@@ -1,0 +1,21 @@
+/*---------------------------------------------------
+    LESS Elements 0.9
+  ---------------------------------------------------
+    A set of useful LESS mixins
+    More info at: http://lesselements.com
+  ---------------------------------------------------*/
+.note-editor {
+  border: 1px solid #a9a9a9;
+}
+.note-editor .note-toolbar {
+  background-color: #f5f5f5;
+  margin: 0px;
+  padding: 5px;
+  border-bottom: 1px solid #a9a9a9;
+}
+.note-editor .note-editable {
+  outline: none;
+  height: 300px;
+  overflow: scroll;
+  padding: 10px;
+}
