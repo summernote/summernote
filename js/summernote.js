@@ -13,6 +13,8 @@ define('summernote', ['renderer', 'eventHandler'], function(renderer, eventHandl
    * create Editor Layout and attach Key and Mouse Event
    */
   $.fn.summernote = function(options) {
+    options = options || {};
+    
     // createLayout
     renderer.createLayout(this);
     

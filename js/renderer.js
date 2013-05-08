@@ -24,7 +24,6 @@ define('renderer', [], function() {
                    '</div>' +
                    '<div class="note-insert btn-group">' +
                      '<button class="btn btn-small"><i class="icon-picture"></i></button>' +
-                     '<button class="btn btn-small"><i class="icon-plus"></i></button>' +
                      '<button class="btn btn-small"><i class="icon-link"></i></button>' +
                      '<button class="btn btn-small"><i class="icon-table"></i></button>' +
                    '</div>' +
