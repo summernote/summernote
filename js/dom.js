@@ -26,7 +26,7 @@ var dom = (function() {
   };
 
   return {
-    isText: isText, isNotText: not(isText),
+    isText: isText,
     listPrev: listPrev
   }
 })();
