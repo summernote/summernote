@@ -55,17 +55,35 @@ define('renderer', [], function() {
   };
   
   /**
+   * layoutInfo
+   */
+  var layoutInfo = function(welHolder) {
+    var welEditor = welHolder.next();
+    if (!welEditor.hasClass('note-editor')) { return; }
+    
+    // editorInfo
+    return {
+      editor: welEditor,
+      editable: welEditor.find('.note-editable'),
+      toolbar: welEditor.find('.note-toolbar')
+    }
+  };
+  
+  /**
    * removeLayout
    */
   var removeLayout = function(welHolder) {
-    var welEditor = welHolder.next();
-    if (!welEditor.hasClass('note-editor')) { return; }
-    welEditor.remove();
+    var info = layoutInfo(welHolder);
+    if (!info) { return; }
+    welHolder.html(info.editable.html());
+    
+    info.editor.remove();
     welHolder.show();
   };
 
   return {
     createLayout: createLayout,
-    removeLayout: removeLayout
+    removeLayout: removeLayout,
+    layoutInfo: layoutInfo
   }
 });
