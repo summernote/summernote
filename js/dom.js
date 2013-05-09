@@ -2,10 +2,9 @@
  * dom.js
  * (c) 2013~ Youngteac Hong
  * summernote may be freely distributed under the MIT license./
- *
  */
 "use strict";
-define('dom', [], function() {
+define('dom', ['lodash'], function(_) {
   /**
    * judge whether node is text node or not
    */
@@ -46,6 +45,22 @@ define('dom', [], function() {
     }
     return null;
   };
+  
+  /**
+   * commonAncestor
+   *
+   * find commonAncestor
+   */
+  var commonAncestor = function(nodeA, nodeB) {
+    var aAncestor = listAncestor(nodeA);
+    
+    for (var n = nodeB; n; n = n.parentNode) {
+      if (_.contains(aAncestor, n)) { return n; }
+    }
+    
+    // difference document area
+    return null;
+  };
  
   /**
    * listPrev
@@ -54,6 +69,7 @@ define('dom', [], function() {
    */
   var listPrev = function(node, pred) {
     pred = pred || function() { return false; };
+
     var nodes = [], prev = node;
     while (prev) {
       if (pred(prev)) { break; }
@@ -64,12 +80,29 @@ define('dom', [], function() {
   };
   
   /**
+   * listAncestor
+   *
+   * listing ancestor nodes
+   */
+  var listAncestor = function(node, pred) {
+    pred = pred || function() { return false; };
+    
+    var aAncestor = [];
+    ancestor(node, function(el) {
+      aAncestor.push(el);
+      return pred(el);
+    });
+    
+    return aAncestor;
+  };
+  
+  /**
    * listBetween
    *
    * listing nodes between nodeA and nodeB (predicate, optional)
    */
   var listBetween = function(nodeA, nodeB, pred) {
-    return [];
+    
   };
 
   return {
@@ -79,11 +112,15 @@ define('dom', [], function() {
     isU: isU,
     isDiv: isDiv,
     
-    //finds
+    //find 1
     ancestor: ancestor,
+    
+    //find 2
+    commonAncestor: commonAncestor,
 
     //lists
     listPrev: listPrev,
-    listBetween: listBetween
+    listBetween: listBetween,
+    listAncestor: listAncestor
   }
 });
