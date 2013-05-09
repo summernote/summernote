@@ -4,15 +4,13 @@
  * summernote may be freely distributed under the MIT license./
  */
 "use strict";
-define('editor', ['w3cRange', 'style'], function(w3cRange, style) {
+define('editor', ['dom', 'w3cRange', 'style'], function(dom, w3cRange, style) {
   /**
    * bold
    */
   var bold = function() {
-    console.log('bold');
-    //var range = w3cRange.createFromNative();
-    //var aText = range.nodes(true, dom.isText);
-    //style.styleNode(range);
+    var range = w3cRange.createFromSelection();
+    var aText = range.nodes(true, dom.isText);
   };
   
   return {

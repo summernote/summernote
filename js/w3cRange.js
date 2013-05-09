@@ -7,18 +7,24 @@
 "use strict";
 define('w3cRange', ['dom'], function(dom) {
   var Range = function(sc, so, ec, eo) {
-    /**
-     * nodes
-     */
     this.nodes = function(bSplitText, pred) {
-      return [];
+      var aNodes = dom.listBetween(sc, ec);
+      return aNodes;
     };
   };
   
+  /**
+   * createFromSelection
+   */
+  var createFromSelection = function() {
+    if (document.getSelection) { //webkit
+      var rng = document.getSelection().getRangeAt(0);
+      return new Range(rng.startContainer, rng.startOffset,
+                       rng.endContainer, rng.endOffset);
+    }
+  };
   
   return {
-    createFromNative: function() {
-      return new Range();
-    }
+    createFromSelection: createFromSelection
   };
 });
