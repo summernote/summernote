@@ -34,7 +34,7 @@ define('renderer', [], function() {
   /**
    * createLayout
    */
-  var createLayout = function(welHolder) {
+  var createLayout = function(welHolder, nHeight) {
     //already created
     if (welHolder.next().hasClass('note-editor')) { return; }
     
@@ -43,6 +43,8 @@ define('renderer', [], function() {
 
     //02. create Editable
     var welEditable = $('<div class="note-editable" contentEditable="true"></div>').prependTo(welEditor);
+    if (nHeight) { welEditable.height(nHeight); }
+
     welEditable.html(welHolder.html());
     
     //03. create Toolbar

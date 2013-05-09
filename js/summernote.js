@@ -4,6 +4,7 @@
  * summernote may be freely distributed under the MIT license./
  */
 "use strict";
+require.config({ paths: { "lodash": '../libs/lodash', } });
 define('summernote', ['renderer', 'eventHandler'], function(renderer, eventHandler) {
   var $ = jQuery;
   
@@ -16,7 +17,7 @@ define('summernote', ['renderer', 'eventHandler'], function(renderer, eventHandl
     options = options || {};
     
     // createLayout
-    renderer.createLayout(this);
+    renderer.createLayout(this, options.height);
     
     var info = renderer.layoutInfo(this);
     eventHandler.attach(info);
