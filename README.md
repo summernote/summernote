@@ -5,7 +5,7 @@
 > summernote is a javascript program that helps you to create WYSIWYG Editor on web. summernote uses opensouce libraries(bootstrap, jQuery, fontAwesome)
 
 ## installation
-### 01. include js/css
+#### 01. include js/css
 ```
 <!-- include libries(jQuery, bootstrap, fontawesome) -->
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script> 
@@ -16,11 +16,11 @@
 <link rel="stylesheet" href="summernote.css" />
 <script type="text/javascript" src="build/summernote_min.js"></script>
 ```
-### 02. target elements
+#### 02. target elements
 ```
 <div id="summernote">Hello Summernote</div>
 ```
-### 03. run script
+#### 03. run script
 ```
 $('#summernote').summernote();
 ```
