@@ -16,7 +16,7 @@ Demo Page: http://hackerwins.github.io/summernote/
 
 <!-- include summernote css/js-->
 <link rel="stylesheet" href="summernote.css" />
-<script type="text/javascript" src="build/summernote.js"></script>
+<script type="text/javascript" src="summernote.js"></script>
 ```
 #### 02. target elements
 ```html
