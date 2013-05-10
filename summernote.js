@@ -8,15 +8,9 @@
   var $ = jQuery;
   
   /**
-   * key util
+   * Editor
    */
-  var key = {
-	  B			: 66,
-	  I			: 73,
-	  U			: 85
-  }
-  
-  var editor = new (function() {
+  var Editor = function() {
     var makeExecCommand = function(sCmd) {
       return function() { document.execCommand(sCmd); }
     };
@@ -24,12 +18,15 @@
     this.bold = makeExecCommand('bold');
     this.italic = makeExecCommand('italic');
     this.underline = makeExecCommand('underline');
-    this.justfyLeft = makeExecCommand('justfyLeft');
-    this.justfyCenter = makeExecCommand('justfyCenter');
-    this.justfyRight = makeExecCommand('justfyRight');
+    this.justifyLeft = makeExecCommand('justifyLeft');
+    this.justifyCenter = makeExecCommand('justifyCenter');
+    this.justifyRight = makeExecCommand('justifyRight');
     this.insertOrderedList = makeExecCommand('insertOrderedList');
     this.insertUnorderedList = makeExecCommand('insertUnorderedList');
-  });
+    this.indent = makeExecCommand('indent');
+    this.outdent = makeExecCommand('outdent');
+  };
+  var editor = new Editor();
   
   /**
    * EventHandler
@@ -37,6 +34,8 @@
    * handle keydown event on editable area
    */
   var EventHandler = function() {
+    var key = { B: 66, I: 73, U: 85 };
+
     var hKeydown = function(event) {
       if(event.metaKey && event.keyCode === key.B) { // bold
         editor.bold();
@@ -48,17 +47,35 @@
     };
 
     /**
-     * attach
+     * ancestor
+     * find nearest ancestor predicate hit
      */
-    this.attach = function(layoutInfo) {
-      layoutInfo.editable.bind('keydown', hKeydown);
+    var ancestor = function(node, pred) {
+      while (node) {
+        if(pred(node)) { return node; }
+        node = node.parentNode;
+      }
+      return null;
+    };
+    
+    var hToolbarClick = function(event) {
+      var elBtn = ancestor(event.target, function(node) {
+        return $(node).attr('data-event');
+      });
+      
+      if (elBtn) {
+        editor[$(elBtn).attr('data-event')]();
+      }
     };
 
-    /**
-     * dettach
-     */
+    this.attach = function(layoutInfo) {
+      layoutInfo.editable.bind('keydown', hKeydown);
+      layoutInfo.toolbar.bind('click', hToolbarClick);
+    };
+
     this.dettach = function(layoutInfo) {
       layoutInfo.editable.unbind('keydown');
+      layoutInfo.toolbar.unbind('click');
     };
   };
 
@@ -70,20 +87,20 @@
   var Renderer = function() {
     var sToolbar = '<div class="note-toolbar btn-toolbar">' + 
                      '<div class="note-style btn-group">' +
-                       '<button class="btn btn-small"><i class="icon-bold"></i></button>' +
-                       '<button class="btn btn-small"><i class="icon-italic"></i></button>' +
-                       '<button class="btn btn-small"><i class="icon-underline"></i></button>' +
+                       '<button class="btn btn-small" data-event="bold"><i class="icon-bold"></i></button>' +
+                       '<button class="btn btn-small" data-event="italic"><i class="icon-italic"></i></button>' +
+                       '<button class="btn btn-small" data-event="underline"><i class="icon-underline"></i></button>' +
                      '</div>' +
                      '<div class="note-para btn-group">' +
-                       '<button class="btn btn-small"><i class="icon-align-left"></i></button>' +
-                       '<button class="btn btn-small"><i class="icon-align-center"></i></button>' +
-                       '<button class="btn btn-small"><i class="icon-align-right"></i></button>' +
+                       '<button class="btn btn-small" data-event="justifyLeft"><i class="icon-align-left"></i></button>' +
+                       '<button class="btn btn-small" data-event="justifyCenter"><i class="icon-align-center"></i></button>' +
+                       '<button class="btn btn-small" data-event="justifyRight"><i class="icon-align-right"></i></button>' +
                      '</div>' +
                      '<div class="note-list btn-group">' +
-                       '<button class="btn btn-small"><i class="icon-list-ul"></i></button>' +
-                       '<button class="btn btn-small"><i class="icon-list-ol"></i></button>' +
-                       '<button class="btn btn-small"><i class="icon-indent-left"></i></button>' +
-                       '<button class="btn btn-small"><i class="icon-indent-right"></i></button>' +
+                       '<button class="btn btn-small" data-event="insertUnorderedList"><i class="icon-list-ul"></i></button>' +
+                       '<button class="btn btn-small" data-event="insertOrderedList"><i class="icon-list-ol"></i></button>' +
+                       '<button class="btn btn-small" data-event="outdent"><i class="icon-indent-left"></i></button>' +
+                       '<button class="btn btn-small" data-event="indent"><i class="icon-indent-right"></i></button>' +
                      '</div>' +
                      '<div class="note-insert btn-group">' +
                        '<button class="btn btn-small"><i class="icon-picture"></i></button>' +
