@@ -27,5 +27,8 @@ Demo Page: http://hackerwins.github.io/summernote/
 $('#summernote').summernote();
 ```
 
+### TODO list
+1. implements image, link, table
+
 ### browser support
 > Modern Browser (Webkit, Firefox, IE 9+)
