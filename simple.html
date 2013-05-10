@@ -3,18 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <title>summernote</title>
+  <!-- include libraries -->
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script> 
   <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
   <link rel="stylesheet" href="libs/FortAwesome-Font-Awesome/css/font-awesome.min.css">
 
-  <link rel="stylesheet/less" type="text/css" href="css/summernote.less" /> 
-  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.3.3/less.min.js"></script> 
-  <script data-main="js/summernote" type="text/javascript" src="libs/require.js" charset="utf-8"></script>
+  <!-- include summernote -->
+  <link rel="stylesheet" href="summernote.css" />
+  <script type="text/javascript" src="summernote.js"></script>
 
   <script type="text/javascript">
-    setTimeout(function() {
+    $(document).ready(function() {
       $('#summernote').summernote({height: 300});
-    }, 1000);
+    });
   </script>
 </head>
 <body>
