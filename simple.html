@@ -3,30 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <title>summernote</title>
-  
-  <!-- 01. include jQuery -->
+  <!-- include libraries -->
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script> 
-
-  <!-- 02. include bootstrap -->
   <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-  <!-- 03. include Font Awesome css  -->
   <link rel="stylesheet" href="libs/FortAwesome-Font-Awesome/css/font-awesome.min.css">
-  
-  <!-- 04. include summernote -->
+
+  <!-- include summernote -->
   <link rel="stylesheet" href="summernote.css" />
   <script type="text/javascript" src="summernote.js"></script>
-  
-  <!-- 05. summernote init after document ready -->
+
   <script type="text/javascript">
-    var edit = function() {
-      $('#click-to-edit').summernote({focus: true});
-    };
-    
-    var save = function() {
-      var sHTML = $('#click-to-edit').code();
-      $('#click-to-edit').destory();
-    };
-    
     $(document).ready(function() {
       $('#summernote').summernote({height: 300});
     });
@@ -34,8 +20,6 @@
 </head>
 <body>
 <div class="container">
-  <h2 class="text-center">Super simple WYSIWYG editor on Bootstrap</h2>
-  <p class="text-center muted">Cross-Browsing WYSIWYG editor</p>
   <div id="summernote">
     <h1><img alt="Saturn V carrying Apollo 11" style="float:right; margin:15px;" src="http://b.cksource.com/a/1/img/sample.jpg" /> Apollo 11</h1>
     <p><strong>Apollo 11</strong> was the spaceflight that landed the first humans, Americans <a href="http://en.wikipedia.org/wiki/Neil_Armstrong">Neil Armstrong</a> and <a href="http://en.wikipedia.org/wiki/Buzz_Aldrin">Buzz Aldrin</a>, on the Moon on July 20, 1969, at 20:18 UTC. Armstrong became the first to step onto the lunar surface 6 hours later on July 21 at 02:56 UTC.</p>
@@ -79,44 +63,6 @@
     <hr />
     <p><small>Source: <a href="http://en.wikipedia.org/wiki/Apollo_11">Wikipedia.org</a></small></p>
   </div>
-  <hr/>
-  <h4>click to edit</h4>
-  <div class="row-fluid">
-    <div class="span6">
-      <div class="btn-group">
-        <button class="btn btn-small" onclick="edit()">Edit</button>
-        <button class="btn btn-small" onclick="save()">Save</button>
-      </div>
-      <div id="click-to-edit">
-        <p>Armstrong spent about <s>three and a half</s> two and a half hours outside the spacecraft, Aldrin slightly less; and together they collected 47.5 pounds (21.5&nbsp;kg) of lunar material for return to Earth. A third member of the mission, <a href="http://en.wikipedia.org/wiki/Michael_Collins_(astronaut)">Michael Collins</a>, piloted the <a href="http://en.wikipedia.org/wiki/Apollo_Command/Service_Module">command</a> spacecraft alone in lunar orbit until Armstrong and Aldrin returned to it for the trip back to Earth.</p>
-      </div>
-    </div>
-    <div class="span6">
-      <pre class="prettyprint lang-javascript linenums">var edit = function() {
-  // create summernote
-  $('.editor').summernote({focus: true});
-};
-
-var save = function() {
-  // get HTML if you need
-  var sHTML = $('.editor').code();
-  // finish to edit
-  $('.editor').destory();
-};</pre>
-    </div>
-  </div>
-  <hr/>
-  <h4>Installation</h4>
-  <p>Summernote is a javascript program that helps you to create WYSIWYG Editor on web. summernote uses opensouce libraries include bootstrap</p>
-  <ul>
-    <li>bootstrap</li>
-    <li>jQuery</li>
-    <li>FontAwesome</li>
-  </ul>
 </div>
-<!-- pretty print -->
-<link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.css" />
-<script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.js"></script>
-<script>!function($) { $(function() { window.prettyPrint && prettyPrint() }) }(window.jQuery)</script>
 </body>
 </html>
