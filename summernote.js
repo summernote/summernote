@@ -6,14 +6,40 @@
 "use strict";
 (function(root) {
   var $ = jQuery;
+
+  /**
+   * Range
+   * {startContainer, startOffset, endContainer, endOffset} From BrowserRange
+   */
+  var Range = function() {
+    var sc, so, ec, eo;
+    if(document.getSelection) { // webkit, firefox
+      var nativeRng = document.getSelection().getRangeAt(0);
+      sc = nativeRng.startContainer, so = nativeRng.startOffset,
+      ec = nativeRng.endContainer, eo = nativeRng.endOffset;
+    } // TODO: handle IE8+ TextRange
+    this.sc = sc; this.so = so;
+    this.ec = ec; this.eo = eo;
+  };
+  
+  /**
+   * Style
+   */
+  var Style = function() {
+    var isText = function (node) { return node && node.nodeName === "#text"; };
+    this.current = function() {
+      var rng = new Range();
+      var elCont = isText(rng.sc) ? rng.sc.parentNode : rng.sc;
+      return $(elCont).curStyles('font-weight', 'font-style', 'text-decoration',
+                                 'text-align', 'list-style-type') || {};
+    }
+  };
   
   /**
    * Editor
    */
   var Editor = function() {
-    var makeExecCommand = function(sCmd) {
-      return function() { document.execCommand(sCmd); }
-    };
+    var makeExecCommand = function(sCmd) { return function() { document.execCommand(sCmd); } };
     
     this.bold = makeExecCommand('bold');
     this.italic = makeExecCommand('italic');
@@ -26,7 +52,6 @@
     this.indent = makeExecCommand('indent');
     this.outdent = makeExecCommand('outdent');
   };
-  var editor = new Editor();
   
   /**
    * EventHandler
@@ -34,18 +59,6 @@
    * handle keydown event on editable area
    */
   var EventHandler = function() {
-    var key = { B: 66, I: 73, U: 85 };
-
-    var hKeydown = function(event) {
-      if(event.metaKey && event.keyCode === key.B) { // bold
-        editor.bold();
-      } else if(event.metaKey && event.keyCode === key.I) { // italic
-        editor.italic();
-      } else if(event.metaKey && event.keyCode === key.U) { // underline
-        editor.underline();
-      } 
-    };
-
     /**
      * ancestor
      * find nearest ancestor predicate hit
@@ -57,15 +70,27 @@
       }
       return null;
     };
-    
+
+    var editor = new Editor();
+    var style = new Style();
+    var key = { B: 66, I: 73, U: 85 };
+
+    var hKeydown = function(event) {
+      if(event.metaKey && event.keyCode === key.B) { // bold
+        editor.bold();
+      } else if(event.metaKey && event.keyCode === key.I) { // italic
+        editor.italic();
+      } else if(event.metaKey && event.keyCode === key.U) { // underline
+        editor.underline();
+      }
+      //console.log(style.current()); TODO:: update toolbar
+    };
+
     var hToolbarClick = function(event) {
       var elBtn = ancestor(event.target, function(node) {
         return $(node).attr('data-event');
       });
-      
-      if (elBtn) {
-        editor[$(elBtn).attr('data-event')]();
-      }
+      if (elBtn) { editor[$(elBtn).attr('data-event')](); }
     };
 
     this.attach = function(layoutInfo) {
@@ -140,7 +165,6 @@
       var welEditor = welHolder.next();
       if (!welEditor.hasClass('note-editor')) { return; }
       
-      // editorInfo
       return {
         editor: welEditor,
         editable: welEditor.find('.note-editable'),
