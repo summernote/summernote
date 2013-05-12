@@ -9,6 +9,35 @@
 
   //Check Platform/Agent
   var bMac = navigator.appVersion.indexOf('Mac') > -1; 
+  
+  /**
+   * dom
+   */
+  var dom = function() {
+    var isText = function (node) {
+      return node && node.nodeName === "#text";
+    };
+    var isList = function(el) {                                                 
+      return el && (el.nodeName === 'UL' || el.nodeName === 'OL');              
+    };                                                                          
+
+    /**
+     * ancestor
+     * find nearest ancestor predicate hit
+     */
+    var ancestor = function(node, pred) {
+      while (node) {
+        if(pred(node)) { return node; }
+        node = node.parentNode;
+      }
+      return null;
+    };
+    return {
+      isText: isText,
+      isList: isList,
+      ancestor: ancestor
+    };
+  }();
 
   /**
    * Range
@@ -23,18 +52,39 @@
     } // TODO: handle IE8+ TextRange
     this.sc = sc; this.so = so;
     this.ec = ec; this.eo = eo;
+    
+    /**
+     * isOnList
+     *
+     * judge whether range is on list node or not
+     */
+    this.isOnList = function() {
+      var elStart = dom.ancestor(sc, dom.isList),
+          elEnd = dom.ancestor(sc, dom.isList);
+      return elStart && (elStart === elEnd);
+    };
   };
   
   /**
    * Style
    */
   var Style = function() {
-    var isText = function (node) { return node && node.nodeName === "#text"; };
     this.current = function() {
       var rng = new Range();
-      var elCont = isText(rng.sc) ? rng.sc.parentNode : rng.sc;
-      return $(elCont).curStyles('font-weight', 'font-style', 'text-decoration',
-                                 'text-align', 'list-style-type') || {};
+      var welCont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
+      var oStyle = welCont.curStyles('font-weight', 'font-style', 'text-decoration',
+                                     'text-align', 'list-style-type') || {};
+      if (!rng.isOnList()) {                                                    
+        oStyle.listStyle = 'none';
+      } else {
+        if (oStyle.listStyleType === 'circle' || oStyle.listStyleType === 'disc' ||
+            oStyle.listStyleType === 'disc-leading-zero' || oStyle.listStyleType === 'sqare') {
+          oStyle.listStyle = 'unordered';
+        } else {                                                                
+          oStyle.listStyle = 'ordered';
+        }
+      } 
+      return oStyle;
     }
   };
   
@@ -62,21 +112,42 @@
    * handle keydown event on editable area
    */
   var EventHandler = function() {
-    /**
-     * ancestor
-     * find nearest ancestor predicate hit
-     */
-    var ancestor = function(node, pred) {
-      while (node) {
-        if(pred(node)) { return node; }
-        node = node.parentNode;
-      }
-      return null;
-    };
-
     var editor = new Editor();
     var style = new Style();
     var key = { B: 66, I: 73, U: 85 };
+
+    var updateToolbar = function(welToolbar) {
+      var oStyle = style.current();
+      var btnState = function(sSelector, pred) {
+        var welBtn = welToolbar.find(sSelector);
+        welBtn[pred() ? 'addClass' : 'removeClass']('active');
+      };
+      
+      btnState('button[data-event="bold"]', function() {
+        return oStyle.fontWeight === 'bold';
+      });
+      btnState('button[data-event="italic"]', function() {
+        return oStyle.fontStyle === 'italic';
+      });
+      btnState('button[data-event="underline"]', function() {
+        return oStyle.textDecoration === 'underline';
+      });
+      btnState('button[data-event="justifyLeft"]', function() {
+        return oStyle.textAlign === 'left' || oStyle.textAlign === 'start';
+      });
+      btnState('button[data-event="justifyCenter"]', function() {
+        return oStyle.textAlign === 'center';
+      });
+      btnState('button[data-event="justifyRight"]', function() {
+        return oStyle.textAlign === 'right';
+      });
+      btnState('button[data-event="insertUnorderedList"]', function() {
+        return oStyle.listStyle === 'unordered';
+      });
+      btnState('button[data-event="insertOrderedList"]', function() {
+        return oStyle.listStyle === 'ordered';
+      });
+    };
 
     var hKeydown = function(event) {
       var bCmd = bMac ? event.metaKey : event.ctrlKey;
@@ -87,11 +158,16 @@
       } else if(bCmd && event.keyCode === key.U) { // underline
         editor.underline();
       }
-      //console.log(style.current()); TODO:: update toolbar
+    };
+    
+    var hToolbarUpdate = function(event) {
+      var elToolbar = event.currentTarget || event.target;
+      var welToolbar = $(elToolbar.parentNode).find('.note-toolbar');
+      updateToolbar(welToolbar);
     };
 
     var hToolbarClick = function(event) {
-      var elBtn = ancestor(event.target, function(node) {
+      var elBtn = dom.ancestor(event.target, function(node) {
         return $(node).attr('data-event');
       });
       if (elBtn) { editor[$(elBtn).attr('data-event')](); }
@@ -99,11 +175,15 @@
 
     this.attach = function(layoutInfo) {
       layoutInfo.editable.bind('keydown', hKeydown);
+      layoutInfo.editable.bind('keyup', hToolbarUpdate);
+      layoutInfo.editable.bind('mouseup', hToolbarUpdate);
       layoutInfo.toolbar.bind('click', hToolbarClick);
     };
 
     this.dettach = function(layoutInfo) {
       layoutInfo.editable.unbind('keydown');
+      layoutInfo.editable.unbind('keyup');
+      layoutInfo.editable.unbind('mouseup');
       layoutInfo.toolbar.unbind('click');
     };
   };
