@@ -1,5 +1,5 @@
 # summernote
-> Super simple WYSIWYG Editor on Bootstrap
+> Super Simple WYSIWYG Editor on Bootstrap
 
 ### summernote ?
 summernote is a javascript program that helps you to create WYSIWYG Editor on web. summernote uses opensouce libraries(bootstrap, jQuery, fontAwesome)
@@ -9,8 +9,9 @@ Demo Page: http://hackerwins.github.io/summernote/
 ### installation
 #### 01. include js/css
 ```html
-<!-- include libries(jQuery, bootstrap, fontawesome) -->
+<!-- include libries(jquery, jquery.curstyles, bootstrap, fontawesome) -->
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script> 
+<script type="text/javascript" src="libs/jquery.curstyles.min.js"></script>
 <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link rel="stylesheet" href="libs/FortAwesome-Font-Awesome/css/font-awesome.min.css">
 
