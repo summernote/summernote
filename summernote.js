@@ -146,7 +146,8 @@
         var welBtn = $(elBtn);
         var sShortcut = welBtn.attr(bMac ? 'data-mac-shortcut':'data-shortcut');
         if (sShortcut) { welBtn.attr('title', function(i, v) { return v + ' (' + sShortcut + ')'}); }
-      }).tooltip();
+      //bootstrap tooltip on btn-group bug: https://github.com/twitter/bootstrap/issues/5687
+      }).tooltip({container: 'body'});
     };
     
     /**
