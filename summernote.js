@@ -84,6 +84,12 @@
           oStyle.listStyle = 'ordered';
         }
       } 
+      
+      //FF style fontWeight patch
+      if (!isNaN(parseInt(oStyle.fontWeight))) {
+        oStyle.fontWeight = oStyle.fontWeight > 400 ? 'bold' : 'normal';
+      } 
+
       return oStyle;
     }
   };
@@ -157,7 +163,10 @@
         editor.italic();
       } else if(bCmd && event.keyCode === key.U) { // underline
         editor.underline();
+      } else {
+        return; // not matched
       }
+      event.preventDefault(); //prevent default event for FF
     };
     
     var hToolbarUpdate = function(event) {
