@@ -184,16 +184,14 @@
 
     this.attach = function(layoutInfo) {
       layoutInfo.editable.bind('keydown', hKeydown);
-      layoutInfo.editable.bind('keyup', hToolbarUpdate);
-      layoutInfo.editable.bind('mouseup', hToolbarUpdate);
+      layoutInfo.editable.bind('keyup mouseup', hToolbarUpdate);
       layoutInfo.toolbar.bind('click', hToolbarClick);
+      layoutInfo.toolbar.bind('click', hToolbarUpdate);
     };
 
     this.dettach = function(layoutInfo) {
-      layoutInfo.editable.unbind('keydown');
-      layoutInfo.editable.unbind('keyup');
-      layoutInfo.editable.unbind('mouseup');
-      layoutInfo.toolbar.unbind('click');
+      layoutInfo.editable.unbind();
+      layoutInfo.toolbar.unbind();
     };
   };
 
