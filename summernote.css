@@ -1,9 +1,3 @@
-/*---------------------------------------------------
-    LESS Elements 0.9
-  ---------------------------------------------------
-    A set of useful LESS mixins
-    More info at: http://lesselements.com
-  ---------------------------------------------------*/
 .note-editor {
   border: 1px solid #a9a9a9;
 }
@@ -12,6 +6,23 @@
   margin: 0px;
   padding: 5px;
   border-bottom: 1px solid #a9a9a9;
+}
+.note-editor .note-popover .popover {
+  max-width: none;
+}
+.note-editor .note-popover .popover.bottom .arrow {
+  left: 20px;
+}
+.note-editor .note-popover .popover .popover-content {
+  padding: 5px;
+}
+.note-editor .note-popover .popover .popover-content a {
+  display: inline-block;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* for FF */ 
+  vertical-align: middle; /* for FF */
 }
 .note-editor .note-editable {
   outline: none;
