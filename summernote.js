@@ -4,9 +4,7 @@
  * summernote may be freely distributed under the MIT license./
  */
 "use strict";
-(function(root) {
-  var $ = jQuery;
-
+(function($) {
   //Check Platform/Agent
   var bMac = navigator.appVersion.indexOf('Mac') > -1; 
   
@@ -17,9 +15,12 @@
     var isText = function (node) {
       return node && node.nodeName === "#text";
     };
-    var isList = function(el) {                                                 
-      return el && (el.nodeName === 'UL' || el.nodeName === 'OL');              
-    };                                                                          
+    var isList = function(el) {
+      return el && (el.nodeName === 'UL' || el.nodeName === 'OL');
+    };
+    var isAnchor = function(el) {
+      return el && (el.nodeName === 'A');
+    };
 
     /**
      * ancestor
@@ -35,24 +36,42 @@
     return {
       isText: isText,
       isList: isList,
+      isAnchor: isAnchor,
       ancestor: ancestor
     };
   }();
 
   /**
    * Range
-   * {startContainer, startOffset, endContainer, endOffset} From BrowserRange
+   * {startContainer, startOffset, endContainer, endOffset}
+   * create Range Object From arguments or Browser Selection
    */
-  var Range = function() {
-    var sc, so, ec, eo;
-    if(document.getSelection) { // webkit, firefox
-      var nativeRng = document.getSelection().getRangeAt(0);
-      sc = nativeRng.startContainer, so = nativeRng.startOffset,
-      ec = nativeRng.endContainer, eo = nativeRng.endOffset;
-    } // TODO: handle IE8+ TextRange
+  var Range = function(sc, so, ec, eo) {
+    if (arguments.length === 0) { // from Browser Selection
+      if(document.getSelection) { // webkit, firefox
+        var nativeRng = document.getSelection().getRangeAt(0);
+        sc = nativeRng.startContainer, so = nativeRng.startOffset,
+        ec = nativeRng.endContainer, eo = nativeRng.endOffset;
+      } // TODO: handle IE8+ TextRange
+    }
+    
     this.sc = sc; this.so = so;
     this.ec = ec; this.eo = eo;
-    
+ 
+    /**
+     * select
+     *
+     * update visible range
+     */
+    this.select = function() {
+      if(document.createRange) {
+        var range = document.createRange();
+        range.setStart(sc, so);
+        range.setEnd(ec, eo);
+        document.getSelection().addRange(range);
+      } // TODO: handle IE8+ TextRange
+    }
+   
     /**
      * isOnList
      *
@@ -63,17 +82,38 @@
           elEnd = dom.ancestor(sc, dom.isList);
       return elStart && (elStart === elEnd);
     };
+
+    /**
+     * isOnAnchor
+     *
+     * judge whether range is on anchor node or not
+     */
+    this.isOnAnchor = function() {
+      var elStart = dom.ancestor(sc, dom.isAnchor),
+          elEnd = dom.ancestor(sc, dom.isAnchor);
+      return elStart && (elStart === elEnd);
+    };
   };
   
   /**
    * Style
    */
   var Style = function() {
+    /**
+     * current
+     */
     this.current = function() {
       var rng = new Range();
       var welCont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
       var oStyle = welCont.curStyles('font-weight', 'font-style', 'text-decoration',
                                      'text-align', 'list-style-type') || {};
+
+      //FF fontWeight patch(number to 'bold' or 'normal')
+      if (!isNaN(parseInt(oStyle.fontWeight))) {
+        oStyle.fontWeight = oStyle.fontWeight > 400 ? 'bold' : 'normal';
+      }
+      
+      // listStyleType to listStyle(unordered, ordered)
       if (!rng.isOnList()) {                                                    
         oStyle.listStyle = 'none';
       } else {
@@ -85,11 +125,7 @@
         }
       } 
       
-      //FF style fontWeight patch
-      if (!isNaN(parseInt(oStyle.fontWeight))) {
-        oStyle.fontWeight = oStyle.fontWeight > 400 ? 'bold' : 'normal';
-      } 
-
+      oStyle.anchor = rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor) : null;
       return oStyle;
     }
   };
@@ -110,6 +146,18 @@
     this.insertUnorderedList = makeExecCommand('insertUnorderedList');
     this.indent = makeExecCommand('indent');
     this.outdent = makeExecCommand('outdent');
+    this.unlink = function() {
+      var range = new Range();
+      if (range.isOnAnchor()) {
+        var elAnchor = dom.ancestor(range.sc, dom.isAnchor);
+        range = new Range(elAnchor, 0, elAnchor, 1);
+        range.select();
+        document.execCommand('unlink');
+      }
+    };
+    this.editLink = function() {
+      console.log('editLink');
+    };
   };
   
   /**
@@ -122,8 +170,7 @@
     var style = new Style();
     var key = { B: 66, I: 73, U: 85 };
 
-    var updateToolbar = function(welToolbar) {
-      var oStyle = style.current();
+    var updateToolbar = function(welToolbar, oStyle) {
       var btnState = function(sSelector, pred) {
         var welBtn = welToolbar.find(sSelector);
         welBtn[pred() ? 'addClass' : 'removeClass']('active');
@@ -154,6 +201,24 @@
         return oStyle.listStyle === 'ordered';
       });
     };
+    
+    var updatePopover = function(welPopover, oStyle) {
+      var welAnchorPopover = welPopover.find('.note-anchor-popover');
+      if (oStyle.anchor) {
+        var welAnchor = welAnchorPopover.find('a');
+        welAnchor.attr('href', oStyle.anchor.href).html(oStyle.anchor.href);
+        
+        //popover position
+        var rect = oStyle.anchor.getBoundingClientRect();
+        welAnchorPopover.css({
+          display: 'block',
+          left: rect.left,
+          top: rect.bottom
+        });
+      } else {
+        welAnchorPopover.hide();
+      }
+    };
 
     var hKeydown = function(event) {
       var bCmd = bMac ? event.metaKey : event.ctrlKey;
@@ -169,13 +234,16 @@
       event.preventDefault(); //prevent default event for FF
     };
     
-    var hToolbarUpdate = function(event) {
-      var elToolbar = event.currentTarget || event.target;
-      var welToolbar = $(elToolbar.parentNode).find('.note-toolbar');
-      updateToolbar(welToolbar);
+    var hToolbarAndPopoverUpdate = function(event) {
+      var elEditableOrToolbar = event.currentTarget || event.target;
+      var welEditor = $(elEditableOrToolbar.parentNode);
+      
+      var oStyle = style.current();
+      updateToolbar(welEditor.find('.note-toolbar'), oStyle);
+      updatePopover(welEditor.find('.note-popover'), oStyle);
     };
 
-    var hToolbarClick = function(event) {
+    var hToolbarAndPopoverClick = function(event) {
       var elBtn = dom.ancestor(event.target, function(node) {
         return $(node).attr('data-event');
       });
@@ -184,14 +252,17 @@
 
     this.attach = function(layoutInfo) {
       layoutInfo.editable.bind('keydown', hKeydown);
-      layoutInfo.editable.bind('keyup mouseup', hToolbarUpdate);
-      layoutInfo.toolbar.bind('click', hToolbarClick);
-      layoutInfo.toolbar.bind('click', hToolbarUpdate);
+      layoutInfo.editable.bind('keyup mouseup', hToolbarAndPopoverUpdate);
+      layoutInfo.toolbar.bind('click', hToolbarAndPopoverClick);
+      layoutInfo.toolbar.bind('click', hToolbarAndPopoverUpdate);
+      layoutInfo.popover.bind('click', hToolbarAndPopoverClick);
+      layoutInfo.popover.bind('click', hToolbarAndPopoverUpdate);
     };
 
     this.dettach = function(layoutInfo) {
       layoutInfo.editable.unbind();
       layoutInfo.toolbar.unbind();
+      layoutInfo.popover.unbind();
     };
   };
 
@@ -224,12 +295,23 @@
                        '<button class="btn btn-small" title="Table"><i class="icon-table"></i></button>' +
                      '</div>' +
                    '</div>';
- 
+    var sPopover = '<div class="note-popover">' +
+                     '<div class="note-anchor-popover popover fade bottom in" style="display: none;">' +
+                       '<div class="arrow"></div>' +
+                       '<div class="popover-content">' +
+                         '<a href="http://www.naver.com" target="_blank">www.naver.com</a>&nbsp;&nbsp;' +
+                         '<div class="note-insert btn-group">' +
+                           '<button class="btn btn-small" title="Edit" data-event="editLink"><i class="icon-edit"></i></button>' +
+                           '<button class="btn btn-small" title="Unlink" data-event="unlink"><i class="icon-unlink"></i></button>' +
+                         '</div>' +
+                       '</div>' +
+                     '</div>' +
+                   '</div>';
     /**
      * createTooltip
      */
-    var createTooltip = function(welToolbar) {
-      welToolbar.find('button').each(function(i, elBtn) {
+    var createTooltip = function(welContainer) {
+      welContainer.find('button').each(function(i, elBtn) {
         var welBtn = $(elBtn);
         var sShortcut = welBtn.attr(bMac ? 'data-mac-shortcut':'data-shortcut');
         if (sShortcut) { welBtn.attr('title', function(i, v) { return v + ' (' + sShortcut + ')'}); }
@@ -257,7 +339,11 @@
       var welToolbar = $(sToolbar).prependTo(welEditor);
       createTooltip(welToolbar);
       
-      //04. Editor/Holder switch
+      //04. create Popover
+      var welPopover = $(sPopover).prependTo(welEditor);
+      createTooltip(welPopover);
+      
+      //05. Editor/Holder switch
       welEditor.insertAfter(welHolder);
       welHolder.hide();
     };
@@ -272,7 +358,8 @@
       return {
         editor: welEditor,
         editable: welEditor.find('.note-editable'),
-        toolbar: welEditor.find('.note-toolbar')
+        toolbar: welEditor.find('.note-toolbar'),
+        popover: welEditor.find('.note-popover')
       }
     };
     
@@ -334,4 +421,6 @@
     eventHandler.dettach(info);
     renderer.removeLayout(this);
   };
-})();
+  
+// jQuery
+})(jQuery);
