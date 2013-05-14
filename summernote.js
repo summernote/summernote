@@ -213,7 +213,7 @@
         welAnchorPopover.css({
           display: 'block',
           left: rect.left,
-          top: rect.bottom
+          top: $(document).scrollTop() + rect.bottom
         });
       } else {
         welAnchorPopover.hide();
@@ -242,6 +242,13 @@
       updateToolbar(welEditor.find('.note-toolbar'), oStyle);
       updatePopover(welEditor.find('.note-popover'), oStyle);
     };
+    
+    var hScroll = function(event) {
+      var elEditableOrToolbar = event.currentTarget || event.target;
+      var welEditor = $(elEditableOrToolbar.parentNode);
+
+      welEditor.find('.note-popover').children().hide();
+    };
 
     var hToolbarAndPopoverClick = function(event) {
       var elBtn = dom.ancestor(event.target, function(node) {
@@ -253,6 +260,7 @@
     this.attach = function(layoutInfo) {
       layoutInfo.editable.bind('keydown', hKeydown);
       layoutInfo.editable.bind('keyup mouseup', hToolbarAndPopoverUpdate);
+      layoutInfo.editable.bind('scroll', hScroll);
       layoutInfo.toolbar.bind('click', hToolbarAndPopoverClick);
       layoutInfo.toolbar.bind('click', hToolbarAndPopoverUpdate);
       layoutInfo.popover.bind('click', hToolbarAndPopoverClick);
