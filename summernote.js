@@ -168,7 +168,7 @@
   var EventHandler = function() {
     var editor = new Editor();
     var style = new Style();
-    var key = { B: 66, I: 73, U: 85 };
+    var key = { TAB: 9, B: 66, I: 73, U: 85 };
 
     var updateToolbar = function(welToolbar, oStyle) {
       var btnState = function(sSelector, pred) {
@@ -222,12 +222,17 @@
 
     var hKeydown = function(event) {
       var bCmd = bMac ? event.metaKey : event.ctrlKey;
+      var bShift = event.shiftKey;
       if(bCmd && event.keyCode === key.B) { // bold
         editor.bold();
       } else if(bCmd && event.keyCode === key.I) { // italic
         editor.italic();
       } else if(bCmd && event.keyCode === key.U) { // underline
         editor.underline();
+      } else if(bShift && event.keyCode === key.TAB) { // shift + tab
+        editor.outdent();
+      } else if(event.keyCode === key.TAB) { // tab
+        editor.indent();
       } else {
         return; // not matched
       }
@@ -294,8 +299,8 @@
                      '<div class="note-list btn-group">' +
                        '<button class="btn btn-small" title="Unordered list" data-event="insertUnorderedList"><i class="icon-list-ul"></i></button>' +
                        '<button class="btn btn-small" title="Ordered list" data-event="insertOrderedList"><i class="icon-list-ol"></i></button>' +
-                       '<button class="btn btn-small" title="Outdent" data-event="outdent"><i class="icon-indent-left"></i></button>' +
-                       '<button class="btn btn-small" title="Indent" data-event="indent"><i class="icon-indent-right"></i></button>' +
+                       '<button class="btn btn-small" title="Outdent" data-shortcut="Shift+TAB" data-mac-shortcut="⇧+TAB" data-event="outdent"><i class="icon-indent-left"></i></button>' +
+                       '<button class="btn btn-small" title="Indent" data-shortcut="TAB" data-mac-shortcut="TAB" data-event="indent"><i class="icon-indent-right"></i></button>' +
                      '</div>' +
                      '<div class="note-insert btn-group">' +
                        '<button class="btn btn-small" title="Picture"><i class="icon-picture"></i></button>' +
@@ -318,13 +323,13 @@
     /**
      * createTooltip
      */
-    var createTooltip = function(welContainer) {
+    var createTooltip = function(welContainer, sPlacement) {
       welContainer.find('button').each(function(i, elBtn) {
         var welBtn = $(elBtn);
         var sShortcut = welBtn.attr(bMac ? 'data-mac-shortcut':'data-shortcut');
         if (sShortcut) { welBtn.attr('title', function(i, v) { return v + ' (' + sShortcut + ')'}); }
       //bootstrap tooltip on btn-group bug: https://github.com/twitter/bootstrap/issues/5687
-      }).tooltip({container: 'body'});
+      }).tooltip({container: 'body', placement: sPlacement || 'top'});
     };
     
     /**
@@ -345,7 +350,7 @@
       
       //03. create Toolbar
       var welToolbar = $(sToolbar).prependTo(welEditor);
-      createTooltip(welToolbar);
+      createTooltip(welToolbar, 'bottom');
       
       //04. create Popover
       var welPopover = $(sPopover).prependTo(welEditor);
@@ -387,48 +392,38 @@
   var renderer = new Renderer();
   var eventHandler = new EventHandler();
 
-  /**
-   * summernote 
-   *
-   * create Editor Layout and attach Key and Mouse Event
-   */
-  $.fn.summernote = function(options) {
-    options = options || {};
-    
-    // createLayout
-    renderer.createLayout(this, options.height);
-    
-    var info = renderer.layoutInfo(this);
-    eventHandler.attach(info);
-    
-    if(options.focus) { info.editable.focus(); } // options focus
-  };
-  
-  /**
-   * code
-   *
-   * get the HTML contents of note or set the HTML contents of note.
-   */
-  $.fn.code = function(sHTML) {
-    var info = renderer.layoutInfo(this);
-    
-    //get the HTML contents
-    if (sHTML === undefined) {
-      return info.editable.html();
+  //extend jquery fn
+  $.fn.extend({
+    // create Editor Layout and attach Key and Mouse Event
+    summernote : function(options) {
+      options = options || {};
+
+      // createLayout
+      renderer.createLayout(this, options.height);
+
+      var info = renderer.layoutInfo(this);
+      eventHandler.attach(info);
+
+      if(options.focus) { info.editable.focus(); } // options focus
+    },
+    // get the HTML contents of note or set the HTML contents of note.
+    code : function(sHTML) {
+      var info = renderer.layoutInfo(this);
+
+      //get the HTML contents
+      if (sHTML === undefined) {
+        return info.editable.html();
+      }
+
+      // set the HTML contents
+      info.editable.html(sHTML);
+    },
+    // destory Editor Layout and dettach Key and Mouse Event
+    destory : function() {
+      var info = renderer.layoutInfo(this);
+      eventHandler.dettach(info);
+      renderer.removeLayout(this);
     }
-    
-    // set the HTML contents
-    info.editable.html(sHTML);
-  };
-  
-  /**
-   * finish
-   */
-  $.fn.destory = function() {
-    var info = renderer.layoutInfo(this);
-    eventHandler.dettach(info);
-    renderer.removeLayout(this);
-  };
-  
+  });
 // jQuery
 })(jQuery);
