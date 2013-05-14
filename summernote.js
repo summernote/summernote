@@ -318,13 +318,13 @@
     /**
      * createTooltip
      */
-    var createTooltip = function(welContainer) {
+    var createTooltip = function(welContainer, sPlacement) {
       welContainer.find('button').each(function(i, elBtn) {
         var welBtn = $(elBtn);
         var sShortcut = welBtn.attr(bMac ? 'data-mac-shortcut':'data-shortcut');
         if (sShortcut) { welBtn.attr('title', function(i, v) { return v + ' (' + sShortcut + ')'}); }
       //bootstrap tooltip on btn-group bug: https://github.com/twitter/bootstrap/issues/5687
-      }).tooltip({container: 'body'});
+      }).tooltip({container: 'body', placement: sPlacement || 'top'});
     };
     
     /**
@@ -345,7 +345,7 @@
       
       //03. create Toolbar
       var welToolbar = $(sToolbar).prependTo(welEditor);
-      createTooltip(welToolbar);
+      createTooltip(welToolbar, 'bottom');
       
       //04. create Popover
       var welPopover = $(sPopover).prependTo(welEditor);
