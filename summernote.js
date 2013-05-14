@@ -168,7 +168,7 @@
   var EventHandler = function() {
     var editor = new Editor();
     var style = new Style();
-    var key = { B: 66, I: 73, U: 85 };
+    var key = { TAB: 9, B: 66, I: 73, U: 85 };
 
     var updateToolbar = function(welToolbar, oStyle) {
       var btnState = function(sSelector, pred) {
@@ -222,12 +222,17 @@
 
     var hKeydown = function(event) {
       var bCmd = bMac ? event.metaKey : event.ctrlKey;
+      var bShift = event.shiftKey;
       if(bCmd && event.keyCode === key.B) { // bold
         editor.bold();
       } else if(bCmd && event.keyCode === key.I) { // italic
         editor.italic();
       } else if(bCmd && event.keyCode === key.U) { // underline
         editor.underline();
+      } else if(bShift && event.keyCode === key.TAB) { // shift + tab
+        editor.outdent();
+      } else if(event.keyCode === key.TAB) { // tab
+        editor.indent();
       } else {
         return; // not matched
       }
@@ -294,8 +299,8 @@
                      '<div class="note-list btn-group">' +
                        '<button class="btn btn-small" title="Unordered list" data-event="insertUnorderedList"><i class="icon-list-ul"></i></button>' +
                        '<button class="btn btn-small" title="Ordered list" data-event="insertOrderedList"><i class="icon-list-ol"></i></button>' +
-                       '<button class="btn btn-small" title="Outdent" data-event="outdent"><i class="icon-indent-left"></i></button>' +
-                       '<button class="btn btn-small" title="Indent" data-event="indent"><i class="icon-indent-right"></i></button>' +
+                       '<button class="btn btn-small" title="Outdent" data-shortcut="Shift+TAB" data-mac-shortcut="⇧+TAB" data-event="outdent"><i class="icon-indent-left"></i></button>' +
+                       '<button class="btn btn-small" title="Indent" data-shortcut="TAB" data-mac-shortcut="TAB" data-event="indent"><i class="icon-indent-right"></i></button>' +
                      '</div>' +
                      '<div class="note-insert btn-group">' +
                        '<button class="btn btn-small" title="Picture"><i class="icon-picture"></i></button>' +
