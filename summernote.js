@@ -33,6 +33,7 @@
       }
       return null;
     };
+    
     return {
       isText: isText,
       isList: isList,
@@ -79,7 +80,7 @@
      */
     this.isOnList = function() {
       var elStart = dom.ancestor(sc, dom.isList),
-          elEnd = dom.ancestor(sc, dom.isList);
+          elEnd = dom.ancestor(ec, dom.isList);
       return elStart && (elStart === elEnd);
     };
 
@@ -90,8 +91,17 @@
      */
     this.isOnAnchor = function() {
       var elStart = dom.ancestor(sc, dom.isAnchor),
-          elEnd = dom.ancestor(sc, dom.isAnchor);
+          elEnd = dom.ancestor(ec, dom.isAnchor);
       return elStart && (elStart === elEnd);
+    };
+
+    /**
+     * isCollapsed
+     *
+     * judge whether range was collapsed
+     */
+    this.isCollapsed = function() {
+      return sc === ec && so === eo;
     };
   };
   
@@ -158,6 +168,10 @@
     this.editLink = function() {
       console.log('editLink');
     };
+    this.formatBlock = function(sNodeName) {
+      document.execCommand('formatBlock', false, sNodeName);
+    };
+    this.removeFormat = makeExecCommand('removeFormat');
   };
   
   /**
@@ -259,7 +273,10 @@
       var elBtn = dom.ancestor(event.target, function(node) {
         return $(node).attr('data-event');
       });
-      if (elBtn) { editor[$(elBtn).attr('data-event')](); }
+      if (elBtn) {
+        var welBtn = $(elBtn);
+        editor[welBtn.attr('data-event')](welBtn.attr('data-value'));
+      }
     };
 
     this.attach = function(layoutInfo) {
@@ -286,6 +303,17 @@
    */
   var Renderer = function() {
     var sToolbar = '<div class="note-toolbar btn-toolbar">' + 
+                     '<div class="note-style btn-group">' +
+                       '<button class="btn btn-small dropdown-toggle" title="Style" data-toggle="dropdown"><i class="icon-magic"></i> <span class="caret"></span></button>' +
+                       '<ul class="dropdown-menu">' +
+                         '<li><a href="#" data-event="formatBlock" data-value="p">Paragraph</a></li>' +
+                         '<li><a href="#" data-event="formatBlock" data-value="blockquote"><blockquote>Quote</blockquote></a></li>' +
+                         '<li><a href="#" data-event="formatBlock" data-value="h1"><h1>Header 1</h1></a></li>' +
+                         '<li><a href="#" data-event="formatBlock" data-value="h2"><h2>Header 2</h2></a></li>' +
+                         '<li><a href="#" data-event="formatBlock" data-value="h3"><h3>Header 3</h3></a></li>' +
+                         '<li><a href="#" data-event="formatBlock" data-value="h4"><h4>Header 4</h4></a></li>' +
+                       '</ul>' +
+                     '</div>' +
                      '<div class="note-style btn-group">' +
                        '<button class="btn btn-small" title="Bold" data-shortcut="Ctrl+B" data-mac-shortcut="⌘+B" data-event="bold"><i class="icon-bold"></i></button>' +
                        '<button class="btn btn-small" title="Italic" data-shortcut="Ctrl+I" data-mac-shortcut="⌘+I" data-event="italic"><i class="icon-italic"></i></button>' +
@@ -425,5 +453,4 @@
       renderer.removeLayout(this);
     }
   });
-// jQuery
-})(jQuery);
+})(jQuery); // jQuery
