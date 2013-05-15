@@ -152,6 +152,7 @@
     this.justifyLeft = makeExecCommand('justifyLeft');
     this.justifyCenter = makeExecCommand('justifyCenter');
     this.justifyRight = makeExecCommand('justifyRight');
+    this.justifyFull = makeExecCommand('justifyFull');
     this.insertOrderedList = makeExecCommand('insertOrderedList');
     this.insertUnorderedList = makeExecCommand('insertUnorderedList');
     this.indent = makeExecCommand('indent');
@@ -208,6 +209,10 @@
       btnState('button[data-event="justifyRight"]', function() {
         return oStyle.textAlign === 'right';
       });
+      btnState('button[data-event="justifyFull"]', function() {
+        return oStyle.textAlign === 'justify';
+      });
+
       btnState('button[data-event="insertUnorderedList"]', function() {
         return oStyle.listStyle === 'unordered';
       });
@@ -316,6 +321,9 @@
                          '<li><a href="#" data-event="formatBlock" data-value="h4"><h4>Header 4</h4></a></li>' +
                        '</ul>' +
                      '</div>' +
+                     '<div class="note-eraser btn-group">' +
+                       '<button class="btn btn-small" title="Remove Format" data-event="removeFormat"><i class="icon-eraser"></i></button>' +
+                     '</div>' +
                      '<div class="note-style btn-group">' +
                        '<button class="btn btn-small" title="Bold" data-shortcut="Ctrl+B" data-mac-shortcut="⌘+B" data-event="bold"><i class="icon-bold"></i></button>' +
                        '<button class="btn btn-small" title="Italic" data-shortcut="Ctrl+I" data-mac-shortcut="⌘+I" data-event="italic"><i class="icon-italic"></i></button>' +
@@ -325,6 +333,7 @@
                        '<button class="btn btn-small" title="Align left" data-event="justifyLeft"><i class="icon-align-left"></i></button>' +
                        '<button class="btn btn-small" title="Align center" data-event="justifyCenter"><i class="icon-align-center"></i></button>' +
                        '<button class="btn btn-small" title="Align right" data-event="justifyRight"><i class="icon-align-right"></i></button>' +
+                       '<button class="btn btn-small" title="Justify full" data-event="justifyFull"><i class="icon-align-justify"></i></button>' +
                      '</div>' +
                      '<div class="note-list btn-group">' +
                        '<button class="btn btn-small" title="Unordered list" data-event="insertUnorderedList"><i class="icon-list-ul"></i></button>' +
