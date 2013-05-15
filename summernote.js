@@ -16,10 +16,10 @@
       return node && node.nodeName === "#text";
     };
     var isList = function(el) {
-      return el && (el.nodeName === 'UL' || el.nodeName === 'OL');
+      return el && (el.nodeName.toLowerCase() === 'ul' || el.nodeName.toLowerCase() === 'ol');
     };
     var isAnchor = function(el) {
-      return el && (el.nodeName === 'A');
+      return el && (el.nodeName.toLowerCase() === 'a');
     };
 
     /**
