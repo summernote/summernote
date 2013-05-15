@@ -7,11 +7,15 @@
   padding: 5px;
   border-bottom: 1px solid #a9a9a9;
 }
+.note-editor .note-toolbar .note-style h1,
+.note-editor .note-toolbar .note-style h2,
+.note-editor .note-toolbar .note-style h3,
+.note-editor .note-toolbar .note-style h4,
+.note-editor .note-toolbar .note-style blockquote {
+  margin: 0px;
+}
 .note-editor .note-popover .popover {
   max-width: none;
-}
-.note-editor .note-popover .popover.bottom .arrow {
-  left: 20px;
 }
 .note-editor .note-popover .popover .popover-content {
   padding: 5px;
@@ -21,8 +25,14 @@
   max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap; /* for FF */ 
-  vertical-align: middle; /* for FF */
+  white-space: nowrap;
+  /* for FF */
+  vertical-align: middle;
+  /* for FF */
+
+}
+.note-editor .note-popover .popover.bottom .arrow {
+  left: 20px;
 }
 .note-editor .note-editable {
   outline: none;
