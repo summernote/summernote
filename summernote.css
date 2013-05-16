@@ -14,6 +14,16 @@
 .note-editor .note-toolbar .note-style blockquote {
   margin: 0px;
 }
+.note-editor .note-toolbar .note-color .dropdown-toggle {
+  width: 20px;
+  padding: 2px 5px;
+}
+.note-editor .note-toolbar .note-color .dropdown-menu {
+  padding: 5px;
+}
+.note-editor .note-toolbar .note-color .dropdown-menu .note-palette-title {
+  font-size: 12px;
+}
 .note-editor .note-popover .popover {
   max-width: none;
 }
@@ -33,6 +43,19 @@
 }
 .note-editor .note-popover .popover.bottom .arrow {
   left: 20px;
+}
+.note-editor .note-color-palette {
+  line-height: 1;
+}
+.note-editor .note-color-palette div .note-color-btn {
+  width: 17px;
+  height: 17px;
+  border: 1px solid #fff;
+  margin: 0;
+  padding: 0;
+}
+.note-editor .note-color-palette div .note-color-btn:hover {
+  border: 1px solid #000;
 }
 .note-editor .note-editable {
   outline: none;

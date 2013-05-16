@@ -144,18 +144,28 @@
    * Editor
    */
   var Editor = function() {
-    var makeExecCommand = function(sCmd) { return function() { document.execCommand(sCmd); } };
+    var makeExecCommand = function(sCmd) {
+      return function(sValue) { document.execCommand(sCmd, false, sValue); }
+    };
     
+    // use makeExecCommand
     this.bold = makeExecCommand('bold');
     this.italic = makeExecCommand('italic');
     this.underline = makeExecCommand('underline');
     this.justifyLeft = makeExecCommand('justifyLeft');
     this.justifyCenter = makeExecCommand('justifyCenter');
     this.justifyRight = makeExecCommand('justifyRight');
+    this.justifyFull = makeExecCommand('justifyFull');
     this.insertOrderedList = makeExecCommand('insertOrderedList');
     this.insertUnorderedList = makeExecCommand('insertUnorderedList');
     this.indent = makeExecCommand('indent');
     this.outdent = makeExecCommand('outdent');
+    this.formatBlock = makeExecCommand('formatBlock');
+    this.removeFormat = makeExecCommand('removeFormat');
+    this.backColor = makeExecCommand('backColor');
+    this.foreColor = makeExecCommand('foreColor');
+
+    // customize command
     this.unlink = function() {
       var range = new Range();
       if (range.isOnAnchor()) {
@@ -165,13 +175,12 @@
         document.execCommand('unlink');
       }
     };
-    this.editLink = function() {
-      console.log('editLink');
+    this.editLink = function() { console.log('editLink'); };
+    this.color = function(sObjColor) {
+      var oColor = JSON.parse(sObjColor);
+      this.foreColor(oColor.foreColor);
+      this.backColor(oColor.backColor);
     };
-    this.formatBlock = function(sNodeName) {
-      document.execCommand('formatBlock', false, sNodeName);
-    };
-    this.removeFormat = makeExecCommand('removeFormat');
   };
   
   /**
@@ -182,7 +191,7 @@
   var EventHandler = function() {
     var editor = new Editor();
     var style = new Style();
-    var key = { TAB: 9, B: 66, I: 73, U: 85, NUM1: 49, NUM6: 54 };
+    var key = { TAB: 9, B: 66, I: 73, U: 85, NUM1: 49, NUM4: 52 };
 
     var updateToolbar = function(welToolbar, oStyle) {
       var btnState = function(sSelector, pred) {
@@ -208,6 +217,10 @@
       btnState('button[data-event="justifyRight"]', function() {
         return oStyle.textAlign === 'right';
       });
+      btnState('button[data-event="justifyFull"]', function() {
+        return oStyle.textAlign === 'justify';
+      });
+
       btnState('button[data-event="insertUnorderedList"]', function() {
         return oStyle.listStyle === 'unordered';
       });
@@ -247,7 +260,7 @@
         editor.outdent();
       } else if(event.keyCode === key.TAB) { // tab
         editor.indent();
-      } else if(bCmd && (key.NUM1 <= event.keyCode && event.keyCode <= key.NUM6)) { // formatBlock H1~H6
+      } else if(bCmd && (key.NUM1 <= event.keyCode && event.keyCode <= key.NUM4)) { // formatBlock H1~H4
         editor.formatBlock('H' + String.fromCharCode(event.keyCode));
       } else {
         return; // not matched
@@ -305,6 +318,11 @@
    */
   var Renderer = function() {
     var sToolbar = '<div class="note-toolbar btn-toolbar">' + 
+                      '<div class="note-insert btn-group">' +
+                       '<button class="btn btn-small" title="Picture"><i class="icon-picture"></i></button>' +
+                       '<button class="btn btn-small" title="Link" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" ><i class="icon-link"></i></button>' +
+                       '<button class="btn btn-small" title="Table"><i class="icon-table"></i></button>' +
+                     '</div>' +
                      '<div class="note-style btn-group">' +
                        '<button class="btn btn-small dropdown-toggle" title="Style" data-toggle="dropdown"><i class="icon-magic"></i> <span class="caret"></span></button>' +
                        '<ul class="dropdown-menu">' +
@@ -316,26 +334,43 @@
                          '<li><a href="#" data-event="formatBlock" data-value="h4"><h4>Header 4</h4></a></li>' +
                        '</ul>' +
                      '</div>' +
+                     '<div class="note-color btn-group">' +
+                       '<button class="btn btn-small" title="Recent Color" data-event="color" data-value=\'{"foreColor":"black","backColor":"yellow"}\'><i class="icon-font" style="color:black;background-color:yellow;"></i></button>' +
+                       '<button class="btn btn-small dropdown-toggle" title="More Color" data-toggle="dropdown">' +
+                         '<span class="caret"></span>' +
+                       '</button>' +
+                       '<ul class="dropdown-menu">' +
+                         '<li>' +
+                           '<div class="btn-group">' +
+                             '<div class="note-palette-title">BackColor</div>' +
+                             '<div class="note-color-palette" data-target-event="backColor"></div>' +
+                           '</div>' +
+                           '<div class="btn-group">' +
+                             '<div class="note-palette-title">FontColor</div>' +
+                             '<div class="note-color-palette" data-target-event="foreColor"></div>' +
+                           '</div>' +
+                         '</li>' +
+                       '</ul>' +
+                     '</div>' +
                      '<div class="note-style btn-group">' +
                        '<button class="btn btn-small" title="Bold" data-shortcut="Ctrl+B" data-mac-shortcut="⌘+B" data-event="bold"><i class="icon-bold"></i></button>' +
                        '<button class="btn btn-small" title="Italic" data-shortcut="Ctrl+I" data-mac-shortcut="⌘+I" data-event="italic"><i class="icon-italic"></i></button>' +
                        '<button class="btn btn-small" title="Underline" data-shortcut="Ctrl+U" data-mac-shortcut="⌘+U" data-event="underline"><i class="icon-underline"></i></button>' +
                      '</div>' +
+                     '<div class="note-eraser btn-group">' +
+                       '<button class="btn btn-small" title="Remove Font Style" data-event="removeFormat"><i class="icon-eraser"></i></button>' +
+                     '</div>' +
                      '<div class="note-para btn-group">' +
                        '<button class="btn btn-small" title="Align left" data-event="justifyLeft"><i class="icon-align-left"></i></button>' +
                        '<button class="btn btn-small" title="Align center" data-event="justifyCenter"><i class="icon-align-center"></i></button>' +
                        '<button class="btn btn-small" title="Align right" data-event="justifyRight"><i class="icon-align-right"></i></button>' +
+                       '<button class="btn btn-small" title="Justify full" data-event="justifyFull"><i class="icon-align-justify"></i></button>' +
                      '</div>' +
                      '<div class="note-list btn-group">' +
                        '<button class="btn btn-small" title="Unordered list" data-event="insertUnorderedList"><i class="icon-list-ul"></i></button>' +
                        '<button class="btn btn-small" title="Ordered list" data-event="insertOrderedList"><i class="icon-list-ol"></i></button>' +
                        '<button class="btn btn-small" title="Outdent" data-shortcut="Shift+TAB" data-mac-shortcut="⇧+TAB" data-event="outdent"><i class="icon-indent-left"></i></button>' +
                        '<button class="btn btn-small" title="Indent" data-shortcut="TAB" data-mac-shortcut="TAB" data-event="indent"><i class="icon-indent-right"></i></button>' +
-                     '</div>' +
-                     '<div class="note-insert btn-group">' +
-                       '<button class="btn btn-small" title="Picture"><i class="icon-picture"></i></button>' +
-                       '<button class="btn btn-small" title="Link" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" ><i class="icon-link"></i></button>' +
-                       '<button class="btn btn-small" title="Table"><i class="icon-table"></i></button>' +
                      '</div>' +
                    '</div>';
     var sPopover = '<div class="note-popover">' +
@@ -362,6 +397,44 @@
       }).tooltip({container: 'body', placement: sPlacement || 'top'});
     };
     
+    // pallete colors
+    var aaColor = [
+      ['#000000', '#424242', '#636363', '#9C9C94', '#CEC6CE', '#EFEFEF', '#EFF7F7', '#FFFFFF'],
+      ['#FF0000', '#FF9C00', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#9C00FF', '#FF00FF'],
+      ['#F7C6CE', '#FFE7CE', '#FFEFC6', '#D6EFD6', '#CEDEE7', '#CEE7F7', '#D6D6E7', '#E7D6DE'],
+      ['#E79C9C', '#FFC69C', '#FFE79C', '#B5D6A5', '#A5C6CE', '#9CC6EF', '#B5A5D6', '#D6A5BD'],
+      ['#E76363', '#F7AD6B', '#FFD663', '#94BD7B', '#73A5AD', '#6BADDE', '#8C7BC6', '#C67BA5'],
+      ['#CE0000', '#E79439', '#EFC631', '#6BA54A', '#4A7B8C', '#3984C6', '#634AA5', '#A54A7B'],
+      ['#9C0000', '#B56308', '#BD9400', '#397B21', '#104A5A', '#085294', '#311873', '#731842'],
+      ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031']
+    ];
+    
+    /**
+     * createPalette
+     */
+    var createPalette = function(welContainer) {
+      welContainer.find('.note-color-palette').each(function() {
+        var welPalette = $(this), sEvent = welPalette.attr('data-target-event');
+        var sPaletteContents = ''
+        for(var row = 0, szRow = aaColor.length; row < szRow; row++) {
+          var aColor = aaColor[row];
+          var sLine = '<div>'
+          for(var col = 0, szCol = aColor.length; col < szCol; col++) {
+            var sColor = aColor[col];
+            var sButton = ['<button class="note-color-btn" style="background-color:', sColor,
+                           ';" data-event="', sEvent,
+                           '" data-value="', sColor,
+                           '" title="', sColor,
+                           '" data-toggle="button"></button>'].join('');
+            sLine += sButton;
+          }
+          sLine += '</div>';
+          sPaletteContents += sLine;
+        }
+        welPalette.html(sPaletteContents);
+      });
+    };
+    
     /**
      * createLayout
      */
@@ -380,6 +453,7 @@
       
       //03. create Toolbar
       var welToolbar = $(sToolbar).prependTo(welEditor);
+      createPalette(welToolbar);
       createTooltip(welToolbar, 'bottom');
       
       //04. create Popover
