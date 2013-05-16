@@ -24,6 +24,9 @@
 .note-editor .note-toolbar .note-color .dropdown-menu .note-palette-title {
   font-size: 12px;
 }
+.note-editor .note-toolbar .btn-small {
+    font-size: 14px;
+}
 .note-editor .note-popover .popover {
   max-width: none;
 }
