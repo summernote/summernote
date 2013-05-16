@@ -40,6 +40,13 @@
                         <a href="./index.html">Home</a>
                     </li>
                     <li class="">
+                        <a href="./edit_fly.html">Edit on fly</a>
+                    </li>
+                    <li class="">
+                        <a href="./theme_less.html">Theme in less</a>
+                    </li>
+
+                    <li class="">
                         <a href="./simple.html">Simple</a>
                     </li>
                     <li class="">
@@ -84,7 +91,7 @@
         <h1>Introducing Summernote</h1>
         <p class="marketing-byline">Super Simple WYSIWYG Editor on Bootstrap</p>
 
-        <div class="row-fluid">
+        <div class="row">
             <div class="span4">
                 <h2>Easy</h2>
                 <p>Summernote need minimal code</p>
@@ -103,7 +110,7 @@
 
         <h1>Write with Summernote</h1>
         <p class="marketing-byline"></p>
-        <div class="row-fluid">
+        <div class="row">
             <div class="span12 summernote">
                 <div id="summernote">
                     <img alt="Saturn V carrying Apollo 11" style="float:right; margin:15px;" src="http://b.cksource.com/a/1/img/sample.jpg" />
@@ -164,6 +171,23 @@
             </div>
         </div>
 
+        <hr class="soften">
+
+        <h1>Customize by options</h1>
+        <p class="marketing-byline"></p>
+        <div class="row">
+            <div class="span6">
+                <h2>Height</h2>
+                <p>set height (number) pixel</p>
+                <pre class="prettyprint">$('#summernote').summernote({ height: 500 })</pre>
+            </div>
+            <div class="span6">
+                <h2>Focus</h2>
+                <p>set focus on load</p>
+                <pre class="prettyprint">$('#summernote').summernote({ focus: true })</pre>
+            </div>
+        </div>
+
     </div>
 
 </div>
@@ -178,7 +202,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#summernote').summernote({height: 500});
+        $('#summernote').summernote({height: 400});
     });
 </script>
 </body>
