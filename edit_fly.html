@@ -19,6 +19,7 @@
     <!-- add summernote -->
     <link href="http://hackerwins.github.io/summernote/summernote.css" rel="stylesheet">
     <script src="http://hackerwins.github.io/summernote/summernote.js"></script>
+    <!--<script src="/summernote.js"></script>-->
     <!-- add user custom -->
     <link href="http://hackerwins.github.io/summernote/css/style.css" rel="stylesheet">
     <script src="http://platform.twitter.com/widgets.js"></script>
@@ -38,10 +39,10 @@
             <a class="brand" href="./index.html">Summernote</a>
             <div class="nav-collapse collapse">
                 <ul class="nav">
-                    <li class="active">
+                    <li class="">
                         <a href="./index.html">Home</a>
                     </li>
-                    <li class="">
+                    <li class="active">
                         <a href="./edit_fly.html">Edit on fly</a>
                     </li>
                     <li class="">
@@ -63,63 +64,40 @@
     </div>
 </div>
 
-<div class="jumbotron masthead">
-    <div class="container">
-        <h1>Summernote</h1>
-        <p>Summernote has something specials no like others. <br>Interactive WYSIWYG editing, <br>Easy integrate Your Server and Much!</p>
-        <p>
-            <a href="https://github.com/HackerWins/summernote/archive/master.zip" class="btn btn-primary btn-large">Get Summernote</a>
-        </p>
-    </div>
-</div>
-
-<div class="bs-docs-social">
-    <div class="container">
-        <ul class="bs-docs-social-buttons">
-            <li>
-                <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=HackerWins&amp;repo=summernote&amp;type=watch&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="100px" height="20px"></iframe>
-            </li>
-            <li>
-                <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=HackerWins&amp;repo=summernote&amp;type=fork&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="102px" height="20px"></iframe>
-            </li>
-        </ul>
-    </div>
-</div>
-
 <div class="container">
 
     <div class="marketing">
 
-        <h1>Introducing Summernote</h1>
-        <p class="marketing-byline">Super Simple WYSIWYG Editor on Bootstrap</p>
-
+        <h1>Edit content on the fly</h1>
+        <p class="marketing-byline">You can edit content on th fly by 'content editable'</p>
         <div class="row">
-            <div class="span4">
-                <h2>Easy</h2>
-                <p>Summernote need minimal code</p>
-            </div>
-            <div class="span4">
-                <h2>Smart</h2>
-                <p>Summernote support reasonable shortcut</p>
-            </div>
-            <div class="span4">
-                <h2>Familiar</h2>
-                <p>Summernote use worldwide bootstrap</p>
+
+            <h2>Code</h2>
+            <p class="marketing-byline"></p>
+
+            <div class="span12">
+<pre class="prettyprint lang-javascript linenums summernote">
+var edit = function() {
+    // create summernote
+    $('.click-to-edit').summernote({focus: true});
+};
+
+var save = function() {
+    // get HTML if you need
+    var sHTML = $('.editor').code();
+    // finish to edit
+    $('.editor').destory();
+};</pre>
             </div>
         </div>
 
         <hr class="soften">
 
-        <h1>Write with Summernote</h1>
+        <h2>Click to Edit</h2>
         <p class="marketing-byline"></p>
         <div class="row">
-            <div class="span12 summernote">
-                <div id="summernote">
-                    <img alt="Saturn V carrying Apollo 11" style="float:right; margin:15px;" src="http://b.cksource.com/a/1/img/sample.jpg" />
-                    <h1>Apollo 11</h1>
-
-                    <p><strong>Apollo 11</strong> was the spaceflight that landed the first humans, Americans <a href="http://en.wikipedia.org/wiki/Neil_Armstrong">Neil Armstrong</a> and <a href="http://en.wikipedia.org/wiki/Buzz_Aldrin">Buzz Aldrin</a>, on the Moon on July 20, 1969, at 20:18 UTC. Armstrong became the first to step onto the lunar surface 6 hours later on July 21 at 02:56 UTC.</p>
-                    <p>Armstrong spent about <s>three and a half</s> two and a half hours outside the spacecraft, Aldrin slightly less; and together they collected 47.5 pounds (21.5&nbsp;kg) of lunar material for return to Earth. A third member of the mission, <a href="http://en.wikipedia.org/wiki/Michael_Collins_(astronaut)">Michael Collins</a>, piloted the <a href="http://en.wikipedia.org/wiki/Apollo_Command/Service_Module">command</a> spacecraft alone in lunar orbit until Armstrong and Aldrin returned to it for the trip back to Earth.</p>
+            <div class="span10 summernote">
+                <div id="click-to-edit">
                     <h2>Broadcasting and <em>quotes</em></h2>
                     <p>Broadcast on live TV to a world-wide audience, Armstrong stepped onto the lunar surface and described the event as:</p>
                     <blockquote>
@@ -129,32 +107,6 @@
                     <blockquote>
                         <p>[...] before this decade is out, of landing a man on the Moon and returning him safely to the Earth.</p>
                     </blockquote>
-
-                    <h2>Technical details</h2>
-
-                    <table align="right" border="1" bordercolor="#ccc" cellpadding="5" cellspacing="0" style="border-collapse:collapse">
-                        <caption><strong>Mission crew</strong></caption>
-                        <thead>
-                        <tr>
-                            <th scope="col">Position</th>
-                            <th scope="col">Astronaut</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>Commander</td>
-                            <td>Neil A. Armstrong</td>
-                        </tr>
-                        <tr>
-                            <td>Command Module Pilot</td>
-                            <td>Michael Collins</td>
-                        </tr>
-                        <tr>
-                            <td>Lunar Module Pilot</td>
-                            <td>Edwin &quot;Buzz&quot; E. Aldrin, Jr.</td>
-                        </tr>
-                        </tbody>
-                    </table>
 
                     <p>Launched by a <strong>Saturn V</strong> rocket from <a href="http://en.wikipedia.org/wiki/Kennedy_Space_Center">Kennedy Space Center</a> in Merritt Island, Florida on July 16, Apollo 11 was the fifth manned mission of <a href="http://en.wikipedia.org/wiki/NASA">NASA</a>&#39;s Apollo program. The Apollo spacecraft had three parts:</p>
 
@@ -171,22 +123,9 @@
                     <p><small>Source: <a href="http://en.wikipedia.org/wiki/Apollo_11">Wikipedia.org</a></small></p>
                 </div>
             </div>
-        </div>
-
-        <hr class="soften">
-
-        <h1>Customize by options</h1>
-        <p class="marketing-byline"></p>
-        <div class="row">
-            <div class="span6">
-                <h2>Height</h2>
-                <p>set height (number) pixel</p>
-                <pre class="prettyprint lang-javascript">$('#summernote').summernote({ height: 500 })</pre>
-            </div>
-            <div class="span6">
-                <h2>Focus</h2>
-                <p>set focus on load</p>
-                <pre class="prettyprint lang-javascript">$('#summernote').summernote({ focus: true })</pre>
+            <div class="span2">
+                <button id="edit" class="btn btn-large btn-block btn-primary" type="button">Edit</button>
+                <button id="save" class="btn btn-large btn-block" type="button">Save</button>
             </div>
         </div>
 
@@ -204,8 +143,21 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#summernote').summernote({height: 400});
         prettyPrint();
+        $('#save').addClass('disabled');
+
+        $('#edit').click(function () {
+            $('#click-to-edit').summernote({focus: true});
+            $(this).removeClass('btn-primary').addClass('disabled');
+            $('#save').addClass('btn-primary').removeClass('disabled');
+        });
+        $('#save').click(function () {
+            var sHTML = $('#click-to-edit').code();
+            //sHTML && alert(sHTML);
+            $('#click-to-edit').destory();
+            $(this).removeClass('btn-primary').addClass('disabled');
+            $('#edit').addClass('btn-primary').removeClass('disabled');
+        });
     });
 </script>
 </body>
