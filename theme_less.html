@@ -17,7 +17,7 @@
     <script src="http://hackerwins.github.io/summernote/js/jquery.curstyles.min.js"></script>
     <script src="http://hackerwins.github.io/summernote/js/bootstrap.min.js"></script>
     <!-- add summernote -->
-    <link href="http://hackerwins.github.io/summernote/summernote.css" rel="stylesheet">
+    <link href="http://hackerwins.github.io/summernote/summernote.less" rel="stylesheet/less" type="text/css">
     <script src="http://hackerwins.github.io/summernote/summernote.js"></script>
     <!--<script src="/summernote.js"></script>-->
     <!-- add user custom -->
@@ -42,10 +42,10 @@
                     <li class="">
                         <a href="./index.html">Home</a>
                     </li>
-                    <li class="active">
+                    <li class="">
                         <a href="./edit_fly.html">Edit on the fly</a>
                     </li>
-                    <li class="">
+                    <li class="active">
                         <a href="./theme_less.html">Theme in less</a>
                     </li>
 
@@ -68,7 +68,7 @@
 
     <div class="marketing">
 
-        <h1>Edit content on the fly</h1>
+        <h1>Customize your own editor theme</h1>
         <p class="marketing-byline">You can edit content on th fly by 'content editable'</p>
         <div class="row">
 
@@ -77,27 +77,35 @@
 
             <div class="span12">
 <pre class="prettyprint lang-javascript linenums summernote">
-var edit = function() {
-    // create summernote
-    $('.click-to-edit').summernote({focus: true});
-};
+&lt;link rel="stylesheet/less" type="text/css" href="summernote.less"&gt;
 
-var save = function() {
-    // get HTML if you need
-    var sHTML = $('.editor').code();
-    // finish to edit
-    $('.editor').destory();
-};</pre>
+&lt;script type="text/javascript"&gt;
+less = {
+    env: "development",             // or "production"
+    async: false,                   // load imports async
+    fileAsync: false,               // load imports async when in a page under
+                                    // a file protocol
+    poll: 1000,                     // when in watch mode, time in ms between polls
+    functions: {},                  // user functions, keyed by name
+    dumpLineNumbers: "comments",    // or "mediaQuery" or "all"
+    relativeUrls: false,            // whether to adjust url's to be relative
+                                    // if false, url's are already relative to the
+                                    // entry less file
+    rootpath: ":/a.com/"            // a path to add on to the start of every url
+                                    // resource
+};
+&lt;/script&gt;
+</pre>
             </div>
         </div>
 
         <hr class="soften">
 
-        <h2>Click to Edit</h2>
+        <h2>Embedding the less</h2>
         <p class="marketing-byline"></p>
         <div class="row">
-            <div class="span10 summernote">
-                <div id="click-to-edit">
+            <div class="span12 summernote">
+                <div id="summernote">
                     <h2>Broadcasting and <em>quotes</em></h2>
                     <p>Broadcast on live TV to a world-wide audience, Armstrong stepped onto the lunar surface and described the event as:</p>
                     <blockquote>
@@ -123,10 +131,6 @@ var save = function() {
                     <p><small>Source: <a href="http://en.wikipedia.org/wiki/Apollo_11">Wikipedia.org</a></small></p>
                 </div>
             </div>
-            <div class="span2">
-                <button id="edit" class="btn btn-large btn-block btn-primary" type="button">Edit</button>
-                <button id="save" class="btn btn-large btn-block" type="button">Save</button>
-            </div>
         </div>
 
     </div>
@@ -144,21 +148,25 @@ var save = function() {
 <script type="text/javascript">
     $(document).ready(function() {
         prettyPrint();
-        $('#save').addClass('disabled');
-
-        $('#edit').click(function () {
-            $('#click-to-edit').summernote({focus: true});
-            $(this).removeClass('btn-primary').addClass('disabled');
-            $('#save').addClass('btn-primary').removeClass('disabled');
-        });
-        $('#save').click(function () {
-            var sHTML = $('#click-to-edit').code();
-            //sHTML && alert(sHTML);
-            $('#click-to-edit').destory();
-            $(this).removeClass('btn-primary').addClass('disabled');
-            $('#edit').addClass('btn-primary').removeClass('disabled');
-        });
+        $('#summernote').summernote({height: 400});
     });
 </script>
+<script type="text/javascript">
+    less = {
+        env: "development",             // or "production"
+        async: false,                   // load imports async
+        fileAsync: false,               // load imports async when in a page under
+                                        // a file protocol
+        poll: 1000,                     // when in watch mode, time in ms between polls
+        functions: {},                  // user functions, keyed by name
+        dumpLineNumbers: "comments",    // or "mediaQuery" or "all"
+        relativeUrls: false,            // whether to adjust url's to be relative
+                                        // if false, url's are already relative to the
+                                        // entry less file
+        rootpath: ":/a.com/"            // a path to add on to the start of every url
+                                        // resource
+    };
+</script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.3.3/less.min.js" type="text/javascript"></script>
 </body>
 </html>
