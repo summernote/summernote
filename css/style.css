@@ -333,7 +333,3 @@ only screen and (     -o-min-device-pixel-ratio: 2/1) {
     line-height: 1.5;
     color: inherit;
 }
-
-.summernote .btn-small {
-    font-size: 14px;
-}
