@@ -209,7 +209,7 @@
   var EventHandler = function() {
     var editor = new Editor();
     var style = new Style();
-    var key = { TAB: 9, B: 66, I: 73, U: 85, NUM1: 49, NUM4: 52 };
+    var key = { TAB: 9, B: 66, I: 73, U: 85, NUM0: 48, NUM1: 49, NUM4: 52 };
 
     var updateToolbar = function(welToolbar, oStyle) {
       var btnState = function(sSelector, pred) {
@@ -278,6 +278,8 @@
         editor.outdent();
       } else if(event.keyCode === key.TAB) { // tab
         editor.indent();
+      } else if(bCmd && event.keyCode === key.NUM0) { // formatBlock Paragraph
+        editor.formatBlock('P');
       } else if(bCmd && (key.NUM1 <= event.keyCode && event.keyCode <= key.NUM4)) { // formatBlock H1~H4
         editor.formatBlock('H' + String.fromCharCode(event.keyCode));
       } else {
