@@ -301,7 +301,7 @@
       var elEditableOrToolbar = event.currentTarget || event.target;
       var welEditor = $(elEditableOrToolbar.parentNode);
 
-      welEditor.find('.note-popover').children().hide();
+      welEditor.find('.note-popover').children().hide(); //hide popover when scrolled
     };
     
     var hToolbarAndPopoverClick = function(event) {
@@ -393,17 +393,28 @@
                      '<div class="note-eraser btn-group">' +
                        '<button class="btn btn-small" title="Remove Font Style" data-event="removeFormat"><i class="icon-eraser"></i></button>' +
                      '</div>' +
-                     '<div class="note-para btn-group">' +
-                       '<button class="btn btn-small" title="Align left" data-event="justifyLeft"><i class="icon-align-left"></i></button>' +
-                       '<button class="btn btn-small" title="Align center" data-event="justifyCenter"><i class="icon-align-center"></i></button>' +
-                       '<button class="btn btn-small" title="Align right" data-event="justifyRight"><i class="icon-align-right"></i></button>' +
-                       '<button class="btn btn-small" title="Justify full" data-event="justifyFull"><i class="icon-align-justify"></i></button>' +
-                     '</div>' +
                      '<div class="note-list btn-group">' +
                        '<button class="btn btn-small" title="Unordered list" data-event="insertUnorderedList"><i class="icon-list-ul"></i></button>' +
                        '<button class="btn btn-small" title="Ordered list" data-event="insertOrderedList"><i class="icon-list-ol"></i></button>' +
-                       '<button class="btn btn-small" title="Outdent" data-shortcut="Shift+TAB" data-mac-shortcut="⇧+TAB" data-event="outdent"><i class="icon-indent-left"></i></button>' +
-                       '<button class="btn btn-small" title="Indent" data-shortcut="TAB" data-mac-shortcut="TAB" data-event="indent"><i class="icon-indent-right"></i></button>' +
+                     '</div>' +
+                     '<div class="note-para btn-group">' +
+                       '<button class="btn btn-small dropdown-toggle" title="Paragraph" data-toggle="dropdown"><i class="icon-align-left"></i>  <span class="caret"></span></button>' +
+                       '<ul class="dropdown-menu">' +
+                         '<li>' +
+                           '<div class="note-align btn-group">' +
+                             '<button class="btn btn-small" title="Align left" data-event="justifyLeft"><i class="icon-align-left"></i></button>' +
+                             '<button class="btn btn-small" title="Align center" data-event="justifyCenter"><i class="icon-align-center"></i></button>' +
+                             '<button class="btn btn-small" title="Align right" data-event="justifyRight"><i class="icon-align-right"></i></button>' +
+                             '<button class="btn btn-small" title="Justify full" data-event="justifyFull"><i class="icon-align-justify"></i></button>' +
+                           '</div>' +
+                         '</li>' +
+                         '<li>' +
+                           '<div class="note-list btn-group">' +
+                             '<button class="btn btn-small" title="Outdent" data-shortcut="Shift+TAB" data-mac-shortcut="⇧+TAB" data-event="outdent"><i class="icon-indent-left"></i></button>' +
+                             '<button class="btn btn-small" title="Indent" data-shortcut="TAB" data-mac-shortcut="TAB" data-event="indent"><i class="icon-indent-right"></i></button>' +
+                         '</li>' +
+                       '</ul>' +
+                     '</div>' +
                      '</div>' +
                    '</div>';
     var sPopover = '<div class="note-popover">' +
