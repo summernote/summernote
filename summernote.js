@@ -17,7 +17,7 @@
     };
     
     var hasClass = function(sClass) {
-      return function(node) { return $(node).hasClass('note-color'); };
+      return function(node) { return $(node).hasClass(sClass); };
     };
     
     return {
@@ -325,6 +325,26 @@
           welRecentColor.find('i').css(sKey, sValue);
         }
       }
+
+      var elBtn = dom.ancestor(event.target, iter.hasAttr('data-ui-event'));
+      if (elBtn) {
+        var welBtn = $(elBtn);
+        var sEvent = welBtn.attr('data-ui-event');
+        
+        // switch contents(link-show to link-edit)
+        if (sEvent === "editLink") {
+          var welLinkContent = welBtn.closest('.note-link-content');
+          var welLinkEdit = welLinkContent.find('.note-link-edit');
+          var welLinkShow = welLinkContent.find('.note-link-show');
+          var welInput = welLinkEdit.find('input');
+          var welAnchor = welLinkShow.find('a');
+          
+          welInput.val(welAnchor.attr('href'));
+
+          welLinkEdit.show();
+          welLinkShow.hide();
+        }
+      }
     };
 
     this.attach = function(layoutInfo) {
@@ -334,7 +354,7 @@
       layoutInfo.toolbar.bind('click', hToolbarAndPopoverClick);
       layoutInfo.toolbar.bind('click', hToolbarAndPopoverUpdate);
       layoutInfo.popover.bind('click', hToolbarAndPopoverClick);
-      layoutInfo.popover.bind('click', hToolbarAndPopoverUpdate);
+      //layoutInfo.popover.bind('click', hToolbarAndPopoverUpdate);
     };
 
     this.dettach = function(layoutInfo) {
@@ -420,11 +440,17 @@
     var sPopover = '<div class="note-popover">' +
                      '<div class="note-anchor-popover popover fade bottom in" style="display: none;">' +
                        '<div class="arrow"></div>' +
-                       '<div class="popover-content">' +
-                         '<a href="http://www.naver.com" target="_blank">www.naver.com</a>&nbsp;&nbsp;' +
-                         '<div class="note-insert btn-group">' +
-                           '<button class="btn btn-small" title="Edit" data-event="editLink"><i class="icon-edit"></i></button>' +
-                           '<button class="btn btn-small" title="Unlink" data-event="unlink"><i class="icon-unlink"></i></button>' +
+                       '<div class="popover-content note-link-content">' +
+                         '<div class="note-link-edit input-append">' + 
+                           '<input id="prependedInput" type="text" placeholder="link url">' +
+                           '<button class="btn" title="Edit" data-event="editLink"><i class="icon-edit"></i></button>' +
+                         '</div>' +
+                         '<div class="note-link-show">' +
+                           '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
+                           '<div class="note-insert btn-group">' +
+                             '<button class="btn btn-small" title="Edit" data-ui-event="editLink"><i class="icon-edit"></i></button>' +
+                             '<button class="btn btn-small" title="Unlink" data-event="unlink"><i class="icon-unlink"></i></button>' +
+                           '</div>' +
                          '</div>' +
                        '</div>' +
                      '</div>' +

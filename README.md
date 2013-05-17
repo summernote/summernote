@@ -1,14 +1,14 @@
 # Summernote
 Super Simple WYSIWYG Editor on Bootstrap~
 
-Inspired by
-* Gmail WYSIWYG Editor (http://www.gmail.com)
-* Redactor (http://imperavi.com/redactor/)
-
 ### Summernote ?
 Summernote is a javascript program that helps you to create WYSIWYG Editor on web. Summernote uses opensouce libraries(jquery, jquery.curstyles, bootstrap, fontAwesome)
 
 Demo Page: http://hackerwins.github.io/summernote/
+
+Inspired by
+* Gmail WYSIWYG Editor (http://www.gmail.com)
+* Redactor (http://imperavi.com/redactor/)
 
 ### Release
 

@@ -42,13 +42,24 @@
     max-width: none;
     .popover-content {
       padding: 5px;
-      a {
-        display: inline-block;
-        max-width: 200px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap; /* for FF */ 
-        vertical-align: middle; /* for FF */
+      
+      .note-link-edit {
+        margin: 0;
+        display: none;
+        input {
+          width: 200px;
+        }
+      }
+      
+      .note-link-show {
+        a {
+          display: inline-block;
+          max-width: 200px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap; /* for FF */ 
+          vertical-align: middle; /* for FF */
+        }
       }
     }
     &.bottom .arrow {
