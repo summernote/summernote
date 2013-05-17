@@ -9,6 +9,24 @@
   var bMac = navigator.appVersion.indexOf('Mac') > -1; 
   
   /**
+   * iter
+   */
+  var iter = function() {
+    var hasAttr = function(sAttr) {
+      return function(node) { return $(node).attr(sAttr); };
+    };
+    
+    var hasClass = function(sClass) {
+      return function(node) { return $(node).hasClass('note-color'); };
+    };
+    
+    return {
+      hasAttr: hasAttr,
+      hasClass: hasClass
+    }
+  }();
+  
+  /**
    * dom
    */
   var dom = function() {
@@ -283,14 +301,27 @@
 
       welEditor.find('.note-popover').children().hide();
     };
-
+    
     var hToolbarAndPopoverClick = function(event) {
-      var elBtn = dom.ancestor(event.target, function(node) {
-        return $(node).attr('data-event');
-      });
+      var elBtn = dom.ancestor(event.target, iter.hasAttr('data-event'));
+      
       if (elBtn) {
         var welBtn = $(elBtn);
-        editor[welBtn.attr('data-event')](welBtn.attr('data-value'));
+        var sEvent = welBtn.attr('data-event');
+        var sValue = welBtn.attr('data-value');
+
+        editor[sEvent](sValue); // execute editor method
+        
+        // check and update recent color
+        if (sEvent === "backColor" || sEvent === "foreColor") {
+          var elNoteColor = dom.ancestor(elBtn, iter.hasClass('note-color'));
+          var welRecentColor = $(elNoteColor).find('.note-recent-color');
+          var oColor = JSON.parse(welRecentColor.attr('data-value'));
+          oColor[sEvent] = sValue;
+          welRecentColor.attr('data-value', JSON.stringify(oColor));
+          var sKey = sEvent === "backColor" ? 'background-color' : 'color';
+          welRecentColor.find('i').css(sKey, sValue);
+        }
       }
     };
 
@@ -335,7 +366,7 @@
                        '</ul>' +
                      '</div>' +
                      '<div class="note-color btn-group">' +
-                       '<button class="btn btn-small" title="Recent Color" data-event="color" data-value=\'{"foreColor":"black","backColor":"yellow"}\'><i class="icon-font" style="color:black;background-color:yellow;"></i></button>' +
+                       '<button class="btn btn-small note-recent-color" title="Recent Color" data-event="color" data-value=\'{"foreColor":"black","backColor":"yellow"}\'><i class="icon-font" style="color:black;background-color:yellow;"></i></button>' +
                        '<button class="btn btn-small dropdown-toggle" title="More Color" data-toggle="dropdown">' +
                          '<span class="caret"></span>' +
                        '</button>' +
