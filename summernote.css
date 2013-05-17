@@ -47,6 +47,9 @@
 .note-editor .note-popover .popover.bottom .arrow {
   left: 20px;
 }
+.note-editor .note-popover .btn-small {
+    font-size: 14px;
+}
 .note-editor .note-color-palette {
   line-height: 1;
 }
