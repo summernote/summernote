@@ -24,6 +24,13 @@
 .note-editor .note-toolbar .note-color .dropdown-menu .note-palette-title {
   font-size: 12px;
 }
+.note-editor .note-toolbar .note-para .dropdown-menu {
+  min-width: 140px;
+  padding: 5px;
+}
+.note-editor .note-toolbar .note-para li:first-child {
+  margin-bottom: 5px;
+}
 .note-editor .note-popover .popover {
   max-width: none;
 }
