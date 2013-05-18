@@ -46,7 +46,7 @@
      */
     var ancestor = function(node, pred) {
       while (node) {
-        if(pred(node)) { return node; }
+        if (pred(node)) { return node; }
         node = node.parentNode;
       }
       return null;
@@ -67,7 +67,7 @@
    */
   var Range = function(sc, so, ec, eo) {
     if (arguments.length === 0) { // from Browser Selection
-      if(document.getSelection) { // webkit, firefox
+      if (document.getSelection) { // webkit, firefox
         var nativeRng = document.getSelection().getRangeAt(0);
         sc = nativeRng.startContainer, so = nativeRng.startOffset,
         ec = nativeRng.endContainer, eo = nativeRng.endOffset;
@@ -83,7 +83,7 @@
      * update visible range
      */
     this.select = function() {
-      if(document.createRange) {
+      if (document.createRange) {
         var range = document.createRange();
         range.setStart(sc, so);
         range.setEnd(ec, eo);
@@ -268,19 +268,19 @@
     var hKeydown = function(event) {
       var bCmd = bMac ? event.metaKey : event.ctrlKey;
       var bShift = event.shiftKey;
-      if(bCmd && event.keyCode === key.B) { // bold
+      if (bCmd && event.keyCode === key.B) { // bold
         editor.bold();
-      } else if(bCmd && event.keyCode === key.I) { // italic
+      } else if (bCmd && event.keyCode === key.I) { // italic
         editor.italic();
-      } else if(bCmd && event.keyCode === key.U) { // underline
+      } else if (bCmd && event.keyCode === key.U) { // underline
         editor.underline();
-      } else if(bShift && event.keyCode === key.TAB) { // shift + tab
+      } else if (bShift && event.keyCode === key.TAB) { // shift + tab
         editor.outdent();
-      } else if(event.keyCode === key.TAB) { // tab
+      } else if (event.keyCode === key.TAB) { // tab
         editor.indent();
-      } else if(bCmd && event.keyCode === key.NUM0) { // formatBlock Paragraph
+      } else if (bCmd && event.keyCode === key.NUM0) { // formatBlock Paragraph
         editor.formatBlock('P');
-      } else if(bCmd && (key.NUM1 <= event.keyCode && event.keyCode <= key.NUM4)) { // formatBlock H1~H4
+      } else if (bCmd && (key.NUM1 <= event.keyCode && event.keyCode <= key.NUM4)) { // formatBlock H1~H4
         editor.formatBlock('H' + String.fromCharCode(event.keyCode));
       } else {
         return; // not matched
@@ -331,18 +331,8 @@
         var welBtn = $(elBtn);
         var sEvent = welBtn.attr('data-ui-event');
         
-        // switch contents(link-show to link-edit)
         if (sEvent === "editLink") {
-          var welLinkContent = welBtn.closest('.note-link-content');
-          var welLinkEdit = welLinkContent.find('.note-link-edit');
-          var welLinkShow = welLinkContent.find('.note-link-show');
-          var welInput = welLinkEdit.find('input');
-          var welAnchor = welLinkShow.find('a');
-          
-          welInput.val(welAnchor.attr('href'));
-
-          welLinkEdit.show();
-          welLinkShow.hide();
+          $('.note-anchor-dialog').modal('show');
         }
       }
     };
@@ -354,7 +344,7 @@
       layoutInfo.toolbar.bind('click', hToolbarAndPopoverClick);
       layoutInfo.toolbar.bind('click', hToolbarAndPopoverUpdate);
       layoutInfo.popover.bind('click', hToolbarAndPopoverClick);
-      //layoutInfo.popover.bind('click', hToolbarAndPopoverUpdate);
+      layoutInfo.popover.bind('click', hToolbarAndPopoverUpdate);
     };
 
     this.dettach = function(layoutInfo) {
@@ -441,20 +431,38 @@
                      '<div class="note-anchor-popover popover fade bottom in" style="display: none;">' +
                        '<div class="arrow"></div>' +
                        '<div class="popover-content note-link-content">' +
-                         '<div class="note-link-edit input-append">' + 
-                           '<input id="prependedInput" type="text" placeholder="link url">' +
-                           '<button class="btn" title="Edit" data-event="editLink"><i class="icon-edit"></i></button>' +
-                         '</div>' +
-                         '<div class="note-link-show">' +
-                           '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
-                           '<div class="note-insert btn-group">' +
-                             '<button class="btn btn-small" title="Edit" data-ui-event="editLink"><i class="icon-edit"></i></button>' +
-                             '<button class="btn btn-small" title="Unlink" data-event="unlink"><i class="icon-unlink"></i></button>' +
-                           '</div>' +
+                         '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
+                         '<div class="note-insert btn-group">' +
+                           '<button class="btn btn-small" title="Edit" data-ui-event="editLink"><i class="icon-edit"></i></button>' +
+                           '<button class="btn btn-small" title="Unlink" data-event="unlink"><i class="icon-unlink"></i></button>' +
                          '</div>' +
                        '</div>' +
                      '</div>' +
                    '</div>';
+    var sDialog = '<div class="note-dialog">' +
+                    '<div class="note-anchor-dialog modal hide in" aria-hidden="false">' +
+                      '<div class="modal-header">' +
+                        '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>' +
+                        '<h4>Edit Link</h4>' +
+                      '</div>' +
+                      '<div class="modal-body">' +
+                        '<div class="row-fluid">' +
+                          '<div class="span6">' +
+                            '<label>Text to display</label><br/>' +
+                            '<label>To what URL should this link go?</label>' +
+                          '</div>' +
+                          '<div class="span6">' +
+                            '<input class="note-anchor-text" type="text" />' +
+                            '<input class="note-anchor-url" type="text" />' +
+                          '</div>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div class="modal-footer">' +
+                        '<a href="#" class="btn disabled" data-event="editLink" disabled="disabled">Edit</a>' +
+                      '</div>' +
+                    '</div>' +
+                  '</div>';
+                        
     /**
      * createTooltip
      */
@@ -486,10 +494,10 @@
       welContainer.find('.note-color-palette').each(function() {
         var welPalette = $(this), sEvent = welPalette.attr('data-target-event');
         var sPaletteContents = ''
-        for(var row = 0, szRow = aaColor.length; row < szRow; row++) {
+        for (var row = 0, szRow = aaColor.length; row < szRow; row++) {
           var aColor = aaColor[row];
           var sLine = '<div>'
-          for(var col = 0, szCol = aColor.length; col < szCol; col++) {
+          for (var col = 0, szCol = aColor.length; col < szCol; col++) {
             var sColor = aColor[col];
             var sButton = ['<button class="note-color-btn" style="background-color:', sColor,
                            ';" data-event="', sEvent,
@@ -529,6 +537,9 @@
       //04. create Popover
       var welPopover = $(sPopover).prependTo(welEditor);
       createTooltip(welPopover);
+      
+      //05. create Dialog
+      var welDialog = $(sDialog).prependTo(welEditor);
       
       //05. Editor/Holder switch
       welEditor.insertAfter(welHolder);
@@ -578,7 +589,7 @@
       var info = renderer.layoutInfo(this);
       eventHandler.attach(info);
 
-      if(options.focus) { info.editable.focus(); } // options focus
+      if (options.focus) { info.editable.focus(); } // options focus
     },
     // get the HTML contents of note or set the HTML contents of note.
     code : function(sHTML) {
