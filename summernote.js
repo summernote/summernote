@@ -254,20 +254,20 @@
    */
   var Popover = function() {
     this.update = function(welPopover, oStyle) {
-      var welAnchorPopover = welPopover.find('.note-anchor-popover');
+      var welLinkPopover = welPopover.find('.note-link-popover');
       if (oStyle.anchor) {
-        var welAnchor = welAnchorPopover.find('a');
+        var welAnchor = welLinkPopover.find('a');
         welAnchor.attr('href', oStyle.anchor.href).html(oStyle.anchor.href);
         
         //popover position
         var rect = oStyle.anchor.getBoundingClientRect();
-        welAnchorPopover.css({
+        welLinkPopover.css({
           display: 'block',
           left: rect.left,
           top: $(document).scrollTop() + rect.bottom
         });
       } else {
-        welAnchorPopover.hide();
+        welLinkPopover.hide();
       }
     };
     
@@ -280,11 +280,11 @@
    * Dialog
    */
   var Dialog = function() {
-    this.showAnchorDialog = function(welDialog) {
-      var welAnchorDialog = welDialog.find('.note-anchor-dialog');
-      welAnchorDialog.modal('show');
-      //welAnchorDialog.find('.note-anchor-text');
-      //welAnchorDialog.find('.note-anchor-url');
+    this.showLinkDialog = function(welDialog) {
+      var welLinkDialog = welDialog.find('.note-link-dialog');
+      welLinkDialog.modal('show');
+      //welLinkDialog.find('.note-link-text');
+      //welLinkDialog.find('.note-link-url');
     };
   };
   
@@ -298,7 +298,7 @@
     var toolbar = new Toolbar(), popover = new Popover();
     var dialog = new Dialog();
     
-    var key = { TAB: 9, B: 66, I: 73, U: 85, NUM0: 48, NUM1: 49, NUM4: 52 };
+    var key = { TAB: 9, B: 66, K: 75, I: 73, U: 85, NUM0: 48, NUM1: 49, NUM4: 52 };
 
     var hKeydown = function(event) {
       var bCmd = bMac ? event.metaKey : event.ctrlKey;
@@ -309,6 +309,8 @@
         editor.italic();
       } else if (bCmd && event.keyCode === key.U) { // underline
         editor.underline();
+      } else if (bCmd && event.keyCode === key.K) { // showLink
+        dialog.showLinkDialog($('.note-dialog'));
       } else if (bShift && event.keyCode === key.TAB) { // shift + tab
         editor.outdent();
       } else if (event.keyCode === key.TAB) { // tab
@@ -353,7 +355,7 @@
         if (sEvent === "backColor" || sEvent === "foreColor") {
           toolbar.updateRecentColor(elBtn, sEvent, sValue);
         } else if (sEvent === "showLink") { //popover to dialog
-          dialog.showAnchorDialog($('.note-dialog'));
+          dialog.showLinkDialog($('.note-dialog'));
         }
       }
     };
@@ -384,7 +386,7 @@
     var sToolbar = '<div class="note-toolbar btn-toolbar">' + 
                       '<div class="note-insert btn-group">' +
                        '<button class="btn btn-small" title="Picture"><i class="icon-picture"></i></button>' +
-                       '<button class="btn btn-small" title="Link" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" ><i class="icon-link"></i></button>' +
+                       '<button class="btn btn-small" title="Link" data-event="showLink" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" ><i class="icon-link"></i></button>' +
                        '<button class="btn btn-small" title="Table"><i class="icon-table"></i></button>' +
                      '</div>' +
                      '<div class="note-style btn-group">' +
@@ -446,10 +448,9 @@
                          '</li>' +
                        '</ul>' +
                      '</div>' +
-                     '</div>' +
                    '</div>';
     var sPopover = '<div class="note-popover">' +
-                     '<div class="note-anchor-popover popover fade bottom in" style="display: none;">' +
+                     '<div class="note-link-popover popover fade bottom in" style="display: none;">' +
                        '<div class="arrow"></div>' +
                        '<div class="popover-content note-link-content">' +
                          '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
@@ -461,7 +462,7 @@
                      '</div>' +
                    '</div>';
     var sDialog = '<div class="note-dialog">' +
-                    '<div class="note-anchor-dialog modal hide in" aria-hidden="false">' +
+                    '<div class="note-link-dialog modal hide in" aria-hidden="false">' +
                       '<div class="modal-header">' +
                         '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>' +
                         '<h4>Edit Link</h4>' +
@@ -469,9 +470,9 @@
                       '<div class="modal-body">' +
                         '<div class="row-fluid">' +
                           '<label>Text to display</label>' +
-                          '<input class="note-anchor-text span12" type="text" />' +
+                          '<input class="note-link-text span12" type="text" />' +
                           '<label>To what URL should this link go?</label>' +
-                          '<input class="note-anchor-url span12" type="text" />' +
+                          '<input class="note-link-url span12" type="text" />' +
                         '</div>' +
                       '</div>' +
                       '<div class="modal-footer">' +
