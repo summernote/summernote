@@ -166,24 +166,17 @@
       return function(sValue) { document.execCommand(sCmd, false, sValue); }
     };
     
-    // use makeExecCommand
-    this.bold = makeExecCommand('bold');
-    this.italic = makeExecCommand('italic');
-    this.underline = makeExecCommand('underline');
-    this.justifyLeft = makeExecCommand('justifyLeft');
-    this.justifyCenter = makeExecCommand('justifyCenter');
-    this.justifyRight = makeExecCommand('justifyRight');
-    this.justifyFull = makeExecCommand('justifyFull');
-    this.insertOrderedList = makeExecCommand('insertOrderedList');
-    this.insertUnorderedList = makeExecCommand('insertUnorderedList');
-    this.indent = makeExecCommand('indent');
-    this.outdent = makeExecCommand('outdent');
-    this.formatBlock = makeExecCommand('formatBlock');
-    this.removeFormat = makeExecCommand('removeFormat');
-    this.backColor = makeExecCommand('backColor');
-    this.foreColor = makeExecCommand('foreColor');
+    // native commands(with execCommand)
+    var aCmd = ['bold', 'italic', 'underline', 'justifyLeft', 'justifyCenter',
+                'justifyRight', 'justifyFull', 'insertOrderedList',
+                'insertUnorderedList', 'indent', 'outdent', 'formatBlock',
+                'removeFormat', 'backColor', 'foreColor'];
+                
+    for (var idx=0, len=aCmd.length; idx < len; idx ++) {
+      this[aCmd[idx]] = makeExecCommand(aCmd[idx]);
+    }                
 
-    // customize command
+    // custom commands
     this.unlink = function() {
       var range = new Range();
       if (range.isOnAnchor()) {
@@ -193,7 +186,11 @@
         document.execCommand('unlink');
       }
     };
-    this.editLink = function() { console.log('editLink'); };
+
+    this.editLink = function() {
+      console.log('editLink');
+    };
+    
     this.color = function(sObjColor) {
       var oColor = JSON.parse(sObjColor);
       this.foreColor(oColor.foreColor);
@@ -202,16 +199,10 @@
   };
   
   /**
-   * EventHandler
-   *
-   * handle keydown event on editable area
+   * Toolbar
    */
-  var EventHandler = function() {
-    var editor = new Editor();
-    var style = new Style();
-    var key = { TAB: 9, B: 66, I: 73, U: 85, NUM0: 48, NUM1: 49, NUM4: 52 };
-
-    var updateToolbar = function(welToolbar, oStyle) {
+  var Toolbar = function() {
+    this.update = function(welToolbar, oStyle) {
       var btnState = function(sSelector, pred) {
         var welBtn = welToolbar.find(sSelector);
         welBtn[pred() ? 'addClass' : 'removeClass']('active');
@@ -247,7 +238,22 @@
       });
     };
     
-    var updatePopover = function(welPopover, oStyle) {
+    this.updateRecentColor = function(elBtn, sEvent, sValue) {
+      var elNoteColor = dom.ancestor(elBtn, iter.hasClass('note-color'));
+      var welRecentColor = $(elNoteColor).find('.note-recent-color');
+      var oColor = JSON.parse(welRecentColor.attr('data-value'));
+      oColor[sEvent] = sValue;
+      welRecentColor.attr('data-value', JSON.stringify(oColor));
+      var sKey = sEvent === "backColor" ? 'background-color' : 'color';
+      welRecentColor.find('i').css(sKey, sValue);
+    };
+  };
+  
+  /**
+   * Popover
+   */
+  var Popover = function() {
+    this.update = function(welPopover, oStyle) {
       var welAnchorPopover = welPopover.find('.note-anchor-popover');
       if (oStyle.anchor) {
         var welAnchor = welAnchorPopover.find('a');
@@ -264,6 +270,35 @@
         welAnchorPopover.hide();
       }
     };
+    
+    this.hide = function(welPopover) {
+      welPopover.children().hide();
+    };
+  };
+  
+  /**
+   * Dialog
+   */
+  var Dialog = function() {
+    this.showAnchorDialog = function(welDialog) {
+      var welAnchorDialog = welDialog.find('.note-anchor-dialog');
+      welAnchorDialog.modal('show');
+      //welAnchorDialog.find('.note-anchor-text');
+      //welAnchorDialog.find('.note-anchor-url');
+    };
+  };
+  
+  /**
+   * EventHandler
+   *
+   * handle mouse & key event on note
+   */
+  var EventHandler = function() {
+    var editor = new Editor(), style = new Style();
+    var toolbar = new Toolbar(), popover = new Popover();
+    var dialog = new Dialog();
+    
+    var key = { TAB: 9, B: 66, I: 73, U: 85, NUM0: 48, NUM1: 49, NUM4: 52 };
 
     var hKeydown = function(event) {
       var bCmd = bMac ? event.metaKey : event.ctrlKey;
@@ -293,15 +328,15 @@
       var welEditor = $(elEditableOrToolbar.parentNode);
       
       var oStyle = style.current();
-      updateToolbar(welEditor.find('.note-toolbar'), oStyle);
-      updatePopover(welEditor.find('.note-popover'), oStyle);
+      toolbar.update(welEditor.find('.note-toolbar'), oStyle);
+      popover.update(welEditor.find('.note-popover'), oStyle);
     };
     
     var hScroll = function(event) {
       var elEditableOrToolbar = event.currentTarget || event.target;
       var welEditor = $(elEditableOrToolbar.parentNode);
-
-      welEditor.find('.note-popover').children().hide(); //hide popover when scrolled
+      //hide popover when scrolled
+      popover.hide(welEditor.find('.note-popover'));
     };
     
     var hToolbarAndPopoverClick = function(event) {
@@ -312,27 +347,13 @@
         var sEvent = welBtn.attr('data-event');
         var sValue = welBtn.attr('data-value');
 
-        editor[sEvent](sValue); // execute editor method
+        if (editor[sEvent]) { editor[sEvent](sValue); } // execute editor method
         
         // check and update recent color
         if (sEvent === "backColor" || sEvent === "foreColor") {
-          var elNoteColor = dom.ancestor(elBtn, iter.hasClass('note-color'));
-          var welRecentColor = $(elNoteColor).find('.note-recent-color');
-          var oColor = JSON.parse(welRecentColor.attr('data-value'));
-          oColor[sEvent] = sValue;
-          welRecentColor.attr('data-value', JSON.stringify(oColor));
-          var sKey = sEvent === "backColor" ? 'background-color' : 'color';
-          welRecentColor.find('i').css(sKey, sValue);
-        }
-      }
-
-      var elBtn = dom.ancestor(event.target, iter.hasAttr('data-ui-event'));
-      if (elBtn) {
-        var welBtn = $(elBtn);
-        var sEvent = welBtn.attr('data-ui-event');
-        
-        if (sEvent === "editLink") {
-          $('.note-anchor-dialog').modal('show');
+          toolbar.updateRecentColor(elBtn, sEvent, sValue);
+        } else if (sEvent === "showLink") { //popover to dialog
+          dialog.showAnchorDialog($('.note-dialog'));
         }
       }
     };
@@ -433,7 +454,7 @@
                        '<div class="popover-content note-link-content">' +
                          '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
                          '<div class="note-insert btn-group">' +
-                           '<button class="btn btn-small" title="Edit" data-ui-event="editLink"><i class="icon-edit"></i></button>' +
+                           '<button class="btn btn-small" title="Edit" data-event="showLink"><i class="icon-edit"></i></button>' +
                            '<button class="btn btn-small" title="Unlink" data-event="unlink"><i class="icon-unlink"></i></button>' +
                          '</div>' +
                        '</div>' +
@@ -447,14 +468,10 @@
                       '</div>' +
                       '<div class="modal-body">' +
                         '<div class="row-fluid">' +
-                          '<div class="span6">' +
-                            '<label>Text to display</label><br/>' +
-                            '<label>To what URL should this link go?</label>' +
-                          '</div>' +
-                          '<div class="span6">' +
-                            '<input class="note-anchor-text" type="text" />' +
-                            '<input class="note-anchor-url" type="text" />' +
-                          '</div>' +
+                          '<label>Text to display</label>' +
+                          '<input class="note-anchor-text span12" type="text" />' +
+                          '<label>To what URL should this link go?</label>' +
+                          '<input class="note-anchor-url span12" type="text" />' +
                         '</div>' +
                       '</div>' +
                       '<div class="modal-footer">' +
@@ -557,7 +574,8 @@
         editor: welEditor,
         editable: welEditor.find('.note-editable'),
         toolbar: welEditor.find('.note-toolbar'),
-        popover: welEditor.find('.note-popover')
+        popover: welEditor.find('.note-popover'),
+        dialog: welEditor.find('.note-dialog')
       }
     };
     
