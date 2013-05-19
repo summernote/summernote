@@ -24,10 +24,6 @@ A summer is comming soon. release summernote v0.1 on 1st June, 2013
 
 Summernote has something specials no like others. interative WYSIWYG editing, easy integrate Backend server and so much others.
 
-### TODO list
-
-implements image embeding, make/edit link, insert table
-
 ### Easy to install
 
 #### 01. include js/css
