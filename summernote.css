@@ -14,6 +14,9 @@
 .note-editor .note-toolbar .note-style blockquote {
   margin: 0px;
 }
+.note-editor .note-toolbar .note-fontsize button {
+  height: 26px;
+}
 .note-editor .note-toolbar .note-color .dropdown-toggle {
   width: 20px;
   padding: 2px 5px;
@@ -51,6 +54,34 @@
 .note-editor .note-popover .popover.bottom .arrow {
   left: 20px;
 }
+.note-editor .note-editable {
+  outline: none;
+  height: 300px;
+  overflow: scroll;
+  padding: 10px;
+}
+.note-editor .dropdown-menu {
+  min-width: 90px;
+}
+.note-editor .dropdown-menu.right {
+  left: auto;
+  right: 0;
+}
+.note-editor .dropdown-menu.right::before {
+  left: auto !important;
+  right: 9px;
+}
+.note-editor .dropdown-menu.right::after {
+  left: auto !important;
+  right: 10px;
+}
+.note-editor .dropdown-menu li a i {
+  visibility: hidden;
+  color: deepskyblue;
+}
+.note-editor .dropdown-menu li a.checked i {
+  visibility: visible;
+}
 .note-editor .btn-small {
   font-size: 14px;
 }
@@ -66,10 +97,4 @@
 }
 .note-editor .note-color-palette div .note-color-btn:hover {
   border: 1px solid #000;
-}
-.note-editor .note-editable {
-  outline: none;
-  height: 300px;
-  overflow: scroll;
-  padding: 10px;
 }
