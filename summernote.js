@@ -133,8 +133,11 @@
     this.current = function() {
       var rng = new Range();
       var welCont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
-      var oStyle = welCont.curStyles('font-weight', 'font-style', 'text-decoration',
-                                     'text-align', 'list-style-type') || {};
+      var oStyle = welCont.curStyles('font-size', 'font-weight', 'font-style',
+                                     'text-decoration', 'text-align',
+                                     'list-style-type') || {};
+                                     
+      oStyle.fontSize = parseInt(oStyle.fontSize);
 
       //FF fontWeight patch(number to 'bold' or 'normal')
       if (!isNaN(parseInt(oStyle.fontWeight))) {
@@ -175,8 +178,11 @@
     for (var idx=0, len=aCmd.length; idx < len; idx ++) {
       this[aCmd[idx]] = makeExecCommand(aCmd[idx]);
     }                
-
+    
     // custom commands
+    this.fontSize = function(sValue) {
+    };
+
     this.unlink = function() {
       var range = new Range();
       if (range.isOnAnchor()) {
@@ -207,6 +213,14 @@
         var welBtn = welToolbar.find(sSelector);
         welBtn[pred() ? 'addClass' : 'removeClass']('active');
       };
+      
+      //handle selectbox for fontsize
+      var welFontsize = welToolbar.find('.note-fontsize');
+      welFontsize.find('.note-current-fontsize').html(oStyle.fontSize);
+      welFontsize.find('.dropdown-menu li a').each(function() {
+        var bChecked = $(this).attr('data-value') == oStyle.fontSize;
+        this.className = bChecked ? 'checked' : '';
+      });
       
       btnState('button[data-event="bold"]', function() {
         return oStyle.fontWeight === 'bold';
@@ -398,6 +412,20 @@
                          '<li><a href="#" data-event="formatBlock" data-value="h2"><h2>Header 2</h2></a></li>' +
                          '<li><a href="#" data-event="formatBlock" data-value="h3"><h3>Header 3</h3></a></li>' +
                          '<li><a href="#" data-event="formatBlock" data-value="h4"><h4>Header 4</h4></a></li>' +
+                       '</ul>' +
+                     '</div>' +
+                     '<div class="note-fontsize btn-group">' +
+                       '<button class="btn btn-mini dropdown-toggle" data-toggle="dropdown" title="Font Size"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +
+                       '<ul class="dropdown-menu">' +
+                         '<li><a href="#" data-event="fontSize" data-value="8"><i class="icon-ok"></i> 8</a></li>' +
+                         '<li><a href="#" data-event="fontSize" data-value="9"><i class="icon-ok"></i> 9</a></li>' +
+                         '<li><a href="#" data-event="fontSize" data-value="10"><i class="icon-ok"></i> 10</a></li>' +
+                         '<li><a href="#" data-event="fontSize" data-value="11"><i class="icon-ok"></i> 11</a></li>' +
+                         '<li><a href="#" data-event="fontSize" data-value="12"><i class="icon-ok"></i> 12</a></li>' +
+                         '<li><a href="#" data-event="fontSize" data-value="14"><i class="icon-ok"></i> 14</a></li>' +
+                         '<li><a href="#" data-event="fontSize" data-value="18"><i class="icon-ok"></i> 18</a></li>' +
+                         '<li><a href="#" data-event="fontSize" data-value="24"><i class="icon-ok"></i> 24</a></li>' +
+                         '<li><a href="#" data-event="fontSize" data-value="36"><i class="icon-ok"></i> 36</a></li>' +
                        '</ul>' +
                      '</div>' +
                      '<div class="note-color btn-group">' +

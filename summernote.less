@@ -12,6 +12,24 @@
         margin: 0px;
       }
     }
+    
+    .note-fontsize {
+      button {
+        height: 26px;
+        span { // overwrite bootstrap default
+          font-size: 14px;
+        }
+      }
+      .dropdown-menu {
+        li a i {
+          visibility: hidden;
+          color: darkblue;
+        }
+        li a.checked i {
+          visibility: visible;
+        }
+      }
+    }
 
     .note-color {
       .dropdown-toggle {
