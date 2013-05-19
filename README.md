@@ -6,6 +6,12 @@ Summernote is a javascript program that helps you to create WYSIWYG Editor on we
 
 Demo Page: http://hackerwins.github.io/summernote/
 
+Dependency
+* jQuery: http://jquery.com/
+* jquery.curstyles: http://bitovi.com/blog/2010/06/get-multiple-computed-styles-fast-with-the-curstyles-jquery-plugin.html
+* bootstrap: http://twitter.github.io/bootstrap/
+* fontAwesome: https://github.com/FortAwesome/Font-Awesome 
+
 Inspired by
 * Gmail WYSIWYG Editor (http://www.gmail.com)
 * Redactor (http://imperavi.com/redactor/)
