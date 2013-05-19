@@ -179,6 +179,11 @@
     
     // custom commands
     this.fontSize = function(sValue) {
+      console.log('fontSize', sValue);
+    };
+    
+    this.lineHeight = function(sValue) {
+      console.log('lineHeight', sValue);
     };
 
     this.unlink = function() {
@@ -369,6 +374,8 @@
         } else if (sEvent === "showLink") { //popover to dialog
           dialog.showLinkDialog($('.note-dialog'));
         }
+        
+        event.preventDefault();
       }
     };
 
