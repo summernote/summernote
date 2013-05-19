@@ -8,6 +8,35 @@
     padding: 5px;
     border-bottom: 1px solid #a9a9a9;
     
+    .note-table {
+      .dropdown-menu {
+        min-width: 0;
+        padding: 5px;
+        .note-dimension-picker {
+           .note-dimension-picker-mousecatcher {
+            z-index: 3;
+            position: absolute !important;
+            width: 20em;
+            height: 20em;
+          }
+          .note-dimension-picker-unhighlighted {
+            z-index: 1;
+            position: relative !important;
+            border: 1px solid lightgray;
+            width: 5em;
+            height: 5em;
+          }
+          .note-dimension-picker-highlighted {
+            z-index: 2;
+            position: absolute !important;
+            border: 1px solid deepskyblue;
+            width: 1em;
+            height: 1em;
+          }
+        }
+      }
+    }
+    
     .note-style {
       h1, h2, h3, h4, blockquote {
         margin: 0px;

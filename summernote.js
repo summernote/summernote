@@ -205,6 +205,10 @@
       this.foreColor(oColor.foreColor);
       this.backColor(oColor.backColor);
     };
+    
+    this.insertTable = function(sDim) {
+      console.log('insertTable', sDim);
+    };
   };
   
   /**
@@ -378,15 +382,46 @@
         event.preventDefault();
       }
     };
+    
+    var PX_PER_EM = 14;
+    var hDimensionPickerMove = function(event) {
+      var welPicker = $(event.target.parentNode); // target is mousecatcher
+      var welDimensionDisplay = welPicker.next();
+      var welCatcher = welPicker.find('.note-dimension-picker-mousecatcher');
+      var welHighlighted = welPicker.find('.note-dimension-picker-highlighted');
+      var welUnhighlighted = welPicker.find('.note-dimension-picker-unhighlighted');
+
+      var dim = {c: Math.ceil(event.offsetX / PX_PER_EM) || 1,
+                 r: Math.ceil(event.offsetY / PX_PER_EM) || 1};
+      welHighlighted.css({ width: dim.c +'em', height: dim.r + 'em' });
+      welCatcher.attr('data-value', dim.c + 'x' + dim.r);
+      
+      if (5 <= dim.c && dim.c < 20) {
+        welUnhighlighted.css({ width: dim.c + 1 + 'em'});
+      }
+
+      if (5 <= dim.r && dim.r < 20) {
+        welUnhighlighted.css({ height: dim.r + 1 + 'em'});
+      }
+
+      welDimensionDisplay.html(dim.c + ' x ' + dim.r);
+    };
 
     this.attach = function(layoutInfo) {
       layoutInfo.editable.bind('keydown', hKeydown);
       layoutInfo.editable.bind('keyup mouseup', hToolbarAndPopoverUpdate);
       layoutInfo.editable.bind('scroll', hScroll);
+
       layoutInfo.toolbar.bind('click', hToolbarAndPopoverClick);
       layoutInfo.toolbar.bind('click', hToolbarAndPopoverUpdate);
+
       layoutInfo.popover.bind('click', hToolbarAndPopoverClick);
       layoutInfo.popover.bind('click', hToolbarAndPopoverUpdate);
+      
+      //toolbar table dimension
+      var welToolbar = layoutInfo.toolbar;
+      var welCatcher = welToolbar.find('.note-dimension-picker-mousecatcher');
+      welCatcher.bind('mousemove', hDimensionPickerMove);
     };
 
     this.dettach = function(layoutInfo) {
@@ -403,10 +438,20 @@
    */
   var Renderer = function() {
     var sToolbar = '<div class="note-toolbar btn-toolbar">' + 
-                      '<div class="note-insert btn-group">' +
+                     '<div class="note-insert btn-group">' +
                        '<button class="btn btn-small" title="Picture"><i class="icon-picture"></i></button>' +
                        '<button class="btn btn-small" title="Link" data-event="showLink" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" ><i class="icon-link"></i></button>' +
-                       '<button class="btn btn-small" title="Table"><i class="icon-table"></i></button>' +
+                     '</div>' +
+                     '<div class="note-table btn-group">' +
+                       '<button class="btn btn-small dropdown-toggle" title="Table" data-toggle="dropdown"><i class="icon-table"></i> <span class="caret"></span></button>' +
+                        '<ul class="dropdown-menu">' +
+                          '<div class="note-dimension-picker">' +
+                            '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>' +
+                            '<div class="note-dimension-picker-highlighted"></div>' +
+                            '<div class="note-dimension-picker-unhighlighted"></div>' +
+                          '</div>' +
+                          '<div class="note-dimension-display"> 1 x 1 </div>' +
+                        '</ul>' +
                      '</div>' +
                      '<div class="note-style btn-group">' +
                        '<button class="btn btn-small dropdown-toggle" title="Style" data-toggle="dropdown"><i class="icon-magic"></i> <span class="caret"></span></button>' +
