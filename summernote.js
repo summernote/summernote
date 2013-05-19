@@ -9,6 +9,24 @@
   var bMac = navigator.appVersion.indexOf('Mac') > -1; 
   
   /**
+   * iter
+   */
+  var iter = function() {
+    var hasAttr = function(sAttr) {
+      return function(node) { return $(node).attr(sAttr); };
+    };
+    
+    var hasClass = function(sClass) {
+      return function(node) { return $(node).hasClass(sClass); };
+    };
+    
+    return {
+      hasAttr: hasAttr,
+      hasClass: hasClass
+    }
+  }();
+  
+  /**
    * dom
    */
   var dom = function() {
@@ -28,7 +46,7 @@
      */
     var ancestor = function(node, pred) {
       while (node) {
-        if(pred(node)) { return node; }
+        if (pred(node)) { return node; }
         node = node.parentNode;
       }
       return null;
@@ -49,7 +67,7 @@
    */
   var Range = function(sc, so, ec, eo) {
     if (arguments.length === 0) { // from Browser Selection
-      if(document.getSelection) { // webkit, firefox
+      if (document.getSelection) { // webkit, firefox
         var nativeRng = document.getSelection().getRangeAt(0);
         sc = nativeRng.startContainer, so = nativeRng.startOffset,
         ec = nativeRng.endContainer, eo = nativeRng.endOffset;
@@ -65,7 +83,7 @@
      * update visible range
      */
     this.select = function() {
-      if(document.createRange) {
+      if (document.createRange) {
         var range = document.createRange();
         range.setStart(sc, so);
         range.setEnd(ec, eo);
@@ -100,9 +118,7 @@
      *
      * judge whether range was collapsed
      */
-    this.isCollapsed = function() {
-      return sc === ec && so === eo;
-    };
+    this.isCollapsed = function() { return sc === ec && so === eo; };
   };
   
   /**
@@ -115,8 +131,11 @@
     this.current = function() {
       var rng = new Range();
       var welCont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
-      var oStyle = welCont.curStyles('font-weight', 'font-style', 'text-decoration',
-                                     'text-align', 'list-style-type') || {};
+      var oStyle = welCont.curStyles('font-size', 'font-weight', 'font-style',
+                                     'text-decoration', 'text-align',
+                                     'list-style-type', 'line-height') || {};
+                                     
+      oStyle.fontSize = parseInt(oStyle.fontSize);
 
       //FF fontWeight patch(number to 'bold' or 'normal')
       if (!isNaN(parseInt(oStyle.fontWeight))) {
@@ -148,24 +167,20 @@
       return function(sValue) { document.execCommand(sCmd, false, sValue); }
     };
     
-    // use makeExecCommand
-    this.bold = makeExecCommand('bold');
-    this.italic = makeExecCommand('italic');
-    this.underline = makeExecCommand('underline');
-    this.justifyLeft = makeExecCommand('justifyLeft');
-    this.justifyCenter = makeExecCommand('justifyCenter');
-    this.justifyRight = makeExecCommand('justifyRight');
-    this.justifyFull = makeExecCommand('justifyFull');
-    this.insertOrderedList = makeExecCommand('insertOrderedList');
-    this.insertUnorderedList = makeExecCommand('insertUnorderedList');
-    this.indent = makeExecCommand('indent');
-    this.outdent = makeExecCommand('outdent');
-    this.formatBlock = makeExecCommand('formatBlock');
-    this.removeFormat = makeExecCommand('removeFormat');
-    this.backColor = makeExecCommand('backColor');
-    this.foreColor = makeExecCommand('foreColor');
+    // native commands(with execCommand)
+    var aCmd = ['bold', 'italic', 'underline', 'justifyLeft', 'justifyCenter',
+                'justifyRight', 'justifyFull', 'insertOrderedList',
+                'insertUnorderedList', 'indent', 'outdent', 'formatBlock',
+                'removeFormat', 'backColor', 'foreColor'];
+                
+    for (var idx=0, len=aCmd.length; idx < len; idx ++) {
+      this[aCmd[idx]] = makeExecCommand(aCmd[idx]);
+    }                
+    
+    // custom commands
+    this.fontSize = function(sValue) {
+    };
 
-    // customize command
     this.unlink = function() {
       var range = new Range();
       if (range.isOnAnchor()) {
@@ -175,7 +190,11 @@
         document.execCommand('unlink');
       }
     };
-    this.editLink = function() { console.log('editLink'); };
+
+    this.editLink = function() {
+      console.log('editLink');
+    };
+    
     this.color = function(sObjColor) {
       var oColor = JSON.parse(sObjColor);
       this.foreColor(oColor.foreColor);
@@ -184,20 +203,22 @@
   };
   
   /**
-   * EventHandler
-   *
-   * handle keydown event on editable area
+   * Toolbar
    */
-  var EventHandler = function() {
-    var editor = new Editor();
-    var style = new Style();
-    var key = { TAB: 9, B: 66, I: 73, U: 85, NUM1: 49, NUM4: 52 };
-
-    var updateToolbar = function(welToolbar, oStyle) {
+  var Toolbar = function() {
+    this.update = function(welToolbar, oStyle) {
       var btnState = function(sSelector, pred) {
         var welBtn = welToolbar.find(sSelector);
         welBtn[pred() ? 'addClass' : 'removeClass']('active');
       };
+      
+      //handle selectbox for fontsize
+      var welFontsize = welToolbar.find('.note-fontsize');
+      welFontsize.find('.note-current-fontsize').html(oStyle.fontSize);
+      welFontsize.find('.dropdown-menu li a').each(function() {
+        var bChecked = $(this).attr('data-value') == oStyle.fontSize;
+        this.className = bChecked ? 'checked' : '';
+      });
       
       btnState('button[data-event="bold"]', function() {
         return oStyle.fontWeight === 'bold';
@@ -229,38 +250,86 @@
       });
     };
     
-    var updatePopover = function(welPopover, oStyle) {
-      var welAnchorPopover = welPopover.find('.note-anchor-popover');
+    this.updateRecentColor = function(elBtn, sEvent, sValue) {
+      var elNoteColor = dom.ancestor(elBtn, iter.hasClass('note-color'));
+      var welRecentColor = $(elNoteColor).find('.note-recent-color');
+      var oColor = JSON.parse(welRecentColor.attr('data-value'));
+      oColor[sEvent] = sValue;
+      welRecentColor.attr('data-value', JSON.stringify(oColor));
+      var sKey = sEvent === "backColor" ? 'background-color' : 'color';
+      welRecentColor.find('i').css(sKey, sValue);
+    };
+  };
+  
+  /**
+   * Popover
+   */
+  var Popover = function() {
+    this.update = function(welPopover, oStyle) {
+      var welLinkPopover = welPopover.find('.note-link-popover');
       if (oStyle.anchor) {
-        var welAnchor = welAnchorPopover.find('a');
+        var welAnchor = welLinkPopover.find('a');
         welAnchor.attr('href', oStyle.anchor.href).html(oStyle.anchor.href);
         
         //popover position
         var rect = oStyle.anchor.getBoundingClientRect();
-        welAnchorPopover.css({
+        welLinkPopover.css({
           display: 'block',
           left: rect.left,
           top: $(document).scrollTop() + rect.bottom
         });
       } else {
-        welAnchorPopover.hide();
+        welLinkPopover.hide();
       }
     };
+    
+    this.hide = function(welPopover) {
+      welPopover.children().hide();
+    };
+  };
+  
+  /**
+   * Dialog
+   */
+  var Dialog = function() {
+    this.showLinkDialog = function(welDialog) {
+      var welLinkDialog = welDialog.find('.note-link-dialog');
+      welLinkDialog.modal('show');
+      //welLinkDialog.find('.note-link-text');
+      //welLinkDialog.find('.note-link-url');
+    };
+  };
+  
+  /**
+   * EventHandler
+   *
+   * handle mouse & key event on note
+   */
+  var EventHandler = function() {
+    var editor = new Editor(), style = new Style();
+    var toolbar = new Toolbar(), popover = new Popover();
+    var dialog = new Dialog();
+    
+    var key = { TAB: 9, B: 66, K: 75, I: 73, U: 85, NUM0: 48, NUM1: 49, NUM4: 52 };
 
     var hKeydown = function(event) {
       var bCmd = bMac ? event.metaKey : event.ctrlKey;
       var bShift = event.shiftKey;
-      if(bCmd && event.keyCode === key.B) { // bold
+      if (bCmd && event.keyCode === key.B) { // bold
         editor.bold();
-      } else if(bCmd && event.keyCode === key.I) { // italic
+      } else if (bCmd && event.keyCode === key.I) { // italic
         editor.italic();
-      } else if(bCmd && event.keyCode === key.U) { // underline
+      } else if (bCmd && event.keyCode === key.U) { // underline
         editor.underline();
-      } else if(bShift && event.keyCode === key.TAB) { // shift + tab
+      } else if (bCmd && event.keyCode === key.K) { // showLink
+        dialog.showLinkDialog($('.note-dialog'));
+      } else if (bShift && event.keyCode === key.TAB) { // shift + tab
         editor.outdent();
-      } else if(event.keyCode === key.TAB) { // tab
+      } else if (event.keyCode === key.TAB) { // tab
         editor.indent();
-      } else if(bCmd && (key.NUM1 <= event.keyCode && event.keyCode <= key.NUM4)) { // formatBlock H1~H4
+      } else if (bCmd && event.keyCode === key.NUM0) { // formatBlock Paragraph
+        editor.formatBlock('P');
+      } else if (bCmd && (key.NUM1 <= event.keyCode && event.keyCode <= key.NUM4)) { // formatBlock H1~H4
         editor.formatBlock('H' + String.fromCharCode(event.keyCode));
       } else {
         return; // not matched
@@ -273,24 +342,33 @@
       var welEditor = $(elEditableOrToolbar.parentNode);
       
       var oStyle = style.current();
-      updateToolbar(welEditor.find('.note-toolbar'), oStyle);
-      updatePopover(welEditor.find('.note-popover'), oStyle);
+      toolbar.update(welEditor.find('.note-toolbar'), oStyle);
+      popover.update(welEditor.find('.note-popover'), oStyle);
     };
     
     var hScroll = function(event) {
       var elEditableOrToolbar = event.currentTarget || event.target;
       var welEditor = $(elEditableOrToolbar.parentNode);
-
-      welEditor.find('.note-popover').children().hide();
+      //hide popover when scrolled
+      popover.hide(welEditor.find('.note-popover'));
     };
-
+    
     var hToolbarAndPopoverClick = function(event) {
-      var elBtn = dom.ancestor(event.target, function(node) {
-        return $(node).attr('data-event');
-      });
+      var elBtn = dom.ancestor(event.target, iter.hasAttr('data-event'));
+      
       if (elBtn) {
         var welBtn = $(elBtn);
-        editor[welBtn.attr('data-event')](welBtn.attr('data-value'));
+        var sEvent = welBtn.attr('data-event');
+        var sValue = welBtn.attr('data-value');
+
+        if (editor[sEvent]) { editor[sEvent](sValue); } // execute editor method
+        
+        // check and update recent color
+        if (sEvent === "backColor" || sEvent === "foreColor") {
+          toolbar.updateRecentColor(elBtn, sEvent, sValue);
+        } else if (sEvent === "showLink") { //popover to dialog
+          dialog.showLinkDialog($('.note-dialog'));
+        }
       }
     };
 
@@ -320,7 +398,7 @@
     var sToolbar = '<div class="note-toolbar btn-toolbar">' + 
                       '<div class="note-insert btn-group">' +
                        '<button class="btn btn-small" title="Picture"><i class="icon-picture"></i></button>' +
-                       '<button class="btn btn-small" title="Link" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" ><i class="icon-link"></i></button>' +
+                       '<button class="btn btn-small" title="Link" data-event="showLink" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" ><i class="icon-link"></i></button>' +
                        '<button class="btn btn-small" title="Table"><i class="icon-table"></i></button>' +
                      '</div>' +
                      '<div class="note-style btn-group">' +
@@ -334,8 +412,22 @@
                          '<li><a href="#" data-event="formatBlock" data-value="h4"><h4>Header 4</h4></a></li>' +
                        '</ul>' +
                      '</div>' +
+                     '<div class="note-fontsize btn-group">' +
+                       '<button class="btn btn-small dropdown-toggle" data-toggle="dropdown" title="Font Size"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +
+                       '<ul class="dropdown-menu">' +
+                         '<li><a href="#" data-event="fontSize" data-value="8"><i class="icon-ok"></i> 8</a></li>' +
+                         '<li><a href="#" data-event="fontSize" data-value="9"><i class="icon-ok"></i> 9</a></li>' +
+                         '<li><a href="#" data-event="fontSize" data-value="10"><i class="icon-ok"></i> 10</a></li>' +
+                         '<li><a href="#" data-event="fontSize" data-value="11"><i class="icon-ok"></i> 11</a></li>' +
+                         '<li><a href="#" data-event="fontSize" data-value="12"><i class="icon-ok"></i> 12</a></li>' +
+                         '<li><a href="#" data-event="fontSize" data-value="14"><i class="icon-ok"></i> 14</a></li>' +
+                         '<li><a href="#" data-event="fontSize" data-value="18"><i class="icon-ok"></i> 18</a></li>' +
+                         '<li><a href="#" data-event="fontSize" data-value="24"><i class="icon-ok"></i> 24</a></li>' +
+                         '<li><a href="#" data-event="fontSize" data-value="36"><i class="icon-ok"></i> 36</a></li>' +
+                       '</ul>' +
+                     '</div>' +
                      '<div class="note-color btn-group">' +
-                       '<button class="btn btn-small" title="Recent Color" data-event="color" data-value=\'{"foreColor":"black","backColor":"yellow"}\'><i class="icon-font" style="color:black;background-color:yellow;"></i></button>' +
+                       '<button class="btn btn-small note-recent-color" title="Recent Color" data-event="color" data-value=\'{"foreColor":"black","backColor":"yellow"}\'><i class="icon-font" style="color:black;background-color:yellow;"></i></button>' +
                        '<button class="btn btn-small dropdown-toggle" title="More Color" data-toggle="dropdown">' +
                          '<span class="caret"></span>' +
                        '</button>' +
@@ -360,31 +452,74 @@
                      '<div class="note-eraser btn-group">' +
                        '<button class="btn btn-small" title="Remove Font Style" data-event="removeFormat"><i class="icon-eraser"></i></button>' +
                      '</div>' +
-                     '<div class="note-para btn-group">' +
-                       '<button class="btn btn-small" title="Align left" data-event="justifyLeft"><i class="icon-align-left"></i></button>' +
-                       '<button class="btn btn-small" title="Align center" data-event="justifyCenter"><i class="icon-align-center"></i></button>' +
-                       '<button class="btn btn-small" title="Align right" data-event="justifyRight"><i class="icon-align-right"></i></button>' +
-                       '<button class="btn btn-small" title="Justify full" data-event="justifyFull"><i class="icon-align-justify"></i></button>' +
-                     '</div>' +
                      '<div class="note-list btn-group">' +
                        '<button class="btn btn-small" title="Unordered list" data-event="insertUnorderedList"><i class="icon-list-ul"></i></button>' +
                        '<button class="btn btn-small" title="Ordered list" data-event="insertOrderedList"><i class="icon-list-ol"></i></button>' +
-                       '<button class="btn btn-small" title="Outdent" data-shortcut="Shift+TAB" data-mac-shortcut="⇧+TAB" data-event="outdent"><i class="icon-indent-left"></i></button>' +
-                       '<button class="btn btn-small" title="Indent" data-shortcut="TAB" data-mac-shortcut="TAB" data-event="indent"><i class="icon-indent-right"></i></button>' +
+                     '</div>' +
+                     '<div class="note-para btn-group">' +
+                       '<button class="btn btn-small dropdown-toggle" title="Paragraph" data-toggle="dropdown"><i class="icon-align-left"></i>  <span class="caret"></span></button>' +
+                       '<ul class="dropdown-menu">' +
+                         '<li>' +
+                           '<div class="note-align btn-group">' +
+                             '<button class="btn btn-small" title="Align left" data-event="justifyLeft"><i class="icon-align-left"></i></button>' +
+                             '<button class="btn btn-small" title="Align center" data-event="justifyCenter"><i class="icon-align-center"></i></button>' +
+                             '<button class="btn btn-small" title="Align right" data-event="justifyRight"><i class="icon-align-right"></i></button>' +
+                             '<button class="btn btn-small" title="Justify full" data-event="justifyFull"><i class="icon-align-justify"></i></button>' +
+                           '</div>' +
+                         '</li>' +
+                         '<li>' +
+                           '<div class="note-list btn-group">' +
+                             '<button class="btn btn-small" title="Outdent" data-shortcut="Shift+TAB" data-mac-shortcut="⇧+TAB" data-event="outdent"><i class="icon-indent-left"></i></button>' +
+                             '<button class="btn btn-small" title="Indent" data-shortcut="TAB" data-mac-shortcut="TAB" data-event="indent"><i class="icon-indent-right"></i></button>' +
+                         '</li>' +
+                       '</ul>' +
+                     '</div>' +
+                     '<div class="note-line-height btn-group">' +
+                       '<button class="btn btn-small dropdown-toggle" data-toggle="dropdown" title="Line Height"><i class="icon-text-height"></i>&nbsp; <b class="caret"></b></button>' +
+                       '<ul class="dropdown-menu">' +
+                       '<li><a href="#" data-event="lineHeight" data-value="1.0"><i class="icon-ok"></i> 1.0</a></li>' +
+                       '<li><a href="#" data-event="lineHeight" data-value="1.2"><i class="icon-ok"></i> 1.2</a></li>' +
+                       '<li><a href="#" data-event="lineHeight" data-value="1.4"><i class="icon-ok"></i> 1.4</a></li>' +
+                       '<li><a href="#" data-event="lineHeight" data-value="1.5"><i class="icon-ok"></i> 1.5</a></li>' +
+                       '<li><a href="#" data-event="lineHeight" data-value="1.6"><i class="icon-ok"></i> 1.6</a></li>' +
+                       '<li><a href="#" data-event="lineHeight" data-value="1.8"><i class="icon-ok"></i> 1.8</a></li>' +
+                       '<li><a href="#" data-event="lineHeight" data-value="2.0"><i class="icon-ok"></i> 2.0</a></li>' +
+                       '<li><a href="#" data-event="lineHeight" data-value="3.0"><i class="icon-ok"></i> 3.0</a></li>' +
+                       '</ul>' +
                      '</div>' +
                    '</div>';
     var sPopover = '<div class="note-popover">' +
-                     '<div class="note-anchor-popover popover fade bottom in" style="display: none;">' +
+                     '<div class="note-link-popover popover fade bottom in" style="display: none;">' +
                        '<div class="arrow"></div>' +
-                       '<div class="popover-content">' +
-                         '<a href="http://www.naver.com" target="_blank">www.naver.com</a>&nbsp;&nbsp;' +
+                       '<div class="popover-content note-link-content">' +
+                         '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
                          '<div class="note-insert btn-group">' +
-                           '<button class="btn btn-small" title="Edit" data-event="editLink"><i class="icon-edit"></i></button>' +
+                           '<button class="btn btn-small" title="Edit" data-event="showLink"><i class="icon-edit"></i></button>' +
                            '<button class="btn btn-small" title="Unlink" data-event="unlink"><i class="icon-unlink"></i></button>' +
                          '</div>' +
                        '</div>' +
                      '</div>' +
                    '</div>';
+    var sDialog = '<div class="note-dialog">' +
+                    '<div class="note-link-dialog modal hide in" aria-hidden="false">' +
+                      '<div class="modal-header">' +
+                        '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>' +
+                        '<h4>Edit Link</h4>' +
+                      '</div>' +
+                      '<div class="modal-body">' +
+                        '<div class="row-fluid">' +
+                          '<label>Text to display</label>' +
+                          '<input class="note-link-text span12" type="text" />' +
+                          '<label>To what URL should this link go?</label>' +
+                          '<input class="note-link-url span12" type="text" />' +
+                        '</div>' +
+                      '</div>' +
+                      '<div class="modal-footer">' +
+                        '<a href="#" class="btn disabled" data-event="editLink" disabled="disabled">Edit</a>' +
+                      '</div>' +
+                    '</div>' +
+                  '</div>';
+                        
     /**
      * createTooltip
      */
@@ -416,10 +551,10 @@
       welContainer.find('.note-color-palette').each(function() {
         var welPalette = $(this), sEvent = welPalette.attr('data-target-event');
         var sPaletteContents = ''
-        for(var row = 0, szRow = aaColor.length; row < szRow; row++) {
+        for (var row = 0, szRow = aaColor.length; row < szRow; row++) {
           var aColor = aaColor[row];
           var sLine = '<div>'
-          for(var col = 0, szCol = aColor.length; col < szCol; col++) {
+          for (var col = 0, szCol = aColor.length; col < szCol; col++) {
             var sColor = aColor[col];
             var sButton = ['<button class="note-color-btn" style="background-color:', sColor,
                            ';" data-event="', sEvent,
@@ -460,6 +595,9 @@
       var welPopover = $(sPopover).prependTo(welEditor);
       createTooltip(welPopover);
       
+      //05. create Dialog
+      var welDialog = $(sDialog).prependTo(welEditor);
+      
       //05. Editor/Holder switch
       welEditor.insertAfter(welHolder);
       welHolder.hide();
@@ -476,7 +614,8 @@
         editor: welEditor,
         editable: welEditor.find('.note-editable'),
         toolbar: welEditor.find('.note-toolbar'),
-        popover: welEditor.find('.note-popover')
+        popover: welEditor.find('.note-popover'),
+        dialog: welEditor.find('.note-dialog')
       }
     };
     
@@ -508,7 +647,7 @@
       var info = renderer.layoutInfo(this);
       eventHandler.attach(info);
 
-      if(options.focus) { info.editable.focus(); } // options focus
+      if (options.focus) { info.editable.focus(); } // options focus
     },
     // get the HTML contents of note or set the HTML contents of note.
     code : function(sHTML) {

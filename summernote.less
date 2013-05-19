@@ -1,6 +1,7 @@
 .note-editor {
   border: 1px solid #a9a9a9;
   
+  //toolbar
   .note-toolbar {
     background-color: #f5f5f5;
     margin: 0px;
@@ -10,6 +11,12 @@
     .note-style {
       h1, h2, h3, h4, blockquote {
         margin: 0px;
+      }
+    }
+    
+    .note-fontsize {
+      button {
+        height: 26px;
       }
     }
 
@@ -38,44 +45,63 @@
     }
   }
   
+  // popover
   .note-popover .popover {
     max-width: none;
     .popover-content {
       padding: 5px;
-      
-      .note-link-edit {
-        margin: 0;
-        display: none;
-        input {
-          width: 200px;
-        }
-      }
-      
-      .note-link-show {
-        a {
-          display: inline-block;
-          max-width: 200px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap; /* for FF */ 
-          vertical-align: middle; /* for FF */
-        }
+
+      a {
+        display: inline-block;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap; /* for FF */ 
+        vertical-align: middle; /* for FF */
       }
     }
     &.bottom .arrow {
       left: 20px;
     }
-    .btn-small {
-      font-size: 14px;
+  }
+  
+  // editable
+  .note-editable {
+    outline: none;
+    height: 300px;
+    overflow: scroll;
+    padding: 10px;
+  }
+  
+  //dropdown-menu for toolbar and popover
+  .dropdown-menu {
+    min-width: 90px;
+
+    // dropdown-menu right position
+    // http://forrst.com/posts/Bootstrap_right_positioned_dropdown-2KB
+    &.right {
+      left: auto;
+      right: 0;
+      &::before { left: auto !important; right: 9px; }
+      &::after { left: auto !important; right: 10px; }
+    }
+
+    // dropdown-menu for selectbox
+    li a i {
+      visibility: hidden;
+      color: deepskyblue;
+    }
+    li a.checked i {
+      visibility: visible;
     }
   }
   
-  // note's .btn-small at toolbar and popover
+  // buttons for toolbar and popover
   .btn-small {
     font-size: 14px;
   }
   
-  // note-color-palette at toolbar and popover
+  // color palette for toolbar and popover
   .note-color-palette {
     line-height: 1;
     div {
@@ -92,10 +118,4 @@
     }
   }
   
-  .note-editable {
-    outline: none;
-    height: 300px;
-    overflow: scroll;
-    padding: 10px;
-  }
 }
