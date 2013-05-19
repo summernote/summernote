@@ -118,9 +118,7 @@
      *
      * judge whether range was collapsed
      */
-    this.isCollapsed = function() {
-      return sc === ec && so === eo;
-    };
+    this.isCollapsed = function() { return sc === ec && so === eo; };
   };
   
   /**
@@ -135,7 +133,7 @@
       var welCont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
       var oStyle = welCont.curStyles('font-size', 'font-weight', 'font-style',
                                      'text-decoration', 'text-align',
-                                     'list-style-type') || {};
+                                     'list-style-type', 'line-height') || {};
                                      
       oStyle.fontSize = parseInt(oStyle.fontSize);
 
@@ -415,7 +413,7 @@
                        '</ul>' +
                      '</div>' +
                      '<div class="note-fontsize btn-group">' +
-                       '<button class="btn btn-mini dropdown-toggle" data-toggle="dropdown" title="Font Size"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +
+                       '<button class="btn btn-small dropdown-toggle" data-toggle="dropdown" title="Font Size"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +
                        '<ul class="dropdown-menu">' +
                          '<li><a href="#" data-event="fontSize" data-value="8"><i class="icon-ok"></i> 8</a></li>' +
                          '<li><a href="#" data-event="fontSize" data-value="9"><i class="icon-ok"></i> 9</a></li>' +
@@ -474,6 +472,19 @@
                              '<button class="btn btn-small" title="Outdent" data-shortcut="Shift+TAB" data-mac-shortcut="⇧+TAB" data-event="outdent"><i class="icon-indent-left"></i></button>' +
                              '<button class="btn btn-small" title="Indent" data-shortcut="TAB" data-mac-shortcut="TAB" data-event="indent"><i class="icon-indent-right"></i></button>' +
                          '</li>' +
+                       '</ul>' +
+                     '</div>' +
+                     '<div class="note-line-height btn-group">' +
+                       '<button class="btn btn-small dropdown-toggle" data-toggle="dropdown" title="Line Height"><i class="icon-text-height"></i>&nbsp; <b class="caret"></b></button>' +
+                       '<ul class="dropdown-menu">' +
+                       '<li><a href="#" data-event="lineHeight" data-value="1.0"><i class="icon-ok"></i> 1.0</a></li>' +
+                       '<li><a href="#" data-event="lineHeight" data-value="1.2"><i class="icon-ok"></i> 1.2</a></li>' +
+                       '<li><a href="#" data-event="lineHeight" data-value="1.4"><i class="icon-ok"></i> 1.4</a></li>' +
+                       '<li><a href="#" data-event="lineHeight" data-value="1.5"><i class="icon-ok"></i> 1.5</a></li>' +
+                       '<li><a href="#" data-event="lineHeight" data-value="1.6"><i class="icon-ok"></i> 1.6</a></li>' +
+                       '<li><a href="#" data-event="lineHeight" data-value="1.8"><i class="icon-ok"></i> 1.8</a></li>' +
+                       '<li><a href="#" data-event="lineHeight" data-value="2.0"><i class="icon-ok"></i> 2.0</a></li>' +
+                       '<li><a href="#" data-event="lineHeight" data-value="3.0"><i class="icon-ok"></i> 3.0</a></li>' +
                        '</ul>' +
                      '</div>' +
                    '</div>';
