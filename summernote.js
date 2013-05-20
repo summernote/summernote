@@ -21,8 +21,7 @@
     };
     
     return {
-      hasAttr: hasAttr,
-      hasClass: hasClass
+      hasAttr: hasAttr, hasClass: hasClass
     }
   }();
   
@@ -35,9 +34,14 @@
     var makePredByNodeName = function(sNodeName) {
       return function(node) { return node && node.nodeName === sNodeName; };
     };
+    
+    var isPara = function(node) {
+      return node && (/^P|^LI/.test(node.nodeName) ||
+                      /^H[1-7]/.test(node.nodeName));
+    };
 
-    var isList = function(el) {
-      return el && el.nodeName === 'UL' || el.nodeName === 'OL';
+    var isList = function(node) {
+      return node && node.nodeName === 'UL' || node.nodeName === 'OL';
     };
 
     /**
@@ -52,14 +56,53 @@
       return null;
     };
     
+    /**
+     * listAncestor
+     * listing ancestor nodes
+     */
+    var listAncestor = function(node, pred) {
+      pred = pred || function() { return false; };
+      
+      var aAncestor = [];
+      ancestor(node, function(el) {
+        aAncestor.push(el);
+        return pred(el);
+      });
+      return aAncestor;
+    };
+    
+    /**
+     * commonAncestor
+     * find commonAncestor
+     */
+    var commonAncestor = function(nodeA, nodeB) {
+      var aAncestor = listAncestor(nodeA);
+      for (var n = nodeB; n; n = n.parentNode) {
+        //TODO: IE8 there is no indexOf
+        if (aAncestor.indexOf(n) != -1) { return n; }
+      }
+      
+      return null; // difference document area
+    };
+
+    /**
+     * listBetween
+     * listing all Nodes between nodeA and nodeB
+     */
+    var listBetween = function(nodeA, nodeB) {
+      var elAncestor = commonAncestor(nodeA, nodeB);
+      return [nodeA];
+    };
+    
     return {
       isText: makePredByNodeName('#text'),
-      isList: isList,
+      isPara: isPara, isList: isList,
       isAnchor: makePredByNodeName('A'),
       isDiv: makePredByNodeName('DIV'), isSpan: makePredByNodeName('SPAN'),
       isB: makePredByNodeName('B'), isU: makePredByNodeName('U'),
       isS: makePredByNodeName('S'), isI: makePredByNodeName('I'),
-      ancestor: ancestor
+      ancestor: ancestor, listAncestor: listAncestor,
+      commonAncestor: commonAncestor, listBetween: listBetween
     };
   }();
 
@@ -94,15 +137,11 @@
       } // TODO: handle IE8+ TextRange
     }
     
-    this.insertNode = function(node) {
-      if (document.createRange) {
-        var range = document.createRange();
-        range.setStart(sc, so);
-        range.setEnd(ec, eo);
-        range.insertNode(node);
-      } // TODO: handle IE8+ TextRange
+    this.getParas = function() {
+      var aNode = dom.listBetween(sc, ec);
+      //filter out aPara
     };
-   
+    
     /**
      * isOnList
      *
@@ -137,11 +176,13 @@
    * Style
    */
   var Style = function() {
-    /**
-     * current
-     */
-    this.current = function() {
-      var rng = new Range();
+    // style range
+    this.styleRange = function(rng, oStyle) {
+
+    };
+    
+    // get current style
+    this.current = function(rng) {
       var welCont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
       var oStyle = welCont.curStyles('font-size', 'font-weight', 'font-style',
                                      'text-decoration', 'text-align',
@@ -175,8 +216,16 @@
    * Editor
    */
   var Editor = function() {
+    var style = new Style();
+    
     var makeExecCommand = function(sCmd) {
       return function(sValue) { document.execCommand(sCmd, false, sValue); }
+    };
+
+    // current style
+    this.currentStyle = function() {
+      var rng = new Range();
+      return style.current(rng);
     };
     
     // native commands(with execCommand)
@@ -184,26 +233,28 @@
                 'justifyRight', 'justifyFull', 'insertOrderedList',
                 'insertUnorderedList', 'indent', 'outdent', 'formatBlock',
                 'removeFormat', 'backColor', 'foreColor'];
-                
     for (var idx=0, len=aCmd.length; idx < len; idx ++) {
       this[aCmd[idx]] = makeExecCommand(aCmd[idx]);
     }                
     
     // custom commands
     this.fontSize = function(sValue) {
-      console.log('fontSize', sValue);
+      var rng = new Range();
+      style.styleRange(rng, {fontSize: sValue});
     };
     
     this.lineHeight = function(sValue) {
-      console.log('lineHeight', sValue);
+      var rng = new Range();
+      var aPara = rng.getParas();
+      //lineHeight
     };
 
     this.unlink = function() {
-      var range = new Range();
-      if (range.isOnAnchor()) {
-        var elAnchor = dom.ancestor(range.sc, dom.isAnchor);
-        range = new Range(elAnchor, 0, elAnchor, 1);
-        range.select();
+      var rng = new Range();
+      if (rng.isOnAnchor()) {
+        var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
+        rng = new Range(elAnchor, 0, elAnchor, 1);
+        rng.select();
         document.execCommand('unlink');
       }
     };
@@ -340,7 +391,7 @@
    * handle mouse & key event on note
    */
   var EventHandler = function() {
-    var editor = new Editor(), style = new Style();
+    var editor = new Editor();
     var toolbar = new Toolbar(), popover = new Popover();
     var dialog = new Dialog();
     
@@ -388,7 +439,7 @@
       var elEditableOrToolbar = event.currentTarget || event.target;
       var welEditor = $(elEditableOrToolbar.parentNode);
       
-      var oStyle = style.current();
+      var oStyle = editor.currentStyle();
       toolbar.update(welEditor.find('.note-toolbar'), oStyle);
       popover.update(welEditor.find('.note-popover'), oStyle);
     };
