@@ -55,7 +55,6 @@ test('dom.listBetween', function() {
 
   deepEqual(dom.listBetween($b[0], $b[0]), [$b[0]], 'same elements');
   deepEqual(dom.listBetween($b[0], $u[0]), [$b[0], $b[0].firstChild, $u[0]], 'adjacent');
-  deepEqual(dom.listBetween($b[0], $u[0]), [$b[0], $b[0].firstChild, $u[0]], 'distance 2');
   deepEqual(dom.listBetween($b[0], $s[0]), [$b[0], $b[0].firstChild,
                                             $u[0], $u[0].firstChild,
                                             $s[0]], 'distance 2');
