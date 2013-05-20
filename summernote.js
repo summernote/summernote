@@ -30,14 +30,14 @@
    * dom
    */
   var dom = function() {
-    var isText = function (node) {
-      return node && node.nodeName === "#text";
+    // nodeName of element are always uppercase.
+    // http://ejohn.org/blog/nodename-case-sensitivity/
+    var makePredByNodeName = function(sNodeName) {
+      return function(node) { return node && node.nodeName === sNodeName; };
     };
+
     var isList = function(el) {
-      return el && (el.nodeName.toLowerCase() === 'ul' || el.nodeName.toLowerCase() === 'ol');
-    };
-    var isAnchor = function(el) {
-      return el && (el.nodeName.toLowerCase() === 'a');
+      return el && el.nodeName === 'UL' || el.nodeName === 'OL';
     };
 
     /**
@@ -53,9 +53,12 @@
     };
     
     return {
-      isText: isText,
+      isText: makePredByNodeName('#text'),
       isList: isList,
-      isAnchor: isAnchor,
+      isAnchor: makePredByNodeName('A'),
+      isDiv: makePredByNodeName('DIV'), isSpan: makePredByNodeName('SPAN'),
+      isB: makePredByNodeName('B'), isU: makePredByNodeName('U'),
+      isS: makePredByNodeName('S'), isI: makePredByNodeName('I'),
       ancestor: ancestor
     };
   }();
@@ -90,6 +93,15 @@
         document.getSelection().addRange(range);
       } // TODO: handle IE8+ TextRange
     }
+    
+    this.insertNode = function(node) {
+      if (document.createRange) {
+        var range = document.createRange();
+        range.setStart(sc, so);
+        range.setEnd(ec, eo);
+        range.insertNode(node);
+      } // TODO: handle IE8+ TextRange
+    };
    
     /**
      * isOnList
@@ -207,10 +219,23 @@
     };
     
     this.insertTable = function(sDim) {
-      console.log('insertTable', sDim);
+      var aDim = sDim.split('x');
+      var nCol = aDim[0], nRow = aDim[1];
+      
+      var aTD = [], sTD;
+      for (var idxCol = 0; idxCol < nCol; idxCol++) {
+        aTD.push('<td></td>');
+      }
+      sTD = aTD.join('');
+
+      var aTR = [], sTR;
+      for (var idxRow = 0; idxRow < nRow; idxRow++) {
+        aTR.push('<tr>' + sTD + '</tr>');
+      }
+      sTR = aTR.join('');
     };
   };
-  
+
   /**
    * Toolbar
    */
@@ -729,6 +754,12 @@
       var info = renderer.layoutInfo(this);
       eventHandler.dettach(info);
       renderer.removeLayout(this);
+    },
+    // inner object for test
+    summernoteInner : function() {
+      return {
+        dom: dom
+      };
     }
   });
 })(jQuery); // jQuery
