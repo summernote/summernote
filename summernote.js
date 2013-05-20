@@ -78,7 +78,7 @@
     var commonAncestor = function(nodeA, nodeB) {
       var aAncestor = listAncestor(nodeA);
       for (var n = nodeB; n; n = n.parentNode) {
-        //TODO: IE8 there is no indexOf
+        //TODO: IE8, indexOf
         if (aAncestor.indexOf(n) != -1) { return n; }
       }
       
@@ -90,8 +90,20 @@
      * listing all Nodes between nodeA and nodeB
      */
     var listBetween = function(nodeA, nodeB) {
+      //FIXME: must nodeA and nodeB be sorted, use comparePoints later.
+      var aNode = [];
       var elAncestor = commonAncestor(nodeA, nodeB);
-      return [nodeA];
+      //TODO: IE8, createNodeIterator
+      var iterator = document.createNodeIterator(elAncestor,
+                                                 NodeFilter.SHOW_ALL, null,
+                                                 false);
+      var node, bStart = false;
+      while (node = iterator.nextNode()) {
+        if (nodeA === node) { bStart = true; }
+        if (bStart) { aNode.push(node); }
+        if (nodeB === node) { break; }
+      }
+      return aNode;
     };
     
     return {
