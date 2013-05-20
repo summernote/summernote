@@ -22,8 +22,8 @@ Summernote uses opensouce libraries(jquery, jquery.curstyles, bootstrap, fontAwe
 Include Following code into `<head>` tag of your HTML:
 ```html
 <!-- include libries(jquery, jquery.curstyles, bootstrap, fontawesome) -->
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script> 
-<script type="text/javascript" src="http://v3.javascriptmvc.com/jquery/dist/jquery.curstyles.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.min.js"></script> 
+<script type="text/javascript" src="//v3.javascriptmvc.com/jquery/dist/jquery.curstyles.min.js"></script>
 <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet"> 
 <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script> 
 <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.min.css" rel="stylesheet">
