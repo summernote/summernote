@@ -54,13 +54,18 @@ $(document).ready(function() {
 * bootstrap: http://twitter.github.io/bootstrap/
 * fontAwesome: https://github.com/FortAwesome/Font-Awesome
 
+### Supported platform
+* Modern Browser (Safari, Chrome, , Firefox, Opera, Internet Explorer 9+)
+* OS (Windows, Mac)
+
 ### Release
 
 A summer is comming soon. release summernote v0.1 on 1st June, 2013
 
-### Supported platform
-* Modern Browser (Safari, Chrome, , Firefox, Opera, Internet Explorer 9+)
-* OS (Windows, Mac)
+### Author
+* Email: susukang98@gmail.com
+* Twitter: http://twitter.com/susukang98
+* GitHub: http://github.com/HackerWins
 
 ### License
 summernote may be freely distributed under the MIT license.
