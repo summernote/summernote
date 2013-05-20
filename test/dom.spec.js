@@ -17,7 +17,7 @@ test('dom.ancestor', function() {
   equal(dom.ancestor(elB, dom.isU), null, 'find ancestor U: null');
 });
 
-test('listAncestor', function() {
+test('dom.listAncestor', function() {
   var $cont, $b, $u, $s, $i;
 
   $cont = $('<div><i><s><u><b>b</b></u></s></i></div>'); //busi
@@ -34,7 +34,7 @@ test('listAncestor', function() {
 
 });
 
-test('commonAncestor', function() {
+test('dom.commonAncestor', function() {
   var $cont, $b, elB;
 
   $cont = $('<div><span><b>b</b><u>u</u></span><span><s>s</s><i>i</i></span></div>');
