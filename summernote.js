@@ -9,7 +9,7 @@
   var bMac = navigator.appVersion.indexOf('Mac') > -1; 
   
   /**
-   * iter
+   * iter utils
    */
   var iter = function() {
     var hasAttr = function(sAttr) {
@@ -21,23 +21,61 @@
     };
     
     return {
-      hasAttr: hasAttr,
-      hasClass: hasClass
+      hasAttr: hasAttr, hasClass: hasClass
     }
   }();
   
   /**
-   * dom
+   * list utils
+   */
+  var list = function() {
+    var head = function(array) { return array[0]; };
+    var last = function(array) { return array[array.length - 1]; };
+    var tail = function(array) { return array.slice(1); };
+    
+    var clusterBy = function(array, fn) {
+      if (array.length === 0) { return []; }
+      var aTail = tail(array);
+      return aTail.reduce(function (memo, v) {
+        var aLast = last(memo);
+        if (fn(last(aLast), v)) {
+          aLast[aLast.length] = v;
+        } else {
+          memo[memo.length] = [v];
+        }
+        return memo;
+      }, [[head(array)]]);
+    };
+
+    var compact = function(array) {
+      var aResult = [];
+      for(var idx = 0; idx < array.length; idx ++) {
+        if (array[idx]) { aResult.push(array[idx]); };
+      };
+      return aResult;
+    };
+
+    return { head: head, last: last, tail: tail, 
+             compact: compact, clusterBy: clusterBy };
+  }();
+  
+  /**
+   * dom utils
    */
   var dom = function() {
-    var isText = function (node) {
-      return node && node.nodeName === "#text";
+    // nodeName of element are always uppercase.
+    // http://ejohn.org/blog/nodename-case-sensitivity/
+    var makePredByNodeName = function(sNodeName) {
+      return function(node) { return node && node.nodeName === sNodeName; };
     };
-    var isList = function(el) {
-      return el && (el.nodeName.toLowerCase() === 'ul' || el.nodeName.toLowerCase() === 'ol');
+    
+    var isPara = function(node) {
+      return node && (/^P|^LI/.test(node.nodeName) ||
+                      /^H[1-7]/.test(node.nodeName));
     };
-    var isAnchor = function(el) {
-      return el && (el.nodeName.toLowerCase() === 'a');
+
+    var isList = function(node) {
+      return node && node.nodeName === 'UL' || node.nodeName === 'OL';
     };
 
     /**
@@ -52,11 +90,65 @@
       return null;
     };
     
+    /**
+     * listAncestor
+     * listing ancestor nodes
+     */
+    var listAncestor = function(node, pred) {
+      pred = pred || function() { return false; };
+      
+      var aAncestor = [];
+      ancestor(node, function(el) {
+        aAncestor.push(el);
+        return pred(el);
+      });
+      return aAncestor;
+    };
+    
+    /**
+     * commonAncestor
+     * find commonAncestor
+     */
+    var commonAncestor = function(nodeA, nodeB) {
+      var aAncestor = listAncestor(nodeA);
+      for (var n = nodeB; n; n = n.parentNode) {
+        //TODO: IE8, indexOf
+        if (aAncestor.indexOf(n) != -1) { return n; }
+      }
+      
+      return null; // difference document area
+    };
+
+    /**
+     * listBetween
+     * listing all Nodes between nodeA and nodeB
+     * FIXME: nodeA and nodeB must be sorted, use comparePoints later.
+     */
+    var listBetween = function(nodeA, nodeB) {
+      var aNode = [];
+      var elAncestor = commonAncestor(nodeA, nodeB);
+      //TODO: IE8, createNodeIterator
+      var iterator = document.createNodeIterator(elAncestor,
+                                                 NodeFilter.SHOW_ALL, null,
+                                                 false);
+      var node, bStart = false;
+      while (node = iterator.nextNode()) {
+        if (nodeA === node) { bStart = true; }
+        if (bStart) { aNode.push(node); }
+        if (nodeB === node) { break; }
+      }
+      return aNode;
+    };
+    
     return {
-      isText: isText,
-      isList: isList,
-      isAnchor: isAnchor,
-      ancestor: ancestor
+      isText: makePredByNodeName('#text'),
+      isPara: isPara, isList: isList,
+      isAnchor: makePredByNodeName('A'),
+      isDiv: makePredByNodeName('DIV'), isSpan: makePredByNodeName('SPAN'),
+      isB: makePredByNodeName('B'), isU: makePredByNodeName('U'),
+      isS: makePredByNodeName('S'), isI: makePredByNodeName('I'),
+      ancestor: ancestor, listAncestor: listAncestor,
+      commonAncestor: commonAncestor, listBetween: listBetween
     };
   }();
 
@@ -90,7 +182,24 @@
         document.getSelection().addRange(range);
       } // TODO: handle IE8+ TextRange
     }
-   
+    
+    /**
+     * listPara
+     *
+     * listing paragraphs on range
+     */
+    this.listPara = function() {
+      var aNode = dom.listBetween(sc, ec);
+      // TODO: IE8 use es5-shim(https://github.com/kriskowal/es5-shim) later
+      var aPara = list.compact(aNode.map(function(node) {
+        return dom.ancestor(node, dom.isPara);
+      }));
+      var aaClustered = list.clusterBy(aPara, function(nodeA, nodeB) {
+        return nodeA === nodeB;
+      });
+      return aaClustered.map(list.head);
+    };
+    
     /**
      * isOnList
      *
@@ -125,11 +234,25 @@
    * Style
    */
   var Style = function() {
-    /**
-     * current
-     */
-    this.current = function() {
-      var rng = new Range();
+    // font level style
+    this.styleFont = function(rng, oStyle) {
+
+    };
+    
+    // para level style
+    this.stylePara = function(rng, oStyle) {
+      var aPara = rng.listPara();
+      // TODO: IE8 use es5-shim(https://github.com/kriskowal/es5-shim) later
+      var aKey = Object.keys(oStyle);
+      aPara.forEach(function(elPara) {
+        aKey.forEach(function(sKey) {
+          elPara.style[sKey] = oStyle[sKey];
+        });
+      });
+    };
+    
+    // get current style
+    this.current = function(rng) {
       var welCont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
       var oStyle = welCont.curStyles('font-size', 'font-weight', 'font-style',
                                      'text-decoration', 'text-align',
@@ -155,6 +278,14 @@
       } 
       
       oStyle.anchor = rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor) : null;
+
+      var elPara = dom.ancestor(rng.sc, dom.isPara);
+      if (elPara && elPara.style.lineHeight) {
+        oStyle.lineHeight = elPara.style.lineHeight;
+      } else {
+        var lineHeight = parseInt(oStyle.lineHeight) / parseInt(oStyle.fontSize);
+        oStyle.lineHeight = Math.round(lineHeight * 10) / 10;
+      }
       return oStyle;
     }
   };
@@ -163,8 +294,16 @@
    * Editor
    */
   var Editor = function() {
+    var style = new Style();
+    
     var makeExecCommand = function(sCmd) {
       return function(sValue) { document.execCommand(sCmd, false, sValue); }
+    };
+
+    // current style
+    this.currentStyle = function() {
+      var rng = new Range();
+      return style.current(rng);
     };
     
     // native commands(with execCommand)
@@ -172,26 +311,24 @@
                 'justifyRight', 'justifyFull', 'insertOrderedList',
                 'insertUnorderedList', 'indent', 'outdent', 'formatBlock',
                 'removeFormat', 'backColor', 'foreColor'];
-                
     for (var idx=0, len=aCmd.length; idx < len; idx ++) {
       this[aCmd[idx]] = makeExecCommand(aCmd[idx]);
     }                
     
-    // custom commands
     this.fontSize = function(sValue) {
-      console.log('fontSize', sValue);
+      style.styleFont(new Range(), {fontSize: sValue});
     };
     
     this.lineHeight = function(sValue) {
-      console.log('lineHeight', sValue);
+      style.stylePara(new Range(), {lineHeight: sValue});
     };
 
     this.unlink = function() {
-      var range = new Range();
-      if (range.isOnAnchor()) {
-        var elAnchor = dom.ancestor(range.sc, dom.isAnchor);
-        range = new Range(elAnchor, 0, elAnchor, 1);
-        range.select();
+      var rng = new Range();
+      if (rng.isOnAnchor()) {
+        var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
+        rng = new Range(elAnchor, 0, elAnchor, 1);
+        rng.select();
         document.execCommand('unlink');
       }
     };
@@ -207,28 +344,49 @@
     };
     
     this.insertTable = function(sDim) {
-      console.log('insertTable', sDim);
+      var aDim = sDim.split('x');
+      var nCol = aDim[0], nRow = aDim[1];
+      
+      var aTD = [], sTD;
+      for (var idxCol = 0; idxCol < nCol; idxCol++) {
+        aTD.push('<td></td>');
+      }
+      sTD = aTD.join('');
+
+      var aTR = [], sTR;
+      for (var idxRow = 0; idxRow < nRow; idxRow++) {
+        aTR.push('<tr>' + sTD + '</tr>');
+      }
+      sTR = aTR.join('');
     };
   };
-  
+
   /**
    * Toolbar
    */
   var Toolbar = function() {
     this.update = function(welToolbar, oStyle) {
+      //handle selectbox for fontsize, lineHeight
+      var checkDropdownMenu = function(welBtn, nValue) {
+        welBtn.find('.dropdown-menu li a').each(function() {
+          var bChecked = $(this).attr('data-value') == nValue;
+          this.className = bChecked ? 'checked' : '';
+        });
+      };
+      
+      var welFontsize = welToolbar.find('.note-fontsize');
+      welFontsize.find('.note-current-fontsize').html(oStyle.fontSize);
+      checkDropdownMenu(welFontsize, parseFloat(oStyle.fontSize));
+      
+      var welLineHeight = welToolbar.find('.note-line-height');
+      checkDropdownMenu(welLineHeight, parseFloat(oStyle.lineHeight));
+      
+      //check button state
       var btnState = function(sSelector, pred) {
         var welBtn = welToolbar.find(sSelector);
         welBtn[pred() ? 'addClass' : 'removeClass']('active');
       };
-      
-      //handle selectbox for fontsize
-      var welFontsize = welToolbar.find('.note-fontsize');
-      welFontsize.find('.note-current-fontsize').html(oStyle.fontSize);
-      welFontsize.find('.dropdown-menu li a').each(function() {
-        var bChecked = $(this).attr('data-value') == oStyle.fontSize;
-        this.className = bChecked ? 'checked' : '';
-      });
-      
+
       btnState('button[data-event="bold"]', function() {
         return oStyle.fontWeight === 'bold';
       });
@@ -250,7 +408,6 @@
       btnState('button[data-event="justifyFull"]', function() {
         return oStyle.textAlign === 'justify';
       });
-
       btnState('button[data-event="insertUnorderedList"]', function() {
         return oStyle.listStyle === 'unordered';
       });
@@ -315,7 +472,7 @@
    * handle mouse & key event on note
    */
   var EventHandler = function() {
-    var editor = new Editor(), style = new Style();
+    var editor = new Editor();
     var toolbar = new Toolbar(), popover = new Popover();
     var dialog = new Dialog();
     
@@ -363,7 +520,7 @@
       var elEditableOrToolbar = event.currentTarget || event.target;
       var welEditor = $(elEditableOrToolbar.parentNode);
       
-      var oStyle = style.current();
+      var oStyle = editor.currentStyle();
       toolbar.update(welEditor.find('.note-toolbar'), oStyle);
       popover.update(welEditor.find('.note-popover'), oStyle);
     };
@@ -729,6 +886,10 @@
       var info = renderer.layoutInfo(this);
       eventHandler.dettach(info);
       renderer.removeLayout(this);
+    },
+    // inner object for test
+    summernoteInner : function() {
+      return { dom: dom, list: list };
     }
   });
 })(jQuery); // jQuery
