@@ -2,6 +2,7 @@
  * summernote.js
  * (c) 2013~ Youngteac Hong
  * summernote may be freely distributed under the MIT license./
+ *
  */
 "use strict";
 (function($) {
@@ -269,12 +270,10 @@
       if (!rng.isOnList()) {                                                    
         oStyle.listStyle = 'none';
       } else {
-        if (oStyle.listStyleType === 'circle' || oStyle.listStyleType === 'disc' ||
-            oStyle.listStyleType === 'disc-leading-zero' || oStyle.listStyleType === 'sqare') {
-          oStyle.listStyle = 'unordered';
-        } else {                                                                
-          oStyle.listStyle = 'ordered';
-        }
+        //TODO: IE8, indexOf
+        var aOrderedType = ['circle', 'disc', 'disc-leading-zero', 'square'];
+        var bUnordered = aOrderedType.indexOf(oStyle.listStyleType) !== -1;
+        oStyle.listStyle = bUnordered ? 'unordered' : 'ordered';
       } 
       
       oStyle.anchor = rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor) : null;
