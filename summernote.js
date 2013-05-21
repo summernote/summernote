@@ -267,14 +267,14 @@
       }
       
       // listStyleType to listStyle(unordered, ordered)
-      if (!rng.isOnList()) {                                                    
+      if (!rng.isOnList()) {
         oStyle.listStyle = 'none';
       } else {
         //TODO: IE8, indexOf
         var aOrderedType = ['circle', 'disc', 'disc-leading-zero', 'square'];
         var bUnordered = aOrderedType.indexOf(oStyle.listStyleType) !== -1;
         oStyle.listStyle = bUnordered ? 'unordered' : 'ordered';
-      } 
+      }
       
       oStyle.anchor = rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor) : null;
 
@@ -677,7 +677,7 @@
                      '</div>' +
                      '<div class="note-para btn-group">' +
                        '<button class="btn btn-small dropdown-toggle" title="Paragraph" data-toggle="dropdown"><i class="icon-align-left"></i>  <span class="caret"></span></button>' +
-                       '<ul class="dropdown-menu">' +
+                       '<ul class="dropdown-menu right">' +
                          '<li>' +
                            '<div class="note-align btn-group">' +
                              '<button class="btn btn-small" title="Align left" data-shortcut="Ctrl+Shift+L" data-mac-shortcut="⌘+⇧+L" data-event="justifyLeft"><i class="icon-align-left"></i></button>' +
@@ -695,7 +695,7 @@
                      '</div>' +
                      '<div class="note-line-height btn-group">' +
                        '<button class="btn btn-small dropdown-toggle" data-toggle="dropdown" title="Line Height"><i class="icon-text-height"></i>&nbsp; <b class="caret"></b></button>' +
-                       '<ul class="dropdown-menu">' +
+                       '<ul class="dropdown-menu right">' +
                        '<li><a href="#" data-event="lineHeight" data-value="1.0"><i class="icon-ok"></i> 1.0</a></li>' +
                        '<li><a href="#" data-event="lineHeight" data-value="1.2"><i class="icon-ok"></i> 1.2</a></li>' +
                        '<li><a href="#" data-event="lineHeight" data-value="1.4"><i class="icon-ok"></i> 1.4</a></li>' +
