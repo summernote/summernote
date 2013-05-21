@@ -9,7 +9,7 @@
   var bMac = navigator.appVersion.indexOf('Mac') > -1; 
   
   /**
-   * iter
+   * iter utils
    */
   var iter = function() {
     var hasAttr = function(sAttr) {
@@ -26,7 +26,41 @@
   }();
   
   /**
-   * dom
+   * list utils
+   */
+  var list = function() {
+    var head = function(array) { return array[0]; };
+    var last = function(array) { return array[array.length - 1]; };
+    var tail = function(array) { return array.slice(1); };
+    
+    var clusterBy = function(array, fn) {
+      if (array.length === 0) { return []; }
+      var aTail = tail(array);
+      return aTail.reduce(function (memo, v) {
+        var aLast = last(memo);
+        if (fn(last(aLast), v)) {
+          aLast[aLast.length] = v;
+        } else {
+          memo[memo.length] = [v];
+        }
+        return memo;
+      }, [[head(array)]]);
+    };
+
+    var compact = function(array) {
+      var aResult = [];
+      for(var idx = 0; idx < array.length; idx ++) {
+        if (array[idx]) { aResult.push(array[idx]); };
+      };
+      return aResult;
+    };
+
+    return { head: head, last: last, tail: tail, 
+             compact: compact, clusterBy: clusterBy };
+  }();
+  
+  /**
+   * dom utils
    */
   var dom = function() {
     // nodeName of element are always uppercase.
@@ -88,9 +122,9 @@
     /**
      * listBetween
      * listing all Nodes between nodeA and nodeB
+     * FIXME: nodeA and nodeB must be sorted, use comparePoints later.
      */
     var listBetween = function(nodeA, nodeB) {
-      //FIXME: must nodeA and nodeB be sorted, use comparePoints later.
       var aNode = [];
       var elAncestor = commonAncestor(nodeA, nodeB);
       //TODO: IE8, createNodeIterator
@@ -149,9 +183,21 @@
       } // TODO: handle IE8+ TextRange
     }
     
-    this.getParas = function() {
+    /**
+     * listPara
+     *
+     * listing paragraphs on range
+     */
+    this.listPara = function() {
       var aNode = dom.listBetween(sc, ec);
-      //filter out aPara
+      // TODO: IE8 use es5-shim(https://github.com/kriskowal/es5-shim) later
+      var aPara = list.compact(aNode.map(function(node) {
+        return dom.ancestor(node, dom.isPara);
+      }));
+      var aaClustered = list.clusterBy(aPara, function(nodeA, nodeB) {
+        return nodeA === nodeB;
+      });
+      return aaClustered.map(list.head);
     };
     
     /**
@@ -257,8 +303,8 @@
     
     this.lineHeight = function(sValue) {
       var rng = new Range();
-      var aPara = rng.getParas();
-      //lineHeight
+      var aPara = rng.listPara();
+      console.log(aPara);
     };
 
     this.unlink = function() {
@@ -820,9 +866,7 @@
     },
     // inner object for test
     summernoteInner : function() {
-      return {
-        dom: dom
-      };
+      return { dom: dom, list: list };
     }
   });
 })(jQuery); // jQuery
