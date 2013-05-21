@@ -256,7 +256,7 @@
       var welCont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
       var oStyle = welCont.curStyles('font-size', 'font-weight', 'font-style',
                                      'text-decoration', 'text-align',
-                                     'list-style-type') || {};
+                                     'list-style-type', 'line-height') || {};
                                      
       oStyle.fontSize = parseInt(oStyle.fontSize);
 
@@ -282,6 +282,9 @@
       var elPara = dom.ancestor(rng.sc, dom.isPara);
       if (elPara && elPara.style.lineHeight) {
         oStyle.lineHeight = elPara.style.lineHeight;
+      } else {
+        var lineHeight = parseInt(oStyle.lineHeight) / parseInt(oStyle.fontSize);
+        oStyle.lineHeight = Math.round(lineHeight * 10) / 10;
       }
       return oStyle;
     }
