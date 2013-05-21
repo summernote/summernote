@@ -234,9 +234,21 @@
    * Style
    */
   var Style = function() {
-    // style range
-    this.styleRange = function(rng, oStyle) {
+    // font level style
+    this.styleFont = function(rng, oStyle) {
 
+    };
+    
+    // para level style
+    this.stylePara = function(rng, oStyle) {
+      var aPara = rng.listPara();
+      // TODO: IE8 use es5-shim(https://github.com/kriskowal/es5-shim) later
+      var aKey = Object.keys(oStyle);
+      aPara.forEach(function(elPara) {
+        aKey.forEach(function(sKey) {
+          elPara.style[sKey] = oStyle[sKey];
+        });
+      });
     };
     
     // get current style
@@ -244,7 +256,7 @@
       var welCont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
       var oStyle = welCont.curStyles('font-size', 'font-weight', 'font-style',
                                      'text-decoration', 'text-align',
-                                     'list-style-type', 'line-height') || {};
+                                     'list-style-type') || {};
                                      
       oStyle.fontSize = parseInt(oStyle.fontSize);
 
@@ -266,6 +278,11 @@
       } 
       
       oStyle.anchor = rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor) : null;
+
+      var elPara = dom.ancestor(rng.sc, dom.isPara);
+      if (elPara && elPara.style.lineHeight) {
+        oStyle.lineHeight = elPara.style.lineHeight;
+      }
       return oStyle;
     }
   };
@@ -295,16 +312,12 @@
       this[aCmd[idx]] = makeExecCommand(aCmd[idx]);
     }                
     
-    // custom commands
     this.fontSize = function(sValue) {
-      var rng = new Range();
-      style.styleRange(rng, {fontSize: sValue});
+      style.styleFont(new Range(), {fontSize: sValue});
     };
     
     this.lineHeight = function(sValue) {
-      var rng = new Range();
-      var aPara = rng.listPara();
-      console.log(aPara);
+      style.stylePara(new Range(), {lineHeight: sValue});
     };
 
     this.unlink = function() {
@@ -350,19 +363,27 @@
    */
   var Toolbar = function() {
     this.update = function(welToolbar, oStyle) {
+      //handle selectbox for fontsize, lineHeight
+      var checkDropdownMenu = function(welBtn, nValue) {
+        welBtn.find('.dropdown-menu li a').each(function() {
+          var bChecked = $(this).attr('data-value') == nValue;
+          this.className = bChecked ? 'checked' : '';
+        });
+      };
+      
+      var welFontsize = welToolbar.find('.note-fontsize');
+      welFontsize.find('.note-current-fontsize').html(oStyle.fontSize);
+      checkDropdownMenu(welFontsize, parseFloat(oStyle.fontSize));
+      
+      var welLineHeight = welToolbar.find('.note-line-height');
+      checkDropdownMenu(welLineHeight, parseFloat(oStyle.lineHeight));
+      
+      //check button state
       var btnState = function(sSelector, pred) {
         var welBtn = welToolbar.find(sSelector);
         welBtn[pred() ? 'addClass' : 'removeClass']('active');
       };
-      
-      //handle selectbox for fontsize
-      var welFontsize = welToolbar.find('.note-fontsize');
-      welFontsize.find('.note-current-fontsize').html(oStyle.fontSize);
-      welFontsize.find('.dropdown-menu li a').each(function() {
-        var bChecked = $(this).attr('data-value') == oStyle.fontSize;
-        this.className = bChecked ? 'checked' : '';
-      });
-      
+
       btnState('button[data-event="bold"]', function() {
         return oStyle.fontWeight === 'bold';
       });
@@ -384,7 +405,6 @@
       btnState('button[data-event="justifyFull"]', function() {
         return oStyle.textAlign === 'justify';
       });
-
       btnState('button[data-event="insertUnorderedList"]', function() {
         return oStyle.listStyle === 'unordered';
       });
