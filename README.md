@@ -65,7 +65,6 @@ A summer is comming soon. release summernote v0.1 on 1st June, 2013
 ### Author
 * Email: susukang98@gmail.com
 * Twitter: http://twitter.com/susukang98
-* GitHub: http://github.com/HackerWins
 
 ### License
 summernote may be freely distributed under the MIT license.
