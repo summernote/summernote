@@ -6,9 +6,11 @@ Summernote is a javascript program that helps you to create WYSIWYG Editor on we
 
 Demo Page: http://hackerwins.github.io/summernote/
 
-### Speciality
+### Why Summernote?
 
-Summernote has something specials no like others. simple UI, interative WYSIWYG editing, easy integrate Backend server and so much others.
+Summernote has something specials no like others.
+
+Simple UI, Interative WYSIWYG editing, easy integrate Backend server and so much others.
 
 #### Inspired by
 * Gmail WYSIWYG Editor (http://www.gmail.com)
