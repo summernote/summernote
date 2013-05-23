@@ -3,7 +3,8 @@
  * (c) 2013~ Youngteac Hong
  * summernote may be freely distributed under the MIT license./
  */
-var dom = $.fn.summernoteInner().dom;
+var dom = $.fn.summernoteInner().dom,
+    func = $.fn.summernoteInner().func;
 
 test('dom.ancestor', function() {
   var $cont, $b, elB;
@@ -59,3 +60,29 @@ test('dom.listBetween', function() {
                                             $u[0], $u[0].firstChild,
                                             $s[0]], 'distance 2');
 });
+
+test('dom.listNext', function() {
+   var $cont, $b, $u, $s, $i;
+
+  $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
+  $b = $cont.find('b'), $u = $cont.find('u'),
+  $s = $cont.find('s'), $i = $cont.find('i');
+
+  deepEqual(dom.listNext($u[0]), [$s[0], $i[0]], 'with no pred');
+  deepEqual(dom.listNext($i[0]), [], 'last item with no pred');
+  
+  deepEqual(dom.listNext($s[0], func.eq($i[0])), [$i[0]], 's to i');
+});
+
+//test('dom.split', function() {
+//  var $cont, $b, $u, $s, $i;
+//
+//  $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
+//  $b = $cont.find('b'), $u = $cont.find('u'),
+//  $s = $cont.find('s'), $i = $cont.find('i');
+//
+//  var elRightCont = dom.split($cont[0], $u[0], 0);
+//  equal($cont.html(), '<div><b>b</b></div>');
+//  equal($(elRightCont).html(), '<div><u>u</u><s>s</s><i>i</i></div>');
+//
+//});

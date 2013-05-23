@@ -2,7 +2,6 @@
  * summernote.js
  * (c) 2013~ Youngteac Hong
  * summernote may be freely distributed under the MIT license./
- *
  */
 "use strict";
 (function($) {
@@ -10,9 +9,9 @@
   var bMac = navigator.appVersion.indexOf('Mac') > -1; 
   
   /**
-   * iter utils
+   * func utils
    */
-  var iter = function() {
+  var func = function() {
     var hasAttr = function(sAttr) {
       return function(node) { return $(node).attr(sAttr); };
     };
@@ -21,8 +20,16 @@
       return function(node) { return $(node).hasClass(sClass); };
     };
     
+    var eq = function(target) {
+      return function(current) { return target === current; };
+    };
+
+    var fail = function() {
+      return false;
+    };
+    
     return {
-      hasAttr: hasAttr, hasClass: hasClass
+      hasAttr: hasAttr, hasClass: hasClass, eq: eq, fail: fail
     }
   }();
   
@@ -93,10 +100,10 @@
     
     /**
      * listAncestor
-     * listing ancestor nodes
+     * listing ancestor nodes (until predicate hit: optional)
      */
     var listAncestor = function(node, pred) {
-      pred = pred || function() { return false; };
+      pred = pred || func.fail;      
       
       var aAncestor = [];
       ancestor(node, function(el) {
@@ -141,6 +148,31 @@
       return aNode;
     };
     
+    /**
+     * listNext
+     * listing nextSiblings (until predicate hit: optional)
+     */
+    var listNext = function(node, pred) {
+      pred = pred || func.fail;      
+
+      var aNext = [];
+      while(node = node.nextSibling) {
+        aNext.push(node);
+        if (node === pred) { break; }
+      };
+      return aNext;
+    };
+    
+    /**
+     * split
+     * split dom tree by boundaryPoint(pivot and offset)
+     */
+    var split = function(root, pivot/*, offset */) {
+      var node = pivot;
+      var aAncestor = listAncestor(pivot, func.eq(root));
+      var aaRightHandSide = aAncestor.map(dom.listNext);
+    };
+    
     return {
       isText: makePredByNodeName('#text'),
       isPara: isPara, isList: isList,
@@ -149,7 +181,8 @@
       isB: makePredByNodeName('B'), isU: makePredByNodeName('U'),
       isS: makePredByNodeName('S'), isI: makePredByNodeName('I'),
       ancestor: ancestor, listAncestor: listAncestor,
-      commonAncestor: commonAncestor, listBetween: listBetween
+      listNext: listNext,
+      commonAncestor: commonAncestor, listBetween: listBetween, split: split
     };
   }();
 
@@ -416,7 +449,7 @@
     };
     
     this.updateRecentColor = function(elBtn, sEvent, sValue) {
-      var elNoteColor = dom.ancestor(elBtn, iter.hasClass('note-color'));
+      var elNoteColor = dom.ancestor(elBtn, func.hasClass('note-color'));
       var welRecentColor = $(elNoteColor).find('.note-recent-color');
       var oColor = JSON.parse(welRecentColor.attr('data-value'));
       oColor[sEvent] = sValue;
@@ -532,7 +565,7 @@
     };
     
     var hToolbarAndPopoverClick = function(event) {
-      var elBtn = dom.ancestor(event.target, iter.hasAttr('data-event'));
+      var elBtn = dom.ancestor(event.target, func.hasAttr('data-event'));
       
       if (elBtn) {
         var welBtn = $(elBtn);
@@ -888,7 +921,7 @@
     },
     // inner object for test
     summernoteInner : function() {
-      return { dom: dom, list: list };
+      return { dom: dom, list: list, func: func };
     }
   });
 })(jQuery); // jQuery
