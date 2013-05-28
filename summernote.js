@@ -39,6 +39,7 @@
   var list = function() {
     var head = function(array) { return array[0]; };
     var last = function(array) { return array[array.length - 1]; };
+    var initial = function(array) { return array.slice(0, length - 1); };
     var tail = function(array) { return array.slice(1); };
     
     var clusterBy = function(array, fn) {
@@ -63,7 +64,7 @@
       return aResult;
     };
 
-    return { head: head, last: last, tail: tail, 
+    return { head: head, last: last, initial: initial, tail: tail, 
              compact: compact, clusterBy: clusterBy };
   }();
   
@@ -150,31 +151,65 @@
     
     /**
      * listNext
+     *
      * listing nextSiblings (until predicate hit: optional)
      */
     var listNext = function(node, pred) {
       pred = pred || func.fail;      
 
       var aNext = [];
-      while(node = node.nextSibling) {
+      while(node) {
         aNext.push(node);
         if (node === pred) { break; }
+        node = node.nextSibling;
       };
       return aNext;
     };
     
     /**
+     * insertAfter
+     * insert node after preceding
+     */
+    var insertAfter = function(node, preceding) {
+      var next = preceding.nextSibling, parent = preceding.parentNode;
+      if (next) {
+        parent.insertBefore(node, next);
+      } else {
+        parent.appendChild(node);
+      }
+    };
+
+    /**
+     * appends
+     * append children
+     */
+    var appends = function(node, aChild) {
+      aChild.forEach(function(child) { node.appendChild(child); });
+    };
+    
+    var isText = makePredByNodeName('#text');
+    
+    /**
      * split
      * split dom tree by boundaryPoint(pivot and offset)
      */
-    var split = function(root, pivot/*, offset */) {
+    var split = function(root, pivot, offset) {
       var node = pivot;
-      var aAncestor = listAncestor(pivot, func.eq(root));
-      var aaRightHandSide = aAncestor.map(dom.listNext);
+      var aAncestor = list.initial(listAncestor(pivot, func.eq(root)));
+      var clone = null;
+      aAncestor.forEach(function(node) {
+        clone = node.parentNode.cloneNode(false); // shallow clone
+        // pivot's rightside
+        if (node === pivot && !isText(node) && offset > 0) {
+          node = node.nextSibling;
+        }
+        appends(clone, listNext(node));
+      });
+      insertAfter(clone, root);
     };
     
     return {
-      isText: makePredByNodeName('#text'),
+      isText: isText,
       isPara: isPara, isList: isList,
       isAnchor: makePredByNodeName('A'),
       isDiv: makePredByNodeName('DIV'), isSpan: makePredByNodeName('SPAN'),
@@ -182,7 +217,8 @@
       isS: makePredByNodeName('S'), isI: makePredByNodeName('I'),
       ancestor: ancestor, listAncestor: listAncestor,
       listNext: listNext,
-      commonAncestor: commonAncestor, listBetween: listBetween, split: split
+      commonAncestor: commonAncestor, listBetween: listBetween,
+      insertAfter: insertAfter, split: split
     };
   }();
 
@@ -381,7 +417,7 @@
       
       var aTD = [], sTD;
       for (var idxCol = 0; idxCol < nCol; idxCol++) {
-        aTD.push('<td></td>');
+        aTD.push('<td><br/></td>');
       }
       sTD = aTD.join('');
 
@@ -390,6 +426,13 @@
         aTR.push('<tr>' + sTD + '</tr>');
       }
       sTR = aTR.join('');
+      var sTable = '<table class="table table-bordered">' + sTR + '</table>';
+      
+      //FIXME: complete paragraph split
+      var rng = new Range();
+      var elPara = dom.ancestor(rng.sc, dom.isPara);
+      dom.split(elPara, rng.sc, rng.so);
+      dom.insertAfter($(sTable)[0], elPara);
     };
   };
 
@@ -564,7 +607,7 @@
       popover.hide(welEditor.find('.note-popover'));
     };
     
-    var hToolbarAndPopoverClick = function(event) {
+    var hToolbarAndPopoverMousedown = function(event) {
       var elBtn = dom.ancestor(event.target, func.hasAttr('data-event'));
       
       if (elBtn) {
@@ -615,8 +658,8 @@
       layoutInfo.editable.bind('keyup mouseup', hToolbarAndPopoverUpdate);
       layoutInfo.editable.bind('scroll', hScroll);
 
-      layoutInfo.toolbar.bind('click', hToolbarAndPopoverClick);
-      layoutInfo.popover.bind('click', hToolbarAndPopoverClick);
+      layoutInfo.toolbar.bind('mousedown', hToolbarAndPopoverMousedown);
+      layoutInfo.popover.bind('mousedown', hToolbarAndPopoverMousedown);
       
       //toolbar table dimension
       var welToolbar = layoutInfo.toolbar;

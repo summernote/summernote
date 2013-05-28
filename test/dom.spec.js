@@ -68,21 +68,39 @@ test('dom.listNext', function() {
   $b = $cont.find('b'), $u = $cont.find('u'),
   $s = $cont.find('s'), $i = $cont.find('i');
 
-  deepEqual(dom.listNext($u[0]), [$s[0], $i[0]], 'with no pred');
-  deepEqual(dom.listNext($i[0]), [], 'last item with no pred');
+  deepEqual(dom.listNext($u[0]), [$u[0], $s[0], $i[0]], 'with no pred');
+  deepEqual(dom.listNext($i[0]), [$i[0]], 'last item with no pred');
   
-  deepEqual(dom.listNext($s[0], func.eq($i[0])), [$i[0]], 's to i');
+  deepEqual(dom.listNext($s[0], func.eq($i[0])), [$s[0], $i[0]], 's to i');
 });
 
-//test('dom.split', function() {
-//  var $cont, $b, $u, $s, $i;
-//
-//  $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
-//  $b = $cont.find('b'), $u = $cont.find('u'),
-//  $s = $cont.find('s'), $i = $cont.find('i');
-//
-//  var elRightCont = dom.split($cont[0], $u[0], 0);
-//  equal($cont.html(), '<div><b>b</b></div>');
-//  equal($(elRightCont).html(), '<div><u>u</u><s>s</s><i>i</i></div>');
-//
-//});
+test('dom.split', function() {
+  var $cont, $b, $u, $s, $i;
+
+  // 01. element pivot case
+  $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
+  $u = $cont.find('u');
+  dom.split($cont[0], $u[0], 0);
+  equal($cont.html(), '<b>b</b>', 'splitBy u tag with offset 0');
+  equal($cont.next().html(), '<u>u</u><s>s</s><i>i</i>', 'right hand side');
+  
+  $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
+  $u = $cont.find('u');
+  dom.split($cont[0], $u[0], 1);
+  equal($cont.html(), '<b>b</b><u>u</u>', 'splitBy u tag with offset 1');
+  equal($cont.next().html(), '<s>s</s><i>i</i>', 'right hand side');
+  
+  $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
+  $b = $cont.find('b');
+  dom.split($cont[0], $b[0], 0);
+  equal($cont.html(), '', 'splitBy b tag with offset 0 (left edge case)');
+  equal($cont.next().html(), '<b>b</b><u>u</u><s>s</s><i>i</i>', 'right hand side');
+
+  $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
+  $i = $cont.find('i');
+  dom.split($cont[0], $i[0], 1);
+  equal($cont.html(), '<b>b</b><u>u</u><s>s</s><i>i</i>', 'splitBy i tag with offset 1 (right edge case)');
+  equal($cont.next().html(), '', 'right hand side');
+  
+  // textNode pivot case
+});
