@@ -321,7 +321,7 @@
         oStyle.lineHeight = elPara.style.lineHeight;
       } else {
         var lineHeight = parseInt(oStyle.lineHeight) / parseInt(oStyle.fontSize);
-        oStyle.lineHeight = Math.round(lineHeight * 10) / 10;
+        oStyle.lineHeight = lineHeight.toFixed(1);
       }
       return oStyle;
     }
