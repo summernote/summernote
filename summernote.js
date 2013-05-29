@@ -7,6 +7,7 @@
 (function($) {
   //Check Platform/Agent
   var bMac = navigator.appVersion.indexOf('Mac') > -1; 
+  var bMSIE = navigator.userAgent.indexOf('MSIE') > -1;
   
   /**
    * func utils
@@ -385,8 +386,9 @@
       var nCol = aDim[0], nRow = aDim[1];
       
       var aTD = [], sTD;
+      var sWhitespace = bMSIE ? '&nbsp;' : '<br/>';
       for (var idxCol = 0; idxCol < nCol; idxCol++) {
-        aTD.push('<td><br/></td>');
+        aTD.push('<td>' + sWhitespace + '</td>');
       }
       sTD = aTD.join('');
 
@@ -572,6 +574,12 @@
     };
     
     var hToolbarAndPopoverMousedown = function(event) {
+      // prevent default event when insertTable (FF, Webkit)
+      var elBtn = dom.ancestor(event.target, func.hasAttr('data-event'));
+      if (elBtn) { event.preventDefault(); }
+    };
+    
+    var hToolbarAndPopoverClick = function(event) {
       var elBtn = dom.ancestor(event.target, func.hasAttr('data-event'));
       
       if (elBtn) {
@@ -600,9 +608,19 @@
       var welCatcher = welPicker.find('.note-dimension-picker-mousecatcher');
       var welHighlighted = welPicker.find('.note-dimension-picker-highlighted');
       var welUnhighlighted = welPicker.find('.note-dimension-picker-unhighlighted');
-
-      var dim = {c: Math.ceil(event.offsetX / PX_PER_EM) || 1,
-                 r: Math.ceil(event.offsetY / PX_PER_EM) || 1};
+      var posOffset;
+      // HTML5 with jQuery - e.offsetX is undefined in Firefox
+      // http://stackoverflow.com/questions/12704686/html5-with-jquery-e-offsetx-is-undefined-in-firefox
+      if (event.offsetX === undefined) {
+        var posMousecatcher = $(event.target).offset();
+        posOffset = {x: event.pageX - posMousecatcher.left,
+                     y: event.pageY - posMousecatcher.top};
+      } else {
+        posOffset = {x: event.offsetX, y: event.offsetY};
+      }
+      
+      var dim = {c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
+                 r: Math.ceil(posOffset.y / PX_PER_EM) || 1};
       welHighlighted.css({ width: dim.c +'em', height: dim.r + 'em' });
       welCatcher.attr('data-value', dim.c + 'x' + dim.r);
       
@@ -622,6 +640,8 @@
       layoutInfo.editable.bind('keyup mouseup', hToolbarAndPopoverUpdate);
       layoutInfo.editable.bind('scroll', hScroll);
 
+      layoutInfo.toolbar.bind('click', hToolbarAndPopoverClick);
+      layoutInfo.popover.bind('click', hToolbarAndPopoverClick);
       layoutInfo.toolbar.bind('mousedown', hToolbarAndPopoverMousedown);
       layoutInfo.popover.bind('mousedown', hToolbarAndPopoverMousedown);
       
