@@ -57,7 +57,7 @@ $(document).ready(function() {
 * fontAwesome: https://github.com/FortAwesome/Font-Awesome
 
 ### Supported platform
-* Modern Browser (Safari, Chrome, , Firefox, Opera, Internet Explorer 9+)
+* Modern Browser (Safari, Chrome, Firefox, Opera, Internet Explorer 9+)
 * OS (Windows, Mac)
 
 ### Release
