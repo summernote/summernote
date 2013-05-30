@@ -7,11 +7,12 @@
 (function($) {
   //Check Platform/Agent
   var bMac = navigator.appVersion.indexOf('Mac') > -1; 
+  var bMSIE = navigator.userAgent.indexOf('MSIE') > -1;
   
   /**
-   * iter utils
+   * func utils
    */
-  var iter = function() {
+  var func = function() {
     var hasAttr = function(sAttr) {
       return function(node) { return $(node).attr(sAttr); };
     };
@@ -20,9 +21,13 @@
       return function(node) { return $(node).hasClass(sClass); };
     };
     
-    return {
-      hasAttr: hasAttr, hasClass: hasClass
-    }
+    var eq = function(target) {
+      return function(current) { return target === current; };
+    };
+    
+    var fail = function() { return false; };
+    
+    return { hasAttr: hasAttr, hasClass: hasClass, eq: eq, fail: fail }
   }();
   
   /**
@@ -31,6 +36,7 @@
   var list = function() {
     var head = function(array) { return array[0]; };
     var last = function(array) { return array[array.length - 1]; };
+    var initial = function(array) { return array.slice(0, length - 1); };
     var tail = function(array) { return array.slice(1); };
     
     var clusterBy = function(array, fn) {
@@ -55,7 +61,7 @@
       return aResult;
     };
 
-    return { head: head, last: last, tail: tail, 
+    return { head: head, last: last, initial: initial, tail: tail, 
              compact: compact, clusterBy: clusterBy };
   }();
   
@@ -70,18 +76,14 @@
     };
     
     var isPara = function(node) {
-      return node && (/^P|^LI/.test(node.nodeName) ||
-                      /^H[1-7]/.test(node.nodeName));
+      return node && /^P|^LI|^H[1-7]/.test(node.nodeName);
     };
 
     var isList = function(node) {
-      return node && node.nodeName === 'UL' || node.nodeName === 'OL';
+      return node && /^UL|^OL/.test(node.nodeName);
     };
 
-    /**
-     * ancestor
-     * find nearest ancestor predicate hit
-     */
+    // ancestor: find nearest ancestor predicate hit
     var ancestor = function(node, pred) {
       while (node) {
         if (pred(node)) { return node; }
@@ -90,12 +92,9 @@
       return null;
     };
     
-    /**
-     * listAncestor
-     * listing ancestor nodes
-     */
+    // listAncestor: listing ancestor nodes (until predicate hit: optional)
     var listAncestor = function(node, pred) {
-      pred = pred || function() { return false; };
+      pred = pred || func.fail;      
       
       var aAncestor = [];
       ancestor(node, function(el) {
@@ -105,25 +104,17 @@
       return aAncestor;
     };
     
-    /**
-     * commonAncestor
-     * find commonAncestor
-     */
+    // commonAncestor: find commonAncestor
     var commonAncestor = function(nodeA, nodeB) {
       var aAncestor = listAncestor(nodeA);
       for (var n = nodeB; n; n = n.parentNode) {
-        //TODO: IE8, indexOf
-        if (aAncestor.indexOf(n) != -1) { return n; }
+        if (aAncestor.indexOf(n) != -1) { return n; } //TODO: IE8, indexOf
       }
-      
       return null; // difference document area
     };
 
-    /**
-     * listBetween
-     * listing all Nodes between nodeA and nodeB
-     * FIXME: nodeA and nodeB must be sorted, use comparePoints later.
-     */
+    // listBetween: listing all Nodes between nodeA and nodeB
+    // FIXME: nodeA and nodeB must be sorted, use comparePoints later.
     var listBetween = function(nodeA, nodeB) {
       var aNode = [];
       var elAncestor = commonAncestor(nodeA, nodeB);
@@ -140,15 +131,63 @@
       return aNode;
     };
     
+    // listNext: listing nextSiblings (until predicate hit: optional)
+    var listNext = function(node, pred) {
+      pred = pred || func.fail;      
+
+      var aNext = [];
+      while(node) {
+        aNext.push(node);
+        if (node === pred) { break; }
+        node = node.nextSibling;
+      };
+      return aNext;
+    };
+    
+    // insertAfter: insert node after preceding
+    var insertAfter = function(node, preceding) {
+      var next = preceding.nextSibling, parent = preceding.parentNode;
+      if (next) {
+        parent.insertBefore(node, next);
+      } else {
+        parent.appendChild(node);
+      }
+    };
+
+    // appends: append children
+    var appends = function(node, aChild) {
+      aChild.forEach(function(child) { node.appendChild(child); });
+    };
+    
+    var isText = makePredByNodeName('#text');
+    
+    // split: split dom tree by boundaryPoint(pivot and offset)
+    var split = function(root, pivot, offset) {
+      var node = pivot;
+      var aAncestor = list.initial(listAncestor(pivot, func.eq(root)));
+      var clone = null;
+      aAncestor.forEach(function(node) {
+        clone = node.parentNode.cloneNode(false); // shallow clone
+        // pivot's rightside
+        if (node === pivot && !isText(node) && offset > 0) {
+          node = node.nextSibling;
+        }
+        appends(clone, listNext(node));
+      });
+      insertAfter(clone, root);
+    };
+    
     return {
-      isText: makePredByNodeName('#text'),
+      isText: isText,
       isPara: isPara, isList: isList,
       isAnchor: makePredByNodeName('A'),
       isDiv: makePredByNodeName('DIV'), isSpan: makePredByNodeName('SPAN'),
       isB: makePredByNodeName('B'), isU: makePredByNodeName('U'),
       isS: makePredByNodeName('S'), isI: makePredByNodeName('I'),
       ancestor: ancestor, listAncestor: listAncestor,
-      commonAncestor: commonAncestor, listBetween: listBetween
+      listNext: listNext,
+      commonAncestor: commonAncestor, listBetween: listBetween,
+      insertAfter: insertAfter, split: split
     };
   }();
 
@@ -157,6 +196,7 @@
    * {startContainer, startOffset, endContainer, endOffset}
    * create Range Object From arguments or Browser Selection
    */
+  var bW3CRangeSupport = !!document.createRange;
   var Range = function(sc, so, ec, eo) {
     if (arguments.length === 0) { // from Browser Selection
       if (document.getSelection) { // webkit, firefox
@@ -168,26 +208,26 @@
     
     this.sc = sc; this.so = so;
     this.ec = ec; this.eo = eo;
- 
-    /**
-     * select
-     *
-     * update visible range
-     */
-    this.select = function() {
-      if (document.createRange) {
+
+    // nativeRange: get nativeRange from sc, so, ec, eo
+    var nativeRange = function() {
+      if (bW3CRangeSupport) {
         var range = document.createRange();
         range.setStart(sc, so);
         range.setEnd(ec, eo);
-        document.getSelection().addRange(range);
+        return range;
+      } // TODO: handle IE8+ TextRange
+    };
+ 
+    // select: update visible range
+    this.select = function() {
+      var nativeRng = nativeRange();
+      if (bW3CRangeSupport) {
+        document.getSelection().addRange(nativeRng);
       } // TODO: handle IE8+ TextRange
     }
     
-    /**
-     * listPara
-     *
-     * listing paragraphs on range
-     */
+    // listPara: listing paragraphs on range
     this.listPara = function() {
       var aNode = dom.listBetween(sc, ec);
       // TODO: IE8 use es5-shim(https://github.com/kriskowal/es5-shim) later
@@ -200,34 +240,34 @@
       return aaClustered.map(list.head);
     };
     
-    /**
-     * isOnList
-     *
-     * judge whether range is on list node or not
-     */
+    // isOnList: judge whether range is on list node or not
     this.isOnList = function() {
       var elStart = dom.ancestor(sc, dom.isList),
           elEnd = dom.ancestor(ec, dom.isList);
       return elStart && (elStart === elEnd);
     };
 
-    /**
-     * isOnAnchor
-     *
-     * judge whether range is on anchor node or not
-     */
+    // isOnAnchor: judge whether range is on anchor node or not
     this.isOnAnchor = function() {
       var elStart = dom.ancestor(sc, dom.isAnchor),
           elEnd = dom.ancestor(ec, dom.isAnchor);
       return elStart && (elStart === elEnd);
     };
 
-    /**
-     * isCollapsed
-     *
-     * judge whether range was collapsed
-     */
+    // isCollapsed: judge whether range was collapsed
     this.isCollapsed = function() { return sc === ec && so === eo; };
+    
+    // insertNode
+    this.insertNode = function(node) {
+      var nativeRng = nativeRange();
+      if (bW3CRangeSupport) {
+        nativeRng.insertNode(node);
+      } // TODO: IE8
+      //TODO: complete paragraph split later
+      //var elPara = dom.ancestor(rng.sc, dom.isPara);
+      //dom.split(elPara, rng.sc, rng.so);
+      //dom.insertAfter($(sTable)[0], elPara);
+    };
   };
   
   /**
@@ -260,22 +300,20 @@
                                      
       oStyle.fontSize = parseInt(oStyle.fontSize);
 
-      //FF fontWeight patch(number to 'bold' or 'normal')
+      // FF fontWeight patch(number to 'bold' or 'normal')
       if (!isNaN(parseInt(oStyle.fontWeight))) {
         oStyle.fontWeight = oStyle.fontWeight > 400 ? 'bold' : 'normal';
       }
       
       // listStyleType to listStyle(unordered, ordered)
-      if (!rng.isOnList()) {                                                    
+      if (!rng.isOnList()) {
         oStyle.listStyle = 'none';
       } else {
-        if (oStyle.listStyleType === 'circle' || oStyle.listStyleType === 'disc' ||
-            oStyle.listStyleType === 'disc-leading-zero' || oStyle.listStyleType === 'sqare') {
-          oStyle.listStyle = 'unordered';
-        } else {                                                                
-          oStyle.listStyle = 'ordered';
-        }
-      } 
+        //TODO: IE8, indexOf
+        var aOrderedType = ['circle', 'disc', 'disc-leading-zero', 'square'];
+        var bUnordered = aOrderedType.indexOf(oStyle.listStyleType) !== -1;
+        oStyle.listStyle = bUnordered ? 'unordered' : 'ordered';
+      }
       
       oStyle.anchor = rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor) : null;
 
@@ -284,7 +322,7 @@
         oStyle.lineHeight = elPara.style.lineHeight;
       } else {
         var lineHeight = parseInt(oStyle.lineHeight) / parseInt(oStyle.fontSize);
-        oStyle.lineHeight = Math.round(lineHeight * 10) / 10;
+        oStyle.lineHeight = lineHeight.toFixed(1);
       }
       return oStyle;
     }
@@ -348,8 +386,9 @@
       var nCol = aDim[0], nRow = aDim[1];
       
       var aTD = [], sTD;
+      var sWhitespace = bMSIE ? '&nbsp;' : '<br/>';
       for (var idxCol = 0; idxCol < nCol; idxCol++) {
-        aTD.push('<td></td>');
+        aTD.push('<td>' + sWhitespace + '</td>');
       }
       sTD = aTD.join('');
 
@@ -358,6 +397,8 @@
         aTR.push('<tr>' + sTD + '</tr>');
       }
       sTR = aTR.join('');
+      var sTable = '<table class="table table-bordered">' + sTR + '</table>';
+      (new Range()).insertNode($(sTable)[0]);
     };
   };
 
@@ -417,7 +458,7 @@
     };
     
     this.updateRecentColor = function(elBtn, sEvent, sValue) {
-      var elNoteColor = dom.ancestor(elBtn, iter.hasClass('note-color'));
+      var elNoteColor = dom.ancestor(elBtn, func.hasClass('note-color'));
       var welRecentColor = $(elNoteColor).find('.note-recent-color');
       var oColor = JSON.parse(welRecentColor.attr('data-value'));
       oColor[sEvent] = sValue;
@@ -532,8 +573,14 @@
       popover.hide(welEditor.find('.note-popover'));
     };
     
+    var hToolbarAndPopoverMousedown = function(event) {
+      // prevent default event when insertTable (FF, Webkit)
+      var elBtn = dom.ancestor(event.target, func.hasAttr('data-event'));
+      if (elBtn) { event.preventDefault(); }
+    };
+    
     var hToolbarAndPopoverClick = function(event) {
-      var elBtn = dom.ancestor(event.target, iter.hasAttr('data-event'));
+      var elBtn = dom.ancestor(event.target, func.hasAttr('data-event'));
       
       if (elBtn) {
         var welBtn = $(elBtn);
@@ -561,9 +608,19 @@
       var welCatcher = welPicker.find('.note-dimension-picker-mousecatcher');
       var welHighlighted = welPicker.find('.note-dimension-picker-highlighted');
       var welUnhighlighted = welPicker.find('.note-dimension-picker-unhighlighted');
-
-      var dim = {c: Math.ceil(event.offsetX / PX_PER_EM) || 1,
-                 r: Math.ceil(event.offsetY / PX_PER_EM) || 1};
+      var posOffset;
+      // HTML5 with jQuery - e.offsetX is undefined in Firefox
+      // http://stackoverflow.com/questions/12704686/html5-with-jquery-e-offsetx-is-undefined-in-firefox
+      if (event.offsetX === undefined) {
+        var posMousecatcher = $(event.target).offset();
+        posOffset = {x: event.pageX - posMousecatcher.left,
+                     y: event.pageY - posMousecatcher.top};
+      } else {
+        posOffset = {x: event.offsetX, y: event.offsetY};
+      }
+      
+      var dim = {c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
+                 r: Math.ceil(posOffset.y / PX_PER_EM) || 1};
       welHighlighted.css({ width: dim.c +'em', height: dim.r + 'em' });
       welCatcher.attr('data-value', dim.c + 'x' + dim.r);
       
@@ -585,6 +642,8 @@
 
       layoutInfo.toolbar.bind('click', hToolbarAndPopoverClick);
       layoutInfo.popover.bind('click', hToolbarAndPopoverClick);
+      layoutInfo.toolbar.bind('mousedown', hToolbarAndPopoverMousedown);
+      layoutInfo.popover.bind('mousedown', hToolbarAndPopoverMousedown);
       
       //toolbar table dimension
       var welToolbar = layoutInfo.toolbar;
@@ -678,7 +737,7 @@
                      '</div>' +
                      '<div class="note-para btn-group">' +
                        '<button class="btn btn-small dropdown-toggle" title="Paragraph" data-toggle="dropdown"><i class="icon-align-left"></i>  <span class="caret"></span></button>' +
-                       '<ul class="dropdown-menu">' +
+                       '<ul class="dropdown-menu right">' +
                          '<li>' +
                            '<div class="note-align btn-group">' +
                              '<button class="btn btn-small" title="Align left" data-shortcut="Ctrl+Shift+L" data-mac-shortcut="⌘+⇧+L" data-event="justifyLeft"><i class="icon-align-left"></i></button>' +
@@ -696,7 +755,7 @@
                      '</div>' +
                      '<div class="note-line-height btn-group">' +
                        '<button class="btn btn-small dropdown-toggle" data-toggle="dropdown" title="Line Height"><i class="icon-text-height"></i>&nbsp; <b class="caret"></b></button>' +
-                       '<ul class="dropdown-menu">' +
+                       '<ul class="dropdown-menu right">' +
                        '<li><a href="#" data-event="lineHeight" data-value="1.0"><i class="icon-ok"></i> 1.0</a></li>' +
                        '<li><a href="#" data-event="lineHeight" data-value="1.2"><i class="icon-ok"></i> 1.2</a></li>' +
                        '<li><a href="#" data-event="lineHeight" data-value="1.4"><i class="icon-ok"></i> 1.4</a></li>' +
@@ -740,9 +799,7 @@
                     '</div>' +
                   '</div>';
                         
-    /**
-     * createTooltip
-     */
+    // createTooltip
     var createTooltip = function(welContainer, sPlacement) {
       welContainer.find('button').each(function(i, elBtn) {
         var welBtn = $(elBtn);
@@ -764,13 +821,11 @@
       ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031']
     ];
     
-    /**
-     * createPalette
-     */
+    // createPalette
     var createPalette = function(welContainer) {
       welContainer.find('.note-color-palette').each(function() {
         var welPalette = $(this), sEvent = welPalette.attr('data-target-event');
-        var sPaletteContents = ''
+        var sPaletteContents = '';
         for (var row = 0, szRow = aaColor.length; row < szRow; row++) {
           var aColor = aaColor[row];
           var sLine = '<div>'
@@ -790,9 +845,7 @@
       });
     };
     
-    /**
-     * createLayout
-     */
+    // createLayout
     var createLayout = this.createLayout = function(welHolder, nHeight) {
       //already created
       if (welHolder.next().hasClass('note-editor')) { return; }
@@ -823,9 +876,7 @@
       welHolder.hide();
     };
     
-    /**
-     * layoutInfo
-     */
+    // layoutInfo
     var layoutInfo = this.layoutInfo = function(welHolder) {
       var welEditor = welHolder.next();
       if (!welEditor.hasClass('note-editor')) { return; }
@@ -839,9 +890,7 @@
       }
     };
     
-    /**
-     * removeLayout
-     */
+    // removeLayout
     var removeLayout = this.removeLayout = function(welHolder) {
       var info = layoutInfo(welHolder);
       if (!info) { return; }
@@ -855,7 +904,9 @@
   var renderer = new Renderer();
   var eventHandler = new EventHandler();
 
-  //extend jquery fn
+  /**
+   * extend jquery fn
+   */
   $.fn.extend({
     // create Editor Layout and attach Key and Mouse Event
     summernote : function(options) {
@@ -889,7 +940,7 @@
     },
     // inner object for test
     summernoteInner : function() {
-      return { dom: dom, list: list };
+      return { dom: dom, list: list, func: func };
     }
   });
 })(jQuery); // jQuery
