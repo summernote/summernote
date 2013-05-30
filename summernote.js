@@ -263,10 +263,22 @@
       if (bW3CRangeSupport) {
         nativeRng.insertNode(node);
       } // TODO: IE8
+
       //TODO: complete paragraph split later
       //var elPara = dom.ancestor(rng.sc, dom.isPara);
       //dom.split(elPara, rng.sc, rng.so);
       //dom.insertAfter($(sTable)[0], elPara);
+    };
+    
+    // surroundContents
+    this.surroundContents = function(sNodeName) {
+      var node = $('<' + sNodeName + ' />')[0];
+      var nativeRng = nativeRange();
+      if (bW3CRangeSupport) {
+        nativeRng.surroundContents(node);
+      } // TODO: IE8
+      
+      return node;
     };
   };
   
@@ -276,7 +288,11 @@
   var Style = function() {
     // font level style
     this.styleFont = function(rng, oStyle) {
-
+      //TODO: complete styleFont later only works for webkit
+      var elSpan = rng.surroundContents('span');
+      Object.keys(oStyle).forEach(function(sKey) {
+        elSpan.style[sKey] = oStyle[sKey];
+      });
     };
     
     // para level style
@@ -354,7 +370,7 @@
     }                
     
     this.fontSize = function(sValue) {
-      style.styleFont(new Range(), {fontSize: sValue});
+      style.styleFont(new Range(), {fontSize: sValue + 'px'});
     };
     
     this.lineHeight = function(sValue) {
