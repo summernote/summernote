@@ -62,7 +62,7 @@ $(document).ready(function() {
 
 ### Release
 
-A summer is comming soon. release summernote v0.1 on 1st June, 2013
+A summer is comming soon. release summernote v0.1 on 1st July, 2013 (June -> July Sorry)
 
 ### Author
 * Email: susukang98@gmail.com
