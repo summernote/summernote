@@ -156,25 +156,26 @@
 
     // appends: append children
     var appends = function(node, aChild) {
-      aChild.forEach(function(child) { node.appendChild(child); });
+      aChild.forEach(function(child) {
+        node.appendChild(child);
+      });
     };
     
     var isText = makePredByNodeName('#text');
     
     // split: split dom tree by boundaryPoint(pivot and offset)
     var split = function(root, pivot, offset) {
-      var node = pivot;
-      var aAncestor = list.initial(listAncestor(pivot, func.eq(root)));
-      var clone = null;
-      aAncestor.forEach(function(node) {
-        clone = node.parentNode.cloneNode(false); // shallow clone
-        // pivot's rightside
-        if (node === pivot && !isText(node) && offset > 0) {
+      var aAncestor = listAncestor(pivot, func.eq(root));
+      var cloneRoot = aAncestor.reduce(function(node, parent) { // node: cloned
+        var clone = parent.cloneNode(false); // shallow clone
+        insertAfter(clone, parent);
+        if (node === pivot && offset > 0) {
+          if (isText(node)) { node.splitText(offset); } // splitText
           node = node.nextSibling;
         }
         appends(clone, listNext(node));
+        return clone;
       });
-      insertAfter(clone, root);
     };
     
     return {

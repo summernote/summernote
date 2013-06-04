@@ -103,4 +103,22 @@ test('dom.split', function() {
   equal($cont.next().html(), '', 'right hand side');
   
   // textNode pivot case
+  $cont = $('<div><b>b</b><u>u</u><s>strike</s><i>i</i></div>'); //bustrikei
+  $s = $cont.find('s');
+  dom.split($cont[0], $s[0].firstChild, 3);
+  equal($cont.html(), '<b>b</b><u>u</u><s>str</s>', 'splitBy s tag with offset 3 (middle case)');
+  equal($cont.next().html(), '<s>ike</s><i>i</i>', 'right hand side');
+  
+  $cont = $('<div><b>b</b><u>u</u><s>strike</s><i>i</i></div>'); //bustrikei
+  $s = $cont.find('s');
+  dom.split($cont[0], $s[0].firstChild, 0);
+  equal($cont.html(), '<b>b</b><u>u</u><s></s>', 'splitBy s tag with offset 0 (left edge case)');
+  equal($cont.next().html(), '<s>strike</s><i>i</i>', 'right hand side');
+
+  $cont = $('<div><b>b</b><u>u</u><s>strike</s><i>i</i></div>'); //bustrikei
+  $s = $cont.find('s');
+  dom.split($cont[0], $s[0].firstChild, 6);
+  equal($cont.html(), '<b>b</b><u>u</u><s>strike</s>', 'splitBy s tag with offset 6 (right edge case)');
+  equal($cont.next().html(), '<s></s><i>i</i>', 'right hand side');
+
 });
