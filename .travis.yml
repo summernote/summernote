@@ -4,5 +4,5 @@ node_js:
 before_script:
   - node --version
   - npm --version
-  - sudo npm install -g grunt-ci
+  - npm install -g grunt-ci
 script: grunt --verbose
