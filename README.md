@@ -1,6 +1,8 @@
 # Summernote
 Super Simple WYSIWYG Editor on Bootstrap.
 
+[![Build Status](https://secure.travis-ci.org/HackerWins/summernote.png)](http://travis-ci.org/HackerWins/summernote)
+
 ### Summernote ?
 Summernote is a javascript program that helps you to create WYSIWYG Editor on web.
 
