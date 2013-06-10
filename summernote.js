@@ -166,7 +166,7 @@
     // split: split dom tree by boundaryPoint(pivot and offset)
     var split = function(root, pivot, offset) {
       var aAncestor = listAncestor(pivot, func.eq(root));
-      var cloneRoot = aAncestor.reduce(function(node, parent) { // node: cloned
+      aAncestor.reduce(function(node, parent) { // node: cloned
         var clone = parent.cloneNode(false); // shallow clone
         insertAfter(clone, parent);
         if (node === pivot && offset > 0) {
@@ -290,6 +290,7 @@
     // font level style
     this.styleFont = function(rng, oStyle) {
       //TODO: complete styleFont later only works for webkit
+      //rng.splitInline();
       var elSpan = rng.surroundContents('span');
       Object.keys(oStyle).forEach(function(sKey) {
         elSpan.style[sKey] = oStyle[sKey];

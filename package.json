@@ -1,0 +1,17 @@
+{
+  "name": "Summernote",
+  "description": "Super Simple WYSIWYG Editor on Bootstrap",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HackerWins/summernote.git"
+  },
+  "author": {
+    "name": "Hackerwins",
+    "email": "<susukang98@gmail.com>"
+  },
+  "dependencies": {
+    "grunt": "*",
+    "grunt-contrib-qunit": "*"
+  }
+}
