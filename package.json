@@ -10,8 +10,10 @@
     "name": "Hackerwins",
     "email": "<susukang98@gmail.com>"
   },
-  "dependencies": {
+  "devDependencies": {
     "grunt": "*",
-    "grunt-contrib-qunit": "*"
+    "grunt-contrib-qunit": "*",
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-contrib-less": "~0.6.1"
   }
 }

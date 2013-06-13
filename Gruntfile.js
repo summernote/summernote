@@ -1,13 +1,22 @@
 module.exports = function(grunt) {
-  // Project configuration.
   grunt.initConfig({
-    qunit: {
-      all: [ 'test/*.html' ]
+    qunit: { all: [ 'test/*.html' ] },
+    uglify: {
+      my_target: {
+        files: { 'summernote.min.js': ['summernote.js'] }
+      }
+    },
+    less: {
+      production: {
+        files: {"summernote.css": "summernote.less"}
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-qunit');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-less');
 
-  // Default task(s).
-  grunt.registerTask('default', 'qunit');
+  grunt.registerTask('test', 'qunit');
+  grunt.registerTask('build', ['uglify', 'less']);
 };
