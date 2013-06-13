@@ -34,7 +34,7 @@ Include Following code into `<head>` tag of your HTML:
 
 <!-- include summernote css/js-->
 <link rel="stylesheet" href="summernote.css" />
-<script type="text/javascript" src="summernote.js"></script>
+<script type="text/javascript" src="summernote.min.js"></script>
 ```
 If your summernote download is placed in a different folder, don't forget to change file's paths.
 
