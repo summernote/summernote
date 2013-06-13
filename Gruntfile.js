@@ -19,4 +19,5 @@ module.exports = function(grunt) {
 
   grunt.registerTask('test', 'qunit');
   grunt.registerTask('build', ['uglify', 'less']);
+  grunt.registerTask('default', ['qunit', 'uglify', 'less']);
 };
