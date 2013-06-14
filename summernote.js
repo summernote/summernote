@@ -281,6 +281,13 @@
       
       return node;
     };
+
+    this.toString = function() {
+      var nativeRng = nativeRange();
+      if (bW3CRangeSupport) {
+        return nativeRng.toString();
+      } // TODO: IE8
+    };
   };
   
   /**
@@ -418,6 +425,19 @@
       var sTable = '<table class="table table-bordered">' + sTR + '</table>';
       (new Range()).insertNode($(sTable)[0]);
     };
+
+    this.linkInfo = function() {
+      var rng = new Range();
+      if (rng.isOnAnchor()) {
+        var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
+        rng = new Range(elAnchor, 0, elAnchor, 1);
+      }
+      return {
+        range: rng,
+        text: rng.toString(),
+        url: rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor).href : ""
+      };
+    };
   };
 
   /**
@@ -517,11 +537,11 @@
    * Dialog
    */
   var Dialog = function() {
-    this.showLinkDialog = function(welDialog) {
+    this.showLinkDialog = function(welDialog, linkInfo) {
       var welLinkDialog = welDialog.find('.note-link-dialog');
+      welLinkDialog.find('.note-link-text').html(linkInfo.text);
+      welLinkDialog.find('.note-link-url').focus().val(linkInfo.url);
       welLinkDialog.modal('show');
-      //welLinkDialog.find('.note-link-text');
-      //welLinkDialog.find('.note-link-url');
     };
   };
   
@@ -548,7 +568,7 @@
       } else if (bCmd && event.keyCode === key.U) { // underline
         editor.underline();
       } else if (bCmd && event.keyCode === key.K) { // showLink
-        dialog.showLinkDialog($('.note-dialog'));
+        dialog.showLinkDialog($('.note-dialog'), editor.linkInfo());
       } else if (bCmd && bShift && event.keyCode === key.L) {
         editor.justifyLeft();
       } else if (bCmd && bShift && event.keyCode === key.E) {
@@ -611,7 +631,7 @@
         if (sEvent === "backColor" || sEvent === "foreColor") {
           toolbar.updateRecentColor(elBtn, sEvent, sValue);
         } else if (sEvent === "showLink") { //popover to dialog
-          dialog.showLinkDialog($('.note-dialog'));
+          dialog.showLinkDialog($('.note-dialog'), editor.linkInfo());
         }
         
         event.preventDefault();
@@ -806,7 +826,7 @@
                       '<div class="modal-body">' +
                         '<div class="row-fluid">' +
                           '<label>Text to display</label>' +
-                          '<input class="note-link-text span12" type="text" />' +
+                          '<span class="note-link-text input-xlarge uneditable-input" />' +
                           '<label>To what URL should this link go?</label>' +
                           '<input class="note-link-url span12" type="text" />' +
                         '</div>' +
