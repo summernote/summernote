@@ -1,2 +1,3 @@
 # vim editing
 *.swp
+node_modules
