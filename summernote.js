@@ -557,6 +557,7 @@
         welLinkBtn.click(function(event) {
           callback(welLinkUrl.val());
           welLinkDialog.modal('hide');
+          event.preventDefault();
         });
       }).on('hidden', function(e) {
         welLinkUrl.off('keyup');
@@ -857,7 +858,7 @@
                         '</div>' +
                       '</div>' +
                       '<div class="modal-footer">' +
-                        '<a class="btn disabled note-link-btn" data-event="editLink" disabled="disabled">Link</a>' +
+                        '<a href="#" class="btn disabled note-link-btn" data-event="editLink" disabled="disabled">Link</a>' +
                       '</div>' +
                     '</div>' +
                   '</div>';
