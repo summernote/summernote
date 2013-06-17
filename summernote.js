@@ -857,7 +857,7 @@
                         '</div>' +
                       '</div>' +
                       '<div class="modal-footer">' +
-                        '<a href="#" class="btn disabled note-link-btn" data-event="editLink" disabled="disabled">Link</a>' +
+                        '<a class="btn disabled note-link-btn" data-event="editLink" disabled="disabled">Link</a>' +
                       '</div>' +
                     '</div>' +
                   '</div>';
