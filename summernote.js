@@ -396,8 +396,23 @@
       }
     };
 
-    this.editLink = function() {
-      console.log('editLink');
+    this.setLinkDialog = function(fnShowDialog) {
+      var rng = new Range();
+      if (rng.isOnAnchor()) {
+        var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
+        rng = new Range(elAnchor, 0, elAnchor, 1);
+      }
+      fnShowDialog({
+        range: rng,
+        text: rng.toString(),
+        url: rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor).href : ""
+      }, function(sLinkUrl) {
+        rng.select();
+        if (sLinkUrl.toLowerCase().indexOf("http://") !== 0) {
+          sLinkUrl = "http://" + sLinkUrl;
+        }
+        document.execCommand('createlink', false, sLinkUrl);
+      });
     };
     
     this.color = function(sObjColor) {
@@ -424,19 +439,6 @@
       sTR = aTR.join('');
       var sTable = '<table class="table table-bordered">' + sTR + '</table>';
       (new Range()).insertNode($(sTable)[0]);
-    };
-
-    this.linkInfo = function() {
-      var rng = new Range();
-      if (rng.isOnAnchor()) {
-        var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = new Range(elAnchor, 0, elAnchor, 1);
-      }
-      return {
-        range: rng,
-        text: rng.toString(),
-        url: rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor).href : ""
-      };
     };
   };
 
@@ -537,11 +539,30 @@
    * Dialog
    */
   var Dialog = function() {
-    this.showLinkDialog = function(welDialog, linkInfo) {
+    this.showLinkDialog = function(welDialog, linkInfo, callback) {
       var welLinkDialog = welDialog.find('.note-link-dialog');
-      welLinkDialog.find('.note-link-text').html(linkInfo.text);
-      welLinkDialog.find('.note-link-url').focus().val(linkInfo.url);
-      welLinkDialog.modal('show');
+      var welLinkText = welLinkDialog.find('.note-link-text'),
+          welLinkUrl = welLinkDialog.find('.note-link-url'),
+          welLinkBtn = welLinkDialog.find('.note-link-btn');
+
+      welLinkDialog.on('shown', function(e) {
+        welLinkText.html(linkInfo.text);
+        welLinkUrl.val(linkInfo.url).keyup(function(event) {
+          if (welLinkUrl.val()) {
+            welLinkBtn.removeClass('disabled').attr('disabled', false);
+          } else {
+            welLinkBtn.addClass('disabled').attr('disabled', true);
+          }
+        }).trigger('focus');
+        welLinkBtn.click(function(event) {
+          callback(welLinkUrl.val());
+          welLinkDialog.modal('hide');
+        });
+      }).on('hidden', function(e) {
+        welLinkUrl.off('keyup');
+        welLinkDialog.off('shown hidden');
+        welLinkBtn.off('click');
+      }).modal('show');
     };
   };
   
@@ -568,7 +589,9 @@
       } else if (bCmd && event.keyCode === key.U) { // underline
         editor.underline();
       } else if (bCmd && event.keyCode === key.K) { // showLink
-        dialog.showLinkDialog($('.note-dialog'), editor.linkInfo());
+        editor.setLinkDialog(function(linkInfo, cb) {
+          dialog.showLinkDialog($('.note-dialog'), linkInfo, cb);
+        });
       } else if (bCmd && bShift && event.keyCode === key.L) {
         editor.justifyLeft();
       } else if (bCmd && bShift && event.keyCode === key.E) {
@@ -631,9 +654,11 @@
         if (sEvent === "backColor" || sEvent === "foreColor") {
           toolbar.updateRecentColor(elBtn, sEvent, sValue);
         } else if (sEvent === "showLink") { //popover to dialog
-          dialog.showLinkDialog($('.note-dialog'), editor.linkInfo());
+          editor.setLinkDialog(function(linkInfo, cb) {
+            dialog.showLinkDialog($('.note-dialog'), linkInfo, cb);
+          });
         }
-        
+
         event.preventDefault();
         hToolbarAndPopoverUpdate(event);
       }
@@ -690,9 +715,9 @@
     };
 
     this.dettach = function(layoutInfo) {
-      layoutInfo.editable.unbind();
-      layoutInfo.toolbar.unbind();
-      layoutInfo.popover.unbind();
+      layoutInfo.editable.off();
+      layoutInfo.toolbar.off();
+      layoutInfo.popover.off();
     };
   };
 
@@ -832,7 +857,7 @@
                         '</div>' +
                       '</div>' +
                       '<div class="modal-footer">' +
-                        '<a href="#" class="btn disabled" data-event="editLink" disabled="disabled">Edit</a>' +
+                        '<a href="#" class="btn disabled note-link-btn" data-event="editLink" disabled="disabled">Link</a>' +
                       '</div>' +
                     '</div>' +
                   '</div>';
