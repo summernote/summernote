@@ -156,7 +156,7 @@
 
     // appends: append children
     var appends = function(node, aChild) {
-      aChild.forEach(function(child) {
+      $.each(aChild, function(idx, child) {
         node.appendChild(child);
       });
     };
@@ -299,19 +299,17 @@
       //TODO: complete styleFont later only works for webkit
       //rng.splitInline();
       var elSpan = rng.surroundContents('span');
-      Object.keys(oStyle).forEach(function(sKey) {
-        elSpan.style[sKey] = oStyle[sKey];
+      $.each(oStyle, function(sKey, sValue) {
+        elSpan.style[sKey] = sValue;
       });
     };
     
     // para level style
     this.stylePara = function(rng, oStyle) {
       var aPara = rng.listPara();
-      // TODO: IE8 use es5-shim(https://github.com/kriskowal/es5-shim) later
-      var aKey = Object.keys(oStyle);
-      aPara.forEach(function(elPara) {
-        aKey.forEach(function(sKey) {
-          elPara.style[sKey] = oStyle[sKey];
+      $.each(aPara, function(idx, elPara) {
+        $.each(oStyle, function(sKey, sValue) {
+          elPara.style[sKey] = sValue;
         });
       });
     };
@@ -617,6 +615,13 @@
       }
       event.preventDefault(); //prevent default event for FF
     };
+
+    var hDragAndDrop = function(event) {
+      //TODO:: drag and drop
+      var dataTransfer = event.originalEvent.dataTransfer;
+      event.stopPropagation();
+      event.preventDefault();
+    };
     
     var hToolbarAndPopoverUpdate = function(event) {
       var elEditableOrToolbar = event.currentTarget || event.target;
@@ -699,14 +704,16 @@
     };
 
     this.attach = function(layoutInfo) {
-      layoutInfo.editable.bind('keydown', hKeydown);
-      layoutInfo.editable.bind('keyup mouseup', hToolbarAndPopoverUpdate);
-      layoutInfo.editable.bind('scroll', hScroll);
+      layoutInfo.editable.on('keydown', hKeydown);
+      layoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
+      layoutInfo.editable.on('scroll', hScroll);
+      layoutInfo.editable.on('dragenter dragover dragleave', false);
+      layoutInfo.editable.on('drop', hDragAndDrop);
 
-      layoutInfo.toolbar.bind('click', hToolbarAndPopoverClick);
-      layoutInfo.popover.bind('click', hToolbarAndPopoverClick);
-      layoutInfo.toolbar.bind('mousedown', hToolbarAndPopoverMousedown);
-      layoutInfo.popover.bind('mousedown', hToolbarAndPopoverMousedown);
+      layoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
+      layoutInfo.popover.on('click', hToolbarAndPopoverClick);
+      layoutInfo.toolbar.on('mousedown', hToolbarAndPopoverMousedown);
+      layoutInfo.popover.on('mousedown', hToolbarAndPopoverMousedown);
       
       //toolbar table dimension
       var welToolbar = layoutInfo.toolbar;
