@@ -555,9 +555,8 @@
           }
         }).trigger('focus');
         welLinkBtn.click(function(event) {
+          welLinkDialog.modal('hide'); //hide and createLink (ie9+)
           callback(welLinkUrl.val());
-          welLinkDialog.modal('hide');
-          event.preventDefault();
         });
       }).on('hidden', function(e) {
         welLinkUrl.off('keyup');
@@ -589,7 +588,7 @@
         editor.italic();
       } else if (bCmd && event.keyCode === key.U) { // underline
         editor.underline();
-      } else if (bCmd && event.keyCode === key.K) { // showLink
+      } else if (bCmd && event.keyCode === key.K) { // showLinkDialog
         editor.setLinkDialog(function(linkInfo, cb) {
           dialog.showLinkDialog($('.note-dialog'), linkInfo, cb);
         });
@@ -654,7 +653,7 @@
         // check and update recent color
         if (sEvent === "backColor" || sEvent === "foreColor") {
           toolbar.updateRecentColor(elBtn, sEvent, sValue);
-        } else if (sEvent === "showLink") { //popover to dialog
+        } else if (sEvent === "showLinkDialog") { //popover to dialog
           editor.setLinkDialog(function(linkInfo, cb) {
             dialog.showLinkDialog($('.note-dialog'), linkInfo, cb);
           });
@@ -731,7 +730,7 @@
     var sToolbar = '<div class="note-toolbar btn-toolbar">' + 
                      '<div class="note-insert btn-group">' +
                        '<button class="btn btn-small" title="Picture"><i class="icon-picture"></i></button>' +
-                       '<button class="btn btn-small" title="Link" data-event="showLink" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" ><i class="icon-link"></i></button>' +
+                       '<button class="btn btn-small" title="Link" data-event="showLinkDialog" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" ><i class="icon-link"></i></button>' +
                      '</div>' +
                      '<div class="note-table btn-group">' +
                        '<button class="btn btn-small dropdown-toggle" title="Table" data-toggle="dropdown"><i class="icon-table"></i> <span class="caret"></span></button>' +
@@ -837,7 +836,7 @@
                        '<div class="popover-content note-link-content">' +
                          '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
                          '<div class="note-insert btn-group">' +
-                           '<button class="btn btn-small" title="Edit" data-event="showLink"><i class="icon-edit"></i></button>' +
+                           '<button class="btn btn-small" title="Edit" data-event="showLinkDialog"><i class="icon-edit"></i></button>' +
                            '<button class="btn btn-small" title="Unlink" data-event="unlink"><i class="icon-unlink"></i></button>' +
                          '</div>' +
                        '</div>' +
