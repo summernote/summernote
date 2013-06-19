@@ -438,6 +438,10 @@
       var sTable = '<table class="table table-bordered">' + sTR + '</table>';
       (new Range()).insertNode($(sTable)[0]);
     };
+
+    this.insertImage = function(sURL) {
+      document.execCommand('insertImage', false, sURL);
+    };
   };
 
   /**
@@ -617,8 +621,16 @@
     };
 
     var hDragAndDrop = function(event) {
-      //TODO:: drag and drop
       var dataTransfer = event.originalEvent.dataTransfer;
+      if (dataTransfer && dataTransfer.files) {
+        $.each(dataTransfer.files, function(idx, file) {
+          var fileReader = new FileReader;
+          fileReader.onload = function(event) {
+            editor.insertImage(event.target.result); // sURL
+          };
+          fileReader.readAsDataURL(file);
+        });
+      }
       event.stopPropagation();
       event.preventDefault();
     };
@@ -707,6 +719,7 @@
       layoutInfo.editable.on('keydown', hKeydown);
       layoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
       layoutInfo.editable.on('scroll', hScroll);
+      //TODO: handle Drag point
       layoutInfo.editable.on('dragenter dragover dragleave', false);
       layoutInfo.editable.on('drop', hDragAndDrop);
 
