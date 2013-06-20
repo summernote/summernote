@@ -1,0 +1,150 @@
+.note-editor {
+  border: 1px solid #a9a9a9;
+  
+  //toolbar
+  .note-toolbar {
+    background-color: #f5f5f5;
+    margin: 0px;
+    padding: 5px;
+    border-bottom: 1px solid #a9a9a9;
+    
+    .note-table {
+      .dropdown-menu {
+        min-width: 0;
+        padding: 5px;
+        .note-dimension-picker {
+           .note-dimension-picker-mousecatcher {
+            z-index: 3;
+            position: absolute !important;
+            width: 20em;
+            height: 20em;
+          }
+          .note-dimension-picker-unhighlighted {
+            z-index: 1;
+            position: relative !important;
+            border: 1px solid lightgray;
+            width: 5em;
+            height: 5em;
+          }
+          .note-dimension-picker-highlighted {
+            z-index: 2;
+            position: absolute !important;
+            border: 1px solid deepskyblue;
+            width: 1em;
+            height: 1em;
+          }
+        }
+      }
+    }
+    
+    .note-style {
+      h1, h2, h3, h4, blockquote {
+        margin: 0px;
+      }
+    }
+    
+    .note-fontsize {
+      button {
+        height: 26px;
+      }
+    }
+
+    .note-color {
+      .dropdown-toggle {
+        width: 20px;
+        padding: 2px 5px;
+      }
+      .dropdown-menu {
+        padding: 5px;
+        .note-palette-title {
+          font-size: 12px;
+        }
+      }
+    }
+    
+    .note-para {
+      .dropdown-menu {
+        min-width: 140px;
+        padding: 5px;
+      }
+      
+      li:first-child {
+        margin-bottom: 5px;
+      }
+    }
+  }
+  
+  // popover
+  .note-popover .popover {
+    max-width: none;
+    .popover-content {
+      padding: 5px;
+
+      a {
+        display: inline-block;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap; /* for FF */ 
+        vertical-align: middle; /* for FF */
+      }
+    }
+    &.bottom .arrow {
+      left: 20px;
+    }
+  }
+  
+  // editable
+  .note-editable {
+    outline: none;
+    height: 300px;
+    overflow: scroll;
+    padding: 10px;
+  }
+  
+  //dropdown-menu for toolbar and popover
+  .dropdown-menu {
+    min-width: 90px;
+
+    // dropdown-menu right position
+    // http://forrst.com/posts/Bootstrap_right_positioned_dropdown-2KB
+    &.right {
+      left: auto;
+      right: 0;
+      &::before { left: auto !important; right: 9px; }
+      &::after { left: auto !important; right: 10px; }
+    }
+
+    // dropdown-menu for selectbox
+    li a i {
+      visibility: hidden;
+      color: deepskyblue;
+    }
+    li a.checked i {
+      visibility: visible;
+    }
+  }
+  
+  // buttons for toolbar and popover
+  .btn-small {
+    font-size: 14px;
+  }
+  
+  // color palette for toolbar and popover
+  .note-color-palette {
+    line-height: 1;
+    div {
+      .note-color-btn {
+        width: 17px;
+        height: 17px;
+        border: 1px solid #fff;
+        margin: 0;
+        padding: 0;
+      }
+      .note-color-btn:hover {
+        border: 1px solid #000;
+      }
+    }
+  }
+  
+}
