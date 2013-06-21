@@ -603,9 +603,9 @@
       } else if (bCmd && bShift && event.keyCode === key.J) {
         editor.justifyFull();
       } else if (bCmd && bShift && event.keyCode === key.NUM7) {
-        editor.insertOrderedList(); // insertUnorderedList
-      } else if (bCmd && bShift && event.keyCode === key.NUM8) {
         editor.insertUnorderedList(); // insertUnorderedList
+      } else if (bCmd && bShift && event.keyCode === key.NUM8) {
+        editor.insertOrderedList(); // insertUnorderedList
       } else if (bShift && event.keyCode === key.TAB) { // shift + tab
         editor.outdent();
       } else if (event.keyCode === key.TAB) { // tab
@@ -810,15 +810,11 @@
                        '<button class="btn btn-small" title="Bold" data-shortcut="Ctrl+B" data-mac-shortcut="⌘+B" data-event="bold"><i class="icon-bold"></i></button>' +
                        '<button class="btn btn-small" title="Italic" data-shortcut="Ctrl+I" data-mac-shortcut="⌘+I" data-event="italic"><i class="icon-italic"></i></button>' +
                        '<button class="btn btn-small" title="Underline" data-shortcut="Ctrl+U" data-mac-shortcut="⌘+U" data-event="underline"><i class="icon-underline"></i></button>' +
-                     '</div>' +
-                     '<div class="note-eraser btn-group">' +
                        '<button class="btn btn-small" title="Remove Font Style" data-event="removeFormat"><i class="icon-eraser"></i></button>' +
                      '</div>' +
-                     '<div class="note-list btn-group">' +
-                       '<button class="btn btn-small" title="Ordered list" data-shortcut="Ctrl+Shift+7" data-mac-shortcut="⌘+⇧+7" data-event="insertOrderedList"><i class="icon-list-ol"></i></button>' +
-                       '<button class="btn btn-small" title="Unordered list" data-shortcut="Ctrl+Shift+8" data-mac-shortcut="⌘+⇧+8" data-event="insertUnorderedList"><i class="icon-list-ul"></i></button>' +
-                     '</div>' +
                      '<div class="note-para btn-group">' +
+                       '<button class="btn btn-small" title="Unordered list" data-shortcut="Ctrl+Shift+8" data-mac-shortcut="⌘+⇧+7" data-event="insertUnorderedList"><i class="icon-list-ul"></i></button>' +
+                       '<button class="btn btn-small" title="Ordered list" data-shortcut="Ctrl+Shift+7" data-mac-shortcut="⌘+⇧+8" data-event="insertOrderedList"><i class="icon-list-ol"></i></button>' +
                        '<button class="btn btn-small dropdown-toggle" title="Paragraph" data-toggle="dropdown"><i class="icon-align-left"></i>  <span class="caret"></span></button>' +
                        '<ul class="dropdown-menu right">' +
                          '<li>' +
