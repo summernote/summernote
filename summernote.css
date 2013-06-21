@@ -19,6 +19,7 @@
   position: absolute !important;
   width: 20em;
   height: 20em;
+  cursor: pointer;
 }
 .note-editor .note-toolbar .note-table .dropdown-menu .note-dimension-picker .note-dimension-picker-unhighlighted {
   z-index: 1;
