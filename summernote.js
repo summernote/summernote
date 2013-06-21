@@ -10,24 +10,15 @@
   var bMSIE = navigator.userAgent.indexOf('MSIE') > -1;
   
   /**
-   * func utils
+   * func utils (for high-order func's arg)
    */
   var func = function() {
-    var hasAttr = function(sAttr) {
-      return function(node) { return $(node).attr(sAttr); };
-    };
-    
-    var hasClass = function(sClass) {
-      return function(node) { return $(node).hasClass(sClass); };
-    };
-    
     var eq = function(target) {
       return function(current) { return target === current; };
     };
     
     var fail = function() { return false; };
-    
-    return { hasAttr: hasAttr, hasClass: hasClass, eq: eq, fail: fail }
+    return { eq: eq, fail: fail }
   }();
   
   /**
@@ -108,7 +99,7 @@
     var commonAncestor = function(nodeA, nodeB) {
       var aAncestor = listAncestor(nodeA);
       for (var n = nodeB; n; n = n.parentNode) {
-        if (aAncestor.indexOf(n) != -1) { return n; } //TODO: IE8, indexOf
+        if ($.inArray(n, aAncestor) > -1) { return n; }
       }
       return null; // difference document area
     };
@@ -264,11 +255,6 @@
       if (bW3CRangeSupport) {
         nativeRng.insertNode(node);
       } // TODO: IE8
-
-      //TODO: complete paragraph split later
-      //var elPara = dom.ancestor(rng.sc, dom.isPara);
-      //dom.split(elPara, rng.sc, rng.so);
-      //dom.insertAfter($(sTable)[0], elPara);
     };
     
     // surroundContents
@@ -332,9 +318,8 @@
       if (!rng.isOnList()) {
         oStyle.listStyle = 'none';
       } else {
-        //TODO: IE8, indexOf
         var aOrderedType = ['circle', 'disc', 'disc-leading-zero', 'square'];
-        var bUnordered = aOrderedType.indexOf(oStyle.listStyleType) !== -1;
+        var bUnordered = $.inArray(oStyle.listStyleType, aOrderedType) > -1;
         oStyle.listStyle = bUnordered ? 'unordered' : 'ordered';
       }
       
@@ -500,8 +485,8 @@
     };
     
     this.updateRecentColor = function(elBtn, sEvent, sValue) {
-      var elNoteColor = dom.ancestor(elBtn, func.hasClass('note-color'));
-      var welRecentColor = $(elNoteColor).find('.note-recent-color');
+      var welNoteColor = $(elBtn).closest('.note-color');
+      var welRecentColor = welNoteColor.find('.note-recent-color');
       var oColor = JSON.parse(welRecentColor.attr('data-value'));
       oColor[sEvent] = sValue;
       welRecentColor.attr('data-value', JSON.stringify(oColor));
@@ -653,15 +638,14 @@
     
     var hToolbarAndPopoverMousedown = function(event) {
       // prevent default event when insertTable (FF, Webkit)
-      var elBtn = dom.ancestor(event.target, func.hasAttr('data-event'));
-      if (elBtn) { event.preventDefault(); }
+      var welBtn = $(event.target).closest('[data-event]');
+      if (welBtn.length > 0) { event.preventDefault(); }
     };
     
     var hToolbarAndPopoverClick = function(event) {
-      var elBtn = dom.ancestor(event.target, func.hasAttr('data-event'));
+      var welBtn = $(event.target).closest('[data-event]');
       
-      if (elBtn) {
-        var welBtn = $(elBtn);
+      if (welBtn.length > 0) {
         var sEvent = welBtn.attr('data-event');
         var sValue = welBtn.attr('data-value');
 
@@ -669,7 +653,7 @@
         
         // check and update recent color
         if (sEvent === "backColor" || sEvent === "foreColor") {
-          toolbar.updateRecentColor(elBtn, sEvent, sValue);
+          toolbar.updateRecentColor(welBtn[0], sEvent, sValue);
         } else if (sEvent === "showLinkDialog") { //popover to dialog
           editor.setLinkDialog(function(linkInfo, cb) {
             dialog.showLinkDialog($('.note-dialog'), linkInfo, cb);
