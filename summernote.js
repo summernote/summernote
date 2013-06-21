@@ -562,6 +562,7 @@
         welLinkBtn.click(function(event) {
           welLinkDialog.modal('hide'); //hide and createLink (ie9+)
           callback(welLinkUrl.val());
+          event.preventDefault();
         });
       }).on('hidden', function(e) {
         welLinkUrl.off('keyup');
