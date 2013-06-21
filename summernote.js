@@ -681,7 +681,7 @@
       }
     };
     
-    var PX_PER_EM = 14;
+    var PX_PER_EM = 18;
     var hDimensionPickerMove = function(event) {
       var welPicker = $(event.target.parentNode); // target is mousecatcher
       var welDimensionDisplay = welPicker.next();
