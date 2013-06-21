@@ -82,6 +82,14 @@
 .note-editor .note-popover .popover.bottom .arrow {
   left: 20px;
 }
+.note-editor .note-dialog .note-image-dialog .note-dropzone {
+  color: lightgray;
+  min-height: 200px;
+  border: 4px dashed lightgray;
+  font-size: 30px;
+  line-height: 6;
+  text-align: center;
+}
 .note-editor .note-editable {
   outline: none;
   overflow: scroll;

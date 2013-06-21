@@ -347,6 +347,8 @@
 
     // current style
     this.currentStyle = function() {
+      if (document.getSelection().rangeCount == 0) { return null; }
+
       var rng = new Range();
       return style.current(rng);
     };
@@ -376,6 +378,15 @@
         rng.select();
         document.execCommand('unlink');
       }
+    };
+
+    this.setImageDialog = function(fnShowDialog) {
+      var rng = new Range();
+      var that = this;
+      fnShowDialog(function(sURL) {
+        rng.select();
+        that.insertImage(sURL);
+      });
     };
 
     this.setLinkDialog = function(fnShowDialog) {
@@ -525,6 +536,12 @@
    * Dialog
    */
   var Dialog = function() {
+    this.showImageDialog = function(welDialog, callback) {
+      //TODO:: implements insertImage
+      var welImageDialog = welDialog.find('.note-image-dialog');
+      welImageDialog.modal('show');
+    };
+
     this.showLinkDialog = function(welDialog, linkInfo, callback) {
       var welLinkDialog = welDialog.find('.note-link-dialog');
       var welLinkText = welLinkDialog.find('.note-link-text'),
@@ -659,6 +676,10 @@
           editor.setLinkDialog(function(linkInfo, cb) {
             dialog.showLinkDialog($('.note-dialog'), linkInfo, cb);
           });
+        } else if (sEvent === "showImageDialog") {
+          editor.setImageDialog(function(cb) {
+            dialog.showImageDialog($('.note-dialog'), cb);
+          });
         }
 
         event.preventDefault();
@@ -734,7 +755,7 @@
   var Renderer = function() {
     var sToolbar = '<div class="note-toolbar btn-toolbar">' + 
                      '<div class="note-insert btn-group">' +
-                       '<button class="btn btn-small" title="Picture"><i class="icon-picture"></i></button>' +
+                       '<button class="btn btn-small" title="Picture" data-event="showImageDialog"><i class="icon-picture"></i></button>' +
                        '<button class="btn btn-small" title="Link" data-event="showLinkDialog" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" ><i class="icon-link"></i></button>' +
                      '</div>' +
                      '<div class="note-table btn-group">' +
@@ -844,6 +865,19 @@
                      '</div>' +
                    '</div>';
     var sDialog = '<div class="note-dialog">' +
+                    '<div class="note-image-dialog modal hide in" aria-hidden="false">' +
+                      '<div class="modal-header">' +
+                        '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>' +
+                        '<h4>Insert Image</h4>' +
+                      '</div>' +
+                      '<div class="modal-body">' +
+                        '<div class="row-fluid">' +
+                          '<div class="note-dropzone span12">Drag an image here</div>' +
+                          '<div>or if you prefer...</div>' +
+                          '<input type="file" class="note-link-url" type="text" />' +
+                        '</div>' +
+                      '</div>' +
+                    '</div>' +
                     '<div class="note-link-dialog modal hide in" aria-hidden="false">' +
                       '<div class="modal-header">' +
                         '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>' +
@@ -858,7 +892,7 @@
                         '</div>' +
                       '</div>' +
                       '<div class="modal-footer">' +
-                        '<a href="#" class="btn disabled note-link-btn" data-event="editLink" disabled="disabled">Link</a>' +
+                        '<a href="#" class="btn disabled note-link-btn" disabled="disabled">Link</a>' +
                       '</div>' +
                     '</div>' +
                   '</div>';
