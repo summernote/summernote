@@ -222,14 +222,13 @@
     // listPara: listing paragraphs on range
     this.listPara = function() {
       var aNode = dom.listBetween(sc, ec);
-      // TODO: IE8 use es5-shim(https://github.com/kriskowal/es5-shim) later
-      var aPara = list.compact(aNode.map(function(node) {
+      var aPara = list.compact($.map(aNode, function(node) {
         return dom.ancestor(node, dom.isPara);
       }));
       var aaClustered = list.clusterBy(aPara, function(nodeA, nodeB) {
         return nodeA === nodeB;
       });
-      return aaClustered.map(list.head);
+      return $.map(aaClustered, list.head);
     };
     
     // isOnList: judge whether range is on list node or not
@@ -540,6 +539,8 @@
           } else {
             welLinkBtn.addClass('disabled').attr('disabled', true);
           }
+
+          if (!linkInfo.text) {welLinkText.html(welLinkUrl.val())}
         }).trigger('focus');
         welLinkBtn.click(function(event) {
           welLinkDialog.modal('hide'); //hide and createLink (ie9+)
@@ -715,7 +716,7 @@
       //toolbar table dimension
       var welToolbar = layoutInfo.toolbar;
       var welCatcher = welToolbar.find('.note-dimension-picker-mousecatcher');
-      welCatcher.bind('mousemove', hDimensionPickerMove);
+      welCatcher.on('mousemove', hDimensionPickerMove);
     };
 
     this.dettach = function(layoutInfo) {
