@@ -380,15 +380,6 @@
       }
     };
 
-    this.setImageDialog = function(fnShowDialog) {
-      var rng = new Range();
-      var that = this;
-      fnShowDialog(function(sURL) {
-        rng.select();
-        that.insertImage(sURL);
-      });
-    };
-
     this.setLinkDialog = function(fnShowDialog) {
       var rng = new Range();
       if (rng.isOnAnchor()) {
@@ -536,10 +527,24 @@
    * Dialog
    */
   var Dialog = function() {
-    this.showImageDialog = function(welDialog, callback) {
-      //TODO:: implements insertImage
+    this.showImageDialog = function(welDialog, hDropImage, fnInsertImages) {
       var welImageDialog = welDialog.find('.note-image-dialog');
-      welImageDialog.modal('show');
+      var welDropzone = welDialog.find('.note-dropzone'),
+          welImageInput = welDialog.find('.note-image-input');
+
+      welImageDialog.on('shown', function(e) {
+        welDropzone.on('dragenter dragover dragleave', false);
+        welDropzone.on('drop', function(e) {
+          hDropImage(e); welImageDialog.modal('hide');
+        });
+        welImageInput.on('change', function() {
+          fnInsertImages(this.files); $(this).val('');
+          welImageDialog.modal('hide');
+        });
+      }).on('hidden', function(e) {
+        welDropzone.off('dragenter dragover dragleave drop');
+        welImageInput.off('change');
+      }).modal('show');
     };
 
     this.showLinkDialog = function(welDialog, linkInfo, callback) {
@@ -624,16 +629,20 @@
       event.preventDefault(); //prevent default event for FF
     };
 
-    var hDragAndDrop = function(event) {
+    var insertImages = function(files) {
+      $.each(files, function(idx, file) {
+        var fileReader = new FileReader;
+        fileReader.onload = function(event) {
+          editor.insertImage(event.target.result); // sURL
+        };
+        fileReader.readAsDataURL(file);
+      });
+    };
+
+    var hDropImage = function(event) {
       var dataTransfer = event.originalEvent.dataTransfer;
       if (dataTransfer && dataTransfer.files) {
-        $.each(dataTransfer.files, function(idx, file) {
-          var fileReader = new FileReader;
-          fileReader.onload = function(event) {
-            editor.insertImage(event.target.result); // sURL
-          };
-          fileReader.readAsDataURL(file);
-        });
+        insertImages(dataTransfer.files);
       }
       event.stopPropagation();
       event.preventDefault();
@@ -678,9 +687,7 @@
             dialog.showLinkDialog($('.note-dialog'), linkInfo, cb);
           });
         } else if (sEvent === "showImageDialog") {
-          editor.setImageDialog(function(cb) {
-            dialog.showImageDialog($('.note-dialog'), cb);
-          });
+          dialog.showImageDialog($('.note-dialog'), hDropImage, insertImages);
         }
 
         event.preventDefault();
@@ -728,7 +735,7 @@
       layoutInfo.editable.on('scroll', hScroll);
       //TODO: handle Drag point
       layoutInfo.editable.on('dragenter dragover dragleave', false);
-      layoutInfo.editable.on('drop', hDragAndDrop);
+      layoutInfo.editable.on('drop', hDropImage);
 
       layoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
       layoutInfo.popover.on('click', hToolbarAndPopoverClick);
@@ -875,7 +882,7 @@
                         '<div class="row-fluid">' +
                           '<div class="note-dropzone span12">Drag an image here</div>' +
                           '<div>or if you prefer...</div>' +
-                          '<input type="file" class="note-link-url" type="text" />' +
+                          '<input class="note-image-input" type="file" class="note-link-url" type="text" />' +
                         '</div>' +
                       '</div>' +
                     '</div>' +
