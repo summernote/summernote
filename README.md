@@ -64,7 +64,10 @@ $(document).ready(function() {
 
 ### Release
 
-A summer is comming soon. release summernote v0.1 on 1st July, 2013 (June -> July Sorry)
+* release summernote v0.2 on 1st August, 2013
+** undo/redo
+** image: sizing handle and popover
+** support standalone css using bootstrap utility mixins
 
 ### Author
 * Email: susukang98@gmail.com
