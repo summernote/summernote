@@ -3,12 +3,12 @@ module.exports = function(grunt) {
     qunit: { all: [ 'test/*.html' ] },
     uglify: {
       my_target: {
-        files: { 'summernote.min.js': ['summernote.js'] }
+        files: { 'build/summernote.min.js': ['summernote.js'] }
       }
     },
     less: {
       production: {
-        files: {"summernote.css": "summernote.less"}
+        files: {"build/summernote.css": "summernote.less"}
       }
     }
   });
