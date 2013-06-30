@@ -67,7 +67,7 @@ $(document).ready(function() {
 summernote v0.2 on 1st August, 2013
 * undo/redo
 * image: sizing handle and popover
-* support standalone css using bootstrap utility mixins
+* support standalone css
 
 summernote v0.1 on 1st July, 2013
 * font style: size, color, bold, italic, underline, remove font style
