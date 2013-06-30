@@ -64,10 +64,17 @@ $(document).ready(function() {
 
 ### Release
 
-* release summernote v0.2 on 1st August, 2013
-** undo/redo
-** image: sizing handle and popover
-** support standalone css using bootstrap utility mixins
+summernote v0.2 on 1st August, 2013
+* undo/redo
+* image: sizing handle and popover
+* support standalone css using bootstrap utility mixins
+
+summernote v0.1 on 1st July, 2013
+* font style: size, color, bold, italic, underline, remove font style
+* para style: bullet, align, outdent, indent, line height
+* image: drag & drop, dialog
+* link: popover and dialog
+* table: create table with dimension picker
 
 ### Author
 * Email: susukang98@gmail.com
