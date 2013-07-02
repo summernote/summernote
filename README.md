@@ -62,14 +62,14 @@ $(document).ready(function() {
 * Modern Browser (Safari, Chrome, Firefox, Opera, Internet Explorer 9+)
 * OS (Windows, Mac)
 
-### Release
+### Change Log
 
-summernote v0.2 on 1st August, 2013
+v0.2, 2013-08-01
 * undo/redo
 * image: sizing handle and popover
 * support standalone css
 
-summernote v0.1 on 1st July, 2013
+v0.1, 2013-07-01
 * font style: size, color, bold, italic, underline, remove font style
 * para style: bullet, align, outdent, indent, line height
 * image: drag & drop, dialog
