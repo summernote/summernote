@@ -600,8 +600,10 @@
       } else if (bCmd && event.keyCode === key.U) { // underline
         editor.underline();
       } else if (bCmd && event.keyCode === key.K) { // showLinkDialog
+        var welNoteEditor = $(event.target).closest('.note-editor');
+        var welNoteDialog = welNoteEditor.find('.note-dialog');
         editor.setLinkDialog(function(linkInfo, cb) {
-          dialog.showLinkDialog($('.note-dialog'), linkInfo, cb);
+          dialog.showLinkDialog(welNoteDialog, linkInfo, cb);
         });
       } else if (bCmd && bShift && event.keyCode === key.L) {
         editor.justifyLeft();
@@ -674,23 +676,26 @@
       var welBtn = $(event.target).closest('[data-event]');
       
       if (welBtn.length > 0) {
-        var sEvent = welBtn.attr('data-event');
-        var sValue = welBtn.attr('data-value');
+        var sEvent = welBtn.attr('data-event'),
+            sValue = welBtn.attr('data-value');
 
-        if (editor[sEvent]) { editor[sEvent](sValue); } // execute editor method
+        var welNoteEditor = $(event.target).closest('.note-editor'),
+            welNoteDialog = welNoteEditor.find('.note-dialog');
+        welNoteEditor.find('.note-editable').trigger('focus');
+
+        if (editor[sEvent]) { editor[sEvent](sValue); } // execute cmd
         
-        // check and update recent color
-        if (sEvent === "backColor" || sEvent === "foreColor") {
+        // update recent color
+        if ($.inArray(sEvent, ["backColor", "foreColor"]) !== -1) {
           toolbar.updateRecentColor(welBtn[0], sEvent, sValue);
-        } else if (sEvent === "showLinkDialog") { //popover to dialog
+        } else if (sEvent === "showLinkDialog") { // popover to dialog
           editor.setLinkDialog(function(linkInfo, cb) {
-            dialog.showLinkDialog($('.note-dialog'), linkInfo, cb);
+            dialog.showLinkDialog(welNoteDialog, linkInfo, cb);
           });
         } else if (sEvent === "showImageDialog") {
-          dialog.showImageDialog($('.note-dialog'), hDropImage, insertImages);
+          dialog.showImageDialog(welNoteDialog, hDropImage, insertImages);
         }
 
-        event.preventDefault();
         hToolbarAndPopoverUpdate(event);
       }
     };
