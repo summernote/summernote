@@ -65,16 +65,16 @@ $(document).ready(function() {
 ### Change Log
 
 v0.2, 2013-08-01
-* undo/redo
-* image: sizing handle and popover
-* support standalone css
+* `ADDED` undo/redo
+* `ADDED` image: sizing handle and popover
+* `IMPROVED` support standalone css
 
 v0.1, 2013-07-01
-* font style: size, color, bold, italic, underline, remove font style
-* para style: bullet, align, outdent, indent, line height
-* image: drag & drop, dialog
-* link: popover and dialog
-* table: create table with dimension picker
+* `ADDED` font style: size, color, bold, italic, underline, remove font style
+* `ADDED` para style: bullet, align, outdent, indent, line height
+* `ADDED` image: drag & drop, dialog
+* `ADDED` link: popover and dialog
+* `ADDED` table: create table with dimension picker
 
 ### Author
 * Email: susukang98@gmail.com
