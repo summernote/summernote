@@ -703,26 +703,26 @@
       var welHighlighted = welPicker.find('.note-dimension-picker-highlighted');
       var welUnhighlighted = welPicker.find('.note-dimension-picker-unhighlighted');
       var posOffset;
-      // HTML5 with jQuery - e.offsetX is undefined in Firefox
-      // http://stackoverflow.com/questions/12704686/html5-with-jquery-e-offsetx-is-undefined-in-firefox
       if (event.offsetX === undefined) {
-        var posMousecatcher = $(event.target).offset();
-        posOffset = {x: event.pageX - posMousecatcher.left,
-                     y: event.pageY - posMousecatcher.top};
+        // HTML5 with jQuery - e.offsetX is undefined in Firefox
+        var posCatcher = $(event.target).offset();
+        posOffset = {x: event.pageX - posCatcher.left,
+                     y: event.pageY - posCatcher.top};
       } else {
         posOffset = {x: event.offsetX, y: event.offsetY};
       }
       
       var dim = {c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
                  r: Math.ceil(posOffset.y / PX_PER_EM) || 1};
+
       welHighlighted.css({ width: dim.c +'em', height: dim.r + 'em' });
       welCatcher.attr('data-value', dim.c + 'x' + dim.r);
       
-      if (5 <= dim.c && dim.c < 20) {
+      if (3 < dim.c && dim.c < 20) { // 5~20
         welUnhighlighted.css({ width: dim.c + 1 + 'em'});
       }
 
-      if (5 <= dim.r && dim.r < 20) {
+      if (3 < dim.r && dim.r < 20) { // 5~20
         welUnhighlighted.css({ height: dim.r + 1 + 'em'});
       }
 
