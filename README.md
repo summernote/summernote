@@ -62,14 +62,14 @@ $(document).ready(function() {
 * Modern Browser (Safari, Chrome, Firefox, Opera, Internet Explorer 9+)
 * OS (Windows, Mac)
 
-### Change Log
+### Release Notes
 
-v0.2, 2013-08-01
+#### v0.2, 2013-08-01
 * `ADDED` undo/redo
 * `ADDED` image: sizing handle and popover
 * `IMPROVED` support standalone css
 
-v0.1, 2013-07-01
+#### v0.1, 2013-07-01
 * `ADDED` font style: size, color, bold, italic, underline, remove font style
 * `ADDED` para style: bullet, align, outdent, indent, line height
 * `ADDED` image: drag & drop, dialog
