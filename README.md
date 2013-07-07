@@ -68,6 +68,7 @@ $(document).ready(function() {
 * `ADDED` undo/redo
 * `ADDED` image: sizing handle and popover
 * `IMPROVED` support standalone css
+* `ADDED` fileupload server integration
 
 #### v0.1, 2013-07-01
 * `ADDED` font style: size, color, bold, italic, underline, remove font style
