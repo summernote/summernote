@@ -74,6 +74,10 @@
       return node && /^UL|^OL/.test(node.nodeName);
     };
 
+    var isEditable = function(node) {
+      return node && $(node).hasClass('note-editable');
+    };
+
     // ancestor: find nearest ancestor predicate hit
     var ancestor = function(node, pred) {
       while (node) {
@@ -172,6 +176,7 @@
     return {
       isText: isText,
       isPara: isPara, isList: isList,
+      isEditable: isEditable,
       isAnchor: makePredByNodeName('A'),
       isDiv: makePredByNodeName('DIV'), isSpan: makePredByNodeName('SPAN'),
       isB: makePredByNodeName('B'), isU: makePredByNodeName('U'),
@@ -321,8 +326,6 @@
         var bUnordered = $.inArray(oStyle.listStyleType, aOrderedType) > -1;
         oStyle.listStyle = bUnordered ? 'unordered' : 'ordered';
       }
-      
-      oStyle.anchor = rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor) : null;
 
       var elPara = dom.ancestor(rng.sc, dom.isPara);
       if (elPara && elPara.style.lineHeight) {
@@ -331,48 +334,88 @@
         var lineHeight = parseInt(oStyle.lineHeight) / parseInt(oStyle.fontSize);
         oStyle.lineHeight = lineHeight.toFixed(1);
       }
+
+      oStyle.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);
+      oStyle.aAncestor = dom.listAncestor(rng.sc, dom.isEditable);
+
       return oStyle;
     }
+  };
+
+  /**
+   * History
+   * TODO: move undo/redo stack to jquery's data for multiple editor
+   */
+  var History = function(fnApplyState) {
+    var aUndo = [], aRedo = [];
+
+    this.undo = function(oState) {
+      if (aUndo.length === 0) { return; }
+      fnApplyState(aUndo.pop()), aRedo.push(oState);
+    };
+
+    this.redo = function(oState) {
+      if (aRedo.length === 0) { return; }
+      fnApplyState(aRedo.pop()), aUndo.push(oState);
+    };
+
+    this.recordUndo = function(oState) {
+      aRedo = [], aUndo.push(oState);
+    };
   };
   
   /**
    * Editor
    */
   var Editor = function() {
+    //currentStyle
     var style = new Style();
-    
-    var makeExecCommand = function(sCmd) {
-      return function(sValue) { document.execCommand(sCmd, false, sValue); }
-    };
-
-    // current style
     this.currentStyle = function() {
       if (document.getSelection().rangeCount == 0) { return null; }
-
-      var rng = new Range();
-      return style.current(rng);
+      return style.current((new Range()));
     };
-    
+
+    // history and command, TODO: Range -> XPath Bookmark, Scroll
+    var makeState = function() {
+      return { contents: $('.note-editable').html(), range: new Range() };
+    };
+    var updateState = function(oState) {
+      $('.note-editable').html(oState.contents);
+    };
+    var history = new History(updateState);
+    this.undo = function() { history.undo(makeState()); };
+    this.redo = function() { history.redo(makeState()); };
+
+    var makeExecCommand = function(sCmd) {
+      return function(sValue) {
+        history.recordUndo(makeState());
+        document.execCommand(sCmd, false, sValue);
+      }
+    };
+
     // native commands(with execCommand)
     var aCmd = ['bold', 'italic', 'underline', 'justifyLeft', 'justifyCenter',
                 'justifyRight', 'justifyFull', 'insertOrderedList',
                 'insertUnorderedList', 'indent', 'outdent', 'formatBlock',
-                'removeFormat', 'backColor', 'foreColor'];
+                'removeFormat', 'backColor', 'foreColor', 'insertImage'];
     for (var idx=0, len=aCmd.length; idx < len; idx ++) {
       this[aCmd[idx]] = makeExecCommand(aCmd[idx]);
     }                
     
     this.fontSize = function(sValue) {
+      history.recordUndo(makeState());
       style.styleFont(new Range(), {fontSize: sValue + 'px'});
     };
     
     this.lineHeight = function(sValue) {
+      history.recordUndo(makeState());
       style.stylePara(new Range(), {lineHeight: sValue});
     };
 
     this.unlink = function() {
       var rng = new Range();
       if (rng.isOnAnchor()) {
+        history.recordUndo(makeState());
         var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
         rng = new Range(elAnchor, 0, elAnchor, 1);
         rng.select();
@@ -391,6 +434,7 @@
         text: rng.toString(),
         url: rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor).href : ""
       }, function(sLinkUrl) {
+        history.recordUndo(makeState());
         rng.select();
         if (sLinkUrl.toLowerCase().indexOf("http://") !== 0) {
           sLinkUrl = "http://" + sLinkUrl;
@@ -406,6 +450,7 @@
     };
     
     this.insertTable = function(sDim) {
+      history.recordUndo(makeState());
       var aDim = sDim.split('x');
       var nCol = aDim[0], nRow = aDim[1];
       
@@ -423,10 +468,6 @@
       sTR = aTR.join('');
       var sTable = '<table class="table table-bordered">' + sTR + '</table>';
       (new Range()).insertNode($(sTable)[0]);
-    };
-
-    this.insertImage = function(sURL) {
-      document.execCommand('insertImage', false, sURL);
     };
   };
 
@@ -588,12 +629,18 @@
     var dialog = new Dialog();
     
     var key = { TAB: 9, B: 66, E: 69, I: 73, J: 74, K: 75, L: 76, R: 82,
-                U: 85, NUM0: 48, NUM1: 49, NUM4: 52, NUM7: 55, NUM8: 56};
+                U: 85, Y: 89, Z: 90,
+                NUM0: 48, NUM1: 49, NUM4: 52, NUM7: 55, NUM8: 56};
 
     var hKeydown = function(event) {
       var bCmd = bMac ? event.metaKey : event.ctrlKey;
       var bShift = event.shiftKey;
-      if (bCmd && event.keyCode === key.B) { // bold
+      if (bCmd && (bShift && event.keyCode === key.Z) ||
+                   event.keyCode === key.Y) { // redo
+        editor.redo();
+      } else if (bCmd && event.keyCode === key.Z) { // undo
+        editor.undo();
+      } else if (bCmd && event.keyCode === key.B) { // bold
         editor.bold();
       } else if (bCmd && event.keyCode === key.I) { // italic
         editor.italic();
@@ -681,9 +728,12 @@
 
         var welNoteEditor = $(event.target).closest('.note-editor'),
             welNoteDialog = welNoteEditor.find('.note-dialog');
-        welNoteEditor.find('.note-editable').trigger('focus');
+            welNoteEditable = welNoteEditor.find('.note-editable');
 
-        if (editor[sEvent]) { editor[sEvent](sValue); } // execute cmd
+        if (editor[sEvent]) { // execute cmd
+          welNoteEditable.trigger('focus');
+          editor[sEvent](sValue);
+        }
         
         // update recent color
         if ($.inArray(sEvent, ["backColor", "foreColor"]) !== -1) {
