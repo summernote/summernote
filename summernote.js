@@ -727,7 +727,7 @@
             sValue = welBtn.attr('data-value');
 
         var welNoteEditor = $(event.target).closest('.note-editor'),
-            welNoteDialog = welNoteEditor.find('.note-dialog');
+            welNoteDialog = welNoteEditor.find('.note-dialog'),
             welNoteEditable = welNoteEditor.find('.note-editable');
 
         if (editor[sEvent]) { // execute cmd
