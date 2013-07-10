@@ -1,154 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>Summernote - Super Simple WYSIWYG editor on Bootstrap</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Super Simple WYSIWYG Editor on Bootstrap">
-    <meta name="author" content="https://github.com/HackerWins">
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
+<meta charset="utf-8">
+<title>Summernote - Super Simple WYSIWYG editor on Bootstrap</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Super Simple WYSIWYG Editor on Bootstrap">
+<meta name="author" content="https://github.com/HackerWins">
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
     <script src="http://twitter.github.io/bootstrap/assets/js/html5shiv.js"></script>
     <![endif]-->
-    <!-- add library -->
-    <link href="http://hackerwins.github.io/summernote/css/bootstrap.min.css" rel="stylesheet">
-    <link href="http://hackerwins.github.io/summernote/css/font-awesome.min.css" rel="stylesheet">
-    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-    <script src="http://hackerwins.github.io/summernote/js/jquery.curstyles.min.js"></script>
-    <script src="http://hackerwins.github.io/summernote/js/bootstrap.min.js"></script>
-    <!-- add summernote -->
-    <link href="http://hackerwins.github.io/summernote/summernote.css" rel="stylesheet">
-    <script src="http://hackerwins.github.io/summernote/summernote.min.js"></script>
-    <!-- add user custom -->
-    <link href="http://hackerwins.github.io/summernote/css/style.css" rel="stylesheet">
-    <script src="http://platform.twitter.com/widgets.js"></script>
-    <link href="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.css" rel="stylesheet">
-    <script src="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.js"></script>
+<!-- add library -->
+<link href="http://bootswatch.com/cerulean/bootstrap.min.css" rel="stylesheet">
+<link href="http://hackerwins.github.io/summernote/css/font-awesome.min.css" rel="stylesheet">
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="http://hackerwins.github.io/summernote/js/jquery.curstyles.min.js"></script>
+<script src="http://hackerwins.github.io/summernote/js/bootstrap.min.js"></script>
+<!-- add summernote -->
+<link href="http://hackerwins.github.io/summernote/summernote.css" rel="stylesheet">
+<script src="http://hackerwins.github.io/summernote/summernote.min.js"></script>
+<!-- add user custom -->
+<link href="http://hackerwins.github.io/summernote/css/style.css" rel="stylesheet">
+<script src="http://platform.twitter.com/widgets.js"></script>
+<link href="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.css" rel="stylesheet">
+<script src="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.js"></script>
 </head>
 <body>
 <div class="navbar navbar-inverse navbar-fixed-top">
-    <a href="https://github.com/HackerWins/summernote" style="z-index: 1031"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
-    <div class="navbar-inner">
-        <div class="container">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="brand" href="./index.html">Summernote</a>
-            <div class="nav-collapse collapse">
-                <ul class="nav">
-                    <li class="active">
-                        <a href="./index.html">Home</a>
-                    </li>
-                    <li class="">
-                        <a href="./edit_fly.html">Edit on the fly</a>
-                    </li>
-                    <li class="">
-                        <a href="./theme_less.html">Theme with less</a>
-                    </li>
-                    <li class="">
-                        <a href="./#server.html">Integration</a>
-                    </li>
-                    <li class="">
-                        <a href="https://github.com/HackerWins/summernote">Hack!</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="jumbotron masthead">
+  <a href="https://github.com/HackerWins/summernote" style="z-index: 1031"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+  <div class="navbar-inner">
     <div class="container">
-        <h1>Summernote</h1>
-        <p>Summernote has something specials no like others. <br>Interactive WYSIWYG editing, <br>Easy integrate Your Server and Much!</p>
-        <p>
-            <a href="https://github.com/HackerWins/summernote/archive/master.zip" class="btn btn-primary btn-large">Get Summernote</a>
-        </p>
-    </div>
-</div>
-
-<div class="bs-docs-social">
-    <div class="container">
-        <ul class="bs-docs-social-buttons">
-            <li>
-                <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=HackerWins&amp;repo=summernote&amp;type=watch&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="100px" height="20px"></iframe>
-            </li>
-            <li>
-                <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=HackerWins&amp;repo=summernote&amp;type=fork&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="102px" height="20px"></iframe>
-            </li>
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="brand" href="./index.html">Summernote</a>
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li class="active">
+          <a href="./index.html">Home</a>
+          </li>
+          <li class="">
+          <a href="./edit_fly.html">Edit on the fly</a>
+          </li>
+          <li class="">
+          <a href="./theme_less.html">Theme with less</a>
+          </li>
+          <li class="">
+          <a href="./#server.html">Integration</a>
+          </li>
+          <li class="">
+          <a href="https://github.com/HackerWins/summernote">Hack!</a>
+          </li>
         </ul>
+      </div>
     </div>
+  </div>
+</div>
+<div class="bs-docs-social">
+  <div class="container">
+    <ul class="bs-docs-social-buttons">
+      <li>
+      <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=HackerWins&amp;repo=summernote&amp;type=watch&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="100px" height="20px"></iframe>
+      </li>
+      <li>
+      <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=HackerWins&amp;repo=summernote&amp;type=fork&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="102px" height="20px"></iframe>
+      </li>
+    </ul>
+  </div>
 </div>
 
 <div class="container">
+  <div class="marketing">
+    <h1>Summernote</h1>
+    <p class="marketing-byline">Super Simple WYSIWYG Editor on Bootstrap</p>
 
-    <div class="marketing">
-
-        <h1>Introducing Summernote</h1>
-        <p class="marketing-byline">Super Simple WYSIWYG Editor on Bootstrap</p>
-
-        <div class="row">
-            <div class="span4">
-                <h2>Easy</h2>
-                <p>Summernote need minimal code</p>
-            </div>
-            <div class="span4">
-                <h2>Smart</h2>
-                <p>Summernote support reasonable shortcut</p>
-            </div>
-            <div class="span4">
-                <h2>Familiar</h2>
-                <p>Summernote use worldwide bootstrap</p>
-            </div>
-        </div>
-
-        <hr class="soften">
-
-        <h1>Write with Summernote</h1>
-        <p class="marketing-byline"></p>
-        <div class="row">
-            <div class="span12 summernote">
-                <div id="summernote"><p><img src="http://imperavi.com/img/woman-red@2x.jpg" alt="Red" style="width: 300px; float: left; margin-right: 20px; margin-bottom: 10px;"></p><h3>Atlas Shrugged</h3><p><span style="color: #a5a5a5;"><em>Ayn Rand</em></span></p><p>She sat listening to the music. It was a symphony of triumph. The notes flowed up, they spoke of rising and they were the rising itself, they were the essence and the form of upward motion, they seemed to embody every human act and thought that had ascent as its motive. It was a sunburst of sound, breaking out of hiding and spreading open. It had the freedom of release and the tension of purpose. It swept space clean, and left nothing but the joy of an unobstructed effort. Only a faint echo within the sounds spoke of that from which the music had escaped, but spoke in laughing astonishment at the discovery that there was no ugliness or pain, and there never had had to be. It was the song of an immense deliverance.</p><p>She thought: For just a few moments — while this lasts — it is all right to surrender completely — to forget everything and just permit yourself to feel. She thought: Let go — drop the controls — this is it.</p><p>Somewhere on the edge of her mind, under the music, she heard the sound of train wheels. They knocked in an even rhythm, every fourth knock accented, as if stressing a conscious purpose. She could relax, because she heard the wheels. She listened to the symphony, thinking: This is why the wheels have to be kept going, and this is where they’re going.</p></div>
-                </div>
-            </div>
-        </div>
-
-        <hr class="soften">
-
-        <h1>Customize by options</h1>
-        <p class="marketing-byline"></p>
-        <div class="row">
-            <div class="span6">
-                <h2>Height</h2>
-                <p>set height (number) pixel</p>
-                <pre class="prettyprint lang-javascript">$('#summernote').summernote({ height: 500 })</pre>
-            </div>
-            <div class="span6">
-                <h2>Focus</h2>
-                <p>set focus on load</p>
-                <pre class="prettyprint lang-javascript">$('#summernote').summernote({ focus: true })</pre>
-            </div>
-        </div>
-
+    <div class="row">
+      <div class="span4">
+        <h2>Easy</h2>
+        <p>Summernote need minimal code</p>
+      </div>
+      <div class="span4">
+        <h2>Smart</h2>
+        <p>Summernote support reasonable shortcut</p>
+      </div>
+      <div class="span4">
+        <h2>Familiar</h2>
+        <p>Summernote use worldwide bootstrap</p>
+      </div>
     </div>
+    <hr class="soften">
+    <a href="https://github.com/HackerWins/summernote/archive/master.zip" class="btn btn-primary btn-large">Get Summernote</a>
+    <p class="marketing-byline"></p>
+    <div class="row">
+      <div class="span12 summernote">
+        <div id="summernote"><p><img src="http://imperavi.com/img/woman-red@2x.jpg" alt="Red" style="width: 300px; float: left; margin-right: 20px; margin-bottom: 10px;"></p><h3>Atlas Shrugged</h3><p><span style="color: #a5a5a5;"><em>Ayn Rand</em></span></p><p>She sat listening to the music. It was a symphony of triumph. The notes flowed up, they spoke of rising and they were the rising itself, they were the essence and the form of upward motion, they seemed to embody every human act and thought that had ascent as its motive. It was a sunburst of sound, breaking out of hiding and spreading open. It had the freedom of release and the tension of purpose. It swept space clean, and left nothing but the joy of an unobstructed effort. Only a faint echo within the sounds spoke of that from which the music had escaped, but spoke in laughing astonishment at the discovery that there was no ugliness or pain, and there never had had to be. It was the song of an immense deliverance.</p><p>She thought: For just a few moments — while this lasts — it is all right to surrender completely — to forget everything and just permit yourself to feel. She thought: Let go — drop the controls — this is it.</p><p>Somewhere on the edge of her mind, under the music, she heard the sound of train wheels. They knocked in an even rhythm, every fourth knock accented, as if stressing a conscious purpose. She could relax, because she heard the wheels. She listened to the symphony, thinking: This is why the wheels have to be kept going, and this is where they’re going.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="soften">
+
+  <h1>Customize by options</h1>
+  <p class="marketing-byline"></p>
+  <div class="row">
+    <div class="span6">
+      <h2>Height</h2>
+      <p>set height (number) pixel</p>
+      <pre class="prettyprint lang-javascript">$('#summernote').summernote({ height: 500 })</pre>
+    </div>
+    <div class="span6">
+      <h2>Focus</h2>
+      <p>set focus on load</p>
+      <pre class="prettyprint lang-javascript">$('#summernote').summernote({ focus: true })</pre>
+    </div>
+  </div>
+
+</div>
 
 </div>
 
 <footer class="footer">
-    <div class="container">
-        <p>Designed and built with all the love in the world by <a href="http://twitter.com/mdo" target="_blank">@mdo</a> and <a href="http://twitter.com/fat" target="_blank">@fat</a>.</p>
-        <p>Code licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>, documentation under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
-        <p><a href="http://glyphicons.com">Glyphicons Free</a> licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
-    </div>
+<div class="container">
+  <p>Designed and built with all the love in the world by <a href="http://twitter.com/mdo" target="_blank">@mdo</a> and <a href="http://twitter.com/fat" target="_blank">@fat</a>.</p>
+  <p>Code licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>, documentation under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+  <p><a href="http://glyphicons.com">Glyphicons Free</a> licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+</div>
 </footer>
 
 <script type="text/javascript">
-    $(document).ready(function() {
-        $('#summernote').summernote({height: 400});
-        prettyPrint();
-    });
+$(document).ready(function() {
+  $('#summernote').summernote({height: 400});
+  prettyPrint();
+});
 </script>
 </body>
 </html>
