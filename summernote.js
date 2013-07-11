@@ -434,8 +434,8 @@
         text: rng.toString(),
         url: rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor).href : ""
       }, function(sLinkUrl) {
-        history.recordUndo(makeState());
         rng.select();
+        history.recordUndo(makeState());
         if (sLinkUrl.toLowerCase().indexOf("http://") !== 0) {
           sLinkUrl = "http://" + sLinkUrl;
         }
@@ -835,26 +835,26 @@
                      '<div class="note-style btn-group">' +
                        '<button class="btn btn-small dropdown-toggle" title="Style" data-toggle="dropdown"><i class="icon-magic"></i> <span class="caret"></span></button>' +
                        '<ul class="dropdown-menu">' +
-                         '<li><a href="#" data-event="formatBlock" data-value="p">Paragraph</a></li>' +
-                         '<li><a href="#" data-event="formatBlock" data-value="blockquote"><blockquote>Quote</blockquote></a></li>' +
-                         '<li><a href="#" data-event="formatBlock" data-value="h1"><h1>Header 1</h1></a></li>' +
-                         '<li><a href="#" data-event="formatBlock" data-value="h2"><h2>Header 2</h2></a></li>' +
-                         '<li><a href="#" data-event="formatBlock" data-value="h3"><h3>Header 3</h3></a></li>' +
-                         '<li><a href="#" data-event="formatBlock" data-value="h4"><h4>Header 4</h4></a></li>' +
+                         '<li><a data-event="formatBlock" data-value="p">Paragraph</a></li>' +
+                         '<li><a data-event="formatBlock" data-value="blockquote"><blockquote>Quote</blockquote></a></li>' +
+                         '<li><a data-event="formatBlock" data-value="h1"><h1>Header 1</h1></a></li>' +
+                         '<li><a data-event="formatBlock" data-value="h2"><h2>Header 2</h2></a></li>' +
+                         '<li><a data-event="formatBlock" data-value="h3"><h3>Header 3</h3></a></li>' +
+                         '<li><a data-event="formatBlock" data-value="h4"><h4>Header 4</h4></a></li>' +
                        '</ul>' +
                      '</div>' +
                      '<div class="note-fontsize btn-group">' +
                        '<button class="btn btn-small dropdown-toggle" data-toggle="dropdown" title="Font Size"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +
                        '<ul class="dropdown-menu">' +
-                         '<li><a href="#" data-event="fontSize" data-value="8"><i class="icon-ok"></i> 8</a></li>' +
-                         '<li><a href="#" data-event="fontSize" data-value="9"><i class="icon-ok"></i> 9</a></li>' +
-                         '<li><a href="#" data-event="fontSize" data-value="10"><i class="icon-ok"></i> 10</a></li>' +
-                         '<li><a href="#" data-event="fontSize" data-value="11"><i class="icon-ok"></i> 11</a></li>' +
-                         '<li><a href="#" data-event="fontSize" data-value="12"><i class="icon-ok"></i> 12</a></li>' +
-                         '<li><a href="#" data-event="fontSize" data-value="14"><i class="icon-ok"></i> 14</a></li>' +
-                         '<li><a href="#" data-event="fontSize" data-value="18"><i class="icon-ok"></i> 18</a></li>' +
-                         '<li><a href="#" data-event="fontSize" data-value="24"><i class="icon-ok"></i> 24</a></li>' +
-                         '<li><a href="#" data-event="fontSize" data-value="36"><i class="icon-ok"></i> 36</a></li>' +
+                         '<li><a data-event="fontSize" data-value="8"><i class="icon-ok"></i> 8</a></li>' +
+                         '<li><a data-event="fontSize" data-value="9"><i class="icon-ok"></i> 9</a></li>' +
+                         '<li><a data-event="fontSize" data-value="10"><i class="icon-ok"></i> 10</a></li>' +
+                         '<li><a data-event="fontSize" data-value="11"><i class="icon-ok"></i> 11</a></li>' +
+                         '<li><a data-event="fontSize" data-value="12"><i class="icon-ok"></i> 12</a></li>' +
+                         '<li><a data-event="fontSize" data-value="14"><i class="icon-ok"></i> 14</a></li>' +
+                         '<li><a data-event="fontSize" data-value="18"><i class="icon-ok"></i> 18</a></li>' +
+                         '<li><a data-event="fontSize" data-value="24"><i class="icon-ok"></i> 24</a></li>' +
+                         '<li><a data-event="fontSize" data-value="36"><i class="icon-ok"></i> 36</a></li>' +
                        '</ul>' +
                      '</div>' +
                      '<div class="note-color btn-group">' +
@@ -904,14 +904,14 @@
                      '<div class="note-line-height btn-group">' +
                        '<button class="btn btn-small dropdown-toggle" data-toggle="dropdown" title="Line Height"><i class="icon-text-height"></i>&nbsp; <b class="caret"></b></button>' +
                        '<ul class="dropdown-menu right">' +
-                       '<li><a href="#" data-event="lineHeight" data-value="1.0"><i class="icon-ok"></i> 1.0</a></li>' +
-                       '<li><a href="#" data-event="lineHeight" data-value="1.2"><i class="icon-ok"></i> 1.2</a></li>' +
-                       '<li><a href="#" data-event="lineHeight" data-value="1.4"><i class="icon-ok"></i> 1.4</a></li>' +
-                       '<li><a href="#" data-event="lineHeight" data-value="1.5"><i class="icon-ok"></i> 1.5</a></li>' +
-                       '<li><a href="#" data-event="lineHeight" data-value="1.6"><i class="icon-ok"></i> 1.6</a></li>' +
-                       '<li><a href="#" data-event="lineHeight" data-value="1.8"><i class="icon-ok"></i> 1.8</a></li>' +
-                       '<li><a href="#" data-event="lineHeight" data-value="2.0"><i class="icon-ok"></i> 2.0</a></li>' +
-                       '<li><a href="#" data-event="lineHeight" data-value="3.0"><i class="icon-ok"></i> 3.0</a></li>' +
+                       '<li><a data-event="lineHeight" data-value="1.0"><i class="icon-ok"></i> 1.0</a></li>' +
+                       '<li><a data-event="lineHeight" data-value="1.2"><i class="icon-ok"></i> 1.2</a></li>' +
+                       '<li><a data-event="lineHeight" data-value="1.4"><i class="icon-ok"></i> 1.4</a></li>' +
+                       '<li><a data-event="lineHeight" data-value="1.5"><i class="icon-ok"></i> 1.5</a></li>' +
+                       '<li><a data-event="lineHeight" data-value="1.6"><i class="icon-ok"></i> 1.6</a></li>' +
+                       '<li><a data-event="lineHeight" data-value="1.8"><i class="icon-ok"></i> 1.8</a></li>' +
+                       '<li><a data-event="lineHeight" data-value="2.0"><i class="icon-ok"></i> 2.0</a></li>' +
+                       '<li><a data-event="lineHeight" data-value="3.0"><i class="icon-ok"></i> 3.0</a></li>' +
                        '</ul>' +
                      '</div>' +
                    '</div>';
