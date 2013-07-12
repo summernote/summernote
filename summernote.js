@@ -154,19 +154,42 @@
       $.each(aChild, function(idx, child) {
         node.appendChild(child);
       });
+      return node;
     };
     
     var isText = makePredByNodeName('#text');
+
+    // length: size of element.
+    var length = function(node) {
+      if (isText(node)) { return node.nodeValue.length; }
+      return node.childNodes.length;
+    };
+
+    // splitData: split element or #text
+    var splitData = function(node, offset) {
+      if (offset === 0) { return node; }
+      if (offset >= length(node)) { return node.nextSibling; }
+
+      // splitText
+      if (isText(node)) { return node.splitText(offset); }
+
+      // splitElement
+      var child = current.childNodes[offset];
+      node = insertAfter(node.cloneNode(false), node);
+      return appends(node, listNext(child));
+    };
     
     // split: split dom tree by boundaryPoint(pivot and offset)
     var split = function(root, pivot, offset) {
       var aAncestor = listAncestor(pivot, func.eq(root));
-      aAncestor.reduce(function(node, parent) { // node: cloned
-        var clone = parent.cloneNode(false); // shallow clone
+      if (aAncestor.length === 1) {
+        return splitData(pivot, offset);
+      }
+      aAncestor.reduce(function(node, parent) {
+        var clone = parent.cloneNode(false);
         insertAfter(clone, parent);
-        if (node === pivot && offset > 0) {
-          if (isText(node)) { node.splitText(offset); } // splitText
-          node = node.nextSibling;
+        if (node === pivot) {
+          node = splitData(node, offset);
         }
         appends(clone, listNext(node));
         return clone;
