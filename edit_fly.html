@@ -1,165 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>Summernote - Super Simple WYSIWYG editor on Bootstrap</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Super Simple WYSIWYG Editor on Bootstrap">
-    <meta name="author" content="https://github.com/HackerWins">
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-    <script src="http://twitter.github.io/bootstrap/assets/js/html5shiv.js"></script>
-    <![endif]-->
-    <!-- add library -->
-    <link href="http://bootswatch.com/cerulean/bootstrap.min.css" rel="stylesheet">
-    <link href="http://hackerwins.github.io/summernote/css/font-awesome.min.css" rel="stylesheet">
-    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-    <script src="http://hackerwins.github.io/summernote/js/jquery.curstyles.min.js"></script>
-    <script src="http://hackerwins.github.io/summernote/js/bootstrap.min.js"></script>
-    <!-- add summernote -->
-    <link href="http://hackerwins.github.io/summernote/summernote.css" rel="stylesheet">
-    <script src="http://hackerwins.github.io/summernote/summernote.min.js"></script>
-    <!--<script src="/summernote.js"></script>-->
-    <!-- add user custom -->
-    <link href="http://hackerwins.github.io/summernote/css/style.css" rel="stylesheet">
-    <script src="http://platform.twitter.com/widgets.js"></script>
-    <link href="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.css" rel="stylesheet">
-    <script src="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.js"></script>
+<meta charset="utf-8">
+<title>Summernote - Super Simple WYSIWYG editor on Bootstrap</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Super Simple WYSIWYG Editor on Bootstrap">
+<meta name="author" content="https://github.com/HackerWins">
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+  <script src="http://twitter.github.io/bootstrap/assets/js/html5shiv.js"></script>
+  <![endif]-->
+<!-- add library -->
+<link href="http://bootswatch.com/cerulean/bootstrap.min.css" rel="stylesheet">
+<link href="http://hackerwins.github.io/summernote/css/font-awesome.min.css" rel="stylesheet">
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="http://hackerwins.github.io/summernote/js/jquery.curstyles.min.js"></script>
+<script src="http://hackerwins.github.io/summernote/js/bootstrap.min.js"></script>
+<!-- add summernote -->
+<link href="http://hackerwins.github.io/summernote/summernote.css" rel="stylesheet">
+<script src="http://hackerwins.github.io/summernote/summernote.min.js"></script>
+<!--<script src="/summernote.js"></script>-->
+<!-- add user custom -->
+<link href="http://hackerwins.github.io/summernote/css/style.css" rel="stylesheet">
+<script src="http://platform.twitter.com/widgets.js"></script>
+<link href="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.css" rel="stylesheet">
+<script src="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.js"></script>
 </head>
 <body>
 <div class="navbar navbar-inverse navbar-fixed-top">
-    <a href="https://github.com/HackerWins/summernote" style="z-index: 1031"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
-    <div class="navbar-inner">
-        <div class="container">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="brand" href="./index.html">Summernote</a>
-            <div class="nav-collapse collapse">
-                <ul class="nav">
-                    <li class="">
-                        <a href="./index.html">Home</a>
-                    </li>
-                    <li class="active">
-                        <a href="./edit_fly.html">Edit on the fly</a>
-                    </li>
-                    <li class="">
-                        <a href="./theme_less.html">Theme with less</a>
-                    </li>
-                    <li class="">
-                        <a href="./#server.html">Integration</a>
-                    </li>
-                    <li class="">
-                        <a href="https://github.com/HackerWins/summernote">Hack!</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+  <a href="https://github.com/HackerWins/summernote" style="z-index: 1031"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+  <div class="navbar-inner">
+    <div class="container">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="brand" href="./index.html">Summernote</a>
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li class="">
+          <a href="./index.html">Overview</a>
+          </li>
+          <li class="active">
+          <a href="./edit_fly.html">Examples</a>
+          </li>
+        </ul>
+      </div>
     </div>
-</div>
-
-<div class="container">
-
-    <div class="marketing">
-
-        <h1>Edit content on the fly</h1>
-        <p class="marketing-byline">You can edit content on th fly by 'content editable'</p>
-        <div class="row">
-
-            <h2>Code</h2>
-            <p class="marketing-byline"></p>
-
-            <div class="span12">
-<pre class="prettyprint lang-javascript linenums summernote">
-var edit = function() {
-    // create summernote
-    $('.click-to-edit').summernote({focus: true});
-};
-
-var save = function() {
-    // get HTML if you need
-    var sHTML = $('.editor').code();
-    // finish to edit
-    $('.editor').destory();
-};</pre>
-            </div>
-        </div>
-
-        <hr class="soften">
-
-        <h2>Click to Edit</h2>
-        <p class="marketing-byline"></p>
-        <div class="row">
-            <div class="span10 summernote">
-                <div id="click-to-edit">
-                    <h2>Broadcasting and <em>quotes</em></h2>
-                    <p>Broadcast on live TV to a world-wide audience, Armstrong stepped onto the lunar surface and described the event as:</p>
-                    <blockquote>
-                        <p>One small step for [a] man, one giant leap for mankind.</p>
-                    </blockquote>
-                    <p>Apollo 11 effectively ended the <a href="http://en.wikipedia.org/wiki/Space_Race">Space Race</a> and fulfilled a national goal proposed in 1961 by the late U.S. President <a href="http://en.wikipedia.org/wiki/John_F._Kennedy">John F. Kennedy</a> in a speech before the United States Congress:</p>
-                    <blockquote>
-                        <p>[...] before this decade is out, of landing a man on the Moon and returning him safely to the Earth.</p>
-                    </blockquote>
-
-                    <p>Launched by a <strong>Saturn V</strong> rocket from <a href="http://en.wikipedia.org/wiki/Kennedy_Space_Center">Kennedy Space Center</a> in Merritt Island, Florida on July 16, Apollo 11 was the fifth manned mission of <a href="http://en.wikipedia.org/wiki/NASA">NASA</a>&#39;s Apollo program. The Apollo spacecraft had three parts:</p>
-
-                    <ol>
-                        <li><strong>Command Module</strong> with a cabin for the three astronauts which was the only part which landed back on Earth</li>
-                        <li><strong>Service Module</strong> which supported the Command Module with propulsion, electrical power, oxygen and water</li>
-                        <li><strong>Lunar Module</strong> for landing on the Moon.</li>
-                    </ol>
-
-                    <p>After being sent to the Moon by the Saturn V&#39;s upper stage, the astronauts separated the spacecraft from it and travelled for three days until they entered into lunar orbit. Armstrong and Aldrin then moved into the Lunar Module and landed in the <a href="http://en.wikipedia.org/wiki/Mare_Tranquillitatis">Sea of Tranquility</a>. They stayed a total of about 21 and a half hours on the lunar surface. After lifting off in the upper part of the Lunar Module and rejoining Collins in the Command Module, they returned to Earth and landed in the <a href="http://en.wikipedia.org/wiki/Pacific_Ocean">Pacific Ocean</a> on July 24.</p>
-
-                    <hr />
-
-                    <p><small>Source: <a href="http://en.wikipedia.org/wiki/Apollo_11">Wikipedia.org</a></small></p>
-                </div>
-            </div>
-            <div class="span2">
-                <button id="edit" class="btn btn-large btn-block btn-primary" type="button">Edit</button>
-                <button id="save" class="btn btn-large btn-block" type="button">Save</button>
-            </div>
-        </div>
-
-    </div>
-
-</div>
-
-
-<footer class="footer">
-  <div class="container">
-    <ul class="bs-docs-social-buttons">
-      <li>
-      <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=HackerWins&amp;repo=summernote&amp;type=watch&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="100px" height="20px"></iframe>
-      </li>
-      <li>
-      <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=HackerWins&amp;repo=summernote&amp;type=fork&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="102px" height="20px"></iframe>
-      </li>
-    </ul>
   </div>
+</div>
+<div class="container">
+  <div class="marketing">
+    <h1>Edit content on the fly</h1>
+    <p class="marketing-byline">You can edit content on th fly by 'content editable'</p>
+    <div class="row">
+      <h2>Code</h2>
+      <p class="marketing-byline"></p>
+      <div class="span12">
+        <pre class="prettyprint lang-javascript linenums summernote">
+          var edit = function() {
+              // create summernote
+              $('.click-to-edit').summernote({focus: true});
+          };
+          
+          var save = function() {
+              // get HTML if you need
+              var sHTML = $('.editor').code();
+              // finish to edit
+              $('.editor').destory();
+          };
+        </pre>
+      </div>
+    </div>
+    <hr class="soften">
+    <h2>Click to Edit</h2>
+    <p class="marketing-byline"></p>
+    <div class="row">
+      <div class="span10 summernote">
+        <div id="click-to-edit">
+          <h2>Broadcasting and <em>quotes</em></h2>
+          <p>Broadcast on live TV to a world-wide audience, Armstrong stepped onto the lunar surface and described the event as:</p>
+          <blockquote>
+            <p>One small step for [a] man, one giant leap for mankind.</p>
+          </blockquote>
+          <p>Apollo 11 effectively ended the <a href="http://en.wikipedia.org/wiki/Space_Race">Space Race</a> and fulfilled a national goal proposed in 1961 by the late U.S. President <a href="http://en.wikipedia.org/wiki/John_F._Kennedy">John F. Kennedy</a> in a speech before the United States Congress:</p>
+          <blockquote>
+            <p>[...] before this decade is out, of landing a man on the Moon and returning him safely to the Earth.</p>
+          </blockquote>
+          <p>Launched by a <strong>Saturn V</strong> rocket from <a href="http://en.wikipedia.org/wiki/Kennedy_Space_Center">Kennedy Space Center</a> in Merritt Island, Florida on July 16, Apollo 11 was the fifth manned mission of <a href="http://en.wikipedia.org/wiki/NASA">NASA</a>&#39;s Apollo program. The Apollo spacecraft had three parts:</p>
+          <ol>
+            <li><strong>Command Module</strong> with a cabin for the three astronauts which was the only part which landed back on Earth</li>
+            <li><strong>Service Module</strong> which supported the Command Module with propulsion, electrical power, oxygen and water</li>
+            <li><strong>Lunar Module</strong> for landing on the Moon.</li>
+          </ol>
+          <p>After being sent to the Moon by the Saturn V&#39;s upper stage, the astronauts separated the spacecraft from it and travelled for three days until they entered into lunar orbit. Armstrong and Aldrin then moved into the Lunar Module and landed in the <a href="http://en.wikipedia.org/wiki/Mare_Tranquillitatis">Sea of Tranquility</a>. They stayed a total of about 21 and a half hours on the lunar surface. After lifting off in the upper part of the Lunar Module and rejoining Collins in the Command Module, they returned to Earth and landed in the <a href="http://en.wikipedia.org/wiki/Pacific_Ocean">Pacific Ocean</a> on July 24.</p>
+          <hr />
+          <p><small>Source: <a href="http://en.wikipedia.org/wiki/Apollo_11">Wikipedia.org</a></small></p>
+        </div>
+      </div>
+      <div class="span2">
+        <button id="edit" class="btn btn-large btn-block btn-primary" type="button">Edit</button>
+        <button id="save" class="btn btn-large btn-block" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">Summernote may be freely distributed under the MIT license.</div>
 </footer>
 <script type="text/javascript">
-    $(document).ready(function() {
-        prettyPrint();
-        $('#save').addClass('disabled');
-
-        $('#edit').click(function () {
-            $('#click-to-edit').summernote({focus: true});
-            $(this).removeClass('btn-primary').addClass('disabled');
-            $('#save').addClass('btn-primary').removeClass('disabled');
-        });
-        $('#save').click(function () {
-            var sHTML = $('#click-to-edit').code();
-            //sHTML && alert(sHTML);
-            $('#click-to-edit').destory();
-            $(this).removeClass('btn-primary').addClass('disabled');
-            $('#edit').addClass('btn-primary').removeClass('disabled');
-        });
-    });
+$(document).ready(function() {
+  prettyPrint();
+  $('#save').addClass('disabled');
+  $('#edit').click(function () {
+    $('#click-to-edit').summernote({focus: true});
+    $(this).removeClass('btn-primary').addClass('disabled');
+    $('#save').addClass('btn-primary').removeClass('disabled');
+  });
+  $('#save').click(function () {
+    var sHTML = $('#click-to-edit').code();
+    //sHTML && alert(sHTML);
+    $('#click-to-edit').destory();
+    $(this).removeClass('btn-primary').addClass('disabled');
+    $('#edit').addClass('btn-primary').removeClass('disabled');
+  });
+});
 </script>
 </body>
 </html>
