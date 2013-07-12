@@ -185,7 +185,7 @@
       if (aAncestor.length === 1) {
         return splitData(pivot, offset);
       }
-      aAncestor.reduce(function(node, parent) {
+      return aAncestor.reduce(function(node, parent) {
         var clone = parent.cloneNode(false);
         insertAfter(clone, parent);
         if (node === pivot) {
