@@ -62,7 +62,7 @@ $(document).ready(function() {
 * Modern Browser (Safari, Chrome, Firefox, Opera, Internet Explorer 9+)
 * OS (Windows, Mac)
 
-### Release Notes
+### Change Log
 
 #### v0.2, 2013-08-01
 * `ADDED` undo/redo
