@@ -26,6 +26,15 @@
   <script src="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.js"></script>
 </head>
 <body>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+var js, fjs = d.getElementsByTagName(s)[0];
+if (d.getElementById(id)) return;
+js = d.createElement(s); js.id = id;
+js.src = "//connect.facebook.net/en/all.js#xfbml=1";
+fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
 <!-- navbar -->
 <div class="navbar navbar-inverse navbar-fixed-top">
   <a href="https://github.com/HackerWins/summernote" style="z-index: 1031"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
@@ -69,7 +78,7 @@
       })();
     </script>
     <!-- Facebook -->
-    <iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Fhackerwins.github.io%2Fsummernote&amp;send=false&amp;layout=button_count&amp;width=450&amp;show_faces=true&amp;font&amp;colorscheme=light&amp;action=like&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:120px; height:21px; margin-top:2px;" allowTransparency="true"></iframe>
+    <a class="fb-like" data-href="http://hackerwins.github.io/summernote" data-send="false" data-layout="button_count" data-width="100" data-show-faces="true" style="display:inline;margin-right:20px;"></a>
     <!-- Github Repo-->
     <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=HackerWins&amp;repo=summernote&amp;type=watch&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="100px" height="20px"></iframe>
     </p>
