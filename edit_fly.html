@@ -11,17 +11,16 @@
   <script src="http://twitter.github.io/bootstrap/assets/js/html5shiv.js"></script>
   <![endif]-->
 <!-- add library -->
-<link href="http://bootswatch.com/cerulean/bootstrap.min.css" rel="stylesheet">
-<link href="http://hackerwins.github.io/summernote/css/font-awesome.min.css" rel="stylesheet">
-<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-<script src="http://hackerwins.github.io/summernote/js/jquery.curstyles.min.js"></script>
-<script src="http://hackerwins.github.io/summernote/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.9.1.min.js"></script> 
+<script src="//v3.javascriptmvc.com/jquery/dist/jquery.curstyles.min.js"></script>
+<link href="//bootswatch.com/cerulean/bootstrap.min.css" rel="stylesheet">
+<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script> 
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.min.css" rel="stylesheet">
 <!-- add summernote -->
-<link href="http://hackerwins.github.io/summernote/summernote.css" rel="stylesheet">
-<script src="http://hackerwins.github.io/summernote/summernote.min.js"></script>
-<!--<script src="/summernote.js"></script>-->
+<link href="summernote.css" rel="stylesheet">
+<script src="summernote.min.js"></script>
 <!-- add user custom -->
-<link href="http://hackerwins.github.io/summernote/css/style.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
 <script src="http://platform.twitter.com/widgets.js"></script>
 <link href="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.css" rel="stylesheet">
 <script src="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.js"></script>
@@ -59,17 +58,17 @@
       <p class="marketing-byline"></p>
       <div class="span12">
         <pre class="prettyprint lang-javascript linenums summernote">
-          var edit = function() {
-              // create summernote
-              $('.click-to-edit').summernote({focus: true});
-          };
-          
-          var save = function() {
-              // get HTML if you need
-              var sHTML = $('.editor').code();
-              // finish to edit
-              $('.editor').destory();
-          };
+var edit = function() {
+  // create summernote
+  $('.click-to-edit').summernote({focus: true});
+};
+
+var save = function() {
+  // get HTML if you need
+  var sHTML = $('.editor').code();
+  // finish to edit
+  $('.editor').destory();
+};
         </pre>
       </div>
     </div>
