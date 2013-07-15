@@ -18,7 +18,7 @@
     };
     
     var fail = function() { return false; };
-    return { eq: eq, fail: fail }
+    return { eq: eq, fail: fail };
   }();
   
   /**
@@ -413,7 +413,7 @@
       return function(sValue) {
         history.recordUndo(makeState());
         document.execCommand(sCmd, false, sValue);
-      }
+      };
     };
 
     // native commands(with execCommand)
@@ -626,7 +626,7 @@
             welLinkBtn.addClass('disabled').attr('disabled', true);
           }
 
-          if (!linkInfo.text) {welLinkText.html(welLinkUrl.val())}
+          if (!linkInfo.text) { welLinkText.html(welLinkUrl.val()); };
         }).trigger('focus');
         welLinkBtn.click(function(event) {
           welLinkDialog.modal('hide'); //hide and createLink (ie9+)
@@ -1012,7 +1012,7 @@
         var sPaletteContents = '';
         for (var row = 0, szRow = aaColor.length; row < szRow; row++) {
           var aColor = aaColor[row];
-          var sLine = '<div>'
+          var sLine = '<div>';
           for (var col = 0, szCol = aColor.length; col < szCol; col++) {
             var sColor = aColor[col];
             var sButton = ['<button class="note-color-btn" style="background-color:', sColor,
