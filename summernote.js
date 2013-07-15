@@ -658,8 +658,8 @@
     var hKeydown = function(event) {
       var bCmd = bMac ? event.metaKey : event.ctrlKey;
       var bShift = event.shiftKey;
-      if (bCmd && (bShift && event.keyCode === key.Z) ||
-                   event.keyCode === key.Y) { // redo
+      if (bCmd && ((bShift && event.keyCode === key.Z) ||
+                   event.keyCode === key.Y)) { // redo
         editor.redo();
       } else if (bCmd && event.keyCode === key.Z) { // undo
         editor.undo();
