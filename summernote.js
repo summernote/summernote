@@ -27,7 +27,7 @@
   var list = function() {
     var head = function(array) { return array[0]; };
     var last = function(array) { return array[array.length - 1]; };
-    var initial = function(array) { return array.slice(0, length - 1); };
+    var initial = function(array) { return array.slice(0, array.length - 1); };
     var tail = function(array) { return array.slice(1); };
     
     var clusterBy = function(array, fn) {
