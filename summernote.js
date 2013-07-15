@@ -3,8 +3,9 @@
  * (c) 2013~ Youngteac Hong
  * summernote may be freely distributed under the MIT license./
  */
-"use strict";
 (function($) {
+  "use strict";
+
   //Check Platform/Agent
   var bMac = navigator.appVersion.indexOf('Mac') > -1; 
   var bMSIE = navigator.userAgent.indexOf('MSIE') > -1;
