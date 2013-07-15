@@ -148,6 +148,7 @@
       } else {
         parent.appendChild(node);
       }
+      return node;
     };
 
     // appends: append children
@@ -175,7 +176,7 @@
       if (isText(node)) { return node.splitText(offset); }
 
       // splitElement
-      var child = current.childNodes[offset];
+      var child = node.childNodes[offset];
       node = insertAfter(node.cloneNode(false), node);
       return appends(node, listNext(child));
     };

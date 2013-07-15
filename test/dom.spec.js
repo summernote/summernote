@@ -124,10 +124,15 @@ test('dom.split', function() {
   $cont = $('<div><b>b</b><u>u</u><s>strike</s><i>i</i></div>'); //bustrikei
   $s = $cont.find('s');
   dom.split($s[0], $s[0].firstChild, 3);
-  equal($cont.html(), '<b>b</b><u>u</u><s>str</s><s>ike</s><i>i</i>', 'splitBy s tag with offset 3 (middle edge with 2 depth case)');
+  equal($cont.html(), '<b>b</b><u>u</u><s>str</s><s>ike</s><i>i</i>', 'splitBy s tag with offset 3 (2 depth case)');
 
   $cont = $('<div><b>b</b><u>u</u><s>strike</s><i>i</i></div>'); //bustrikei
   $s = $cont.find('s');
   dom.split($s[0].firstChild, $s[0].firstChild, 3);
-  equal($cont.html(), '<b>b</b><u>u</u><s>strike</s><i>i</i>', 'splitBy s tag with offset 3 (middle edge with 1 depth case)');
+  equal($cont.html(), '<b>b</b><u>u</u><s>strike</s><i>i</i>', 'splitBy s tag with offset 3 (1 depth, textNode case)');
+
+  $cont = $('<div><span><b>b</b><u>u</u><s>s</s><i>i</i></span></div>'); //busi
+  $span = $cont.find('span');
+  dom.split($span[0], $span[0], 2);
+  equal($cont.html(), '<span><b>b</b><u>u</u></span><span><s>s</s><i>i</i></span>', 'splitBy span tag with offset 2 (1 depth, element case)');
 });
