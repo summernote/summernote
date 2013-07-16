@@ -6,7 +6,22 @@
     border: 1px solid #ddd;
     text-align: center;
 }
-
+@media (max-width: 979px) {
+    .hero-unit {
+        margin: 0 1em;
+    }
+}
+@media (max-width: 767px) {
+    .hero-unit {
+        padding: 1em;
+        margin: 0;
+    }
+}
+@media (max-width: 400px) {
+    .hero-unit {
+        padding: 0.5em;
+    }
+}
 
 /* Faded out hr */
 hr.soften {
@@ -23,12 +38,32 @@ hr.soften {
 /* Base class
 ------------------------- */
 .hero-unit h1 {
-    font-size: 80px;
+    font-size: 4.8em;
     font-weight: bold;
     letter-spacing: -1px;
     line-height: 1;
     text-shadow: 2px 2px 2px rgba(150, 150, 150, 2);
+
+    -webkit-transition-property: font-size;
+    -moz-transition-property: font-size;
+    transition-property: font-size;
+    -webkit-transition-duration: 0.5s, 0.5s;
+    -moz-transition-duration: 0.5s, 0.5s;
+    transition-duration: 0.5s, 0.5s;
 }
+
+@media (max-width: 767px) {
+    .hero-unit h1 {
+        font-size: 3.0em;
+    }
+}
+@media (max-width: 400px) {
+    .hero-unit h1 {
+        font-size: 2.0em;
+
+    }
+}
+
 .hero-unit p {
     font-size: 24px;
     font-weight: 300;
