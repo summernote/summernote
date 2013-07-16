@@ -109,7 +109,6 @@ hr.soften {
 ------------------------- */
 .subhead {
     text-align: left;
-    border-bottom: 1px solid #ddd;
 }
 .subhead h1 {
     font-size: 60px;
@@ -119,6 +118,12 @@ hr.soften {
 }
 .subhead .navbar {
     display: none;
+}
+
+@media (min-width: 980px) {
+    .subhead {
+        margin-top: 45px;
+    }
 }
 
 
