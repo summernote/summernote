@@ -843,11 +843,11 @@
   var Renderer = function() {
     var sToolbar = '<div class="note-toolbar btn-toolbar">' + 
                      '<div class="note-insert btn-group">' +
-                       '<button class="btn btn-small" title="Picture" data-event="showImageDialog"><i class="icon-picture"></i></button>' +
-                       '<button class="btn btn-small" title="Link" data-event="showLinkDialog" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" ><i class="icon-link"></i></button>' +
+                       '<button type="button" class="btn btn-small" title="Picture" data-event="showImageDialog"><i class="icon-picture"></i></button>' +
+                       '<button type="button" class="btn btn-small" title="Link" data-event="showLinkDialog" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" ><i class="icon-link"></i></button>' +
                      '</div>' +
                      '<div class="note-table btn-group">' +
-                       '<button class="btn btn-small dropdown-toggle" title="Table" data-toggle="dropdown"><i class="icon-table"></i> <span class="caret"></span></button>' +
+                       '<button type="button" class="btn btn-small dropdown-toggle" title="Table" data-toggle="dropdown"><i class="icon-table"></i> <span class="caret"></span></button>' +
                         '<ul class="dropdown-menu">' +
                           '<div class="note-dimension-picker">' +
                             '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>' +
@@ -858,7 +858,7 @@
                         '</ul>' +
                      '</div>' +
                      '<div class="note-style btn-group">' +
-                       '<button class="btn btn-small dropdown-toggle" title="Style" data-toggle="dropdown"><i class="icon-magic"></i> <span class="caret"></span></button>' +
+                       '<button type="button" class="btn btn-small dropdown-toggle" title="Style" data-toggle="dropdown"><i class="icon-magic"></i> <span class="caret"></span></button>' +
                        '<ul class="dropdown-menu">' +
                          '<li><a data-event="formatBlock" data-value="p">Paragraph</a></li>' +
                          '<li><a data-event="formatBlock" data-value="blockquote"><blockquote>Quote</blockquote></a></li>' +
@@ -869,7 +869,7 @@
                        '</ul>' +
                      '</div>' +
                      '<div class="note-fontsize btn-group">' +
-                       '<button class="btn btn-small dropdown-toggle" data-toggle="dropdown" title="Font Size"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +
+                       '<button type="button" class="btn btn-small dropdown-toggle" data-toggle="dropdown" title="Font Size"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +
                        '<ul class="dropdown-menu">' +
                          '<li><a data-event="fontSize" data-value="8"><i class="icon-ok"></i> 8</a></li>' +
                          '<li><a data-event="fontSize" data-value="9"><i class="icon-ok"></i> 9</a></li>' +
@@ -883,8 +883,8 @@
                        '</ul>' +
                      '</div>' +
                      '<div class="note-color btn-group">' +
-                       '<button class="btn btn-small note-recent-color" title="Recent Color" data-event="color" data-value=\'{"foreColor":"black","backColor":"yellow"}\'><i class="icon-font" style="color:black;background-color:yellow;"></i></button>' +
-                       '<button class="btn btn-small dropdown-toggle" title="More Color" data-toggle="dropdown">' +
+                       '<button type="button" class="btn btn-small note-recent-color" title="Recent Color" data-event="color" data-value=\'{"foreColor":"black","backColor":"yellow"}\'><i class="icon-font" style="color:black;background-color:yellow;"></i></button>' +
+                       '<button type="button" class="btn btn-small dropdown-toggle" title="More Color" data-toggle="dropdown">' +
                          '<span class="caret"></span>' +
                        '</button>' +
                        '<ul class="dropdown-menu">' +
@@ -901,33 +901,33 @@
                        '</ul>' +
                      '</div>' +
                      '<div class="note-style btn-group">' +
-                       '<button class="btn btn-small" title="Bold" data-shortcut="Ctrl+B" data-mac-shortcut="⌘+B" data-event="bold"><i class="icon-bold"></i></button>' +
-                       '<button class="btn btn-small" title="Italic" data-shortcut="Ctrl+I" data-mac-shortcut="⌘+I" data-event="italic"><i class="icon-italic"></i></button>' +
-                       '<button class="btn btn-small" title="Underline" data-shortcut="Ctrl+U" data-mac-shortcut="⌘+U" data-event="underline"><i class="icon-underline"></i></button>' +
-                       '<button class="btn btn-small" title="Remove Font Style" data-event="removeFormat"><i class="icon-eraser"></i></button>' +
+                       '<button type="button" class="btn btn-small" title="Bold" data-shortcut="Ctrl+B" data-mac-shortcut="⌘+B" data-event="bold"><i class="icon-bold"></i></button>' +
+                       '<button type="button" class="btn btn-small" title="Italic" data-shortcut="Ctrl+I" data-mac-shortcut="⌘+I" data-event="italic"><i class="icon-italic"></i></button>' +
+                       '<button type="button" class="btn btn-small" title="Underline" data-shortcut="Ctrl+U" data-mac-shortcut="⌘+U" data-event="underline"><i class="icon-underline"></i></button>' +
+                       '<button type="button" class="btn btn-small" title="Remove Font Style" data-event="removeFormat"><i class="icon-eraser"></i></button>' +
                      '</div>' +
                      '<div class="note-para btn-group">' +
-                       '<button class="btn btn-small" title="Unordered list" data-shortcut="Ctrl+Shift+8" data-mac-shortcut="⌘+⇧+7" data-event="insertUnorderedList"><i class="icon-list-ul"></i></button>' +
-                       '<button class="btn btn-small" title="Ordered list" data-shortcut="Ctrl+Shift+7" data-mac-shortcut="⌘+⇧+8" data-event="insertOrderedList"><i class="icon-list-ol"></i></button>' +
-                       '<button class="btn btn-small dropdown-toggle" title="Paragraph" data-toggle="dropdown"><i class="icon-align-left"></i>  <span class="caret"></span></button>' +
+                       '<button type="button" class="btn btn-small" title="Unordered list" data-shortcut="Ctrl+Shift+8" data-mac-shortcut="⌘+⇧+7" data-event="insertUnorderedList"><i class="icon-list-ul"></i></button>' +
+                       '<button type="button" class="btn btn-small" title="Ordered list" data-shortcut="Ctrl+Shift+7" data-mac-shortcut="⌘+⇧+8" data-event="insertOrderedList"><i class="icon-list-ol"></i></button>' +
+                       '<button type="button" class="btn btn-small dropdown-toggle" title="Paragraph" data-toggle="dropdown"><i class="icon-align-left"></i>  <span class="caret"></span></button>' +
                        '<ul class="dropdown-menu right">' +
                          '<li>' +
                            '<div class="note-align btn-group">' +
-                             '<button class="btn btn-small" title="Align left" data-shortcut="Ctrl+Shift+L" data-mac-shortcut="⌘+⇧+L" data-event="justifyLeft"><i class="icon-align-left"></i></button>' +
-                             '<button class="btn btn-small" title="Align center" data-shortcut="Ctrl+Shift+E" data-mac-shortcut="⌘+⇧+E" data-event="justifyCenter"><i class="icon-align-center"></i></button>' +
-                             '<button class="btn btn-small" title="Align right" data-shortcut="Ctrl+Shift+R" data-mac-shortcut="⌘+⇧+R" data-event="justifyRight"><i class="icon-align-right"></i></button>' +
-                             '<button class="btn btn-small" title="Justify full" data-shortcut="Ctrl+Shift+J" data-mac-shortcut="⌘+⇧+J" data-event="justifyFull"><i class="icon-align-justify"></i></button>' +
+                             '<button type="button" class="btn btn-small" title="Align left" data-shortcut="Ctrl+Shift+L" data-mac-shortcut="⌘+⇧+L" data-event="justifyLeft"><i class="icon-align-left"></i></button>' +
+                             '<button type="button" class="btn btn-small" title="Align center" data-shortcut="Ctrl+Shift+E" data-mac-shortcut="⌘+⇧+E" data-event="justifyCenter"><i class="icon-align-center"></i></button>' +
+                             '<button type="button" class="btn btn-small" title="Align right" data-shortcut="Ctrl+Shift+R" data-mac-shortcut="⌘+⇧+R" data-event="justifyRight"><i class="icon-align-right"></i></button>' +
+                             '<button type="button" class="btn btn-small" title="Justify full" data-shortcut="Ctrl+Shift+J" data-mac-shortcut="⌘+⇧+J" data-event="justifyFull"><i class="icon-align-justify"></i></button>' +
                            '</div>' +
                          '</li>' +
                          '<li>' +
                            '<div class="note-list btn-group">' +
-                             '<button class="btn btn-small" title="Outdent" data-shortcut="Shift+TAB" data-mac-shortcut="⇧+TAB" data-event="outdent"><i class="icon-indent-left"></i></button>' +
-                             '<button class="btn btn-small" title="Indent" data-shortcut="TAB" data-mac-shortcut="TAB" data-event="indent"><i class="icon-indent-right"></i></button>' +
+                             '<button type="button" class="btn btn-small" title="Outdent" data-shortcut="Shift+TAB" data-mac-shortcut="⇧+TAB" data-event="outdent"><i class="icon-indent-left"></i></button>' +
+                             '<button type="button" class="btn btn-small" title="Indent" data-shortcut="TAB" data-mac-shortcut="TAB" data-event="indent"><i class="icon-indent-right"></i></button>' +
                          '</li>' +
                        '</ul>' +
                      '</div>' +
                      '<div class="note-line-height btn-group">' +
-                       '<button class="btn btn-small dropdown-toggle" data-toggle="dropdown" title="Line Height"><i class="icon-text-height"></i>&nbsp; <b class="caret"></b></button>' +
+                       '<button type="button" class="btn btn-small dropdown-toggle" data-toggle="dropdown" title="Line Height"><i class="icon-text-height"></i>&nbsp; <b class="caret"></b></button>' +
                        '<ul class="dropdown-menu right">' +
                        '<li><a data-event="lineHeight" data-value="1.0"><i class="icon-ok"></i> 1.0</a></li>' +
                        '<li><a data-event="lineHeight" data-value="1.2"><i class="icon-ok"></i> 1.2</a></li>' +
@@ -946,8 +946,8 @@
                        '<div class="popover-content note-link-content">' +
                          '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
                          '<div class="note-insert btn-group">' +
-                           '<button class="btn btn-small" title="Edit" data-event="showLinkDialog"><i class="icon-edit"></i></button>' +
-                           '<button class="btn btn-small" title="Unlink" data-event="unlink"><i class="icon-unlink"></i></button>' +
+                           '<button type="button" class="btn btn-small" title="Edit" data-event="showLinkDialog"><i class="icon-edit"></i></button>' +
+                           '<button type="button" class="btn btn-small" title="Unlink" data-event="unlink"><i class="icon-unlink"></i></button>' +
                          '</div>' +
                        '</div>' +
                      '</div>' +
@@ -1017,7 +1017,7 @@
           var sLine = '<div>';
           for (var col = 0, szCol = aColor.length; col < szCol; col++) {
             var sColor = aColor[col];
-            var sButton = ['<button class="note-color-btn" style="background-color:', sColor,
+            var sButton = ['<button type="button" class="note-color-btn" style="background-color:', sColor,
                            ';" data-event="', sEvent,
                            '" data-value="', sColor,
                            '" title="', sColor,
