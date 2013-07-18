@@ -1118,8 +1118,8 @@
       // set the HTML contents
       info.editable.html(sHTML);
     },
-    // destory Editor Layout and dettach Key and Mouse Event
-    destory : function() {
+    // destroy Editor Layout and dettach Key and Mouse Event
+    destroy : function() {
       var info = renderer.layoutInfo(this);
       eventHandler.dettach(info);
       renderer.removeLayout(this);

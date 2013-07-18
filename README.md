@@ -52,6 +52,27 @@ $(document).ready(function() {
 });
 ```
 
+#### 04. summernote
+Finally, run script after document ready.
+```javascript
+$(document).ready(function() {
+  $('#summernote').summernote();
+});
+```
+
+### API
+Get HTML if you need.
+
+```javascript
+var sHTML = $('#summernote').code();
+```
+
+Destroy summernote.
+
+```javascript
+$('#summernote').destroy();
+```
+
 #### Dependencies
 * jQuery: http://jquery.com/
 * jquery.curstyles: http://bitovi.com/blog/2010/06/get-multiple-computed-styles-fast-with-the-curstyles-jquery-plugin.html
