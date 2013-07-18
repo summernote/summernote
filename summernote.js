@@ -196,6 +196,31 @@
         appends(clone, listNext(node));
         return clone;
       });
+    };  
+    
+    var makeOffsetPath = function(elRoot, elPivot) {
+      var position = function (el) {
+        var cnt = 0;
+		    for (var i=0; el = el.previousSibling; i++) {}
+        return i;
+	    };
+      
+      var aOffset = [], el = elPivot;
+      while (el && el !== elRoot) {
+        aOffset.push(position(el));
+        el = el.parentNode;
+      }
+      aOffset.push(position(elRoot));
+      return aOffset.reverse();
+    };
+
+    var fromOffsetPath = function(elRoot, aOffset) {
+      aOffset = list.tail(aOffset);
+      var el = elRoot;
+      for (var i=0, len = aOffset.length; i < len; i++) {
+        el = el.childNodes[aOffset[i]] || el;
+      }
+      return el;
     };
     
     return {
@@ -209,7 +234,8 @@
       ancestor: ancestor, listAncestor: listAncestor,
       listNext: listNext,
       commonAncestor: commonAncestor, listBetween: listBetween,
-      insertAfter: insertAfter, split: split
+      insertAfter: insertAfter, split: split,
+      makeOffsetPath: makeOffsetPath, fromOffsetPath: fromOffsetPath
     };
   }();
 
@@ -245,9 +271,11 @@
     this.select = function() {
       var nativeRng = nativeRange();
       if (bW3CRangeSupport) {
-        document.getSelection().addRange(nativeRng);
+        var s = window.getSelection();
+        if (s.rangeCount > 0) { s.removeAllRanges(); }
+        s.addRange(nativeRng);
       } // TODO: handle IE8+ TextRange
-    }
+    };
     
     // listPara: listing paragraphs on range
     this.listPara = function() {
@@ -402,11 +430,24 @@
 
     // history and command, TODO: Range -> XPath Bookmark, Scroll
     var makeState = function() {
-      return { contents: $('.note-editable').html(), range: new Range() };
+      var welEditable = $('.note-editable'), elEditable = welEditable[0];
+      var rng = new Range();
+      var rngInfo =  {
+        so: rng.so, eo: rng.eo,
+        sop: dom.makeOffsetPath(elEditable, rng.sc), eop: dom.makeOffsetPath(elEditable, rng.ec)
+      };
+      return { contents: welEditable.html(), range: rng, rngInfo: rngInfo };
     };
+    
     var updateState = function(oState) {
       $('.note-editable').html(oState.contents);
+      var elEditable = $('.note-editable')[0];
+      var rngInfo = oState.rngInfo;
+      var rng = new Range(dom.fromOffsetPath(elEditable, rngInfo.sop), rngInfo.so,
+                          dom.fromOffsetPath(elEditable, rngInfo.eop), rngInfo.eo);
+      rng.select();
     };
+    
     var history = new History(updateState);
     this.undo = function() { history.undo(makeState()); };
     this.redo = function() { history.redo(makeState()); };
@@ -493,6 +534,18 @@
       sTR = aTR.join('');
       var sTable = '<table class="table table-bordered">' + sTR + '</table>';
       (new Range()).insertNode($(sTable)[0]);
+    };
+
+    this.recordUndo = function(bForce) {
+      // check recordable, return true when range is not collapsed or caret on white space character
+      var isRecordable = function(rng) {
+        return !rng.isCollapsed()
+          || dom.isText(rng.sc) && (/[\s]/.test(rng.sc.nodeValue.charAt(rng.so-1)));
+      };
+      
+      if (bForce || isRecordable(new Range())) {
+        history.recordUndo(makeState());
+      } 
     };
   };
 
@@ -655,7 +708,7 @@
     
     var key = { TAB: 9, B: 66, E: 69, I: 73, J: 74, K: 75, L: 76, R: 82,
                 U: 85, Y: 89, Z: 90,
-                NUM0: 48, NUM1: 49, NUM4: 52, NUM7: 55, NUM8: 56};
+                NUM0: 48, NUM1: 49, NUM4: 52, NUM7: 55, NUM8: 56, ENTER: 13};
 
     var hKeydown = function(event) {
       var bCmd = bMac ? event.metaKey : event.ctrlKey;
@@ -698,6 +751,7 @@
       } else if (bCmd && (key.NUM1 <= event.keyCode && event.keyCode <= key.NUM4)) { // formatBlock H1~H4
         editor.formatBlock('H' + String.fromCharCode(event.keyCode));
       } else {
+        editor.recordUndo(event.keyCode === key.ENTER);
         return; // not matched
       }
       event.preventDefault(); //prevent default event for FF
