@@ -52,7 +52,7 @@
 <div class="container">
   <div class="marketing">
     <h1>Edit content on the fly</h1>
-    <p class="marketing-byline">You can edit content on th fly by 'content editable'</p>
+    <p class="marketing-byline">You can edit content on the fly by 'content editable'</p>
     <div class="row">
       <h2>Code</h2>
       <p class="marketing-byline"></p>
@@ -67,7 +67,7 @@ var save = function() {
   // get HTML if you need
   var sHTML = $('.editor').code();
   // finish to edit
-  $('.editor').destory();
+  $('.editor').destroy();
 };
         </pre>
       </div>
@@ -104,7 +104,7 @@ $(document).ready(function() {
   $('#save').click(function () {
     var sHTML = $('#click-to-edit').code();
     //sHTML && alert(sHTML);
-    $('#click-to-edit').destory();
+    $('#click-to-edit').destroy();
     $(this).removeClass('btn-primary').addClass('disabled');
     $('#edit').addClass('btn-primary').removeClass('disabled');
   });
