@@ -52,22 +52,14 @@ $(document).ready(function() {
 });
 ```
 
-#### 04. summernote
-Finally, run script after document ready.
-```javascript
-$(document).ready(function() {
-  $('#summernote').summernote();
-});
-```
-
 ### API
-Get HTML if you need.
+Get HTML `code` if you need.
 
 ```javascript
 var sHTML = $('#summernote').code();
 ```
 
-Destroy summernote.
+`Destroy` summernote.
 
 ```javascript
 $('#summernote').destroy();
