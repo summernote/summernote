@@ -109,6 +109,7 @@ hr.soften {
 ------------------------- */
 .subhead {
     text-align: left;
+    padding: 30px 0;
 }
 .subhead h1 {
     font-size: 60px;
