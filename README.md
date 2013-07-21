@@ -97,17 +97,35 @@ $('#summernote').destroy();
 #### structure of summernote.js
 
 ```
-$.extend - Renderer
-         \ Editor - Range
-                  \ Style
-                  \ History
-         \ Toolbar
-         \ Popover
-         \ Dialog
+$.extend - Renderer (Markup)
+         \ EventHandler - Editor - Range (W3CRange extention)
+                                 \ Style
+                                 \ History
+                        \ Toolbar
+                        \ Popover
+                        \ Dialog
+----------Common Utils----------
+Dom, List, Func
 ```
-### Author
+
+#### build summernote.js
+```
+# grunt-cli is need by grunt; you might have this installed already
+npm install -g grunt-cli
+npm install
+grunt build
+```
+At this point, you should now have a `build/` directory populated with everything you need to use summernote.
+
+#### test summernote.js
+run tests with PhantomJS
+```
+grunt test
+```
+
+### Contacts
 * Email: susukang98@gmail.com
-* Twitter: http://twitter.com/susukang98
+* Twitter: http://twitter.com/hackerwins
 
 ### License
 summernote may be freely distributed under the MIT license.
