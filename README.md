@@ -98,8 +98,8 @@ $('#summernote').destroy();
 ```
 $.extend - Renderer (Markup)
          \ EventHandler - Editor - Range (W3CRange extention)
-                                 \ Style
-                                 \ History
+                                 \ Style (Style Getter and Setter)
+                                 \ History (Store on jQuery.data)
                         \ Toolbar
                         \ Popover
                         \ Dialog
