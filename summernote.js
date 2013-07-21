@@ -369,17 +369,16 @@
 
   /**
    * History
-   * TODO: move undo/redo stack to jquery's data for multiple editor
    */
-  var History = function(fnApplyState) {
+  var History = function() {
     var aUndo = [], aRedo = [];
 
-    this.undo = function(oState) {
+    this.undo = function(fnApplyState, oState) {
       if (aUndo.length === 0) { return; }
       fnApplyState(aUndo.pop()), aRedo.push(oState);
     };
 
-    this.redo = function(oState) {
+    this.redo = function(fnApplyState, oState) {
       if (aRedo.length === 0) { return; }
       fnApplyState(aRedo.pop()), aUndo.push(oState);
     };
@@ -401,19 +400,30 @@
     };
 
     // history and command, TODO: Range -> XPath Bookmark, Scroll
-    var makeState = function() {
-      return { contents: $('.note-editable').html(), range: new Range() };
+    var makeState = function(welEditable) {
+      return { contents: welEditable.html(), range: new Range() };
     };
-    var updateState = function(oState) {
-      $('.note-editable').html(oState.contents);
+
+    // undo
+    this.undo = function(welEditable) {
+      var history = welEditable.data('NoteHistory');
+      history.undo(function(oState) {
+        welEditable.html(oState.contents);
+      }, makeState(welEditable));
     };
-    var history = new History(updateState);
-    this.undo = function() { history.undo(makeState()); };
-    this.redo = function() { history.redo(makeState()); };
+
+    // redo
+    this.redo = function(welEditable) {
+      var history = welEditable.data('NoteHistory');
+      history.redo(function(oState) {
+        welEditable.html(oState.contents);
+      }, makeState(welEditable));
+    };
 
     var makeExecCommand = function(sCmd) {
-      return function(sValue) {
-        history.recordUndo(makeState());
+      return function(welEditable, sValue) {
+        var history = welEditable.data('NoteHistory');
+        history.recordUndo(makeState(welEditable));
         document.execCommand(sCmd, false, sValue);
       };
     };
@@ -427,20 +437,23 @@
       this[aCmd[idx]] = makeExecCommand(aCmd[idx]);
     }                
     
-    this.fontSize = function(sValue) {
-      history.recordUndo(makeState());
+    this.fontSize = function(welEditable, sValue) {
+      var history = welEditable.data('NoteHistory');
+      history.recordUndo(makeState(welEditable));
       style.styleFont(new Range(), {fontSize: sValue + 'px'});
     };
     
-    this.lineHeight = function(sValue) {
-      history.recordUndo(makeState());
+    this.lineHeight = function(welEditable, sValue) {
+      var history = welEditable.data('NoteHistory');
+      history.recordUndo(makeState(welEditable));
       style.stylePara(new Range(), {lineHeight: sValue});
     };
 
-    this.unlink = function() {
+    this.unlink = function(welEditable) {
       var rng = new Range();
       if (rng.isOnAnchor()) {
-        history.recordUndo(makeState());
+        var history = welEditable.data('NoteHistory');
+        history.recordUndo(makeState(welEditable));
         var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
         rng = new Range(elAnchor, 0, elAnchor, 1);
         rng.select();
@@ -448,7 +461,7 @@
       }
     };
 
-    this.setLinkDialog = function(fnShowDialog) {
+    this.setLinkDialog = function(welEditable, fnShowDialog) {
       var rng = new Range();
       if (rng.isOnAnchor()) {
         var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
@@ -460,7 +473,8 @@
         url: rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor).href : ""
       }, function(sLinkUrl) {
         rng.select();
-        history.recordUndo(makeState());
+        var history = welEditable.data('NoteHistory');
+        history.recordUndo(makeState(welEditable));
         if (sLinkUrl.toLowerCase().indexOf("http://") !== 0) {
           sLinkUrl = "http://" + sLinkUrl;
         }
@@ -468,14 +482,15 @@
       });
     };
     
-    this.color = function(sObjColor) {
+    this.color = function(welEditable, sObjColor) {
       var oColor = JSON.parse(sObjColor);
-      this.foreColor(oColor.foreColor);
-      this.backColor(oColor.backColor);
+      this.foreColor(welEditable, oColor.foreColor);
+      this.backColor(welEditable, oColor.backColor);
     };
     
-    this.insertTable = function(sDim) {
-      history.recordUndo(makeState());
+    this.insertTable = function(welEditable, sDim) {
+      var history = welEditable.data('NoteHistory');
+      history.recordUndo(makeState(welEditable));
       var aDim = sDim.split('x');
       var nCol = aDim[0], nRow = aDim[1];
       
@@ -552,8 +567,8 @@
     };
     
     this.updateRecentColor = function(elBtn, sEvent, sValue) {
-      var welNoteColor = $(elBtn).closest('.note-color');
-      var welRecentColor = welNoteColor.find('.note-recent-color');
+      var welColor = $(elBtn).closest('.note-color');
+      var welRecentColor = welColor.find('.note-recent-color');
       var oColor = JSON.parse(welRecentColor.attr('data-value'));
       oColor[sEvent] = sValue;
       welRecentColor.attr('data-value', JSON.stringify(oColor));
@@ -657,46 +672,60 @@
                 U: 85, Y: 89, Z: 90,
                 NUM0: 48, NUM1: 49, NUM4: 52, NUM7: 55, NUM8: 56};
 
+    // makeLayoutInfo from editor's descendant node.
+    var makeLayoutInfo = function(descendant) {
+      var welEditor = $(descendant).closest('.note-editor');
+      return {
+        editor: function() { return welEditor; },
+        editable: function() { return welEditor.find('.note-editable'); },
+        toolbar: function() { return welEditor.find('.note-toolbar'); },
+        popover: function() { return welEditor.find('.note-popover'); },
+        dialog: function() { return welEditor.find('.note-dialog'); }
+      };
+    };
+
     var hKeydown = function(event) {
-      var bCmd = bMac ? event.metaKey : event.ctrlKey;
-      var bShift = event.shiftKey;
-      if (bCmd && ((bShift && event.keyCode === key.Z) ||
-                   event.keyCode === key.Y)) { // redo
-        editor.redo();
-      } else if (bCmd && event.keyCode === key.Z) { // undo
-        editor.undo();
-      } else if (bCmd && event.keyCode === key.B) { // bold
-        editor.bold();
-      } else if (bCmd && event.keyCode === key.I) { // italic
-        editor.italic();
-      } else if (bCmd && event.keyCode === key.U) { // underline
-        editor.underline();
-      } else if (bCmd && event.keyCode === key.K) { // showLinkDialog
-        var welNoteEditor = $(event.target).closest('.note-editor');
-        var welNoteDialog = welNoteEditor.find('.note-dialog');
-        editor.setLinkDialog(function(linkInfo, cb) {
-          dialog.showLinkDialog(welNoteDialog, linkInfo, cb);
+      var bCmd = bMac ? event.metaKey : event.ctrlKey,
+          bShift = event.shiftKey, keyCode = event.keyCode;
+
+      // optimize
+      var oLayoutInfo = (bCmd || bShift) ? makeLayoutInfo(event.target) : null;
+
+      if (bCmd && ((bShift && keyCode === key.Z) || keyCode === key.Y)) {
+        editor.redo(oLayoutInfo.editable());
+      } else if (bCmd && keyCode === key.Z) {
+        editor.undo(oLayoutInfo.editable());
+      } else if (bCmd && keyCode === key.B) {
+        editor.bold(oLayoutInfo.editable());
+      } else if (bCmd && keyCode === key.I) {
+        editor.italic(oLayoutInfo.editable());
+      } else if (bCmd && keyCode === key.U) {
+        editor.underline(oLayoutInfo.editable());
+      } else if (bCmd && keyCode === key.K) {
+        editor.setLinkDialog(oLayoutInfo.editable(), function(linkInfo, cb) {
+          dialog.showLinkDialog(oLayoutInfo.dialog(), linkInfo, cb);
         });
-      } else if (bCmd && bShift && event.keyCode === key.L) {
-        editor.justifyLeft();
-      } else if (bCmd && bShift && event.keyCode === key.E) {
-        editor.justifyCenter();
-      } else if (bCmd && bShift && event.keyCode === key.R) {
-        editor.justifyRight();
-      } else if (bCmd && bShift && event.keyCode === key.J) {
-        editor.justifyFull();
-      } else if (bCmd && bShift && event.keyCode === key.NUM7) {
-        editor.insertUnorderedList(); // insertUnorderedList
-      } else if (bCmd && bShift && event.keyCode === key.NUM8) {
-        editor.insertOrderedList(); // insertUnorderedList
-      } else if (bShift && event.keyCode === key.TAB) { // shift + tab
-        editor.outdent();
-      } else if (event.keyCode === key.TAB) { // tab
-        editor.indent();
-      } else if (bCmd && event.keyCode === key.NUM0) { // formatBlock Paragraph
-        editor.formatBlock('P');
-      } else if (bCmd && (key.NUM1 <= event.keyCode && event.keyCode <= key.NUM4)) { // formatBlock H1~H4
-        editor.formatBlock('H' + String.fromCharCode(event.keyCode));
+      } else if (bCmd && bShift && keyCode === key.L) {
+        editor.justifyLeft(oLayoutInfo.editable());
+      } else if (bCmd && bShift && keyCode === key.E) {
+        editor.justifyCenter(oLayoutInfo.editable());
+      } else if (bCmd && bShift && keyCode === key.R) {
+        editor.justifyRight(oLayoutInfo.editable());
+      } else if (bCmd && bShift && keyCode === key.J) {
+        editor.justifyFull(oLayoutInfo.editable());
+      } else if (bCmd && bShift && keyCode === key.NUM7) {
+        editor.insertUnorderedList(oLayoutInfo.editable());
+      } else if (bCmd && bShift && keyCode === key.NUM8) {
+        editor.insertOrderedList(oLayoutInfo.editable());
+      } else if (bShift && keyCode === key.TAB) { // shift + tab
+        editor.outdent(oLayoutInfo.editable());
+      } else if (keyCode === key.TAB) { // tab
+        editor.indent(oLayoutInfo.editable());
+      } else if (bCmd && keyCode === key.NUM0) { // formatBlock Paragraph
+        editor.formatBlock(oLayoutInfo.editable(), 'P');
+      } else if (bCmd && (key.NUM1 <= keyCode && keyCode <= key.NUM4)) {
+        var sHeading = 'H' + String.fromCharCode(keyCode); // H1~H4
+        editor.formatBlock(oLayoutInfo.editable(), sHeading);
       } else {
         return; // not matched
       }
@@ -723,19 +752,17 @@
     };
     
     var hToolbarAndPopoverUpdate = function(event) {
-      var elEditableOrToolbar = event.currentTarget || event.target;
-      var welEditor = $(elEditableOrToolbar.parentNode);
+      var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
       
       var oStyle = editor.currentStyle();
-      toolbar.update(welEditor.find('.note-toolbar'), oStyle);
-      popover.update(welEditor.find('.note-popover'), oStyle);
+      toolbar.update(oLayoutInfo.toolbar(), oStyle);
+      popover.update(oLayoutInfo.popover(), oStyle);
     };
     
     var hScroll = function(event) {
-      var elEditableOrToolbar = event.currentTarget || event.target;
-      var welEditor = $(elEditableOrToolbar.parentNode);
+      var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
       //hide popover when scrolled
-      popover.hide(welEditor.find('.note-popover'));
+      popover.hide(oLayoutInfo.popover());
     };
     
     var hToolbarAndPopoverMousedown = function(event) {
@@ -751,24 +778,23 @@
         var sEvent = welBtn.attr('data-event'),
             sValue = welBtn.attr('data-value');
 
-        var welNoteEditor = $(event.target).closest('.note-editor'),
-            welNoteDialog = welNoteEditor.find('.note-dialog'),
-            welNoteEditable = welNoteEditor.find('.note-editable');
+        var oLayoutInfo = makeLayoutInfo(event.target);
+        var welDialog = oLayoutInfo.dialog();
 
         if (editor[sEvent]) { // execute cmd
-          welNoteEditable.trigger('focus');
-          editor[sEvent](sValue);
+          oLayoutInfo.editable().trigger('focus');
+          editor[sEvent](oLayoutInfo.editable(), sValue);
         }
         
         // update recent color
         if ($.inArray(sEvent, ["backColor", "foreColor"]) !== -1) {
           toolbar.updateRecentColor(welBtn[0], sEvent, sValue);
         } else if (sEvent === "showLinkDialog") { // popover to dialog
-          editor.setLinkDialog(function(linkInfo, cb) {
-            dialog.showLinkDialog(welNoteDialog, linkInfo, cb);
+          editor.setLinkDialog(oLayoutInfo.editable(), function(linkInfo, cb) {
+            dialog.showLinkDialog(welDialog, linkInfo, cb);
           });
         } else if (sEvent === "showImageDialog") {
-          dialog.showImageDialog(welNoteDialog, hDropImage, insertImages);
+          dialog.showImageDialog(welDialog, hDropImage, insertImages);
         }
 
         hToolbarAndPopoverUpdate(event);
@@ -1044,6 +1070,8 @@
       if (nHeight) { welEditable.height(nHeight); }
 
       welEditable.html(welHolder.html());
+      //NOTE: Store on jQuery.data()
+      welEditable.data('NoteHistory', new History());
       
       //03. create Toolbar
       var welToolbar = $(sToolbar).prependTo(welEditor);
@@ -1062,8 +1090,8 @@
       welHolder.hide();
     };
     
-    // layoutInfo
-    var layoutInfo = this.layoutInfo = function(welHolder) {
+    // layoutInfoFromHolder
+    var layoutInfoFromHolder = this.layoutInfoFromHolder = function(welHolder) {
       var welEditor = welHolder.next();
       if (!welEditor.hasClass('note-editor')) { return; }
       
@@ -1073,12 +1101,12 @@
         toolbar: welEditor.find('.note-toolbar'),
         popover: welEditor.find('.note-popover'),
         dialog: welEditor.find('.note-dialog')
-      }
+      };
     };
     
     // removeLayout
     var removeLayout = this.removeLayout = function(welHolder) {
-      var info = layoutInfo(welHolder);
+      var info = layoutInfoFromHolder(welHolder);
       if (!info) { return; }
       welHolder.html(info.editable.html());
       
@@ -1101,14 +1129,14 @@
       // createLayout
       renderer.createLayout(this, options.height);
 
-      var info = renderer.layoutInfo(this);
+      var info = renderer.layoutInfoFromHolder(this);
       eventHandler.attach(info);
 
       if (options.focus) { info.editable.focus(); } // options focus
     },
     // get the HTML contents of note or set the HTML contents of note.
     code : function(sHTML) {
-      var info = renderer.layoutInfo(this);
+      var info = renderer.layoutInfoFromHolder(this);
 
       //get the HTML contents
       if (sHTML === undefined) {
@@ -1120,7 +1148,7 @@
     },
     // destroy Editor Layout and dettach Key and Mouse Event
     destroy : function() {
-      var info = renderer.layoutInfo(this);
+      var info = renderer.layoutInfoFromHolder(this);
       eventHandler.dettach(info);
       renderer.removeLayout(this);
     },
