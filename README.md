@@ -76,11 +76,11 @@ $('#summernote').destroy();
 ### Upcoming Features
 
 #### v0.2, 2013-08-01
-* undo/redo
-* image: sizing handle and popover
-* support standalone css
-* fileupload server integration
+* Add undo/redo
+* Add image sizing handle and popover
+* Support standalone css
 * Remove jQuery.curstyles dependency
+* Support Multiple Editor
 
 ### Change Log
 
