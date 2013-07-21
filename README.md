@@ -92,6 +92,19 @@ $('#summernote').destroy();
 * `ADDED` link: popover and dialog
 * `ADDED` table: create table with dimension picker
 
+### for Hacker
+
+#### structure of summernote.js
+
+```
+$.extend - Renderer
+         \ Editor - Range
+                  \ Style
+                  \ History
+         \ Toolbar
+         \ Popover
+         \ Dialog
+```
 ### Author
 * Email: susukang98@gmail.com
 * Twitter: http://twitter.com/susukang98
