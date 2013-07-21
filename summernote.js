@@ -17,9 +17,10 @@
     var eq = function(target) {
       return function(current) { return target === current; };
     };
+    var eq2 = function(current, target) { return current === target; }
     
     var fail = function() { return false; };
-    return { eq: eq, fail: fail };
+    return { eq: eq, eq2: eq2, fail: fail };
   }();
   
   /**
@@ -255,10 +256,7 @@
       var aPara = list.compact($.map(aNode, function(node) {
         return dom.ancestor(node, dom.isPara);
       }));
-      var aaClustered = list.clusterBy(aPara, function(nodeA, nodeB) {
-        return nodeA === nodeB;
-      });
-      return $.map(aaClustered, list.head);
+      return $.map(list.clusterBy(aPara, func.eq2), list.head);
     };
     
     // isOnList: judge whether range is on list node or not
@@ -420,10 +418,14 @@
       }, makeState(welEditable));
     };
 
+    var recordUndo = this.recordUndo = function(welEditable) {
+      var history = welEditable.data('NoteHistory');
+      history.recordUndo(makeState(welEditable));
+    };
+
     var makeExecCommand = function(sCmd) {
       return function(welEditable, sValue) {
-        var history = welEditable.data('NoteHistory');
-        history.recordUndo(makeState(welEditable));
+        recordUndo(welEditable);
         document.execCommand(sCmd, false, sValue);
       };
     };
@@ -438,22 +440,19 @@
     }                
     
     this.fontSize = function(welEditable, sValue) {
-      var history = welEditable.data('NoteHistory');
-      history.recordUndo(makeState(welEditable));
+      recordUndo(welEditable);
       style.styleFont(new Range(), {fontSize: sValue + 'px'});
     };
     
     this.lineHeight = function(welEditable, sValue) {
-      var history = welEditable.data('NoteHistory');
-      history.recordUndo(makeState(welEditable));
+      recordUndo(welEditable);
       style.stylePara(new Range(), {lineHeight: sValue});
     };
 
     this.unlink = function(welEditable) {
       var rng = new Range();
       if (rng.isOnAnchor()) {
-        var history = welEditable.data('NoteHistory');
-        history.recordUndo(makeState(welEditable));
+        recordUndo(welEditable);
         var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
         rng = new Range(elAnchor, 0, elAnchor, 1);
         rng.select();
@@ -473,8 +472,7 @@
         url: rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor).href : ""
       }, function(sLinkUrl) {
         rng.select();
-        var history = welEditable.data('NoteHistory');
-        history.recordUndo(makeState(welEditable));
+        recordUndo(welEditable);
         if (sLinkUrl.toLowerCase().indexOf("http://") !== 0) {
           sLinkUrl = "http://" + sLinkUrl;
         }
@@ -489,8 +487,7 @@
     };
     
     this.insertTable = function(welEditable, sDim) {
-      var history = welEditable.data('NoteHistory');
-      history.recordUndo(makeState(welEditable));
+      recordUndo(welEditable);
       var aDim = sDim.split('x');
       var nCol = aDim[0], nRow = aDim[1];
       
@@ -668,9 +665,10 @@
     var toolbar = new Toolbar(), popover = new Popover();
     var dialog = new Dialog();
     
-    var key = { TAB: 9, B: 66, E: 69, I: 73, J: 74, K: 75, L: 76, R: 82,
-                U: 85, Y: 89, Z: 90,
-                NUM0: 48, NUM1: 49, NUM4: 52, NUM7: 55, NUM8: 56};
+    var key = { BACKSPACE: 8, TAB: 9, ENTER: 13, SPACE: 32,
+                B: 66, E: 69, I: 73, J: 74, K: 75, L: 76, R: 82,
+                U: 85, Y: 89, Z: 90, 
+                NUM0: 48, NUM1: 49, NUM4: 52, NUM7: 55, NUM8: 56 };
 
     // makeLayoutInfo from editor's descendant node.
     var makeLayoutInfo = function(descendant) {
@@ -727,6 +725,10 @@
         var sHeading = 'H' + String.fromCharCode(keyCode); // H1~H4
         editor.formatBlock(oLayoutInfo.editable(), sHeading);
       } else {
+        if (keyCode === key.BACKSPACE || keyCode === key.ENTER ||
+            keyCode === key.SPACE) {
+          editor.recordUndo(makeLayoutInfo(event.target).editable());
+        }
         return; // not matched
       }
       event.preventDefault(); //prevent default event for FF
