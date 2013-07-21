@@ -1128,31 +1128,43 @@
     summernote : function(options) {
       options = options || {};
 
-      // createLayout
-      renderer.createLayout(this, options.height);
+      this.each(function(idx, elHolder) {
+        var welHolder = $(elHolder);
 
-      var info = renderer.layoutInfoFromHolder(this);
-      eventHandler.attach(info);
+        // createLayout
+        renderer.createLayout(welHolder, options.height);
 
-      if (options.focus) { info.editable.focus(); } // options focus
+        var info = renderer.layoutInfoFromHolder(welHolder);
+        eventHandler.attach(info);
+
+        if (options.focus) { info.editable.focus(); } // options focus
+      });
     },
     // get the HTML contents of note or set the HTML contents of note.
     code : function(sHTML) {
-      var info = renderer.layoutInfoFromHolder(this);
-
       //get the HTML contents
       if (sHTML === undefined) {
-        return info.editable.html();
+        return this.map(function(idx, elHolder) {
+          var info = renderer.layoutInfoFromHolder($(elHolder));
+          return info.editable.html();
+        });
       }
 
       // set the HTML contents
-      info.editable.html(sHTML);
+      this.each(function(i, elHolder) {
+        var info = renderer.layoutInfoFromHolder($(elHolder));
+        info.editable.html(sHTML);
+      });
     },
     // destroy Editor Layout and dettach Key and Mouse Event
     destroy : function() {
-      var info = renderer.layoutInfoFromHolder(this);
-      eventHandler.dettach(info);
-      renderer.removeLayout(this);
+      this.each(function(idx, elHolder) {
+        var welHolder = $(elHolder);
+
+        var info = renderer.layoutInfoFromHolder(welHolder);
+        eventHandler.dettach(info);
+        renderer.removeLayout(welHolder);
+      });
     },
     // inner object for test
     summernoteInner : function() {
