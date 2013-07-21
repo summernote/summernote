@@ -332,32 +332,32 @@
     // get current style
     this.current = function(rng) {
       var welCont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
-      var oStyle = welCont.curStyles('font-size', 'font-weight', 'font-style',
-                                     'text-decoration', 'text-align',
-                                     'list-style-type', 'line-height') || {};
+      var oStyle = welCont.css(['font-size', 'font-weight', 'font-style',
+                                'text-decoration', 'text-align',
+                                'list-style-type', 'line-height']) || {};
                                      
-      oStyle.fontSize = parseInt(oStyle.fontSize);
+      oStyle['font-size'] = parseInt(oStyle['font-size']);
 
-      // FF fontWeight patch(number to 'bold' or 'normal')
-      if (!isNaN(parseInt(oStyle.fontWeight))) {
-        oStyle.fontWeight = oStyle.fontWeight > 400 ? 'bold' : 'normal';
+      // FF font-weight patch(number to 'bold' or 'normal')
+      if (!isNaN(parseInt(oStyle['font-weight']))) {
+        oStyle['font-weight'] = oStyle['font-weight'] > 400 ? 'bold' : 'normal';
       }
       
-      // listStyleType to listStyle(unordered, ordered)
+      // list-style-type to list-style(unordered, ordered)
       if (!rng.isOnList()) {
-        oStyle.listStyle = 'none';
+        oStyle['list-style'] = 'none';
       } else {
         var aOrderedType = ['circle', 'disc', 'disc-leading-zero', 'square'];
-        var bUnordered = $.inArray(oStyle.listStyleType, aOrderedType) > -1;
-        oStyle.listStyle = bUnordered ? 'unordered' : 'ordered';
+        var bUnordered = $.inArray(oStyle['list-style-type'], aOrderedType) > -1;
+        oStyle['list-style'] = bUnordered ? 'unordered' : 'ordered';
       }
 
       var elPara = dom.ancestor(rng.sc, dom.isPara);
-      if (elPara && elPara.style.lineHeight) {
-        oStyle.lineHeight = elPara.style.lineHeight;
+      if (elPara && elPara.style['line-height']) {
+        oStyle['line-height'] = elPara.style.lineHeight;
       } else {
-        var lineHeight = parseInt(oStyle.lineHeight) / parseInt(oStyle.fontSize);
-        oStyle.lineHeight = lineHeight.toFixed(1);
+        var lineHeight = parseInt(oStyle['line-height']) / parseInt(oStyle['font-size']);
+        oStyle['line-height'] = lineHeight.toFixed(1);
       }
 
       oStyle.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);
@@ -510,11 +510,11 @@
       };
       
       var welFontsize = welToolbar.find('.note-fontsize');
-      welFontsize.find('.note-current-fontsize').html(oStyle.fontSize);
-      checkDropdownMenu(welFontsize, parseFloat(oStyle.fontSize));
+      welFontsize.find('.note-current-fontsize').html(oStyle['font-size']);
+      checkDropdownMenu(welFontsize, parseFloat(oStyle['font-size']));
       
       var welLineHeight = welToolbar.find('.note-line-height');
-      checkDropdownMenu(welLineHeight, parseFloat(oStyle.lineHeight));
+      checkDropdownMenu(welLineHeight, parseFloat(oStyle['line-height']));
       
       //check button state
       var btnState = function(sSelector, pred) {
@@ -523,31 +523,31 @@
       };
 
       btnState('button[data-event="bold"]', function() {
-        return oStyle.fontWeight === 'bold';
+        return oStyle['font-weight'] === 'bold';
       });
       btnState('button[data-event="italic"]', function() {
-        return oStyle.fontStyle === 'italic';
+        return oStyle['font-style'] === 'italic';
       });
       btnState('button[data-event="underline"]', function() {
-        return oStyle.textDecoration === 'underline';
+        return oStyle['text-decoration'] === 'underline';
       });
       btnState('button[data-event="justifyLeft"]', function() {
-        return oStyle.textAlign === 'left' || oStyle.textAlign === 'start';
+        return oStyle['text-align'] === 'left' || oStyle['text-align'] === 'start';
       });
       btnState('button[data-event="justifyCenter"]', function() {
-        return oStyle.textAlign === 'center';
+        return oStyle['text-align'] === 'center';
       });
       btnState('button[data-event="justifyRight"]', function() {
-        return oStyle.textAlign === 'right';
+        return oStyle['text-align'] === 'right';
       });
       btnState('button[data-event="justifyFull"]', function() {
-        return oStyle.textAlign === 'justify';
+        return oStyle['text-align'] === 'justify';
       });
       btnState('button[data-event="insertUnorderedList"]', function() {
-        return oStyle.listStyle === 'unordered';
+        return oStyle['list-style'] === 'unordered';
       });
       btnState('button[data-event="insertOrderedList"]', function() {
-        return oStyle.listStyle === 'ordered';
+        return oStyle['list-style'] === 'ordered';
       });
     };
     
@@ -809,29 +809,29 @@
       welDimensionDisplay.html(dim.c + ' x ' + dim.r);
     };
 
-    this.attach = function(layoutInfo) {
-      layoutInfo.editable.on('keydown', hKeydown);
-      layoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
-      layoutInfo.editable.on('scroll', hScroll);
+    this.attach = function(oLayoutInfo) {
+      oLayoutInfo.editable.on('keydown', hKeydown);
+      oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
+      oLayoutInfo.editable.on('scroll', hScroll);
       //TODO: handle Drag point
-      layoutInfo.editable.on('dragenter dragover dragleave', false);
-      layoutInfo.editable.on('drop', hDropImage);
+      oLayoutInfo.editable.on('dragenter dragover dragleave', false);
+      oLayoutInfo.editable.on('drop', hDropImage);
 
-      layoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
-      layoutInfo.popover.on('click', hToolbarAndPopoverClick);
-      layoutInfo.toolbar.on('mousedown', hToolbarAndPopoverMousedown);
-      layoutInfo.popover.on('mousedown', hToolbarAndPopoverMousedown);
+      oLayoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
+      oLayoutInfo.popover.on('click', hToolbarAndPopoverClick);
+      oLayoutInfo.toolbar.on('mousedown', hToolbarAndPopoverMousedown);
+      oLayoutInfo.popover.on('mousedown', hToolbarAndPopoverMousedown);
       
       //toolbar table dimension
-      var welToolbar = layoutInfo.toolbar;
+      var welToolbar = oLayoutInfo.toolbar;
       var welCatcher = welToolbar.find('.note-dimension-picker-mousecatcher');
       welCatcher.on('mousemove', hDimensionPickerMove);
     };
 
-    this.dettach = function(layoutInfo) {
-      layoutInfo.editable.off();
-      layoutInfo.toolbar.off();
-      layoutInfo.popover.off();
+    this.dettach = function(oLayoutInfo) {
+      oLayoutInfo.editable.off();
+      oLayoutInfo.toolbar.off();
+      oLayoutInfo.popover.off();
     };
   };
 

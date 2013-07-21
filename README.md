@@ -20,14 +20,13 @@ Simple UI, Interative WYSIWYG editing, easy integrate Backend server and so much
 
 ### Easy to install
 
-Summernote uses opensouce libraries(jquery, jquery.curstyles, bootstrap, fontAwesome) 
+Summernote uses opensouce libraries(jQuery, bootstrap, fontAwesome) 
 
 #### 01. include js/css
 Include Following code into `<head>` tag of your HTML:
 ```html
-<!-- include libries(jquery, jquery.curstyles, bootstrap, fontawesome) -->
+<!-- include libries(jQuery, bootstrap, fontawesome) -->
 <script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.min.js"></script> 
-<script type="text/javascript" src="//v3.javascriptmvc.com/jquery/dist/jquery.curstyles.min.js"></script>
 <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet"> 
 <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script> 
 <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.min.css" rel="stylesheet">
@@ -67,7 +66,6 @@ $('#summernote').destroy();
 
 #### Dependencies
 * jQuery: http://jquery.com/
-* jquery.curstyles: http://bitovi.com/blog/2010/06/get-multiple-computed-styles-fast-with-the-curstyles-jquery-plugin.html
 * bootstrap: http://twitter.github.io/bootstrap/
 * fontAwesome: https://github.com/FortAwesome/Font-Awesome
 
@@ -82,6 +80,7 @@ $('#summernote').destroy();
 * image: sizing handle and popover
 * support standalone css
 * fileupload server integration
+* Remove jQuery.curstyles dependency
 
 ### Change Log
 
