@@ -14,11 +14,10 @@
    * func utils (for high-order func's arg)
    */
   var func = function() {
-    var eq = function(target) {
-      return function(current) { return target === current; };
+    var eq = function(nodeA) {
+      return function(nodeB) { return nodeA === nodeB; };
     };
-    var eq2 = function(current, target) { return current === target; }
-    
+    var eq2 = function(nodeA, nodeB) { return nodeA === nodeB; };
     var fail = function() { return false; };
     return { eq: eq, eq2: eq2, fail: fail };
   }();
@@ -248,7 +247,7 @@
       if (bW3CRangeSupport) {
         document.getSelection().addRange(nativeRng);
       } // TODO: handle IE8+ TextRange
-    }
+    };
     
     // listPara: listing paragraphs on range
     this.listPara = function() {
@@ -371,18 +370,31 @@
   var History = function() {
     var aUndo = [], aRedo = [];
 
-    this.undo = function(fnApplyState, oState) {
+    var makeSnap = function(welEditable) {
+      return {
+        contents: welEditable.html(), range: new Range(),
+        scrollTop: welEditable.scrollTop()
+      };
+    };
+
+    var applySnap = function(welEditable, oSnap) {
+      welEditable.html(oSnap.contents).scrollTop(oSnap.scrollTop);
+    };
+
+    this.undo = function(welEditable) {
+      var oSnap = makeSnap(welEditable);
       if (aUndo.length === 0) { return; }
-      fnApplyState(aUndo.pop()), aRedo.push(oState);
+      applySnap(welEditable, aUndo.pop()), aRedo.push(oSnap);
     };
 
-    this.redo = function(fnApplyState, oState) {
+    this.redo = function(welEditable) {
+      var oSnap = makeSnap(welEditable);
       if (aRedo.length === 0) { return; }
-      fnApplyState(aRedo.pop()), aUndo.push(oState);
+      applySnap(welEditable, aRedo.pop()), aUndo.push(oSnap);
     };
 
-    this.recordUndo = function(oState) {
-      aRedo = [], aUndo.push(oState);
+    this.recordUndo = function(welEditable) {
+      aRedo = [], aUndo.push(makeSnap(welEditable));
     };
   };
   
@@ -397,30 +409,19 @@
       return style.current((new Range()));
     };
 
-    // history and command, TODO: Range -> XPath Bookmark, Scroll
-    var makeState = function(welEditable) {
-      return { contents: welEditable.html(), range: new Range() };
-    };
-
     // undo
     this.undo = function(welEditable) {
-      var history = welEditable.data('NoteHistory');
-      history.undo(function(oState) {
-        welEditable.html(oState.contents);
-      }, makeState(welEditable));
+      welEditable.data('NoteHistory').undo(welEditable);
     };
 
     // redo
     this.redo = function(welEditable) {
-      var history = welEditable.data('NoteHistory');
-      history.redo(function(oState) {
-        welEditable.html(oState.contents);
-      }, makeState(welEditable));
+      welEditable.data('NoteHistory').redo(welEditable);
     };
 
+    // recordUndo
     var recordUndo = this.recordUndo = function(welEditable) {
-      var history = welEditable.data('NoteHistory');
-      history.recordUndo(makeState(welEditable));
+      welEditable.data('NoteHistory').recordUndo(welEditable);
     };
 
     var makeExecCommand = function(sCmd) {
@@ -1072,7 +1073,6 @@
       if (nHeight) { welEditable.height(nHeight); }
 
       welEditable.html(welHolder.html());
-      //NOTE: Store on jQuery.data()
       welEditable.data('NoteHistory', new History());
       
       //03. create Toolbar
