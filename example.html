@@ -13,7 +13,6 @@
   <![endif]-->
   <!-- add library -->
   <script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
-  <script src="//v3.javascriptmvc.com/jquery/dist/jquery.curstyles.min.js"></script>
   <link href="//bootswatch.com/default/bootstrap.min.css" rel="stylesheet">
   <link href="//bootswatch.com/default/bootstrap-responsive.min.css" rel="stylesheet">
   <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
@@ -58,32 +57,41 @@
   <div class="row">
     <div class="span3">
       <ul class="nav nav-tabs nav-stacked" style="padding-right: 2em">
-        <li><a href="#local">Local storage</a></li>
-        <li><a href="#nodejs">NodeJS</a></li>
+        <li><a href="#multiple">Multiple Editor</a></li>
+        <li><a href="#click2edit">Click to Edit</a></li>
+        <!-- Upcoming Features
+        <li><a href="#local">Local Storage</a></li>
         <li><a href="#php">PHP</a></li>
+        <li><a href="#nodejs">Node.js</a></li>
+        -->
       </ul>
     </div>
-
-    <div class="span9 temp">
-      <h1>we are working on it</h1>
-    </div>
-
-    <div class="span9 hidden">
-      <section id="local">
-        <h2>Local storage example</h2>
-
-        <p>install</p>
-        <pre class="prettyprint linenums">hello world</pre>
-
-        <p>with options</p>
-        <pre class="prettyprint linenums">hello world</pre>
-
-        <pre class="prettyprint linenums">hello world</pre>
-
-        <pre class="prettyprint linenums">hello world</pre>
-
-        <pre class="prettyprint linenums">hello world</pre>
-
+    <div class="span9">
+      <section id="multiple">
+        <h2>Multiple Editor</h2>
+        <p>To display multiple editors on a page, you need to place two or more div elements on your page.</p>
+        <pre class="prettyprint linenums">
+&lt;div class="summernote"&gt;summernote 1&lt;/div&gt;
+&lt;div class="summernote"&gt;summernote 2&lt;/div&gt;</pre>
+        <p>Then run summernote with jQuery selector.</p>
+        <pre class="prettyprint linenums">
+$(document).ready(function() {
+  $('.summernote').summernote();
+});</pre>
+        <h4>Example</h4>
+        <div class="row-fluid">
+          <div class="span6"><div class="summernote">summernote 1</div></div>
+          <div class="span6"><div class="summernote">summernote 2</div></div>
+        </div>
+        <script>
+          $(document).ready(function() {
+            $('.summernote').summernote();
+          });
+        </script>
+      </section>
+      <hr/>
+      <section id="click2edit">
+        <h2>Click to Edit</h2>
       </section>
     </div>
   </div>

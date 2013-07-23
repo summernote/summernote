@@ -13,7 +13,6 @@
   <![endif]-->
   <!-- add library -->
   <script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
-  <script src="//v3.javascriptmvc.com/jquery/dist/jquery.curstyles.min.js"></script>
   <link href="//bootswatch.com/default/bootstrap.min.css" rel="stylesheet">
   <link href="//bootswatch.com/default/bootstrap-responsive.min.css" rel="stylesheet">
   <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
@@ -61,36 +60,156 @@
         <li><a href="#install">Installation</a></li>
         <li><a href="#setting">Setting Parameters</a></li>
         <li><a href="#Keyboard">Keyboard shortcuts</a></li>
+        <!-- upcoming features
         <li><a href="#toolbar">Toolbar</a></li>
         <li><a href="#image">Image upload</a></li>
         <li><a href="#local">Browser Storage</a></li>
+        -->
         <li><a href="history.html">Version History</a></li>
       </ul>
     </div>
-
-    <div class="span9 temp">
-      <h1>we are working on it</h1>
-    </div>
-    <div class="span9 hidden">
+    <div class="span9">
       <section id="install">
         <h2>Installation</h2>
+        <p>Summernote uses open source libraries(jQuery, Bootstrap, font-awesome).</p>
+        <h4>01. Include js/css</h4>
+        <p>Include Following code into head tag of your HTML:</p>
+        <pre class="prettyprint lang-html linenums">
+&lt;!-- include libries(jQuery, bootstrap, fontawesome) --&gt;
+&lt;script src="//code.jquery.com/jquery-1.9.1.min.js"&gt;&lt;/script&gt; 
+&lt;link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css"&gt; 
+&lt;script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"&gt;&lt;/script&gt; 
+&lt;link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.min.css"&gt;
 
-        <p>install</p>
-        <pre class="prettyprint linenums">hello world</pre>
+&lt;!-- include summernote css/js--&gt;
+&lt;link href="summernote.css" /&gt;
+&lt;script src="summernote.min.js"&gt;&lt;/script&gt;</pre>
+        <p>If your summernote download is placed in a different folder, don't forget to change file's paths.</p>
+        <h4>02. Target elements</h4>
+        <p>And place div tag to somewhere in the body tag. This element will be placed by the visual representation of the summernote.</p>
+        <pre class="prettyprint lang-html linenums">
+&lt;div id="summernote"&gt;Hello Summernote&lt;/div&gt;</pre>
+        <h4>03. run summernote</h4>
+        <p>Finally, run below script after document ready.</p>
+        <pre class="prettyprint lang-javascript linenums">
+$(document).ready(function() {
+  $('#summernote').summernote();
+});</pre>
       </section>
-
+      <hr/>
       <section id="setting">
         <h2>Setting Parameters</h2>
         <p>with options</p>
         <pre class="prettyprint linenums">hello world</pre>
       </section>
-
+      <hr/>
       <section id="Keyboard">
         <h2>Keyboard shortcuts</h2>
-        <p></p>
-        <pre class="prettyprint linenums">hello world</pre>
+        <p>We provide default common shortcut.</p>
+        <table class="table table-hover table-bordered">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Mac</th>
+              <th>Windows</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Undo</td>
+              <td><button class="btn btn-small">⌘</button> + <button class="btn btn-small">Z</button></td>
+              <td><button class="btn btn-small">Ctrl</button> + <button class="btn btn-small">Z</button></td>
+            </tr>
+            <tr>
+              <td>Redo</td>
+              <td><button class="btn btn-small">⌘</button> + <button class="btn btn-small">⇧</button> + <button class="btn btn-small">Z</button></td>
+              <td><button class="btn btn-small">Ctrl</button> + <button class="btn btn-small">Y</button></td>
+            </tr>
+            <tr>
+              <td>Indent</td>
+              <td><button class="btn btn-small">Tab</button></td>
+              <td><button class="btn btn-small">Tab</button></td>
+            </tr>
+            <tr>
+              <td>Outdent</td>
+              <td><button class="btn btn-small">⇧</button> + <button class="btn btn-small">Tab</button></td>
+              <td><button class="btn btn-small">Shift</button> + <button class="btn btn-small">Tab</button></td>
+            </tr>
+            <tr>
+              <td>Bold</td>
+              <td><button class="btn btn-small">⌘</button> + <button class="btn btn-small">B</button></td>
+              <td><button class="btn btn-small">Ctrl</button> + <button class="btn btn-small">B</button></td>
+            </tr>
+            <tr>
+              <td>Italic</td>
+              <td><button class="btn btn-small">⌘</button> + <button class="btn btn-small">I</button></td>
+              <td><button class="btn btn-small">Ctrl</button> + <button class="btn btn-small">I</button></td>
+            </tr>
+            <tr>
+              <td>Underline</td>
+              <td><button class="btn btn-small">⌘</button> + <button class="btn btn-small">U</button></td>
+              <td><button class="btn btn-small">Ctrl</button> + <button class="btn btn-small">U</button></td>
+            </tr>
+            <tr>
+              <td>Align Left</td>
+              <td><button class="btn btn-small">⌘</button> + <button class="btn btn-small">⇧</button> + <button class="btn btn-small">L</button></td>
+              <td><button class="btn btn-small">Ctrl</button> + <button class="btn btn-small">Shift</button> + <button class="btn btn-small">L</button></td>
+            </tr>
+            <tr>
+              <td>Align Center</td>
+              <td><button class="btn btn-small">⌘</button> + <button class="btn btn-small">⇧</button> + <button class="btn btn-small">E</button></td>
+              <td><button class="btn btn-small">Ctrl</button> + <button class="btn btn-small">Shift</button> + <button class="btn btn-small">E</button></td>
+            </tr>
+            <tr>
+              <td>Align Right</td>
+              <td><button class="btn btn-small">⌘</button> + <button class="btn btn-small">⇧</button> + <button class="btn btn-small">R</button></td>
+              <td><button class="btn btn-small">Ctrl</button> + <button class="btn btn-small">Shift</button> + <button class="btn btn-small">R</button></td>
+            </tr>
+            <tr>
+              <td>Justify Full</td>
+              <td><button class="btn btn-small">⌘</button> + <button class="btn btn-small">⇧</button> + <button class="btn btn-small">J</button></td>
+              <td><button class="btn btn-small">Ctrl</button> + <button class="btn btn-small">Shift</button> + <button class="btn btn-small">J</button></td>
+            </tr>
+            <tr>
+              <td>Ordered List</td>
+              <td><button class="btn btn-small">⌘</button> + <button class="btn btn-small">⇧</button> + <button class="btn btn-small">NUM7</button></td>
+              <td><button class="btn btn-small">Ctrl</button> + <button class="btn btn-small">Shift</button> + <button class="btn btn-small">NUM7</button></td>
+            </tr>
+            <tr>
+              <td>Unordered List</td>
+              <td><button class="btn btn-small">⌘</button> + <button class="btn btn-small">⇧</button> + <button class="btn btn-small">NUM8</button></td>
+              <td><button class="btn btn-small">Ctrl</button> + <button class="btn btn-small">Shift</button> + <button class="btn btn-small">NUM8</button></td>
+            </tr>
+            <tr>
+              <td>Normal Text</td>
+              <td><button class="btn btn-small">⌘</button> + <button class="btn btn-small">NUM0</button></td>
+              <td><button class="btn btn-small">Ctrl</button> + <button class="btn btn-small">NUM0</button></td>
+            </tr>
+            <tr>
+              <td>Heading 1</td>
+              <td><button class="btn btn-small">⌘</button> + <button class="btn btn-small">NUM1</button></td>
+              <td><button class="btn btn-small">Ctrl</button> + <button class="btn btn-small">NUM1</button></td>
+            </tr>
+            <tr>
+              <td>Heading 2</td>
+              <td><button class="btn btn-small">⌘</button> + <button class="btn btn-small">NUM2</button></td>
+              <td><button class="btn btn-small">Ctrl</button> + <button class="btn btn-small">NUM2</button></td>
+            </tr>
+            <tr>
+              <td>Heading 3</td>
+              <td><button class="btn btn-small">⌘</button> + <button class="btn btn-small">NUM3</button></td>
+              <td><button class="btn btn-small">Ctrl</button> + <button class="btn btn-small">NUM3</button></td>
+            </tr>
+            <tr>
+              <td>Heading 4</td>
+              <td><button class="btn btn-small">⌘</button> + <button class="btn btn-small">NUM4</button></td>
+              <td><button class="btn btn-small">Ctrl</button> + <button class="btn btn-small">NUM4</button></td>
+            </tr>
+          </tbody>
+        </table>
       </section>
 
+      <!-- upcoming features
       <section id="toolbar">
         <h2>Toolbar</h2>
         <p></p>
@@ -109,6 +228,7 @@
         <pre class="prettyprint linenums">hello world</pre>
 
       </section>
+      -->
     </div>
   </div>
 
