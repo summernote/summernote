@@ -47,7 +47,7 @@
 
     var compact = function(array) {
       var aResult = [];
-      for(var idx = 0; idx < array.length; idx ++) {
+      for (var idx = 0, sz = array.length; idx < sz; idx ++) {
         if (array[idx]) { aResult.push(array[idx]); };
       };
       return aResult;
@@ -132,7 +132,7 @@
       pred = pred || func.fail;      
 
       var aNext = [];
-      while(node) {
+      while (node) {
         aNext.push(node);
         if (node === pred) { break; }
         node = node.nextSibling;
@@ -165,6 +165,28 @@
     var length = function(node) {
       if (isText(node)) { return node.nodeValue.length; }
       return node.childNodes.length;
+    };
+
+    // position: offset from parent.
+    var position = function(node) {
+      var offset = 0;
+      while (node = node.previousSibling) { offset += 1; }
+      return offset;
+    };
+
+    // makeOffsetPath: return offsetPath(offset list) from ancestor
+    var makeOffsetPath = function(ancestor, node) {
+      var aAncestor = list.initial(listAncestor(node, func.eq(ancestor)));
+      return $.map(aAncestor, position).reverse();
+    };
+
+    // fromtOffsetPath: return element from offsetPath(offset list)
+    var fromOffsetPath = function(ancestor, aOffset) {
+      var current = ancestor;
+      for (var i=0, sz = aOffset.length; i < sz; i++) {
+        current = current.childNodes[aOffset[i]];
+      }
+      return current;
     };
 
     // splitData: split element or #text
@@ -206,10 +228,11 @@
       isDiv: makePredByNodeName('DIV'), isSpan: makePredByNodeName('SPAN'),
       isB: makePredByNodeName('B'), isU: makePredByNodeName('U'),
       isS: makePredByNodeName('S'), isI: makePredByNodeName('I'),
-      ancestor: ancestor, listAncestor: listAncestor,
-      listNext: listNext,
+      ancestor: ancestor, listAncestor: listAncestor, listNext: listNext,
       commonAncestor: commonAncestor, listBetween: listBetween,
-      insertAfter: insertAfter, split: split
+      insertAfter: insertAfter, position: position,
+      makeOffsetPath: makeOffsetPath, fromOffsetPath: fromOffsetPath,
+      split: split
     };
   }();
 
@@ -245,7 +268,9 @@
     this.select = function() {
       var nativeRng = nativeRange();
       if (bW3CRangeSupport) {
-        document.getSelection().addRange(nativeRng);
+        var selection = document.getSelection();
+        if (selection.rangeCount > 0) { selection.removeAllRanges(); }
+        selection.addRange(nativeRng);
       } // TODO: handle IE8+ TextRange
     };
     
@@ -300,6 +325,22 @@
         return nativeRng.toString();
       } // TODO: IE8
     };
+
+    //bookmark: offsetPath bookmark
+    this.bookmark = function(elEditable) {
+      return {
+        s: { path: dom.makeOffsetPath(elEditable, sc), offset: so },
+        e: { path: dom.makeOffsetPath(elEditable, ec), offset: eo }
+      };
+    };
+  };
+
+  // createRangeFromBookmark
+  var createRangeFromBookmark = function(elEditable, bookmark) {
+    return new Range(dom.fromOffsetPath(elEditable, bookmark.s.path),
+                     bookmark.s.offset,
+                     dom.fromOffsetPath(elEditable, bookmark.e.path),
+                     bookmark.e.offset);
   };
   
   /**
@@ -371,14 +412,17 @@
     var aUndo = [], aRedo = [];
 
     var makeSnap = function(welEditable) {
+      var elEditable = welEditable[0], rng = new Range();
       return {
-        contents: welEditable.html(), range: new Range(),
+        contents: welEditable.html(), bookmark: rng.bookmark(elEditable),
         scrollTop: welEditable.scrollTop()
       };
     };
 
     var applySnap = function(welEditable, oSnap) {
       welEditable.html(oSnap.contents).scrollTop(oSnap.scrollTop);
+      var rng = createRangeFromBookmark(welEditable[0], oSnap.bookmark);
+      rng.select();
     };
 
     this.undo = function(welEditable) {
@@ -424,20 +468,18 @@
       welEditable.data('NoteHistory').recordUndo(welEditable);
     };
 
-    var makeExecCommand = function(sCmd) {
-      return function(welEditable, sValue) {
-        recordUndo(welEditable);
-        document.execCommand(sCmd, false, sValue);
-      };
-    };
-
     // native commands(with execCommand)
     var aCmd = ['bold', 'italic', 'underline', 'justifyLeft', 'justifyCenter',
                 'justifyRight', 'justifyFull', 'insertOrderedList',
                 'insertUnorderedList', 'indent', 'outdent', 'formatBlock',
                 'removeFormat', 'backColor', 'foreColor', 'insertImage'];
-    for (var idx=0, len=aCmd.length; idx < len; idx ++) {
-      this[aCmd[idx]] = makeExecCommand(aCmd[idx]);
+    for (var idx = 0, len=aCmd.length; idx < len; idx ++) {
+      this[aCmd[idx]] = function(sCmd) {
+        return function(welEditable, sValue) {
+          recordUndo(welEditable);
+          document.execCommand(sCmd, false, sValue);
+        };
+      }(aCmd[idx]);
     }                
     
     this.fontSize = function(welEditable, sValue) {

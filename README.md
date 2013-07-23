@@ -107,7 +107,7 @@ $.extend - Renderer (Markup)
 Dom, List, Func
 ```
 
-#### build summernote.js
+#### build summernote
 ```
 # grunt-cli is need by grunt; you might have this installed already
 npm install -g grunt-cli
@@ -116,7 +116,7 @@ grunt build
 ```
 At this point, you should now have a `build/` directory populated with everything you need to use summernote.
 
-#### test summernote.js
+#### test summernote
 run tests with PhantomJS
 ```
 grunt test

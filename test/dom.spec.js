@@ -74,6 +74,58 @@ test('dom.listNext', function() {
   deepEqual(dom.listNext($s[0], func.eq($i[0])), [$s[0], $i[0]], 's to i');
 });
 
+test('dom.position', function() {
+  var $cont, $b, $u, $s, $i;
+
+  $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
+  $b = $cont.find('b'), $u = $cont.find('u'),
+  $s = $cont.find('s'), $i = $cont.find('i');
+
+  equal(dom.position($b[0]), 0, 'should b return zero');
+  equal(dom.position($u[0]), 1, 'should u return one');
+  equal(dom.position($s[0]), 2, 'should s return three');
+  equal(dom.position($i[0]), 3, 'should i return four');
+
+  equal(dom.position($b[0].firstChild), 0, 'should text in b return zero');
+});
+
+test('dom.makeOffsetPath', function() {
+  var $cont, $b, $u, $s, $i;
+
+  $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
+  $b = $cont.find('b'), $u = $cont.find('u'),
+  $s = $cont.find('s'), $i = $cont.find('i');
+
+  deepEqual(dom.makeOffsetPath($cont[0], $cont[0]), [], 'should return empty list');
+
+  deepEqual(dom.makeOffsetPath($cont[0], $b[0]), [0], 'should return [0]');
+  deepEqual(dom.makeOffsetPath($cont[0], $b[0].firstChild), [0, 0], 'should return [0, 0]');
+
+  deepEqual(dom.makeOffsetPath($cont[0], $u[0]), [1], 'shuold return [1]');
+  deepEqual(dom.makeOffsetPath($cont[0], $u[0].firstChild), [1, 0], 'shuold return [1, 0]');
+
+  deepEqual(dom.makeOffsetPath($cont[0], $s[0]), [2], 'shuold return [2]');
+  deepEqual(dom.makeOffsetPath($cont[0], $s[0].firstChild), [2, 0], 'shuold return [2, 0]');
+
+  deepEqual(dom.makeOffsetPath($cont[0], $i[0]), [3], 'shuold return [3]');
+  deepEqual(dom.makeOffsetPath($cont[0], $i[0].firstChild), [3, 0], 'shuold return [3, 0]');
+});
+
+test('dom.fromOffsetPath', function() {
+  var $cont, $b, $u, $s, $i;
+
+  $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
+  $b = $cont.find('b'), $u = $cont.find('u'),
+  $s = $cont.find('s'), $i = $cont.find('i');
+
+  var cont = $cont[0];
+  $.each([$b[0], $u[0], $s[0], $i[0]], function(idx, node) {
+    equal(dom.fromOffsetPath(cont, dom.makeOffsetPath(cont, node)), node);
+    var child = node.firstChild;
+    equal(dom.fromOffsetPath(cont, dom.makeOffsetPath(cont, child)), child);
+  });
+});
+
 test('dom.split', function() {
   var $cont, $b, $u, $s, $i;
 
