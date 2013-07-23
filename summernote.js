@@ -228,6 +228,7 @@
       isDiv: makePredByNodeName('DIV'), isSpan: makePredByNodeName('SPAN'),
       isB: makePredByNodeName('B'), isU: makePredByNodeName('U'),
       isS: makePredByNodeName('S'), isI: makePredByNodeName('I'),
+      isImg: makePredByNodeName('IMG'),
       ancestor: ancestor, listAncestor: listAncestor, listNext: listNext,
       commonAncestor: commonAncestor, listBetween: listBetween,
       insertAfter: insertAfter, position: position,
@@ -721,6 +722,7 @@
         editable: function() { return welEditor.find('.note-editable'); },
         toolbar: function() { return welEditor.find('.note-toolbar'); },
         popover: function() { return welEditor.find('.note-popover'); },
+        handle: function() { return welEditor.find('.note-handle'); },
         dialog: function() { return welEditor.find('.note-dialog'); }
       };
     };
@@ -803,6 +805,27 @@
       toolbar.update(oLayoutInfo.toolbar(), oStyle);
       popover.update(oLayoutInfo.popover(), oStyle);
     };
+
+    var hEditableMousedown = function(event) {
+      var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+
+      var welSelection = oLayoutInfo.handle().find('.note-control-selection');
+      // update handle
+      if (dom.isImg(event.target)) {
+        var rect = event.target.getBoundingClientRect();
+        welSelection.css({
+          visibility: 'visible',
+          top: rect.top + 'px',
+          left: rect.left + 'px',
+          width: rect.width + 'px',
+          height: rect.height + 'px'
+        });
+        editor.selectNode(event.target);
+      } else {
+        welSelection.css({ visibility: 'hidden' });
+        console.log(welSelection);
+      }
+    };
     
     var hScroll = function(event) {
       var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
@@ -883,6 +906,7 @@
     this.attach = function(oLayoutInfo) {
       oLayoutInfo.editable.on('keydown', hKeydown);
       oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
+      oLayoutInfo.editable.on('mousedown', hEditableMousedown);
       oLayoutInfo.editable.on('scroll', hScroll);
       //TODO: handle Drag point
       oLayoutInfo.editable.on('dragenter dragover dragleave', false);
@@ -1023,6 +1047,17 @@
                        '</div>' +
                      '</div>' +
                    '</div>';
+
+    var sHandle = '<div class="note-handle">' +
+                    '<div class="note-control-selection">' +
+                      '<div class="note-control-selection-bg"></div>' +
+                      '<div class="note-control-holder note-control-nw"></div>' +
+                      '<div class="note-control-holder note-control-ne"></div>' +
+                      '<div class="note-control-holder note-control-sw"></div>' +
+                      '<div class="note-control-sizing note-control-se"></div>' +
+                    '</div>' +
+                  '</div>';
+
     var sDialog = '<div class="note-dialog">' +
                     '<div class="note-image-dialog modal hide in" aria-hidden="false">' +
                       '<div class="modal-header">' +
@@ -1125,9 +1160,12 @@
       //04. create Popover
       var welPopover = $(sPopover).prependTo(welEditor);
       createTooltip(welPopover);
+
+      //05. handle(control selection, ...)
+      $(sHandle).prependTo(welEditor);
       
-      //05. create Dialog
-      var welDialog = $(sDialog).prependTo(welEditor);
+      //06. create Dialog
+      $(sDialog).prependTo(welEditor);
       
       //05. Editor/Holder switch
       welEditor.insertAfter(welHolder);
