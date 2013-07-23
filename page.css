@@ -132,6 +132,16 @@ hr.soften {
     margin: 2em;
 }
 
+.contribute .thumbnail {
+    border: none;
+    box-shadow: none;
+    padding-top: 1.5em;
+}
+
+.contribute .thumbnail img {
+    padding-bottom: 0.5em;
+    max-width: 150px;
+}
 
 /* Footer
 -------------------------------------------------- */
