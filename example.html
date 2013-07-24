@@ -50,7 +50,7 @@
 </div>
 <div class="subhead container">
   <h2>Code Example</h2>
-  <p class="muted">Provide essential features to working our web site. not digging in the codes not with trials and fails</p>
+  <p class="muted">Here are some useful code examples.</p>
 </div>
 <div class="container">
 
@@ -79,35 +79,51 @@ $(document).ready(function() {
   $('.summernote').summernote();
 });</pre>
         <h4>Example</h4>
-
-        <div class="row">
-          <div class="span9">
-            <p>
-            <div class="summernote">summernote 1</div>
-            </p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="span9">
-            <p>
-            <div class="summernote">summernote 2</div>
-            </p>
-          </div>
-        </div>
-
+        <div class="multiple">summernote 1</div>
+        <p></p>
+        <div class="multiple">summernote 2</div>
         <script>
           $(document).ready(function() {
-            $('.summernote').summernote();
+            $('.multiple').summernote();
           });
         </script>
       </section>
       <hr/>
       <section id="click2edit">
         <h2>Click to Edit</h2>
+        <p>You can edit content on the fly.</p>
+        <h5>HTML:</h5>
+        <pre class="prettyprint linenums">
+&lt;button id="edit" class="btn btn-primary" onclick="edit()" type="button"&gt;Edit 1&lt;/button&gt;
+&lt;button id="save" class="btn btn-primary" onclick="save()" type="button"&gt;Save 2&lt;/button&gt;
+&lt;div class="click2edit"&gt;click2edit&lt;/div&gt;</pre>
+        <h5>Script:</h5>
+        <pre class="prettyprint linenums">
+var edit = function() {
+  $('.click2edit').summernote({focus: true});
+};
+var save = function() {
+  var sHTML = $('.click2edit').code(); //save HTML If you need.
+  $('.click2edit').destroy();
+};</pre>
+        <h4>Example</h4>
+        <p>
+          <button id="edit" class="btn btn-primary" onclick="edit()" type="button">Edit</button>
+          <button id="save" class="btn btn-primary" onclick="save()" type="button">Save</button>
+        </p>
+        <p></p>
+        <div class="click2edit">click2edit</div>
+        <script>
+          var edit = function() {
+            $('.click2edit').summernote({focus: true});
+          };
+          var save = function() {
+            $('.click2edit').destroy();
+          };
+        </script>
       </section>
     </div>
   </div>
-
 </div>
 <footer class="footer">
   <div class="container">

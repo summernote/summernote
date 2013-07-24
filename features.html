@@ -58,7 +58,7 @@
     <div class="span3">
       <ul class="nav nav-tabs nav-stacked" style="padding-right: 2em">
         <li><a href="#install">Installation</a></li>
-        <li><a href="#setting">Setting Parameters</a></li>
+        <li><a href="#api">API</a></li>
         <li><a href="#Keyboard">Keyboard shortcuts</a></li>
         <!-- upcoming features
         <li><a href="#toolbar">Toolbar</a></li>
@@ -97,10 +97,24 @@ $(document).ready(function() {
 });</pre>
       </section>
       <hr/>
-      <section id="setting">
-        <h2>Setting Parameters</h2>
-        <p>with options</p>
-        <pre class="prettyprint linenums">hello world</pre>
+      <section id="api">
+        <h2>API</h2>
+        <h4>Summernote</h4>
+        <p>Initialize Summernote</p>
+        <pre class="prettyprint linenums">$('.summernote').summernote();</pre>
+        <p>Initialize Summernote with options</p>
+        <pre class="prettyprint linenums">$('.summernote').summernote({
+  height: 300px, //set height
+  focus: true    //focus
+});</pre>
+        <h4>Destroy</h4>
+        <p>Destroy Summernote.</p>
+        <pre class="prettyprint linenums">$('.summernote').destroy();</pre>
+        <h4>get & set Code</h4>
+        <p>Get Code.</p>
+        <pre class="prettyprint linenums">var sHTML = $('.summernote').code();</pre>
+        <p>Set Code.</p>
+        <pre class="prettyprint linenums">$('.summernote').code(sHTML);</pre>
       </section>
       <hr/>
       <section id="Keyboard">
