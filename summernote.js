@@ -834,6 +834,11 @@
       event.stopPropagation();
       event.preventDefault();
     };
+
+    var hMousedown = function(event) {
+      //preventDefault Selection for FF, IE8+
+      if (dom.isImg(event.target)) { event.preventDefault(); };
+    };
     
     var hToolbarAndPopoverUpdate = function(event) {
       var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
@@ -923,6 +928,7 @@
 
     this.attach = function(oLayoutInfo) {
       oLayoutInfo.editable.on('keydown', hKeydown);
+      oLayoutInfo.editable.on('mousedown', hMousedown);
       oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
       oLayoutInfo.editable.on('scroll', hScroll);
       //TODO: handle Drag point
