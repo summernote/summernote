@@ -368,8 +368,8 @@
       });
     };
     
-    // get current style
-    this.current = function(rng) {
+    // get current style, elTarget: target element on event.
+    this.current = function(rng, elTarget) {
       var welCont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
       var oStyle = welCont.css(['font-size', 'font-weight', 'font-style',
                                 'text-decoration', 'text-align',
@@ -399,6 +399,7 @@
         oStyle['line-height'] = lineHeight.toFixed(1);
       }
 
+      oStyle.image = dom.isImg(elTarget) && elTarget;
       oStyle.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);
       oStyle.aAncestor = dom.listAncestor(rng.sc, dom.isEditable);
 
@@ -449,9 +450,9 @@
   var Editor = function() {
     //currentStyle
     var style = new Style();
-    this.currentStyle = function() {
+    this.currentStyle = function(elTarget) {
       if (document.getSelection().rangeCount == 0) { return null; }
-      return style.current((new Range()));
+      return style.current((new Range()), elTarget);
     };
 
     // undo
@@ -644,6 +645,31 @@
       welPopover.children().hide();
     };
   };
+
+  /**
+   * Handle
+   */
+  var Handle = function() {
+    this.update = function(welHandle, oStyle) {
+      var welSelection = welHandle.find('.note-control-selection');
+      if (oStyle.image) {
+        var rect = oStyle.image.getBoundingClientRect();
+        welSelection.css({
+          display: 'block',
+          left: rect.left + 'px',
+          top: $(document).scrollTop() + rect.top + 'px',
+          width: rect.width + 'px',
+          height: rect.height + 'px'
+        });
+      } else {
+        welSelection.hide();
+      }
+    };
+
+    this.hide = function(welHandle) {
+      welHandle.children().hide();
+    };
+  };
   
   /**
    * Dialog
@@ -707,7 +733,7 @@
   var EventHandler = function() {
     var editor = new Editor();
     var toolbar = new Toolbar(), popover = new Popover();
-    var dialog = new Dialog();
+    var handle = new Handle(), dialog = new Dialog();
     
     var key = { BACKSPACE: 8, TAB: 9, ENTER: 13, SPACE: 32,
                 B: 66, E: 69, I: 73, J: 74, K: 75, L: 76, R: 82,
@@ -801,36 +827,17 @@
     var hToolbarAndPopoverUpdate = function(event) {
       var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
       
-      var oStyle = editor.currentStyle();
+      var oStyle = editor.currentStyle(event.target);
       toolbar.update(oLayoutInfo.toolbar(), oStyle);
       popover.update(oLayoutInfo.popover(), oStyle);
+      handle.update(oLayoutInfo.handle(), oStyle);
     };
 
-    var hEditableMousedown = function(event) {
-      var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-
-      var welSelection = oLayoutInfo.handle().find('.note-control-selection');
-      // update handle
-      if (dom.isImg(event.target)) {
-        var rect = event.target.getBoundingClientRect();
-        welSelection.css({
-          visibility: 'visible',
-          top: rect.top + 'px',
-          left: rect.left + 'px',
-          width: rect.width + 'px',
-          height: rect.height + 'px'
-        });
-        editor.selectNode(event.target);
-      } else {
-        welSelection.css({ visibility: 'hidden' });
-        console.log(welSelection);
-      }
-    };
-    
     var hScroll = function(event) {
       var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-      //hide popover when scrolled
+      //hide popover and handle when scrolled
       popover.hide(oLayoutInfo.popover());
+      handle.hide(oLayoutInfo.handle());
     };
     
     var hToolbarAndPopoverMousedown = function(event) {
@@ -906,7 +913,6 @@
     this.attach = function(oLayoutInfo) {
       oLayoutInfo.editable.on('keydown', hKeydown);
       oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
-      oLayoutInfo.editable.on('mousedown', hEditableMousedown);
       oLayoutInfo.editable.on('scroll', hScroll);
       //TODO: handle Drag point
       oLayoutInfo.editable.on('dragenter dragover dragleave', false);
