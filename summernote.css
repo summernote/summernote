@@ -90,7 +90,7 @@
 }
 .note-editor .note-handle .note-control-selection {
   position: absolute;
-  visibility: hidden;
+  display: none;
   border: 1px solid black;
 }
 .note-editor .note-handle .note-control-selection > div {
