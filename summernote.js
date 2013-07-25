@@ -624,12 +624,12 @@
    */
   var Popover = function() {
     this.update = function(welPopover, oStyle) {
-      var welLinkPopover = welPopover.find('.note-link-popover');
+      var welLinkPopover = welPopover.find('.note-link-popover'),
+          welImagePopover = welPopover.find('.note-image-popover');
       if (oStyle.anchor) {
         var welAnchor = welLinkPopover.find('a');
         welAnchor.attr('href', oStyle.anchor.href).html(oStyle.anchor.href);
         
-        //popover position
         var rect = oStyle.anchor.getBoundingClientRect();
         welLinkPopover.css({
           display: 'block',
@@ -638,6 +638,17 @@
         });
       } else {
         welLinkPopover.hide();
+      }
+
+      if (oStyle.image) {
+        var rect = oStyle.image.getBoundingClientRect();
+        welImagePopover.css({
+          display: 'block',
+          left: rect.left,
+          top: $(document).scrollTop() + rect.bottom
+        });
+      } else {
+        welImagePopover.hide();
       }
     };
     
@@ -1047,8 +1058,22 @@
                        '<div class="popover-content note-link-content">' +
                          '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
                          '<div class="note-insert btn-group">' +
-                           '<button type="button" class="btn btn-small" title="Edit" data-event="showLinkDialog"><i class="icon-edit"></i></button>' +
-                           '<button type="button" class="btn btn-small" title="Unlink" data-event="unlink"><i class="icon-unlink"></i></button>' +
+                         '<button type="button" class="btn btn-small" title="Edit" data-event="showLinkDialog"><i class="icon-edit"></i></button>' +
+                         '<button type="button" class="btn btn-small" title="Unlink" data-event="unlink"><i class="icon-unlink"></i></button>' +
+                         '</div>' +
+                       '</div>' +
+                     '</div>' +
+                     '<div class="note-image-popover popover fade bottom in" style="display: none;">' +
+                       '<div class="arrow"></div>' +
+                       '<div class="popover-content note-image-content">' +
+                         '<div class="btn-group">' +
+                           '<button type="button" class="btn btn-small" title="Resize Big" data-event="resize" data-value="big"><i class="icon-resize-full"></i></button>' +
+                           '<button type="button" class="btn btn-small" title="Resize Small" data-event="resize" data-value="small"><i class="icon-resize-small"></i></button>' +
+                         '</div>' +
+                         '<div class="btn-group">' +
+                           '<button type="button" class="btn btn-small" title="Float Left" data-event="float" data-value="left"><i class="icon-align-left"></i></button>' +
+                           '<button type="button" class="btn btn-small" title="Float Right" data-event="float" data-value="right"><i class="icon-align-right"></i></button>' +
+                           '<button type="button" class="btn btn-small" title="Float None" data-event="float" data-value="none"><i class="icon-align-justify"></i></button>' +
                          '</div>' +
                        '</div>' +
                      '</div>' +
