@@ -1,3 +1,9 @@
+/*---------------------------------------------------
+    LESS Elements 0.9
+  ---------------------------------------------------
+    A set of useful LESS mixins
+    More info at: http://lesselements.com
+  ---------------------------------------------------*/
 .note-editor {
   border: 1px solid #a9a9a9;
 }
@@ -81,6 +87,67 @@
 }
 .note-editor .note-popover .popover.bottom .arrow {
   left: 20px;
+}
+.note-editor .note-handle .note-control-selection {
+  position: absolute;
+  visibility: hidden;
+  border: 1px solid black;
+}
+.note-editor .note-handle .note-control-selection > div {
+  position: absolute;
+}
+.note-editor .note-handle .note-control-selection .note-control-selection-bg {
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  -moz-opacity: 0.3;
+  -khtml-opacity: 0.3;
+  -webkit-opacity: 0.3;
+  opacity: 0.3;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(opacity=30);
+  filter: alpha(opacity=30);
+}
+.note-editor .note-handle .note-control-selection .note-control-handle {
+  border: 1px solid black;
+  width: 7px;
+  height: 7px;
+}
+.note-editor .note-handle .note-control-selection .note-control-holder {
+  border: 1px solid black;
+  width: 7px;
+  height: 7px;
+}
+.note-editor .note-handle .note-control-selection .note-control-sizing {
+  border: 1px solid black;
+  width: 7px;
+  height: 7px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  background-color: white;
+}
+.note-editor .note-handle .note-control-selection .note-control-nw {
+  left: -5px;
+  top: -5px;
+  border-bottom: none;
+  border-right: none;
+}
+.note-editor .note-handle .note-control-selection .note-control-ne {
+  right: -5px;
+  top: -5px;
+  border-bottom: none;
+  border-left: none;
+}
+.note-editor .note-handle .note-control-selection .note-control-sw {
+  left: -5px;
+  bottom: -5px;
+  border-top: none;
+  border-right: none;
+}
+.note-editor .note-handle .note-control-selection .note-control-se {
+  cursor: se-resize;
+  right: -5px;
+  bottom: -5px;
 }
 .note-editor .note-dialog .note-image-dialog .note-dropzone {
   color: lightgray;

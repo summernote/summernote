@@ -3,152 +3,135 @@
 <head>
   <meta charset="utf-8">
   <title>Summernote - Super Simple WYSIWYG editor on Bootstrap</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Super Simple WYSIWYG Editor on Bootstrap">
   <meta name="author" content="https://github.com/HackerWins">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
   <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
   <!--[if lt IE 9]>
-    <script src="http://twitter.github.io/bootstrap/assets/js/html5shiv.js"></script>
-    <![endif]-->
+    <script src="//twitter.github.io/bootstrap/assets/js/html5shiv.js"></script>
+  <![endif]-->
   <!-- add library -->
-  <script src="//code.jquery.com/jquery-1.9.1.min.js"></script> 
-  <link href="//bootswatch.com/cerulean/bootstrap.min.css" rel="stylesheet">
-  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script> 
+  <script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
+  <link href="//bootswatch.com/default/bootstrap.min.css" rel="stylesheet">
+  <link href="//bootswatch.com/default/bootstrap-responsive.min.css" rel="stylesheet">
+  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
   <link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.min.css" rel="stylesheet">
   <!-- add summernote -->
   <link href="summernote.css" rel="stylesheet">
   <script src="summernote.min.js"></script>
   <!-- add user custom -->
   <link href="page.css" rel="stylesheet">
-  <script src="//platform.twitter.com/widgets.js"></script>
   <!-- google code prettify -->
   <link href="//twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.css" rel="stylesheet">
   <script src="//twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.js"></script>
 </head>
 <body>
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-var js, fjs = d.getElementsByTagName(s)[0];
-if (d.getElementById(id)) return;
-js = d.createElement(s); js.id = id;
-js.src = "//connect.facebook.net/en/all.js#xfbml=1";
-fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
-
 <!-- navbar -->
-<div class="navbar navbar-inverse navbar-fixed-top">
-  <a href="https://github.com/HackerWins/summernote" style="z-index: 1031"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+<div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container">
-      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
-      </button>
+      </a>
       <a class="brand" href="./">Summernote</a>
-      <div class="nav-collapse collapse">
-        <ul class="nav">
-          <li class="active">
-          <a href="./">Overview</a>
-          </li>
-          <li class="">
-          <a href="./edit_fly.html">Examples</a>
-          </li>
+      <div class="nav-collapse collapse" id="main-menu">
+        <ul class="nav" id="main-menu-left">
+          <li><a href="features.html">Features</a></li>
+          <li><a href="example.html">Example</a></li>
+          <li><a href="history.html">History</a></li>
+          <li><a href="about.html">About</a></li>
         </ul>
       </div>
     </div>
   </div>
 </div>
-
-<!-- body -->
-<div class="container">
-  <div class="marketing">
-    <h1>Summernote</h1>
-    <p class="marketing-byline">Super Simple WYSIWYG Editor on Bootstrap</p>
-    <!-- social badges -->
-    <p class="marketing-byline">
+<div class="hero-unit">
+  <h1>Summernote</h1>
+  <p class="marketing-byline">Super Simple WYSIWYG Editor on Bootstrap</p>
+  <!-- social badges -->
+  <p class="marketing-byline">
     <!-- Twitter -->
-    <a href="https://twitter.com/share" class="twitter-share-button" data-via="hackerwins">Tweet</a>
+    <a href="https://twitter.com/intent/tweet?button_hashtag=summernote" class="twitter-hashtag-button" data-related="hackerwins">Tweet #summernote</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
     <!-- Google Plus -->
-    <a class="g-plusone" data-size="medium" data-href="http://hackerwins.github.io/summernote"></a>
     <script type="text/javascript">
-(function() {
-  var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-  po.src = 'https://apis.google.com/js/plusone.js';
-  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-})();
+      (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+      })();
     </script>
     <!-- Facebook -->
     <a class="fb-like" data-href="http://hackerwins.github.io/summernote" data-send="false" data-layout="button_count" data-width="100" data-show-faces="true" style="display:inline;margin-right:20px;"></a>
     <!-- Github Repo-->
     <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=HackerWins&amp;repo=summernote&amp;type=watch&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="100px" height="20px"></iframe>
-    </p>
-    <!-- Summernote -->
-    <div class="row">
-      <div class="span12 summernote">
-        <div id="summernote" class="span12"><p><img src="http://imperavi.com/img/woman-red@2x.jpg" alt="Red" style="width: 300px; float: left; margin-right: 20px; margin-bottom: 10px;"></p><h3>Atlas Shrugged</h3><p><span style="color: #a5a5a5;"><em>Ayn Rand</em></span></p><p>She sat listening to the <a href="http://en.wikipedia.org/wiki/Music">music</a>. It was a symphony of triumph. The notes flowed up, they spoke of rising and they were the rising itself, they were the essence and the form of upward motion, they seemed to embody every human act and thought that had ascent as its motive. It was a sunburst of sound, breaking out of hiding and spreading open. It had the freedom of release and the tension of purpose. It swept space clean, and left nothing but the joy of an unobstructed effort. Only a faint echo within the sounds spoke of that from which the music had escaped, but spoke in laughing astonishment at the discovery that there was no ugliness or pain, and there never had had to be. It was the song of an immense deliverance.</p><p>She thought: For just a few moments — while this lasts — it is all right to surrender completely — to forget everything and just permit yourself to feel. She thought: Let go — drop the controls — this is it.</p><p>Somewhere on the edge of her mind, under the music, she heard the sound of train wheels. They knocked in an even rhythm, every fourth knock accented, as if stressing a conscious purpose. She could relax, because she heard the wheels. She listened to the symphony, thinking: This is why the wheels have to be kept going, and this is where they’re going.</p></div>
-      </div>
-    </div>
-    <br/>
-    <p class="marketing-byline"><a href="https://github.com/HackerWins/summernote/archive/master.zip" class="btn btn-primary btn-large">Get Summernote</a></p>
+  </p>
+  <!-- Summernote -->
+  <div class="summernote">
+    <div id="summernote" class="span12"><p><img src="http://imperavi.com/img/woman-red@2x.jpg" alt="Red" style="width: 300px; float: left; margin-right: 20px; margin-bottom: 10px;"></p><h3>Atlas Shrugged</h3><p><span style="color: #a5a5a5;"><em>Ayn Rand</em></span></p><p>She sat listening to the <a href="http://en.wikipedia.org/wiki/Music">music</a>. It was a symphony of triumph. The notes flowed up, they spoke of rising and they were the rising itself, they were the essence and the form of upward motion, they seemed to embody every human act and thought that had ascent as its motive. It was a sunburst of sound, breaking out of hiding and spreading open. It had the freedom of release and the tension of purpose. It swept space clean, and left nothing but the joy of an unobstructed effort. Only a faint echo within the sounds spoke of that from which the music had escaped, but spoke in laughing astonishment at the discovery that there was no ugliness or pain, and there never had had to be. It was the song of an immense deliverance.</p><p>She thought: For just a few moments — while this lasts — it is all right to surrender completely — to forget everything and just permit yourself to feel. She thought: Let go — drop the controls — this is it.</p><p>Somewhere on the edge of her mind, under the music, she heard the sound of train wheels. They knocked in an even rhythm, every fourth knock accented, as if stressing a conscious purpose. She could relax, because she heard the wheels. She listened to the symphony, thinking: This is why the wheels have to be kept going, and this is where they’re going.</p></div>
   </div>
+  <div class="download"><a href="https://github.com/HackerWins/summernote/archive/master.zip" class="btn btn-primary btn-large">Download Summernote</a></div>
+</div>
+<div class="container">
+  <!-- body -->
   <hr class="soften">
-  <h3>Features</h3>
-  <div class="marketing">
-    <div class="row">
-      <div class="span4">
-        <h3>Easy</h3>
-        <p>Summernote need minimal code</p>
-      </div>
-      <div class="span4">
-        <h3>Smart</h3>
-        <p>Summernote support reasonable shortcut</p>
-      </div>
-      <div class="span4">
-        <h3>Familiar</h3>
-        <p>Summernote use worldwide bootstrap</p>
-      </div>
+
+  <div class="row about">
+    <div class="span4">
+      <h3><i class="icon-globe"></i> Worldwide Bootstrap</h3>
+      <p>Meet the best one in the world bootstrap WYSIWYG editor</p>
+    </div>
+    <div class="span4">
+      <h3><i class="icon-file-alt"></i> Easy to Install</h3>
+      <p>Simply download a zip file and add your html folder with Bootstrap.</p>
+    </div>
+    <div class="span4">
+      <h3><i class="icon-github"></i> Open Source</h3>
+      <p>Summernote are licensed under MIT and maintained by the community on <a target="_blank" href="https://github.com/hackerwins/summernote">GitHub</a>.</p>
+    </div>
+    <div class="span4">
+      <h3><i class="icon-pencil"></i> Smart Shortcut</h3>
+      <p>Bind your favorite keyboard shortcut easy, We provide default common shortcut.</p>
+    </div>
+    <div class="span4">
+      <h3><i class="icon-wrench"></i> Integrate Backend</h3>
+      <p>Find your examples there are php, nodejs sample code exist. freely make more server-side languages</p>
     </div>
   </div>
+
   <hr class="soften">
-  <h3>Cross-browser and Cross-platform</h3>
+
   <div class="row">
     <div class="span6">
+      <h3><i class="icon-cogs"></i> Trend leading Specs</h3>
       <ul>
-        <li>Safari, Chrome, Opera</li>
-        <li>Firefox
-        <li>Internet Explorer 9+</li>
+        <li>Lightweight (Summernote: 30Kb)</li>
+        <li>Smart User Interaction</li>
+        <!-- Upcomming Features
+        <li>Painless File upload</li>
+        <li>Unobtrusive Integration</li>
+        <li>Simple Image Manipulation</li>
+        -->
+        <li>Customize by Initializing options</li>
+        <li>Safari, Chrome, Firefox, Opera</li>
+        <li>Internet Explorer 9+ (We planed to support IE 8)</li>
       </ul>
     </div>
     <div class="span6">
-      <li>Mac</li>
-      <li>Windows</li>
-      <li>Linux</li>
+      <h3><i class="icon-bullhorn"></i> Guys say this awesome</h3>
+      <a class="twitter-timeline" height="260" width="640" data-chrome="noheader nofooter" href="https://twitter.com/search?q=summernote" data-widget-id="356967600934240256">"summernote" 관련 트윗</a>
+      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     </div>
   </div>
-  <hr class="soften">
-  <h3>Customize by options</h3>
-  <p class="marketing-byline"></p>
-  <div class="row">
-    <div class="span6">
-      <h4>Height</h4>
-      <p>set height (number) pixel</p>
-      <pre class="prettyprint lang-javascript">$('#summernote').summernote({ height: 500 })</pre>
-    </div>
-    <div class="span6">
-      <h4>Focus</h4>
-      <p>set focus on load</p>
-      <pre class="prettyprint lang-javascript">$('#summernote').summernote({ focus: true })</pre>
-    </div>
-  </div>
-</div>
 </div>
 <footer class="footer">
-<div class="container">
-  © Summernote 2013, Summernote may be freely distributed under the MIT license.
-  <a href="https://twitter.com/hackerwins">Follow me on Twitter</a>
-</div>
+  <div class="container">
+    © Summernote 2013, Summernote distributed under the MIT license.
+    <a href="https://twitter.com/hackerwins">Follow me on Twitter</a>
+  </div>
 </footer>
 <script type="text/javascript">
 $(document).ready(function() {
@@ -158,13 +141,12 @@ $(document).ready(function() {
 </script>
 <!-- Google Analytics -->
 <script type="text/javascript">
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-ga('create', 'UA-42438082-1', 'github.com');
-ga('send', 'pageview');
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-42438082-1', 'github.com');
+  ga('send', 'pageview');
 </script>
 </body>
 </html>

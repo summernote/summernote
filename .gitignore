@@ -1,3 +1,9 @@
 # vim editing
 *.swp
 node_modules
+### intellij ###
+*.iml
+*.ipr
+*.iws
+.idea/
+

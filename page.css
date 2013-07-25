@@ -1,70 +1,26 @@
-/* Add additional stylesheets below
--------------------------------------------------- */
-/*
-  Bootstrap's documentation styles
-  Special styles for presenting Bootstrap's documentation and examples
-*/
-
-
-
 /* Body and structure
 -------------------------------------------------- */
-
-body {
-    position: relative;
-    padding-top: 40px;
+.hero-unit {
+    padding-bottom: 5px;
+    background-color: #F3F3F3;
+    border: 1px solid #ddd;
+    text-align: center;
 }
-
-/* Code in headings */
-h3 code {
-    font-size: 14px;
-    font-weight: normal;
+@media (max-width: 979px) {
+    .hero-unit {
+        margin: 0 1em;
+    }
 }
-
-/* Tweak navbar brand link to be super sleek
--------------------------------------------------- */
-
-body > .navbar {
-    font-size: 13px;
+@media (max-width: 767px) {
+    .hero-unit {
+        padding: 1em;
+        margin: 0;
+    }
 }
-
-/* Change the docs' brand */
-body > .navbar .brand {
-    padding-right: 0;
-    padding-left: 0;
-    margin-left: 20px;
-    float: right;
-    font-weight: bold;
-    color: #000;
-    text-shadow: 0 1px 0 rgba(255,255,255,.1), 0 0 30px rgba(255,255,255,.125);
-    -webkit-transition: all .2s linear;
-    -moz-transition: all .2s linear;
-    transition: all .2s linear;
-}
-body > .navbar .brand:hover {
-    text-decoration: none;
-    text-shadow: 0 1px 0 rgba(255,255,255,.1), 0 0 30px rgba(255,255,255,.4);
-}
-
-
-/* Sections
--------------------------------------------------- */
-
-/* padding for in-page bookmarks and fixed navbar */
-section {
-    padding-top: 30px;
-}
-section > .page-header,
-section > .lead {
-    color: #5a5a5a;
-}
-section > ul li {
-    margin-bottom: 5px;
-}
-
-/* Separators (hr) */
-.bs-docs-separator {
-    margin: 40px 0 39px;
+@media (max-width: 400px) {
+    .hero-unit {
+        padding: 0.5em;
+    }
 }
 
 /* Faded out hr */
@@ -79,67 +35,57 @@ hr.soften {
 }
 
 
-
-/* Jumbotrons
--------------------------------------------------- */
-
 /* Base class
 ------------------------- */
-.jumbotron {
-    position: relative;
-    padding: 40px 0;
-    color: #fff;
-    text-align: center;
-    text-shadow: 0 1px 3px rgba(0,0,0,.4), 0 0 30px rgba(0,0,0,.075);
-    background: #020031; /* Old browsers */
-    background: -moz-linear-gradient(45deg, #312c79 0%, #2e5aea 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left bottom, right top, color-stop(0%, #312c79), color-stop(100%, #2e5aea)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(45deg, #312c79 0%, #2e5aea 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(45deg, #312c79 0%, #2e5aea 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(45deg, #312c79 0%, #2e5aea 100%); /* IE10+ */
-    background: linear-gradient(45deg, #312c79 0%, #2e5aea 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#020031', endColorstr='#6d3353',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-    -webkit-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
-    -moz-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
-    box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
-}
-.jumbotron h1 {
-    font-size: 80px;
+.hero-unit h1 {
+    font-size: 4.8em;
     font-weight: bold;
     letter-spacing: -1px;
     line-height: 1;
     text-shadow: 2px 2px 2px rgba(150, 150, 150, 2);
+
+    -webkit-transition-property: font-size;
+    -moz-transition-property: font-size;
+    transition-property: font-size;
+    -webkit-transition-duration: 0.5s, 0.5s;
+    -moz-transition-duration: 0.5s, 0.5s;
+    transition-duration: 0.5s, 0.5s;
 }
-.jumbotron p {
+
+@media (max-width: 767px) {
+    .hero-unit h1 {
+        font-size: 3.0em;
+    }
+}
+@media (max-width: 400px) {
+    .hero-unit h1 {
+        font-size: 2.0em;
+
+    }
+}
+
+.hero-unit p {
     font-size: 24px;
     font-weight: 300;
     line-height: 1.25;
     margin-bottom: 30px;
 }
 
-/* Link styles (used on .masthead-links as well) */
-.jumbotron a {
-    color: #fff;
-    color: rgba(255,255,255,.5);
-    -webkit-transition: all .2s ease-in-out;
-    -moz-transition: all .2s ease-in-out;
-    transition: all .2s ease-in-out;
-}
-.jumbotron a:hover {
-    color: #fff;
-    text-shadow: 0 0 10px rgba(255,255,255,.25);
-}
 
 /* Download button */
-.masthead .btn {
+.download {
+    padding: 2em 0;
+}
+
+.download .btn {
     padding: 19px 24px;
     font-size: 24px;
     font-weight: 200;
-    color: #fff; /* redeclare to override the `.jumbotron a` */
+    color: #fff;
     border: 0;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border-radius: 6px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
     -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
     -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
     box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
@@ -147,103 +93,23 @@ hr.soften {
     -moz-transition: none;
     transition: none;
 }
-.masthead .btn:hover {
+.download .btn:hover {
     -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
     -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
     box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
 }
-.masthead .btn:active {
+.download .btn:active {
     -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
     -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
     box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
 }
 
 
-/* Pattern overlay
-------------------------- */
-.jumbotron .container {
-    position: relative;
-    z-index: 2;
-}
-.jumbotron:after {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    opacity: .4;
-}
-@media
-only screen and (-webkit-min-device-pixel-ratio: 2),
-only screen and (   min--moz-device-pixel-ratio: 2),
-only screen and (     -o-min-device-pixel-ratio: 2/1) {
-
-    .jumbotron:after {
-        background-size: 150px 150px;
-    }
-
-}
-
-/* Masthead (docs home)
-------------------------- */
-.masthead {
-    padding: 70px 0 80px;
-    margin-bottom: 0;
-    color: #fff;
-}
-.masthead h1 {
-    font-size: 120px;
-    line-height: 1;
-    letter-spacing: -2px;
-}
-.masthead p {
-    font-size: 40px;
-    font-weight: 200;
-    line-height: 1.25;
-}
-
-/* Textual links in masthead */
-.masthead-links {
-    margin: 0;
-    list-style: none;
-}
-.masthead-links li {
-    display: inline;
-    padding: 0 10px;
-    color: rgba(255,255,255,.25);
-}
-
-/* Social proof buttons from GitHub & Twitter */
-.bs-docs-social {
-    padding: 15px 0;
-    text-align: center;
-    background-color: #f5f5f5;
-    border-top: 1px solid #fff;
-    border-bottom: 1px solid #ddd;
-}
-
-/* Quick links on Home */
-.bs-docs-social-buttons {
-    margin-left: 0;
-    margin-bottom: 0;
-    padding-left: 0;
-    list-style: none;
-}
-.bs-docs-social-buttons li {
-    display: inline-block;
-    padding: 5px 8px;
-    line-height: 1;
-    *display: inline;
-    *zoom: 1;
-}
-
 /* Subhead (other pages)
 ------------------------- */
 .subhead {
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    padding: 30px 0;
 }
 .subhead h1 {
     font-size: 60px;
@@ -255,44 +121,27 @@ only screen and (     -o-min-device-pixel-ratio: 2/1) {
     display: none;
 }
 
-
-
-/* Marketing section of Overview
--------------------------------------------------- */
-
-.marketing {
-    text-align: center;
-    color: #5a5a5a;
-}
-.marketing h1 {
-    margin: 60px 0 10px;
-    font-size: 60px;
-    font-weight: 200;
-    line-height: 1;
-    letter-spacing: -1px;
-}
-.marketing h2 {
-    font-weight: 200;
-    margin-bottom: 5px;
-}
-.marketing p {
-    font-size: 16px;
-    line-height: 1.5;
-}
-.marketing .marketing-byline {
-    margin-bottom: 40px;
-    font-size: 20px;
-    font-weight: 300;
-    line-height: 1.25;
-    color: #999;
-}
-.marketing-img {
-    display: block;
-    margin: 0 auto 30px;
-    max-height: 145px;
+@media (min-width: 980px) {
+    .subhead {
+        margin-top: 45px;
+    }
 }
 
+.about-pic {
+    max-width: 200px;
+    margin: 2em;
+}
 
+.contribute .thumbnail {
+    border: none;
+    box-shadow: none;
+    padding-top: 1.5em;
+}
+
+.contribute .thumbnail img {
+    padding-bottom: 0.5em;
+    max-width: 150px;
+}
 
 /* Footer
 -------------------------------------------------- */
@@ -323,6 +172,7 @@ only screen and (     -o-min-device-pixel-ratio: 2/1) {
 
 /* summernote */
 .summernote {
+    background-color: #ffffff;
     text-align: left;
 }
 
