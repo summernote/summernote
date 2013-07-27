@@ -71,15 +71,20 @@ hr.soften {
     margin-bottom: 30px;
 }
 
+/* summernote style on hero unit */
 .hero-unit .summernote {
   font-family: "HelveticaNeue", "Helvetica Neue", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   line-height: 1;
+  color: #333;
+}
+
+.hero-unit .summernote h1 {
+  font-size: 40px;
 }
 
 .hero-unit .summernote p {
   font-size: 18px;
   font-weight: normal;
-  color: #333;
 }
 
 /* Download button */
