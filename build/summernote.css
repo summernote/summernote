@@ -121,9 +121,6 @@
   border: 1px solid black;
   width: 7px;
   height: 7px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
   background-color: white;
 }
 .note-editor .note-handle .note-control-selection .note-control-nw {

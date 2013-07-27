@@ -551,6 +551,16 @@
       var sTable = '<table class="table table-bordered">' + sTR + '</table>';
       (new Range()).insertNode($(sTable)[0]);
     };
+
+    this.float = function(welEditable, sValue, elTarget) {
+      recordUndo(welEditable);
+      elTarget.style.float = sValue;
+    };
+
+    this.resize = function(welEditable, sValue, elTarget) {
+      recordUndo(welEditable);
+      elTarget.style.width = welEditable.width() * sValue + 'px';
+    };
   };
 
   /**
@@ -671,7 +681,7 @@
           top: $(document).scrollTop() + rect.top + 'px',
           width: rect.width + 'px',
           height: rect.height + 'px'
-        });
+        }).data('target', oStyle.image); // save current image element.
       } else {
         welSelection.hide();
       }
@@ -844,6 +854,7 @@
       var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
       
       var oStyle = editor.currentStyle(event.target);
+      if (!oStyle) { return; }
       toolbar.update(oLayoutInfo.toolbar(), oStyle);
       popover.update(oLayoutInfo.popover(), oStyle);
       handle.update(oLayoutInfo.handle(), oStyle);
@@ -870,18 +881,27 @@
             sValue = welBtn.attr('data-value');
 
         var oLayoutInfo = makeLayoutInfo(event.target);
-        var welDialog = oLayoutInfo.dialog();
+        var welDialog = oLayoutInfo.dialog(),
+            welEditable = oLayoutInfo.editable();
 
-        if (editor[sEvent]) { // execute cmd
-          oLayoutInfo.editable().trigger('focus');
-          editor[sEvent](oLayoutInfo.editable(), sValue);
+        // before command
+        var elTarget;
+        if ($.inArray(sEvent, ['resize', 'float']) !== -1) {
+          var welHandle = oLayoutInfo.handle();
+          var welSelection = welHandle.find('.note-control-selection');
+          elTarget = welSelection.data('target');
+        }
+
+        if (editor[sEvent]) { // on command
+          welEditable.trigger('focus');
+          editor[sEvent](welEditable, sValue, elTarget);
         }
         
-        // update recent color
+        // after command
         if ($.inArray(sEvent, ["backColor", "foreColor"]) !== -1) {
           toolbar.updateRecentColor(welBtn[0], sEvent, sValue);
         } else if (sEvent === "showLinkDialog") { // popover to dialog
-          editor.setLinkDialog(oLayoutInfo.editable(), function(linkInfo, cb) {
+          editor.setLinkDialog(welEditable, function(linkInfo, cb) {
             dialog.showLinkDialog(welDialog, linkInfo, cb);
           });
         } else if (sEvent === "showImageDialog") {
@@ -1073,13 +1093,15 @@
                        '<div class="arrow"></div>' +
                        '<div class="popover-content note-image-content">' +
                          '<div class="btn-group">' +
-                           '<button type="button" class="btn btn-small" title="Resize Big" data-event="resize" data-value="big"><i class="icon-resize-full"></i></button>' +
-                           '<button type="button" class="btn btn-small" title="Resize Small" data-event="resize" data-value="small"><i class="icon-resize-small"></i></button>' +
+                           '<button type="button" class="btn btn-small" title="Resize Full" data-event="resize" data-value="1"><i class="icon-resize-full"></i></button>' +
+                           '<button type="button" class="btn btn-small" title="Resize Half" data-event="resize" data-value="0.5">½</button>' +
+                           '<button type="button" class="btn btn-small" title="Resize Thrid" data-event="resize" data-value="0.33">⅓</button>' +
+                           '<button type="button" class="btn btn-small" title="Resize Quarter" data-event="resize" data-value="0.25">¼</button>' +
                          '</div>' +
                          '<div class="btn-group">' +
                            '<button type="button" class="btn btn-small" title="Float Left" data-event="float" data-value="left"><i class="icon-align-left"></i></button>' +
                            '<button type="button" class="btn btn-small" title="Float Right" data-event="float" data-value="right"><i class="icon-align-right"></i></button>' +
-                           '<button type="button" class="btn btn-small" title="Float None" data-event="float" data-value="none"><i class="icon-align-justify"></i></button>' +
+                           '<button type="button" class="btn btn-small" title="Float None" data-event="float" data-value="none"><i class="icon-reorder"></i></button>' +
                          '</div>' +
                        '</div>' +
                      '</div>' +
