@@ -757,9 +757,9 @@
     var handle = new Handle(), dialog = new Dialog();
     
     var key = { BACKSPACE: 8, TAB: 9, ENTER: 13, SPACE: 32,
+                NUM0: 48, NUM1: 49, NUM4: 52, NUM7: 55, NUM8: 56, 
                 B: 66, E: 69, I: 73, J: 74, K: 75, L: 76, R: 82,
-                U: 85, Y: 89, Z: 90, 
-                NUM0: 48, NUM1: 49, NUM4: 52, NUM7: 55, NUM8: 56 };
+                U: 85, Y: 89, Z: 90, BACKSLACH: 220 };
 
     // makeLayoutInfo from editor's descendant node.
     var makeLayoutInfo = function(descendant) {
@@ -791,6 +791,8 @@
         editor.italic(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.U) {
         editor.underline(oLayoutInfo.editable());
+      } else if (bCmd && keyCode === key.BACKSLACH) {
+        editor.removeFormat(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.K) {
         editor.setLinkDialog(oLayoutInfo.editable(), function(linkInfo, cb) {
           dialog.showLinkDialog(oLayoutInfo.dialog(), linkInfo, cb);
@@ -1042,7 +1044,7 @@
                        '<button type="button" class="btn btn-small" title="Bold" data-shortcut="Ctrl+B" data-mac-shortcut="⌘+B" data-event="bold"><i class="icon-bold"></i></button>' +
                        '<button type="button" class="btn btn-small" title="Italic" data-shortcut="Ctrl+I" data-mac-shortcut="⌘+I" data-event="italic"><i class="icon-italic"></i></button>' +
                        '<button type="button" class="btn btn-small" title="Underline" data-shortcut="Ctrl+U" data-mac-shortcut="⌘+U" data-event="underline"><i class="icon-underline"></i></button>' +
-                       '<button type="button" class="btn btn-small" title="Remove Font Style" data-event="removeFormat"><i class="icon-eraser"></i></button>' +
+                       '<button type="button" class="btn btn-small" title="Remove Font Style" data-shortcut="Ctrl+\\" data-mac-shortcut="⌘+\\" data-event="removeFormat"><i class="icon-eraser"></i></button>' +
                      '</div>' +
                      '<div class="note-para btn-group">' +
                        '<button type="button" class="btn btn-small" title="Unordered list" data-shortcut="Ctrl+Shift+8" data-mac-shortcut="⌘+⇧+7" data-event="insertUnorderedList"><i class="icon-list-ul"></i></button>' +
