@@ -71,6 +71,16 @@ hr.soften {
     margin-bottom: 30px;
 }
 
+.hero-unit .summernote {
+  font-family: "HelveticaNeue", "Helvetica Neue", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  line-height: 1;
+}
+
+.hero-unit .summernote p {
+  font-size: 18px;
+  font-weight: normal;
+  color: #333;
+}
 
 /* Download button */
 .download {
