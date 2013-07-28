@@ -74,6 +74,9 @@ $('#summernote').destroy();
 * OS (Windows, Mac)
 
 ### Upcoming Features
+* Table: Handles(Sizing, Selection) and Popover
+* Responsive Toolbar
+* API for Callbacks
 
 ### Change Log
 
@@ -102,6 +105,7 @@ $.extend - Renderer (Markup)
                                  \ History (Store on jQuery.data)
                         \ Toolbar
                         \ Popover
+                        \ Handle
                         \ Dialog
 ----------Common Utils----------
 Dom, List, Func
