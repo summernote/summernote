@@ -61,9 +61,8 @@
    * dom utils
    */
   var dom = function() {
-    // nodeName of element are always uppercase.
-    // http://ejohn.org/blog/nodename-case-sensitivity/
     var makePredByNodeName = function(sNodeName) {
+      // nodeName of element is always uppercase.
       return function(node) { return node && node.nodeName === sNodeName; };
     };
     
@@ -77,6 +76,10 @@
 
     var isEditable = function(node) {
       return node && $(node).hasClass('note-editable');
+    };
+
+    var isControlSizing = function(node) {
+      return node && $(node).hasClass('note-control-sizing');
     };
 
     // ancestor: find nearest ancestor predicate hit
@@ -183,7 +186,7 @@
     // fromtOffsetPath: return element from offsetPath(offset list)
     var fromOffsetPath = function(ancestor, aOffset) {
       var current = ancestor;
-      for (var i=0, sz = aOffset.length; i < sz; i++) {
+      for (var i = 0, sz = aOffset.length; i < sz; i++) {
         current = current.childNodes[aOffset[i]];
       }
       return current;
@@ -223,7 +226,7 @@
     return {
       isText: isText,
       isPara: isPara, isList: isList,
-      isEditable: isEditable,
+      isEditable: isEditable, isControlSizing: isControlSizing,
       isAnchor: makePredByNodeName('A'),
       isDiv: makePredByNodeName('DIV'), isSpan: makePredByNodeName('SPAN'),
       isB: makePredByNodeName('B'), isU: makePredByNodeName('U'),
@@ -423,8 +426,7 @@
 
     var applySnap = function(welEditable, oSnap) {
       welEditable.html(oSnap.contents).scrollTop(oSnap.scrollTop);
-      var rng = createRangeFromBookmark(welEditable[0], oSnap.bookmark);
-      rng.select();
+      createRangeFromBookmark(welEditable[0], oSnap.bookmark).select();
     };
 
     this.undo = function(welEditable) {
@@ -560,6 +562,12 @@
     this.resize = function(welEditable, sValue, elTarget) {
       recordUndo(welEditable);
       elTarget.style.width = welEditable.width() * sValue + 'px';
+      elTarget.style.height = "";
+    };
+
+    this.resizeTo = function(pos, elTarget) {
+      elTarget.style.width = pos.x + 'px';
+      elTarget.style.height = pos.y + 'px';
     };
   };
 
@@ -868,6 +876,29 @@
       popover.hide(oLayoutInfo.popover());
       handle.hide(oLayoutInfo.handle());
     };
+
+    var hHandleMousedown = function(event) {
+      if (dom.isControlSizing(event.target)) {
+        var oLayoutInfo = makeLayoutInfo(event.target),
+            welHandle = oLayoutInfo.handle(), welPopover = oLayoutInfo.popover(),
+            welEditable = oLayoutInfo.editable(), welEditor = oLayoutInfo.editor();
+
+        var elTarget = welHandle.find('.note-control-selection').data('target');
+        var posStart = $(elTarget).offset(), posDistance;
+        welEditor.on('mousemove', function(event) {
+          posDistance = {x: event.clientX - posStart.left,
+                         y: event.clientY - posStart.top};
+          editor.resizeTo(posDistance, elTarget);
+          handle.update(welHandle, {image: elTarget});
+          popover.update(welPopover, {image: elTarget});
+        }).on('mouseup', function() {
+          welEditor.off('mousemove').off('mouseup');
+        });
+
+        editor.recordUndo(welEditable);
+        event.stopPropagation(); event.preventDefault();
+      }
+    };
     
     var hToolbarAndPopoverMousedown = function(event) {
       // prevent default event when insertTable (FF, Webkit)
@@ -957,6 +988,8 @@
       oLayoutInfo.editable.on('dragenter dragover dragleave', false);
       oLayoutInfo.editable.on('drop', hDropImage);
 
+      oLayoutInfo.handle.on('mousedown', hHandleMousedown);
+
       oLayoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
       oLayoutInfo.popover.on('click', hToolbarAndPopoverClick);
       oLayoutInfo.toolbar.on('mousedown', hToolbarAndPopoverMousedown);
@@ -971,6 +1004,7 @@
     this.dettach = function(oLayoutInfo) {
       oLayoutInfo.editable.off();
       oLayoutInfo.toolbar.off();
+      oLayoutInfo.handle.off();
       oLayoutInfo.popover.off();
     };
   };
@@ -1243,6 +1277,7 @@
         editable: welEditor.find('.note-editable'),
         toolbar: welEditor.find('.note-toolbar'),
         popover: welEditor.find('.note-popover'),
+        handle: welEditor.find('.note-handle'),
         dialog: welEditor.find('.note-dialog')
       };
     };
@@ -1266,7 +1301,7 @@
    */
   $.fn.extend({
     // create Editor Layout and attach Key and Mouse Event
-    summernote : function(options) {
+    summernote: function(options) {
       options = options || {};
 
       this.each(function(idx, elHolder) {
@@ -1282,7 +1317,7 @@
       });
     },
     // get the HTML contents of note or set the HTML contents of note.
-    code : function(sHTML) {
+    code: function(sHTML) {
       //get the HTML contents
       if (sHTML === undefined) {
         return this.map(function(idx, elHolder) {
@@ -1298,7 +1333,7 @@
       });
     },
     // destroy Editor Layout and dettach Key and Mouse Event
-    destroy : function() {
+    destroy: function() {
       this.each(function(idx, elHolder) {
         var welHolder = $(elHolder);
 
@@ -1308,7 +1343,7 @@
       });
     },
     // inner object for test
-    summernoteInner : function() {
+    summernoteInner: function() {
       return { dom: dom, list: list, func: func };
     }
   });
