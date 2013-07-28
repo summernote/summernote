@@ -1037,6 +1037,7 @@
                        '<ul class="dropdown-menu">' +
                          '<li><a data-event="formatBlock" data-value="p">Paragraph</a></li>' +
                          '<li><a data-event="formatBlock" data-value="blockquote"><blockquote>Quote</blockquote></a></li>' +
+                         '<li><a data-event="formatBlock" data-value="pre">Code</a></li>' +
                          '<li><a data-event="formatBlock" data-value="h1"><h1>Header 1</h1></a></li>' +
                          '<li><a data-event="formatBlock" data-value="h2"><h2>Header 2</h2></a></li>' +
                          '<li><a data-event="formatBlock" data-value="h3"><h3>Header 3</h3></a></li>' +
