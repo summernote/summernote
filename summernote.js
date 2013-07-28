@@ -884,10 +884,11 @@
             welEditable = oLayoutInfo.editable(), welEditor = oLayoutInfo.editor();
 
         var elTarget = welHandle.find('.note-control-selection').data('target');
-        var posStart = $(elTarget).offset(), posDistance;
+        var posStart = $(elTarget).offset(),
+            scrollTop = $(document).scrollTop(), posDistance;
         welEditor.on('mousemove', function(event) {
           posDistance = {x: event.clientX - posStart.left,
-                         y: event.clientY - posStart.top};
+                         y: event.clientY - (posStart.top - scrollTop)};
           editor.resizeTo(posDistance, elTarget);
           handle.update(welHandle, {image: elTarget});
           popover.update(welPopover, {image: elTarget});
