@@ -75,14 +75,14 @@ $('#summernote').destroy();
 
 ### Upcoming Features
 
-#### v0.2, 2013-08-01
-* Add undo/redo
-* Add image sizing handle and popover
-* Support standalone css
-* Remove jQuery.curstyles dependency
-* Support Multiple Editor
-
 ### Change Log
+
+#### v0.2, 2013-08-01
+* `ADDED` undo/redo
+* `ADDED` image sizing handle and popover
+* `ADDED` support standalone css
+* `ADDED` support Multiple Editor
+* `REMOVED` jQuery.curstyles dependency
 
 #### v0.1, 2013-07-01
 * `ADDED` font style: size, color, bold, italic, underline, remove font style
