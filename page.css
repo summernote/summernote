@@ -83,22 +83,6 @@ hr.soften {
     margin-bottom: 30px;
 }
 
-/* summernote style on hero unit */
-.hero-unit .summernote {
-  font-family: "HelveticaNeue", "Helvetica Neue", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  line-height: 1;
-  color: #333;
-}
-
-.hero-unit .summernote h1 {
-  font-size: 40px;
-}
-
-.hero-unit .summernote p {
-  font-size: 18px;
-  font-weight: normal;
-}
-
 /* Download button */
 .download {
     padding: 2em 0;
@@ -195,12 +179,22 @@ hr.soften {
     padding-left: 0;
 }
 
-
-
-/* summernote */
-.summernote {
+/* summernote style on hero unit */
+.hero-unit .summernote {
+    font-family: "HelveticaNeue", "Helvetica Neue", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    line-height: 1;
+    color: #333;
     background-color: #ffffff;
     text-align: left;
+}
+
+.hero-unit .summernote h1 {
+    font-size: 40px;
+}
+
+.hero-unit .summernote p {
+    font-size: 18px;
+    font-weight: normal;
 }
 
 .summernote h1, .summernote h2, .summernote h3, .summernote h4, .summernote h5, .summernote h6 {
