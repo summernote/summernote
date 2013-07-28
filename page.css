@@ -182,7 +182,7 @@ hr.soften {
 /* summernote style on hero unit */
 .hero-unit .summernote {
     font-family: "HelveticaNeue", "Helvetica Neue", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-    line-height: 1;
+    line-height: 1.2;
     color: #333;
     background-color: #ffffff;
     text-align: left;
@@ -195,6 +195,7 @@ hr.soften {
 .hero-unit .summernote p {
     font-size: 18px;
     font-weight: normal;
+    margin: 0;
 }
 
 .summernote h1, .summernote h2, .summernote h3, .summernote h4, .summernote h5, .summernote h6 {
