@@ -23,8 +23,8 @@
   <!-- add user custom -->
   <link href="page.css" rel="stylesheet">
   <!-- google code prettify -->
-  <link href="//twitter.github.com/bootstrap/2.3.2/assets/js/google-code-prettify/prettify.css" rel="stylesheet">
-  <script src="//twitter.github.com/bootstrap/2.3.2/assets/js/google-code-prettify/prettify.js"></script>
+  <link href="prettify.css" rel="stylesheet">
+  <script src="prettify.js"></script>
 </head>
 <body>
 <!-- navbar -->
@@ -103,7 +103,7 @@ var edit = function() {
   $('.click2edit').summernote({focus: true});
 };
 var save = function() {
-  var sHTML = $('.click2edit').code(); //save HTML If you need.
+  var aHTML = $('.click2edit').code(); //save HTML If you need(aHTML: array).
   $('.click2edit').destroy();
 };</pre>
         <h4>Example</h4>

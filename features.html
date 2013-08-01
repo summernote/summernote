@@ -23,8 +23,8 @@
   <!-- add user custom -->
   <link href="page.css" rel="stylesheet">
   <!-- google code prettify -->
-  <link href="//twitter.github.com/bootstrap/2.3.2/assets/js/google-code-prettify/prettify.css" rel="stylesheet">
-  <script src="//twitter.github.com/bootstrap/2.3.2/assets/js/google-code-prettify/prettify.js"></script>
+  <link href="prettify.css" rel="stylesheet">
+  <script src="prettify.js"></script>
 </head>
 <body>
 <!-- navbar -->
@@ -72,6 +72,14 @@
       <section id="install">
         <h2>Installation</h2>
         <p>Summernote uses open source libraries(jQuery, Bootstrap, font-awesome).</p>
+        <h4>00. Requires HTML5 doctype</h4>
+        <p>Bootstrap makes use of certain HTML elements and CSS properties that require the use of the HTML5 doctype. Include it at the beginning of all your projects.</p>
+        <pre class="prettyprint lang-html linenums">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+...
+&lt;/html lang="en"&gt;
+</pre>
         <h4>01. Include js/css</h4>
         <p>Include Following code into head tag of your HTML:</p>
         <pre class="prettyprint lang-html linenums">
@@ -112,7 +120,7 @@ $(document).ready(function() {
         <pre class="prettyprint linenums">$('.summernote').destroy();</pre>
         <h4>get & set Code</h4>
         <p>Get Code.</p>
-        <pre class="prettyprint linenums">var sHTML = $('.summernote').code();</pre>
+        <pre class="prettyprint linenums">var aHTML = $('.summernote').code(); //aHTML: array of strings.</pre>
         <p>Set Code.</p>
         <pre class="prettyprint linenums">$('.summernote').code(sHTML);</pre>
       </section>
