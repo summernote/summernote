@@ -476,20 +476,21 @@
     var aCmd = ['bold', 'italic', 'underline', 'justifyLeft', 'justifyCenter',
                 'justifyRight', 'justifyFull', 'insertOrderedList',
                 'insertUnorderedList', 'indent', 'outdent', 'formatBlock',
-                'removeFormat', 'backColor', 'foreColor', 'insertImage'];
+                'removeFormat', 'backColor', 'foreColor', 'insertImage', 'fontSize'];
+    
     for (var idx = 0, len=aCmd.length; idx < len; idx ++) {
       this[aCmd[idx]] = function(sCmd) {
         return function(welEditable, sValue) {
           recordUndo(welEditable);
           document.execCommand(sCmd, false, sValue);
+
+          // <font size='3px;'> to <font style='font-size=3px;'>
+          if (sCmd === 'fontSize') {
+            $("font[size]", welEditable).removeAttr("size").css("font-size", sValue);
+          } 
         };
       }(aCmd[idx]);
-    }                
-    
-    this.fontSize = function(welEditable, sValue) {
-      recordUndo(welEditable);
-      style.styleFont(new Range(), {fontSize: sValue + 'px'});
-    };
+    }
     
     this.lineHeight = function(welEditable, sValue) {
       recordUndo(welEditable);
@@ -1047,15 +1048,15 @@
                      '<div class="note-fontsize btn-group">' +
                        '<button type="button" class="btn btn-small dropdown-toggle" data-toggle="dropdown" title="Font Size"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +
                        '<ul class="dropdown-menu">' +
-                         '<li><a data-event="fontSize" data-value="8"><i class="icon-ok"></i> 8</a></li>' +
-                         '<li><a data-event="fontSize" data-value="9"><i class="icon-ok"></i> 9</a></li>' +
-                         '<li><a data-event="fontSize" data-value="10"><i class="icon-ok"></i> 10</a></li>' +
-                         '<li><a data-event="fontSize" data-value="11"><i class="icon-ok"></i> 11</a></li>' +
-                         '<li><a data-event="fontSize" data-value="12"><i class="icon-ok"></i> 12</a></li>' +
-                         '<li><a data-event="fontSize" data-value="14"><i class="icon-ok"></i> 14</a></li>' +
-                         '<li><a data-event="fontSize" data-value="18"><i class="icon-ok"></i> 18</a></li>' +
-                         '<li><a data-event="fontSize" data-value="24"><i class="icon-ok"></i> 24</a></li>' +
-                         '<li><a data-event="fontSize" data-value="36"><i class="icon-ok"></i> 36</a></li>' +
+                         '<li><a data-event="fontSize" data-value="8px"><i class="icon-ok"></i> 8</a></li>' +
+                         '<li><a data-event="fontSize" data-value="9px"><i class="icon-ok"></i> 9</a></li>' +
+                         '<li><a data-event="fontSize" data-value="10px"><i class="icon-ok"></i> 10</a></li>' +
+                         '<li><a data-event="fontSize" data-value="11px"><i class="icon-ok"></i> 11</a></li>' +
+                         '<li><a data-event="fontSize" data-value="12px"><i class="icon-ok"></i> 12</a></li>' +
+                         '<li><a data-event="fontSize" data-value="14px"><i class="icon-ok"></i> 14</a></li>' +
+                         '<li><a data-event="fontSize" data-value="18px"><i class="icon-ok"></i> 18</a></li>' +
+                         '<li><a data-event="fontSize" data-value="24px"><i class="icon-ok"></i> 24</a></li>' +
+                         '<li><a data-event="fontSize" data-value="36px"><i class="icon-ok"></i> 36</a></li>' +
                        '</ul>' +
                      '</div>' +
                      '<div class="note-color btn-group">' +
