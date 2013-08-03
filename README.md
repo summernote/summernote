@@ -77,6 +77,7 @@ $('#summernote').destroy();
 * Table: Handles(Sizing, Selection) and Popover
 * Responsive Toolbar
 * API for Callbacks
+* Air Mode
 * Bootstrap 2.x to Bootstrap 3 Migration
 
 ### Change Log
