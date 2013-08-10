@@ -560,7 +560,7 @@
 
     this.float = function(welEditable, sValue, elTarget) {
       recordUndo(welEditable);
-      elTarget.style.float = sValue;
+      elTarget.style.cssFloat = sValue;
     };
 
     this.resize = function(welEditable, sValue, elTarget) {
