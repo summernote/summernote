@@ -476,7 +476,8 @@
     var aCmd = ['bold', 'italic', 'underline', 'justifyLeft', 'justifyCenter',
                 'justifyRight', 'justifyFull', 'insertOrderedList',
                 'insertUnorderedList', 'indent', 'outdent', 'formatBlock',
-                'removeFormat', 'backColor', 'foreColor', 'insertImage'];
+                'removeFormat', 'backColor', 'foreColor', 'insertImage',
+                'insertHorizontalRule'];
     
     for (var idx = 0, len=aCmd.length; idx < len; idx ++) {
       this[aCmd[idx]] = function(sCmd) {
@@ -832,6 +833,8 @@
       } else if (bCmd && (key.NUM1 <= keyCode && keyCode <= key.NUM4)) {
         var sHeading = 'H' + String.fromCharCode(keyCode); // H1~H4
         editor.formatBlock(oLayoutInfo.editable(), sHeading);
+      } else if (bCmd && keyCode === key.ENTER) {
+        editor.insertHorizontalRule(oLayoutInfo.editable());
       } else {
         if (keyCode === key.BACKSPACE || keyCode === key.ENTER ||
             keyCode === key.SPACE) {
