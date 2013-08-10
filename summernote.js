@@ -840,11 +840,11 @@
       event.preventDefault(); //prevent default event for FF
     };
 
-    var insertImages = function(files) {
+    var insertImages = function(welEditable, files) {
       $.each(files, function(idx, file) {
         var fileReader = new FileReader;
         fileReader.onload = function(event) {
-          editor.insertImage(event.target.result); // sURL
+          editor.insertImage(welEditable, event.target.result); // sURL
         };
         fileReader.readAsDataURL(file);
       });
@@ -853,7 +853,8 @@
     var hDropImage = function(event) {
       var dataTransfer = event.originalEvent.dataTransfer;
       if (dataTransfer && dataTransfer.files) {
-        insertImages(dataTransfer.files);
+        var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+        insertImages(oLayoutInfo.editable(), dataTransfer.files);
       }
       event.stopPropagation();
       event.preventDefault();
@@ -943,7 +944,9 @@
             dialog.showLinkDialog(welDialog, linkInfo, cb);
           });
         } else if (sEvent === "showImageDialog") {
-          dialog.showImageDialog(welDialog, hDropImage, insertImages);
+          dialog.showImageDialog(welDialog, hDropImage, function(files) {
+            insertImages(welEditable, files);
+          });
         }
 
         hToolbarAndPopoverUpdate(event);
