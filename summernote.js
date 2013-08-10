@@ -694,6 +694,8 @@
           width: rect.width + 'px',
           height: rect.height + 'px'
         }).data('target', oStyle.image); // save current image element.
+        var sSizing = rect.width + 'x' + rect.height;
+        welSelection.find('.note-control-selection-info').text(sSizing);
       } else {
         welSelection.hide();
       }
@@ -1159,6 +1161,7 @@
                       '<div class="note-control-holder note-control-ne"></div>' +
                       '<div class="note-control-holder note-control-sw"></div>' +
                       '<div class="note-control-sizing note-control-se"></div>' +
+                      '<div class="note-control-selection-info"></div>' +
                     '</div>' +
                   '</div>';
 

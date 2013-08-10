@@ -146,6 +146,23 @@
   right: -5px;
   bottom: -5px;
 }
+.note-editor .note-handle .note-control-selection .note-control-selection-info {
+  margin: 5px;
+  padding: 5px;
+  right: 0;
+  bottom: 0;
+  color: white;
+  background-color: black;
+  -moz-opacity: 0.3;
+  -khtml-opacity: 0.3;
+  -webkit-opacity: 0.3;
+  opacity: 0.3;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(opacity=30);
+  filter: alpha(opacity=30);
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
 .note-editor .note-dialog .note-image-dialog .note-dropzone {
   color: lightgray;
   min-height: 200px;
