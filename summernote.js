@@ -1256,7 +1256,7 @@
     };
     
     // createLayout
-    var createLayout = this.createLayout = function(welHolder, nHeight) {
+    var createLayout = this.createLayout = function(welHolder, nHeight, nTabIndex) {
       //already created
       if (welHolder.next().hasClass('note-editor')) { return; }
       
@@ -1265,6 +1265,7 @@
 
       //02. create Editable
       var welEditable = $('<div class="note-editable" contentEditable="true"></div>').prependTo(welEditor);
+      if (nTabIndex) { welEditable.attr('tabIndex', nTabIndex); }
       if (nHeight) { welEditable.height(nHeight); }
 
       welEditable.html(welHolder.html());
@@ -1330,8 +1331,8 @@
       this.each(function(idx, elHolder) {
         var welHolder = $(elHolder);
 
-        // createLayout
-        renderer.createLayout(welHolder, options.height);
+        // createLayout with options
+        renderer.createLayout(welHolder, options.height, options.tabIndex);
 
         var info = renderer.layoutInfoFromHolder(welHolder);
         eventHandler.attach(info);
