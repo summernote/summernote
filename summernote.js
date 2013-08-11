@@ -1337,14 +1337,15 @@
       if (sHTML === undefined) {
         return this.map(function(idx, elHolder) {
           var info = renderer.layoutInfoFromHolder($(elHolder));
-          return info.editable.html();
+          var bEditable = !!(info && info.editable);
+          return  bEditable ? info.editable.html() : $(elHolder).html();
         });
       }
 
       // set the HTML contents
       this.each(function(i, elHolder) {
         var info = renderer.layoutInfoFromHolder($(elHolder));
-        info.editable.html(sHTML);
+        if (info && info.editable) { info.editable.html(sHTML); }
       });
     },
     // destroy Editor Layout and dettach Key and Mouse Event
@@ -1353,6 +1354,7 @@
         var welHolder = $(elHolder);
 
         var info = renderer.layoutInfoFromHolder(welHolder);
+        if (!info || !info.editable) { return; }
         eventHandler.dettach(info);
         renderer.removeLayout(welHolder);
       });
