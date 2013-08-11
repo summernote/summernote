@@ -153,12 +153,12 @@
   bottom: 0;
   color: white;
   background-color: black;
-  -moz-opacity: 0.3;
-  -khtml-opacity: 0.3;
-  -webkit-opacity: 0.3;
-  opacity: 0.3;
-  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(opacity=30);
-  filter: alpha(opacity=30);
+  -moz-opacity: 0.7;
+  -khtml-opacity: 0.7;
+  -webkit-opacity: 0.7;
+  opacity: 0.7;
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(opacity=70);
+  filter: alpha(opacity=70);
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
