@@ -488,6 +488,13 @@
       }(aCmd[idx]);
     }
 
+    this.tab = function(welEditable) {
+      var rng = new Range();
+      if (rng.isOnList() || !rng.isCollapsed()) {
+        return this.indent(welEditable); // return is hack.
+      }
+    };
+
     this.fontSize = function(welEditable, sValue) {
       recordUndo(welEditable);
       document.execCommand('fontSize', false, 3);
@@ -794,7 +801,8 @@
           bShift = event.shiftKey, keyCode = event.keyCode;
 
       // optimize
-      var oLayoutInfo = (bCmd || bShift) ? makeLayoutInfo(event.target) : null;
+      var bExecCmd = (bCmd || bShift || keyCode === key.TAB);
+      var oLayoutInfo = (bExecCmd) ? makeLayoutInfo(event.target) : null;
 
       if (bCmd && ((bShift && keyCode === key.Z) || keyCode === key.Y)) {
         editor.redo(oLayoutInfo.editable());
@@ -827,7 +835,7 @@
       } else if (bShift && keyCode === key.TAB) { // shift + tab
         editor.outdent(oLayoutInfo.editable());
       } else if (keyCode === key.TAB) { // tab
-        editor.indent(oLayoutInfo.editable());
+        editor.tab(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.NUM0) { // formatBlock Paragraph
         editor.formatBlock(oLayoutInfo.editable(), 'P');
       } else if (bCmd && (key.NUM1 <= keyCode && keyCode <= key.NUM4)) {
