@@ -1038,11 +1038,11 @@
   var Renderer = function() {
     var sToolbar = '<div class="note-toolbar btn-toolbar">' + 
                      '<div class="note-insert btn-group">' +
-                       '<button type="button" class="btn btn-small" title="Picture" data-event="showImageDialog"><i class="icon-picture"></i></button>' +
-                       '<button type="button" class="btn btn-small" title="Link" data-event="showLinkDialog" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" ><i class="icon-link"></i></button>' +
+                       '<button type="button" class="btn btn-small" title="Picture" data-event="showImageDialog" tabindex="-1"><i class="icon-picture"></i></button>' +
+                       '<button type="button" class="btn btn-small" title="Link" data-event="showLinkDialog" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" tabindex="-1"><i class="icon-link"></i></button>' +
                      '</div>' +
                      '<div class="note-table btn-group">' +
-                       '<button type="button" class="btn btn-small dropdown-toggle" title="Table" data-toggle="dropdown"><i class="icon-table"></i> <span class="caret"></span></button>' +
+                       '<button type="button" class="btn btn-small dropdown-toggle" title="Table" data-toggle="dropdown" tabindex="-1"><i class="icon-table"></i> <span class="caret"></span></button>' +
                         '<ul class="dropdown-menu">' +
                           '<div class="note-dimension-picker">' +
                             '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>' +
@@ -1053,7 +1053,7 @@
                         '</ul>' +
                      '</div>' +
                      '<div class="note-style btn-group">' +
-                       '<button type="button" class="btn btn-small dropdown-toggle" title="Style" data-toggle="dropdown"><i class="icon-magic"></i> <span class="caret"></span></button>' +
+                       '<button type="button" class="btn btn-small dropdown-toggle" title="Style" data-toggle="dropdown" tabindex="-1"><i class="icon-magic"></i> <span class="caret"></span></button>' +
                        '<ul class="dropdown-menu">' +
                          '<li><a data-event="formatBlock" data-value="p">Paragraph</a></li>' +
                          '<li><a data-event="formatBlock" data-value="blockquote"><blockquote>Quote</blockquote></a></li>' +
@@ -1065,7 +1065,7 @@
                        '</ul>' +
                      '</div>' +
                      '<div class="note-fontsize btn-group">' +
-                       '<button type="button" class="btn btn-small dropdown-toggle" data-toggle="dropdown" title="Font Size"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +
+                       '<button type="button" class="btn btn-small dropdown-toggle" data-toggle="dropdown" title="Font Size" tabindex="-1"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +
                        '<ul class="dropdown-menu">' +
                          '<li><a data-event="fontSize" data-value="8"><i class="icon-ok"></i> 8</a></li>' +
                          '<li><a data-event="fontSize" data-value="9"><i class="icon-ok"></i> 9</a></li>' +
@@ -1079,8 +1079,8 @@
                        '</ul>' +
                      '</div>' +
                      '<div class="note-color btn-group">' +
-                       '<button type="button" class="btn btn-small note-recent-color" title="Recent Color" data-event="color" data-value=\'{"foreColor":"black","backColor":"yellow"}\'><i class="icon-font" style="color:black;background-color:yellow;"></i></button>' +
-                       '<button type="button" class="btn btn-small dropdown-toggle" title="More Color" data-toggle="dropdown">' +
+                       '<button type="button" class="btn btn-small note-recent-color" title="Recent Color" data-event="color" data-value=\'{"foreColor":"black","backColor":"yellow"}\' tabindex="-1"><i class="icon-font" style="color:black;background-color:yellow;"></i></button>' +
+                       '<button type="button" class="btn btn-small dropdown-toggle" title="More Color" data-toggle="dropdown" tabindex="-1">' +
                          '<span class="caret"></span>' +
                        '</button>' +
                        '<ul class="dropdown-menu">' +
@@ -1097,33 +1097,33 @@
                        '</ul>' +
                      '</div>' +
                      '<div class="note-style btn-group">' +
-                       '<button type="button" class="btn btn-small" title="Bold" data-shortcut="Ctrl+B" data-mac-shortcut="⌘+B" data-event="bold"><i class="icon-bold"></i></button>' +
-                       '<button type="button" class="btn btn-small" title="Italic" data-shortcut="Ctrl+I" data-mac-shortcut="⌘+I" data-event="italic"><i class="icon-italic"></i></button>' +
-                       '<button type="button" class="btn btn-small" title="Underline" data-shortcut="Ctrl+U" data-mac-shortcut="⌘+U" data-event="underline"><i class="icon-underline"></i></button>' +
-                       '<button type="button" class="btn btn-small" title="Remove Font Style" data-shortcut="Ctrl+\\" data-mac-shortcut="⌘+\\" data-event="removeFormat"><i class="icon-eraser"></i></button>' +
+                       '<button type="button" class="btn btn-small" title="Bold" data-shortcut="Ctrl+B" data-mac-shortcut="⌘+B" data-event="bold" tabindex="-1"><i class="icon-bold"></i></button>' +
+                       '<button type="button" class="btn btn-small" title="Italic" data-shortcut="Ctrl+I" data-mac-shortcut="⌘+I" data-event="italic" tabindex="-1"><i class="icon-italic"></i></button>' +
+                       '<button type="button" class="btn btn-small" title="Underline" data-shortcut="Ctrl+U" data-mac-shortcut="⌘+U" data-event="underline" tabindex="-1"><i class="icon-underline"></i></button>' +
+                       '<button type="button" class="btn btn-small" title="Remove Font Style" data-shortcut="Ctrl+\\" data-mac-shortcut="⌘+\\" data-event="removeFormat" tabindex="-1"><i class="icon-eraser"></i></button>' +
                      '</div>' +
                      '<div class="note-para btn-group">' +
-                       '<button type="button" class="btn btn-small" title="Unordered list" data-shortcut="Ctrl+Shift+8" data-mac-shortcut="⌘+⇧+7" data-event="insertUnorderedList"><i class="icon-list-ul"></i></button>' +
-                       '<button type="button" class="btn btn-small" title="Ordered list" data-shortcut="Ctrl+Shift+7" data-mac-shortcut="⌘+⇧+8" data-event="insertOrderedList"><i class="icon-list-ol"></i></button>' +
-                       '<button type="button" class="btn btn-small dropdown-toggle" title="Paragraph" data-toggle="dropdown"><i class="icon-align-left"></i>  <span class="caret"></span></button>' +
+                       '<button type="button" class="btn btn-small" title="Unordered list" data-shortcut="Ctrl+Shift+8" data-mac-shortcut="⌘+⇧+7" data-event="insertUnorderedList" tabindex="-1"><i class="icon-list-ul"></i></button>' +
+                       '<button type="button" class="btn btn-small" title="Ordered list" data-shortcut="Ctrl+Shift+7" data-mac-shortcut="⌘+⇧+8" data-event="insertOrderedList" tabindex="-1"><i class="icon-list-ol"></i></button>' +
+                       '<button type="button" class="btn btn-small dropdown-toggle" title="Paragraph" data-toggle="dropdown" tabindex="-1"><i class="icon-align-left"></i>  <span class="caret"></span></button>' +
                        '<ul class="dropdown-menu right">' +
                          '<li>' +
                            '<div class="note-align btn-group">' +
-                             '<button type="button" class="btn btn-small" title="Align left" data-shortcut="Ctrl+Shift+L" data-mac-shortcut="⌘+⇧+L" data-event="justifyLeft"><i class="icon-align-left"></i></button>' +
-                             '<button type="button" class="btn btn-small" title="Align center" data-shortcut="Ctrl+Shift+E" data-mac-shortcut="⌘+⇧+E" data-event="justifyCenter"><i class="icon-align-center"></i></button>' +
-                             '<button type="button" class="btn btn-small" title="Align right" data-shortcut="Ctrl+Shift+R" data-mac-shortcut="⌘+⇧+R" data-event="justifyRight"><i class="icon-align-right"></i></button>' +
-                             '<button type="button" class="btn btn-small" title="Justify full" data-shortcut="Ctrl+Shift+J" data-mac-shortcut="⌘+⇧+J" data-event="justifyFull"><i class="icon-align-justify"></i></button>' +
+                             '<button type="button" class="btn btn-small" title="Align left" data-shortcut="Ctrl+Shift+L" data-mac-shortcut="⌘+⇧+L" data-event="justifyLeft" tabindex="-1"><i class="icon-align-left"></i></button>' +
+                             '<button type="button" class="btn btn-small" title="Align center" data-shortcut="Ctrl+Shift+E" data-mac-shortcut="⌘+⇧+E" data-event="justifyCenter" tabindex="-1"><i class="icon-align-center"></i></button>' +
+                             '<button type="button" class="btn btn-small" title="Align right" data-shortcut="Ctrl+Shift+R" data-mac-shortcut="⌘+⇧+R" data-event="justifyRight" tabindex="-1"><i class="icon-align-right"></i></button>' +
+                             '<button type="button" class="btn btn-small" title="Justify full" data-shortcut="Ctrl+Shift+J" data-mac-shortcut="⌘+⇧+J" data-event="justifyFull" tabindex="-1"><i class="icon-align-justify"></i></button>' +
                            '</div>' +
                          '</li>' +
                          '<li>' +
                            '<div class="note-list btn-group">' +
-                             '<button type="button" class="btn btn-small" title="Outdent" data-shortcut="Shift+TAB" data-mac-shortcut="⇧+TAB" data-event="outdent"><i class="icon-indent-left"></i></button>' +
-                             '<button type="button" class="btn btn-small" title="Indent" data-shortcut="TAB" data-mac-shortcut="TAB" data-event="indent"><i class="icon-indent-right"></i></button>' +
+                             '<button type="button" class="btn btn-small" title="Outdent" data-shortcut="Shift+TAB" data-mac-shortcut="⇧+TAB" data-event="outdent" tabindex="-1"><i class="icon-indent-left"></i></button>' +
+                             '<button type="button" class="btn btn-small" title="Indent" data-shortcut="TAB" data-mac-shortcut="TAB" data-event="indent" tabindex="-1"><i class="icon-indent-right"></i></button>' +
                          '</li>' +
                        '</ul>' +
                      '</div>' +
                      '<div class="note-line-height btn-group">' +
-                       '<button type="button" class="btn btn-small dropdown-toggle" data-toggle="dropdown" title="Line Height"><i class="icon-text-height"></i>&nbsp; <b class="caret"></b></button>' +
+                       '<button type="button" class="btn btn-small dropdown-toggle" data-toggle="dropdown" title="Line Height" tabindex="-1"><i class="icon-text-height"></i>&nbsp; <b class="caret"></b></button>' +
                        '<ul class="dropdown-menu right">' +
                        '<li><a data-event="lineHeight" data-value="1.0"><i class="icon-ok"></i> 1.0</a></li>' +
                        '<li><a data-event="lineHeight" data-value="1.2"><i class="icon-ok"></i> 1.2</a></li>' +
@@ -1142,8 +1142,8 @@
                        '<div class="popover-content note-link-content">' +
                          '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
                          '<div class="note-insert btn-group">' +
-                         '<button type="button" class="btn btn-small" title="Edit" data-event="showLinkDialog"><i class="icon-edit"></i></button>' +
-                         '<button type="button" class="btn btn-small" title="Unlink" data-event="unlink"><i class="icon-unlink"></i></button>' +
+                         '<button type="button" class="btn btn-small" title="Edit" data-event="showLinkDialog" tabindex="-1"><i class="icon-edit"></i></button>' +
+                         '<button type="button" class="btn btn-small" title="Unlink" data-event="unlink" tabindex="-1"><i class="icon-unlink"></i></button>' +
                          '</div>' +
                        '</div>' +
                      '</div>' +
@@ -1151,15 +1151,15 @@
                        '<div class="arrow"></div>' +
                        '<div class="popover-content note-image-content">' +
                          '<div class="btn-group">' +
-                           '<button type="button" class="btn btn-small" title="Resize Full" data-event="resize" data-value="1"><i class="icon-resize-full"></i></button>' +
-                           '<button type="button" class="btn btn-small" title="Resize Half" data-event="resize" data-value="0.5">½</button>' +
-                           '<button type="button" class="btn btn-small" title="Resize Thrid" data-event="resize" data-value="0.33">⅓</button>' +
-                           '<button type="button" class="btn btn-small" title="Resize Quarter" data-event="resize" data-value="0.25">¼</button>' +
+                           '<button type="button" class="btn btn-small" title="Resize Full" data-event="resize" data-value="1" tabindex="-1"><i class="icon-resize-full"></i></button>' +
+                           '<button type="button" class="btn btn-small" title="Resize Half" data-event="resize" data-value="0.5" tabindex="-1">½</button>' +
+                           '<button type="button" class="btn btn-small" title="Resize Thrid" data-event="resize" data-value="0.33" tabindex="-1">⅓</button>' +
+                           '<button type="button" class="btn btn-small" title="Resize Quarter" data-event="resize" data-value="0.25" tabindex="-1">¼</button>' +
                          '</div>' +
                          '<div class="btn-group">' +
-                           '<button type="button" class="btn btn-small" title="Float Left" data-event="float" data-value="left"><i class="icon-align-left"></i></button>' +
-                           '<button type="button" class="btn btn-small" title="Float Right" data-event="float" data-value="right"><i class="icon-align-right"></i></button>' +
-                           '<button type="button" class="btn btn-small" title="Float None" data-event="float" data-value="none"><i class="icon-reorder"></i></button>' +
+                           '<button type="button" class="btn btn-small" title="Float Left" data-event="float" data-value="left" tabindex="-1"><i class="icon-align-left"></i></button>' +
+                           '<button type="button" class="btn btn-small" title="Float Right" data-event="float" data-value="right" tabindex="-1"><i class="icon-align-right"></i></button>' +
+                           '<button type="button" class="btn btn-small" title="Float None" data-event="float" data-value="none" tabindex="-1"><i class="icon-reorder"></i></button>' +
                          '</div>' +
                        '</div>' +
                      '</div>' +
@@ -1179,7 +1179,7 @@
     var sDialog = '<div class="note-dialog">' +
                     '<div class="note-image-dialog modal hide in" aria-hidden="false">' +
                       '<div class="modal-header">' +
-                        '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>' +
+                        '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" tabindex="-1">×</button>' +
                         '<h4>Insert Image</h4>' +
                       '</div>' +
                       '<div class="modal-body">' +
@@ -1192,7 +1192,7 @@
                     '</div>' +
                     '<div class="note-link-dialog modal hide in" aria-hidden="false">' +
                       '<div class="modal-header">' +
-                        '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>' +
+                        '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" tabindex="-1">×</button>' +
                         '<h4>Edit Link</h4>' +
                       '</div>' +
                       '<div class="modal-body">' +
@@ -1245,7 +1245,7 @@
                            ';" data-event="', sEvent,
                            '" data-value="', sColor,
                            '" title="', sColor,
-                           '" data-toggle="button"></button>'].join('');
+                           '" data-toggle="button" tabindex="-1"></button>'].join('');
             sLine += sButton;
           }
           sLine += '</div>';
