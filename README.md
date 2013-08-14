@@ -80,6 +80,7 @@ $('#summernote').destroy();
 * API for Callbacks
 * Revision
 * Bootstrap 2.x to Bootstrap 3 Migration
+* Support IE8
 
 ### Change Log
 
