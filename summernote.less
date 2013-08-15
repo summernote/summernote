@@ -5,9 +5,9 @@
   
   //toolbar
   .note-toolbar {
-    background-color: #f5f5f5;
-    margin: 0px;
     padding: 5px;
+    margin: 0;
+    background-color: #f5f5f5;
     border-bottom: 1px solid #a9a9a9;
     
     .note-table {
@@ -17,22 +17,22 @@
         .note-dimension-picker {
           font-size: 18px;
            .note-dimension-picker-mousecatcher {
-            z-index: 3;
             position: absolute !important;
+            z-index: 3;
             width: 20em;
             height: 20em;
             cursor: pointer;
           }
           .note-dimension-picker-unhighlighted {
-            z-index: 1;
             position: relative !important;
+            z-index: 1;
             width: 5em;
             height: 5em;
             background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASAgMAAAAroGbEAAAACVBMVEUAAIj4+Pjp6ekKlAqjAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfYAR0BKhmnaJzPAAAAG0lEQVQI12NgAAOtVatWMTCohoaGUY+EmIkEAEruEzK2J7tvAAAAAElFTkSuQmCC') repeat;
           }
           .note-dimension-picker-highlighted {
-            z-index: 2;
             position: absolute !important;
+            z-index: 2;
             width: 1em;
             height: 1em;
             background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASAgMAAAAroGbEAAAACVBMVEUAAIjd6vvD2f9LKLW+AAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfYAR0BKwNDEVT0AAAAG0lEQVQI12NgAAOtVatWMTCohoaGUY+EmIkEAEruEzK2J7tvAAAAAElFTkSuQmCC') repeat;
@@ -43,7 +43,7 @@
     
     .note-style {
       h1, h2, h3, h4, blockquote {
-        margin: 0px;
+        margin: 0;
       }
     }
     
@@ -93,7 +93,7 @@
         vertical-align: middle; /* for FF */
       }
     }
-    &.bottom .arrow {
+    & .arrow {
       left: 20px;
     }
   }
@@ -115,9 +115,9 @@
       }
 
       .note-control-handle {
-        border: 1px solid black;
         width: 7px;
         height: 7px;
+        border: 1px solid black;
       }
 
       .note-control-holder {
@@ -130,41 +130,41 @@
       }
 
       .note-control-nw {
-        left: -5px;
         top: -5px;
-        border-bottom: none;
+        left: -5px;
         border-right: none;
+        border-bottom: none;
       }
 
       .note-control-ne {
-        right: -5px;
         top: -5px;
+        right: -5px;
         border-bottom: none;
         border-left: none;
       }
 
       .note-control-sw {
-        left: -5px;
         bottom: -5px;
+        left: -5px;
         border-top: none;
         border-right: none;
       }
 
       .note-control-se {
-        cursor: se-resize;
         right: -5px;
         bottom: -5px;
+        cursor: se-resize;
       }
 
       .note-control-selection-info {
-        margin: 5px;
-        padding: 5px;
         right: 0;
         bottom: 0;
+        padding: 5px;
+        margin: 5px;
         color: white;
         background-color: black;
-        .opacity(0.70);
         .rounded(5px);
+        .opacity(0.7);
       }
     }
   }
@@ -173,21 +173,21 @@
   .note-dialog {
     .note-image-dialog {
       .note-dropzone {
-        color: lightgray;
         min-height: 200px;
-        border: 4px dashed lightgray;
         font-size: 30px;
         line-height: 6; // vertical-align
+        color: lightgray;
         text-align: center;
+        border: 4px dashed lightgray;
       }
     }
   }
   
   // editable
   .note-editable {
-    outline: none;
-    overflow: scroll;
     padding: 10px;
+    overflow: scroll;
+    outline: none;
   }
   
   //dropdown-menu for toolbar and popover
@@ -197,16 +197,16 @@
     // dropdown-menu right position
     // http://forrst.com/posts/Bootstrap_right_positioned_dropdown-2KB
     &.right {
-      left: auto;
       right: 0;
-      &::before { left: auto !important; right: 9px; }
-      &::after { left: auto !important; right: 10px; }
+      left: auto;
+      &::before { right: 9px; left: auto !important;  }
+      &::after { right: 10px; left: auto !important;  }
     }
 
     // dropdown-menu for selectbox
     li a i {
-      visibility: hidden;
       color: deepskyblue;
+      visibility: hidden;
     }
     li a.checked i {
       visibility: visible;
@@ -215,8 +215,8 @@
   
   // buttons for toolbar and popover
   .btn-small {
-    font-size: 14px;
     min-height: 26px;
+    font-size: 14px;
   }
   
   // color palette for toolbar and popover
@@ -226,9 +226,9 @@
       .note-color-btn {
         width: 17px;
         height: 17px;
-        border: 1px solid #fff;
-        margin: 0;
         padding: 0;
+        margin: 0;
+        border: 1px solid #fff;
       }
       .note-color-btn:hover {
         border: 1px solid #000;

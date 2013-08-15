@@ -6,18 +6,21 @@ module.exports = function(grunt) {
         files: { 'build/summernote.min.js': ['summernote.js'] }
       }
     },
-    less: {
-      production: {
-        files: {"build/summernote.css": "summernote.less"}
+    recess: {
+      dist: {
+        options: { compile: true, compress: true },
+        files: {
+          'build/summernote.css': ['summernote.less']
+        }
       }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-recess');
 
   grunt.registerTask('test', 'qunit');
-  grunt.registerTask('build', ['uglify', 'less']);
-  grunt.registerTask('default', ['qunit', 'uglify', 'less']);
+  grunt.registerTask('build', ['uglify', 'recess']);
+  grunt.registerTask('default', ['qunit', 'uglify', 'recess']);
 };
