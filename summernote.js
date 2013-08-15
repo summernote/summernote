@@ -768,6 +768,10 @@
         welLinkBtn.off('click');
       }).modal('show');
     };
+
+    this.showHelpDialog = function(welDialog) {
+      welDialog.find('.note-help-dialog').modal('show');
+    };
   };
   
   /**
@@ -962,6 +966,8 @@
           dialog.showImageDialog(welDialog, hDropImage, function(files) {
             insertImages(welEditable, files);
           });
+        } else if (sEvent === "showHelpDialog") {
+          dialog.showHelpDialog(welDialog);
         }
 
         hToolbarAndPopoverUpdate(event);
@@ -1137,6 +1143,8 @@
                        '<li><a data-event="lineHeight" data-value="3.0"><i class="icon-ok"></i> 3.0</a></li>' +
                        '</ul>' +
                      '</div>' +
+                     '<div class="note-help btn-group">' +
+                       '<button type="button" class="btn btn-small" title="Help" data-event="showHelpDialog" tabindex="-1"><i class="icon-question"></i></button>' +
                    '</div>';
     var sPopover = '<div class="note-popover">' +
                      '<div class="note-link-popover popover fade bottom in" style="display: none;">' +
@@ -1178,6 +1186,123 @@
                     '</div>' +
                   '</div>';
 
+    var sShortcutTable = '<table class="table table-hover table-striped table-bordered">' +
+                           '<thead>' +
+                             '<tr>' +
+                               '<th></th>' +
+                               '<th>Mac</th>' +
+                               '<th>Windows</th>' +
+                             '</tr>' +
+                           '</thead>' +
+                           '<tbody>' +
+                             '<tr>' +
+                               '<td>Undo</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">Z</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">Z</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Redo</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">⇧</button> + <button class="btn btn-mini">Z</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">Y</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Indent</td>' +
+                               '<td><button class="btn btn-mini">Tab</button></td>' +
+                               '<td><button class="btn btn-mini">Tab</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Outdent</td>' +
+                               '<td><button class="btn btn-mini">⇧</button> + <button class="btn btn-mini">Tab</button></td>' +
+                               '<td><button class="btn btn-mini">Shift</button> + <button class="btn btn-mini">Tab</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Bold</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">B</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">B</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Italic</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">I</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">I</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Underline</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">U</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">U</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Remove Font Style</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">\\</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">\\</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Align Left</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">⇧</button> + <button class="btn btn-mini">L</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">Shift</button> + <button class="btn btn-mini">L</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Align Center</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">⇧</button> + <button class="btn btn-mini">E</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">Shift</button> + <button class="btn btn-mini">E</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Align Right</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">⇧</button> + <button class="btn btn-mini">R</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">Shift</button> + <button class="btn btn-mini">R</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Justify Full</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">⇧</button> + <button class="btn btn-mini">J</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">Shift</button> + <button class="btn btn-mini">J</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Ordered List</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">⇧</button> + <button class="btn btn-mini">NUM7</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">Shift</button> + <button class="btn btn-mini">NUM7</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Unordered List</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">⇧</button> + <button class="btn btn-mini">NUM8</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">Shift</button> + <button class="btn btn-mini">NUM8</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Normal Text</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">NUM0</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">NUM0</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Heading 1</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">NUM1</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">NUM1</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Heading 2</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">NUM2</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">NUM2</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Heading 3</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">NUM3</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">NUM3</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Heading 4</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">NUM4</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">NUM4</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Insert Link</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">K</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">K</button></td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Insert Horizontal Rule</td>' +
+                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">ENTER</button></td>' +
+                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">ENTER</button></td>' +
+                             '</tr>' +
+                           '</tbody>' +
+                           '</table>';
+
     var sDialog = '<div class="note-dialog">' +
                     '<div class="note-image-dialog modal hide in" aria-hidden="false">' +
                       '<div class="modal-header">' +
@@ -1207,6 +1332,32 @@
                       '</div>' +
                       '<div class="modal-footer">' +
                         '<a href="#" class="btn disabled note-link-btn" disabled="disabled">Link</a>' +
+                      '</div>' +
+                    '</div>' +
+                    '<div class="note-help-dialog modal hide in" aria-hidden="false">' +
+                      '<div class="modal-header">' +
+                        '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" tabindex="-1">×</button>' +
+                        '<h4>Help</h4>' +
+                      '</div>' +
+                      '<div class="modal-body">' +
+                        '<div class="tabbable">' +
+                          '<ul class="nav nav-tabs">' +
+                            '<li class="active"><a href="#summernote-shortcut" data-toggle="tab"><i class="icon-keyboard"></i> Shortcut</a></li>' +
+                            '<li><a href="#summernote-about" data-toggle="tab"><i class="icon-question"></i> About</a></li>' +
+                          '</ul>' +
+                          '<div class="tab-content" style="padding-bottom: 9px; border-bottom: 1px solid #ddd;">' +
+                            '<div class="tab-pane active" id="summernote-shortcut">' +
+                              sShortcutTable +
+                            '</div>' +
+                            '<div class="tab-pane" id="summernote-about">' +
+                                '<p class="text-center">Summernote v0.2 distributed under the MIT license.</p>' +
+                                '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Home</a> · <a href="//github.com/HackerWins/summernote" target="_blank">GitHub Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
+                            '</div>' +
+                          '</div>' +
+                        '</div>' +
+                      '</div>' +
+                      '<div class="modal-footer">' +
+                        '<button class="btn" data-dismiss="modal" aria-hidden="true">Ok</button>' +
                       '</div>' +
                     '</div>' +
                   '</div>';
