@@ -541,8 +541,10 @@
     
     this.color = function(welEditable, sObjColor) {
       var oColor = JSON.parse(sObjColor);
-      this.foreColor(welEditable, oColor.foreColor);
-      this.backColor(welEditable, oColor.backColor);
+
+      recordUndo(welEditable);
+      document.execCommand('foreColor', false, oColor.foreColor);
+      document.execCommand('backColor', false, oColor.backColor);
     };
     
     this.insertTable = function(welEditable, sDim) {
