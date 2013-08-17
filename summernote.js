@@ -785,7 +785,7 @@
     var handle = new Handle(), dialog = new Dialog();
     
     var key = { BACKSPACE: 8, TAB: 9, ENTER: 13, SPACE: 32,
-                NUM0: 48, NUM1: 49, NUM4: 52, NUM7: 55, NUM8: 56, 
+                NUM0: 48, NUM1: 49, NUM6: 54, NUM7: 55, NUM8: 56, 
                 B: 66, E: 69, I: 73, J: 74, K: 75, L: 76, R: 82,
                 U: 85, Y: 89, Z: 90, BACKSLACH: 220 };
 
@@ -844,8 +844,8 @@
         editor.tab(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.NUM0) { // formatBlock Paragraph
         editor.formatBlock(oLayoutInfo.editable(), 'P');
-      } else if (bCmd && (key.NUM1 <= keyCode && keyCode <= key.NUM4)) {
-        var sHeading = 'H' + String.fromCharCode(keyCode); // H1~H4
+      } else if (bCmd && (key.NUM1 <= keyCode && keyCode <= key.NUM6)) {
+        var sHeading = 'H' + String.fromCharCode(keyCode); // H1~H6
         editor.formatBlock(oLayoutInfo.editable(), sHeading);
       } else if (bCmd && keyCode === key.ENTER) {
         editor.insertHorizontalRule(oLayoutInfo.editable());
@@ -1063,13 +1063,15 @@
                      '<div class="note-style btn-group">' +
                        '<button type="button" class="btn btn-small dropdown-toggle" title="Style" data-toggle="dropdown" tabindex="-1"><i class="icon-magic"></i> <span class="caret"></span></button>' +
                        '<ul class="dropdown-menu">' +
-                         '<li><a data-event="formatBlock" data-value="p">Paragraph</a></li>' +
+                         '<li><a data-event="formatBlock" data-value="p">Normal</a></li>' +
                          '<li><a data-event="formatBlock" data-value="blockquote"><blockquote>Quote</blockquote></a></li>' +
                          '<li><a data-event="formatBlock" data-value="pre">Code</a></li>' +
                          '<li><a data-event="formatBlock" data-value="h1"><h1>Header 1</h1></a></li>' +
                          '<li><a data-event="formatBlock" data-value="h2"><h2>Header 2</h2></a></li>' +
                          '<li><a data-event="formatBlock" data-value="h3"><h3>Header 3</h3></a></li>' +
                          '<li><a data-event="formatBlock" data-value="h4"><h4>Header 4</h4></a></li>' +
+                         '<li><a data-event="formatBlock" data-value="h5"><h5>Header 5</h5></a></li>' +
+                         '<li><a data-event="formatBlock" data-value="h6"><h6>Header 6</h6></a></li>' +
                        '</ul>' +
                      '</div>' +
                      '<div class="note-fontsize btn-group">' +
