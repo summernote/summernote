@@ -1008,7 +1008,7 @@
       welDimensionDisplay.html(dim.c + ' x ' + dim.r);
     };
 
-    this.attach = function(oLayoutInfo) {
+    this.attach = function(oLayoutInfo, options) {
       oLayoutInfo.editable.on('keydown', hKeydown);
       oLayoutInfo.editable.on('mousedown', hMousedown);
       oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
@@ -1028,6 +1028,21 @@
       var welToolbar = oLayoutInfo.toolbar;
       var welCatcher = welToolbar.find('.note-dimension-picker-mousecatcher');
       welCatcher.on('mousemove', hDimensionPickerMove);
+
+      // callback
+      // init, enter, !change, !pasteBefore, !pasteAfter, focus, blur, keyup, keydown
+      if (options.onenter) {
+        oLayoutInfo.editable.keypress(function(event) {
+          if (event.keyCode === key.ENTER) { options.onenter(event);}
+        });
+      }
+      if (options.onfocus) { oLayoutInfo.editable.focus(options.onfocus); }
+      if (options.onblur) { oLayoutInfo.editable.blur(options.onblur); }
+      if (options.onkeyup) { oLayoutInfo.editable.blur(options.onkeyup); }
+      if (options.onkeydown) { oLayoutInfo.editable.blur(options.onkeydown); }
+
+      // TODO: callback for advanced features
+      // autosave, impageUpload, imageUploadError, fileUpload, fileUploadError
     };
 
     this.dettach = function(oLayoutInfo) {
@@ -1490,9 +1505,10 @@
         renderer.createLayout(welHolder, options.height, options.tabIndex);
 
         var info = renderer.layoutInfoFromHolder(welHolder);
-        eventHandler.attach(info);
+        eventHandler.attach(info, options);
 
         if (options.focus) { info.editable.focus(); } // options focus
+        if (options.oninit) { options.oninit(this); }; // callback on init
       });
     },
     // get the HTML contents of note or set the HTML contents of note.
