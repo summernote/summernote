@@ -1513,7 +1513,7 @@
         info.editable.focus();
       }
       if (this.length > 0 && options.oninit) { // callback on init
-        options.oninit(welFirstHolder);
+        options.oninit();
       };
     },
     // get the HTML contents of note or set the HTML contents of note.
