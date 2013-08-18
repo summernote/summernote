@@ -64,6 +64,49 @@ var sHTML = $('#summernote').code();
 $('#summernote').destroy();
 ```
 
+### Callbacks
+#### oninit
+```javascript
+$('#summernote', { oninit: function() {
+  console.log('Summernote is launched');
+});
+```
+
+#### onenter
+```javascript
+$('#summernote', { onenter: function(e) {
+  console.log('Enter/Return key pressed');
+});
+```
+
+#### onfocus
+```javascript
+$('#summernote', { onfocus: function(e) {
+  console.log("Editable area is focused");
+});
+```
+
+#### onblur
+```javascript
+$('#summernote', { onblur: function(e) {
+  console.log("Editable area is blured");
+});
+```
+
+#### onkeyup
+```javascript
+$('#summernote', { onkeyup: function(e) {
+  console.log("Key is released:", e.keyCode);
+});
+```
+
+#### onkeydown
+```javascript
+$('#summernote', { onkeydown: function(e) {
+  console.log("Key is pressed:", e.keyCode);
+});
+```
+
 #### Dependencies
 * jQuery: http://jquery.com/
 * bootstrap: http://twitter.github.io/bootstrap/
