@@ -118,12 +118,16 @@ $('#summernote', { onkeydown: function(e) {
 
 ### Upcoming Features
 * Table: Handles(Sizing, Selection) and Popover
-* Responsive Toolbar
-* Air Mode
-* API for Callbacks
 * Revision
 * Bootstrap 2.x to Bootstrap 3 Migration
+* Responsive Toolbar
+* Air Mode
 * Support IE8
+
+#### v0.3 2013-09-01
+* help dialog
+* event callback
+* fixing bugs(image upload, fontsize, tab, recent color)
 
 ### Change Log
 
