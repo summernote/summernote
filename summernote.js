@@ -1506,10 +1506,15 @@
 
         var info = renderer.layoutInfoFromHolder(welHolder);
         eventHandler.attach(info, options);
-
-        if (options.focus) { info.editable.focus(); } // options focus
-        if (options.oninit) { options.oninit(this); }; // callback on init
       });
+
+      if (this.first() && options.focus) { // focus on first editable element
+        var info = renderer.layoutInfoFromHolder(this.first());
+        info.editable.focus();
+      }
+      if (this.length > 0 && options.oninit) { // callback on init
+        options.oninit(welFirstHolder);
+      };
     },
     // get the HTML contents of note or set the HTML contents of note.
     code: function(sHTML) {
