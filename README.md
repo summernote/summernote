@@ -64,43 +64,43 @@ var sHTML = $('#summernote').code();
 $('#summernote').destroy();
 ```
 
-### Callbacks
-#### oninit
+#### Callbacks
+##### oninit
 ```javascript
 $('#summernote', { oninit: function() {
   console.log('Summernote is launched');
 });
 ```
 
-#### onenter
+##### onenter
 ```javascript
 $('#summernote', { onenter: function(e) {
   console.log('Enter/Return key pressed');
 });
 ```
 
-#### onfocus
+##### onfocus
 ```javascript
 $('#summernote', { onfocus: function(e) {
   console.log("Editable area is focused");
 });
 ```
 
-#### onblur
+##### onblur
 ```javascript
 $('#summernote', { onblur: function(e) {
-  console.log("Editable area is blured");
+  console.log("Editable area loses focus");
 });
 ```
 
-#### onkeyup
+##### onkeyup
 ```javascript
 $('#summernote', { onkeyup: function(e) {
   console.log("Key is released:", e.keyCode);
 });
 ```
 
-#### onkeydown
+##### onkeydown
 ```javascript
 $('#summernote', { onkeydown: function(e) {
   console.log("Key is pressed:", e.keyCode);
