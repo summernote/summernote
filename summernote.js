@@ -470,7 +470,6 @@
 
     // redo
     this.redo = function(welEditable) {
-      clearStyleState();
       welEditable.data('NoteHistory').redo(welEditable);
     };
 
@@ -484,15 +483,15 @@
     var clearStyleState = function() { oStyleState = {}; };
     var setStyleState = function(sCmd) {
       if (aToggleCmd.indexOf(sCmd) === -1) { return; };
+      var rng = new Range();
+      if (!rng.isCollapsed()) { return; };
       
-      var sKey = "", sValue = "";
       var oStyle = currentStyle(null), map = {};
-
       if (sCmd === "bold") map["font-weight"] = oStyle['font-weight'] === "bold" ? "normal" : "bold";
       if (sCmd === "italic") map["font-style"] = oStyle['font-style'] === "italic" ? "normal" : "italic";
       if (sCmd === "underline") map["text-decoration"] = oStyle["text-decoration"] === "underline" ? "none" : "underline";
-      
-      oStyleState[JSON.stringify((new Range()).bookmark())] = map;
+
+      oStyleState[JSON.stringify(rng.bookmark())] = map;
     };
 
     // native commands(with execCommand)
