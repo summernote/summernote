@@ -1513,7 +1513,7 @@
                 ['fontsize', ['fontsize']],
                 ['color', ['color']],
                 ['style', ['bold', 'italic', 'underline', 'clear']],
-                ['para', ['ul', 'ol', 'align']],
+                ['para', ['ul', 'ol', 'paragraph']],
                 ['height', ['height']],
                 ['help', ['help']]
             ]
