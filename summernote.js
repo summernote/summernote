@@ -452,13 +452,19 @@
   var Editor = function() {
     //currentStyle
     var style = new Style();
-    this.currentStyle = function(elTarget) {
+    var oStyleState = {};
+    var currentStyle = this.currentStyle = function(elTarget) {
       if (document.getSelection().rangeCount == 0) { return null; }
-      return style.current((new Range()), elTarget);
+      var rng = new Range();
+      var oStyle = style.current(rng, elTarget);
+      $.extend(oStyle, oStyleState[JSON.stringify(rng.bookmark())] || {});
+      
+      return oStyle;
     };
 
     // undo
     this.undo = function(welEditable) {
+      clearStyleState();
       welEditable.data('NoteHistory').undo(welEditable);
     };
 
@@ -472,17 +478,34 @@
       welEditable.data('NoteHistory').recordUndo(welEditable);
     };
 
+    // set style state
+    var aToggleCmd = ['bold', 'italic', 'underline'];
+    var clearStyleState = function() { oStyleState = {}; };
+    var setStyleState = function(sCmd) {
+      if (aToggleCmd.indexOf(sCmd) === -1) { return; };
+      var rng = new Range();
+      if (!rng.isCollapsed()) { return; };
+      
+      var oStyle = currentStyle(null), map = {};
+      if (sCmd === "bold") map["font-weight"] = oStyle['font-weight'] === "bold" ? "normal" : "bold";
+      if (sCmd === "italic") map["font-style"] = oStyle['font-style'] === "italic" ? "normal" : "italic";
+      if (sCmd === "underline") map["text-decoration"] = oStyle["text-decoration"] === "underline" ? "none" : "underline";
+
+      oStyleState[JSON.stringify(rng.bookmark())] = map;
+    };
+
     // native commands(with execCommand)
     var aCmd = ['bold', 'italic', 'underline', 'justifyLeft', 'justifyCenter',
                 'justifyRight', 'justifyFull', 'insertOrderedList',
                 'insertUnorderedList', 'indent', 'outdent', 'formatBlock',
                 'removeFormat', 'backColor', 'foreColor', 'insertImage',
                 'insertHorizontalRule'];
-    
+
     for (var idx = 0, len=aCmd.length; idx < len; idx ++) {
       this[aCmd[idx]] = function(sCmd) {
         return function(welEditable, sValue) {
           recordUndo(welEditable);
+          setStyleState(sCmd);
           document.execCommand(sCmd, false, sValue);
         };
       }(aCmd[idx]);
