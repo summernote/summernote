@@ -1201,122 +1201,155 @@
                     '</div>' +
                   '</div>';
 
-    var sShortcutTable = '<table class="table table-hover table-striped table-bordered">' +
+    var sShortcutText = '<table class="note-shortcut">' +
                            '<thead>' +
                              '<tr>' +
                                '<th></th>' +
-                               '<th>Mac</th>' +
-                               '<th>Windows</th>' +
+                               '<th>Text formatting</th>' +
                              '</tr>' +
                            '</thead>' +
                            '<tbody>' +
                              '<tr>' +
-                               '<td>Undo</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">Z</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">Z</button></td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>Redo</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">⇧</button> + <button class="btn btn-mini">Z</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">Y</button></td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>Indent</td>' +
-                               '<td><button class="btn btn-mini">Tab</button></td>' +
-                               '<td><button class="btn btn-mini">Tab</button></td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>Outdent</td>' +
-                               '<td><button class="btn btn-mini">⇧</button> + <button class="btn btn-mini">Tab</button></td>' +
-                               '<td><button class="btn btn-mini">Shift</button> + <button class="btn btn-mini">Tab</button></td>' +
-                             '</tr>' +
-                             '<tr>' +
+                               '<td>⌘ + B</td>' +
                                '<td>Bold</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">B</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">B</button></td>' +
                              '</tr>' +
                              '<tr>' +
+                               '<td>⌘ + I</td>' +
                                '<td>Italic</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">I</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">I</button></td>' +
                              '</tr>' +
                              '<tr>' +
+                               '<td>⌘ + U</td>' +
                                '<td>Underline</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">U</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">U</button></td>' +
                              '</tr>' +
                              '<tr>' +
+                               '<td>⌘ + \\</td>' +
                                '<td>Remove Font Style</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">\\</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">\\</button></td>' +
                              '</tr>' +
-                             '<tr>' +
-                               '<td>Align Left</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">⇧</button> + <button class="btn btn-mini">L</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">Shift</button> + <button class="btn btn-mini">L</button></td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>Align Center</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">⇧</button> + <button class="btn btn-mini">E</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">Shift</button> + <button class="btn btn-mini">E</button></td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>Align Right</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">⇧</button> + <button class="btn btn-mini">R</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">Shift</button> + <button class="btn btn-mini">R</button></td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>Justify Full</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">⇧</button> + <button class="btn btn-mini">J</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">Shift</button> + <button class="btn btn-mini">J</button></td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>Ordered List</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">⇧</button> + <button class="btn btn-mini">NUM7</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">Shift</button> + <button class="btn btn-mini">NUM7</button></td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>Unordered List</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">⇧</button> + <button class="btn btn-mini">NUM8</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">Shift</button> + <button class="btn btn-mini">NUM8</button></td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>Normal Text</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">NUM0</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">NUM0</button></td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>Heading 1</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">NUM1</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">NUM1</button></td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>Heading 2</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">NUM2</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">NUM2</button></td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>Heading 3</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">NUM3</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">NUM3</button></td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>Heading 4</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">NUM4</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">NUM4</button></td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>Insert Link</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">K</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">K</button></td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>Insert Horizontal Rule</td>' +
-                               '<td><button class="btn btn-mini">⌘</button> + <button class="btn btn-mini">ENTER</button></td>' +
-                               '<td><button class="btn btn-mini">Ctrl</button> + <button class="btn btn-mini">ENTER</button></td>' +
                              '</tr>' +
                            '</tbody>' +
-                           '</table>';
+                         '</table>';
+
+    var sShortcutAction = '<table class="note-shortcut">' +
+                           '<thead>' +
+                             '<tr>' +
+                               '<th></th>' +
+                               '<th>Action</th>' +
+                             '</tr>' +
+                           '</thead>' +
+                           '<tbody>' +
+                             '<tr>' +
+                               '<td>⌘ + Z</td>' +
+                               '<td>Undo</td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>⌘ + ⇧ + Z</td>' +
+                               '<td>Redo</td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>Tab</td>' +
+                               '<td>Indent</td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>⇧ + Tab</td>' +
+                               '<td>Outdent</td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>⌘ + K</td>' +
+                               '<td>Insert Link</td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>⌘ + ENTER</td>' +
+                               '<td>Insert Horizontal Rule</td>' +
+                             '</tr>' +
+                           '</tbody>' +
+                         '</table>';
+
+    var sShortcutPara = '<table class="note-shortcut">' +
+                          '<thead>' +
+                            '<tr>' +
+                              '<th></th>' +
+                              '<th>Paragraph formatting</th>' +
+                            '</tr>' +
+                          '</thead>' +
+                          '<tbody>' +
+                            '<tr>' +
+                              '<td>⌘ + ⇧ + L</td>' +
+                              '<td>Align Left</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                              '<td>⌘ + ⇧ + E</td>' +
+                              '<td>Align Center</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                              '<td>⌘ + ⇧ + R</td>' +
+                              '<td>Align Right</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                              '<td>⌘ + ⇧ + J</td>' +
+                              '<td>Justify Full</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                              '<td>⌘ + ⇧ + NUM7</td>' +
+                              '<td>Ordered List</td>' +
+                            '</tr>' +
+                            '<tr>' +
+                              '<td>⌘ + ⇧ + NUM8</td>' +
+                              '<td>Unordered List</td>' +
+                            '</tr>' +
+                          '</tbody>' +
+                        '</table>';
+
+    var sShortcutStyle = '<table class="note-shortcut">' +
+                           '<thead>' +
+                             '<tr>' +
+                               '<th></th>' +
+                               '<th>Document Style</th>' +
+                             '</tr>' +
+                           '</thead>' +
+                           '<tbody>' +
+                             '<tr>' +
+                               '<td>⌘ + NUM0</td>' +
+                               '<td>Normal Text</td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>⌘ + NUM1</td>' +
+                               '<td>Heading 1</td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>⌘ + NUM2</td>' +
+                               '<td>Heading 2</td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>⌘ + NUM3</td>' +
+                               '<td>Heading 3</td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>⌘ + NUM4</td>' +
+                               '<td>Heading 4</td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>⌘ + NUM5</td>' +
+                               '<td>Heading 5</td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>⌘ + NUM6</td>' +
+                               '<td>Heading 6</td>' +
+                             '</tr>' +
+
+                           '</tbody>' +
+                         '</table>';
+    var sShortcutTable = '<table class="note-shortcut-layout">' +
+                           '<tbody>' +
+                             '<tr>' +
+                               '<td>' + sShortcutAction +'</td>' +
+                               '<td>' + sShortcutText +'</td>' +
+                             '</tr>' +
+                             '<tr>' +
+                               '<td>' + sShortcutStyle +'</td>' +
+                               '<td>' + sShortcutPara +'</td>' +
+                             '</tr>' +
+                           '</tbody>' +
+                         '</table>';
 
     var sDialog = '<div class="note-dialog">' +
                     '<div class="note-image-dialog modal hide in" aria-hidden="false">' +
@@ -1350,29 +1383,12 @@
                       '</div>' +
                     '</div>' +
                     '<div class="note-help-dialog modal hide in" aria-hidden="false">' +
-                      '<div class="modal-header">' +
-                        '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" tabindex="-1">×</button>' +
-                        '<h4>Help</h4>' +
-                      '</div>' +
                       '<div class="modal-body">' +
-                        '<div class="tabbable">' +
-                          '<ul class="nav nav-tabs">' +
-                            '<li class="active"><a href="#summernote-shortcut" data-toggle="tab"><i class="icon-keyboard"></i> Shortcut</a></li>' +
-                            '<li><a href="#summernote-about" data-toggle="tab"><i class="icon-question"></i> About</a></li>' +
-                          '</ul>' +
-                          '<div class="tab-content" style="padding-bottom: 9px; border-bottom: 1px solid #ddd;">' +
-                            '<div class="tab-pane active" id="summernote-shortcut">' +
-                              sShortcutTable +
-                            '</div>' +
-                            '<div class="tab-pane" id="summernote-about">' +
-                                '<p class="text-center">Summernote v0.2 distributed under the MIT license.</p>' +
-                                '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Home</a> · <a href="//github.com/HackerWins/summernote" target="_blank">GitHub Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
-                            '</div>' +
-                          '</div>' +
-                        '</div>' +
-                      '</div>' +
-                      '<div class="modal-footer">' +
-                        '<button class="btn" data-dismiss="modal" aria-hidden="true">Ok</button>' +
+                        '<div class="modal-background">' +
+                        '<a class="modal-close pull-right" data-dismiss="modal" aria-hidden="true" tabindex="-1">Close</a>' +
+                        '<div class="title">Keyboard shortcuts</div>' +
+                        sShortcutTable +
+                        '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote v0.2</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
                       '</div>' +
                     '</div>' +
                   '</div>';
