@@ -181,6 +181,52 @@
         border: 4px dashed lightgray;
       }
     }
+    .note-help-dialog {
+      @note-shortcut-hl: #dd0;
+      font-size: 12px;
+      color: white;
+      background: transparent;
+      border: 1px solid white;
+
+      a {
+        font-size: 12px;
+        color: white;
+      }
+
+      .title {
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+        padding-bottom: 5px;
+        border-bottom: white 1px solid;
+      }
+      .modal-close {
+        font-size: 14px;
+        color: @note-shortcut-hl;
+        cursor: pointer;
+      }
+      .note-shortcut-layout {
+        width: 100%;
+        td {
+          vertical-align: top;
+        }
+      }
+      .note-shortcut {
+        margin-top: 8px;
+        th {
+          text-align: left;
+          font-size: 13px;
+          color: @note-shortcut-hl;
+        }
+        td:first-child {
+          min-width: 110px;
+          font-family: "Courier New";
+          color: @note-shortcut-hl;
+          text-align: right;
+          padding-right: 10px
+        }
+      }
+    }
   }
   
   // editable
@@ -236,49 +282,4 @@
     }
   }
 
-  .note-help-dialog {
-    @note-shortcut-hl: #dd0;
-    font-size: 12px;
-    color: white;
-    background: transparent;
-    border: 1px solid white;
-
-    a {
-      color: white;
-    }
-
-    .title {
-      color: white;
-      font-size: 14px;
-      font-weight: bold;
-      padding-bottom: 5px;
-      border-bottom: white 1px solid;
-    }
-    .modal-close {
-      font-size: 14px;
-      color: @note-shortcut-hl;
-      cursor: pointer;
-    }
-    .note-shortcut-layout {
-      width: 100%;
-      td {
-        vertical-align: top;
-      }
-    }
-    .note-shortcut {
-      margin-top: 8px;
-      th {
-        text-align: left;
-        font-size: 13px;
-        color: @note-shortcut-hl;
-      }
-      td:first-child {
-        min-width: 110px;
-        font-family: "Courier New";
-        color: @note-shortcut-hl;
-        text-align: right;
-        padding-right: 10px
-      }
-    }
-  }
 }
