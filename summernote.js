@@ -602,7 +602,7 @@
       welFontsize.find('.note-current-fontsize').html(oStyle['font-size']);
       checkDropdownMenu(welFontsize, parseFloat(oStyle['font-size']));
       
-      var welLineHeight = welToolbar.find('.note-line-height');
+      var welLineHeight = welToolbar.find('.note-height');
       checkDropdownMenu(welLineHeight, parseFloat(oStyle['line-height']));
       
       //check button state
