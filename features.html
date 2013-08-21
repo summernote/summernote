@@ -59,14 +59,14 @@
       <ul class="nav nav-tabs nav-stacked" style="padding-right: 2em">
         <li><a href="#install">Installation</a></li>
         <li><a href="#api">API</a></li>
-        <li><a href="#Keyboard">Keyboard shortcuts</a></li>
+        <li><a href="#callbacks">Callbacks</a></li>
+        <li><a href="#keyboard">Keyboard shortcuts</a></li>
         <!-- upcoming features
         <li><a href="#toolbar">Toolbar</a></li>
         <li><a href="#image">Image upload</a></li>
         <li><a href="#local">Browser Storage</a></li>
         -->
         <li><a href="example.html#integration">Backend Integration</a></li>
-        <li><a href="history.html">Version History</a></li>
       </ul>
     </div>
     <div class="span9">
@@ -116,6 +116,20 @@ $(document).ready(function() {
   height: 300px, //set height
   focus: true    //focus
 });</pre>
+        <p>and custom toolbar</p>
+        <pre class="prettyprint linenums">$('.summernote').summernote({
+  toolbar: [
+    //['insert', ['picture', 'link']], // no insert buttons
+    ['table', ['table']],
+    ['style', ['style']],
+    ['fontsize', ['fontsize']],
+    ['color', ['color']],
+    ['style', ['bold', 'italic', 'underline', 'clear']],
+    ['para', ['ul', 'ol', 'paragraph']],
+    ['height', ['height']],
+    ['help', ['help']]
+  ]
+});</pre>
         <h4>Destroy</h4>
         <p>Destroy Summernote.</p>
         <pre class="prettyprint linenums">$('.summernote').destroy();</pre>
@@ -126,7 +140,47 @@ $(document).ready(function() {
         <pre class="prettyprint linenums">$('.summernote').code(sHTML);</pre>
       </section>
       <hr/>
-      <section id="Keyboard">
+      <section id="callbacks">
+        <h2>Callbacks</h2>
+        <h4>oninit</h4>
+        <pre class="prettyprint linenums">$('#summernote').summernote({
+  oninit: function() {
+    console.log('Summernote is launched');
+  }
+});</pre>
+        <h4>onenter</h4>
+        <pre class="prettyprint linenums">$('#summernote').summernote({
+  onenter: function(e) {
+    console.log('Enter/Return key pressed');
+  }
+});</pre>
+        <h4>onfocus</h4>
+        <pre class="prettyprint linenums">$('#summernote').summernote({
+  onfocus: function(e) {
+    console.log('Editable area is focused');
+  }
+});</pre>
+        <h4>onblur</h4>
+        <pre class="prettyprint linenums">$('#summernote').summernote({
+  onblur: function(e) {
+    console.log('Editable area loses focus');
+  }
+});</pre>
+        <h4>onkeyup</h4>
+        <pre class="prettyprint linenums">$('#summernote').summernote({
+  onkeyup: function(e) {
+    console.log('Key is released:', e.keyCode);
+  }
+});</pre>
+        <h4>onkeydown</h4>
+        <pre class="prettyprint linenums">$('#summernote').summernote({
+  onkeydown: function(e) {
+    console.log('Key is pressed:', e.keyCode);
+  }
+});</pre>
+      </section>
+      <hr/>
+      <section id="keyboard">
         <h2>Keyboard shortcuts</h2>
         <p>We provide default common shortcut.</p>
         <table class="table table-hover table-bordered">
