@@ -64,49 +64,6 @@ var sHTML = $('#summernote').code();
 $('#summernote').destroy();
 ```
 
-#### Callbacks
-##### oninit
-```javascript
-$('#summernote', { oninit: function() {
-  console.log('Summernote is launched');
-});
-```
-
-##### onenter
-```javascript
-$('#summernote', { onenter: function(e) {
-  console.log('Enter/Return key pressed');
-});
-```
-
-##### onfocus
-```javascript
-$('#summernote', { onfocus: function(e) {
-  console.log("Editable area is focused");
-});
-```
-
-##### onblur
-```javascript
-$('#summernote', { onblur: function(e) {
-  console.log("Editable area loses focus");
-});
-```
-
-##### onkeyup
-```javascript
-$('#summernote', { onkeyup: function(e) {
-  console.log("Key is released:", e.keyCode);
-});
-```
-
-##### onkeydown
-```javascript
-$('#summernote', { onkeydown: function(e) {
-  console.log("Key is pressed:", e.keyCode);
-});
-```
-
 #### Dependencies
 * jQuery: http://jquery.com/
 * bootstrap: http://twitter.github.io/bootstrap/
@@ -125,9 +82,10 @@ $('#summernote', { onkeydown: function(e) {
 * Support IE8
 
 #### v0.3 2013-09-01
-* help dialog
-* event callback
-* fixing bugs(image upload, fontsize, tab, recent color)
+* `ADDED` help dialog
+* `ADDED` event callback
+* `ADDED` custom toolbar
+* `FIXED` bugs(image upload, fontsize, tab, recent color)
 
 ### Change Log
 
