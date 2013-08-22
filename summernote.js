@@ -1584,7 +1584,7 @@
     },
     // inner object for test
     summernoteInner: function() {
-      return { dom: dom, list: list, func: func };
+      return { dom: dom, list: list, func: func, Range: Range };
     }
   });
 })(jQuery); // jQuery
