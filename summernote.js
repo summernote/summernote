@@ -993,11 +993,11 @@
       welHighlighted.css({ width: dim.c +'em', height: dim.r + 'em' });
       welCatcher.attr('data-value', dim.c + 'x' + dim.r);
       
-      if (3 < dim.c && dim.c < 20) { // 5~20
+      if (3 < dim.c && dim.c < 10) { // 5~10
         welUnhighlighted.css({ width: dim.c + 1 + 'em'});
       }
 
-      if (3 < dim.r && dim.r < 20) { // 5~20
+      if (3 < dim.r && dim.r < 10) { // 5~10
         welUnhighlighted.css({ height: dim.r + 1 + 'em'});
       }
 
@@ -1127,7 +1127,7 @@
         '<button type="button" class="btn btn-small" title="Ordered list" data-shortcut="Ctrl+Shift+7" data-mac-shortcut="⌘+⇧+8" data-event="insertOrderedList" tabindex="-1"><i class="icon-list-ol"></i></button>',
       paragraph:
         '<button type="button" class="btn btn-small dropdown-toggle" title="Paragraph" data-toggle="dropdown" tabindex="-1"><i class="icon-align-left"></i>  <span class="caret"></span></button>' +
-        '<ul class="dropdown-menu right">' +
+        '<ul class="dropdown-menu">' +
           '<li>' +
           '<div class="note-align btn-group">' +
           '<button type="button" class="btn btn-small" title="Align left" data-shortcut="Ctrl+Shift+L" data-mac-shortcut="⌘+⇧+L" data-event="justifyLeft" tabindex="-1"><i class="icon-align-left"></i></button>' +
@@ -1144,7 +1144,7 @@
         '</ul>',
       height:
         '<button type="button" class="btn btn-small dropdown-toggle" data-toggle="dropdown" title="Line Height" tabindex="-1"><i class="icon-text-height"></i>&nbsp; <b class="caret"></b></button>' +
-        '<ul class="dropdown-menu right">' +
+        '<ul class="dropdown-menu">' +
         '<li><a data-event="lineHeight" data-value="1.0"><i class="icon-ok"></i> 1.0</a></li>' +
         '<li><a data-event="lineHeight" data-value="1.2"><i class="icon-ok"></i> 1.2</a></li>' +
         '<li><a data-event="lineHeight" data-value="1.4"><i class="icon-ok"></i> 1.4</a></li>' +
@@ -1433,14 +1433,14 @@
     summernote: function(options) {
       options = $.extend({
             toolbar: [
-                ['insert', ['picture', 'link']],
-                ['table', ['table']],
                 ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear']],
                 ['fontsize', ['fontsize']],
                 ['color', ['color']],
-                ['style', ['bold', 'italic', 'underline', 'clear']],
                 ['para', ['ul', 'ol', 'paragraph']],
                 ['height', ['height']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture']],
                 ['help', ['help']]
             ]
           }, options );
