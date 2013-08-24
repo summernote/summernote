@@ -488,13 +488,6 @@
       }(aCmd[idx]);
     }
 
-    this.tab = function(welEditable) {
-      var rng = new Range();
-      if (rng.isOnList() || !rng.isCollapsed()) {
-        return this.indent(welEditable); // return is hack.
-      }
-    };
-
     this.fontSize = function(welEditable, sValue) {
       recordUndo(welEditable);
       document.execCommand('fontSize', false, 3);
@@ -786,8 +779,9 @@
     
     var key = { BACKSPACE: 8, TAB: 9, ENTER: 13, SPACE: 32,
                 NUM0: 48, NUM1: 49, NUM6: 54, NUM7: 55, NUM8: 56, 
-                B: 66, E: 69, I: 73, J: 74, K: 75, L: 76, R: 82,
-                U: 85, Y: 89, Z: 90, BACKSLACH: 220 };
+                B: 66, E: 69, I: 73, J: 74, K: 75, L: 76, R: 82, U: 85,
+                Y: 89, Z: 90, SLASH: 191,
+                LEFTBRACKET: 219, BACKSLACH: 220, RIGHTBRACKET: 221 };
 
     // makeLayoutInfo from editor's descendant node.
     var makeLayoutInfo = function(descendant) {
@@ -826,6 +820,8 @@
         editor.setLinkDialog(oLayoutInfo.editable(), function(linkInfo, cb) {
           dialog.showLinkDialog(oLayoutInfo.dialog(), linkInfo, cb);
         });
+      } else if (bCmd && keyCode === key.SLASH) {
+        dialog.showHelpDialog(oLayoutInfo.dialog());
       } else if (bCmd && bShift && keyCode === key.L) {
         editor.justifyLeft(oLayoutInfo.editable());
       } else if (bCmd && bShift && keyCode === key.E) {
@@ -838,10 +834,10 @@
         editor.insertUnorderedList(oLayoutInfo.editable());
       } else if (bCmd && bShift && keyCode === key.NUM8) {
         editor.insertOrderedList(oLayoutInfo.editable());
-      } else if (bShift && keyCode === key.TAB) { // shift + tab
+      } else if (bCmd && keyCode === key.LEFTBRACKET) {
         editor.outdent(oLayoutInfo.editable());
-      } else if (keyCode === key.TAB) { // tab
-        editor.tab(oLayoutInfo.editable());
+      } else if (bCmd && keyCode === key.RIGHTBRACKET) {
+        editor.indent(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.NUM0) { // formatBlock Paragraph
         editor.formatBlock(oLayoutInfo.editable(), 'P');
       } else if (bCmd && (key.NUM1 <= keyCode && keyCode <= key.NUM6)) {
@@ -1142,8 +1138,8 @@
           '</li>' +
           '<li>' +
           '<div class="note-list btn-group">' +
-          '<button type="button" class="btn btn-small" title="Outdent" data-shortcut="Shift+TAB" data-mac-shortcut="⇧+TAB" data-event="outdent" tabindex="-1"><i class="icon-indent-left"></i></button>' +
-          '<button type="button" class="btn btn-small" title="Indent" data-shortcut="TAB" data-mac-shortcut="TAB" data-event="indent" tabindex="-1"><i class="icon-indent-right"></i></button>' +
+          '<button type="button" class="btn btn-small" title="Outdent" data-shortcut="Ctrl+[" data-mac-shortcut="⌘+[" data-event="outdent" tabindex="-1"><i class="icon-indent-left"></i></button>' +
+          '<button type="button" class="btn btn-small" title="Indent" data-shortcut="Ctrl+]" data-mac-shortcut="⌘+]" data-event="indent" tabindex="-1"><i class="icon-indent-right"></i></button>' +
           '</li>' +
         '</ul>',
       height:
@@ -1159,7 +1155,7 @@
         '<li><a data-event="lineHeight" data-value="3.0"><i class="icon-ok"></i> 3.0</a></li>' +
         '</ul>',
       help:
-        '<button type="button" class="btn btn-small" title="Help" data-event="showHelpDialog" tabindex="-1"><i class="icon-question"></i></button>'
+        '<button type="button" class="btn btn-small" title="Help" data-shortcut="Ctrl+/" data-mac-shortcut="⌘+/" data-event="showHelpDialog" tabindex="-1"><i class="icon-question"></i></button>'
     };
     var sPopover = '<div class="note-popover">' +
                      '<div class="note-link-popover popover fade bottom in" style="display: none;">' +
@@ -1203,151 +1199,64 @@
 
     var sShortcutText = '<table class="note-shortcut">' +
                            '<thead>' +
-                             '<tr>' +
-                               '<th></th>' +
-                               '<th>Text formatting</th>' +
-                             '</tr>' +
+                             '<tr><th></th><th>Text formatting</th></tr>' +
                            '</thead>' +
                            '<tbody>' +
-                             '<tr>' +
-                               '<td>⌘ + B</td>' +
-                               '<td>Bold</td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>⌘ + I</td>' +
-                               '<td>Italic</td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>⌘ + U</td>' +
-                               '<td>Underline</td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>⌘ + \\</td>' +
-                               '<td>Remove Font Style</td>' +
-                             '</tr>' +
+                             '<tr><td>⌘ + B</td><td>Bold</td></tr>' +
+                             '<tr><td>⌘ + I</td><td>Italic</td></tr>' +
+                             '<tr><td>⌘ + U</td><td>Underline</td></tr>' +
+                             '<tr><td>⌘ + \\</td><td>Remove Font Style</td></tr>' +
                              '</tr>' +
                            '</tbody>' +
                          '</table>';
 
     var sShortcutAction = '<table class="note-shortcut">' +
                            '<thead>' +
-                             '<tr>' +
-                               '<th></th>' +
-                               '<th>Action</th>' +
-                             '</tr>' +
+                             '<tr><th></th><th>Action</th></tr>' +
                            '</thead>' +
                            '<tbody>' +
-                             '<tr>' +
-                               '<td>⌘ + Z</td>' +
-                               '<td>Undo</td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>⌘ + ⇧ + Z</td>' +
-                               '<td>Redo</td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>Tab</td>' +
-                               '<td>Indent</td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>⇧ + Tab</td>' +
-                               '<td>Outdent</td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>⌘ + K</td>' +
-                               '<td>Insert Link</td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>⌘ + ENTER</td>' +
-                               '<td>Insert Horizontal Rule</td>' +
-                             '</tr>' +
+                             '<tr><td>⌘ + Z</td><td>Undo</td></tr>' +
+                             '<tr><td>⌘ + ⇧ + Z</td><td>Redo</td></tr>' +
+                             '<tr><td>⌘ + ]</td><td>Indent</td></tr>' +
+                             '<tr><td>⌘ + [</td><td>Outdent</td></tr>' +
+                             '<tr><td>⌘ + K</td><td>Insert Link</td></tr>' +
+                             '<tr><td>⌘ + ENTER</td><td>Insert Horizontal Rule</td></tr>' +
                            '</tbody>' +
                          '</table>';
 
     var sShortcutPara = '<table class="note-shortcut">' +
                           '<thead>' +
-                            '<tr>' +
-                              '<th></th>' +
-                              '<th>Paragraph formatting</th>' +
-                            '</tr>' +
+                            '<tr><th></th><th>Paragraph formatting</th></tr>' +
                           '</thead>' +
                           '<tbody>' +
-                            '<tr>' +
-                              '<td>⌘ + ⇧ + L</td>' +
-                              '<td>Align Left</td>' +
-                            '</tr>' +
-                            '<tr>' +
-                              '<td>⌘ + ⇧ + E</td>' +
-                              '<td>Align Center</td>' +
-                            '</tr>' +
-                            '<tr>' +
-                              '<td>⌘ + ⇧ + R</td>' +
-                              '<td>Align Right</td>' +
-                            '</tr>' +
-                            '<tr>' +
-                              '<td>⌘ + ⇧ + J</td>' +
-                              '<td>Justify Full</td>' +
-                            '</tr>' +
-                            '<tr>' +
-                              '<td>⌘ + ⇧ + NUM7</td>' +
-                              '<td>Ordered List</td>' +
-                            '</tr>' +
-                            '<tr>' +
-                              '<td>⌘ + ⇧ + NUM8</td>' +
-                              '<td>Unordered List</td>' +
-                            '</tr>' +
+                            '<tr><td>⌘ + ⇧ + L</td><td>Align Left</td></tr>' +
+                            '<tr><td>⌘ + ⇧ + E</td><td>Align Center</td></tr>' +
+                            '<tr><td>⌘ + ⇧ + R</td><td>Align Right</td></tr>' +
+                            '<tr><td>⌘ + ⇧ + J</td><td>Justify Full</td></tr>' +
+                            '<tr><td>⌘ + ⇧ + NUM7</td><td>Ordered List</td></tr>' +
+                            '<tr><td>⌘ + ⇧ + NUM8</td><td>Unordered List</td></tr>' +
                           '</tbody>' +
                         '</table>';
 
     var sShortcutStyle = '<table class="note-shortcut">' +
                            '<thead>' +
-                             '<tr>' +
-                               '<th></th>' +
-                               '<th>Document Style</th>' +
-                             '</tr>' +
+                             '<tr><th></th><th>Document Style</th></tr>' +
                            '</thead>' +
                            '<tbody>' +
-                             '<tr>' +
-                               '<td>⌘ + NUM0</td>' +
-                               '<td>Normal Text</td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>⌘ + NUM1</td>' +
-                               '<td>Heading 1</td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>⌘ + NUM2</td>' +
-                               '<td>Heading 2</td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>⌘ + NUM3</td>' +
-                               '<td>Heading 3</td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>⌘ + NUM4</td>' +
-                               '<td>Heading 4</td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>⌘ + NUM5</td>' +
-                               '<td>Heading 5</td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>⌘ + NUM6</td>' +
-                               '<td>Heading 6</td>' +
-                             '</tr>' +
-
+                             '<tr><td>⌘ + NUM0</td><td>Normal Text</td></tr>' +
+                             '<tr><td>⌘ + NUM1</td><td>Heading 1</td></tr>' +
+                             '<tr><td>⌘ + NUM2</td><td>Heading 2</td></tr>' +
+                             '<tr><td>⌘ + NUM3</td><td>Heading 3</td></tr>' +
+                             '<tr><td>⌘ + NUM4</td><td>Heading 4</td></tr>' +
+                             '<tr><td>⌘ + NUM5</td><td>Heading 5</td></tr>' +
+                             '<tr><td>⌘ + NUM6</td><td>Heading 6</td></tr>' +
                            '</tbody>' +
                          '</table>';
+
     var sShortcutTable = '<table class="note-shortcut-layout">' +
                            '<tbody>' +
-                             '<tr>' +
-                               '<td>' + sShortcutAction +'</td>' +
-                               '<td>' + sShortcutText +'</td>' +
-                             '</tr>' +
-                             '<tr>' +
-                               '<td>' + sShortcutStyle +'</td>' +
-                               '<td>' + sShortcutPara +'</td>' +
-                             '</tr>' +
+                             '<tr><td>' + sShortcutAction +'</td><td>' + sShortcutText +'</td></tr>' +
+                             '<tr><td>' + sShortcutStyle +'</td><td>' + sShortcutPara +'</td></tr>' +
                            '</tbody>' +
                          '</table>';
 
