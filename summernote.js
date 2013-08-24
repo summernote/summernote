@@ -364,16 +364,15 @@
     // get current style, elTarget: target element on event.
     this.current = function(rng, elTarget) {
       var welCont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
-      var oStyle = welCont.css(['font-size', 'font-weight', 'font-style',
-                                'text-decoration', 'text-align',
+      var oStyle = welCont.css(['font-size', 'text-align',
                                 'list-style-type', 'line-height']) || {};
-                                     
+
       oStyle['font-size'] = parseInt(oStyle['font-size']);
 
-      // FF font-weight patch(number to 'bold' or 'normal')
-      if (!isNaN(parseInt(oStyle['font-weight']))) {
-        oStyle['font-weight'] = oStyle['font-weight'] > 400 ? 'bold' : 'normal';
-      }
+      // document.queryCommandState for toggle state
+      oStyle['font-bold'] = document.queryCommandState('bold') ? 'bold' : 'normal';
+      oStyle['font-italic'] = document.queryCommandState('italic') ? 'italic' : 'normal';
+      oStyle['font-underline'] = document.queryCommandState('underline') ? 'underline' : 'normal';
       
       // list-style-type to list-style(unordered, ordered)
       if (!rng.isOnList()) {
@@ -595,13 +594,13 @@
       };
 
       btnState('button[data-event="bold"]', function() {
-        return oStyle['font-weight'] === 'bold';
+        return oStyle['font-bold'] === 'bold';
       });
       btnState('button[data-event="italic"]', function() {
-        return oStyle['font-style'] === 'italic';
+        return oStyle['font-italic'] === 'italic';
       });
       btnState('button[data-event="underline"]', function() {
-        return oStyle['text-decoration'] === 'underline';
+        return oStyle['font-underline'] === 'underline';
       });
       btnState('button[data-event="justifyLeft"]', function() {
         return oStyle['text-align'] === 'left' || oStyle['text-align'] === 'start';
