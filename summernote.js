@@ -351,16 +351,6 @@
    * Style
    */
   var Style = function() {
-    // font level style
-    this.styleFont = function(rng, oStyle) {
-      //TODO: complete styleFont later only works for webkit
-      //rng.splitInline();
-      var elSpan = rng.surroundContents('span');
-      $.each(oStyle, function(sKey, sValue) {
-        elSpan.style[sKey] = sValue;
-      });
-    };
-    
     // para level style
     this.stylePara = function(rng, oStyle) {
       var aPara = rng.listPara();
@@ -473,11 +463,11 @@
     };
 
     // native commands(with execCommand)
-    var aCmd = ['bold', 'italic', 'underline', 'justifyLeft', 'justifyCenter',
-                'justifyRight', 'justifyFull', 'insertOrderedList',
-                'insertUnorderedList', 'indent', 'outdent', 'formatBlock',
-                'removeFormat', 'backColor', 'foreColor', 'insertImage',
-                'insertHorizontalRule'];
+    var aCmd = ['bold', 'italic', 'underline', 'strikethrough',
+                'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
+                'insertOrderedList', 'insertUnorderedList',
+                'indent', 'outdent', 'formatBlock', 'removeFormat',
+                'backColor', 'foreColor', 'insertImage', 'insertHorizontalRule'];
     
     for (var idx = 0, len=aCmd.length; idx < len; idx ++) {
       this[aCmd[idx]] = function(sCmd) {
@@ -779,7 +769,7 @@
     
     var key = { BACKSPACE: 8, TAB: 9, ENTER: 13, SPACE: 32,
                 NUM0: 48, NUM1: 49, NUM6: 54, NUM7: 55, NUM8: 56, 
-                B: 66, E: 69, I: 73, J: 74, K: 75, L: 76, R: 82, U: 85,
+                B: 66, E: 69, I: 73, J: 74, K: 75, L: 76, R: 82, S: 83, U: 85,
                 Y: 89, Z: 90, SLASH: 191,
                 LEFTBRACKET: 219, BACKSLACH: 220, RIGHTBRACKET: 221 };
 
@@ -814,6 +804,8 @@
         editor.italic(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.U) {
         editor.underline(oLayoutInfo.editable());
+      } else if (bCmd && bShift && keyCode === key.S) {
+        editor.strikethrough(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.BACKSLACH) {
         editor.removeFormat(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.K) {
@@ -1202,9 +1194,10 @@
                              '<tr><th></th><th>Text formatting</th></tr>' +
                            '</thead>' +
                            '<tbody>' +
-                             '<tr><td>⌘ + B</td><td>Bold</td></tr>' +
-                             '<tr><td>⌘ + I</td><td>Italic</td></tr>' +
-                             '<tr><td>⌘ + U</td><td>Underline</td></tr>' +
+                             '<tr><td>⌘ + B</td><td>Toggle Bold</td></tr>' +
+                             '<tr><td>⌘ + I</td><td>Toggle Italic</td></tr>' +
+                             '<tr><td>⌘ + U</td><td>Toggle Underline</td></tr>' +
+                             '<tr><td>⌘ + ⇧ + S</td><td>Toggle Strike</td></tr>' +
                              '<tr><td>⌘ + \\</td><td>Remove Font Style</td></tr>' +
                              '</tr>' +
                            '</tbody>' +
