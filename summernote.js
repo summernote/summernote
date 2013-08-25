@@ -209,9 +209,7 @@
     // split: split dom tree by boundaryPoint(pivot and offset)
     var split = function(root, pivot, offset) {
       var aAncestor = listAncestor(pivot, func.eq(root));
-      if (aAncestor.length === 1) {
-        return splitData(pivot, offset);
-      }
+      if (aAncestor.length === 1) { return splitData(pivot, offset); }
       return aAncestor.reduce(function(node, parent) {
         var clone = parent.cloneNode(false);
         insertAfter(clone, parent);
@@ -847,6 +845,7 @@
     };
 
     var insertImages = function(welEditable, files) {
+      welEditable.trigger('focus');
       $.each(files, function(idx, file) {
         var fileReader = new FileReader;
         fileReader.onload = function(event) {
@@ -1424,18 +1423,18 @@
     // create Editor Layout and attach Key and Mouse Event
     summernote: function(options) {
       options = $.extend({
-            toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'italic', 'underline', 'clear']],
-                ['fontsize', ['fontsize']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['height', ['height']],
-                ['table', ['table']],
-                ['insert', ['link', 'picture']],
-                ['help', ['help']]
-            ]
-          }, options );
+        toolbar: [
+          ['style', ['style']],
+          ['font', ['bold', 'italic', 'underline', 'clear']],
+          ['fontsize', ['fontsize']],
+          ['color', ['color']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['height', ['height']],
+          ['table', ['table']],
+          ['insert', ['link', 'picture']],
+          ['help', ['help']]
+        ]
+      }, options );
 
       this.each(function(idx, elHolder) {
         var welHolder = $(elHolder);
