@@ -78,14 +78,14 @@ $('#summernote').destroy();
 * Revision
 * Bootstrap 2.x to Bootstrap 3 Migration
 * Responsive Toolbar
+* Resizable Editable Area
 * Air Mode
-* Support IE8
 
 #### v0.3 2013-09-01
-* `ADDED` help dialog
-* `ADDED` event callback
-* `ADDED` custom toolbar
-* `FIXED` bugs(image upload, fontsize, tab, recent color)
+* `FIXED` bugs(image upload, fontsize, tab, recent color, ...)
+* `ADDED` help dialog(keyboard shortcut)
+* `ADDED` init options(event callbacks, custom toolbar)
+* `ADDED` support IE8
 
 ### Change Log
 
