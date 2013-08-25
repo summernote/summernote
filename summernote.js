@@ -775,8 +775,9 @@
       var welEditor = $(descendant).closest('.note-editor');
       return {
         editor: function() { return welEditor; },
-        editable: function() { return welEditor.find('.note-editable'); },
         toolbar: function() { return welEditor.find('.note-toolbar'); },
+        editable: function() { return welEditor.find('.note-editable'); },
+        statusbar: function() { return welEditor.find('.note-statusbar'); },
         popover: function() { return welEditor.find('.note-popover'); },
         handle: function() { return welEditor.find('.note-handle'); },
         dialog: function() { return welEditor.find('.note-dialog'); }
@@ -959,6 +960,23 @@
         hToolbarAndPopoverUpdate(event);
       }
     };
+
+    var EDITABLE_PADDING = 24;
+    var hStatusbarMousedown = function(event) {
+      var welDocument = $(document);
+      var welEditable = makeLayoutInfo(event.target).editable();
+
+      var nEditableTop = welEditable.offset().top - welDocument.scrollTop();
+      var hMousemove = function(event) {
+        welEditable.height(event.clientY - (nEditableTop + EDITABLE_PADDING));
+      };
+      var hMouseup = function() {
+        welDocument.unbind('mousemove', hMousemove)
+                   .unbind('mouseup', hMouseup);
+      }
+      welDocument.mousemove(hMousemove).mouseup(hMouseup);
+      event.stopPropagation(); event.preventDefault();
+    };
     
     var PX_PER_EM = 18;
     var hDimensionPickerMove = function(event) {
@@ -1009,6 +1027,8 @@
       oLayoutInfo.popover.on('click', hToolbarAndPopoverClick);
       oLayoutInfo.toolbar.on('mousedown', hToolbarAndPopoverMousedown);
       oLayoutInfo.popover.on('mousedown', hToolbarAndPopoverMousedown);
+
+      oLayoutInfo.statusbar.on('mousedown', hStatusbarMousedown);
       
       //toolbar table dimension
       var welToolbar = oLayoutInfo.toolbar;
@@ -1347,7 +1367,12 @@
       //01. create Editor
       var welEditor = $('<div class="note-editor"></div>');
 
-      //02. create Editable
+      //02. statusbar
+      if (nHeight > 0) {
+        var welStatusbar = $('<div class="note-statusbar"><div class="note-resizebar"><div class="note-icon-bar"></div><div class="note-icon-bar"></div><div class="note-icon-bar"></div><div class="note-icon-bar"></div></div></div>').prependTo(welEditor);
+      }
+
+      //03. create Editable
       var welEditable = $('<div class="note-editable" contentEditable="true"></div>').prependTo(welEditor);
       if (nTabIndex) { welEditable.attr('tabIndex', nTabIndex); }
       if (nHeight) { welEditable.height(nHeight); }
@@ -1355,7 +1380,7 @@
       welEditable.html(welHolder.html());
       welEditable.data('NoteHistory', new History());
       
-      //03. create Toolbar
+      //04. create Toolbar
       var sToolbar = '';
       for (var idx in aToolbarSetting) {
         var group = aToolbarSetting[idx];
@@ -1372,17 +1397,17 @@
       createPalette(welToolbar);
       createTooltip(welToolbar, 'bottom');
       
-      //04. create Popover
+      //05. create Popover
       var welPopover = $(sPopover).prependTo(welEditor);
       createTooltip(welPopover);
 
-      //05. handle(control selection, ...)
+      //06. handle(control selection, ...)
       $(sHandle).prependTo(welEditor);
       
-      //06. create Dialog
+      //07. create Dialog
       $(sDialog).prependTo(welEditor);
       
-      //05. Editor/Holder switch
+      //08. Editor/Holder switch
       welEditor.insertAfter(welHolder);
       welHolder.hide();
     };
@@ -1394,8 +1419,9 @@
       
       return {
         editor: welEditor,
-        editable: welEditor.find('.note-editable'),
         toolbar: welEditor.find('.note-toolbar'),
+        editable: welEditor.find('.note-editable'),
+        statusbar: welEditor.find('.note-statusbar'),
         popover: welEditor.find('.note-popover'),
         handle: welEditor.find('.note-handle'),
         dialog: welEditor.find('.note-dialog')
