@@ -244,13 +244,52 @@
    * create Range Object From arguments or Browser Selection
    */
   var bW3CRangeSupport = !!document.createRange;
+  // return boundary point from TextRange(ie8)
+  var textRange2bp = function(textRange) {
+    var elCont = textRange.parentElement();
+
+    // TODO: compute cont, offset
+    var nOffset;
+    var tester = document.body.createTextRange();
+    for (nOffset = 0; nOffset < elCont.childNodes.length; nOffset++) {
+      var elChild = elCont.childNodes[nOffset];
+      if (dom.isText(elChild)) { continue; }
+
+      tester.moveToElementText(elChild);
+      if (tester.compareEndPoints("StartToStart", textRange) >= 0) { break; }
+    }
+
+    return {cont: elCont, offset: nOffset};
+  };
+
+  // return TextRange(ie8) from boundary point
+  var bp2textRange = function(bp) {
+    var textRange = document.body.createTextRange();
+    var elCont = bp.cont, offset = bp.offset;
+
+    // TODO: compute cont, offset
+    textRange.moveToElementText(elCont);
+    textRange.moveStart("character", offset);
+    return textRange;
+  };
+
   var Range = function(sc, so, ec, eo) {
     if (arguments.length === 0) { // from Browser Selection
-      if (document.getSelection) { // webkit, firefox
+      if (bW3CRangeSupport) { // webkit, firefox
         var nativeRng = document.getSelection().getRangeAt(0);
         sc = nativeRng.startContainer, so = nativeRng.startOffset,
         ec = nativeRng.endContainer, eo = nativeRng.endOffset;
-      } // TODO: handle IE8+ TextRange
+      } else { //TextRange
+        var textRange = document.selection.createRange();
+        var textRangeEnd = textRange.duplicate(); textRangeEnd.collapse(false);
+        var textRangeStart = textRange; textRangeStart.collapse(true);
+
+        var bpStart = textRange2bp(textRangeStart),
+            bpEnd = textRange2bp(textRangeEnd);
+
+        sc = bpStart.cont, so = bpStart.offset;
+        ec = bpEnd.cont, eo = bpEnd.offset;
+      }
     }
     
     this.sc = sc; this.so = so;
@@ -263,7 +302,11 @@
         range.setStart(sc, so);
         range.setEnd(ec, eo);
         return range;
-      } // TODO: handle IE8+ TextRange
+      } else {
+        var textRange = bp2textRange(sc, so);
+        textRange.setEndPoint('EndToEnd', bp2textRange(ec, eo));
+        return textRange;
+      }
     };
  
     // select: update visible range
@@ -273,7 +316,9 @@
         var selection = document.getSelection();
         if (selection.rangeCount > 0) { selection.removeAllRanges(); }
         selection.addRange(nativeRng);
-      } // TODO: handle IE8+ TextRange
+      } else {
+        nativeRng.select();
+      }
     };
     
     // listPara: listing paragraphs on range
@@ -307,25 +352,16 @@
       var nativeRng = nativeRange();
       if (bW3CRangeSupport) {
         nativeRng.insertNode(node);
-      } // TODO: IE8
-    };
-    
-    // surroundContents
-    this.surroundContents = function(sNodeName) {
-      var node = $('<' + sNodeName + ' />')[0];
-      var nativeRng = nativeRange();
-      if (bW3CRangeSupport) {
-        nativeRng.surroundContents(node);
-      } // TODO: IE8
-      
-      return node;
+      } // TODO: IE8, pasteHTML
     };
 
     this.toString = function() {
       var nativeRng = nativeRange();
       if (bW3CRangeSupport) {
         return nativeRng.toString();
-      } // TODO: IE8
+      } else {
+        return nativeRng.text;
+      }
     };
 
     //bookmark: offsetPath bookmark
@@ -440,7 +476,7 @@
     //currentStyle
     var style = new Style();
     this.currentStyle = function(elTarget) {
-      if (document.getSelection().rangeCount == 0) { return null; }
+      if (document.getSelection && document.getSelection().rangeCount == 0) { return null; }
       return style.current((new Range()), elTarget);
     };
 
