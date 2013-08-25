@@ -85,6 +85,7 @@ $('#summernote').destroy();
 * `FIXED` bugs(image upload, fontsize, tab, recent color, ...)
 * `ADDED` help dialog(keyboard shortcut)
 * `ADDED` init options(event callbacks, custom toolbar)
+* `ADDED` resizebar
 * `ADDED` support IE8
 
 ### Change Log
