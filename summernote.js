@@ -19,7 +19,12 @@
     };
     var eq2 = function(nodeA, nodeB) { return nodeA === nodeB; };
     var fail = function() { return false; };
-    return { eq: eq, eq2: eq2, fail: fail };
+    var not = function(pred) {
+      return function() {
+        return !f.apply(f, arguments);
+      }
+    };
+    return { eq: eq, eq2: eq2, fail: fail, not: not };
   }();
   
   /**
@@ -30,6 +35,12 @@
     var last = function(array) { return array[array.length - 1]; };
     var initial = function(array) { return array.slice(0, array.length - 1); };
     var tail = function(array) { return array.slice(1); };
+
+    var sum = function(array, fn) {
+      return array.reduce(function(memo, v) {
+        return memo + fn(item);
+      }, 0);
+    };
     
     var clusterBy = function(array, fn) {
       if (array.length === 0) { return []; }
@@ -54,7 +65,7 @@
     };
 
     return { head: head, last: last, initial: initial, tail: tail, 
-             compact: compact, clusterBy: clusterBy };
+             compact: compact, clusterBy: clusterBy, sum: sum };
   }();
   
   /**
@@ -128,6 +139,19 @@
         if (nodeB === node) { break; }
       }
       return aNode;
+    };
+
+    // listPrev: listing prevSiblings (until predicate hit: optional)
+    var listPrev = function(node, pred) {
+      pred = pred || func.fail;      
+
+      var aNext = [];
+      while (node) {
+        aNext.push(node);
+        if (node === pred) { break; }
+        node = node.prevSibling;
+      };
+      return aNext;
     };
     
     // listNext: listing nextSiblings (until predicate hit: optional)
@@ -230,7 +254,8 @@
       isB: makePredByNodeName('B'), isU: makePredByNodeName('U'),
       isS: makePredByNodeName('S'), isI: makePredByNodeName('I'),
       isImg: makePredByNodeName('IMG'),
-      ancestor: ancestor, listAncestor: listAncestor, listNext: listNext,
+      ancestor: ancestor, listAncestor: listAncestor,
+      listNext: listNext, listPrev: listPrev,
       commonAncestor: commonAncestor, listBetween: listBetween,
       insertAfter: insertAfter, position: position,
       makeOffsetPath: makeOffsetPath, fromOffsetPath: fromOffsetPath,
@@ -245,31 +270,44 @@
    */
   var bW3CRangeSupport = !!document.createRange;
   // return boundary point from TextRange(ie8)
+  // (inspired by google closure-library)
   var textRange2bp = function(textRange) {
     var elCont = textRange.parentElement();
 
-    // TODO: compute cont, offset
-    var nOffset;
-    var tester = document.body.createTextRange();
-    for (nOffset = 0; nOffset < elCont.childNodes.length; nOffset++) {
-      var elChild = elCont.childNodes[nOffset];
-      if (dom.isText(elChild)) { continue; }
-
-      tester.moveToElementText(elChild);
-      if (tester.compareEndPoints("StartToStart", textRange) >= 0) { break; }
-    }
+    var nOffset = 0; // TODO: compute cont, offset
 
     return {cont: elCont, offset: nOffset};
   };
 
   // return TextRange(ie8) from boundary point
+  // (inspired by google closure-library)
   var bp2textRange = function(bp) {
-    var textRange = document.body.createTextRange();
-    var elCont = bp.cont, offset = bp.offset;
+    var textRangeInfo = function(elCont, nOffset) {
+      var elNode, bCollapseToStart;
 
-    // TODO: compute cont, offset
-    textRange.moveToElementText(elCont);
-    textRange.moveStart("character", offset);
+      if (dom.isText(elCont)) {
+        aPrevText = dom.listPrev(elCont, func.not(dom.isText));
+        var elPrevCont = list.last(aPrevText).previousSibling;
+        elNode =  elPrevCont || elCont.parentNode;
+        nOffset += list.sum(list.tail(aPrevText), dom.length);
+        bCollapseToStart = !elPrevCont;
+      } else {
+        elNode = elCont.childNodes[nOffset] || elCont;
+        if (dom.isText(elNode)) {
+          return textRangeInfo(elNode, nOffset);
+        }
+      }
+      nOffset = 0;
+      bCollapseToStart = false;
+      return {cont: elNode, collapseToStart:bCollapseToStart, offset: nOffset};
+    }
+
+    var textRange = document.body.createTextRange();
+    var info = textRangeInfo(bp.cont, bp.offset);
+
+    textRange.moveToElementText(info.cont);
+    textRange.collapse(info.collapseToStart);
+    textRange.moveStart("character", info.offset);
     return textRange;
   };
 
