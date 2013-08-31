@@ -19,7 +19,11 @@
     };
     var eq2 = function(nodeA, nodeB) { return nodeA === nodeB; };
     var fail = function() { return false; };
-    return { eq: eq, eq2: eq2, fail: fail };
+    var not = function(pred) { return function() {
+      return !f.apply(f, arguments);
+    }};
+    var self = function(a) { return a; }
+    return { eq: eq, eq2: eq2, fail: fail, not: not, self: self };
   }();
   
   /**
@@ -30,6 +34,13 @@
     var last = function(array) { return array[array.length - 1]; };
     var initial = function(array) { return array.slice(0, array.length - 1); };
     var tail = function(array) { return array.slice(1); };
+
+    var sum = function(array, fn) {
+      fn = fn || func.self
+      return array.reduce(function(memo, v) {
+        return memo + fn(v);
+      }, 0);
+    };
     
     var clusterBy = function(array, fn) {
       if (array.length === 0) { return []; }
@@ -54,7 +65,7 @@
     };
 
     return { head: head, last: last, initial: initial, tail: tail, 
-             compact: compact, clusterBy: clusterBy };
+             compact: compact, clusterBy: clusterBy, sum: sum };
   }();
   
   /**
@@ -129,6 +140,19 @@
       }
       return aNode;
     };
+
+    // listPrev: listing prevSiblings (until predicate hit: optional)
+    var listPrev = function(node, pred) {
+      pred = pred || func.fail;      
+
+      var aNext = [];
+      while (node) {
+        aNext.push(node);
+        if (pred(node)) { break; }
+        node = node.previousSibling;
+      };
+      return aNext;
+    };
     
     // listNext: listing nextSiblings (until predicate hit: optional)
     var listNext = function(node, pred) {
@@ -137,7 +161,7 @@
       var aNext = [];
       while (node) {
         aNext.push(node);
-        if (node === pred) { break; }
+        if (pred(node)) { break; }
         node = node.nextSibling;
       };
       return aNext;
@@ -230,7 +254,8 @@
       isB: makePredByNodeName('B'), isU: makePredByNodeName('U'),
       isS: makePredByNodeName('S'), isI: makePredByNodeName('I'),
       isImg: makePredByNodeName('IMG'),
-      ancestor: ancestor, listAncestor: listAncestor, listNext: listNext,
+      ancestor: ancestor, listAncestor: listAncestor,
+      listNext: listNext, listPrev: listPrev,
       commonAncestor: commonAncestor, listBetween: listBetween,
       insertAfter: insertAfter, position: position,
       makeOffsetPath: makeOffsetPath, fromOffsetPath: fromOffsetPath,
@@ -244,13 +269,65 @@
    * create Range Object From arguments or Browser Selection
    */
   var bW3CRangeSupport = !!document.createRange;
+  // return boundary point from TextRange(ie8)
+  // (inspired by google closure-library)
+  var textRange2bp = function(textRange) {
+    var elCont = textRange.parentElement();
+
+    var nOffset = 0; // TODO: compute cont, offset
+
+    return {cont: elCont, offset: nOffset};
+  };
+
+  // return TextRange(ie8) from boundary point
+  // (inspired by google closure-library)
+  var bp2textRange = function(bp) {
+    var textRangeInfo = function(elCont, nOffset) {
+      var elNode, bCollapseToStart;
+
+      if (dom.isText(elCont)) {
+        aPrevText = dom.listPrev(elCont, func.not(dom.isText));
+        var elPrevCont = list.last(aPrevText).previousSibling;
+        elNode =  elPrevCont || elCont.parentNode;
+        nOffset += list.sum(list.tail(aPrevText), dom.length);
+        bCollapseToStart = !elPrevCont;
+      } else {
+        elNode = elCont.childNodes[nOffset] || elCont;
+        if (dom.isText(elNode)) {
+          return textRangeInfo(elNode, nOffset);
+        }
+      }
+      nOffset = 0;
+      bCollapseToStart = false;
+      return {cont: elNode, collapseToStart:bCollapseToStart, offset: nOffset};
+    }
+
+    var textRange = document.body.createTextRange();
+    var info = textRangeInfo(bp.cont, bp.offset);
+
+    textRange.moveToElementText(info.cont);
+    textRange.collapse(info.collapseToStart);
+    textRange.moveStart("character", info.offset);
+    return textRange;
+  };
+
   var Range = function(sc, so, ec, eo) {
     if (arguments.length === 0) { // from Browser Selection
-      if (document.getSelection) { // webkit, firefox
+      if (bW3CRangeSupport) { // webkit, firefox
         var nativeRng = document.getSelection().getRangeAt(0);
         sc = nativeRng.startContainer, so = nativeRng.startOffset,
         ec = nativeRng.endContainer, eo = nativeRng.endOffset;
-      } // TODO: handle IE8+ TextRange
+      } else { //TextRange
+        var textRange = document.selection.createRange();
+        var textRangeEnd = textRange.duplicate(); textRangeEnd.collapse(false);
+        var textRangeStart = textRange; textRangeStart.collapse(true);
+
+        var bpStart = textRange2bp(textRangeStart),
+            bpEnd = textRange2bp(textRangeEnd);
+
+        sc = bpStart.cont, so = bpStart.offset;
+        ec = bpEnd.cont, eo = bpEnd.offset;
+      }
     }
     
     this.sc = sc; this.so = so;
@@ -263,7 +340,11 @@
         range.setStart(sc, so);
         range.setEnd(ec, eo);
         return range;
-      } // TODO: handle IE8+ TextRange
+      } else {
+        var textRange = bp2textRange(sc, so);
+        textRange.setEndPoint('EndToEnd', bp2textRange(ec, eo));
+        return textRange;
+      }
     };
  
     // select: update visible range
@@ -273,7 +354,9 @@
         var selection = document.getSelection();
         if (selection.rangeCount > 0) { selection.removeAllRanges(); }
         selection.addRange(nativeRng);
-      } // TODO: handle IE8+ TextRange
+      } else {
+        nativeRng.select();
+      }
     };
     
     // listPara: listing paragraphs on range
@@ -307,25 +390,16 @@
       var nativeRng = nativeRange();
       if (bW3CRangeSupport) {
         nativeRng.insertNode(node);
-      } // TODO: IE8
-    };
-    
-    // surroundContents
-    this.surroundContents = function(sNodeName) {
-      var node = $('<' + sNodeName + ' />')[0];
-      var nativeRng = nativeRange();
-      if (bW3CRangeSupport) {
-        nativeRng.surroundContents(node);
-      } // TODO: IE8
-      
-      return node;
+      } // TODO: IE8, pasteHTML
     };
 
     this.toString = function() {
       var nativeRng = nativeRange();
       if (bW3CRangeSupport) {
         return nativeRng.toString();
-      } // TODO: IE8
+      } else {
+        return nativeRng.text;
+      }
     };
 
     //bookmark: offsetPath bookmark
@@ -440,7 +514,7 @@
     //currentStyle
     var style = new Style();
     this.currentStyle = function(elTarget) {
-      if (document.getSelection().rangeCount == 0) { return null; }
+      if (document.getSelection && document.getSelection().rangeCount == 0) { return null; }
       return style.current((new Range()), elTarget);
     };
 

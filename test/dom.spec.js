@@ -74,6 +74,19 @@ test('dom.listNext', function() {
   deepEqual(dom.listNext($s[0], func.eq($i[0])), [$s[0], $i[0]], 's to i');
 });
 
+test('dom.listPrev', function() {
+   var $cont, $b, $u, $s, $i;
+
+  $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
+  $b = $cont.find('b'), $u = $cont.find('u'),
+  $s = $cont.find('s'), $i = $cont.find('i');
+
+  deepEqual(dom.listPrev($s[0]), [$s[0], $u[0], $b[0]], 'with no pred');
+  deepEqual(dom.listPrev($b[0]), [$b[0]], 'first item with no pred');
+  
+  deepEqual(dom.listPrev($i[0], func.eq($s[0])), [$i[0], $s[0]], 'i to s');
+});
+
 test('dom.position', function() {
   var $cont, $b, $u, $s, $i;
 
