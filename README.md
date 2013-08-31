@@ -74,11 +74,9 @@ $('#summernote').destroy();
 * OS (Windows, Mac)
 
 ### Upcoming Features
-* Table: Handles(Sizing, Selection) and Popover
-* Revision
 * Bootstrap 2.x to Bootstrap 3 Migration
+* Table: Handles(Sizing, Selection) and Popover
 * Responsive Toolbar
-* Resizable Editable Area
 * Air Mode
 
 #### v0.3 2013-09-01
