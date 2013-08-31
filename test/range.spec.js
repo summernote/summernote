@@ -1,6 +1,6 @@
 /**
  * range.spec.js
- * (c) 2013~ Youngteac Hong
+ * (c) 2013~ Alan Hong
  * summernote may be freely distributed under the MIT license./
  */
 var Range = $.fn.summernoteInner().Range;

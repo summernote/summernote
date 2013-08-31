@@ -36,10 +36,18 @@
     var tail = function(array) { return array.slice(1); };
 
     var sum = function(array, fn) {
-      fn = fn || func.self
+      fn = fn || func.self;
       return array.reduce(function(memo, v) {
         return memo + fn(v);
       }, 0);
+    };
+
+    var from = function(collection) {
+      var result = [], idx = -1, length = collection.length;
+      while (++idx < length) {
+        result[idx] = collection[idx];
+      }
+      return result;
     };
     
     var clusterBy = function(array, fn) {
@@ -65,7 +73,7 @@
     };
 
     return { head: head, last: last, initial: initial, tail: tail, 
-             compact: compact, clusterBy: clusterBy, sum: sum };
+             sum: sum, from: from, compact: compact, clusterBy: clusterBy };
   }();
   
   /**
@@ -269,12 +277,46 @@
    * create Range Object From arguments or Browser Selection
    */
   var bW3CRangeSupport = !!document.createRange;
-  // return boundary point from TextRange(ie8)
-  // (inspired by google closure-library)
-  var textRange2bp = function(textRange) {
-    var elCont = textRange.parentElement();
 
-    var nOffset = 0; // TODO: compute cont, offset
+  // return boundary point from TextRange(ie8)
+  // inspired by Andy Na's HuskyRange.js
+  var textRange2bp = function(textRange, bStart) {
+    var elCont = textRange.parentElement(), nOffset;
+
+    var tester = document.body.createTextRange(), elPrevCont;
+    var aChild = list.from(elCont.childNodes);
+    for (nOffset = 0; nOffset < aChild.length; nOffset++) {
+      if (dom.isText(aChild[nOffset])) { continue; }
+      tester.moveToElementText(aChild[nOffset]);
+      if (tester.compareEndPoints("StartToStart", textRange) >= 0) { break; }
+      elPrevCont = aChild[nOffset];
+    }
+
+    if (nOffset != 0 && dom.isText(aChild[nOffset - 1])) {
+      var textRangeStart = document.body.createTextRange(), elCurText = null;
+      textRangeStart.moveToElementText(elPrevCont || elCont);
+      textRangeStart.collapse(!elPrevCont);
+      elCurText = elPrevCont ? elPrevCont.nextSibling : elCont.firstChild;
+
+      var pointTester = textRange.duplicate();
+      pointTester.setEndPoint("StartToStart", textRangeStart);
+      var nTextCount = pointTester.text.replace(/[\r\n]/g, "").length;
+
+      while (nTextCount > elCurText.nodeValue.length && elCurText.nextSibling) {
+        nTextCount -= elCurText.nodeValue.length;
+        elCurText = elCurText.nextSibling;
+      }
+      var sDummy = elCurText.nodeValue; //enforce IE to re-reference elCurText
+
+      if (bStart && elCurText.nextSibling && dom.isText(elCurText.nextSibling) &&
+          nTextCount == elCurText.nodeValue.length) {
+        nTextCount -= elCurText.nodeValue.length;
+        elCurText = elCurText.nextSibling;
+      }
+
+      elCont = elCurText;
+      nOffset = nTextCount;
+    }
 
     return {cont: elCont, offset: nOffset};
   };
@@ -296,9 +338,11 @@
         if (dom.isText(elNode)) {
           return textRangeInfo(elNode, nOffset);
         }
+
+        nOffset = 0;
+        bCollapseToStart = false;
       }
-      nOffset = 0;
-      bCollapseToStart = false;
+
       return {cont: elNode, collapseToStart:bCollapseToStart, offset: nOffset};
     }
 
@@ -322,8 +366,8 @@
         var textRangeEnd = textRange.duplicate(); textRangeEnd.collapse(false);
         var textRangeStart = textRange; textRangeStart.collapse(true);
 
-        var bpStart = textRange2bp(textRangeStart),
-            bpEnd = textRange2bp(textRangeEnd);
+        var bpStart = textRange2bp(textRangeStart, true),
+            bpEnd = textRange2bp(textRangeEnd, false);
 
         sc = bpStart.cont, so = bpStart.offset;
         ec = bpEnd.cont, eo = bpEnd.offset;
