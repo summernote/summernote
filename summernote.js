@@ -19,12 +19,11 @@
     };
     var eq2 = function(nodeA, nodeB) { return nodeA === nodeB; };
     var fail = function() { return false; };
-    var not = function(pred) {
-      return function() {
-        return !f.apply(f, arguments);
-      }
-    };
-    return { eq: eq, eq2: eq2, fail: fail, not: not };
+    var not = function(pred) { return function() {
+      return !f.apply(f, arguments);
+    }};
+    var self = function(a) { return a; }
+    return { eq: eq, eq2: eq2, fail: fail, not: not, self: self };
   }();
   
   /**
@@ -37,8 +36,9 @@
     var tail = function(array) { return array.slice(1); };
 
     var sum = function(array, fn) {
+      fn = fn || func.self
       return array.reduce(function(memo, v) {
-        return memo + fn(item);
+        return memo + fn(v);
       }, 0);
     };
     
@@ -148,8 +148,8 @@
       var aNext = [];
       while (node) {
         aNext.push(node);
-        if (node === pred) { break; }
-        node = node.prevSibling;
+        if (pred(node)) { break; }
+        node = node.previousSibling;
       };
       return aNext;
     };
@@ -161,7 +161,7 @@
       var aNext = [];
       while (node) {
         aNext.push(node);
-        if (node === pred) { break; }
+        if (pred(node)) { break; }
         node = node.nextSibling;
       };
       return aNext;

@@ -21,6 +21,11 @@ test('list.tail', function() {
   deepEqual(list.tail([1, 2, 3]), [2, 3], 'should exclude first element');
 });
 
+test('list.sum', function() {
+  deepEqual(list.sum([1, 2, 3]), 6, 'should return 6');
+  deepEqual(list.sum([1, 2, 3], function(v) { return v * 2; }), 12, 'should return 12');
+});
+
 test('list.clusterBy', function() {
   var aaClustered = list.clusterBy([1, 1, 2, 2, 3], function(itemA, itemB) {
     return itemA === itemB;
