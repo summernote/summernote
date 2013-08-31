@@ -19,7 +19,7 @@
     };
     var eq2 = function(nodeA, nodeB) { return nodeA === nodeB; };
     var fail = function() { return false; };
-    var not = function(pred) { return function() {
+    var not = function(f) { return function() {
       return !f.apply(f, arguments);
     }};
     var self = function(a) { return a; }
@@ -341,8 +341,8 @@
         range.setEnd(ec, eo);
         return range;
       } else {
-        var textRange = bp2textRange(sc, so);
-        textRange.setEndPoint('EndToEnd', bp2textRange(ec, eo));
+        var textRange = bp2textRange({cont:sc, offset:so});
+        textRange.setEndPoint('EndToEnd', bp2textRange({cont:ec, offset:eo}));
         return textRange;
       }
     };
