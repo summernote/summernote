@@ -594,6 +594,11 @@
       }(aCmd[idx]);
     }
 
+    this.formatBlock = function(welEditable, sValue) {
+      document.execCommand("FormatBlock", false,
+                           bMSIE ? "<" + sValue + ">" : sValue);
+    };
+
     this.fontSize = function(welEditable, sValue) {
       recordUndo(welEditable);
       document.execCommand('fontSize', false, 3);
