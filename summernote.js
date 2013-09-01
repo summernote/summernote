@@ -1500,10 +1500,10 @@
       
       //04. create Toolbar
       var sToolbar = '';
-      for (var idx in aToolbarSetting) {
+      for (var idx = 0, sz = aToolbarSetting.length; idx < sz; idx ++) {
         var group = aToolbarSetting[idx];
         sToolbar += '<div class="note-' + group[0] + ' btn-group">';
-        for (var i in group[1]) {
+        for (var i = 0, szGroup = group[1].length; i < szGroup; i++) {
           sToolbar += aToolbarItem[group[1][i]];
         }
         sToolbar += '</div>';
