@@ -14,14 +14,10 @@
    * func utils (for high-order func's arg)
    */
   var func = function() {
-    var eq = function(nodeA) {
-      return function(nodeB) { return nodeA === nodeB; };
-    };
-    var eq2 = function(nodeA, nodeB) { return nodeA === nodeB; };
+    var eq = function(elA) { return function(elB) { return elA === elB; }; };
+    var eq2 = function(elA, elB) { return elA === elB; };
     var fail = function() { return false; };
-    var not = function(f) { return function() {
-      return !f.apply(f, arguments);
-    }};
+    var not = function(f) { return function() { return !f.apply(f, arguments); }};
     var self = function(a) { return a; }
     return { eq: eq, eq2: eq2, fail: fail, not: not, self: self };
   }();
@@ -1632,3 +1628,25 @@
     }
   });
 })(jQuery); // jQuery
+
+//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
+if ('function' !== typeof Array.prototype.reduce) {
+  Array.prototype.reduce = function(callback, opt_initialValue) {
+    'use strict';
+    var idx, value, length = this.length >>> 0, isValueSet = false;
+    if (1 < arguments.length) { value = opt_initialValue, isValueSet = true; }
+    for (idx = 0; length > idx; ++idx) {
+      if (this.hasOwnProperty(idx)) {
+        if (isValueSet) {
+          value = callback(value, this[idx], idx, this);
+        } else {
+          value = this[idx], isValueSet = true;
+        }
+      }
+    }
+    if (!isValueSet) {
+      throw new TypeError('Reduce of empty array with no initial value');
+    }
+    return value;
+  };
+}

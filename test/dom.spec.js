@@ -139,6 +139,10 @@ test('dom.fromOffsetPath', function() {
   });
 });
 
+var equalsToUpperCase = function(actual, expected, comment) {
+   ok(actual.toUpperCase() == expected.toUpperCase(), comment);
+};
+
 test('dom.split', function() {
   var $cont, $b, $u, $s, $i;
 
@@ -146,58 +150,58 @@ test('dom.split', function() {
   $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
   $u = $cont.find('u');
   dom.split($cont[0], $u[0], 0);
-  equal($cont.html(), '<b>b</b>', 'splitBy u tag with offset 0');
-  equal($cont.next().html(), '<u>u</u><s>s</s><i>i</i>', 'right hand side');
+  equalsToUpperCase($cont.html(), '<b>b</b>', 'splitBy u tag with offset 0');
+  equalsToUpperCase($cont.next().html(), '<u>u</u><s>s</s><i>i</i>', 'right hand side');
   
   $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
   $u = $cont.find('u');
   dom.split($cont[0], $u[0], 1);
-  equal($cont.html(), '<b>b</b><u>u</u>', 'splitBy u tag with offset 1');
-  equal($cont.next().html(), '<s>s</s><i>i</i>', 'right hand side');
+  equalsToUpperCase($cont.html(), '<b>b</b><u>u</u>', 'splitBy u tag with offset 1');
+  equalsToUpperCase($cont.next().html(), '<s>s</s><i>i</i>', 'right hand side');
   
   $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
   $b = $cont.find('b');
   dom.split($cont[0], $b[0], 0);
-  equal($cont.html(), '', 'splitBy b tag with offset 0 (left edge case)');
-  equal($cont.next().html(), '<b>b</b><u>u</u><s>s</s><i>i</i>', 'right hand side');
+  equalsToUpperCase($cont.html(), '', 'splitBy b tag with offset 0 (left edge case)');
+  equalsToUpperCase($cont.next().html(), '<b>b</b><u>u</u><s>s</s><i>i</i>', 'right hand side');
 
   $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
   $i = $cont.find('i');
   dom.split($cont[0], $i[0], 1);
-  equal($cont.html(), '<b>b</b><u>u</u><s>s</s><i>i</i>', 'splitBy i tag with offset 1 (right edge case)');
-  equal($cont.next().html(), '', 'right hand side');
+  equalsToUpperCase($cont.html(), '<b>b</b><u>u</u><s>s</s><i>i</i>', 'splitBy i tag with offset 1 (right edge case)');
+  equalsToUpperCase($cont.next().html(), '', 'right hand side');
   
   // textNode pivot case
   $cont = $('<div><b>b</b><u>u</u><s>strike</s><i>i</i></div>'); //bustrikei
   $s = $cont.find('s');
   dom.split($cont[0], $s[0].firstChild, 3);
-  equal($cont.html(), '<b>b</b><u>u</u><s>str</s>', 'splitBy s tag with offset 3 (middle case)');
-  equal($cont.next().html(), '<s>ike</s><i>i</i>', 'right hand side');
+  equalsToUpperCase($cont.html(), '<b>b</b><u>u</u><s>str</s>', 'splitBy s tag with offset 3 (middle case)');
+  equalsToUpperCase($cont.next().html(), '<s>ike</s><i>i</i>', 'right hand side');
   
   $cont = $('<div><b>b</b><u>u</u><s>strike</s><i>i</i></div>'); //bustrikei
   $s = $cont.find('s');
   dom.split($cont[0], $s[0].firstChild, 0);
-  equal($cont.html(), '<b>b</b><u>u</u><s></s>', 'splitBy s tag with offset 0 (left edge case)');
-  equal($cont.next().html(), '<s>strike</s><i>i</i>', 'right hand side');
+  equalsToUpperCase($cont.html(), '<b>b</b><u>u</u><s></s>', 'splitBy s tag with offset 0 (left edge case)');
+  equalsToUpperCase($cont.next().html(), '<s>strike</s><i>i</i>', 'right hand side');
 
   $cont = $('<div><b>b</b><u>u</u><s>strike</s><i>i</i></div>'); //bustrikei
   $s = $cont.find('s');
   dom.split($cont[0], $s[0].firstChild, 6);
-  equal($cont.html(), '<b>b</b><u>u</u><s>strike</s>', 'splitBy s tag with offset 6 (right edge case)');
-  equal($cont.next().html(), '<s></s><i>i</i>', 'right hand side');
+  equalsToUpperCase($cont.html(), '<b>b</b><u>u</u><s>strike</s>', 'splitBy s tag with offset 6 (right edge case)');
+  equalsToUpperCase($cont.next().html(), '<s></s><i>i</i>', 'right hand side');
 
   $cont = $('<div><b>b</b><u>u</u><s>strike</s><i>i</i></div>'); //bustrikei
   $s = $cont.find('s');
   dom.split($s[0], $s[0].firstChild, 3);
-  equal($cont.html(), '<b>b</b><u>u</u><s>str</s><s>ike</s><i>i</i>', 'splitBy s tag with offset 3 (2 depth case)');
+  equalsToUpperCase($cont.html(), '<b>b</b><u>u</u><s>str</s><s>ike</s><i>i</i>', 'splitBy s tag with offset 3 (2 depth case)');
 
   $cont = $('<div><b>b</b><u>u</u><s>strike</s><i>i</i></div>'); //bustrikei
   $s = $cont.find('s');
   dom.split($s[0].firstChild, $s[0].firstChild, 3);
-  equal($cont.html(), '<b>b</b><u>u</u><s>strike</s><i>i</i>', 'splitBy s tag with offset 3 (1 depth, textNode case)');
+  equalsToUpperCase($cont.html(), '<b>b</b><u>u</u><s>strike</s><i>i</i>', 'splitBy s tag with offset 3 (1 depth, textNode case)');
 
   $cont = $('<div><span><b>b</b><u>u</u><s>s</s><i>i</i></span></div>'); //busi
   $span = $cont.find('span');
   dom.split($span[0], $span[0], 2);
-  equal($cont.html(), '<span><b>b</b><u>u</u></span><span><s>s</s><i>i</i></span>', 'splitBy span tag with offset 2 (1 depth, element case)');
+  equalsToUpperCase($cont.html(), '<span><b>b</b><u>u</u></span><span><s>s</s><i>i</i></span>', 'splitBy span tag with offset 2 (1 depth, element case)');
 });
