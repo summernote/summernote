@@ -430,7 +430,9 @@
       var nativeRng = nativeRange();
       if (bW3CRangeSupport) {
         nativeRng.insertNode(node);
-      } // TODO: IE8, pasteHTML
+      } else {
+        nativeRng.pasteHTML(node.outerHTML); // NOTE: missing node reference.
+      }
     };
 
     this.toString = function() {
