@@ -634,12 +634,21 @@
         text: rng.toString(),
         url: rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor).href : ""
       }, function(sLinkUrl) {
-        rng.select();
-        recordUndo(welEditable);
-        if (sLinkUrl.toLowerCase().indexOf("http://") !== 0) {
-          sLinkUrl = "http://" + sLinkUrl;
+        rng.select(); recordUndo(welEditable);
+
+        var bProtocol = sLinkUrl.toLowerCase().indexOf("://") !== -1;
+        var sLinkUrlWithProtocol = bProtocol ? sLinkUrl : "http://" + sLinkUrl;
+
+        //IE: createLink when range collapsed.
+        if (bMSIE && rng.isCollapsed()) {
+          rng.insertNode($('<A id="linkAnchor">' + sLinkUrl + '</A>')[0]);
+          var welAnchor = $('#linkAnchor').removeAttr("id")
+                                          .attr('href', sLinkUrlWithProtocol);
+          rng = new Range(welAnchor[0], 0, welAnchor[0], 1);
+          rng.select();
+        } else {
+          document.execCommand('createlink', false, sLinkUrlWithProtocol);
         }
-        document.execCommand('createlink', false, sLinkUrl);
       });
     };
     
@@ -1639,6 +1648,7 @@
   });
 })(jQuery); // jQuery
 
+//Array.prototype.reduce fallback
 //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
 if ('function' !== typeof Array.prototype.reduce) {
   Array.prototype.reduce = function(callback, opt_initialValue) {
