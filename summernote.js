@@ -131,17 +131,20 @@
     // FIXME: nodeA and nodeB must be sorted, use comparePoints later.
     var listBetween = function(nodeA, nodeB) {
       var aNode = [];
-      var elAncestor = commonAncestor(nodeA, nodeB);
-      //TODO: IE8, createNodeIterator
-      var iterator = document.createNodeIterator(elAncestor,
-                                                 NodeFilter.SHOW_ALL, null,
-                                                 false);
-      var node, bStart = false;
-      while (node = iterator.nextNode()) {
-        if (nodeA === node) { bStart = true; }
-        if (bStart) { aNode.push(node); }
-        if (nodeB === node) { break; }
+
+      var bStart = false, bEnd = false;
+      var fnWalk = function(node) {
+        if (!node) { return; } // traverse fisnish
+        if (node === nodeA) { bStart = true; } // start point
+        if (bStart && !bEnd) { aNode.push(node) } // between
+        if (node === nodeB) { bEnd = true; return; } // end point
+
+        for (var idx = 0, sz=node.childNodes.length; idx < sz; idx++) {
+          fnWalk(node.childNodes[idx]);
+        }
       }
+
+      fnWalk(commonAncestor(nodeA, nodeB)); // DFS with commonAcestor.
       return aNode;
     };
 
