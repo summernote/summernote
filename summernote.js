@@ -595,8 +595,8 @@
     }
 
     this.formatBlock = function(welEditable, sValue) {
-      document.execCommand("FormatBlock", false,
-                           bMSIE ? "<" + sValue + ">" : sValue);
+      sValue = bMSIE ? "<" + sValue + ">" : sValue;
+      document.execCommand("FormatBlock", false, sValue);
     };
 
     this.fontSize = function(welEditable, sValue) {

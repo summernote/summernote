@@ -74,19 +74,23 @@ $('#summernote').destroy();
 * OS (Windows, Mac)
 
 ### Upcoming Features
+* Air Mode
+* Responsive Toolbar
+
+#### v0.4 2013-10-01
 * Bootstrap 2.x to Bootstrap 3 Migration
 * Table: Handles(Sizing, Selection) and Popover
-* Responsive Toolbar
-* Air Mode
+* Image Upload
+* support IE8
+
+### Change Log
 
 #### v0.3 2013-09-01
 * `FIXED` bugs(image upload, fontsize, tab, recent color, ...)
 * `ADDED` help dialog(keyboard shortcut)
 * `ADDED` init options(event callbacks, custom toolbar)
-* `ADDED` resizebar
-* `ADDED` support IE8
-
-### Change Log
+* `ADDED` resize bar
+* `ADDED` support IE8 Beta(some range bugs, can't insert Image)
 
 #### v0.2, 2013-08-01
 * `ADDED` undo/redo
