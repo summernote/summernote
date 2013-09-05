@@ -1,5 +1,5 @@
 # Summernote
-Super Simple WYSIWYG Editor on Bootstrap 3.
+Super Simple WYSIWYG Editor on Bootstrap 3.x.x.
 
 [![Build Status](https://secure.travis-ci.org/HackerWins/summernote.png)](http://travis-ci.org/HackerWins/summernote)
 
