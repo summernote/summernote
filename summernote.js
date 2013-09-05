@@ -327,7 +327,7 @@
       var elNode, bCollapseToStart;
 
       if (dom.isText(elCont)) {
-        aPrevText = dom.listPrev(elCont, func.not(dom.isText));
+        var aPrevText = dom.listPrev(elCont, func.not(dom.isText));
         var elPrevCont = list.last(aPrevText).previousSibling;
         elNode =  elPrevCont || elCont.parentNode;
         nOffset += list.sum(list.tail(aPrevText), dom.length);
@@ -342,7 +342,7 @@
         bCollapseToStart = false;
       }
 
-      return {cont: elNode, collapseToStart:bCollapseToStart, offset: nOffset};
+      return {cont: elNode, collapseToStart: bCollapseToStart, offset: nOffset};
     }
 
     var textRange = document.body.createTextRange();
