@@ -1,14 +1,21 @@
 @import "elements.less";
 
+/* Theme Variables
+ ------------------------------------------*/
+@border-color: #a9a9a9;
+@background-color: #f5f5f5;
+
+/* Layout
+ ------------------------------------------*/
 .note-editor {
-  border: 1px solid #a9a9a9;
+  border: 1px solid @border-color;
   
   //toolbar
   .note-toolbar {
     padding: 5px;
     margin: 0;
-    background-color: #f5f5f5;
-    border-bottom: 1px solid #a9a9a9;
+    background-color: @background-color;
+    border-bottom: 1px solid @border-color;
     
     .note-table {
       .dropdown-menu {
@@ -60,11 +67,10 @@
       }
       .dropdown-menu {
         min-width: 290px;
-        padding: 5px;
         .btn-group {
-          margin-left: 0px;
+          margin: 0;
           &:first-child {
-            margin-right: 5px;
+            margin: 0 5px;
           }
 
           .note-palette-title {
@@ -76,7 +82,7 @@
     
     .note-para {
       .dropdown-menu {
-        min-width: 145px;
+        min-width: 153px;
         padding: 5px;
       }
       
@@ -87,16 +93,16 @@
   }
 
   .note-statusbar {
-    background-color: #f5f5f5;
+    background-color: @background-color;
     .note-resizebar {
       height: 8px;
       width: 100%;
-      border-top: 1px solid #a9a9a9;
+      border-top: 1px solid @border-color;
       cursor: s-resize;
       .note-icon-bar {
         width: 20px;
         margin: 1px auto;
-        border-top: 1px solid #a9a9a9;
+        border-top: 1px solid @border-color;
       }
     }
   }
@@ -114,6 +120,9 @@
         text-overflow: ellipsis;
         white-space: nowrap; /* for FF */ 
         vertical-align: middle; /* for FF */
+      }
+      .btn-group+.btn-group {
+        margin-left: 5px;
       }
     }
     & .arrow {
@@ -195,6 +204,9 @@
 
   // dialog
   .note-dialog {
+    &>div {
+      display: none; /* BS2's hide pacth. */
+    }
     .note-image-dialog {
       .note-dropzone {
         min-height: 200px;
@@ -209,8 +221,16 @@
       @note-shortcut-hl: #dd0;
       font-size: 12px;
       color: white;
+      .modal-content {
+        background: transparent;
+        border: 1px solid white;
+        .box-shadow(none);
+        .rounded(5px);
+      }
+
+      /* BS2's background pacth. */
       background: transparent;
-      border: 1px solid white;
+      border: none;
 
       a {
         font-size: 12px;
@@ -285,7 +305,8 @@
   
   // buttons for toolbar and popover
   .btn-sm {
-    min-height: 30px;
+    min-height: 33px;
+    font-size: 14px;
   }
   
   // color palette for toolbar and popover

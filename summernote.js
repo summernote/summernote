@@ -838,7 +838,7 @@
       var welDropzone = welDialog.find('.note-dropzone'),
           welImageInput = welDialog.find('.note-image-input');
 
-      welImageDialog.on('shown', function(e) {
+      welImageDialog.on('shown.bs.modal', function(e) {
         welDropzone.on('dragenter dragover dragleave', false);
         welDropzone.on('drop', function(e) {
           hDropImage(e); welImageDialog.modal('hide');
@@ -847,7 +847,7 @@
           fnInsertImages(this.files); $(this).val('');
           welImageDialog.modal('hide');
         });
-      }).on('hidden', function(e) {
+      }).on('hidden.bs.modal', function(e) {
         welDropzone.off('dragenter dragover dragleave drop');
         welImageInput.off('change');
       }).modal('show');
@@ -859,7 +859,7 @@
           welLinkUrl = welLinkDialog.find('.note-link-url'),
           welLinkBtn = welLinkDialog.find('.note-link-btn');
 
-      welLinkDialog.on('shown', function(e) {
+      welLinkDialog.on('shown.bs.modal', function(e) {
         welLinkText.html(linkInfo.text);
         welLinkUrl.val(linkInfo.url).keyup(function(event) {
           if (welLinkUrl.val()) {
@@ -875,9 +875,9 @@
           callback(welLinkUrl.val());
           event.preventDefault();
         });
-      }).on('hidden', function(e) {
+      }).on('hidden.bs.modal', function(e) {
         welLinkUrl.off('keyup');
-        welLinkDialog.off('shown hidden');
+        welLinkDialog.off('shown.bs.modal hidden.bs.modal');
         welLinkBtn.off('click');
       }).modal('show');
     };
@@ -1405,43 +1405,60 @@
                          '</table>';
 
     var sDialog = '<div class="note-dialog">' +
-                    '<div class="note-image-dialog modal hide in" aria-hidden="false">' +
-                      '<div class="modal-header">' +
-                        '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" tabindex="-1">×</button>' +
-                        '<h4>Insert Image</h4>' +
-                      '</div>' +
-                      '<div class="modal-body">' +
-                        '<div class="row-fluid">' +
-                          '<div class="note-dropzone span12">Drag an image here</div>' +
-                          '<div>or if you prefer...</div>' +
-                          '<input class="note-image-input" type="file" class="note-link-url" type="text" />' +
+                    '<div class="note-image-dialog modal" aria-hidden="false">' +
+                      '<div class="modal-dialog">' +
+                        '<div class="modal-content">' +
+                          '<div class="modal-header">' +
+                            '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" tabindex="-1">×</button>' +
+                            '<h4>Insert Image</h4>' +
+                          '</div>' +
+                          '<div class="modal-body">' +
+                            '<div class="row-fluid">' +
+                              '<div class="note-dropzone span12">Drag an image here</div>' +
+                              '<div>or if you prefer...</div>' +
+                              '<input class="note-image-input" type="file" class="note-link-url" type="text" />' +
+                            '</div>' +
+                          '</div>' +
                         '</div>' +
                       '</div>' +
                     '</div>' +
-                    '<div class="note-link-dialog modal hide in" aria-hidden="false">' +
-                      '<div class="modal-header">' +
-                        '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" tabindex="-1">×</button>' +
-                        '<h4>Edit Link</h4>' +
-                      '</div>' +
-                      '<div class="modal-body">' +
-                        '<div class="row-fluid">' +
-                          '<label>Text to display</label>' +
-                          '<span class="note-link-text input-xlarge uneditable-input" />' +
-                          '<label>To what URL should this link go?</label>' +
-                          '<input class="note-link-url span12" type="text" />' +
+                    '<div class="note-link-dialog modal" aria-hidden="false">' +
+                      '<div class="modal-dialog">' +
+                        '<div class="modal-content">' +
+                          '<div class="modal-header">' +
+                            '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" tabindex="-1">×</button>' +
+                            '<h4>Edit Link</h4>' +
+                          '</div>' +
+                          '<div class="modal-body">' +
+                            '<div class="row-fluid">' +
+
+                            '<div class="form-group">' +
+                              '<label>Text to display</label>' +
+                              '<span class="note-link-text form-control input-xlarge uneditable-input" />' +
+                            '</div>' +
+                            '<div class="form-group">' +
+                              '<label>To what URL should this link go?</label>' +
+                              '<input class="note-link-url form-control span12" type="text" />' +
+                            '</div>' +
+                            '</div>' +
+                          '</div>' +
+                          '<div class="modal-footer">' +
+                            '<a href="#" class="btn disabled note-link-btn" disabled="disabled">Link</a>' +
+                          '</div>' +
                         '</div>' +
                       '</div>' +
-                      '<div class="modal-footer">' +
-                        '<a href="#" class="btn disabled note-link-btn" disabled="disabled">Link</a>' +
-                      '</div>' +
                     '</div>' +
-                    '<div class="note-help-dialog modal hide in" aria-hidden="false">' +
-                      '<div class="modal-body">' +
-                        '<div class="modal-background">' +
-                        '<a class="modal-close pull-right" data-dismiss="modal" aria-hidden="true" tabindex="-1">Close</a>' +
-                        '<div class="title">Keyboard shortcuts</div>' +
-                        sShortcutTable +
-                        '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote v0.3</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
+                    '<div class="note-help-dialog modal fade" aria-hidden="false">' +
+                      '<div class="modal-dialog">' +
+                        '<div class="modal-content">' +
+                          '<div class="modal-body">' +
+                            '<div class="modal-background">' +
+                            '<a class="modal-close pull-right" data-dismiss="modal" aria-hidden="true" tabindex="-1">Close</a>' +
+                            '<div class="title">Keyboard shortcuts</div>' +
+                            sShortcutTable +
+                            '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote v0.3</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
+                          '</div>' +
+                        '</div>' +
                       '</div>' +
                     '</div>' +
                   '</div>';
