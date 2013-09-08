@@ -1,207 +1,203 @@
 /* Body and structure
 -------------------------------------------------- */
-.hero-unit {
-    padding-bottom: 5px;
-    background-color: #F3F3F3;
-    border: 1px solid #ddd;
-    text-align: center;
+body { padding-top: 50px; }
+
+.jumbotron {
+  padding-top: 20px;
+  background-color: #f7f5fa;
+  border: 1px solid #ddd;
+  text-align: center;
 }
 @media (max-width: 979px) {
-    .hero-unit {
-        margin: 0 1em;
-    }
+  .jumbotron {
+    margin: 0 1em;
+  }
 }
 @media (max-width: 767px) {
-    .hero-unit {
-        padding: 1em;
-        margin: 0;
-    }
+  .jumbotron {
+    padding: 1em;
+    margin: 0;
+  }
 }
 @media (max-width: 400px) {
-    .hero-unit {
-        padding: 0.5em;
-    }
+  .jumbotron {
+    padding: 0.5em;
+  }
 }
 
-
-.brand {
-    border-right: 1px solid rgba(0,0,0,0.2);
+.nav-stacked {
+  background-color: #f7f5fa;
 }
-
-@media (max-width: 979px) {
-    .brand {
-        border-right: 0;
-    }
-}
-
 
 /* Faded out hr */
 hr.soften {
-    height: 1px;
-    margin: 70px 0;
-    background-image: -webkit-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
-    background-image:    -moz-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
-    background-image:     -ms-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
-    background-image:      -o-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
-    border: 0;
+  height: 1px;
+  margin: 70px 0;
+  background-image: -webkit-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
+  background-image:    -moz-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
+  background-image:     -ms-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
+  background-image:      -o-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,.1), rgba(0,0,0,0));
+  border: 0;
 }
 
 
 /* Base class
 ------------------------- */
-.hero-unit h1 {
-    font-size: 4.8em;
-    font-weight: bold;
-    letter-spacing: -1px;
-    line-height: 1;
-    text-shadow: 2px 2px 2px rgba(150, 150, 150, 2);
+.jumbotron h1 {
+  font-size: 4.8em;
+  font-weight: bold;
+  letter-spacing: -1px;
+  line-height: 1;
+  text-shadow: 2px 2px 2px rgba(150, 150, 150, 2);
 
-    -webkit-transition-property: font-size;
-    -moz-transition-property: font-size;
-    transition-property: font-size;
-    -webkit-transition-duration: 0.5s, 0.5s;
-    -moz-transition-duration: 0.5s, 0.5s;
-    transition-duration: 0.5s, 0.5s;
+  -webkit-transition-property: font-size;
+  -moz-transition-property: font-size;
+  transition-property: font-size;
+  -webkit-transition-duration: 0.5s, 0.5s;
+  -moz-transition-duration: 0.5s, 0.5s;
+  transition-duration: 0.5s, 0.5s;
 }
 
 @media (max-width: 767px) {
-    .hero-unit h1 {
-        font-size: 3.0em;
-    }
+  .jumbotron h1 {
+    font-size: 3.0em;
+  }
 }
 @media (max-width: 400px) {
-    .hero-unit h1 {
-        font-size: 2.0em;
+  .jumbotron h1 {
+    font-size: 2.0em;
 
-    }
+  }
 }
 
-.hero-unit p {
-    font-size: 24px;
-    font-weight: 300;
-    line-height: 1.25;
-    margin-bottom: 30px;
+.jumbotron p {
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 1.25;
+  margin-bottom: 30px;
 }
 
 /* Download button */
 .download {
-    padding: 2em 0;
+  padding: 2em 0;
 }
 
 .download .btn {
-    padding: 19px 24px;
-    font-size: 24px;
-    font-weight: 200;
-    color: #fff;
-    border: 0;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
-    -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
-    -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
-    -webkit-transition: none;
-    -moz-transition: none;
-    transition: none;
+  padding: 19px 24px;
+  font-size: 24px;
+  font-weight: 200;
+  color: #fff;
+  border: 0;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
+  -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
+  -webkit-transition: none;
+  -moz-transition: none;
+  transition: none;
 }
 .download .btn:hover {
-    -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
-    -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
+  -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
+  -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
 }
 .download .btn:active {
-    -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
-    -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
-    box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
+  -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
+  -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
 }
-
 
 /* Subhead (other pages)
 ------------------------- */
 .subhead {
-    text-align: left;
-    padding: 30px 0;
+  text-align: left;
+  padding: 15px 20px;
 }
 .subhead h1 {
-    font-size: 60px;
+  font-size: 60px;
 }
 .subhead p {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 .subhead .navbar {
-    display: none;
+  display: none;
 }
 
-@media (min-width: 980px) {
-    .subhead {
-        margin-top: 45px;
-    }
+.prettyprint .linenums {
+  margin: 0; /* BS2's prettyprint patch */
 }
 
 .about-pic {
-    max-width: 200px;
-    margin: 2em;
+  max-width: 200px;
+  margin: 2em;
 }
 
 .contribute .thumbnail {
-    border: none;
-    box-shadow: none;
-    padding-top: 1.5em;
+  border: none;
+  box-shadow: none;
+  padding-top: 1.5em;
 }
 
 .contribute .thumbnail img {
-    padding-bottom: 0.5em;
-    max-width: 150px;
+  padding-bottom: 0.5em;
+  max-width: 150px;
+}
+
+.label.label-info {
+  font-size: 10px;
 }
 
 /* Footer
 -------------------------------------------------- */
 
 .footer {
-    text-align: center;
-    padding: 30px 0;
-    margin-top: 70px;
-    border-top: 1px solid #e5e5e5;
-    background-color: #f5f5f5;
+  text-align: center;
+  padding: 30px 0;
+  margin-top: 70px;
+  border-top: 1px solid #e5e5e5;
+  background-color: #f5f5f5;
 }
 .footer p {
-    margin-bottom: 0;
-    color: #777;
+  margin-bottom: 0;
+  color: #777;
 }
 .footer-links {
-    margin: 10px 0;
+  margin: 10px 0;
 }
 .footer-links li {
-    display: inline;
-    padding: 0 2px;
+  display: inline;
+  padding: 0 2px;
 }
 .footer-links li:first-child {
-    padding-left: 0;
+  padding-left: 0;
 }
 
 /* summernote style on hero unit */
-.hero-unit .summernote {
-    font-family: "HelveticaNeue", "Helvetica Neue", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-    line-height: 1.2;
-    color: #333;
-    background-color: #ffffff;
-    text-align: left;
+.jumbotron .summernote {
+  font-family: "HelveticaNeue", "Helvetica Neue", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  line-height: 1.2;
+  color: #333;
+  background-color: #ffffff;
+  text-align: left;
+  padding: 0;
 }
 
-.hero-unit .summernote h1 {
-    font-size: 40px;
+.jumbotron .summernote h1 {
+  font-size: 40px;
 }
 
-.hero-unit .summernote p {
-    font-size: 18px;
-    font-weight: normal;
-    margin: 0;
+.jumbotron .summernote p {
+  font-size: 18px;
+  font-weight: normal;
+  margin: 0;
 }
 
 .summernote h1, .summernote h2, .summernote h3, .summernote h4, .summernote h5, .summernote h6 {
-    margin: 10px 0;
-    font-family: inherit;
-    font-weight: bold;
-    line-height: 1.5;
-    color: inherit;
+  margin: 10px 0;
+  font-family: inherit;
+  font-weight: bold;
+  line-height: 1.5;
+  color: inherit;
 }

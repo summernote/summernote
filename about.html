@@ -13,9 +13,8 @@
   <![endif]-->
   <!-- add library -->
   <script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
-  <link href="//bootswatch.com/2/united/bootstrap.min.css" rel="stylesheet">
-  <link href="//bootswatch.com/2/default/bootstrap-responsive.min.css" rel="stylesheet">
-  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+  <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/cerulean/bootstrap.min.css" rel="stylesheet">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
   <!-- add summernote -->
   <link href="summernote.css" rel="stylesheet">
@@ -28,23 +27,25 @@
 </head>
 <body>
 <!-- navbar -->
-<div class="navbar navbar-fixed-top">
-  <div class="navbar-inner">
-    <div class="container">
-      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+        <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
-      </a>
-      <a class="brand" href="./"><i class="icon-sun"></i> Summernote</a>
-      <div class="nav-collapse collapse" id="main-menu">
-        <ul class="nav" id="main-menu-left">
-          <li><a href="features.html">Features</a></li>
-          <li><a href="example.html">Example</a></li>
-          <li><a href="history.html">History</a></li>
-          <li><a href="about.html">About</a></li>
-        </ul>
-      </div>
+      </button>
+      <a class="navbar-brand" href="./"><i class="icon-sun"></i> Summernote</a>
+    </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="features.html">Features</a></li>
+        <li><a href="example.html">Example</a></li>
+        <li><a href="history.html">History</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
     </div>
   </div>
 </div>
@@ -55,14 +56,14 @@
 <div class="container">
   <!-- body -->
   <div class="row">
-    <div class="span6" style="text-align: center">
+    <div class="col-md-6" style="text-align: center">
       <h3><i class="icon-cogs"></i> Core Developer</h3>
       <p class="lead">Javascript developer</p>
       <img src="http://www.gravatar.com/avatar/47236e140589881bbadb777a44340140.png?size=200" class="img-circle about-pic">
       <h4>Alan <span class="label">(hackerwins)</span></h4>
       <p class="text-info">wanna be a hacker</p>
     </div>
-    <div class="span6" style="text-align: center">
+    <div class="col-md-6" style="text-align: center">
       <h3><i class="icon-bullhorn"></i> Managing Supporter</h3>
       <p class="lead">Web developer</p>
       <img src="./images/pic_tj.jpeg" class="img-circle about-pic">
@@ -74,43 +75,43 @@
   <hr class="soften">
 
   <div class="row">
-    <div class="span12 contribute">
+    <div class="contribute">
       <h3><i class="icon-retweet"></i> Contributors</h3>
-      <ul class="thumbnails">
-        <li class="span3">
+      <div class="row">
+        <div class="col-sm-4">
           <div class="thumbnail">
             <img class="img-circle" src="https://si0.twimg.com/profile_images/3183499035/54cd9e3e8bd5abcfa7bd7918fb4d429a.png">
             <p>Thanks to <a href="http://twitter.com/lqez" target="_blank"><span class="p-nickname" dir="ltr">@<b>lqez</b></span></a> for advice and developing <a href="https://github.com/lqez/django-summernote" target="_blank">django-summernote</a>, the best way to use summernote on django.</p>
           </div>
-        </li>
-        <li class="span3">
+        </div>
+        <div class="col-sm-4">
           <div class="thumbnail">
             <img class="img-circle" src="https://si0.twimg.com/profile_images/378800000142494725/67e94a0ea61755f343cdd816aa423b98.png">
             <p>Thanks to <a href="http://twitter.com/blueiur" target="_blank"><span class="p-nickname" dir="ltr">@<b>blueiur</b></span></a> for excellent pull requests about core logic.</p>
           </div>
-        </li>
-        <li class="span3">
+        </div>
+        <div class="col-sm-4">
           <div class="thumbnail">
             <img src="https://www.gravatar.com/avatar/4e68f953e9af529c38a562f625a608fb?s=200">
             <p>Thanks to <a href="http://twitter.com/rorlab" target="_blank"><span class="p-nickname" dir="ltr">@<b>rorlab</b></span></a> for good idea and developing <a href="https://github.com/rorlab/summernote-rails" target="_blank">summernote-rails</a>&nbsp;gem, the best way to use summernote on ruby on rails.</p>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
   </div>
 
   <hr class="soften">
 
   <div class="row about">
-    <div class="span4">
+    <div class="col-md-4">
       <h3><i class="icon-user"></i> About Us</h3>
       <p>We planed to make web editor for website integration together. so we co-worked remained time for this project.</p>
     </div>
-    <div class="span4">
+    <div class="col-md-4">
       <h3><i class="icon-road"></i> Our Goal</h3>
       <p>Save the web developers from my own affordable WYSIWYG editor difficulties.</p>
     </div>
-    <div class="span4">
+    <div class="col-md-4">
       <h3><i class="icon-briefcase"></i> Suggestion</h3>
       <p>Help us for coarse english with any suggestion for better code on GitHub <a target="_blank" href="https://github.com/HackerWins/summernote/issues">Issues</a>.</p>
     </div>

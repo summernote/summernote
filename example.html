@@ -13,9 +13,8 @@
   <![endif]-->
   <!-- add library -->
   <script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
-  <link href="//bootswatch.com/2/united/bootstrap.min.css" rel="stylesheet">
-  <link href="//bootswatch.com/2/default/bootstrap-responsive.min.css" rel="stylesheet">
-  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+  <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/cerulean/bootstrap.min.css" rel="stylesheet">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
   <!-- add summernote -->
   <link href="summernote.css" rel="stylesheet">
@@ -28,23 +27,25 @@
 </head>
 <body>
 <!-- navbar -->
-<div class="navbar navbar-fixed-top">
-  <div class="navbar-inner">
-    <div class="container">
-      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+        <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
-      </a>
-      <a class="brand" href="./"><i class="icon-sun"></i> Summernote</a>
-      <div class="nav-collapse collapse" id="main-menu">
-        <ul class="nav" id="main-menu-left">
-          <li><a href="features.html">Features</a></li>
-          <li><a href="example.html">Example</a></li>
-          <li><a href="history.html">History</a></li>
-          <li><a href="about.html">About</a></li>
-        </ul>
-      </div>
+      </button>
+      <a class="navbar-brand" href="./"><i class="icon-sun"></i> Summernote</a>
+    </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="features.html">Features</a></li>
+        <li><a href="example.html">Example</a></li>
+        <li><a href="history.html">History</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
     </div>
   </div>
 </div>
@@ -55,8 +56,8 @@
 <div class="container">
 
   <div class="row">
-    <div class="span3">
-      <ul class="nav nav-tabs nav-stacked" style="padding-right: 2em">
+    <div class="col-sm-3">
+      <ul class="nav nav-stacked" style="padding-right: 2em">
         <li><a href="#multiple">Multiple Editor</a></li>
         <li><a href="#click2edit">Click to Edit</a></li>
         <li><a href="#integration">Server Integration</a></li>
@@ -66,7 +67,7 @@
         -->
       </ul>
     </div>
-    <div class="span9">
+    <div class="col-sm-9">
       <section id="multiple">
         <h2>Multiple Editor</h2>
         <p>To display multiple editors on a page, you need to place two or more div elements on your page.</p>

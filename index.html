@@ -13,9 +13,8 @@
   <![endif]-->
   <!-- add library -->
   <script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
-  <link href="//bootswatch.com/2/united/bootstrap.min.css" rel="stylesheet">
-  <link href="//bootswatch.com/2/default/bootstrap-responsive.min.css" rel="stylesheet">
-  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+  <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/cerulean/bootstrap.min.css" rel="stylesheet">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
   <!-- add summernote -->
   <link href="summernote.css" rel="stylesheet">
@@ -28,27 +27,29 @@
 </head>
 <body>
 <!-- navbar -->
-<div class="navbar navbar-fixed-top">
-  <div class="navbar-inner">
-    <div class="container">
-      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+        <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
-      </a>
-      <a class="brand" href="./"><i class="icon-sun"></i> Summernote</a>
-      <div class="nav-collapse collapse" id="main-menu">
-        <ul class="nav" id="main-menu-left">
-          <li><a href="features.html">Features</a></li>
-          <li><a href="example.html">Example</a></li>
-          <li><a href="history.html">History</a></li>
-          <li><a href="about.html">About</a></li>
-        </ul>
-      </div>
+      </button>
+      <a class="navbar-brand" href="./"><i class="icon-sun"></i> Summernote</a>
+    </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="features.html">Features</a></li>
+        <li><a href="example.html">Example</a></li>
+        <li><a href="history.html">History</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
     </div>
   </div>
 </div>
-<div class="hero-unit">
+<div class="jumbotron">
   <h1>Summernote</h1>
   <p class="marketing-byline">Super Simple WYSIWYG Editor on Bootstrap</p>
   <!-- social badges -->
@@ -80,23 +81,23 @@
   <hr class="soften">
 
   <div class="row about">
-    <div class="span4">
+    <div class="col-sm-4">
       <h3><i class="icon-globe"></i> Worldwide Bootstrap</h3>
-      <p>Meet the world's best WYSIWYG editor on bootstrap</p>
+      <p>Meet the world's best WYSIWYG editor on bootstrap. Summernote support both bootstrap <strong>3.x.x and 2.x.x</strong>.</p>
     </div>
-    <div class="span4">
+    <div class="col-sm-4">
       <h3><i class="icon-file-alt"></i> Easy to Install</h3>
       <p>Simply download a zip file and add your html folder with Bootstrap.</p>
     </div>
-    <div class="span4">
+    <div class="col-sm-4">
       <h3><i class="icon-github"></i> Open Source</h3>
       <p>Summernote is licensed under MIT and maintained by the community on <a target="_blank" href="https://github.com/hackerwins/summernote">GitHub</a>.</p>
     </div>
-    <div class="span4">
+    <div class="col-sm-4">
       <h3><i class="icon-pencil"></i> Smart Shortcuts</h3>
       <p>Bind your favorite keyboard shortcut easily, We provide default common shortcut.</p>
     </div>
-    <div class="span4">
+    <div class="col-sm-4">
       <h3><i class="icon-wrench"></i> Integrate Backend</h3>
       <p>Integrate it with any back-end technology. Examples available in PHP and nodejs.</p>
     </div>
@@ -105,10 +106,10 @@
   <hr class="soften">
 
   <div class="row">
-    <div class="span6">
+    <div class="col-sm-6">
       <h3><i class="icon-cogs"></i> Trend-leading Features</h3>
       <ul>
-        <li>Lightweight (js+css: 37Kb)</li>
+        <li>Lightweight (js+css: 41Kb)</li>
         <li>Smart User Interaction</li>
         <!-- Upcomming Features
         <li>Painless File upload</li>
@@ -120,7 +121,7 @@
         <li>Internet Explorer 9+ (IE8 support coming soon)</li>
       </ul>
     </div>
-    <div class="span6">
+    <div class="col-sm-6">
       <h3><i class="icon-bullhorn"></i> Guys say it's awesome</h3>
       <a class="twitter-timeline" height="260" width="640" data-chrome="noheader nofooter" href="https://twitter.com/search?q=summernote" data-widget-id="356967600934240256">"summernote" Tweets</a>
       <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
