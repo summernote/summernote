@@ -101,7 +101,7 @@
       <section>
         <h2 id="installation">Installation</h2>
         <h3 id="installation-doctype">00. Requires HTML5 doctype</h3>
-        <p>Bootstrap makes use of certain HTML elements and CSS properties that require the use of the HTML5 doctype. Include it at the beginning of all your projects.</p>
+        <p>Bootstrap uses certain HTML elements and CSS properties which require HTML5 doctype. Include <code>&lt;!DOCTYPE html&gt;</code> in the beginning of all your projects.</p>
         <pre class="prettyprint lang-html linenums">
 &lt;!DOCTYPE html&gt;
 &lt;html lang="en"&gt;
@@ -110,7 +110,7 @@
 </pre>
         <h3 id="installation-include">01. Include js/css</h3>
         <p>Summernote uses open source libraries(jQuery, Bootstrap, font-awesome).</p>
-        <p>Include Following code into head tag of your HTML:</p>
+        <p>Include the Following code in your HTML <code>&lt;HTML&gt;</code> tag</p>
         <pre class="prettyprint lang-html linenums">
 &lt;!-- include libries(jQuery, bootstrap, fontawesome) --&gt;
 &lt;script src="//code.jquery.com/jquery-1.9.1.min.js"&gt;&lt;/script&gt; 
@@ -121,13 +121,13 @@
 &lt;!-- include summernote css/js--&gt;
 &lt;link href="summernote.css" /&gt;
 &lt;script src="summernote.min.js"&gt;&lt;/script&gt;</pre>
-        <p>If your summernote download is placed in a different folder, don't forget to change file's paths.</p>
-        <h3 id="installation-target">02. Target elements</h3>
-        <p>And place div tag to somewhere in the body tag. This element will be placed by the visual representation of the summernote.</p>
+        <p>Don't forget to change the file's path if you downloaded summernote in a different folders.</p>
+        <h3 id="installation-target">02. Insert</h3>
+        <p>Add <code>div</code> into <code>body</code>; this targeted element will later be rendered to summernote editing tool.</p>
         <pre class="prettyprint lang-html linenums">
 &lt;div id="summernote"&gt;Hello Summernote&lt;/div&gt;</pre>
         <h3 id="installation-summernote">03. Run summernote</h3>
-        <p>Finally, run below script after document ready.</p>
+        <p>Run the script below when document is ready!</p>
         <pre class="prettyprint lang-javascript linenums">
 $(document).ready(function() {
   $('#summernote').summernote();
@@ -210,7 +210,7 @@ $(document).ready(function() {
       <hr/>
       <section>
         <h2 id="keyboard">Keyboard shortcuts</h2>
-        <p>We provide default common shortcut.</p>
+        <p>We provide default shortcut.</p>
         <table class="table table-hover table-bordered">
           <thead>
             <tr>
