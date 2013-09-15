@@ -122,7 +122,9 @@ var save = function() {
           <button id="save" class="btn btn-primary" onclick="save()" type="button">Save</button>
         </p>
         <p></p>
-        <div class="click2edit">click2edit</div>
+        <div class="click2edit"><pre><code class="javascript">var edit = function() {
+  $('.click2edit').summernote();
+};</code></pre></div>
         <script>
           var edit = function() {
             $('.click2edit').summernote({focus: true});
