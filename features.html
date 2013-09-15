@@ -11,26 +11,30 @@
   <!--[if lt IE 9]>
     <script src="//twitter.github.io/bootstrap/assets/js/html5shiv.js"></script>
   <![endif]-->
-  <!-- add library -->
+  <!-- include jquery and bootstrap and font-awesome -->
   <script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
   <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/cerulean/bootstrap.min.css" rel="stylesheet">
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
-  <!-- add summernote -->
+
+  <!-- include summernote -->
   <link href="summernote.css" rel="stylesheet">
   <script src="summernote.min.js"></script>
-  <!-- add user custom -->
+
+  <!-- include page style and script -->
   <link href="page.css" rel="stylesheet">
+  <script type="text/javascript" src="page.js"> </script>
+
   <!-- google code prettify -->
   <link href="prettify.css" rel="stylesheet">
   <script src="prettify.js"></script>
 </head>
 <body>
 <!-- navbar -->
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+<header class="navbar navbar-default navbar-fixed-top bs-page-navbar" role="banner">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -39,7 +43,7 @@
       <a class="navbar-brand" href="./"><i class="icon-sun"></i> Summernote</a>
     </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse navbar-ex1-collapse">
+    <div class="collapse navbar-collapse navbar-collapse" role="navigation">
       <ul class="nav navbar-nav">
         <li><a href="features.html">Features</a></li>
         <li><a href="example.html">Example</a></li>
@@ -48,29 +52,27 @@
       </ul>
     </div>
   </div>
-</div>
+</header>
 <div class="subhead container">
   <h2>Features</h2>
   <p class="muted">Provide essential features to working our web site. not digging in the codes not with trials and fails</p>
 </div>
 <div class="container">
-
   <div class="row">
-    <div class="col-sm-3">
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#install">Installation</a></li>
-        <li><a href="#api">API</a></li>
-        <li><a href="#callbacks">Callbacks</a></li>
-        <li><a href="#keyboard">Keyboard shortcuts</a></li>
-        <!-- upcoming features
-        <li><a href="#toolbar">Toolbar</a></li>
-        <li><a href="#image">Image upload</a></li>
-        <li><a href="#local">Browser Storage</a></li>
-        -->
-        <li><a href="example.html#integration">Backend Integration</a></li>
-      </ul>
+    <div class="col-md-3">
+      <div class="bs-page-sidebar" role="complementary">
+        <ul class="nav nav-pills nav-stacked">
+          <li><a href="#install">Installation</a></li>
+          <li><a href="#api">API</a></li>
+          <li><a href="#callbacks">Callbacks</a></li>
+          <li><a href="#keyboard">Keyboard shortcuts</a></li>
+          <!-- upcoming features
+            <li><a href="#image">Image upload</a></li>
+          -->
+        </ul>
+      </div>
     </div>
-    <div class="col-sm-9">
+    <div class="col-md-9" role="main">
       <section id="install">
         <h2>Installation</h2>
         <h4>00. Requires HTML5 doctype</h4>
@@ -324,7 +326,7 @@ $(document).ready(function() {
     </div>
   </div>
 </div>
-<footer class="footer">
+<footer class="footer bs-page-footer" role="contentinfo">
   <div class="container">
     <p><i class="icon-sun"></i> Summernote v0.3 · Created and Maintained by <a href="https://twitter.com/hackerwins">Alan</a> and <a href="https://twitter.com/soomtong">TJ</a></p>
     <p>Based on <a href="http://twitter.github.io/bootstrap/">Bootstrap</a> and <a href="http://jquery.com/">jQuery</a>. Icons from <a href="http://fontawesome.io/">Font Awesome</a>. Theme from <a href="http://bootswatch.com">bootswatch</a>.</p>

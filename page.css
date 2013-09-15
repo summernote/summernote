@@ -149,6 +149,54 @@ hr.soften {
   font-size: 10px;
 }
 
+/* sidebar with affix
+-------------------------------------------------- */
+
+/* By default it's not affixed in mobile views, so undo that */
+.bs-page-sidebar.affix {
+  position: static;
+}
+
+/* Show and affix the side nav when space allows it */
+@media screen and (min-width: 992px) {
+  .bs-page-sidebar.affix,
+  .bs-page-sidebar.affix-bottom {
+    width: 213px;
+  }
+
+  .bs-page-sidebar.affix {
+    position: fixed;
+    top: 70px;
+  }
+
+  .bs-page-sidebar.affix-bottom {
+    position: absolute;
+  }
+
+  .bs-page-sidebar.affix-bottom .nav,
+  .bs-page-sidebar.affix .nav {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  /* Widen the fixed sidebar again */
+  .bs-page-sidebar.affix-bottom,
+  .bs-page-sidebar.affix {
+    width: 270px;
+  }
+}
+
+/* Body
+-------------------------------------------------- */
+
+/* Janky fix for preventing navbar from overlapping */
+section {
+  margin-top: -45px;
+  padding-top: 50px;
+}
+
 /* Footer
 -------------------------------------------------- */
 
