@@ -1443,7 +1443,7 @@
                             '</div>' +
                           '</div>' +
                           '<div class="modal-footer">' +
-                            '<a href="#" class="btn disabled note-link-btn" disabled="disabled">Link</a>' +
+                            '<button href="#" class="btn btn-primary note-link-btn disabled" disabled="disabled">Link</button>' +
                           '</div>' +
                         '</div>' +
                       '</div>' +
