@@ -245,6 +245,10 @@ h2[id], h3[id] {
   padding-top: 50px;
 }
 
+pre code {
+  background: transparent !important;
+}
+
 /* Footer
 -------------------------------------------------- */
 

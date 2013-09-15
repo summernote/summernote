@@ -25,9 +25,9 @@
   <link href="page.css" rel="stylesheet">
   <script type="text/javascript" src="page.js"> </script>
 
-  <!-- google code prettify -->
-  <link href="prettify.css" rel="stylesheet">
-  <script src="prettify.js"></script>
+  <!-- highlight.js -->
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/tomorrow.min.css"/>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/highlight.min.js"></script>
 </head>
 <body>
 <!-- navbar -->
@@ -102,17 +102,14 @@
         <h2 id="installation">Installation</h2>
         <h3 id="installation-doctype">00. Requires HTML5 doctype</h3>
         <p>Bootstrap uses certain HTML elements and CSS properties which require HTML5 doctype. Include <code>&lt;!DOCTYPE html&gt;</code> in the beginning of all your projects.</p>
-        <pre class="prettyprint lang-html linenums">
-&lt;!DOCTYPE html&gt;
+        <pre><code class="xml">&lt;!DOCTYPE html&gt;
 &lt;html lang="en"&gt;
 ...
-&lt;/html&gt;
-</pre>
+&lt;/html&gt;</code></pre>
         <h3 id="installation-include">01. Include js/css</h3>
         <p>Summernote uses open source libraries(jQuery, Bootstrap, font-awesome).</p>
         <p>Include the Following code in your HTML <code>&lt;HTML&gt;</code> tag</p>
-        <pre class="prettyprint lang-html linenums">
-&lt;!-- include libries(jQuery, bootstrap, fontawesome) --&gt;
+        <pre><code class="xml">&lt;!-- include libries(jQuery, bootstrap, fontawesome) --&gt;
 &lt;script src="//code.jquery.com/jquery-1.9.1.min.js"&gt;&lt;/script&gt; 
 &lt;link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.no-icons.min.css"&gt; 
 &lt;script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"&gt;&lt;/script&gt; 
@@ -120,32 +117,30 @@
 
 &lt;!-- include summernote css/js--&gt;
 &lt;link href="summernote.css" /&gt;
-&lt;script src="summernote.min.js"&gt;&lt;/script&gt;</pre>
+&lt;script src="summernote.min.js"&gt;&lt;/script&gt;</code></pre>
         <p>Don't forget to change the file's path if you downloaded summernote in a different folders.</p>
         <h3 id="installation-target">02. Insert</h3>
         <p>Add <code>div</code> into <code>body</code>; this targeted element will later be rendered to summernote editing tool.</p>
-        <pre class="prettyprint lang-html linenums">
-&lt;div id="summernote"&gt;Hello Summernote&lt;/div&gt;</pre>
+        <pre><code class="xml">&lt;div id="summernote"&gt;Hello Summernote&lt;/div&gt;</code></pre>
         <h3 id="installation-summernote">03. Run summernote</h3>
         <p>Run the script below when document is ready!</p>
-        <pre class="prettyprint lang-javascript linenums">
-$(document).ready(function() {
+        <pre><code class="javascript">$(document).ready(function() {
   $('#summernote').summernote();
-});</pre>
+});</code></pre>
       </section>
       <hr/>
       <section>
         <h2 id="api">API</h2>
         <h3 id="api-summernote">Summernote</h3>
         <p>Initialize Summernote</p>
-        <pre class="prettyprint linenums">$('.summernote').summernote();</pre>
+        <pre><code class="javascript">$('.summernote').summernote();</code></pre>
         <p>Initialize Summernote with options</p>
-        <pre class="prettyprint linenums">$('.summernote').summernote({
-  height: 300px, //set height
+        <pre><code class="javascript">$('.summernote').summernote({
+  height: 300,   //set height
   focus: true    //focus
-});</pre>
+});</code></pre>
         <p>and custom toolbar</p>
-        <pre class="prettyprint linenums">$('.summernote').summernote({
+        <pre><code class="javascript">$('.summernote').summernote({
   toolbar: [
     //['insert', ['picture', 'link']], // no insert buttons
     ['table', ['table']],
@@ -157,55 +152,55 @@ $(document).ready(function() {
     ['height', ['height']],
     ['help', ['help']]
   ]
-});</pre>
+});</code></pre>
         <h3 id="api-destory">Destroy</h3>
         <p>Destroy Summernote.</p>
-        <pre class="prettyprint linenums">$('.summernote').destroy();</pre>
+        <pre><code class="javascript">$('.summernote').destroy();</code></pre>
         <h3 id="api-code">get & set Code</h3>
         <p>Get Code.</p>
-        <pre class="prettyprint linenums">var aHTML = $('.summernote').code(); //aHTML: array of strings.</pre>
+        <pre><code class="javascript">var aHTML = $('.summernote').code(); //aHTML: array of strings.</code></pre>
         <p>Set Code.</p>
-        <pre class="prettyprint linenums">$('.summernote').code(sHTML);</pre>
+        <pre><code class="javascript">$('.summernote').code(sHTML);</code></pre>
       </section>
       <hr/>
       <section>
         <h2 id="callbacks">Callbacks</h2>
         <h3 id="callbacks-oninit">oninit</h3>
-        <pre class="prettyprint linenums">$('#summernote').summernote({
+        <pre><code class="javascript">$('#summernote').summernote({
   oninit: function() {
     console.log('Summernote is launched');
   }
-});</pre>
+});</code></pre>
         <h3 id="callbacks-onenter">onenter</h3>
-        <pre class="prettyprint linenums">$('#summernote').summernote({
+        <pre><code class="javascript">$('#summernote').summernote({
   onenter: function(e) {
     console.log('Enter/Return key pressed');
   }
-});</pre>
+});</code></pre>
         <h3 id="callbacks-onfocus">onfocus</h3>
-        <pre class="prettyprint linenums">$('#summernote').summernote({
+        <pre><code class="javascript">$('#summernote').summernote({
   onfocus: function(e) {
     console.log('Editable area is focused');
   }
-});</pre>
+});</code></pre>
         <h3 id="callbacks-onblur">onblur</h3>
-        <pre class="prettyprint linenums">$('#summernote').summernote({
+        <pre><code class="javascript">$('#summernote').summernote({
   onblur: function(e) {
     console.log('Editable area loses focus');
   }
-});</pre>
+});</code></pre>
         <h3 id="callbacks-onkeyup">onkeyup</h3>
-        <pre class="prettyprint linenums">$('#summernote').summernote({
+        <pre><code class="javascript">$('#summernote').summernote({
   onkeyup: function(e) {
     console.log('Key is released:', e.keyCode);
   }
-});</pre>
+});</code></pre>
         <h3 id="callbacks-onkeydown">onkeydown</h3>
-        <pre class="prettyprint linenums">$('#summernote').summernote({
+        <pre><code class="javascript">$('#summernote').summernote({
   onkeydown: function(e) {
     console.log('Key is pressed:', e.keyCode);
   }
-});</pre>
+});</code></pre>
       </section>
       <hr/>
       <section>
@@ -338,13 +333,13 @@ $(document).ready(function() {
       <section id="image">
         <h2>Image upload</h2>
         <p></p>
-        <pre class="prettyprint linenums">hello world</pre>
+        <pre>hello world</pre>
       </section>
 
       <section id="local">
         <h2>use Local storage</h2>
         <p>install</p>
-        <pre class="prettyprint linenums">hello world</pre>
+        <pre>hello world</pre>
 
       </section>
       -->
@@ -360,11 +355,6 @@ $(document).ready(function() {
     <p><a href="https://github.com/HackerWins/summernote">GitHub Project</a> · <a href="https://github.com/HackerWins/summernote/issues">Issues</a></p>
   </div>
 </footer>
-<script type="text/javascript">
-  $(document).ready(function() {
-    prettyPrint();
-  });
-</script>
 <!-- Google Analytics -->
 <script type="text/javascript">
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -374,5 +364,7 @@ $(document).ready(function() {
   ga('create', 'UA-42438082-1', 'github.com');
   ga('send', 'pageview');
 </script>
+<!-- highlight.js -->
+<script>hljs.initHighlightingOnLoad();</script>
 </body>
 </html>
