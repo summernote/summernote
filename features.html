@@ -61,10 +61,35 @@
   <div class="row">
     <div class="col-md-3">
       <div class="bs-page-sidebar" role="complementary">
-        <ul class="nav nav-pills nav-stacked">
-          <li><a href="#install">Installation</a></li>
-          <li><a href="#api">API</a></li>
-          <li><a href="#callbacks">Callbacks</a></li>
+        <ul class="nav">
+          <li>
+            <a href="#installation">Installation</a>
+            <ul class="nav">
+              <li><a href="#installation-doctype">Require html5 doctype</a></li>
+              <li><a href="#installation-include">Include js/css</a></li>
+              <li><a href="#installation-target">Target element</a></li>
+              <li><a href="#installation-summernote">Run summernote</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#api">API</a>
+            <ul class="nav">
+              <li><a href="#api-summernote">summernote</a></li>
+              <li><a href="#api-destory">destory</a></li>
+              <li><a href="#api-code">code</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#callbacks">Callbacks</a>
+            <ul class="nav">
+              <li><a href="#callbacks-oninit">oninit</a></li>
+              <li><a href="#callbacks-onenter">onenter</a></li>
+              <li><a href="#callbacks-onfocus">onfocus</a></li>
+              <li><a href="#callbacks-onblur">onblur</a></li>
+              <li><a href="#callbacks-onkeyup">onkeyup</a></li>
+              <li><a href="#callbacks-onkeydown">onkeydown</a></li>
+            </ul>
+          </li>
           <li><a href="#keyboard">Keyboard shortcuts</a></li>
           <!-- upcoming features
             <li><a href="#image">Image upload</a></li>
@@ -73,9 +98,9 @@
       </div>
     </div>
     <div class="col-md-9" role="main">
-      <section id="install">
-        <h2>Installation</h2>
-        <h4>00. Requires HTML5 doctype</h4>
+      <section>
+        <h2 id="installation">Installation</h2>
+        <h3 id="installation-doctype">00. Requires HTML5 doctype</h3>
         <p>Bootstrap makes use of certain HTML elements and CSS properties that require the use of the HTML5 doctype. Include it at the beginning of all your projects.</p>
         <pre class="prettyprint lang-html linenums">
 &lt;!DOCTYPE html&gt;
@@ -83,7 +108,7 @@
 ...
 &lt;/html&gt;
 </pre>
-        <h4>01. Include js/css</h4>
+        <h3 id="installation-include">01. Include js/css</h3>
         <p>Summernote uses open source libraries(jQuery, Bootstrap, font-awesome).</p>
         <p>Include Following code into head tag of your HTML:</p>
         <pre class="prettyprint lang-html linenums">
@@ -97,11 +122,11 @@
 &lt;link href="summernote.css" /&gt;
 &lt;script src="summernote.min.js"&gt;&lt;/script&gt;</pre>
         <p>If your summernote download is placed in a different folder, don't forget to change file's paths.</p>
-        <h4>02. Target elements</h4>
+        <h3 id="installation-target">02. Target elements</h3>
         <p>And place div tag to somewhere in the body tag. This element will be placed by the visual representation of the summernote.</p>
         <pre class="prettyprint lang-html linenums">
 &lt;div id="summernote"&gt;Hello Summernote&lt;/div&gt;</pre>
-        <h4>03. run summernote</h4>
+        <h3 id="installation-summernote">03. Run summernote</h3>
         <p>Finally, run below script after document ready.</p>
         <pre class="prettyprint lang-javascript linenums">
 $(document).ready(function() {
@@ -109,9 +134,9 @@ $(document).ready(function() {
 });</pre>
       </section>
       <hr/>
-      <section id="api">
-        <h2>API</h2>
-        <h4>Summernote</h4>
+      <section>
+        <h2 id="api">API</h2>
+        <h3 id="api-summernote">Summernote</h3>
         <p>Initialize Summernote</p>
         <pre class="prettyprint linenums">$('.summernote').summernote();</pre>
         <p>Initialize Summernote with options</p>
@@ -133,49 +158,49 @@ $(document).ready(function() {
     ['help', ['help']]
   ]
 });</pre>
-        <h4>Destroy</h4>
+        <h3 id="api-destory">Destroy</h3>
         <p>Destroy Summernote.</p>
         <pre class="prettyprint linenums">$('.summernote').destroy();</pre>
-        <h4>get & set Code</h4>
+        <h3 id="api-code">get & set Code</h3>
         <p>Get Code.</p>
         <pre class="prettyprint linenums">var aHTML = $('.summernote').code(); //aHTML: array of strings.</pre>
         <p>Set Code.</p>
         <pre class="prettyprint linenums">$('.summernote').code(sHTML);</pre>
       </section>
       <hr/>
-      <section id="callbacks">
-        <h2>Callbacks</h2>
-        <h4>oninit</h4>
+      <section>
+        <h2 id="callbacks">Callbacks</h2>
+        <h3 id="callbacks-oninit">oninit</h3>
         <pre class="prettyprint linenums">$('#summernote').summernote({
   oninit: function() {
     console.log('Summernote is launched');
   }
 });</pre>
-        <h4>onenter</h4>
+        <h3 id="callbacks-onenter">onenter</h3>
         <pre class="prettyprint linenums">$('#summernote').summernote({
   onenter: function(e) {
     console.log('Enter/Return key pressed');
   }
 });</pre>
-        <h4>onfocus</h4>
+        <h3 id="callbacks-onfocus">onfocus</h3>
         <pre class="prettyprint linenums">$('#summernote').summernote({
   onfocus: function(e) {
     console.log('Editable area is focused');
   }
 });</pre>
-        <h4>onblur</h4>
+        <h3 id="callbacks-onblur">onblur</h3>
         <pre class="prettyprint linenums">$('#summernote').summernote({
   onblur: function(e) {
     console.log('Editable area loses focus');
   }
 });</pre>
-        <h4>onkeyup</h4>
+        <h3 id="callbacks-onkeyup">onkeyup</h3>
         <pre class="prettyprint linenums">$('#summernote').summernote({
   onkeyup: function(e) {
     console.log('Key is released:', e.keyCode);
   }
 });</pre>
-        <h4>onkeydown</h4>
+        <h3 id="callbacks-onkeydown">onkeydown</h3>
         <pre class="prettyprint linenums">$('#summernote').summernote({
   onkeydown: function(e) {
     console.log('Key is pressed:', e.keyCode);
@@ -183,8 +208,8 @@ $(document).ready(function() {
 });</pre>
       </section>
       <hr/>
-      <section id="keyboard">
-        <h2>Keyboard shortcuts</h2>
+      <section>
+        <h2 id="keyboard">Keyboard shortcuts</h2>
         <p>We provide default common shortcut.</p>
         <table class="table table-hover table-bordered">
           <thead>
