@@ -14,7 +14,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1030; /* bootstrap modal-backdrop: 1030 */
+    z-index: 1050; /* bs3 modal-backdrop: 1030, bs2: 1040 */
     .note-editable {
       background-color: white;
     }
@@ -234,6 +234,8 @@
       @note-shortcut-hl: #dd0;
       font-size: 12px;
       color: white;
+      background-color: black !important;
+      .opacity(0.9);
       .modal-content {
         background: transparent;
         border: 1px solid white;
