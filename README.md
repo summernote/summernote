@@ -89,6 +89,7 @@ $('#summernote').destroy();
 * Table: Handles(Sizing, Selection) and Popover
 * Image Upload
 * support IE8
+* Fullscreen
 
 ### Change Log
 
