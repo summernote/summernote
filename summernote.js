@@ -1127,7 +1127,7 @@
           welEditor.toggleClass('fullscreen');
 
           var hResizeFullscreen = function() {
-            var nHeight = $(document).height() - oLayoutInfo.toolbar().outerHeight();
+            var nHeight = $(window).height() - oLayoutInfo.toolbar().outerHeight();
             welEditable.css('height', nHeight);
           }
 
@@ -1349,7 +1349,7 @@
         '</ul>',
       help:
         '<button type="button" class="btn btn-default btn-sm btn-small" title="Help" data-shortcut="Ctrl+/" data-mac-shortcut="⌘+/" data-event="showHelpDialog" tabindex="-1"><i class="icon-question"></i></button>',
-      screen:
+      fullscreen:
         '<button type="button" class="btn btn-default btn-sm btn-small" title="Full Screen" data-event="fullscreen" tabindex="-1"><i class="icon-fullscreen"></i></button>'
 
     };
@@ -1663,7 +1663,8 @@
           ['height', ['height']],
           ['table', ['table']],
           ['insert', ['link', 'picture']],
-          ['help', ['screen', 'help']]
+          ['fullscreen', ['fullscreen']],
+          ['help', ['help']]
         ]
       }, options );
 
