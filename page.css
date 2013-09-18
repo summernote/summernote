@@ -109,7 +109,7 @@ hr.soften {
 ------------------------- */
 .subhead {
   text-align: left;
-  padding: 15px 0;
+  padding: 15px 10px;
 }
 .subhead h1 {
   font-size: 60px;
@@ -147,6 +147,10 @@ hr.soften {
 
 /* sidebar with affix
 -------------------------------------------------- */
+
+.bs-page-sidebar {
+  margin-bottom: 30px;
+}
 
 /* By default it's not affixed in mobile views, so undo that */
 .bs-page-sidebar.affix {
@@ -201,6 +205,14 @@ hr.soften {
   font-size: 90%;
 }
 
+/* Nav: third level (shown on .active) */
+.bs-page-sidebar .nav .nav .nav > li > a {
+  padding-top:    3px;
+  padding-bottom: 3px;
+  padding-left: 40px;
+  font-size: 80%;
+}
+
 /* Show and affix the side nav when space allows it */
 @media screen and (min-width: 992px) {
   .bs-page-sidebar .nav > .active > ul {
@@ -240,9 +252,15 @@ hr.soften {
 -------------------------------------------------- */
 
 /* Janky fix for preventing navbar from overlapping */
-h2[id], h3[id] {
+h2[id] {
   margin-top: -45px;
-  padding-top: 50px;
+  padding-top: 60px;
+  border-bottom: 1px solid silver;
+}
+
+h3[id], h4[id] {
+  margin-top: -45px;
+  padding-top: 55px;
 }
 
 pre code {

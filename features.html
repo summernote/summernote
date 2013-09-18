@@ -63,7 +63,7 @@
       <div class="bs-page-sidebar" role="complementary">
         <ul class="nav">
           <li>
-            <a href="#installation">Installation</a>
+            <a href="#installation">Easy Installation</a>
             <ul class="nav">
               <li><a href="#installation-doctype">Require html5 doctype</a></li>
               <li><a href="#installation-include">Include js/css</a></li>
@@ -74,7 +74,13 @@
           <li>
             <a href="#api">API</a>
             <ul class="nav">
-              <li><a href="#api-summernote">summernote</a></li>
+              <li>
+                <a href="#api-summernote">summernote</a>
+                <ul class="nav">
+                  <li><a href="#heightandfocus">Height and Focus</a></li>
+                  <li><a href="#customtoolbar">Custom toolbar</a></li>
+                </ul>
+              </li>
               <li><a href="#api-destory">destory</a></li>
               <li><a href="#api-code">code</a></li>
             </ul>
@@ -99,7 +105,7 @@
     </div>
     <div class="col-md-9" role="main">
       <section>
-        <h2 id="installation">Installation</h2>
+        <h2 id="installation">Easy Installation</h2>
         <h3 id="installation-doctype">00. Requires HTML5 doctype</h3>
         <p>Bootstrap uses certain HTML elements and CSS properties which require HTML5 doctype. Include <code>&lt;!DOCTYPE html&gt;</code> in the beginning of all your projects.</p>
         <pre><code class="xml">&lt;!DOCTYPE html&gt;
@@ -128,31 +134,68 @@
   $('#summernote').summernote();
 });</code></pre>
       </section>
-      <hr/>
       <section>
         <h2 id="api">API</h2>
         <h3 id="api-summernote">Summernote</h3>
         <p>Initialize Summernote</p>
         <pre><code class="javascript">$('.summernote').summernote();</code></pre>
         <p>Initialize Summernote with options</p>
+        <h4 id="heightandfocus">Height and Focus</h4>
+        <p>If you set focus option, cursor will focus editable area after initialize summernote.
         <pre><code class="javascript">$('.summernote').summernote({
-  height: 300,   //set height
-  focus: true    //focus
+  height: 300,   //set editable area's height
+  focus: true    //set focus editable area after Initialize summernote
 });</code></pre>
-        <p>and custom toolbar</p>
+        <p>If you set height, you can see <strong>resizebar</strong> below.</p>
+        <div class="height">{height: 150}</div>
+        <script>
+          $(document).ready(function() {
+            $('.height').summernote({height: 150});
+          });
+        </script>
+        <p></p>
+        <p>If you doesn't set the height, editable area's height will change according to contents.</p>
+        <div class="noheight">press enter key.<br/>blah blah~<br/>blah blah~</div>
+        <script>
+          $(document).ready(function() {
+            $('.noheight').summernote();
+          });
+        </script>
+        <p></p>
+        <h4 id="customtoolbar">Custom toolbar</h4>
+        <p>This option is about custom toolbar.</p>
         <pre><code class="javascript">$('.summernote').summernote({
   toolbar: [
-    //['insert', ['picture', 'link']], // no insert buttons
-    ['table', ['table']],
-    ['style', ['style']],
+    //['style', ['style']], //no style button
     ['fontsize', ['fontsize']],
     ['color', ['color']],
     ['style', ['bold', 'italic', 'underline', 'clear']],
     ['para', ['ul', 'ol', 'paragraph']],
     ['height', ['height']],
-    ['help', ['help']]
+    //['insert', ['picture', 'link']], // no insert buttons
+    //['table', ['table']], // no table button
+    ['help', ['help']] /no help button
   ]
 });</code></pre>
+        <div class="customtoolbar">Only font style toolbar.</div>
+        <script>
+          $(document).ready(function() {
+            $('.customtoolbar').summernote({
+              toolbar: [
+                //['style', ['style']], // no style button
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                //['insert', ['picture', 'link']], // no insert buttons
+                //['table', ['table']], // no table button
+                //['help', ['help']] //no help button
+              ]
+            });
+          });
+        </script>
+        <p></p>
         <h3 id="api-destory">Destroy</h3>
         <p>Destroy Summernote.</p>
         <pre><code class="javascript">$('.summernote').destroy();</code></pre>
@@ -162,7 +205,6 @@
         <p>Set Code.</p>
         <pre><code class="javascript">$('.summernote').code(sHTML);</code></pre>
       </section>
-      <hr/>
       <section>
         <h2 id="callbacks">Callbacks</h2>
         <h3 id="callbacks-oninit">oninit</h3>
@@ -202,7 +244,6 @@
   }
 });</code></pre>
       </section>
-      <hr/>
       <section>
         <h2 id="keyboard">Keyboard shortcuts</h2>
         <p>We provide default shortcut.</p>
