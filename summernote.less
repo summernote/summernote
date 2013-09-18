@@ -9,6 +9,18 @@
  ------------------------------------------*/
 .note-editor {
   border: 1px solid @border-color;
+  &.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    .note-editable {
+      background-color: white;
+    }
+    .note-resizebar {
+      display: none;
+    }
+  }
   
   //toolbar
   .note-toolbar {
@@ -325,5 +337,4 @@
       }
     }
   }
-
 }

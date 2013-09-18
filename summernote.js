@@ -307,7 +307,7 @@
     for (nOffset = 0; nOffset < aChild.length; nOffset++) {
       if (dom.isText(aChild[nOffset])) { continue; }
       tester.moveToElementText(aChild[nOffset]);
-      if (tester.compareEndPoints("StartToStart", textRange) >= 0) { break; }
+      if (tester.compareEndPoints('StartToStart', textRange) >= 0) { break; }
       elPrevCont = aChild[nOffset];
     }
 
@@ -318,8 +318,8 @@
       elCurText = elPrevCont ? elPrevCont.nextSibling : elCont.firstChild;
 
       var pointTester = textRange.duplicate();
-      pointTester.setEndPoint("StartToStart", textRangeStart);
-      var nTextCount = pointTester.text.replace(/[\r\n]/g, "").length;
+      pointTester.setEndPoint('StartToStart', textRangeStart);
+      var nTextCount = pointTester.text.replace(/[\r\n]/g, '').length;
 
       while (nTextCount > elCurText.nodeValue.length && elCurText.nextSibling) {
         nTextCount -= elCurText.nodeValue.length;
@@ -370,7 +370,7 @@
 
     textRange.moveToElementText(info.cont);
     textRange.collapse(info.collapseToStart);
-    textRange.moveStart("character", info.offset);
+    textRange.moveStart('character', info.offset);
     return textRange;
   };
 
@@ -628,8 +628,8 @@
     }
 
     this.formatBlock = function(welEditable, sValue) {
-      sValue = bMSIE ? "<" + sValue + ">" : sValue;
-      document.execCommand("FormatBlock", false, sValue);
+      sValue = bMSIE ? '<' + sValue + '>' : sValue;
+      document.execCommand('FormatBlock', false, sValue);
     };
 
     this.fontSize = function(welEditable, sValue) {
@@ -665,17 +665,17 @@
       fnShowDialog({
         range: rng,
         text: rng.toString(),
-        url: rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor).href : ""
+        url: rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor).href : ''
       }, function(sLinkUrl) {
         rng.select(); recordUndo(welEditable);
 
-        var bProtocol = sLinkUrl.toLowerCase().indexOf("://") !== -1;
-        var sLinkUrlWithProtocol = bProtocol ? sLinkUrl : "http://" + sLinkUrl;
+        var bProtocol = sLinkUrl.toLowerCase().indexOf('://') !== -1;
+        var sLinkUrlWithProtocol = bProtocol ? sLinkUrl : 'http://' + sLinkUrl;
 
         //IE: createLink when range collapsed.
         if (bMSIE && rng.isCollapsed()) {
           rng.insertNode($('<A id="linkAnchor">' + sLinkUrl + '</A>')[0]);
-          var welAnchor = $('#linkAnchor').removeAttr("id")
+          var welAnchor = $('#linkAnchor').removeAttr('id')
                                           .attr('href', sLinkUrlWithProtocol);
           rng = new Range(welAnchor[0], 0, welAnchor[0], 1);
           rng.select();
@@ -722,7 +722,7 @@
     this.resize = function(welEditable, sValue, elTarget) {
       recordUndo(welEditable);
       elTarget.style.width = welEditable.width() * sValue + 'px';
-      elTarget.style.height = "";
+      elTarget.style.height = '';
     };
 
     this.resizeTo = function(pos, elTarget) {
@@ -792,7 +792,7 @@
       var oColor = JSON.parse(welRecentColor.attr('data-value'));
       oColor[sEvent] = sValue;
       welRecentColor.attr('data-value', JSON.stringify(oColor));
-      var sKey = sEvent === "backColor" ? 'background-color' : 'color';
+      var sKey = sEvent === 'backColor' ? 'background-color' : 'color';
       welRecentColor.find('i').css(sKey, sValue);
     };
   };
@@ -1110,18 +1110,34 @@
         }
         
         // after command
-        if ($.inArray(sEvent, ["backColor", "foreColor"]) !== -1) {
+        if ($.inArray(sEvent, ['backColor', 'foreColor']) !== -1) {
           toolbar.updateRecentColor(welBtn[0], sEvent, sValue);
-        } else if (sEvent === "showLinkDialog") { // popover to dialog
+        } else if (sEvent === 'showLinkDialog') { // popover to dialog
           editor.setLinkDialog(welEditable, function(linkInfo, cb) {
             dialog.showLinkDialog(welDialog, linkInfo, cb);
           });
-        } else if (sEvent === "showImageDialog") {
+        } else if (sEvent === 'showImageDialog') {
           dialog.showImageDialog(welDialog, hDropImage, function(files) {
             insertImages(welEditable, files);
           });
-        } else if (sEvent === "showHelpDialog") {
+        } else if (sEvent === 'showHelpDialog') {
           dialog.showHelpDialog(welDialog);
+        } else if (sEvent === 'fullscreen') {
+          var welEditor = oLayoutInfo.editor();
+          welEditor.toggleClass('fullscreen');
+
+          var hResizeFullscreen = function() {
+            var nHeight = $(document).height() - oLayoutInfo.toolbar().outerHeight();
+            welEditable.css('height', nHeight);
+          }
+
+          if (welEditor.hasClass('fullscreen')) {
+            welEditable.data('orgHeight', welEditable.css('height'));
+            $(window).resize(hResizeFullscreen).trigger('resize');
+          } else {
+            welEditable.css('height', welEditable.data('orgHeight'));
+            $(window).off('resize');
+          }
         }
 
         hToolbarAndPopoverUpdate(event);
@@ -1332,7 +1348,10 @@
         '<li><a data-event="lineHeight" data-value="3.0"><i class="icon-ok"></i> 3.0</a></li>' +
         '</ul>',
       help:
-        '<button type="button" class="btn btn-default btn-sm btn-small" title="Help" data-shortcut="Ctrl+/" data-mac-shortcut="⌘+/" data-event="showHelpDialog" tabindex="-1"><i class="icon-question"></i></button>'
+        '<button type="button" class="btn btn-default btn-sm btn-small" title="Help" data-shortcut="Ctrl+/" data-mac-shortcut="⌘+/" data-event="showHelpDialog" tabindex="-1"><i class="icon-question"></i></button>',
+      screen:
+        '<button type="button" class="btn btn-default btn-sm btn-small" title="Full Screen" data-event="fullscreen" tabindex="-1"><i class="icon-fullscreen"></i></button>'
+
     };
     var sPopover = '<div class="note-popover">' +
                      '<div class="note-link-popover popover fade bottom in" style="display: none;">' +
@@ -1644,7 +1663,7 @@
           ['height', ['height']],
           ['table', ['table']],
           ['insert', ['link', 'picture']],
-          ['help', ['help']]
+          ['help', ['screen', 'help']]
         ]
       }, options );
 
