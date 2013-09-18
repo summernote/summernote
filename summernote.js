@@ -768,30 +768,29 @@
    * Popover
    */
   var Popover = function() {
+    var showPopover = function(welPopover, elPlaceholder) {
+      var welPlaceHolder = $(elPlaceholder);
+      var pos = welPlaceHolder.position(), height = welPlaceHolder.height();
+      welPopover.css({
+        display: 'block',
+        left: pos.left,
+        top: pos.top + height
+      });
+    };
+
     this.update = function(welPopover, oStyle) {
       var welLinkPopover = welPopover.find('.note-link-popover'),
           welImagePopover = welPopover.find('.note-image-popover');
       if (oStyle.anchor) {
         var welAnchor = welLinkPopover.find('a');
         welAnchor.attr('href', oStyle.anchor.href).html(oStyle.anchor.href);
-        
-        var rect = oStyle.anchor.getBoundingClientRect();
-        welLinkPopover.css({
-          display: 'block',
-          left: rect.left,
-          top: $(document).scrollTop() + rect.bottom
-        });
+        showPopover(welLinkPopover, oStyle.anchor);
       } else {
         welLinkPopover.hide();
       }
 
       if (oStyle.image) {
-        var rect = oStyle.image.getBoundingClientRect();
-        welImagePopover.css({
-          display: 'block',
-          left: rect.left,
-          top: $(document).scrollTop() + rect.bottom
-        });
+        showPopover(welImagePopover, oStyle.image);
       } else {
         welImagePopover.hide();
       }
@@ -809,15 +808,15 @@
     this.update = function(welHandle, oStyle) {
       var welSelection = welHandle.find('.note-control-selection');
       if (oStyle.image) {
-        var rect = oStyle.image.getBoundingClientRect();
+        var welImage = $(oStyle.image);
+        var pos = welImage.position();
+        var szImage = {w: welImage.width(), h: welImage.height()};
         welSelection.css({
           display: 'block',
-          left: rect.left + 'px',
-          top: $(document).scrollTop() + rect.top + 'px',
-          width: rect.width + 'px',
-          height: rect.height + 'px'
+          left: pos.left, top: pos.top,
+          width: szImage.w, height: szImage.h
         }).data('target', oStyle.image); // save current image element.
-        var sSizing = rect.width + 'x' + rect.height;
+        var sSizing = szImage.w + 'x' + szImage.h;
         welSelection.find('.note-control-selection-info').text(sSizing);
       } else {
         welSelection.hide();
