@@ -795,6 +795,11 @@
       var sKey = sEvent === 'backColor' ? 'background-color' : 'color';
       welRecentColor.find('i').css(sKey, sValue);
     };
+
+    this.updateFullscreen = function(welToolbar, bFullscreen) {
+      var welBtn = welToolbar.find('button[data-event="fullscreen"]');
+      welBtn[bFullscreen ? 'addClass' : 'removeClass']('active');
+    };
   };
   
   /**
@@ -1126,18 +1131,22 @@
           var welEditor = oLayoutInfo.editor();
           welEditor.toggleClass('fullscreen');
 
+          var welToolbar = oLayoutInfo.toolbar();
           var hResizeFullscreen = function() {
-            var nHeight = $(window).height() - oLayoutInfo.toolbar().outerHeight();
+            var nHeight = $(window).height() - welToolbar.outerHeight();
             welEditable.css('height', nHeight);
           }
 
-          if (welEditor.hasClass('fullscreen')) {
+          var bFullscreen = welEditor.hasClass('fullscreen');
+          if (bFullscreen) {
             welEditable.data('orgHeight', welEditable.css('height'));
             $(window).resize(hResizeFullscreen).trigger('resize');
           } else {
             welEditable.css('height', welEditable.data('orgHeight'));
             $(window).off('resize');
           }
+
+          toolbar.updateFullscreen(welToolbar, bFullscreen);
         }
 
         hToolbarAndPopoverUpdate(event);
