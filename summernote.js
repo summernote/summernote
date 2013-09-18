@@ -139,7 +139,7 @@
         if (bStart && !bEnd) { aNode.push(node) } // between
         if (node === nodeB) { bEnd = true; return; } // end point
 
-        for (var idx = 0, sz=node.childNodes.length; idx < sz; idx++) {
+        for (var idx = 0, sz = node.childNodes.length; idx < sz; idx++) {
           fnWalk(node.childNodes[idx]);
         }
       }
@@ -251,6 +251,26 @@
         return clone;
       });
     };
+
+    // remove: remove node, (bRemoveChild: remove child or not)
+    var remove = function(node, bRemoveChild) {
+      if (!node || !node.parentNode) { return; }
+      if (node.removeNode) { return node.removeNode(bRemoveChild); }
+
+      var elParent = node.parentNode;
+      if (!bRemoveChild) {
+        var aNode = [];
+        for (var i = 0, sz = node.childNodes.length; i < sz; i++) {
+          aNode.push(node.childNodes[i]);
+        }
+
+        for (var i = 0, sz = aNode.length; i < sz; i++) {
+          elParent.insertBefore(aNode[i], node);
+        }
+      }
+
+      elParent.removeChild(node);
+    };
     
     return {
       isText: isText,
@@ -266,7 +286,7 @@
       commonAncestor: commonAncestor, listBetween: listBetween,
       insertAfter: insertAfter, position: position,
       makeOffsetPath: makeOffsetPath, fromOffsetPath: fromOffsetPath,
-      split: split
+      split: split, remove: remove
     };
   }();
 
@@ -360,7 +380,7 @@
         var nativeRng = document.getSelection().getRangeAt(0);
         sc = nativeRng.startContainer, so = nativeRng.startOffset,
         ec = nativeRng.endContainer, eo = nativeRng.endOffset;
-      } else { //TextRange
+      } else { // IE8: TextRange
         var textRange = document.selection.createRange();
         var textRangeEnd = textRange.duplicate(); textRangeEnd.collapse(false);
         var textRangeStart = textRange; textRangeStart.collapse(true);
@@ -371,6 +391,8 @@
         sc = bpStart.cont, so = bpStart.offset;
         ec = bpEnd.cont, eo = bpEnd.offset;
       }
+    } else if (arguments.length === 2) { //collapsed
+      ec = sc; eo = so;
     }
     
     this.sc = sc; this.so = so;
@@ -561,6 +583,17 @@
     this.currentStyle = function(elTarget) {
       if (document.getSelection && document.getSelection().rangeCount == 0) { return null; }
       return style.current((new Range()), elTarget);
+    };
+
+    this.tab = function(welEditable) {
+      recordUndo(welEditable);
+      var rng = new Range();
+      var sNbsp = new Array(welEditable.data('tabsize') + 1).join('&nbsp;')
+      rng.insertNode($('<span id="noteTab">' + sNbsp + '</span>')[0]);
+      var welTab = $('#noteTab').removeAttr('id');
+      rng = new Range(welTab[0], 1);
+      rng.select();
+      dom.remove(welTab[0]);
     };
 
     // undo
@@ -924,7 +957,9 @@
       var bExecCmd = (bCmd || bShift || keyCode === key.TAB);
       var oLayoutInfo = (bExecCmd) ? makeLayoutInfo(event.target) : null;
 
-      if (bCmd && ((bShift && keyCode === key.Z) || keyCode === key.Y)) {
+      if (keyCode === key.TAB && oLayoutInfo.editable().data('tabsize')) {
+        editor.tab(oLayoutInfo.editable());
+      } else if (bCmd && ((bShift && keyCode === key.Z) || keyCode === key.Y)) {
         editor.redo(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.Z) {
         editor.undo(oLayoutInfo.editable());
@@ -1509,7 +1544,7 @@
     };
     
     // createLayout
-    var createLayout = this.createLayout = function(welHolder, nHeight, nTabIndex, aToolbarSetting) {
+    var createLayout = this.createLayout = function(welHolder, nHeight, nTabsize, aToolbarSetting) {
       //already created
       if (welHolder.next().hasClass('note-editor')) { return; }
       
@@ -1523,8 +1558,10 @@
 
       //03. create Editable
       var welEditable = $('<div class="note-editable" contentEditable="true"></div>').prependTo(welEditor);
-      if (nTabIndex) { welEditable.attr('tabIndex', nTabIndex); }
       if (nHeight) { welEditable.height(nHeight); }
+      if (nTabsize) {
+        welEditable.data('tabsize', nTabsize);
+      }
 
       welEditable.html(welHolder.html());
       welEditable.data('NoteHistory', new History());
@@ -1615,7 +1652,7 @@
         var welHolder = $(elHolder);
 
         // createLayout with options
-        renderer.createLayout(welHolder, options.height, options.tabIndex, options.toolbar);
+        renderer.createLayout(welHolder, options.height, options.tabsize, options.toolbar);
 
         var info = renderer.layoutInfoFromHolder(welHolder);
         eventHandler.attach(info, options);
