@@ -725,9 +725,14 @@
       elTarget.style.height = '';
     };
 
-    this.resizeTo = function(pos, elTarget) {
-      elTarget.style.width = pos.x + 'px';
-      elTarget.style.height = pos.y + 'px';
+    this.resizeTo = function(pos, welTarget) {
+      var newRatio = pos.y / pos.x;
+      var ratio = welTarget.data('ratio');
+
+      welTarget.css({
+        width: ratio > newRatio ? pos.x : pos.y / ratio,
+        height: ratio > newRatio ? pos.x * ratio : pos.y
+      });
     };
   };
 
@@ -1066,18 +1071,24 @@
             welHandle = oLayoutInfo.handle(), welPopover = oLayoutInfo.popover(),
             welEditable = oLayoutInfo.editable(), welEditor = oLayoutInfo.editor();
 
-        var elTarget = welHandle.find('.note-control-selection').data('target');
-        var posStart = $(elTarget).offset(),
+        var elTarget = welHandle.find('.note-control-selection').data('target'),
+            welTarget = $(elTarget);
+        var posStart = welTarget.offset(),
             scrollTop = $(document).scrollTop(), posDistance;
+
         welEditor.on('mousemove', function(event) {
           posDistance = {x: event.clientX - posStart.left,
                          y: event.clientY - (posStart.top - scrollTop)};
-          editor.resizeTo(posDistance, elTarget);
+          editor.resizeTo(posDistance, welTarget);
           handle.update(welHandle, {image: elTarget});
           popover.update(welPopover, {image: elTarget});
         }).on('mouseup', function() {
           welEditor.off('mousemove').off('mouseup');
         });
+
+        if (!welTarget.data('ratio')) { // original ratio.
+          welTarget.data('ratio', welTarget.height() / welTarget.width());
+        }
 
         editor.recordUndo(welEditable);
         event.stopPropagation(); event.preventDefault();
