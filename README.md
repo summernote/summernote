@@ -132,7 +132,7 @@ Dom, List, Func
 ```
 
 #### build summernote
-```
+```bash
 # grunt-cli is need by grunt; you might have this installed already
 npm install -g grunt-cli
 npm install
@@ -142,7 +142,7 @@ At this point, you should now have a `build/` directory populated with everythin
 
 #### test summernote
 run tests with PhantomJS
-```
+```bash
 grunt test
 ```
 
