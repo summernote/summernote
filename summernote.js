@@ -432,20 +432,21 @@
       }));
       return $.map(list.clusterBy(aPara, func.eq2), list.head);
     };
-    
-    // isOnList: judge whether range is on list node or not
-    this.isOnList = function() {
-      var elStart = dom.ancestor(sc, dom.isList),
-          elEnd = dom.ancestor(ec, dom.isList);
-      return elStart && (elStart === elEnd);
+
+    // makeIsOn: return isOn(pred) function
+    var makeIsOn = function(pred) {
+      return function() {
+        var elAncestor = dom.ancestor(sc, pred);
+        return elAncestor && (elAncestor === dom.ancestor(ec, pred));
+      };
     };
 
+    // isOnEditable: judge whether range is on editable or not
+    this.isOnEditable = makeIsOn(dom.isEditable);
+    // isOnList: judge whether range is on list node or not
+    this.isOnList = makeIsOn(dom.isList);
     // isOnAnchor: judge whether range is on anchor node or not
-    this.isOnAnchor = function() {
-      var elStart = dom.ancestor(sc, dom.isAnchor),
-          elEnd = dom.ancestor(ec, dom.isAnchor);
-      return elStart && (elStart === elEnd);
-    };
+    this.isOnAnchor = makeIsOn(dom.isAnchor);
 
     // isCollapsed: judge whether range was collapsed
     this.isCollapsed = function() { return sc === ec && so === eo; };
@@ -581,8 +582,8 @@
     //currentStyle
     var style = new Style();
     this.currentStyle = function(elTarget) {
-      if (document.getSelection && document.getSelection().rangeCount == 0) { return null; }
-      return style.current((new Range()), elTarget);
+      var rng = new Range();
+      return rng.isOnEditable() && style.current(rng, elTarget);
     };
 
     this.tab = function(welEditable) {
@@ -892,6 +893,7 @@
       }).on('hidden.bs.modal', function(e) {
         welDropzone.off('dragenter dragover dragleave drop');
         welImageInput.off('change');
+        welImageDialog.off('shown.bs.modal hidden.bs.modal');
       }).modal('show');
     };
 
@@ -919,8 +921,8 @@
         });
       }).on('hidden.bs.modal', function(e) {
         welLinkUrl.off('keyup');
-        welLinkDialog.off('shown.bs.modal hidden.bs.modal');
         welLinkBtn.off('click');
+        welLinkDialog.off('shown.bs.modal hidden.bs.modal');
       }).modal('show');
     };
 
@@ -1050,7 +1052,6 @@
     
     var hToolbarAndPopoverUpdate = function(event) {
       var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-      
       var oStyle = editor.currentStyle(event.target);
       if (!oStyle) { return; }
       toolbar.update(oLayoutInfo.toolbar(), oStyle);
