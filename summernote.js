@@ -3,9 +3,7 @@
  * (c) 2013~ Alan Hong
  * summernote may be freely distributed under the MIT license./
  */
-(function($) {
-  "use strict";
-
+(function($) { "use strict";
   //Check Platform/Agent
   var bMac = navigator.appVersion.indexOf('Mac') > -1; 
   var bMSIE = navigator.userAgent.indexOf('MSIE') > -1;
@@ -1745,7 +1743,7 @@
       return { dom: dom, list: list, func: func, range: range };
     }
   });
-})(jQuery); // jQuery
+})(window.jQuery); // jQuery
 
 // Array.prototype.reduce fallback
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
