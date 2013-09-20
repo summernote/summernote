@@ -291,201 +291,206 @@
   }();
 
   /**
-   * Range
-   * {startContainer, startOffset, endContainer, endOffset}
-   * create Range Object From arguments or Browser Selection
+   * range module
    */
-  var bW3CRangeSupport = !!document.createRange;
+  var range = function() {
+    var bW3CRangeSupport = !!document.createRange;
 
-  // return boundary point from TextRange(ie8)
-  // inspired by Andy Na's HuskyRange.js
-  var textRange2bp = function(textRange, bStart) {
-    var elCont = textRange.parentElement(), nOffset;
+    // return boundaryPoint from TextRange, inspired by Andy Na's HuskyRange.js
+    var textRange2bp = function(textRange, bStart) {
+      var elCont = textRange.parentElement(), nOffset;
 
-    var tester = document.body.createTextRange(), elPrevCont;
-    var aChild = list.from(elCont.childNodes);
-    for (nOffset = 0; nOffset < aChild.length; nOffset++) {
-      if (dom.isText(aChild[nOffset])) { continue; }
-      tester.moveToElementText(aChild[nOffset]);
-      if (tester.compareEndPoints('StartToStart', textRange) >= 0) { break; }
-      elPrevCont = aChild[nOffset];
-    }
-
-    if (nOffset != 0 && dom.isText(aChild[nOffset - 1])) {
-      var textRangeStart = document.body.createTextRange(), elCurText = null;
-      textRangeStart.moveToElementText(elPrevCont || elCont);
-      textRangeStart.collapse(!elPrevCont);
-      elCurText = elPrevCont ? elPrevCont.nextSibling : elCont.firstChild;
-
-      var pointTester = textRange.duplicate();
-      pointTester.setEndPoint('StartToStart', textRangeStart);
-      var nTextCount = pointTester.text.replace(/[\r\n]/g, '').length;
-
-      while (nTextCount > elCurText.nodeValue.length && elCurText.nextSibling) {
-        nTextCount -= elCurText.nodeValue.length;
-        elCurText = elCurText.nextSibling;
-      }
-      var sDummy = elCurText.nodeValue; //enforce IE to re-reference elCurText
-
-      if (bStart && elCurText.nextSibling && dom.isText(elCurText.nextSibling) &&
-          nTextCount == elCurText.nodeValue.length) {
-        nTextCount -= elCurText.nodeValue.length;
-        elCurText = elCurText.nextSibling;
+      var tester = document.body.createTextRange(), elPrevCont;
+      var aChild = list.from(elCont.childNodes);
+      for (nOffset = 0; nOffset < aChild.length; nOffset++) {
+        if (dom.isText(aChild[nOffset])) { continue; }
+        tester.moveToElementText(aChild[nOffset]);
+        if (tester.compareEndPoints('StartToStart', textRange) >= 0) { break; }
+        elPrevCont = aChild[nOffset];
       }
 
-      elCont = elCurText;
-      nOffset = nTextCount;
-    }
+      if (nOffset != 0 && dom.isText(aChild[nOffset - 1])) {
+        var textRangeStart = document.body.createTextRange(), elCurText = null;
+        textRangeStart.moveToElementText(elPrevCont || elCont);
+        textRangeStart.collapse(!elPrevCont);
+        elCurText = elPrevCont ? elPrevCont.nextSibling : elCont.firstChild;
 
-    return {cont: elCont, offset: nOffset};
-  };
+        var pointTester = textRange.duplicate();
+        pointTester.setEndPoint('StartToStart', textRangeStart);
+        var nTextCount = pointTester.text.replace(/[\r\n]/g, '').length;
 
-  // return TextRange(ie8) from boundary point
-  // (inspired by google closure-library)
-  var bp2textRange = function(bp) {
-    var textRangeInfo = function(elCont, nOffset) {
-      var elNode, bCollapseToStart;
+        while (nTextCount > elCurText.nodeValue.length && elCurText.nextSibling) {
+          nTextCount -= elCurText.nodeValue.length;
+          elCurText = elCurText.nextSibling;
+        }
+        var sDummy = elCurText.nodeValue; //enforce IE to re-reference elCurText
 
-      if (dom.isText(elCont)) {
-        var aPrevText = dom.listPrev(elCont, func.not(dom.isText));
-        var elPrevCont = list.last(aPrevText).previousSibling;
-        elNode =  elPrevCont || elCont.parentNode;
-        nOffset += list.sum(list.tail(aPrevText), dom.length);
-        bCollapseToStart = !elPrevCont;
-      } else {
-        elNode = elCont.childNodes[nOffset] || elCont;
-        if (dom.isText(elNode)) {
-          return textRangeInfo(elNode, nOffset);
+        if (bStart && elCurText.nextSibling && dom.isText(elCurText.nextSibling) &&
+            nTextCount == elCurText.nodeValue.length) {
+          nTextCount -= elCurText.nodeValue.length;
+        elCurText = elCurText.nextSibling;
         }
 
-        nOffset = 0;
-        bCollapseToStart = false;
+        elCont = elCurText;
+        nOffset = nTextCount;
       }
 
-      return {cont: elNode, collapseToStart: bCollapseToStart, offset: nOffset};
-    }
+      return {cont: elCont, offset: nOffset};
+    };
 
-    var textRange = document.body.createTextRange();
-    var info = textRangeInfo(bp.cont, bp.offset);
+    // return TextRange from boundary point (inspired by google closure-library)
+    var bp2textRange = function(bp) {
+      var textRangeInfo = function(elCont, nOffset) {
+        var elNode, bCollapseToStart;
 
-    textRange.moveToElementText(info.cont);
-    textRange.collapse(info.collapseToStart);
-    textRange.moveStart('character', info.offset);
-    return textRange;
-  };
+        if (dom.isText(elCont)) {
+          var aPrevText = dom.listPrev(elCont, func.not(dom.isText));
+          var elPrevCont = list.last(aPrevText).previousSibling;
+          elNode =  elPrevCont || elCont.parentNode;
+          nOffset += list.sum(list.tail(aPrevText), dom.length);
+          bCollapseToStart = !elPrevCont;
+        } else {
+          elNode = elCont.childNodes[nOffset] || elCont;
+          if (dom.isText(elNode)) {
+            return textRangeInfo(elNode, nOffset);
+          }
 
-  var Range = function(sc, so, ec, eo) {
-    if (arguments.length === 0) { // from Browser Selection
-      if (bW3CRangeSupport) { // webkit, firefox
-        var nativeRng = document.getSelection().getRangeAt(0);
-        sc = nativeRng.startContainer, so = nativeRng.startOffset,
-        ec = nativeRng.endContainer, eo = nativeRng.endOffset;
-      } else { // IE8: TextRange
-        var textRange = document.selection.createRange();
-        var textRangeEnd = textRange.duplicate(); textRangeEnd.collapse(false);
-        var textRangeStart = textRange; textRangeStart.collapse(true);
+          nOffset = 0;
+          bCollapseToStart = false;
+        }
 
-        var bpStart = textRange2bp(textRangeStart, true),
+        return {cont: elNode, collapseToStart: bCollapseToStart, offset: nOffset};
+      }
+
+      var textRange = document.body.createTextRange();
+      var info = textRangeInfo(bp.cont, bp.offset);
+
+      textRange.moveToElementText(info.cont);
+      textRange.collapse(info.collapseToStart);
+      textRange.moveStart('character', info.offset);
+      return textRange;
+    };
+
+    // {startContainer, startOffset, endContainer, endOffset}
+    var WrappedRange = function(sc, so, ec, eo) {
+      this.sc = sc; this.so = so;
+      this.ec = ec; this.eo = eo;
+
+      // nativeRange: get nativeRange from sc, so, ec, eo
+      var nativeRange = function() {
+        if (bW3CRangeSupport) {
+          var w3cRange = document.createRange();
+          w3cRange.setStart(sc, so);
+          w3cRange.setEnd(ec, eo);
+          return w3cRange;
+        } else {
+          var textRange = bp2textRange({cont:sc, offset:so});
+          textRange.setEndPoint('EndToEnd', bp2textRange({cont:ec, offset:eo}));
+          return textRange;
+        }
+      };
+
+      // select: update visible range
+      this.select = function() {
+        var nativeRng = nativeRange();
+        if (bW3CRangeSupport) {
+          var selection = document.getSelection();
+          if (selection.rangeCount > 0) { selection.removeAllRanges(); }
+          selection.addRange(nativeRng);
+        } else {
+          nativeRng.select();
+        }
+      };
+
+      // listPara: listing paragraphs on range
+      this.listPara = function() {
+        var aNode = dom.listBetween(sc, ec);
+        var aPara = list.compact($.map(aNode, function(node) {
+          return dom.ancestor(node, dom.isPara);
+        }));
+        return $.map(list.clusterBy(aPara, func.eq2), list.head);
+      };
+
+      // makeIsOn: return isOn(pred) function
+      var makeIsOn = function(pred) {
+        return function() {
+          var elAncestor = dom.ancestor(sc, pred);
+          return elAncestor && (elAncestor === dom.ancestor(ec, pred));
+        };
+      };
+
+      // isOnEditable: judge whether range is on editable or not
+      this.isOnEditable = makeIsOn(dom.isEditable);
+      // isOnList: judge whether range is on list node or not
+      this.isOnList = makeIsOn(dom.isList);
+      // isOnAnchor: judge whether range is on anchor node or not
+      this.isOnAnchor = makeIsOn(dom.isAnchor);
+
+      // isCollapsed: judge whether range was collapsed
+      this.isCollapsed = function() { return sc === ec && so === eo; };
+
+      // insertNode
+      this.insertNode = function(node) {
+        var nativeRng = nativeRange();
+        if (bW3CRangeSupport) {
+          nativeRng.insertNode(node);
+        } else {
+          nativeRng.pasteHTML(node.outerHTML); // NOTE: missing node reference.
+        }
+      };
+
+      this.toString = function() {
+        var nativeRng = nativeRange();
+        if (bW3CRangeSupport) {
+          return nativeRng.toString();
+        } else {
+          return nativeRng.text;
+        }
+      };
+
+      //bookmark: offsetPath bookmark
+      this.bookmark = function(elEditable) {
+        return {
+          s: { path: dom.makeOffsetPath(elEditable, sc), offset: so },
+          e: { path: dom.makeOffsetPath(elEditable, ec), offset: eo }
+        };
+      };
+    };
+
+    return { // Range Object
+      // create Range Object From arguments or Browser Selection
+      create : function(sc, so, ec, eo) {
+        if (arguments.length === 0) { // from Browser Selection
+          if (bW3CRangeSupport) { // webkit, firefox
+            var nativeRng = document.getSelection().getRangeAt(0);
+            sc = nativeRng.startContainer, so = nativeRng.startOffset,
+            ec = nativeRng.endContainer, eo = nativeRng.endOffset;
+          } else { // IE8: TextRange
+            var textRange = document.selection.createRange();
+            var textRangeEnd = textRange.duplicate(); textRangeEnd.collapse(false);
+            var textRangeStart = textRange; textRangeStart.collapse(true);
+
+            var bpStart = textRange2bp(textRangeStart, true),
             bpEnd = textRange2bp(textRangeEnd, false);
 
-        sc = bpStart.cont, so = bpStart.offset;
-        ec = bpEnd.cont, eo = bpEnd.offset;
-      }
-    } else if (arguments.length === 2) { //collapsed
-      ec = sc; eo = so;
-    }
-    
-    this.sc = sc; this.so = so;
-    this.ec = ec; this.eo = eo;
-
-    // nativeRange: get nativeRange from sc, so, ec, eo
-    var nativeRange = function() {
-      if (bW3CRangeSupport) {
-        var range = document.createRange();
-        range.setStart(sc, so);
-        range.setEnd(ec, eo);
-        return range;
-      } else {
-        var textRange = bp2textRange({cont:sc, offset:so});
-        textRange.setEndPoint('EndToEnd', bp2textRange({cont:ec, offset:eo}));
-        return textRange;
+            sc = bpStart.cont, so = bpStart.offset;
+            ec = bpEnd.cont, eo = bpEnd.offset;
+          }
+        } else if (arguments.length === 2) { //collapsed
+          ec = sc; eo = so;
+        }
+        return new WrappedRange(sc, so, ec, eo);
+      },
+      // createFromBookmark
+      createFromBookmark : function(elEditable, bookmark) {
+        var sc = dom.fromOffsetPath(elEditable, bookmark.s.path);
+        var so = bookmark.s.offset;
+        var ec = dom.fromOffsetPath(elEditable, bookmark.e.path);
+        var eo = bookmark.e.offset;
+        return new WrappedRange(sc, so, ec, eo);
       }
     };
- 
-    // select: update visible range
-    this.select = function() {
-      var nativeRng = nativeRange();
-      if (bW3CRangeSupport) {
-        var selection = document.getSelection();
-        if (selection.rangeCount > 0) { selection.removeAllRanges(); }
-        selection.addRange(nativeRng);
-      } else {
-        nativeRng.select();
-      }
-    };
-    
-    // listPara: listing paragraphs on range
-    this.listPara = function() {
-      var aNode = dom.listBetween(sc, ec);
-      var aPara = list.compact($.map(aNode, function(node) {
-        return dom.ancestor(node, dom.isPara);
-      }));
-      return $.map(list.clusterBy(aPara, func.eq2), list.head);
-    };
-
-    // makeIsOn: return isOn(pred) function
-    var makeIsOn = function(pred) {
-      return function() {
-        var elAncestor = dom.ancestor(sc, pred);
-        return elAncestor && (elAncestor === dom.ancestor(ec, pred));
-      };
-    };
-
-    // isOnEditable: judge whether range is on editable or not
-    this.isOnEditable = makeIsOn(dom.isEditable);
-    // isOnList: judge whether range is on list node or not
-    this.isOnList = makeIsOn(dom.isList);
-    // isOnAnchor: judge whether range is on anchor node or not
-    this.isOnAnchor = makeIsOn(dom.isAnchor);
-
-    // isCollapsed: judge whether range was collapsed
-    this.isCollapsed = function() { return sc === ec && so === eo; };
-    
-    // insertNode
-    this.insertNode = function(node) {
-      var nativeRng = nativeRange();
-      if (bW3CRangeSupport) {
-        nativeRng.insertNode(node);
-      } else {
-        nativeRng.pasteHTML(node.outerHTML); // NOTE: missing node reference.
-      }
-    };
-
-    this.toString = function() {
-      var nativeRng = nativeRange();
-      if (bW3CRangeSupport) {
-        return nativeRng.toString();
-      } else {
-        return nativeRng.text;
-      }
-    };
-
-    //bookmark: offsetPath bookmark
-    this.bookmark = function(elEditable) {
-      return {
-        s: { path: dom.makeOffsetPath(elEditable, sc), offset: so },
-        e: { path: dom.makeOffsetPath(elEditable, ec), offset: eo }
-      };
-    };
-  };
-
-  // createRangeFromBookmark
-  var createRangeFromBookmark = function(elEditable, bookmark) {
-    return new Range(dom.fromOffsetPath(elEditable, bookmark.s.path),
-                     bookmark.s.offset,
-                     dom.fromOffsetPath(elEditable, bookmark.e.path),
-                     bookmark.e.offset);
-  };
+  }();
   
   /**
    * Style
@@ -546,7 +551,7 @@
     var aUndo = [], aRedo = [];
 
     var makeSnap = function(welEditable) {
-      var elEditable = welEditable[0], rng = new Range();
+      var elEditable = welEditable[0], rng = range.create();
       return {
         contents: welEditable.html(), bookmark: rng.bookmark(elEditable),
         scrollTop: welEditable.scrollTop()
@@ -555,7 +560,7 @@
 
     var applySnap = function(welEditable, oSnap) {
       welEditable.html(oSnap.contents).scrollTop(oSnap.scrollTop);
-      createRangeFromBookmark(welEditable[0], oSnap.bookmark).select();
+      range.createFromBookmark(welEditable[0], oSnap.bookmark).select();
     };
 
     this.undo = function(welEditable) {
@@ -582,17 +587,17 @@
     //currentStyle
     var style = new Style();
     this.currentStyle = function(elTarget) {
-      var rng = new Range();
+      var rng = range.create();
       return rng.isOnEditable() && style.current(rng, elTarget);
     };
 
     this.tab = function(welEditable) {
       recordUndo(welEditable);
-      var rng = new Range();
+      var rng = range.create();
       var sNbsp = new Array(welEditable.data('tabsize') + 1).join('&nbsp;')
       rng.insertNode($('<span id="noteTab">' + sNbsp + '</span>')[0]);
       var welTab = $('#noteTab').removeAttr('id');
-      rng = new Range(welTab[0], 1);
+      rng = range.create(welTab[0], 1);
       rng.select();
       dom.remove(welTab[0]);
     };
@@ -643,25 +648,25 @@
     
     this.lineHeight = function(welEditable, sValue) {
       recordUndo(welEditable);
-      style.stylePara(new Range(), {lineHeight: sValue});
+      style.stylePara(range.create(), {lineHeight: sValue});
     };
 
     this.unlink = function(welEditable) {
-      var rng = new Range();
+      var rng = range.create();
       if (rng.isOnAnchor()) {
         recordUndo(welEditable);
         var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = new Range(elAnchor, 0, elAnchor, 1);
+        rng = range.create(elAnchor, 0, elAnchor, 1);
         rng.select();
         document.execCommand('unlink');
       }
     };
 
     this.setLinkDialog = function(welEditable, fnShowDialog) {
-      var rng = new Range();
+      var rng = range.create();
       if (rng.isOnAnchor()) {
         var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = new Range(elAnchor, 0, elAnchor, 1);
+        rng = range.create(elAnchor, 0, elAnchor, 1);
       }
       fnShowDialog({
         range: rng,
@@ -678,7 +683,7 @@
           rng.insertNode($('<A id="linkAnchor">' + sLinkUrl + '</A>')[0]);
           var welAnchor = $('#linkAnchor').removeAttr('id')
                                           .attr('href', sLinkUrlWithProtocol);
-          rng = new Range(welAnchor[0], 0, welAnchor[0], 1);
+          rng = range.create(welAnchor[0], 0, welAnchor[0], 1);
           rng.select();
         } else {
           document.execCommand('createlink', false, sLinkUrlWithProtocol);
@@ -712,7 +717,7 @@
       }
       sTR = aTR.join('');
       var sTable = '<table class="table table-bordered">' + sTR + '</table>';
-      (new Range()).insertNode($(sTable)[0]);
+      range.create().insertNode($(sTable)[0]);
     };
 
     this.float = function(welEditable, sValue, elTarget) {
@@ -1737,13 +1742,13 @@
     },
     // inner object for test
     summernoteInner: function() {
-      return { dom: dom, list: list, func: func, Range: Range };
+      return { dom: dom, list: list, func: func, range: range };
     }
   });
 })(jQuery); // jQuery
 
-//Array.prototype.reduce fallback
-//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
+// Array.prototype.reduce fallback
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
 if ('function' !== typeof Array.prototype.reduce) {
   Array.prototype.reduce = function(callback, opt_initialValue) {
     'use strict';
