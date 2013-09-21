@@ -87,8 +87,8 @@ $('#summernote').destroy();
 
 #### v0.4 2013-10-01
 * Support both Bootstrap 3.0 and 2.x
-* Image Upload
 * support IE8
+* Image Upload
 * Fullscreen
 
 ### Change Log
