@@ -83,10 +83,10 @@ $('#summernote').destroy();
 ### Upcoming Features
 * Air Mode
 * Responsive Toolbar
+* Table: Handles(Sizing, Selection) and Popover
 
 #### v0.4 2013-10-01
 * Support both Bootstrap 3.0 and 2.x
-* Table: Handles(Sizing, Selection) and Popover
 * Image Upload
 * support IE8
 * Fullscreen
