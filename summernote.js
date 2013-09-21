@@ -1251,8 +1251,8 @@
       }
       if (options.onfocus) { oLayoutInfo.editable.focus(options.onfocus); }
       if (options.onblur) { oLayoutInfo.editable.blur(options.onblur); }
-      if (options.onkeyup) { oLayoutInfo.editable.blur(options.onkeyup); }
-      if (options.onkeydown) { oLayoutInfo.editable.blur(options.onkeydown); }
+      if (options.onkeyup) { oLayoutInfo.editable.keyup(options.onkeyup); }
+      if (options.onkeydown) { oLayoutInfo.editable.keydown(options.onkeydown); }
 
       // TODO: callback for advanced features
       // autosave, impageUpload, imageUploadError, fileUpload, fileUploadError
