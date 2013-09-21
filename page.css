@@ -2,6 +2,10 @@
 -------------------------------------------------- */
 body { padding-top: 50px; }
 
+.navbar-fixed-top {
+  opacity: 0.9;
+}
+
 .jumbotron {
   padding-top: 20px;
   background-color: #f7f5fa;
