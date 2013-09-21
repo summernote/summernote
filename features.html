@@ -200,9 +200,11 @@
         <p>Destroy Summernote.</p>
         <pre><code class="javascript">$('.summernote').destroy();</code></pre>
         <h3 id="api-code">get & set Code</h3>
-        <p>Get Code.</p>
-        <pre><code class="javascript">var aHTML = $('.summernote').code(); //aHTML: array of strings.</code></pre>
-        <p>Set Code.</p>
+        <p>Get the HTML contents of the first summernote in the set of matched elements.</p>
+        <pre><code class="javascript">var sHTML = $('.summernote').code();</code></pre>
+        <p>Get the HTML content of the second summernote with jQuery <a href="http://api.jquery.com/eq/">eq</a>.</p>
+        <pre><code class="javascript">var sHTML = $('.summernote').eq(1).code();</code></pre>
+        <p>A string of HTML to set as the content of each matched element.</p>
         <pre><code class="javascript">$('.summernote').code(sHTML);</code></pre>
       </section>
       <section>
