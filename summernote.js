@@ -1714,11 +1714,11 @@
     code: function(sHTML) {
       //get the HTML contents
       if (sHTML === undefined) {
-        return this.map(function(idx, elHolder) {
-          var info = renderer.layoutInfoFromHolder($(elHolder));
-          var bEditable = !!(info && info.editable);
-          return  bEditable ? info.editable.html() : $(elHolder).html();
-        });
+        var welHolder = this.first();
+        if (welHolder.length == 0) { return; }
+        var info = renderer.layoutInfoFromHolder(welHolder);
+        var bEditable = !!(info && info.editable);
+        return  bEditable ? info.editable.html() : welHolder.html();
       }
 
       // set the HTML contents
