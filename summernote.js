@@ -1378,7 +1378,7 @@
 
     };
     var sPopover = '<div class="note-popover">' +
-                     '<div class="note-link-popover popover fade bottom in" style="display: none;">' +
+                     '<div class="note-link-popover popover bottom in" style="display: none;">' +
                        '<div class="arrow"></div>' +
                        '<div class="popover-content note-link-content">' +
                          '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
@@ -1388,7 +1388,7 @@
                          '</div>' +
                        '</div>' +
                      '</div>' +
-                     '<div class="note-image-popover popover fade bottom in" style="display: none;">' +
+                     '<div class="note-image-popover popover bottom in" style="display: none;">' +
                        '<div class="arrow"></div>' +
                        '<div class="popover-content note-image-content">' +
                          '<div class="btn-group">' +

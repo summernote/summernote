@@ -9,6 +9,8 @@
  ------------------------------------------*/
 .note-editor {
   border: 1px solid @border-color;
+
+  /* fullscreen mode */
   &.fullscreen {
     position: fixed;
     top: 0;
@@ -23,13 +25,20 @@
     }
   }
   
-  //toolbar
+  /* toolbar */
   .note-toolbar {
-    padding: 5px;
+    padding-left: 5px;
+    padding-bottom: 5px;
     margin: 0;
     background-color: @background-color;
     border-bottom: 1px solid @border-color;
-    
+
+    &>.btn-group {
+      margin-top: 5px;
+      margin-left: 0;
+      margin-right: 5px;
+    }
+
     .note-table {
       .dropdown-menu {
         min-width: 0;
@@ -131,7 +140,7 @@
         max-width: 200px;
         overflow: hidden;
         text-overflow: ellipsis;
-        white-space: nowrap; /* for FF */ 
+        white-space: nowrap;    /* for FF */ 
         vertical-align: middle; /* for FF */
       }
       .btn-group+.btn-group {
@@ -143,9 +152,9 @@
     }
   }
 
-  // note handle
+  /* note handle */
   .note-handle {
-    // control selection
+    /* control selection */
     .note-control-selection {
       position: absolute;
       display: none;
@@ -215,7 +224,7 @@
     }
   }
 
-  // dialog
+  /* dialog */
   .note-dialog {
     &>div {
       display: none; /* BS2's hide pacth. */
@@ -224,7 +233,7 @@
       .note-dropzone {
         min-height: 200px;
         font-size: 30px;
-        line-height: 6; // vertical-align
+        line-height: 6; /* vertical-align */
         color: lightgray;
         text-align: center;
         border: 4px dashed lightgray;
@@ -288,19 +297,19 @@
     }
   }
   
-  // editable
+  /* editable */
   .note-editable {
     padding: 10px;
     overflow: scroll;
     outline: none;
   }
   
-  //dropdown-menu for toolbar and popover
+  /* dropdown-menu for toolbar and popover */
   .dropdown-menu {
     min-width: 90px;
 
-    // dropdown-menu right position
-    // http://forrst.com/posts/Bootstrap_right_positioned_dropdown-2KB
+    /* dropdown-menu right position */
+    /* http://forrst.com/posts/Bootstrap_right_positioned_dropdown-2KB */
     &.right {
       right: 0;
       left: auto;
@@ -308,7 +317,7 @@
       &::after { right: 10px; left: auto !important;  }
     }
 
-    // dropdown-menu for selectbox
+    /* dropdown-menu for selectbox */
     li a i {
       color: deepskyblue;
       visibility: hidden;
@@ -318,13 +327,13 @@
     }
   }
   
-  // buttons for toolbar and popover
+  /* buttons for toolbar and popover */
   .btn-sm {
     min-height: 33px;
     font-size: 14px;
   }
   
-  // color palette for toolbar and popover
+  /* color palette for toolbar and popover */
   .note-color-palette {
     line-height: 1;
     div {
