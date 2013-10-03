@@ -85,9 +85,7 @@ $('#summernote').destroy();
 * Responsive Toolbar
 * Table: Handles(Sizing, Selection) and Popover
 
-> I'm busy with conference and company's project currently. v0.4 will be released on November 1st.
->
-> from alan
+> **NOTE:** I'm busy with conference and company's project currently. v0.4 will be released on November 1st. from alan
 
 #### v0.4 2013-10-01 -> 2013-11-01
 * Support both Bootstrap 3.0 and 2.x
