@@ -278,7 +278,7 @@
       isDiv: makePredByNodeName('DIV'), isSpan: makePredByNodeName('SPAN'),
       isB: makePredByNodeName('B'), isU: makePredByNodeName('U'),
       isS: makePredByNodeName('S'), isI: makePredByNodeName('I'),
-      isImg: makePredByNodeName('IMG'),
+      isImg: makePredByNodeName('IMG'), isTextarea: makePredByNodeName('TEXTAREA'),
       ancestor: ancestor, listAncestor: listAncestor,
       listNext: listNext, listPrev: listPrev,
       commonAncestor: commonAncestor, listBetween: listBetween,
@@ -1606,7 +1606,11 @@
         welEditable.data('tabsize', nTabsize);
       }
 
-      welEditable.html(welHolder.html());
+      var sHTML = welHolder.html();
+      var unescape = function(str) { return $("<div/>").html(str).text(); };
+      if (dom.isTextarea(welHolder[0])) { sHTML = unescape(sHTML); } 
+
+      welEditable.html(sHTML);
       welEditable.data('NoteHistory', new History());
       
       //04. create Toolbar
