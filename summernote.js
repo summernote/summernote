@@ -625,7 +625,6 @@
     for (var idx = 0, len=aCmd.length; idx < len; idx ++) {
       this[aCmd[idx]] = function(sCmd) {
         return function(welEditable, sValue) {
-         // console.log('sValue',sValue);
           recordUndo(welEditable);
           document.execCommand(sCmd, false, sValue);
         };
@@ -659,7 +658,6 @@
       recordUndo(welEditable);
       var html = "<img src='"+sValue+"'' style='width:300px'>"
       insertHtmlAtCursor(html)
-
       //document.execCommand('insertImage', false, sValue);
     }
 
