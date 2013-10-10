@@ -1062,7 +1062,6 @@
       $.each(files, function(idx, file) {
         var fileReader = new FileReader;
         fileReader.onload = function(event) {
-          console.log(editor.insertImage);
           editor.insertImage(welEditable, event.target.result); // sURL
         };
         fileReader.readAsDataURL(file);
