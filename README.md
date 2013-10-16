@@ -92,6 +92,7 @@ $('#summernote').destroy();
 * support IE8
 * Image Upload
 * Fullscreen
+* Code View
 
 ### Change Log
 
