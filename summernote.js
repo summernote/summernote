@@ -269,6 +269,13 @@
 
       elParent.removeChild(node);
     };
+
+    var unescape = function(str) {
+      return $("<div/>").html(str).text();
+    };
+    var html = function($node) {
+      return dom.isTextarea($node[0]) ? unescape($node.val()) : $node.html();
+    };
     
     return {
       isText: isText,
@@ -284,7 +291,7 @@
       commonAncestor: commonAncestor, listBetween: listBetween,
       insertAfter: insertAfter, position: position,
       makeOffsetPath: makeOffsetPath, fromOffsetPath: fromOffsetPath,
-      split: split, remove: remove
+      split: split, remove: remove, html: html
     };
   }();
 
@@ -809,6 +816,18 @@
       var welBtn = welToolbar.find('button[data-event="fullscreen"]');
       welBtn[bFullscreen ? 'addClass' : 'removeClass']('active');
     };
+    this.updateCodeview = function(welToolbar, bCodeview) {
+      var welBtn = welToolbar.find('button[data-event="codeview"]');
+      welBtn[bCodeview ? 'addClass' : 'removeClass']('active');
+    };
+
+    this.enable = function(welToolbar) {
+      welToolbar.find('button').not('button[data-event="codeview"]').removeClass('disabled');
+    };
+
+    this.disable = function(welToolbar) {
+      welToolbar.find('button').not('button[data-event="codeview"]').addClass('disabled');
+    };
   };
   
   /**
@@ -889,7 +908,7 @@
         welDropzone.on('drop', function(e) {
           hDropImage(e); welImageDialog.modal('hide');
         });
-        welImageInput.on('change', function() {
+        welImageInput.on('change', function(event) {
           fnInsertImages(this.files); $(this).val('');
           welImageDialog.modal('hide');
         });
@@ -957,6 +976,7 @@
         editor: function() { return welEditor; },
         toolbar: function() { return welEditor.find('.note-toolbar'); },
         editable: function() { return welEditor.find('.note-editable'); },
+        codeable: function() { return welEditor.find('.note-codeable'); },
         statusbar: function() { return welEditor.find('.note-statusbar'); },
         popover: function() { return welEditor.find('.note-popover'); },
         handle: function() { return welEditor.find('.note-handle'); },
@@ -1114,7 +1134,8 @@
 
         var oLayoutInfo = makeLayoutInfo(event.target);
         var welDialog = oLayoutInfo.dialog(),
-            welEditable = oLayoutInfo.editable();
+            welEditable = oLayoutInfo.editable(),
+            welCodeable = oLayoutInfo.codeable();
 
         // before command
         var elTarget;
@@ -1162,6 +1183,25 @@
           }
 
           toolbar.updateFullscreen(welToolbar, bFullscreen);
+        } else if (sEvent === 'codeview') {
+          var welEditor = oLayoutInfo.editor(),
+              welToolbar = oLayoutInfo.toolbar();
+          welEditor.toggleClass('codeview');
+
+          var bCodeview = welEditor.hasClass('codeview')
+          if (bCodeview) {
+            welCodeable.val(welEditable.html());
+            welCodeable.height(welEditable.height());
+            toolbar.disable(welToolbar);
+            welCodeable.focus();
+          } else {
+            welEditable.html(welCodeable.val());
+            welEditable.height(welCodeable.height());
+            toolbar.enable(welToolbar);
+            welEditable.focus();
+          }
+
+          toolbar.updateCodeview(oLayoutInfo.toolbar(), bCodeview);
         }
 
         hToolbarAndPopoverUpdate(event);
@@ -1171,7 +1211,9 @@
     var EDITABLE_PADDING = 24;
     var hStatusbarMousedown = function(event) {
       var welDocument = $(document);
-      var welEditable = makeLayoutInfo(event.target).editable();
+      var oLayoutInfo = makeLayoutInfo(event.target);
+      var welEditable = oLayoutInfo.editable(),
+          welCodeable = oLayoutInfo.codeable();
 
       var nEditableTop = welEditable.offset().top - welDocument.scrollTop();
       var hMousemove = function(event) {
@@ -1374,8 +1416,9 @@
       help:
         '<button type="button" class="btn btn-default btn-sm btn-small" title="Help" data-shortcut="Ctrl+/" data-mac-shortcut="⌘+/" data-event="showHelpDialog" tabindex="-1"><i class="icon-question"></i></button>',
       fullscreen:
-        '<button type="button" class="btn btn-default btn-sm btn-small" title="Full Screen" data-event="fullscreen" tabindex="-1"><i class="icon-fullscreen"></i></button>'
-
+        '<button type="button" class="btn btn-default btn-sm btn-small" title="Full Screen" data-event="fullscreen" tabindex="-1"><i class="icon-fullscreen"></i></button>',
+      codeview:
+        '<button type="button" class="btn btn-default btn-sm btn-small" title="Code View" data-event="codeview" tabindex="-1"><i class="icon-code"></i></button>'
     };
     var sPopover = '<div class="note-popover">' +
                      '<div class="note-link-popover popover bottom in" style="display: none;">' +
@@ -1606,12 +1649,11 @@
         welEditable.data('tabsize', nTabsize);
       }
 
-      var sHTML = welHolder.html();
-      var unescape = function(str) { return $("<div/>").html(str).text(); };
-      if (dom.isTextarea(welHolder[0])) { sHTML = unescape(sHTML); } 
-
-      welEditable.html(sHTML);
+      welEditable.html(dom.html(welHolder));
       welEditable.data('NoteHistory', new History());
+
+      //031. create Codeable
+      var welCodeable = $('<textarea class="note-codeable"></textarea>').prependTo(welEditor);
       
       //04. create Toolbar
       var sToolbar = '';
@@ -1691,7 +1733,7 @@
           ['height', ['height']],
           ['table', ['table']],
           ['insert', ['link', 'picture']],
-          ['fullscreen', ['fullscreen']],
+          ['view', ['fullscreen', 'codeview']],
           ['help', ['help']]
         ]
       }, options );
