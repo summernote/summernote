@@ -698,10 +698,11 @@
     
     this.color = function(welEditable, sObjColor) {
       var oColor = JSON.parse(sObjColor);
+      var foreColor = oColor.foreColor, backColor = oColor.backColor;
 
       recordUndo(welEditable);
-      document.execCommand('foreColor', false, oColor.foreColor);
-      document.execCommand('backColor', false, oColor.backColor);
+      if (foreColor) { document.execCommand('foreColor', false, foreColor); }
+      if (backColor) { document.execCommand('backColor', false, backColor); }
     };
     
     this.insertTable = function(welEditable, sDim) {
@@ -1356,7 +1357,7 @@
         '<li><a data-event="fontSize" data-value="36"><i class="icon-ok"></i> 36</a></li>' +
         '</ul>',
       color:
-        '<button type="button" class="btn btn-default btn-sm btn-small note-recent-color" title="Recent Color" data-event="color" data-value=\'{"foreColor":"black","backColor":"yellow"}\' tabindex="-1"><i class="icon-font" style="color:black;background-color:yellow;"></i></button>' +
+        '<button type="button" class="btn btn-default btn-sm btn-small note-recent-color" title="Recent Color" data-event="color" data-value=\'{"backColor":"yellow"}\' tabindex="-1"><i class="icon-font" style="color:black;background-color:yellow;"></i></button>' +
         '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="More Color" data-toggle="dropdown" tabindex="-1">' +
         '<span class="caret"></span>' +
         '</button>' +
