@@ -1364,10 +1364,12 @@
         '<li>' +
         '<div class="btn-group">' +
         '<div class="note-palette-title">BackColor</div>' +
+        '<div class="note-color-reset" data-event="backColor" data-value="inherit" title="Transparent">Set transparent</div>' +
         '<div class="note-color-palette" data-target-event="backColor"></div>' +
         '</div>' +
         '<div class="btn-group">' +
         '<div class="note-palette-title">FontColor</div>' +
+        '<div class="note-color-reset" data-event="foreColor" data-value="inherit" title="Reset">Reset to default</div>' +
         '<div class="note-color-palette" data-target-event="foreColor"></div>' +
         '</div>' +
         '</li>' +
@@ -1654,6 +1656,9 @@
 
       //031. create Codeable
       var welCodeable = $('<textarea class="note-codeable"></textarea>').prependTo(welEditor);
+
+      //032. set styleWithCSS for backColor / foreColor clearing with 'inherit'.
+      document.execCommand('styleWithCSS', true, null);
       
       //04. create Toolbar
       var sToolbar = '';
