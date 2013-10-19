@@ -1532,7 +1532,7 @@
                       '<div class="modal-dialog">' +
                         '<div class="modal-content">' +
                           '<div class="modal-header">' +
-                            '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" tabindex="-1">×</button>' +
+                            '<button type="button" class="close" aria-hidden="true" tabindex="-1">×</button>' +
                             '<h4>Insert Image</h4>' +
                           '</div>' +
                           '<div class="modal-body">' +
@@ -1549,7 +1549,7 @@
                       '<div class="modal-dialog">' +
                         '<div class="modal-content">' +
                           '<div class="modal-header">' +
-                            '<button type="button" class="close" data-dismiss="modal" aria-hidden="true" tabindex="-1">×</button>' +
+                            '<button type="button" class="close" aria-hidden="true" tabindex="-1">×</button>' +
                             '<h4>Edit Link</h4>' +
                           '</div>' +
                           '<div class="modal-body">' +
@@ -1571,12 +1571,12 @@
                         '</div>' +
                       '</div>' +
                     '</div>' +
-                    '<div class="note-help-dialog modal fade" aria-hidden="false">' +
+                    '<div class="note-help-dialog modal" aria-hidden="false">' +
                       '<div class="modal-dialog">' +
                         '<div class="modal-content">' +
                           '<div class="modal-body">' +
                             '<div class="modal-background">' +
-                            '<a class="modal-close pull-right" data-dismiss="modal" aria-hidden="true" tabindex="-1">Close</a>' +
+                            '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">Close</a>' +
                             '<div class="title">Keyboard shortcuts</div>' +
                             sShortcutTable +
                             '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote v0.3</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
@@ -1686,8 +1686,11 @@
       $(sHandle).prependTo(welEditor);
       
       //07. create Dialog
-      $(sDialog).prependTo(welEditor);
-      
+      var welDialog = $(sDialog).prependTo(welEditor);
+      welDialog.find('button.close, a.modal-close').click(function(event) {
+        $(this).closest('.modal').modal('hide');
+      });
+
       //08. Editor/Holder switch
       welEditor.insertAfter(welHolder);
       welHolder.hide();
