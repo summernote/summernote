@@ -1659,7 +1659,9 @@
       var welCodeable = $('<textarea class="note-codeable"></textarea>').prependTo(welEditor);
 
       //032. set styleWithCSS for backColor / foreColor clearing with 'inherit'.
-      document.execCommand('styleWithCSS', true, null);
+      setTimeout(function() { // protect FF Error: NS_ERROR_FAILURE: Failure
+        document.execCommand('styleWithCSS', 0, true);
+      });
       
       //04. create Toolbar
       var sToolbar = '';
