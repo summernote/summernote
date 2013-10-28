@@ -696,6 +696,19 @@
       });
     };
     
+    this.setImageDialog = function(welEditable, fnShowDialog) {
+      var rng = range.create();
+      fnShowDialog(function(sImageUrl) {
+        rng.select(); recordUndo(welEditable);
+
+        var bProtocol = sImageUrl.toLowerCase().indexOf('://') !== -1;
+        var sImageUrlWithProtocol = bProtocol ? sImageUrl : 'http://' + sImageUrl;
+        var sImg = '<img src="' + sImageUrlWithProtocol + '"/>';
+
+        rng.insertNode($(sImg)[0]);
+      });
+    };
+    
     this.color = function(welEditable, sObjColor) {
       var oColor = JSON.parse(sObjColor);
       var foreColor = oColor.foreColor, backColor = oColor.backColor;
@@ -899,10 +912,12 @@
    * Dialog
    */
   var Dialog = function() {
-    this.showImageDialog = function(welDialog, hDropImage, fnInsertImages) {
+    this.showImageDialog = function(welDialog, hDropImage, fnInsertImages, callback) {
       var welImageDialog = welDialog.find('.note-image-dialog');
       var welDropzone = welDialog.find('.note-dropzone'),
-          welImageInput = welDialog.find('.note-image-input');
+          welImageInput = welDialog.find('.note-image-input'),
+          welImageUrl = welDialog.find('.note-image-url'),
+          welImageBtn = welDialog.find('.note-image-btn');
 
       welImageDialog.on('shown.bs.modal', function(e) {
         welDropzone.on('dragenter dragover dragleave', false);
@@ -913,10 +928,24 @@
           fnInsertImages(this.files); $(this).val('');
           welImageDialog.modal('hide');
         });
+        welImageUrl.val('').keyup(function(event) {
+          if (welImageUrl.val()) {
+            welImageBtn.removeClass('disabled').attr('disabled', false);
+          } else {
+            welImageBtn.addClass('disabled').attr('disabled', true);
+          }
+        }).trigger('focus');
+        welImageBtn.click(function(event) {
+          welImageDialog.modal('hide');
+          callback(welImageUrl.val());
+          event.preventDefault();
+        });
       }).on('hidden.bs.modal', function(e) {
         welDropzone.off('dragenter dragover dragleave drop');
         welImageInput.off('change');
         welImageDialog.off('shown.bs.modal hidden.bs.modal');
+        welImageUrl.off('keyup');
+        welImageBtn.off('click');
       }).modal('show');
     };
 
@@ -969,6 +998,14 @@
                 B: 66, E: 69, I: 73, J: 74, K: 75, L: 76, R: 82, S: 83, U: 85,
                 Y: 89, Z: 90, SLASH: 191,
                 LEFTBRACKET: 219, BACKSLACH: 220, RIGHTBRACKET: 221 };
+
+    var callback = {
+        onAutoSave: null,
+        onImageUpload: null,
+        onImageUploadError: null,
+        onFileUpload: null,
+        onFileUploadError: null
+    };
 
     // makeLayoutInfo from editor's descendant node.
     var makeLayoutInfo = function(descendant) {
@@ -1050,13 +1087,17 @@
 
     var insertImages = function(welEditable, files) {
       welEditable.trigger('focus');
-      $.each(files, function(idx, file) {
-        var fileReader = new FileReader;
-        fileReader.onload = function(event) {
-          editor.insertImage(welEditable, event.target.result); // sURL
-        };
-        fileReader.readAsDataURL(file);
-      });
+      if (callback.onImageUpload) {
+          callback.onImageUpload(files, editor, welEditable); // call custom handler
+      } else {
+        $.each(files, function(idx, file) {
+          var fileReader = new FileReader;
+          fileReader.onload = function(event) {
+              editor.insertImage(welEditable, event.target.result); // sURL
+          };
+          fileReader.readAsDataURL(file);
+        });
+      }
     };
 
     var hDropImage = function(event) {
@@ -1159,8 +1200,10 @@
             dialog.showLinkDialog(welDialog, linkInfo, cb);
           });
         } else if (sEvent === 'showImageDialog') {
-          dialog.showImageDialog(welDialog, hDropImage, function(files) {
-            insertImages(welEditable, files);
+          editor.setImageDialog(welEditable, function(cb) {
+            dialog.showImageDialog(welDialog, hDropImage, function(files) {
+              insertImages(welEditable, files);
+            }, cb);
           });
         } else if (sEvent === 'showHelpDialog') {
           dialog.showHelpDialog(welDialog);
@@ -1299,6 +1342,7 @@
 
       // TODO: callback for advanced features
       // autosave, impageUpload, imageUploadError, fileUpload, fileUploadError
+      if (options.onImageUpload) { callback.onImageUpload = options.onImageUpload; }
     };
 
     this.dettach = function(oLayoutInfo) {
@@ -1538,9 +1582,14 @@
                           '<div class="modal-body">' +
                             '<div class="row-fluid">' +
                               '<div class="note-dropzone span12">Drag an image here</div>' +
-                              '<div>or if you prefer...</div>' +
-                              '<input class="note-image-input" type="file" class="note-link-url" type="text" />' +
+                              '<h5>Select from files</h5>' +
+                              '<input class="note-image-input" type="file" name="files" multiple/>' +
+                              '<h5>Image URL</h5>' +
+                              '<input class="note-image-url form-control span12" type="text" />' +
                             '</div>' +
+                          '</div>' +
+                          '<div class="modal-footer">' +
+                            '<button href="#" class="btn btn-primary note-image-btn disabled" disabled="disabled">Insert</button>' +
                           '</div>' +
                         '</div>' +
                       '</div>' +
