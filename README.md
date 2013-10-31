@@ -92,10 +92,10 @@ $('#summernote').destroy();
 ### Change Log
 
 #### v0.4 2013-11-01
-* Support both Bootstrap 3.0 and 2.x
-* Fullscreen
-* Code View
-* Image Upload callback
+* `ADDED` Support both Bootstrap 3.0 and 2.x
+* `ADDED` Fullscreen
+* `ADDED` Code View
+* `ADDED` Image Upload callback
 
 #### v0.3 2013-09-01
 * `FIXED` bugs(image upload, fontsize, tab, recent color, ...)
