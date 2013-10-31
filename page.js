@@ -1,9 +1,11 @@
 $(document).ready(function() {
   // scrollspy  
   var $body = $(document.body), $navbar = $('.bs-page-navbar');
-  $body.scrollspy({
-    target: '.bs-page-sidebar',
-    offset: $navbar.height()
+  $(window).load(function() {
+    $body.scrollspy({
+      target: '.bs-page-sidebar',
+      offset: $navbar.height()
+    });
   });
 
   // sidebar affix
