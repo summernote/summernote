@@ -639,6 +639,7 @@
     }
 
     this.formatBlock = function(welEditable, sValue) {
+      recordUndo(welEditable);
       sValue = bMSIE ? '<' + sValue + '>' : sValue;
       document.execCommand('FormatBlock', false, sValue);
     };
