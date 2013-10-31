@@ -1629,7 +1629,7 @@
                             '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">Close</a>' +
                             '<div class="title">Keyboard shortcuts</div>' +
                             sShortcutTable +
-                            '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote v0.3</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
+                            '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote v0.4</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
                           '</div>' +
                         '</div>' +
                       '</div>' +
