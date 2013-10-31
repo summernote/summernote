@@ -639,6 +639,7 @@
     }
 
     this.formatBlock = function(welEditable, sValue) {
+      recordUndo(welEditable);
       sValue = bMSIE ? '<' + sValue + '>' : sValue;
       document.execCommand('FormatBlock', false, sValue);
     };
@@ -1647,7 +1648,7 @@
     
     // pallete colors
     var aaColor = [
-      ['#000000', '#424242', '#636363', '#9C9C94', '#CEC6CE', '#EFEFEF', '#EFF7F7', '#FFFFFF'],
+      ['#000000', '#424242', '#636363', '#9C9C94', '#CEC6CE', '#EFEFEF', '#F7F7F7', '#FFFFFF'],
       ['#FF0000', '#FF9C00', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#9C00FF', '#FF00FF'],
       ['#F7C6CE', '#FFE7CE', '#FFEFC6', '#D6EFD6', '#CEDEE7', '#CEE7F7', '#D6D6E7', '#E7D6DE'],
       ['#E79C9C', '#FFC69C', '#FFE79C', '#B5D6A5', '#A5C6CE', '#9CC6EF', '#B5A5D6', '#D6A5BD'],
