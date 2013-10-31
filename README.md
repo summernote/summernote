@@ -85,9 +85,10 @@ $('#summernote').destroy();
 * Responsive Toolbar
 * Table: Handles(Sizing, Selection) and Popover
 
-#### v0.5
+#### v0.5 2013-12-01
 * support IE8
-* Image Upload
+* Clipboard
+* Image Selection
 
 ### Change Log
 
