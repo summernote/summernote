@@ -1,6 +1,6 @@
 {
   "name": "summernote",
-  "version": "0.4.0",
+  "version": "0.4",
   "main": ["./build/summernote.min.js", "./build/summernote.css"],
   "ignore": [
     "**/.*",
