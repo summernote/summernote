@@ -85,16 +85,18 @@ $('#summernote').destroy();
 * Responsive Toolbar
 * Table: Handles(Sizing, Selection) and Popover
 
-> **NOTE:** I'm busy with conference and company's project currently. v0.4 will be released on November 1st. from alan
-
-#### v0.4 2013-10-01 -> 2013-11-01
-* Support both Bootstrap 3.0 and 2.x
+#### v0.5 2013-12-01
 * support IE8
-* Image Upload
-* Fullscreen
-* Code View
+* Clipboard
+* Image Selection
 
 ### Change Log
+
+#### v0.4 2013-11-01
+* `ADDED` Support both Bootstrap 3.0 and 2.x
+* `ADDED` Fullscreen
+* `ADDED` Code View
+* `ADDED` Image Upload callback
 
 #### v0.3 2013-09-01
 * `FIXED` bugs(image upload, fontsize, tab, recent color, ...)
