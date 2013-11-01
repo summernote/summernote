@@ -1572,6 +1572,10 @@
                            '</tbody>' +
                          '</table>';
 
+    if (!bMac) { // shortcut modifier for windows
+      sShortcutTable = sShortcutTable.replace(/⌘/g, 'Ctrl').replace(/⇧/g, 'Shift');
+    }
+
     var sDialog = '<div class="note-dialog">' +
                     '<div class="note-image-dialog modal" aria-hidden="false">' +
                       '<div class="modal-dialog">' +
