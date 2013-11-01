@@ -3101,8 +3101,8 @@ fieldset[disabled] .note-editor .btn-link:focus {
   border-radius: 6px;
 }
 .note-editor .btn-group > .btn + .dropdown-toggle {
-  padding-left: 8px;
-  padding-right: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 .note-editor .btn-group > .btn-lg + .dropdown-toggle {
   padding-left: 12px;
