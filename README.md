@@ -67,8 +67,8 @@ $('#summernote').destroy();
 
 #### Dependencies
 * jQuery: http://jquery.com/
-* bootstrap: http://twitter.github.io/bootstrap/
-* fontAwesome: https://github.com/FortAwesome/Font-Awesome
+* bootstrap: http://twitter.github.io/bootstrap (both 2.x and 3.x)
+* fontAwesome: https://github.com/FortAwesome/Font-Awesome (both 3.x and 4.x)
 
 ### Supported platform
 * Modern Browser (Safari, Chrome, Firefox, Opera, Internet Explorer 9+)
