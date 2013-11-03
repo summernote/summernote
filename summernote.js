@@ -7,7 +7,7 @@
   //Check Platform/Agent
   var bMac = navigator.appVersion.indexOf('Mac') > -1; 
   var bMSIE = navigator.userAgent.indexOf('MSIE') > -1;
-  var bMoz = navigator.userAgent.indexOf('Mozilla') > -1;
+  var bFF = navigator.userAgent.indexOf('Firefox') > -1;
   
   /**
    * func utils (for high-order func's arg)
@@ -648,8 +648,8 @@
     this.fontSize = function(welEditable, sValue) {
       recordUndo(welEditable);
       document.execCommand('fontSize', false, 3);
-      if (bMoz) {
-        // mozilla: <font size="3"> to <span style='font-size={sValue}px;'>, buggy
+      if (bFF) {
+        // firefox: <font size="3"> to <span style='font-size={sValue}px;'>, buggy
         welEditable.find('font[size=3]').removeAttr('size').css('font-size', sValue + 'px');
       } else {
         // chrome: <span style="font-size: medium"> to <span style='font-size={sValue}px;'>
