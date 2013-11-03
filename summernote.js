@@ -1588,7 +1588,7 @@
                             '<div class="row-fluid">' +
                               '<div class="note-dropzone span12">Drag an image here</div>' +
                               '<h5>Select from files</h5>' +
-                              '<input class="note-image-input" type="file" name="files" multiple/>' +
+                              '<input class="note-image-input" type="file" name="files" accept="image/*" capture="camera" />' +
                               '<h5>Image URL</h5>' +
                               '<input class="note-image-url form-control span12" type="text" />' +
                             '</div>' +
