@@ -747,7 +747,7 @@
       range.create().insertNode($(sTable)[0]);
     };
 
-    this.float = function(welEditable, sValue, elTarget) {
+    this.floatMe = function(welEditable, sValue, elTarget) {
       recordUndo(welEditable);
       elTarget.style.cssFloat = sValue;
     };
@@ -1189,7 +1189,7 @@
 
         // before command
         var elTarget;
-        if ($.inArray(sEvent, ['resize', 'float']) !== -1) {
+        if ($.inArray(sEvent, ['resize', 'floatMe']) !== -1) {
           var welHandle = oLayoutInfo.handle();
           var welSelection = welHandle.find('.note-control-selection');
           elTarget = welSelection.data('target');
@@ -1496,9 +1496,9 @@
                            '<button type="button" class="btn btn-default btn-sm btn-small" title="Resize Quarter" data-event="resize" data-value="0.25" tabindex="-1">¼</button>' +
                          '</div>' +
                          '<div class="btn-group">' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Float Left" data-event="float" data-value="left" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Float Right" data-event="float" data-value="right" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Float None" data-event="float" data-value="none" tabindex="-1"><i class="fa fa-reorder icon-reorder"></i></button>' +
+                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Float Left" data-event="floatMe" data-value="left" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
+                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Float Right" data-event="floatMe" data-value="right" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
+                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Float None" data-event="floatMe" data-value="none" tabindex="-1"><i class="fa fa-reorder icon-reorder"></i></button>' +
                          '</div>' +
                        '</div>' +
                      '</div>' +
