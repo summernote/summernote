@@ -135,7 +135,7 @@ Dom, List, Func
 # grunt-cli is need by grunt; you might have this installed already
 npm install -g grunt-cli
 npm install
-grunt build
+grunt dist
 ```
 At this point, you should now have a `build/` directory populated with everything you need to use summernote.
 
