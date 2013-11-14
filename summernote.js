@@ -1022,7 +1022,7 @@
         editor: function() { return welEditor; },
         toolbar: function() { return welEditor.find('.note-toolbar'); },
         editable: function() { return welEditor.find('.note-editable'); },
-        codeable: function() { return welEditor.find('.note-codeable'); },
+        codable: function() { return welEditor.find('.note-codable'); },
         statusbar: function() { return welEditor.find('.note-statusbar'); },
         popover: function() { return welEditor.find('.note-popover'); },
         handle: function() { return welEditor.find('.note-handle'); },
@@ -1185,7 +1185,7 @@
         var oLayoutInfo = makeLayoutInfo(event.target);
         var welDialog = oLayoutInfo.dialog(),
             welEditable = oLayoutInfo.editable(),
-            welCodeable = oLayoutInfo.codeable();
+            welCodable = oLayoutInfo.codable();
 
         // before command
         var elTarget;
@@ -1242,13 +1242,13 @@
 
           var bCodeview = welEditor.hasClass('codeview')
           if (bCodeview) {
-            welCodeable.val(welEditable.html());
-            welCodeable.height(welEditable.height());
+            welCodable.val(welEditable.html());
+            welCodable.height(welEditable.height());
             toolbar.disable(welToolbar);
-            welCodeable.focus();
+            welCodable.focus();
           } else {
-            welEditable.html(welCodeable.val());
-            welEditable.height(welCodeable.height());
+            welEditable.html(welCodable.val());
+            welEditable.height(welCodable.height());
             toolbar.enable(welToolbar);
             welEditable.focus();
           }
@@ -1265,7 +1265,7 @@
       var welDocument = $(document);
       var oLayoutInfo = makeLayoutInfo(event.target);
       var welEditable = oLayoutInfo.editable(),
-          welCodeable = oLayoutInfo.codeable();
+          welCodable = oLayoutInfo.codable();
 
       var nEditableTop = welEditable.offset().top - welDocument.scrollTop();
       var hMousemove = function(event) {
@@ -1716,8 +1716,8 @@
       welEditable.html(dom.html(welHolder));
       welEditable.data('NoteHistory', new History());
 
-      //031. create Codeable
-      var welCodeable = $('<textarea class="note-codeable"></textarea>').prependTo(welEditor);
+      //031. create codable
+      var welCodable = $('<textarea class="note-codable"></textarea>').prependTo(welEditor);
 
       //032. set styleWithCSS for backColor / foreColor clearing with 'inherit'.
       setTimeout(function() { // protect FF Error: NS_ERROR_FAILURE: Failure
@@ -1768,6 +1768,7 @@
         editor: welEditor,
         toolbar: welEditor.find('.note-toolbar'),
         editable: welEditor.find('.note-editable'),
+        codable: welEditor.find('.note-codable'),
         statusbar: welEditor.find('.note-statusbar'),
         popover: welEditor.find('.note-popover'),
         handle: welEditor.find('.note-handle'),
@@ -1835,8 +1836,11 @@
         var welHolder = this.first();
         if (welHolder.length == 0) { return; }
         var info = renderer.layoutInfoFromHolder(welHolder);
-        var bEditable = !!(info && info.editable);
-        return  bEditable ? info.editable.html() : welHolder.html();
+        if (!!(info && info.editable)) {
+          var bCodeview = info.editor.hasClass('codeview');
+          return bCodeview ? info.codable.val() : info.editable.html();
+        }
+        return welHolder.html();
       }
 
       // set the HTML contents
