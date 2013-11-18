@@ -16,8 +16,8 @@
     var eq = function(elA) { return function(elB) { return elA === elB; }; };
     var eq2 = function(elA, elB) { return elA === elB; };
     var fail = function() { return false; };
-    var not = function(f) { return function() { return !f.apply(f, arguments); }};
-    var self = function(a) { return a; }
+    var not = function(f) { return function() { return !f.apply(f, arguments); }; };
+    var self = function(a) { return a; };
     return { eq: eq, eq2: eq2, fail: fail, not: not, self: self };
   }();
   
@@ -62,8 +62,8 @@
     var compact = function(array) {
       var aResult = [];
       for (var idx = 0, sz = array.length; idx < sz; idx ++) {
-        if (array[idx]) { aResult.push(array[idx]); };
-      };
+        if (array[idx]) { aResult.push(array[idx]); }
+      }
       return aResult;
     };
 
@@ -135,13 +135,13 @@
       var fnWalk = function(node) {
         if (!node) { return; } // traverse fisnish
         if (node === nodeA) { bStart = true; } // start point
-        if (bStart && !bEnd) { aNode.push(node) } // between
+        if (bStart && !bEnd) { aNode.push(node); } // between
         if (node === nodeB) { bEnd = true; return; } // end point
 
         for (var idx = 0, sz = node.childNodes.length; idx < sz; idx++) {
           fnWalk(node.childNodes[idx]);
         }
-      }
+      };
 
       fnWalk(commonAncestor(nodeA, nodeB)); // DFS with commonAcestor.
       return aNode;
@@ -156,7 +156,7 @@
         aNext.push(node);
         if (pred(node)) { break; }
         node = node.previousSibling;
-      };
+      }
       return aNext;
     };
     
@@ -169,7 +169,7 @@
         aNext.push(node);
         if (pred(node)) { break; }
         node = node.nextSibling;
-      };
+      }
       return aNext;
     };
     
@@ -315,7 +315,7 @@
         elPrevCont = aChild[nOffset];
       }
 
-      if (nOffset != 0 && dom.isText(aChild[nOffset - 1])) {
+      if (nOffset !== 0 && dom.isText(aChild[nOffset - 1])) {
         var textRangeStart = document.body.createTextRange(), elCurText = null;
         textRangeStart.moveToElementText(elPrevCont || elCont);
         textRangeStart.collapse(!elPrevCont);
@@ -366,7 +366,7 @@
         }
 
         return {cont: elNode, collapseToStart: bCollapseToStart, offset: nOffset};
-      }
+      };
 
       var textRange = document.body.createTextRange();
       var info = textRangeInfo(bp.cont, bp.offset);
@@ -547,7 +547,7 @@
       oStyle.aAncestor = dom.listAncestor(rng.sc, dom.isEditable);
 
       return oStyle;
-    }
+    };
   };
 
   /**
@@ -600,7 +600,7 @@
     this.tab = function(welEditable) {
       recordUndo(welEditable);
       var rng = range.create();
-      var sNbsp = new Array(welEditable.data('tabsize') + 1).join('&nbsp;')
+      var sNbsp = new Array(welEditable.data('tabsize') + 1).join('&nbsp;');
       rng.insertNode($('<span id="noteTab">' + sNbsp + '</span>')[0]);
       var welTab = $('#noteTab').removeAttr('id');
       rng = range.create(welTab[0], 1);
@@ -972,7 +972,7 @@
             welLinkBtn.addClass('disabled').attr('disabled', true);
           }
 
-          if (!linkInfo.text) { welLinkText.html(welLinkUrl.val()); };
+          if (!linkInfo.text) { welLinkText.html(welLinkUrl.val()); }
         }).trigger('focus');
         welLinkBtn.click(function(event) {
           welLinkDialog.modal('hide'); //hide and createLink (ie9+)
@@ -1099,7 +1099,7 @@
           callback.onImageUpload(files, editor, welEditable); // call custom handler
       } else {
         $.each(files, function(idx, file) {
-          var fileReader = new FileReader;
+          var fileReader = new FileReader();
           fileReader.onload = function(event) {
               editor.insertImage(welEditable, event.target.result); // sURL
           };
@@ -1120,7 +1120,7 @@
 
     var hMousedown = function(event) {
       //preventDefault Selection for FF, IE8+
-      if (dom.isImg(event.target)) { event.preventDefault(); };
+      if (dom.isImg(event.target)) { event.preventDefault(); }
     };
     
     var hToolbarAndPopoverUpdate = function(event) {
@@ -1223,7 +1223,7 @@
           var hResizeFullscreen = function() {
             var nHeight = $(window).height() - welToolbar.outerHeight();
             welEditable.css('height', nHeight);
-          }
+          };
 
           var bFullscreen = welEditor.hasClass('fullscreen');
           if (bFullscreen) {
@@ -1240,7 +1240,7 @@
               welToolbar = oLayoutInfo.toolbar();
           welEditor.toggleClass('codeview');
 
-          var bCodeview = welEditor.hasClass('codeview')
+          var bCodeview = welEditor.hasClass('codeview');
           if (bCodeview) {
             welCodable.val(welEditable.html());
             welCodable.height(welEditable.height());
@@ -1274,7 +1274,7 @@
       var hMouseup = function() {
         welDocument.unbind('mousemove', hMousemove)
                    .unbind('mouseup', hMouseup);
-      }
+      };
       welDocument.mousemove(hMousemove).mouseup(hMouseup);
       event.stopPropagation(); event.preventDefault();
     };
@@ -1652,7 +1652,7 @@
       welContainer.find('button').each(function(i, elBtn) {
         var welBtn = $(elBtn);
         var sShortcut = welBtn.attr(bMac ? 'data-mac-shortcut':'data-shortcut');
-        if (sShortcut) { welBtn.attr('title', function(i, v) { return v + ' (' + sShortcut + ')'}); }
+        if (sShortcut) { welBtn.attr('title', function(i, v) { return v + ' (' + sShortcut + ')'; }); }
       //bootstrap tooltip on btn-group bug: https://github.com/twitter/bootstrap/issues/5687
       }).tooltip({container: 'body', placement: sPlacement || 'top'});
     };
@@ -1733,7 +1733,7 @@
           sToolbar += aToolbarItem[group[1][i]];
         }
         sToolbar += '</div>';
-      };
+      }
 
       sToolbar = '<div class="note-toolbar btn-toolbar">' + sToolbar + '</div>';
 
@@ -1827,14 +1827,14 @@
       }
       if (this.length > 0 && options.oninit) { // callback on init
         options.oninit();
-      };
+      }
     },
     // get the HTML contents of note or set the HTML contents of note.
     code: function(sHTML) {
       //get the HTML contents
       if (sHTML === undefined) {
         var welHolder = this.first();
-        if (welHolder.length == 0) { return; }
+        if (welHolder.length === 0) { return; }
         var info = renderer.layoutInfoFromHolder(welHolder);
         if (!!(info && info.editable)) {
           var bCodeview = info.editor.hasClass('codeview');
