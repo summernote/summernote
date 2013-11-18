@@ -70,6 +70,20 @@
     return { head: head, last: last, initial: initial, tail: tail, 
              sum: sum, from: from, compact: compact, clusterBy: clusterBy };
   }();
+
+  /**
+   * common utils
+   */
+  var util = function() {
+    var readFile = function(file) {
+      var reader = new FileReader(), deferred = $.Deferred();
+      reader.onload = function(e) { deferred.resolve(e.target.result); }
+      reader.onerror = function(e) { deferred.reject(this); }
+      reader.readAsDataURL(file);
+      return deferred.promise();
+    };
+    return { readFile: readFile };
+  }();
   
   /**
    * dom utils
@@ -431,7 +445,6 @@
       this.isOnList = makeIsOn(dom.isList);
       // isOnAnchor: judge whether range is on anchor node or not
       this.isOnAnchor = makeIsOn(dom.isAnchor);
-
       // isCollapsed: judge whether range was collapsed
       this.isCollapsed = function() { return sc === ec && so === eo; };
 
@@ -447,11 +460,7 @@
 
       this.toString = function() {
         var nativeRng = nativeRange();
-        if (bW3CRangeSupport) {
-          return nativeRng.toString();
-        } else {
-          return nativeRng.text;
-        }
+        return bW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
       };
 
       //bookmark: offsetPath bookmark
@@ -1008,7 +1017,7 @@
                 Y: 89, Z: 90, SLASH: 191,
                 LEFTBRACKET: 219, BACKSLACH: 220, RIGHTBRACKET: 221 };
 
-    var callback = {
+    var callbacks = {
         onAutoSave: null,
         onImageUpload: null,
         onImageUploadError: null,
@@ -1096,15 +1105,13 @@
 
     var insertImages = function(welEditable, files) {
       editor.restoreRange(welEditable);
-      if (callback.onImageUpload) {
-          callback.onImageUpload(files, editor, welEditable); // call custom handler
+      if (callbacks.onImageUpload) {
+          callbacks.onImageUpload(files, editor, welEditable); // call custom handler
       } else {
         $.each(files, function(idx, file) {
-          var fileReader = new FileReader();
-          fileReader.onload = function(event) {
-              editor.insertImage(welEditable, event.target.result); // sURL
-          };
-          fileReader.readAsDataURL(file);
+          util.readFile(file).then(function(sURL) {
+            editor.insertImage(welEditable, sURL); // sURL
+          });
         });
       }
     };
@@ -1338,14 +1345,14 @@
       var welCatcher = welToolbar.find('.note-dimension-picker-mousecatcher');
       welCatcher.on('mousemove', hDimensionPickerMove);
 
-      // callback
-      // init, enter, !change, !pasteBefore, !pasteAfter, focus, blur, keyup, keydown
-      
       // save selection when focusout
       oLayoutInfo.editable.on('blur', function() {
         editor.saveRange(oLayoutInfo.editable);
       });
 
+      // callbacks
+      // init, enter, [change, pasteBefore, pasteAfter], focus, blur, keyup, keydown
+      
       if (options.onenter) {
         oLayoutInfo.editable.keypress(function(event) {
           if (event.keyCode === key.ENTER) { options.onenter(event);}
@@ -1356,9 +1363,9 @@
       if (options.onkeyup) { oLayoutInfo.editable.keyup(options.onkeyup); }
       if (options.onkeydown) { oLayoutInfo.editable.keydown(options.onkeydown); }
 
-      // TODO: callback for advanced features
-      // autosave, impageUpload, imageUploadError, fileUpload, fileUploadError
-      if (options.onImageUpload) { callback.onImageUpload = options.onImageUpload; }
+      // TODO: callbacks for advanced features (camel)
+      // autosave, imageUpload, imageUploadError, fileUpload, fileUploadError
+      if (options.onImageUpload) { callbacks.onImageUpload = options.onImageUpload; }
     };
 
     this.dettach = function(oLayoutInfo) {
