@@ -468,7 +468,10 @@
       create : function(sc, so, ec, eo) {
         if (arguments.length === 0) { // from Browser Selection
           if (bW3CRangeSupport) { // webkit, firefox
-            var nativeRng = document.getSelection().getRangeAt(0);
+            var selection = document.getSelection();
+            if (selection.rangeCount === 0) { return null; }
+
+            var nativeRng = selection.getRangeAt(0);
             sc = nativeRng.startContainer, so = nativeRng.startOffset,
             ec = nativeRng.endContainer, eo = nativeRng.endOffset;
           } else { // IE8: TextRange
@@ -590,6 +593,17 @@
    * Editor
    */
   var Editor = function() {
+    // save current range
+    this.saveRange = function(welEditable) {
+      welEditable.data('range', range.create());
+    }
+
+    // restore lately range
+    this.restoreRange = function(welEditable) {
+      var rng = welEditable.data('range');
+      if (rng) { rng.select(); }
+    }
+
     //currentStyle
     var style = new Style();
     this.currentStyle = function(elTarget) {
@@ -701,19 +715,6 @@
         } else {
           document.execCommand('createlink', false, sLinkUrlWithProtocol);
         }
-      });
-    };
-    
-    this.setImageDialog = function(welEditable, fnShowDialog) {
-      var rng = range.create();
-      fnShowDialog(function(sImageUrl) {
-        rng.select(); recordUndo(welEditable);
-
-        var bProtocol = sImageUrl.toLowerCase().indexOf('://') !== -1;
-        var sImageUrlWithProtocol = bProtocol ? sImageUrl : 'http://' + sImageUrl;
-        var sImg = '<img src="' + sImageUrlWithProtocol + '"/>';
-
-        rng.insertNode($(sImg)[0]);
       });
     };
     
@@ -920,7 +921,7 @@
    * Dialog
    */
   var Dialog = function() {
-    this.showImageDialog = function(welDialog, hDropImage, fnInsertImages, callback) {
+    this.showImageDialog = function(welDialog, hDropImage, fnInsertImages, fnInsertImage) {
       var welImageDialog = welDialog.find('.note-image-dialog');
       var welDropzone = welDialog.find('.note-dropzone'),
           welImageInput = welDialog.find('.note-image-input'),
@@ -945,7 +946,7 @@
         }).trigger('focus');
         welImageBtn.click(function(event) {
           welImageDialog.modal('hide');
-          callback(welImageUrl.val());
+          fnInsertImage(welImageUrl.val());
           event.preventDefault();
         });
       }).on('hidden.bs.modal', function(e) {
@@ -1094,7 +1095,7 @@
     };
 
     var insertImages = function(welEditable, files) {
-      welEditable.trigger('focus');
+      editor.restoreRange(welEditable);
       if (callback.onImageUpload) {
           callback.onImageUpload(files, editor, welEditable); // call custom handler
       } else {
@@ -1208,10 +1209,11 @@
             dialog.showLinkDialog(welDialog, linkInfo, cb);
           });
         } else if (sEvent === 'showImageDialog') {
-          editor.setImageDialog(welEditable, function(cb) {
-            dialog.showImageDialog(welDialog, hDropImage, function(files) {
-              insertImages(welEditable, files);
-            }, cb);
+          dialog.showImageDialog(welDialog, hDropImage, function(files) {
+            insertImages(welEditable, files);
+          }, function(sUrl) {
+            editor.restoreRange(welEditable);
+            editor.insertImage(welEditable, sUrl);
           });
         } else if (sEvent === 'showHelpDialog') {
           dialog.showHelpDialog(welDialog);
@@ -1338,6 +1340,12 @@
 
       // callback
       // init, enter, !change, !pasteBefore, !pasteAfter, focus, blur, keyup, keydown
+      
+      // save selection when focusout
+      oLayoutInfo.editable.on('blur', function() {
+        editor.saveRange(oLayoutInfo.editable);
+      });
+
       if (options.onenter) {
         oLayoutInfo.editable.keypress(function(event) {
           if (event.keyCode === key.ENTER) { options.onenter(event);}
