@@ -78,11 +78,12 @@ $('#summernote').destroy();
 * Air Mode
 * Responsive Toolbar
 * Table: Handles(Sizing, Selection) and Popover
-
-#### v0.5 2013-12-01
 * support IE8
 * Clipboard
 * Image Selection
+
+#### v0.5 2013-12-01
+* Bug fixes.
 
 ### Change Log
 
