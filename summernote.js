@@ -651,7 +651,7 @@
                 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
                 'insertOrderedList', 'insertUnorderedList',
                 'indent', 'outdent', 'formatBlock', 'removeFormat',
-                'backColor', 'foreColor', 'insertImage', 'insertHorizontalRule'];
+                'backColor', 'foreColor',  'insertHorizontalRule']; //'insertImage',
     
     for (var idx = 0, len=aCmd.length; idx < len; idx ++) {
       this[aCmd[idx]] = function(sCmd) {
@@ -660,6 +660,36 @@
           document.execCommand(sCmd, false, sValue);
         };
       }(aCmd[idx]);
+    }
+
+    function insertNodeAtCursor(node) { //unused yet
+        var range, html;
+        if (window.getSelection && window.getSelection().getRangeAt) {
+            range = window.getSelection().getRangeAt(0);
+            range.insertNode(node);
+        } else if (document.selection && document.selection.createRange) {
+            range = document.selection.createRange();
+            html = (node.nodeType == 3) ? node.data : node.outerHTML;
+            range.pasteHTML(html);
+        }
+    }
+
+    function insertHtmlAtCursor(html) {
+        var range, node;
+        if (window.getSelection && window.getSelection().getRangeAt) {
+            range = window.getSelection().getRangeAt(0);
+            node = range.createContextualFragment(html);
+            range.insertNode(node);
+        } else if (document.selection && document.selection.createRange) {
+            document.selection.createRange().pasteHTML(html);
+        }
+    }
+
+    this.insertImage = function(welEditable,  sValue) {
+      recordUndo(welEditable);
+      var html = "<img src='"+sValue+"'' style='width:300px'>"
+      insertHtmlAtCursor(html)
+      //document.execCommand('insertImage', false, sValue);
     }
 
     this.formatBlock = function(welEditable, sValue) {
@@ -1117,6 +1147,7 @@
     };
 
     var hDropImage = function(event) {
+
       var dataTransfer = event.originalEvent.dataTransfer;
       if (dataTransfer && dataTransfer.files) {
         var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
