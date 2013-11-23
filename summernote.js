@@ -1505,7 +1505,7 @@
                        '<div class="arrow"></div>' +
                        '<div class="popover-content note-image-content">' +
                          '<div class="btn-group">' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Resize Full" data-event="resize" data-value="1" tabindex="-1"><i class="fa fa-resize-full icon-resize-full"></i></button>' +
+                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Resize Full" data-event="resize" data-value="1" tabindex="-1"><i class="fa fa-arrows-alt icon-resize-full"></i></button>' +
                            '<button type="button" class="btn btn-default btn-sm btn-small" title="Resize Half" data-event="resize" data-value="0.5" tabindex="-1">½</button>' +
                            '<button type="button" class="btn btn-default btn-sm btn-small" title="Resize Thrid" data-event="resize" data-value="0.33" tabindex="-1">⅓</button>' +
                            '<button type="button" class="btn btn-default btn-sm btn-small" title="Resize Quarter" data-event="resize" data-value="0.25" tabindex="-1">¼</button>' +
@@ -1513,7 +1513,7 @@
                          '<div class="btn-group">' +
                            '<button type="button" class="btn btn-default btn-sm btn-small" title="Float Left" data-event="floatMe" data-value="left" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
                            '<button type="button" class="btn btn-default btn-sm btn-small" title="Float Right" data-event="floatMe" data-value="right" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Float None" data-event="floatMe" data-value="none" tabindex="-1"><i class="fa fa-reorder icon-reorder"></i></button>' +
+                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Float None" data-event="floatMe" data-value="none" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
                          '</div>' +
                        '</div>' +
                      '</div>' +
