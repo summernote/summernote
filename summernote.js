@@ -4,10 +4,14 @@
  * summernote may be freely distributed under the MIT license./
  */
 (function($) { "use strict";
-  //Check Platform/Agent
-  var bMac = navigator.appVersion.indexOf('Mac') > -1; 
-  var bMSIE = navigator.userAgent.indexOf('MSIE') > -1;
-  var bFF = navigator.userAgent.indexOf('Firefox') > -1;
+  /**
+   * object which check platform/agent
+   */
+  var agent = {
+    bMac: navigator.appVersion.indexOf('Mac') > -1,
+    bMSIE: navigator.userAgent.indexOf('MSIE') > -1,
+    bFF: navigator.userAgent.indexOf('Firefox') > -1
+  };
   
   /**
    * func utils (for high-order func's arg)
@@ -30,6 +34,11 @@
     var initial = function(array) { return array.slice(0, array.length - 1); };
     var tail = function(array) { return array.slice(1); };
 
+    /**
+     * get sum from a list
+     * @param {array} array - array
+     * @param {function} fn - iterator
+     */
     var sum = function(array, fn) {
       fn = fn || func.self;
       return array.reduce(function(memo, v) {
@@ -37,6 +46,10 @@
       }, 0);
     };
 
+    /**
+     * returns a copy of the collection with array type.
+     * @param {collection} collection - collection eg) node.childNodes, ...
+     */
     var from = function(collection) {
       var result = [], idx = -1, length = collection.length;
       while (++idx < length) {
@@ -45,6 +58,11 @@
       return result;
     };
     
+    /**
+     * cluster item by second function
+     * @param {array} array - array
+     * @param {function} fn - predicate function for cluster rule
+     */
     var clusterBy = function(array, fn) {
       if (array.length === 0) { return []; }
       var aTail = tail(array);
@@ -59,6 +77,11 @@
       }, [[head(array)]]);
     };
 
+    /**
+     * returns a copy of the array with all falsy values removed
+     * @param {array} array - array
+     * @param {function} fn - predicate function for cluster rule
+     */
     var compact = function(array) {
       var aResult = [];
       for (var idx = 0, sz = array.length; idx < sz; idx ++) {
@@ -72,26 +95,63 @@
   }();
 
   /**
-   * common utils
+   * aysnc functions which returns deferred object
    */
-  var util = function() {
+  var async = function() {
+    /**
+     * readFile
+     * @param {file} file - file object
+     */
     var readFile = function(file) {
-      var reader = new FileReader(), deferred = $.Deferred();
-      reader.onload = function(e) { deferred.resolve(e.target.result); }
-      reader.onerror = function(e) { deferred.reject(this); }
-      reader.readAsDataURL(file);
-      return deferred.promise();
+      return $.Deferred(function(deferred) {
+        var reader = new FileReader();
+        reader.onload = function(e) { deferred.resolve(e.target.result); }
+        reader.onerror = function(e) { deferred.reject(this); }
+        reader.readAsDataURL(file);
+      }).promise();
     };
-    return { readFile: readFile };
+
+    /**
+     * loadImage
+     * @param {string} sUrl
+     */
+    var loadImage = function(sUrl) {
+      return $.Deferred(function(deferred) {
+        var image = new Image();
+        image.onload = loaded;
+        image.onerror = errored; // URL returns 404, etc
+        image.onabort = errored; // IE may call this if user clicks "Stop"
+        image.src = sUrl;
+         
+        function loaded() {
+          unbindEvents(); deferred.resolve(image);
+        }
+        function errored() {
+          unbindEvents(); deferred.reject(image);
+        }
+        function unbindEvents() {
+          image.onload = null;
+          image.onerror = null;
+          image.onabort = null;
+        }
+      }).promise();
+    };
+
+    return { readFile: readFile, loadImage: loadImage };
   }();
   
   /**
    * dom utils
    */
   var dom = function() {
+    /**
+     * returns predicate which judge whether nodeName is same
+     */
     var makePredByNodeName = function(sNodeName) {
       // nodeName of element is always uppercase.
-      return function(node) { return node && node.nodeName === sNodeName; };
+      return function(node) {
+        return node && node.nodeName === sNodeName;
+      };
     };
     
     var isPara = function(node) {
@@ -110,7 +170,11 @@
       return node && $(node).hasClass('note-control-sizing');
     };
 
-    // ancestor: find nearest ancestor predicate hit
+    /**
+     * find nearest ancestor predicate hit
+     * @param {element} node
+     * @param {function} pred - predicate function
+     */
     var ancestor = function(node, pred) {
       while (node) {
         if (pred(node)) { return node; }
@@ -119,7 +183,11 @@
       return null;
     };
     
-    // listAncestor: listing ancestor nodes (until predicate hit: optional)
+    /**
+     * returns new array of ancestor nodes (until predicate hit).
+     * @param {element} node
+     * @param {function} [optional] pred - predicate function
+     */
     var listAncestor = function(node, pred) {
       pred = pred || func.fail;      
       
@@ -131,7 +199,11 @@
       return aAncestor;
     };
     
-    // commonAncestor: find commonAncestor
+    /**
+     * returns common ancestor node between two nodes.
+     * @param {element} nodeA
+     * @param {element} nodeB
+     */
     var commonAncestor = function(nodeA, nodeB) {
       var aAncestor = listAncestor(nodeA);
       for (var n = nodeB; n; n = n.parentNode) {
@@ -140,8 +212,12 @@
       return null; // difference document area
     };
 
-    // listBetween: listing all Nodes between nodeA and nodeB
-    // FIXME: nodeA and nodeB must be sorted, use comparePoints later.
+    /**
+     * listing all Nodes between two nodes.
+     * FIXME: nodeA and nodeB must be sorted, use comparePoints later.
+     * @param {element} nodeA
+     * @param {element} nodeB
+     */
     var listBetween = function(nodeA, nodeB) {
       var aNode = [];
 
@@ -161,7 +237,11 @@
       return aNode;
     };
 
-    // listPrev: listing prevSiblings (until predicate hit: optional)
+    /**
+     * listing all prevSiblings (until predicate hit).
+     * @param {element} node
+     * @param {function} [optional] pred - predicate function
+     */
     var listPrev = function(node, pred) {
       pred = pred || func.fail;      
 
@@ -174,7 +254,11 @@
       return aNext;
     };
     
-    // listNext: listing nextSiblings (until predicate hit: optional)
+    /**
+     * listing nextSiblings (until predicate hit).
+     * @param {element} node
+     * @param {function} pred [optional] - predicate function
+     */
     var listNext = function(node, pred) {
       pred = pred || func.fail;      
 
@@ -187,7 +271,11 @@
       return aNext;
     };
     
-    // insertAfter: insert node after preceding
+    /**
+     * insert node after preceding
+     * @param {element} node
+     * @param {element} preceding - predicate function
+     */
     var insertAfter = function(node, preceding) {
       var next = preceding.nextSibling, parent = preceding.parentNode;
       if (next) {
@@ -198,7 +286,11 @@
       return node;
     };
 
-    // appends: append children
+    /**
+     * append children
+     * @param {element} node
+     * @param {collection} aChild
+     */
     var appends = function(node, aChild) {
       $.each(aChild, function(idx, child) {
         node.appendChild(child);
@@ -208,26 +300,40 @@
     
     var isText = makePredByNodeName('#text');
 
-    // length: size of element.
+    /**
+     * returns #text's text size or element's childNodes size
+     * @param {element} node
+     */
     var length = function(node) {
       if (isText(node)) { return node.nodeValue.length; }
       return node.childNodes.length;
     };
 
-    // position: offset from parent.
+    /**
+     * returns offset from parent.
+     * @param {element} node
+     */
     var position = function(node) {
       var offset = 0;
       while (node = node.previousSibling) { offset += 1; }
       return offset;
     };
 
-    // makeOffsetPath: return offsetPath(offset list) from ancestor
+    /**
+     * return offsetPath(array of offset) from ancestor
+     * @param {element} ancestor - ancestor node
+     * @param {element} node
+     */
     var makeOffsetPath = function(ancestor, node) {
       var aAncestor = list.initial(listAncestor(node, func.eq(ancestor)));
       return $.map(aAncestor, position).reverse();
     };
 
-    // fromtOffsetPath: return element from offsetPath(offset list)
+    /**
+     * return element from offsetPath(array of offset)
+     * @param {element} ancestor - ancestor node
+     * @param {array} aOffset - offsetPath
+     */
     var fromOffsetPath = function(ancestor, aOffset) {
       var current = ancestor;
       for (var i = 0, sz = aOffset.length; i < sz; i++) {
@@ -236,7 +342,11 @@
       return current;
     };
 
-    // splitData: split element or #text
+    /**
+     * split element or #text
+     * @param {element} node
+     * @param {number} offset
+     */
     var splitData = function(node, offset) {
       if (offset === 0) { return node; }
       if (offset >= length(node)) { return node.nextSibling; }
@@ -250,7 +360,12 @@
       return appends(node, listNext(child));
     };
     
-    // split: split dom tree by boundaryPoint(pivot and offset)
+    /**
+     * split dom tree by boundaryPoint(pivot and offset)
+     * @param {element} root
+     * @param {element} pivot - this will be boundaryPoint's node
+     * @param {number} offset - this will be boundaryPoint's offset
+     */
     var split = function(root, pivot, offset) {
       var aAncestor = listAncestor(pivot, func.eq(root));
       if (aAncestor.length === 1) { return splitData(pivot, offset); }
@@ -265,7 +380,11 @@
       });
     };
 
-    // remove: remove node, (bRemoveChild: remove child or not)
+    /**
+     * remove node, (bRemoveChild: remove child or not)
+     * @param {element} node
+     * @param {boolean} bRemoveChild
+     */
     var remove = function(node, bRemoveChild) {
       if (!node || !node.parentNode) { return; }
       if (node.removeNode) { return node.removeNode(bRemoveChild); }
@@ -651,7 +770,7 @@
                 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
                 'insertOrderedList', 'insertUnorderedList',
                 'indent', 'outdent', 'formatBlock', 'removeFormat',
-                'backColor', 'foreColor', 'insertImage', 'insertHorizontalRule'];
+                'backColor', 'foreColor', 'insertHorizontalRule'];
     
     for (var idx = 0, len=aCmd.length; idx < len; idx ++) {
       this[aCmd[idx]] = function(sCmd) {
@@ -662,16 +781,30 @@
       }(aCmd[idx]);
     }
 
+    this.insertImage = function(welEditable, sUrl) {
+      async.loadImage(sUrl).done(function(image) {
+        recordUndo(welEditable);
+        var welImage = $('<img>').attr('src', sUrl);
+        welImage.css('width', Math.min(welEditable.width(), image.width));
+        range.create().insertNode(welImage[0]);
+      }).fail(function(image) { 
+        var callbacks = welEditable.data('callbacks');
+        if (callbacks.onImageUploadError) {
+          callbacks.onImageUploadError();
+        }
+      });
+    };
+
     this.formatBlock = function(welEditable, sValue) {
       recordUndo(welEditable);
-      sValue = bMSIE ? '<' + sValue + '>' : sValue;
+      sValue = agent.bMSIE ? '<' + sValue + '>' : sValue;
       document.execCommand('FormatBlock', false, sValue);
     };
 
     this.fontSize = function(welEditable, sValue) {
       recordUndo(welEditable);
       document.execCommand('fontSize', false, 3);
-      if (bFF) {
+      if (agent.bFF) {
         // firefox: <font size="3"> to <span style='font-size={sValue}px;'>, buggy
         welEditable.find('font[size=3]').removeAttr('size').css('font-size', sValue + 'px');
       } else {
@@ -715,7 +848,7 @@
         var sLinkUrlWithProtocol = bProtocol ? sLinkUrl : 'http://' + sLinkUrl;
 
         //IE: createLink when range collapsed.
-        if (bMSIE && rng.isCollapsed()) {
+        if (agent.bMSIE && rng.isCollapsed()) {
           rng.insertNode($('<A id="linkAnchor">' + sLinkUrl + '</A>')[0]);
           var welAnchor = $('#linkAnchor').removeAttr('id')
                                           .attr('href', sLinkUrlWithProtocol);
@@ -742,7 +875,7 @@
       var nCol = aDim[0], nRow = aDim[1];
       
       var aTD = [], sTD;
-      var sWhitespace = bMSIE ? '&nbsp;' : '<br/>';
+      var sWhitespace = agent.bMSIE ? '&nbsp;' : '<br/>';
       for (var idxCol = 0; idxCol < nCol; idxCol++) {
         aTD.push('<td>' + sWhitespace + '</td>');
       }
@@ -863,7 +996,7 @@
   };
   
   /**
-   * Popover
+   * Popover (http://getbootstrap.com/javascript/#popovers)
    */
   var Popover = function() {
     var showPopover = function(welPopover, elPlaceholder) {
@@ -1017,14 +1150,6 @@
                 Y: 89, Z: 90, SLASH: 191,
                 LEFTBRACKET: 219, BACKSLACH: 220, RIGHTBRACKET: 221 };
 
-    var callbacks = {
-        onAutoSave: null,
-        onImageUpload: null,
-        onImageUploadError: null,
-        onFileUpload: null,
-        onFileUploadError: null
-    };
-
     // makeLayoutInfo from editor's descendant node.
     var makeLayoutInfo = function(descendant) {
       var welEditor = $(descendant).closest('.note-editor');
@@ -1041,7 +1166,7 @@
     };
 
     var hKeydown = function(event) {
-      var bCmd = bMac ? event.metaKey : event.ctrlKey,
+      var bCmd = agent.bMac ? event.metaKey : event.ctrlKey,
           bShift = event.shiftKey, keyCode = event.keyCode;
 
       // optimize
@@ -1065,6 +1190,7 @@
       } else if (bCmd && keyCode === key.BACKSLACH) {
         editor.removeFormat(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.K) {
+        oLayoutInfo.editable();
         editor.setLinkDialog(oLayoutInfo.editable(), function(linkInfo, cb) {
           dialog.showLinkDialog(oLayoutInfo.dialog(), linkInfo, cb);
         });
@@ -1104,13 +1230,18 @@
     };
 
     var insertImages = function(welEditable, files) {
+      var callbacks = welEditable.data('callbacks');
       editor.restoreRange(welEditable);
-      if (callbacks.onImageUpload) {
-          callbacks.onImageUpload(files, editor, welEditable); // call custom handler
+      if (callbacks.onImageUpload) { // call custom handler
+          callbacks.onImageUpload(files, editor, welEditable);
       } else {
         $.each(files, function(idx, file) {
-          util.readFile(file).then(function(sURL) {
-            editor.insertImage(welEditable, sURL); // sURL
+          async.readFile(file).done(function(sURL) {
+            editor.insertImage(welEditable, sURL);
+          }).fail(function() {
+            if (callbacks.onImageUploadError) {
+                callbacks.onImageUploadError();
+            }  
           });
         });
       }
@@ -1212,10 +1343,12 @@
         if ($.inArray(sEvent, ['backColor', 'foreColor']) !== -1) {
           toolbar.updateRecentColor(welBtn[0], sEvent, sValue);
         } else if (sEvent === 'showLinkDialog') { // popover to dialog
+          welEditable.focus();
           editor.setLinkDialog(welEditable, function(linkInfo, cb) {
             dialog.showLinkDialog(welDialog, linkInfo, cb);
           });
         } else if (sEvent === 'showImageDialog') {
+          welEditable.focus();
           dialog.showImageDialog(welDialog, hDropImage, function(files) {
             insertImages(welEditable, files);
           }, function(sUrl) {
@@ -1322,6 +1455,12 @@
       welDimensionDisplay.html(dim.c + ' x ' + dim.r);
     };
 
+    /**
+     * Attach eventhandler
+     * @param {object} oLayoutInfo - layout Informations
+     * @param {object} options - user options include custom event handlers
+     * @param {function} options.enter - enter key handler
+     */
     this.attach = function(oLayoutInfo, options) {
       oLayoutInfo.editable.on('keydown', hKeydown);
       oLayoutInfo.editable.on('mousedown', hMousedown);
@@ -1350,9 +1489,8 @@
         editor.saveRange(oLayoutInfo.editable);
       });
 
-      // callbacks
-      // init, enter, [change, pasteBefore, pasteAfter], focus, blur, keyup, keydown
-      
+      // basic event callbacks (lowercase)
+      // enter, focus, blur, keyup, keydown
       if (options.onenter) {
         oLayoutInfo.editable.keypress(function(event) {
           if (event.keyCode === key.ENTER) { options.onenter(event);}
@@ -1363,9 +1501,15 @@
       if (options.onkeyup) { oLayoutInfo.editable.keyup(options.onkeyup); }
       if (options.onkeydown) { oLayoutInfo.editable.keydown(options.onkeydown); }
 
-      // TODO: callbacks for advanced features (camel)
-      // autosave, imageUpload, imageUploadError, fileUpload, fileUploadError
-      if (options.onImageUpload) { callbacks.onImageUpload = options.onImageUpload; }
+      // callbacks for advanced features (camel)
+      // All editor status will be saved on editable with jquery's data
+      // for support multiple editor with singleton object.
+      oLayoutInfo.editable.data('callbacks', {
+        onChange: options.onChange, onAutoSave: options.onAutoSave,
+        onPasteBefore: options.onPasteBefore, onPasteAfter: options.onPasteAfter,
+        onImageUpload: options.onImageUpload, onImageUploadError: options.onImageUpload,
+        onFileUpload: options.onFileUpload, onFileUploadError: options.onFileUpload
+      });
     };
 
     this.dettach = function(oLayoutInfo) {
@@ -1505,10 +1649,9 @@
                        '<div class="arrow"></div>' +
                        '<div class="popover-content note-image-content">' +
                          '<div class="btn-group">' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Resize Full" data-event="resize" data-value="1" tabindex="-1"><i class="fa fa-arrows-alt icon-resize-full"></i></button>' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Resize Half" data-event="resize" data-value="0.5" tabindex="-1">½</button>' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Resize Thrid" data-event="resize" data-value="0.33" tabindex="-1">⅓</button>' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Resize Quarter" data-event="resize" data-value="0.25" tabindex="-1">¼</button>' +
+                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Resize Full" data-event="resize" data-value="1" tabindex="-1">100%</button>' +
+                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Resize Half" data-event="resize" data-value="0.5" tabindex="-1">50%</button>' +
+                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Resize Quarter" data-event="resize" data-value="0.25" tabindex="-1">25%</button>' +
                          '</div>' +
                          '<div class="btn-group">' +
                            '<button type="button" class="btn btn-default btn-sm btn-small" title="Float Left" data-event="floatMe" data-value="left" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
@@ -1594,7 +1737,7 @@
                            '</tbody>' +
                          '</table>';
 
-    if (!bMac) { // shortcut modifier for windows
+    if (!agent.bMac) { // shortcut modifier for windows
       sShortcutTable = sShortcutTable.replace(/⌘/g, 'Ctrl').replace(/⇧/g, 'Shift');
     }
 
@@ -1666,7 +1809,7 @@
     var createTooltip = function(welContainer, sPlacement) {
       welContainer.find('button').each(function(i, elBtn) {
         var welBtn = $(elBtn);
-        var sShortcut = welBtn.attr(bMac ? 'data-mac-shortcut':'data-shortcut');
+        var sShortcut = welBtn.attr(agent.bMac ? 'data-mac-shortcut': 'data-shortcut');
         if (sShortcut) { welBtn.attr('title', function(i, v) { return v + ' (' + sShortcut + ')'; }); }
       //bootstrap tooltip on btn-group bug: https://github.com/twitter/bootstrap/issues/5687
       }).tooltip({container: 'body', placement: sPlacement || 'top'});
