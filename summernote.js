@@ -3,7 +3,7 @@
  * (c) 2013~ Alan Hong
  * summernote may be freely distributed under the MIT license./
  */
-(function ($) {
+(function ($, CodeMirror) {
   'use strict';
   /**
    * object which check platform/agent
@@ -11,7 +11,8 @@
   var agent = {
     bMac: navigator.appVersion.indexOf('Mac') > -1,
     bMSIE: navigator.userAgent.indexOf('MSIE') > -1,
-    bFF: navigator.userAgent.indexOf('Firefox') > -1
+    bFF: navigator.userAgent.indexOf('Firefox') > -1,
+    bCodeMirror: !!CodeMirror
   };
   
   /**
@@ -412,7 +413,7 @@
       return $('<div/>').html(str).text();
     };
     var html = function ($node) {
-      return dom.isTextarea($node[0]) ? unescape($node.val()) : $node.html();
+      return dom.isTextarea($node[0]) ? $node.val() : $node.html();
     };
     
     return {
@@ -479,6 +480,7 @@
           nTextCount -= elCurText.nodeValue.length;
           elCurText = elCurText.nextSibling;
         }
+
         var sDummy = elCurText.nodeValue; //enforce IE to re-reference elCurText, hack
 
         if (bStart && elCurText.nextSibling && dom.isText(elCurText.nextSibling) &&
@@ -795,7 +797,8 @@
       welEditable.data('NoteHistory').recordUndo(welEditable);
     };
 
-    // native commands(with execCommand)
+    /* jshint ignore:start */
+    // native commands(with execCommand), generate function for execCommand
     var aCmd = ['bold', 'italic', 'underline', 'strikethrough',
                 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
                 'insertOrderedList', 'insertUnorderedList',
@@ -810,6 +813,7 @@
         };
       })(aCmd[idx]);
     }
+    /* jshint ignore:end */
 
     this.insertImage = function (welEditable, sUrl) {
       async.loadImage(sUrl).done(function (image) {
@@ -1422,7 +1426,28 @@
             welCodable.height(welEditable.height());
             toolbar.disable(welToolbar);
             welCodable.focus();
+
+            // activate CodeMirror as codable
+            if (agent.bCodeMirror) {
+              var cmEditor = CodeMirror.fromTextArea(welCodable[0], {
+                mode: 'text/html',
+                lineNumbers: true
+              });
+              cmEditor.setSize(null, welEditable.height());
+              // autoFormatRange If formatting included
+              if (cmEditor.autoFormatRange) {
+                cmEditor.autoFormatRange({line: 0, ch: 0}, {
+                  line: cmEditor.lineCount(),
+                  ch: cmEditor.getTextArea().value.length
+                });
+              }
+              welCodable.data('cmEditor', cmEditor);
+            }
           } else {
+            // deactivate CodeMirror as codable
+            if (agent.bCodeMirror) {
+              welCodable.data('cmEditor').toTextArea();
+            }
             welEditable.html(welCodable.val());
             welEditable.height(welCodable.height());
             toolbar.enable(welToolbar);
@@ -2038,6 +2063,9 @@
         var info = renderer.layoutInfoFromHolder(welHolder);
         if (!!(info && info.editable)) {
           var bCodeview = info.editor.hasClass('codeview');
+          if (agent.bCodeMirror) {
+            info.codable.data('cmEditor').save();
+          }
           return bCodeview ? info.codable.val() : info.editable.html();
         }
         return welHolder.html();
@@ -2065,7 +2093,7 @@
       return { dom: dom, list: list, func: func, range: range };
     }
   });
-})(window.jQuery); // jQuery
+})(window.jQuery, window.CodeMirror); // jQuery, CodeMirror
 
 // Array.prototype.reduce fallback
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
