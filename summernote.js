@@ -3,7 +3,8 @@
  * (c) 2013~ Alan Hong
  * summernote may be freely distributed under the MIT license./
  */
-(function($) { "use strict";
+(function ($) {
+  'use strict';
   /**
    * object which check platform/agent
    */
@@ -16,32 +17,32 @@
   /**
    * func utils (for high-order func's arg)
    */
-  var func = function() {
-    var eq = function(elA) { return function(elB) { return elA === elB; }; };
-    var eq2 = function(elA, elB) { return elA === elB; };
-    var fail = function() { return false; };
-    var not = function(f) { return function() { return !f.apply(f, arguments); }; };
-    var self = function(a) { return a; };
+  var func = (function () {
+    var eq = function (elA) { return function (elB) { return elA === elB; }; };
+    var eq2 = function (elA, elB) { return elA === elB; };
+    var fail = function () { return false; };
+    var not = function (f) { return function () { return !f.apply(f, arguments); }; };
+    var self = function (a) { return a; };
     return { eq: eq, eq2: eq2, fail: fail, not: not, self: self };
-  }();
+  })();
   
   /**
    * list utils
    */
-  var list = function() {
-    var head = function(array) { return array[0]; };
-    var last = function(array) { return array[array.length - 1]; };
-    var initial = function(array) { return array.slice(0, array.length - 1); };
-    var tail = function(array) { return array.slice(1); };
+  var list = (function () {
+    var head = function (array) { return array[0]; };
+    var last = function (array) { return array[array.length - 1]; };
+    var initial = function (array) { return array.slice(0, array.length - 1); };
+    var tail = function (array) { return array.slice(1); };
 
     /**
      * get sum from a list
      * @param {array} array - array
      * @param {function} fn - iterator
      */
-    var sum = function(array, fn) {
+    var sum = function (array, fn) {
       fn = fn || func.self;
-      return array.reduce(function(memo, v) {
+      return array.reduce(function (memo, v) {
         return memo + fn(v);
       }, 0);
     };
@@ -50,7 +51,7 @@
      * returns a copy of the collection with array type.
      * @param {collection} collection - collection eg) node.childNodes, ...
      */
-    var from = function(collection) {
+    var from = function (collection) {
       var result = [], idx = -1, length = collection.length;
       while (++idx < length) {
         result[idx] = collection[idx];
@@ -63,7 +64,7 @@
      * @param {array} array - array
      * @param {function} fn - predicate function for cluster rule
      */
-    var clusterBy = function(array, fn) {
+    var clusterBy = function (array, fn) {
       if (array.length === 0) { return []; }
       var aTail = tail(array);
       return aTail.reduce(function (memo, v) {
@@ -82,7 +83,7 @@
      * @param {array} array - array
      * @param {function} fn - predicate function for cluster rule
      */
-    var compact = function(array) {
+    var compact = function (array) {
       var aResult = [];
       for (var idx = 0, sz = array.length; idx < sz; idx ++) {
         if (array[idx]) { aResult.push(array[idx]); }
@@ -90,33 +91,33 @@
       return aResult;
     };
 
-    return { head: head, last: last, initial: initial, tail: tail, 
+    return { head: head, last: last, initial: initial, tail: tail,
              sum: sum, from: from, compact: compact, clusterBy: clusterBy };
-  }();
+  })();
 
   /**
    * aysnc functions which returns deferred object
    */
-  var async = function() {
+  var async = (function () {
     /**
      * readFile
      * @param {file} file - file object
      */
-    var readFile = function(file) {
-      return $.Deferred(function(deferred) {
+    var readFile = function (file) {
+      return $.Deferred(function (deferred) {
         var reader = new FileReader();
-        reader.onload = function(e) { deferred.resolve(e.target.result); }
-        reader.onerror = function(e) { deferred.reject(this); }
+        reader.onload = function (e) { deferred.resolve(e.target.result); };
+        reader.onerror = function () { deferred.reject(this); };
         reader.readAsDataURL(file);
       }).promise();
     };
 
     /**
-     * loadImage
+     * loadImage from url string
      * @param {string} sUrl
      */
-    var loadImage = function(sUrl) {
-      return $.Deferred(function(deferred) {
+    var loadImage = function (sUrl) {
+      return $.Deferred(function (deferred) {
         var image = new Image();
         image.onload = loaded;
         image.onerror = errored; // URL returns 404, etc
@@ -124,10 +125,12 @@
         image.src = sUrl;
          
         function loaded() {
-          unbindEvents(); deferred.resolve(image);
+          unbindEvents();
+          deferred.resolve(image);
         }
         function errored() {
-          unbindEvents(); deferred.reject(image);
+          unbindEvents();
+          deferred.reject(image);
         }
         function unbindEvents() {
           image.onload = null;
@@ -138,35 +141,35 @@
     };
 
     return { readFile: readFile, loadImage: loadImage };
-  }();
+  })();
   
   /**
    * dom utils
    */
-  var dom = function() {
+  var dom = (function () {
     /**
      * returns predicate which judge whether nodeName is same
      */
-    var makePredByNodeName = function(sNodeName) {
+    var makePredByNodeName = function (sNodeName) {
       // nodeName of element is always uppercase.
-      return function(node) {
+      return function (node) {
         return node && node.nodeName === sNodeName;
       };
     };
     
-    var isPara = function(node) {
+    var isPara = function (node) {
       return node && /^P|^LI|^H[1-7]/.test(node.nodeName);
     };
 
-    var isList = function(node) {
+    var isList = function (node) {
       return node && /^UL|^OL/.test(node.nodeName);
     };
 
-    var isEditable = function(node) {
+    var isEditable = function (node) {
       return node && $(node).hasClass('note-editable');
     };
 
-    var isControlSizing = function(node) {
+    var isControlSizing = function (node) {
       return node && $(node).hasClass('note-control-sizing');
     };
 
@@ -175,7 +178,7 @@
      * @param {element} node
      * @param {function} pred - predicate function
      */
-    var ancestor = function(node, pred) {
+    var ancestor = function (node, pred) {
       while (node) {
         if (pred(node)) { return node; }
         node = node.parentNode;
@@ -188,11 +191,11 @@
      * @param {element} node
      * @param {function} [optional] pred - predicate function
      */
-    var listAncestor = function(node, pred) {
-      pred = pred || func.fail;      
+    var listAncestor = function (node, pred) {
+      pred = pred || func.fail;
       
       var aAncestor = [];
-      ancestor(node, function(el) {
+      ancestor(node, function (el) {
         aAncestor.push(el);
         return pred(el);
       });
@@ -204,7 +207,7 @@
      * @param {element} nodeA
      * @param {element} nodeB
      */
-    var commonAncestor = function(nodeA, nodeB) {
+    var commonAncestor = function (nodeA, nodeB) {
       var aAncestor = listAncestor(nodeA);
       for (var n = nodeB; n; n = n.parentNode) {
         if ($.inArray(n, aAncestor) > -1) { return n; }
@@ -218,11 +221,11 @@
      * @param {element} nodeA
      * @param {element} nodeB
      */
-    var listBetween = function(nodeA, nodeB) {
+    var listBetween = function (nodeA, nodeB) {
       var aNode = [];
 
       var bStart = false, bEnd = false;
-      var fnWalk = function(node) {
+      var fnWalk = function (node) {
         if (!node) { return; } // traverse fisnish
         if (node === nodeA) { bStart = true; } // start point
         if (bStart && !bEnd) { aNode.push(node); } // between
@@ -242,8 +245,8 @@
      * @param {element} node
      * @param {function} [optional] pred - predicate function
      */
-    var listPrev = function(node, pred) {
-      pred = pred || func.fail;      
+    var listPrev = function (node, pred) {
+      pred = pred || func.fail;
 
       var aNext = [];
       while (node) {
@@ -259,8 +262,8 @@
      * @param {element} node
      * @param {function} pred [optional] - predicate function
      */
-    var listNext = function(node, pred) {
-      pred = pred || func.fail;      
+    var listNext = function (node, pred) {
+      pred = pred || func.fail;
 
       var aNext = [];
       while (node) {
@@ -276,7 +279,7 @@
      * @param {element} node
      * @param {element} preceding - predicate function
      */
-    var insertAfter = function(node, preceding) {
+    var insertAfter = function (node, preceding) {
       var next = preceding.nextSibling, parent = preceding.parentNode;
       if (next) {
         parent.insertBefore(node, next);
@@ -291,8 +294,8 @@
      * @param {element} node
      * @param {collection} aChild
      */
-    var appends = function(node, aChild) {
-      $.each(aChild, function(idx, child) {
+    var appends = function (node, aChild) {
+      $.each(aChild, function (idx, child) {
         node.appendChild(child);
       });
       return node;
@@ -304,7 +307,7 @@
      * returns #text's text size or element's childNodes size
      * @param {element} node
      */
-    var length = function(node) {
+    var length = function (node) {
       if (isText(node)) { return node.nodeValue.length; }
       return node.childNodes.length;
     };
@@ -313,7 +316,7 @@
      * returns offset from parent.
      * @param {element} node
      */
-    var position = function(node) {
+    var position = function (node) {
       var offset = 0;
       while (node = node.previousSibling) { offset += 1; }
       return offset;
@@ -324,7 +327,7 @@
      * @param {element} ancestor - ancestor node
      * @param {element} node
      */
-    var makeOffsetPath = function(ancestor, node) {
+    var makeOffsetPath = function (ancestor, node) {
       var aAncestor = list.initial(listAncestor(node, func.eq(ancestor)));
       return $.map(aAncestor, position).reverse();
     };
@@ -334,7 +337,7 @@
      * @param {element} ancestor - ancestor node
      * @param {array} aOffset - offsetPath
      */
-    var fromOffsetPath = function(ancestor, aOffset) {
+    var fromOffsetPath = function (ancestor, aOffset) {
       var current = ancestor;
       for (var i = 0, sz = aOffset.length; i < sz; i++) {
         current = current.childNodes[aOffset[i]];
@@ -347,7 +350,7 @@
      * @param {element} node
      * @param {number} offset
      */
-    var splitData = function(node, offset) {
+    var splitData = function (node, offset) {
       if (offset === 0) { return node; }
       if (offset >= length(node)) { return node.nextSibling; }
 
@@ -366,10 +369,10 @@
      * @param {element} pivot - this will be boundaryPoint's node
      * @param {number} offset - this will be boundaryPoint's offset
      */
-    var split = function(root, pivot, offset) {
+    var split = function (root, pivot, offset) {
       var aAncestor = listAncestor(pivot, func.eq(root));
       if (aAncestor.length === 1) { return splitData(pivot, offset); }
-      return aAncestor.reduce(function(node, parent) {
+      return aAncestor.reduce(function (node, parent) {
         var clone = parent.cloneNode(false);
         insertAfter(clone, parent);
         if (node === pivot) {
@@ -385,18 +388,19 @@
      * @param {element} node
      * @param {boolean} bRemoveChild
      */
-    var remove = function(node, bRemoveChild) {
+    var remove = function (node, bRemoveChild) {
       if (!node || !node.parentNode) { return; }
       if (node.removeNode) { return node.removeNode(bRemoveChild); }
 
       var elParent = node.parentNode;
       if (!bRemoveChild) {
         var aNode = [];
-        for (var i = 0, sz = node.childNodes.length; i < sz; i++) {
+        var i, sz;
+        for (i = 0, sz = node.childNodes.length; i < sz; i++) {
           aNode.push(node.childNodes[i]);
         }
 
-        for (var i = 0, sz = aNode.length; i < sz; i++) {
+        for (i = 0, sz = aNode.length; i < sz; i++) {
           elParent.insertBefore(aNode[i], node);
         }
       }
@@ -404,39 +408,52 @@
       elParent.removeChild(node);
     };
 
-    var unescape = function(str) {
-      return $("<div/>").html(str).text();
+    var unescape = function (str) {
+      return $('<div/>').html(str).text();
     };
-    var html = function($node) {
+    var html = function ($node) {
       return dom.isTextarea($node[0]) ? unescape($node.val()) : $node.html();
     };
     
     return {
       isText: isText,
-      isPara: isPara, isList: isList,
-      isEditable: isEditable, isControlSizing: isControlSizing,
+      isPara: isPara,
+      isList: isList,
+      isEditable: isEditable,
+      isControlSizing: isControlSizing,
       isAnchor: makePredByNodeName('A'),
-      isDiv: makePredByNodeName('DIV'), isSpan: makePredByNodeName('SPAN'),
-      isB: makePredByNodeName('B'), isU: makePredByNodeName('U'),
-      isS: makePredByNodeName('S'), isI: makePredByNodeName('I'),
-      isImg: makePredByNodeName('IMG'), isTextarea: makePredByNodeName('TEXTAREA'),
-      ancestor: ancestor, listAncestor: listAncestor,
-      listNext: listNext, listPrev: listPrev,
-      commonAncestor: commonAncestor, listBetween: listBetween,
-      insertAfter: insertAfter, position: position,
-      makeOffsetPath: makeOffsetPath, fromOffsetPath: fromOffsetPath,
-      split: split, remove: remove, html: html
+      isDiv: makePredByNodeName('DIV'),
+      isSpan: makePredByNodeName('SPAN'),
+      isB: makePredByNodeName('B'),
+      isU: makePredByNodeName('U'),
+      isS: makePredByNodeName('S'),
+      isI: makePredByNodeName('I'),
+      isImg: makePredByNodeName('IMG'),
+      isTextarea: makePredByNodeName('TEXTAREA'),
+      ancestor: ancestor,
+      listAncestor: listAncestor,
+      listNext: listNext,
+      listPrev: listPrev,
+      commonAncestor: commonAncestor,
+      listBetween: listBetween,
+      insertAfter: insertAfter,
+      position: position,
+      makeOffsetPath: makeOffsetPath,
+      fromOffsetPath: fromOffsetPath,
+      split: split,
+      remove: remove,
+      html: html
     };
-  }();
+  })();
 
   /**
    * range module
    */
-  var range = function() {
+  var range = (function () {
     var bW3CRangeSupport = !!document.createRange;
 
     // return boundaryPoint from TextRange, inspired by Andy Na's HuskyRange.js
-    var textRange2bp = function(textRange, bStart) {
+    var textRange2bp = function (textRange, bStart) {
       var elCont = textRange.parentElement(), nOffset;
 
       var tester = document.body.createTextRange(), elPrevCont;
@@ -462,12 +479,12 @@
           nTextCount -= elCurText.nodeValue.length;
           elCurText = elCurText.nextSibling;
         }
-        var sDummy = elCurText.nodeValue; //enforce IE to re-reference elCurText
+        var sDummy = elCurText.nodeValue; //enforce IE to re-reference elCurText, hack
 
         if (bStart && elCurText.nextSibling && dom.isText(elCurText.nextSibling) &&
-            nTextCount == elCurText.nodeValue.length) {
+            nTextCount === elCurText.nodeValue.length) {
           nTextCount -= elCurText.nodeValue.length;
-        elCurText = elCurText.nextSibling;
+          elCurText = elCurText.nextSibling;
         }
 
         elCont = elCurText;
@@ -478,8 +495,8 @@
     };
 
     // return TextRange from boundary point (inspired by google closure-library)
-    var bp2textRange = function(bp) {
-      var textRangeInfo = function(elCont, nOffset) {
+    var bp2textRange = function (bp) {
+      var textRangeInfo = function (elCont, nOffset) {
         var elNode, bCollapseToStart;
 
         if (dom.isText(elCont)) {
@@ -511,26 +528,28 @@
     };
 
     // {startContainer, startOffset, endContainer, endOffset}
-    var WrappedRange = function(sc, so, ec, eo) {
-      this.sc = sc; this.so = so;
-      this.ec = ec; this.eo = eo;
+    var WrappedRange = function (sc, so, ec, eo) {
+      this.sc = sc;
+      this.so = so;
+      this.ec = ec;
+      this.eo = eo;
 
       // nativeRange: get nativeRange from sc, so, ec, eo
-      var nativeRange = function() {
+      var nativeRange = function () {
         if (bW3CRangeSupport) {
           var w3cRange = document.createRange();
           w3cRange.setStart(sc, so);
           w3cRange.setEnd(ec, eo);
           return w3cRange;
         } else {
-          var textRange = bp2textRange({cont:sc, offset:so});
-          textRange.setEndPoint('EndToEnd', bp2textRange({cont:ec, offset:eo}));
+          var textRange = bp2textRange({cont: sc, offset: so});
+          textRange.setEndPoint('EndToEnd', bp2textRange({cont: ec, offset: eo}));
           return textRange;
         }
       };
 
       // select: update visible range
-      this.select = function() {
+      this.select = function () {
         var nativeRng = nativeRange();
         if (bW3CRangeSupport) {
           var selection = document.getSelection();
@@ -542,17 +561,17 @@
       };
 
       // listPara: listing paragraphs on range
-      this.listPara = function() {
+      this.listPara = function () {
         var aNode = dom.listBetween(sc, ec);
-        var aPara = list.compact($.map(aNode, function(node) {
+        var aPara = list.compact($.map(aNode, function (node) {
           return dom.ancestor(node, dom.isPara);
         }));
         return $.map(list.clusterBy(aPara, func.eq2), list.head);
       };
 
       // makeIsOn: return isOn(pred) function
-      var makeIsOn = function(pred) {
-        return function() {
+      var makeIsOn = function (pred) {
+        return function () {
           var elAncestor = dom.ancestor(sc, pred);
           return elAncestor && (elAncestor === dom.ancestor(ec, pred));
         };
@@ -565,10 +584,10 @@
       // isOnAnchor: judge whether range is on anchor node or not
       this.isOnAnchor = makeIsOn(dom.isAnchor);
       // isCollapsed: judge whether range was collapsed
-      this.isCollapsed = function() { return sc === ec && so === eo; };
+      this.isCollapsed = function () { return sc === ec && so === eo; };
 
       // insertNode
-      this.insertNode = function(node) {
+      this.insertNode = function (node) {
         var nativeRng = nativeRange();
         if (bW3CRangeSupport) {
           nativeRng.insertNode(node);
@@ -577,13 +596,13 @@
         }
       };
 
-      this.toString = function() {
+      this.toString = function () {
         var nativeRng = nativeRange();
         return bW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
       };
 
       //bookmark: offsetPath bookmark
-      this.bookmark = function(elEditable) {
+      this.bookmark = function (elEditable) {
         return {
           s: { path: dom.makeOffsetPath(elEditable, sc), offset: so },
           e: { path: dom.makeOffsetPath(elEditable, ec), offset: eo }
@@ -593,33 +612,40 @@
 
     return { // Range Object
       // create Range Object From arguments or Browser Selection
-      create : function(sc, so, ec, eo) {
+      create : function (sc, so, ec, eo) {
         if (arguments.length === 0) { // from Browser Selection
           if (bW3CRangeSupport) { // webkit, firefox
             var selection = document.getSelection();
             if (selection.rangeCount === 0) { return null; }
 
             var nativeRng = selection.getRangeAt(0);
-            sc = nativeRng.startContainer, so = nativeRng.startOffset,
-            ec = nativeRng.endContainer, eo = nativeRng.endOffset;
+            sc = nativeRng.startContainer;
+            so = nativeRng.startOffset;
+            ec = nativeRng.endContainer;
+            eo = nativeRng.endOffset;
           } else { // IE8: TextRange
             var textRange = document.selection.createRange();
-            var textRangeEnd = textRange.duplicate(); textRangeEnd.collapse(false);
-            var textRangeStart = textRange; textRangeStart.collapse(true);
+            var textRangeEnd = textRange.duplicate();
+            textRangeEnd.collapse(false);
+            var textRangeStart = textRange;
+            textRangeStart.collapse(true);
 
             var bpStart = textRange2bp(textRangeStart, true),
             bpEnd = textRange2bp(textRangeEnd, false);
 
-            sc = bpStart.cont, so = bpStart.offset;
-            ec = bpEnd.cont, eo = bpEnd.offset;
+            sc = bpStart.cont;
+            so = bpStart.offset;
+            ec = bpEnd.cont;
+            eo = bpEnd.offset;
           }
         } else if (arguments.length === 2) { //collapsed
-          ec = sc; eo = so;
+          ec = sc;
+          eo = so;
         }
         return new WrappedRange(sc, so, ec, eo);
       },
       // createFromBookmark
-      createFromBookmark : function(elEditable, bookmark) {
+      createFromBookmark : function (elEditable, bookmark) {
         var sc = dom.fromOffsetPath(elEditable, bookmark.s.path);
         var so = bookmark.s.offset;
         var ec = dom.fromOffsetPath(elEditable, bookmark.e.path);
@@ -627,24 +653,24 @@
         return new WrappedRange(sc, so, ec, eo);
       }
     };
-  }();
+  })();
   
   /**
    * Style
    */
-  var Style = function() {
+  var Style = function () {
     // para level style
-    this.stylePara = function(rng, oStyle) {
+    this.stylePara = function (rng, oStyle) {
       var aPara = rng.listPara();
-      $.each(aPara, function(idx, elPara) {
-        $.each(oStyle, function(sKey, sValue) {
+      $.each(aPara, function (idx, elPara) {
+        $.each(oStyle, function (sKey, sValue) {
           elPara.style[sKey] = sValue;
         });
       });
     };
     
     // get current style, elTarget: target element on event.
-    this.current = function(rng, elTarget) {
+    this.current = function (rng, elTarget) {
       var welCont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
       var oStyle = welCont.css(['font-size', 'text-align',
                                 'list-style-type', 'line-height']) || {};
@@ -684,62 +710,66 @@
   /**
    * History
    */
-  var History = function() {
+  var History = function () {
     var aUndo = [], aRedo = [];
 
-    var makeSnap = function(welEditable) {
+    var makeSnap = function (welEditable) {
       var elEditable = welEditable[0], rng = range.create();
       return {
-        contents: welEditable.html(), bookmark: rng.bookmark(elEditable),
+        contents: welEditable.html(),
+        bookmark: rng.bookmark(elEditable),
         scrollTop: welEditable.scrollTop()
       };
     };
 
-    var applySnap = function(welEditable, oSnap) {
+    var applySnap = function (welEditable, oSnap) {
       welEditable.html(oSnap.contents).scrollTop(oSnap.scrollTop);
       range.createFromBookmark(welEditable[0], oSnap.bookmark).select();
     };
 
-    this.undo = function(welEditable) {
+    this.undo = function (welEditable) {
       var oSnap = makeSnap(welEditable);
       if (aUndo.length === 0) { return; }
-      applySnap(welEditable, aUndo.pop()), aRedo.push(oSnap);
+      applySnap(welEditable, aUndo.pop());
+      aRedo.push(oSnap);
     };
 
-    this.redo = function(welEditable) {
+    this.redo = function (welEditable) {
       var oSnap = makeSnap(welEditable);
       if (aRedo.length === 0) { return; }
-      applySnap(welEditable, aRedo.pop()), aUndo.push(oSnap);
+      applySnap(welEditable, aRedo.pop());
+      aUndo.push(oSnap);
     };
 
-    this.recordUndo = function(welEditable) {
-      aRedo = [], aUndo.push(makeSnap(welEditable));
+    this.recordUndo = function (welEditable) {
+      aRedo = [];
+      aUndo.push(makeSnap(welEditable));
     };
   };
   
   /**
    * Editor
    */
-  var Editor = function() {
+  var Editor = function () {
     // save current range
-    this.saveRange = function(welEditable) {
+    this.saveRange = function (welEditable) {
       welEditable.data('range', range.create());
-    }
+    };
 
     // restore lately range
-    this.restoreRange = function(welEditable) {
+    this.restoreRange = function (welEditable) {
       var rng = welEditable.data('range');
       if (rng) { rng.select(); }
-    }
+    };
 
     //currentStyle
     var style = new Style();
-    this.currentStyle = function(elTarget) {
+    this.currentStyle = function (elTarget) {
       var rng = range.create();
       return rng.isOnEditable() && style.current(rng, elTarget);
     };
 
-    this.tab = function(welEditable) {
+    this.tab = function (welEditable) {
       recordUndo(welEditable);
       var rng = range.create();
       var sNbsp = new Array(welEditable.data('tabsize') + 1).join('&nbsp;');
@@ -751,17 +781,17 @@
     };
 
     // undo
-    this.undo = function(welEditable) {
+    this.undo = function (welEditable) {
       welEditable.data('NoteHistory').undo(welEditable);
     };
 
     // redo
-    this.redo = function(welEditable) {
+    this.redo = function (welEditable) {
       welEditable.data('NoteHistory').redo(welEditable);
     };
 
     // recordUndo
-    var recordUndo = this.recordUndo = function(welEditable) {
+    var recordUndo = this.recordUndo = function (welEditable) {
       welEditable.data('NoteHistory').recordUndo(welEditable);
     };
 
@@ -772,22 +802,22 @@
                 'indent', 'outdent', 'formatBlock', 'removeFormat',
                 'backColor', 'foreColor', 'insertHorizontalRule'];
     
-    for (var idx = 0, len=aCmd.length; idx < len; idx ++) {
-      this[aCmd[idx]] = function(sCmd) {
-        return function(welEditable, sValue) {
+    for (var idx = 0, len = aCmd.length; idx < len; idx ++) {
+      this[aCmd[idx]] = (function (sCmd) {
+        return function (welEditable, sValue) {
           recordUndo(welEditable);
           document.execCommand(sCmd, false, sValue);
         };
-      }(aCmd[idx]);
+      })(aCmd[idx]);
     }
 
-    this.insertImage = function(welEditable, sUrl) {
-      async.loadImage(sUrl).done(function(image) {
+    this.insertImage = function (welEditable, sUrl) {
+      async.loadImage(sUrl).done(function (image) {
         recordUndo(welEditable);
         var welImage = $('<img>').attr('src', sUrl);
         welImage.css('width', Math.min(welEditable.width(), image.width));
         range.create().insertNode(welImage[0]);
-      }).fail(function(image) { 
+      }).fail(function () {
         var callbacks = welEditable.data('callbacks');
         if (callbacks.onImageUploadError) {
           callbacks.onImageUploadError();
@@ -795,13 +825,13 @@
       });
     };
 
-    this.formatBlock = function(welEditable, sValue) {
+    this.formatBlock = function (welEditable, sValue) {
       recordUndo(welEditable);
       sValue = agent.bMSIE ? '<' + sValue + '>' : sValue;
       document.execCommand('FormatBlock', false, sValue);
     };
 
-    this.fontSize = function(welEditable, sValue) {
+    this.fontSize = function (welEditable, sValue) {
       recordUndo(welEditable);
       document.execCommand('fontSize', false, 3);
       if (agent.bFF) {
@@ -809,18 +839,18 @@
         welEditable.find('font[size=3]').removeAttr('size').css('font-size', sValue + 'px');
       } else {
         // chrome: <span style="font-size: medium"> to <span style='font-size={sValue}px;'>
-        welEditable.find('span').filter(function() {
-          return this.style.fontSize == 'medium';
+        welEditable.find('span').filter(function () {
+          return this.style.fontSize === 'medium';
         }).css('font-size', sValue + 'px');
       }
     };
     
-    this.lineHeight = function(welEditable, sValue) {
+    this.lineHeight = function (welEditable, sValue) {
       recordUndo(welEditable);
       style.stylePara(range.create(), {lineHeight: sValue});
     };
 
-    this.unlink = function(welEditable) {
+    this.unlink = function (welEditable) {
       var rng = range.create();
       if (rng.isOnAnchor()) {
         recordUndo(welEditable);
@@ -831,7 +861,7 @@
       }
     };
 
-    this.setLinkDialog = function(welEditable, fnShowDialog) {
+    this.setLinkDialog = function (welEditable, fnShowDialog) {
       var rng = range.create();
       if (rng.isOnAnchor()) {
         var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
@@ -841,8 +871,9 @@
         range: rng,
         text: rng.toString(),
         url: rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor).href : ''
-      }, function(sLinkUrl) {
-        rng.select(); recordUndo(welEditable);
+      }, function (sLinkUrl) {
+        rng.select();
+        recordUndo(welEditable);
 
         var bProtocol = sLinkUrl.toLowerCase().indexOf('://') !== -1;
         var sLinkUrlWithProtocol = bProtocol ? sLinkUrl : 'http://' + sLinkUrl;
@@ -860,7 +891,7 @@
       });
     };
     
-    this.color = function(welEditable, sObjColor) {
+    this.color = function (welEditable, sObjColor) {
       var oColor = JSON.parse(sObjColor);
       var foreColor = oColor.foreColor, backColor = oColor.backColor;
 
@@ -869,7 +900,7 @@
       if (backColor) { document.execCommand('backColor', false, backColor); }
     };
     
-    this.insertTable = function(welEditable, sDim) {
+    this.insertTable = function (welEditable, sDim) {
       recordUndo(welEditable);
       var aDim = sDim.split('x');
       var nCol = aDim[0], nRow = aDim[1];
@@ -890,18 +921,18 @@
       range.create().insertNode($(sTable)[0]);
     };
 
-    this.floatMe = function(welEditable, sValue, elTarget) {
+    this.floatMe = function (welEditable, sValue, elTarget) {
       recordUndo(welEditable);
       elTarget.style.cssFloat = sValue;
     };
 
-    this.resize = function(welEditable, sValue, elTarget) {
+    this.resize = function (welEditable, sValue, elTarget) {
       recordUndo(welEditable);
       elTarget.style.width = welEditable.width() * sValue + 'px';
       elTarget.style.height = '';
     };
 
-    this.resizeTo = function(pos, welTarget) {
+    this.resizeTo = function (pos, welTarget) {
       var newRatio = pos.y / pos.x;
       var ratio = welTarget.data('ratio');
 
@@ -915,12 +946,12 @@
   /**
    * Toolbar
    */
-  var Toolbar = function() {
-    this.update = function(welToolbar, oStyle) {
+  var Toolbar = function () {
+    this.update = function (welToolbar, oStyle) {
       //handle selectbox for fontsize, lineHeight
-      var checkDropdownMenu = function(welBtn, nValue) {
-        welBtn.find('.dropdown-menu li a').each(function() {
-          var bChecked = $(this).attr('data-value') == nValue;
+      var checkDropdownMenu = function (welBtn, nValue) {
+        welBtn.find('.dropdown-menu li a').each(function () {
+          var bChecked = $(this).attr('data-value') === nValue;
           this.className = bChecked ? 'checked' : '';
         });
       };
@@ -933,41 +964,41 @@
       checkDropdownMenu(welLineHeight, parseFloat(oStyle['line-height']));
       
       //check button state
-      var btnState = function(sSelector, pred) {
+      var btnState = function (sSelector, pred) {
         var welBtn = welToolbar.find(sSelector);
         welBtn[pred() ? 'addClass' : 'removeClass']('active');
       };
 
-      btnState('button[data-event="bold"]', function() {
+      btnState('button[data-event="bold"]', function () {
         return oStyle['font-bold'] === 'bold';
       });
-      btnState('button[data-event="italic"]', function() {
+      btnState('button[data-event="italic"]', function () {
         return oStyle['font-italic'] === 'italic';
       });
-      btnState('button[data-event="underline"]', function() {
+      btnState('button[data-event="underline"]', function () {
         return oStyle['font-underline'] === 'underline';
       });
-      btnState('button[data-event="justifyLeft"]', function() {
+      btnState('button[data-event="justifyLeft"]', function () {
         return oStyle['text-align'] === 'left' || oStyle['text-align'] === 'start';
       });
-      btnState('button[data-event="justifyCenter"]', function() {
+      btnState('button[data-event="justifyCenter"]', function () {
         return oStyle['text-align'] === 'center';
       });
-      btnState('button[data-event="justifyRight"]', function() {
+      btnState('button[data-event="justifyRight"]', function () {
         return oStyle['text-align'] === 'right';
       });
-      btnState('button[data-event="justifyFull"]', function() {
+      btnState('button[data-event="justifyFull"]', function () {
         return oStyle['text-align'] === 'justify';
       });
-      btnState('button[data-event="insertUnorderedList"]', function() {
+      btnState('button[data-event="insertUnorderedList"]', function () {
         return oStyle['list-style'] === 'unordered';
       });
-      btnState('button[data-event="insertOrderedList"]', function() {
+      btnState('button[data-event="insertOrderedList"]', function () {
         return oStyle['list-style'] === 'ordered';
       });
     };
     
-    this.updateRecentColor = function(elBtn, sEvent, sValue) {
+    this.updateRecentColor = function (elBtn, sEvent, sValue) {
       var welColor = $(elBtn).closest('.note-color');
       var welRecentColor = welColor.find('.note-recent-color');
       var oColor = JSON.parse(welRecentColor.attr('data-value'));
@@ -977,20 +1008,20 @@
       welRecentColor.find('i').css(sKey, sValue);
     };
 
-    this.updateFullscreen = function(welToolbar, bFullscreen) {
+    this.updateFullscreen = function (welToolbar, bFullscreen) {
       var welBtn = welToolbar.find('button[data-event="fullscreen"]');
       welBtn[bFullscreen ? 'addClass' : 'removeClass']('active');
     };
-    this.updateCodeview = function(welToolbar, bCodeview) {
+    this.updateCodeview = function (welToolbar, bCodeview) {
       var welBtn = welToolbar.find('button[data-event="codeview"]');
       welBtn[bCodeview ? 'addClass' : 'removeClass']('active');
     };
 
-    this.enable = function(welToolbar) {
+    this.enable = function (welToolbar) {
       welToolbar.find('button').not('button[data-event="codeview"]').removeClass('disabled');
     };
 
-    this.disable = function(welToolbar) {
+    this.disable = function (welToolbar) {
       welToolbar.find('button').not('button[data-event="codeview"]').addClass('disabled');
     };
   };
@@ -998,8 +1029,8 @@
   /**
    * Popover (http://getbootstrap.com/javascript/#popovers)
    */
-  var Popover = function() {
-    var showPopover = function(welPopover, elPlaceholder) {
+  var Popover = function () {
+    var showPopover = function (welPopover, elPlaceholder) {
       var welPlaceHolder = $(elPlaceholder);
       var pos = welPlaceHolder.position(), height = welPlaceHolder.height();
       welPopover.css({
@@ -1009,7 +1040,7 @@
       });
     };
 
-    this.update = function(welPopover, oStyle) {
+    this.update = function (welPopover, oStyle) {
       var welLinkPopover = welPopover.find('.note-link-popover'),
           welImagePopover = welPopover.find('.note-image-popover');
       if (oStyle.anchor) {
@@ -1027,7 +1058,7 @@
       }
     };
     
-    this.hide = function(welPopover) {
+    this.hide = function (welPopover) {
       welPopover.children().hide();
     };
   };
@@ -1035,8 +1066,8 @@
   /**
    * Handle
    */
-  var Handle = function() {
-    this.update = function(welHandle, oStyle) {
+  var Handle = function () {
+    this.update = function (welHandle, oStyle) {
       var welSelection = welHandle.find('.note-control-selection');
       if (oStyle.image) {
         var welImage = $(oStyle.image);
@@ -1044,8 +1075,10 @@
         var szImage = {w: welImage.width(), h: welImage.height()};
         welSelection.css({
           display: 'block',
-          left: pos.left, top: pos.top,
-          width: szImage.w, height: szImage.h
+          left: pos.left,
+          top: pos.top,
+          width: szImage.w,
+          height: szImage.h
         }).data('target', oStyle.image); // save current image element.
         var sSizing = szImage.w + 'x' + szImage.h;
         welSelection.find('.note-control-selection-info').text(sSizing);
@@ -1054,7 +1087,7 @@
       }
     };
 
-    this.hide = function(welHandle) {
+    this.hide = function (welHandle) {
       welHandle.children().hide();
     };
   };
@@ -1062,36 +1095,38 @@
   /**
    * Dialog
    */
-  var Dialog = function() {
-    this.showImageDialog = function(welDialog, hDropImage, fnInsertImages, fnInsertImage) {
+  var Dialog = function () {
+    this.showImageDialog = function (welDialog, hDropImage, fnInsertImages, fnInsertImage) {
       var welImageDialog = welDialog.find('.note-image-dialog');
       var welDropzone = welDialog.find('.note-dropzone'),
           welImageInput = welDialog.find('.note-image-input'),
           welImageUrl = welDialog.find('.note-image-url'),
           welImageBtn = welDialog.find('.note-image-btn');
 
-      welImageDialog.on('shown.bs.modal', function(e) {
+      welImageDialog.on('shown.bs.modal', function () {
         welDropzone.on('dragenter dragover dragleave', false);
-        welDropzone.on('drop', function(e) {
-          hDropImage(e); welImageDialog.modal('hide');
-        });
-        welImageInput.on('change', function(event) {
-          fnInsertImages(this.files); $(this).val('');
+        welDropzone.on('drop', function (e) {
+          hDropImage(e);
           welImageDialog.modal('hide');
         });
-        welImageUrl.val('').keyup(function(event) {
+        welImageInput.on('change', function () {
+          fnInsertImages(this.files);
+          $(this).val('');
+          welImageDialog.modal('hide');
+        });
+        welImageUrl.val('').keyup(function () {
           if (welImageUrl.val()) {
             welImageBtn.removeClass('disabled').attr('disabled', false);
           } else {
             welImageBtn.addClass('disabled').attr('disabled', true);
           }
         }).trigger('focus');
-        welImageBtn.click(function(event) {
+        welImageBtn.click(function (event) {
           welImageDialog.modal('hide');
           fnInsertImage(welImageUrl.val());
           event.preventDefault();
         });
-      }).on('hidden.bs.modal', function(e) {
+      }).on('hidden.bs.modal', function () {
         welDropzone.off('dragenter dragover dragleave drop');
         welImageInput.off('change');
         welImageDialog.off('shown.bs.modal hidden.bs.modal');
@@ -1100,15 +1135,15 @@
       }).modal('show');
     };
 
-    this.showLinkDialog = function(welDialog, linkInfo, callback) {
+    this.showLinkDialog = function (welDialog, linkInfo, callback) {
       var welLinkDialog = welDialog.find('.note-link-dialog');
       var welLinkText = welLinkDialog.find('.note-link-text'),
           welLinkUrl = welLinkDialog.find('.note-link-url'),
           welLinkBtn = welLinkDialog.find('.note-link-btn');
 
-      welLinkDialog.on('shown.bs.modal', function(e) {
+      welLinkDialog.on('shown.bs.modal', function () {
         welLinkText.html(linkInfo.text);
-        welLinkUrl.val(linkInfo.url).keyup(function(event) {
+        welLinkUrl.val(linkInfo.url).keyup(function () {
           if (welLinkUrl.val()) {
             welLinkBtn.removeClass('disabled').attr('disabled', false);
           } else {
@@ -1117,19 +1152,19 @@
 
           if (!linkInfo.text) { welLinkText.html(welLinkUrl.val()); }
         }).trigger('focus');
-        welLinkBtn.click(function(event) {
+        welLinkBtn.click(function (event) {
           welLinkDialog.modal('hide'); //hide and createLink (ie9+)
           callback(welLinkUrl.val());
           event.preventDefault();
         });
-      }).on('hidden.bs.modal', function(e) {
+      }).on('hidden.bs.modal', function () {
         welLinkUrl.off('keyup');
         welLinkBtn.off('click');
         welLinkDialog.off('shown.bs.modal hidden.bs.modal');
       }).modal('show');
     };
 
-    this.showHelpDialog = function(welDialog) {
+    this.showHelpDialog = function (welDialog) {
       welDialog.find('.note-help-dialog').modal('show');
     };
   };
@@ -1139,33 +1174,33 @@
    *
    * handle mouse & key event on note
    */
-  var EventHandler = function() {
+  var EventHandler = function () {
     var editor = new Editor();
     var toolbar = new Toolbar(), popover = new Popover();
     var handle = new Handle(), dialog = new Dialog();
     
     var key = { BACKSPACE: 8, TAB: 9, ENTER: 13, SPACE: 32,
-                NUM0: 48, NUM1: 49, NUM6: 54, NUM7: 55, NUM8: 56, 
+                NUM0: 48, NUM1: 49, NUM6: 54, NUM7: 55, NUM8: 56,
                 B: 66, E: 69, I: 73, J: 74, K: 75, L: 76, R: 82, S: 83, U: 85,
                 Y: 89, Z: 90, SLASH: 191,
                 LEFTBRACKET: 219, BACKSLACH: 220, RIGHTBRACKET: 221 };
 
     // makeLayoutInfo from editor's descendant node.
-    var makeLayoutInfo = function(descendant) {
+    var makeLayoutInfo = function (descendant) {
       var welEditor = $(descendant).closest('.note-editor');
       return {
-        editor: function() { return welEditor; },
-        toolbar: function() { return welEditor.find('.note-toolbar'); },
-        editable: function() { return welEditor.find('.note-editable'); },
-        codable: function() { return welEditor.find('.note-codable'); },
-        statusbar: function() { return welEditor.find('.note-statusbar'); },
-        popover: function() { return welEditor.find('.note-popover'); },
-        handle: function() { return welEditor.find('.note-handle'); },
-        dialog: function() { return welEditor.find('.note-dialog'); }
+        editor: function () { return welEditor; },
+        toolbar: function () { return welEditor.find('.note-toolbar'); },
+        editable: function () { return welEditor.find('.note-editable'); },
+        codable: function () { return welEditor.find('.note-codable'); },
+        statusbar: function () { return welEditor.find('.note-statusbar'); },
+        popover: function () { return welEditor.find('.note-popover'); },
+        handle: function () { return welEditor.find('.note-handle'); },
+        dialog: function () { return welEditor.find('.note-dialog'); }
       };
     };
 
-    var hKeydown = function(event) {
+    var hKeydown = function (event) {
       var bCmd = agent.bMac ? event.metaKey : event.ctrlKey,
           bShift = event.shiftKey, keyCode = event.keyCode;
 
@@ -1191,7 +1226,7 @@
         editor.removeFormat(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.K) {
         oLayoutInfo.editable();
-        editor.setLinkDialog(oLayoutInfo.editable(), function(linkInfo, cb) {
+        editor.setLinkDialog(oLayoutInfo.editable(), function (linkInfo, cb) {
           dialog.showLinkDialog(oLayoutInfo.dialog(), linkInfo, cb);
         });
       } else if (bCmd && keyCode === key.SLASH) {
@@ -1229,25 +1264,25 @@
       event.preventDefault(); //prevent default event for FF
     };
 
-    var insertImages = function(welEditable, files) {
+    var insertImages = function (welEditable, files) {
       var callbacks = welEditable.data('callbacks');
       editor.restoreRange(welEditable);
       if (callbacks.onImageUpload) { // call custom handler
-          callbacks.onImageUpload(files, editor, welEditable);
+        callbacks.onImageUpload(files, editor, welEditable);
       } else {
-        $.each(files, function(idx, file) {
-          async.readFile(file).done(function(sURL) {
+        $.each(files, function (idx, file) {
+          async.readFile(file).done(function (sURL) {
             editor.insertImage(welEditable, sURL);
-          }).fail(function() {
+          }).fail(function () {
             if (callbacks.onImageUploadError) {
-                callbacks.onImageUploadError();
-            }  
+              callbacks.onImageUploadError();
+            }
           });
         });
       }
     };
 
-    var hDropImage = function(event) {
+    var hDropImage = function (event) {
       var dataTransfer = event.originalEvent.dataTransfer;
       if (dataTransfer && dataTransfer.files) {
         var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
@@ -1257,12 +1292,12 @@
       event.preventDefault();
     };
 
-    var hMousedown = function(event) {
+    var hMousedown = function (event) {
       //preventDefault Selection for FF, IE8+
       if (dom.isImg(event.target)) { event.preventDefault(); }
     };
     
-    var hToolbarAndPopoverUpdate = function(event) {
+    var hToolbarAndPopoverUpdate = function (event) {
       var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
       var oStyle = editor.currentStyle(event.target);
       if (!oStyle) { return; }
@@ -1271,14 +1306,14 @@
       handle.update(oLayoutInfo.handle(), oStyle);
     };
 
-    var hScroll = function(event) {
+    var hScroll = function (event) {
       var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
       //hide popover and handle when scrolled
       popover.hide(oLayoutInfo.popover());
       handle.hide(oLayoutInfo.handle());
     };
 
-    var hHandleMousedown = function(event) {
+    var hHandleMousedown = function (event) {
       if (dom.isControlSizing(event.target)) {
         var oLayoutInfo = makeLayoutInfo(event.target),
             welHandle = oLayoutInfo.handle(), welPopover = oLayoutInfo.popover(),
@@ -1289,13 +1324,13 @@
         var posStart = welTarget.offset(),
             scrollTop = $(document).scrollTop(), posDistance;
 
-        welEditor.on('mousemove', function(event) {
+        welEditor.on('mousemove', function (event) {
           posDistance = {x: event.clientX - posStart.left,
                          y: event.clientY - (posStart.top - scrollTop)};
           editor.resizeTo(posDistance, welTarget);
           handle.update(welHandle, {image: elTarget});
           popover.update(welPopover, {image: elTarget});
-        }).on('mouseup', function() {
+        }).on('mouseup', function () {
           welEditor.off('mousemove').off('mouseup');
         });
 
@@ -1304,17 +1339,18 @@
         }
 
         editor.recordUndo(welEditable);
-        event.stopPropagation(); event.preventDefault();
+        event.stopPropagation();
+        event.preventDefault();
       }
     };
     
-    var hToolbarAndPopoverMousedown = function(event) {
+    var hToolbarAndPopoverMousedown = function (event) {
       // prevent default event when insertTable (FF, Webkit)
       var welBtn = $(event.target).closest('[data-event]');
       if (welBtn.length > 0) { event.preventDefault(); }
     };
     
-    var hToolbarAndPopoverClick = function(event) {
+    var hToolbarAndPopoverClick = function (event) {
       var welBtn = $(event.target).closest('[data-event]');
       
       if (welBtn.length > 0) {
@@ -1322,7 +1358,9 @@
             sValue = welBtn.attr('data-value');
 
         var oLayoutInfo = makeLayoutInfo(event.target);
-        var welDialog = oLayoutInfo.dialog(),
+        var welEditor = oLayoutInfo.editor(),
+            welToolbar = oLayoutInfo.toolbar(),
+            welDialog = oLayoutInfo.dialog(),
             welEditable = oLayoutInfo.editable(),
             welCodable = oLayoutInfo.codable();
 
@@ -1344,25 +1382,23 @@
           toolbar.updateRecentColor(welBtn[0], sEvent, sValue);
         } else if (sEvent === 'showLinkDialog') { // popover to dialog
           welEditable.focus();
-          editor.setLinkDialog(welEditable, function(linkInfo, cb) {
+          editor.setLinkDialog(welEditable, function (linkInfo, cb) {
             dialog.showLinkDialog(welDialog, linkInfo, cb);
           });
         } else if (sEvent === 'showImageDialog') {
           welEditable.focus();
-          dialog.showImageDialog(welDialog, hDropImage, function(files) {
+          dialog.showImageDialog(welDialog, hDropImage, function (files) {
             insertImages(welEditable, files);
-          }, function(sUrl) {
+          }, function (sUrl) {
             editor.restoreRange(welEditable);
             editor.insertImage(welEditable, sUrl);
           });
         } else if (sEvent === 'showHelpDialog') {
           dialog.showHelpDialog(welDialog);
         } else if (sEvent === 'fullscreen') {
-          var welEditor = oLayoutInfo.editor();
           welEditor.toggleClass('fullscreen');
 
-          var welToolbar = oLayoutInfo.toolbar();
-          var hResizeFullscreen = function() {
+          var hResizeFullscreen = function () {
             var nHeight = $(window).height() - welToolbar.outerHeight();
             welEditable.css('height', nHeight);
           };
@@ -1378,8 +1414,6 @@
 
           toolbar.updateFullscreen(welToolbar, bFullscreen);
         } else if (sEvent === 'codeview') {
-          var welEditor = oLayoutInfo.editor(),
-              welToolbar = oLayoutInfo.toolbar();
           welEditor.toggleClass('codeview');
 
           var bCodeview = welEditor.hasClass('codeview');
@@ -1403,26 +1437,26 @@
     };
 
     var EDITABLE_PADDING = 24;
-    var hStatusbarMousedown = function(event) {
+    var hStatusbarMousedown = function (event) {
       var welDocument = $(document);
       var oLayoutInfo = makeLayoutInfo(event.target);
-      var welEditable = oLayoutInfo.editable(),
-          welCodable = oLayoutInfo.codable();
+      var welEditable = oLayoutInfo.editable();
 
       var nEditableTop = welEditable.offset().top - welDocument.scrollTop();
-      var hMousemove = function(event) {
+      var hMousemove = function (event) {
         welEditable.height(event.clientY - (nEditableTop + EDITABLE_PADDING));
       };
-      var hMouseup = function() {
+      var hMouseup = function () {
         welDocument.unbind('mousemove', hMousemove)
                    .unbind('mouseup', hMouseup);
       };
       welDocument.mousemove(hMousemove).mouseup(hMouseup);
-      event.stopPropagation(); event.preventDefault();
+      event.stopPropagation();
+      event.preventDefault();
     };
     
     var PX_PER_EM = 18;
-    var hDimensionPickerMove = function(event) {
+    var hDimensionPickerMove = function (event) {
       var welPicker = $(event.target.parentNode); // target is mousecatcher
       var welDimensionDisplay = welPicker.next();
       var welCatcher = welPicker.find('.note-dimension-picker-mousecatcher');
@@ -1441,7 +1475,7 @@
       var dim = {c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
                  r: Math.ceil(posOffset.y / PX_PER_EM) || 1};
 
-      welHighlighted.css({ width: dim.c +'em', height: dim.r + 'em' });
+      welHighlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });
       welCatcher.attr('data-value', dim.c + 'x' + dim.r);
       
       if (3 < dim.c && dim.c < 10) { // 5~10
@@ -1461,7 +1495,7 @@
      * @param {object} options - user options include custom event handlers
      * @param {function} options.enter - enter key handler
      */
-    this.attach = function(oLayoutInfo, options) {
+    this.attach = function (oLayoutInfo, options) {
       oLayoutInfo.editable.on('keydown', hKeydown);
       oLayoutInfo.editable.on('mousedown', hMousedown);
       oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
@@ -1485,15 +1519,15 @@
       welCatcher.on('mousemove', hDimensionPickerMove);
 
       // save selection when focusout
-      oLayoutInfo.editable.on('blur', function() {
+      oLayoutInfo.editable.on('blur', function () {
         editor.saveRange(oLayoutInfo.editable);
       });
 
       // basic event callbacks (lowercase)
       // enter, focus, blur, keyup, keydown
       if (options.onenter) {
-        oLayoutInfo.editable.keypress(function(event) {
-          if (event.keyCode === key.ENTER) { options.onenter(event);}
+        oLayoutInfo.editable.keypress(function (event) {
+          if (event.keyCode === key.ENTER) { options.onenter(event); }
         });
       }
       if (options.onfocus) { oLayoutInfo.editable.focus(options.onfocus); }
@@ -1505,14 +1539,18 @@
       // All editor status will be saved on editable with jquery's data
       // for support multiple editor with singleton object.
       oLayoutInfo.editable.data('callbacks', {
-        onChange: options.onChange, onAutoSave: options.onAutoSave,
-        onPasteBefore: options.onPasteBefore, onPasteAfter: options.onPasteAfter,
-        onImageUpload: options.onImageUpload, onImageUploadError: options.onImageUpload,
-        onFileUpload: options.onFileUpload, onFileUploadError: options.onFileUpload
+        onChange: options.onChange,
+        onAutoSave: options.onAutoSave,
+        onPasteBefore: options.onPasteBefore,
+        onPasteAfter: options.onPasteAfter,
+        onImageUpload: options.onImageUpload,
+        onImageUploadError: options.onImageUpload,
+        onFileUpload: options.onFileUpload,
+        onFileUploadError: options.onFileUpload
       });
     };
 
-    this.dettach = function(oLayoutInfo) {
+    this.dettach = function (oLayoutInfo) {
       oLayoutInfo.editable.off();
       oLayoutInfo.toolbar.off();
       oLayoutInfo.handle.off();
@@ -1525,7 +1563,8 @@
    *
    * rendering toolbar and editable
    */
-  var Renderer = function() {
+  var Renderer = function () {
+    /* jshint ignore:start */
     var aToolbarItem = {
       picture:
         '<button type="button" class="btn btn-default btn-sm btn-small" title="Picture" data-event="showImageDialog" tabindex="-1"><i class="fa fa-picture-o icon-picture"></i></button>',
@@ -1732,8 +1771,8 @@
 
     var sShortcutTable = '<table class="note-shortcut-layout">' +
                            '<tbody>' +
-                             '<tr><td>' + sShortcutAction +'</td><td>' + sShortcutText +'</td></tr>' +
-                             '<tr><td>' + sShortcutStyle +'</td><td>' + sShortcutPara +'</td></tr>' +
+                             '<tr><td>' + sShortcutAction + '</td><td>' + sShortcutText + '</td></tr>' +
+                             '<tr><td>' + sShortcutStyle + '</td><td>' + sShortcutPara + '</td></tr>' +
                            '</tbody>' +
                          '</table>';
 
@@ -1804,13 +1843,16 @@
                       '</div>' +
                     '</div>' +
                   '</div>';
+
+    var sStatusbar = '<div class="note-resizebar"><div class="note-icon-bar"></div><div class="note-icon-bar"></div><div class="note-icon-bar"></div></div>';
+    /* jshint ignore:end */
                         
     // createTooltip
-    var createTooltip = function(welContainer, sPlacement) {
-      welContainer.find('button').each(function(i, elBtn) {
+    var createTooltip = function (welContainer, sPlacement) {
+      welContainer.find('button').each(function (i, elBtn) {
         var welBtn = $(elBtn);
         var sShortcut = welBtn.attr(agent.bMac ? 'data-mac-shortcut': 'data-shortcut');
-        if (sShortcut) { welBtn.attr('title', function(i, v) { return v + ' (' + sShortcut + ')'; }); }
+        if (sShortcut) { welBtn.attr('title', function (i, v) { return v + ' (' + sShortcut + ')'; }); }
       //bootstrap tooltip on btn-group bug: https://github.com/twitter/bootstrap/issues/5687
       }).tooltip({container: 'body', placement: sPlacement || 'top'});
     };
@@ -1828,8 +1870,8 @@
     ];
     
     // createPalette
-    var createPalette = function(welContainer) {
-      welContainer.find('.note-color-palette').each(function() {
+    var createPalette = function (welContainer) {
+      welContainer.find('.note-color-palette').each(function () {
         var welPalette = $(this), sEvent = welPalette.attr('data-target-event');
         var sPaletteContents = '';
         for (var row = 0, szRow = aaColor.length; row < szRow; row++) {
@@ -1852,7 +1894,7 @@
     };
     
     // createLayout
-    var createLayout = this.createLayout = function(welHolder, nHeight, nTabsize, aToolbarSetting) {
+    this.createLayout = function (welHolder, nHeight, nTabsize, aToolbarSetting) {
       //already created
       if (welHolder.next().hasClass('note-editor')) { return; }
       
@@ -1861,7 +1903,7 @@
 
       //02. statusbar
       if (nHeight > 0) {
-        var welStatusbar = $('<div class="note-statusbar"><div class="note-resizebar"><div class="note-icon-bar"></div><div class="note-icon-bar"></div><div class="note-icon-bar"></div></div></div>').prependTo(welEditor);
+        $('<div class="note-statusbar">' + sStatusbar + '</div>').prependTo(welEditor);
       }
 
       //03. create Editable
@@ -1875,10 +1917,10 @@
       welEditable.data('NoteHistory', new History());
 
       //031. create codable
-      var welCodable = $('<textarea class="note-codable"></textarea>').prependTo(welEditor);
+      $('<textarea class="note-codable"></textarea>').prependTo(welEditor);
 
       //032. set styleWithCSS for backColor / foreColor clearing with 'inherit'.
-      setTimeout(function() { // protect FF Error: NS_ERROR_FAILURE: Failure
+      setTimeout(function () { // protect FF Error: NS_ERROR_FAILURE: Failure
         document.execCommand('styleWithCSS', 0, true);
       });
       
@@ -1908,7 +1950,7 @@
       
       //07. create Dialog
       var welDialog = $(sDialog).prependTo(welEditor);
-      welDialog.find('button.close, a.modal-close').click(function(event) {
+      welDialog.find('button.close, a.modal-close').click(function () {
         $(this).closest('.modal').modal('hide');
       });
 
@@ -1918,7 +1960,7 @@
     };
     
     // layoutInfoFromHolder
-    var layoutInfoFromHolder = this.layoutInfoFromHolder = function(welHolder) {
+    var layoutInfoFromHolder = this.layoutInfoFromHolder = function (welHolder) {
       var welEditor = welHolder.next();
       if (!welEditor.hasClass('note-editor')) { return; }
       
@@ -1935,7 +1977,7 @@
     };
     
     // removeLayout
-    var removeLayout = this.removeLayout = function(welHolder) {
+    this.removeLayout = function (welHolder) {
       var info = layoutInfoFromHolder(welHolder);
       if (!info) { return; }
       welHolder.html(info.editable.html());
@@ -1953,7 +1995,7 @@
    */
   $.fn.extend({
     // create Editor Layout and attach Key and Mouse Event
-    summernote: function(options) {
+    summernote: function (options) {
       options = $.extend({
         toolbar: [
           ['style', ['style']],
@@ -1967,9 +2009,9 @@
           ['view', ['fullscreen', 'codeview']],
           ['help', ['help']]
         ]
-      }, options );
+      }, options);
 
-      this.each(function(idx, elHolder) {
+      this.each(function (idx, elHolder) {
         var welHolder = $(elHolder);
 
         // createLayout with options
@@ -1988,7 +2030,7 @@
       }
     },
     // get the HTML contents of note or set the HTML contents of note.
-    code: function(sHTML) {
+    code: function (sHTML) {
       //get the HTML contents
       if (sHTML === undefined) {
         var welHolder = this.first();
@@ -2002,14 +2044,14 @@
       }
 
       // set the HTML contents
-      this.each(function(i, elHolder) {
+      this.each(function (i, elHolder) {
         var info = renderer.layoutInfoFromHolder($(elHolder));
         if (info && info.editable) { info.editable.html(sHTML); }
       });
     },
     // destroy Editor Layout and dettach Key and Mouse Event
-    destroy: function() {
-      this.each(function(idx, elHolder) {
+    destroy: function () {
+      this.each(function (idx, elHolder) {
         var welHolder = $(elHolder);
 
         var info = renderer.layoutInfoFromHolder(welHolder);
@@ -2019,7 +2061,7 @@
       });
     },
     // inner object for test
-    summernoteInner: function() {
+    summernoteInner: function () {
       return { dom: dom, list: list, func: func, range: range };
     }
   });
@@ -2028,16 +2070,20 @@
 // Array.prototype.reduce fallback
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
 if ('function' !== typeof Array.prototype.reduce) {
-  Array.prototype.reduce = function(callback, opt_initialValue) {
+  Array.prototype.reduce = function (callback, optInitialValue) {
     'use strict';
     var idx, value, length = this.length >>> 0, isValueSet = false;
-    if (1 < arguments.length) { value = opt_initialValue, isValueSet = true; }
+    if (1 < arguments.length) {
+      value = optInitialValue;
+      isValueSet = true;
+    }
     for (idx = 0; length > idx; ++idx) {
       if (this.hasOwnProperty(idx)) {
         if (isValueSet) {
           value = callback(value, this[idx], idx, this);
         } else {
-          value = this[idx], isValueSet = true;
+          value = this[idx];
+          isValueSet = true;
         }
       }
     }
