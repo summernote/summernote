@@ -1412,7 +1412,8 @@
             welEditable.data('orgHeight', welEditable.css('height'));
             $(window).resize(hResizeFullscreen).trigger('resize');
           } else {
-            welEditable.css('height', welEditable.data('orgHeight'));
+            var hasInitHeight = !!welEditable.data('initHeight');
+            welEditable.css('height', hasInitHeight ? welEditable.data('orgHeight') : 'auto');
             $(window).off('resize');
           }
 
@@ -1433,7 +1434,8 @@
                 mode: 'text/html',
                 lineNumbers: true
               });
-              cmEditor.setSize(null, welEditable.height());
+              // CodeMirror hasn't Padding.
+              cmEditor.setSize(null, welEditable.outerHeight());
               // autoFormatRange If formatting included
               if (cmEditor.autoFormatRange) {
                 cmEditor.autoFormatRange({line: 0, ch: 0}, {
@@ -1448,8 +1450,12 @@
             if (agent.bCodeMirror) {
               welCodable.data('cmEditor').toTextArea();
             }
+
             welEditable.html(welCodable.val());
-            welEditable.height(welCodable.height());
+
+            var hasInitHeight = !!welEditable.data('initHeight');
+            welEditable.height(hasInitHeight ? welCodable.height() : 'auto');
+
             toolbar.enable(welToolbar);
             welEditable.focus();
           }
@@ -1933,7 +1939,10 @@
 
       //03. create Editable
       var welEditable = $('<div class="note-editable" contentEditable="true"></div>').prependTo(welEditor);
-      if (nHeight) { welEditable.height(nHeight); }
+      if (nHeight) { 
+        welEditable.height(nHeight);
+        welEditable.data('initHeight', nHeight);
+      }
       if (nTabsize) {
         welEditable.data('tabsize', nTabsize);
       }
