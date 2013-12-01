@@ -1412,8 +1412,8 @@
             welEditable.data('orgHeight', welEditable.css('height'));
             $(window).resize(hResizeFullscreen).trigger('resize');
           } else {
-            var hasInitHeight = !!welEditable.data('initHeight');
-            welEditable.css('height', hasInitHeight ? welEditable.data('orgHeight') : 'auto');
+            var hasOptionHeight = !!welEditable.data('optionHeight');
+            welEditable.css('height', hasOptionHeight ? welEditable.data('orgHeight') : 'auto');
             $(window).off('resize');
           }
 
@@ -1452,9 +1452,7 @@
             }
 
             welEditable.html(welCodable.val());
-
-            var hasInitHeight = !!welEditable.data('initHeight');
-            welEditable.height(hasInitHeight ? welCodable.height() : 'auto');
+            welEditable.height(welEditable.data('optionHeight') ? welCodable.height() : 'auto');
 
             toolbar.enable(welToolbar);
             welEditable.focus();
@@ -1939,9 +1937,9 @@
 
       //03. create Editable
       var welEditable = $('<div class="note-editable" contentEditable="true"></div>').prependTo(welEditor);
-      if (nHeight) { 
+      if (nHeight) {
         welEditable.height(nHeight);
-        welEditable.data('initHeight', nHeight);
+        welEditable.data('optionHeight', nHeight);
       }
       if (nTabsize) {
         welEditable.data('tabsize', nTabsize);
