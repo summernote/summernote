@@ -11,11 +11,18 @@
   <!--[if lt IE 9]>
     <script src="//twitter.github.io/bootstrap/assets/js/html5shiv.js"></script>
   <![endif]-->
+
   <!-- include jquery and bootstrap and font-awesome -->
   <script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css" rel="stylesheet">
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+
+  <!-- include (codemirror.css, codemirror.js, xml.js, formatting.js) -->
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css" />
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/xml/xml.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js"></script>
 
   <!-- include summernote -->
   <link href="summernote.css" rel="stylesheet">
@@ -65,6 +72,7 @@
         <ul class="nav">
           <li><a href="#multiple">Multiple Editor</a></li>
           <li><a href="#click2edit">Click to Edit</a></li>
+          <li><a href="#codemirror">CodeMirror as CodeView</a></li>
           <li><a href="#theme">Theme</a></li>
           <!-- Upcoming Features
           <li><a href="#local">Local Storage</a></li>
@@ -126,6 +134,35 @@ var save = function() {
           };
         </script>
       </section>
+      <section>
+        <h2 id="codemirror">CodeMirror as Codeview</h2>
+        <p>If you include a <code>CodeMirror</code> on a page, you can use CodeMirror to Codeview.</p>
+        <p>Include jQuery, Bootstrap, font-awesome and <b>CodeMirror</b> with summernote.</p>
+        <pre><code class="xml">&lt;!-- include libries(jQuery, bootstrap, fontawesome) --&gt;
+&lt;script src="//code.jquery.com/jquery-1.9.1.min.js"&gt;&lt;/script&gt; 
+&lt;link href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css"&gt; 
+&lt;script src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"&gt;&lt;/script&gt; 
+&lt;link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"&gt;
+
+&lt;!-- include codemirror (codemirror.css, codemirror.js, xml.js, formatting.js) --&gt;
+&lt;link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css" /&gt;
+&lt;script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/xml/xml.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- include summernote css/js--&gt;
+&lt;link href="summernote.css" /&gt;
+&lt;script src="summernote.min.js"&gt;&lt;/script&gt;</code></pre>
+        <textarea class="codemirror">Click <b>Code View</b>!!!</textarea>
+        <script>
+          $(document).ready(function() {
+            $('.codemirror').summernote({height: 150});
+          });
+        </script>
+        <p></p>
+        <p><a href="http://codemirror.net/">CodeMirror</a> is a versatile text editor implemented in JavaScript for the browser. It is specialized for editing code, and comes with a number of language modes and addons that implement more advanced editing functionaly.</p>
+      </section>
+
       <section>
         <h2 id="theme">Theme</h2>
         <p>Style changed accroding to bootstrap theme.</p>
