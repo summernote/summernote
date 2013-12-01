@@ -82,8 +82,9 @@ $('#summernote').destroy();
 * Clipboard
 * Image Selection
 
-#### v0.5 2013-12-01
+#### v0.5 2013-12-31
 * Bug fixes.
+* CodeMirror as Codeview
 
 ### Change Log
 
