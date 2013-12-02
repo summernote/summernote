@@ -879,8 +879,12 @@
         rng.select();
         recordUndo(welEditable);
 
-        var bProtocol = sLinkUrl.toLowerCase().indexOf('://') !== -1;
-        var sLinkUrlWithProtocol = bProtocol ? sLinkUrl : 'http://' + sLinkUrl;
+        var sLinkUrlWithProtocol;
+        if (sLinkUrl.indexOf('@') !== -1) { // email address
+          sLinkUrlWithProtocol = sLinkUrl.indexOf(':') !== -1 ? sLinkUrl : 'mailto:' + sLinkUrl;
+        } else { // normal address
+          sLinkUrlWithProtocol = sLinkUrl.indexOf('://') !== -1 ? sLinkUrl : 'http://' + sLinkUrl;
+        }
 
         //IE: createLink when range collapsed.
         if (agent.bMSIE && rng.isCollapsed()) {
