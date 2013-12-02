@@ -409,9 +409,6 @@
       elParent.removeChild(node);
     };
 
-    var unescape = function (str) {
-      return $('<div/>').html(str).text();
-    };
     var html = function ($node) {
       return dom.isTextarea($node[0]) ? $node.val() : $node.html();
     };
@@ -1434,10 +1431,10 @@
 
             // activate CodeMirror as codable
             if (agent.bCodeMirror) {
-              var cmEditor = CodeMirror.fromTextArea(welCodable[0], {
+              var cmEditor = CodeMirror.fromTextArea(welCodable[0], $.extend({
                 mode: 'text/html',
                 lineNumbers: true
-              });
+              }, welEditor.data('options').codemirror));
               // CodeMirror hasn't Padding.
               cmEditor.setSize(null, welEditable.outerHeight());
               // autoFormatRange If formatting included
@@ -1927,12 +1924,17 @@
     };
     
     // createLayout
-    this.createLayout = function (welHolder, nHeight, nTabsize, aToolbarSetting) {
+    this.createLayout = function (welHolder, options) {
+      var nHeight = options.height,
+          nTabsize = options.tabsize,
+          aToolbarSetting = options.toolbar;
+
       //already created
       if (welHolder.next().hasClass('note-editor')) { return; }
       
       //01. create Editor
       var welEditor = $('<div class="note-editor"></div>');
+      welEditor.data('options', options);
 
       //02. statusbar
       if (nHeight > 0) {
@@ -2051,7 +2053,7 @@
         var welHolder = $(elHolder);
 
         // createLayout with options
-        renderer.createLayout(welHolder, options.height, options.tabsize, options.toolbar);
+        renderer.createLayout(welHolder, options);
 
         var info = renderer.layoutInfoFromHolder(welHolder);
         eventHandler.attach(info, options);
