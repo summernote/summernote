@@ -154,6 +154,13 @@ var save = function() {
 &lt;!-- include summernote css/js--&gt;
 &lt;link href="summernote.css" /&gt;
 &lt;script src="summernote.min.js"&gt;&lt;/script&gt;</code></pre>
+<p>Initialize Summernote with codemirror options</p>
+<pre><code class="javascript">$('.summernote').summernote({
+  height: 150,   //set editable area's height
+  codemirror: { // codemirror options
+    theme: 'monokai'
+  }
+});</code></pre>
         <textarea class="codemirror">Click <b>Code View</b>!!!</textarea>
         <script>
           $(document).ready(function() {
