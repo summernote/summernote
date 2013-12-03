@@ -83,6 +83,7 @@ $('#summernote').destroy();
 * Image Selection
 
 #### v0.5 2013-12-31
+* Support both Font-Awesome 3.x and 4.x
 * CodeMirror as Codeview
 * Bug fixes
 
