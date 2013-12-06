@@ -159,7 +159,8 @@
     };
     
     var isPara = function (node) {
-      return node && /^P|^LI|^H[1-7]/.test(node.nodeName);
+      // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
+      return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName);
     };
 
     var isList = function (node) {
@@ -956,7 +957,7 @@
       //handle selectbox for fontsize, lineHeight
       var checkDropdownMenu = function ($btn, nValue) {
         $btn.find('.dropdown-menu li a').each(function () {
-          var bChecked = $(this).attr('data-value') === nValue;
+          var bChecked = parseFloat($(this).data('value')) === nValue;
           this.className = bChecked ? 'checked' : '';
         });
       };
