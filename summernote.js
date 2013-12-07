@@ -163,6 +163,8 @@
       return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName);
     };
 
+    var emptyPara = '<p><br/></p>';
+
     var isList = function (node) {
       return node && /^UL|^OL/.test(node.nodeName);
     };
@@ -415,6 +417,7 @@
     };
     
     return {
+      emptyPara: emptyPara,
       isText: isText,
       isPara: isPara,
       isList: isList,
@@ -479,7 +482,9 @@
           elCurText = elCurText.nextSibling;
         }
 
+        /* jshint ignore:start */
         var sDummy = elCurText.nodeValue; //enforce IE to re-reference elCurText, hack
+        /* jshint ignore:end */
 
         if (bStart && elCurText.nextSibling && dom.isText(elCurText.nextSibling) &&
             nTextCount === elCurText.nodeValue.length) {
@@ -1453,7 +1458,7 @@
               $codable.data('cmEditor').toTextArea();
             }
 
-            $editable.html($codable.val());
+            $editable.html($codable.val() || dom.emptyPara);
             $editable.height($editable.data('optionHeight') ? $codable.height() : 'auto');
 
             toolbar.enable($toolbar);
@@ -1952,7 +1957,7 @@
         $editable.data('tabsize', nTabsize);
       }
 
-      $editable.html(dom.html($holder));
+      $editable.html(dom.html($holder) || dom.emptyPara);
       $editable.data('NoteHistory', new History());
 
       //031. create codable
