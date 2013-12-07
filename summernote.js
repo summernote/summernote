@@ -2063,6 +2063,13 @@
 
         var info = renderer.layoutInfoFromHolder($holder);
         eventHandler.attach(info, options);
+
+        // Textarea auto filling the code before form submit.
+        if (dom.isTextarea($holder[0])) {
+          $holder.closest('form').submit(function () {
+            $holder.html($holder.code());
+          });
+        }
       });
 
       if (this.first() && options.focus) { // focus on first editable element
