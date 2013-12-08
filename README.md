@@ -149,7 +149,7 @@ grunt test
 ```
 
 #### Coding convention
-* Summernote: http://www.jshint.com/about/
+* JSHint: http://www.jshint.com/about/
 * JSHint rule: https://github.com/HackerWins/summernote/blob/master/.jshintrc
 
 ### Contacts
