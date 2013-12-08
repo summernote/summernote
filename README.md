@@ -148,6 +148,10 @@ run tests with PhantomJS
 grunt test
 ```
 
+#### Coding convention
+* Summernote: http://www.jshint.com/about/
+* JSHint rule: https://github.com/HackerWins/summernote/blob/master/.jshintrc
+
 ### Contacts
 * Email: susukang98@gmail.com
 * Twitter: http://twitter.com/hackerwins
