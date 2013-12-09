@@ -14,7 +14,7 @@
     bFF: navigator.userAgent.indexOf('Firefox') > -1,
     bCodeMirror: !!CodeMirror
   };
-  
+
   /**
    * func utils (for high-order func's arg)
    */
@@ -26,7 +26,7 @@
     var self = function (a) { return a; };
     return { eq: eq, eq2: eq2, fail: fail, not: not, self: self };
   })();
-  
+
   /**
    * list utils
    */
@@ -59,7 +59,7 @@
       }
       return result;
     };
-    
+
     /**
      * cluster item by second function
      * @param {array} array - array
@@ -143,7 +143,7 @@
 
     return { readFile: readFile, loadImage: loadImage };
   })();
-  
+
   /**
    * dom utils
    */
@@ -157,7 +157,7 @@
         return node && node.nodeName === sNodeName;
       };
     };
-    
+
     var isPara = function (node) {
       // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
       return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName);
@@ -189,7 +189,7 @@
       }
       return null;
     };
-    
+
     /**
      * returns new array of ancestor nodes (until predicate hit).
      * @param {element} node
@@ -197,7 +197,7 @@
      */
     var listAncestor = function (node, pred) {
       pred = pred || func.fail;
-      
+
       var aAncestor = [];
       ancestor(node, function (el) {
         aAncestor.push(el);
@@ -205,7 +205,7 @@
       });
       return aAncestor;
     };
-    
+
     /**
      * returns common ancestor node between two nodes.
      * @param {element} nodeA
@@ -260,7 +260,7 @@
       }
       return aNext;
     };
-    
+
     /**
      * listing nextSiblings (until predicate hit).
      * @param {element} node
@@ -277,7 +277,7 @@
       }
       return aNext;
     };
-    
+
     /**
      * insert node after preceding
      * @param {element} node
@@ -304,7 +304,7 @@
       });
       return node;
     };
-    
+
     var isText = makePredByNodeName('#text');
 
     /**
@@ -366,7 +366,7 @@
       node = insertAfter(node.cloneNode(false), node);
       return appends(node, listNext(child));
     };
-    
+
     /**
      * split dom tree by boundaryPoint(pivot and offset)
      * @param {element} root
@@ -415,7 +415,7 @@
     var html = function ($node) {
       return dom.isTextarea($node[0]) ? $node.val() : $node.html();
     };
-    
+
     return {
       emptyPara: emptyPara,
       isText: isText,
@@ -659,7 +659,7 @@
       }
     };
   })();
-  
+
   /**
    * Style
    */
@@ -673,7 +673,7 @@
         });
       });
     };
-    
+
     // get current style, elTarget: target element on event.
     this.current = function (rng, elTarget) {
       var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
@@ -686,7 +686,7 @@
       oStyle['font-bold'] = document.queryCommandState('bold') ? 'bold' : 'normal';
       oStyle['font-italic'] = document.queryCommandState('italic') ? 'italic' : 'normal';
       oStyle['font-underline'] = document.queryCommandState('underline') ? 'underline' : 'normal';
-      
+
       // list-style-type to list-style(unordered, ordered)
       if (!rng.isOnList()) {
         oStyle['list-style'] = 'none';
@@ -751,7 +751,7 @@
       aUndo.push(makeSnap($editable));
     };
   };
-  
+
   /**
    * Editor
    */
@@ -807,7 +807,7 @@
                 'insertOrderedList', 'insertUnorderedList',
                 'indent', 'outdent', 'formatBlock', 'removeFormat',
                 'backColor', 'foreColor', 'insertHorizontalRule'];
-    
+
     for (var idx = 0, len = aCmd.length; idx < len; idx ++) {
       this[aCmd[idx]] = (function (sCmd) {
         return function ($editable, sValue) {
@@ -851,7 +851,7 @@
         }).css('font-size', sValue + 'px');
       }
     };
-    
+
     this.lineHeight = function ($editable, sValue) {
       recordUndo($editable);
       style.stylePara(range.create(), {lineHeight: sValue});
@@ -901,7 +901,7 @@
         }
       });
     };
-    
+
     this.color = function ($editable, sObjColor) {
       var oColor = JSON.parse(sObjColor);
       var foreColor = oColor.foreColor, backColor = oColor.backColor;
@@ -910,12 +910,12 @@
       if (foreColor) { document.execCommand('foreColor', false, foreColor); }
       if (backColor) { document.execCommand('backColor', false, backColor); }
     };
-    
+
     this.insertTable = function ($editable, sDim) {
       recordUndo($editable);
       var aDim = sDim.split('x');
       var nCol = aDim[0], nRow = aDim[1];
-      
+
       var aTD = [], sTD;
       var sWhitespace = agent.bMSIE ? '&nbsp;' : '<br/>';
       for (var idxCol = 0; idxCol < nCol; idxCol++) {
@@ -966,14 +966,14 @@
           this.className = bChecked ? 'checked' : '';
         });
       };
-      
+
       var $fontsize = $toolbar.find('.note-fontsize');
       $fontsize.find('.note-current-fontsize').html(oStyle['font-size']);
       checkDropdownMenu($fontsize, parseFloat(oStyle['font-size']));
-      
+
       var $lineHeight = $toolbar.find('.note-height');
       checkDropdownMenu($lineHeight, parseFloat(oStyle['line-height']));
-      
+
       //check button state
       var btnState = function (sSelector, pred) {
         var $btn = $toolbar.find(sSelector);
@@ -1008,7 +1008,7 @@
         return oStyle['list-style'] === 'ordered';
       });
     };
-    
+
     this.updateRecentColor = function (elBtn, sEvent, sValue) {
       var $color = $(elBtn).closest('.note-color');
       var $recentColor = $color.find('.note-recent-color');
@@ -1036,7 +1036,7 @@
       $toolbar.find('button').not('button[data-event="codeview"]').addClass('disabled');
     };
   };
-  
+
   /**
    * Popover (http://getbootstrap.com/javascript/#popovers)
    */
@@ -1068,7 +1068,7 @@
         $imagePopover.hide();
       }
     };
-    
+
     this.hide = function ($popover) {
       $popover.children().hide();
     };
@@ -1102,7 +1102,7 @@
       $handle.children().hide();
     };
   };
-  
+
   /**
    * Dialog
    */
@@ -1179,7 +1179,7 @@
       $dialog.find('.note-help-dialog').modal('show');
     };
   };
-  
+
   /**
    * EventHandler
    *
@@ -1189,7 +1189,7 @@
     var editor = new Editor();
     var toolbar = new Toolbar(), popover = new Popover();
     var handle = new Handle(), dialog = new Dialog();
-    
+
     var key = { BACKSPACE: 8, TAB: 9, ENTER: 13, SPACE: 32,
                 NUM0: 48, NUM1: 49, NUM6: 54, NUM7: 55, NUM8: 56,
                 B: 66, E: 69, I: 73, J: 74, K: 75, L: 76, R: 82, S: 83, U: 85,
@@ -1307,7 +1307,7 @@
       //preventDefault Selection for FF, IE8+
       if (dom.isImg(event.target)) { event.preventDefault(); }
     };
-    
+
     var hToolbarAndPopoverUpdate = function (event) {
       var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
       var oStyle = editor.currentStyle(event.target);
@@ -1354,16 +1354,16 @@
         event.preventDefault();
       }
     };
-    
+
     var hToolbarAndPopoverMousedown = function (event) {
       // prevent default event when insertTable (FF, Webkit)
       var $btn = $(event.target).closest('[data-event]');
       if ($btn.length > 0) { event.preventDefault(); }
     };
-    
+
     var hToolbarAndPopoverClick = function (event) {
       var $btn = $(event.target).closest('[data-event]');
-      
+
       if ($btn.length > 0) {
         var sEvent = $btn.attr('data-event'),
             sValue = $btn.attr('data-value');
@@ -1387,7 +1387,7 @@
           $editable.trigger('focus');
           editor[sEvent]($editable, sValue, elTarget);
         }
-        
+
         // after command
         if ($.inArray(sEvent, ['backColor', 'foreColor']) !== -1) {
           toolbar.updateRecentColor($btn[0], sEvent, sValue);
@@ -1490,7 +1490,7 @@
       event.stopPropagation();
       event.preventDefault();
     };
-    
+
     var PX_PER_EM = 18;
     var hDimensionPickerMove = function (event) {
       var $picker = $(event.target.parentNode); // target is mousecatcher
@@ -1507,13 +1507,13 @@
       } else {
         posOffset = {x: event.offsetX, y: event.offsetY};
       }
-      
+
       var dim = {c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
                  r: Math.ceil(posOffset.y / PX_PER_EM) || 1};
 
       $highlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });
       $catcher.attr('data-value', dim.c + 'x' + dim.r);
-      
+
       if (3 < dim.c && dim.c < 10) { // 5~10
         $unhighlighted.css({ width: dim.c + 1 + 'em'});
       }
@@ -1548,7 +1548,7 @@
       oLayoutInfo.popover.on('mousedown', hToolbarAndPopoverMousedown);
 
       oLayoutInfo.statusbar.on('mousedown', hStatusbarMousedown);
-      
+
       //toolbar table dimension
       var $toolbar = oLayoutInfo.toolbar;
       var $catcher = $toolbar.find('.note-dimension-picker-mousecatcher');
@@ -1595,6 +1595,193 @@
   };
 
   /**
+   * Locale
+   */
+  var Locale = {
+    'en-US': {
+      font: {
+        bold: 'Bold',
+        italic: 'Italic',
+        underline: 'Underline',
+        strike: 'Strike',
+        clear: 'Remove Font Style',
+        height: 'Line Height',
+        size: 'Font Size'
+      },
+      image: {
+        image: 'Picture',
+        insert: 'Insert Image',
+        resize_full: 'Resize Full',
+        resize_half: 'Resize Half',
+        resize_quarter: 'Resize Quarter',
+        float_left: 'Float Left',
+        float_right: 'Float Right',
+        float_none: 'Float None',
+        drag_image_here: 'Drag an image here',
+        select_from_files: 'Select from files',
+        url: 'Image URL'
+      },
+      link: {
+        link: 'Link',
+        insert: 'Insert Link',
+        unlink: 'Unlink',
+        edit: 'Edit',
+        text_to_display: 'Text to display',
+        url: 'To what URL should this link go?'
+      },
+      table: {
+        table: 'Table'
+      },
+      hr: {
+        insert: 'Insert Horizontal Rule'
+      },
+      style: {
+        style: 'Style',
+        normal: 'Normal',
+        blockquote: 'Quote',
+        pre: 'Code',
+        h1: 'Header 1',
+        h2: 'Header 2',
+        h3: 'Header 3',
+        h4: 'Header 4',
+        h5: 'Header 5',
+        h6: 'Header 6'
+      },
+      lists: {
+        unordered: 'Unordered list',
+        ordered: 'Ordered list'
+      },
+      options: {
+        help: 'Help',
+        fullscreen: 'Full Screen',
+        codeview: 'Code View'
+      },
+      paragraph: {
+        paragraph: 'Paragraph',
+        outdent: 'Outdent',
+        indent: 'Indent',
+        left: 'Align left',
+        center: 'Align center',
+        right: 'Align right',
+        justify: 'Justify full'
+      },
+      color: {
+        recent: 'Recent Color',
+        more: 'More Color',
+        background: 'BackColor',
+        foreground: 'FontColor',
+        transparent: 'Transparent',
+        set_transparent: 'Set transparent',
+        reset: 'Reset',
+        reset_to_default: 'Reset to default'
+      },
+      shortcut: {
+        shortcuts: 'Keyboard shortcuts',
+        close: 'Close',
+        text_formatting: 'Text formatting',
+        action: 'Action',
+        paragraph_formatting: 'Paragraph formatting',
+        document_style: 'Document Style'
+      },
+      history: {
+        undo: 'Undo',
+        redo: 'Redo'
+      }
+    },
+
+    'nl-NL': {
+      font: {
+        bold: 'Vet',
+        italic: 'Cursief',
+        underline: 'Onderstrepen',
+        strike: 'Doorhalen',
+        clear: 'Stijl verwijderen',
+        height: 'Regelhoogte',
+        size: 'Tekstgrootte'
+      },
+      image: {
+        image: 'Afbeelding',
+        insert: 'Afbeelding invoegen',
+        resize_full: 'Volledige breedte',
+        resize_half: 'Halve breedte',
+        resize_quarter: 'Kwart breedte',
+        float_left: 'Links uitlijnen',
+        float_right: 'Rechts uitlijnen',
+        float_none: 'Geen uitlijning',
+        drag_image_here: 'Sleep hier een afbeelding naar toe',
+        select_from_files: 'Selecteer een bestand',
+        url: 'URL van de afbeelding'
+      },
+      link: {
+        link: 'Link',
+        insert: 'Link invoegen',
+        unlink: 'Link verwijderen',
+        edit: 'Wijzigen',
+        text_to_display: 'Tekst van link',
+        url: 'Naar welke URL moet deze link verwijzen?'
+      },
+      table: {
+        table: 'Tabel'
+      },
+      hr: {
+        insert: 'Horizontale lijn invoegen'
+      },
+      style: {
+        style: 'Stijl',
+        normal: 'Normaal',
+        blockquote: 'Quote',
+        pre: 'Code',
+        h1: 'Kop 1',
+        h2: 'Kop 2',
+        h3: 'Kop 3',
+        h4: 'Kop 4',
+        h5: 'Kop 5',
+        h6: 'Kop 6'
+      },
+      lists: {
+        unordered: 'Ongeordende lijst',
+        ordered: 'Geordende lijst'
+      },
+      options: {
+        help: 'Help',
+        fullscreen: 'Volledig scherm',
+        codeview: 'Bekijk Code'
+      },
+      paragraph: {
+        paragraph: 'Paragraaf',
+        outdent: 'Inspringen verkleinen',
+        indent: 'Inspringen vergroten',
+        left: 'Links uitlijnen',
+        center: 'Centreren',
+        right: 'Rechts uitlijnen',
+        justify: 'Uitvullen'
+      },
+      color: {
+        recent: 'Recente kleur',
+        more: 'Meer kleuren',
+        background: 'Achtergrond kleur',
+        foreground: 'Tekst kleur',
+        transparent: 'Transparant',
+        set_transparent: 'Transparant',
+        reset: 'Standaard',
+        reset_to_default: 'Standaard kleur'
+      },
+      shortcut: {
+        shortcuts: 'Toetsencombinaties',
+        close: 'sluiten',
+        text_formatting: 'Tekststijlen',
+        action: 'Acties',
+        paragraph_formatting: 'Paragraafstijlen',
+        document_style: 'Documentstijlen'
+      },
+      history: {
+        undo: 'Ongedaan maken',
+        redo: 'Opnieuw doorvoeren'
+      }
+    }
+  };
+
+  /**
    * Renderer
    *
    * rendering toolbar and editable
@@ -1602,12 +1789,14 @@
   var Renderer = function () {
     /* jshint ignore:start */
     var aToolbarItem = {
-      picture:
-        '<button type="button" class="btn btn-default btn-sm btn-small" title="Picture" data-event="showImageDialog" tabindex="-1"><i class="fa fa-picture-o icon-picture"></i></button>',
-      link:
-        '<button type="button" class="btn btn-default btn-sm btn-small" title="Link" data-event="showLinkDialog" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" tabindex="-1"><i class="fa fa-link icon-link"></i></button>',
-      table:
-        '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="Table" data-toggle="dropdown" tabindex="-1"><i class="fa fa-table icon-table"></i> <span class="caret"></span></button>' +
+      picture: function(locale) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.image + '" data-event="showImageDialog" tabindex="-1"><i class="fa fa-picture-o icon-picture"></i></button>';
+      },
+      link: function(locale) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.link.link + '" data-event="showLinkDialog" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" tabindex="-1"><i class="fa fa-link icon-link"></i></button>';
+      },
+      table: function(locale) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + locale.table.table + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-table icon-table"></i> <span class="caret"></span></button>' +
         '<ul class="dropdown-menu">' +
         '<div class="note-dimension-picker">' +
         '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>' +
@@ -1615,22 +1804,24 @@
         '<div class="note-dimension-picker-unhighlighted"></div>' +
         '</div>' +
         '<div class="note-dimension-display"> 1 x 1 </div>' +
-        '</ul>',
-      style:
-        '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="Style" data-toggle="dropdown" tabindex="-1"><i class="fa fa-magic icon-magic"></i> <span class="caret"></span></button>' +
+        '</ul>';
+      },
+      style: function(locale) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + locale.style.style + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-magic icon-magic"></i> <span class="caret"></span></button>' +
         '<ul class="dropdown-menu">' +
-        '<li><a data-event="formatBlock" data-value="p">Normal</a></li>' +
-        '<li><a data-event="formatBlock" data-value="blockquote"><blockquote>Quote</blockquote></a></li>' +
-        '<li><a data-event="formatBlock" data-value="pre">Code</a></li>' +
-        '<li><a data-event="formatBlock" data-value="h1"><h1>Header 1</h1></a></li>' +
-        '<li><a data-event="formatBlock" data-value="h2"><h2>Header 2</h2></a></li>' +
-        '<li><a data-event="formatBlock" data-value="h3"><h3>Header 3</h3></a></li>' +
-        '<li><a data-event="formatBlock" data-value="h4"><h4>Header 4</h4></a></li>' +
-        '<li><a data-event="formatBlock" data-value="h5"><h5>Header 5</h5></a></li>' +
-        '<li><a data-event="formatBlock" data-value="h6"><h6>Header 6</h6></a></li>' +
-        '</ul>',
-      fontsize:
-        '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="Font Size" tabindex="-1"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +
+        '<li><a data-event="formatBlock" data-value="p">' + locale.style.normal + '</a></li>' +
+        '<li><a data-event="formatBlock" data-value="blockquote"><blockquote>' + locale.style.blockquote + '</blockquote></a></li>' +
+        '<li><a data-event="formatBlock" data-value="pre">' + locale.style.pre + '</a></li>' +
+        '<li><a data-event="formatBlock" data-value="h1"><h1>' + locale.style.h1 + '</h1></a></li>' +
+        '<li><a data-event="formatBlock" data-value="h2"><h2>' + locale.style.h2 + '</h2></a></li>' +
+        '<li><a data-event="formatBlock" data-value="h3"><h3>' + locale.style.h3 + '</h3></a></li>' +
+        '<li><a data-event="formatBlock" data-value="h4"><h4>' + locale.style.h4 + '</h4></a></li>' +
+        '<li><a data-event="formatBlock" data-value="h5"><h5>' + locale.style.h5 + '</h5></a></li>' +
+        '<li><a data-event="formatBlock" data-value="h6"><h6>' + locale.style.h6 + '</h6></a></li>' +
+        '</ul>';
+      },
+      fontsize: function(locale) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + locale.font.size + '" tabindex="-1"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +
         '<ul class="dropdown-menu">' +
         '<li><a data-event="fontSize" data-value="8"><i class="fa fa-check icon-ok"></i> 8</a></li>' +
         '<li><a data-event="fontSize" data-value="9"><i class="fa fa-check icon-ok"></i> 9</a></li>' +
@@ -1641,57 +1832,66 @@
         '<li><a data-event="fontSize" data-value="18"><i class="fa fa-check icon-ok"></i> 18</a></li>' +
         '<li><a data-event="fontSize" data-value="24"><i class="fa fa-check icon-ok"></i> 24</a></li>' +
         '<li><a data-event="fontSize" data-value="36"><i class="fa fa-check icon-ok"></i> 36</a></li>' +
-        '</ul>',
-      color:
-        '<button type="button" class="btn btn-default btn-sm btn-small note-recent-color" title="Recent Color" data-event="color" data-value=\'{"backColor":"yellow"}\' tabindex="-1"><i class="fa fa-font icon-font" style="color:black;background-color:yellow;"></i></button>' +
-        '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="More Color" data-toggle="dropdown" tabindex="-1">' +
+        '</ul>';
+      },
+      color: function(locale) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small note-recent-color" title="' + locale.color.recent + '" data-event="color" data-value=\'{"backColor":"yellow"}\' tabindex="-1"><i class="fa fa-font icon-font" style="color:black;background-color:yellow;"></i></button>' +
+        '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + locale.color.more + '" data-toggle="dropdown" tabindex="-1">' +
         '<span class="caret"></span>' +
         '</button>' +
         '<ul class="dropdown-menu">' +
         '<li>' +
         '<div class="btn-group">' +
-        '<div class="note-palette-title">BackColor</div>' +
-        '<div class="note-color-reset" data-event="backColor" data-value="inherit" title="Transparent">Set transparent</div>' +
+        '<div class="note-palette-title">' + locale.color.background + '</div>' +
+        '<div class="note-color-reset" data-event="backColor" data-value="inherit" title="' + locale.color.transparent + '">' + locale.color.set_transparent + '</div>' +
         '<div class="note-color-palette" data-target-event="backColor"></div>' +
         '</div>' +
         '<div class="btn-group">' +
-        '<div class="note-palette-title">FontColor</div>' +
-        '<div class="note-color-reset" data-event="foreColor" data-value="inherit" title="Reset">Reset to default</div>' +
+        '<div class="note-palette-title">' + locale.color.foreground + '</div>' +
+        '<div class="note-color-reset" data-event="foreColor" data-value="inherit" title="' + locale.color.reset + '">' + locale.color.reset_to_default + '</div>' +
         '<div class="note-color-palette" data-target-event="foreColor"></div>' +
         '</div>' +
         '</li>' +
-        '</ul>',
-      bold:
-        '<button type="button" class="btn btn-default btn-sm btn-small" title="Bold" data-shortcut="Ctrl+B" data-mac-shortcut="⌘+B" data-event="bold" tabindex="-1"><i class="fa fa-bold icon-bold"></i></button>',
-      italic:
-        '<button type="button" class="btn btn-default btn-sm btn-small" title="Italic" data-shortcut="Ctrl+I" data-mac-shortcut="⌘+I" data-event="italic" tabindex="-1"><i class="fa fa-italic icon-italic"></i></button>',
-      underline:
-        '<button type="button" class="btn btn-default btn-sm btn-small" title="Underline" data-shortcut="Ctrl+U" data-mac-shortcut="⌘+U" data-event="underline" tabindex="-1"><i class="fa fa-underline icon-underline"></i></button>',
-      clear:
-        '<button type="button" class="btn btn-default btn-sm btn-small" title="Remove Font Style" data-shortcut="Ctrl+\\" data-mac-shortcut="⌘+\\" data-event="removeFormat" tabindex="-1"><i class="fa fa-eraser icon-eraser"></i></button>',
-      ul:
-        '<button type="button" class="btn btn-default btn-sm btn-small" title="Unordered list" data-shortcut="Ctrl+Shift+8" data-mac-shortcut="⌘+⇧+7" data-event="insertUnorderedList" tabindex="-1"><i class="fa fa-list-ul icon-list-ul"></i></button>',
-      ol:
-        '<button type="button" class="btn btn-default btn-sm btn-small" title="Ordered list" data-shortcut="Ctrl+Shift+7" data-mac-shortcut="⌘+⇧+8" data-event="insertOrderedList" tabindex="-1"><i class="fa fa-list-ol icon-list-ol"></i></button>',
-      paragraph:
-        '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="Paragraph" data-toggle="dropdown" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i>  <span class="caret"></span></button>' +
+        '</ul>';
+      },
+      bold: function(locale) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.font.bold + '" data-shortcut="Ctrl+B" data-mac-shortcut="⌘+B" data-event="bold" tabindex="-1"><i class="fa fa-bold icon-bold"></i></button>';
+      },
+      italic: function(locale) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.font.italic + '" data-shortcut="Ctrl+I" data-mac-shortcut="⌘+I" data-event="italic" tabindex="-1"><i class="fa fa-italic icon-italic"></i></button>';
+      },
+      underline: function(locale) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.font.underline + '" data-shortcut="Ctrl+U" data-mac-shortcut="⌘+U" data-event="underline" tabindex="-1"><i class="fa fa-underline icon-underline"></i></button>';
+      },
+      clear: function(locale) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.font.clear + '" data-shortcut="Ctrl+\\" data-mac-shortcut="⌘+\\" data-event="removeFormat" tabindex="-1"><i class="fa fa-eraser icon-eraser"></i></button>';
+      },
+      ul: function(locale) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.lists.unordered + '" data-shortcut="Ctrl+Shift+8" data-mac-shortcut="⌘+⇧+7" data-event="insertUnorderedList" tabindex="-1"><i class="fa fa-list-ul icon-list-ul"></i></button>';
+      },
+      ol: function(locale) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.lists.ordered + '" data-shortcut="Ctrl+Shift+7" data-mac-shortcut="⌘+⇧+8" data-event="insertOrderedList" tabindex="-1"><i class="fa fa-list-ol icon-list-ol"></i></button>';
+      },
+      paragraph: function(locale) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + locale.paragraph.paragraph + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i>  <span class="caret"></span></button>' +
         '<ul class="dropdown-menu">' +
           '<li>' +
           '<div class="note-align btn-group">' +
-          '<button type="button" class="btn btn-default btn-sm btn-small" title="Align left" data-shortcut="Ctrl+Shift+L" data-mac-shortcut="⌘+⇧+L" data-event="justifyLeft" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
-          '<button type="button" class="btn btn-default btn-sm btn-small" title="Align center" data-shortcut="Ctrl+Shift+E" data-mac-shortcut="⌘+⇧+E" data-event="justifyCenter" tabindex="-1"><i class="fa fa-align-center icon-align-center"></i></button>' +
-          '<button type="button" class="btn btn-default btn-sm btn-small" title="Align right" data-shortcut="Ctrl+Shift+R" data-mac-shortcut="⌘+⇧+R" data-event="justifyRight" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
-          '<button type="button" class="btn btn-default btn-sm btn-small" title="Justify full" data-shortcut="Ctrl+Shift+J" data-mac-shortcut="⌘+⇧+J" data-event="justifyFull" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
+          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.paragraph.left + '" data-shortcut="Ctrl+Shift+L" data-mac-shortcut="⌘+⇧+L" data-event="justifyLeft" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
+          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.paragraph.center + '" data-shortcut="Ctrl+Shift+E" data-mac-shortcut="⌘+⇧+E" data-event="justifyCenter" tabindex="-1"><i class="fa fa-align-center icon-align-center"></i></button>' +
+          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.paragraph.right + '" data-shortcut="Ctrl+Shift+R" data-mac-shortcut="⌘+⇧+R" data-event="justifyRight" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
+          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.paragraph.justify + '" data-shortcut="Ctrl+Shift+J" data-mac-shortcut="⌘+⇧+J" data-event="justifyFull" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
           '</div>' +
           '</li>' +
           '<li>' +
           '<div class="note-list btn-group">' +
-          '<button type="button" class="btn btn-default btn-sm btn-small" title="Outdent" data-shortcut="Ctrl+[" data-mac-shortcut="⌘+[" data-event="outdent" tabindex="-1"><i class="fa fa-outdent icon-indent-left"></i></button>' +
-          '<button type="button" class="btn btn-default btn-sm btn-small" title="Indent" data-shortcut="Ctrl+]" data-mac-shortcut="⌘+]" data-event="indent" tabindex="-1"><i class="fa fa-indent icon-indent-right"></i></button>' +
+          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.paragraph.outdent + '" data-shortcut="Ctrl+[" data-mac-shortcut="⌘+[" data-event="outdent" tabindex="-1"><i class="fa fa-outdent icon-indent-left"></i></button>' +
+          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.paragraph.indent + '" data-shortcut="Ctrl+]" data-mac-shortcut="⌘+]" data-event="indent" tabindex="-1"><i class="fa fa-indent icon-indent-right"></i></button>' +
           '</li>' +
-        '</ul>',
-      height:
-        '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="Line Height" tabindex="-1"><i class="fa fa-text-height icon-text-height"></i>&nbsp; <b class="caret"></b></button>' +
+        '</ul>';
+      },
+      height: function(locale) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + locale.font.height + '" tabindex="-1"><i class="fa fa-text-height icon-text-height"></i>&nbsp; <b class="caret"></b></button>' +
         '<ul class="dropdown-menu">' +
         '<li><a data-event="lineHeight" data-value="1.0"><i class="fa fa-check icon-ok"></i> 1.0</a></li>' +
         '<li><a data-event="lineHeight" data-value="1.2"><i class="fa fa-check icon-ok"></i> 1.2</a></li>' +
@@ -1701,41 +1901,47 @@
         '<li><a data-event="lineHeight" data-value="1.8"><i class="fa fa-check icon-ok"></i> 1.8</a></li>' +
         '<li><a data-event="lineHeight" data-value="2.0"><i class="fa fa-check icon-ok"></i> 2.0</a></li>' +
         '<li><a data-event="lineHeight" data-value="3.0"><i class="fa fa-check icon-ok"></i> 3.0</a></li>' +
-        '</ul>',
-      help:
-        '<button type="button" class="btn btn-default btn-sm btn-small" title="Help" data-shortcut="Ctrl+/" data-mac-shortcut="⌘+/" data-event="showHelpDialog" tabindex="-1"><i class="fa fa-question icon-question"></i></button>',
-      fullscreen:
-        '<button type="button" class="btn btn-default btn-sm btn-small" title="Full Screen" data-event="fullscreen" tabindex="-1"><i class="fa fa-arrows-alt icon-fullscreen"></i></button>',
-      codeview:
-        '<button type="button" class="btn btn-default btn-sm btn-small" title="Code View" data-event="codeview" tabindex="-1"><i class="fa fa-code icon-code"></i></button>'
+        '</ul>';
+      },
+      help: function(locale) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.options.help + '" data-shortcut="Ctrl+/" data-mac-shortcut="⌘+/" data-event="showHelpDialog" tabindex="-1"><i class="fa fa-question icon-question"></i></button>';
+      },
+      fullscreen: function(locale) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.options.fullscreen + '" data-event="fullscreen" tabindex="-1"><i class="fa fa-arrows-alt icon-fullscreen"></i></button>';
+      },
+      codeview: function(locale) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.options.codeview + '" data-event="codeview" tabindex="-1"><i class="fa fa-code icon-code"></i></button>';
+      }
     };
-    var sPopover = '<div class="note-popover">' +
-                     '<div class="note-link-popover popover bottom in" style="display: none;">' +
-                       '<div class="arrow"></div>' +
-                       '<div class="popover-content note-link-content">' +
-                         '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
-                         '<div class="note-insert btn-group">' +
-                         '<button type="button" class="btn btn-default btn-sm btn-small" title="Edit" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-edit icon-edit"></i></button>' +
-                         '<button type="button" class="btn btn-default btn-sm btn-small" title="Unlink" data-event="unlink" tabindex="-1"><i class="fa fa-unlink icon-unlink"></i></button>' +
-                         '</div>' +
-                       '</div>' +
-                     '</div>' +
-                     '<div class="note-image-popover popover bottom in" style="display: none;">' +
-                       '<div class="arrow"></div>' +
-                       '<div class="popover-content note-image-content">' +
-                         '<div class="btn-group">' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Resize Full" data-event="resize" data-value="1" tabindex="-1"><span class="note-fontsize-10">100%</span> </button>' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Resize Half" data-event="resize" data-value="0.5" tabindex="-1"><span class="note-fontsize-10">50%</span> </button>' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Resize Quarter" data-event="resize" data-value="0.25" tabindex="-1"><span class="note-fontsize-10">25%</span> </button>' +
-                         '</div>' +
-                         '<div class="btn-group">' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Float Left" data-event="floatMe" data-value="left" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Float Right" data-event="floatMe" data-value="right" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="Float None" data-event="floatMe" data-value="none" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
-                         '</div>' +
-                       '</div>' +
-                     '</div>' +
-                   '</div>';
+    var sPopover = function(locale) {
+      return '<div class="note-popover">' +
+                '<div class="note-link-popover popover bottom in" style="display: none;">' +
+                  '<div class="arrow"></div>' +
+                  '<div class="popover-content note-link-content">' +
+                    '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
+                    '<div class="note-insert btn-group">' +
+                    '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.link.edit + '" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-edit icon-edit"></i></button>' +
+                    '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.link.unlink + '" data-event="unlink" tabindex="-1"><i class="fa fa-unlink icon-unlink"></i></button>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="note-image-popover popover bottom in" style="display: none;">' +
+                  '<div class="arrow"></div>' +
+                  '<div class="popover-content note-image-content">' +
+                    '<div class="btn-group">' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.resize_full + '" data-event="resize" data-value="1" tabindex="-1"><span class="note-fontsize-10">100%</span> </button>' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.resize_half + '" data-event="resize" data-value="0.5" tabindex="-1"><span class="note-fontsize-10">50%</span> </button>' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.resize_quarter + '" data-event="resize" data-value="0.25" tabindex="-1"><span class="note-fontsize-10">25%</span> </button>' +
+                    '</div>' +
+                    '<div class="btn-group">' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.float_left + '" data-event="floatMe" data-value="left" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.float_right + '" data-event="floatMe" data-value="right" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.float_none + '" data-event="floatMe" data-value="none" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+              '</div>';
+    };
 
     var sHandle = '<div class="note-handle">' +
                     '<div class="note-control-selection">' +
@@ -1748,141 +1954,153 @@
                     '</div>' +
                   '</div>';
 
-    var sShortcutText = '<table class="note-shortcut">' +
-                           '<thead>' +
-                             '<tr><th></th><th>Text formatting</th></tr>' +
-                           '</thead>' +
-                           '<tbody>' +
-                             '<tr><td>⌘ + B</td><td>Toggle Bold</td></tr>' +
-                             '<tr><td>⌘ + I</td><td>Toggle Italic</td></tr>' +
-                             '<tr><td>⌘ + U</td><td>Toggle Underline</td></tr>' +
-                             '<tr><td>⌘ + ⇧ + S</td><td>Toggle Strike</td></tr>' +
-                             '<tr><td>⌘ + \\</td><td>Remove Font Style</td></tr>' +
-                             '</tr>' +
-                           '</tbody>' +
-                         '</table>';
+    var sShortcutText = function(locale) {
+      return '<table class="note-shortcut">' +
+        '<thead>' +
+          '<tr><th></th><th>' + locale.shortcut.text_formatting + '</th></tr>' +
+        '</thead>' +
+        '<tbody>' +
+          '<tr><td>⌘ + B</td><td>' + locale.font.bold + '</td></tr>' +
+          '<tr><td>⌘ + I</td><td>' + locale.font.italic + '</td></tr>' +
+          '<tr><td>⌘ + U</td><td>' + locale.font.underline + '</td></tr>' +
+          '<tr><td>⌘ + ⇧ + S</td><td>' + locale.font.strike + '</td></tr>' +
+          '<tr><td>⌘ + \\</td><td>' + locale.font.clear + '</td></tr>' +
+          '</tr>' +
+        '</tbody>' +
+      '</table>';
+    };
 
-    var sShortcutAction = '<table class="note-shortcut">' +
-                           '<thead>' +
-                             '<tr><th></th><th>Action</th></tr>' +
-                           '</thead>' +
-                           '<tbody>' +
-                             '<tr><td>⌘ + Z</td><td>Undo</td></tr>' +
-                             '<tr><td>⌘ + ⇧ + Z</td><td>Redo</td></tr>' +
-                             '<tr><td>⌘ + ]</td><td>Indent</td></tr>' +
-                             '<tr><td>⌘ + [</td><td>Outdent</td></tr>' +
-                             '<tr><td>⌘ + K</td><td>Insert Link</td></tr>' +
-                             '<tr><td>⌘ + ENTER</td><td>Insert Horizontal Rule</td></tr>' +
-                           '</tbody>' +
-                         '</table>';
+    var sShortcutAction = function(locale) {
+      return '<table class="note-shortcut">' +
+        '<thead>' +
+          '<tr><th></th><th>' + locale.shortcut.action + '</th></tr>' +
+        '</thead>' +
+        '<tbody>' +
+          '<tr><td>⌘ + Z</td><td>' + locale.history.undo + '</td></tr>' +
+          '<tr><td>⌘ + ⇧ + Z</td><td>' + locale.history.redo + '</td></tr>' +
+          '<tr><td>⌘ + ]</td><td>' + locale.paragraph.indent + '</td></tr>' +
+          '<tr><td>⌘ + [</td><td>' + locale.paragraph.outdent + '</td></tr>' +
+          '<tr><td>⌘ + K</td><td>' + locale.link.insert + '</td></tr>' +
+          '<tr><td>⌘ + ENTER</td><td>' + locale.hr.insert + '</td></tr>' +
+        '</tbody>' +
+      '</table>';
+    };
 
-    var sShortcutPara = '<table class="note-shortcut">' +
-                          '<thead>' +
-                            '<tr><th></th><th>Paragraph formatting</th></tr>' +
-                          '</thead>' +
-                          '<tbody>' +
-                            '<tr><td>⌘ + ⇧ + L</td><td>Align Left</td></tr>' +
-                            '<tr><td>⌘ + ⇧ + E</td><td>Align Center</td></tr>' +
-                            '<tr><td>⌘ + ⇧ + R</td><td>Align Right</td></tr>' +
-                            '<tr><td>⌘ + ⇧ + J</td><td>Justify Full</td></tr>' +
-                            '<tr><td>⌘ + ⇧ + NUM7</td><td>Ordered List</td></tr>' +
-                            '<tr><td>⌘ + ⇧ + NUM8</td><td>Unordered List</td></tr>' +
-                          '</tbody>' +
-                        '</table>';
+    var sShortcutPara = function(locale) {
+      return '<table class="note-shortcut">' +
+                '<thead>' +
+                  '<tr><th></th><th>' + locale.shortcut.paragraph_formatting + '</th></tr>' +
+                '</thead>' +
+                '<tbody>' +
+                  '<tr><td>⌘ + ⇧ + L</td><td>' + locale.paragraph.left + '</td></tr>' +
+                  '<tr><td>⌘ + ⇧ + E</td><td>' + locale.paragraph.center + '</td></tr>' +
+                  '<tr><td>⌘ + ⇧ + R</td><td>' + locale.paragraph.right + '</td></tr>' +
+                  '<tr><td>⌘ + ⇧ + J</td><td>' + locale.paragraph.justify + '</td></tr>' +
+                  '<tr><td>⌘ + ⇧ + NUM7</td><td>' + locale.lists.ordered + '</td></tr>' +
+                  '<tr><td>⌘ + ⇧ + NUM8</td><td>' + locale.lists.unordered + '</td></tr>' +
+                '</tbody>' +
+              '</table>';
+    };
 
-    var sShortcutStyle = '<table class="note-shortcut">' +
-                           '<thead>' +
-                             '<tr><th></th><th>Document Style</th></tr>' +
-                           '</thead>' +
-                           '<tbody>' +
-                             '<tr><td>⌘ + NUM0</td><td>Normal Text</td></tr>' +
-                             '<tr><td>⌘ + NUM1</td><td>Heading 1</td></tr>' +
-                             '<tr><td>⌘ + NUM2</td><td>Heading 2</td></tr>' +
-                             '<tr><td>⌘ + NUM3</td><td>Heading 3</td></tr>' +
-                             '<tr><td>⌘ + NUM4</td><td>Heading 4</td></tr>' +
-                             '<tr><td>⌘ + NUM5</td><td>Heading 5</td></tr>' +
-                             '<tr><td>⌘ + NUM6</td><td>Heading 6</td></tr>' +
-                           '</tbody>' +
-                         '</table>';
+    var sShortcutStyle = function(locale) {
+      return '<table class="note-shortcut">' +
+                '<thead>' +
+                  '<tr><th></th><th>' + locale.shortcut.document_style + '</th></tr>' +
+                '</thead>' +
+                '<tbody>' +
+                  '<tr><td>⌘ + NUM0</td><td>' + locale.style.normal + '</td></tr>' +
+                  '<tr><td>⌘ + NUM1</td><td>' + locale.style.h1 + '</td></tr>' +
+                  '<tr><td>⌘ + NUM2</td><td>' + locale.style.h2 + '</td></tr>' +
+                  '<tr><td>⌘ + NUM3</td><td>' + locale.style.h3 + '</td></tr>' +
+                  '<tr><td>⌘ + NUM4</td><td>' + locale.style.h4 + '</td></tr>' +
+                  '<tr><td>⌘ + NUM5</td><td>' + locale.style.h5 + '</td></tr>' +
+                  '<tr><td>⌘ + NUM6</td><td>' + locale.style.h6 + '</td></tr>' +
+                '</tbody>' +
+              '</table>';
+    };
 
-    var sShortcutTable = '<table class="note-shortcut-layout">' +
-                           '<tbody>' +
-                             '<tr><td>' + sShortcutAction + '</td><td>' + sShortcutText + '</td></tr>' +
-                             '<tr><td>' + sShortcutStyle + '</td><td>' + sShortcutPara + '</td></tr>' +
-                           '</tbody>' +
-                         '</table>';
+    var sShortcutTable = function(locale) {
+      return '<table class="note-shortcut-layout">' +
+                '<tbody>' +
+                  '<tr><td>' + sShortcutAction(locale) + '</td><td>' + sShortcutText(locale) + '</td></tr>' +
+                  '<tr><td>' + sShortcutStyle(locale) + '</td><td>' + sShortcutPara(locale) + '</td></tr>' +
+                '</tbody>' +
+              '</table>';
+    };
 
-    if (!agent.bMac) { // shortcut modifier for windows
-      sShortcutTable = sShortcutTable.replace(/⌘/g, 'Ctrl').replace(/⇧/g, 'Shift');
-    }
+    var replaceMacKeys = function (sHtml) {
+        return sHtml.replace(/⌘/g, 'Ctrl').replace(/⇧/g, 'Shift');
+    };
 
-    var sDialog = '<div class="note-dialog">' +
-                    '<div class="note-image-dialog modal" aria-hidden="false">' +
-                      '<div class="modal-dialog">' +
-                        '<div class="modal-content">' +
-                          '<div class="modal-header">' +
-                            '<button type="button" class="close" aria-hidden="true" tabindex="-1">×</button>' +
-                            '<h4>Insert Image</h4>' +
-                          '</div>' +
-                          '<div class="modal-body">' +
-                            '<div class="row-fluid">' +
-                              '<div class="note-dropzone span12">Drag an image here</div>' +
-                              '<h5>Select from files</h5>' +
-                              '<input class="note-image-input" type="file" name="files" accept="image/*" capture="camera" />' +
-                              '<h5>Image URL</h5>' +
-                              '<input class="note-image-url form-control span12" type="text" />' +
-                            '</div>' +
-                          '</div>' +
-                          '<div class="modal-footer">' +
-                            '<button href="#" class="btn btn-primary note-image-btn disabled" disabled="disabled">Insert</button>' +
-                          '</div>' +
+    var sDialog = function(locale) {
+      return '<div class="note-dialog">' +
+                '<div class="note-image-dialog modal" aria-hidden="false">' +
+                  '<div class="modal-dialog">' +
+                    '<div class="modal-content">' +
+                      '<div class="modal-header">' +
+                        '<button type="button" class="close" aria-hidden="true" tabindex="-1">×</button>' +
+                        '<h4>' + locale.image.insert + '</h4>' +
+                      '</div>' +
+                      '<div class="modal-body">' +
+                        '<div class="row-fluid">' +
+                          '<div class="note-dropzone span12">' + locale.image.drag_image_here + '</div>' +
+                          '<h5>' + locale.image.select_from_files + '</h5>' +
+                          '<input class="note-image-input" type="file" name="files" accept="image/*" capture="camera" />' +
+                          '<h5>' + locale.image.url + '</h5>' +
+                          '<input class="note-image-url form-control span12" type="text" />' +
                         '</div>' +
                       '</div>' +
+                      '<div class="modal-footer">' +
+                        '<button href="#" class="btn btn-primary note-image-btn disabled" disabled="disabled">' + locale.image.insert + '</button>' +
+                      '</div>' +
                     '</div>' +
-                    '<div class="note-link-dialog modal" aria-hidden="false">' +
-                      '<div class="modal-dialog">' +
-                        '<div class="modal-content">' +
-                          '<div class="modal-header">' +
-                            '<button type="button" class="close" aria-hidden="true" tabindex="-1">×</button>' +
-                            '<h4>Edit Link</h4>' +
-                          '</div>' +
-                          '<div class="modal-body">' +
-                            '<div class="row-fluid">' +
+                  '</div>' +
+                '</div>' +
+                '<div class="note-link-dialog modal" aria-hidden="false">' +
+                  '<div class="modal-dialog">' +
+                    '<div class="modal-content">' +
+                      '<div class="modal-header">' +
+                        '<button type="button" class="close" aria-hidden="true" tabindex="-1">×</button>' +
+                        '<h4>' + locale.link.insert + '</h4>' +
+                      '</div>' +
+                      '<div class="modal-body">' +
+                        '<div class="row-fluid">' +
 
-                            '<div class="form-group">' +
-                              '<label>Text to display</label>' +
-                              '<span class="note-link-text form-control input-xlarge uneditable-input" />' +
-                            '</div>' +
-                            '<div class="form-group">' +
-                              '<label>To what URL should this link go?</label>' +
-                              '<input class="note-link-url form-control span12" type="text" />' +
-                            '</div>' +
-                            '</div>' +
-                          '</div>' +
-                          '<div class="modal-footer">' +
-                            '<button href="#" class="btn btn-primary note-link-btn disabled" disabled="disabled">Link</button>' +
-                          '</div>' +
+                        '<div class="form-group">' +
+                          '<label>' + locale.link.text_to_display + '</label>' +
+                          '<span class="note-link-text form-control input-xlarge uneditable-input" />' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                          '<label>' + locale.link.url + '</label>' +
+                          '<input class="note-link-url form-control span12" type="text" />' +
+                        '</div>' +
                         '</div>' +
                       '</div>' +
-                    '</div>' +
-                    '<div class="note-help-dialog modal" aria-hidden="false">' +
-                      '<div class="modal-dialog">' +
-                        '<div class="modal-content">' +
-                          '<div class="modal-body">' +
-                            '<div class="modal-background">' +
-                            '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">Close</a>' +
-                            '<div class="title">Keyboard shortcuts</div>' +
-                            sShortcutTable +
-                            '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote v0.4</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
-                          '</div>' +
-                        '</div>' +
+                      '<div class="modal-footer">' +
+                        '<button href="#" class="btn btn-primary note-link-btn disabled" disabled="disabled">' + locale.link.insert + '</button>' +
                       '</div>' +
                     '</div>' +
-                  '</div>';
+                  '</div>' +
+                '</div>' +
+                '<div class="note-help-dialog modal" aria-hidden="false">' +
+                  '<div class="modal-dialog">' +
+                    '<div class="modal-content">' +
+                      '<div class="modal-body">' +
+                        '<div class="modal-background">' +
+                        '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + locale.shortcut.close + '</a>' +
+                        '<div class="title">' + locale.shortcut.shortcuts + '</div>' +
+                        (agent.bMac ? sShortcutTable(locale) : replaceMacKeys(sShortcutTable(locale))) +
+                        '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote v0.4</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
+                      '</div>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>' +
+              '</div>';
+    };
 
     var sStatusbar = '<div class="note-resizebar"><div class="note-icon-bar"></div><div class="note-icon-bar"></div><div class="note-icon-bar"></div></div>';
     /* jshint ignore:end */
-                        
+
     // createTooltip
     var createTooltip = function ($container, sPlacement) {
       $container.find('button').each(function (i, elBtn) {
@@ -1892,7 +2110,7 @@
       //bootstrap tooltip on btn-group bug: https://github.com/twitter/bootstrap/issues/5687
       }).tooltip({container: 'body', placement: sPlacement || 'top'});
     };
-    
+
     // pallete colors
     var aaColor = [
       ['#000000', '#424242', '#636363', '#9C9C94', '#CEC6CE', '#EFEFEF', '#F7F7F7', '#FFFFFF'],
@@ -1904,7 +2122,7 @@
       ['#9C0000', '#B56308', '#BD9400', '#397B21', '#104A5A', '#085294', '#311873', '#731842'],
       ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031']
     ];
-    
+
     // createPalette
     var createPalette = function ($container) {
       $container.find('.note-color-palette').each(function () {
@@ -1928,7 +2146,7 @@
         $palette.html(sPaletteContents);
       });
     };
-    
+
     // createLayout
     this.createLayout = function ($holder, options) {
       var nHeight = options.height,
@@ -1937,7 +2155,7 @@
 
       //already created
       if ($holder.next().hasClass('note-editor')) { return; }
-      
+
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
       $editor.data('options', options);
@@ -1967,14 +2185,14 @@
       setTimeout(function () { // protect FF Error: NS_ERROR_FAILURE: Failure
         document.execCommand('styleWithCSS', 0, true);
       });
-      
+
       //04. create Toolbar
       var sToolbar = '';
       for (var idx = 0, sz = aToolbarSetting.length; idx < sz; idx ++) {
         var group = aToolbarSetting[idx];
         sToolbar += '<div class="note-' + group[0] + ' btn-group">';
         for (var i = 0, szGroup = group[1].length; i < szGroup; i++) {
-          sToolbar += aToolbarItem[group[1][i]];
+          sToolbar += aToolbarItem[group[1][i]](Locale[options.locale]);
         }
         sToolbar += '</div>';
       }
@@ -1984,16 +2202,16 @@
       var $toolbar = $(sToolbar).prependTo($editor);
       createPalette($toolbar);
       createTooltip($toolbar, 'bottom');
-      
+
       //05. create Popover
-      var $popover = $(sPopover).prependTo($editor);
+      var $popover = $(sPopover(Locale[options.locale])).prependTo($editor);
       createTooltip($popover);
 
       //06. handle(control selection, ...)
       $(sHandle).prependTo($editor);
-      
+
       //07. create Dialog
-      var $dialog = $(sDialog).prependTo($editor);
+      var $dialog = $(sDialog(Locale[options.locale])).prependTo($editor);
       $dialog.find('button.close, a.modal-close').click(function () {
         $(this).closest('.modal').modal('hide');
       });
@@ -2002,12 +2220,12 @@
       $editor.insertAfter($holder);
       $holder.hide();
     };
-    
+
     // layoutInfoFromHolder
     var layoutInfoFromHolder = this.layoutInfoFromHolder = function ($holder) {
       var $editor = $holder.next();
       if (!$editor.hasClass('note-editor')) { return; }
-      
+
       return {
         editor: $editor,
         toolbar: $editor.find('.note-toolbar'),
@@ -2019,13 +2237,13 @@
         dialog: $editor.find('.note-dialog')
       };
     };
-    
+
     // removeLayout
     this.removeLayout = function ($holder) {
       var info = layoutInfoFromHolder($holder);
       if (!info) { return; }
       $holder.html(info.editable.html());
-      
+
       info.editor.remove();
       $holder.show();
     };
@@ -2052,7 +2270,8 @@
           ['insert', ['link', 'picture']],
           ['view', ['fullscreen', 'codeview']],
           ['help', ['help']]
-        ]
+        ],
+        locale: 'en-US'
       }, options);
 
       this.each(function (idx, elHolder) {
