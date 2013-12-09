@@ -2023,9 +2023,9 @@
               '</table>';
     };
 
-    if (!agent.bMac) { // shortcut modifier for windows
-      sShortcutTable = sShortcutTable.replace(/⌘/g, 'Ctrl').replace(/⇧/g, 'Shift');
-    }
+    var replaceMacKeys = function (sHtml) {
+        return sHtml.replace(/⌘/g, 'Ctrl').replace(/⇧/g, 'Shift');
+    };
 
     var sDialog = function(locale) {
       return '<div class="note-dialog">' +
@@ -2084,7 +2084,7 @@
                         '<div class="modal-background">' +
                         '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + locale.shortcut.close + '</a>' +
                         '<div class="title">' + locale.shortcut.shortcuts + '</div>' +
-                        sShortcutTable(locale) +
+                        (agent.bMac ? sShortcutTable(locale) : replaceMacKeys(sShortcutTable(locale))) +
                         '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote v0.4</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
                       '</div>' +
                     '</div>' +
