@@ -12,7 +12,7 @@
     bMSIE: navigator.userAgent.indexOf('MSIE') > -1,
     bFF: navigator.userAgent.indexOf('Firefox') > -1
   };
-  
+
   /**
    * func utils (for high-order func's arg)
    */
@@ -24,7 +24,7 @@
     var self = function(a) { return a; };
     return { eq: eq, eq2: eq2, fail: fail, not: not, self: self };
   }();
-  
+
   /**
    * list utils
    */
@@ -57,7 +57,7 @@
       }
       return result;
     };
-    
+
     /**
      * cluster item by second function
      * @param {array} array - array
@@ -90,7 +90,7 @@
       return aResult;
     };
 
-    return { head: head, last: last, initial: initial, tail: tail, 
+    return { head: head, last: last, initial: initial, tail: tail,
              sum: sum, from: from, compact: compact, clusterBy: clusterBy };
   }();
 
@@ -139,7 +139,7 @@
 
     return { readFile: readFile, loadImage: loadImage };
   }();
-  
+
   /**
    * dom utils
    */
@@ -153,7 +153,7 @@
         return node && node.nodeName === sNodeName;
       };
     };
-    
+
     var isPara = function(node) {
       return node && /^P|^LI|^H[1-7]/.test(node.nodeName);
     };
@@ -182,15 +182,15 @@
       }
       return null;
     };
-    
+
     /**
      * returns new array of ancestor nodes (until predicate hit).
      * @param {element} node
      * @param {function} [optional] pred - predicate function
      */
     var listAncestor = function(node, pred) {
-      pred = pred || func.fail;      
-      
+      pred = pred || func.fail;
+
       var aAncestor = [];
       ancestor(node, function(el) {
         aAncestor.push(el);
@@ -198,7 +198,7 @@
       });
       return aAncestor;
     };
-    
+
     /**
      * returns common ancestor node between two nodes.
      * @param {element} nodeA
@@ -243,7 +243,7 @@
      * @param {function} [optional] pred - predicate function
      */
     var listPrev = function(node, pred) {
-      pred = pred || func.fail;      
+      pred = pred || func.fail;
 
       var aNext = [];
       while (node) {
@@ -253,14 +253,14 @@
       }
       return aNext;
     };
-    
+
     /**
      * listing nextSiblings (until predicate hit).
      * @param {element} node
      * @param {function} pred [optional] - predicate function
      */
     var listNext = function(node, pred) {
-      pred = pred || func.fail;      
+      pred = pred || func.fail;
 
       var aNext = [];
       while (node) {
@@ -270,7 +270,7 @@
       }
       return aNext;
     };
-    
+
     /**
      * insert node after preceding
      * @param {element} node
@@ -297,7 +297,7 @@
       });
       return node;
     };
-    
+
     var isText = makePredByNodeName('#text');
 
     /**
@@ -359,7 +359,7 @@
       node = insertAfter(node.cloneNode(false), node);
       return appends(node, listNext(child));
     };
-    
+
     /**
      * split dom tree by boundaryPoint(pivot and offset)
      * @param {element} root
@@ -410,7 +410,7 @@
     var html = function($node) {
       return dom.isTextarea($node[0]) ? unescape($node.val()) : $node.html();
     };
-    
+
     return {
       isText: isText,
       isPara: isPara, isList: isList,
@@ -628,7 +628,7 @@
       }
     };
   }();
-  
+
   /**
    * Style
    */
@@ -642,7 +642,7 @@
         });
       });
     };
-    
+
     // get current style, elTarget: target element on event.
     this.current = function(rng, elTarget) {
       var welCont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
@@ -655,7 +655,7 @@
       oStyle['font-bold'] = document.queryCommandState('bold') ? 'bold' : 'normal';
       oStyle['font-italic'] = document.queryCommandState('italic') ? 'italic' : 'normal';
       oStyle['font-underline'] = document.queryCommandState('underline') ? 'underline' : 'normal';
-      
+
       // list-style-type to list-style(unordered, ordered)
       if (!rng.isOnList()) {
         oStyle['list-style'] = 'none';
@@ -716,7 +716,7 @@
       aRedo = [], aUndo.push(makeSnap(welEditable));
     };
   };
-  
+
   /**
    * Editor
    */
@@ -771,7 +771,7 @@
                 'insertOrderedList', 'insertUnorderedList',
                 'indent', 'outdent', 'formatBlock', 'removeFormat',
                 'backColor', 'foreColor', 'insertHorizontalRule'];
-    
+
     for (var idx = 0, len=aCmd.length; idx < len; idx ++) {
       this[aCmd[idx]] = function(sCmd) {
         return function(welEditable, sValue) {
@@ -787,13 +787,76 @@
         var welImage = $('<img>').attr('src', sUrl);
         welImage.css('width', Math.min(welEditable.width(), image.width));
         range.create().insertNode(welImage[0]);
-      }).fail(function(image) { 
+      }).fail(function(image) {
         var callbacks = welEditable.data('callbacks');
         if (callbacks.onImageUploadError) {
           callbacks.onImageUploadError();
         }
       });
     };
+
+    this.insertVideo = function(welEditable, sUrl) {
+      var ytRegExp = /(?:https?:\/\/)?(?:www\.)?youtu(?:be\.com\/watch\?(?:.*?&(?:amp;)?)?v=|\.be\/)([\w‌​\-]+)(?:&(?:amp;)?[\w\?=]*)?/;
+      var ytMatch = sUrl.match(ytRegExp);
+
+      var igRegExp = /\/\/instagram.com\/p\/(.[a-zA-Z0-9]*)/;
+      var igMatch = sUrl.match(igRegExp);
+
+      var vRegExp = /\/\/vine.co\/v\/(.[a-zA-Z0-9]*)/;
+      var vMatch = sUrl.match(vRegExp);
+
+      var vimRegExp = /\/\/(player.)?vimeo.com\/([a-z]*\/)*([0-9]{6,11})[?]?.*/;
+      var vimMatch = sUrl.match(vimRegExp);
+
+      var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
+      var dmMatch = sUrl.match(dmRegExp);
+
+      var welVideo;
+
+      if (ytMatch && ytMatch[1].length==11){
+        var youtube_id =  ytMatch[1];
+        welVideo = $('<iframe>')
+          .attr('src', 'http://www.youtube.com/embed/' + youtube_id + "?origin=http://diply.com")
+          .attr('frameborder', '0')
+          .attr('width', '640').attr('height', '360');
+
+      }else if (igMatch && igMatch[0].length > 0){
+        welVideo = $('<iframe>')
+          .attr('src', igMatch[0] + "/embed/")
+          .attr('frameborder', '0')
+          .attr('width', '612').attr('height', '710')
+          .attr('scrolling', 'no')
+          .attr('allowtransparency', 'true');
+
+      }else if (vMatch && vMatch[0].length > 0){
+        welVideo = $('<iframe>')
+          .attr('src', vMatch[0] + "/embed/simple")
+          .attr('frameborder', 0)
+          .attr('width', '600').attr('height', '600')
+          .attr('class', 'vine-embed');
+
+      } else if (vimMatch && vimMatch[3].length >0){
+        welVideo = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+          .attr('src','//player.vimeo.com/video/' + vimMatch[3])
+          .attr('width', '640').attr('height', '360')
+          .attr('frameborder', 0);
+
+
+      } else if(dmMatch && dmMatch[2].length >0) {
+        welVideo = $('<iframe>')
+          .attr('src','http://www.dailymotion.com/embed/video/' + dmMatch[2])
+          .attr('frameborder', 0)
+          .attr('width', '640').attr('height', '360');
+
+      }else{
+          //this is not a known video link. Now what, Cat? Now what?
+      }
+
+      if (welVideo){
+          document.execCommand('delete');
+          range.create().insertNode(welVideo[0]);
+      }
+    }
 
     this.formatBlock = function(welEditable, sValue) {
       recordUndo(welEditable);
@@ -814,7 +877,7 @@
         }).css('font-size', sValue + 'px');
       }
     };
-    
+
     this.lineHeight = function(welEditable, sValue) {
       recordUndo(welEditable);
       style.stylePara(range.create(), {lineHeight: sValue});
@@ -859,7 +922,26 @@
         }
       });
     };
-    
+
+    this.setVideoDialog = function(welEditable, fnShowDialog){
+      var rng = range.create();
+      var editor = this;
+
+      if (rng.isOnAnchor()) {
+        var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
+        rng = range.create(elAnchor, 0, elAnchor, 1);
+      }
+
+      fnShowDialog({
+        range: rng,
+        text: rng.toString()
+      }, function(sLinkUrl) {
+        rng.select();
+        recordUndo(welEditable);
+        editor.insertVideo(welEditable, sLinkUrl);
+      })
+    }
+
     this.color = function(welEditable, sObjColor) {
       var oColor = JSON.parse(sObjColor);
       var foreColor = oColor.foreColor, backColor = oColor.backColor;
@@ -868,12 +950,12 @@
       if (foreColor) { document.execCommand('foreColor', false, foreColor); }
       if (backColor) { document.execCommand('backColor', false, backColor); }
     };
-    
+
     this.insertTable = function(welEditable, sDim) {
       recordUndo(welEditable);
       var aDim = sDim.split('x');
       var nCol = aDim[0], nRow = aDim[1];
-      
+
       var aTD = [], sTD;
       var sWhitespace = agent.bMSIE ? '&nbsp;' : '<br/>';
       for (var idxCol = 0; idxCol < nCol; idxCol++) {
@@ -924,14 +1006,14 @@
           this.className = bChecked ? 'checked' : '';
         });
       };
-      
+
       var welFontsize = welToolbar.find('.note-fontsize');
       welFontsize.find('.note-current-fontsize').html(oStyle['font-size']);
       checkDropdownMenu(welFontsize, parseFloat(oStyle['font-size']));
-      
+
       var welLineHeight = welToolbar.find('.note-height');
       checkDropdownMenu(welLineHeight, parseFloat(oStyle['line-height']));
-      
+
       //check button state
       var btnState = function(sSelector, pred) {
         var welBtn = welToolbar.find(sSelector);
@@ -966,7 +1048,7 @@
         return oStyle['list-style'] === 'ordered';
       });
     };
-    
+
     this.updateRecentColor = function(elBtn, sEvent, sValue) {
       var welColor = $(elBtn).closest('.note-color');
       var welRecentColor = welColor.find('.note-recent-color');
@@ -994,7 +1076,7 @@
       welToolbar.find('button').not('button[data-event="codeview"]').addClass('disabled');
     };
   };
-  
+
   /**
    * Popover (http://getbootstrap.com/javascript/#popovers)
    */
@@ -1026,7 +1108,7 @@
         welImagePopover.hide();
       }
     };
-    
+
     this.hide = function(welPopover) {
       welPopover.children().hide();
     };
@@ -1058,7 +1140,7 @@
       welHandle.children().hide();
     };
   };
-  
+
   /**
    * Dialog
    */
@@ -1100,6 +1182,33 @@
       }).modal('show');
     };
 
+    this.showVideoDialog = function(welDialog, videoInfo, callback){
+      var welVideoDialog = welDialog.find('.note-video-dialog');
+      var welVideoUrl = welVideoDialog.find('.note-video-url'),
+          welVideoBtn = welVideoDialog.find('.note-video-btn');
+
+      welVideoDialog.on('show.bs.modal', function(e){
+        welVideoUrl.val(videoInfo.text).keyup(function(event) {
+          if (welVideoUrl.val()) {
+            welVideoBtn.removeClass('disabled').attr('disabled', false);
+          } else {
+            welVideoBtn.addClass('disabled').attr('disabled', true);
+          }
+        }).trigger('keyup').trigger('focus');
+
+        welVideoBtn.click(function(event){
+          welVideoDialog.modal('hide');
+          callback(welVideoUrl.val());
+          event.preventDefault();
+        })
+
+      }).on('hidden.bs.modal', function(e){
+        welVideoUrl.off('keyup');
+        welVideoBtn.off('click');
+        welVideoDialog.off('show.bs.modal hidden.bs.modal');
+      }).modal('show');
+    }
+
     this.showLinkDialog = function(welDialog, linkInfo, callback) {
       var welLinkDialog = welDialog.find('.note-link-dialog');
       var welLinkText = welLinkDialog.find('.note-link-text'),
@@ -1133,7 +1242,7 @@
       welDialog.find('.note-help-dialog').modal('show');
     };
   };
-  
+
   /**
    * EventHandler
    *
@@ -1143,9 +1252,9 @@
     var editor = new Editor();
     var toolbar = new Toolbar(), popover = new Popover();
     var handle = new Handle(), dialog = new Dialog();
-    
+
     var key = { BACKSPACE: 8, TAB: 9, ENTER: 13, SPACE: 32,
-                NUM0: 48, NUM1: 49, NUM6: 54, NUM7: 55, NUM8: 56, 
+                NUM0: 48, NUM1: 49, NUM6: 54, NUM7: 55, NUM8: 56,
                 B: 66, E: 69, I: 73, J: 74, K: 75, L: 76, R: 82, S: 83, U: 85,
                 Y: 89, Z: 90, SLASH: 191,
                 LEFTBRACKET: 219, BACKSLACH: 220, RIGHTBRACKET: 221 };
@@ -1241,7 +1350,7 @@
           }).fail(function() {
             if (callbacks.onImageUploadError) {
                 callbacks.onImageUploadError();
-            }  
+            }
           });
         });
       }
@@ -1261,7 +1370,7 @@
       //preventDefault Selection for FF, IE8+
       if (dom.isImg(event.target)) { event.preventDefault(); }
     };
-    
+
     var hToolbarAndPopoverUpdate = function(event) {
       var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
       var oStyle = editor.currentStyle(event.target);
@@ -1307,16 +1416,16 @@
         event.stopPropagation(); event.preventDefault();
       }
     };
-    
+
     var hToolbarAndPopoverMousedown = function(event) {
       // prevent default event when insertTable (FF, Webkit)
       var welBtn = $(event.target).closest('[data-event]');
       if (welBtn.length > 0) { event.preventDefault(); }
     };
-    
+
     var hToolbarAndPopoverClick = function(event) {
       var welBtn = $(event.target).closest('[data-event]');
-      
+
       if (welBtn.length > 0) {
         var sEvent = welBtn.attr('data-event'),
             sValue = welBtn.attr('data-value');
@@ -1338,7 +1447,7 @@
           welEditable.trigger('focus');
           editor[sEvent](welEditable, sValue, elTarget);
         }
-        
+
         // after command
         if ($.inArray(sEvent, ['backColor', 'foreColor']) !== -1) {
           toolbar.updateRecentColor(welBtn[0], sEvent, sValue);
@@ -1354,6 +1463,12 @@
           }, function(sUrl) {
             editor.restoreRange(welEditable);
             editor.insertImage(welEditable, sUrl);
+          });
+        } else if (sEvent === 'showVideoDialog') {
+          welEditable.focus();
+          editor.setVideoDialog(welEditable, function(linkInfo, cb) {
+            dialog.showVideoDialog(welDialog, linkInfo, cb);
+            //popover.hide();
           });
         } else if (sEvent === 'showHelpDialog') {
           dialog.showHelpDialog(welDialog);
@@ -1420,7 +1535,7 @@
       welDocument.mousemove(hMousemove).mouseup(hMouseup);
       event.stopPropagation(); event.preventDefault();
     };
-    
+
     var PX_PER_EM = 18;
     var hDimensionPickerMove = function(event) {
       var welPicker = $(event.target.parentNode); // target is mousecatcher
@@ -1437,13 +1552,13 @@
       } else {
         posOffset = {x: event.offsetX, y: event.offsetY};
       }
-      
+
       var dim = {c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
                  r: Math.ceil(posOffset.y / PX_PER_EM) || 1};
 
       welHighlighted.css({ width: dim.c +'em', height: dim.r + 'em' });
       welCatcher.attr('data-value', dim.c + 'x' + dim.r);
-      
+
       if (3 < dim.c && dim.c < 10) { // 5~10
         welUnhighlighted.css({ width: dim.c + 1 + 'em'});
       }
@@ -1478,7 +1593,7 @@
       oLayoutInfo.popover.on('mousedown', hToolbarAndPopoverMousedown);
 
       oLayoutInfo.statusbar.on('mousedown', hStatusbarMousedown);
-      
+
       //toolbar table dimension
       var welToolbar = oLayoutInfo.toolbar;
       var welCatcher = welToolbar.find('.note-dimension-picker-mousecatcher');
@@ -1531,6 +1646,8 @@
         '<button type="button" class="btn btn-default btn-sm btn-small" title="Picture" data-event="showImageDialog" tabindex="-1"><i class="fa fa-picture-o icon-picture"></i></button>',
       link:
         '<button type="button" class="btn btn-default btn-sm btn-small" title="Link" data-event="showLinkDialog" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" tabindex="-1"><i class="fa fa-link icon-link"></i></button>',
+      video:
+          '<button type="button" class="btn btn-default btn-sm btn-small" title="Video" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>',
       table:
         '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="Table" data-toggle="dropdown" tabindex="-1"><i class="fa fa-table icon-table"></i> <span class="caret"></span></button>' +
         '<ul class="dropdown-menu">' +
@@ -1642,6 +1759,7 @@
                          '<div class="note-insert btn-group">' +
                          '<button type="button" class="btn btn-default btn-sm btn-small" title="Edit" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-edit icon-edit"></i></button>' +
                          '<button type="button" class="btn btn-default btn-sm btn-small" title="Unlink" data-event="unlink" tabindex="-1"><i class="fa fa-unlink icon-unlink"></i></button>' +
+                         '<button type="button" class="btn btn-default btn-sm btn-small" title="Video Link" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>' +
                          '</div>' +
                        '</div>' +
                      '</div>' +
@@ -1790,6 +1908,29 @@
                         '</div>' +
                       '</div>' +
                     '</div>' +
+                    '<div class="note-video-dialog modal" aria-hidden="false">' +
+                      '<div class="modal-dialog">' +
+                        '<div class="modal-content">' +
+                          '<div class="modal-header">' +
+                            '<button type="button" class="close" aria-hidden="true" tabindex="-1">×</button>' +
+                            '<h4>Insert Video</h4>' +
+                          '</div>' +
+                          '<div class="modal-body">' +
+                            '<div class="row-fluid">' +
+
+                            '<div class="form-group">' +
+                              '<label>Video URL?</label>&nbsp;<small class="text-muted">(YouTube, Vimeo, Vine, Instagram, or DailyMotion)</small>' +
+                              '<input class="note-video-url form-control span12" type="text" />' +
+                              '' +
+                            '</div>' +
+                            '</div>' +
+                          '</div>' +
+                          '<div class="modal-footer">' +
+                            '<button href="#" class="btn btn-primary note-video-btn disabled" disabled="disabled">Add Video</button>' +
+                          '</div>' +
+                        '</div>' +
+                      '</div>' +
+                    '</div>' +
                     '<div class="note-help-dialog modal" aria-hidden="false">' +
                       '<div class="modal-dialog">' +
                         '<div class="modal-content">' +
@@ -1804,7 +1945,7 @@
                       '</div>' +
                     '</div>' +
                   '</div>';
-                        
+
     // createTooltip
     var createTooltip = function(welContainer, sPlacement) {
       welContainer.find('button').each(function(i, elBtn) {
@@ -1814,7 +1955,7 @@
       //bootstrap tooltip on btn-group bug: https://github.com/twitter/bootstrap/issues/5687
       }).tooltip({container: 'body', placement: sPlacement || 'top'});
     };
-    
+
     // pallete colors
     var aaColor = [
       ['#000000', '#424242', '#636363', '#9C9C94', '#CEC6CE', '#EFEFEF', '#F7F7F7', '#FFFFFF'],
@@ -1826,7 +1967,7 @@
       ['#9C0000', '#B56308', '#BD9400', '#397B21', '#104A5A', '#085294', '#311873', '#731842'],
       ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031']
     ];
-    
+
     // createPalette
     var createPalette = function(welContainer) {
       welContainer.find('.note-color-palette').each(function() {
@@ -1850,12 +1991,12 @@
         welPalette.html(sPaletteContents);
       });
     };
-    
+
     // createLayout
     var createLayout = this.createLayout = function(welHolder, nHeight, nTabsize, aToolbarSetting) {
       //already created
       if (welHolder.next().hasClass('note-editor')) { return; }
-      
+
       //01. create Editor
       var welEditor = $('<div class="note-editor"></div>');
 
@@ -1881,7 +2022,7 @@
       setTimeout(function() { // protect FF Error: NS_ERROR_FAILURE: Failure
         document.execCommand('styleWithCSS', 0, true);
       });
-      
+
       //04. create Toolbar
       var sToolbar = '';
       for (var idx = 0, sz = aToolbarSetting.length; idx < sz; idx ++) {
@@ -1898,14 +2039,14 @@
       var welToolbar = $(sToolbar).prependTo(welEditor);
       createPalette(welToolbar);
       createTooltip(welToolbar, 'bottom');
-      
+
       //05. create Popover
       var welPopover = $(sPopover).prependTo(welEditor);
       createTooltip(welPopover);
 
       //06. handle(control selection, ...)
       $(sHandle).prependTo(welEditor);
-      
+
       //07. create Dialog
       var welDialog = $(sDialog).prependTo(welEditor);
       welDialog.find('button.close, a.modal-close').click(function(event) {
@@ -1916,12 +2057,12 @@
       welEditor.insertAfter(welHolder);
       welHolder.hide();
     };
-    
+
     // layoutInfoFromHolder
     var layoutInfoFromHolder = this.layoutInfoFromHolder = function(welHolder) {
       var welEditor = welHolder.next();
       if (!welEditor.hasClass('note-editor')) { return; }
-      
+
       return {
         editor: welEditor,
         toolbar: welEditor.find('.note-toolbar'),
@@ -1933,13 +2074,13 @@
         dialog: welEditor.find('.note-dialog')
       };
     };
-    
+
     // removeLayout
     var removeLayout = this.removeLayout = function(welHolder) {
       var info = layoutInfoFromHolder(welHolder);
       if (!info) { return; }
       welHolder.html(info.editable.html());
-      
+
       info.editor.remove();
       welHolder.show();
     };
@@ -1963,7 +2104,7 @@
           ['para', ['ul', 'ol', 'paragraph']],
           ['height', ['height']],
           ['table', ['table']],
-          ['insert', ['link', 'picture']],
+          ['insert', ['link', 'picture', 'video']],
           ['view', ['fullscreen', 'codeview']],
           ['help', ['help']]
         ]
