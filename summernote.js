@@ -965,7 +965,7 @@
       });
     };
 
-    this.setVideoDialog = function(welEditable, fnShowDialog){
+    this.setVideoDialog = function($editable, fnShowDialog){
       var rng = range.create();
       var editor = this;
 
@@ -979,8 +979,8 @@
         text: rng.toString()
       }, function(sLinkUrl) {
         rng.select();
-        recordUndo(welEditable);
-        editor.insertVideo(welEditable, sLinkUrl);
+        recordUndo($editable);
+        editor.insertVideo($editable, sLinkUrl);
       })
     }
 
