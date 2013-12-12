@@ -82,8 +82,10 @@ $('#summernote').destroy();
 * Clipboard
 * Image Selection
 
-#### v0.5 2013-12-01
-* Bug fixes.
+#### v0.5 2013-12-31
+* Support both Font-Awesome 3.x and 4.x
+* CodeMirror as Codeview
+* Bug fixes
 
 ### Change Log
 
@@ -145,6 +147,10 @@ run tests with PhantomJS
 ```bash
 grunt test
 ```
+
+#### Coding convention
+* JSHint: http://www.jshint.com/about/
+* JSHint rule: https://github.com/HackerWins/summernote/blob/master/.jshintrc
 
 ### Contacts
 * Email: susukang98@gmail.com
