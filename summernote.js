@@ -1778,6 +1778,97 @@
         undo: 'Ongedaan maken',
         redo: 'Opnieuw doorvoeren'
       }
+    },
+
+    'de-DE': {
+      font: {
+        bold: 'Fett',
+        italic: 'Kursiv',
+        underline: 'Unterstreichen',
+        strike: 'Durchgestrichen',
+        clear: 'Zurücksetzen',
+        height: 'Zeilenhöhe',
+        size: 'Schriftgröße'
+      },
+      image: {
+        image: 'Grafik',
+        insert: 'Grafik einfügen',
+        resize_full: 'Originalgröße',
+        resize_half: 'Größe 1/2',
+        resize_quarter: 'Größe 1/4',
+        float_left: 'Linksbündig',
+        float_right: 'Rechtsbündig',
+        float_none: 'Kein Textfluss',
+        drag_image_here: 'Ziehen Sie ein Bild mit der Maus hierher',
+        select_from_files: 'Wählen Sie eine Datei aus',
+        url: 'Grafik URL'
+      },
+      link: {
+        link: 'Link',
+        insert: 'Link einfügen',
+        unlink: 'Link entfernen',
+        edit: 'Editieren',
+        text_to_display: 'Anzeigetext',
+        url: 'Ziel des Links?'
+      },
+      table: {
+        table: 'Tabelle'
+      },
+      hr: {
+        insert: 'Eine horizontale Linie einfügen'
+      },
+      style: {
+        style: 'Stil',
+        normal: 'Normal',
+        blockquote: 'Zitat',
+        pre: 'Quellcode',
+        h1: 'Überschrift 1',
+        h2: 'Überschrift 2',
+        h3: 'Überschrift 3',
+        h4: 'Überschrift 4',
+        h5: 'Überschrift 5',
+        h6: 'Überschrift 6'
+      },
+      lists: {
+        unordered: 'Aufzählung',
+        ordered: 'Nummerieung'
+      },
+      options: {
+        help: 'Hilfe',
+        fullscreen: 'Vollbild',
+        codeview: 'HTML-Code anzeigen'
+      },
+      paragraph: {
+        paragraph: 'Absatz',
+        outdent: 'Einzug vergrößern',
+        indent: 'Einzug verkleinern',
+        left: 'Links ausrichten',
+        center: 'Zentriert ausrichten',
+        right: 'Rechts ausrichten',
+        justify: 'Blocksatz'
+      },
+      color: {
+        recent: 'Letzte Farbe',
+        more: 'Mehr Farben',
+        background: 'Hintergrundfarbe',
+        foreground: 'Schriftfarbe',
+        transparent: 'Transparenz',
+        set_transparent: 'Transparenz setzen',
+        reset: 'Zurücksetzen',
+        reset_to_default: 'Auf Standard zurücksetzen'
+      },
+      shortcut: {
+        shortcuts: 'Tastenkürzel',
+        close: 'Schließen',
+        text_formatting: 'Textformatierung',
+        action: 'Aktion',
+        paragraph_formatting: 'Absatzformatierung',
+        document_style: 'Dokumentenstil'
+      },
+      history: {
+        undo: 'Rückgängig',
+        redo: 'Wiederholen'
+      }
     }
   };
 
