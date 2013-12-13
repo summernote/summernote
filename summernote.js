@@ -832,7 +832,70 @@
       });
     };
 
-    this.formatBlock = function ($editable, sValue) {
+    this.insertVideo = function($editable, sUrl) {
+      var ytRegExp = /(?:https?:\/\/)?(?:www\.)?youtu(?:be\.com\/watch\?(?:.*?&(?:amp;)?)?v=|\.be\/)([\w‌​\-]+)(?:&(?:amp;)?[\w\?=]*)?/;
+      var ytMatch = sUrl.match(ytRegExp);
+
+      var igRegExp = /\/\/instagram.com\/p\/(.[a-zA-Z0-9]*)/;
+      var igMatch = sUrl.match(igRegExp);
+
+      var vRegExp = /\/\/vine.co\/v\/(.[a-zA-Z0-9]*)/;
+      var vMatch = sUrl.match(vRegExp);
+
+      var vimRegExp = /\/\/(player.)?vimeo.com\/([a-z]*\/)*([0-9]{6,11})[?]?.*/;
+      var vimMatch = sUrl.match(vimRegExp);
+
+      var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
+      var dmMatch = sUrl.match(dmRegExp);
+
+      var $video;
+
+      if (ytMatch && ytMatch[1].length==11){
+        var youtube_id =  ytMatch[1];
+        $video = $('<iframe>')
+          .attr('src', 'http://www.youtube.com/embed/' + youtube_id + "?origin=http://diply.com")
+          .attr('frameborder', '0')
+          .attr('width', '640').attr('height', '360');
+
+      }else if (igMatch && igMatch[0].length > 0){
+        $video = $('<iframe>')
+          .attr('src', igMatch[0] + "/embed/")
+          .attr('frameborder', '0')
+          .attr('width', '612').attr('height', '710')
+          .attr('scrolling', 'no')
+          .attr('allowtransparency', 'true');
+
+      }else if (vMatch && vMatch[0].length > 0){
+        $video = $('<iframe>')
+          .attr('src', vMatch[0] + "/embed/simple")
+          .attr('frameborder', 0)
+          .attr('width', '600').attr('height', '600')
+          .attr('class', 'vine-embed');
+
+      } else if (vimMatch && vimMatch[3].length >0){
+        $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+          .attr('src','//player.vimeo.com/video/' + vimMatch[3])
+          .attr('width', '640').attr('height', '360')
+          .attr('frameborder', 0);
+
+
+      } else if(dmMatch && dmMatch[2].length >0) {
+        $video = $('<iframe>')
+          .attr('src','http://www.dailymotion.com/embed/video/' + dmMatch[2])
+          .attr('frameborder', 0)
+          .attr('width', '640').attr('height', '360');
+
+      }else{
+          //this is not a known video link. Now what, Cat? Now what?
+      }
+
+      if ($video){
+          document.execCommand('delete');
+          range.create().insertNode($video[0]);
+      }
+    }
+
+    this.formatBlock = function($editable, sValue){
       recordUndo($editable);
       sValue = agent.bMSIE ? '<' + sValue + '>' : sValue;
       document.execCommand('FormatBlock', false, sValue);
@@ -901,6 +964,25 @@
         }
       });
     };
+
+    this.setVideoDialog = function($editable, fnShowDialog){
+      var rng = range.create();
+      var editor = this;
+
+      if (rng.isOnAnchor()) {
+        var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
+        rng = range.create(elAnchor, 0, elAnchor, 1);
+      }
+
+      fnShowDialog({
+        range: rng,
+        text: rng.toString()
+      }, function(sLinkUrl) {
+        rng.select();
+        recordUndo($editable);
+        editor.insertVideo($editable, sLinkUrl);
+      })
+    }
 
     this.color = function ($editable, sObjColor) {
       var oColor = JSON.parse(sObjColor);
@@ -1145,6 +1227,34 @@
         $imageBtn.off('click');
       }).modal('show');
     };
+
+    this.showVideoDialog = function($dialog, videoInfo, callback){
+      var $videoDialog = $dialog.find('.note-video-dialog');
+      var $videoUrl = $videoDialog.find('.note-video-url'),
+          $videoBtn = $videoDialog.find('.note-video-btn');
+
+      $videoDialog.on('show.bs.modal', function(e){
+        $videoUrl.val(videoInfo.text).keyup(function(event) {
+          if ($videoUrl.val()) {
+            $videoBtn.removeClass('disabled').attr('disabled', false);
+          } else {
+            $videoBtn.addClass('disabled').attr('disabled', true);
+          }
+        }).trigger('keyup').trigger('focus');
+
+        $videoBtn.click(function(event){
+          $videoDialog.modal('hide');
+          callback($videoUrl.val());
+          event.preventDefault();
+        })
+
+      }).on('hidden.bs.modal', function(e){
+        $videoUrl.off('keyup');
+        $videoBtn.off('click');
+        $videoDialog.off('show.bs.modal hidden.bs.modal');
+      }).modal('show');
+    }
+
 
     this.showLinkDialog = function ($dialog, linkInfo, callback) {
       var $linkDialog = $dialog.find('.note-link-dialog');
@@ -1404,6 +1514,11 @@
             editor.restoreRange($editable);
             editor.insertImage($editable, sUrl);
           });
+        } else if (sEvent === 'showVideoDialog') {
+          $editable.focus();
+          editor.setVideoDialog($editable, function(linkInfo, cb) {
+            dialog.showVideoDialog($dialog, linkInfo, cb);
+          });
         } else if (sEvent === 'showHelpDialog') {
           dialog.showHelpDialog($dialog);
         } else if (sEvent === 'fullscreen') {
@@ -1629,6 +1744,13 @@
         text_to_display: 'Text to display',
         url: 'To what URL should this link go?'
       },
+      video: {
+        video: 'Video',
+        video_link: 'Video Link',
+        insert: 'Insert Video',
+        url: 'Video URL?',
+        providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
+      },
       table: {
         table: 'Table'
       },
@@ -1719,6 +1841,13 @@
         edit: 'Wijzigen',
         text_to_display: 'Tekst van link',
         url: 'Naar welke URL moet deze link verwijzen?'
+      },
+      video: {
+        video: 'Video',
+        video_link: 'Video Link',
+        insert: 'Insert Video',
+        url: 'Video URL?',
+        providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
       },
       table: {
         table: 'Tabel'
@@ -1811,6 +1940,13 @@
         text_to_display: 'Anzeigetext',
         url: 'Ziel des Links?'
       },
+      video: {
+        video: 'Video',
+        video_link: 'Video Link',
+        insert: 'Insert Video',
+        url: 'Video URL?',
+        providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
+      },
       table: {
         table: 'Tabelle'
       },
@@ -1885,6 +2021,9 @@
       },
       link: function(locale) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.link.link + '" data-event="showLinkDialog" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" tabindex="-1"><i class="fa fa-link icon-link"></i></button>';
+      },
+      video: function(locale){
+          return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.video.video + '" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>';
       },
       table: function(locale) {
         return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + locale.table.table + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-table icon-table"></i> <span class="caret"></span></button>' +
@@ -2013,6 +2152,7 @@
                     '<div class="note-insert btn-group">' +
                     '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.link.edit + '" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-edit icon-edit"></i></button>' +
                     '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.link.unlink + '" data-event="unlink" tabindex="-1"><i class="fa fa-unlink icon-unlink"></i></button>' +
+                    '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.video.video_link +'" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
@@ -2173,6 +2313,28 @@
                     '</div>' +
                   '</div>' +
                 '</div>' +
+                    '<div class="note-video-dialog modal" aria-hidden="false">' +
+                      '<div class="modal-dialog">' +
+                        '<div class="modal-content">' +
+                          '<div class="modal-header">' +
+                            '<button type="button" class="close" aria-hidden="true" tabindex="-1">×</button>' +
+                            '<h4>' + locale.video.insert +'</h4>' +
+                          '</div>' +
+                          '<div class="modal-body">' +
+                            '<div class="row-fluid">' +
+
+                            '<div class="form-group">' +
+                              '<label>' + locale.video.url + '</label>&nbsp;<small class="text-muted">' + locale.video.providers + '</small>' +
+                              '<input class="note-video-url form-control span12" type="text" />' +
+                            '</div>' +
+                            '</div>' +
+                          '</div>' +
+                          '<div class="modal-footer">' +
+                            '<button href="#" class="btn btn-primary note-video-btn disabled" disabled="disabled">' + locale.video.insert + '</button>' +
+                          '</div>' +
+                        '</div>' +
+                      '</div>' +
+                    '</div>' +
                 '<div class="note-help-dialog modal" aria-hidden="false">' +
                   '<div class="modal-dialog">' +
                     '<div class="modal-content">' +
@@ -2358,7 +2520,7 @@
           ['para', ['ul', 'ol', 'paragraph']],
           ['height', ['height']],
           ['table', ['table']],
-          ['insert', ['link', 'picture']],
+          ['insert', ['link', 'picture', 'video']],
           ['view', ['fullscreen', 'codeview']],
           ['help', ['help']]
         ],
