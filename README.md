@@ -80,11 +80,13 @@ $('#summernote').destroy();
 * Table: Handles(Sizing, Selection) and Popover
 * support IE8
 * Clipboard
-* Image Selection
+* Media Object Selection
 
 #### v0.5 2013-12-31
 * Support both Font-Awesome 3.x and 4.x
 * CodeMirror as Codeview
+* Insert Video (by cdownie)
+* Locale (by hendrismit, tschiela)
 * Bug fixes
 
 ### Change Log

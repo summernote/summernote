@@ -322,7 +322,7 @@
      */
     var position = function (node) {
       var offset = 0;
-      while (node = node.previousSibling) { offset += 1; }
+      while ((node = node.previousSibling)) { offset += 1; }
       return offset;
     };
 
@@ -832,7 +832,8 @@
       });
     };
 
-    this.insertVideo = function($editable, sUrl) {
+    this.insertVideo = function ($editable, sUrl) {
+      // video url patterns(youtube, instagram, vimeo, dailymotion)
       var ytRegExp = /(?:https?:\/\/)?(?:www\.)?youtu(?:be\.com\/watch\?(?:.*?&(?:amp;)?)?v=|\.be\/)([\w‌​\-]+)(?:&(?:amp;)?[\w\?=]*)?/;
       var ytMatch = sUrl.match(ytRegExp);
 
@@ -849,53 +850,42 @@
       var dmMatch = sUrl.match(dmRegExp);
 
       var $video;
-
-      if (ytMatch && ytMatch[1].length==11){
-        var youtube_id =  ytMatch[1];
+      if (ytMatch && ytMatch[1].length === 11) {
+        var youtubeId =  ytMatch[1];
         $video = $('<iframe>')
-          .attr('src', 'http://www.youtube.com/embed/' + youtube_id + "?origin=http://diply.com")
-          .attr('frameborder', '0')
+          .attr('src', 'http://www.youtube.com/embed/' + youtubeId + '?origin=http://diply.com')
           .attr('width', '640').attr('height', '360');
-
-      }else if (igMatch && igMatch[0].length > 0){
+      } else if (igMatch && igMatch[0].length > 0) {
         $video = $('<iframe>')
-          .attr('src', igMatch[0] + "/embed/")
-          .attr('frameborder', '0')
+          .attr('src', igMatch[0] + '/embed/')
           .attr('width', '612').attr('height', '710')
           .attr('scrolling', 'no')
           .attr('allowtransparency', 'true');
-
-      }else if (vMatch && vMatch[0].length > 0){
+      } else if (vMatch && vMatch[0].length > 0) {
         $video = $('<iframe>')
-          .attr('src', vMatch[0] + "/embed/simple")
-          .attr('frameborder', 0)
+          .attr('src', vMatch[0] + '/embed/simple')
           .attr('width', '600').attr('height', '600')
           .attr('class', 'vine-embed');
-
-      } else if (vimMatch && vimMatch[3].length >0){
+      } else if (vimMatch && vimMatch[3].length > 0) {
         $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
-          .attr('src','//player.vimeo.com/video/' + vimMatch[3])
-          .attr('width', '640').attr('height', '360')
-          .attr('frameborder', 0);
-
-
-      } else if(dmMatch && dmMatch[2].length >0) {
-        $video = $('<iframe>')
-          .attr('src','http://www.dailymotion.com/embed/video/' + dmMatch[2])
-          .attr('frameborder', 0)
+          .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
           .attr('width', '640').attr('height', '360');
-
-      }else{
-          //this is not a known video link. Now what, Cat? Now what?
+      } else if (dmMatch && dmMatch[2].length > 0) {
+        $video = $('<iframe>')
+          .attr('src', 'http://www.dailymotion.com/embed/video/' + dmMatch[2])
+          .attr('width', '640').attr('height', '360');
+      } else {
+        // this is not a known video link. Now what, Cat? Now what?
       }
 
-      if ($video){
-          document.execCommand('delete');
-          range.create().insertNode($video[0]);
+      if ($video) {
+        $video.attr('frameborder', 0);
+        document.execCommand('delete');
+        range.create().insertNode($video[0]);
       }
-    }
+    };
 
-    this.formatBlock = function($editable, sValue){
+    this.formatBlock = function ($editable, sValue) {
       recordUndo($editable);
       sValue = agent.bMSIE ? '<' + sValue + '>' : sValue;
       document.execCommand('FormatBlock', false, sValue);
@@ -965,7 +955,7 @@
       });
     };
 
-    this.setVideoDialog = function($editable, fnShowDialog){
+    this.setVideoDialog = function ($editable, fnShowDialog) {
       var rng = range.create();
       var editor = this;
 
@@ -977,12 +967,12 @@
       fnShowDialog({
         range: rng,
         text: rng.toString()
-      }, function(sLinkUrl) {
+      }, function (sLinkUrl) {
         rng.select();
         recordUndo($editable);
         editor.insertVideo($editable, sLinkUrl);
-      })
-    }
+      });
+    };
 
     this.color = function ($editable, sObjColor) {
       var oColor = JSON.parse(sObjColor);
@@ -1228,13 +1218,13 @@
       }).modal('show');
     };
 
-    this.showVideoDialog = function($dialog, videoInfo, callback){
+    this.showVideoDialog = function ($dialog, videoInfo, callback) {
       var $videoDialog = $dialog.find('.note-video-dialog');
       var $videoUrl = $videoDialog.find('.note-video-url'),
           $videoBtn = $videoDialog.find('.note-video-btn');
 
-      $videoDialog.on('show.bs.modal', function(e){
-        $videoUrl.val(videoInfo.text).keyup(function(event) {
+      $videoDialog.on('show.bs.modal', function () {
+        $videoUrl.val(videoInfo.text).keyup(function () {
           if ($videoUrl.val()) {
             $videoBtn.removeClass('disabled').attr('disabled', false);
           } else {
@@ -1242,18 +1232,18 @@
           }
         }).trigger('keyup').trigger('focus');
 
-        $videoBtn.click(function(event){
+        $videoBtn.click(function (event) {
           $videoDialog.modal('hide');
           callback($videoUrl.val());
           event.preventDefault();
-        })
+        });
 
-      }).on('hidden.bs.modal', function(e){
+      }).on('hidden.bs.modal', function () {
         $videoUrl.off('keyup');
         $videoBtn.off('click');
         $videoDialog.off('show.bs.modal hidden.bs.modal');
       }).modal('show');
-    }
+    };
 
 
     this.showLinkDialog = function ($dialog, linkInfo, callback) {
@@ -1516,7 +1506,7 @@
           });
         } else if (sEvent === 'showVideoDialog') {
           $editable.focus();
-          editor.setVideoDialog($editable, function(linkInfo, cb) {
+          editor.setVideoDialog($editable, function (linkInfo, cb) {
             dialog.showVideoDialog($dialog, linkInfo, cb);
           });
         } else if (sEvent === 'showHelpDialog') {
@@ -1726,14 +1716,14 @@
       image: {
         image: 'Picture',
         insert: 'Insert Image',
-        resize_full: 'Resize Full',
-        resize_half: 'Resize Half',
-        resize_quarter: 'Resize Quarter',
-        float_left: 'Float Left',
-        float_right: 'Float Right',
-        float_none: 'Float None',
-        drag_image_here: 'Drag an image here',
-        select_from_files: 'Select from files',
+        resizeFull: 'Resize Full',
+        resizeHalf: 'Resize Half',
+        resizeQuarter: 'Resize Quarter',
+        floatLeft: 'Float Left',
+        floatRight: 'Float Right',
+        floatNone: 'Float None',
+        dragImageHere: 'Drag an image here',
+        selectFromFiles: 'Select from files',
         url: 'Image URL'
       },
       link: {
@@ -1741,12 +1731,12 @@
         insert: 'Insert Link',
         unlink: 'Unlink',
         edit: 'Edit',
-        text_to_display: 'Text to display',
+        textToDisplay: 'Text to display',
         url: 'To what URL should this link go?'
       },
       video: {
         video: 'Video',
-        video_link: 'Video Link',
+        videoLink: 'Video Link',
         insert: 'Insert Video',
         url: 'Video URL?',
         providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
@@ -1793,17 +1783,17 @@
         background: 'BackColor',
         foreground: 'FontColor',
         transparent: 'Transparent',
-        set_transparent: 'Set transparent',
+        setTransparent: 'Set transparent',
         reset: 'Reset',
-        reset_to_default: 'Reset to default'
+        resetToDefault: 'Reset to default'
       },
       shortcut: {
         shortcuts: 'Keyboard shortcuts',
         close: 'Close',
-        text_formatting: 'Text formatting',
+        textFormatting: 'Text formatting',
         action: 'Action',
-        paragraph_formatting: 'Paragraph formatting',
-        document_style: 'Document Style'
+        paragraphFormatting: 'Paragraph formatting',
+        documentStyle: 'Document Style'
       },
       history: {
         undo: 'Undo',
@@ -1824,14 +1814,14 @@
       image: {
         image: 'Afbeelding',
         insert: 'Afbeelding invoegen',
-        resize_full: 'Volledige breedte',
-        resize_half: 'Halve breedte',
-        resize_quarter: 'Kwart breedte',
-        float_left: 'Links uitlijnen',
-        float_right: 'Rechts uitlijnen',
-        float_none: 'Geen uitlijning',
-        drag_image_here: 'Sleep hier een afbeelding naar toe',
-        select_from_files: 'Selecteer een bestand',
+        resizeFull: 'Volledige breedte',
+        resizeHalf: 'Halve breedte',
+        resizeQuarter: 'Kwart breedte',
+        floatLeft: 'Links uitlijnen',
+        floatRight: 'Rechts uitlijnen',
+        floatNone: 'Geen uitlijning',
+        dragImageHere: 'Sleep hier een afbeelding naar toe',
+        selectFromFiles: 'Selecteer een bestand',
         url: 'URL van de afbeelding'
       },
       link: {
@@ -1839,12 +1829,12 @@
         insert: 'Link invoegen',
         unlink: 'Link verwijderen',
         edit: 'Wijzigen',
-        text_to_display: 'Tekst van link',
+        textToDisplay: 'Tekst van link',
         url: 'Naar welke URL moet deze link verwijzen?'
       },
       video: {
         video: 'Video',
-        video_link: 'Video Link',
+        videoLink: 'Video Link',
         insert: 'Insert Video',
         url: 'Video URL?',
         providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
@@ -1891,17 +1881,17 @@
         background: 'Achtergrond kleur',
         foreground: 'Tekst kleur',
         transparent: 'Transparant',
-        set_transparent: 'Transparant',
+        setTransparent: 'Transparant',
         reset: 'Standaard',
-        reset_to_default: 'Standaard kleur'
+        resetToDefault: 'Standaard kleur'
       },
       shortcut: {
         shortcuts: 'Toetsencombinaties',
         close: 'sluiten',
-        text_formatting: 'Tekststijlen',
+        textFormatting: 'Tekststijlen',
         action: 'Acties',
-        paragraph_formatting: 'Paragraafstijlen',
-        document_style: 'Documentstijlen'
+        paragraphFormatting: 'Paragraafstijlen',
+        documentStyle: 'Documentstijlen'
       },
       history: {
         undo: 'Ongedaan maken',
@@ -1922,14 +1912,14 @@
       image: {
         image: 'Grafik',
         insert: 'Grafik einfügen',
-        resize_full: 'Originalgröße',
-        resize_half: 'Größe 1/2',
-        resize_quarter: 'Größe 1/4',
-        float_left: 'Linksbündig',
-        float_right: 'Rechtsbündig',
-        float_none: 'Kein Textfluss',
-        drag_image_here: 'Ziehen Sie ein Bild mit der Maus hierher',
-        select_from_files: 'Wählen Sie eine Datei aus',
+        resizeFull: 'Originalgröße',
+        resizeHalf: 'Größe 1/2',
+        resizeQuarter: 'Größe 1/4',
+        floatLeft: 'Linksbündig',
+        floatRight: 'Rechtsbündig',
+        floatNone: 'Kein Textfluss',
+        dragImageHere: 'Ziehen Sie ein Bild mit der Maus hierher',
+        selectFromFiles: 'Wählen Sie eine Datei aus',
         url: 'Grafik URL'
       },
       link: {
@@ -1937,12 +1927,12 @@
         insert: 'Link einfügen',
         unlink: 'Link entfernen',
         edit: 'Editieren',
-        text_to_display: 'Anzeigetext',
+        textToDisplay: 'Anzeigetext',
         url: 'Ziel des Links?'
       },
       video: {
         video: 'Video',
-        video_link: 'Video Link',
+        videoLink: 'Video Link',
         insert: 'Insert Video',
         url: 'Video URL?',
         providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
@@ -1989,17 +1979,17 @@
         background: 'Hintergrundfarbe',
         foreground: 'Schriftfarbe',
         transparent: 'Transparenz',
-        set_transparent: 'Transparenz setzen',
+        setTransparent: 'Transparenz setzen',
         reset: 'Zurücksetzen',
-        reset_to_default: 'Auf Standard zurücksetzen'
+        resetToDefault: 'Auf Standard zurücksetzen'
       },
       shortcut: {
         shortcuts: 'Tastenkürzel',
         close: 'Schließen',
-        text_formatting: 'Textformatierung',
+        textFormatting: 'Textformatierung',
         action: 'Aktion',
-        paragraph_formatting: 'Absatzformatierung',
-        document_style: 'Dokumentenstil'
+        paragraphFormatting: 'Absatzformatierung',
+        documentStyle: 'Dokumentenstil'
       },
       history: {
         undo: 'Rückgängig',
@@ -2014,8 +2004,10 @@
    * rendering toolbar and editable
    */
   var Renderer = function () {
+    var aToolbarItem, sPopover, sHandle, sDialog, sStatusbar;
+
     /* jshint ignore:start */
-    var aToolbarItem = {
+    aToolbarItem = {
       picture: function(locale) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.image + '" data-event="showImageDialog" tabindex="-1"><i class="fa fa-picture-o icon-picture"></i></button>';
       },
@@ -2073,12 +2065,12 @@
         '<li>' +
         '<div class="btn-group">' +
         '<div class="note-palette-title">' + locale.color.background + '</div>' +
-        '<div class="note-color-reset" data-event="backColor" data-value="inherit" title="' + locale.color.transparent + '">' + locale.color.set_transparent + '</div>' +
+        '<div class="note-color-reset" data-event="backColor" data-value="inherit" title="' + locale.color.transparent + '">' + locale.color.setTransparent + '</div>' +
         '<div class="note-color-palette" data-target-event="backColor"></div>' +
         '</div>' +
         '<div class="btn-group">' +
         '<div class="note-palette-title">' + locale.color.foreground + '</div>' +
-        '<div class="note-color-reset" data-event="foreColor" data-value="inherit" title="' + locale.color.reset + '">' + locale.color.reset_to_default + '</div>' +
+        '<div class="note-color-reset" data-event="foreColor" data-value="inherit" title="' + locale.color.reset + '">' + locale.color.resetToDefault + '</div>' +
         '<div class="note-color-palette" data-target-event="foreColor"></div>' +
         '</div>' +
         '</li>' +
@@ -2143,7 +2135,7 @@
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.options.codeview + '" data-event="codeview" tabindex="-1"><i class="fa fa-code icon-code"></i></button>';
       }
     };
-    var sPopover = function(locale) {
+    sPopover = function(locale) {
       return '<div class="note-popover">' +
                 '<div class="note-link-popover popover bottom in" style="display: none;">' +
                   '<div class="arrow"></div>' +
@@ -2152,7 +2144,7 @@
                     '<div class="note-insert btn-group">' +
                     '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.link.edit + '" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-edit icon-edit"></i></button>' +
                     '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.link.unlink + '" data-event="unlink" tabindex="-1"><i class="fa fa-unlink icon-unlink"></i></button>' +
-                    '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.video.video_link +'" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>' +
+                    '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.video.videoLink +'" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
@@ -2160,35 +2152,35 @@
                   '<div class="arrow"></div>' +
                   '<div class="popover-content note-image-content">' +
                     '<div class="btn-group">' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.resize_full + '" data-event="resize" data-value="1" tabindex="-1"><span class="note-fontsize-10">100%</span> </button>' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.resize_half + '" data-event="resize" data-value="0.5" tabindex="-1"><span class="note-fontsize-10">50%</span> </button>' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.resize_quarter + '" data-event="resize" data-value="0.25" tabindex="-1"><span class="note-fontsize-10">25%</span> </button>' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.resizeFull + '" data-event="resize" data-value="1" tabindex="-1"><span class="note-fontsize-10">100%</span> </button>' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.resizeHalf + '" data-event="resize" data-value="0.5" tabindex="-1"><span class="note-fontsize-10">50%</span> </button>' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.resizeQuarter + '" data-event="resize" data-value="0.25" tabindex="-1"><span class="note-fontsize-10">25%</span> </button>' +
                     '</div>' +
                     '<div class="btn-group">' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.float_left + '" data-event="floatMe" data-value="left" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.float_right + '" data-event="floatMe" data-value="right" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.float_none + '" data-event="floatMe" data-value="none" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.floatLeft + '" data-event="floatMe" data-value="left" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.floatRight + '" data-event="floatMe" data-value="right" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.floatNone + '" data-event="floatMe" data-value="none" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
               '</div>';
     };
 
-    var sHandle = '<div class="note-handle">' +
-                    '<div class="note-control-selection">' +
-                      '<div class="note-control-selection-bg"></div>' +
-                      '<div class="note-control-holder note-control-nw"></div>' +
-                      '<div class="note-control-holder note-control-ne"></div>' +
-                      '<div class="note-control-holder note-control-sw"></div>' +
-                      '<div class="note-control-sizing note-control-se"></div>' +
-                      '<div class="note-control-selection-info"></div>' +
-                    '</div>' +
-                  '</div>';
+    sHandle = '<div class="note-handle">' +
+                '<div class="note-control-selection">' +
+                  '<div class="note-control-selection-bg"></div>' +
+                  '<div class="note-control-holder note-control-nw"></div>' +
+                  '<div class="note-control-holder note-control-ne"></div>' +
+                  '<div class="note-control-holder note-control-sw"></div>' +
+                  '<div class="note-control-sizing note-control-se"></div>' +
+                  '<div class="note-control-selection-info"></div>' +
+                '</div>' +
+              '</div>';
 
     var sShortcutText = function(locale) {
       return '<table class="note-shortcut">' +
         '<thead>' +
-          '<tr><th></th><th>' + locale.shortcut.text_formatting + '</th></tr>' +
+          '<tr><th></th><th>' + locale.shortcut.textFormatting + '</th></tr>' +
         '</thead>' +
         '<tbody>' +
           '<tr><td>⌘ + B</td><td>' + locale.font.bold + '</td></tr>' +
@@ -2220,7 +2212,7 @@
     var sShortcutPara = function(locale) {
       return '<table class="note-shortcut">' +
                 '<thead>' +
-                  '<tr><th></th><th>' + locale.shortcut.paragraph_formatting + '</th></tr>' +
+                  '<tr><th></th><th>' + locale.shortcut.paragraphFormatting + '</th></tr>' +
                 '</thead>' +
                 '<tbody>' +
                   '<tr><td>⌘ + ⇧ + L</td><td>' + locale.paragraph.left + '</td></tr>' +
@@ -2236,7 +2228,7 @@
     var sShortcutStyle = function(locale) {
       return '<table class="note-shortcut">' +
                 '<thead>' +
-                  '<tr><th></th><th>' + locale.shortcut.document_style + '</th></tr>' +
+                  '<tr><th></th><th>' + locale.shortcut.documentStyle + '</th></tr>' +
                 '</thead>' +
                 '<tbody>' +
                   '<tr><td>⌘ + NUM0</td><td>' + locale.style.normal + '</td></tr>' +
@@ -2265,93 +2257,93 @@
 
     var sDialog = function(locale) {
       return '<div class="note-dialog">' +
-                '<div class="note-image-dialog modal" aria-hidden="false">' +
-                  '<div class="modal-dialog">' +
-                    '<div class="modal-content">' +
-                      '<div class="modal-header">' +
-                        '<button type="button" class="close" aria-hidden="true" tabindex="-1">×</button>' +
-                        '<h4>' + locale.image.insert + '</h4>' +
-                      '</div>' +
-                      '<div class="modal-body">' +
-                        '<div class="row-fluid">' +
-                          '<div class="note-dropzone span12">' + locale.image.drag_image_here + '</div>' +
-                          '<h5>' + locale.image.select_from_files + '</h5>' +
-                          '<input class="note-image-input" type="file" name="files" accept="image/*" capture="camera" />' +
-                          '<h5>' + locale.image.url + '</h5>' +
-                          '<input class="note-image-url form-control span12" type="text" />' +
-                        '</div>' +
-                      '</div>' +
-                      '<div class="modal-footer">' +
-                        '<button href="#" class="btn btn-primary note-image-btn disabled" disabled="disabled">' + locale.image.insert + '</button>' +
-                      '</div>' +
-                    '</div>' +
-                  '</div>' +
-                '</div>' +
-                '<div class="note-link-dialog modal" aria-hidden="false">' +
-                  '<div class="modal-dialog">' +
-                    '<div class="modal-content">' +
-                      '<div class="modal-header">' +
-                        '<button type="button" class="close" aria-hidden="true" tabindex="-1">×</button>' +
-                        '<h4>' + locale.link.insert + '</h4>' +
-                      '</div>' +
-                      '<div class="modal-body">' +
-                        '<div class="row-fluid">' +
+               '<div class="note-image-dialog modal" aria-hidden="false">' +
+                 '<div class="modal-dialog">' +
+                   '<div class="modal-content">' +
+                     '<div class="modal-header">' +
+                       '<button type="button" class="close" aria-hidden="true" tabindex="-1">×</button>' +
+                       '<h4>' + locale.image.insert + '</h4>' +
+                     '</div>' +
+                     '<div class="modal-body">' +
+                       '<div class="row-fluid">' +
+                         '<div class="note-dropzone span12">' + locale.image.dragImageHere + '</div>' +
+                         '<h5>' + locale.image.selectFromFiles + '</h5>' +
+                         '<input class="note-image-input" type="file" name="files" accept="image/*" capture="camera" />' +
+                         '<h5>' + locale.image.url + '</h5>' +
+                         '<input class="note-image-url form-control span12" type="text" />' +
+                       '</div>' +
+                     '</div>' +
+                     '<div class="modal-footer">' +
+                       '<button href="#" class="btn btn-primary note-image-btn disabled" disabled="disabled">' + locale.image.insert + '</button>' +
+                     '</div>' +
+                   '</div>' +
+                 '</div>' +
+               '</div>' +
+               '<div class="note-link-dialog modal" aria-hidden="false">' +
+                 '<div class="modal-dialog">' +
+                   '<div class="modal-content">' +
+                     '<div class="modal-header">' +
+                       '<button type="button" class="close" aria-hidden="true" tabindex="-1">×</button>' +
+                       '<h4>' + locale.link.insert + '</h4>' +
+                     '</div>' +
+                     '<div class="modal-body">' +
+                       '<div class="row-fluid">' +
 
-                        '<div class="form-group">' +
-                          '<label>' + locale.link.text_to_display + '</label>' +
-                          '<span class="note-link-text form-control input-xlarge uneditable-input" />' +
-                        '</div>' +
-                        '<div class="form-group">' +
-                          '<label>' + locale.link.url + '</label>' +
-                          '<input class="note-link-url form-control span12" type="text" />' +
-                        '</div>' +
-                        '</div>' +
-                      '</div>' +
-                      '<div class="modal-footer">' +
-                        '<button href="#" class="btn btn-primary note-link-btn disabled" disabled="disabled">' + locale.link.insert + '</button>' +
-                      '</div>' +
-                    '</div>' +
-                  '</div>' +
-                '</div>' +
-                    '<div class="note-video-dialog modal" aria-hidden="false">' +
-                      '<div class="modal-dialog">' +
-                        '<div class="modal-content">' +
-                          '<div class="modal-header">' +
-                            '<button type="button" class="close" aria-hidden="true" tabindex="-1">×</button>' +
-                            '<h4>' + locale.video.insert +'</h4>' +
-                          '</div>' +
-                          '<div class="modal-body">' +
-                            '<div class="row-fluid">' +
+                       '<div class="form-group">' +
+                         '<label>' + locale.link.textToDisplay + '</label>' +
+                         '<span class="note-link-text form-control input-xlarge uneditable-input" />' +
+                       '</div>' +
+                       '<div class="form-group">' +
+                         '<label>' + locale.link.url + '</label>' +
+                         '<input class="note-link-url form-control span12" type="text" />' +
+                       '</div>' +
+                       '</div>' +
+                     '</div>' +
+                     '<div class="modal-footer">' +
+                       '<button href="#" class="btn btn-primary note-link-btn disabled" disabled="disabled">' + locale.link.insert + '</button>' +
+                     '</div>' +
+                   '</div>' +
+                 '</div>' +
+               '</div>' +
+                   '<div class="note-video-dialog modal" aria-hidden="false">' +
+                     '<div class="modal-dialog">' +
+                       '<div class="modal-content">' +
+                         '<div class="modal-header">' +
+                           '<button type="button" class="close" aria-hidden="true" tabindex="-1">×</button>' +
+                           '<h4>' + locale.video.insert +'</h4>' +
+                         '</div>' +
+                         '<div class="modal-body">' +
+                           '<div class="row-fluid">' +
 
-                            '<div class="form-group">' +
-                              '<label>' + locale.video.url + '</label>&nbsp;<small class="text-muted">' + locale.video.providers + '</small>' +
-                              '<input class="note-video-url form-control span12" type="text" />' +
-                            '</div>' +
-                            '</div>' +
-                          '</div>' +
-                          '<div class="modal-footer">' +
-                            '<button href="#" class="btn btn-primary note-video-btn disabled" disabled="disabled">' + locale.video.insert + '</button>' +
-                          '</div>' +
-                        '</div>' +
-                      '</div>' +
-                    '</div>' +
-                '<div class="note-help-dialog modal" aria-hidden="false">' +
-                  '<div class="modal-dialog">' +
-                    '<div class="modal-content">' +
-                      '<div class="modal-body">' +
-                        '<div class="modal-background">' +
-                        '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + locale.shortcut.close + '</a>' +
-                        '<div class="title">' + locale.shortcut.shortcuts + '</div>' +
-                        (agent.bMac ? sShortcutTable(locale) : replaceMacKeys(sShortcutTable(locale))) +
-                        '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote v0.4</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
-                      '</div>' +
-                    '</div>' +
-                  '</div>' +
-                '</div>' +
-              '</div>';
+                           '<div class="form-group">' +
+                             '<label>' + locale.video.url + '</label>&nbsp;<small class="text-muted">' + locale.video.providers + '</small>' +
+                             '<input class="note-video-url form-control span12" type="text" />' +
+                           '</div>' +
+                           '</div>' +
+                         '</div>' +
+                         '<div class="modal-footer">' +
+                           '<button href="#" class="btn btn-primary note-video-btn disabled" disabled="disabled">' + locale.video.insert + '</button>' +
+                         '</div>' +
+                       '</div>' +
+                     '</div>' +
+                   '</div>' +
+               '<div class="note-help-dialog modal" aria-hidden="false">' +
+                 '<div class="modal-dialog">' +
+                   '<div class="modal-content">' +
+                     '<div class="modal-body">' +
+                       '<div class="modal-background">' +
+                       '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + locale.shortcut.close + '</a>' +
+                       '<div class="title">' + locale.shortcut.shortcuts + '</div>' +
+                       (agent.bMac ? sShortcutTable(locale) : replaceMacKeys(sShortcutTable(locale))) +
+                       '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote v0.4</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
+                     '</div>' +
+                   '</div>' +
+                 '</div>' +
+               '</div>' +
+             '</div>';
     };
 
-    var sStatusbar = '<div class="note-resizebar"><div class="note-icon-bar"></div><div class="note-icon-bar"></div><div class="note-icon-bar"></div></div>';
+    sStatusbar = '<div class="note-resizebar"><div class="note-icon-bar"></div><div class="note-icon-bar"></div><div class="note-icon-bar"></div></div>';
     /* jshint ignore:end */
 
     // createTooltip
