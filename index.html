@@ -18,6 +18,7 @@
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
   <!-- include (codemirror.css, codemirror.js, xml.js, formatting.js) -->
   <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css" />
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/theme/monokai.min.css">
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/xml/xml.min.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js"></script>
@@ -119,7 +120,7 @@
     <div class="col-sm-6">
       <h3><i class="fa fa-cogs"></i> Trend-leading Features</h3>
       <ul>
-        <li>Lightweight (js+css: 48Kb)</li>
+        <li>Lightweight (js+css: 58Kb)</li>
         <li>Smart User Interaction</li>
         <!-- Upcomming Features
         <li>Painless File upload</li>
@@ -148,7 +149,9 @@
 </footer>
 <script type="text/javascript">
 $(document).ready(function() {
-  $('#summernote').summernote({height: 300});
+  $('#summernote').summernote({height: 300, codemirror: {
+    theme: 'monokai'}
+  });
 });
 </script>
 <!-- Google Analytics -->
