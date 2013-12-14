@@ -880,7 +880,6 @@
 
       if ($video) {
         $video.attr('frameborder', 0);
-        document.execCommand('delete');
         range.create().insertNode($video[0]);
       }
     };
