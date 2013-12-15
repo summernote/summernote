@@ -3,7 +3,16 @@
  * (c) 2013~ Alan Hong
  * summernote may be freely distributed under the MIT license./
  */
-(function ($, CodeMirror) {
+(function (factory) {
+  /* global define */
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['jquery', 'codemirror'], factory);
+  } else {
+    // Browser globals: jQuery, CodeMirror
+    factory(window.jQuery, window.CodeMirror);
+  }
+}(function ($, CodeMirror) {
   'use strict';
 
   // Array.prototype.reduce fallback
@@ -1676,10 +1685,10 @@
       });
 
       // dropzone change message on hover.
-      $dropzone.on('dragenter', function (e) {
+      $dropzone.on('dragenter', function () {
         $dropzone.addClass('hover');
         $dropzoneMessage.text('Drop Image');
-      }).on('dragleave', function (e) {
+      }).on('dragleave', function () {
         $dropzone.removeClass('hover');
         $dropzoneMessage.text('Drag Image Here');
       });
@@ -2238,34 +2247,34 @@
 
     var sShortcutText = function(locale) {
       return '<table class="note-shortcut">' +
-        '<thead>' +
-          '<tr><th></th><th>' + locale.shortcut.textFormatting + '</th></tr>' +
-        '</thead>' +
-        '<tbody>' +
-          '<tr><td>⌘ + B</td><td>' + locale.font.bold + '</td></tr>' +
-          '<tr><td>⌘ + I</td><td>' + locale.font.italic + '</td></tr>' +
-          '<tr><td>⌘ + U</td><td>' + locale.font.underline + '</td></tr>' +
-          '<tr><td>⌘ + ⇧ + S</td><td>' + locale.font.strike + '</td></tr>' +
-          '<tr><td>⌘ + \\</td><td>' + locale.font.clear + '</td></tr>' +
-          '</tr>' +
-        '</tbody>' +
-      '</table>';
+               '<thead>' +
+                 '<tr><th></th><th>' + locale.shortcut.textFormatting + '</th></tr>' +
+               '</thead>' +
+               '<tbody>' +
+                 '<tr><td>⌘ + B</td><td>' + locale.font.bold + '</td></tr>' +
+                 '<tr><td>⌘ + I</td><td>' + locale.font.italic + '</td></tr>' +
+                 '<tr><td>⌘ + U</td><td>' + locale.font.underline + '</td></tr>' +
+                 '<tr><td>⌘ + ⇧ + S</td><td>' + locale.font.strike + '</td></tr>' +
+                 '<tr><td>⌘ + \\</td><td>' + locale.font.clear + '</td></tr>' +
+                 '</tr>' +
+               '</tbody>' +
+             '</table>';
     };
 
     var sShortcutAction = function(locale) {
       return '<table class="note-shortcut">' +
-        '<thead>' +
-          '<tr><th></th><th>' + locale.shortcut.action + '</th></tr>' +
-        '</thead>' +
-        '<tbody>' +
-          '<tr><td>⌘ + Z</td><td>' + locale.history.undo + '</td></tr>' +
-          '<tr><td>⌘ + ⇧ + Z</td><td>' + locale.history.redo + '</td></tr>' +
-          '<tr><td>⌘ + ]</td><td>' + locale.paragraph.indent + '</td></tr>' +
-          '<tr><td>⌘ + [</td><td>' + locale.paragraph.outdent + '</td></tr>' +
-          '<tr><td>⌘ + K</td><td>' + locale.link.insert + '</td></tr>' +
-          '<tr><td>⌘ + ENTER</td><td>' + locale.hr.insert + '</td></tr>' +
-        '</tbody>' +
-      '</table>';
+               '<thead>' +
+                 '<tr><th></th><th>' + locale.shortcut.action + '</th></tr>' +
+               '</thead>' +
+               '<tbody>' +
+                 '<tr><td>⌘ + Z</td><td>' + locale.history.undo + '</td></tr>' +
+                 '<tr><td>⌘ + ⇧ + Z</td><td>' + locale.history.redo + '</td></tr>' +
+                 '<tr><td>⌘ + ]</td><td>' + locale.paragraph.indent + '</td></tr>' +
+                 '<tr><td>⌘ + [</td><td>' + locale.paragraph.outdent + '</td></tr>' +
+                 '<tr><td>⌘ + K</td><td>' + locale.link.insert + '</td></tr>' +
+                 '<tr><td>⌘ + ENTER</td><td>' + locale.hr.insert + '</td></tr>' +
+               '</tbody>' +
+             '</table>';
     };
 
     var sShortcutPara = function(locale) {
@@ -2286,28 +2295,28 @@
 
     var sShortcutStyle = function(locale) {
       return '<table class="note-shortcut">' +
-                '<thead>' +
-                  '<tr><th></th><th>' + locale.shortcut.documentStyle + '</th></tr>' +
-                '</thead>' +
-                '<tbody>' +
-                  '<tr><td>⌘ + NUM0</td><td>' + locale.style.normal + '</td></tr>' +
-                  '<tr><td>⌘ + NUM1</td><td>' + locale.style.h1 + '</td></tr>' +
-                  '<tr><td>⌘ + NUM2</td><td>' + locale.style.h2 + '</td></tr>' +
-                  '<tr><td>⌘ + NUM3</td><td>' + locale.style.h3 + '</td></tr>' +
-                  '<tr><td>⌘ + NUM4</td><td>' + locale.style.h4 + '</td></tr>' +
-                  '<tr><td>⌘ + NUM5</td><td>' + locale.style.h5 + '</td></tr>' +
-                  '<tr><td>⌘ + NUM6</td><td>' + locale.style.h6 + '</td></tr>' +
-                '</tbody>' +
-              '</table>';
+               '<thead>' +
+                 '<tr><th></th><th>' + locale.shortcut.documentStyle + '</th></tr>' +
+               '</thead>' +
+               '<tbody>' +
+                 '<tr><td>⌘ + NUM0</td><td>' + locale.style.normal + '</td></tr>' +
+                 '<tr><td>⌘ + NUM1</td><td>' + locale.style.h1 + '</td></tr>' +
+                 '<tr><td>⌘ + NUM2</td><td>' + locale.style.h2 + '</td></tr>' +
+                 '<tr><td>⌘ + NUM3</td><td>' + locale.style.h3 + '</td></tr>' +
+                 '<tr><td>⌘ + NUM4</td><td>' + locale.style.h4 + '</td></tr>' +
+                 '<tr><td>⌘ + NUM5</td><td>' + locale.style.h5 + '</td></tr>' +
+                 '<tr><td>⌘ + NUM6</td><td>' + locale.style.h6 + '</td></tr>' +
+               '</tbody>' +
+             '</table>';
     };
 
     var sShortcutTable = function(locale) {
       return '<table class="note-shortcut-layout">' +
-                '<tbody>' +
-                  '<tr><td>' + sShortcutAction(locale) + '</td><td>' + sShortcutText(locale) + '</td></tr>' +
-                  '<tr><td>' + sShortcutStyle(locale) + '</td><td>' + sShortcutPara(locale) + '</td></tr>' +
-                '</tbody>' +
-              '</table>';
+               '<tbody>' +
+                 '<tr><td>' + sShortcutAction(locale) + '</td><td>' + sShortcutText(locale) + '</td></tr>' +
+                 '<tr><td>' + sShortcutStyle(locale) + '</td><td>' + sShortcutPara(locale) + '</td></tr>' +
+               '</tbody>' +
+             '</table>';
     };
 
     var replaceMacKeys = function (sHtml) {
@@ -2410,7 +2419,7 @@
         var $btn = $(elBtn);
         var sShortcut = $btn.attr(agent.bMac ? 'data-mac-shortcut': 'data-shortcut');
         if (sShortcut) { $btn.attr('title', function (i, v) { return v + ' (' + sShortcut + ')'; }); }
-      //bootstrap tooltip on btn-group bug: https://github.com/twitter/bootstrap/issues/5687
+      // bootstrap tooltip on btn-group bug: https://github.com/twitter/bootstrap/issues/5687
       }).tooltip({container: 'body', placement: sPlacement || 'top'});
     };
 
@@ -2608,7 +2617,7 @@
     },
     // get the HTML contents of note or set the HTML contents of note.
     code: function (sHTML) {
-      //get the HTML contents
+      // get the HTML contents
       if (sHTML === undefined) {
         var $holder = this.first();
         if ($holder.length === 0) { return; }
@@ -2645,4 +2654,4 @@
       return { dom: dom, list: list, func: func, range: range };
     }
   });
-})(window.jQuery, window.CodeMirror); // jQuery, CodeMirror
+}));
