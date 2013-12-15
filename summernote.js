@@ -5,6 +5,33 @@
  */
 (function ($, CodeMirror) {
   'use strict';
+
+  // Array.prototype.reduce fallback
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
+  if ('function' !== typeof Array.prototype.reduce) {
+    Array.prototype.reduce = function (callback, optInitialValue) {
+      var idx, value, length = this.length >>> 0, isValueSet = false;
+      if (1 < arguments.length) {
+        value = optInitialValue;
+        isValueSet = true;
+      }
+      for (idx = 0; length > idx; ++idx) {
+        if (this.hasOwnProperty(idx)) {
+          if (isValueSet) {
+            value = callback(value, this[idx], idx, this);
+          } else {
+            value = this[idx];
+            isValueSet = true;
+          }
+        }
+      }
+      if (!isValueSet) {
+        throw new TypeError('Reduce of empty array with no initial value');
+      }
+      return value;
+    };
+  }
+
   /**
    * object which check platform/agent
    */
@@ -1180,17 +1207,11 @@
   var Dialog = function () {
     this.showImageDialog = function ($dialog, hDropImage, fnInsertImages, fnInsertImage) {
       var $imageDialog = $dialog.find('.note-image-dialog');
-      var $dropzone = $dialog.find('.note-dropzone'),
-          $imageInput = $dialog.find('.note-image-input'),
+      var $imageInput = $dialog.find('.note-image-input'),
           $imageUrl = $dialog.find('.note-image-url'),
           $imageBtn = $dialog.find('.note-image-btn');
 
       $imageDialog.on('shown.bs.modal', function () {
-        $dropzone.on('dragenter dragover dragleave', false);
-        $dropzone.on('drop', function (e) {
-          hDropImage(e);
-          $imageDialog.modal('hide');
-        });
         $imageInput.on('change', function () {
           fnInsertImages(this.files);
           $(this).val('');
@@ -1209,7 +1230,6 @@
           event.preventDefault();
         });
       }).on('hidden.bs.modal', function () {
-        $dropzone.off('dragenter dragover dragleave drop');
         $imageInput.off('change');
         $imageDialog.off('shown.bs.modal hidden.bs.modal');
         $imageUrl.off('keyup');
@@ -1396,6 +1416,7 @@
       var dataTransfer = event.originalEvent.dataTransfer;
       if (dataTransfer && dataTransfer.files) {
         var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+        oLayoutInfo.editable().focus();
         insertImages(oLayoutInfo.editable(), dataTransfer.files);
       }
       event.stopPropagation();
@@ -1630,6 +1651,48 @@
     };
 
     /**
+     * attach Drag and Drop Events
+     * @param oLayoutInfo {object} - layout Informations
+     */
+    var attachDragAndDropEvent = function (oLayoutInfo) {
+      var collection = $(), $dropzone = oLayoutInfo.dropzone,
+          $dropzoneMessage = oLayoutInfo.dropzone.find('.note-dropzone-message');
+
+      // show dropzone(overlay) on dragenter when dragging a object to document.
+      $(document).on('dragenter', function (e) {
+        var bCodeview = oLayoutInfo.editor.hasClass('codeview');
+        if (!bCodeview && collection.length === 0) {
+          oLayoutInfo.editor.addClass('dragover');
+          $dropzone.width(oLayoutInfo.editor.width());
+          $dropzone.height(oLayoutInfo.editor.height());
+          $dropzoneMessage.text('Drag Image Here');
+        }
+        collection = collection.add(e.target);
+      }).on('dragleave', function (e) {
+        collection = collection.not(e.target);
+        if (collection.length === 0) {
+          oLayoutInfo.editor.removeClass('dragover');
+        }
+      });
+
+      // dropzone change message on hover.
+      $dropzone.on('dragenter', function (e) {
+        $dropzone.addClass('hover');
+        $dropzoneMessage.text('Drop Image');
+      }).on('dragleave', function (e) {
+        $dropzone.removeClass('hover');
+        $dropzoneMessage.text('Drag Image Here');
+      });
+
+      // attach drop event
+      $dropzone.on('drop', function (e) {
+        hDropImage(e);
+        collection = $();
+        oLayoutInfo.editor.removeClass('dragover');
+      }).on('dragover', false); // prevent default dragover event
+    };
+
+    /**
      * Attach eventhandler
      * @param {object} oLayoutInfo - layout Informations
      * @param {object} options - user options include custom event handlers
@@ -1640,17 +1703,14 @@
       oLayoutInfo.editable.on('mousedown', hMousedown);
       oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
       oLayoutInfo.editable.on('scroll', hScroll);
-      //TODO: handle Drag point
-      oLayoutInfo.editable.on('dragenter dragover dragleave', false);
-      oLayoutInfo.editable.on('drop', hDropImage);
+
+      attachDragAndDropEvent(oLayoutInfo);
 
       oLayoutInfo.handle.on('mousedown', hHandleMousedown);
-
       oLayoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
       oLayoutInfo.popover.on('click', hToolbarAndPopoverClick);
       oLayoutInfo.toolbar.on('mousedown', hToolbarAndPopoverMousedown);
       oLayoutInfo.popover.on('mousedown', hToolbarAndPopoverMousedown);
-
       oLayoutInfo.statusbar.on('mousedown', hStatusbarMousedown);
 
       //toolbar table dimension
@@ -2265,7 +2325,6 @@
                      '</div>' +
                      '<div class="modal-body">' +
                        '<div class="row-fluid">' +
-                         '<div class="note-dropzone span12">' + locale.image.dragImageHere + '</div>' +
                          '<h5>' + locale.image.selectFromFiles + '</h5>' +
                          '<input class="note-image-input" type="file" name="files" accept="image/*" capture="camera" />' +
                          '<h5>' + locale.image.url + '</h5>' +
@@ -2460,7 +2519,10 @@
         $(this).closest('.modal').modal('hide');
       });
 
-      //08. Editor/Holder switch
+      //08. create Dropzone
+      $('<div class="note-dropzone"><div class="note-dropzone-message"></div></div>').prependTo($editor);
+
+      //09. Editor/Holder switch
       $editor.insertAfter($holder);
       $holder.hide();
     };
@@ -2472,6 +2534,7 @@
 
       return {
         editor: $editor,
+        dropzone: $editor.find('.note-dropzone'),
         toolbar: $editor.find('.note-toolbar'),
         editable: $editor.find('.note-editable'),
         codable: $editor.find('.note-codable'),
@@ -2583,30 +2646,3 @@
     }
   });
 })(window.jQuery, window.CodeMirror); // jQuery, CodeMirror
-
-// Array.prototype.reduce fallback
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
-if ('function' !== typeof Array.prototype.reduce) {
-  Array.prototype.reduce = function (callback, optInitialValue) {
-    'use strict';
-    var idx, value, length = this.length >>> 0, isValueSet = false;
-    if (1 < arguments.length) {
-      value = optInitialValue;
-      isValueSet = true;
-    }
-    for (idx = 0; length > idx; ++idx) {
-      if (this.hasOwnProperty(idx)) {
-        if (isValueSet) {
-          value = callback(value, this[idx], idx, this);
-        } else {
-          value = this[idx];
-          isValueSet = true;
-        }
-      }
-    }
-    if (!isValueSet) {
-      throw new TypeError('Reduce of empty array with no initial value');
-    }
-    return value;
-  };
-}

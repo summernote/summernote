@@ -10,6 +10,36 @@
 .note-editor {
   border: 1px solid @border-color;
 
+  /* dropzone */
+  @dropzone-color: lightskyblue;
+  @dropzone-active-color: darken(@dropzone-color, 20);
+  .note-dropzone {
+    position: absolute;
+    display: none;
+    z-index: 1;
+    border: 2px dashed @dropzone-color;
+    color: @dropzone-color;
+    background-color: white;
+    opacity: 0.95;
+    pointer-event: none;
+
+    .note-dropzone-message {
+      display: table-cell;
+      vertical-align: middle;
+      text-align: center;
+      font-size: 28px;
+    }
+
+    &.hover {
+      border: 2px dashed @dropzone-active-color;
+      color: @dropzone-active-color;
+    }
+  }
+
+  &.dragover .note-dropzone {
+    display: table;
+  }
+
   /* fullscreen mode */
   &.fullscreen {
     position: fixed;
@@ -25,6 +55,7 @@
     }
   }
 
+  /* codeview mode */
   &.codeview {
     .note-editable {
       display: none;
