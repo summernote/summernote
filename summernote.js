@@ -2084,7 +2084,7 @@
         floatLeft: '왼쪽 정렬',
         floatRight: '오른쪽 정렬',
         floatNone: '정렬하지 않음',
-        dragImageHere: '이미지를 이곳으로 끌어오세요',
+        dragImageHere: '사진을 이곳으로 끌어오세요',
         selectFromFiles: '파일 선택',
         url: '사진 URL'
       },
