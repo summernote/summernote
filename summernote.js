@@ -2045,7 +2045,7 @@
                         '<div class="row-fluid">' +
                           '<div class="note-dropzone span12">' + locale.image.drag_image_here + '</div>' +
                           '<h5>' + locale.image.select_from_files + '</h5>' +
-                          '<input class="note-image-input" type="file" name="files" accept="image/*" capture="camera" />' +
+                          '<input class="note-image-input" type="file" name="files" accept="image/*"/>' +
                           '<h5>' + locale.image.url + '</h5>' +
                           '<input class="note-image-url form-control span12" type="text" />' +
                         '</div>' +
