@@ -2433,7 +2433,7 @@
                      '<div class="modal-body">' +
                        '<div class="row-fluid">' +
                          '<h5>' + locale.image.selectFromFiles + '</h5>' +
-                         '<input class="note-image-input" type="file" name="files" accept="image/*" capture="camera" />' +
+                         '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
                          '<h5>' + locale.image.url + '</h5>' +
                          '<input class="note-image-url form-control span12" type="text" />' +
                        '</div>' +
