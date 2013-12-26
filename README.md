@@ -87,7 +87,7 @@ $('#summernote').destroy();
 * CodeMirror as Codeview
 * Insert Video (by cdownie)
 * Locale (by hendrismit, tschiela)
-* Restructuring(jquery build pattern) and Bug fixes
+* Restructuring: jQuery build pattern
 
 ### Change Log
 
@@ -123,16 +123,21 @@ $('#summernote').destroy();
 #### structure of summernote.js
 
 ```
-$.extend - Renderer (Markup)
-         \ EventHandler - Editor - Range (W3CRange extention)
-                                 \ Style (Style Getter and Setter)
-                                 \ History (Store on jQuery.data)
-                        \ Toolbar
-                        \ Popover
-                        \ Handle
-                        \ Dialog
-----------Common Utils----------
-Dom, List, Func
+summernote.js - Renderer.js (Generate markup) - Locale.js (Locale object)
+              ㄴEventHandler.js - Editor.js  (Abstract editor)
+                                ㄴStyle.js   (Style Getter and Setter)
+                                ㄴHistory.js (Store on jQuery.data)
+                                ㄴToolbar.js (Toolbar module)
+                                ㄴPopover.js (Popover module)
+                                ㄴHandle.js  (Handle module)
+                                ㄴDialog.js  (Dialog module)
+-----------------------------Core Script-----------------------------
+  agent.js  (agent information)
+  async.js  (aysnc utility)
+  dom.js    (dom functions)
+  list.js   (list functions)
+  range.js  (W3CRange extention)
+---------------------------------------------------------------------
 ```
 
 #### build summernote
@@ -140,6 +145,11 @@ Dom, List, Func
 # grunt-cli is need by grunt; you might have this installed already
 npm install -g grunt-cli
 npm install
+
+# build full version of summernote: dist/summernote.js
+grunt build
+
+# generate minified copy: dist/summernote.min.js, dist/summernote.css
 grunt dist
 ```
 At this point, you should now have a `build/` directory populated with everything you need to use summernote.

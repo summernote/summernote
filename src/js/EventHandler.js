@@ -1,8 +1,10 @@
 define([
+  'CodeMirror',
   'core/agent', 'core/dom', 'core/async',
   'editing/Style', 'editing/Editor',
   'module/Toolbar', 'module/Popover', 'module/Handle', 'module/Dialog'
-], function (agent, dom, async,
+], function (CodeMirror,
+             agent, dom, async,
              Style, Editor,
              Toolbar, Popover, Handle, Dialog) {
   /**

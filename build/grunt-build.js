@@ -1,7 +1,6 @@
 module.exports = function (grunt) {
   'use strict';
 
-  var fs = require('fs');
   var requirejs = require('requirejs');
   var path = require('path');
 
@@ -17,11 +16,11 @@ module.exports = function (grunt) {
    * @param {String} path
    * @param {String} contents The contents to be written (including their AMD wrappers)
    */
-  var convert = function(name, path, contents) {
+  var convert = function (name, path, contents) {
     contents = contents.replace(rDefineStart, '');
 
     if (rDefineEndWithReturn.test(contents)) {
-      contents = contents.replace(rDefineEndWithReturn, '')
+      contents = contents.replace(rDefineEndWithReturn, '');
     } else {
       contents = contents.replace(rDefineEnd, '');
     }
@@ -50,9 +49,9 @@ module.exports = function (grunt) {
     };
 
     var done = this.async();
-    requirejs.optimize(config, function(response) {
+    requirejs.optimize(config, function () {
       done();
-    }, function(err) {
+    }, function (err) {
       done(err);
     });
   });

@@ -1,4 +1,4 @@
-define('core/list', function () {
+define(['core/func'], function (func) {
   /**
    * list utils
    */

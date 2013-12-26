@@ -35,8 +35,8 @@ module.exports = function(grunt) {
   grunt.registerTask('test', 'qunit');
 
   // dist:
-  grunt.registerTask('dist', ['uglify', 'recess']);
+  grunt.registerTask('dist', ['build', 'uglify', 'recess']);
 
   // default: All tasks
-  grunt.registerTask('default', ['qunit', 'uglify', 'recess']);
+  grunt.registerTask('default', ['build', 'qunit', 'uglify', 'recess']);
 };
