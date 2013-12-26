@@ -87,7 +87,7 @@ $('#summernote').destroy();
 * CodeMirror as Codeview
 * Insert Video (by cdownie)
 * Locale (by hendrismit, tschiela)
-* Bug fixes
+* Restructuring(jquery build pattern) and Bug fixes
 
 ### Change Log
 

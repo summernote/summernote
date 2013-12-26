@@ -21,8 +21,8 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js"></script>
 
   <!-- include summernote -->
-  <link rel="stylesheet/less" type="text/css" href="../summernote.less" /> 
-  <script type="text/javascript" src="../summernote.js"></script>
+  <link rel="stylesheet" href="../dist/summernote.css">
+  <script type="text/javascript" src="../dist/summernote.js"></script>
 
   <script type="text/javascript">
     $(document).ready(function() {
@@ -38,22 +38,5 @@
 </head>
 <body>
 <textarea class="summernote"><p>Seasons <b>coming up</b></p></textarea>
-<script type="text/javascript">
-  less = {
-    env: "development", // or "production"
-    async: false,       // load imports async
-    fileAsync: false,   // load imports async when in a page under
-    // a file protocol
-    poll: 1000,         // when in watch mode, time in ms between polls
-    functions: {},      // user functions, keyed by name
-    dumpLineNumbers: "comments", // or "mediaQuery" or "all"
-    relativeUrls: false,// whether to adjust url's to be relative
-    // if false, url's are already relative to the
-    // entry less file
-    rootpath: ":/a.com/"// a path to add on to the start of every url
-    //resource
-  };
-</script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.3.3/less.min.js" type="text/javascript"></script>
 </body>
 </html>
