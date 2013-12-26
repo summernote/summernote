@@ -82,14 +82,14 @@ $('#summernote').destroy();
 * Clipboard
 * Media Object Selection
 
+### Change Log
+
 #### v0.5 2013-12-31
 * Support both Font-Awesome 3.x and 4.x
 * CodeMirror as Codeview
 * Insert Video (by cdownie)
 * Locale (by hendrismit, tschiela)
 * Restructuring: jQuery build pattern
-
-### Change Log
 
 #### v0.4 2013-11-01
 * `ADDED` Support both Bootstrap 3.0 and 2.x

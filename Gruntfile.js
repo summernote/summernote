@@ -8,7 +8,7 @@ module.exports = function (grunt) {
     } catch (e) { }
     return data;
   };
-  var srcHintOptions = readOptionalJSON('src/.jshintrc');
+  var srcHintOptions = readOptionalJSON('.jshintrc');
 
   // The concatenated file won't pass onevar
   // But our modules can
