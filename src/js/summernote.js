@@ -1,10 +1,11 @@
 define([
   'jquery',
-  'core/agent', 'core/dom', 'core/range', 'core/async',                 // level 1
-  'editing/Style', 'editing/History', 'editing/Editor',                 // level 2
-  'module/Toolbar', 'module/Popover', 'module/Handle', 'module/Dialog', // level 3
-  'EventHandler', 'Locale', 'Renderer'                                  // level 4
-], function ($, agent, dom, range, async,
+  'core/agent', 'core/dom', 'core/list', 'core/func', 'core/range', 'core/async', // level 1
+  'editing/Style', 'editing/History', 'editing/Editor',                           // level 2
+  'module/Toolbar', 'module/Popover', 'module/Handle', 'module/Dialog',           // level 3
+  'EventHandler', 'Locale', 'Renderer'                                            // level 4
+], function ($,
+             agent, dom, list, func, range, async,
              Style, History, Editor,
              Toolbar, Popover, Handle, Dialog,
              EventHandler, Locale, Renderer) {

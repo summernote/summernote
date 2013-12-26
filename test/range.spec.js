@@ -5,8 +5,8 @@
  */
 var range = $.fn.summernoteInner().range;
 
-test('rng.listPara', function() {
-  var $cont, $b, elB, rng;
+test('rng.listPara', function () {
+  var rng, $cont, $para, $li, $h1, $h2, $b;
 
   //01. 1 depth 
   $cont = $('<div><p>para1</p><p>para2</p></div>');
@@ -30,7 +30,8 @@ test('rng.listPara', function() {
   equal(rng.listPara().length, 2, 'should listPara return array of list paragraphs');
 
   $cont = $('<div><h1>heading1</h1><h2>heading2</h2></div>');
-  $h1 = $cont.find('h1'), $h2 = $cont.find('h2');
+  $h1 = $cont.find('h1');
+  $h2 = $cont.find('h2');
   rng = range.create($h1[0].firstChild, 0, $h2[0].firstChild, 1);
   equal(rng.listPara().length, 2, 'should listPara return array of list paragraphs');
 });

@@ -1,8 +1,47 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
+  'use strict';
+
+  var readOptionalJSON = function (filepath) {
+    var data = {};
+    try {
+      data = grunt.file.readJSON(filepath);
+    } catch (e) { }
+    return data;
+  };
+  var srcHintOptions = readOptionalJSON('src/.jshintrc');
+
+  // The concatenated file won't pass onevar
+  // But our modules can
+  delete srcHintOptions.onevar;
+
   grunt.initConfig({
-    qunit: { all: [ 'test/*.html' ] },
+    build: {
+      all: {
+        baseUrl: 'src/js',
+        startFile: 'intro.js',
+        endFile: 'outro.js',
+        out: 'dist/summernote.js'
+      }
+    },
+    jshint: {
+      all: {
+        src: [
+          'src/**/*.js', 'Gruntfile.js', 'test/**/*.js', 'build/*.js'
+        ],
+        options: {
+          jshintrc: true
+        }
+      },
+      dist: {
+        src: 'dist/summernote.js',
+        options: srcHintOptions
+      }
+    },
+    qunit: {
+      all: [ 'test/*.html' ]
+    },
     uglify: {
-      my_target: {
+      all: {
         files: { 'dist/summernote.min.js': ['dist/summernote.js'] }
       }
     },
@@ -13,30 +52,23 @@ module.exports = function(grunt) {
           'dist/summernote.css': ['src/less/summernote.less']
         }
       }
-    },
-    build: {
-      all: {
-        baseUrl: 'src/js',
-        startFile: 'intro.js',
-        endFile: 'outro.js',
-        out: 'dist/summernote.js'
-      }
     }
   });
 
-  grunt.loadNpmTasks('grunt-contrib-qunit');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-recess');
+  require('load-grunt-tasks')(grunt);
 
   // build: build summernote.js
   grunt.loadTasks('build');
 
   // test: unit test on test folder
-  grunt.registerTask('test', 'qunit');
+  grunt.registerTask('test', ['jshint', 'qunit']);
 
-  // dist:
-  grunt.registerTask('dist', ['build', 'uglify', 'recess']);
+  // dev: build, jshint, test
+  grunt.registerTask('dev', ['build', 'test']);
+
+  // dist: 
+  grunt.registerTask('dist', ['dev', 'uglify', 'recess']);
 
   // default: All tasks
-  grunt.registerTask('default', ['build', 'qunit', 'uglify', 'recess']);
+  grunt.registerTask('default', ['dist']);
 };

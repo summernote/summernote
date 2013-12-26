@@ -6,11 +6,12 @@
 var dom = $.fn.summernoteInner().dom,
     func = $.fn.summernoteInner().func;
 
-test('dom.ancestor', function() {
+test('dom.ancestor', function () {
   var $cont, $b, elB;
 
   $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
-  $b = $cont.find('b'), elB = $b[0].firstChild;
+  $b = $cont.find('b');
+  elB = $b[0].firstChild;
 
   equal(dom.ancestor(elB, dom.isB), $b[0], 'find ancestor B');
   equal(dom.ancestor(elB, dom.isDiv), $cont[0], 'find ancestor DIV');
@@ -18,41 +19,47 @@ test('dom.ancestor', function() {
   equal(dom.ancestor(elB, dom.isU), null, 'find ancestor U: null');
 });
 
-test('dom.listAncestor', function() {
+test('dom.listAncestor', function () {
   var $cont, $b, $u, $s, $i;
 
   $cont = $('<div><i><s><u><b>b</b></u></s></i></div>'); //busi
-  $b = $cont.find('b'), $u = $cont.find('u'),
-  $s = $cont.find('s'), $i = $cont.find('i');
+  $b = $cont.find('b');
+  $u = $cont.find('u');
+  $s = $cont.find('s');
+  $i = $cont.find('i');
 
-  deepEqual(dom.listAncestor($b[0], function(node) {
+  deepEqual(dom.listAncestor($b[0], function (node) {
     return node === $i[0];
   }), [$b[0], $u[0], $s[0], $i[0]], 'listAncestor from b to i');
 
-  deepEqual(dom.listAncestor($u[0], function(node) {
+  deepEqual(dom.listAncestor($u[0], function (node) {
     return node === $s[0];
   }), [$u[0], $s[0]], 'listAncestor from u to s');
 
 });
 
-test('dom.commonAncestor', function() {
-  var $cont, $b, elB;
+test('dom.commonAncestor', function () {
+  var $cont, $span, $b, $u, $s, $i;
 
   $cont = $('<div><span><b>b</b><u>u</u></span><span><s>s</s><i>i</i></span></div>');
   $span = $cont.find('span');
-  $b = $cont.find('b'), $u = $cont.find('u'),
-  $s = $cont.find('s'), $i = $cont.find('i');
+  $b = $cont.find('b');
+  $u = $cont.find('u');
+  $s = $cont.find('s');
+  $i = $cont.find('i');
 
   equal(dom.commonAncestor($b[0], $u[0]), $span[0], 'common(b, u) => span');
   equal(dom.commonAncestor($b[0], $s[0]), $cont[0], 'common(b, s) => div');
 });
 
-test('dom.listBetween', function() {
+test('dom.listBetween', function () {
   var $cont, $b, $u, $s, $i;
   
   $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
-  $b = $cont.find('b'), $u = $cont.find('u'),
-  $s = $cont.find('s'), $i = $cont.find('i');
+  $b = $cont.find('b');
+  $u = $cont.find('u');
+  $s = $cont.find('s');
+  $i = $cont.find('i');
 
   deepEqual(dom.listBetween($b[0], $b[0]), [$b[0]], 'same elements');
   deepEqual(dom.listBetween($b[0], $u[0]), [$b[0], $b[0].firstChild, $u[0]], 'adjacent');
@@ -61,12 +68,14 @@ test('dom.listBetween', function() {
                                             $s[0]], 'distance 2');
 });
 
-test('dom.listNext', function() {
-   var $cont, $b, $u, $s, $i;
+test('dom.listNext', function () {
+  var $cont, $b, $u, $s, $i;
 
   $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
-  $b = $cont.find('b'), $u = $cont.find('u'),
-  $s = $cont.find('s'), $i = $cont.find('i');
+  $b = $cont.find('b');
+  $u = $cont.find('u');
+  $s = $cont.find('s');
+  $i = $cont.find('i');
 
   deepEqual(dom.listNext($u[0]), [$u[0], $s[0], $i[0]], 'with no pred');
   deepEqual(dom.listNext($i[0]), [$i[0]], 'last item with no pred');
@@ -74,12 +83,14 @@ test('dom.listNext', function() {
   deepEqual(dom.listNext($s[0], func.eq($i[0])), [$s[0], $i[0]], 's to i');
 });
 
-test('dom.listPrev', function() {
-   var $cont, $b, $u, $s, $i;
+test('dom.listPrev', function () {
+  var $cont, $b, $u, $s, $i;
 
   $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
-  $b = $cont.find('b'), $u = $cont.find('u'),
-  $s = $cont.find('s'), $i = $cont.find('i');
+  $b = $cont.find('b');
+  $u = $cont.find('u');
+  $s = $cont.find('s');
+  $i = $cont.find('i');
 
   deepEqual(dom.listPrev($s[0]), [$s[0], $u[0], $b[0]], 'with no pred');
   deepEqual(dom.listPrev($b[0]), [$b[0]], 'first item with no pred');
@@ -87,12 +98,14 @@ test('dom.listPrev', function() {
   deepEqual(dom.listPrev($i[0], func.eq($s[0])), [$i[0], $s[0]], 'i to s');
 });
 
-test('dom.position', function() {
+test('dom.position', function () {
   var $cont, $b, $u, $s, $i;
 
   $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
-  $b = $cont.find('b'), $u = $cont.find('u'),
-  $s = $cont.find('s'), $i = $cont.find('i');
+  $b = $cont.find('b');
+  $u = $cont.find('u');
+  $s = $cont.find('s');
+  $i = $cont.find('i');
 
   equal(dom.position($b[0]), 0, 'should b return zero');
   equal(dom.position($u[0]), 1, 'should u return one');
@@ -102,12 +115,14 @@ test('dom.position', function() {
   equal(dom.position($b[0].firstChild), 0, 'should text in b return zero');
 });
 
-test('dom.makeOffsetPath', function() {
+test('dom.makeOffsetPath', function () {
   var $cont, $b, $u, $s, $i;
 
   $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
-  $b = $cont.find('b'), $u = $cont.find('u'),
-  $s = $cont.find('s'), $i = $cont.find('i');
+  $b = $cont.find('b');
+  $u = $cont.find('u');
+  $s = $cont.find('s');
+  $i = $cont.find('i');
 
   deepEqual(dom.makeOffsetPath($cont[0], $cont[0]), [], 'should return empty list');
 
@@ -124,27 +139,29 @@ test('dom.makeOffsetPath', function() {
   deepEqual(dom.makeOffsetPath($cont[0], $i[0].firstChild), [3, 0], 'shuold return [3, 0]');
 });
 
-test('dom.fromOffsetPath', function() {
+test('dom.fromOffsetPath', function () {
   var $cont, $b, $u, $s, $i;
 
   $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
-  $b = $cont.find('b'), $u = $cont.find('u'),
-  $s = $cont.find('s'), $i = $cont.find('i');
+  $b = $cont.find('b');
+  $u = $cont.find('u');
+  $s = $cont.find('s');
+  $i = $cont.find('i');
 
   var cont = $cont[0];
-  $.each([$b[0], $u[0], $s[0], $i[0]], function(idx, node) {
+  $.each([$b[0], $u[0], $s[0], $i[0]], function (idx, node) {
     equal(dom.fromOffsetPath(cont, dom.makeOffsetPath(cont, node)), node);
     var child = node.firstChild;
     equal(dom.fromOffsetPath(cont, dom.makeOffsetPath(cont, child)), child);
   });
 });
 
-var equalsToUpperCase = function(actual, expected, comment) {
-   ok(actual.toUpperCase() == expected.toUpperCase(), comment);
+var equalsToUpperCase = function (actual, expected, comment) {
+  ok(actual.toUpperCase() === expected.toUpperCase(), comment);
 };
 
-test('dom.split', function() {
-  var $cont, $b, $u, $s, $i;
+test('dom.split', function () {
+  var $cont, $b, $u, $s, $i, $span;
 
   // 01. element pivot case
   $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
@@ -193,15 +210,18 @@ test('dom.split', function() {
   $cont = $('<div><b>b</b><u>u</u><s>strike</s><i>i</i></div>'); //bustrikei
   $s = $cont.find('s');
   dom.split($s[0], $s[0].firstChild, 3);
-  equalsToUpperCase($cont.html(), '<b>b</b><u>u</u><s>str</s><s>ike</s><i>i</i>', 'splitBy s tag with offset 3 (2 depth case)');
+  equalsToUpperCase($cont.html(), '<b>b</b><u>u</u><s>str</s><s>ike</s><i>i</i>',
+                    'splitBy s tag with offset 3 (2 depth case)');
 
   $cont = $('<div><b>b</b><u>u</u><s>strike</s><i>i</i></div>'); //bustrikei
   $s = $cont.find('s');
   dom.split($s[0].firstChild, $s[0].firstChild, 3);
-  equalsToUpperCase($cont.html(), '<b>b</b><u>u</u><s>strike</s><i>i</i>', 'splitBy s tag with offset 3 (1 depth, textNode case)');
+  equalsToUpperCase($cont.html(), '<b>b</b><u>u</u><s>strike</s><i>i</i>',
+                    'splitBy s tag with offset 3 (1 depth, textNode case)');
 
   $cont = $('<div><span><b>b</b><u>u</u><s>s</s><i>i</i></span></div>'); //busi
   $span = $cont.find('span');
   dom.split($span[0], $span[0], 2);
-  equalsToUpperCase($cont.html(), '<span><b>b</b><u>u</u></span><span><s>s</s><i>i</i></span>', 'splitBy span tag with offset 2 (1 depth, element case)');
+  equalsToUpperCase($cont.html(), '<span><b>b</b><u>u</u></span><span><s>s</s><i>i</i></span>',
+                    'splitBy span tag with offset 2 (1 depth, element case)');
 });

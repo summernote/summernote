@@ -83,7 +83,7 @@ define([
 
     this.insertVideo = function ($editable, sUrl) {
       // video url patterns(youtube, instagram, vimeo, dailymotion)
-      var ytRegExp = /(?:https?:\/\/)?(?:www\.)?youtu(?:be\.com\/watch\?(?:.*?&(?:amp;)?)?v=|\.be\/)([\w‌​\-]+)(?:&(?:amp;)?[\w\?=]*)?/;
+      var ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       var ytMatch = sUrl.match(ytRegExp);
 
       var igRegExp = /\/\/instagram.com\/p\/(.[a-zA-Z0-9]*)/;
@@ -99,10 +99,10 @@ define([
       var dmMatch = sUrl.match(dmRegExp);
 
       var $video;
-      if (ytMatch && ytMatch[1].length === 11) {
-        var youtubeId =  ytMatch[1];
+      if (ytMatch && ytMatch[2].length === 11) {
+        var youtubeId = ytMatch[2];
         $video = $('<iframe>')
-          .attr('src', 'http://www.youtube.com/embed/' + youtubeId + '?origin=http://diply.com')
+          .attr('src', 'http://www.youtube.com/embed/' + youtubeId)
           .attr('width', '640').attr('height', '360');
       } else if (igMatch && igMatch[0].length > 0) {
         $video = $('<iframe>')
