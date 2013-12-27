@@ -2748,7 +2748,7 @@
         var info = renderer.layoutInfoFromHolder($holder);
         if (!!(info && info.editable)) {
           var bCodeview = info.editor.hasClass('codeview');
-          if (agent.bCodeMirror) {
+          if (bCodeview && agent.bCodeMirror) {
             info.codable.data('cmEditor').save();
           }
           return bCodeview ? info.codable.val() : info.editable.html();
