@@ -1,8 +1,8 @@
 # Summernote
 Super Simple WYSIWYG Editor on Bootstrap(3.0 and 2.x).
 
-[![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 [![Build Status](https://secure.travis-ci.org/HackerWins/summernote.png)](http://travis-ci.org/HackerWins/summernote)
+[![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 
 ### Summernote
 Summernote is a javascript program that helps you to create WYSIWYG Editor on web.
