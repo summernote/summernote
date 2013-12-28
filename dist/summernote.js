@@ -1454,7 +1454,6 @@
         oLayoutInfo.editable().focus();
         insertImages(oLayoutInfo.editable(), dataTransfer.files);
       }
-      event.stopPropagation();
       event.preventDefault();
     };
 
@@ -1693,7 +1692,7 @@
       var collection = $(), $dropzone = oLayoutInfo.dropzone,
           $dropzoneMessage = oLayoutInfo.dropzone.find('.note-dropzone-message');
 
-      // show dropzone(overlay) on dragenter when dragging a object to document.
+      // show dropzone on dragenter when dragging a object to document.
       $(document).on('dragenter', function (e) {
         var bCodeview = oLayoutInfo.editor.hasClass('codeview');
         if (!bCodeview && collection.length === 0) {
@@ -1708,9 +1707,12 @@
         if (collection.length === 0) {
           oLayoutInfo.editor.removeClass('dragover');
         }
+      }).on('drop', function () {
+        collection = $();
+        oLayoutInfo.editor.removeClass('dragover');
       });
 
-      // dropzone change message on hover.
+      // change dropzone's message on hover.
       $dropzone.on('dragenter', function () {
         $dropzone.addClass('hover');
         $dropzoneMessage.text('Drop Image');
@@ -1719,11 +1721,9 @@
         $dropzoneMessage.text('Drag Image Here');
       });
 
-      // attach drop event
+      // attach dropImage
       $dropzone.on('drop', function (e) {
         hDropImage(e);
-        collection = $();
-        oLayoutInfo.editor.removeClass('dragover');
       }).on('dragover', false); // prevent default dragover event
     };
 
