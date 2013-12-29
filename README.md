@@ -89,7 +89,7 @@ $('#summernote').destroy();
 * Support both Font-Awesome 3.x and 4.x
 * CodeMirror as Codeview
 * Insert Video (by cdownie)
-* Locale Plugins(by hendrismit, tschiela, inomies, cverond)
+* Support 5 Languages(by hendrismit, tschiela, inomies, cverond)
 * Restructuring: jQuery build pattern
 
 #### v0.4 2013-11-01
