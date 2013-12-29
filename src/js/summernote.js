@@ -3,19 +3,118 @@ define([
   'core/agent', 'core/dom', 'core/list', 'core/func', 'core/range', 'core/async', // level 1
   'editing/Style', 'editing/History', 'editing/Editor',                           // level 2
   'module/Toolbar', 'module/Popover', 'module/Handle', 'module/Dialog',           // level 3
-  'EventHandler', 'Locale', 'Renderer'                                            // level 4
+  'EventHandler', 'Renderer'                                                      // level 4
 ], function ($,
              agent, dom, list, func, range, async,
              Style, History, Editor,
              Toolbar, Popover, Handle, Dialog,
-             EventHandler, Locale, Renderer) {
+             EventHandler, Renderer) {
   var renderer = new Renderer();
   var eventHandler = new EventHandler();
 
   $.summernote = $.summernote || {};
 
   $.extend($.summernote, {
-    version: '@VERSION'
+    version: '@VERSION',
+    locale: {
+      'en-US': {
+        font: {
+          bold: 'Bold',
+          italic: 'Italic',
+          underline: 'Underline',
+          strike: 'Strike',
+          clear: 'Remove Font Style',
+          height: 'Line Height',
+          size: 'Font Size'
+        },
+        image: {
+          image: 'Picture',
+          insert: 'Insert Image',
+          resizeFull: 'Resize Full',
+          resizeHalf: 'Resize Half',
+          resizeQuarter: 'Resize Quarter',
+          floatLeft: 'Float Left',
+          floatRight: 'Float Right',
+          floatNone: 'Float None',
+          dragImageHere: 'Drag an image here',
+          selectFromFiles: 'Select from files',
+          url: 'Image URL'
+        },
+        link: {
+          link: 'Link',
+          insert: 'Insert Link',
+          unlink: 'Unlink',
+          edit: 'Edit',
+          textToDisplay: 'Text to display',
+          url: 'To what URL should this link go?'
+        },
+        video: {
+          video: 'Video',
+          videoLink: 'Video Link',
+          insert: 'Insert Video',
+          url: 'Video URL?',
+          providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
+        },
+        table: {
+          table: 'Table'
+        },
+        hr: {
+          insert: 'Insert Horizontal Rule'
+        },
+        style: {
+          style: 'Style',
+          normal: 'Normal',
+          blockquote: 'Quote',
+          pre: 'Code',
+          h1: 'Header 1',
+          h2: 'Header 2',
+          h3: 'Header 3',
+          h4: 'Header 4',
+          h5: 'Header 5',
+          h6: 'Header 6'
+        },
+        lists: {
+          unordered: 'Unordered list',
+          ordered: 'Ordered list'
+        },
+        options: {
+          help: 'Help',
+          fullscreen: 'Full Screen',
+          codeview: 'Code View'
+        },
+        paragraph: {
+          paragraph: 'Paragraph',
+          outdent: 'Outdent',
+          indent: 'Indent',
+          left: 'Align left',
+          center: 'Align center',
+          right: 'Align right',
+          justify: 'Justify full'
+        },
+        color: {
+          recent: 'Recent Color',
+          more: 'More Color',
+          background: 'BackColor',
+          foreground: 'FontColor',
+          transparent: 'Transparent',
+          setTransparent: 'Set transparent',
+          reset: 'Reset',
+          resetToDefault: 'Reset to default'
+        },
+        shortcut: {
+          shortcuts: 'Keyboard shortcuts',
+          close: 'Close',
+          textFormatting: 'Text formatting',
+          action: 'Action',
+          paragraphFormatting: 'Paragraph formatting',
+          documentStyle: 'Document Style'
+        },
+        history: {
+          undo: 'Undo',
+          redo: 'Redo'
+        }
+      }
+    }
   });
 
   /**

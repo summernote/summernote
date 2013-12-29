@@ -1,6 +1,6 @@
 define([
-  'core/agent', 'core/dom', 'editing/History', 'Locale'
-], function (agent, dom, History, Locale) {
+  'core/agent', 'core/dom', 'editing/History'
+], function (agent, dom, History) {
   /**
    * Renderer
    *
@@ -397,7 +397,7 @@ define([
       var nHeight = options.height,
           nTabsize = options.tabsize,
           aToolbarSetting = options.toolbar,
-          localeInfo = Locale[options.locale];
+          localeInfo = $.summernote.locale[options.locale];
 
       //already created
       if ($holder.next().hasClass('note-editor')) { return; }
