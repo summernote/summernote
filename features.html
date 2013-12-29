@@ -308,15 +308,19 @@
         <p>Run the script with locale option.</p>
         <pre><code class="javascript">$(document).ready(function() {
   $('#summernote').summernote({
-    lang: 'ko-KR'
+    lang: 'ko-KR' // default: 'en-US'
   });
 });</code></pre>
         <div class="lang"></div>
         <script>
           $(document).ready(function() {
-            $('.lang').summernote({lang: 'ko-KR'});
+            $('.lang').summernote({
+              lang: 'ko-KR'
+            });
           });
         </script>
+        <p></p>
+        <p>More summernote languages: <a href="https://github.com/HackerWins/summernote/tree/master/lang" target="_blank">languages <i class="fa fa-external-link"></i></a></p>
       </section>
       <section>
         <h2 id="integration">Server Integration</h2>
