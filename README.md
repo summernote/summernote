@@ -85,7 +85,7 @@ $('#summernote').destroy();
 
 ### Change Log
 
-#### v0.5 2013-12-31
+#### v0.5 2013-12-29
 * Support both Font-Awesome 3.x and 4.x
 * CodeMirror as Codeview
 * Insert Video (by cdownie)
