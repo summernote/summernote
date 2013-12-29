@@ -1240,7 +1240,26 @@
    * Dialog
    */
   var Dialog = function () {
-    this.showImageDialog = function ($dialog, hDropImage, fnInsertImages, fnInsertImage) {
+    /**
+     * toggle button status
+     * @param $btn {jquery}
+     * @param bEnable {boolean}
+     */
+    var toggleBtn = function ($btn, bEnable) {
+      if (bEnable) {
+        $btn.removeClass('disabled').attr('disabled', false);
+      } else {
+        $btn.addClass('disabled').attr('disabled', true);
+      }
+    };
+
+    /**
+     * show image dialog
+     * @param $dialog {jquery}
+     * @param fnInsertImages {function}
+     * @param fnInsertImage {function}
+     */
+    this.showImageDialog = function ($dialog, fnInsertImages, fnInsertImage) {
       var $imageDialog = $dialog.find('.note-image-dialog');
       var $imageInput = $dialog.find('.note-image-input'),
           $imageUrl = $dialog.find('.note-image-url'),
@@ -1253,11 +1272,7 @@
           $imageDialog.modal('hide');
         });
         $imageUrl.val('').keyup(function () {
-          if ($imageUrl.val()) {
-            $imageBtn.removeClass('disabled').attr('disabled', false);
-          } else {
-            $imageBtn.addClass('disabled').attr('disabled', true);
-          }
+          toggleBtn($imageBtn, $imageUrl.val());
         }).trigger('focus');
         $imageBtn.click(function (event) {
           $imageDialog.modal('hide');
@@ -1272,18 +1287,20 @@
       }).modal('show');
     };
 
+    /**
+     * show video dialog
+     * @param $dialog {jquery}
+     * @param videoInfo {object}
+     * @param callback {function}
+     */
     this.showVideoDialog = function ($dialog, videoInfo, callback) {
       var $videoDialog = $dialog.find('.note-video-dialog');
       var $videoUrl = $videoDialog.find('.note-video-url'),
           $videoBtn = $videoDialog.find('.note-video-btn');
 
-      $videoDialog.on('show.bs.modal', function () {
+      $videoDialog.on('shown.bs.modal', function () {
         $videoUrl.val(videoInfo.text).keyup(function () {
-          if ($videoUrl.val()) {
-            $videoBtn.removeClass('disabled').attr('disabled', false);
-          } else {
-            $videoBtn.addClass('disabled').attr('disabled', true);
-          }
+          toggleBtn($videoBtn, $videoUrl.val());
         }).trigger('keyup').trigger('focus');
 
         $videoBtn.click(function (event) {
@@ -1291,7 +1308,6 @@
           callback($videoUrl.val());
           event.preventDefault();
         });
-
       }).on('hidden.bs.modal', function () {
         $videoUrl.off('keyup');
         $videoBtn.off('click');
@@ -1299,7 +1315,12 @@
       }).modal('show');
     };
 
-
+    /**
+     * show link dialog
+     * @param $dialog {jquery}
+     * @param linkInfo {object}
+     * @param callback {function}
+     */
     this.showLinkDialog = function ($dialog, linkInfo, callback) {
       var $linkDialog = $dialog.find('.note-link-dialog');
       var $linkText = $linkDialog.find('.note-link-text'),
@@ -1309,12 +1330,7 @@
       $linkDialog.on('shown.bs.modal', function () {
         $linkText.html(linkInfo.text);
         $linkUrl.val(linkInfo.url).keyup(function () {
-          if ($linkUrl.val()) {
-            $linkBtn.removeClass('disabled').attr('disabled', false);
-          } else {
-            $linkBtn.addClass('disabled').attr('disabled', true);
-          }
-
+          toggleBtn($linkBtn, $linkUrl.val());
           if (!linkInfo.text) { $linkText.html($linkUrl.val()); }
         }).trigger('focus');
         $linkBtn.click(function (event) {
@@ -1329,6 +1345,10 @@
       }).modal('show');
     };
 
+    /**
+     * show help dialog
+     * @param $dialog {jquery}
+     */
     this.showHelpDialog = function ($dialog) {
       $dialog.find('.note-help-dialog').modal('show');
     };
@@ -1552,7 +1572,7 @@
           });
         } else if (sEvent === 'showImageDialog') {
           $editable.focus();
-          dialog.showImageDialog($dialog, hDropImage, function (files) {
+          dialog.showImageDialog($dialog, function (files) {
             insertImages($editable, files);
           }, function (sUrl) {
             editor.restoreRange($editable);
@@ -2088,6 +2108,104 @@
       history: {
         undo: 'Rückgängig',
         redo: 'Wiederholen'
+      }
+    },
+
+    'it-IT': {
+      font: {
+        bold: 'Testo in grassetto',
+        italic: 'Testo in corsivo',
+        underline: 'Testo sottolineato',
+        strike: 'Testo barrato',
+        clear: 'Elimina la formattazione del testo',
+        height: 'Altezza della linea di testo',
+        size: 'Dimensione del carattere'
+      },
+      image: {
+        image: 'Immagine',
+        insert: 'Inserisci Immagine',
+        resizeFull: 'Dimensioni originali',
+        resizeHalf: 'Ridimensiona al 50%',
+        resizeQuarter: 'Ridimensiona al 25%',
+        floatLeft: 'Posiziona a sinistra',
+        floatRight: 'Posiziona a destra',
+        floatNone: 'Nessun posizionamento',
+        dragImageHere: 'Trascina qui un\'immagine',
+        selectFromFiles: 'Scegli dai Documenti',
+        url: 'URL dell\'immagine'
+      },
+      link: {
+        link: 'Collegamento',
+        insert: 'Inserisci Collegamento',
+        unlink: 'Elimina collegamento',
+        edit: 'Modifica collegamento',
+        textToDisplay: 'Testo del collegamento',
+        url: 'URL del collegamento'
+      },
+      video: {
+        video: 'Video',
+        videoLink: 'Collegamento ad un Video',
+        insert: 'Inserisci Video',
+        url: 'URL del Video',
+        providers: '(YouTube, Vimeo, Vine, Instagram o DailyMotion)'
+      },
+      table: {
+        table: 'Tabella'
+      },
+      hr: {
+        insert: 'Inserisce una linea di separazione'
+      },
+      style: {
+        style: 'Stili',
+        normal: 'Normale',
+        blockquote: 'Citazione',
+        pre: 'Codice',
+        h1: 'Titolo 1',
+        h2: 'Titolo 2',
+        h3: 'Titolo 3',
+        h4: 'Titolo 4',
+        h5: 'Titolo 5',
+        h6: 'Titolo 6'
+      },
+      lists: {
+        unordered: 'Elenco non ordinato',
+        ordered: 'Elenco ordinato'
+      },
+      options: {
+        help: 'Aiuto',
+        fullscreen: 'Modalità a tutto schermo',
+        codeview: 'Visualizza codice'
+      },
+      paragraph: {
+        paragraph: 'Paragrafo',
+        outdent: 'Diminuisce il livello di rientro',
+        indent: 'Aumenta il livello di rientro',
+        left: 'Allinea a sinistra',
+        center: 'Centra',
+        right: 'Allinea a destra',
+        justify: 'Giustifica (allinea a destra e sinistra)'
+      },
+      color: {
+        recent: 'Ultimo colore utilizzato',
+        more: 'Altri colori',
+        background: 'Colore di sfondo',
+        foreground: 'Colore',
+        transparent: 'Trasparente',
+        setTransparent: 'Trasparente',
+        reset: 'Reimposta',
+        resetToDefault: 'Reimposta i colori'
+      },
+      shortcut: {
+        shortcuts: 'Scorciatoie da tastiera',
+        close: 'Chiudi',
+        textFormatting: 'Formattazione testo',
+        action: 'Azioni',
+        paragraphFormatting: 'Formattazione paragrafo',
+        documentStyle: 'Stili'
+      },
+      history: {
+        undo: 'Annulla',
+        redo: 'Ripristina'
       }
     },
 

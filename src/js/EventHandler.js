@@ -225,7 +225,7 @@ define([
           });
         } else if (sEvent === 'showImageDialog') {
           $editable.focus();
-          dialog.showImageDialog($dialog, hDropImage, function (files) {
+          dialog.showImageDialog($dialog, function (files) {
             insertImages($editable, files);
           }, function (sUrl) {
             editor.restoreRange($editable);

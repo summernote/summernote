@@ -3,7 +3,26 @@ define('module/Dialog', function () {
    * Dialog
    */
   var Dialog = function () {
-    this.showImageDialog = function ($dialog, hDropImage, fnInsertImages, fnInsertImage) {
+    /**
+     * toggle button status
+     * @param $btn {jquery}
+     * @param bEnable {boolean}
+     */
+    var toggleBtn = function ($btn, bEnable) {
+      if (bEnable) {
+        $btn.removeClass('disabled').attr('disabled', false);
+      } else {
+        $btn.addClass('disabled').attr('disabled', true);
+      }
+    };
+
+    /**
+     * show image dialog
+     * @param $dialog {jquery}
+     * @param fnInsertImages {function}
+     * @param fnInsertImage {function}
+     */
+    this.showImageDialog = function ($dialog, fnInsertImages, fnInsertImage) {
       var $imageDialog = $dialog.find('.note-image-dialog');
       var $imageInput = $dialog.find('.note-image-input'),
           $imageUrl = $dialog.find('.note-image-url'),
@@ -16,11 +35,7 @@ define('module/Dialog', function () {
           $imageDialog.modal('hide');
         });
         $imageUrl.val('').keyup(function () {
-          if ($imageUrl.val()) {
-            $imageBtn.removeClass('disabled').attr('disabled', false);
-          } else {
-            $imageBtn.addClass('disabled').attr('disabled', true);
-          }
+          toggleBtn($imageBtn, $imageUrl.val());
         }).trigger('focus');
         $imageBtn.click(function (event) {
           $imageDialog.modal('hide');
@@ -35,18 +50,20 @@ define('module/Dialog', function () {
       }).modal('show');
     };
 
+    /**
+     * show video dialog
+     * @param $dialog {jquery}
+     * @param videoInfo {object}
+     * @param callback {function}
+     */
     this.showVideoDialog = function ($dialog, videoInfo, callback) {
       var $videoDialog = $dialog.find('.note-video-dialog');
       var $videoUrl = $videoDialog.find('.note-video-url'),
           $videoBtn = $videoDialog.find('.note-video-btn');
 
-      $videoDialog.on('show.bs.modal', function () {
+      $videoDialog.on('shown.bs.modal', function () {
         $videoUrl.val(videoInfo.text).keyup(function () {
-          if ($videoUrl.val()) {
-            $videoBtn.removeClass('disabled').attr('disabled', false);
-          } else {
-            $videoBtn.addClass('disabled').attr('disabled', true);
-          }
+          toggleBtn($videoBtn, $videoUrl.val());
         }).trigger('keyup').trigger('focus');
 
         $videoBtn.click(function (event) {
@@ -54,7 +71,6 @@ define('module/Dialog', function () {
           callback($videoUrl.val());
           event.preventDefault();
         });
-
       }).on('hidden.bs.modal', function () {
         $videoUrl.off('keyup');
         $videoBtn.off('click');
@@ -62,7 +78,12 @@ define('module/Dialog', function () {
       }).modal('show');
     };
 
-
+    /**
+     * show link dialog
+     * @param $dialog {jquery}
+     * @param linkInfo {object}
+     * @param callback {function}
+     */
     this.showLinkDialog = function ($dialog, linkInfo, callback) {
       var $linkDialog = $dialog.find('.note-link-dialog');
       var $linkText = $linkDialog.find('.note-link-text'),
@@ -72,12 +93,7 @@ define('module/Dialog', function () {
       $linkDialog.on('shown.bs.modal', function () {
         $linkText.html(linkInfo.text);
         $linkUrl.val(linkInfo.url).keyup(function () {
-          if ($linkUrl.val()) {
-            $linkBtn.removeClass('disabled').attr('disabled', false);
-          } else {
-            $linkBtn.addClass('disabled').attr('disabled', true);
-          }
-
+          toggleBtn($linkBtn, $linkUrl.val());
           if (!linkInfo.text) { $linkText.html($linkUrl.val()); }
         }).trigger('focus');
         $linkBtn.click(function (event) {
@@ -92,6 +108,10 @@ define('module/Dialog', function () {
       }).modal('show');
     };
 
+    /**
+     * show help dialog
+     * @param $dialog {jquery}
+     */
     this.showHelpDialog = function ($dialog) {
       $dialog.find('.note-help-dialog').modal('show');
     };
