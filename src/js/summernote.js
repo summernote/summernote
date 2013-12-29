@@ -16,7 +16,7 @@ define([
 
   $.extend($.summernote, {
     version: '@VERSION',
-    locale: {
+    lang: {
       'en-US': {
         font: {
           bold: 'Bold',
@@ -136,7 +136,7 @@ define([
           ['view', ['fullscreen', 'codeview']],
           ['help', ['help']]
         ],
-        locale: 'en-US'
+        lang: 'en-US'
       }, options);
 
       this.each(function (idx, elHolder) {

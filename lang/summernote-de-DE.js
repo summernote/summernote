@@ -1,5 +1,5 @@
 (function ($) {
-  $.extend($.summernote.locale, {
+  $.extend($.summernote.lang, {
     'de-DE': {
       font: {
         bold: 'Fett',

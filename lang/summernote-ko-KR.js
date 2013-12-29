@@ -1,5 +1,5 @@
 (function ($) {
-  $.extend($.summernote.locale, {
+  $.extend($.summernote.lang, {
     'ko-KR': {
       font: {
         bold: '굵게',

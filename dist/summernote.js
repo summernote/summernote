@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2013-12-29T08:32Z
+ * Date: 2013-12-29T09:50Z
  */
 (function (factory) {
   /* global define */
@@ -1828,17 +1828,17 @@
 
     /* jshint ignore:start */
     tplToolbarInfo = {
-      picture: function (locale) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.image + '" data-event="showImageDialog" tabindex="-1"><i class="fa fa-picture-o icon-picture"></i></button>';
+      picture: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.image + '" data-event="showImageDialog" tabindex="-1"><i class="fa fa-picture-o icon-picture"></i></button>';
       },
-      link: function (locale) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.link.link + '" data-event="showLinkDialog" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" tabindex="-1"><i class="fa fa-link icon-link"></i></button>';
+      link: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.link + '" data-event="showLinkDialog" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" tabindex="-1"><i class="fa fa-link icon-link"></i></button>';
       },
-      video: function (locale) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.video.video + '" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>';
+      video: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.video.video + '" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>';
       },
-      table: function (locale) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + locale.table.table + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-table icon-table"></i> <span class="caret"></span></button>' +
+      table: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + lang.table.table + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-table icon-table"></i> <span class="caret"></span></button>' +
                  '<ul class="dropdown-menu">' +
                    '<div class="note-dimension-picker">' +
                      '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>' +
@@ -1848,22 +1848,22 @@
                    '<div class="note-dimension-display"> 1 x 1 </div>' +
                  '</ul>';
       },
-      style: function (locale) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + locale.style.style + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-magic icon-magic"></i> <span class="caret"></span></button>' +
+      style: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + lang.style.style + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-magic icon-magic"></i> <span class="caret"></span></button>' +
                '<ul class="dropdown-menu">' +
-                 '<li><a data-event="formatBlock" data-value="p">' + locale.style.normal + '</a></li>' +
-                 '<li><a data-event="formatBlock" data-value="blockquote"><blockquote>' + locale.style.blockquote + '</blockquote></a></li>' +
-                 '<li><a data-event="formatBlock" data-value="pre">' + locale.style.pre + '</a></li>' +
-                 '<li><a data-event="formatBlock" data-value="h1"><h1>' + locale.style.h1 + '</h1></a></li>' +
-                 '<li><a data-event="formatBlock" data-value="h2"><h2>' + locale.style.h2 + '</h2></a></li>' +
-                 '<li><a data-event="formatBlock" data-value="h3"><h3>' + locale.style.h3 + '</h3></a></li>' +
-                 '<li><a data-event="formatBlock" data-value="h4"><h4>' + locale.style.h4 + '</h4></a></li>' +
-                 '<li><a data-event="formatBlock" data-value="h5"><h5>' + locale.style.h5 + '</h5></a></li>' +
-                 '<li><a data-event="formatBlock" data-value="h6"><h6>' + locale.style.h6 + '</h6></a></li>' +
+                 '<li><a data-event="formatBlock" data-value="p">' + lang.style.normal + '</a></li>' +
+                 '<li><a data-event="formatBlock" data-value="blockquote"><blockquote>' + lang.style.blockquote + '</blockquote></a></li>' +
+                 '<li><a data-event="formatBlock" data-value="pre">' + lang.style.pre + '</a></li>' +
+                 '<li><a data-event="formatBlock" data-value="h1"><h1>' + lang.style.h1 + '</h1></a></li>' +
+                 '<li><a data-event="formatBlock" data-value="h2"><h2>' + lang.style.h2 + '</h2></a></li>' +
+                 '<li><a data-event="formatBlock" data-value="h3"><h3>' + lang.style.h3 + '</h3></a></li>' +
+                 '<li><a data-event="formatBlock" data-value="h4"><h4>' + lang.style.h4 + '</h4></a></li>' +
+                 '<li><a data-event="formatBlock" data-value="h5"><h5>' + lang.style.h5 + '</h5></a></li>' +
+                 '<li><a data-event="formatBlock" data-value="h6"><h6>' + lang.style.h6 + '</h6></a></li>' +
                '</ul>';
       },
-      fontsize: function (locale) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + locale.font.size + '" tabindex="-1"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +
+      fontsize: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + lang.font.size + '" tabindex="-1"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +
                '<ul class="dropdown-menu">' +
                  '<li><a data-event="fontSize" data-value="8"><i class="fa fa-check icon-ok"></i> 8</a></li>' +
                  '<li><a data-event="fontSize" data-value="9"><i class="fa fa-check icon-ok"></i> 9</a></li>' +
@@ -1876,64 +1876,64 @@
                  '<li><a data-event="fontSize" data-value="36"><i class="fa fa-check icon-ok"></i> 36</a></li>' +
                '</ul>';
       },
-      color: function (locale) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small note-recent-color" title="' + locale.color.recent + '" data-event="color" data-value=\'{"backColor":"yellow"}\' tabindex="-1"><i class="fa fa-font icon-font" style="color:black;background-color:yellow;"></i></button>' +
-               '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + locale.color.more + '" data-toggle="dropdown" tabindex="-1">' +
+      color: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small note-recent-color" title="' + lang.color.recent + '" data-event="color" data-value=\'{"backColor":"yellow"}\' tabindex="-1"><i class="fa fa-font icon-font" style="color:black;background-color:yellow;"></i></button>' +
+               '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + lang.color.more + '" data-toggle="dropdown" tabindex="-1">' +
                  '<span class="caret"></span>' +
                '</button>' +
                '<ul class="dropdown-menu">' +
                  '<li>' +
                    '<div class="btn-group">' +
-                     '<div class="note-palette-title">' + locale.color.background + '</div>' +
-                     '<div class="note-color-reset" data-event="backColor" data-value="inherit" title="' + locale.color.transparent + '">' + locale.color.setTransparent + '</div>' +
+                     '<div class="note-palette-title">' + lang.color.background + '</div>' +
+                     '<div class="note-color-reset" data-event="backColor" data-value="inherit" title="' + lang.color.transparent + '">' + lang.color.setTransparent + '</div>' +
                      '<div class="note-color-palette" data-target-event="backColor"></div>' +
                    '</div>' +
                    '<div class="btn-group">' +
-                     '<div class="note-palette-title">' + locale.color.foreground + '</div>' +
-                     '<div class="note-color-reset" data-event="foreColor" data-value="inherit" title="' + locale.color.reset + '">' + locale.color.resetToDefault + '</div>' +
+                     '<div class="note-palette-title">' + lang.color.foreground + '</div>' +
+                     '<div class="note-color-reset" data-event="foreColor" data-value="inherit" title="' + lang.color.reset + '">' + lang.color.resetToDefault + '</div>' +
                      '<div class="note-color-palette" data-target-event="foreColor"></div>' +
                    '</div>' +
                  '</li>' +
                '</ul>';
       },
-      bold: function (locale) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.font.bold + '" data-shortcut="Ctrl+B" data-mac-shortcut="⌘+B" data-event="bold" tabindex="-1"><i class="fa fa-bold icon-bold"></i></button>';
+      bold: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.bold + '" data-shortcut="Ctrl+B" data-mac-shortcut="⌘+B" data-event="bold" tabindex="-1"><i class="fa fa-bold icon-bold"></i></button>';
       },
-      italic: function (locale) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.font.italic + '" data-shortcut="Ctrl+I" data-mac-shortcut="⌘+I" data-event="italic" tabindex="-1"><i class="fa fa-italic icon-italic"></i></button>';
+      italic: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.italic + '" data-shortcut="Ctrl+I" data-mac-shortcut="⌘+I" data-event="italic" tabindex="-1"><i class="fa fa-italic icon-italic"></i></button>';
       },
-      underline: function (locale) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.font.underline + '" data-shortcut="Ctrl+U" data-mac-shortcut="⌘+U" data-event="underline" tabindex="-1"><i class="fa fa-underline icon-underline"></i></button>';
+      underline: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.underline + '" data-shortcut="Ctrl+U" data-mac-shortcut="⌘+U" data-event="underline" tabindex="-1"><i class="fa fa-underline icon-underline"></i></button>';
       },
-      clear: function (locale) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.font.clear + '" data-shortcut="Ctrl+\\" data-mac-shortcut="⌘+\\" data-event="removeFormat" tabindex="-1"><i class="fa fa-eraser icon-eraser"></i></button>';
+      clear: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.clear + '" data-shortcut="Ctrl+\\" data-mac-shortcut="⌘+\\" data-event="removeFormat" tabindex="-1"><i class="fa fa-eraser icon-eraser"></i></button>';
       },
-      ul: function (locale) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.lists.unordered + '" data-shortcut="Ctrl+Shift+8" data-mac-shortcut="⌘+⇧+7" data-event="insertUnorderedList" tabindex="-1"><i class="fa fa-list-ul icon-list-ul"></i></button>';
+      ul: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.lists.unordered + '" data-shortcut="Ctrl+Shift+8" data-mac-shortcut="⌘+⇧+7" data-event="insertUnorderedList" tabindex="-1"><i class="fa fa-list-ul icon-list-ul"></i></button>';
       },
-      ol: function (locale) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.lists.ordered + '" data-shortcut="Ctrl+Shift+7" data-mac-shortcut="⌘+⇧+8" data-event="insertOrderedList" tabindex="-1"><i class="fa fa-list-ol icon-list-ol"></i></button>';
+      ol: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.lists.ordered + '" data-shortcut="Ctrl+Shift+7" data-mac-shortcut="⌘+⇧+8" data-event="insertOrderedList" tabindex="-1"><i class="fa fa-list-ol icon-list-ol"></i></button>';
       },
-      paragraph: function (locale) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + locale.paragraph.paragraph + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i>  <span class="caret"></span></button>' +
+      paragraph: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + lang.paragraph.paragraph + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i>  <span class="caret"></span></button>' +
         '<ul class="dropdown-menu">' +
           '<li>' +
           '<div class="note-align btn-group">' +
-          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.paragraph.left + '" data-shortcut="Ctrl+Shift+L" data-mac-shortcut="⌘+⇧+L" data-event="justifyLeft" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
-          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.paragraph.center + '" data-shortcut="Ctrl+Shift+E" data-mac-shortcut="⌘+⇧+E" data-event="justifyCenter" tabindex="-1"><i class="fa fa-align-center icon-align-center"></i></button>' +
-          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.paragraph.right + '" data-shortcut="Ctrl+Shift+R" data-mac-shortcut="⌘+⇧+R" data-event="justifyRight" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
-          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.paragraph.justify + '" data-shortcut="Ctrl+Shift+J" data-mac-shortcut="⌘+⇧+J" data-event="justifyFull" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
+          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.left + '" data-shortcut="Ctrl+Shift+L" data-mac-shortcut="⌘+⇧+L" data-event="justifyLeft" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
+          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.center + '" data-shortcut="Ctrl+Shift+E" data-mac-shortcut="⌘+⇧+E" data-event="justifyCenter" tabindex="-1"><i class="fa fa-align-center icon-align-center"></i></button>' +
+          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.right + '" data-shortcut="Ctrl+Shift+R" data-mac-shortcut="⌘+⇧+R" data-event="justifyRight" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
+          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.justify + '" data-shortcut="Ctrl+Shift+J" data-mac-shortcut="⌘+⇧+J" data-event="justifyFull" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
           '</div>' +
           '</li>' +
           '<li>' +
           '<div class="note-list btn-group">' +
-          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.paragraph.outdent + '" data-shortcut="Ctrl+[" data-mac-shortcut="⌘+[" data-event="outdent" tabindex="-1"><i class="fa fa-outdent icon-indent-left"></i></button>' +
-          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.paragraph.indent + '" data-shortcut="Ctrl+]" data-mac-shortcut="⌘+]" data-event="indent" tabindex="-1"><i class="fa fa-indent icon-indent-right"></i></button>' +
+          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.outdent + '" data-shortcut="Ctrl+[" data-mac-shortcut="⌘+[" data-event="outdent" tabindex="-1"><i class="fa fa-outdent icon-indent-left"></i></button>' +
+          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.indent + '" data-shortcut="Ctrl+]" data-mac-shortcut="⌘+]" data-event="indent" tabindex="-1"><i class="fa fa-indent icon-indent-right"></i></button>' +
           '</li>' +
         '</ul>';
       },
-      height: function (locale) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + locale.font.height + '" tabindex="-1"><i class="fa fa-text-height icon-text-height"></i>&nbsp; <b class="caret"></b></button>' +
+      height: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + lang.font.height + '" tabindex="-1"><i class="fa fa-text-height icon-text-height"></i>&nbsp; <b class="caret"></b></button>' +
         '<ul class="dropdown-menu">' +
           '<li><a data-event="lineHeight" data-value="1.0"><i class="fa fa-check icon-ok"></i> 1.0</a></li>' +
           '<li><a data-event="lineHeight" data-value="1.2"><i class="fa fa-check icon-ok"></i> 1.2</a></li>' +
@@ -1945,26 +1945,26 @@
           '<li><a data-event="lineHeight" data-value="3.0"><i class="fa fa-check icon-ok"></i> 3.0</a></li>' +
         '</ul>';
       },
-      help: function (locale) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.options.help + '" data-shortcut="Ctrl+/" data-mac-shortcut="⌘+/" data-event="showHelpDialog" tabindex="-1"><i class="fa fa-question icon-question"></i></button>';
+      help: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.options.help + '" data-shortcut="Ctrl+/" data-mac-shortcut="⌘+/" data-event="showHelpDialog" tabindex="-1"><i class="fa fa-question icon-question"></i></button>';
       },
-      fullscreen: function (locale) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.options.fullscreen + '" data-event="fullscreen" tabindex="-1"><i class="fa fa-arrows-alt icon-fullscreen"></i></button>';
+      fullscreen: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.options.fullscreen + '" data-event="fullscreen" tabindex="-1"><i class="fa fa-arrows-alt icon-fullscreen"></i></button>';
       },
-      codeview: function (locale) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.options.codeview + '" data-event="codeview" tabindex="-1"><i class="fa fa-code icon-code"></i></button>';
+      codeview: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.options.codeview + '" data-event="codeview" tabindex="-1"><i class="fa fa-code icon-code"></i></button>';
       }
     };
-    tplPopover = function (locale) {
+    tplPopover = function (lang) {
       return '<div class="note-popover">' +
                 '<div class="note-link-popover popover bottom in" style="display: none;">' +
                   '<div class="arrow"></div>' +
                   '<div class="popover-content note-link-content">' +
                     '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
                     '<div class="note-insert btn-group">' +
-                    '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.link.edit + '" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-edit icon-edit"></i></button>' +
-                    '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.link.unlink + '" data-event="unlink" tabindex="-1"><i class="fa fa-unlink icon-unlink"></i></button>' +
-                    '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.video.videoLink + '" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>' +
+                    '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.edit + '" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-edit icon-edit"></i></button>' +
+                    '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.unlink + '" data-event="unlink" tabindex="-1"><i class="fa fa-unlink icon-unlink"></i></button>' +
+                    '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.video.videoLink + '" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
@@ -1972,14 +1972,14 @@
                   '<div class="arrow"></div>' +
                   '<div class="popover-content note-image-content">' +
                     '<div class="btn-group">' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.resizeFull + '" data-event="resize" data-value="1" tabindex="-1"><span class="note-fontsize-10">100%</span> </button>' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.resizeHalf + '" data-event="resize" data-value="0.5" tabindex="-1"><span class="note-fontsize-10">50%</span> </button>' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.resizeQuarter + '" data-event="resize" data-value="0.25" tabindex="-1"><span class="note-fontsize-10">25%</span> </button>' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.resizeFull + '" data-event="resize" data-value="1" tabindex="-1"><span class="note-fontsize-10">100%</span> </button>' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.resizeHalf + '" data-event="resize" data-value="0.5" tabindex="-1"><span class="note-fontsize-10">50%</span> </button>' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.resizeQuarter + '" data-event="resize" data-value="0.25" tabindex="-1"><span class="note-fontsize-10">25%</span> </button>' +
                     '</div>' +
                     '<div class="btn-group">' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.floatLeft + '" data-event="floatMe" data-value="left" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.floatRight + '" data-event="floatMe" data-value="right" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + locale.image.floatNone + '" data-event="floatMe" data-value="none" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.floatLeft + '" data-event="floatMe" data-value="left" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.floatRight + '" data-event="floatMe" data-value="right" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.floatNone + '" data-event="floatMe" data-value="none" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
@@ -1997,76 +1997,76 @@
                 '</div>' +
               '</div>';
 
-    var tplShortcutText = function (locale) {
+    var tplShortcutText = function (lang) {
       return '<table class="note-shortcut">' +
                '<thead>' +
-                 '<tr><th></th><th>' + locale.shortcut.textFormatting + '</th></tr>' +
+                 '<tr><th></th><th>' + lang.shortcut.textFormatting + '</th></tr>' +
                '</thead>' +
                '<tbody>' +
-                 '<tr><td>⌘ + B</td><td>' + locale.font.bold + '</td></tr>' +
-                 '<tr><td>⌘ + I</td><td>' + locale.font.italic + '</td></tr>' +
-                 '<tr><td>⌘ + U</td><td>' + locale.font.underline + '</td></tr>' +
-                 '<tr><td>⌘ + ⇧ + S</td><td>' + locale.font.strike + '</td></tr>' +
-                 '<tr><td>⌘ + \\</td><td>' + locale.font.clear + '</td></tr>' +
+                 '<tr><td>⌘ + B</td><td>' + lang.font.bold + '</td></tr>' +
+                 '<tr><td>⌘ + I</td><td>' + lang.font.italic + '</td></tr>' +
+                 '<tr><td>⌘ + U</td><td>' + lang.font.underline + '</td></tr>' +
+                 '<tr><td>⌘ + ⇧ + S</td><td>' + lang.font.strike + '</td></tr>' +
+                 '<tr><td>⌘ + \\</td><td>' + lang.font.clear + '</td></tr>' +
                  '</tr>' +
                '</tbody>' +
              '</table>';
     };
 
-    var tplShortcutAction = function (locale) {
+    var tplShortcutAction = function (lang) {
       return '<table class="note-shortcut">' +
                '<thead>' +
-                 '<tr><th></th><th>' + locale.shortcut.action + '</th></tr>' +
+                 '<tr><th></th><th>' + lang.shortcut.action + '</th></tr>' +
                '</thead>' +
                '<tbody>' +
-                 '<tr><td>⌘ + Z</td><td>' + locale.history.undo + '</td></tr>' +
-                 '<tr><td>⌘ + ⇧ + Z</td><td>' + locale.history.redo + '</td></tr>' +
-                 '<tr><td>⌘ + ]</td><td>' + locale.paragraph.indent + '</td></tr>' +
-                 '<tr><td>⌘ + [</td><td>' + locale.paragraph.outdent + '</td></tr>' +
-                 '<tr><td>⌘ + K</td><td>' + locale.link.insert + '</td></tr>' +
-                 '<tr><td>⌘ + ENTER</td><td>' + locale.hr.insert + '</td></tr>' +
+                 '<tr><td>⌘ + Z</td><td>' + lang.history.undo + '</td></tr>' +
+                 '<tr><td>⌘ + ⇧ + Z</td><td>' + lang.history.redo + '</td></tr>' +
+                 '<tr><td>⌘ + ]</td><td>' + lang.paragraph.indent + '</td></tr>' +
+                 '<tr><td>⌘ + [</td><td>' + lang.paragraph.outdent + '</td></tr>' +
+                 '<tr><td>⌘ + K</td><td>' + lang.link.insert + '</td></tr>' +
+                 '<tr><td>⌘ + ENTER</td><td>' + lang.hr.insert + '</td></tr>' +
                '</tbody>' +
              '</table>';
     };
 
-    var tplShortcutPara = function (locale) {
+    var tplShortcutPara = function (lang) {
       return '<table class="note-shortcut">' +
                 '<thead>' +
-                  '<tr><th></th><th>' + locale.shortcut.paragraphFormatting + '</th></tr>' +
+                  '<tr><th></th><th>' + lang.shortcut.paragraphFormatting + '</th></tr>' +
                 '</thead>' +
                 '<tbody>' +
-                  '<tr><td>⌘ + ⇧ + L</td><td>' + locale.paragraph.left + '</td></tr>' +
-                  '<tr><td>⌘ + ⇧ + E</td><td>' + locale.paragraph.center + '</td></tr>' +
-                  '<tr><td>⌘ + ⇧ + R</td><td>' + locale.paragraph.right + '</td></tr>' +
-                  '<tr><td>⌘ + ⇧ + J</td><td>' + locale.paragraph.justify + '</td></tr>' +
-                  '<tr><td>⌘ + ⇧ + NUM7</td><td>' + locale.lists.ordered + '</td></tr>' +
-                  '<tr><td>⌘ + ⇧ + NUM8</td><td>' + locale.lists.unordered + '</td></tr>' +
+                  '<tr><td>⌘ + ⇧ + L</td><td>' + lang.paragraph.left + '</td></tr>' +
+                  '<tr><td>⌘ + ⇧ + E</td><td>' + lang.paragraph.center + '</td></tr>' +
+                  '<tr><td>⌘ + ⇧ + R</td><td>' + lang.paragraph.right + '</td></tr>' +
+                  '<tr><td>⌘ + ⇧ + J</td><td>' + lang.paragraph.justify + '</td></tr>' +
+                  '<tr><td>⌘ + ⇧ + NUM7</td><td>' + lang.lists.ordered + '</td></tr>' +
+                  '<tr><td>⌘ + ⇧ + NUM8</td><td>' + lang.lists.unordered + '</td></tr>' +
                 '</tbody>' +
               '</table>';
     };
 
-    var tplShortcutStyle = function (locale) {
+    var tplShortcutStyle = function (lang) {
       return '<table class="note-shortcut">' +
                '<thead>' +
-                 '<tr><th></th><th>' + locale.shortcut.documentStyle + '</th></tr>' +
+                 '<tr><th></th><th>' + lang.shortcut.documentStyle + '</th></tr>' +
                '</thead>' +
                '<tbody>' +
-                 '<tr><td>⌘ + NUM0</td><td>' + locale.style.normal + '</td></tr>' +
-                 '<tr><td>⌘ + NUM1</td><td>' + locale.style.h1 + '</td></tr>' +
-                 '<tr><td>⌘ + NUM2</td><td>' + locale.style.h2 + '</td></tr>' +
-                 '<tr><td>⌘ + NUM3</td><td>' + locale.style.h3 + '</td></tr>' +
-                 '<tr><td>⌘ + NUM4</td><td>' + locale.style.h4 + '</td></tr>' +
-                 '<tr><td>⌘ + NUM5</td><td>' + locale.style.h5 + '</td></tr>' +
-                 '<tr><td>⌘ + NUM6</td><td>' + locale.style.h6 + '</td></tr>' +
+                 '<tr><td>⌘ + NUM0</td><td>' + lang.style.normal + '</td></tr>' +
+                 '<tr><td>⌘ + NUM1</td><td>' + lang.style.h1 + '</td></tr>' +
+                 '<tr><td>⌘ + NUM2</td><td>' + lang.style.h2 + '</td></tr>' +
+                 '<tr><td>⌘ + NUM3</td><td>' + lang.style.h3 + '</td></tr>' +
+                 '<tr><td>⌘ + NUM4</td><td>' + lang.style.h4 + '</td></tr>' +
+                 '<tr><td>⌘ + NUM5</td><td>' + lang.style.h5 + '</td></tr>' +
+                 '<tr><td>⌘ + NUM6</td><td>' + lang.style.h6 + '</td></tr>' +
                '</tbody>' +
              '</table>';
     };
 
-    var tplShortcutTable = function (locale) {
+    var tplShortcutTable = function (lang) {
       return '<table class="note-shortcut-layout">' +
                '<tbody>' +
-                 '<tr><td>' + tplShortcutAction(locale) + '</td><td>' + tplShortcutText(locale) + '</td></tr>' +
-                 '<tr><td>' + tplShortcutStyle(locale) + '</td><td>' + tplShortcutPara(locale) + '</td></tr>' +
+                 '<tr><td>' + tplShortcutAction(lang) + '</td><td>' + tplShortcutText(lang) + '</td></tr>' +
+                 '<tr><td>' + tplShortcutStyle(lang) + '</td><td>' + tplShortcutPara(lang) + '</td></tr>' +
                '</tbody>' +
              '</table>';
     };
@@ -2075,25 +2075,25 @@
       return sHtml.replace(/⌘/g, 'Ctrl').replace(/⇧/g, 'Shift');
     };
 
-    tplDialog = function (locale) {
+    tplDialog = function (lang) {
       return '<div class="note-dialog">' +
                '<div class="note-image-dialog modal" aria-hidden="false">' +
                  '<div class="modal-dialog">' +
                    '<div class="modal-content">' +
                      '<div class="modal-header">' +
                        '<button type="button" class="close" aria-hidden="true" tabindex="-1">×</button>' +
-                       '<h4>' + locale.image.insert + '</h4>' +
+                       '<h4>' + lang.image.insert + '</h4>' +
                      '</div>' +
                      '<div class="modal-body">' +
                        '<div class="row-fluid">' +
-                         '<h5>' + locale.image.selectFromFiles + '</h5>' +
+                         '<h5>' + lang.image.selectFromFiles + '</h5>' +
                          '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
-                         '<h5>' + locale.image.url + '</h5>' +
+                         '<h5>' + lang.image.url + '</h5>' +
                          '<input class="note-image-url form-control span12" type="text" />' +
                        '</div>' +
                      '</div>' +
                      '<div class="modal-footer">' +
-                       '<button href="#" class="btn btn-primary note-image-btn disabled" disabled="disabled">' + locale.image.insert + '</button>' +
+                       '<button href="#" class="btn btn-primary note-image-btn disabled" disabled="disabled">' + lang.image.insert + '</button>' +
                      '</div>' +
                    '</div>' +
                  '</div>' +
@@ -2103,23 +2103,23 @@
                    '<div class="modal-content">' +
                      '<div class="modal-header">' +
                        '<button type="button" class="close" aria-hidden="true" tabindex="-1">×</button>' +
-                       '<h4>' + locale.link.insert + '</h4>' +
+                       '<h4>' + lang.link.insert + '</h4>' +
                      '</div>' +
                      '<div class="modal-body">' +
                        '<div class="row-fluid">' +
 
                        '<div class="form-group">' +
-                         '<label>' + locale.link.textToDisplay + '</label>' +
+                         '<label>' + lang.link.textToDisplay + '</label>' +
                          '<span class="note-link-text form-control input-xlarge uneditable-input" />' +
                        '</div>' +
                        '<div class="form-group">' +
-                         '<label>' + locale.link.url + '</label>' +
+                         '<label>' + lang.link.url + '</label>' +
                          '<input class="note-link-url form-control span12" type="text" />' +
                        '</div>' +
                        '</div>' +
                      '</div>' +
                      '<div class="modal-footer">' +
-                       '<button href="#" class="btn btn-primary note-link-btn disabled" disabled="disabled">' + locale.link.insert + '</button>' +
+                       '<button href="#" class="btn btn-primary note-link-btn disabled" disabled="disabled">' + lang.link.insert + '</button>' +
                      '</div>' +
                    '</div>' +
                  '</div>' +
@@ -2129,19 +2129,19 @@
                        '<div class="modal-content">' +
                          '<div class="modal-header">' +
                            '<button type="button" class="close" aria-hidden="true" tabindex="-1">×</button>' +
-                           '<h4>' + locale.video.insert + '</h4>' +
+                           '<h4>' + lang.video.insert + '</h4>' +
                          '</div>' +
                          '<div class="modal-body">' +
                            '<div class="row-fluid">' +
 
                            '<div class="form-group">' +
-                             '<label>' + locale.video.url + '</label>&nbsp;<small class="text-muted">' + locale.video.providers + '</small>' +
+                             '<label>' + lang.video.url + '</label>&nbsp;<small class="text-muted">' + lang.video.providers + '</small>' +
                              '<input class="note-video-url form-control span12" type="text" />' +
                            '</div>' +
                            '</div>' +
                          '</div>' +
                          '<div class="modal-footer">' +
-                           '<button href="#" class="btn btn-primary note-video-btn disabled" disabled="disabled">' + locale.video.insert + '</button>' +
+                           '<button href="#" class="btn btn-primary note-video-btn disabled" disabled="disabled">' + lang.video.insert + '</button>' +
                          '</div>' +
                        '</div>' +
                      '</div>' +
@@ -2151,9 +2151,9 @@
                    '<div class="modal-content">' +
                      '<div class="modal-body">' +
                        '<div class="modal-background">' +
-                       '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + locale.shortcut.close + '</a>' +
-                       '<div class="title">' + locale.shortcut.shortcuts + '</div>' +
-                       (agent.bMac ? tplShortcutTable(locale) : replaceMacKeys(tplShortcutTable(locale))) +
+                       '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
+                       '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
+                       (agent.bMac ? tplShortcutTable(lang) : replaceMacKeys(tplShortcutTable(lang))) +
                        '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote v0.4</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
                      '</div>' +
                    '</div>' +
@@ -2214,7 +2214,7 @@
       var nHeight = options.height,
           nTabsize = options.tabsize,
           aToolbarSetting = options.toolbar,
-          localeInfo = $.summernote.locale[options.locale];
+          langInfo = $.summernote.lang[options.lang];
 
       //already created
       if ($holder.next().hasClass('note-editor')) { return; }
@@ -2255,7 +2255,7 @@
         var group = aToolbarSetting[idx];
         sToolbar += '<div class="note-' + group[0] + ' btn-group">';
         for (var i = 0, szGroup = group[1].length; i < szGroup; i++) {
-          sToolbar += tplToolbarInfo[group[1][i]](localeInfo);
+          sToolbar += tplToolbarInfo[group[1][i]](langInfo);
         }
         sToolbar += '</div>';
       }
@@ -2267,14 +2267,14 @@
       createTooltip($toolbar, 'bottom');
 
       //05. create Popover
-      var $popover = $(tplPopover(localeInfo)).prependTo($editor);
+      var $popover = $(tplPopover(langInfo)).prependTo($editor);
       createTooltip($popover);
 
       //06. handle(control selection, ...)
       $(tplhandle).prependTo($editor);
 
       //07. create Dialog
-      var $dialog = $(tplDialog(localeInfo)).prependTo($editor);
+      var $dialog = $(tplDialog(langInfo)).prependTo($editor);
       $dialog.find('button.close, a.modal-close').click(function () {
         $(this).closest('.modal').modal('hide');
       });
@@ -2323,7 +2323,7 @@
 
   $.extend($.summernote, {
     version: '0.4.2',
-    locale: {
+    lang: {
       'en-US': {
         font: {
           bold: 'Bold',
@@ -2443,7 +2443,7 @@
           ['view', ['fullscreen', 'codeview']],
           ['help', ['help']]
         ],
-        locale: 'en-US'
+        lang: 'en-US'
       }, options);
 
       this.each(function (idx, elHolder) {
