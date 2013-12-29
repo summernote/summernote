@@ -18,8 +18,9 @@
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
 
   <!-- include summernote -->
-  <link href="summernote.css" rel="stylesheet">
-  <script src="summernote.min.js"></script>
+  <link href="summernote-dist/summernote.css" rel="stylesheet">
+  <script src="summernote-dist/summernote.min.js"></script>
+  <script src="summernote-lang/summernote-ko-KR.js"></script>
 
   <!-- include page style and script -->
   <link href="page.css" rel="stylesheet">
@@ -102,6 +103,12 @@
               <li><a href="#callbacks-onkeyup">onkeyup</a></li>
               <li><a href="#callbacks-onkeydown">onkeydown</a></li>
               <li><a href="#callbacks-onImageUpload">onImageUpload</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#i18n">I18n Support</a>
+            <ul class="nav">
+              <li><a href="#i18n-language">Language</a></li>
             </ul>
           </li>
           <li>
@@ -281,6 +288,35 @@
     console.log('image upload:', files, editor, welEditable);
   }
 });</code></pre>
+      </section>
+      <section>
+        <h2 id="i18n">I18n Support</h2>
+        <h3 id="i18n-language">Language</h3>
+        <p>Include libraries with lang file. eg) <code>summernote-ko-KR.js</code></p>
+        <pre><code class="xml">&lt;!-- include libries(jQuery, bootstrap, fontawesome) --&gt;
+&lt;script src="//code.jquery.com/jquery-1.9.1.min.js"&gt;&lt;/script&gt; 
+&lt;link href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css"&gt; 
+&lt;script src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"&gt;&lt;/script&gt; 
+&lt;link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"&gt;
+
+&lt;!-- include summernote css/js--&gt;
+&lt;link href="summernote.css" /&gt;
+&lt;script src="summernote.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- include summernote-ko-KR --&gt;
+&lt;script src="lang/summernote-ko-KR.js"&gt;&lt;/script&gt;</code></pre>
+        <p>Run the script with locale option.</p>
+        <pre><code class="javascript">$(document).ready(function() {
+  $('#summernote').summernote({
+    lang: 'ko-KR'
+  });
+});</code></pre>
+        <div class="lang"></div>
+        <script>
+          $(document).ready(function() {
+            $('.lang').summernote({lang: 'ko-KR'});
+          });
+        </script>
       </section>
       <section>
         <h2 id="integration">Server Integration</h2>
