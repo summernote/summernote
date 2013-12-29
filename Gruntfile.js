@@ -15,6 +15,7 @@ module.exports = function (grunt) {
   delete srcHintOptions.onevar;
 
   grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
     build: {
       all: {
         baseUrl: 'src/js',

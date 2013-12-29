@@ -1,7 +1,12 @@
 /**
+ * Super simple wysiwyg editor on Bootstrap v0.4.2
+ * http://hackerwins.github.io/summernote/
+ *
  * summernote.js
- * (c) 2013~ Alan Hong
+ * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
+ *
+ * Date: 2013-12-29T04:36Z
  */
 (function (factory) {
   /* global define */
@@ -2808,6 +2813,12 @@
 
   var renderer = new Renderer();
   var eventHandler = new EventHandler();
+
+  $.summernote = $.summernote || {};
+
+  $.extend($.summernote, {
+    version: '0.4.2'
+  });
 
   /**
    * extend jquery fn

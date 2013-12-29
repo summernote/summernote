@@ -12,6 +12,12 @@ define([
   var renderer = new Renderer();
   var eventHandler = new EventHandler();
 
+  $.summernote = $.summernote || {};
+
+  $.extend($.summernote, {
+    version: '@VERSION'
+  });
+
   /**
    * extend jquery fn
    */
