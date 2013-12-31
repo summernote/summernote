@@ -5,21 +5,29 @@
   <title>Summernote - Super Simple WYSIWYG editor on Bootstrap</title>
   <meta name="description" content="Super Simple WYSIWYG Editor on Bootstrap">
   <meta name="author" content="https://github.com/HackerWins">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
   <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
   <!--[if lt IE 9]>
     <script src="//twitter.github.io/bootstrap/assets/js/html5shiv.js"></script>
   <![endif]-->
+
   <!-- include jquery and bootstrap and font-awesome -->
   <script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
-  <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/cerulean/bootstrap.min.css" rel="stylesheet">
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css" rel="stylesheet">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+
+  <!-- include (codemirror.css, codemirror.js, xml.js, formatting.js) -->
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css" />
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/theme/monokai.min.css">
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/xml/xml.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js"></script>
 
   <!-- include summernote -->
-  <link href="summernote.css" rel="stylesheet">
-  <script src="summernote.min.js"></script>
+  <link href="summernote-dist/summernote.css" rel="stylesheet">
+  <script src="summernote-dist/summernote.min.js"></script>
 
   <!-- include page style and script -->
   <link href="page.css" rel="stylesheet">
@@ -40,7 +48,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="./"><i class="icon-sun"></i> Summernote</a>
+      <a class="navbar-brand" href="./"><i class="fa fa-sun-o"></i> Summernote</a>
     </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse navbar-ex1-collapse" role="navigation">
@@ -65,6 +73,8 @@
         <ul class="nav">
           <li><a href="#multiple">Multiple Editor</a></li>
           <li><a href="#click2edit">Click to Edit</a></li>
+          <li><a href="#codemirror">CodeMirror as CodeView</a></li>
+          <li><a href="#theme">Theme</a></li>
           <!-- Upcoming Features
           <li><a href="#local">Local Storage</a></li>
           -->
@@ -125,13 +135,84 @@ var save = function() {
           };
         </script>
       </section>
+      <section>
+        <h2 id="codemirror">CodeMirror as Codeview</h2>
+        <p>If you include a <code>CodeMirror</code> on a page, you can use CodeMirror to Codeview.</p>
+        <p>Include jQuery, Bootstrap, font-awesome and <b>CodeMirror</b> with summernote.</p>
+        <pre><code class="xml">&lt;!-- include libries(jQuery, bootstrap, fontawesome) --&gt;
+&lt;script src="//code.jquery.com/jquery-1.9.1.min.js"&gt;&lt;/script&gt; 
+&lt;link href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css"&gt; 
+&lt;script src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"&gt;&lt;/script&gt; 
+&lt;link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"&gt;
+
+&lt;!-- include codemirror (codemirror.css, codemirror.js, xml.js, formatting.js) --&gt;
+&lt;link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css" /&gt;
+&lt;link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/theme/monokai.min.css" /&gt;
+&lt;script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/xml/xml.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- include summernote css/js--&gt;
+&lt;link href="summernote.css" /&gt;
+&lt;script src="summernote.min.js"&gt;&lt;/script&gt;</code></pre>
+<p>Initialize Summernote with codemirror options</p>
+<pre><code class="javascript">$('.summernote').summernote({
+  height: 150,   //set editable area's height
+  codemirror: { // codemirror options
+    theme: 'monokai'
+  }
+});</code></pre>
+        <textarea class="codemirror">Click <b>Code View</b>!!!</textarea>
+        <script>
+          $(document).ready(function() {
+            $('.codemirror').summernote({
+              height: 150,
+              codemirror: { // codemirror options
+                theme: 'monokai'
+              }
+            });
+          });
+        </script>
+        <p></p>
+        <p><a href="http://codemirror.net/">CodeMirror</a> is a versatile text editor implemented in JavaScript for the browser. It is specialized for editing code, and comes with a number of language modes and addons that implement more advanced editing functionaly.</p>
+      </section>
+
+      <section>
+        <h2 id="theme">Theme</h2>
+        <p>Style changed accroding to bootstrap theme.</p>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">cosmo</h3>
+          </div>
+          <div class="panel-body">
+            <iframe src="theme.html#cosmo" width="100%" height="100" frameborder="0"></iframe>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">flatly</h3>
+          </div>
+          <div class="panel-body">
+            <iframe src="theme.html#flatly" width="100%" height="100" frameborder="0"></iframe>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">spacelab</h3>
+          </div>
+          <div class="panel-body">
+            <iframe src="theme.html#spacelab" width="100%" height="100" frameborder="0"></iframe>
+          </div>
+        </div>
+        <p>More bootstrap theme: <a href="http://bootswatch.com/" target="_blank">Bootswatch <i class="fa fa-external-link"></i></a></p>
+      </section>
       <hr/>
     </div>
   </div>
 </div>
 <footer class="footer">
   <div class="container">
-    <p><i class="icon-sun"></i> Summernote v0.4 · Created and Maintained by <a href="https://twitter.com/hackerwins">Alan</a> and <a href="https://twitter.com/soomtong">TJ</a></p>
+    <p><i class="fa fa-sun-o"></i> Summernote v0.4 · Created and Maintained by <a href="https://twitter.com/hackerwins">Alan</a> and <a href="https://twitter.com/soomtong">TJ</a></p>
     <p>Based on <a href="http://twitter.github.io/bootstrap/">Bootstrap</a> and <a href="http://jquery.com/">jQuery</a>. Icons from <a href="http://fontawesome.io/">Font Awesome</a>. Theme from <a href="http://bootswatch.com">bootswatch</a>.</p>
     <p>Summernote distributed under the MIT license.</p>
     <p></p>

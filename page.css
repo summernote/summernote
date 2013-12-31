@@ -3,30 +3,25 @@
 body { padding-top: 50px; }
 
 .navbar-fixed-top {
-  opacity: 0.9;
+  opacity: 0.90;
+  background-image: linear-gradient(rgb(4, 81, 155), rgb(4, 70, 135) 60%, rgb(3, 55, 105));
+}
+.navbar-fixed-top .navbar-brand,
+.navbar-fixed-top .navbar-brand:hover,
+.navbar-fixed-top .navbar-nav>li>a,
+.navbar-fixed-top .navbar-nav>li>a:hover {
+  color: white;
+}
+
+.navbar-fixed-top .navbar-brand:hover,
+.navbar-fixed-top .navbar-nav>li>a:hover {
+  background-color: rgb(2, 47, 90);
 }
 
 .jumbotron {
-  padding-top: 20px;
   background-color: #f7f5fa;
-  border: 1px solid #ddd;
+  padding-top: 20px;
   text-align: center;
-}
-@media (max-width: 979px) {
-  .jumbotron {
-    margin: 0 1em;
-  }
-}
-@media (max-width: 767px) {
-  .jumbotron {
-    padding: 1em;
-    margin: 0;
-  }
-}
-@media (max-width: 400px) {
-  .jumbotron {
-    padding: 0.5em;
-  }
 }
 
 /* Faded out hr */
@@ -43,7 +38,7 @@ hr.soften {
 
 /* Base class
 ------------------------- */
-.jumbotron h1 {
+.jumbotron>h1 {
   font-size: 4.8em;
   font-weight: bold;
   letter-spacing: -1px;
@@ -59,18 +54,17 @@ hr.soften {
 }
 
 @media (max-width: 767px) {
-  .jumbotron h1 {
+  .jumbotron>h1 {
     font-size: 3.0em;
   }
 }
 @media (max-width: 400px) {
-  .jumbotron h1 {
+  .jumbotron>h1 {
     font-size: 2.0em;
-
   }
 }
 
-.jumbotron p {
+.jumbotron>p {
   font-size: 24px;
   font-weight: 300;
   line-height: 1.25;
@@ -296,7 +290,7 @@ pre code {
   padding-left: 0;
 }
 
-/* summernote style on hero unit */
+/* summernote style on jumbotron */
 .jumbotron .summernote {
   font-family: "HelveticaNeue", "Helvetica Neue", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   line-height: 1.2;
@@ -304,16 +298,6 @@ pre code {
   background-color: #ffffff;
   text-align: left;
   padding: 0;
-}
-
-.jumbotron .summernote h1 {
-  font-size: 40px;
-}
-
-.jumbotron .summernote p {
-  font-size: 18px;
-  font-weight: normal;
-  margin: 0;
 }
 
 .summernote h1, .summernote h2, .summernote h3, .summernote h4, .summernote h5, .summernote h6 {

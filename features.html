@@ -5,7 +5,7 @@
   <title>Summernote - Super Simple WYSIWYG editor on Bootstrap</title>
   <meta name="description" content="Super Simple WYSIWYG Editor on Bootstrap">
   <meta name="author" content="https://github.com/HackerWins">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
   <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
   <!--[if lt IE 9]>
@@ -13,13 +13,14 @@
   <![endif]-->
   <!-- include jquery and bootstrap and font-awesome -->
   <script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
-  <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/cerulean/bootstrap.min.css" rel="stylesheet">
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css" rel="stylesheet">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
 
   <!-- include summernote -->
-  <link href="summernote.css" rel="stylesheet">
-  <script src="summernote.min.js"></script>
+  <link href="summernote-dist/summernote.css" rel="stylesheet">
+  <script src="summernote-dist/summernote.min.js"></script>
+  <script src="summernote-lang/summernote-ko-KR.js"></script>
 
   <!-- include page style and script -->
   <link href="page.css" rel="stylesheet">
@@ -40,7 +41,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="./"><i class="icon-sun"></i> Summernote</a>
+      <a class="navbar-brand" href="./"><i class="fa fa-sun-o"></i> Summernote</a>
     </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse navbar-collapse" role="navigation">
@@ -63,7 +64,14 @@
       <div class="bs-page-sidebar" role="complementary">
         <ul class="nav">
           <li>
-            <a href="#installation">Easy Installation</a>
+            <a href="#download">Download Summernote</a>
+            <ul class="nav">
+              <li><a href="#download-compiled">Compiled CSS, JS</a></li>
+              <li><a href="#download-additional">Additional downloads</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#installation">Installation</a>
             <ul class="nav">
               <li><a href="#installation-doctype">Require html5 doctype</a></li>
               <li><a href="#installation-include">Include js/css</a></li>
@@ -94,6 +102,13 @@
               <li><a href="#callbacks-onblur">onblur</a></li>
               <li><a href="#callbacks-onkeyup">onkeyup</a></li>
               <li><a href="#callbacks-onkeydown">onkeydown</a></li>
+              <li><a href="#callbacks-onImageUpload">onImageUpload</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#i18n">I18n Support</a>
+            <ul class="nav">
+              <li><a href="#i18n-language">Language</a></li>
             </ul>
           </li>
           <li>
@@ -106,15 +121,26 @@
             </ul>
           </li>
           <li><a href="#keyboard">Keyboard shortcuts</a></li>
-          <!-- upcoming features
-            <li><a href="#image">Image upload</a></li>
-          -->
         </ul>
       </div>
     </div>
     <div class="col-md-9" role="main">
       <section>
-        <h2 id="installation">Easy Installation</h2>
+        <h2 id="download">Download Summernote</h2>
+        <h3 id="download-compiled">Compiled CSS, JS</h3>
+        <p>The fastest way to get Summernote is to download the precompiled and minified versions of our CSS, JavaScript. No documentation or original source code files are included.</p>
+        <p><a href="https://github.com/HackerWins/summernote/releases/download/v0.5.0/summernote-0.5.0-dist.zip" class="btn btn-primary">Download compiled Summernote</a></p>
+        <h3 id="download-additional">Additional downloads</h3>
+        <h4><a href="https://github.com/HackerWins/summernote/archive/master.zip">Download source code</a></h4>
+        <p>Get the lastest Summernote LESS and Javascript source code by downloading it directly from GitHub.</p>
+        <h4><a href="https://github.com/HackerWins/summernote">Clone or fork via Github</a></h4>
+        <p>Visit us on GitHub to clone or fork the summernote project.</p>
+        <h4>Install with <a href="http://bower.io/">Bower</a></h4>
+        <p>Install and manage Summernote's styles, JavaScript, and documentation using Bower.</p>
+        <pre><code class="bash">bower install summernote</code></pre>
+      </section>
+      <section>
+        <h2 id="installation">Installation</h2>
         <h3 id="installation-doctype">00. Requires HTML5 doctype</h3>
         <p>Bootstrap uses certain HTML elements and CSS properties which require HTML5 doctype. Include <code>&lt;!DOCTYPE html&gt;</code> in the beginning of all your projects.</p>
         <pre><code class="xml">&lt;!DOCTYPE html&gt;
@@ -126,9 +152,9 @@
         <p>Include the Following code in your HTML <code>&lt;HTML&gt;</code> tag</p>
         <pre><code class="xml">&lt;!-- include libries(jQuery, bootstrap, fontawesome) --&gt;
 &lt;script src="//code.jquery.com/jquery-1.9.1.min.js"&gt;&lt;/script&gt; 
-&lt;link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.no-icons.min.css"&gt; 
-&lt;script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"&gt;&lt;/script&gt; 
-&lt;link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css"&gt;
+&lt;link href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css"&gt; 
+&lt;script src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"&gt;&lt;/script&gt; 
+&lt;link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"&gt;
 
 &lt;!-- include summernote css/js--&gt;
 &lt;link href="summernote.css" /&gt;
@@ -254,19 +280,51 @@
     console.log('Key is pressed:', e.keyCode);
   }
 });</code></pre>
+        <h3 id="callbacks-onImageUpload">onImageUpload</h3>
+        <p>Override image upload handler(default: base64 dataURL on `IMG` tag).</p>
+        <p>You can upload image to server or AWS S3: <a href="https://github.com/HackerWins/summernote/issues/72" target="_blank">More...</a>.</p>
+        <pre><code class="javascript">$('#summernote').summernote({
+  onImageUpload: function(files, editor, welEditable) {
+    console.log('image upload:', files, editor, welEditable);
+  }
+});</code></pre>
+      </section>
+      <section>
+        <h2 id="i18n">I18n Support</h2>
+        <h3 id="i18n-language">Language</h3>
+        <p>Include libraries with lang file. eg) <code>summernote-ko-KR.js</code></p>
+        <pre><code class="xml">&lt;!-- include libries(jQuery, bootstrap, fontawesome) --&gt;
+&lt;script src="//code.jquery.com/jquery-1.9.1.min.js"&gt;&lt;/script&gt; 
+&lt;link href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css"&gt; 
+&lt;script src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"&gt;&lt;/script&gt; 
+&lt;link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"&gt;
+
+&lt;!-- include summernote css/js--&gt;
+&lt;link href="summernote.css" /&gt;
+&lt;script src="summernote.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- include summernote-ko-KR --&gt;
+&lt;script src="lang/summernote-ko-KR.js"&gt;&lt;/script&gt;</code></pre>
+        <p>Run the script with locale option.</p>
+        <pre><code class="javascript">$(document).ready(function() {
+  $('#summernote').summernote({
+    lang: 'ko-KR' // default: 'en-US'
+  });
+});</code></pre>
+        <div class="lang"></div>
+        <script>
+          $(document).ready(function() {
+            $('.lang').summernote({
+              lang: 'ko-KR'
+            });
+          });
+        </script>
+        <p></p>
+        <p>More summernote languages: <a href="https://github.com/HackerWins/summernote/tree/master/lang" target="_blank">languages <i class="fa fa-external-link"></i></a></p>
       </section>
       <section>
         <h2 id="integration">Server Integration</h2>
         <p>Examples with backend server.</p>
-
-        <ul>
-          <li>Image Upload Demo - <a href="http://blog.nerdbrea.kr/">humble blog application for nodejs</a><br/>
-            <p class="text-warning">sorry for horrible script, really I do not have a coding time.</p>
-          </li>
-        </ul>
-
-        <br/>
-
         <h3 id="integration-php">PHP Form example <span class="label label-info" style="font-weight: normal;">php</span></h3>
         <p>PHP Form example with <code>TEXTAREA</code>.</p>
         <ul>
@@ -275,12 +333,14 @@
         </ul>
 
         <h3 id="integration-nodejs">node.js example <span class="label label-info" style="font-weight: normal;">nodejs</span></h3>
-        <p>Nodejs example.</p>
+        <p>Some node.js examples.</p>
         <p><img class="img-rounded img-responsive" src="./images/blititor-editor.png" alt="nodejs"/></p>
         <ul>
+          <li><a href="http://blog.nerdbrea.kr/">Image Upload Demo</a><br/>
           <li><a href="https://github.com/soomtong/blititor">blititor - humble blog application for nodejs</a></li>
+          </li>
         </ul>
-
+        <br/>
         <h3 id="integration-django">Django-summernote <span class="label label-info" style="font-weight: normal;">python</span></h3>
         <p>Handy update for your django admin page.</p>
         <p><img class="img-rounded img-responsive" src="https://raw.github.com/lqez/pastebin/master/img/django-summernote.png" alt="django"/></p>
@@ -303,7 +363,7 @@
       <section>
         <h2 id="keyboard">Keyboard shortcuts</h2>
         <p>We provide default shortcut.</p>
-        <table class="table table-hover table-bordered">
+        <table class="table table-hover table-striped">
           <thead>
             <tr>
               <th></th>
@@ -445,7 +505,7 @@
 </div>
 <footer class="footer bs-page-footer" role="contentinfo">
   <div class="container">
-    <p><i class="icon-sun"></i> Summernote v0.4 · Created and Maintained by <a href="https://twitter.com/hackerwins">Alan</a> and <a href="https://twitter.com/soomtong">TJ</a></p>
+    <p><i class="fa fa-sun-o"></i> Summernote v0.4 · Created and Maintained by <a href="https://twitter.com/hackerwins">Alan</a> and <a href="https://twitter.com/soomtong">TJ</a></p>
     <p>Based on <a href="http://twitter.github.io/bootstrap/">Bootstrap</a> and <a href="http://jquery.com/">jQuery</a>. Icons from <a href="http://fontawesome.io/">Font Awesome</a>. Theme from <a href="http://bootswatch.com">bootswatch</a>.</p>
     <p>Summernote distributed under the MIT license.</p>
     <p></p>
