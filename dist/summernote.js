@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.5.0
+ * Super simple wysiwyg editor on Bootstrap v0.5.1
  * http://hackerwins.github.io/summernote/
  *
  * summernote.js
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2013-12-29T10:27Z
+ * Date: 2013-12-31T14:34Z
  */
 (function (factory) {
   /* global define */
@@ -2154,7 +2154,7 @@
                        '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
                        '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                        (agent.bMac ? tplShortcutTable(lang) : replaceMacKeys(tplShortcutTable(lang))) +
-                       '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.0</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
+                       '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.1</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
                      '</div>' +
                    '</div>' +
                  '</div>' +
@@ -2172,7 +2172,8 @@
         var tplShortcut = $btn.attr(agent.bMac ? 'data-mac-shortcut': 'data-shortcut');
         if (tplShortcut) { $btn.attr('title', function (i, v) { return v + ' (' + tplShortcut + ')'; }); }
       // bootstrap tooltip on btn-group bug: https://github.com/twitter/bootstrap/issues/5687
-      }).tooltip({container: 'body', placement: sPlacement || 'top'});
+      }).tooltip({container: 'body', trigger: 'hover', placement: sPlacement || 'top'})
+        .on('click', function () {$(this).tooltip('hide'); });
     };
 
     // pallete colors
@@ -2322,7 +2323,7 @@
   $.summernote = $.summernote || {};
 
   $.extend($.summernote, {
-    version: '0.5.0',
+    version: '0.5.1',
     lang: {
       'en-US': {
         font: {
