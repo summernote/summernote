@@ -22,28 +22,27 @@ define('core/async', function () {
      */
     var loadImage = function (sUrl) {
       return $.Deferred(function (deferred) {
-        var image = new Image();
-        image.onload = loaded;
-        image.onerror = errored; // URL returns 404, etc
-        image.onabort = errored; // IE may call this if user clicks "Stop"
-        image.src = sUrl;
-         
-        function loaded() {
-          unbindEvents();
+        var image = new Image();
+        image.onload = loaded;
+        image.onerror = errored; // URL returns 404, etc
+        image.onabort = errored; // IE may call this if user clicks "Stop"
+        image.src = sUrl;
+
+        function loaded() {
+          unbindEvents();
           deferred.resolve(image);
-        }
-        function errored() {
-          unbindEvents();
+        }
+        function errored() {
+          unbindEvents();
           deferred.reject(image);
-        }
-        function unbindEvents() {
-          image.onload = null;
-          image.onerror = null;
-          image.onabort = null;
-        }
+        }
+        function unbindEvents() {
+          image.onload = null;
+          image.onerror = null;
+          image.onabort = null;
+        }
       }).promise();
     };
-  
     return { readFile: readFile, loadImage: loadImage };
   })();
 

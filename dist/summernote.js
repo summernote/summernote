@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-01-02T14:30Z
+ * Date: 2014-01-02T14:54Z
  */
 (function (factory) {
   /* global define */
@@ -702,28 +702,27 @@
      */
     var loadImage = function (sUrl) {
       return $.Deferred(function (deferred) {
-        var image = new Image();
-        image.onload = loaded;
-        image.onerror = errored; // URL returns 404, etc
-        image.onabort = errored; // IE may call this if user clicks "Stop"
-        image.src = sUrl;
-         
-        function loaded() {
-          unbindEvents();
+        var image = new Image();
+        image.onload = loaded;
+        image.onerror = errored; // URL returns 404, etc
+        image.onabort = errored; // IE may call this if user clicks "Stop"
+        image.src = sUrl;
+
+        function loaded() {
+          unbindEvents();
           deferred.resolve(image);
-        }
-        function errored() {
-          unbindEvents();
+        }
+        function errored() {
+          unbindEvents();
           deferred.reject(image);
-        }
-        function unbindEvents() {
-          image.onload = null;
-          image.onerror = null;
-          image.onabort = null;
-        }
+        }
+        function unbindEvents() {
+          image.onload = null;
+          image.onerror = null;
+          image.onabort = null;
+        }
       }).promise();
     };
-  
     return { readFile: readFile, loadImage: loadImage };
   })();
 
