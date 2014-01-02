@@ -397,6 +397,7 @@ define([
     this.createLayout = function ($holder, options) {
       var nHeight = options.height,
           nTabsize = options.tabsize,
+          sDirection = options.direction,
           aToolbarSetting = options.toolbar,
           langInfo = $.summernote.lang[options.lang];
 
@@ -420,6 +421,9 @@ define([
       }
       if (nTabsize) {
         $editable.data('tabsize', nTabsize);
+      }
+      if (sDirection) {
+        $editable.attr('dir', sDirection);
       }
 
       $editable.html(dom.html($holder) || dom.emptyPara);

@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-01-02T00:05Z
+ * Date: 2014-01-02T14:30Z
  */
 (function (factory) {
   /* global define */
@@ -2214,6 +2214,7 @@
     this.createLayout = function ($holder, options) {
       var nHeight = options.height,
           nTabsize = options.tabsize,
+          sDirection = options.direction,
           aToolbarSetting = options.toolbar,
           langInfo = $.summernote.lang[options.lang];
 
@@ -2237,6 +2238,9 @@
       }
       if (nTabsize) {
         $editable.data('tabsize', nTabsize);
+      }
+      if (sDirection) {
+        $editable.attr('dir', sDirection);
       }
 
       $editable.html(dom.html($holder) || dom.emptyPara);
