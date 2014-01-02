@@ -93,31 +93,31 @@ $('#summernote').destroy();
 * Restructuring: jQuery build pattern
 
 #### v0.4 2013-11-01
-* `ADDED` Support both Bootstrap 3.0 and 2.x
-* `ADDED` Fullscreen
-* `ADDED` Code View
-* `ADDED` Image Upload callback
+* Support both Bootstrap 3.0 and 2.x
+* Fullscreen
+* Codeview
+* Image Upload callback
 
 #### v0.3 2013-09-01
-* `FIXED` bugs(image upload, fontsize, tab, recent color, ...)
-* `ADDED` help dialog(keyboard shortcut)
-* `ADDED` init options(event callbacks, custom toolbar)
-* `ADDED` resize bar
-* `ADDED` support IE8 Beta(some range bugs, can't insert Image)
+* Bugs(image upload, fontsize, tab, recent color, ...)
+* Help dialog(keyboard shortcut)
+* Init options(event callbacks, custom toolbar)
+* Resize bar
+* Support IE8 Beta(some range bugs, can't insert Image)
 
 #### v0.2, 2013-08-01
-* `ADDED` undo/redo
-* `ADDED` image sizing handle and popover
-* `ADDED` support standalone css
-* `ADDED` support Multiple Editor
-* `REMOVED` jQuery.curstyles dependency
+* Undo/Redo
+* Image sizing handle and popover
+* Support standalone css
+* Support Multiple Editor
+* Remove jQuery.curstyles dependency
 
 #### v0.1, 2013-07-01
-* `ADDED` font style: size, color, bold, italic, underline, remove font style
-* `ADDED` para style: bullet, align, outdent, indent, line height
-* `ADDED` image: drag & drop, dialog
-* `ADDED` link: popover and dialog
-* `ADDED` table: create table with dimension picker
+* Font style: size, color, bold, italic, underline, remove font style
+* Para style: bullet, align, outdent, indent, line height
+* Image: drag & drop, dialog
+* Link: popover and dialog
+* Table: create table with dimension picker
 
 ### for Hacker
 
