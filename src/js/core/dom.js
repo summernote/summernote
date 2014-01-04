@@ -24,6 +24,9 @@ define(['core/func', 'core/list'], function (func, list) {
       return node && /^UL|^OL/.test(node.nodeName);
     };
   
+    /**
+     * returns whether node is `note-editable` or not.
+     */
     var isEditable = function (node) {
       return node && $(node).hasClass('note-editable');
     };
@@ -38,7 +41,7 @@ define(['core/func', 'core/list'], function (func, list) {
      * @param {function} pred - predicate function
      */
     var ancestor = function (node, pred) {
-      while (node && !$(node).hasClass('note-editor')) {
+      while (node && !isEditable(node)) {
         if (pred(node)) { return node; }
         node = node.parentNode;
       }

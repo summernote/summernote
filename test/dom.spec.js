@@ -9,6 +9,7 @@ var dom = $.fn.summernoteInner().dom,
 test('dom.ancestor', function () {
   var $cont, $b, elB;
 
+  // basic case
   $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
   $b = $cont.find('b');
   elB = $b[0].firstChild;
@@ -17,6 +18,11 @@ test('dom.ancestor', function () {
   equal(dom.ancestor(elB, dom.isDiv), $cont[0], 'find ancestor DIV');
 
   equal(dom.ancestor(elB, dom.isU), null, 'find ancestor U: null');
+
+  // keep boundary
+  $cont = $('<ul><li><div class="note-editable"><b>b</b></div></li></ul>'); //b
+  elB = $cont.find('b')[0].firstChild;
+  equal(dom.ancestor(elB, dom.isPara), null, 'find paragraph ancestor outside note-editable: null');
 });
 
 test('dom.listAncestor', function () {

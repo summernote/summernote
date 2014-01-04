@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-01-02T14:54Z
+ * Date: 2014-01-04T04:30Z
  */
 (function (factory) {
   /* global define */
@@ -188,6 +188,9 @@
       return node && /^UL|^OL/.test(node.nodeName);
     };
   
+    /**
+     * returns whether node is `note-editable` or not.
+     */
     var isEditable = function (node) {
       return node && $(node).hasClass('note-editable');
     };
@@ -202,7 +205,7 @@
      * @param {function} pred - predicate function
      */
     var ancestor = function (node, pred) {
-      while (node) {
+      while (node && !isEditable(node)) {
         if (pred(node)) { return node; }
         node = node.parentNode;
       }
