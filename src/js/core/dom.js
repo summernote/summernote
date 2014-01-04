@@ -41,8 +41,10 @@ define(['core/func', 'core/list'], function (func, list) {
      * @param {function} pred - predicate function
      */
     var ancestor = function (node, pred) {
-      while (node && !isEditable(node)) {
+      while (node) {
         if (pred(node)) { return node; }
+        if (isEditable(node)) { break; }
+
         node = node.parentNode;
       }
       return null;
@@ -283,6 +285,7 @@ define(['core/func', 'core/list'], function (func, list) {
       isControlSizing: isControlSizing,
       isAnchor: makePredByNodeName('A'),
       isDiv: makePredByNodeName('DIV'),
+      isLi: makePredByNodeName('LI'),
       isSpan: makePredByNodeName('SPAN'),
       isB: makePredByNodeName('B'),
       isU: makePredByNodeName('U'),

@@ -22,7 +22,7 @@ test('dom.ancestor', function () {
   // keep boundary
   $cont = $('<ul><li><div class="note-editable"><b>b</b></div></li></ul>'); //b
   elB = $cont.find('b')[0].firstChild;
-  equal(dom.ancestor(elB, dom.isPara), null, 'find paragraph ancestor outside note-editable: null');
+  equal(dom.ancestor(elB, dom.isLi), null, 'find paragraph ancestor outside note-editable: null');
 });
 
 test('dom.listAncestor', function () {

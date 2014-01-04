@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-01-04T05:11Z
+ * Date: 2014-01-04T05:41Z
  */
 (function (factory) {
   /* global define */
@@ -205,8 +205,10 @@
      * @param {function} pred - predicate function
      */
     var ancestor = function (node, pred) {
-      while (node && !isEditable(node)) {
+      while (node) {
         if (pred(node)) { return node; }
+        if (isEditable(node)) { break; }
+
         node = node.parentNode;
       }
       return null;
@@ -447,6 +449,7 @@
       isControlSizing: isControlSizing,
       isAnchor: makePredByNodeName('A'),
       isDiv: makePredByNodeName('DIV'),
+      isLi: makePredByNodeName('LI'),
       isSpan: makePredByNodeName('SPAN'),
       isB: makePredByNodeName('B'),
       isU: makePredByNodeName('U'),
