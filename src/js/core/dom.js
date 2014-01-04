@@ -38,7 +38,7 @@ define(['core/func', 'core/list'], function (func, list) {
      * @param {function} pred - predicate function
      */
     var ancestor = function (node, pred) {
-      while (node) {
+      while (node && !$(node).hasClass('note-editor')) {
         if (pred(node)) { return node; }
         node = node.parentNode;
       }
