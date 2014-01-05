@@ -1,4 +1,4 @@
-define(['core/func', 'core/list'], function (func, list) {
+define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
   /**
    * dom utils
    */
@@ -17,8 +17,6 @@ define(['core/func', 'core/list'], function (func, list) {
       // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
       return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName);
     };
-  
-    var emptyPara = '<p><br/></p>';
   
     var isList = function (node) {
       return node && /^UL|^OL/.test(node.nodeName);
@@ -277,7 +275,8 @@ define(['core/func', 'core/list'], function (func, list) {
     };
   
     return {
-      emptyPara: emptyPara,
+      blank: agent.bMSIE ? '&nbsp;' : '<br/>',
+      emptyPara: '<p><br/></p>',
       isText: isText,
       isPara: isPara,
       isList: isList,

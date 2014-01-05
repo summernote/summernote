@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-01-04T05:41Z
+ * Date: 2014-01-05T06:11Z
  */
 (function (factory) {
   /* global define */
@@ -181,8 +181,6 @@
       // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
       return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName);
     };
-  
-    var emptyPara = '<p><br/></p>';
   
     var isList = function (node) {
       return node && /^UL|^OL/.test(node.nodeName);
@@ -441,7 +439,8 @@
     };
   
     return {
-      emptyPara: emptyPara,
+      blank: agent.bMSIE ? '&nbsp;' : '<br/>',
+      emptyPara: '<p><br/></p>',
       isText: isText,
       isPara: isPara,
       isList: isList,
@@ -824,50 +823,84 @@
     };
   };
 
+  var Table = function () {
+    /**
+     * Create empty table element
+     * @param nRow {number}
+     * @param nCol {number}
+     */
+    this.createTable = function (nCol, nRow) {
+      var aTD = [], sTD;
+      for (var idxCol = 0; idxCol < nCol; idxCol++) {
+        aTD.push('<td>' + dom.blank + '</td>');
+      }
+      sTD = aTD.join('');
+
+      var aTR = [], sTR;
+      for (var idxRow = 0; idxRow < nRow; idxRow++) {
+        aTR.push('<tr>' + sTD + '</tr>');
+      }
+      sTR = aTR.join('');
+      var sTable = '<table class="table table-bordered">' + sTR + '</table>';
+
+      return $(sTable)[0];
+    };
+  };
+
   /**
    * Editor
    */
   var Editor = function () {
-    // save current range
+
+    var style = new Style();
+    var table = new Table();
+
+    /**
+     * save current range
+     * @param $editable {jQuery}
+     */
     this.saveRange = function ($editable) {
       $editable.data('range', range.create());
     };
 
-    // restore lately range
+    /**
+     * restore lately range
+     * @param $editable {jQuery}
+     */
     this.restoreRange = function ($editable) {
       var rng = $editable.data('range');
       if (rng) { rng.select(); }
     };
 
-    //currentStyle
-    var style = new Style();
+    /**
+     * currentStyle
+     * @param elTarget {element}
+     */
     this.currentStyle = function (elTarget) {
       var rng = range.create();
       return rng.isOnEditable() && style.current(rng, elTarget);
     };
 
-    this.tab = function ($editable) {
-      recordUndo($editable);
-      var rng = range.create();
-      var sNbsp = new Array($editable.data('tabsize') + 1).join('&nbsp;');
-      rng.insertNode($('<span id="noteTab">' + sNbsp + '</span>')[0]);
-      var $tab = $('#noteTab').removeAttr('id');
-      rng = range.create($tab[0], 1);
-      rng.select();
-      dom.remove($tab[0]);
-    };
-
-    // undo
+    /**
+     * undo
+     * @param $editable {jQuery}
+     */
     this.undo = function ($editable) {
       $editable.data('NoteHistory').undo($editable);
     };
 
-    // redo
+    /**
+     * redo
+     * @param $editable {jQuery}
+     */
     this.redo = function ($editable) {
       $editable.data('NoteHistory').redo($editable);
     };
 
-    // recordUndo
+    /**
+     * record Undo
+     * @param $editable {jQuery}
+     */
     var recordUndo = this.recordUndo = function ($editable) {
       $editable.data('NoteHistory').recordUndo($editable);
     };
@@ -890,6 +923,26 @@
     }
     /* jshint ignore:end */
 
+    /**
+     * handle tag key
+     * @param $editable {jQuery}
+     */
+    this.tab = function ($editable) {
+      recordUndo($editable);
+      var rng = range.create();
+      var sNbsp = new Array($editable.data('tabsize') + 1).join('&nbsp;');
+      rng.insertNode($('<span id="noteTab">' + sNbsp + '</span>')[0]);
+      var $tab = $('#noteTab').removeAttr('id');
+      rng = range.create($tab[0], 1);
+      rng.select();
+      dom.remove($tab[0]);
+    };
+
+    /**
+     * insert Image
+     * @param $editable {jQuery}
+     * @param sUrl {string}
+     */
     this.insertImage = function ($editable, sUrl) {
       async.loadImage(sUrl).done(function (image) {
         recordUndo($editable);
@@ -904,6 +957,11 @@
       });
     };
 
+    /**
+     * insert video
+     * @param $editable {jQuery}
+     * @param sUrl {string}
+     */
     this.insertVideo = function ($editable, sUrl) {
       // video url patterns(youtube, instagram, vimeo, dailymotion)
       var ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -956,12 +1014,22 @@
       }
     };
 
-    this.formatBlock = function ($editable, sValue) {
+    /**
+     * formatBlock
+     * @param $editable {jQuery}
+     * @param sTagName {string} - tag name
+     */
+    this.formatBlock = function ($editable, sTagName) {
       recordUndo($editable);
-      sValue = agent.bMSIE ? '<' + sValue + '>' : sValue;
-      document.execCommand('FormatBlock', false, sValue);
+      sTagName = agent.bMSIE ? '<' + sTagName + '>' : sTagName;
+      document.execCommand('FormatBlock', false, sTagName);
     };
 
+    /**
+     * fontsize
+     * @param $editable {jQuery}
+     * @param sValue {string} - fontsize (px)
+     */
     this.fontSize = function ($editable, sValue) {
       recordUndo($editable);
       document.execCommand('fontSize', false, 3);
@@ -976,11 +1044,20 @@
       }
     };
 
+    /**
+     * lineHeight
+     * @param $editable {jQuery}
+     * @param sValue {string} - lineHeight
+     */
     this.lineHeight = function ($editable, sValue) {
       recordUndo($editable);
       style.stylePara(range.create(), {lineHeight: sValue});
     };
 
+    /**
+     * unlink
+     * @param $editable {jQuery}
+     */
     this.unlink = function ($editable) {
       var rng = range.create();
       if (rng.isOnAnchor()) {
@@ -1057,22 +1134,7 @@
     this.insertTable = function ($editable, sDim) {
       recordUndo($editable);
       var aDim = sDim.split('x');
-      var nCol = aDim[0], nRow = aDim[1];
-
-      var aTD = [], sTD;
-      var sWhitespace = agent.bMSIE ? '&nbsp;' : '<br/>';
-      for (var idxCol = 0; idxCol < nCol; idxCol++) {
-        aTD.push('<td>' + sWhitespace + '</td>');
-      }
-      sTD = aTD.join('');
-
-      var aTR = [], sTR;
-      for (var idxRow = 0; idxRow < nRow; idxRow++) {
-        aTR.push('<tr>' + sTD + '</tr>');
-      }
-      sTR = aTR.join('');
-      var sTable = '<table class="table table-bordered">' + sTR + '</table>';
-      range.create().insertNode($(sTable)[0]);
+      range.create().insertNode(table.createTable(aDim[0], aDim[1]));
     };
 
     this.floatMe = function ($editable, sValue, elTarget) {
@@ -1080,6 +1142,12 @@
       elTarget.style.cssFloat = sValue;
     };
 
+    /**
+     * resize target
+     * @param $editable {jQuery}
+     * @param sValue {string}
+     * @param elTarget {element} - target element
+     */
     this.resize = function ($editable, sValue, elTarget) {
       recordUndo($editable);
       elTarget.style.width = $editable.width() * sValue + 'px';
