@@ -36,7 +36,7 @@
           videoLink: 'Ссылка на видео',
           insert: 'Вставить видео',
           url: 'URL видео',
-          providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
+          providers: '(YouTube, Vimeo, Vine, Instagram или DailyMotion)'
         },
         table: {
           table: 'Таблица'
