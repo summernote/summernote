@@ -2,99 +2,99 @@
   $.extend($.summernote.lang, {
     'de-DE': {
       font: {
-        bold: 'Fett',
-        italic: 'Kursiv',
-        underline: 'Unterstreichen',
-        strike: 'Durchgestrichen',
-        clear: 'Zurücksetzen',
-        height: 'Zeilenhöhe',
-        size: 'Schriftgröße'
+        bold: 'Жирный',
+        italic: 'Курсив',
+        underline: 'Подчеркнутый',
+        strike: 'Зачернутый',
+        clear: 'Очистить',
+        height: 'Высота',
+        size: 'Размер'
       },
       image: {
-        image: 'Grafik',
-        insert: 'Grafik einfügen',
-        resizeFull: 'Originalgröße',
-        resizeHalf: 'Größe 1/2',
-        resizeQuarter: 'Größe 1/4',
-        floatLeft: 'Linksbündig',
-        floatRight: 'Rechtsbündig',
-        floatNone: 'Kein Textfluss',
-        dragImageHere: 'Ziehen Sie ein Bild mit der Maus hierher',
-        selectFromFiles: 'Wählen Sie eine Datei aus',
-        url: 'Grafik URL'
+        image: 'Изображение',
+        insert: 'Вставить изображение',
+        resizeFull: 'Оригинальный размер',
+        resizeHalf: 'Размер 1/2',
+        resizeQuarter: 'Размер 1/4',
+        floatLeft: 'Выравнивание по левому краю',
+        floatRight: 'Выравнивание по правому краю',
+        floatNone: 'Никакого выравнивания',
+        dragImageHere: 'Перетащить изображение сюда',
+        selectFromFiles: 'Выбрать из файлов',
+        url: 'URL изображения'
       },
       link: {
-        link: 'Link',
-        insert: 'Link einfügen',
-        unlink: 'Link entfernen',
-        edit: 'Editieren',
-        textToDisplay: 'Anzeigetext',
-        url: 'Ziel des Links?'
+        link: 'Ссылка',
+        insert: 'Вставить ссылку',
+        unlink: 'Удалить ссылку',
+        edit: 'Редактировать',
+        textToDisplay: 'Показывать текст',
+        url: 'URL ссылки'
       },
       video: {
-        video: 'Video',
-        videoLink: 'Video Link',
-        insert: 'Insert Video',
-        url: 'Video URL?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
+        video: 'Видео',
+        videoLink: 'Ссылка на видео',
+        insert: 'Вставить видео',
+        url: 'URL видео',
+        providers: '(YouTube, Vimeo, Vine, Instagram или DailyMotion)'
       },
       table: {
-        table: 'Tabelle'
+        table: 'Таблица'
       },
       hr: {
-        insert: 'Eine horizontale Linie einfügen'
+        insert: 'Горизонтальный разделитель'
       },
       style: {
-        style: 'Stil',
-        normal: 'Normal',
-        blockquote: 'Zitat',
-        pre: 'Quellcode',
-        h1: 'Überschrift 1',
-        h2: 'Überschrift 2',
-        h3: 'Überschrift 3',
-        h4: 'Überschrift 4',
-        h5: 'Überschrift 5',
-        h6: 'Überschrift 6'
+        style: 'Стиль',
+        normal: 'Обычный',
+        blockquote: 'Цитата',
+        pre: 'Отформатированный',
+        h1: 'Заголовок 1',
+        h2: 'Заголовок 2',
+        h3: 'Заголовок 3',
+        h4: 'Заголовок 4',
+        h5: 'Заголовок 5',
+        h6: 'Заголовок 6'
       },
       lists: {
-        unordered: 'Aufzählung',
-        ordered: 'Nummerieung'
+        unordered: 'Ненумерованный',
+        ordered: 'Нумерованный'
       },
       options: {
-        help: 'Hilfe',
-        fullscreen: 'Vollbild',
-        codeview: 'HTML-Code anzeigen'
+        help: 'Помощь',
+        fullscreen: 'На весь экран',
+        codeview: 'Редактировать HTML'
       },
       paragraph: {
-        paragraph: 'Absatz',
-        outdent: 'Einzug vergrößern',
-        indent: 'Einzug verkleinern',
-        left: 'Links ausrichten',
-        center: 'Zentriert ausrichten',
-        right: 'Rechts ausrichten',
-        justify: 'Blocksatz'
+        paragraph: 'Параграф',
+        outdent: 'Уменьшить отступ',
+        indent: 'Увеличить отступ',
+        left: 'Выравнивание по левому краю',
+        center: 'Выравнивание по центру',
+        right: 'Выравнивание по правому краю',
+        justify: 'Выравнивание по всей ширине'
       },
       color: {
-        recent: 'Letzte Farbe',
-        more: 'Mehr Farben',
-        background: 'Hintergrundfarbe',
-        foreground: 'Schriftfarbe',
-        transparent: 'Transparenz',
-        setTransparent: 'Transparenz setzen',
-        reset: 'Zurücksetzen',
-        resetToDefault: 'Auf Standard zurücksetzen'
+        recent: 'Предыдущий цвет',
+        more: 'Больше цветов',
+        background: 'Цвет фона',
+        foreground: 'Цвет текста',
+        transparent: 'Прозрачный',
+        setTransparent: 'Установить прозрачность',
+        reset: 'Сброс',
+        resetToDefault: 'Вернуться к значениям по умолчанию'
       },
       shortcut: {
-        shortcuts: 'Tastenkürzel',
-        close: 'Schließen',
-        textFormatting: 'Textformatierung',
-        action: 'Aktion',
-        paragraphFormatting: 'Absatzformatierung',
-        documentStyle: 'Dokumentenstil'
+        shortcuts: 'Горячие клавиши',
+        close: 'Закрыть',
+        textFormatting: 'Форматирование текста',
+        action: 'Действие',
+        paragraphFormatting: 'Форматирование параграфа',
+        documentStyle: 'Стиль документа'
       },
       history: {
-        undo: 'Rückgängig',
-        redo: 'Wiederholen'
+        undo: 'Отменить',
+        redo: 'Повторить'
       }
 
     }
