@@ -12,7 +12,7 @@
         },
         image: {
           image: '图片',
-          insert: '插入',
+          insert: '插入图片',
           resizeFull: '调整至 100%',
           resizeHalf: '调整至 50%',
           resizeQuarter: '调整至 25%',
@@ -25,7 +25,7 @@
         },
         link: {
           link: '链接',
-          insert: '插入',
+          insert: '插入链接',
           unlink: '去除链接',
           edit: '编辑链接',
           textToDisplay: '显示文本',
@@ -34,7 +34,7 @@
         video: {
           video: '视频',
           videoLink: '视频链接',
-          insert: '插入',
+          insert: '插入视频',
           url: '视频地址',
           providers: '(优酷, Instagram, Youtube等)'
         },

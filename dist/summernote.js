@@ -1007,10 +1007,10 @@
         $video = $('<iframe>')
           .attr('src', 'http://www.dailymotion.com/embed/video/' + dmMatch[2])
           .attr('width', '640').attr('height', '360');
-      } else if (ykMatch && ykMatch[2].length > 0 ){
+      } else if (ykMatch && ykMatch[2].length > 0) {
         $video = $('<iframe>')
           .attr('src', 'http://player.youku.com/player.php/sid/' + ykMatch[2] + '/v.swf')
-          .attr('width', '600').attr('height', '600')
+          .attr('width', '600').attr('height', '360');
       } else {
         // this is not a known video link. Now what, Cat? Now what?
       }
