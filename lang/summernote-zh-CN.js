@@ -36,7 +36,7 @@
           videoLink: '视频链接',
           insert: '插入',
           url: '视频地址',
-          providers: '(优酷, 土豆, 爱奇艺等)'
+          providers: '(优酷, Instagram, Youtube等)'
         },
         table: {
           table: '表格'

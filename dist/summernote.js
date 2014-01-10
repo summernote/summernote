@@ -963,7 +963,7 @@
      * @param sUrl {string}
      */
     this.insertVideo = function ($editable, sUrl) {
-      // video url patterns(youtube, instagram, vimeo, dailymotion)
+      // video url patterns(youtube, instagram, vimeo, dailymotion, youku)
       var ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       var ytMatch = sUrl.match(ytRegExp);
 
@@ -978,6 +978,9 @@
 
       var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
       var dmMatch = sUrl.match(dmRegExp);
+
+      var ykRegExp = /\/\/(v.youku.com)\/v_show\/id_(.+?).html/;
+      var ykMatch = sUrl.match(ykRegExp);
 
       var $video;
       if (ytMatch && ytMatch[2].length === 11) {
@@ -1004,6 +1007,10 @@
         $video = $('<iframe>')
           .attr('src', 'http://www.dailymotion.com/embed/video/' + dmMatch[2])
           .attr('width', '640').attr('height', '360');
+      } else if (ykMatch && ykMatch[2].length > 0 ){
+        $video = $('<iframe>')
+          .attr('src', 'http://player.youku.com/player.php/sid/' + ykMatch[2] + '/v.swf')
+          .attr('width', '600').attr('height', '600')
       } else {
         // this is not a known video link. Now what, Cat? Now what?
       }
