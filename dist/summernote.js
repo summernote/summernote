@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-01-05T06:11Z
+ * Date: 2014-01-05T06:31Z
  */
 (function (factory) {
   /* global define */
@@ -176,6 +176,16 @@
         return node && node.nodeName === sNodeName;
       };
     };
+
+    /**
+     * returns predicate which judge whether contains className
+     */
+    var makePredByClassName = function (sClassName) {
+      // nodeName of element is always uppercase.
+      return function (node) {
+        return node && $(node).hasClass(sClassName);
+      };
+    };
   
     var isPara = function (node) {
       // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
@@ -186,17 +196,11 @@
       return node && /^UL|^OL/.test(node.nodeName);
     };
   
-    /**
-     * returns whether node is `note-editable` or not.
-     */
-    var isEditable = function (node) {
-      return node && $(node).hasClass('note-editable');
-    };
-  
-    var isControlSizing = function (node) {
-      return node && $(node).hasClass('note-control-sizing');
-    };
-  
+    // returns whether node is `note-editable` or not.
+    var isEditable = makePredByClassName('note-editable');
+    // returns whether node is `note-control-sizing` or not.
+    var isControlSizing = makePredByClassName('note-control-sizing');
+
     /**
      * find nearest ancestor predicate hit
      * @param {element} node
@@ -456,6 +460,7 @@
       isI: makePredByNodeName('I'),
       isImg: makePredByNodeName('IMG'),
       isTextarea: makePredByNodeName('TEXTAREA'),
+      isTable: makePredByNodeName('TABLE'),
       ancestor: ancestor,
       listAncestor: listAncestor,
       listNext: listNext,
@@ -612,6 +617,8 @@
       this.isOnList = makeIsOn(dom.isList);
       // isOnAnchor: judge whether range is on anchor node or not
       this.isOnAnchor = makeIsOn(dom.isAnchor);
+      // isOnAnchor: judge whether range is on cell node or not
+      this.isOnCell = makeIsOn(dom.isCell);
       // isCollapsed: judge whether range was collapsed
       this.isCollapsed = function () { return sc === ec && so === eo; };
   
@@ -923,19 +930,27 @@
     }
     /* jshint ignore:end */
 
-    /**
-     * handle tag key
-     * @param $editable {jQuery}
-     */
-    this.tab = function ($editable) {
+    var insertTab = function ($editable, rng) {
       recordUndo($editable);
-      var rng = range.create();
       var sNbsp = new Array($editable.data('tabsize') + 1).join('&nbsp;');
       rng.insertNode($('<span id="noteTab">' + sNbsp + '</span>')[0]);
       var $tab = $('#noteTab').removeAttr('id');
       rng = range.create($tab[0], 1);
       rng.select();
       dom.remove($tab[0]);
+    };
+
+    /**
+     * handle tag key
+     * @param $editable {jQuery}
+     */
+    this.tab = function ($editable) {
+      var rng = range.create();
+      if (rng.isOnCell) {
+
+      } else {
+        insertTab($editable, rng);
+      }
     };
 
     /**

@@ -1,6 +1,7 @@
 define(['core/dom'], function (dom) {
   /**
    * Style
+   * @class
    */
   var Style = function () {
     // para level style

@@ -1,4 +1,8 @@
 define(['core/dom'], function (dom) {
+  /**
+   * Table
+   * @class
+   */
   var Table = function () {
     /**
      * Create empty table element

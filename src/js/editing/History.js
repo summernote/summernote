@@ -1,6 +1,7 @@
 define(['core/range'], function (range) {
   /**
    * History
+   * @class
    */
   var History = function () {
     var aUndo = [], aRedo = [];

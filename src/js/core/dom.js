@@ -12,6 +12,16 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
         return node && node.nodeName === sNodeName;
       };
     };
+
+    /**
+     * returns predicate which judge whether contains className
+     */
+    var makePredByClassName = function (sClassName) {
+      // nodeName of element is always uppercase.
+      return function (node) {
+        return node && $(node).hasClass(sClassName);
+      };
+    };
   
     var isPara = function (node) {
       // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
@@ -21,18 +31,16 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     var isList = function (node) {
       return node && /^UL|^OL/.test(node.nodeName);
     };
-  
-    /**
-     * returns whether node is `note-editable` or not.
-     */
-    var isEditable = function (node) {
-      return node && $(node).hasClass('note-editable');
+
+    var isCell = function (node) {
+      return node && /^TD|^TH/.test(node.nodeName);
     };
   
-    var isControlSizing = function (node) {
-      return node && $(node).hasClass('note-control-sizing');
-    };
-  
+    // returns whether node is `note-editable` or not.
+    var isEditable = makePredByClassName('note-editable');
+    // returns whether node is `note-control-sizing` or not.
+    var isControlSizing = makePredByClassName('note-control-sizing');
+
     /**
      * find nearest ancestor predicate hit
      * @param {element} node
@@ -282,6 +290,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
       isList: isList,
       isEditable: isEditable,
       isControlSizing: isControlSizing,
+      isCell: isCell,
       isAnchor: makePredByNodeName('A'),
       isDiv: makePredByNodeName('DIV'),
       isLi: makePredByNodeName('LI'),
@@ -292,6 +301,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
       isI: makePredByNodeName('I'),
       isImg: makePredByNodeName('IMG'),
       isTextarea: makePredByNodeName('TEXTAREA'),
+      isTable: makePredByNodeName('TABLE'),
       ancestor: ancestor,
       listAncestor: listAncestor,
       listNext: listNext,

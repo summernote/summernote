@@ -3,6 +3,7 @@ define([
 ], function (agent, dom, range, async, Style, Table) {
   /**
    * Editor
+   * @class
    */
   var Editor = function () {
 
@@ -77,19 +78,27 @@ define([
     }
     /* jshint ignore:end */
 
-    /**
-     * handle tag key
-     * @param $editable {jQuery}
-     */
-    this.tab = function ($editable) {
+    var insertTab = function ($editable, rng) {
       recordUndo($editable);
-      var rng = range.create();
       var sNbsp = new Array($editable.data('tabsize') + 1).join('&nbsp;');
       rng.insertNode($('<span id="noteTab">' + sNbsp + '</span>')[0]);
       var $tab = $('#noteTab').removeAttr('id');
       rng = range.create($tab[0], 1);
       rng.select();
       dom.remove($tab[0]);
+    };
+
+    /**
+     * handle tag key
+     * @param $editable {jQuery}
+     */
+    this.tab = function ($editable) {
+      var rng = range.create();
+      if (rng.isOnCell) {
+        console.log('cell');
+      } else {
+        insertTab($editable, rng);
+      }
     };
 
     /**

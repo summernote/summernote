@@ -141,6 +141,8 @@ define([
       this.isOnList = makeIsOn(dom.isList);
       // isOnAnchor: judge whether range is on anchor node or not
       this.isOnAnchor = makeIsOn(dom.isAnchor);
+      // isOnAnchor: judge whether range is on cell node or not
+      this.isOnCell = makeIsOn(dom.isCell);
       // isCollapsed: judge whether range was collapsed
       this.isCollapsed = function () { return sc === ec && so === eo; };
   
