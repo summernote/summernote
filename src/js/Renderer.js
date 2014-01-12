@@ -402,7 +402,8 @@ define([
           langInfo = $.summernote.lang[options.lang];
 
       //already created
-      if ($holder.next().hasClass('note-editor')) { return; }
+      var next = $holder.next();
+      if (!next && next.hasClass('note-editor')) { return; }
 
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
