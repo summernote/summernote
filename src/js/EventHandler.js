@@ -9,8 +9,6 @@ define([
              Toolbar, Popover, Handle, Dialog) {
   /**
    * EventHandler
-   *
-   * handle mouse & key event on note
    */
   var EventHandler = function () {
     var editor = new Editor();
@@ -358,8 +356,9 @@ define([
     };
 
     /**
-     * attach Drag and Drop Events
-     * @param oLayoutInfo {object} - layout Informations
+     * Attach Drag and Drop Events
+     *
+     * @param {Object} oLayoutInfo - layout Informations
      */
     var attachDragAndDropEvent = function (oLayoutInfo) {
       var collection = $(), $dropzone = oLayoutInfo.dropzone,
@@ -402,9 +401,10 @@ define([
 
     /**
      * Attach eventhandler
-     * @param {object} oLayoutInfo - layout Informations
-     * @param {object} options - user options include custom event handlers
-     * @param {function} options.enter - enter key handler
+     *
+     * @param {Object} oLayoutInfo - layout Informations
+     * @param {Object} options - user options include custom event handlers
+     * @param {Function} options.enter - enter key handler
      */
     this.attach = function (oLayoutInfo, options) {
       oLayoutInfo.editable.on('keydown', hKeydown);

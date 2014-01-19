@@ -3,7 +3,9 @@ define(['core/dom'], function (dom) {
    * Style
    */
   var Style = function () {
-    // para level style
+    /**
+     * Paragraph level style
+     */
     this.stylePara = function (rng, oStyle) {
       var aPara = rng.listPara();
       $.each(aPara, function (idx, elPara) {
@@ -13,11 +15,15 @@ define(['core/dom'], function (dom) {
       });
     };
 
-    // get current style, elTarget: target element on event.
+    /**
+     * Get current style on cursor
+     *
+     * @param {WrappedRange} rng
+     * @param {Element} elTarget - target element on event
+     */
     this.current = function (rng, elTarget) {
       var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
-      var oStyle = $cont.css(['font-size', 'text-align',
-                                'list-style-type', 'line-height']) || {};
+      var oStyle = $cont.css(['font-size', 'text-align', 'list-style-type', 'line-height']) || {};
 
       oStyle['font-size'] = parseInt(oStyle['font-size']);
 

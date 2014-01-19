@@ -1,13 +1,13 @@
 define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
   /**
-   * dom utils
+   * Dom functions
    */
   var dom = (function () {
     /**
-     * returns predicate which judge whether nodeName is same
+     * Returns predicate which judge whether nodeName is same
      */
     var makePredByNodeName = function (sNodeName) {
-      // nodeName of element is always uppercase.
+      // nodeName is always uppercase.
       return function (node) {
         return node && node.nodeName === sNodeName;
       };
@@ -23,7 +23,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * returns whether node is `note-editable` or not.
+     * Returns whether node is `note-editable` or not.
      */
     var isEditable = function (node) {
       return node && $(node).hasClass('note-editable');
@@ -34,9 +34,10 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * find nearest ancestor predicate hit
-     * @param {element} node
-     * @param {function} pred - predicate function
+     * Find nearest ancestor predicate hit
+     *
+     * @param {Element} node
+     * @param {Function} pred - predicate function
      */
     var ancestor = function (node, pred) {
       while (node) {
@@ -49,9 +50,10 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * returns new array of ancestor nodes (until predicate hit).
-     * @param {element} node
-     * @param {function} [optional] pred - predicate function
+     * Returns new array of ancestor nodes (until predicate hit).
+     *
+     * @param {Element} node
+     * @param {Function} [optional] pred - predicate function
      */
     var listAncestor = function (node, pred) {
       pred = pred || func.fail;
@@ -65,9 +67,10 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * returns common ancestor node between two nodes.
-     * @param {element} nodeA
-     * @param {element} nodeB
+     * Returns common ancestor node between two nodes.
+     *
+     * @param {Element} nodeA
+     * @param {Element} nodeB
      */
     var commonAncestor = function (nodeA, nodeB) {
       var aAncestor = listAncestor(nodeA);
@@ -78,10 +81,11 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * listing all Nodes between two nodes.
+     * Listing all Nodes between two nodes.
      * FIXME: nodeA and nodeB must be sorted, use comparePoints later.
-     * @param {element} nodeA
-     * @param {element} nodeB
+     *
+     * @param {Element} nodeA
+     * @param {Element} nodeB
      */
     var listBetween = function (nodeA, nodeB) {
       var aNode = [];
@@ -103,9 +107,9 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * listing all prevSiblings (until predicate hit).
-     * @param {element} node
-     * @param {function} [optional] pred - predicate function
+     * Listing all previous siblings (until predicate hit).
+     * @param {Element} node
+     * @param {Function} [optional] pred - predicate function
      */
     var listPrev = function (node, pred) {
       pred = pred || func.fail;
@@ -120,9 +124,10 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * listing nextSiblings (until predicate hit).
-     * @param {element} node
-     * @param {function} pred [optional] - predicate function
+     * Listing next siblings (until predicate hit).
+     *
+     * @param {Element} node
+     * @param {Function} pred [optional] - predicate function
      */
     var listNext = function (node, pred) {
       pred = pred || func.fail;
@@ -137,9 +142,10 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * insert node after preceding
-     * @param {element} node
-     * @param {element} preceding - predicate function
+     * Insert node after preceding
+     *
+     * @param {Element} node
+     * @param {Element} preceding - predicate function
      */
     var insertAfter = function (node, preceding) {
       var next = preceding.nextSibling, parent = preceding.parentNode;
@@ -152,9 +158,10 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * append children
-     * @param {element} node
-     * @param {collection} aChild
+     * Append elements.
+     *
+     * @param {Element} node
+     * @param {Collection} aChild
      */
     var appends = function (node, aChild) {
       $.each(aChild, function (idx, child) {
@@ -166,8 +173,9 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     var isText = makePredByNodeName('#text');
   
     /**
-     * returns #text's text size or element's childNodes size
-     * @param {element} node
+     * Returns #text's text size or element's childNodes size
+     *
+     * @param {Element} node
      */
     var length = function (node) {
       if (isText(node)) { return node.nodeValue.length; }
@@ -175,8 +183,9 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * returns offset from parent.
-     * @param {element} node
+     * Returns offset from parent.
+     *
+     * @param {Element} node
      */
     var position = function (node) {
       var offset = 0;
@@ -185,9 +194,10 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * return offsetPath(array of offset) from ancestor
-     * @param {element} ancestor - ancestor node
-     * @param {element} node
+     * Return offsetPath(array of offset) from ancestor
+     *
+     * @param {Element} ancestor - ancestor node
+     * @param {Element} node
      */
     var makeOffsetPath = function (ancestor, node) {
       var aAncestor = list.initial(listAncestor(node, func.eq(ancestor)));
@@ -195,8 +205,9 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * return element from offsetPath(array of offset)
-     * @param {element} ancestor - ancestor node
+     * Return element from offsetPath(array of offset)
+     *
+     * @param {Element} ancestor - ancestor node
      * @param {array} aOffset - offsetPath
      */
     var fromOffsetPath = function (ancestor, aOffset) {
@@ -208,9 +219,10 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * split element or #text
-     * @param {element} node
-     * @param {number} offset
+     * Split element or #text
+     *
+     * @param {Element} node
+     * @param {Number} offset
      */
     var splitData = function (node, offset) {
       if (offset === 0) { return node; }
@@ -226,10 +238,11 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * split dom tree by boundaryPoint(pivot and offset)
-     * @param {element} root
-     * @param {element} pivot - this will be boundaryPoint's node
-     * @param {number} offset - this will be boundaryPoint's offset
+     * Split dom tree by boundaryPoint(pivot and offset)
+     *
+     * @param {Element} root
+     * @param {Element} pivot - this will be boundaryPoint's node
+     * @param {Number} offset - this will be boundaryPoint's offset
      */
     var split = function (root, pivot, offset) {
       var aAncestor = listAncestor(pivot, func.eq(root));
@@ -246,9 +259,9 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * remove node, (bRemoveChild: remove child or not)
-     * @param {element} node
-     * @param {boolean} bRemoveChild
+     * Remove node, (bRemoveChild: remove child or not)
+     * @param {Element} node
+     * @param {Boolean} bRemoveChild
      */
     var remove = function (node, bRemoveChild) {
       if (!node || !node.parentNode) { return; }

@@ -4,9 +4,10 @@ define('module/Dialog', function () {
    */
   var Dialog = function () {
     /**
-     * toggle button status
-     * @param $btn {jquery}
-     * @param bEnable {boolean}
+     * Toggle button status
+     *
+     * @param {jQuery} $btn
+     * @param {Boolean} bEnable
      */
     var toggleBtn = function ($btn, bEnable) {
       if (bEnable) {
@@ -17,10 +18,11 @@ define('module/Dialog', function () {
     };
 
     /**
-     * show image dialog
-     * @param $dialog {jquery}
-     * @param fnInsertImages {function}
-     * @param fnInsertImage {function}
+     * Show image dialog
+     *
+     * @param {jQuery} $dialog
+     * @param {Function} fnInsertImages 
+     * @param {Function} fnInsertImage 
      */
     this.showImageDialog = function ($dialog, fnInsertImages, fnInsertImage) {
       var $imageDialog = $dialog.find('.note-image-dialog');
@@ -51,10 +53,11 @@ define('module/Dialog', function () {
     };
 
     /**
-     * show video dialog
-     * @param $dialog {jquery}
-     * @param videoInfo {object}
-     * @param callback {function}
+     * Show video dialog
+     *
+     * @param {jQuery} $dialog 
+     * @param {Object} videoInfo 
+     * @param {Function} callback 
      */
     this.showVideoDialog = function ($dialog, videoInfo, callback) {
       var $videoDialog = $dialog.find('.note-video-dialog');
@@ -79,10 +82,11 @@ define('module/Dialog', function () {
     };
 
     /**
-     * show link dialog
-     * @param $dialog {jquery}
-     * @param linkInfo {object}
-     * @param callback {function}
+     * Show link dialog
+     *
+     * @param {jQuery} $dialog
+     * @param {Object} linkInfo
+     * @param {function} callback
      */
     this.showLinkDialog = function ($dialog, linkInfo, callback) {
       var $linkDialog = $dialog.find('.note-link-dialog');
@@ -109,8 +113,9 @@ define('module/Dialog', function () {
     };
 
     /**
-     * show help dialog
-     * @param $dialog {jquery}
+     * Show help dialog
+     *
+     * @param {jQuery} $dialog
      */
     this.showHelpDialog = function ($dialog) {
       $dialog.find('.note-help-dialog').modal('show');

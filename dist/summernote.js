@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-01-05T06:11Z
+ * Date: 2014-01-19T05:15Z
  */
 (function (factory) {
   /* global define */
@@ -21,9 +21,11 @@
   
 
 
-  // Array.prototype.reduce fallback
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
   if ('function' !== typeof Array.prototype.reduce) {
+    /**
+     * Array.prototype.reduce fallback
+     *  - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
+     */
     Array.prototype.reduce = function (callback, optInitialValue) {
       var idx, value, length = this.length >>> 0, isValueSet = false;
       if (1 < arguments.length) {
@@ -48,7 +50,7 @@
   }
 
   /**
-   * object which check platform/agent
+   * Object which check platform and agent
    */
   var agent = {
     bMac: navigator.appVersion.indexOf('Mac') > -1,
@@ -164,14 +166,14 @@
   })();
 
   /**
-   * dom utils
+   * Dom functions
    */
   var dom = (function () {
     /**
-     * returns predicate which judge whether nodeName is same
+     * Returns predicate which judge whether nodeName is same
      */
     var makePredByNodeName = function (sNodeName) {
-      // nodeName of element is always uppercase.
+      // nodeName is always uppercase.
       return function (node) {
         return node && node.nodeName === sNodeName;
       };
@@ -187,7 +189,7 @@
     };
   
     /**
-     * returns whether node is `note-editable` or not.
+     * Returns whether node is `note-editable` or not.
      */
     var isEditable = function (node) {
       return node && $(node).hasClass('note-editable');
@@ -198,9 +200,10 @@
     };
   
     /**
-     * find nearest ancestor predicate hit
-     * @param {element} node
-     * @param {function} pred - predicate function
+     * Find nearest ancestor predicate hit
+     *
+     * @param {Element} node
+     * @param {Function} pred - predicate function
      */
     var ancestor = function (node, pred) {
       while (node) {
@@ -213,9 +216,10 @@
     };
   
     /**
-     * returns new array of ancestor nodes (until predicate hit).
-     * @param {element} node
-     * @param {function} [optional] pred - predicate function
+     * Returns new array of ancestor nodes (until predicate hit).
+     *
+     * @param {Element} node
+     * @param {Function} [optional] pred - predicate function
      */
     var listAncestor = function (node, pred) {
       pred = pred || func.fail;
@@ -229,9 +233,10 @@
     };
   
     /**
-     * returns common ancestor node between two nodes.
-     * @param {element} nodeA
-     * @param {element} nodeB
+     * Returns common ancestor node between two nodes.
+     *
+     * @param {Element} nodeA
+     * @param {Element} nodeB
      */
     var commonAncestor = function (nodeA, nodeB) {
       var aAncestor = listAncestor(nodeA);
@@ -242,10 +247,11 @@
     };
   
     /**
-     * listing all Nodes between two nodes.
+     * Listing all Nodes between two nodes.
      * FIXME: nodeA and nodeB must be sorted, use comparePoints later.
-     * @param {element} nodeA
-     * @param {element} nodeB
+     *
+     * @param {Element} nodeA
+     * @param {Element} nodeB
      */
     var listBetween = function (nodeA, nodeB) {
       var aNode = [];
@@ -267,9 +273,9 @@
     };
   
     /**
-     * listing all prevSiblings (until predicate hit).
-     * @param {element} node
-     * @param {function} [optional] pred - predicate function
+     * Listing all previous siblings (until predicate hit).
+     * @param {Element} node
+     * @param {Function} [optional] pred - predicate function
      */
     var listPrev = function (node, pred) {
       pred = pred || func.fail;
@@ -284,9 +290,10 @@
     };
   
     /**
-     * listing nextSiblings (until predicate hit).
-     * @param {element} node
-     * @param {function} pred [optional] - predicate function
+     * Listing next siblings (until predicate hit).
+     *
+     * @param {Element} node
+     * @param {Function} pred [optional] - predicate function
      */
     var listNext = function (node, pred) {
       pred = pred || func.fail;
@@ -301,9 +308,10 @@
     };
   
     /**
-     * insert node after preceding
-     * @param {element} node
-     * @param {element} preceding - predicate function
+     * Insert node after preceding
+     *
+     * @param {Element} node
+     * @param {Element} preceding - predicate function
      */
     var insertAfter = function (node, preceding) {
       var next = preceding.nextSibling, parent = preceding.parentNode;
@@ -316,9 +324,10 @@
     };
   
     /**
-     * append children
-     * @param {element} node
-     * @param {collection} aChild
+     * Append elements.
+     *
+     * @param {Element} node
+     * @param {Collection} aChild
      */
     var appends = function (node, aChild) {
       $.each(aChild, function (idx, child) {
@@ -330,8 +339,9 @@
     var isText = makePredByNodeName('#text');
   
     /**
-     * returns #text's text size or element's childNodes size
-     * @param {element} node
+     * Returns #text's text size or element's childNodes size
+     *
+     * @param {Element} node
      */
     var length = function (node) {
       if (isText(node)) { return node.nodeValue.length; }
@@ -339,8 +349,9 @@
     };
   
     /**
-     * returns offset from parent.
-     * @param {element} node
+     * Returns offset from parent.
+     *
+     * @param {Element} node
      */
     var position = function (node) {
       var offset = 0;
@@ -349,9 +360,10 @@
     };
   
     /**
-     * return offsetPath(array of offset) from ancestor
-     * @param {element} ancestor - ancestor node
-     * @param {element} node
+     * Return offsetPath(array of offset) from ancestor
+     *
+     * @param {Element} ancestor - ancestor node
+     * @param {Element} node
      */
     var makeOffsetPath = function (ancestor, node) {
       var aAncestor = list.initial(listAncestor(node, func.eq(ancestor)));
@@ -359,8 +371,9 @@
     };
   
     /**
-     * return element from offsetPath(array of offset)
-     * @param {element} ancestor - ancestor node
+     * Return element from offsetPath(array of offset)
+     *
+     * @param {Element} ancestor - ancestor node
      * @param {array} aOffset - offsetPath
      */
     var fromOffsetPath = function (ancestor, aOffset) {
@@ -372,9 +385,10 @@
     };
   
     /**
-     * split element or #text
-     * @param {element} node
-     * @param {number} offset
+     * Split element or #text
+     *
+     * @param {Element} node
+     * @param {Number} offset
      */
     var splitData = function (node, offset) {
       if (offset === 0) { return node; }
@@ -390,10 +404,11 @@
     };
   
     /**
-     * split dom tree by boundaryPoint(pivot and offset)
-     * @param {element} root
-     * @param {element} pivot - this will be boundaryPoint's node
-     * @param {number} offset - this will be boundaryPoint's offset
+     * Split dom tree by boundaryPoint(pivot and offset)
+     *
+     * @param {Element} root
+     * @param {Element} pivot - this will be boundaryPoint's node
+     * @param {Number} offset - this will be boundaryPoint's offset
      */
     var split = function (root, pivot, offset) {
       var aAncestor = listAncestor(pivot, func.eq(root));
@@ -410,9 +425,9 @@
     };
   
     /**
-     * remove node, (bRemoveChild: remove child or not)
-     * @param {element} node
-     * @param {boolean} bRemoveChild
+     * Remove node, (bRemoveChild: remove child or not)
+     * @param {Element} node
+     * @param {Boolean} bRemoveChild
      */
     var remove = function (node, bRemoveChild) {
       if (!node || !node.parentNode) { return; }
@@ -685,47 +700,54 @@
   })();
 
   /**
-   * aysnc functions which returns deferred object
+   * Async functions which returns deferred object
    */
   var async = (function () {
     /**
-     * readFile
-     * @param {file} file - file object
+     * Read contents of file as representing URL
+     * @param {File} file
      */
     var readFile = function (file) {
       return $.Deferred(function (deferred) {
-        var reader = new FileReader();
-        reader.onload = function (e) { deferred.resolve(e.target.result); };
-        reader.onerror = function () { deferred.reject(this); };
-        reader.readAsDataURL(file);
+        $.extend(new FileReader(), {
+          onload: function (e) {
+            deferred.resolve(e.target.result);
+          },
+          onerror: function () {
+            deferred.reject(this);
+          }
+        }).readAsDataURL(file);
       }).promise();
     };
   
     /**
-     * loadImage from url string
-     * @param {string} sUrl
+     * Load image from url string
+     *
+     * @param {String} sUrl
      */
     var loadImage = function (sUrl) {
       return $.Deferred(function (deferred) {
-        var image = new Image();
-        image.onload = loaded;
-        image.onerror = errored; // URL returns 404, etc
-        image.onabort = errored; // IE may call this if user clicks "Stop"
-        image.src = sUrl;
-
-        function loaded() {
-          unbindEvents();
-          deferred.resolve(image);
-        }
-        function errored() {
-          unbindEvents();
-          deferred.reject(image);
-        }
-        function unbindEvents() {
-          image.onload = null;
-          image.onerror = null;
-          image.onabort = null;
-        }
+        $.extend(new Image(), {
+          detachEvents: function () {
+            this.onload = null;
+            this.onerror = null;
+            this.onabort = null;
+          },
+          onload: function () {
+            this.detachEvents();
+            deferred.resolve(this);
+          },
+          onerror: function () {
+            // URL returns 404, etc
+            this.detachEvents();
+            deferred.reject(this);
+          },
+          onabort: function () {
+            // IE may call this if user clicks "Stop"
+            this.detachEvents();
+            deferred.reject(this);
+          }
+        }).src = sUrl;
       }).promise();
     };
     return { readFile: readFile, loadImage: loadImage };
@@ -735,7 +757,9 @@
    * Style
    */
   var Style = function () {
-    // para level style
+    /**
+     * Paragraph level style
+     */
     this.stylePara = function (rng, oStyle) {
       var aPara = rng.listPara();
       $.each(aPara, function (idx, elPara) {
@@ -745,11 +769,15 @@
       });
     };
 
-    // get current style, elTarget: target element on event.
+    /**
+     * Get current style on cursor
+     *
+     * @param {WrappedRange} rng
+     * @param {Element} elTarget - target element on event
+     */
     this.current = function (rng, elTarget) {
       var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
-      var oStyle = $cont.css(['font-size', 'text-align',
-                                'list-style-type', 'line-height']) || {};
+      var oStyle = $cont.css(['font-size', 'text-align', 'list-style-type', 'line-height']) || {};
 
       oStyle['font-size'] = parseInt(oStyle['font-size']);
 
@@ -826,8 +854,9 @@
   var Table = function () {
     /**
      * Create empty table element
-     * @param nRow {number}
-     * @param nCol {number}
+     *
+     * @param {Number} nRow
+     * @param {Number} nCol
      */
     this.createTable = function (nCol, nRow) {
       var aTD = [], sTD;
@@ -856,16 +885,18 @@
     var table = new Table();
 
     /**
-     * save current range
-     * @param $editable {jQuery}
+     * Save current range
+     *
+     * @param {jQuery} $editable 
      */
     this.saveRange = function ($editable) {
       $editable.data('range', range.create());
     };
 
     /**
-     * restore lately range
-     * @param $editable {jQuery}
+     * Restore lately range
+     *
+     * @param {jQuery} $editable
      */
     this.restoreRange = function ($editable) {
       var rng = $editable.data('range');
@@ -873,8 +904,8 @@
     };
 
     /**
-     * currentStyle
-     * @param elTarget {element}
+     * Current style
+     * @param {Element} elTarget
      */
     this.currentStyle = function (elTarget) {
       var rng = range.create();
@@ -882,16 +913,16 @@
     };
 
     /**
-     * undo
-     * @param $editable {jQuery}
+     * Undo
+     * @param {jQuery} $editable
      */
     this.undo = function ($editable) {
       $editable.data('NoteHistory').undo($editable);
     };
 
     /**
-     * redo
-     * @param $editable {jQuery}
+     * Redo
+     * @param {jQuery} $editable
      */
     this.redo = function ($editable) {
       $editable.data('NoteHistory').redo($editable);
@@ -899,7 +930,7 @@
 
     /**
      * record Undo
-     * @param $editable {jQuery}
+     * @param {jQuery} $editable
      */
     var recordUndo = this.recordUndo = function ($editable) {
       $editable.data('NoteHistory').recordUndo($editable);
@@ -924,8 +955,9 @@
     /* jshint ignore:end */
 
     /**
-     * handle tag key
-     * @param $editable {jQuery}
+     * Handle tab key
+     *
+     * @param {jQuery} $editable
      */
     this.tab = function ($editable) {
       recordUndo($editable);
@@ -939,9 +971,10 @@
     };
 
     /**
-     * insert Image
-     * @param $editable {jQuery}
-     * @param sUrl {string}
+     * Insert image
+     *
+     * @param {jQuery} $editable
+     * @param {String} sUrl
      */
     this.insertImage = function ($editable, sUrl) {
       async.loadImage(sUrl).done(function (image) {
@@ -958,12 +991,12 @@
     };
 
     /**
-     * insert video
-     * @param $editable {jQuery}
-     * @param sUrl {string}
+     * Insert video
+     * @param {jQuery} $editable
+     * @param {String} sUrl
      */
     this.insertVideo = function ($editable, sUrl) {
-      // video url patterns(youtube, instagram, vimeo, dailymotion, youku)
+      // video url patterns(youtube, instagram, vimeo, dailymotion)
       var ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       var ytMatch = sUrl.match(ytRegExp);
 
@@ -978,9 +1011,6 @@
 
       var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
       var dmMatch = sUrl.match(dmRegExp);
-
-      var ykRegExp = /\/\/(v.youku.com)\/v_show\/id_(.+?).html/;
-      var ykMatch = sUrl.match(ykRegExp);
 
       var $video;
       if (ytMatch && ytMatch[2].length === 11) {
@@ -1007,10 +1037,6 @@
         $video = $('<iframe>')
           .attr('src', 'http://www.dailymotion.com/embed/video/' + dmMatch[2])
           .attr('width', '640').attr('height', '360');
-      } else if (ykMatch && ykMatch[2].length > 0) {
-        $video = $('<iframe>')
-          .attr('src', 'http://player.youku.com/player.php/sid/' + ykMatch[2] + '/v.swf')
-          .attr('width', '600').attr('height', '360');
       } else {
         // this is not a known video link. Now what, Cat? Now what?
       }
@@ -1022,9 +1048,10 @@
     };
 
     /**
-     * formatBlock
-     * @param $editable {jQuery}
-     * @param sTagName {string} - tag name
+     * FormatBlock
+     *
+     * @param {jQuery} $editable
+     * @param {String} sTagName
      */
     this.formatBlock = function ($editable, sTagName) {
       recordUndo($editable);
@@ -1034,8 +1061,10 @@
 
     /**
      * fontsize
-     * @param $editable {jQuery}
-     * @param sValue {string} - fontsize (px)
+     * FIXME: Still buggy
+     *
+     * @param {jQuery} $editable
+     * @param {String} sValue - px
      */
     this.fontSize = function ($editable, sValue) {
       recordUndo($editable);
@@ -1053,8 +1082,8 @@
 
     /**
      * lineHeight
-     * @param $editable {jQuery}
-     * @param sValue {string} - lineHeight
+     * @param {jQuery} $editable
+     * @param {String} sValue
      */
     this.lineHeight = function ($editable, sValue) {
       recordUndo($editable);
@@ -1063,7 +1092,7 @@
 
     /**
      * unlink
-     * @param $editable {jQuery}
+     * @param {jQuery} $editable
      */
     this.unlink = function ($editable) {
       var rng = range.create();
@@ -1150,10 +1179,10 @@
     };
 
     /**
-     * resize target
-     * @param $editable {jQuery}
-     * @param sValue {string}
-     * @param elTarget {element} - target element
+     * Resize target
+     * @param {jQuery} $editable
+     * @param {String} sValue
+     * @param {Element} elTarget - target element
      */
     this.resize = function ($editable, sValue, elTarget) {
       recordUndo($editable);
@@ -1177,7 +1206,7 @@
    */
   var Toolbar = function () {
     this.update = function ($toolbar, oStyle) {
-      //handle selectbox for fontsize, lineHeight
+      // Handle selectbox for fontsize, lineHeight
       var checkDropdownMenu = function ($btn, nValue) {
         $btn.find('.dropdown-menu li a').each(function () {
           var bChecked = parseFloat($(this).data('value')) === nValue;
@@ -1192,7 +1221,7 @@
       var $lineHeight = $toolbar.find('.note-height');
       checkDropdownMenu($lineHeight, parseFloat(oStyle['line-height']));
 
-      //check button state
+      // check button state
       var btnState = function (sSelector, pred) {
         var $btn = $toolbar.find(sSelector);
         $btn[pred() ? 'addClass' : 'removeClass']('active');
@@ -1326,9 +1355,10 @@
    */
   var Dialog = function () {
     /**
-     * toggle button status
-     * @param $btn {jquery}
-     * @param bEnable {boolean}
+     * Toggle button status
+     *
+     * @param {jQuery} $btn
+     * @param {Boolean} bEnable
      */
     var toggleBtn = function ($btn, bEnable) {
       if (bEnable) {
@@ -1339,10 +1369,11 @@
     };
 
     /**
-     * show image dialog
-     * @param $dialog {jquery}
-     * @param fnInsertImages {function}
-     * @param fnInsertImage {function}
+     * Show image dialog
+     *
+     * @param {jQuery} $dialog
+     * @param {Function} fnInsertImages 
+     * @param {Function} fnInsertImage 
      */
     this.showImageDialog = function ($dialog, fnInsertImages, fnInsertImage) {
       var $imageDialog = $dialog.find('.note-image-dialog');
@@ -1373,10 +1404,11 @@
     };
 
     /**
-     * show video dialog
-     * @param $dialog {jquery}
-     * @param videoInfo {object}
-     * @param callback {function}
+     * Show video dialog
+     *
+     * @param {jQuery} $dialog 
+     * @param {Object} videoInfo 
+     * @param {Function} callback 
      */
     this.showVideoDialog = function ($dialog, videoInfo, callback) {
       var $videoDialog = $dialog.find('.note-video-dialog');
@@ -1401,10 +1433,11 @@
     };
 
     /**
-     * show link dialog
-     * @param $dialog {jquery}
-     * @param linkInfo {object}
-     * @param callback {function}
+     * Show link dialog
+     *
+     * @param {jQuery} $dialog
+     * @param {Object} linkInfo
+     * @param {function} callback
      */
     this.showLinkDialog = function ($dialog, linkInfo, callback) {
       var $linkDialog = $dialog.find('.note-link-dialog');
@@ -1431,8 +1464,9 @@
     };
 
     /**
-     * show help dialog
-     * @param $dialog {jquery}
+     * Show help dialog
+     *
+     * @param {jQuery} $dialog
      */
     this.showHelpDialog = function ($dialog) {
       $dialog.find('.note-help-dialog').modal('show');
@@ -1441,8 +1475,6 @@
 
   /**
    * EventHandler
-   *
-   * handle mouse & key event on note
    */
   var EventHandler = function () {
     var editor = new Editor();
@@ -1790,8 +1822,9 @@
     };
 
     /**
-     * attach Drag and Drop Events
-     * @param oLayoutInfo {object} - layout Informations
+     * Attach Drag and Drop Events
+     *
+     * @param {Object} oLayoutInfo - layout Informations
      */
     var attachDragAndDropEvent = function (oLayoutInfo) {
       var collection = $(), $dropzone = oLayoutInfo.dropzone,
@@ -1834,9 +1867,10 @@
 
     /**
      * Attach eventhandler
-     * @param {object} oLayoutInfo - layout Informations
-     * @param {object} options - user options include custom event handlers
-     * @param {function} options.enter - enter key handler
+     *
+     * @param {Object} oLayoutInfo - layout Informations
+     * @param {Object} options - user options include custom event handlers
+     * @param {Function} options.enter - enter key handler
      */
     this.attach = function (oLayoutInfo, options) {
       oLayoutInfo.editable.on('keydown', hKeydown);
@@ -2299,7 +2333,8 @@
           langInfo = $.summernote.lang[options.lang];
 
       //already created
-      if ($holder.next().hasClass('note-editor')) { return; }
+      var next = $holder.next();
+      if (!next && next.hasClass('note-editor')) { return; }
 
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');

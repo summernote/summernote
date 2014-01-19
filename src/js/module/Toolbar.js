@@ -4,7 +4,7 @@ define('module/Toolbar', function () {
    */
   var Toolbar = function () {
     this.update = function ($toolbar, oStyle) {
-      //handle selectbox for fontsize, lineHeight
+      // Handle selectbox for fontsize, lineHeight
       var checkDropdownMenu = function ($btn, nValue) {
         $btn.find('.dropdown-menu li a').each(function () {
           var bChecked = parseFloat($(this).data('value')) === nValue;
@@ -19,7 +19,7 @@ define('module/Toolbar', function () {
       var $lineHeight = $toolbar.find('.note-height');
       checkDropdownMenu($lineHeight, parseFloat(oStyle['line-height']));
 
-      //check button state
+      // check button state
       var btnState = function (sSelector, pred) {
         var $btn = $toolbar.find(sSelector);
         $btn[pred() ? 'addClass' : 'removeClass']('active');

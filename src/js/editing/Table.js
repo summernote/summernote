@@ -2,8 +2,9 @@ define(['core/dom'], function (dom) {
   var Table = function () {
     /**
      * Create empty table element
-     * @param nRow {number}
-     * @param nCol {number}
+     *
+     * @param {Number} nRow
+     * @param {Number} nCol
      */
     this.createTable = function (nCol, nRow) {
       var aTD = [], sTD;

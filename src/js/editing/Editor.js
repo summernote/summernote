@@ -10,16 +10,18 @@ define([
     var table = new Table();
 
     /**
-     * save current range
-     * @param $editable {jQuery}
+     * Save current range
+     *
+     * @param {jQuery} $editable 
      */
     this.saveRange = function ($editable) {
       $editable.data('range', range.create());
     };
 
     /**
-     * restore lately range
-     * @param $editable {jQuery}
+     * Restore lately range
+     *
+     * @param {jQuery} $editable
      */
     this.restoreRange = function ($editable) {
       var rng = $editable.data('range');
@@ -27,8 +29,8 @@ define([
     };
 
     /**
-     * currentStyle
-     * @param elTarget {element}
+     * Current style
+     * @param {Element} elTarget
      */
     this.currentStyle = function (elTarget) {
       var rng = range.create();
@@ -36,16 +38,16 @@ define([
     };
 
     /**
-     * undo
-     * @param $editable {jQuery}
+     * Undo
+     * @param {jQuery} $editable
      */
     this.undo = function ($editable) {
       $editable.data('NoteHistory').undo($editable);
     };
 
     /**
-     * redo
-     * @param $editable {jQuery}
+     * Redo
+     * @param {jQuery} $editable
      */
     this.redo = function ($editable) {
       $editable.data('NoteHistory').redo($editable);
@@ -53,7 +55,7 @@ define([
 
     /**
      * record Undo
-     * @param $editable {jQuery}
+     * @param {jQuery} $editable
      */
     var recordUndo = this.recordUndo = function ($editable) {
       $editable.data('NoteHistory').recordUndo($editable);
@@ -78,8 +80,9 @@ define([
     /* jshint ignore:end */
 
     /**
-     * handle tag key
-     * @param $editable {jQuery}
+     * Handle tab key
+     *
+     * @param {jQuery} $editable
      */
     this.tab = function ($editable) {
       recordUndo($editable);
@@ -93,9 +96,10 @@ define([
     };
 
     /**
-     * insert Image
-     * @param $editable {jQuery}
-     * @param sUrl {string}
+     * Insert image
+     *
+     * @param {jQuery} $editable
+     * @param {String} sUrl
      */
     this.insertImage = function ($editable, sUrl) {
       async.loadImage(sUrl).done(function (image) {
@@ -112,9 +116,9 @@ define([
     };
 
     /**
-     * insert video
-     * @param $editable {jQuery}
-     * @param sUrl {string}
+     * Insert video
+     * @param {jQuery} $editable
+     * @param {String} sUrl
      */
     this.insertVideo = function ($editable, sUrl) {
       // video url patterns(youtube, instagram, vimeo, dailymotion)
@@ -169,9 +173,10 @@ define([
     };
 
     /**
-     * formatBlock
-     * @param $editable {jQuery}
-     * @param sTagName {string} - tag name
+     * FormatBlock
+     *
+     * @param {jQuery} $editable
+     * @param {String} sTagName
      */
     this.formatBlock = function ($editable, sTagName) {
       recordUndo($editable);
@@ -181,8 +186,10 @@ define([
 
     /**
      * fontsize
-     * @param $editable {jQuery}
-     * @param sValue {string} - fontsize (px)
+     * FIXME: Still buggy
+     *
+     * @param {jQuery} $editable
+     * @param {String} sValue - px
      */
     this.fontSize = function ($editable, sValue) {
       recordUndo($editable);
@@ -200,8 +207,8 @@ define([
 
     /**
      * lineHeight
-     * @param $editable {jQuery}
-     * @param sValue {string} - lineHeight
+     * @param {jQuery} $editable
+     * @param {String} sValue
      */
     this.lineHeight = function ($editable, sValue) {
       recordUndo($editable);
@@ -210,7 +217,7 @@ define([
 
     /**
      * unlink
-     * @param $editable {jQuery}
+     * @param {jQuery} $editable
      */
     this.unlink = function ($editable) {
       var rng = range.create();
@@ -297,10 +304,10 @@ define([
     };
 
     /**
-     * resize target
-     * @param $editable {jQuery}
-     * @param sValue {string}
-     * @param elTarget {element} - target element
+     * Resize target
+     * @param {jQuery} $editable
+     * @param {String} sValue
+     * @param {Element} elTarget - target element
      */
     this.resize = function ($editable, sValue, elTarget) {
       recordUndo($editable);

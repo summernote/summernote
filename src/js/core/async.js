@@ -1,46 +1,53 @@
 define('core/async', function () {
   /**
-   * aysnc functions which returns deferred object
+   * Async functions which returns deferred object
    */
   var async = (function () {
     /**
-     * readFile
-     * @param {file} file - file object
+     * Read contents of file as representing URL
+     * @param {File} file
      */
     var readFile = function (file) {
       return $.Deferred(function (deferred) {
-        var reader = new FileReader();
-        reader.onload = function (e) { deferred.resolve(e.target.result); };
-        reader.onerror = function () { deferred.reject(this); };
-        reader.readAsDataURL(file);
+        $.extend(new FileReader(), {
+          onload: function (e) {
+            deferred.resolve(e.target.result);
+          },
+          onerror: function () {
+            deferred.reject(this);
+          }
+        }).readAsDataURL(file);
       }).promise();
     };
   
     /**
-     * loadImage from url string
-     * @param {string} sUrl
+     * Load image from url string
+     *
+     * @param {String} sUrl
      */
     var loadImage = function (sUrl) {
       return $.Deferred(function (deferred) {
-        var image = new Image();
-        image.onload = loaded;
-        image.onerror = errored; // URL returns 404, etc
-        image.onabort = errored; // IE may call this if user clicks "Stop"
-        image.src = sUrl;
-
-        function loaded() {
-          unbindEvents();
-          deferred.resolve(image);
-        }
-        function errored() {
-          unbindEvents();
-          deferred.reject(image);
-        }
-        function unbindEvents() {
-          image.onload = null;
-          image.onerror = null;
-          image.onabort = null;
-        }
+        $.extend(new Image(), {
+          detachEvents: function () {
+            this.onload = null;
+            this.onerror = null;
+            this.onabort = null;
+          },
+          onload: function () {
+            this.detachEvents();
+            deferred.resolve(this);
+          },
+          onerror: function () {
+            // URL returns 404, etc
+            this.detachEvents();
+            deferred.reject(this);
+          },
+          onabort: function () {
+            // IE may call this if user clicks "Stop"
+            this.detachEvents();
+            deferred.reject(this);
+          }
+        }).src = sUrl;
       }).promise();
     };
     return { readFile: readFile, loadImage: loadImage };
