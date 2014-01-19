@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-01-19T05:53Z
+ * Date: 2014-01-19T06:27Z
  */
 (function (factory) {
   /* global define */
@@ -2078,7 +2078,6 @@
                     '<div class="note-insert btn-group">' +
                     '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.edit + '" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-edit icon-edit"></i></button>' +
                     '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.unlink + '" data-event="unlink" tabindex="-1"><i class="fa fa-unlink icon-unlink"></i></button>' +
-                    '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.video.videoLink + '" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
