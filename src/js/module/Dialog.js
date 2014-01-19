@@ -77,7 +77,7 @@ define('module/Dialog', function () {
       }).on('hidden.bs.modal', function () {
         $videoUrl.off('keyup');
         $videoBtn.off('click');
-        $videoDialog.off('show.bs.modal hidden.bs.modal');
+        $videoDialog.off('shown.bs.modal hidden.bs.modal');
       }).modal('show');
     };
 
