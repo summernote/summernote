@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-01-19T06:27Z
+ * Date: 2014-01-23T17:52Z
  */
 (function (factory) {
   /* global define */
@@ -1016,7 +1016,7 @@
       if (ytMatch && ytMatch[2].length === 11) {
         var youtubeId = ytMatch[2];
         $video = $('<iframe>')
-          .attr('src', 'http://www.youtube.com/embed/' + youtubeId)
+          .attr('src', '//www.youtube.com/embed/' + youtubeId)
           .attr('width', '640').attr('height', '360');
       } else if (igMatch && igMatch[0].length > 0) {
         $video = $('<iframe>')

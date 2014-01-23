@@ -141,7 +141,7 @@ define([
       if (ytMatch && ytMatch[2].length === 11) {
         var youtubeId = ytMatch[2];
         $video = $('<iframe>')
-          .attr('src', 'http://www.youtube.com/embed/' + youtubeId)
+          .attr('src', '//www.youtube.com/embed/' + youtubeId)
           .attr('width', '640').attr('height', '360');
       } else if (igMatch && igMatch[0].length > 0) {
         $video = $('<iframe>')
