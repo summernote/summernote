@@ -6,8 +6,13 @@ define([
    */
   var range = (function () {
     var bW3CRangeSupport = !!document.createRange;
-  
-    // return boundaryPoint from TextRange, inspired by Andy Na's HuskyRange.js
+     
+    /**
+     * return boundaryPoint from TextRange, inspired by Andy Na's HuskyRange.js
+     * @param {TextRange} textRange
+     * @param {Boolean} bStart
+     * @return {BoundaryPoint}
+     */
     var textRange2bp = function (textRange, bStart) {
       var elCont = textRange.parentElement(), nOffset;
   
@@ -51,8 +56,12 @@ define([
   
       return {cont: elCont, offset: nOffset};
     };
-  
-    // return TextRange from boundary point (inspired by google closure-library)
+    
+    /**
+     * return TextRange from boundary point (inspired by google closure-library)
+     * @param {BoundaryPoint} bp
+     * @return {TextRange}
+     */
     var bp2textRange = function (bp) {
       var textRangeInfo = function (elCont, nOffset) {
         var elNode, bCollapseToStart;
@@ -84,8 +93,15 @@ define([
       textRange.moveStart('character', info.offset);
       return textRange;
     };
-  
-    // {startContainer, startOffset, endContainer, endOffset}
+    
+    /**
+     * Wrapped Range
+     *
+     * @param {Element} sc - start container
+     * @param {Number} so - start offset
+     * @param {Element} ec - end container
+     * @param {Number} eo - end offset
+     */
     var WrappedRange = function (sc, so, ec, eo) {
       this.sc = sc;
       this.so = so;
@@ -105,8 +121,10 @@ define([
           return textRange;
         }
       };
-  
-      // select: update visible range
+
+      /**
+       * select update visible range
+       */
       this.select = function () {
         var nativeRng = nativeRange();
         if (bW3CRangeSupport) {
@@ -118,7 +136,9 @@ define([
         }
       };
   
-      // listPara: listing paragraphs on range
+      /**
+       * listPara: listing paragraphs on range
+       */
       this.listPara = function () {
         var aNode = dom.listBetween(sc, ec);
         var aPara = list.compact($.map(aNode, function (node) {
@@ -126,8 +146,10 @@ define([
         }));
         return $.map(list.clusterBy(aPara, func.eq2), list.head);
       };
-  
-      // makeIsOn: return isOn(pred) function
+      
+      /**
+       * makeIsOn: return isOn(pred) function
+       */
       var makeIsOn = function (pred) {
         return function () {
           var elAncestor = dom.ancestor(sc, pred);
@@ -143,8 +165,11 @@ define([
       this.isOnAnchor = makeIsOn(dom.isAnchor);
       // isCollapsed: judge whether range was collapsed
       this.isCollapsed = function () { return sc === ec && so === eo; };
-  
-      // insertNode
+
+      /**
+       * insert node at current cursor
+       * @param {Element} node
+       */
       this.insertNode = function (node) {
         var nativeRng = nativeRange();
         if (bW3CRangeSupport) {
@@ -159,7 +184,7 @@ define([
         return bW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
       };
   
-      //bookmark: offsetPath bookmark
+      // bookmark: offsetPath bookmark
       this.bookmark = function (elEditable) {
         return {
           s: { path: dom.makeOffsetPath(elEditable, sc), offset: so },
@@ -168,8 +193,15 @@ define([
       };
     };
   
-    return { // Range Object
-      // create Range Object From arguments or Browser Selection
+    return {
+      /**
+       * create Range Object From arguments or Browser Selection
+       *
+       * @param {Element} sc - start container
+       * @param {Number} so - start offset
+       * @param {Element} ec - end container
+       * @param {Number} eo - end offset
+       */
       create : function (sc, so, ec, eo) {
         if (arguments.length === 0) { // from Browser Selection
           if (bW3CRangeSupport) { // webkit, firefox
@@ -202,7 +234,15 @@ define([
         }
         return new WrappedRange(sc, so, ec, eo);
       },
-      // createFromBookmark
+      // 
+
+      /**
+       * create WrappedRange from Bookmark
+       *
+       * @param {Element} element
+       * @param {Obkect} bookmark
+       * @return {WrappedRange}
+       */
       createFromBookmark : function (elEditable, bookmark) {
         var sc = dom.fromOffsetPath(elEditable, bookmark.s.path);
         var so = bookmark.s.offset;

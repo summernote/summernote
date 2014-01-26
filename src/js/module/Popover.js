@@ -4,7 +4,7 @@ define('module/Popover', function () {
    */
   var Popover = function () {
     /**
-     * Show popover
+     * show popover
      * @param {jQuery} popover
      * @param {Element} elPlaceholder - placeholder for popover
      */

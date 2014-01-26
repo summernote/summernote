@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-01-26T06:19Z
+ * Date: 2014-01-26T06:45Z
  */
 (function (factory) {
   /* global define */
@@ -125,7 +125,7 @@
     };
 
     /**
-     * Returns the rest of the elements in an array.
+     * returns the rest of the elements in an array.
      * @param {Array} array
      */
     var tail = function (array) {
@@ -198,7 +198,8 @@
    */
   var dom = (function () {
     /**
-     * Returns predicate which judge whether nodeName is same
+     * returns predicate which judge whether nodeName is same
+     * @param {String} sNodeName
      */
     var makePredByNodeName = function (sNodeName) {
       // nodeName is always uppercase.
@@ -217,7 +218,7 @@
     };
   
     /**
-     * Returns whether node is `note-editable` or not.
+     * returns whether node is `note-editable` or not.
      */
     var isEditable = function (node) {
       return node && $(node).hasClass('note-editable');
@@ -228,7 +229,7 @@
     };
   
     /**
-     * Find nearest ancestor predicate hit
+     * find nearest ancestor predicate hit
      *
      * @param {Element} node
      * @param {Function} pred - predicate function
@@ -244,7 +245,7 @@
     };
   
     /**
-     * Returns new array of ancestor nodes (until predicate hit).
+     * returns new array of ancestor nodes (until predicate hit).
      *
      * @param {Element} node
      * @param {Function} [optional] pred - predicate function
@@ -261,7 +262,7 @@
     };
   
     /**
-     * Returns common ancestor node between two nodes.
+     * returns common ancestor node between two nodes.
      *
      * @param {Element} nodeA
      * @param {Element} nodeB
@@ -275,7 +276,7 @@
     };
   
     /**
-     * Listing all Nodes between two nodes.
+     * listing all Nodes between two nodes.
      * FIXME: nodeA and nodeB must be sorted, use comparePoints later.
      *
      * @param {Element} nodeA
@@ -301,7 +302,7 @@
     };
   
     /**
-     * Listing all previous siblings (until predicate hit).
+     * listing all previous siblings (until predicate hit).
      * @param {Element} node
      * @param {Function} [optional] pred - predicate function
      */
@@ -318,7 +319,7 @@
     };
   
     /**
-     * Listing next siblings (until predicate hit).
+     * listing next siblings (until predicate hit).
      *
      * @param {Element} node
      * @param {Function} pred [optional] - predicate function
@@ -336,7 +337,7 @@
     };
   
     /**
-     * Insert node after preceding
+     * insert node after preceding
      *
      * @param {Element} node
      * @param {Element} preceding - predicate function
@@ -352,7 +353,7 @@
     };
   
     /**
-     * Append elements.
+     * append elements.
      *
      * @param {Element} node
      * @param {Collection} aChild
@@ -367,7 +368,7 @@
     var isText = makePredByNodeName('#text');
   
     /**
-     * Returns #text's text size or element's childNodes size
+     * returns #text's text size or element's childNodes size
      *
      * @param {Element} node
      */
@@ -377,7 +378,7 @@
     };
   
     /**
-     * Returns offset from parent.
+     * returns offset from parent.
      *
      * @param {Element} node
      */
@@ -388,7 +389,7 @@
     };
   
     /**
-     * Return offsetPath(array of offset) from ancestor
+     * return offsetPath(array of offset) from ancestor
      *
      * @param {Element} ancestor - ancestor node
      * @param {Element} node
@@ -399,7 +400,7 @@
     };
   
     /**
-     * Return element from offsetPath(array of offset)
+     * return element from offsetPath(array of offset)
      *
      * @param {Element} ancestor - ancestor node
      * @param {array} aOffset - offsetPath
@@ -413,7 +414,7 @@
     };
   
     /**
-     * Split element or #text
+     * split element or #text
      *
      * @param {Element} node
      * @param {Number} offset
@@ -432,7 +433,7 @@
     };
   
     /**
-     * Split dom tree by boundaryPoint(pivot and offset)
+     * split dom tree by boundaryPoint(pivot and offset)
      *
      * @param {Element} root
      * @param {Element} pivot - this will be boundaryPoint's node
@@ -453,7 +454,7 @@
     };
   
     /**
-     * Remove node, (bRemoveChild: remove child or not)
+     * remove node, (bRemoveChild: remove child or not)
      * @param {Element} node
      * @param {Boolean} bRemoveChild
      */
@@ -520,8 +521,13 @@
    */
   var range = (function () {
     var bW3CRangeSupport = !!document.createRange;
-  
-    // return boundaryPoint from TextRange, inspired by Andy Na's HuskyRange.js
+     
+    /**
+     * return boundaryPoint from TextRange, inspired by Andy Na's HuskyRange.js
+     * @param {TextRange} textRange
+     * @param {Boolean} bStart
+     * @return {BoundaryPoint}
+     */
     var textRange2bp = function (textRange, bStart) {
       var elCont = textRange.parentElement(), nOffset;
   
@@ -565,8 +571,12 @@
   
       return {cont: elCont, offset: nOffset};
     };
-  
-    // return TextRange from boundary point (inspired by google closure-library)
+    
+    /**
+     * return TextRange from boundary point (inspired by google closure-library)
+     * @param {BoundaryPoint} bp
+     * @return {TextRange}
+     */
     var bp2textRange = function (bp) {
       var textRangeInfo = function (elCont, nOffset) {
         var elNode, bCollapseToStart;
@@ -598,8 +608,15 @@
       textRange.moveStart('character', info.offset);
       return textRange;
     };
-  
-    // {startContainer, startOffset, endContainer, endOffset}
+    
+    /**
+     * Wrapped Range
+     *
+     * @param {Element} sc - start container
+     * @param {Number} so - start offset
+     * @param {Element} ec - end container
+     * @param {Number} eo - end offset
+     */
     var WrappedRange = function (sc, so, ec, eo) {
       this.sc = sc;
       this.so = so;
@@ -619,8 +636,10 @@
           return textRange;
         }
       };
-  
-      // select: update visible range
+
+      /**
+       * select update visible range
+       */
       this.select = function () {
         var nativeRng = nativeRange();
         if (bW3CRangeSupport) {
@@ -632,7 +651,9 @@
         }
       };
   
-      // listPara: listing paragraphs on range
+      /**
+       * listPara: listing paragraphs on range
+       */
       this.listPara = function () {
         var aNode = dom.listBetween(sc, ec);
         var aPara = list.compact($.map(aNode, function (node) {
@@ -640,8 +661,10 @@
         }));
         return $.map(list.clusterBy(aPara, func.eq2), list.head);
       };
-  
-      // makeIsOn: return isOn(pred) function
+      
+      /**
+       * makeIsOn: return isOn(pred) function
+       */
       var makeIsOn = function (pred) {
         return function () {
           var elAncestor = dom.ancestor(sc, pred);
@@ -657,8 +680,11 @@
       this.isOnAnchor = makeIsOn(dom.isAnchor);
       // isCollapsed: judge whether range was collapsed
       this.isCollapsed = function () { return sc === ec && so === eo; };
-  
-      // insertNode
+
+      /**
+       * insert node at current cursor
+       * @param {Element} node
+       */
       this.insertNode = function (node) {
         var nativeRng = nativeRange();
         if (bW3CRangeSupport) {
@@ -673,7 +699,7 @@
         return bW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
       };
   
-      //bookmark: offsetPath bookmark
+      // bookmark: offsetPath bookmark
       this.bookmark = function (elEditable) {
         return {
           s: { path: dom.makeOffsetPath(elEditable, sc), offset: so },
@@ -682,8 +708,15 @@
       };
     };
   
-    return { // Range Object
-      // create Range Object From arguments or Browser Selection
+    return {
+      /**
+       * create Range Object From arguments or Browser Selection
+       *
+       * @param {Element} sc - start container
+       * @param {Number} so - start offset
+       * @param {Element} ec - end container
+       * @param {Number} eo - end offset
+       */
       create : function (sc, so, ec, eo) {
         if (arguments.length === 0) { // from Browser Selection
           if (bW3CRangeSupport) { // webkit, firefox
@@ -716,7 +749,15 @@
         }
         return new WrappedRange(sc, so, ec, eo);
       },
-      // createFromBookmark
+      // 
+
+      /**
+       * create WrappedRange from Bookmark
+       *
+       * @param {Element} element
+       * @param {Obkect} bookmark
+       * @return {WrappedRange}
+       */
       createFromBookmark : function (elEditable, bookmark) {
         var sc = dom.fromOffsetPath(elEditable, bookmark.s.path);
         var so = bookmark.s.offset;
@@ -732,7 +773,7 @@
    */
   var async = (function () {
     /**
-     * Read contents of file as representing URL
+     * read contents of file as representing URL
      * @param {File} file
      */
     var readFile = function (file) {
@@ -749,7 +790,7 @@
     };
   
     /**
-     * Load image from url string
+     * load image from url string
      *
      * @param {String} sUrl
      */
@@ -786,7 +827,7 @@
    */
   var Style = function () {
     /**
-     * Paragraph level style
+     * paragraph level style
      */
     this.stylePara = function (rng, oStyle) {
       var aPara = rng.listPara();
@@ -798,7 +839,7 @@
     };
 
     /**
-     * Get current style on cursor
+     * get current style on cursor
      *
      * @param {WrappedRange} rng
      * @param {Element} elTarget - target element on event
@@ -882,7 +923,7 @@
 
   var Table = function () {
     /**
-     * Create empty table element
+     * create empty table element
      *
      * @param {Number} nRow
      * @param {Number} nCol
@@ -914,7 +955,7 @@
     var table = new Table();
 
     /**
-     * Save current range
+     * save current range
      *
      * @param {jQuery} $editable 
      */
@@ -923,7 +964,7 @@
     };
 
     /**
-     * Restore lately range
+     * restore lately range
      *
      * @param {jQuery} $editable
      */
@@ -933,7 +974,7 @@
     };
 
     /**
-     * Current style
+     * current style
      * @param {Element} elTarget
      */
     this.currentStyle = function (elTarget) {
@@ -942,7 +983,7 @@
     };
 
     /**
-     * Undo
+     * undo
      * @param {jQuery} $editable
      */
     this.undo = function ($editable) {
@@ -950,7 +991,7 @@
     };
 
     /**
-     * Redo
+     * redo
      * @param {jQuery} $editable
      */
     this.redo = function ($editable) {
@@ -984,7 +1025,7 @@
     /* jshint ignore:end */
 
     /**
-     * Handle tab key
+     * handle tab key
      *
      * @param {jQuery} $editable
      */
@@ -1000,7 +1041,7 @@
     };
 
     /**
-     * Insert image
+     * insert image
      *
      * @param {jQuery} $editable
      * @param {String} sUrl
@@ -1020,7 +1061,7 @@
     };
 
     /**
-     * Insert video
+     * insert video
      * @param {jQuery} $editable
      * @param {String} sUrl
      */
@@ -1077,7 +1118,7 @@
     };
 
     /**
-     * FormatBlock
+     * formatBlock
      *
      * @param {jQuery} $editable
      * @param {String} sTagName
@@ -1208,7 +1249,7 @@
     };
 
     /**
-     * Resize target
+     * resize target
      * @param {jQuery} $editable
      * @param {String} sValue
      * @param {Element} elTarget - target element
@@ -1322,7 +1363,7 @@
    */
   var Popover = function () {
     /**
-     * Show popover
+     * show popover
      * @param {jQuery} popover
      * @param {Element} elPlaceholder - placeholder for popover
      */
@@ -1410,7 +1451,7 @@
    */
   var Dialog = function () {
     /**
-     * Toggle button status
+     * toggle button status
      *
      * @param {jQuery} $btn
      * @param {Boolean} bEnable
@@ -1424,7 +1465,7 @@
     };
 
     /**
-     * Show image dialog
+     * show image dialog
      *
      * @param {jQuery} $dialog
      * @param {Function} fnInsertImages 
@@ -1459,7 +1500,7 @@
     };
 
     /**
-     * Show video dialog
+     * show video dialog
      *
      * @param {jQuery} $dialog 
      * @param {Object} videoInfo 
@@ -1488,7 +1529,7 @@
     };
 
     /**
-     * Show link dialog
+     * show link dialog
      *
      * @param {jQuery} $dialog
      * @param {Object} linkInfo
@@ -1519,7 +1560,7 @@
     };
 
     /**
-     * Show help dialog
+     * show help dialog
      *
      * @param {jQuery} $dialog
      */
@@ -1877,7 +1918,7 @@
     };
 
     /**
-     * Attach Drag and Drop Events
+     * attach Drag and Drop Events
      *
      * @param {Object} oLayoutInfo - layout Informations
      */
@@ -1921,7 +1962,7 @@
     };
 
     /**
-     * Attach eventhandler
+     * attach eventhandler
      *
      * @param {Object} oLayoutInfo - layout Informations
      * @param {Object} options - user options include custom event handlers
@@ -1991,7 +2032,7 @@
   };
 
   /**
-   * Renderer
+   * renderer
    *
    * rendering toolbar and editable
    */

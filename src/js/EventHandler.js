@@ -356,7 +356,7 @@ define([
     };
 
     /**
-     * Attach Drag and Drop Events
+     * attach Drag and Drop Events
      *
      * @param {Object} oLayoutInfo - layout Informations
      */
@@ -400,7 +400,7 @@ define([
     };
 
     /**
-     * Attach eventhandler
+     * attach eventhandler
      *
      * @param {Object} oLayoutInfo - layout Informations
      * @param {Object} options - user options include custom event handlers

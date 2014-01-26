@@ -4,7 +4,7 @@ define(['core/dom'], function (dom) {
    */
   var Style = function () {
     /**
-     * Paragraph level style
+     * paragraph level style
      */
     this.stylePara = function (rng, oStyle) {
       var aPara = rng.listPara();
@@ -16,7 +16,7 @@ define(['core/dom'], function (dom) {
     };
 
     /**
-     * Get current style on cursor
+     * get current style on cursor
      *
      * @param {WrappedRange} rng
      * @param {Element} elTarget - target element on event

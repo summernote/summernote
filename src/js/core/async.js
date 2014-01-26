@@ -4,7 +4,7 @@ define('core/async', function () {
    */
   var async = (function () {
     /**
-     * Read contents of file as representing URL
+     * read contents of file as representing URL
      * @param {File} file
      */
     var readFile = function (file) {
@@ -21,7 +21,7 @@ define('core/async', function () {
     };
   
     /**
-     * Load image from url string
+     * load image from url string
      *
      * @param {String} sUrl
      */

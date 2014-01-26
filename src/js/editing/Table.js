@@ -1,7 +1,7 @@
 define(['core/dom'], function (dom) {
   var Table = function () {
     /**
-     * Create empty table element
+     * create empty table element
      *
      * @param {Number} nRow
      * @param {Number} nCol

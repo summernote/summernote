@@ -10,7 +10,7 @@ define([
     var table = new Table();
 
     /**
-     * Save current range
+     * save current range
      *
      * @param {jQuery} $editable 
      */
@@ -19,7 +19,7 @@ define([
     };
 
     /**
-     * Restore lately range
+     * restore lately range
      *
      * @param {jQuery} $editable
      */
@@ -29,7 +29,7 @@ define([
     };
 
     /**
-     * Current style
+     * current style
      * @param {Element} elTarget
      */
     this.currentStyle = function (elTarget) {
@@ -38,7 +38,7 @@ define([
     };
 
     /**
-     * Undo
+     * undo
      * @param {jQuery} $editable
      */
     this.undo = function ($editable) {
@@ -46,7 +46,7 @@ define([
     };
 
     /**
-     * Redo
+     * redo
      * @param {jQuery} $editable
      */
     this.redo = function ($editable) {
@@ -80,7 +80,7 @@ define([
     /* jshint ignore:end */
 
     /**
-     * Handle tab key
+     * handle tab key
      *
      * @param {jQuery} $editable
      */
@@ -96,7 +96,7 @@ define([
     };
 
     /**
-     * Insert image
+     * insert image
      *
      * @param {jQuery} $editable
      * @param {String} sUrl
@@ -116,7 +116,7 @@ define([
     };
 
     /**
-     * Insert video
+     * insert video
      * @param {jQuery} $editable
      * @param {String} sUrl
      */
@@ -173,7 +173,7 @@ define([
     };
 
     /**
-     * FormatBlock
+     * formatBlock
      *
      * @param {jQuery} $editable
      * @param {String} sTagName
@@ -304,7 +304,7 @@ define([
     };
 
     /**
-     * Resize target
+     * resize target
      * @param {jQuery} $editable
      * @param {String} sValue
      * @param {Element} elTarget - target element

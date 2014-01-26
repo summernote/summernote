@@ -4,7 +4,7 @@ define('module/Dialog', function () {
    */
   var Dialog = function () {
     /**
-     * Toggle button status
+     * toggle button status
      *
      * @param {jQuery} $btn
      * @param {Boolean} bEnable
@@ -18,7 +18,7 @@ define('module/Dialog', function () {
     };
 
     /**
-     * Show image dialog
+     * show image dialog
      *
      * @param {jQuery} $dialog
      * @param {Function} fnInsertImages 
@@ -53,7 +53,7 @@ define('module/Dialog', function () {
     };
 
     /**
-     * Show video dialog
+     * show video dialog
      *
      * @param {jQuery} $dialog 
      * @param {Object} videoInfo 
@@ -82,7 +82,7 @@ define('module/Dialog', function () {
     };
 
     /**
-     * Show link dialog
+     * show link dialog
      *
      * @param {jQuery} $dialog
      * @param {Object} linkInfo
@@ -113,7 +113,7 @@ define('module/Dialog', function () {
     };
 
     /**
-     * Show help dialog
+     * show help dialog
      *
      * @param {jQuery} $dialog
      */

@@ -4,7 +4,8 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
    */
   var dom = (function () {
     /**
-     * Returns predicate which judge whether nodeName is same
+     * returns predicate which judge whether nodeName is same
+     * @param {String} sNodeName
      */
     var makePredByNodeName = function (sNodeName) {
       // nodeName is always uppercase.
@@ -23,7 +24,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * Returns whether node is `note-editable` or not.
+     * returns whether node is `note-editable` or not.
      */
     var isEditable = function (node) {
       return node && $(node).hasClass('note-editable');
@@ -34,7 +35,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * Find nearest ancestor predicate hit
+     * find nearest ancestor predicate hit
      *
      * @param {Element} node
      * @param {Function} pred - predicate function
@@ -50,7 +51,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * Returns new array of ancestor nodes (until predicate hit).
+     * returns new array of ancestor nodes (until predicate hit).
      *
      * @param {Element} node
      * @param {Function} [optional] pred - predicate function
@@ -67,7 +68,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * Returns common ancestor node between two nodes.
+     * returns common ancestor node between two nodes.
      *
      * @param {Element} nodeA
      * @param {Element} nodeB
@@ -81,7 +82,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * Listing all Nodes between two nodes.
+     * listing all Nodes between two nodes.
      * FIXME: nodeA and nodeB must be sorted, use comparePoints later.
      *
      * @param {Element} nodeA
@@ -107,7 +108,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * Listing all previous siblings (until predicate hit).
+     * listing all previous siblings (until predicate hit).
      * @param {Element} node
      * @param {Function} [optional] pred - predicate function
      */
@@ -124,7 +125,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * Listing next siblings (until predicate hit).
+     * listing next siblings (until predicate hit).
      *
      * @param {Element} node
      * @param {Function} pred [optional] - predicate function
@@ -142,7 +143,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * Insert node after preceding
+     * insert node after preceding
      *
      * @param {Element} node
      * @param {Element} preceding - predicate function
@@ -158,7 +159,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * Append elements.
+     * append elements.
      *
      * @param {Element} node
      * @param {Collection} aChild
@@ -173,7 +174,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     var isText = makePredByNodeName('#text');
   
     /**
-     * Returns #text's text size or element's childNodes size
+     * returns #text's text size or element's childNodes size
      *
      * @param {Element} node
      */
@@ -183,7 +184,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * Returns offset from parent.
+     * returns offset from parent.
      *
      * @param {Element} node
      */
@@ -194,7 +195,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * Return offsetPath(array of offset) from ancestor
+     * return offsetPath(array of offset) from ancestor
      *
      * @param {Element} ancestor - ancestor node
      * @param {Element} node
@@ -205,7 +206,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * Return element from offsetPath(array of offset)
+     * return element from offsetPath(array of offset)
      *
      * @param {Element} ancestor - ancestor node
      * @param {array} aOffset - offsetPath
@@ -219,7 +220,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * Split element or #text
+     * split element or #text
      *
      * @param {Element} node
      * @param {Number} offset
@@ -238,7 +239,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * Split dom tree by boundaryPoint(pivot and offset)
+     * split dom tree by boundaryPoint(pivot and offset)
      *
      * @param {Element} root
      * @param {Element} pivot - this will be boundaryPoint's node
@@ -259,7 +260,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * Remove node, (bRemoveChild: remove child or not)
+     * remove node, (bRemoveChild: remove child or not)
      * @param {Element} node
      * @param {Boolean} bRemoveChild
      */

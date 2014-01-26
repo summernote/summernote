@@ -2,7 +2,7 @@ define([
   'core/agent', 'core/dom', 'editing/History'
 ], function (agent, dom, History) {
   /**
-   * Renderer
+   * renderer
    *
    * rendering toolbar and editable
    */
