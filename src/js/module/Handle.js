@@ -3,6 +3,11 @@ define('module/Handle', function () {
    * Handle
    */
   var Handle = function () {
+    /**
+     * update handle
+     * @param {jQuery} $handle
+     * @param {Object} oStyle
+     */
     this.update = function ($handle, oStyle) {
       var $selection = $handle.find('.note-control-selection');
       if (oStyle.image) {

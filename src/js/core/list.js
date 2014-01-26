@@ -3,15 +3,42 @@ define(['core/func'], function (func) {
    * list utils
    */
   var list = (function () {
-    var head = function (array) { return array[0]; };
-    var last = function (array) { return array[array.length - 1]; };
-    var initial = function (array) { return array.slice(0, array.length - 1); };
-    var tail = function (array) { return array.slice(1); };
+    /**
+     * returns the first element of an array.
+     * @param {Array} array
+     */
+    var head = function (array) {
+      return array[0];
+    };
+
+    /**
+     * returns the last element of an array.
+     * @param {Array} array
+     */
+    var last = function (array) {
+      return array[array.length - 1];
+    };
+
+    /**
+     * returns everything but the last entry of the array.
+     * @param {Array} array
+     */
+    var initial = function (array) {
+      return array.slice(0, array.length - 1);
+    };
+
+    /**
+     * returns the rest of the elements in an array.
+     * @param {Array} array
+     */
+    var tail = function (array) {
+      return array.slice(1);
+    };
   
     /**
      * get sum from a list
-     * @param {array} array - array
-     * @param {function} fn - iterator
+     * @param {Array} array - array
+     * @param {Function} fn - iterator
      */
     var sum = function (array, fn) {
       fn = fn || func.self;
@@ -22,7 +49,7 @@ define(['core/func'], function (func) {
   
     /**
      * returns a copy of the collection with array type.
-     * @param {collection} collection - collection eg) node.childNodes, ...
+     * @param {Collection} collection - collection eg) node.childNodes, ...
      */
     var from = function (collection) {
       var result = [], idx = -1, length = collection.length;
@@ -33,9 +60,10 @@ define(['core/func'], function (func) {
     };
   
     /**
-     * cluster item by second function
-     * @param {array} array - array
-     * @param {function} fn - predicate function for cluster rule
+     * cluster elements by predicate function.
+     * @param {Array} array - array
+     * @param {Function} fn - predicate function for cluster rule
+     * @param {Array[]}
      */
     var clusterBy = function (array, fn) {
       if (array.length === 0) { return []; }
@@ -53,8 +81,8 @@ define(['core/func'], function (func) {
   
     /**
      * returns a copy of the array with all falsy values removed
-     * @param {array} array - array
-     * @param {function} fn - predicate function for cluster rule
+     * @param {Array} array - array
+     * @param {Function} fn - predicate function for cluster rule
      */
     var compact = function (array) {
       var aResult = [];

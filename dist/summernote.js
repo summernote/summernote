@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-01-23T17:52Z
+ * Date: 2014-01-26T06:19Z
  */
 (function (factory) {
   /* global define */
@@ -100,15 +100,42 @@
    * list utils
    */
   var list = (function () {
-    var head = function (array) { return array[0]; };
-    var last = function (array) { return array[array.length - 1]; };
-    var initial = function (array) { return array.slice(0, array.length - 1); };
-    var tail = function (array) { return array.slice(1); };
+    /**
+     * returns the first element of an array.
+     * @param {Array} array
+     */
+    var head = function (array) {
+      return array[0];
+    };
+
+    /**
+     * returns the last element of an array.
+     * @param {Array} array
+     */
+    var last = function (array) {
+      return array[array.length - 1];
+    };
+
+    /**
+     * returns everything but the last entry of the array.
+     * @param {Array} array
+     */
+    var initial = function (array) {
+      return array.slice(0, array.length - 1);
+    };
+
+    /**
+     * Returns the rest of the elements in an array.
+     * @param {Array} array
+     */
+    var tail = function (array) {
+      return array.slice(1);
+    };
   
     /**
      * get sum from a list
-     * @param {array} array - array
-     * @param {function} fn - iterator
+     * @param {Array} array - array
+     * @param {Function} fn - iterator
      */
     var sum = function (array, fn) {
       fn = fn || func.self;
@@ -119,7 +146,7 @@
   
     /**
      * returns a copy of the collection with array type.
-     * @param {collection} collection - collection eg) node.childNodes, ...
+     * @param {Collection} collection - collection eg) node.childNodes, ...
      */
     var from = function (collection) {
       var result = [], idx = -1, length = collection.length;
@@ -130,9 +157,10 @@
     };
   
     /**
-     * cluster item by second function
-     * @param {array} array - array
-     * @param {function} fn - predicate function for cluster rule
+     * cluster elements by predicate function.
+     * @param {Array} array - array
+     * @param {Function} fn - predicate function for cluster rule
+     * @param {Array[]}
      */
     var clusterBy = function (array, fn) {
       if (array.length === 0) { return []; }
@@ -150,8 +178,8 @@
   
     /**
      * returns a copy of the array with all falsy values removed
-     * @param {array} array - array
-     * @param {function} fn - predicate function for cluster rule
+     * @param {Array} array - array
+     * @param {Function} fn - predicate function for cluster rule
      */
     var compact = function (array) {
       var aResult = [];
@@ -774,6 +802,7 @@
      *
      * @param {WrappedRange} rng
      * @param {Element} elTarget - target element on event
+     * @param {Object} - object contains style properties.
      */
     this.current = function (rng, elTarget) {
       var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
@@ -1206,7 +1235,11 @@
    */
   var Toolbar = function () {
     this.update = function ($toolbar, oStyle) {
-      // Handle selectbox for fontsize, lineHeight
+      /**
+       * handle dropdown's check mark (for fontsize, lineHeight).
+       * @param {jQuery} $btn
+       * @param {Number} nValue
+       */
       var checkDropdownMenu = function ($btn, nValue) {
         $btn.find('.dropdown-menu li a').each(function () {
           var bChecked = parseFloat($(this).data('value')) === nValue;
@@ -1288,9 +1321,16 @@
    * Popover (http://getbootstrap.com/javascript/#popovers)
    */
   var Popover = function () {
+    /**
+     * Show popover
+     * @param {jQuery} popover
+     * @param {Element} elPlaceholder - placeholder for popover
+     */
     var showPopover = function ($popover, elPlaceholder) {
       var $placeholder = $(elPlaceholder);
       var pos = $placeholder.position(), height = $placeholder.height();
+
+      // display popover below placeholder.
       $popover.css({
         display: 'block',
         left: pos.left,
@@ -1298,9 +1338,14 @@
       });
     };
 
+    /**
+     * update current state
+     * @param {jQuery} $popover - popover container
+     * @param {Object} oStyle - style object
+     */
     this.update = function ($popover, oStyle) {
-      var $linkPopover = $popover.find('.note-link-popover'),
-          $imagePopover = $popover.find('.note-image-popover');
+      var $linkPopover = $popover.find('.note-link-popover');
+
       if (oStyle.anchor) {
         var $anchor = $linkPopover.find('a');
         $anchor.attr('href', oStyle.anchor.href).html(oStyle.anchor.href);
@@ -1309,6 +1354,7 @@
         $linkPopover.hide();
       }
 
+      var $imagePopover = $popover.find('.note-image-popover');
       if (oStyle.image) {
         showPopover($imagePopover, oStyle.image);
       } else {
@@ -1316,6 +1362,10 @@
       }
     };
 
+    /**
+     * hide all popovers
+     * @param {jQuery} $popover - popover contaienr
+     */
     this.hide = function ($popover) {
       $popover.children().hide();
     };
@@ -1325,6 +1375,11 @@
    * Handle
    */
   var Handle = function () {
+    /**
+     * update handle
+     * @param {jQuery} $handle
+     * @param {Object} oStyle
+     */
     this.update = function ($handle, oStyle) {
       var $selection = $handle.find('.note-control-selection');
       if (oStyle.image) {
@@ -1878,7 +1933,10 @@
       oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
       oLayoutInfo.editable.on('scroll', hScroll);
 
-      attachDragAndDropEvent(oLayoutInfo);
+      // Doesn't attach `dragAndDrop` event when `options.disableDragAndDrop` is true
+      if (!options.disableDragAndDrop) {
+        attachDragAndDropEvent(oLayoutInfo);
+      }
 
       oLayoutInfo.handle.on('mousedown', hHandleMousedown);
       oLayoutInfo.toolbar.on('click', hToolbarAndPopoverClick);

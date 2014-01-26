@@ -20,6 +20,7 @@ define(['core/dom'], function (dom) {
      *
      * @param {WrappedRange} rng
      * @param {Element} elTarget - target element on event
+     * @param {Object} - object contains style properties.
      */
     this.current = function (rng, elTarget) {
       var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);

@@ -4,7 +4,11 @@ define('module/Toolbar', function () {
    */
   var Toolbar = function () {
     this.update = function ($toolbar, oStyle) {
-      // Handle selectbox for fontsize, lineHeight
+      /**
+       * handle dropdown's check mark (for fontsize, lineHeight).
+       * @param {jQuery} $btn
+       * @param {Number} nValue
+       */
       var checkDropdownMenu = function ($btn, nValue) {
         $btn.find('.dropdown-menu li a').each(function () {
           var bChecked = parseFloat($(this).data('value')) === nValue;
