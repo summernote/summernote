@@ -21,10 +21,11 @@ require([
 ], function ($) {
   // summernote
   $('.summernote').summernote({
-    height: 300,
-    focus: true,
-    tabsize: 2,
-    codemirror: {
+    height: 300,                  // set editable area's height
+    focus: true,                  // set focus editable area after summernote loaded
+    tabsize: 2,                   // size of tab
+    // disableDragAndDrop: false, // disable drag and drop event
+    codemirror: {                 // code mirror options
       theme: 'monokai'
     }
   });

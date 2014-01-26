@@ -412,7 +412,10 @@ define([
       oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
       oLayoutInfo.editable.on('scroll', hScroll);
 
-      attachDragAndDropEvent(oLayoutInfo);
+      // Doesn't attach `dragAndDrop` event when `options.disableDragAndDrop` is true
+      if (!options.disableDragAndDrop) {
+        attachDragAndDropEvent(oLayoutInfo);
+      }
 
       oLayoutInfo.handle.on('mousedown', hHandleMousedown);
       oLayoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
