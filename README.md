@@ -135,6 +135,7 @@ summernote.js - Renderer.js (Generate markup) - Locale.js (Locale object)
 -----------------------------Core Script-----------------------------
   agent.js  (agent information)
   async.js  (aysnc utility)
+  key.js    (keycode object)
   dom.js    (dom functions)
   list.js   (list functions)
   range.js  (W3CRange extention)
@@ -161,7 +162,7 @@ run tests with PhantomJS
 grunt test
 ```
 
-### start local server
+#### start local server for developing summernote.
 run local server with connect and watch.
 ```bash
 # this will open a browser on http://localhost:3000.
