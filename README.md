@@ -161,6 +161,14 @@ run tests with PhantomJS
 grunt test
 ```
 
+### start local server
+run local server with connect and watch.
+```bash
+# this will open a browser on http://localhost:3000.
+grunt server
+# If you change source code, automatically reload your page.
+```
+
 #### Coding convention
 * JSHint: http://www.jshint.com/about/
 * JSHint rule: https://github.com/HackerWins/summernote/blob/master/.jshintrc
