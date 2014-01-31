@@ -83,11 +83,12 @@ define([
      * handle tab key
      *
      * @param {jQuery} $editable
+     * @param {Number} tabsize
      */
-    this.tab = function ($editable) {
+    this.tab = function ($editable, tabsize) {
       recordUndo($editable);
       var rng = range.create();
-      var sNbsp = new Array($editable.data('tabsize') + 1).join('&nbsp;');
+      var sNbsp = new Array(tabsize + 1).join('&nbsp;');
       rng.insertNode($('<span id="noteTab">' + sNbsp + '</span>')[0]);
       var $tab = $('#noteTab').removeAttr('id');
       rng = range.create($tab[0], 1);

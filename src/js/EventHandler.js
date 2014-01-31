@@ -1,11 +1,11 @@
 define([
   'CodeMirror',
   'core/agent', 'core/dom', 'core/async', 'core/key',
-  'editing/Style', 'editing/Editor',
+  'editing/Style', 'editing/Editor', 'editing/History',
   'module/Toolbar', 'module/Popover', 'module/Handle', 'module/Dialog'
 ], function (CodeMirror,
              agent, dom, async, key,
-             Style, Editor,
+             Style, Editor, History,
              Toolbar, Popover, Handle, Dialog) {
   /**
    * EventHandler
@@ -75,8 +75,9 @@ define([
       var bExecCmd = (bCmd || bShift || keyCode === key.TAB);
       var oLayoutInfo = (bExecCmd) ? makeLayoutInfo(event.target) : null;
 
-      if (keyCode === key.TAB && oLayoutInfo.editable().data('tabsize')) {
-        editor.tab(oLayoutInfo.editable());
+      var tabsize = oLayoutInfo && oLayoutInfo.editor().data('options').tabsize;
+      if (keyCode === key.TAB && tabsize) {
+        editor.tab(oLayoutInfo.editable(), tabsize);
       } else if (bCmd && ((bShift && keyCode === key.Z) || keyCode === key.Y)) {
         editor.redo(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.Z) {
@@ -213,6 +214,8 @@ define([
             $editable = oLayoutInfo.editable(),
             $codable = oLayoutInfo.codable();
 
+        var options = $editor.data('options');
+
         // before command
         var elTarget;
         if ($.inArray(sEvent, ['resize', 'floatMe']) !== -1) {
@@ -262,8 +265,7 @@ define([
             $editable.data('orgHeight', $editable.css('height'));
             $(window).resize(hResizeFullscreen).trigger('resize');
           } else {
-            var hasOptionHeight = !!$editable.data('optionHeight');
-            $editable.css('height', hasOptionHeight ? $editable.data('orgHeight') : 'auto');
+            $editable.css('height', options.height ? $editable.data('orgHeight') : 'auto');
             $(window).off('resize');
           }
 
@@ -283,7 +285,7 @@ define([
               var cmEditor = CodeMirror.fromTextArea($codable[0], $.extend({
                 mode: 'text/html',
                 lineNumbers: true
-              }, $editor.data('options').codemirror));
+              }, options.codemirror));
               // CodeMirror hasn't Padding.
               cmEditor.setSize(null, $editable.outerHeight());
               // autoFormatRange If formatting included
@@ -302,7 +304,7 @@ define([
             }
 
             $editable.html($codable.val() || dom.emptyPara);
-            $editable.height($editable.data('optionHeight') ? $codable.height() : 'auto');
+            $editable.height(options.height ? $codable.height() : 'auto');
 
             toolbar.enable($toolbar);
             $editable.focus();
@@ -447,6 +449,12 @@ define([
       oLayoutInfo.editable.on('blur', function () {
         editor.saveRange(oLayoutInfo.editable);
       });
+
+      // save options on editor
+      oLayoutInfo.editor.data('options', options);
+
+      // History
+      oLayoutInfo.editable.data('NoteHistory', new History());
 
       // basic event callbacks (lowercase)
       // enter, focus, blur, keyup, keydown

@@ -1,6 +1,6 @@
 define([
-  'core/agent', 'core/dom', 'editing/History'
-], function (agent, dom, History) {
+  'core/agent', 'core/dom'
+], function (agent, dom) {
   /**
    * renderer
    *
@@ -392,42 +392,35 @@ define([
       });
     };
 
-    // createLayout
+    /**
+     * create summernote layout
+     *
+     * @param {jQuery} $holder
+     * @param {Object} options
+     */
     this.createLayout = function ($holder, options) {
-      var nHeight = options.height,
-          nTabsize = options.tabsize,
-          sDirection = options.direction,
-          aToolbarSetting = options.toolbar,
-          langInfo = $.summernote.lang[options.lang];
-
       //already created
       var next = $holder.next();
       if (next && next.hasClass('note-editor')) { return; }
 
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
-      $editor.data('options', options);
 
-      //02. statusbar
-      if (nHeight > 0) {
+      //02. statusbar (resizebar)
+      if (options.height > 0) {
         $('<div class="note-statusbar">' + tplStatusbar + '</div>').prependTo($editor);
       }
 
       //03. create Editable
       var $editable = $('<div class="note-editable" contentEditable="true"></div>').prependTo($editor);
-      if (nHeight) {
-        $editable.height(nHeight);
-        $editable.data('optionHeight', nHeight);
+      if (options.height) {
+        $editable.height(options.height);
       }
-      if (nTabsize) {
-        $editable.data('tabsize', nTabsize);
-      }
-      if (sDirection) {
-        $editable.attr('dir', sDirection);
+      if (options.direction) {
+        $editable.attr('dir', options.direction);
       }
 
       $editable.html(dom.html($holder) || dom.emptyPara);
-      $editable.data('NoteHistory', new History());
 
       //031. create codable
       $('<textarea class="note-codable"></textarea>').prependTo($editor);
@@ -437,10 +430,12 @@ define([
         document.execCommand('styleWithCSS', 0, true);
       });
 
+      var langInfo = $.summernote.lang[options.lang];
+
       //04. create Toolbar
       var sToolbar = '';
-      for (var idx = 0, sz = aToolbarSetting.length; idx < sz; idx ++) {
-        var group = aToolbarSetting[idx];
+      for (var idx = 0, sz = options.toolbar.length; idx < sz; idx ++) {
+        var group = options.toolbar[idx];
         sToolbar += '<div class="note-' + group[0] + ' btn-group">';
         for (var i = 0, szGroup = group[1].length; i < szGroup; i++) {
           sToolbar += tplToolbarInfo[group[1][i]](langInfo);
@@ -474,9 +469,14 @@ define([
       $editor.insertAfter($holder);
       $holder.hide();
     };
-
-    // layoutInfoFromHolder
-    var layoutInfoFromHolder = this.layoutInfoFromHolder = function ($holder) {
+    
+    /**
+     * returns layoutInfo from holder
+     *
+     * @param {jQuery} $holder - placeholder
+     * @returns {Object}
+     */
+    this.layoutInfoFromHolder = function ($holder) {
       var $editor = $holder.next();
       if (!$editor.hasClass('note-editor')) { return; }
 
@@ -493,9 +493,13 @@ define([
       };
     };
 
-    // removeLayout
+    /**
+     * removeLayout
+     *
+     * @param {jQuery} $holder - placeholder
+     */
     this.removeLayout = function ($holder) {
-      var info = layoutInfoFromHolder($holder);
+      var info = this.layoutInfoFromHolder($holder);
       if (!info) { return; }
       $holder.html(info.editable.html());
 

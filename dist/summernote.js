@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-01-31T10:41Z
+ * Date: 2014-01-31T11:56Z
  */
 (function (factory) {
   /* global define */
@@ -515,6 +515,151 @@
       html: html
     };
   })();
+
+  var settings = {
+    // version
+    version: '0.5.1',
+
+    /**
+     * options for init
+     */
+    options: {
+      height: null,                 // set editable height, ex) 300
+      focus: false,                 // set focus after initilize summernote
+      tabsize: null,                // size of tab ex) 2 or 4
+      disableDragAndDrop: false,    // disable drag and drop event
+      codemirror: null,             // codemirror options
+
+      // language
+      lang: 'en-US',   // language 'en-US', 'ko-KR', ...
+      direction: null, // text direction, ex) 'rtl'
+
+      // default toolbar
+      toolbar: [
+        ['style', ['style']],
+        ['font', ['bold', 'italic', 'underline', 'clear']],
+        ['fontsize', ['fontsize']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['height', ['height']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture', 'video']],
+        ['view', ['fullscreen', 'codeview']],
+        ['help', ['help']]
+      ],
+
+      // callbacks
+      oninit: null,             // initialize
+      onfocus: null,            // editable has focus
+      onblur: null,             // editable out of focus
+      onenter: null,            // enter key pressed
+      onkeyup: null,            // keyup
+      onkeydown: null,          // keydown
+      onImageUpload: null,      // imageUploadHandler
+      onImageUploadError: null  // imageUploadErrorHandler
+    },
+
+    // default language: en-US
+    lang: {
+      'en-US': {
+        font: {
+          bold: 'Bold',
+          italic: 'Italic',
+          underline: 'Underline',
+          strike: 'Strike',
+          clear: 'Remove Font Style',
+          height: 'Line Height',
+          size: 'Font Size'
+        },
+        image: {
+          image: 'Picture',
+          insert: 'Insert Image',
+          resizeFull: 'Resize Full',
+          resizeHalf: 'Resize Half',
+          resizeQuarter: 'Resize Quarter',
+          floatLeft: 'Float Left',
+          floatRight: 'Float Right',
+          floatNone: 'Float None',
+          dragImageHere: 'Drag an image here',
+          selectFromFiles: 'Select from files',
+          url: 'Image URL'
+        },
+        link: {
+          link: 'Link',
+          insert: 'Insert Link',
+          unlink: 'Unlink',
+          edit: 'Edit',
+          textToDisplay: 'Text to display',
+          url: 'To what URL should this link go?'
+        },
+        video: {
+          video: 'Video',
+          videoLink: 'Video Link',
+          insert: 'Insert Video',
+          url: 'Video URL?',
+          providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
+        },
+        table: {
+          table: 'Table'
+        },
+        hr: {
+          insert: 'Insert Horizontal Rule'
+        },
+        style: {
+          style: 'Style',
+          normal: 'Normal',
+          blockquote: 'Quote',
+          pre: 'Code',
+          h1: 'Header 1',
+          h2: 'Header 2',
+          h3: 'Header 3',
+          h4: 'Header 4',
+          h5: 'Header 5',
+          h6: 'Header 6'
+        },
+        lists: {
+          unordered: 'Unordered list',
+          ordered: 'Ordered list'
+        },
+        options: {
+          help: 'Help',
+          fullscreen: 'Full Screen',
+          codeview: 'Code View'
+        },
+        paragraph: {
+          paragraph: 'Paragraph',
+          outdent: 'Outdent',
+          indent: 'Indent',
+          left: 'Align left',
+          center: 'Align center',
+          right: 'Align right',
+          justify: 'Justify full'
+        },
+        color: {
+          recent: 'Recent Color',
+          more: 'More Color',
+          background: 'BackColor',
+          foreground: 'FontColor',
+          transparent: 'Transparent',
+          setTransparent: 'Set transparent',
+          reset: 'Reset',
+          resetToDefault: 'Reset to default'
+        },
+        shortcut: {
+          shortcuts: 'Keyboard shortcuts',
+          close: 'Close',
+          textFormatting: 'Text formatting',
+          action: 'Action',
+          paragraphFormatting: 'Paragraph formatting',
+          documentStyle: 'Document Style'
+        },
+        history: {
+          undo: 'Undo',
+          redo: 'Redo'
+        }
+      }
+    }
+  };
 
   /**
    * Async functions which returns `Promise`
@@ -1030,11 +1175,12 @@
      * handle tab key
      *
      * @param {jQuery} $editable
+     * @param {Number} tabsize
      */
-    this.tab = function ($editable) {
+    this.tab = function ($editable, tabsize) {
       recordUndo($editable);
       var rng = range.create();
-      var sNbsp = new Array($editable.data('tabsize') + 1).join('&nbsp;');
+      var sNbsp = new Array(tabsize + 1).join('&nbsp;');
       rng.insertNode($('<span id="noteTab">' + sNbsp + '</span>')[0]);
       var $tab = $('#noteTab').removeAttr('id');
       rng = range.create($tab[0], 1);
@@ -1270,6 +1416,46 @@
         width: ratio > newRatio ? pos.x : pos.y / ratio,
         height: ratio > newRatio ? pos.x * ratio : pos.y
       });
+    };
+  };
+
+  /**
+   * History
+   */
+  var History = function () {
+    var aUndo = [], aRedo = [];
+
+    var makeSnap = function ($editable) {
+      var elEditable = $editable[0], rng = range.create();
+      return {
+        contents: $editable.html(),
+        bookmark: rng.bookmark(elEditable),
+        scrollTop: $editable.scrollTop()
+      };
+    };
+
+    var applySnap = function ($editable, oSnap) {
+      $editable.html(oSnap.contents).scrollTop(oSnap.scrollTop);
+      range.createFromBookmark($editable[0], oSnap.bookmark).select();
+    };
+
+    this.undo = function ($editable) {
+      var oSnap = makeSnap($editable);
+      if (aUndo.length === 0) { return; }
+      applySnap($editable, aUndo.pop());
+      aRedo.push(oSnap);
+    };
+
+    this.redo = function ($editable) {
+      var oSnap = makeSnap($editable);
+      if (aRedo.length === 0) { return; }
+      applySnap($editable, aRedo.pop());
+      aUndo.push(oSnap);
+    };
+
+    this.recordUndo = function ($editable) {
+      aRedo = [];
+      aUndo.push(makeSnap($editable));
     };
   };
 
@@ -1639,8 +1825,9 @@
       var bExecCmd = (bCmd || bShift || keyCode === key.TAB);
       var oLayoutInfo = (bExecCmd) ? makeLayoutInfo(event.target) : null;
 
-      if (keyCode === key.TAB && oLayoutInfo.editable().data('tabsize')) {
-        editor.tab(oLayoutInfo.editable());
+      var tabsize = oLayoutInfo && oLayoutInfo.editor().data('options').tabsize;
+      if (keyCode === key.TAB && tabsize) {
+        editor.tab(oLayoutInfo.editable(), tabsize);
       } else if (bCmd && ((bShift && keyCode === key.Z) || keyCode === key.Y)) {
         editor.redo(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.Z) {
@@ -1777,6 +1964,8 @@
             $editable = oLayoutInfo.editable(),
             $codable = oLayoutInfo.codable();
 
+        var options = $editor.data('options');
+
         // before command
         var elTarget;
         if ($.inArray(sEvent, ['resize', 'floatMe']) !== -1) {
@@ -1826,8 +2015,7 @@
             $editable.data('orgHeight', $editable.css('height'));
             $(window).resize(hResizeFullscreen).trigger('resize');
           } else {
-            var hasOptionHeight = !!$editable.data('optionHeight');
-            $editable.css('height', hasOptionHeight ? $editable.data('orgHeight') : 'auto');
+            $editable.css('height', options.height ? $editable.data('orgHeight') : 'auto');
             $(window).off('resize');
           }
 
@@ -1847,7 +2035,7 @@
               var cmEditor = CodeMirror.fromTextArea($codable[0], $.extend({
                 mode: 'text/html',
                 lineNumbers: true
-              }, $editor.data('options').codemirror));
+              }, options.codemirror));
               // CodeMirror hasn't Padding.
               cmEditor.setSize(null, $editable.outerHeight());
               // autoFormatRange If formatting included
@@ -1866,7 +2054,7 @@
             }
 
             $editable.html($codable.val() || dom.emptyPara);
-            $editable.height($editable.data('optionHeight') ? $codable.height() : 'auto');
+            $editable.height(options.height ? $codable.height() : 'auto');
 
             toolbar.enable($toolbar);
             $editable.focus();
@@ -2012,6 +2200,12 @@
         editor.saveRange(oLayoutInfo.editable);
       });
 
+      // save options on editor
+      oLayoutInfo.editor.data('options', options);
+
+      // History
+      oLayoutInfo.editable.data('NoteHistory', new History());
+
       // basic event callbacks (lowercase)
       // enter, focus, blur, keyup, keydown
       if (options.onenter) {
@@ -2044,46 +2238,6 @@
       oLayoutInfo.toolbar.off();
       oLayoutInfo.handle.off();
       oLayoutInfo.popover.off();
-    };
-  };
-
-  /**
-   * History
-   */
-  var History = function () {
-    var aUndo = [], aRedo = [];
-
-    var makeSnap = function ($editable) {
-      var elEditable = $editable[0], rng = range.create();
-      return {
-        contents: $editable.html(),
-        bookmark: rng.bookmark(elEditable),
-        scrollTop: $editable.scrollTop()
-      };
-    };
-
-    var applySnap = function ($editable, oSnap) {
-      $editable.html(oSnap.contents).scrollTop(oSnap.scrollTop);
-      range.createFromBookmark($editable[0], oSnap.bookmark).select();
-    };
-
-    this.undo = function ($editable) {
-      var oSnap = makeSnap($editable);
-      if (aUndo.length === 0) { return; }
-      applySnap($editable, aUndo.pop());
-      aRedo.push(oSnap);
-    };
-
-    this.redo = function ($editable) {
-      var oSnap = makeSnap($editable);
-      if (aRedo.length === 0) { return; }
-      applySnap($editable, aRedo.pop());
-      aUndo.push(oSnap);
-    };
-
-    this.recordUndo = function ($editable) {
-      aRedo = [];
-      aUndo.push(makeSnap($editable));
     };
   };
 
@@ -2478,42 +2632,35 @@
       });
     };
 
-    // createLayout
+    /**
+     * create summernote layout
+     *
+     * @param {jQuery} $holder
+     * @param {Object} options
+     */
     this.createLayout = function ($holder, options) {
-      var nHeight = options.height,
-          nTabsize = options.tabsize,
-          sDirection = options.direction,
-          aToolbarSetting = options.toolbar,
-          langInfo = $.summernote.lang[options.lang];
-
       //already created
       var next = $holder.next();
       if (next && next.hasClass('note-editor')) { return; }
 
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
-      $editor.data('options', options);
 
-      //02. statusbar
-      if (nHeight > 0) {
+      //02. statusbar (resizebar)
+      if (options.height > 0) {
         $('<div class="note-statusbar">' + tplStatusbar + '</div>').prependTo($editor);
       }
 
       //03. create Editable
       var $editable = $('<div class="note-editable" contentEditable="true"></div>').prependTo($editor);
-      if (nHeight) {
-        $editable.height(nHeight);
-        $editable.data('optionHeight', nHeight);
+      if (options.height) {
+        $editable.height(options.height);
       }
-      if (nTabsize) {
-        $editable.data('tabsize', nTabsize);
-      }
-      if (sDirection) {
-        $editable.attr('dir', sDirection);
+      if (options.direction) {
+        $editable.attr('dir', options.direction);
       }
 
       $editable.html(dom.html($holder) || dom.emptyPara);
-      $editable.data('NoteHistory', new History());
 
       //031. create codable
       $('<textarea class="note-codable"></textarea>').prependTo($editor);
@@ -2523,10 +2670,12 @@
         document.execCommand('styleWithCSS', 0, true);
       });
 
+      var langInfo = $.summernote.lang[options.lang];
+
       //04. create Toolbar
       var sToolbar = '';
-      for (var idx = 0, sz = aToolbarSetting.length; idx < sz; idx ++) {
-        var group = aToolbarSetting[idx];
+      for (var idx = 0, sz = options.toolbar.length; idx < sz; idx ++) {
+        var group = options.toolbar[idx];
         sToolbar += '<div class="note-' + group[0] + ' btn-group">';
         for (var i = 0, szGroup = group[1].length; i < szGroup; i++) {
           sToolbar += tplToolbarInfo[group[1][i]](langInfo);
@@ -2560,9 +2709,14 @@
       $editor.insertAfter($holder);
       $holder.hide();
     };
-
-    // layoutInfoFromHolder
-    var layoutInfoFromHolder = this.layoutInfoFromHolder = function ($holder) {
+    
+    /**
+     * returns layoutInfo from holder
+     *
+     * @param {jQuery} $holder - placeholder
+     * @returns {Object}
+     */
+    this.layoutInfoFromHolder = function ($holder) {
       var $editor = $holder.next();
       if (!$editor.hasClass('note-editor')) { return; }
 
@@ -2579,9 +2733,13 @@
       };
     };
 
-    // removeLayout
+    /**
+     * removeLayout
+     *
+     * @param {jQuery} $holder - placeholder
+     */
     this.removeLayout = function ($holder) {
-      var info = layoutInfoFromHolder($holder);
+      var info = this.layoutInfoFromHolder($holder);
       if (!info) { return; }
       $holder.html(info.editable.html());
 
@@ -2590,129 +2748,14 @@
     };
   };
 
-  var renderer = new Renderer();
-  var eventHandler = new EventHandler();
-
+  // jQuery namespace for summernote
   $.summernote = $.summernote || {};
 
-  $.extend($.summernote, {
-    version: '0.5.1',
-    lang: {
-      'en-US': {
-        font: {
-          bold: 'Bold',
-          italic: 'Italic',
-          underline: 'Underline',
-          strike: 'Strike',
-          clear: 'Remove Font Style',
-          height: 'Line Height',
-          size: 'Font Size'
-        },
-        image: {
-          image: 'Picture',
-          insert: 'Insert Image',
-          resizeFull: 'Resize Full',
-          resizeHalf: 'Resize Half',
-          resizeQuarter: 'Resize Quarter',
-          floatLeft: 'Float Left',
-          floatRight: 'Float Right',
-          floatNone: 'Float None',
-          dragImageHere: 'Drag an image here',
-          selectFromFiles: 'Select from files',
-          url: 'Image URL'
-        },
-        link: {
-          link: 'Link',
-          insert: 'Insert Link',
-          unlink: 'Unlink',
-          edit: 'Edit',
-          textToDisplay: 'Text to display',
-          url: 'To what URL should this link go?'
-        },
-        video: {
-          video: 'Video',
-          videoLink: 'Video Link',
-          insert: 'Insert Video',
-          url: 'Video URL?',
-          providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
-        },
-        table: {
-          table: 'Table'
-        },
-        hr: {
-          insert: 'Insert Horizontal Rule'
-        },
-        style: {
-          style: 'Style',
-          normal: 'Normal',
-          blockquote: 'Quote',
-          pre: 'Code',
-          h1: 'Header 1',
-          h2: 'Header 2',
-          h3: 'Header 3',
-          h4: 'Header 4',
-          h5: 'Header 5',
-          h6: 'Header 6'
-        },
-        lists: {
-          unordered: 'Unordered list',
-          ordered: 'Ordered list'
-        },
-        options: {
-          help: 'Help',
-          fullscreen: 'Full Screen',
-          codeview: 'Code View'
-        },
-        paragraph: {
-          paragraph: 'Paragraph',
-          outdent: 'Outdent',
-          indent: 'Indent',
-          left: 'Align left',
-          center: 'Align center',
-          right: 'Align right',
-          justify: 'Justify full'
-        },
-        color: {
-          recent: 'Recent Color',
-          more: 'More Color',
-          background: 'BackColor',
-          foreground: 'FontColor',
-          transparent: 'Transparent',
-          setTransparent: 'Set transparent',
-          reset: 'Reset',
-          resetToDefault: 'Reset to default'
-        },
-        shortcut: {
-          shortcuts: 'Keyboard shortcuts',
-          close: 'Close',
-          textFormatting: 'Text formatting',
-          action: 'Action',
-          paragraphFormatting: 'Paragraph formatting',
-          documentStyle: 'Document Style'
-        },
-        history: {
-          undo: 'Undo',
-          redo: 'Redo'
-        }
-      }
-    },
-    // default options
-    options: {
-      toolbar: [
-        ['style', ['style']],
-        ['font', ['bold', 'italic', 'underline', 'clear']],
-        ['fontsize', ['fontsize']],
-        ['color', ['color']],
-        ['para', ['ul', 'ol', 'paragraph']],
-        ['height', ['height']],
-        ['table', ['table']],
-        ['insert', ['link', 'picture', 'video']],
-        ['view', ['fullscreen', 'codeview']],
-        ['help', ['help']]
-      ],
-      lang: 'en-US'
-    }
-  });
+  // extends default `settings`
+  $.extend($.summernote, settings);
+
+  var renderer = new Renderer();
+  var eventHandler = new EventHandler();
 
   /**
    * extend jquery fn
@@ -2720,8 +2763,7 @@
   $.fn.extend({
     /**
      * initialize summernote
-     *  - create Editor Layout
-     *  - attach Key and Mouse Event
+     *  - create editor layout and attach Mouse and keyboard events.
      *
      * @param {Object} options
      * @returns {this}
@@ -2739,7 +2781,7 @@
         var info = renderer.layoutInfoFromHolder($holder);
         eventHandler.attach(info, options);
 
-        // Textarea auto filling the code before form submit.
+        // Textarea: auto filling the code before form submit.
         if (dom.isTextarea($holder[0])) {
           $holder.closest('form').submit(function () {
             $holder.html($holder.code());

@@ -1,129 +1,16 @@
 define([
-  'core/agent', 'core/dom', 'EventHandler', 'Renderer'
-], function (agent, dom, EventHandler, Renderer) {
-  var renderer = new Renderer();
-  var eventHandler = new EventHandler();
-
+  'core/agent', 'core/dom',
+  'settings',
+  'EventHandler', 'Renderer'
+], function (agent, dom, settings, EventHandler, Renderer) {
+  // jQuery namespace for summernote
   $.summernote = $.summernote || {};
 
-  $.extend($.summernote, {
-    version: '@VERSION',
-    lang: {
-      'en-US': {
-        font: {
-          bold: 'Bold',
-          italic: 'Italic',
-          underline: 'Underline',
-          strike: 'Strike',
-          clear: 'Remove Font Style',
-          height: 'Line Height',
-          size: 'Font Size'
-        },
-        image: {
-          image: 'Picture',
-          insert: 'Insert Image',
-          resizeFull: 'Resize Full',
-          resizeHalf: 'Resize Half',
-          resizeQuarter: 'Resize Quarter',
-          floatLeft: 'Float Left',
-          floatRight: 'Float Right',
-          floatNone: 'Float None',
-          dragImageHere: 'Drag an image here',
-          selectFromFiles: 'Select from files',
-          url: 'Image URL'
-        },
-        link: {
-          link: 'Link',
-          insert: 'Insert Link',
-          unlink: 'Unlink',
-          edit: 'Edit',
-          textToDisplay: 'Text to display',
-          url: 'To what URL should this link go?'
-        },
-        video: {
-          video: 'Video',
-          videoLink: 'Video Link',
-          insert: 'Insert Video',
-          url: 'Video URL?',
-          providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
-        },
-        table: {
-          table: 'Table'
-        },
-        hr: {
-          insert: 'Insert Horizontal Rule'
-        },
-        style: {
-          style: 'Style',
-          normal: 'Normal',
-          blockquote: 'Quote',
-          pre: 'Code',
-          h1: 'Header 1',
-          h2: 'Header 2',
-          h3: 'Header 3',
-          h4: 'Header 4',
-          h5: 'Header 5',
-          h6: 'Header 6'
-        },
-        lists: {
-          unordered: 'Unordered list',
-          ordered: 'Ordered list'
-        },
-        options: {
-          help: 'Help',
-          fullscreen: 'Full Screen',
-          codeview: 'Code View'
-        },
-        paragraph: {
-          paragraph: 'Paragraph',
-          outdent: 'Outdent',
-          indent: 'Indent',
-          left: 'Align left',
-          center: 'Align center',
-          right: 'Align right',
-          justify: 'Justify full'
-        },
-        color: {
-          recent: 'Recent Color',
-          more: 'More Color',
-          background: 'BackColor',
-          foreground: 'FontColor',
-          transparent: 'Transparent',
-          setTransparent: 'Set transparent',
-          reset: 'Reset',
-          resetToDefault: 'Reset to default'
-        },
-        shortcut: {
-          shortcuts: 'Keyboard shortcuts',
-          close: 'Close',
-          textFormatting: 'Text formatting',
-          action: 'Action',
-          paragraphFormatting: 'Paragraph formatting',
-          documentStyle: 'Document Style'
-        },
-        history: {
-          undo: 'Undo',
-          redo: 'Redo'
-        }
-      }
-    },
-    // default options
-    options: {
-      toolbar: [
-        ['style', ['style']],
-        ['font', ['bold', 'italic', 'underline', 'clear']],
-        ['fontsize', ['fontsize']],
-        ['color', ['color']],
-        ['para', ['ul', 'ol', 'paragraph']],
-        ['height', ['height']],
-        ['table', ['table']],
-        ['insert', ['link', 'picture', 'video']],
-        ['view', ['fullscreen', 'codeview']],
-        ['help', ['help']]
-      ],
-      lang: 'en-US'
-    }
-  });
+  // extends default `settings`
+  $.extend($.summernote, settings);
+
+  var renderer = new Renderer();
+  var eventHandler = new EventHandler();
 
   /**
    * extend jquery fn
@@ -131,8 +18,7 @@ define([
   $.fn.extend({
     /**
      * initialize summernote
-     *  - create Editor Layout
-     *  - attach Key and Mouse Event
+     *  - create editor layout and attach Mouse and keyboard events.
      *
      * @param {Object} options
      * @returns {this}
@@ -150,7 +36,7 @@ define([
         var info = renderer.layoutInfoFromHolder($holder);
         eventHandler.attach(info, options);
 
-        // Textarea auto filling the code before form submit.
+        // Textarea: auto filling the code before form submit.
         if (dom.isTextarea($holder[0])) {
           $holder.closest('form').submit(function () {
             $holder.html($holder.code());
