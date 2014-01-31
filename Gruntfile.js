@@ -81,7 +81,8 @@ module.exports = function (grunt) {
               connect.static(options.base),    // serve static files
               connect.directory(options.base)  // make empty directories browsable
             ];
-          }
+          },
+          open: 'http://localhost:3000'
         }
       }
     },
