@@ -17,11 +17,10 @@
     "grunt-contrib-jshint": "0.7.2",
     "grunt-contrib-qunit": "*",
     "grunt-contrib-uglify": "~0.2.2",
-    "grunt-contrib-connect": "~0.6.0",
-    "grunt-contrib-watch": "~0.5.3",
     "grunt-recess": "*",
-    "express": "~3.4.8",
-    "connect-livereload": "~0.3.2"
+    "grunt-contrib-watch": "*",
+    "grunt-contrib-connect": "*",
+    "connect-livereload": "*"
   },
   "dependencies": {
     "open": "0.0.4"

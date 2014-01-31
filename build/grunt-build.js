@@ -28,7 +28,7 @@ module.exports = function (grunt) {
       return contents;
     };
 
-    var outputPath = this.data.out;
+    var outputPath = this.data.outFile;
     /**
      * Handle final output from the optimizer
      */
