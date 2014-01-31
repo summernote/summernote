@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-01-31T11:56Z
+ * Date: 2014-01-31T12:30Z
  */
 (function (factory) {
   /* global define */
@@ -198,6 +198,43 @@
    */
   var dom = (function () {
     /**
+     * returns whether node is `note-editable` or not.
+     *
+     * @param {Element} node
+     * @return {Boolean}
+     */
+    var isEditable = function (node) {
+      return node && $(node).hasClass('note-editable');
+    };
+  
+    var isControlSizing = function (node) {
+      return node && $(node).hasClass('note-control-sizing');
+    };
+
+    /**
+     * build layoutInfo from $editor(.note-editor)
+     *
+     * @param {jQuery} $editor
+     * @return {Object}
+     */
+    var buildLayoutInfo = function ($editor) {
+      var makeFinder = function (sClassName) {
+        return function () { return $editor.find(sClassName); };
+      };
+      return {
+        editor: function () { return $editor; },
+        dropzone: makeFinder('.note-dropzone'),
+        toolbar: makeFinder('.note-toolbar'),
+        editable: makeFinder('.note-editable'),
+        codable: makeFinder('.note-codable'),
+        statusbar: makeFinder('.note-statusbar'),
+        popover: makeFinder('.note-popover'),
+        handle: makeFinder('.note-handle'),
+        dialog: makeFinder('.note-dialog')
+      };
+    };
+
+    /**
      * returns predicate which judge whether nodeName is same
      * @param {String} sNodeName
      */
@@ -215,17 +252,6 @@
   
     var isList = function (node) {
       return node && /^UL|^OL/.test(node.nodeName);
-    };
-  
-    /**
-     * returns whether node is `note-editable` or not.
-     */
-    var isEditable = function (node) {
-      return node && $(node).hasClass('note-editable');
-    };
-  
-    var isControlSizing = function (node) {
-      return node && $(node).hasClass('note-control-sizing');
     };
   
     /**
@@ -485,11 +511,12 @@
     return {
       blank: agent.bMSIE ? '&nbsp;' : '<br/>',
       emptyPara: '<p><br/></p>',
+      isEditable: isEditable,
+      isControlSizing: isControlSizing,
+      buildLayoutInfo: buildLayoutInfo,
       isText: isText,
       isPara: isPara,
       isList: isList,
-      isEditable: isEditable,
-      isControlSizing: isControlSizing,
       isAnchor: makePredByNodeName('A'),
       isDiv: makePredByNodeName('DIV'),
       isLi: makePredByNodeName('LI'),
@@ -1773,16 +1800,7 @@
      */
     var makeLayoutInfo = function (descendant) {
       var $editor = $(descendant).closest('.note-editor');
-      return {
-        editor: function () { return $editor; },
-        toolbar: function () { return $editor.find('.note-toolbar'); },
-        editable: function () { return $editor.find('.note-editable'); },
-        codable: function () { return $editor.find('.note-codable'); },
-        statusbar: function () { return $editor.find('.note-statusbar'); },
-        popover: function () { return $editor.find('.note-popover'); },
-        handle: function () { return $editor.find('.note-handle'); },
-        dialog: function () { return $editor.find('.note-dialog'); }
-      };
+      return $editor.length > 0 && dom.buildLayoutInfo($editor);
     };
 
     /**
@@ -2720,17 +2738,14 @@
       var $editor = $holder.next();
       if (!$editor.hasClass('note-editor')) { return; }
 
-      return {
-        editor: $editor,
-        dropzone: $editor.find('.note-dropzone'),
-        toolbar: $editor.find('.note-toolbar'),
-        editable: $editor.find('.note-editable'),
-        codable: $editor.find('.note-codable'),
-        statusbar: $editor.find('.note-statusbar'),
-        popover: $editor.find('.note-popover'),
-        handle: $editor.find('.note-handle'),
-        dialog: $editor.find('.note-dialog')
-      };
+      var layoutInfo = dom.buildLayoutInfo($editor);
+      // cache all properties.
+      for (var key in layoutInfo) {
+        if (layoutInfo.hasOwnProperty(key)) {
+          layoutInfo[key] = layoutInfo[key].call();
+        }
+      }
+      return layoutInfo;
     };
 
     /**

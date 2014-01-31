@@ -480,17 +480,14 @@ define([
       var $editor = $holder.next();
       if (!$editor.hasClass('note-editor')) { return; }
 
-      return {
-        editor: $editor,
-        dropzone: $editor.find('.note-dropzone'),
-        toolbar: $editor.find('.note-toolbar'),
-        editable: $editor.find('.note-editable'),
-        codable: $editor.find('.note-codable'),
-        statusbar: $editor.find('.note-statusbar'),
-        popover: $editor.find('.note-popover'),
-        handle: $editor.find('.note-handle'),
-        dialog: $editor.find('.note-dialog')
-      };
+      var layoutInfo = dom.buildLayoutInfo($editor);
+      // cache all properties.
+      for (var key in layoutInfo) {
+        if (layoutInfo.hasOwnProperty(key)) {
+          layoutInfo[key] = layoutInfo[key].call();
+        }
+      }
+      return layoutInfo;
     };
 
     /**

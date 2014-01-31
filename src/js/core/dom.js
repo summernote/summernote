@@ -4,6 +4,43 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
    */
   var dom = (function () {
     /**
+     * returns whether node is `note-editable` or not.
+     *
+     * @param {Element} node
+     * @return {Boolean}
+     */
+    var isEditable = function (node) {
+      return node && $(node).hasClass('note-editable');
+    };
+  
+    var isControlSizing = function (node) {
+      return node && $(node).hasClass('note-control-sizing');
+    };
+
+    /**
+     * build layoutInfo from $editor(.note-editor)
+     *
+     * @param {jQuery} $editor
+     * @return {Object}
+     */
+    var buildLayoutInfo = function ($editor) {
+      var makeFinder = function (sClassName) {
+        return function () { return $editor.find(sClassName); };
+      };
+      return {
+        editor: function () { return $editor; },
+        dropzone: makeFinder('.note-dropzone'),
+        toolbar: makeFinder('.note-toolbar'),
+        editable: makeFinder('.note-editable'),
+        codable: makeFinder('.note-codable'),
+        statusbar: makeFinder('.note-statusbar'),
+        popover: makeFinder('.note-popover'),
+        handle: makeFinder('.note-handle'),
+        dialog: makeFinder('.note-dialog')
+      };
+    };
+
+    /**
      * returns predicate which judge whether nodeName is same
      * @param {String} sNodeName
      */
@@ -21,17 +58,6 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
   
     var isList = function (node) {
       return node && /^UL|^OL/.test(node.nodeName);
-    };
-  
-    /**
-     * returns whether node is `note-editable` or not.
-     */
-    var isEditable = function (node) {
-      return node && $(node).hasClass('note-editable');
-    };
-  
-    var isControlSizing = function (node) {
-      return node && $(node).hasClass('note-control-sizing');
     };
   
     /**
@@ -291,11 +317,12 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     return {
       blank: agent.bMSIE ? '&nbsp;' : '<br/>',
       emptyPara: '<p><br/></p>',
+      isEditable: isEditable,
+      isControlSizing: isControlSizing,
+      buildLayoutInfo: buildLayoutInfo,
       isText: isText,
       isPara: isPara,
       isList: isList,
-      isEditable: isEditable,
-      isControlSizing: isControlSizing,
       isAnchor: makePredByNodeName('A'),
       isDiv: makePredByNodeName('DIV'),
       isLi: makePredByNodeName('LI'),

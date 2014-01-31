@@ -23,16 +23,7 @@ define([
      */
     var makeLayoutInfo = function (descendant) {
       var $editor = $(descendant).closest('.note-editor');
-      return {
-        editor: function () { return $editor; },
-        toolbar: function () { return $editor.find('.note-toolbar'); },
-        editable: function () { return $editor.find('.note-editable'); },
-        codable: function () { return $editor.find('.note-codable'); },
-        statusbar: function () { return $editor.find('.note-statusbar'); },
-        popover: function () { return $editor.find('.note-popover'); },
-        handle: function () { return $editor.find('.note-handle'); },
-        dialog: function () { return $editor.find('.note-dialog'); }
-      };
+      return $editor.length > 0 && dom.buildLayoutInfo($editor);
     };
 
     /**
