@@ -53,6 +53,28 @@ module.exports = function (grunt) {
           'dist/summernote.css': ['src/less/summernote.less']
         }
       }
+    },
+    watch: {
+      css: {
+        files: 'src/less/*.less',
+        tasks: ['recess'],
+        options: { livereload: true }
+      },
+      scripts: {
+        files: 'src/js/**/*.js',
+        tasks: ['build'],
+        options: { livereload: true }
+      }
+    },
+    connect: {
+      all: {
+        options: {
+          port: 3000,
+          keepalive: true,
+          open: 'http://localhost:3000/examples/',
+          options: { livereload: true }
+        }
+      }
     }
   });
 
@@ -72,4 +94,11 @@ module.exports = function (grunt) {
 
   // default: All tasks
   grunt.registerTask('default', ['dist']);
+
+  // grunt: connect
+  grunt.registerTask('server', ['connect', 'watch']);
+
+  // loaded npm module
+  grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 };
