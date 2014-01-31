@@ -1,10 +1,10 @@
 define([
   'CodeMirror',
-  'core/agent', 'core/dom', 'core/async',
+  'core/agent', 'core/dom', 'core/async', 'core/key',
   'editing/Style', 'editing/Editor',
   'module/Toolbar', 'module/Popover', 'module/Handle', 'module/Dialog'
 ], function (CodeMirror,
-             agent, dom, async,
+             agent, dom, async, key,
              Style, Editor,
              Toolbar, Popover, Handle, Dialog) {
   /**
@@ -14,12 +14,6 @@ define([
     var editor = new Editor();
     var toolbar = new Toolbar(), popover = new Popover();
     var handle = new Handle(), dialog = new Dialog();
-
-    var key = { BACKSPACE: 8, TAB: 9, ENTER: 13, SPACE: 32,
-                NUM0: 48, NUM1: 49, NUM6: 54, NUM7: 55, NUM8: 56,
-                B: 66, E: 69, I: 73, J: 74, K: 75, L: 76, R: 82, S: 83, U: 85,
-                Y: 89, Z: 90, SLASH: 191,
-                LEFTBRACKET: 219, BACKSLACH: 220, RIGHTBRACKET: 221 };
 
     // makeLayoutInfo from editor's descendant node.
     var makeLayoutInfo = function (descendant) {
@@ -100,15 +94,24 @@ define([
       event.preventDefault(); //prevent default event for FF
     };
 
+    /**
+     * insert Images from file array.
+     *
+     * @param {jQuery} $editable
+     * @param {File[]} files
+     */
     var insertImages = function ($editable, files) {
-      var callbacks = $editable.data('callbacks');
       editor.restoreRange($editable);
-      if (callbacks.onImageUpload) { // call custom handler
+      var callbacks = $editable.data('callbacks');
+
+      // If onImageUpload options setted
+      if (callbacks.onImageUpload) {
         callbacks.onImageUpload(files, editor, $editable);
+      // else insert Image as dataURL
       } else {
         $.each(files, function (idx, file) {
-          async.readFile(file).done(function (sURL) {
-            editor.insertImage($editable, sURL);
+          async.readFileAsDataURL(file).done(function (sDataURL) {
+            editor.insertImage($editable, sDataURL);
           }).fail(function () {
             if (callbacks.onImageUploadError) {
               callbacks.onImageUploadError();

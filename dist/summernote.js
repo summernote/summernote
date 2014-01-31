@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-01-31T06:19Z
+ * Date: 2014-01-31T06:51Z
  */
 (function (factory) {
   /* global define */
@@ -769,18 +769,21 @@
   })();
 
   /**
-   * Async functions which returns deferred object
+   * Async functions which returns `Promise`
    */
   var async = (function () {
     /**
      * read contents of file as representing URL
+     *
      * @param {File} file
+     * @return {Promise}
      */
-    var readFile = function (file) {
+    var readFileAsDataURL = function (file) {
       return $.Deferred(function (deferred) {
         $.extend(new FileReader(), {
           onload: function (e) {
-            deferred.resolve(e.target.result);
+            var sDataURL = e.target.result;
+            deferred.resolve(sDataURL);
           },
           onerror: function () {
             deferred.reject(this);
@@ -793,6 +796,7 @@
      * load image from url string
      *
      * @param {String} sUrl
+     * @param {Promise}
      */
     var loadImage = function (sUrl) {
       return $.Deferred(function (deferred) {
@@ -819,7 +823,10 @@
         }).src = sUrl;
       }).promise();
     };
-    return { readFile: readFile, loadImage: loadImage };
+    return {
+      readFileAsDataURL: readFileAsDataURL,
+      loadImage: loadImage
+    };
   })();
 
   /**
@@ -1570,18 +1577,47 @@
   };
 
   /**
+   * Object for keycodes.
+   */
+  var key = {
+    BACKSPACE: 8,
+    TAB: 9,
+    ENTER: 13,
+    SPACE: 32,
+
+    // Number: 0-9
+    NUM0: 48,
+    NUM1: 49,
+    NUM6: 54,
+    NUM7: 55,
+    NUM8: 56,
+
+    // Alphabet: a-z
+    B: 66,
+    E: 69,
+    I: 73,
+    J: 74,
+    K: 75,
+    L: 76,
+    R: 82,
+    S: 83,
+    U: 85,
+    Y: 89,
+    Z: 90,
+
+    SLASH: 191,
+    LEFTBRACKET: 219,
+    BACKSLACH: 220,
+    RIGHTBRACKET: 221
+  };
+
+  /**
    * EventHandler
    */
   var EventHandler = function () {
     var editor = new Editor();
     var toolbar = new Toolbar(), popover = new Popover();
     var handle = new Handle(), dialog = new Dialog();
-
-    var key = { BACKSPACE: 8, TAB: 9, ENTER: 13, SPACE: 32,
-                NUM0: 48, NUM1: 49, NUM6: 54, NUM7: 55, NUM8: 56,
-                B: 66, E: 69, I: 73, J: 74, K: 75, L: 76, R: 82, S: 83, U: 85,
-                Y: 89, Z: 90, SLASH: 191,
-                LEFTBRACKET: 219, BACKSLACH: 220, RIGHTBRACKET: 221 };
 
     // makeLayoutInfo from editor's descendant node.
     var makeLayoutInfo = function (descendant) {
@@ -1662,15 +1698,24 @@
       event.preventDefault(); //prevent default event for FF
     };
 
+    /**
+     * insert Images from file array.
+     *
+     * @param {jQuery} $editable
+     * @param {File[]} files
+     */
     var insertImages = function ($editable, files) {
-      var callbacks = $editable.data('callbacks');
       editor.restoreRange($editable);
-      if (callbacks.onImageUpload) { // call custom handler
+      var callbacks = $editable.data('callbacks');
+
+      // If onImageUpload options setted
+      if (callbacks.onImageUpload) {
         callbacks.onImageUpload(files, editor, $editable);
+      // else insert Image as dataURL
       } else {
         $.each(files, function (idx, file) {
-          async.readFile(file).done(function (sURL) {
-            editor.insertImage($editable, sURL);
+          async.readFileAsDataURL(file).done(function (sDataURL) {
+            editor.insertImage($editable, sDataURL);
           }).fail(function () {
             if (callbacks.onImageUploadError) {
               callbacks.onImageUploadError();

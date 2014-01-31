@@ -1,17 +1,20 @@
 define('core/async', function () {
   /**
-   * Async functions which returns deferred object
+   * Async functions which returns `Promise`
    */
   var async = (function () {
     /**
      * read contents of file as representing URL
+     *
      * @param {File} file
+     * @return {Promise}
      */
-    var readFile = function (file) {
+    var readFileAsDataURL = function (file) {
       return $.Deferred(function (deferred) {
         $.extend(new FileReader(), {
           onload: function (e) {
-            deferred.resolve(e.target.result);
+            var sDataURL = e.target.result;
+            deferred.resolve(sDataURL);
           },
           onerror: function () {
             deferred.reject(this);
@@ -24,6 +27,7 @@ define('core/async', function () {
      * load image from url string
      *
      * @param {String} sUrl
+     * @param {Promise}
      */
     var loadImage = function (sUrl) {
       return $.Deferred(function (deferred) {
@@ -50,7 +54,10 @@ define('core/async', function () {
         }).src = sUrl;
       }).promise();
     };
-    return { readFile: readFile, loadImage: loadImage };
+    return {
+      readFileAsDataURL: readFileAsDataURL,
+      loadImage: loadImage
+    };
   })();
 
   return async;
