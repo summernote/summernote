@@ -17,9 +17,13 @@
   <script type="text/javascript" src="../dist/summernote.js"></script>
 
   <script type="text/javascript">
-    $(document).ready(function() {
+    $(function() {
       $('.summernote').summernote({
-        height: 300
+        height: 200
+      });
+
+      $('form').on('submit', function (e) {
+        alert($('.summernote').code());
       });
     });
   </script>
