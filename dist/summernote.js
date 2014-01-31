@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-01-31T06:51Z
+ * Date: 2014-01-31T10:41Z
  */
 (function (factory) {
   /* global define */
@@ -517,6 +517,161 @@
   })();
 
   /**
+   * Async functions which returns `Promise`
+   */
+  var async = (function () {
+    /**
+     * read contents of file as representing URL
+     *
+     * @param {File} file
+     * @return {Promise}
+     */
+    var readFileAsDataURL = function (file) {
+      return $.Deferred(function (deferred) {
+        $.extend(new FileReader(), {
+          onload: function (e) {
+            var sDataURL = e.target.result;
+            deferred.resolve(sDataURL);
+          },
+          onerror: function () {
+            deferred.reject(this);
+          }
+        }).readAsDataURL(file);
+      }).promise();
+    };
+  
+    /**
+     * load image from url string
+     *
+     * @param {String} sUrl
+     * @param {Promise}
+     */
+    var loadImage = function (sUrl) {
+      return $.Deferred(function (deferred) {
+        $.extend(new Image(), {
+          detachEvents: function () {
+            this.onload = null;
+            this.onerror = null;
+            this.onabort = null;
+          },
+          onload: function () {
+            this.detachEvents();
+            deferred.resolve(this);
+          },
+          onerror: function () {
+            // URL returns 404, etc
+            this.detachEvents();
+            deferred.reject(this);
+          },
+          onabort: function () {
+            // IE may call this if user clicks "Stop"
+            this.detachEvents();
+            deferred.reject(this);
+          }
+        }).src = sUrl;
+      }).promise();
+    };
+    return {
+      readFileAsDataURL: readFileAsDataURL,
+      loadImage: loadImage
+    };
+  })();
+
+  /**
+   * Object for keycodes.
+   */
+  var key = {
+    BACKSPACE: 8,
+    TAB: 9,
+    ENTER: 13,
+    SPACE: 32,
+
+    // Number: 0-9
+    NUM0: 48,
+    NUM1: 49,
+    NUM6: 54,
+    NUM7: 55,
+    NUM8: 56,
+
+    // Alphabet: a-z
+    B: 66,
+    E: 69,
+    I: 73,
+    J: 74,
+    K: 75,
+    L: 76,
+    R: 82,
+    S: 83,
+    U: 85,
+    Y: 89,
+    Z: 90,
+
+    SLASH: 191,
+    LEFTBRACKET: 219,
+    BACKSLACH: 220,
+    RIGHTBRACKET: 221
+  };
+
+  /**
+   * Style
+   */
+  var Style = function () {
+    /**
+     * paragraph level style
+     */
+    this.stylePara = function (rng, oStyle) {
+      var aPara = rng.listPara();
+      $.each(aPara, function (idx, elPara) {
+        $.each(oStyle, function (sKey, sValue) {
+          elPara.style[sKey] = sValue;
+        });
+      });
+    };
+
+    /**
+     * get current style on cursor
+     *
+     * @param {WrappedRange} rng
+     * @param {Element} elTarget - target element on event
+     * @param {Object} - object contains style properties.
+     */
+    this.current = function (rng, elTarget) {
+      var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
+      var oStyle = $cont.css(['font-size', 'text-align', 'list-style-type', 'line-height']) || {};
+
+      oStyle['font-size'] = parseInt(oStyle['font-size']);
+
+      // document.queryCommandState for toggle state
+      oStyle['font-bold'] = document.queryCommandState('bold') ? 'bold' : 'normal';
+      oStyle['font-italic'] = document.queryCommandState('italic') ? 'italic' : 'normal';
+      oStyle['font-underline'] = document.queryCommandState('underline') ? 'underline' : 'normal';
+
+      // list-style-type to list-style(unordered, ordered)
+      if (!rng.isOnList()) {
+        oStyle['list-style'] = 'none';
+      } else {
+        var aOrderedType = ['circle', 'disc', 'disc-leading-zero', 'square'];
+        var bUnordered = $.inArray(oStyle['list-style-type'], aOrderedType) > -1;
+        oStyle['list-style'] = bUnordered ? 'unordered' : 'ordered';
+      }
+
+      var elPara = dom.ancestor(rng.sc, dom.isPara);
+      if (elPara && elPara.style['line-height']) {
+        oStyle['line-height'] = elPara.style.lineHeight;
+      } else {
+        var lineHeight = parseInt(oStyle['line-height']) / parseInt(oStyle['font-size']);
+        oStyle['line-height'] = lineHeight.toFixed(1);
+      }
+
+      oStyle.image = dom.isImg(elTarget) && elTarget;
+      oStyle.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);
+      oStyle.aAncestor = dom.listAncestor(rng.sc, dom.isEditable);
+
+      return oStyle;
+    };
+  };
+
+  /**
    * range module
    */
   var range = (function () {
@@ -767,166 +922,6 @@
       }
     };
   })();
-
-  /**
-   * Async functions which returns `Promise`
-   */
-  var async = (function () {
-    /**
-     * read contents of file as representing URL
-     *
-     * @param {File} file
-     * @return {Promise}
-     */
-    var readFileAsDataURL = function (file) {
-      return $.Deferred(function (deferred) {
-        $.extend(new FileReader(), {
-          onload: function (e) {
-            var sDataURL = e.target.result;
-            deferred.resolve(sDataURL);
-          },
-          onerror: function () {
-            deferred.reject(this);
-          }
-        }).readAsDataURL(file);
-      }).promise();
-    };
-  
-    /**
-     * load image from url string
-     *
-     * @param {String} sUrl
-     * @param {Promise}
-     */
-    var loadImage = function (sUrl) {
-      return $.Deferred(function (deferred) {
-        $.extend(new Image(), {
-          detachEvents: function () {
-            this.onload = null;
-            this.onerror = null;
-            this.onabort = null;
-          },
-          onload: function () {
-            this.detachEvents();
-            deferred.resolve(this);
-          },
-          onerror: function () {
-            // URL returns 404, etc
-            this.detachEvents();
-            deferred.reject(this);
-          },
-          onabort: function () {
-            // IE may call this if user clicks "Stop"
-            this.detachEvents();
-            deferred.reject(this);
-          }
-        }).src = sUrl;
-      }).promise();
-    };
-    return {
-      readFileAsDataURL: readFileAsDataURL,
-      loadImage: loadImage
-    };
-  })();
-
-  /**
-   * Style
-   */
-  var Style = function () {
-    /**
-     * paragraph level style
-     */
-    this.stylePara = function (rng, oStyle) {
-      var aPara = rng.listPara();
-      $.each(aPara, function (idx, elPara) {
-        $.each(oStyle, function (sKey, sValue) {
-          elPara.style[sKey] = sValue;
-        });
-      });
-    };
-
-    /**
-     * get current style on cursor
-     *
-     * @param {WrappedRange} rng
-     * @param {Element} elTarget - target element on event
-     * @param {Object} - object contains style properties.
-     */
-    this.current = function (rng, elTarget) {
-      var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
-      var oStyle = $cont.css(['font-size', 'text-align', 'list-style-type', 'line-height']) || {};
-
-      oStyle['font-size'] = parseInt(oStyle['font-size']);
-
-      // document.queryCommandState for toggle state
-      oStyle['font-bold'] = document.queryCommandState('bold') ? 'bold' : 'normal';
-      oStyle['font-italic'] = document.queryCommandState('italic') ? 'italic' : 'normal';
-      oStyle['font-underline'] = document.queryCommandState('underline') ? 'underline' : 'normal';
-
-      // list-style-type to list-style(unordered, ordered)
-      if (!rng.isOnList()) {
-        oStyle['list-style'] = 'none';
-      } else {
-        var aOrderedType = ['circle', 'disc', 'disc-leading-zero', 'square'];
-        var bUnordered = $.inArray(oStyle['list-style-type'], aOrderedType) > -1;
-        oStyle['list-style'] = bUnordered ? 'unordered' : 'ordered';
-      }
-
-      var elPara = dom.ancestor(rng.sc, dom.isPara);
-      if (elPara && elPara.style['line-height']) {
-        oStyle['line-height'] = elPara.style.lineHeight;
-      } else {
-        var lineHeight = parseInt(oStyle['line-height']) / parseInt(oStyle['font-size']);
-        oStyle['line-height'] = lineHeight.toFixed(1);
-      }
-
-      oStyle.image = dom.isImg(elTarget) && elTarget;
-      oStyle.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);
-      oStyle.aAncestor = dom.listAncestor(rng.sc, dom.isEditable);
-
-      return oStyle;
-    };
-  };
-
-  /**
-   * History
-   */
-  var History = function () {
-    var aUndo = [], aRedo = [];
-
-    var makeSnap = function ($editable) {
-      var elEditable = $editable[0], rng = range.create();
-      return {
-        contents: $editable.html(),
-        bookmark: rng.bookmark(elEditable),
-        scrollTop: $editable.scrollTop()
-      };
-    };
-
-    var applySnap = function ($editable, oSnap) {
-      $editable.html(oSnap.contents).scrollTop(oSnap.scrollTop);
-      range.createFromBookmark($editable[0], oSnap.bookmark).select();
-    };
-
-    this.undo = function ($editable) {
-      var oSnap = makeSnap($editable);
-      if (aUndo.length === 0) { return; }
-      applySnap($editable, aUndo.pop());
-      aRedo.push(oSnap);
-    };
-
-    this.redo = function ($editable) {
-      var oSnap = makeSnap($editable);
-      if (aRedo.length === 0) { return; }
-      applySnap($editable, aRedo.pop());
-      aUndo.push(oSnap);
-    };
-
-    this.recordUndo = function ($editable) {
-      aRedo = [];
-      aUndo.push(makeSnap($editable));
-    };
-  };
 
   var Table = function () {
     /**
@@ -1577,41 +1572,6 @@
   };
 
   /**
-   * Object for keycodes.
-   */
-  var key = {
-    BACKSPACE: 8,
-    TAB: 9,
-    ENTER: 13,
-    SPACE: 32,
-
-    // Number: 0-9
-    NUM0: 48,
-    NUM1: 49,
-    NUM6: 54,
-    NUM7: 55,
-    NUM8: 56,
-
-    // Alphabet: a-z
-    B: 66,
-    E: 69,
-    I: 73,
-    J: 74,
-    K: 75,
-    L: 76,
-    R: 82,
-    S: 83,
-    U: 85,
-    Y: 89,
-    Z: 90,
-
-    SLASH: 191,
-    LEFTBRACKET: 219,
-    BACKSLACH: 220,
-    RIGHTBRACKET: 221
-  };
-
-  /**
    * EventHandler
    */
   var EventHandler = function () {
@@ -1619,7 +1579,12 @@
     var toolbar = new Toolbar(), popover = new Popover();
     var handle = new Handle(), dialog = new Dialog();
 
-    // makeLayoutInfo from editor's descendant node.
+    /**
+     * returns makeLayoutInfo from editor's descendant node.
+     *
+     * @param {Element} descendant
+     * @returns {Object}
+     */
     var makeLayoutInfo = function (descendant) {
       var $editor = $(descendant).closest('.note-editor');
       return {
@@ -1634,6 +1599,38 @@
       };
     };
 
+    /**
+     * insert Images from file array.
+     *
+     * @param {jQuery} $editable
+     * @param {File[]} files
+     */
+    var insertImages = function ($editable, files) {
+      editor.restoreRange($editable);
+      var callbacks = $editable.data('callbacks');
+
+      // If onImageUpload options setted
+      if (callbacks.onImageUpload) {
+        callbacks.onImageUpload(files, editor, $editable);
+      // else insert Image as dataURL
+      } else {
+        $.each(files, function (idx, file) {
+          async.readFileAsDataURL(file).done(function (sDataURL) {
+            editor.insertImage($editable, sDataURL);
+          }).fail(function () {
+            if (callbacks.onImageUploadError) {
+              callbacks.onImageUploadError();
+            }
+          });
+        });
+      }
+    };
+
+    /**
+     * keydown event handler
+     *
+     * @param {KeyEvent} event
+     */
     var hKeydown = function (event) {
       var bCmd = agent.bMac ? event.metaKey : event.ctrlKey,
           bShift = event.shiftKey, keyCode = event.keyCode;
@@ -1696,33 +1693,6 @@
         return; // not matched
       }
       event.preventDefault(); //prevent default event for FF
-    };
-
-    /**
-     * insert Images from file array.
-     *
-     * @param {jQuery} $editable
-     * @param {File[]} files
-     */
-    var insertImages = function ($editable, files) {
-      editor.restoreRange($editable);
-      var callbacks = $editable.data('callbacks');
-
-      // If onImageUpload options setted
-      if (callbacks.onImageUpload) {
-        callbacks.onImageUpload(files, editor, $editable);
-      // else insert Image as dataURL
-      } else {
-        $.each(files, function (idx, file) {
-          async.readFileAsDataURL(file).done(function (sDataURL) {
-            editor.insertImage($editable, sDataURL);
-          }).fail(function () {
-            if (callbacks.onImageUploadError) {
-              callbacks.onImageUploadError();
-            }
-          });
-        });
-      }
     };
 
     var hDropImage = function (event) {
@@ -2025,6 +1995,7 @@
       }
 
       oLayoutInfo.handle.on('mousedown', hHandleMousedown);
+
       oLayoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
       oLayoutInfo.popover.on('click', hToolbarAndPopoverClick);
       oLayoutInfo.toolbar.on('mousedown', hToolbarAndPopoverMousedown);
@@ -2073,6 +2044,46 @@
       oLayoutInfo.toolbar.off();
       oLayoutInfo.handle.off();
       oLayoutInfo.popover.off();
+    };
+  };
+
+  /**
+   * History
+   */
+  var History = function () {
+    var aUndo = [], aRedo = [];
+
+    var makeSnap = function ($editable) {
+      var elEditable = $editable[0], rng = range.create();
+      return {
+        contents: $editable.html(),
+        bookmark: rng.bookmark(elEditable),
+        scrollTop: $editable.scrollTop()
+      };
+    };
+
+    var applySnap = function ($editable, oSnap) {
+      $editable.html(oSnap.contents).scrollTop(oSnap.scrollTop);
+      range.createFromBookmark($editable[0], oSnap.bookmark).select();
+    };
+
+    this.undo = function ($editable) {
+      var oSnap = makeSnap($editable);
+      if (aUndo.length === 0) { return; }
+      applySnap($editable, aUndo.pop());
+      aRedo.push(oSnap);
+    };
+
+    this.redo = function ($editable) {
+      var oSnap = makeSnap($editable);
+      if (aRedo.length === 0) { return; }
+      applySnap($editable, aRedo.pop());
+      aUndo.push(oSnap);
+    };
+
+    this.recordUndo = function ($editable) {
+      aRedo = [];
+      aUndo.push(makeSnap($editable));
     };
   };
 
@@ -2578,7 +2589,6 @@
       $holder.show();
     };
   };
-             // level 4
 
   var renderer = new Renderer();
   var eventHandler = new EventHandler();
@@ -2798,16 +2808,6 @@
       });
 
       return this;
-    },
-
-    // inner object for test
-    summernoteInner: function () {
-      return {
-        dom: dom,
-        list: list,
-        func: func,
-        range: range
-      };
     }
   });
 }));

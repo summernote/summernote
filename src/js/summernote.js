@@ -1,15 +1,6 @@
 define([
-  'jquery',
-  'core/agent', 'core/dom', 'core/list', 'core/func', 'core/range', 'core/async',
-  'editing/Style', 'editing/History', 'editing/Editor',
-  'module/Toolbar', 'module/Popover', 'module/Handle', 'module/Dialog',
-  'EventHandler', 'Renderer'
-], function ($,
-             agent, dom, list, func, range, async, // level 1
-             Style, History, Editor,               // level 2
-             Toolbar, Popover, Handle, Dialog,     // level 3
-             EventHandler, Renderer) {             // level 4
-
+  'core/agent', 'core/dom', 'EventHandler', 'Renderer'
+], function (agent, dom, EventHandler, Renderer) {
   var renderer = new Renderer();
   var eventHandler = new EventHandler();
 
@@ -228,16 +219,6 @@ define([
       });
 
       return this;
-    },
-
-    // inner object for test
-    summernoteInner: function () {
-      return {
-        dom: dom,
-        list: list,
-        func: func,
-        range: range
-      };
     }
   });
 });
