@@ -15,7 +15,12 @@ define([
     var toolbar = new Toolbar(), popover = new Popover();
     var handle = new Handle(), dialog = new Dialog();
 
-    // makeLayoutInfo from editor's descendant node.
+    /**
+     * returns makeLayoutInfo from editor's descendant node.
+     *
+     * @param {Element} descendant
+     * @returns {Object}
+     */
     var makeLayoutInfo = function (descendant) {
       var $editor = $(descendant).closest('.note-editor');
       return {
@@ -30,6 +35,38 @@ define([
       };
     };
 
+    /**
+     * insert Images from file array.
+     *
+     * @param {jQuery} $editable
+     * @param {File[]} files
+     */
+    var insertImages = function ($editable, files) {
+      editor.restoreRange($editable);
+      var callbacks = $editable.data('callbacks');
+
+      // If onImageUpload options setted
+      if (callbacks.onImageUpload) {
+        callbacks.onImageUpload(files, editor, $editable);
+      // else insert Image as dataURL
+      } else {
+        $.each(files, function (idx, file) {
+          async.readFileAsDataURL(file).done(function (sDataURL) {
+            editor.insertImage($editable, sDataURL);
+          }).fail(function () {
+            if (callbacks.onImageUploadError) {
+              callbacks.onImageUploadError();
+            }
+          });
+        });
+      }
+    };
+
+    /**
+     * keydown event handler
+     *
+     * @param {KeyEvent} event
+     */
     var hKeydown = function (event) {
       var bCmd = agent.bMac ? event.metaKey : event.ctrlKey,
           bShift = event.shiftKey, keyCode = event.keyCode;
@@ -92,33 +129,6 @@ define([
         return; // not matched
       }
       event.preventDefault(); //prevent default event for FF
-    };
-
-    /**
-     * insert Images from file array.
-     *
-     * @param {jQuery} $editable
-     * @param {File[]} files
-     */
-    var insertImages = function ($editable, files) {
-      editor.restoreRange($editable);
-      var callbacks = $editable.data('callbacks');
-
-      // If onImageUpload options setted
-      if (callbacks.onImageUpload) {
-        callbacks.onImageUpload(files, editor, $editable);
-      // else insert Image as dataURL
-      } else {
-        $.each(files, function (idx, file) {
-          async.readFileAsDataURL(file).done(function (sDataURL) {
-            editor.insertImage($editable, sDataURL);
-          }).fail(function () {
-            if (callbacks.onImageUploadError) {
-              callbacks.onImageUploadError();
-            }
-          });
-        });
-      }
     };
 
     var hDropImage = function (event) {
@@ -421,6 +431,7 @@ define([
       }
 
       oLayoutInfo.handle.on('mousedown', hHandleMousedown);
+
       oLayoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
       oLayoutInfo.popover.on('click', hToolbarAndPopoverClick);
       oLayoutInfo.toolbar.on('mousedown', hToolbarAndPopoverMousedown);
