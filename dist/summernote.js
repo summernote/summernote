@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-01-26T06:45Z
+ * Date: 2014-01-31T06:19Z
  */
 (function (factory) {
   /* global define */
@@ -1105,7 +1105,7 @@
           .attr('width', '640').attr('height', '360');
       } else if (dmMatch && dmMatch[2].length > 0) {
         $video = $('<iframe>')
-          .attr('src', 'http://www.dailymotion.com/embed/video/' + dmMatch[2])
+          .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
           .attr('width', '640').attr('height', '360');
       } else {
         // this is not a known video link. Now what, Cat? Now what?
@@ -2432,7 +2432,7 @@
 
       //already created
       var next = $holder.next();
-      if (!next && next.hasClass('note-editor')) { return; }
+      if (next && next.hasClass('note-editor')) { return; }
 
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
@@ -2533,6 +2533,7 @@
       $holder.show();
     };
   };
+             // level 4
 
   var renderer = new Renderer();
   var eventHandler = new EventHandler();
@@ -2639,6 +2640,22 @@
           redo: 'Redo'
         }
       }
+    },
+    // default options
+    options: {
+      toolbar: [
+        ['style', ['style']],
+        ['font', ['bold', 'italic', 'underline', 'clear']],
+        ['fontsize', ['fontsize']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['height', ['height']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture', 'video']],
+        ['view', ['fullscreen', 'codeview']],
+        ['help', ['help']]
+      ],
+      lang: 'en-US'
     }
   });
 
@@ -2646,23 +2663,17 @@
    * extend jquery fn
    */
   $.fn.extend({
-    // create Editor Layout and attach Key and Mouse Event
+    /**
+     * initialize summernote
+     *  - create Editor Layout
+     *  - attach Key and Mouse Event
+     *
+     * @param {Object} options
+     * @returns {this}
+     */
     summernote: function (options) {
-      options = $.extend({
-        toolbar: [
-          ['style', ['style']],
-          ['font', ['bold', 'italic', 'underline', 'clear']],
-          ['fontsize', ['fontsize']],
-          ['color', ['color']],
-          ['para', ['ul', 'ol', 'paragraph']],
-          ['height', ['height']],
-          ['table', ['table']],
-          ['insert', ['link', 'picture', 'video']],
-          ['view', ['fullscreen', 'codeview']],
-          ['help', ['help']]
-        ],
-        lang: 'en-US'
-      }, options);
+      // extend default options
+      options = $.extend($.summernote.options, options);
 
       this.each(function (idx, elHolder) {
         var $holder = $(elHolder);
@@ -2681,17 +2692,29 @@
         }
       });
 
-      if (this.first() && options.focus) { // focus on first editable element
+      // focus on first editable element
+      if (this.first() && options.focus) {
         var info = renderer.layoutInfoFromHolder(this.first());
         info.editable.focus();
       }
-      if (this.length > 0 && options.oninit) { // callback on init
+
+      // callback on init
+      if (this.length > 0 && options.oninit) {
         options.oninit();
       }
+
+      return this;
     },
-    // get the HTML contents of note or set the HTML contents of note.
+    // 
+
+    /**
+     * get the HTML contents of note or set the HTML contents of note.
+     *
+     * @param {String} [sHTML] - HTML contents(optional, set)
+     * @returns {this|String} - context(set) or HTML contents of note(get).
+     */
     code: function (sHTML) {
-      // get the HTML contents
+      // get the HTML contents of note
       if (sHTML === undefined) {
         var $holder = this.first();
         if ($holder.length === 0) { return; }
@@ -2706,13 +2729,19 @@
         return $holder.html();
       }
 
-      // set the HTML contents
+      // set the HTML contents of note
       this.each(function (i, elHolder) {
         var info = renderer.layoutInfoFromHolder($(elHolder));
         if (info && info.editable) { info.editable.html(sHTML); }
       });
+
+      return this;
     },
-    // destroy Editor Layout and dettach Key and Mouse Event
+
+    /**
+     * destroy Editor Layout and dettach Key and Mouse Event
+     * @returns {this}
+     */
     destroy: function () {
       this.each(function (idx, elHolder) {
         var $holder = $(elHolder);
@@ -2722,10 +2751,18 @@
         eventHandler.dettach(info);
         renderer.removeLayout($holder);
       });
+
+      return this;
     },
+
     // inner object for test
     summernoteInner: function () {
-      return { dom: dom, list: list, func: func, range: range };
+      return {
+        dom: dom,
+        list: list,
+        func: func,
+        range: range
+      };
     }
   });
 }));

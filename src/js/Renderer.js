@@ -402,7 +402,7 @@ define([
 
       //already created
       var next = $holder.next();
-      if (!next && next.hasClass('note-editor')) { return; }
+      if (next && next.hasClass('note-editor')) { return; }
 
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');

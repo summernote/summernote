@@ -160,7 +160,7 @@ define([
           .attr('width', '640').attr('height', '360');
       } else if (dmMatch && dmMatch[2].length > 0) {
         $video = $('<iframe>')
-          .attr('src', 'http://www.dailymotion.com/embed/video/' + dmMatch[2])
+          .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
           .attr('width', '640').attr('height', '360');
       } else {
         // this is not a known video link. Now what, Cat? Now what?
