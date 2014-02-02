@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-01-31T12:30Z
+ * Date: 2014-02-02T03:52Z
  */
 (function (factory) {
   /* global define */
@@ -24,7 +24,8 @@
   if ('function' !== typeof Array.prototype.reduce) {
     /**
      * Array.prototype.reduce fallback
-     *  - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
+     *
+     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
      */
     Array.prototype.reduce = function (callback, optInitialValue) {
       var idx, value, length = this.length >>> 0, isValueSet = false;
@@ -1490,7 +1491,14 @@
    * Toolbar
    */
   var Toolbar = function () {
+    /**
+     * update button status
+     *
+     * @param {jQuery} $toolbar
+     * @param {Object} oStyle
+     */
     this.update = function ($toolbar, oStyle) {
+
       /**
        * handle dropdown's check mark (for fontsize, lineHeight).
        * @param {jQuery} $btn
@@ -1503,18 +1511,23 @@
         });
       };
 
+      /**
+       * update button state(active or not).
+       *
+       * @param {String} sSelector
+       * @param {Function} pred
+       */
+      var btnState = function (sSelector, pred) {
+        var $btn = $toolbar.find(sSelector);
+        $btn.toggleClass('active', pred());
+      };
+
       var $fontsize = $toolbar.find('.note-fontsize');
       $fontsize.find('.note-current-fontsize').html(oStyle['font-size']);
       checkDropdownMenu($fontsize, parseFloat(oStyle['font-size']));
 
       var $lineHeight = $toolbar.find('.note-height');
       checkDropdownMenu($lineHeight, parseFloat(oStyle['line-height']));
-
-      // check button state
-      var btnState = function (sSelector, pred) {
-        var $btn = $toolbar.find(sSelector);
-        $btn[pred() ? 'addClass' : 'removeClass']('active');
-      };
 
       btnState('button[data-event="bold"]', function () {
         return oStyle['font-bold'] === 'bold';
@@ -1545,6 +1558,13 @@
       });
     };
 
+    /**
+     * update recent color
+     *
+     * @param {Element} elBtn
+     * @param {String} sEvent
+     * @param {sValue} sValue
+     */
     this.updateRecentColor = function (elBtn, sEvent, sValue) {
       var $color = $(elBtn).closest('.note-color');
       var $recentColor = $color.find('.note-recent-color');
@@ -1557,18 +1577,27 @@
 
     this.updateFullscreen = function ($toolbar, bFullscreen) {
       var $btn = $toolbar.find('button[data-event="fullscreen"]');
-      $btn[bFullscreen ? 'addClass' : 'removeClass']('active');
-    };
-    this.updateCodeview = function ($toolbar, bCodeview) {
-      var $btn = $toolbar.find('button[data-event="codeview"]');
-      $btn[bCodeview ? 'addClass' : 'removeClass']('active');
+      $btn.toggleClass('active', bFullscreen);
     };
 
-    this.enable = function ($toolbar) {
+    this.updateCodeview = function ($toolbar, bCodeview) {
+      var $btn = $toolbar.find('button[data-event="codeview"]');
+      $btn.toggleClass('active', bCodeview);
+    };
+
+    /**
+     * activate buttons exclude codeview
+     * @param {jQuery} $toolbar
+     */
+    this.activate = function ($toolbar) {
       $toolbar.find('button').not('button[data-event="codeview"]').removeClass('disabled');
     };
 
-    this.disable = function ($toolbar) {
+    /**
+     * deactivate buttons exclude codeview
+     * @param {jQuery} $toolbar
+     */
+    this.deactivate = function ($toolbar) {
       $toolbar.find('button').not('button[data-event="codeview"]').addClass('disabled');
     };
   };
@@ -2045,7 +2074,7 @@
           if (bCodeview) {
             $codable.val($editable.html());
             $codable.height($editable.height());
-            toolbar.disable($toolbar);
+            toolbar.deactivate($toolbar);
             $codable.focus();
 
             // activate CodeMirror as codable
@@ -2074,7 +2103,7 @@
             $editable.html($codable.val() || dom.emptyPara);
             $editable.height(options.height ? $codable.height() : 'auto');
 
-            toolbar.enable($toolbar);
+            toolbar.activate($toolbar);
             $editable.focus();
           }
 

@@ -268,7 +268,7 @@ define([
           if (bCodeview) {
             $codable.val($editable.html());
             $codable.height($editable.height());
-            toolbar.disable($toolbar);
+            toolbar.deactivate($toolbar);
             $codable.focus();
 
             // activate CodeMirror as codable
@@ -297,7 +297,7 @@ define([
             $editable.html($codable.val() || dom.emptyPara);
             $editable.height(options.height ? $codable.height() : 'auto');
 
-            toolbar.enable($toolbar);
+            toolbar.activate($toolbar);
             $editable.focus();
           }
 
