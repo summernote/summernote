@@ -7,7 +7,7 @@
         underline: 'Subrayado',
         strike: 'Tachado',
         clear: 'Quitar estilo de fuente',
-        height: 'Altura de la línea',
+        height: 'Altura de línea',
         size: 'Tamaño de la fuente'
       },
       image: {
@@ -19,8 +19,8 @@
         floatLeft: 'Flotar a la izquierda',
         floatRight: 'Flotar a la derecha',
         floatNone: 'No flotar',
-        dragImageHere: 'Arrastre una imagen aquó',
-        selectFromFiles: 'Seleccionar a partir de un archivo',
+        dragImageHere: 'Arrastrar una imagen aquí',
+        selectFromFiles: 'Seleccionar desde los archivos',
         url: 'URL de la imagen'
       },
       link: {
@@ -29,11 +29,12 @@
         unlink: 'Quitar link',
         edit: 'Editar',
         textToDisplay: 'Texto para mostrar',
-        url: 'Hacia que URL lleva el link?'
+        url: 'Hacia que URL lleva el link?',
+        openInNewWindow: 'Abrir en una nueva ventana'
       },
       video: {
         video: 'Video',
-        videoLink: 'Link para el video',
+        videoLink: 'Link del video',
         insert: 'Insertar video',
         url: 'URL del video?',
         providers: '(YouTube, Vimeo, Vine, Instagram, o DailyMotion)'
@@ -57,8 +58,8 @@
         h6: 'Título 6'
       },
       lists: {
-        unordered: 'Lista con marcadores',
-        ordered: 'Lista numerada'
+        unordered: 'Lista desordenada',
+        ordered: 'Lista ordenada'
       },
       options: {
         help: 'Ayuda',
@@ -75,12 +76,12 @@
         justify: 'Justificar'
       },
       color: {
-        recent: 'Color de fondo',
+        recent: 'Último color',
         more: 'Más colores',
-        background: 'Fondo',
-        foreground: 'Fuente',
+        background: 'Color de fondo',
+        foreground: 'Color de fuente',
         transparent: 'Transparente',
-        setTransparent: 'Fondo transparente',
+        setTransparent: 'Establecer transparente',
         reset: 'Restaurar',
         resetToDefault: 'Restaurar por defecto'
       },
@@ -89,7 +90,7 @@
         close: 'Cerrar',
         textFormatting: 'Formato de texto',
         action: 'Acción',
-        paragraphFormatting: 'Formatao de párrafo',
+        paragraphFormatting: 'Formato de párrafo',
         documentStyle: 'Estilo de documento'
       },
       history: {
