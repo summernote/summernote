@@ -29,7 +29,8 @@
           unlink: '去除链接',
           edit: '编辑链接',
           textToDisplay: '显示文本',
-          url: '链接地址'
+          url: '链接地址',
+          openInNewWindow: '在新窗口打开'
         },
         video: {
           video: '视频',
