@@ -135,16 +135,19 @@ define([
           nativeRng.select();
         }
       };
-  
+
       /**
-       * listPara: listing paragraphs on range
+       * returns matched nodes on range
+       *
+       * @param {Function} pred - predicate function
+       * @return {Element[]}
        */
-      this.listPara = function () {
+      this.nodes = function (pred) {
         var aNode = dom.listBetween(sc, ec);
-        var aPara = list.compact($.map(aNode, function (node) {
-          return dom.ancestor(node, dom.isPara);
+        var aMatched = list.compact($.map(aNode, function (node) {
+          return dom.ancestor(node, pred);
         }));
-        return $.map(list.clusterBy(aPara, func.eq2), list.head);
+        return $.map(list.clusterBy(aMatched, func.eq2), list.head);
       };
       
       /**
@@ -234,12 +237,21 @@ define([
         }
         return new WrappedRange(sc, so, ec, eo);
       },
-      // 
+
+      /**
+       * create WrappedRange from node
+       *
+       * @param {Element} node
+       * @return {WrappedRange}
+       */
+      createFromNode: function (node) {
+        return this.create(node, 0, node, 1);
+      },
 
       /**
        * create WrappedRange from Bookmark
        *
-       * @param {Element} element
+       * @param {Element} elEditable
        * @param {Obkect} bookmark
        * @return {WrappedRange}
        */

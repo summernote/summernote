@@ -289,15 +289,19 @@ define([
                      '</div>' +
                      '<div class="modal-body">' +
                        '<div class="row-fluid">' +
-
-                       '<div class="form-group">' +
-                         '<label>' + lang.link.textToDisplay + '</label>' +
-                         '<span class="note-link-text form-control input-xlarge uneditable-input" />' +
-                       '</div>' +
-                       '<div class="form-group">' +
-                         '<label>' + lang.link.url + '</label>' +
-                         '<input class="note-link-url form-control span12" type="text" />' +
-                       '</div>' +
+                         '<div class="form-group">' +
+                           '<label>' + lang.link.textToDisplay + '</label>' +
+                           '<span class="note-link-text form-control input-xlarge uneditable-input" />' +
+                         '</div>' +
+                         '<div class="form-group">' +
+                           '<label>' + lang.link.url + '</label>' +
+                           '<input class="note-link-url form-control span12" type="text" />' +
+                         '</div>' +
+                         '<div class="checkbox">' +
+                           '<label>' + '<input type="checkbox" checked> ' +
+                             lang.link.openInNewWindow +
+                           '</label>' +
+                         '</div>' +
                        '</div>' +
                      '</div>' +
                      '<div class="modal-footer">' +

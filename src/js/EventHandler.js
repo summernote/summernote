@@ -84,7 +84,6 @@ define([
       } else if (bCmd && keyCode === key.BACKSLACH) {
         editor.removeFormat(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.K) {
-        oLayoutInfo.editable();
         editor.setLinkDialog(oLayoutInfo.editable(), function (linkInfo, cb) {
           dialog.showLinkDialog(oLayoutInfo.dialog(), linkInfo, cb);
         });

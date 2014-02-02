@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-02T03:52Z
+ * Date: 2014-02-02T05:33Z
  */
 (function (factory) {
   /* global define */
@@ -618,7 +618,8 @@
           unlink: 'Unlink',
           edit: 'Edit',
           textToDisplay: 'Text to display',
-          url: 'To what URL should this link go?'
+          url: 'To what URL should this link go?',
+          openInNewWindow: 'Open in new window'
         },
         video: {
           video: 'Video',
@@ -791,13 +792,13 @@
   var Style = function () {
     /**
      * paragraph level style
+     *
+     * @param {WrappedRange} rng
+     * @param {Object} oStyle
      */
     this.stylePara = function (rng, oStyle) {
-      var aPara = rng.listPara();
-      $.each(aPara, function (idx, elPara) {
-        $.each(oStyle, function (sKey, sValue) {
-          elPara.style[sKey] = sValue;
-        });
+      $.each(rng.nodes(dom.isPara), function (idx, elPara) {
+        $(elPara).css(oStyle);
       });
     };
 
@@ -978,16 +979,19 @@
           nativeRng.select();
         }
       };
-  
+
       /**
-       * listPara: listing paragraphs on range
+       * returns matched nodes on range
+       *
+       * @param {Function} pred - predicate function
+       * @return {Element[]}
        */
-      this.listPara = function () {
+      this.nodes = function (pred) {
         var aNode = dom.listBetween(sc, ec);
-        var aPara = list.compact($.map(aNode, function (node) {
-          return dom.ancestor(node, dom.isPara);
+        var aMatched = list.compact($.map(aNode, function (node) {
+          return dom.ancestor(node, pred);
         }));
-        return $.map(list.clusterBy(aPara, func.eq2), list.head);
+        return $.map(list.clusterBy(aMatched, func.eq2), list.head);
       };
       
       /**
@@ -1077,12 +1081,21 @@
         }
         return new WrappedRange(sc, so, ec, eo);
       },
-      // 
+
+      /**
+       * create WrappedRange from node
+       *
+       * @param {Element} node
+       * @return {WrappedRange}
+       */
+      createFromNode: function (node) {
+        return this.create(node, 0, node, 1);
+      },
 
       /**
        * create WrappedRange from Bookmark
        *
-       * @param {Element} element
+       * @param {Element} elEditable
        * @param {Obkect} bookmark
        * @return {WrappedRange}
        */
@@ -1242,6 +1255,8 @@
      * @param {String} sUrl
      */
     this.insertVideo = function ($editable, sUrl) {
+      recordUndo($editable);
+
       // video url patterns(youtube, instagram, vimeo, dailymotion)
       var ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       var ytMatch = sUrl.match(ytRegExp);
@@ -1345,62 +1360,100 @@
       if (rng.isOnAnchor()) {
         recordUndo($editable);
         var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = range.create(elAnchor, 0, elAnchor, 1);
+        rng = range.createFromNode(elAnchor);
         rng.select();
         document.execCommand('unlink');
       }
     };
 
-    this.setLinkDialog = function ($editable, fnShowDialog) {
+    /**
+     * create link
+     *
+     * @param {jQuery} $editable
+     * @param {String} sLinkUrl
+     * @param {Boolean} bNewWindow
+     */
+    this.createLink = function ($editable, sLinkUrl, bNewWindow) {
       var rng = range.create();
-      if (rng.isOnAnchor()) {
-        var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = range.create(elAnchor, 0, elAnchor, 1);
+      recordUndo($editable);
+
+      // protocol
+      var sLinkUrlWithProtocol = sLinkUrl;
+      if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
+        sLinkUrlWithProtocol =  'mailto:' + sLinkUrl;
+      } else if (sLinkUrl.indexOf('://') === -1) {
+        sLinkUrlWithProtocol = 'http://' + sLinkUrl;
       }
-      fnShowDialog({
-        range: rng,
-        text: rng.toString(),
-        url: rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor).href : ''
-      }, function (sLinkUrl) {
+
+      // createLink when range collapsed (IE).
+      if (agent.bMSIE && rng.isCollapsed()) {
+        rng.insertNode($('<A id="linkAnchor">' + sLinkUrl + '</A>')[0]);
+        var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol).removeAttr('id');
+        rng = range.createFromNode($anchor[0]);
         rng.select();
-        recordUndo($editable);
+      } else {
+        document.execCommand('createlink', false, sLinkUrlWithProtocol);
+        rng = range.create();
+      }
 
-        var sLinkUrlWithProtocol;
-        if (sLinkUrl.indexOf('@') !== -1) { // email address
-          sLinkUrlWithProtocol = sLinkUrl.indexOf(':') !== -1 ? sLinkUrl : 'mailto:' + sLinkUrl;
-        } else { // normal address
-          sLinkUrlWithProtocol = sLinkUrl.indexOf('://') !== -1 ? sLinkUrl : 'http://' + sLinkUrl;
-        }
-
-        //IE: createLink when range collapsed.
-        if (agent.bMSIE && rng.isCollapsed()) {
-          rng.insertNode($('<A id="linkAnchor">' + sLinkUrl + '</A>')[0]);
-          var $anchor = $('#linkAnchor').removeAttr('id')
-                                          .attr('href', sLinkUrlWithProtocol);
-          rng = range.create($anchor[0], 0, $anchor[0], 1);
-          rng.select();
+      // target
+      $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
+        if (bNewWindow) {
+          $(elAnchor).attr('target', '_blank');
         } else {
-          document.execCommand('createlink', false, sLinkUrlWithProtocol);
+          $(elAnchor).removeAttr('target');
         }
       });
     };
 
+    /**
+     * set linkInfo before link dialog opened.
+     * @param {jQuery} $editable
+     * @param {Function} fnShowDialog
+     */
+    this.setLinkDialog = function ($editable, fnShowDialog) {
+      var rng = range.create(),
+          bNewWindow = true;
+
+      // If range on anchor (Edit).
+      if (rng.isOnAnchor()) {
+        // expand range on anchor.
+        var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
+        rng = range.createFromNode(elAnchor);
+        bNewWindow = $(elAnchor).attr('target') === '_blank';
+      }
+
+      var self = this;
+      fnShowDialog({
+        text: rng.toString(),
+        url: rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor).href : '',
+        newWindow: bNewWindow
+      }, function (sLinkUrl, bNewWindow) {
+        // restore range
+        rng.select();
+        self.createLink($editable, sLinkUrl, bNewWindow);
+      });
+    };
+
+    /**
+     * set videoInfo before video dialog opend.
+     * @param {jQuery} $editable
+     * @param {Function} fnShowDialog
+     */
     this.setVideoDialog = function ($editable, fnShowDialog) {
       var rng = range.create();
-      var editor = this;
 
       if (rng.isOnAnchor()) {
         var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = range.create(elAnchor, 0, elAnchor, 1);
+        rng = range.createFromNode(elAnchor);
       }
 
+      var self = this;
       fnShowDialog({
-        range: rng,
         text: rng.toString()
       }, function (sLinkUrl) {
         rng.select();
-        recordUndo($editable);
-        editor.insertVideo($editable, sLinkUrl);
+        self.insertVideo($editable, sLinkUrl);
       });
     };
 
@@ -1783,7 +1836,8 @@
       var $linkDialog = $dialog.find('.note-link-dialog');
       var $linkText = $linkDialog.find('.note-link-text'),
           $linkUrl = $linkDialog.find('.note-link-url'),
-          $linkBtn = $linkDialog.find('.note-link-btn');
+          $linkBtn = $linkDialog.find('.note-link-btn'),
+          $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
       $linkDialog.on('shown.bs.modal', function () {
         $linkText.html(linkInfo.text);
@@ -1791,9 +1845,10 @@
           toggleBtn($linkBtn, $linkUrl.val());
           if (!linkInfo.text) { $linkText.html($linkUrl.val()); }
         }).trigger('focus');
+        $openInNewWindow.prop('checked', linkInfo.newWindow);
         $linkBtn.click(function (event) {
           $linkDialog.modal('hide'); //hide and createLink (ie9+)
-          callback($linkUrl.val());
+          callback($linkUrl.val(), $openInNewWindow.is(':checked'));
           event.preventDefault();
         });
       }).on('hidden.bs.modal', function () {
@@ -1890,7 +1945,6 @@
       } else if (bCmd && keyCode === key.BACKSLACH) {
         editor.removeFormat(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.K) {
-        oLayoutInfo.editable();
         editor.setLinkDialog(oLayoutInfo.editable(), function (linkInfo, cb) {
           dialog.showLinkDialog(oLayoutInfo.dialog(), linkInfo, cb);
         });
@@ -2576,15 +2630,19 @@
                      '</div>' +
                      '<div class="modal-body">' +
                        '<div class="row-fluid">' +
-
-                       '<div class="form-group">' +
-                         '<label>' + lang.link.textToDisplay + '</label>' +
-                         '<span class="note-link-text form-control input-xlarge uneditable-input" />' +
-                       '</div>' +
-                       '<div class="form-group">' +
-                         '<label>' + lang.link.url + '</label>' +
-                         '<input class="note-link-url form-control span12" type="text" />' +
-                       '</div>' +
+                         '<div class="form-group">' +
+                           '<label>' + lang.link.textToDisplay + '</label>' +
+                           '<span class="note-link-text form-control input-xlarge uneditable-input" />' +
+                         '</div>' +
+                         '<div class="form-group">' +
+                           '<label>' + lang.link.url + '</label>' +
+                           '<input class="note-link-url form-control span12" type="text" />' +
+                         '</div>' +
+                         '<div class="checkbox">' +
+                           '<label>' + '<input type="checkbox" checked> ' +
+                             lang.link.openInNewWindow +
+                           '</label>' +
+                         '</div>' +
                        '</div>' +
                      '</div>' +
                      '<div class="modal-footer">' +

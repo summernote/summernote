@@ -73,7 +73,8 @@ define('settings', function () {
           unlink: 'Unlink',
           edit: 'Edit',
           textToDisplay: 'Text to display',
-          url: 'To what URL should this link go?'
+          url: 'To what URL should this link go?',
+          openInNewWindow: 'Open in new window'
         },
         video: {
           video: 'Video',

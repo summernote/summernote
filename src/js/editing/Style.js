@@ -5,13 +5,13 @@ define(['core/dom'], function (dom) {
   var Style = function () {
     /**
      * paragraph level style
+     *
+     * @param {WrappedRange} rng
+     * @param {Object} oStyle
      */
     this.stylePara = function (rng, oStyle) {
-      var aPara = rng.listPara();
-      $.each(aPara, function (idx, elPara) {
-        $.each(oStyle, function (sKey, sValue) {
-          elPara.style[sKey] = sValue;
-        });
+      $.each(rng.nodes(dom.isPara), function (idx, elPara) {
+        $(elPara).css(oStyle);
       });
     };
 
