@@ -29,7 +29,8 @@
         unlink: 'リンク解除',
         edit: '編集',
         textToDisplay: 'リンク文字列',
-        url: 'URLを入力してください'
+        url: 'URLを入力してください',
+        openInNewWindow: '新しいウィンドウで開く'
       },
       video: {
         video: '動画',
