@@ -29,7 +29,8 @@
         unlink: 'Hapus tautan',
         edit: 'Edit',
         textToDisplay: 'Tampilan teks',
-        url: 'Tautan tujuan'
+        url: 'Tautan tujuan',
+        openInNewWindow: 'Buka di jendela baru'
       },
       video: {
         video: 'Video',
