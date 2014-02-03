@@ -30,7 +30,7 @@
         edit: 'Modifier',
         textToDisplay: 'Texte à afficher',
         url: 'URL du lien',
-        openInNewWindow: 'Open in new window'
+        openInNewWindow: 'Ouvrir dans une nouvelle fenêtre'
       },
       video: {
         video: 'Vidéo',
