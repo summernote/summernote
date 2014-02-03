@@ -30,7 +30,7 @@
         edit: 'Editieren',
         textToDisplay: 'Anzeigetext',
         url: 'Ziel des Links?',
-		openInNewWindow: 'In einem neuen Fenster öffnen'
+        openInNewWindow: 'In einem neuen Fenster öffnen'
       },
       video: {
         video: 'Video',
