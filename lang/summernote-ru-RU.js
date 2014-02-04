@@ -29,7 +29,8 @@
         unlink: 'Убрать ссылку',
         edit: 'Редактировать',
         textToDisplay: 'Отображаемый текст',
-        url: 'URL для перехода'
+        url: 'URL для перехода',
+        openInNewWindow: 'Открывать в новом окне'
       },
       video: {
         video: 'Видео',
