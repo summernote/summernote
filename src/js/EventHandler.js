@@ -199,6 +199,9 @@ define([
             $dialog = oLayoutInfo.dialog(),
             $editable = oLayoutInfo.editable(),
             $codable = oLayoutInfo.codable();
+            
+        var server;
+        var cmEditor;
 
         // before command
         var elTarget;
@@ -242,15 +245,29 @@ define([
           var hResizeFullscreen = function () {
             var nHeight = $(window).height() - $toolbar.outerHeight();
             $editable.css('height', nHeight);
+            $codable.css('height', nHeight);
+            var cmEditor = $codable.data('cmEditor');
+            if (cmEditor) {
+                cmEditor.setSize(null, $editable.height());
+            }
           };
 
+          var $scrollbar = $('html, body');
           var bFullscreen = $editor.hasClass('fullscreen');
           if (bFullscreen) {
             $editable.data('orgHeight', $editable.css('height'));
             $(window).resize(hResizeFullscreen).trigger('resize');
+            $scrollbar.css('overflow', 'hidden');
           } else {
             var hasOptionHeight = !!$editable.data('optionHeight');
-            $editable.css('height', hasOptionHeight ? $editable.data('orgHeight') : 'auto');
+            var newHeight = hasOptionHeight ? $editable.data('orgHeight') : 'auto';
+            $editable.css('height', newHeight);
+            $codable.css('height', newHeight);
+            cmEditor = $codable.data('cmEditor');
+            if (cmEditor) {
+                cmEditor.setSize(null, newHeight);
+            }
+            scrollbar.css('overflow', 'auto');
             $(window).off('resize');
           }
 
@@ -271,6 +288,15 @@ define([
                 mode: 'text/html',
                 lineNumbers: true
               }, $editor.data('options').codemirror));
+              var tern = $editor.data('options').codemirror.tern || false;
+              if (tern) {
+                  server = new CodeMirror.TernServer(tern);
+                  cmEditor.ternServer = server;
+                  cmEditor.on('cursorActivity', function(cm) {
+                      server.updateArgHints(cm);
+                  });
+              }
+              
               // CodeMirror hasn't Padding.
               cmEditor.setSize(null, $editable.outerHeight());
               // autoFormatRange If formatting included
@@ -285,7 +311,9 @@ define([
           } else {
             // deactivate CodeMirror as codable
             if (agent.bCodeMirror) {
-              $codable.data('cmEditor').toTextArea();
+              cmEditor = $codable.data('cmEditor');
+              $codable.val(cmEditor.getValue());
+              cmEditor.toTextArea();
             }
 
             $editable.html($codable.val() || dom.emptyPara);

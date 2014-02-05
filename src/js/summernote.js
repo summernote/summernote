@@ -107,7 +107,8 @@ define([
           textFormatting: 'Text formatting',
           action: 'Action',
           paragraphFormatting: 'Paragraph formatting',
-          documentStyle: 'Document Style'
+          documentStyle: 'Document Style',
+          extraKeys: 'Extra shortcuts'
         },
         history: {
           undo: 'Undo',

@@ -95,7 +95,7 @@ define('module/Dialog', function () {
           $linkBtn = $linkDialog.find('.note-link-btn');
 
       $linkDialog.on('shown.bs.modal', function () {
-        $linkText.html(linkInfo.text);
+        $linkText.val(linkInfo.text);
         $linkUrl.val(linkInfo.url).keyup(function () {
           toggleBtn($linkBtn, $linkUrl.val());
           if (!linkInfo.text) { $linkText.html($linkUrl.val()); }

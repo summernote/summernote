@@ -3,6 +3,29 @@ define(['core/dom'], function (dom) {
    * Style
    */
   var Style = function () {
+     /**
+     * A compability issue for jQuery 1.9+
+     *
+     * @param  {*}       obj     jQuery object
+     * @param  {string}  method  A method to call
+     * @param  {*}       args    Arguments
+     * @returns  {*}
+     * @private
+     */
+    var jqueryCustomCall = function(obj, method, args) {  // Из-за jQuery < 1.9
+        var i, arg, result = {}, $obj;
+        $obj = $(obj);
+        if (args instanceof Array) {
+            for (i = 0; i < args.length; i++) {
+                arg = args[i];
+                result[arg] = $obj[method](arg);
+            }
+            return $.extend($obj, result);
+        }
+        return $obj[method].apply($obj, args);
+    };  
+  
+  
     /**
      * paragraph level style
      */
@@ -24,7 +47,8 @@ define(['core/dom'], function (dom) {
      */
     this.current = function (rng, elTarget) {
       var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
-      var oStyle = $cont.css(['font-size', 'text-align', 'list-style-type', 'line-height']) || {};
+      var properties = ['font-size', 'text-align', 'list-style-type', 'line-height'];  // Compability with jQuery < 1.9
+      var oStyle = jqueryCustomCall($cont, 'css', properties) || {};
 
       oStyle['font-size'] = parseInt(oStyle['font-size']);
 
