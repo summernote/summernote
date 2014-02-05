@@ -90,7 +90,8 @@
           textFormatting: 'Форматирование текста',
           action: 'Действие',
           paragraphFormatting: 'Форматирование параграфа',
-          documentStyle: 'Стиль документа'
+          documentStyle: 'Стиль документа', 
+          extraKeys: 'Дополнительные комбинации'
         },
         history: {
           undo: 'Отменить',
