@@ -133,6 +133,12 @@ define([
       },
       codeview: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.options.codeview + '" data-event="codeview" tabindex="-1"><i class="fa fa-code icon-code"></i></button>';
+      },
+      undo: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.history.undo + '" data-event="undo" tabindex="-1"><i class="fa fa-undo icon-undo"></i></button>';
+      },
+      redo: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.history.redo + '" data-event="redo" tabindex="-1"><i class="fa fa-repeat icon-repeat"></i></button>';
       }
     };
     tplPopover = function (lang) {
@@ -470,7 +476,7 @@ define([
       $editor.insertAfter($holder);
       $holder.hide();
     };
-    
+
     /**
      * returns layoutInfo from holder
      *
