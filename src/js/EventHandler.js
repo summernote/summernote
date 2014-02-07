@@ -254,7 +254,7 @@ define([
             $codable.css('height', nHeight);
             var cmEditor = $codable.data('cmEditor');
             if (cmEditor) {
-                cmEditor.setSize(null, $editable.height());
+              cmEditor.setSize(null, $editable.height());
             }
           };
 
@@ -271,9 +271,9 @@ define([
             $codable.css('height', newHeight);
             cmEditor = $codable.data('cmEditor');
             if (cmEditor) {
-                cmEditor.setSize(null, newHeight);
+              cmEditor.setSize(null, newHeight);
             }
-            scrollbar.css('overflow', 'auto');
+            $scrollbar.css('overflow', 'auto');
             $(window).off('resize');
           }
 
@@ -296,11 +296,11 @@ define([
               }, options.codemirror));
               var tern = $editor.data('options').codemirror.tern || false;
               if (tern) {
-                  server = new CodeMirror.TernServer(tern);
-                  cmEditor.ternServer = server;
-                  cmEditor.on('cursorActivity', function(cm) {
-                      server.updateArgHints(cm);
-                  });
+                server = new CodeMirror.TernServer(tern);
+                cmEditor.ternServer = server;
+                cmEditor.on('cursorActivity', function(cm) {
+                  server.updateArgHints(cm);
+                });
               }
               
               // CodeMirror hasn't Padding.
