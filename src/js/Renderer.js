@@ -1,6 +1,6 @@
 define([
-  'core/agent', 'core/dom', 'editing/History'
-], function (agent, dom, History) {
+  'core/agent', 'core/dom'
+], function (agent, dom) {
   /**
    * renderer
    *
@@ -99,21 +99,18 @@ define([
       },
       paragraph: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + lang.paragraph.paragraph + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i>  <span class="caret"></span></button>' +
-        '<ul class="dropdown-menu">' +
-          '<li>' +
+        '<div class="dropdown-menu">' +
           '<div class="note-align btn-group">' +
-          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.left + '" data-shortcut="Ctrl+Shift+L" data-mac-shortcut="⌘+⇧+L" data-event="justifyLeft" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
-          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.center + '" data-shortcut="Ctrl+Shift+E" data-mac-shortcut="⌘+⇧+E" data-event="justifyCenter" tabindex="-1"><i class="fa fa-align-center icon-align-center"></i></button>' +
-          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.right + '" data-shortcut="Ctrl+Shift+R" data-mac-shortcut="⌘+⇧+R" data-event="justifyRight" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
-          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.justify + '" data-shortcut="Ctrl+Shift+J" data-mac-shortcut="⌘+⇧+J" data-event="justifyFull" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
+            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.left + '" data-shortcut="Ctrl+Shift+L" data-mac-shortcut="⌘+⇧+L" data-event="justifyLeft" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
+            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.center + '" data-shortcut="Ctrl+Shift+E" data-mac-shortcut="⌘+⇧+E" data-event="justifyCenter" tabindex="-1"><i class="fa fa-align-center icon-align-center"></i></button>' +
+            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.right + '" data-shortcut="Ctrl+Shift+R" data-mac-shortcut="⌘+⇧+R" data-event="justifyRight" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
+            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.justify + '" data-shortcut="Ctrl+Shift+J" data-mac-shortcut="⌘+⇧+J" data-event="justifyFull" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
           '</div>' +
-          '</li>' +
-          '<li>' +
           '<div class="note-list btn-group">' +
-          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.outdent + '" data-shortcut="Ctrl+[" data-mac-shortcut="⌘+[" data-event="outdent" tabindex="-1"><i class="fa fa-outdent icon-indent-left"></i></button>' +
-          '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.indent + '" data-shortcut="Ctrl+]" data-mac-shortcut="⌘+]" data-event="indent" tabindex="-1"><i class="fa fa-indent icon-indent-right"></i></button>' +
-          '</li>' +
-        '</ul>';
+            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.outdent + '" data-shortcut="Ctrl+[" data-mac-shortcut="⌘+[" data-event="outdent" tabindex="-1"><i class="fa fa-outdent icon-indent-left"></i></button>' +
+            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.indent + '" data-shortcut="Ctrl+]" data-mac-shortcut="⌘+]" data-event="indent" tabindex="-1"><i class="fa fa-indent icon-indent-right"></i></button>' +
+          '</div>' +
+        '</div>';
       },
       height: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + lang.font.height + '" tabindex="-1"><i class="fa fa-text-height icon-text-height"></i>&nbsp; <b class="caret"></b></button>' +
@@ -136,6 +133,12 @@ define([
       },
       codeview: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.options.codeview + '" data-event="codeview" tabindex="-1"><i class="fa fa-code icon-code"></i></button>';
+      },
+      undo: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.history.undo + '" data-event="undo" tabindex="-1"><i class="fa fa-undo icon-undo"></i></button>';
+      },
+      redo: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.history.redo + '" data-event="redo" tabindex="-1"><i class="fa fa-repeat icon-repeat"></i></button>';
       }
     };
     tplPopover = function (lang) {
@@ -309,15 +312,19 @@ define([
                      '</div>' +
                      '<div class="modal-body">' +
                        '<div class="row-fluid">' +
-
-                       '<div class="form-group">' +
-                         '<label>' + lang.link.textToDisplay + '</label>' +
-                         '<input class="note-link-text form-control span12" disabled type="text" />' +
-                       '</div>' +
-                       '<div class="form-group">' +
-                         '<label>' + lang.link.url + '</label>' +
-                         '<input class="note-link-url form-control span12" type="text" />' +
-                       '</div>' +
+                         '<div class="form-group">' +
+                           '<label>' + lang.link.textToDisplay + '</label>' +
+                           '<input class="note-link-text form-control span12" disabled type="text" />' +
+                         '</div>' +
+                         '<div class="form-group">' +
+                           '<label>' + lang.link.url + '</label>' +
+                           '<input class="note-link-url form-control span12" type="text" />' +
+                         '</div>' +
+                         '<div class="checkbox">' +
+                           '<label>' + '<input type="checkbox" checked> ' +
+                             lang.link.openInNewWindow +
+                           '</label>' +
+                         '</div>' +
                        '</div>' +
                      '</div>' +
                      '<div class="modal-footer">' +
@@ -412,42 +419,35 @@ define([
       });
     };
 
-    // createLayout
+    /**
+     * create summernote layout
+     *
+     * @param {jQuery} $holder
+     * @param {Object} options
+     */
     this.createLayout = function ($holder, options) {
-      var nHeight = options.height,
-          nTabsize = options.tabsize,
-          sDirection = options.direction,
-          aToolbarSetting = options.toolbar,
-          langInfo = $.summernote.lang[options.lang];
-
       //already created
       var next = $holder.next();
-      if (!next && next.hasClass('note-editor')) { return; }
+      if (next && next.hasClass('note-editor')) { return; }
 
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
-      $editor.data('options', options);
 
-      //02. statusbar
-      if (nHeight > 0) {
+      //02. statusbar (resizebar)
+      if (options.height > 0) {
         $('<div class="note-statusbar">' + tplStatusbar + '</div>').prependTo($editor);
       }
 
       //03. create Editable
       var $editable = $('<div class="note-editable" contentEditable="true"></div>').prependTo($editor);
-      if (nHeight) {
-        $editable.height(nHeight);
-        $editable.data('optionHeight', nHeight);
+      if (options.height) {
+        $editable.height(options.height);
       }
-      if (nTabsize) {
-        $editable.data('tabsize', nTabsize);
-      }
-      if (sDirection) {
-        $editable.attr('dir', sDirection);
+      if (options.direction) {
+        $editable.attr('dir', options.direction);
       }
 
       $editable.html(dom.html($holder) || dom.emptyPara);
-      $editable.data('NoteHistory', new History());
 
       //031. create codable
       $('<textarea class="note-codable"></textarea>').prependTo($editor);
@@ -457,10 +457,12 @@ define([
         document.execCommand('styleWithCSS', 0, true);
       });
 
+      var langInfo = $.summernote.lang[options.lang];
+
       //04. create Toolbar
       var sToolbar = '';
-      for (var idx = 0, sz = aToolbarSetting.length; idx < sz; idx ++) {
-        var group = aToolbarSetting[idx];
+      for (var idx = 0, sz = options.toolbar.length; idx < sz; idx ++) {
+        var group = options.toolbar[idx];
         sToolbar += '<div class="note-' + group[0] + ' btn-group">';
         for (var i = 0, szGroup = group[1].length; i < szGroup; i++) {
           sToolbar += tplToolbarInfo[group[1][i]](langInfo);
@@ -495,27 +497,33 @@ define([
       $holder.hide();
     };
 
-    // layoutInfoFromHolder
-    var layoutInfoFromHolder = this.layoutInfoFromHolder = function ($holder) {
+    /**
+     * returns layoutInfo from holder
+     *
+     * @param {jQuery} $holder - placeholder
+     * @returns {Object}
+     */
+    this.layoutInfoFromHolder = function ($holder) {
       var $editor = $holder.next();
       if (!$editor.hasClass('note-editor')) { return; }
 
-      return {
-        editor: $editor,
-        dropzone: $editor.find('.note-dropzone'),
-        toolbar: $editor.find('.note-toolbar'),
-        editable: $editor.find('.note-editable'),
-        codable: $editor.find('.note-codable'),
-        statusbar: $editor.find('.note-statusbar'),
-        popover: $editor.find('.note-popover'),
-        handle: $editor.find('.note-handle'),
-        dialog: $editor.find('.note-dialog')
-      };
+      var layoutInfo = dom.buildLayoutInfo($editor);
+      // cache all properties.
+      for (var key in layoutInfo) {
+        if (layoutInfo.hasOwnProperty(key)) {
+          layoutInfo[key] = layoutInfo[key].call();
+        }
+      }
+      return layoutInfo;
     };
 
-    // removeLayout
+    /**
+     * removeLayout
+     *
+     * @param {jQuery} $holder - placeholder
+     */
     this.removeLayout = function ($holder) {
-      var info = layoutInfoFromHolder($holder);
+      var info = this.layoutInfoFromHolder($holder);
       if (!info) { return; }
       $holder.html(info.editable.html());
 

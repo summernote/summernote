@@ -29,7 +29,8 @@
         unlink: '링크 삭제',
         edit: '수정',
         textToDisplay: '링크에 표시할 내용',
-        url: '이동할 URL'
+        url: '이동할 URL',
+        openInNewWindow: '새창으로 열기'
       },
       video: {
         video: '동영상',

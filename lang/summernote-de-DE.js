@@ -29,7 +29,8 @@
         unlink: 'Link entfernen',
         edit: 'Editieren',
         textToDisplay: 'Anzeigetext',
-        url: 'Ziel des Links?'
+        url: 'Ziel des Links?',
+        openInNewWindow: 'In einem neuen Fenster öffnen'
       },
       video: {
         video: 'Video',

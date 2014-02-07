@@ -92,7 +92,8 @@ define('module/Dialog', function () {
       var $linkDialog = $dialog.find('.note-link-dialog');
       var $linkText = $linkDialog.find('.note-link-text'),
           $linkUrl = $linkDialog.find('.note-link-url'),
-          $linkBtn = $linkDialog.find('.note-link-btn');
+          $linkBtn = $linkDialog.find('.note-link-btn'),
+          $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
       $linkDialog.on('shown.bs.modal', function () {
         $linkText.val(linkInfo.text);
@@ -100,9 +101,10 @@ define('module/Dialog', function () {
           toggleBtn($linkBtn, $linkUrl.val());
           if (!linkInfo.text) { $linkText.html($linkUrl.val()); }
         }).trigger('focus');
+        $openInNewWindow.prop('checked', linkInfo.newWindow);
         $linkBtn.click(function (event) {
           $linkDialog.modal('hide'); //hide and createLink (ie9+)
-          callback($linkUrl.val());
+          callback($linkUrl.val(), $openInNewWindow.is(':checked'));
           event.preventDefault();
         });
       }).on('hidden.bs.modal', function () {

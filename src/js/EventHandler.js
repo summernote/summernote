@@ -1,11 +1,11 @@
 define([
   'CodeMirror',
-  'core/agent', 'core/dom', 'core/async',
-  'editing/Style', 'editing/Editor',
+  'core/agent', 'core/dom', 'core/async', 'core/key',
+  'editing/Style', 'editing/Editor', 'editing/History',
   'module/Toolbar', 'module/Popover', 'module/Handle', 'module/Dialog'
 ], function (CodeMirror,
-             agent, dom, async,
-             Style, Editor,
+             agent, dom, async, key,
+             Style, Editor, History,
              Toolbar, Popover, Handle, Dialog) {
   /**
    * EventHandler
@@ -15,27 +15,49 @@ define([
     var toolbar = new Toolbar(), popover = new Popover();
     var handle = new Handle(), dialog = new Dialog();
 
-    var key = { BACKSPACE: 8, TAB: 9, ENTER: 13, SPACE: 32,
-                NUM0: 48, NUM1: 49, NUM6: 54, NUM7: 55, NUM8: 56,
-                B: 66, E: 69, I: 73, J: 74, K: 75, L: 76, R: 82, S: 83, U: 85,
-                Y: 89, Z: 90, SLASH: 191,
-                LEFTBRACKET: 219, BACKSLACH: 220, RIGHTBRACKET: 221 };
-
-    // makeLayoutInfo from editor's descendant node.
+    /**
+     * returns makeLayoutInfo from editor's descendant node.
+     *
+     * @param {Element} descendant
+     * @returns {Object}
+     */
     var makeLayoutInfo = function (descendant) {
       var $editor = $(descendant).closest('.note-editor');
-      return {
-        editor: function () { return $editor; },
-        toolbar: function () { return $editor.find('.note-toolbar'); },
-        editable: function () { return $editor.find('.note-editable'); },
-        codable: function () { return $editor.find('.note-codable'); },
-        statusbar: function () { return $editor.find('.note-statusbar'); },
-        popover: function () { return $editor.find('.note-popover'); },
-        handle: function () { return $editor.find('.note-handle'); },
-        dialog: function () { return $editor.find('.note-dialog'); }
-      };
+      return $editor.length > 0 && dom.buildLayoutInfo($editor);
     };
 
+    /**
+     * insert Images from file array.
+     *
+     * @param {jQuery} $editable
+     * @param {File[]} files
+     */
+    var insertImages = function ($editable, files) {
+      editor.restoreRange($editable);
+      var callbacks = $editable.data('callbacks');
+
+      // If onImageUpload options setted
+      if (callbacks.onImageUpload) {
+        callbacks.onImageUpload(files, editor, $editable);
+      // else insert Image as dataURL
+      } else {
+        $.each(files, function (idx, file) {
+          async.readFileAsDataURL(file).done(function (sDataURL) {
+            editor.insertImage($editable, sDataURL);
+          }).fail(function () {
+            if (callbacks.onImageUploadError) {
+              callbacks.onImageUploadError();
+            }
+          });
+        });
+      }
+    };
+
+    /**
+     * keydown event handler
+     *
+     * @param {KeyEvent} event
+     */
     var hKeydown = function (event) {
       var bCmd = agent.bMac ? event.metaKey : event.ctrlKey,
           bShift = event.shiftKey, keyCode = event.keyCode;
@@ -44,8 +66,9 @@ define([
       var bExecCmd = (bCmd || bShift || keyCode === key.TAB);
       var oLayoutInfo = (bExecCmd) ? makeLayoutInfo(event.target) : null;
 
-      if (keyCode === key.TAB && oLayoutInfo.editable().data('tabsize')) {
-        editor.tab(oLayoutInfo.editable());
+      var tabsize = oLayoutInfo && oLayoutInfo.editor().data('options').tabsize;
+      if (keyCode === key.TAB && tabsize) {
+        editor.tab(oLayoutInfo.editable(), tabsize);
       } else if (bCmd && ((bShift && keyCode === key.Z) || keyCode === key.Y)) {
         editor.redo(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.Z) {
@@ -61,7 +84,6 @@ define([
       } else if (bCmd && keyCode === key.BACKSLACH) {
         editor.removeFormat(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.K) {
-        oLayoutInfo.editable();
         editor.setLinkDialog(oLayoutInfo.editable(), function (linkInfo, cb) {
           dialog.showLinkDialog(oLayoutInfo.dialog(), linkInfo, cb);
         });
@@ -98,24 +120,6 @@ define([
         return; // not matched
       }
       event.preventDefault(); //prevent default event for FF
-    };
-
-    var insertImages = function ($editable, files) {
-      var callbacks = $editable.data('callbacks');
-      editor.restoreRange($editable);
-      if (callbacks.onImageUpload) { // call custom handler
-        callbacks.onImageUpload(files, editor, $editable);
-      } else {
-        $.each(files, function (idx, file) {
-          async.readFile(file).done(function (sURL) {
-            editor.insertImage($editable, sURL);
-          }).fail(function () {
-            if (callbacks.onImageUploadError) {
-              callbacks.onImageUploadError();
-            }
-          });
-        });
-      }
     };
 
     var hDropImage = function (event) {
@@ -203,6 +207,8 @@ define([
         var server;
         var cmEditor;
 
+        var options = $editor.data('options');
+
         // before command
         var elTarget;
         if ($.inArray(sEvent, ['resize', 'floatMe']) !== -1) {
@@ -279,7 +285,7 @@ define([
           if (bCodeview) {
             $codable.val($editable.html());
             $codable.height($editable.height());
-            toolbar.disable($toolbar);
+            toolbar.deactivate($toolbar);
             $codable.focus();
 
             // activate CodeMirror as codable
@@ -287,7 +293,7 @@ define([
               var cmEditor = CodeMirror.fromTextArea($codable[0], $.extend({
                 mode: 'text/html',
                 lineNumbers: true
-              }, $editor.data('options').codemirror));
+              }, options.codemirror));
               var tern = $editor.data('options').codemirror.tern || false;
               if (tern) {
                   server = new CodeMirror.TernServer(tern);
@@ -317,9 +323,9 @@ define([
             }
 
             $editable.html($codable.val() || dom.emptyPara);
-            $editable.height($editable.data('optionHeight') ? $codable.height() : 'auto');
+            $editable.height(options.height ? $codable.height() : 'auto');
 
-            toolbar.enable($toolbar);
+            toolbar.activate($toolbar);
             $editable.focus();
           }
 
@@ -446,6 +452,7 @@ define([
       }
 
       oLayoutInfo.handle.on('mousedown', hHandleMousedown);
+
       oLayoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
       oLayoutInfo.popover.on('click', hToolbarAndPopoverClick);
       oLayoutInfo.toolbar.on('mousedown', hToolbarAndPopoverMousedown);
@@ -461,6 +468,12 @@ define([
       oLayoutInfo.editable.on('blur', function () {
         editor.saveRange(oLayoutInfo.editable);
       });
+
+      // save options on editor
+      oLayoutInfo.editor.data('options', options);
+
+      // History
+      oLayoutInfo.editable.data('NoteHistory', new History());
 
       // basic event callbacks (lowercase)
       // enter, focus, blur, keyup, keydown

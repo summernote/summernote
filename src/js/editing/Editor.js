@@ -83,11 +83,12 @@ define([
      * handle tab key
      *
      * @param {jQuery} $editable
+     * @param {Number} tabsize
      */
-    this.tab = function ($editable) {
+    this.tab = function ($editable, tabsize) {
       recordUndo($editable);
       var rng = range.create();
-      var sNbsp = new Array($editable.data('tabsize') + 1).join('&nbsp;');
+      var sNbsp = new Array(tabsize + 1).join('&nbsp;');
       rng.insertNode($('<span id="noteTab">' + sNbsp + '</span>')[0]);
       var $tab = $('#noteTab').removeAttr('id');
       rng = range.create($tab[0], 1);
@@ -121,6 +122,8 @@ define([
      * @param {String} sUrl
      */
     this.insertVideo = function ($editable, sUrl) {
+      recordUndo($editable);
+
       // video url patterns(youtube, instagram, vimeo, dailymotion)
       var ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       var ytMatch = sUrl.match(ytRegExp);
@@ -160,7 +163,7 @@ define([
           .attr('width', '640').attr('height', '360');
       } else if (dmMatch && dmMatch[2].length > 0) {
         $video = $('<iframe>')
-          .attr('src', 'http://www.dailymotion.com/embed/video/' + dmMatch[2])
+          .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
           .attr('width', '640').attr('height', '360');
       } else {
         // this is not a known video link. Now what, Cat? Now what?
@@ -224,62 +227,100 @@ define([
       if (rng.isOnAnchor()) {
         recordUndo($editable);
         var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = range.create(elAnchor, 0, elAnchor, 1);
+        rng = range.createFromNode(elAnchor);
         rng.select();
         document.execCommand('unlink');
       }
     };
 
-    this.setLinkDialog = function ($editable, fnShowDialog) {
+    /**
+     * create link
+     *
+     * @param {jQuery} $editable
+     * @param {String} sLinkUrl
+     * @param {Boolean} bNewWindow
+     */
+    this.createLink = function ($editable, sLinkUrl, bNewWindow) {
       var rng = range.create();
-      if (rng.isOnAnchor()) {
-        var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = range.create(elAnchor, 0, elAnchor, 1);
+      recordUndo($editable);
+
+      // protocol
+      var sLinkUrlWithProtocol = sLinkUrl;
+      if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
+        sLinkUrlWithProtocol =  'mailto:' + sLinkUrl;
+      } else if (sLinkUrl.indexOf('://') === -1) {
+        sLinkUrlWithProtocol = 'http://' + sLinkUrl;
       }
-      fnShowDialog({
-        range: rng,
-        text: rng.toString(),
-        url: rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor).href : ''
-      }, function (sLinkUrl) {
+
+      // createLink when range collapsed (IE).
+      if (agent.bMSIE && rng.isCollapsed()) {
+        rng.insertNode($('<A id="linkAnchor">' + sLinkUrl + '</A>')[0]);
+        var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol).removeAttr('id');
+        rng = range.createFromNode($anchor[0]);
         rng.select();
-        recordUndo($editable);
+      } else {
+        document.execCommand('createlink', false, sLinkUrlWithProtocol);
+        rng = range.create();
+      }
 
-        var sLinkUrlWithProtocol;
-        if (sLinkUrl.indexOf('@') !== -1) { // email address
-          sLinkUrlWithProtocol = sLinkUrl.indexOf(':') !== -1 ? sLinkUrl : 'mailto:' + sLinkUrl;
-        } else { // normal address
-          sLinkUrlWithProtocol = sLinkUrl.indexOf('://') !== -1 ? sLinkUrl : 'http://' + sLinkUrl;
-        }
-
-        //IE: createLink when range collapsed.
-        if (agent.bMSIE && rng.isCollapsed()) {
-          rng.insertNode($('<A id="linkAnchor">' + sLinkUrl + '</A>')[0]);
-          var $anchor = $('#linkAnchor').removeAttr('id')
-                                          .attr('href', sLinkUrlWithProtocol);
-          rng = range.create($anchor[0], 0, $anchor[0], 1);
-          rng.select();
+      // target
+      $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
+        if (bNewWindow) {
+          $(elAnchor).attr('target', '_blank');
         } else {
-          document.execCommand('createlink', false, sLinkUrlWithProtocol);
+          $(elAnchor).removeAttr('target');
         }
       });
     };
 
+    /**
+     * set linkInfo before link dialog opened.
+     * @param {jQuery} $editable
+     * @param {Function} fnShowDialog
+     */
+    this.setLinkDialog = function ($editable, fnShowDialog) {
+      var rng = range.create(),
+          bNewWindow = true;
+
+      // If range on anchor (Edit).
+      if (rng.isOnAnchor()) {
+        // expand range on anchor.
+        var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
+        rng = range.createFromNode(elAnchor);
+        bNewWindow = $(elAnchor).attr('target') === '_blank';
+      }
+
+      var self = this;
+      fnShowDialog({
+        text: rng.toString(),
+        url: rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor).href : '',
+        newWindow: bNewWindow
+      }, function (sLinkUrl, bNewWindow) {
+        // restore range
+        rng.select();
+        self.createLink($editable, sLinkUrl, bNewWindow);
+      });
+    };
+
+    /**
+     * set videoInfo before video dialog opend.
+     * @param {jQuery} $editable
+     * @param {Function} fnShowDialog
+     */
     this.setVideoDialog = function ($editable, fnShowDialog) {
       var rng = range.create();
-      var editor = this;
 
       if (rng.isOnAnchor()) {
         var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = range.create(elAnchor, 0, elAnchor, 1);
+        rng = range.createFromNode(elAnchor);
       }
 
+      var self = this;
       fnShowDialog({
-        range: rng,
         text: rng.toString()
       }, function (sLinkUrl) {
         rng.select();
-        recordUndo($editable);
-        editor.insertVideo($editable, sLinkUrl);
+        self.insertVideo($editable, sLinkUrl);
       });
     };
 

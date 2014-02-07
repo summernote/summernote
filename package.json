@@ -13,11 +13,16 @@
   "devDependencies": {
     "load-grunt-tasks": "0.2.0",
     "requirejs": "2.1.9",
-
     "grunt": "*",
     "grunt-contrib-jshint": "0.7.2",
     "grunt-contrib-qunit": "*",
     "grunt-contrib-uglify": "~0.2.2",
-    "grunt-recess": "*"
+    "grunt-recess": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-contrib-connect": "*",
+    "connect-livereload": "*"
+  },
+  "dependencies": {
+    "open": "0.0.4"
   }
 }
