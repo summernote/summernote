@@ -39,7 +39,8 @@ define('settings', function () {
       onkeyup: null,            // keyup
       onkeydown: null,          // keydown
       onImageUpload: null,      // imageUploadHandler
-      onImageUploadError: null  // imageUploadErrorHandler
+      onImageUploadError: null, // imageUploadErrorHandler
+      onToolbarClick: null
     },
 
     // default language: en-US
