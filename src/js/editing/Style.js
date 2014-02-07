@@ -12,7 +12,7 @@ define(['core/dom'], function (dom) {
      * @returns  {*}
      * @private
      */
-    var jqueryCustomCall = function (obj, method, args) {  // Из-за jQuery < 1.9
+    var jqueryCustomCall = function (obj, method, args) {  // For better compability with jQuery < 1.9
       var i, arg, result = {}, $obj;
       $obj = $(obj);
       if (args instanceof Array) {
