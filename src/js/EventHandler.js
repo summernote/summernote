@@ -457,6 +457,7 @@ define([
       if (options.onblur) { oLayoutInfo.editable.blur(options.onblur); }
       if (options.onkeyup) { oLayoutInfo.editable.keyup(options.onkeyup); }
       if (options.onkeydown) { oLayoutInfo.editable.keydown(options.onkeydown); }
+      if (options.onToolbarClick) { oLayoutInfo.toolbar.click(options.onToolbarClick); }
 
       // callbacks for advanced features (camel)
       // All editor status will be saved on editable with jquery's data
