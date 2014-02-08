@@ -298,7 +298,7 @@ define([
               if (tern) {
                 server = new CodeMirror.TernServer(tern);
                 cmEditor.ternServer = server;
-                cmEditor.on('cursorActivity', function(cm) {
+                cmEditor.on('cursorActivity', function (cm) {
                   server.updateArgHints(cm);
                 });
               }
