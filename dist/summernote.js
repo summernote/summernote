@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-06T11:02Z
+ * Date: 2014-02-08T01:22Z
  */
 (function (factory) {
   /* global define */
@@ -790,6 +790,29 @@
    * Style
    */
   var Style = function () {
+     /**
+     * A compability issue for jQuery 1.9+
+     *
+     * @param  {*}       obj     jQuery object
+     * @param  {string}  method  A method to call
+     * @param  {*}       args    Arguments
+     * @returns  {*}
+     * @private
+     */
+    var jqueryCustomCall = function (obj, method, args) {  // For better compability with jQuery < 1.9
+      var i, arg, result = {}, $obj;
+      $obj = $(obj);
+      if (args instanceof Array) {
+        for (i = 0; i < args.length; i++) {
+          arg = args[i];
+          result[arg] = $obj[method](arg);
+        }
+        return $.extend($obj, result);
+      }
+      return $obj[method].apply($obj, args);
+    };
+
+
     /**
      * paragraph level style
      *
@@ -811,7 +834,8 @@
      */
     this.current = function (rng, elTarget) {
       var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
-      var oStyle = $cont.css(['font-size', 'text-align', 'list-style-type', 'line-height']) || {};
+      var properties = ['font-size', 'text-align', 'list-style-type', 'line-height'];  // Compability with jQuery < 1.9
+      var oStyle = jqueryCustomCall($cont, 'css', properties) || {};
 
       oStyle['font-size'] = parseInt(oStyle['font-size']);
 
@@ -1840,7 +1864,7 @@
           $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
       $linkDialog.on('shown.bs.modal', function () {
-        $linkText.html(linkInfo.text);
+        $linkText.val(linkInfo.text);
         $linkUrl.val(linkInfo.url).keyup(function () {
           toggleBtn($linkBtn, $linkUrl.val());
           if (!linkInfo.text) { $linkText.html($linkUrl.val()); }
@@ -2064,6 +2088,9 @@
             $dialog = oLayoutInfo.dialog(),
             $editable = oLayoutInfo.editable(),
             $codable = oLayoutInfo.codable();
+            
+        var server;
+        var cmEditor;
 
         var options = $editor.data('options');
 
@@ -2109,14 +2136,29 @@
           var hResizeFullscreen = function () {
             var nHeight = $(window).height() - $toolbar.outerHeight();
             $editable.css('height', nHeight);
+            $codable.css('height', nHeight);
+            var cmEditor = $codable.data('cmEditor');
+            if (cmEditor) {
+              cmEditor.setSize(null, $editable.height());
+            }
           };
 
+          var $scrollbar = $('html, body');
           var bFullscreen = $editor.hasClass('fullscreen');
           if (bFullscreen) {
             $editable.data('orgHeight', $editable.css('height'));
             $(window).resize(hResizeFullscreen).trigger('resize');
+            $scrollbar.css('overflow', 'hidden');
           } else {
-            $editable.css('height', options.height ? $editable.data('orgHeight') : 'auto');
+            var hasOptionHeight = !!$editable.data('optionHeight');
+            var newHeight = hasOptionHeight ? $editable.data('orgHeight') : 'auto';
+            $editable.css('height', newHeight);
+            $codable.css('height', newHeight);
+            cmEditor = $codable.data('cmEditor');
+            if (cmEditor) {
+              cmEditor.setSize(null, newHeight);
+            }
+            $scrollbar.css('overflow', 'auto');
             $(window).off('resize');
           }
 
@@ -2133,10 +2175,19 @@
 
             // activate CodeMirror as codable
             if (agent.bCodeMirror) {
-              var cmEditor = CodeMirror.fromTextArea($codable[0], $.extend({
+              cmEditor = CodeMirror.fromTextArea($codable[0], $.extend({
                 mode: 'text/html',
                 lineNumbers: true
               }, options.codemirror));
+              var tern = $editor.data('options').codemirror.tern || false;
+              if (tern) {
+                server = new CodeMirror.TernServer(tern);
+                cmEditor.ternServer = server;
+                cmEditor.on('cursorActivity', function (cm) {
+                  server.updateArgHints(cm);
+                });
+              }
+              
               // CodeMirror hasn't Padding.
               cmEditor.setSize(null, $editable.outerHeight());
               // autoFormatRange If formatting included
@@ -2151,7 +2202,9 @@
           } else {
             // deactivate CodeMirror as codable
             if (agent.bCodeMirror) {
-              $codable.data('cmEditor').toTextArea();
+              cmEditor = $codable.data('cmEditor');
+              $codable.val(cmEditor.getValue());
+              cmEditor.toTextArea();
             }
 
             $editable.html($codable.val() || dom.emptyPara);
@@ -2523,7 +2576,7 @@
                 '</div>' +
               '</div>';
 
-    var tplShortcutText = function (lang) {
+    var tplShortcutText = function (lang, options) {
       return '<table class="note-shortcut">' +
                '<thead>' +
                  '<tr><th></th><th>' + lang.shortcut.textFormatting + '</th></tr>' +
@@ -2539,7 +2592,7 @@
              '</table>';
     };
 
-    var tplShortcutAction = function (lang) {
+    var tplShortcutAction = function (lang, options) {
       return '<table class="note-shortcut">' +
                '<thead>' +
                  '<tr><th></th><th>' + lang.shortcut.action + '</th></tr>' +
@@ -2554,8 +2607,25 @@
                '</tbody>' +
              '</table>';
     };
+    
+    var tplExtraShortcuts = function(lang, options) {
+      var template =
+             '<table class="note-shortcut">' +
+               '<thead>' +
+                 '<tr><th></th><th>' + lang.shortcut.extraKeys + '</th></tr>' +
+               '</thead>' +
+               '<tbody>';
+      for (var key in options.extraKeys) {
+          if (!options.extraKeys.hasOwnProperty(key)) {
+              continue;
+          }
+          template += '<tr><td>' + key + '</td><td>' + options.extraKeys[key] + '</td></tr>';
+      }
+      template +='</tbody></table>';
+      return template;
+    };
 
-    var tplShortcutPara = function (lang) {
+    var tplShortcutPara = function (lang, options) {
       return '<table class="note-shortcut">' +
                 '<thead>' +
                   '<tr><th></th><th>' + lang.shortcut.paragraphFormatting + '</th></tr>' +
@@ -2571,7 +2641,7 @@
               '</table>';
     };
 
-    var tplShortcutStyle = function (lang) {
+    var tplShortcutStyle = function (lang, options) {
       return '<table class="note-shortcut">' +
                '<thead>' +
                  '<tr><th></th><th>' + lang.shortcut.documentStyle + '</th></tr>' +
@@ -2588,13 +2658,16 @@
              '</table>';
     };
 
-    var tplShortcutTable = function (lang) {
-      return '<table class="note-shortcut-layout">' +
+    var tplShortcutTable = function (lang, options) {
+      var template = '<table class="note-shortcut-layout">' +
                '<tbody>' +
-                 '<tr><td>' + tplShortcutAction(lang) + '</td><td>' + tplShortcutText(lang) + '</td></tr>' +
-                 '<tr><td>' + tplShortcutStyle(lang) + '</td><td>' + tplShortcutPara(lang) + '</td></tr>' +
-               '</tbody>' +
-             '</table>';
+                 '<tr><td>' + tplShortcutAction(lang, options) + '</td><td>' + tplShortcutText(lang, options) + '</td></tr>' +
+                 '<tr><td>' + tplShortcutStyle(lang, options) + '</td><td>' + tplShortcutPara(lang, options) + '</td></tr>';
+      if (options.extraKeys) {
+          template += '<tr><td colspan="2">' + tplExtraShortcuts(lang, options) + '</td></tr>';
+      }
+      template += '</tbody</table>';
+      return template;
     };
 
     var replaceMacKeys = function (sHtml) {
@@ -2635,7 +2708,7 @@
                        '<div class="row-fluid">' +
                          '<div class="form-group">' +
                            '<label>' + lang.link.textToDisplay + '</label>' +
-                           '<span class="note-link-text form-control input-xlarge uneditable-input" />' +
+                           '<input class="note-link-text form-control span12" disabled type="text" />' +
                          '</div>' +
                          '<div class="form-group">' +
                            '<label>' + lang.link.url + '</label>' +
@@ -2683,7 +2756,7 @@
                        '<div class="modal-background">' +
                        '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
                        '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
-                       (agent.bMac ? tplShortcutTable(lang) : replaceMacKeys(tplShortcutTable(lang))) +
+                       (agent.bMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                        '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.1</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
                      '</div>' +
                    '</div>' +
@@ -2805,7 +2878,7 @@
       $(tplhandle).prependTo($editor);
 
       //07. create Dialog
-      var $dialog = $(tplDialog(langInfo)).prependTo($editor);
+      var $dialog = $(tplDialog(langInfo, options)).prependTo($editor);
       $dialog.find('button.close, a.modal-close').click(function () {
         $(this).closest('.modal').modal('hide');
       });

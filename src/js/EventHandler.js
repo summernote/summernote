@@ -203,6 +203,9 @@ define([
             $dialog = oLayoutInfo.dialog(),
             $editable = oLayoutInfo.editable(),
             $codable = oLayoutInfo.codable();
+            
+        var server;
+        var cmEditor;
 
         var options = $editor.data('options');
 
@@ -248,14 +251,29 @@ define([
           var hResizeFullscreen = function () {
             var nHeight = $(window).height() - $toolbar.outerHeight();
             $editable.css('height', nHeight);
+            $codable.css('height', nHeight);
+            var cmEditor = $codable.data('cmEditor');
+            if (cmEditor) {
+              cmEditor.setSize(null, $editable.height());
+            }
           };
 
+          var $scrollbar = $('html, body');
           var bFullscreen = $editor.hasClass('fullscreen');
           if (bFullscreen) {
             $editable.data('orgHeight', $editable.css('height'));
             $(window).resize(hResizeFullscreen).trigger('resize');
+            $scrollbar.css('overflow', 'hidden');
           } else {
-            $editable.css('height', options.height ? $editable.data('orgHeight') : 'auto');
+            var hasOptionHeight = !!$editable.data('optionHeight');
+            var newHeight = hasOptionHeight ? $editable.data('orgHeight') : 'auto';
+            $editable.css('height', newHeight);
+            $codable.css('height', newHeight);
+            cmEditor = $codable.data('cmEditor');
+            if (cmEditor) {
+              cmEditor.setSize(null, newHeight);
+            }
+            $scrollbar.css('overflow', 'auto');
             $(window).off('resize');
           }
 
@@ -272,10 +290,19 @@ define([
 
             // activate CodeMirror as codable
             if (agent.bCodeMirror) {
-              var cmEditor = CodeMirror.fromTextArea($codable[0], $.extend({
+              cmEditor = CodeMirror.fromTextArea($codable[0], $.extend({
                 mode: 'text/html',
                 lineNumbers: true
               }, options.codemirror));
+              var tern = $editor.data('options').codemirror.tern || false;
+              if (tern) {
+                server = new CodeMirror.TernServer(tern);
+                cmEditor.ternServer = server;
+                cmEditor.on('cursorActivity', function (cm) {
+                  server.updateArgHints(cm);
+                });
+              }
+              
               // CodeMirror hasn't Padding.
               cmEditor.setSize(null, $editable.outerHeight());
               // autoFormatRange If formatting included
@@ -290,7 +317,9 @@ define([
           } else {
             // deactivate CodeMirror as codable
             if (agent.bCodeMirror) {
-              $codable.data('cmEditor').toTextArea();
+              cmEditor = $codable.data('cmEditor');
+              $codable.val(cmEditor.getValue());
+              cmEditor.toTextArea();
             }
 
             $editable.html($codable.val() || dom.emptyPara);

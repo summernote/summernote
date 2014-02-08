@@ -182,7 +182,7 @@ define([
                 '</div>' +
               '</div>';
 
-    var tplShortcutText = function (lang) {
+    var tplShortcutText = function (lang, options) {
       return '<table class="note-shortcut">' +
                '<thead>' +
                  '<tr><th></th><th>' + lang.shortcut.textFormatting + '</th></tr>' +
@@ -198,7 +198,7 @@ define([
              '</table>';
     };
 
-    var tplShortcutAction = function (lang) {
+    var tplShortcutAction = function (lang, options) {
       return '<table class="note-shortcut">' +
                '<thead>' +
                  '<tr><th></th><th>' + lang.shortcut.action + '</th></tr>' +
@@ -213,8 +213,25 @@ define([
                '</tbody>' +
              '</table>';
     };
+    
+    var tplExtraShortcuts = function(lang, options) {
+      var template =
+             '<table class="note-shortcut">' +
+               '<thead>' +
+                 '<tr><th></th><th>' + lang.shortcut.extraKeys + '</th></tr>' +
+               '</thead>' +
+               '<tbody>';
+      for (var key in options.extraKeys) {
+          if (!options.extraKeys.hasOwnProperty(key)) {
+              continue;
+          }
+          template += '<tr><td>' + key + '</td><td>' + options.extraKeys[key] + '</td></tr>';
+      }
+      template +='</tbody></table>';
+      return template;
+    };
 
-    var tplShortcutPara = function (lang) {
+    var tplShortcutPara = function (lang, options) {
       return '<table class="note-shortcut">' +
                 '<thead>' +
                   '<tr><th></th><th>' + lang.shortcut.paragraphFormatting + '</th></tr>' +
@@ -230,7 +247,7 @@ define([
               '</table>';
     };
 
-    var tplShortcutStyle = function (lang) {
+    var tplShortcutStyle = function (lang, options) {
       return '<table class="note-shortcut">' +
                '<thead>' +
                  '<tr><th></th><th>' + lang.shortcut.documentStyle + '</th></tr>' +
@@ -247,13 +264,16 @@ define([
              '</table>';
     };
 
-    var tplShortcutTable = function (lang) {
-      return '<table class="note-shortcut-layout">' +
+    var tplShortcutTable = function (lang, options) {
+      var template = '<table class="note-shortcut-layout">' +
                '<tbody>' +
-                 '<tr><td>' + tplShortcutAction(lang) + '</td><td>' + tplShortcutText(lang) + '</td></tr>' +
-                 '<tr><td>' + tplShortcutStyle(lang) + '</td><td>' + tplShortcutPara(lang) + '</td></tr>' +
-               '</tbody>' +
-             '</table>';
+                 '<tr><td>' + tplShortcutAction(lang, options) + '</td><td>' + tplShortcutText(lang, options) + '</td></tr>' +
+                 '<tr><td>' + tplShortcutStyle(lang, options) + '</td><td>' + tplShortcutPara(lang, options) + '</td></tr>';
+      if (options.extraKeys) {
+          template += '<tr><td colspan="2">' + tplExtraShortcuts(lang, options) + '</td></tr>';
+      }
+      template += '</tbody</table>';
+      return template;
     };
 
     var replaceMacKeys = function (sHtml) {
@@ -294,7 +314,7 @@ define([
                        '<div class="row-fluid">' +
                          '<div class="form-group">' +
                            '<label>' + lang.link.textToDisplay + '</label>' +
-                           '<span class="note-link-text form-control input-xlarge uneditable-input" />' +
+                           '<input class="note-link-text form-control span12" disabled type="text" />' +
                          '</div>' +
                          '<div class="form-group">' +
                            '<label>' + lang.link.url + '</label>' +
@@ -342,7 +362,7 @@ define([
                        '<div class="modal-background">' +
                        '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
                        '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
-                       (agent.bMac ? tplShortcutTable(lang) : replaceMacKeys(tplShortcutTable(lang))) +
+                       (agent.bMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                        '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote @VERSION</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
                      '</div>' +
                    '</div>' +
@@ -464,7 +484,7 @@ define([
       $(tplhandle).prependTo($editor);
 
       //07. create Dialog
-      var $dialog = $(tplDialog(langInfo)).prependTo($editor);
+      var $dialog = $(tplDialog(langInfo, options)).prependTo($editor);
       $dialog.find('button.close, a.modal-close').click(function () {
         $(this).closest('.modal').modal('hide');
       });
