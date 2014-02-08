@@ -290,7 +290,7 @@ define([
 
             // activate CodeMirror as codable
             if (agent.bCodeMirror) {
-              var cmEditor = CodeMirror.fromTextArea($codable[0], $.extend({
+              cmEditor = CodeMirror.fromTextArea($codable[0], $.extend({
                 mode: 'text/html',
                 lineNumbers: true
               }, options.codemirror));

@@ -23,9 +23,9 @@ define(['core/dom'], function (dom) {
         return $.extend($obj, result);
       }
       return $obj[method].apply($obj, args);
-    };  
-  
-  
+    };
+
+
     /**
      * paragraph level style
      *
