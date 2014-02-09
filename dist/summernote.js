@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-09T04:49Z
+ * Date: 2014-02-09T05:25Z
  */
 (function (factory) {
   /* global define */
@@ -57,6 +57,7 @@
     bMac: navigator.appVersion.indexOf('Mac') > -1,
     bMSIE: navigator.userAgent.indexOf('MSIE') > -1,
     bFF: navigator.userAgent.indexOf('Firefox') > -1,
+    jqueryVersion: parseFloat($.fn.jquery),
     bCodeMirror: !!CodeMirror
   };
 
@@ -791,28 +792,25 @@
    * Style
    */
   var Style = function () {
-     /**
-     * A compability issue for jQuery 1.9+
+    /**
+     * passing an array of style properties to .css() 
+     * will result in an object of property-value pairs.
+     * (compability with version < 1.9)
      *
-     * @param  {*}       obj     jQuery object
-     * @param  {string}  method  A method to call
-     * @param  {*}       args    Arguments
-     * @returns  {*}
-     * @private
+     * @param  {jQuery} $obj
+     * @param  {Array} propertyNames - An array of one or more CSS properties.
+     * @returns {Object}
      */
-    var jqueryCustomCall = function (obj, method, args) {  // For better compability with jQuery < 1.9
-      var i, arg, result = {}, $obj;
-      $obj = $(obj);
-      if (args instanceof Array) {
-        for (i = 0; i < args.length; i++) {
-          arg = args[i];
-          result[arg] = $obj[method](arg);
-        }
-        return $.extend($obj, result);
+    var jQueryCSS = function ($obj, propertyNames) {
+      if (agent.jqueryVersion < 1.9) {
+        var result = {};
+        $.each(propertyNames, function (idx, propertyName) {
+          result[propertyName] = $obj.css(propertyName);
+        });
+        return result;
       }
-      return $obj[method].apply($obj, args);
+      return $obj.css.call($obj, propertyNames);
     };
-
 
     /**
      * paragraph level style
@@ -831,12 +829,12 @@
      *
      * @param {WrappedRange} rng
      * @param {Element} elTarget - target element on event
-     * @param {Object} - object contains style properties.
+     * @return {Object} - object contains style properties.
      */
     this.current = function (rng, elTarget) {
       var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
-      var properties = ['font-size', 'text-align', 'list-style-type', 'line-height'];  // Compability with jQuery < 1.9
-      var oStyle = jqueryCustomCall($cont, 'css', properties) || {};
+      var properties = ['font-size', 'text-align', 'list-style-type', 'line-height'];
+      var oStyle = jQueryCSS($cont, properties) || {};
 
       oStyle['font-size'] = parseInt(oStyle['font-size']);
 
