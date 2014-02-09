@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-09T04:45Z
+ * Date: 2014-02-09T04:49Z
  */
 (function (factory) {
   /* global define */
@@ -584,7 +584,8 @@
       onkeyup: null,            // keyup
       onkeydown: null,          // keydown
       onImageUpload: null,      // imageUploadHandler
-      onImageUploadError: null  // imageUploadErrorHandler
+      onImageUploadError: null, // imageUploadErrorHandler
+      onToolbarClick: null
     },
 
     // default language: en-US
@@ -2371,6 +2372,7 @@
       if (options.onblur) { oLayoutInfo.editable.blur(options.onblur); }
       if (options.onkeyup) { oLayoutInfo.editable.keyup(options.onkeyup); }
       if (options.onkeydown) { oLayoutInfo.editable.keydown(options.onkeydown); }
+      if (options.onToolbarClick) { oLayoutInfo.toolbar.click(options.onToolbarClick); }
 
       // callbacks for advanced features (camel)
       // All editor status will be saved on editable with jquery's data
