@@ -280,7 +280,7 @@ define([
       return sHtml.replace(/⌘/g, 'Ctrl').replace(/⇧/g, 'Shift');
     };
 
-    tplDialog = function (lang) {
+    tplDialog = function (lang, options) {
       return '<div class="note-dialog">' +
                '<div class="note-image-dialog modal" aria-hidden="false">' +
                  '<div class="modal-dialog">' +

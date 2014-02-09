@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-08T01:22Z
+ * Date: 2014-02-09T04:45Z
  */
 (function (factory) {
   /* global define */
@@ -2674,7 +2674,7 @@
       return sHtml.replace(/⌘/g, 'Ctrl').replace(/⇧/g, 'Shift');
     };
 
-    tplDialog = function (lang) {
+    tplDialog = function (lang, options) {
       return '<div class="note-dialog">' +
                '<div class="note-image-dialog modal" aria-hidden="false">' +
                  '<div class="modal-dialog">' +
