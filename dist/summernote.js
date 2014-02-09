@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-09T05:25Z
+ * Date: 2014-02-09T05:41Z
  */
 (function (factory) {
   /* global define */
@@ -2138,7 +2138,7 @@
             $codable.css('height', nHeight);
             var cmEditor = $codable.data('cmEditor');
             if (cmEditor) {
-              cmEditor.setSize(null, $editable.height());
+              cmEditor.setSize(null, nHeight);
             }
           };
 
@@ -2146,7 +2146,7 @@
           var bFullscreen = $editor.hasClass('fullscreen');
           if (bFullscreen) {
             $editable.data('orgHeight', $editable.css('height'));
-            $(window).resize(hResizeFullscreen).trigger('resize');
+            $(window).on('resize', hResizeFullscreen).trigger('resize');
             $scrollbar.css('overflow', 'hidden');
           } else {
             var hasOptionHeight = !!$editable.data('optionHeight');

@@ -254,7 +254,7 @@ define([
             $codable.css('height', nHeight);
             var cmEditor = $codable.data('cmEditor');
             if (cmEditor) {
-              cmEditor.setSize(null, $editable.height());
+              cmEditor.setSize(null, nHeight);
             }
           };
 
@@ -262,7 +262,7 @@ define([
           var bFullscreen = $editor.hasClass('fullscreen');
           if (bFullscreen) {
             $editable.data('orgHeight', $editable.css('height'));
-            $(window).resize(hResizeFullscreen).trigger('resize');
+            $(window).on('resize', hResizeFullscreen).trigger('resize');
             $scrollbar.css('overflow', 'hidden');
           } else {
             var hasOptionHeight = !!$editable.data('optionHeight');
