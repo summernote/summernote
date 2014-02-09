@@ -213,7 +213,7 @@ define([
                '</tbody>' +
              '</table>';
     };
-    
+
     var tplExtraShortcuts = function(lang, options) {
       var template =
              '<table class="note-shortcut">' +
@@ -432,6 +432,9 @@ define([
 
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
+      if (options.width) {
+        $editor.width(options.width);
+      }
 
       //02. statusbar (resizebar)
       if (options.height > 0) {

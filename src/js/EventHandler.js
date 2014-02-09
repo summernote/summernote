@@ -203,7 +203,7 @@ define([
             $dialog = oLayoutInfo.dialog(),
             $editable = oLayoutInfo.editable(),
             $codable = oLayoutInfo.codable();
-            
+
         var server;
         var cmEditor;
 
@@ -249,6 +249,8 @@ define([
           $editor.toggleClass('fullscreen');
 
           var hResizeFullscreen = function () {
+            var nWidth = $(window).width();
+            $editor.css('width', nWidth);
             var nHeight = $(window).height() - $toolbar.outerHeight();
             $editable.css('height', nHeight);
             $codable.css('height', nHeight);
@@ -261,12 +263,15 @@ define([
           var $scrollbar = $('html, body');
           var bFullscreen = $editor.hasClass('fullscreen');
           if (bFullscreen) {
+            $editor.data('orgWidth', $editor.width());
             $editable.data('orgHeight', $editable.css('height'));
             $(window).on('resize', hResizeFullscreen).trigger('resize');
             $scrollbar.css('overflow', 'hidden');
           } else {
-            var hasOptionHeight = !!$editable.data('optionHeight');
-            var newHeight = hasOptionHeight ? $editable.data('orgHeight') : 'auto';
+            var orgWidth = $editor.data('orgWidth');
+            var newWidth = orgWidth === $(window).width() ? 'auto' : orgWidth;
+            $editor.css('width', newWidth);
+            var newHeight = $editable.data('orgHeight');
             $editable.css('height', newHeight);
             $codable.css('height', newHeight);
             cmEditor = $codable.data('cmEditor');
@@ -302,7 +307,7 @@ define([
                   server.updateArgHints(cm);
                 });
               }
-              
+
               // CodeMirror hasn't Padding.
               cmEditor.setSize(null, $editable.outerHeight());
               // autoFormatRange If formatting included
