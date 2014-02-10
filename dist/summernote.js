@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-09T05:41Z
+ * Date: 2014-02-10T12:00Z
  */
 (function (factory) {
   /* global define */
@@ -2607,7 +2607,7 @@
                '</tbody>' +
              '</table>';
     };
-    
+
     var tplExtraShortcuts = function(lang, options) {
       var template =
              '<table class="note-shortcut">' +
@@ -2833,7 +2833,9 @@
       }
 
       //03. create Editable
-      var $editable = $('<div class="note-editable" contentEditable="true"></div>').prependTo($editor);
+      var isContentEditable = !$holder.is(':disabled');
+      var $editable = $('<div class="note-editable" contentEditable="' + isContentEditable + '"></div>')
+          .prependTo($editor);
       if (options.height) {
         $editable.height(options.height);
       }
