@@ -1,0 +1,20 @@
+{
+    "name": "HackerWins/summernote",
+    "description": "Super Simple WYSIWYG Editor on Bootstrap(3.0 and 2.x).",
+    "type": "library",
+    "keywords": [
+        "wysiwyg"
+    ],
+    "homepage": "http://hackerwins.github.io/summernote/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alan",
+            "email": "susukang98@gmail.com",
+            "role": "lead"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/HackerWins/summernote/issues"
+    }
+}
