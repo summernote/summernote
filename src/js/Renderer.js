@@ -45,6 +45,20 @@ define([
                  '<li><a data-event="formatBlock" data-value="h6"><h6>' + lang.style.h6 + '</h6></a></li>' +
                '</ul>';
       },
+      fontname: function(lang) {
+        var fonts, i, output;
+
+        fonts   = ['Serif', 'Sans', 'Arial', 'Arial Black', 'Courier', 'Courier New', 'Comic Sans MS', 'Helvetica', 'Impact', 'Lucida Grande', 'Lucida Sans', 'Tahoma', 'Times', 'Times New Roman', 'Verdana'];
+        output  = '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + lang.font.name + '" tabindex="-1"><span class="note-current-fontname">Arial</span> <b class="caret"></b></button>';
+        output +=   '<ul class="dropdown-menu">';
+
+        for ( i = 0; i < fonts.length; i++ ) {
+          output += '<li><a data-event="fontName" data-value="' + fonts[i] + '"><i class="fa fa-check icon-ok"></i> ' + fonts[i] + '</a></li>';
+        }
+        output +=   '</ul>';
+
+        return output;
+      },
       fontsize: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + lang.font.size + '" tabindex="-1"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +
                '<ul class="dropdown-menu">' +
@@ -213,7 +227,7 @@ define([
                '</tbody>' +
              '</table>';
     };
-    
+
     var tplExtraShortcuts = function(lang, options) {
       var template =
              '<table class="note-shortcut">' +

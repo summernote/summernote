@@ -21,6 +21,7 @@ define('settings', function () {
       toolbar: [
         ['style', ['style']],
         ['font', ['bold', 'italic', 'underline', 'clear']],
+        ['fontname', ['fontname']],
         ['fontsize', ['fontsize']],
         ['color', ['color']],
         ['para', ['ul', 'ol', 'paragraph']],
@@ -53,6 +54,7 @@ define('settings', function () {
           strike: 'Strike',
           clear: 'Remove Font Style',
           height: 'Line Height',
+          name: 'Font Family',
           size: 'Font Size'
         },
         image: {

@@ -12,13 +12,14 @@ define('module/Toolbar', function () {
     this.update = function ($toolbar, oStyle) {
 
       /**
-       * handle dropdown's check mark (for fontsize, lineHeight).
+       * handle dropdown's check mark (for fontname, fontsize, lineHeight).
        * @param {jQuery} $btn
        * @param {Number} nValue
        */
       var checkDropdownMenu = function ($btn, nValue) {
         $btn.find('.dropdown-menu li a').each(function () {
-          var bChecked = parseFloat($(this).data('value')) === nValue;
+          // always compare string to avoid creating another func.
+          var bChecked = ($(this).data('value') + '') === (nValue + '');
           this.className = bChecked ? 'checked' : '';
         });
       };
@@ -33,6 +34,17 @@ define('module/Toolbar', function () {
         var $btn = $toolbar.find(sSelector);
         $btn.toggleClass('active', pred());
       };
+
+      var $fontname = $toolbar.find('.note-fontname');
+      if ($fontname.get(0)) {
+        var selectedFont = oStyle['font-family'];
+        if (!!selectedFont) {
+          selectedFont = selectedFont.split(',')[0];
+          selectedFont = selectedFont.replace(/\'/g, '');
+          $fontname.find('.note-current-fontname').html(selectedFont);
+          checkDropdownMenu($fontname, selectedFont);
+        }
+      }
 
       var $fontsize = $toolbar.find('.note-fontsize');
       $fontsize.find('.note-current-fontsize').html(oStyle['font-size']);
