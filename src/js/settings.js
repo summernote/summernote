@@ -7,6 +7,7 @@ define('settings', function () {
      * options for init
      */
     options: {
+      width: null,                  // set editor width
       height: null,                 // set editable height, ex) 300
       focus: false,                 // set focus after initilize summernote
       tabsize: null,                // size of tab ex) 2 or 4

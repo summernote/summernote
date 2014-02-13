@@ -553,6 +553,7 @@
      * options for init
      */
     options: {
+      width: null,                  // set editor width
       height: null,                 // set editable height, ex) 300
       focus: false,                 // set focus after initilize summernote
       tabsize: null,                // size of tab ex) 2 or 4
@@ -2087,7 +2088,7 @@
             $dialog = oLayoutInfo.dialog(),
             $editable = oLayoutInfo.editable(),
             $codable = oLayoutInfo.codable();
-            
+
         var server;
         var cmEditor;
 
@@ -2133,6 +2134,8 @@
           $editor.toggleClass('fullscreen');
 
           var hResizeFullscreen = function () {
+            var nWidth = $(window).width();
+            $editor.css('width', nWidth);
             var nHeight = $(window).height() - $toolbar.outerHeight();
             $editable.css('height', nHeight);
             $codable.css('height', nHeight);
@@ -2145,12 +2148,15 @@
           var $scrollbar = $('html, body');
           var bFullscreen = $editor.hasClass('fullscreen');
           if (bFullscreen) {
+            $editor.data('orgWidth', $editor.width());
             $editable.data('orgHeight', $editable.css('height'));
             $(window).on('resize', hResizeFullscreen).trigger('resize');
             $scrollbar.css('overflow', 'hidden');
           } else {
-            var hasOptionHeight = !!$editable.data('optionHeight');
-            var newHeight = hasOptionHeight ? $editable.data('orgHeight') : 'auto';
+            var orgWidth = $editor.data('orgWidth');
+            var newWidth = orgWidth === $(window).width() ? 'auto' : orgWidth;
+            $editor.css('width', newWidth);
+            var newHeight = $editable.data('orgHeight');
             $editable.css('height', newHeight);
             $codable.css('height', newHeight);
             cmEditor = $codable.data('cmEditor');
@@ -2186,7 +2192,7 @@
                   server.updateArgHints(cm);
                 });
               }
-              
+
               // CodeMirror hasn't Padding.
               cmEditor.setSize(null, $editable.outerHeight());
               // autoFormatRange If formatting included
@@ -2607,7 +2613,7 @@
                '</tbody>' +
              '</table>';
     };
-    
+
     var tplExtraShortcuts = function(lang, options) {
       var template =
              '<table class="note-shortcut">' +
@@ -2826,6 +2832,9 @@
 
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
+      if (options.width) {
+        $editor.width(options.width);
+      }
 
       //02. statusbar (resizebar)
       if (options.height > 0) {
