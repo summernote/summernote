@@ -85,10 +85,10 @@ define([
         editor.removeFormat(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.K) {
         editor.setLinkDialog(oLayoutInfo.editable(), function (linkInfo, cb) {
-          dialog.showLinkDialog(oLayoutInfo.dialog(), linkInfo, cb);
+          dialog.showLinkDialog(oLayoutInfo.editable(), oLayoutInfo.dialog(), linkInfo, cb);
         });
       } else if (bCmd && keyCode === key.SLASH) {
-        dialog.showHelpDialog(oLayoutInfo.dialog());
+        dialog.showHelpDialog(oLayoutInfo.editable(), oLayoutInfo.dialog());
       } else if (bCmd && bShift && keyCode === key.L) {
         editor.justifyLeft(oLayoutInfo.editable());
       } else if (bCmd && bShift && keyCode === key.E) {
@@ -228,11 +228,11 @@ define([
         } else if (sEvent === 'showLinkDialog') { // popover to dialog
           $editable.focus();
           editor.setLinkDialog($editable, function (linkInfo, cb) {
-            dialog.showLinkDialog($dialog, linkInfo, cb);
+            dialog.showLinkDialog($editable, $dialog, linkInfo, cb);
           });
         } else if (sEvent === 'showImageDialog') {
           $editable.focus();
-          dialog.showImageDialog($dialog, function (files) {
+          dialog.showImageDialog($editable, $dialog, function (files) {
             insertImages($editable, files);
           }, function (sUrl) {
             editor.restoreRange($editable);
@@ -241,10 +241,10 @@ define([
         } else if (sEvent === 'showVideoDialog') {
           $editable.focus();
           editor.setVideoDialog($editable, function (linkInfo, cb) {
-            dialog.showVideoDialog($dialog, linkInfo, cb);
+            dialog.showVideoDialog($editable, $dialog, linkInfo, cb);
           });
         } else if (sEvent === 'showHelpDialog') {
-          dialog.showHelpDialog($dialog);
+          dialog.showHelpDialog($editable, $dialog);
         } else if (sEvent === 'fullscreen') {
           $editor.toggleClass('fullscreen');
 

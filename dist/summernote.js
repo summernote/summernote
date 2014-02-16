@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-16T09:40Z
+ * Date: 2014-02-16T10:58Z
  */
 (function (factory) {
   /* global define */
@@ -1409,8 +1409,8 @@
         sLinkUrlWithProtocol = 'http://' + sLinkUrl;
       }
 
-      // createLink when range collapsed (IE).
-      if (agent.bMSIE && rng.isCollapsed()) {
+      // createLink when range collapsed (IE, Firefox).
+      if ((agent.bMSIE || agent.bFF) && rng.isCollapsed()) {
         rng.insertNode($('<A id="linkAnchor">' + sLinkUrl + '</A>')[0]);
         var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol).removeAttr('id');
         rng = range.createFromNode($anchor[0]);
@@ -1768,9 +1768,12 @@
   };
 
   /**
-   * Dialog
+   * Dialog 
+   *
+   * @class
    */
   var Dialog = function () {
+
     /**
      * toggle button status
      *
@@ -1792,47 +1795,50 @@
      * @param {Function} fnInsertImages 
      * @param {Function} fnInsertImage 
      */
-    this.showImageDialog = function ($dialog, fnInsertImages, fnInsertImage) {
+    this.showImageDialog = function ($editable, $dialog, fnInsertImages, fnInsertImage) {
       var $imageDialog = $dialog.find('.note-image-dialog');
+
       var $imageInput = $dialog.find('.note-image-input'),
           $imageUrl = $dialog.find('.note-image-url'),
           $imageBtn = $dialog.find('.note-image-btn');
 
-      $imageDialog.on('shown.bs.modal', function () {
+      $imageDialog.one('shown.bs.modal', function () {
         $imageInput.on('change', function () {
           fnInsertImages(this.files);
           $(this).val('');
           $imageDialog.modal('hide');
         });
-        $imageUrl.val('').keyup(function () {
-          toggleBtn($imageBtn, $imageUrl.val());
-        }).trigger('focus');
+
         $imageBtn.click(function (event) {
           $imageDialog.modal('hide');
           fnInsertImage($imageUrl.val());
           event.preventDefault();
         });
-      }).on('hidden.bs.modal', function () {
+
+        $imageUrl.keyup(function () {
+          toggleBtn($imageBtn, $imageUrl.val());
+        }).val('').focus();
+      }).one('hidden.bs.modal', function () {
+        $editable.focus();
         $imageInput.off('change');
-        $imageDialog.off('shown.bs.modal hidden.bs.modal');
         $imageUrl.off('keyup');
         $imageBtn.off('click');
       }).modal('show');
     };
 
     /**
-     * show video dialog
+     * Show video dialog and set event handlers on dialog controls.
      *
      * @param {jQuery} $dialog 
      * @param {Object} videoInfo 
      * @param {Function} callback 
      */
-    this.showVideoDialog = function ($dialog, videoInfo, callback) {
+    this.showVideoDialog = function ($editable, $dialog, videoInfo, callback) {
       var $videoDialog = $dialog.find('.note-video-dialog');
       var $videoUrl = $videoDialog.find('.note-video-url'),
           $videoBtn = $videoDialog.find('.note-video-btn');
 
-      $videoDialog.on('shown.bs.modal', function () {
+      $videoDialog.one('shown.bs.modal', function () {
         $videoUrl.val(videoInfo.text).keyup(function () {
           toggleBtn($videoBtn, $videoUrl.val());
         }).trigger('keyup').trigger('focus');
@@ -1842,43 +1848,52 @@
           callback($videoUrl.val());
           event.preventDefault();
         });
-      }).on('hidden.bs.modal', function () {
+      }).one('hidden.bs.modal', function () {
+        $editable.focus();
         $videoUrl.off('keyup');
         $videoBtn.off('click');
-        $videoDialog.off('shown.bs.modal hidden.bs.modal');
       }).modal('show');
     };
 
     /**
-     * show link dialog
+     * Show link dialog and set event handlers on dialog controls.
      *
      * @param {jQuery} $dialog
      * @param {Object} linkInfo
      * @param {function} callback
      */
-    this.showLinkDialog = function ($dialog, linkInfo, callback) {
+    this.showLinkDialog = function ($editable, $dialog, linkInfo, callback) {
       var $linkDialog = $dialog.find('.note-link-dialog');
+
       var $linkText = $linkDialog.find('.note-link-text'),
           $linkUrl = $linkDialog.find('.note-link-url'),
           $linkBtn = $linkDialog.find('.note-link-btn'),
           $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
-      $linkDialog.on('shown.bs.modal', function () {
+      $linkDialog.one('shown.bs.modal', function () {
         $linkText.val(linkInfo.text);
+
         $linkUrl.val(linkInfo.url).keyup(function () {
           toggleBtn($linkBtn, $linkUrl.val());
-          if (!linkInfo.text) { $linkText.html($linkUrl.val()); }
+
+          // If create a new link, display same link on `Text to display` input.
+          if (!linkInfo.text) {
+            $linkText.val($linkUrl.val());
+          }
         }).trigger('focus');
+
         $openInNewWindow.prop('checked', linkInfo.newWindow);
+
         $linkBtn.click(function (event) {
-          $linkDialog.modal('hide'); //hide and createLink (ie9+)
+          $linkDialog.modal('hide');
           callback($linkUrl.val(), $openInNewWindow.is(':checked'));
+
           event.preventDefault();
         });
-      }).on('hidden.bs.modal', function () {
+      }).one('hidden.bs.modal', function () {
+        $editable.focus();
         $linkUrl.off('keyup');
         $linkBtn.off('click');
-        $linkDialog.off('shown.bs.modal hidden.bs.modal');
       }).modal('show');
     };
 
@@ -1887,8 +1902,12 @@
      *
      * @param {jQuery} $dialog
      */
-    this.showHelpDialog = function ($dialog) {
-      $dialog.find('.note-help-dialog').modal('show');
+    this.showHelpDialog = function ($editable, $dialog) {
+      var $helpDialog = $dialog.find('.note-help-dialog');
+
+      $helpDialog.one('hidden.bs.modal', function () {
+        $editable.focus();
+      }).modal('show');
     };
   };
 
@@ -1970,10 +1989,10 @@
         editor.removeFormat(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.K) {
         editor.setLinkDialog(oLayoutInfo.editable(), function (linkInfo, cb) {
-          dialog.showLinkDialog(oLayoutInfo.dialog(), linkInfo, cb);
+          dialog.showLinkDialog(oLayoutInfo.editable(), oLayoutInfo.dialog(), linkInfo, cb);
         });
       } else if (bCmd && keyCode === key.SLASH) {
-        dialog.showHelpDialog(oLayoutInfo.dialog());
+        dialog.showHelpDialog(oLayoutInfo.editable(), oLayoutInfo.dialog());
       } else if (bCmd && bShift && keyCode === key.L) {
         editor.justifyLeft(oLayoutInfo.editable());
       } else if (bCmd && bShift && keyCode === key.E) {
@@ -2113,11 +2132,11 @@
         } else if (sEvent === 'showLinkDialog') { // popover to dialog
           $editable.focus();
           editor.setLinkDialog($editable, function (linkInfo, cb) {
-            dialog.showLinkDialog($dialog, linkInfo, cb);
+            dialog.showLinkDialog($editable, $dialog, linkInfo, cb);
           });
         } else if (sEvent === 'showImageDialog') {
           $editable.focus();
-          dialog.showImageDialog($dialog, function (files) {
+          dialog.showImageDialog($editable, $dialog, function (files) {
             insertImages($editable, files);
           }, function (sUrl) {
             editor.restoreRange($editable);
@@ -2126,10 +2145,10 @@
         } else if (sEvent === 'showVideoDialog') {
           $editable.focus();
           editor.setVideoDialog($editable, function (linkInfo, cb) {
-            dialog.showVideoDialog($dialog, linkInfo, cb);
+            dialog.showVideoDialog($editable, $dialog, linkInfo, cb);
           });
         } else if (sEvent === 'showHelpDialog') {
-          dialog.showHelpDialog($dialog);
+          dialog.showHelpDialog($editable, $dialog);
         } else if (sEvent === 'fullscreen') {
           $editor.toggleClass('fullscreen');
 
