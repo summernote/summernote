@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-16T11:37Z
+ * Date: 2014-02-16T12:49Z
  */
 (function (factory) {
   /* global define */
@@ -1802,7 +1802,9 @@
           $imageUrl = $dialog.find('.note-image-url'),
           $imageBtn = $dialog.find('.note-image-btn');
 
-      $imageDialog.one('shown.bs.modal', function () {
+      $imageDialog.one('shown.bs.modal', function (event) {
+        event.stopPropagation();
+
         $imageInput.on('change', function () {
           fnInsertImages(this.files);
           $(this).val('');
@@ -1818,7 +1820,8 @@
         $imageUrl.keyup(function () {
           toggleBtn($imageBtn, $imageUrl.val());
         }).val('').focus();
-      }).one('hidden.bs.modal', function () {
+      }).one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
         $editable.focus();
         $imageInput.off('change');
         $imageUrl.off('keyup');
@@ -1838,7 +1841,9 @@
       var $videoUrl = $videoDialog.find('.note-video-url'),
           $videoBtn = $videoDialog.find('.note-video-btn');
 
-      $videoDialog.one('shown.bs.modal', function () {
+      $videoDialog.one('shown.bs.modal', function (event) {
+        event.stopPropagation();
+
         $videoUrl.val(videoInfo.text).keyup(function () {
           toggleBtn($videoBtn, $videoUrl.val());
         }).trigger('keyup').trigger('focus');
@@ -1848,7 +1853,8 @@
           callback($videoUrl.val());
           event.preventDefault();
         });
-      }).one('hidden.bs.modal', function () {
+      }).one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
         $editable.focus();
         $videoUrl.off('keyup');
         $videoBtn.off('click');
@@ -1870,7 +1876,9 @@
           $linkBtn = $linkDialog.find('.note-link-btn'),
           $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
-      $linkDialog.one('shown.bs.modal', function () {
+      $linkDialog.one('shown.bs.modal', function (event) {
+        event.stopPropagation();
+
         $linkText.val(linkInfo.text);
 
         $linkUrl.val(linkInfo.url).keyup(function () {
@@ -1890,7 +1898,9 @@
 
           event.preventDefault();
         });
-      }).one('hidden.bs.modal', function () {
+      }).one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
+
         $editable.focus();
         $linkUrl.off('keyup');
         $linkBtn.off('click');
@@ -1905,7 +1915,8 @@
     this.showHelpDialog = function ($editable, $dialog) {
       var $helpDialog = $dialog.find('.note-help-dialog');
 
-      $helpDialog.one('hidden.bs.modal', function () {
+      $helpDialog.one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
         $editable.focus();
       }).modal('show');
     };

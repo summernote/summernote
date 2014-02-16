@@ -34,7 +34,9 @@ define('module/Dialog', function () {
           $imageUrl = $dialog.find('.note-image-url'),
           $imageBtn = $dialog.find('.note-image-btn');
 
-      $imageDialog.one('shown.bs.modal', function () {
+      $imageDialog.one('shown.bs.modal', function (event) {
+        event.stopPropagation();
+
         $imageInput.on('change', function () {
           fnInsertImages(this.files);
           $(this).val('');
@@ -50,7 +52,8 @@ define('module/Dialog', function () {
         $imageUrl.keyup(function () {
           toggleBtn($imageBtn, $imageUrl.val());
         }).val('').focus();
-      }).one('hidden.bs.modal', function () {
+      }).one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
         $editable.focus();
         $imageInput.off('change');
         $imageUrl.off('keyup');
@@ -70,7 +73,9 @@ define('module/Dialog', function () {
       var $videoUrl = $videoDialog.find('.note-video-url'),
           $videoBtn = $videoDialog.find('.note-video-btn');
 
-      $videoDialog.one('shown.bs.modal', function () {
+      $videoDialog.one('shown.bs.modal', function (event) {
+        event.stopPropagation();
+
         $videoUrl.val(videoInfo.text).keyup(function () {
           toggleBtn($videoBtn, $videoUrl.val());
         }).trigger('keyup').trigger('focus');
@@ -80,7 +85,8 @@ define('module/Dialog', function () {
           callback($videoUrl.val());
           event.preventDefault();
         });
-      }).one('hidden.bs.modal', function () {
+      }).one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
         $editable.focus();
         $videoUrl.off('keyup');
         $videoBtn.off('click');
@@ -102,7 +108,9 @@ define('module/Dialog', function () {
           $linkBtn = $linkDialog.find('.note-link-btn'),
           $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
-      $linkDialog.one('shown.bs.modal', function () {
+      $linkDialog.one('shown.bs.modal', function (event) {
+        event.stopPropagation();
+
         $linkText.val(linkInfo.text);
 
         $linkUrl.val(linkInfo.url).keyup(function () {
@@ -122,7 +130,9 @@ define('module/Dialog', function () {
 
           event.preventDefault();
         });
-      }).one('hidden.bs.modal', function () {
+      }).one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
+
         $editable.focus();
         $linkUrl.off('keyup');
         $linkBtn.off('click');
@@ -137,7 +147,8 @@ define('module/Dialog', function () {
     this.showHelpDialog = function ($editable, $dialog) {
       var $helpDialog = $dialog.find('.note-help-dialog');
 
-      $helpDialog.one('hidden.bs.modal', function () {
+      $helpDialog.one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
         $editable.focus();
       }).modal('show');
     };
