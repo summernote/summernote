@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-16T10:58Z
+ * Date: 2014-02-16T11:37Z
  */
 (function (factory) {
   /* global define */
@@ -2057,6 +2057,12 @@
       handle.hide(oLayoutInfo.handle());
     };
 
+    /**
+     * `mousedown` event handler on $handle
+     *  - controlSizing: resize image
+     *
+     * @param {MouseEvent} event
+     */
     var hHandleMousedown = function (event) {
       if (dom.isControlSizing(event.target)) {
         var oLayoutInfo = makeLayoutInfo(event.target),
@@ -2066,16 +2072,18 @@
         var elTarget = $handle.find('.note-control-selection').data('target'),
             $target = $(elTarget);
         var posStart = $target.offset(),
-            scrollTop = $(document).scrollTop(), posDistance;
+            scrollTop = $(document).scrollTop();
 
         $editor.on('mousemove', function (event) {
-          posDistance = {x: event.clientX - posStart.left,
-                         y: event.clientY - (posStart.top - scrollTop)};
-          editor.resizeTo(posDistance, $target);
+          editor.resizeTo({
+            x: event.clientX - posStart.left,
+            y: event.clientY - (posStart.top - scrollTop)
+          }, $target);
+
           handle.update($handle, {image: elTarget});
           popover.update($popover, {image: elTarget});
-        }).on('mouseup', function () {
-          $editor.off('mousemove').off('mouseup');
+        }).one('mouseup', function () {
+          $editor.off('mousemove');
         });
 
         if (!$target.data('ratio')) { // original ratio.
@@ -2246,20 +2254,23 @@
     };
 
     var EDITABLE_PADDING = 24;
+    /**
+     * `mousedown` event handler on statusbar
+     *
+     * @param {MouseEvent} event
+     */
     var hStatusbarMousedown = function (event) {
       var $document = $(document);
-      var oLayoutInfo = makeLayoutInfo(event.target);
-      var $editable = oLayoutInfo.editable();
-
+      var $editable = makeLayoutInfo(event.target).editable();
       var nEditableTop = $editable.offset().top - $document.scrollTop();
-      var hMousemove = function (event) {
-        $editable.height(event.clientY - (nEditableTop + EDITABLE_PADDING));
-      };
-      var hMouseup = function () {
-        $document.unbind('mousemove', hMousemove)
-                   .unbind('mouseup', hMouseup);
-      };
-      $document.mousemove(hMousemove).mouseup(hMouseup);
+
+      $document.on('mousemove', function (event) {
+        var nHeight = event.clientY - (nEditableTop + EDITABLE_PADDING);
+        $editable.height(nHeight);
+      }).one('mouseup', function () {
+        $document.off('mousemove');
+      });
+
       event.stopPropagation();
       event.preventDefault();
     };
@@ -2271,6 +2282,7 @@
       var $catcher = $picker.find('.note-dimension-picker-mousecatcher');
       var $highlighted = $picker.find('.note-dimension-picker-highlighted');
       var $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
+
       var posOffset;
       if (event.offsetX === undefined) {
         // HTML5 with jQuery - e.offsetX is undefined in Firefox
@@ -2281,8 +2293,10 @@
         posOffset = {x: event.offsetX, y: event.offsetY};
       }
 
-      var dim = {c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
-                 r: Math.ceil(posOffset.y / PX_PER_EM) || 1};
+      var dim = {
+        c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
+        r: Math.ceil(posOffset.y / PX_PER_EM) || 1
+      };
 
       $highlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });
       $catcher.attr('data-value', dim.c + 'x' + dim.r);
