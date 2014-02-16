@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-13T15:33Z
+ * Date: 2014-02-16T09:40Z
  */
 (function (factory) {
   /* global define */
@@ -2959,7 +2959,7 @@
      */
     summernote: function (options) {
       // extend default options
-      options = $.extend($.summernote.options, options);
+      options = $.extend({}, $.summernote.options, options);
 
       this.each(function (idx, elHolder) {
         var $holder = $(elHolder);
