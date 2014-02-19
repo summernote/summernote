@@ -252,8 +252,8 @@ define([
         sLinkUrlWithProtocol = 'http://' + sLinkUrl;
       }
 
-      // createLink when range collapsed (IE).
-      if (agent.bMSIE && rng.isCollapsed()) {
+      // createLink when range collapsed (IE, Firefox).
+      if ((agent.bMSIE || agent.bFF) && rng.isCollapsed()) {
         rng.insertNode($('<A id="linkAnchor">' + sLinkUrl + '</A>')[0]);
         var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol).removeAttr('id');
         rng = range.createFromNode($anchor[0]);

@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-13T03:07Z
+ * Date: 2014-02-19T00:26Z
  */
 (function (factory) {
   /* global define */
@@ -553,6 +553,7 @@
      * options for init
      */
     options: {
+      width: null,                  // set editor width
       height: null,                 // set editable height, ex) 300
       focus: false,                 // set focus after initilize summernote
       tabsize: null,                // size of tab ex) 2 or 4
@@ -1410,8 +1411,8 @@
         sLinkUrlWithProtocol = 'http://' + sLinkUrl;
       }
 
-      // createLink when range collapsed (IE).
-      if (agent.bMSIE && rng.isCollapsed()) {
+      // createLink when range collapsed (IE, Firefox).
+      if ((agent.bMSIE || agent.bFF) && rng.isCollapsed()) {
         rng.insertNode($('<A id="linkAnchor">' + sLinkUrl + '</A>')[0]);
         var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol).removeAttr('id');
         rng = range.createFromNode($anchor[0]);
@@ -1781,9 +1782,12 @@
   };
 
   /**
-   * Dialog
+   * Dialog 
+   *
+   * @class
    */
   var Dialog = function () {
+
     /**
      * toggle button status
      *
@@ -1805,47 +1809,55 @@
      * @param {Function} fnInsertImages 
      * @param {Function} fnInsertImage 
      */
-    this.showImageDialog = function ($dialog, fnInsertImages, fnInsertImage) {
+    this.showImageDialog = function ($editable, $dialog, fnInsertImages, fnInsertImage) {
       var $imageDialog = $dialog.find('.note-image-dialog');
+
       var $imageInput = $dialog.find('.note-image-input'),
           $imageUrl = $dialog.find('.note-image-url'),
           $imageBtn = $dialog.find('.note-image-btn');
 
-      $imageDialog.on('shown.bs.modal', function () {
+      $imageDialog.one('shown.bs.modal', function (event) {
+        event.stopPropagation();
+
         $imageInput.on('change', function () {
           fnInsertImages(this.files);
           $(this).val('');
           $imageDialog.modal('hide');
         });
-        $imageUrl.val('').keyup(function () {
-          toggleBtn($imageBtn, $imageUrl.val());
-        }).trigger('focus');
+
         $imageBtn.click(function (event) {
           $imageDialog.modal('hide');
           fnInsertImage($imageUrl.val());
           event.preventDefault();
         });
-      }).on('hidden.bs.modal', function () {
+
+        $imageUrl.keyup(function () {
+          toggleBtn($imageBtn, $imageUrl.val());
+        }).val('').focus();
+      }).one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
+        $editable.focus();
         $imageInput.off('change');
-        $imageDialog.off('shown.bs.modal hidden.bs.modal');
         $imageUrl.off('keyup');
         $imageBtn.off('click');
       }).modal('show');
     };
 
     /**
-     * show video dialog
+     * Show video dialog and set event handlers on dialog controls.
      *
      * @param {jQuery} $dialog 
      * @param {Object} videoInfo 
      * @param {Function} callback 
      */
-    this.showVideoDialog = function ($dialog, videoInfo, callback) {
+    this.showVideoDialog = function ($editable, $dialog, videoInfo, callback) {
       var $videoDialog = $dialog.find('.note-video-dialog');
       var $videoUrl = $videoDialog.find('.note-video-url'),
           $videoBtn = $videoDialog.find('.note-video-btn');
 
-      $videoDialog.on('shown.bs.modal', function () {
+      $videoDialog.one('shown.bs.modal', function (event) {
+        event.stopPropagation();
+
         $videoUrl.val(videoInfo.text).keyup(function () {
           toggleBtn($videoBtn, $videoUrl.val());
         }).trigger('keyup').trigger('focus');
@@ -1855,43 +1867,57 @@
           callback($videoUrl.val());
           event.preventDefault();
         });
-      }).on('hidden.bs.modal', function () {
+      }).one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
+        $editable.focus();
         $videoUrl.off('keyup');
         $videoBtn.off('click');
-        $videoDialog.off('shown.bs.modal hidden.bs.modal');
       }).modal('show');
     };
 
     /**
-     * show link dialog
+     * Show link dialog and set event handlers on dialog controls.
      *
      * @param {jQuery} $dialog
      * @param {Object} linkInfo
      * @param {function} callback
      */
-    this.showLinkDialog = function ($dialog, linkInfo, callback) {
+    this.showLinkDialog = function ($editable, $dialog, linkInfo, callback) {
       var $linkDialog = $dialog.find('.note-link-dialog');
+
       var $linkText = $linkDialog.find('.note-link-text'),
           $linkUrl = $linkDialog.find('.note-link-url'),
           $linkBtn = $linkDialog.find('.note-link-btn'),
           $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
-      $linkDialog.on('shown.bs.modal', function () {
+      $linkDialog.one('shown.bs.modal', function (event) {
+        event.stopPropagation();
+
         $linkText.val(linkInfo.text);
+
         $linkUrl.val(linkInfo.url).keyup(function () {
           toggleBtn($linkBtn, $linkUrl.val());
-          if (!linkInfo.text) { $linkText.html($linkUrl.val()); }
+
+          // If create a new link, display same link on `Text to display` input.
+          if (!linkInfo.text) {
+            $linkText.val($linkUrl.val());
+          }
         }).trigger('focus');
+
         $openInNewWindow.prop('checked', linkInfo.newWindow);
+
         $linkBtn.click(function (event) {
-          $linkDialog.modal('hide'); //hide and createLink (ie9+)
+          $linkDialog.modal('hide');
           callback($linkUrl.val(), $openInNewWindow.is(':checked'));
+
           event.preventDefault();
         });
-      }).on('hidden.bs.modal', function () {
+      }).one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
+
+        $editable.focus();
         $linkUrl.off('keyup');
         $linkBtn.off('click');
-        $linkDialog.off('shown.bs.modal hidden.bs.modal');
       }).modal('show');
     };
 
@@ -1900,8 +1926,13 @@
      *
      * @param {jQuery} $dialog
      */
-    this.showHelpDialog = function ($dialog) {
-      $dialog.find('.note-help-dialog').modal('show');
+    this.showHelpDialog = function ($editable, $dialog) {
+      var $helpDialog = $dialog.find('.note-help-dialog');
+
+      $helpDialog.one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
+        $editable.focus();
+      }).modal('show');
     };
   };
 
@@ -1983,10 +2014,10 @@
         editor.removeFormat(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.K) {
         editor.setLinkDialog(oLayoutInfo.editable(), function (linkInfo, cb) {
-          dialog.showLinkDialog(oLayoutInfo.dialog(), linkInfo, cb);
+          dialog.showLinkDialog(oLayoutInfo.editable(), oLayoutInfo.dialog(), linkInfo, cb);
         });
       } else if (bCmd && keyCode === key.SLASH) {
-        dialog.showHelpDialog(oLayoutInfo.dialog());
+        dialog.showHelpDialog(oLayoutInfo.editable(), oLayoutInfo.dialog());
       } else if (bCmd && bShift && keyCode === key.L) {
         editor.justifyLeft(oLayoutInfo.editable());
       } else if (bCmd && bShift && keyCode === key.E) {
@@ -2051,6 +2082,12 @@
       handle.hide(oLayoutInfo.handle());
     };
 
+    /**
+     * `mousedown` event handler on $handle
+     *  - controlSizing: resize image
+     *
+     * @param {MouseEvent} event
+     */
     var hHandleMousedown = function (event) {
       if (dom.isControlSizing(event.target)) {
         var oLayoutInfo = makeLayoutInfo(event.target),
@@ -2060,16 +2097,18 @@
         var elTarget = $handle.find('.note-control-selection').data('target'),
             $target = $(elTarget);
         var posStart = $target.offset(),
-            scrollTop = $(document).scrollTop(), posDistance;
+            scrollTop = $(document).scrollTop();
 
         $editor.on('mousemove', function (event) {
-          posDistance = {x: event.clientX - posStart.left,
-                         y: event.clientY - (posStart.top - scrollTop)};
-          editor.resizeTo(posDistance, $target);
+          editor.resizeTo({
+            x: event.clientX - posStart.left,
+            y: event.clientY - (posStart.top - scrollTop)
+          }, $target);
+
           handle.update($handle, {image: elTarget});
           popover.update($popover, {image: elTarget});
-        }).on('mouseup', function () {
-          $editor.off('mousemove').off('mouseup');
+        }).one('mouseup', function () {
+          $editor.off('mousemove');
         });
 
         if (!$target.data('ratio')) { // original ratio.
@@ -2101,7 +2140,7 @@
             $dialog = oLayoutInfo.dialog(),
             $editable = oLayoutInfo.editable(),
             $codable = oLayoutInfo.codable();
-            
+
         var server;
         var cmEditor;
 
@@ -2126,11 +2165,11 @@
         } else if (sEvent === 'showLinkDialog') { // popover to dialog
           $editable.focus();
           editor.setLinkDialog($editable, function (linkInfo, cb) {
-            dialog.showLinkDialog($dialog, linkInfo, cb);
+            dialog.showLinkDialog($editable, $dialog, linkInfo, cb);
           });
         } else if (sEvent === 'showImageDialog') {
           $editable.focus();
-          dialog.showImageDialog($dialog, function (files) {
+          dialog.showImageDialog($editable, $dialog, function (files) {
             insertImages($editable, files);
           }, function (sUrl) {
             editor.restoreRange($editable);
@@ -2139,14 +2178,16 @@
         } else if (sEvent === 'showVideoDialog') {
           $editable.focus();
           editor.setVideoDialog($editable, function (linkInfo, cb) {
-            dialog.showVideoDialog($dialog, linkInfo, cb);
+            dialog.showVideoDialog($editable, $dialog, linkInfo, cb);
           });
         } else if (sEvent === 'showHelpDialog') {
-          dialog.showHelpDialog($dialog);
+          dialog.showHelpDialog($editable, $dialog);
         } else if (sEvent === 'fullscreen') {
           $editor.toggleClass('fullscreen');
 
           var hResizeFullscreen = function () {
+            var nWidth = $(window).width();
+            $editor.css('width', nWidth);
             var nHeight = $(window).height() - $toolbar.outerHeight();
             $editable.css('height', nHeight);
             $codable.css('height', nHeight);
@@ -2159,12 +2200,15 @@
           var $scrollbar = $('html, body');
           var bFullscreen = $editor.hasClass('fullscreen');
           if (bFullscreen) {
+            $editor.data('orgWidth', $editor.width());
             $editable.data('orgHeight', $editable.css('height'));
             $(window).on('resize', hResizeFullscreen).trigger('resize');
             $scrollbar.css('overflow', 'hidden');
           } else {
-            var hasOptionHeight = !!$editable.data('optionHeight');
-            var newHeight = hasOptionHeight ? $editable.data('orgHeight') : 'auto';
+            var orgWidth = $editor.data('orgWidth');
+            var newWidth = orgWidth === $(window).width() ? 'auto' : orgWidth;
+            $editor.css('width', newWidth);
+            var newHeight = $editable.data('orgHeight');
             $editable.css('height', newHeight);
             $codable.css('height', newHeight);
             cmEditor = $codable.data('cmEditor');
@@ -2200,7 +2244,7 @@
                   server.updateArgHints(cm);
                 });
               }
-              
+
               // CodeMirror hasn't Padding.
               cmEditor.setSize(null, $editable.outerHeight());
               // autoFormatRange If formatting included
@@ -2235,20 +2279,23 @@
     };
 
     var EDITABLE_PADDING = 24;
+    /**
+     * `mousedown` event handler on statusbar
+     *
+     * @param {MouseEvent} event
+     */
     var hStatusbarMousedown = function (event) {
       var $document = $(document);
-      var oLayoutInfo = makeLayoutInfo(event.target);
-      var $editable = oLayoutInfo.editable();
-
+      var $editable = makeLayoutInfo(event.target).editable();
       var nEditableTop = $editable.offset().top - $document.scrollTop();
-      var hMousemove = function (event) {
-        $editable.height(event.clientY - (nEditableTop + EDITABLE_PADDING));
-      };
-      var hMouseup = function () {
-        $document.unbind('mousemove', hMousemove)
-                   .unbind('mouseup', hMouseup);
-      };
-      $document.mousemove(hMousemove).mouseup(hMouseup);
+
+      $document.on('mousemove', function (event) {
+        var nHeight = event.clientY - (nEditableTop + EDITABLE_PADDING);
+        $editable.height(nHeight);
+      }).one('mouseup', function () {
+        $document.off('mousemove');
+      });
+
       event.stopPropagation();
       event.preventDefault();
     };
@@ -2260,6 +2307,7 @@
       var $catcher = $picker.find('.note-dimension-picker-mousecatcher');
       var $highlighted = $picker.find('.note-dimension-picker-highlighted');
       var $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
+
       var posOffset;
       if (event.offsetX === undefined) {
         // HTML5 with jQuery - e.offsetX is undefined in Firefox
@@ -2270,8 +2318,10 @@
         posOffset = {x: event.offsetX, y: event.offsetY};
       }
 
-      var dim = {c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
-                 r: Math.ceil(posOffset.y / PX_PER_EM) || 1};
+      var dim = {
+        c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
+        r: Math.ceil(posOffset.y / PX_PER_EM) || 1
+      };
 
       $highlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });
       $catcher.attr('data-value', dim.c + 'x' + dim.r);
@@ -2854,6 +2904,9 @@
 
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
+      if (options.width) {
+        $editor.width(options.width);
+      }
 
       //02. statusbar (resizebar)
       if (options.height > 0) {
@@ -2861,7 +2914,9 @@
       }
 
       //03. create Editable
-      var $editable = $('<div class="note-editable" contentEditable="true"></div>').prependTo($editor);
+      var isContentEditable = !$holder.is(':disabled');
+      var $editable = $('<div class="note-editable" contentEditable="' + isContentEditable + '"></div>')
+          .prependTo($editor);
       if (options.height) {
         $editable.height(options.height);
       }
@@ -2976,7 +3031,7 @@
      */
     summernote: function (options) {
       // extend default options
-      options = $.extend($.summernote.options, options);
+      options = $.extend({}, $.summernote.options, options);
 
       this.each(function (idx, elHolder) {
         var $holder = $(elHolder);

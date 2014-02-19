@@ -25,7 +25,7 @@ define([
      */
     summernote: function (options) {
       // extend default options
-      options = $.extend($.summernote.options, options);
+      options = $.extend({}, $.summernote.options, options);
 
       this.each(function (idx, elHolder) {
         var $holder = $(elHolder);

@@ -85,10 +85,10 @@ define([
         editor.removeFormat(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.K) {
         editor.setLinkDialog(oLayoutInfo.editable(), function (linkInfo, cb) {
-          dialog.showLinkDialog(oLayoutInfo.dialog(), linkInfo, cb);
+          dialog.showLinkDialog(oLayoutInfo.editable(), oLayoutInfo.dialog(), linkInfo, cb);
         });
       } else if (bCmd && keyCode === key.SLASH) {
-        dialog.showHelpDialog(oLayoutInfo.dialog());
+        dialog.showHelpDialog(oLayoutInfo.editable(), oLayoutInfo.dialog());
       } else if (bCmd && bShift && keyCode === key.L) {
         editor.justifyLeft(oLayoutInfo.editable());
       } else if (bCmd && bShift && keyCode === key.E) {
@@ -153,6 +153,12 @@ define([
       handle.hide(oLayoutInfo.handle());
     };
 
+    /**
+     * `mousedown` event handler on $handle
+     *  - controlSizing: resize image
+     *
+     * @param {MouseEvent} event
+     */
     var hHandleMousedown = function (event) {
       if (dom.isControlSizing(event.target)) {
         var oLayoutInfo = makeLayoutInfo(event.target),
@@ -162,16 +168,18 @@ define([
         var elTarget = $handle.find('.note-control-selection').data('target'),
             $target = $(elTarget);
         var posStart = $target.offset(),
-            scrollTop = $(document).scrollTop(), posDistance;
+            scrollTop = $(document).scrollTop();
 
         $editor.on('mousemove', function (event) {
-          posDistance = {x: event.clientX - posStart.left,
-                         y: event.clientY - (posStart.top - scrollTop)};
-          editor.resizeTo(posDistance, $target);
+          editor.resizeTo({
+            x: event.clientX - posStart.left,
+            y: event.clientY - (posStart.top - scrollTop)
+          }, $target);
+
           handle.update($handle, {image: elTarget});
           popover.update($popover, {image: elTarget});
-        }).on('mouseup', function () {
-          $editor.off('mousemove').off('mouseup');
+        }).one('mouseup', function () {
+          $editor.off('mousemove');
         });
 
         if (!$target.data('ratio')) { // original ratio.
@@ -203,7 +211,7 @@ define([
             $dialog = oLayoutInfo.dialog(),
             $editable = oLayoutInfo.editable(),
             $codable = oLayoutInfo.codable();
-            
+
         var server;
         var cmEditor;
 
@@ -228,11 +236,11 @@ define([
         } else if (sEvent === 'showLinkDialog') { // popover to dialog
           $editable.focus();
           editor.setLinkDialog($editable, function (linkInfo, cb) {
-            dialog.showLinkDialog($dialog, linkInfo, cb);
+            dialog.showLinkDialog($editable, $dialog, linkInfo, cb);
           });
         } else if (sEvent === 'showImageDialog') {
           $editable.focus();
-          dialog.showImageDialog($dialog, function (files) {
+          dialog.showImageDialog($editable, $dialog, function (files) {
             insertImages($editable, files);
           }, function (sUrl) {
             editor.restoreRange($editable);
@@ -241,14 +249,16 @@ define([
         } else if (sEvent === 'showVideoDialog') {
           $editable.focus();
           editor.setVideoDialog($editable, function (linkInfo, cb) {
-            dialog.showVideoDialog($dialog, linkInfo, cb);
+            dialog.showVideoDialog($editable, $dialog, linkInfo, cb);
           });
         } else if (sEvent === 'showHelpDialog') {
-          dialog.showHelpDialog($dialog);
+          dialog.showHelpDialog($editable, $dialog);
         } else if (sEvent === 'fullscreen') {
           $editor.toggleClass('fullscreen');
 
           var hResizeFullscreen = function () {
+            var nWidth = $(window).width();
+            $editor.css('width', nWidth);
             var nHeight = $(window).height() - $toolbar.outerHeight();
             $editable.css('height', nHeight);
             $codable.css('height', nHeight);
@@ -261,12 +271,15 @@ define([
           var $scrollbar = $('html, body');
           var bFullscreen = $editor.hasClass('fullscreen');
           if (bFullscreen) {
+            $editor.data('orgWidth', $editor.width());
             $editable.data('orgHeight', $editable.css('height'));
             $(window).on('resize', hResizeFullscreen).trigger('resize');
             $scrollbar.css('overflow', 'hidden');
           } else {
-            var hasOptionHeight = !!$editable.data('optionHeight');
-            var newHeight = hasOptionHeight ? $editable.data('orgHeight') : 'auto';
+            var orgWidth = $editor.data('orgWidth');
+            var newWidth = orgWidth === $(window).width() ? 'auto' : orgWidth;
+            $editor.css('width', newWidth);
+            var newHeight = $editable.data('orgHeight');
             $editable.css('height', newHeight);
             $codable.css('height', newHeight);
             cmEditor = $codable.data('cmEditor');
@@ -302,7 +315,7 @@ define([
                   server.updateArgHints(cm);
                 });
               }
-              
+
               // CodeMirror hasn't Padding.
               cmEditor.setSize(null, $editable.outerHeight());
               // autoFormatRange If formatting included
@@ -337,20 +350,23 @@ define([
     };
 
     var EDITABLE_PADDING = 24;
+    /**
+     * `mousedown` event handler on statusbar
+     *
+     * @param {MouseEvent} event
+     */
     var hStatusbarMousedown = function (event) {
       var $document = $(document);
-      var oLayoutInfo = makeLayoutInfo(event.target);
-      var $editable = oLayoutInfo.editable();
-
+      var $editable = makeLayoutInfo(event.target).editable();
       var nEditableTop = $editable.offset().top - $document.scrollTop();
-      var hMousemove = function (event) {
-        $editable.height(event.clientY - (nEditableTop + EDITABLE_PADDING));
-      };
-      var hMouseup = function () {
-        $document.unbind('mousemove', hMousemove)
-                   .unbind('mouseup', hMouseup);
-      };
-      $document.mousemove(hMousemove).mouseup(hMouseup);
+
+      $document.on('mousemove', function (event) {
+        var nHeight = event.clientY - (nEditableTop + EDITABLE_PADDING);
+        $editable.height(nHeight);
+      }).one('mouseup', function () {
+        $document.off('mousemove');
+      });
+
       event.stopPropagation();
       event.preventDefault();
     };
@@ -362,6 +378,7 @@ define([
       var $catcher = $picker.find('.note-dimension-picker-mousecatcher');
       var $highlighted = $picker.find('.note-dimension-picker-highlighted');
       var $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
+
       var posOffset;
       if (event.offsetX === undefined) {
         // HTML5 with jQuery - e.offsetX is undefined in Firefox
@@ -372,8 +389,10 @@ define([
         posOffset = {x: event.offsetX, y: event.offsetY};
       }
 
-      var dim = {c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
-                 r: Math.ceil(posOffset.y / PX_PER_EM) || 1};
+      var dim = {
+        c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
+        r: Math.ceil(posOffset.y / PX_PER_EM) || 1
+      };
 
       $highlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });
       $catcher.attr('data-value', dim.c + 'x' + dim.r);
