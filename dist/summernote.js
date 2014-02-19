@@ -2903,7 +2903,11 @@
 
       //032. set styleWithCSS for backColor / foreColor clearing with 'inherit'.
       setTimeout(function () { // protect FF Error: NS_ERROR_FAILURE: Failure
-        document.execCommand('styleWithCSS', 0, true);
+        try {
+          document.execCommand('styleWithCSS', 0, true);
+        } catch(error) {
+        } finally { 
+        }
       });
 
       var langInfo = $.summernote.lang[options.lang];
