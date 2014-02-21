@@ -2906,6 +2906,14 @@
         try {
           document.execCommand('styleWithCSS', 0, true);
         } catch(error) {
+          try {
+            document.execCommand('useCSS', 0, false);
+          } catch(error) {
+            try {
+              document.execCommand('styleWithCSS', false, true);
+            } catch(error) {
+            }
+          }
         } finally { 
         }
       });
