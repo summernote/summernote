@@ -1,24 +1,55 @@
-define(['core/dom'], function (dom) {
+define([
+  'core/agent',
+  'core/dom'
+], function (agent, dom) {
   /**
    * Style
    * @class
    */
   var Style = function () {
-    // para level style
-    this.stylePara = function (rng, oStyle) {
-      var aPara = rng.listPara();
-      $.each(aPara, function (idx, elPara) {
-        $.each(oStyle, function (sKey, sValue) {
-          elPara.style[sKey] = sValue;
+    /**
+     * passing an array of style properties to .css()
+     * will result in an object of property-value pairs.
+     * (compability with version < 1.9)
+     *
+     * @param  {jQuery} $obj
+     * @param  {Array} propertyNames - An array of one or more CSS properties.
+     * @returns {Object}
+     */
+    var jQueryCSS = function ($obj, propertyNames) {
+      if (agent.jqueryVersion < 1.9) {
+        var result = {};
+        $.each(propertyNames, function (idx, propertyName) {
+          result[propertyName] = $obj.css(propertyName);
         });
+        return result;
+      }
+      return $obj.css.call($obj, propertyNames);
+    };
+
+    /**
+     * paragraph level style
+     *
+     * @param {WrappedRange} rng
+     * @param {Object} oStyle
+     */
+    this.stylePara = function (rng, oStyle) {
+      $.each(rng.nodes(dom.isPara), function (idx, elPara) {
+        $(elPara).css(oStyle);
       });
     };
 
-    // get current style, elTarget: target element on event.
+    /**
+     * get current style on cursor
+     *
+     * @param {WrappedRange} rng
+     * @param {Element} elTarget - target element on event
+     * @return {Object} - object contains style properties.
+     */
     this.current = function (rng, elTarget) {
       var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
-      var oStyle = $cont.css(['font-size', 'text-align',
-                                'list-style-type', 'line-height']) || {};
+      var properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
+      var oStyle = jQueryCSS($cont, properties) || {};
 
       oStyle['font-size'] = parseInt(oStyle['font-size']);
 

@@ -1,7 +1,10 @@
 define(['CodeMirror'], function (CodeMirror) {
-  // Array.prototype.reduce fallback
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
   if ('function' !== typeof Array.prototype.reduce) {
+    /**
+     * Array.prototype.reduce fallback
+     *
+     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
+     */
     Array.prototype.reduce = function (callback, optInitialValue) {
       var idx, value, length = this.length >>> 0, isValueSet = false;
       if (1 < arguments.length) {
@@ -26,12 +29,13 @@ define(['CodeMirror'], function (CodeMirror) {
   }
 
   /**
-   * object which check platform/agent
+   * Object which check platform and agent
    */
   var agent = {
     bMac: navigator.appVersion.indexOf('Mac') > -1,
     bMSIE: navigator.userAgent.indexOf('MSIE') > -1,
     bFF: navigator.userAgent.indexOf('Firefox') > -1,
+    jqueryVersion: parseFloat($.fn.jquery),
     bCodeMirror: !!CodeMirror
   };
 

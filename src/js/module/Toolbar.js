@@ -1,29 +1,62 @@
-define('module/Toolbar', function () {
+define([
+  'core/list'
+], function (list) {
   /**
    * Toolbar
    */
   var Toolbar = function () {
+    /**
+     * update button status
+     *
+     * @param {jQuery} $toolbar
+     * @param {Object} oStyle
+     */
     this.update = function ($toolbar, oStyle) {
-      //handle selectbox for fontsize, lineHeight
+
+      /**
+       * handle dropdown's check mark (for fontname, fontsize, lineHeight).
+       * @param {jQuery} $btn
+       * @param {Number} nValue
+       */
       var checkDropdownMenu = function ($btn, nValue) {
         $btn.find('.dropdown-menu li a').each(function () {
-          var bChecked = parseFloat($(this).data('value')) === nValue;
+          // always compare string to avoid creating another func.
+          var bChecked = ($(this).data('value') + '') === (nValue + '');
           this.className = bChecked ? 'checked' : '';
         });
       };
 
-      var $fontsize = $toolbar.find('.note-fontsize');
-      $fontsize.find('.note-current-fontsize').html(oStyle['font-size']);
-      checkDropdownMenu($fontsize, parseFloat(oStyle['font-size']));
-
-      var $lineHeight = $toolbar.find('.note-height');
-      checkDropdownMenu($lineHeight, parseFloat(oStyle['line-height']));
-
-      //check button state
+      /**
+       * update button state(active or not).
+       *
+       * @param {String} sSelector
+       * @param {Function} pred
+       */
       var btnState = function (sSelector, pred) {
         var $btn = $toolbar.find(sSelector);
-        $btn[pred() ? 'addClass' : 'removeClass']('active');
+        $btn.toggleClass('active', pred());
       };
+
+      // fontname
+      var $fontname = $toolbar.find('.note-fontname');
+      if ($fontname.length > 0) {
+        var selectedFont = oStyle['font-family'];
+        if (!!selectedFont) {
+          selectedFont = list.head(selectedFont.split(','));
+          selectedFont = selectedFont.replace(/\'/g, '');
+          $fontname.find('.note-current-fontname').text(selectedFont);
+          checkDropdownMenu($fontname, selectedFont);
+        }
+      }
+
+      // fontsize
+      var $fontsize = $toolbar.find('.note-fontsize');
+      $fontsize.find('.note-current-fontsize').text(oStyle['font-size']);
+      checkDropdownMenu($fontsize, parseFloat(oStyle['font-size']));
+
+      // lineheight
+      var $lineHeight = $toolbar.find('.note-height');
+      checkDropdownMenu($lineHeight, parseFloat(oStyle['line-height']));
 
       btnState('button[data-event="bold"]', function () {
         return oStyle['font-bold'] === 'bold';
@@ -54,6 +87,13 @@ define('module/Toolbar', function () {
       });
     };
 
+    /**
+     * update recent color
+     *
+     * @param {Element} elBtn
+     * @param {String} sEvent
+     * @param {sValue} sValue
+     */
     this.updateRecentColor = function (elBtn, sEvent, sValue) {
       var $color = $(elBtn).closest('.note-color');
       var $recentColor = $color.find('.note-recent-color');
@@ -66,18 +106,27 @@ define('module/Toolbar', function () {
 
     this.updateFullscreen = function ($toolbar, bFullscreen) {
       var $btn = $toolbar.find('button[data-event="fullscreen"]');
-      $btn[bFullscreen ? 'addClass' : 'removeClass']('active');
-    };
-    this.updateCodeview = function ($toolbar, bCodeview) {
-      var $btn = $toolbar.find('button[data-event="codeview"]');
-      $btn[bCodeview ? 'addClass' : 'removeClass']('active');
+      $btn.toggleClass('active', bFullscreen);
     };
 
-    this.enable = function ($toolbar) {
+    this.updateCodeview = function ($toolbar, bCodeview) {
+      var $btn = $toolbar.find('button[data-event="codeview"]');
+      $btn.toggleClass('active', bCodeview);
+    };
+
+    /**
+     * activate buttons exclude codeview
+     * @param {jQuery} $toolbar
+     */
+    this.activate = function ($toolbar) {
       $toolbar.find('button').not('button[data-event="codeview"]').removeClass('disabled');
     };
 
-    this.disable = function ($toolbar) {
+    /**
+     * deactivate buttons exclude codeview
+     * @param {jQuery} $toolbar
+     */
+    this.deactivate = function ($toolbar) {
       $toolbar.find('button').not('button[data-event="codeview"]').addClass('disabled');
     };
   };

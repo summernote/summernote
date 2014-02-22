@@ -1,25 +1,53 @@
 define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
   /**
-   * dom utils
+   * Dom functions
    */
   var dom = (function () {
     /**
-     * returns predicate which judge whether nodeName is same
+     * returns whether node is `note-editable` or not.
+     *
+     * @param {Element} node
+     * @return {Boolean}
      */
-    var makePredByNodeName = function (sNodeName) {
-      // nodeName of element is always uppercase.
-      return function (node) {
-        return node && node.nodeName === sNodeName;
+    var isEditable = function (node) {
+      return node && $(node).hasClass('note-editable');
+    };
+  
+    var isControlSizing = function (node) {
+      return node && $(node).hasClass('note-control-sizing');
+    };
+
+    /**
+     * build layoutInfo from $editor(.note-editor)
+     *
+     * @param {jQuery} $editor
+     * @return {Object}
+     */
+    var buildLayoutInfo = function ($editor) {
+      var makeFinder = function (sClassName) {
+        return function () { return $editor.find(sClassName); };
+      };
+      return {
+        editor: function () { return $editor; },
+        dropzone: makeFinder('.note-dropzone'),
+        toolbar: makeFinder('.note-toolbar'),
+        editable: makeFinder('.note-editable'),
+        codable: makeFinder('.note-codable'),
+        statusbar: makeFinder('.note-statusbar'),
+        popover: makeFinder('.note-popover'),
+        handle: makeFinder('.note-handle'),
+        dialog: makeFinder('.note-dialog')
       };
     };
 
     /**
-     * returns predicate which judge whether contains className
+     * returns predicate which judge whether nodeName is same
+     * @param {String} sNodeName
      */
-    var makePredByClassName = function (sClassName) {
-      // nodeName of element is always uppercase.
+    var makePredByNodeName = function (sNodeName) {
+      // nodeName is always uppercase.
       return function (node) {
-        return node && $(node).hasClass(sClassName);
+        return node && node.nodeName === sNodeName;
       };
     };
   
@@ -36,15 +64,11 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
       return node && /^TD|^TH/.test(node.nodeName);
     };
   
-    // returns whether node is `note-editable` or not.
-    var isEditable = makePredByClassName('note-editable');
-    // returns whether node is `note-control-sizing` or not.
-    var isControlSizing = makePredByClassName('note-control-sizing');
-
     /**
      * find nearest ancestor predicate hit
-     * @param {element} node
-     * @param {function} pred - predicate function
+     *
+     * @param {Element} node
+     * @param {Function} pred - predicate function
      */
     var ancestor = function (node, pred) {
       while (node) {
@@ -58,8 +82,9 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
   
     /**
      * returns new array of ancestor nodes (until predicate hit).
-     * @param {element} node
-     * @param {function} [optional] pred - predicate function
+     *
+     * @param {Element} node
+     * @param {Function} [optional] pred - predicate function
      */
     var listAncestor = function (node, pred) {
       pred = pred || func.fail;
@@ -74,8 +99,9 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
   
     /**
      * returns common ancestor node between two nodes.
-     * @param {element} nodeA
-     * @param {element} nodeB
+     *
+     * @param {Element} nodeA
+     * @param {Element} nodeB
      */
     var commonAncestor = function (nodeA, nodeB) {
       var aAncestor = listAncestor(nodeA);
@@ -88,32 +114,34 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     /**
      * listing all Nodes between two nodes.
      * FIXME: nodeA and nodeB must be sorted, use comparePoints later.
-     * @param {element} nodeA
-     * @param {element} nodeB
+     *
+     * @param {Element} nodeA
+     * @param {Element} nodeB
      */
     var listBetween = function (nodeA, nodeB) {
       var aNode = [];
   
       var bStart = false, bEnd = false;
-      var fnWalk = function (node) {
+
+      // DFS(depth first search) with commonAcestor.
+      (function fnWalk(node) {
         if (!node) { return; } // traverse fisnish
         if (node === nodeA) { bStart = true; } // start point
         if (bStart && !bEnd) { aNode.push(node); } // between
         if (node === nodeB) { bEnd = true; return; } // end point
-  
+
         for (var idx = 0, sz = node.childNodes.length; idx < sz; idx++) {
           fnWalk(node.childNodes[idx]);
         }
-      };
+      })(commonAncestor(nodeA, nodeB));
   
-      fnWalk(commonAncestor(nodeA, nodeB)); // DFS with commonAcestor.
       return aNode;
     };
   
     /**
-     * listing all prevSiblings (until predicate hit).
-     * @param {element} node
-     * @param {function} [optional] pred - predicate function
+     * listing all previous siblings (until predicate hit).
+     * @param {Element} node
+     * @param {Function} [optional] pred - predicate function
      */
     var listPrev = function (node, pred) {
       pred = pred || func.fail;
@@ -128,9 +156,10 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * listing nextSiblings (until predicate hit).
-     * @param {element} node
-     * @param {function} pred [optional] - predicate function
+     * listing next siblings (until predicate hit).
+     *
+     * @param {Element} node
+     * @param {Function} [pred] - predicate function
      */
     var listNext = function (node, pred) {
       pred = pred || func.fail;
@@ -143,11 +172,36 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
       }
       return aNext;
     };
+
+    /**
+     * listing descendant nodes
+     *
+     * @param {Element} node
+     * @param {Function} [pred] - predicate function
+     */
+    var listDescendant = function (node, pred) {
+      var aDescendant = [];
+      pred = pred || func.ok;
+
+      // start DFS(depth first search) with node
+      (function fnWalk(current) {
+        console.log(current);
+        if (node !== current && pred(current)) {
+          aDescendant.push(current);
+        }
+        for (var idx = 0, sz = current.childNodes.length; idx < sz; idx++) {
+          fnWalk(current.childNodes[idx]);
+        }
+      })(node);
+
+      return aDescendant;
+    };
   
     /**
      * insert node after preceding
-     * @param {element} node
-     * @param {element} preceding - predicate function
+     *
+     * @param {Element} node
+     * @param {Element} preceding - predicate function
      */
     var insertAfter = function (node, preceding) {
       var next = preceding.nextSibling, parent = preceding.parentNode;
@@ -160,9 +214,10 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     };
   
     /**
-     * append children
-     * @param {element} node
-     * @param {collection} aChild
+     * append elements.
+     *
+     * @param {Element} node
+     * @param {Collection} aChild
      */
     var appends = function (node, aChild) {
       $.each(aChild, function (idx, child) {
@@ -175,7 +230,8 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
   
     /**
      * returns #text's text size or element's childNodes size
-     * @param {element} node
+     *
+     * @param {Element} node
      */
     var length = function (node) {
       if (isText(node)) { return node.nodeValue.length; }
@@ -184,7 +240,8 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
   
     /**
      * returns offset from parent.
-     * @param {element} node
+     *
+     * @param {Element} node
      */
     var position = function (node) {
       var offset = 0;
@@ -194,8 +251,9 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
   
     /**
      * return offsetPath(array of offset) from ancestor
-     * @param {element} ancestor - ancestor node
-     * @param {element} node
+     *
+     * @param {Element} ancestor - ancestor node
+     * @param {Element} node
      */
     var makeOffsetPath = function (ancestor, node) {
       var aAncestor = list.initial(listAncestor(node, func.eq(ancestor)));
@@ -204,7 +262,8 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
   
     /**
      * return element from offsetPath(array of offset)
-     * @param {element} ancestor - ancestor node
+     *
+     * @param {Element} ancestor - ancestor node
      * @param {array} aOffset - offsetPath
      */
     var fromOffsetPath = function (ancestor, aOffset) {
@@ -217,8 +276,9 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
   
     /**
      * split element or #text
-     * @param {element} node
-     * @param {number} offset
+     *
+     * @param {Element} node
+     * @param {Number} offset
      */
     var splitData = function (node, offset) {
       if (offset === 0) { return node; }
@@ -235,9 +295,10 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
   
     /**
      * split dom tree by boundaryPoint(pivot and offset)
-     * @param {element} root
-     * @param {element} pivot - this will be boundaryPoint's node
-     * @param {number} offset - this will be boundaryPoint's offset
+     *
+     * @param {Element} root
+     * @param {Element} pivot - this will be boundaryPoint's node
+     * @param {Number} offset - this will be boundaryPoint's offset
      */
     var split = function (root, pivot, offset) {
       var aAncestor = listAncestor(pivot, func.eq(root));
@@ -255,8 +316,8 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
   
     /**
      * remove node, (bRemoveChild: remove child or not)
-     * @param {element} node
-     * @param {boolean} bRemoveChild
+     * @param {Element} node
+     * @param {Boolean} bRemoveChild
      */
     var remove = function (node, bRemoveChild) {
       if (!node || !node.parentNode) { return; }
@@ -285,11 +346,13 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
     return {
       blank: agent.bMSIE ? '&nbsp;' : '<br/>',
       emptyPara: '<p><br/></p>',
+      isEditable: isEditable,
+      isControlSizing: isControlSizing,
+      buildLayoutInfo: buildLayoutInfo,
       isText: isText,
       isPara: isPara,
       isList: isList,
-      isEditable: isEditable,
-      isControlSizing: isControlSizing,
+      isTable: makePredByNodeName('TABLE'),
       isCell: isCell,
       isAnchor: makePredByNodeName('A'),
       isDiv: makePredByNodeName('DIV'),
@@ -301,11 +364,11 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
       isI: makePredByNodeName('I'),
       isImg: makePredByNodeName('IMG'),
       isTextarea: makePredByNodeName('TEXTAREA'),
-      isTable: makePredByNodeName('TABLE'),
       ancestor: ancestor,
       listAncestor: listAncestor,
       listNext: listNext,
       listPrev: listPrev,
+      listDescendant: listDescendant,
       commonAncestor: commonAncestor,
       listBetween: listBetween,
       insertAfter: insertAfter,

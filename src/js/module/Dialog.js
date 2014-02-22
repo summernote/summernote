@@ -1,12 +1,16 @@
 define('module/Dialog', function () {
   /**
-   * Dialog
+   * Dialog 
+   *
+   * @class
    */
   var Dialog = function () {
+
     /**
      * toggle button status
-     * @param $btn {jquery}
-     * @param bEnable {boolean}
+     *
+     * @param {jQuery} $btn
+     * @param {Boolean} bEnable
      */
     var toggleBtn = function ($btn, bEnable) {
       if (bEnable) {
@@ -18,50 +22,60 @@ define('module/Dialog', function () {
 
     /**
      * show image dialog
-     * @param $dialog {jquery}
-     * @param fnInsertImages {function}
-     * @param fnInsertImage {function}
+     *
+     * @param {jQuery} $dialog
+     * @param {Function} fnInsertImages 
+     * @param {Function} fnInsertImage 
      */
-    this.showImageDialog = function ($dialog, fnInsertImages, fnInsertImage) {
+    this.showImageDialog = function ($editable, $dialog, fnInsertImages, fnInsertImage) {
       var $imageDialog = $dialog.find('.note-image-dialog');
+
       var $imageInput = $dialog.find('.note-image-input'),
           $imageUrl = $dialog.find('.note-image-url'),
           $imageBtn = $dialog.find('.note-image-btn');
 
-      $imageDialog.on('shown.bs.modal', function () {
+      $imageDialog.one('shown.bs.modal', function (event) {
+        event.stopPropagation();
+
         $imageInput.on('change', function () {
           fnInsertImages(this.files);
           $(this).val('');
           $imageDialog.modal('hide');
         });
-        $imageUrl.val('').keyup(function () {
-          toggleBtn($imageBtn, $imageUrl.val());
-        }).trigger('focus');
+
         $imageBtn.click(function (event) {
           $imageDialog.modal('hide');
           fnInsertImage($imageUrl.val());
           event.preventDefault();
         });
-      }).on('hidden.bs.modal', function () {
+
+        $imageUrl.keyup(function () {
+          toggleBtn($imageBtn, $imageUrl.val());
+        }).val('').focus();
+      }).one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
+        $editable.focus();
         $imageInput.off('change');
-        $imageDialog.off('shown.bs.modal hidden.bs.modal');
         $imageUrl.off('keyup');
         $imageBtn.off('click');
       }).modal('show');
     };
 
     /**
-     * show video dialog
-     * @param $dialog {jquery}
-     * @param videoInfo {object}
-     * @param callback {function}
+     * Show video dialog and set event handlers on dialog controls.
+     *
+     * @param {jQuery} $dialog 
+     * @param {Object} videoInfo 
+     * @param {Function} callback 
      */
-    this.showVideoDialog = function ($dialog, videoInfo, callback) {
+    this.showVideoDialog = function ($editable, $dialog, videoInfo, callback) {
       var $videoDialog = $dialog.find('.note-video-dialog');
       var $videoUrl = $videoDialog.find('.note-video-url'),
           $videoBtn = $videoDialog.find('.note-video-btn');
 
-      $videoDialog.on('shown.bs.modal', function () {
+      $videoDialog.one('shown.bs.modal', function (event) {
+        event.stopPropagation();
+
         $videoUrl.val(videoInfo.text).keyup(function () {
           toggleBtn($videoBtn, $videoUrl.val());
         }).trigger('keyup').trigger('focus');
@@ -71,49 +85,72 @@ define('module/Dialog', function () {
           callback($videoUrl.val());
           event.preventDefault();
         });
-      }).on('hidden.bs.modal', function () {
+      }).one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
+        $editable.focus();
         $videoUrl.off('keyup');
         $videoBtn.off('click');
-        $videoDialog.off('show.bs.modal hidden.bs.modal');
       }).modal('show');
     };
 
     /**
-     * show link dialog
-     * @param $dialog {jquery}
-     * @param linkInfo {object}
-     * @param callback {function}
+     * Show link dialog and set event handlers on dialog controls.
+     *
+     * @param {jQuery} $dialog
+     * @param {Object} linkInfo
+     * @param {function} callback
      */
-    this.showLinkDialog = function ($dialog, linkInfo, callback) {
+    this.showLinkDialog = function ($editable, $dialog, linkInfo, callback) {
       var $linkDialog = $dialog.find('.note-link-dialog');
+
       var $linkText = $linkDialog.find('.note-link-text'),
           $linkUrl = $linkDialog.find('.note-link-url'),
-          $linkBtn = $linkDialog.find('.note-link-btn');
+          $linkBtn = $linkDialog.find('.note-link-btn'),
+          $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
-      $linkDialog.on('shown.bs.modal', function () {
-        $linkText.html(linkInfo.text);
+      $linkDialog.one('shown.bs.modal', function (event) {
+        event.stopPropagation();
+
+        $linkText.val(linkInfo.text);
+
         $linkUrl.val(linkInfo.url).keyup(function () {
           toggleBtn($linkBtn, $linkUrl.val());
-          if (!linkInfo.text) { $linkText.html($linkUrl.val()); }
+
+          // If create a new link, display same link on `Text to display` input.
+          if (!linkInfo.text) {
+            $linkText.val($linkUrl.val());
+          }
         }).trigger('focus');
+
+        $openInNewWindow.prop('checked', linkInfo.newWindow);
+
         $linkBtn.click(function (event) {
-          $linkDialog.modal('hide'); //hide and createLink (ie9+)
-          callback($linkUrl.val());
+          $linkDialog.modal('hide');
+          callback($linkUrl.val(), $openInNewWindow.is(':checked'));
+
           event.preventDefault();
         });
-      }).on('hidden.bs.modal', function () {
+      }).one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
+
+        $editable.focus();
         $linkUrl.off('keyup');
         $linkBtn.off('click');
-        $linkDialog.off('shown.bs.modal hidden.bs.modal');
       }).modal('show');
     };
 
     /**
      * show help dialog
-     * @param $dialog {jquery}
+     *
+     * @param {jQuery} $dialog
      */
-    this.showHelpDialog = function ($dialog) {
-      $dialog.find('.note-help-dialog').modal('show');
+    this.showHelpDialog = function ($editable, $dialog) {
+      var $helpDialog = $dialog.find('.note-help-dialog');
+
+      $helpDialog.one('hidden.bs.modal', function (event) {
+        event.stopPropagation();
+        $editable.focus();
+      }).modal('show');
     };
   };
 

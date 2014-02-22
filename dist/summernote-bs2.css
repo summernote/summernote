@@ -4433,7 +4433,7 @@
   top: 10%;
   left: 50%;
   z-index: 1050;
-  width: 560px;
+  width: 640px;
   margin-left: -280px;
   background-color: #ffffff;
   border: 1px solid #999;
@@ -4476,7 +4476,7 @@
 .note-editor .modal-body {
   position: relative;
   overflow-y: auto;
-  max-height: 400px;
+  max-height: 600px;
   padding: 15px;
 }
 .note-editor .modal-form {
@@ -4517,7 +4517,7 @@
 }
 .tooltip {
   position: absolute;
-  z-index: 1030;
+  z-index: 10000;
   display: block;
   visibility: visible;
   font-size: 11px;

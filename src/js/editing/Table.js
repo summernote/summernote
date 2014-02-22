@@ -1,13 +1,33 @@
-define(['core/dom'], function (dom) {
+define([
+  'core/dom', 'core/range', 'core/list'
+], function (dom, range, list) {
   /**
    * Table
    * @class
    */
   var Table = function () {
     /**
-     * Create empty table element
-     * @param nRow {number}
-     * @param nCol {number}
+     * handle tab key
+     *
+     * @param {WrappedRange} rng
+     * @param {Boolean} bShift
+     */
+    this.tab = function (rng, bShift) {
+      var elCell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      var elTable = dom.ancestor(elCell, dom.isTable);
+      var aCell = dom.listDescendant(elTable, dom.isCell);
+
+      var elNext = list[bShift ? 'prev' : 'next'](aCell, elCell);
+      if (elNext) {
+        range.create(elNext, 0).select();
+      }
+    };
+
+    /**
+     * create empty table element
+     *
+     * @param {Number} nRow
+     * @param {Number} nCol
      */
     this.createTable = function (nCol, nRow) {
       var aTD = [], sTD;

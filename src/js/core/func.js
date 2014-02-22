@@ -13,6 +13,10 @@ define('core/func', function () {
       return elA === elB;
     };
 
+    var ok = function () {
+      return true;
+    };
+
     var fail = function () {
       return false;
     };
@@ -30,6 +34,7 @@ define('core/func', function () {
     return {
       eq: eq,
       eq2: eq2,
+      ok: ok,
       fail: fail,
       not: not,
       self: self

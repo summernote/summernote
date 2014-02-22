@@ -1,29 +1,37 @@
 module.exports = function (grunt) {
   'use strict';
 
+  /**
+   * read optional JSON from filepath
+   * @param {String} filepath
+   * @return {Object}
+   */
   var readOptionalJSON = function (filepath) {
     var data = {};
     try {
       data = grunt.file.readJSON(filepath);
+      // The concatenated file won't pass onevar
+      // But our modules can
+      delete data.onever;
     } catch (e) { }
     return data;
   };
-  var srcHintOptions = readOptionalJSON('.jshintrc');
-
-  // The concatenated file won't pass onevar
-  // But our modules can
-  delete srcHintOptions.onevar;
 
   grunt.initConfig({
+    // package File
     pkg: grunt.file.readJSON('package.json'),
+
+    // bulid source(grunt-build.js).
     build: {
       all: {
-        baseUrl: 'src/js',
-        startFile: 'intro.js',
-        endFile: 'outro.js',
-        out: 'dist/summernote.js'
+        baseUrl: 'src/js',        // base url
+        startFile: 'intro.js',    // intro part
+        endFile: 'outro.js',      // outro part
+        outFile: 'dist/summernote.js' // out file
       }
     },
+
+    // for javascript convention.
     jshint: {
       all: {
         src: [
@@ -35,17 +43,23 @@ module.exports = function (grunt) {
       },
       dist: {
         src: 'dist/summernote.js',
-        options: srcHintOptions
+        options: readOptionalJSON('.jshintrc')
       }
     },
+
+    // qunit: javascript unit test.
     qunit: {
       all: [ 'test/*.html' ]
     },
+
+    // uglify: minify javascript
     uglify: {
       all: {
         files: { 'dist/summernote.min.js': ['dist/summernote.js'] }
       }
     },
+
+    // recess: minify stylesheets
     recess: {
       dist: {
         options: { compile: true, compress: true },
@@ -53,23 +67,53 @@ module.exports = function (grunt) {
           'dist/summernote.css': ['src/less/summernote.less']
         }
       }
+    },
+
+    // connect configuration.
+    connect: {
+      all: {
+        options: {
+          port: 3000,
+          livereload: true,
+          middleware: function (connect, options) {
+            return [
+              require('connect-livereload')(), // livereload middleware
+              connect.static(options.base),    // serve static files
+              connect.directory(options.base)  // make empty directories browsable
+            ];
+          },
+          open: 'http://localhost:3000'
+        }
+      }
+    },
+
+    // watch source code change
+    watch: {
+      all: {
+        files: ['src/less/*.less', 'src/js/**/*.js'],
+        tasks: ['recess', 'jshint', 'qunit'],
+        options: {
+          livereload: true
+        }
+      }
     }
   });
 
+  // load grunt tasks on package.json.
   require('load-grunt-tasks')(grunt);
+
+  // server
+  grunt.registerTask('server', ['connect', 'watch']);
 
   // build: build summernote.js
   grunt.loadTasks('build');
 
   // test: unit test on test folder
-  grunt.registerTask('test', ['jshint', 'qunit']);
+  grunt.registerTask('test', ['build', 'jshint', 'qunit']);
 
-  // dev: build, jshint, test
-  grunt.registerTask('dev', ['build', 'test']);
+  // dist
+  grunt.registerTask('dist', ['test', 'uglify', 'recess']);
 
-  // dist: 
-  grunt.registerTask('dist', ['dev', 'uglify', 'recess']);
-
-  // default: All tasks
+  // default: build, test, dist.
   grunt.registerTask('default', ['dist']);
 };

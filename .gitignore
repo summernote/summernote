@@ -1,5 +1,8 @@
 # vim editing
 *.swp
 .tern-port
+.DS_Store
 # node modules
 node_modules
+bower_components
+*.sublime*

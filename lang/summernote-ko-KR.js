@@ -21,7 +21,8 @@
         floatNone: '정렬하지 않음',
         dragImageHere: '사진을 이곳으로 끌어오세요',
         selectFromFiles: '파일 선택',
-        url: '사진 URL'
+        url: '사진 URL',
+        remove: '사진 삭제'
       },
       link: {
         link: '링크',
@@ -29,7 +30,8 @@
         unlink: '링크 삭제',
         edit: '수정',
         textToDisplay: '링크에 표시할 내용',
-        url: '이동할 URL'
+        url: '이동할 URL',
+        openInNewWindow: '새창으로 열기'
       },
       video: {
         video: '동영상',
