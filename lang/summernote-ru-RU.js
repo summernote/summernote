@@ -21,7 +21,8 @@
         floatNone: 'Расположение по-умолчанию',
         dragImageHere: 'Перетащите сюда картинку',
         selectFromFiles: 'Выбрать из файлов',
-        url: 'URL картинки'
+        url: 'URL картинки',
+        remove: 'Удалить картинку'
       },
       link: {
         link: 'Ссылка',
