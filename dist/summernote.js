@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-22T07:26Z
+ * Date: 2014-02-22T07:33Z
  */
 (function (factory) {
   /* global define */
@@ -409,7 +409,6 @@
 
       // start DFS(depth first search) with node
       (function fnWalk(current) {
-        console.log(current);
         if (node !== current && pred(current)) {
           aDescendant.push(current);
         }

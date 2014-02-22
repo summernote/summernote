@@ -109,10 +109,10 @@ module.exports = function (grunt) {
   grunt.loadTasks('build');
 
   // test: unit test on test folder
-  grunt.registerTask('test', ['build', 'jshint', 'qunit']);
+  grunt.registerTask('test', ['jshint', 'qunit']);
 
   // dist
-  grunt.registerTask('dist', ['test', 'uglify', 'recess']);
+  grunt.registerTask('dist', ['build', 'test', 'uglify', 'recess']);
 
   // default: build, test, dist.
   grunt.registerTask('default', ['dist']);

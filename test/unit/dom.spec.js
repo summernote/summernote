@@ -52,11 +52,17 @@ define(['jquery', 'core/dom', 'core/func'], function ($, dom, func) {
       $s = $cont.find('s');
       $i = $cont.find('i');
 
-      deepEqual(dom.listDescendant($cont[0]), [$b[0], $u[0], $s[0], $i[0]], 'listDescendant($cont) should returns [$b, $u, $s, $i]');
+      deepEqual(
+        dom.listDescendant($cont[0]), [$b[0], $u[0], $s[0], $i[0]],
+        'listDescendant($cont) should returns [$b, $u, $s, $i]'
+      );
 
-      deepEqual(dom.listDescendant($cont[0], function (node) {
-        return node.nodeName === 'B' || node.nodeName === 'S';
-      }), [$b[0], $s[0]], 'listDescendant($cont, pred(b,s) should returns [$b, $s]');
+      deepEqual(
+        dom.listDescendant($cont[0], function (node) {
+          return node.nodeName === 'B' || node.nodeName === 'S';
+        }),
+        [$b[0], $s[0]], 'listDescendant($cont, pred(b,s) should returns [$b, $s]'
+      );
 
     });
 

@@ -185,7 +185,6 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
 
       // start DFS(depth first search) with node
       (function fnWalk(current) {
-        console.log(current);
         if (node !== current && pred(current)) {
           aDescendant.push(current);
         }
