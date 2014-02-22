@@ -567,7 +567,7 @@
       // default toolbar
       toolbar: [
         ['style', ['style']],
-        ['font', ['bold', 'italic', 'underline', 'clear']],
+        ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
         ['fontsize', ['fontsize']],
         ['color', ['color']],
         ['para', ['ul', 'ol', 'paragraph']],
@@ -597,7 +597,9 @@
           bold: 'Bold',
           italic: 'Italic',
           underline: 'Underline',
-          strike: 'Strike',
+          strikethrough: 'Strike',
+          superscript: 'Superscript',
+          subscript: 'Subscript',
           clear: 'Remove Font Style',
           height: 'Line Height',
           size: 'Font Size'
@@ -843,6 +845,9 @@
       oStyle['font-bold'] = document.queryCommandState('bold') ? 'bold' : 'normal';
       oStyle['font-italic'] = document.queryCommandState('italic') ? 'italic' : 'normal';
       oStyle['font-underline'] = document.queryCommandState('underline') ? 'underline' : 'normal';
+      oStyle['font-strikethrough'] = document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal';
+      oStyle['font-superscript'] = document.queryCommandState('superscript') ? 'superscript' : 'normal';
+      oStyle['font-subscript'] = document.queryCommandState('subscript') ? 'subscript' : 'normal';
 
       // list-style-type to list-style(unordered, ordered)
       if (!rng.isOnList()) {
@@ -1220,7 +1225,7 @@
 
     /* jshint ignore:start */
     // native commands(with execCommand), generate function for execCommand
-    var aCmd = ['bold', 'italic', 'underline', 'strikethrough',
+    var aCmd = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
                 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
                 'insertOrderedList', 'insertUnorderedList',
                 'indent', 'outdent', 'formatBlock', 'removeFormat',
@@ -1614,6 +1619,15 @@
       });
       btnState('button[data-event="underline"]', function () {
         return oStyle['font-underline'] === 'underline';
+      });
+      btnState('button[data-event="strikethrough"]', function () {
+        return oStyle['font-strikethrough'] === 'strikethrough';
+      });
+      btnState('button[data-event="superscript"]', function () {
+        return oStyle['font-superscript'] === 'superscript';
+      });
+      btnState('button[data-event="subscript"]', function () {
+        return oStyle['font-subscript'] === 'subscript';
       });
       btnState('button[data-event="justifyLeft"]', function () {
         return oStyle['text-align'] === 'left' || oStyle['text-align'] === 'start';
@@ -2532,6 +2546,15 @@
       underline: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.underline + '" data-shortcut="Ctrl+U" data-mac-shortcut="⌘+U" data-event="underline" tabindex="-1"><i class="fa fa-underline icon-underline"></i></button>';
       },
+      strikethrough: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.strikethrough + '" data-shortcut="Ctrl+Shift+S" data-mac-shortcut="⌘+⇧+S" data-event="strikethrough" tabindex="-1"><i class="fa fa-strikethrough icon-strikethrough"></i></button>';
+      },
+      superscript: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.superscript + '" data-shortcut="" data-mac-shortcut="" data-event="superscript" tabindex="-1"><i class="fa fa-superscript icon-superscript"></i></button>';
+      },
+      subscript: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.subscript + '" data-shortcut="" data-mac-shortcut="" data-event="subscript" tabindex="-1"><i class="fa fa-subscript icon-subscript"></i></button>';
+      },
       clear: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.clear + '" data-shortcut="Ctrl+\\" data-mac-shortcut="⌘+\\" data-event="removeFormat" tabindex="-1"><i class="fa fa-eraser icon-eraser"></i></button>';
       },
@@ -2635,7 +2658,7 @@
                  '<tr><td>⌘ + B</td><td>' + lang.font.bold + '</td></tr>' +
                  '<tr><td>⌘ + I</td><td>' + lang.font.italic + '</td></tr>' +
                  '<tr><td>⌘ + U</td><td>' + lang.font.underline + '</td></tr>' +
-                 '<tr><td>⌘ + ⇧ + S</td><td>' + lang.font.strike + '</td></tr>' +
+                 '<tr><td>⌘ + ⇧ + S</td><td>' + lang.font.strikethrough + '</td></tr>' +
                  '<tr><td>⌘ + \\</td><td>' + lang.font.clear + '</td></tr>' +
                  '</tr>' +
                '</tbody>' +
