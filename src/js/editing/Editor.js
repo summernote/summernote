@@ -339,31 +339,65 @@ define([
       range.create().insertNode(table.createTable(aDim[0], aDim[1]));
     };
 
-    this.floatMe = function ($editable, sValue, elTarget) {
+    /**
+     * @param {jQuery} $editable
+     * @param {String} sValue
+     * @param {jQuery} $target
+     */
+    this.floatMe = function ($editable, sValue, $target) {
       recordUndo($editable);
-      elTarget.style.cssFloat = sValue;
+      $target.css('float', sValue);
     };
 
     /**
-     * resize target
+     * resize overlay element
      * @param {jQuery} $editable
      * @param {String} sValue
-     * @param {Element} elTarget - target element
+     * @param {jQuery} $target - target element
      */
-    this.resize = function ($editable, sValue, elTarget) {
+    this.resize = function ($editable, sValue, $target) {
       recordUndo($editable);
-      elTarget.style.width = $editable.width() * sValue + 'px';
-      elTarget.style.height = '';
-    };
-
-    this.resizeTo = function (pos, $target) {
-      var newRatio = pos.y / pos.x;
-      var ratio = $target.data('ratio');
 
       $target.css({
-        width: ratio > newRatio ? pos.x : pos.y / ratio,
-        height: ratio > newRatio ? pos.x * ratio : pos.y
+        width: $editable.width() * sValue + 'px',
+        height: ''
       });
+    };
+
+    /**
+     * @param {Position} pos
+     * @param {jQuery} $target - target element
+     * @param {Boolean} [bKeepRatio] - keep ratio
+     */
+    this.resizeTo = function (pos, $target, bKeepRatio) {
+      var szImage;
+      if (bKeepRatio) {
+        var newRatio = pos.y / pos.x;
+        var ratio = $target.data('ratio');
+        szImage = {
+          width: ratio > newRatio ? pos.x : pos.y / ratio,
+          height: ratio > newRatio ? pos.x * ratio : pos.y
+        };
+      } else {
+        szImage = {
+          width: pos.x,
+          height: pos.y
+        };
+      }
+
+      $target.css(szImage);
+    };
+
+    /**
+     * remove media object
+     *
+     * @param {jQuery} $editable
+     * @param {String} sValue - dummy argument (for keep interface)
+     * @param {jQuery} $target - target element
+     */
+    this.removeMedia = function ($editable, sValue, $target) {
+      recordUndo($editable);
+      $target.detach();
     };
   };
 

@@ -171,10 +171,11 @@ define([
             scrollTop = $(document).scrollTop();
 
         $editor.on('mousemove', function (event) {
+          
           editor.resizeTo({
             x: event.clientX - posStart.left,
             y: event.clientY - (posStart.top - scrollTop)
-          }, $target);
+          }, $target, !event.shiftKey);
 
           handle.update($handle, {image: elTarget});
           popover.update($popover, {image: elTarget});
@@ -217,17 +218,17 @@ define([
 
         var options = $editor.data('options');
 
-        // before command
-        var elTarget;
-        if ($.inArray(sEvent, ['resize', 'floatMe']) !== -1) {
+        // before command: detect control selection element($target)
+        var $target;
+        if ($.inArray(sEvent, ['resize', 'floatMe', 'removeMedia']) !== -1) {
           var $handle = oLayoutInfo.handle();
           var $selection = $handle.find('.note-control-selection');
-          elTarget = $selection.data('target');
+          $target = $($selection.data('target'));
         }
 
         if (editor[sEvent]) { // on command
           $editable.trigger('focus');
-          editor[sEvent]($editable, sValue, elTarget);
+          editor[sEvent]($editable, sValue, $target);
         }
 
         // after command

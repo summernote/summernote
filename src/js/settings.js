@@ -71,7 +71,8 @@ define('settings', function () {
           floatNone: 'Float None',
           dragImageHere: 'Drag an image here',
           selectFromFiles: 'Select from files',
-          url: 'Image URL'
+          url: 'Image URL',
+          remove: 'Remove Image'
         },
         link: {
           link: 'Link',

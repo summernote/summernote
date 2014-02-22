@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-22T04:24Z
+ * Date: 2014-02-22T05:03Z
  */
 (function (factory) {
   /* global define */
@@ -617,7 +617,8 @@
           floatNone: 'Float None',
           dragImageHere: 'Drag an image here',
           selectFromFiles: 'Select from files',
-          url: 'Image URL'
+          url: 'Image URL',
+          remove: 'Remove Image'
         },
         link: {
           link: 'Link',
@@ -1500,31 +1501,65 @@
       range.create().insertNode(table.createTable(aDim[0], aDim[1]));
     };
 
-    this.floatMe = function ($editable, sValue, elTarget) {
+    /**
+     * @param {jQuery} $editable
+     * @param {String} sValue
+     * @param {jQuery} $target
+     */
+    this.floatMe = function ($editable, sValue, $target) {
       recordUndo($editable);
-      elTarget.style.cssFloat = sValue;
+      $target.css('float', sValue);
     };
 
     /**
-     * resize target
+     * resize overlay element
      * @param {jQuery} $editable
      * @param {String} sValue
-     * @param {Element} elTarget - target element
+     * @param {jQuery} $target - target element
      */
-    this.resize = function ($editable, sValue, elTarget) {
+    this.resize = function ($editable, sValue, $target) {
       recordUndo($editable);
-      elTarget.style.width = $editable.width() * sValue + 'px';
-      elTarget.style.height = '';
-    };
-
-    this.resizeTo = function (pos, $target) {
-      var newRatio = pos.y / pos.x;
-      var ratio = $target.data('ratio');
 
       $target.css({
-        width: ratio > newRatio ? pos.x : pos.y / ratio,
-        height: ratio > newRatio ? pos.x * ratio : pos.y
+        width: $editable.width() * sValue + 'px',
+        height: ''
       });
+    };
+
+    /**
+     * @param {Position} pos
+     * @param {jQuery} $target - target element
+     * @param {Boolean} [bKeepRatio] - keep ratio
+     */
+    this.resizeTo = function (pos, $target, bKeepRatio) {
+      var szImage;
+      if (bKeepRatio) {
+        var newRatio = pos.y / pos.x;
+        var ratio = $target.data('ratio');
+        szImage = {
+          width: ratio > newRatio ? pos.x : pos.y / ratio,
+          height: ratio > newRatio ? pos.x * ratio : pos.y
+        };
+      } else {
+        szImage = {
+          width: pos.x,
+          height: pos.y
+        };
+      }
+
+      $target.css(szImage);
+    };
+
+    /**
+     * remove media object
+     *
+     * @param {jQuery} $editable
+     * @param {String} sValue - dummy argument (for keep interface)
+     * @param {jQuery} $target - target element
+     */
+    this.removeMedia = function ($editable, sValue, $target) {
+      recordUndo($editable);
+      $target.detach();
     };
   };
 
@@ -2105,10 +2140,11 @@
             scrollTop = $(document).scrollTop();
 
         $editor.on('mousemove', function (event) {
+          
           editor.resizeTo({
             x: event.clientX - posStart.left,
             y: event.clientY - (posStart.top - scrollTop)
-          }, $target);
+          }, $target, !event.shiftKey);
 
           handle.update($handle, {image: elTarget});
           popover.update($popover, {image: elTarget});
@@ -2151,17 +2187,17 @@
 
         var options = $editor.data('options');
 
-        // before command
-        var elTarget;
-        if ($.inArray(sEvent, ['resize', 'floatMe']) !== -1) {
+        // before command: detect control selection element($target)
+        var $target;
+        if ($.inArray(sEvent, ['resize', 'floatMe', 'removeMedia']) !== -1) {
           var $handle = oLayoutInfo.handle();
           var $selection = $handle.find('.note-control-selection');
-          elTarget = $selection.data('target');
+          $target = $($selection.data('target'));
         }
 
         if (editor[sEvent]) { // on command
           $editable.trigger('focus');
-          editor[sEvent]($editable, sValue, elTarget);
+          editor[sEvent]($editable, sValue, $target);
         }
 
         // after command
@@ -2651,6 +2687,9 @@
                       '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.floatLeft + '" data-event="floatMe" data-value="left" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
                       '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.floatRight + '" data-event="floatMe" data-value="right" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
                       '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.floatNone + '" data-event="floatMe" data-value="none" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
+                    '</div>' +
+                    '<div class="btn-group">' +
+                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.remove + '" data-event="removeMedia" data-value="none" tabindex="-1"><i class="fa fa-trash-o icon-trash"></i></button>' +
                     '</div>' +
                   '</div>' +
                 '</div>' +
