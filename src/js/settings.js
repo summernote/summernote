@@ -23,7 +23,7 @@ define('settings', function () {
       // default toolbar
       toolbar: [
         ['style', ['style']],
-        ['font', ['bold', 'italic', 'underline', 'clear']],
+        ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
         ['fontname', ['fontname']],
         // ['fontsize', ['fontsize']], Still buggy
         ['color', ['color']],
@@ -54,7 +54,9 @@ define('settings', function () {
           bold: 'Bold',
           italic: 'Italic',
           underline: 'Underline',
-          strike: 'Strike',
+          strikethrough: 'Strike',
+          superscript: 'Superscript',
+          subscript: 'Subscript',
           clear: 'Remove Font Style',
           height: 'Line Height',
           name: 'Font Family',
