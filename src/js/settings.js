@@ -25,7 +25,7 @@ define('settings', function () {
         ['style', ['style']],
         ['font', ['bold', 'italic', 'underline', 'clear']],
         ['fontname', ['fontname']],
-        ['fontsize', ['fontsize']],
+        // ['fontsize', ['fontsize']], Still buggy
         ['color', ['color']],
         ['para', ['ul', 'ol', 'paragraph']],
         ['height', ['height']],

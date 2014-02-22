@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-22T05:03Z
+ * Date: 2014-02-22T05:20Z
  */
 (function (factory) {
   /* global define */
@@ -571,7 +571,7 @@
         ['style', ['style']],
         ['font', ['bold', 'italic', 'underline', 'clear']],
         ['fontname', ['fontname']],
-        ['fontsize', ['fontsize']],
+        // ['fontsize', ['fontsize']], Still buggy
         ['color', ['color']],
         ['para', ['ul', 'ol', 'paragraph']],
         ['height', ['height']],
