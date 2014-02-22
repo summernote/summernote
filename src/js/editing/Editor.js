@@ -154,12 +154,21 @@ define([
       var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
       var dmMatch = sUrl.match(dmRegExp);
 
+      if ( (typeof(video_width_default) != 'undefined') && (typeof(video_height_default) != 'undefined') ){
+        var video_width = video_width_default;
+        var video_height = video_height_default;
+      } else {
+        var video_width = '640';
+        var video_height = '360';
+      }
+
       var $video;
       if (ytMatch && ytMatch[2].length === 11) {
         var youtubeId = ytMatch[2];
         $video = $('<iframe>')
-          .attr('src', '//www.youtube.com/embed/' + youtubeId)
-          .attr('width', '640').attr('height', '360');
+          .attr('src', '//www.youtube.com/embed/' + youtubeId + "?wmode=transparent")
+          .attr('width', video_width).attr('height', video_height)
+          .attr('wmode', 'Opaque');
       } else if (igMatch && igMatch[0].length > 0) {
         $video = $('<iframe>')
           .attr('src', igMatch[0] + '/embed/')
@@ -174,11 +183,11 @@ define([
       } else if (vimMatch && vimMatch[3].length > 0) {
         $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
           .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
-          .attr('width', '640').attr('height', '360');
+          .attr('width', video_width).attr('height', video_height);
       } else if (dmMatch && dmMatch[2].length > 0) {
         $video = $('<iframe>')
           .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
-          .attr('width', '640').attr('height', '360');
+          .attr('width', video_width).attr('height', video_height);
       } else {
         // this is not a known video link. Now what, Cat? Now what?
       }
@@ -279,6 +288,7 @@ define([
 
       // target
       $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
+        $(elAnchor).addClass('link_summernote');
         if (bNewWindow) {
           $(elAnchor).attr('target', '_blank');
         } else {
