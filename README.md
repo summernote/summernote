@@ -7,13 +7,14 @@ Super Simple WYSIWYG Editor on Bootstrap(3.0 and 2.x).
 ### Summernote
 Summernote is a javascript program that helps you to create WYSIWYG Editor on web.
 
-Demo Page: http://hackerwins.github.io/summernote/
+Home Page: http://hackerwins.github.io/summernote/
 
 ### Why Summernote?
 
 Summernote has something specials no like others.
-
-Simple UI, Interative WYSIWYG editing, easy integrate Backend server and so much others.
+* Simple UI
+* Interative WYSIWYG editing
+* Handy integration with server
 
 #### Inspired by
 * Gmail WYSIWYG Editor (http://www.gmail.com)
@@ -24,19 +25,21 @@ Simple UI, Interative WYSIWYG editing, easy integrate Backend server and so much
 Summernote uses opensouce libraries(jQuery, bootstrap, fontAwesome) 
 
 #### 01. include js/css
+
 Include Following code into `<head>` tag of your HTML:
+
 ```html
 <!-- include libries(jQuery, bootstrap, fontawesome) -->
 <script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.min.js"></script> 
-<!-- bootstrap v3 -->
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css" />
-<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.min.css" />
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
 
 <!-- include summernote css/js-->
 <link rel="stylesheet" href="summernote.css" />
 <script type="text/javascript" src="summernote.min.js"></script>
 ```
+
 If your summernote download is placed in a different folder, don't forget to change file's paths.
 
 #### 02. target elements
