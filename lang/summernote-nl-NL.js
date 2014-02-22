@@ -8,6 +8,7 @@
         strike: 'Doorhalen',
         clear: 'Stijl verwijderen',
         height: 'Regelhoogte',
+        name: 'Lettertype',
         size: 'Tekstgrootte'
       },
       image: {
@@ -21,7 +22,8 @@
         floatNone: 'Geen uitlijning',
         dragImageHere: 'Sleep hier een afbeelding naar toe',
         selectFromFiles: 'Selecteer een bestand',
-        url: 'URL van de afbeelding'
+        url: 'URL van de afbeelding',
+        remove: 'Verwijder afbeelding'
       },
       link: {
         link: 'Link',
@@ -29,14 +31,15 @@
         unlink: 'Link verwijderen',
         edit: 'Wijzigen',
         textToDisplay: 'Tekst van link',
-        url: 'Naar welke URL moet deze link verwijzen?'
+        url: 'Naar welke URL moet deze link verwijzen?',
+        openInNewWindow: 'Open in nieuw venster'
       },
       video: {
         video: 'Video',
-        videoLink: 'Video Link',
-        insert: 'Insert Video',
-        url: 'Video URL?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
+        videoLink: 'Video link',
+        insert: 'Video invoegen',
+        url: 'URL van de video',
+        providers: '(YouTube, Vimeo, Vine, Instagram of DailyMotion)'
       },
       table: {
         table: 'Tabel'
