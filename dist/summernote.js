@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-16T12:49Z
+ * Date: 2014-02-19T00:26Z
  */
 (function (factory) {
   /* global define */
@@ -568,6 +568,7 @@
       toolbar: [
         ['style', ['style']],
         ['font', ['bold', 'italic', 'underline', 'clear']],
+        ['fontname', ['fontname']],
         ['fontsize', ['fontsize']],
         ['color', ['color']],
         ['para', ['ul', 'ol', 'paragraph']],
@@ -600,6 +601,7 @@
           strike: 'Strike',
           clear: 'Remove Font Style',
           height: 'Line Height',
+          name: 'Font Family',
           size: 'Font Size'
         },
         image: {
@@ -794,7 +796,7 @@
    */
   var Style = function () {
     /**
-     * passing an array of style properties to .css() 
+     * passing an array of style properties to .css()
      * will result in an object of property-value pairs.
      * (compability with version < 1.9)
      *
@@ -834,7 +836,7 @@
      */
     this.current = function (rng, elTarget) {
       var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
-      var properties = ['font-size', 'text-align', 'list-style-type', 'line-height'];
+      var properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
       var oStyle = jQueryCSS($cont, properties) || {};
 
       oStyle['font-size'] = parseInt(oStyle['font-size']);
@@ -1169,7 +1171,7 @@
     /**
      * save current range
      *
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      */
     this.saveRange = function ($editable) {
       $editable.data('range', range.create());
@@ -1224,7 +1226,7 @@
                 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
                 'insertOrderedList', 'insertUnorderedList',
                 'indent', 'outdent', 'formatBlock', 'removeFormat',
-                'backColor', 'foreColor', 'insertHorizontalRule'];
+                'backColor', 'foreColor', 'insertHorizontalRule', 'fontName'];
 
     for (var idx = 0, len = aCmd.length; idx < len; idx ++) {
       this[aCmd[idx]] = (function (sCmd) {
@@ -1577,13 +1579,14 @@
     this.update = function ($toolbar, oStyle) {
 
       /**
-       * handle dropdown's check mark (for fontsize, lineHeight).
+       * handle dropdown's check mark (for fontname, fontsize, lineHeight).
        * @param {jQuery} $btn
        * @param {Number} nValue
        */
       var checkDropdownMenu = function ($btn, nValue) {
         $btn.find('.dropdown-menu li a').each(function () {
-          var bChecked = parseFloat($(this).data('value')) === nValue;
+          // always compare string to avoid creating another func.
+          var bChecked = ($(this).data('value') + '') === (nValue + '');
           this.className = bChecked ? 'checked' : '';
         });
       };
@@ -1598,6 +1601,17 @@
         var $btn = $toolbar.find(sSelector);
         $btn.toggleClass('active', pred());
       };
+
+      var $fontname = $toolbar.find('.note-fontname');
+      if ($fontname.get(0)) {
+        var selectedFont = oStyle['font-family'];
+        if (!!selectedFont) {
+          selectedFont = selectedFont.split(',')[0];
+          selectedFont = selectedFont.replace(/\'/g, '');
+          $fontname.find('.note-current-fontname').html(selectedFont);
+          checkDropdownMenu($fontname, selectedFont);
+        }
+      }
 
       var $fontsize = $toolbar.find('.note-fontsize');
       $fontsize.find('.note-current-fontsize').html(oStyle['font-size']);
@@ -2488,6 +2502,20 @@
                  '<li><a data-event="formatBlock" data-value="h5"><h5>' + lang.style.h5 + '</h5></a></li>' +
                  '<li><a data-event="formatBlock" data-value="h6"><h6>' + lang.style.h6 + '</h6></a></li>' +
                '</ul>';
+      },
+      fontname: function(lang) {
+        var fonts, i, output;
+
+        fonts   = ['Serif', 'Sans', 'Arial', 'Arial Black', 'Courier', 'Courier New', 'Comic Sans MS', 'Helvetica', 'Impact', 'Lucida Grande', 'Lucida Sans', 'Tahoma', 'Times', 'Times New Roman', 'Verdana'];
+        output  = '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + lang.font.name + '" tabindex="-1"><span class="note-current-fontname">Arial</span> <b class="caret"></b></button>';
+        output +=   '<ul class="dropdown-menu">';
+
+        for ( i = 0; i < fonts.length; i++ ) {
+          output += '<li><a data-event="fontName" data-value="' + fonts[i] + '"><i class="fa fa-check icon-ok"></i> ' + fonts[i] + '</a></li>';
+        }
+        output +=   '</ul>';
+
+        return output;
       },
       fontsize: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + lang.font.size + '" tabindex="-1"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +

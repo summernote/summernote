@@ -12,7 +12,7 @@ define([
     /**
      * save current range
      *
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      */
     this.saveRange = function ($editable) {
       $editable.data('range', range.create());
@@ -67,7 +67,7 @@ define([
                 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
                 'insertOrderedList', 'insertUnorderedList',
                 'indent', 'outdent', 'formatBlock', 'removeFormat',
-                'backColor', 'foreColor', 'insertHorizontalRule'];
+                'backColor', 'foreColor', 'insertHorizontalRule', 'fontName'];
 
     for (var idx = 0, len = aCmd.length; idx < len; idx ++) {
       this[aCmd[idx]] = (function (sCmd) {
