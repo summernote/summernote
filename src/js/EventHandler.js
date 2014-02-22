@@ -491,6 +491,13 @@ define([
       // save options on editor
       oLayoutInfo.editor.data('options', options);
 
+      if (options.styleWithSpan) {
+        // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
+        setTimeout(function () { // protect FF Error: NS_ERROR_FAILURE: Failure
+          document.execCommand('styleWithCSS', 0, true);
+        });
+      }
+
       // History
       oLayoutInfo.editable.data('NoteHistory', new History());
 

@@ -7,7 +7,7 @@ define([
    * rendering toolbar and editable
    */
   var Renderer = function () {
-    var tplToolbarInfo, tplPopover, tplhandle, tplDialog, tplStatusbar;
+    var tplToolbarInfo, tplPopover, tplHandle, tplDialog, tplStatusbar;
 
     /* jshint ignore:start */
     tplToolbarInfo = {
@@ -46,18 +46,20 @@ define([
                '</ul>';
       },
       fontname: function(lang) {
-        var fonts, i, output;
+        var aFont = [
+          'Serif', 'Sans', 'Arial', 'Arial Black', 'Courier',
+          'Courier New', 'Comic Sans MS', 'Helvetica', 'Impact', 'Lucida Grande',
+          'Lucida Sans', 'Tahoma', 'Times', 'Times New Roman', 'Verdana'
+        ];
 
-        fonts   = ['Serif', 'Sans', 'Arial', 'Arial Black', 'Courier', 'Courier New', 'Comic Sans MS', 'Helvetica', 'Impact', 'Lucida Grande', 'Lucida Sans', 'Tahoma', 'Times', 'Times New Roman', 'Verdana'];
-        output  = '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + lang.font.name + '" tabindex="-1"><span class="note-current-fontname">Arial</span> <b class="caret"></b></button>';
-        output +=   '<ul class="dropdown-menu">';
-
-        for ( i = 0; i < fonts.length; i++ ) {
-          output += '<li><a data-event="fontName" data-value="' + fonts[i] + '"><i class="fa fa-check icon-ok"></i> ' + fonts[i] + '</a></li>';
+        var sMarkup = '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + lang.font.name + '" tabindex="-1"><span class="note-current-fontname">Arial</span> <b class="caret"></b></button>';
+        sMarkup += '<ul class="dropdown-menu">';
+        for (var idx = 0; idx < aFont.length; idx++ ) {
+          sMarkup += '<li><a data-event="fontName" data-value="' + aFont[idx] + '"><i class="fa fa-check icon-ok"></i> ' + aFont[idx] + '</a></li>';
         }
-        output +=   '</ul>';
+        sMarkup += '</ul>';
 
-        return output;
+        return sMarkup;
       },
       fontsize: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + lang.font.size + '" tabindex="-1"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +
@@ -185,16 +187,18 @@ define([
               '</div>';
     };
 
-    tplhandle = '<div class="note-handle">' +
-                '<div class="note-control-selection">' +
-                  '<div class="note-control-selection-bg"></div>' +
-                  '<div class="note-control-holder note-control-nw"></div>' +
-                  '<div class="note-control-holder note-control-ne"></div>' +
-                  '<div class="note-control-holder note-control-sw"></div>' +
-                  '<div class="note-control-sizing note-control-se"></div>' +
-                  '<div class="note-control-selection-info"></div>' +
-                '</div>' +
-              '</div>';
+    var tplHandle = function () {
+      return '<div class="note-handle">' +
+               '<div class="note-control-selection">' +
+                 '<div class="note-control-selection-bg"></div>' +
+                 '<div class="note-control-holder note-control-nw"></div>' +
+                 '<div class="note-control-holder note-control-ne"></div>' +
+                 '<div class="note-control-holder note-control-sw"></div>' +
+                 '<div class="note-control-sizing note-control-se"></div>' +
+                 '<div class="note-control-selection-info"></div>' +
+               '</div>' +
+             '</div>';
+    };
 
     var tplShortcutText = function (lang, options) {
       return '<table class="note-shortcut">' +
@@ -385,7 +389,9 @@ define([
              '</div>';
     };
 
-    tplStatusbar = '<div class="note-resizebar"><div class="note-icon-bar"></div><div class="note-icon-bar"></div><div class="note-icon-bar"></div></div>';
+    tplStatusbar = function () {
+      return '<div class="note-resizebar"><div class="note-icon-bar"></div><div class="note-icon-bar"></div><div class="note-icon-bar"></div></div>';
+    };
     /* jshint ignore:end */
 
     // createTooltip
@@ -452,7 +458,7 @@ define([
 
       //02. statusbar (resizebar)
       if (options.height > 0) {
-        $('<div class="note-statusbar">' + tplStatusbar + '</div>').prependTo($editor);
+        $('<div class="note-statusbar">' + tplStatusbar() + '</div>').prependTo($editor);
       }
 
       //03. create Editable
@@ -470,11 +476,6 @@ define([
 
       //031. create codable
       $('<textarea class="note-codable"></textarea>').prependTo($editor);
-
-      //032. set styleWithCSS for backColor / foreColor clearing with 'inherit'.
-      setTimeout(function () { // protect FF Error: NS_ERROR_FAILURE: Failure
-        document.execCommand('styleWithCSS', 0, true);
-      });
 
       var langInfo = $.summernote.lang[options.lang];
 
@@ -500,7 +501,7 @@ define([
       createTooltip($popover);
 
       //06. handle(control selection, ...)
-      $(tplhandle).prependTo($editor);
+      $(tplHandle()).prependTo($editor);
 
       //07. create Dialog
       var $dialog = $(tplDialog(langInfo, options)).prependTo($editor);

@@ -1,4 +1,6 @@
-define('module/Toolbar', function () {
+define([
+  'core/list'
+], function (list) {
   /**
    * Toolbar
    */
@@ -35,21 +37,24 @@ define('module/Toolbar', function () {
         $btn.toggleClass('active', pred());
       };
 
+      // fontname
       var $fontname = $toolbar.find('.note-fontname');
-      if ($fontname.get(0)) {
+      if ($fontname.length > 0) {
         var selectedFont = oStyle['font-family'];
         if (!!selectedFont) {
-          selectedFont = selectedFont.split(',')[0];
+          selectedFont = list.head(selectedFont.split(','));
           selectedFont = selectedFont.replace(/\'/g, '');
-          $fontname.find('.note-current-fontname').html(selectedFont);
+          $fontname.find('.note-current-fontname').text(selectedFont);
           checkDropdownMenu($fontname, selectedFont);
         }
       }
 
+      // fontsize
       var $fontsize = $toolbar.find('.note-fontsize');
-      $fontsize.find('.note-current-fontsize').html(oStyle['font-size']);
+      $fontsize.find('.note-current-fontsize').text(oStyle['font-size']);
       checkDropdownMenu($fontsize, parseFloat(oStyle['font-size']));
 
+      // lineheight
       var $lineHeight = $toolbar.find('.note-height');
       checkDropdownMenu($lineHeight, parseFloat(oStyle['line-height']));
 

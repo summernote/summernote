@@ -11,7 +11,9 @@ define('settings', function () {
       height: null,                 // set editable height, ex) 300
       focus: false,                 // set focus after initilize summernote
       tabsize: null,                // size of tab ex) 2 or 4
+      styleWithSpan: true,          // style with span
       disableDragAndDrop: false,    // disable drag and drop event
+
       codemirror: null,             // codemirror options
 
       // language

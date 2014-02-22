@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-19T00:26Z
+ * Date: 2014-02-22T04:24Z
  */
 (function (factory) {
   /* global define */
@@ -557,7 +557,9 @@
       height: null,                 // set editable height, ex) 300
       focus: false,                 // set focus after initilize summernote
       tabsize: null,                // size of tab ex) 2 or 4
+      styleWithSpan: true,          // style with span
       disableDragAndDrop: false,    // disable drag and drop event
+
       codemirror: null,             // codemirror options
 
       // language
@@ -1602,21 +1604,24 @@
         $btn.toggleClass('active', pred());
       };
 
+      // fontname
       var $fontname = $toolbar.find('.note-fontname');
-      if ($fontname.get(0)) {
+      if ($fontname.length > 0) {
         var selectedFont = oStyle['font-family'];
         if (!!selectedFont) {
-          selectedFont = selectedFont.split(',')[0];
+          selectedFont = list.head(selectedFont.split(','));
           selectedFont = selectedFont.replace(/\'/g, '');
-          $fontname.find('.note-current-fontname').html(selectedFont);
+          $fontname.find('.note-current-fontname').text(selectedFont);
           checkDropdownMenu($fontname, selectedFont);
         }
       }
 
+      // fontsize
       var $fontsize = $toolbar.find('.note-fontsize');
-      $fontsize.find('.note-current-fontsize').html(oStyle['font-size']);
+      $fontsize.find('.note-current-fontsize').text(oStyle['font-size']);
       checkDropdownMenu($fontsize, parseFloat(oStyle['font-size']));
 
+      // lineheight
       var $lineHeight = $toolbar.find('.note-height');
       checkDropdownMenu($lineHeight, parseFloat(oStyle['line-height']));
 
@@ -2420,6 +2425,13 @@
       // save options on editor
       oLayoutInfo.editor.data('options', options);
 
+      if (options.styleWithSpan) {
+        // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
+        setTimeout(function () { // protect FF Error: NS_ERROR_FAILURE: Failure
+          document.execCommand('styleWithCSS', 0, true);
+        });
+      }
+
       // History
       oLayoutInfo.editable.data('NoteHistory', new History());
 
@@ -2465,7 +2477,7 @@
    * rendering toolbar and editable
    */
   var Renderer = function () {
-    var tplToolbarInfo, tplPopover, tplhandle, tplDialog, tplStatusbar;
+    var tplToolbarInfo, tplPopover, tplHandle, tplDialog, tplStatusbar;
 
     /* jshint ignore:start */
     tplToolbarInfo = {
@@ -2504,18 +2516,20 @@
                '</ul>';
       },
       fontname: function(lang) {
-        var fonts, i, output;
+        var aFont = [
+          'Serif', 'Sans', 'Arial', 'Arial Black', 'Courier',
+          'Courier New', 'Comic Sans MS', 'Helvetica', 'Impact', 'Lucida Grande',
+          'Lucida Sans', 'Tahoma', 'Times', 'Times New Roman', 'Verdana'
+        ];
 
-        fonts   = ['Serif', 'Sans', 'Arial', 'Arial Black', 'Courier', 'Courier New', 'Comic Sans MS', 'Helvetica', 'Impact', 'Lucida Grande', 'Lucida Sans', 'Tahoma', 'Times', 'Times New Roman', 'Verdana'];
-        output  = '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + lang.font.name + '" tabindex="-1"><span class="note-current-fontname">Arial</span> <b class="caret"></b></button>';
-        output +=   '<ul class="dropdown-menu">';
-
-        for ( i = 0; i < fonts.length; i++ ) {
-          output += '<li><a data-event="fontName" data-value="' + fonts[i] + '"><i class="fa fa-check icon-ok"></i> ' + fonts[i] + '</a></li>';
+        var sMarkup = '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + lang.font.name + '" tabindex="-1"><span class="note-current-fontname">Arial</span> <b class="caret"></b></button>';
+        sMarkup += '<ul class="dropdown-menu">';
+        for (var idx = 0; idx < aFont.length; idx++ ) {
+          sMarkup += '<li><a data-event="fontName" data-value="' + aFont[idx] + '"><i class="fa fa-check icon-ok"></i> ' + aFont[idx] + '</a></li>';
         }
-        output +=   '</ul>';
+        sMarkup += '</ul>';
 
-        return output;
+        return sMarkup;
       },
       fontsize: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + lang.font.size + '" tabindex="-1"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +
@@ -2643,16 +2657,18 @@
               '</div>';
     };
 
-    tplhandle = '<div class="note-handle">' +
-                '<div class="note-control-selection">' +
-                  '<div class="note-control-selection-bg"></div>' +
-                  '<div class="note-control-holder note-control-nw"></div>' +
-                  '<div class="note-control-holder note-control-ne"></div>' +
-                  '<div class="note-control-holder note-control-sw"></div>' +
-                  '<div class="note-control-sizing note-control-se"></div>' +
-                  '<div class="note-control-selection-info"></div>' +
-                '</div>' +
-              '</div>';
+    var tplHandle = function () {
+      return '<div class="note-handle">' +
+               '<div class="note-control-selection">' +
+                 '<div class="note-control-selection-bg"></div>' +
+                 '<div class="note-control-holder note-control-nw"></div>' +
+                 '<div class="note-control-holder note-control-ne"></div>' +
+                 '<div class="note-control-holder note-control-sw"></div>' +
+                 '<div class="note-control-sizing note-control-se"></div>' +
+                 '<div class="note-control-selection-info"></div>' +
+               '</div>' +
+             '</div>';
+    };
 
     var tplShortcutText = function (lang, options) {
       return '<table class="note-shortcut">' +
@@ -2843,7 +2859,9 @@
              '</div>';
     };
 
-    tplStatusbar = '<div class="note-resizebar"><div class="note-icon-bar"></div><div class="note-icon-bar"></div><div class="note-icon-bar"></div></div>';
+    tplStatusbar = function () {
+      return '<div class="note-resizebar"><div class="note-icon-bar"></div><div class="note-icon-bar"></div><div class="note-icon-bar"></div></div>';
+    };
     /* jshint ignore:end */
 
     // createTooltip
@@ -2910,7 +2928,7 @@
 
       //02. statusbar (resizebar)
       if (options.height > 0) {
-        $('<div class="note-statusbar">' + tplStatusbar + '</div>').prependTo($editor);
+        $('<div class="note-statusbar">' + tplStatusbar() + '</div>').prependTo($editor);
       }
 
       //03. create Editable
@@ -2928,11 +2946,6 @@
 
       //031. create codable
       $('<textarea class="note-codable"></textarea>').prependTo($editor);
-
-      //032. set styleWithCSS for backColor / foreColor clearing with 'inherit'.
-      setTimeout(function () { // protect FF Error: NS_ERROR_FAILURE: Failure
-        document.execCommand('styleWithCSS', 0, true);
-      });
 
       var langInfo = $.summernote.lang[options.lang];
 
@@ -2958,7 +2971,7 @@
       createTooltip($popover);
 
       //06. handle(control selection, ...)
-      $(tplhandle).prependTo($editor);
+      $(tplHandle()).prependTo($editor);
 
       //07. create Dialog
       var $dialog = $(tplDialog(langInfo, options)).prependTo($editor);
