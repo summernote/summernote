@@ -21,7 +21,8 @@
         floatNone: 'Pas d\'alignement',
         dragImageHere: 'Faites glisser une image avec la souris dans ce cadre',
         selectFromFiles: 'Choisir un fichier',
-        url: 'URL de l\'image'
+        url: 'URL de l\'image',
+        remove: 'Supprimer l\'image'
       },
       link: {
         link: 'Lien',
