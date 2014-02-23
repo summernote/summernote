@@ -104,6 +104,15 @@ define([
       underline: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.underline + '" data-shortcut="Ctrl+U" data-mac-shortcut="⌘+U" data-event="underline" tabindex="-1"><i class="fa fa-underline icon-underline"></i></button>';
       },
+      strikethrough: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.strikethrough + '" data-shortcut="Ctrl+Shift+S" data-mac-shortcut="⌘+⇧+S" data-event="strikethrough" tabindex="-1"><i class="fa fa-strikethrough icon-strikethrough"></i></button>';
+      },
+      superscript: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.superscript + '" data-shortcut="" data-mac-shortcut="" data-event="superscript" tabindex="-1"><i class="fa fa-superscript icon-superscript"></i></button>';
+      },
+      subscript: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.subscript + '" data-shortcut="" data-mac-shortcut="" data-event="subscript" tabindex="-1"><i class="fa fa-subscript icon-subscript"></i></button>';
+      },
       clear: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.clear + '" data-shortcut="Ctrl+\\" data-mac-shortcut="⌘+\\" data-event="removeFormat" tabindex="-1"><i class="fa fa-eraser icon-eraser"></i></button>';
       },
@@ -212,7 +221,7 @@ define([
                  '<tr><td>⌘ + B</td><td>' + lang.font.bold + '</td></tr>' +
                  '<tr><td>⌘ + I</td><td>' + lang.font.italic + '</td></tr>' +
                  '<tr><td>⌘ + U</td><td>' + lang.font.underline + '</td></tr>' +
-                 '<tr><td>⌘ + ⇧ + S</td><td>' + lang.font.strike + '</td></tr>' +
+                 '<tr><td>⌘ + ⇧ + S</td><td>' + lang.font.strikethrough + '</td></tr>' +
                  '<tr><td>⌘ + \\</td><td>' + lang.font.clear + '</td></tr>' +
                  '</tr>' +
                '</tbody>' +
