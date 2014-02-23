@@ -57,6 +57,9 @@ define([
       oStyle['font-bold'] = document.queryCommandState('bold') ? 'bold' : 'normal';
       oStyle['font-italic'] = document.queryCommandState('italic') ? 'italic' : 'normal';
       oStyle['font-underline'] = document.queryCommandState('underline') ? 'underline' : 'normal';
+      oStyle['font-strikethrough'] = document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal';
+      oStyle['font-superscript'] = document.queryCommandState('superscript') ? 'superscript' : 'normal';
+      oStyle['font-subscript'] = document.queryCommandState('subscript') ? 'subscript' : 'normal';
 
       // list-style-type to list-style(unordered, ordered)
       if (!rng.isOnList()) {
