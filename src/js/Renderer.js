@@ -341,7 +341,7 @@ define([
                            '<label>' + lang.link.url + '</label>' +
                            '<input class="note-link-url form-control span12" type="text" />' +
                          '</div>' +
-                         '<div class="checkbox">' +
+                         '<div class="checkbox checkbox_target">' +
                            '<label>' + '<input type="checkbox" checked> ' +
                              lang.link.openInNewWindow +
                            '</label>' +
