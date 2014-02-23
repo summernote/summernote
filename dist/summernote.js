@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-22T07:33Z
+ * Date: 2014-02-23T06:42Z
  */
 (function (factory) {
   /* global define */
@@ -614,16 +614,20 @@
     options: {
       width: null,                  // set editor width
       height: null,                 // set editable height, ex) 300
+
       focus: false,                 // set focus after initilize summernote
+
       tabsize: null,                // size of tab ex) 2 or 4
-      styleWithSpan: true,          // style with span
+      styleWithSpan: true,          // style with span (Chrome and FF)
+
+      disableLinkTarget: false,     // hide link Target Checkbox
       disableDragAndDrop: false,    // disable drag and drop event
 
       codemirror: null,             // codemirror options
 
       // language
-      lang: 'en-US',   // language 'en-US', 'ko-KR', ...
-      direction: null, // text direction, ex) 'rtl'
+      lang: 'en-US',                // language 'en-US', 'ko-KR', ...
+      direction: null,              // text direction, ex) 'rtl'
 
       // default toolbar
       toolbar: [
@@ -2567,9 +2571,10 @@
       // save options on editor
       oLayoutInfo.editor.data('options', options);
 
-      if (options.styleWithSpan) {
-        // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
-        setTimeout(function () { // protect FF Error: NS_ERROR_FAILURE: Failure
+      // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
+      if (options.styleWithSpan && !agent.bMSIE) {
+        // protect FF Error: NS_ERROR_FAILURE: Failure
+        setTimeout(function () {
           document.execCommand('styleWithCSS', 0, true);
         });
       }
@@ -2914,8 +2919,8 @@
     };
 
     tplDialog = function (lang, options) {
-      return '<div class="note-dialog">' +
-               '<div class="note-image-dialog modal" aria-hidden="false">' +
+      var tplImageDialog = function () {
+        return '<div class="note-image-dialog modal" aria-hidden="false">' +
                  '<div class="modal-dialog">' +
                    '<div class="modal-content">' +
                      '<div class="modal-header">' +
@@ -2935,8 +2940,11 @@
                      '</div>' +
                    '</div>' +
                  '</div>' +
-               '</div>' +
-               '<div class="note-link-dialog modal" aria-hidden="false">' +
+               '</div>';
+      };
+
+      var tplLinkDialog = function () {
+        return '<div class="note-link-dialog modal" aria-hidden="false">' +
                  '<div class="modal-dialog">' +
                    '<div class="modal-content">' +
                      '<div class="modal-header">' +
@@ -2953,11 +2961,13 @@
                            '<label>' + lang.link.url + '</label>' +
                            '<input class="note-link-url form-control span12" type="text" />' +
                          '</div>' +
-                         '<div class="checkbox">' +
-                           '<label>' + '<input type="checkbox" checked> ' +
-                             lang.link.openInNewWindow +
-                           '</label>' +
-                         '</div>' +
+                         (!options.disableLinkTarget ?
+                           '<div class="checkbox">' +
+                             '<label>' + '<input type="checkbox" checked> ' +
+                               lang.link.openInNewWindow +
+                             '</label>' +
+                           '</div>' : ''
+                         ) +
                        '</div>' +
                      '</div>' +
                      '<div class="modal-footer">' +
@@ -2965,34 +2975,39 @@
                      '</div>' +
                    '</div>' +
                  '</div>' +
-               '</div>' +
-                   '<div class="note-video-dialog modal" aria-hidden="false">' +
-                     '<div class="modal-dialog">' +
-                       '<div class="modal-content">' +
-                         '<div class="modal-header">' +
-                           '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                           '<h4>' + lang.video.insert + '</h4>' +
-                         '</div>' +
-                         '<div class="modal-body">' +
-                           '<div class="row-fluid">' +
+               '</div>';
+      };
 
-                           '<div class="form-group">' +
-                             '<label>' + lang.video.url + '</label>&nbsp;<small class="text-muted">' + lang.video.providers + '</small>' +
-                             '<input class="note-video-url form-control span12" type="text" />' +
-                           '</div>' +
-                           '</div>' +
-                         '</div>' +
-                         '<div class="modal-footer">' +
-                           '<button href="#" class="btn btn-primary note-video-btn disabled" disabled="disabled">' + lang.video.insert + '</button>' +
-                         '</div>' +
+      var tplVideoDialog = function () {
+        return '<div class="note-video-dialog modal" aria-hidden="false">' +
+                 '<div class="modal-dialog">' +
+                   '<div class="modal-content">' +
+                     '<div class="modal-header">' +
+                       '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
+                       '<h4>' + lang.video.insert + '</h4>' +
+                     '</div>' +
+                     '<div class="modal-body">' +
+                       '<div class="row-fluid">' +
+
+                       '<div class="form-group">' +
+                         '<label>' + lang.video.url + '</label>&nbsp;<small class="text-muted">' + lang.video.providers + '</small>' +
+                         '<input class="note-video-url form-control span12" type="text" />' +
+                       '</div>' +
                        '</div>' +
                      '</div>' +
+                     '<div class="modal-footer">' +
+                       '<button href="#" class="btn btn-primary note-video-btn disabled" disabled="disabled">' + lang.video.insert + '</button>' +
+                     '</div>' +
                    '</div>' +
-               '<div class="note-help-dialog modal" aria-hidden="false">' +
+                 '</div>' +
+               '</div>';
+      };
+
+      var tplHelpDialog = function () {
+        return '<div class="note-help-dialog modal" aria-hidden="false">' +
                  '<div class="modal-dialog">' +
                    '<div class="modal-content">' +
                      '<div class="modal-body">' +
-                       '<div class="modal-background">' +
                        '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
                        '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                        (agent.bMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
@@ -3000,7 +3015,14 @@
                      '</div>' +
                    '</div>' +
                  '</div>' +
-               '</div>' +
+               '</div>';
+      };
+
+      return '<div class="note-dialog">' +
+               tplImageDialog() +
+               tplLinkDialog() +
+               tplVideoDialog() +
+               tplHelpDialog() +
              '</div>';
     };
 

@@ -302,8 +302,8 @@ define([
     };
 
     tplDialog = function (lang, options) {
-      return '<div class="note-dialog">' +
-               '<div class="note-image-dialog modal" aria-hidden="false">' +
+      var tplImageDialog = function () {
+        return '<div class="note-image-dialog modal" aria-hidden="false">' +
                  '<div class="modal-dialog">' +
                    '<div class="modal-content">' +
                      '<div class="modal-header">' +
@@ -323,8 +323,11 @@ define([
                      '</div>' +
                    '</div>' +
                  '</div>' +
-               '</div>' +
-               '<div class="note-link-dialog modal" aria-hidden="false">' +
+               '</div>';
+      };
+
+      var tplLinkDialog = function () {
+        return '<div class="note-link-dialog modal" aria-hidden="false">' +
                  '<div class="modal-dialog">' +
                    '<div class="modal-content">' +
                      '<div class="modal-header">' +
@@ -341,11 +344,13 @@ define([
                            '<label>' + lang.link.url + '</label>' +
                            '<input class="note-link-url form-control span12" type="text" />' +
                          '</div>' +
-                         '<div class="checkbox">' +
-                           '<label>' + '<input type="checkbox" checked> ' +
-                             lang.link.openInNewWindow +
-                           '</label>' +
-                         '</div>' +
+                         (!options.disableLinkTarget ?
+                           '<div class="checkbox">' +
+                             '<label>' + '<input type="checkbox" checked> ' +
+                               lang.link.openInNewWindow +
+                             '</label>' +
+                           '</div>' : ''
+                         ) +
                        '</div>' +
                      '</div>' +
                      '<div class="modal-footer">' +
@@ -353,34 +358,39 @@ define([
                      '</div>' +
                    '</div>' +
                  '</div>' +
-               '</div>' +
-                   '<div class="note-video-dialog modal" aria-hidden="false">' +
-                     '<div class="modal-dialog">' +
-                       '<div class="modal-content">' +
-                         '<div class="modal-header">' +
-                           '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                           '<h4>' + lang.video.insert + '</h4>' +
-                         '</div>' +
-                         '<div class="modal-body">' +
-                           '<div class="row-fluid">' +
+               '</div>';
+      };
 
-                           '<div class="form-group">' +
-                             '<label>' + lang.video.url + '</label>&nbsp;<small class="text-muted">' + lang.video.providers + '</small>' +
-                             '<input class="note-video-url form-control span12" type="text" />' +
-                           '</div>' +
-                           '</div>' +
-                         '</div>' +
-                         '<div class="modal-footer">' +
-                           '<button href="#" class="btn btn-primary note-video-btn disabled" disabled="disabled">' + lang.video.insert + '</button>' +
-                         '</div>' +
+      var tplVideoDialog = function () {
+        return '<div class="note-video-dialog modal" aria-hidden="false">' +
+                 '<div class="modal-dialog">' +
+                   '<div class="modal-content">' +
+                     '<div class="modal-header">' +
+                       '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
+                       '<h4>' + lang.video.insert + '</h4>' +
+                     '</div>' +
+                     '<div class="modal-body">' +
+                       '<div class="row-fluid">' +
+
+                       '<div class="form-group">' +
+                         '<label>' + lang.video.url + '</label>&nbsp;<small class="text-muted">' + lang.video.providers + '</small>' +
+                         '<input class="note-video-url form-control span12" type="text" />' +
+                       '</div>' +
                        '</div>' +
                      '</div>' +
+                     '<div class="modal-footer">' +
+                       '<button href="#" class="btn btn-primary note-video-btn disabled" disabled="disabled">' + lang.video.insert + '</button>' +
+                     '</div>' +
                    '</div>' +
-               '<div class="note-help-dialog modal" aria-hidden="false">' +
+                 '</div>' +
+               '</div>';
+      };
+
+      var tplHelpDialog = function () {
+        return '<div class="note-help-dialog modal" aria-hidden="false">' +
                  '<div class="modal-dialog">' +
                    '<div class="modal-content">' +
                      '<div class="modal-body">' +
-                       '<div class="modal-background">' +
                        '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
                        '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                        (agent.bMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
@@ -388,7 +398,14 @@ define([
                      '</div>' +
                    '</div>' +
                  '</div>' +
-               '</div>' +
+               '</div>';
+      };
+
+      return '<div class="note-dialog">' +
+               tplImageDialog() +
+               tplLinkDialog() +
+               tplVideoDialog() +
+               tplHelpDialog() +
              '</div>';
     };
 
