@@ -495,7 +495,19 @@ define([
       if (options.styleWithSpan) {
         // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
         setTimeout(function () { // protect FF Error: NS_ERROR_FAILURE: Failure
-          document.execCommand('styleWithCSS', 0, true);
+          try {
+            document.execCommand('styleWithCSS', 0, true);
+          } catch(error) {
+            try {
+              document.execCommand('useCSS', 0, false);
+            } catch(error) {
+              try {
+                document.execCommand('styleWithCSS', false, true);
+              } catch(error) {
+              }
+            }
+          } finally { 
+          }
         });
       }
 
