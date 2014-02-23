@@ -21,7 +21,8 @@
         floatNone: '寄せ解除',
         dragImageHere: 'ここに画像をドラッグしてください',
         selectFromFiles: '画像ファイルを選ぶ',
-        url: 'URLから画像を挿入する'
+        url: 'URLから画像を挿入する',
+        remove: '画像を削除する'
       },
       link: {
         link: 'リンク',
