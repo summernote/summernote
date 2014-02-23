@@ -492,22 +492,11 @@ define([
       // save options on editor
       oLayoutInfo.editor.data('options', options);
 
-      if (options.styleWithSpan) {
-        // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
-        setTimeout(function () { // protect FF Error: NS_ERROR_FAILURE: Failure
-          try {
-            document.execCommand('styleWithCSS', 0, true);
-          } catch(error) {
-            try {
-              document.execCommand('useCSS', 0, false);
-            } catch(error) {
-              try {
-                document.execCommand('styleWithCSS', false, true);
-              } catch(error) {
-              }
-            }
-          } finally { 
-          }
+      // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
+      if (options.styleWithSpan && !agent.bMSIE) {
+        // protect FF Error: NS_ERROR_FAILURE: Failure
+        setTimeout(function () {
+          document.execCommand('styleWithCSS', 0, true);
         });
       }
 
