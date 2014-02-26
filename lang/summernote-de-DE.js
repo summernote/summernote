@@ -21,7 +21,8 @@
         floatNone: 'Kein Textfluss',
         dragImageHere: 'Ziehen Sie ein Bild mit der Maus hierher',
         selectFromFiles: 'Wählen Sie eine Datei aus',
-        url: 'Grafik URL'
+        url: 'Grafik URL',
+		remove: 'Grafik entfernen'
       },
       link: {
         link: 'Link',
