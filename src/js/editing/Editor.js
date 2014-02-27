@@ -154,20 +154,20 @@ define([
       var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
       var dmMatch = sUrl.match(dmRegExp);
 
-      if ( (typeof(video_width_default) != 'undefined') && (typeof(video_height_default) != 'undefined') ){
-        var video_width = video_width_default;
-        var video_height = video_height_default;
+      if ((typeof(videoWidthDefault) != 'undefined') && (typeof(videoHeightDefault) != 'undefined')){
+        var videoWidth = videoWidthDefault;
+        var videoHeight = videoHeightDefault;
       } else {
-        var video_width = '640';
-        var video_height = '360';
+        var videoWidth = '640';
+        var videoHeight = '360';
       }
 
       var $video;
       if (ytMatch && ytMatch[2].length === 11) {
         var youtubeId = ytMatch[2];
         $video = $('<iframe>')
-          .attr('src', '//www.youtube.com/embed/' + youtubeId + "?wmode=transparent")
-          .attr('width', video_width).attr('height', video_height)
+          .attr('src', '//www.youtube.com/embed/' + youtubeId + '?wmode=transparent')
+          .attr('width', videoWidth).attr('height', videoHeight)
           .attr('wmode', 'Opaque');
       } else if (igMatch && igMatch[0].length > 0) {
         $video = $('<iframe>')
@@ -183,11 +183,11 @@ define([
       } else if (vimMatch && vimMatch[3].length > 0) {
         $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
           .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
-          .attr('width', video_width).attr('height', video_height);
+          .attr('width', videoWidth).attr('height', videoHeight);
       } else if (dmMatch && dmMatch[2].length > 0) {
         $video = $('<iframe>')
           .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
-          .attr('width', video_width).attr('height', video_height);
+          .attr('width', videoWidth).attr('height', videoHeight);
       } else {
         // this is not a known video link. Now what, Cat? Now what?
       }
