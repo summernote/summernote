@@ -154,12 +154,11 @@ define([
       var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
       var dmMatch = sUrl.match(dmRegExp);
 
-      if ((typeof(videoWidthDefault) != 'undefined') && (typeof(videoHeightDefault) != 'undefined')){
-        var videoWidth = videoWidthDefault;
-        var videoHeight = videoHeightDefault;
-      } else {
-        var videoWidth = '640';
-        var videoHeight = '360';
+      var videoWidth = '640';
+      var videoHeight = '360';
+      if ((typeof(videoWidthDefault) !== 'undefined') && (typeof(videoHeightDefault) !== 'undefined')){
+        videoWidth = videoWidthDefault;
+        videoHeight = videoHeightDefault;
       }
 
       var $video;
