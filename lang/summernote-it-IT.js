@@ -8,6 +8,7 @@
         strike: 'Testo barrato',
         clear: 'Elimina la formattazione del testo',
         height: 'Altezza della linea di testo',
+        name: 'Famiglia Font',
         size: 'Dimensione del carattere'
       },
       image: {
@@ -21,7 +22,8 @@
         floatNone: 'Nessun posizionamento',
         dragImageHere: 'Trascina qui un\'immagine',
         selectFromFiles: 'Scegli dai Documenti',
-        url: 'URL dell\'immagine'
+        url: 'URL dell\'immagine',
+        remove: 'Rimuovi immagine'
       },
       link: {
         link: 'Collegamento',
@@ -29,7 +31,8 @@
         unlink: 'Elimina collegamento',
         edit: 'Modifica collegamento',
         textToDisplay: 'Testo del collegamento',
-        url: 'URL del collegamento'
+        url: 'URL del collegamento',
+        openInNewWindow: 'Apri in una nuova finestra'
       },
       video: {
         video: 'Video',
