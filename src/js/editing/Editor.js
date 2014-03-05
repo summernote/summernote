@@ -295,7 +295,7 @@ define([
      * @param {jQuery} $editable
      * @return {Promise}
      */
-    this.getLinkInfo = function ($editable) {
+    this.getLinkInfo = function () {
       var rng = range.create();
       var bNewWindow = true;
       var sUrl = '';

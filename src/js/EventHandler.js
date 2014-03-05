@@ -230,7 +230,9 @@ define([
         if ($.inArray(sEvent, ['backColor', 'foreColor']) !== -1) {
           toolbar.updateRecentColor($btn[0], sEvent, sValue);
         } else if (sEvent === 'showLinkDialog') { // popover to dialog
-          $editable.focus(), linkInfo = editor.getLinkInfo();
+          $editable.focus();
+          var linkInfo = editor.getLinkInfo();
+
           editor.saveRange($editable);
           dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkUrl, bNewWindow) {
             editor.restoreRange($editable);

@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-03-05T03:42Z
+ * Date: 2014-03-05T04:19Z
  */
 (function (factory) {
   /* global define */
@@ -1534,32 +1534,29 @@
     };
 
     /**
-     * set linkInfo before link dialog opened.
+     * getLinkInfo
+     *
      * @param {jQuery} $editable
-     * @param {Function} fnShowDialog
+     * @return {Promise}
      */
-    this.setLinkDialog = function ($editable, fnShowDialog) {
-      var rng = range.create(),
-          bNewWindow = true;
+    this.getLinkInfo = function () {
+      var rng = range.create();
+      var bNewWindow = true;
+      var sUrl = '';
 
-      // If range on anchor (Edit).
+      // If range on anchor expand range on anchor(for edit link).
       if (rng.isOnAnchor()) {
-        // expand range on anchor.
         var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
         rng = range.createFromNode(elAnchor);
         bNewWindow = $(elAnchor).attr('target') === '_blank';
+        sUrl = elAnchor.href;
       }
 
-      var self = this;
-      fnShowDialog({
+      return {
         text: rng.toString(),
-        url: rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor).href : '',
+        url: sUrl,
         newWindow: bNewWindow
-      }, function (sLinkUrl, bNewWindow) {
-        // restore range
-        rng.select();
-        self.createLink($editable, sLinkUrl, bNewWindow);
-      });
+      };
     };
 
     /**
@@ -1934,11 +1931,8 @@
      * @param {Boolean} bEnable
      */
     var toggleBtn = function ($btn, bEnable) {
-      if (bEnable) {
-        $btn.removeClass('disabled').attr('disabled', false);
-      } else {
-        $btn.addClass('disabled').attr('disabled', true);
-      }
+      $btn.toggleClass('disabled', !bEnable);
+      $btn.attr('disabled', !bEnable);
     };
 
     /**
@@ -2019,45 +2013,46 @@
      *
      * @param {jQuery} $dialog
      * @param {Object} linkInfo
-     * @param {function} callback
+     * @return {Promise}
      */
-    this.showLinkDialog = function ($editable, $dialog, linkInfo, callback) {
-      var $linkDialog = $dialog.find('.note-link-dialog');
+    this.showLinkDialog = function ($editable, $dialog, linkInfo) {
+      return $.Deferred(function (deferred) {
+        var $linkDialog = $dialog.find('.note-link-dialog');
 
-      var $linkText = $linkDialog.find('.note-link-text'),
-          $linkUrl = $linkDialog.find('.note-link-url'),
-          $linkBtn = $linkDialog.find('.note-link-btn'),
-          $openInNewWindow = $linkDialog.find('input[type=checkbox]');
+        var $linkText = $linkDialog.find('.note-link-text'),
+        $linkUrl = $linkDialog.find('.note-link-url'),
+        $linkBtn = $linkDialog.find('.note-link-btn'),
+        $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
-      $linkDialog.one('shown.bs.modal', function (event) {
-        event.stopPropagation();
+        $linkDialog.one('shown.bs.modal', function (event) {
+          event.stopPropagation();
 
-        $linkText.val(linkInfo.text);
+          $linkText.val(linkInfo.text);
 
-        $linkUrl.val(linkInfo.url).keyup(function () {
-          toggleBtn($linkBtn, $linkUrl.val());
+          $linkUrl.keyup(function () {
+            toggleBtn($linkBtn, $linkUrl.val());
+            // display same link on `Text to display` input
+            // when create a new link
+            if (!linkInfo.text) {
+              $linkText.val($linkUrl.val());
+            }
+          }).val(linkInfo.url).trigger('focus');
 
-          // If create a new link, display same link on `Text to display` input.
-          if (!linkInfo.text) {
-            $linkText.val($linkUrl.val());
-          }
-        }).trigger('focus');
+          $openInNewWindow.prop('checked', linkInfo.newWindow);
 
-        $openInNewWindow.prop('checked', linkInfo.newWindow);
+          $linkBtn.one('click', function (event) {
+            event.preventDefault();
 
-        $linkBtn.click(function (event) {
-          $linkDialog.modal('hide');
-          callback($linkUrl.val(), $openInNewWindow.is(':checked'));
+            $linkDialog.modal('hide');
+            deferred.resolve($linkUrl.val(), $openInNewWindow.is(':checked'));
+          });
+        }).one('hidden.bs.modal', function (event) {
+          event.stopPropagation();
 
-          event.preventDefault();
-        });
-      }).one('hidden.bs.modal', function (event) {
-        event.stopPropagation();
-
-        $editable.focus();
-        $linkUrl.off('keyup');
-        $linkBtn.off('click');
-      }).modal('show');
+          $editable.focus();
+          $linkUrl.off('keyup');
+        }).modal('show');
+      }).promise();
     };
 
     /**
@@ -2150,9 +2145,16 @@
       } else if (bCmd && keyCode === key.BACKSLACH) {
         editor.removeFormat(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.K) {
-        editor.setLinkDialog(oLayoutInfo.editable(), function (linkInfo, cb) {
-          dialog.showLinkDialog(oLayoutInfo.editable(), oLayoutInfo.dialog(), linkInfo, cb);
+        var $editable = oLayoutInfo.editable(),
+            $dialog = oLayoutInfo.dialog(),
+            linkInfo = editor.getLinkInfo();
+
+        editor.saveRange($editable);
+        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkUrl, bNewWindow) {
+          editor.restoreRange($editable);
+          editor.createLink($editable, sLinkUrl, bNewWindow);
         });
+
       } else if (bCmd && keyCode === key.SLASH) {
         dialog.showHelpDialog(oLayoutInfo.editable(), oLayoutInfo.dialog());
       } else if (bCmd && bShift && keyCode === key.L) {
@@ -2292,8 +2294,11 @@
           toolbar.updateRecentColor($btn[0], sEvent, sValue);
         } else if (sEvent === 'showLinkDialog') { // popover to dialog
           $editable.focus();
-          editor.setLinkDialog($editable, function (linkInfo, cb) {
-            dialog.showLinkDialog($editable, $dialog, linkInfo, cb);
+          var linkInfo = editor.getLinkInfo();
+          editor.saveRange($editable);
+          dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkUrl, bNewWindow) {
+            editor.restoreRange($editable);
+            editor.createLink($editable, sLinkUrl, bNewWindow);
           });
         } else if (sEvent === 'showImageDialog') {
           $editable.focus();
