@@ -117,10 +117,12 @@ define([
      * @param {String} sUrl
      */
     this.insertImage = function ($editable, sUrl) {
-      async.loadImage(sUrl).done(function (image) {
+      async.createImage(sUrl).then(function ($image) {
         recordUndo($editable);
-        var $image = $('<img>').attr('src', sUrl);
-        $image.css('width', Math.min($editable.width(), image.width));
+        $image.css({
+          display: '',
+          width: Math.min($editable.width(), $image.width())
+        });
         range.create().insertNode($image[0]);
       }).fail(function () {
         var callbacks = $editable.data('callbacks');

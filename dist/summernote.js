@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-02-23T06:42Z
+ * Date: 2014-03-05T03:42Z
  */
 (function (factory) {
   /* global define */
@@ -769,7 +769,7 @@
      * read contents of file as representing URL
      *
      * @param {File} file
-     * @return {Promise}
+     * @return {Promise} - then: sDataUrl
      */
     var readFileAsDataURL = function (file) {
       return $.Deferred(function (deferred) {
@@ -786,39 +786,26 @@
     };
   
     /**
-     * load image from url string
+     * create `<image>` from url string
      *
      * @param {String} sUrl
-     * @param {Promise}
+     * @return {Promise} - then: $image
      */
-    var loadImage = function (sUrl) {
+    var createImage = function (sUrl) {
       return $.Deferred(function (deferred) {
-        $.extend(new Image(), {
-          detachEvents: function () {
-            this.onload = null;
-            this.onerror = null;
-            this.onabort = null;
-          },
-          onload: function () {
-            this.detachEvents();
-            deferred.resolve(this);
-          },
-          onerror: function () {
-            // URL returns 404, etc
-            this.detachEvents();
-            deferred.reject(this);
-          },
-          onabort: function () {
-            // IE may call this if user clicks "Stop"
-            this.detachEvents();
-            deferred.reject(this);
-          }
-        }).src = sUrl;
+        $('<img>').one('load', function () {
+          deferred.resolve($(this));
+        }).one('error abort', function () {
+          deferred.reject($(this));
+        }).css({
+          display: 'none'
+        }).appendTo(document.body).attr('src', sUrl);
       }).promise();
     };
+
     return {
       readFileAsDataURL: readFileAsDataURL,
-      loadImage: loadImage
+      createImage: createImage
     };
   })();
 
@@ -1374,10 +1361,12 @@
      * @param {String} sUrl
      */
     this.insertImage = function ($editable, sUrl) {
-      async.loadImage(sUrl).done(function (image) {
+      async.createImage(sUrl).then(function ($image) {
         recordUndo($editable);
-        var $image = $('<img>').attr('src', sUrl);
-        $image.css('width', Math.min($editable.width(), image.width));
+        $image.css({
+          display: '',
+          width: Math.min($editable.width(), $image.width())
+        });
         range.create().insertNode($image[0]);
       }).fail(function () {
         var callbacks = $editable.data('callbacks');
@@ -2121,7 +2110,7 @@
       // else insert Image as dataURL
       } else {
         $.each(files, function (idx, file) {
-          async.readFileAsDataURL(file).done(function (sDataURL) {
+          async.readFileAsDataURL(file).then(function (sDataURL) {
             editor.insertImage($editable, sDataURL);
           }).fail(function () {
             if (callbacks.onImageUploadError) {
@@ -2141,13 +2130,11 @@
       var bCmd = agent.bMac ? event.metaKey : event.ctrlKey,
           bShift = event.shiftKey, keyCode = event.keyCode;
 
-      // optimize
-      var bExecCmd = (bCmd || bShift || keyCode === key.TAB);
-      var oLayoutInfo = (bExecCmd) ? makeLayoutInfo(event.target) : null;
+      var oLayoutInfo = makeLayoutInfo(event.target);
+      var options = oLayoutInfo.editor().data('options');
 
       if (keyCode === key.TAB) {
-        var nTabsize = oLayoutInfo.editor().data('options').tabsize;
-        editor.tab(oLayoutInfo.editable(), nTabsize, bShift);
+        editor.tab(oLayoutInfo.editable(), options.tabsize, bShift);
       } else if (bCmd && ((bShift && keyCode === key.Z) || keyCode === key.Y)) {
         editor.redo(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.Z) {
@@ -2199,16 +2186,6 @@
         return; // not matched
       }
       event.preventDefault(); //prevent default event for FF
-    };
-
-    var hDropImage = function (event) {
-      var dataTransfer = event.originalEvent.dataTransfer;
-      if (dataTransfer && dataTransfer.files) {
-        var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-        oLayoutInfo.editable().focus();
-        insertImages(oLayoutInfo.editable(), dataTransfer.files);
-      }
-      event.preventDefault();
     };
 
     var hMousedown = function (event) {
@@ -2342,7 +2319,7 @@
             var nHeight = $(window).height() - $toolbar.outerHeight();
             $editable.css('height', nHeight);
             $codable.css('height', nHeight);
-            var cmEditor = $codable.data('cmEditor');
+            cmEditor = $codable.data('cmEditor');
             if (cmEditor) {
               cmEditor.setSize(null, nHeight);
             }
@@ -2460,13 +2437,18 @@
       var $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
 
       var posOffset;
+      // HTML5 with jQuery - e.offsetX is undefined in Firefox
       if (event.offsetX === undefined) {
-        // HTML5 with jQuery - e.offsetX is undefined in Firefox
         var posCatcher = $(event.target).offset();
-        posOffset = {x: event.pageX - posCatcher.left,
-                     y: event.pageY - posCatcher.top};
+        posOffset = {
+          x: event.pageX - posCatcher.left,
+          y: event.pageY - posCatcher.top
+        };
       } else {
-        posOffset = {x: event.offsetX, y: event.offsetY};
+        posOffset = {
+          x: event.offsetX,
+          y: event.offsetY
+        };
       }
 
       var dim = {
@@ -2527,8 +2509,14 @@
       });
 
       // attach dropImage
-      $dropzone.on('drop', function (e) {
-        hDropImage(e);
+      $dropzone.on('drop', function (event) {
+        var dataTransfer = event.originalEvent.dataTransfer;
+        if (dataTransfer && dataTransfer.files) {
+          var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+          oLayoutInfo.editable().focus();
+          insertImages(oLayoutInfo.editable(), dataTransfer.files);
+        }
+        event.preventDefault();
       }).on('dragover', false); // prevent default dragover event
     };
 

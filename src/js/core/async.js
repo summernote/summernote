@@ -7,7 +7,7 @@ define('core/async', function () {
      * read contents of file as representing URL
      *
      * @param {File} file
-     * @return {Promise}
+     * @return {Promise} - then: sDataUrl
      */
     var readFileAsDataURL = function (file) {
       return $.Deferred(function (deferred) {
@@ -24,39 +24,26 @@ define('core/async', function () {
     };
   
     /**
-     * load image from url string
+     * create `<image>` from url string
      *
      * @param {String} sUrl
-     * @param {Promise}
+     * @return {Promise} - then: $image
      */
-    var loadImage = function (sUrl) {
+    var createImage = function (sUrl) {
       return $.Deferred(function (deferred) {
-        $.extend(new Image(), {
-          detachEvents: function () {
-            this.onload = null;
-            this.onerror = null;
-            this.onabort = null;
-          },
-          onload: function () {
-            this.detachEvents();
-            deferred.resolve(this);
-          },
-          onerror: function () {
-            // URL returns 404, etc
-            this.detachEvents();
-            deferred.reject(this);
-          },
-          onabort: function () {
-            // IE may call this if user clicks "Stop"
-            this.detachEvents();
-            deferred.reject(this);
-          }
-        }).src = sUrl;
+        $('<img>').one('load', function () {
+          deferred.resolve($(this));
+        }).one('error abort', function () {
+          deferred.reject($(this));
+        }).css({
+          display: 'none'
+        }).appendTo(document.body).attr('src', sUrl);
       }).promise();
     };
+
     return {
       readFileAsDataURL: readFileAsDataURL,
-      loadImage: loadImage
+      createImage: createImage
     };
   })();
 
