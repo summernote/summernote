@@ -59,7 +59,7 @@ define([
      * @param {KeyEvent} event
      */
     var hKeydown = function (event) {
-      var bCmd = agent.bMac ? event.metaKey : event.ctrlKey,
+      var bCmd = agent.bMac ? event.metaKey : (event.ctrlKey && !event.altKey),
           bShift = event.shiftKey, keyCode = event.keyCode;
 
       var oLayoutInfo = makeLayoutInfo(event.target);
