@@ -76,6 +76,7 @@ module.exports = function (grunt) {
           port: 3000,
           livereload: true,
           middleware: function (connect, options, middlewares) {
+            middlewares = middlewares || [];
             return middlewares.concat([
               require('connect-livereload')(), // livereload middleware
               connect.static(options.base),    // serve static files
