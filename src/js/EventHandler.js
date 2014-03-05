@@ -91,7 +91,6 @@ define([
           editor.restoreRange($editable);
           editor.createLink($editable, sLinkUrl, bNewWindow);
         });
-
       } else if (bCmd && keyCode === key.SLASH) {
         dialog.showHelpDialog(oLayoutInfo.editable(), oLayoutInfo.dialog());
       } else if (bCmd && bShift && keyCode === key.L) {
@@ -240,16 +239,23 @@ define([
           });
         } else if (sEvent === 'showImageDialog') {
           $editable.focus();
-          dialog.showImageDialog($editable, $dialog, function (files) {
-            insertImages($editable, files);
-          }, function (sUrl) {
-            editor.restoreRange($editable);
-            editor.insertImage($editable, sUrl);
+
+          dialog.showImageDialog($editable, $dialog).then(function (data) {
+            if (typeof data === 'string') {
+              insertImages($editable, data);
+            } else {
+              editor.restoreRange($editable);
+              editor.insertImage($editable, data);
+            }
           });
         } else if (sEvent === 'showVideoDialog') {
           $editable.focus();
-          editor.setVideoDialog($editable, function (linkInfo, cb) {
-            dialog.showVideoDialog($editable, $dialog, linkInfo, cb);
+          var videoInfo = editor.getVideoInfo();
+
+          editor.saveRange($editable);
+          dialog.showVideoDialog($editable, $dialog, videoInfo).then(function (sUrl) {
+            editor.restoreRange($editable);
+            editor.insertVideo($editable, sUrl);
           });
         } else if (sEvent === 'showHelpDialog') {
           dialog.showHelpDialog($editable, $dialog);

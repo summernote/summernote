@@ -290,9 +290,8 @@ define([
     };
 
     /**
-     * getLinkInfo
+     * get link info
      *
-     * @param {jQuery} $editable
      * @return {Promise}
      */
     this.getLinkInfo = function () {
@@ -316,11 +315,11 @@ define([
     };
 
     /**
-     * set videoInfo before video dialog opend.
-     * @param {jQuery} $editable
-     * @param {Function} fnShowDialog
+     * get video info
+     *
+     * @return {Object}
      */
-    this.setVideoDialog = function ($editable, fnShowDialog) {
+    this.getVideoInfo = function () {
       var rng = range.create();
 
       if (rng.isOnAnchor()) {
@@ -328,13 +327,9 @@ define([
         rng = range.createFromNode(elAnchor);
       }
 
-      var self = this;
-      fnShowDialog({
+      return {
         text: rng.toString()
-      }, function (sLinkUrl) {
-        rng.select();
-        self.insertVideo($editable, sLinkUrl);
-      });
+      };
     };
 
     this.color = function ($editable, sObjColor) {

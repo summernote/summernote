@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-03-05T04:19Z
+ * Date: 2014-03-05T16:57Z
  */
 (function (factory) {
   /* global define */
@@ -1534,9 +1534,8 @@
     };
 
     /**
-     * getLinkInfo
+     * get link info
      *
-     * @param {jQuery} $editable
      * @return {Promise}
      */
     this.getLinkInfo = function () {
@@ -1560,11 +1559,11 @@
     };
 
     /**
-     * set videoInfo before video dialog opend.
-     * @param {jQuery} $editable
-     * @param {Function} fnShowDialog
+     * get video info
+     *
+     * @return {Object}
      */
-    this.setVideoDialog = function ($editable, fnShowDialog) {
+    this.getVideoInfo = function () {
       var rng = range.create();
 
       if (rng.isOnAnchor()) {
@@ -1572,13 +1571,9 @@
         rng = range.createFromNode(elAnchor);
       }
 
-      var self = this;
-      fnShowDialog({
+      return {
         text: rng.toString()
-      }, function (sLinkUrl) {
-        rng.select();
-        self.insertVideo($editable, sLinkUrl);
-      });
+      };
     };
 
     this.color = function ($editable, sObjColor) {
@@ -1938,42 +1933,45 @@
     /**
      * show image dialog
      *
+     * @param {jQuery} $editable
      * @param {jQuery} $dialog
-     * @param {Function} fnInsertImages 
-     * @param {Function} fnInsertImage 
+     * @return {Promise}
      */
-    this.showImageDialog = function ($editable, $dialog, fnInsertImages, fnInsertImage) {
-      var $imageDialog = $dialog.find('.note-image-dialog');
+    this.showImageDialog = function ($editable, $dialog) {
+      return $.Deferred(function (deferred) {
+        var $imageDialog = $dialog.find('.note-image-dialog');
 
-      var $imageInput = $dialog.find('.note-image-input'),
-          $imageUrl = $dialog.find('.note-image-url'),
-          $imageBtn = $dialog.find('.note-image-btn');
+        var $imageInput = $dialog.find('.note-image-input'),
+            $imageUrl = $dialog.find('.note-image-url'),
+            $imageBtn = $dialog.find('.note-image-btn');
 
-      $imageDialog.one('shown.bs.modal', function (event) {
-        event.stopPropagation();
+        $imageDialog.one('shown.bs.modal', function (event) {
+          event.stopPropagation();
 
-        $imageInput.on('change', function () {
-          fnInsertImages(this.files);
-          $(this).val('');
-          $imageDialog.modal('hide');
-        });
+          $imageInput.on('change', function () {
+            $imageDialog.modal('hide');
+            deferred.resolve(this.files);
+          });
 
-        $imageBtn.click(function (event) {
-          $imageDialog.modal('hide');
-          fnInsertImage($imageUrl.val());
-          event.preventDefault();
-        });
+          $imageBtn.click(function (event) {
+            event.preventDefault();
 
-        $imageUrl.keyup(function () {
-          toggleBtn($imageBtn, $imageUrl.val());
-        }).val('').focus();
-      }).one('hidden.bs.modal', function (event) {
-        event.stopPropagation();
-        $editable.focus();
-        $imageInput.off('change');
-        $imageUrl.off('keyup');
-        $imageBtn.off('click');
-      }).modal('show');
+            $imageDialog.modal('hide');
+            deferred.resolve($imageUrl.val());
+          });
+
+          $imageUrl.keyup(function () {
+            toggleBtn($imageBtn, $imageUrl.val());
+          }).val('').focus();
+        }).one('hidden.bs.modal', function (event) {
+          event.stopPropagation();
+
+          $editable.focus();
+          $imageInput.off('change');
+          $imageUrl.off('keyup');
+          $imageBtn.off('click');
+        }).modal('show');
+      });
     };
 
     /**
@@ -1981,31 +1979,35 @@
      *
      * @param {jQuery} $dialog 
      * @param {Object} videoInfo 
-     * @param {Function} callback 
+     * @return {Promise}
      */
-    this.showVideoDialog = function ($editable, $dialog, videoInfo, callback) {
-      var $videoDialog = $dialog.find('.note-video-dialog');
-      var $videoUrl = $videoDialog.find('.note-video-url'),
-          $videoBtn = $videoDialog.find('.note-video-btn');
+    this.showVideoDialog = function ($editable, $dialog, videoInfo) {
+      return $.Deferred(function (deferred) {
+        var $videoDialog = $dialog.find('.note-video-dialog');
+        var $videoUrl = $videoDialog.find('.note-video-url'),
+            $videoBtn = $videoDialog.find('.note-video-btn');
 
-      $videoDialog.one('shown.bs.modal', function (event) {
-        event.stopPropagation();
+        $videoDialog.one('shown.bs.modal', function (event) {
+          event.stopPropagation();
 
-        $videoUrl.val(videoInfo.text).keyup(function () {
-          toggleBtn($videoBtn, $videoUrl.val());
-        }).trigger('keyup').trigger('focus');
+          $videoUrl.val(videoInfo.text).keyup(function () {
+            toggleBtn($videoBtn, $videoUrl.val());
+          }).trigger('keyup').trigger('focus');
 
-        $videoBtn.click(function (event) {
-          $videoDialog.modal('hide');
-          callback($videoUrl.val());
-          event.preventDefault();
-        });
-      }).one('hidden.bs.modal', function (event) {
-        event.stopPropagation();
-        $editable.focus();
-        $videoUrl.off('keyup');
-        $videoBtn.off('click');
-      }).modal('show');
+          $videoBtn.click(function (event) {
+            event.preventDefault();
+
+            $videoDialog.modal('hide');
+            deferred.resolve($videoUrl.val());
+          });
+        }).one('hidden.bs.modal', function (event) {
+          event.stopPropagation();
+
+          $editable.focus();
+          $videoUrl.off('keyup');
+          $videoBtn.off('click');
+        }).modal('show');
+      });
     };
 
     /**
@@ -2154,7 +2156,6 @@
           editor.restoreRange($editable);
           editor.createLink($editable, sLinkUrl, bNewWindow);
         });
-
       } else if (bCmd && keyCode === key.SLASH) {
         dialog.showHelpDialog(oLayoutInfo.editable(), oLayoutInfo.dialog());
       } else if (bCmd && bShift && keyCode === key.L) {
@@ -2295,6 +2296,7 @@
         } else if (sEvent === 'showLinkDialog') { // popover to dialog
           $editable.focus();
           var linkInfo = editor.getLinkInfo();
+
           editor.saveRange($editable);
           dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkUrl, bNewWindow) {
             editor.restoreRange($editable);
@@ -2302,16 +2304,23 @@
           });
         } else if (sEvent === 'showImageDialog') {
           $editable.focus();
-          dialog.showImageDialog($editable, $dialog, function (files) {
-            insertImages($editable, files);
-          }, function (sUrl) {
-            editor.restoreRange($editable);
-            editor.insertImage($editable, sUrl);
+
+          dialog.showImageDialog($editable, $dialog).then(function (data) {
+            if (typeof data === 'string') {
+              insertImages($editable, data);
+            } else {
+              editor.restoreRange($editable);
+              editor.insertImage($editable, data);
+            }
           });
         } else if (sEvent === 'showVideoDialog') {
           $editable.focus();
-          editor.setVideoDialog($editable, function (linkInfo, cb) {
-            dialog.showVideoDialog($editable, $dialog, linkInfo, cb);
+          var videoInfo = editor.getVideoInfo();
+
+          editor.saveRange($editable);
+          dialog.showVideoDialog($editable, $dialog, videoInfo).then(function (sUrl) {
+            editor.restoreRange($editable);
+            editor.insertVideo($editable, sUrl);
           });
         } else if (sEvent === 'showHelpDialog') {
           dialog.showHelpDialog($editable, $dialog);
