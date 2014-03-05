@@ -290,32 +290,29 @@ define([
     };
 
     /**
-     * set linkInfo before link dialog opened.
+     * getLinkInfo
+     *
      * @param {jQuery} $editable
-     * @param {Function} fnShowDialog
+     * @return {Promise}
      */
-    this.setLinkDialog = function ($editable, fnShowDialog) {
-      var rng = range.create(),
-          bNewWindow = true;
+    this.getLinkInfo = function ($editable) {
+      var rng = range.create();
+      var bNewWindow = true;
+      var sUrl = '';
 
-      // If range on anchor (Edit).
+      // If range on anchor expand range on anchor(for edit link).
       if (rng.isOnAnchor()) {
-        // expand range on anchor.
         var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
         rng = range.createFromNode(elAnchor);
         bNewWindow = $(elAnchor).attr('target') === '_blank';
+        sUrl = elAnchor.href;
       }
 
-      var self = this;
-      fnShowDialog({
+      return {
         text: rng.toString(),
-        url: rng.isOnAnchor() ? dom.ancestor(rng.sc, dom.isAnchor).href : '',
+        url: sUrl,
         newWindow: bNewWindow
-      }, function (sLinkUrl, bNewWindow) {
-        // restore range
-        rng.select();
-        self.createLink($editable, sLinkUrl, bNewWindow);
-      });
+      };
     };
 
     /**

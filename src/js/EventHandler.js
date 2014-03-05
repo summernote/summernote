@@ -82,9 +82,16 @@ define([
       } else if (bCmd && keyCode === key.BACKSLACH) {
         editor.removeFormat(oLayoutInfo.editable());
       } else if (bCmd && keyCode === key.K) {
-        editor.setLinkDialog(oLayoutInfo.editable(), function (linkInfo, cb) {
-          dialog.showLinkDialog(oLayoutInfo.editable(), oLayoutInfo.dialog(), linkInfo, cb);
+        var $editable = oLayoutInfo.editable(),
+            $dialog = oLayoutInfo.dialog(),
+            linkInfo = editor.getLinkInfo();
+
+        editor.saveRange($editable);
+        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkUrl, bNewWindow) {
+          editor.restoreRange($editable);
+          editor.createLink($editable, sLinkUrl, bNewWindow);
         });
+
       } else if (bCmd && keyCode === key.SLASH) {
         dialog.showHelpDialog(oLayoutInfo.editable(), oLayoutInfo.dialog());
       } else if (bCmd && bShift && keyCode === key.L) {
@@ -223,9 +230,11 @@ define([
         if ($.inArray(sEvent, ['backColor', 'foreColor']) !== -1) {
           toolbar.updateRecentColor($btn[0], sEvent, sValue);
         } else if (sEvent === 'showLinkDialog') { // popover to dialog
-          $editable.focus();
-          editor.setLinkDialog($editable, function (linkInfo, cb) {
-            dialog.showLinkDialog($editable, $dialog, linkInfo, cb);
+          $editable.focus(), linkInfo = editor.getLinkInfo();
+          editor.saveRange($editable);
+          dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkUrl, bNewWindow) {
+            editor.restoreRange($editable);
+            editor.createLink($editable, sLinkUrl, bNewWindow);
           });
         } else if (sEvent === 'showImageDialog') {
           $editable.focus();
