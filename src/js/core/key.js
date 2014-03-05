@@ -1,4 +1,4 @@
-define('core/key', function () {
+define('summernote/core/key', function () {
   /**
    * Object for keycodes.
    */

@@ -1,4 +1,4 @@
-define('module/Dialog', function () {
+define('summernote/module/Dialog', function () {
   /**
    * Dialog 
    *

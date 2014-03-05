@@ -1,5 +1,6 @@
 define([
-  'core/agent', 'core/dom', 'core/range', 'core/async', 'editing/Style', 'editing/Table'
+  'summernote/core/agent', 'summernote/core/dom', 'summernote/core/range',
+  'summernote/core/async', 'summernote/editing/Style', 'summernote/editing/Table'
 ], function (agent, dom, range, async, Style, Table) {
   /**
    * Editor

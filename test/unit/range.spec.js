@@ -3,7 +3,7 @@
  * (c) 2013~ Alan Hong
  * summernote may be freely distributed under the MIT license./
  */
-define(['jquery', 'core/dom', 'core/range'], function ($, dom, range) {
+define(['jquery', 'summernote/core/dom', 'summernote/core/range'], function ($, dom, range) {
   return function () {
     test('rng.nodes', function () {
       var rng, $cont, $para, $li, $h1, $h2, $b;

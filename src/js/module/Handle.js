@@ -1,4 +1,4 @@
-define('module/Handle', function () {
+define('summernote/module/Handle', function () {
   /**
    * Handle
    */

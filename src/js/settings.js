@@ -1,4 +1,4 @@
-define('settings', function () {
+define('summernote/settings', function () {
   var settings = {
     // version
     version: '@VERSION',

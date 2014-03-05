@@ -1,6 +1,6 @@
 define([
-  'core/agent',
-  'core/dom'
+  'summernote/core/agent',
+  'summernote/core/dom'
 ], function (agent, dom) {
   /**
    * Style

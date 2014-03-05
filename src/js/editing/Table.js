@@ -1,5 +1,5 @@
 define([
-  'core/dom', 'core/range', 'core/list'
+  'summernote/core/dom', 'summernote/core/range', 'summernote/core/list'
 ], function (dom, range, list) {
   /**
    * Table
