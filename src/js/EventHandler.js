@@ -1,8 +1,8 @@
 define([
   'CodeMirror',
-  'core/agent', 'core/dom', 'core/async', 'core/key',
-  'editing/Style', 'editing/Editor', 'editing/History',
-  'module/Toolbar', 'module/Popover', 'module/Handle', 'module/Dialog'
+  'summernote/core/agent', 'summernote/core/dom', 'summernote/core/async', 'summernote/core/key',
+  'summernote/editing/Style', 'summernote/editing/Editor', 'summernote/editing/History',
+  'summernote/module/Toolbar', 'summernote/module/Popover', 'summernote/module/Handle', 'summernote/module/Dialog'
 ], function (CodeMirror,
              agent, dom, async, key,
              Style, Editor, History,

@@ -1,7 +1,7 @@
 define([
-  'core/agent', 'core/dom',
-  'settings',
-  'EventHandler', 'Renderer'
+  'summernote/core/agent', 'summernote/core/dom',
+  'summernote/settings',
+  'summernote/EventHandler', 'summernote/Renderer'
 ], function (agent, dom, settings, EventHandler, Renderer) {
   // jQuery namespace for summernote
   $.summernote = $.summernote || {};

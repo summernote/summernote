@@ -1,4 +1,4 @@
-define(['core/range'], function (range) {
+define(['summernote/core/range'], function (range) {
   /**
    * History
    * @class

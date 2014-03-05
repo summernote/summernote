@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-03-05T04:19Z
+ * Date: 2014-03-05T12:17Z
  */
 (function (factory) {
   /* global define */
@@ -2295,6 +2295,7 @@
         } else if (sEvent === 'showLinkDialog') { // popover to dialog
           $editable.focus();
           var linkInfo = editor.getLinkInfo();
+
           editor.saveRange($editable);
           dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkUrl, bNewWindow) {
             editor.restoreRange($editable);

@@ -11,7 +11,12 @@ require.config({
   },
   shim: {
     CodeMirror: { exports: 'CodeMirror' },
-  }
+  },
+  packages: [{
+    name: 'summernote',
+    location: './',
+    main: 'summernote'
+  }]
 });
 
 require([
