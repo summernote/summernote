@@ -242,10 +242,10 @@ define([
 
           dialog.showImageDialog($editable, $dialog).then(function (data) {
             if (typeof data === 'string') {
-              insertImages($editable, data);
-            } else {
               editor.restoreRange($editable);
               editor.insertImage($editable, data);
+            } else {
+              insertImages($editable, data);
             }
           });
         } else if (sEvent === 'showVideoDialog') {
