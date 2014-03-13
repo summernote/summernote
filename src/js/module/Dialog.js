@@ -35,10 +35,13 @@ define('module/Dialog', function () {
         $imageDialog.one('shown.bs.modal', function (event) {
           event.stopPropagation();
 
-          $imageInput.on('change', function () {
-            $imageDialog.modal('hide');
-            deferred.resolve(this.files);
-          });
+          // Cloning imageInput to clear element.
+          $imageInput.replaceWith($imageInput.clone()
+            .on('change', function () {
+              $imageDialog.modal('hide');
+              deferred.resolve(this.files);
+            })
+          );
 
           $imageBtn.click(function (event) {
             event.preventDefault();
