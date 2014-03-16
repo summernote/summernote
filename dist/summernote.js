@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-03-16T03:56Z
+ * Date: 2014-03-16T05:16Z
  */
 (function (factory) {
   /* global define */
@@ -653,7 +653,65 @@
       onkeydown: null,          // keydown
       onImageUpload: null,      // imageUploadHandler
       onImageUploadError: null, // imageUploadErrorHandler
-      onToolbarClick: null
+      onToolbarClick: null,
+
+      keyMap: {
+        pc: {
+          'CTRL+Z': 'undo',
+          'CTRL+Y': 'redo',
+          'TAB': 'tab',
+          'SHIFT+TAB': 'untab',
+          'CTRL+B': 'bold',
+          'CTRL+I': 'italic',
+          'CTRL+U': 'underline',
+          'CTRL+SHIFT+S': 'strikethrough',
+          'CTRL+BACKSLASH': 'removeFormat',
+          'CTRL+SHIFT+L': 'justifyLeft',
+          'CTRL+SHIFT+E': 'justifyCenter',
+          'CTRL+SHIFT+R': 'justifyRight',
+          'CTRL+SHIFT+J': 'justifyFull',
+          'CTRL+SHIFT+NUM7': 'insertUnorderedList',
+          'CTRL+SHIFT+NUM8': 'insertOrderedList',
+          'CTRL+LEFTBRACKET': 'outdent',
+          'CTRL+RIGHTBRACKET': 'indent',
+          'CTRL+NUM0': 'formatPara',
+          'CTRL+NUM1': 'formatH1',
+          'CTRL+NUM2': 'formatH2',
+          'CTRL+NUM3': 'formatH3',
+          'CTRL+NUM4': 'formatH4',
+          'CTRL+NUM5': 'formatH5',
+          'CTRL+NUM6': 'formatH6',
+          'CTRL+ENTER': 'insertHorizontalRule'
+        },
+
+        mac: {
+          'CMD+Z': 'undo',
+          'CMD+SHIFT+Z': 'redo',
+          'TAB': 'tab',
+          'SHIFT+TAB': 'untab',
+          'CMD+B': 'bold',
+          'CMD+I': 'italic',
+          'CMD+U': 'underline',
+          'CMD+SHIFT+S': 'strikethrough',
+          'CMD+BACKSLASH': 'removeFormat',
+          'CMD+SHIFT+L': 'justifyLeft',
+          'CMD+SHIFT+E': 'justifyCenter',
+          'CMD+SHIFT+R': 'justifyRight',
+          'CMD+SHIFT+J': 'justifyFull',
+          'CMD+SHIFT+NUM7': 'insertUnorderedList',
+          'CMD+SHIFT+NUM8': 'insertOrderedList',
+          'CMD+LEFTBRACKET': 'outdent',
+          'CMD+RIGHTBRACKET': 'indent',
+          'CMD+NUM0': 'formatPara',
+          'CMD+NUM1': 'formatH1',
+          'CMD+NUM2': 'formatH2',
+          'CMD+NUM3': 'formatH3',
+          'CMD+NUM4': 'formatH4',
+          'CMD+NUM5': 'formatH5',
+          'CMD+NUM6': 'formatH6',
+          'CMD+ENTER': 'insertHorizontalRule'
+        }
+      }
     },
 
     // default language: en-US
@@ -813,35 +871,44 @@
    * Object for keycodes.
    */
   var key = {
-    BACKSPACE: 8,
-    TAB: 9,
-    ENTER: 13,
-    SPACE: 32,
+    isEdit: function (keyCode) {
+      return [8, 9, 13, 32].indexOf(keyCode) !== -1;
+    },
+    nameFromCode: {
+      '8': 'BACKSPACE',
+      '9': 'TAB',
+      '13': 'ENTER',
+      '32': 'SPACE',
 
-    // Number: 0-9
-    NUM0: 48,
-    NUM1: 49,
-    NUM6: 54,
-    NUM7: 55,
-    NUM8: 56,
+      // Number: 0-9
+      '48': 'NUM0',
+      '49': 'NUM1',
+      '50': 'NUM2',
+      '51': 'NUM3',
+      '52': 'NUM4',
+      '53': 'NUM5',
+      '54': 'NUM6',
+      '55': 'NUM7',
+      '56': 'NUM8',
 
-    // Alphabet: a-z
-    B: 66,
-    E: 69,
-    I: 73,
-    J: 74,
-    K: 75,
-    L: 76,
-    R: 82,
-    S: 83,
-    U: 85,
-    Y: 89,
-    Z: 90,
+      // Alphabet: a-z
+      '66': 'B',
+      '69': 'E',
+      '73': 'I',
+      '74': 'J',
+      '75': 'K',
+      '76': 'L',
+      '82': 'R',
+      '83': 'S',
+      '85': 'U',
+      '89': 'Y',
+      '90': 'Z',
 
-    SLASH: 191,
-    LEFTBRACKET: 219,
-    BACKSLACH: 220,
-    RIGHTBRACKET: 221
+      '191': 'SLASH',
+      '219': 'LEFTBRACKET',
+      '220': 'BACKSLASH',
+      '221': 'RIGHTBRACKET'
+    }
   };
 
   /**
@@ -1345,12 +1412,22 @@
      * @param {Number} nTabsize
      * @param {Boolean} bShift
      */
-    this.tab = function ($editable, nTabsize, bShift) {
+    this.tab = function ($editable, options) {
       var rng = range.create();
       if (rng.isCollapsed() && rng.isOnCell()) {
-        table.tab(rng, bShift);
+        table.tab(rng);
       } else {
-        insertTab($editable, rng, nTabsize);
+        insertTab($editable, rng, options.tabsize);
+      }
+    };
+
+    /**
+     * handle shift+tab key
+     */
+    this.untab = function () {
+      var rng = range.create();
+      if (rng.isCollapsed() && rng.isOnCell()) {
+        table.tab(rng, true);
       }
     };
 
@@ -1446,6 +1523,20 @@
       sTagName = agent.bMSIE ? '<' + sTagName + '>' : sTagName;
       document.execCommand('FormatBlock', false, sTagName);
     };
+
+    this.formatPara = function ($editable) {
+      this.formatBlock($editable, 'P');
+    };
+
+    /* jshint ignore:start */
+    for (var idx = 1; idx <= 6; idx ++) {
+      this['formatH' + idx] = function (idx) {
+        return function ($editable) {
+          this.formatBlock($editable, 'H' + idx);
+        };
+      }(idx);
+    };
+    /* jshint ignore:end */
 
     /**
      * fontsize
@@ -2121,79 +2212,6 @@
       }
     };
 
-    /**
-     * keydown event handler
-     *
-     * @param {KeyEvent} event
-     */
-    var hKeydown = function (event) {
-      var bCmd = agent.bMac ? event.metaKey : event.ctrlKey,
-          bShift = event.shiftKey, keyCode = event.keyCode;
-
-      var oLayoutInfo = makeLayoutInfo(event.target);
-      var options = oLayoutInfo.editor().data('options');
-
-      if (keyCode === key.TAB) {
-        editor.tab(oLayoutInfo.editable(), options.tabsize, bShift);
-      } else if (bCmd && ((bShift && keyCode === key.Z) || keyCode === key.Y)) {
-        editor.redo(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.Z) {
-        editor.undo(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.B) {
-        editor.bold(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.I) {
-        editor.italic(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.U) {
-        editor.underline(oLayoutInfo.editable());
-      } else if (bCmd && bShift && keyCode === key.S) {
-        editor.strikethrough(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.BACKSLACH) {
-        editor.removeFormat(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.K) {
-        var $editable = oLayoutInfo.editable(),
-            $dialog = oLayoutInfo.dialog(),
-            linkInfo = editor.getLinkInfo();
-
-        editor.saveRange($editable);
-        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkUrl, bNewWindow) {
-          editor.restoreRange($editable);
-          editor.createLink($editable, sLinkUrl, bNewWindow);
-        });
-      } else if (bCmd && keyCode === key.SLASH) {
-        dialog.showHelpDialog(oLayoutInfo.editable(), oLayoutInfo.dialog());
-      } else if (bCmd && bShift && keyCode === key.L) {
-        editor.justifyLeft(oLayoutInfo.editable());
-      } else if (bCmd && bShift && keyCode === key.E) {
-        editor.justifyCenter(oLayoutInfo.editable());
-      } else if (bCmd && bShift && keyCode === key.R) {
-        editor.justifyRight(oLayoutInfo.editable());
-      } else if (bCmd && bShift && keyCode === key.J) {
-        editor.justifyFull(oLayoutInfo.editable());
-      } else if (bCmd && bShift && keyCode === key.NUM7) {
-        editor.insertUnorderedList(oLayoutInfo.editable());
-      } else if (bCmd && bShift && keyCode === key.NUM8) {
-        editor.insertOrderedList(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.LEFTBRACKET) {
-        editor.outdent(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.RIGHTBRACKET) {
-        editor.indent(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.NUM0) { // formatBlock Paragraph
-        editor.formatBlock(oLayoutInfo.editable(), 'P');
-      } else if (bCmd && (key.NUM1 <= keyCode && keyCode <= key.NUM6)) {
-        var sHeading = 'H' + String.fromCharCode(keyCode); // H1~H6
-        editor.formatBlock(oLayoutInfo.editable(), sHeading);
-      } else if (bCmd && keyCode === key.ENTER) {
-        editor.insertHorizontalRule(oLayoutInfo.editable());
-      } else {
-        if (keyCode === key.BACKSPACE || keyCode === key.ENTER ||
-            keyCode === key.SPACE) {
-          editor.recordUndo(makeLayoutInfo(event.target).editable());
-        }
-        return; // not matched
-      }
-      event.preventDefault(); //prevent default event for FF
-    };
-
     var hMousedown = function (event) {
       //preventDefault Selection for FF, IE8+
       if (dom.isImg(event.target)) { event.preventDefault(); }
@@ -2537,6 +2555,32 @@
       }).on('dragover', false); // prevent default dragover event
     };
 
+    this.bindKeyMap = function (oLayoutInfo, keyMap) {
+      var $editor = oLayoutInfo.editor;
+      var $editable = oLayoutInfo.editable;
+
+      $editable.on('keydown', function (event) {
+        var aKey = [];
+        var keyName = key.nameFromCode[event.keyCode];
+
+        // modifier
+        if (event.metaKey) { aKey.push('CMD'); }
+        if (event.ctrlKey) { aKey.push('CTRL'); }
+        if (event.shiftKey) { aKey.push('SHIFT'); }
+
+        // keycode
+        if (keyName) { aKey.push(keyName); }
+
+        var handler = keyMap[aKey.join('+')];
+        if (handler) {
+          event.preventDefault();
+          editor[handler]($editable, $editor.data('options'));
+        } else if (key.isEdit(event.keyCode)) {
+          editor.recordUndo($editable);
+        }
+      });
+    };
+
     /**
      * attach eventhandler
      *
@@ -2545,7 +2589,9 @@
      * @param {Function} options.enter - enter key handler
      */
     this.attach = function (oLayoutInfo, options) {
-      oLayoutInfo.editable.on('keydown', hKeydown);
+      var keyMap = options.keyMap[agent.bMac ? 'mac' : 'pc'];
+      this.bindKeyMap(oLayoutInfo, keyMap);
+
       oLayoutInfo.editable.on('mousedown', hMousedown);
       oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
       oLayoutInfo.editable.on('scroll', hScroll);
@@ -2637,7 +2683,7 @@
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.image + '" data-event="showImageDialog" tabindex="-1"><i class="fa fa-picture-o icon-picture"></i></button>';
       },
       link: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.link + '" data-event="showLinkDialog" data-shortcut="Ctrl+K" data-mac-shortcut="⌘+K" tabindex="-1"><i class="fa fa-link icon-link"></i></button>';
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.link + '" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-link icon-link"></i></button>';
       },
       video: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.video.video + '" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>';
@@ -2764,7 +2810,7 @@
         '</ul>';
       },
       help: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.options.help + '" data-shortcut="Ctrl+/" data-mac-shortcut="⌘+/" data-event="showHelpDialog" tabindex="-1"><i class="fa fa-question icon-question"></i></button>';
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.options.help + '" data-event="showHelpDialog" tabindex="-1"><i class="fa fa-question icon-question"></i></button>';
       },
       fullscreen: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.options.fullscreen + '" data-event="fullscreen" tabindex="-1"><i class="fa fa-arrows-alt icon-fullscreen"></i></button>';
@@ -2851,7 +2897,6 @@
                  '<tr><td>⌘ + ⇧ + Z</td><td>' + lang.history.redo + '</td></tr>' +
                  '<tr><td>⌘ + ]</td><td>' + lang.paragraph.indent + '</td></tr>' +
                  '<tr><td>⌘ + [</td><td>' + lang.paragraph.outdent + '</td></tr>' +
-                 '<tr><td>⌘ + K</td><td>' + lang.link.insert + '</td></tr>' +
                  '<tr><td>⌘ + ENTER</td><td>' + lang.hr.insert + '</td></tr>' +
                '</tbody>' +
              '</table>';

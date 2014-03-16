@@ -53,79 +53,6 @@ define([
       }
     };
 
-    /**
-     * keydown event handler
-     *
-     * @param {KeyEvent} event
-     */
-    var hKeydown = function (event) {
-      var bCmd = agent.bMac ? event.metaKey : event.ctrlKey,
-          bShift = event.shiftKey, keyCode = event.keyCode;
-
-      var oLayoutInfo = makeLayoutInfo(event.target);
-      var options = oLayoutInfo.editor().data('options');
-
-      if (keyCode === key.TAB) {
-        editor.tab(oLayoutInfo.editable(), options.tabsize, bShift);
-      } else if (bCmd && ((bShift && keyCode === key.Z) || keyCode === key.Y)) {
-        editor.redo(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.Z) {
-        editor.undo(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.B) {
-        editor.bold(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.I) {
-        editor.italic(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.U) {
-        editor.underline(oLayoutInfo.editable());
-      } else if (bCmd && bShift && keyCode === key.S) {
-        editor.strikethrough(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.BACKSLACH) {
-        editor.removeFormat(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.K) {
-        var $editable = oLayoutInfo.editable(),
-            $dialog = oLayoutInfo.dialog(),
-            linkInfo = editor.getLinkInfo();
-
-        editor.saveRange($editable);
-        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkUrl, bNewWindow) {
-          editor.restoreRange($editable);
-          editor.createLink($editable, sLinkUrl, bNewWindow);
-        });
-      } else if (bCmd && keyCode === key.SLASH) {
-        dialog.showHelpDialog(oLayoutInfo.editable(), oLayoutInfo.dialog());
-      } else if (bCmd && bShift && keyCode === key.L) {
-        editor.justifyLeft(oLayoutInfo.editable());
-      } else if (bCmd && bShift && keyCode === key.E) {
-        editor.justifyCenter(oLayoutInfo.editable());
-      } else if (bCmd && bShift && keyCode === key.R) {
-        editor.justifyRight(oLayoutInfo.editable());
-      } else if (bCmd && bShift && keyCode === key.J) {
-        editor.justifyFull(oLayoutInfo.editable());
-      } else if (bCmd && bShift && keyCode === key.NUM7) {
-        editor.insertUnorderedList(oLayoutInfo.editable());
-      } else if (bCmd && bShift && keyCode === key.NUM8) {
-        editor.insertOrderedList(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.LEFTBRACKET) {
-        editor.outdent(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.RIGHTBRACKET) {
-        editor.indent(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.NUM0) { // formatBlock Paragraph
-        editor.formatBlock(oLayoutInfo.editable(), 'P');
-      } else if (bCmd && (key.NUM1 <= keyCode && keyCode <= key.NUM6)) {
-        var sHeading = 'H' + String.fromCharCode(keyCode); // H1~H6
-        editor.formatBlock(oLayoutInfo.editable(), sHeading);
-      } else if (bCmd && keyCode === key.ENTER) {
-        editor.insertHorizontalRule(oLayoutInfo.editable());
-      } else {
-        if (keyCode === key.BACKSPACE || keyCode === key.ENTER ||
-            keyCode === key.SPACE) {
-          editor.recordUndo(makeLayoutInfo(event.target).editable());
-        }
-        return; // not matched
-      }
-      event.preventDefault(); //prevent default event for FF
-    };
-
     var hMousedown = function (event) {
       //preventDefault Selection for FF, IE8+
       if (dom.isImg(event.target)) { event.preventDefault(); }
@@ -469,6 +396,40 @@ define([
       }).on('dragover', false); // prevent default dragover event
     };
 
+
+    /**
+     * bind KeyMap on keydown
+     *
+     * @param {Object} oLayoutInfo
+     * @param {Object} keyMap
+     */
+    this.bindKeyMap = function (oLayoutInfo, keyMap) {
+      var $editor = oLayoutInfo.editor;
+      var $editable = oLayoutInfo.editable;
+
+      $editable.on('keydown', function (event) {
+        var aKey = [];
+
+        // modifier
+        if (event.metaKey) { aKey.push('CMD'); }
+        if (event.ctrlKey) { aKey.push('CTRL'); }
+        if (event.shiftKey) { aKey.push('SHIFT'); }
+
+        // keycode
+        var keyName = key.nameFromCode[event.keyCode];
+        if (keyName) { aKey.push(keyName); }
+
+        var handler = keyMap[aKey.join('+')];
+        if (handler) {
+          event.preventDefault();
+
+          editor[handler]($editable, $editor.data('options'));
+        } else if (key.isEdit(event.keyCode)) {
+          editor.recordUndo($editable);
+        }
+      });
+    };
+
     /**
      * attach eventhandler
      *
@@ -477,7 +438,9 @@ define([
      * @param {Function} options.enter - enter key handler
      */
     this.attach = function (oLayoutInfo, options) {
-      oLayoutInfo.editable.on('keydown', hKeydown);
+      var keyMap = options.keyMap[agent.bMac ? 'mac' : 'pc'];
+      this.bindKeyMap(oLayoutInfo, keyMap);
+
       oLayoutInfo.editable.on('mousedown', hMousedown);
       oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
       oLayoutInfo.editable.on('scroll', hScroll);
