@@ -541,7 +541,7 @@ define([
         onPasteBefore: options.onPasteBefore,
         onPasteAfter: options.onPasteAfter,
         onImageUpload: options.onImageUpload,
-        onImageUploadError: options.onImageUpload,
+        onImageUploadError: options.onImageUploadError,
         onFileUpload: options.onFileUpload,
         onFileUploadError: options.onFileUpload
       });
