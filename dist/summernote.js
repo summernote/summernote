@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-03-16T05:16Z
+ * Date: 2014-03-16T05:42Z
  */
 (function (factory) {
   /* global define */
@@ -2555,13 +2555,19 @@
       }).on('dragover', false); // prevent default dragover event
     };
 
+
+    /**
+     * bind KeyMap on keydown
+     *
+     * @param {Object} oLayoutInfo
+     * @param {Object} keyMap
+     */
     this.bindKeyMap = function (oLayoutInfo, keyMap) {
       var $editor = oLayoutInfo.editor;
       var $editable = oLayoutInfo.editable;
 
       $editable.on('keydown', function (event) {
         var aKey = [];
-        var keyName = key.nameFromCode[event.keyCode];
 
         // modifier
         if (event.metaKey) { aKey.push('CMD'); }
@@ -2569,11 +2575,13 @@
         if (event.shiftKey) { aKey.push('SHIFT'); }
 
         // keycode
+        var keyName = key.nameFromCode[event.keyCode];
         if (keyName) { aKey.push(keyName); }
 
         var handler = keyMap[aKey.join('+')];
         if (handler) {
           event.preventDefault();
+
           editor[handler]($editable, $editor.data('options'));
         } else if (key.isEdit(event.keyCode)) {
           editor.recordUndo($editable);
@@ -2644,6 +2652,7 @@
       if (options.onblur) { oLayoutInfo.editable.blur(options.onblur); }
       if (options.onkeyup) { oLayoutInfo.editable.keyup(options.onkeyup); }
       if (options.onkeydown) { oLayoutInfo.editable.keydown(options.onkeydown); }
+      if (options.onpaste) { oLayoutInfo.editable.on('paste', options.onpaste); }
       if (options.onToolbarClick) { oLayoutInfo.toolbar.click(options.onToolbarClick); }
 
       // callbacks for advanced features (camel)
@@ -2652,8 +2661,6 @@
       oLayoutInfo.editable.data('callbacks', {
         onChange: options.onChange,
         onAutoSave: options.onAutoSave,
-        onPasteBefore: options.onPasteBefore,
-        onPasteAfter: options.onPasteAfter,
         onImageUpload: options.onImageUpload,
         onImageUploadError: options.onImageUploadError,
         onFileUpload: options.onFileUpload,

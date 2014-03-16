@@ -493,6 +493,7 @@ define([
       if (options.onblur) { oLayoutInfo.editable.blur(options.onblur); }
       if (options.onkeyup) { oLayoutInfo.editable.keyup(options.onkeyup); }
       if (options.onkeydown) { oLayoutInfo.editable.keydown(options.onkeydown); }
+      if (options.onpaste) { oLayoutInfo.editable.on('paste', options.onpaste); }
       if (options.onToolbarClick) { oLayoutInfo.toolbar.click(options.onToolbarClick); }
 
       // callbacks for advanced features (camel)
@@ -501,8 +502,6 @@ define([
       oLayoutInfo.editable.data('callbacks', {
         onChange: options.onChange,
         onAutoSave: options.onAutoSave,
-        onPasteBefore: options.onPasteBefore,
-        onPasteAfter: options.onPasteAfter,
         onImageUpload: options.onImageUpload,
         onImageUploadError: options.onImageUploadError,
         onFileUpload: options.onFileUpload,
