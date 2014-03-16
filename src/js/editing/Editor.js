@@ -18,7 +18,6 @@ define([
     this.saveRange = function ($editable) {
       $editable.data('range', range.create());
     };
-
     /**
      * restore lately range
      *
@@ -28,7 +27,12 @@ define([
       var rng = $editable.data('range');
       if (rng) { rng.select(); }
     };
-
+    /**
+     * get range object
+     */
+    this.getRange = function () {
+      return range;
+    };
     /**
      * current style
      * @param {Element} elTarget
@@ -430,6 +434,11 @@ define([
     this.removeMedia = function ($editable, sValue, $target) {
       recordUndo($editable);
       $target.detach();
+      console.log($editable.data('callbacks'));
+      var callbacks = $editable.data('callbacks');
+      if (callbacks.onMediaDelete) {
+        callbacks.onMediaDelete($target, this, $editable);
+      }
     };
   };
 

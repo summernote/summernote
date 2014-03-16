@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.5.1
+ * Super simple wysiwyg editor on Bootstrap v0.5.2
  * http://hackerwins.github.io/summernote/
  *
  * summernote.js
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-03-16T06:23Z
+ * Date: 2014-03-16T19:31Z
  */
 (function (factory) {
   /* global define */
@@ -606,7 +606,7 @@
 
   var settings = {
     // version
-    version: '0.5.1',
+    version: '0.5.2',
 
     /**
      * options for init
@@ -1329,7 +1329,6 @@
     this.saveRange = function ($editable) {
       $editable.data('range', range.create());
     };
-
     /**
      * restore lately range
      *
@@ -1339,7 +1338,12 @@
       var rng = $editable.data('range');
       if (rng) { rng.select(); }
     };
-
+    /**
+     * get range object
+     */
+    this.getRange = function () {
+      return range;
+    };
     /**
      * current style
      * @param {Element} elTarget
@@ -1741,6 +1745,11 @@
     this.removeMedia = function ($editable, sValue, $target) {
       recordUndo($editable);
       $target.detach();
+      console.log($editable.data('callbacks'));
+      var callbacks = $editable.data('callbacks');
+      if (callbacks.onMediaDelete) {
+        callbacks.onMediaDelete($target, this, $editable);
+      }
     };
   };
 
@@ -2660,7 +2669,8 @@
         onImageUpload: options.onImageUpload,
         onImageUploadError: options.onImageUploadError,
         onFileUpload: options.onFileUpload,
-        onFileUploadError: options.onFileUpload
+        onFileUploadError: options.onFileUpload,
+        onMediaDelete : options.onMediaDelete
       });
     };
 
@@ -3064,7 +3074,7 @@
                        '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
                        '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                        (agent.bMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
-                       '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.1</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
+                       '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.2</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
                      '</div>' +
                    '</div>' +
                  '</div>' +
