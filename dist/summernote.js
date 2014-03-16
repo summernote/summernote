@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-03-05T16:57Z
+ * Date: 2014-03-16T03:56Z
  */
 (function (factory) {
   /* global define */
@@ -1948,10 +1948,13 @@
         $imageDialog.one('shown.bs.modal', function (event) {
           event.stopPropagation();
 
-          $imageInput.on('change', function () {
-            $imageDialog.modal('hide');
-            deferred.resolve(this.files);
-          });
+          // Cloning imageInput to clear element.
+          $imageInput.replaceWith($imageInput.clone()
+            .on('change', function () {
+              $imageDialog.modal('hide');
+              deferred.resolve(this.files);
+            })
+          );
 
           $imageBtn.click(function (event) {
             event.preventDefault();
@@ -2307,10 +2310,10 @@
 
           dialog.showImageDialog($editable, $dialog).then(function (data) {
             if (typeof data === 'string') {
-              insertImages($editable, data);
-            } else {
               editor.restoreRange($editable);
               editor.insertImage($editable, data);
+            } else {
+              insertImages($editable, data);
             }
           });
         } else if (sEvent === 'showVideoDialog') {
@@ -2606,7 +2609,7 @@
         onPasteBefore: options.onPasteBefore,
         onPasteAfter: options.onPasteAfter,
         onImageUpload: options.onImageUpload,
-        onImageUploadError: options.onImageUpload,
+        onImageUploadError: options.onImageUploadError,
         onFileUpload: options.onFileUpload,
         onFileUploadError: options.onFileUpload
       });
