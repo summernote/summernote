@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-03-16T05:42Z
+ * Date: 2014-03-16T06:23Z
  */
 (function (factory) {
   /* global define */
@@ -2346,43 +2346,39 @@
         } else if (sEvent === 'showHelpDialog') {
           dialog.showHelpDialog($editable, $dialog);
         } else if (sEvent === 'fullscreen') {
-          $editor.toggleClass('fullscreen');
+          var $scrollbar = $('html, body');
 
-          var hResizeFullscreen = function () {
-            var nWidth = $(window).width();
-            $editor.css('width', nWidth);
-            var nHeight = $(window).height() - $toolbar.outerHeight();
-            $editable.css('height', nHeight);
-            $codable.css('height', nHeight);
-            cmEditor = $codable.data('cmEditor');
-            if (cmEditor) {
-              cmEditor.setSize(null, nHeight);
+          var resize = function (size) {
+            $editor.css('width', size.w);
+            $editable.css('height', size.h);
+            $codable.css('height', size.h);
+            if ($codable.data('cmEditor')) {
+              $codable.data('cmEditor').setSize(null, size.h);
             }
           };
 
-          var $scrollbar = $('html, body');
-          var bFullscreen = $editor.hasClass('fullscreen');
-          if (bFullscreen) {
-            $editor.data('orgWidth', $editor.width());
+          $editor.toggleClass('fullscreen');
+          var isFullscreen = $editor.hasClass('fullscreen');
+          if (isFullscreen) {
             $editable.data('orgHeight', $editable.css('height'));
-            $(window).on('resize', hResizeFullscreen).trigger('resize');
+
+            $(window).on('resize', function () {
+              resize({
+                w: $(window).width(),
+                h: $(window).height() - $toolbar.outerHeight()
+              });
+            }).trigger('resize');
+
             $scrollbar.css('overflow', 'hidden');
           } else {
-            var orgWidth = $editor.data('orgWidth');
-            var newWidth = orgWidth === $(window).width() ? 'auto' : orgWidth;
-            $editor.css('width', newWidth);
-            var newHeight = $editable.data('orgHeight');
-            $editable.css('height', newHeight);
-            $codable.css('height', newHeight);
-            cmEditor = $codable.data('cmEditor');
-            if (cmEditor) {
-              cmEditor.setSize(null, newHeight);
-            }
-            $scrollbar.css('overflow', 'auto');
             $(window).off('resize');
+            resize({
+              w: options.width || '',
+              h: $editable.data('orgHeight')
+            });
+            $scrollbar.css('overflow', 'auto');
           }
-
-          toolbar.updateFullscreen($toolbar, bFullscreen);
+          toolbar.updateFullscreen($toolbar, isFullscreen);
         } else if (sEvent === 'codeview') {
           $editor.toggleClass('codeview');
 
