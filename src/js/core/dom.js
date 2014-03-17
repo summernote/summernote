@@ -344,7 +344,7 @@ define(['core/func', 'core/list', 'core/agent'], function (func, list, agent) {
   
     return {
       blank: agent.bMSIE ? '&nbsp;' : '<br/>',
-      emptyPara: '<p><br/></p>',
+      emptyPara: '',
       isEditable: isEditable,
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
