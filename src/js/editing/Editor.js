@@ -101,12 +101,22 @@ define([
      * @param {Number} nTabsize
      * @param {Boolean} bShift
      */
-    this.tab = function ($editable, nTabsize, bShift) {
+    this.tab = function ($editable, options) {
       var rng = range.create();
       if (rng.isCollapsed() && rng.isOnCell()) {
-        table.tab(rng, bShift);
+        table.tab(rng);
       } else {
-        insertTab($editable, rng, nTabsize);
+        insertTab($editable, rng, options.tabsize);
+      }
+    };
+
+    /**
+     * handle shift+tab key
+     */
+    this.untab = function () {
+      var rng = range.create();
+      if (rng.isCollapsed() && rng.isOnCell()) {
+        table.tab(rng, true);
       }
     };
 
@@ -202,6 +212,20 @@ define([
       sTagName = agent.bMSIE ? '<' + sTagName + '>' : sTagName;
       document.execCommand('FormatBlock', false, sTagName);
     };
+
+    this.formatPara = function ($editable) {
+      this.formatBlock($editable, 'P');
+    };
+
+    /* jshint ignore:start */
+    for (var idx = 1; idx <= 6; idx ++) {
+      this['formatH' + idx] = function (idx) {
+        return function ($editable) {
+          this.formatBlock($editable, 'H' + idx);
+        };
+      }(idx);
+    };
+    /* jshint ignore:end */
 
     /**
      * fontsize

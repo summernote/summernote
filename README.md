@@ -88,6 +88,12 @@ $('#summernote').destroy();
 
 ### Change Log
 
+#### v0.5.1 2014-03-16
+* Support 15 Languages(https://github.com/HackerWins/summernote/tree/master/lang)
+* Add local-server for develop summernote.
+* Font style: Font-Family
+* And Bug patch.
+
 #### v0.5 2013-12-29
 * Support both Font-Awesome 3.x and 4.x
 * CodeMirror as Codeview

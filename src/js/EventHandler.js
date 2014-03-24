@@ -53,79 +53,6 @@ define([
       }
     };
 
-    /**
-     * keydown event handler
-     *
-     * @param {KeyEvent} event
-     */
-    var hKeydown = function (event) {
-      var bCmd = agent.bMac ? event.metaKey : event.ctrlKey,
-          bShift = event.shiftKey, keyCode = event.keyCode;
-
-      var oLayoutInfo = makeLayoutInfo(event.target);
-      var options = oLayoutInfo.editor().data('options');
-
-      if (keyCode === key.TAB) {
-        editor.tab(oLayoutInfo.editable(), options.tabsize, bShift);
-      } else if (bCmd && ((bShift && keyCode === key.Z) || keyCode === key.Y)) {
-        editor.redo(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.Z) {
-        editor.undo(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.B) {
-        editor.bold(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.I) {
-        editor.italic(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.U) {
-        editor.underline(oLayoutInfo.editable());
-      } else if (bCmd && bShift && keyCode === key.S) {
-        editor.strikethrough(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.BACKSLACH) {
-        editor.removeFormat(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.K) {
-        var $editable = oLayoutInfo.editable(),
-            $dialog = oLayoutInfo.dialog(),
-            linkInfo = editor.getLinkInfo();
-
-        editor.saveRange($editable);
-        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkUrl, bNewWindow) {
-          editor.restoreRange($editable);
-          editor.createLink($editable, sLinkUrl, bNewWindow);
-        });
-      } else if (bCmd && keyCode === key.SLASH) {
-        dialog.showHelpDialog(oLayoutInfo.editable(), oLayoutInfo.dialog());
-      } else if (bCmd && bShift && keyCode === key.L) {
-        editor.justifyLeft(oLayoutInfo.editable());
-      } else if (bCmd && bShift && keyCode === key.E) {
-        editor.justifyCenter(oLayoutInfo.editable());
-      } else if (bCmd && bShift && keyCode === key.R) {
-        editor.justifyRight(oLayoutInfo.editable());
-      } else if (bCmd && bShift && keyCode === key.J) {
-        editor.justifyFull(oLayoutInfo.editable());
-      } else if (bCmd && bShift && keyCode === key.NUM7) {
-        editor.insertUnorderedList(oLayoutInfo.editable());
-      } else if (bCmd && bShift && keyCode === key.NUM8) {
-        editor.insertOrderedList(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.LEFTBRACKET) {
-        editor.outdent(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.RIGHTBRACKET) {
-        editor.indent(oLayoutInfo.editable());
-      } else if (bCmd && keyCode === key.NUM0) { // formatBlock Paragraph
-        editor.formatBlock(oLayoutInfo.editable(), 'P');
-      } else if (bCmd && (key.NUM1 <= keyCode && keyCode <= key.NUM6)) {
-        var sHeading = 'H' + String.fromCharCode(keyCode); // H1~H6
-        editor.formatBlock(oLayoutInfo.editable(), sHeading);
-      } else if (bCmd && keyCode === key.ENTER) {
-        editor.insertHorizontalRule(oLayoutInfo.editable());
-      } else {
-        if (keyCode === key.BACKSPACE || keyCode === key.ENTER ||
-            keyCode === key.SPACE) {
-          editor.recordUndo(makeLayoutInfo(event.target).editable());
-        }
-        return; // not matched
-      }
-      event.preventDefault(); //prevent default event for FF
-    };
-
     var hMousedown = function (event) {
       //preventDefault Selection for FF, IE8+
       if (dom.isImg(event.target)) { event.preventDefault(); }
@@ -242,10 +169,10 @@ define([
 
           dialog.showImageDialog($editable, $dialog).then(function (data) {
             if (typeof data === 'string') {
-              insertImages($editable, data);
-            } else {
               editor.restoreRange($editable);
               editor.insertImage($editable, data);
+            } else {
+              insertImages($editable, data);
             }
           });
         } else if (sEvent === 'showVideoDialog') {
@@ -260,43 +187,39 @@ define([
         } else if (sEvent === 'showHelpDialog') {
           dialog.showHelpDialog($editable, $dialog);
         } else if (sEvent === 'fullscreen') {
-          $editor.toggleClass('fullscreen');
+          var $scrollbar = $('html, body');
 
-          var hResizeFullscreen = function () {
-            var nWidth = $(window).width();
-            $editor.css('width', nWidth);
-            var nHeight = $(window).height() - $toolbar.outerHeight();
-            $editable.css('height', nHeight);
-            $codable.css('height', nHeight);
-            cmEditor = $codable.data('cmEditor');
-            if (cmEditor) {
-              cmEditor.setSize(null, nHeight);
+          var resize = function (size) {
+            $editor.css('width', size.w);
+            $editable.css('height', size.h);
+            $codable.css('height', size.h);
+            if ($codable.data('cmEditor')) {
+              $codable.data('cmEditor').setSize(null, size.h);
             }
           };
 
-          var $scrollbar = $('html, body');
-          var bFullscreen = $editor.hasClass('fullscreen');
-          if (bFullscreen) {
-            $editor.data('orgWidth', $editor.width());
+          $editor.toggleClass('fullscreen');
+          var isFullscreen = $editor.hasClass('fullscreen');
+          if (isFullscreen) {
             $editable.data('orgHeight', $editable.css('height'));
-            $(window).on('resize', hResizeFullscreen).trigger('resize');
+
+            $(window).on('resize', function () {
+              resize({
+                w: $(window).width(),
+                h: $(window).height() - $toolbar.outerHeight()
+              });
+            }).trigger('resize');
+
             $scrollbar.css('overflow', 'hidden');
           } else {
-            var orgWidth = $editor.data('orgWidth');
-            var newWidth = orgWidth === $(window).width() ? 'auto' : orgWidth;
-            $editor.css('width', newWidth);
-            var newHeight = $editable.data('orgHeight');
-            $editable.css('height', newHeight);
-            $codable.css('height', newHeight);
-            cmEditor = $codable.data('cmEditor');
-            if (cmEditor) {
-              cmEditor.setSize(null, newHeight);
-            }
-            $scrollbar.css('overflow', 'auto');
             $(window).off('resize');
+            resize({
+              w: options.width || '',
+              h: $editable.data('orgHeight')
+            });
+            $scrollbar.css('overflow', 'auto');
           }
-
-          toolbar.updateFullscreen($toolbar, bFullscreen);
+          toolbar.updateFullscreen($toolbar, isFullscreen);
         } else if (sEvent === 'codeview') {
           $editor.toggleClass('codeview');
 
@@ -469,6 +392,40 @@ define([
       }).on('dragover', false); // prevent default dragover event
     };
 
+
+    /**
+     * bind KeyMap on keydown
+     *
+     * @param {Object} oLayoutInfo
+     * @param {Object} keyMap
+     */
+    this.bindKeyMap = function (oLayoutInfo, keyMap) {
+      var $editor = oLayoutInfo.editor;
+      var $editable = oLayoutInfo.editable;
+
+      $editable.on('keydown', function (event) {
+        var aKey = [];
+
+        // modifier
+        if (event.metaKey) { aKey.push('CMD'); }
+        if (event.ctrlKey) { aKey.push('CTRL'); }
+        if (event.shiftKey) { aKey.push('SHIFT'); }
+
+        // keycode
+        var keyName = key.nameFromCode[event.keyCode];
+        if (keyName) { aKey.push(keyName); }
+
+        var handler = keyMap[aKey.join('+')];
+        if (handler) {
+          event.preventDefault();
+
+          editor[handler]($editable, $editor.data('options'));
+        } else if (key.isEdit(event.keyCode)) {
+          editor.recordUndo($editable);
+        }
+      });
+    };
+
     /**
      * attach eventhandler
      *
@@ -477,7 +434,9 @@ define([
      * @param {Function} options.enter - enter key handler
      */
     this.attach = function (oLayoutInfo, options) {
-      oLayoutInfo.editable.on('keydown', hKeydown);
+      var keyMap = options.keyMap[agent.bMac ? 'mac' : 'pc'];
+      this.bindKeyMap(oLayoutInfo, keyMap);
+
       oLayoutInfo.editable.on('mousedown', hMousedown);
       oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
       oLayoutInfo.editable.on('scroll', hScroll);
@@ -530,6 +489,7 @@ define([
       if (options.onblur) { oLayoutInfo.editable.blur(options.onblur); }
       if (options.onkeyup) { oLayoutInfo.editable.keyup(options.onkeyup); }
       if (options.onkeydown) { oLayoutInfo.editable.keydown(options.onkeydown); }
+      if (options.onpaste) { oLayoutInfo.editable.on('paste', options.onpaste); }
       if (options.onToolbarClick) { oLayoutInfo.toolbar.click(options.onToolbarClick); }
 
       // callbacks for advanced features (camel)
@@ -538,10 +498,8 @@ define([
       oLayoutInfo.editable.data('callbacks', {
         onChange: options.onChange,
         onAutoSave: options.onAutoSave,
-        onPasteBefore: options.onPasteBefore,
-        onPasteAfter: options.onPasteAfter,
         onImageUpload: options.onImageUpload,
-        onImageUploadError: options.onImageUpload,
+        onImageUploadError: options.onImageUploadError,
         onFileUpload: options.onFileUpload,
         onFileUploadError: options.onFileUpload
       });
