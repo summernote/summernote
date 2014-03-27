@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.5.1
+ * Super simple wysiwyg editor on Bootstrap v0.5.2
  * http://hackerwins.github.io/summernote/
  *
  * summernote.js
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-03-16T06:23Z
+ * Date: 2014-03-27T09:43Z
  */
 (function (factory) {
   /* global define */
@@ -606,7 +606,7 @@
 
   var settings = {
     // version
-    version: '0.5.1',
+    version: '0.5.2',
 
     /**
      * options for init
@@ -2004,7 +2004,7 @@
   };
 
   /**
-   * Dialog 
+   * Dialog
    *
    * @class
    */
@@ -2057,9 +2057,7 @@
           $imageUrl.keyup(function () {
             toggleBtn($imageBtn, $imageUrl.val());
           }).val('').focus();
-        }).one('hidden.bs.modal', function (event) {
-          event.stopPropagation();
-
+        }).one('hidden.bs.modal', function () {
           $editable.focus();
           $imageInput.off('change');
           $imageUrl.off('keyup');
@@ -2071,8 +2069,8 @@
     /**
      * Show video dialog and set event handlers on dialog controls.
      *
-     * @param {jQuery} $dialog 
-     * @param {Object} videoInfo 
+     * @param {jQuery} $dialog
+     * @param {Object} videoInfo
      * @return {Promise}
      */
     this.showVideoDialog = function ($editable, $dialog, videoInfo) {
@@ -2094,9 +2092,7 @@
             $videoDialog.modal('hide');
             deferred.resolve($videoUrl.val());
           });
-        }).one('hidden.bs.modal', function (event) {
-          event.stopPropagation();
-
+        }).one('hidden.bs.modal', function () {
           $editable.focus();
           $videoUrl.off('keyup');
           $videoBtn.off('click');
@@ -2139,12 +2135,10 @@
           $linkBtn.one('click', function (event) {
             event.preventDefault();
 
-            $linkDialog.modal('hide');
+            $linkDialog.modalmodal('hide');
             deferred.resolve($linkUrl.val(), $openInNewWindow.is(':checked'));
           });
-        }).one('hidden.bs.modal', function (event) {
-          event.stopPropagation();
-
+        }).one('hidden.bs.modal', function () {
           $editable.focus();
           $linkUrl.off('keyup');
         }).modal('show');
@@ -2159,8 +2153,7 @@
     this.showHelpDialog = function ($editable, $dialog) {
       var $helpDialog = $dialog.find('.note-help-dialog');
 
-      $helpDialog.one('hidden.bs.modal', function (event) {
-        event.stopPropagation();
+      $helpDialog.one('hidden.bs.modal', function () {
         $editable.focus();
       }).modal('show');
     };
@@ -3064,7 +3057,7 @@
                        '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
                        '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                        (agent.bMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
-                       '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.1</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
+                       '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.2</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
                      '</div>' +
                    '</div>' +
                  '</div>' +

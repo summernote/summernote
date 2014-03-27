@@ -1,6 +1,6 @@
 define('module/Dialog', function () {
   /**
-   * Dialog 
+   * Dialog
    *
    * @class
    */
@@ -53,9 +53,7 @@ define('module/Dialog', function () {
           $imageUrl.keyup(function () {
             toggleBtn($imageBtn, $imageUrl.val());
           }).val('').focus();
-        }).one('hidden.bs.modal', function (event) {
-          event.stopPropagation();
-
+        }).one('hidden.bs.modal', function () {
           $editable.focus();
           $imageInput.off('change');
           $imageUrl.off('keyup');
@@ -67,8 +65,8 @@ define('module/Dialog', function () {
     /**
      * Show video dialog and set event handlers on dialog controls.
      *
-     * @param {jQuery} $dialog 
-     * @param {Object} videoInfo 
+     * @param {jQuery} $dialog
+     * @param {Object} videoInfo
      * @return {Promise}
      */
     this.showVideoDialog = function ($editable, $dialog, videoInfo) {
@@ -90,9 +88,7 @@ define('module/Dialog', function () {
             $videoDialog.modal('hide');
             deferred.resolve($videoUrl.val());
           });
-        }).one('hidden.bs.modal', function (event) {
-          event.stopPropagation();
-
+        }).one('hidden.bs.modal', function () {
           $editable.focus();
           $videoUrl.off('keyup');
           $videoBtn.off('click');
@@ -135,12 +131,10 @@ define('module/Dialog', function () {
           $linkBtn.one('click', function (event) {
             event.preventDefault();
 
-            $linkDialog.modal('hide');
+            $linkDialog.modalmodal('hide');
             deferred.resolve($linkUrl.val(), $openInNewWindow.is(':checked'));
           });
-        }).one('hidden.bs.modal', function (event) {
-          event.stopPropagation();
-
+        }).one('hidden.bs.modal', function () {
           $editable.focus();
           $linkUrl.off('keyup');
         }).modal('show');
@@ -155,8 +149,7 @@ define('module/Dialog', function () {
     this.showHelpDialog = function ($editable, $dialog) {
       var $helpDialog = $dialog.find('.note-help-dialog');
 
-      $helpDialog.one('hidden.bs.modal', function (event) {
-        event.stopPropagation();
+      $helpDialog.one('hidden.bs.modal', function () {
         $editable.focus();
       }).modal('show');
     };
