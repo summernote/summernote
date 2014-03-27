@@ -131,7 +131,7 @@ define('module/Dialog', function () {
           $linkBtn.one('click', function (event) {
             event.preventDefault();
 
-            $linkDialog.modalmodal('hide');
+            $linkDialog.modal('hide');
             deferred.resolve($linkUrl.val(), $openInNewWindow.is(':checked'));
           });
         }).one('hidden.bs.modal', function () {
