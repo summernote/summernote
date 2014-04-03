@@ -8,6 +8,7 @@
         strike: 'Barré',
         clear: 'Effacer la mise en forme',
         height: 'Interligne',
+        name: 'Famille de police',
         size: 'Taille de police'
       },
       image: {
