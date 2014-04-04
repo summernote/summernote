@@ -54,6 +54,10 @@ define([
       $fontsize.find('.note-current-fontsize').text(oStyle['font-size']);
       checkDropdownMenu($fontsize, parseFloat(oStyle['font-size']));
 
+      btnState('button[data-event="strikethrough"]', function () {
+        return oStyle['font-strikethrough'] === 'strikethrough';
+      });
+
       // lineheight
       var $lineHeight = $toolbar.find('.note-height');
       checkDropdownMenu($lineHeight, parseFloat(oStyle['line-height']));

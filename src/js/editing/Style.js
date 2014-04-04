@@ -52,6 +52,7 @@ define([
       var oStyle = jQueryCSS($cont, properties) || {};
 
       oStyle['font-size'] = parseInt(oStyle['font-size']);
+      oStyle['font-strikethrough'] = document.queryCommandState('strikeThrough') ? 'strikethrough' : 'normal';
 
       // document.queryCommandState for toggle state
       oStyle['font-bold'] = document.queryCommandState('bold') ? 'bold' : 'normal';
