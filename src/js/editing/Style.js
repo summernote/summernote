@@ -52,12 +52,12 @@ define([
       var oStyle = jQueryCSS($cont, properties) || {};
 
       oStyle['font-size'] = parseInt(oStyle['font-size']);
-      oStyle['font-strikethrough'] = document.queryCommandState('strikeThrough') ? 'strikethrough' : 'normal';
 
       // document.queryCommandState for toggle state
       oStyle['font-bold'] = document.queryCommandState('bold') ? 'bold' : 'normal';
       oStyle['font-italic'] = document.queryCommandState('italic') ? 'italic' : 'normal';
       oStyle['font-underline'] = document.queryCommandState('underline') ? 'underline' : 'normal';
+      oStyle['font-strikethrough'] = document.queryCommandState('strikeThrough') ? 'strikethrough' : 'normal';
 
       // list-style-type to list-style(unordered, ordered)
       if (!rng.isOnList()) {

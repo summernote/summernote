@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.5.1
+ * Super simple wysiwyg editor on Bootstrap v0.5.2
  * http://hackerwins.github.io/summernote/
  *
  * summernote.js
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-03-16T06:23Z
+ * Date: 2014-04-04T11:03Z
  */
 (function (factory) {
   /* global define */
@@ -606,7 +606,7 @@
 
   var settings = {
     // version
-    version: '0.5.1',
+    version: '0.5.2',
 
     /**
      * options for init
@@ -966,6 +966,7 @@
       oStyle['font-bold'] = document.queryCommandState('bold') ? 'bold' : 'normal';
       oStyle['font-italic'] = document.queryCommandState('italic') ? 'italic' : 'normal';
       oStyle['font-underline'] = document.queryCommandState('underline') ? 'underline' : 'normal';
+      oStyle['font-strikethrough'] = document.queryCommandState('strikeThrough') ? 'strikethrough' : 'normal';
 
       // list-style-type to list-style(unordered, ordered)
       if (!rng.isOnList()) {
@@ -1850,6 +1851,9 @@
       });
       btnState('button[data-event="underline"]', function () {
         return oStyle['font-underline'] === 'underline';
+      });
+      btnState('button[data-event="strikethrough"]', function () {
+        return oStyle['font-strikethrough'] === 'strikethrough';
       });
       btnState('button[data-event="justifyLeft"]', function () {
         return oStyle['text-align'] === 'left' || oStyle['text-align'] === 'start';
@@ -2775,6 +2779,9 @@
       underline: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.underline + '" data-shortcut="Ctrl+U" data-mac-shortcut="⌘+U" data-event="underline" tabindex="-1"><i class="fa fa-underline icon-underline"></i></button>';
       },
+      strike: function (lang) {
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.strike + '" data-event="strikethrough" tabindex="-1"><i class="fa fa-strikethrough icon-strikethrough"></i></button>';
+      },
       clear: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.clear + '" data-shortcut="Ctrl+\\" data-mac-shortcut="⌘+\\" data-event="removeFormat" tabindex="-1"><i class="fa fa-eraser icon-eraser"></i></button>';
       },
@@ -3064,7 +3071,7 @@
                        '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
                        '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                        (agent.bMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
-                       '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.1</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
+                       '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.2</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
                      '</div>' +
                    '</div>' +
                  '</div>' +
