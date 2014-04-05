@@ -3,7 +3,7 @@
  * (c) 2013~ Alan Hong
  * summernote may be freely distributed under the MIT license./
  */
-define(['jquery', 'core/dom', 'core/func'], function ($, dom, func) {
+define(['jquery', 'summernote/core/dom', 'summernote/core/func'], function ($, dom, func) {
   return function () {
     test('dom.ancestor', function () {
       var $cont, $b, elB;

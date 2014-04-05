@@ -1,4 +1,4 @@
-define('core/func', function () {
+define('summernote/core/func', function () {
   /**
    * func utils (for high-order func's arg)
    */

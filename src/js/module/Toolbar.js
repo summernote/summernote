@@ -1,5 +1,5 @@
 define([
-  'core/list'
+  'summernote/core/list'
 ], function (list) {
   /**
    * Toolbar

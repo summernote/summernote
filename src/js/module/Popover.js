@@ -1,4 +1,4 @@
-define('module/Popover', function () {
+define('summernote/module/Popover', function () {
   /**
    * Popover (http://getbootstrap.com/javascript/#popovers)
    */

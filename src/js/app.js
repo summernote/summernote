@@ -12,7 +12,12 @@ require.config({
     CodeMirror: { exports: 'CodeMirror' },
     CodeMirrorXml: ['CodeMirror'],
     CodeMirrorFormatting: ['CodeMirror', 'CodeMirrorXml']
-  }
+  },
+  packages: [{
+    name: 'summernote',
+    location: './',
+    main: 'summernote'
+  }]
 });
 
 require([

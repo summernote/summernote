@@ -1,5 +1,5 @@
 define([
-  'core/func', 'core/list', 'core/dom'
+  'summernote/core/func', 'summernote/core/list', 'summernote/core/dom'
 ], function (func, list, dom) {
   /**
    * range module
