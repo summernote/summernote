@@ -51,7 +51,7 @@ define([
       var properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
       var oStyle = jQueryCSS($cont, properties) || {};
 
-      oStyle['font-size'] = parseInt(oStyle['font-size']);
+      oStyle['font-size'] = parseInt(oStyle['font-size'], 10);
 
       // document.queryCommandState for toggle state
       oStyle['font-bold'] = document.queryCommandState('bold') ? 'bold' : 'normal';
@@ -72,7 +72,7 @@ define([
       if (elPara && elPara.style['line-height']) {
         oStyle['line-height'] = elPara.style.lineHeight;
       } else {
-        var lineHeight = parseInt(oStyle['line-height']) / parseInt(oStyle['font-size']);
+        var lineHeight = parseInt(oStyle['line-height'], 10) / parseInt(oStyle['font-size'], 10);
         oStyle['line-height'] = lineHeight.toFixed(1);
       }
 

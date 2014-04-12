@@ -79,7 +79,7 @@ module.exports = function (grunt) {
             middlewares = middlewares || [];
             return middlewares.concat([
               require('connect-livereload')(), // livereload middleware
-              connect.static(options.base),    // serve static files
+              connect['static'](options.base),    // serve static files
               connect.directory(options.base)  // make empty directories browsable
             ]);
           },

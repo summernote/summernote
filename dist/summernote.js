@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-04-05T08:18Z
+ * Date: 2014-04-12T04:54Z
  */
 (function (factory) {
   /* global define */
@@ -960,7 +960,7 @@
       var properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
       var oStyle = jQueryCSS($cont, properties) || {};
 
-      oStyle['font-size'] = parseInt(oStyle['font-size']);
+      oStyle['font-size'] = parseInt(oStyle['font-size'], 10);
 
       // document.queryCommandState for toggle state
       oStyle['font-bold'] = document.queryCommandState('bold') ? 'bold' : 'normal';
@@ -981,7 +981,7 @@
       if (elPara && elPara.style['line-height']) {
         oStyle['line-height'] = elPara.style.lineHeight;
       } else {
-        var lineHeight = parseInt(oStyle['line-height']) / parseInt(oStyle['font-size']);
+        var lineHeight = parseInt(oStyle['line-height'], 10) / parseInt(oStyle['font-size'], 10);
         oStyle['line-height'] = lineHeight.toFixed(1);
       }
 
@@ -2040,9 +2040,7 @@
             $imageUrl = $dialog.find('.note-image-url'),
             $imageBtn = $dialog.find('.note-image-btn');
 
-        $imageDialog.one('shown.bs.modal', function (event) {
-          event.stopPropagation();
-
+        $imageDialog.one('shown.bs.modal', function () {
           // Cloning imageInput to clear element.
           $imageInput.replaceWith($imageInput.clone()
             .on('change', function () {
@@ -2061,9 +2059,7 @@
           $imageUrl.keyup(function () {
             toggleBtn($imageBtn, $imageUrl.val());
           }).val('').focus();
-        }).one('hidden.bs.modal', function (event) {
-          event.stopPropagation();
-
+        }).one('hidden.bs.modal', function () {
           $editable.focus();
           $imageInput.off('change');
           $imageUrl.off('keyup');
@@ -2085,9 +2081,7 @@
         var $videoUrl = $videoDialog.find('.note-video-url'),
             $videoBtn = $videoDialog.find('.note-video-btn');
 
-        $videoDialog.one('shown.bs.modal', function (event) {
-          event.stopPropagation();
-
+        $videoDialog.one('shown.bs.modal', function () {
           $videoUrl.val(videoInfo.text).keyup(function () {
             toggleBtn($videoBtn, $videoUrl.val());
           }).trigger('keyup').trigger('focus');
@@ -2098,9 +2092,7 @@
             $videoDialog.modal('hide');
             deferred.resolve($videoUrl.val());
           });
-        }).one('hidden.bs.modal', function (event) {
-          event.stopPropagation();
-
+        }).one('hidden.bs.modal', function () {
           $editable.focus();
           $videoUrl.off('keyup');
           $videoBtn.off('click');
@@ -2124,9 +2116,7 @@
         $linkBtn = $linkDialog.find('.note-link-btn'),
         $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
-        $linkDialog.one('shown.bs.modal', function (event) {
-          event.stopPropagation();
-
+        $linkDialog.one('shown.bs.modal', function () {
           $linkText.val(linkInfo.text);
 
           $linkUrl.keyup(function () {
@@ -2146,9 +2136,7 @@
             $linkDialog.modal('hide');
             deferred.resolve($linkUrl.val(), $openInNewWindow.is(':checked'));
           });
-        }).one('hidden.bs.modal', function (event) {
-          event.stopPropagation();
-
+        }).one('hidden.bs.modal', function () {
           $editable.focus();
           $linkUrl.off('keyup');
         }).modal('show');
@@ -2163,8 +2151,7 @@
     this.showHelpDialog = function ($editable, $dialog) {
       var $helpDialog = $dialog.find('.note-help-dialog');
 
-      $helpDialog.one('hidden.bs.modal', function (event) {
-        event.stopPropagation();
+      $helpDialog.one('hidden.bs.modal', function () {
         $editable.focus();
       }).modal('show');
     };
