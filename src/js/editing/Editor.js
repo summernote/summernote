@@ -167,12 +167,20 @@ define([
       var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
       var dmMatch = sUrl.match(dmRegExp);
 
+      var videoWidth = '640';
+      var videoHeight = '360';
+      if ((typeof(videoWidthDefault) !== 'undefined') && (typeof(videoHeightDefault) !== 'undefined')){
+        videoWidth = videoWidthDefault;
+        videoHeight = videoHeightDefault;
+      }
+
       var $video;
       if (ytMatch && ytMatch[2].length === 11) {
         var youtubeId = ytMatch[2];
         $video = $('<iframe>')
-          .attr('src', '//www.youtube.com/embed/' + youtubeId)
-          .attr('width', '640').attr('height', '360');
+          .attr('src', '//www.youtube.com/embed/' + youtubeId + '?wmode=transparent')
+          .attr('width', videoWidth).attr('height', videoHeight)
+          .attr('wmode', 'Opaque');
       } else if (igMatch && igMatch[0].length > 0) {
         $video = $('<iframe>')
           .attr('src', igMatch[0] + '/embed/')
@@ -187,11 +195,11 @@ define([
       } else if (vimMatch && vimMatch[3].length > 0) {
         $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
           .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
-          .attr('width', '640').attr('height', '360');
+          .attr('width', videoWidth).attr('height', videoHeight);
       } else if (dmMatch && dmMatch[2].length > 0) {
         $video = $('<iframe>')
           .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
-          .attr('width', '640').attr('height', '360');
+          .attr('width', videoWidth).attr('height', videoHeight);
       } else {
         // this is not a known video link. Now what, Cat? Now what?
       }
@@ -306,6 +314,7 @@ define([
 
       // target
       $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
+        $(elAnchor).addClass('link_summernote');
         if (bNewWindow) {
           $(elAnchor).attr('target', '_blank');
         } else {
