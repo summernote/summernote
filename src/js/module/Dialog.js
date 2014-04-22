@@ -1,6 +1,6 @@
 define('summernote/module/Dialog', function () {
   /**
-   * Dialog 
+   * Dialog
    *
    * @class
    */
@@ -63,8 +63,8 @@ define('summernote/module/Dialog', function () {
     /**
      * Show video dialog and set event handlers on dialog controls.
      *
-     * @param {jQuery} $dialog 
-     * @param {Object} videoInfo 
+     * @param {jQuery} $dialog
+     * @param {Object} videoInfo
      * @return {Promise}
      */
     this.showVideoDialog = function ($editable, $dialog, videoInfo) {

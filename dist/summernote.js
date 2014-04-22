@@ -1852,9 +1852,6 @@
       btnState('button[data-event="underline"]', function () {
         return oStyle['font-underline'] === 'underline';
       });
-      btnState('button[data-event="strikethrough"]', function () {
-        return oStyle['font-strikethrough'] === 'strikethrough';
-      });
       btnState('button[data-event="justifyLeft"]', function () {
         return oStyle['text-align'] === 'left' || oStyle['text-align'] === 'start';
       });
@@ -2765,9 +2762,6 @@
       },
       underline: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.underline + '" data-shortcut="Ctrl+U" data-mac-shortcut="⌘+U" data-event="underline" tabindex="-1"><i class="fa fa-underline icon-underline"></i></button>';
-      },
-      strike: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.strike + '" data-event="strikethrough" tabindex="-1"><i class="fa fa-strikethrough icon-strikethrough"></i></button>';
       },
       clear: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.clear + '" data-shortcut="Ctrl+\\" data-mac-shortcut="⌘+\\" data-event="removeFormat" tabindex="-1"><i class="fa fa-eraser icon-eraser"></i></button>';
