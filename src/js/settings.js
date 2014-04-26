@@ -12,7 +12,7 @@ define('summernote/settings', function () {
 
       focus: false,                 // set focus after initilize summernote
 
-      tabsize: null,                // size of tab ex) 2 or 4
+      tabsize: 4,                   // size of tab ex) 2 or 4
       styleWithSpan: true,          // style with span (Chrome and FF)
 
       disableLinkTarget: false,     // hide link Target Checkbox
