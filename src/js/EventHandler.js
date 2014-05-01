@@ -485,18 +485,29 @@ define([
           if (event.keyCode === key.ENTER) { options.onenter(event); }
         });
       }
+
       if (options.onfocus) { oLayoutInfo.editable.focus(options.onfocus); }
       if (options.onblur) { oLayoutInfo.editable.blur(options.onblur); }
       if (options.onkeyup) { oLayoutInfo.editable.keyup(options.onkeyup); }
       if (options.onkeydown) { oLayoutInfo.editable.keydown(options.onkeydown); }
       if (options.onpaste) { oLayoutInfo.editable.on('paste', options.onpaste); }
       if (options.onToolbarClick) { oLayoutInfo.toolbar.click(options.onToolbarClick); }
+      if (options.onChange) {
+        var handler = function () {
+          options.onChange(oLayoutInfo.editable, oLayoutInfo.editable.html());
+        };
+
+        if (agent.bMSIE) {
+          oLayoutInfo.editable.on('DOMCharacterDataModified, DOMSubtreeModified, DOMNodeInserted', handler);
+        } else {
+          oLayoutInfo.editable.on('input', handler);
+        }
+      }
 
       // callbacks for advanced features (camel)
       // All editor status will be saved on editable with jquery's data
       // for support multiple editor with singleton object.
       oLayoutInfo.editable.data('callbacks', {
-        onChange: options.onChange,
         onAutoSave: options.onAutoSave,
         onImageUpload: options.onImageUpload,
         onImageUploadError: options.onImageUploadError,
