@@ -36,8 +36,8 @@ Include Following code into `<head>` tag of your HTML:
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
 
 <!-- include summernote css/js-->
-<link rel="stylesheet" href="summernote.css" />
-<script type="text/javascript" src="summernote.min.js"></script>
+<link href="//oss.maxcdn.com/summernote/0.5.1/summernote.css" rel="stylesheet">
+<script src="//oss.maxcdn.com/summernote/0.5.1/summernote.min.js"></script>
 ```
 
 If your summernote download is placed in a different folder, don't forget to change file's paths.
