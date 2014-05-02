@@ -1,10 +1,10 @@
 define([
   'CodeMirror',
-  'summernote/core/agent', 'summernote/core/dom', 'summernote/core/async', 'summernote/core/key',
+  'summernote/core/agent', 'summernote/core/dom', 'summernote/core/async', 'summernote/core/key', 'summernote/core/list',
   'summernote/editing/Style', 'summernote/editing/Editor', 'summernote/editing/History',
   'summernote/module/Toolbar', 'summernote/module/Popover', 'summernote/module/Handle', 'summernote/module/Dialog'
 ], function (CodeMirror,
-             agent, dom, async, key,
+             agent, dom, async, key, list,
              Style, Editor, History,
              Toolbar, Popover, Handle, Dialog) {
   /**
@@ -72,6 +72,28 @@ define([
       //hide popover and handle when scrolled
       popover.hide(oLayoutInfo.popover());
       handle.hide(oLayoutInfo.handle());
+    };
+
+    /**
+     * paste clipboard image
+     *
+     * @param {Event} event
+     */
+    var hPasteClipboardImage = function (event) {
+      var originalEvent = event.originalEvent;
+      if (!originalEvent.clipboardData ||
+            !originalEvent.clipboardData.items ||
+            !originalEvent.clipboardData.items.length) {
+        return;
+      }
+
+      var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+      var item = list.head(originalEvent.clipboardData.items);
+      var bClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
+
+      if (bClipboardImage) {
+        insertImages(oLayoutInfo.editable(), [item.getAsFile()]);
+      }
     };
 
     /**
@@ -434,27 +456,28 @@ define([
      * @param {Function} options.enter - enter key handler
      */
     this.attach = function (oLayoutInfo, options) {
-      var keyMap = options.keyMap[agent.bMac ? 'mac' : 'pc'];
-      this.bindKeyMap(oLayoutInfo, keyMap);
 
+      // handlers for editable
+      this.bindKeyMap(oLayoutInfo, options.keyMap[agent.bMac ? 'mac' : 'pc']);
       oLayoutInfo.editable.on('mousedown', hMousedown);
       oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
       oLayoutInfo.editable.on('scroll', hScroll);
+      oLayoutInfo.editable.on('paste', hPasteClipboardImage);
 
-      // Doesn't attach `dragAndDrop` event when `options.disableDragAndDrop` is true
-      if (!options.disableDragAndDrop) {
-        attachDragAndDropEvent(oLayoutInfo);
-      }
+      // handler for drag and drop
+      if (!options.disableDragAndDrop) { attachDragAndDropEvent(oLayoutInfo); }
 
+      // handler for handle(sizing image handle)
       oLayoutInfo.handle.on('mousedown', hHandleMousedown);
 
+      // handler for toolbar, popover and statusbar
       oLayoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
       oLayoutInfo.popover.on('click', hToolbarAndPopoverClick);
       oLayoutInfo.toolbar.on('mousedown', hToolbarAndPopoverMousedown);
       oLayoutInfo.popover.on('mousedown', hToolbarAndPopoverMousedown);
       oLayoutInfo.statusbar.on('mousedown', hStatusbarMousedown);
 
-      //toolbar table dimension
+      // handler for toolbar's table dimension
       var $toolbar = oLayoutInfo.toolbar;
       var $catcher = $toolbar.find('.note-dimension-picker-mousecatcher');
       $catcher.on('mousemove', hDimensionPickerMove);
@@ -491,6 +514,8 @@ define([
       if (options.onkeyup) { oLayoutInfo.editable.keyup(options.onkeyup); }
       if (options.onkeydown) { oLayoutInfo.editable.keydown(options.onkeydown); }
       if (options.onpaste) { oLayoutInfo.editable.on('paste', options.onpaste); }
+
+      // callbacks for advanced features (camel)
       if (options.onToolbarClick) { oLayoutInfo.toolbar.click(options.onToolbarClick); }
       if (options.onChange) {
         var handler = function () {
@@ -504,7 +529,6 @@ define([
         }
       }
 
-      // callbacks for advanced features (camel)
       // All editor status will be saved on editable with jquery's data
       // for support multiple editor with singleton object.
       oLayoutInfo.editable.data('callbacks', {
