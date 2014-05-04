@@ -104,17 +104,18 @@ define([
      */
     var hHandleMousedown = function (event) {
       if (dom.isControlSizing(event.target)) {
+        event.preventDefault();
+        event.stopPropagation();
+
         var oLayoutInfo = makeLayoutInfo(event.target),
             $handle = oLayoutInfo.handle(), $popover = oLayoutInfo.popover(),
             $editable = oLayoutInfo.editable(), $editor = oLayoutInfo.editor();
 
         var elTarget = $handle.find('.note-control-selection').data('target'),
-            $target = $(elTarget);
-        var posStart = $target.offset(),
+            $target = $(elTarget), posStart = $target.offset(),
             scrollTop = $(document).scrollTop();
 
         $editor.on('mousemove', function (event) {
-          
           editor.resizeTo({
             x: event.clientX - posStart.left,
             y: event.clientY - (posStart.top - scrollTop)
@@ -131,8 +132,6 @@ define([
         }
 
         editor.recordUndo($editable);
-        event.stopPropagation();
-        event.preventDefault();
       }
     };
 
@@ -542,9 +541,12 @@ define([
 
     this.dettach = function (oLayoutInfo) {
       oLayoutInfo.editable.off();
+      oLayoutInfo.dropzone.off();
       oLayoutInfo.toolbar.off();
-      oLayoutInfo.handle.off();
+      oLayoutInfo.statusbar.off();
       oLayoutInfo.popover.off();
+      oLayoutInfo.handle.off();
+      oLayoutInfo.dialog.off();
     };
   };
 
