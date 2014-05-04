@@ -7,7 +7,7 @@ define([
    * rendering toolbar and editable
    */
   var Renderer = function () {
-    var tplToolbarInfo, tplPopover, tplHandle, tplDialog, tplStatusbar;
+    var tplToolbarInfo, tplPopover, tplHandle, tplDialogs, tplStatusbar;
 
     /* jshint ignore:start */
     tplToolbarInfo = {
@@ -96,38 +96,38 @@ define([
                '</ul>';
       },
       bold: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.bold + '" data-shortcut="Ctrl+B" data-mac-shortcut="⌘+B" data-event="bold" tabindex="-1"><i class="fa fa-bold icon-bold"></i></button>';
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.bold + '" data-event="bold" tabindex="-1"><i class="fa fa-bold icon-bold"></i></button>';
       },
       italic: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.italic + '" data-shortcut="Ctrl+I" data-mac-shortcut="⌘+I" data-event="italic" tabindex="-1"><i class="fa fa-italic icon-italic"></i></button>';
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.italic + '" data-event="italic" tabindex="-1"><i class="fa fa-italic icon-italic"></i></button>';
       },
       underline: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.underline + '" data-shortcut="Ctrl+U" data-mac-shortcut="⌘+U" data-event="underline" tabindex="-1"><i class="fa fa-underline icon-underline"></i></button>';
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.underline + '" data-event="underline" tabindex="-1"><i class="fa fa-underline icon-underline"></i></button>';
       },
       strike: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.strike + '" data-event="strikethrough" tabindex="-1"><i class="fa fa-strikethrough icon-strikethrough"></i></button>';
       },
       clear: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.clear + '" data-shortcut="Ctrl+\\" data-mac-shortcut="⌘+\\" data-event="removeFormat" tabindex="-1"><i class="fa fa-eraser icon-eraser"></i></button>';
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.clear + '" data-event="removeFormat" tabindex="-1"><i class="fa fa-eraser icon-eraser"></i></button>';
       },
       ul: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.lists.unordered + '" data-shortcut="Ctrl+Shift+8" data-mac-shortcut="⌘+⇧+7" data-event="insertUnorderedList" tabindex="-1"><i class="fa fa-list-ul icon-list-ul"></i></button>';
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.lists.unordered + '" data-event="insertUnorderedList" tabindex="-1"><i class="fa fa-list-ul icon-list-ul"></i></button>';
       },
       ol: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.lists.ordered + '" data-shortcut="Ctrl+Shift+7" data-mac-shortcut="⌘+⇧+8" data-event="insertOrderedList" tabindex="-1"><i class="fa fa-list-ol icon-list-ol"></i></button>';
+        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.lists.ordered + '" data-event="insertOrderedList" tabindex="-1"><i class="fa fa-list-ol icon-list-ol"></i></button>';
       },
       paragraph: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + lang.paragraph.paragraph + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i>  <span class="caret"></span></button>' +
         '<div class="dropdown-menu">' +
           '<div class="note-align btn-group">' +
-            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.left + '" data-shortcut="Ctrl+Shift+L" data-mac-shortcut="⌘+⇧+L" data-event="justifyLeft" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
-            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.center + '" data-shortcut="Ctrl+Shift+E" data-mac-shortcut="⌘+⇧+E" data-event="justifyCenter" tabindex="-1"><i class="fa fa-align-center icon-align-center"></i></button>' +
-            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.right + '" data-shortcut="Ctrl+Shift+R" data-mac-shortcut="⌘+⇧+R" data-event="justifyRight" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
-            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.justify + '" data-shortcut="Ctrl+Shift+J" data-mac-shortcut="⌘+⇧+J" data-event="justifyFull" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
+            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.left + '" data-event="justifyLeft" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
+            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.center + '" data-event="justifyCenter" tabindex="-1"><i class="fa fa-align-center icon-align-center"></i></button>' +
+            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.right + '" data-event="justifyRight" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
+            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.justify + '" data-event="justifyFull" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
           '</div>' +
           '<div class="note-list btn-group">' +
-            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.outdent + '" data-shortcut="Ctrl+[" data-mac-shortcut="⌘+[" data-event="outdent" tabindex="-1"><i class="fa fa-outdent icon-indent-left"></i></button>' +
-            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.indent + '" data-shortcut="Ctrl+]" data-mac-shortcut="⌘+]" data-event="indent" tabindex="-1"><i class="fa fa-indent icon-indent-right"></i></button>' +
+            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.outdent + '" data-event="outdent" tabindex="-1"><i class="fa fa-outdent icon-indent-left"></i></button>' +
+            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.indent + '" data-event="indent" tabindex="-1"><i class="fa fa-indent icon-indent-right"></i></button>' +
           '</div>' +
         '</div>';
       },
@@ -206,92 +206,75 @@ define([
              '</div>';
     };
 
-    var tplShortcutText = function (lang, options) {
+    var tplShortcut = function (title, body) {
       return '<table class="note-shortcut">' +
                '<thead>' +
-                 '<tr><th></th><th>' + lang.shortcut.textFormatting + '</th></tr>' +
+                 '<tr><th></th><th>' + title + '</th></tr>' +
                '</thead>' +
-               '<tbody>' +
-                 '<tr><td>⌘ + B</td><td>' + lang.font.bold + '</td></tr>' +
+               '<tbody>' + body + '</tbody>' +
+             '</table>';
+    };
+
+    var tplShortcutText = function (lang, options) {
+      var body = '<tr><td>⌘ + B</td><td>' + lang.font.bold + '</td></tr>' +
                  '<tr><td>⌘ + I</td><td>' + lang.font.italic + '</td></tr>' +
                  '<tr><td>⌘ + U</td><td>' + lang.font.underline + '</td></tr>' +
                  '<tr><td>⌘ + ⇧ + S</td><td>' + lang.font.strike + '</td></tr>' +
-                 '<tr><td>⌘ + \\</td><td>' + lang.font.clear + '</td></tr>' +
-                 '</tr>' +
-               '</tbody>' +
-             '</table>';
+                 '<tr><td>⌘ + \\</td><td>' + lang.font.clear + '</td></tr>';
+
+      return tplShortcut(lang.shortcut.textFormatting, body);
     };
 
     var tplShortcutAction = function (lang, options) {
-      return '<table class="note-shortcut">' +
-               '<thead>' +
-                 '<tr><th></th><th>' + lang.shortcut.action + '</th></tr>' +
-               '</thead>' +
-               '<tbody>' +
-                 '<tr><td>⌘ + Z</td><td>' + lang.history.undo + '</td></tr>' +
+      var body = '<tr><td>⌘ + Z</td><td>' + lang.history.undo + '</td></tr>' +
                  '<tr><td>⌘ + ⇧ + Z</td><td>' + lang.history.redo + '</td></tr>' +
                  '<tr><td>⌘ + ]</td><td>' + lang.paragraph.indent + '</td></tr>' +
                  '<tr><td>⌘ + [</td><td>' + lang.paragraph.outdent + '</td></tr>' +
-                 '<tr><td>⌘ + ENTER</td><td>' + lang.hr.insert + '</td></tr>' +
-               '</tbody>' +
-             '</table>';
-    };
+                 '<tr><td>⌘ + ENTER</td><td>' + lang.hr.insert + '</td></tr>';
 
-    var tplExtraShortcuts = function(lang, options) {
-      var template =
-             '<table class="note-shortcut">' +
-               '<thead>' +
-                 '<tr><th></th><th>' + lang.shortcut.extraKeys + '</th></tr>' +
-               '</thead>' +
-               '<tbody>';
-      for (var key in options.extraKeys) {
-          if (!options.extraKeys.hasOwnProperty(key)) {
-              continue;
-          }
-          template += '<tr><td>' + key + '</td><td>' + options.extraKeys[key] + '</td></tr>';
-      }
-      template +='</tbody></table>';
-      return template;
+      return tplShortcut(lang.shortcut.action, body);
     };
 
     var tplShortcutPara = function (lang, options) {
-      return '<table class="note-shortcut">' +
-                '<thead>' +
-                  '<tr><th></th><th>' + lang.shortcut.paragraphFormatting + '</th></tr>' +
-                '</thead>' +
-                '<tbody>' +
-                  '<tr><td>⌘ + ⇧ + L</td><td>' + lang.paragraph.left + '</td></tr>' +
-                  '<tr><td>⌘ + ⇧ + E</td><td>' + lang.paragraph.center + '</td></tr>' +
-                  '<tr><td>⌘ + ⇧ + R</td><td>' + lang.paragraph.right + '</td></tr>' +
-                  '<tr><td>⌘ + ⇧ + J</td><td>' + lang.paragraph.justify + '</td></tr>' +
-                  '<tr><td>⌘ + ⇧ + NUM7</td><td>' + lang.lists.ordered + '</td></tr>' +
-                  '<tr><td>⌘ + ⇧ + NUM8</td><td>' + lang.lists.unordered + '</td></tr>' +
-                '</tbody>' +
-              '</table>';
+      var body = '<tr><td>⌘ + ⇧ + L</td><td>' + lang.paragraph.left + '</td></tr>' +
+                 '<tr><td>⌘ + ⇧ + E</td><td>' + lang.paragraph.center + '</td></tr>' +
+                 '<tr><td>⌘ + ⇧ + R</td><td>' + lang.paragraph.right + '</td></tr>' +
+                 '<tr><td>⌘ + ⇧ + J</td><td>' + lang.paragraph.justify + '</td></tr>' +
+                 '<tr><td>⌘ + ⇧ + NUM7</td><td>' + lang.lists.ordered + '</td></tr>' +
+                 '<tr><td>⌘ + ⇧ + NUM8</td><td>' + lang.lists.unordered + '</td></tr>';
+
+      return tplShortcut(lang.shortcut.paragraphFormatting, body);
     };
 
     var tplShortcutStyle = function (lang, options) {
-      return '<table class="note-shortcut">' +
-               '<thead>' +
-                 '<tr><th></th><th>' + lang.shortcut.documentStyle + '</th></tr>' +
-               '</thead>' +
-               '<tbody>' +
-                 '<tr><td>⌘ + NUM0</td><td>' + lang.style.normal + '</td></tr>' +
+      var body = '<tr><td>⌘ + NUM0</td><td>' + lang.style.normal + '</td></tr>' +
                  '<tr><td>⌘ + NUM1</td><td>' + lang.style.h1 + '</td></tr>' +
                  '<tr><td>⌘ + NUM2</td><td>' + lang.style.h2 + '</td></tr>' +
                  '<tr><td>⌘ + NUM3</td><td>' + lang.style.h3 + '</td></tr>' +
                  '<tr><td>⌘ + NUM4</td><td>' + lang.style.h4 + '</td></tr>' +
                  '<tr><td>⌘ + NUM5</td><td>' + lang.style.h5 + '</td></tr>' +
-                 '<tr><td>⌘ + NUM6</td><td>' + lang.style.h6 + '</td></tr>' +
-               '</tbody>' +
-             '</table>';
+                 '<tr><td>⌘ + NUM6</td><td>' + lang.style.h6 + '</td></tr>';
+
+      return tplShortcut(lang.shortcut.documentStyle, body);
+    };
+
+    var tplExtraShortcuts = function(lang, options) {
+      var extraKeys = options.extraKeys;
+      var body = '';
+      for (var key in extraKeys) {
+        if (extraKeys.hasOwnProperty(key)) {
+          body += '<tr><td>' + key + '</td><td>' + extraKeys[key] + '</td></tr>';
+        }
+      }
+
+      return tplShortcut(lang.shortcut.extraKeys, body);
     };
 
     var tplShortcutTable = function (lang, options) {
       var template = '<table class="note-shortcut-layout">' +
-               '<tbody>' +
-                 '<tr><td>' + tplShortcutAction(lang, options) + '</td><td>' + tplShortcutText(lang, options) + '</td></tr>' +
-                 '<tr><td>' + tplShortcutStyle(lang, options) + '</td><td>' + tplShortcutPara(lang, options) + '</td></tr>';
+                       '<tbody>' +
+                         '<tr><td>' + tplShortcutAction(lang, options) + '</td><td>' + tplShortcutText(lang, options) + '</td></tr>' +
+                         '<tr><td>' + tplShortcutStyle(lang, options) + '</td><td>' + tplShortcutPara(lang, options) + '</td></tr>';
       if (options.extraKeys) {
           template += '<tr><td colspan="2">' + tplExtraShortcuts(lang, options) + '</td></tr>';
       }
@@ -303,104 +286,80 @@ define([
       return sHtml.replace(/⌘/g, 'Ctrl').replace(/⇧/g, 'Shift');
     };
 
-    tplDialog = function (lang, options) {
-      var tplImageDialog = function () {
-        return '<div class="note-image-dialog modal" aria-hidden="false">' +
+    /**
+     * bootstrap dialog template
+     *
+     * @param {String} className
+     * @param {String} [title]
+     * @param {String} body
+     * @param {String} [footer]
+     */
+    var tplDialog = function (className, title, body, footer) {
+        return '<div class="' + className +' modal" aria-hidden="false">' +
                  '<div class="modal-dialog">' +
                    '<div class="modal-content">' +
+                     (title ?
                      '<div class="modal-header">' +
                        '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                       '<h4>' + lang.image.insert + '</h4>' +
-                     '</div>' +
+                       '<h4>' + title + '</h4>' +
+                     '</div>' : ''
+                     ) +
                      '<div class="modal-body">' +
-                       '<div class="row-fluid">' +
-                         '<h5>' + lang.image.selectFromFiles + '</h5>' +
-                         '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
-                         '<h5>' + lang.image.url + '</h5>' +
-                         '<input class="note-image-url form-control span12" type="text" />' +
-                       '</div>' +
+                       '<div class="row-fluid">' + body + '</div>' +
                      '</div>' +
-                     '<div class="modal-footer">' +
-                       '<button href="#" class="btn btn-primary note-image-btn disabled" disabled="disabled">' + lang.image.insert + '</button>' +
-                     '</div>' +
+                     (footer ?
+                     '<div class="modal-footer">' + footer + '</div>' : ''
+                     ) +
                    '</div>' +
                  '</div>' +
                '</div>';
+    };
+
+    tplDialogs = function (lang, options) {
+      var tplImageDialog = function () {
+        var body = '<h5>' + lang.image.selectFromFiles + '</h5>' +
+                   '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
+                   '<h5>' + lang.image.url + '</h5>' +
+                   '<input class="note-image-url form-control span12" type="text" />';
+        var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
+        return tplDialog('note-image-dialog', lang.image.insert, body, footer);
       };
 
       var tplLinkDialog = function () {
-        return '<div class="note-link-dialog modal" aria-hidden="false">' +
-                 '<div class="modal-dialog">' +
-                   '<div class="modal-content">' +
-                     '<div class="modal-header">' +
-                       '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                       '<h4>' + lang.link.insert + '</h4>' +
-                     '</div>' +
-                     '<div class="modal-body">' +
-                       '<div class="row-fluid">' +
-                         '<div class="form-group">' +
-                           '<label>' + lang.link.textToDisplay + '</label>' +
-                           '<input class="note-link-text form-control span12" disabled type="text" />' +
-                         '</div>' +
-                         '<div class="form-group">' +
-                           '<label>' + lang.link.url + '</label>' +
-                           '<input class="note-link-url form-control span12" type="text" />' +
-                         '</div>' +
-                         (!options.disableLinkTarget ?
-                           '<div class="checkbox">' +
-                             '<label>' + '<input type="checkbox" checked> ' +
-                               lang.link.openInNewWindow +
-                             '</label>' +
-                           '</div>' : ''
-                         ) +
-                       '</div>' +
-                     '</div>' +
-                     '<div class="modal-footer">' +
-                       '<button href="#" class="btn btn-primary note-link-btn disabled" disabled="disabled">' + lang.link.insert + '</button>' +
-                     '</div>' +
+        var body = '<div class="form-group">' +
+                     '<label>' + lang.link.textToDisplay + '</label>' +
+                     '<input class="note-link-text form-control span12" type="text" disabled />' +
                    '</div>' +
-                 '</div>' +
-               '</div>';
+                   '<div class="form-group">' +
+                     '<label>' + lang.link.url + '</label>' +
+                     '<input class="note-link-url form-control span12" type="text" />' +
+                   '</div>' +
+                   (!options.disableLinkTarget ?
+                     '<div class="checkbox">' +
+                       '<label>' + '<input type="checkbox" checked> ' +
+                         lang.link.openInNewWindow +
+                       '</label>' +
+                     '</div>' : ''
+                   );
+        var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
+        return tplDialog('note-link-dialog', lang.link.insert, body, footer);
       };
 
       var tplVideoDialog = function () {
-        return '<div class="note-video-dialog modal" aria-hidden="false">' +
-                 '<div class="modal-dialog">' +
-                   '<div class="modal-content">' +
-                     '<div class="modal-header">' +
-                       '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                       '<h4>' + lang.video.insert + '</h4>' +
-                     '</div>' +
-                     '<div class="modal-body">' +
-                       '<div class="row-fluid">' +
-
-                       '<div class="form-group">' +
-                         '<label>' + lang.video.url + '</label>&nbsp;<small class="text-muted">' + lang.video.providers + '</small>' +
-                         '<input class="note-video-url form-control span12" type="text" />' +
-                       '</div>' +
-                       '</div>' +
-                     '</div>' +
-                     '<div class="modal-footer">' +
-                       '<button href="#" class="btn btn-primary note-video-btn disabled" disabled="disabled">' + lang.video.insert + '</button>' +
-                     '</div>' +
-                   '</div>' +
-                 '</div>' +
-               '</div>';
+        var body = '<div class="form-group">' +
+                     '<label>' + lang.video.url + '</label>&nbsp;<small class="text-muted">' + lang.video.providers + '</small>' +
+                     '<input class="note-video-url form-control span12" type="text" />' +
+                   '</div>';
+        var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
+        return tplDialog('note-video-dialog', lang.video.insert, body, footer);
       };
 
       var tplHelpDialog = function () {
-        return '<div class="note-help-dialog modal" aria-hidden="false">' +
-                 '<div class="modal-dialog">' +
-                   '<div class="modal-content">' +
-                     '<div class="modal-body">' +
-                       '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
-                       '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
-                       (agent.bMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
-                       '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote @VERSION</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>' +
-                     '</div>' +
-                   '</div>' +
-                 '</div>' +
-               '</div>';
+        var body = '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
+                     '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
+                     (agent.bMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
+                     '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote @VERSION</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>';
+        return tplDialog('note-help-dialog', '', body, '');
       };
 
       return '<div class="note-dialog">' +
@@ -416,15 +375,55 @@ define([
     };
     /* jshint ignore:end */
 
-    // createTooltip
-    var createTooltip = function ($container, sPlacement) {
-      $container.find('button').each(function (i, elBtn) {
+    var invertObject = function (obj) {
+      var inverted = {};
+      for (var key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          inverted[obj[key]] = key;
+        }
+      }
+      return inverted;
+    };
+
+    var representShortcut = function (str) {
+      if (agent.bMac) {
+        str = str.replace('CMD', '⌘').replace('SHIFT', '⇧');
+      }
+
+      return str.replace('BACKSLASH', '\\')
+                .replace('SLASH', '/')
+                .replace('LEFTBRACKET', '[')
+                .replace('RIGHTBRACKET', ']');
+    };
+
+    /**
+     * createTooltip
+     *
+     * @param {jQuery} $container
+     * @param {Object} keyMap
+     * @param {String} [sPlacement]
+     */
+    var createTooltip = function ($container, keyMap, sPlacement) {
+      var invertedKeyMap = invertObject(keyMap);
+      var $buttons = $container.find('button');
+
+      $buttons.each(function (i, elBtn) {
         var $btn = $(elBtn);
-        var tplShortcut = $btn.attr(agent.bMac ? 'data-mac-shortcut': 'data-shortcut');
-        if (tplShortcut) { $btn.attr('title', function (i, v) { return v + ' (' + tplShortcut + ')'; }); }
-      // bootstrap tooltip on btn-group bug: https://github.com/twitter/bootstrap/issues/5687
-      }).tooltip({container: 'body', trigger: 'hover', placement: sPlacement || 'top'})
-        .on('click', function () {$(this).tooltip('hide'); });
+        var sShortcut = invertedKeyMap[$btn.data('event')];
+        if (sShortcut) {
+          $btn.attr('title', function (i, v) {
+            return v + ' (' + representShortcut(sShortcut) + ')';
+          });
+        }
+      // bootstrap tooltip on btn-group bug
+      // https://github.com/twitter/bootstrap/issues/5687
+      }).tooltip({
+        container: 'body',
+        trigger: 'hover',
+        placement: sPlacement || 'top'
+      }).on('click', function () {
+        $(this).tooltip('hide');
+      });
     };
 
     // pallete colors
@@ -515,18 +514,19 @@ define([
       sToolbar = '<div class="note-toolbar btn-toolbar">' + sToolbar + '</div>';
 
       var $toolbar = $(sToolbar).prependTo($editor);
+      var keyMap = options.keyMap[agent.bMac ? 'mac' : 'pc'];
       createPalette($toolbar);
-      createTooltip($toolbar, 'bottom');
+      createTooltip($toolbar, keyMap, 'bottom');
 
       //05. create Popover
       var $popover = $(tplPopover(langInfo)).prependTo($editor);
-      createTooltip($popover);
+      createTooltip($popover, keyMap);
 
       //06. handle(control selection, ...)
       $(tplHandle()).prependTo($editor);
 
       //07. create Dialog
-      var $dialog = $(tplDialog(langInfo, options)).prependTo($editor);
+      var $dialog = $(tplDialogs(langInfo, options)).prependTo($editor);
       $dialog.find('button.close, a.modal-close').click(function () {
         $(this).closest('.modal').modal('hide');
       });
