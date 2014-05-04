@@ -8,6 +8,7 @@
         strike: '취소선',
         clear: '글자 효과 없애기',
         height: '줄간격',
+        name: '글꼴',
         size: '글자 크기'
       },
       image: {
