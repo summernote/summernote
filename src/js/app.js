@@ -31,6 +31,8 @@ require([
     tabsize: 2,                   // size of tab
     // disableDragAndDrop: false, // disable drag and drop event
     codemirror: {                 // code mirror options
+      mode: 'text/html',
+      lineNumbers: true,
       theme: 'monokai'
     }
   });

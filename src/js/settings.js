@@ -27,7 +27,7 @@ define('summernote/settings', function () {
       lang: 'en-US',                // language 'en-US', 'ko-KR', ...
       direction: null,              // text direction, ex) 'rtl'
 
-      // default toolbar
+      // toolbar
       toolbar: [
         ['style', ['style']],
         ['font', ['bold', 'italic', 'underline', 'clear']],
@@ -250,4 +250,3 @@ define('summernote/settings', function () {
 
   return settings;
 });
-
