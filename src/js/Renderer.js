@@ -7,74 +7,148 @@ define([
    * rendering toolbar and editable
    */
   var Renderer = function () {
-    var tplToolbarInfo, tplPopover, tplHandle, tplDialogs, tplStatusbar;
+    var tplToolbarInfo, tplPopovers, tplHandle, tplDialogs, tplStatusbar;
 
     /* jshint ignore:start */
+
+    /**
+     * bootstrap button template
+     *
+     * @param {String} sLabel
+     * @param {Object} [options]
+     * @param {String} [options.event]
+     * @param {String} [options.value]
+     * @param {String} [options.title]
+     * @param {String} [options.dropdown]
+     */
+    var tplButton = function (sLabel, options) {
+      var event = options.event;
+      var value = options.value;
+      var title = options.title;
+      var dropdown = options.dropdown;
+
+      return '<button type="button"' +
+                 ' class="btn btn-default btn-sm btn-small' +
+                   (dropdown ? ' dropdown-toggle' : '') + '"' +
+                 (dropdown ? ' data-toggle="dropdown"' : '') +
+                 (title ? ' title="' + title + '"' : '') +
+                 (event ? ' data-event="' + event + '"' : '') +
+                 (value ? ' data-value="' + value + '"' : '') +
+                 ' tabindex="-1">' +
+               sLabel +
+               (dropdown ? ' <span class="caret"></span>' : '') +
+             '</button>' +
+             (dropdown || '');
+    };
+
+    /**
+     * bootstrap icon button template
+     *
+     * @param {String} sIconClass
+     * @param {Object} [options]
+     * @param {String} [options.event]
+     * @param {String} [options.value]
+     * @param {String} [options.title]
+     * @param {String} [options.dropdown]
+     */
+    var tplIconButton = function (sIconClass, options) {
+      var sLabel = '<i class="' + sIconClass + '"></i>';
+      return tplButton(sLabel, options);
+    };
+
     tplToolbarInfo = {
       picture: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.image + '" data-event="showImageDialog" tabindex="-1"><i class="fa fa-picture-o icon-picture"></i></button>';
+        return tplIconButton('fa fa-picture-o icon-picture', {
+          event: 'showImageDialog',
+          title: lang.image.image
+        });
       },
       link: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.link + '" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-link icon-link"></i></button>';
+        return tplIconButton('fa fa-link icon-link', {
+          event: 'showLinkDialog',
+          title: lang.link.link
+        });
       },
       video: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.video.video + '" data-event="showVideoDialog" tabindex="-1"><i class="fa fa-youtube-play icon-play"></i></button>';
+        return tplIconButton('fa fa-youtube-play icon-play', {
+          event: 'showVideoDialog',
+          title: lang.link.link
+        });
       },
       table: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + lang.table.table + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-table icon-table"></i> <span class="caret"></span></button>' +
-                 '<ul class="dropdown-menu">' +
-                   '<div class="note-dimension-picker">' +
-                     '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>' +
-                     '<div class="note-dimension-picker-highlighted"></div>' +
-                     '<div class="note-dimension-picker-unhighlighted"></div>' +
-                   '</div>' +
-                   '<div class="note-dimension-display"> 1 x 1 </div>' +
-                 '</ul>';
+        var dropdown = '<ul class="dropdown-menu">' +
+                         '<div class="note-dimension-picker">' +
+                           '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>' +
+                           '<div class="note-dimension-picker-highlighted"></div>' +
+                           '<div class="note-dimension-picker-unhighlighted"></div>' +
+                         '</div>' +
+                         '<div class="note-dimension-display"> 1 x 1 </div>' +
+                       '</ul>';
+        return tplIconButton('fa fa-table icon-table', {
+          title: lang.table.table,
+          dropdown: dropdown
+        });
       },
       style: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + lang.style.style + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-magic icon-magic"></i> <span class="caret"></span></button>' +
-               '<ul class="dropdown-menu">' +
-                 '<li><a data-event="formatBlock" data-value="p">' + lang.style.normal + '</a></li>' +
-                 '<li><a data-event="formatBlock" data-value="blockquote"><blockquote>' + lang.style.blockquote + '</blockquote></a></li>' +
-                 '<li><a data-event="formatBlock" data-value="pre">' + lang.style.pre + '</a></li>' +
-                 '<li><a data-event="formatBlock" data-value="h1"><h1>' + lang.style.h1 + '</h1></a></li>' +
-                 '<li><a data-event="formatBlock" data-value="h2"><h2>' + lang.style.h2 + '</h2></a></li>' +
-                 '<li><a data-event="formatBlock" data-value="h3"><h3>' + lang.style.h3 + '</h3></a></li>' +
-                 '<li><a data-event="formatBlock" data-value="h4"><h4>' + lang.style.h4 + '</h4></a></li>' +
-                 '<li><a data-event="formatBlock" data-value="h5"><h5>' + lang.style.h5 + '</h5></a></li>' +
-                 '<li><a data-event="formatBlock" data-value="h6"><h6>' + lang.style.h6 + '</h6></a></li>' +
-               '</ul>';
+        var aTagName = ['p', 'blockquote', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+
+        var dropdown = '<ul class="dropdown-menu">';
+        for (var idx = 0; idx < aTagName.length; idx++) {
+          var tagName = aTagName[idx];
+          var label = lang.style[tagName === 'p' ? 'normal' : tagName];
+          dropdown += '<li><a data-event="formatBlock" data-value="' + tagName + '">' +
+                        (
+                          (tagName === 'p' || tagName === 'pre') ? label :
+                          '<' + tagName + '>' + label + '</' + tagName + '>'
+                        ) +
+                      '</a></li>';
+        }
+        dropdown += '</ul>';
+
+        return tplIconButton('fa fa-magic icon-magic', {
+          title: lang.style.style,
+          dropdown: dropdown
+        });
       },
-      fontname: function(lang) {
+      fontname: function (lang) {
         var aFont = [
           'Serif', 'Sans', 'Arial', 'Arial Black', 'Courier',
           'Courier New', 'Comic Sans MS', 'Helvetica', 'Impact', 'Lucida Grande',
           'Lucida Sans', 'Tahoma', 'Times', 'Times New Roman', 'Verdana'
         ];
 
-        var sMarkup = '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + lang.font.name + '" tabindex="-1"><span class="note-current-fontname">Arial</span> <b class="caret"></b></button>';
-        sMarkup += '<ul class="dropdown-menu">';
-        for (var idx = 0; idx < aFont.length; idx++ ) {
-          sMarkup += '<li><a data-event="fontName" data-value="' + aFont[idx] + '"><i class="fa fa-check icon-ok"></i> ' + aFont[idx] + '</a></li>';
+        var dropdown = '<ul class="dropdown-menu">';
+        for (var idx = 0; idx < aFont.length; idx++) {
+          dropdown += '<li><a data-event="fontName" data-value="' + aFont[idx] + '">' +
+                        '<i class="fa fa-check icon-ok"></i> ' + aFont[idx] +
+                      '</a></li>';
         }
-        sMarkup += '</ul>';
+        dropdown += '</ul>';
 
-        return sMarkup;
+        var sLabel = '<span class="note-current-fontname">Arial</span>';
+        return tplButton(sLabel, {
+          title: lang.font.name,
+          dropdown: dropdown
+        });
       },
       fontsize: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + lang.font.size + '" tabindex="-1"><span class="note-current-fontsize">11</span> <b class="caret"></b></button>' +
-               '<ul class="dropdown-menu">' +
-                 '<li><a data-event="fontSize" data-value="8"><i class="fa fa-check icon-ok"></i> 8</a></li>' +
-                 '<li><a data-event="fontSize" data-value="9"><i class="fa fa-check icon-ok"></i> 9</a></li>' +
-                 '<li><a data-event="fontSize" data-value="10"><i class="fa fa-check icon-ok"></i> 10</a></li>' +
-                 '<li><a data-event="fontSize" data-value="11"><i class="fa fa-check icon-ok"></i> 11</a></li>' +
-                 '<li><a data-event="fontSize" data-value="12"><i class="fa fa-check icon-ok"></i> 12</a></li>' +
-                 '<li><a data-event="fontSize" data-value="14"><i class="fa fa-check icon-ok"></i> 14</a></li>' +
-                 '<li><a data-event="fontSize" data-value="18"><i class="fa fa-check icon-ok"></i> 18</a></li>' +
-                 '<li><a data-event="fontSize" data-value="24"><i class="fa fa-check icon-ok"></i> 24</a></li>' +
-                 '<li><a data-event="fontSize" data-value="36"><i class="fa fa-check icon-ok"></i> 36</a></li>' +
-               '</ul>';
+        var aFontSize = [8, 9, 10, 11, 12, 14, 18, 24, 36];
+
+        var dropdown = '<ul class="dropdown-menu">';
+        for (var idx = 0; idx < aFontSize.length; idx++) {
+          dropdown += '<li><a data-event="fontSize" data-value="' + aFontSize[idx] + '">' +
+                        '<i class="fa fa-check icon-ok"></i> ' + aFontSize[idx] +
+                      '</a></li>';
+        }
+        dropdown += '</ul>';
+
+        var sLabel = '<span class="note-current-fontsize">11</span>';
+        return tplButton(sLabel, {
+          title: lang.font.size,
+          dropdown: dropdown
+        });
       },
+
       color: function (lang) {
         return '<button type="button" class="btn btn-default btn-sm btn-small note-recent-color" title="' + lang.color.recent + '" data-event="color" data-value=\'{"backColor":"yellow"}\' tabindex="-1"><i class="fa fa-font icon-font" style="color:black;background-color:yellow;"></i></button>' +
                '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + lang.color.more + '" data-toggle="dropdown" tabindex="-1">' +
@@ -96,104 +170,192 @@ define([
                '</ul>';
       },
       bold: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.bold + '" data-event="bold" tabindex="-1"><i class="fa fa-bold icon-bold"></i></button>';
+        return tplIconButton('fa fa-bold icon-bold', {
+          event: 'bold',
+          title: lang.font.bold
+        });
       },
       italic: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.italic + '" data-event="italic" tabindex="-1"><i class="fa fa-italic icon-italic"></i></button>';
+        return tplIconButton('fa fa-italic icon-italic', {
+          event: 'italic',
+          title: lang.font.italic
+        });
       },
       underline: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.underline + '" data-event="underline" tabindex="-1"><i class="fa fa-underline icon-underline"></i></button>';
+        return tplIconButton('fa fa-underline icon-underline', {
+          event: 'underline',
+          title: lang.font.underline
+        });
       },
       strike: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.strike + '" data-event="strikethrough" tabindex="-1"><i class="fa fa-strikethrough icon-strikethrough"></i></button>';
+        return tplIconButton('fa fa-strikethrough icon-strikethrough', {
+          event: 'strikethrough',
+          title: lang.font.strike
+        });
       },
       clear: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.font.clear + '" data-event="removeFormat" tabindex="-1"><i class="fa fa-eraser icon-eraser"></i></button>';
+        return tplIconButton('fa fa-eraser icon-eraser', {
+          event: 'removeFormat',
+          title: lang.font.clear
+        });
       },
       ul: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.lists.unordered + '" data-event="insertUnorderedList" tabindex="-1"><i class="fa fa-list-ul icon-list-ul"></i></button>';
+        return tplIconButton('fa fa-list-ul icon-list-ul', {
+          event: 'insertUnorderedList',
+          title: lang.lists.unordered
+        });
       },
       ol: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.lists.ordered + '" data-event="insertOrderedList" tabindex="-1"><i class="fa fa-list-ol icon-list-ol"></i></button>';
+        return tplIconButton('fa fa-list-ol icon-list-ol', {
+          event: 'insertOrderedList',
+          title: lang.lists.ordered
+        });
       },
       paragraph: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + lang.paragraph.paragraph + '" data-toggle="dropdown" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i>  <span class="caret"></span></button>' +
-        '<div class="dropdown-menu">' +
-          '<div class="note-align btn-group">' +
-            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.left + '" data-event="justifyLeft" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
-            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.center + '" data-event="justifyCenter" tabindex="-1"><i class="fa fa-align-center icon-align-center"></i></button>' +
-            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.right + '" data-event="justifyRight" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
-            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.justify + '" data-event="justifyFull" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
-          '</div>' +
-          '<div class="note-list btn-group">' +
-            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.outdent + '" data-event="outdent" tabindex="-1"><i class="fa fa-outdent icon-indent-left"></i></button>' +
-            '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.indent + '" data-event="indent" tabindex="-1"><i class="fa fa-indent icon-indent-right"></i></button>' +
-          '</div>' +
-        '</div>';
+        var dropdown = '<div class="dropdown-menu">' +
+                         '<div class="note-align btn-group">' +
+                           '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.left + '" data-event="justifyLeft" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
+                           '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.center + '" data-event="justifyCenter" tabindex="-1"><i class="fa fa-align-center icon-align-center"></i></button>' +
+                           '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.right + '" data-event="justifyRight" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
+                           '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.justify + '" data-event="justifyFull" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
+                         '</div>' +
+                         '<div class="note-list btn-group">' +
+                           '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.outdent + '" data-event="outdent" tabindex="-1"><i class="fa fa-outdent icon-indent-left"></i></button>' +
+                           '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.indent + '" data-event="indent" tabindex="-1"><i class="fa fa-indent icon-indent-right"></i></button>' +
+                         '</div>' +
+                       '</div>';
+
+        return tplIconButton('fa fa-align-left icon-align-left', {
+          title: lang.paragraph.paragraph,
+          dropdown: dropdown
+        });
       },
       height: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" data-toggle="dropdown" title="' + lang.font.height + '" tabindex="-1"><i class="fa fa-text-height icon-text-height"></i>&nbsp; <b class="caret"></b></button>' +
-        '<ul class="dropdown-menu">' +
-          '<li><a data-event="lineHeight" data-value="1.0"><i class="fa fa-check icon-ok"></i> 1.0</a></li>' +
-          '<li><a data-event="lineHeight" data-value="1.2"><i class="fa fa-check icon-ok"></i> 1.2</a></li>' +
-          '<li><a data-event="lineHeight" data-value="1.4"><i class="fa fa-check icon-ok"></i> 1.4</a></li>' +
-          '<li><a data-event="lineHeight" data-value="1.5"><i class="fa fa-check icon-ok"></i> 1.5</a></li>' +
-          '<li><a data-event="lineHeight" data-value="1.6"><i class="fa fa-check icon-ok"></i> 1.6</a></li>' +
-          '<li><a data-event="lineHeight" data-value="1.8"><i class="fa fa-check icon-ok"></i> 1.8</a></li>' +
-          '<li><a data-event="lineHeight" data-value="2.0"><i class="fa fa-check icon-ok"></i> 2.0</a></li>' +
-          '<li><a data-event="lineHeight" data-value="3.0"><i class="fa fa-check icon-ok"></i> 3.0</a></li>' +
-        '</ul>';
+        var aHeight = ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'];
+        var dropdown = '<ul class="dropdown-menu">';
+        for (var idx = 0; idx < aHeight.length; idx++) {
+          dropdown += '<li><a data-event="lineHeight" data-value="' + aHeight[idx] + '"><i class="fa fa-check icon-ok"></i> ' + aHeight[idx] + '</a></li>';
+        }
+        dropdown += '</ul>';
+
+        return tplIconButton('fa fa-text-height icon-text-height', {
+          title: lang.font.height,
+          dropdown: dropdown
+        });
+
       },
       help: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.options.help + '" data-event="showHelpDialog" tabindex="-1"><i class="fa fa-question icon-question"></i></button>';
+        return tplIconButton('fa fa-question icon-question', {
+          event: 'showHelpDialog',
+          title: lang.options.help
+        });
       },
       fullscreen: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.options.fullscreen + '" data-event="fullscreen" tabindex="-1"><i class="fa fa-arrows-alt icon-fullscreen"></i></button>';
+        return tplIconButton('fa fa-arrows-alt icon-fullscreen', {
+          event: 'fullscreen',
+          title: lang.options.fullscreen
+        });
       },
       codeview: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.options.codeview + '" data-event="codeview" tabindex="-1"><i class="fa fa-code icon-code"></i></button>';
+        return tplIconButton('fa fa-code icon-code', {
+          event: 'codeview',
+          title: lang.options.codeview
+        });
       },
       undo: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.history.undo + '" data-event="undo" tabindex="-1"><i class="fa fa-undo icon-undo"></i></button>';
+        return tplIconButton('fa fa-undo icon-undo', {
+          event: 'undo',
+          title: lang.history.undo
+        });
       },
       redo: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.history.redo + '" data-event="redo" tabindex="-1"><i class="fa fa-repeat icon-repeat"></i></button>';
+        return tplIconButton('fa fa-repeat icon-repeat', {
+          event: 'redo',
+          title: lang.history.redo
+        });
       }
     };
-    tplPopover = function (lang) {
-      return '<div class="note-popover">' +
-                '<div class="note-link-popover popover bottom in" style="display: none;">' +
-                  '<div class="arrow"></div>' +
-                  '<div class="popover-content note-link-content">' +
-                    '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
-                    '<div class="note-insert btn-group">' +
-                    '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.edit + '" data-event="showLinkDialog" tabindex="-1"><i class="fa fa-edit icon-edit"></i></button>' +
-                    '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.link.unlink + '" data-event="unlink" tabindex="-1"><i class="fa fa-unlink icon-unlink"></i></button>' +
-                    '</div>' +
-                  '</div>' +
-                '</div>' +
-                '<div class="note-image-popover popover bottom in" style="display: none;">' +
-                  '<div class="arrow"></div>' +
-                  '<div class="popover-content note-image-content">' +
-                    '<div class="btn-group">' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.resizeFull + '" data-event="resize" data-value="1" tabindex="-1"><span class="note-fontsize-10">100%</span> </button>' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.resizeHalf + '" data-event="resize" data-value="0.5" tabindex="-1"><span class="note-fontsize-10">50%</span> </button>' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.resizeQuarter + '" data-event="resize" data-value="0.25" tabindex="-1"><span class="note-fontsize-10">25%</span> </button>' +
-                    '</div>' +
-                    '<div class="btn-group">' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.floatLeft + '" data-event="floatMe" data-value="left" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.floatRight + '" data-event="floatMe" data-value="right" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.floatNone + '" data-event="floatMe" data-value="none" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
-                    '</div>' +
-                    '<div class="btn-group">' +
-                      '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.image.remove + '" data-event="removeMedia" data-value="none" tabindex="-1"><i class="fa fa-trash-o icon-trash"></i></button>' +
-                    '</div>' +
-                  '</div>' +
-                '</div>' +
-              '</div>';
+
+    /**
+     * bootstrap popover template
+     *
+     * @param {String} className
+     * @param {String} content
+     */
+    var tplPopover = function (className, content) {
+      return '<div class="' + className + ' popover bottom in" style="display: none;">' +
+               '<div class="arrow"></div>' +
+               '<div class="popover-content">' +
+                 content +
+               '</div>' +
+             '</div>';
     };
 
-    var tplHandle = function () {
+    tplPopovers = function (lang) {
+      var tplLinkPopover = function () {
+        var content = '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
+                      '<div class="note-insert btn-group">' +
+                        tplIconButton('fa fa-edit icon-edit', {
+                          title: lang.link.edit,
+                          event: 'showLinkDialog'
+                        }) +
+                        tplIconButton('fa fa-unlink icon-unlink', {
+                          title: lang.link.unlink,
+                          event: 'unlink'
+                        }) +
+                      '</div>';
+        return tplPopover('note-link-popover', content);
+      };
+
+      var tplImagePopover = function () {
+        var content = '<div class="btn-group">' +
+                        tplButton('<span class="note-fontsize-10">100%</span>', {
+                          title: lang.image.resizeFull,
+                          event: 'resize',
+                          value: '1'
+                        }) +
+                        tplButton('<span class="note-fontsize-10">50%</span>', {
+                          title: lang.image.resizeHalf,
+                          event: 'resize',
+                          value: '0.5'
+                        }) +
+                        tplButton('<span class="note-fontsize-10">25%</span>', {
+                          title: lang.image.resizeQuarter,
+                          event: 'resize',
+                          value: '0.25'
+                        }) +
+                      '</div>' +
+                      '<div class="btn-group">' +
+                        tplIconButton('fa fa-align-left icon-align-left', {
+                          title: lang.image.floatLeft,
+                          event: 'floatMe',
+                          value: 'left'
+                        }) +
+                        tplIconButton('fa fa-align-left icon-align-right', {
+                          title: lang.image.floatRight,
+                          event: 'floatMe',
+                          value: 'right'
+                        }) +
+                        tplIconButton('fa fa-align-justify icon-align-justify', {
+                          title: lang.image.floatNone,
+                          event: 'floatMe',
+                          value: 'none'
+                        }) +
+                      '</div>' +
+                      '<div class="btn-group">' +
+                        tplIconButton('fa fa-trash-o icon-trash', {
+                          title: lang.image.remove,
+                          event: 'removeMedia',
+                          value: 'none'
+                        }) +
+                      '</div>';
+        return tplPopover('note-image-popover', content);
+      };
+
+      return '<div class="note-popover">' + tplLinkPopover() + tplImagePopover() + '</div>';
+    };
+
+    tplHandle = function () {
       return '<div class="note-handle">' +
                '<div class="note-control-selection">' +
                  '<div class="note-control-selection-bg"></div>' +
@@ -206,6 +368,11 @@ define([
              '</div>';
     };
 
+    /**
+     * shortcut table template
+     * @param {String} title
+     * @param {String} body
+     */
     var tplShortcut = function (title, body) {
       return '<table class="note-shortcut">' +
                '<thead>' +
@@ -215,7 +382,7 @@ define([
              '</table>';
     };
 
-    var tplShortcutText = function (lang, options) {
+    var tplShortcutText = function (lang) {
       var body = '<tr><td>⌘ + B</td><td>' + lang.font.bold + '</td></tr>' +
                  '<tr><td>⌘ + I</td><td>' + lang.font.italic + '</td></tr>' +
                  '<tr><td>⌘ + U</td><td>' + lang.font.underline + '</td></tr>' +
@@ -225,7 +392,7 @@ define([
       return tplShortcut(lang.shortcut.textFormatting, body);
     };
 
-    var tplShortcutAction = function (lang, options) {
+    var tplShortcutAction = function (lang) {
       var body = '<tr><td>⌘ + Z</td><td>' + lang.history.undo + '</td></tr>' +
                  '<tr><td>⌘ + ⇧ + Z</td><td>' + lang.history.redo + '</td></tr>' +
                  '<tr><td>⌘ + ]</td><td>' + lang.paragraph.indent + '</td></tr>' +
@@ -235,7 +402,7 @@ define([
       return tplShortcut(lang.shortcut.action, body);
     };
 
-    var tplShortcutPara = function (lang, options) {
+    var tplShortcutPara = function (lang) {
       var body = '<tr><td>⌘ + ⇧ + L</td><td>' + lang.paragraph.left + '</td></tr>' +
                  '<tr><td>⌘ + ⇧ + E</td><td>' + lang.paragraph.center + '</td></tr>' +
                  '<tr><td>⌘ + ⇧ + R</td><td>' + lang.paragraph.right + '</td></tr>' +
@@ -246,7 +413,7 @@ define([
       return tplShortcut(lang.shortcut.paragraphFormatting, body);
     };
 
-    var tplShortcutStyle = function (lang, options) {
+    var tplShortcutStyle = function (lang) {
       var body = '<tr><td>⌘ + NUM0</td><td>' + lang.style.normal + '</td></tr>' +
                  '<tr><td>⌘ + NUM1</td><td>' + lang.style.h1 + '</td></tr>' +
                  '<tr><td>⌘ + NUM2</td><td>' + lang.style.h2 + '</td></tr>' +
@@ -258,7 +425,7 @@ define([
       return tplShortcut(lang.shortcut.documentStyle, body);
     };
 
-    var tplExtraShortcuts = function(lang, options) {
+    var tplExtraShortcuts = function (lang, options) {
       var extraKeys = options.extraKeys;
       var body = '';
       for (var key in extraKeys) {
@@ -276,7 +443,7 @@ define([
                          '<tr><td>' + tplShortcutAction(lang, options) + '</td><td>' + tplShortcutText(lang, options) + '</td></tr>' +
                          '<tr><td>' + tplShortcutStyle(lang, options) + '</td><td>' + tplShortcutPara(lang, options) + '</td></tr>';
       if (options.extraKeys) {
-          template += '<tr><td colspan="2">' + tplExtraShortcuts(lang, options) + '</td></tr>';
+        template += '<tr><td colspan="2">' + tplExtraShortcuts(lang, options) + '</td></tr>';
       }
       template += '</tbody</table>';
       return template;
@@ -295,24 +462,24 @@ define([
      * @param {String} [footer]
      */
     var tplDialog = function (className, title, body, footer) {
-        return '<div class="' + className +' modal" aria-hidden="false">' +
-                 '<div class="modal-dialog">' +
-                   '<div class="modal-content">' +
-                     (title ?
-                     '<div class="modal-header">' +
-                       '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                       '<h4>' + title + '</h4>' +
-                     '</div>' : ''
-                     ) +
-                     '<div class="modal-body">' +
-                       '<div class="row-fluid">' + body + '</div>' +
-                     '</div>' +
-                     (footer ?
-                     '<div class="modal-footer">' + footer + '</div>' : ''
-                     ) +
+      return '<div class="' + className + ' modal" aria-hidden="false">' +
+               '<div class="modal-dialog">' +
+                 '<div class="modal-content">' +
+                   (title ?
+                   '<div class="modal-header">' +
+                     '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
+                     '<h4>' + title + '</h4>' +
+                   '</div>' : ''
+                   ) +
+                   '<div class="modal-body">' +
+                     '<div class="row-fluid">' + body + '</div>' +
                    '</div>' +
+                   (footer ?
+                   '<div class="modal-footer">' + footer + '</div>' : ''
+                   ) +
                  '</div>' +
-               '</div>';
+               '</div>' +
+             '</div>';
     };
 
     tplDialogs = function (lang, options) {
@@ -356,9 +523,13 @@ define([
 
       var tplHelpDialog = function () {
         var body = '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
-                     '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
-                     (agent.bMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
-                     '<p class="text-center"><a href="//hackerwins.github.io/summernote/" target="_blank">Summernote @VERSION</a> · <a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · <a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a></p>';
+                   '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
+                   (agent.bMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
+                   '<p class="text-center">' +
+                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote @VERSION</a> · ' +
+                     '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
+                     '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
+                   '</p>';
         return tplDialog('note-help-dialog', '', body, '');
       };
 
@@ -371,8 +542,13 @@ define([
     };
 
     tplStatusbar = function () {
-      return '<div class="note-resizebar"><div class="note-icon-bar"></div><div class="note-icon-bar"></div><div class="note-icon-bar"></div></div>';
+      return '<div class="note-resizebar">' +
+               '<div class="note-icon-bar"></div>' +
+               '<div class="note-icon-bar"></div>' +
+               '<div class="note-icon-bar"></div>' +
+             '</div>';
     };
+
     /* jshint ignore:end */
 
     var invertObject = function (obj) {
@@ -519,7 +695,7 @@ define([
       createTooltip($toolbar, keyMap, 'bottom');
 
       //05. create Popover
-      var $popover = $(tplPopover(langInfo)).prependTo($editor);
+      var $popover = $(tplPopovers(langInfo)).prependTo($editor);
       createTooltip($popover, keyMap);
 
       //06. handle(control selection, ...)
