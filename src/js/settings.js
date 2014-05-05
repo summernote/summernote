@@ -18,7 +18,10 @@ define('summernote/settings', function () {
       disableLinkTarget: false,     // hide link Target Checkbox
       disableDragAndDrop: false,    // disable drag and drop event
 
-      codemirror: null,             // codemirror options
+      codemirror: {                 // codemirror options
+        mode: 'text/html',
+        lineNumbers: true
+      },
 
       // language
       lang: 'en-US',                // language 'en-US', 'ko-KR', ...

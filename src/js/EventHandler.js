@@ -253,13 +253,11 @@ define([
 
             // activate CodeMirror as codable
             if (agent.bCodeMirror) {
-              cmEditor = CodeMirror.fromTextArea($codable[0], $.extend({
-                mode: 'text/html',
-                lineNumbers: true
-              }, options.codemirror));
-              var tern = $editor.data('options').codemirror.tern || false;
-              if (tern) {
-                server = new CodeMirror.TernServer(tern);
+              cmEditor = CodeMirror.fromTextArea($codable[0], options.codemirror);
+
+              // CodeMirror TernServer
+              if (options.codemirror.tern) {
+                server = new CodeMirror.TernServer(options.codemirror.tern);
                 cmEditor.ternServer = server;
                 cmEditor.on('cursorActivity', function (cm) {
                   server.updateArgHints(cm);

@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-05-05T11:48Z
+ * Date: 2014-05-05T12:16Z
  */
 (function (factory) {
   /* global define */
@@ -623,7 +623,10 @@
       disableLinkTarget: false,     // hide link Target Checkbox
       disableDragAndDrop: false,    // disable drag and drop event
 
-      codemirror: null,             // codemirror options
+      codemirror: {                 // codemirror options
+        mode: 'text/html',
+        lineNumbers: true
+      },
 
       // language
       lang: 'en-US',                // language 'en-US', 'ko-KR', ...
@@ -2434,13 +2437,11 @@
 
             // activate CodeMirror as codable
             if (agent.bCodeMirror) {
-              cmEditor = CodeMirror.fromTextArea($codable[0], $.extend({
-                mode: 'text/html',
-                lineNumbers: true
-              }, options.codemirror));
-              var tern = $editor.data('options').codemirror.tern || false;
-              if (tern) {
-                server = new CodeMirror.TernServer(tern);
+              cmEditor = CodeMirror.fromTextArea($codable[0], options.codemirror);
+
+              // CodeMirror TernServer
+              if (options.codemirror.tern) {
+                server = new CodeMirror.TernServer(options.codemirror.tern);
                 cmEditor.ternServer = server;
                 cmEditor.on('cursorActivity', function (cm) {
                   server.updateArgHints(cm);
