@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-05-05T04:45Z
+ * Date: 2014-05-05T11:48Z
  */
 (function (factory) {
   /* global define */
@@ -609,7 +609,7 @@
     version: '0.5.2',
 
     /**
-     * options for init
+     * options
      */
     options: {
       width: null,                  // set editor width
@@ -618,7 +618,7 @@
       focus: false,                 // set focus after initilize summernote
 
       tabsize: 4,                   // size of tab ex) 2 or 4
-      styleWithSpan: true,          // style with span (Chrome and FF)
+      styleWithSpan: true,          // style with span (Chrome and FF only)
 
       disableLinkTarget: false,     // hide link Target Checkbox
       disableDragAndDrop: false,    // disable drag and drop event
@@ -634,7 +634,7 @@
         ['style', ['style']],
         ['font', ['bold', 'italic', 'underline', 'clear']],
         ['fontname', ['fontname']],
-        // ['fontsize', ['fontsize']], Still buggy
+        // ['fontsize', ['fontsize']], // Still buggy
         ['color', ['color']],
         ['para', ['ul', 'ol', 'paragraph']],
         ['height', ['height']],
@@ -643,6 +643,37 @@
         ['view', ['fullscreen', 'codeview']],
         ['help', ['help']]
       ],
+
+      // style tag
+      styleTags: ['p', 'blockquote', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+
+      // default fontName
+      defaultFontName: 'Arial',
+
+      // fontName
+      fontNames: [
+        'Serif', 'Sans', 'Arial', 'Arial Black', 'Courier',
+        'Courier New', 'Comic Sans MS', 'Helvetica', 'Impact', 'Lucida Grande',
+        'Lucida Sans', 'Tahoma', 'Times', 'Times New Roman', 'Verdana'
+      ],
+
+      // pallete colors(n x n)
+      colors: [
+        ['#000000', '#424242', '#636363', '#9C9C94', '#CEC6CE', '#EFEFEF', '#F7F7F7', '#FFFFFF'],
+        ['#FF0000', '#FF9C00', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#9C00FF', '#FF00FF'],
+        ['#F7C6CE', '#FFE7CE', '#FFEFC6', '#D6EFD6', '#CEDEE7', '#CEE7F7', '#D6D6E7', '#E7D6DE'],
+        ['#E79C9C', '#FFC69C', '#FFE79C', '#B5D6A5', '#A5C6CE', '#9CC6EF', '#B5A5D6', '#D6A5BD'],
+        ['#E76363', '#F7AD6B', '#FFD663', '#94BD7B', '#73A5AD', '#6BADDE', '#8C7BC6', '#C67BA5'],
+        ['#CE0000', '#E79439', '#EFC631', '#6BA54A', '#4A7B8C', '#3984C6', '#634AA5', '#A54A7B'],
+        ['#9C0000', '#B56308', '#BD9400', '#397B21', '#104A5A', '#085294', '#311873', '#731842'],
+        ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031']
+      ],
+
+      // fontSize
+      fontSizes: ['8', '9', '10', '11', '12', '14', '18', '24', '36'],
+
+      // lineHeight
+      lineHeights: ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'],
 
       // callbacks
       oninit: null,             // initialize
@@ -2706,9 +2737,6 @@
    * rendering toolbar and editable
    */
   var Renderer = function () {
-    var tplToolbarInfo, tplPopovers, tplHandle, tplDialogs, tplStatusbar;
-
-    /* jshint ignore:start */
 
     /**
      * bootstrap button template
@@ -2724,15 +2752,18 @@
       var event = options.event;
       var value = options.value;
       var title = options.title;
+      var className = options.className;
       var dropdown = options.dropdown;
 
       return '<button type="button"' +
                  ' class="btn btn-default btn-sm btn-small' +
-                   (dropdown ? ' dropdown-toggle' : '') + '"' +
+                   (className ? ' ' + className : '') +
+                   (dropdown ? ' dropdown-toggle' : '') +
+                 '"' +
                  (dropdown ? ' data-toggle="dropdown"' : '') +
                  (title ? ' title="' + title + '"' : '') +
                  (event ? ' data-event="' + event + '"' : '') +
-                 (value ? ' data-value="' + value + '"' : '') +
+                 (value ? ' data-value=\'' + value + '\'' : '') +
                  ' tabindex="-1">' +
                sLabel +
                (dropdown ? ' <span class="caret"></span>' : '') +
@@ -2755,7 +2786,51 @@
       return tplButton(sLabel, options);
     };
 
-    tplToolbarInfo = {
+    /**
+     * bootstrap popover template
+     *
+     * @param {String} className
+     * @param {String} content
+     */
+    var tplPopover = function (className, content) {
+      return '<div class="' + className + ' popover bottom in" style="display: none;">' +
+               '<div class="arrow"></div>' +
+               '<div class="popover-content">' +
+                 content +
+               '</div>' +
+             '</div>';
+    };
+
+    /**
+     * bootstrap dialog template
+     *
+     * @param {String} className
+     * @param {String} [title]
+     * @param {String} body
+     * @param {String} [footer]
+     */
+    var tplDialog = function (className, title, body, footer) {
+      return '<div class="' + className + ' modal" aria-hidden="false">' +
+               '<div class="modal-dialog">' +
+                 '<div class="modal-content">' +
+                   (title ?
+                   '<div class="modal-header">' +
+                     '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
+                     '<h4>' + title + '</h4>' +
+                   '</div>' : ''
+                   ) +
+                   '<div class="modal-body">' +
+                     '<div class="row-fluid">' + body + '</div>' +
+                   '</div>' +
+                   (footer ?
+                   '<div class="modal-footer">' + footer + '</div>' : ''
+                   ) +
+                 '</div>' +
+               '</div>' +
+             '</div>';
+    };
+
+    var tplToolbarInfo = {
       picture: function (lang) {
         return tplIconButton('fa fa-picture-o icon-picture', {
           event: 'showImageDialog',
@@ -2788,85 +2863,85 @@
           dropdown: dropdown
         });
       },
-      style: function (lang) {
-        var aTagName = ['p', 'blockquote', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
-
-        var dropdown = '<ul class="dropdown-menu">';
-        for (var idx = 0; idx < aTagName.length; idx++) {
-          var tagName = aTagName[idx];
-          var label = lang.style[tagName === 'p' ? 'normal' : tagName];
-          dropdown += '<li><a data-event="formatBlock" data-value="' + tagName + '">' +
-                        (
-                          (tagName === 'p' || tagName === 'pre') ? label :
-                          '<' + tagName + '>' + label + '</' + tagName + '>'
-                        ) +
-                      '</a></li>';
-        }
-        dropdown += '</ul>';
+      style: function (lang, options) {
+        var items = options.styleTags.reduce(function (memo, v) {
+          var label = lang.style[v === 'p' ? 'normal' : v];
+          return memo + '<li><a data-event="formatBlock" data-value="' + v + '">' +
+                   (
+                     (v === 'p' || v === 'pre') ? label :
+                     '<' + v + '>' + label + '</' + v + '>'
+                   ) +
+                 '</a></li>';
+        }, '');
 
         return tplIconButton('fa fa-magic icon-magic', {
           title: lang.style.style,
-          dropdown: dropdown
+          dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
         });
       },
-      fontname: function (lang) {
-        var aFont = [
-          'Serif', 'Sans', 'Arial', 'Arial Black', 'Courier',
-          'Courier New', 'Comic Sans MS', 'Helvetica', 'Impact', 'Lucida Grande',
-          'Lucida Sans', 'Tahoma', 'Times', 'Times New Roman', 'Verdana'
-        ];
-
-        var dropdown = '<ul class="dropdown-menu">';
-        for (var idx = 0; idx < aFont.length; idx++) {
-          dropdown += '<li><a data-event="fontName" data-value="' + aFont[idx] + '">' +
-                        '<i class="fa fa-check icon-ok"></i> ' + aFont[idx] +
-                      '</a></li>';
-        }
-        dropdown += '</ul>';
-
-        var sLabel = '<span class="note-current-fontname">Arial</span>';
+      fontname: function (lang, options) {
+        var items = options.fontNames.reduce(function (memo, v) {
+          return memo + '<li><a data-event="fontName" data-value="' + v + '">' +
+                          '<i class="fa fa-check icon-ok"></i> ' + v +
+                        '</a></li>';
+        }, '');
+        var sLabel = '<span class="note-current-fontname">' +
+                       options.defaultFontName +
+                     '</span>';
         return tplButton(sLabel, {
           title: lang.font.name,
-          dropdown: dropdown
+          dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
         });
       },
-      fontsize: function (lang) {
-        var aFontSize = [8, 9, 10, 11, 12, 14, 18, 24, 36];
-
-        var dropdown = '<ul class="dropdown-menu">';
-        for (var idx = 0; idx < aFontSize.length; idx++) {
-          dropdown += '<li><a data-event="fontSize" data-value="' + aFontSize[idx] + '">' +
-                        '<i class="fa fa-check icon-ok"></i> ' + aFontSize[idx] +
-                      '</a></li>';
-        }
-        dropdown += '</ul>';
+      fontsize: function (lang, options) {
+        var items = options.fontSizes.reduce(function (memo, v) {
+          return memo + '<li><a data-event="fontSize" data-value="' + v + '">' +
+                          '<i class="fa fa-check icon-ok"></i> ' + v +
+                        '</a></li>';
+        }, '');
 
         var sLabel = '<span class="note-current-fontsize">11</span>';
         return tplButton(sLabel, {
           title: lang.font.size,
-          dropdown: dropdown
+          dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
         });
       },
 
       color: function (lang) {
-        return '<button type="button" class="btn btn-default btn-sm btn-small note-recent-color" title="' + lang.color.recent + '" data-event="color" data-value=\'{"backColor":"yellow"}\' tabindex="-1"><i class="fa fa-font icon-font" style="color:black;background-color:yellow;"></i></button>' +
-               '<button type="button" class="btn btn-default btn-sm btn-small dropdown-toggle" title="' + lang.color.more + '" data-toggle="dropdown" tabindex="-1">' +
-                 '<span class="caret"></span>' +
-               '</button>' +
-               '<ul class="dropdown-menu">' +
-                 '<li>' +
-                   '<div class="btn-group">' +
-                     '<div class="note-palette-title">' + lang.color.background + '</div>' +
-                     '<div class="note-color-reset" data-event="backColor" data-value="inherit" title="' + lang.color.transparent + '">' + lang.color.setTransparent + '</div>' +
-                     '<div class="note-color-palette" data-target-event="backColor"></div>' +
-                   '</div>' +
-                   '<div class="btn-group">' +
-                     '<div class="note-palette-title">' + lang.color.foreground + '</div>' +
-                     '<div class="note-color-reset" data-event="foreColor" data-value="inherit" title="' + lang.color.reset + '">' + lang.color.resetToDefault + '</div>' +
-                     '<div class="note-color-palette" data-target-event="foreColor"></div>' +
-                   '</div>' +
-                 '</li>' +
-               '</ul>';
+        var colorButtonLabel = '<i class="fa fa-font icon-font" style="color:black;background-color:yellow;"></i>';
+        var colorButton = tplButton(colorButtonLabel, {
+          className: 'note-recent-color',
+          title: lang.color.recent,
+          event: 'color',
+          value: '{"backColor":"yellow"}'
+        });
+
+        var dropdown = '<ul class="dropdown-menu">' +
+                         '<li>' +
+                           '<div class="btn-group">' +
+                             '<div class="note-palette-title">' + lang.color.background + '</div>' +
+                             '<div class="note-color-reset" data-event="backColor"' +
+                               ' data-value="inherit" title="' + lang.color.transparent + '">' +
+                               lang.color.setTransparent +
+                             '</div>' +
+                             '<div class="note-color-palette" data-target-event="backColor"></div>' +
+                           '</div>' +
+                           '<div class="btn-group">' +
+                             '<div class="note-palette-title">' + lang.color.foreground + '</div>' +
+                             '<div class="note-color-reset" data-event="foreColor" data-value="inherit" title="' + lang.color.reset + '">' +
+                               lang.color.resetToDefault +
+                             '</div>' +
+                             '<div class="note-color-palette" data-target-event="foreColor"></div>' +
+                           '</div>' +
+                         '</li>' +
+                       '</ul>';
+
+        var moreButton = tplButton('', {
+          title: lang.color.more,
+          dropdown: dropdown
+        });
+
+        return colorButton + moreButton;
       },
       bold: function (lang) {
         return tplIconButton('fa fa-bold icon-bold', {
@@ -2911,16 +2986,38 @@
         });
       },
       paragraph: function (lang) {
+        var leftButton = tplIconButton('fa fa-align-left icon-align-left', {
+          title: lang.paragraph.left,
+          event: 'justifyLeft'
+        });
+        var centerButton = tplIconButton('fa fa-align-center icon-align-center', {
+          title: lang.paragraph.center,
+          event: 'justifyCenter'
+        });
+        var rightButton = tplIconButton('fa fa-align-right icon-align-right', {
+          title: lang.paragraph.right,
+          event: 'justifyRight'
+        });
+        var justifyButton = tplIconButton('fa fa-align-justify icon-align-justify', {
+          title: lang.paragraph.justify,
+          event: 'justifyFull'
+        });
+
+        var outdentButton = tplIconButton('fa fa-outdent icon-indent-left', {
+          title: lang.paragraph.outdent,
+          event: 'outdent'
+        });
+        var indentButton = tplIconButton('fa fa-indent icon-indent-right', {
+          title: lang.paragraph.indent,
+          event: 'indent'
+        });
+
         var dropdown = '<div class="dropdown-menu">' +
                          '<div class="note-align btn-group">' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.left + '" data-event="justifyLeft" tabindex="-1"><i class="fa fa-align-left icon-align-left"></i></button>' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.center + '" data-event="justifyCenter" tabindex="-1"><i class="fa fa-align-center icon-align-center"></i></button>' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.right + '" data-event="justifyRight" tabindex="-1"><i class="fa fa-align-right icon-align-right"></i></button>' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.justify + '" data-event="justifyFull" tabindex="-1"><i class="fa fa-align-justify icon-align-justify"></i></button>' +
+                           leftButton + centerButton + rightButton + justifyButton +
                          '</div>' +
                          '<div class="note-list btn-group">' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.outdent + '" data-event="outdent" tabindex="-1"><i class="fa fa-outdent icon-indent-left"></i></button>' +
-                           '<button type="button" class="btn btn-default btn-sm btn-small" title="' + lang.paragraph.indent + '" data-event="indent" tabindex="-1"><i class="fa fa-indent icon-indent-right"></i></button>' +
+                           indentButton + outdentButton +
                          '</div>' +
                        '</div>';
 
@@ -2929,17 +3026,16 @@
           dropdown: dropdown
         });
       },
-      height: function (lang) {
-        var aHeight = ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'];
-        var dropdown = '<ul class="dropdown-menu">';
-        for (var idx = 0; idx < aHeight.length; idx++) {
-          dropdown += '<li><a data-event="lineHeight" data-value="' + aHeight[idx] + '"><i class="fa fa-check icon-ok"></i> ' + aHeight[idx] + '</a></li>';
-        }
-        dropdown += '</ul>';
+      height: function (lang, options) {
+        var items = options.lineHeights.reduce(function (memo, v) {
+          return memo + '<li><a data-event="lineHeight" data-value="' + v + '">' +
+                          '<i class="fa fa-check icon-ok"></i> ' + v +
+                        '</a></li>';
+        }, '');
 
         return tplIconButton('fa fa-text-height icon-text-height', {
           title: lang.font.height,
-          dropdown: dropdown
+          dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
         });
 
       },
@@ -2975,86 +3071,72 @@
       }
     };
 
-    /**
-     * bootstrap popover template
-     *
-     * @param {String} className
-     * @param {String} content
-     */
-    var tplPopover = function (className, content) {
-      return '<div class="' + className + ' popover bottom in" style="display: none;">' +
-               '<div class="arrow"></div>' +
-               '<div class="popover-content">' +
-                 content +
-               '</div>' +
-             '</div>';
-    };
-
-    tplPopovers = function (lang) {
+    var tplPopovers = function (lang) {
       var tplLinkPopover = function () {
+        var linkButton = tplIconButton('fa fa-edit icon-edit', {
+          title: lang.link.edit,
+          event: 'showLinkDialog'
+        });
+        var unlinkButton = tplIconButton('fa fa-unlink icon-unlink', {
+          title: lang.link.unlink,
+          event: 'unlink'
+        });
         var content = '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
                       '<div class="note-insert btn-group">' +
-                        tplIconButton('fa fa-edit icon-edit', {
-                          title: lang.link.edit,
-                          event: 'showLinkDialog'
-                        }) +
-                        tplIconButton('fa fa-unlink icon-unlink', {
-                          title: lang.link.unlink,
-                          event: 'unlink'
-                        }) +
+                        linkButton + unlinkButton +
                       '</div>';
         return tplPopover('note-link-popover', content);
       };
 
       var tplImagePopover = function () {
-        var content = '<div class="btn-group">' +
-                        tplButton('<span class="note-fontsize-10">100%</span>', {
-                          title: lang.image.resizeFull,
-                          event: 'resize',
-                          value: '1'
-                        }) +
-                        tplButton('<span class="note-fontsize-10">50%</span>', {
-                          title: lang.image.resizeHalf,
-                          event: 'resize',
-                          value: '0.5'
-                        }) +
-                        tplButton('<span class="note-fontsize-10">25%</span>', {
-                          title: lang.image.resizeQuarter,
-                          event: 'resize',
-                          value: '0.25'
-                        }) +
-                      '</div>' +
-                      '<div class="btn-group">' +
-                        tplIconButton('fa fa-align-left icon-align-left', {
-                          title: lang.image.floatLeft,
-                          event: 'floatMe',
-                          value: 'left'
-                        }) +
-                        tplIconButton('fa fa-align-left icon-align-right', {
-                          title: lang.image.floatRight,
-                          event: 'floatMe',
-                          value: 'right'
-                        }) +
-                        tplIconButton('fa fa-align-justify icon-align-justify', {
-                          title: lang.image.floatNone,
-                          event: 'floatMe',
-                          value: 'none'
-                        }) +
-                      '</div>' +
-                      '<div class="btn-group">' +
-                        tplIconButton('fa fa-trash-o icon-trash', {
-                          title: lang.image.remove,
-                          event: 'removeMedia',
-                          value: 'none'
-                        }) +
-                      '</div>';
+        var fullButton = tplButton('<span class="note-fontsize-10">100%</span>', {
+          title: lang.image.resizeFull,
+          event: 'resize',
+          value: '1'
+        });
+        var halfButton = tplButton('<span class="note-fontsize-10">50%</span>', {
+          title: lang.image.resizeHalf,
+          event: 'resize',
+          value: '0.5'
+        });
+        var quarterButton = tplButton('<span class="note-fontsize-10">25%</span>', {
+          title: lang.image.resizeQuarter,
+          event: 'resize',
+          value: '0.25'
+        });
+
+        var leftButton = tplIconButton('fa fa-align-left icon-align-left', {
+          title: lang.image.floatLeft,
+          event: 'floatMe',
+          value: 'left'
+        });
+        var rightButton = tplIconButton('fa fa-align-left icon-align-right', {
+          title: lang.image.floatRight,
+          event: 'floatMe',
+          value: 'right'
+        });
+        var justifyButton = tplIconButton('fa fa-align-justify icon-align-justify', {
+          title: lang.image.floatNone,
+          event: 'floatMe',
+          value: 'none'
+        });
+
+        var removeButton = tplIconButton('fa fa-trash-o icon-trash', {
+          title: lang.image.remove,
+          event: 'removeMedia',
+          value: 'none'
+        });
+
+        var content = '<div class="btn-group">' + fullButton + halfButton + quarterButton + '</div>' +
+                      '<div class="btn-group">' + leftButton + rightButton + justifyButton + '</div>' +
+                      '<div class="btn-group">' + removeButton + '</div>';
         return tplPopover('note-image-popover', content);
       };
 
       return '<div class="note-popover">' + tplLinkPopover() + tplImagePopover() + '</div>';
     };
 
-    tplHandle = function () {
+    var tplHandles = function () {
       return '<div class="note-handle">' +
                '<div class="note-control-selection">' +
                  '<div class="note-control-selection-bg"></div>' +
@@ -3152,36 +3234,7 @@
       return sHtml.replace(/⌘/g, 'Ctrl').replace(/⇧/g, 'Shift');
     };
 
-    /**
-     * bootstrap dialog template
-     *
-     * @param {String} className
-     * @param {String} [title]
-     * @param {String} body
-     * @param {String} [footer]
-     */
-    var tplDialog = function (className, title, body, footer) {
-      return '<div class="' + className + ' modal" aria-hidden="false">' +
-               '<div class="modal-dialog">' +
-                 '<div class="modal-content">' +
-                   (title ?
-                   '<div class="modal-header">' +
-                     '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                     '<h4>' + title + '</h4>' +
-                   '</div>' : ''
-                   ) +
-                   '<div class="modal-body">' +
-                     '<div class="row-fluid">' + body + '</div>' +
-                   '</div>' +
-                   (footer ?
-                   '<div class="modal-footer">' + footer + '</div>' : ''
-                   ) +
-                 '</div>' +
-               '</div>' +
-             '</div>';
-    };
-
-    tplDialogs = function (lang, options) {
+    var tplDialogs = function (lang, options) {
       var tplImageDialog = function () {
         var body = '<h5>' + lang.image.selectFromFiles + '</h5>' +
                    '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
@@ -3240,15 +3293,13 @@
              '</div>';
     };
 
-    tplStatusbar = function () {
+    var tplStatusbar = function () {
       return '<div class="note-resizebar">' +
                '<div class="note-icon-bar"></div>' +
                '<div class="note-icon-bar"></div>' +
                '<div class="note-icon-bar"></div>' +
              '</div>';
     };
-
-    /* jshint ignore:end */
 
     var invertObject = function (obj) {
       var inverted = {};
@@ -3301,20 +3352,9 @@
       });
     };
 
-    // pallete colors
-    var aaColor = [
-      ['#000000', '#424242', '#636363', '#9C9C94', '#CEC6CE', '#EFEFEF', '#F7F7F7', '#FFFFFF'],
-      ['#FF0000', '#FF9C00', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#9C00FF', '#FF00FF'],
-      ['#F7C6CE', '#FFE7CE', '#FFEFC6', '#D6EFD6', '#CEDEE7', '#CEE7F7', '#D6D6E7', '#E7D6DE'],
-      ['#E79C9C', '#FFC69C', '#FFE79C', '#B5D6A5', '#A5C6CE', '#9CC6EF', '#B5A5D6', '#D6A5BD'],
-      ['#E76363', '#F7AD6B', '#FFD663', '#94BD7B', '#73A5AD', '#6BADDE', '#8C7BC6', '#C67BA5'],
-      ['#CE0000', '#E79439', '#EFC631', '#6BA54A', '#4A7B8C', '#3984C6', '#634AA5', '#A54A7B'],
-      ['#9C0000', '#B56308', '#BD9400', '#397B21', '#104A5A', '#085294', '#311873', '#731842'],
-      ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031']
-    ];
-
     // createPalette
-    var createPalette = function ($container) {
+    var createPalette = function ($container, options) {
+      var aaColor = options.colors;
       $container.find('.note-color-palette').each(function () {
         var $palette = $(this), sEvent = $palette.attr('data-target-event');
         var aPaletteContents = [];
@@ -3381,7 +3421,7 @@
         var group = options.toolbar[idx];
         sToolbar += '<div class="note-' + group[0] + ' btn-group">';
         for (var i = 0, szGroup = group[1].length; i < szGroup; i++) {
-          sToolbar += tplToolbarInfo[group[1][i]](langInfo);
+          sToolbar += tplToolbarInfo[group[1][i]](langInfo, options);
         }
         sToolbar += '</div>';
       }
@@ -3390,7 +3430,7 @@
 
       var $toolbar = $(sToolbar).prependTo($editor);
       var keyMap = options.keyMap[agent.bMac ? 'mac' : 'pc'];
-      createPalette($toolbar);
+      createPalette($toolbar, options);
       createTooltip($toolbar, keyMap, 'bottom');
 
       //05. create Popover
@@ -3398,7 +3438,7 @@
       createTooltip($popover, keyMap);
 
       //06. handle(control selection, ...)
-      $(tplHandle()).prependTo($editor);
+      $(tplHandles()).prependTo($editor);
 
       //07. create Dialog
       var $dialog = $(tplDialogs(langInfo, options)).prependTo($editor);
