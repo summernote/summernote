@@ -31,13 +31,20 @@ define('summernote/core/func', function () {
       return a;
     };
 
+    var idCounter = 0;
+    var uniqueId = function (prefix) {
+      var id = ++idCounter + '';
+      return prefix ? prefix + id : id;
+    };
+
     return {
       eq: eq,
       eq2: eq2,
       ok: ok,
       fail: fail,
       not: not,
-      self: self
+      self: self,
+      uniqueId: uniqueId
     };
   })();
 

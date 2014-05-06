@@ -197,12 +197,24 @@ define([
         return bW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
       };
   
-      // bookmark: offsetPath bookmark
+      /**
+       * create offsetPath bookmark
+       * @param {Element} elEditable
+       */
       this.bookmark = function (elEditable) {
         return {
           s: { path: dom.makeOffsetPath(elEditable, sc), offset: so },
           e: { path: dom.makeOffsetPath(elEditable, ec), offset: eo }
         };
+      };
+
+      /**
+       * getClientRects
+       * @return {Rect[]}
+       */
+      this.getClientRects = function () {
+        var nativeRng = nativeRange();
+        return nativeRng.getClientRects();
       };
     };
   

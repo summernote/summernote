@@ -45,7 +45,7 @@ define([
       });
 
       // focus on first editable element
-      if (this.first() && options.focus) {
+      if (this.first().length && options.focus) {
         var info = renderer.layoutInfoFromHolder(this.first());
         info.editable.focus();
       }

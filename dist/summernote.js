@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-05-05T12:16Z
+ * Date: 2014-05-06T14:07Z
  */
 (function (factory) {
   /* global define */
@@ -93,13 +93,20 @@
       return a;
     };
 
+    var idCounter = 0;
+    var uniqueId = function (prefix) {
+      var id = ++idCounter + '';
+      return prefix ? prefix + id : id;
+    };
+
     return {
       eq: eq,
       eq2: eq2,
       ok: ok,
       fail: fail,
       not: not,
-      self: self
+      self: self,
+      uniqueId: uniqueId
     };
   })();
 
@@ -248,20 +255,40 @@
      * @return {Object}
      */
     var buildLayoutInfo = function ($editor) {
-      var makeFinder = function (sClassName) {
-        return function () { return $editor.find(sClassName); };
-      };
-      return {
-        editor: function () { return $editor; },
-        dropzone: makeFinder('.note-dropzone'),
-        toolbar: makeFinder('.note-toolbar'),
-        editable: makeFinder('.note-editable'),
-        codable: makeFinder('.note-codable'),
-        statusbar: makeFinder('.note-statusbar'),
-        popover: makeFinder('.note-popover'),
-        handle: makeFinder('.note-handle'),
-        dialog: makeFinder('.note-dialog')
-      };
+      var makeFinder;
+
+      // air mode
+      if ($editor.hasClass('note-air-editor')) {
+        var id = list.last($editor.attr('id').split('-'));
+        makeFinder = function (sIdPrefix) {
+          return function () { return $(sIdPrefix + id); };
+        };
+
+        return {
+          editor: function () { return $editor; },
+          editable: function () { return $editor; },
+          popover: makeFinder('#note-popover-'),
+          handle: makeFinder('#note-handle-'),
+          dialog: makeFinder('#note-dialog-')
+        };
+
+      // frame mode
+      } else {
+        makeFinder = function (sClassName) {
+          return function () { return $editor.find(sClassName); };
+        };
+        return {
+          editor: function () { return $editor; },
+          dropzone: makeFinder('.note-dropzone'),
+          toolbar: makeFinder('.note-toolbar'),
+          editable: makeFinder('.note-editable'),
+          codable: makeFinder('.note-codable'),
+          statusbar: makeFinder('.note-statusbar'),
+          popover: makeFinder('.note-popover'),
+          handle: makeFinder('.note-handle'),
+          dialog: makeFinder('.note-dialog')
+        };
+      }
     };
 
     /**
@@ -632,7 +659,7 @@
       lang: 'en-US',                // language 'en-US', 'ko-KR', ...
       direction: null,              // text direction, ex) 'rtl'
 
-      // default toolbar
+      // toolbar
       toolbar: [
         ['style', ['style']],
         ['font', ['bold', 'italic', 'underline', 'clear']],
@@ -645,6 +672,28 @@
         ['insert', ['link', 'picture', 'video']],
         ['view', ['fullscreen', 'codeview']],
         ['help', ['help']]
+      ],
+
+      // air mode: inline editor
+      airMode: false,
+      // airPopover: [
+      //   ['style', ['style']],
+      //   ['font', ['bold', 'italic', 'underline', 'clear']],
+      //   ['fontname', ['fontname']],
+      //   ['fontsize', ['fontsize']], // Still buggy
+      //   ['color', ['color']],
+      //   ['para', ['ul', 'ol', 'paragraph']],
+      //   ['height', ['height']],
+      //   ['table', ['table']],
+      //   ['insert', ['link', 'picture', 'video']],
+      //   ['help', ['help']]
+      // ],
+      airPopover: [
+        ['color', ['color']],
+        ['font', ['bold', 'underline', 'clear']],
+        ['para', ['ul', 'paragraph']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture']]
       ],
 
       // style tag
@@ -1022,6 +1071,7 @@
       oStyle.image = dom.isImg(elTarget) && elTarget;
       oStyle.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);
       oStyle.aAncestor = dom.listAncestor(rng.sc, dom.isEditable);
+      oStyle.range = rng;
 
       return oStyle;
     };
@@ -1223,12 +1273,24 @@
         return bW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
       };
   
-      // bookmark: offsetPath bookmark
+      /**
+       * create offsetPath bookmark
+       * @param {Element} elEditable
+       */
       this.bookmark = function (elEditable) {
         return {
           s: { path: dom.makeOffsetPath(elEditable, sc), offset: so },
           e: { path: dom.makeOffsetPath(elEditable, ec), offset: eo }
         };
+      };
+
+      /**
+       * getClientRects
+       * @return {Rect[]}
+       */
+      this.getClientRects = function () {
+        var nativeRng = nativeRange();
+        return nativeRng.getClientRects();
       };
     };
   
@@ -1821,17 +1883,16 @@
   };
 
   /**
-   * Toolbar
+   * Button
    */
-  var Toolbar = function () {
+  var Button = function () {
     /**
      * update button status
      *
-     * @param {jQuery} $toolbar
+     * @param {jQuery} $container
      * @param {Object} oStyle
      */
-    this.update = function ($toolbar, oStyle) {
-
+    this.update = function ($container, oStyle) {
       /**
        * handle dropdown's check mark (for fontname, fontsize, lineHeight).
        * @param {jQuery} $btn
@@ -1852,12 +1913,12 @@
        * @param {Function} pred
        */
       var btnState = function (sSelector, pred) {
-        var $btn = $toolbar.find(sSelector);
+        var $btn = $container.find(sSelector);
         $btn.toggleClass('active', pred());
       };
 
       // fontname
-      var $fontname = $toolbar.find('.note-fontname');
+      var $fontname = $container.find('.note-fontname');
       if ($fontname.length > 0) {
         var selectedFont = oStyle['font-family'];
         if (!!selectedFont) {
@@ -1869,12 +1930,12 @@
       }
 
       // fontsize
-      var $fontsize = $toolbar.find('.note-fontsize');
+      var $fontsize = $container.find('.note-fontsize');
       $fontsize.find('.note-current-fontsize').text(oStyle['font-size']);
       checkDropdownMenu($fontsize, parseFloat(oStyle['font-size']));
 
       // lineheight
-      var $lineHeight = $toolbar.find('.note-height');
+      var $lineHeight = $container.find('.note-height');
       checkDropdownMenu($lineHeight, parseFloat(oStyle['line-height']));
 
       btnState('button[data-event="bold"]', function () {
@@ -1926,14 +1987,29 @@
       $recentColor.find('i').css(sKey, sValue);
     };
 
-    this.updateFullscreen = function ($toolbar, bFullscreen) {
-      var $btn = $toolbar.find('button[data-event="fullscreen"]');
+    this.updateFullscreen = function ($container, bFullscreen) {
+      var $btn = $container.find('button[data-event="fullscreen"]');
       $btn.toggleClass('active', bFullscreen);
     };
 
-    this.updateCodeview = function ($toolbar, bCodeview) {
-      var $btn = $toolbar.find('button[data-event="codeview"]');
+    this.updateCodeview = function ($container, bCodeview) {
+      var $btn = $container.find('button[data-event="codeview"]');
       $btn.toggleClass('active', bCodeview);
+    };
+  };
+
+  /**
+   * Toolbar
+   */
+  var Toolbar = function () {
+    var button = new Button();
+
+    this.update = function ($toolbar, oStyle) {
+      button.update($toolbar, oStyle);
+    };
+
+    this.updateRecentColor = function (elBtn, sEvent, sValue) {
+      button.updateRecentColor(elBtn, sEvent, sValue);
     };
 
     /**
@@ -1957,6 +2033,8 @@
    * Popover (http://getbootstrap.com/javascript/#popovers)
    */
   var Popover = function () {
+    var button = new Button();
+
     /**
      * show popover
      * @param {jQuery} popover
@@ -1964,7 +2042,10 @@
      */
     var showPopover = function ($popover, elPlaceholder) {
       var $placeholder = $(elPlaceholder);
-      var pos = $placeholder.position(), height = $placeholder.height();
+      var pos = $placeholder.position();
+
+      // include margin
+      var height = $placeholder.outerHeight(true);
 
       // display popover below placeholder.
       $popover.css({
@@ -1978,8 +2059,11 @@
      * update current state
      * @param {jQuery} $popover - popover container
      * @param {Object} oStyle - style object
+     * @param {Boolean} isAirMode
      */
-    this.update = function ($popover, oStyle) {
+    this.update = function ($popover, oStyle, isAirMode) {
+      button.update($popover, oStyle);
+
       var $linkPopover = $popover.find('.note-link-popover');
 
       if (oStyle.anchor) {
@@ -1996,6 +2080,24 @@
       } else {
         $imagePopover.hide();
       }
+
+      if (isAirMode) {
+        var $airPopover = $popover.find('.note-air-popover');
+        if (!oStyle.range.isCollapsed()) {
+          var rect = list.last(oStyle.range.getClientRects());
+          $airPopover.css({
+            display: 'block',
+            left: rect.left + rect.width / 2,
+            top: rect.top + rect.height
+          });
+        } else {
+          $airPopover.hide();
+        }
+      }
+    };
+
+    this.updateRecentColor = function (elBtn, sEvent, sValue) {
+      button.updateRecentColor(elBtn, sEvent, sValue);
     };
 
     /**
@@ -2021,7 +2123,13 @@
       if (oStyle.image) {
         var $image = $(oStyle.image);
         var pos = $image.position();
-        var szImage = {w: $image.width(), h: $image.height()};
+
+        // include margin
+        var szImage = {
+          w: $image.outerWidth(true),
+          h: $image.outerHeight(true)
+        };
+
         $selection.css({
           display: 'block',
           left: pos.left,
@@ -2195,6 +2303,8 @@
    * EventHandler
    */
   var EventHandler = function () {
+    var $document = $(document);
+
     var editor = new Editor();
     var toolbar = new Toolbar(), popover = new Popover();
     var handle = new Handle(), dialog = new Dialog();
@@ -2206,8 +2316,18 @@
      * @returns {Object}
      */
     var makeLayoutInfo = function (descendant) {
-      var $editor = $(descendant).closest('.note-editor');
-      return $editor.length > 0 && dom.buildLayoutInfo($editor);
+      var $target = $(descendant).closest('.note-editor, .note-air-editor, .note-air-layout');
+
+      if ($target.length === 0) { return null; }
+
+      var $editor;
+      if ($target.is('.note-editor, .note-air-editor')) {
+        $editor = $target;
+      } else {
+        $editor = $('#note-editor-' + list.last($target.attr('id').split('-')));
+      }
+
+      return dom.buildLayoutInfo($editor);
     };
 
     /**
@@ -2239,16 +2359,26 @@
 
     var hMousedown = function (event) {
       //preventDefault Selection for FF, IE8+
-      if (dom.isImg(event.target)) { event.preventDefault(); }
+      if (dom.isImg(event.target)) {
+        event.preventDefault();
+      }
     };
 
     var hToolbarAndPopoverUpdate = function (event) {
-      var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-      var oStyle = editor.currentStyle(event.target);
-      if (!oStyle) { return; }
-      toolbar.update(oLayoutInfo.toolbar(), oStyle);
-      popover.update(oLayoutInfo.popover(), oStyle);
-      handle.update(oLayoutInfo.handle(), oStyle);
+      // delay for range after mouseup
+      setTimeout(function () {
+        var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+        var oStyle = editor.currentStyle(event.target);
+        if (!oStyle) { return; }
+
+        var isAirMode = oLayoutInfo.editor().data('options').airMode;
+        if (!isAirMode) {
+          toolbar.update(oLayoutInfo.toolbar(), oStyle);
+        }
+
+        popover.update(oLayoutInfo.popover(), oStyle, isAirMode);
+        handle.update(oLayoutInfo.handle(), oStyle);
+      }, 0);
     };
 
     var hScroll = function (event) {
@@ -2293,13 +2423,13 @@
 
         var oLayoutInfo = makeLayoutInfo(event.target),
             $handle = oLayoutInfo.handle(), $popover = oLayoutInfo.popover(),
-            $editable = oLayoutInfo.editable(), $editor = oLayoutInfo.editor();
+            $editable = oLayoutInfo.editable();
 
         var elTarget = $handle.find('.note-control-selection').data('target'),
             $target = $(elTarget), posStart = $target.offset(),
-            scrollTop = $(document).scrollTop();
+            scrollTop = $document.scrollTop();
 
-        $editor.on('mousemove', function (event) {
+        $document.on('mousemove', function (event) {
           editor.resizeTo({
             x: event.clientX - posStart.left,
             y: event.clientY - (posStart.top - scrollTop)
@@ -2308,7 +2438,7 @@
           handle.update($handle, {image: elTarget});
           popover.update($popover, {image: elTarget});
         }).one('mouseup', function () {
-          $editor.off('mousemove');
+          $document.off('mousemove');
         });
 
         if (!$target.data('ratio')) { // original ratio.
@@ -2322,33 +2452,130 @@
     var hToolbarAndPopoverMousedown = function (event) {
       // prevent default event when insertTable (FF, Webkit)
       var $btn = $(event.target).closest('[data-event]');
-      if ($btn.length > 0) { event.preventDefault(); }
+      if ($btn.length > 0) {
+        event.preventDefault();
+      }
+    };
+
+    var toggleFullscreen = function (oLayoutInfo) {
+      var $editor = oLayoutInfo.editor(),
+          $toolbar = oLayoutInfo.toolbar(),
+          $editable = oLayoutInfo.editable(),
+          $codable = oLayoutInfo.codable();
+
+      var options = $editor.data('options');
+
+      var $scrollbar = $('html, body');
+
+      var resize = function (size) {
+        $editor.css('width', size.w);
+        $editable.css('height', size.h);
+        $codable.css('height', size.h);
+        if ($codable.data('cmEditor')) {
+          $codable.data('cmEditor').setSize(null, size.h);
+        }
+      };
+
+      $editor.toggleClass('fullscreen');
+      var isFullscreen = $editor.hasClass('fullscreen');
+      if (isFullscreen) {
+        $editable.data('orgHeight', $editable.css('height'));
+
+        $(window).on('resize', function () {
+          resize({
+            w: $(window).width(),
+            h: $(window).height() - $toolbar.outerHeight()
+          });
+        }).trigger('resize');
+
+        $scrollbar.css('overflow', 'hidden');
+      } else {
+        $(window).off('resize');
+        resize({
+          w: options.width || '',
+          h: $editable.data('orgHeight')
+        });
+        $scrollbar.css('overflow', 'auto');
+      }
+
+      toolbar.updateFullscreen($toolbar, isFullscreen);
+    };
+
+    var toggleCodeView = function (oLayoutInfo) {
+      var $editor = oLayoutInfo.editor(),
+          $toolbar = oLayoutInfo.toolbar(),
+          $editable = oLayoutInfo.editable(),
+          $codable = oLayoutInfo.codable();
+
+      var options = $editor.data('options');
+
+      var cmEditor, server;
+
+      $editor.toggleClass('codeview');
+
+      var bCodeview = $editor.hasClass('codeview');
+      if (bCodeview) {
+        $codable.val($editable.html());
+        $codable.height($editable.height());
+        toolbar.deactivate($toolbar);
+        $codable.focus();
+
+        // activate CodeMirror as codable
+        if (agent.bCodeMirror) {
+          cmEditor = CodeMirror.fromTextArea($codable[0], options.codemirror);
+
+          // CodeMirror TernServer
+          if (options.codemirror.tern) {
+            server = new CodeMirror.TernServer(options.codemirror.tern);
+            cmEditor.ternServer = server;
+            cmEditor.on('cursorActivity', function (cm) {
+              server.updateArgHints(cm);
+            });
+          }
+
+          // CodeMirror hasn't Padding.
+          cmEditor.setSize(null, $editable.outerHeight());
+          // autoFormatRange If formatting included
+          if (cmEditor.autoFormatRange) {
+            cmEditor.autoFormatRange({line: 0, ch: 0}, {
+              line: cmEditor.lineCount(),
+              ch: cmEditor.getTextArea().value.length
+            });
+          }
+          $codable.data('cmEditor', cmEditor);
+        }
+      } else {
+        // deactivate CodeMirror as codable
+        if (agent.bCodeMirror) {
+          cmEditor = $codable.data('cmEditor');
+          $codable.val(cmEditor.getValue());
+          cmEditor.toTextArea();
+        }
+
+        $editable.html($codable.val() || dom.emptyPara);
+        $editable.height(options.height ? $codable.height() : 'auto');
+
+        toolbar.activate($toolbar);
+        $editable.focus();
+      }
+
+      toolbar.updateCodeview(oLayoutInfo.toolbar(), bCodeview);
     };
 
     var hToolbarAndPopoverClick = function (event) {
       var $btn = $(event.target).closest('[data-event]');
 
       if ($btn.length > 0) {
-        var sEvent = $btn.attr('data-event'),
-            sValue = $btn.attr('data-value');
+        var sEvent = $btn.attr('data-event'), sValue = $btn.attr('data-value');
 
         var oLayoutInfo = makeLayoutInfo(event.target);
-        var $editor = oLayoutInfo.editor(),
-            $toolbar = oLayoutInfo.toolbar(),
-            $dialog = oLayoutInfo.dialog(),
-            $editable = oLayoutInfo.editable(),
-            $codable = oLayoutInfo.codable();
-
-        var server;
-        var cmEditor;
-
-        var options = $editor.data('options');
+        var $dialog = oLayoutInfo.dialog(),
+            $editable = oLayoutInfo.editable();
 
         // before command: detect control selection element($target)
         var $target;
         if ($.inArray(sEvent, ['resize', 'floatMe', 'removeMedia']) !== -1) {
-          var $handle = oLayoutInfo.handle();
-          var $selection = $handle.find('.note-control-selection');
+          var $selection = oLayoutInfo.handle().find('.note-control-selection');
           $target = $($selection.data('target'));
         }
 
@@ -2359,7 +2586,9 @@
 
         // after command
         if ($.inArray(sEvent, ['backColor', 'foreColor']) !== -1) {
-          toolbar.updateRecentColor($btn[0], sEvent, sValue);
+          var options = oLayoutInfo.editor().data('options', options);
+          var module = options.airMode ? popover : toolbar;
+          module.updateRecentColor(list.head($btn), sEvent, sValue);
         } else if (sEvent === 'showLinkDialog') { // popover to dialog
           $editable.focus();
           var linkInfo = editor.getLinkInfo();
@@ -2392,89 +2621,9 @@
         } else if (sEvent === 'showHelpDialog') {
           dialog.showHelpDialog($editable, $dialog);
         } else if (sEvent === 'fullscreen') {
-          var $scrollbar = $('html, body');
-
-          var resize = function (size) {
-            $editor.css('width', size.w);
-            $editable.css('height', size.h);
-            $codable.css('height', size.h);
-            if ($codable.data('cmEditor')) {
-              $codable.data('cmEditor').setSize(null, size.h);
-            }
-          };
-
-          $editor.toggleClass('fullscreen');
-          var isFullscreen = $editor.hasClass('fullscreen');
-          if (isFullscreen) {
-            $editable.data('orgHeight', $editable.css('height'));
-
-            $(window).on('resize', function () {
-              resize({
-                w: $(window).width(),
-                h: $(window).height() - $toolbar.outerHeight()
-              });
-            }).trigger('resize');
-
-            $scrollbar.css('overflow', 'hidden');
-          } else {
-            $(window).off('resize');
-            resize({
-              w: options.width || '',
-              h: $editable.data('orgHeight')
-            });
-            $scrollbar.css('overflow', 'auto');
-          }
-          toolbar.updateFullscreen($toolbar, isFullscreen);
+          toggleFullscreen(oLayoutInfo);
         } else if (sEvent === 'codeview') {
-          $editor.toggleClass('codeview');
-
-          var bCodeview = $editor.hasClass('codeview');
-          if (bCodeview) {
-            $codable.val($editable.html());
-            $codable.height($editable.height());
-            toolbar.deactivate($toolbar);
-            $codable.focus();
-
-            // activate CodeMirror as codable
-            if (agent.bCodeMirror) {
-              cmEditor = CodeMirror.fromTextArea($codable[0], options.codemirror);
-
-              // CodeMirror TernServer
-              if (options.codemirror.tern) {
-                server = new CodeMirror.TernServer(options.codemirror.tern);
-                cmEditor.ternServer = server;
-                cmEditor.on('cursorActivity', function (cm) {
-                  server.updateArgHints(cm);
-                });
-              }
-
-              // CodeMirror hasn't Padding.
-              cmEditor.setSize(null, $editable.outerHeight());
-              // autoFormatRange If formatting included
-              if (cmEditor.autoFormatRange) {
-                cmEditor.autoFormatRange({line: 0, ch: 0}, {
-                  line: cmEditor.lineCount(),
-                  ch: cmEditor.getTextArea().value.length
-                });
-              }
-              $codable.data('cmEditor', cmEditor);
-            }
-          } else {
-            // deactivate CodeMirror as codable
-            if (agent.bCodeMirror) {
-              cmEditor = $codable.data('cmEditor');
-              $codable.val(cmEditor.getValue());
-              cmEditor.toTextArea();
-            }
-
-            $editable.html($codable.val() || dom.emptyPara);
-            $editable.height(options.height ? $codable.height() : 'auto');
-
-            toolbar.activate($toolbar);
-            $editable.focus();
-          }
-
-          toolbar.updateCodeview(oLayoutInfo.toolbar(), bCodeview);
+          toggleCodeView(oLayoutInfo);
         }
 
         hToolbarAndPopoverUpdate(event);
@@ -2488,7 +2637,9 @@
      * @param {MouseEvent} event
      */
     var hStatusbarMousedown = function (event) {
-      var $document = $(document);
+      event.preventDefault();
+      event.stopPropagation();
+
       var $editable = makeLayoutInfo(event.target).editable();
       var nEditableTop = $editable.offset().top - $document.scrollTop();
 
@@ -2498,9 +2649,6 @@
       }).one('mouseup', function () {
         $document.off('mousemove');
       });
-
-      event.stopPropagation();
-      event.preventDefault();
     };
 
     var PX_PER_EM = 18;
@@ -2555,7 +2703,7 @@
           $dropzoneMessage = oLayoutInfo.dropzone.find('.note-dropzone-message');
 
       // show dropzone on dragenter when dragging a object to document.
-      $(document).on('dragenter', function (e) {
+      $document.on('dragenter', function (e) {
         var bCodeview = oLayoutInfo.editor.hasClass('codeview');
         if (!bCodeview && collection.length === 0) {
           oLayoutInfo.editor.addClass('dragover');
@@ -2585,13 +2733,14 @@
 
       // attach dropImage
       $dropzone.on('drop', function (event) {
+        event.preventDefault();
+
         var dataTransfer = event.originalEvent.dataTransfer;
         if (dataTransfer && dataTransfer.files) {
           var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
           oLayoutInfo.editable().focus();
           insertImages(oLayoutInfo.editable(), dataTransfer.files);
         }
-        event.preventDefault();
       }).on('dragover', false); // prevent default dragover event
     };
 
@@ -2637,7 +2786,6 @@
      * @param {Function} options.enter - enter key handler
      */
     this.attach = function (oLayoutInfo, options) {
-
       // handlers for editable
       this.bindKeyMap(oLayoutInfo, options.keyMap[agent.bMac ? 'mac' : 'pc']);
       oLayoutInfo.editable.on('mousedown', hMousedown);
@@ -2645,22 +2793,30 @@
       oLayoutInfo.editable.on('scroll', hScroll);
       oLayoutInfo.editable.on('paste', hPasteClipboardImage);
 
-      // handler for drag and drop
-      if (!options.disableDragAndDrop) { attachDragAndDropEvent(oLayoutInfo); }
-
-      // handler for handle(sizing image handle)
+      // handler for handle and popover
       oLayoutInfo.handle.on('mousedown', hHandleMousedown);
-
-      // handler for toolbar, popover and statusbar
-      oLayoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
       oLayoutInfo.popover.on('click', hToolbarAndPopoverClick);
-      oLayoutInfo.toolbar.on('mousedown', hToolbarAndPopoverMousedown);
       oLayoutInfo.popover.on('mousedown', hToolbarAndPopoverMousedown);
-      oLayoutInfo.statusbar.on('mousedown', hStatusbarMousedown);
 
-      // handler for toolbar's table dimension
-      var $toolbar = oLayoutInfo.toolbar;
-      var $catcher = $toolbar.find('.note-dimension-picker-mousecatcher');
+      // handlers for frame mode (toolbar, statusbar)
+      if (!options.airMode) {
+        // handler for drag and drop
+        if (!options.disableDragAndDrop) {
+          attachDragAndDropEvent(oLayoutInfo);
+        }
+
+        // handler for toolbar
+        oLayoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
+        oLayoutInfo.toolbar.on('mousedown', hToolbarAndPopoverMousedown);
+
+        // handler for statusbar
+        oLayoutInfo.statusbar.on('mousedown', hStatusbarMousedown);
+      }
+
+      // handler for table dimension
+      var $catcherContainer = options.airMode ? oLayoutInfo.popover :
+                                                oLayoutInfo.toolbar;
+      var $catcher = $catcherContainer.find('.note-dimension-picker-mousecatcher');
       $catcher.on('mousemove', hDimensionPickerMove);
 
       // save selection when focusout
@@ -2676,7 +2832,7 @@
         // protect FF Error: NS_ERROR_FAILURE: Failure
         setTimeout(function () {
           document.execCommand('styleWithCSS', 0, true);
-        });
+        }, 0);
       }
 
       // History
@@ -2699,14 +2855,15 @@
       // callbacks for advanced features (camel)
       if (options.onToolbarClick) { oLayoutInfo.toolbar.click(options.onToolbarClick); }
       if (options.onChange) {
-        var handler = function () {
+        var hChange = function () {
           options.onChange(oLayoutInfo.editable, oLayoutInfo.editable.html());
         };
 
         if (agent.bMSIE) {
-          oLayoutInfo.editable.on('DOMCharacterDataModified, DOMSubtreeModified, DOMNodeInserted', handler);
+          var sDomEvents = 'DOMCharacterDataModified, DOMSubtreeModified, DOMNodeInserted';
+          oLayoutInfo.editable.on(sDomEvents, hChange);
         } else {
-          oLayoutInfo.editable.on('input', handler);
+          oLayoutInfo.editable.on('input', hChange);
         }
       }
 
@@ -2723,12 +2880,16 @@
 
     this.dettach = function (oLayoutInfo) {
       oLayoutInfo.editable.off();
-      oLayoutInfo.dropzone.off();
-      oLayoutInfo.toolbar.off();
-      oLayoutInfo.statusbar.off();
+
       oLayoutInfo.popover.off();
       oLayoutInfo.handle.off();
       oLayoutInfo.dialog.off();
+
+      if (oLayoutInfo.editor.data('options').airMode) {
+        oLayoutInfo.dropzone.off();
+        oLayoutInfo.toolbar.off();
+        oLayoutInfo.statusbar.off();
+      }
     };
   };
 
@@ -2831,7 +2992,7 @@
              '</div>';
     };
 
-    var tplToolbarInfo = {
+    var tplButtonInfo = {
       picture: function (lang) {
         return tplIconButton('fa fa-picture-o icon-picture', {
           event: 'showImageDialog',
@@ -2847,7 +3008,7 @@
       video: function (lang) {
         return tplIconButton('fa fa-youtube-play icon-play', {
           event: 'showVideoDialog',
-          title: lang.link.link
+          title: lang.video.video
         });
       },
       table: function (lang) {
@@ -3072,7 +3233,7 @@
       }
     };
 
-    var tplPopovers = function (lang) {
+    var tplPopovers = function (lang, options) {
       var tplLinkPopover = function () {
         var linkButton = tplIconButton('fa fa-edit icon-edit', {
           title: lang.link.edit,
@@ -3111,7 +3272,7 @@
           event: 'floatMe',
           value: 'left'
         });
-        var rightButton = tplIconButton('fa fa-align-left icon-align-right', {
+        var rightButton = tplIconButton('fa fa-align-right icon-align-right', {
           title: lang.image.floatRight,
           event: 'floatMe',
           value: 'right'
@@ -3134,7 +3295,25 @@
         return tplPopover('note-image-popover', content);
       };
 
-      return '<div class="note-popover">' + tplLinkPopover() + tplImagePopover() + '</div>';
+      var tplAirPopover = function () {
+        var content = '';
+        for (var idx = 0, sz = options.airPopover.length; idx < sz; idx ++) {
+          var group = options.airPopover[idx];
+          content += '<div class="note-' + group[0] + ' btn-group">';
+          for (var i = 0, szGroup = group[1].length; i < szGroup; i++) {
+            content += tplButtonInfo[group[1][i]](lang, options);
+          }
+          content += '</div>';
+        }
+
+        return tplPopover('note-air-popover', content);
+      };
+
+      return '<div class="note-popover">' +
+               tplLinkPopover() +
+               tplImagePopover() +
+               (options.airMode ?  tplAirPopover() : '') +
+             '</div>';
     };
 
     var tplHandles = function () {
@@ -3377,16 +3556,56 @@
     };
 
     /**
-     * create summernote layout
+     * create summernote layout (air mode)
      *
      * @param {jQuery} $holder
      * @param {Object} options
      */
-    this.createLayout = function ($holder, options) {
-      //already created
-      var next = $holder.next();
-      if (next && next.hasClass('note-editor')) { return; }
+    this.createLayoutByAirMode = function ($holder, options) {
+      var keyMap = options.keyMap[agent.bMac ? 'mac' : 'pc'];
+      var langInfo = $.summernote.lang[options.lang];
 
+      var id = func.uniqueId();
+
+      $holder.addClass('note-air-editor note-editable');
+      $holder.attr({
+        'id': 'note-editor-' + id,
+        'contentEditable': true
+      });
+
+      var body = document.body;
+
+      // create Popover
+      var $popover = $(tplPopovers(langInfo, options));
+      $popover.addClass('note-air-layout');
+      $popover.attr('id', 'note-popover-' + id);
+      $popover.appendTo(body);
+      createTooltip($popover, keyMap);
+      createPalette($popover, options);
+
+      // create Handle
+      var $handle = $(tplHandles());
+      $handle.addClass('note-air-layout');
+      $handle.attr('id', 'note-handle-' + id);
+      $handle.appendTo(body);
+
+      // create Dialog
+      var $dialog = $(tplDialogs(langInfo, options));
+      $dialog.addClass('note-air-layout');
+      $dialog.attr('id', 'note-dialog-' + id);
+      $dialog.find('button.close, a.modal-close').click(function () {
+        $(this).closest('.modal').modal('hide');
+      });
+      $dialog.appendTo(body);
+    };
+
+    /**
+     * create summernote layout (normal mode)
+     *
+     * @param {jQuery} $holder
+     * @param {Object} options
+     */
+    this.createLayoutByFrame = function ($holder, options) {
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
       if (options.width) {
@@ -3422,7 +3641,7 @@
         var group = options.toolbar[idx];
         sToolbar += '<div class="note-' + group[0] + ' btn-group">';
         for (var i = 0, szGroup = group[1].length; i < szGroup; i++) {
-          sToolbar += tplToolbarInfo[group[1][i]](langInfo, options);
+          sToolbar += tplButtonInfo[group[1][i]](langInfo, options);
         }
         sToolbar += '</div>';
       }
@@ -3435,7 +3654,8 @@
       createTooltip($toolbar, keyMap, 'bottom');
 
       //05. create Popover
-      var $popover = $(tplPopovers(langInfo)).prependTo($editor);
+      var $popover = $(tplPopovers(langInfo, options)).prependTo($editor);
+      createPalette($popover, options);
       createTooltip($popover, keyMap);
 
       //06. handle(control selection, ...)
@@ -3455,6 +3675,34 @@
       $holder.hide();
     };
 
+    this.noteEditorFromHolder = function ($holder) {
+      if ($holder.hasClass('note-air-editor')) {
+        return $holder;
+      } else if ($holder.next().hasClass('note-editor')) {
+        return $holder.next();
+      } else {
+        return $();
+      }
+    };
+
+    /**
+     * create summernote layout
+     *
+     * @param {jQuery} $holder
+     * @param {Object} options
+     */
+    this.createLayout = function ($holder, options) {
+      if (this.noteEditorFromHolder($holder).length > 0) {
+        return;
+      }
+
+      if (options.airMode) {
+        this.createLayoutByAirMode($holder, options);
+      } else {
+        this.createLayoutByFrame($holder, options);
+      }
+    };
+
     /**
      * returns layoutInfo from holder
      *
@@ -3462,8 +3710,8 @@
      * @returns {Object}
      */
     this.layoutInfoFromHolder = function ($holder) {
-      var $editor = $holder.next();
-      if (!$editor.hasClass('note-editor')) { return; }
+      var $editor = this.noteEditorFromHolder($holder);
+      if (!$editor.length) { return; }
 
       var layoutInfo = dom.buildLayoutInfo($editor);
       // cache all properties.

@@ -13,7 +13,13 @@ define('summernote/module/Handle', function () {
       if (oStyle.image) {
         var $image = $(oStyle.image);
         var pos = $image.position();
-        var szImage = {w: $image.width(), h: $image.height()};
+
+        // include margin
+        var szImage = {
+          w: $image.outerWidth(true),
+          h: $image.outerHeight(true)
+        };
+
         $selection.css({
           display: 'block',
           left: pos.left,
