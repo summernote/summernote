@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-05-06T14:07Z
+ * Date: 2014-05-06T17:30Z
  */
 (function (factory) {
   /* global define */
@@ -2084,11 +2084,12 @@
       if (isAirMode) {
         var $airPopover = $popover.find('.note-air-popover');
         if (!oStyle.range.isCollapsed()) {
+          var $document = $(document);
           var rect = list.last(oStyle.range.getClientRects());
           $airPopover.css({
             display: 'block',
-            left: rect.left + rect.width / 2,
-            top: rect.top + rect.height
+            left: Math.max($document.scrollLeft() + rect.left + rect.width / 2 - 20, 0),
+            top: $document.scrollTop() + rect.top + rect.height
           });
         } else {
           $airPopover.hide();
@@ -3780,7 +3781,7 @@
       });
 
       // focus on first editable element
-      if (this.first() && options.focus) {
+      if (this.first().length && options.focus) {
         var info = renderer.layoutInfoFromHolder(this.first());
         info.editable.focus();
       }

@@ -57,11 +57,12 @@ define([
       if (isAirMode) {
         var $airPopover = $popover.find('.note-air-popover');
         if (!oStyle.range.isCollapsed()) {
+          var $document = $(document);
           var rect = list.last(oStyle.range.getClientRects());
           $airPopover.css({
             display: 'block',
-            left: rect.left + rect.width / 2,
-            top: rect.top + rect.height
+            left: Math.max($document.scrollLeft() + rect.left + rect.width / 2 - 20, 0),
+            top: $document.scrollTop() + rect.top + rect.height
           });
         } else {
           $airPopover.hide();
