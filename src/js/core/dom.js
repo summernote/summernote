@@ -24,20 +24,40 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
      * @return {Object}
      */
     var buildLayoutInfo = function ($editor) {
-      var makeFinder = function (sClassName) {
-        return function () { return $editor.find(sClassName); };
-      };
-      return {
-        editor: function () { return $editor; },
-        dropzone: makeFinder('.note-dropzone'),
-        toolbar: makeFinder('.note-toolbar'),
-        editable: makeFinder('.note-editable'),
-        codable: makeFinder('.note-codable'),
-        statusbar: makeFinder('.note-statusbar'),
-        popover: makeFinder('.note-popover'),
-        handle: makeFinder('.note-handle'),
-        dialog: makeFinder('.note-dialog')
-      };
+      var makeFinder;
+
+      // air mode
+      if ($editor.hasClass('note-air-editor')) {
+        var id = list.last($editor.attr('id').split('-'));
+        makeFinder = function (sIdPrefix) {
+          return function () { return $(sIdPrefix + id); };
+        };
+
+        return {
+          editor: function () { return $editor; },
+          editable: function () { return $editor; },
+          popover: makeFinder('#note-popover-'),
+          handle: makeFinder('#note-handle-'),
+          dialog: makeFinder('#note-dialog-')
+        };
+
+      // frame mode
+      } else {
+        makeFinder = function (sClassName) {
+          return function () { return $editor.find(sClassName); };
+        };
+        return {
+          editor: function () { return $editor; },
+          dropzone: makeFinder('.note-dropzone'),
+          toolbar: makeFinder('.note-toolbar'),
+          editable: makeFinder('.note-editable'),
+          codable: makeFinder('.note-codable'),
+          statusbar: makeFinder('.note-statusbar'),
+          popover: makeFinder('.note-popover'),
+          handle: makeFinder('.note-handle'),
+          dialog: makeFinder('.note-dialog')
+        };
+      }
     };
 
     /**

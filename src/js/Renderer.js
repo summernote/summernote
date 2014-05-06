@@ -1,6 +1,6 @@
 define([
-  'summernote/core/agent', 'summernote/core/dom'
-], function (agent, dom) {
+  'summernote/core/agent', 'summernote/core/dom', 'summernote/core/func'
+], function (agent, dom, func) {
   /**
    * renderer
    *
@@ -341,7 +341,7 @@ define([
       }
     };
 
-    var tplPopovers = function (lang) {
+    var tplPopovers = function (lang, options) {
       var tplLinkPopover = function () {
         var linkButton = tplIconButton('fa fa-edit icon-edit', {
           title: lang.link.edit,
@@ -380,7 +380,7 @@ define([
           event: 'floatMe',
           value: 'left'
         });
-        var rightButton = tplIconButton('fa fa-align-left icon-align-right', {
+        var rightButton = tplIconButton('fa fa-align-right icon-align-right', {
           title: lang.image.floatRight,
           event: 'floatMe',
           value: 'right'
@@ -403,7 +403,25 @@ define([
         return tplPopover('note-image-popover', content);
       };
 
-      return '<div class="note-popover">' + tplLinkPopover() + tplImagePopover() + '</div>';
+      var tplAirPopover = function () {
+        var content = '';
+        for (var idx = 0, sz = options.toolbar.length; idx < sz; idx ++) {
+          var group = options.toolbar[idx];
+          content += '<div class="note-' + group[0] + ' btn-group">';
+          for (var i = 0, szGroup = group[1].length; i < szGroup; i++) {
+            content += tplToolbarInfo[group[1][i]](lang, options);
+          }
+          content += '</div>';
+        }
+
+        return tplPopover('note-air-popover', content);
+      };
+
+      return '<div class="note-popover">' +
+               tplLinkPopover() +
+               tplImagePopover() +
+               (options.airMode ?  tplAirPopover() : '') +
+             '</div>';
     };
 
     var tplHandles = function () {
@@ -646,16 +664,56 @@ define([
     };
 
     /**
-     * create summernote layout
+     * create summernote layout (air mode)
      *
      * @param {jQuery} $holder
      * @param {Object} options
      */
-    this.createLayout = function ($holder, options) {
-      //already created
-      var next = $holder.next();
-      if (next && next.hasClass('note-editor')) { return; }
+    this.createLayoutByAirMode = function ($holder, options) {
+      var keyMap = options.keyMap[agent.bMac ? 'mac' : 'pc'];
+      var langInfo = $.summernote.lang[options.lang];
 
+      var id = func.uniqueId();
+
+      $holder.addClass('note-air-editor note-editable');
+      $holder.attr({
+        'id': 'note-editor-' + id,
+        'contentEditable': true
+      });
+
+      var body = document.body;
+
+      // create Popover
+      var $popover = $(tplPopovers(langInfo, options));
+      $popover.addClass('note-air-layout');
+      $popover.attr('id', 'note-popover-' + id);
+      $popover.appendTo(body);
+      createTooltip($popover, keyMap);
+      createPalette($popover, options);
+
+      // create Handle
+      var $handle = $(tplHandles());
+      $handle.addClass('note-air-layout');
+      $handle.attr('id', 'note-handle-' + id);
+      $handle.appendTo(body);
+
+      // create Dialog
+      var $dialog = $(tplDialogs(langInfo, options));
+      $dialog.addClass('note-air-layout');
+      $dialog.attr('id', 'note-dialog-' + id);
+      $dialog.find('button.close, a.modal-close').click(function () {
+        $(this).closest('.modal').modal('hide');
+      });
+      $dialog.appendTo(body);
+    };
+
+    /**
+     * create summernote layout (normal mode)
+     *
+     * @param {jQuery} $holder
+     * @param {Object} options
+     */
+    this.createLayoutByFrame = function ($holder, options) {
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
       if (options.width) {
@@ -704,7 +762,8 @@ define([
       createTooltip($toolbar, keyMap, 'bottom');
 
       //05. create Popover
-      var $popover = $(tplPopovers(langInfo)).prependTo($editor);
+      var $popover = $(tplPopovers(langInfo, options)).prependTo($editor);
+      createPalette($popover, options);
       createTooltip($popover, keyMap);
 
       //06. handle(control selection, ...)
@@ -724,6 +783,34 @@ define([
       $holder.hide();
     };
 
+    this.noteEditorFromHolder = function ($holder) {
+      if ($holder.hasClass('note-air-editor')) {
+        return $holder;
+      } else if ($holder.next().hasClass('note-editor')) {
+        return $holder.next();
+      } else {
+        return $();
+      }
+    };
+
+    /**
+     * create summernote layout
+     *
+     * @param {jQuery} $holder
+     * @param {Object} options
+     */
+    this.createLayout = function ($holder, options) {
+      if (this.noteEditorFromHolder($holder).length > 0) {
+        return;
+      }
+
+      if (options.airMode) {
+        this.createLayoutByAirMode($holder, options);
+      } else {
+        this.createLayoutByFrame($holder, options);
+      }
+    };
+
     /**
      * returns layoutInfo from holder
      *
@@ -731,8 +818,8 @@ define([
      * @returns {Object}
      */
     this.layoutInfoFromHolder = function ($holder) {
-      var $editor = $holder.next();
-      if (!$editor.hasClass('note-editor')) { return; }
+      var $editor = this.noteEditorFromHolder($holder);
+      if (!$editor.length) { return; }
 
       var layoutInfo = dom.buildLayoutInfo($editor);
       // cache all properties.

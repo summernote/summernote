@@ -79,6 +79,7 @@ define([
       oStyle.image = dom.isImg(elTarget) && elTarget;
       oStyle.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);
       oStyle.aAncestor = dom.listAncestor(rng.sc, dom.isEditable);
+      oStyle.range = rng;
 
       return oStyle;
     };
