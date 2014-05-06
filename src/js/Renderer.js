@@ -100,7 +100,7 @@ define([
              '</div>';
     };
 
-    var tplToolbarInfo = {
+    var tplButtonInfo = {
       picture: function (lang) {
         return tplIconButton('fa fa-picture-o icon-picture', {
           event: 'showImageDialog',
@@ -116,7 +116,7 @@ define([
       video: function (lang) {
         return tplIconButton('fa fa-youtube-play icon-play', {
           event: 'showVideoDialog',
-          title: lang.link.link
+          title: lang.video.video
         });
       },
       table: function (lang) {
@@ -405,11 +405,11 @@ define([
 
       var tplAirPopover = function () {
         var content = '';
-        for (var idx = 0, sz = options.toolbar.length; idx < sz; idx ++) {
-          var group = options.toolbar[idx];
+        for (var idx = 0, sz = options.airPopover.length; idx < sz; idx ++) {
+          var group = options.airPopover[idx];
           content += '<div class="note-' + group[0] + ' btn-group">';
           for (var i = 0, szGroup = group[1].length; i < szGroup; i++) {
-            content += tplToolbarInfo[group[1][i]](lang, options);
+            content += tplButtonInfo[group[1][i]](lang, options);
           }
           content += '</div>';
         }
@@ -749,7 +749,7 @@ define([
         var group = options.toolbar[idx];
         sToolbar += '<div class="note-' + group[0] + ' btn-group">';
         for (var i = 0, szGroup = group[1].length; i < szGroup; i++) {
-          sToolbar += tplToolbarInfo[group[1][i]](langInfo, options);
+          sToolbar += tplButtonInfo[group[1][i]](langInfo, options);
         }
         sToolbar += '</div>';
       }

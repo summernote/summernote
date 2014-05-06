@@ -11,6 +11,8 @@ define([
    * EventHandler
    */
   var EventHandler = function () {
+    var $document = $(document);
+
     var editor = new Editor();
     var toolbar = new Toolbar(), popover = new Popover();
     var handle = new Handle(), dialog = new Dialog();
@@ -65,21 +67,26 @@ define([
 
     var hMousedown = function (event) {
       //preventDefault Selection for FF, IE8+
-      if (dom.isImg(event.target)) { event.preventDefault(); }
+      if (dom.isImg(event.target)) {
+        event.preventDefault();
+      }
     };
 
     var hToolbarAndPopoverUpdate = function (event) {
-      var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-      var oStyle = editor.currentStyle(event.target);
-      if (!oStyle) { return; }
+      // delay for range after mouseup
+      setTimeout(function () {
+        var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+        var oStyle = editor.currentStyle(event.target);
+        if (!oStyle) { return; }
 
-      var isAirMode = oLayoutInfo.editor().data('options').airMode;
-      if (!isAirMode) {
-        toolbar.update(oLayoutInfo.toolbar(), oStyle);
-      }
+        var isAirMode = oLayoutInfo.editor().data('options').airMode;
+        if (!isAirMode) {
+          toolbar.update(oLayoutInfo.toolbar(), oStyle);
+        }
 
-      popover.update(oLayoutInfo.popover(), oStyle, isAirMode);
-      handle.update(oLayoutInfo.handle(), oStyle);
+        popover.update(oLayoutInfo.popover(), oStyle, isAirMode);
+        handle.update(oLayoutInfo.handle(), oStyle);
+      }, 0);
     };
 
     var hScroll = function (event) {
@@ -122,17 +129,15 @@ define([
         event.preventDefault();
         event.stopPropagation();
 
-        var $body = $(document.body);
-
         var oLayoutInfo = makeLayoutInfo(event.target),
             $handle = oLayoutInfo.handle(), $popover = oLayoutInfo.popover(),
             $editable = oLayoutInfo.editable();
 
         var elTarget = $handle.find('.note-control-selection').data('target'),
             $target = $(elTarget), posStart = $target.offset(),
-            scrollTop = $(document).scrollTop();
+            scrollTop = $document.scrollTop();
 
-        $body.on('mousemove', function (event) {
+        $document.on('mousemove', function (event) {
           editor.resizeTo({
             x: event.clientX - posStart.left,
             y: event.clientY - (posStart.top - scrollTop)
@@ -141,7 +146,7 @@ define([
           handle.update($handle, {image: elTarget});
           popover.update($popover, {image: elTarget});
         }).one('mouseup', function () {
-          $body.off('mousemove');
+          $document.off('mousemove');
         });
 
         if (!$target.data('ratio')) { // original ratio.
@@ -155,7 +160,9 @@ define([
     var hToolbarAndPopoverMousedown = function (event) {
       // prevent default event when insertTable (FF, Webkit)
       var $btn = $(event.target).closest('[data-event]');
-      if ($btn.length > 0) { event.preventDefault(); }
+      if ($btn.length > 0) {
+        event.preventDefault();
+      }
     };
 
     var toggleFullscreen = function (oLayoutInfo) {
@@ -267,8 +274,7 @@ define([
       var $btn = $(event.target).closest('[data-event]');
 
       if ($btn.length > 0) {
-        var sEvent = $btn.attr('data-event'),
-            sValue = $btn.attr('data-value');
+        var sEvent = $btn.attr('data-event'), sValue = $btn.attr('data-value');
 
         var oLayoutInfo = makeLayoutInfo(event.target);
         var $dialog = oLayoutInfo.dialog(),
@@ -277,8 +283,7 @@ define([
         // before command: detect control selection element($target)
         var $target;
         if ($.inArray(sEvent, ['resize', 'floatMe', 'removeMedia']) !== -1) {
-          var $handle = oLayoutInfo.handle();
-          var $selection = $handle.find('.note-control-selection');
+          var $selection = oLayoutInfo.handle().find('.note-control-selection');
           $target = $($selection.data('target'));
         }
 
@@ -289,7 +294,9 @@ define([
 
         // after command
         if ($.inArray(sEvent, ['backColor', 'foreColor']) !== -1) {
-          toolbar.updateRecentColor($btn[0], sEvent, sValue);
+          var options = oLayoutInfo.editor().data('options', options);
+          var module = options.airMode ? popover : toolbar;
+          module.updateRecentColor(list.head($btn), sEvent, sValue);
         } else if (sEvent === 'showLinkDialog') { // popover to dialog
           $editable.focus();
           var linkInfo = editor.getLinkInfo();
@@ -338,7 +345,9 @@ define([
      * @param {MouseEvent} event
      */
     var hStatusbarMousedown = function (event) {
-      var $document = $(document);
+      event.preventDefault();
+      event.stopPropagation();
+
       var $editable = makeLayoutInfo(event.target).editable();
       var nEditableTop = $editable.offset().top - $document.scrollTop();
 
@@ -348,9 +357,6 @@ define([
       }).one('mouseup', function () {
         $document.off('mousemove');
       });
-
-      event.stopPropagation();
-      event.preventDefault();
     };
 
     var PX_PER_EM = 18;
@@ -405,7 +411,7 @@ define([
           $dropzoneMessage = oLayoutInfo.dropzone.find('.note-dropzone-message');
 
       // show dropzone on dragenter when dragging a object to document.
-      $(document).on('dragenter', function (e) {
+      $document.on('dragenter', function (e) {
         var bCodeview = oLayoutInfo.editor.hasClass('codeview');
         if (!bCodeview && collection.length === 0) {
           oLayoutInfo.editor.addClass('dragover');
@@ -435,13 +441,14 @@ define([
 
       // attach dropImage
       $dropzone.on('drop', function (event) {
+        event.preventDefault();
+
         var dataTransfer = event.originalEvent.dataTransfer;
         if (dataTransfer && dataTransfer.files) {
           var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
           oLayoutInfo.editable().focus();
           insertImages(oLayoutInfo.editable(), dataTransfer.files);
         }
-        event.preventDefault();
       }).on('dragover', false); // prevent default dragover event
     };
 
@@ -510,14 +517,15 @@ define([
         oLayoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
         oLayoutInfo.toolbar.on('mousedown', hToolbarAndPopoverMousedown);
 
-        // handler for toolbar's table dimension
-        var $toolbar = oLayoutInfo.toolbar;
-        var $catcher = $toolbar.find('.note-dimension-picker-mousecatcher');
-        $catcher.on('mousemove', hDimensionPickerMove);
-
         // handler for statusbar
         oLayoutInfo.statusbar.on('mousedown', hStatusbarMousedown);
       }
+
+      // handler for table dimension
+      var $catcherContainer = options.airMode ? oLayoutInfo.popover :
+                                                oLayoutInfo.toolbar;
+      var $catcher = $catcherContainer.find('.note-dimension-picker-mousecatcher');
+      $catcher.on('mousemove', hDimensionPickerMove);
 
       // save selection when focusout
       oLayoutInfo.editable.on('blur', function () {
@@ -532,7 +540,7 @@ define([
         // protect FF Error: NS_ERROR_FAILURE: Failure
         setTimeout(function () {
           document.execCommand('styleWithCSS', 0, true);
-        });
+        }, 0);
       }
 
       // History
@@ -555,14 +563,15 @@ define([
       // callbacks for advanced features (camel)
       if (options.onToolbarClick) { oLayoutInfo.toolbar.click(options.onToolbarClick); }
       if (options.onChange) {
-        var handler = function () {
+        var hChange = function () {
           options.onChange(oLayoutInfo.editable, oLayoutInfo.editable.html());
         };
 
         if (agent.bMSIE) {
-          oLayoutInfo.editable.on('DOMCharacterDataModified, DOMSubtreeModified, DOMNodeInserted', handler);
+          var sDomEvents = 'DOMCharacterDataModified, DOMSubtreeModified, DOMNodeInserted';
+          oLayoutInfo.editable.on(sDomEvents, hChange);
         } else {
-          oLayoutInfo.editable.on('input', handler);
+          oLayoutInfo.editable.on('input', hChange);
         }
       }
 

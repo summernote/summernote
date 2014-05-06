@@ -1,10 +1,13 @@
 define([
-  'summernote/core/list'
-], function (list) {
+  'summernote/core/list',
+  'summernote/module/Button'
+], function (list, Button) {
   /**
    * Popover (http://getbootstrap.com/javascript/#popovers)
    */
   var Popover = function () {
+    var button = new Button();
+
     /**
      * show popover
      * @param {jQuery} popover
@@ -32,6 +35,8 @@ define([
      * @param {Boolean} isAirMode
      */
     this.update = function ($popover, oStyle, isAirMode) {
+      button.update($popover, oStyle);
+
       var $linkPopover = $popover.find('.note-link-popover');
 
       if (oStyle.anchor) {
@@ -62,6 +67,10 @@ define([
           $airPopover.hide();
         }
       }
+    };
+
+    this.updateRecentColor = function (elBtn, sEvent, sValue) {
+      button.updateRecentColor(elBtn, sEvent, sValue);
     };
 
     /**
