@@ -105,16 +105,6 @@ define([
       var sKey = sEvent === 'backColor' ? 'background-color' : 'color';
       $recentColor.find('i').css(sKey, sValue);
     };
-
-    this.updateFullscreen = function ($container, bFullscreen) {
-      var $btn = $container.find('button[data-event="fullscreen"]');
-      $btn.toggleClass('active', bFullscreen);
-    };
-
-    this.updateCodeview = function ($container, bCodeview) {
-      var $btn = $container.find('button[data-event="codeview"]');
-      $btn.toggleClass('active', bCodeview);
-    };
   };
 
   return Button;

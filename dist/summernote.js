@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-05-07T09:46Z
+ * Date: 2014-05-07T14:21Z
  */
 (function (factory) {
   /* global define */
@@ -1986,16 +1986,6 @@
       var sKey = sEvent === 'backColor' ? 'background-color' : 'color';
       $recentColor.find('i').css(sKey, sValue);
     };
-
-    this.updateFullscreen = function ($container, bFullscreen) {
-      var $btn = $container.find('button[data-event="fullscreen"]');
-      $btn.toggleClass('active', bFullscreen);
-    };
-
-    this.updateCodeview = function ($container, bCodeview) {
-      var $btn = $container.find('button[data-event="codeview"]');
-      $btn.toggleClass('active', bCodeview);
-    };
   };
 
   /**
@@ -2026,6 +2016,16 @@
      */
     this.deactivate = function ($toolbar) {
       $toolbar.find('button').not('button[data-event="codeview"]').addClass('disabled');
+    };
+
+    this.updateFullscreen = function ($container, bFullscreen) {
+      var $btn = $container.find('button[data-event="fullscreen"]');
+      $btn.toggleClass('active', bFullscreen);
+    };
+
+    this.updateCodeview = function ($container, bCodeview) {
+      var $btn = $container.find('button[data-event="codeview"]');
+      $btn.toggleClass('active', bCodeview);
     };
   };
 

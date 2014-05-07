@@ -31,6 +31,16 @@ define([
     this.deactivate = function ($toolbar) {
       $toolbar.find('button').not('button[data-event="codeview"]').addClass('disabled');
     };
+
+    this.updateFullscreen = function ($container, bFullscreen) {
+      var $btn = $container.find('button[data-event="fullscreen"]');
+      $btn.toggleClass('active', bFullscreen);
+    };
+
+    this.updateCodeview = function ($container, bCodeview) {
+      var $btn = $container.find('button[data-event="codeview"]');
+      $btn.toggleClass('active', bCodeview);
+    };
   };
 
   return Toolbar;
