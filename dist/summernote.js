@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-05-06T17:30Z
+ * Date: 2014-05-07T09:46Z
  */
 (function (factory) {
   /* global define */
@@ -3191,7 +3191,7 @@
       },
       height: function (lang, options) {
         var items = options.lineHeights.reduce(function (memo, v) {
-          return memo + '<li><a data-event="lineHeight" data-value="' + v + '">' +
+          return memo + '<li><a data-event="lineHeight" data-value="' + parseFloat(v) + '">' +
                           '<i class="fa fa-check icon-ok"></i> ' + v +
                         '</a></li>';
         }, '');

@@ -298,7 +298,7 @@ define([
       },
       height: function (lang, options) {
         var items = options.lineHeights.reduce(function (memo, v) {
-          return memo + '<li><a data-event="lineHeight" data-value="' + v + '">' +
+          return memo + '<li><a data-event="lineHeight" data-value="' + parseFloat(v) + '">' +
                           '<i class="fa fa-check icon-ok"></i> ' + v +
                         '</a></li>';
         }, '');
