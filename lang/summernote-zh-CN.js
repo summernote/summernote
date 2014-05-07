@@ -8,8 +8,8 @@
         strike: '删除线',
         clear: '清除格式',
         height: '行高',
-        size: '字号',
-        name:'字体'
+        name:'字体',
+        size: '字号'
       },
       image: {
         image: '图片',
