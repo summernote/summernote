@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-05-07T14:21Z
+ * Date: 2014-05-07T15:17Z
  */
 (function (factory) {
   /* global define */
@@ -94,9 +94,53 @@
     };
 
     var idCounter = 0;
+
+    /**
+     * generate a globally-unique id
+     *
+     * @param {String} [prefix]
+     */
     var uniqueId = function (prefix) {
       var id = ++idCounter + '';
       return prefix ? prefix + id : id;
+    };
+
+    /**
+     * returns bnd (bounds) from rect
+     *
+     * - IE Compatability Issue: http://goo.gl/sRLOAo
+     * - Scroll Issue: http://goo.gl/sNjUc
+     *
+     * @param {Rect} rect
+     * @return {Object} bounds
+     * @return {Number} bounds.top
+     * @return {Number} bounds.left
+     * @return {Number} bounds.width
+     * @return {Number} bounds.height
+     */
+    var rect2bnd = function (rect) {
+      var $document = $(document);
+      return {
+        top: rect.top + $document.scrollTop(),
+        left: rect.left + $document.scrollLeft(),
+        width: rect.right - rect.left,
+        height: rect.bottom - rect.top
+      };
+    };
+
+    /**
+     * returns a copy of the object where the keys have become the values and the values the keys.
+     * @param {Object} obj
+     * @return {Object}
+     */
+    var invertObject = function (obj) {
+      var inverted = {};
+      for (var key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          inverted[obj[key]] = key;
+        }
+      }
+      return inverted;
     };
 
     return {
@@ -106,7 +150,9 @@
       fail: fail,
       not: not,
       self: self,
-      uniqueId: uniqueId
+      uniqueId: uniqueId,
+      rect2bnd: rect2bnd,
+      invertObject: invertObject
     };
   })();
 
@@ -2055,6 +2101,8 @@
       });
     };
 
+    var PX_POPOVER_ARROW_OFFSET_X = 20;
+
     /**
      * update current state
      * @param {jQuery} $popover - popover container
@@ -2084,12 +2132,11 @@
       if (isAirMode) {
         var $airPopover = $popover.find('.note-air-popover');
         if (!oStyle.range.isCollapsed()) {
-          var $document = $(document);
-          var rect = list.last(oStyle.range.getClientRects());
+          var bnd = func.rect2bnd(list.last(oStyle.range.getClientRects()));
           $airPopover.css({
             display: 'block',
-            left: Math.max($document.scrollLeft() + rect.left + rect.width / 2 - 20, 0),
-            top: $document.scrollTop() + rect.top + rect.height
+            left: Math.max(bnd.left + bnd.width / 2 - PX_POPOVER_ARROW_OFFSET_X, 0),
+            top: bnd.top + bnd.height
           });
         } else {
           $airPopover.hide();
@@ -3482,16 +3529,6 @@
              '</div>';
     };
 
-    var invertObject = function (obj) {
-      var inverted = {};
-      for (var key in obj) {
-        if (obj.hasOwnProperty(key)) {
-          inverted[obj[key]] = key;
-        }
-      }
-      return inverted;
-    };
-
     var representShortcut = function (str) {
       if (agent.bMac) {
         str = str.replace('CMD', '⌘').replace('SHIFT', '⇧');
@@ -3511,7 +3548,7 @@
      * @param {String} [sPlacement]
      */
     var createTooltip = function ($container, keyMap, sPlacement) {
-      var invertedKeyMap = invertObject(keyMap);
+      var invertedKeyMap = func.invertObject(keyMap);
       var $buttons = $container.find('button');
 
       $buttons.each(function (i, elBtn) {

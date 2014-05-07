@@ -589,16 +589,6 @@ define([
              '</div>';
     };
 
-    var invertObject = function (obj) {
-      var inverted = {};
-      for (var key in obj) {
-        if (obj.hasOwnProperty(key)) {
-          inverted[obj[key]] = key;
-        }
-      }
-      return inverted;
-    };
-
     var representShortcut = function (str) {
       if (agent.bMac) {
         str = str.replace('CMD', '⌘').replace('SHIFT', '⇧');
@@ -618,7 +608,7 @@ define([
      * @param {String} [sPlacement]
      */
     var createTooltip = function ($container, keyMap, sPlacement) {
-      var invertedKeyMap = invertObject(keyMap);
+      var invertedKeyMap = func.invertObject(keyMap);
       var $buttons = $container.find('button');
 
       $buttons.each(function (i, elBtn) {

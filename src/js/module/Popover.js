@@ -1,7 +1,8 @@
 define([
+  'summernote/core/func',
   'summernote/core/list',
   'summernote/module/Button'
-], function (list, Button) {
+], function (func, list, Button) {
   /**
    * Popover (http://getbootstrap.com/javascript/#popovers)
    */
@@ -27,6 +28,8 @@ define([
         top: pos.top + height
       });
     };
+
+    var PX_POPOVER_ARROW_OFFSET_X = 20;
 
     /**
      * update current state
@@ -57,12 +60,11 @@ define([
       if (isAirMode) {
         var $airPopover = $popover.find('.note-air-popover');
         if (!oStyle.range.isCollapsed()) {
-          var $document = $(document);
-          var rect = list.last(oStyle.range.getClientRects());
+          var bnd = func.rect2bnd(list.last(oStyle.range.getClientRects()));
           $airPopover.css({
             display: 'block',
-            left: Math.max($document.scrollLeft() + rect.left + rect.width / 2 - 20, 0),
-            top: $document.scrollTop() + rect.top + rect.height
+            left: Math.max(bnd.left + bnd.width / 2 - PX_POPOVER_ARROW_OFFSET_X, 0),
+            top: bnd.top + bnd.height
           });
         } else {
           $airPopover.hide();
