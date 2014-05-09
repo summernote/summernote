@@ -89,12 +89,14 @@ define([
                      '<h4>' + title + '</h4>' +
                    '</div>' : ''
                    ) +
+                   '<form class="note-modal-form">' +
                    '<div class="modal-body">' +
                      '<div class="row-fluid">' + body + '</div>' +
                    '</div>' +
                    (footer ?
                    '<div class="modal-footer">' + footer + '</div>' : ''
                    ) +
+                   '</form>' +
                  '</div>' +
                '</div>' +
              '</div>';
