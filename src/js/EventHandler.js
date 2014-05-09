@@ -213,7 +213,8 @@ define([
       var $editor = oLayoutInfo.editor(),
           $toolbar = oLayoutInfo.toolbar(),
           $editable = oLayoutInfo.editable(),
-          $codable = oLayoutInfo.codable();
+          $codable = oLayoutInfo.codable(),
+          $popover = oLayoutInfo.popover();
 
       var options = $editor.data('options');
 
@@ -226,6 +227,7 @@ define([
         $codable.val($editable.html());
         $codable.height($editable.height());
         toolbar.deactivate($toolbar);
+        popover.hide($popover);
         $codable.focus();
 
         // activate CodeMirror as codable
