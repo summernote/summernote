@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-05-09T22:19Z
+ * Date: 2014-05-09T22:23Z
  */
 (function (factory) {
   /* global define */
@@ -3047,12 +3047,12 @@
                    '</div>' : ''
                    ) +
                    '<form class="note-modal-form">' +
-                   '<div class="modal-body">' +
-                     '<div class="row-fluid">' + body + '</div>' +
-                   '</div>' +
-                   (footer ?
-                   '<div class="modal-footer">' + footer + '</div>' : ''
-                   ) +
+                     '<div class="modal-body">' +
+                       '<div class="row-fluid">' + body + '</div>' +
+                     '</div>' +
+                     (footer ?
+                     '<div class="modal-footer">' + footer + '</div>' : ''
+                     ) +
                    '</form>' +
                  '</div>' +
                '</div>' +
