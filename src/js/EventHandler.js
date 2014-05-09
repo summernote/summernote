@@ -304,9 +304,11 @@ define([
           var linkInfo = editor.getLinkInfo();
 
           editor.saveRange($editable);
-          dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkUrl, bNewWindow) {
+          dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkText, sLinkUrl, bNewWindow) {
             editor.restoreRange($editable);
-            editor.createLink($editable, sLinkUrl, bNewWindow);
+            editor.createLink($editable, sLinkText, sLinkUrl, bNewWindow);
+            // hide popover after creating link
+            popover.hide(oLayoutInfo.popover());
           });
         } else if (sEvent === 'showImageDialog') {
           $editable.focus();

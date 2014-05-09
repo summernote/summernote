@@ -537,7 +537,7 @@ define([
       var tplLinkDialog = function () {
         var body = '<div class="form-group">' +
                      '<label>' + lang.link.textToDisplay + '</label>' +
-                     '<input class="note-link-text form-control span12" type="text" disabled />' +
+                     '<input class="note-link-text form-control span12" type="text" />' +
                    '</div>' +
                    '<div class="form-group">' +
                      '<label>' + lang.link.url + '</label>' +

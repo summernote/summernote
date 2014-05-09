@@ -118,7 +118,7 @@ define('summernote/module/Dialog', function () {
             if (!linkInfo.text) {
               $linkText.val($linkUrl.val());
             }
-          }).val(linkInfo.url).trigger('focus');
+          }).val(linkInfo.url).trigger('focus').trigger('select');
 
           $openInNewWindow.prop('checked', linkInfo.newWindow);
 
@@ -126,7 +126,7 @@ define('summernote/module/Dialog', function () {
             event.preventDefault();
 
             $linkDialog.modal('hide');
-            deferred.resolve($linkUrl.val(), $openInNewWindow.is(':checked'));
+            deferred.resolve($linkText.val(), $linkUrl.val(), $openInNewWindow.is(':checked'));
           });
         }).one('hidden.bs.modal', function () {
           $editable.focus();

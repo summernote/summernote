@@ -281,7 +281,7 @@ define([
      * @param {String} sLinkUrl
      * @param {Boolean} bNewWindow
      */
-    this.createLink = function ($editable, sLinkUrl, bNewWindow) {
+    this.createLink = function ($editable, sLinkText, sLinkUrl, bNewWindow) {
       var rng = range.create();
       recordUndo($editable);
 
@@ -295,17 +295,18 @@ define([
 
       // createLink when range collapsed (IE, Firefox).
       if ((agent.bMSIE || agent.bFF) && rng.isCollapsed()) {
-        rng.insertNode($('<A id="linkAnchor">' + sLinkUrl + '</A>')[0]);
+        rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
         var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol).removeAttr('id');
         rng = range.createFromNode($anchor[0]);
         rng.select();
       } else {
         document.execCommand('createlink', false, sLinkUrlWithProtocol);
-        rng = range.create();
       }
 
       // target
       $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
+        // update link text
+        $(elAnchor).html(sLinkText);
         if (bNewWindow) {
           $(elAnchor).attr('target', '_blank');
         } else {
