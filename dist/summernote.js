@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-05-07T15:17Z
+ * Date: 2014-05-09T22:19Z
  */
 (function (factory) {
   /* global define */
@@ -1734,7 +1734,7 @@
      * @param {String} sLinkUrl
      * @param {Boolean} bNewWindow
      */
-    this.createLink = function ($editable, sLinkUrl, bNewWindow) {
+    this.createLink = function ($editable, sLinkText, sLinkUrl, bNewWindow) {
       var rng = range.create();
       recordUndo($editable);
 
@@ -1748,17 +1748,18 @@
 
       // createLink when range collapsed (IE, Firefox).
       if ((agent.bMSIE || agent.bFF) && rng.isCollapsed()) {
-        rng.insertNode($('<A id="linkAnchor">' + sLinkUrl + '</A>')[0]);
+        rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
         var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol).removeAttr('id');
         rng = range.createFromNode($anchor[0]);
         rng.select();
       } else {
         document.execCommand('createlink', false, sLinkUrlWithProtocol);
-        rng = range.create();
       }
 
       // target
       $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
+        // update link text
+        $(elAnchor).html(sLinkText);
         if (bNewWindow) {
           $(elAnchor).attr('target', '_blank');
         } else {
@@ -2309,6 +2310,18 @@
         $linkDialog.one('shown.bs.modal', function () {
           $linkText.val(linkInfo.text);
 
+          $linkText.keyup(function () {
+            // if linktext was modified by keyup,
+            // stop cloning text from linkUrl
+            linkInfo.text = $linkText.val();
+          });
+
+          // if no url was given, copy text to url
+          if (!linkInfo.url) {
+            linkInfo.url = linkInfo.text;
+            toggleBtn($linkBtn, linkInfo.text);
+          }
+
           $linkUrl.keyup(function () {
             toggleBtn($linkBtn, $linkUrl.val());
             // display same link on `Text to display` input
@@ -2316,7 +2329,7 @@
             if (!linkInfo.text) {
               $linkText.val($linkUrl.val());
             }
-          }).val(linkInfo.url).trigger('focus');
+          }).val(linkInfo.url).trigger('focus').trigger('select');
 
           $openInNewWindow.prop('checked', linkInfo.newWindow);
 
@@ -2324,7 +2337,7 @@
             event.preventDefault();
 
             $linkDialog.modal('hide');
-            deferred.resolve($linkUrl.val(), $openInNewWindow.is(':checked'));
+            deferred.resolve($linkText.val(), $linkUrl.val(), $openInNewWindow.is(':checked'));
           });
         }).one('hidden.bs.modal', function () {
           $editable.focus();
@@ -2553,7 +2566,8 @@
       var $editor = oLayoutInfo.editor(),
           $toolbar = oLayoutInfo.toolbar(),
           $editable = oLayoutInfo.editable(),
-          $codable = oLayoutInfo.codable();
+          $codable = oLayoutInfo.codable(),
+          $popover = oLayoutInfo.popover();
 
       var options = $editor.data('options');
 
@@ -2566,6 +2580,7 @@
         $codable.val($editable.html());
         $codable.height($editable.height());
         toolbar.deactivate($toolbar);
+        popover.hide($popover);
         $codable.focus();
 
         // activate CodeMirror as codable
@@ -2642,9 +2657,11 @@
           var linkInfo = editor.getLinkInfo();
 
           editor.saveRange($editable);
-          dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkUrl, bNewWindow) {
+          dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkText, sLinkUrl, bNewWindow) {
             editor.restoreRange($editable);
-            editor.createLink($editable, sLinkUrl, bNewWindow);
+            editor.createLink($editable, sLinkText, sLinkUrl, bNewWindow);
+            // hide popover after creating link
+            popover.hide(oLayoutInfo.popover());
           });
         } else if (sEvent === 'showImageDialog') {
           $editable.focus();
@@ -3029,12 +3046,14 @@
                      '<h4>' + title + '</h4>' +
                    '</div>' : ''
                    ) +
+                   '<form class="note-modal-form">' +
                    '<div class="modal-body">' +
                      '<div class="row-fluid">' + body + '</div>' +
                    '</div>' +
                    (footer ?
                    '<div class="modal-footer">' + footer + '</div>' : ''
                    ) +
+                   '</form>' +
                  '</div>' +
                '</div>' +
              '</div>';
@@ -3475,7 +3494,7 @@
       var tplLinkDialog = function () {
         var body = '<div class="form-group">' +
                      '<label>' + lang.link.textToDisplay + '</label>' +
-                     '<input class="note-link-text form-control span12" type="text" disabled />' +
+                     '<input class="note-link-text form-control span12" type="text" />' +
                    '</div>' +
                    '<div class="form-group">' +
                      '<label>' + lang.link.url + '</label>' +
