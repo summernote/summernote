@@ -111,6 +111,18 @@ define('summernote/module/Dialog', function () {
         $linkDialog.one('shown.bs.modal', function () {
           $linkText.val(linkInfo.text);
 
+          $linkText.keyup(function () {
+            // if linktext was modified by keyup,
+            // stop cloning text from linkUrl
+            linkInfo.text = $linkText.val();
+          });
+
+          // if no url was given, copy text to url
+          if (!linkInfo.url) {
+            linkInfo.url = linkInfo.text;
+            toggleBtn($linkBtn, linkInfo.text);
+          }
+
           $linkUrl.keyup(function () {
             toggleBtn($linkBtn, $linkUrl.val());
             // display same link on `Text to display` input
