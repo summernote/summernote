@@ -203,7 +203,7 @@ define([
           w: options.width || '',
           h: $editable.data('orgHeight')
         });
-        $scrollbar.css('overflow', 'auto');
+        $scrollbar.css('overflow', 'visible');
       }
 
       toolbar.updateFullscreen($toolbar, isFullscreen);
