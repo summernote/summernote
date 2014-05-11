@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-05-09T22:23Z
+ * Date: 2014-05-11T15:07Z
  */
 (function (factory) {
   /* global define */
@@ -2556,7 +2556,7 @@
           w: options.width || '',
           h: $editable.data('orgHeight')
         });
-        $scrollbar.css('overflow', 'auto');
+        $scrollbar.css('overflow', 'visible');
       }
 
       toolbar.updateFullscreen($toolbar, isFullscreen);
@@ -3037,13 +3037,13 @@
      * @param {String} [footer]
      */
     var tplDialog = function (className, title, body, footer) {
-      return '<div class="' + className + ' modal" aria-hidden="false">' +
+      return '<div class="' + className + ' modal fade" aria-hidden="false">' +
                '<div class="modal-dialog">' +
                  '<div class="modal-content">' +
                    (title ?
                    '<div class="modal-header">' +
                      '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                     '<h4>' + title + '</h4>' +
+                     '<h4 class="modal-title">' + title + '</h4>' +
                    '</div>' : ''
                    ) +
                    '<form class="note-modal-form">' +
@@ -3095,7 +3095,7 @@
       style: function (lang, options) {
         var items = options.styleTags.reduce(function (memo, v) {
           var label = lang.style[v === 'p' ? 'normal' : v];
-          return memo + '<li><a data-event="formatBlock" data-value="' + v + '">' +
+          return memo + '<li><a data-event="formatBlock" href="#" data-value="' + v + '">' +
                    (
                      (v === 'p' || v === 'pre') ? label :
                      '<' + v + '>' + label + '</' + v + '>'
@@ -3110,7 +3110,7 @@
       },
       fontname: function (lang, options) {
         var items = options.fontNames.reduce(function (memo, v) {
-          return memo + '<li><a data-event="fontName" data-value="' + v + '">' +
+          return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '">' +
                           '<i class="fa fa-check icon-ok"></i> ' + v +
                         '</a></li>';
         }, '');
@@ -3124,7 +3124,7 @@
       },
       fontsize: function (lang, options) {
         var items = options.fontSizes.reduce(function (memo, v) {
-          return memo + '<li><a data-event="fontSize" data-value="' + v + '">' +
+          return memo + '<li><a data-event="fontSize" href="#" data-value="' + v + '">' +
                           '<i class="fa fa-check icon-ok"></i> ' + v +
                         '</a></li>';
         }, '');
@@ -3257,7 +3257,7 @@
       },
       height: function (lang, options) {
         var items = options.lineHeights.reduce(function (memo, v) {
-          return memo + '<li><a data-event="lineHeight" data-value="' + parseFloat(v) + '">' +
+          return memo + '<li><a data-event="lineHeight" href="#" data-value="' + parseFloat(v) + '">' +
                           '<i class="fa fa-check icon-ok"></i> ' + v +
                         '</a></li>';
         }, '');
@@ -3483,10 +3483,14 @@
 
     var tplDialogs = function (lang, options) {
       var tplImageDialog = function () {
-        var body = '<h5>' + lang.image.selectFromFiles + '</h5>' +
+        var body = '<div class="form-group">' +
+                   '<label>' + lang.image.selectFromFiles + '</label>' +
                    '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
-                   '<h5>' + lang.image.url + '</h5>' +
-                   '<input class="note-image-url form-control span12" type="text" />';
+                   '</div>' +
+                   '<div class="form-group">' +
+                   '<label>' + lang.image.url + '</label>' +
+                   '<input class="note-image-url form-control span12" type="text" />' +
+                   '</div>';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
         return tplDialog('note-image-dialog', lang.image.insert, body, footer);
       };
@@ -3513,7 +3517,7 @@
 
       var tplVideoDialog = function () {
         var body = '<div class="form-group">' +
-                     '<label>' + lang.video.url + '</label>&nbsp;<small class="text-muted">' + lang.video.providers + '</small>' +
+                     '<label>' + lang.video.url + '&nbsp;<small class="text-muted">' + lang.video.providers + '</small></label>' +
                      '<input class="note-video-url form-control span12" type="text" />' +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
