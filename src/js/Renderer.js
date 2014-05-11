@@ -447,7 +447,7 @@ define([
     var tplShortcut = function (title, body) {
       return '<table class="note-shortcut">' +
                '<thead>' +
-                 '<tr><th></th><th>' + title + '</th></tr>' +
+                 '<tr><th width="50%"></th><th width="50%">' + title + '</th></tr>' +
                '</thead>' +
                '<tbody>' + body + '</tbody>' +
              '</table>';
