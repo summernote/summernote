@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-05-11T15:07Z
+ * Date: 2014-05-11T15:46Z
  */
 (function (factory) {
   /* global define */
@@ -3404,7 +3404,7 @@
     var tplShortcut = function (title, body) {
       return '<table class="note-shortcut">' +
                '<thead>' +
-                 '<tr><th></th><th>' + title + '</th></tr>' +
+                 '<tr><th width="50%"></th><th width="50%">' + title + '</th></tr>' +
                '</thead>' +
                '<tbody>' + body + '</tbody>' +
              '</table>';
