@@ -86,7 +86,7 @@ define([
                    (title ?
                    '<div class="modal-header">' +
                      '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                     '<h4>' + title + '</h4>' +
+                     '<h4 class="modal-title">' + title + '</h4>' +
                    '</div>' : ''
                    ) +
                    '<form class="note-modal-form">' +
@@ -526,10 +526,14 @@ define([
 
     var tplDialogs = function (lang, options) {
       var tplImageDialog = function () {
-        var body = '<h5>' + lang.image.selectFromFiles + '</h5>' +
+        var body = '<div class="form-group">' +
+                   '<label>' + lang.image.selectFromFiles + '</label>' +
                    '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
-                   '<h5>' + lang.image.url + '</h5>' +
-                   '<input class="note-image-url form-control span12" type="text" />';
+                   '</div>' +
+                   '<div class="form-group">' +
+                   '<label>' + lang.image.url + '</label>' +
+                   '<input class="note-image-url form-control span12" type="text" />' +
+                   '</div>';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
         return tplDialog('note-image-dialog', lang.image.insert, body, footer);
       };
@@ -556,7 +560,7 @@ define([
 
       var tplVideoDialog = function () {
         var body = '<div class="form-group">' +
-                     '<label>' + lang.video.url + '</label>&nbsp;<small class="text-muted">' + lang.video.providers + '</small>' +
+                     '<label>' + lang.video.url + '&nbsp;<small class="text-muted">' + lang.video.providers + '</small></label>' +
                      '<input class="note-video-url form-control span12" type="text" />' +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
