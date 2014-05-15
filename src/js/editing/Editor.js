@@ -65,7 +65,7 @@ define([
 
     /* jshint ignore:start */
     // native commands(with execCommand), generate function for execCommand
-    var aCmd = ['bold', 'italic', 'underline', 'strikethrough',
+    var aCmd = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
                 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
                 'insertOrderedList', 'insertUnorderedList',
                 'indent', 'outdent', 'formatBlock', 'removeFormat',

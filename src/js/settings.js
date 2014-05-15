@@ -30,7 +30,7 @@ define('summernote/settings', function () {
       // toolbar
       toolbar: [
         ['style', ['style']],
-        ['font', ['bold', 'italic', 'underline', 'clear']],
+        ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'clear']],
         ['fontname', ['fontname']],
         // ['fontsize', ['fontsize']], // Still buggy
         ['color', ['color']],
