@@ -5,7 +5,7 @@
         bold: 'Îngroșat',
         italic: 'Înclinat',
         underline: 'Subliniat',
-        strike: 'Tăiat',
+        strikethrough: 'Tăiat',
         clear: 'Înlătură formatare font',
         height: 'Înălțime rând',
         size: 'Dimensiune font'

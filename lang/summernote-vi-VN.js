@@ -5,7 +5,7 @@
 		bold: 'In Đậm',
         italic: 'In Nghiên',
         underline: 'Gạch Dưới',
-        strike: 'Gạch Ngang',
+        strikethrough: 'Gạch Ngang',
         clear: 'Bỏ Định Dạng',
         height: 'Khoảng Cách Hàng',
         size: 'Cỡ Chữ',

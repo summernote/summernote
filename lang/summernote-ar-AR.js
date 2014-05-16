@@ -5,7 +5,7 @@
         bold: 'عريض',
         italic: 'مائل',
         underline: 'تحته خط',
-        strike: 'فى وسطه خط',
+        strikethrough: 'فى وسطه خط',
         clear: 'مسح التنسيق',
         height: 'إرتفاع السطر',
         name: 'الخط',

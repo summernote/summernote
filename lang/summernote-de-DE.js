@@ -5,7 +5,7 @@
         bold: 'Fett',
         italic: 'Kursiv',
         underline: 'Unterstreichen',
-        strike: 'Durchgestrichen',
+        strikethrough: 'Durchgestrichen',
         clear: 'Zurücksetzen',
         height: 'Zeilenhöhe',
         size: 'Schriftgröße'

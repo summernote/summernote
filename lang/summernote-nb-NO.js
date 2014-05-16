@@ -5,7 +5,7 @@
         bold: 'Fet',
         italic: 'Kursiv',
         underline: 'Understrek',
-        strike: 'Gjennomstrek',
+        strikethrough: 'Gjennomstrek',
         clear: 'Fjern formatering',
         height: 'Linjehøyde',
         name: 'Skrifttype',

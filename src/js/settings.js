@@ -30,7 +30,7 @@ define('summernote/settings', function () {
       // toolbar
       toolbar: [
         ['style', ['style']],
-        ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'clear']],
+        ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'strikethrough', 'clear']],
         ['fontname', ['fontname']],
         // ['fontsize', ['fontsize']], // Still buggy
         ['color', ['color']],
@@ -172,7 +172,7 @@ define('summernote/settings', function () {
           bold: 'Bold',
           italic: 'Italic',
           underline: 'Underline',
-          strike: 'Strike',
+          strikethrough: 'Strikethrough',
           clear: 'Remove Font Style',
           height: 'Line Height',
           name: 'Font Family',

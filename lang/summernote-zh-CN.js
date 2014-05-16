@@ -5,7 +5,7 @@
         bold: '粗体',
         italic: '斜体',
         underline: '下划线',
-        strike: '删除线',
+        strikethrough: '删除线',
         clear: '清除格式',
         height: '行高',
         name:'字体',

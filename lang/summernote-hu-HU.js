@@ -5,7 +5,7 @@
                 bold: 'Félkövér',
                 italic: 'Dőlt',
                 underline: 'Aláhúzott',
-                strike: 'Áthúzott',
+                strikethrough: 'Áthúzott',
                 clear: 'Formázás törlése',
                 height: 'Sorköz',
                 name: 'Betűtípus',

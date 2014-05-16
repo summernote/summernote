@@ -5,7 +5,7 @@
         bold: 'Vet',
         italic: 'Cursief',
         underline: 'Onderstrepen',
-        strike: 'Doorhalen',
+        strikethrough: 'Doorhalen',
         clear: 'Stijl verwijderen',
         height: 'Regelhoogte',
         name: 'Lettertype',

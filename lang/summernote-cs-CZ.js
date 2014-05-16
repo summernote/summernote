@@ -5,7 +5,7 @@
         bold: 'Tučné',
         italic: 'Kurzíva',
         underline: 'Podtržené',
-        strike: 'Přeškrtnuté',
+        strikethrough: 'Přeškrtnuté',
         clear: 'Odstranit styl písma',
         height: 'Výška řádku',
         size: 'Velikost písma'

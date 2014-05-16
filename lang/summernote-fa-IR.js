@@ -5,7 +5,7 @@
                 bold: 'درشت',
                 italic: 'خمیده',
                 underline: 'میان خط',
-                strike: 'Strike',
+                strikethrough: 'Strike',
                 clear: 'پاک کردن فرمت فونت',
                 height: 'فاصله ی خطی',
                 name: 'اسم فونت',

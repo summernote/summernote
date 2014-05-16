@@ -5,7 +5,7 @@
         bold: 'Pogrubienie',
         italic: 'Pochylenie',
         underline: 'Podkreślenie',
-        strike: 'Przekreślenie',
+        strikethrough: 'Przekreślenie',
         clear: 'Usuń formatowanie',
         height: 'Interlinia',
         name: 'Czcionka',
