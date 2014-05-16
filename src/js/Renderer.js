@@ -239,6 +239,18 @@ define([
           title: lang.font.strike
         });
       },
+      superscript: function (lang) {
+        return tplIconButton('fa fa-superscript icon-superscript', {
+          event: 'superscript',
+          title: lang.font.superscript
+        });
+      },
+      subscript: function (lang) {
+        return tplIconButton('fa fa-subscript icon-subscript', {
+          event: 'subscript',
+          title: lang.font.subscript
+        });
+      },
       clear: function (lang) {
         return tplIconButton('fa fa-eraser icon-eraser', {
           event: 'removeFormat',

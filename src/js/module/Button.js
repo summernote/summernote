@@ -69,6 +69,12 @@ define([
       btnState('button[data-event="strikethrough"]', function () {
         return oStyle['font-strikethrough'] === 'strikethrough';
       });
+      btnState('button[data-event="superscript"]', function () {
+        return oStyle['font-superscript'] === 'superscript';
+      });
+      btnState('button[data-event="subscript"]', function () {
+        return oStyle['font-subscript'] === 'subscript';
+      });
       btnState('button[data-event="justifyLeft"]', function () {
         return oStyle['text-align'] === 'left' || oStyle['text-align'] === 'start';
       });
