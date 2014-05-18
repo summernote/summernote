@@ -132,7 +132,8 @@ define('summernote/settings', function () {
           'CTRL+NUM4': 'formatH4',
           'CTRL+NUM5': 'formatH5',
           'CTRL+NUM6': 'formatH6',
-          'CTRL+ENTER': 'insertHorizontalRule'
+          'CTRL+ENTER': 'insertHorizontalRule',
+          'CTRL+K': 'showLinkDialog'
         },
 
         mac: {
@@ -160,7 +161,8 @@ define('summernote/settings', function () {
           'CMD+NUM4': 'formatH4',
           'CMD+NUM5': 'formatH5',
           'CMD+NUM6': 'formatH6',
-          'CMD+ENTER': 'insertHorizontalRule'
+          'CMD+ENTER': 'insertHorizontalRule',
+          'CMD+K': 'showLinkDialog'
         }
       }
     },
