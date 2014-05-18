@@ -11,7 +11,9 @@ define([
    * EventHandler
    */
   var EventHandler = function () {
+    var $window = $(window);
     var $document = $(document);
+    var $scrollbar = $('html, body');
 
     var editor = new Editor();
     var toolbar = new Toolbar(), popover = new Popover();
@@ -36,6 +38,33 @@ define([
       }
 
       return dom.buildLayoutInfo($editor);
+    };
+
+    /**
+     * insert Images from file array.
+     *
+     * @param {jQuery} $editable
+     * @param {File[]} files
+     */
+    var insertImages = function ($editable, files) {
+      editor.restoreRange($editable);
+      var callbacks = $editable.data('callbacks');
+
+      // If onImageUpload options setted
+      if (callbacks.onImageUpload) {
+        callbacks.onImageUpload(files, editor, $editable);
+      // else insert Image as dataURL
+      } else {
+        $.each(files, function (idx, file) {
+          async.readFileAsDataURL(file).then(function (sDataURL) {
+            editor.insertImage($editable, sDataURL);
+          }).fail(function () {
+            if (callbacks.onImageUploadError) {
+              callbacks.onImageUploadError();
+            }
+          });
+        });
+      }
     };
 
     var commands = {
@@ -112,8 +141,6 @@ define([
 
         var options = $editor.data('options');
 
-        var $scrollbar = $('html, body');
-
         var resize = function (size) {
           $editor.css('width', size.w);
           $editable.css('height', size.h);
@@ -128,16 +155,16 @@ define([
         if (isfullscreen) {
           $editable.data('orgheight', $editable.css('height'));
 
-          $(window).on('resize', function () {
+          $window.on('resize', function () {
             resize({
-              w: $(window).width(),
-              h: $(window).height() - $toolbar.outerheight()
+              w: $window.width(),
+              h: $window.height() - $toolbar.outerheight()
             });
           }).trigger('resize');
 
           $scrollbar.css('overflow', 'hidden');
         } else {
-          $(window).off('resize');
+          $window.off('resize');
           resize({
             w: options.width || '',
             h: $editable.data('orgheight')
@@ -212,33 +239,6 @@ define([
       }
     };
 
-    /**
-     * insert Images from file array.
-     *
-     * @param {jQuery} $editable
-     * @param {File[]} files
-     */
-    var insertImages = function ($editable, files) {
-      editor.restoreRange($editable);
-      var callbacks = $editable.data('callbacks');
-
-      // If onImageUpload options setted
-      if (callbacks.onImageUpload) {
-        callbacks.onImageUpload(files, editor, $editable);
-      // else insert Image as dataURL
-      } else {
-        $.each(files, function (idx, file) {
-          async.readFileAsDataURL(file).then(function (sDataURL) {
-            editor.insertImage($editable, sDataURL);
-          }).fail(function () {
-            if (callbacks.onImageUploadError) {
-              callbacks.onImageUploadError();
-            }
-          });
-        });
-      }
-    };
-
     var hMousedown = function (event) {
       //preventDefault Selection for FF, IE8+
       if (dom.isImg(event.target)) {
@@ -276,15 +276,13 @@ define([
      * @param {Event} event
      */
     var hPasteClipboardImage = function (event) {
-      var originalEvent = event.originalEvent;
-      if (!originalEvent.clipboardData ||
-            !originalEvent.clipboardData.items ||
-            !originalEvent.clipboardData.items.length) {
+      var clipboardData = event.originalEvent.clipboardData;
+      if (!clipboardData || !clipboardData.items || !clipboardData.items.length) {
         return;
       }
 
       var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-      var item = list.head(originalEvent.clipboardData.items);
+      var item = list.head(clipboardData.items);
       var bClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
 
       if (bClipboardImage) {
