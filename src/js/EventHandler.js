@@ -510,14 +510,14 @@ define([
         var keyName = key.nameFromCode[event.keyCode];
         if (keyName) { aKey.push(keyName); }
 
-        var handler = keyMap[aKey.join('+')];
-        if (handler) {
+        var sEvent = keyMap[aKey.join('+')];
+        if (sEvent) {
           event.preventDefault();
 
-          if (editor[handler]) {
-            editor[handler]($editable, $editor.data('options'));
-          } else if (commands[handler]) {
-            commands[handler].call(this, oLayoutInfo);
+          if (editor[sEvent]) {
+            editor[sEvent]($editable, $editor.data('options'));
+          } else if (commands[sEvent]) {
+            commands[sEvent].call(this, oLayoutInfo);
           }
         } else if (key.isEdit(event.keyCode)) {
           editor.recordUndo($editable);
