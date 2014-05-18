@@ -22,14 +22,14 @@ define(['summernote/core/range'], function (range) {
 
     this.undo = function ($editable) {
       var oSnap = makeSnap($editable);
-      if (aUndo.length === 0) { return; }
+      if (!aUndo.length) { return; }
       applySnap($editable, aUndo.pop());
       aRedo.push(oSnap);
     };
 
     this.redo = function ($editable) {
       var oSnap = makeSnap($editable);
-      if (aRedo.length === 0) { return; }
+      if (!aRedo.length) { return; }
       applySnap($editable, aRedo.pop());
       aUndo.push(oSnap);
     };

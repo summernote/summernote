@@ -228,7 +228,7 @@ define([
        * @param {Number} eo - end offset
        */
       create : function (sc, so, ec, eo) {
-        if (arguments.length === 0) { // from Browser Selection
+        if (!arguments.length) { // from Browser Selection
           if (bW3CRangeSupport) { // webkit, firefox
             var selection = document.getSelection();
             if (selection.rangeCount === 0) { return null; }

@@ -38,7 +38,7 @@ define([
 
       // fontname
       var $fontname = $container.find('.note-fontname');
-      if ($fontname.length > 0) {
+      if ($fontname.length) {
         var selectedFont = oStyle['font-family'];
         if (!!selectedFont) {
           selectedFont = list.head(selectedFont.split(','));

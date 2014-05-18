@@ -26,7 +26,7 @@ define([
     var makeLayoutInfo = function (descendant) {
       var $target = $(descendant).closest('.note-editor, .note-air-editor, .note-air-layout');
 
-      if ($target.length === 0) { return null; }
+      if (!$target.length) { return null; }
 
       var $editor;
       if ($target.is('.note-editor, .note-air-editor')) {
@@ -160,7 +160,7 @@ define([
     var hToolbarAndPopoverMousedown = function (event) {
       // prevent default event when insertTable (FF, Webkit)
       var $btn = $(event.target).closest('[data-event]');
-      if ($btn.length > 0) {
+      if ($btn.length) {
         event.preventDefault();
       }
     };
@@ -275,7 +275,7 @@ define([
     var hToolbarAndPopoverClick = function (event) {
       var $btn = $(event.target).closest('[data-event]');
 
-      if ($btn.length > 0) {
+      if ($btn.length) {
         var sEvent = $btn.attr('data-event'), sValue = $btn.attr('data-value');
 
         var oLayoutInfo = makeLayoutInfo(event.target);
@@ -417,7 +417,7 @@ define([
       // show dropzone on dragenter when dragging a object to document.
       $document.on('dragenter', function (e) {
         var bCodeview = oLayoutInfo.editor.hasClass('codeview');
-        if (!bCodeview && collection.length === 0) {
+        if (!bCodeview && !collection.length) {
           oLayoutInfo.editor.addClass('dragover');
           $dropzone.width(oLayoutInfo.editor.width());
           $dropzone.height(oLayoutInfo.editor.height());
@@ -426,7 +426,7 @@ define([
         collection = collection.add(e.target);
       }).on('dragleave', function (e) {
         collection = collection.not(e.target);
-        if (collection.length === 0) {
+        if (!collection.length) {
           oLayoutInfo.editor.removeClass('dragover');
         }
       }).on('drop', function () {

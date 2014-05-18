@@ -88,7 +88,7 @@ define(['summernote/core/func'], function (func) {
      * @param {Array[]}
      */
     var clusterBy = function (array, fn) {
-      if (array.length === 0) { return []; }
+      if (!array.length) { return []; }
       var aTail = tail(array);
       return aTail.reduce(function (memo, v) {
         var aLast = last(memo);

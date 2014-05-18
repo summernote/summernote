@@ -173,22 +173,22 @@ define([
         $video = $('<iframe>')
           .attr('src', '//www.youtube.com/embed/' + youtubeId)
           .attr('width', '640').attr('height', '360');
-      } else if (igMatch && igMatch[0].length > 0) {
+      } else if (igMatch && igMatch[0].length) {
         $video = $('<iframe>')
           .attr('src', igMatch[0] + '/embed/')
           .attr('width', '612').attr('height', '710')
           .attr('scrolling', 'no')
           .attr('allowtransparency', 'true');
-      } else if (vMatch && vMatch[0].length > 0) {
+      } else if (vMatch && vMatch[0].length) {
         $video = $('<iframe>')
           .attr('src', vMatch[0] + '/embed/simple')
           .attr('width', '600').attr('height', '600')
           .attr('class', 'vine-embed');
-      } else if (vimMatch && vimMatch[3].length > 0) {
+      } else if (vimMatch && vimMatch[3].length) {
         $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
           .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
           .attr('width', '640').attr('height', '360');
-      } else if (dmMatch && dmMatch[2].length > 0) {
+      } else if (dmMatch && dmMatch[2].length) {
         $video = $('<iframe>')
           .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
           .attr('width', '640').attr('height', '360');
