@@ -5,7 +5,7 @@
         bold: 'Fed',
         italic: 'Kursiv',
         underline: 'Understreget',
-        strike: 'Genemstreget',
+        strikethrough: 'Genemstreget',
         clear: 'Fjern formatering',
         height: 'Højde',
         size: 'Skriftstørrelse'

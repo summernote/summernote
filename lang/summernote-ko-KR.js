@@ -5,7 +5,7 @@
         bold: '굵게',
         italic: '기울임꼴',
         underline: '밑줄',
-        strike: '취소선',
+        strikethrough: '취소선',
         clear: '글자 효과 없애기',
         height: '줄간격',
         name: '글꼴',

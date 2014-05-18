@@ -5,7 +5,7 @@
         bold: 'Fet',
         italic: 'Kursiv',
         underline: 'Understruken',
-        strike: 'Genomstruken',
+        strikethrough: 'Genomstruken',
         clear: 'Radera formatering',
         height: 'Radavstånd',
         name: 'Teckensnitt',

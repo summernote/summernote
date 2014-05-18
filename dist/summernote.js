@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-05-09T22:23Z
+ * Date: 2014-05-16T11:28Z
  */
 (function (factory) {
   /* global define */
@@ -708,7 +708,7 @@
       // toolbar
       toolbar: [
         ['style', ['style']],
-        ['font', ['bold', 'italic', 'underline', 'clear']],
+        ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'strikethrough', 'clear']],
         ['fontname', ['fontname']],
         // ['fontsize', ['fontsize']], // Still buggy
         ['color', ['color']],
@@ -850,7 +850,7 @@
           bold: 'Bold',
           italic: 'Italic',
           underline: 'Underline',
-          strike: 'Strike',
+          strikethrough: 'Strikethrough',
           clear: 'Remove Font Style',
           height: 'Line Height',
           name: 'Font Family',
@@ -1096,6 +1096,8 @@
       oStyle['font-italic'] = document.queryCommandState('italic') ? 'italic' : 'normal';
       oStyle['font-underline'] = document.queryCommandState('underline') ? 'underline' : 'normal';
       oStyle['font-strikethrough'] = document.queryCommandState('strikeThrough') ? 'strikethrough' : 'normal';
+      oStyle['font-superscript'] = document.queryCommandState('superscript') ? 'superscript' : 'normal';
+      oStyle['font-subscript'] = document.queryCommandState('subscript') ? 'subscript' : 'normal';
 
       // list-style-type to list-style(unordered, ordered)
       if (!rng.isOnList()) {
@@ -1518,7 +1520,7 @@
 
     /* jshint ignore:start */
     // native commands(with execCommand), generate function for execCommand
-    var aCmd = ['bold', 'italic', 'underline', 'strikethrough',
+    var aCmd = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
                 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
                 'insertOrderedList', 'insertUnorderedList',
                 'indent', 'outdent', 'formatBlock', 'removeFormat',
@@ -1996,6 +1998,12 @@
       });
       btnState('button[data-event="strikethrough"]', function () {
         return oStyle['font-strikethrough'] === 'strikethrough';
+      });
+      btnState('button[data-event="superscript"]', function () {
+        return oStyle['font-superscript'] === 'superscript';
+      });
+      btnState('button[data-event="subscript"]', function () {
+        return oStyle['font-subscript'] === 'subscript';
       });
       btnState('button[data-event="justifyLeft"]', function () {
         return oStyle['text-align'] === 'left' || oStyle['text-align'] === 'start';
@@ -2556,7 +2564,7 @@
           w: options.width || '',
           h: $editable.data('orgHeight')
         });
-        $scrollbar.css('overflow', 'auto');
+        $scrollbar.css('overflow', 'visible');
       }
 
       toolbar.updateFullscreen($toolbar, isFullscreen);
@@ -3190,10 +3198,22 @@
           title: lang.font.underline
         });
       },
-      strike: function (lang) {
+      strikethrough: function (lang) {
         return tplIconButton('fa fa-strikethrough icon-strikethrough', {
           event: 'strikethrough',
-          title: lang.font.strike
+          title: lang.font.strikethrough
+        });
+      },
+      superscript: function (lang) {
+        return tplIconButton('fa fa-superscript icon-superscript', {
+          event: 'superscript',
+          title: lang.font.superscript
+        });
+      },
+      subscript: function (lang) {
+        return tplIconButton('fa fa-subscript icon-subscript', {
+          event: 'subscript',
+          title: lang.font.subscript
         });
       },
       clear: function (lang) {
@@ -3414,7 +3434,7 @@
       var body = '<tr><td>⌘ + B</td><td>' + lang.font.bold + '</td></tr>' +
                  '<tr><td>⌘ + I</td><td>' + lang.font.italic + '</td></tr>' +
                  '<tr><td>⌘ + U</td><td>' + lang.font.underline + '</td></tr>' +
-                 '<tr><td>⌘ + ⇧ + S</td><td>' + lang.font.strike + '</td></tr>' +
+                 '<tr><td>⌘ + ⇧ + S</td><td>' + lang.font.strikethrough + '</td></tr>' +
                  '<tr><td>⌘ + \\</td><td>' + lang.font.clear + '</td></tr>';
 
       return tplShortcut(lang.shortcut.textFormatting, body);

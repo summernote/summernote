@@ -5,7 +5,7 @@
         bold: 'Kalın',
         italic: 'İtalik',
         underline: 'Altı çizili',
-        strike: 'Üstü çizili',
+        strikethrough: 'Üstü çizili',
         clear: 'Temizle',
         height: 'Satır yüksekliği',
         size: 'Yazı tipi boyutu'

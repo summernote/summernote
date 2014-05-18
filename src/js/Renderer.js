@@ -233,10 +233,10 @@ define([
           title: lang.font.underline
         });
       },
-      strike: function (lang) {
+      strikethrough: function (lang) {
         return tplIconButton('fa fa-strikethrough icon-strikethrough', {
           event: 'strikethrough',
-          title: lang.font.strike
+          title: lang.font.strikethrough
         });
       },
       superscript: function (lang) {
@@ -469,7 +469,7 @@ define([
       var body = '<tr><td>⌘ + B</td><td>' + lang.font.bold + '</td></tr>' +
                  '<tr><td>⌘ + I</td><td>' + lang.font.italic + '</td></tr>' +
                  '<tr><td>⌘ + U</td><td>' + lang.font.underline + '</td></tr>' +
-                 '<tr><td>⌘ + ⇧ + S</td><td>' + lang.font.strike + '</td></tr>' +
+                 '<tr><td>⌘ + ⇧ + S</td><td>' + lang.font.strikethrough + '</td></tr>' +
                  '<tr><td>⌘ + \\</td><td>' + lang.font.clear + '</td></tr>';
 
       return tplShortcut(lang.shortcut.textFormatting, body);

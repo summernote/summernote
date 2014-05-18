@@ -5,7 +5,7 @@
         bold: 'Testo in grassetto',
         italic: 'Testo in corsivo',
         underline: 'Testo sottolineato',
-        strike: 'Testo barrato',
+        strikethrough: 'Testo barrato',
         clear: 'Elimina la formattazione del testo',
         height: 'Altezza della linea di testo',
         name: 'Famiglia Font',

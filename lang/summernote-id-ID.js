@@ -5,7 +5,7 @@
         bold: 'Tebal',
         italic: 'Miring',
         underline: 'Garis bawah',
-        strike: 'Coret',
+        strikethrough: 'Coret',
         clear: 'Bersihkan gaya',
         height: 'Jarak baris',
         size: 'Ukuran font'
