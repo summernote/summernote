@@ -6,6 +6,8 @@
         italic: 'Italique',
         underline: 'Souligné',
         strikethrough: 'Barré',
+        superscript: 'Exposant',
+        subscript: 'Indicé',
         clear: 'Effacer la mise en forme',
         height: 'Interligne',
         name: 'Famille de police',
