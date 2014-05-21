@@ -37,7 +37,7 @@ define('summernote/settings', function () {
         ['para', ['ul', 'ol', 'paragraph']],
         ['height', ['height']],
         ['table', ['table']],
-        ['insert', ['link', 'picture', 'video']],
+        ['insert', ['link', 'picture', 'video', 'hr']],
         ['view', ['fullscreen', 'codeview']],
         ['help', ['help']]
       ],

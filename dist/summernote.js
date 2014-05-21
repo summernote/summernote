@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-05-16T11:28Z
+ * Date: 2014-05-21T01:58Z
  */
 (function (factory) {
   /* global define */
@@ -715,7 +715,7 @@
         ['para', ['ul', 'ol', 'paragraph']],
         ['height', ['height']],
         ['table', ['table']],
-        ['insert', ['link', 'picture', 'video']],
+        ['insert', ['link', 'picture', 'video', 'hr']],
         ['view', ['fullscreen', 'codeview']],
         ['help', ['help']]
       ],
@@ -3316,6 +3316,12 @@
         return tplIconButton('fa fa-repeat icon-repeat', {
           event: 'redo',
           title: lang.history.redo
+        });
+      },
+      hr: function (lang) {
+        return tplIconButton('fa fa-minus icon-hr', {
+          event: 'insertHorizontalRule',
+          title: lang.hr.insert
         });
       }
     };

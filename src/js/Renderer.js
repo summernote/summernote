@@ -352,6 +352,12 @@ define([
           event: 'redo',
           title: lang.history.redo
         });
+      },
+      hr: function (lang) {
+        return tplIconButton('fa fa-minus icon-hr', {
+          event: 'insertHorizontalRule',
+          title: lang.hr.insert
+        });
       }
     };
 
