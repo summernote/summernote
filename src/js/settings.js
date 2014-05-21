@@ -13,7 +13,7 @@ define('summernote/settings', function () {
       minHeight: null,              // set minimum height of editor
       maxHeight: null,              // set maximum height of editor
 
-      focus: false,                 // set focus after initilize summernote
+      focus: false,                 // set focus to editable area after initializing summernote
 
       tabsize: 4,                   // size of tab ex) 2 or 4
       styleWithSpan: true,          // style with span (Chrome and FF only)
