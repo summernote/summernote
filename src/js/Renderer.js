@@ -732,7 +732,7 @@ define([
 
       //02. statusbar (resizebar)
       if (options.height > 0) {
-        $('<div class="note-statusbar">' + tplStatusbar() + '</div>').prependTo($editor);
+        $('<div class="note-statusbar">' + (options.disableResizeEditor ? '' : tplStatusbar()) + '</div>').prependTo($editor);
       }
 
       //03. create Editable

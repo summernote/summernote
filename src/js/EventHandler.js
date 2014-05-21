@@ -529,7 +529,9 @@ define([
         oLayoutInfo.toolbar.on('mousedown', hToolbarAndPopoverMousedown);
 
         // handler for statusbar
-        oLayoutInfo.statusbar.on('mousedown', hStatusbarMousedown);
+        if (!options.disableResizeEditor) {
+          oLayoutInfo.statusbar.on('mousedown', hStatusbarMousedown);
+        }
       }
 
       // handler for table dimension
