@@ -355,8 +355,15 @@ define([
       var $editable = makeLayoutInfo(event.target).editable();
       var nEditableTop = $editable.offset().top - $document.scrollTop();
 
+      var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+      var options = oLayoutInfo.editor().data('options');
+
       $document.on('mousemove', function (event) {
         var nHeight = event.clientY - (nEditableTop + EDITABLE_PADDING);
+
+        nHeight = (options.minHeight > 0) ? Math.max(nHeight, options.minHeight) : nHeight;
+        nHeight = (options.maxHeight > 0) ? Math.min(nHeight, options.maxHeight) : nHeight;
+
         $editable.height(nHeight);
       }).one('mouseup', function () {
         $document.off('mousemove');
