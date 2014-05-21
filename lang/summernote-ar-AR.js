@@ -99,7 +99,6 @@
         undo: 'Undo',
         redo: 'Redo'
       }
-
     }
   });
 })(jQuery);
