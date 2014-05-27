@@ -29,7 +29,8 @@
         unlink: 'Remover link',
         edit: 'Editar',
         textToDisplay: 'Texto para exibir',
-        url: 'Para qual URL esse link leva?'
+        url: 'Para qual URL esse link leva?',
+	    	openInNewWindow: 'Abrir em uma nova janela'
       },
       video: {
         video: 'Vídeo',
