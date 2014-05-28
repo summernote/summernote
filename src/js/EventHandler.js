@@ -157,15 +157,15 @@ define([
           }
         };
 
-        $editor.toggleclass('fullscreen');
-        var isfullscreen = $editor.hasclass('fullscreen');
-        if (isfullscreen) {
+        $editor.toggleClass('fullscreen');
+        var isFullscreen = $editor.hasClass('fullscreen');
+        if (isFullscreen) {
           $editable.data('orgheight', $editable.css('height'));
 
           $window.on('resize', function () {
             resize({
               w: $window.width(),
-              h: $window.height() - $toolbar.outerheight()
+              h: $window.height() - $toolbar.outerHeight()
             });
           }).trigger('resize');
 
@@ -179,7 +179,7 @@ define([
           $scrollbar.css('overflow', 'visible');
         }
 
-        toolbar.updatefullscreen($toolbar, isfullscreen);
+        toolbar.updateFullscreen($toolbar, isFullscreen);
       },
 
       codeview: function (oLayoutInfo) {
