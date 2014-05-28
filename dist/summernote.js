@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-05-28T19:32Z
+ * Date: 2014-05-28T19:44Z
  */
 (function (factory) {
   /* global define */
@@ -3129,7 +3129,7 @@
                    (title ?
                    '<div class="modal-header">' +
                      '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                     '<h4>' + title + '</h4>' +
+                     '<h4 class="modal-title">' + title + '</h4>' +
                    '</div>' : ''
                    ) +
                    '<form class="note-modal-form">' +
