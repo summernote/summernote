@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-05-28T19:22Z
+ * Date: 2014-05-28T19:32Z
  */
 (function (factory) {
   /* global define */
@@ -2550,15 +2550,15 @@
           }
         };
 
-        $editor.toggleclass('fullscreen');
-        var isfullscreen = $editor.hasclass('fullscreen');
-        if (isfullscreen) {
+        $editor.toggleClass('fullscreen');
+        var isFullscreen = $editor.hasClass('fullscreen');
+        if (isFullscreen) {
           $editable.data('orgheight', $editable.css('height'));
 
           $window.on('resize', function () {
             resize({
               w: $window.width(),
-              h: $window.height() - $toolbar.outerheight()
+              h: $window.height() - $toolbar.outerHeight()
             });
           }).trigger('resize');
 
@@ -2572,7 +2572,7 @@
           $scrollbar.css('overflow', 'visible');
         }
 
-        toolbar.updatefullscreen($toolbar, isfullscreen);
+        toolbar.updateFullscreen($toolbar, isFullscreen);
       },
 
       codeview: function (oLayoutInfo) {
@@ -3181,7 +3181,7 @@
       style: function (lang, options) {
         var items = options.styleTags.reduce(function (memo, v) {
           var label = lang.style[v === 'p' ? 'normal' : v];
-          return memo + '<li><a data-event="formatBlock" data-value="' + v + '">' +
+          return memo + '<li><a data-event="formatBlock" href="#" data-value="' + v + '">' +
                    (
                      (v === 'p' || v === 'pre') ? label :
                      '<' + v + '>' + label + '</' + v + '>'
@@ -3196,7 +3196,7 @@
       },
       fontname: function (lang, options) {
         var items = options.fontNames.reduce(function (memo, v) {
-          return memo + '<li><a data-event="fontName" data-value="' + v + '">' +
+          return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '">' +
                           '<i class="fa fa-check icon-ok"></i> ' + v +
                         '</a></li>';
         }, '');
@@ -3210,7 +3210,7 @@
       },
       fontsize: function (lang, options) {
         var items = options.fontSizes.reduce(function (memo, v) {
-          return memo + '<li><a data-event="fontSize" data-value="' + v + '">' +
+          return memo + '<li><a data-event="fontSize" href="#" data-value="' + v + '">' +
                           '<i class="fa fa-check icon-ok"></i> ' + v +
                         '</a></li>';
         }, '');
@@ -3355,7 +3355,7 @@
       },
       height: function (lang, options) {
         var items = options.lineHeights.reduce(function (memo, v) {
-          return memo + '<li><a data-event="lineHeight" data-value="' + parseFloat(v) + '">' +
+          return memo + '<li><a data-event="lineHeight" href="#" data-value="' + parseFloat(v) + '">' +
                           '<i class="fa fa-check icon-ok"></i> ' + v +
                         '</a></li>';
         }, '');
