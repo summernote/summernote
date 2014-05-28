@@ -138,7 +138,7 @@ define([
       style: function (lang, options) {
         var items = options.styleTags.reduce(function (memo, v) {
           var label = lang.style[v === 'p' ? 'normal' : v];
-          return memo + '<li><a data-event="formatBlock" data-value="' + v + '">' +
+          return memo + '<li><a data-event="formatBlock" href="#" data-value="' + v + '">' +
                    (
                      (v === 'p' || v === 'pre') ? label :
                      '<' + v + '>' + label + '</' + v + '>'
@@ -153,7 +153,7 @@ define([
       },
       fontname: function (lang, options) {
         var items = options.fontNames.reduce(function (memo, v) {
-          return memo + '<li><a data-event="fontName" data-value="' + v + '">' +
+          return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '">' +
                           '<i class="fa fa-check icon-ok"></i> ' + v +
                         '</a></li>';
         }, '');
@@ -167,7 +167,7 @@ define([
       },
       fontsize: function (lang, options) {
         var items = options.fontSizes.reduce(function (memo, v) {
-          return memo + '<li><a data-event="fontSize" data-value="' + v + '">' +
+          return memo + '<li><a data-event="fontSize" href="#" data-value="' + v + '">' +
                           '<i class="fa fa-check icon-ok"></i> ' + v +
                         '</a></li>';
         }, '');
@@ -312,7 +312,7 @@ define([
       },
       height: function (lang, options) {
         var items = options.lineHeights.reduce(function (memo, v) {
-          return memo + '<li><a data-event="lineHeight" data-value="' + parseFloat(v) + '">' +
+          return memo + '<li><a data-event="lineHeight" href="#" data-value="' + parseFloat(v) + '">' +
                           '<i class="fa fa-check icon-ok"></i> ' + v +
                         '</a></li>';
         }, '');
