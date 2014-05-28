@@ -17,6 +17,8 @@ define([
      * @param {jQuery} $editable
      */
     this.saveRange = function ($editable) {
+      $editable.focus();
+      var rng = range.create()
       $editable.data('range', range.create());
     };
 
@@ -27,7 +29,10 @@ define([
      */
     this.restoreRange = function ($editable) {
       var rng = $editable.data('range');
-      if (rng) { rng.select(); }
+      if (rng) {
+        rng.select();
+        $editable.focus();
+      }
     };
 
     /**
@@ -320,7 +325,9 @@ define([
      *
      * @return {Promise}
      */
-    this.getLinkInfo = function () {
+    this.getLinkInfo = function ($editable) {
+      $editable.focus();
+
       var rng = range.create();
       var bNewWindow = true;
       var sUrl = '';
@@ -343,9 +350,12 @@ define([
     /**
      * get video info
      *
+     * @param {jQuery} $editable
      * @return {Object}
      */
-    this.getVideoInfo = function () {
+    this.getVideoInfo = function ($editable) {
+      $editable.focus();
+
       var rng = range.create();
 
       if (rng.isOnAnchor()) {

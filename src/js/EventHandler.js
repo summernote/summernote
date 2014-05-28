@@ -73,10 +73,8 @@ define([
        */
       showLinkDialog: function (oLayoutInfo) {
         var $dialog = oLayoutInfo.dialog(),
-            $editable = oLayoutInfo.editable();
-
-        $editable.focus();
-        var linkInfo = editor.getLinkInfo();
+            $editable = oLayoutInfo.editable(),
+            linkInfo = editor.getLinkInfo($editable);
 
         editor.saveRange($editable);
         dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkText, sLinkUrl, bNewWindow) {
@@ -84,6 +82,8 @@ define([
           editor.createLink($editable, sLinkText, sLinkUrl, bNewWindow);
           // hide popover after creating link
           popover.hide(oLayoutInfo.popover());
+        }).fail(function () {
+          editor.restoreRange($editable);
         });
       },
 
@@ -94,15 +94,19 @@ define([
         var $dialog = oLayoutInfo.dialog(),
             $editable = oLayoutInfo.editable();
 
-        $editable.focus();
-
+        editor.saveRange($editable);
         dialog.showImageDialog($editable, $dialog).then(function (data) {
+          editor.restoreRange($editable);
+
           if (typeof data === 'string') {
-            editor.restoreRange($editable);
+            // image url
             editor.insertImage($editable, data);
           } else {
+            // array of files
             insertImages($editable, data);
           }
+        }).fail(function () {
+          editor.restoreRange($editable);
         });
       },
 
@@ -111,15 +115,15 @@ define([
        */
       showVideoDialog: function (oLayoutInfo) {
         var $dialog = oLayoutInfo.dialog(),
-            $editable = oLayoutInfo.editable();
-
-        $editable.focus();
-        var videoInfo = editor.getVideoInfo();
+            $editable = oLayoutInfo.editable(),
+            videoInfo = editor.getVideoInfo($editable);
 
         editor.saveRange($editable);
         dialog.showVideoDialog($editable, $dialog, videoInfo).then(function (sUrl) {
           editor.restoreRange($editable);
           editor.insertVideo($editable, sUrl);
+        }).fail(function () {
+          editor.restoreRange($editable);
         });
       },
 
@@ -130,7 +134,10 @@ define([
         var $dialog = oLayoutInfo.dialog(),
             $editable = oLayoutInfo.editable();
 
-        dialog.showHelpDialog($editable, $dialog);
+        editor.saveRange($editable);
+        dialog.showHelpDialog($editable, $dialog).then(function () {
+          editor.restoreRange($editable);
+        });
       },
 
       fullscreen: function (oLayoutInfo) {
@@ -565,11 +572,6 @@ define([
                                                 oLayoutInfo.toolbar;
       var $catcher = $catcherContainer.find('.note-dimension-picker-mousecatcher');
       $catcher.on('mousemove', hDimensionPickerMove);
-
-      // save selection when focusout
-      oLayoutInfo.editable.on('blur', function () {
-        editor.saveRange(oLayoutInfo.editable);
-      });
 
       // save options on editor
       oLayoutInfo.editor.data('options', options);
