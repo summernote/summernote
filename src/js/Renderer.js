@@ -86,7 +86,7 @@ define([
                    (title ?
                    '<div class="modal-header">' +
                      '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
-                     '<h4>' + title + '</h4>' +
+                     '<h4 class="modal-title">' + title + '</h4>' +
                    '</div>' : ''
                    ) +
                    '<form class="note-modal-form">' +
