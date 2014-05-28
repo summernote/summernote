@@ -2263,6 +2263,7 @@
             toggleBtn($imageBtn, $imageUrl.val());
           }).val('').focus();
         }).one('hidden.bs.modal', function () {
+          $('body').removeClass('modal-open');
           $editable.focus();
           $imageInput.off('change');
           $imageUrl.off('keyup');
@@ -2296,6 +2297,7 @@
             deferred.resolve($videoUrl.val());
           });
         }).one('hidden.bs.modal', function () {
+          $('body').removeClass('modal-open');
           $editable.focus();
           $videoUrl.off('keyup');
           $videoBtn.off('click');
@@ -2352,6 +2354,7 @@
             deferred.resolve($linkText.val(), $linkUrl.val(), $openInNewWindow.is(':checked'));
           });
         }).one('hidden.bs.modal', function () {
+          $('body').removeClass('modal-open');
           $editable.focus();
           $linkUrl.off('keyup');
         }).modal('show');
@@ -2367,6 +2370,7 @@
       var $helpDialog = $dialog.find('.note-help-dialog');
 
       $helpDialog.one('hidden.bs.modal', function () {
+        $('body').removeClass('modal-open');
         $editable.focus();
       }).modal('show');
     };
