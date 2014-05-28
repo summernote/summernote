@@ -810,7 +810,7 @@ define([
      * @param {Object} options
      */
     this.createLayout = function ($holder, options) {
-      if (this.noteEditorFromHolder($holder).length > 0) {
+      if (this.noteEditorFromHolder($holder).length) {
         return;
       }
 

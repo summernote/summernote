@@ -51,7 +51,7 @@ define([
       }
 
       // callback on init
-      if (this.length > 0 && options.oninit) {
+      if (this.length && options.oninit) {
         options.oninit();
       }
 
@@ -69,7 +69,7 @@ define([
       // get the HTML contents of note
       if (sHTML === undefined) {
         var $holder = this.first();
-        if ($holder.length === 0) { return; }
+        if (!$holder.length) { return; }
         var info = renderer.layoutInfoFromHolder($holder);
         if (!!(info && info.editable)) {
           var bCodeview = info.editor.hasClass('codeview');

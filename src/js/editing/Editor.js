@@ -17,6 +17,7 @@ define([
      * @param {jQuery} $editable
      */
     this.saveRange = function ($editable) {
+      $editable.focus();
       $editable.data('range', range.create());
     };
 
@@ -27,7 +28,10 @@ define([
      */
     this.restoreRange = function ($editable) {
       var rng = $editable.data('range');
-      if (rng) { rng.select(); }
+      if (rng) {
+        rng.select();
+        $editable.focus();
+      }
     };
 
     /**
@@ -173,22 +177,22 @@ define([
         $video = $('<iframe>')
           .attr('src', '//www.youtube.com/embed/' + youtubeId)
           .attr('width', '640').attr('height', '360');
-      } else if (igMatch && igMatch[0].length > 0) {
+      } else if (igMatch && igMatch[0].length) {
         $video = $('<iframe>')
           .attr('src', igMatch[0] + '/embed/')
           .attr('width', '612').attr('height', '710')
           .attr('scrolling', 'no')
           .attr('allowtransparency', 'true');
-      } else if (vMatch && vMatch[0].length > 0) {
+      } else if (vMatch && vMatch[0].length) {
         $video = $('<iframe>')
           .attr('src', vMatch[0] + '/embed/simple')
           .attr('width', '600').attr('height', '600')
           .attr('class', 'vine-embed');
-      } else if (vimMatch && vimMatch[3].length > 0) {
+      } else if (vimMatch && vimMatch[3].length) {
         $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
           .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
           .attr('width', '640').attr('height', '360');
-      } else if (dmMatch && dmMatch[2].length > 0) {
+      } else if (dmMatch && dmMatch[2].length) {
         $video = $('<iframe>')
           .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
           .attr('width', '640').attr('height', '360');
@@ -285,7 +289,7 @@ define([
       var rng = range.create();
       recordUndo($editable);
 
-      // protocol
+      // prepend protocol
       var sLinkUrlWithProtocol = sLinkUrl;
       if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
         sLinkUrlWithProtocol =  'mailto:' + sLinkUrl;
@@ -293,20 +297,26 @@ define([
         sLinkUrlWithProtocol = 'http://' + sLinkUrl;
       }
 
-      // createLink when range collapsed (IE, Firefox).
-      if ((agent.bMSIE || agent.bFF) && rng.isCollapsed()) {
-        rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
-        var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol).removeAttr('id');
-        rng = range.createFromNode($anchor[0]);
-        rng.select();
-      } else {
-        document.execCommand('createlink', false, sLinkUrlWithProtocol);
+      // Create a new link when there is no anchor on range.
+      if (!rng.isOnAnchor()) {
+        // when range collapsed (IE, Firefox).
+        if ((agent.bMSIE || agent.bFF) && rng.isCollapsed()) {
+          rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
+          var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol)
+                                        .removeAttr('id');
+          rng = range.createFromNode($anchor[0]);
+          rng.select();
+        } else {
+          document.execCommand('createlink', false, sLinkUrlWithProtocol);
+        }
       }
 
-      // target
+      // Edit link tags
       $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
-        // update link text
+        // link text
         $(elAnchor).html(sLinkText);
+
+        // link target
         if (bNewWindow) {
           $(elAnchor).attr('target', '_blank');
         } else {
@@ -320,7 +330,9 @@ define([
      *
      * @return {Promise}
      */
-    this.getLinkInfo = function () {
+    this.getLinkInfo = function ($editable) {
+      $editable.focus();
+
       var rng = range.create();
       var bNewWindow = true;
       var sUrl = '';
@@ -343,9 +355,12 @@ define([
     /**
      * get video info
      *
+     * @param {jQuery} $editable
      * @return {Object}
      */
-    this.getVideoInfo = function () {
+    this.getVideoInfo = function ($editable) {
+      $editable.focus();
+
       var rng = range.create();
 
       if (rng.isOnAnchor()) {

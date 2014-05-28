@@ -36,26 +36,29 @@ define('summernote/module/Dialog', function () {
           // Cloning imageInput to clear element.
           $imageInput.replaceWith($imageInput.clone()
             .on('change', function () {
-              $imageDialog.modal('hide');
               deferred.resolve(this.files);
+              $imageDialog.modal('hide');
             })
           );
 
           $imageBtn.click(function (event) {
             event.preventDefault();
 
-            $imageDialog.modal('hide');
             deferred.resolve($imageUrl.val());
+            $imageDialog.modal('hide');
           });
 
           $imageUrl.keyup(function () {
             toggleBtn($imageBtn, $imageUrl.val());
-          }).val('').focus();
+          }).val('').trigger('focus');
         }).one('hidden.bs.modal', function () {
-          $editable.focus();
           $imageInput.off('change');
           $imageUrl.off('keyup');
           $imageBtn.off('click');
+
+          if (deferred.state() === 'pending') {
+            deferred.reject();
+          }
         }).modal('show');
       });
     };
@@ -81,13 +84,16 @@ define('summernote/module/Dialog', function () {
           $videoBtn.click(function (event) {
             event.preventDefault();
 
-            $videoDialog.modal('hide');
             deferred.resolve($videoUrl.val());
+            $videoDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
-          $editable.focus();
           $videoUrl.off('keyup');
           $videoBtn.off('click');
+
+          if (deferred.state() === 'pending') {
+            deferred.reject();
+          }
         }).modal('show');
       });
     };
@@ -137,12 +143,15 @@ define('summernote/module/Dialog', function () {
           $linkBtn.one('click', function (event) {
             event.preventDefault();
 
-            $linkDialog.modal('hide');
             deferred.resolve($linkText.val(), $linkUrl.val(), $openInNewWindow.is(':checked'));
+            $linkDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
-          $editable.focus();
           $linkUrl.off('keyup');
+
+          if (deferred.state() === 'pending') {
+            deferred.reject();
+          }
         }).modal('show');
       }).promise();
     };
@@ -153,11 +162,13 @@ define('summernote/module/Dialog', function () {
      * @param {jQuery} $dialog
      */
     this.showHelpDialog = function ($editable, $dialog) {
-      var $helpDialog = $dialog.find('.note-help-dialog');
+      return $.Deferred(function (deferred) {
+        var $helpDialog = $dialog.find('.note-help-dialog');
 
-      $helpDialog.one('hidden.bs.modal', function () {
-        $editable.focus();
-      }).modal('show');
+        $helpDialog.one('hidden.bs.modal', function () {
+          deferred.resolve();
+        }).modal('show');
+      }).promise();
     };
   };
 
