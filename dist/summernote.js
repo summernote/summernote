@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-05-21T04:46Z
+ * Date: 2014-05-28T19:22Z
  */
 (function (factory) {
   /* global define */
@@ -245,7 +245,7 @@
      * @param {Array[]}
      */
     var clusterBy = function (array, fn) {
-      if (array.length === 0) { return []; }
+      if (!array.length) { return []; }
       var aTail = tail(array);
       return aTail.reduce(function (memo, v) {
         var aLast = last(memo);
@@ -691,7 +691,7 @@
       minHeight: null,              // set minimum height of editor
       maxHeight: null,              // set maximum height of editor
 
-      focus: false,                 // set focus after initilize summernote
+      focus: false,                 // set focus to editable area after initializing summernote
 
       tabsize: 4,                   // size of tab ex) 2 or 4
       styleWithSpan: true,          // style with span (Chrome and FF only)
@@ -814,7 +814,8 @@
           'CTRL+NUM4': 'formatH4',
           'CTRL+NUM5': 'formatH5',
           'CTRL+NUM6': 'formatH6',
-          'CTRL+ENTER': 'insertHorizontalRule'
+          'CTRL+ENTER': 'insertHorizontalRule',
+          'CTRL+K': 'showLinkDialog'
         },
 
         mac: {
@@ -842,7 +843,8 @@
           'CMD+NUM4': 'formatH4',
           'CMD+NUM5': 'formatH5',
           'CMD+NUM6': 'formatH6',
-          'CMD+ENTER': 'insertHorizontalRule'
+          'CMD+ENTER': 'insertHorizontalRule',
+          'CMD+K': 'showLinkDialog'
         }
       }
     },
@@ -1356,7 +1358,7 @@
        * @param {Number} eo - end offset
        */
       create : function (sc, so, ec, eo) {
-        if (arguments.length === 0) { // from Browser Selection
+        if (!arguments.length) { // from Browser Selection
           if (bW3CRangeSupport) { // webkit, firefox
             var selection = document.getSelection();
             if (selection.rangeCount === 0) { return null; }
@@ -1476,6 +1478,7 @@
      * @param {jQuery} $editable
      */
     this.saveRange = function ($editable) {
+      $editable.focus();
       $editable.data('range', range.create());
     };
 
@@ -1486,7 +1489,10 @@
      */
     this.restoreRange = function ($editable) {
       var rng = $editable.data('range');
-      if (rng) { rng.select(); }
+      if (rng) {
+        rng.select();
+        $editable.focus();
+      }
     };
 
     /**
@@ -1632,22 +1638,22 @@
         $video = $('<iframe>')
           .attr('src', '//www.youtube.com/embed/' + youtubeId)
           .attr('width', '640').attr('height', '360');
-      } else if (igMatch && igMatch[0].length > 0) {
+      } else if (igMatch && igMatch[0].length) {
         $video = $('<iframe>')
           .attr('src', igMatch[0] + '/embed/')
           .attr('width', '612').attr('height', '710')
           .attr('scrolling', 'no')
           .attr('allowtransparency', 'true');
-      } else if (vMatch && vMatch[0].length > 0) {
+      } else if (vMatch && vMatch[0].length) {
         $video = $('<iframe>')
           .attr('src', vMatch[0] + '/embed/simple')
           .attr('width', '600').attr('height', '600')
           .attr('class', 'vine-embed');
-      } else if (vimMatch && vimMatch[3].length > 0) {
+      } else if (vimMatch && vimMatch[3].length) {
         $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
           .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
           .attr('width', '640').attr('height', '360');
-      } else if (dmMatch && dmMatch[2].length > 0) {
+      } else if (dmMatch && dmMatch[2].length) {
         $video = $('<iframe>')
           .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
           .attr('width', '640').attr('height', '360');
@@ -1744,7 +1750,7 @@
       var rng = range.create();
       recordUndo($editable);
 
-      // protocol
+      // prepend protocol
       var sLinkUrlWithProtocol = sLinkUrl;
       if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
         sLinkUrlWithProtocol =  'mailto:' + sLinkUrl;
@@ -1752,20 +1758,26 @@
         sLinkUrlWithProtocol = 'http://' + sLinkUrl;
       }
 
-      // createLink when range collapsed (IE, Firefox).
-      if ((agent.bMSIE || agent.bFF) && rng.isCollapsed()) {
-        rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
-        var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol).removeAttr('id');
-        rng = range.createFromNode($anchor[0]);
-        rng.select();
-      } else {
-        document.execCommand('createlink', false, sLinkUrlWithProtocol);
+      // Create a new link when there is no anchor on range.
+      if (!rng.isOnAnchor()) {
+        // when range collapsed (IE, Firefox).
+        if ((agent.bMSIE || agent.bFF) && rng.isCollapsed()) {
+          rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
+          var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol)
+                                        .removeAttr('id');
+          rng = range.createFromNode($anchor[0]);
+          rng.select();
+        } else {
+          document.execCommand('createlink', false, sLinkUrlWithProtocol);
+        }
       }
 
-      // target
+      // Edit link tags
       $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
-        // update link text
+        // link text
         $(elAnchor).html(sLinkText);
+
+        // link target
         if (bNewWindow) {
           $(elAnchor).attr('target', '_blank');
         } else {
@@ -1779,7 +1791,9 @@
      *
      * @return {Promise}
      */
-    this.getLinkInfo = function () {
+    this.getLinkInfo = function ($editable) {
+      $editable.focus();
+
       var rng = range.create();
       var bNewWindow = true;
       var sUrl = '';
@@ -1802,9 +1816,12 @@
     /**
      * get video info
      *
+     * @param {jQuery} $editable
      * @return {Object}
      */
-    this.getVideoInfo = function () {
+    this.getVideoInfo = function ($editable) {
+      $editable.focus();
+
       var rng = range.create();
 
       if (rng.isOnAnchor()) {
@@ -1917,14 +1934,14 @@
 
     this.undo = function ($editable) {
       var oSnap = makeSnap($editable);
-      if (aUndo.length === 0) { return; }
+      if (!aUndo.length) { return; }
       applySnap($editable, aUndo.pop());
       aRedo.push(oSnap);
     };
 
     this.redo = function ($editable) {
       var oSnap = makeSnap($editable);
-      if (aRedo.length === 0) { return; }
+      if (!aRedo.length) { return; }
       applySnap($editable, aRedo.pop());
       aUndo.push(oSnap);
     };
@@ -1972,7 +1989,7 @@
 
       // fontname
       var $fontname = $container.find('.note-fontname');
-      if ($fontname.length > 0) {
+      if ($fontname.length) {
         var selectedFont = oStyle['font-family'];
         if (!!selectedFont) {
           selectedFont = list.head(selectedFont.split(','));
@@ -2247,26 +2264,29 @@
           // Cloning imageInput to clear element.
           $imageInput.replaceWith($imageInput.clone()
             .on('change', function () {
-              $imageDialog.modal('hide');
               deferred.resolve(this.files);
+              $imageDialog.modal('hide');
             })
           );
 
           $imageBtn.click(function (event) {
             event.preventDefault();
 
-            $imageDialog.modal('hide');
             deferred.resolve($imageUrl.val());
+            $imageDialog.modal('hide');
           });
 
           $imageUrl.keyup(function () {
             toggleBtn($imageBtn, $imageUrl.val());
-          }).val('').focus();
+          }).val('').trigger('focus');
         }).one('hidden.bs.modal', function () {
-          $editable.focus();
           $imageInput.off('change');
           $imageUrl.off('keyup');
           $imageBtn.off('click');
+
+          if (deferred.state() === 'pending') {
+            deferred.reject();
+          }
         }).modal('show');
       });
     };
@@ -2292,13 +2312,16 @@
           $videoBtn.click(function (event) {
             event.preventDefault();
 
-            $videoDialog.modal('hide');
             deferred.resolve($videoUrl.val());
+            $videoDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
-          $editable.focus();
           $videoUrl.off('keyup');
           $videoBtn.off('click');
+
+          if (deferred.state() === 'pending') {
+            deferred.reject();
+          }
         }).modal('show');
       });
     };
@@ -2348,12 +2371,15 @@
           $linkBtn.one('click', function (event) {
             event.preventDefault();
 
-            $linkDialog.modal('hide');
             deferred.resolve($linkText.val(), $linkUrl.val(), $openInNewWindow.is(':checked'));
+            $linkDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
-          $editable.focus();
           $linkUrl.off('keyup');
+
+          if (deferred.state() === 'pending') {
+            deferred.reject();
+          }
         }).modal('show');
       }).promise();
     };
@@ -2364,11 +2390,13 @@
      * @param {jQuery} $dialog
      */
     this.showHelpDialog = function ($editable, $dialog) {
-      var $helpDialog = $dialog.find('.note-help-dialog');
+      return $.Deferred(function (deferred) {
+        var $helpDialog = $dialog.find('.note-help-dialog');
 
-      $helpDialog.one('hidden.bs.modal', function () {
-        $editable.focus();
-      }).modal('show');
+        $helpDialog.one('hidden.bs.modal', function () {
+          deferred.resolve();
+        }).modal('show');
+      }).promise();
     };
   };
 
@@ -2376,7 +2404,9 @@
    * EventHandler
    */
   var EventHandler = function () {
+    var $window = $(window);
     var $document = $(document);
+    var $scrollbar = $('html, body');
 
     var editor = new Editor();
     var toolbar = new Toolbar(), popover = new Popover();
@@ -2391,7 +2421,7 @@
     var makeLayoutInfo = function (descendant) {
       var $target = $(descendant).closest('.note-editor, .note-air-editor, .note-air-layout');
 
-      if ($target.length === 0) { return null; }
+      if (!$target.length) { return null; }
 
       var $editor;
       if ($target.is('.note-editor, .note-air-editor')) {
@@ -2427,6 +2457,185 @@
             }
           });
         });
+      }
+    };
+
+    var commands = {
+      /**
+       * @param {Object} oLayoutInfo
+       */
+      showLinkDialog: function (oLayoutInfo) {
+        var $dialog = oLayoutInfo.dialog(),
+            $editable = oLayoutInfo.editable(),
+            linkInfo = editor.getLinkInfo($editable);
+
+        editor.saveRange($editable);
+        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkText, sLinkUrl, bNewWindow) {
+          editor.restoreRange($editable);
+          editor.createLink($editable, sLinkText, sLinkUrl, bNewWindow);
+          // hide popover after creating link
+          popover.hide(oLayoutInfo.popover());
+        }).fail(function () {
+          editor.restoreRange($editable);
+        });
+      },
+
+      /**
+       * @param {Object} oLayoutInfo
+       */
+      showImageDialog: function (oLayoutInfo) {
+        var $dialog = oLayoutInfo.dialog(),
+            $editable = oLayoutInfo.editable();
+
+        editor.saveRange($editable);
+        dialog.showImageDialog($editable, $dialog).then(function (data) {
+          editor.restoreRange($editable);
+
+          if (typeof data === 'string') {
+            // image url
+            editor.insertImage($editable, data);
+          } else {
+            // array of files
+            insertImages($editable, data);
+          }
+        }).fail(function () {
+          editor.restoreRange($editable);
+        });
+      },
+
+      /**
+       * @param {Object} oLayoutInfo
+       */
+      showVideoDialog: function (oLayoutInfo) {
+        var $dialog = oLayoutInfo.dialog(),
+            $editable = oLayoutInfo.editable(),
+            videoInfo = editor.getVideoInfo($editable);
+
+        editor.saveRange($editable);
+        dialog.showVideoDialog($editable, $dialog, videoInfo).then(function (sUrl) {
+          editor.restoreRange($editable);
+          editor.insertVideo($editable, sUrl);
+        }).fail(function () {
+          editor.restoreRange($editable);
+        });
+      },
+
+      /**
+       * @param {Object} oLayoutInfo
+       */
+      showHelpDialog: function (oLayoutInfo) {
+        var $dialog = oLayoutInfo.dialog(),
+            $editable = oLayoutInfo.editable();
+
+        editor.saveRange($editable);
+        dialog.showHelpDialog($editable, $dialog).then(function () {
+          editor.restoreRange($editable);
+        });
+      },
+
+      fullscreen: function (oLayoutInfo) {
+        var $editor = oLayoutInfo.editor(),
+        $toolbar = oLayoutInfo.toolbar(),
+        $editable = oLayoutInfo.editable(),
+        $codable = oLayoutInfo.codable();
+
+        var options = $editor.data('options');
+
+        var resize = function (size) {
+          $editor.css('width', size.w);
+          $editable.css('height', size.h);
+          $codable.css('height', size.h);
+          if ($codable.data('cmeditor')) {
+            $codable.data('cmeditor').setsize(null, size.h);
+          }
+        };
+
+        $editor.toggleclass('fullscreen');
+        var isfullscreen = $editor.hasclass('fullscreen');
+        if (isfullscreen) {
+          $editable.data('orgheight', $editable.css('height'));
+
+          $window.on('resize', function () {
+            resize({
+              w: $window.width(),
+              h: $window.height() - $toolbar.outerheight()
+            });
+          }).trigger('resize');
+
+          $scrollbar.css('overflow', 'hidden');
+        } else {
+          $window.off('resize');
+          resize({
+            w: options.width || '',
+            h: $editable.data('orgheight')
+          });
+          $scrollbar.css('overflow', 'visible');
+        }
+
+        toolbar.updatefullscreen($toolbar, isfullscreen);
+      },
+
+      codeview: function (oLayoutInfo) {
+        var $editor = oLayoutInfo.editor(),
+        $toolbar = oLayoutInfo.toolbar(),
+        $editable = oLayoutInfo.editable(),
+        $codable = oLayoutInfo.codable(),
+        $popover = oLayoutInfo.popover();
+
+        var options = $editor.data('options');
+
+        var cmEditor, server;
+
+        $editor.toggleClass('codeview');
+
+        var bCodeview = $editor.hasClass('codeview');
+        if (bCodeview) {
+          $codable.val($editable.html());
+          $codable.height($editable.height());
+          toolbar.deactivate($toolbar);
+          popover.hide($popover);
+          $codable.focus();
+
+          // activate CodeMirror as codable
+          if (agent.bCodeMirror) {
+            cmEditor = CodeMirror.fromTextArea($codable[0], options.codemirror);
+
+            // CodeMirror TernServer
+            if (options.codemirror.tern) {
+              server = new CodeMirror.TernServer(options.codemirror.tern);
+              cmEditor.ternServer = server;
+              cmEditor.on('cursorActivity', function (cm) {
+                server.updateArgHints(cm);
+              });
+            }
+
+            // CodeMirror hasn't Padding.
+            cmEditor.setSize(null, $editable.outerHeight());
+            // autoFormatRange If formatting included
+            if (cmEditor.autoFormatRange) {
+              cmEditor.autoFormatRange({line: 0, ch: 0}, {
+                line: cmEditor.lineCount(),
+                ch: cmEditor.getTextArea().value.length
+              });
+            }
+            $codable.data('cmEditor', cmEditor);
+          }
+        } else {
+          // deactivate CodeMirror as codable
+          if (agent.bCodeMirror) {
+            cmEditor = $codable.data('cmEditor');
+            $codable.val(cmEditor.getValue());
+            cmEditor.toTextArea();
+          }
+
+          $editable.html($codable.val() || dom.emptyPara);
+          $editable.height(options.height ? $codable.height() : 'auto');
+
+          toolbar.activate($toolbar);
+          $editable.focus();
+        }
+
+        toolbar.updateCodeview(oLayoutInfo.toolbar(), bCodeview);
       }
     };
 
@@ -2467,15 +2676,13 @@
      * @param {Event} event
      */
     var hPasteClipboardImage = function (event) {
-      var originalEvent = event.originalEvent;
-      if (!originalEvent.clipboardData ||
-            !originalEvent.clipboardData.items ||
-            !originalEvent.clipboardData.items.length) {
+      var clipboardData = event.originalEvent.clipboardData;
+      if (!clipboardData || !clipboardData.items || !clipboardData.items.length) {
         return;
       }
 
       var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-      var item = list.head(originalEvent.clipboardData.items);
+      var item = list.head(clipboardData.items);
       var bClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
 
       if (bClipboardImage) {
@@ -2525,127 +2732,18 @@
     var hToolbarAndPopoverMousedown = function (event) {
       // prevent default event when insertTable (FF, Webkit)
       var $btn = $(event.target).closest('[data-event]');
-      if ($btn.length > 0) {
+      if ($btn.length) {
         event.preventDefault();
       }
-    };
-
-    var toggleFullscreen = function (oLayoutInfo) {
-      var $editor = oLayoutInfo.editor(),
-          $toolbar = oLayoutInfo.toolbar(),
-          $editable = oLayoutInfo.editable(),
-          $codable = oLayoutInfo.codable();
-
-      var options = $editor.data('options');
-
-      var $scrollbar = $('html, body');
-
-      var resize = function (size) {
-        $editor.css('width', size.w);
-        $editable.css('height', size.h);
-        $codable.css('height', size.h);
-        if ($codable.data('cmEditor')) {
-          $codable.data('cmEditor').setSize(null, size.h);
-        }
-      };
-
-      $editor.toggleClass('fullscreen');
-      var isFullscreen = $editor.hasClass('fullscreen');
-      if (isFullscreen) {
-        $editable.data('orgHeight', $editable.css('height'));
-
-        $(window).on('resize', function () {
-          resize({
-            w: $(window).width(),
-            h: $(window).height() - $toolbar.outerHeight()
-          });
-        }).trigger('resize');
-
-        $scrollbar.css('overflow', 'hidden');
-      } else {
-        $(window).off('resize');
-        resize({
-          w: options.width || '',
-          h: $editable.data('orgHeight')
-        });
-        $scrollbar.css('overflow', 'visible');
-      }
-
-      toolbar.updateFullscreen($toolbar, isFullscreen);
-    };
-
-    var toggleCodeView = function (oLayoutInfo) {
-      var $editor = oLayoutInfo.editor(),
-          $toolbar = oLayoutInfo.toolbar(),
-          $editable = oLayoutInfo.editable(),
-          $codable = oLayoutInfo.codable(),
-          $popover = oLayoutInfo.popover();
-
-      var options = $editor.data('options');
-
-      var cmEditor, server;
-
-      $editor.toggleClass('codeview');
-
-      var bCodeview = $editor.hasClass('codeview');
-      if (bCodeview) {
-        $codable.val($editable.html());
-        $codable.height($editable.height());
-        toolbar.deactivate($toolbar);
-        popover.hide($popover);
-        $codable.focus();
-
-        // activate CodeMirror as codable
-        if (agent.bCodeMirror) {
-          cmEditor = CodeMirror.fromTextArea($codable[0], options.codemirror);
-
-          // CodeMirror TernServer
-          if (options.codemirror.tern) {
-            server = new CodeMirror.TernServer(options.codemirror.tern);
-            cmEditor.ternServer = server;
-            cmEditor.on('cursorActivity', function (cm) {
-              server.updateArgHints(cm);
-            });
-          }
-
-          // CodeMirror hasn't Padding.
-          cmEditor.setSize(null, $editable.outerHeight());
-          // autoFormatRange If formatting included
-          if (cmEditor.autoFormatRange) {
-            cmEditor.autoFormatRange({line: 0, ch: 0}, {
-              line: cmEditor.lineCount(),
-              ch: cmEditor.getTextArea().value.length
-            });
-          }
-          $codable.data('cmEditor', cmEditor);
-        }
-      } else {
-        // deactivate CodeMirror as codable
-        if (agent.bCodeMirror) {
-          cmEditor = $codable.data('cmEditor');
-          $codable.val(cmEditor.getValue());
-          cmEditor.toTextArea();
-        }
-
-        $editable.html($codable.val() || dom.emptyPara);
-        $editable.height(options.height ? $codable.height() : 'auto');
-
-        toolbar.activate($toolbar);
-        $editable.focus();
-      }
-
-      toolbar.updateCodeview(oLayoutInfo.toolbar(), bCodeview);
     };
 
     var hToolbarAndPopoverClick = function (event) {
       var $btn = $(event.target).closest('[data-event]');
 
-      if ($btn.length > 0) {
+      if ($btn.length) {
         var sEvent = $btn.attr('data-event'), sValue = $btn.attr('data-value');
 
         var oLayoutInfo = makeLayoutInfo(event.target);
-        var $dialog = oLayoutInfo.dialog(),
-            $editable = oLayoutInfo.editable();
 
         // before command: detect control selection element($target)
         var $target;
@@ -2655,8 +2753,11 @@
         }
 
         if (editor[sEvent]) { // on command
+          var $editable = oLayoutInfo.editable();
           $editable.trigger('focus');
           editor[sEvent]($editable, sValue, $target);
+        } else if (commands[sEvent]) {
+          commands[sEvent].call(this, oLayoutInfo);
         }
 
         // after command
@@ -2664,43 +2765,6 @@
           var options = oLayoutInfo.editor().data('options', options);
           var module = options.airMode ? popover : toolbar;
           module.updateRecentColor(list.head($btn), sEvent, sValue);
-        } else if (sEvent === 'showLinkDialog') { // popover to dialog
-          $editable.focus();
-          var linkInfo = editor.getLinkInfo();
-
-          editor.saveRange($editable);
-          dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkText, sLinkUrl, bNewWindow) {
-            editor.restoreRange($editable);
-            editor.createLink($editable, sLinkText, sLinkUrl, bNewWindow);
-            // hide popover after creating link
-            popover.hide(oLayoutInfo.popover());
-          });
-        } else if (sEvent === 'showImageDialog') {
-          $editable.focus();
-
-          dialog.showImageDialog($editable, $dialog).then(function (data) {
-            if (typeof data === 'string') {
-              editor.restoreRange($editable);
-              editor.insertImage($editable, data);
-            } else {
-              insertImages($editable, data);
-            }
-          });
-        } else if (sEvent === 'showVideoDialog') {
-          $editable.focus();
-          var videoInfo = editor.getVideoInfo();
-
-          editor.saveRange($editable);
-          dialog.showVideoDialog($editable, $dialog, videoInfo).then(function (sUrl) {
-            editor.restoreRange($editable);
-            editor.insertVideo($editable, sUrl);
-          });
-        } else if (sEvent === 'showHelpDialog') {
-          dialog.showHelpDialog($editable, $dialog);
-        } else if (sEvent === 'fullscreen') {
-          toggleFullscreen(oLayoutInfo);
-        } else if (sEvent === 'codeview') {
-          toggleCodeView(oLayoutInfo);
         }
 
         hToolbarAndPopoverUpdate(event);
@@ -2789,7 +2853,7 @@
       // show dropzone on dragenter when dragging a object to document.
       $document.on('dragenter', function (e) {
         var bCodeview = oLayoutInfo.editor.hasClass('codeview');
-        if (!bCodeview && collection.length === 0) {
+        if (!bCodeview && !collection.length) {
           oLayoutInfo.editor.addClass('dragover');
           $dropzone.width(oLayoutInfo.editor.width());
           $dropzone.height(oLayoutInfo.editor.height());
@@ -2798,7 +2862,7 @@
         collection = collection.add(e.target);
       }).on('dragleave', function (e) {
         collection = collection.not(e.target);
-        if (collection.length === 0) {
+        if (!collection.length) {
           oLayoutInfo.editor.removeClass('dragover');
         }
       }).on('drop', function () {
@@ -2839,6 +2903,8 @@
       var $editor = oLayoutInfo.editor;
       var $editable = oLayoutInfo.editable;
 
+      oLayoutInfo = makeLayoutInfo($editable);
+
       $editable.on('keydown', function (event) {
         var aKey = [];
 
@@ -2851,11 +2917,15 @@
         var keyName = key.nameFromCode[event.keyCode];
         if (keyName) { aKey.push(keyName); }
 
-        var handler = keyMap[aKey.join('+')];
-        if (handler) {
+        var sEvent = keyMap[aKey.join('+')];
+        if (sEvent) {
           event.preventDefault();
 
-          editor[handler]($editable, $editor.data('options'));
+          if (editor[sEvent]) {
+            editor[sEvent]($editable, $editor.data('options'));
+          } else if (commands[sEvent]) {
+            commands[sEvent].call(this, oLayoutInfo);
+          }
         } else if (key.isEdit(event.keyCode)) {
           editor.recordUndo($editable);
         }
@@ -2904,11 +2974,6 @@
                                                 oLayoutInfo.toolbar;
       var $catcher = $catcherContainer.find('.note-dimension-picker-mousecatcher');
       $catcher.on('mousemove', hDimensionPickerMove);
-
-      // save selection when focusout
-      oLayoutInfo.editable.on('blur', function () {
-        editor.saveRange(oLayoutInfo.editable);
-      });
 
       // save options on editor
       oLayoutInfo.editor.data('options', options);
@@ -3788,7 +3853,7 @@
      * @param {Object} options
      */
     this.createLayout = function ($holder, options) {
-      if (this.noteEditorFromHolder($holder).length > 0) {
+      if (this.noteEditorFromHolder($holder).length) {
         return;
       }
 
@@ -3882,7 +3947,7 @@
       }
 
       // callback on init
-      if (this.length > 0 && options.oninit) {
+      if (this.length && options.oninit) {
         options.oninit();
       }
 
@@ -3900,7 +3965,7 @@
       // get the HTML contents of note
       if (sHTML === undefined) {
         var $holder = this.first();
-        if ($holder.length === 0) { return; }
+        if (!$holder.length) { return; }
         var info = renderer.layoutInfoFromHolder($holder);
         if (!!(info && info.editable)) {
           var bCodeview = info.editor.hasClass('codeview');
