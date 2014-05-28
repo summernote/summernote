@@ -18,7 +18,6 @@ define([
      */
     this.saveRange = function ($editable) {
       $editable.focus();
-      var rng = range.create()
       $editable.data('range', range.create());
     };
 
@@ -290,7 +289,7 @@ define([
       var rng = range.create();
       recordUndo($editable);
 
-      // protocol
+      // prepend protocol
       var sLinkUrlWithProtocol = sLinkUrl;
       if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
         sLinkUrlWithProtocol =  'mailto:' + sLinkUrl;
@@ -298,20 +297,26 @@ define([
         sLinkUrlWithProtocol = 'http://' + sLinkUrl;
       }
 
-      // createLink when range collapsed (IE, Firefox).
-      if ((agent.bMSIE || agent.bFF) && rng.isCollapsed()) {
-        rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
-        var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol).removeAttr('id');
-        rng = range.createFromNode($anchor[0]);
-        rng.select();
-      } else {
-        document.execCommand('createlink', false, sLinkUrlWithProtocol);
+      // Create a new link when there is no anchor on range.
+      if (!rng.isOnAnchor()) {
+        // when range collapsed (IE, Firefox).
+        if ((agent.bMSIE || agent.bFF) && rng.isCollapsed()) {
+          rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
+          var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol)
+                                        .removeAttr('id');
+          rng = range.createFromNode($anchor[0]);
+          rng.select();
+        } else {
+          document.execCommand('createlink', false, sLinkUrlWithProtocol);
+        }
       }
 
-      // target
+      // Edit link tags
       $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
-        // update link text
+        // link text
         $(elAnchor).html(sLinkText);
+
+        // link target
         if (bNewWindow) {
           $(elAnchor).attr('target', '_blank');
         } else {
