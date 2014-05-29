@@ -307,7 +307,13 @@ define([
           rng = range.createFromNode($anchor[0]);
           rng.select();
         } else {
-          document.execCommand('createlink', false, sLinkUrlWithProtocol);
+          var link = document.createElement('a');
+          link.setAttribute('href', sLinkUrlWithProtocol);
+          link.innerHTML = sLinkText;
+          if (bNewWindow) {
+            link.target = '_blank';
+          }
+          rng.insertNode(link);
         }
       }
 
