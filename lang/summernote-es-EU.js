@@ -87,16 +87,16 @@
         resetToDefault: 'Berrezarri lehenetsia'
       },
       shortcut: {
-        shortcuts: 'Lasterbideak', // ????????? Atajos de teclado
-        close: 'Itxi', //Cerrar
-        textFormatting: 'Testuaren formatua', //????? Formato de texto
-        action: 'Ekintza', //Acción
-        paragraphFormatting: 'Paragrafoaren formatua', //Formato de párrafo
-        documentStyle: 'Dokumentuaren estiloa' //Estilo de documento
+        shortcuts: 'Lasterbideak',
+        close: 'Itxi',
+        textFormatting: 'Testuaren formatua',
+        action: 'Ekintza',
+        paragraphFormatting: 'Paragrafoaren formatua',
+        documentStyle: 'Dokumentuaren estiloa'
       },
       history: {
-        undo: 'Desegin', //Deshacer
-        redo: 'Berregin' //Rehacer
+        undo: 'Desegin',
+        redo: 'Berregin'
       }
     }
   });
