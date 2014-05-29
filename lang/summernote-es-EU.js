@@ -2,94 +2,94 @@
   $.extend($.summernote.lang, {
     'es-EU': {
       font: {
-        name:'Tipografia', //Fuente
-        bold: 'Lodia', //Negrita
-        italic: 'Etzana', //Itálica
-        underline: 'Nabarmendu', //Subrayar
-        strikethrough: 'Marratu', //Tachar
-        clear: 'Estiloa kendu', //Quitar Estilo
-        height: 'Lerro altuera', //Alto de línea
-        size: 'Letren neurria' //Tamaño de la fuente
+        name:'Tipografia',
+        bold: 'Lodia',
+        italic: 'Etzana',
+        underline: 'Azpimarratua',
+        strikethrough: 'Marratua',
+        clear: 'Estiloa kendu',
+        height: 'Lerro altuera',
+        size: 'Letren neurria'
       },
       image: {
-        image: 'Irudia', //Imagen
-        insert: 'Irudi bat txertatu', // Insertar una imagen
-        resizeFull: 'Jatorrizko neurrira aldatu', //Redimensionar al tamaño original
-        resizeHalf: 'Erdira neurria aldatu', //Redimensionar a la mitad
-        resizeQuarter: 'Laurden batera neurria aldatu', //Redimensionar a un cuarto
-        floatLeft: 'Ezkerrean kokatu', //Flotar a la izquierda 
-        floatRight: 'Eskuinean kokatu', //Flotar a la derecha
-        floatNone: 'Kokapena ez ezarri', //No flotar
-        dragImageHere: 'Irudi bat ezarri hemen', //Arrastrar una imagen aquí
-        selectFromFiles: 'Zure fitxategi bat aukeratu', //Seleccionar desde los archivos
-        url: 'Irudiaren URL helbidea' //URL de la imagen
+        image: 'Irudia', 
+        insert: 'Irudi bat txertatu', 
+        resizeFull: 'Jatorrizko neurrira aldatu', 
+        resizeHalf: 'Neurria erdira aldatu', 
+        resizeQuarter: 'Neurria laurdenera aldatu',
+        floatLeft: 'Ezkerrean kokatu',
+        floatRight: 'Eskuinean kokatu', 
+        floatNone: 'Kokapenik ez ezarri',
+        dragImageHere: 'Irudi bat ezarri hemen', 
+        selectFromFiles: 'Zure fitxategi bat aukeratu',
+        url: 'Irudiaren URL helbidea' 
       },
       link: {
-        link: 'Esteka',//Link
-        insert: 'Esteka bat txertatu', //Insertar link
-        unlink: 'Esteka ezabatu', //Quitar link
-        edit: 'Editatu', //Editar
-        textToDisplay: 'Estekaren textua', //Texto para mostrar
-        url: 'Estekaren URL helbidea?', //Hacia que URL lleva el link?
-        openInNewWindow: 'Lehio berri batean ireki' //Abrir en una nueva ventana
+        link: 'Esteka',
+        insert: 'Esteka bat txertatu', 
+        unlink: 'Esteka ezabatu', 
+        edit: 'Editatu',
+        textToDisplay: 'Estekaren testua', 
+        url: 'Estekaren URL helbidea',
+        openInNewWindow: 'Leiho berri batean ireki' 
       },
       video: {
-        video: 'Bideoa', //Video
-        videoLink: 'Bideoarako esteka', //Link del video
-        insert: 'Bideo berri bat txertatu', //Insertar video
-        url: 'Bideoaren URL helbidea?', //URL del video
-        providers: '(YouTube, Vimeo, Vine, Instagram, edo DailyMotion)' //(YouTube, Vimeo, Vine, Instagram, o DailyMotion)
+        video: 'Bideoa',
+        videoLink: 'Bideorako esteka',
+        insert: 'Bideo berri bat txertatu',
+        url: 'Bideoaren URL helbidea',
+        providers: '(YouTube, Vimeo, Vine, Instagram, edo DailyMotion)' 
       },
       table: {
         table: 'Taula' //Tabla
       },
       hr: {
-        insert: 'Separazio marra horizontala txertatu' //Insertar línea horizontal
+        insert: 'Marra horizontala txertatu' //Insertar línea horizontal
       },
       style: {
-        style: 'Estiloa', //Estilo
-        normal: 'Normal', //Normal
-        blockquote: 'Aipamena', //Cita
-        pre: 'Kodea', //Código
-        h1: '1. Titularra', //Título 1
-        h2: '2. Titularra',
-        h3: '3. Titularra',
-        h4: '4. Titularra',
-        h5: '5. Titularra',
-        h6: '6. Titularra'
+        style: 'Estiloa',
+        normal: 'Normal',
+        blockquote: 'Aipamena',
+        pre: 'Kodea',
+        h1: '1. izenburua',
+        h2: '2. izenburua',
+        h3: '3. izenburua',
+        h4: '4. izenburua',
+        h5: '5. izenburua',
+        h6: '6. izenburua'
       },
       lists: {
-        unordered: 'Zenbatu gabeko zerrenda', //Lista desordenada
-        ordered: 'Zerrenda zenbatua' //Lista ordenada
+        unordered: 'Ordenatu gabeko zerrenda',
+        ordered: 'Zerrenda ordenatua'
       },
       options: {
-        help: 'Laguntza', //Ayuda
-        fullscreen: 'Pantaila osoa', //Pantalla completa
-        codeview: 'Kodea ikusi' //Ver código fuente
+        help: 'Laguntza',
+        fullscreen: 'Pantaila osoa',
+        codeview: 'Kodea ikusi'
       },
       paragraph: {
-        paragraph: 'Paragrafoa', //Párrafo
-        outdent: 'Tabulazio gutxiago', //Menos tabulación
-        indent: 'Tabulazio gehiago', //Más tabulación
-        left: 'Ezkerreak kokatu', //Alinear a la izquierda
-        center: 'Erdian kokatu', //Alinear al centro
-        right: 'Eskuinean kokatu', //Alinear a la derecha
-        justify: 'Justifikatu' //????????? Justificar
+        paragraph: 'Paragrafoa',
+        outdent: 'Koska txikiagoa',
+        indent: 'Koska handiagoa',
+        left: 'Ezkerrean kokatu',
+        center: 'Erdian kokatu',
+        right: 'Eskuinean kokatu',
+        justify: 'Justifikatu'
       },
       color: {
-        recent: 'Azken kolorea', //Último color
-        more: 'Kolore gehiago', //Más colores
-        background: 'Atzeko kolorea', // ?????? Color de fondo
-        foreground: 'Tipografi kolorea', //Color de fuente
-        transparent: 'Gardena', //Transparente
-        setTransparent: 'Gardendu', //????? Establecer transparente
-        reset: 'Hasierako egoerara bueltatu', // motzago, eta bueltatu edo bueltarazi????????     Restaurar
-        resetToDefault: 'Egoera originalera bueltatu' //   berdin!!! Restaurar por defecto
+        recent: 'Azken kolorea',
+        more: 'Kolore gehiago',
+        background: 'Atzeko planoa',
+        foreground: 'Aurreko planoa',
+        transparent: 'Gardena',
+        setTransparent: 'Gardendu',
+        reset: 'Lehengoratu',
+        resetToDefault: 'Berrezarri lehenetsia'
       },
       shortcut: {
-        shortcuts: 'Teklatuaren abantaiak', // ????????? Atajos de teclado
+        shortcuts: 'Lasterbideak', // ????????? Atajos de teclado
         close: 'Itxi', //Cerrar
-        textFormatting: 'Textuaren formatua', //????? Formato de texto
+        textFormatting: 'Testuaren formatua', //????? Formato de texto
         action: 'Ekintza', //Acción
         paragraphFormatting: 'Paragrafoaren formatua', //Formato de párrafo
         documentStyle: 'Dokumentuaren estiloa' //Estilo de documento
