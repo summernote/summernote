@@ -517,7 +517,7 @@ define([
 
         // modifier
         if (event.metaKey) { aKey.push('CMD'); }
-        if (event.ctrlKey) { aKey.push('CTRL'); }
+        if (event.ctrlKey && !event.altKey) { aKey.push('CTRL'); }
         if (event.shiftKey) { aKey.push('SHIFT'); }
 
         // keycode
