@@ -1,7 +1,10 @@
 {
   "name": "summernote",
   "version": "0.5.1",
-  "main": ["./dist/summernote.min.js", "./dist/summernote.css"],
+  "main": [
+    "./dist/summernote.min.js",
+    "./dist/summernote.css"
+  ],
   "ignore": [
     "**/.*",
     "node_modules",
@@ -12,6 +15,6 @@
   "dependencies": {
     "jquery": ">= 1.9.0",
     "bootstrap": ">= 3.0.1",
-    "font-awesome": ">= 4.0.1"
+    "fontawesome": ">= 4.1.0"
   }
 }
