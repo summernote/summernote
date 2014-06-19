@@ -42,7 +42,7 @@ define('summernote/settings', function () {
         ['para', ['ul', 'ol', 'paragraph']],
         ['height', ['height']],
         ['table', ['table']],
-        ['insert', ['link', 'picture', 'video', 'hr']],
+        ['insert', ['link', 'picture', 'video', 'hr', 'pasteword']],
         ['view', ['fullscreen', 'codeview']],
         ['help', ['help']]
       ],
@@ -208,6 +208,11 @@ define('summernote/settings', function () {
           url: 'To what URL should this link go?',
           openInNewWindow: 'Open in new window'
         },
+				pasteword: {
+					insert: 'Paste from Word',
+					description: 'Because of your browser security settings, the editor is not able to access your clipboard data directly. ' +
+						'You are required to paste it again in this window. Please paste inside the following box using the keyboard (Ctrl/Cmd+V).'
+				},
         video: {
           video: 'Video',
           videoLink: 'Video Link',

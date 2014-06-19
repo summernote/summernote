@@ -34,6 +34,11 @@
         url: 'Naar welke URL moet deze link verwijzen?',
         openInNewWindow: 'Open in nieuw venster'
       },
+      pasteword: {
+        insert: 'Plakken uit Word',
+        description: 'Omdat uw browser beveiliging het niet toestaat, kunnen we niet uw klembord inhoud direct invoeren.'+
+          'U moet het opnieuw plakken in het venster hier onder met (Ctrl/Cmd+V).'
+      },
       video: {
         video: 'Video',
         videoLink: 'Video link',

@@ -157,6 +157,42 @@ define('summernote/module/Dialog', function () {
     };
 
     /**
+     * Show paste from word dialog and set event handlers on dialog controls.
+     *
+     * @param {jQuery} $dialog
+     * @return {Promise}
+     */
+    this.showPasteWordDialog = function ($editable, $dialog) {
+      return $.Deferred(function (deferred) {
+        var $pasteWordDialog = $dialog.find('.note-pasteword-dialog');
+
+        var $pasteWordText = $pasteWordDialog.find('.note-pasteword-text'),
+          $pasteWordBtn = $pasteWordDialog.find('.note-pasteword-btn');
+
+        $pasteWordDialog.one('shown.bs.modal', function () {
+
+          $pasteWordText.keyup(function () {
+            toggleBtn($pasteWordBtn, $pasteWordText.val());
+          }).trigger('focus').trigger('select');
+
+          $pasteWordBtn.one('click', function (event) {
+            event.preventDefault();
+
+            deferred.resolve($pasteWordText.val());
+            $pasteWordDialog.modal('hide');
+            $pasteWordText.val('');
+          });
+        }).one('hidden.bs.modal', function () {
+          $pasteWordText.off('keyup');
+
+          if (deferred.state() === 'pending') {
+            deferred.reject();
+          }
+        }).modal('show');
+      }).promise();
+    };
+
+    /**
      * show help dialog
      *
      * @param {jQuery} $dialog

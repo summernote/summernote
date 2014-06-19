@@ -90,6 +90,24 @@ define([
       /**
        * @param {Object} oLayoutInfo
        */
+      showPasteWordDialog: function (oLayoutInfo) {
+        var $dialog = oLayoutInfo.dialog(),
+          $editable = oLayoutInfo.editable();
+
+        editor.saveRange($editable);
+        dialog.showPasteWordDialog($editable, $dialog).then(function (sPasteWordText) {
+          editor.restoreRange($editable);
+          editor.insertText($editable, sPasteWordText);
+          // hide popover after creating link
+          popover.hide(oLayoutInfo.popover());
+        }).fail(function () {
+          editor.restoreRange($editable);
+        });
+      },
+
+      /**
+       * @param {Object} oLayoutInfo
+       */
       showImageDialog: function (oLayoutInfo) {
         var $dialog = oLayoutInfo.dialog(),
             $editable = oLayoutInfo.editable();

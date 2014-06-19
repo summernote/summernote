@@ -1,7 +1,8 @@
 define([
   'summernote/core/agent', 'summernote/core/dom', 'summernote/core/range',
-  'summernote/core/async', 'summernote/editing/Style', 'summernote/editing/Table'
-], function (agent, dom, range, async, Style, Table) {
+  'summernote/core/async', 'summernote/editing/Style', 'summernote/editing/Table',
+  'summernote/editing/PasteWord'
+], function (agent, dom, range, async, Style, Table, PasteWord) {
   /**
    * Editor
    * @class
@@ -323,6 +324,12 @@ define([
           $(elAnchor).removeAttr('target');
         }
       });
+    };
+
+    this.insertText = function ($editable, sValue) {
+      recordUndo($editable);
+      sValue = PasteWord.format(sValue);
+      document.execCommand('insertText', false, sValue);
     };
 
     /**
