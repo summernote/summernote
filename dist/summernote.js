@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-06-19T06:23Z
+ * Date: 2014-06-19T06:35Z
  */
 (function (factory) {
   /* global define */
@@ -2911,7 +2911,7 @@
 
         // modifier
         if (event.metaKey) { aKey.push('CMD'); }
-        if (event.ctrlKey) { aKey.push('CTRL'); }
+        if (event.ctrlKey && !event.altKey) { aKey.push('CTRL'); }
         if (event.shiftKey) { aKey.push('SHIFT'); }
 
         // keycode
