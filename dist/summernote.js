@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-05-28T19:44Z
+ * Date: 2014-06-19T06:09Z
  */
 (function (factory) {
   /* global define */
@@ -2118,7 +2118,7 @@
      */
     var showPopover = function ($popover, elPlaceholder) {
       var $placeholder = $(elPlaceholder);
-      var pos = $placeholder.position();
+      var pos = $placeholder.offset();
 
       // include margin
       var height = $placeholder.outerHeight(true);
@@ -2200,7 +2200,7 @@
       var $selection = $handle.find('.note-control-selection');
       if (oStyle.image) {
         var $image = $(oStyle.image);
-        var pos = $image.position();
+        var pos = $image.offset();
 
         // include margin
         var szImage = {

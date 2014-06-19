@@ -12,7 +12,7 @@ define('summernote/module/Handle', function () {
       var $selection = $handle.find('.note-control-selection');
       if (oStyle.image) {
         var $image = $(oStyle.image);
-        var pos = $image.position();
+        var pos = $image.offset();
 
         // include margin
         var szImage = {
