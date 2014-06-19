@@ -31,6 +31,7 @@ require([
     tabsize: 2,                   // size of tab
     codemirror: {                 // code mirror options
       mode: 'text/html',
+      htmlMode: true,
       lineNumbers: true,
       theme: 'monokai'
     }
