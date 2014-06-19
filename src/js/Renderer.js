@@ -115,6 +115,12 @@ define([
           title: lang.link.link
         });
       },
+      pasteword: function (lang) {
+        return tplIconButton('fa fa-clipboard icon-clipboard', {
+          event: 'showPasteWordDialog',
+          title: lang.pasteword.insert
+        });
+      },
       video: function (lang) {
         return tplIconButton('fa fa-youtube-play icon-play', {
           event: 'showVideoDialog',
@@ -572,6 +578,15 @@ define([
         return tplDialog('note-link-dialog', lang.link.insert, body, footer);
       };
 
+      var tplPasteWordDialog = function () {
+        var body = '<div class="form-group">' +
+                     '<label>' + lang.pasteword.description + '</label>' +
+                     '<textarea class="note-pasteword-text form-control span12"></textarea>' +
+                   '</div>';
+        var footer = '<button href="#" class="btn btn-primary note-pasteword-btn disabled" disabled>' + lang.pasteword.insert + '</button>';
+        return tplDialog('note-pasteword-dialog', lang.pasteword.insert, body, footer);
+      };
+
       var tplVideoDialog = function () {
         var body = '<div class="form-group">' +
                      '<label>' + lang.video.url + '</label>&nbsp;<small class="text-muted">' + lang.video.providers + '</small>' +
@@ -596,6 +611,7 @@ define([
       return '<div class="note-dialog">' +
                tplImageDialog() +
                tplLinkDialog() +
+               tplPasteWordDialog() +
                tplVideoDialog() +
                tplHelpDialog() +
              '</div>';
