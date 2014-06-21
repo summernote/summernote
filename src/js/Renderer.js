@@ -80,7 +80,7 @@ define([
      * @param {String} [footer]
      */
     var tplDialog = function (className, title, body, footer) {
-      return '<div class="' + className + ' modal" aria-hidden="false">' +
+      return '<div class="' + className + ' modal fade" aria-hidden="false">' +
                '<div class="modal-dialog">' +
                  '<div class="modal-content">' +
                    (title ?
@@ -544,9 +544,9 @@ define([
 
     var tplDialogs = function (lang, options) {
       var tplImageDialog = function () {
-        var body = '<h5>' + lang.image.selectFromFiles + '</h5>' +
+        var body = '<label>' + lang.image.selectFromFiles + '</label>' +
                    '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
-                   '<h5>' + lang.image.url + '</h5>' +
+                   '<label>' + lang.image.url + '</label>' +
                    '<input class="note-image-url form-control span12" type="text" />';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
         return tplDialog('note-image-dialog', lang.image.insert, body, footer);

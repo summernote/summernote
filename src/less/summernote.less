@@ -250,12 +250,20 @@
     }
 
     /* dropdown-menu for selectbox */
-    li a i {
-      color: deepskyblue;
-      visibility: hidden;
-    }
-    li a.checked i {
-      visibility: visible;
+    > li {
+      > a {
+        position: relative;
+        i {
+          color: deepskyblue;
+          visibility: hidden;
+          position: absolute;
+          left: 3px;
+          top: 6px;
+        }
+      }
+      > a.checked i {
+        visibility: visible;
+      }
     }
   }
 
@@ -335,18 +343,24 @@
     .note-shortcut-layout {
       width: 100%;
       td {
+        width: 50%;
         vertical-align: top;
       }
     }
     .note-shortcut {
       margin-top: 8px;
+      width: 100%;
+      th,
+      td {
+        width: 50%;
+      }
       th {
         text-align: left;
         font-size: 13px;
         color: @note-shortcut-hl;
       }
       td:first-child {
-        min-width: 110px;
+        // min-width: 110px;
         font-family: "Courier New";
         color: @note-shortcut-hl;
         text-align: right;
