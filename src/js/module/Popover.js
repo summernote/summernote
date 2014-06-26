@@ -16,7 +16,7 @@ define([
      */
     var showPopover = function ($popover, elPlaceholder) {
       var $placeholder = $(elPlaceholder);
-      var pos = $placeholder.offset();
+      var pos = $placeholder.position();
 
       // include margin
       var height = $placeholder.outerHeight(true);
