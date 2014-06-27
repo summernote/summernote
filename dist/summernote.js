@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-06-26T19:36Z
+ * Date: 2014-06-27T03:51Z
  */
 (function (factory) {
   /* global define */
@@ -2112,23 +2112,28 @@
   var Popover = function () {
     var button = new Button();
 
+    var posFromPlaceholder = function (placeholder, isAirMode) {
+      var $placeholder = $(placeholder);
+      var pos = isAirMode ? $placeholder.offset() : $placeholder.position();
+      var height = $placeholder.outerHeight(true); // include margin
+
+      // popover below placeholder.
+      return {
+        left: pos.left,
+        top: pos.top + height
+      };
+    };
+
     /**
      * show popover
      * @param {jQuery} popover
-     * @param {Element} elPlaceholder - placeholder for popover
+     * @param {Position} pos
      */
-    var showPopover = function ($popover, elPlaceholder) {
-      var $placeholder = $(elPlaceholder);
-      var pos = $placeholder.position();
-
-      // include margin
-      var height = $placeholder.outerHeight(true);
-
-      // display popover below placeholder.
+    var showPopover = function ($popover, pos) {
       $popover.css({
         display: 'block',
         left: pos.left,
-        top: pos.top + height
+        top: pos.top
       });
     };
 
@@ -2144,34 +2149,30 @@
       button.update($popover, oStyle);
 
       var $linkPopover = $popover.find('.note-link-popover');
-
       if (oStyle.anchor) {
         var $anchor = $linkPopover.find('a');
         $anchor.attr('href', oStyle.anchor.href).html(oStyle.anchor.href);
-        showPopover($linkPopover, oStyle.anchor);
+        showPopover($linkPopover, posFromPlaceholder(oStyle.anchor));
       } else {
         $linkPopover.hide();
       }
 
       var $imagePopover = $popover.find('.note-image-popover');
       if (oStyle.image) {
-        showPopover($imagePopover, oStyle.image);
+        showPopover($imagePopover, posFromPlaceholder(oStyle.image));
       } else {
         $imagePopover.hide();
       }
 
-      if (isAirMode) {
-        var $airPopover = $popover.find('.note-air-popover');
-        if (!oStyle.range.isCollapsed()) {
-          var bnd = func.rect2bnd(list.last(oStyle.range.getClientRects()));
-          $airPopover.css({
-            display: 'block',
-            left: Math.max(bnd.left + bnd.width / 2 - PX_POPOVER_ARROW_OFFSET_X, 0),
-            top: bnd.top + bnd.height
-          });
-        } else {
-          $airPopover.hide();
-        }
+      var $airPopover = $popover.find('.note-air-popover');
+      if (isAirMode && !oStyle.range.isCollapsed()) {
+        var bnd = func.rect2bnd(list.last(oStyle.range.getClientRects()));
+        showPopover($airPopover, {
+          left: Math.max(bnd.left + bnd.width / 2 - PX_POPOVER_ARROW_OFFSET_X, 0),
+          top: bnd.top + bnd.height
+        });
+      } else {
+        $airPopover.hide();
       }
     };
 
@@ -2196,12 +2197,13 @@
      * update handle
      * @param {jQuery} $handle
      * @param {Object} oStyle
+     * @param {Boolean} isAirMode
      */
-    this.update = function ($handle, oStyle) {
+    this.update = function ($handle, oStyle, isAirMode) {
       var $selection = $handle.find('.note-control-selection');
       if (oStyle.image) {
         var $image = $(oStyle.image);
-        var pos = $image.position();
+        var pos = isAirMode ? $image.offset() : $image.position();
 
         // include margin
         var szImage = {
@@ -2660,7 +2662,7 @@
         }
 
         popover.update(oLayoutInfo.popover(), oStyle, isAirMode);
-        handle.update(oLayoutInfo.handle(), oStyle);
+        handle.update(oLayoutInfo.handle(), oStyle, isAirMode);
       }, 0);
     };
 
@@ -2704,11 +2706,14 @@
 
         var oLayoutInfo = makeLayoutInfo(event.target),
             $handle = oLayoutInfo.handle(), $popover = oLayoutInfo.popover(),
-            $editable = oLayoutInfo.editable();
+            $editable = oLayoutInfo.editable(),
+            $editor = oLayoutInfo.editor();
 
         var elTarget = $handle.find('.note-control-selection').data('target'),
             $target = $(elTarget), posStart = $target.offset(),
             scrollTop = $document.scrollTop();
+
+        var isAirMode = $editor.data('options').airMode;
 
         $document.on('mousemove', function (event) {
           editor.resizeTo({
@@ -2716,8 +2721,8 @@
             y: event.clientY - (posStart.top - scrollTop)
           }, $target, !event.shiftKey);
 
-          handle.update($handle, {image: elTarget});
-          popover.update($popover, {image: elTarget});
+          handle.update($handle, {image: elTarget}, isAirMode);
+          popover.update($popover, {image: elTarget}, isAirMode);
         }).one('mouseup', function () {
           $document.off('mousemove');
         });

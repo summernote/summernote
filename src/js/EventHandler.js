@@ -266,7 +266,7 @@ define([
         }
 
         popover.update(oLayoutInfo.popover(), oStyle, isAirMode);
-        handle.update(oLayoutInfo.handle(), oStyle);
+        handle.update(oLayoutInfo.handle(), oStyle, isAirMode);
       }, 0);
     };
 
@@ -310,11 +310,14 @@ define([
 
         var oLayoutInfo = makeLayoutInfo(event.target),
             $handle = oLayoutInfo.handle(), $popover = oLayoutInfo.popover(),
-            $editable = oLayoutInfo.editable();
+            $editable = oLayoutInfo.editable(),
+            $editor = oLayoutInfo.editor();
 
         var elTarget = $handle.find('.note-control-selection').data('target'),
             $target = $(elTarget), posStart = $target.offset(),
             scrollTop = $document.scrollTop();
+
+        var isAirMode = $editor.data('options').airMode;
 
         $document.on('mousemove', function (event) {
           editor.resizeTo({
@@ -322,8 +325,8 @@ define([
             y: event.clientY - (posStart.top - scrollTop)
           }, $target, !event.shiftKey);
 
-          handle.update($handle, {image: elTarget});
-          popover.update($popover, {image: elTarget});
+          handle.update($handle, {image: elTarget}, isAirMode);
+          popover.update($popover, {image: elTarget}, isAirMode);
         }).one('mouseup', function () {
           $document.off('mousemove');
         });
