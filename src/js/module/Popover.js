@@ -9,6 +9,11 @@ define([
   var Popover = function () {
     var button = new Button();
 
+    /**
+     * returns position from placeholder
+     * @param {Element} placeholder
+     * @param {Boolean} isAirMode
+     */
     var posFromPlaceholder = function (placeholder, isAirMode) {
       var $placeholder = $(placeholder);
       var pos = isAirMode ? $placeholder.offset() : $placeholder.position();
@@ -49,14 +54,14 @@ define([
       if (oStyle.anchor) {
         var $anchor = $linkPopover.find('a');
         $anchor.attr('href', oStyle.anchor.href).html(oStyle.anchor.href);
-        showPopover($linkPopover, posFromPlaceholder(oStyle.anchor), isAirMode);
+        showPopover($linkPopover, posFromPlaceholder(oStyle.anchor, isAirMode));
       } else {
         $linkPopover.hide();
       }
 
       var $imagePopover = $popover.find('.note-image-popover');
       if (oStyle.image) {
-        showPopover($imagePopover, posFromPlaceholder(oStyle.image), isAirMode);
+        showPopover($imagePopover, posFromPlaceholder(oStyle.image, isAirMode));
       } else {
         $imagePopover.hide();
       }
