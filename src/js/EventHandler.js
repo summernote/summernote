@@ -7,7 +7,7 @@ define([
              Toolbar, Popover, Handle, Dialog) {
 
   var CodeMirror;
-  if (agent.bCodeMirror) {
+  if (agent.hasCodeMirror) {
     if (agent.isSupportAmd) {
       require(['CodeMirror'], function (cm) {
         CodeMirror = cm;
@@ -87,9 +87,9 @@ define([
             linkInfo = editor.getLinkInfo($editable);
 
         editor.saveRange($editable);
-        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkText, sLinkUrl, bNewWindow) {
+        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkText, sLinkUrl, isNewWindow) {
           editor.restoreRange($editable);
-          editor.createLink($editable, sLinkText, sLinkUrl, bNewWindow);
+          editor.createLink($editable, sLinkText, sLinkUrl, isNewWindow);
           // hide popover after creating link
           popover.hide(oLayoutInfo.popover());
         }).fail(function () {
@@ -205,8 +205,8 @@ define([
 
         $editor.toggleClass('codeview');
 
-        var bCodeview = $editor.hasClass('codeview');
-        if (bCodeview) {
+        var isCodeview = $editor.hasClass('codeview');
+        if (isCodeview) {
           $codable.val($editable.html());
           $codable.height($editable.height());
           toolbar.deactivate($toolbar);
@@ -214,7 +214,7 @@ define([
           $codable.focus();
 
           // activate CodeMirror as codable
-          if (agent.bCodeMirror) {
+          if (agent.hasCodeMirror) {
             cmEditor = CodeMirror.fromTextArea($codable[0], options.codemirror);
 
             // CodeMirror TernServer
@@ -239,7 +239,7 @@ define([
           }
         } else {
           // deactivate CodeMirror as codable
-          if (agent.bCodeMirror) {
+          if (agent.hasCodeMirror) {
             cmEditor = $codable.data('cmEditor');
             $codable.val(cmEditor.getValue());
             cmEditor.toTextArea();
@@ -252,7 +252,7 @@ define([
           $editable.focus();
         }
 
-        toolbar.updateCodeview(oLayoutInfo.toolbar(), bCodeview);
+        toolbar.updateCodeview(oLayoutInfo.toolbar(), isCodeview);
       }
     };
 
@@ -300,9 +300,9 @@ define([
 
       var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
       var item = list.head(clipboardData.items);
-      var bClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
+      var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
 
-      if (bClipboardImage) {
+      if (isClipboardImage) {
         insertImages(oLayoutInfo.editable(), [item.getAsFile()]);
       }
     };
@@ -472,8 +472,8 @@ define([
 
       // show dropzone on dragenter when dragging a object to document.
       $document.on('dragenter', function (e) {
-        var bCodeview = oLayoutInfo.editor.hasClass('codeview');
-        if (!bCodeview && !collection.length) {
+        var isCodeview = oLayoutInfo.editor.hasClass('codeview');
+        if (!isCodeview && !collection.length) {
           oLayoutInfo.editor.addClass('dragover');
           $dropzone.width(oLayoutInfo.editor.width());
           $dropzone.height(oLayoutInfo.editor.height());
@@ -561,7 +561,7 @@ define([
      */
     this.attach = function (oLayoutInfo, options) {
       // handlers for editable
-      this.bindKeyMap(oLayoutInfo, options.keyMap[agent.bMac ? 'mac' : 'pc']);
+      this.bindKeyMap(oLayoutInfo, options.keyMap[agent.isMac ? 'mac' : 'pc']);
       oLayoutInfo.editable.on('mousedown', hMousedown);
       oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
       oLayoutInfo.editable.on('scroll', hScroll);
@@ -599,7 +599,7 @@ define([
       oLayoutInfo.editor.data('options', options);
 
       // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
-      if (options.styleWithSpan && !agent.bMSIE) {
+      if (options.styleWithSpan && !agent.isMSIE) {
         // protect FF Error: NS_ERROR_FAILURE: Failure
         setTimeout(function () {
           document.execCommand('styleWithCSS', 0, true);
@@ -630,7 +630,7 @@ define([
           options.onChange(oLayoutInfo.editable, oLayoutInfo.editable.html());
         };
 
-        if (agent.bMSIE) {
+        if (agent.isMSIE) {
           var sDomEvents = 'DOMCharacterDataModified, DOMSubtreeModified, DOMNodeInserted';
           oLayoutInfo.editable.on(sDomEvents, hChange);
         } else {

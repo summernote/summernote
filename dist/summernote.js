@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-06-29T05:16Z
+ * Date: 2014-06-29T05:51Z
  */
 (function (factory) {
   /* global define */
@@ -56,12 +56,12 @@
    * Object which check platform and agent
    */
   var agent = {
-    bMac: navigator.appVersion.indexOf('Mac') > -1,
-    bMSIE: navigator.userAgent.indexOf('MSIE') > -1 || navigator.userAgent.indexOf('Trident') > -1,
-    bFF: navigator.userAgent.indexOf('Firefox') > -1,
+    isMac: navigator.appVersion.indexOf('Mac') > -1,
+    isMSIE: navigator.userAgent.indexOf('MSIE') > -1 || navigator.userAgent.indexOf('Trident') > -1,
+    isFF: navigator.userAgent.indexOf('Firefox') > -1,
     jqueryVersion: parseFloat($.fn.jquery),
     isSupportAmd: isSupportAmd,
-    bCodeMirror: isSupportAmd ? require.specified('CodeMirror') : !!window.CodeMirror
+    hasCodeMirror: isSupportAmd ? require.specified('CodeMirror') : !!window.CodeMirror
   };
 
   /**
@@ -421,14 +421,14 @@
     var listBetween = function (nodeA, nodeB) {
       var aNode = [];
   
-      var bStart = false, bEnd = false;
+      var isStart = false, isEnd = false;
 
       // DFS(depth first search) with commonAcestor.
       (function fnWalk(node) {
         if (!node) { return; } // traverse fisnish
-        if (node === nodeA) { bStart = true; } // start point
-        if (bStart && !bEnd) { aNode.push(node); } // between
-        if (node === nodeB) { bEnd = true; return; } // end point
+        if (node === nodeA) { isStart = true; } // start point
+        if (isStart && !isEnd) { aNode.push(node); } // between
+        if (node === nodeB) { isEnd = true; return; } // end point
 
         for (var idx = 0, sz = node.childNodes.length; idx < sz; idx++) {
           fnWalk(node.childNodes[idx]);
@@ -643,7 +643,7 @@
     };
   
     return {
-      blank: agent.bMSIE ? '&nbsp;' : '<br/>',
+      blank: agent.isMSIE ? '&nbsp;' : '<br/>',
       emptyPara: '<p><br/></p>',
       isEditable: isEditable,
       isControlSizing: isControlSizing,
@@ -1114,8 +1114,8 @@
         oStyle['list-style'] = 'none';
       } else {
         var aOrderedType = ['circle', 'disc', 'disc-leading-zero', 'square'];
-        var bUnordered = $.inArray(oStyle['list-style-type'], aOrderedType) > -1;
-        oStyle['list-style'] = bUnordered ? 'unordered' : 'ordered';
+        var isUnordered = $.inArray(oStyle['list-style-type'], aOrderedType) > -1;
+        oStyle['list-style'] = isUnordered ? 'unordered' : 'ordered';
       }
 
       var elPara = dom.ancestor(rng.sc, dom.isPara);
@@ -1139,15 +1139,15 @@
    * range module
    */
   var range = (function () {
-    var bW3CRangeSupport = !!document.createRange;
+    var isW3CRangeSupport = !!document.createRange;
      
     /**
      * return boundaryPoint from TextRange, inspired by Andy Na's HuskyRange.js
      * @param {TextRange} textRange
-     * @param {Boolean} bStart
+     * @param {Boolean} isStart
      * @return {BoundaryPoint}
      */
-    var textRange2bp = function (textRange, bStart) {
+    var textRange2bp = function (textRange, isStart) {
       var elCont = textRange.parentElement(), nOffset;
   
       var tester = document.body.createTextRange(), elPrevCont;
@@ -1178,7 +1178,7 @@
         var sDummy = elCurText.nodeValue; //enforce IE to re-reference elCurText, hack
         /* jshint ignore:end */
   
-        if (bStart && elCurText.nextSibling && dom.isText(elCurText.nextSibling) &&
+        if (isStart && elCurText.nextSibling && dom.isText(elCurText.nextSibling) &&
             nTextCount === elCurText.nodeValue.length) {
           nTextCount -= elCurText.nodeValue.length;
           elCurText = elCurText.nextSibling;
@@ -1198,14 +1198,14 @@
      */
     var bp2textRange = function (bp) {
       var textRangeInfo = function (elCont, nOffset) {
-        var elNode, bCollapseToStart;
+        var elNode, isCollapseToStart;
   
         if (dom.isText(elCont)) {
           var aPrevText = dom.listPrev(elCont, func.not(dom.isText));
           var elPrevCont = list.last(aPrevText).previousSibling;
           elNode =  elPrevCont || elCont.parentNode;
           nOffset += list.sum(list.tail(aPrevText), dom.length);
-          bCollapseToStart = !elPrevCont;
+          isCollapseToStart = !elPrevCont;
         } else {
           elNode = elCont.childNodes[nOffset] || elCont;
           if (dom.isText(elNode)) {
@@ -1213,10 +1213,10 @@
           }
   
           nOffset = 0;
-          bCollapseToStart = false;
+          isCollapseToStart = false;
         }
   
-        return {cont: elNode, collapseToStart: bCollapseToStart, offset: nOffset};
+        return {cont: elNode, collapseToStart: isCollapseToStart, offset: nOffset};
       };
   
       var textRange = document.body.createTextRange();
@@ -1244,7 +1244,7 @@
   
       // nativeRange: get nativeRange from sc, so, ec, eo
       var nativeRange = function () {
-        if (bW3CRangeSupport) {
+        if (isW3CRangeSupport) {
           var w3cRange = document.createRange();
           w3cRange.setStart(sc, so);
           w3cRange.setEnd(ec, eo);
@@ -1261,7 +1261,7 @@
        */
       this.select = function () {
         var nativeRng = nativeRange();
-        if (bW3CRangeSupport) {
+        if (isW3CRangeSupport) {
           var selection = document.getSelection();
           if (selection.rangeCount > 0) { selection.removeAllRanges(); }
           selection.addRange(nativeRng);
@@ -1319,7 +1319,7 @@
        */
       this.insertNode = function (node) {
         var nativeRng = nativeRange();
-        if (bW3CRangeSupport) {
+        if (isW3CRangeSupport) {
           nativeRng.insertNode(node);
         } else {
           nativeRng.pasteHTML(node.outerHTML); // NOTE: missing node reference.
@@ -1328,7 +1328,7 @@
   
       this.toString = function () {
         var nativeRng = nativeRange();
-        return bW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
+        return isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
       };
   
       /**
@@ -1363,7 +1363,7 @@
        */
       create : function (sc, so, ec, eo) {
         if (!arguments.length) { // from Browser Selection
-          if (bW3CRangeSupport) { // webkit, firefox
+          if (isW3CRangeSupport) { // webkit, firefox
             var selection = document.getSelection();
             if (selection.rangeCount === 0) { return null; }
   
@@ -1430,14 +1430,14 @@
      * handle tab key
      *
      * @param {WrappedRange} rng
-     * @param {Boolean} bShift
+     * @param {Boolean} isShift
      */
-    this.tab = function (rng, bShift) {
+    this.tab = function (rng, isShift) {
       var elCell = dom.ancestor(rng.commonAncestor(), dom.isCell);
       var elTable = dom.ancestor(elCell, dom.isTable);
       var aCell = dom.listDescendant(elTable, dom.isCell);
 
-      var elNext = list[bShift ? 'prev' : 'next'](aCell, elCell);
+      var elNext = list[isShift ? 'prev' : 'next'](aCell, elCell);
       if (elNext) {
         range.create(elNext, 0).select();
       }
@@ -1568,8 +1568,7 @@
     /**
      * handle tab key
      * @param {jQuery} $editable 
-     * @param {Number} nTabsize
-     * @param {Boolean} bShift
+     * @param {Object} options
      */
     this.tab = function ($editable, options) {
       var rng = range.create();
@@ -1679,7 +1678,7 @@
      */
     this.formatBlock = function ($editable, sTagName) {
       recordUndo($editable);
-      sTagName = agent.bMSIE ? '<' + sTagName + '>' : sTagName;
+      sTagName = agent.isMSIE ? '<' + sTagName + '>' : sTagName;
       document.execCommand('FormatBlock', false, sTagName);
     };
 
@@ -1707,7 +1706,7 @@
     this.fontSize = function ($editable, sValue) {
       recordUndo($editable);
       document.execCommand('fontSize', false, 3);
-      if (agent.bFF) {
+      if (agent.isFF) {
         // firefox: <font size="3"> to <span style='font-size={sValue}px;'>, buggy
         $editable.find('font[size=3]').removeAttr('size').css('font-size', sValue + 'px');
       } else {
@@ -1748,9 +1747,9 @@
      *
      * @param {jQuery} $editable
      * @param {String} sLinkUrl
-     * @param {Boolean} bNewWindow
+     * @param {Boolean} isNewWindow
      */
-    this.createLink = function ($editable, sLinkText, sLinkUrl, bNewWindow) {
+    this.createLink = function ($editable, sLinkText, sLinkUrl, isNewWindow) {
       var rng = range.create();
       recordUndo($editable);
 
@@ -1765,7 +1764,7 @@
       // Create a new link when there is no anchor on range.
       if (!rng.isOnAnchor()) {
         // when range collapsed (IE, Firefox).
-        if ((agent.bMSIE || agent.bFF) && rng.isCollapsed()) {
+        if ((agent.isMSIE || agent.isFF) && rng.isCollapsed()) {
           rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
           var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol)
                                         .removeAttr('id');
@@ -1782,7 +1781,7 @@
         $(elAnchor).html(sLinkText);
 
         // link target
-        if (bNewWindow) {
+        if (isNewWindow) {
           $(elAnchor).attr('target', '_blank');
         } else {
           $(elAnchor).removeAttr('target');
@@ -1799,21 +1798,21 @@
       $editable.focus();
 
       var rng = range.create();
-      var bNewWindow = true;
+      var isNewWindow = true;
       var sUrl = '';
 
       // If range on anchor expand range on anchor(for edit link).
       if (rng.isOnAnchor()) {
         var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
         rng = range.createFromNode(elAnchor);
-        bNewWindow = $(elAnchor).attr('target') === '_blank';
+        isNewWindow = $(elAnchor).attr('target') === '_blank';
         sUrl = elAnchor.href;
       }
 
       return {
         text: rng.toString(),
         url: sUrl,
-        newWindow: bNewWindow
+        newWindow: isNewWindow
       };
     };
 
@@ -1975,8 +1974,8 @@
       var checkDropdownMenu = function ($btn, nValue) {
         $btn.find('.dropdown-menu li a').each(function () {
           // always compare string to avoid creating another func.
-          var bChecked = ($(this).data('value') + '') === (nValue + '');
-          this.className = bChecked ? 'checked' : '';
+          var isChecked = ($(this).data('value') + '') === (nValue + '');
+          this.className = isChecked ? 'checked' : '';
         });
       };
 
@@ -2103,9 +2102,9 @@
       $btn.toggleClass('active', bFullscreen);
     };
 
-    this.updateCodeview = function ($container, bCodeview) {
+    this.updateCodeview = function ($container, isCodeview) {
       var $btn = $container.find('button[data-event="codeview"]');
-      $btn.toggleClass('active', bCodeview);
+      $btn.toggleClass('active', isCodeview);
     };
   };
 
@@ -2249,11 +2248,11 @@
      * toggle button status
      *
      * @param {jQuery} $btn
-     * @param {Boolean} bEnable
+     * @param {Boolean} isEnable
      */
-    var toggleBtn = function ($btn, bEnable) {
-      $btn.toggleClass('disabled', !bEnable);
-      $btn.attr('disabled', !bEnable);
+    var toggleBtn = function ($btn, isEnable) {
+      $btn.toggleClass('disabled', !isEnable);
+      $btn.attr('disabled', !isEnable);
     };
 
     /**
@@ -2413,7 +2412,7 @@
 
 
   var CodeMirror;
-  if (agent.bCodeMirror) {
+  if (agent.hasCodeMirror) {
     if (agent.isSupportAmd) {
       require(['CodeMirror'], function (cm) {
         CodeMirror = cm;
@@ -2493,9 +2492,9 @@
             linkInfo = editor.getLinkInfo($editable);
 
         editor.saveRange($editable);
-        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkText, sLinkUrl, bNewWindow) {
+        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkText, sLinkUrl, isNewWindow) {
           editor.restoreRange($editable);
-          editor.createLink($editable, sLinkText, sLinkUrl, bNewWindow);
+          editor.createLink($editable, sLinkText, sLinkUrl, isNewWindow);
           // hide popover after creating link
           popover.hide(oLayoutInfo.popover());
         }).fail(function () {
@@ -2611,8 +2610,8 @@
 
         $editor.toggleClass('codeview');
 
-        var bCodeview = $editor.hasClass('codeview');
-        if (bCodeview) {
+        var isCodeview = $editor.hasClass('codeview');
+        if (isCodeview) {
           $codable.val($editable.html());
           $codable.height($editable.height());
           toolbar.deactivate($toolbar);
@@ -2620,7 +2619,7 @@
           $codable.focus();
 
           // activate CodeMirror as codable
-          if (agent.bCodeMirror) {
+          if (agent.hasCodeMirror) {
             cmEditor = CodeMirror.fromTextArea($codable[0], options.codemirror);
 
             // CodeMirror TernServer
@@ -2645,7 +2644,7 @@
           }
         } else {
           // deactivate CodeMirror as codable
-          if (agent.bCodeMirror) {
+          if (agent.hasCodeMirror) {
             cmEditor = $codable.data('cmEditor');
             $codable.val(cmEditor.getValue());
             cmEditor.toTextArea();
@@ -2658,7 +2657,7 @@
           $editable.focus();
         }
 
-        toolbar.updateCodeview(oLayoutInfo.toolbar(), bCodeview);
+        toolbar.updateCodeview(oLayoutInfo.toolbar(), isCodeview);
       }
     };
 
@@ -2706,9 +2705,9 @@
 
       var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
       var item = list.head(clipboardData.items);
-      var bClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
+      var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
 
-      if (bClipboardImage) {
+      if (isClipboardImage) {
         insertImages(oLayoutInfo.editable(), [item.getAsFile()]);
       }
     };
@@ -2878,8 +2877,8 @@
 
       // show dropzone on dragenter when dragging a object to document.
       $document.on('dragenter', function (e) {
-        var bCodeview = oLayoutInfo.editor.hasClass('codeview');
-        if (!bCodeview && !collection.length) {
+        var isCodeview = oLayoutInfo.editor.hasClass('codeview');
+        if (!isCodeview && !collection.length) {
           oLayoutInfo.editor.addClass('dragover');
           $dropzone.width(oLayoutInfo.editor.width());
           $dropzone.height(oLayoutInfo.editor.height());
@@ -2967,7 +2966,7 @@
      */
     this.attach = function (oLayoutInfo, options) {
       // handlers for editable
-      this.bindKeyMap(oLayoutInfo, options.keyMap[agent.bMac ? 'mac' : 'pc']);
+      this.bindKeyMap(oLayoutInfo, options.keyMap[agent.isMac ? 'mac' : 'pc']);
       oLayoutInfo.editable.on('mousedown', hMousedown);
       oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
       oLayoutInfo.editable.on('scroll', hScroll);
@@ -3005,7 +3004,7 @@
       oLayoutInfo.editor.data('options', options);
 
       // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
-      if (options.styleWithSpan && !agent.bMSIE) {
+      if (options.styleWithSpan && !agent.isMSIE) {
         // protect FF Error: NS_ERROR_FAILURE: Failure
         setTimeout(function () {
           document.execCommand('styleWithCSS', 0, true);
@@ -3036,7 +3035,7 @@
           options.onChange(oLayoutInfo.editable, oLayoutInfo.editable.html());
         };
 
-        if (agent.bMSIE) {
+        if (agent.isMSIE) {
           var sDomEvents = 'DOMCharacterDataModified, DOMSubtreeModified, DOMNodeInserted';
           oLayoutInfo.editable.on(sDomEvents, hChange);
         } else {
@@ -3653,7 +3652,7 @@
       var tplHelpDialog = function () {
         var body = '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
-                   (agent.bMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
+                   (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
                      '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.2</a> · ' +
                      '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
@@ -3679,7 +3678,7 @@
     };
 
     var representShortcut = function (str) {
-      if (agent.bMac) {
+      if (agent.isMac) {
         str = str.replace('CMD', '⌘').replace('SHIFT', '⇧');
       }
 
@@ -3749,7 +3748,7 @@
      * @param {Object} options
      */
     this.createLayoutByAirMode = function ($holder, options) {
-      var keyMap = options.keyMap[agent.bMac ? 'mac' : 'pc'];
+      var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       var langInfo = $.summernote.lang[options.lang];
 
       var id = func.uniqueId();
@@ -3836,7 +3835,7 @@
       sToolbar = '<div class="note-toolbar btn-toolbar">' + sToolbar + '</div>';
 
       var $toolbar = $(sToolbar).prependTo($editor);
-      var keyMap = options.keyMap[agent.bMac ? 'mac' : 'pc'];
+      var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       createPalette($toolbar, options);
       createTooltip($toolbar, keyMap, 'bottom');
 
@@ -3994,11 +3993,11 @@
         if (!$holder.length) { return; }
         var info = renderer.layoutInfoFromHolder($holder);
         if (!!(info && info.editable)) {
-          var bCodeview = info.editor.hasClass('codeview');
-          if (bCodeview && agent.bCodeMirror) {
+          var isCodeview = info.editor.hasClass('codeview');
+          if (isCodeview && agent.hasCodeMirror) {
             info.codable.data('cmEditor').save();
           }
-          return bCodeview ? info.codable.val() : info.editable.html();
+          return isCodeview ? info.codable.val() : info.editable.html();
         }
         return $holder.html();
       }

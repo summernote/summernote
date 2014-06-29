@@ -103,8 +103,7 @@ define([
     /**
      * handle tab key
      * @param {jQuery} $editable 
-     * @param {Number} nTabsize
-     * @param {Boolean} bShift
+     * @param {Object} options
      */
     this.tab = function ($editable, options) {
       var rng = range.create();
@@ -214,7 +213,7 @@ define([
      */
     this.formatBlock = function ($editable, sTagName) {
       recordUndo($editable);
-      sTagName = agent.bMSIE ? '<' + sTagName + '>' : sTagName;
+      sTagName = agent.isMSIE ? '<' + sTagName + '>' : sTagName;
       document.execCommand('FormatBlock', false, sTagName);
     };
 
@@ -242,7 +241,7 @@ define([
     this.fontSize = function ($editable, sValue) {
       recordUndo($editable);
       document.execCommand('fontSize', false, 3);
-      if (agent.bFF) {
+      if (agent.isFF) {
         // firefox: <font size="3"> to <span style='font-size={sValue}px;'>, buggy
         $editable.find('font[size=3]').removeAttr('size').css('font-size', sValue + 'px');
       } else {
@@ -283,9 +282,9 @@ define([
      *
      * @param {jQuery} $editable
      * @param {String} sLinkUrl
-     * @param {Boolean} bNewWindow
+     * @param {Boolean} isNewWindow
      */
-    this.createLink = function ($editable, sLinkText, sLinkUrl, bNewWindow) {
+    this.createLink = function ($editable, sLinkText, sLinkUrl, isNewWindow) {
       var rng = range.create();
       recordUndo($editable);
 
@@ -300,7 +299,7 @@ define([
       // Create a new link when there is no anchor on range.
       if (!rng.isOnAnchor()) {
         // when range collapsed (IE, Firefox).
-        if ((agent.bMSIE || agent.bFF) && rng.isCollapsed()) {
+        if ((agent.isMSIE || agent.isFF) && rng.isCollapsed()) {
           rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
           var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol)
                                         .removeAttr('id');
@@ -317,7 +316,7 @@ define([
         $(elAnchor).html(sLinkText);
 
         // link target
-        if (bNewWindow) {
+        if (isNewWindow) {
           $(elAnchor).attr('target', '_blank');
         } else {
           $(elAnchor).removeAttr('target');
@@ -334,21 +333,21 @@ define([
       $editable.focus();
 
       var rng = range.create();
-      var bNewWindow = true;
+      var isNewWindow = true;
       var sUrl = '';
 
       // If range on anchor expand range on anchor(for edit link).
       if (rng.isOnAnchor()) {
         var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
         rng = range.createFromNode(elAnchor);
-        bNewWindow = $(elAnchor).attr('target') === '_blank';
+        isNewWindow = $(elAnchor).attr('target') === '_blank';
         sUrl = elAnchor.href;
       }
 
       return {
         text: rng.toString(),
         url: sUrl,
-        newWindow: bNewWindow
+        newWindow: isNewWindow
       };
     };
 

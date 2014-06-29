@@ -10,11 +10,11 @@ define('summernote/module/Dialog', function () {
      * toggle button status
      *
      * @param {jQuery} $btn
-     * @param {Boolean} bEnable
+     * @param {Boolean} isEnable
      */
-    var toggleBtn = function ($btn, bEnable) {
-      $btn.toggleClass('disabled', !bEnable);
-      $btn.attr('disabled', !bEnable);
+    var toggleBtn = function ($btn, isEnable) {
+      $btn.toggleClass('disabled', !isEnable);
+      $btn.attr('disabled', !isEnable);
     };
 
     /**

@@ -34,12 +34,12 @@ define(['jquery'], function ($) {
    * Object which check platform and agent
    */
   var agent = {
-    bMac: navigator.appVersion.indexOf('Mac') > -1,
-    bMSIE: navigator.userAgent.indexOf('MSIE') > -1 || navigator.userAgent.indexOf('Trident') > -1,
-    bFF: navigator.userAgent.indexOf('Firefox') > -1,
+    isMac: navigator.appVersion.indexOf('Mac') > -1,
+    isMSIE: navigator.userAgent.indexOf('MSIE') > -1 || navigator.userAgent.indexOf('Trident') > -1,
+    isFF: navigator.userAgent.indexOf('Firefox') > -1,
     jqueryVersion: parseFloat($.fn.jquery),
     isSupportAmd: isSupportAmd,
-    bCodeMirror: isSupportAmd ? require.specified('CodeMirror') : !!window.CodeMirror
+    hasCodeMirror: isSupportAmd ? require.specified('CodeMirror') : !!window.CodeMirror
   };
 
   return agent;

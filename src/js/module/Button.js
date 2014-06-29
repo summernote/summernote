@@ -20,8 +20,8 @@ define([
       var checkDropdownMenu = function ($btn, nValue) {
         $btn.find('.dropdown-menu li a').each(function () {
           // always compare string to avoid creating another func.
-          var bChecked = ($(this).data('value') + '') === (nValue + '');
-          this.className = bChecked ? 'checked' : '';
+          var isChecked = ($(this).data('value') + '') === (nValue + '');
+          this.className = isChecked ? 'checked' : '';
         });
       };
 
