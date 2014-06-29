@@ -364,7 +364,7 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
   
     return {
       blank: agent.bMSIE ? '&nbsp;' : '<br/>',
-      emptyPara: '<p><br/></p>',
+      emptyPara: '',
       isEditable: isEditable,
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
