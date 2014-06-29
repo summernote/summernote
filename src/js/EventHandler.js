@@ -420,7 +420,7 @@ define([
     };
 
     var PX_PER_EM = 18;
-    var hDimensionPickerMove = function (event) {
+    var hDimensionPickerMove = function (event, options) {
       var $picker = $(event.target.parentNode); // target is mousecatcher
       var $dimensionDisplay = $picker.next();
       var $catcher = $picker.find('.note-dimension-picker-mousecatcher');
@@ -450,11 +450,11 @@ define([
       $highlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });
       $catcher.attr('data-value', dim.c + 'x' + dim.r);
 
-      if (3 < dim.c && dim.c < 10) { // 5~10
+      if (3 < dim.c && dim.c < options.insertTableMaxSize.col) {
         $unhighlighted.css({ width: dim.c + 1 + 'em'});
       }
 
-      if (3 < dim.r && dim.r < 10) { // 5~10
+      if (3 < dim.r && dim.r < options.insertTableMaxSize.row) {
         $unhighlighted.css({ height: dim.r + 1 + 'em'});
       }
 
@@ -593,7 +593,12 @@ define([
       var $catcherContainer = options.airMode ? oLayoutInfo.popover :
                                                 oLayoutInfo.toolbar;
       var $catcher = $catcherContainer.find('.note-dimension-picker-mousecatcher');
-      $catcher.on('mousemove', hDimensionPickerMove);
+      $catcher.css({
+        width: options.insertTableMaxSize.col + 'em',
+        height: options.insertTableMaxSize.row + 'em'
+      }).on('mousemove', function (event) {
+        hDimensionPickerMove(event, options);
+      });
 
       // save options on editor
       oLayoutInfo.editor.data('options', options);

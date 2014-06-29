@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-06-29T05:51Z
+ * Date: 2014-06-29T06:22Z
  */
 (function (factory) {
   /* global define */
@@ -780,6 +780,12 @@
 
       // lineHeight
       lineHeights: ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'],
+
+      // insertTable max size
+      insertTableMaxSize: {
+        col: 10,
+        row: 10
+      },
 
       // callbacks
       oninit: null,             // initialize
@@ -2825,7 +2831,7 @@
     };
 
     var PX_PER_EM = 18;
-    var hDimensionPickerMove = function (event) {
+    var hDimensionPickerMove = function (event, options) {
       var $picker = $(event.target.parentNode); // target is mousecatcher
       var $dimensionDisplay = $picker.next();
       var $catcher = $picker.find('.note-dimension-picker-mousecatcher');
@@ -2855,11 +2861,11 @@
       $highlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });
       $catcher.attr('data-value', dim.c + 'x' + dim.r);
 
-      if (3 < dim.c && dim.c < 10) { // 5~10
+      if (3 < dim.c && dim.c < options.insertTableMaxSize.col) {
         $unhighlighted.css({ width: dim.c + 1 + 'em'});
       }
 
-      if (3 < dim.r && dim.r < 10) { // 5~10
+      if (3 < dim.r && dim.r < options.insertTableMaxSize.row) {
         $unhighlighted.css({ height: dim.r + 1 + 'em'});
       }
 
@@ -2998,7 +3004,12 @@
       var $catcherContainer = options.airMode ? oLayoutInfo.popover :
                                                 oLayoutInfo.toolbar;
       var $catcher = $catcherContainer.find('.note-dimension-picker-mousecatcher');
-      $catcher.on('mousemove', hDimensionPickerMove);
+      $catcher.css({
+        width: options.insertTableMaxSize.col + 'em',
+        height: options.insertTableMaxSize.row + 'em'
+      }).on('mousemove', function (event) {
+        hDimensionPickerMove(event, options);
+      });
 
       // save options on editor
       oLayoutInfo.editor.data('options', options);

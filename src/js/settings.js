@@ -100,6 +100,12 @@ define('summernote/settings', function () {
       // lineHeight
       lineHeights: ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'],
 
+      // insertTable max size
+      insertTableMaxSize: {
+        col: 10,
+        row: 10
+      },
+
       // callbacks
       oninit: null,             // initialize
       onfocus: null,            // editable has focus
