@@ -1,4 +1,4 @@
-define(['CodeMirror'], function (CodeMirror) {
+define(['jquery'], function ($) {
   if ('function' !== typeof Array.prototype.reduce) {
     /**
      * Array.prototype.reduce fallback
@@ -28,6 +28,8 @@ define(['CodeMirror'], function (CodeMirror) {
     };
   }
 
+  var isSupportAmd = typeof define === 'function' && define.amd;
+
   /**
    * Object which check platform and agent
    */
@@ -36,7 +38,8 @@ define(['CodeMirror'], function (CodeMirror) {
     bMSIE: navigator.userAgent.indexOf('MSIE') > -1 || navigator.userAgent.indexOf('Trident') > -1,
     bFF: navigator.userAgent.indexOf('Firefox') > -1,
     jqueryVersion: parseFloat($.fn.jquery),
-    bCodeMirror: !!CodeMirror
+    isSupportAmd: isSupportAmd,
+    bCodeMirror: isSupportAmd ? require.specified('CodeMirror') : !!window.CodeMirror
   };
 
   return agent;

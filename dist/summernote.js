@@ -6,18 +6,18 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-06-27T04:13Z
+ * Date: 2014-06-29T05:16Z
  */
 (function (factory) {
   /* global define */
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['jquery', 'codemirror'], factory);
+    define(['jquery'], factory);
   } else {
-    // Browser globals: jQuery, CodeMirror
-    factory(window.jQuery, window.CodeMirror);
+    // Browser globals: jQuery
+    factory(window.jQuery);
   }
-}(function ($, CodeMirror) {
+}(function ($) {
   
 
 
@@ -50,6 +50,8 @@
     };
   }
 
+  var isSupportAmd = typeof define === 'function' && define.amd;
+
   /**
    * Object which check platform and agent
    */
@@ -58,7 +60,8 @@
     bMSIE: navigator.userAgent.indexOf('MSIE') > -1 || navigator.userAgent.indexOf('Trident') > -1,
     bFF: navigator.userAgent.indexOf('Firefox') > -1,
     jqueryVersion: parseFloat($.fn.jquery),
-    bCodeMirror: !!CodeMirror
+    isSupportAmd: isSupportAmd,
+    bCodeMirror: isSupportAmd ? require.specified('CodeMirror') : !!window.CodeMirror
   };
 
   /**
@@ -2407,6 +2410,18 @@
       }).promise();
     };
   };
+
+
+  var CodeMirror;
+  if (agent.bCodeMirror) {
+    if (agent.isSupportAmd) {
+      require(['CodeMirror'], function (cm) {
+        CodeMirror = cm;
+      });
+    } else {
+      CodeMirror = window.CodeMirror;
+    }
+  }
 
   /**
    * EventHandler

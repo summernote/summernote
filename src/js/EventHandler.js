@@ -1,12 +1,22 @@
 define([
-  'CodeMirror',
   'summernote/core/agent', 'summernote/core/dom', 'summernote/core/async', 'summernote/core/key', 'summernote/core/list',
   'summernote/editing/Style', 'summernote/editing/Editor', 'summernote/editing/History',
   'summernote/module/Toolbar', 'summernote/module/Popover', 'summernote/module/Handle', 'summernote/module/Dialog'
-], function (CodeMirror,
-             agent, dom, async, key, list,
+], function (agent, dom, async, key, list,
              Style, Editor, History,
              Toolbar, Popover, Handle, Dialog) {
+
+  var CodeMirror;
+  if (agent.bCodeMirror) {
+    if (agent.isSupportAmd) {
+      require(['CodeMirror'], function (cm) {
+        CodeMirror = cm;
+      });
+    } else {
+      CodeMirror = window.CodeMirror;
+    }
+  }
+
   /**
    * EventHandler
    */
