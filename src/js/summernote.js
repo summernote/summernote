@@ -100,8 +100,11 @@ define([
 
         var info = renderer.layoutInfoFromHolder($holder);
         if (!info || !info.editable) { return; }
-        eventHandler.dettach(info);
-        renderer.removeLayout($holder);
+
+        var options = info.editor.data('options');
+
+        eventHandler.dettach(info, options);
+        renderer.removeLayout($holder, info, options);
       });
 
       return this;

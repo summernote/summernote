@@ -845,14 +845,24 @@ define([
      * removeLayout
      *
      * @param {jQuery} $holder - placeholder
+     * @param {Object} oLayoutInfo
+     * @param {Object} options
+     *
      */
-    this.removeLayout = function ($holder) {
-      var info = this.layoutInfoFromHolder($holder);
-      if (!info) { return; }
-      $holder.html(info.editable.html());
+    this.removeLayout = function ($holder, oLayoutInfo, options) {
+      if (options.airMode) {
+        $holder.removeClass('note-air-editor note-editable')
+               .removeAttr('id contentEditable');
 
-      info.editor.remove();
-      $holder.show();
+        oLayoutInfo.popover.remove();
+        oLayoutInfo.handle.remove();
+        oLayoutInfo.dialog.remove();
+      } else {
+        $holder.html(oLayoutInfo.editable.html());
+
+        oLayoutInfo.editor.remove();
+        $holder.show();
+      }
     };
   };
 

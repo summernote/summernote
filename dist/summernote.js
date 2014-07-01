@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-06-29T06:22Z
+ * Date: 2014-07-01T12:24Z
  */
 (function (factory) {
   /* global define */
@@ -3065,14 +3065,14 @@
       });
     };
 
-    this.dettach = function (oLayoutInfo) {
+    this.dettach = function (oLayoutInfo, options) {
       oLayoutInfo.editable.off();
 
       oLayoutInfo.popover.off();
       oLayoutInfo.handle.off();
       oLayoutInfo.dialog.off();
 
-      if (oLayoutInfo.editor.data('options').airMode) {
+      if (!options.airMode) {
         oLayoutInfo.dropzone.off();
         oLayoutInfo.toolbar.off();
         oLayoutInfo.statusbar.off();
@@ -3924,14 +3924,24 @@
      * removeLayout
      *
      * @param {jQuery} $holder - placeholder
+     * @param {Object} oLayoutInfo
+     * @param {Object} options
+     *
      */
-    this.removeLayout = function ($holder) {
-      var info = this.layoutInfoFromHolder($holder);
-      if (!info) { return; }
-      $holder.html(info.editable.html());
+    this.removeLayout = function ($holder, oLayoutInfo, options) {
+      if (options.airMode) {
+        $holder.removeClass('note-air-editor note-editable')
+               .removeAttr('id contentEditable');
 
-      info.editor.remove();
-      $holder.show();
+        oLayoutInfo.popover.remove();
+        oLayoutInfo.handle.remove();
+        oLayoutInfo.dialog.remove();
+      } else {
+        $holder.html(oLayoutInfo.editable.html());
+
+        oLayoutInfo.editor.remove();
+        $holder.show();
+      }
     };
   };
 
@@ -4032,8 +4042,11 @@
 
         var info = renderer.layoutInfoFromHolder($holder);
         if (!info || !info.editable) { return; }
-        eventHandler.dettach(info);
-        renderer.removeLayout($holder);
+
+        var options = info.editor.data('options');
+
+        eventHandler.dettach(info, options);
+        renderer.removeLayout($holder, info, options);
       });
 
       return this;

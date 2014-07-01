@@ -654,14 +654,14 @@ define([
       });
     };
 
-    this.dettach = function (oLayoutInfo) {
+    this.dettach = function (oLayoutInfo, options) {
       oLayoutInfo.editable.off();
 
       oLayoutInfo.popover.off();
       oLayoutInfo.handle.off();
       oLayoutInfo.dialog.off();
 
-      if (oLayoutInfo.editor.data('options').airMode) {
+      if (!options.airMode) {
         oLayoutInfo.dropzone.off();
         oLayoutInfo.toolbar.off();
         oLayoutInfo.statusbar.off();
