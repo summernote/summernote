@@ -281,19 +281,19 @@ define([
      * create link
      *
      * @param {jQuery} $editable
-     * @param {String} sLinkUrl
-     * @param {Boolean} isNewWindow
+     * @param {Object} linkInfo
+     * @param {Object} options
      */
-    this.createLink = function ($editable, sLinkText, sLinkUrl, isNewWindow) {
+    this.createLink = function ($editable, linkInfo, options) {
+      var sLinkUrl = linkInfo.url;
+      var sLinkText = linkInfo.text;
+      var isNewWindow = linkInfo.newWindow;
+
       var rng = range.create();
       recordUndo($editable);
 
-      // prepend protocol
-      var sLinkUrlWithProtocol = sLinkUrl;
-      if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
-        sLinkUrlWithProtocol =  'mailto:' + sLinkUrl;
-      } else if (sLinkUrl.indexOf('://') === -1) {
-        sLinkUrlWithProtocol = 'http://' + sLinkUrl;
+      if (options.onCreateLink) {
+        sLinkUrl = options.onCreateLink(sLinkUrl);
       }
 
       // Create a new link when there is no anchor on range.
@@ -301,12 +301,12 @@ define([
         // when range collapsed (IE, Firefox).
         if ((agent.isMSIE || agent.isFF) && rng.isCollapsed()) {
           rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
-          var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol)
+          var $anchor = $('#linkAnchor').attr('href', sLinkUrl)
                                         .removeAttr('id');
           rng = range.createFromNode($anchor[0]);
           rng.select();
         } else {
-          document.execCommand('createlink', false, sLinkUrlWithProtocol);
+          document.execCommand('createlink', false, sLinkUrl);
         }
       }
 
@@ -325,9 +325,9 @@ define([
     };
 
     /**
-     * get link info
+     * returns link info
      *
-     * @return {Promise}
+     * @return {Object}
      */
     this.getLinkInfo = function ($editable) {
       $editable.focus();

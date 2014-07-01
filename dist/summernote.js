@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-07-01T12:24Z
+ * Date: 2014-07-01T13:19Z
  */
 (function (factory) {
   /* global define */
@@ -794,9 +794,24 @@
       onenter: null,            // enter key pressed
       onkeyup: null,            // keyup
       onkeydown: null,          // keydown
-      onImageUpload: null,      // imageUploadHandler
-      onImageUploadError: null, // imageUploadErrorHandler
+      onImageUpload: null,      // imageUpload
+      onImageUploadError: null, // imageUploadError
       onToolbarClick: null,
+
+      /**
+       * manipulate link address when user create link
+       * @param {String} sLinkUrl
+       * @return {String}
+       */
+      onCreateLink: function (sLinkUrl) {
+        if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
+          sLinkUrl =  'mailto:' + sLinkUrl;
+        } else if (sLinkUrl.indexOf('://') === -1) {
+          sLinkUrl = 'http://' + sLinkUrl;
+        }
+
+        return sLinkUrl;
+      },
 
       keyMap: {
         pc: {
@@ -1752,19 +1767,19 @@
      * create link
      *
      * @param {jQuery} $editable
-     * @param {String} sLinkUrl
-     * @param {Boolean} isNewWindow
+     * @param {Object} linkInfo
+     * @param {Object} options
      */
-    this.createLink = function ($editable, sLinkText, sLinkUrl, isNewWindow) {
+    this.createLink = function ($editable, linkInfo, options) {
+      var sLinkUrl = linkInfo.url;
+      var sLinkText = linkInfo.text;
+      var isNewWindow = linkInfo.newWindow;
+
       var rng = range.create();
       recordUndo($editable);
 
-      // prepend protocol
-      var sLinkUrlWithProtocol = sLinkUrl;
-      if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
-        sLinkUrlWithProtocol =  'mailto:' + sLinkUrl;
-      } else if (sLinkUrl.indexOf('://') === -1) {
-        sLinkUrlWithProtocol = 'http://' + sLinkUrl;
+      if (options.onCreateLink) {
+        sLinkUrl = options.onCreateLink(sLinkUrl);
       }
 
       // Create a new link when there is no anchor on range.
@@ -1772,12 +1787,12 @@
         // when range collapsed (IE, Firefox).
         if ((agent.isMSIE || agent.isFF) && rng.isCollapsed()) {
           rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
-          var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol)
+          var $anchor = $('#linkAnchor').attr('href', sLinkUrl)
                                         .removeAttr('id');
           rng = range.createFromNode($anchor[0]);
           rng.select();
         } else {
-          document.execCommand('createlink', false, sLinkUrlWithProtocol);
+          document.execCommand('createlink', false, sLinkUrl);
         }
       }
 
@@ -1796,9 +1811,9 @@
     };
 
     /**
-     * get link info
+     * returns link info
      *
-     * @return {Promise}
+     * @return {Object}
      */
     this.getLinkInfo = function ($editable) {
       $editable.focus();
@@ -2387,7 +2402,11 @@
           $linkBtn.one('click', function (event) {
             event.preventDefault();
 
-            deferred.resolve($linkText.val(), $linkUrl.val(), $openInNewWindow.is(':checked'));
+            deferred.resolve({
+              url: $linkUrl.val(),
+              text: $linkText.val(),
+              newWindow: $openInNewWindow.is(':checked')
+            });
             $linkDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
@@ -2493,14 +2512,17 @@
        * @param {Object} oLayoutInfo
        */
       showLinkDialog: function (oLayoutInfo) {
-        var $dialog = oLayoutInfo.dialog(),
+        var $editor = oLayoutInfo.editor(),
+            $dialog = oLayoutInfo.dialog(),
             $editable = oLayoutInfo.editable(),
             linkInfo = editor.getLinkInfo($editable);
 
+        var options = $editor.data('options');
+
         editor.saveRange($editable);
-        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkText, sLinkUrl, isNewWindow) {
+        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
           editor.restoreRange($editable);
-          editor.createLink($editable, sLinkText, sLinkUrl, isNewWindow);
+          editor.createLink($editable, linkInfo, options);
           // hide popover after creating link
           popover.hide(oLayoutInfo.popover());
         }).fail(function () {
