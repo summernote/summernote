@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-07-01T13:19Z
+ * Date: 2014-07-02T10:52Z
  */
 (function (factory) {
   /* global define */
@@ -1640,7 +1640,7 @@
     this.insertVideo = function ($editable, sUrl) {
       recordUndo($editable);
 
-      // video url patterns(youtube, instagram, vimeo, dailymotion)
+      // video url patterns(youtube, instagram, vimeo, dailymotion, youku)
       var ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       var ytMatch = sUrl.match(ytRegExp);
 
@@ -1655,6 +1655,9 @@
 
       var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
       var dmMatch = sUrl.match(dmRegExp);
+
+      var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)\.html/;
+      var youkuMatch = sUrl.match(youkuRegExp);
 
       var $video;
       if (ytMatch && ytMatch[2].length === 11) {
@@ -1681,6 +1684,11 @@
         $video = $('<iframe>')
           .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
           .attr('width', '640').attr('height', '360');
+      } else if (youkuMatch && youkuMatch[1].length) {
+        $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+          .attr('height', '498')
+          .attr('width', '510')
+          .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
       } else {
         // this is not a known video link. Now what, Cat? Now what?
       }
