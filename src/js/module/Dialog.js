@@ -143,7 +143,11 @@ define('summernote/module/Dialog', function () {
           $linkBtn.one('click', function (event) {
             event.preventDefault();
 
-            deferred.resolve($linkText.val(), $linkUrl.val(), $openInNewWindow.is(':checked'));
+            deferred.resolve({
+              url: $linkUrl.val(),
+              text: $linkText.val(),
+              newWindow: $openInNewWindow.is(':checked')
+            });
             $linkDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {

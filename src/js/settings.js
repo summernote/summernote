@@ -113,9 +113,24 @@ define('summernote/settings', function () {
       onenter: null,            // enter key pressed
       onkeyup: null,            // keyup
       onkeydown: null,          // keydown
-      onImageUpload: null,      // imageUploadHandler
-      onImageUploadError: null, // imageUploadErrorHandler
+      onImageUpload: null,      // imageUpload
+      onImageUploadError: null, // imageUploadError
       onToolbarClick: null,
+
+      /**
+       * manipulate link address when user create link
+       * @param {String} sLinkUrl
+       * @return {String}
+       */
+      onCreateLink: function (sLinkUrl) {
+        if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
+          sLinkUrl =  'mailto:' + sLinkUrl;
+        } else if (sLinkUrl.indexOf('://') === -1) {
+          sLinkUrl = 'http://' + sLinkUrl;
+        }
+
+        return sLinkUrl;
+      },
 
       keyMap: {
         pc: {

@@ -82,14 +82,17 @@ define([
        * @param {Object} oLayoutInfo
        */
       showLinkDialog: function (oLayoutInfo) {
-        var $dialog = oLayoutInfo.dialog(),
+        var $editor = oLayoutInfo.editor(),
+            $dialog = oLayoutInfo.dialog(),
             $editable = oLayoutInfo.editable(),
             linkInfo = editor.getLinkInfo($editable);
 
+        var options = $editor.data('options');
+
         editor.saveRange($editable);
-        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkText, sLinkUrl, isNewWindow) {
+        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
           editor.restoreRange($editable);
-          editor.createLink($editable, sLinkText, sLinkUrl, isNewWindow);
+          editor.createLink($editable, linkInfo, options);
           // hide popover after creating link
           popover.hide(oLayoutInfo.popover());
         }).fail(function () {
