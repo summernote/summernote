@@ -38,7 +38,7 @@
         videoLink: 'Veza ka videu',
         insert: 'Umetni video',
         url: 'URL video',
-        providers: '(YouTube, Vimeo, Vine, Instagram ili DailyMotion)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ili Youku)'
       },
       table: {
         table: 'Tabela'

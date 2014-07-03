@@ -39,7 +39,7 @@
         videoLink: 'رابط الفيديو',
         insert: 'إدراج الفيديو',
         url: 'رابط الفيديو',
-        providers: '(YouTube, Vimeo, Vine, Instagram ou DailyMotion)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ou Youku)'
       },
       table: {
         table: 'جدول'

@@ -234,7 +234,7 @@ define('summernote/settings', function () {
           videoLink: 'Video Link',
           insert: 'Insert Video',
           url: 'Video URL?',
-          providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
         },
         table: {
           table: 'Table'

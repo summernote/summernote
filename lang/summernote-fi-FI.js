@@ -39,7 +39,7 @@
         videoLink: 'Linkki videoon',
         insert: 'Lisää video',
         url: 'Videon URL-osoite?',
-        providers: '(YouTube, Vimeo, Vine, Instagram tai DailyMotion)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion tai Youku)'
       },
       table: {
         table: 'Taulukko'

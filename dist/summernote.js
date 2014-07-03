@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-07-02T10:52Z
+ * Date: 2014-07-03T07:03Z
  */
 (function (factory) {
   /* global define */
@@ -915,7 +915,7 @@
           videoLink: 'Video Link',
           insert: 'Insert Video',
           url: 'Video URL?',
-          providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
         },
         table: {
           table: 'Table'

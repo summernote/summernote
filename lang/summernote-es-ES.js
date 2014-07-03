@@ -38,7 +38,7 @@
         videoLink: 'Link del video',
         insert: 'Insertar video',
         url: 'URL del video?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, o DailyMotion)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, o Youku)'
       },
       table: {
         table: 'Tabla'

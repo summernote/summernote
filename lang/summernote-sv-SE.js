@@ -39,7 +39,7 @@
         videoLink: 'Länk till filmklipp',
         insert: 'Infoga filmklipp',
         url: 'Länk till filmklipp',
-        providers: '(YouTube, Vimeo, Vine, Instagram eller DailyMotion)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion eller Youku)'
       },
       table: {
         table: 'Tabell'

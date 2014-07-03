@@ -39,7 +39,7 @@
         videoLink: '동영상 링크',
         insert: '동영상 추가',
         url: '동영상 URL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion 사용 가능)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, Youku 사용 가능)'
       },
       table: {
         table: '테이블'

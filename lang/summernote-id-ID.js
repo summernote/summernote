@@ -38,7 +38,7 @@
         videoLink: 'Link video',
         insert: 'Sisipkan video',
         url: 'Tautan video',
-        providers: '(YouTube, Vimeo, Vine, Instagram, atau DailyMotion)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, atau Youku)'
       },
       table: {
         table: 'Tabel'
