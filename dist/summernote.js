@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-07-06T13:19Z
+ * Date: 2014-07-06T16:28Z
  */
 (function (factory) {
   /* global define */
@@ -1790,24 +1790,24 @@
         sLinkUrl = options.onCreateLink(sLinkUrl);
       }
 
+      var $anchor;
       // Create a new link when there is no anchor on range.
       if (!rng.isOnAnchor()) {
         // when range collapsed (IE, Firefox).
         if ((agent.isMSIE || agent.isFF) && rng.isCollapsed()) {
           rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
-          var $anchor = $('#linkAnchor').attr('href', sLinkUrl)
+          $anchor = $('#linkAnchor').attr('href', sLinkUrl)
                                         .removeAttr('id');
           rng = range.createFromNode($anchor[0]);
           rng.select();
         } else {
-          var sLinkHtml = '<a href="' + sLinkUrl + '" ';
+          $anchor = $(document.createElement('a')).text(sLinkText).attr('href', sLinkUrl);
 
           if (isNewWindow) {
-            sLinkHtml += 'target="_blank"';
+            $anchor.attr('target', '_blank');
           }
-          sLinkHtml += '>' + sLinkText + '</a>';
 
-          document.execCommand('insertHtml', false, sLinkHtml);
+          document.execCommand('insertHtml', false, $anchor[0]);
         }
       }
 
@@ -1815,7 +1815,7 @@
       $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
         // link href
         $(elAnchor).attr('href', sLinkUrl);
-        
+
         // link text
         $(elAnchor).html(sLinkText);
 
