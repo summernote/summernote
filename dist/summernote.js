@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-07-03T07:53Z
+ * Date: 2014-07-06T16:37Z
  */
 (function (factory) {
   /* global define */
@@ -1790,22 +1790,32 @@
         sLinkUrl = options.onCreateLink(sLinkUrl);
       }
 
+      var $anchor;
       // Create a new link when there is no anchor on range.
       if (!rng.isOnAnchor()) {
         // when range collapsed (IE, Firefox).
         if ((agent.isMSIE || agent.isFF) && rng.isCollapsed()) {
           rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
-          var $anchor = $('#linkAnchor').attr('href', sLinkUrl)
+          $anchor = $('#linkAnchor').attr('href', sLinkUrl)
                                         .removeAttr('id');
           rng = range.createFromNode($anchor[0]);
           rng.select();
         } else {
-          document.execCommand('createlink', false, sLinkUrl);
+          $anchor = $(document.createElement('a')).text(sLinkText).attr('href', sLinkUrl);
+
+          if (isNewWindow) {
+            $anchor.attr('target', '_blank');
+          }
+
+          document.execCommand('insertHtml', false, $anchor[0].outerHTML);
         }
       }
 
       // Edit link tags
       $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
+        // link href
+        $(elAnchor).attr('href', sLinkUrl);
+
         // link text
         $(elAnchor).html(sLinkText);
 
