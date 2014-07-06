@@ -314,12 +314,22 @@ define([
           rng = range.createFromNode($anchor[0]);
           rng.select();
         } else {
-          document.execCommand('createlink', false, sLinkUrl);
+          var sLinkHtml = '<a href="' + sLinkUrl + '" ';
+
+          if (isNewWindow) {
+            sLinkHtml += 'target="_blank"';
+          }
+          sLinkHtml += '>' + sLinkText + '</a>';
+
+          document.execCommand('insertHtml', false, sLinkHtml);
         }
       }
 
       // Edit link tags
       $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
+        // link href
+        $(elAnchor).attr('href', sLinkUrl);
+        
         // link text
         $(elAnchor).html(sLinkText);
 
