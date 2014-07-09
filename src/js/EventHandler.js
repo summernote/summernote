@@ -56,8 +56,9 @@ define([
       // else insert Image as dataURL
       } else {
         $.each(files, function (idx, file) {
+          var filename = file.name;
           async.readFileAsDataURL(file).then(function (sDataURL) {
-            editor.insertImage($editable, sDataURL);
+            editor.insertImage($editable, sDataURL, filename);
           }).fail(function () {
             if (callbacks.onImageUploadError) {
               callbacks.onImageUploadError();

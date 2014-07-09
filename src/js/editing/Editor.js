@@ -131,8 +131,8 @@ define([
      * @param {jQuery} $editable
      * @param {String} sUrl
      */
-    this.insertImage = function ($editable, sUrl) {
-      async.createImage(sUrl).then(function ($image) {
+    this.insertImage = function ($editable, sUrl, filename) {
+      async.createImage(sUrl, filename).then(function ($image) {
         recordUndo($editable);
         $image.css({
           display: '',
