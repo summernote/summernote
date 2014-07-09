@@ -39,7 +39,7 @@
                 videoLink: 'Videó hivatkozás',
                 insert: 'Videó beszúrása',
                 url: 'Videó URL címe',
-                providers: '(YouTube, Vimeo, Vine, Instagram, vagy DailyMotion)'
+                providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, vagy Youku)'
             },
             table: {
                 table: 'Táblázat'

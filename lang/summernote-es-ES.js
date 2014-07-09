@@ -4,8 +4,10 @@
       font: {
         name:'Fuente',
         bold: 'Negrita',
-        italic: 'Itálica',
+        italic: 'Cursiva',
         underline: 'Subrayado',
+        superscript: 'Superíndice',
+        subscript: 'Subíndice',
         strikethrough: 'Tachado',
         clear: 'Quitar estilo de fuente',
         height: 'Altura de línea',
@@ -38,7 +40,7 @@
         videoLink: 'Link del video',
         insert: 'Insertar video',
         url: 'URL del video?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, o DailyMotion)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, o Youku)'
       },
       table: {
         table: 'Tabla'

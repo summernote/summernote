@@ -141,14 +141,14 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
     var listBetween = function (nodeA, nodeB) {
       var aNode = [];
   
-      var bStart = false, bEnd = false;
+      var isStart = false, isEnd = false;
 
       // DFS(depth first search) with commonAcestor.
       (function fnWalk(node) {
         if (!node) { return; } // traverse fisnish
-        if (node === nodeA) { bStart = true; } // start point
-        if (bStart && !bEnd) { aNode.push(node); } // between
-        if (node === nodeB) { bEnd = true; return; } // end point
+        if (node === nodeA) { isStart = true; } // start point
+        if (isStart && !isEnd) { aNode.push(node); } // between
+        if (node === nodeB) { isEnd = true; return; } // end point
 
         for (var idx = 0, sz = node.childNodes.length; idx < sz; idx++) {
           fnWalk(node.childNodes[idx]);
@@ -363,7 +363,7 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
     };
   
     return {
-      blank: agent.bMSIE ? '&nbsp;' : '<br/>',
+      blank: agent.isMSIE ? '&nbsp;' : '<br/>',
       emptyPara: '<p><br/></p>',
       isEditable: isEditable,
       isControlSizing: isControlSizing,

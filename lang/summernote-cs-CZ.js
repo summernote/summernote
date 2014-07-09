@@ -37,7 +37,7 @@
         videoLink: 'Odkaz videa',
         insert: 'Vložit video',
         url: 'URL videa?',
-        providers: '(YouTube, Vimeo, Vine, Instagram nebo DailyMotion)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion nebo Youku)'
       },
       table: {
         table: 'Tabulka'

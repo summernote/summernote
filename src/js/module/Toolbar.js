@@ -37,9 +37,9 @@ define([
       $btn.toggleClass('active', bFullscreen);
     };
 
-    this.updateCodeview = function ($container, bCodeview) {
+    this.updateCodeview = function ($container, isCodeview) {
       var $btn = $container.find('button[data-event="codeview"]');
-      $btn.toggleClass('active', bCodeview);
+      $btn.toggleClass('active', isCodeview);
     };
   };
 

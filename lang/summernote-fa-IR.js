@@ -39,7 +39,7 @@
                 videoLink: 'لینک ویدیو',
                 insert: 'افزودن ویدیو',
                 url: 'آدرس ویدیو ؟',
-                providers: '(YouTube, Vimeo, Vine, Instagram, یا DailyMotion)'
+                providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, یا Youku)'
             },
             table: {
                 table: 'جدول'

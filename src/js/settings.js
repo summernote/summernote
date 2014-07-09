@@ -100,6 +100,12 @@ define('summernote/settings', function () {
       // lineHeight
       lineHeights: ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'],
 
+      // insertTable max size
+      insertTableMaxSize: {
+        col: 10,
+        row: 10
+      },
+
       // callbacks
       oninit: null,             // initialize
       onfocus: null,            // editable has focus
@@ -107,9 +113,24 @@ define('summernote/settings', function () {
       onenter: null,            // enter key pressed
       onkeyup: null,            // keyup
       onkeydown: null,          // keydown
-      onImageUpload: null,      // imageUploadHandler
-      onImageUploadError: null, // imageUploadErrorHandler
+      onImageUpload: null,      // imageUpload
+      onImageUploadError: null, // imageUploadError
       onToolbarClick: null,
+
+      /**
+       * manipulate link address when user create link
+       * @param {String} sLinkUrl
+       * @return {String}
+       */
+      onCreateLink: function (sLinkUrl) {
+        if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
+          sLinkUrl =  'mailto:' + sLinkUrl;
+        } else if (sLinkUrl.indexOf('://') === -1) {
+          sLinkUrl = 'http://' + sLinkUrl;
+        }
+
+        return sLinkUrl;
+      },
 
       keyMap: {
         pc: {
@@ -213,7 +234,7 @@ define('summernote/settings', function () {
           videoLink: 'Video Link',
           insert: 'Insert Video',
           url: 'Video URL?',
-          providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
         },
         table: {
           table: 'Table'

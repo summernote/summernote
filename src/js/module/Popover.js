@@ -10,22 +10,32 @@ define([
     var button = new Button();
 
     /**
+     * returns position from placeholder
+     * @param {Element} placeholder
+     * @param {Boolean} isAirMode
+     */
+    var posFromPlaceholder = function (placeholder, isAirMode) {
+      var $placeholder = $(placeholder);
+      var pos = isAirMode ? $placeholder.offset() : $placeholder.position();
+      var height = $placeholder.outerHeight(true); // include margin
+
+      // popover below placeholder.
+      return {
+        left: pos.left,
+        top: pos.top + height
+      };
+    };
+
+    /**
      * show popover
      * @param {jQuery} popover
-     * @param {Element} elPlaceholder - placeholder for popover
+     * @param {Position} pos
      */
-    var showPopover = function ($popover, elPlaceholder) {
-      var $placeholder = $(elPlaceholder);
-      var pos = $placeholder.position();
-
-      // include margin
-      var height = $placeholder.outerHeight(true);
-
-      // display popover below placeholder.
+    var showPopover = function ($popover, pos) {
       $popover.css({
         display: 'block',
         left: pos.left,
-        top: pos.top + height
+        top: pos.top
       });
     };
 
@@ -41,34 +51,30 @@ define([
       button.update($popover, oStyle);
 
       var $linkPopover = $popover.find('.note-link-popover');
-
       if (oStyle.anchor) {
         var $anchor = $linkPopover.find('a');
         $anchor.attr('href', oStyle.anchor.href).html(oStyle.anchor.href);
-        showPopover($linkPopover, oStyle.anchor);
+        showPopover($linkPopover, posFromPlaceholder(oStyle.anchor, isAirMode));
       } else {
         $linkPopover.hide();
       }
 
       var $imagePopover = $popover.find('.note-image-popover');
       if (oStyle.image) {
-        showPopover($imagePopover, oStyle.image);
+        showPopover($imagePopover, posFromPlaceholder(oStyle.image, isAirMode));
       } else {
         $imagePopover.hide();
       }
 
-      if (isAirMode) {
-        var $airPopover = $popover.find('.note-air-popover');
-        if (!oStyle.range.isCollapsed()) {
-          var bnd = func.rect2bnd(list.last(oStyle.range.getClientRects()));
-          $airPopover.css({
-            display: 'block',
-            left: Math.max(bnd.left + bnd.width / 2 - PX_POPOVER_ARROW_OFFSET_X, 0),
-            top: bnd.top + bnd.height
-          });
-        } else {
-          $airPopover.hide();
-        }
+      var $airPopover = $popover.find('.note-air-popover');
+      if (isAirMode && !oStyle.range.isCollapsed()) {
+        var bnd = func.rect2bnd(list.last(oStyle.range.getClientRects()));
+        showPopover($airPopover, {
+          left: Math.max(bnd.left + bnd.width / 2 - PX_POPOVER_ARROW_OFFSET_X, 0),
+          top: bnd.top + bnd.height
+        });
+      } else {
+        $airPopover.hide();
       }
     };
 

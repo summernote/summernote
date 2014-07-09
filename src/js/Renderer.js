@@ -584,7 +584,7 @@ define([
       var tplHelpDialog = function () {
         var body = '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
-                   (agent.bMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
+                   (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
                      '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote @VERSION</a> · ' +
                      '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
@@ -610,7 +610,7 @@ define([
     };
 
     var representShortcut = function (str) {
-      if (agent.bMac) {
+      if (agent.isMac) {
         str = str.replace('CMD', '⌘').replace('SHIFT', '⇧');
       }
 
@@ -680,7 +680,7 @@ define([
      * @param {Object} options
      */
     this.createLayoutByAirMode = function ($holder, options) {
-      var keyMap = options.keyMap[agent.bMac ? 'mac' : 'pc'];
+      var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       var langInfo = $.summernote.lang[options.lang];
 
       var id = func.uniqueId();
@@ -767,7 +767,7 @@ define([
       sToolbar = '<div class="note-toolbar btn-toolbar">' + sToolbar + '</div>';
 
       var $toolbar = $(sToolbar).prependTo($editor);
-      var keyMap = options.keyMap[agent.bMac ? 'mac' : 'pc'];
+      var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       createPalette($toolbar, options);
       createTooltip($toolbar, keyMap, 'bottom');
 
@@ -845,14 +845,24 @@ define([
      * removeLayout
      *
      * @param {jQuery} $holder - placeholder
+     * @param {Object} oLayoutInfo
+     * @param {Object} options
+     *
      */
-    this.removeLayout = function ($holder) {
-      var info = this.layoutInfoFromHolder($holder);
-      if (!info) { return; }
-      $holder.html(info.editable.html());
+    this.removeLayout = function ($holder, oLayoutInfo, options) {
+      if (options.airMode) {
+        $holder.removeClass('note-air-editor note-editable')
+               .removeAttr('id contentEditable');
 
-      info.editor.remove();
-      $holder.show();
+        oLayoutInfo.popover.remove();
+        oLayoutInfo.handle.remove();
+        oLayoutInfo.dialog.remove();
+      } else {
+        $holder.html(oLayoutInfo.editable.html());
+
+        oLayoutInfo.editor.remove();
+        $holder.show();
+      }
     };
   };
 

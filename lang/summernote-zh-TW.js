@@ -37,7 +37,7 @@
         videoLink: '影片連結',
         insert: '插入影片',
         url: '影片網址',
-        providers: '(優酷, Instagram, Youtube等)'
+        providers: '(優酷, Instagram, DailyMotion, Youtube等)'
       },
       table: {
         table: '表格'

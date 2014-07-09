@@ -39,7 +39,7 @@
         videoLink: 'Video link',
         insert: 'Video invoegen',
         url: 'URL van de video',
-        providers: '(YouTube, Vimeo, Vine, Instagram of DailyMotion)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion of Youku)'
       },
       table: {
         table: 'Tabel'

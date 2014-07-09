@@ -103,8 +103,7 @@ define([
     /**
      * handle tab key
      * @param {jQuery} $editable 
-     * @param {Number} nTabsize
-     * @param {Boolean} bShift
+     * @param {Object} options
      */
     this.tab = function ($editable, options) {
       var rng = range.create();
@@ -155,7 +154,7 @@ define([
     this.insertVideo = function ($editable, sUrl) {
       recordUndo($editable);
 
-      // video url patterns(youtube, instagram, vimeo, dailymotion)
+      // video url patterns(youtube, instagram, vimeo, dailymotion, youku)
       var ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       var ytMatch = sUrl.match(ytRegExp);
 
@@ -170,6 +169,9 @@ define([
 
       var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
       var dmMatch = sUrl.match(dmRegExp);
+
+      var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)\.html/;
+      var youkuMatch = sUrl.match(youkuRegExp);
 
       var $video;
       if (ytMatch && ytMatch[2].length === 11) {
@@ -196,6 +198,11 @@ define([
         $video = $('<iframe>')
           .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
           .attr('width', '640').attr('height', '360');
+      } else if (youkuMatch && youkuMatch[1].length) {
+        $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+          .attr('height', '498')
+          .attr('width', '510')
+          .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
       } else {
         // this is not a known video link. Now what, Cat? Now what?
       }
@@ -214,7 +221,7 @@ define([
      */
     this.formatBlock = function ($editable, sTagName) {
       recordUndo($editable);
-      sTagName = agent.bMSIE ? '<' + sTagName + '>' : sTagName;
+      sTagName = agent.isMSIE ? '<' + sTagName + '>' : sTagName;
       document.execCommand('FormatBlock', false, sTagName);
     };
 
@@ -242,7 +249,7 @@ define([
     this.fontSize = function ($editable, sValue) {
       recordUndo($editable);
       document.execCommand('fontSize', false, 3);
-      if (agent.bFF) {
+      if (agent.isFF) {
         // firefox: <font size="3"> to <span style='font-size={sValue}px;'>, buggy
         $editable.find('font[size=3]').removeAttr('size').css('font-size', sValue + 'px');
       } else {
@@ -282,32 +289,32 @@ define([
      * create link
      *
      * @param {jQuery} $editable
-     * @param {String} sLinkUrl
-     * @param {Boolean} bNewWindow
+     * @param {Object} linkInfo
+     * @param {Object} options
      */
-    this.createLink = function ($editable, sLinkText, sLinkUrl, bNewWindow) {
+    this.createLink = function ($editable, linkInfo, options) {
+      var sLinkUrl = linkInfo.url;
+      var sLinkText = linkInfo.text;
+      var isNewWindow = linkInfo.newWindow;
+
       var rng = range.create();
       recordUndo($editable);
 
-      // prepend protocol
-      var sLinkUrlWithProtocol = sLinkUrl;
-      if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
-        sLinkUrlWithProtocol =  'mailto:' + sLinkUrl;
-      } else if (sLinkUrl.indexOf('://') === -1) {
-        sLinkUrlWithProtocol = 'http://' + sLinkUrl;
+      if (options.onCreateLink) {
+        sLinkUrl = options.onCreateLink(sLinkUrl);
       }
 
       // Create a new link when there is no anchor on range.
       if (!rng.isOnAnchor()) {
         // when range collapsed (IE, Firefox).
-        if ((agent.bMSIE || agent.bFF) && rng.isCollapsed()) {
+        if ((agent.isMSIE || agent.isFF) && rng.isCollapsed()) {
           rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
-          var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol)
+          var $anchor = $('#linkAnchor').attr('href', sLinkUrl)
                                         .removeAttr('id');
           rng = range.createFromNode($anchor[0]);
           rng.select();
         } else {
-          document.execCommand('createlink', false, sLinkUrlWithProtocol);
+          document.execCommand('createlink', false, sLinkUrl);
         }
       }
 
@@ -317,7 +324,7 @@ define([
         $(elAnchor).html(sLinkText);
 
         // link target
-        if (bNewWindow) {
+        if (isNewWindow) {
           $(elAnchor).attr('target', '_blank');
         } else {
           $(elAnchor).removeAttr('target');
@@ -326,29 +333,29 @@ define([
     };
 
     /**
-     * get link info
+     * returns link info
      *
-     * @return {Promise}
+     * @return {Object}
      */
     this.getLinkInfo = function ($editable) {
       $editable.focus();
 
       var rng = range.create();
-      var bNewWindow = true;
+      var isNewWindow = true;
       var sUrl = '';
 
       // If range on anchor expand range on anchor(for edit link).
       if (rng.isOnAnchor()) {
         var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
         rng = range.createFromNode(elAnchor);
-        bNewWindow = $(elAnchor).attr('target') === '_blank';
+        isNewWindow = $(elAnchor).attr('target') === '_blank';
         sUrl = elAnchor.href;
       }
 
       return {
         text: rng.toString(),
         url: sUrl,
-        newWindow: bNewWindow
+        newWindow: isNewWindow
       };
     };
 

@@ -6,18 +6,18 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-07-09T18:16Z
+ * Date: 2014-07-09T18:25Z
  */
 (function (factory) {
   /* global define */
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['jquery', 'codemirror'], factory);
+    define(['jquery'], factory);
   } else {
-    // Browser globals: jQuery, CodeMirror
-    factory(window.jQuery, window.CodeMirror);
+    // Browser globals: jQuery
+    factory(window.jQuery);
   }
-}(function ($, CodeMirror) {
+}(function ($) {
   
 
 
@@ -50,15 +50,18 @@
     };
   }
 
+  var isSupportAmd = typeof define === 'function' && define.amd;
+
   /**
    * Object which check platform and agent
    */
   var agent = {
-    bMac: navigator.appVersion.indexOf('Mac') > -1,
-    bMSIE: navigator.userAgent.indexOf('MSIE') > -1 || navigator.userAgent.indexOf('Trident') > -1,
-    bFF: navigator.userAgent.indexOf('Firefox') > -1,
+    isMac: navigator.appVersion.indexOf('Mac') > -1,
+    isMSIE: navigator.userAgent.indexOf('MSIE') > -1 || navigator.userAgent.indexOf('Trident') > -1,
+    isFF: navigator.userAgent.indexOf('Firefox') > -1,
     jqueryVersion: parseFloat($.fn.jquery),
-    bCodeMirror: !!CodeMirror
+    isSupportAmd: isSupportAmd,
+    hasCodeMirror: isSupportAmd ? require.specified('CodeMirror') : !!window.CodeMirror
   };
 
   /**
@@ -418,14 +421,14 @@
     var listBetween = function (nodeA, nodeB) {
       var aNode = [];
   
-      var bStart = false, bEnd = false;
+      var isStart = false, isEnd = false;
 
       // DFS(depth first search) with commonAcestor.
       (function fnWalk(node) {
         if (!node) { return; } // traverse fisnish
-        if (node === nodeA) { bStart = true; } // start point
-        if (bStart && !bEnd) { aNode.push(node); } // between
-        if (node === nodeB) { bEnd = true; return; } // end point
+        if (node === nodeA) { isStart = true; } // start point
+        if (isStart && !isEnd) { aNode.push(node); } // between
+        if (node === nodeB) { isEnd = true; return; } // end point
 
         for (var idx = 0, sz = node.childNodes.length; idx < sz; idx++) {
           fnWalk(node.childNodes[idx]);
@@ -640,7 +643,7 @@
     };
   
     return {
-      blank: agent.bMSIE ? '&nbsp;' : '<br/>',
+      blank: agent.isMSIE ? '&nbsp;' : '<br/>',
       emptyPara: '<p><br/></p>',
       isEditable: isEditable,
       isControlSizing: isControlSizing,
@@ -778,6 +781,12 @@
       // lineHeight
       lineHeights: ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'],
 
+      // insertTable max size
+      insertTableMaxSize: {
+        col: 10,
+        row: 10
+      },
+
       // callbacks
       oninit: null,             // initialize
       onfocus: null,            // editable has focus
@@ -785,9 +794,24 @@
       onenter: null,            // enter key pressed
       onkeyup: null,            // keyup
       onkeydown: null,          // keydown
-      onImageUpload: null,      // imageUploadHandler
-      onImageUploadError: null, // imageUploadErrorHandler
+      onImageUpload: null,      // imageUpload
+      onImageUploadError: null, // imageUploadError
       onToolbarClick: null,
+
+      /**
+       * manipulate link address when user create link
+       * @param {String} sLinkUrl
+       * @return {String}
+       */
+      onCreateLink: function (sLinkUrl) {
+        if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
+          sLinkUrl =  'mailto:' + sLinkUrl;
+        } else if (sLinkUrl.indexOf('://') === -1) {
+          sLinkUrl = 'http://' + sLinkUrl;
+        }
+
+        return sLinkUrl;
+      },
 
       keyMap: {
         pc: {
@@ -891,7 +915,7 @@
           videoLink: 'Video Link',
           insert: 'Insert Video',
           url: 'Video URL?',
-          providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
         },
         table: {
           table: 'Table'
@@ -1113,8 +1137,8 @@
         oStyle['list-style'] = 'none';
       } else {
         var aOrderedType = ['circle', 'disc', 'disc-leading-zero', 'square'];
-        var bUnordered = $.inArray(oStyle['list-style-type'], aOrderedType) > -1;
-        oStyle['list-style'] = bUnordered ? 'unordered' : 'ordered';
+        var isUnordered = $.inArray(oStyle['list-style-type'], aOrderedType) > -1;
+        oStyle['list-style'] = isUnordered ? 'unordered' : 'ordered';
       }
 
       var elPara = dom.ancestor(rng.sc, dom.isPara);
@@ -1138,15 +1162,15 @@
    * range module
    */
   var range = (function () {
-    var bW3CRangeSupport = !!document.createRange;
+    var isW3CRangeSupport = !!document.createRange;
      
     /**
      * return boundaryPoint from TextRange, inspired by Andy Na's HuskyRange.js
      * @param {TextRange} textRange
-     * @param {Boolean} bStart
+     * @param {Boolean} isStart
      * @return {BoundaryPoint}
      */
-    var textRange2bp = function (textRange, bStart) {
+    var textRange2bp = function (textRange, isStart) {
       var elCont = textRange.parentElement(), nOffset;
   
       var tester = document.body.createTextRange(), elPrevCont;
@@ -1177,7 +1201,7 @@
         var sDummy = elCurText.nodeValue; //enforce IE to re-reference elCurText, hack
         /* jshint ignore:end */
   
-        if (bStart && elCurText.nextSibling && dom.isText(elCurText.nextSibling) &&
+        if (isStart && elCurText.nextSibling && dom.isText(elCurText.nextSibling) &&
             nTextCount === elCurText.nodeValue.length) {
           nTextCount -= elCurText.nodeValue.length;
           elCurText = elCurText.nextSibling;
@@ -1197,14 +1221,14 @@
      */
     var bp2textRange = function (bp) {
       var textRangeInfo = function (elCont, nOffset) {
-        var elNode, bCollapseToStart;
+        var elNode, isCollapseToStart;
   
         if (dom.isText(elCont)) {
           var aPrevText = dom.listPrev(elCont, func.not(dom.isText));
           var elPrevCont = list.last(aPrevText).previousSibling;
           elNode =  elPrevCont || elCont.parentNode;
           nOffset += list.sum(list.tail(aPrevText), dom.length);
-          bCollapseToStart = !elPrevCont;
+          isCollapseToStart = !elPrevCont;
         } else {
           elNode = elCont.childNodes[nOffset] || elCont;
           if (dom.isText(elNode)) {
@@ -1212,10 +1236,10 @@
           }
   
           nOffset = 0;
-          bCollapseToStart = false;
+          isCollapseToStart = false;
         }
   
-        return {cont: elNode, collapseToStart: bCollapseToStart, offset: nOffset};
+        return {cont: elNode, collapseToStart: isCollapseToStart, offset: nOffset};
       };
   
       var textRange = document.body.createTextRange();
@@ -1243,7 +1267,7 @@
   
       // nativeRange: get nativeRange from sc, so, ec, eo
       var nativeRange = function () {
-        if (bW3CRangeSupport) {
+        if (isW3CRangeSupport) {
           var w3cRange = document.createRange();
           w3cRange.setStart(sc, so);
           w3cRange.setEnd(ec, eo);
@@ -1260,7 +1284,7 @@
        */
       this.select = function () {
         var nativeRng = nativeRange();
-        if (bW3CRangeSupport) {
+        if (isW3CRangeSupport) {
           var selection = document.getSelection();
           if (selection.rangeCount > 0) { selection.removeAllRanges(); }
           selection.addRange(nativeRng);
@@ -1318,7 +1342,7 @@
        */
       this.insertNode = function (node) {
         var nativeRng = nativeRange();
-        if (bW3CRangeSupport) {
+        if (isW3CRangeSupport) {
           nativeRng.insertNode(node);
         } else {
           nativeRng.pasteHTML(node.outerHTML); // NOTE: missing node reference.
@@ -1327,7 +1351,7 @@
   
       this.toString = function () {
         var nativeRng = nativeRange();
-        return bW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
+        return isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
       };
   
       /**
@@ -1362,7 +1386,7 @@
        */
       create : function (sc, so, ec, eo) {
         if (!arguments.length) { // from Browser Selection
-          if (bW3CRangeSupport) { // webkit, firefox
+          if (isW3CRangeSupport) { // webkit, firefox
             var selection = document.getSelection();
             if (selection.rangeCount === 0) { return null; }
   
@@ -1429,14 +1453,14 @@
      * handle tab key
      *
      * @param {WrappedRange} rng
-     * @param {Boolean} bShift
+     * @param {Boolean} isShift
      */
-    this.tab = function (rng, bShift) {
+    this.tab = function (rng, isShift) {
       var elCell = dom.ancestor(rng.commonAncestor(), dom.isCell);
       var elTable = dom.ancestor(elCell, dom.isTable);
       var aCell = dom.listDescendant(elTable, dom.isCell);
 
-      var elNext = list[bShift ? 'prev' : 'next'](aCell, elCell);
+      var elNext = list[isShift ? 'prev' : 'next'](aCell, elCell);
       if (elNext) {
         range.create(elNext, 0).select();
       }
@@ -1567,8 +1591,7 @@
     /**
      * handle tab key
      * @param {jQuery} $editable 
-     * @param {Number} nTabsize
-     * @param {Boolean} bShift
+     * @param {Object} options
      */
     this.tab = function ($editable, options) {
       var rng = range.create();
@@ -1619,7 +1642,7 @@
     this.insertVideo = function ($editable, sUrl) {
       recordUndo($editable);
 
-      // video url patterns(youtube, instagram, vimeo, dailymotion)
+      // video url patterns(youtube, instagram, vimeo, dailymotion, youku)
       var ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       var ytMatch = sUrl.match(ytRegExp);
 
@@ -1634,6 +1657,9 @@
 
       var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
       var dmMatch = sUrl.match(dmRegExp);
+
+      var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)\.html/;
+      var youkuMatch = sUrl.match(youkuRegExp);
 
       var $video;
       if (ytMatch && ytMatch[2].length === 11) {
@@ -1660,6 +1686,11 @@
         $video = $('<iframe>')
           .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
           .attr('width', '640').attr('height', '360');
+      } else if (youkuMatch && youkuMatch[1].length) {
+        $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+          .attr('height', '498')
+          .attr('width', '510')
+          .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
       } else {
         // this is not a known video link. Now what, Cat? Now what?
       }
@@ -1678,7 +1709,7 @@
      */
     this.formatBlock = function ($editable, sTagName) {
       recordUndo($editable);
-      sTagName = agent.bMSIE ? '<' + sTagName + '>' : sTagName;
+      sTagName = agent.isMSIE ? '<' + sTagName + '>' : sTagName;
       document.execCommand('FormatBlock', false, sTagName);
     };
 
@@ -1706,7 +1737,7 @@
     this.fontSize = function ($editable, sValue) {
       recordUndo($editable);
       document.execCommand('fontSize', false, 3);
-      if (agent.bFF) {
+      if (agent.isFF) {
         // firefox: <font size="3"> to <span style='font-size={sValue}px;'>, buggy
         $editable.find('font[size=3]').removeAttr('size').css('font-size', sValue + 'px');
       } else {
@@ -1746,32 +1777,32 @@
      * create link
      *
      * @param {jQuery} $editable
-     * @param {String} sLinkUrl
-     * @param {Boolean} bNewWindow
+     * @param {Object} linkInfo
+     * @param {Object} options
      */
-    this.createLink = function ($editable, sLinkText, sLinkUrl, bNewWindow) {
+    this.createLink = function ($editable, linkInfo, options) {
+      var sLinkUrl = linkInfo.url;
+      var sLinkText = linkInfo.text;
+      var isNewWindow = linkInfo.newWindow;
+
       var rng = range.create();
       recordUndo($editable);
 
-      // prepend protocol
-      var sLinkUrlWithProtocol = sLinkUrl;
-      if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
-        sLinkUrlWithProtocol =  'mailto:' + sLinkUrl;
-      } else if (sLinkUrl.indexOf('://') === -1) {
-        sLinkUrlWithProtocol = 'http://' + sLinkUrl;
+      if (options.onCreateLink) {
+        sLinkUrl = options.onCreateLink(sLinkUrl);
       }
 
       // Create a new link when there is no anchor on range.
       if (!rng.isOnAnchor()) {
         // when range collapsed (IE, Firefox).
-        if ((agent.bMSIE || agent.bFF) && rng.isCollapsed()) {
+        if ((agent.isMSIE || agent.isFF) && rng.isCollapsed()) {
           rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
-          var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol)
+          var $anchor = $('#linkAnchor').attr('href', sLinkUrl)
                                         .removeAttr('id');
           rng = range.createFromNode($anchor[0]);
           rng.select();
         } else {
-          document.execCommand('createlink', false, sLinkUrlWithProtocol);
+          document.execCommand('createlink', false, sLinkUrl);
         }
       }
 
@@ -1781,7 +1812,7 @@
         $(elAnchor).html(sLinkText);
 
         // link target
-        if (bNewWindow) {
+        if (isNewWindow) {
           $(elAnchor).attr('target', '_blank');
         } else {
           $(elAnchor).removeAttr('target');
@@ -1790,29 +1821,29 @@
     };
 
     /**
-     * get link info
+     * returns link info
      *
-     * @return {Promise}
+     * @return {Object}
      */
     this.getLinkInfo = function ($editable) {
       $editable.focus();
 
       var rng = range.create();
-      var bNewWindow = true;
+      var isNewWindow = true;
       var sUrl = '';
 
       // If range on anchor expand range on anchor(for edit link).
       if (rng.isOnAnchor()) {
         var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
         rng = range.createFromNode(elAnchor);
-        bNewWindow = $(elAnchor).attr('target') === '_blank';
+        isNewWindow = $(elAnchor).attr('target') === '_blank';
         sUrl = elAnchor.href;
       }
 
       return {
         text: rng.toString(),
         url: sUrl,
-        newWindow: bNewWindow
+        newWindow: isNewWindow
       };
     };
 
@@ -1974,8 +2005,8 @@
       var checkDropdownMenu = function ($btn, nValue) {
         $btn.find('.dropdown-menu li a').each(function () {
           // always compare string to avoid creating another func.
-          var bChecked = ($(this).data('value') + '') === (nValue + '');
-          this.className = bChecked ? 'checked' : '';
+          var isChecked = ($(this).data('value') + '') === (nValue + '');
+          this.className = isChecked ? 'checked' : '';
         });
       };
 
@@ -2102,9 +2133,9 @@
       $btn.toggleClass('active', bFullscreen);
     };
 
-    this.updateCodeview = function ($container, bCodeview) {
+    this.updateCodeview = function ($container, isCodeview) {
       var $btn = $container.find('button[data-event="codeview"]');
-      $btn.toggleClass('active', bCodeview);
+      $btn.toggleClass('active', isCodeview);
     };
   };
 
@@ -2115,22 +2146,32 @@
     var button = new Button();
 
     /**
+     * returns position from placeholder
+     * @param {Element} placeholder
+     * @param {Boolean} isAirMode
+     */
+    var posFromPlaceholder = function (placeholder, isAirMode) {
+      var $placeholder = $(placeholder);
+      var pos = isAirMode ? $placeholder.offset() : $placeholder.position();
+      var height = $placeholder.outerHeight(true); // include margin
+
+      // popover below placeholder.
+      return {
+        left: pos.left,
+        top: pos.top + height
+      };
+    };
+
+    /**
      * show popover
      * @param {jQuery} popover
-     * @param {Element} elPlaceholder - placeholder for popover
+     * @param {Position} pos
      */
-    var showPopover = function ($popover, elPlaceholder) {
-      var $placeholder = $(elPlaceholder);
-      var pos = $placeholder.position();
-
-      // include margin
-      var height = $placeholder.outerHeight(true);
-
-      // display popover below placeholder.
+    var showPopover = function ($popover, pos) {
       $popover.css({
         display: 'block',
         left: pos.left,
-        top: pos.top + height
+        top: pos.top
       });
     };
 
@@ -2146,34 +2187,30 @@
       button.update($popover, oStyle);
 
       var $linkPopover = $popover.find('.note-link-popover');
-
       if (oStyle.anchor) {
         var $anchor = $linkPopover.find('a');
         $anchor.attr('href', oStyle.anchor.href).html(oStyle.anchor.href);
-        showPopover($linkPopover, oStyle.anchor);
+        showPopover($linkPopover, posFromPlaceholder(oStyle.anchor, isAirMode));
       } else {
         $linkPopover.hide();
       }
 
       var $imagePopover = $popover.find('.note-image-popover');
       if (oStyle.image) {
-        showPopover($imagePopover, oStyle.image);
+        showPopover($imagePopover, posFromPlaceholder(oStyle.image, isAirMode));
       } else {
         $imagePopover.hide();
       }
 
-      if (isAirMode) {
-        var $airPopover = $popover.find('.note-air-popover');
-        if (!oStyle.range.isCollapsed()) {
-          var bnd = func.rect2bnd(list.last(oStyle.range.getClientRects()));
-          $airPopover.css({
-            display: 'block',
-            left: Math.max(bnd.left + bnd.width / 2 - PX_POPOVER_ARROW_OFFSET_X, 0),
-            top: bnd.top + bnd.height
-          });
-        } else {
-          $airPopover.hide();
-        }
+      var $airPopover = $popover.find('.note-air-popover');
+      if (isAirMode && !oStyle.range.isCollapsed()) {
+        var bnd = func.rect2bnd(list.last(oStyle.range.getClientRects()));
+        showPopover($airPopover, {
+          left: Math.max(bnd.left + bnd.width / 2 - PX_POPOVER_ARROW_OFFSET_X, 0),
+          top: bnd.top + bnd.height
+        });
+      } else {
+        $airPopover.hide();
       }
     };
 
@@ -2198,12 +2235,13 @@
      * update handle
      * @param {jQuery} $handle
      * @param {Object} oStyle
+     * @param {Boolean} isAirMode
      */
-    this.update = function ($handle, oStyle) {
+    this.update = function ($handle, oStyle, isAirMode) {
       var $selection = $handle.find('.note-control-selection');
       if (oStyle.image) {
         var $image = $(oStyle.image);
-        var pos = $image.position();
+        var pos = isAirMode ? $image.offset() : $image.position();
 
         // include margin
         var szImage = {
@@ -2241,11 +2279,11 @@
      * toggle button status
      *
      * @param {jQuery} $btn
-     * @param {Boolean} bEnable
+     * @param {Boolean} isEnable
      */
-    var toggleBtn = function ($btn, bEnable) {
-      $btn.toggleClass('disabled', !bEnable);
-      $btn.attr('disabled', !bEnable);
+    var toggleBtn = function ($btn, isEnable) {
+      $btn.toggleClass('disabled', !isEnable);
+      $btn.attr('disabled', !isEnable);
     };
 
     /**
@@ -2279,12 +2317,20 @@
             $imageDialog.modal('hide');
           });
 
-          $imageUrl.keyup(function () {
-            toggleBtn($imageBtn, $imageUrl.val());
+          $imageUrl.on('keyup paste', function (event) {
+            var url;
+            
+            if (event.type === 'paste') {
+              url = event.originalEvent.clipboardData.getData('text');
+            } else {
+              url = $imageUrl.val();
+            }
+            
+            toggleBtn($imageBtn, url);
           }).val('').trigger('focus');
         }).one('hidden.bs.modal', function () {
           $imageInput.off('change');
-          $imageUrl.off('keyup');
+          $imageUrl.off('keyup paste');
           $imageBtn.off('click');
 
           if (deferred.state() === 'pending') {
@@ -2374,7 +2420,11 @@
           $linkBtn.one('click', function (event) {
             event.preventDefault();
 
-            deferred.resolve($linkText.val(), $linkUrl.val(), $openInNewWindow.is(':checked'));
+            deferred.resolve({
+              url: $linkUrl.val(),
+              text: $linkText.val(),
+              newWindow: $openInNewWindow.is(':checked')
+            });
             $linkDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
@@ -2402,6 +2452,18 @@
       }).promise();
     };
   };
+
+
+  var CodeMirror;
+  if (agent.hasCodeMirror) {
+    if (agent.isSupportAmd) {
+      require(['CodeMirror'], function (cm) {
+        CodeMirror = cm;
+      });
+    } else {
+      CodeMirror = window.CodeMirror;
+    }
+  }
 
   /**
    * EventHandler
@@ -2469,14 +2531,17 @@
        * @param {Object} oLayoutInfo
        */
       showLinkDialog: function (oLayoutInfo) {
-        var $dialog = oLayoutInfo.dialog(),
+        var $editor = oLayoutInfo.editor(),
+            $dialog = oLayoutInfo.dialog(),
             $editable = oLayoutInfo.editable(),
             linkInfo = editor.getLinkInfo($editable);
 
+        var options = $editor.data('options');
+
         editor.saveRange($editable);
-        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkText, sLinkUrl, bNewWindow) {
+        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
           editor.restoreRange($editable);
-          editor.createLink($editable, sLinkText, sLinkUrl, bNewWindow);
+          editor.createLink($editable, linkInfo, options);
           // hide popover after creating link
           popover.hide(oLayoutInfo.popover());
         }).fail(function () {
@@ -2592,8 +2657,8 @@
 
         $editor.toggleClass('codeview');
 
-        var bCodeview = $editor.hasClass('codeview');
-        if (bCodeview) {
+        var isCodeview = $editor.hasClass('codeview');
+        if (isCodeview) {
           $codable.val($editable.html());
           $codable.height($editable.height());
           toolbar.deactivate($toolbar);
@@ -2601,7 +2666,7 @@
           $codable.focus();
 
           // activate CodeMirror as codable
-          if (agent.bCodeMirror) {
+          if (agent.hasCodeMirror) {
             cmEditor = CodeMirror.fromTextArea($codable[0], options.codemirror);
 
             // CodeMirror TernServer
@@ -2626,7 +2691,7 @@
           }
         } else {
           // deactivate CodeMirror as codable
-          if (agent.bCodeMirror) {
+          if (agent.hasCodeMirror) {
             cmEditor = $codable.data('cmEditor');
             $codable.val(cmEditor.getValue());
             cmEditor.toTextArea();
@@ -2639,7 +2704,7 @@
           $editable.focus();
         }
 
-        toolbar.updateCodeview(oLayoutInfo.toolbar(), bCodeview);
+        toolbar.updateCodeview(oLayoutInfo.toolbar(), isCodeview);
       }
     };
 
@@ -2663,7 +2728,7 @@
         }
 
         popover.update(oLayoutInfo.popover(), oStyle, isAirMode);
-        handle.update(oLayoutInfo.handle(), oStyle);
+        handle.update(oLayoutInfo.handle(), oStyle, isAirMode);
       }, 0);
     };
 
@@ -2687,9 +2752,9 @@
 
       var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
       var item = list.head(clipboardData.items);
-      var bClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
+      var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
 
-      if (bClipboardImage) {
+      if (isClipboardImage) {
         insertImages(oLayoutInfo.editable(), [item.getAsFile()]);
       }
     };
@@ -2707,11 +2772,14 @@
 
         var oLayoutInfo = makeLayoutInfo(event.target),
             $handle = oLayoutInfo.handle(), $popover = oLayoutInfo.popover(),
-            $editable = oLayoutInfo.editable();
+            $editable = oLayoutInfo.editable(),
+            $editor = oLayoutInfo.editor();
 
         var elTarget = $handle.find('.note-control-selection').data('target'),
             $target = $(elTarget), posStart = $target.offset(),
             scrollTop = $document.scrollTop();
+
+        var isAirMode = $editor.data('options').airMode;
 
         $document.on('mousemove', function (event) {
           editor.resizeTo({
@@ -2719,8 +2787,8 @@
             y: event.clientY - (posStart.top - scrollTop)
           }, $target, !event.shiftKey);
 
-          handle.update($handle, {image: elTarget});
-          popover.update($popover, {image: elTarget});
+          handle.update($handle, {image: elTarget}, isAirMode);
+          popover.update($popover, {image: elTarget}, isAirMode);
         }).one('mouseup', function () {
           $document.off('mousemove');
         });
@@ -2804,7 +2872,7 @@
     };
 
     var PX_PER_EM = 18;
-    var hDimensionPickerMove = function (event) {
+    var hDimensionPickerMove = function (event, options) {
       var $picker = $(event.target.parentNode); // target is mousecatcher
       var $dimensionDisplay = $picker.next();
       var $catcher = $picker.find('.note-dimension-picker-mousecatcher');
@@ -2834,11 +2902,11 @@
       $highlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });
       $catcher.attr('data-value', dim.c + 'x' + dim.r);
 
-      if (3 < dim.c && dim.c < 10) { // 5~10
+      if (3 < dim.c && dim.c < options.insertTableMaxSize.col) {
         $unhighlighted.css({ width: dim.c + 1 + 'em'});
       }
 
-      if (3 < dim.r && dim.r < 10) { // 5~10
+      if (3 < dim.r && dim.r < options.insertTableMaxSize.row) {
         $unhighlighted.css({ height: dim.r + 1 + 'em'});
       }
 
@@ -2856,8 +2924,8 @@
 
       // show dropzone on dragenter when dragging a object to document.
       $document.on('dragenter', function (e) {
-        var bCodeview = oLayoutInfo.editor.hasClass('codeview');
-        if (!bCodeview && !collection.length) {
+        var isCodeview = oLayoutInfo.editor.hasClass('codeview');
+        if (!isCodeview && !collection.length) {
           oLayoutInfo.editor.addClass('dragover');
           $dropzone.width(oLayoutInfo.editor.width());
           $dropzone.height(oLayoutInfo.editor.height());
@@ -2945,7 +3013,7 @@
      */
     this.attach = function (oLayoutInfo, options) {
       // handlers for editable
-      this.bindKeyMap(oLayoutInfo, options.keyMap[agent.bMac ? 'mac' : 'pc']);
+      this.bindKeyMap(oLayoutInfo, options.keyMap[agent.isMac ? 'mac' : 'pc']);
       oLayoutInfo.editable.on('mousedown', hMousedown);
       oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
       oLayoutInfo.editable.on('scroll', hScroll);
@@ -2977,13 +3045,18 @@
       var $catcherContainer = options.airMode ? oLayoutInfo.popover :
                                                 oLayoutInfo.toolbar;
       var $catcher = $catcherContainer.find('.note-dimension-picker-mousecatcher');
-      $catcher.on('mousemove', hDimensionPickerMove);
+      $catcher.css({
+        width: options.insertTableMaxSize.col + 'em',
+        height: options.insertTableMaxSize.row + 'em'
+      }).on('mousemove', function (event) {
+        hDimensionPickerMove(event, options);
+      });
 
       // save options on editor
       oLayoutInfo.editor.data('options', options);
 
       // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
-      if (options.styleWithSpan && !agent.bMSIE) {
+      if (options.styleWithSpan && !agent.isMSIE) {
         // protect FF Error: NS_ERROR_FAILURE: Failure
         setTimeout(function () {
           document.execCommand('styleWithCSS', 0, true);
@@ -3014,7 +3087,7 @@
           options.onChange(oLayoutInfo.editable, oLayoutInfo.editable.html());
         };
 
-        if (agent.bMSIE) {
+        if (agent.isMSIE) {
           var sDomEvents = 'DOMCharacterDataModified, DOMSubtreeModified, DOMNodeInserted';
           oLayoutInfo.editable.on(sDomEvents, hChange);
         } else {
@@ -3033,14 +3106,14 @@
       });
     };
 
-    this.dettach = function (oLayoutInfo) {
+    this.dettach = function (oLayoutInfo, options) {
       oLayoutInfo.editable.off();
 
       oLayoutInfo.popover.off();
       oLayoutInfo.handle.off();
       oLayoutInfo.dialog.off();
 
-      if (oLayoutInfo.editor.data('options').airMode) {
+      if (!options.airMode) {
         oLayoutInfo.dropzone.off();
         oLayoutInfo.toolbar.off();
         oLayoutInfo.statusbar.off();
@@ -3631,7 +3704,7 @@
       var tplHelpDialog = function () {
         var body = '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
-                   (agent.bMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
+                   (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
                      '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.2</a> · ' +
                      '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
@@ -3657,7 +3730,7 @@
     };
 
     var representShortcut = function (str) {
-      if (agent.bMac) {
+      if (agent.isMac) {
         str = str.replace('CMD', '⌘').replace('SHIFT', '⇧');
       }
 
@@ -3727,7 +3800,7 @@
      * @param {Object} options
      */
     this.createLayoutByAirMode = function ($holder, options) {
-      var keyMap = options.keyMap[agent.bMac ? 'mac' : 'pc'];
+      var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       var langInfo = $.summernote.lang[options.lang];
 
       var id = func.uniqueId();
@@ -3814,7 +3887,7 @@
       sToolbar = '<div class="note-toolbar btn-toolbar">' + sToolbar + '</div>';
 
       var $toolbar = $(sToolbar).prependTo($editor);
-      var keyMap = options.keyMap[agent.bMac ? 'mac' : 'pc'];
+      var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       createPalette($toolbar, options);
       createTooltip($toolbar, keyMap, 'bottom');
 
@@ -3892,14 +3965,24 @@
      * removeLayout
      *
      * @param {jQuery} $holder - placeholder
+     * @param {Object} oLayoutInfo
+     * @param {Object} options
+     *
      */
-    this.removeLayout = function ($holder) {
-      var info = this.layoutInfoFromHolder($holder);
-      if (!info) { return; }
-      $holder.html(info.editable.html());
+    this.removeLayout = function ($holder, oLayoutInfo, options) {
+      if (options.airMode) {
+        $holder.removeClass('note-air-editor note-editable')
+               .removeAttr('id contentEditable');
 
-      info.editor.remove();
-      $holder.show();
+        oLayoutInfo.popover.remove();
+        oLayoutInfo.handle.remove();
+        oLayoutInfo.dialog.remove();
+      } else {
+        $holder.html(oLayoutInfo.editable.html());
+
+        oLayoutInfo.editor.remove();
+        $holder.show();
+      }
     };
   };
 
@@ -3972,11 +4055,11 @@
         if (!$holder.length) { return; }
         var info = renderer.layoutInfoFromHolder($holder);
         if (!!(info && info.editable)) {
-          var bCodeview = info.editor.hasClass('codeview');
-          if (bCodeview && agent.bCodeMirror) {
+          var isCodeview = info.editor.hasClass('codeview');
+          if (isCodeview && agent.hasCodeMirror) {
             info.codable.data('cmEditor').save();
           }
-          return bCodeview ? info.codable.val() : info.editable.html();
+          return isCodeview ? info.codable.val() : info.editable.html();
         }
         return $holder.html();
       }
@@ -4000,8 +4083,11 @@
 
         var info = renderer.layoutInfoFromHolder($holder);
         if (!info || !info.editable) { return; }
-        eventHandler.dettach(info);
-        renderer.removeLayout($holder);
+
+        var options = info.editor.data('options');
+
+        eventHandler.dettach(info, options);
+        renderer.removeLayout($holder, info, options);
       });
 
       return this;

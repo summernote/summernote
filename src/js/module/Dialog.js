@@ -10,11 +10,11 @@ define('summernote/module/Dialog', function () {
      * toggle button status
      *
      * @param {jQuery} $btn
-     * @param {Boolean} bEnable
+     * @param {Boolean} isEnable
      */
-    var toggleBtn = function ($btn, bEnable) {
-      $btn.toggleClass('disabled', !bEnable);
-      $btn.attr('disabled', !bEnable);
+    var toggleBtn = function ($btn, isEnable) {
+      $btn.toggleClass('disabled', !isEnable);
+      $btn.attr('disabled', !isEnable);
     };
 
     /**
@@ -48,12 +48,20 @@ define('summernote/module/Dialog', function () {
             $imageDialog.modal('hide');
           });
 
-          $imageUrl.keyup(function () {
-            toggleBtn($imageBtn, $imageUrl.val());
+          $imageUrl.on('keyup paste', function (event) {
+            var url;
+            
+            if (event.type === 'paste') {
+              url = event.originalEvent.clipboardData.getData('text');
+            } else {
+              url = $imageUrl.val();
+            }
+            
+            toggleBtn($imageBtn, url);
           }).val('').trigger('focus');
         }).one('hidden.bs.modal', function () {
           $imageInput.off('change');
-          $imageUrl.off('keyup');
+          $imageUrl.off('keyup paste');
           $imageBtn.off('click');
 
           if (deferred.state() === 'pending') {
@@ -143,7 +151,11 @@ define('summernote/module/Dialog', function () {
           $linkBtn.one('click', function (event) {
             event.preventDefault();
 
-            deferred.resolve($linkText.val(), $linkUrl.val(), $openInNewWindow.is(':checked'));
+            deferred.resolve({
+              url: $linkUrl.val(),
+              text: $linkText.val(),
+              newWindow: $openInNewWindow.is(':checked')
+            });
             $linkDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {

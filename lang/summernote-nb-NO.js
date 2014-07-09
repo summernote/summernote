@@ -39,7 +39,7 @@
         videoLink: 'Videolenke',
         insert: 'Sett inn video',
         url: 'Video-URL',
-        providers: '(YouTube, Vimeo, Vine, Instagram eller DailyMotion)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion eller Youku)'
       },
       table: {
         table: 'Tabell'

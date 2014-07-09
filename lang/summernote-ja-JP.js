@@ -38,7 +38,7 @@
         videoLink: '動画リンク',
         insert: '動画挿入',
         url: '動画のURL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, Youku)'
       },
       table: {
         table: 'テーブル'

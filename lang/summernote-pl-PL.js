@@ -39,7 +39,7 @@
         videoLink: 'Adres wideo',
         insert: 'Wstaw wideo',
         url: 'Adres wideo',
-        providers: '(YouTube, Vimeo, Vine, Instagram, lub DailyMotion)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, lub Youku)'
       },
       table: {
         table: 'Tabela'

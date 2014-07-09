@@ -1,12 +1,22 @@
 define([
-  'CodeMirror',
   'summernote/core/agent', 'summernote/core/dom', 'summernote/core/async', 'summernote/core/key', 'summernote/core/list',
   'summernote/editing/Style', 'summernote/editing/Editor', 'summernote/editing/History',
   'summernote/module/Toolbar', 'summernote/module/Popover', 'summernote/module/Handle', 'summernote/module/Dialog'
-], function (CodeMirror,
-             agent, dom, async, key, list,
+], function (agent, dom, async, key, list,
              Style, Editor, History,
              Toolbar, Popover, Handle, Dialog) {
+
+  var CodeMirror;
+  if (agent.hasCodeMirror) {
+    if (agent.isSupportAmd) {
+      require(['CodeMirror'], function (cm) {
+        CodeMirror = cm;
+      });
+    } else {
+      CodeMirror = window.CodeMirror;
+    }
+  }
+
   /**
    * EventHandler
    */
@@ -73,14 +83,17 @@ define([
        * @param {Object} oLayoutInfo
        */
       showLinkDialog: function (oLayoutInfo) {
-        var $dialog = oLayoutInfo.dialog(),
+        var $editor = oLayoutInfo.editor(),
+            $dialog = oLayoutInfo.dialog(),
             $editable = oLayoutInfo.editable(),
             linkInfo = editor.getLinkInfo($editable);
 
+        var options = $editor.data('options');
+
         editor.saveRange($editable);
-        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (sLinkText, sLinkUrl, bNewWindow) {
+        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
           editor.restoreRange($editable);
-          editor.createLink($editable, sLinkText, sLinkUrl, bNewWindow);
+          editor.createLink($editable, linkInfo, options);
           // hide popover after creating link
           popover.hide(oLayoutInfo.popover());
         }).fail(function () {
@@ -196,8 +209,8 @@ define([
 
         $editor.toggleClass('codeview');
 
-        var bCodeview = $editor.hasClass('codeview');
-        if (bCodeview) {
+        var isCodeview = $editor.hasClass('codeview');
+        if (isCodeview) {
           $codable.val($editable.html());
           $codable.height($editable.height());
           toolbar.deactivate($toolbar);
@@ -205,7 +218,7 @@ define([
           $codable.focus();
 
           // activate CodeMirror as codable
-          if (agent.bCodeMirror) {
+          if (agent.hasCodeMirror) {
             cmEditor = CodeMirror.fromTextArea($codable[0], options.codemirror);
 
             // CodeMirror TernServer
@@ -230,7 +243,7 @@ define([
           }
         } else {
           // deactivate CodeMirror as codable
-          if (agent.bCodeMirror) {
+          if (agent.hasCodeMirror) {
             cmEditor = $codable.data('cmEditor');
             $codable.val(cmEditor.getValue());
             cmEditor.toTextArea();
@@ -243,7 +256,7 @@ define([
           $editable.focus();
         }
 
-        toolbar.updateCodeview(oLayoutInfo.toolbar(), bCodeview);
+        toolbar.updateCodeview(oLayoutInfo.toolbar(), isCodeview);
       }
     };
 
@@ -267,7 +280,7 @@ define([
         }
 
         popover.update(oLayoutInfo.popover(), oStyle, isAirMode);
-        handle.update(oLayoutInfo.handle(), oStyle);
+        handle.update(oLayoutInfo.handle(), oStyle, isAirMode);
       }, 0);
     };
 
@@ -291,9 +304,9 @@ define([
 
       var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
       var item = list.head(clipboardData.items);
-      var bClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
+      var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
 
-      if (bClipboardImage) {
+      if (isClipboardImage) {
         insertImages(oLayoutInfo.editable(), [item.getAsFile()]);
       }
     };
@@ -311,11 +324,14 @@ define([
 
         var oLayoutInfo = makeLayoutInfo(event.target),
             $handle = oLayoutInfo.handle(), $popover = oLayoutInfo.popover(),
-            $editable = oLayoutInfo.editable();
+            $editable = oLayoutInfo.editable(),
+            $editor = oLayoutInfo.editor();
 
         var elTarget = $handle.find('.note-control-selection').data('target'),
             $target = $(elTarget), posStart = $target.offset(),
             scrollTop = $document.scrollTop();
+
+        var isAirMode = $editor.data('options').airMode;
 
         $document.on('mousemove', function (event) {
           editor.resizeTo({
@@ -323,8 +339,8 @@ define([
             y: event.clientY - (posStart.top - scrollTop)
           }, $target, !event.shiftKey);
 
-          handle.update($handle, {image: elTarget});
-          popover.update($popover, {image: elTarget});
+          handle.update($handle, {image: elTarget}, isAirMode);
+          popover.update($popover, {image: elTarget}, isAirMode);
         }).one('mouseup', function () {
           $document.off('mousemove');
         });
@@ -408,7 +424,7 @@ define([
     };
 
     var PX_PER_EM = 18;
-    var hDimensionPickerMove = function (event) {
+    var hDimensionPickerMove = function (event, options) {
       var $picker = $(event.target.parentNode); // target is mousecatcher
       var $dimensionDisplay = $picker.next();
       var $catcher = $picker.find('.note-dimension-picker-mousecatcher');
@@ -438,11 +454,11 @@ define([
       $highlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });
       $catcher.attr('data-value', dim.c + 'x' + dim.r);
 
-      if (3 < dim.c && dim.c < 10) { // 5~10
+      if (3 < dim.c && dim.c < options.insertTableMaxSize.col) {
         $unhighlighted.css({ width: dim.c + 1 + 'em'});
       }
 
-      if (3 < dim.r && dim.r < 10) { // 5~10
+      if (3 < dim.r && dim.r < options.insertTableMaxSize.row) {
         $unhighlighted.css({ height: dim.r + 1 + 'em'});
       }
 
@@ -460,8 +476,8 @@ define([
 
       // show dropzone on dragenter when dragging a object to document.
       $document.on('dragenter', function (e) {
-        var bCodeview = oLayoutInfo.editor.hasClass('codeview');
-        if (!bCodeview && !collection.length) {
+        var isCodeview = oLayoutInfo.editor.hasClass('codeview');
+        if (!isCodeview && !collection.length) {
           oLayoutInfo.editor.addClass('dragover');
           $dropzone.width(oLayoutInfo.editor.width());
           $dropzone.height(oLayoutInfo.editor.height());
@@ -549,7 +565,7 @@ define([
      */
     this.attach = function (oLayoutInfo, options) {
       // handlers for editable
-      this.bindKeyMap(oLayoutInfo, options.keyMap[agent.bMac ? 'mac' : 'pc']);
+      this.bindKeyMap(oLayoutInfo, options.keyMap[agent.isMac ? 'mac' : 'pc']);
       oLayoutInfo.editable.on('mousedown', hMousedown);
       oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
       oLayoutInfo.editable.on('scroll', hScroll);
@@ -581,13 +597,18 @@ define([
       var $catcherContainer = options.airMode ? oLayoutInfo.popover :
                                                 oLayoutInfo.toolbar;
       var $catcher = $catcherContainer.find('.note-dimension-picker-mousecatcher');
-      $catcher.on('mousemove', hDimensionPickerMove);
+      $catcher.css({
+        width: options.insertTableMaxSize.col + 'em',
+        height: options.insertTableMaxSize.row + 'em'
+      }).on('mousemove', function (event) {
+        hDimensionPickerMove(event, options);
+      });
 
       // save options on editor
       oLayoutInfo.editor.data('options', options);
 
       // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
-      if (options.styleWithSpan && !agent.bMSIE) {
+      if (options.styleWithSpan && !agent.isMSIE) {
         // protect FF Error: NS_ERROR_FAILURE: Failure
         setTimeout(function () {
           document.execCommand('styleWithCSS', 0, true);
@@ -618,7 +639,7 @@ define([
           options.onChange(oLayoutInfo.editable, oLayoutInfo.editable.html());
         };
 
-        if (agent.bMSIE) {
+        if (agent.isMSIE) {
           var sDomEvents = 'DOMCharacterDataModified, DOMSubtreeModified, DOMNodeInserted';
           oLayoutInfo.editable.on(sDomEvents, hChange);
         } else {
@@ -637,14 +658,14 @@ define([
       });
     };
 
-    this.dettach = function (oLayoutInfo) {
+    this.dettach = function (oLayoutInfo, options) {
       oLayoutInfo.editable.off();
 
       oLayoutInfo.popover.off();
       oLayoutInfo.handle.off();
       oLayoutInfo.dialog.off();
 
-      if (oLayoutInfo.editor.data('options').airMode) {
+      if (!options.airMode) {
         oLayoutInfo.dropzone.off();
         oLayoutInfo.toolbar.off();
         oLayoutInfo.statusbar.off();

@@ -72,11 +72,11 @@ define([
         if (!$holder.length) { return; }
         var info = renderer.layoutInfoFromHolder($holder);
         if (!!(info && info.editable)) {
-          var bCodeview = info.editor.hasClass('codeview');
-          if (bCodeview && agent.bCodeMirror) {
+          var isCodeview = info.editor.hasClass('codeview');
+          if (isCodeview && agent.hasCodeMirror) {
             info.codable.data('cmEditor').save();
           }
-          return bCodeview ? info.codable.val() : info.editable.html();
+          return isCodeview ? info.codable.val() : info.editable.html();
         }
         return $holder.html();
       }
@@ -100,8 +100,11 @@ define([
 
         var info = renderer.layoutInfoFromHolder($holder);
         if (!info || !info.editable) { return; }
-        eventHandler.dettach(info);
-        renderer.removeLayout($holder);
+
+        var options = info.editor.data('options');
+
+        eventHandler.dettach(info, options);
+        renderer.removeLayout($holder, info, options);
       });
 
       return this;

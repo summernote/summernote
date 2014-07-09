@@ -66,8 +66,8 @@ define([
         oStyle['list-style'] = 'none';
       } else {
         var aOrderedType = ['circle', 'disc', 'disc-leading-zero', 'square'];
-        var bUnordered = $.inArray(oStyle['list-style-type'], aOrderedType) > -1;
-        oStyle['list-style'] = bUnordered ? 'unordered' : 'ordered';
+        var isUnordered = $.inArray(oStyle['list-style-type'], aOrderedType) > -1;
+        oStyle['list-style'] = isUnordered ? 'unordered' : 'ordered';
       }
 
       var elPara = dom.ancestor(rng.sc, dom.isPara);
