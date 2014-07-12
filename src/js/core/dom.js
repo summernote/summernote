@@ -383,6 +383,7 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
       isI: makePredByNodeName('I'),
       isImg: makePredByNodeName('IMG'),
       isTextarea: makePredByNodeName('TEXTAREA'),
+      length: length,
       ancestor: ancestor,
       listAncestor: listAncestor,
       listNext: listNext,

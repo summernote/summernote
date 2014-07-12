@@ -1,5 +1,7 @@
 define([
-  'summernote/core/func', 'summernote/core/list', 'summernote/core/dom'
+  'summernote/core/func',
+  'summernote/core/list',
+  'summernote/core/dom'
 ], function (func, list, dom) {
   /**
    * range module
@@ -156,6 +158,45 @@ define([
        */
       this.commonAncestor = function () {
         return dom.commonAncestor(sc, ec);
+      };
+
+      /**
+       * returns expanded range by pred
+       *
+       * @param {Function} pred - predicate function
+       * @return {WrappedRange}
+       */
+      this.expand = function (pred) {
+        var startAncestor = dom.ancestor(sc, pred);
+        var endAncestor = dom.ancestor(ec, pred);
+
+        if (!startAncestor && !endAncestor) {
+          return new WrappedRange(sc, so, ec, eo);
+        }
+
+        var boundaryPoints = {
+          sc: sc,
+          so: so,
+          ec: ec,
+          eo: eo
+        };
+
+        if (startAncestor) {
+          boundaryPoints.sc = startAncestor;
+          boundaryPoints.so = 0;
+        }
+
+        if (endAncestor) {
+          boundaryPoints.ec = endAncestor;
+          boundaryPoints.eo = dom.length(endAncestor);
+        }
+
+        return new WrappedRange(
+          boundaryPoints.sc,
+          boundaryPoints.so,
+          boundaryPoints.ec,
+          boundaryPoints.eo
+        );
       };
       
       /**
