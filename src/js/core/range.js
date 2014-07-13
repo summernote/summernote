@@ -124,6 +124,29 @@ define([
         }
       };
 
+      this.getBPs = function () {
+        return {
+          sc: sc,
+          so: so,
+          ec: ec,
+          eo: eo
+        };
+      };
+
+      this.getStartBP = function () {
+        return {
+          node: sc,
+          offset: so
+        };
+      };
+
+      this.getEndBP = function () {
+        return {
+          node: ec,
+          offset: eo
+        };
+      };
+
       /**
        * select update visible range
        */
@@ -141,10 +164,12 @@ define([
       /**
        * returns matched nodes on range
        *
-       * @param {Function} pred - predicate function
+       * @param {Function} [pred] - predicate function
        * @return {Element[]}
        */
       this.nodes = function (pred) {
+        pred = pred || func.ok;
+
         var aNode = dom.listBetween(sc, ec);
         var aMatched = list.compact($.map(aNode, function (node) {
           return dom.ancestor(node, pred);
@@ -174,12 +199,7 @@ define([
           return new WrappedRange(sc, so, ec, eo);
         }
 
-        var boundaryPoints = {
-          sc: sc,
-          so: so,
-          ec: ec,
-          eo: eo
-        };
+        var boundaryPoints = this.getBPs();
 
         if (startAncestor) {
           boundaryPoints.sc = startAncestor;
@@ -196,6 +216,71 @@ define([
           boundaryPoints.so,
           boundaryPoints.ec,
           boundaryPoints.eo
+        );
+      };
+
+      /**
+       * @param {Boolean} isCollapseToStart
+       * @return {WrappedRange}
+       */
+      this.collapse = function (isCollapseToStart) {
+        if (isCollapseToStart) {
+          return new WrappedRange(sc, so, sc, so);
+        } else {
+          return new WrappedRange(ec, eo, ec, eo);
+        }
+      };
+
+      /**
+       * splitText on range
+       */
+      this.splitText = function () {
+        var isSameContainer = sc === ec;
+        var boundaryPoints = this.getBPs();
+
+        if (dom.isText(ec) && !dom.isEdgeBP(this.getEndBP())) {
+          ec.splitText(eo);
+        }
+
+        if (dom.isText(sc) && !dom.isEdgeBP(this.getStartBP())) {
+          boundaryPoints.sc = sc.splitText(so);
+          boundaryPoints.so = 0;
+
+          if (isSameContainer) {
+            boundaryPoints.ec = boundaryPoints.sc;
+            boundaryPoints.eo = eo - so;
+          }
+        }
+
+        return new WrappedRange(
+          boundaryPoints.sc,
+          boundaryPoints.so,
+          boundaryPoints.ec,
+          boundaryPoints.eo
+        );
+      };
+
+      /**
+       * delete contents on range
+       * @return {WrappedRange}
+       */
+      this.deleteContents = function () {
+        if (this.isCollapsed()) {
+          return this;
+        }
+
+        var rng = this.splitText();
+        var prevBP = dom.prevBP(rng.getStartBP());
+
+        $.each(rng.nodes(), function (idx, node) {
+          dom.remove(node, !dom.isPara(node));
+        });
+
+        return new WrappedRange(
+          prevBP.node,
+          prevBP.offset,
+          prevBP.node,
+          prevBP.offset
         );
       };
       
@@ -229,8 +314,15 @@ define([
         if (isW3CRangeSupport) {
           nativeRng.insertNode(node);
         } else {
-          nativeRng.pasteHTML(node.outerHTML); // NOTE: missing node reference.
+          var tmpId = 'node-insert-node-target';
+          node.id = tmpId;
+
+          // NOTE: missing node reference.
+          nativeRng.pasteHTML(node.outerHTML);
+          node = $('#' + tmpId)[0];
         }
+
+        return node;
       };
   
       this.toString = function () {

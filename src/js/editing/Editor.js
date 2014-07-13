@@ -309,32 +309,17 @@ define([
         sLinkUrl = options.onCreateLink(sLinkUrl);
       }
 
+      rng = rng.deleteContents();
+
       // Create a new link when there is no anchor on range.
-      if (!rng.isOnAnchor()) {
-        // when range collapsed (IE, Firefox).
-        if ((agent.isMSIE || agent.isFF) && rng.isCollapsed()) {
-          rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
-          var $anchor = $('#linkAnchor').attr('href', sLinkUrl)
-                                        .removeAttr('id');
-          rng = range.createFromNode($anchor[0]);
-          rng.select();
-        } else {
-          document.execCommand('createlink', false, sLinkUrl);
-        }
-      }
-
-      // Edit link tags
-      $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
-        // link text
-        $(elAnchor).html(sLinkText);
-
-        // link target
-        if (isNewWindow) {
-          $(elAnchor).attr('target', '_blank');
-        } else {
-          $(elAnchor).removeAttr('target');
-        }
+      var anchor = rng.insertNode($('<A>' + sLinkText + '</A>')[0]);
+      $(anchor).attr({
+        href: sLinkUrl,
+        target: isNewWindow ? '_blank' : ''
       });
+
+      rng = range.createFromNode(anchor);
+      rng.select();
     };
 
     /**
@@ -348,13 +333,13 @@ define([
       var rng = range.create().expand(dom.isAnchor);
 
       // Get the first anchor on range(for edit).
-      var anchor = list.head(rng.nodes(dom.isAnchor));
+      var $anchor = $(list.head(rng.nodes(dom.isAnchor)));
 
       return {
         range: rng,
         text: rng.toString(),
-        isNewWindow: anchor ? $(anchor).attr('target') === '_blank' : true,
-        url: anchor ? anchor.href : ''
+        isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : true,
+        url: $anchor.length ? $anchor.attr('href') : ''
       };
     };
 
