@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-07-09T18:25Z
+ * Date: 2014-07-13T20:09Z
  */
 (function (factory) {
   /* global define */
@@ -53,6 +53,28 @@
   var isSupportAmd = typeof define === 'function' && define.amd;
 
   /**
+   * returns whether font is installed or not.
+   * @param {String} fontName
+   * @return {Boolean}
+   */
+  var isFontInstalled = function (fontName) {
+    var testFontName = fontName === 'Comic Sans MS' ? 'Courier New' : 'Comic Sans MS';
+    var $tester = $('<div>').css({
+      position: 'absolute',
+      left: '-9999px',
+      top: '-9999px',
+      fontSize: '200px'
+    }).text('mmmmmmmmmwwwwwww').appendTo(document.body);
+
+    var originalWidth = $tester.css('fontFamily', testFontName).width();
+    var width = $tester.css('fontFamily', fontName + ',' + testFontName).width();
+
+    $tester.remove();
+
+    return originalWidth !== width;
+  };
+
+  /**
    * Object which check platform and agent
    */
   var agent = {
@@ -61,7 +83,8 @@
     isFF: navigator.userAgent.indexOf('Firefox') > -1,
     jqueryVersion: parseFloat($.fn.jquery),
     isSupportAmd: isSupportAmd,
-    hasCodeMirror: isSupportAmd ? require.specified('CodeMirror') : !!window.CodeMirror
+    hasCodeMirror: isSupportAmd ? require.specified('CodeMirror') : !!window.CodeMirror,
+    isFontInstalled: isFontInstalled
   };
 
   /**
@@ -754,13 +777,13 @@
       styleTags: ['p', 'blockquote', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
 
       // default fontName
-      defaultFontName: 'Arial',
+      defaultFontName: 'Helvetica Neue',
 
       // fontName
       fontNames: [
-        'Serif', 'Sans', 'Arial', 'Arial Black', 'Courier',
-        'Courier New', 'Comic Sans MS', 'Helvetica', 'Impact', 'Lucida Grande',
-        'Lucida Sans', 'Tahoma', 'Times', 'Times New Roman', 'Verdana'
+        'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New',
+        'Helvetica Neue', 'Impact', 'Lucida Grande',
+        'Tahoma', 'Times New Roman', 'Verdana'
       ],
 
       // pallete colors(n x n)
@@ -3273,6 +3296,7 @@
       },
       fontname: function (lang, options) {
         var items = options.fontNames.reduce(function (memo, v) {
+          if (!agent.isFontInstalled(v)) { return memo; }
           return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '">' +
                           '<i class="fa fa-check icon-ok"></i> ' + v +
                         '</a></li>';

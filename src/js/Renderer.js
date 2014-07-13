@@ -153,6 +153,7 @@ define([
       },
       fontname: function (lang, options) {
         var items = options.fontNames.reduce(function (memo, v) {
+          if (!agent.isFontInstalled(v)) { return memo; }
           return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '">' +
                           '<i class="fa fa-check icon-ok"></i> ' + v +
                         '</a></li>';
