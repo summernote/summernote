@@ -53,7 +53,8 @@ define([
       var $linkPopover = $popover.find('.note-link-popover');
       if (oStyle.anchor) {
         var $anchor = $linkPopover.find('a');
-        $anchor.attr('href', oStyle.anchor.href).html(oStyle.anchor.href);
+        var href = $(oStyle.anchor).attr('href');
+        $anchor.attr('href', href).html(href);
         showPopover($linkPopover, posFromPlaceholder(oStyle.anchor, isAirMode));
       } else {
         $linkPopover.hide();

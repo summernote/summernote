@@ -152,6 +152,7 @@ define('summernote/module/Dialog', function () {
             event.preventDefault();
 
             deferred.resolve({
+              range: linkInfo.range,
               url: $linkUrl.val(),
               text: $linkText.val(),
               newWindow: $openInNewWindow.is(':checked')

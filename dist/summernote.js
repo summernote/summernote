@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-07-12T04:34Z
+ * Date: 2014-07-13T06:37Z
  */
 (function (factory) {
   /* global define */
@@ -559,7 +559,18 @@
       if (isText(node)) { return node.nodeValue.length; }
       return node.childNodes.length;
     };
-  
+
+    /**
+     * returns whether boundaryPoint is edge or not.
+     *
+     * @param {BoundaryPoint} boundaryPoitn
+     * @return {Boolean}
+     */
+    var isEdgeBP = function (boundaryPoint) {
+      return boundaryPoint.offset === 0 ||
+             boundaryPoint.offset === length(boundaryPoint.node);
+    };
+
     /**
      * returns offset from parent.
      *
@@ -569,6 +580,33 @@
       var offset = 0;
       while ((node = node.previousSibling)) { offset += 1; }
       return offset;
+    };
+
+    var hasChildren = function (node) {
+      return node && node.childNodes && node.childNodes.length;
+    };
+
+    /**
+     * returns previous boundaryPoint
+     *
+     * @param {BoundaryPoint} boundaryPoitn
+     * @return {BoundaryPoint}
+     */
+    var prevBP = function (boundaryPoint) {
+      var node = boundaryPoint.node,
+          offset = boundaryPoint.offset;
+
+      if (offset === 0) {
+        if (isEditable(node)) { return null; }
+        return {node: node.parentNode, offset: position(node)};
+      } else {
+        if (hasChildren(node)) {
+          var child = node.childNodes[offset - 1];
+          return {node: child, offset: length(child)};
+        } else {
+          return {node: node, offset: offset - 1};
+        }
+      }
     };
   
     /**
@@ -602,7 +640,7 @@
      * @param {Element} node
      * @param {Number} offset
      */
-    var splitData = function (node, offset) {
+    var split = function (node, offset) {
       if (offset === 0) { return node; }
       if (offset >= length(node)) { return node.nextSibling; }
   
@@ -622,20 +660,20 @@
      * @param {Element} pivot - this will be boundaryPoint's node
      * @param {Number} offset - this will be boundaryPoint's offset
      */
-    var split = function (root, pivot, offset) {
+    var splitTree = function (root, pivot, offset) {
       var aAncestor = listAncestor(pivot, func.eq(root));
-      if (aAncestor.length === 1) { return splitData(pivot, offset); }
+      if (aAncestor.length === 1) { return split(pivot, offset); }
       return aAncestor.reduce(function (node, parent) {
         var clone = parent.cloneNode(false);
         insertAfter(clone, parent);
         if (node === pivot) {
-          node = splitData(node, offset);
+          node = split(node, offset);
         }
         appends(clone, listNext(node));
         return clone;
       });
     };
-  
+
     /**
      * remove node, (bRemoveChild: remove child or not)
      * @param {Element} node
@@ -686,6 +724,9 @@
       isI: makePredByNodeName('I'),
       isImg: makePredByNodeName('IMG'),
       isTextarea: makePredByNodeName('TEXTAREA'),
+      length: length,
+      isEdgeBP: isEdgeBP,
+      prevBP: prevBP,
       ancestor: ancestor,
       listAncestor: listAncestor,
       listNext: listNext,
@@ -697,7 +738,7 @@
       position: position,
       makeOffsetPath: makeOffsetPath,
       fromOffsetPath: fromOffsetPath,
-      split: split,
+      splitTree: splitTree,
       remove: remove,
       html: html
     };
@@ -1300,6 +1341,29 @@
         }
       };
 
+      this.getBPs = function () {
+        return {
+          sc: sc,
+          so: so,
+          ec: ec,
+          eo: eo
+        };
+      };
+
+      this.getStartBP = function () {
+        return {
+          node: sc,
+          offset: so
+        };
+      };
+
+      this.getEndBP = function () {
+        return {
+          node: ec,
+          offset: eo
+        };
+      };
+
       /**
        * select update visible range
        */
@@ -1317,10 +1381,12 @@
       /**
        * returns matched nodes on range
        *
-       * @param {Function} pred - predicate function
+       * @param {Function} [pred] - predicate function
        * @return {Element[]}
        */
       this.nodes = function (pred) {
+        pred = pred || func.ok;
+
         var aNode = dom.listBetween(sc, ec);
         var aMatched = list.compact($.map(aNode, function (node) {
           return dom.ancestor(node, pred);
@@ -1334,6 +1400,105 @@
        */
       this.commonAncestor = function () {
         return dom.commonAncestor(sc, ec);
+      };
+
+      /**
+       * returns expanded range by pred
+       *
+       * @param {Function} pred - predicate function
+       * @return {WrappedRange}
+       */
+      this.expand = function (pred) {
+        var startAncestor = dom.ancestor(sc, pred);
+        var endAncestor = dom.ancestor(ec, pred);
+
+        if (!startAncestor && !endAncestor) {
+          return new WrappedRange(sc, so, ec, eo);
+        }
+
+        var boundaryPoints = this.getBPs();
+
+        if (startAncestor) {
+          boundaryPoints.sc = startAncestor;
+          boundaryPoints.so = 0;
+        }
+
+        if (endAncestor) {
+          boundaryPoints.ec = endAncestor;
+          boundaryPoints.eo = dom.length(endAncestor);
+        }
+
+        return new WrappedRange(
+          boundaryPoints.sc,
+          boundaryPoints.so,
+          boundaryPoints.ec,
+          boundaryPoints.eo
+        );
+      };
+
+      /**
+       * @param {Boolean} isCollapseToStart
+       * @return {WrappedRange}
+       */
+      this.collapse = function (isCollapseToStart) {
+        if (isCollapseToStart) {
+          return new WrappedRange(sc, so, sc, so);
+        } else {
+          return new WrappedRange(ec, eo, ec, eo);
+        }
+      };
+
+      /**
+       * splitText on range
+       */
+      this.splitText = function () {
+        var isSameContainer = sc === ec;
+        var boundaryPoints = this.getBPs();
+
+        if (dom.isText(ec) && !dom.isEdgeBP(this.getEndBP())) {
+          ec.splitText(eo);
+        }
+
+        if (dom.isText(sc) && !dom.isEdgeBP(this.getStartBP())) {
+          boundaryPoints.sc = sc.splitText(so);
+          boundaryPoints.so = 0;
+
+          if (isSameContainer) {
+            boundaryPoints.ec = boundaryPoints.sc;
+            boundaryPoints.eo = eo - so;
+          }
+        }
+
+        return new WrappedRange(
+          boundaryPoints.sc,
+          boundaryPoints.so,
+          boundaryPoints.ec,
+          boundaryPoints.eo
+        );
+      };
+
+      /**
+       * delete contents on range
+       * @return {WrappedRange}
+       */
+      this.deleteContents = function () {
+        if (this.isCollapsed()) {
+          return this;
+        }
+
+        var rng = this.splitText();
+        var prevBP = dom.prevBP(rng.getStartBP());
+
+        $.each(rng.nodes(), function (idx, node) {
+          dom.remove(node, !dom.isPara(node));
+        });
+
+        return new WrappedRange(
+          prevBP.node,
+          prevBP.offset,
+          prevBP.node,
+          prevBP.offset
+        );
       };
       
       /**
@@ -1366,8 +1531,15 @@
         if (isW3CRangeSupport) {
           nativeRng.insertNode(node);
         } else {
-          nativeRng.pasteHTML(node.outerHTML); // NOTE: missing node reference.
+          var tmpId = 'node-insert-node-target';
+          node.id = tmpId;
+
+          // NOTE: missing node reference.
+          nativeRng.pasteHTML(node.outerHTML);
+          node = $('#' + tmpId)[0];
         }
+
+        return node;
       };
   
       this.toString = function () {
@@ -1805,40 +1977,25 @@
       var sLinkUrl = linkInfo.url;
       var sLinkText = linkInfo.text;
       var isNewWindow = linkInfo.newWindow;
+      var rng = linkInfo.range;
 
-      var rng = range.create();
       recordUndo($editable);
 
       if (options.onCreateLink) {
         sLinkUrl = options.onCreateLink(sLinkUrl);
       }
 
+      rng = rng.deleteContents();
+
       // Create a new link when there is no anchor on range.
-      if (!rng.isOnAnchor()) {
-        // when range collapsed (IE, Firefox).
-        if ((agent.isMSIE || agent.isFF) && rng.isCollapsed()) {
-          rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
-          var $anchor = $('#linkAnchor').attr('href', sLinkUrl)
-                                        .removeAttr('id');
-          rng = range.createFromNode($anchor[0]);
-          rng.select();
-        } else {
-          document.execCommand('createlink', false, sLinkUrl);
-        }
-      }
-
-      // Edit link tags
-      $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
-        // link text
-        $(elAnchor).html(sLinkText);
-
-        // link target
-        if (isNewWindow) {
-          $(elAnchor).attr('target', '_blank');
-        } else {
-          $(elAnchor).removeAttr('target');
-        }
+      var anchor = rng.insertNode($('<A>' + sLinkText + '</A>')[0]);
+      $(anchor).attr({
+        href: sLinkUrl,
+        target: isNewWindow ? '_blank' : ''
       });
+
+      rng = range.createFromNode(anchor);
+      rng.select();
     };
 
     /**
@@ -1849,22 +2006,16 @@
     this.getLinkInfo = function ($editable) {
       $editable.focus();
 
-      var rng = range.create();
-      var isNewWindow = true;
-      var sUrl = '';
+      var rng = range.create().expand(dom.isAnchor);
 
-      // If range on anchor expand range on anchor(for edit link).
-      if (rng.isOnAnchor()) {
-        var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = range.createFromNode(elAnchor);
-        isNewWindow = $(elAnchor).attr('target') === '_blank';
-        sUrl = elAnchor.href;
-      }
+      // Get the first anchor on range(for edit).
+      var $anchor = $(list.head(rng.nodes(dom.isAnchor)));
 
       return {
+        range: rng,
         text: rng.toString(),
-        url: sUrl,
-        newWindow: isNewWindow
+        isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : true,
+        url: $anchor.length ? $anchor.attr('href') : ''
       };
     };
 
@@ -2210,7 +2361,8 @@
       var $linkPopover = $popover.find('.note-link-popover');
       if (oStyle.anchor) {
         var $anchor = $linkPopover.find('a');
-        $anchor.attr('href', oStyle.anchor.href).html(oStyle.anchor.href);
+        var href = $(oStyle.anchor).attr('href');
+        $anchor.attr('href', href).html(href);
         showPopover($linkPopover, posFromPlaceholder(oStyle.anchor, isAirMode));
       } else {
         $linkPopover.hide();
@@ -2442,6 +2594,7 @@
             event.preventDefault();
 
             deferred.resolve({
+              range: linkInfo.range,
               url: $linkUrl.val(),
               text: $linkText.val(),
               newWindow: $openInNewWindow.is(':checked')

@@ -256,7 +256,18 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
       if (isText(node)) { return node.nodeValue.length; }
       return node.childNodes.length;
     };
-  
+
+    /**
+     * returns whether boundaryPoint is edge or not.
+     *
+     * @param {BoundaryPoint} boundaryPoitn
+     * @return {Boolean}
+     */
+    var isEdgeBP = function (boundaryPoint) {
+      return boundaryPoint.offset === 0 ||
+             boundaryPoint.offset === length(boundaryPoint.node);
+    };
+
     /**
      * returns offset from parent.
      *
@@ -266,6 +277,33 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
       var offset = 0;
       while ((node = node.previousSibling)) { offset += 1; }
       return offset;
+    };
+
+    var hasChildren = function (node) {
+      return node && node.childNodes && node.childNodes.length;
+    };
+
+    /**
+     * returns previous boundaryPoint
+     *
+     * @param {BoundaryPoint} boundaryPoitn
+     * @return {BoundaryPoint}
+     */
+    var prevBP = function (boundaryPoint) {
+      var node = boundaryPoint.node,
+          offset = boundaryPoint.offset;
+
+      if (offset === 0) {
+        if (isEditable(node)) { return null; }
+        return {node: node.parentNode, offset: position(node)};
+      } else {
+        if (hasChildren(node)) {
+          var child = node.childNodes[offset - 1];
+          return {node: child, offset: length(child)};
+        } else {
+          return {node: node, offset: offset - 1};
+        }
+      }
     };
   
     /**
@@ -299,7 +337,7 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
      * @param {Element} node
      * @param {Number} offset
      */
-    var splitData = function (node, offset) {
+    var split = function (node, offset) {
       if (offset === 0) { return node; }
       if (offset >= length(node)) { return node.nextSibling; }
   
@@ -319,20 +357,20 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
      * @param {Element} pivot - this will be boundaryPoint's node
      * @param {Number} offset - this will be boundaryPoint's offset
      */
-    var split = function (root, pivot, offset) {
+    var splitTree = function (root, pivot, offset) {
       var aAncestor = listAncestor(pivot, func.eq(root));
-      if (aAncestor.length === 1) { return splitData(pivot, offset); }
+      if (aAncestor.length === 1) { return split(pivot, offset); }
       return aAncestor.reduce(function (node, parent) {
         var clone = parent.cloneNode(false);
         insertAfter(clone, parent);
         if (node === pivot) {
-          node = splitData(node, offset);
+          node = split(node, offset);
         }
         appends(clone, listNext(node));
         return clone;
       });
     };
-  
+
     /**
      * remove node, (bRemoveChild: remove child or not)
      * @param {Element} node
@@ -383,6 +421,9 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
       isI: makePredByNodeName('I'),
       isImg: makePredByNodeName('IMG'),
       isTextarea: makePredByNodeName('TEXTAREA'),
+      length: length,
+      isEdgeBP: isEdgeBP,
+      prevBP: prevBP,
       ancestor: ancestor,
       listAncestor: listAncestor,
       listNext: listNext,
@@ -394,7 +435,7 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
       position: position,
       makeOffsetPath: makeOffsetPath,
       fromOffsetPath: fromOffsetPath,
-      split: split,
+      splitTree: splitTree,
       remove: remove,
       html: html
     };

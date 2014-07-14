@@ -1,7 +1,12 @@
 define([
-  'summernote/core/agent', 'summernote/core/dom', 'summernote/core/range',
-  'summernote/core/async', 'summernote/editing/Style', 'summernote/editing/Table'
-], function (agent, dom, range, async, Style, Table) {
+  'summernote/core/agent',
+  'summernote/core/list',
+  'summernote/core/dom',
+  'summernote/core/range',
+  'summernote/core/async',
+  'summernote/editing/Style',
+  'summernote/editing/Table'
+], function (agent, list, dom, range, async, Style, Table) {
   /**
    * Editor
    * @class
@@ -296,40 +301,25 @@ define([
       var sLinkUrl = linkInfo.url;
       var sLinkText = linkInfo.text;
       var isNewWindow = linkInfo.newWindow;
+      var rng = linkInfo.range;
 
-      var rng = range.create();
       recordUndo($editable);
 
       if (options.onCreateLink) {
         sLinkUrl = options.onCreateLink(sLinkUrl);
       }
 
+      rng = rng.deleteContents();
+
       // Create a new link when there is no anchor on range.
-      if (!rng.isOnAnchor()) {
-        // when range collapsed (IE, Firefox).
-        if ((agent.isMSIE || agent.isFF) && rng.isCollapsed()) {
-          rng.insertNode($('<A id="linkAnchor">' + sLinkText + '</A>')[0]);
-          var $anchor = $('#linkAnchor').attr('href', sLinkUrl)
-                                        .removeAttr('id');
-          rng = range.createFromNode($anchor[0]);
-          rng.select();
-        } else {
-          document.execCommand('createlink', false, sLinkUrl);
-        }
-      }
-
-      // Edit link tags
-      $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
-        // link text
-        $(elAnchor).html(sLinkText);
-
-        // link target
-        if (isNewWindow) {
-          $(elAnchor).attr('target', '_blank');
-        } else {
-          $(elAnchor).removeAttr('target');
-        }
+      var anchor = rng.insertNode($('<A>' + sLinkText + '</A>')[0]);
+      $(anchor).attr({
+        href: sLinkUrl,
+        target: isNewWindow ? '_blank' : ''
       });
+
+      rng = range.createFromNode(anchor);
+      rng.select();
     };
 
     /**
@@ -340,22 +330,16 @@ define([
     this.getLinkInfo = function ($editable) {
       $editable.focus();
 
-      var rng = range.create();
-      var isNewWindow = true;
-      var sUrl = '';
+      var rng = range.create().expand(dom.isAnchor);
 
-      // If range on anchor expand range on anchor(for edit link).
-      if (rng.isOnAnchor()) {
-        var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = range.createFromNode(elAnchor);
-        isNewWindow = $(elAnchor).attr('target') === '_blank';
-        sUrl = elAnchor.href;
-      }
+      // Get the first anchor on range(for edit).
+      var $anchor = $(list.head(rng.nodes(dom.isAnchor)));
 
       return {
+        range: rng,
         text: rng.toString(),
-        url: sUrl,
-        newWindow: isNewWindow
+        isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : true,
+        url: $anchor.length ? $anchor.attr('href') : ''
       };
     };
 
