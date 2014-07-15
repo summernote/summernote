@@ -201,6 +201,8 @@ define('summernote/settings', function () {
           italic: 'Italic',
           underline: 'Underline',
           strikethrough: 'Strikethrough',
+          subscript: 'Subscript',
+          superscript: 'Superscript',
           clear: 'Remove Font Style',
           height: 'Line Height',
           name: 'Font Family',
