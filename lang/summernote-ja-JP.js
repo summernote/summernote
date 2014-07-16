@@ -8,6 +8,7 @@
         strikethrough: '取り消し線',
         clear: 'クリア',
         height: '文字高',
+        name: 'フォント',
         size: '大きさ'
       },
       image: {
