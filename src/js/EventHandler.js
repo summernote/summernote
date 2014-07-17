@@ -639,7 +639,7 @@ define([
         };
 
         if (agent.isMSIE) {
-          var sDomEvents = 'DOMCharacterDataModified, DOMSubtreeModified, DOMNodeInserted';
+          var sDomEvents = 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted';
           oLayoutInfo.editable.on(sDomEvents, hChange);
         } else {
           oLayoutInfo.editable.on('input', hChange);
