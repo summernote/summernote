@@ -89,7 +89,7 @@ $('#summernote').destroy();
 
 #### v0.5.2 2014-07-20
 * Air Mode
-* And bug patch (createLink, fontSize).
+* And bug patch (scroll, createLink, ...)
 
 #### v0.5.1 2014-03-16
 * Support 15 Languages(https://github.com/HackerWins/summernote/tree/master/lang)

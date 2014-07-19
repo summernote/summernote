@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-07-13T06:37Z
+ * Date: 2014-07-19T03:38Z
  */
 (function (factory) {
   /* global define */
@@ -946,6 +946,8 @@
           italic: 'Italic',
           underline: 'Underline',
           strikethrough: 'Strikethrough',
+          subscript: 'Subscript',
+          superscript: 'Superscript',
           clear: 'Remove Font Style',
           height: 'Line Height',
           name: 'Font Family',
@@ -3261,7 +3263,7 @@
         };
 
         if (agent.isMSIE) {
-          var sDomEvents = 'DOMCharacterDataModified, DOMSubtreeModified, DOMNodeInserted';
+          var sDomEvents = 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted';
           oLayoutInfo.editable.on(sDomEvents, hChange);
         } else {
           oLayoutInfo.editable.on('input', hChange);
@@ -3934,7 +3936,7 @@
           });
         }
       // bootstrap tooltip on btn-group bug
-      // https://github.com/twitter/bootstrap/issues/5687
+      // https://github.com/twbs/bootstrap/issues/5687
       }).tooltip({
         container: 'body',
         trigger: 'hover',
