@@ -641,7 +641,7 @@ define([
           });
         }
       // bootstrap tooltip on btn-group bug
-      // https://github.com/twitter/bootstrap/issues/5687
+      // https://github.com/twbs/bootstrap/issues/5687
       }).tooltip({
         container: 'body',
         trigger: 'hover',
