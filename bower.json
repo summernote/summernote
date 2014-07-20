@@ -2,7 +2,7 @@
   "name": "summernote",
   "version": "0.5.2",
   "main": [
-    "./dist/summernote.min.js",
+    "./dist/summernote.js",
     "./dist/summernote.css"
   ],
   "ignore": [
