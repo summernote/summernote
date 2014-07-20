@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-07-19T03:38Z
+ * Date: 2014-07-20T03:22Z
  */
 (function (factory) {
   /* global define */
@@ -2988,9 +2988,12 @@
       var $btn = $(event.target).closest('[data-event]');
 
       if ($btn.length) {
-        var sEvent = $btn.attr('data-event'), sValue = $btn.attr('data-value');
+        var sEvent = $btn.attr('data-event'),
+            sValue = $btn.attr('data-value');
 
         var oLayoutInfo = makeLayoutInfo(event.target);
+
+        event.preventDefault();
 
         // before command: detect control selection element($target)
         var $target;

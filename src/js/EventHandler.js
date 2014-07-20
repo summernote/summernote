@@ -364,9 +364,12 @@ define([
       var $btn = $(event.target).closest('[data-event]');
 
       if ($btn.length) {
-        var sEvent = $btn.attr('data-event'), sValue = $btn.attr('data-value');
+        var sEvent = $btn.attr('data-event'),
+            sValue = $btn.attr('data-value');
 
         var oLayoutInfo = makeLayoutInfo(event.target);
+
+        event.preventDefault();
 
         // before command: detect control selection element($target)
         var $target;
