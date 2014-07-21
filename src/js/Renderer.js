@@ -668,7 +668,7 @@ define([
                            '" title="', sColor,
                            '" data-toggle="button" tabindex="-1"></button>'].join(''));
           }
-          aPaletteContents.push('<div>' + aButton.join('') + '</div>');
+          aPaletteContents.push('<div class="note-color-row">' + aButton.join('') + '</div>');
         }
         $palette.html(aPaletteContents.join(''));
       });
