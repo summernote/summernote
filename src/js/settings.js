@@ -277,8 +277,8 @@ define('summernote/settings', function () {
         color: {
           recent: 'Recent Color',
           more: 'More Color',
-          background: 'BackColor',
-          foreground: 'FontColor',
+          background: 'Background Color',
+          foreground: 'Foreground Color',
           transparent: 'Transparent',
           setTransparent: 'Set transparent',
           reset: 'Reset',
