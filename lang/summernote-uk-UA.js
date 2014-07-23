@@ -6,8 +6,11 @@
         italic: 'Курсив',
         underline: 'Підкреслений',
         strikethrough: 'Закреслений',
+        subscript: 'Нижній індекс',
+        superscript: 'Верхній індекс',
         clear: 'Прибрати стилі шрифту',
         height: 'Висота лінії',
+        name: 'Шрифт',
         size: 'Розмір шрифту'
       },
       image: {
