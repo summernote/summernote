@@ -232,7 +232,7 @@ define([
             // CodeMirror hasn't Padding.
             cmEditor.setSize(null, $editable.outerHeight());
             // autoFormatRange If formatting included
-            if (cmEditor.autoFormatRange) {
+            if (options.codemirror.autoFormatOnStart && cmEditor.autoFormatRange) {
               cmEditor.autoFormatRange({line: 0, ch: 0}, {
                 line: cmEditor.lineCount(),
                 ch: cmEditor.getTextArea().value.length

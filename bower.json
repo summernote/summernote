@@ -1,6 +1,6 @@
 {
   "name": "summernote",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "main": [
     "./dist/summernote.js",
     "./dist/summernote.css"
