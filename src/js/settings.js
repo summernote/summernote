@@ -25,7 +25,8 @@ define('summernote/settings', function () {
       codemirror: {                 // codemirror options
         mode: 'text/html',
         htmlMode: true,
-        lineNumbers: true
+        lineNumbers: true,
+        autoFormatOnStart: false
       },
 
       // language
