@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-07-25T02:00Z
+ * Date: 2014-07-25T03:05Z
  */
 (function (factory) {
   /* global define */
@@ -770,7 +770,8 @@
       codemirror: {                 // codemirror options
         mode: 'text/html',
         htmlMode: true,
-        lineNumbers: true
+        lineNumbers: true,
+        autoFormatOnStart: false
       },
 
       // language
@@ -1723,7 +1724,7 @@
      */
     this.currentStyle = function (elTarget) {
       var rng = range.create();
-      return (rng) ? rng.isOnEditable() && style.current(rng, elTarget) : false;
+      return rng ? rng.isOnEditable() && style.current(rng, elTarget) : false;
     };
 
     /**
@@ -2860,7 +2861,7 @@
             // CodeMirror hasn't Padding.
             cmEditor.setSize(null, $editable.outerHeight());
             // autoFormatRange If formatting included
-            if (cmEditor.autoFormatRange) {
+            if (options.codemirror.autoFormatOnStart && cmEditor.autoFormatRange) {
               cmEditor.autoFormatRange({line: 0, ch: 0}, {
                 line: cmEditor.lineCount(),
                 ch: cmEditor.getTextArea().value.length
