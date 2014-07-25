@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.5.2
+ * Super simple wysiwyg editor on Bootstrap v0.5.3
  * http://hackerwins.github.io/summernote/
  *
  * summernote.js
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-07-20T03:22Z
+ * Date: 2014-07-25T02:00Z
  */
 (function (factory) {
   /* global define */
@@ -746,7 +746,7 @@
 
   var settings = {
     // version
-    version: '0.5.2',
+    version: '0.5.3',
 
     /**
      * options
@@ -1022,8 +1022,8 @@
         color: {
           recent: 'Recent Color',
           more: 'More Color',
-          background: 'BackColor',
-          foreground: 'FontColor',
+          background: 'Background Color',
+          foreground: 'Foreground Color',
           transparent: 'Transparent',
           setTransparent: 'Set transparent',
           reset: 'Reset',
@@ -1723,7 +1723,7 @@
      */
     this.currentStyle = function (elTarget) {
       var rng = range.create();
-      return rng.isOnEditable() && style.current(rng, elTarget);
+      return (rng) ? rng.isOnEditable() && style.current(rng, elTarget) : false;
     };
 
     /**
@@ -2540,6 +2540,7 @@
             $videoDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
+          // dettach events
           $videoUrl.off('keyup');
           $videoBtn.off('click');
 
@@ -2604,7 +2605,10 @@
             $linkDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
+          // dettach events
+          $linkText.off('keyup');
           $linkUrl.off('keyup');
+          $linkBtn.off('click');
 
           if (deferred.state() === 'pending') {
             deferred.reject();
@@ -3885,7 +3889,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.2</a> · ' +
+                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.3</a> · ' +
                      '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
@@ -3966,7 +3970,7 @@
                            '" title="', sColor,
                            '" data-toggle="button" tabindex="-1"></button>'].join(''));
           }
-          aPaletteContents.push('<div>' + aButton.join('') + '</div>');
+          aPaletteContents.push('<div class="note-color-row">' + aButton.join('') + '</div>');
         }
         $palette.html(aPaletteContents.join(''));
       });
