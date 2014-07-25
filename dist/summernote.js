@@ -4063,7 +4063,7 @@
         var group = options.toolbar[idx];
         sToolbar += '<div class="note-' + group[0] + ' btn-group">';
         for (var i = 0, szGroup = group[1].length; i < szGroup; i++) {
-          if($.isFunction(tplButtonInfo[group[1][i]])) {
+          if ($.isFunction(tplButtonInfo[group[1][i]])) {
             sToolbar += tplButtonInfo[group[1][i]](langInfo, options);
           }
           
