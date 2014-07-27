@@ -29,7 +29,7 @@ Summernote uses opensouce libraries(jQuery, bootstrap, fontAwesome)
 Include Following code into `<head>` tag of your HTML:
 
 ```html
-<!-- include libries(jQuery, bootstrap, fontawesome) -->
+<!-- include libraries(jQuery, bootstrap, fontawesome) -->
 <script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.min.js"></script> 
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
 <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
@@ -76,7 +76,7 @@ $('#summernote').destroy();
 
 ### Supported platform
 * Modern Browser (Safari, Chrome, Firefox, Opera, Internet Explorer 9+)
-* OS (Windows, Mac)
+* OS (Windows, Mac, Linux)
 
 ### Upcoming Features
 * Responsive Toolbar
