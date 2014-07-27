@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-07-25T03:05Z
+ * Date: 2014-07-27T05:00Z
  */
 (function (factory) {
   /* global define */
@@ -4206,7 +4206,7 @@
         // Textarea: auto filling the code before form submit.
         if (dom.isTextarea($holder[0])) {
           $holder.closest('form').submit(function () {
-            $holder.html($holder.code());
+            $holder.val($holder.code());
           });
         }
       });
@@ -4245,7 +4245,7 @@
           }
           return isCodeview ? info.codable.val() : info.editable.html();
         }
-        return $holder.html();
+        return dom.isTextarea($holder[0]) ? $holder.val() : $holder.html();
       }
 
       // set the HTML contents of note

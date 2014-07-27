@@ -78,7 +78,7 @@ define([
           }
           return isCodeview ? info.codable.val() : info.editable.html();
         }
-        return $holder.html();
+        return dom.isTextarea($holder[0]) ? $holder.val() : $holder.html();
       }
 
       // set the HTML contents of note
