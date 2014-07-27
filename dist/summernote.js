@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-07-27T05:00Z
+ * Date: 2014-07-27T05:15Z
  */
 (function (factory) {
   /* global define */
@@ -4060,13 +4060,14 @@
       //04. create Toolbar
       var sToolbar = '';
       for (var idx = 0, sz = options.toolbar.length; idx < sz; idx ++) {
-        var group = options.toolbar[idx];
-        sToolbar += '<div class="note-' + group[0] + ' btn-group">';
-        for (var i = 0, szGroup = group[1].length; i < szGroup; i++) {
-          if ($.isFunction(tplButtonInfo[group[1][i]])) {
-            sToolbar += tplButtonInfo[group[1][i]](langInfo, options);
-          }
-          
+        var groupName = options.toolbar[idx][0];
+        var groupButtons = options.toolbar[idx][1];
+
+        sToolbar += '<div class="note-' + groupName + ' btn-group">';
+        for (var i = 0, btnLength = groupButtons.length; i < btnLength; i++) {
+          // continue When a toolbar button does'nt exist
+          if (!$.isFunction(tplButtonInfo[groupButtons[i]])) { continue; }
+          sToolbar += tplButtonInfo[groupButtons[i]](langInfo, options);
         }
         sToolbar += '</div>';
       }
