@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-07-27T05:15Z
+ * Date: 2014-08-02T04:33Z
  */
 (function (factory) {
   /* global define */
@@ -471,8 +471,8 @@
   
       var aNext = [];
       while (node) {
-        aNext.push(node);
         if (pred(node)) { break; }
+        aNext.push(node);
         node = node.previousSibling;
       }
       return aNext;
@@ -489,8 +489,8 @@
   
       var aNext = [];
       while (node) {
-        aNext.push(node);
         if (pred(node)) { break; }
+        aNext.push(node);
         node = node.nextSibling;
       }
       return aNext;
@@ -517,6 +517,23 @@
       })(node);
 
       return aDescendant;
+    };
+
+    /**
+     * wrap node with new tag.
+     *
+     * @param {Element} node
+     * @param {Element} tagName of wrapper
+     * @return {Element} - wrapper
+     */
+    var wrap = function (node, wrapperName) {
+      var parent = node.parentNode;
+      var wrapper = $('<' + wrapperName + '>')[0];
+
+      parent.insertBefore(wrapper, node);
+      wrapper.appendChild(node);
+
+      return wrapper;
     };
   
     /**
@@ -549,6 +566,15 @@
     };
   
     var isText = makePredByNodeName('#text');
+
+    /**
+     * returns whether node is textNode on `note-editable` or not.
+     *
+     * @param {Element} node
+     */
+    var isRootText = function (node) {
+      return dom.isText(node) && isEditable(node.parentNode);
+    };
   
     /**
      * returns #text's text size or element's childNodes size
@@ -710,6 +736,7 @@
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
       isText: isText,
+      isRootText: isRootText,
       isPara: isPara,
       isList: isList,
       isTable: makePredByNodeName('TABLE'),
@@ -734,6 +761,7 @@
       listDescendant: listDescendant,
       commonAncestor: commonAncestor,
       listBetween: listBetween,
+      wrap: wrap,
       insertAfter: insertAfter,
       position: position,
       makeOffsetPath: makeOffsetPath,
@@ -1297,7 +1325,7 @@
         } else {
           elNode = elCont.childNodes[nOffset] || elCont;
           if (dom.isText(elNode)) {
-            return textRangeInfo(elNode, nOffset);
+            return textRangeInfo(elNode, 0);
           }
   
           nOffset = 0;
