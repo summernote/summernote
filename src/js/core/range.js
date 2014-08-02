@@ -77,7 +77,7 @@ define([
         } else {
           elNode = elCont.childNodes[nOffset] || elCont;
           if (dom.isText(elNode)) {
-            return textRangeInfo(elNode, nOffset);
+            return textRangeInfo(elNode, 0);
           }
   
           nOffset = 0;

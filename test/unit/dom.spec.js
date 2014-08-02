@@ -108,7 +108,7 @@ define(['jquery', 'summernote/core/dom', 'summernote/core/func'], function ($, d
       deepEqual(dom.listNext($u[0]), [$u[0], $s[0], $i[0]], 'with no pred');
       deepEqual(dom.listNext($i[0]), [$i[0]], 'last item with no pred');
 
-      deepEqual(dom.listNext($s[0], func.eq($i[0])), [$s[0], $i[0]], 's to i');
+      deepEqual(dom.listNext($s[0], func.eq($i[0])), [$s[0]], 's to i');
     });
 
     test('dom.listPrev', function () {
@@ -123,7 +123,7 @@ define(['jquery', 'summernote/core/dom', 'summernote/core/func'], function ($, d
       deepEqual(dom.listPrev($s[0]), [$s[0], $u[0], $b[0]], 'with no pred');
       deepEqual(dom.listPrev($b[0]), [$b[0]], 'first item with no pred');
 
-      deepEqual(dom.listPrev($i[0], func.eq($s[0])), [$i[0], $s[0]], 'i to s');
+      deepEqual(dom.listPrev($i[0], func.eq($s[0])), [$i[0]], 'i to s');
     });
 
     test('dom.position', function () {

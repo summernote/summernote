@@ -168,8 +168,8 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
   
       var aNext = [];
       while (node) {
-        aNext.push(node);
         if (pred(node)) { break; }
+        aNext.push(node);
         node = node.previousSibling;
       }
       return aNext;
@@ -186,8 +186,8 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
   
       var aNext = [];
       while (node) {
-        aNext.push(node);
         if (pred(node)) { break; }
+        aNext.push(node);
         node = node.nextSibling;
       }
       return aNext;
@@ -214,6 +214,23 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
       })(node);
 
       return aDescendant;
+    };
+
+    /**
+     * wrap node with new tag.
+     *
+     * @param {Element} node
+     * @param {Element} tagName of wrapper
+     * @return {Element} - wrapper
+     */
+    var wrap = function (node, wrapperName) {
+      var parent = node.parentNode;
+      var wrapper = $('<' + wrapperName + '>')[0];
+
+      parent.insertBefore(wrapper, node);
+      wrapper.appendChild(node);
+
+      return wrapper;
     };
   
     /**
@@ -246,6 +263,15 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
     };
   
     var isText = makePredByNodeName('#text');
+
+    /**
+     * returns whether node is textNode on `note-editable` or not.
+     *
+     * @param {Element} node
+     */
+    var isRootText = function (node) {
+      return dom.isText(node) && isEditable(node.parentNode);
+    };
   
     /**
      * returns #text's text size or element's childNodes size
@@ -407,6 +433,7 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
       isText: isText,
+      isRootText: isRootText,
       isPara: isPara,
       isList: isList,
       isTable: makePredByNodeName('TABLE'),
@@ -431,6 +458,7 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
       listDescendant: listDescendant,
       commonAncestor: commonAncestor,
       listBetween: listBetween,
+      wrap: wrap,
       insertAfter: insertAfter,
       position: position,
       makeOffsetPath: makeOffsetPath,
