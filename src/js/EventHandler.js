@@ -468,12 +468,30 @@ define([
     };
 
     /**
+     * Drag and Drop Events
+     *
+     * @param {Object} oLayoutInfo - layout Informations
+     * @param {Boolean} disableDragAndDrop
+     */
+    var handleDragAndDropEvent = function (oLayoutInfo, disableDragAndDrop) {
+        if (disableDragAndDrop) {
+            // prevent default drop event
+            $document.on('drop', function (e) {
+                e.preventDefault();
+            });
+        } else {
+            attachDragAndDropEvent(oLayoutInfo);
+        }
+    };
+
+    /**
      * attach Drag and Drop Events
      *
      * @param {Object} oLayoutInfo - layout Informations
      */
     var attachDragAndDropEvent = function (oLayoutInfo) {
-      var collection = $(), $dropzone = oLayoutInfo.dropzone,
+      var collection = $(),
+          $dropzone = oLayoutInfo.dropzone,
           $dropzoneMessage = oLayoutInfo.dropzone.find('.note-dropzone-message');
 
       // show dropzone on dragenter when dragging a object to document.
@@ -581,9 +599,7 @@ define([
       // handlers for frame mode (toolbar, statusbar)
       if (!options.airMode) {
         // handler for drag and drop
-        if (!options.disableDragAndDrop) {
-          attachDragAndDropEvent(oLayoutInfo);
-        }
+        handleDragAndDropEvent(oLayoutInfo, options.disableDragAndDrop);
 
         // handler for toolbar
         oLayoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
