@@ -96,6 +96,7 @@ define('summernote/module/Dialog', function () {
             $videoDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
+          // dettach events
           $videoUrl.off('keyup');
           $videoBtn.off('click');
 
@@ -152,6 +153,7 @@ define('summernote/module/Dialog', function () {
             event.preventDefault();
 
             deferred.resolve({
+              range: linkInfo.range,
               url: $linkUrl.val(),
               text: $linkText.val(),
               newWindow: $openInNewWindow.is(':checked')
@@ -159,7 +161,10 @@ define('summernote/module/Dialog', function () {
             $linkDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
+          // dettach events
+          $linkText.off('keyup');
           $linkUrl.off('keyup');
+          $linkBtn.off('click');
 
           if (deferred.state() === 'pending') {
             deferred.reject();

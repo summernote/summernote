@@ -641,7 +641,7 @@ define([
           });
         }
       // bootstrap tooltip on btn-group bug
-      // https://github.com/twitter/bootstrap/issues/5687
+      // https://github.com/twbs/bootstrap/issues/5687
       }).tooltip({
         container: 'body',
         trigger: 'hover',
@@ -668,7 +668,7 @@ define([
                            '" title="', sColor,
                            '" data-toggle="button" tabindex="-1"></button>'].join(''));
           }
-          aPaletteContents.push('<div>' + aButton.join('') + '</div>');
+          aPaletteContents.push('<div class="note-color-row">' + aButton.join('') + '</div>');
         }
         $palette.html(aPaletteContents.join(''));
       });
@@ -757,10 +757,14 @@ define([
       //04. create Toolbar
       var sToolbar = '';
       for (var idx = 0, sz = options.toolbar.length; idx < sz; idx ++) {
-        var group = options.toolbar[idx];
-        sToolbar += '<div class="note-' + group[0] + ' btn-group">';
-        for (var i = 0, szGroup = group[1].length; i < szGroup; i++) {
-          sToolbar += tplButtonInfo[group[1][i]](langInfo, options);
+        var groupName = options.toolbar[idx][0];
+        var groupButtons = options.toolbar[idx][1];
+
+        sToolbar += '<div class="note-' + groupName + ' btn-group">';
+        for (var i = 0, btnLength = groupButtons.length; i < btnLength; i++) {
+          // continue creating toolbar even if a button doesn't exist
+          if (!$.isFunction(tplButtonInfo[groupButtons[i]])) { continue; }
+          sToolbar += tplButtonInfo[groupButtons[i]](langInfo, options);
         }
         sToolbar += '</div>';
       }

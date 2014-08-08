@@ -233,7 +233,7 @@ define([
             // CodeMirror hasn't Padding.
             cmEditor.setSize(null, $editable.outerHeight());
             // autoFormatRange If formatting included
-            if (cmEditor.autoFormatRange) {
+            if (options.codemirror.autoFormatOnStart && cmEditor.autoFormatRange) {
               cmEditor.autoFormatRange({line: 0, ch: 0}, {
                 line: cmEditor.lineCount(),
                 ch: cmEditor.getTextArea().value.length
@@ -365,9 +365,12 @@ define([
       var $btn = $(event.target).closest('[data-event]');
 
       if ($btn.length) {
-        var sEvent = $btn.attr('data-event'), sValue = $btn.attr('data-value');
+        var sEvent = $btn.attr('data-event'),
+            sValue = $btn.attr('data-value');
 
         var oLayoutInfo = makeLayoutInfo(event.target);
+
+        event.preventDefault();
 
         // before command: detect control selection element($target)
         var $target;
@@ -640,7 +643,7 @@ define([
         };
 
         if (agent.isMSIE) {
-          var sDomEvents = 'DOMCharacterDataModified, DOMSubtreeModified, DOMNodeInserted';
+          var sDomEvents = 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted';
           oLayoutInfo.editable.on(sDomEvents, hChange);
         } else {
           oLayoutInfo.editable.on('input', hChange);

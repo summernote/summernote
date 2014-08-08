@@ -36,9 +36,9 @@
       video: {
         video: 'Video',
         videoLink: 'Video Link',
-        insert: 'Insert Video',
+        insert: 'Video einfügen',
         url: 'Video URL?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, or Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, oder Youku)'
       },
       table: {
         table: 'Tabelle'
@@ -60,7 +60,7 @@
       },
       lists: {
         unordered: 'Aufzählung',
-        ordered: 'Nummerieung'
+        ordered: 'Nummerierung'
       },
       options: {
         help: 'Hilfe',

@@ -32,14 +32,14 @@
         unlink: 'Quitar link',
         edit: 'Editar',
         textToDisplay: 'Texto para mostrar',
-        url: 'Hacia que URL lleva el link?',
+        url: '¿Hacia que URL lleva el link?',
         openInNewWindow: 'Abrir en una nueva ventana'
       },
       video: {
         video: 'Video',
         videoLink: 'Link del video',
         insert: 'Insertar video',
-        url: 'URL del video?',
+        url: '¿URL del video?',
         providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, o Youku)'
       },
       table: {

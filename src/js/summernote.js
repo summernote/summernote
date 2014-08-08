@@ -39,7 +39,7 @@ define([
         // Textarea: auto filling the code before form submit.
         if (dom.isTextarea($holder[0])) {
           $holder.closest('form').submit(function () {
-            $holder.html($holder.code());
+            $holder.val($holder.code());
           });
         }
       });
@@ -78,7 +78,7 @@ define([
           }
           return isCodeview ? info.codable.val() : info.editable.html();
         }
-        return $holder.html();
+        return dom.isTextarea($holder[0]) ? $holder.val() : $holder.html();
       }
 
       // set the HTML contents of note

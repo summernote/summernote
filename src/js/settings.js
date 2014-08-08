@@ -25,7 +25,8 @@ define('summernote/settings', function () {
       codemirror: {                 // codemirror options
         mode: 'text/html',
         htmlMode: true,
-        lineNumbers: true
+        lineNumbers: true,
+        autoFormatOnStart: false
       },
 
       // language
@@ -201,6 +202,8 @@ define('summernote/settings', function () {
           italic: 'Italic',
           underline: 'Underline',
           strikethrough: 'Strikethrough',
+          subscript: 'Subscript',
+          superscript: 'Superscript',
           clear: 'Remove Font Style',
           height: 'Line Height',
           name: 'Font Family',
@@ -275,8 +278,8 @@ define('summernote/settings', function () {
         color: {
           recent: 'Recent Color',
           more: 'More Color',
-          background: 'BackColor',
-          foreground: 'FontColor',
+          background: 'Background Color',
+          foreground: 'Foreground Color',
           transparent: 'Transparent',
           setTransparent: 'Set transparent',
           reset: 'Reset',
