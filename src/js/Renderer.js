@@ -762,7 +762,7 @@ define([
 
         sToolbar += '<div class="note-' + groupName + ' btn-group">';
         for (var i = 0, btnLength = groupButtons.length; i < btnLength; i++) {
-          // continue When a toolbar button does'nt exist
+          // continue creating toolbar even if a button doesn't exist
           if (!$.isFunction(tplButtonInfo[groupButtons[i]])) { continue; }
           sToolbar += tplButtonInfo[groupButtons[i]](langInfo, options);
         }
