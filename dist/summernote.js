@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-02T04:33Z
+ * Date: 2014-08-08T18:14Z
  */
 (function (factory) {
   /* global define */
@@ -1104,7 +1104,7 @@
      * @param {String} sUrl
      * @return {Promise} - then: $image
      */
-    var createImage = function (sUrl) {
+    var createImage = function (sUrl, filename) {
       return $.Deferred(function (deferred) {
         $('<img>').one('load', function () {
           deferred.resolve($(this));
@@ -1112,7 +1112,9 @@
           deferred.reject($(this));
         }).css({
           display: 'none'
-        }).appendTo(document.body).attr('src', sUrl);
+        }).appendTo(document.body)
+          .attr('src', sUrl)
+          .attr('data-filename', filename);
       }).promise();
     };
 
@@ -1842,8 +1844,8 @@
      * @param {jQuery} $editable
      * @param {String} sUrl
      */
-    this.insertImage = function ($editable, sUrl) {
-      async.createImage(sUrl).then(function ($image) {
+    this.insertImage = function ($editable, sUrl, filename) {
+      async.createImage(sUrl, filename).then(function ($image) {
         recordUndo($editable);
         $image.css({
           display: '',
@@ -2723,8 +2725,9 @@
       // else insert Image as dataURL
       } else {
         $.each(files, function (idx, file) {
+          var filename = file.name;
           async.readFileAsDataURL(file).then(function (sDataURL) {
-            editor.insertImage($editable, sDataURL);
+            editor.insertImage($editable, sDataURL, filename);
           }).fail(function () {
             if (callbacks.onImageUploadError) {
               callbacks.onImageUploadError();
@@ -4093,7 +4096,7 @@
 
         sToolbar += '<div class="note-' + groupName + ' btn-group">';
         for (var i = 0, btnLength = groupButtons.length; i < btnLength; i++) {
-          // continue When a toolbar button does'nt exist
+          // continue creating toolbar even if a button doesn't exist
           if (!$.isFunction(tplButtonInfo[groupButtons[i]])) { continue; }
           sToolbar += tplButtonInfo[groupButtons[i]](langInfo, options);
         }
