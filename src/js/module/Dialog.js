@@ -39,6 +39,7 @@ define('summernote/module/Dialog', function () {
               deferred.resolve(this.files);
               $imageDialog.modal('hide');
             })
+            .val('')
           );
 
           $imageBtn.click(function (event) {
