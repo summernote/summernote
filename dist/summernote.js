@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-08T18:14Z
+ * Date: 2014-08-14T19:05Z
  */
 (function (factory) {
   /* global define */
@@ -3879,8 +3879,11 @@
 
     var tplDialogs = function (lang, options) {
       var tplImageDialog = function () {
-        var body = '<h5>' + lang.image.selectFromFiles + '</h5>' +
+        var body =
+                   '<div class="note-group-select-from-files">' +
+                   '<h5>' + lang.image.selectFromFiles + '</h5>' +
                    '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
+                   '</div>' +
                    '<h5>' + lang.image.url + '</h5>' +
                    '<input class="note-image-url form-control span12" type="text" />';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
