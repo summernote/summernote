@@ -17,6 +17,7 @@ define([
      * @param {String} [options.value]
      * @param {String} [options.title]
      * @param {String} [options.dropdown]
+     * @param {String} [options.hide]
      */
     var tplButton = function (sLabel, options) {
       var event = options.event;
@@ -24,6 +25,7 @@ define([
       var title = options.title;
       var className = options.className;
       var dropdown = options.dropdown;
+      var hide = options.hide;
 
       return '<button type="button"' +
                  ' class="btn btn-default btn-sm btn-small' +
@@ -34,6 +36,7 @@ define([
                  (title ? ' title="' + title + '"' : '') +
                  (event ? ' data-event="' + event + '"' : '') +
                  (value ? ' data-value=\'' + value + '\'' : '') +
+                 (hide ? ' data-hide=\'' + hide + '\'' : '') +
                  ' tabindex="-1">' +
                sLabel +
                (dropdown ? ' <span class="caret"></span>' : '') +
@@ -106,19 +109,22 @@ define([
       picture: function (lang) {
         return tplIconButton('fa fa-picture-o icon-picture', {
           event: 'showImageDialog',
-          title: lang.image.image
+          title: lang.image.image,
+          hide: true
         });
       },
       link: function (lang) {
         return tplIconButton('fa fa-link icon-link', {
           event: 'showLinkDialog',
-          title: lang.link.link
+          title: lang.link.link,
+          hide: true
         });
       },
       video: function (lang) {
         return tplIconButton('fa fa-youtube-play icon-play', {
           event: 'showVideoDialog',
-          title: lang.video.video
+          title: lang.video.video,
+          hide: true
         });
       },
       table: function (lang) {
@@ -327,7 +333,8 @@ define([
       help: function (lang) {
         return tplIconButton('fa fa-question icon-question', {
           event: 'showHelpDialog',
-          title: lang.options.help
+          title: lang.options.help,
+          hide: true
         });
       },
       fullscreen: function (lang) {
@@ -366,7 +373,8 @@ define([
       var tplLinkPopover = function () {
         var linkButton = tplIconButton('fa fa-edit icon-edit', {
           title: lang.link.edit,
-          event: 'showLinkDialog'
+          event: 'showLinkDialog',
+          hide: true
         });
         var unlinkButton = tplIconButton('fa fa-unlink icon-unlink', {
           title: lang.link.unlink,

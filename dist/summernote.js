@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-08T18:14Z
+ * Date: 2014-08-15T04:50Z
  */
 (function (factory) {
   /* global define */
@@ -1730,9 +1730,12 @@
      *
      * @param {jQuery} $editable
      */
-    this.saveRange = function ($editable) {
+    this.saveRange = function ($editable, thenCollapse) {
       $editable.focus();
       $editable.data('range', range.create());
+      if (thenCollapse) {
+        range.create().collapse().select();
+      }
     };
 
     /**
@@ -2807,7 +2810,7 @@
         var $dialog = oLayoutInfo.dialog(),
             $editable = oLayoutInfo.editable();
 
-        editor.saveRange($editable);
+        editor.saveRange($editable, true);
         dialog.showHelpDialog($editable, $dialog).then(function () {
           editor.restoreRange($editable);
         });
@@ -3025,7 +3028,8 @@
 
       if ($btn.length) {
         var sEvent = $btn.attr('data-event'),
-            sValue = $btn.attr('data-value');
+            sValue = $btn.attr('data-value'),
+            sHide = $btn.attr('data-hide');
 
         var oLayoutInfo = makeLayoutInfo(event.target);
 
@@ -3038,6 +3042,12 @@
           $target = $($selection.data('target'));
         }
 
+        // If requested, hide the popover when the button is clicked.
+        // Useful for things like showHelpDialog.
+        if (sHide) {
+          $btn.parents('.popover').hide();
+        }
+        
         if (editor[sEvent]) { // on command
           var $editable = oLayoutInfo.editable();
           $editable.trigger('focus');
@@ -3351,6 +3361,7 @@
      * @param {String} [options.value]
      * @param {String} [options.title]
      * @param {String} [options.dropdown]
+     * @param {String} [options.hide]
      */
     var tplButton = function (sLabel, options) {
       var event = options.event;
@@ -3358,6 +3369,7 @@
       var title = options.title;
       var className = options.className;
       var dropdown = options.dropdown;
+      var hide = options.hide;
 
       return '<button type="button"' +
                  ' class="btn btn-default btn-sm btn-small' +
@@ -3368,6 +3380,7 @@
                  (title ? ' title="' + title + '"' : '') +
                  (event ? ' data-event="' + event + '"' : '') +
                  (value ? ' data-value=\'' + value + '\'' : '') +
+                 (hide ? ' data-hide=\'' + hide + '\'' : '') +
                  ' tabindex="-1">' +
                sLabel +
                (dropdown ? ' <span class="caret"></span>' : '') +
@@ -3440,19 +3453,22 @@
       picture: function (lang) {
         return tplIconButton('fa fa-picture-o icon-picture', {
           event: 'showImageDialog',
-          title: lang.image.image
+          title: lang.image.image,
+          hide: true
         });
       },
       link: function (lang) {
         return tplIconButton('fa fa-link icon-link', {
           event: 'showLinkDialog',
-          title: lang.link.link
+          title: lang.link.link,
+          hide: true
         });
       },
       video: function (lang) {
         return tplIconButton('fa fa-youtube-play icon-play', {
           event: 'showVideoDialog',
-          title: lang.video.video
+          title: lang.video.video,
+          hide: true
         });
       },
       table: function (lang) {
@@ -3661,7 +3677,8 @@
       help: function (lang) {
         return tplIconButton('fa fa-question icon-question', {
           event: 'showHelpDialog',
-          title: lang.options.help
+          title: lang.options.help,
+          hide: true
         });
       },
       fullscreen: function (lang) {
@@ -3700,7 +3717,8 @@
       var tplLinkPopover = function () {
         var linkButton = tplIconButton('fa fa-edit icon-edit', {
           title: lang.link.edit,
-          event: 'showLinkDialog'
+          event: 'showLinkDialog',
+          hide: true
         });
         var unlinkButton = tplIconButton('fa fa-unlink icon-unlink', {
           title: lang.link.unlink,
