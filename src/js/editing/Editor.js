@@ -91,6 +91,25 @@ define([
     /* jshint ignore:end */
 
     /**
+     * wrapper around range.insertNode to fire events
+     * @param {jQuery} $editable
+     * @param {Element} node
+     * @return {Object}
+     */
+    var insert = this.insert = function ($editable, node) {
+        var callbacks = $editable.data('callbacks');
+        var rng = range.create();
+        if (callbacks.onBeforeInsert) {
+          callbacks.onBeforeInsert(node, rng);
+        }
+        rng.insertNode(node);
+        if (callbacks.onInsert) {
+          callbacks.onInsert(node, rng);
+        }
+        return node;
+      };
+
+    /**
      * @param {jQuery} $editable 
      * @param {WrappedRange} rng
      * @param {Number} nTabsize
@@ -142,7 +161,7 @@ define([
           display: '',
           width: Math.min($editable.width(), $image.width())
         });
-        range.create().insertNode($image[0]);
+        insert($editable, $image[0]);
       }).fail(function () {
         var callbacks = $editable.data('callbacks');
         if (callbacks.onImageUploadError) {
@@ -214,7 +233,7 @@ define([
 
       if ($video) {
         $video.attr('frameborder', 0);
-        range.create().insertNode($video[0]);
+        insert($editable, $video[0]);
       }
     };
 
@@ -312,7 +331,7 @@ define([
       rng = rng.deleteContents();
 
       // Create a new link when there is no anchor on range.
-      var anchor = rng.insertNode($('<A>' + sLinkText + '</A>')[0]);
+      var anchor = insert($editable, $('<A>' + sLinkText + '</A>')[0]);
       $(anchor).attr({
         href: sLinkUrl,
         target: isNewWindow ? '_blank' : ''
@@ -376,7 +395,7 @@ define([
     this.insertTable = function ($editable, sDim) {
       recordUndo($editable);
       var aDim = sDim.split('x');
-      range.create().insertNode(table.createTable(aDim[0], aDim[1]));
+      insert($editable, table.createTable(aDim[0], aDim[1]));
     };
 
     /**
