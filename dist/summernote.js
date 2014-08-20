@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-20T13:11Z
+ * Date: 2014-08-20T14:07Z
  */
 (function (factory) {
   /* global define */
@@ -2040,7 +2040,6 @@
       rng = rng.deleteContents();
 
       // Create a new link when there is no anchor on range.
-      // var anchor = rng.insertNode($('<A>' + sLinkText + '</A>')[0]);
       var anchor = insert($editable, $('<A>' + sLinkText + '</A>')[0]);
       $(anchor).attr({
         href: sLinkUrl,
@@ -2105,7 +2104,7 @@
     this.insertTable = function ($editable, sDim) {
       recordUndo($editable);
       var aDim = sDim.split('x');
-      this.insert($editable, table.createTable(aDim[0], aDim[1]));
+      insert($editable, table.createTable(aDim[0], aDim[1]));
     };
 
     /**
