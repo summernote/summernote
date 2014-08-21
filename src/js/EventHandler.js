@@ -657,7 +657,9 @@ define([
         onImageUpload: options.onImageUpload,
         onImageUploadError: options.onImageUploadError,
         onFileUpload: options.onFileUpload,
-        onFileUploadError: options.onFileUpload
+        onFileUploadError: options.onFileUpload,
+        onBeforeInsert: options.onBeforeInsert,
+        onInsert: options.onInsert
       });
     };
 
