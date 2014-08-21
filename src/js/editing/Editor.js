@@ -41,7 +41,7 @@ define([
 
     /**
      * current style
-     * @param {Element} elTarget
+     * @param {Node} elTarget
      */
     this.currentStyle = function (elTarget) {
       var rng = range.create();
@@ -127,6 +127,32 @@ define([
       if (rng.isCollapsed() && rng.isOnCell()) {
         table.tab(rng, true);
       }
+    };
+
+    /**
+     * insert paragraph
+     *
+     * @param {Node} $editable
+     */
+    this.insertParagraph = function ($editable) {
+      recordUndo($editable);
+
+      var rng = range.create();
+
+      // deleteContents on range.
+      if (!rng.isCollapsed()) {
+        rng = rng.deleteContents();
+      }
+
+      // wrap body text with paragraph
+      $.each(rng.nodes(dom.isBodyText), function (idx, node) {
+        dom.wrap(node, 'p');
+      });
+
+      // find split root node: block level node
+      var splitRoot = dom.ancestor(rng.sc, dom.isPara);
+      var nextPara = dom.splitTree(splitRoot, rng.getStartBP());
+      range.create(nextPara, 0).select();
     };
 
     /**

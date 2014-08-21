@@ -43,7 +43,7 @@ define([
      * get current style on cursor
      *
      * @param {WrappedRange} rng
-     * @param {Element} elTarget - target element on event
+     * @param {Node} elTarget - target element on event
      * @return {Object} - object contains style properties.
      */
     this.current = function (rng, elTarget) {
