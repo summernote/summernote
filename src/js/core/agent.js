@@ -62,7 +62,8 @@ define(['jquery'], function ($) {
     jqueryVersion: parseFloat($.fn.jquery),
     isSupportAmd: isSupportAmd,
     hasCodeMirror: isSupportAmd ? require.specified('CodeMirror') : !!window.CodeMirror,
-    isFontInstalled: isFontInstalled
+    isFontInstalled: isFontInstalled,
+    isW3CRangeSupport: !!document.createRange
   };
 
   return agent;

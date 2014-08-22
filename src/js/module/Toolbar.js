@@ -8,12 +8,17 @@ define([
   var Toolbar = function () {
     var button = new Button();
 
-    this.update = function ($toolbar, oStyle) {
-      button.update($toolbar, oStyle);
+    this.update = function ($toolbar, styleInfo) {
+      button.update($toolbar, styleInfo);
     };
 
-    this.updateRecentColor = function (elBtn, sEvent, sValue) {
-      button.updateRecentColor(elBtn, sEvent, sValue);
+    /**
+     * @param {Node} button
+     * @param {String} eventName
+     * @param {String} value
+     */
+    this.updateRecentColor = function (buttonNode, eventName, value) {
+      button.updateRecentColor(buttonNode, event, value);
     };
 
     /**
@@ -21,7 +26,9 @@ define([
      * @param {jQuery} $toolbar
      */
     this.activate = function ($toolbar) {
-      $toolbar.find('button').not('button[data-event="codeview"]').removeClass('disabled');
+      $toolbar.find('button')
+              .not('button[data-event="codeview"]')
+              .removeClass('disabled');
     };
 
     /**
@@ -29,7 +36,9 @@ define([
      * @param {jQuery} $toolbar
      */
     this.deactivate = function ($toolbar) {
-      $toolbar.find('button').not('button[data-event="codeview"]').addClass('disabled');
+      $toolbar.find('button')
+              .not('button[data-event="codeview"]')
+              .addClass('disabled');
     };
 
     this.updateFullscreen = function ($container, bFullscreen) {

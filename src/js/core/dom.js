@@ -1,4 +1,12 @@
-define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent'], function (func, list, agent) {
+define([
+  'summernote/core/func',
+  'summernote/core/list',
+  'summernote/core/agent'
+], function (func, list, agent) {
+
+  var NBSP_CHAR = String.fromCharCode(160);
+  var ZERO_WIDTH_NBSP_CHAR = '\ufeff';
+
   /**
    * Dom functions
    */
@@ -6,13 +14,13 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
     /**
      * returns whether node is `note-editable` or not.
      *
-     * @param {Element} node
+     * @param {Node} node
      * @return {Boolean}
      */
     var isEditable = function (node) {
       return node && $(node).hasClass('note-editable');
     };
-  
+
     var isControlSizing = function (node) {
       return node && $(node).hasClass('note-control-sizing');
     };
@@ -41,7 +49,7 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
           dialog: makeFinder('#note-dialog-')
         };
 
-      // frame mode
+        // frame mode
       } else {
         makeFinder = function (sClassName) {
           return function () { return $editor.find(sClassName); };
@@ -65,29 +73,68 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
      * @param {String} sNodeName
      */
     var makePredByNodeName = function (sNodeName) {
-      // nodeName is always uppercase.
+      sNodeName = sNodeName.toUpperCase();
       return function (node) {
-        return node && node.nodeName === sNodeName;
+        return node && node.nodeName.toUpperCase() === sNodeName;
       };
     };
-  
+
+    var isText = function (node) {
+      return node.nodeType === 3;
+    };
+
+    /**
+     * ex) br, col, embed, hr, img, input, ...
+     * @see http://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
+     */
+    var isVoid = function (node) {
+      return node && /^BR|^IMG|^HR/.test(node.nodeName.toUpperCase());
+    };
+
     var isPara = function (node) {
       // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
-      return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName);
+      return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName.toUpperCase());
     };
-  
+
     var isList = function (node) {
-      return node && /^UL|^OL/.test(node.nodeName);
+      return node && /^UL|^OL/.test(node.nodeName.toUpperCase());
     };
 
     var isCell = function (node) {
-      return node && /^TD|^TH/.test(node.nodeName);
+      return node && /^TD|^TH/.test(node.nodeName.toUpperCase());
     };
-  
+
+    var isBodyContainer = function (node) {
+      return isCell(node) || isEditable(node);
+    };
+
+    /**
+     * returns whether node is textNode on bodyContainer or not.
+     *
+     * @param {Node} node
+     */
+    var isBodyText = function (node) {
+      return dom.isText(node) && isBodyContainer(node.parentNode);
+    };
+
+    /**
+     * blank HTML for cursor position
+     */
+    var blankHTML = agent.isMSIE ? '&nbsp;' : '<br>';
+
+    /**
+     * padding blankHTML if node is empty (for cursor position)
+     */
+    var paddingBlankHTML = function (node) {
+      if (!isVoid(node) && !length(node)) {
+        node.innerHTML = blankHTML;
+      }
+    };
+
     /**
      * find nearest ancestor predicate hit
      *
-     * @param {Element} node
+     * @param {Node} node
      * @param {Function} pred - predicate function
      */
     var ancestor = function (node, pred) {
@@ -99,129 +146,130 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
       }
       return null;
     };
-  
+
     /**
      * returns new array of ancestor nodes (until predicate hit).
      *
-     * @param {Element} node
+     * @param {Node} node
      * @param {Function} [optional] pred - predicate function
      */
     var listAncestor = function (node, pred) {
       pred = pred || func.fail;
-  
-      var aAncestor = [];
+
+      var ancestors = [];
       ancestor(node, function (el) {
-        aAncestor.push(el);
+        ancestors.push(el);
         return pred(el);
       });
-      return aAncestor;
+      return ancestors;
     };
-  
+
     /**
      * returns common ancestor node between two nodes.
      *
-     * @param {Element} nodeA
-     * @param {Element} nodeB
+     * @param {Node} nodeA
+     * @param {Node} nodeB
      */
     var commonAncestor = function (nodeA, nodeB) {
-      var aAncestor = listAncestor(nodeA);
+      var ancestors = listAncestor(nodeA);
       for (var n = nodeB; n; n = n.parentNode) {
-        if ($.inArray(n, aAncestor) > -1) { return n; }
+        if ($.inArray(n, ancestors) > -1) { return n; }
       }
       return null; // difference document area
     };
-  
+
     /**
      * listing all Nodes between two nodes.
      * FIXME: nodeA and nodeB must be sorted, use comparePoints later.
      *
-     * @param {Element} nodeA
-     * @param {Element} nodeB
+     * @param {Node} nodeA
+     * @param {Node} nodeB
      */
     var listBetween = function (nodeA, nodeB) {
-      var aNode = [];
-  
+      var nodes = [];
+
       var isStart = false, isEnd = false;
 
       // DFS(depth first search) with commonAcestor.
       (function fnWalk(node) {
         if (!node) { return; } // traverse fisnish
         if (node === nodeA) { isStart = true; } // start point
-        if (isStart && !isEnd) { aNode.push(node); } // between
+        if (isStart && !isEnd) { nodes.push(node); } // between
         if (node === nodeB) { isEnd = true; return; } // end point
 
         for (var idx = 0, sz = node.childNodes.length; idx < sz; idx++) {
           fnWalk(node.childNodes[idx]);
         }
       })(commonAncestor(nodeA, nodeB));
-  
-      return aNode;
+
+      return nodes;
     };
-  
+
     /**
      * listing all previous siblings (until predicate hit).
-     * @param {Element} node
+     *
+     * @param {Node} node
      * @param {Function} [optional] pred - predicate function
      */
     var listPrev = function (node, pred) {
       pred = pred || func.fail;
-  
-      var aNext = [];
+
+      var nodes = [];
       while (node) {
         if (pred(node)) { break; }
-        aNext.push(node);
+        nodes.push(node);
         node = node.previousSibling;
       }
-      return aNext;
+      return nodes;
     };
-  
+
     /**
      * listing next siblings (until predicate hit).
      *
-     * @param {Element} node
+     * @param {Node} node
      * @param {Function} [pred] - predicate function
      */
     var listNext = function (node, pred) {
       pred = pred || func.fail;
-  
-      var aNext = [];
+
+      var nodes = [];
       while (node) {
         if (pred(node)) { break; }
-        aNext.push(node);
+        nodes.push(node);
         node = node.nextSibling;
       }
-      return aNext;
+      return nodes;
     };
 
     /**
      * listing descendant nodes
      *
-     * @param {Element} node
+     * @param {Node} node
      * @param {Function} [pred] - predicate function
      */
     var listDescendant = function (node, pred) {
-      var aDescendant = [];
+      var descendents = [];
       pred = pred || func.ok;
 
       // start DFS(depth first search) with node
       (function fnWalk(current) {
         if (node !== current && pred(current)) {
-          aDescendant.push(current);
+          descendents.push(current);
         }
         for (var idx = 0, sz = current.childNodes.length; idx < sz; idx++) {
           fnWalk(current.childNodes[idx]);
         }
       })(node);
 
-      return aDescendant;
+      return descendents;
     };
 
     /**
      * wrap node with new tag.
      *
-     * @param {Element} node
-     * @param {Element} tagName of wrapper
-     * @return {Element} - wrapper
+     * @param {Node} node
+     * @param {Node} tagName of wrapper
+     * @return {Node} - wrapper
      */
     var wrap = function (node, wrapperName) {
       var parent = node.parentNode;
@@ -232,12 +280,12 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
 
       return wrapper;
     };
-  
+
     /**
      * insert node after preceding
      *
-     * @param {Element} node
-     * @param {Element} preceding - predicate function
+     * @param {Node} node
+     * @param {Node} preceding - predicate function
      */
     var insertAfter = function (node, preceding) {
       var next = preceding.nextSibling, parent = preceding.parentNode;
@@ -248,39 +296,36 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
       }
       return node;
     };
-  
+
     /**
      * append elements.
      *
-     * @param {Element} node
+     * @param {Node} node
      * @param {Collection} aChild
      */
-    var appends = function (node, aChild) {
+    var appendChildNodes = function (node, aChild) {
       $.each(aChild, function (idx, child) {
         node.appendChild(child);
       });
       return node;
     };
-  
-    var isText = makePredByNodeName('#text');
 
-    /**
-     * returns whether node is textNode on `note-editable` or not.
-     *
-     * @param {Element} node
-     */
-    var isRootText = function (node) {
-      return dom.isText(node) && isEditable(node.parentNode);
-    };
-  
     /**
      * returns #text's text size or element's childNodes size
      *
-     * @param {Element} node
+     * @param {Node} node
      */
     var length = function (node) {
       if (isText(node)) { return node.nodeValue.length; }
       return node.childNodes.length;
+    };
+
+    var isLeftEdgePoint = function (boundaryPoint) {
+      return boundaryPoint.offset === 0;
+    };
+
+    var isRightEdgePoint = function (boundaryPoint) {
+      return boundaryPoint.offset === length(boundaryPoint.node);
     };
 
     /**
@@ -289,15 +334,32 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
      * @param {BoundaryPoint} boundaryPoitn
      * @return {Boolean}
      */
-    var isEdgeBP = function (boundaryPoint) {
-      return boundaryPoint.offset === 0 ||
-             boundaryPoint.offset === length(boundaryPoint.node);
+    var isEdgePoint = function (boundaryPoint) {
+      return boundaryPoint.offset === 0 || isRightEdgePoint(boundaryPoint);
+    };
+
+    /**
+     * returns whether node is right edge of ancestor or not.
+     *
+     * @param {Node} node
+     * @param {Node} ancestor
+     * @return {Boolean}
+     */
+    var isRightEdgeOf = function (node, ancestor) {
+      while (node && node !== ancestor) {
+        if (position(node) !== length(node.parentNode) - 1) {
+          return false;
+        }
+        node = node.parentNode;
+      }
+
+      return true;
     };
 
     /**
      * returns offset from parent.
      *
-     * @param {Element} node
+     * @param {Node} node
      */
     var position = function (node) {
       var offset = 0;
@@ -315,9 +377,9 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
      * @param {BoundaryPoint} boundaryPoitn
      * @return {BoundaryPoint}
      */
-    var prevBP = function (boundaryPoint) {
+    var prevPoint = function (boundaryPoint) {
       var node = boundaryPoint.node,
-          offset = boundaryPoint.offset;
+      offset = boundaryPoint.offset;
 
       if (offset === 0) {
         if (isEditable(node)) { return null; }
@@ -331,22 +393,22 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
         }
       }
     };
-  
+
     /**
      * return offsetPath(array of offset) from ancestor
      *
-     * @param {Element} ancestor - ancestor node
-     * @param {Element} node
+     * @param {Node} ancestor - ancestor node
+     * @param {Node} node
      */
     var makeOffsetPath = function (ancestor, node) {
-      var aAncestor = list.initial(listAncestor(node, func.eq(ancestor)));
-      return $.map(aAncestor, position).reverse();
+      var ancestors = list.initial(listAncestor(node, func.eq(ancestor)));
+      return $.map(ancestors, position).reverse();
     };
-  
+
     /**
      * return element from offsetPath(array of offset)
      *
-     * @param {Element} ancestor - ancestor node
+     * @param {Node} ancestor - ancestor node
      * @param {array} aOffset - offsetPath
      */
     var fromOffsetPath = function (ancestor, aOffset) {
@@ -356,88 +418,117 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
       }
       return current;
     };
-  
+
     /**
      * split element or #text
      *
-     * @param {Element} node
-     * @param {Number} offset
+     * @param {BoundaryPoint} point
+     * @return {Node} right node of boundaryPoint
      */
-    var split = function (node, offset) {
-      if (offset === 0) { return node; }
-      if (offset >= length(node)) { return node.nextSibling; }
-  
-      // splitText
-      if (isText(node)) { return node.splitText(offset); }
-  
-      // splitElement
-      var child = node.childNodes[offset];
-      node = insertAfter(node.cloneNode(false), node);
-      return appends(node, listNext(child));
-    };
-  
-    /**
-     * split dom tree by boundaryPoint(pivot and offset)
-     *
-     * @param {Element} root
-     * @param {Element} pivot - this will be boundaryPoint's node
-     * @param {Number} offset - this will be boundaryPoint's offset
-     */
-    var splitTree = function (root, pivot, offset) {
-      var aAncestor = listAncestor(pivot, func.eq(root));
-      if (aAncestor.length === 1) { return split(pivot, offset); }
-      return aAncestor.reduce(function (node, parent) {
-        var clone = parent.cloneNode(false);
-        insertAfter(clone, parent);
-        if (node === pivot) {
-          node = split(node, offset);
+    var splitNode = function (point) {
+      // split #text
+      if (isText(point.node)) {
+        // edge case
+        if (isLeftEdgePoint(point)) {
+          return point.node;
+        } else if (isRightEdgePoint(point)) {
+          return point.node.nextSibling;
         }
-        appends(clone, listNext(node));
+
+        return point.node.splitText(point.offset);
+      }
+
+      // split element
+      var childNode = point.node.childNodes[point.offset];
+      var clone = insertAfter(point.node.cloneNode(false), point.node);
+      appendChildNodes(clone, listNext(childNode));
+
+      paddingBlankHTML(point.node);
+      paddingBlankHTML(clone);
+
+      return clone;
+    };
+
+    /**
+     * split tree by point
+     *
+     * @param {Node} root - split root
+     * @param {BoundaryPoint} point
+     * @return {Node} right node of boundaryPoint
+     */
+    var splitTree = function (root, point) {
+      // ex) [#text, <span>, <p>]
+      var ancestors = listAncestor(point.node, func.eq(root));
+
+      if (!ancestors.length) {
+        return null;
+      } else if (ancestors.length === 1) {
+        return splitNode(point);
+      }
+
+      return ancestors.reduce(function (node, parent) {
+        var clone = insertAfter(parent.cloneNode(false), parent);
+
+        if (node === point.node) {
+          node = splitNode(point);
+        }
+
+        appendChildNodes(clone, listNext(node));
+
+        paddingBlankHTML(parent);
+        paddingBlankHTML(clone);
         return clone;
       });
     };
 
+    var createText = function (text) {
+      return document.createTextNode(text);
+    };
+
     /**
-     * remove node, (bRemoveChild: remove child or not)
-     * @param {Element} node
-     * @param {Boolean} bRemoveChild
+     * remove node, (isRemoveChild: remove child or not)
+     * @param {Node} node
+     * @param {Boolean} isRemoveChild
      */
-    var remove = function (node, bRemoveChild) {
+    var remove = function (node, isRemoveChild) {
       if (!node || !node.parentNode) { return; }
-      if (node.removeNode) { return node.removeNode(bRemoveChild); }
-  
-      var elParent = node.parentNode;
-      if (!bRemoveChild) {
-        var aNode = [];
+      if (node.removeNode) { return node.removeNode(isRemoveChild); }
+
+      var parent = node.parentNode;
+      if (!isRemoveChild) {
+        var nodes = [];
         var i, sz;
         for (i = 0, sz = node.childNodes.length; i < sz; i++) {
-          aNode.push(node.childNodes[i]);
+          nodes.push(node.childNodes[i]);
         }
-  
-        for (i = 0, sz = aNode.length; i < sz; i++) {
-          elParent.insertBefore(aNode[i], node);
+
+        for (i = 0, sz = nodes.length; i < sz; i++) {
+          parent.insertBefore(nodes[i], node);
         }
       }
-  
-      elParent.removeChild(node);
+
+      parent.removeChild(node);
     };
-  
+
     var html = function ($node) {
       return dom.isTextarea($node[0]) ? $node.val() : $node.html();
     };
-  
+
     return {
-      blank: agent.isMSIE ? '&nbsp;' : '<br/>',
-      emptyPara: '<p><br/></p>',
+      NBSP_CHAR: NBSP_CHAR,
+      ZERO_WIDTH_NBSP_CHAR: ZERO_WIDTH_NBSP_CHAR,
+      blank: blankHTML,
+      emptyPara: '<p>' + blankHTML + '</p>',
       isEditable: isEditable,
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
       isText: isText,
-      isRootText: isRootText,
+      isBodyText: isBodyText,
       isPara: isPara,
       isList: isList,
       isTable: makePredByNodeName('TABLE'),
       isCell: isCell,
+      isBodyContainer: isBodyContainer,
       isAnchor: makePredByNodeName('A'),
       isDiv: makePredByNodeName('DIV'),
       isLi: makePredByNodeName('LI'),
@@ -449,8 +540,10 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
       isImg: makePredByNodeName('IMG'),
       isTextarea: makePredByNodeName('TEXTAREA'),
       length: length,
-      isEdgeBP: isEdgeBP,
-      prevBP: prevBP,
+      isRightEdgePoint: isRightEdgePoint,
+      isEdgePoint: isEdgePoint,
+      isRightEdgeOf: isRightEdgeOf,
+      prevPoint: prevPoint,
       ancestor: ancestor,
       listAncestor: listAncestor,
       listNext: listNext,
@@ -464,6 +557,7 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
       makeOffsetPath: makeOffsetPath,
       fromOffsetPath: fromOffsetPath,
       splitTree: splitTree,
+      createText: createText,
       remove: remove,
       html: html
     };
