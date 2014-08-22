@@ -36,8 +36,8 @@ Include Following code into `<head>` tag of your HTML:
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
 
 <!-- include summernote css/js-->
-<link href="//oss.maxcdn.com/summernote/0.5.1/summernote.css" rel="stylesheet">
-<script src="//oss.maxcdn.com/summernote/0.5.1/summernote.min.js"></script>
+<link href="summernote.css" rel="stylesheet">
+<script src="summernote.min.js"></script>
 ```
 
 If your summernote download is placed in a different folder, don't forget to change file's paths.
@@ -86,6 +86,13 @@ $('#summernote').destroy();
 * Media Object Selection
 
 ### Change Log
+
+### v0.5.4 2014-08-23
+* Dom editing (insertPara, insertNode)
+
+### v0.5.3 2014-07-25
+* Extract codemirror.autoFormatOnStart option
+* Bug patch (createLink)
 
 #### v0.5.2 2014-07-20
 * Air Mode
