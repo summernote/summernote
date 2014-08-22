@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-22T06:00Z
+ * Date: 2014-08-22T16:56Z
  */
 (function (factory) {
   /* global define */
@@ -1299,11 +1299,11 @@
      * paragraph level style
      *
      * @param {WrappedRange} rng
-     * @param {Object} oStyle
+     * @param {Object} styleInfo
      */
-    this.stylePara = function (rng, oStyle) {
-      $.each(rng.nodes(dom.isPara), function (idx, elPara) {
-        $(elPara).css(oStyle);
+    this.stylePara = function (rng, styleInfo) {
+      $.each(rng.nodes(dom.isPara), function (idx, para) {
+        $(para).css(styleInfo);
       });
     };
 
@@ -1317,41 +1317,41 @@
     this.current = function (rng, target) {
       var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
       var properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
-      var oStyle = jQueryCSS($cont, properties) || {};
+      var styleInfo = jQueryCSS($cont, properties) || {};
 
-      oStyle['font-size'] = parseInt(oStyle['font-size'], 10);
+      styleInfo['font-size'] = parseInt(styleInfo['font-size'], 10);
 
       // document.queryCommandState for toggle state
-      oStyle['font-bold'] = document.queryCommandState('bold') ? 'bold' : 'normal';
-      oStyle['font-italic'] = document.queryCommandState('italic') ? 'italic' : 'normal';
-      oStyle['font-underline'] = document.queryCommandState('underline') ? 'underline' : 'normal';
-      oStyle['font-strikethrough'] = document.queryCommandState('strikeThrough') ? 'strikethrough' : 'normal';
-      oStyle['font-superscript'] = document.queryCommandState('superscript') ? 'superscript' : 'normal';
-      oStyle['font-subscript'] = document.queryCommandState('subscript') ? 'subscript' : 'normal';
+      styleInfo['font-bold'] = document.queryCommandState('bold') ? 'bold' : 'normal';
+      styleInfo['font-italic'] = document.queryCommandState('italic') ? 'italic' : 'normal';
+      styleInfo['font-underline'] = document.queryCommandState('underline') ? 'underline' : 'normal';
+      styleInfo['font-strikethrough'] = document.queryCommandState('strikeThrough') ? 'strikethrough' : 'normal';
+      styleInfo['font-superscript'] = document.queryCommandState('superscript') ? 'superscript' : 'normal';
+      styleInfo['font-subscript'] = document.queryCommandState('subscript') ? 'subscript' : 'normal';
 
       // list-style-type to list-style(unordered, ordered)
       if (!rng.isOnList()) {
-        oStyle['list-style'] = 'none';
+        styleInfo['list-style'] = 'none';
       } else {
         var aOrderedType = ['circle', 'disc', 'disc-leading-zero', 'square'];
-        var isUnordered = $.inArray(oStyle['list-style-type'], aOrderedType) > -1;
-        oStyle['list-style'] = isUnordered ? 'unordered' : 'ordered';
+        var isUnordered = $.inArray(styleInfo['list-style-type'], aOrderedType) > -1;
+        styleInfo['list-style'] = isUnordered ? 'unordered' : 'ordered';
       }
 
-      var elPara = dom.ancestor(rng.sc, dom.isPara);
-      if (elPara && elPara.style['line-height']) {
-        oStyle['line-height'] = elPara.style.lineHeight;
+      var para = dom.ancestor(rng.sc, dom.isPara);
+      if (para && para.style['line-height']) {
+        styleInfo['line-height'] = para.style.lineHeight;
       } else {
-        var lineHeight = parseInt(oStyle['line-height'], 10) / parseInt(oStyle['font-size'], 10);
-        oStyle['line-height'] = lineHeight.toFixed(1);
+        var lineHeight = parseInt(styleInfo['line-height'], 10) / parseInt(styleInfo['font-size'], 10);
+        styleInfo['line-height'] = lineHeight.toFixed(1);
       }
 
-      oStyle.image = dom.isImg(target) && target;
-      oStyle.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);
-      oStyle.aAncestor = dom.listAncestor(rng.sc, dom.isEditable);
-      oStyle.range = rng;
+      styleInfo.image = dom.isImg(target) && target;
+      styleInfo.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);
+      styleInfo.ancestors = dom.listAncestor(rng.sc, dom.isEditable);
+      styleInfo.range = rng;
 
-      return oStyle;
+      return styleInfo;
     };
   };
 
@@ -1709,18 +1709,21 @@
 
         this.wrapBodyTextWithPara();
 
-        var splitRoot, container;
+        var splitRoot, container, pivot;
         if (isInline) {
-          container = point.node.parentNode;
-          splitRoot = point.node;
+          container = dom.isPara(point.node) ? point.node : point.node.parentNode;
+          if (dom.isPara(point.node)) {
+            pivot = point.node.childNodes[point.offset];
+          } else {
+            pivot = dom.splitTree(point.node, point);
+          }
         } else {
           // splitRoot will be childNode of container
           var ancestors = dom.listAncestor(point.node, dom.isBodyContainer);
-          container = list.last(ancestors);
           splitRoot = ancestors[ancestors.length - 2];
+          container = list.last(ancestors);
+          pivot = splitRoot && dom.splitTree(splitRoot, point);
         }
-
-        var pivot = splitRoot && dom.splitTree(splitRoot, point);
 
         if (pivot) {
           pivot.parentNode.insertBefore(node, pivot);
@@ -1846,13 +1849,13 @@
      * @param {Boolean} isShift
      */
     this.tab = function (rng, isShift) {
-      var elCell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-      var elTable = dom.ancestor(elCell, dom.isTable);
-      var aCell = dom.listDescendant(elTable, dom.isCell);
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      var table = dom.ancestor(cell, dom.isTable);
+      var cells = dom.litdHTMLescendant(table, dom.isCell);
 
-      var elNext = list[isShift ? 'prev' : 'next'](aCell, elCell);
-      if (elNext) {
-        range.create(elNext, 0).select();
+      var nextCell = list[isShift ? 'prev' : 'next'](cells, cell);
+      if (nextCell) {
+        range.create(nextCell, 0).select();
       }
     };
 
@@ -1863,20 +1866,18 @@
      * @param {Number} nCol
      */
     this.createTable = function (nCol, nRow) {
-      var aTD = [], sTD;
+      var tds = [], tdHTML;
       for (var idxCol = 0; idxCol < nCol; idxCol++) {
-        aTD.push('<td>' + dom.blank + '</td>');
+        tds.push('<td>' + dom.blank + '</td>');
       }
-      sTD = aTD.join('');
+      tdHTML = tds.join('');
 
-      var aTR = [], sTR;
+      var trs = [], trHTML;
       for (var idxRow = 0; idxRow < nRow; idxRow++) {
-        aTR.push('<tr>' + sTD + '</tr>');
+        trs.push('<tr>' + tdHTML + '</tr>');
       }
-      sTR = aTR.join('');
-      var sTable = '<table class="table table-bordered">' + sTR + '</table>';
-
-      return $(sTable)[0];
+      trHTML = trs.join('');
+      return $('<table class="table table-bordered">' + trHTML + '</table>')[0];
     };
   };
 
@@ -2201,23 +2202,23 @@
      * @param {Object} options
      */
     this.createLink = function ($editable, linkInfo, options) {
-      var sLinkUrl = linkInfo.url;
-      var sLinkText = linkInfo.text;
+      var linkUrl = linkInfo.url;
+      var linkText = linkInfo.text;
       var isNewWindow = linkInfo.newWindow;
       var rng = linkInfo.range;
 
       recordUndo($editable);
 
       if (options.onCreateLink) {
-        sLinkUrl = options.onCreateLink(sLinkUrl);
+        linkUrl = options.onCreateLink(linkUrl);
       }
 
       rng = rng.deleteContents();
 
       // Create a new link when there is no anchor on range.
-      var anchor = rng.insertNode($('<A>' + sLinkText + '</A>')[0]);
+      var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0], true);
       $(anchor).attr({
-        href: sLinkUrl,
+        href: linkUrl,
         target: isNewWindow ? '_blank' : ''
       });
 
@@ -2355,39 +2356,45 @@
    * @class
    */
   var History = function () {
-    var aUndo = [], aRedo = [];
+    var undoStack = [], redoStack = [];
 
-    var makeSnap = function ($editable) {
-      var elEditable = $editable[0], rng = range.create();
+    var makeSnapshot = function ($editable) {
+      var editable = $editable[0];
+      var rng = range.create();
+
       return {
         contents: $editable.html(),
-        bookmark: rng.bookmark(elEditable),
+        bookmark: rng.bookmark(editable),
         scrollTop: $editable.scrollTop()
       };
     };
 
-    var applySnap = function ($editable, oSnap) {
-      $editable.html(oSnap.contents).scrollTop(oSnap.scrollTop);
-      range.createFromBookmark($editable[0], oSnap.bookmark).select();
+    var applySnapshot = function ($editable, snapshot) {
+      $editable.html(snapshot.contents).scrollTop(snapshot.scrollTop);
+      range.createFromBookmark($editable[0], snapshot.bookmark).select();
     };
 
     this.undo = function ($editable) {
-      var oSnap = makeSnap($editable);
-      if (!aUndo.length) { return; }
-      applySnap($editable, aUndo.pop());
-      aRedo.push(oSnap);
+      var snapshot = makeSnapshot($editable);
+      if (!undoStack.length) {
+        return;
+      }
+      applySnapshot($editable, undoStack.pop());
+      redoStack.push(snapshot);
     };
 
     this.redo = function ($editable) {
-      var oSnap = makeSnap($editable);
-      if (!aRedo.length) { return; }
-      applySnap($editable, aRedo.pop());
-      aUndo.push(oSnap);
+      var snapshot = makeSnapshot($editable);
+      if (!redoStack.length) {
+        return;
+      }
+      applySnapshot($editable, redoStack.pop());
+      undoStack.push(snapshot);
     };
 
     this.recordUndo = function ($editable) {
-      aRedo = [];
-      aUndo.push(makeSnap($editable));
+      redoStack = [];
+      undoStack.push(makeSnapshot($editable));
     };
   };
 
@@ -2399,18 +2406,18 @@
      * update button status
      *
      * @param {jQuery} $container
-     * @param {Object} oStyle
+     * @param {Object} styleInfo
      */
-    this.update = function ($container, oStyle) {
+    this.update = function ($container, styleInfo) {
       /**
        * handle dropdown's check mark (for fontname, fontsize, lineHeight).
        * @param {jQuery} $btn
-       * @param {Number} nValue
+       * @param {Number} value
        */
-      var checkDropdownMenu = function ($btn, nValue) {
+      var checkDropdownMenu = function ($btn, value) {
         $btn.find('.dropdown-menu li a').each(function () {
           // always compare string to avoid creating another func.
-          var isChecked = ($(this).data('value') + '') === (nValue + '');
+          var isChecked = ($(this).data('value') + '') === (value + '');
           this.className = isChecked ? 'checked' : '';
         });
       };
@@ -2418,18 +2425,18 @@
       /**
        * update button state(active or not).
        *
-       * @param {String} sSelector
+       * @param {String} selector
        * @param {Function} pred
        */
-      var btnState = function (sSelector, pred) {
-        var $btn = $container.find(sSelector);
+      var btnState = function (selector, pred) {
+        var $btn = $container.find(selector);
         $btn.toggleClass('active', pred());
       };
 
       // fontname
       var $fontname = $container.find('.note-fontname');
       if ($fontname.length) {
-        var selectedFont = oStyle['font-family'];
+        var selectedFont = styleInfo['font-family'];
         if (!!selectedFont) {
           selectedFont = list.head(selectedFont.split(','));
           selectedFont = selectedFont.replace(/\'/g, '');
@@ -2440,66 +2447,66 @@
 
       // fontsize
       var $fontsize = $container.find('.note-fontsize');
-      $fontsize.find('.note-current-fontsize').text(oStyle['font-size']);
-      checkDropdownMenu($fontsize, parseFloat(oStyle['font-size']));
+      $fontsize.find('.note-current-fontsize').text(styleInfo['font-size']);
+      checkDropdownMenu($fontsize, parseFloat(styleInfo['font-size']));
 
       // lineheight
       var $lineHeight = $container.find('.note-height');
-      checkDropdownMenu($lineHeight, parseFloat(oStyle['line-height']));
+      checkDropdownMenu($lineHeight, parseFloat(styleInfo['line-height']));
 
       btnState('button[data-event="bold"]', function () {
-        return oStyle['font-bold'] === 'bold';
+        return styleInfo['font-bold'] === 'bold';
       });
       btnState('button[data-event="italic"]', function () {
-        return oStyle['font-italic'] === 'italic';
+        return styleInfo['font-italic'] === 'italic';
       });
       btnState('button[data-event="underline"]', function () {
-        return oStyle['font-underline'] === 'underline';
+        return styleInfo['font-underline'] === 'underline';
       });
       btnState('button[data-event="strikethrough"]', function () {
-        return oStyle['font-strikethrough'] === 'strikethrough';
+        return styleInfo['font-strikethrough'] === 'strikethrough';
       });
       btnState('button[data-event="superscript"]', function () {
-        return oStyle['font-superscript'] === 'superscript';
+        return styleInfo['font-superscript'] === 'superscript';
       });
       btnState('button[data-event="subscript"]', function () {
-        return oStyle['font-subscript'] === 'subscript';
+        return styleInfo['font-subscript'] === 'subscript';
       });
       btnState('button[data-event="justifyLeft"]', function () {
-        return oStyle['text-align'] === 'left' || oStyle['text-align'] === 'start';
+        return styleInfo['text-align'] === 'left' || styleInfo['text-align'] === 'start';
       });
       btnState('button[data-event="justifyCenter"]', function () {
-        return oStyle['text-align'] === 'center';
+        return styleInfo['text-align'] === 'center';
       });
       btnState('button[data-event="justifyRight"]', function () {
-        return oStyle['text-align'] === 'right';
+        return styleInfo['text-align'] === 'right';
       });
       btnState('button[data-event="justifyFull"]', function () {
-        return oStyle['text-align'] === 'justify';
+        return styleInfo['text-align'] === 'justify';
       });
       btnState('button[data-event="insertUnorderedList"]', function () {
-        return oStyle['list-style'] === 'unordered';
+        return styleInfo['list-style'] === 'unordered';
       });
       btnState('button[data-event="insertOrderedList"]', function () {
-        return oStyle['list-style'] === 'ordered';
+        return styleInfo['list-style'] === 'ordered';
       });
     };
 
     /**
      * update recent color
      *
-     * @param {Node} elBtn
-     * @param {String} sEvent
-     * @param {sValue} sValue
+     * @param {Node} button
+     * @param {String} eventName
+     * @param {value} value
      */
-    this.updateRecentColor = function (elBtn, sEvent, sValue) {
-      var $color = $(elBtn).closest('.note-color');
+    this.updateRecentColor = function (button, eventName, value) {
+      var $color = $(button).closest('.note-color');
       var $recentColor = $color.find('.note-recent-color');
-      var oColor = JSON.parse($recentColor.attr('data-value'));
-      oColor[sEvent] = sValue;
-      $recentColor.attr('data-value', JSON.stringify(oColor));
-      var sKey = sEvent === 'backColor' ? 'background-color' : 'color';
-      $recentColor.find('i').css(sKey, sValue);
+      var colorInfo = JSON.parse($recentColor.attr('data-value'));
+      colorInfo[eventName] = value;
+      $recentColor.attr('data-value', JSON.stringify(colorInfo));
+      var sKey = eventName === 'backColor' ? 'background-color' : 'color';
+      $recentColor.find('i').css(sKey, value);
     };
   };
 
@@ -2509,12 +2516,17 @@
   var Toolbar = function () {
     var button = new Button();
 
-    this.update = function ($toolbar, oStyle) {
-      button.update($toolbar, oStyle);
+    this.update = function ($toolbar, styleInfo) {
+      button.update($toolbar, styleInfo);
     };
 
-    this.updateRecentColor = function (elBtn, sEvent, sValue) {
-      button.updateRecentColor(elBtn, sEvent, sValue);
+    /**
+     * @param {Node} button
+     * @param {String} eventName
+     * @param {String} value
+     */
+    this.updateRecentColor = function (buttonNode, eventName, value) {
+      button.updateRecentColor(buttonNode, event, value);
     };
 
     /**
@@ -2522,7 +2534,9 @@
      * @param {jQuery} $toolbar
      */
     this.activate = function ($toolbar) {
-      $toolbar.find('button').not('button[data-event="codeview"]').removeClass('disabled');
+      $toolbar.find('button')
+              .not('button[data-event="codeview"]')
+              .removeClass('disabled');
     };
 
     /**
@@ -2530,7 +2544,9 @@
      * @param {jQuery} $toolbar
      */
     this.deactivate = function ($toolbar) {
-      $toolbar.find('button').not('button[data-event="codeview"]').addClass('disabled');
+      $toolbar.find('button')
+              .not('button[data-event="codeview"]')
+              .addClass('disabled');
     };
 
     this.updateFullscreen = function ($container, bFullscreen) {
@@ -2585,32 +2601,32 @@
     /**
      * update current state
      * @param {jQuery} $popover - popover container
-     * @param {Object} oStyle - style object
+     * @param {Object} styleInfo - style object
      * @param {Boolean} isAirMode
      */
-    this.update = function ($popover, oStyle, isAirMode) {
-      button.update($popover, oStyle);
+    this.update = function ($popover, styleInfo, isAirMode) {
+      button.update($popover, styleInfo);
 
       var $linkPopover = $popover.find('.note-link-popover');
-      if (oStyle.anchor) {
+      if (styleInfo.anchor) {
         var $anchor = $linkPopover.find('a');
-        var href = $(oStyle.anchor).attr('href');
+        var href = $(styleInfo.anchor).attr('href');
         $anchor.attr('href', href).html(href);
-        showPopover($linkPopover, posFromPlaceholder(oStyle.anchor, isAirMode));
+        showPopover($linkPopover, posFromPlaceholder(styleInfo.anchor, isAirMode));
       } else {
         $linkPopover.hide();
       }
 
       var $imagePopover = $popover.find('.note-image-popover');
-      if (oStyle.image) {
-        showPopover($imagePopover, posFromPlaceholder(oStyle.image, isAirMode));
+      if (styleInfo.image) {
+        showPopover($imagePopover, posFromPlaceholder(styleInfo.image, isAirMode));
       } else {
         $imagePopover.hide();
       }
 
       var $airPopover = $popover.find('.note-air-popover');
-      if (isAirMode && !oStyle.range.isCollapsed()) {
-        var bnd = func.rect2bnd(list.last(oStyle.range.getClientRects()));
+      if (isAirMode && !styleInfo.range.isCollapsed()) {
+        var bnd = func.rect2bnd(list.last(styleInfo.range.getClientRects()));
         showPopover($airPopover, {
           left: Math.max(bnd.left + bnd.width / 2 - PX_POPOVER_ARROW_OFFSET_X, 0),
           top: bnd.top + bnd.height
@@ -2620,8 +2636,13 @@
       }
     };
 
-    this.updateRecentColor = function (elBtn, sEvent, sValue) {
-      button.updateRecentColor(elBtn, sEvent, sValue);
+    /**
+     * @param {Node} button
+     * @param {String} eventName
+     * @param {String} value
+     */
+    this.updateRecentColor = function (button, eventName, value) {
+      button.updateRecentColor(button, eventName, value);
     };
 
     /**
@@ -2640,17 +2661,17 @@
     /**
      * update handle
      * @param {jQuery} $handle
-     * @param {Object} oStyle
+     * @param {Object} styleInfo
      * @param {Boolean} isAirMode
      */
-    this.update = function ($handle, oStyle, isAirMode) {
+    this.update = function ($handle, styleInfo, isAirMode) {
       var $selection = $handle.find('.note-control-selection');
-      if (oStyle.image) {
-        var $image = $(oStyle.image);
+      if (styleInfo.image) {
+        var $image = $(styleInfo.image);
         var pos = isAirMode ? $image.offset() : $image.position();
 
         // include margin
-        var szImage = {
+        var imageSize = {
           w: $image.outerWidth(true),
           h: $image.outerHeight(true)
         };
@@ -2659,11 +2680,11 @@
           display: 'block',
           left: pos.left,
           top: pos.top,
-          width: szImage.w,
-          height: szImage.h
-        }).data('target', oStyle.image); // save current image element.
-        var sSizing = szImage.w + 'x' + szImage.h;
-        $selection.find('.note-control-selection-info').text(sSizing);
+          width: imageSize.w,
+          height: imageSize.h
+        }).data('target', styleInfo.image); // save current image element.
+        var sizingText = imageSize.w + 'x' + imageSize.h;
+        $selection.find('.note-control-selection-info').text(sizingText);
       } else {
         $selection.hide();
       }
@@ -2940,12 +2961,12 @@
 
     var commands = {
       /**
-       * @param {Object} oLayoutInfo
+       * @param {Object} layoutInfo
        */
-      showLinkDialog: function (oLayoutInfo) {
-        var $editor = oLayoutInfo.editor(),
-            $dialog = oLayoutInfo.dialog(),
-            $editable = oLayoutInfo.editable(),
+      showLinkDialog: function (layoutInfo) {
+        var $editor = layoutInfo.editor(),
+            $dialog = layoutInfo.dialog(),
+            $editable = layoutInfo.editable(),
             linkInfo = editor.getLinkInfo($editable);
 
         var options = $editor.data('options');
@@ -2955,18 +2976,18 @@
           editor.restoreRange($editable);
           editor.createLink($editable, linkInfo, options);
           // hide popover after creating link
-          popover.hide(oLayoutInfo.popover());
+          popover.hide(layoutInfo.popover());
         }).fail(function () {
           editor.restoreRange($editable);
         });
       },
 
       /**
-       * @param {Object} oLayoutInfo
+       * @param {Object} layoutInfo
        */
-      showImageDialog: function (oLayoutInfo) {
-        var $dialog = oLayoutInfo.dialog(),
-            $editable = oLayoutInfo.editable();
+      showImageDialog: function (layoutInfo) {
+        var $dialog = layoutInfo.dialog(),
+            $editable = layoutInfo.editable();
 
         editor.saveRange($editable);
         dialog.showImageDialog($editable, $dialog).then(function (data) {
@@ -2985,11 +3006,11 @@
       },
 
       /**
-       * @param {Object} oLayoutInfo
+       * @param {Object} layoutInfo
        */
-      showVideoDialog: function (oLayoutInfo) {
-        var $dialog = oLayoutInfo.dialog(),
-            $editable = oLayoutInfo.editable(),
+      showVideoDialog: function (layoutInfo) {
+        var $dialog = layoutInfo.dialog(),
+            $editable = layoutInfo.editable(),
             videoInfo = editor.getVideoInfo($editable);
 
         editor.saveRange($editable);
@@ -3002,11 +3023,11 @@
       },
 
       /**
-       * @param {Object} oLayoutInfo
+       * @param {Object} layoutInfo
        */
-      showHelpDialog: function (oLayoutInfo) {
-        var $dialog = oLayoutInfo.dialog(),
-            $editable = oLayoutInfo.editable();
+      showHelpDialog: function (layoutInfo) {
+        var $dialog = layoutInfo.dialog(),
+            $editable = layoutInfo.editable();
 
         editor.saveRange($editable);
         dialog.showHelpDialog($editable, $dialog).then(function () {
@@ -3014,11 +3035,11 @@
         });
       },
 
-      fullscreen: function (oLayoutInfo) {
-        var $editor = oLayoutInfo.editor(),
-        $toolbar = oLayoutInfo.toolbar(),
-        $editable = oLayoutInfo.editable(),
-        $codable = oLayoutInfo.codable();
+      fullscreen: function (layoutInfo) {
+        var $editor = layoutInfo.editor(),
+        $toolbar = layoutInfo.toolbar(),
+        $editable = layoutInfo.editable(),
+        $codable = layoutInfo.codable();
 
         var options = $editor.data('options');
 
@@ -3056,12 +3077,12 @@
         toolbar.updateFullscreen($toolbar, isFullscreen);
       },
 
-      codeview: function (oLayoutInfo) {
-        var $editor = oLayoutInfo.editor(),
-        $toolbar = oLayoutInfo.toolbar(),
-        $editable = oLayoutInfo.editable(),
-        $codable = oLayoutInfo.codable(),
-        $popover = oLayoutInfo.popover();
+      codeview: function (layoutInfo) {
+        var $editor = layoutInfo.editor(),
+        $toolbar = layoutInfo.toolbar(),
+        $editable = layoutInfo.editable(),
+        $codable = layoutInfo.codable(),
+        $popover = layoutInfo.popover();
 
         var options = $editor.data('options');
 
@@ -3116,7 +3137,7 @@
           $editable.focus();
         }
 
-        toolbar.updateCodeview(oLayoutInfo.toolbar(), isCodeview);
+        toolbar.updateCodeview(layoutInfo.toolbar(), isCodeview);
       }
     };
 
@@ -3130,25 +3151,25 @@
     var hToolbarAndPopoverUpdate = function (event) {
       // delay for range after mouseup
       setTimeout(function () {
-        var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-        var oStyle = editor.currentStyle(event.target);
-        if (!oStyle) { return; }
+        var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+        var styleInfo = editor.currentStyle(event.target);
+        if (!styleInfo) { return; }
 
-        var isAirMode = oLayoutInfo.editor().data('options').airMode;
+        var isAirMode = layoutInfo.editor().data('options').airMode;
         if (!isAirMode) {
-          toolbar.update(oLayoutInfo.toolbar(), oStyle);
+          toolbar.update(layoutInfo.toolbar(), styleInfo);
         }
 
-        popover.update(oLayoutInfo.popover(), oStyle, isAirMode);
-        handle.update(oLayoutInfo.handle(), oStyle, isAirMode);
+        popover.update(layoutInfo.popover(), styleInfo, isAirMode);
+        handle.update(layoutInfo.handle(), styleInfo, isAirMode);
       }, 0);
     };
 
     var hScroll = function (event) {
-      var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
       //hide popover and handle when scrolled
-      popover.hide(oLayoutInfo.popover());
-      handle.hide(oLayoutInfo.handle());
+      popover.hide(layoutInfo.popover());
+      handle.hide(layoutInfo.handle());
     };
 
     /**
@@ -3162,12 +3183,12 @@
         return;
       }
 
-      var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
       var item = list.head(clipboardData.items);
       var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
 
       if (isClipboardImage) {
-        insertImages(oLayoutInfo.editable(), [item.getAsFile()]);
+        insertImages(layoutInfo.editable(), [item.getAsFile()]);
       }
     };
 
@@ -3182,10 +3203,10 @@
         event.preventDefault();
         event.stopPropagation();
 
-        var oLayoutInfo = makeLayoutInfo(event.target),
-            $handle = oLayoutInfo.handle(), $popover = oLayoutInfo.popover(),
-            $editable = oLayoutInfo.editable(),
-            $editor = oLayoutInfo.editor();
+        var layoutInfo = makeLayoutInfo(event.target),
+            $handle = layoutInfo.handle(), $popover = layoutInfo.popover(),
+            $editable = layoutInfo.editable(),
+            $editor = layoutInfo.editor();
 
         var target = $handle.find('.note-control-selection').data('target'),
             $target = $(target), posStart = $target.offset(),
@@ -3225,33 +3246,33 @@
       var $btn = $(event.target).closest('[data-event]');
 
       if ($btn.length) {
-        var sEvent = $btn.attr('data-event'),
-            sValue = $btn.attr('data-value');
+        var eventName = $btn.attr('data-event'),
+            value = $btn.attr('data-value');
 
-        var oLayoutInfo = makeLayoutInfo(event.target);
+        var layoutInfo = makeLayoutInfo(event.target);
 
         event.preventDefault();
 
         // before command: detect control selection element($target)
         var $target;
-        if ($.inArray(sEvent, ['resize', 'floatMe', 'removeMedia']) !== -1) {
-          var $selection = oLayoutInfo.handle().find('.note-control-selection');
+        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia']) !== -1) {
+          var $selection = layoutInfo.handle().find('.note-control-selection');
           $target = $($selection.data('target'));
         }
 
-        if (editor[sEvent]) { // on command
-          var $editable = oLayoutInfo.editable();
+        if (editor[eventName]) { // on command
+          var $editable = layoutInfo.editable();
           $editable.trigger('focus');
-          editor[sEvent]($editable, sValue, $target);
-        } else if (commands[sEvent]) {
-          commands[sEvent].call(this, oLayoutInfo);
+          editor[eventName]($editable, value, $target);
+        } else if (commands[eventName]) {
+          commands[eventName].call(this, layoutInfo);
         }
 
         // after command
-        if ($.inArray(sEvent, ['backColor', 'foreColor']) !== -1) {
-          var options = oLayoutInfo.editor().data('options', options);
+        if ($.inArray(eventName, ['backColor', 'foreColor']) !== -1) {
+          var options = layoutInfo.editor().data('options', options);
           var module = options.airMode ? popover : toolbar;
-          module.updateRecentColor(list.head($btn), sEvent, sValue);
+          module.updateRecentColor(list.head($btn), eventName, value);
         }
 
         hToolbarAndPopoverUpdate(event);
@@ -3271,8 +3292,8 @@
       var $editable = makeLayoutInfo(event.target).editable();
       var nEditableTop = $editable.offset().top - $document.scrollTop();
 
-      var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-      var options = oLayoutInfo.editor().data('options');
+      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+      var options = layoutInfo.editor().data('options');
 
       $document.on('mousemove', function (event) {
         var nHeight = event.clientY - (nEditableTop + EDITABLE_PADDING);
@@ -3331,48 +3352,48 @@
     /**
      * Drag and Drop Events
      *
-     * @param {Object} oLayoutInfo - layout Informations
+     * @param {Object} layoutInfo - layout Informations
      * @param {Boolean} disableDragAndDrop
      */
-    var handleDragAndDropEvent = function (oLayoutInfo, disableDragAndDrop) {
+    var handleDragAndDropEvent = function (layoutInfo, disableDragAndDrop) {
       if (disableDragAndDrop) {
         // prevent default drop event
         $document.on('drop', function (e) {
           e.preventDefault();
         });
       } else {
-        attachDragAndDropEvent(oLayoutInfo);
+        attachDragAndDropEvent(layoutInfo);
       }
     };
 
     /**
      * attach Drag and Drop Events
      *
-     * @param {Object} oLayoutInfo - layout Informations
+     * @param {Object} layoutInfo - layout Informations
      */
-    var attachDragAndDropEvent = function (oLayoutInfo) {
+    var attachDragAndDropEvent = function (layoutInfo) {
       var collection = $(),
-          $dropzone = oLayoutInfo.dropzone,
-          $dropzoneMessage = oLayoutInfo.dropzone.find('.note-dropzone-message');
+          $dropzone = layoutInfo.dropzone,
+          $dropzoneMessage = layoutInfo.dropzone.find('.note-dropzone-message');
 
       // show dropzone on dragenter when dragging a object to document.
       $document.on('dragenter', function (e) {
-        var isCodeview = oLayoutInfo.editor.hasClass('codeview');
+        var isCodeview = layoutInfo.editor.hasClass('codeview');
         if (!isCodeview && !collection.length) {
-          oLayoutInfo.editor.addClass('dragover');
-          $dropzone.width(oLayoutInfo.editor.width());
-          $dropzone.height(oLayoutInfo.editor.height());
+          layoutInfo.editor.addClass('dragover');
+          $dropzone.width(layoutInfo.editor.width());
+          $dropzone.height(layoutInfo.editor.height());
           $dropzoneMessage.text('Drag Image Here');
         }
         collection = collection.add(e.target);
       }).on('dragleave', function (e) {
         collection = collection.not(e.target);
         if (!collection.length) {
-          oLayoutInfo.editor.removeClass('dragover');
+          layoutInfo.editor.removeClass('dragover');
         }
       }).on('drop', function () {
         collection = $();
-        oLayoutInfo.editor.removeClass('dragover');
+        layoutInfo.editor.removeClass('dragover');
       });
 
       // change dropzone's message on hover.
@@ -3390,9 +3411,9 @@
 
         var dataTransfer = event.originalEvent.dataTransfer;
         if (dataTransfer && dataTransfer.files) {
-          var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-          oLayoutInfo.editable().focus();
-          insertImages(oLayoutInfo.editable(), dataTransfer.files);
+          var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+          layoutInfo.editable().focus();
+          insertImages(layoutInfo.editable(), dataTransfer.files);
         }
       }).on('dragover', false); // prevent default dragover event
     };
@@ -3401,14 +3422,14 @@
     /**
      * bind KeyMap on keydown
      *
-     * @param {Object} oLayoutInfo
+     * @param {Object} layoutInfo
      * @param {Object} keyMap
      */
-    this.bindKeyMap = function (oLayoutInfo, keyMap) {
-      var $editor = oLayoutInfo.editor;
-      var $editable = oLayoutInfo.editable;
+    this.bindKeyMap = function (layoutInfo, keyMap) {
+      var $editor = layoutInfo.editor;
+      var $editable = layoutInfo.editable;
 
-      oLayoutInfo = makeLayoutInfo($editable);
+      layoutInfo = makeLayoutInfo($editable);
 
       $editable.on('keydown', function (event) {
         var aKey = [];
@@ -3422,14 +3443,14 @@
         var keyName = key.nameFromCode[event.keyCode];
         if (keyName) { aKey.push(keyName); }
 
-        var sEvent = keyMap[aKey.join('+')];
-        if (sEvent) {
+        var eventName = keyMap[aKey.join('+')];
+        if (eventName) {
           event.preventDefault();
 
-          if (editor[sEvent]) {
-            editor[sEvent]($editable, $editor.data('options'));
-          } else if (commands[sEvent]) {
-            commands[sEvent].call(this, oLayoutInfo);
+          if (editor[eventName]) {
+            editor[eventName]($editable, $editor.data('options'));
+          } else if (commands[eventName]) {
+            commands[eventName].call(this, layoutInfo);
           }
         } else if (key.isEdit(event.keyCode)) {
           editor.recordUndo($editable);
@@ -3440,41 +3461,41 @@
     /**
      * attach eventhandler
      *
-     * @param {Object} oLayoutInfo - layout Informations
+     * @param {Object} layoutInfo - layout Informations
      * @param {Object} options - user options include custom event handlers
      * @param {Function} options.enter - enter key handler
      */
-    this.attach = function (oLayoutInfo, options) {
+    this.attach = function (layoutInfo, options) {
       // handlers for editable
-      this.bindKeyMap(oLayoutInfo, options.keyMap[agent.isMac ? 'mac' : 'pc']);
-      oLayoutInfo.editable.on('mousedown', hMousedown);
-      oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
-      oLayoutInfo.editable.on('scroll', hScroll);
-      oLayoutInfo.editable.on('paste', hPasteClipboardImage);
+      this.bindKeyMap(layoutInfo, options.keyMap[agent.isMac ? 'mac' : 'pc']);
+      layoutInfo.editable.on('mousedown', hMousedown);
+      layoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
+      layoutInfo.editable.on('scroll', hScroll);
+      layoutInfo.editable.on('paste', hPasteClipboardImage);
 
       // handler for handle and popover
-      oLayoutInfo.handle.on('mousedown', hHandleMousedown);
-      oLayoutInfo.popover.on('click', hToolbarAndPopoverClick);
-      oLayoutInfo.popover.on('mousedown', hToolbarAndPopoverMousedown);
+      layoutInfo.handle.on('mousedown', hHandleMousedown);
+      layoutInfo.popover.on('click', hToolbarAndPopoverClick);
+      layoutInfo.popover.on('mousedown', hToolbarAndPopoverMousedown);
 
       // handlers for frame mode (toolbar, statusbar)
       if (!options.airMode) {
         // handler for drag and drop
-        handleDragAndDropEvent(oLayoutInfo, options.disableDragAndDrop);
+        handleDragAndDropEvent(layoutInfo, options.disableDragAndDrop);
 
         // handler for toolbar
-        oLayoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
-        oLayoutInfo.toolbar.on('mousedown', hToolbarAndPopoverMousedown);
+        layoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
+        layoutInfo.toolbar.on('mousedown', hToolbarAndPopoverMousedown);
 
         // handler for statusbar
         if (!options.disableResizeEditor) {
-          oLayoutInfo.statusbar.on('mousedown', hStatusbarMousedown);
+          layoutInfo.statusbar.on('mousedown', hStatusbarMousedown);
         }
       }
 
       // handler for table dimension
-      var $catcherContainer = options.airMode ? oLayoutInfo.popover :
-                                                oLayoutInfo.toolbar;
+      var $catcherContainer = options.airMode ? layoutInfo.popover :
+                                                layoutInfo.toolbar;
       var $catcher = $catcherContainer.find('.note-dimension-picker-mousecatcher');
       $catcher.css({
         width: options.insertTableMaxSize.col + 'em',
@@ -3484,7 +3505,7 @@
       });
 
       // save options on editor
-      oLayoutInfo.editor.data('options', options);
+      layoutInfo.editor.data('options', options);
 
       // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
       if (options.styleWithSpan && !agent.isMSIE) {
@@ -3495,40 +3516,40 @@
       }
 
       // History
-      oLayoutInfo.editable.data('NoteHistory', new History());
+      layoutInfo.editable.data('NoteHistory', new History());
 
       // basic event callbacks (lowercase)
       // enter, focus, blur, keyup, keydown
       if (options.onenter) {
-        oLayoutInfo.editable.keypress(function (event) {
+        layoutInfo.editable.keypress(function (event) {
           if (event.keyCode === key.ENTER) { options.onenter(event); }
         });
       }
 
-      if (options.onfocus) { oLayoutInfo.editable.focus(options.onfocus); }
-      if (options.onblur) { oLayoutInfo.editable.blur(options.onblur); }
-      if (options.onkeyup) { oLayoutInfo.editable.keyup(options.onkeyup); }
-      if (options.onkeydown) { oLayoutInfo.editable.keydown(options.onkeydown); }
-      if (options.onpaste) { oLayoutInfo.editable.on('paste', options.onpaste); }
+      if (options.onfocus) { layoutInfo.editable.focus(options.onfocus); }
+      if (options.onblur) { layoutInfo.editable.blur(options.onblur); }
+      if (options.onkeyup) { layoutInfo.editable.keyup(options.onkeyup); }
+      if (options.onkeydown) { layoutInfo.editable.keydown(options.onkeydown); }
+      if (options.onpaste) { layoutInfo.editable.on('paste', options.onpaste); }
 
       // callbacks for advanced features (camel)
-      if (options.onToolbarClick) { oLayoutInfo.toolbar.click(options.onToolbarClick); }
+      if (options.onToolbarClick) { layoutInfo.toolbar.click(options.onToolbarClick); }
       if (options.onChange) {
         var hChange = function () {
-          options.onChange(oLayoutInfo.editable, oLayoutInfo.editable.html());
+          options.onChange(layoutInfo.editable, layoutInfo.editable.html());
         };
 
         if (agent.isMSIE) {
           var sDomEvents = 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted';
-          oLayoutInfo.editable.on(sDomEvents, hChange);
+          layoutInfo.editable.on(sDomEvents, hChange);
         } else {
-          oLayoutInfo.editable.on('input', hChange);
+          layoutInfo.editable.on('input', hChange);
         }
       }
 
       // All editor status will be saved on editable with jquery's data
       // for support multiple editor with singleton object.
-      oLayoutInfo.editable.data('callbacks', {
+      layoutInfo.editable.data('callbacks', {
         onAutoSave: options.onAutoSave,
         onImageUpload: options.onImageUpload,
         onImageUploadError: options.onImageUploadError,
@@ -3537,17 +3558,17 @@
       });
     };
 
-    this.dettach = function (oLayoutInfo, options) {
-      oLayoutInfo.editable.off();
+    this.dettach = function (layoutInfo, options) {
+      layoutInfo.editable.off();
 
-      oLayoutInfo.popover.off();
-      oLayoutInfo.handle.off();
-      oLayoutInfo.dialog.off();
+      layoutInfo.popover.off();
+      layoutInfo.handle.off();
+      layoutInfo.dialog.off();
 
       if (!options.airMode) {
-        oLayoutInfo.dropzone.off();
-        oLayoutInfo.toolbar.off();
-        oLayoutInfo.statusbar.off();
+        layoutInfo.dropzone.off();
+        layoutInfo.toolbar.off();
+        layoutInfo.statusbar.off();
       }
     };
   };
@@ -3562,14 +3583,14 @@
     /**
      * bootstrap button template
      *
-     * @param {String} sLabel
+     * @param {String} label
      * @param {Object} [options]
      * @param {String} [options.event]
      * @param {String} [options.value]
      * @param {String} [options.title]
      * @param {String} [options.dropdown]
      */
-    var tplButton = function (sLabel, options) {
+    var tplButton = function (label, options) {
       var event = options.event;
       var value = options.value;
       var title = options.title;
@@ -3586,7 +3607,7 @@
                  (event ? ' data-event="' + event + '"' : '') +
                  (value ? ' data-value=\'' + value + '\'' : '') +
                  ' tabindex="-1">' +
-               sLabel +
+               label +
                (dropdown ? ' <span class="caret"></span>' : '') +
              '</button>' +
              (dropdown || '');
@@ -3595,16 +3616,16 @@
     /**
      * bootstrap icon button template
      *
-     * @param {String} sIconClass
+     * @param {String} iconClassName
      * @param {Object} [options]
      * @param {String} [options.event]
      * @param {String} [options.value]
      * @param {String} [options.title]
      * @param {String} [options.dropdown]
      */
-    var tplIconButton = function (sIconClass, options) {
-      var sLabel = '<i class="' + sIconClass + '"></i>';
-      return tplButton(sLabel, options);
+    var tplIconButton = function (iconClassName, options) {
+      var label = '<i class="' + iconClassName + '"></i>';
+      return tplButton(label, options);
     };
 
     /**
@@ -3709,10 +3730,10 @@
                           '<i class="fa fa-check icon-ok"></i> ' + v +
                         '</a></li>';
         }, '');
-        var sLabel = '<span class="note-current-fontname">' +
+        var label = '<span class="note-current-fontname">' +
                        options.defaultFontName +
                      '</span>';
-        return tplButton(sLabel, {
+        return tplButton(label, {
           title: lang.font.name,
           dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
         });
@@ -3724,8 +3745,8 @@
                         '</a></li>';
         }, '');
 
-        var sLabel = '<span class="note-current-fontsize">11</span>';
-        return tplButton(sLabel, {
+        var label = '<span class="note-current-fontsize">11</span>';
+        return tplButton(label, {
           title: lang.font.size,
           dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
         });
@@ -4204,24 +4225,24 @@
 
     // createPalette
     var createPalette = function ($container, options) {
-      var aaColor = options.colors;
+      var colorInfo = options.colors;
       $container.find('.note-color-palette').each(function () {
-        var $palette = $(this), sEvent = $palette.attr('data-target-event');
-        var aPaletteContents = [];
-        for (var row = 0, szRow = aaColor.length; row < szRow; row++) {
-          var aColor = aaColor[row];
-          var aButton = [];
-          for (var col = 0, szCol = aColor.length; col < szCol; col++) {
-            var sColor = aColor[col];
-            aButton.push(['<button type="button" class="note-color-btn" style="background-color:', sColor,
-                           ';" data-event="', sEvent,
-                           '" data-value="', sColor,
-                           '" title="', sColor,
+        var $palette = $(this), eventName = $palette.attr('data-target-event');
+        var paletteContents = [];
+        for (var row = 0, szRow = colorInfo.length; row < szRow; row++) {
+          var colors = colorInfo[row];
+          var buttons = [];
+          for (var col = 0, szCol = colors.length; col < szCol; col++) {
+            var color = colors[col];
+            buttons.push(['<button type="button" class="note-color-btn" style="background-color:', color,
+                           ';" data-event="', eventName,
+                           '" data-value="', color,
+                           '" title="', color,
                            '" data-toggle="button" tabindex="-1"></button>'].join(''));
           }
-          aPaletteContents.push('<div class="note-color-row">' + aButton.join('') + '</div>');
+          paletteContents.push('<div class="note-color-row">' + buttons.join('') + '</div>');
         }
-        $palette.html(aPaletteContents.join(''));
+        $palette.html(paletteContents.join(''));
       });
     };
 
@@ -4306,23 +4327,23 @@
       var langInfo = $.summernote.lang[options.lang];
 
       //04. create Toolbar
-      var sToolbar = '';
+      var toolbarHTML = '';
       for (var idx = 0, sz = options.toolbar.length; idx < sz; idx ++) {
         var groupName = options.toolbar[idx][0];
         var groupButtons = options.toolbar[idx][1];
 
-        sToolbar += '<div class="note-' + groupName + ' btn-group">';
+        toolbarHTML += '<div class="note-' + groupName + ' btn-group">';
         for (var i = 0, btnLength = groupButtons.length; i < btnLength; i++) {
           // continue creating toolbar even if a button doesn't exist
           if (!$.isFunction(tplButtonInfo[groupButtons[i]])) { continue; }
-          sToolbar += tplButtonInfo[groupButtons[i]](langInfo, options);
+          toolbarHTML += tplButtonInfo[groupButtons[i]](langInfo, options);
         }
-        sToolbar += '</div>';
+        toolbarHTML += '</div>';
       }
 
-      sToolbar = '<div class="note-toolbar btn-toolbar">' + sToolbar + '</div>';
+      toolbarHTML = '<div class="note-toolbar btn-toolbar">' + toolbarHTML + '</div>';
 
-      var $toolbar = $(sToolbar).prependTo($editor);
+      var $toolbar = $(toolbarHTML).prependTo($editor);
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       createPalette($toolbar, options);
       createTooltip($toolbar, keyMap, 'bottom');
@@ -4401,22 +4422,22 @@
      * removeLayout
      *
      * @param {jQuery} $holder - placeholder
-     * @param {Object} oLayoutInfo
+     * @param {Object} layoutInfo
      * @param {Object} options
      *
      */
-    this.removeLayout = function ($holder, oLayoutInfo, options) {
+    this.removeLayout = function ($holder, layoutInfo, options) {
       if (options.airMode) {
         $holder.removeClass('note-air-editor note-editable')
                .removeAttr('id contentEditable');
 
-        oLayoutInfo.popover.remove();
-        oLayoutInfo.handle.remove();
-        oLayoutInfo.dialog.remove();
+        layoutInfo.popover.remove();
+        layoutInfo.handle.remove();
+        layoutInfo.dialog.remove();
       } else {
-        $holder.html(oLayoutInfo.editable.html());
+        $holder.html(layoutInfo.editable.html());
 
-        oLayoutInfo.editor.remove();
+        layoutInfo.editor.remove();
         $holder.show();
       }
     };

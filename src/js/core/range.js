@@ -369,7 +369,7 @@ define([
         } else {
           // splitRoot will be childNode of container
           var ancestors = dom.listAncestor(point.node, dom.isBodyContainer);
-          var splitRoot = ancestors[ancestors.length - 2];
+          splitRoot = ancestors[ancestors.length - 2];
           container = list.last(ancestors);
           pivot = splitRoot && dom.splitTree(splitRoot, point);
         }

@@ -25,7 +25,7 @@ define(['summernote/core/range'], function (range) {
     this.undo = function ($editable) {
       var snapshot = makeSnapshot($editable);
       if (!undoStack.length) {
-        return; 
+        return;
       }
       applySnapshot($editable, undoStack.pop());
       redoStack.push(snapshot);
