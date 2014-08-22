@@ -3,6 +3,10 @@ define([
   'summernote/core/list',
   'summernote/core/agent'
 ], function (func, list, agent) {
+
+  var NBSP_CHAR = String.fromCharCode(160);
+  var ZERO_WIDTH_NBSP_CHAR = '\ufeff';
+
   /**
    * Dom functions
    */
@@ -69,9 +73,9 @@ define([
      * @param {String} sNodeName
      */
     var makePredByNodeName = function (sNodeName) {
-      // nodeName is always uppercase.
+      sNodeName = sNodeName.toUpperCase();
       return function (node) {
-        return node && node.nodeName === sNodeName;
+        return node && node.nodeName.toUpperCase() === sNodeName;
       };
     };
 
@@ -84,20 +88,20 @@ define([
      * @see http://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
      */
     var isVoid = function (node) {
-      return node && (node.nodeName === 'BR' || node.nodeName === 'IMG');
+      return node && /^BR|^IMG|^HR/.test(node.nodeName.toUpperCase());
     };
 
     var isPara = function (node) {
       // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
-      return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName);
+      return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName.toUpperCase());
     };
 
     var isList = function (node) {
-      return node && /^UL|^OL/.test(node.nodeName);
+      return node && /^UL|^OL/.test(node.nodeName.toUpperCase());
     };
 
     var isCell = function (node) {
-      return node && /^TD|^TH/.test(node.nodeName);
+      return node && /^TD|^TH/.test(node.nodeName.toUpperCase());
     };
 
     var isBodyContainer = function (node) {
@@ -152,12 +156,12 @@ define([
     var listAncestor = function (node, pred) {
       pred = pred || func.fail;
 
-      var aAncestor = [];
+      var ancestors = [];
       ancestor(node, function (el) {
-        aAncestor.push(el);
+        ancestors.push(el);
         return pred(el);
       });
-      return aAncestor;
+      return ancestors;
     };
 
     /**
@@ -167,9 +171,9 @@ define([
      * @param {Node} nodeB
      */
     var commonAncestor = function (nodeA, nodeB) {
-      var aAncestor = listAncestor(nodeA);
+      var ancestors = listAncestor(nodeA);
       for (var n = nodeB; n; n = n.parentNode) {
-        if ($.inArray(n, aAncestor) > -1) { return n; }
+        if ($.inArray(n, ancestors) > -1) { return n; }
       }
       return null; // difference document area
     };
@@ -182,7 +186,7 @@ define([
      * @param {Node} nodeB
      */
     var listBetween = function (nodeA, nodeB) {
-      var aNode = [];
+      var nodes = [];
 
       var isStart = false, isEnd = false;
 
@@ -190,7 +194,7 @@ define([
       (function fnWalk(node) {
         if (!node) { return; } // traverse fisnish
         if (node === nodeA) { isStart = true; } // start point
-        if (isStart && !isEnd) { aNode.push(node); } // between
+        if (isStart && !isEnd) { nodes.push(node); } // between
         if (node === nodeB) { isEnd = true; return; } // end point
 
         for (var idx = 0, sz = node.childNodes.length; idx < sz; idx++) {
@@ -198,24 +202,25 @@ define([
         }
       })(commonAncestor(nodeA, nodeB));
 
-      return aNode;
+      return nodes;
     };
 
     /**
      * listing all previous siblings (until predicate hit).
+     *
      * @param {Node} node
      * @param {Function} [optional] pred - predicate function
      */
     var listPrev = function (node, pred) {
       pred = pred || func.fail;
 
-      var aNext = [];
+      var nodes = [];
       while (node) {
         if (pred(node)) { break; }
-        aNext.push(node);
+        nodes.push(node);
         node = node.previousSibling;
       }
-      return aNext;
+      return nodes;
     };
 
     /**
@@ -227,13 +232,13 @@ define([
     var listNext = function (node, pred) {
       pred = pred || func.fail;
 
-      var aNext = [];
+      var nodes = [];
       while (node) {
         if (pred(node)) { break; }
-        aNext.push(node);
+        nodes.push(node);
         node = node.nextSibling;
       }
-      return aNext;
+      return nodes;
     };
 
     /**
@@ -243,20 +248,20 @@ define([
      * @param {Function} [pred] - predicate function
      */
     var listDescendant = function (node, pred) {
-      var aDescendant = [];
+      var descendents = [];
       pred = pred || func.ok;
 
       // start DFS(depth first search) with node
       (function fnWalk(current) {
         if (node !== current && pred(current)) {
-          aDescendant.push(current);
+          descendents.push(current);
         }
         for (var idx = 0, sz = current.childNodes.length; idx < sz; idx++) {
           fnWalk(current.childNodes[idx]);
         }
       })(node);
 
-      return aDescendant;
+      return descendents;
     };
 
     /**
@@ -298,7 +303,7 @@ define([
      * @param {Node} node
      * @param {Collection} aChild
      */
-    var appends = function (node, aChild) {
+    var appendChildNodes = function (node, aChild) {
       $.each(aChild, function (idx, child) {
         node.appendChild(child);
       });
@@ -315,11 +320,11 @@ define([
       return node.childNodes.length;
     };
 
-    var isLeftEdgeBP = function (boundaryPoint) {
+    var isLeftEdgePoint = function (boundaryPoint) {
       return boundaryPoint.offset === 0;
     };
 
-    var isRightEdgeBP = function (boundaryPoint) {
+    var isRightEdgePoint = function (boundaryPoint) {
       return boundaryPoint.offset === length(boundaryPoint.node);
     };
 
@@ -329,8 +334,8 @@ define([
      * @param {BoundaryPoint} boundaryPoitn
      * @return {Boolean}
      */
-    var isEdgeBP = function (boundaryPoint) {
-      return boundaryPoint.offset === 0 || isRightEdgeBP(boundaryPoint);
+    var isEdgePoint = function (boundaryPoint) {
+      return boundaryPoint.offset === 0 || isRightEdgePoint(boundaryPoint);
     };
 
     /**
@@ -372,7 +377,7 @@ define([
      * @param {BoundaryPoint} boundaryPoitn
      * @return {BoundaryPoint}
      */
-    var prevBP = function (boundaryPoint) {
+    var prevPoint = function (boundaryPoint) {
       var node = boundaryPoint.node,
       offset = boundaryPoint.offset;
 
@@ -396,8 +401,8 @@ define([
      * @param {Node} node
      */
     var makeOffsetPath = function (ancestor, node) {
-      var aAncestor = list.initial(listAncestor(node, func.eq(ancestor)));
-      return $.map(aAncestor, position).reverse();
+      var ancestors = list.initial(listAncestor(node, func.eq(ancestor)));
+      return $.map(ancestors, position).reverse();
     };
 
     /**
@@ -424,9 +429,9 @@ define([
       // split #text
       if (isText(point.node)) {
         // edge case
-        if (isLeftEdgeBP(point)) {
+        if (isLeftEdgePoint(point)) {
           return point.node;
-        } else if (isRightEdgeBP(point)) {
+        } else if (isRightEdgePoint(point)) {
           return point.node.nextSibling;
         }
 
@@ -436,7 +441,7 @@ define([
       // split element
       var childNode = point.node.childNodes[point.offset];
       var clone = insertAfter(point.node.cloneNode(false), point.node);
-      appends(clone, listNext(childNode));
+      appendChildNodes(clone, listNext(childNode));
 
       paddingBlankHTML(point.node);
       paddingBlankHTML(clone);
@@ -468,7 +473,7 @@ define([
           node = splitNode(point);
         }
 
-        appends(clone, listNext(node));
+        appendChildNodes(clone, listNext(node));
 
         paddingBlankHTML(parent);
         paddingBlankHTML(clone);
@@ -476,29 +481,33 @@ define([
       });
     };
 
-    /**
-     * remove node, (bRemoveChild: remove child or not)
-     * @param {Node} node
-     * @param {Boolean} bRemoveChild
-     */
-    var remove = function (node, bRemoveChild) {
-      if (!node || !node.parentNode) { return; }
-      if (node.removeNode) { return node.removeNode(bRemoveChild); }
+    var createText = function (text) {
+      return document.createTextNode(text);
+    };
 
-      var elParent = node.parentNode;
-      if (!bRemoveChild) {
-        var aNode = [];
+    /**
+     * remove node, (isRemoveChild: remove child or not)
+     * @param {Node} node
+     * @param {Boolean} isRemoveChild
+     */
+    var remove = function (node, isRemoveChild) {
+      if (!node || !node.parentNode) { return; }
+      if (node.removeNode) { return node.removeNode(isRemoveChild); }
+
+      var parent = node.parentNode;
+      if (!isRemoveChild) {
+        var nodes = [];
         var i, sz;
         for (i = 0, sz = node.childNodes.length; i < sz; i++) {
-          aNode.push(node.childNodes[i]);
+          nodes.push(node.childNodes[i]);
         }
 
-        for (i = 0, sz = aNode.length; i < sz; i++) {
-          elParent.insertBefore(aNode[i], node);
+        for (i = 0, sz = nodes.length; i < sz; i++) {
+          parent.insertBefore(nodes[i], node);
         }
       }
 
-      elParent.removeChild(node);
+      parent.removeChild(node);
     };
 
     var html = function ($node) {
@@ -506,8 +515,10 @@ define([
     };
 
     return {
+      NBSP_CHAR: NBSP_CHAR,
+      ZERO_WIDTH_NBSP_CHAR: ZERO_WIDTH_NBSP_CHAR,
       blank: blankHTML,
-      emptyPara: '<p><br/></p>',
+      emptyPara: '<p>' + blankHTML + '</p>',
       isEditable: isEditable,
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
@@ -517,6 +528,7 @@ define([
       isList: isList,
       isTable: makePredByNodeName('TABLE'),
       isCell: isCell,
+      isBodyContainer: isBodyContainer,
       isAnchor: makePredByNodeName('A'),
       isDiv: makePredByNodeName('DIV'),
       isLi: makePredByNodeName('LI'),
@@ -528,10 +540,10 @@ define([
       isImg: makePredByNodeName('IMG'),
       isTextarea: makePredByNodeName('TEXTAREA'),
       length: length,
-      isRightEdgeBP: isRightEdgeBP,
-      isEdgeBP: isEdgeBP,
+      isRightEdgePoint: isRightEdgePoint,
+      isEdgePoint: isEdgePoint,
       isRightEdgeOf: isRightEdgeOf,
-      prevBP: prevBP,
+      prevPoint: prevPoint,
       ancestor: ancestor,
       listAncestor: listAncestor,
       listNext: listNext,
@@ -545,6 +557,7 @@ define([
       makeOffsetPath: makeOffsetPath,
       fromOffsetPath: fromOffsetPath,
       splitTree: splitTree,
+      createText: createText,
       remove: remove,
       html: html
     };
