@@ -1,4 +1,7 @@
-define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent'], function (func, list, agent) {
+define([
+  'summernote/core/func', 'summernote/core/list', 'summernote/core/agent',
+  'summernote/settings'
+], function (func, list, agent, settings) {
   /**
    * Dom functions
    */
@@ -425,10 +428,13 @@ define(['summernote/core/func', 'summernote/core/list', 'summernote/core/agent']
     var html = function ($node) {
       return dom.isTextarea($node[0]) ? $node.val() : $node.html();
     };
+
+    var emptyPara = (settings.options.textAlign === 'left') ?
+      '<p><br/></p>' : '<p style="text-align:' + settings.options.textAlign + '"><br/></p>';
   
     return {
       blank: agent.isMSIE ? '&nbsp;' : '<br/>',
-      emptyPara: '<p><br/></p>',
+      emptyPara: emptyPara,
       isEditable: isEditable,
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,

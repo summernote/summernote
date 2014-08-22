@@ -95,6 +95,9 @@ define('summernote/settings', function () {
         ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031']
       ],
 
+      // textalign
+      textAlign: 'left',
+
       // fontSize
       fontSizes: ['8', '9', '10', '11', '12', '14', '18', '24', '36'],
 
