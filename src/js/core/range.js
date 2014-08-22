@@ -99,9 +99,9 @@ define([
     /**
      * Wrapped Range
      *
-     * @param {Element} sc - start container
+     * @param {Node} sc - start container
      * @param {Number} so - start offset
-     * @param {Element} ec - end container
+     * @param {Node} ec - end container
      * @param {Number} eo - end offset
      */
     var WrappedRange = function (sc, so, ec, eo) {
@@ -165,7 +165,7 @@ define([
        * returns matched nodes on range
        *
        * @param {Function} [pred] - predicate function
-       * @return {Element[]}
+       * @return {Node[]}
        */
       this.nodes = function (pred) {
         pred = pred || func.ok;
@@ -307,7 +307,7 @@ define([
 
       /**
        * insert node at current cursor
-       * @param {Element} node
+       * @param {Node} node
        */
       this.insertNode = function (node) {
         var nativeRng = nativeRange();
@@ -332,7 +332,7 @@ define([
   
       /**
        * create offsetPath bookmark
-       * @param {Element} elEditable
+       * @param {Node} elEditable
        */
       this.bookmark = function (elEditable) {
         return {
@@ -355,9 +355,9 @@ define([
       /**
        * create Range Object From arguments or Browser Selection
        *
-       * @param {Element} sc - start container
+       * @param {Node} sc - start container
        * @param {Number} so - start offset
-       * @param {Element} ec - end container
+       * @param {Node} ec - end container
        * @param {Number} eo - end offset
        */
       create : function (sc, so, ec, eo) {
@@ -396,7 +396,7 @@ define([
       /**
        * create WrappedRange from node
        *
-       * @param {Element} node
+       * @param {Node} node
        * @return {WrappedRange}
        */
       createFromNode: function (node) {
@@ -406,7 +406,7 @@ define([
       /**
        * create WrappedRange from Bookmark
        *
-       * @param {Element} elEditable
+       * @param {Node} elEditable
        * @param {Obkect} bookmark
        * @return {WrappedRange}
        */

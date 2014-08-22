@@ -32,7 +32,7 @@ define([
     /**
      * returns makeLayoutInfo from editor's descendant node.
      *
-     * @param {Element} descendant
+     * @param {Node} descendant
      * @returns {Object}
      */
     var makeLayoutInfo = function (descendant) {
@@ -475,14 +475,14 @@ define([
      * @param {Boolean} disableDragAndDrop
      */
     var handleDragAndDropEvent = function (oLayoutInfo, disableDragAndDrop) {
-        if (disableDragAndDrop) {
-            // prevent default drop event
-            $document.on('drop', function (e) {
-                e.preventDefault();
-            });
-        } else {
-            attachDragAndDropEvent(oLayoutInfo);
-        }
+      if (disableDragAndDrop) {
+        // prevent default drop event
+        $document.on('drop', function (e) {
+          e.preventDefault();
+        });
+      } else {
+        attachDragAndDropEvent(oLayoutInfo);
+      }
     };
 
     /**

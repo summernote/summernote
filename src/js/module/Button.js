@@ -98,7 +98,7 @@ define([
     /**
      * update recent color
      *
-     * @param {Element} elBtn
+     * @param {Node} elBtn
      * @param {String} sEvent
      * @param {sValue} sValue
      */

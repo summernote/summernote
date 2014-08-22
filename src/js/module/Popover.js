@@ -11,7 +11,7 @@ define([
 
     /**
      * returns position from placeholder
-     * @param {Element} placeholder
+     * @param {Node} placeholder
      * @param {Boolean} isAirMode
      */
     var posFromPlaceholder = function (placeholder, isAirMode) {
