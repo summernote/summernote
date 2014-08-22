@@ -328,23 +328,23 @@ define([
      * @param {Object} options
      */
     this.createLink = function ($editable, linkInfo, options) {
-      var sLinkUrl = linkInfo.url;
-      var sLinkText = linkInfo.text;
+      var linkUrl = linkInfo.url;
+      var linkText = linkInfo.text;
       var isNewWindow = linkInfo.newWindow;
       var rng = linkInfo.range;
 
       recordUndo($editable);
 
       if (options.onCreateLink) {
-        sLinkUrl = options.onCreateLink(sLinkUrl);
+        linkUrl = options.onCreateLink(linkUrl);
       }
 
       rng = rng.deleteContents();
 
       // Create a new link when there is no anchor on range.
-      var anchor = rng.insertNode($('<A>' + sLinkText + '</A>')[0]);
+      var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0], true);
       $(anchor).attr({
-        href: sLinkUrl,
+        href: linkUrl,
         target: isNewWindow ? '_blank' : ''
       });
 

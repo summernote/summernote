@@ -80,12 +80,12 @@ define([
 
     var commands = {
       /**
-       * @param {Object} oLayoutInfo
+       * @param {Object} layoutInfo
        */
-      showLinkDialog: function (oLayoutInfo) {
-        var $editor = oLayoutInfo.editor(),
-            $dialog = oLayoutInfo.dialog(),
-            $editable = oLayoutInfo.editable(),
+      showLinkDialog: function (layoutInfo) {
+        var $editor = layoutInfo.editor(),
+            $dialog = layoutInfo.dialog(),
+            $editable = layoutInfo.editable(),
             linkInfo = editor.getLinkInfo($editable);
 
         var options = $editor.data('options');
@@ -95,18 +95,18 @@ define([
           editor.restoreRange($editable);
           editor.createLink($editable, linkInfo, options);
           // hide popover after creating link
-          popover.hide(oLayoutInfo.popover());
+          popover.hide(layoutInfo.popover());
         }).fail(function () {
           editor.restoreRange($editable);
         });
       },
 
       /**
-       * @param {Object} oLayoutInfo
+       * @param {Object} layoutInfo
        */
-      showImageDialog: function (oLayoutInfo) {
-        var $dialog = oLayoutInfo.dialog(),
-            $editable = oLayoutInfo.editable();
+      showImageDialog: function (layoutInfo) {
+        var $dialog = layoutInfo.dialog(),
+            $editable = layoutInfo.editable();
 
         editor.saveRange($editable);
         dialog.showImageDialog($editable, $dialog).then(function (data) {
@@ -125,11 +125,11 @@ define([
       },
 
       /**
-       * @param {Object} oLayoutInfo
+       * @param {Object} layoutInfo
        */
-      showVideoDialog: function (oLayoutInfo) {
-        var $dialog = oLayoutInfo.dialog(),
-            $editable = oLayoutInfo.editable(),
+      showVideoDialog: function (layoutInfo) {
+        var $dialog = layoutInfo.dialog(),
+            $editable = layoutInfo.editable(),
             videoInfo = editor.getVideoInfo($editable);
 
         editor.saveRange($editable);
@@ -142,11 +142,11 @@ define([
       },
 
       /**
-       * @param {Object} oLayoutInfo
+       * @param {Object} layoutInfo
        */
-      showHelpDialog: function (oLayoutInfo) {
-        var $dialog = oLayoutInfo.dialog(),
-            $editable = oLayoutInfo.editable();
+      showHelpDialog: function (layoutInfo) {
+        var $dialog = layoutInfo.dialog(),
+            $editable = layoutInfo.editable();
 
         editor.saveRange($editable);
         dialog.showHelpDialog($editable, $dialog).then(function () {
@@ -154,11 +154,11 @@ define([
         });
       },
 
-      fullscreen: function (oLayoutInfo) {
-        var $editor = oLayoutInfo.editor(),
-        $toolbar = oLayoutInfo.toolbar(),
-        $editable = oLayoutInfo.editable(),
-        $codable = oLayoutInfo.codable();
+      fullscreen: function (layoutInfo) {
+        var $editor = layoutInfo.editor(),
+        $toolbar = layoutInfo.toolbar(),
+        $editable = layoutInfo.editable(),
+        $codable = layoutInfo.codable();
 
         var options = $editor.data('options');
 
@@ -196,12 +196,12 @@ define([
         toolbar.updateFullscreen($toolbar, isFullscreen);
       },
 
-      codeview: function (oLayoutInfo) {
-        var $editor = oLayoutInfo.editor(),
-        $toolbar = oLayoutInfo.toolbar(),
-        $editable = oLayoutInfo.editable(),
-        $codable = oLayoutInfo.codable(),
-        $popover = oLayoutInfo.popover();
+      codeview: function (layoutInfo) {
+        var $editor = layoutInfo.editor(),
+        $toolbar = layoutInfo.toolbar(),
+        $editable = layoutInfo.editable(),
+        $codable = layoutInfo.codable(),
+        $popover = layoutInfo.popover();
 
         var options = $editor.data('options');
 
@@ -256,7 +256,7 @@ define([
           $editable.focus();
         }
 
-        toolbar.updateCodeview(oLayoutInfo.toolbar(), isCodeview);
+        toolbar.updateCodeview(layoutInfo.toolbar(), isCodeview);
       }
     };
 
@@ -270,25 +270,25 @@ define([
     var hToolbarAndPopoverUpdate = function (event) {
       // delay for range after mouseup
       setTimeout(function () {
-        var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-        var oStyle = editor.currentStyle(event.target);
-        if (!oStyle) { return; }
+        var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+        var styleInfo = editor.currentStyle(event.target);
+        if (!styleInfo) { return; }
 
-        var isAirMode = oLayoutInfo.editor().data('options').airMode;
+        var isAirMode = layoutInfo.editor().data('options').airMode;
         if (!isAirMode) {
-          toolbar.update(oLayoutInfo.toolbar(), oStyle);
+          toolbar.update(layoutInfo.toolbar(), styleInfo);
         }
 
-        popover.update(oLayoutInfo.popover(), oStyle, isAirMode);
-        handle.update(oLayoutInfo.handle(), oStyle, isAirMode);
+        popover.update(layoutInfo.popover(), styleInfo, isAirMode);
+        handle.update(layoutInfo.handle(), styleInfo, isAirMode);
       }, 0);
     };
 
     var hScroll = function (event) {
-      var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
       //hide popover and handle when scrolled
-      popover.hide(oLayoutInfo.popover());
-      handle.hide(oLayoutInfo.handle());
+      popover.hide(layoutInfo.popover());
+      handle.hide(layoutInfo.handle());
     };
 
     /**
@@ -302,12 +302,12 @@ define([
         return;
       }
 
-      var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
       var item = list.head(clipboardData.items);
       var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
 
       if (isClipboardImage) {
-        insertImages(oLayoutInfo.editable(), [item.getAsFile()]);
+        insertImages(layoutInfo.editable(), [item.getAsFile()]);
       }
     };
 
@@ -322,13 +322,13 @@ define([
         event.preventDefault();
         event.stopPropagation();
 
-        var oLayoutInfo = makeLayoutInfo(event.target),
-            $handle = oLayoutInfo.handle(), $popover = oLayoutInfo.popover(),
-            $editable = oLayoutInfo.editable(),
-            $editor = oLayoutInfo.editor();
+        var layoutInfo = makeLayoutInfo(event.target),
+            $handle = layoutInfo.handle(), $popover = layoutInfo.popover(),
+            $editable = layoutInfo.editable(),
+            $editor = layoutInfo.editor();
 
-        var elTarget = $handle.find('.note-control-selection').data('target'),
-            $target = $(elTarget), posStart = $target.offset(),
+        var target = $handle.find('.note-control-selection').data('target'),
+            $target = $(target), posStart = $target.offset(),
             scrollTop = $document.scrollTop();
 
         var isAirMode = $editor.data('options').airMode;
@@ -339,8 +339,8 @@ define([
             y: event.clientY - (posStart.top - scrollTop)
           }, $target, !event.shiftKey);
 
-          handle.update($handle, {image: elTarget}, isAirMode);
-          popover.update($popover, {image: elTarget}, isAirMode);
+          handle.update($handle, {image: target}, isAirMode);
+          popover.update($popover, {image: target}, isAirMode);
         }).one('mouseup', function () {
           $document.off('mousemove');
         });
@@ -365,33 +365,33 @@ define([
       var $btn = $(event.target).closest('[data-event]');
 
       if ($btn.length) {
-        var sEvent = $btn.attr('data-event'),
-            sValue = $btn.attr('data-value');
+        var eventName = $btn.attr('data-event'),
+            value = $btn.attr('data-value');
 
-        var oLayoutInfo = makeLayoutInfo(event.target);
+        var layoutInfo = makeLayoutInfo(event.target);
 
         event.preventDefault();
 
         // before command: detect control selection element($target)
         var $target;
-        if ($.inArray(sEvent, ['resize', 'floatMe', 'removeMedia']) !== -1) {
-          var $selection = oLayoutInfo.handle().find('.note-control-selection');
+        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia']) !== -1) {
+          var $selection = layoutInfo.handle().find('.note-control-selection');
           $target = $($selection.data('target'));
         }
 
-        if (editor[sEvent]) { // on command
-          var $editable = oLayoutInfo.editable();
+        if (editor[eventName]) { // on command
+          var $editable = layoutInfo.editable();
           $editable.trigger('focus');
-          editor[sEvent]($editable, sValue, $target);
-        } else if (commands[sEvent]) {
-          commands[sEvent].call(this, oLayoutInfo);
+          editor[eventName]($editable, value, $target);
+        } else if (commands[eventName]) {
+          commands[eventName].call(this, layoutInfo);
         }
 
         // after command
-        if ($.inArray(sEvent, ['backColor', 'foreColor']) !== -1) {
-          var options = oLayoutInfo.editor().data('options', options);
+        if ($.inArray(eventName, ['backColor', 'foreColor']) !== -1) {
+          var options = layoutInfo.editor().data('options', options);
           var module = options.airMode ? popover : toolbar;
-          module.updateRecentColor(list.head($btn), sEvent, sValue);
+          module.updateRecentColor(list.head($btn), eventName, value);
         }
 
         hToolbarAndPopoverUpdate(event);
@@ -411,8 +411,8 @@ define([
       var $editable = makeLayoutInfo(event.target).editable();
       var nEditableTop = $editable.offset().top - $document.scrollTop();
 
-      var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-      var options = oLayoutInfo.editor().data('options');
+      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+      var options = layoutInfo.editor().data('options');
 
       $document.on('mousemove', function (event) {
         var nHeight = event.clientY - (nEditableTop + EDITABLE_PADDING);
@@ -471,48 +471,48 @@ define([
     /**
      * Drag and Drop Events
      *
-     * @param {Object} oLayoutInfo - layout Informations
+     * @param {Object} layoutInfo - layout Informations
      * @param {Boolean} disableDragAndDrop
      */
-    var handleDragAndDropEvent = function (oLayoutInfo, disableDragAndDrop) {
+    var handleDragAndDropEvent = function (layoutInfo, disableDragAndDrop) {
       if (disableDragAndDrop) {
         // prevent default drop event
         $document.on('drop', function (e) {
           e.preventDefault();
         });
       } else {
-        attachDragAndDropEvent(oLayoutInfo);
+        attachDragAndDropEvent(layoutInfo);
       }
     };
 
     /**
      * attach Drag and Drop Events
      *
-     * @param {Object} oLayoutInfo - layout Informations
+     * @param {Object} layoutInfo - layout Informations
      */
-    var attachDragAndDropEvent = function (oLayoutInfo) {
+    var attachDragAndDropEvent = function (layoutInfo) {
       var collection = $(),
-          $dropzone = oLayoutInfo.dropzone,
-          $dropzoneMessage = oLayoutInfo.dropzone.find('.note-dropzone-message');
+          $dropzone = layoutInfo.dropzone,
+          $dropzoneMessage = layoutInfo.dropzone.find('.note-dropzone-message');
 
       // show dropzone on dragenter when dragging a object to document.
       $document.on('dragenter', function (e) {
-        var isCodeview = oLayoutInfo.editor.hasClass('codeview');
+        var isCodeview = layoutInfo.editor.hasClass('codeview');
         if (!isCodeview && !collection.length) {
-          oLayoutInfo.editor.addClass('dragover');
-          $dropzone.width(oLayoutInfo.editor.width());
-          $dropzone.height(oLayoutInfo.editor.height());
+          layoutInfo.editor.addClass('dragover');
+          $dropzone.width(layoutInfo.editor.width());
+          $dropzone.height(layoutInfo.editor.height());
           $dropzoneMessage.text('Drag Image Here');
         }
         collection = collection.add(e.target);
       }).on('dragleave', function (e) {
         collection = collection.not(e.target);
         if (!collection.length) {
-          oLayoutInfo.editor.removeClass('dragover');
+          layoutInfo.editor.removeClass('dragover');
         }
       }).on('drop', function () {
         collection = $();
-        oLayoutInfo.editor.removeClass('dragover');
+        layoutInfo.editor.removeClass('dragover');
       });
 
       // change dropzone's message on hover.
@@ -530,9 +530,9 @@ define([
 
         var dataTransfer = event.originalEvent.dataTransfer;
         if (dataTransfer && dataTransfer.files) {
-          var oLayoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-          oLayoutInfo.editable().focus();
-          insertImages(oLayoutInfo.editable(), dataTransfer.files);
+          var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+          layoutInfo.editable().focus();
+          insertImages(layoutInfo.editable(), dataTransfer.files);
         }
       }).on('dragover', false); // prevent default dragover event
     };
@@ -541,14 +541,14 @@ define([
     /**
      * bind KeyMap on keydown
      *
-     * @param {Object} oLayoutInfo
+     * @param {Object} layoutInfo
      * @param {Object} keyMap
      */
-    this.bindKeyMap = function (oLayoutInfo, keyMap) {
-      var $editor = oLayoutInfo.editor;
-      var $editable = oLayoutInfo.editable;
+    this.bindKeyMap = function (layoutInfo, keyMap) {
+      var $editor = layoutInfo.editor;
+      var $editable = layoutInfo.editable;
 
-      oLayoutInfo = makeLayoutInfo($editable);
+      layoutInfo = makeLayoutInfo($editable);
 
       $editable.on('keydown', function (event) {
         var aKey = [];
@@ -562,14 +562,14 @@ define([
         var keyName = key.nameFromCode[event.keyCode];
         if (keyName) { aKey.push(keyName); }
 
-        var sEvent = keyMap[aKey.join('+')];
-        if (sEvent) {
+        var eventName = keyMap[aKey.join('+')];
+        if (eventName) {
           event.preventDefault();
 
-          if (editor[sEvent]) {
-            editor[sEvent]($editable, $editor.data('options'));
-          } else if (commands[sEvent]) {
-            commands[sEvent].call(this, oLayoutInfo);
+          if (editor[eventName]) {
+            editor[eventName]($editable, $editor.data('options'));
+          } else if (commands[eventName]) {
+            commands[eventName].call(this, layoutInfo);
           }
         } else if (key.isEdit(event.keyCode)) {
           editor.recordUndo($editable);
@@ -580,41 +580,41 @@ define([
     /**
      * attach eventhandler
      *
-     * @param {Object} oLayoutInfo - layout Informations
+     * @param {Object} layoutInfo - layout Informations
      * @param {Object} options - user options include custom event handlers
      * @param {Function} options.enter - enter key handler
      */
-    this.attach = function (oLayoutInfo, options) {
+    this.attach = function (layoutInfo, options) {
       // handlers for editable
-      this.bindKeyMap(oLayoutInfo, options.keyMap[agent.isMac ? 'mac' : 'pc']);
-      oLayoutInfo.editable.on('mousedown', hMousedown);
-      oLayoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
-      oLayoutInfo.editable.on('scroll', hScroll);
-      oLayoutInfo.editable.on('paste', hPasteClipboardImage);
+      this.bindKeyMap(layoutInfo, options.keyMap[agent.isMac ? 'mac' : 'pc']);
+      layoutInfo.editable.on('mousedown', hMousedown);
+      layoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
+      layoutInfo.editable.on('scroll', hScroll);
+      layoutInfo.editable.on('paste', hPasteClipboardImage);
 
       // handler for handle and popover
-      oLayoutInfo.handle.on('mousedown', hHandleMousedown);
-      oLayoutInfo.popover.on('click', hToolbarAndPopoverClick);
-      oLayoutInfo.popover.on('mousedown', hToolbarAndPopoverMousedown);
+      layoutInfo.handle.on('mousedown', hHandleMousedown);
+      layoutInfo.popover.on('click', hToolbarAndPopoverClick);
+      layoutInfo.popover.on('mousedown', hToolbarAndPopoverMousedown);
 
       // handlers for frame mode (toolbar, statusbar)
       if (!options.airMode) {
         // handler for drag and drop
-        handleDragAndDropEvent(oLayoutInfo, options.disableDragAndDrop);
+        handleDragAndDropEvent(layoutInfo, options.disableDragAndDrop);
 
         // handler for toolbar
-        oLayoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
-        oLayoutInfo.toolbar.on('mousedown', hToolbarAndPopoverMousedown);
+        layoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
+        layoutInfo.toolbar.on('mousedown', hToolbarAndPopoverMousedown);
 
         // handler for statusbar
         if (!options.disableResizeEditor) {
-          oLayoutInfo.statusbar.on('mousedown', hStatusbarMousedown);
+          layoutInfo.statusbar.on('mousedown', hStatusbarMousedown);
         }
       }
 
       // handler for table dimension
-      var $catcherContainer = options.airMode ? oLayoutInfo.popover :
-                                                oLayoutInfo.toolbar;
+      var $catcherContainer = options.airMode ? layoutInfo.popover :
+                                                layoutInfo.toolbar;
       var $catcher = $catcherContainer.find('.note-dimension-picker-mousecatcher');
       $catcher.css({
         width: options.insertTableMaxSize.col + 'em',
@@ -624,7 +624,7 @@ define([
       });
 
       // save options on editor
-      oLayoutInfo.editor.data('options', options);
+      layoutInfo.editor.data('options', options);
 
       // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
       if (options.styleWithSpan && !agent.isMSIE) {
@@ -635,40 +635,40 @@ define([
       }
 
       // History
-      oLayoutInfo.editable.data('NoteHistory', new History());
+      layoutInfo.editable.data('NoteHistory', new History());
 
       // basic event callbacks (lowercase)
       // enter, focus, blur, keyup, keydown
       if (options.onenter) {
-        oLayoutInfo.editable.keypress(function (event) {
+        layoutInfo.editable.keypress(function (event) {
           if (event.keyCode === key.ENTER) { options.onenter(event); }
         });
       }
 
-      if (options.onfocus) { oLayoutInfo.editable.focus(options.onfocus); }
-      if (options.onblur) { oLayoutInfo.editable.blur(options.onblur); }
-      if (options.onkeyup) { oLayoutInfo.editable.keyup(options.onkeyup); }
-      if (options.onkeydown) { oLayoutInfo.editable.keydown(options.onkeydown); }
-      if (options.onpaste) { oLayoutInfo.editable.on('paste', options.onpaste); }
+      if (options.onfocus) { layoutInfo.editable.focus(options.onfocus); }
+      if (options.onblur) { layoutInfo.editable.blur(options.onblur); }
+      if (options.onkeyup) { layoutInfo.editable.keyup(options.onkeyup); }
+      if (options.onkeydown) { layoutInfo.editable.keydown(options.onkeydown); }
+      if (options.onpaste) { layoutInfo.editable.on('paste', options.onpaste); }
 
       // callbacks for advanced features (camel)
-      if (options.onToolbarClick) { oLayoutInfo.toolbar.click(options.onToolbarClick); }
+      if (options.onToolbarClick) { layoutInfo.toolbar.click(options.onToolbarClick); }
       if (options.onChange) {
         var hChange = function () {
-          options.onChange(oLayoutInfo.editable, oLayoutInfo.editable.html());
+          options.onChange(layoutInfo.editable, layoutInfo.editable.html());
         };
 
         if (agent.isMSIE) {
           var sDomEvents = 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted';
-          oLayoutInfo.editable.on(sDomEvents, hChange);
+          layoutInfo.editable.on(sDomEvents, hChange);
         } else {
-          oLayoutInfo.editable.on('input', hChange);
+          layoutInfo.editable.on('input', hChange);
         }
       }
 
       // All editor status will be saved on editable with jquery's data
       // for support multiple editor with singleton object.
-      oLayoutInfo.editable.data('callbacks', {
+      layoutInfo.editable.data('callbacks', {
         onAutoSave: options.onAutoSave,
         onImageUpload: options.onImageUpload,
         onImageUploadError: options.onImageUploadError,
@@ -677,17 +677,17 @@ define([
       });
     };
 
-    this.dettach = function (oLayoutInfo, options) {
-      oLayoutInfo.editable.off();
+    this.dettach = function (layoutInfo, options) {
+      layoutInfo.editable.off();
 
-      oLayoutInfo.popover.off();
-      oLayoutInfo.handle.off();
-      oLayoutInfo.dialog.off();
+      layoutInfo.popover.off();
+      layoutInfo.handle.off();
+      layoutInfo.dialog.off();
 
       if (!options.airMode) {
-        oLayoutInfo.dropzone.off();
-        oLayoutInfo.toolbar.off();
-        oLayoutInfo.statusbar.off();
+        layoutInfo.dropzone.off();
+        layoutInfo.toolbar.off();
+        layoutInfo.statusbar.off();
       }
     };
   };

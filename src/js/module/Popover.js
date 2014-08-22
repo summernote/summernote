@@ -44,32 +44,32 @@ define([
     /**
      * update current state
      * @param {jQuery} $popover - popover container
-     * @param {Object} oStyle - style object
+     * @param {Object} styleInfo - style object
      * @param {Boolean} isAirMode
      */
-    this.update = function ($popover, oStyle, isAirMode) {
-      button.update($popover, oStyle);
+    this.update = function ($popover, styleInfo, isAirMode) {
+      button.update($popover, styleInfo);
 
       var $linkPopover = $popover.find('.note-link-popover');
-      if (oStyle.anchor) {
+      if (styleInfo.anchor) {
         var $anchor = $linkPopover.find('a');
-        var href = $(oStyle.anchor).attr('href');
+        var href = $(styleInfo.anchor).attr('href');
         $anchor.attr('href', href).html(href);
-        showPopover($linkPopover, posFromPlaceholder(oStyle.anchor, isAirMode));
+        showPopover($linkPopover, posFromPlaceholder(styleInfo.anchor, isAirMode));
       } else {
         $linkPopover.hide();
       }
 
       var $imagePopover = $popover.find('.note-image-popover');
-      if (oStyle.image) {
-        showPopover($imagePopover, posFromPlaceholder(oStyle.image, isAirMode));
+      if (styleInfo.image) {
+        showPopover($imagePopover, posFromPlaceholder(styleInfo.image, isAirMode));
       } else {
         $imagePopover.hide();
       }
 
       var $airPopover = $popover.find('.note-air-popover');
-      if (isAirMode && !oStyle.range.isCollapsed()) {
-        var bnd = func.rect2bnd(list.last(oStyle.range.getClientRects()));
+      if (isAirMode && !styleInfo.range.isCollapsed()) {
+        var bnd = func.rect2bnd(list.last(styleInfo.range.getClientRects()));
         showPopover($airPopover, {
           left: Math.max(bnd.left + bnd.width / 2 - PX_POPOVER_ARROW_OFFSET_X, 0),
           top: bnd.top + bnd.height
@@ -79,8 +79,13 @@ define([
       }
     };
 
-    this.updateRecentColor = function (elBtn, sEvent, sValue) {
-      button.updateRecentColor(elBtn, sEvent, sValue);
+    /**
+     * @param {Node} button
+     * @param {String} eventName
+     * @param {String} value
+     */
+    this.updateRecentColor = function (button, eventName, value) {
+      button.updateRecentColor(button, eventName, value);
     };
 
     /**

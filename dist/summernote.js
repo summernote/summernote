@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-21T16:11Z
+ * Date: 2014-08-22T06:00Z
  */
 (function (factory) {
   /* global define */
@@ -84,7 +84,8 @@
     jqueryVersion: parseFloat($.fn.jquery),
     isSupportAmd: isSupportAmd,
     hasCodeMirror: isSupportAmd ? require.specified('CodeMirror') : !!window.CodeMirror,
-    isFontInstalled: isFontInstalled
+    isFontInstalled: isFontInstalled,
+    isW3CRangeSupport: !!document.createRange
   };
 
   /**
@@ -311,6 +312,10 @@
              clusterBy: clusterBy, compact: compact };
   })();
 
+
+  var NBSP_CHAR = String.fromCharCode(160);
+  var ZERO_WIDTH_NBSP_CHAR = '\ufeff';
+
   /**
    * Dom functions
    */
@@ -377,9 +382,9 @@
      * @param {String} sNodeName
      */
     var makePredByNodeName = function (sNodeName) {
-      // nodeName is always uppercase.
+      sNodeName = sNodeName.toUpperCase();
       return function (node) {
-        return node && node.nodeName === sNodeName;
+        return node && node.nodeName.toUpperCase() === sNodeName;
       };
     };
 
@@ -392,20 +397,20 @@
      * @see http://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
      */
     var isVoid = function (node) {
-      return node && (node.nodeName === 'BR' || node.nodeName === 'IMG');
+      return node && /^BR|^IMG|^HR/.test(node.nodeName.toUpperCase());
     };
 
     var isPara = function (node) {
       // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
-      return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName);
+      return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName.toUpperCase());
     };
 
     var isList = function (node) {
-      return node && /^UL|^OL/.test(node.nodeName);
+      return node && /^UL|^OL/.test(node.nodeName.toUpperCase());
     };
 
     var isCell = function (node) {
-      return node && /^TD|^TH/.test(node.nodeName);
+      return node && /^TD|^TH/.test(node.nodeName.toUpperCase());
     };
 
     var isBodyContainer = function (node) {
@@ -460,12 +465,12 @@
     var listAncestor = function (node, pred) {
       pred = pred || func.fail;
 
-      var aAncestor = [];
+      var ancestors = [];
       ancestor(node, function (el) {
-        aAncestor.push(el);
+        ancestors.push(el);
         return pred(el);
       });
-      return aAncestor;
+      return ancestors;
     };
 
     /**
@@ -475,9 +480,9 @@
      * @param {Node} nodeB
      */
     var commonAncestor = function (nodeA, nodeB) {
-      var aAncestor = listAncestor(nodeA);
+      var ancestors = listAncestor(nodeA);
       for (var n = nodeB; n; n = n.parentNode) {
-        if ($.inArray(n, aAncestor) > -1) { return n; }
+        if ($.inArray(n, ancestors) > -1) { return n; }
       }
       return null; // difference document area
     };
@@ -490,7 +495,7 @@
      * @param {Node} nodeB
      */
     var listBetween = function (nodeA, nodeB) {
-      var aNode = [];
+      var nodes = [];
 
       var isStart = false, isEnd = false;
 
@@ -498,7 +503,7 @@
       (function fnWalk(node) {
         if (!node) { return; } // traverse fisnish
         if (node === nodeA) { isStart = true; } // start point
-        if (isStart && !isEnd) { aNode.push(node); } // between
+        if (isStart && !isEnd) { nodes.push(node); } // between
         if (node === nodeB) { isEnd = true; return; } // end point
 
         for (var idx = 0, sz = node.childNodes.length; idx < sz; idx++) {
@@ -506,24 +511,25 @@
         }
       })(commonAncestor(nodeA, nodeB));
 
-      return aNode;
+      return nodes;
     };
 
     /**
      * listing all previous siblings (until predicate hit).
+     *
      * @param {Node} node
      * @param {Function} [optional] pred - predicate function
      */
     var listPrev = function (node, pred) {
       pred = pred || func.fail;
 
-      var aNext = [];
+      var nodes = [];
       while (node) {
         if (pred(node)) { break; }
-        aNext.push(node);
+        nodes.push(node);
         node = node.previousSibling;
       }
-      return aNext;
+      return nodes;
     };
 
     /**
@@ -535,13 +541,13 @@
     var listNext = function (node, pred) {
       pred = pred || func.fail;
 
-      var aNext = [];
+      var nodes = [];
       while (node) {
         if (pred(node)) { break; }
-        aNext.push(node);
+        nodes.push(node);
         node = node.nextSibling;
       }
-      return aNext;
+      return nodes;
     };
 
     /**
@@ -551,20 +557,20 @@
      * @param {Function} [pred] - predicate function
      */
     var listDescendant = function (node, pred) {
-      var aDescendant = [];
+      var descendents = [];
       pred = pred || func.ok;
 
       // start DFS(depth first search) with node
       (function fnWalk(current) {
         if (node !== current && pred(current)) {
-          aDescendant.push(current);
+          descendents.push(current);
         }
         for (var idx = 0, sz = current.childNodes.length; idx < sz; idx++) {
           fnWalk(current.childNodes[idx]);
         }
       })(node);
 
-      return aDescendant;
+      return descendents;
     };
 
     /**
@@ -606,7 +612,7 @@
      * @param {Node} node
      * @param {Collection} aChild
      */
-    var appends = function (node, aChild) {
+    var appendChildNodes = function (node, aChild) {
       $.each(aChild, function (idx, child) {
         node.appendChild(child);
       });
@@ -623,11 +629,11 @@
       return node.childNodes.length;
     };
 
-    var isLeftEdgeBP = function (boundaryPoint) {
+    var isLeftEdgePoint = function (boundaryPoint) {
       return boundaryPoint.offset === 0;
     };
 
-    var isRightEdgeBP = function (boundaryPoint) {
+    var isRightEdgePoint = function (boundaryPoint) {
       return boundaryPoint.offset === length(boundaryPoint.node);
     };
 
@@ -637,8 +643,8 @@
      * @param {BoundaryPoint} boundaryPoitn
      * @return {Boolean}
      */
-    var isEdgeBP = function (boundaryPoint) {
-      return boundaryPoint.offset === 0 || isRightEdgeBP(boundaryPoint);
+    var isEdgePoint = function (boundaryPoint) {
+      return boundaryPoint.offset === 0 || isRightEdgePoint(boundaryPoint);
     };
 
     /**
@@ -680,7 +686,7 @@
      * @param {BoundaryPoint} boundaryPoitn
      * @return {BoundaryPoint}
      */
-    var prevBP = function (boundaryPoint) {
+    var prevPoint = function (boundaryPoint) {
       var node = boundaryPoint.node,
       offset = boundaryPoint.offset;
 
@@ -704,8 +710,8 @@
      * @param {Node} node
      */
     var makeOffsetPath = function (ancestor, node) {
-      var aAncestor = list.initial(listAncestor(node, func.eq(ancestor)));
-      return $.map(aAncestor, position).reverse();
+      var ancestors = list.initial(listAncestor(node, func.eq(ancestor)));
+      return $.map(ancestors, position).reverse();
     };
 
     /**
@@ -732,9 +738,9 @@
       // split #text
       if (isText(point.node)) {
         // edge case
-        if (isLeftEdgeBP(point)) {
+        if (isLeftEdgePoint(point)) {
           return point.node;
-        } else if (isRightEdgeBP(point)) {
+        } else if (isRightEdgePoint(point)) {
           return point.node.nextSibling;
         }
 
@@ -744,7 +750,7 @@
       // split element
       var childNode = point.node.childNodes[point.offset];
       var clone = insertAfter(point.node.cloneNode(false), point.node);
-      appends(clone, listNext(childNode));
+      appendChildNodes(clone, listNext(childNode));
 
       paddingBlankHTML(point.node);
       paddingBlankHTML(clone);
@@ -776,7 +782,7 @@
           node = splitNode(point);
         }
 
-        appends(clone, listNext(node));
+        appendChildNodes(clone, listNext(node));
 
         paddingBlankHTML(parent);
         paddingBlankHTML(clone);
@@ -784,29 +790,33 @@
       });
     };
 
-    /**
-     * remove node, (bRemoveChild: remove child or not)
-     * @param {Node} node
-     * @param {Boolean} bRemoveChild
-     */
-    var remove = function (node, bRemoveChild) {
-      if (!node || !node.parentNode) { return; }
-      if (node.removeNode) { return node.removeNode(bRemoveChild); }
+    var createText = function (text) {
+      return document.createTextNode(text);
+    };
 
-      var elParent = node.parentNode;
-      if (!bRemoveChild) {
-        var aNode = [];
+    /**
+     * remove node, (isRemoveChild: remove child or not)
+     * @param {Node} node
+     * @param {Boolean} isRemoveChild
+     */
+    var remove = function (node, isRemoveChild) {
+      if (!node || !node.parentNode) { return; }
+      if (node.removeNode) { return node.removeNode(isRemoveChild); }
+
+      var parent = node.parentNode;
+      if (!isRemoveChild) {
+        var nodes = [];
         var i, sz;
         for (i = 0, sz = node.childNodes.length; i < sz; i++) {
-          aNode.push(node.childNodes[i]);
+          nodes.push(node.childNodes[i]);
         }
 
-        for (i = 0, sz = aNode.length; i < sz; i++) {
-          elParent.insertBefore(aNode[i], node);
+        for (i = 0, sz = nodes.length; i < sz; i++) {
+          parent.insertBefore(nodes[i], node);
         }
       }
 
-      elParent.removeChild(node);
+      parent.removeChild(node);
     };
 
     var html = function ($node) {
@@ -814,8 +824,10 @@
     };
 
     return {
+      NBSP_CHAR: NBSP_CHAR,
+      ZERO_WIDTH_NBSP_CHAR: ZERO_WIDTH_NBSP_CHAR,
       blank: blankHTML,
-      emptyPara: '<p><br/></p>',
+      emptyPara: '<p>' + blankHTML + '</p>',
       isEditable: isEditable,
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
@@ -825,6 +837,7 @@
       isList: isList,
       isTable: makePredByNodeName('TABLE'),
       isCell: isCell,
+      isBodyContainer: isBodyContainer,
       isAnchor: makePredByNodeName('A'),
       isDiv: makePredByNodeName('DIV'),
       isLi: makePredByNodeName('LI'),
@@ -836,10 +849,10 @@
       isImg: makePredByNodeName('IMG'),
       isTextarea: makePredByNodeName('TEXTAREA'),
       length: length,
-      isRightEdgeBP: isRightEdgeBP,
-      isEdgeBP: isEdgeBP,
+      isRightEdgePoint: isRightEdgePoint,
+      isEdgePoint: isEdgePoint,
       isRightEdgeOf: isRightEdgeOf,
-      prevBP: prevBP,
+      prevPoint: prevPoint,
       ancestor: ancestor,
       listAncestor: listAncestor,
       listNext: listNext,
@@ -853,6 +866,7 @@
       makeOffsetPath: makeOffsetPath,
       fromOffsetPath: fromOffsetPath,
       splitTree: splitTree,
+      createText: createText,
       remove: remove,
       html: html
     };
@@ -1297,10 +1311,10 @@
      * get current style on cursor
      *
      * @param {WrappedRange} rng
-     * @param {Node} elTarget - target element on event
+     * @param {Node} target - target element on event
      * @return {Object} - object contains style properties.
      */
-    this.current = function (rng, elTarget) {
+    this.current = function (rng, target) {
       var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
       var properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
       var oStyle = jQueryCSS($cont, properties) || {};
@@ -1332,7 +1346,7 @@
         oStyle['line-height'] = lineHeight.toFixed(1);
       }
 
-      oStyle.image = dom.isImg(elTarget) && elTarget;
+      oStyle.image = dom.isImg(target) && target;
       oStyle.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);
       oStyle.aAncestor = dom.listAncestor(rng.sc, dom.isEditable);
       oStyle.range = rng;
@@ -1341,94 +1355,109 @@
     };
   };
 
+
   /**
-   * range module
+   * related data structure
+   *  - {BoundaryPoint}: a point of dom tree
+   *  - {BoundaryPoints}: two boundaryPoints corresponding to the start and the end of the Range
+   *
+   *  @see http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html#Level-2-Range-Position
    */
   var range = (function () {
-    var isW3CRangeSupport = !!document.createRange;
-     
     /**
      * return boundaryPoint from TextRange, inspired by Andy Na's HuskyRange.js
+     *
      * @param {TextRange} textRange
      * @param {Boolean} isStart
      * @return {BoundaryPoint}
      */
-    var textRange2bp = function (textRange, isStart) {
-      var elCont = textRange.parentElement(), nOffset;
+    var textRangeToPoint = function (textRange, isStart) {
+      var container = textRange.parentElement(), offset;
   
-      var tester = document.body.createTextRange(), elPrevCont;
-      var aChild = list.from(elCont.childNodes);
-      for (nOffset = 0; nOffset < aChild.length; nOffset++) {
-        if (dom.isText(aChild[nOffset])) { continue; }
-        tester.moveToElementText(aChild[nOffset]);
-        if (tester.compareEndPoints('StartToStart', textRange) >= 0) { break; }
-        elPrevCont = aChild[nOffset];
+      var tester = document.body.createTextRange(), prevContainer;
+      var childNodes = list.from(container.childNodes);
+      for (offset = 0; offset < childNodes.length; offset++) {
+        if (dom.isText(childNodes[offset])) {
+          continue;
+        }
+        tester.moveToElementText(childNodes[offset]);
+        if (tester.compareEndPoints('StartToStart', textRange) >= 0) {
+          break;
+        }
+        prevContainer = childNodes[offset];
       }
   
-      if (nOffset !== 0 && dom.isText(aChild[nOffset - 1])) {
-        var textRangeStart = document.body.createTextRange(), elCurText = null;
-        textRangeStart.moveToElementText(elPrevCont || elCont);
-        textRangeStart.collapse(!elPrevCont);
-        elCurText = elPrevCont ? elPrevCont.nextSibling : elCont.firstChild;
+      if (offset !== 0 && dom.isText(childNodes[offset - 1])) {
+        var textRangeStart = document.body.createTextRange(), curTextNode = null;
+        textRangeStart.moveToElementText(prevContainer || container);
+        textRangeStart.collapse(!prevContainer);
+        curTextNode = prevContainer ? prevContainer.nextSibling : container.firstChild;
   
         var pointTester = textRange.duplicate();
         pointTester.setEndPoint('StartToStart', textRangeStart);
-        var nTextCount = pointTester.text.replace(/[\r\n]/g, '').length;
+        var textCount = pointTester.text.replace(/[\r\n]/g, '').length;
   
-        while (nTextCount > elCurText.nodeValue.length && elCurText.nextSibling) {
-          nTextCount -= elCurText.nodeValue.length;
-          elCurText = elCurText.nextSibling;
+        while (textCount > curTextNode.nodeValue.length && curTextNode.nextSibling) {
+          textCount -= curTextNode.nodeValue.length;
+          curTextNode = curTextNode.nextSibling;
         }
   
         /* jshint ignore:start */
-        var sDummy = elCurText.nodeValue; //enforce IE to re-reference elCurText, hack
+        var dummy = curTextNode.nodeValue; // enforce IE to re-reference curTextNode, hack
         /* jshint ignore:end */
   
-        if (isStart && elCurText.nextSibling && dom.isText(elCurText.nextSibling) &&
-            nTextCount === elCurText.nodeValue.length) {
-          nTextCount -= elCurText.nodeValue.length;
-          elCurText = elCurText.nextSibling;
+        if (isStart && curTextNode.nextSibling && dom.isText(curTextNode.nextSibling) &&
+            textCount === curTextNode.nodeValue.length) {
+          textCount -= curTextNode.nodeValue.length;
+          curTextNode = curTextNode.nextSibling;
         }
   
-        elCont = elCurText;
-        nOffset = nTextCount;
+        container = curTextNode;
+        offset = textCount;
       }
   
-      return {cont: elCont, offset: nOffset};
+      return {
+        cont: container,
+        offset: offset
+      };
     };
     
     /**
      * return TextRange from boundary point (inspired by google closure-library)
-     * @param {BoundaryPoint} bp
+     * @param {BoundaryPoint} point
      * @return {TextRange}
      */
-    var bp2textRange = function (bp) {
-      var textRangeInfo = function (elCont, nOffset) {
-        var elNode, isCollapseToStart;
+    var pointToTextRange = function (point) {
+      var textRangeInfo = function (container, offset) {
+        var node, isCollapseToStart;
   
-        if (dom.isText(elCont)) {
-          var aPrevText = dom.listPrev(elCont, func.not(dom.isText));
-          var elPrevCont = list.last(aPrevText).previousSibling;
-          elNode =  elPrevCont || elCont.parentNode;
-          nOffset += list.sum(list.tail(aPrevText), dom.length);
-          isCollapseToStart = !elPrevCont;
+        if (dom.isText(container)) {
+          var prevTextNodes = dom.listPrev(container, func.not(dom.isText));
+          var prevContainer = list.last(prevTextNodes).previousSibling;
+          node =  prevContainer || container.parentNode;
+          offset += list.sum(list.tail(prevTextNodes), dom.length);
+          isCollapseToStart = !prevContainer;
         } else {
-          elNode = elCont.childNodes[nOffset] || elCont;
-          if (dom.isText(elNode)) {
-            return textRangeInfo(elNode, 0);
+          node = container.childNodes[offset] || container;
+          if (dom.isText(node)) {
+            return textRangeInfo(node, 0);
           }
   
-          nOffset = 0;
+          offset = 0;
           isCollapseToStart = false;
         }
   
-        return {cont: elNode, collapseToStart: isCollapseToStart, offset: nOffset};
+        return {
+          node: node,
+          collapseToStart: isCollapseToStart,
+          offset: offset
+        };
       };
   
       var textRange = document.body.createTextRange();
-      var info = textRangeInfo(bp.cont, bp.offset);
+      var info = textRangeInfo(point.node, point.offset);
   
-      textRange.moveToElementText(info.cont);
+      textRange.moveToElementText(info.node);
       textRange.collapse(info.collapseToStart);
       textRange.moveStart('character', info.offset);
       return textRange;
@@ -1450,19 +1479,28 @@
   
       // nativeRange: get nativeRange from sc, so, ec, eo
       var nativeRange = function () {
-        if (isW3CRangeSupport) {
+        if (agent.isW3CRangeSupport) {
           var w3cRange = document.createRange();
           w3cRange.setStart(sc, so);
           w3cRange.setEnd(ec, eo);
+
           return w3cRange;
         } else {
-          var textRange = bp2textRange({cont: sc, offset: so});
-          textRange.setEndPoint('EndToEnd', bp2textRange({cont: ec, offset: eo}));
+          var textRange = pointToTextRange({
+            node: sc,
+            offset: so
+          });
+
+          textRange.setEndPoint('EndToEnd', pointToTextRange({
+            node: ec,
+            offset: eo
+          }));
+
           return textRange;
         }
       };
 
-      this.getBPs = function () {
+      this.getPoints = function () {
         return {
           sc: sc,
           so: so,
@@ -1471,14 +1509,14 @@
         };
       };
 
-      this.getStartBP = function () {
+      this.getStartPoint = function () {
         return {
           node: sc,
           offset: so
         };
       };
 
-      this.getEndBP = function () {
+      this.getEndPoint = function () {
         return {
           node: ec,
           offset: eo
@@ -1490,9 +1528,11 @@
        */
       this.select = function () {
         var nativeRng = nativeRange();
-        if (isW3CRangeSupport) {
+        if (agent.isW3CRangeSupport) {
           var selection = document.getSelection();
-          if (selection.rangeCount > 0) { selection.removeAllRanges(); }
+          if (selection.rangeCount > 0) {
+            selection.removeAllRanges();
+          }
           selection.addRange(nativeRng);
         } else {
           nativeRng.select();
@@ -1508,11 +1548,11 @@
       this.nodes = function (pred) {
         pred = pred || func.ok;
 
-        var aNode = dom.listBetween(sc, ec);
-        var aMatched = list.compact($.map(aNode, function (node) {
+        var nodes = dom.listBetween(sc, ec);
+        var matcheds = list.compact($.map(nodes, function (node) {
           return dom.ancestor(node, pred);
         }));
-        return $.map(list.clusterBy(aMatched, func.eq2), list.head);
+        return $.map(list.clusterBy(matcheds, func.eq2), list.head);
       };
 
       /**
@@ -1537,7 +1577,7 @@
           return new WrappedRange(sc, so, ec, eo);
         }
 
-        var boundaryPoints = this.getBPs();
+        var boundaryPoints = this.getPoints();
 
         if (startAncestor) {
           boundaryPoints.sc = startAncestor;
@@ -1574,13 +1614,13 @@
        */
       this.splitText = function () {
         var isSameContainer = sc === ec;
-        var boundaryPoints = this.getBPs();
+        var boundaryPoints = this.getPoints();
 
-        if (dom.isText(ec) && !dom.isEdgeBP(this.getEndBP())) {
+        if (dom.isText(ec) && !dom.isEdgePoint(this.getEndPoint())) {
           ec.splitText(eo);
         }
 
-        if (dom.isText(sc) && !dom.isEdgeBP(this.getStartBP())) {
+        if (dom.isText(sc) && !dom.isEdgePoint(this.getStartPoint())) {
           boundaryPoints.sc = sc.splitText(so);
           boundaryPoints.so = 0;
 
@@ -1608,17 +1648,17 @@
         }
 
         var rng = this.splitText();
-        var prevBP = dom.prevBP(rng.getStartBP());
+        var prevPoint = dom.prevPoint(rng.getStartPoint());
 
         $.each(rng.nodes(), function (idx, node) {
           dom.remove(node, !dom.isPara(node));
         });
 
         return new WrappedRange(
-          prevBP.node,
-          prevBP.offset,
-          prevBP.node,
-          prevBP.offset
+          prevPoint.node,
+          prevPoint.offset,
+          prevPoint.node,
+          prevPoint.offset
         );
       };
       
@@ -1627,8 +1667,8 @@
        */
       var makeIsOn = function (pred) {
         return function () {
-          var elAncestor = dom.ancestor(sc, pred);
-          return !!elAncestor && (elAncestor === dom.ancestor(ec, pred));
+          var ancestor = dom.ancestor(sc, pred);
+          return !!ancestor && (ancestor === dom.ancestor(ec, pred));
         };
       };
   
@@ -1640,24 +1680,52 @@
       this.isOnAnchor = makeIsOn(dom.isAnchor);
       // isOnAnchor: judge whether range is on cell node or not
       this.isOnCell = makeIsOn(dom.isCell);
-      // isCollapsed: judge whether range was collapsed
-      this.isCollapsed = function () { return sc === ec && so === eo; };
+
+      /**
+       * returns whether range was collapsed or not
+       */
+      this.isCollapsed = function () {
+        return sc === ec && so === eo;
+      };
+
+      /**
+       * wrap body text with paragraph
+       */
+      this.wrapBodyTextWithPara = function () {
+        $.each(this.nodes(dom.isBodyText), function (idx, node) {
+          dom.wrap(node, 'p');
+        });
+      };
 
       /**
        * insert node at current cursor
+       *
        * @param {Node} node
+       * @param {Boolean} [isInline]
+       * @return {Node}
        */
-      this.insertNode = function (node) {
-        var nativeRng = nativeRange();
-        if (isW3CRangeSupport) {
-          nativeRng.insertNode(node);
-        } else {
-          var tmpId = 'node-insert-node-target';
-          node.id = tmpId;
+      this.insertNode = function (node, isInline) {
+        var point = this.getStartPoint();
 
-          // NOTE: missing node reference.
-          nativeRng.pasteHTML(node.outerHTML);
-          node = $('#' + tmpId)[0];
+        this.wrapBodyTextWithPara();
+
+        var splitRoot, container;
+        if (isInline) {
+          container = point.node.parentNode;
+          splitRoot = point.node;
+        } else {
+          // splitRoot will be childNode of container
+          var ancestors = dom.listAncestor(point.node, dom.isBodyContainer);
+          container = list.last(ancestors);
+          splitRoot = ancestors[ancestors.length - 2];
+        }
+
+        var pivot = splitRoot && dom.splitTree(splitRoot, point);
+
+        if (pivot) {
+          pivot.parentNode.insertBefore(node, pivot);
+        } else {
+          container.appendChild(node);
         }
 
         return node;
@@ -1665,17 +1733,23 @@
   
       this.toString = function () {
         var nativeRng = nativeRange();
-        return isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
+        return agent.isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
       };
   
       /**
        * create offsetPath bookmark
-       * @param {Node} elEditable
+       * @param {Node} editable
        */
-      this.bookmark = function (elEditable) {
+      this.bookmark = function (editable) {
         return {
-          s: { path: dom.makeOffsetPath(elEditable, sc), offset: so },
-          e: { path: dom.makeOffsetPath(elEditable, ec), offset: eo }
+          s: {
+            path: dom.makeOffsetPath(editable, sc),
+            offset: so
+          },
+          e: {
+            path: dom.makeOffsetPath(editable, ec),
+            offset: eo
+          }
         };
       };
 
@@ -1700,9 +1774,11 @@
        */
       create : function (sc, so, ec, eo) {
         if (!arguments.length) { // from Browser Selection
-          if (isW3CRangeSupport) { // webkit, firefox
+          if (agent.isW3CRangeSupport) {
             var selection = document.getSelection();
-            if (selection.rangeCount === 0) { return null; }
+            if (selection.rangeCount === 0) {
+              return null;
+            }
   
             var nativeRng = selection.getRangeAt(0);
             sc = nativeRng.startContainer;
@@ -1716,13 +1792,13 @@
             var textRangeStart = textRange;
             textRangeStart.collapse(true);
   
-            var bpStart = textRange2bp(textRangeStart, true),
-            bpEnd = textRange2bp(textRangeEnd, false);
+            var startPoint = textRangeToPoint(textRangeStart, true),
+            endPoint = textRangeToPoint(textRangeEnd, false);
   
-            sc = bpStart.cont;
-            so = bpStart.offset;
-            ec = bpEnd.cont;
-            eo = bpEnd.offset;
+            sc = startPoint.cont;
+            so = startPoint.offset;
+            ec = endPoint.cont;
+            eo = endPoint.offset;
           }
         } else if (arguments.length === 2) { //collapsed
           ec = sc;
@@ -1744,14 +1820,14 @@
       /**
        * create WrappedRange from Bookmark
        *
-       * @param {Node} elEditable
+       * @param {Node} editable
        * @param {Obkect} bookmark
        * @return {WrappedRange}
        */
-      createFromBookmark : function (elEditable, bookmark) {
-        var sc = dom.fromOffsetPath(elEditable, bookmark.s.path);
+      createFromBookmark : function (editable, bookmark) {
+        var sc = dom.fromOffsetPath(editable, bookmark.s.path);
         var so = bookmark.s.offset;
-        var ec = dom.fromOffsetPath(elEditable, bookmark.e.path);
+        var ec = dom.fromOffsetPath(editable, bookmark.e.path);
         var eo = bookmark.e.offset;
         return new WrappedRange(sc, so, ec, eo);
       }
@@ -1838,11 +1914,11 @@
 
     /**
      * current style
-     * @param {Node} elTarget
+     * @param {Node} target
      */
-    this.currentStyle = function (elTarget) {
+    this.currentStyle = function (target) {
       var rng = range.create();
-      return rng ? rng.isOnEditable() && style.current(rng, elTarget) : false;
+      return rng ? rng.isOnEditable() && style.current(rng, target) : false;
     };
 
     /**
@@ -1871,35 +1947,37 @@
 
     /* jshint ignore:start */
     // native commands(with execCommand), generate function for execCommand
-    var aCmd = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
-                'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
-                'insertOrderedList', 'insertUnorderedList',
-                'indent', 'outdent', 'formatBlock', 'removeFormat',
-                'backColor', 'foreColor', 'insertHorizontalRule', 'fontName'];
+    var commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
+                    'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
+                    'insertOrderedList', 'insertUnorderedList',
+                    'indent', 'outdent', 'formatBlock', 'removeFormat',
+                    'backColor', 'foreColor', 'insertHorizontalRule', 'fontName'];
 
-    for (var idx = 0, len = aCmd.length; idx < len; idx ++) {
-      this[aCmd[idx]] = (function (sCmd) {
-        return function ($editable, sValue) {
+    for (var idx = 0, len = commands.length; idx < len; idx ++) {
+      this[commands[idx]] = (function (sCmd) {
+        return function ($editable, value) {
           recordUndo($editable);
-          document.execCommand(sCmd, false, sValue);
+
+          document.execCommand(sCmd, false, value);
         };
-      })(aCmd[idx]);
+      })(commands[idx]);
     }
     /* jshint ignore:end */
 
     /**
      * @param {jQuery} $editable 
      * @param {WrappedRange} rng
-     * @param {Number} nTabsize
+     * @param {Number} tabsize
      */
-    var insertTab = function ($editable, rng, nTabsize) {
+    var insertTab = function ($editable, rng, tabsize) {
       recordUndo($editable);
-      var sNbsp = new Array(nTabsize + 1).join('&nbsp;');
-      rng.insertNode($('<span id="noteTab">' + sNbsp + '</span>')[0]);
-      var $tab = $('#noteTab').removeAttr('id');
-      rng = range.create($tab[0], 1);
+
+      var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
+      rng = rng.deleteContents();
+      rng.insertNode(tab, true);
+
+      rng = range.create(tab, tabsize);
       rng.select();
-      dom.remove($tab[0]);
     };
 
     /**
@@ -1937,18 +2015,13 @@
       var rng = range.create();
 
       // deleteContents on range.
-      if (!rng.isCollapsed()) {
-        rng = rng.deleteContents();
-      }
+      rng = rng.deleteContents();
 
-      // wrap root text with paragraph
-      $.each(rng.nodes(dom.isBodyText), function (idx, node) {
-        dom.wrap(node, 'p');
-      });
+      rng.wrapBodyTextWithPara();
 
       // find split root node: block level node
       var splitRoot = dom.ancestor(rng.sc, dom.isPara);
-      var nextPara = dom.splitTree(splitRoot, rng.getStartBP());
+      var nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
       range.create(nextPara, 0).select();
     };
 
@@ -1961,6 +2034,7 @@
     this.insertImage = function ($editable, sUrl, filename) {
       async.createImage(sUrl, filename).then(function ($image) {
         recordUndo($editable);
+
         $image.css({
           display: '',
           width: Math.min($editable.width(), $image.width())
@@ -2045,12 +2119,13 @@
      * formatBlock
      *
      * @param {jQuery} $editable
-     * @param {String} sTagName
+     * @param {String} tagName
      */
-    this.formatBlock = function ($editable, sTagName) {
+    this.formatBlock = function ($editable, tagName) {
       recordUndo($editable);
-      sTagName = agent.isMSIE ? '<' + sTagName + '>' : sTagName;
-      document.execCommand('FormatBlock', false, sTagName);
+
+      tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
+      document.execCommand('FormatBlock', false, tagName);
     };
 
     this.formatPara = function ($editable) {
@@ -2072,30 +2147,34 @@
      * FIXME: Still buggy
      *
      * @param {jQuery} $editable
-     * @param {String} sValue - px
+     * @param {String} value - px
      */
-    this.fontSize = function ($editable, sValue) {
+    this.fontSize = function ($editable, value) {
       recordUndo($editable);
+
       document.execCommand('fontSize', false, 3);
       if (agent.isFF) {
-        // firefox: <font size="3"> to <span style='font-size={sValue}px;'>, buggy
-        $editable.find('font[size=3]').removeAttr('size').css('font-size', sValue + 'px');
+        // firefox: <font size="3"> to <span style='font-size={value}px;'>, buggy
+        $editable.find('font[size=3]').removeAttr('size').css('font-size', value + 'px');
       } else {
-        // chrome: <span style="font-size: medium"> to <span style='font-size={sValue}px;'>
+        // chrome: <span style="font-size: medium"> to <span style='font-size={value}px;'>
         $editable.find('span').filter(function () {
           return this.style.fontSize === 'medium';
-        }).css('font-size', sValue + 'px');
+        }).css('font-size', value + 'px');
       }
     };
 
     /**
      * lineHeight
      * @param {jQuery} $editable
-     * @param {String} sValue
+     * @param {String} value
      */
-    this.lineHeight = function ($editable, sValue) {
+    this.lineHeight = function ($editable, value) {
       recordUndo($editable);
-      style.stylePara(range.create(), {lineHeight: sValue});
+
+      style.stylePara(range.create(), {
+        lineHeight: value
+      });
     };
 
     /**
@@ -2106,8 +2185,9 @@
       var rng = range.create();
       if (rng.isOnAnchor()) {
         recordUndo($editable);
-        var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = range.createFromNode(elAnchor);
+
+        var anchor = dom.ancestor(rng.sc, dom.isAnchor);
+        rng = range.createFromNode(anchor);
         rng.select();
         document.execCommand('unlink');
       }
@@ -2178,8 +2258,8 @@
       var rng = range.create();
 
       if (rng.isOnAnchor()) {
-        var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = range.createFromNode(elAnchor);
+        var anchor = dom.ancestor(rng.sc, dom.isAnchor);
+        rng = range.createFromNode(anchor);
       }
 
       return {
@@ -2192,37 +2272,42 @@
       var foreColor = oColor.foreColor, backColor = oColor.backColor;
 
       recordUndo($editable);
+
       if (foreColor) { document.execCommand('foreColor', false, foreColor); }
       if (backColor) { document.execCommand('backColor', false, backColor); }
     };
 
     this.insertTable = function ($editable, sDim) {
       recordUndo($editable);
-      var aDim = sDim.split('x');
-      range.create().insertNode(table.createTable(aDim[0], aDim[1]));
+
+      var dimension = sDim.split('x');
+      var rng = range.create();
+      rng = rng.deleteContents();
+      rng.insertNode(table.createTable(dimension[0], dimension[1]));
     };
 
     /**
      * @param {jQuery} $editable
-     * @param {String} sValue
+     * @param {String} value
      * @param {jQuery} $target
      */
-    this.floatMe = function ($editable, sValue, $target) {
+    this.floatMe = function ($editable, value, $target) {
       recordUndo($editable);
-      $target.css('float', sValue);
+
+      $target.css('float', value);
     };
 
     /**
      * resize overlay element
      * @param {jQuery} $editable
-     * @param {String} sValue
+     * @param {String} value
      * @param {jQuery} $target - target element
      */
-    this.resize = function ($editable, sValue, $target) {
+    this.resize = function ($editable, value, $target) {
       recordUndo($editable);
 
       $target.css({
-        width: $editable.width() * sValue + 'px',
+        width: $editable.width() * value + 'px',
         height: ''
       });
     };
@@ -2233,33 +2318,34 @@
      * @param {Boolean} [bKeepRatio] - keep ratio
      */
     this.resizeTo = function (pos, $target, bKeepRatio) {
-      var szImage;
+      var imageSize;
       if (bKeepRatio) {
         var newRatio = pos.y / pos.x;
         var ratio = $target.data('ratio');
-        szImage = {
+        imageSize = {
           width: ratio > newRatio ? pos.x : pos.y / ratio,
           height: ratio > newRatio ? pos.x * ratio : pos.y
         };
       } else {
-        szImage = {
+        imageSize = {
           width: pos.x,
           height: pos.y
         };
       }
 
-      $target.css(szImage);
+      $target.css(imageSize);
     };
 
     /**
      * remove media object
      *
      * @param {jQuery} $editable
-     * @param {String} sValue - dummy argument (for keep interface)
+     * @param {String} value - dummy argument (for keep interface)
      * @param {jQuery} $target - target element
      */
-    this.removeMedia = function ($editable, sValue, $target) {
+    this.removeMedia = function ($editable, value, $target) {
       recordUndo($editable);
+
       $target.detach();
     };
   };
@@ -3101,8 +3187,8 @@
             $editable = oLayoutInfo.editable(),
             $editor = oLayoutInfo.editor();
 
-        var elTarget = $handle.find('.note-control-selection').data('target'),
-            $target = $(elTarget), posStart = $target.offset(),
+        var target = $handle.find('.note-control-selection').data('target'),
+            $target = $(target), posStart = $target.offset(),
             scrollTop = $document.scrollTop();
 
         var isAirMode = $editor.data('options').airMode;
@@ -3113,8 +3199,8 @@
             y: event.clientY - (posStart.top - scrollTop)
           }, $target, !event.shiftKey);
 
-          handle.update($handle, {image: elTarget}, isAirMode);
-          popover.update($popover, {image: elTarget}, isAirMode);
+          handle.update($handle, {image: target}, isAirMode);
+          popover.update($popover, {image: target}, isAirMode);
         }).one('mouseup', function () {
           $document.off('mousemove');
         });
