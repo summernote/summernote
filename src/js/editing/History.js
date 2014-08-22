@@ -4,39 +4,45 @@ define(['summernote/core/range'], function (range) {
    * @class
    */
   var History = function () {
-    var aUndo = [], aRedo = [];
+    var undoStack = [], redoStack = [];
 
-    var makeSnap = function ($editable) {
-      var elEditable = $editable[0], rng = range.create();
+    var makeSnapshot = function ($editable) {
+      var editable = $editable[0];
+      var rng = range.create();
+
       return {
         contents: $editable.html(),
-        bookmark: rng.bookmark(elEditable),
+        bookmark: rng.bookmark(editable),
         scrollTop: $editable.scrollTop()
       };
     };
 
-    var applySnap = function ($editable, oSnap) {
-      $editable.html(oSnap.contents).scrollTop(oSnap.scrollTop);
-      range.createFromBookmark($editable[0], oSnap.bookmark).select();
+    var applySnapshot = function ($editable, snapshot) {
+      $editable.html(snapshot.contents).scrollTop(snapshot.scrollTop);
+      range.createFromBookmark($editable[0], snapshot.bookmark).select();
     };
 
     this.undo = function ($editable) {
-      var oSnap = makeSnap($editable);
-      if (!aUndo.length) { return; }
-      applySnap($editable, aUndo.pop());
-      aRedo.push(oSnap);
+      var snapshot = makeSnapshot($editable);
+      if (!undoStack.length) {
+        return; 
+      }
+      applySnapshot($editable, undoStack.pop());
+      redoStack.push(snapshot);
     };
 
     this.redo = function ($editable) {
-      var oSnap = makeSnap($editable);
-      if (!aRedo.length) { return; }
-      applySnap($editable, aRedo.pop());
-      aUndo.push(oSnap);
+      var snapshot = makeSnapshot($editable);
+      if (!redoStack.length) {
+        return;
+      }
+      applySnapshot($editable, redoStack.pop());
+      undoStack.push(snapshot);
     };
 
     this.recordUndo = function ($editable) {
-      aRedo = [];
-      aUndo.push(makeSnap($editable));
+      redoStack = [];
+      undoStack.push(makeSnapshot($editable));
     };
   };
 

@@ -11,14 +11,14 @@ define([
     /**
      * bootstrap button template
      *
-     * @param {String} sLabel
+     * @param {String} label
      * @param {Object} [options]
      * @param {String} [options.event]
      * @param {String} [options.value]
      * @param {String} [options.title]
      * @param {String} [options.dropdown]
      */
-    var tplButton = function (sLabel, options) {
+    var tplButton = function (label, options) {
       var event = options.event;
       var value = options.value;
       var title = options.title;
@@ -35,7 +35,7 @@ define([
                  (event ? ' data-event="' + event + '"' : '') +
                  (value ? ' data-value=\'' + value + '\'' : '') +
                  ' tabindex="-1">' +
-               sLabel +
+               label +
                (dropdown ? ' <span class="caret"></span>' : '') +
              '</button>' +
              (dropdown || '');
@@ -44,16 +44,16 @@ define([
     /**
      * bootstrap icon button template
      *
-     * @param {String} sIconClass
+     * @param {String} iconClassName
      * @param {Object} [options]
      * @param {String} [options.event]
      * @param {String} [options.value]
      * @param {String} [options.title]
      * @param {String} [options.dropdown]
      */
-    var tplIconButton = function (sIconClass, options) {
-      var sLabel = '<i class="' + sIconClass + '"></i>';
-      return tplButton(sLabel, options);
+    var tplIconButton = function (iconClassName, options) {
+      var label = '<i class="' + iconClassName + '"></i>';
+      return tplButton(label, options);
     };
 
     /**
@@ -158,10 +158,10 @@ define([
                           '<i class="fa fa-check icon-ok"></i> ' + v +
                         '</a></li>';
         }, '');
-        var sLabel = '<span class="note-current-fontname">' +
+        var label = '<span class="note-current-fontname">' +
                        options.defaultFontName +
                      '</span>';
-        return tplButton(sLabel, {
+        return tplButton(label, {
           title: lang.font.name,
           dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
         });
@@ -173,8 +173,8 @@ define([
                         '</a></li>';
         }, '');
 
-        var sLabel = '<span class="note-current-fontsize">11</span>';
-        return tplButton(sLabel, {
+        var label = '<span class="note-current-fontsize">11</span>';
+        return tplButton(label, {
           title: lang.font.size,
           dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
         });
@@ -653,24 +653,24 @@ define([
 
     // createPalette
     var createPalette = function ($container, options) {
-      var aaColor = options.colors;
+      var colorInfo = options.colors;
       $container.find('.note-color-palette').each(function () {
-        var $palette = $(this), sEvent = $palette.attr('data-target-event');
-        var aPaletteContents = [];
-        for (var row = 0, szRow = aaColor.length; row < szRow; row++) {
-          var aColor = aaColor[row];
-          var aButton = [];
-          for (var col = 0, szCol = aColor.length; col < szCol; col++) {
-            var sColor = aColor[col];
-            aButton.push(['<button type="button" class="note-color-btn" style="background-color:', sColor,
-                           ';" data-event="', sEvent,
-                           '" data-value="', sColor,
-                           '" title="', sColor,
+        var $palette = $(this), eventName = $palette.attr('data-target-event');
+        var paletteContents = [];
+        for (var row = 0, szRow = colorInfo.length; row < szRow; row++) {
+          var colors = colorInfo[row];
+          var buttons = [];
+          for (var col = 0, szCol = colors.length; col < szCol; col++) {
+            var color = colors[col];
+            buttons.push(['<button type="button" class="note-color-btn" style="background-color:', color,
+                           ';" data-event="', eventName,
+                           '" data-value="', color,
+                           '" title="', color,
                            '" data-toggle="button" tabindex="-1"></button>'].join(''));
           }
-          aPaletteContents.push('<div class="note-color-row">' + aButton.join('') + '</div>');
+          paletteContents.push('<div class="note-color-row">' + buttons.join('') + '</div>');
         }
-        $palette.html(aPaletteContents.join(''));
+        $palette.html(paletteContents.join(''));
       });
     };
 
@@ -755,23 +755,23 @@ define([
       var langInfo = $.summernote.lang[options.lang];
 
       //04. create Toolbar
-      var sToolbar = '';
+      var toolbarHTML = '';
       for (var idx = 0, sz = options.toolbar.length; idx < sz; idx ++) {
         var groupName = options.toolbar[idx][0];
         var groupButtons = options.toolbar[idx][1];
 
-        sToolbar += '<div class="note-' + groupName + ' btn-group">';
+        toolbarHTML += '<div class="note-' + groupName + ' btn-group">';
         for (var i = 0, btnLength = groupButtons.length; i < btnLength; i++) {
           // continue creating toolbar even if a button doesn't exist
           if (!$.isFunction(tplButtonInfo[groupButtons[i]])) { continue; }
-          sToolbar += tplButtonInfo[groupButtons[i]](langInfo, options);
+          toolbarHTML += tplButtonInfo[groupButtons[i]](langInfo, options);
         }
-        sToolbar += '</div>';
+        toolbarHTML += '</div>';
       }
 
-      sToolbar = '<div class="note-toolbar btn-toolbar">' + sToolbar + '</div>';
+      toolbarHTML = '<div class="note-toolbar btn-toolbar">' + toolbarHTML + '</div>';
 
-      var $toolbar = $(sToolbar).prependTo($editor);
+      var $toolbar = $(toolbarHTML).prependTo($editor);
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       createPalette($toolbar, options);
       createTooltip($toolbar, keyMap, 'bottom');
@@ -850,22 +850,22 @@ define([
      * removeLayout
      *
      * @param {jQuery} $holder - placeholder
-     * @param {Object} oLayoutInfo
+     * @param {Object} layoutInfo
      * @param {Object} options
      *
      */
-    this.removeLayout = function ($holder, oLayoutInfo, options) {
+    this.removeLayout = function ($holder, layoutInfo, options) {
       if (options.airMode) {
         $holder.removeClass('note-air-editor note-editable')
                .removeAttr('id contentEditable');
 
-        oLayoutInfo.popover.remove();
-        oLayoutInfo.handle.remove();
-        oLayoutInfo.dialog.remove();
+        layoutInfo.popover.remove();
+        layoutInfo.handle.remove();
+        layoutInfo.dialog.remove();
       } else {
-        $holder.html(oLayoutInfo.editable.html());
+        $holder.html(layoutInfo.editable.html());
 
-        oLayoutInfo.editor.remove();
+        layoutInfo.editor.remove();
         $holder.show();
       }
     };

@@ -13,13 +13,13 @@ define([
      * @param {Boolean} isShift
      */
     this.tab = function (rng, isShift) {
-      var elCell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-      var elTable = dom.ancestor(elCell, dom.isTable);
-      var aCell = dom.listDescendant(elTable, dom.isCell);
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      var table = dom.ancestor(cell, dom.isTable);
+      var cells = dom.litdHTMLescendant(table, dom.isCell);
 
-      var elNext = list[isShift ? 'prev' : 'next'](aCell, elCell);
-      if (elNext) {
-        range.create(elNext, 0).select();
+      var nextCell = list[isShift ? 'prev' : 'next'](cells, cell);
+      if (nextCell) {
+        range.create(nextCell, 0).select();
       }
     };
 
@@ -30,20 +30,18 @@ define([
      * @param {Number} nCol
      */
     this.createTable = function (nCol, nRow) {
-      var aTD = [], sTD;
+      var tds = [], tdHTML;
       for (var idxCol = 0; idxCol < nCol; idxCol++) {
-        aTD.push('<td>' + dom.blank + '</td>');
+        tds.push('<td>' + dom.blank + '</td>');
       }
-      sTD = aTD.join('');
+      tdHTML = tds.join('');
 
-      var aTR = [], sTR;
+      var trs = [], trHTML;
       for (var idxRow = 0; idxRow < nRow; idxRow++) {
-        aTR.push('<tr>' + sTD + '</tr>');
+        trs.push('<tr>' + tdHTML + '</tr>');
       }
-      sTR = aTR.join('');
-      var sTable = '<table class="table table-bordered">' + sTR + '</table>';
-
-      return $(sTable)[0];
+      trHTML = trs.join('');
+      return $('<table class="table table-bordered">' + trHTML + '</table>')[0];
     };
   };
   return Table;
