@@ -80,7 +80,7 @@ define([
     };
 
     var isText = function (node) {
-      return node.nodeType === 3;
+      return node && node.nodeType === 3;
     };
 
     /**
@@ -92,6 +92,10 @@ define([
     };
 
     var isPara = function (node) {
+      if (isEditable(node)) {
+        return false;
+      }
+
       // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
       return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName.toUpperCase());
     };
@@ -126,7 +130,7 @@ define([
      * padding blankHTML if node is empty (for cursor position)
      */
     var paddingBlankHTML = function (node) {
-      if (!isVoid(node) && !length(node)) {
+      if (!isVoid(node) && !nodeLength(node)) {
         node.innerHTML = blankHTML;
       }
     };
@@ -315,8 +319,11 @@ define([
      *
      * @param {Node} node
      */
-    var length = function (node) {
-      if (isText(node)) { return node.nodeValue.length; }
+    var nodeLength = function (node) {
+      if (isText(node)) {
+        return node.nodeValue.length;
+      }
+
       return node.childNodes.length;
     };
 
@@ -325,7 +332,7 @@ define([
     };
 
     var isRightEdgePoint = function (boundaryPoint) {
-      return boundaryPoint.offset === length(boundaryPoint.node);
+      return boundaryPoint.offset === nodeLength(boundaryPoint.node);
     };
 
     /**
@@ -347,7 +354,7 @@ define([
      */
     var isRightEdgeOf = function (node, ancestor) {
       while (node && node !== ancestor) {
-        if (position(node) !== length(node.parentNode) - 1) {
+        if (position(node) !== nodeLength(node.parentNode) - 1) {
           return false;
         }
         node = node.parentNode;
@@ -374,24 +381,73 @@ define([
     /**
      * returns previous boundaryPoint
      *
-     * @param {BoundaryPoint} boundaryPoitn
+     * @param {BoundaryPoint} point
+     * @param {Boolean} isSkipInnerOffset
      * @return {BoundaryPoint}
      */
-    var prevPoint = function (boundaryPoint) {
-      var node = boundaryPoint.node,
-      offset = boundaryPoint.offset;
+    var prevPoint = function (point, isSkipInnerOffset) {
+      var node, offset;
 
-      if (offset === 0) {
-        if (isEditable(node)) { return null; }
-        return {node: node.parentNode, offset: position(node)};
-      } else {
-        if (hasChildren(node)) {
-          var child = node.childNodes[offset - 1];
-          return {node: child, offset: length(child)};
-        } else {
-          return {node: node, offset: offset - 1};
+      if (point.offset === 0) {
+        if (isEditable(point.node)) {
+          return null;
         }
+
+        node = point.node.parentNode;
+        offset = position(node);
+      } else if (hasChildren(point.node)) {
+        node = point.node.childNodes[offset - 1];
+        offset = nodeLength(node);
+      } else {
+        node = node;
+        offset = isSkipInnerOffset ? 0 : point.offset - 1;
       }
+
+      return {
+        node: node,
+        offset: offset
+      };
+    };
+
+    /**
+     * returns next boundaryPoint
+     *
+     * @param {BoundaryPoint} point
+     * @param {Boolean} isSkipInnerOffset
+     * @return {BoundaryPoint}
+     */
+    var nextPoint = function (point, isSkipInnerOffset) {
+      var node, offset;
+
+      if (nodeLength(point.node) === point.offset) {
+        if (isEditable(point.node)) {
+          return null;
+        }
+
+        node = point.node.parentNode;
+        offset = position(point.node) + 1;
+      } else if (hasChildren(point.node)) {
+        node = point.node.childNodes[point.offset];
+        offset = 0;
+      } else {
+        node = point.node;
+        offset = isSkipInnerOffset ? nodeLength(point.node) : point.offset + 1;
+      }
+
+      return {
+        node: node,
+        offset: offset
+      };
+    };
+
+    /**
+     * returns whether pointA and pointB is same or not.
+     *
+     * @param {BoundaryPoint} pointA
+     * @param {BoundaryPoint} pointB
+     */
+    var isSamePoint = function (pointA, pointB) {
+      return pointA.node === pointB.node && pointA.offset === pointB.offset;
     };
 
     /**
@@ -544,6 +600,8 @@ define([
       isEdgePoint: isEdgePoint,
       isRightEdgeOf: isRightEdgeOf,
       prevPoint: prevPoint,
+      nextPoint: nextPoint,
+      isSamePoint: isSamePoint,
       ancestor: ancestor,
       listAncestor: listAncestor,
       listNext: listNext,

@@ -122,10 +122,22 @@ define(['summernote/core/func'], function (func) {
       }
       return aResult;
     };
+
+    var unique = function (array) {
+      var results = [];
+
+      for (var idx = 0, sz = array.length; idx < sz; idx ++) {
+        if (results.indexOf(array[idx]) === -1) {
+          results.push(array[idx]);
+        }
+      }
+
+      return results;
+    };
   
     return { head: head, last: last, initial: initial, tail: tail,
              prev: prev, next: next, all: all, sum: sum, from: from,
-             clusterBy: clusterBy, compact: compact };
+             clusterBy: clusterBy, compact: compact, unique: unique };
   })();
 
   return list;

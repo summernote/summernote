@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.5.4
+ * Super simple wysiwyg editor on Bootstrap v0.5.5
  * http://hackerwins.github.io/summernote/
  *
  * summernote.js
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-24T05:17Z
+ * Date: 2014-08-24T15:23Z
  */
 (function (factory) {
   /* global define */
@@ -306,10 +306,22 @@
       }
       return aResult;
     };
+
+    var unique = function (array) {
+      var results = [];
+
+      for (var idx = 0, sz = array.length; idx < sz; idx ++) {
+        if (results.indexOf(array[idx]) === -1) {
+          results.push(array[idx]);
+        }
+      }
+
+      return results;
+    };
   
     return { head: head, last: last, initial: initial, tail: tail,
              prev: prev, next: next, all: all, sum: sum, from: from,
-             clusterBy: clusterBy, compact: compact };
+             clusterBy: clusterBy, compact: compact, unique: unique };
   })();
 
 
@@ -389,7 +401,7 @@
     };
 
     var isText = function (node) {
-      return node.nodeType === 3;
+      return node && node.nodeType === 3;
     };
 
     /**
@@ -401,6 +413,10 @@
     };
 
     var isPara = function (node) {
+      if (isEditable(node)) {
+        return false;
+      }
+
       // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
       return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName.toUpperCase());
     };
@@ -435,7 +451,7 @@
      * padding blankHTML if node is empty (for cursor position)
      */
     var paddingBlankHTML = function (node) {
-      if (!isVoid(node) && !length(node)) {
+      if (!isVoid(node) && !nodeLength(node)) {
         node.innerHTML = blankHTML;
       }
     };
@@ -624,8 +640,11 @@
      *
      * @param {Node} node
      */
-    var length = function (node) {
-      if (isText(node)) { return node.nodeValue.length; }
+    var nodeLength = function (node) {
+      if (isText(node)) {
+        return node.nodeValue.length;
+      }
+
       return node.childNodes.length;
     };
 
@@ -634,7 +653,7 @@
     };
 
     var isRightEdgePoint = function (boundaryPoint) {
-      return boundaryPoint.offset === length(boundaryPoint.node);
+      return boundaryPoint.offset === nodeLength(boundaryPoint.node);
     };
 
     /**
@@ -656,7 +675,7 @@
      */
     var isRightEdgeOf = function (node, ancestor) {
       while (node && node !== ancestor) {
-        if (position(node) !== length(node.parentNode) - 1) {
+        if (position(node) !== nodeLength(node.parentNode) - 1) {
           return false;
         }
         node = node.parentNode;
@@ -683,24 +702,73 @@
     /**
      * returns previous boundaryPoint
      *
-     * @param {BoundaryPoint} boundaryPoitn
+     * @param {BoundaryPoint} point
+     * @param {Boolean} isSkipInnerOffset
      * @return {BoundaryPoint}
      */
-    var prevPoint = function (boundaryPoint) {
-      var node = boundaryPoint.node,
-      offset = boundaryPoint.offset;
+    var prevPoint = function (point, isSkipInnerOffset) {
+      var node, offset;
 
-      if (offset === 0) {
-        if (isEditable(node)) { return null; }
-        return {node: node.parentNode, offset: position(node)};
-      } else {
-        if (hasChildren(node)) {
-          var child = node.childNodes[offset - 1];
-          return {node: child, offset: length(child)};
-        } else {
-          return {node: node, offset: offset - 1};
+      if (point.offset === 0) {
+        if (isEditable(point.node)) {
+          return null;
         }
+
+        node = point.node.parentNode;
+        offset = position(node);
+      } else if (hasChildren(point.node)) {
+        node = point.node.childNodes[offset - 1];
+        offset = nodeLength(node);
+      } else {
+        node = node;
+        offset = isSkipInnerOffset ? 0 : point.offset - 1;
       }
+
+      return {
+        node: node,
+        offset: offset
+      };
+    };
+
+    /**
+     * returns next boundaryPoint
+     *
+     * @param {BoundaryPoint} point
+     * @param {Boolean} isSkipInnerOffset
+     * @return {BoundaryPoint}
+     */
+    var nextPoint = function (point, isSkipInnerOffset) {
+      var node, offset;
+
+      if (nodeLength(point.node) === point.offset) {
+        if (isEditable(point.node)) {
+          return null;
+        }
+
+        node = point.node.parentNode;
+        offset = position(point.node) + 1;
+      } else if (hasChildren(point.node)) {
+        node = point.node.childNodes[point.offset];
+        offset = 0;
+      } else {
+        node = point.node;
+        offset = isSkipInnerOffset ? nodeLength(point.node) : point.offset + 1;
+      }
+
+      return {
+        node: node,
+        offset: offset
+      };
+    };
+
+    /**
+     * returns whether pointA and pointB is same or not.
+     *
+     * @param {BoundaryPoint} pointA
+     * @param {BoundaryPoint} pointB
+     */
+    var isSamePoint = function (pointA, pointB) {
+      return pointA.node === pointB.node && pointA.offset === pointB.offset;
     };
 
     /**
@@ -853,6 +921,8 @@
       isEdgePoint: isEdgePoint,
       isRightEdgeOf: isRightEdgeOf,
       prevPoint: prevPoint,
+      nextPoint: nextPoint,
+      isSamePoint: isSamePoint,
       ancestor: ancestor,
       listAncestor: listAncestor,
       listNext: listNext,
@@ -874,7 +944,7 @@
 
   var settings = {
     // version
-    version: '0.5.4',
+    version: '0.5.5',
 
     /**
      * options
@@ -1302,7 +1372,7 @@
      * @param {Object} styleInfo
      */
     this.stylePara = function (rng, styleInfo) {
-      $.each(rng.nodes(dom.isPara), function (idx, para) {
+      $.each(rng.nodes(dom.isPara, true), function (idx, para) {
         $(para).css(styleInfo);
       });
     };
@@ -1435,7 +1505,7 @@
           var prevTextNodes = dom.listPrev(container, func.not(dom.isText));
           var prevContainer = list.last(prevTextNodes).previousSibling;
           node =  prevContainer || container.parentNode;
-          offset += list.sum(list.tail(prevTextNodes), dom.length);
+          offset += list.sum(list.tail(prevTextNodes), dom.nodeLength);
           isCollapseToStart = !prevContainer;
         } else {
           node = container.childNodes[offset] || container;
@@ -1543,16 +1613,34 @@
        * returns matched nodes on range
        *
        * @param {Function} [pred] - predicate function
+       * @param {Boolean} findAncestor
        * @return {Node[]}
        */
-      this.nodes = function (pred) {
+      this.nodes = function (pred, findAncestor) {
         pred = pred || func.ok;
 
-        var nodes = dom.listBetween(sc, ec);
-        var matcheds = list.compact($.map(nodes, function (node) {
-          return dom.ancestor(node, pred);
-        }));
-        return $.map(list.clusterBy(matcheds, func.eq2), list.head);
+        var nodes = [];
+        var point = this.getStartPoint();
+        var endPoint = this.getEndPoint();
+
+        while (point) {
+          if (findAncestor) {
+            var ancestor = dom.ancestor(point.node, pred);
+            if (ancestor) {
+              nodes.push(ancestor);
+            }
+          } else if (pred(point.node)) {
+            nodes.push(point.node);
+          }
+
+          if (dom.isSamePoint(point, endPoint)) {
+            break;
+          }
+
+          point = dom.nextPoint(point, true);
+        }
+
+        return list.unique(nodes);
       };
 
       /**
@@ -1586,7 +1674,7 @@
 
         if (endAncestor) {
           boundaryPoints.ec = endAncestor;
-          boundaryPoints.eo = dom.length(endAncestor);
+          boundaryPoints.eo = dom.nodeLength(endAncestor);
         }
 
         return new WrappedRange(
@@ -4163,7 +4251,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.4</a> · ' +
+                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.5</a> · ' +
                      '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';

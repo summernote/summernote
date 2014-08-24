@@ -84,7 +84,7 @@ define([
           var prevTextNodes = dom.listPrev(container, func.not(dom.isText));
           var prevContainer = list.last(prevTextNodes).previousSibling;
           node =  prevContainer || container.parentNode;
-          offset += list.sum(list.tail(prevTextNodes), dom.length);
+          offset += list.sum(list.tail(prevTextNodes), dom.nodeLength);
           isCollapseToStart = !prevContainer;
         } else {
           node = container.childNodes[offset] || container;
@@ -192,16 +192,34 @@ define([
        * returns matched nodes on range
        *
        * @param {Function} [pred] - predicate function
+       * @param {Boolean} findAncestor
        * @return {Node[]}
        */
-      this.nodes = function (pred) {
+      this.nodes = function (pred, findAncestor) {
         pred = pred || func.ok;
 
-        var nodes = dom.listBetween(sc, ec);
-        var matcheds = list.compact($.map(nodes, function (node) {
-          return dom.ancestor(node, pred);
-        }));
-        return $.map(list.clusterBy(matcheds, func.eq2), list.head);
+        var nodes = [];
+        var point = this.getStartPoint();
+        var endPoint = this.getEndPoint();
+
+        while (point) {
+          if (findAncestor) {
+            var ancestor = dom.ancestor(point.node, pred);
+            if (ancestor) {
+              nodes.push(ancestor);
+            }
+          } else if (pred(point.node)) {
+            nodes.push(point.node);
+          }
+
+          if (dom.isSamePoint(point, endPoint)) {
+            break;
+          }
+
+          point = dom.nextPoint(point, true);
+        }
+
+        return list.unique(nodes);
       };
 
       /**
@@ -235,7 +253,7 @@ define([
 
         if (endAncestor) {
           boundaryPoints.ec = endAncestor;
-          boundaryPoints.eo = dom.length(endAncestor);
+          boundaryPoints.eo = dom.nodeLength(endAncestor);
         }
 
         return new WrappedRange(
