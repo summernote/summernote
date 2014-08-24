@@ -15,7 +15,7 @@ define([
     this.tab = function (rng, isShift) {
       var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
       var table = dom.ancestor(cell, dom.isTable);
-      var cells = dom.litdHTMLescendant(table, dom.isCell);
+      var cells = dom.listDescendant(table, dom.isCell);
 
       var nextCell = list[isShift ? 'prev' : 'next'](cells, cell);
       if (nextCell) {
@@ -26,18 +26,19 @@ define([
     /**
      * create empty table element
      *
-     * @param {Number} nRow
-     * @param {Number} nCol
+     * @param {Number} rowCount
+     * @param {Number} colCount
+     * @return {Node}
      */
-    this.createTable = function (nCol, nRow) {
+    this.createTable = function (colCount, rowCount) {
       var tds = [], tdHTML;
-      for (var idxCol = 0; idxCol < nCol; idxCol++) {
+      for (var idxCol = 0; idxCol < colCount; idxCol++) {
         tds.push('<td>' + dom.blank + '</td>');
       }
       tdHTML = tds.join('');
 
       var trs = [], trHTML;
-      for (var idxRow = 0; idxRow < nRow; idxRow++) {
+      for (var idxRow = 0; idxRow < rowCount; idxRow++) {
         trs.push('<tr>' + tdHTML + '</tr>');
       }
       trHTML = trs.join('');
