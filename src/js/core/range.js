@@ -359,7 +359,7 @@ define([
        * wrap inline nodes which children of body with paragraph
        */
       this.wrapBodyInlineWithPara = function () {
-        if (dom.isParaInline(sc)) {
+        if (!dom.isInline(sc) || dom.isParaInline(sc)) {
           return;
         }
 

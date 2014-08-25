@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-25T06:27Z
+ * Date: 2014-08-25T06:34Z
  */
 (function (factory) {
   /* global define */
@@ -1803,7 +1803,7 @@
        * wrap inline nodes which children of body with paragraph
        */
       this.wrapBodyInlineWithPara = function () {
-        if (dom.isParaInline(sc)) {
+        if (!dom.isInline(sc) || dom.isParaInline(sc)) {
           return;
         }
 
