@@ -100,6 +100,14 @@ define([
       return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName.toUpperCase());
     };
 
+    var isInline = function (node) {
+      if (isEditable(node)) {
+        return false;
+      }
+
+      return !isPara(node);
+    };
+
     var isList = function (node) {
       return node && /^UL|^OL/.test(node.nodeName.toUpperCase());
     };
@@ -118,7 +126,15 @@ define([
      * @param {Node} node
      */
     var isBodyText = function (node) {
-      return dom.isText(node) && isBodyContainer(node.parentNode);
+      return isText(node) && isBodyContainer(node.parentNode);
+    };
+
+    var isParaInline = function (node) {
+      return isInline(node) && !!ancestor(node, isPara);
+    };
+
+    var isBodyInline = function (node) {
+      return isInline(node) && !ancestor(node, isPara);
     };
 
     /**
@@ -162,7 +178,10 @@ define([
 
       var ancestors = [];
       ancestor(node, function (el) {
-        ancestors.push(el);
+        if (!isEditable(el)) {
+          ancestors.push(el);
+        }
+
         return pred(el);
       });
       return ancestors;
@@ -579,8 +598,11 @@ define([
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
       isText: isText,
-      isBodyText: isBodyText,
       isPara: isPara,
+      isInline: isInline,
+      isBodyText: isBodyText,
+      isBodyInline: isBodyInline,
+      isParaInline: isParaInline,
       isList: isList,
       isTable: makePredByNodeName('TABLE'),
       isCell: isCell,
@@ -611,6 +633,7 @@ define([
       listBetween: listBetween,
       wrap: wrap,
       insertAfter: insertAfter,
+      appendChildNodes: appendChildNodes,
       position: position,
       makeOffsetPath: makeOffsetPath,
       fromOffsetPath: fromOffsetPath,

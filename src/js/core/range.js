@@ -356,12 +356,26 @@ define([
       };
 
       /**
-       * wrap body text with paragraph
+       * wrap inline nodes which children of body with paragraph
        */
-      this.wrapBodyTextWithPara = function () {
-        $.each(this.nodes(dom.isBodyText), function (idx, node) {
-          dom.wrap(node, 'p');
-        });
+      this.wrapBodyInlineWithPara = function () {
+        if (dom.isParaInline(sc)) {
+          return;
+        }
+
+        // find inline top ancestor
+        var ancestors = dom.listAncestor(sc);
+        var topAncestor = list.last(ancestors);
+
+        // siblings not in paragraph
+        var inlineSiblings = dom.listPrev(topAncestor, dom.isParaInline).reverse();
+        inlineSiblings = inlineSiblings.concat(dom.listNext(topAncestor.nextSibling, dom.isParaInline));
+
+        // wrap with paragraph
+        if (inlineSiblings.length) {
+          var para = dom.wrap(list.head(inlineSiblings), 'p');
+          dom.appendChildNodes(para, list.tail(inlineSiblings));
+        }
       };
 
       /**
@@ -374,7 +388,7 @@ define([
       this.insertNode = function (node, isInline) {
         var point = this.getStartPoint();
 
-        this.wrapBodyTextWithPara();
+        this.wrapBodyInlineWithPara();
 
         var splitRoot, container, pivot;
         if (isInline) {
