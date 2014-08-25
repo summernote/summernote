@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-25T06:34Z
+ * Date: 2014-08-25T12:37Z
  */
 (function (factory) {
   /* global define */
@@ -422,11 +422,7 @@
     };
 
     var isInline = function (node) {
-      if (isEditable(node)) {
-        return false;
-      }
-
-      return !isPara(node);
+      return !isBodyContainer(node) && !isPara(node);
     };
 
     var isList = function (node) {
@@ -1808,8 +1804,11 @@
         }
 
         // find inline top ancestor
-        var ancestors = dom.listAncestor(sc);
+        var ancestors = dom.listAncestor(sc, func.not(dom.isInline));
         var topAncestor = list.last(ancestors);
+        if (!dom.isInline(topAncestor)) {
+          topAncestor = ancestors[ancestors.length - 2] || sc.childNodes[so];
+        }
 
         // siblings not in paragraph
         var inlineSiblings = dom.listPrev(topAncestor, dom.isParaInline).reverse();
@@ -1845,8 +1844,15 @@
         } else {
           // splitRoot will be childNode of container
           var ancestors = dom.listAncestor(point.node, dom.isBodyContainer);
-          splitRoot = ancestors[ancestors.length - 2];
-          container = list.last(ancestors);
+          var topAncestor = list.last(ancestors);
+
+          if (dom.isBodyContainer(topAncestor)) {
+            splitRoot = ancestors[ancestors.length - 2];
+            container = topAncestor;
+          } else {
+            splitRoot = topAncestor;
+            container = splitRoot.parentNode;
+          }
           pivot = splitRoot && dom.splitTree(splitRoot, point);
         }
 

@@ -101,11 +101,7 @@ define([
     };
 
     var isInline = function (node) {
-      if (isEditable(node)) {
-        return false;
-      }
-
-      return !isPara(node);
+      return !isBodyContainer(node) && !isPara(node);
     };
 
     var isList = function (node) {

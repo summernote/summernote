@@ -364,8 +364,11 @@ define([
         }
 
         // find inline top ancestor
-        var ancestors = dom.listAncestor(sc);
+        var ancestors = dom.listAncestor(sc, func.not(dom.isInline));
         var topAncestor = list.last(ancestors);
+        if (!dom.isInline(topAncestor)) {
+          topAncestor = ancestors[ancestors.length - 2] || sc.childNodes[so];
+        }
 
         // siblings not in paragraph
         var inlineSiblings = dom.listPrev(topAncestor, dom.isParaInline).reverse();
@@ -401,8 +404,15 @@ define([
         } else {
           // splitRoot will be childNode of container
           var ancestors = dom.listAncestor(point.node, dom.isBodyContainer);
-          splitRoot = ancestors[ancestors.length - 2];
-          container = list.last(ancestors);
+          var topAncestor = list.last(ancestors);
+
+          if (dom.isBodyContainer(topAncestor)) {
+            splitRoot = ancestors[ancestors.length - 2];
+            container = topAncestor;
+          } else {
+            splitRoot = topAncestor;
+            container = splitRoot.parentNode;
+          }
           pivot = splitRoot && dom.splitTree(splitRoot, point);
         }
 
