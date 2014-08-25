@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-24T15:23Z
+ * Date: 2014-08-25T12:37Z
  */
 (function (factory) {
   /* global define */
@@ -421,6 +421,10 @@
       return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName.toUpperCase());
     };
 
+    var isInline = function (node) {
+      return !isBodyContainer(node) && !isPara(node);
+    };
+
     var isList = function (node) {
       return node && /^UL|^OL/.test(node.nodeName.toUpperCase());
     };
@@ -439,7 +443,15 @@
      * @param {Node} node
      */
     var isBodyText = function (node) {
-      return dom.isText(node) && isBodyContainer(node.parentNode);
+      return isText(node) && isBodyContainer(node.parentNode);
+    };
+
+    var isParaInline = function (node) {
+      return isInline(node) && !!ancestor(node, isPara);
+    };
+
+    var isBodyInline = function (node) {
+      return isInline(node) && !ancestor(node, isPara);
     };
 
     /**
@@ -483,7 +495,10 @@
 
       var ancestors = [];
       ancestor(node, function (el) {
-        ancestors.push(el);
+        if (!isEditable(el)) {
+          ancestors.push(el);
+        }
+
         return pred(el);
       });
       return ancestors;
@@ -900,8 +915,11 @@
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
       isText: isText,
-      isBodyText: isBodyText,
       isPara: isPara,
+      isInline: isInline,
+      isBodyText: isBodyText,
+      isBodyInline: isBodyInline,
+      isParaInline: isParaInline,
       isList: isList,
       isTable: makePredByNodeName('TABLE'),
       isCell: isCell,
@@ -932,6 +950,7 @@
       listBetween: listBetween,
       wrap: wrap,
       insertAfter: insertAfter,
+      appendChildNodes: appendChildNodes,
       position: position,
       makeOffsetPath: makeOffsetPath,
       fromOffsetPath: fromOffsetPath,
@@ -1777,12 +1796,29 @@
       };
 
       /**
-       * wrap body text with paragraph
+       * wrap inline nodes which children of body with paragraph
        */
-      this.wrapBodyTextWithPara = function () {
-        $.each(this.nodes(dom.isBodyText), function (idx, node) {
-          dom.wrap(node, 'p');
-        });
+      this.wrapBodyInlineWithPara = function () {
+        if (!dom.isInline(sc) || dom.isParaInline(sc)) {
+          return;
+        }
+
+        // find inline top ancestor
+        var ancestors = dom.listAncestor(sc, func.not(dom.isInline));
+        var topAncestor = list.last(ancestors);
+        if (!dom.isInline(topAncestor)) {
+          topAncestor = ancestors[ancestors.length - 2] || sc.childNodes[so];
+        }
+
+        // siblings not in paragraph
+        var inlineSiblings = dom.listPrev(topAncestor, dom.isParaInline).reverse();
+        inlineSiblings = inlineSiblings.concat(dom.listNext(topAncestor.nextSibling, dom.isParaInline));
+
+        // wrap with paragraph
+        if (inlineSiblings.length) {
+          var para = dom.wrap(list.head(inlineSiblings), 'p');
+          dom.appendChildNodes(para, list.tail(inlineSiblings));
+        }
       };
 
       /**
@@ -1795,7 +1831,7 @@
       this.insertNode = function (node, isInline) {
         var point = this.getStartPoint();
 
-        this.wrapBodyTextWithPara();
+        this.wrapBodyInlineWithPara();
 
         var splitRoot, container, pivot;
         if (isInline) {
@@ -1808,8 +1844,15 @@
         } else {
           // splitRoot will be childNode of container
           var ancestors = dom.listAncestor(point.node, dom.isBodyContainer);
-          splitRoot = ancestors[ancestors.length - 2];
-          container = list.last(ancestors);
+          var topAncestor = list.last(ancestors);
+
+          if (dom.isBodyContainer(topAncestor)) {
+            splitRoot = ancestors[ancestors.length - 2];
+            container = topAncestor;
+          } else {
+            splitRoot = topAncestor;
+            container = splitRoot.parentNode;
+          }
           pivot = splitRoot && dom.splitTree(splitRoot, point);
         }
 
@@ -2107,7 +2150,7 @@
       // deleteContents on range.
       rng = rng.deleteContents();
 
-      rng.wrapBodyTextWithPara();
+      rng.wrapBodyInlineWithPara();
 
       // find split root node: block level node
       var splitRoot = dom.ancestor(rng.sc, dom.isPara);

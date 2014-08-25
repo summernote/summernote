@@ -356,12 +356,29 @@ define([
       };
 
       /**
-       * wrap body text with paragraph
+       * wrap inline nodes which children of body with paragraph
        */
-      this.wrapBodyTextWithPara = function () {
-        $.each(this.nodes(dom.isBodyText), function (idx, node) {
-          dom.wrap(node, 'p');
-        });
+      this.wrapBodyInlineWithPara = function () {
+        if (!dom.isInline(sc) || dom.isParaInline(sc)) {
+          return;
+        }
+
+        // find inline top ancestor
+        var ancestors = dom.listAncestor(sc, func.not(dom.isInline));
+        var topAncestor = list.last(ancestors);
+        if (!dom.isInline(topAncestor)) {
+          topAncestor = ancestors[ancestors.length - 2] || sc.childNodes[so];
+        }
+
+        // siblings not in paragraph
+        var inlineSiblings = dom.listPrev(topAncestor, dom.isParaInline).reverse();
+        inlineSiblings = inlineSiblings.concat(dom.listNext(topAncestor.nextSibling, dom.isParaInline));
+
+        // wrap with paragraph
+        if (inlineSiblings.length) {
+          var para = dom.wrap(list.head(inlineSiblings), 'p');
+          dom.appendChildNodes(para, list.tail(inlineSiblings));
+        }
       };
 
       /**
@@ -374,7 +391,7 @@ define([
       this.insertNode = function (node, isInline) {
         var point = this.getStartPoint();
 
-        this.wrapBodyTextWithPara();
+        this.wrapBodyInlineWithPara();
 
         var splitRoot, container, pivot;
         if (isInline) {
@@ -387,8 +404,15 @@ define([
         } else {
           // splitRoot will be childNode of container
           var ancestors = dom.listAncestor(point.node, dom.isBodyContainer);
-          splitRoot = ancestors[ancestors.length - 2];
-          container = list.last(ancestors);
+          var topAncestor = list.last(ancestors);
+
+          if (dom.isBodyContainer(topAncestor)) {
+            splitRoot = ancestors[ancestors.length - 2];
+            container = topAncestor;
+          } else {
+            splitRoot = topAncestor;
+            container = splitRoot.parentNode;
+          }
           pivot = splitRoot && dom.splitTree(splitRoot, point);
         }
 
