@@ -66,6 +66,10 @@ define(['summernote/core/func'], function (func) {
       return true;
     };
 
+    var contains = function (array, item) {
+      return array.indexOf(item) !== -1;
+    };
+
     /**
      * get sum from a list
      * @param {Array} array - array
@@ -136,7 +140,8 @@ define(['summernote/core/func'], function (func) {
     };
   
     return { head: head, last: last, initial: initial, tail: tail,
-             prev: prev, next: next, all: all, sum: sum, from: from,
+             prev: prev, next: next, contains: contains,
+             all: all, sum: sum, from: from,
              clusterBy: clusterBy, compact: compact, unique: unique };
   })();
 

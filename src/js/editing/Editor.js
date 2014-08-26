@@ -144,7 +144,7 @@ define([
       // deleteContents on range.
       rng = rng.deleteContents();
 
-      rng.wrapBodyTextWithPara();
+      rng = rng.wrapBodyInlineWithPara();
 
       // find split root node: block level node
       var splitRoot = dom.ancestor(rng.sc, dom.isPara);
