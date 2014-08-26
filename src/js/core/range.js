@@ -199,15 +199,16 @@ define([
        */
       this.nodes = function (pred, options) {
         pred = pred || func.ok;
-        includeAncestor = options && options.includeAncestor;
-        fullyContains = options && options.fullyContains;
+
+        var includeAncestor = options && options.includeAncestor;
+        var fullyContains = options && options.fullyContains;
 
         // TODO compare points and sort
         var startPoint = this.getStartPoint();
         var endPoint = this.getEndPoint();
 
         var nodes = [];
-        var leftEdgeNodes = []
+        var leftEdgeNodes = [];
 
         dom.walkPoint(startPoint, endPoint, function (point) {
           if (dom.isEditable(point.node)) {
@@ -383,8 +384,7 @@ define([
        */
       this.wrapBodyInlineWithPara = function () {
         if (dom.isEditable(sc) && !sc.childNodes[so]) {
-          var para = sc.appendChild($(dom.emptyPara)[0]);
-          return new WrappedRange(para, 0);
+          return new WrappedRange(sc.appendChild($(dom.emptyPara)[0]), 0);
         } else if (!dom.isInline(sc) || dom.isParaInline(sc)) {
           return this;
         }

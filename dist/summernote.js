@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.5.5
+ * Super simple wysiwyg editor on Bootstrap v0.5.6
  * http://hackerwins.github.io/summernote/
  *
  * summernote.js
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-25T12:37Z
+ * Date: 2014-08-26T18:23Z
  */
 (function (factory) {
   /* global define */
@@ -250,6 +250,10 @@
       return true;
     };
 
+    var contains = function (array, item) {
+      return array.indexOf(item) !== -1;
+    };
+
     /**
      * get sum from a list
      * @param {Array} array - array
@@ -320,7 +324,8 @@
     };
   
     return { head: head, last: last, initial: initial, tail: tail,
-             prev: prev, next: next, all: all, sum: sum, from: from,
+             prev: prev, next: next, contains: contains,
+             all: all, sum: sum, from: from,
              clusterBy: clusterBy, compact: compact, unique: unique };
   })();
 
@@ -458,6 +463,19 @@
      * blank HTML for cursor position
      */
     var blankHTML = agent.isMSIE ? '&nbsp;' : '<br>';
+
+    /**
+     * returns #text's text size or element's childNodes size
+     *
+     * @param {Node} node
+     */
+    var nodeLength = function (node) {
+      if (isText(node)) {
+        return node.nodeValue.length;
+      }
+
+      return node.childNodes.length;
+    };
 
     /**
      * padding blankHTML if node is empty (for cursor position)
@@ -650,19 +668,6 @@
       return node;
     };
 
-    /**
-     * returns #text's text size or element's childNodes size
-     *
-     * @param {Node} node
-     */
-    var nodeLength = function (node) {
-      if (isText(node)) {
-        return node.nodeValue.length;
-      }
-
-      return node.childNodes.length;
-    };
-
     var isLeftEdgePoint = function (boundaryPoint) {
       return boundaryPoint.offset === 0;
     };
@@ -730,12 +735,12 @@
         }
 
         node = point.node.parentNode;
-        offset = position(node);
+        offset = position(point.node);
       } else if (hasChildren(point.node)) {
         node = point.node.childNodes[offset - 1];
         offset = nodeLength(node);
       } else {
-        node = node;
+        node = point.node;
         offset = isSkipInnerOffset ? 0 : point.offset - 1;
       }
 
@@ -784,6 +789,44 @@
      */
     var isSamePoint = function (pointA, pointB) {
       return pointA.node === pointB.node && pointA.offset === pointB.offset;
+    };
+
+    /**
+     * @param {BoundaryPoint} point
+     * @param {Function} pred
+     * @return {BoundaryPoint}
+     */
+    var prevPointUntil = function (point, pred) {
+      while (point) {
+        if (pred(point)) {
+          return point;
+        }
+
+        point = prevPoint(point);
+      }
+
+      return null;
+    };
+
+    /**
+     * @param {BoundaryPoint} startPoint
+     * @param {BoundaryPoint} endPoint
+     * @param {Function} handler
+     * @param {Boolean} isSkipInnerOffset
+     */
+    var walkPoint = function (startPoint, endPoint, handler, isSkipInnerOffset) {
+      var point = startPoint;
+
+      while (point) {
+        handler(point);
+
+        if (isSamePoint(point, endPoint)) {
+          break;
+        }
+
+        var isSkipOffset = isSkipInnerOffset && startPoint.node !== point.node;
+        point = nextPoint(point, isSkipOffset);
+      }
     };
 
     /**
@@ -902,8 +945,10 @@
       parent.removeChild(node);
     };
 
+    var isTextarea = makePredByNodeName('TEXTAREA');
+
     var html = function ($node) {
-      return dom.isTextarea($node[0]) ? $node.val() : $node.html();
+      return isTextarea($node[0]) ? $node.val() : $node.html();
     };
 
     return {
@@ -933,14 +978,17 @@
       isS: makePredByNodeName('S'),
       isI: makePredByNodeName('I'),
       isImg: makePredByNodeName('IMG'),
-      isTextarea: makePredByNodeName('TEXTAREA'),
-      length: length,
+      isTextarea: isTextarea,
+      nodeLength: nodeLength,
+      isLeftEdgePoint: isLeftEdgePoint,
       isRightEdgePoint: isRightEdgePoint,
       isEdgePoint: isEdgePoint,
       isRightEdgeOf: isRightEdgeOf,
       prevPoint: prevPoint,
       nextPoint: nextPoint,
       isSamePoint: isSamePoint,
+      prevPointUntil: prevPointUntil,
+      walkPoint: walkPoint,
       ancestor: ancestor,
       listAncestor: listAncestor,
       listNext: listNext,
@@ -963,7 +1011,7 @@
 
   var settings = {
     // version
-    version: '0.5.5',
+    version: '0.5.6',
 
     /**
      * options
@@ -1391,7 +1439,9 @@
      * @param {Object} styleInfo
      */
     this.stylePara = function (rng, styleInfo) {
-      $.each(rng.nodes(dom.isPara, true), function (idx, para) {
+      $.each(rng.nodes(dom.isPara, {
+        includeAncestor: true
+      }), function (idx, para) {
         $(para).css(styleInfo);
       });
     };
@@ -1632,32 +1682,48 @@
        * returns matched nodes on range
        *
        * @param {Function} [pred] - predicate function
-       * @param {Boolean} findAncestor
+       * @param {Object} [options]
+       * @param {Boolean} [options.includeAncestor]
+       * @param {Boolean} [options.fullyContains]
        * @return {Node[]}
        */
-      this.nodes = function (pred, findAncestor) {
+      this.nodes = function (pred, options) {
         pred = pred || func.ok;
 
-        var nodes = [];
-        var point = this.getStartPoint();
+        var includeAncestor = options && options.includeAncestor;
+        var fullyContains = options && options.fullyContains;
+
+        // TODO compare points and sort
+        var startPoint = this.getStartPoint();
         var endPoint = this.getEndPoint();
 
-        while (point) {
-          if (findAncestor) {
-            var ancestor = dom.ancestor(point.node, pred);
-            if (ancestor) {
-              nodes.push(ancestor);
+        var nodes = [];
+        var leftEdgeNodes = [];
+
+        dom.walkPoint(startPoint, endPoint, function (point) {
+          if (dom.isEditable(point.node)) {
+            return;
+          }
+
+          var node;
+          if (fullyContains) {
+            if (dom.isLeftEdgePoint(point)) {
+              leftEdgeNodes.push(point.node);
             }
-          } else if (pred(point.node)) {
-            nodes.push(point.node);
+            if (dom.isRightEdgePoint(point) &&
+                  list.contains(leftEdgeNodes, point.node)) {
+              node = point.node;
+            }
+          } else if (includeAncestor) {
+            node = dom.ancestor(point.node, pred);
+          } else {
+            node = point.node;
           }
 
-          if (dom.isSamePoint(point, endPoint)) {
-            break;
+          if (node && pred(node)) {
+            nodes.push(node);
           }
-
-          point = dom.nextPoint(point, true);
-        }
+        }, true);
 
         return list.unique(nodes);
       };
@@ -1755,17 +1821,23 @@
         }
 
         var rng = this.splitText();
-        var prevPoint = dom.prevPoint(rng.getStartPoint());
+        var nodes = rng.nodes(null, {
+          fullyContains: true
+        });
 
-        $.each(rng.nodes(), function (idx, node) {
-          dom.remove(node, !dom.isPara(node));
+        var point = dom.prevPointUntil(rng.getStartPoint(), function (point) {
+          return !list.contains(nodes, point.node);
+        });
+
+        $.each(nodes, function (idx, node) {
+          dom.remove(node, false);
         });
 
         return new WrappedRange(
-          prevPoint.node,
-          prevPoint.offset,
-          prevPoint.node,
-          prevPoint.offset
+          point.node,
+          point.offset,
+          point.node,
+          point.offset
         );
       };
       
@@ -1797,10 +1869,14 @@
 
       /**
        * wrap inline nodes which children of body with paragraph
+       *
+       * @return {WrappedRange}
        */
       this.wrapBodyInlineWithPara = function () {
-        if (!dom.isInline(sc) || dom.isParaInline(sc)) {
-          return;
+        if (dom.isEditable(sc) && !sc.childNodes[so]) {
+          return new WrappedRange(sc.appendChild($(dom.emptyPara)[0]), 0);
+        } else if (!dom.isInline(sc) || dom.isParaInline(sc)) {
+          return this;
         }
 
         // find inline top ancestor
@@ -1819,6 +1895,8 @@
           var para = dom.wrap(list.head(inlineSiblings), 'p');
           dom.appendChildNodes(para, list.tail(inlineSiblings));
         }
+
+        return this;
       };
 
       /**
@@ -1829,9 +1907,8 @@
        * @return {Node}
        */
       this.insertNode = function (node, isInline) {
-        var point = this.getStartPoint();
-
-        this.wrapBodyInlineWithPara();
+        var rng = this.wrapBodyInlineWithPara();
+        var point = rng.getStartPoint();
 
         var splitRoot, container, pivot;
         if (isInline) {
@@ -1844,7 +1921,7 @@
         } else {
           // splitRoot will be childNode of container
           var ancestors = dom.listAncestor(point.node, dom.isBodyContainer);
-          var topAncestor = list.last(ancestors);
+          var topAncestor = list.last(ancestors) || point.node;
 
           if (dom.isBodyContainer(topAncestor)) {
             splitRoot = ancestors[ancestors.length - 2];
@@ -2150,7 +2227,7 @@
       // deleteContents on range.
       rng = rng.deleteContents();
 
-      rng.wrapBodyInlineWithPara();
+      rng = rng.wrapBodyInlineWithPara();
 
       // find split root node: block level node
       var splitRoot = dom.ancestor(rng.sc, dom.isPara);
@@ -4294,7 +4371,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.5</a> · ' +
+                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.6</a> · ' +
                      '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';

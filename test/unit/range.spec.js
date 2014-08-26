@@ -12,28 +12,38 @@ define(['jquery', 'summernote/core/dom', 'summernote/core/range'], function ($, 
       $cont = $('<div class="note-editable"><p>para1</p><p>para2</p></div>');
       $para = $cont.find('p');
       rng = range.create($para[0].firstChild, 0, $para[1].firstChild, 1);
-      equal(rng.nodes(dom.isPara, true).length, 2, 'should nodes return array of paragraphs[2]');
+      equal(rng.nodes(dom.isPara, {
+        includeAncestor: true
+      }).length, 2, 'should nodes return array of paragraphs[2]');
 
       rng = range.create($para[0].firstChild, 0, $para[0].firstChild, 0);
-      equal(rng.nodes(dom.isPara, true).length, 1, 'should nodes return array of a para');
+      equal(rng.nodes(dom.isPara, {
+        includeAncestor: true
+      }).length, 1, 'should nodes return array of a para');
 
       //02. multi depth
       $cont = $('<div class="note-editable"><p>p<b>ar</b>a1</p><p>para2</p></div>');
       $b = $cont.find('b');
       rng = range.create($b[0].firstChild, 0, $b[0].firstChild, 0);
-      equal(rng.nodes(dom.isPara, true).length, 1, 'should nodes return array of a para');
+      equal(rng.nodes(dom.isPara, {
+        includeAncestor: true
+      }).length, 1, 'should nodes return array of a para');
 
       //03. on list, on heading
       $cont = $('<div class="note-editable"><ul><li>para1</li><li>para2</li></ul></div>');
       $li = $cont.find('li');
       rng = range.create($li[0].firstChild, 0, $li[1].firstChild, 1);
-      equal(rng.nodes(dom.isPara, true).length, 2, 'should nodes return array of list paragraphs');
+      equal(rng.nodes(dom.isPara, {
+        includeAncestor: true
+      }).length, 2, 'should nodes return array of list paragraphs');
 
       $cont = $('<div class="note-editable"><h1>heading1</h1><h2>heading2</h2></div>');
       $h1 = $cont.find('h1');
       $h2 = $cont.find('h2');
       rng = range.create($h1[0].firstChild, 0, $h2[0].firstChild, 1);
-      equal(rng.nodes(dom.isPara, true).length, 2, 'should nodes return array of list paragraphs');
+      equal(rng.nodes(dom.isPara, {
+        includeAncestor: true
+      }).length, 2, 'should nodes return array of list paragraphs');
     });
 
     test('rng.commonAncestor', function () {
