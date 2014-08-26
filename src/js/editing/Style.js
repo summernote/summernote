@@ -34,7 +34,9 @@ define([
      * @param {Object} styleInfo
      */
     this.stylePara = function (rng, styleInfo) {
-      $.each(rng.nodes(dom.isPara, true), function (idx, para) {
+      $.each(rng.nodes(dom.isPara, {
+        includeAncestor: true
+      }), function (idx, para) {
         $(para).css(styleInfo);
       });
     };
