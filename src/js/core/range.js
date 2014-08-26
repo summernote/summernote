@@ -192,32 +192,47 @@ define([
        * returns matched nodes on range
        *
        * @param {Function} [pred] - predicate function
-       * @param {Boolean} findAncestor
+       * @param {Object} [options]
+       * @param {Boolean} [options.includeAncestor]
+       * @param {Boolean} [options.fullyContains]
        * @return {Node[]}
        */
-      this.nodes = function (pred, findAncestor) {
+      this.nodes = function (pred, options) {
         pred = pred || func.ok;
+        includeAncestor = options && options.includeAncestor;
+        fullyContains = options && options.fullyContains;
 
-        var nodes = [];
-        var point = this.getStartPoint();
+        // TODO compare points and sort
+        var startPoint = this.getStartPoint();
         var endPoint = this.getEndPoint();
 
-        while (point) {
-          if (findAncestor) {
-            var ancestor = dom.ancestor(point.node, pred);
-            if (ancestor) {
-              nodes.push(ancestor);
+        var nodes = [];
+        var leftEdgeNodes = []
+
+        dom.walkPoint(startPoint, endPoint, function (point) {
+          if (dom.isEditable(point.node)) {
+            return;
+          }
+
+          var node;
+          if (fullyContains) {
+            if (dom.isLeftEdgePoint(point)) {
+              leftEdgeNodes.push(point.node);
             }
-          } else if (pred(point.node)) {
-            nodes.push(point.node);
+            if (dom.isRightEdgePoint(point) &&
+                  list.contains(leftEdgeNodes, point.node)) {
+              node = point.node;
+            }
+          } else if (includeAncestor) {
+            node = dom.ancestor(point.node, pred);
+          } else {
+            node = point.node;
           }
 
-          if (dom.isSamePoint(point, endPoint)) {
-            break;
+          if (node && pred(node)) {
+            nodes.push(node);
           }
-
-          point = dom.nextPoint(point, true);
-        }
+        }, true);
 
         return list.unique(nodes);
       };
@@ -315,17 +330,23 @@ define([
         }
 
         var rng = this.splitText();
-        var prevPoint = dom.prevPoint(rng.getStartPoint());
+        var nodes = rng.nodes(null, {
+          fullyContains: true
+        });
 
-        $.each(rng.nodes(), function (idx, node) {
-          dom.remove(node, !dom.isPara(node));
+        var point = dom.prevPointUntil(rng.getStartPoint(), function (point) {
+          return !list.contains(nodes, point.node);
+        });
+
+        $.each(nodes, function (idx, node) {
+          dom.remove(node, false);
         });
 
         return new WrappedRange(
-          prevPoint.node,
-          prevPoint.offset,
-          prevPoint.node,
-          prevPoint.offset
+          point.node,
+          point.offset,
+          point.node,
+          point.offset
         );
       };
       
@@ -357,10 +378,15 @@ define([
 
       /**
        * wrap inline nodes which children of body with paragraph
+       *
+       * @return {WrappedRange}
        */
       this.wrapBodyInlineWithPara = function () {
-        if (!dom.isInline(sc) || dom.isParaInline(sc)) {
-          return;
+        if (dom.isEditable(sc) && !sc.childNodes[so]) {
+          var para = sc.appendChild($(dom.emptyPara)[0]);
+          return new WrappedRange(para, 0);
+        } else if (!dom.isInline(sc) || dom.isParaInline(sc)) {
+          return this;
         }
 
         // find inline top ancestor
@@ -379,6 +405,8 @@ define([
           var para = dom.wrap(list.head(inlineSiblings), 'p');
           dom.appendChildNodes(para, list.tail(inlineSiblings));
         }
+
+        return this;
       };
 
       /**
@@ -389,9 +417,8 @@ define([
        * @return {Node}
        */
       this.insertNode = function (node, isInline) {
-        var point = this.getStartPoint();
-
-        this.wrapBodyInlineWithPara();
+        var rng = this.wrapBodyInlineWithPara();
+        var point = rng.getStartPoint();
 
         var splitRoot, container, pivot;
         if (isInline) {
@@ -404,7 +431,7 @@ define([
         } else {
           // splitRoot will be childNode of container
           var ancestors = dom.listAncestor(point.node, dom.isBodyContainer);
-          var topAncestor = list.last(ancestors);
+          var topAncestor = list.last(ancestors) || point.node;
 
           if (dom.isBodyContainer(topAncestor)) {
             splitRoot = ancestors[ancestors.length - 2];

@@ -139,6 +139,19 @@ define([
     var blankHTML = agent.isMSIE ? '&nbsp;' : '<br>';
 
     /**
+     * returns #text's text size or element's childNodes size
+     *
+     * @param {Node} node
+     */
+    var nodeLength = function (node) {
+      if (isText(node)) {
+        return node.nodeValue.length;
+      }
+
+      return node.childNodes.length;
+    };
+
+    /**
      * padding blankHTML if node is empty (for cursor position)
      */
     var paddingBlankHTML = function (node) {
@@ -329,19 +342,6 @@ define([
       return node;
     };
 
-    /**
-     * returns #text's text size or element's childNodes size
-     *
-     * @param {Node} node
-     */
-    var nodeLength = function (node) {
-      if (isText(node)) {
-        return node.nodeValue.length;
-      }
-
-      return node.childNodes.length;
-    };
-
     var isLeftEdgePoint = function (boundaryPoint) {
       return boundaryPoint.offset === 0;
     };
@@ -409,12 +409,12 @@ define([
         }
 
         node = point.node.parentNode;
-        offset = position(node);
+        offset = position(point.node);
       } else if (hasChildren(point.node)) {
         node = point.node.childNodes[offset - 1];
         offset = nodeLength(node);
       } else {
-        node = node;
+        node = point.node;
         offset = isSkipInnerOffset ? 0 : point.offset - 1;
       }
 
@@ -463,6 +463,44 @@ define([
      */
     var isSamePoint = function (pointA, pointB) {
       return pointA.node === pointB.node && pointA.offset === pointB.offset;
+    };
+
+    /**
+     * @param {BoundaryPoint} point
+     * @param {Function} pred
+     * @return {BoundaryPoint}
+     */
+    var prevPointUntil = function (point, pred) {
+      while (point) {
+        if (pred(point)) {
+          return point;
+        }
+
+        point = prevPoint(point);
+      }
+
+      return null;
+    };
+
+    /**
+     * @param {BoundaryPoint} startPoint
+     * @param {BoundaryPoint} endPoint
+     * @param {Function} handler
+     * @param {Boolean} isSkipInnerOffset
+     */
+    var walkPoint = function (startPoint, endPoint, handler, isSkipInnerOffset) {
+      var point = startPoint;
+
+      while (point) {
+        handler(point);
+
+        if (isSamePoint(point, endPoint)) {
+          break;
+        }
+
+        var isSkipOffset = isSkipInnerOffset && startPoint.node !== point.node;
+        point = nextPoint(point, isSkipOffset);
+      }
     };
 
     /**
@@ -581,8 +619,10 @@ define([
       parent.removeChild(node);
     };
 
+    var isTextarea = makePredByNodeName('TEXTAREA');
+
     var html = function ($node) {
-      return dom.isTextarea($node[0]) ? $node.val() : $node.html();
+      return isTextarea($node[0]) ? $node.val() : $node.html();
     };
 
     return {
@@ -612,14 +652,17 @@ define([
       isS: makePredByNodeName('S'),
       isI: makePredByNodeName('I'),
       isImg: makePredByNodeName('IMG'),
-      isTextarea: makePredByNodeName('TEXTAREA'),
-      length: length,
+      isTextarea: isTextarea,
+      nodeLength: nodeLength,
+      isLeftEdgePoint: isLeftEdgePoint,
       isRightEdgePoint: isRightEdgePoint,
       isEdgePoint: isEdgePoint,
       isRightEdgeOf: isRightEdgeOf,
       prevPoint: prevPoint,
       nextPoint: nextPoint,
       isSamePoint: isSamePoint,
+      prevPointUntil: prevPointUntil,
+      walkPoint: walkPoint,
       ancestor: ancestor,
       listAncestor: listAncestor,
       listNext: listNext,
