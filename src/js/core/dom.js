@@ -465,6 +465,11 @@ define([
       return pointA.node === pointB.node && pointA.offset === pointB.offset;
     };
 
+    /**
+     * @param {BoundaryPoint} point
+     * @param {Function} pred
+     * @return {BoundaryPoint}
+     */
     var prevPointUntil = function (point, pred) {
       while (point) {
         if (pred(point)) {
