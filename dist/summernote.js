@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-27T08:05Z
+ * Date: 2014-08-27T08:33Z
  */
 (function (factory) {
   /* global define */
@@ -92,14 +92,14 @@
    * func utils (for high-order func's arg)
    */
   var func = (function () {
-    var eq = function (elA) {
-      return function (elB) {
-        return elA === elB;
+    var eq = function (itemA) {
+      return function (itemB) {
+        return itemA === itemB;
       };
     };
 
-    var eq2 = function (elA, elB) {
-      return elA === elB;
+    var eq2 = function (itemA, itemB) {
+      return itemA === itemB;
     };
 
     var ok = function () {
@@ -113,6 +113,12 @@
     var not = function (f) {
       return function () {
         return !f.apply(f, arguments);
+      };
+    };
+
+    var and = function (fA, fB) {
+      return function (item) {
+        return fA(item) && fB(item);
       };
     };
 
@@ -175,8 +181,9 @@
       eq2: eq2,
       ok: ok,
       fail: fail,
-      not: not,
       self: self,
+      not: not,
+      and: and,
       uniqueId: uniqueId,
       rect2bnd: rect2bnd,
       invertObject: invertObject
@@ -442,6 +449,8 @@
       return isCell(node) || isEditable(node);
     };
 
+    var isAnchor = makePredByNodeName('A');
+
     /**
      * returns whether node is textNode on bodyContainer or not.
      *
@@ -475,6 +484,19 @@
       }
 
       return node.childNodes.length;
+    };
+
+    var isEmpty = function (node) {
+      var len = nodeLength(node);
+      if (len === 0) {
+        return true;
+      }
+
+      if (!dom.isText(node) && len === 1 && node.innerHTML === blankHTML) {
+        return true;
+      }
+
+      return false;
     };
 
     /**
@@ -942,7 +964,7 @@
       isTable: makePredByNodeName('TABLE'),
       isCell: isCell,
       isBodyContainer: isBodyContainer,
-      isAnchor: makePredByNodeName('A'),
+      isAnchor: isAnchor,
       isDiv: makePredByNodeName('DIV'),
       isLi: makePredByNodeName('LI'),
       isSpan: makePredByNodeName('SPAN'),
@@ -952,6 +974,8 @@
       isI: makePredByNodeName('I'),
       isImg: makePredByNodeName('IMG'),
       isTextarea: isTextarea,
+      isEmpty: isEmpty,
+      isEmptyAnchor: func.and(isAnchor, isEmpty),
       nodeLength: nodeLength,
       isLeftEdgePoint: isLeftEdgePoint,
       isRightEdgePoint: isRightEdgePoint,
@@ -2208,6 +2232,14 @@
       // find split root node: block level node
       var splitRoot = dom.ancestor(rng.sc, dom.isPara);
       var nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
+
+      var emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
+      emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
+
+      $.each(emptyAnchors, function (idx, anchor) {
+        dom.remove(anchor);
+      });
+
       range.create(nextPara, 0).select();
     };
 
