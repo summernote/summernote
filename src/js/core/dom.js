@@ -21,6 +21,12 @@ define([
       return node && $(node).hasClass('note-editable');
     };
 
+    /**
+     * returns whether node is `note-control-sizing` or not.
+     *
+     * @param {Node} node
+     * @return {Boolean}
+     */
     var isControlSizing = function (node) {
       return node && $(node).hasClass('note-control-sizing');
     };
@@ -118,15 +124,6 @@ define([
 
     var isAnchor = makePredByNodeName('A');
 
-    /**
-     * returns whether node is textNode on bodyContainer or not.
-     *
-     * @param {Node} node
-     */
-    var isBodyText = function (node) {
-      return isText(node) && isBodyContainer(node.parentNode);
-    };
-
     var isParaInline = function (node) {
       return isInline(node) && !!ancestor(node, isPara);
     };
@@ -153,13 +150,19 @@ define([
       return node.childNodes.length;
     };
 
+    /**
+     * returns whether node is empty or not.
+     *
+     * @param {Node} node
+     * @return {Boolean}
+     */
     var isEmpty = function (node) {
       var len = nodeLength(node);
+
       if (len === 0) {
         return true;
-      }
-
-      if (!dom.isText(node) && len === 1 && node.innerHTML === blankHTML) {
+      } else if (!dom.isText(node) && len === 1 && node.innerHTML === blankHTML) {
+        // ex) <p><br></p>, <span><br></span>
         return true;
       }
 
@@ -330,22 +333,34 @@ define([
       return node;
     };
 
-    var isLeftEdgePoint = function (boundaryPoint) {
-      return boundaryPoint.offset === 0;
+    /**
+     * returns whether boundaryPoint is left edge or not.
+     *
+     * @param {BoundaryPoint} point
+     * @return {Boolean}
+     */
+    var isLeftEdgePoint = function (point) {
+      return point.offset === 0;
     };
 
-    var isRightEdgePoint = function (boundaryPoint) {
-      return boundaryPoint.offset === nodeLength(boundaryPoint.node);
+    /**
+     * returns whether boundaryPoint is right edge or not.
+     *
+     * @param {BoundaryPoint} point
+     * @return {Boolean}
+     */
+    var isRightEdgePoint = function (point) {
+      return point.offset === nodeLength(point.node);
     };
 
     /**
      * returns whether boundaryPoint is edge or not.
      *
-     * @param {BoundaryPoint} boundaryPoitn
+     * @param {BoundaryPoint} point
      * @return {Boolean}
      */
-    var isEdgePoint = function (boundaryPoint) {
-      return boundaryPoint.offset === 0 || isRightEdgePoint(boundaryPoint);
+    var isEdgePoint = function (point) {
+      return isLeftEdgePoint(point) || isRightEdgePoint(point);
     };
 
     /**
@@ -373,12 +388,14 @@ define([
      */
     var position = function (node) {
       var offset = 0;
-      while ((node = node.previousSibling)) { offset += 1; }
+      while ((node = node.previousSibling)) {
+        offset += 1;
+      }
       return offset;
     };
 
     var hasChildren = function (node) {
-      return node && node.childNodes && node.childNodes.length;
+      return !!(node && node.childNodes && node.childNodes.length);
     };
 
     /**
@@ -448,9 +465,23 @@ define([
      *
      * @param {BoundaryPoint} pointA
      * @param {BoundaryPoint} pointB
+     * @return {Boolean}
      */
     var isSamePoint = function (pointA, pointB) {
       return pointA.node === pointB.node && pointA.offset === pointB.offset;
+    };
+
+    /**
+     * returns whether point is visible (can set cursor) or not.
+     * 
+     * @param {BoundaryPoint} point
+     * @return {Boolean}
+     */
+    var isVisiblePoint = function (point) {
+      return isText(point.node) ||
+             !hasChildren(point.node) ||
+             isEmpty(point.node) ||
+             !isEdgePoint(point);
     };
 
     /**
@@ -465,6 +496,23 @@ define([
         }
 
         point = prevPoint(point);
+      }
+
+      return null;
+    };
+
+    /**
+     * @param {BoundaryPoint} point
+     * @param {Function} pred
+     * @return {BoundaryPoint}
+     */
+    var nextPointUntil = function (point, pred) {
+      while (point) {
+        if (pred(point)) {
+          return point;
+        }
+
+        point = nextPoint(point);
       }
 
       return null;
@@ -624,7 +672,6 @@ define([
       isText: isText,
       isPara: isPara,
       isInline: isInline,
-      isBodyText: isBodyText,
       isBodyInline: isBodyInline,
       isParaInline: isParaInline,
       isList: isList,
@@ -651,7 +698,9 @@ define([
       prevPoint: prevPoint,
       nextPoint: nextPoint,
       isSamePoint: isSamePoint,
+      isVisiblePoint: isVisiblePoint,
       prevPointUntil: prevPointUntil,
+      nextPointUntil: nextPointUntil,
       walkPoint: walkPoint,
       ancestor: ancestor,
       listAncestor: listAncestor,
@@ -663,6 +712,7 @@ define([
       insertAfter: insertAfter,
       appendChildNodes: appendChildNodes,
       position: position,
+      hasChildren: hasChildren,
       makeOffsetPath: makeOffsetPath,
       fromOffsetPath: fromOffsetPath,
       splitTree: splitTree,
