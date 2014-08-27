@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-27T07:51Z
+ * Date: 2014-08-27T08:05Z
  */
 (function (factory) {
   /* global define */
@@ -242,7 +242,7 @@
     };
   
     var all = function (array, pred) {
-      for (var idx = 0, sz = array.length; idx < sz; idx ++) {
+      for (var idx = 0, len = array.length; idx < len; idx ++) {
         if (!pred(array[idx])) {
           return false;
         }
@@ -305,7 +305,7 @@
      */
     var compact = function (array) {
       var aResult = [];
-      for (var idx = 0, sz = array.length; idx < sz; idx ++) {
+      for (var idx = 0, len = array.length; idx < len; idx ++) {
         if (array[idx]) { aResult.push(array[idx]); }
       }
       return aResult;
@@ -314,7 +314,7 @@
     var unique = function (array) {
       var results = [];
 
-      for (var idx = 0, sz = array.length; idx < sz; idx ++) {
+      for (var idx = 0, len = array.length; idx < len; idx ++) {
         if (results.indexOf(array[idx]) === -1) {
           results.push(array[idx]);
         }
@@ -587,7 +587,7 @@
         if (node !== current && pred(current)) {
           descendents.push(current);
         }
-        for (var idx = 0, sz = current.childNodes.length; idx < sz; idx++) {
+        for (var idx = 0, len = current.childNodes.length; idx < len; idx++) {
           fnWalk(current.childNodes[idx]);
         }
       })(node);
@@ -821,7 +821,7 @@
      */
     var fromOffsetPath = function (ancestor, aOffset) {
       var current = ancestor;
-      for (var i = 0, sz = aOffset.length; i < sz; i++) {
+      for (var i = 0, len = aOffset.length; i < len; i++) {
         current = current.childNodes[aOffset[i]];
       }
       return current;
@@ -905,12 +905,12 @@
       var parent = node.parentNode;
       if (!isRemoveChild) {
         var nodes = [];
-        var i, sz;
-        for (i = 0, sz = node.childNodes.length; i < sz; i++) {
+        var i, len;
+        for (i = 0, len = node.childNodes.length; i < len; i++) {
           nodes.push(node.childNodes[i]);
         }
 
-        for (i = 0, sz = nodes.length; i < sz; i++) {
+        for (i = 0, len = nodes.length; i < len; i++) {
           parent.insertBefore(nodes[i], node);
         }
       }
@@ -4183,10 +4183,10 @@
 
       var tplAirPopover = function () {
         var content = '';
-        for (var idx = 0, sz = options.airPopover.length; idx < sz; idx ++) {
+        for (var idx = 0, len = options.airPopover.length; idx < len; idx ++) {
           var group = options.airPopover[idx];
           content += '<div class="note-' + group[0] + ' btn-group">';
-          for (var i = 0, szGroup = group[1].length; i < szGroup; i++) {
+          for (var i = 0, lenGroup = group[1].length; i < lenGroup; i++) {
             content += tplButtonInfo[group[1][i]](lang, options);
           }
           content += '</div>';
@@ -4417,10 +4417,10 @@
       $container.find('.note-color-palette').each(function () {
         var $palette = $(this), eventName = $palette.attr('data-target-event');
         var paletteContents = [];
-        for (var row = 0, szRow = colorInfo.length; row < szRow; row++) {
+        for (var row = 0, lenRow = colorInfo.length; row < lenRow; row++) {
           var colors = colorInfo[row];
           var buttons = [];
-          for (var col = 0, szCol = colors.length; col < szCol; col++) {
+          for (var col = 0, lenCol = colors.length; col < lenCol; col++) {
             var color = colors[col];
             buttons.push(['<button type="button" class="note-color-btn" style="background-color:', color,
                            ';" data-event="', eventName,
@@ -4516,7 +4516,7 @@
 
       //04. create Toolbar
       var toolbarHTML = '';
-      for (var idx = 0, sz = options.toolbar.length; idx < sz; idx ++) {
+      for (var idx = 0, len = options.toolbar.length; idx < len; idx ++) {
         var groupName = options.toolbar[idx][0];
         var groupButtons = options.toolbar[idx][1];
 

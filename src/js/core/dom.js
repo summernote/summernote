@@ -261,7 +261,7 @@ define([
         if (node !== current && pred(current)) {
           descendents.push(current);
         }
-        for (var idx = 0, sz = current.childNodes.length; idx < sz; idx++) {
+        for (var idx = 0, len = current.childNodes.length; idx < len; idx++) {
           fnWalk(current.childNodes[idx]);
         }
       })(node);
@@ -495,7 +495,7 @@ define([
      */
     var fromOffsetPath = function (ancestor, aOffset) {
       var current = ancestor;
-      for (var i = 0, sz = aOffset.length; i < sz; i++) {
+      for (var i = 0, len = aOffset.length; i < len; i++) {
         current = current.childNodes[aOffset[i]];
       }
       return current;
@@ -579,12 +579,12 @@ define([
       var parent = node.parentNode;
       if (!isRemoveChild) {
         var nodes = [];
-        var i, sz;
-        for (i = 0, sz = node.childNodes.length; i < sz; i++) {
+        var i, len;
+        for (i = 0, len = node.childNodes.length; i < len; i++) {
           nodes.push(node.childNodes[i]);
         }
 
-        for (i = 0, sz = nodes.length; i < sz; i++) {
+        for (i = 0, len = nodes.length; i < len; i++) {
           parent.insertBefore(nodes[i], node);
         }
       }
