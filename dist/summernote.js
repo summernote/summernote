@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-26T18:23Z
+ * Date: 2014-08-27T07:06Z
  */
 (function (factory) {
   /* global define */
@@ -2735,7 +2735,7 @@
      * @param {String} value
      */
     this.updateRecentColor = function (buttonNode, eventName, value) {
-      button.updateRecentColor(buttonNode, event, value);
+      button.updateRecentColor(buttonNode, eventName, value);
     };
 
     /**
