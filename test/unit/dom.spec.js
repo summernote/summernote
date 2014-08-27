@@ -80,22 +80,6 @@ define(['jquery', 'summernote/core/dom', 'summernote/core/func'], function ($, d
       equal(dom.commonAncestor($b[0], $s[0]), $cont[0], 'common(b, s) => div');
     });
 
-    test('dom.listBetween', function () {
-      var $cont, $b, $u, $s, $i;
-
-      $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
-      $b = $cont.find('b');
-      $u = $cont.find('u');
-      $s = $cont.find('s');
-      $i = $cont.find('i');
-
-      deepEqual(dom.listBetween($b[0], $b[0]), [$b[0]], 'same elements');
-      deepEqual(dom.listBetween($b[0], $u[0]), [$b[0], $b[0].firstChild, $u[0]], 'adjacent');
-      deepEqual(dom.listBetween($b[0], $s[0]), [$b[0], $b[0].firstChild,
-                $u[0], $u[0].firstChild,
-                $s[0]], 'distance 2');
-    });
-
     test('dom.listNext', function () {
       var $cont, $b, $u, $s, $i;
 

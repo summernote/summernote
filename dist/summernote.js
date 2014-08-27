@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.5.6
+ * Super simple wysiwyg editor on Bootstrap v0.5.7
  * http://hackerwins.github.io/summernote/
  *
  * summernote.js
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-27T07:06Z
+ * Date: 2014-08-27T07:51Z
  */
 (function (factory) {
   /* global define */
@@ -537,33 +537,6 @@
     };
 
     /**
-     * listing all Nodes between two nodes.
-     * FIXME: nodeA and nodeB must be sorted, use comparePoints later.
-     *
-     * @param {Node} nodeA
-     * @param {Node} nodeB
-     */
-    var listBetween = function (nodeA, nodeB) {
-      var nodes = [];
-
-      var isStart = false, isEnd = false;
-
-      // DFS(depth first search) with commonAcestor.
-      (function fnWalk(node) {
-        if (!node) { return; } // traverse fisnish
-        if (node === nodeA) { isStart = true; } // start point
-        if (isStart && !isEnd) { nodes.push(node); } // between
-        if (node === nodeB) { isEnd = true; return; } // end point
-
-        for (var idx = 0, sz = node.childNodes.length; idx < sz; idx++) {
-          fnWalk(node.childNodes[idx]);
-        }
-      })(commonAncestor(nodeA, nodeB));
-
-      return nodes;
-    };
-
-    /**
      * listing all previous siblings (until predicate hit).
      *
      * @param {Node} node
@@ -995,7 +968,6 @@
       listPrev: listPrev,
       listDescendant: listDescendant,
       commonAncestor: commonAncestor,
-      listBetween: listBetween,
       wrap: wrap,
       insertAfter: insertAfter,
       appendChildNodes: appendChildNodes,
@@ -1011,7 +983,7 @@
 
   var settings = {
     // version
-    version: '0.5.6',
+    version: '0.5.7',
 
     /**
      * options
@@ -1496,19 +1468,22 @@
 
 
   /**
-   * related data structure
+   * Data structure
    *  - {BoundaryPoint}: a point of dom tree
    *  - {BoundaryPoints}: two boundaryPoints corresponding to the start and the end of the Range
    *
    *  @see http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html#Level-2-Range-Position
    */
   var range = (function () {
+
     /**
      * return boundaryPoint from TextRange, inspired by Andy Na's HuskyRange.js
      *
      * @param {TextRange} textRange
      * @param {Boolean} isStart
      * @return {BoundaryPoint}
+     *
+     * @see http://msdn.microsoft.com/en-us/library/ie/ms535872(v=vs.85).aspx
      */
     var textRangeToPoint = function (textRange, isStart) {
       var container = textRange.parentElement(), offset;
@@ -1873,6 +1848,7 @@
        * @return {WrappedRange}
        */
       this.wrapBodyInlineWithPara = function () {
+        // startContainer on bodyContainer
         if (dom.isEditable(sc) && !sc.childNodes[so]) {
           return new WrappedRange(sc.appendChild($(dom.emptyPara)[0]), 0);
         } else if (!dom.isInline(sc) || dom.isParaInline(sc)) {
@@ -4371,7 +4347,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.6</a> · ' +
+                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.7</a> · ' +
                      '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';

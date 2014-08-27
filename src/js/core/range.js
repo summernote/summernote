@@ -6,19 +6,22 @@ define([
 ], function (agent, func, list, dom) {
 
   /**
-   * related data structure
+   * Data structure
    *  - {BoundaryPoint}: a point of dom tree
    *  - {BoundaryPoints}: two boundaryPoints corresponding to the start and the end of the Range
    *
    *  @see http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html#Level-2-Range-Position
    */
   var range = (function () {
+
     /**
      * return boundaryPoint from TextRange, inspired by Andy Na's HuskyRange.js
      *
      * @param {TextRange} textRange
      * @param {Boolean} isStart
      * @return {BoundaryPoint}
+     *
+     * @see http://msdn.microsoft.com/en-us/library/ie/ms535872(v=vs.85).aspx
      */
     var textRangeToPoint = function (textRange, isStart) {
       var container = textRange.parentElement(), offset;
@@ -383,6 +386,7 @@ define([
        * @return {WrappedRange}
        */
       this.wrapBodyInlineWithPara = function () {
+        // startContainer on bodyContainer
         if (dom.isEditable(sc) && !sc.childNodes[so]) {
           return new WrappedRange(sc.appendChild($(dom.emptyPara)[0]), 0);
         } else if (!dom.isInline(sc) || dom.isParaInline(sc)) {

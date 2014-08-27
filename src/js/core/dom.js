@@ -211,33 +211,6 @@ define([
     };
 
     /**
-     * listing all Nodes between two nodes.
-     * FIXME: nodeA and nodeB must be sorted, use comparePoints later.
-     *
-     * @param {Node} nodeA
-     * @param {Node} nodeB
-     */
-    var listBetween = function (nodeA, nodeB) {
-      var nodes = [];
-
-      var isStart = false, isEnd = false;
-
-      // DFS(depth first search) with commonAcestor.
-      (function fnWalk(node) {
-        if (!node) { return; } // traverse fisnish
-        if (node === nodeA) { isStart = true; } // start point
-        if (isStart && !isEnd) { nodes.push(node); } // between
-        if (node === nodeB) { isEnd = true; return; } // end point
-
-        for (var idx = 0, sz = node.childNodes.length; idx < sz; idx++) {
-          fnWalk(node.childNodes[idx]);
-        }
-      })(commonAncestor(nodeA, nodeB));
-
-      return nodes;
-    };
-
-    /**
      * listing all previous siblings (until predicate hit).
      *
      * @param {Node} node
@@ -669,7 +642,6 @@ define([
       listPrev: listPrev,
       listDescendant: listDescendant,
       commonAncestor: commonAncestor,
-      listBetween: listBetween,
       wrap: wrap,
       insertAfter: insertAfter,
       appendChildNodes: appendChildNodes,

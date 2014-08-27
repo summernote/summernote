@@ -86,7 +86,7 @@ $('#summernote').destroy();
 
 ### Change Log
 
-### v0.5.4 2014-08-23
+### v0.5.6 ~ v0.5.4 2014-08-27 ~ 2014-08-23
 * Dom editing (insertPara, insertNode)
 
 ### v0.5.3 2014-07-25
