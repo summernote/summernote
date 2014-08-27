@@ -18,7 +18,7 @@ define([
      * @param {String} value
      */
     this.updateRecentColor = function (buttonNode, eventName, value) {
-      button.updateRecentColor(buttonNode, event, value);
+      button.updateRecentColor(buttonNode, eventName, value);
     };
 
     /**
