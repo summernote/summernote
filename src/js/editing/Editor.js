@@ -159,7 +159,7 @@ define([
         dom.remove(anchor);
       });
 
-      range.create(nextPara, 0).select();
+      range.create(nextPara, 0).normalize().select();
     };
 
     /**

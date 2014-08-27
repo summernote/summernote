@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-27T08:33Z
+ * Date: 2014-08-27T09:15Z
  */
 (function (factory) {
   /* global define */
@@ -786,6 +786,13 @@
       return pointA.node === pointB.node && pointA.offset === pointB.offset;
     };
 
+    var isVisiblePoint = function (point) {
+      return isText(point.node) ||
+             !hasChildren(point.node) ||
+             isEmpty(point.node) ||
+             !isEdgePoint(point);
+    };
+
     /**
      * @param {BoundaryPoint} point
      * @param {Function} pred
@@ -798,6 +805,23 @@
         }
 
         point = prevPoint(point);
+      }
+
+      return null;
+    };
+
+    /**
+     * @param {BoundaryPoint} point
+     * @param {Function} pred
+     * @return {BoundaryPoint}
+     */
+    var nextPointUntil = function (point, pred) {
+      while (point) {
+        if (pred(point)) {
+          return point;
+        }
+
+        point = nextPoint(point);
       }
 
       return null;
@@ -984,7 +1008,9 @@
       prevPoint: prevPoint,
       nextPoint: nextPoint,
       isSamePoint: isSamePoint,
+      isVisiblePoint: isVisiblePoint,
       prevPointUntil: prevPointUntil,
+      nextPointUntil: nextPointUntil,
       walkPoint: walkPoint,
       ancestor: ancestor,
       listAncestor: listAncestor,
@@ -996,6 +1022,7 @@
       insertAfter: insertAfter,
       appendChildNodes: appendChildNodes,
       position: position,
+      hasChildren: hasChildren,
       makeOffsetPath: makeOffsetPath,
       fromOffsetPath: fromOffsetPath,
       splitTree: splitTree,
@@ -1678,6 +1705,32 @@
       };
 
       /**
+       * @return {WrappedRange}
+       */
+      this.normalize = function () {
+        var getVisiblePoint = function (point) {
+          if (!dom.isVisiblePoint(point)) {
+            if (dom.isLeftEdgePoint(point)) {
+              point = dom.nextPointUntil(point, dom.isVisiblePoint);
+            } else if (dom.isRightEdgePoint(point)) {
+              point = dom.prevPointUntil(point, dom.isVisiblePoint);
+            }
+          }
+          return point;
+        };
+
+        var startPoint = getVisiblePoint(this.getStartPoint());
+        var endPoint = getVisiblePoint(this.getStartPoint());
+
+        return new WrappedRange(
+          startPoint.node,
+          startPoint.offset,
+          endPoint.node,
+          endPoint.offset
+        );
+      };
+
+      /**
        * returns matched nodes on range
        *
        * @param {Function} [pred] - predicate function
@@ -2240,7 +2293,7 @@
         dom.remove(anchor);
       });
 
-      range.create(nextPara, 0).select();
+      range.create(nextPara, 0).normalize().select();
     };
 
     /**

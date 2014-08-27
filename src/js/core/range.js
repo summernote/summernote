@@ -192,6 +192,32 @@ define([
       };
 
       /**
+       * @return {WrappedRange}
+       */
+      this.normalize = function () {
+        var getVisiblePoint = function (point) {
+          if (!dom.isVisiblePoint(point)) {
+            if (dom.isLeftEdgePoint(point)) {
+              point = dom.nextPointUntil(point, dom.isVisiblePoint);
+            } else if (dom.isRightEdgePoint(point)) {
+              point = dom.prevPointUntil(point, dom.isVisiblePoint);
+            }
+          }
+          return point;
+        };
+
+        var startPoint = getVisiblePoint(this.getStartPoint());
+        var endPoint = getVisiblePoint(this.getStartPoint());
+
+        return new WrappedRange(
+          startPoint.node,
+          startPoint.offset,
+          endPoint.node,
+          endPoint.offset
+        );
+      };
+
+      /**
        * returns matched nodes on range
        *
        * @param {Function} [pred] - predicate function

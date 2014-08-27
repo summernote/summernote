@@ -453,6 +453,13 @@ define([
       return pointA.node === pointB.node && pointA.offset === pointB.offset;
     };
 
+    var isVisiblePoint = function (point) {
+      return isText(point.node) ||
+             !hasChildren(point.node) ||
+             isEmpty(point.node) ||
+             !isEdgePoint(point);
+    };
+
     /**
      * @param {BoundaryPoint} point
      * @param {Function} pred
@@ -465,6 +472,23 @@ define([
         }
 
         point = prevPoint(point);
+      }
+
+      return null;
+    };
+
+    /**
+     * @param {BoundaryPoint} point
+     * @param {Function} pred
+     * @return {BoundaryPoint}
+     */
+    var nextPointUntil = function (point, pred) {
+      while (point) {
+        if (pred(point)) {
+          return point;
+        }
+
+        point = nextPoint(point);
       }
 
       return null;
@@ -651,7 +675,9 @@ define([
       prevPoint: prevPoint,
       nextPoint: nextPoint,
       isSamePoint: isSamePoint,
+      isVisiblePoint: isVisiblePoint,
       prevPointUntil: prevPointUntil,
+      nextPointUntil: nextPointUntil,
       walkPoint: walkPoint,
       ancestor: ancestor,
       listAncestor: listAncestor,
@@ -663,6 +689,7 @@ define([
       insertAfter: insertAfter,
       appendChildNodes: appendChildNodes,
       position: position,
+      hasChildren: hasChildren,
       makeOffsetPath: makeOffsetPath,
       fromOffsetPath: fromOffsetPath,
       splitTree: splitTree,
