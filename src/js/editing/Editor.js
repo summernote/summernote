@@ -1,12 +1,14 @@
 define([
   'summernote/core/agent',
+  'summernote/core/func',
   'summernote/core/list',
   'summernote/core/dom',
   'summernote/core/range',
   'summernote/core/async',
   'summernote/editing/Style',
   'summernote/editing/Table'
-], function (agent, list, dom, range, async, Style, Table) {
+], function (agent, func, list, dom, range, async,
+             Style, Table) {
   /**
    * Editor
    * @class
@@ -149,6 +151,14 @@ define([
       // find split root node: block level node
       var splitRoot = dom.ancestor(rng.sc, dom.isPara);
       var nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
+
+      var emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
+      emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
+
+      $.each(emptyAnchors, function (idx, anchor) {
+        dom.remove(anchor);
+      });
+
       range.create(nextPara, 0).select();
     };
 

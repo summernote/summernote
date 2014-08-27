@@ -116,6 +116,8 @@ define([
       return isCell(node) || isEditable(node);
     };
 
+    var isAnchor = makePredByNodeName('A');
+
     /**
      * returns whether node is textNode on bodyContainer or not.
      *
@@ -149,6 +151,19 @@ define([
       }
 
       return node.childNodes.length;
+    };
+
+    var isEmpty = function (node) {
+      var len = nodeLength(node);
+      if (len === 0) {
+        return true;
+      }
+
+      if (!dom.isText(node) && len === 1 && node.innerHTML === blankHTML) {
+        return true;
+      }
+
+      return false;
     };
 
     /**
@@ -616,7 +631,7 @@ define([
       isTable: makePredByNodeName('TABLE'),
       isCell: isCell,
       isBodyContainer: isBodyContainer,
-      isAnchor: makePredByNodeName('A'),
+      isAnchor: isAnchor,
       isDiv: makePredByNodeName('DIV'),
       isLi: makePredByNodeName('LI'),
       isSpan: makePredByNodeName('SPAN'),
@@ -626,6 +641,8 @@ define([
       isI: makePredByNodeName('I'),
       isImg: makePredByNodeName('IMG'),
       isTextarea: isTextarea,
+      isEmpty: isEmpty,
+      isEmptyAnchor: func.and(isAnchor, isEmpty),
       nodeLength: nodeLength,
       isLeftEdgePoint: isLeftEdgePoint,
       isRightEdgePoint: isRightEdgePoint,

@@ -3,14 +3,14 @@ define('summernote/core/func', function () {
    * func utils (for high-order func's arg)
    */
   var func = (function () {
-    var eq = function (elA) {
-      return function (elB) {
-        return elA === elB;
+    var eq = function (itemA) {
+      return function (itemB) {
+        return itemA === itemB;
       };
     };
 
-    var eq2 = function (elA, elB) {
-      return elA === elB;
+    var eq2 = function (itemA, itemB) {
+      return itemA === itemB;
     };
 
     var ok = function () {
@@ -24,6 +24,12 @@ define('summernote/core/func', function () {
     var not = function (f) {
       return function () {
         return !f.apply(f, arguments);
+      };
+    };
+
+    var and = function (fA, fB) {
+      return function (item) {
+        return fA(item) && fB(item);
       };
     };
 
@@ -86,8 +92,9 @@ define('summernote/core/func', function () {
       eq2: eq2,
       ok: ok,
       fail: fail,
-      not: not,
       self: self,
+      not: not,
+      and: and,
       uniqueId: uniqueId,
       rect2bnd: rect2bnd,
       invertObject: invertObject
