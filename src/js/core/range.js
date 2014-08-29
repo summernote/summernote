@@ -6,19 +6,22 @@ define([
 ], function (agent, func, list, dom) {
 
   /**
-   * related data structure
+   * Data structure
    *  - {BoundaryPoint}: a point of dom tree
    *  - {BoundaryPoints}: two boundaryPoints corresponding to the start and the end of the Range
    *
    *  @see http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html#Level-2-Range-Position
    */
   var range = (function () {
+
     /**
      * return boundaryPoint from TextRange, inspired by Andy Na's HuskyRange.js
      *
      * @param {TextRange} textRange
      * @param {Boolean} isStart
      * @return {BoundaryPoint}
+     *
+     * @see http://msdn.microsoft.com/en-us/library/ie/ms535872(v=vs.85).aspx
      */
     var textRangeToPoint = function (textRange, isStart) {
       var container = textRange.parentElement(), offset;
@@ -189,6 +192,32 @@ define([
       };
 
       /**
+       * @return {WrappedRange}
+       */
+      this.normalize = function () {
+        var getVisiblePoint = function (point) {
+          if (!dom.isVisiblePoint(point)) {
+            if (dom.isLeftEdgePoint(point)) {
+              point = dom.nextPointUntil(point, dom.isVisiblePoint);
+            } else if (dom.isRightEdgePoint(point)) {
+              point = dom.prevPointUntil(point, dom.isVisiblePoint);
+            }
+          }
+          return point;
+        };
+
+        var startPoint = getVisiblePoint(this.getStartPoint());
+        var endPoint = getVisiblePoint(this.getStartPoint());
+
+        return new WrappedRange(
+          startPoint.node,
+          startPoint.offset,
+          endPoint.node,
+          endPoint.offset
+        );
+      };
+
+      /**
        * returns matched nodes on range
        *
        * @param {Function} [pred] - predicate function
@@ -220,8 +249,7 @@ define([
             if (dom.isLeftEdgePoint(point)) {
               leftEdgeNodes.push(point.node);
             }
-            if (dom.isRightEdgePoint(point) &&
-                  list.contains(leftEdgeNodes, point.node)) {
+            if (dom.isRightEdgePoint(point) && list.contains(leftEdgeNodes, point.node)) {
               node = point.node;
             }
           } else if (includeAncestor) {
@@ -339,7 +367,18 @@ define([
           return !list.contains(nodes, point.node);
         });
 
+        var emptyParents = [];
         $.each(nodes, function (idx, node) {
+          // find empty parents
+          var parent = node.parentNode;
+          if (point.node !== parent && dom.nodeLength(parent) === 1) {
+            emptyParents.push(parent);
+          }
+          dom.remove(node, false);
+        });
+
+        // remove empty parents
+        $.each(emptyParents, function (idx, node) {
           dom.remove(node, false);
         });
 
@@ -383,6 +422,7 @@ define([
        * @return {WrappedRange}
        */
       this.wrapBodyInlineWithPara = function () {
+        // startContainer on bodyContainer
         if (dom.isEditable(sc) && !sc.childNodes[so]) {
           return new WrappedRange(sc.appendChild($(dom.emptyPara)[0]), 0);
         } else if (!dom.isInline(sc) || dom.isParaInline(sc)) {

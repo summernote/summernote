@@ -58,7 +58,7 @@ define(['summernote/core/func'], function (func) {
     };
   
     var all = function (array, pred) {
-      for (var idx = 0, sz = array.length; idx < sz; idx ++) {
+      for (var idx = 0, len = array.length; idx < len; idx ++) {
         if (!pred(array[idx])) {
           return false;
         }
@@ -121,7 +121,7 @@ define(['summernote/core/func'], function (func) {
      */
     var compact = function (array) {
       var aResult = [];
-      for (var idx = 0, sz = array.length; idx < sz; idx ++) {
+      for (var idx = 0, len = array.length; idx < len; idx ++) {
         if (array[idx]) { aResult.push(array[idx]); }
       }
       return aResult;
@@ -130,7 +130,7 @@ define(['summernote/core/func'], function (func) {
     var unique = function (array) {
       var results = [];
 
-      for (var idx = 0, sz = array.length; idx < sz; idx ++) {
+      for (var idx = 0, len = array.length; idx < len; idx ++) {
         if (results.indexOf(array[idx]) === -1) {
           results.push(array[idx]);
         }

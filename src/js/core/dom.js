@@ -21,6 +21,12 @@ define([
       return node && $(node).hasClass('note-editable');
     };
 
+    /**
+     * returns whether node is `note-control-sizing` or not.
+     *
+     * @param {Node} node
+     * @return {Boolean}
+     */
     var isControlSizing = function (node) {
       return node && $(node).hasClass('note-control-sizing');
     };
@@ -101,7 +107,7 @@ define([
     };
 
     var isInline = function (node) {
-      return !isBodyContainer(node) && !isPara(node);
+      return !isBodyContainer(node) && !isList(node) && !isPara(node);
     };
 
     var isList = function (node) {
@@ -112,18 +118,13 @@ define([
       return node && /^TD|^TH/.test(node.nodeName.toUpperCase());
     };
 
+    var isBlockquote = makePredByNodeName('BLOCKQUOTE');
+
     var isBodyContainer = function (node) {
-      return isCell(node) || isEditable(node);
+      return isCell(node) || isBlockquote(node) || isEditable(node);
     };
 
-    /**
-     * returns whether node is textNode on bodyContainer or not.
-     *
-     * @param {Node} node
-     */
-    var isBodyText = function (node) {
-      return isText(node) && isBodyContainer(node.parentNode);
-    };
+    var isAnchor = makePredByNodeName('A');
 
     var isParaInline = function (node) {
       return isInline(node) && !!ancestor(node, isPara);
@@ -149,6 +150,25 @@ define([
       }
 
       return node.childNodes.length;
+    };
+
+    /**
+     * returns whether node is empty or not.
+     *
+     * @param {Node} node
+     * @return {Boolean}
+     */
+    var isEmpty = function (node) {
+      var len = nodeLength(node);
+
+      if (len === 0) {
+        return true;
+      } else if (!dom.isText(node) && len === 1 && node.innerHTML === blankHTML) {
+        // ex) <p><br></p>, <span><br></span>
+        return true;
+      }
+
+      return false;
     };
 
     /**
@@ -211,33 +231,6 @@ define([
     };
 
     /**
-     * listing all Nodes between two nodes.
-     * FIXME: nodeA and nodeB must be sorted, use comparePoints later.
-     *
-     * @param {Node} nodeA
-     * @param {Node} nodeB
-     */
-    var listBetween = function (nodeA, nodeB) {
-      var nodes = [];
-
-      var isStart = false, isEnd = false;
-
-      // DFS(depth first search) with commonAcestor.
-      (function fnWalk(node) {
-        if (!node) { return; } // traverse fisnish
-        if (node === nodeA) { isStart = true; } // start point
-        if (isStart && !isEnd) { nodes.push(node); } // between
-        if (node === nodeB) { isEnd = true; return; } // end point
-
-        for (var idx = 0, sz = node.childNodes.length; idx < sz; idx++) {
-          fnWalk(node.childNodes[idx]);
-        }
-      })(commonAncestor(nodeA, nodeB));
-
-      return nodes;
-    };
-
-    /**
      * listing all previous siblings (until predicate hit).
      *
      * @param {Node} node
@@ -288,7 +281,7 @@ define([
         if (node !== current && pred(current)) {
           descendents.push(current);
         }
-        for (var idx = 0, sz = current.childNodes.length; idx < sz; idx++) {
+        for (var idx = 0, len = current.childNodes.length; idx < len; idx++) {
           fnWalk(current.childNodes[idx]);
         }
       })(node);
@@ -342,22 +335,34 @@ define([
       return node;
     };
 
-    var isLeftEdgePoint = function (boundaryPoint) {
-      return boundaryPoint.offset === 0;
+    /**
+     * returns whether boundaryPoint is left edge or not.
+     *
+     * @param {BoundaryPoint} point
+     * @return {Boolean}
+     */
+    var isLeftEdgePoint = function (point) {
+      return point.offset === 0;
     };
 
-    var isRightEdgePoint = function (boundaryPoint) {
-      return boundaryPoint.offset === nodeLength(boundaryPoint.node);
+    /**
+     * returns whether boundaryPoint is right edge or not.
+     *
+     * @param {BoundaryPoint} point
+     * @return {Boolean}
+     */
+    var isRightEdgePoint = function (point) {
+      return point.offset === nodeLength(point.node);
     };
 
     /**
      * returns whether boundaryPoint is edge or not.
      *
-     * @param {BoundaryPoint} boundaryPoitn
+     * @param {BoundaryPoint} point
      * @return {Boolean}
      */
-    var isEdgePoint = function (boundaryPoint) {
-      return boundaryPoint.offset === 0 || isRightEdgePoint(boundaryPoint);
+    var isEdgePoint = function (point) {
+      return isLeftEdgePoint(point) || isRightEdgePoint(point);
     };
 
     /**
@@ -385,12 +390,14 @@ define([
      */
     var position = function (node) {
       var offset = 0;
-      while ((node = node.previousSibling)) { offset += 1; }
+      while ((node = node.previousSibling)) {
+        offset += 1;
+      }
       return offset;
     };
 
     var hasChildren = function (node) {
-      return node && node.childNodes && node.childNodes.length;
+      return !!(node && node.childNodes && node.childNodes.length);
     };
 
     /**
@@ -460,9 +467,23 @@ define([
      *
      * @param {BoundaryPoint} pointA
      * @param {BoundaryPoint} pointB
+     * @return {Boolean}
      */
     var isSamePoint = function (pointA, pointB) {
       return pointA.node === pointB.node && pointA.offset === pointB.offset;
+    };
+
+    /**
+     * returns whether point is visible (can set cursor) or not.
+     * 
+     * @param {BoundaryPoint} point
+     * @return {Boolean}
+     */
+    var isVisiblePoint = function (point) {
+      return isText(point.node) ||
+             !hasChildren(point.node) ||
+             isEmpty(point.node) ||
+             !isEdgePoint(point);
     };
 
     /**
@@ -477,6 +498,23 @@ define([
         }
 
         point = prevPoint(point);
+      }
+
+      return null;
+    };
+
+    /**
+     * @param {BoundaryPoint} point
+     * @param {Function} pred
+     * @return {BoundaryPoint}
+     */
+    var nextPointUntil = function (point, pred) {
+      while (point) {
+        if (pred(point)) {
+          return point;
+        }
+
+        point = nextPoint(point);
       }
 
       return null;
@@ -522,7 +560,7 @@ define([
      */
     var fromOffsetPath = function (ancestor, aOffset) {
       var current = ancestor;
-      for (var i = 0, sz = aOffset.length; i < sz; i++) {
+      for (var i = 0, len = aOffset.length; i < len; i++) {
         current = current.childNodes[aOffset[i]];
       }
       return current;
@@ -606,12 +644,12 @@ define([
       var parent = node.parentNode;
       if (!isRemoveChild) {
         var nodes = [];
-        var i, sz;
-        for (i = 0, sz = node.childNodes.length; i < sz; i++) {
+        var i, len;
+        for (i = 0, len = node.childNodes.length; i < len; i++) {
           nodes.push(node.childNodes[i]);
         }
 
-        for (i = 0, sz = nodes.length; i < sz; i++) {
+        for (i = 0, len = nodes.length; i < len; i++) {
           parent.insertBefore(nodes[i], node);
         }
       }
@@ -621,8 +659,28 @@ define([
 
     var isTextarea = makePredByNodeName('TEXTAREA');
 
-    var html = function ($node) {
-      return isTextarea($node[0]) ? $node.val() : $node.html();
+    var html = function ($node, isNewlineOnBlock) {
+      var markup = isTextarea($node[0]) ? $node.val() : $node.html();
+
+      if (isNewlineOnBlock) {
+        var regexEndTag = /<(\/?)(\b(?!!)[^>\s]*)(.*?)(\s*\/?>)/g;
+        markup = markup.replace(regexEndTag, function (match, endSlash, name) {
+          name = name.toUpperCase();
+          var isEndCont = (/^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) && !!endSlash);
+          var isBlock = /^TABLE|^TBODY|^TR|^HR|^UL/.test(name);
+
+          return match + ((isEndCont || isBlock) ? '\n' : '');
+        });
+        markup = $.trim(markup);
+      }
+
+      return markup;
+    };
+
+    var value = function ($textarea) {
+      var val = $textarea.val();
+      // strip line breaks
+      return val.replace(/[\n\r]/g, '');
     };
 
     return {
@@ -636,14 +694,14 @@ define([
       isText: isText,
       isPara: isPara,
       isInline: isInline,
-      isBodyText: isBodyText,
       isBodyInline: isBodyInline,
       isParaInline: isParaInline,
       isList: isList,
       isTable: makePredByNodeName('TABLE'),
       isCell: isCell,
+      isBlockquote: isBlockquote,
       isBodyContainer: isBodyContainer,
-      isAnchor: makePredByNodeName('A'),
+      isAnchor: isAnchor,
       isDiv: makePredByNodeName('DIV'),
       isLi: makePredByNodeName('LI'),
       isSpan: makePredByNodeName('SPAN'),
@@ -653,6 +711,8 @@ define([
       isI: makePredByNodeName('I'),
       isImg: makePredByNodeName('IMG'),
       isTextarea: isTextarea,
+      isEmpty: isEmpty,
+      isEmptyAnchor: func.and(isAnchor, isEmpty),
       nodeLength: nodeLength,
       isLeftEdgePoint: isLeftEdgePoint,
       isRightEdgePoint: isRightEdgePoint,
@@ -661,7 +721,9 @@ define([
       prevPoint: prevPoint,
       nextPoint: nextPoint,
       isSamePoint: isSamePoint,
+      isVisiblePoint: isVisiblePoint,
       prevPointUntil: prevPointUntil,
+      nextPointUntil: nextPointUntil,
       walkPoint: walkPoint,
       ancestor: ancestor,
       listAncestor: listAncestor,
@@ -669,17 +731,18 @@ define([
       listPrev: listPrev,
       listDescendant: listDescendant,
       commonAncestor: commonAncestor,
-      listBetween: listBetween,
       wrap: wrap,
       insertAfter: insertAfter,
       appendChildNodes: appendChildNodes,
       position: position,
+      hasChildren: hasChildren,
       makeOffsetPath: makeOffsetPath,
       fromOffsetPath: fromOffsetPath,
       splitTree: splitTree,
       createText: createText,
       remove: remove,
-      html: html
+      html: html,
+      value: value
     };
   })();
 

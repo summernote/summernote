@@ -426,10 +426,10 @@ define([
 
       var tplAirPopover = function () {
         var content = '';
-        for (var idx = 0, sz = options.airPopover.length; idx < sz; idx ++) {
+        for (var idx = 0, len = options.airPopover.length; idx < len; idx ++) {
           var group = options.airPopover[idx];
           content += '<div class="note-' + group[0] + ' btn-group">';
-          for (var i = 0, szGroup = group[1].length; i < szGroup; i++) {
+          for (var i = 0, lenGroup = group[1].length; i < lenGroup; i++) {
             content += tplButtonInfo[group[1][i]](lang, options);
           }
           content += '</div>';
@@ -660,10 +660,10 @@ define([
       $container.find('.note-color-palette').each(function () {
         var $palette = $(this), eventName = $palette.attr('data-target-event');
         var paletteContents = [];
-        for (var row = 0, szRow = colorInfo.length; row < szRow; row++) {
+        for (var row = 0, lenRow = colorInfo.length; row < lenRow; row++) {
           var colors = colorInfo[row];
           var buttons = [];
-          for (var col = 0, szCol = colors.length; col < szCol; col++) {
+          for (var col = 0, lenCol = colors.length; col < lenCol; col++) {
             var color = colors[col];
             buttons.push(['<button type="button" class="note-color-btn" style="background-color:', color,
                            ';" data-event="', eventName,
@@ -759,7 +759,7 @@ define([
 
       //04. create Toolbar
       var toolbarHTML = '';
-      for (var idx = 0, sz = options.toolbar.length; idx < sz; idx ++) {
+      for (var idx = 0, len = options.toolbar.length; idx < len; idx ++) {
         var groupName = options.toolbar[idx][0];
         var groupButtons = options.toolbar[idx][1];
 
