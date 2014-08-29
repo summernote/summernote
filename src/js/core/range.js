@@ -249,8 +249,7 @@ define([
             if (dom.isLeftEdgePoint(point)) {
               leftEdgeNodes.push(point.node);
             }
-            if (dom.isRightEdgePoint(point) &&
-                  list.contains(leftEdgeNodes, point.node)) {
+            if (dom.isRightEdgePoint(point) && list.contains(leftEdgeNodes, point.node)) {
               node = point.node;
             }
           } else if (includeAncestor) {
@@ -368,7 +367,18 @@ define([
           return !list.contains(nodes, point.node);
         });
 
+        var emptyParents = [];
         $.each(nodes, function (idx, node) {
+          // find empty parents
+          var parent = node.parentNode;
+          if (point.node !== parent && dom.nodeLength(parent) === 1) {
+            emptyParents.push(parent);
+          }
+          dom.remove(node, false);
+        });
+
+        // remove empty parents
+        $.each(emptyParents, function (idx, node) {
           dom.remove(node, false);
         });
 
