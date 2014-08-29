@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-29T05:37Z
+ * Date: 2014-08-29T07:25Z
  */
 (function (factory) {
   /* global define */
@@ -992,8 +992,28 @@
 
     var isTextarea = makePredByNodeName('TEXTAREA');
 
-    var html = function ($node) {
-      return isTextarea($node[0]) ? $node.val() : $node.html();
+    var html = function ($node, isNewlineOnBlock) {
+      var markup = isTextarea($node[0]) ? $node.val() : $node.html();
+
+      if (isNewlineOnBlock) {
+        var regexEndTag = /<(\/?)(\b(?!!)[^>\s]*)(.*?)(\s*\/?>)/g;
+        markup = markup.replace(regexEndTag, function (match, endSlash, name) {
+          name = name.toUpperCase();
+          var isEndCont = (/^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) && !!endSlash);
+          var isBlock = /^TABLE|^TBODY|^TR|^HR|^UL/.test(name);
+
+          return match + ((isEndCont || isBlock) ? '\n' : '');
+        });
+        markup = $.trim(markup);
+      }
+
+      return markup;
+    };
+
+    var value = function ($textarea) {
+      var val = $textarea.val();
+      // strip line breaks
+      return val.replace(/[\n\r]/g, '');
     };
 
     return {
@@ -1054,7 +1074,8 @@
       splitTree: splitTree,
       createText: createText,
       remove: remove,
-      html: html
+      html: html,
+      value: value
     };
   })();
 
@@ -3398,7 +3419,7 @@
 
         var isCodeview = $editor.hasClass('codeview');
         if (isCodeview) {
-          $codable.val($editable.html());
+          $codable.val(dom.html($editable, true));
           $codable.height($editable.height());
           toolbar.deactivate($toolbar);
           popover.hide($popover);
@@ -3420,7 +3441,7 @@
             // CodeMirror hasn't Padding.
             cmEditor.setSize(null, $editable.outerHeight());
             // autoFormatRange If formatting included
-            if (options.codemirror.autoFormatOnStart && cmEditor.autoFormatRange) {
+            if (cmEditor.autoFormatRange) {
               cmEditor.autoFormatRange({line: 0, ch: 0}, {
                 line: cmEditor.lineCount(),
                 ch: cmEditor.getTextArea().value.length
@@ -3436,7 +3457,7 @@
             cmEditor.toTextArea();
           }
 
-          $editable.html($codable.val() || dom.emptyPara);
+          $editable.html(dom.value($codable) || dom.emptyPara);
           $editable.height(options.height ? $codable.height() : 'auto');
 
           toolbar.activate($toolbar);

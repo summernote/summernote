@@ -659,8 +659,28 @@ define([
 
     var isTextarea = makePredByNodeName('TEXTAREA');
 
-    var html = function ($node) {
-      return isTextarea($node[0]) ? $node.val() : $node.html();
+    var html = function ($node, isNewlineOnBlock) {
+      var markup = isTextarea($node[0]) ? $node.val() : $node.html();
+
+      if (isNewlineOnBlock) {
+        var regexEndTag = /<(\/?)(\b(?!!)[^>\s]*)(.*?)(\s*\/?>)/g;
+        markup = markup.replace(regexEndTag, function (match, endSlash, name) {
+          name = name.toUpperCase();
+          var isEndCont = (/^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) && !!endSlash);
+          var isBlock = /^TABLE|^TBODY|^TR|^HR|^UL/.test(name);
+
+          return match + ((isEndCont || isBlock) ? '\n' : '');
+        });
+        markup = $.trim(markup);
+      }
+
+      return markup;
+    };
+
+    var value = function ($textarea) {
+      var val = $textarea.val();
+      // strip line breaks
+      return val.replace(/[\n\r]/g, '');
     };
 
     return {
@@ -721,7 +741,8 @@ define([
       splitTree: splitTree,
       createText: createText,
       remove: remove,
-      html: html
+      html: html,
+      value: value
     };
   })();
 
