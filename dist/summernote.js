@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-27T14:14Z
+ * Date: 2014-08-29T05:04Z
  */
 (function (factory) {
   /* global define */
@@ -440,7 +440,7 @@
     };
 
     var isInline = function (node) {
-      return !isBodyContainer(node) && !isPara(node);
+      return !isBodyContainer(node) && !isList(node) && !isPara(node);
     };
 
     var isList = function (node) {
@@ -451,8 +451,10 @@
       return node && /^TD|^TH/.test(node.nodeName.toUpperCase());
     };
 
+    var isBlockquote = makePredByNodeName('BLOCKQUOTE');
+
     var isBodyContainer = function (node) {
-      return isCell(node) || isEditable(node);
+      return isCell(node) || isBlockquote(node) || isEditable(node);
     };
 
     var isAnchor = makePredByNodeName('A');
@@ -1010,6 +1012,7 @@
       isList: isList,
       isTable: makePredByNodeName('TABLE'),
       isCell: isCell,
+      isBlockquote: isBlockquote,
       isBodyContainer: isBodyContainer,
       isAnchor: isAnchor,
       isDiv: makePredByNodeName('DIV'),
