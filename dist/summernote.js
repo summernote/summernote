@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-29T07:25Z
+ * Date: 2014-08-29T07:34Z
  */
 (function (factory) {
   /* global define */
@@ -3441,7 +3441,7 @@
             // CodeMirror hasn't Padding.
             cmEditor.setSize(null, $editable.outerHeight());
             // autoFormatRange If formatting included
-            if (cmEditor.autoFormatRange) {
+            if (options.codemirror.autoFormatOnStart && cmEditor.autoFormatRange) {
               cmEditor.autoFormatRange({line: 0, ch: 0}, {
                 line: cmEditor.lineCount(),
                 ch: cmEditor.getTextArea().value.length
