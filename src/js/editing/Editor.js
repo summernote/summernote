@@ -50,12 +50,20 @@ define([
       return rng ? rng.isOnEditable() && style.current(rng, target) : false;
     };
 
+    var triggerOnChange = this.triggerOnChange = function ($editable) {
+      var onChange = $editable.data('callbacks').onChange;
+      if (onChange) {
+        onChange($editable.html(), $editable);
+      }
+    };
+
     /**
      * undo
      * @param {jQuery} $editable
      */
     this.undo = function ($editable) {
       $editable.data('NoteHistory').undo($editable);
+      triggerOnChange($editable);
     };
 
     /**
@@ -64,6 +72,7 @@ define([
      */
     this.redo = function ($editable) {
       $editable.data('NoteHistory').redo($editable);
+      triggerOnChange($editable);
     };
 
     /**
@@ -160,6 +169,7 @@ define([
       });
 
       range.create(nextPara, 0).normalize().select();
+      triggerOnChange($editable);
     };
 
     /**
@@ -177,6 +187,7 @@ define([
           width: Math.min($editable.width(), $image.width())
         });
         range.create().insertNode($image[0]);
+        triggerOnChange($editable);
       }).fail(function () {
         var callbacks = $editable.data('callbacks');
         if (callbacks.onImageUploadError) {
@@ -249,6 +260,7 @@ define([
       if ($video) {
         $video.attr('frameborder', 0);
         range.create().insertNode($video[0]);
+        triggerOnChange($editable);
       }
     };
 
@@ -312,6 +324,7 @@ define([
       style.stylePara(range.create(), {
         lineHeight: value
       });
+      triggerOnChange($editable);
     };
 
     /**
@@ -358,8 +371,8 @@ define([
         target: isNewWindow ? '_blank' : ''
       });
 
-      rng = range.createFromNode(anchor);
-      rng.select();
+      range.createFromNode(anchor).select();
+      triggerOnChange($editable);
     };
 
     /**
@@ -421,6 +434,7 @@ define([
       var rng = range.create();
       rng = rng.deleteContents();
       rng.insertNode(table.createTable(dimension[0], dimension[1]));
+      triggerOnChange($editable);
     };
 
     /**

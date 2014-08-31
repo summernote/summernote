@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-29T07:34Z
+ * Date: 2014-08-31T03:48Z
  */
 (function (factory) {
   /* global define */
@@ -992,17 +992,24 @@
 
     var isTextarea = makePredByNodeName('TEXTAREA');
 
+    /**
+     * get the HTML contents of node 
+     *
+     * @param {jQuery} $node
+     * @param {Boolean} [isNewlineOnBlock]
+     */
     var html = function ($node, isNewlineOnBlock) {
       var markup = isTextarea($node[0]) ? $node.val() : $node.html();
 
       if (isNewlineOnBlock) {
-        var regexEndTag = /<(\/?)(\b(?!!)[^>\s]*)(.*?)(\s*\/?>)/g;
-        markup = markup.replace(regexEndTag, function (match, endSlash, name) {
+        var regexTag = /<(\/?)(\b(?!!)[^>\s]*)(.*?)(\s*\/?>)/g;
+        markup = markup.replace(regexTag, function (match, endSlash, name) {
           name = name.toUpperCase();
-          var isEndCont = (/^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) && !!endSlash);
-          var isBlock = /^TABLE|^TBODY|^TR|^HR|^UL/.test(name);
+          var isEndOfInlineContainer = /^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) &&
+                                       !!endSlash;
+          var isBlockNode = /^TABLE|^TBODY|^TR|^HR|^UL/.test(name);
 
-          return match + ((isEndCont || isBlock) ? '\n' : '');
+          return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
         });
         markup = $.trim(markup);
       }
@@ -1105,8 +1112,7 @@
       codemirror: {                 // codemirror options
         mode: 'text/html',
         htmlMode: true,
-        lineNumbers: true,
-        autoFormatOnStart: false
+        lineNumbers: true
       },
 
       // language
@@ -2241,12 +2247,20 @@
       return rng ? rng.isOnEditable() && style.current(rng, target) : false;
     };
 
+    var triggerOnChange = this.triggerOnChange = function ($editable) {
+      var onChange = $editable.data('callbacks').onChange;
+      if (onChange) {
+        onChange($editable.html(), $editable);
+      }
+    };
+
     /**
      * undo
      * @param {jQuery} $editable
      */
     this.undo = function ($editable) {
       $editable.data('NoteHistory').undo($editable);
+      triggerOnChange($editable);
     };
 
     /**
@@ -2255,6 +2269,7 @@
      */
     this.redo = function ($editable) {
       $editable.data('NoteHistory').redo($editable);
+      triggerOnChange($editable);
     };
 
     /**
@@ -2351,6 +2366,7 @@
       });
 
       range.create(nextPara, 0).normalize().select();
+      triggerOnChange($editable);
     };
 
     /**
@@ -2368,6 +2384,7 @@
           width: Math.min($editable.width(), $image.width())
         });
         range.create().insertNode($image[0]);
+        triggerOnChange($editable);
       }).fail(function () {
         var callbacks = $editable.data('callbacks');
         if (callbacks.onImageUploadError) {
@@ -2440,6 +2457,7 @@
       if ($video) {
         $video.attr('frameborder', 0);
         range.create().insertNode($video[0]);
+        triggerOnChange($editable);
       }
     };
 
@@ -2503,6 +2521,7 @@
       style.stylePara(range.create(), {
         lineHeight: value
       });
+      triggerOnChange($editable);
     };
 
     /**
@@ -2549,8 +2568,8 @@
         target: isNewWindow ? '_blank' : ''
       });
 
-      rng = range.createFromNode(anchor);
-      rng.select();
+      range.createFromNode(anchor).select();
+      triggerOnChange($editable);
     };
 
     /**
@@ -2612,6 +2631,7 @@
       var rng = range.create();
       rng = rng.deleteContents();
       rng.insertNode(table.createTable(dimension[0], dimension[1]));
+      triggerOnChange($editable);
     };
 
     /**
@@ -2691,14 +2711,14 @@
 
       return {
         contents: $editable.html(),
-        bookmark: rng.bookmark(editable),
-        scrollTop: $editable.scrollTop()
+        bookmark: rng.bookmark(editable)
       };
     };
 
     var applySnapshot = function ($editable, snapshot) {
-      $editable.html(snapshot.contents).scrollTop(snapshot.scrollTop);
-      range.createFromBookmark($editable[0], snapshot.bookmark).select();
+      $editable.html(snapshot.contents);
+      // FIXME: Still buggy, use marker tag
+      // range.createFromBookmark($editable[0], snapshot.bookmark).select();
     };
 
     this.undo = function ($editable) {
@@ -3440,13 +3460,6 @@
 
             // CodeMirror hasn't Padding.
             cmEditor.setSize(null, $editable.outerHeight());
-            // autoFormatRange If formatting included
-            if (options.codemirror.autoFormatOnStart && cmEditor.autoFormatRange) {
-              cmEditor.autoFormatRange({line: 0, ch: 0}, {
-                line: cmEditor.lineCount(),
-                ch: cmEditor.getTextArea().value.length
-              });
-            }
             $codable.data('cmEditor', cmEditor);
           }
         } else {
@@ -3863,7 +3876,7 @@
       if (options.onToolbarClick) { layoutInfo.toolbar.click(options.onToolbarClick); }
       if (options.onChange) {
         var hChange = function () {
-          options.onChange(layoutInfo.editable, layoutInfo.editable.html());
+          editor.triggerOnChange(layoutInfo.editable);
         };
 
         if (agent.isMSIE) {
@@ -3877,6 +3890,7 @@
       // All editor status will be saved on editable with jquery's data
       // for support multiple editor with singleton object.
       layoutInfo.editable.data('callbacks', {
+        onChange: options.onChange,
         onAutoSave: options.onAutoSave,
         onImageUpload: options.onImageUpload,
         onImageUploadError: options.onImageUploadError,
