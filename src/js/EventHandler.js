@@ -232,13 +232,6 @@ define([
 
             // CodeMirror hasn't Padding.
             cmEditor.setSize(null, $editable.outerHeight());
-            // autoFormatRange If formatting included
-            if (options.codemirror.autoFormatOnStart && cmEditor.autoFormatRange) {
-              cmEditor.autoFormatRange({line: 0, ch: 0}, {
-                line: cmEditor.lineCount(),
-                ch: cmEditor.getTextArea().value.length
-              });
-            }
             $codable.data('cmEditor', cmEditor);
           }
         } else {
@@ -655,7 +648,7 @@ define([
       if (options.onToolbarClick) { layoutInfo.toolbar.click(options.onToolbarClick); }
       if (options.onChange) {
         var hChange = function () {
-          options.onChange(layoutInfo.editable, layoutInfo.editable.html());
+          editor.triggerOnChange(layoutInfo.editable);
         };
 
         if (agent.isMSIE) {
@@ -669,6 +662,7 @@ define([
       // All editor status will be saved on editable with jquery's data
       // for support multiple editor with singleton object.
       layoutInfo.editable.data('callbacks', {
+        onChange: options.onChange,
         onAutoSave: options.onAutoSave,
         onImageUpload: options.onImageUpload,
         onImageUploadError: options.onImageUploadError,

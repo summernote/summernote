@@ -659,17 +659,24 @@ define([
 
     var isTextarea = makePredByNodeName('TEXTAREA');
 
+    /**
+     * get the HTML contents of node 
+     *
+     * @param {jQuery} $node
+     * @param {Boolean} [isNewlineOnBlock]
+     */
     var html = function ($node, isNewlineOnBlock) {
       var markup = isTextarea($node[0]) ? $node.val() : $node.html();
 
       if (isNewlineOnBlock) {
-        var regexEndTag = /<(\/?)(\b(?!!)[^>\s]*)(.*?)(\s*\/?>)/g;
-        markup = markup.replace(regexEndTag, function (match, endSlash, name) {
+        var regexTag = /<(\/?)(\b(?!!)[^>\s]*)(.*?)(\s*\/?>)/g;
+        markup = markup.replace(regexTag, function (match, endSlash, name) {
           name = name.toUpperCase();
-          var isEndCont = (/^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) && !!endSlash);
-          var isBlock = /^TABLE|^TBODY|^TR|^HR|^UL/.test(name);
+          var isEndOfInlineContainer = /^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) &&
+                                       !!endSlash;
+          var isBlockNode = /^TABLE|^TBODY|^TR|^HR|^UL/.test(name);
 
-          return match + ((isEndCont || isBlock) ? '\n' : '');
+          return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
         });
         markup = $.trim(markup);
       }

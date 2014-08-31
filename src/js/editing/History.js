@@ -12,14 +12,14 @@ define(['summernote/core/range'], function (range) {
 
       return {
         contents: $editable.html(),
-        bookmark: rng.bookmark(editable),
-        scrollTop: $editable.scrollTop()
+        bookmark: rng.bookmark(editable)
       };
     };
 
     var applySnapshot = function ($editable, snapshot) {
-      $editable.html(snapshot.contents).scrollTop(snapshot.scrollTop);
-      range.createFromBookmark($editable[0], snapshot.bookmark).select();
+      $editable.html(snapshot.contents);
+      // FIXME: Still buggy, use marker tag
+      // range.createFromBookmark($editable[0], snapshot.bookmark).select();
     };
 
     this.undo = function ($editable) {
