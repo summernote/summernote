@@ -86,6 +86,10 @@ $('#summernote').destroy();
 
 ### Change Log
 
+#### v0.5.8 2014-08-31
+* Remove `autoFormatRange` option
+* Fixed `onChange` issues
+
 #### v0.5.7 ~ v0.5.4 2014-08-29 ~ 2014-08-23
 * Dom editing (insertPara, insertNode)
 
