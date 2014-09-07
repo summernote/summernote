@@ -6,9 +6,10 @@ define([
   'summernote/core/range',
   'summernote/core/async',
   'summernote/editing/Style',
-  'summernote/editing/Table'
+  'summernote/editing/Table',
+  'summernote/editing/Bullet'
 ], function (agent, func, list, dom, range, async,
-             Style, Table) {
+             Style, Table, Bullet) {
   /**
    * Editor
    * @class
@@ -17,6 +18,7 @@ define([
 
     var style = new Style();
     var table = new Table();
+    var bullet = new Bullet();
 
     /**
      * save current range
@@ -87,8 +89,7 @@ define([
     // native commands(with execCommand), generate function for execCommand
     var commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
                     'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
-                    'insertOrderedList', 'insertUnorderedList',
-                    'indent', 'outdent', 'formatBlock', 'removeFormat',
+                    'formatBlock', 'removeFormat',
                     'backColor', 'foreColor', 'insertHorizontalRule', 'fontName'];
 
     for (var idx = 0, len = commands.length; idx < len; idx ++) {
@@ -169,6 +170,30 @@ define([
       });
 
       range.create(nextPara, 0).normalize().select();
+      triggerOnChange($editable);
+    };
+
+    this.insertOrderedList = function ($editable) {
+      recordUndo($editable);
+      bullet.insertOrderedList($editable);
+      triggerOnChange($editable);
+    };
+
+    this.insertUnorderedList = function ($editable) {
+      recordUndo($editable);
+      bullet.insertUnorderedList($editable);
+      triggerOnChange($editable);
+    };
+
+    this.indent = function ($editable) {
+      recordUndo($editable);
+      bullet.indent($editable);
+      triggerOnChange($editable);
+    };
+
+    this.outdent = function ($editable) {
+      recordUndo($editable);
+      bullet.outdent($editable);
       triggerOnChange($editable);
     };
 
