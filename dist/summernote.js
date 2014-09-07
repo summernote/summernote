@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.5.8
+ * Super simple wysiwyg editor on Bootstrap v0.5.9
  * http://hackerwins.github.io/summernote/
  *
  * summernote.js
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-31T03:57Z
+ * Date: 2014-09-07T04:39Z
  */
 (function (factory) {
   /* global define */
@@ -47,6 +47,33 @@
         throw new TypeError('Reduce of empty array with no initial value');
       }
       return value;
+    };
+  }
+
+  if ('function' !== typeof Array.prototype.filter) {
+    Array.prototype.filter = function (fun/*, thisArg*/) {
+      if (this === void 0 || this === null) {
+        throw new TypeError();
+      }
+  
+      var t = Object(this);
+      var len = t.length >>> 0;
+      if (typeof fun !== 'function') {
+        throw new TypeError();
+      }
+  
+      var res = [];
+      var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
+      for (var i = 0; i < len; i++) {
+        if (i in t) {
+          var val = t[i];
+          if (fun.call(thisArg, val, i, t)) {
+            res.push(val);
+          }
+        }
+      }
+  
+      return res;
     };
   }
 
@@ -100,6 +127,12 @@
 
     var eq2 = function (itemA, itemB) {
       return itemA === itemB;
+    };
+
+    var peq2 = function (propName) {
+      return function (itemA, itemB) {
+        return itemA[propName] === itemB[propName];
+      };
     };
 
     var ok = function () {
@@ -179,6 +212,7 @@
     return {
       eq: eq,
       eq2: eq2,
+      peq2: peq2,
       ok: ok,
       fail: fail,
       self: self,
@@ -195,7 +229,7 @@
    */
   var list = (function () {
     /**
-     * returns the first element of an array.
+     * returns the first item of an array.
      * @param {Array} array
      */
     var head = function (array) {
@@ -203,7 +237,7 @@
     };
 
     /**
-     * returns the last element of an array.
+     * returns the last item of an array.
      * @param {Array} array
      */
     var last = function (array) {
@@ -219,11 +253,23 @@
     };
 
     /**
-     * returns the rest of the elements in an array.
+     * returns the rest of the items in an array.
      * @param {Array} array
      */
     var tail = function (array) {
       return array.slice(1);
+    };
+
+    /**
+     * returns item of array
+     */
+    var find = function (array, pred) {
+      for (var idx = 0, len = array.length; idx < len; idx ++) {
+        var item = array[idx];
+        if (pred(item)) {
+          return item;
+        }
+      }
     };
 
     /**
@@ -331,7 +377,7 @@
     };
   
     return { head: head, last: last, initial: initial, tail: tail,
-             prev: prev, next: next, contains: contains,
+             prev: prev, next: next, find: find, contains: contains,
              all: all, sum: sum, from: from,
              clusterBy: clusterBy, compact: compact, unique: unique };
   })();
@@ -437,6 +483,12 @@
 
       // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
       return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName.toUpperCase());
+    };
+
+    var isLi = makePredByNodeName('LI');
+
+    var isPurePara = function (node) {
+      return isPara(node) && !isLi(node);
     };
 
     var isInline = function (node) {
@@ -547,6 +599,14 @@
         return pred(el);
       });
       return ancestors;
+    };
+
+    /**
+     * find farthest ancestor predicate hit
+     */
+    var lastAncestor = function (node, pred) {
+      var ancestors = listAncestor(node);
+      return list.last(ancestors.filter(pred));
     };
 
     /**
@@ -869,7 +929,9 @@
           break;
         }
 
-        var isSkipOffset = isSkipInnerOffset && startPoint.node !== point.node;
+        var isSkipOffset = isSkipInnerOffset &&
+                           startPoint.node !== point.node &&
+                           endPoint.node !== point.node;
         point = nextPoint(point, isSkipOffset);
       }
     };
@@ -903,9 +965,10 @@
      * split element or #text
      *
      * @param {BoundaryPoint} point
+     * @param {Boolean} [isSkipPaddingBlankHTML]
      * @return {Node} right node of boundaryPoint
      */
-    var splitNode = function (point) {
+    var splitNode = function (point, isSkipPaddingBlankHTML) {
       // split #text
       if (isText(point.node)) {
         // edge case
@@ -923,8 +986,10 @@
       var clone = insertAfter(point.node.cloneNode(false), point.node);
       appendChildNodes(clone, listNext(childNode));
 
-      paddingBlankHTML(point.node);
-      paddingBlankHTML(clone);
+      if (!isSkipPaddingBlankHTML) {
+        paddingBlankHTML(point.node);
+        paddingBlankHTML(clone);
+      }
 
       return clone;
     };
@@ -934,31 +999,38 @@
      *
      * @param {Node} root - split root
      * @param {BoundaryPoint} point
+     * @param {Boolean} [isSkipPaddingBlankHTML]
      * @return {Node} right node of boundaryPoint
      */
-    var splitTree = function (root, point) {
+    var splitTree = function (root, point, isSkipPaddingBlankHTML) {
       // ex) [#text, <span>, <p>]
       var ancestors = listAncestor(point.node, func.eq(root));
 
       if (!ancestors.length) {
         return null;
       } else if (ancestors.length === 1) {
-        return splitNode(point);
+        return splitNode(point, isSkipPaddingBlankHTML);
       }
 
       return ancestors.reduce(function (node, parent) {
         var clone = insertAfter(parent.cloneNode(false), parent);
 
         if (node === point.node) {
-          node = splitNode(point);
+          node = splitNode(point, isSkipPaddingBlankHTML);
         }
 
         appendChildNodes(clone, listNext(node));
 
-        paddingBlankHTML(parent);
-        paddingBlankHTML(clone);
+        if (!isSkipPaddingBlankHTML) {
+          paddingBlankHTML(parent);
+          paddingBlankHTML(clone);
+        }
         return clone;
       });
+    };
+
+    var create = function (nodeName) {
+      return document.createElement(nodeName);
     };
 
     var createText = function (text) {
@@ -990,6 +1062,31 @@
       parent.removeChild(node);
     };
 
+    /**
+     * replace node with provided nodeName
+     *
+     * @param {Node} node
+     * @param {String} nodeName
+     * @return {Node} - new node
+     */
+    var replace = function (node, nodeName) {
+      if (node.nodeName.toUpperCase() === nodeName.toUpperCase()) {
+        return node;
+      }
+
+      var newNode = create(nodeName);
+
+      if (node.style.cssText) {
+        newNode.style.cssText = node.style.cssText;
+      }
+
+      appendChildNodes(newNode, list.from(node.childNodes));
+      insertAfter(newNode, node);
+      remove(node);
+
+      return newNode;
+    };
+
     var isTextarea = makePredByNodeName('TEXTAREA');
 
     /**
@@ -1007,7 +1104,7 @@
           name = name.toUpperCase();
           var isEndOfInlineContainer = /^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) &&
                                        !!endSlash;
-          var isBlockNode = /^TABLE|^TBODY|^TR|^HR|^UL/.test(name);
+          var isBlockNode = /^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
 
           return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
         });
@@ -1033,6 +1130,7 @@
       buildLayoutInfo: buildLayoutInfo,
       isText: isText,
       isPara: isPara,
+      isPurePara: isPurePara,
       isInline: isInline,
       isBodyInline: isBodyInline,
       isParaInline: isParaInline,
@@ -1043,7 +1141,7 @@
       isBodyContainer: isBodyContainer,
       isAnchor: isAnchor,
       isDiv: makePredByNodeName('DIV'),
-      isLi: makePredByNodeName('LI'),
+      isLi: isLi,
       isSpan: makePredByNodeName('SPAN'),
       isB: makePredByNodeName('B'),
       isU: makePredByNodeName('U'),
@@ -1067,6 +1165,7 @@
       walkPoint: walkPoint,
       ancestor: ancestor,
       listAncestor: listAncestor,
+      lastAncestor: lastAncestor,
       listNext: listNext,
       listPrev: listPrev,
       listDescendant: listDescendant,
@@ -1079,8 +1178,10 @@
       makeOffsetPath: makeOffsetPath,
       fromOffsetPath: fromOffsetPath,
       splitTree: splitTree,
+      create: create,
       createText: createText,
       remove: remove,
+      replace: replace,
       html: html,
       value: value
     };
@@ -1088,7 +1189,7 @@
 
   var settings = {
     // version
-    version: '0.5.8',
+    version: '0.5.9',
 
     /**
      * options
@@ -2206,6 +2307,178 @@
     };
   };
 
+
+  var Bullet = function () {
+    this.insertOrderedList = function () {
+      this.toggleList('OL');
+    };
+
+    this.insertUnorderedList = function () {
+      this.toggleList('UL');
+    };
+
+    this.indent = function () {
+      var self = this;
+      var rng = range.create().wrapBodyInlineWithPara();
+
+      var paras = rng.nodes(dom.isPara, { includeAncestor: true });
+      var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
+
+      $.each(clustereds, function (idx, paras) {
+        var head = list.head(paras);
+        if (dom.isLi(head)) {
+          self.wrapList(paras, head.parentNode.nodeName);
+        } else {
+          $.each(paras, function (idx, para) {
+            $(para).css('marginLeft', function (idx, val) {
+              return (parseInt(val, 10) || 0) + 25;
+            });
+          });
+        }
+      });
+
+      rng.select();
+    };
+
+    this.outdent = function () {
+      var self = this;
+      var rng = range.create().wrapBodyInlineWithPara();
+
+      var paras = rng.nodes(dom.isPara, { includeAncestor: true });
+      var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
+
+      $.each(clustereds, function (idx, paras) {
+        var head = list.head(paras);
+        if (dom.isLi(head)) {
+          self.releaseList([paras]);
+        } else {
+          $.each(paras, function (idx, para) {
+            $(para).css('marginLeft', function (idx, val) {
+              val = (parseInt(val, 10) || 0);
+              return val > 25 ? val - 25 : '';
+            });
+          });
+        }
+      });
+
+      rng.select();
+    };
+
+    this.toggleList = function (listName) {
+      var self = this;
+      var rng = range.create().wrapBodyInlineWithPara();
+
+      var paras = rng.nodes(dom.isPara, { includeAncestor: true });
+      var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
+
+      // paragraph to list
+      if (list.find(paras, dom.isPurePara)) {
+        $.each(clustereds, function (idx, paras) {
+          self.wrapList(paras, listName);
+        });
+      // list to paragraph or change list style
+      } else {
+        var diffLists = rng.nodes(dom.isList, {
+          includeAncestor: true
+        }).filter(function (listNode) {
+          return !$.nodeName(listNode, listName);
+        });
+
+        if (diffLists.length) {
+          $.each(diffLists, function (idx, listNode) {
+            dom.replace(listNode, listName);
+          });
+        } else {
+          this.releaseList(clustereds, true);
+        }
+      }
+
+      rng.select();
+    };
+
+    /**
+     * @param {Node[]} paras
+     * @param {String} listName
+     */
+    this.wrapList = function (paras, listName) {
+      var head = list.head(paras);
+      var last = list.last(paras);
+
+      var prevList = dom.isList(head.previousSibling) && head.previousSibling;
+      var nextList = dom.isList(last.nextSibling) && last.nextSibling;
+
+      var listNode = prevList || dom.insertAfter(dom.create(listName || 'UL'), last);
+
+      // P to LI
+      paras = $.map(paras, function (para) {
+        return dom.isPurePara(para) ? dom.replace(para, 'LI') : para;
+      });
+
+      // append to list(<ul>, <ol>)
+      dom.appendChildNodes(listNode, paras);
+
+      if (nextList) {
+        dom.appendChildNodes(listNode, list.from(nextList.childNodes));
+        dom.remove(nextList);
+      }
+    };
+
+    /**
+     * @param {Array[]} clustereds
+     * @param {Boolean} isEscapseToBody
+     * @return {Node[]}
+     */
+    this.releaseList = function (clustereds, isEscapseToBody) {
+      var releasedParas = [];
+
+      $.each(clustereds, function (idx, paras) {
+        var head = list.head(paras);
+        var last = list.last(paras);
+
+        var headList = isEscapseToBody ? dom.lastAncestor(head, dom.isList) :
+                                         head.parentNode;
+        var lastList = headList.childNodes.length > 1 ? dom.splitTree(headList, {
+          node: last.parentNode,
+          offset: dom.position(last) + 1
+        }, true) : null;
+
+        var middleList = dom.splitTree(headList, {
+          node: head.parentNode,
+          offset: dom.position(head)
+        }, true);
+
+        paras = isEscapseToBody ? dom.listDescendant(middleList, dom.isLi) :
+                                  list.from(middleList.childNodes).filter(dom.isLi);
+
+        // LI to P
+        if (isEscapseToBody || !dom.isList(headList.parentNode)) {
+          paras = $.map(paras, function (para) {
+            return dom.replace(para, 'P');
+          });
+        }
+
+        $.each(list.from(paras).reverse(), function (idx, para) {
+          dom.insertAfter(para, headList);
+        });
+
+        // remove empty lists
+        var rootLists = list.compact([headList, middleList, lastList]);
+        $.each(rootLists, function (idx, rootList) {
+          var listNodes = [rootList].concat(dom.listDescendant(rootList, dom.isList));
+          $.each(listNodes.reverse(), function (idx, listNode) {
+            if (!dom.nodeLength(listNode)) {
+              dom.remove(listNode, true);
+            }
+          });
+        });
+
+        paras = releasedParas.concat(paras);
+      });
+
+      return releasedParas;
+    };
+  };
+
   /**
    * Editor
    * @class
@@ -2214,6 +2487,7 @@
 
     var style = new Style();
     var table = new Table();
+    var bullet = new Bullet();
 
     /**
      * save current range
@@ -2284,8 +2558,7 @@
     // native commands(with execCommand), generate function for execCommand
     var commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
                     'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
-                    'insertOrderedList', 'insertUnorderedList',
-                    'indent', 'outdent', 'formatBlock', 'removeFormat',
+                    'formatBlock', 'removeFormat',
                     'backColor', 'foreColor', 'insertHorizontalRule', 'fontName'];
 
     for (var idx = 0, len = commands.length; idx < len; idx ++) {
@@ -2366,6 +2639,30 @@
       });
 
       range.create(nextPara, 0).normalize().select();
+      triggerOnChange($editable);
+    };
+
+    this.insertOrderedList = function ($editable) {
+      recordUndo($editable);
+      bullet.insertOrderedList($editable);
+      triggerOnChange($editable);
+    };
+
+    this.insertUnorderedList = function ($editable) {
+      recordUndo($editable);
+      bullet.insertUnorderedList($editable);
+      triggerOnChange($editable);
+    };
+
+    this.indent = function ($editable) {
+      recordUndo($editable);
+      bullet.indent($editable);
+      triggerOnChange($editable);
+    };
+
+    this.outdent = function ($editable) {
+      recordUndo($editable);
+      bullet.outdent($editable);
       triggerOnChange($editable);
     };
 
@@ -4503,7 +4800,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.8</a> · ' +
+                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.9</a> · ' +
                      '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';

@@ -106,6 +106,12 @@ define([
       return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName.toUpperCase());
     };
 
+    var isLi = makePredByNodeName('LI');
+
+    var isPurePara = function (node) {
+      return isPara(node) && !isLi(node);
+    };
+
     var isInline = function (node) {
       return !isBodyContainer(node) && !isList(node) && !isPara(node);
     };
@@ -214,6 +220,14 @@ define([
         return pred(el);
       });
       return ancestors;
+    };
+
+    /**
+     * find farthest ancestor predicate hit
+     */
+    var lastAncestor = function (node, pred) {
+      var ancestors = listAncestor(node);
+      return list.last(ancestors.filter(pred));
     };
 
     /**
@@ -536,7 +550,9 @@ define([
           break;
         }
 
-        var isSkipOffset = isSkipInnerOffset && startPoint.node !== point.node;
+        var isSkipOffset = isSkipInnerOffset &&
+                           startPoint.node !== point.node &&
+                           endPoint.node !== point.node;
         point = nextPoint(point, isSkipOffset);
       }
     };
@@ -570,9 +586,10 @@ define([
      * split element or #text
      *
      * @param {BoundaryPoint} point
+     * @param {Boolean} [isSkipPaddingBlankHTML]
      * @return {Node} right node of boundaryPoint
      */
-    var splitNode = function (point) {
+    var splitNode = function (point, isSkipPaddingBlankHTML) {
       // split #text
       if (isText(point.node)) {
         // edge case
@@ -590,8 +607,10 @@ define([
       var clone = insertAfter(point.node.cloneNode(false), point.node);
       appendChildNodes(clone, listNext(childNode));
 
-      paddingBlankHTML(point.node);
-      paddingBlankHTML(clone);
+      if (!isSkipPaddingBlankHTML) {
+        paddingBlankHTML(point.node);
+        paddingBlankHTML(clone);
+      }
 
       return clone;
     };
@@ -601,31 +620,38 @@ define([
      *
      * @param {Node} root - split root
      * @param {BoundaryPoint} point
+     * @param {Boolean} [isSkipPaddingBlankHTML]
      * @return {Node} right node of boundaryPoint
      */
-    var splitTree = function (root, point) {
+    var splitTree = function (root, point, isSkipPaddingBlankHTML) {
       // ex) [#text, <span>, <p>]
       var ancestors = listAncestor(point.node, func.eq(root));
 
       if (!ancestors.length) {
         return null;
       } else if (ancestors.length === 1) {
-        return splitNode(point);
+        return splitNode(point, isSkipPaddingBlankHTML);
       }
 
       return ancestors.reduce(function (node, parent) {
         var clone = insertAfter(parent.cloneNode(false), parent);
 
         if (node === point.node) {
-          node = splitNode(point);
+          node = splitNode(point, isSkipPaddingBlankHTML);
         }
 
         appendChildNodes(clone, listNext(node));
 
-        paddingBlankHTML(parent);
-        paddingBlankHTML(clone);
+        if (!isSkipPaddingBlankHTML) {
+          paddingBlankHTML(parent);
+          paddingBlankHTML(clone);
+        }
         return clone;
       });
+    };
+
+    var create = function (nodeName) {
+      return document.createElement(nodeName);
     };
 
     var createText = function (text) {
@@ -657,6 +683,31 @@ define([
       parent.removeChild(node);
     };
 
+    /**
+     * replace node with provided nodeName
+     *
+     * @param {Node} node
+     * @param {String} nodeName
+     * @return {Node} - new node
+     */
+    var replace = function (node, nodeName) {
+      if (node.nodeName.toUpperCase() === nodeName.toUpperCase()) {
+        return node;
+      }
+
+      var newNode = create(nodeName);
+
+      if (node.style.cssText) {
+        newNode.style.cssText = node.style.cssText;
+      }
+
+      appendChildNodes(newNode, list.from(node.childNodes));
+      insertAfter(newNode, node);
+      remove(node);
+
+      return newNode;
+    };
+
     var isTextarea = makePredByNodeName('TEXTAREA');
 
     /**
@@ -674,7 +725,7 @@ define([
           name = name.toUpperCase();
           var isEndOfInlineContainer = /^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) &&
                                        !!endSlash;
-          var isBlockNode = /^TABLE|^TBODY|^TR|^HR|^UL/.test(name);
+          var isBlockNode = /^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
 
           return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
         });
@@ -700,6 +751,7 @@ define([
       buildLayoutInfo: buildLayoutInfo,
       isText: isText,
       isPara: isPara,
+      isPurePara: isPurePara,
       isInline: isInline,
       isBodyInline: isBodyInline,
       isParaInline: isParaInline,
@@ -710,7 +762,7 @@ define([
       isBodyContainer: isBodyContainer,
       isAnchor: isAnchor,
       isDiv: makePredByNodeName('DIV'),
-      isLi: makePredByNodeName('LI'),
+      isLi: isLi,
       isSpan: makePredByNodeName('SPAN'),
       isB: makePredByNodeName('B'),
       isU: makePredByNodeName('U'),
@@ -734,6 +786,7 @@ define([
       walkPoint: walkPoint,
       ancestor: ancestor,
       listAncestor: listAncestor,
+      lastAncestor: lastAncestor,
       listNext: listNext,
       listPrev: listPrev,
       listDescendant: listDescendant,
@@ -746,8 +799,10 @@ define([
       makeOffsetPath: makeOffsetPath,
       fromOffsetPath: fromOffsetPath,
       splitTree: splitTree,
+      create: create,
       createText: createText,
       remove: remove,
+      replace: replace,
       html: html,
       value: value
     };

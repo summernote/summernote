@@ -13,6 +13,12 @@ define('summernote/core/func', function () {
       return itemA === itemB;
     };
 
+    var peq2 = function (propName) {
+      return function (itemA, itemB) {
+        return itemA[propName] === itemB[propName];
+      };
+    };
+
     var ok = function () {
       return true;
     };
@@ -90,6 +96,7 @@ define('summernote/core/func', function () {
     return {
       eq: eq,
       eq2: eq2,
+      peq2: peq2,
       ok: ok,
       fail: fail,
       self: self,
