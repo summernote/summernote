@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-09-07T04:06Z
+ * Date: 2014-09-07T04:39Z
  */
 (function (factory) {
   /* global define */
@@ -129,6 +129,12 @@
       return itemA === itemB;
     };
 
+    var peq2 = function (propName) {
+      return function (itemA, itemB) {
+        return itemA[propName] === itemB[propName];
+      };
+    };
+
     var ok = function () {
       return true;
     };
@@ -206,6 +212,7 @@
     return {
       eq: eq,
       eq2: eq2,
+      peq2: peq2,
       ok: ok,
       fail: fail,
       self: self,
@@ -2315,9 +2322,7 @@
       var rng = range.create().wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
-      var clustereds = list.clusterBy(paras, function (nodeA, nodeB) {
-        return nodeA.parentNode === nodeB.parentNode;
-      });
+      var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
 
       $.each(clustereds, function (idx, paras) {
         var head = list.head(paras);
@@ -2340,9 +2345,7 @@
       var rng = range.create().wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
-      var clustereds = list.clusterBy(paras, function (nodeA, nodeB) {
-        return nodeA.parentNode === nodeB.parentNode;
-      });
+      var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
 
       $.each(clustereds, function (idx, paras) {
         var head = list.head(paras);
@@ -2352,7 +2355,7 @@
           $.each(paras, function (idx, para) {
             $(para).css('marginLeft', function (idx, val) {
               val = (parseInt(val, 10) || 0);
-              return val >= 25 ? val - 25 : 0;
+              return val > 25 ? val - 25 : '';
             });
           });
         }
@@ -2366,9 +2369,7 @@
       var rng = range.create().wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
-      var clustereds = list.clusterBy(paras, function (nodeA, nodeB) {
-        return nodeA.parentNode === nodeB.parentNode;
-      });
+      var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
 
       // paragraph to list
       if (list.find(paras, dom.isPurePara)) {

@@ -1,8 +1,9 @@
 define([
+  'summernote/core/list',
+  'summernote/core/func',
   'summernote/core/dom',
-  'summernote/core/range',
-  'summernote/core/list'
-], function (dom, range, list) {
+  'summernote/core/range'
+], function (list, func, dom, range) {
 
   var Bullet = function () {
     this.insertOrderedList = function () {
@@ -18,9 +19,7 @@ define([
       var rng = range.create().wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
-      var clustereds = list.clusterBy(paras, function (nodeA, nodeB) {
-        return nodeA.parentNode === nodeB.parentNode;
-      });
+      var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
 
       $.each(clustereds, function (idx, paras) {
         var head = list.head(paras);
@@ -43,9 +42,7 @@ define([
       var rng = range.create().wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
-      var clustereds = list.clusterBy(paras, function (nodeA, nodeB) {
-        return nodeA.parentNode === nodeB.parentNode;
-      });
+      var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
 
       $.each(clustereds, function (idx, paras) {
         var head = list.head(paras);
@@ -55,7 +52,7 @@ define([
           $.each(paras, function (idx, para) {
             $(para).css('marginLeft', function (idx, val) {
               val = (parseInt(val, 10) || 0);
-              return val >= 25 ? val - 25 : 0;
+              return val > 25 ? val - 25 : '';
             });
           });
         }
@@ -69,9 +66,7 @@ define([
       var rng = range.create().wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
-      var clustereds = list.clusterBy(paras, function (nodeA, nodeB) {
-        return nodeA.parentNode === nodeB.parentNode;
-      });
+      var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
 
       // paragraph to list
       if (list.find(paras, dom.isPurePara)) {
