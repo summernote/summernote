@@ -6,14 +6,26 @@ define([
 ], function (list, func, dom, range) {
 
   var Bullet = function () {
+    /**
+     * toggle ordered list
+     * @type command
+     */
     this.insertOrderedList = function () {
       this.toggleList('OL');
     };
 
+    /**
+     * toggle unordered list
+     * @type command
+     */
     this.insertUnorderedList = function () {
       this.toggleList('UL');
     };
 
+    /**
+     * indent
+     * @type command
+     */
     this.indent = function () {
       var self = this;
       var rng = range.create().wrapBodyInlineWithPara();
@@ -37,6 +49,10 @@ define([
       rng.select();
     };
 
+    /**
+     * outdent
+     * @type command
+     */
     this.outdent = function () {
       var self = this;
       var rng = range.create().wrapBodyInlineWithPara();
@@ -61,6 +77,10 @@ define([
       rng.select();
     };
 
+    /**
+     * toggle list
+     * @param {String} listName - OL or UL
+     */
     this.toggleList = function (listName) {
       var self = this;
       var rng = range.create().wrapBodyInlineWithPara();

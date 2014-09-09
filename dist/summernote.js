@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-09-07T04:39Z
+ * Date: 2014-09-09T10:33Z
  */
 (function (factory) {
   /* global define */
@@ -2262,6 +2262,50 @@
     };
   })();
 
+
+  var Typing = function () {
+
+    /**
+     * @param {jQuery} $editable 
+     * @param {WrappedRange} rng
+     * @param {Number} tabsize
+     */
+    this.insertTab = function ($editable, rng, tabsize) {
+      var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
+      rng = rng.deleteContents();
+      rng.insertNode(tab, true);
+
+      rng = range.create(tab, tabsize);
+      rng.select();
+    };
+
+    /**
+     * insert paragraph
+     */
+    this.insertParagraph = function () {
+      var rng = range.create();
+
+      // deleteContents on range.
+      rng = rng.deleteContents();
+
+      rng = rng.wrapBodyInlineWithPara();
+
+      // find split root node: block level node
+      var splitRoot = dom.ancestor(rng.sc, dom.isPara);
+      var nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
+
+      var emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
+      emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
+
+      $.each(emptyAnchors, function (idx, anchor) {
+        dom.remove(anchor);
+      });
+
+      range.create(nextPara, 0).normalize().select();
+    };
+
+  };
+
   /**
    * Table
    * @class
@@ -2309,14 +2353,26 @@
 
 
   var Bullet = function () {
+    /**
+     * toggle ordered list
+     * @type command
+     */
     this.insertOrderedList = function () {
       this.toggleList('OL');
     };
 
+    /**
+     * toggle unordered list
+     * @type command
+     */
     this.insertUnorderedList = function () {
       this.toggleList('UL');
     };
 
+    /**
+     * indent
+     * @type command
+     */
     this.indent = function () {
       var self = this;
       var rng = range.create().wrapBodyInlineWithPara();
@@ -2340,6 +2396,10 @@
       rng.select();
     };
 
+    /**
+     * outdent
+     * @type command
+     */
     this.outdent = function () {
       var self = this;
       var rng = range.create().wrapBodyInlineWithPara();
@@ -2364,6 +2424,10 @@
       rng.select();
     };
 
+    /**
+     * toggle list
+     * @param {String} listName - OL or UL
+     */
     this.toggleList = function (listName) {
       var self = this;
       var rng = range.create().wrapBodyInlineWithPara();
@@ -2487,6 +2551,7 @@
 
     var style = new Style();
     var table = new Table();
+    var typing = new Typing();
     var bullet = new Bullet();
 
     /**
@@ -2573,23 +2638,8 @@
     /* jshint ignore:end */
 
     /**
-     * @param {jQuery} $editable 
-     * @param {WrappedRange} rng
-     * @param {Number} tabsize
-     */
-    var insertTab = function ($editable, rng, tabsize) {
-      recordUndo($editable);
-
-      var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
-      rng = rng.deleteContents();
-      rng.insertNode(tab, true);
-
-      rng = range.create(tab, tabsize);
-      rng.select();
-    };
-
-    /**
      * handle tab key
+     *
      * @param {jQuery} $editable 
      * @param {Object} options
      */
@@ -2598,7 +2648,9 @@
       if (rng.isCollapsed() && rng.isOnCell()) {
         table.tab(rng);
       } else {
-        insertTab($editable, rng, options.tabsize);
+        recordUndo($editable);
+        typing.insertTab($editable, rng, options.tabsize);
+        triggerOnChange($editable);
       }
     };
 
@@ -2619,47 +2671,40 @@
      */
     this.insertParagraph = function ($editable) {
       recordUndo($editable);
-
-      var rng = range.create();
-
-      // deleteContents on range.
-      rng = rng.deleteContents();
-
-      rng = rng.wrapBodyInlineWithPara();
-
-      // find split root node: block level node
-      var splitRoot = dom.ancestor(rng.sc, dom.isPara);
-      var nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
-
-      var emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
-      emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
-
-      $.each(emptyAnchors, function (idx, anchor) {
-        dom.remove(anchor);
-      });
-
-      range.create(nextPara, 0).normalize().select();
+      typing.insertParagraph($editable);
       triggerOnChange($editable);
     };
 
+    /**
+     * @param {jQuery} $editable
+     */
     this.insertOrderedList = function ($editable) {
       recordUndo($editable);
       bullet.insertOrderedList($editable);
       triggerOnChange($editable);
     };
 
+    /**
+     * @param {jQuery} $editable
+     */
     this.insertUnorderedList = function ($editable) {
       recordUndo($editable);
       bullet.insertUnorderedList($editable);
       triggerOnChange($editable);
     };
 
+    /**
+     * @param {jQuery} $editable
+     */
     this.indent = function ($editable) {
       recordUndo($editable);
       bullet.indent($editable);
       triggerOnChange($editable);
     };
 
+    /**
+     * @param {jQuery} $editable
+     */
     this.outdent = function ($editable) {
       recordUndo($editable);
       bullet.outdent($editable);
@@ -2814,7 +2859,6 @@
      */
     this.lineHeight = function ($editable, value) {
       recordUndo($editable);
-
       style.stylePara(range.create(), {
         lineHeight: value
       });
@@ -2823,6 +2867,9 @@
 
     /**
      * unlink
+     *
+     * @type command
+     *
      * @param {jQuery} $editable
      */
     this.unlink = function ($editable) {
@@ -2839,6 +2886,8 @@
 
     /**
      * create link
+     *
+     * @type command
      *
      * @param {jQuery} $editable
      * @param {Object} linkInfo
