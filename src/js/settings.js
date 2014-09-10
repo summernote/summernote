@@ -225,6 +225,9 @@ define('summernote/settings', function () {
           shapeNone: 'Shape: None',
           dragImageHere: 'Drag an image here',
           selectFromFiles: 'Select from files',
+          link: 'Link',
+          insertLink: 'Link Image',
+          unlink: 'Unlink',
           url: 'Image URL',
           remove: 'Remove Image'
         },

@@ -6,7 +6,11 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
+<<<<<<< HEAD
  * Date: 2014-10-11T01:18Z
+=======
+ * Date: 2014-09-10T07:01Z
+>>>>>>> Added ability to add links to images
  */
 (function (factory) {
   /* global define */
@@ -18,7 +22,7 @@
     factory(window.jQuery);
   }
 }(function ($) {
-  
+
 
 
   if ('function' !== typeof Array.prototype.reduce) {
@@ -55,13 +59,13 @@
       if (this === void 0 || this === null) {
         throw new TypeError();
       }
-  
+
       var t = Object(this);
       var len = t.length >>> 0;
       if (typeof fun !== 'function') {
         throw new TypeError();
       }
-  
+
       var res = [];
       var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
       for (var i = 0; i < len; i++) {
@@ -72,7 +76,7 @@
           }
         }
       }
-  
+
       return res;
     };
   }
@@ -307,7 +311,7 @@
         return memo + fn(v);
       }, 0);
     };
-  
+
     /**
      * returns a copy of the collection with array type.
      * @param {Collection} collection - collection eg) node.childNodes, ...
@@ -319,7 +323,7 @@
       }
       return result;
     };
-  
+
     /**
      * cluster elements by predicate function.
      *
@@ -340,7 +344,7 @@
         return memo;
       }, [[head(array)]]);
     };
-  
+
     /**
      * returns a copy of the array with all falsy values removed
      *
@@ -394,7 +398,7 @@
       return array[idx - 1];
     };
 
-  
+
     return { head: head, last: last, initial: initial, tail: tail,
              prev: prev, next: next, find: find, contains: contains,
              all: all, sum: sum, from: from,
@@ -909,7 +913,7 @@
 
     /**
      * returns whether point is visible (can set cursor) or not.
-     * 
+     *
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
@@ -1158,7 +1162,7 @@
     var isTextarea = makePredByNodeName('TEXTAREA');
 
     /**
-     * get the HTML contents of node 
+     * get the HTML contents of node
      *
      * @param {jQuery} $node
      * @param {Boolean} [isNewlineOnBlock]
@@ -1484,6 +1488,9 @@
           shapeNone: 'Shape: None',
           dragImageHere: 'Drag an image here',
           selectFromFiles: 'Select from files',
+          link: 'Link',
+          insertLink: 'Link Image',
+          unlink: 'Unlink',
           url: 'Image URL',
           remove: 'Remove Image'
         },
@@ -1588,7 +1595,7 @@
         }).readAsDataURL(file);
       }).promise();
     };
-  
+
     /**
      * create `<image>` from url string
      *
@@ -1767,7 +1774,7 @@
      */
     var textRangeToPoint = function (textRange, isStart) {
       var container = textRange.parentElement(), offset;
-  
+
       var tester = document.body.createTextRange(), prevContainer;
       var childNodes = list.from(container.childNodes);
       for (offset = 0; offset < childNodes.length; offset++) {
@@ -1780,42 +1787,42 @@
         }
         prevContainer = childNodes[offset];
       }
-  
+
       if (offset !== 0 && dom.isText(childNodes[offset - 1])) {
         var textRangeStart = document.body.createTextRange(), curTextNode = null;
         textRangeStart.moveToElementText(prevContainer || container);
         textRangeStart.collapse(!prevContainer);
         curTextNode = prevContainer ? prevContainer.nextSibling : container.firstChild;
-  
+
         var pointTester = textRange.duplicate();
         pointTester.setEndPoint('StartToStart', textRangeStart);
         var textCount = pointTester.text.replace(/[\r\n]/g, '').length;
-  
+
         while (textCount > curTextNode.nodeValue.length && curTextNode.nextSibling) {
           textCount -= curTextNode.nodeValue.length;
           curTextNode = curTextNode.nextSibling;
         }
-  
+
         /* jshint ignore:start */
         var dummy = curTextNode.nodeValue; // enforce IE to re-reference curTextNode, hack
         /* jshint ignore:end */
-  
+
         if (isStart && curTextNode.nextSibling && dom.isText(curTextNode.nextSibling) &&
             textCount === curTextNode.nodeValue.length) {
           textCount -= curTextNode.nodeValue.length;
           curTextNode = curTextNode.nextSibling;
         }
-  
+
         container = curTextNode;
         offset = textCount;
       }
-  
+
       return {
         cont: container,
         offset: offset
       };
     };
-    
+
     /**
      * return TextRange from boundary point (inspired by google closure-library)
      * @param {BoundaryPoint} point
@@ -1824,7 +1831,7 @@
     var pointToTextRange = function (point) {
       var textRangeInfo = function (container, offset) {
         var node, isCollapseToStart;
-  
+
         if (dom.isText(container)) {
           var prevTextNodes = dom.listPrev(container, func.not(dom.isText));
           var prevContainer = list.last(prevTextNodes).previousSibling;
@@ -1836,27 +1843,27 @@
           if (dom.isText(node)) {
             return textRangeInfo(node, 0);
           }
-  
+
           offset = 0;
           isCollapseToStart = false;
         }
-  
+
         return {
           node: node,
           collapseToStart: isCollapseToStart,
           offset: offset
         };
       };
-  
+
       var textRange = document.body.createTextRange();
       var info = textRangeInfo(point.node, point.offset);
-  
+
       textRange.moveToElementText(info.node);
       textRange.collapse(info.collapseToStart);
       textRange.moveStart('character', info.offset);
       return textRange;
     };
-    
+
     /**
      * Wrapped Range
      *
@@ -1870,7 +1877,7 @@
       this.so = so;
       this.ec = ec;
       this.eo = eo;
-  
+
       // nativeRange: get nativeRange from sc, so, ec, eo
       var nativeRange = function () {
         if (agent.isW3CRangeSupport) {
@@ -2131,7 +2138,7 @@
           point.offset
         );
       };
-      
+
       /**
        * makeIsOn: return isOn(pred) function
        */
@@ -2141,7 +2148,7 @@
           return !!ancestor && (ancestor === dom.ancestor(ec, pred));
         };
       };
-  
+
       // isOnEditable: judge whether range is on editable or not
       this.isOnEditable = makeIsOn(dom.isEditable);
       // isOnList: judge whether range is on list node or not
@@ -2246,12 +2253,12 @@
 
         return node;
       };
-  
+
       this.toString = function () {
         var nativeRng = nativeRange();
         return agent.isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
       };
-  
+
       /**
        * create offsetPath bookmark
        * @param {Node} editable
@@ -2278,7 +2285,7 @@
         return nativeRng.getClientRects();
       };
     };
-  
+
     return {
       /**
        * create Range Object From arguments or Browser Selection
@@ -2298,7 +2305,7 @@
               // Firefox: returns entire body as range on initialization. We won't never need it.
               return null;
             }
-  
+
             var nativeRng = selection.getRangeAt(0);
             sc = nativeRng.startContainer;
             so = nativeRng.startOffset;
@@ -2310,7 +2317,7 @@
             textRangeEnd.collapse(false);
             var textRangeStart = textRange;
             textRangeStart.collapse(true);
-  
+
             var startPoint = textRangeToPoint(textRangeStart, true),
             endPoint = textRangeToPoint(textRangeEnd, false);
 
@@ -2364,7 +2371,7 @@
   var Typing = function () {
 
     /**
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      * @param {WrappedRange} rng
      * @param {Number} tabsize
      */
@@ -2757,7 +2764,7 @@
     /**
      * handle tab key
      *
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      * @param {Object} options
      */
     this.tab = function ($editable, options) {
@@ -2989,7 +2996,60 @@
         afterCommand($editable);
       }
     };
+      /**
+         * unlink image link
+         * @param {jQuery} $editable
+         * @param {jQuery} $target
+         */
+        this.unlinkImageLink = function ($editable, value, $target) {
+            /*
+            var rng = range.create();
+            if (rng.isOnAnchor()) {
+                recordUndo($editable);
 
+                var anchor = dom.ancestor(rng.sc, dom.isAnchor);
+                rng = range.createFromNode(anchor);
+                rng.select();
+                document.execCommand('unlink');
+            }
+            */
+            recordUndo($editable);
+            if($target.parent('a').length){
+                $target.unwrap();
+            }
+
+        };
+      /**
+         * create image link
+         *
+         * @param {jQuery} $editable
+         * @param {Object} linkInfo
+         * @param {jQuery} $target - target element
+         */
+        this.createImageLink = function ($editable, linkInfo, options, $target) {
+            var linkUrl = linkInfo.url;
+            var isNewWindow = linkInfo.newWindow;
+
+            recordUndo($editable);
+            // Create a new link when there is no anchor on range.
+            if($target.parent('a').length) {
+                var anchor = $target.parent('a');
+                anchor.attr({
+                    href: linkUrl,
+                    target: isNewWindow ? '_blank' : ''
+                });
+            } else {
+                var anchor = $('<a></a>');
+                $(anchor).attr({
+                    href: linkUrl,
+                    target: isNewWindow ? '_blank' : ''
+                });
+                $target.wrap(anchor);
+            }
+
+            //range.createFromNode(anchor).select();
+            triggerOnChange($editable);
+        };
     /**
      * create link
      *
@@ -3508,7 +3568,7 @@
   };
 
   /**
-   * Dialog 
+   * Dialog
    *
    * @class
    */
@@ -3559,13 +3619,13 @@
 
           $imageUrl.on('keyup paste', function (event) {
             var url;
-            
+
             if (event.type === 'paste') {
               url = event.originalEvent.clipboardData.getData('text');
             } else {
               url = $imageUrl.val();
             }
-            
+
             toggleBtn($imageBtn, url);
           }).val('').trigger('focus');
         }).one('hidden.bs.modal', function () {
@@ -3583,8 +3643,8 @@
     /**
      * Show video dialog and set event handlers on dialog controls.
      *
-     * @param {jQuery} $dialog 
-     * @param {Object} videoInfo 
+     * @param {jQuery} $dialog
+     * @param {Object} videoInfo
      * @return {Promise}
      */
     this.showVideoDialog = function ($editable, $dialog, videoInfo) {
@@ -3681,7 +3741,53 @@
         }).modal('show');
       }).promise();
     };
+      /**
+		 * Show link dialog and set event handlers on dialog controls.
+		 *
+		 * @param {jQuery} $dialog
+		 * @param {Object} linkInfo
+		 * @return {Promise}
+		 */
+		this.showImageLinkDialog = function ($editable, $dialog, linkInfo) {
+			return $.Deferred(function (deferred) {
+				var $linkDialog = $dialog.find('.note-image-link-dialog');
 
+				var $linkUrl = $linkDialog.find('.note-link-url'),
+					$linkBtn = $linkDialog.find('.note-link-btn'),
+					$openInNewWindow = $linkDialog.find('input[type=checkbox]');
+
+                $linkUrl.val(linkInfo.url);
+
+				$linkDialog.one('shown.bs.modal', function () {
+
+					$linkUrl.keyup(function () {
+						toggleBtn($linkBtn, $linkUrl.val());
+
+					}).val(linkInfo.url).trigger('focus').trigger('select');
+
+					$openInNewWindow.prop('checked', linkInfo.newWindow);
+
+					$linkBtn.one('click', function (event) {
+						event.preventDefault();
+
+						deferred.resolve({
+							range: linkInfo.range,
+							url: $linkUrl.val(),
+							newWindow: $openInNewWindow.is(':checked')
+						});
+						$linkDialog.modal('hide');
+					});
+				}).one('hidden.bs.modal', function () {
+					// dettach events
+					$linkUrl.off('keyup');
+					$linkBtn.off('click');
+
+					if (deferred.state() === 'pending') {
+						deferred.reject();
+					}
+				}).modal('show');
+			}).promise();
+		};
     /**
      * show help dialog
      *
@@ -3792,10 +3898,47 @@
           editor.restoreRange($editable);
         });
       },
+      /**
+      * @param {Object} layoutInfo
+      */
+      showImageLinkDialog: function (layoutInfo) {
+          var $editor = layoutInfo.editor(),
+              $dialog = layoutInfo.dialog(),
+              $editable = layoutInfo.editable(),
+              $handle = layoutInfo.handle(),
+              linkInfo = editor.getLinkInfo($editable);
+
+          var options = $editor.data('options'),
+              target = $handle.find('.note-control-selection').data('target'),
+              $target = $(target);
+
+
+          editor.saveRange($editable);
+          dialog.showImageLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
+              editor.restoreRange($editable);
+              editor.createImageLink($editable, linkInfo, options, $target);
+              // hide popover after creating link
+              popover.hide(layoutInfo.popover());
+          }).fail(function () {
+              editor.restoreRange($editable);
+          });
+      },
 
       /**
        * @param {Object} layoutInfo
        */
+      unlinkImageLink: function (layoutInfo) {
+        var $editor = layoutInfo.editor(),
+            $handle = layoutInfo.handle(),
+            target = $handle.find('.note-control-selection').data('target'),
+            $target = $(target);
+
+            editor.saveRange($editable);
+            editor.unlinkImageLink($editable, $target);
+      },
+      /**
+        * @param {Object} layoutInfo
+        */
       showImageDialog: function (layoutInfo) {
         var $dialog = layoutInfo.dialog(),
             $editable = layoutInfo.editable();
@@ -4064,7 +4207,7 @@
 
         // before command: detect control selection element($target)
         var $target;
-        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'imageShape']) !== -1) {
+        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'showImageLink','unlinkImageLink']) !== -1) {
           var $selection = layoutInfo.handle().find('.note-control-selection');
           $target = $($selection.data('target'));
         }
@@ -4074,7 +4217,7 @@
         if (hide) {
           $btn.parents('.popover').hide();
         }
-        
+
         if (editor[eventName]) { // on command
           var $editable = layoutInfo.editable();
           $editable.trigger('focus');
@@ -4994,7 +5137,21 @@
         var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
         return tplDialog('note-link-dialog', lang.link.insert, body, footer);
       };
-
+      var tplImageLinkDialog = function () {
+          var body = '<div class="form-group">' +
+              '<label>' + lang.link.url + '</label>' +
+              '<input class="note-link-url form-control span12" type="text" />' +
+              '</div>' +
+              (!options.disableLinkTarget ?
+                  '<div class="checkbox">' +
+                  '<label>' + '<input type="checkbox" checked> ' +
+                  lang.link.openInNewWindow +
+                  '</label>' +
+                  '</div>' : ''
+              );
+          var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.image.insertLink + '</button>';
+          return tplDialog('note-image-link-dialog', lang.image.insertLink, body, footer);
+      };
       var tplVideoDialog = function () {
         var body = '<div class="form-group">' +
                      '<label>' + lang.video.url + '</label>&nbsp;<small class="text-muted">' + lang.video.providers + '</small>' +
@@ -5347,7 +5504,7 @@
 
       return this;
     },
-    // 
+    //
 
     /**
      * get the HTML contents of note or set the HTML contents of note.

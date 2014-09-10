@@ -99,10 +99,47 @@ define([
           editor.restoreRange($editable);
         });
       },
+      /**
+      * @param {Object} layoutInfo
+      */
+      showImageLinkDialog: function (layoutInfo) {
+          var $editor = layoutInfo.editor(),
+              $dialog = layoutInfo.dialog(),
+              $editable = layoutInfo.editable(),
+              $handle = layoutInfo.handle(),
+              linkInfo = editor.getLinkInfo($editable);
+
+          var options = $editor.data('options'),
+              target = $handle.find('.note-control-selection').data('target'),
+              $target = $(target);
+
+
+          editor.saveRange($editable);
+          dialog.showImageLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
+              editor.restoreRange($editable);
+              editor.createImageLink($editable, linkInfo, options, $target);
+              // hide popover after creating link
+              popover.hide(layoutInfo.popover());
+          }).fail(function () {
+              editor.restoreRange($editable);
+          });
+      },
 
       /**
        * @param {Object} layoutInfo
        */
+      unlinkImageLink: function (layoutInfo) {
+        var $editor = layoutInfo.editor(),
+            $handle = layoutInfo.handle(),
+            target = $handle.find('.note-control-selection').data('target'),
+            $target = $(target);
+
+            editor.saveRange($editable);
+            editor.unlinkImageLink($editable, $target);
+      },
+      /**
+        * @param {Object} layoutInfo
+        */
       showImageDialog: function (layoutInfo) {
         var $dialog = layoutInfo.dialog(),
             $editable = layoutInfo.editable();
@@ -371,7 +408,7 @@ define([
 
         // before command: detect control selection element($target)
         var $target;
-        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'imageShape']) !== -1) {
+        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'showImageLink','unlinkImageLink']) !== -1) {
           var $selection = layoutInfo.handle().find('.note-control-selection');
           $target = $($selection.data('target'));
         }
@@ -381,7 +418,7 @@ define([
         if (hide) {
           $btn.parents('.popover').hide();
         }
-        
+
         if (editor[eventName]) { // on command
           var $editable = layoutInfo.editable();
           $editable.trigger('focus');
