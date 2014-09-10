@@ -3,8 +3,8 @@ define([
   'summernote/editing/Style', 'summernote/editing/Editor', 'summernote/editing/History',
   'summernote/module/Toolbar', 'summernote/module/Popover', 'summernote/module/Handle', 'summernote/module/Dialog'
 ], function (agent, dom, async, key, list,
-             Style, Editor, History,
-             Toolbar, Popover, Handle, Dialog) {
+  Style, Editor, History,
+  Toolbar, Popover, Handle, Dialog) {
 
   var CodeMirror;
   if (agent.hasCodeMirror) {
@@ -26,8 +26,10 @@ define([
     var $scrollbar = $('html, body');
 
     var editor = new Editor();
-    var toolbar = new Toolbar(), popover = new Popover();
-    var handle = new Handle(), dialog = new Dialog();
+    var toolbar = new Toolbar(),
+      popover = new Popover();
+    var handle = new Handle(),
+      dialog = new Dialog();
 
     /**
      * returns makeLayoutInfo from editor's descendant node.
@@ -38,7 +40,9 @@ define([
     var makeLayoutInfo = function (descendant) {
       var $target = $(descendant).closest('.note-editor, .note-air-editor, .note-air-layout');
 
-      if (!$target.length) { return null; }
+      if (!$target.length) {
+        return null;
+      }
 
       var $editor;
       if ($target.is('.note-editor, .note-air-editor')) {
@@ -63,7 +67,7 @@ define([
       // If onImageUpload options setted
       if (callbacks.onImageUpload) {
         callbacks.onImageUpload(files, editor, $editable);
-      // else insert Image as dataURL
+        // else insert Image as dataURL
       } else {
         $.each(files, function (idx, file) {
           var filename = file.name;
@@ -84,9 +88,9 @@ define([
        */
       showLinkDialog: function (layoutInfo) {
         var $editor = layoutInfo.editor(),
-            $dialog = layoutInfo.dialog(),
-            $editable = layoutInfo.editable(),
-            linkInfo = editor.getLinkInfo($editable);
+          $dialog = layoutInfo.dialog(),
+          $editable = layoutInfo.editable(),
+          linkInfo = editor.getLinkInfo($editable);
 
         var options = $editor.data('options');
 
@@ -101,49 +105,47 @@ define([
         });
       },
       /**
-      * @param {Object} layoutInfo
-      */
+       * @param {Object} layoutInfo
+       */
       showImageLinkDialog: function (layoutInfo) {
-          var $editor = layoutInfo.editor(),
-              $dialog = layoutInfo.dialog(),
-              $editable = layoutInfo.editable(),
-              $handle = layoutInfo.handle(),
-              linkInfo = editor.getLinkInfo($editable);
+        var $editor = layoutInfo.editor(),
+          $dialog = layoutInfo.dialog(),
+          $editable = layoutInfo.editable(),
+          $handle = layoutInfo.handle(),
+          linkInfo = editor.getLinkInfo($editable);
 
-          var options = $editor.data('options'),
-              target = $handle.find('.note-control-selection').data('target'),
-              $target = $(target);
+        var options = $editor.data('options'),
+          target = $handle.find('.note-control-selection').data('target'),
+          $target = $(target);
 
-
-          editor.saveRange($editable);
-          dialog.showImageLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
-              editor.restoreRange($editable);
-              editor.createImageLink($editable, linkInfo, options, $target);
-              // hide popover after creating link
-              popover.hide(layoutInfo.popover());
-          }).fail(function () {
-              editor.restoreRange($editable);
-          });
+        editor.saveRange($editable);
+        dialog.showImageLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
+          editor.restoreRange($editable);
+          editor.createImageLink($editable, linkInfo, options, $target);
+          // hide popover after creating link
+          popover.hide(layoutInfo.popover());
+        }).fail(function () {
+          editor.restoreRange($editable);
+        });
       },
-
       /**
        * @param {Object} layoutInfo
        */
       unlinkImageLink: function (layoutInfo) {
-        var $editor = layoutInfo.editor(),                   
-            $handle = layoutInfo.handle(),
-            target = $handle.find('.note-control-selection').data('target'),
-            $target = $(target);
+        var $editable = layoutInfo.editable(),
+          $handle = layoutInfo.handle(),
+          target = $handle.find('.note-control-selection').data('target'),
+          $target = $(target);
 
-            editor.saveRange($editable);
-            editor.unlinkImageLink($editable, $target);                    
+        editor.saveRange($editable);
+        editor.unlinkImageLink($editable, $target);
       },
       /**
-        * @param {Object} layoutInfo
-        */
+       * @param {Object} layoutInfo
+       */
       showImageDialog: function (layoutInfo) {
         var $dialog = layoutInfo.dialog(),
-            $editable = layoutInfo.editable();
+          $editable = layoutInfo.editable();
 
         editor.saveRange($editable);
         dialog.showImageDialog($editable, $dialog).then(function (data) {
@@ -166,8 +168,8 @@ define([
        */
       showVideoDialog: function (layoutInfo) {
         var $dialog = layoutInfo.dialog(),
-            $editable = layoutInfo.editable(),
-            videoInfo = editor.getVideoInfo($editable);
+          $editable = layoutInfo.editable(),
+          videoInfo = editor.getVideoInfo($editable);
 
         editor.saveRange($editable);
         dialog.showVideoDialog($editable, $dialog, videoInfo).then(function (sUrl) {
@@ -183,7 +185,7 @@ define([
        */
       showHelpDialog: function (layoutInfo) {
         var $dialog = layoutInfo.dialog(),
-            $editable = layoutInfo.editable();
+          $editable = layoutInfo.editable();
 
         editor.saveRange($editable);
         dialog.showHelpDialog($editable, $dialog).then(function () {
@@ -193,9 +195,9 @@ define([
 
       fullscreen: function (layoutInfo) {
         var $editor = layoutInfo.editor(),
-        $toolbar = layoutInfo.toolbar(),
-        $editable = layoutInfo.editable(),
-        $codable = layoutInfo.codable();
+          $toolbar = layoutInfo.toolbar(),
+          $editable = layoutInfo.editable(),
+          $codable = layoutInfo.codable();
 
         var options = $editor.data('options');
 
@@ -235,10 +237,10 @@ define([
 
       codeview: function (layoutInfo) {
         var $editor = layoutInfo.editor(),
-        $toolbar = layoutInfo.toolbar(),
-        $editable = layoutInfo.editable(),
-        $codable = layoutInfo.codable(),
-        $popover = layoutInfo.popover();
+          $toolbar = layoutInfo.toolbar(),
+          $editable = layoutInfo.editable(),
+          $codable = layoutInfo.codable(),
+          $popover = layoutInfo.popover();
 
         var options = $editor.data('options');
 
@@ -302,7 +304,9 @@ define([
       setTimeout(function () {
         var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
         var styleInfo = editor.currentStyle(event.target);
-        if (!styleInfo) { return; }
+        if (!styleInfo) {
+          return;
+        }
 
         var isAirMode = layoutInfo.editor().data('options').airMode;
         if (!isAirMode) {
@@ -353,13 +357,15 @@ define([
         event.stopPropagation();
 
         var layoutInfo = makeLayoutInfo(event.target),
-            $handle = layoutInfo.handle(), $popover = layoutInfo.popover(),
-            $editable = layoutInfo.editable(),
-            $editor = layoutInfo.editor();
+          $handle = layoutInfo.handle(),
+          $popover = layoutInfo.popover(),
+          $editable = layoutInfo.editable(),
+          $editor = layoutInfo.editor();
 
         var target = $handle.find('.note-control-selection').data('target'),
-            $target = $(target), posStart = $target.offset(),
-            scrollTop = $document.scrollTop();
+          $target = $(target),
+          posStart = $target.offset(),
+          scrollTop = $document.scrollTop();
 
         var isAirMode = $editor.data('options').airMode;
 
@@ -369,8 +375,12 @@ define([
             y: event.clientY - (posStart.top - scrollTop)
           }, $target, !event.shiftKey);
 
-          handle.update($handle, {image: target}, isAirMode);
-          popover.update($popover, {image: target}, isAirMode);
+          handle.update($handle, {
+            image: target
+          }, isAirMode);
+          popover.update($popover, {
+            image: target
+          }, isAirMode);
         }).one('mouseup', function () {
           $document.off('mousemove');
         });
@@ -396,7 +406,7 @@ define([
 
       if ($btn.length) {
         var eventName = $btn.attr('data-event'),
-            value = $btn.attr('data-value');
+          value = $btn.attr('data-value');
 
         var layoutInfo = makeLayoutInfo(event.target);
 
@@ -404,7 +414,7 @@ define([
 
         // before command: detect control selection element($target)
         var $target;
-        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'showImageLink','unlinkImageLink']) !== -1) {
+        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'showImageLink', 'unlinkImageLink']) !== -1) {
           var $selection = layoutInfo.handle().find('.note-control-selection');
           $target = $($selection.data('target'));
         }
@@ -484,15 +494,22 @@ define([
         r: Math.ceil(posOffset.y / PX_PER_EM) || 1
       };
 
-      $highlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });
+      $highlighted.css({
+        width: dim.c + 'em',
+        height: dim.r + 'em'
+      });
       $catcher.attr('data-value', dim.c + 'x' + dim.r);
 
       if (3 < dim.c && dim.c < options.insertTableMaxSize.col) {
-        $unhighlighted.css({ width: dim.c + 1 + 'em'});
+        $unhighlighted.css({
+          width: dim.c + 1 + 'em'
+        });
       }
 
       if (3 < dim.r && dim.r < options.insertTableMaxSize.row) {
-        $unhighlighted.css({ height: dim.r + 1 + 'em'});
+        $unhighlighted.css({
+          height: dim.r + 1 + 'em'
+        });
       }
 
       $dimensionDisplay.html(dim.c + ' x ' + dim.r);
@@ -522,8 +539,8 @@ define([
      */
     var attachDragAndDropEvent = function (layoutInfo) {
       var collection = $(),
-          $dropzone = layoutInfo.dropzone,
-          $dropzoneMessage = layoutInfo.dropzone.find('.note-dropzone-message');
+        $dropzone = layoutInfo.dropzone,
+        $dropzoneMessage = layoutInfo.dropzone.find('.note-dropzone-message');
 
       // show dropzone on dragenter when dragging a object to document.
       $document.on('dragenter', function (e) {
@@ -584,13 +601,21 @@ define([
         var aKey = [];
 
         // modifier
-        if (event.metaKey) { aKey.push('CMD'); }
-        if (event.ctrlKey && !event.altKey) { aKey.push('CTRL'); }
-        if (event.shiftKey) { aKey.push('SHIFT'); }
+        if (event.metaKey) {
+          aKey.push('CMD');
+        }
+        if (event.ctrlKey && !event.altKey) {
+          aKey.push('CTRL');
+        }
+        if (event.shiftKey) {
+          aKey.push('SHIFT');
+        }
 
         // keycode
         var keyName = key.nameFromCode[event.keyCode];
-        if (keyName) { aKey.push(keyName); }
+        if (keyName) {
+          aKey.push(keyName);
+        }
 
         var eventName = keyMap[aKey.join('+')];
         if (eventName) {
@@ -644,7 +669,7 @@ define([
 
       // handler for table dimension
       var $catcherContainer = options.airMode ? layoutInfo.popover :
-                                                layoutInfo.toolbar;
+        layoutInfo.toolbar;
       var $catcher = $catcherContainer.find('.note-dimension-picker-mousecatcher');
       $catcher.css({
         width: options.insertTableMaxSize.col + 'em',
@@ -671,18 +696,32 @@ define([
       // enter, focus, blur, keyup, keydown
       if (options.onenter) {
         layoutInfo.editable.keypress(function (event) {
-          if (event.keyCode === key.ENTER) { options.onenter(event); }
+          if (event.keyCode === key.ENTER) {
+            options.onenter(event);
+          }
         });
       }
 
-      if (options.onfocus) { layoutInfo.editable.focus(options.onfocus); }
-      if (options.onblur) { layoutInfo.editable.blur(options.onblur); }
-      if (options.onkeyup) { layoutInfo.editable.keyup(options.onkeyup); }
-      if (options.onkeydown) { layoutInfo.editable.keydown(options.onkeydown); }
-      if (options.onpaste) { layoutInfo.editable.on('paste', options.onpaste); }
+      if (options.onfocus) {
+        layoutInfo.editable.focus(options.onfocus);
+      }
+      if (options.onblur) {
+        layoutInfo.editable.blur(options.onblur);
+      }
+      if (options.onkeyup) {
+        layoutInfo.editable.keyup(options.onkeyup);
+      }
+      if (options.onkeydown) {
+        layoutInfo.editable.keydown(options.onkeydown);
+      }
+      if (options.onpaste) {
+        layoutInfo.editable.on('paste', options.onpaste);
+      }
 
       // callbacks for advanced features (camel)
-      if (options.onToolbarClick) { layoutInfo.toolbar.click(options.onToolbarClick); }
+      if (options.onToolbarClick) {
+        layoutInfo.toolbar.click(options.onToolbarClick);
+      }
       if (options.onChange) {
         var hChange = function () {
           editor.triggerOnChange(layoutInfo.editable);

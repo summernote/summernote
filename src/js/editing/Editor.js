@@ -8,7 +8,7 @@ define([
   'summernote/editing/Style',
   'summernote/editing/Table'
 ], function (agent, func, list, dom, range, async,
-             Style, Table) {
+  Style, Table) {
   /**
    * Editor
    * @class
@@ -91,7 +91,7 @@ define([
                     'indent', 'outdent', 'formatBlock', 'removeFormat',
                     'backColor', 'foreColor', 'insertHorizontalRule', 'fontName'];
 
-    for (var idx = 0, len = commands.length; idx < len; idx ++) {
+    for (var idx = 0, len = commands.length; idx < len; idx++) {
       this[commands[idx]] = (function (sCmd) {
         return function ($editable, value) {
           recordUndo($editable);
@@ -103,7 +103,7 @@ define([
     /* jshint ignore:end */
 
     /**
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      * @param {WrappedRange} rng
      * @param {Number} tabsize
      */
@@ -120,7 +120,7 @@ define([
 
     /**
      * handle tab key
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      * @param {Object} options
      */
     this.tab = function ($editable, options) {
@@ -282,7 +282,7 @@ define([
     };
 
     /* jshint ignore:start */
-    for (var idx = 1; idx <= 6; idx ++) {
+    for (var idx = 1; idx <= 6; idx++) {
       this['formatH' + idx] = function (idx) {
         return function ($editable) {
           this.formatBlock($editable, 'H' + idx);
@@ -342,60 +342,51 @@ define([
         document.execCommand('unlink');
       }
     };
-      /**
-         * unlink image link
-         * @param {jQuery} $editable
-         * @param {jQuery} $target
-         */
-        this.unlinkImageLink = function ($editable, value, $target) {
-            /*
-            var rng = range.create();
-            if (rng.isOnAnchor()) {
-                recordUndo($editable);
+    /**
+     * unlink image link
+     * @param {jQuery} $editable
+     * @param {jQuery} $target
+     */
+    this.unlinkImageLink = function ($editable, value, $target) {
 
-                var anchor = dom.ancestor(rng.sc, dom.isAnchor);
-                rng = range.createFromNode(anchor);
-                rng.select();
-                document.execCommand('unlink');
-            }
-            */
-            recordUndo($editable);
-            if($target.parent('a').length){
-                $target.unwrap();
-            }
-            
-        };
-      /**
-         * create image link
-         *
-         * @param {jQuery} $editable
-         * @param {Object} linkInfo
-         * @param {jQuery} $target - target element
-         */
-        this.createImageLink = function ($editable, linkInfo, options, $target) {
-            var linkUrl = linkInfo.url;
-            var isNewWindow = linkInfo.newWindow;
-            
-            recordUndo($editable);
-            // Create a new link when there is no anchor on range.
-            if($target.parent('a').length) {
-                var anchor = $target.parent('a');
-                anchor.attr({
-                    href: linkUrl,
-                    target: isNewWindow ? '_blank' : ''
-                });
-            } else {
-                var anchor = $('<a></a>');
-                $(anchor).attr({
-                    href: linkUrl,
-                    target: isNewWindow ? '_blank' : ''
-                });
-                $target.wrap(anchor);
-            }
+      recordUndo($editable);
+      if ($target.parent('a').length) {
+        $target.unwrap();
+      }
 
-            //range.createFromNode(anchor).select();
-            triggerOnChange($editable);
-        };
+    };
+    /**
+     * create image link
+     *
+     * @param {jQuery} $editable
+     * @param {Object} linkInfo
+     * @param {jQuery} $target - target element
+     */
+    this.createImageLink = function ($editable, linkInfo, options, $target) {
+      var linkUrl = linkInfo.url;
+      var isNewWindow = linkInfo.newWindow;
+
+      recordUndo($editable);
+
+      var anchor;
+      // Create a new link when there is no anchor on range.
+      if ($target.parent('a').length) {
+        anchor = $target.parent('a');
+        anchor.attr({
+          href: linkUrl,
+          target: isNewWindow ? '_blank' : ''
+        });
+      } else {
+        anchor = $('<a></a>');
+        $(anchor).attr({
+          href: linkUrl,
+          target: isNewWindow ? '_blank' : ''
+        });
+        $target.wrap(anchor);
+      }
+
+      triggerOnChange($editable);
+    };
     /**
      * create link
      *
@@ -472,12 +463,17 @@ define([
 
     this.color = function ($editable, sObjColor) {
       var oColor = JSON.parse(sObjColor);
-      var foreColor = oColor.foreColor, backColor = oColor.backColor;
+      var foreColor = oColor.foreColor,
+        backColor = oColor.backColor;
 
       recordUndo($editable);
 
-      if (foreColor) { document.execCommand('foreColor', false, foreColor); }
-      if (backColor) { document.execCommand('backColor', false, backColor); }
+      if (foreColor) {
+        document.execCommand('foreColor', false, foreColor);
+      }
+      if (backColor) {
+        document.execCommand('backColor', false, backColor);
+      }
     };
 
     this.insertTable = function ($editable, sDim) {
