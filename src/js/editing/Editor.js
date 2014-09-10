@@ -8,7 +8,7 @@ define([
   'summernote/editing/Style',
   'summernote/editing/Table'
 ], function (agent, func, list, dom, range, async,
-  Style, Table) {
+             Style, Table) {
   /**
    * Editor
    * @class
@@ -91,7 +91,7 @@ define([
                     'indent', 'outdent', 'formatBlock', 'removeFormat',
                     'backColor', 'foreColor', 'insertHorizontalRule', 'fontName'];
 
-    for (var idx = 0, len = commands.length; idx < len; idx++) {
+    for (var idx = 0, len = commands.length; idx < len; idx ++) {
       this[commands[idx]] = (function (sCmd) {
         return function ($editable, value) {
           recordUndo($editable);
@@ -282,7 +282,7 @@ define([
     };
 
     /* jshint ignore:start */
-    for (var idx = 1; idx <= 6; idx++) {
+    for (var idx = 1; idx <= 6; idx ++) {
       this['formatH' + idx] = function (idx) {
         return function ($editable) {
           this.formatBlock($editable, 'H' + idx);
@@ -463,17 +463,12 @@ define([
 
     this.color = function ($editable, sObjColor) {
       var oColor = JSON.parse(sObjColor);
-      var foreColor = oColor.foreColor,
-        backColor = oColor.backColor;
+      var foreColor = oColor.foreColor, backColor = oColor.backColor;
 
       recordUndo($editable);
 
-      if (foreColor) {
-        document.execCommand('foreColor', false, foreColor);
-      }
-      if (backColor) {
-        document.execCommand('backColor', false, backColor);
-      }
+      if (foreColor) { document.execCommand('foreColor', false, foreColor); }
+      if (backColor) { document.execCommand('backColor', false, backColor); }
     };
 
     this.insertTable = function ($editable, sDim) {

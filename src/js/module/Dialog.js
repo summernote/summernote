@@ -29,8 +29,8 @@ define('summernote/module/Dialog', function () {
         var $imageDialog = $dialog.find('.note-image-dialog');
 
         var $imageInput = $dialog.find('.note-image-input'),
-          $imageUrl = $dialog.find('.note-image-url'),
-          $imageBtn = $dialog.find('.note-image-btn');
+            $imageUrl = $dialog.find('.note-image-url'),
+            $imageBtn = $dialog.find('.note-image-btn');
 
         $imageDialog.one('shown.bs.modal', function () {
           // Cloning imageInput to clear element.
@@ -83,7 +83,7 @@ define('summernote/module/Dialog', function () {
       return $.Deferred(function (deferred) {
         var $videoDialog = $dialog.find('.note-video-dialog');
         var $videoUrl = $videoDialog.find('.note-video-url'),
-          $videoBtn = $videoDialog.find('.note-video-btn');
+            $videoBtn = $videoDialog.find('.note-video-btn');
 
         $videoDialog.one('shown.bs.modal', function () {
           $videoUrl.val(videoInfo.text).keyup(function () {
@@ -120,9 +120,9 @@ define('summernote/module/Dialog', function () {
         var $linkDialog = $dialog.find('.note-link-dialog');
 
         var $linkText = $linkDialog.find('.note-link-text'),
-          $linkUrl = $linkDialog.find('.note-link-url'),
-          $linkBtn = $linkDialog.find('.note-link-btn'),
-          $openInNewWindow = $linkDialog.find('input[type=checkbox]');
+            $linkUrl = $linkDialog.find('.note-link-url'),
+            $linkBtn = $linkDialog.find('.note-link-btn'),
+            $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
         $linkDialog.one('shown.bs.modal', function () {
           $linkText.val(linkInfo.text);
