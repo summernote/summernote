@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-31T03:57Z
+ * Date: 2014-09-10T07:01Z
  */
 (function (factory) {
   /* global define */
@@ -1308,6 +1308,9 @@
           floatNone: 'Float None',
           dragImageHere: 'Drag an image here',
           selectFromFiles: 'Select from files',
+          link: 'Link',
+          insertLink: 'Link Image',
+          unlink: 'Unlink',
           url: 'Image URL',
           remove: 'Remove Image'
         },
@@ -2539,7 +2542,60 @@
         document.execCommand('unlink');
       }
     };
+      /**
+         * unlink image link
+         * @param {jQuery} $editable
+         * @param {jQuery} $target
+         */
+        this.unlinkImageLink = function ($editable, value, $target) {
+            /*
+            var rng = range.create();
+            if (rng.isOnAnchor()) {
+                recordUndo($editable);
 
+                var anchor = dom.ancestor(rng.sc, dom.isAnchor);
+                rng = range.createFromNode(anchor);
+                rng.select();
+                document.execCommand('unlink');
+            }
+            */
+            recordUndo($editable);
+            if($target.parent('a').length){
+                $target.unwrap();
+            }
+            
+        };
+      /**
+         * create image link
+         *
+         * @param {jQuery} $editable
+         * @param {Object} linkInfo
+         * @param {jQuery} $target - target element
+         */
+        this.createImageLink = function ($editable, linkInfo, options, $target) {
+            var linkUrl = linkInfo.url;
+            var isNewWindow = linkInfo.newWindow;
+            
+            recordUndo($editable);
+            // Create a new link when there is no anchor on range.
+            if($target.parent('a').length) {
+                var anchor = $target.parent('a');
+                anchor.attr({
+                    href: linkUrl,
+                    target: isNewWindow ? '_blank' : ''
+                });
+            } else {
+                var anchor = $('<a></a>');
+                $(anchor).attr({
+                    href: linkUrl,
+                    target: isNewWindow ? '_blank' : ''
+                });
+                $target.wrap(anchor);
+            }
+
+            //range.createFromNode(anchor).select();
+            triggerOnChange($editable);
+        };
     /**
      * create link
      *
@@ -3216,7 +3272,53 @@
         }).modal('show');
       }).promise();
     };
+      /**
+		 * Show link dialog and set event handlers on dialog controls.
+		 *
+		 * @param {jQuery} $dialog
+		 * @param {Object} linkInfo
+		 * @return {Promise}
+		 */
+		this.showImageLinkDialog = function ($editable, $dialog, linkInfo) {
+			return $.Deferred(function (deferred) {
+				var $linkDialog = $dialog.find('.note-image-link-dialog');
 
+				var $linkUrl = $linkDialog.find('.note-link-url'),
+					$linkBtn = $linkDialog.find('.note-link-btn'),
+					$openInNewWindow = $linkDialog.find('input[type=checkbox]');
+                
+                $linkUrl.val(linkInfo.url);
+                
+				$linkDialog.one('shown.bs.modal', function () {
+
+					$linkUrl.keyup(function () {
+						toggleBtn($linkBtn, $linkUrl.val());
+
+					}).val(linkInfo.url).trigger('focus').trigger('select');
+
+					$openInNewWindow.prop('checked', linkInfo.newWindow);
+
+					$linkBtn.one('click', function (event) {
+						event.preventDefault();
+
+						deferred.resolve({
+							range: linkInfo.range,
+							url: $linkUrl.val(),
+							newWindow: $openInNewWindow.is(':checked')
+						});
+						$linkDialog.modal('hide');
+					});
+				}).one('hidden.bs.modal', function () {
+					// dettach events					
+					$linkUrl.off('keyup');
+					$linkBtn.off('click');
+
+					if (deferred.state() === 'pending') {
+						deferred.reject();
+					}
+				}).modal('show');
+			}).promise();
+		};
     /**
      * show help dialog
      *
@@ -3328,10 +3430,47 @@
           editor.restoreRange($editable);
         });
       },
+      /**
+      * @param {Object} layoutInfo
+      */
+      showImageLinkDialog: function (layoutInfo) {
+          var $editor = layoutInfo.editor(),
+              $dialog = layoutInfo.dialog(),
+              $editable = layoutInfo.editable(),
+              $handle = layoutInfo.handle(),
+              linkInfo = editor.getLinkInfo($editable);
+
+          var options = $editor.data('options'),
+              target = $handle.find('.note-control-selection').data('target'),
+              $target = $(target);
+
+
+          editor.saveRange($editable);
+          dialog.showImageLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
+              editor.restoreRange($editable);
+              editor.createImageLink($editable, linkInfo, options, $target);
+              // hide popover after creating link
+              popover.hide(layoutInfo.popover());
+          }).fail(function () {
+              editor.restoreRange($editable);
+          });
+      },
 
       /**
        * @param {Object} layoutInfo
        */
+      unlinkImageLink: function (layoutInfo) {
+        var $editor = layoutInfo.editor(),                   
+            $handle = layoutInfo.handle(),
+            target = $handle.find('.note-control-selection').data('target'),
+            $target = $(target);
+
+            editor.saveRange($editable);
+            editor.unlinkImageLink($editable, $target);                    
+      },
+      /**
+        * @param {Object} layoutInfo
+        */
       showImageDialog: function (layoutInfo) {
         var $dialog = layoutInfo.dialog(),
             $editable = layoutInfo.editable();
@@ -3595,7 +3734,7 @@
 
         // before command: detect control selection element($target)
         var $target;
-        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia']) !== -1) {
+        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'showImageLink','unlinkImageLink']) !== -1) {
           var $selection = layoutInfo.handle().find('.note-control-selection');
           $target = $($selection.data('target'));
         }
@@ -4488,7 +4627,21 @@
         var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
         return tplDialog('note-link-dialog', lang.link.insert, body, footer);
       };
-
+      var tplImageLinkDialog = function () {
+          var body = '<div class="form-group">' +
+              '<label>' + lang.link.url + '</label>' +
+              '<input class="note-link-url form-control span12" type="text" />' +
+              '</div>' +
+              (!options.disableLinkTarget ?
+                  '<div class="checkbox">' +
+                  '<label>' + '<input type="checkbox" checked> ' +
+                  lang.link.openInNewWindow +
+                  '</label>' +
+                  '</div>' : ''
+              );
+          var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.image.insertLink + '</button>';
+          return tplDialog('note-image-link-dialog', lang.image.insertLink, body, footer);
+      };
       var tplVideoDialog = function () {
         var body = '<div class="form-group">' +
                      '<label>' + lang.video.url + '</label>&nbsp;<small class="text-muted">' + lang.video.providers + '</small>' +

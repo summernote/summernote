@@ -575,7 +575,21 @@ define([
         var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
         return tplDialog('note-link-dialog', lang.link.insert, body, footer);
       };
-
+      var tplImageLinkDialog = function () {
+          var body = '<div class="form-group">' +
+              '<label>' + lang.link.url + '</label>' +
+              '<input class="note-link-url form-control span12" type="text" />' +
+              '</div>' +
+              (!options.disableLinkTarget ?
+                  '<div class="checkbox">' +
+                  '<label>' + '<input type="checkbox" checked> ' +
+                  lang.link.openInNewWindow +
+                  '</label>' +
+                  '</div>' : ''
+              );
+          var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.image.insertLink + '</button>';
+          return tplDialog('note-image-link-dialog', lang.image.insertLink, body, footer);
+      };
       var tplVideoDialog = function () {
         var body = '<div class="form-group">' +
                      '<label>' + lang.video.url + '</label>&nbsp;<small class="text-muted">' + lang.video.providers + '</small>' +

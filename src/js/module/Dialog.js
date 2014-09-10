@@ -173,7 +173,53 @@ define('summernote/module/Dialog', function () {
         }).modal('show');
       }).promise();
     };
+      /**
+		 * Show link dialog and set event handlers on dialog controls.
+		 *
+		 * @param {jQuery} $dialog
+		 * @param {Object} linkInfo
+		 * @return {Promise}
+		 */
+		this.showImageLinkDialog = function ($editable, $dialog, linkInfo) {
+			return $.Deferred(function (deferred) {
+				var $linkDialog = $dialog.find('.note-image-link-dialog');
 
+				var $linkUrl = $linkDialog.find('.note-link-url'),
+					$linkBtn = $linkDialog.find('.note-link-btn'),
+					$openInNewWindow = $linkDialog.find('input[type=checkbox]');
+                
+                $linkUrl.val(linkInfo.url);
+                
+				$linkDialog.one('shown.bs.modal', function () {
+
+					$linkUrl.keyup(function () {
+						toggleBtn($linkBtn, $linkUrl.val());
+
+					}).val(linkInfo.url).trigger('focus').trigger('select');
+
+					$openInNewWindow.prop('checked', linkInfo.newWindow);
+
+					$linkBtn.one('click', function (event) {
+						event.preventDefault();
+
+						deferred.resolve({
+							range: linkInfo.range,
+							url: $linkUrl.val(),
+							newWindow: $openInNewWindow.is(':checked')
+						});
+						$linkDialog.modal('hide');
+					});
+				}).one('hidden.bs.modal', function () {
+					// dettach events					
+					$linkUrl.off('keyup');
+					$linkBtn.off('click');
+
+					if (deferred.state() === 'pending') {
+						deferred.reject();
+					}
+				}).modal('show');
+			}).promise();
+		};
     /**
      * show help dialog
      *
