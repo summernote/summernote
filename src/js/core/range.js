@@ -539,6 +539,8 @@ define([
             var selection = document.getSelection();
             if (selection.rangeCount === 0) {
               return null;
+            } else if (selection.anchorNode.tagName === 'BODY') {
+              return null;
             }
   
             var nativeRng = selection.getRangeAt(0);
