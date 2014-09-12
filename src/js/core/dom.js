@@ -561,7 +561,11 @@ define([
     var fromOffsetPath = function (ancestor, aOffset) {
       var current = ancestor;
       for (var i = 0, len = aOffset.length; i < len; i++) {
-        current = current.childNodes[aOffset[i]];
+        if (current.childNodes.length <= aOffset[i]) {
+          current = current.childNodes[current.childNodes.length - 1];
+        } else {
+          current = current.childNodes[aOffset[i]];
+        }
       }
       return current;
     };
