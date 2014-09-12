@@ -4,7 +4,7 @@ define(['summernote/core/func'], function (func) {
    */
   var list = (function () {
     /**
-     * returns the first element of an array.
+     * returns the first item of an array.
      * @param {Array} array
      */
     var head = function (array) {
@@ -12,7 +12,7 @@ define(['summernote/core/func'], function (func) {
     };
 
     /**
-     * returns the last element of an array.
+     * returns the last item of an array.
      * @param {Array} array
      */
     var last = function (array) {
@@ -28,11 +28,23 @@ define(['summernote/core/func'], function (func) {
     };
 
     /**
-     * returns the rest of the elements in an array.
+     * returns the rest of the items in an array.
      * @param {Array} array
      */
     var tail = function (array) {
       return array.slice(1);
+    };
+
+    /**
+     * returns item of array
+     */
+    var find = function (array, pred) {
+      for (var idx = 0, len = array.length; idx < len; idx ++) {
+        var item = array[idx];
+        if (pred(item)) {
+          return item;
+        }
+      }
     };
 
     /**
@@ -140,7 +152,7 @@ define(['summernote/core/func'], function (func) {
     };
   
     return { head: head, last: last, initial: initial, tail: tail,
-             prev: prev, next: next, contains: contains,
+             prev: prev, next: next, find: find, contains: contains,
              all: all, sum: sum, from: from,
              clusterBy: clusterBy, compact: compact, unique: unique };
   })();

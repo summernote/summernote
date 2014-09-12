@@ -6,9 +6,11 @@ define([
   'summernote/core/range',
   'summernote/core/async',
   'summernote/editing/Style',
-  'summernote/editing/Table'
+  'summernote/editing/Typing',
+  'summernote/editing/Table',
+  'summernote/editing/Bullet'
 ], function (agent, func, list, dom, range, async,
-             Style, Table) {
+             Style, Typing, Table, Bullet) {
   /**
    * Editor
    * @class
@@ -17,6 +19,8 @@ define([
 
     var style = new Style();
     var table = new Table();
+    var typing = new Typing();
+    var bullet = new Bullet();
 
     /**
      * save current range
@@ -87,8 +91,7 @@ define([
     // native commands(with execCommand), generate function for execCommand
     var commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
                     'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
-                    'insertOrderedList', 'insertUnorderedList',
-                    'indent', 'outdent', 'formatBlock', 'removeFormat',
+                    'formatBlock', 'removeFormat',
                     'backColor', 'foreColor', 'insertHorizontalRule', 'fontName'];
 
     for (var idx = 0, len = commands.length; idx < len; idx ++) {
@@ -103,23 +106,8 @@ define([
     /* jshint ignore:end */
 
     /**
-     * @param {jQuery} $editable 
-     * @param {WrappedRange} rng
-     * @param {Number} tabsize
-     */
-    var insertTab = function ($editable, rng, tabsize) {
-      var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
-      rng = rng.deleteContents();
-      rng.insertNode(tab, true);
-
-      rng = range.create(tab, tabsize);
-      rng.select();
-
-      recordUndo($editable);
-    };
-
-    /**
      * handle tab key
+     *
      * @param {jQuery} $editable 
      * @param {Object} options
      */
@@ -128,7 +116,10 @@ define([
       if (rng.isCollapsed() && rng.isOnCell()) {
         table.tab(rng);
       } else {
-        insertTab($editable, rng, options.tabsize);
+        typing.insertTab($editable, rng, options.tabsize);
+        triggerOnChange($editable);
+
+        recordUndo($editable);
       }
     };
 
@@ -148,25 +139,47 @@ define([
      * @param {Node} $editable
      */
     this.insertParagraph = function ($editable) {
-      var rng = range.create();
+      typing.insertParagraph($editable);
+      triggerOnChange($editable);
 
-      // deleteContents on range.
-      rng = rng.deleteContents();
+      recordUndo($editable);
+    };
 
-      rng = rng.wrapBodyInlineWithPara();
+    /**
+     * @param {jQuery} $editable
+     */
+    this.insertOrderedList = function ($editable) {
+      bullet.insertOrderedList($editable);
+      triggerOnChange($editable);
 
-      // find split root node: block level node
-      var splitRoot = dom.ancestor(rng.sc, dom.isPara);
-      var nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
+      recordUndo($editable);
+    };
 
-      var emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
-      emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
+    /**
+     * @param {jQuery} $editable
+     */
+    this.insertUnorderedList = function ($editable) {
+      bullet.insertUnorderedList($editable);
+      triggerOnChange($editable);
 
-      $.each(emptyAnchors, function (idx, anchor) {
-        dom.remove(anchor);
-      });
+      recordUndo($editable);
+    };
 
-      range.create(nextPara, 0).normalize().select();
+    /**
+     * @param {jQuery} $editable
+     */
+    this.indent = function ($editable) {
+      bullet.indent($editable);
+      triggerOnChange($editable);
+
+      recordUndo($editable);
+    };
+
+    /**
+     * @param {jQuery} $editable
+     */
+    this.outdent = function ($editable) {
+      bullet.outdent($editable);
       triggerOnChange($editable);
 
       recordUndo($editable);
@@ -279,8 +292,6 @@ define([
 
     this.formatPara = function ($editable) {
       this.formatBlock($editable, 'P');
-
-      recordUndo($editable);
     };
 
     /* jshint ignore:start */
@@ -331,6 +342,9 @@ define([
 
     /**
      * unlink
+     *
+     * @type command
+     *
      * @param {jQuery} $editable
      */
     this.unlink = function ($editable) {
@@ -347,6 +361,8 @@ define([
 
     /**
      * create link
+     *
+     * @type command
      *
      * @param {jQuery} $editable
      * @param {Object} linkInfo
