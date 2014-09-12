@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-09-12T03:58Z
+ * Date: 2014-09-12T09:46Z
  */
 (function (factory) {
   /* global define */
@@ -881,7 +881,7 @@
      * @param {Node} node
      */
     var makeOffsetPath = function (ancestor, node) {
-      var ancestors = list.initial(listAncestor(node, func.eq(ancestor)));
+      var ancestors = listAncestor(node, func.eq(ancestor));
       return $.map(ancestors, position).reverse();
     };
 
@@ -894,7 +894,11 @@
     var fromOffsetPath = function (ancestor, aOffset) {
       var current = ancestor;
       for (var i = 0, len = aOffset.length; i < len; i++) {
-        current = current.childNodes[aOffset[i]];
+        if (current.childNodes.length <= aOffset[i]) {
+          current = current.childNodes[current.childNodes.length - 1];
+        } else {
+          current = current.childNodes[aOffset[i]];
+        }
       }
       return current;
     };
@@ -2105,6 +2109,8 @@
             var selection = document.getSelection();
             if (selection.rangeCount === 0) {
               return null;
+            } else if (selection.anchorNode.tagName === 'BODY') {
+              return null;
             }
   
             var nativeRng = selection.getRangeAt(0);
@@ -2710,17 +2716,21 @@
     var makeSnapshot = function ($editable) {
       var editable = $editable[0];
       var rng = range.create();
+      var emptyBookmark = {s: {path: [0], offset: 0}, e: {path: [0], offset: 0}};
 
       return {
         contents: $editable.html(),
-        bookmark: (rng ? rng.bookmark(editable) : null)
+        bookmark: (rng ? rng.bookmark(editable) : emptyBookmark)
       };
     };
 
     var applySnapshot = function ($editable, snapshot) {
-      $editable.html(snapshot.contents);
-      // FIXME: Still buggy, use marker tag
-      // range.createFromBookmark($editable[0], snapshot.bookmark).select();
+      if (snapshot.contents !== null) {
+        $editable.html(snapshot.contents);
+      }
+      if (snapshot.bookmark !== null) {
+        range.createFromBookmark($editable[0], snapshot.bookmark).select();
+      }
     };
 
     this.undo = function ($editable) {
@@ -2731,9 +2741,9 @@
     };
 
     this.redo = function ($editable) {
-      if (stack.length > stackOffset) {
-        applySnapshot($editable, stack[stackOffset]);
+      if (stack.length - 1 > stackOffset) {
         stackOffset++;
+        applySnapshot($editable, stack[stackOffset]);
       }
     };
 
