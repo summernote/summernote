@@ -628,7 +628,10 @@ define([
       }
 
       // History
-      layoutInfo.editable.data('NoteHistory', new History());
+      var history = new History();
+      // Create first undo stack
+      history.recordUndo(layoutInfo.editable);
+      layoutInfo.editable.data('NoteHistory', history);
 
       // basic event callbacks (lowercase)
       // enter, focus, blur, keyup, keydown
