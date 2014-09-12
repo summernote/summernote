@@ -9,17 +9,21 @@ define(['summernote/core/range'], function (range) {
     var makeSnapshot = function ($editable) {
       var editable = $editable[0];
       var rng = range.create();
+      var emptyBookmark = {s: {path: [0], offset: 0}, e: {path: [0], offset: 0}};
 
       return {
         contents: $editable.html(),
-        bookmark: (rng ? rng.bookmark(editable) : null)
+        bookmark: (rng ? rng.bookmark(editable) : emptyBookmark)
       };
     };
 
     var applySnapshot = function ($editable, snapshot) {
-      $editable.html(snapshot.contents);
-      // FIXME: Still buggy, use marker tag
-      // range.createFromBookmark($editable[0], snapshot.bookmark).select();
+      if (snapshot.contents !== null) {
+        $editable.html(snapshot.contents);
+      }
+      if (snapshot.bookmark !== null) {
+        range.createFromBookmark($editable[0], snapshot.bookmark).select();
+      }
     };
 
     this.undo = function ($editable) {
@@ -30,9 +34,9 @@ define(['summernote/core/range'], function (range) {
     };
 
     this.redo = function ($editable) {
-      if (stack.length > stackOffset) {
-        applySnapshot($editable, stack[stackOffset]);
+      if (stack.length - 1 > stackOffset) {
         stackOffset++;
+        applySnapshot($editable, stack[stackOffset]);
       }
     };
 
