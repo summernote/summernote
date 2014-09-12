@@ -94,9 +94,9 @@ define([
     for (var idx = 0, len = commands.length; idx < len; idx ++) {
       this[commands[idx]] = (function (sCmd) {
         return function ($editable, value) {
-          recordUndo($editable);
-
           document.execCommand(sCmd, false, value);
+
+          recordUndo($editable);
         };
       })(commands[idx]);
     }
@@ -108,14 +108,14 @@ define([
      * @param {Number} tabsize
      */
     var insertTab = function ($editable, rng, tabsize) {
-      recordUndo($editable);
-
       var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
       rng = rng.deleteContents();
       rng.insertNode(tab, true);
 
       rng = range.create(tab, tabsize);
       rng.select();
+
+      recordUndo($editable);
     };
 
     /**
@@ -148,8 +148,6 @@ define([
      * @param {Node} $editable
      */
     this.insertParagraph = function ($editable) {
-      recordUndo($editable);
-
       var rng = range.create();
 
       // deleteContents on range.
@@ -170,6 +168,8 @@ define([
 
       range.create(nextPara, 0).normalize().select();
       triggerOnChange($editable);
+
+      recordUndo($editable);
     };
 
     /**
@@ -180,14 +180,14 @@ define([
      */
     this.insertImage = function ($editable, sUrl, filename) {
       async.createImage(sUrl, filename).then(function ($image) {
-        recordUndo($editable);
-
         $image.css({
           display: '',
           width: Math.min($editable.width(), $image.width())
         });
         range.create().insertNode($image[0]);
         triggerOnChange($editable);
+
+        recordUndo($editable);
       }).fail(function () {
         var callbacks = $editable.data('callbacks');
         if (callbacks.onImageUploadError) {
@@ -202,8 +202,6 @@ define([
      * @param {String} sUrl
      */
     this.insertVideo = function ($editable, sUrl) {
-      recordUndo($editable);
-
       // video url patterns(youtube, instagram, vimeo, dailymotion, youku)
       var ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       var ytMatch = sUrl.match(ytRegExp);
@@ -261,6 +259,8 @@ define([
         $video.attr('frameborder', 0);
         range.create().insertNode($video[0]);
         triggerOnChange($editable);
+
+        recordUndo($editable);
       }
     };
 
@@ -271,14 +271,16 @@ define([
      * @param {String} tagName
      */
     this.formatBlock = function ($editable, tagName) {
-      recordUndo($editable);
-
       tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       document.execCommand('FormatBlock', false, tagName);
+
+      recordUndo($editable);
     };
 
     this.formatPara = function ($editable) {
       this.formatBlock($editable, 'P');
+
+      recordUndo($editable);
     };
 
     /* jshint ignore:start */
@@ -299,8 +301,6 @@ define([
      * @param {String} value - px
      */
     this.fontSize = function ($editable, value) {
-      recordUndo($editable);
-
       document.execCommand('fontSize', false, 3);
       if (agent.isFF) {
         // firefox: <font size="3"> to <span style='font-size={value}px;'>, buggy
@@ -311,6 +311,8 @@ define([
           return this.style.fontSize === 'medium';
         }).css('font-size', value + 'px');
       }
+
+      recordUndo($editable);
     };
 
     /**
@@ -319,12 +321,12 @@ define([
      * @param {String} value
      */
     this.lineHeight = function ($editable, value) {
-      recordUndo($editable);
-
       style.stylePara(range.create(), {
         lineHeight: value
       });
       triggerOnChange($editable);
+
+      recordUndo($editable);
     };
 
     /**
@@ -334,12 +336,12 @@ define([
     this.unlink = function ($editable) {
       var rng = range.create();
       if (rng.isOnAnchor()) {
-        recordUndo($editable);
-
         var anchor = dom.ancestor(rng.sc, dom.isAnchor);
         rng = range.createFromNode(anchor);
         rng.select();
         document.execCommand('unlink');
+
+        recordUndo($editable);
       }
     };
 
@@ -356,8 +358,6 @@ define([
       var isNewWindow = linkInfo.newWindow;
       var rng = linkInfo.range;
 
-      recordUndo($editable);
-
       if (options.onCreateLink) {
         linkUrl = options.onCreateLink(linkUrl);
       }
@@ -373,6 +373,8 @@ define([
 
       range.createFromNode(anchor).select();
       triggerOnChange($editable);
+
+      recordUndo($editable);
     };
 
     /**
@@ -421,20 +423,20 @@ define([
       var oColor = JSON.parse(sObjColor);
       var foreColor = oColor.foreColor, backColor = oColor.backColor;
 
-      recordUndo($editable);
-
       if (foreColor) { document.execCommand('foreColor', false, foreColor); }
       if (backColor) { document.execCommand('backColor', false, backColor); }
+
+      recordUndo($editable);
     };
 
     this.insertTable = function ($editable, sDim) {
-      recordUndo($editable);
-
       var dimension = sDim.split('x');
       var rng = range.create();
       rng = rng.deleteContents();
       rng.insertNode(table.createTable(dimension[0], dimension[1]));
       triggerOnChange($editable);
+
+      recordUndo($editable);
     };
 
     /**
@@ -443,9 +445,9 @@ define([
      * @param {jQuery} $target
      */
     this.floatMe = function ($editable, value, $target) {
-      recordUndo($editable);
-
       $target.css('float', value);
+
+      recordUndo($editable);
     };
 
     /**
@@ -455,12 +457,12 @@ define([
      * @param {jQuery} $target - target element
      */
     this.resize = function ($editable, value, $target) {
-      recordUndo($editable);
-
       $target.css({
         width: $editable.width() * value + 'px',
         height: ''
       });
+
+      recordUndo($editable);
     };
 
     /**
@@ -495,9 +497,9 @@ define([
      * @param {jQuery} $target - target element
      */
     this.removeMedia = function ($editable, value, $target) {
-      recordUndo($editable);
-
       $target.detach();
+
+      recordUndo($editable);
     };
   };
 
