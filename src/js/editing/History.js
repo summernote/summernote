@@ -4,7 +4,7 @@ define(['summernote/core/range'], function (range) {
    * @class
    */
   var History = function () {
-    var undoStack = [], redoStack = [];
+    var stack = [], stackOffset = 0;
 
     var makeSnapshot = function ($editable) {
       var editable = $editable[0];
@@ -12,7 +12,7 @@ define(['summernote/core/range'], function (range) {
 
       return {
         contents: $editable.html(),
-        bookmark: rng.bookmark(editable)
+        bookmark: (rng ? rng.bookmark(editable) : null)
       };
     };
 
@@ -23,26 +23,28 @@ define(['summernote/core/range'], function (range) {
     };
 
     this.undo = function ($editable) {
-      var snapshot = makeSnapshot($editable);
-      if (!undoStack.length) {
-        return;
+      if (0 < stackOffset) {
+        stackOffset--;
+        applySnapshot($editable, stack[stackOffset]);
       }
-      applySnapshot($editable, undoStack.pop());
-      redoStack.push(snapshot);
     };
 
     this.redo = function ($editable) {
-      var snapshot = makeSnapshot($editable);
-      if (!redoStack.length) {
-        return;
+      if (stack.length > stackOffset) {
+        applySnapshot($editable, stack[stackOffset]);
+        stackOffset++;
       }
-      applySnapshot($editable, redoStack.pop());
-      undoStack.push(snapshot);
     };
 
     this.recordUndo = function ($editable) {
-      redoStack = [];
-      undoStack.push(makeSnapshot($editable));
+      // Wash out stack after stackOffset
+      if (stack.length > stackOffset) {
+        stack = stack.slice(0, stackOffset);
+      }
+
+      // Create new snapshot and push it to the end
+      stack.push(makeSnapshot($editable));
+      stackOffset++;
     };
   };
 

@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-08-31T03:57Z
+ * Date: 2014-09-12T03:58Z
  */
 (function (factory) {
   /* global define */
@@ -2291,9 +2291,9 @@
     for (var idx = 0, len = commands.length; idx < len; idx ++) {
       this[commands[idx]] = (function (sCmd) {
         return function ($editable, value) {
-          recordUndo($editable);
-
           document.execCommand(sCmd, false, value);
+
+          recordUndo($editable);
         };
       })(commands[idx]);
     }
@@ -2305,14 +2305,14 @@
      * @param {Number} tabsize
      */
     var insertTab = function ($editable, rng, tabsize) {
-      recordUndo($editable);
-
       var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
       rng = rng.deleteContents();
       rng.insertNode(tab, true);
 
       rng = range.create(tab, tabsize);
       rng.select();
+
+      recordUndo($editable);
     };
 
     /**
@@ -2345,8 +2345,6 @@
      * @param {Node} $editable
      */
     this.insertParagraph = function ($editable) {
-      recordUndo($editable);
-
       var rng = range.create();
 
       // deleteContents on range.
@@ -2367,6 +2365,8 @@
 
       range.create(nextPara, 0).normalize().select();
       triggerOnChange($editable);
+
+      recordUndo($editable);
     };
 
     /**
@@ -2377,14 +2377,14 @@
      */
     this.insertImage = function ($editable, sUrl, filename) {
       async.createImage(sUrl, filename).then(function ($image) {
-        recordUndo($editable);
-
         $image.css({
           display: '',
           width: Math.min($editable.width(), $image.width())
         });
         range.create().insertNode($image[0]);
         triggerOnChange($editable);
+
+        recordUndo($editable);
       }).fail(function () {
         var callbacks = $editable.data('callbacks');
         if (callbacks.onImageUploadError) {
@@ -2399,8 +2399,6 @@
      * @param {String} sUrl
      */
     this.insertVideo = function ($editable, sUrl) {
-      recordUndo($editable);
-
       // video url patterns(youtube, instagram, vimeo, dailymotion, youku)
       var ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       var ytMatch = sUrl.match(ytRegExp);
@@ -2458,6 +2456,8 @@
         $video.attr('frameborder', 0);
         range.create().insertNode($video[0]);
         triggerOnChange($editable);
+
+        recordUndo($editable);
       }
     };
 
@@ -2468,14 +2468,16 @@
      * @param {String} tagName
      */
     this.formatBlock = function ($editable, tagName) {
-      recordUndo($editable);
-
       tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       document.execCommand('FormatBlock', false, tagName);
+
+      recordUndo($editable);
     };
 
     this.formatPara = function ($editable) {
       this.formatBlock($editable, 'P');
+
+      recordUndo($editable);
     };
 
     /* jshint ignore:start */
@@ -2496,8 +2498,6 @@
      * @param {String} value - px
      */
     this.fontSize = function ($editable, value) {
-      recordUndo($editable);
-
       document.execCommand('fontSize', false, 3);
       if (agent.isFF) {
         // firefox: <font size="3"> to <span style='font-size={value}px;'>, buggy
@@ -2508,6 +2508,8 @@
           return this.style.fontSize === 'medium';
         }).css('font-size', value + 'px');
       }
+
+      recordUndo($editable);
     };
 
     /**
@@ -2516,12 +2518,12 @@
      * @param {String} value
      */
     this.lineHeight = function ($editable, value) {
-      recordUndo($editable);
-
       style.stylePara(range.create(), {
         lineHeight: value
       });
       triggerOnChange($editable);
+
+      recordUndo($editable);
     };
 
     /**
@@ -2531,12 +2533,12 @@
     this.unlink = function ($editable) {
       var rng = range.create();
       if (rng.isOnAnchor()) {
-        recordUndo($editable);
-
         var anchor = dom.ancestor(rng.sc, dom.isAnchor);
         rng = range.createFromNode(anchor);
         rng.select();
         document.execCommand('unlink');
+
+        recordUndo($editable);
       }
     };
 
@@ -2553,8 +2555,6 @@
       var isNewWindow = linkInfo.newWindow;
       var rng = linkInfo.range;
 
-      recordUndo($editable);
-
       if (options.onCreateLink) {
         linkUrl = options.onCreateLink(linkUrl);
       }
@@ -2570,6 +2570,8 @@
 
       range.createFromNode(anchor).select();
       triggerOnChange($editable);
+
+      recordUndo($editable);
     };
 
     /**
@@ -2618,20 +2620,20 @@
       var oColor = JSON.parse(sObjColor);
       var foreColor = oColor.foreColor, backColor = oColor.backColor;
 
-      recordUndo($editable);
-
       if (foreColor) { document.execCommand('foreColor', false, foreColor); }
       if (backColor) { document.execCommand('backColor', false, backColor); }
+
+      recordUndo($editable);
     };
 
     this.insertTable = function ($editable, sDim) {
-      recordUndo($editable);
-
       var dimension = sDim.split('x');
       var rng = range.create();
       rng = rng.deleteContents();
       rng.insertNode(table.createTable(dimension[0], dimension[1]));
       triggerOnChange($editable);
+
+      recordUndo($editable);
     };
 
     /**
@@ -2640,9 +2642,9 @@
      * @param {jQuery} $target
      */
     this.floatMe = function ($editable, value, $target) {
-      recordUndo($editable);
-
       $target.css('float', value);
+
+      recordUndo($editable);
     };
 
     /**
@@ -2652,12 +2654,12 @@
      * @param {jQuery} $target - target element
      */
     this.resize = function ($editable, value, $target) {
-      recordUndo($editable);
-
       $target.css({
         width: $editable.width() * value + 'px',
         height: ''
       });
+
+      recordUndo($editable);
     };
 
     /**
@@ -2692,9 +2694,9 @@
      * @param {jQuery} $target - target element
      */
     this.removeMedia = function ($editable, value, $target) {
-      recordUndo($editable);
-
       $target.detach();
+
+      recordUndo($editable);
     };
   };
 
@@ -2703,7 +2705,7 @@
    * @class
    */
   var History = function () {
-    var undoStack = [], redoStack = [];
+    var stack = [], stackOffset = 0;
 
     var makeSnapshot = function ($editable) {
       var editable = $editable[0];
@@ -2711,7 +2713,7 @@
 
       return {
         contents: $editable.html(),
-        bookmark: rng.bookmark(editable)
+        bookmark: (rng ? rng.bookmark(editable) : null)
       };
     };
 
@@ -2722,26 +2724,28 @@
     };
 
     this.undo = function ($editable) {
-      var snapshot = makeSnapshot($editable);
-      if (!undoStack.length) {
-        return;
+      if (0 < stackOffset) {
+        stackOffset--;
+        applySnapshot($editable, stack[stackOffset]);
       }
-      applySnapshot($editable, undoStack.pop());
-      redoStack.push(snapshot);
     };
 
     this.redo = function ($editable) {
-      var snapshot = makeSnapshot($editable);
-      if (!redoStack.length) {
-        return;
+      if (stack.length > stackOffset) {
+        applySnapshot($editable, stack[stackOffset]);
+        stackOffset++;
       }
-      applySnapshot($editable, redoStack.pop());
-      undoStack.push(snapshot);
     };
 
     this.recordUndo = function ($editable) {
-      redoStack = [];
-      undoStack.push(makeSnapshot($editable));
+      // Wash out stack after stackOffset
+      if (stack.length > stackOffset) {
+        stack = stack.slice(0, stackOffset);
+      }
+
+      // Create new snapshot and push it to the end
+      stack.push(makeSnapshot($editable));
+      stackOffset++;
     };
   };
 
@@ -3856,7 +3860,10 @@
       }
 
       // History
-      layoutInfo.editable.data('NoteHistory', new History());
+      var history = new History();
+      // Create first undo stack
+      history.recordUndo(layoutInfo.editable);
+      layoutInfo.editable.data('NoteHistory', history);
 
       // basic event callbacks (lowercase)
       // enter, focus, blur, keyup, keydown
