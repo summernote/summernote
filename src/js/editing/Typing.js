@@ -1,9 +1,37 @@
 define([
+  'summernote/core/func',
+  'summernote/core/list',
   'summernote/core/dom',
-  'summernote/core/range'
-], function (dom, range) {
+  'summernote/core/range',
+  'summernote/editing/Bullet'
+], function (func, list, dom, range, Bullet) {
+  var bullet = new Bullet();
 
   var Typing = function () {
+
+    this.backspace = function () {
+      var rng = range.create();
+
+      if (!rng.isCollapsed()) {
+        rng = rng.deleteContents();
+      } else if (rng.isLeftEdgeOf(dom.isLi)) {
+        var listPara = dom.ancestor(rng.sc, dom.isLi);
+        var para = list.head(bullet.releaseList([[listPara]]));
+        rng = range.create(para, 0).normalize();
+      } else if (rng.isLeftEdgeOf(dom.isBlockquote)) {
+        var blockquote = dom.ancestor(rng.sc, dom.isBlockquote);
+        dom.remove(blockquote);
+      } else if (dom.isText(rng.sc)) {
+        rng.sc.nodeValue = func.replaceChar(rng.sc.nodeValue, rng.so, '');
+        var prevPoint = dom.prevPointUntil(dom.prevPoint(rng.getStartPoint()),
+                        func.and(dom.isVisiblePoint, func.not(dom.isLeftEdgePoint)));
+
+        dom.removeWhile(rng.sc, func.and(dom.isEmpty, dom.isInline));
+        rng = range.create(prevPoint.node, prevPoint.offset);
+      }
+
+      rng.select();
+    };
 
     /**
      * @param {jQuery} $editable 

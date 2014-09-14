@@ -93,6 +93,12 @@ define('summernote/core/func', function () {
       return inverted;
     };
 
+    var replaceChar = function (str, offset, replacement) {
+      var prev = str.substring(0, offset - 1);
+      var next = str.substring(offset);
+      return prev + replacement + next;
+    };
+
     return {
       eq: eq,
       eq2: eq2,
@@ -104,7 +110,8 @@ define('summernote/core/func', function () {
       and: and,
       uniqueId: uniqueId,
       rect2bnd: rect2bnd,
-      invertObject: invertObject
+      invertObject: invertObject,
+      replaceChar: replaceChar
     };
   })();
 

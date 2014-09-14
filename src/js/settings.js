@@ -49,18 +49,6 @@ define('summernote/settings', function () {
 
       // air mode: inline editor
       airMode: false,
-      // airPopover: [
-      //   ['style', ['style']],
-      //   ['font', ['bold', 'italic', 'underline', 'clear']],
-      //   ['fontname', ['fontname']],
-      //   ['fontsize', ['fontsize']], // Still buggy
-      //   ['color', ['color']],
-      //   ['para', ['ul', 'ol', 'paragraph']],
-      //   ['height', ['height']],
-      //   ['table', ['table']],
-      //   ['insert', ['link', 'picture', 'video']],
-      //   ['help', ['help']]
-      // ],
       airPopover: [
         ['color', ['color']],
         ['font', ['bold', 'underline', 'clear']],
@@ -135,6 +123,7 @@ define('summernote/settings', function () {
       keyMap: {
         pc: {
           'ENTER': 'insertParagraph',
+          'BACKSPACE': 'backspace',
           'CTRL+Z': 'undo',
           'CTRL+Y': 'redo',
           'TAB': 'tab',
@@ -165,6 +154,7 @@ define('summernote/settings', function () {
 
         mac: {
           'ENTER': 'insertParagraph',
+          'BACKSPACE': 'backspace',
           'CMD+Z': 'undo',
           'CMD+SHIFT+Z': 'redo',
           'TAB': 'tab',

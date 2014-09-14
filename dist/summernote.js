@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-09-09T10:33Z
+ * Date: 2014-09-14T04:53Z
  */
 (function (factory) {
   /* global define */
@@ -209,6 +209,12 @@
       return inverted;
     };
 
+    var replaceChar = function (str, offset, replacement) {
+      var prev = str.substring(0, offset - 1);
+      var next = str.substring(offset);
+      return prev + replacement + next;
+    };
+
     return {
       eq: eq,
       eq2: eq2,
@@ -220,7 +226,8 @@
       and: and,
       uniqueId: uniqueId,
       rect2bnd: rect2bnd,
-      invertObject: invertObject
+      invertObject: invertObject,
+      replaceChar: replaceChar
     };
   })();
 
@@ -230,6 +237,7 @@
   var list = (function () {
     /**
      * returns the first item of an array.
+     *
      * @param {Array} array
      */
     var head = function (array) {
@@ -238,6 +246,7 @@
 
     /**
      * returns the last item of an array.
+     *
      * @param {Array} array
      */
     var last = function (array) {
@@ -246,6 +255,7 @@
 
     /**
      * returns everything but the last entry of the array.
+     *
      * @param {Array} array
      */
     var initial = function (array) {
@@ -254,6 +264,7 @@
 
     /**
      * returns the rest of the items in an array.
+     *
      * @param {Array} array
      */
     var tail = function (array) {
@@ -273,27 +284,8 @@
     };
 
     /**
-     * returns next item.
-     * @param {Array} array
+     * returns true if all of the values in the array pass the predicate truth test.
      */
-    var next = function (array, item) {
-      var idx = array.indexOf(item);
-      if (idx === -1) { return null; }
-
-      return array[idx + 1];
-    };
-
-    /**
-     * returns prev item.
-     * @param {Array} array
-     */
-    var prev = function (array, item) {
-      var idx = array.indexOf(item);
-      if (idx === -1) { return null; }
-
-      return array[idx - 1];
-    };
-  
     var all = function (array, pred) {
       for (var idx = 0, len = array.length; idx < len; idx ++) {
         if (!pred(array[idx])) {
@@ -303,12 +295,16 @@
       return true;
     };
 
+    /**
+     * returns true if the value is present in the list.
+     */
     var contains = function (array, item) {
       return array.indexOf(item) !== -1;
     };
 
     /**
      * get sum from a list
+     *
      * @param {Array} array - array
      * @param {Function} fn - iterator
      */
@@ -333,6 +329,7 @@
   
     /**
      * cluster elements by predicate function.
+     *
      * @param {Array} array - array
      * @param {Function} fn - predicate function for cluster rule
      * @param {Array[]}
@@ -353,6 +350,7 @@
   
     /**
      * returns a copy of the array with all falsy values removed
+     *
      * @param {Array} array - array
      * @param {Function} fn - predicate function for cluster rule
      */
@@ -364,6 +362,11 @@
       return aResult;
     };
 
+    /**
+     * produces a duplicate-free version of the array
+     *
+     * @param {Array} array
+     */
     var unique = function (array) {
       var results = [];
 
@@ -377,7 +380,7 @@
     };
   
     return { head: head, last: last, initial: initial, tail: tail,
-             prev: prev, next: next, find: find, contains: contains,
+             find: find, contains: contains,
              all: all, sum: sum, from: from,
              clusterBy: clusterBy, compact: compact, unique: unique };
   })();
@@ -455,12 +458,14 @@
 
     /**
      * returns predicate which judge whether nodeName is same
-     * @param {String} sNodeName
+     *
+     * @param {String} nodeName
+     * @return {String}
      */
-    var makePredByNodeName = function (sNodeName) {
-      sNodeName = sNodeName.toUpperCase();
+    var makePredByNodeName = function (nodeName) {
+      nodeName = nodeName.toUpperCase();
       return function (node) {
-        return node && node.nodeName.toUpperCase() === sNodeName;
+        return node && node.nodeName.toUpperCase() === nodeName;
       };
     };
 
@@ -759,6 +764,24 @@
     };
 
     /**
+     * returns wheter node is left edge of ancestor or not.
+     *
+     * @param {Node} node
+     * @param {Node} ancestor
+     * @return {Boolean}
+     */
+    var isLeftEdgeOf = function (node, ancestor) {
+      while (node && node !== ancestor) {
+        if (position(node) !== 0) {
+          return false;
+        }
+        node = node.parentNode;
+      }
+
+      return true;
+    };
+
+    /**
      * returns whether node is right edge of ancestor or not.
      *
      * @param {Node} node
@@ -811,7 +834,7 @@
         node = point.node.parentNode;
         offset = position(point.node);
       } else if (hasChildren(point.node)) {
-        node = point.node.childNodes[offset - 1];
+        node = point.node.childNodes[point.offset - 1];
         offset = nodeLength(node);
       } else {
         node = point.node;
@@ -873,10 +896,17 @@
      * @return {Boolean}
      */
     var isVisiblePoint = function (point) {
-      return isText(point.node) ||
-             !hasChildren(point.node) ||
-             isEmpty(point.node) ||
-             !isEdgePoint(point);
+      if (isText(point.node) || !hasChildren(point.node) || isEmpty(point.node)) {
+        return true;
+      }
+
+      var leftNode = point.node.childNodes[point.offset - 1];
+      var rightNode = point.node.childNodes[point.offset];
+      if ((!leftNode || isVoid(leftNode)) && (!rightNode || isVoid(rightNode))) {
+        return true;
+      }
+
+      return false;
     };
 
     /**
@@ -1063,6 +1093,22 @@
     };
 
     /**
+     * @param {Node} node
+     * @param {Function} pred
+     */
+    var removeWhile = function (node, pred) {
+      while (node) {
+        if (isEditable(node) || !pred(node)) {
+          break;
+        }
+
+        var parent = node.parentNode;
+        remove(node);
+        node = parent;
+      }
+    };
+
+    /**
      * replace node with provided nodeName
      *
      * @param {Node} node
@@ -1104,7 +1150,7 @@
           name = name.toUpperCase();
           var isEndOfInlineContainer = /^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) &&
                                        !!endSlash;
-          var isBlockNode = /^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
+          var isBlockNode = /^BLOCKQUOTE|^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
 
           return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
         });
@@ -1155,6 +1201,7 @@
       isLeftEdgePoint: isLeftEdgePoint,
       isRightEdgePoint: isRightEdgePoint,
       isEdgePoint: isEdgePoint,
+      isLeftEdgeOf: isLeftEdgeOf,
       isRightEdgeOf: isRightEdgeOf,
       prevPoint: prevPoint,
       nextPoint: nextPoint,
@@ -1181,6 +1228,7 @@
       create: create,
       createText: createText,
       remove: remove,
+      removeWhile: removeWhile,
       replace: replace,
       html: html,
       value: value
@@ -1237,18 +1285,6 @@
 
       // air mode: inline editor
       airMode: false,
-      // airPopover: [
-      //   ['style', ['style']],
-      //   ['font', ['bold', 'italic', 'underline', 'clear']],
-      //   ['fontname', ['fontname']],
-      //   ['fontsize', ['fontsize']], // Still buggy
-      //   ['color', ['color']],
-      //   ['para', ['ul', 'ol', 'paragraph']],
-      //   ['height', ['height']],
-      //   ['table', ['table']],
-      //   ['insert', ['link', 'picture', 'video']],
-      //   ['help', ['help']]
-      // ],
       airPopover: [
         ['color', ['color']],
         ['font', ['bold', 'underline', 'clear']],
@@ -1323,6 +1359,7 @@
       keyMap: {
         pc: {
           'ENTER': 'insertParagraph',
+          'BACKSPACE': 'backspace',
           'CTRL+Z': 'undo',
           'CTRL+Y': 'redo',
           'TAB': 'tab',
@@ -1353,6 +1390,7 @@
 
         mac: {
           'ENTER': 'insertParagraph',
+          'BACKSPACE': 'backspace',
           'CMD+Z': 'undo',
           'CMD+SHIFT+Z': 'redo',
           'TAB': 'tab',
@@ -2077,6 +2115,19 @@
       this.isOnCell = makeIsOn(dom.isCell);
 
       /**
+       * @param {Function} pred
+       * @return {Boolean}
+       */
+      this.isLeftEdgeOf = function (pred) {
+        if (!dom.isLeftEdgePoint(this.getStartPoint())) {
+          return false;
+        }
+
+        var node = dom.ancestor(this.sc, pred);
+        return node && dom.isLeftEdgeOf(this.sc, node);
+      };
+
+      /**
        * returns whether range was collapsed or not
        */
       this.isCollapsed = function () {
@@ -2263,95 +2314,6 @@
   })();
 
 
-  var Typing = function () {
-
-    /**
-     * @param {jQuery} $editable 
-     * @param {WrappedRange} rng
-     * @param {Number} tabsize
-     */
-    this.insertTab = function ($editable, rng, tabsize) {
-      var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
-      rng = rng.deleteContents();
-      rng.insertNode(tab, true);
-
-      rng = range.create(tab, tabsize);
-      rng.select();
-    };
-
-    /**
-     * insert paragraph
-     */
-    this.insertParagraph = function () {
-      var rng = range.create();
-
-      // deleteContents on range.
-      rng = rng.deleteContents();
-
-      rng = rng.wrapBodyInlineWithPara();
-
-      // find split root node: block level node
-      var splitRoot = dom.ancestor(rng.sc, dom.isPara);
-      var nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
-
-      var emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
-      emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
-
-      $.each(emptyAnchors, function (idx, anchor) {
-        dom.remove(anchor);
-      });
-
-      range.create(nextPara, 0).normalize().select();
-    };
-
-  };
-
-  /**
-   * Table
-   * @class
-   */
-  var Table = function () {
-    /**
-     * handle tab key
-     *
-     * @param {WrappedRange} rng
-     * @param {Boolean} isShift
-     */
-    this.tab = function (rng, isShift) {
-      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-      var table = dom.ancestor(cell, dom.isTable);
-      var cells = dom.listDescendant(table, dom.isCell);
-
-      var nextCell = list[isShift ? 'prev' : 'next'](cells, cell);
-      if (nextCell) {
-        range.create(nextCell, 0).select();
-      }
-    };
-
-    /**
-     * create empty table element
-     *
-     * @param {Number} rowCount
-     * @param {Number} colCount
-     * @return {Node}
-     */
-    this.createTable = function (colCount, rowCount) {
-      var tds = [], tdHTML;
-      for (var idxCol = 0; idxCol < colCount; idxCol++) {
-        tds.push('<td>' + dom.blank + '</td>');
-      }
-      tdHTML = tds.join('');
-
-      var trs = [], trHTML;
-      for (var idxRow = 0; idxRow < rowCount; idxRow++) {
-        trs.push('<tr>' + tdHTML + '</tr>');
-      }
-      trHTML = trs.join('');
-      return $('<table class="table table-bordered">' + trHTML + '</table>')[0];
-    };
-  };
-
-
   var Bullet = function () {
     /**
      * toggle ordered list
@@ -2536,10 +2498,124 @@
           });
         });
 
-        paras = releasedParas.concat(paras);
+        releasedParas = releasedParas.concat(paras);
       });
 
       return releasedParas;
+    };
+  };
+
+  var bullet = new Bullet();
+
+  var Typing = function () {
+
+    this.backspace = function () {
+      var rng = range.create();
+
+      if (!rng.isCollapsed()) {
+        rng = rng.deleteContents();
+      } else if (rng.isLeftEdgeOf(dom.isLi)) {
+        var listPara = dom.ancestor(rng.sc, dom.isLi);
+        var para = list.head(bullet.releaseList([[listPara]]));
+        rng = range.create(para, 0).normalize();
+      } else if (rng.isLeftEdgeOf(dom.isBlockquote)) {
+        var blockquote = dom.ancestor(rng.sc, dom.isBlockquote);
+        dom.remove(blockquote);
+      } else if (dom.isText(rng.sc)) {
+        rng.sc.nodeValue = func.replaceChar(rng.sc.nodeValue, rng.so, '');
+        var prevPoint = dom.prevPointUntil(dom.prevPoint(rng.getStartPoint()),
+                        func.and(dom.isVisiblePoint, func.not(dom.isLeftEdgePoint)));
+
+        dom.removeWhile(rng.sc, func.and(dom.isEmpty, dom.isInline));
+        rng = range.create(prevPoint.node, prevPoint.offset);
+      }
+
+      rng.select();
+    };
+
+    /**
+     * @param {jQuery} $editable 
+     * @param {WrappedRange} rng
+     * @param {Number} tabsize
+     */
+    this.insertTab = function ($editable, rng, tabsize) {
+      var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
+      rng = rng.deleteContents();
+      rng.insertNode(tab, true);
+
+      rng = range.create(tab, tabsize);
+      rng.select();
+    };
+
+    /**
+     * insert paragraph
+     */
+    this.insertParagraph = function () {
+      var rng = range.create();
+
+      // deleteContents on range.
+      rng = rng.deleteContents();
+
+      rng = rng.wrapBodyInlineWithPara();
+
+      // find split root node: block level node
+      var splitRoot = dom.ancestor(rng.sc, dom.isPara);
+      var nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
+
+      var emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
+      emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
+
+      $.each(emptyAnchors, function (idx, anchor) {
+        dom.remove(anchor);
+      });
+
+      range.create(nextPara, 0).normalize().select();
+    };
+
+  };
+
+  /**
+   * Table
+   * @class
+   */
+  var Table = function () {
+    /**
+     * handle tab key
+     *
+     * @param {WrappedRange} rng
+     * @param {Boolean} isShift
+     */
+    this.tab = function (rng, isShift) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      var table = dom.ancestor(cell, dom.isTable);
+      var cells = dom.listDescendant(table, dom.isCell);
+
+      var nextCell = list[isShift ? 'prev' : 'next'](cells, cell);
+      if (nextCell) {
+        range.create(nextCell, 0).select();
+      }
+    };
+
+    /**
+     * create empty table element
+     *
+     * @param {Number} rowCount
+     * @param {Number} colCount
+     * @return {Node}
+     */
+    this.createTable = function (colCount, rowCount) {
+      var tds = [], tdHTML;
+      for (var idxCol = 0; idxCol < colCount; idxCol++) {
+        tds.push('<td>' + dom.blank + '</td>');
+      }
+      tdHTML = tds.join('');
+
+      var trs = [], trHTML;
+      for (var idxRow = 0; idxRow < rowCount; idxRow++) {
+        trs.push('<tr>' + tdHTML + '</tr>');
+      }
+      trHTML = trs.join('');
+      return $('<table class="table table-bordered">' + trHTML + '</table>')[0];
     };
   };
 
@@ -2636,6 +2712,17 @@
       })(commands[idx]);
     }
     /* jshint ignore:end */
+
+    /**
+     * handle backspace
+     *
+     * @param {jQuery} $editable
+     */
+    this.backspace = function ($editable) {
+      recordUndo($editable);
+      typing.backspace();
+      triggerOnChange($editable);
+    };
 
     /**
      * handle tab key

@@ -106,6 +106,17 @@ define([
     /* jshint ignore:end */
 
     /**
+     * handle backspace
+     *
+     * @param {jQuery} $editable
+     */
+    this.backspace = function ($editable) {
+      recordUndo($editable);
+      typing.backspace();
+      triggerOnChange($editable);
+    };
+
+    /**
      * handle tab key
      *
      * @param {jQuery} $editable 
