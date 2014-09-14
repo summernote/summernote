@@ -189,7 +189,7 @@ define([
           });
         });
 
-        paras = releasedParas.concat(paras);
+        releasedParas = releasedParas.concat(paras);
       });
 
       return releasedParas;
