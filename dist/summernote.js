@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-09-09T10:33Z
+ * Date: 2014-09-14T04:54Z
  */
 (function (factory) {
   /* global define */
@@ -230,6 +230,7 @@
   var list = (function () {
     /**
      * returns the first item of an array.
+     *
      * @param {Array} array
      */
     var head = function (array) {
@@ -238,6 +239,7 @@
 
     /**
      * returns the last item of an array.
+     *
      * @param {Array} array
      */
     var last = function (array) {
@@ -246,6 +248,7 @@
 
     /**
      * returns everything but the last entry of the array.
+     *
      * @param {Array} array
      */
     var initial = function (array) {
@@ -254,6 +257,7 @@
 
     /**
      * returns the rest of the items in an array.
+     *
      * @param {Array} array
      */
     var tail = function (array) {
@@ -273,27 +277,8 @@
     };
 
     /**
-     * returns next item.
-     * @param {Array} array
+     * returns true if all of the values in the array pass the predicate truth test.
      */
-    var next = function (array, item) {
-      var idx = array.indexOf(item);
-      if (idx === -1) { return null; }
-
-      return array[idx + 1];
-    };
-
-    /**
-     * returns prev item.
-     * @param {Array} array
-     */
-    var prev = function (array, item) {
-      var idx = array.indexOf(item);
-      if (idx === -1) { return null; }
-
-      return array[idx - 1];
-    };
-  
     var all = function (array, pred) {
       for (var idx = 0, len = array.length; idx < len; idx ++) {
         if (!pred(array[idx])) {
@@ -303,12 +288,16 @@
       return true;
     };
 
+    /**
+     * returns true if the value is present in the list.
+     */
     var contains = function (array, item) {
       return array.indexOf(item) !== -1;
     };
 
     /**
      * get sum from a list
+     *
      * @param {Array} array - array
      * @param {Function} fn - iterator
      */
@@ -333,6 +322,7 @@
   
     /**
      * cluster elements by predicate function.
+     *
      * @param {Array} array - array
      * @param {Function} fn - predicate function for cluster rule
      * @param {Array[]}
@@ -353,6 +343,7 @@
   
     /**
      * returns a copy of the array with all falsy values removed
+     *
      * @param {Array} array - array
      * @param {Function} fn - predicate function for cluster rule
      */
@@ -364,6 +355,11 @@
       return aResult;
     };
 
+    /**
+     * produces a duplicate-free version of the array
+     *
+     * @param {Array} array
+     */
     var unique = function (array) {
       var results = [];
 
@@ -377,7 +373,7 @@
     };
   
     return { head: head, last: last, initial: initial, tail: tail,
-             prev: prev, next: next, find: find, contains: contains,
+             find: find, contains: contains,
              all: all, sum: sum, from: from,
              clusterBy: clusterBy, compact: compact, unique: unique };
   })();
@@ -455,12 +451,14 @@
 
     /**
      * returns predicate which judge whether nodeName is same
-     * @param {String} sNodeName
+     *
+     * @param {String} nodeName
+     * @return {String}
      */
-    var makePredByNodeName = function (sNodeName) {
-      sNodeName = sNodeName.toUpperCase();
+    var makePredByNodeName = function (nodeName) {
+      nodeName = nodeName.toUpperCase();
       return function (node) {
-        return node && node.nodeName.toUpperCase() === sNodeName;
+        return node && node.nodeName.toUpperCase() === nodeName;
       };
     };
 
@@ -759,6 +757,24 @@
     };
 
     /**
+     * returns wheter node is left edge of ancestor or not.
+     *
+     * @param {Node} node
+     * @param {Node} ancestor
+     * @return {Boolean}
+     */
+    var isLeftEdgeOf = function (node, ancestor) {
+      while (node && node !== ancestor) {
+        if (position(node) !== 0) {
+          return false;
+        }
+        node = node.parentNode;
+      }
+
+      return true;
+    };
+
+    /**
      * returns whether node is right edge of ancestor or not.
      *
      * @param {Node} node
@@ -811,7 +827,7 @@
         node = point.node.parentNode;
         offset = position(point.node);
       } else if (hasChildren(point.node)) {
-        node = point.node.childNodes[offset - 1];
+        node = point.node.childNodes[point.offset - 1];
         offset = nodeLength(node);
       } else {
         node = point.node;
@@ -873,10 +889,17 @@
      * @return {Boolean}
      */
     var isVisiblePoint = function (point) {
-      return isText(point.node) ||
-             !hasChildren(point.node) ||
-             isEmpty(point.node) ||
-             !isEdgePoint(point);
+      if (isText(point.node) || !hasChildren(point.node) || isEmpty(point.node)) {
+        return true;
+      }
+
+      var leftNode = point.node.childNodes[point.offset - 1];
+      var rightNode = point.node.childNodes[point.offset];
+      if ((!leftNode || isVoid(leftNode)) && (!rightNode || isVoid(rightNode))) {
+        return true;
+      }
+
+      return false;
     };
 
     /**
@@ -1063,6 +1086,22 @@
     };
 
     /**
+     * @param {Node} node
+     * @param {Function} pred
+     */
+    var removeWhile = function (node, pred) {
+      while (node) {
+        if (isEditable(node) || !pred(node)) {
+          break;
+        }
+
+        var parent = node.parentNode;
+        remove(node);
+        node = parent;
+      }
+    };
+
+    /**
      * replace node with provided nodeName
      *
      * @param {Node} node
@@ -1104,7 +1143,7 @@
           name = name.toUpperCase();
           var isEndOfInlineContainer = /^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) &&
                                        !!endSlash;
-          var isBlockNode = /^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
+          var isBlockNode = /^BLOCKQUOTE|^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
 
           return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
         });
@@ -1155,6 +1194,7 @@
       isLeftEdgePoint: isLeftEdgePoint,
       isRightEdgePoint: isRightEdgePoint,
       isEdgePoint: isEdgePoint,
+      isLeftEdgeOf: isLeftEdgeOf,
       isRightEdgeOf: isRightEdgeOf,
       prevPoint: prevPoint,
       nextPoint: nextPoint,
@@ -1181,6 +1221,7 @@
       create: create,
       createText: createText,
       remove: remove,
+      removeWhile: removeWhile,
       replace: replace,
       html: html,
       value: value
@@ -2077,6 +2118,19 @@
       this.isOnCell = makeIsOn(dom.isCell);
 
       /**
+       * @param {Function} pred
+       * @return {Boolean}
+       */
+      this.isLeftEdgeOf = function (pred) {
+        if (!dom.isLeftEdgePoint(this.getStartPoint())) {
+          return false;
+        }
+
+        var node = dom.ancestor(this.sc, pred);
+        return node && dom.isLeftEdgeOf(this.sc, node);
+      };
+
+      /**
        * returns whether range was collapsed or not
        */
       this.isCollapsed = function () {
@@ -2536,7 +2590,7 @@
           });
         });
 
-        paras = releasedParas.concat(paras);
+        releasedParas = releasedParas.concat(paras);
       });
 
       return releasedParas;
@@ -2559,9 +2613,12 @@
      *
      * @param {jQuery} $editable
      */
-    this.saveRange = function ($editable) {
+    this.saveRange = function ($editable, thenCollapse) {
       $editable.focus();
       $editable.data('range', range.create());
+      if (thenCollapse) {
+        range.create().collapse().select();
+      }
     };
 
     /**
@@ -3722,7 +3779,7 @@
         var $dialog = layoutInfo.dialog(),
             $editable = layoutInfo.editable();
 
-        editor.saveRange($editable);
+        editor.saveRange($editable, true);
         dialog.showHelpDialog($editable, $dialog).then(function () {
           editor.restoreRange($editable);
         });
@@ -3933,7 +3990,8 @@
 
       if ($btn.length) {
         var eventName = $btn.attr('data-event'),
-            value = $btn.attr('data-value');
+            value = $btn.attr('data-value'),
+            hide = $btn.attr('data-hide');
 
         var layoutInfo = makeLayoutInfo(event.target);
 
@@ -3946,6 +4004,12 @@
           $target = $($selection.data('target'));
         }
 
+        // If requested, hide the popover when the button is clicked.
+        // Useful for things like showHelpDialog.
+        if (hide) {
+          $btn.parents('.popover').hide();
+        }
+        
         if (editor[eventName]) { // on command
           var $editable = layoutInfo.editable();
           $editable.trigger('focus');
@@ -4276,6 +4340,7 @@
      * @param {String} [options.value]
      * @param {String} [options.title]
      * @param {String} [options.dropdown]
+     * @param {String} [options.hide]
      */
     var tplButton = function (label, options) {
       var event = options.event;
@@ -4283,6 +4348,7 @@
       var title = options.title;
       var className = options.className;
       var dropdown = options.dropdown;
+      var hide = options.hide;
 
       return '<button type="button"' +
                  ' class="btn btn-default btn-sm btn-small' +
@@ -4293,6 +4359,7 @@
                  (title ? ' title="' + title + '"' : '') +
                  (event ? ' data-event="' + event + '"' : '') +
                  (value ? ' data-value=\'' + value + '\'' : '') +
+                 (hide ? ' data-hide=\'' + hide + '\'' : '') +
                  ' tabindex="-1">' +
                label +
                (dropdown ? ' <span class="caret"></span>' : '') +
@@ -4365,19 +4432,22 @@
       picture: function (lang) {
         return tplIconButton('fa fa-picture-o icon-picture', {
           event: 'showImageDialog',
-          title: lang.image.image
+          title: lang.image.image,
+          hide: true
         });
       },
       link: function (lang) {
         return tplIconButton('fa fa-link icon-link', {
           event: 'showLinkDialog',
-          title: lang.link.link
+          title: lang.link.link,
+          hide: true
         });
       },
       video: function (lang) {
         return tplIconButton('fa fa-youtube-play icon-play', {
           event: 'showVideoDialog',
-          title: lang.video.video
+          title: lang.video.video,
+          hide: true
         });
       },
       table: function (lang) {
@@ -4586,7 +4656,8 @@
       help: function (lang) {
         return tplIconButton('fa fa-question icon-question', {
           event: 'showHelpDialog',
-          title: lang.options.help
+          title: lang.options.help,
+          hide: true
         });
       },
       fullscreen: function (lang) {
@@ -4625,7 +4696,8 @@
       var tplLinkPopover = function () {
         var linkButton = tplIconButton('fa fa-edit icon-edit', {
           title: lang.link.edit,
-          event: 'showLinkDialog'
+          event: 'showLinkDialog',
+          hide: true
         });
         var unlinkButton = tplIconButton('fa fa-unlink icon-unlink', {
           title: lang.link.unlink,
