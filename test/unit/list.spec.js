@@ -21,6 +21,24 @@ define(['jquery', 'summernote/core/list'], function ($, list) {
       deepEqual(list.tail([1, 2, 3]), [2, 3], 'should exclude first element');
     });
 
+    var isEven = function (num) {
+      return num % 2 === 0;
+    };
+
+    test('list.find', function () {
+      deepEqual(list.find([1, 2, 3], isEven), 2, 'should returns first matched element');
+    });
+
+    test('list.all', function () {
+      deepEqual(list.all([1, 2, 3], isEven), false, 'should returns false');
+      deepEqual(list.all([2, 4], isEven), true, 'should returns true');
+    });
+
+    test('list.sum', function () {
+      deepEqual(list.contains([1, 2, 3], 4), false, 'should returns false');
+      deepEqual(list.contains([1, 2, 4], 4), true, 'should returns true');
+    });
+
     test('list.sum', function () {
       deepEqual(list.sum([1, 2, 3]), 6, 'should return 6');
       deepEqual(list.sum([1, 2, 3], function (v) { return v * 2; }), 12, 'should return 12');
@@ -52,6 +70,10 @@ define(['jquery', 'summernote/core/list'], function ($, list) {
 
     test('list.compact', function () {
       deepEqual(list.compact([0, 1, false, 2, '', 3]), [1, 2, 3], 'falsey values of `array` removed');
+    });
+
+    test('list.unique', function () {
+      deepEqual(list.unique([1, 2, 3, 3, 2, 1]), [1, 2, 3], 'returns duplicate-free version of array');
     });
   };
 });

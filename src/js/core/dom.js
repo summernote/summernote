@@ -76,12 +76,14 @@ define([
 
     /**
      * returns predicate which judge whether nodeName is same
-     * @param {String} sNodeName
+     *
+     * @param {String} nodeName
+     * @return {String}
      */
-    var makePredByNodeName = function (sNodeName) {
-      sNodeName = sNodeName.toUpperCase();
+    var makePredByNodeName = function (nodeName) {
+      nodeName = nodeName.toUpperCase();
       return function (node) {
-        return node && node.nodeName.toUpperCase() === sNodeName;
+        return node && node.nodeName.toUpperCase() === nodeName;
       };
     };
 
@@ -382,6 +384,24 @@ define([
     };
 
     /**
+     * returns wheter node is left edge of ancestor or not.
+     *
+     * @param {Node} node
+     * @param {Node} ancestor
+     * @return {Boolean}
+     */
+    var isLeftEdgeOf = function (node, ancestor) {
+      while (node && node !== ancestor) {
+        if (position(node) !== 0) {
+          return false;
+        }
+        node = node.parentNode;
+      }
+
+      return true;
+    };
+
+    /**
      * returns whether node is right edge of ancestor or not.
      *
      * @param {Node} node
@@ -434,7 +454,7 @@ define([
         node = point.node.parentNode;
         offset = position(point.node);
       } else if (hasChildren(point.node)) {
-        node = point.node.childNodes[offset - 1];
+        node = point.node.childNodes[point.offset - 1];
         offset = nodeLength(node);
       } else {
         node = point.node;
@@ -496,10 +516,17 @@ define([
      * @return {Boolean}
      */
     var isVisiblePoint = function (point) {
-      return isText(point.node) ||
-             !hasChildren(point.node) ||
-             isEmpty(point.node) ||
-             !isEdgePoint(point);
+      if (isText(point.node) || !hasChildren(point.node) || isEmpty(point.node)) {
+        return true;
+      }
+
+      var leftNode = point.node.childNodes[point.offset - 1];
+      var rightNode = point.node.childNodes[point.offset];
+      if ((!leftNode || isVoid(leftNode)) && (!rightNode || isVoid(rightNode))) {
+        return true;
+      }
+
+      return false;
     };
 
     /**
@@ -690,6 +717,22 @@ define([
     };
 
     /**
+     * @param {Node} node
+     * @param {Function} pred
+     */
+    var removeWhile = function (node, pred) {
+      while (node) {
+        if (isEditable(node) || !pred(node)) {
+          break;
+        }
+
+        var parent = node.parentNode;
+        remove(node);
+        node = parent;
+      }
+    };
+
+    /**
      * replace node with provided nodeName
      *
      * @param {Node} node
@@ -731,7 +774,7 @@ define([
           name = name.toUpperCase();
           var isEndOfInlineContainer = /^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) &&
                                        !!endSlash;
-          var isBlockNode = /^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
+          var isBlockNode = /^BLOCKQUOTE|^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
 
           return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
         });
@@ -783,6 +826,7 @@ define([
       isLeftEdgePoint: isLeftEdgePoint,
       isRightEdgePoint: isRightEdgePoint,
       isEdgePoint: isEdgePoint,
+      isLeftEdgeOf: isLeftEdgeOf,
       isRightEdgeOf: isRightEdgeOf,
       prevPoint: prevPoint,
       nextPoint: nextPoint,
@@ -809,6 +853,7 @@ define([
       create: create,
       createText: createText,
       remove: remove,
+      removeWhile: removeWhile,
       replace: replace,
       html: html,
       value: value

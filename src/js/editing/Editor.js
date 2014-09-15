@@ -27,9 +27,12 @@ define([
      *
      * @param {jQuery} $editable
      */
-    this.saveRange = function ($editable) {
+    this.saveRange = function ($editable, thenCollapse) {
       $editable.focus();
       $editable.data('range', range.create());
+      if (thenCollapse) {
+        range.create().collapse().select();
+      }
     };
 
     /**
