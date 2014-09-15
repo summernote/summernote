@@ -140,6 +140,8 @@ define([
       return isInline(node) && !ancestor(node, isPara);
     };
 
+    var isBody = makePredByNodeName('BODY');
+
     /**
      * blank HTML for cursor position
      */
@@ -758,6 +760,7 @@ define([
       isPurePara: isPurePara,
       isInline: isInline,
       isBodyInline: isBodyInline,
+      isBody: isBody,
       isParaInline: isParaInline,
       isList: isList,
       isTable: makePredByNodeName('TABLE'),
