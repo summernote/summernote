@@ -539,7 +539,8 @@ define([
             var selection = document.getSelection();
             if (selection.rangeCount === 0) {
               return null;
-            } else if (selection.anchorNode.tagName === 'BODY') {
+            } else if (dom.isBody(selection.anchorNode)) {
+              // Firefox: returns entire body as range on initialization. We won't never need it.
               return null;
             }
   
