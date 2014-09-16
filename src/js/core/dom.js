@@ -142,6 +142,8 @@ define([
       return isInline(node) && !ancestor(node, isPara);
     };
 
+    var isBody = makePredByNodeName('BODY');
+
     /**
      * blank HTML for cursor position
      */
@@ -591,7 +593,7 @@ define([
      * @param {Node} node
      */
     var makeOffsetPath = function (ancestor, node) {
-      var ancestors = list.initial(listAncestor(node, func.eq(ancestor)));
+      var ancestors = listAncestor(node, func.eq(ancestor));
       return $.map(ancestors, position).reverse();
     };
 
@@ -604,7 +606,11 @@ define([
     var fromOffsetPath = function (ancestor, aOffset) {
       var current = ancestor;
       for (var i = 0, len = aOffset.length; i < len; i++) {
-        current = current.childNodes[aOffset[i]];
+        if (current.childNodes.length <= aOffset[i]) {
+          current = current.childNodes[current.childNodes.length - 1];
+        } else {
+          current = current.childNodes[aOffset[i]];
+        }
       }
       return current;
     };
@@ -797,6 +803,7 @@ define([
       isPurePara: isPurePara,
       isInline: isInline,
       isBodyInline: isBodyInline,
+      isBody: isBody,
       isParaInline: isParaInline,
       isList: isList,
       isTable: makePredByNodeName('TABLE'),

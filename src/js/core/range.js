@@ -552,6 +552,9 @@ define([
             var selection = document.getSelection();
             if (selection.rangeCount === 0) {
               return null;
+            } else if (dom.isBody(selection.anchorNode)) {
+              // Firefox: returns entire body as range on initialization. We won't never need it.
+              return null;
             }
   
             var nativeRng = selection.getRangeAt(0);

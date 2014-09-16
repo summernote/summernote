@@ -4,45 +4,51 @@ define(['summernote/core/range'], function (range) {
    * @class
    */
   var History = function () {
-    var undoStack = [], redoStack = [];
+    var stack = [], stackOffset = 0;
 
     var makeSnapshot = function ($editable) {
       var editable = $editable[0];
       var rng = range.create();
+      var emptyBookmark = {s: {path: [0], offset: 0}, e: {path: [0], offset: 0}};
 
       return {
         contents: $editable.html(),
-        bookmark: rng.bookmark(editable)
+        bookmark: (rng ? rng.bookmark(editable) : emptyBookmark)
       };
     };
 
     var applySnapshot = function ($editable, snapshot) {
-      $editable.html(snapshot.contents);
-      // FIXME: Still buggy, use marker tag
-      // range.createFromBookmark($editable[0], snapshot.bookmark).select();
+      if (snapshot.contents !== null) {
+        $editable.html(snapshot.contents);
+      }
+      if (snapshot.bookmark !== null) {
+        range.createFromBookmark($editable[0], snapshot.bookmark).select();
+      }
     };
 
     this.undo = function ($editable) {
-      var snapshot = makeSnapshot($editable);
-      if (!undoStack.length) {
-        return;
+      if (0 < stackOffset) {
+        stackOffset--;
+        applySnapshot($editable, stack[stackOffset]);
       }
-      applySnapshot($editable, undoStack.pop());
-      redoStack.push(snapshot);
     };
 
     this.redo = function ($editable) {
-      var snapshot = makeSnapshot($editable);
-      if (!redoStack.length) {
-        return;
+      if (stack.length - 1 > stackOffset) {
+        stackOffset++;
+        applySnapshot($editable, stack[stackOffset]);
       }
-      applySnapshot($editable, redoStack.pop());
-      undoStack.push(snapshot);
     };
 
     this.recordUndo = function ($editable) {
-      redoStack = [];
-      undoStack.push(makeSnapshot($editable));
+      // Wash out stack after stackOffset
+      if (stack.length > stackOffset) {
+        stack = stack.slice(0, stackOffset);
+      }
+
+      // Create new snapshot and push it to the end
+      stack.push(makeSnapshot($editable));
+      stackOffset++;
     };
   };
 
