@@ -3,7 +3,7 @@
  * http://hackerwins.github.io/summernote/
  *
  * summernote.js
- * Copyright 2013 Alan Hong. and outher contributors
+ * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
  * Date: @DATE
