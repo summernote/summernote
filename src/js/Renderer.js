@@ -543,7 +543,7 @@ define([
       if (options.extraKeys) {
         template += '<tr><td colspan="2">' + tplExtraShortcuts(lang, options) + '</td></tr>';
       }
-      template += '</tbody</table>';
+      template += '</tbody></table>';
       return template;
     };
 
