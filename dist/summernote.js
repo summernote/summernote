@@ -6,11 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
-<<<<<<< HEAD
- * Date: 2014-10-11T01:18Z
-=======
- * Date: 2014-09-10T07:01Z
->>>>>>> Added ability to add links to images
+ * Date: 2014-09-19T04:58Z
  */
 (function (factory) {
   /* global define */
@@ -1379,6 +1375,13 @@
       onImageUpload: null,      // imageUpload
       onImageUploadError: null, // imageUploadError
       onToolbarClick: null,
+
+      // custom dialogs
+      showLinkDialog: null,
+      showImageLinkDialog: null,
+      showImageDialog: null,
+      showVideoDialog: null,
+      showHelpDialog: null,
 
       /**
        * manipulate link address when user create link
@@ -3889,7 +3892,8 @@
         var options = $editor.data('options');
 
         editor.saveRange($editable);
-        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
+        var showLinkDialogFunc = (options.showLinkDialog !== null) ? options.showLinkDialog : dialog.showLinkDialog;
+        showLinkDialogFunc($editable, $dialog, linkInfo).then(function (linkInfo) {
           editor.restoreRange($editable);
           editor.createLink($editable, linkInfo, options);
           // hide popover after creating link
@@ -3902,26 +3906,26 @@
       * @param {Object} layoutInfo
       */
       showImageLinkDialog: function (layoutInfo) {
-          var $editor = layoutInfo.editor(),
-              $dialog = layoutInfo.dialog(),
-              $editable = layoutInfo.editable(),
-              $handle = layoutInfo.handle(),
-              linkInfo = editor.getLinkInfo($editable);
+        var $editor = layoutInfo.editor(),
+            $dialog = layoutInfo.dialog(),
+            $editable = layoutInfo.editable(),
+            $handle = layoutInfo.handle(),
+            linkInfo = editor.getLinkInfo($editable);
 
-          var options = $editor.data('options'),
-              target = $handle.find('.note-control-selection').data('target'),
-              $target = $(target);
+        var options = $editor.data('options'),
+            target = $handle.find('.note-control-selection').data('target'),
+            $target = $(target);
 
-
-          editor.saveRange($editable);
-          dialog.showImageLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
-              editor.restoreRange($editable);
-              editor.createImageLink($editable, linkInfo, options, $target);
-              // hide popover after creating link
-              popover.hide(layoutInfo.popover());
-          }).fail(function () {
-              editor.restoreRange($editable);
-          });
+        editor.saveRange($editable);
+        var showImageLinkDialogFunc = (options.showImageLinkDialog !== null) ? options.showImageLinkDialog : dialog.showImageLinkDialog;
+        showImageLinkDialogFunc($editable, $dialog, linkInfo).then(function (linkInfo) {
+          editor.restoreRange($editable);
+          editor.createImageLink($editable, linkInfo, options, $target);
+          // hide popover after creating link
+          popover.hide(layoutInfo.popover());
+        }).fail(function () {
+          editor.restoreRange($editable);
+        });
       },
 
       /**
@@ -3941,10 +3945,14 @@
         */
       showImageDialog: function (layoutInfo) {
         var $dialog = layoutInfo.dialog(),
-            $editable = layoutInfo.editable();
+            $editable = layoutInfo.editable(),
+            $editor = layoutInfo.editor();
+
+        var options = $editor.data('options');
 
         editor.saveRange($editable);
-        dialog.showImageDialog($editable, $dialog).then(function (data) {
+        var showImageDialogFunc = (options.showImageDialog !== null) ? options.showImageDialog : dialog.showImageDialog;
+        showImageDialogFunc($editable, $dialog).then(function (data) {
           editor.restoreRange($editable);
 
           if (typeof data === 'string') {
@@ -3965,10 +3973,14 @@
       showVideoDialog: function (layoutInfo) {
         var $dialog = layoutInfo.dialog(),
             $editable = layoutInfo.editable(),
-            videoInfo = editor.getVideoInfo($editable);
+            videoInfo = editor.getVideoInfo($editable),
+            $editor = layoutInfo.editor();
+
+        var options = $editor.data('options');
 
         editor.saveRange($editable);
-        dialog.showVideoDialog($editable, $dialog, videoInfo).then(function (sUrl) {
+        var showVideoDialogFunc = (options.showVideoDialog !== null) ? options.showVideoDialog : dialog.showVideoDialog;
+        showVideoDialogFunc($editable, $dialog, videoInfo).then(function (sUrl) {
           editor.restoreRange($editable);
           editor.insertVideo($editable, sUrl);
         }).fail(function () {
@@ -3981,10 +3993,14 @@
        */
       showHelpDialog: function (layoutInfo) {
         var $dialog = layoutInfo.dialog(),
-            $editable = layoutInfo.editable();
+            $editable = layoutInfo.editable(),
+            $editor = layoutInfo.editor();
+
+        var options = $editor.data('options');
 
         editor.saveRange($editable, true);
-        dialog.showHelpDialog($editable, $dialog).then(function () {
+        var showHelpDialogFunc = (options.showHelpDialog !== null) ? options.showHelpDialog : dialog.showHelpDialog;
+        showHelpDialogFunc($editable, $dialog).then(function () {
           editor.restoreRange($editable);
         });
       },
