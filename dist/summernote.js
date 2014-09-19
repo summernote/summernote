@@ -6,7 +6,11 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
+<<<<<<< HEAD
  * Date: 2014-09-10T11:20Z
+=======
+ * Date: 2014-09-16T01:57Z
+>>>>>>> upstream/master
  */
 (function (factory) {
   /* global define */
@@ -2223,9 +2227,12 @@
      *
      * @param {jQuery} $editable
      */
-    this.saveRange = function ($editable) {
+    this.saveRange = function ($editable, thenCollapse) {
       $editable.focus();
       $editable.data('range', range.create());
+      if (thenCollapse) {
+        range.create().collapse().select();
+      }
     };
 
     /**
@@ -3504,7 +3511,7 @@
         var $dialog = layoutInfo.dialog(),
             $editable = layoutInfo.editable();
 
-        editor.saveRange($editable);
+        editor.saveRange($editable, true);
         dialog.showHelpDialog($editable, $dialog).then(function () {
           editor.restoreRange($editable);
         });
@@ -3717,7 +3724,8 @@
 
       if ($btn.length) {
         var eventName = $btn.attr('data-event'),
-            value = $btn.attr('data-value');
+            value = $btn.attr('data-value'),
+            hide = $btn.attr('data-hide');
 
         var layoutInfo = makeLayoutInfo(event.target);
 
@@ -3730,6 +3738,12 @@
           $target = $($selection.data('target'));
         }
 
+        // If requested, hide the popover when the button is clicked.
+        // Useful for things like showHelpDialog.
+        if (hide) {
+          $btn.parents('.popover').hide();
+        }
+        
         if (editor[eventName]) { // on command
           var $editable = layoutInfo.editable();
           $editable.trigger('focus');
@@ -4060,6 +4074,7 @@
      * @param {String} [options.value]
      * @param {String} [options.title]
      * @param {String} [options.dropdown]
+     * @param {String} [options.hide]
      */
     var tplButton = function (label, options) {
       var event = options.event;
@@ -4067,21 +4082,23 @@
       var title = options.title;
       var className = options.className;
       var dropdown = options.dropdown;
+      var hide = options.hide;
 
       return '<button type="button"' +
-                ' class="btn btn-default btn-sm btn-small' +
-                  (className ? ' ' + className : '') +
-                  (dropdown ? ' dropdown-toggle' : '') +
-                '"' +
-                (dropdown ? ' data-toggle="dropdown"' : '') +
-                (title ? ' title="' + title + '"' : '') +
-                (event ? ' data-event="' + event + '"' : '') +
-                (value ? ' data-value=\'' + value + '\'' : '') +
-                ' tabindex="-1">' +
-              label +
-              (dropdown ? ' <span class="caret"></span>' : '') +
-            '</button>' +
-            (dropdown || '');
+                 ' class="btn btn-default btn-sm btn-small' +
+                   (className ? ' ' + className : '') +
+                   (dropdown ? ' dropdown-toggle' : '') +
+                 '"' +
+                 (dropdown ? ' data-toggle="dropdown"' : '') +
+                 (title ? ' title="' + title + '"' : '') +
+                 (event ? ' data-event="' + event + '"' : '') +
+                 (value ? ' data-value=\'' + value + '\'' : '') +
+                 (hide ? ' data-hide=\'' + hide + '\'' : '') +
+                 ' tabindex="-1">' +
+               label +
+               (dropdown ? ' <span class="caret"></span>' : '') +
+             '</button>' +
+             (dropdown || '');
     };
 
     /**
@@ -4149,23 +4166,26 @@
       picture: function (lang) {
         return tplIconButton('fa fa-picture-o icon-picture', {
           event: 'showImageDialog',
-          title: lang.image.image
+          title: lang.image.image,
+          hide: true
         });
       },
       link: function (lang) {
         return tplIconButton('fa fa-link icon-link', {
           event: 'showLinkDialog',
-          title: lang.link.link
+          title: lang.link.link,
+          hide: true
         });
       },
       video: function (lang) {
         return tplIconButton('fa fa-youtube-play icon-play', {
           event: 'showVideoDialog',
-          title: lang.video.video
+          title: lang.video.video,
+          hide: true
         });
       },
       table: function (lang) {
-        var dropdown = '<ul class="dropdown-menu">' +
+        var dropdown = '<ul class="note-table dropdown-menu">' +
                          '<div class="note-dimension-picker">' +
                            '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>' +
                            '<div class="note-dimension-picker-highlighted"></div>' +
@@ -4370,7 +4390,8 @@
       help: function (lang) {
         return tplIconButton('fa fa-question icon-question', {
           event: 'showHelpDialog',
-          title: lang.options.help
+          title: lang.options.help,
+          hide: true
         });
       },
       fullscreen: function (lang) {
@@ -4409,7 +4430,8 @@
       var tplLinkPopover = function () {
         var linkButton = tplIconButton('fa fa-edit icon-edit', {
           title: lang.link.edit,
-          event: 'showLinkDialog'
+          event: 'showLinkDialog',
+          hide: true
         });
         var unlinkButton = tplIconButton('fa fa-unlink icon-unlink', {
           title: lang.link.unlink,
@@ -4588,7 +4610,7 @@
       if (options.extraKeys) {
         template += '<tr><td colspan="2">' + tplExtraShortcuts(lang, options) + '</td></tr>';
       }
-      template += '</tbody</table>';
+      template += '</tbody></table>';
       return template;
     };
 

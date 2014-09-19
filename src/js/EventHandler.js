@@ -183,7 +183,7 @@ define([
         var $dialog = layoutInfo.dialog(),
             $editable = layoutInfo.editable();
 
-        editor.saveRange($editable);
+        editor.saveRange($editable, true);
         dialog.showHelpDialog($editable, $dialog).then(function () {
           editor.restoreRange($editable);
         });
@@ -396,7 +396,8 @@ define([
 
       if ($btn.length) {
         var eventName = $btn.attr('data-event'),
-            value = $btn.attr('data-value');
+            value = $btn.attr('data-value'),
+            hide = $btn.attr('data-hide');
 
         var layoutInfo = makeLayoutInfo(event.target);
 
@@ -409,6 +410,12 @@ define([
           $target = $($selection.data('target'));
         }
 
+        // If requested, hide the popover when the button is clicked.
+        // Useful for things like showHelpDialog.
+        if (hide) {
+          $btn.parents('.popover').hide();
+        }
+        
         if (editor[eventName]) { // on command
           var $editable = layoutInfo.editable();
           $editable.trigger('focus');
