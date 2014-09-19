@@ -117,6 +117,13 @@ define('summernote/settings', function () {
       onImageUploadError: null, // imageUploadError
       onToolbarClick: null,
 
+      // custom dialogs
+      showLinkDialog: null,
+      showImageLinkDialog: null,
+      showImageDialog: null,
+      showVideoDialog: null,
+      showHelpDialog: null,
+
       /**
        * manipulate link address when user create link
        * @param {String} sLinkUrl
