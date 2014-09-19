@@ -2,7 +2,7 @@
 *.swp
 .tern-port
 .DS_Store
-.desktop.ini
+desktop.ini
 # node modules
 node_modules
 bower_components
