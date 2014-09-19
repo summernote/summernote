@@ -103,7 +103,7 @@ define([
     /* jshint ignore:end */
 
     /**
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      * @param {WrappedRange} rng
      * @param {Number} tabsize
      */
@@ -120,7 +120,7 @@ define([
 
     /**
      * handle tab key
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      * @param {Object} options
      */
     this.tab = function ($editable, options) {
@@ -342,7 +342,51 @@ define([
         document.execCommand('unlink');
       }
     };
+    /**
+     * unlink image link
+     * @param {jQuery} $editable
+     * @param {jQuery} $target
+     */
+    this.unlinkImageLink = function ($editable, value, $target) {
 
+      recordUndo($editable);
+      if ($target.parent('a').length) {
+        $target.unwrap();
+      }
+
+    };
+    /**
+     * create image link
+     *
+     * @param {jQuery} $editable
+     * @param {Object} linkInfo
+     * @param {jQuery} $target - target element
+     */
+    this.createImageLink = function ($editable, linkInfo, options, $target) {
+      var linkUrl = linkInfo.url;
+      var isNewWindow = linkInfo.newWindow;
+
+      recordUndo($editable);
+
+      var anchor;
+      // Create a new link when there is no anchor on range.
+      if ($target.parent('a').length) {
+        anchor = $target.parent('a');
+        anchor.attr({
+          href: linkUrl,
+          target: isNewWindow ? '_blank' : ''
+        });
+      } else {
+        anchor = $('<a></a>');
+        $(anchor).attr({
+          href: linkUrl,
+          target: isNewWindow ? '_blank' : ''
+        });
+        $target.wrap(anchor);
+      }
+
+      triggerOnChange($editable);
+    };
     /**
      * create link
      *

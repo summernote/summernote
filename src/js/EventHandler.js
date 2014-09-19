@@ -100,7 +100,42 @@ define([
           editor.restoreRange($editable);
         });
       },
+      /**
+       * @param {Object} layoutInfo
+       */
+      showImageLinkDialog: function (layoutInfo) {
+        var $editor = layoutInfo.editor(),
+            $dialog = layoutInfo.dialog(),
+            $editable = layoutInfo.editable(),
+            $handle = layoutInfo.handle(),
+            linkInfo = editor.getLinkInfo($editable);
 
+        var options = $editor.data('options'),
+            target = $handle.find('.note-control-selection').data('target'),
+            $target = $(target);
+
+        editor.saveRange($editable);
+        dialog.showImageLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
+          editor.restoreRange($editable);
+          editor.createImageLink($editable, linkInfo, options, $target);
+          // hide popover after creating link
+          popover.hide(layoutInfo.popover());
+        }).fail(function () {
+          editor.restoreRange($editable);
+        });
+      },
+      /**
+       * @param {Object} layoutInfo
+       */
+      unlinkImageLink: function (layoutInfo) {
+        var $editable = layoutInfo.editable(),
+            $handle = layoutInfo.handle(),
+            target = $handle.find('.note-control-selection').data('target'),
+            $target = $(target);
+
+        editor.saveRange($editable);
+        editor.unlinkImageLink($editable, $target);
+      },
       /**
        * @param {Object} layoutInfo
        */
@@ -156,9 +191,9 @@ define([
 
       fullscreen: function (layoutInfo) {
         var $editor = layoutInfo.editor(),
-        $toolbar = layoutInfo.toolbar(),
-        $editable = layoutInfo.editable(),
-        $codable = layoutInfo.codable();
+            $toolbar = layoutInfo.toolbar(),
+            $editable = layoutInfo.editable(),
+            $codable = layoutInfo.codable();
 
         var options = $editor.data('options');
 
@@ -198,10 +233,10 @@ define([
 
       codeview: function (layoutInfo) {
         var $editor = layoutInfo.editor(),
-        $toolbar = layoutInfo.toolbar(),
-        $editable = layoutInfo.editable(),
-        $codable = layoutInfo.codable(),
-        $popover = layoutInfo.popover();
+            $toolbar = layoutInfo.toolbar(),
+            $editable = layoutInfo.editable(),
+            $codable = layoutInfo.codable(),
+            $popover = layoutInfo.popover();
 
         var options = $editor.data('options');
 
@@ -316,12 +351,14 @@ define([
         event.stopPropagation();
 
         var layoutInfo = makeLayoutInfo(event.target),
-            $handle = layoutInfo.handle(), $popover = layoutInfo.popover(),
+            $handle = layoutInfo.handle(),
+            $popover = layoutInfo.popover(),
             $editable = layoutInfo.editable(),
             $editor = layoutInfo.editor();
 
         var target = $handle.find('.note-control-selection').data('target'),
-            $target = $(target), posStart = $target.offset(),
+            $target = $(target),
+            posStart = $target.offset(),
             scrollTop = $document.scrollTop();
 
         var isAirMode = $editor.data('options').airMode;
@@ -367,7 +404,7 @@ define([
 
         // before command: detect control selection element($target)
         var $target;
-        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia']) !== -1) {
+        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'showImageLink', 'unlinkImageLink']) !== -1) {
           var $selection = layoutInfo.handle().find('.note-control-selection');
           $target = $($selection.data('target'));
         }
@@ -451,11 +488,11 @@ define([
       $catcher.attr('data-value', dim.c + 'x' + dim.r);
 
       if (3 < dim.c && dim.c < options.insertTableMaxSize.col) {
-        $unhighlighted.css({ width: dim.c + 1 + 'em'});
+        $unhighlighted.css({ width: dim.c + 1 + 'em' });
       }
 
       if (3 < dim.r && dim.r < options.insertTableMaxSize.row) {
-        $unhighlighted.css({ height: dim.r + 1 + 'em'});
+        $unhighlighted.css({ height: dim.r + 1 + 'em' });
       }
 
       $dimensionDisplay.html(dim.c + ' x ' + dim.r);
