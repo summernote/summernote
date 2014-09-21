@@ -69,7 +69,7 @@ define([
      * @param {jQuery} $editable
      */
     this.undo = function ($editable) {
-      $editable.data('NoteHistory').undo($editable);
+      $editable.data('NoteHistory').undo();
       triggerOnChange($editable);
     };
 
@@ -78,16 +78,17 @@ define([
      * @param {jQuery} $editable
      */
     this.redo = function ($editable) {
-      $editable.data('NoteHistory').redo($editable);
+      $editable.data('NoteHistory').redo();
       triggerOnChange($editable);
     };
 
     /**
-     * record Undo
+     * after command
      * @param {jQuery} $editable
      */
-    var recordUndo = this.recordUndo = function ($editable) {
-      $editable.data('NoteHistory').recordUndo($editable);
+    var afterCommand = this.afterCommand = function ($editable) {
+      $editable.data('NoteHistory').recordUndo();
+      triggerOnChange($editable);
     };
 
     /* jshint ignore:start */
@@ -102,7 +103,7 @@ define([
         return function ($editable, value) {
           document.execCommand(sCmd, false, value);
 
-          recordUndo($editable);
+          afterCommand($editable);
         };
       })(commands[idx]);
     }
@@ -120,9 +121,7 @@ define([
         table.tab(rng);
       } else {
         typing.insertTab($editable, rng, options.tabsize);
-        triggerOnChange($editable);
-
-        recordUndo($editable);
+        afterCommand($editable);
       }
     };
 
@@ -143,9 +142,7 @@ define([
      */
     this.insertParagraph = function ($editable) {
       typing.insertParagraph($editable);
-      triggerOnChange($editable);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -153,9 +150,7 @@ define([
      */
     this.insertOrderedList = function ($editable) {
       bullet.insertOrderedList($editable);
-      triggerOnChange($editable);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -163,9 +158,7 @@ define([
      */
     this.insertUnorderedList = function ($editable) {
       bullet.insertUnorderedList($editable);
-      triggerOnChange($editable);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -173,9 +166,7 @@ define([
      */
     this.indent = function ($editable) {
       bullet.indent($editable);
-      triggerOnChange($editable);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -183,9 +174,7 @@ define([
      */
     this.outdent = function ($editable) {
       bullet.outdent($editable);
-      triggerOnChange($editable);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -201,9 +190,7 @@ define([
           width: Math.min($editable.width(), $image.width())
         });
         range.create().insertNode($image[0]);
-        triggerOnChange($editable);
-
-        recordUndo($editable);
+        afterCommand($editable);
       }).fail(function () {
         var callbacks = $editable.data('callbacks');
         if (callbacks.onImageUploadError) {
@@ -274,9 +261,7 @@ define([
       if ($video) {
         $video.attr('frameborder', 0);
         range.create().insertNode($video[0]);
-        triggerOnChange($editable);
-
-        recordUndo($editable);
+        afterCommand($editable);
       }
     };
 
@@ -289,12 +274,12 @@ define([
     this.formatBlock = function ($editable, tagName) {
       tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       document.execCommand('FormatBlock', false, tagName);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     this.formatPara = function ($editable) {
       this.formatBlock($editable, 'P');
+      afterCommand($editable);
     };
 
     /* jshint ignore:start */
@@ -326,7 +311,7 @@ define([
         }).css('font-size', value + 'px');
       }
 
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -338,9 +323,7 @@ define([
       style.stylePara(range.create(), {
         lineHeight: value
       });
-      triggerOnChange($editable);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -358,7 +341,7 @@ define([
         rng.select();
         document.execCommand('unlink');
 
-        recordUndo($editable);
+        afterCommand($editable);
       }
     };
 
@@ -391,9 +374,7 @@ define([
       });
 
       range.createFromNode(anchor).select();
-      triggerOnChange($editable);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -445,7 +426,7 @@ define([
       if (foreColor) { document.execCommand('foreColor', false, foreColor); }
       if (backColor) { document.execCommand('backColor', false, backColor); }
 
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     this.insertTable = function ($editable, sDim) {
@@ -453,9 +434,7 @@ define([
       var rng = range.create();
       rng = rng.deleteContents();
       rng.insertNode(table.createTable(dimension[0], dimension[1]));
-      triggerOnChange($editable);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -465,8 +444,7 @@ define([
      */
     this.floatMe = function ($editable, value, $target) {
       $target.css('float', value);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -481,7 +459,7 @@ define([
         height: ''
       });
 
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -518,7 +496,7 @@ define([
     this.removeMedia = function ($editable, value, $target) {
       $target.detach();
 
-      recordUndo($editable);
+      afterCommand($editable);
     };
   };
 

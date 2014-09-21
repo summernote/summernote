@@ -342,7 +342,7 @@ define([
           $target.data('ratio', $target.height() / $target.width());
         }
 
-        editor.recordUndo($editable);
+        editor.afterCommand($editable);
       }
     };
 
@@ -572,7 +572,7 @@ define([
             commands[eventName].call(this, layoutInfo);
           }
         } else if (key.isEdit(event.keyCode)) {
-          editor.recordUndo($editable);
+          editor.afterCommand($editable);
         }
       });
     };
@@ -635,9 +635,7 @@ define([
       }
 
       // History
-      var history = new History();
-      // Create first undo stack
-      history.recordUndo(layoutInfo.editable);
+      var history = new History(layoutInfo.editable);
       layoutInfo.editable.data('NoteHistory', history);
 
       // basic event callbacks (lowercase)
