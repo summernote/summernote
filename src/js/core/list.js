@@ -4,7 +4,8 @@ define(['summernote/core/func'], function (func) {
    */
   var list = (function () {
     /**
-     * returns the first element of an array.
+     * returns the first item of an array.
+     *
      * @param {Array} array
      */
     var head = function (array) {
@@ -12,7 +13,8 @@ define(['summernote/core/func'], function (func) {
     };
 
     /**
-     * returns the last element of an array.
+     * returns the last item of an array.
+     *
      * @param {Array} array
      */
     var last = function (array) {
@@ -21,6 +23,7 @@ define(['summernote/core/func'], function (func) {
 
     /**
      * returns everything but the last entry of the array.
+     *
      * @param {Array} array
      */
     var initial = function (array) {
@@ -28,7 +31,8 @@ define(['summernote/core/func'], function (func) {
     };
 
     /**
-     * returns the rest of the elements in an array.
+     * returns the rest of the items in an array.
+     *
      * @param {Array} array
      */
     var tail = function (array) {
@@ -36,27 +40,20 @@ define(['summernote/core/func'], function (func) {
     };
 
     /**
-     * returns next item.
-     * @param {Array} array
+     * returns item of array
      */
-    var next = function (array, item) {
-      var idx = array.indexOf(item);
-      if (idx === -1) { return null; }
-
-      return array[idx + 1];
+    var find = function (array, pred) {
+      for (var idx = 0, len = array.length; idx < len; idx ++) {
+        var item = array[idx];
+        if (pred(item)) {
+          return item;
+        }
+      }
     };
 
     /**
-     * returns prev item.
-     * @param {Array} array
+     * returns true if all of the values in the array pass the predicate truth test.
      */
-    var prev = function (array, item) {
-      var idx = array.indexOf(item);
-      if (idx === -1) { return null; }
-
-      return array[idx - 1];
-    };
-  
     var all = function (array, pred) {
       for (var idx = 0, len = array.length; idx < len; idx ++) {
         if (!pred(array[idx])) {
@@ -66,12 +63,16 @@ define(['summernote/core/func'], function (func) {
       return true;
     };
 
+    /**
+     * returns true if the value is present in the list.
+     */
     var contains = function (array, item) {
       return array.indexOf(item) !== -1;
     };
 
     /**
      * get sum from a list
+     *
      * @param {Array} array - array
      * @param {Function} fn - iterator
      */
@@ -96,6 +97,7 @@ define(['summernote/core/func'], function (func) {
   
     /**
      * cluster elements by predicate function.
+     *
      * @param {Array} array - array
      * @param {Function} fn - predicate function for cluster rule
      * @param {Array[]}
@@ -116,6 +118,7 @@ define(['summernote/core/func'], function (func) {
   
     /**
      * returns a copy of the array with all falsy values removed
+     *
      * @param {Array} array - array
      * @param {Function} fn - predicate function for cluster rule
      */
@@ -127,6 +130,11 @@ define(['summernote/core/func'], function (func) {
       return aResult;
     };
 
+    /**
+     * produces a duplicate-free version of the array
+     *
+     * @param {Array} array
+     */
     var unique = function (array) {
       var results = [];
 
@@ -140,7 +148,7 @@ define(['summernote/core/func'], function (func) {
     };
   
     return { head: head, last: last, initial: initial, tail: tail,
-             prev: prev, next: next, contains: contains,
+             find: find, contains: contains,
              all: all, sum: sum, from: from,
              clusterBy: clusterBy, compact: compact, unique: unique };
   })();

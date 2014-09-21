@@ -6,9 +6,11 @@ define([
   'summernote/core/range',
   'summernote/core/async',
   'summernote/editing/Style',
-  'summernote/editing/Table'
+  'summernote/editing/Typing',
+  'summernote/editing/Table',
+  'summernote/editing/Bullet'
 ], function (agent, func, list, dom, range, async,
-             Style, Table) {
+             Style, Typing, Table, Bullet) {
   /**
    * Editor
    * @class
@@ -17,6 +19,8 @@ define([
 
     var style = new Style();
     var table = new Table();
+    var typing = new Typing();
+    var bullet = new Bullet();
 
     /**
      * save current range
@@ -65,7 +69,7 @@ define([
      * @param {jQuery} $editable
      */
     this.undo = function ($editable) {
-      $editable.data('NoteHistory').undo($editable);
+      $editable.data('NoteHistory').undo();
       triggerOnChange($editable);
     };
 
@@ -74,55 +78,40 @@ define([
      * @param {jQuery} $editable
      */
     this.redo = function ($editable) {
-      $editable.data('NoteHistory').redo($editable);
+      $editable.data('NoteHistory').redo();
       triggerOnChange($editable);
     };
 
     /**
-     * record Undo
+     * after command
      * @param {jQuery} $editable
      */
-    var recordUndo = this.recordUndo = function ($editable) {
-      $editable.data('NoteHistory').recordUndo($editable);
+    var afterCommand = this.afterCommand = function ($editable) {
+      $editable.data('NoteHistory').recordUndo();
+      triggerOnChange($editable);
     };
 
     /* jshint ignore:start */
     // native commands(with execCommand), generate function for execCommand
     var commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
                     'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
-                    'insertOrderedList', 'insertUnorderedList',
-                    'indent', 'outdent', 'formatBlock', 'removeFormat',
+                    'formatBlock', 'removeFormat',
                     'backColor', 'foreColor', 'insertHorizontalRule', 'fontName'];
 
     for (var idx = 0, len = commands.length; idx < len; idx ++) {
       this[commands[idx]] = (function (sCmd) {
         return function ($editable, value) {
-          recordUndo($editable);
-
           document.execCommand(sCmd, false, value);
+
+          afterCommand($editable);
         };
       })(commands[idx]);
     }
     /* jshint ignore:end */
 
     /**
-     * @param {jQuery} $editable 
-     * @param {WrappedRange} rng
-     * @param {Number} tabsize
-     */
-    var insertTab = function ($editable, rng, tabsize) {
-      recordUndo($editable);
-
-      var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
-      rng = rng.deleteContents();
-      rng.insertNode(tab, true);
-
-      rng = range.create(tab, tabsize);
-      rng.select();
-    };
-
-    /**
      * handle tab key
+     *
      * @param {jQuery} $editable 
      * @param {Object} options
      */
@@ -131,7 +120,8 @@ define([
       if (rng.isCollapsed() && rng.isOnCell()) {
         table.tab(rng);
       } else {
-        insertTab($editable, rng, options.tabsize);
+        typing.insertTab($editable, rng, options.tabsize);
+        afterCommand($editable);
       }
     };
 
@@ -151,28 +141,40 @@ define([
      * @param {Node} $editable
      */
     this.insertParagraph = function ($editable) {
-      recordUndo($editable);
+      typing.insertParagraph($editable);
+      afterCommand($editable);
+    };
 
-      var rng = range.create();
+    /**
+     * @param {jQuery} $editable
+     */
+    this.insertOrderedList = function ($editable) {
+      bullet.insertOrderedList($editable);
+      afterCommand($editable);
+    };
 
-      // deleteContents on range.
-      rng = rng.deleteContents();
+    /**
+     * @param {jQuery} $editable
+     */
+    this.insertUnorderedList = function ($editable) {
+      bullet.insertUnorderedList($editable);
+      afterCommand($editable);
+    };
 
-      rng = rng.wrapBodyInlineWithPara();
+    /**
+     * @param {jQuery} $editable
+     */
+    this.indent = function ($editable) {
+      bullet.indent($editable);
+      afterCommand($editable);
+    };
 
-      // find split root node: block level node
-      var splitRoot = dom.ancestor(rng.sc, dom.isPara);
-      var nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
-
-      var emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
-      emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
-
-      $.each(emptyAnchors, function (idx, anchor) {
-        dom.remove(anchor);
-      });
-
-      range.create(nextPara, 0).normalize().select();
-      triggerOnChange($editable);
+    /**
+     * @param {jQuery} $editable
+     */
+    this.outdent = function ($editable) {
+      bullet.outdent($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -183,14 +185,12 @@ define([
      */
     this.insertImage = function ($editable, sUrl, filename) {
       async.createImage(sUrl, filename).then(function ($image) {
-        recordUndo($editable);
-
         $image.css({
           display: '',
           width: Math.min($editable.width(), $image.width())
         });
         range.create().insertNode($image[0]);
-        triggerOnChange($editable);
+        afterCommand($editable);
       }).fail(function () {
         var callbacks = $editable.data('callbacks');
         if (callbacks.onImageUploadError) {
@@ -205,8 +205,6 @@ define([
      * @param {String} sUrl
      */
     this.insertVideo = function ($editable, sUrl) {
-      recordUndo($editable);
-
       // video url patterns(youtube, instagram, vimeo, dailymotion, youku)
       var ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       var ytMatch = sUrl.match(ytRegExp);
@@ -263,7 +261,7 @@ define([
       if ($video) {
         $video.attr('frameborder', 0);
         range.create().insertNode($video[0]);
-        triggerOnChange($editable);
+        afterCommand($editable);
       }
     };
 
@@ -274,14 +272,14 @@ define([
      * @param {String} tagName
      */
     this.formatBlock = function ($editable, tagName) {
-      recordUndo($editable);
-
       tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       document.execCommand('FormatBlock', false, tagName);
+      afterCommand($editable);
     };
 
     this.formatPara = function ($editable) {
       this.formatBlock($editable, 'P');
+      afterCommand($editable);
     };
 
     /* jshint ignore:start */
@@ -302,8 +300,6 @@ define([
      * @param {String} value - px
      */
     this.fontSize = function ($editable, value) {
-      recordUndo($editable);
-
       document.execCommand('fontSize', false, 3);
       if (agent.isFF) {
         // firefox: <font size="3"> to <span style='font-size={value}px;'>, buggy
@@ -314,6 +310,8 @@ define([
           return this.style.fontSize === 'medium';
         }).css('font-size', value + 'px');
       }
+
+      afterCommand($editable);
     };
 
     /**
@@ -322,32 +320,35 @@ define([
      * @param {String} value
      */
     this.lineHeight = function ($editable, value) {
-      recordUndo($editable);
-
       style.stylePara(range.create(), {
         lineHeight: value
       });
-      triggerOnChange($editable);
+      afterCommand($editable);
     };
 
     /**
      * unlink
+     *
+     * @type command
+     *
      * @param {jQuery} $editable
      */
     this.unlink = function ($editable) {
       var rng = range.create();
       if (rng.isOnAnchor()) {
-        recordUndo($editable);
-
         var anchor = dom.ancestor(rng.sc, dom.isAnchor);
         rng = range.createFromNode(anchor);
         rng.select();
         document.execCommand('unlink');
+
+        afterCommand($editable);
       }
     };
 
     /**
      * create link
+     *
+     * @type command
      *
      * @param {jQuery} $editable
      * @param {Object} linkInfo
@@ -358,8 +359,6 @@ define([
       var linkText = linkInfo.text;
       var isNewWindow = linkInfo.newWindow;
       var rng = linkInfo.range;
-
-      recordUndo($editable);
 
       if (options.onCreateLink) {
         linkUrl = options.onCreateLink(linkUrl);
@@ -375,7 +374,7 @@ define([
       });
 
       range.createFromNode(anchor).select();
-      triggerOnChange($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -424,20 +423,18 @@ define([
       var oColor = JSON.parse(sObjColor);
       var foreColor = oColor.foreColor, backColor = oColor.backColor;
 
-      recordUndo($editable);
-
       if (foreColor) { document.execCommand('foreColor', false, foreColor); }
       if (backColor) { document.execCommand('backColor', false, backColor); }
+
+      afterCommand($editable);
     };
 
     this.insertTable = function ($editable, sDim) {
-      recordUndo($editable);
-
       var dimension = sDim.split('x');
       var rng = range.create();
       rng = rng.deleteContents();
       rng.insertNode(table.createTable(dimension[0], dimension[1]));
-      triggerOnChange($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -446,9 +443,8 @@ define([
      * @param {jQuery} $target
      */
     this.floatMe = function ($editable, value, $target) {
-      recordUndo($editable);
-
       $target.css('float', value);
+      afterCommand($editable);
     };
 
     /**
@@ -458,12 +454,12 @@ define([
      * @param {jQuery} $target - target element
      */
     this.resize = function ($editable, value, $target) {
-      recordUndo($editable);
-
       $target.css({
         width: $editable.width() * value + 'px',
         height: ''
       });
+
+      afterCommand($editable);
     };
 
     /**
@@ -498,9 +494,9 @@ define([
      * @param {jQuery} $target - target element
      */
     this.removeMedia = function ($editable, value, $target) {
-      recordUndo($editable);
-
       $target.detach();
+
+      afterCommand($editable);
     };
   };
 

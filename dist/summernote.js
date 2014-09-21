@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.5.8
+ * Super simple wysiwyg editor on Bootstrap v0.5.9
  * http://hackerwins.github.io/summernote/
  *
  * summernote.js
- * Copyright 2013 Alan Hong. and outher contributors
+ * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-09-16T01:57Z
+ * Date: 2014-09-21T04:14Z
  */
 (function (factory) {
   /* global define */
@@ -47,6 +47,33 @@
         throw new TypeError('Reduce of empty array with no initial value');
       }
       return value;
+    };
+  }
+
+  if ('function' !== typeof Array.prototype.filter) {
+    Array.prototype.filter = function (fun/*, thisArg*/) {
+      if (this === void 0 || this === null) {
+        throw new TypeError();
+      }
+  
+      var t = Object(this);
+      var len = t.length >>> 0;
+      if (typeof fun !== 'function') {
+        throw new TypeError();
+      }
+  
+      var res = [];
+      var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
+      for (var i = 0; i < len; i++) {
+        if (i in t) {
+          var val = t[i];
+          if (fun.call(thisArg, val, i, t)) {
+            res.push(val);
+          }
+        }
+      }
+  
+      return res;
     };
   }
 
@@ -100,6 +127,12 @@
 
     var eq2 = function (itemA, itemB) {
       return itemA === itemB;
+    };
+
+    var peq2 = function (propName) {
+      return function (itemA, itemB) {
+        return itemA[propName] === itemB[propName];
+      };
     };
 
     var ok = function () {
@@ -179,6 +212,7 @@
     return {
       eq: eq,
       eq2: eq2,
+      peq2: peq2,
       ok: ok,
       fail: fail,
       self: self,
@@ -195,7 +229,8 @@
    */
   var list = (function () {
     /**
-     * returns the first element of an array.
+     * returns the first item of an array.
+     *
      * @param {Array} array
      */
     var head = function (array) {
@@ -203,7 +238,8 @@
     };
 
     /**
-     * returns the last element of an array.
+     * returns the last item of an array.
+     *
      * @param {Array} array
      */
     var last = function (array) {
@@ -212,6 +248,7 @@
 
     /**
      * returns everything but the last entry of the array.
+     *
      * @param {Array} array
      */
     var initial = function (array) {
@@ -219,7 +256,8 @@
     };
 
     /**
-     * returns the rest of the elements in an array.
+     * returns the rest of the items in an array.
+     *
      * @param {Array} array
      */
     var tail = function (array) {
@@ -227,27 +265,20 @@
     };
 
     /**
-     * returns next item.
-     * @param {Array} array
+     * returns item of array
      */
-    var next = function (array, item) {
-      var idx = array.indexOf(item);
-      if (idx === -1) { return null; }
-
-      return array[idx + 1];
+    var find = function (array, pred) {
+      for (var idx = 0, len = array.length; idx < len; idx ++) {
+        var item = array[idx];
+        if (pred(item)) {
+          return item;
+        }
+      }
     };
 
     /**
-     * returns prev item.
-     * @param {Array} array
+     * returns true if all of the values in the array pass the predicate truth test.
      */
-    var prev = function (array, item) {
-      var idx = array.indexOf(item);
-      if (idx === -1) { return null; }
-
-      return array[idx - 1];
-    };
-  
     var all = function (array, pred) {
       for (var idx = 0, len = array.length; idx < len; idx ++) {
         if (!pred(array[idx])) {
@@ -257,12 +288,16 @@
       return true;
     };
 
+    /**
+     * returns true if the value is present in the list.
+     */
     var contains = function (array, item) {
       return array.indexOf(item) !== -1;
     };
 
     /**
      * get sum from a list
+     *
      * @param {Array} array - array
      * @param {Function} fn - iterator
      */
@@ -287,6 +322,7 @@
   
     /**
      * cluster elements by predicate function.
+     *
      * @param {Array} array - array
      * @param {Function} fn - predicate function for cluster rule
      * @param {Array[]}
@@ -307,6 +343,7 @@
   
     /**
      * returns a copy of the array with all falsy values removed
+     *
      * @param {Array} array - array
      * @param {Function} fn - predicate function for cluster rule
      */
@@ -318,6 +355,11 @@
       return aResult;
     };
 
+    /**
+     * produces a duplicate-free version of the array
+     *
+     * @param {Array} array
+     */
     var unique = function (array) {
       var results = [];
 
@@ -331,7 +373,7 @@
     };
   
     return { head: head, last: last, initial: initial, tail: tail,
-             prev: prev, next: next, contains: contains,
+             find: find, contains: contains,
              all: all, sum: sum, from: from,
              clusterBy: clusterBy, compact: compact, unique: unique };
   })();
@@ -409,12 +451,14 @@
 
     /**
      * returns predicate which judge whether nodeName is same
-     * @param {String} sNodeName
+     *
+     * @param {String} nodeName
+     * @return {String}
      */
-    var makePredByNodeName = function (sNodeName) {
-      sNodeName = sNodeName.toUpperCase();
+    var makePredByNodeName = function (nodeName) {
+      nodeName = nodeName.toUpperCase();
       return function (node) {
-        return node && node.nodeName.toUpperCase() === sNodeName;
+        return node && node.nodeName.toUpperCase() === nodeName;
       };
     };
 
@@ -437,6 +481,12 @@
 
       // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
       return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName.toUpperCase());
+    };
+
+    var isLi = makePredByNodeName('LI');
+
+    var isPurePara = function (node) {
+      return isPara(node) && !isLi(node);
     };
 
     var isInline = function (node) {
@@ -466,6 +516,8 @@
     var isBodyInline = function (node) {
       return isInline(node) && !ancestor(node, isPara);
     };
+
+    var isBody = makePredByNodeName('BODY');
 
     /**
      * blank HTML for cursor position
@@ -547,6 +599,14 @@
         return pred(el);
       });
       return ancestors;
+    };
+
+    /**
+     * find farthest ancestor predicate hit
+     */
+    var lastAncestor = function (node, pred) {
+      var ancestors = listAncestor(node);
+      return list.last(ancestors.filter(pred));
     };
 
     /**
@@ -699,6 +759,24 @@
     };
 
     /**
+     * returns wheter node is left edge of ancestor or not.
+     *
+     * @param {Node} node
+     * @param {Node} ancestor
+     * @return {Boolean}
+     */
+    var isLeftEdgeOf = function (node, ancestor) {
+      while (node && node !== ancestor) {
+        if (position(node) !== 0) {
+          return false;
+        }
+        node = node.parentNode;
+      }
+
+      return true;
+    };
+
+    /**
      * returns whether node is right edge of ancestor or not.
      *
      * @param {Node} node
@@ -751,7 +829,7 @@
         node = point.node.parentNode;
         offset = position(point.node);
       } else if (hasChildren(point.node)) {
-        node = point.node.childNodes[offset - 1];
+        node = point.node.childNodes[point.offset - 1];
         offset = nodeLength(node);
       } else {
         node = point.node;
@@ -813,10 +891,17 @@
      * @return {Boolean}
      */
     var isVisiblePoint = function (point) {
-      return isText(point.node) ||
-             !hasChildren(point.node) ||
-             isEmpty(point.node) ||
-             !isEdgePoint(point);
+      if (isText(point.node) || !hasChildren(point.node) || isEmpty(point.node)) {
+        return true;
+      }
+
+      var leftNode = point.node.childNodes[point.offset - 1];
+      var rightNode = point.node.childNodes[point.offset];
+      if ((!leftNode || isVoid(leftNode)) && (!rightNode || isVoid(rightNode))) {
+        return true;
+      }
+
+      return false;
     };
 
     /**
@@ -869,7 +954,9 @@
           break;
         }
 
-        var isSkipOffset = isSkipInnerOffset && startPoint.node !== point.node;
+        var isSkipOffset = isSkipInnerOffset &&
+                           startPoint.node !== point.node &&
+                           endPoint.node !== point.node;
         point = nextPoint(point, isSkipOffset);
       }
     };
@@ -881,7 +968,7 @@
      * @param {Node} node
      */
     var makeOffsetPath = function (ancestor, node) {
-      var ancestors = list.initial(listAncestor(node, func.eq(ancestor)));
+      var ancestors = listAncestor(node, func.eq(ancestor));
       return $.map(ancestors, position).reverse();
     };
 
@@ -894,7 +981,11 @@
     var fromOffsetPath = function (ancestor, aOffset) {
       var current = ancestor;
       for (var i = 0, len = aOffset.length; i < len; i++) {
-        current = current.childNodes[aOffset[i]];
+        if (current.childNodes.length <= aOffset[i]) {
+          current = current.childNodes[current.childNodes.length - 1];
+        } else {
+          current = current.childNodes[aOffset[i]];
+        }
       }
       return current;
     };
@@ -903,9 +994,10 @@
      * split element or #text
      *
      * @param {BoundaryPoint} point
+     * @param {Boolean} [isSkipPaddingBlankHTML]
      * @return {Node} right node of boundaryPoint
      */
-    var splitNode = function (point) {
+    var splitNode = function (point, isSkipPaddingBlankHTML) {
       // split #text
       if (isText(point.node)) {
         // edge case
@@ -923,8 +1015,10 @@
       var clone = insertAfter(point.node.cloneNode(false), point.node);
       appendChildNodes(clone, listNext(childNode));
 
-      paddingBlankHTML(point.node);
-      paddingBlankHTML(clone);
+      if (!isSkipPaddingBlankHTML) {
+        paddingBlankHTML(point.node);
+        paddingBlankHTML(clone);
+      }
 
       return clone;
     };
@@ -934,31 +1028,38 @@
      *
      * @param {Node} root - split root
      * @param {BoundaryPoint} point
+     * @param {Boolean} [isSkipPaddingBlankHTML]
      * @return {Node} right node of boundaryPoint
      */
-    var splitTree = function (root, point) {
+    var splitTree = function (root, point, isSkipPaddingBlankHTML) {
       // ex) [#text, <span>, <p>]
       var ancestors = listAncestor(point.node, func.eq(root));
 
       if (!ancestors.length) {
         return null;
       } else if (ancestors.length === 1) {
-        return splitNode(point);
+        return splitNode(point, isSkipPaddingBlankHTML);
       }
 
       return ancestors.reduce(function (node, parent) {
         var clone = insertAfter(parent.cloneNode(false), parent);
 
         if (node === point.node) {
-          node = splitNode(point);
+          node = splitNode(point, isSkipPaddingBlankHTML);
         }
 
         appendChildNodes(clone, listNext(node));
 
-        paddingBlankHTML(parent);
-        paddingBlankHTML(clone);
+        if (!isSkipPaddingBlankHTML) {
+          paddingBlankHTML(parent);
+          paddingBlankHTML(clone);
+        }
         return clone;
       });
+    };
+
+    var create = function (nodeName) {
+      return document.createElement(nodeName);
     };
 
     var createText = function (text) {
@@ -990,6 +1091,47 @@
       parent.removeChild(node);
     };
 
+    /**
+     * @param {Node} node
+     * @param {Function} pred
+     */
+    var removeWhile = function (node, pred) {
+      while (node) {
+        if (isEditable(node) || !pred(node)) {
+          break;
+        }
+
+        var parent = node.parentNode;
+        remove(node);
+        node = parent;
+      }
+    };
+
+    /**
+     * replace node with provided nodeName
+     *
+     * @param {Node} node
+     * @param {String} nodeName
+     * @return {Node} - new node
+     */
+    var replace = function (node, nodeName) {
+      if (node.nodeName.toUpperCase() === nodeName.toUpperCase()) {
+        return node;
+      }
+
+      var newNode = create(nodeName);
+
+      if (node.style.cssText) {
+        newNode.style.cssText = node.style.cssText;
+      }
+
+      appendChildNodes(newNode, list.from(node.childNodes));
+      insertAfter(newNode, node);
+      remove(node);
+
+      return newNode;
+    };
+
     var isTextarea = makePredByNodeName('TEXTAREA');
 
     /**
@@ -1007,7 +1149,7 @@
           name = name.toUpperCase();
           var isEndOfInlineContainer = /^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) &&
                                        !!endSlash;
-          var isBlockNode = /^TABLE|^TBODY|^TR|^HR|^UL/.test(name);
+          var isBlockNode = /^BLOCKQUOTE|^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
 
           return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
         });
@@ -1033,8 +1175,10 @@
       buildLayoutInfo: buildLayoutInfo,
       isText: isText,
       isPara: isPara,
+      isPurePara: isPurePara,
       isInline: isInline,
       isBodyInline: isBodyInline,
+      isBody: isBody,
       isParaInline: isParaInline,
       isList: isList,
       isTable: makePredByNodeName('TABLE'),
@@ -1043,7 +1187,7 @@
       isBodyContainer: isBodyContainer,
       isAnchor: isAnchor,
       isDiv: makePredByNodeName('DIV'),
-      isLi: makePredByNodeName('LI'),
+      isLi: isLi,
       isSpan: makePredByNodeName('SPAN'),
       isB: makePredByNodeName('B'),
       isU: makePredByNodeName('U'),
@@ -1057,6 +1201,7 @@
       isLeftEdgePoint: isLeftEdgePoint,
       isRightEdgePoint: isRightEdgePoint,
       isEdgePoint: isEdgePoint,
+      isLeftEdgeOf: isLeftEdgeOf,
       isRightEdgeOf: isRightEdgeOf,
       prevPoint: prevPoint,
       nextPoint: nextPoint,
@@ -1067,6 +1212,7 @@
       walkPoint: walkPoint,
       ancestor: ancestor,
       listAncestor: listAncestor,
+      lastAncestor: lastAncestor,
       listNext: listNext,
       listPrev: listPrev,
       listDescendant: listDescendant,
@@ -1079,8 +1225,11 @@
       makeOffsetPath: makeOffsetPath,
       fromOffsetPath: fromOffsetPath,
       splitTree: splitTree,
+      create: create,
       createText: createText,
       remove: remove,
+      removeWhile: removeWhile,
+      replace: replace,
       html: html,
       value: value
     };
@@ -1088,7 +1237,7 @@
 
   var settings = {
     // version
-    version: '0.5.8',
+    version: '0.5.9',
 
     /**
      * options
@@ -1976,6 +2125,19 @@
       this.isOnCell = makeIsOn(dom.isCell);
 
       /**
+       * @param {Function} pred
+       * @return {Boolean}
+       */
+      this.isLeftEdgeOf = function (pred) {
+        if (!dom.isLeftEdgePoint(this.getStartPoint())) {
+          return false;
+        }
+
+        var node = dom.ancestor(this.sc, pred);
+        return node && dom.isLeftEdgeOf(this.sc, node);
+      };
+
+      /**
        * returns whether range was collapsed or not
        */
       this.isCollapsed = function () {
@@ -2105,6 +2267,9 @@
             var selection = document.getSelection();
             if (selection.rangeCount === 0) {
               return null;
+            } else if (dom.isBody(selection.anchorNode)) {
+              // Firefox: returns entire body as range on initialization. We won't never need it.
+              return null;
             }
   
             var nativeRng = selection.getRangeAt(0);
@@ -2161,6 +2326,50 @@
     };
   })();
 
+
+  var Typing = function () {
+
+    /**
+     * @param {jQuery} $editable 
+     * @param {WrappedRange} rng
+     * @param {Number} tabsize
+     */
+    this.insertTab = function ($editable, rng, tabsize) {
+      var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
+      rng = rng.deleteContents();
+      rng.insertNode(tab, true);
+
+      rng = range.create(tab, tabsize);
+      rng.select();
+    };
+
+    /**
+     * insert paragraph
+     */
+    this.insertParagraph = function () {
+      var rng = range.create();
+
+      // deleteContents on range.
+      rng = rng.deleteContents();
+
+      rng = rng.wrapBodyInlineWithPara();
+
+      // find split root node: block level node
+      var splitRoot = dom.ancestor(rng.sc, dom.isPara);
+      var nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
+
+      var emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
+      emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
+
+      $.each(emptyAnchors, function (idx, anchor) {
+        dom.remove(anchor);
+      });
+
+      range.create(nextPara, 0).normalize().select();
+    };
+
+  };
+
   /**
    * Table
    * @class
@@ -2206,6 +2415,198 @@
     };
   };
 
+
+  var Bullet = function () {
+    /**
+     * toggle ordered list
+     * @type command
+     */
+    this.insertOrderedList = function () {
+      this.toggleList('OL');
+    };
+
+    /**
+     * toggle unordered list
+     * @type command
+     */
+    this.insertUnorderedList = function () {
+      this.toggleList('UL');
+    };
+
+    /**
+     * indent
+     * @type command
+     */
+    this.indent = function () {
+      var self = this;
+      var rng = range.create().wrapBodyInlineWithPara();
+
+      var paras = rng.nodes(dom.isPara, { includeAncestor: true });
+      var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
+
+      $.each(clustereds, function (idx, paras) {
+        var head = list.head(paras);
+        if (dom.isLi(head)) {
+          self.wrapList(paras, head.parentNode.nodeName);
+        } else {
+          $.each(paras, function (idx, para) {
+            $(para).css('marginLeft', function (idx, val) {
+              return (parseInt(val, 10) || 0) + 25;
+            });
+          });
+        }
+      });
+
+      rng.select();
+    };
+
+    /**
+     * outdent
+     * @type command
+     */
+    this.outdent = function () {
+      var self = this;
+      var rng = range.create().wrapBodyInlineWithPara();
+
+      var paras = rng.nodes(dom.isPara, { includeAncestor: true });
+      var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
+
+      $.each(clustereds, function (idx, paras) {
+        var head = list.head(paras);
+        if (dom.isLi(head)) {
+          self.releaseList([paras]);
+        } else {
+          $.each(paras, function (idx, para) {
+            $(para).css('marginLeft', function (idx, val) {
+              val = (parseInt(val, 10) || 0);
+              return val > 25 ? val - 25 : '';
+            });
+          });
+        }
+      });
+
+      rng.select();
+    };
+
+    /**
+     * toggle list
+     * @param {String} listName - OL or UL
+     */
+    this.toggleList = function (listName) {
+      var self = this;
+      var rng = range.create().wrapBodyInlineWithPara();
+
+      var paras = rng.nodes(dom.isPara, { includeAncestor: true });
+      var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
+
+      // paragraph to list
+      if (list.find(paras, dom.isPurePara)) {
+        $.each(clustereds, function (idx, paras) {
+          self.wrapList(paras, listName);
+        });
+      // list to paragraph or change list style
+      } else {
+        var diffLists = rng.nodes(dom.isList, {
+          includeAncestor: true
+        }).filter(function (listNode) {
+          return !$.nodeName(listNode, listName);
+        });
+
+        if (diffLists.length) {
+          $.each(diffLists, function (idx, listNode) {
+            dom.replace(listNode, listName);
+          });
+        } else {
+          this.releaseList(clustereds, true);
+        }
+      }
+
+      rng.select();
+    };
+
+    /**
+     * @param {Node[]} paras
+     * @param {String} listName
+     */
+    this.wrapList = function (paras, listName) {
+      var head = list.head(paras);
+      var last = list.last(paras);
+
+      var prevList = dom.isList(head.previousSibling) && head.previousSibling;
+      var nextList = dom.isList(last.nextSibling) && last.nextSibling;
+
+      var listNode = prevList || dom.insertAfter(dom.create(listName || 'UL'), last);
+
+      // P to LI
+      paras = $.map(paras, function (para) {
+        return dom.isPurePara(para) ? dom.replace(para, 'LI') : para;
+      });
+
+      // append to list(<ul>, <ol>)
+      dom.appendChildNodes(listNode, paras);
+
+      if (nextList) {
+        dom.appendChildNodes(listNode, list.from(nextList.childNodes));
+        dom.remove(nextList);
+      }
+    };
+
+    /**
+     * @param {Array[]} clustereds
+     * @param {Boolean} isEscapseToBody
+     * @return {Node[]}
+     */
+    this.releaseList = function (clustereds, isEscapseToBody) {
+      var releasedParas = [];
+
+      $.each(clustereds, function (idx, paras) {
+        var head = list.head(paras);
+        var last = list.last(paras);
+
+        var headList = isEscapseToBody ? dom.lastAncestor(head, dom.isList) :
+                                         head.parentNode;
+        var lastList = headList.childNodes.length > 1 ? dom.splitTree(headList, {
+          node: last.parentNode,
+          offset: dom.position(last) + 1
+        }, true) : null;
+
+        var middleList = dom.splitTree(headList, {
+          node: head.parentNode,
+          offset: dom.position(head)
+        }, true);
+
+        paras = isEscapseToBody ? dom.listDescendant(middleList, dom.isLi) :
+                                  list.from(middleList.childNodes).filter(dom.isLi);
+
+        // LI to P
+        if (isEscapseToBody || !dom.isList(headList.parentNode)) {
+          paras = $.map(paras, function (para) {
+            return dom.replace(para, 'P');
+          });
+        }
+
+        $.each(list.from(paras).reverse(), function (idx, para) {
+          dom.insertAfter(para, headList);
+        });
+
+        // remove empty lists
+        var rootLists = list.compact([headList, middleList, lastList]);
+        $.each(rootLists, function (idx, rootList) {
+          var listNodes = [rootList].concat(dom.listDescendant(rootList, dom.isList));
+          $.each(listNodes.reverse(), function (idx, listNode) {
+            if (!dom.nodeLength(listNode)) {
+              dom.remove(listNode, true);
+            }
+          });
+        });
+
+        releasedParas = releasedParas.concat(paras);
+      });
+
+      return releasedParas;
+    };
+  };
+
   /**
    * Editor
    * @class
@@ -2214,6 +2615,8 @@
 
     var style = new Style();
     var table = new Table();
+    var typing = new Typing();
+    var bullet = new Bullet();
 
     /**
      * save current range
@@ -2262,7 +2665,7 @@
      * @param {jQuery} $editable
      */
     this.undo = function ($editable) {
-      $editable.data('NoteHistory').undo($editable);
+      $editable.data('NoteHistory').undo();
       triggerOnChange($editable);
     };
 
@@ -2271,55 +2674,40 @@
      * @param {jQuery} $editable
      */
     this.redo = function ($editable) {
-      $editable.data('NoteHistory').redo($editable);
+      $editable.data('NoteHistory').redo();
       triggerOnChange($editable);
     };
 
     /**
-     * record Undo
+     * after command
      * @param {jQuery} $editable
      */
-    var recordUndo = this.recordUndo = function ($editable) {
-      $editable.data('NoteHistory').recordUndo($editable);
+    var afterCommand = this.afterCommand = function ($editable) {
+      $editable.data('NoteHistory').recordUndo();
+      triggerOnChange($editable);
     };
 
     /* jshint ignore:start */
     // native commands(with execCommand), generate function for execCommand
     var commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
                     'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
-                    'insertOrderedList', 'insertUnorderedList',
-                    'indent', 'outdent', 'formatBlock', 'removeFormat',
+                    'formatBlock', 'removeFormat',
                     'backColor', 'foreColor', 'insertHorizontalRule', 'fontName'];
 
     for (var idx = 0, len = commands.length; idx < len; idx ++) {
       this[commands[idx]] = (function (sCmd) {
         return function ($editable, value) {
-          recordUndo($editable);
-
           document.execCommand(sCmd, false, value);
+
+          afterCommand($editable);
         };
       })(commands[idx]);
     }
     /* jshint ignore:end */
 
     /**
-     * @param {jQuery} $editable 
-     * @param {WrappedRange} rng
-     * @param {Number} tabsize
-     */
-    var insertTab = function ($editable, rng, tabsize) {
-      recordUndo($editable);
-
-      var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
-      rng = rng.deleteContents();
-      rng.insertNode(tab, true);
-
-      rng = range.create(tab, tabsize);
-      rng.select();
-    };
-
-    /**
      * handle tab key
+     *
      * @param {jQuery} $editable 
      * @param {Object} options
      */
@@ -2328,7 +2716,8 @@
       if (rng.isCollapsed() && rng.isOnCell()) {
         table.tab(rng);
       } else {
-        insertTab($editable, rng, options.tabsize);
+        typing.insertTab($editable, rng, options.tabsize);
+        afterCommand($editable);
       }
     };
 
@@ -2348,28 +2737,40 @@
      * @param {Node} $editable
      */
     this.insertParagraph = function ($editable) {
-      recordUndo($editable);
+      typing.insertParagraph($editable);
+      afterCommand($editable);
+    };
 
-      var rng = range.create();
+    /**
+     * @param {jQuery} $editable
+     */
+    this.insertOrderedList = function ($editable) {
+      bullet.insertOrderedList($editable);
+      afterCommand($editable);
+    };
 
-      // deleteContents on range.
-      rng = rng.deleteContents();
+    /**
+     * @param {jQuery} $editable
+     */
+    this.insertUnorderedList = function ($editable) {
+      bullet.insertUnorderedList($editable);
+      afterCommand($editable);
+    };
 
-      rng = rng.wrapBodyInlineWithPara();
+    /**
+     * @param {jQuery} $editable
+     */
+    this.indent = function ($editable) {
+      bullet.indent($editable);
+      afterCommand($editable);
+    };
 
-      // find split root node: block level node
-      var splitRoot = dom.ancestor(rng.sc, dom.isPara);
-      var nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
-
-      var emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
-      emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
-
-      $.each(emptyAnchors, function (idx, anchor) {
-        dom.remove(anchor);
-      });
-
-      range.create(nextPara, 0).normalize().select();
-      triggerOnChange($editable);
+    /**
+     * @param {jQuery} $editable
+     */
+    this.outdent = function ($editable) {
+      bullet.outdent($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -2380,14 +2781,12 @@
      */
     this.insertImage = function ($editable, sUrl, filename) {
       async.createImage(sUrl, filename).then(function ($image) {
-        recordUndo($editable);
-
         $image.css({
           display: '',
           width: Math.min($editable.width(), $image.width())
         });
         range.create().insertNode($image[0]);
-        triggerOnChange($editable);
+        afterCommand($editable);
       }).fail(function () {
         var callbacks = $editable.data('callbacks');
         if (callbacks.onImageUploadError) {
@@ -2402,8 +2801,6 @@
      * @param {String} sUrl
      */
     this.insertVideo = function ($editable, sUrl) {
-      recordUndo($editable);
-
       // video url patterns(youtube, instagram, vimeo, dailymotion, youku)
       var ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       var ytMatch = sUrl.match(ytRegExp);
@@ -2460,7 +2857,7 @@
       if ($video) {
         $video.attr('frameborder', 0);
         range.create().insertNode($video[0]);
-        triggerOnChange($editable);
+        afterCommand($editable);
       }
     };
 
@@ -2471,14 +2868,14 @@
      * @param {String} tagName
      */
     this.formatBlock = function ($editable, tagName) {
-      recordUndo($editable);
-
       tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       document.execCommand('FormatBlock', false, tagName);
+      afterCommand($editable);
     };
 
     this.formatPara = function ($editable) {
       this.formatBlock($editable, 'P');
+      afterCommand($editable);
     };
 
     /* jshint ignore:start */
@@ -2499,8 +2896,6 @@
      * @param {String} value - px
      */
     this.fontSize = function ($editable, value) {
-      recordUndo($editable);
-
       document.execCommand('fontSize', false, 3);
       if (agent.isFF) {
         // firefox: <font size="3"> to <span style='font-size={value}px;'>, buggy
@@ -2511,6 +2906,8 @@
           return this.style.fontSize === 'medium';
         }).css('font-size', value + 'px');
       }
+
+      afterCommand($editable);
     };
 
     /**
@@ -2519,32 +2916,35 @@
      * @param {String} value
      */
     this.lineHeight = function ($editable, value) {
-      recordUndo($editable);
-
       style.stylePara(range.create(), {
         lineHeight: value
       });
-      triggerOnChange($editable);
+      afterCommand($editable);
     };
 
     /**
      * unlink
+     *
+     * @type command
+     *
      * @param {jQuery} $editable
      */
     this.unlink = function ($editable) {
       var rng = range.create();
       if (rng.isOnAnchor()) {
-        recordUndo($editable);
-
         var anchor = dom.ancestor(rng.sc, dom.isAnchor);
         rng = range.createFromNode(anchor);
         rng.select();
         document.execCommand('unlink');
+
+        afterCommand($editable);
       }
     };
 
     /**
      * create link
+     *
+     * @type command
      *
      * @param {jQuery} $editable
      * @param {Object} linkInfo
@@ -2555,8 +2955,6 @@
       var linkText = linkInfo.text;
       var isNewWindow = linkInfo.newWindow;
       var rng = linkInfo.range;
-
-      recordUndo($editable);
 
       if (options.onCreateLink) {
         linkUrl = options.onCreateLink(linkUrl);
@@ -2572,7 +2970,7 @@
       });
 
       range.createFromNode(anchor).select();
-      triggerOnChange($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -2621,20 +3019,18 @@
       var oColor = JSON.parse(sObjColor);
       var foreColor = oColor.foreColor, backColor = oColor.backColor;
 
-      recordUndo($editable);
-
       if (foreColor) { document.execCommand('foreColor', false, foreColor); }
       if (backColor) { document.execCommand('backColor', false, backColor); }
+
+      afterCommand($editable);
     };
 
     this.insertTable = function ($editable, sDim) {
-      recordUndo($editable);
-
       var dimension = sDim.split('x');
       var rng = range.create();
       rng = rng.deleteContents();
       rng.insertNode(table.createTable(dimension[0], dimension[1]));
-      triggerOnChange($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -2643,9 +3039,8 @@
      * @param {jQuery} $target
      */
     this.floatMe = function ($editable, value, $target) {
-      recordUndo($editable);
-
       $target.css('float', value);
+      afterCommand($editable);
     };
 
     /**
@@ -2655,12 +3050,12 @@
      * @param {jQuery} $target - target element
      */
     this.resize = function ($editable, value, $target) {
-      recordUndo($editable);
-
       $target.css({
         width: $editable.width() * value + 'px',
         height: ''
       });
+
+      afterCommand($editable);
     };
 
     /**
@@ -2695,9 +3090,9 @@
      * @param {jQuery} $target - target element
      */
     this.removeMedia = function ($editable, value, $target) {
-      recordUndo($editable);
-
       $target.detach();
+
+      afterCommand($editable);
     };
   };
 
@@ -2705,47 +3100,56 @@
    * History
    * @class
    */
-  var History = function () {
-    var undoStack = [], redoStack = [];
+  var History = function ($editable) {
+    var stack = [], stackOffset = 0;
+    var editable = $editable[0];
 
-    var makeSnapshot = function ($editable) {
-      var editable = $editable[0];
+    var makeSnapshot = function () {
       var rng = range.create();
+      var emptyBookmark = {s: {path: [0], offset: 0}, e: {path: [0], offset: 0}};
 
       return {
         contents: $editable.html(),
-        bookmark: rng.bookmark(editable)
+        bookmark: (rng ? rng.bookmark(editable) : emptyBookmark)
       };
     };
 
-    var applySnapshot = function ($editable, snapshot) {
-      $editable.html(snapshot.contents);
-      // FIXME: Still buggy, use marker tag
-      // range.createFromBookmark($editable[0], snapshot.bookmark).select();
-    };
-
-    this.undo = function ($editable) {
-      var snapshot = makeSnapshot($editable);
-      if (!undoStack.length) {
-        return;
+    var applySnapshot = function (snapshot) {
+      if (snapshot.contents !== null) {
+        $editable.html(snapshot.contents);
       }
-      applySnapshot($editable, undoStack.pop());
-      redoStack.push(snapshot);
-    };
-
-    this.redo = function ($editable) {
-      var snapshot = makeSnapshot($editable);
-      if (!redoStack.length) {
-        return;
+      if (snapshot.bookmark !== null) {
+        range.createFromBookmark(editable, snapshot.bookmark).select();
       }
-      applySnapshot($editable, redoStack.pop());
-      undoStack.push(snapshot);
     };
 
-    this.recordUndo = function ($editable) {
-      redoStack = [];
-      undoStack.push(makeSnapshot($editable));
+    this.undo = function () {
+      if (0 < stackOffset) {
+        stackOffset--;
+        applySnapshot(stack[stackOffset]);
+      }
     };
+
+    this.redo = function () {
+      if (stack.length - 1 > stackOffset) {
+        stackOffset++;
+        applySnapshot(stack[stackOffset]);
+      }
+    };
+
+    this.recordUndo = function () {
+      // Wash out stack after stackOffset
+      if (stack.length > stackOffset) {
+        stack = stack.slice(0, stackOffset);
+      }
+
+      // Create new snapshot and push it to the end
+      stack.push(makeSnapshot());
+      stackOffset++;
+    };
+
+    // Create first undo stack
+    this.recordUndo();
   };
 
   /**
@@ -3573,7 +3977,7 @@
           $target.data('ratio', $target.height() / $target.width());
         }
 
-        editor.recordUndo($editable);
+        editor.afterCommand($editable);
       }
     };
 
@@ -3803,7 +4207,7 @@
             commands[eventName].call(this, layoutInfo);
           }
         } else if (key.isEdit(event.keyCode)) {
-          editor.recordUndo($editable);
+          editor.afterCommand($editable);
         }
       });
     };
@@ -3866,7 +4270,8 @@
       }
 
       // History
-      layoutInfo.editable.data('NoteHistory', new History());
+      var history = new History(layoutInfo.editable);
+      layoutInfo.editable.data('NoteHistory', history);
 
       // basic event callbacks (lowercase)
       // enter, focus, blur, keyup, keydown
@@ -4521,7 +4926,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.8</a> · ' +
+                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.9</a> · ' +
                      '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';

@@ -3,47 +3,56 @@ define(['summernote/core/range'], function (range) {
    * History
    * @class
    */
-  var History = function () {
-    var undoStack = [], redoStack = [];
+  var History = function ($editable) {
+    var stack = [], stackOffset = 0;
+    var editable = $editable[0];
 
-    var makeSnapshot = function ($editable) {
-      var editable = $editable[0];
+    var makeSnapshot = function () {
       var rng = range.create();
+      var emptyBookmark = {s: {path: [0], offset: 0}, e: {path: [0], offset: 0}};
 
       return {
         contents: $editable.html(),
-        bookmark: rng.bookmark(editable)
+        bookmark: (rng ? rng.bookmark(editable) : emptyBookmark)
       };
     };
 
-    var applySnapshot = function ($editable, snapshot) {
-      $editable.html(snapshot.contents);
-      // FIXME: Still buggy, use marker tag
-      // range.createFromBookmark($editable[0], snapshot.bookmark).select();
-    };
-
-    this.undo = function ($editable) {
-      var snapshot = makeSnapshot($editable);
-      if (!undoStack.length) {
-        return;
+    var applySnapshot = function (snapshot) {
+      if (snapshot.contents !== null) {
+        $editable.html(snapshot.contents);
       }
-      applySnapshot($editable, undoStack.pop());
-      redoStack.push(snapshot);
-    };
-
-    this.redo = function ($editable) {
-      var snapshot = makeSnapshot($editable);
-      if (!redoStack.length) {
-        return;
+      if (snapshot.bookmark !== null) {
+        range.createFromBookmark(editable, snapshot.bookmark).select();
       }
-      applySnapshot($editable, redoStack.pop());
-      undoStack.push(snapshot);
     };
 
-    this.recordUndo = function ($editable) {
-      redoStack = [];
-      undoStack.push(makeSnapshot($editable));
+    this.undo = function () {
+      if (0 < stackOffset) {
+        stackOffset--;
+        applySnapshot(stack[stackOffset]);
+      }
     };
+
+    this.redo = function () {
+      if (stack.length - 1 > stackOffset) {
+        stackOffset++;
+        applySnapshot(stack[stackOffset]);
+      }
+    };
+
+    this.recordUndo = function () {
+      // Wash out stack after stackOffset
+      if (stack.length > stackOffset) {
+        stack = stack.slice(0, stackOffset);
+      }
+
+      // Create new snapshot and push it to the end
+      stack.push(makeSnapshot());
+      stackOffset++;
+    };
+
+    // Create first undo stack
+    this.recordUndo();
   };
 
   return History;

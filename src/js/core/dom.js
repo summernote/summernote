@@ -76,12 +76,14 @@ define([
 
     /**
      * returns predicate which judge whether nodeName is same
-     * @param {String} sNodeName
+     *
+     * @param {String} nodeName
+     * @return {String}
      */
-    var makePredByNodeName = function (sNodeName) {
-      sNodeName = sNodeName.toUpperCase();
+    var makePredByNodeName = function (nodeName) {
+      nodeName = nodeName.toUpperCase();
       return function (node) {
-        return node && node.nodeName.toUpperCase() === sNodeName;
+        return node && node.nodeName.toUpperCase() === nodeName;
       };
     };
 
@@ -104,6 +106,12 @@ define([
 
       // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
       return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName.toUpperCase());
+    };
+
+    var isLi = makePredByNodeName('LI');
+
+    var isPurePara = function (node) {
+      return isPara(node) && !isLi(node);
     };
 
     var isInline = function (node) {
@@ -133,6 +141,8 @@ define([
     var isBodyInline = function (node) {
       return isInline(node) && !ancestor(node, isPara);
     };
+
+    var isBody = makePredByNodeName('BODY');
 
     /**
      * blank HTML for cursor position
@@ -214,6 +224,14 @@ define([
         return pred(el);
       });
       return ancestors;
+    };
+
+    /**
+     * find farthest ancestor predicate hit
+     */
+    var lastAncestor = function (node, pred) {
+      var ancestors = listAncestor(node);
+      return list.last(ancestors.filter(pred));
     };
 
     /**
@@ -366,6 +384,24 @@ define([
     };
 
     /**
+     * returns wheter node is left edge of ancestor or not.
+     *
+     * @param {Node} node
+     * @param {Node} ancestor
+     * @return {Boolean}
+     */
+    var isLeftEdgeOf = function (node, ancestor) {
+      while (node && node !== ancestor) {
+        if (position(node) !== 0) {
+          return false;
+        }
+        node = node.parentNode;
+      }
+
+      return true;
+    };
+
+    /**
      * returns whether node is right edge of ancestor or not.
      *
      * @param {Node} node
@@ -418,7 +454,7 @@ define([
         node = point.node.parentNode;
         offset = position(point.node);
       } else if (hasChildren(point.node)) {
-        node = point.node.childNodes[offset - 1];
+        node = point.node.childNodes[point.offset - 1];
         offset = nodeLength(node);
       } else {
         node = point.node;
@@ -480,10 +516,17 @@ define([
      * @return {Boolean}
      */
     var isVisiblePoint = function (point) {
-      return isText(point.node) ||
-             !hasChildren(point.node) ||
-             isEmpty(point.node) ||
-             !isEdgePoint(point);
+      if (isText(point.node) || !hasChildren(point.node) || isEmpty(point.node)) {
+        return true;
+      }
+
+      var leftNode = point.node.childNodes[point.offset - 1];
+      var rightNode = point.node.childNodes[point.offset];
+      if ((!leftNode || isVoid(leftNode)) && (!rightNode || isVoid(rightNode))) {
+        return true;
+      }
+
+      return false;
     };
 
     /**
@@ -536,7 +579,9 @@ define([
           break;
         }
 
-        var isSkipOffset = isSkipInnerOffset && startPoint.node !== point.node;
+        var isSkipOffset = isSkipInnerOffset &&
+                           startPoint.node !== point.node &&
+                           endPoint.node !== point.node;
         point = nextPoint(point, isSkipOffset);
       }
     };
@@ -548,7 +593,7 @@ define([
      * @param {Node} node
      */
     var makeOffsetPath = function (ancestor, node) {
-      var ancestors = list.initial(listAncestor(node, func.eq(ancestor)));
+      var ancestors = listAncestor(node, func.eq(ancestor));
       return $.map(ancestors, position).reverse();
     };
 
@@ -561,7 +606,11 @@ define([
     var fromOffsetPath = function (ancestor, aOffset) {
       var current = ancestor;
       for (var i = 0, len = aOffset.length; i < len; i++) {
-        current = current.childNodes[aOffset[i]];
+        if (current.childNodes.length <= aOffset[i]) {
+          current = current.childNodes[current.childNodes.length - 1];
+        } else {
+          current = current.childNodes[aOffset[i]];
+        }
       }
       return current;
     };
@@ -570,9 +619,10 @@ define([
      * split element or #text
      *
      * @param {BoundaryPoint} point
+     * @param {Boolean} [isSkipPaddingBlankHTML]
      * @return {Node} right node of boundaryPoint
      */
-    var splitNode = function (point) {
+    var splitNode = function (point, isSkipPaddingBlankHTML) {
       // split #text
       if (isText(point.node)) {
         // edge case
@@ -590,8 +640,10 @@ define([
       var clone = insertAfter(point.node.cloneNode(false), point.node);
       appendChildNodes(clone, listNext(childNode));
 
-      paddingBlankHTML(point.node);
-      paddingBlankHTML(clone);
+      if (!isSkipPaddingBlankHTML) {
+        paddingBlankHTML(point.node);
+        paddingBlankHTML(clone);
+      }
 
       return clone;
     };
@@ -601,31 +653,38 @@ define([
      *
      * @param {Node} root - split root
      * @param {BoundaryPoint} point
+     * @param {Boolean} [isSkipPaddingBlankHTML]
      * @return {Node} right node of boundaryPoint
      */
-    var splitTree = function (root, point) {
+    var splitTree = function (root, point, isSkipPaddingBlankHTML) {
       // ex) [#text, <span>, <p>]
       var ancestors = listAncestor(point.node, func.eq(root));
 
       if (!ancestors.length) {
         return null;
       } else if (ancestors.length === 1) {
-        return splitNode(point);
+        return splitNode(point, isSkipPaddingBlankHTML);
       }
 
       return ancestors.reduce(function (node, parent) {
         var clone = insertAfter(parent.cloneNode(false), parent);
 
         if (node === point.node) {
-          node = splitNode(point);
+          node = splitNode(point, isSkipPaddingBlankHTML);
         }
 
         appendChildNodes(clone, listNext(node));
 
-        paddingBlankHTML(parent);
-        paddingBlankHTML(clone);
+        if (!isSkipPaddingBlankHTML) {
+          paddingBlankHTML(parent);
+          paddingBlankHTML(clone);
+        }
         return clone;
       });
+    };
+
+    var create = function (nodeName) {
+      return document.createElement(nodeName);
     };
 
     var createText = function (text) {
@@ -657,6 +716,47 @@ define([
       parent.removeChild(node);
     };
 
+    /**
+     * @param {Node} node
+     * @param {Function} pred
+     */
+    var removeWhile = function (node, pred) {
+      while (node) {
+        if (isEditable(node) || !pred(node)) {
+          break;
+        }
+
+        var parent = node.parentNode;
+        remove(node);
+        node = parent;
+      }
+    };
+
+    /**
+     * replace node with provided nodeName
+     *
+     * @param {Node} node
+     * @param {String} nodeName
+     * @return {Node} - new node
+     */
+    var replace = function (node, nodeName) {
+      if (node.nodeName.toUpperCase() === nodeName.toUpperCase()) {
+        return node;
+      }
+
+      var newNode = create(nodeName);
+
+      if (node.style.cssText) {
+        newNode.style.cssText = node.style.cssText;
+      }
+
+      appendChildNodes(newNode, list.from(node.childNodes));
+      insertAfter(newNode, node);
+      remove(node);
+
+      return newNode;
+    };
+
     var isTextarea = makePredByNodeName('TEXTAREA');
 
     /**
@@ -674,7 +774,7 @@ define([
           name = name.toUpperCase();
           var isEndOfInlineContainer = /^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) &&
                                        !!endSlash;
-          var isBlockNode = /^TABLE|^TBODY|^TR|^HR|^UL/.test(name);
+          var isBlockNode = /^BLOCKQUOTE|^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
 
           return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
         });
@@ -700,8 +800,10 @@ define([
       buildLayoutInfo: buildLayoutInfo,
       isText: isText,
       isPara: isPara,
+      isPurePara: isPurePara,
       isInline: isInline,
       isBodyInline: isBodyInline,
+      isBody: isBody,
       isParaInline: isParaInline,
       isList: isList,
       isTable: makePredByNodeName('TABLE'),
@@ -710,7 +812,7 @@ define([
       isBodyContainer: isBodyContainer,
       isAnchor: isAnchor,
       isDiv: makePredByNodeName('DIV'),
-      isLi: makePredByNodeName('LI'),
+      isLi: isLi,
       isSpan: makePredByNodeName('SPAN'),
       isB: makePredByNodeName('B'),
       isU: makePredByNodeName('U'),
@@ -724,6 +826,7 @@ define([
       isLeftEdgePoint: isLeftEdgePoint,
       isRightEdgePoint: isRightEdgePoint,
       isEdgePoint: isEdgePoint,
+      isLeftEdgeOf: isLeftEdgeOf,
       isRightEdgeOf: isRightEdgeOf,
       prevPoint: prevPoint,
       nextPoint: nextPoint,
@@ -734,6 +837,7 @@ define([
       walkPoint: walkPoint,
       ancestor: ancestor,
       listAncestor: listAncestor,
+      lastAncestor: lastAncestor,
       listNext: listNext,
       listPrev: listPrev,
       listDescendant: listDescendant,
@@ -746,8 +850,11 @@ define([
       makeOffsetPath: makeOffsetPath,
       fromOffsetPath: fromOffsetPath,
       splitTree: splitTree,
+      create: create,
       createText: createText,
       remove: remove,
+      removeWhile: removeWhile,
+      replace: replace,
       html: html,
       value: value
     };

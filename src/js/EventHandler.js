@@ -342,7 +342,7 @@ define([
           $target.data('ratio', $target.height() / $target.width());
         }
 
-        editor.recordUndo($editable);
+        editor.afterCommand($editable);
       }
     };
 
@@ -572,7 +572,7 @@ define([
             commands[eventName].call(this, layoutInfo);
           }
         } else if (key.isEdit(event.keyCode)) {
-          editor.recordUndo($editable);
+          editor.afterCommand($editable);
         }
       });
     };
@@ -635,7 +635,8 @@ define([
       }
 
       // History
-      layoutInfo.editable.data('NoteHistory', new History());
+      var history = new History(layoutInfo.editable);
+      layoutInfo.editable.data('NoteHistory', history);
 
       // basic event callbacks (lowercase)
       // enter, focus, blur, keyup, keydown

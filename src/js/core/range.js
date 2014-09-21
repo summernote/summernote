@@ -410,6 +410,19 @@ define([
       this.isOnCell = makeIsOn(dom.isCell);
 
       /**
+       * @param {Function} pred
+       * @return {Boolean}
+       */
+      this.isLeftEdgeOf = function (pred) {
+        if (!dom.isLeftEdgePoint(this.getStartPoint())) {
+          return false;
+        }
+
+        var node = dom.ancestor(this.sc, pred);
+        return node && dom.isLeftEdgeOf(this.sc, node);
+      };
+
+      /**
        * returns whether range was collapsed or not
        */
       this.isCollapsed = function () {
@@ -538,6 +551,9 @@ define([
           if (agent.isW3CRangeSupport) {
             var selection = document.getSelection();
             if (selection.rangeCount === 0) {
+              return null;
+            } else if (dom.isBody(selection.anchorNode)) {
+              // Firefox: returns entire body as range on initialization. We won't never need it.
               return null;
             }
   
