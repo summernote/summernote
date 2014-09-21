@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-09-21T04:14Z
+ * Date: 2014-09-21T04:39Z
  */
 (function (factory) {
   /* global define */
@@ -3692,7 +3692,6 @@
      * @param {File[]} files
      */
     var insertImages = function ($editable, files) {
-      editor.restoreRange($editable);
       var callbacks = $editable.data('callbacks');
 
       // If onImageUpload options setted
