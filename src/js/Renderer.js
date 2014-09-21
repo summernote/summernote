@@ -128,7 +128,7 @@ define([
         });
       },
       table: function (lang) {
-        var dropdown = '<ul class="dropdown-menu">' +
+        var dropdown = '<ul class="note-table dropdown-menu">' +
                          '<div class="note-dimension-picker">' +
                            '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>' +
                            '<div class="note-dimension-picker-highlighted"></div>' +
@@ -543,7 +543,7 @@ define([
       if (options.extraKeys) {
         template += '<tr><td colspan="2">' + tplExtraShortcuts(lang, options) + '</td></tr>';
       }
-      template += '</tbody</table>';
+      template += '</tbody></table>';
       return template;
     };
 

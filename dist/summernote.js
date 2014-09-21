@@ -3,10 +3,10 @@
  * http://hackerwins.github.io/summernote/
  *
  * summernote.js
- * Copyright 2013 Alan Hong. and outher contributors
+ * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-09-21T04:13Z
+ * Date: 2014-09-21T04:14Z
  */
 (function (factory) {
   /* global define */
@@ -4456,7 +4456,7 @@
         });
       },
       table: function (lang) {
-        var dropdown = '<ul class="dropdown-menu">' +
+        var dropdown = '<ul class="note-table dropdown-menu">' +
                          '<div class="note-dimension-picker">' +
                            '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>' +
                            '<div class="note-dimension-picker-highlighted"></div>' +
@@ -4871,7 +4871,7 @@
       if (options.extraKeys) {
         template += '<tr><td colspan="2">' + tplExtraShortcuts(lang, options) + '</td></tr>';
       }
-      template += '</tbody</table>';
+      template += '</tbody></table>';
       return template;
     };
 
