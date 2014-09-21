@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.5.9
+ * Super simple wysiwyg editor on Bootstrap v0.5.10
  * http://hackerwins.github.io/summernote/
  *
  * summernote.js
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-09-21T04:39Z
+ * Date: 2014-09-21T05:17Z
  */
 (function (factory) {
   /* global define */
@@ -1237,7 +1237,7 @@
 
   var settings = {
     // version
-    version: '0.5.9',
+    version: '0.5.10',
 
     /**
      * options
@@ -2286,7 +2286,14 @@
   
             var startPoint = textRangeToPoint(textRangeStart, true),
             endPoint = textRangeToPoint(textRangeEnd, false);
-  
+
+            // same visible point case: range was collapsed.
+            if (dom.isText(startPoint.node) && dom.isLeftSidePoint(startPoint) &&
+                dom.isTextNode(endPoint.node) && dom.isRightSidePoint(endPoint) &&
+                endPoint.node.nextSibling === startPoint.node) {
+              startPoint = endPoint;
+            }
+
             sc = startPoint.cont;
             so = startPoint.offset;
             ec = endPoint.cont;
@@ -4925,7 +4932,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.9</a> · ' +
+                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.10</a> · ' +
                      '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
