@@ -6,7 +6,7 @@
  * Copyright 2013 Alan Hong. and outher contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-09-15T07:34Z
+ * Date: 2014-09-21T04:13Z
  */
 (function (factory) {
   /* global define */
@@ -2665,7 +2665,7 @@
      * @param {jQuery} $editable
      */
     this.undo = function ($editable) {
-      $editable.data('NoteHistory').undo($editable);
+      $editable.data('NoteHistory').undo();
       triggerOnChange($editable);
     };
 
@@ -2674,16 +2674,17 @@
      * @param {jQuery} $editable
      */
     this.redo = function ($editable) {
-      $editable.data('NoteHistory').redo($editable);
+      $editable.data('NoteHistory').redo();
       triggerOnChange($editable);
     };
 
     /**
-     * record Undo
+     * after command
      * @param {jQuery} $editable
      */
-    var recordUndo = this.recordUndo = function ($editable) {
-      $editable.data('NoteHistory').recordUndo($editable);
+    var afterCommand = this.afterCommand = function ($editable) {
+      $editable.data('NoteHistory').recordUndo();
+      triggerOnChange($editable);
     };
 
     /* jshint ignore:start */
@@ -2698,7 +2699,7 @@
         return function ($editable, value) {
           document.execCommand(sCmd, false, value);
 
-          recordUndo($editable);
+          afterCommand($editable);
         };
       })(commands[idx]);
     }
@@ -2716,9 +2717,7 @@
         table.tab(rng);
       } else {
         typing.insertTab($editable, rng, options.tabsize);
-        triggerOnChange($editable);
-
-        recordUndo($editable);
+        afterCommand($editable);
       }
     };
 
@@ -2739,9 +2738,7 @@
      */
     this.insertParagraph = function ($editable) {
       typing.insertParagraph($editable);
-      triggerOnChange($editable);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -2749,9 +2746,7 @@
      */
     this.insertOrderedList = function ($editable) {
       bullet.insertOrderedList($editable);
-      triggerOnChange($editable);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -2759,9 +2754,7 @@
      */
     this.insertUnorderedList = function ($editable) {
       bullet.insertUnorderedList($editable);
-      triggerOnChange($editable);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -2769,9 +2762,7 @@
      */
     this.indent = function ($editable) {
       bullet.indent($editable);
-      triggerOnChange($editable);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -2779,9 +2770,7 @@
      */
     this.outdent = function ($editable) {
       bullet.outdent($editable);
-      triggerOnChange($editable);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -2797,9 +2786,7 @@
           width: Math.min($editable.width(), $image.width())
         });
         range.create().insertNode($image[0]);
-        triggerOnChange($editable);
-
-        recordUndo($editable);
+        afterCommand($editable);
       }).fail(function () {
         var callbacks = $editable.data('callbacks');
         if (callbacks.onImageUploadError) {
@@ -2870,9 +2857,7 @@
       if ($video) {
         $video.attr('frameborder', 0);
         range.create().insertNode($video[0]);
-        triggerOnChange($editable);
-
-        recordUndo($editable);
+        afterCommand($editable);
       }
     };
 
@@ -2885,12 +2870,12 @@
     this.formatBlock = function ($editable, tagName) {
       tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       document.execCommand('FormatBlock', false, tagName);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     this.formatPara = function ($editable) {
       this.formatBlock($editable, 'P');
+      afterCommand($editable);
     };
 
     /* jshint ignore:start */
@@ -2922,7 +2907,7 @@
         }).css('font-size', value + 'px');
       }
 
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -2934,9 +2919,7 @@
       style.stylePara(range.create(), {
         lineHeight: value
       });
-      triggerOnChange($editable);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -2954,7 +2937,7 @@
         rng.select();
         document.execCommand('unlink');
 
-        recordUndo($editable);
+        afterCommand($editable);
       }
     };
 
@@ -2987,9 +2970,7 @@
       });
 
       range.createFromNode(anchor).select();
-      triggerOnChange($editable);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -3041,7 +3022,7 @@
       if (foreColor) { document.execCommand('foreColor', false, foreColor); }
       if (backColor) { document.execCommand('backColor', false, backColor); }
 
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     this.insertTable = function ($editable, sDim) {
@@ -3049,9 +3030,7 @@
       var rng = range.create();
       rng = rng.deleteContents();
       rng.insertNode(table.createTable(dimension[0], dimension[1]));
-      triggerOnChange($editable);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -3061,8 +3040,7 @@
      */
     this.floatMe = function ($editable, value, $target) {
       $target.css('float', value);
-
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -3077,7 +3055,7 @@
         height: ''
       });
 
-      recordUndo($editable);
+      afterCommand($editable);
     };
 
     /**
@@ -3114,7 +3092,7 @@
     this.removeMedia = function ($editable, value, $target) {
       $target.detach();
 
-      recordUndo($editable);
+      afterCommand($editable);
     };
   };
 
@@ -3122,11 +3100,11 @@
    * History
    * @class
    */
-  var History = function () {
+  var History = function ($editable) {
     var stack = [], stackOffset = 0;
+    var editable = $editable[0];
 
-    var makeSnapshot = function ($editable) {
-      var editable = $editable[0];
+    var makeSnapshot = function () {
       var rng = range.create();
       var emptyBookmark = {s: {path: [0], offset: 0}, e: {path: [0], offset: 0}};
 
@@ -3136,39 +3114,42 @@
       };
     };
 
-    var applySnapshot = function ($editable, snapshot) {
+    var applySnapshot = function (snapshot) {
       if (snapshot.contents !== null) {
         $editable.html(snapshot.contents);
       }
       if (snapshot.bookmark !== null) {
-        range.createFromBookmark($editable[0], snapshot.bookmark).select();
+        range.createFromBookmark(editable, snapshot.bookmark).select();
       }
     };
 
-    this.undo = function ($editable) {
+    this.undo = function () {
       if (0 < stackOffset) {
         stackOffset--;
-        applySnapshot($editable, stack[stackOffset]);
+        applySnapshot(stack[stackOffset]);
       }
     };
 
-    this.redo = function ($editable) {
+    this.redo = function () {
       if (stack.length - 1 > stackOffset) {
         stackOffset++;
-        applySnapshot($editable, stack[stackOffset]);
+        applySnapshot(stack[stackOffset]);
       }
     };
 
-    this.recordUndo = function ($editable) {
+    this.recordUndo = function () {
       // Wash out stack after stackOffset
       if (stack.length > stackOffset) {
         stack = stack.slice(0, stackOffset);
       }
 
       // Create new snapshot and push it to the end
-      stack.push(makeSnapshot($editable));
+      stack.push(makeSnapshot());
       stackOffset++;
     };
+
+    // Create first undo stack
+    this.recordUndo();
   };
 
   /**
@@ -3996,7 +3977,7 @@
           $target.data('ratio', $target.height() / $target.width());
         }
 
-        editor.recordUndo($editable);
+        editor.afterCommand($editable);
       }
     };
 
@@ -4226,7 +4207,7 @@
             commands[eventName].call(this, layoutInfo);
           }
         } else if (key.isEdit(event.keyCode)) {
-          editor.recordUndo($editable);
+          editor.afterCommand($editable);
         }
       });
     };
@@ -4289,9 +4270,7 @@
       }
 
       // History
-      var history = new History();
-      // Create first undo stack
-      history.recordUndo(layoutInfo.editable);
+      var history = new History(layoutInfo.editable);
       layoutInfo.editable.data('NoteHistory', history);
 
       // basic event callbacks (lowercase)
