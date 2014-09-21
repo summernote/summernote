@@ -57,7 +57,6 @@ define([
      * @param {File[]} files
      */
     var insertImages = function ($editable, files) {
-      editor.restoreRange($editable);
       var callbacks = $editable.data('callbacks');
 
       // If onImageUpload options setted
