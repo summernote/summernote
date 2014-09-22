@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-09-22T09:53Z
+ * Date: 2014-09-22T09:56Z
  */
 (function (factory) {
   /* global define */
@@ -3936,7 +3936,7 @@
       var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
 
       if (isClipboardImage) {
-        insertImages(layoutInfo.editable(), [item.getAsFile()]);
+        insertImages($editable, [item.getAsFile()]);
       }
 
       editor.afterCommand($editable);
