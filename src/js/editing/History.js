@@ -4,7 +4,7 @@ define(['summernote/core/range'], function (range) {
    * @class
    */
   var History = function ($editable) {
-    var stack = [], stackOffset = 0;
+    var stack = [], stackOffset = -1;
     var editable = $editable[0];
 
     var makeSnapshot = function () {
@@ -41,6 +41,8 @@ define(['summernote/core/range'], function (range) {
     };
 
     this.recordUndo = function () {
+      stackOffset++;
+
       // Wash out stack after stackOffset
       if (stack.length > stackOffset) {
         stack = stack.slice(0, stackOffset);
@@ -48,7 +50,6 @@ define(['summernote/core/range'], function (range) {
 
       // Create new snapshot and push it to the end
       stack.push(makeSnapshot());
-      stackOffset++;
     };
 
     // Create first undo stack

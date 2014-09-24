@@ -294,13 +294,17 @@ define([
         return;
       }
 
-      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target),
+          $editable = layoutInfo.editable();
+
       var item = list.head(clipboardData.items);
       var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
 
       if (isClipboardImage) {
-        insertImages(layoutInfo.editable(), [item.getAsFile()]);
+        insertImages($editable, [item.getAsFile()]);
       }
+
+      editor.afterCommand($editable);
     };
 
     /**

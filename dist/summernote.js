@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-09-21T05:17Z
+ * Date: 2014-09-24T15:54Z
  */
 (function (factory) {
   /* global define */
@@ -2288,8 +2288,8 @@
             endPoint = textRangeToPoint(textRangeEnd, false);
 
             // same visible point case: range was collapsed.
-            if (dom.isText(startPoint.node) && dom.isLeftSidePoint(startPoint) &&
-                dom.isTextNode(endPoint.node) && dom.isRightSidePoint(endPoint) &&
+            if (dom.isText(startPoint.node) && dom.isLeftEdgePoint(startPoint) &&
+                dom.isTextNode(endPoint.node) && dom.isRightEdgePoint(endPoint) &&
                 endPoint.node.nextSibling === startPoint.node) {
               startPoint = endPoint;
             }
@@ -2359,6 +2359,7 @@
       // deleteContents on range.
       rng = rng.deleteContents();
 
+      // Wrap range if it needs to be wrapped by paragraph
       rng = rng.wrapBodyInlineWithPara();
 
       // find split root node: block level node
@@ -3108,7 +3109,7 @@
    * @class
    */
   var History = function ($editable) {
-    var stack = [], stackOffset = 0;
+    var stack = [], stackOffset = -1;
     var editable = $editable[0];
 
     var makeSnapshot = function () {
@@ -3145,6 +3146,8 @@
     };
 
     this.recordUndo = function () {
+      stackOffset++;
+
       // Wash out stack after stackOffset
       if (stack.length > stackOffset) {
         stack = stack.slice(0, stackOffset);
@@ -3152,7 +3155,6 @@
 
       // Create new snapshot and push it to the end
       stack.push(makeSnapshot());
-      stackOffset++;
     };
 
     // Create first undo stack
@@ -3936,13 +3938,17 @@
         return;
       }
 
-      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target),
+          $editable = layoutInfo.editable();
+
       var item = list.head(clipboardData.items);
       var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
 
       if (isClipboardImage) {
-        insertImages(layoutInfo.editable(), [item.getAsFile()]);
+        insertImages($editable, [item.getAsFile()]);
       }
+
+      editor.afterCommand($editable);
     };
 
     /**
