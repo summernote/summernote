@@ -435,9 +435,9 @@ define([
        * @return {WrappedRange}
        */
       this.wrapBodyInlineWithPara = function () {
-        // startContainer on bodyContainer
-        if (dom.isEditable(sc) && !sc.childNodes[so]) {
-          return new WrappedRange(sc.appendChild($(dom.emptyPara)[0]), 0);
+        if (dom.isBodyContainer(sc) && dom.isEmpty(sc)) {
+          sc.innerHTML = dom.emptyPara;
+          return new WrappedRange(sc.firstChild, 0);
         } else if (!dom.isInline(sc) || dom.isParaInline(sc)) {
           return this;
         }
