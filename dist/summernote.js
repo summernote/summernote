@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-09-22T09:56Z
+ * Date: 2014-09-24T15:46Z
  */
 (function (factory) {
   /* global define */
@@ -2150,9 +2150,9 @@
        * @return {WrappedRange}
        */
       this.wrapBodyInlineWithPara = function () {
-        // startContainer on bodyContainer
-        if (dom.isEditable(sc) && !sc.childNodes[so]) {
-          return new WrappedRange(sc.appendChild($(dom.emptyPara)[0]), 0);
+        if (dom.isBodyContainer(sc) && dom.isEmpty(sc)) {
+          sc.innerHTML = dom.emptyPara;
+          return new WrappedRange(sc.firstChild, 0);
         } else if (!dom.isInline(sc) || dom.isParaInline(sc)) {
           return this;
         }
@@ -2352,18 +2352,33 @@
       // deleteContents on range.
       rng = rng.deleteContents();
 
+      // Wrap range if it needs to be wrapped by paragraph
       rng = rng.wrapBodyInlineWithPara();
 
-      // find split root node: block level node
+      // finding paragraph
       var splitRoot = dom.ancestor(rng.sc, dom.isPara);
-      var nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
 
-      var emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
-      emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
+      var nextPara;
+      // on paragraph: split paragraph
+      if (splitRoot) {
+        nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
 
-      $.each(emptyAnchors, function (idx, anchor) {
-        dom.remove(anchor);
-      });
+        var emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
+        emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
+
+        $.each(emptyAnchors, function (idx, anchor) {
+          dom.remove(anchor);
+        });
+      // no paragraph: insert empty paragraph
+      } else {
+        var next = rng.sc.childNodes[rng.so];
+        nextPara = $(dom.emptyPara)[0];
+        if (next) {
+          rng.sc.insertBefore(nextPara, next);
+        } else {
+          rng.sc.appendChild(nextPara);
+        }
+      }
 
       range.create(nextPara, 0).normalize().select();
     };
