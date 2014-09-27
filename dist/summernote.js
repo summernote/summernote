@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-09-24T15:55Z
+ * Date: 2014-09-27T04:00Z
  */
 (function (factory) {
   /* global define */
@@ -292,7 +292,7 @@
      * returns true if the value is present in the list.
      */
     var contains = function (array, item) {
-      return array.indexOf(item) !== -1;
+      return $.inArray(item, array) !== -1;
     };
 
     /**
@@ -364,7 +364,7 @@
       var results = [];
 
       for (var idx = 0, len = array.length; idx < len; idx ++) {
-        if (results.indexOf(array[idx]) === -1) {
+        if (!contains(results, array[idx])) {
           results.push(array[idx]);
         }
       }
@@ -1593,7 +1593,7 @@
    */
   var key = {
     isEdit: function (keyCode) {
-      return [8, 9, 13, 32].indexOf(keyCode) !== -1;
+      return list.contains([8, 9, 13, 32], keyCode);
     },
     nameFromCode: {
       '8': 'BACKSPACE',

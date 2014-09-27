@@ -67,7 +67,7 @@ define(['summernote/core/func'], function (func) {
      * returns true if the value is present in the list.
      */
     var contains = function (array, item) {
-      return array.indexOf(item) !== -1;
+      return $.inArray(item, array) !== -1;
     };
 
     /**
@@ -139,7 +139,7 @@ define(['summernote/core/func'], function (func) {
       var results = [];
 
       for (var idx = 0, len = array.length; idx < len; idx ++) {
-        if (results.indexOf(array[idx]) === -1) {
+        if (!contains(results, array[idx])) {
           results.push(array[idx]);
         }
       }

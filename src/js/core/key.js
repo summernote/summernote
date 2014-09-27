@@ -1,10 +1,12 @@
-define('summernote/core/key', function () {
+define([
+  'summernote/core/list'
+], function (list) {
   /**
    * Object for keycodes.
    */
   var key = {
     isEdit: function (keyCode) {
-      return [8, 9, 13, 32].indexOf(keyCode) !== -1;
+      return list.contains([8, 9, 13, 32], keyCode);
     },
     nameFromCode: {
       '8': 'BACKSPACE',
