@@ -449,7 +449,7 @@ define([
 
         var content = '<div class="btn-group">' + fullButton + halfButton + quarterButton + '</div>' +
                       '<div class="btn-group">' + leftButton + rightButton + justifyButton + '</div>' +
-                      '<div class="btn-group">' + circleButton + roundedButton + thumbnailButton + noneButton + '</div>' +
+                      '<div class="btn-group">' + roundedButton + circleButton + thumbnailButton + noneButton + '</div>' +
                       '<div class="btn-group">' + removeButton + '</div>';
         return tplPopover('note-image-popover', content);
       };
@@ -785,7 +785,7 @@ define([
       //031. create codable
       $('<textarea class="note-codable"></textarea>').prependTo($editor);
 
-      var langInfo = $.summernote.lang[options.lang];
+      var langInfo = $.extend($.summernote.lang['en-US'], $.summernote.lang[options.lang]);
 
       //04. create Toolbar
       var toolbarHTML = '';
