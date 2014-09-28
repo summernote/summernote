@@ -420,6 +420,27 @@ define([
           value: 'none'
         });
 
+        var roundedButton = tplIconButton('fa fa-square icon-unchecked', {
+          title: lang.image.shapeRounded,
+          event: 'imageShape',
+          value: 'img-rounded'
+        });
+        var circleButton = tplIconButton('fa fa-circle-o icon-circle-blank', {
+          title: lang.image.shapeCircle,
+          event: 'imageShape',
+          value: 'img-circle'
+        });
+        var thumbnailButton = tplIconButton('fa fa-picture-o icon-picture', {
+          title: lang.image.shapeThumbnail,
+          event: 'imageShape',
+          value: 'img-thumbnail'
+        });
+        var noneButton = tplIconButton('fa fa-times icon-times', {
+          title: lang.image.shapeNone,
+          event: 'imageShape',
+          value: ''
+        });
+
         var removeButton = tplIconButton('fa fa-trash-o icon-trash', {
           title: lang.image.remove,
           event: 'removeMedia',
@@ -428,6 +449,7 @@ define([
 
         var content = '<div class="btn-group">' + fullButton + halfButton + quarterButton + '</div>' +
                       '<div class="btn-group">' + leftButton + rightButton + justifyButton + '</div>' +
+                      '<div class="btn-group">' + circleButton + roundedButton + thumbnailButton + noneButton + '</div>' +
                       '<div class="btn-group">' + removeButton + '</div>';
         return tplPopover('note-image-popover', content);
       };
@@ -693,7 +715,7 @@ define([
      */
     this.createLayoutByAirMode = function ($holder, options) {
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
-      var langInfo = $.summernote.lang[options.lang];
+      var langInfo = $.extend($.summernote.lang['en-US'], $.summernote.lang[options.lang]);
 
       var id = func.uniqueId();
 
