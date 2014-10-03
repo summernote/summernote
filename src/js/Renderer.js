@@ -749,7 +749,7 @@ define([
 
       //03. create Editable
       var isContentEditable = !$holder.is(':disabled');
-      var $editable = $('<div class="note-editable" style="font-family: \'' + 
+      var $editable = $('<div class="note-editable" style="font-family: \'' +
           options.defaultFontName + '\'" contentEditable="' + isContentEditable + '"></div>')
           .prependTo($editor);
       if (options.height) {
