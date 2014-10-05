@@ -93,9 +93,7 @@ define([
                    '</div>' : ''
                    ) +
                    '<form class="note-modal-form">' +
-                     '<div class="modal-body">' +
-                       '<div class="row-fluid">' + body + '</div>' +
-                     '</div>' +
+                     '<div class="modal-body">' + body + '</div>' +
                      (footer ?
                      '<div class="modal-footer">' + footer + '</div>' : ''
                      ) +
@@ -575,12 +573,11 @@ define([
 
     var tplDialogs = function (lang, options) {
       var tplImageDialog = function () {
-        var body = '<div class="form-group note-group-select-from-files">' +
-                     // '<div class="note-group-select-from-files">' +
+        var body = '<div class="form-group row-fluid note-group-select-from-files">' +
                      '<label>' + lang.image.selectFromFiles + '</label>' +
                      '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
                    '</div>' +
-                   '<div class="form-group">' +
+                   '<div class="form-group row-fluid">' +
                      '<label>' + lang.image.url + '</label>' +
                      '<input class="note-image-url form-control span12" type="text" />' +
                    '</div>';
@@ -589,11 +586,11 @@ define([
       };
 
       var tplLinkDialog = function () {
-        var body = '<div class="form-group">' +
+        var body = '<div class="form-group row-fluid">' +
                      '<label>' + lang.link.textToDisplay + '</label>' +
                      '<input class="note-link-text form-control span12" type="text" />' +
                    '</div>' +
-                   '<div class="form-group">' +
+                   '<div class="form-group row-fluid">' +
                      '<label>' + lang.link.url + '</label>' +
                      '<input class="note-link-url form-control span12" type="text" />' +
                    '</div>' +
@@ -609,7 +606,7 @@ define([
       };
 
       var tplVideoDialog = function () {
-        var body = '<div class="form-group">' +
+        var body = '<div class="form-group row-fluid">' +
                      '<label>' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
                      '<input class="note-video-url form-control span12" type="text" />' +
                    '</div>';
