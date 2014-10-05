@@ -575,13 +575,15 @@ define([
 
     var tplDialogs = function (lang, options) {
       var tplImageDialog = function () {
-        var body =
-                   '<div class="note-group-select-from-files">' +
-                   '<h5>' + lang.image.selectFromFiles + '</h5>' +
-                   '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
+        var body = '<div class="form-group note-group-select-from-files">' +
+                     // '<div class="note-group-select-from-files">' +
+                     '<label>' + lang.image.selectFromFiles + '</label>' +
+                     '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
                    '</div>' +
-                   '<h5>' + lang.image.url + '</h5>' +
-                   '<input class="note-image-url form-control span12" type="text" />';
+                   '<div class="form-group">' +
+                     '<label>' + lang.image.url + '</label>' +
+                     '<input class="note-image-url form-control span12" type="text" />' +
+                   '</div>';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
         return tplDialog('note-image-dialog', lang.image.insert, body, footer);
       };
