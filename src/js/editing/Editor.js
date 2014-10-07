@@ -447,6 +447,14 @@ define([
       afterCommand($editable);
     };
 
+    this.imageShape = function ($editable, value, $target) {
+      $target.removeClass('img-rounded img-circle img-thumbnail');
+
+      if (value) {
+        $target.addClass(value);
+      }
+    };
+
     /**
      * resize overlay element
      * @param {jQuery} $editable
@@ -455,7 +463,7 @@ define([
      */
     this.resize = function ($editable, value, $target) {
       $target.css({
-        width: $editable.width() * value + 'px',
+        width: value * 100 + '%',
         height: ''
       });
 

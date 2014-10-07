@@ -571,7 +571,14 @@ define([
   
             var startPoint = textRangeToPoint(textRangeStart, true),
             endPoint = textRangeToPoint(textRangeEnd, false);
-  
+
+            // same visible point case: range was collapsed.
+            if (dom.isText(startPoint.node) && dom.isLeftEdgePoint(startPoint) &&
+                dom.isTextNode(endPoint.node) && dom.isRightEdgePoint(endPoint) &&
+                endPoint.node.nextSibling === startPoint.node) {
+              startPoint = endPoint;
+            }
+
             sc = startPoint.cont;
             so = startPoint.offset;
             ec = endPoint.cont;
