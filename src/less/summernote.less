@@ -333,32 +333,44 @@
       font-size: 14px;
       font-weight: bold;
       padding-bottom: 5px;
+      margin-bottom: 10px;
       border-bottom: white 1px solid;
     }
+
     .modal-close {
       font-size: 14px;
       color: @note-shortcut-hl;
       cursor: pointer;
     }
-    .note-shortcut-layout {
-      width: 100%;
-      td {
-        vertical-align: top;
-      }
+
+    .text-center {
+      margin: 10px 0 0;
     }
+
     .note-shortcut {
-      margin-top: 8px;
-      th {
-        text-align: left;
+      padding-top: 8px;
+      padding-bottom: 8px;
+
+      &-row {
+        margin-right: -5px;
+        margin-left: -5px;
+      }
+
+      &-col {
+        padding-right: 5px;
+        padding-left: 5px;
+      }
+
+      &-title {
         font-size: 13px;
+        font-weight: bold;
         color: @note-shortcut-hl;
       }
-      td:first-child {
-        min-width: 110px;
+
+      &-key {
         font-family: "Courier New";
         color: @note-shortcut-hl;
         text-align: right;
-        padding-right: 10px
       }
     }
   }
