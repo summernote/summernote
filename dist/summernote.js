@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-10-03T06:12Z
+ * Date: 2014-10-11T01:18Z
  */
 (function (factory) {
   /* global define */
@@ -371,9 +371,32 @@
 
       return results;
     };
+
+    /**
+     * returns next item.
+     * @param {Array} array
+     */
+    var next = function (array, item) {
+      var idx = array.indexOf(item);
+      if (idx === -1) { return null; }
+
+      return array[idx + 1];
+    };
+
+    /**
+     * returns prev item.
+     * @param {Array} array
+     */
+    var prev = function (array, item) {
+      var idx = array.indexOf(item);
+      if (idx === -1) { return null; }
+
+      return array[idx - 1];
+    };
+
   
     return { head: head, last: last, initial: initial, tail: tail,
-             find: find, contains: contains,
+             prev: prev, next: next, find: find, contains: contains,
              all: all, sum: sum, from: from,
              clusterBy: clusterBy, compact: compact, unique: unique };
   })();
