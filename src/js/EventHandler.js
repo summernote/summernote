@@ -104,23 +104,41 @@ define([
        * @param {Object} layoutInfo
        */
       showImageDialog: function (layoutInfo) {
-        var $dialog = layoutInfo.dialog(),
-            $editable = layoutInfo.editable();
+        var $editable = layoutInfo.editable(),
+            callbacks = $editable.data('callbacks');
 
         editor.saveRange($editable);
-        dialog.showImageDialog($editable, $dialog).then(function (data) {
-          editor.restoreRange($editable);
 
-          if (typeof data === 'string') {
-            // image url
-            editor.insertImage($editable, data);
-          } else {
-            // array of files
-            insertImages($editable, data);
-          }
-        }).fail(function () {
-          editor.restoreRange($editable);
-        });
+        // If customImageSelector options setted
+        if (callbacks.customImageSelector) {
+          $.Deferred(function (deferred) {
+            callbacks.customImageSelector(deferred);
+          }).then(function (imgUrl) {
+            editor.restoreRange($editable);
+
+            if (typeof imgUrl === 'string') {
+              editor.insertImage($editable, imgUrl);
+            }
+          }).fail(function () {
+            editor.restoreRange($editable);
+          });
+        // else show default ImageDialog
+        } else {
+          var $dialog = layoutInfo.dialog();
+          dialog.showImageDialog($editable, $dialog).then(function (data) {
+            editor.restoreRange($editable);
+
+            if (typeof data === 'string') {
+              // image url
+              editor.insertImage($editable, data);
+            } else {
+              // array of files
+              insertImages($editable, data);
+            }
+          }).fail(function () {
+            editor.restoreRange($editable);
+          });
+        }
       },
 
       /**
@@ -678,7 +696,8 @@ define([
         onImageUpload: options.onImageUpload,
         onImageUploadError: options.onImageUploadError,
         onFileUpload: options.onFileUpload,
-        onFileUploadError: options.onFileUpload
+        onFileUploadError: options.onFileUpload,
+        customImageSelector: options.customImageSelector
       });
     };
 

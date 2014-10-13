@@ -116,6 +116,7 @@ define('summernote/settings', function () {
       onImageUpload: null,      // imageUpload
       onImageUploadError: null, // imageUploadError
       onToolbarClick: null,
+      customImageSelector: null, // External Image Provider. Called with (deferred) argument, must resolved with Image URL.
 
       /**
        * manipulate link address when user create link
