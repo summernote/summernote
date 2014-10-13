@@ -96,8 +96,8 @@
         documentStyle: 'تنسيق المستند'
       },
       history: {
-        undo: 'Undo',
-        redo: 'Redo'
+        undo: 'تراجع',
+        redo: 'إعادة'
       }
     }
   });
