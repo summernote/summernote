@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-10-05T10:00Z
+ * Date: 2014-10-16T20:18Z
  */
 (function (factory) {
   /* global define */
@@ -2734,7 +2734,7 @@
     /**
      * handle tab key
      *
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      * @param {Object} options
      */
     this.tab = function ($editable, options) {
@@ -2828,7 +2828,7 @@
      */
     this.insertVideo = function ($editable, sUrl) {
       // video url patterns(youtube, instagram, vimeo, dailymotion, youku)
-      var ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      var ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
       var ytMatch = sUrl.match(ytRegExp);
 
       var igRegExp = /\/\/instagram.com\/p\/(.[a-zA-Z0-9]*)/;
@@ -2847,8 +2847,8 @@
       var youkuMatch = sUrl.match(youkuRegExp);
 
       var $video;
-      if (ytMatch && ytMatch[2].length === 11) {
-        var youtubeId = ytMatch[2];
+      if (ytMatch && ytMatch[1].length === 11) {
+        var youtubeId = ytMatch[1];
         $video = $('<iframe>')
           .attr('src', '//www.youtube.com/embed/' + youtubeId)
           .attr('width', '640').attr('height', '360');
