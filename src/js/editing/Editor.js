@@ -112,7 +112,7 @@ define([
     /**
      * handle tab key
      *
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      * @param {Object} options
      */
     this.tab = function ($editable, options) {
@@ -206,7 +206,7 @@ define([
      */
     this.insertVideo = function ($editable, sUrl) {
       // video url patterns(youtube, instagram, vimeo, dailymotion, youku)
-      var ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      var ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
       var ytMatch = sUrl.match(ytRegExp);
 
       var igRegExp = /\/\/instagram.com\/p\/(.[a-zA-Z0-9]*)/;
@@ -225,8 +225,8 @@ define([
       var youkuMatch = sUrl.match(youkuRegExp);
 
       var $video;
-      if (ytMatch && ytMatch[2].length === 11) {
-        var youtubeId = ytMatch[2];
+      if (ytMatch && ytMatch[1].length === 11) {
+        var youtubeId = ytMatch[1];
         $video = $('<iframe>')
           .attr('src', '//www.youtube.com/embed/' + youtubeId)
           .attr('width', '640').attr('height', '360');
