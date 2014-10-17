@@ -39,7 +39,13 @@ define([
         // Textarea: auto filling the code before form submit.
         if (dom.isTextarea($holder[0])) {
           $holder.closest('form').submit(function () {
-            $holder.val($holder.code());
+            var contents = $holder.code();
+            $holder.val(contents);
+
+            // callback on submit
+            if (options.onsubmit) {
+              options.onsubmit(contents);
+            }
           });
         }
       });
@@ -57,7 +63,7 @@ define([
 
       return this;
     },
-    // 
+    //
 
     /**
      * get the HTML contents of note or set the HTML contents of note.
