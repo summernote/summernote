@@ -511,7 +511,7 @@ define([
 
     /**
      * returns whether point is visible (can set cursor) or not.
-     * 
+     *
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
@@ -760,7 +760,7 @@ define([
     var isTextarea = makePredByNodeName('TEXTAREA');
 
     /**
-     * get the HTML contents of node 
+     * get the HTML contents of node
      *
      * @param {jQuery} $node
      * @param {Boolean} [isNewlineOnBlock]
@@ -788,6 +788,29 @@ define([
       var val = $textarea.val();
       // strip line breaks
       return val.replace(/[\n\r]/g, '');
+    };
+
+    /**
+     * Sync the content of the editor with the textarea
+     *
+     * If the content is 'empty' (dom.isEmpty()) update the content with an empty string
+     *
+     * @param {jQuery} $holder
+     */
+    var sync = function ($holder) {
+      if ($holder && !dom.isTextarea($holder[0])) {
+        return;
+      }
+
+      var content = $holder.code();
+
+      if (!content || dom.isEmpty($(content)[0])) {
+        // set the content to an empty string to support validation
+        content = '';
+      }
+
+      // fire change and keyup events so that anything interested will be notified (validation)
+      $holder.val(content).trigger('change').trigger('keyup');
     };
 
     return {
@@ -856,7 +879,8 @@ define([
       removeWhile: removeWhile,
       replace: replace,
       html: html,
-      value: value
+      value: value,
+      sync: sync
     };
   })();
 

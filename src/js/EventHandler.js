@@ -381,7 +381,7 @@ define([
         if (hide) {
           $btn.parents('.popover').hide();
         }
-        
+
         if (editor[eventName]) { // on command
           var $editable = layoutInfo.editable();
           $editable.trigger('focus');
@@ -646,6 +646,14 @@ define([
       if (options.onenter) {
         layoutInfo.editable.keypress(function (event) {
           if (event.keyCode === key.ENTER) { options.onenter(event); }
+        });
+      }
+
+      var $holder = layoutInfo.editor.data('holder');
+      if ($holder && $holder.length > 0) {
+        // watch for changes and sync the textarea when things change
+        layoutInfo.editable.on('blur keyup paste', function () {
+          dom.sync($holder);
         });
       }
 

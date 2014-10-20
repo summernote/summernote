@@ -828,6 +828,12 @@ define([
       //09. Editor/Holder switch
       $editor.insertAfter($holder);
       $holder.hide();
+
+      // if the element that the editor is being created against is a textarea, keep a reference to it with the editor
+      // so that it can be synced when the editor changes
+      if (dom.isTextarea($holder[0])) {
+        $editor.data('holder', $holder);
+      }
     };
 
     this.noteEditorFromHolder = function ($holder) {
