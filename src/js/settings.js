@@ -42,7 +42,7 @@ define('summernote/settings', function () {
         ['para', ['ul', 'ol', 'paragraph']],
         ['height', ['height']],
         ['table', ['table']],
-        ['insert', ['link', 'picture', 'video', 'hr']],
+        ['insert', ['link', 'picture', 'hr']],
         ['view', ['fullscreen', 'codeview']],
         ['help', ['help']]
       ],
@@ -58,7 +58,7 @@ define('summernote/settings', function () {
       //   ['para', ['ul', 'ol', 'paragraph']],
       //   ['height', ['height']],
       //   ['table', ['table']],
-      //   ['insert', ['link', 'picture', 'video']],
+      //   ['insert', ['link', 'picture']],
       //   ['help', ['help']]
       // ],
       airPopover: [
@@ -236,13 +236,6 @@ define('summernote/settings', function () {
           textToDisplay: 'Text to display',
           url: 'To what URL should this link go?',
           openInNewWindow: 'Open in new window'
-        },
-        video: {
-          video: 'Video',
-          videoLink: 'Video Link',
-          insert: 'Insert Video',
-          url: 'Video URL?',
-          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
         },
         table: {
           table: 'Table'

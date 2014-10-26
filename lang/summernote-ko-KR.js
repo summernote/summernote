@@ -38,13 +38,6 @@
         url: '이동할 URL',
         openInNewWindow: '새창으로 열기'
       },
-      video: {
-        video: '동영상',
-        videoLink: '동영상 링크',
-        insert: '동영상 추가',
-        url: '동영상 URL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, Youku 사용 가능)'
-      },
       table: {
         table: '테이블'
       },
