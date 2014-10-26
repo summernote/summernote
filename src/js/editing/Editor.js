@@ -228,7 +228,7 @@ define([
       if (ytMatch && ytMatch[1].length === 11) {
         var youtubeId = ytMatch[1];
         $video = $('<iframe>')
-          .attr('src', '//www.youtube.com/embed/' + youtubeId)
+          .attr('src', '//www.youtube.com/embed/' + youtubeId + '?wmode=opaque')
           .attr('width', '640').attr('height', '360');
       } else if (igMatch && igMatch[0].length) {
         $video = $('<iframe>')
