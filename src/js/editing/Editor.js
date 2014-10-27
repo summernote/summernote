@@ -507,8 +507,8 @@ define([
       afterCommand($editable);
     };
     
-    this.insertDom = function ($editable, dom) {
-      range.create().insertNode(dom);
+    this.insertDom = function ($editable, dom, isInline) {
+      range.create().insertNode(dom, isInline);
       afterCommand($editable);
     };
     
