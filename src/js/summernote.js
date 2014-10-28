@@ -37,7 +37,7 @@ define([
         renderer.createLayout($holder, options, langInfo);
 
         var info = renderer.layoutInfoFromHolder($holder);
-        // Include langInfo in general info for later us, e.g. for image drag-n-drop
+        // Include langInfo in general info for later use, e.g. for image drag-n-drop
         info.langInfo = langInfo; 
         eventHandler.attach(info, options);
 
