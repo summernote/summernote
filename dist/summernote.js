@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-10-28T10:24Z
+ * Date: 2014-10-28T10:45Z
  */
 (function (factory) {
   /* global define */
@@ -5343,14 +5343,14 @@
         var $holder = $(elHolder);
 
         // Setup language info with en-US as default
-        var langInfo = $.extend(true,{}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+        var langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
         
         // createLayout with options
         renderer.createLayout($holder, options, langInfo);
 
         var info = renderer.layoutInfoFromHolder($holder);
-        // Include langInfo in general info for later us, e.g. for image drag-n-drop
-        info.langInfo = langInfo; 
+        // Include langInfo in general info for later use, e.g. for image drag-n-drop
+        info.langInfo = langInfo;
         eventHandler.attach(info, options);
 
         // Textarea: auto filling the code before form submit.

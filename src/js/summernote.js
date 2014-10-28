@@ -31,14 +31,14 @@ define([
         var $holder = $(elHolder);
 
         // Setup language info with en-US as default
-        var langInfo = $.extend(true,{}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+        var langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
         
         // createLayout with options
         renderer.createLayout($holder, options, langInfo);
 
         var info = renderer.layoutInfoFromHolder($holder);
         // Include langInfo in general info for later use, e.g. for image drag-n-drop
-        info.langInfo = langInfo; 
+        info.langInfo = langInfo;
         eventHandler.attach(info, options);
 
         // Textarea: auto filling the code before form submit.
