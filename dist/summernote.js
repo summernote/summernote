@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-10-26T03:43Z
+ * Date: 2014-10-28T12:46Z
  */
 (function (factory) {
   /* global define */
@@ -413,38 +413,40 @@
      * @return {Object}
      */
     var buildLayoutInfo = function ($editor) {
-      var makeFinder;
+      // get the id from the editor
+      var id = list.last($editor.attr('id').split('-'));
+
+      var makeFinder = {
+        byId: function (sIdPrefix) {
+          return function () { return $(sIdPrefix + id); };
+        },
+        inEditor: function (sClassName) {
+          return function () { return $editor.find(sClassName); };
+        }
+      };
 
       // air mode
       if ($editor.hasClass('note-air-editor')) {
-        var id = list.last($editor.attr('id').split('-'));
-        makeFinder = function (sIdPrefix) {
-          return function () { return $(sIdPrefix + id); };
-        };
-
         return {
           editor: function () { return $editor; },
           editable: function () { return $editor; },
-          popover: makeFinder('#note-popover-'),
-          handle: makeFinder('#note-handle-'),
-          dialog: makeFinder('#note-dialog-')
+          popover: makeFinder.byId('#note-popover-'),
+          handle: makeFinder.byId('#note-handle-'),
+          dialog: makeFinder.byId('#note-dialog-')
         };
 
         // frame mode
       } else {
-        makeFinder = function (sClassName) {
-          return function () { return $editor.find(sClassName); };
-        };
         return {
           editor: function () { return $editor; },
-          dropzone: makeFinder('.note-dropzone'),
-          toolbar: makeFinder('.note-toolbar'),
-          editable: makeFinder('.note-editable'),
-          codable: makeFinder('.note-codable'),
-          statusbar: makeFinder('.note-statusbar'),
-          popover: makeFinder('.note-popover'),
-          handle: makeFinder('.note-handle'),
-          dialog: makeFinder('.note-dialog')
+          dropzone: makeFinder.inEditor('.note-dropzone'),
+          toolbar: makeFinder.inEditor('.note-toolbar'),
+          editable: makeFinder.inEditor('.note-editable'),
+          codable: makeFinder.inEditor('.note-codable'),
+          statusbar: makeFinder.inEditor('.note-statusbar'),
+          popover: makeFinder.inEditor('.note-popover'),
+          handle: makeFinder.inEditor('.note-handle'),
+          dialog: makeFinder.byId('#note-dialog-')
         };
       }
     };
@@ -886,7 +888,7 @@
 
     /**
      * returns whether point is visible (can set cursor) or not.
-     * 
+     *
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
@@ -1135,7 +1137,7 @@
     var isTextarea = makePredByNodeName('TEXTAREA');
 
     /**
-     * get the HTML contents of node 
+     * get the HTML contents of node
      *
      * @param {jQuery} $node
      * @param {Boolean} [isNewlineOnBlock]
@@ -5163,8 +5165,12 @@
      * @param {Object} options
      */
     this.createLayoutByFrame = function ($holder, options) {
+      //00. create id for the editor
+      var id = func.uniqueId();
+
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
+      $editor.attr('id', 'note-editor-' + id);
       if (options.width) {
         $editor.width(options.width);
       }
@@ -5229,10 +5235,12 @@
       $(tplHandles()).prependTo($editor);
 
       //07. create Dialog
-      var $dialog = $(tplDialogs(langInfo, options)).prependTo($editor);
+      var $dialog = $(tplDialogs(langInfo, options));
+      $dialog.attr('id', 'note-dialog-' + id);
       $dialog.find('button.close, a.modal-close').click(function () {
         $(this).closest('.modal').modal('hide');
       });
+      $dialog.appendTo(document.body);
 
       //08. create Dropzone
       $('<div class="note-dropzone"><div class="note-dropzone-message"></div></div>').prependTo($editor);
@@ -5245,8 +5253,8 @@
     this.noteEditorFromHolder = function ($holder) {
       if ($holder.hasClass('note-air-editor')) {
         return $holder;
-      } else if ($holder.next().hasClass('note-editor')) {
-        return $holder.next();
+      } else if ($holder.siblings().hasClass('note-editor')) {
+        return $holder.siblings('.note-editor');
       } else {
         return $();
       }
