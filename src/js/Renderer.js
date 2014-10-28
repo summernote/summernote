@@ -934,6 +934,7 @@ define([
         $holder.html(layoutInfo.editable.html());
 
         layoutInfo.editor.remove();
+        layoutInfo.dialog.remove();
         $holder.show();
       }
     };
