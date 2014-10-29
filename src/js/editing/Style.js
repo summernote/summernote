@@ -81,6 +81,7 @@ define([
       }
 
       styleInfo.image = dom.isImg(target) && target;
+      styleInfo.video = dom.isVideo(target) && target;
       styleInfo.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);
       styleInfo.ancestors = dom.listAncestor(rng.sc, dom.isEditable);
       styleInfo.range = rng;

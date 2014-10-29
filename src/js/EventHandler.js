@@ -132,9 +132,12 @@ define([
             videoInfo = editor.getVideoInfo($editable);
 
         editor.saveRange($editable);
-        dialog.showVideoDialog($editable, $dialog, videoInfo).then(function (sUrl) {
+        dialog.showVideoDialog($editable, $dialog, videoInfo).then(function (videoInfo) {
           editor.restoreRange($editable);
-          editor.insertVideo($editable, sUrl);
+          editor.insertVideo($editable, videoInfo);
+          
+          popover.hide(layoutInfo.popover());
+          handle.hide(layoutInfo.handle());
         }).fail(function () {
           editor.restoreRange($editable);
         });
@@ -334,9 +337,8 @@ define([
             x: event.clientX - posStart.left,
             y: event.clientY - (posStart.top - scrollTop)
           }, $target, !event.shiftKey);
-
-          handle.update($handle, {image: target}, isAirMode);
-          popover.update($popover, {image: target}, isAirMode);
+          handle.update($handle, dom.isVideo(target) ? {video: target} : {image: target}, isAirMode);
+          popover.update($popover, dom.isVideo(target) ? {video: target} : {image: target}, isAirMode);
         }).one('mouseup', function () {
           $document.off('mousemove');
         });

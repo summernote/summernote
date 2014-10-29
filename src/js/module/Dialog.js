@@ -86,14 +86,17 @@ define('summernote/module/Dialog', function () {
             $videoBtn = $videoDialog.find('.note-video-btn');
 
         $videoDialog.one('shown.bs.modal', function () {
-          $videoUrl.val(videoInfo.text).keyup(function () {
+          $videoUrl.val(videoInfo.url).keyup(function () {
             toggleBtn($videoBtn, $videoUrl.val());
           }).trigger('keyup').trigger('focus');
 
           $videoBtn.click(function (event) {
             event.preventDefault();
 
-            deferred.resolve($videoUrl.val());
+            deferred.resolve({
+                range: videoInfo.range,
+                url:$videoUrl.val()
+            });
             $videoDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {

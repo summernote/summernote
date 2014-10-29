@@ -116,6 +116,17 @@
     .rounded(0);
     margin-bottom: 0;
   }
+  
+  .video-wrapper:after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    content: " ";
+    background: #aaa;
+    opacity: 0.5;
+  }
 }
 
 /* Air Mode Layout
@@ -372,6 +383,7 @@
     position: absolute;
     display: none;
     border: 1px solid black;
+    z-index: 1;
     &>div { position: absolute; }
 
     .note-control-selection-bg {

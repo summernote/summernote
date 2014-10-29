@@ -134,6 +134,10 @@ define([
 
     var isAnchor = makePredByNodeName('A');
 
+    var isVideo = function (node) {
+      return node && $(node).hasClass('video-wrapper');
+    };
+    
     var isParaInline = function (node) {
       return isInline(node) && !!ancestor(node, isPara);
     };
@@ -811,6 +815,7 @@ define([
       isBlockquote: isBlockquote,
       isBodyContainer: isBodyContainer,
       isAnchor: isAnchor,
+      isVideo: isVideo,
       isDiv: makePredByNodeName('DIV'),
       isLi: isLi,
       isSpan: makePredByNodeName('SPAN'),

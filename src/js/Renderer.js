@@ -384,7 +384,41 @@ define([
                       '</div>';
         return tplPopover('note-link-popover', content);
       };
-
+      
+      var tplVideoPopover = function () {
+        var leftButton = tplIconButton('fa fa-align-left', {
+          title: lang.image.floatLeft,
+          event: 'floatMe',
+          value: 'left'
+        });
+        var rightButton = tplIconButton('fa fa-align-right', {
+          title: lang.image.floatRight,
+          event: 'floatMe',
+          value: 'right'
+        });
+        var justifyButton = tplIconButton('fa fa-align-justify', {
+          title: lang.image.floatNone,
+          event: 'floatMe',
+          value: 'none'
+        });   
+        
+        var videoButton = tplIconButton('fa fa-edit', {
+          title: lang.video.edit,
+          event: 'showVideoDialog',
+          hide: true
+        });
+        var removeButton = tplIconButton('fa fa-trash-o', {
+          title: lang.video.remove,
+          event: 'removeMedia',
+          value: 'none'
+        });
+        
+        var content = '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
+                      '<div class="btn-group">' + leftButton + rightButton + justifyButton + '</div>' +
+                      '<div class="btn-group">' + videoButton + removeButton + '</div>';
+        return tplPopover('note-video-popover', content);
+      };
+      
       var tplImagePopover = function () {
         var fullButton = tplButton('<span class="note-fontsize-10">100%</span>', {
           title: lang.image.resizeFull,
@@ -468,6 +502,7 @@ define([
 
       return '<div class="note-popover">' +
                tplLinkPopover() +
+               tplVideoPopover() +
                tplImagePopover() +
                (options.airMode ?  tplAirPopover() : '') +
              '</div>';

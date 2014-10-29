@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-10-26T03:43Z
+ * Date: 2014-10-29T14:46Z
  */
 (function (factory) {
   /* global define */
@@ -509,6 +509,10 @@
 
     var isAnchor = makePredByNodeName('A');
 
+    var isVideo = function (node) {
+      return node && $(node).hasClass('video-wrapper');
+    };
+    
     var isParaInline = function (node) {
       return isInline(node) && !!ancestor(node, isPara);
     };
@@ -1186,6 +1190,7 @@
       isBlockquote: isBlockquote,
       isBodyContainer: isBodyContainer,
       isAnchor: isAnchor,
+      isVideo: isVideo,
       isDiv: makePredByNodeName('DIV'),
       isLi: isLi,
       isSpan: makePredByNodeName('SPAN'),
@@ -1475,6 +1480,8 @@
         },
         video: {
           video: 'Video',
+          remove: 'Remove Video',
+          edit: 'Edit Video',
           videoLink: 'Video Link',
           insert: 'Insert Video',
           url: 'Video URL?',
@@ -1715,6 +1722,7 @@
       }
 
       styleInfo.image = dom.isImg(target) && target;
+      styleInfo.video = dom.isVideo(target) && target;
       styleInfo.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);
       styleInfo.ancestors = dom.listAncestor(rng.sc, dom.isEditable);
       styleInfo.range = rng;
@@ -2085,7 +2093,7 @@
         var point = dom.prevPointUntil(rng.getStartPoint(), function (point) {
           return !list.contains(nodes, point.node);
         });
-
+        
         var emptyParents = [];
         $.each(nodes, function (idx, node) {
           // find empty parents
@@ -2826,7 +2834,10 @@
      * @param {jQuery} $editable
      * @param {String} sUrl
      */
-    this.insertVideo = function ($editable, sUrl) {
+    this.insertVideo = function ($editable, videoInfo) {
+      var sUrl = videoInfo.url;
+      var rng = videoInfo.range;
+      
       // video url patterns(youtube, instagram, vimeo, dailymotion, youku)
       var ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
       var ytMatch = sUrl.match(ytRegExp);
@@ -2846,43 +2857,63 @@
       var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)\.html/;
       var youkuMatch = sUrl.match(youkuRegExp);
 
+      var frameStyle = {'position': 'absolute', 'top': '0', 'left': '0', 'width': '100%', 'height': '100%'};
+      //.video-container {position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden;
+      var wrapperStyle = {'position': 'relative', 'width': '640px', 'height': '360px'};
+      
       var $video;
       if (ytMatch && ytMatch[1].length === 11) {
         var youtubeId = ytMatch[1];
         $video = $('<iframe>')
           .attr('src', '//www.youtube.com/embed/' + youtubeId + '?wmode=opaque')
-          .attr('width', '640').attr('height', '360');
+          .attr('width', '640').attr('height', '360')
+          .css(frameStyle);
       } else if (igMatch && igMatch[0].length) {
         $video = $('<iframe>')
           .attr('src', igMatch[0] + '/embed/')
           .attr('width', '612').attr('height', '710')
           .attr('scrolling', 'no')
-          .attr('allowtransparency', 'true');
+          .attr('allowtransparency', 'true')
+          .css(frameStyle);
+        wrapperStyle.width = '612px';
+        wrapperStyle.height = '710px';
       } else if (vMatch && vMatch[0].length) {
         $video = $('<iframe>')
           .attr('src', vMatch[0] + '/embed/simple')
           .attr('width', '600').attr('height', '600')
-          .attr('class', 'vine-embed');
+          .attr('class', 'vine-embed')
+          .css(frameStyle);
+        wrapperStyle.width = '600px';
+        wrapperStyle.height = '600px';
       } else if (vimMatch && vimMatch[3].length) {
         $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
           .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
-          .attr('width', '640').attr('height', '360');
+          .attr('width', '640').attr('height', '360')
+          .css(frameStyle);
       } else if (dmMatch && dmMatch[2].length) {
         $video = $('<iframe>')
           .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
-          .attr('width', '640').attr('height', '360');
+          .attr('width', '640').attr('height', '360')
+          .css(frameStyle);
       } else if (youkuMatch && youkuMatch[1].length) {
         $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
           .attr('height', '498')
           .attr('width', '510')
-          .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
+          .attr('src', '//player.youku.com/embed/' + youkuMatch[1])
+          .css(frameStyle);
+        wrapperStyle.width = '510px';
+        wrapperStyle.height = '498px';
       } else {
         // this is not a known video link. Now what, Cat? Now what?
+        // is alert better than nothing?
+        alert('Unsupported video URL');
       }
 
       if ($video) {
         $video.attr('frameborder', 0);
-        range.create().insertNode($video[0]);
+        $wrapper = $('<div class="video-wrapper"></div>').attr('data-original-url', sUrl).css(wrapperStyle).append($video);
+        rng = rng.deleteContents();
+        rng.insertNode($wrapper[0]);
         afterCommand($editable);
       }
     };
@@ -2985,7 +3016,6 @@
       if (options.onCreateLink) {
         linkUrl = options.onCreateLink(linkUrl);
       }
-
       rng = rng.deleteContents();
 
       // Create a new link when there is no anchor on range.
@@ -3028,16 +3058,25 @@
      */
     this.getVideoInfo = function ($editable) {
       $editable.focus();
-
-      var rng = range.create();
-
+      
+      var rng = range.create().expand(dom.isVideo);
+      
+      var $video = $(list.head(rng.nodes(dom.isVideo)));
+      if($video.length){
+              return {
+                range : rng,
+                url : $video.attr('data-original-url')
+              };
+      }
+      
       if (rng.isOnAnchor()) {
         var anchor = dom.ancestor(rng.sc, dom.isAnchor);
         rng = range.createFromNode(anchor);
       }
 
       return {
-        text: rng.toString()
+        range : rng,
+        url: rng.toString()
       };
     };
 
@@ -3401,7 +3440,7 @@
      */
     this.update = function ($popover, styleInfo, isAirMode) {
       button.update($popover, styleInfo);
-
+      
       var $linkPopover = $popover.find('.note-link-popover');
       if (styleInfo.anchor) {
         var $anchor = $linkPopover.find('a');
@@ -3411,7 +3450,17 @@
       } else {
         $linkPopover.hide();
       }
-
+      
+      var $videoPopover = $popover.find('.note-video-popover');
+      if (styleInfo.video) {
+        var $anchor = $videoPopover.find('a');
+        var href = $(styleInfo.video).attr('data-original-url');
+        $anchor.attr('href', href).html(href);
+        showPopover($videoPopover, posFromPlaceholder(styleInfo.video, isAirMode));
+      } else {
+        $videoPopover.hide();
+      }
+      
       var $imagePopover = $popover.find('.note-image-popover');
       if (styleInfo.image) {
         showPopover($imagePopover, posFromPlaceholder(styleInfo.image, isAirMode));
@@ -3461,24 +3510,26 @@
      */
     this.update = function ($handle, styleInfo, isAirMode) {
       var $selection = $handle.find('.note-control-selection');
-      if (styleInfo.image) {
-        var $image = $(styleInfo.image);
-        var pos = isAirMode ? $image.offset() : $image.position();
+      if (styleInfo.image || styleInfo.video) {
+        var target = styleInfo.image ? styleInfo.image : styleInfo.video;
+        var $element = $(target);
+        
+        var pos = isAirMode ? $element.offset() : $element.position();
 
         // include margin
-        var imageSize = {
-          w: $image.outerWidth(true),
-          h: $image.outerHeight(true)
+        var elementSize = {
+          w: $element.outerWidth(true),
+          h: $element.outerHeight(true)
         };
 
         $selection.css({
           display: 'block',
           left: pos.left,
           top: pos.top,
-          width: imageSize.w,
-          height: imageSize.h
-        }).data('target', styleInfo.image); // save current image element.
-        var sizingText = imageSize.w + 'x' + imageSize.h;
+          width: elementSize.w,
+          height: elementSize.h
+        }).data('target', target); // save current image element.
+        var sizingText = elementSize.w + 'x' + elementSize.h;
         $selection.find('.note-control-selection-info').text(sizingText);
       } else {
         $selection.hide();
@@ -3577,14 +3628,17 @@
             $videoBtn = $videoDialog.find('.note-video-btn');
 
         $videoDialog.one('shown.bs.modal', function () {
-          $videoUrl.val(videoInfo.text).keyup(function () {
+          $videoUrl.val(videoInfo.url).keyup(function () {
             toggleBtn($videoBtn, $videoUrl.val());
           }).trigger('keyup').trigger('focus');
 
           $videoBtn.click(function (event) {
             event.preventDefault();
 
-            deferred.resolve($videoUrl.val());
+            deferred.resolve({
+                range: videoInfo.range,
+                url:$videoUrl.val()
+            });
             $videoDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
@@ -3808,9 +3862,12 @@
             videoInfo = editor.getVideoInfo($editable);
 
         editor.saveRange($editable);
-        dialog.showVideoDialog($editable, $dialog, videoInfo).then(function (sUrl) {
+        dialog.showVideoDialog($editable, $dialog, videoInfo).then(function (videoInfo) {
           editor.restoreRange($editable);
-          editor.insertVideo($editable, sUrl);
+          editor.insertVideo($editable, videoInfo);
+          
+          popover.hide(layoutInfo.popover());
+          handle.hide(layoutInfo.handle());
         }).fail(function () {
           editor.restoreRange($editable);
         });
@@ -4010,9 +4067,8 @@
             x: event.clientX - posStart.left,
             y: event.clientY - (posStart.top - scrollTop)
           }, $target, !event.shiftKey);
-
-          handle.update($handle, {image: target}, isAirMode);
-          popover.update($popover, {image: target}, isAirMode);
+          handle.update($handle, dom.isVideo(target) ? {video: target} : {image: target}, isAirMode);
+          popover.update($popover, dom.isVideo(target) ? {video: target} : {image: target}, isAirMode);
         }).one('mouseup', function () {
           $document.off('mousemove');
         });
@@ -4766,7 +4822,41 @@
                       '</div>';
         return tplPopover('note-link-popover', content);
       };
-
+      
+      var tplVideoPopover = function () {
+        var leftButton = tplIconButton('fa fa-align-left', {
+          title: lang.image.floatLeft,
+          event: 'floatMe',
+          value: 'left'
+        });
+        var rightButton = tplIconButton('fa fa-align-right', {
+          title: lang.image.floatRight,
+          event: 'floatMe',
+          value: 'right'
+        });
+        var justifyButton = tplIconButton('fa fa-align-justify', {
+          title: lang.image.floatNone,
+          event: 'floatMe',
+          value: 'none'
+        });   
+        
+        var videoButton = tplIconButton('fa fa-edit', {
+          title: lang.video.edit,
+          event: 'showVideoDialog',
+          hide: true
+        });
+        var removeButton = tplIconButton('fa fa-trash-o', {
+          title: lang.video.remove,
+          event: 'removeMedia',
+          value: 'none'
+        });
+        
+        var content = '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
+                      '<div class="btn-group">' + leftButton + rightButton + justifyButton + '</div>' +
+                      '<div class="btn-group">' + videoButton + removeButton + '</div>';
+        return tplPopover('note-video-popover', content);
+      };
+      
       var tplImagePopover = function () {
         var fullButton = tplButton('<span class="note-fontsize-10">100%</span>', {
           title: lang.image.resizeFull,
@@ -4850,6 +4940,7 @@
 
       return '<div class="note-popover">' +
                tplLinkPopover() +
+               tplVideoPopover() +
                tplImagePopover() +
                (options.airMode ?  tplAirPopover() : '') +
              '</div>';

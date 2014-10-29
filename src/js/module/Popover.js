@@ -49,7 +49,7 @@ define([
      */
     this.update = function ($popover, styleInfo, isAirMode) {
       button.update($popover, styleInfo);
-
+      
       var $linkPopover = $popover.find('.note-link-popover');
       if (styleInfo.anchor) {
         var $anchor = $linkPopover.find('a');
@@ -59,7 +59,17 @@ define([
       } else {
         $linkPopover.hide();
       }
-
+      
+      var $videoPopover = $popover.find('.note-video-popover');
+      if (styleInfo.video) {
+        var $anchor = $videoPopover.find('a');
+        var href = $(styleInfo.video).attr('data-original-url');
+        $anchor.attr('href', href).html(href);
+        showPopover($videoPopover, posFromPlaceholder(styleInfo.video, isAirMode));
+      } else {
+        $videoPopover.hide();
+      }
+      
       var $imagePopover = $popover.find('.note-image-popover');
       if (styleInfo.image) {
         showPopover($imagePopover, posFromPlaceholder(styleInfo.image, isAirMode));

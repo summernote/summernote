@@ -366,7 +366,7 @@ define([
         var point = dom.prevPointUntil(rng.getStartPoint(), function (point) {
           return !list.contains(nodes, point.node);
         });
-
+        
         var emptyParents = [];
         $.each(nodes, function (idx, node) {
           // find empty parents

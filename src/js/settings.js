@@ -239,6 +239,8 @@ define('summernote/settings', function () {
         },
         video: {
           video: 'Video',
+          remove: 'Remove Video',
+          edit: 'Edit Video',
           videoLink: 'Video Link',
           insert: 'Insert Video',
           url: 'Video URL?',
