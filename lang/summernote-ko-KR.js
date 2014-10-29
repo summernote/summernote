@@ -5,6 +5,8 @@
         bold: '굵게',
         italic: '기울임꼴',
         underline: '밑줄',
+        superscript: '위 첨자',
+        subscript: '아래 첨자',
         strikethrough: '취소선',
         clear: '글자 효과 없애기',
         height: '줄간격',

@@ -6,8 +6,11 @@
         italic: 'İtalik',
         underline: 'Altı çizili',
         strikethrough: 'Üstü çizili',
+        subscript: 'Subscript',
+        superscript: 'Superscript',
         clear: 'Temizle',
         height: 'Satır yüksekliği',
+        name: 'Yazı Tipi',
         size: 'Yazı tipi boyutu'
       },
       image: {
@@ -19,9 +22,14 @@
         floatLeft: 'Sola hizala',
         floatRight: 'Sağa hizala',
         floatNone: 'Hizalamayı kaldır',
+        shapeRounded: 'Şekil: Yuvarlatılmış Köşe',
+        shapeCircle: 'Şekil: Daire',
+        shapeThumbnail: 'Şekil: K.Resim',
+        shapeNone: 'Şekil: Yok',
         dragImageHere: 'Buraya sürükleyin',
         selectFromFiles: 'Dosya seçin',
-        url: 'Resim bağlantısı'
+        url: 'Resim bağlantısı',
+        remove: 'Resimi Kaldır'
       },
       link: {
         link: 'Bağlantı',
@@ -29,7 +37,8 @@
         unlink: 'Bağlantıyı kaldır',
         edit: 'Bağlantıyı düzenle',
         textToDisplay: 'Görüntülemek için',
-        url: 'Bağlantı adresi?'
+        url: 'Bağlantı adresi?',
+        openInNewWindow: 'Yeni pencerede aç'
       },
       video: {
         video: 'Video',
