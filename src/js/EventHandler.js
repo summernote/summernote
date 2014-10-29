@@ -29,6 +29,10 @@ define([
     var toolbar = new Toolbar(), popover = new Popover();
     var handle = new Handle(), dialog = new Dialog();
 
+    this.getEditor = function () {
+      return editor;
+    };
+
     /**
      * returns makeLayoutInfo from editor's descendant node.
      *
@@ -118,23 +122,6 @@ define([
             // array of files
             insertImages($editable, data);
           }
-        }).fail(function () {
-          editor.restoreRange($editable);
-        });
-      },
-
-      /**
-       * @param {Object} layoutInfo
-       */
-      showVideoDialog: function (layoutInfo) {
-        var $dialog = layoutInfo.dialog(),
-            $editable = layoutInfo.editable(),
-            videoInfo = editor.getVideoInfo($editable);
-
-        editor.saveRange($editable);
-        dialog.showVideoDialog($editable, $dialog, videoInfo).then(function (sUrl) {
-          editor.restoreRange($editable);
-          editor.insertVideo($editable, sUrl);
         }).fail(function () {
           editor.restoreRange($editable);
         });
@@ -388,11 +375,8 @@ define([
           editor[eventName]($editable, value, $target);
         } else if (commands[eventName]) {
           commands[eventName].call(this, layoutInfo);
-        } else if ($.summernote.plugins[eventName]) {
-          var plugin = $.summernote.plugins[eventName];
-          if ($.isFunction(plugin.event)) {
-            plugin.event(event, editor, layoutInfo);
-          }
+        } else if ($.isFunction($.summernote.pluginEvents[eventName])) {
+          $.summernote.pluginEvents[eventName](layoutInfo);
         }
 
         // after command
@@ -692,7 +676,7 @@ define([
       });
     };
 
-    this.dettach = function (layoutInfo, options) {
+    this.detach = function (layoutInfo, options) {
       layoutInfo.editable.off();
 
       layoutInfo.popover.off();

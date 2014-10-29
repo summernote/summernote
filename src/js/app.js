@@ -3,6 +3,7 @@ require.config({
   paths: {
     jquery: '//code.jquery.com/jquery-1.9.1.min',
     bootstrap: '//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min',
+    summernotevideo: '/../../plugin/summernote-video',
     CodeMirror: '//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror',
     CodeMirrorXml: '//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/xml/xml.min',
     CodeMirrorFormatting: '//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min'
@@ -11,7 +12,8 @@ require.config({
     bootstrap: ['jquery'],
     CodeMirror: { exports: 'CodeMirror' },
     CodeMirrorXml: ['CodeMirror'],
-    CodeMirrorFormatting: ['CodeMirror', 'CodeMirrorXml']
+    CodeMirrorFormatting: ['CodeMirror', 'CodeMirrorXml'],
+    summernotevideo: ['summernote']
   },
   packages: [{
     name: 'summernote',
@@ -22,7 +24,7 @@ require.config({
 
 require([
   'jquery', 'bootstrap', 'CodeMirrorFormatting',
-  'summernote'
+  'summernote', 'summernotevideo'
 ], function ($) {
   // summernote
   $('.summernote').summernote({

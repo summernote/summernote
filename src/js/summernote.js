@@ -1,8 +1,9 @@
 define([
   'summernote/core/agent', 'summernote/core/dom',
+  'summernote/core/range',
   'summernote/settings',
   'summernote/EventHandler', 'summernote/Renderer'
-], function (agent, dom, settings, EventHandler, Renderer) {
+], function (agent, dom, range, settings, EventHandler, Renderer) {
   // jQuery namespace for summernote
   $.summernote = $.summernote || {};
 
@@ -11,6 +12,42 @@ define([
 
   var renderer = new Renderer();
   var eventHandler = new EventHandler();
+
+  $.extend($.summernote, {
+    renderer: renderer,
+    eventHandler: eventHandler,
+    core: {
+      agent: agent,
+      dom: dom,
+      range: range
+    },
+    pluginEvents: {}
+  });
+
+  /**
+   * addPlugin
+   *
+   * @param {Object} plugin
+   */
+  $.summernote.addPlugin = function (plugin) {
+    $.each(plugin.buttons, function (name, button) {
+      renderer.addButtonInfo(name, button);
+    });
+
+    $.each(plugin.dialogs, function (name, dialog) {
+      renderer.addDialogInfo(name, dialog);
+    });
+
+    $.each(plugin.events, function (name, event) {
+      $.summernote.pluginEvents[name] = event;
+    });
+
+    $.each(plugin.langs, function (locale, lang) {
+      if ($.summernote.lang[locale]) {
+        $.extend($.summernote.lang[locale], lang);
+      }
+    });
+  };
 
   /**
    * extend jquery fn
@@ -91,7 +128,7 @@ define([
     },
 
     /**
-     * destroy Editor Layout and dettach Key and Mouse Event
+     * destroy Editor Layout and detach Key and Mouse Event
      * @returns {this}
      */
     destroy: function () {
@@ -103,7 +140,7 @@ define([
 
         var options = info.editor.data('options');
 
-        eventHandler.dettach(info, options);
+        eventHandler.detach(info, options);
         renderer.removeLayout($holder, info, options);
       });
 
