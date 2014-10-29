@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-10-26T06:16Z
+ * Date: 2014-10-29T18:23Z
  */
 (function (factory) {
   /* global define */
@@ -3534,7 +3534,7 @@
             $linkDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
-          // dettach events
+          // detach events
           $linkText.off('keyup');
           $linkUrl.off('keyup');
           $linkBtn.off('click');
@@ -4233,7 +4233,7 @@
       });
     };
 
-    this.dettach = function (layoutInfo, options) {
+    this.detach = function (layoutInfo, options) {
       layoutInfo.editable.off();
 
       layoutInfo.popover.off();
@@ -5307,7 +5307,7 @@
     },
 
     /**
-     * destroy Editor Layout and dettach Key and Mouse Event
+     * destroy Editor Layout and detach Key and Mouse Event
      * @returns {this}
      */
     destroy: function () {
@@ -5319,7 +5319,7 @@
 
         var options = info.editor.data('options');
 
-        eventHandler.dettach(info, options);
+        eventHandler.detach(info, options);
         renderer.removeLayout($holder, info, options);
       });
 

@@ -126,7 +126,7 @@ define('summernote/module/Dialog', function () {
             $linkDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
-          // dettach events
+          // detach events
           $linkText.off('keyup');
           $linkUrl.off('keyup');
           $linkBtn.off('click');
