@@ -400,7 +400,7 @@ define([
           title: lang.image.floatNone,
           event: 'floatMe',
           value: 'none'
-        });   
+        });
         
         var videoButton = tplIconButton('fa fa-edit', {
           title: lang.video.edit,

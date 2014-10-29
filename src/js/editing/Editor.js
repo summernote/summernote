@@ -280,7 +280,7 @@ define([
 
       if ($video) {
         $video.attr('frameborder', 0);
-        $wrapper = $('<div class="video-wrapper"></div>').attr('data-original-url', sUrl).css(wrapperStyle).append($video);
+        var $wrapper = $('<div class="video-wrapper"></div>').attr('data-original-url', sUrl).css(wrapperStyle).append($video);
         rng = rng.deleteContents();
         rng.insertNode($wrapper[0]);
         afterCommand($editable);
@@ -431,11 +431,11 @@ define([
       var rng = range.create().expand(dom.isVideo);
       
       var $video = $(list.head(rng.nodes(dom.isVideo)));
-      if($video.length){
-              return {
-                range : rng,
-                url : $video.attr('data-original-url')
-              };
+      if ($video.length) {
+        return {
+          range : rng,
+          url : $video.attr('data-original-url')
+        };
       }
       
       if (rng.isOnAnchor()) {

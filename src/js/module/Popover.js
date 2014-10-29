@@ -62,9 +62,9 @@ define([
       
       var $videoPopover = $popover.find('.note-video-popover');
       if (styleInfo.video) {
-        var $anchor = $videoPopover.find('a');
-        var href = $(styleInfo.video).attr('data-original-url');
-        $anchor.attr('href', href).html(href);
+        var $url = $videoPopover.find('a');
+        var url = $(styleInfo.video).attr('data-original-url');
+        $url.attr('href', url).html(url);
         showPopover($videoPopover, posFromPlaceholder(styleInfo.video, isAirMode));
       } else {
         $videoPopover.hide();

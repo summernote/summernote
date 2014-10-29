@@ -95,8 +95,8 @@ define('summernote/module/Dialog', function () {
 
             deferred.resolve({
                 range: videoInfo.range,
-                url:$videoUrl.val()
-            });
+                url: $videoUrl.val()
+              });
             $videoDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {

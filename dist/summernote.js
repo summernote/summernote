@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-10-29T14:46Z
+ * Date: 2014-10-29T14:58Z
  */
 (function (factory) {
   /* global define */
@@ -2858,7 +2858,6 @@
       var youkuMatch = sUrl.match(youkuRegExp);
 
       var frameStyle = {'position': 'absolute', 'top': '0', 'left': '0', 'width': '100%', 'height': '100%'};
-      //.video-container {position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden;
       var wrapperStyle = {'position': 'relative', 'width': '640px', 'height': '360px'};
       
       var $video;
@@ -2911,7 +2910,7 @@
 
       if ($video) {
         $video.attr('frameborder', 0);
-        $wrapper = $('<div class="video-wrapper"></div>').attr('data-original-url', sUrl).css(wrapperStyle).append($video);
+        var $wrapper = $('<div class="video-wrapper"></div>').attr('data-original-url', sUrl).css(wrapperStyle).append($video);
         rng = rng.deleteContents();
         rng.insertNode($wrapper[0]);
         afterCommand($editable);
@@ -3062,11 +3061,11 @@
       var rng = range.create().expand(dom.isVideo);
       
       var $video = $(list.head(rng.nodes(dom.isVideo)));
-      if($video.length){
-              return {
-                range : rng,
-                url : $video.attr('data-original-url')
-              };
+      if ($video.length) {
+        return {
+          range : rng,
+          url : $video.attr('data-original-url')
+        };
       }
       
       if (rng.isOnAnchor()) {
@@ -3453,9 +3452,9 @@
       
       var $videoPopover = $popover.find('.note-video-popover');
       if (styleInfo.video) {
-        var $anchor = $videoPopover.find('a');
-        var href = $(styleInfo.video).attr('data-original-url');
-        $anchor.attr('href', href).html(href);
+        var $url = $videoPopover.find('a');
+        var url = $(styleInfo.video).attr('data-original-url');
+        $url.attr('href', url).html(url);
         showPopover($videoPopover, posFromPlaceholder(styleInfo.video, isAirMode));
       } else {
         $videoPopover.hide();
@@ -3637,8 +3636,8 @@
 
             deferred.resolve({
                 range: videoInfo.range,
-                url:$videoUrl.val()
-            });
+                url: $videoUrl.val()
+              });
             $videoDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
@@ -4838,7 +4837,7 @@
           title: lang.image.floatNone,
           event: 'floatMe',
           value: 'none'
-        });   
+        });
         
         var videoButton = tplIconButton('fa fa-edit', {
           title: lang.video.edit,
