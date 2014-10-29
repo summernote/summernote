@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-10-29T12:02Z
+ * Date: 2014-10-29T12:12Z
  */
 (function (factory) {
   /* global define */
@@ -1260,6 +1260,8 @@
       disableDragAndDrop: false,    // disable drag and drop event
       disableResizeEditor: false,   // disable resizing editor
 
+      dialogZindex: null,         // Option to override the dialog z-index, if none is set, default Bootstrap is used (1050)
+      
       codemirror: {                 // codemirror options
         mode: 'text/html',
         htmlMode: true,
@@ -3590,7 +3592,7 @@
             $videoDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
-          // dettach events
+          // detach events
           $videoUrl.off('keyup');
           $videoBtn.off('click');
 
@@ -3655,7 +3657,7 @@
             $linkDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
-          // dettach events
+          // detach events
           $linkText.off('keyup');
           $linkUrl.off('keyup');
           $linkBtn.off('click');
@@ -4370,7 +4372,7 @@
       });
     };
 
-    this.dettach = function (layoutInfo, options) {
+    this.detach = function (layoutInfo, options) {
       layoutInfo.editable.off();
 
       layoutInfo.popover.off();
@@ -4466,8 +4468,12 @@
      * @param {String} body
      * @param {String} [footer]
      */
-    var tplDialog = function (className, title, body, footer) {
-      return '<div class="' + className + ' modal" aria-hidden="false">' +
+    var tplDialog = function (className, title, body, footer, options) {
+      return '<div class="' + className + ' modal" aria-hidden="false" ' +
+              (options.dialogZindex ?
+              'style="z-index: ' + options.dialogZindex + '"' : ''
+              ) +
+              '>' +
                '<div class="modal-dialog">' +
                  '<div class="modal-content">' +
                    (title ?
@@ -4966,7 +4972,7 @@
                      '<input class="note-image-url form-control span12" type="text" />' +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
-        return tplDialog('note-image-dialog', lang.image.insert, body, footer);
+        return tplDialog('note-image-dialog', lang.image.insert, body, footer, options);
       };
 
       var tplLinkDialog = function () {
@@ -4986,7 +4992,7 @@
                      '</div>' : ''
                    );
         var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
-        return tplDialog('note-link-dialog', lang.link.insert, body, footer);
+        return tplDialog('note-link-dialog', lang.link.insert, body, footer, options);
       };
 
       var tplVideoDialog = function () {
@@ -4995,7 +5001,7 @@
                      '<input class="note-video-url form-control span12" type="text" />' +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
-        return tplDialog('note-video-dialog', lang.video.insert, body, footer);
+        return tplDialog('note-video-dialog', lang.video.insert, body, footer, options);
       };
 
       var tplHelpDialog = function () {
@@ -5007,7 +5013,7 @@
                      '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
-        return tplDialog('note-help-dialog', '', body, '');
+        return tplDialog('note-help-dialog', '', body, '', options);
       };
 
       return '<div class="note-dialog">' +
@@ -5318,6 +5324,7 @@
         $holder.html(layoutInfo.editable.html());
 
         layoutInfo.editor.remove();
+        layoutInfo.dialog.remove();
         $holder.show();
       }
     };
@@ -5411,7 +5418,7 @@
     },
 
     /**
-     * destroy Editor Layout and dettach Key and Mouse Event
+     * destroy Editor Layout and detach Key and Mouse Event
      * @returns {this}
      */
     destroy: function () {
@@ -5423,7 +5430,7 @@
 
         var options = info.editor.data('options');
 
-        eventHandler.dettach(info, options);
+        eventHandler.detach(info, options);
         renderer.removeLayout($holder, info, options);
       });
 

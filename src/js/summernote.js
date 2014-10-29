@@ -91,7 +91,7 @@ define([
     },
 
     /**
-     * destroy Editor Layout and dettach Key and Mouse Event
+     * destroy Editor Layout and detach Key and Mouse Event
      * @returns {this}
      */
     destroy: function () {
@@ -103,7 +103,7 @@ define([
 
         var options = info.editor.data('options');
 
-        eventHandler.dettach(info, options);
+        eventHandler.detach(info, options);
         renderer.removeLayout($holder, info, options);
       });
 
