@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-10-29T19:50Z
+ * Date: 2014-10-29T20:18Z
  */
 (function (factory) {
   /* global define */
@@ -2187,7 +2187,7 @@
         $('<img>').one('load', function () {
           deferred.resolve($(this));
         }).one('error abort', function () {
-          deferred.reject($(this));
+          deferred.reject($(this).detach());
         }).css({
           display: 'none'
         }).appendTo(document.body)
