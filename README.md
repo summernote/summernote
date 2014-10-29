@@ -86,6 +86,9 @@ $('#summernote').destroy();
 
 ### Change Log
 
+#### v0.6 2014-11-XX
+* Plugin system
+
 #### v0.5.9 2014-09-21
 * Dom Editing: insert(Un)OrderedList, indent/outdent
 * History in a line.
