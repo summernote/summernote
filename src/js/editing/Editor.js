@@ -210,9 +210,10 @@ define([
     /**
      * insert node
      * @param {Node} node
+     * @param {Boolean} [isInline]
      */
-    this.insertNode = function ($editable, node) {
-      range.create().insertNode(node);
+    this.insertNode = function ($editable, node, isInline) {
+      range.create().insertNode(node, isInline);
       afterCommand($editable);
     };
 

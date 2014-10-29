@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-10-29T18:23Z
+ * Date: 2014-10-29T19:18Z
  */
 (function (factory) {
   /* global define */
@@ -2825,9 +2825,10 @@
     /**
      * insert node
      * @param {Node} node
+     * @param {Boolean} [isInline]
      */
-    this.insertNode = function ($editable, node) {
-      range.create().insertNode(node);
+    this.insertNode = function ($editable, node, isInline) {
+      range.create().insertNode(node, isInline);
       afterCommand($editable);
     };
 

@@ -155,6 +155,7 @@
         });
       }
     },
+
     dialogs: {
       /**
        * @param {Object} lang
