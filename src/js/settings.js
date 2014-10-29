@@ -22,6 +22,8 @@ define('summernote/settings', function () {
       disableDragAndDrop: false,    // disable drag and drop event
       disableResizeEditor: false,   // disable resizing editor
 
+      dialogZindex: null,         // Option to override the dialog z-index, if none is set, default Bootstrap is used (1050)
+      
       codemirror: {                 // codemirror options
         mode: 'text/html',
         htmlMode: true,

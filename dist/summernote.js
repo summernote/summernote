@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-10-26T03:43Z
+ * Date: 2014-10-29T12:12Z
  */
 (function (factory) {
   /* global define */
@@ -413,38 +413,40 @@
      * @return {Object}
      */
     var buildLayoutInfo = function ($editor) {
-      var makeFinder;
+      // get the id from the editor
+      var id = list.last($editor.attr('id').split('-'));
+
+      var makeFinder = {
+        byId: function (sIdPrefix) {
+          return function () { return $(sIdPrefix + id); };
+        },
+        inEditor: function (sClassName) {
+          return function () { return $editor.find(sClassName); };
+        }
+      };
 
       // air mode
       if ($editor.hasClass('note-air-editor')) {
-        var id = list.last($editor.attr('id').split('-'));
-        makeFinder = function (sIdPrefix) {
-          return function () { return $(sIdPrefix + id); };
-        };
-
         return {
           editor: function () { return $editor; },
           editable: function () { return $editor; },
-          popover: makeFinder('#note-popover-'),
-          handle: makeFinder('#note-handle-'),
-          dialog: makeFinder('#note-dialog-')
+          popover: makeFinder.byId('#note-popover-'),
+          handle: makeFinder.byId('#note-handle-'),
+          dialog: makeFinder.byId('#note-dialog-')
         };
 
         // frame mode
       } else {
-        makeFinder = function (sClassName) {
-          return function () { return $editor.find(sClassName); };
-        };
         return {
           editor: function () { return $editor; },
-          dropzone: makeFinder('.note-dropzone'),
-          toolbar: makeFinder('.note-toolbar'),
-          editable: makeFinder('.note-editable'),
-          codable: makeFinder('.note-codable'),
-          statusbar: makeFinder('.note-statusbar'),
-          popover: makeFinder('.note-popover'),
-          handle: makeFinder('.note-handle'),
-          dialog: makeFinder('.note-dialog')
+          dropzone: makeFinder.inEditor('.note-dropzone'),
+          toolbar: makeFinder.inEditor('.note-toolbar'),
+          editable: makeFinder.inEditor('.note-editable'),
+          codable: makeFinder.inEditor('.note-codable'),
+          statusbar: makeFinder.inEditor('.note-statusbar'),
+          popover: makeFinder.inEditor('.note-popover'),
+          handle: makeFinder.inEditor('.note-handle'),
+          dialog: makeFinder.byId('#note-dialog-')
         };
       }
     };
@@ -886,7 +888,7 @@
 
     /**
      * returns whether point is visible (can set cursor) or not.
-     * 
+     *
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
@@ -1135,7 +1137,7 @@
     var isTextarea = makePredByNodeName('TEXTAREA');
 
     /**
-     * get the HTML contents of node 
+     * get the HTML contents of node
      *
      * @param {jQuery} $node
      * @param {Boolean} [isNewlineOnBlock]
@@ -1258,6 +1260,8 @@
       disableDragAndDrop: false,    // disable drag and drop event
       disableResizeEditor: false,   // disable resizing editor
 
+      dialogZindex: null,         // Option to override the dialog z-index, if none is set, default Bootstrap is used (1050)
+      
       codemirror: {                 // codemirror options
         mode: 'text/html',
         htmlMode: true,
@@ -3588,7 +3592,7 @@
             $videoDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
-          // dettach events
+          // detach events
           $videoUrl.off('keyup');
           $videoBtn.off('click');
 
@@ -3653,7 +3657,7 @@
             $linkDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
-          // dettach events
+          // detach events
           $linkText.off('keyup');
           $linkUrl.off('keyup');
           $linkBtn.off('click');
@@ -4368,7 +4372,7 @@
       });
     };
 
-    this.dettach = function (layoutInfo, options) {
+    this.detach = function (layoutInfo, options) {
       layoutInfo.editable.off();
 
       layoutInfo.popover.off();
@@ -4464,8 +4468,12 @@
      * @param {String} body
      * @param {String} [footer]
      */
-    var tplDialog = function (className, title, body, footer) {
-      return '<div class="' + className + ' modal" aria-hidden="false">' +
+    var tplDialog = function (className, title, body, footer, options) {
+      return '<div class="' + className + ' modal" aria-hidden="false" ' +
+              (options.dialogZindex ?
+              'style="z-index: ' + options.dialogZindex + '"' : ''
+              ) +
+              '>' +
                '<div class="modal-dialog">' +
                  '<div class="modal-content">' +
                    (title ?
@@ -4964,7 +4972,7 @@
                      '<input class="note-image-url form-control span12" type="text" />' +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
-        return tplDialog('note-image-dialog', lang.image.insert, body, footer);
+        return tplDialog('note-image-dialog', lang.image.insert, body, footer, options);
       };
 
       var tplLinkDialog = function () {
@@ -4984,7 +4992,7 @@
                      '</div>' : ''
                    );
         var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
-        return tplDialog('note-link-dialog', lang.link.insert, body, footer);
+        return tplDialog('note-link-dialog', lang.link.insert, body, footer, options);
       };
 
       var tplVideoDialog = function () {
@@ -4993,7 +5001,7 @@
                      '<input class="note-video-url form-control span12" type="text" />' +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
-        return tplDialog('note-video-dialog', lang.video.insert, body, footer);
+        return tplDialog('note-video-dialog', lang.video.insert, body, footer, options);
       };
 
       var tplHelpDialog = function () {
@@ -5005,7 +5013,7 @@
                      '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
-        return tplDialog('note-help-dialog', '', body, '');
+        return tplDialog('note-help-dialog', '', body, '', options);
       };
 
       return '<div class="note-dialog">' +
@@ -5163,8 +5171,12 @@
      * @param {Object} options
      */
     this.createLayoutByFrame = function ($holder, options) {
+      //00. create id for the editor
+      var id = func.uniqueId();
+
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
+      $editor.attr('id', 'note-editor-' + id);
       if (options.width) {
         $editor.width(options.width);
       }
@@ -5229,10 +5241,12 @@
       $(tplHandles()).prependTo($editor);
 
       //07. create Dialog
-      var $dialog = $(tplDialogs(langInfo, options)).prependTo($editor);
+      var $dialog = $(tplDialogs(langInfo, options));
+      $dialog.attr('id', 'note-dialog-' + id);
       $dialog.find('button.close, a.modal-close').click(function () {
         $(this).closest('.modal').modal('hide');
       });
+      $dialog.appendTo(document.body);
 
       //08. create Dropzone
       $('<div class="note-dropzone"><div class="note-dropzone-message"></div></div>').prependTo($editor);
@@ -5245,8 +5259,8 @@
     this.noteEditorFromHolder = function ($holder) {
       if ($holder.hasClass('note-air-editor')) {
         return $holder;
-      } else if ($holder.next().hasClass('note-editor')) {
-        return $holder.next();
+      } else if ($holder.siblings().hasClass('note-editor')) {
+        return $holder.siblings('.note-editor');
       } else {
         return $();
       }
@@ -5310,6 +5324,7 @@
         $holder.html(layoutInfo.editable.html());
 
         layoutInfo.editor.remove();
+        layoutInfo.dialog.remove();
         $holder.show();
       }
     };
@@ -5403,7 +5418,7 @@
     },
 
     /**
-     * destroy Editor Layout and dettach Key and Mouse Event
+     * destroy Editor Layout and detach Key and Mouse Event
      * @returns {this}
      */
     destroy: function () {
@@ -5415,7 +5430,7 @@
 
         var options = info.editor.data('options');
 
-        eventHandler.dettach(info, options);
+        eventHandler.detach(info, options);
         renderer.removeLayout($holder, info, options);
       });
 

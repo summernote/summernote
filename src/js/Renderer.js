@@ -82,8 +82,12 @@ define([
      * @param {String} body
      * @param {String} [footer]
      */
-    var tplDialog = function (className, title, body, footer) {
-      return '<div class="' + className + ' modal" aria-hidden="false">' +
+    var tplDialog = function (className, title, body, footer, options) {
+      return '<div class="' + className + ' modal" aria-hidden="false" ' +
+              (options.dialogZindex ?
+              'style="z-index: ' + options.dialogZindex + '"' : ''
+              ) +
+              '>' +
                '<div class="modal-dialog">' +
                  '<div class="modal-content">' +
                    (title ?
@@ -582,7 +586,7 @@ define([
                      '<input class="note-image-url form-control span12" type="text" />' +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
-        return tplDialog('note-image-dialog', lang.image.insert, body, footer);
+        return tplDialog('note-image-dialog', lang.image.insert, body, footer, options);
       };
 
       var tplLinkDialog = function () {
@@ -602,7 +606,7 @@ define([
                      '</div>' : ''
                    );
         var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
-        return tplDialog('note-link-dialog', lang.link.insert, body, footer);
+        return tplDialog('note-link-dialog', lang.link.insert, body, footer, options);
       };
 
       var tplVideoDialog = function () {
@@ -611,7 +615,7 @@ define([
                      '<input class="note-video-url form-control span12" type="text" />' +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
-        return tplDialog('note-video-dialog', lang.video.insert, body, footer);
+        return tplDialog('note-video-dialog', lang.video.insert, body, footer, options);
       };
 
       var tplHelpDialog = function () {
@@ -623,7 +627,7 @@ define([
                      '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
-        return tplDialog('note-help-dialog', '', body, '');
+        return tplDialog('note-help-dialog', '', body, '', options);
       };
 
       return '<div class="note-dialog">' +
@@ -781,8 +785,12 @@ define([
      * @param {Object} options
      */
     this.createLayoutByFrame = function ($holder, options) {
+      //00. create id for the editor
+      var id = func.uniqueId();
+
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
+      $editor.attr('id', 'note-editor-' + id);
       if (options.width) {
         $editor.width(options.width);
       }
@@ -847,10 +855,12 @@ define([
       $(tplHandles()).prependTo($editor);
 
       //07. create Dialog
-      var $dialog = $(tplDialogs(langInfo, options)).prependTo($editor);
+      var $dialog = $(tplDialogs(langInfo, options));
+      $dialog.attr('id', 'note-dialog-' + id);
       $dialog.find('button.close, a.modal-close').click(function () {
         $(this).closest('.modal').modal('hide');
       });
+      $dialog.appendTo(document.body);
 
       //08. create Dropzone
       $('<div class="note-dropzone"><div class="note-dropzone-message"></div></div>').prependTo($editor);
@@ -863,8 +873,8 @@ define([
     this.noteEditorFromHolder = function ($holder) {
       if ($holder.hasClass('note-air-editor')) {
         return $holder;
-      } else if ($holder.next().hasClass('note-editor')) {
-        return $holder.next();
+      } else if ($holder.siblings().hasClass('note-editor')) {
+        return $holder.siblings('.note-editor');
       } else {
         return $();
       }
@@ -928,6 +938,7 @@ define([
         $holder.html(layoutInfo.editable.html());
 
         layoutInfo.editor.remove();
+        layoutInfo.dialog.remove();
         $holder.show();
       }
     };
