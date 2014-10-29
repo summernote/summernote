@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-10-29T20:18Z
+ * Date: 2014-10-29T20:43Z
  */
 (function (factory) {
   /* global define */
@@ -2827,11 +2827,23 @@
 
     /**
      * insert node
+     * @param {Node} $editable
      * @param {Node} node
      * @param {Boolean} [isInline]
      */
     this.insertNode = function ($editable, node, isInline) {
       range.create().insertNode(node, isInline);
+      afterCommand($editable);
+    };
+
+    /**
+     * insert text
+     * @param {Node} $editable
+     * @param {String} text
+     */
+    this.insertText = function ($editable, text) {
+      var textNode = this.createRange().insertNode(dom.createText(text), true);
+      range.create(textNode, dom.nodeLength(textNode)).select();
       afterCommand($editable);
     };
 
@@ -5236,23 +5248,31 @@
    * @param {Object} plugin
    */
   $.summernote.addPlugin = function (plugin) {
-    $.each(plugin.buttons, function (name, button) {
-      renderer.addButtonInfo(name, button);
-    });
+    if (plugin.buttons) {
+      $.each(plugin.buttons, function (name, button) {
+        renderer.addButtonInfo(name, button);
+      });
+    }
 
-    $.each(plugin.dialogs, function (name, dialog) {
-      renderer.addDialogInfo(name, dialog);
-    });
+    if (plugin.dialogs) {
+      $.each(plugin.dialogs, function (name, dialog) {
+        renderer.addDialogInfo(name, dialog);
+      });
+    }
 
-    $.each(plugin.events, function (name, event) {
-      $.summernote.pluginEvents[name] = event;
-    });
+    if (plugin.events) {
+      $.each(plugin.events, function (name, event) {
+        $.summernote.pluginEvents[name] = event;
+      });
+    }
 
-    $.each(plugin.langs, function (locale, lang) {
-      if ($.summernote.lang[locale]) {
-        $.extend($.summernote.lang[locale], lang);
-      }
-    });
+    if (plugin.langs) {
+      $.each(plugin.langs, function (locale, lang) {
+        if ($.summernote.lang[locale]) {
+          $.extend($.summernote.lang[locale], lang);
+        }
+      });
+    }
   };
 
   /**

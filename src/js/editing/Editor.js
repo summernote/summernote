@@ -209,11 +209,23 @@ define([
 
     /**
      * insert node
+     * @param {Node} $editable
      * @param {Node} node
      * @param {Boolean} [isInline]
      */
     this.insertNode = function ($editable, node, isInline) {
       range.create().insertNode(node, isInline);
+      afterCommand($editable);
+    };
+
+    /**
+     * insert text
+     * @param {Node} $editable
+     * @param {String} text
+     */
+    this.insertText = function ($editable, text) {
+      var textNode = this.createRange().insertNode(dom.createText(text), true);
+      range.create(textNode, dom.nodeLength(textNode)).select();
       afterCommand($editable);
     };
 

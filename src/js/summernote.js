@@ -30,23 +30,31 @@ define([
    * @param {Object} plugin
    */
   $.summernote.addPlugin = function (plugin) {
-    $.each(plugin.buttons, function (name, button) {
-      renderer.addButtonInfo(name, button);
-    });
+    if (plugin.buttons) {
+      $.each(plugin.buttons, function (name, button) {
+        renderer.addButtonInfo(name, button);
+      });
+    }
 
-    $.each(plugin.dialogs, function (name, dialog) {
-      renderer.addDialogInfo(name, dialog);
-    });
+    if (plugin.dialogs) {
+      $.each(plugin.dialogs, function (name, dialog) {
+        renderer.addDialogInfo(name, dialog);
+      });
+    }
 
-    $.each(plugin.events, function (name, event) {
-      $.summernote.pluginEvents[name] = event;
-    });
+    if (plugin.events) {
+      $.each(plugin.events, function (name, event) {
+        $.summernote.pluginEvents[name] = event;
+      });
+    }
 
-    $.each(plugin.langs, function (locale, lang) {
-      if ($.summernote.lang[locale]) {
-        $.extend($.summernote.lang[locale], lang);
-      }
-    });
+    if (plugin.langs) {
+      $.each(plugin.langs, function (locale, lang) {
+        if ($.summernote.lang[locale]) {
+          $.extend($.summernote.lang[locale], lang);
+        }
+      });
+    }
   };
 
   /**
