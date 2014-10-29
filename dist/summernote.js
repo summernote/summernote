@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-10-29T19:27Z
+ * Date: 2014-10-29T19:36Z
  */
 (function (factory) {
   /* global define */
@@ -1966,6 +1966,7 @@
       onImageUpload: null,      // imageUpload
       onImageUploadError: null, // imageUploadError
       onToolbarClick: null,
+      onsubmit: null,
 
       /**
        * manipulate link address when user create link
@@ -5277,7 +5278,13 @@
         // Textarea: auto filling the code before form submit.
         if (dom.isTextarea($holder[0])) {
           $holder.closest('form').submit(function () {
-            $holder.val($holder.code());
+            var contents = $holder.code();
+            $holder.val(contents);
+
+            // callback on submit
+            if (options.onsubmit) {
+              options.onsubmit(contents);
+            }
           });
         }
       });
@@ -5295,7 +5302,7 @@
 
       return this;
     },
-    // 
+    //
 
     /**
      * get the HTML contents of note or set the HTML contents of note.

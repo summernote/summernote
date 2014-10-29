@@ -116,6 +116,7 @@ define('summernote/settings', function () {
       onImageUpload: null,      // imageUpload
       onImageUploadError: null, // imageUploadError
       onToolbarClick: null,
+      onsubmit: null,
 
       /**
        * manipulate link address when user create link
