@@ -82,8 +82,12 @@ define([
      * @param {String} body
      * @param {String} [footer]
      */
-    var tplDialog = function (className, title, body, footer) {
-      return '<div class="' + className + ' modal" aria-hidden="false">' +
+    var tplDialog = function (className, title, body, footer, options) {
+      return '<div class="' + className + ' modal" aria-hidden="false" ' +
+              (options.dialogZindex ?
+              'style="z-index: ' + options.dialogZindex + '"' : ''
+              ) +
+              '>' +
                '<div class="modal-dialog">' +
                  '<div class="modal-content">' +
                    (title ?
@@ -582,7 +586,7 @@ define([
                      '<input class="note-image-url form-control span12" type="text" />' +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
-        return tplDialog('note-image-dialog', lang.image.insert, body, footer);
+        return tplDialog('note-image-dialog', lang.image.insert, body, footer, options);
       };
 
       var tplLinkDialog = function () {
@@ -602,7 +606,7 @@ define([
                      '</div>' : ''
                    );
         var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
-        return tplDialog('note-link-dialog', lang.link.insert, body, footer);
+        return tplDialog('note-link-dialog', lang.link.insert, body, footer, options);
       };
 
       var tplVideoDialog = function () {
@@ -611,7 +615,7 @@ define([
                      '<input class="note-video-url form-control span12" type="text" />' +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
-        return tplDialog('note-video-dialog', lang.video.insert, body, footer);
+        return tplDialog('note-video-dialog', lang.video.insert, body, footer, options);
       };
 
       var tplHelpDialog = function () {
@@ -623,7 +627,7 @@ define([
                      '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
-        return tplDialog('note-help-dialog', '', body, '');
+        return tplDialog('note-help-dialog', '', body, '', options);
       };
 
       return '<div class="note-dialog">' +
@@ -934,6 +938,7 @@ define([
         $holder.html(layoutInfo.editable.html());
 
         layoutInfo.editor.remove();
+        layoutInfo.dialog.remove();
         $holder.show();
       }
     };
