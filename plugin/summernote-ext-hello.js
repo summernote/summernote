@@ -3,10 +3,10 @@
   var tmpl = $.summernote.renderer.getTemplate();
   var editor = $.summernote.eventHandler.getEditor();
 
-  // add video plugin
+  // add plugin
   $.summernote.addPlugin({
-    name: 'hello',
-    buttons: {
+    name: 'hello', // name of plugin
+    buttons: { // buttons
       hello: function () {
         return tmpl.iconButton('fa fa-header', {
           event: 'hello',
@@ -16,7 +16,7 @@
       }
     },
 
-    events: {
+    events: { // events
       hello: function (layoutInfo) {
         // Get current editable node
         var $editable = layoutInfo.editable();
