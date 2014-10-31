@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-10-29T20:43Z
+ * Date: 2014-10-31T13:12Z
  */
 (function (factory) {
   /* global define */
@@ -1887,9 +1887,8 @@
       // toolbar
       toolbar: [
         ['style', ['style']],
-        ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'strikethrough', 'clear']],
+        ['font', ['bold', 'italic', 'underline', 'clear']],
         ['fontname', ['fontname']],
-        // ['fontsize', ['fontsize']], // Still buggy
         ['color', ['color']],
         ['para', ['ul', 'ol', 'paragraph']],
         ['height', ['height']],
@@ -1905,7 +1904,6 @@
       //   ['style', ['style']],
       //   ['font', ['bold', 'italic', 'underline', 'clear']],
       //   ['fontname', ['fontname']],
-      //   ['fontsize', ['fontsize']], // Still buggy
       //   ['color', ['color']],
       //   ['para', ['ul', 'ol', 'paragraph']],
       //   ['height', ['height']],
@@ -1945,9 +1943,6 @@
         ['#9C0000', '#B56308', '#BD9400', '#397B21', '#104A5A', '#085294', '#311873', '#731842'],
         ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031']
       ],
-
-      // fontSize
-      fontSizes: ['8', '9', '10', '11', '12', '14', '18', '24', '36'],
 
       // lineHeight
       lineHeights: ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'],
@@ -2055,13 +2050,9 @@
           bold: 'Bold',
           italic: 'Italic',
           underline: 'Underline',
-          strikethrough: 'Strikethrough',
-          subscript: 'Subscript',
-          superscript: 'Superscript',
           clear: 'Remove Font Style',
           height: 'Line Height',
-          name: 'Font Family',
-          size: 'Font Size'
+          name: 'Font Family'
         },
         image: {
           image: 'Picture',
@@ -2842,7 +2833,7 @@
      * @param {String} text
      */
     this.insertText = function ($editable, text) {
-      var textNode = this.createRange().insertNode(dom.createText(text), true);
+      var textNode = this.createRange($editable).insertNode(dom.createText(text), true);
       range.create(textNode, dom.nodeLength(textNode)).select();
       afterCommand($editable);
     };
@@ -4428,20 +4419,6 @@
           dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
         });
       },
-      fontsize: function (lang, options) {
-        var items = options.fontSizes.reduce(function (memo, v) {
-          return memo + '<li><a data-event="fontSize" href="#" data-value="' + v + '">' +
-                          '<i class="fa fa-check"></i> ' + v +
-                        '</a></li>';
-        }, '');
-
-        var label = '<span class="note-current-fontsize">11</span>';
-        return tplButton(label, {
-          title: lang.font.size,
-          dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
-        });
-      },
-
       color: function (lang) {
         var colorButtonLabel = '<i class="fa fa-font" style="color:black;background-color:yellow;"></i>';
         var colorButton = tplButton(colorButtonLabel, {
@@ -4494,24 +4471,6 @@
         return tplIconButton('fa fa-underline', {
           event: 'underline',
           title: lang.font.underline
-        });
-      },
-      strikethrough: function (lang) {
-        return tplIconButton('fa fa-strikethrough', {
-          event: 'strikethrough',
-          title: lang.font.strikethrough
-        });
-      },
-      superscript: function (lang) {
-        return tplIconButton('fa fa-superscript', {
-          event: 'superscript',
-          title: lang.font.superscript
-        });
-      },
-      subscript: function (lang) {
-        return tplIconButton('fa fa-subscript', {
-          event: 'subscript',
-          title: lang.font.subscript
         });
       },
       clear: function (lang) {
@@ -4980,30 +4939,6 @@
     };
 
     /**
-     * create summernote plugin button 
-     * 
-     * @param {string} plugin  plugin name 
-     * @param {Object} options  plugin's options
-     */
-    var createPluginToolbar = function (plugin, options) {
-      return function () {
-        var toolbar = {
-          title : options.title,
-          className : options.className,
-          dropdown : $.isFunction(options.dropdown) ? options.dropdown() : options.dropdown,
-          hide : options.hide,
-          event : (!options.dropdown) ? plugin : '',
-          value : (!options.dropdown) ? plugin : ''
-        };
-        if (options.icon) {
-          return tplIconButton(options.icon, toolbar);
-        } else {
-          return tplButton(options.label, toolbar);
-        }
-      };
-    };
-
-    /**
      * create summernote layout (air mode)
      *
      * @param {jQuery} $holder
@@ -5091,12 +5026,7 @@
 
         toolbarHTML += '<div class="note-' + groupName + ' btn-group">';
         for (var i = 0, btnLength = groupButtons.length; i < btnLength; i++) {
-          
           var buttonInfo = tplButtonInfo[groupButtons[i]];
-          if (!buttonInfo && !!$.summernote.plugins[groupButtons[i]]) {
-            buttonInfo = createPluginToolbar(groupButtons[i], $.summernote.plugins[groupButtons[i]]);
-          }
-          
           // continue creating toolbar even if a button doesn't exist
           if (!$.isFunction(buttonInfo)) { continue; }
           toolbarHTML += buttonInfo(langInfo, options);
@@ -5272,6 +5202,10 @@
           $.extend($.summernote.lang[locale], lang);
         }
       });
+    }
+
+    if (plugin.options) {
+      $.extend($.summernote.options, plugin.options);
     }
   };
 

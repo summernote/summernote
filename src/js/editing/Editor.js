@@ -224,7 +224,7 @@ define([
      * @param {String} text
      */
     this.insertText = function ($editable, text) {
-      var textNode = this.createRange().insertNode(dom.createText(text), true);
+      var textNode = this.createRange($editable).insertNode(dom.createText(text), true);
       range.create(textNode, dom.nodeLength(textNode)).select();
       afterCommand($editable);
     };
