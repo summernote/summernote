@@ -37,9 +37,8 @@ define('summernote/settings', function () {
       // toolbar
       toolbar: [
         ['style', ['style']],
-        ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'strikethrough', 'clear']],
+        ['font', ['bold', 'italic', 'underline', 'clear']],
         ['fontname', ['fontname']],
-        // ['fontsize', ['fontsize']], // Still buggy
         ['color', ['color']],
         ['para', ['ul', 'ol', 'paragraph']],
         ['height', ['height']],
@@ -55,7 +54,6 @@ define('summernote/settings', function () {
       //   ['style', ['style']],
       //   ['font', ['bold', 'italic', 'underline', 'clear']],
       //   ['fontname', ['fontname']],
-      //   ['fontsize', ['fontsize']], // Still buggy
       //   ['color', ['color']],
       //   ['para', ['ul', 'ol', 'paragraph']],
       //   ['height', ['height']],
@@ -95,9 +93,6 @@ define('summernote/settings', function () {
         ['#9C0000', '#B56308', '#BD9400', '#397B21', '#104A5A', '#085294', '#311873', '#731842'],
         ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031']
       ],
-
-      // fontSize
-      fontSizes: ['8', '9', '10', '11', '12', '14', '18', '24', '36'],
 
       // lineHeight
       lineHeights: ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'],
@@ -205,13 +200,9 @@ define('summernote/settings', function () {
           bold: 'Bold',
           italic: 'Italic',
           underline: 'Underline',
-          strikethrough: 'Strikethrough',
-          subscript: 'Subscript',
-          superscript: 'Superscript',
           clear: 'Remove Font Style',
           height: 'Line Height',
-          name: 'Font Family',
-          size: 'Font Size'
+          name: 'Font Family'
         },
         image: {
           image: 'Picture',

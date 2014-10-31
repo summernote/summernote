@@ -55,6 +55,10 @@ define([
         }
       });
     }
+
+    if (plugin.options) {
+      $.extend($.summernote.options, plugin.options);
+    }
   };
 
   /**
