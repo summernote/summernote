@@ -2,7 +2,7 @@
   $.extend($.summernote.lang, {
     'es-ES': {
       font: {
-        name:'Fuente',
+        name: 'Fuente',
         bold: 'Negrita',
         italic: 'Cursiva',
         underline: 'Subrayado',

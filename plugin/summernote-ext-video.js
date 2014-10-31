@@ -14,62 +14,62 @@
    * @return {Node}
    */
   var createVideoNode = function (url) {
-      // video url patterns(youtube, instagram, vimeo, dailymotion, youku)
-      var ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
-      var ytMatch = url.match(ytRegExp);
+    // video url patterns(youtube, instagram, vimeo, dailymotion, youku)
+    var ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+    var ytMatch = url.match(ytRegExp);
 
-      var igRegExp = /\/\/instagram.com\/p\/(.[a-zA-Z0-9]*)/;
-      var igMatch = url.match(igRegExp);
+    var igRegExp = /\/\/instagram.com\/p\/(.[a-zA-Z0-9]*)/;
+    var igMatch = url.match(igRegExp);
 
-      var vRegExp = /\/\/vine.co\/v\/(.[a-zA-Z0-9]*)/;
-      var vMatch = url.match(vRegExp);
+    var vRegExp = /\/\/vine.co\/v\/(.[a-zA-Z0-9]*)/;
+    var vMatch = url.match(vRegExp);
 
-      var vimRegExp = /\/\/(player.)?vimeo.com\/([a-z]*\/)*([0-9]{6,11})[?]?.*/;
-      var vimMatch = url.match(vimRegExp);
+    var vimRegExp = /\/\/(player.)?vimeo.com\/([a-z]*\/)*([0-9]{6,11})[?]?.*/;
+    var vimMatch = url.match(vimRegExp);
 
-      var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
-      var dmMatch = url.match(dmRegExp);
+    var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
+    var dmMatch = url.match(dmRegExp);
 
-      var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)\.html/;
-      var youkuMatch = url.match(youkuRegExp);
+    var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)\.html/;
+    var youkuMatch = url.match(youkuRegExp);
 
-      var $video;
-      if (ytMatch && ytMatch[1].length === 11) {
-        var youtubeId = ytMatch[1];
-        $video = $('<iframe>')
-          .attr('src', '//www.youtube.com/embed/' + youtubeId)
-          .attr('width', '640').attr('height', '360');
-      } else if (igMatch && igMatch[0].length) {
-        $video = $('<iframe>')
-          .attr('src', igMatch[0] + '/embed/')
-          .attr('width', '612').attr('height', '710')
-          .attr('scrolling', 'no')
-          .attr('allowtransparency', 'true');
-      } else if (vMatch && vMatch[0].length) {
-        $video = $('<iframe>')
-          .attr('src', vMatch[0] + '/embed/simple')
-          .attr('width', '600').attr('height', '600')
-          .attr('class', 'vine-embed');
-      } else if (vimMatch && vimMatch[3].length) {
-        $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
-          .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
-          .attr('width', '640').attr('height', '360');
-      } else if (dmMatch && dmMatch[2].length) {
-        $video = $('<iframe>')
-          .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
-          .attr('width', '640').attr('height', '360');
-      } else if (youkuMatch && youkuMatch[1].length) {
-        $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
-          .attr('height', '498')
-          .attr('width', '510')
-          .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
-      } else {
-        // this is not a known video link. Now what, Cat? Now what?
-      }
+    var $video;
+    if (ytMatch && ytMatch[1].length === 11) {
+      var youtubeId = ytMatch[1];
+      $video = $('<iframe>')
+        .attr('src', '//www.youtube.com/embed/' + youtubeId)
+        .attr('width', '640').attr('height', '360');
+    } else if (igMatch && igMatch[0].length) {
+      $video = $('<iframe>')
+        .attr('src', igMatch[0] + '/embed/')
+        .attr('width', '612').attr('height', '710')
+        .attr('scrolling', 'no')
+        .attr('allowtransparency', 'true');
+    } else if (vMatch && vMatch[0].length) {
+      $video = $('<iframe>')
+        .attr('src', vMatch[0] + '/embed/simple')
+        .attr('width', '600').attr('height', '600')
+        .attr('class', 'vine-embed');
+    } else if (vimMatch && vimMatch[3].length) {
+      $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+        .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
+        .attr('width', '640').attr('height', '360');
+    } else if (dmMatch && dmMatch[2].length) {
+      $video = $('<iframe>')
+        .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
+        .attr('width', '640').attr('height', '360');
+    } else if (youkuMatch && youkuMatch[1].length) {
+      $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+        .attr('height', '498')
+        .attr('width', '510')
+        .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
+    } else {
+      // this is not a known video link. Now what, Cat? Now what?
+    }
 
-      $video.attr('frameborder', 0);
+    $video.attr('frameborder', 0);
 
-      return $video[0];
+    return $video[0];
   };
 
   /**
@@ -144,10 +144,9 @@
     buttons: {
       /**
        * @param {Object} lang
-       * @param {Object} options
        * @return {String}
        */
-      video: function (lang, options) {
+      video: function (lang) {
         return tmpl.iconButton('fa fa-youtube-play', {
           event: 'showVideoDialog',
           title: lang.video.video,
@@ -162,7 +161,7 @@
        * @param {Object} options
        * @return {String}
        */
-      video: function (lang, options) {
+      video: function (lang) {
         var body = '<div class="form-group row-fluid">' +
                      '<label>' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
                      '<input class="note-video-url form-control span12" type="text" />' +
@@ -182,7 +181,7 @@
             text = getTextOnRange($editable);
 
         // save current range
-        editor.saveRange($editable)
+        editor.saveRange($editable);
 
         showVideoDialog($editable, $dialog, text).then(function (url) {
           // when ok button clicked

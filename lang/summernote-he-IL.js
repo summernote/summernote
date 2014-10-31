@@ -95,7 +95,7 @@
         textFormatting: 'עיצוב הטקסט',
         action: 'פעולה',
         paragraphFormatting: 'סגנונות פסקה',
-        documentStyle: 'עיצוב המסמך', 
+        documentStyle: 'עיצוב המסמך',
         extraKeys: 'קיצורים נוספים'
       },
       history: {

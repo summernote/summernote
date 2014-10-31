@@ -22,7 +22,7 @@
         dragImageHere: 'Træk billede hertil',
         selectFromFiles: 'Vælg billed-fil',
         url: 'Billede URL',
-		remove: 'Fjern billede'
+        remove: 'Fjern billede'
       },
       link: {
         link: 'Link',

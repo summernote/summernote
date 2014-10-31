@@ -2,7 +2,7 @@
   $.extend($.summernote.lang, {
     'es-EU': {
       font: {
-        name:'Tipografia',
+        name: 'Tipografia',
         bold: 'Lodia',
         italic: 'Etzana',
         underline: 'Azpimarratua',
@@ -12,33 +12,33 @@
         size: 'Letren neurria'
       },
       image: {
-        image: 'Irudia', 
-        insert: 'Irudi bat txertatu', 
-        resizeFull: 'Jatorrizko neurrira aldatu', 
-        resizeHalf: 'Neurria erdira aldatu', 
+        image: 'Irudia',
+        insert: 'Irudi bat txertatu',
+        resizeFull: 'Jatorrizko neurrira aldatu',
+        resizeHalf: 'Neurria erdira aldatu',
         resizeQuarter: 'Neurria laurdenera aldatu',
         floatLeft: 'Ezkerrean kokatu',
-        floatRight: 'Eskuinean kokatu', 
+        floatRight: 'Eskuinean kokatu',
         floatNone: 'Kokapenik ez ezarri',
-        dragImageHere: 'Irudi bat ezarri hemen', 
+        dragImageHere: 'Irudi bat ezarri hemen',
         selectFromFiles: 'Zure fitxategi bat aukeratu',
-        url: 'Irudiaren URL helbidea' 
+        url: 'Irudiaren URL helbidea'
       },
       link: {
         link: 'Esteka',
-        insert: 'Esteka bat txertatu', 
-        unlink: 'Esteka ezabatu', 
+        insert: 'Esteka bat txertatu',
+        unlink: 'Esteka ezabatu',
         edit: 'Editatu',
-        textToDisplay: 'Estekaren testua', 
+        textToDisplay: 'Estekaren testua',
         url: 'Estekaren URL helbidea',
-        openInNewWindow: 'Leiho berri batean ireki' 
+        openInNewWindow: 'Leiho berri batean ireki'
       },
       video: {
         video: 'Bideoa',
         videoLink: 'Bideorako esteka',
         insert: 'Bideo berri bat txertatu',
         url: 'Bideoaren URL helbidea',
-        providers: '(YouTube, Vimeo, Vine, Instagram, edo DailyMotion)' 
+        providers: '(YouTube, Vimeo, Vine, Instagram, edo DailyMotion)'
       },
       table: {
         table: 'Taula' //Tabla
