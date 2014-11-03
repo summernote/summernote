@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-09-19T04:58Z
+ * Date: 2014-11-03T23:11Z
  */
 (function (factory) {
   /* global define */
@@ -18,7 +18,7 @@
     factory(window.jQuery);
   }
 }(function ($) {
-
+  
 
 
   if ('function' !== typeof Array.prototype.reduce) {
@@ -55,13 +55,13 @@
       if (this === void 0 || this === null) {
         throw new TypeError();
       }
-
+  
       var t = Object(this);
       var len = t.length >>> 0;
       if (typeof fun !== 'function') {
         throw new TypeError();
       }
-
+  
       var res = [];
       var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
       for (var i = 0; i < len; i++) {
@@ -72,7 +72,7 @@
           }
         }
       }
-
+  
       return res;
     };
   }
@@ -307,7 +307,7 @@
         return memo + fn(v);
       }, 0);
     };
-
+  
     /**
      * returns a copy of the collection with array type.
      * @param {Collection} collection - collection eg) node.childNodes, ...
@@ -319,7 +319,7 @@
       }
       return result;
     };
-
+  
     /**
      * cluster elements by predicate function.
      *
@@ -340,7 +340,7 @@
         return memo;
       }, [[head(array)]]);
     };
-
+  
     /**
      * returns a copy of the array with all falsy values removed
      *
@@ -394,7 +394,7 @@
       return array[idx - 1];
     };
 
-
+  
     return { head: head, last: last, initial: initial, tail: tail,
              prev: prev, next: next, find: find, contains: contains,
              all: all, sum: sum, from: from,
@@ -1192,7 +1192,6 @@
       NBSP_CHAR: NBSP_CHAR,
       ZERO_WIDTH_NBSP_CHAR: ZERO_WIDTH_NBSP_CHAR,
       blank: blankHTML,
-      emptyPara: '<p>' + blankHTML + '</p>',
       isEditable: isEditable,
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
@@ -1286,6 +1285,8 @@
         htmlMode: true,
         lineNumbers: true
       },
+
+      emptyPara : '<p>' + dom.blankHTML + '</p>',
 
       // language
       lang: 'en-US',                // language 'en-US', 'ko-KR', ...
@@ -1598,7 +1599,7 @@
         }).readAsDataURL(file);
       }).promise();
     };
-
+  
     /**
      * create `<image>` from url string
      *
@@ -2188,7 +2189,7 @@
        */
       this.wrapBodyInlineWithPara = function () {
         if (dom.isBodyContainer(sc) && dom.isEmpty(sc)) {
-          sc.innerHTML = dom.emptyPara;
+          sc.innerHTML = options.emptyPara;
           return new WrappedRange(sc.firstChild, 0);
         } else if (!dom.isInline(sc) || dom.isParaInline(sc)) {
           return this;
@@ -2416,7 +2417,7 @@
       // no paragraph: insert empty paragraph
       } else {
         var next = rng.sc.childNodes[rng.so];
-        nextPara = $(dom.emptyPara)[0];
+        nextPara = $(options.emptyPara)[0];
         if (next) {
           rng.sc.insertBefore(nextPara, next);
         } else {
@@ -2767,7 +2768,7 @@
     /**
      * handle tab key
      *
-     * @param {jQuery} $editable
+     * @param {jQuery} $editable 
      * @param {Object} options
      */
     this.tab = function ($editable, options) {
@@ -3020,7 +3021,7 @@
             if($target.parent('a').length){
                 $target.unwrap();
             }
-
+            
         };
       /**
          * create image link
@@ -3032,7 +3033,7 @@
         this.createImageLink = function ($editable, linkInfo, options, $target) {
             var linkUrl = linkInfo.url;
             var isNewWindow = linkInfo.newWindow;
-
+            
             recordUndo($editable);
             // Create a new link when there is no anchor on range.
             if($target.parent('a').length) {
@@ -3571,7 +3572,7 @@
   };
 
   /**
-   * Dialog
+   * Dialog 
    *
    * @class
    */
@@ -3622,13 +3623,13 @@
 
           $imageUrl.on('keyup paste', function (event) {
             var url;
-
+            
             if (event.type === 'paste') {
               url = event.originalEvent.clipboardData.getData('text');
             } else {
               url = $imageUrl.val();
             }
-
+            
             toggleBtn($imageBtn, url);
           }).val('').trigger('focus');
         }).one('hidden.bs.modal', function () {
@@ -3646,8 +3647,8 @@
     /**
      * Show video dialog and set event handlers on dialog controls.
      *
-     * @param {jQuery} $dialog
-     * @param {Object} videoInfo
+     * @param {jQuery} $dialog 
+     * @param {Object} videoInfo 
      * @return {Promise}
      */
     this.showVideoDialog = function ($editable, $dialog, videoInfo) {
@@ -3758,9 +3759,9 @@
 				var $linkUrl = $linkDialog.find('.note-link-url'),
 					$linkBtn = $linkDialog.find('.note-link-btn'),
 					$openInNewWindow = $linkDialog.find('input[type=checkbox]');
-
+                
                 $linkUrl.val(linkInfo.url);
-
+                
 				$linkDialog.one('shown.bs.modal', function () {
 
 					$linkUrl.keyup(function () {
@@ -3781,7 +3782,7 @@
 						$linkDialog.modal('hide');
 					});
 				}).one('hidden.bs.modal', function () {
-					// dettach events
+					// dettach events					
 					$linkUrl.off('keyup');
 					$linkBtn.off('click');
 
@@ -5342,7 +5343,7 @@
         $editable.attr('dir', options.direction);
       }
 
-      $editable.html(dom.html($holder) || dom.emptyPara);
+      $editable.html(dom.html($holder) || options.emptyPara);
 
       //031. create codable
       $('<textarea class="note-codable"></textarea>').prependTo($editor);
@@ -5520,7 +5521,7 @@
 
       return this;
     },
-    //
+    // 
 
     /**
      * get the HTML contents of note or set the HTML contents of note.
