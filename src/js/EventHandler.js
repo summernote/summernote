@@ -339,13 +339,12 @@ define([
           popover.update($popover, {image: target}, isAirMode);
         }).one('mouseup', function () {
           $document.off('mousemove');
+          editor.afterCommand($editable);
         });
 
         if (!$target.data('ratio')) { // original ratio.
           $target.data('ratio', $target.height() / $target.width());
         }
-
-        editor.afterCommand($editable);
       }
     };
 
