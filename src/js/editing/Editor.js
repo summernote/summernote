@@ -367,12 +367,10 @@ define([
      * @param {jQuery} $target
      */
     this.unlinkImageLink = function ($editable, value, $target) {
-
-      recordUndo($editable);
       if ($target.parent('a').length) {
         $target.unwrap();
       }
-
+      afterCommand($editable);
     };
     /**
      * create image link
@@ -384,9 +382,6 @@ define([
     this.createImageLink = function ($editable, linkInfo, options, $target) {
       var linkUrl = linkInfo.url;
       var isNewWindow = linkInfo.newWindow;
-
-      recordUndo($editable);
-
       var anchor;
       // Create a new link when there is no anchor on range.
       if ($target.parent('a').length) {
@@ -404,7 +399,7 @@ define([
         $target.wrap(anchor);
       }
 
-      triggerOnChange($editable);
+      afterCommand($editable);
     };
     /**
      * create link
