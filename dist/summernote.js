@@ -6,11 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
-<<<<<<< HEAD
- * Date: 2014-11-03T23:11Z
-=======
- * Date: 2014-11-03T23:33Z
->>>>>>> master
+ * Date: 2014-11-04T01:14Z
  */
 (function (factory) {
   /* global define */
@@ -22,7 +18,7 @@
     factory(window.jQuery);
   }
 }(function ($) {
-
+  
 
 
   if ('function' !== typeof Array.prototype.reduce) {
@@ -59,13 +55,13 @@
       if (this === void 0 || this === null) {
         throw new TypeError();
       }
-
+  
       var t = Object(this);
       var len = t.length >>> 0;
       if (typeof fun !== 'function') {
         throw new TypeError();
       }
-
+  
       var res = [];
       var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
       for (var i = 0; i < len; i++) {
@@ -76,7 +72,7 @@
           }
         }
       }
-
+  
       return res;
     };
   }
@@ -311,7 +307,7 @@
         return memo + fn(v);
       }, 0);
     };
-
+  
     /**
      * returns a copy of the collection with array type.
      * @param {Collection} collection - collection eg) node.childNodes, ...
@@ -323,7 +319,7 @@
       }
       return result;
     };
-
+  
     /**
      * cluster elements by predicate function.
      *
@@ -344,7 +340,7 @@
         return memo;
       }, [[head(array)]]);
     };
-
+  
     /**
      * returns a copy of the array with all falsy values removed
      *
@@ -398,7 +394,7 @@
       return array[idx - 1];
     };
 
-
+  
     return { head: head, last: last, initial: initial, tail: tail,
              prev: prev, next: next, find: find, contains: contains,
              all: all, sum: sum, from: from,
@@ -1603,7 +1599,7 @@
         }).readAsDataURL(file);
       }).promise();
     };
-
+  
     /**
      * create `<image>` from url string
      *
@@ -2771,6 +2767,7 @@
 
     /**
      * handle tab key
+     *
      * @param {jQuery} $editable
      * @param {WrappedRange} rng
      * @param {Number} tabsize
@@ -3020,58 +3017,6 @@
         afterCommand($editable);
       }
     };
-<<<<<<< HEAD
-      /**
-         * unlink image link
-         * @param {jQuery} $editable
-         * @param {jQuery} $target
-         */
-        this.unlinkImageLink = function ($editable, value, $target) {
-            /*
-            var rng = range.create();
-            if (rng.isOnAnchor()) {
-                recordUndo($editable);
-
-                var anchor = dom.ancestor(rng.sc, dom.isAnchor);
-                rng = range.createFromNode(anchor);
-                rng.select();
-                document.execCommand('unlink');
-            }
-            */
-            recordUndo($editable);
-            if($target.parent('a').length){
-                $target.unwrap();
-            }
-
-        };
-      /**
-         * create image link
-         *
-         * @param {jQuery} $editable
-         * @param {Object} linkInfo
-         * @param {jQuery} $target - target element
-         */
-        this.createImageLink = function ($editable, linkInfo, options, $target) {
-            var linkUrl = linkInfo.url;
-            var isNewWindow = linkInfo.newWindow;
-
-            recordUndo($editable);
-            // Create a new link when there is no anchor on range.
-            if($target.parent('a').length) {
-                var anchor = $target.parent('a');
-                anchor.attr({
-                    href: linkUrl,
-                    target: isNewWindow ? '_blank' : ''
-                });
-            } else {
-                var anchor = $('<a></a>');
-                $(anchor).attr({
-                    href: linkUrl,
-                    target: isNewWindow ? '_blank' : ''
-                });
-                $target.wrap(anchor);
-            }
-=======
     /**
      * unlink image link
      * @param {jQuery} $editable
@@ -3083,7 +3028,6 @@
       if ($target.parent('a').length) {
         $target.unwrap();
       }
->>>>>>> master
 
     };
     /**
@@ -4289,7 +4233,7 @@
 
         // before command: detect control selection element($target)
         var $target;
-        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'showImageLink', 'unlinkImageLink']) !== -1) {
+        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'imageShape', 'showImageLink', 'unlinkImageLink']) !== -1) {
           var $selection = layoutInfo.handle().find('.note-control-selection');
           $target = $($selection.data('target'));
         }
@@ -5598,7 +5542,7 @@
 
       return this;
     },
-    //
+    // 
 
     /**
      * get the HTML contents of note or set the HTML contents of note.
