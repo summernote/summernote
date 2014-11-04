@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-11-03T23:33Z
+ * Date: 2014-11-04T01:21Z
  */
 (function (factory) {
   /* global define */
@@ -3022,12 +3022,10 @@
      * @param {jQuery} $target
      */
     this.unlinkImageLink = function ($editable, value, $target) {
-
-      recordUndo($editable);
       if ($target.parent('a').length) {
         $target.unwrap();
       }
-
+      afterCommand($editable);
     };
     /**
      * create image link
@@ -3039,9 +3037,6 @@
     this.createImageLink = function ($editable, linkInfo, options, $target) {
       var linkUrl = linkInfo.url;
       var isNewWindow = linkInfo.newWindow;
-
-      recordUndo($editable);
-
       var anchor;
       // Create a new link when there is no anchor on range.
       if ($target.parent('a').length) {
@@ -3059,7 +3054,7 @@
         $target.wrap(anchor);
       }
 
-      triggerOnChange($editable);
+      afterCommand($editable);
     };
     /**
      * create link
@@ -4232,7 +4227,7 @@
 
         // before command: detect control selection element($target)
         var $target;
-        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'showImageLink', 'unlinkImageLink']) !== -1) {
+        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'imageShape', 'showImageLink', 'unlinkImageLink']) !== -1) {
           var $selection = layoutInfo.handle().find('.note-control-selection');
           $target = $($selection.data('target'));
         }
