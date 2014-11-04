@@ -28,6 +28,8 @@ define('summernote/settings', function () {
         lineNumbers: true
       },
 
+      emptyPara : '<p><br /></p>',
+
       // language
       lang: 'en-US',                // language 'en-US', 'ko-KR', ...
       direction: null,              // text direction, ex) 'rtl'
