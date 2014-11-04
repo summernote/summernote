@@ -28,20 +28,19 @@ define([
       var hide = options.hide;
 
       return '<button type="button"' +
-                 ' class="btn btn-default btn-sm btn-small' +
-                   (className ? ' ' + className : '') +
-                   (dropdown ? ' dropdown-toggle' : '') +
-                 '"' +
-                 (dropdown ? ' data-toggle="dropdown"' : '') +
-                 (title ? ' title="' + title + '"' : '') +
-                 (event ? ' data-event="' + event + '"' : '') +
-                 (value ? ' data-value=\'' + value + '\'' : '') +
-                 (hide ? ' data-hide=\'' + hide + '\'' : '') +
-                 ' tabindex="-1">' +
-               label +
-               (dropdown ? ' <span class="caret"></span>' : '') +
-             '</button>' +
-             (dropdown || '');
+                ' class="btn btn-default btn-sm btn-small' +
+                  (className ? ' ' + className : '') +
+                  (dropdown ? ' dropdown-toggle' : '') +
+                '"' +
+                (dropdown ? ' data-toggle="dropdown"' : '') +
+                (title ? ' title="' + title + '"' : '') +
+                (event ? ' data-event="' + event + '"' : '') +
+                (value ? ' data-value=\'' + value + '\'' : '') +
+                ' tabindex="-1">' +
+              label +
+              (dropdown ? ' <span class="caret"></span>' : '') +
+            '</button>' +
+            (dropdown || '');
     };
 
     /**
@@ -67,11 +66,11 @@ define([
      */
     var tplPopover = function (className, content) {
       return '<div class="' + className + ' popover bottom in" style="display: none;">' +
-               '<div class="arrow"></div>' +
-               '<div class="popover-content">' +
-                 content +
-               '</div>' +
-             '</div>';
+              '<div class="arrow"></div>' +
+              '<div class="popover-content">' +
+                content +
+              '</div>' +
+            '</div>';
     };
 
     /**
@@ -86,23 +85,23 @@ define([
       return '<div class="' + className + ' modal" aria-hidden="false">' +
                '<div class="modal-dialog">' +
                  '<div class="modal-content">' +
-                   (title ?
-                   '<div class="modal-header">' +
+                 (title ?
+                     '<div class="modal-header">' +
                      '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
                      '<h4 class="modal-title">' + title + '</h4>' +
-                   '</div>' : ''
-                   ) +
-                   '<form class="note-modal-form">' +
-                     '<div class="modal-body">' +
-                       '<div class="row-fluid">' + body + '</div>' +
-                     '</div>' +
-                     (footer ?
+                     '</div>' : ''
+                ) +
+                 '<form class="note-modal-form">' +
+                   '<div class="modal-body">' +
+                     '<div class="row-fluid">' + body + '</div>' +
+                   '</div>' +
+                   (footer ?
                      '<div class="modal-footer">' + footer + '</div>' : ''
-                     ) +
-                   '</form>' +
-                 '</div>' +
+                   ) +
+                 '</form>' +
                '</div>' +
-             '</div>';
+             '</div>' +
+           '</div>';
     };
 
     var tplButtonInfo = {
@@ -149,7 +148,7 @@ define([
                      (v === 'p' || v === 'pre') ? label :
                      '<' + v + '>' + label + '</' + v + '>'
                    ) +
-                 '</a></li>';
+                   '</a></li>';
         }, '');
 
         return tplIconButton('fa fa-magic icon-magic', {
@@ -208,7 +207,7 @@ define([
                            '<div class="btn-group">' +
                              '<div class="note-palette-title">' + lang.color.foreground + '</div>' +
                              '<div class="note-color-reset" data-event="foreColor" data-value="inherit" title="' + lang.color.reset + '">' +
-                               lang.color.resetToDefault +
+                              lang.color.resetToDefault +
                              '</div>' +
                              '<div class="note-color-palette" data-target-event="foreColor"></div>' +
                            '</div>' +
@@ -310,7 +309,7 @@ define([
                          '<div class="note-list btn-group">' +
                            indentButton + outdentButton +
                          '</div>' +
-                       '</div>';
+                        '</div>';
 
         return tplIconButton('fa fa-align-left icon-align-left', {
           title: lang.paragraph.paragraph,
@@ -441,6 +440,17 @@ define([
           value: ''
         });
 
+        var linkButton = tplIconButton('fa fa-edit icon-edit', {
+          title: lang.link.edit,
+          event: 'showImageLinkDialog',
+          value: 'none'
+        });
+        var unlinkButton = tplIconButton('fa fa-unlink icon-unlink', {
+          title: lang.link.unlink,
+          event: 'unlinkImageLink',
+          value: 'none'
+        });
+
         var removeButton = tplIconButton('fa fa-trash-o icon-trash', {
           title: lang.image.remove,
           event: 'removeMedia',
@@ -450,6 +460,7 @@ define([
         var content = '<div class="btn-group">' + fullButton + halfButton + quarterButton + '</div>' +
                       '<div class="btn-group">' + leftButton + rightButton + justifyButton + '</div>' +
                       '<div class="btn-group">' + roundedButton + circleButton + thumbnailButton + noneButton + '</div>' +
+                      '<div class="btn-group">' + linkButton + unlinkButton + '</div>' +
                       '<div class="btn-group">' + removeButton + '</div>';
         return tplPopover('note-image-popover', content);
       };
@@ -471,7 +482,7 @@ define([
       return '<div class="note-popover">' +
                tplLinkPopover() +
                tplImagePopover() +
-               (options.airMode ?  tplAirPopover() : '') +
+               (options.airMode ? tplAirPopover() : '') +
              '</div>';
     };
 
@@ -643,6 +654,7 @@ define([
 
       return '<div class="note-dialog">' +
                tplImageDialog() +
+               tplImageLinkDialog() +
                tplLinkDialog() +
                tplVideoDialog() +
                tplHelpDialog() +
@@ -862,9 +874,7 @@ define([
      * @param {Object} options
      */
     this.createLayout = function ($holder, options) {
-      if (this.noteEditorFromHolder($holder).length) {
-        return;
-      }
+      if (this.noteEditorFromHolder($holder).length) { return; }
 
       if (options.airMode) {
         this.createLayoutByAirMode($holder, options);
@@ -881,7 +891,9 @@ define([
      */
     this.layoutInfoFromHolder = function ($holder) {
       var $editor = this.noteEditorFromHolder($holder);
-      if (!$editor.length) { return; }
+      if (!$editor.length) {
+        return;
+      }
 
       var layoutInfo = dom.buildLayoutInfo($editor);
       // cache all properties.

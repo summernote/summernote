@@ -6,7 +6,11 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
+<<<<<<< HEAD
  * Date: 2014-11-03T23:11Z
+=======
+ * Date: 2014-11-03T23:33Z
+>>>>>>> master
  */
 (function (factory) {
   /* global define */
@@ -18,7 +22,7 @@
     factory(window.jQuery);
   }
 }(function ($) {
-  
+
 
 
   if ('function' !== typeof Array.prototype.reduce) {
@@ -55,13 +59,13 @@
       if (this === void 0 || this === null) {
         throw new TypeError();
       }
-  
+
       var t = Object(this);
       var len = t.length >>> 0;
       if (typeof fun !== 'function') {
         throw new TypeError();
       }
-  
+
       var res = [];
       var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
       for (var i = 0; i < len; i++) {
@@ -72,7 +76,7 @@
           }
         }
       }
-  
+
       return res;
     };
   }
@@ -307,7 +311,7 @@
         return memo + fn(v);
       }, 0);
     };
-  
+
     /**
      * returns a copy of the collection with array type.
      * @param {Collection} collection - collection eg) node.childNodes, ...
@@ -319,7 +323,7 @@
       }
       return result;
     };
-  
+
     /**
      * cluster elements by predicate function.
      *
@@ -340,7 +344,7 @@
         return memo;
       }, [[head(array)]]);
     };
-  
+
     /**
      * returns a copy of the array with all falsy values removed
      *
@@ -394,7 +398,7 @@
       return array[idx - 1];
     };
 
-  
+
     return { head: head, last: last, initial: initial, tail: tail,
              prev: prev, next: next, find: find, contains: contains,
              all: all, sum: sum, from: from,
@@ -1599,7 +1603,7 @@
         }).readAsDataURL(file);
       }).promise();
     };
-  
+
     /**
      * create `<image>` from url string
      *
@@ -2767,8 +2771,24 @@
 
     /**
      * handle tab key
-     *
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
+     * @param {WrappedRange} rng
+     * @param {Number} tabsize
+     */
+    var insertTab = function ($editable, rng, tabsize) {
+      recordUndo($editable);
+
+      var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
+      rng = rng.deleteContents();
+      rng.insertNode(tab, true);
+
+      rng = range.create(tab, tabsize);
+      rng.select();
+    };
+
+    /**
+     * handle tab key
+     * @param {jQuery} $editable
      * @param {Object} options
      */
     this.tab = function ($editable, options) {
@@ -3000,6 +3020,7 @@
         afterCommand($editable);
       }
     };
+<<<<<<< HEAD
       /**
          * unlink image link
          * @param {jQuery} $editable
@@ -3021,7 +3042,7 @@
             if($target.parent('a').length){
                 $target.unwrap();
             }
-            
+
         };
       /**
          * create image link
@@ -3033,7 +3054,7 @@
         this.createImageLink = function ($editable, linkInfo, options, $target) {
             var linkUrl = linkInfo.url;
             var isNewWindow = linkInfo.newWindow;
-            
+
             recordUndo($editable);
             // Create a new link when there is no anchor on range.
             if($target.parent('a').length) {
@@ -3050,10 +3071,53 @@
                 });
                 $target.wrap(anchor);
             }
+=======
+    /**
+     * unlink image link
+     * @param {jQuery} $editable
+     * @param {jQuery} $target
+     */
+    this.unlinkImageLink = function ($editable, value, $target) {
 
-            //range.createFromNode(anchor).select();
-            triggerOnChange($editable);
-        };
+      recordUndo($editable);
+      if ($target.parent('a').length) {
+        $target.unwrap();
+      }
+>>>>>>> master
+
+    };
+    /**
+     * create image link
+     *
+     * @param {jQuery} $editable
+     * @param {Object} linkInfo
+     * @param {jQuery} $target - target element
+     */
+    this.createImageLink = function ($editable, linkInfo, options, $target) {
+      var linkUrl = linkInfo.url;
+      var isNewWindow = linkInfo.newWindow;
+
+      recordUndo($editable);
+
+      var anchor;
+      // Create a new link when there is no anchor on range.
+      if ($target.parent('a').length) {
+        anchor = $target.parent('a');
+        anchor.attr({
+          href: linkUrl,
+          target: isNewWindow ? '_blank' : ''
+        });
+      } else {
+        anchor = $('<a></a>');
+        $(anchor).attr({
+          href: linkUrl,
+          target: isNewWindow ? '_blank' : ''
+        });
+        $target.wrap(anchor);
+      }
+
+      triggerOnChange($editable);
+    };
     /**
      * create link
      *
@@ -3572,7 +3636,7 @@
   };
 
   /**
-   * Dialog 
+   * Dialog
    *
    * @class
    */
@@ -3623,13 +3687,13 @@
 
           $imageUrl.on('keyup paste', function (event) {
             var url;
-            
+
             if (event.type === 'paste') {
               url = event.originalEvent.clipboardData.getData('text');
             } else {
               url = $imageUrl.val();
             }
-            
+
             toggleBtn($imageBtn, url);
           }).val('').trigger('focus');
         }).one('hidden.bs.modal', function () {
@@ -3647,8 +3711,8 @@
     /**
      * Show video dialog and set event handlers on dialog controls.
      *
-     * @param {jQuery} $dialog 
-     * @param {Object} videoInfo 
+     * @param {jQuery} $dialog
+     * @param {Object} videoInfo
      * @return {Promise}
      */
     this.showVideoDialog = function ($editable, $dialog, videoInfo) {
@@ -3692,9 +3756,9 @@
         var $linkDialog = $dialog.find('.note-link-dialog');
 
         var $linkText = $linkDialog.find('.note-link-text'),
-        $linkUrl = $linkDialog.find('.note-link-url'),
-        $linkBtn = $linkDialog.find('.note-link-btn'),
-        $openInNewWindow = $linkDialog.find('input[type=checkbox]');
+            $linkUrl = $linkDialog.find('.note-link-url'),
+            $linkBtn = $linkDialog.find('.note-link-btn'),
+            $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
         $linkDialog.one('shown.bs.modal', function () {
           $linkText.val(linkInfo.text);
@@ -3759,9 +3823,9 @@
 				var $linkUrl = $linkDialog.find('.note-link-url'),
 					$linkBtn = $linkDialog.find('.note-link-btn'),
 					$openInNewWindow = $linkDialog.find('input[type=checkbox]');
-                
+
                 $linkUrl.val(linkInfo.url);
-                
+
 				$linkDialog.one('shown.bs.modal', function () {
 
 					$linkUrl.keyup(function () {
@@ -3782,7 +3846,7 @@
 						$linkDialog.modal('hide');
 					});
 				}).one('hidden.bs.modal', function () {
-					// dettach events					
+					// dettach events
 					$linkUrl.off('keyup');
 					$linkBtn.off('click');
 
@@ -3928,7 +3992,6 @@
           editor.restoreRange($editable);
         });
       },
-
       /**
        * @param {Object} layoutInfo
        */
@@ -4008,9 +4071,9 @@
 
       fullscreen: function (layoutInfo) {
         var $editor = layoutInfo.editor(),
-        $toolbar = layoutInfo.toolbar(),
-        $editable = layoutInfo.editable(),
-        $codable = layoutInfo.codable();
+            $toolbar = layoutInfo.toolbar(),
+            $editable = layoutInfo.editable(),
+            $codable = layoutInfo.codable();
 
         var options = $editor.data('options');
 
@@ -4050,10 +4113,10 @@
 
       codeview: function (layoutInfo) {
         var $editor = layoutInfo.editor(),
-        $toolbar = layoutInfo.toolbar(),
-        $editable = layoutInfo.editable(),
-        $codable = layoutInfo.codable(),
-        $popover = layoutInfo.popover();
+            $toolbar = layoutInfo.toolbar(),
+            $editable = layoutInfo.editable(),
+            $codable = layoutInfo.codable(),
+            $popover = layoutInfo.popover();
 
         var options = $editor.data('options');
 
@@ -4172,12 +4235,14 @@
         event.stopPropagation();
 
         var layoutInfo = makeLayoutInfo(event.target),
-            $handle = layoutInfo.handle(), $popover = layoutInfo.popover(),
+            $handle = layoutInfo.handle(),
+            $popover = layoutInfo.popover(),
             $editable = layoutInfo.editable(),
             $editor = layoutInfo.editor();
 
         var target = $handle.find('.note-control-selection').data('target'),
-            $target = $(target), posStart = $target.offset(),
+            $target = $(target),
+            posStart = $target.offset(),
             scrollTop = $document.scrollTop();
 
         var isAirMode = $editor.data('options').airMode;
@@ -4224,7 +4289,7 @@
 
         // before command: detect control selection element($target)
         var $target;
-        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'showImageLink','unlinkImageLink']) !== -1) {
+        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'showImageLink', 'unlinkImageLink']) !== -1) {
           var $selection = layoutInfo.handle().find('.note-control-selection');
           $target = $($selection.data('target'));
         }
@@ -4314,11 +4379,11 @@
       $catcher.attr('data-value', dim.c + 'x' + dim.r);
 
       if (3 < dim.c && dim.c < options.insertTableMaxSize.col) {
-        $unhighlighted.css({ width: dim.c + 1 + 'em'});
+        $unhighlighted.css({ width: dim.c + 1 + 'em' });
       }
 
       if (3 < dim.r && dim.r < options.insertTableMaxSize.row) {
-        $unhighlighted.css({ height: dim.r + 1 + 'em'});
+        $unhighlighted.css({ height: dim.r + 1 + 'em' });
       }
 
       $dimensionDisplay.html(dim.c + ' x ' + dim.r);
@@ -4577,20 +4642,19 @@
       var hide = options.hide;
 
       return '<button type="button"' +
-                 ' class="btn btn-default btn-sm btn-small' +
-                   (className ? ' ' + className : '') +
-                   (dropdown ? ' dropdown-toggle' : '') +
-                 '"' +
-                 (dropdown ? ' data-toggle="dropdown"' : '') +
-                 (title ? ' title="' + title + '"' : '') +
-                 (event ? ' data-event="' + event + '"' : '') +
-                 (value ? ' data-value=\'' + value + '\'' : '') +
-                 (hide ? ' data-hide=\'' + hide + '\'' : '') +
-                 ' tabindex="-1">' +
-               label +
-               (dropdown ? ' <span class="caret"></span>' : '') +
-             '</button>' +
-             (dropdown || '');
+                ' class="btn btn-default btn-sm btn-small' +
+                  (className ? ' ' + className : '') +
+                  (dropdown ? ' dropdown-toggle' : '') +
+                '"' +
+                (dropdown ? ' data-toggle="dropdown"' : '') +
+                (title ? ' title="' + title + '"' : '') +
+                (event ? ' data-event="' + event + '"' : '') +
+                (value ? ' data-value=\'' + value + '\'' : '') +
+                ' tabindex="-1">' +
+              label +
+              (dropdown ? ' <span class="caret"></span>' : '') +
+            '</button>' +
+            (dropdown || '');
     };
 
     /**
@@ -4616,11 +4680,11 @@
      */
     var tplPopover = function (className, content) {
       return '<div class="' + className + ' popover bottom in" style="display: none;">' +
-               '<div class="arrow"></div>' +
-               '<div class="popover-content">' +
-                 content +
-               '</div>' +
-             '</div>';
+              '<div class="arrow"></div>' +
+              '<div class="popover-content">' +
+                content +
+              '</div>' +
+            '</div>';
     };
 
     /**
@@ -4635,23 +4699,23 @@
       return '<div class="' + className + ' modal" aria-hidden="false">' +
                '<div class="modal-dialog">' +
                  '<div class="modal-content">' +
-                   (title ?
-                   '<div class="modal-header">' +
+                 (title ?
+                     '<div class="modal-header">' +
                      '<button type="button" class="close" aria-hidden="true" tabindex="-1">&times;</button>' +
                      '<h4 class="modal-title">' + title + '</h4>' +
-                   '</div>' : ''
-                   ) +
-                   '<form class="note-modal-form">' +
-                     '<div class="modal-body">' +
-                       '<div class="row-fluid">' + body + '</div>' +
-                     '</div>' +
-                     (footer ?
+                     '</div>' : ''
+                ) +
+                 '<form class="note-modal-form">' +
+                   '<div class="modal-body">' +
+                     '<div class="row-fluid">' + body + '</div>' +
+                   '</div>' +
+                   (footer ?
                      '<div class="modal-footer">' + footer + '</div>' : ''
-                     ) +
-                   '</form>' +
-                 '</div>' +
+                   ) +
+                 '</form>' +
                '</div>' +
-             '</div>';
+             '</div>' +
+           '</div>';
     };
 
     var tplButtonInfo = {
@@ -4698,7 +4762,7 @@
                      (v === 'p' || v === 'pre') ? label :
                      '<' + v + '>' + label + '</' + v + '>'
                    ) +
-                 '</a></li>';
+                   '</a></li>';
         }, '');
 
         return tplIconButton('fa fa-magic icon-magic', {
@@ -4757,7 +4821,7 @@
                            '<div class="btn-group">' +
                              '<div class="note-palette-title">' + lang.color.foreground + '</div>' +
                              '<div class="note-color-reset" data-event="foreColor" data-value="inherit" title="' + lang.color.reset + '">' +
-                               lang.color.resetToDefault +
+                              lang.color.resetToDefault +
                              '</div>' +
                              '<div class="note-color-palette" data-target-event="foreColor"></div>' +
                            '</div>' +
@@ -4859,7 +4923,7 @@
                          '<div class="note-list btn-group">' +
                            indentButton + outdentButton +
                          '</div>' +
-                       '</div>';
+                        '</div>';
 
         return tplIconButton('fa fa-align-left icon-align-left', {
           title: lang.paragraph.paragraph,
@@ -4990,6 +5054,17 @@
           value: ''
         });
 
+        var linkButton = tplIconButton('fa fa-edit icon-edit', {
+          title: lang.link.edit,
+          event: 'showImageLinkDialog',
+          value: 'none'
+        });
+        var unlinkButton = tplIconButton('fa fa-unlink icon-unlink', {
+          title: lang.link.unlink,
+          event: 'unlinkImageLink',
+          value: 'none'
+        });
+
         var removeButton = tplIconButton('fa fa-trash-o icon-trash', {
           title: lang.image.remove,
           event: 'removeMedia',
@@ -4999,6 +5074,7 @@
         var content = '<div class="btn-group">' + fullButton + halfButton + quarterButton + '</div>' +
                       '<div class="btn-group">' + leftButton + rightButton + justifyButton + '</div>' +
                       '<div class="btn-group">' + roundedButton + circleButton + thumbnailButton + noneButton + '</div>' +
+                      '<div class="btn-group">' + linkButton + unlinkButton + '</div>' +
                       '<div class="btn-group">' + removeButton + '</div>';
         return tplPopover('note-image-popover', content);
       };
@@ -5020,7 +5096,7 @@
       return '<div class="note-popover">' +
                tplLinkPopover() +
                tplImagePopover() +
-               (options.airMode ?  tplAirPopover() : '') +
+               (options.airMode ? tplAirPopover() : '') +
              '</div>';
     };
 
@@ -5192,6 +5268,7 @@
 
       return '<div class="note-dialog">' +
                tplImageDialog() +
+               tplImageLinkDialog() +
                tplLinkDialog() +
                tplVideoDialog() +
                tplHelpDialog() +
@@ -5411,9 +5488,7 @@
      * @param {Object} options
      */
     this.createLayout = function ($holder, options) {
-      if (this.noteEditorFromHolder($holder).length) {
-        return;
-      }
+      if (this.noteEditorFromHolder($holder).length) { return; }
 
       if (options.airMode) {
         this.createLayoutByAirMode($holder, options);
@@ -5430,7 +5505,9 @@
      */
     this.layoutInfoFromHolder = function ($holder) {
       var $editor = this.noteEditorFromHolder($holder);
-      if (!$editor.length) { return; }
+      if (!$editor.length) {
+        return;
+      }
 
       var layoutInfo = dom.buildLayoutInfo($editor);
       // cache all properties.
@@ -5521,7 +5598,7 @@
 
       return this;
     },
-    // 
+    //
 
     /**
      * get the HTML contents of note or set the HTML contents of note.

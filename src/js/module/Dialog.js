@@ -1,6 +1,6 @@
 define('summernote/module/Dialog', function () {
   /**
-   * Dialog 
+   * Dialog
    *
    * @class
    */
@@ -51,13 +51,13 @@ define('summernote/module/Dialog', function () {
 
           $imageUrl.on('keyup paste', function (event) {
             var url;
-            
+
             if (event.type === 'paste') {
               url = event.originalEvent.clipboardData.getData('text');
             } else {
               url = $imageUrl.val();
             }
-            
+
             toggleBtn($imageBtn, url);
           }).val('').trigger('focus');
         }).one('hidden.bs.modal', function () {
@@ -75,8 +75,8 @@ define('summernote/module/Dialog', function () {
     /**
      * Show video dialog and set event handlers on dialog controls.
      *
-     * @param {jQuery} $dialog 
-     * @param {Object} videoInfo 
+     * @param {jQuery} $dialog
+     * @param {Object} videoInfo
      * @return {Promise}
      */
     this.showVideoDialog = function ($editable, $dialog, videoInfo) {
@@ -120,9 +120,9 @@ define('summernote/module/Dialog', function () {
         var $linkDialog = $dialog.find('.note-link-dialog');
 
         var $linkText = $linkDialog.find('.note-link-text'),
-        $linkUrl = $linkDialog.find('.note-link-url'),
-        $linkBtn = $linkDialog.find('.note-link-btn'),
-        $openInNewWindow = $linkDialog.find('input[type=checkbox]');
+            $linkUrl = $linkDialog.find('.note-link-url'),
+            $linkBtn = $linkDialog.find('.note-link-btn'),
+            $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
         $linkDialog.one('shown.bs.modal', function () {
           $linkText.val(linkInfo.text);
@@ -187,9 +187,9 @@ define('summernote/module/Dialog', function () {
 				var $linkUrl = $linkDialog.find('.note-link-url'),
 					$linkBtn = $linkDialog.find('.note-link-btn'),
 					$openInNewWindow = $linkDialog.find('input[type=checkbox]');
-                
+
                 $linkUrl.val(linkInfo.url);
-                
+
 				$linkDialog.one('shown.bs.modal', function () {
 
 					$linkUrl.keyup(function () {
@@ -210,7 +210,7 @@ define('summernote/module/Dialog', function () {
 						$linkDialog.modal('hide');
 					});
 				}).one('hidden.bs.modal', function () {
-					// dettach events					
+					// dettach events
 					$linkUrl.off('keyup');
 					$linkBtn.off('click');
 
