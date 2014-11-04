@@ -28,6 +28,8 @@ define('summernote/settings', function () {
         lineNumbers: true
       },
 
+      emptyPara : '<p><br /></p>',
+
       // language
       lang: 'en-US',                // language 'en-US', 'ko-KR', ...
       direction: null,              // text direction, ex) 'rtl'
@@ -116,6 +118,13 @@ define('summernote/settings', function () {
       onImageUpload: null,      // imageUpload
       onImageUploadError: null, // imageUploadError
       onToolbarClick: null,
+
+      // custom dialogs
+      showLinkDialog: null,
+      showImageLinkDialog: null,
+      showImageDialog: null,
+      showVideoDialog: null,
+      showHelpDialog: null,
 
       /**
        * manipulate link address when user create link
@@ -225,6 +234,9 @@ define('summernote/settings', function () {
           shapeNone: 'Shape: None',
           dragImageHere: 'Drag an image here',
           selectFromFiles: 'Select from files',
+          link: 'Link',
+          insertLink: 'Link Image',
+          unlink: 'Unlink',
           url: 'Image URL',
           remove: 'Remove Image'
         },

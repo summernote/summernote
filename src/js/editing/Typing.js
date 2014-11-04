@@ -6,7 +6,7 @@ define([
   var Typing = function () {
 
     /**
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      * @param {WrappedRange} rng
      * @param {Number} tabsize
      */
@@ -48,7 +48,7 @@ define([
       // no paragraph: insert empty paragraph
       } else {
         var next = rng.sc.childNodes[rng.so];
-        nextPara = $(dom.emptyPara)[0];
+        nextPara = $(options.emptyPara)[0];
         if (next) {
           rng.sc.insertBefore(nextPara, next);
         } else {

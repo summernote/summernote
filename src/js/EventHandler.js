@@ -90,7 +90,8 @@ define([
         var options = $editor.data('options');
 
         editor.saveRange($editable);
-        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
+        var showLinkDialogFunc = (options.showLinkDialog !== null) ? options.showLinkDialog : dialog.showLinkDialog;
+        showLinkDialogFunc($editable, $dialog, linkInfo).then(function (linkInfo) {
           editor.restoreRange($editable);
           editor.createLink($editable, linkInfo, options);
           // hide popover after creating link
@@ -99,16 +100,56 @@ define([
           editor.restoreRange($editable);
         });
       },
+      /**
+      * @param {Object} layoutInfo
+      */
+      showImageLinkDialog: function (layoutInfo) {
+        var $editor = layoutInfo.editor(),
+            $dialog = layoutInfo.dialog(),
+            $editable = layoutInfo.editable(),
+            $handle = layoutInfo.handle(),
+            linkInfo = editor.getLinkInfo($editable);
 
+        var options = $editor.data('options'),
+            target = $handle.find('.note-control-selection').data('target'),
+            $target = $(target);
+
+        editor.saveRange($editable);
+        var showImageLinkDialogFunc = (options.showImageLinkDialog !== null) ? options.showImageLinkDialog : dialog.showImageLinkDialog;
+        showImageLinkDialogFunc($editable, $dialog, linkInfo).then(function (linkInfo) {
+          editor.restoreRange($editable);
+          editor.createImageLink($editable, linkInfo, options, $target);
+          // hide popover after creating link
+          popover.hide(layoutInfo.popover());
+        }).fail(function () {
+          editor.restoreRange($editable);
+        });
+      },
       /**
        * @param {Object} layoutInfo
        */
+      unlinkImageLink: function (layoutInfo) {
+        var $editor = layoutInfo.editor(),
+            $handle = layoutInfo.handle(),
+            target = $handle.find('.note-control-selection').data('target'),
+            $target = $(target);
+
+            editor.saveRange($editable);
+            editor.unlinkImageLink($editable, $target);
+      },
+      /**
+        * @param {Object} layoutInfo
+        */
       showImageDialog: function (layoutInfo) {
         var $dialog = layoutInfo.dialog(),
-            $editable = layoutInfo.editable();
+            $editable = layoutInfo.editable(),
+            $editor = layoutInfo.editor();
+
+        var options = $editor.data('options');
 
         editor.saveRange($editable);
-        dialog.showImageDialog($editable, $dialog).then(function (data) {
+        var showImageDialogFunc = (options.showImageDialog !== null) ? options.showImageDialog : dialog.showImageDialog;
+        showImageDialogFunc($editable, $dialog).then(function (data) {
           editor.restoreRange($editable);
 
           if (typeof data === 'string') {
@@ -129,10 +170,13 @@ define([
       showVideoDialog: function (layoutInfo) {
         var $dialog = layoutInfo.dialog(),
             $editable = layoutInfo.editable(),
-            videoInfo = editor.getVideoInfo($editable);
+            videoInfo = editor.getVideoInfo($editable),
+            $editor = layoutInfo.editor();
+        var options = $editor.data('options');
 
         editor.saveRange($editable);
-        dialog.showVideoDialog($editable, $dialog, videoInfo).then(function (sUrl) {
+        var showVideoDialogFunc = (options.showVideoDialog !== null) ? options.showVideoDialog : dialog.showVideoDialog;
+        showVideoDialogFunc($editable, $dialog, videoInfo).then(function (sUrl) {
           editor.restoreRange($editable);
           editor.insertVideo($editable, sUrl);
         }).fail(function () {
@@ -145,19 +189,23 @@ define([
        */
       showHelpDialog: function (layoutInfo) {
         var $dialog = layoutInfo.dialog(),
-            $editable = layoutInfo.editable();
+            $editable = layoutInfo.editable(),
+            $editor = layoutInfo.editor();
+
+        var options = $editor.data('options');
 
         editor.saveRange($editable, true);
-        dialog.showHelpDialog($editable, $dialog).then(function () {
+        var showHelpDialogFunc = (options.showHelpDialog !== null) ? options.showHelpDialog : dialog.showHelpDialog;
+        showHelpDialogFunc($editable, $dialog).then(function () {
           editor.restoreRange($editable);
         });
       },
 
       fullscreen: function (layoutInfo) {
         var $editor = layoutInfo.editor(),
-        $toolbar = layoutInfo.toolbar(),
-        $editable = layoutInfo.editable(),
-        $codable = layoutInfo.codable();
+            $toolbar = layoutInfo.toolbar(),
+            $editable = layoutInfo.editable(),
+            $codable = layoutInfo.codable();
 
         var options = $editor.data('options');
 
@@ -197,10 +245,10 @@ define([
 
       codeview: function (layoutInfo) {
         var $editor = layoutInfo.editor(),
-        $toolbar = layoutInfo.toolbar(),
-        $editable = layoutInfo.editable(),
-        $codable = layoutInfo.codable(),
-        $popover = layoutInfo.popover();
+            $toolbar = layoutInfo.toolbar(),
+            $editable = layoutInfo.editable(),
+            $codable = layoutInfo.codable(),
+            $popover = layoutInfo.popover();
 
         var options = $editor.data('options');
 
@@ -319,12 +367,14 @@ define([
         event.stopPropagation();
 
         var layoutInfo = makeLayoutInfo(event.target),
-            $handle = layoutInfo.handle(), $popover = layoutInfo.popover(),
+            $handle = layoutInfo.handle(),
+            $popover = layoutInfo.popover(),
             $editable = layoutInfo.editable(),
             $editor = layoutInfo.editor();
 
         var target = $handle.find('.note-control-selection').data('target'),
-            $target = $(target), posStart = $target.offset(),
+            $target = $(target),
+            posStart = $target.offset(),
             scrollTop = $document.scrollTop();
 
         var isAirMode = $editor.data('options').airMode;
@@ -371,7 +421,7 @@ define([
 
         // before command: detect control selection element($target)
         var $target;
-        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'imageShape']) !== -1) {
+        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'imageShape', 'showImageLink', 'unlinkImageLink']) !== -1) {
           var $selection = layoutInfo.handle().find('.note-control-selection');
           $target = $($selection.data('target'));
         }
@@ -381,7 +431,7 @@ define([
         if (hide) {
           $btn.parents('.popover').hide();
         }
-        
+
         if (editor[eventName]) { // on command
           var $editable = layoutInfo.editable();
           $editable.trigger('focus');
@@ -461,11 +511,11 @@ define([
       $catcher.attr('data-value', dim.c + 'x' + dim.r);
 
       if (3 < dim.c && dim.c < options.insertTableMaxSize.col) {
-        $unhighlighted.css({ width: dim.c + 1 + 'em'});
+        $unhighlighted.css({ width: dim.c + 1 + 'em' });
       }
 
       if (3 < dim.r && dim.r < options.insertTableMaxSize.row) {
-        $unhighlighted.css({ height: dim.r + 1 + 'em'});
+        $unhighlighted.css({ height: dim.r + 1 + 'em' });
       }
 
       $dimensionDisplay.html(dim.c + ' x ' + dim.r);

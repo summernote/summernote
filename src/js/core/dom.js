@@ -511,7 +511,7 @@ define([
 
     /**
      * returns whether point is visible (can set cursor) or not.
-     * 
+     *
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
@@ -760,7 +760,7 @@ define([
     var isTextarea = makePredByNodeName('TEXTAREA');
 
     /**
-     * get the HTML contents of node 
+     * get the HTML contents of node
      *
      * @param {jQuery} $node
      * @param {Boolean} [isNewlineOnBlock]
@@ -794,7 +794,6 @@ define([
       NBSP_CHAR: NBSP_CHAR,
       ZERO_WIDTH_NBSP_CHAR: ZERO_WIDTH_NBSP_CHAR,
       blank: blankHTML,
-      emptyPara: '<p>' + blankHTML + '</p>',
       isEditable: isEditable,
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
