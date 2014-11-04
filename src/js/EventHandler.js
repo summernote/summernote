@@ -172,7 +172,6 @@ define([
             $editable = layoutInfo.editable(),
             videoInfo = editor.getVideoInfo($editable),
             $editor = layoutInfo.editor();
-
         var options = $editor.data('options');
 
         editor.saveRange($editable);

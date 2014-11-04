@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-11-04T01:21Z
+ * Date: 2014-11-04T01:24Z
  */
 (function (factory) {
   /* global define */
@@ -3977,7 +3977,6 @@
             $editable = layoutInfo.editable(),
             videoInfo = editor.getVideoInfo($editable),
             $editor = layoutInfo.editor();
-
         var options = $editor.data('options');
 
         editor.saveRange($editable);
@@ -4580,19 +4579,20 @@
       var hide = options.hide;
 
       return '<button type="button"' +
-                ' class="btn btn-default btn-sm btn-small' +
-                  (className ? ' ' + className : '') +
-                  (dropdown ? ' dropdown-toggle' : '') +
-                '"' +
-                (dropdown ? ' data-toggle="dropdown"' : '') +
-                (title ? ' title="' + title + '"' : '') +
-                (event ? ' data-event="' + event + '"' : '') +
-                (value ? ' data-value=\'' + value + '\'' : '') +
-                ' tabindex="-1">' +
-              label +
-              (dropdown ? ' <span class="caret"></span>' : '') +
-            '</button>' +
-            (dropdown || '');
+                 ' class="btn btn-default btn-sm btn-small' +
+                   (className ? ' ' + className : '') +
+                   (dropdown ? ' dropdown-toggle' : '') +
+                 '"' +
+                 (dropdown ? ' data-toggle="dropdown"' : '') +
+                 (title ? ' title="' + title + '"' : '') +
+                 (event ? ' data-event="' + event + '"' : '') +
+                 (value ? ' data-value=\'' + value + '\'' : '') +
+                 (hide ? ' data-hide=\'' + hide + '\'' : '') +
+                 ' tabindex="-1">' +
+               label +
+               (dropdown ? ' <span class="caret"></span>' : '') +
+             '</button>' +
+             (dropdown || '');
     };
 
     /**

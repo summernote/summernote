@@ -28,19 +28,20 @@ define([
       var hide = options.hide;
 
       return '<button type="button"' +
-                ' class="btn btn-default btn-sm btn-small' +
-                  (className ? ' ' + className : '') +
-                  (dropdown ? ' dropdown-toggle' : '') +
-                '"' +
-                (dropdown ? ' data-toggle="dropdown"' : '') +
-                (title ? ' title="' + title + '"' : '') +
-                (event ? ' data-event="' + event + '"' : '') +
-                (value ? ' data-value=\'' + value + '\'' : '') +
-                ' tabindex="-1">' +
-              label +
-              (dropdown ? ' <span class="caret"></span>' : '') +
-            '</button>' +
-            (dropdown || '');
+                 ' class="btn btn-default btn-sm btn-small' +
+                   (className ? ' ' + className : '') +
+                   (dropdown ? ' dropdown-toggle' : '') +
+                 '"' +
+                 (dropdown ? ' data-toggle="dropdown"' : '') +
+                 (title ? ' title="' + title + '"' : '') +
+                 (event ? ' data-event="' + event + '"' : '') +
+                 (value ? ' data-value=\'' + value + '\'' : '') +
+                 (hide ? ' data-hide=\'' + hide + '\'' : '') +
+                 ' tabindex="-1">' +
+               label +
+               (dropdown ? ' <span class="caret"></span>' : '') +
+             '</button>' +
+             (dropdown || '');
     };
 
     /**
