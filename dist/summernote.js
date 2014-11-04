@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-11-04T01:14Z
+ * Date: 2014-11-04T01:33Z
  */
 (function (factory) {
   /* global define */
@@ -1286,7 +1286,7 @@
         lineNumbers: true
       },
 
-      emptyPara : '<p>' + dom.blankHTML + '</p>',
+      emptyPara : '<p><br /></p>',
 
       // language
       lang: 'en-US',                // language 'en-US', 'ko-KR', ...

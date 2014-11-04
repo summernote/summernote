@@ -28,7 +28,7 @@ define('summernote/settings', function () {
         lineNumbers: true
       },
 
-      emptyPara : '<p>' + dom.blankHTML + '</p>',
+      emptyPara : '<p><br /></p>',
 
       // language
       lang: 'en-US',                // language 'en-US', 'ko-KR', ...
