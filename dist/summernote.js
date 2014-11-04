@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-10-11T01:18Z
+ * Date: 2014-11-04T11:28Z
  */
 (function (factory) {
   /* global define */
@@ -3098,6 +3098,8 @@
       if (value) {
         $target.addClass(value);
       }
+
+      afterCommand($editable);
     };
 
     /**
@@ -4032,13 +4034,12 @@
           popover.update($popover, {image: target}, isAirMode);
         }).one('mouseup', function () {
           $document.off('mousemove');
+          editor.afterCommand($editable);
         });
 
         if (!$target.data('ratio')) { // original ratio.
           $target.data('ratio', $target.height() / $target.width());
         }
-
-        editor.afterCommand($editable);
       }
     };
 
