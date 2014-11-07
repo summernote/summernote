@@ -376,7 +376,7 @@ define([
         } else if (commands[eventName]) {
           commands[eventName].call(this, layoutInfo);
         } else if ($.isFunction($.summernote.pluginEvents[eventName])) {
-          $.summernote.pluginEvents[eventName](layoutInfo);
+          $.summernote.pluginEvents[eventName](layoutInfo, value, $target);
         }
 
         // after command
