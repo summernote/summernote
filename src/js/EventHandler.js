@@ -28,6 +28,7 @@ define([
     var editor = new Editor();
     var toolbar = new Toolbar(), popover = new Popover();
     var handle = new Handle(), dialog = new Dialog();
+    var langInfo;
 
     this.getEditor = function () {
       return editor;
@@ -57,11 +58,15 @@ define([
     /**
      * insert Images from file array.
      *
-     * @param {jQuery} $editable
+     * @param {Object} layoutInfo
      * @param {File[]} files
      */
-    var insertImages = function ($editable, files) {
+    var insertImages = function (layoutInfo, files) {
+      var $editor = layoutInfo.editor(),
+          $editable = layoutInfo.editable();
+
       var callbacks = $editable.data('callbacks');
+      var options = $editor.data('options');
 
       // If onImageUpload options setted
       if (callbacks.onImageUpload) {
@@ -70,6 +75,11 @@ define([
       } else {
         $.each(files, function (idx, file) {
           var filename = file.name;
+          if (options.maximumFileSize && options.maximumFileSize < file.size) {
+            alert(langInfo.image.maximumFileSizeError);
+            return;
+          }
+
           async.readFileAsDataURL(file).then(function (sDataURL) {
             editor.insertImage($editable, sDataURL, filename);
           }).fail(function () {
@@ -120,7 +130,7 @@ define([
             editor.insertImage($editable, data);
           } else {
             // array of files
-            insertImages($editable, data);
+            insertImages(layoutInfo, data);
           }
         }).fail(function () {
           editor.restoreRange($editable);
@@ -288,7 +298,7 @@ define([
       var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
 
       if (isClipboardImage) {
-        insertImages($editable, [item.getAsFile()]);
+        insertImages(layoutInfo, [item.getAsFile()]);
       }
 
       editor.afterCommand($editable);
@@ -524,7 +534,7 @@ define([
         if (dataTransfer && dataTransfer.files) {
           var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
           layoutInfo.editable().focus();
-          insertImages(layoutInfo.editable(), dataTransfer.files);
+          insertImages(layoutInfo, dataTransfer.files);
         }
       }).on('dragover', false); // prevent default dragover event
     };
@@ -582,6 +592,8 @@ define([
      * @param {Function} options.enter - enter key handler
      */
     this.attach = function (layoutInfo, options) {
+      langInfo = $.extend($.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+
       // handlers for editable
       if (options.shortcuts) {
         this.bindKeyMap(layoutInfo, options.keyMap[agent.isMac ? 'mac' : 'pc']);

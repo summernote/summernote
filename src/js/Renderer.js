@@ -554,10 +554,19 @@ define([
     };
 
     var tplDialogInfo = {
-      image: function (lang) {
+      image: function (lang, options) {
+        var imageLimitation = '';
+        if (options.maximumFileSize) {
+          var unit = Math.floor(Math.log(options.maximumFileSize) / Math.log(1024));
+          var readableSize = (options.maximumFileSize / Math.pow(1024, unit)).toFixed(2) * 1 +
+                             ' ' + ' KMGTP'[unit] + 'B';
+          imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
+        }
+
         var body = '<div class="form-group row-fluid note-group-select-from-files">' +
                      '<label>' + lang.image.selectFromFiles + '</label>' +
                      '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
+                     imageLimitation +
                    '</div>' +
                    '<div class="form-group row-fluid">' +
                      '<label>' + lang.image.url + '</label>' +

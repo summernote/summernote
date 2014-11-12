@@ -103,6 +103,9 @@ define('summernote/settings', function () {
         row: 10
       },
 
+      // image
+      maximumFileSize: 1024 * 1024 * 20, // size in bytes, null = no limit
+
       // callbacks
       oninit: null,             // initialize
       onfocus: null,            // editable has focus
@@ -219,6 +222,8 @@ define('summernote/settings', function () {
           shapeNone: 'Shape: None',
           dragImageHere: 'Drag an image here',
           selectFromFiles: 'Select from files',
+          maximumFileSize: 'Maximum file size',
+          maximumFileSizeError: 'Maximum file size exceeded.',
           url: 'Image URL',
           remove: 'Remove Image'
         },
