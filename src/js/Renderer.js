@@ -690,7 +690,8 @@ define([
      */
     this.createLayoutByAirMode = function ($holder, options) {
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
-      var langInfo = $.extend($.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+      // Setup language info with en-US as default
+      var langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
 
       var id = func.uniqueId();
 
@@ -760,7 +761,8 @@ define([
       //031. create codable
       $('<textarea class="note-codable"></textarea>').prependTo($editor);
 
-      var langInfo = $.extend($.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+      // Setup language info with en-US as default
+      var langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
 
       //04. create Toolbar
       var toolbarHTML = '';
