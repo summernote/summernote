@@ -1,31 +1,34 @@
 # Summernote
-Super Simple WYSIWYG Editor on Bootstrap(3.0 and 2.x).
+Super simple WYSIWYG Editor using Bootstrap (3.0 and 2.x).
 
 [![Build Status](https://secure.travis-ci.org/HackerWins/summernote.png)](http://travis-ci.org/HackerWins/summernote)
 
 ### Summernote
-Summernote is a javascript program that helps you to create WYSIWYG Editor on web.
+Summernote is a JavaScript library that helps you create WYSIWYG editors online.
 
 Home Page: http://hackerwins.github.io/summernote/
 
 ### Why Summernote?
 
-Summernote has something specials no like others.
+Summernote has a few special features:
+
+* Paste images from clipboard
+* Saves images directly in the content of the field using base64 encoding, so you don't need to implement image handling at all
 * Simple UI
-* Interative WYSIWYG editing
+* Interactive WYSIWYG editing
 * Handy integration with server
 
 #### Inspired by
-* Gmail WYSIWYG Editor (http://www.gmail.com)
+* Gmail's WYSIWYG editor (http://www.gmail.com)
 * Redactor (http://imperavi.com/redactor/)
 
-### Easy to install
+### Installation and dependencies
 
-Summernote uses opensouce libraries(jQuery, bootstrap, fontAwesome) 
+Summernote uses opensouce libraries: [jQuery](http://jquery.com/), [Bootstrap](http://getbootstrap.com), [Font Awesome](https://github.com/FortAwesome/Font-Awesome).
 
-#### 01. include js/css
+#### 1. include JS/CSS
 
-Include Following code into `<head>` tag of your HTML:
+Include the following code in the `<head>` tag of your HTML:
 
 ```html
 <!-- include libraries(jQuery, bootstrap, fontawesome) -->
@@ -39,15 +42,13 @@ Include Following code into `<head>` tag of your HTML:
 <script src="summernote.min.js"></script>
 ```
 
-If your summernote download is placed in a different folder, don't forget to change file's paths.
-
-#### 02. target elements
+#### 2. target elements
 And place `div` tag to somewhere in the `body` tag. This element will be placed by the visual representation of the summernote.
 ```html
 <div id="summernote">Hello Summernote</div>
 ```
 
-#### 03. summernote
+#### 3. summernote
 Finally, run script after document ready.
 ```javascript
 $(document).ready(function() {
@@ -56,99 +57,31 @@ $(document).ready(function() {
 ```
 
 ### API
-Get HTML `code` if you need.
+Get the HTML `code` if you need it:
 
 ```javascript
 var sHTML = $('#summernote').code();
 ```
 
-`Destroy` summernote.
+`Destroy` summernote:
 
 ```javascript
 $('#summernote').destroy();
 ```
 
-#### Dependencies
-* jQuery: http://jquery.com/
-* Bootstrap: http://getbootstrap.com (both 2.x and 3.x)
-* fontAwesome: https://github.com/FortAwesome/Font-Awesome (both 3.x and 4.x)
+### Supported platforms
 
-### Supported platform
-* Modern Browser (Safari, Chrome, Firefox, Opera, Internet Explorer 9+)
-* OS (Windows, Mac, Linux)
+Any modern browser: Safari, Chrome, Firefox, Opera, Internet Explorer 9+.
 
 ### Upcoming Features
-* Responsive Toolbar
-* Table: Handles(Sizing, Selection) and Popover
-* support IE8
-* Clipboard
-* Media Object Selection
+* Responsive toolbar
+* Table: Handles (sizing, selection) and popover
+* IE8 Support
+* Clipboard (you can paste images already)
+* Media object selection
 
-### Change Log
 
-#### v0.6 2014-11-XX
-* Plugin system
-
-#### v0.5.9 2014-09-21
-* Dom Editing: insert(Un)OrderedList, indent/outdent
-* History in a line.
-
-#### v0.5.8 2014-08-31
-* Remove `autoFormatRange` option
-* Fixed `onChange` issues
-
-#### v0.5.7 ~ v0.5.4 2014-08-29 ~ 2014-08-23
-* Dom editing: insertPara, insertNode
-
-#### v0.5.3 2014-07-25
-* Extract codemirror.autoFormatOnStart option
-* Bug patch (createLink)
-
-#### v0.5.2 2014-07-20
-* Air Mode
-* And bug patch (scroll, createLink, ...)
-
-#### v0.5.1 2014-03-16
-* Support 15 Languages(https://github.com/HackerWins/summernote/tree/master/lang)
-* Add local-server for develop summernote.
-* Font style: Font-Family
-* And Bug patch.
-
-#### v0.5 2013-12-29
-* Support both Font-Awesome 3.x and 4.x
-* CodeMirror as Codeview
-* Insert Video (by cdownie)
-* Support 5 Languages(by hendrismit, tschiela, inomies, cverond)
-* Restructuring: jQuery build pattern
-
-#### v0.4 2013-11-01
-* Support both Bootstrap 3.0 and 2.x
-* Fullscreen
-* Codeview
-* Image Upload callback
-
-#### v0.3 2013-09-01
-* Bugs(image upload, fontsize, tab, recent color, ...)
-* Help dialog(keyboard shortcut)
-* Init options(event callbacks, custom toolbar)
-* Resize bar
-* Support IE8 Beta(some range bugs, can't insert Image)
-
-#### v0.2, 2013-08-01
-* Undo/Redo
-* Image sizing handle and popover
-* Support standalone css
-* Support Multiple Editor
-* Remove jQuery.curstyles dependency
-
-#### v0.1, 2013-07-01
-* Font style: size, color, bold, italic, underline, remove font style
-* Para style: bullet, align, outdent, indent, line height
-* Image: drag & drop, dialog
-* Link: popover and dialog
-* Table: create table with dimension picker
-
-### for Hacker
+### Developer information
 
 #### structure of summernote.js
 
