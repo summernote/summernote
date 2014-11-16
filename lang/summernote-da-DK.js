@@ -5,13 +5,9 @@
         bold: 'Fed',
         italic: 'Kursiv',
         underline: 'Understreget',
-        strikethrough: 'Gennemstreget',
-        subscript: 'Sænket skrift',
-        superscript: 'Hævet skrift',
         clear: 'Fjern formatering',
         height: 'Højde',
-        name: 'Skrifttype',
-        size: 'Skriftstørrelse'
+        name: 'Skrifttype'
       },
       image: {
         image: 'Billede',
@@ -29,6 +25,8 @@
         dragImageHere: 'Træk billede hertil',
         dropImage: 'Slip billede',
         selectFromFiles: 'Vælg billed-fil',
+        maximumFileSize: 'Maks fil størrelse',
+        maximumFileSizeError: 'Filen er større end maks tilladte fil størrelse!',
         url: 'Billede URL',
         remove: 'Fjern billede'
       },
@@ -40,13 +38,6 @@
         textToDisplay: 'Visningstekst',
         url: 'Hvor skal linket pege hen?',
         openInNewWindow: 'Åbn i nyt vindue'
-      },
-      video: {
-        video: 'Video',
-        videoLink: 'Video Link',
-        insert: 'Indsæt Video',
-        url: 'Video URL?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion eller Youku)'
       },
       table: {
         table: 'Tabel'
@@ -104,7 +95,7 @@
       },
       history: {
         undo: 'Fortryd',
-        redo: 'Anuller fortryd'
+        redo: 'Annuller fortryd'
       }
 
     }
