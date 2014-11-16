@@ -74,7 +74,7 @@ define([
       } else {
         $.each(files, function (idx, file) {
           var filename = file.name;
-          if (options.maximumFileSize && options.maximumFileSize < file.size) {
+          if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
             alert(options.langInfo.image.maximumFileSizeError);
             return;
           }

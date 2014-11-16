@@ -104,7 +104,7 @@ define('summernote/settings', function () {
       },
 
       // image
-      maximumFileSize: 1024, // size in bytes, null = no limit
+      maximumImageFileSize: 1024, // size in bytes, null = no limit
 
       // callbacks
       oninit: null,             // initialize

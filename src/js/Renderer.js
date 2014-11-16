@@ -556,9 +556,9 @@ define([
     var tplDialogInfo = {
       image: function (lang, options) {
         var imageLimitation = '';
-        if (options.maximumFileSize) {
+        if (options.maximumImageFileSize) {
           var unit = Math.floor(Math.log(options.maximumFileSize) / Math.log(1024));
-          var readableSize = (options.maximumFileSize / Math.pow(1024, unit)).toFixed(2) * 1 +
+          var readableSize = (options.maximumImageFileSize / Math.pow(1024, unit)).toFixed(2) * 1 +
                              ' ' + ' KMGTP'[unit] + 'B';
           imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
         }
