@@ -76,8 +76,8 @@ define([
       // extend default options
       options = $.extend({}, $.summernote.options, options);
 
-      this.each(function (idx, elHolder) {
-        var $holder = $(elHolder);
+      this.each(function (idx, holder) {
+        var $holder = $(holder);
 
         // Setup language info with en-US as default
         var langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
@@ -142,8 +142,8 @@ define([
       }
 
       // set the HTML contents of note
-      this.each(function (i, elHolder) {
-        var info = renderer.layoutInfoFromHolder($(elHolder));
+      this.each(function (i, holder) {
+        var info = renderer.layoutInfoFromHolder($(holder));
         if (info && info.editable) { info.editable.html(sHTML); }
       });
 
@@ -152,11 +152,12 @@ define([
 
     /**
      * destroy Editor Layout and detach Key and Mouse Event
+     *
      * @returns {this}
      */
     destroy: function () {
-      this.each(function (idx, elHolder) {
-        var $holder = $(elHolder);
+      this.each(function (idx, holder) {
+        var $holder = $(holder);
 
         var info = renderer.layoutInfoFromHolder($holder);
         if (!info || !info.editable) { return; }

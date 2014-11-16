@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-11-16T03:57Z
+ * Date: 2014-11-16T04:26Z
  */
 (function (factory) {
   /* global define */
@@ -5224,8 +5224,8 @@
       // extend default options
       options = $.extend({}, $.summernote.options, options);
 
-      this.each(function (idx, elHolder) {
-        var $holder = $(elHolder);
+      this.each(function (idx, holder) {
+        var $holder = $(holder);
 
         // Setup language info with en-US as default
         var langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
@@ -5290,8 +5290,8 @@
       }
 
       // set the HTML contents of note
-      this.each(function (i, elHolder) {
-        var info = renderer.layoutInfoFromHolder($(elHolder));
+      this.each(function (i, holder) {
+        var info = renderer.layoutInfoFromHolder($(holder));
         if (info && info.editable) { info.editable.html(sHTML); }
       });
 
@@ -5300,11 +5300,12 @@
 
     /**
      * destroy Editor Layout and detach Key and Mouse Event
+     *
      * @returns {this}
      */
     destroy: function () {
-      this.each(function (idx, elHolder) {
-        var $holder = $(elHolder);
+      this.each(function (idx, holder) {
+        var $holder = $(holder);
 
         var info = renderer.layoutInfoFromHolder($holder);
         if (!info || !info.editable) { return; }
