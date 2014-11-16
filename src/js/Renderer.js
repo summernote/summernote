@@ -687,12 +687,10 @@ define([
      *
      * @param {jQuery} $holder
      * @param {Object} options
+     * @param {Object} langInfo
      */
-    this.createLayoutByAirMode = function ($holder, options) {
+    this.createLayoutByAirMode = function ($holder, options, langInfo) {
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
-      // Setup language info with en-US as default
-      var langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
-
       var id = func.uniqueId();
 
       $holder.addClass('note-air-editor note-editable');
@@ -732,8 +730,9 @@ define([
      *
      * @param {jQuery} $holder
      * @param {Object} options
+     * @param {Object} langInfo
      */
-    this.createLayoutByFrame = function ($holder, options) {
+    this.createLayoutByFrame = function ($holder, options, langInfo) {
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
       if (options.width) {
@@ -760,9 +759,6 @@ define([
 
       //031. create codable
       $('<textarea class="note-codable"></textarea>').prependTo($editor);
-
-      // Setup language info with en-US as default
-      var langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
 
       //04. create Toolbar
       var toolbarHTML = '';
@@ -824,16 +820,17 @@ define([
      *
      * @param {jQuery} $holder
      * @param {Object} options
+     * @param {Object} langInfo
      */
-    this.createLayout = function ($holder, options) {
+    this.createLayout = function ($holder, options, langInfo) {
       if (this.noteEditorFromHolder($holder).length) {
         return;
       }
 
       if (options.airMode) {
-        this.createLayoutByAirMode($holder, options);
+        this.createLayoutByAirMode($holder, options, langInfo);
       } else {
-        this.createLayoutByFrame($holder, options);
+        this.createLayoutByFrame($holder, options, langInfo);
       }
     };
 
