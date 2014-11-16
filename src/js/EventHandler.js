@@ -28,7 +28,6 @@ define([
     var editor = new Editor();
     var toolbar = new Toolbar(), popover = new Popover();
     var handle = new Handle(), dialog = new Dialog();
-    var langInfo;
 
     this.getEditor = function () {
       return editor;
@@ -76,7 +75,7 @@ define([
         $.each(files, function (idx, file) {
           var filename = file.name;
           if (options.maximumFileSize && options.maximumFileSize < file.size) {
-            alert(langInfo.image.maximumFileSizeError);
+            alert(options.langInfo.image.maximumFileSizeError);
             return;
           }
 
@@ -474,16 +473,16 @@ define([
      * Drag and Drop Events
      *
      * @param {Object} layoutInfo - layout Informations
-     * @param {Boolean} disableDragAndDrop
+     * @param {Object} options
      */
-    var handleDragAndDropEvent = function (layoutInfo, disableDragAndDrop) {
-      if (disableDragAndDrop) {
+    var handleDragAndDropEvent = function (layoutInfo, options) {
+      if (options.disableDragAndDrop) {
         // prevent default drop event
         $document.on('drop', function (e) {
           e.preventDefault();
         });
       } else {
-        attachDragAndDropEvent(layoutInfo);
+        attachDragAndDropEvent(layoutInfo, options);
       }
     };
 
@@ -491,8 +490,9 @@ define([
      * attach Drag and Drop Events
      *
      * @param {Object} layoutInfo - layout Informations
+     * @param {Object} options
      */
-    var attachDragAndDropEvent = function (layoutInfo) {
+    var attachDragAndDropEvent = function (layoutInfo, options) {
       var collection = $(),
           $dropzone = layoutInfo.dropzone,
           $dropzoneMessage = layoutInfo.dropzone.find('.note-dropzone-message');
@@ -504,7 +504,7 @@ define([
           layoutInfo.editor.addClass('dragover');
           $dropzone.width(layoutInfo.editor.width());
           $dropzone.height(layoutInfo.editor.height());
-          $dropzoneMessage.text('Drag Image Here');
+          $dropzoneMessage.text(options.langInfo.image.dragImageHere);
         }
         collection = collection.add(e.target);
       }).on('dragleave', function (e) {
@@ -520,10 +520,10 @@ define([
       // change dropzone's message on hover.
       $dropzone.on('dragenter', function () {
         $dropzone.addClass('hover');
-        $dropzoneMessage.text('Drop Image');
+        $dropzoneMessage.text(options.langInfo.image.dropImage);
       }).on('dragleave', function () {
         $dropzone.removeClass('hover');
-        $dropzoneMessage.text('Drag Image Here');
+        $dropzoneMessage.text(options.langInfo.image.dragImageHere);
       });
 
       // attach dropImage
@@ -592,8 +592,6 @@ define([
      * @param {Function} options.enter - enter key handler
      */
     this.attach = function (layoutInfo, options) {
-      langInfo = $.extend($.summernote.lang['en-US'], $.summernote.lang[options.lang]);
-
       // handlers for editable
       if (options.shortcuts) {
         this.bindKeyMap(layoutInfo, options.keyMap[agent.isMac ? 'mac' : 'pc']);
@@ -611,7 +609,7 @@ define([
       // handlers for frame mode (toolbar, statusbar)
       if (!options.airMode) {
         // handler for drag and drop
-        handleDragAndDropEvent(layoutInfo, options.disableDragAndDrop);
+        handleDragAndDropEvent(layoutInfo, options);
 
         // handler for toolbar
         layoutInfo.toolbar.on('click', hToolbarAndPopoverClick);

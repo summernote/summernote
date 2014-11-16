@@ -104,7 +104,7 @@ define('summernote/settings', function () {
       },
 
       // image
-      maximumFileSize: 1024 * 1024 * 20, // size in bytes, null = no limit
+      maximumFileSize: 1024, // size in bytes, null = no limit
 
       // callbacks
       oninit: null,             // initialize
@@ -220,7 +220,8 @@ define('summernote/settings', function () {
           shapeCircle: 'Shape: Circle',
           shapeThumbnail: 'Shape: Thumbnail',
           shapeNone: 'Shape: None',
-          dragImageHere: 'Drag an image here',
+          dragImageHere: 'Drag image here',
+          dropImage: 'Drop image',
           selectFromFiles: 'Select from files',
           maximumFileSize: 'Maximum file size',
           maximumFileSizeError: 'Maximum file size exceeded.',

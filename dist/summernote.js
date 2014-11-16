@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-11-07T15:21Z
+ * Date: 2014-11-16T04:26Z
  */
 (function (factory) {
   /* global define */
@@ -2067,7 +2067,8 @@
           shapeCircle: 'Shape: Circle',
           shapeThumbnail: 'Shape: Thumbnail',
           shapeNone: 'Shape: None',
-          dragImageHere: 'Drag an image here',
+          dragImageHere: 'Drag image here',
+          dropImage: 'Drop image',
           selectFromFiles: 'Select from files',
           url: 'Image URL',
           remove: 'Remove Image'
@@ -4058,7 +4059,7 @@
           layoutInfo.editor.addClass('dragover');
           $dropzone.width(layoutInfo.editor.width());
           $dropzone.height(layoutInfo.editor.height());
-          $dropzoneMessage.text('Drag Image Here');
+          $dropzoneMessage.text(layoutInfo.langInfo.image.dragImageHere);
         }
         collection = collection.add(e.target);
       }).on('dragleave', function (e) {
@@ -4074,10 +4075,10 @@
       // change dropzone's message on hover.
       $dropzone.on('dragenter', function () {
         $dropzone.addClass('hover');
-        $dropzoneMessage.text('Drop Image');
+        $dropzoneMessage.text(layoutInfo.langInfo.image.dropImage);
       }).on('dragleave', function () {
         $dropzone.removeClass('hover');
-        $dropzoneMessage.text('Drag Image Here');
+        $dropzoneMessage.text(layoutInfo.langInfo.image.dragImageHere);
       });
 
       // attach dropImage
@@ -4943,11 +4944,10 @@
      *
      * @param {jQuery} $holder
      * @param {Object} options
+     * @param {Object} langInfo
      */
-    this.createLayoutByAirMode = function ($holder, options) {
+    this.createLayoutByAirMode = function ($holder, options, langInfo) {
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
-      var langInfo = $.extend($.summernote.lang['en-US'], $.summernote.lang[options.lang]);
-
       var id = func.uniqueId();
 
       $holder.addClass('note-air-editor note-editable');
@@ -4987,8 +4987,9 @@
      *
      * @param {jQuery} $holder
      * @param {Object} options
+     * @param {Object} langInfo
      */
-    this.createLayoutByFrame = function ($holder, options) {
+    this.createLayoutByFrame = function ($holder, options, langInfo) {
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
       if (options.width) {
@@ -5015,8 +5016,6 @@
 
       //031. create codable
       $('<textarea class="note-codable"></textarea>').prependTo($editor);
-
-      var langInfo = $.extend($.summernote.lang['en-US'], $.summernote.lang[options.lang]);
 
       //04. create Toolbar
       var toolbarHTML = '';
@@ -5078,16 +5077,17 @@
      *
      * @param {jQuery} $holder
      * @param {Object} options
+     * @param {Object} langInfo
      */
-    this.createLayout = function ($holder, options) {
+    this.createLayout = function ($holder, options, langInfo) {
       if (this.noteEditorFromHolder($holder).length) {
         return;
       }
 
       if (options.airMode) {
-        this.createLayoutByAirMode($holder, options);
+        this.createLayoutByAirMode($holder, options, langInfo);
       } else {
-        this.createLayoutByFrame($holder, options);
+        this.createLayoutByFrame($holder, options, langInfo);
       }
     };
 
@@ -5224,13 +5224,18 @@
       // extend default options
       options = $.extend({}, $.summernote.options, options);
 
-      this.each(function (idx, elHolder) {
-        var $holder = $(elHolder);
+      this.each(function (idx, holder) {
+        var $holder = $(holder);
 
+        // Setup language info with en-US as default
+        var langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+        
         // createLayout with options
-        renderer.createLayout($holder, options);
+        renderer.createLayout($holder, options, langInfo);
 
         var info = renderer.layoutInfoFromHolder($holder);
+        // Include langInfo in general info for later use, e.g. for image drag-n-drop
+        info.langInfo = langInfo;
         eventHandler.attach(info, options);
 
         // Textarea: auto filling the code before form submit.
@@ -5285,8 +5290,8 @@
       }
 
       // set the HTML contents of note
-      this.each(function (i, elHolder) {
-        var info = renderer.layoutInfoFromHolder($(elHolder));
+      this.each(function (i, holder) {
+        var info = renderer.layoutInfoFromHolder($(holder));
         if (info && info.editable) { info.editable.html(sHTML); }
       });
 
@@ -5295,11 +5300,12 @@
 
     /**
      * destroy Editor Layout and detach Key and Mouse Event
+     *
      * @returns {this}
      */
     destroy: function () {
-      this.each(function (idx, elHolder) {
-        var $holder = $(elHolder);
+      this.each(function (idx, holder) {
+        var $holder = $(holder);
 
         var info = renderer.layoutInfoFromHolder($holder);
         if (!info || !info.editable) { return; }

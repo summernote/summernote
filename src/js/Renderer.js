@@ -698,9 +698,8 @@ define([
      * @param {Object} options
      */
     this.createLayoutByAirMode = function ($holder, options) {
+      var langInfo = options.langInfo;
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
-      var langInfo = $.extend($.summernote.lang['en-US'], $.summernote.lang[options.lang]);
-
       var id = func.uniqueId();
 
       $holder.addClass('note-air-editor note-editable');
@@ -742,6 +741,8 @@ define([
      * @param {Object} options
      */
     this.createLayoutByFrame = function ($holder, options) {
+      var langInfo = options.langInfo;
+
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
       if (options.width) {
@@ -768,8 +769,6 @@ define([
 
       //031. create codable
       $('<textarea class="note-codable"></textarea>').prependTo($editor);
-
-      var langInfo = $.extend($.summernote.lang['en-US'], $.summernote.lang[options.lang]);
 
       //04. create Toolbar
       var toolbarHTML = '';
