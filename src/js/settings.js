@@ -217,7 +217,8 @@ define('summernote/settings', function () {
           shapeCircle: 'Shape: Circle',
           shapeThumbnail: 'Shape: Thumbnail',
           shapeNone: 'Shape: None',
-          dragImageHere: 'Drag an image here',
+          dragImageHere: 'Drag image here',
+          dropImage: 'Drop image',
           selectFromFiles: 'Select from files',
           url: 'Image URL',
           remove: 'Remove Image'

@@ -494,7 +494,7 @@ define([
           layoutInfo.editor.addClass('dragover');
           $dropzone.width(layoutInfo.editor.width());
           $dropzone.height(layoutInfo.editor.height());
-          $dropzoneMessage.text('Drag Image Here');
+          $dropzoneMessage.text(layoutInfo.langInfo.image.dragImageHere);
         }
         collection = collection.add(e.target);
       }).on('dragleave', function (e) {
@@ -510,10 +510,10 @@ define([
       // change dropzone's message on hover.
       $dropzone.on('dragenter', function () {
         $dropzone.addClass('hover');
-        $dropzoneMessage.text('Drop Image');
+        $dropzoneMessage.text(layoutInfo.langInfo.image.dropImage);
       }).on('dragleave', function () {
         $dropzone.removeClass('hover');
-        $dropzoneMessage.text('Drag Image Here');
+        $dropzoneMessage.text(layoutInfo.langInfo.image.dragImageHere);
       });
 
       // attach dropImage
