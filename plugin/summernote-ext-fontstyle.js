@@ -75,6 +75,14 @@
           strikethrough: '취소선',
           size: '글자 크기'
         }
+      },
+      'da-DK': {
+        fontstyle: {
+          strikethrough: 'Gennemstreget',
+          subscript: 'Sænket skrift',
+          superscript: 'Hævet skrift',
+          size: 'Skriftstørrelse'
+        }
       }
     }
   });
