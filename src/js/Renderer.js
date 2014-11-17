@@ -554,10 +554,19 @@ define([
     };
 
     var tplDialogInfo = {
-      image: function (lang) {
+      image: function (lang, options) {
+        var imageLimitation = '';
+        if (options.maximumImageFileSize) {
+          var unit = Math.floor(Math.log(options.maximumImageFileSize) / Math.log(1024));
+          var readableSize = (options.maximumImageFileSize / Math.pow(1024, unit)).toFixed(2) * 1 +
+                             ' ' + ' KMGTP'[unit] + 'B';
+          imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
+        }
+
         var body = '<div class="form-group row-fluid note-group-select-from-files">' +
                      '<label>' + lang.image.selectFromFiles + '</label>' +
                      '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
+                     imageLimitation +
                    '</div>' +
                    '<div class="form-group row-fluid">' +
                      '<label>' + lang.image.url + '</label>' +
@@ -687,9 +696,9 @@ define([
      *
      * @param {jQuery} $holder
      * @param {Object} options
-     * @param {Object} langInfo
      */
-    this.createLayoutByAirMode = function ($holder, options, langInfo) {
+    this.createLayoutByAirMode = function ($holder, options) {
+      var langInfo = options.langInfo;
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       var id = func.uniqueId();
 
@@ -730,9 +739,10 @@ define([
      *
      * @param {jQuery} $holder
      * @param {Object} options
-     * @param {Object} langInfo
      */
-    this.createLayoutByFrame = function ($holder, options, langInfo) {
+    this.createLayoutByFrame = function ($holder, options) {
+      var langInfo = options.langInfo;
+
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
       if (options.width) {
@@ -820,17 +830,16 @@ define([
      *
      * @param {jQuery} $holder
      * @param {Object} options
-     * @param {Object} langInfo
      */
-    this.createLayout = function ($holder, options, langInfo) {
+    this.createLayout = function ($holder, options) {
       if (this.noteEditorFromHolder($holder).length) {
         return;
       }
 
       if (options.airMode) {
-        this.createLayoutByAirMode($holder, options, langInfo);
+        this.createLayoutByAirMode($holder, options);
       } else {
-        this.createLayoutByFrame($holder, options, langInfo);
+        this.createLayoutByFrame($holder, options);
       }
     };
 

@@ -76,18 +76,17 @@ define([
       // extend default options
       options = $.extend({}, $.summernote.options, options);
 
+      // Include langInfo in options for later use, e.g. for image drag-n-drop
+      // Setup language info with en-US as default
+      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+
       this.each(function (idx, holder) {
         var $holder = $(holder);
 
-        // Setup language info with en-US as default
-        var langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
-        
         // createLayout with options
-        renderer.createLayout($holder, options, langInfo);
+        renderer.createLayout($holder, options);
 
         var info = renderer.layoutInfoFromHolder($holder);
-        // Include langInfo in general info for later use, e.g. for image drag-n-drop
-        info.langInfo = langInfo;
         eventHandler.attach(info, options);
 
         // Textarea: auto filling the code before form submit.
