@@ -75,17 +75,20 @@ define([
         $.each(files, function (idx, file) {
           var filename = file.name;
           if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
-            alert(options.langInfo.image.maximumFileSizeError);
-            return;
-          }
-
-          async.readFileAsDataURL(file).then(function (sDataURL) {
-            editor.insertImage($editable, sDataURL, filename);
-          }).fail(function () {
             if (callbacks.onImageUploadError) {
-              callbacks.onImageUploadError();
+              callbacks.onImageUploadError(options.langInfo.image.maximumFileSizeError);
+            } else {
+              alert(options.langInfo.image.maximumFileSizeError);
             }
-          });
+          } else {
+            async.readFileAsDataURL(file).then(function (sDataURL) {
+              editor.insertImage($editable, sDataURL, filename);
+            }).fail(function () {
+              if (callbacks.onImageUploadError) {
+                callbacks.onImageUploadError();
+              }
+            });
+          }
         });
       }
     };
