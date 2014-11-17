@@ -89,6 +89,10 @@
   }
 
   /* editable */
+  .note-editable[contenteditable=true]:empty:not(:focus):before{
+    content:attr(data-placeholder);
+    color: #7a8288;
+  }
   .note-editable {
     padding: 10px;
     overflow: auto;

@@ -24,6 +24,8 @@ define('summernote/settings', function () {
 
       shortcuts: true,              // enable keyboard shortcuts
 
+      placeholder: 'Type your message here...',
+
       codemirror: {                 // codemirror options
         mode: 'text/html',
         htmlMode: true,
