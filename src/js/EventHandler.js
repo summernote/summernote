@@ -631,10 +631,10 @@ define([
       layoutInfo.editor.data('options', options);
 
       // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
-      if (options.styleWithSpan && !agent.isMSIE) {
+      if (!agent.isMSIE) {
         // protect FF Error: NS_ERROR_FAILURE: Failure
         setTimeout(function () {
-          document.execCommand('styleWithCSS', 0, true);
+          document.execCommand('styleWithCSS', 0, options.styleWithSpan);
         }, 0);
       }
 
