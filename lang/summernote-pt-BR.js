@@ -8,7 +8,8 @@
         strikethrough: 'Riscado',
         clear: 'Remover estilo da fonte',
         height: 'Altura da linha',
-        size: 'Tamanho da fonte'
+        size: 'Tamanho da fonte',
+        name: 'Fonte'
       },
       image: {
         image: 'Imagem',
