@@ -34,13 +34,6 @@
         url: 'Milyen URL címre hivatkozzon?',
         openInNewWindow: 'Megnyitás új ablakban'
       },
-      video: {
-        video: 'Videó',
-        videoLink: 'Videó hivatkozás',
-        insert: 'Videó beszúrása',
-        url: 'Videó URL címe',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, vagy Youku)'
-      },
       table: {
         table: 'Táblázat'
       },

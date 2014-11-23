@@ -32,13 +32,6 @@
         url: '連結網址',
         openInNewWindow: '在新視窗開啟'
       },
-      video: {
-        video: '影片',
-        videoLink: '影片連結',
-        insert: '插入影片',
-        url: '影片網址',
-        providers: '(優酷, Instagram, DailyMotion, Youtube等)'
-      },
       table: {
         table: '表格'
       },

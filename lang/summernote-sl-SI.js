@@ -36,13 +36,6 @@
         url: 'Povezava',
         openInNewWindow: 'Odpri v novem oknu'
       },
-      video: {
-        video: 'Video',
-        videoLink: 'Video povezava',
-        insert: 'Vstavi video',
-        url: 'Povezava do videa',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ali Youku)'
-      },
       table: {
         table: 'Tabela'
       },

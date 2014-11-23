@@ -36,13 +36,6 @@
         url: 'קישור',
         openInNewWindow: 'פתח בחלון חדש'
       },
-      video: {
-        video: 'סרטון',
-        videoLink: 'קישור לסרטון',
-        insert: 'הוסף סרטון',
-        url: 'קישור לסרטון',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion או Youku)'
-      },
       table: {
         table: 'טבלה'
       },

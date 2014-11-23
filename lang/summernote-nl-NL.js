@@ -34,13 +34,6 @@
         url: 'Naar welke URL moet deze link verwijzen?',
         openInNewWindow: 'Open in nieuw venster'
       },
-      video: {
-        video: 'Video',
-        videoLink: 'Video link',
-        insert: 'Video invoegen',
-        url: 'URL van de video',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion of Youku)'
-      },
       table: {
         table: 'Tabel'
       },

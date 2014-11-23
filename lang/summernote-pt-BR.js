@@ -33,13 +33,6 @@
         url: 'Para qual URL esse link leva?',
         openInNewWindow: 'Abrir em uma nova janela'
       },
-      video: {
-        video: 'Vídeo',
-        videoLink: 'Link para vídeo',
-        insert: 'Inserir vídeo',
-        url: 'URL do vídeo?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, ou Youku)'
-      },
       table: {
         table: 'Tabela'
       },

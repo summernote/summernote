@@ -34,13 +34,6 @@
         url: 'URL',
         openInNewWindow: 'Mở ở Cửa Sổ Mới'
       },
-      video: {
-        video: 'Video',
-        videoLink: 'Đường Dẫn đến Video',
-        insert: 'Chèn Video',
-        url: 'URL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion và Youku)'
-      },
       table: {
         table: 'Bảng'
       },

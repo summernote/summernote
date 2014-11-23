@@ -34,13 +34,6 @@
         url: 'Linkin URL-osoite?',
         openInNewWindow: 'Avaa uudessa ikkunassa'
       },
-      video: {
-        video: 'Video',
-        videoLink: 'Linkki videoon',
-        insert: 'Lisää video',
-        url: 'Videon URL-osoite?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion tai Youku)'
-      },
       table: {
         table: 'Taulukko'
       },

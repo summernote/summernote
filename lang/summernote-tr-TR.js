@@ -40,13 +40,6 @@
         url: 'Bağlantı adresi?',
         openInNewWindow: 'Yeni pencerede aç'
       },
-      video: {
-        video: 'Video',
-        videoLink: 'Video bağlantısı',
-        insert: 'Video ekle',
-        url: 'Video bağlantısı?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion veya Youku)'
-      },
       table: {
         table: 'Tablo'
       },

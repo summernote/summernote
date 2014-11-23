@@ -36,13 +36,6 @@
         url: 'URL du lien',
         openInNewWindow: 'Ouvrir dans une nouvelle fenêtre'
       },
-      video: {
-        video: 'Vidéo',
-        videoLink: 'Lien vidéo',
-        insert: 'Insérer une vidéo',
-        url: 'URL de la vidéo',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ou Youku)'
-      },
       table: {
         table: 'Tableau'
       },

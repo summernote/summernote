@@ -33,13 +33,6 @@
         url: 'Internet adresa',
         openInNewWindow: 'Otvori u novom prozoru'
       },
-      video: {
-        video: 'Video',
-        videoLink: 'Veza ka videu',
-        insert: 'Umetni video',
-        url: 'URL video',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ili Youku)'
-      },
       table: {
         table: 'Tabela'
       },

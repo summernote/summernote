@@ -33,13 +33,6 @@
         url: 'Интернет адреса',
         openInNewWindow: 'Отвори у новом прозору'
       },
-      video: {
-        video: 'Видео',
-        videoLink: 'Веза ка видеу',
-        insert: 'Уметни видео',
-        url: 'URL видео',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion или Youku)'
-      },
       table: {
         table: 'Табела'
       },

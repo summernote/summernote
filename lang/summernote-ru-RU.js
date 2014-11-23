@@ -36,13 +36,6 @@
         url: 'URL для перехода',
         openInNewWindow: 'Открывать в новом окне'
       },
-      video: {
-        video: 'Видео',
-        videoLink: 'Ссылка на видео',
-        insert: 'Вставить видео',
-        url: 'URL видео',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion или Youku)'
-      },
       table: {
         table: 'Таблица'
       },

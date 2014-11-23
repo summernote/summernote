@@ -34,13 +34,6 @@
         url: 'این لینک به چه آدرسی باید برود ؟',
         openInNewWindow: 'در یک پنجره ی جدید باز شود'
       },
-      video: {
-        video: 'ویدیو',
-        videoLink: 'لینک ویدیو',
-        insert: 'افزودن ویدیو',
-        url: 'آدرس ویدیو ؟',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, یا Youku)'
-      },
       table: {
         table: 'جدول'
       },

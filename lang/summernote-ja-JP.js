@@ -34,13 +34,6 @@
         url: 'URLを入力してください',
         openInNewWindow: '新しいウィンドウで開く'
       },
-      video: {
-        video: '動画',
-        videoLink: '動画リンク',
-        insert: '動画挿入',
-        url: '動画のURL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, Youku)'
-      },
       table: {
         table: 'テーブル'
       },

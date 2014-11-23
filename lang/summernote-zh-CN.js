@@ -33,13 +33,6 @@
         url: '链接地址',
         openInNewWindow: '在新窗口打开'
       },
-      video: {
-        video: '视频',
-        videoLink: '视频链接',
-        insert: '插入视频',
-        url: '视频地址',
-        providers: '(优酷, Instagram, DailyMotion, Youtube等)'
-      },
       table: {
         table: '表格'
       },

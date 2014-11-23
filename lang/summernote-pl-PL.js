@@ -34,13 +34,6 @@
         url: 'Na jaki URL powinien przenosić ten link?',
         openInNewWindow: 'Otwórz w nowym oknie'
       },
-      video: {
-        video: 'Wideo',
-        videoLink: 'Adres wideo',
-        insert: 'Wstaw wideo',
-        url: 'Adres wideo',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, lub Youku)'
-      },
       table: {
         table: 'Tabela'
       },

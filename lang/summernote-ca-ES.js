@@ -32,13 +32,6 @@
         url: 'Cap a quina URL porta l\'enllaç?',
         openInNewWindow: 'Obrir en una finestra nova'
       },
-      video: {
-        video: 'Video',
-        videoLink: 'Enllaç del video',
-        insert: 'Inserir video',
-        url: 'URL del video?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, o Youku)'
-      },
       table: {
         table: 'Taula'
       },

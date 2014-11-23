@@ -33,13 +33,6 @@
         url: 'Estekaren URL helbidea',
         openInNewWindow: 'Leiho berri batean ireki'
       },
-      video: {
-        video: 'Bideoa',
-        videoLink: 'Bideorako esteka',
-        insert: 'Bideo berri bat txertatu',
-        url: 'Bideoaren URL helbidea',
-        providers: '(YouTube, Vimeo, Vine, Instagram, edo DailyMotion)'
-      },
       table: {
         table: 'Taula' //Tabla
       },
