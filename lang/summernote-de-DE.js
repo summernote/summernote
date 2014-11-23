@@ -5,10 +5,8 @@
         bold: 'Fett',
         italic: 'Kursiv',
         underline: 'Unterstreichen',
-        strikethrough: 'Durchgestrichen',
         clear: 'Zurücksetzen',
-        height: 'Zeilenhöhe',
-        size: 'Schriftgröße'
+        height: 'Zeilenhöhe'
       },
       image: {
         image: 'Grafik',

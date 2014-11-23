@@ -5,13 +5,9 @@
         bold: 'מודגש',
         italic: 'נטוי',
         underline: 'קו תחתון',
-        strikethrough: 'קו חוצה',
-        subscript: 'כתב תחתי',
-        superscript: 'כתב עילי',
         clear: 'נקה עיצוב',
         height: 'גובה',
-        name: 'גופן',
-        size: 'גודל גופן'
+        name: 'גופן'
       },
       image: {
         image: 'תמונה',

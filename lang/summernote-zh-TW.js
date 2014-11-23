@@ -5,10 +5,8 @@
         bold: '粗體',
         italic: '斜體',
         underline: '底線',
-        strikethrough: '刪除線',
         clear: '清除格式',
-        height: '行高',
-        size: '字體大小'
+        height: '行高'
       },
       image: {
         image: '圖片',

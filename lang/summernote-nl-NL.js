@@ -5,11 +5,9 @@
         bold: 'Vet',
         italic: 'Cursief',
         underline: 'Onderstrepen',
-        strikethrough: 'Doorhalen',
         clear: 'Stijl verwijderen',
         height: 'Regelhoogte',
-        name: 'Lettertype',
-        size: 'Tekstgrootte'
+        name: 'Lettertype'
       },
       image: {
         image: 'Afbeelding',

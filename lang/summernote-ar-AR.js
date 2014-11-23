@@ -5,11 +5,9 @@
         bold: 'عريض',
         italic: 'مائل',
         underline: 'تحته خط',
-        strikethrough: 'فى وسطه خط',
         clear: 'مسح التنسيق',
         height: 'إرتفاع السطر',
-        name: 'الخط',
-        size: 'الحجم'
+        name: 'الخط'
       },
       image: {
         image: 'صورة',

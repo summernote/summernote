@@ -5,13 +5,9 @@
         bold: 'Kalın',
         italic: 'İtalik',
         underline: 'Altı çizili',
-        strikethrough: 'Üstü çizili',
-        subscript: 'Subscript',
-        superscript: 'Superscript',
         clear: 'Temizle',
         height: 'Satır yüksekliği',
-        name: 'Yazı Tipi',
-        size: 'Yazı tipi boyutu'
+        name: 'Yazı Tipi'
       },
       image: {
         image: 'Resim',

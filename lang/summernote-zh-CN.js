@@ -5,11 +5,9 @@
         bold: '粗体',
         italic: '斜体',
         underline: '下划线',
-        strikethrough: '删除线',
         clear: '清除格式',
         height: '行高',
-        name: '字体',
-        size: '字号'
+        name: '字体'
       },
       image: {
         image: '图片',

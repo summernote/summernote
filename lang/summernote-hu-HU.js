@@ -5,11 +5,9 @@
         bold: 'Félkövér',
         italic: 'Dőlt',
         underline: 'Aláhúzott',
-        strikethrough: 'Áthúzott',
         clear: 'Formázás törlése',
         height: 'Sorköz',
-        name: 'Betűtípus',
-        size: 'Betűméret'
+        name: 'Betűtípus'
       },
       image: {
         image: 'Kép',

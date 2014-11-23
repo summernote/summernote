@@ -5,10 +5,8 @@
         bold: 'Podebljano',
         italic: 'Kurziv',
         underline: 'Podvučeno',
-        strikethrough: 'Precrtano',
         clear: 'Ukloni stilove fonta',
-        height: 'Visina linije',
-        size: 'Veličina fonta'
+        height: 'Visina linije'
       },
       image: {
         image: 'Slika',

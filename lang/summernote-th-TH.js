@@ -5,13 +5,9 @@
 				bold: 'ตัวหนา',
 				italic: 'ตัวเอียง',
 				underline: 'ขีดเส้นใต้',
-				strikethrough: 'ขีดฆ่า',
-				subscript: 'ตัวห้อย',
-				superscript: 'ตัวยก',
 				clear: 'ล้างรูปแบบตัวอักษร',
 				height: 'ความสูงบรรทัด',
-				name: 'แบบตัวอักษร',
-				size: 'ขนาดตัวอักษร'
+				name: 'แบบตัวอักษร'
 			},
 			image: {
 				image: 'รูปภาพ',

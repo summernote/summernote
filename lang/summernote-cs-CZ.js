@@ -5,10 +5,8 @@
         bold: 'Tučné',
         italic: 'Kurzíva',
         underline: 'Podtržené',
-        strikethrough: 'Přeškrtnuté',
         clear: 'Odstranit styl písma',
-        height: 'Výška řádku',
-        size: 'Velikost písma'
+        height: 'Výška řádku'
       },
       image: {
         image: 'Obrázek',

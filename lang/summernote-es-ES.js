@@ -2,16 +2,12 @@
   $.extend($.summernote.lang, {
     'es-ES': {
       font: {
-        name: 'Fuente',
         bold: 'Negrita',
         italic: 'Cursiva',
         underline: 'Subrayado',
-        superscript: 'Superíndice',
-        subscript: 'Subíndice',
-        strikethrough: 'Tachado',
         clear: 'Quitar estilo de fuente',
         height: 'Altura de línea',
-        size: 'Tamaño de la fuente'
+        name: 'Fuente'
       },
       image: {
         image: 'Imagen',

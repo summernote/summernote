@@ -5,11 +5,9 @@
         bold: 'Pogrubienie',
         italic: 'Pochylenie',
         underline: 'Podkreślenie',
-        strikethrough: 'Przekreślenie',
         clear: 'Usuń formatowanie',
         height: 'Interlinia',
-        name: 'Czcionka',
-        size: 'Rozmiar'
+        name: 'Czcionka'
       },
       image: {
         image: 'Grafika',

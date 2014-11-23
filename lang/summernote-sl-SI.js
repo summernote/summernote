@@ -5,13 +5,9 @@
         bold: 'Krepko',
         italic: 'Ležeče',
         underline: 'Podčrtano',
-        strikethrough: 'Prečrtano',
-        subscript: 'Podpisano',
-        superscript: 'Nadpisano',
         clear: 'Počisti oblikovanje izbire',
         height: 'Razmik med vrsticami',
-        name: 'Pisava',
-        size: 'Velikost pisave'
+        name: 'Pisava'
       },
       image: {
         image: 'Slika',

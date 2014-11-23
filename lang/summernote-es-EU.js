@@ -2,14 +2,12 @@
   $.extend($.summernote.lang, {
     'es-EU': {
       font: {
-        name: 'Tipografia',
         bold: 'Lodia',
         italic: 'Etzana',
         underline: 'Azpimarratua',
-        strikethrough: 'Marratua',
         clear: 'Estiloa kendu',
         height: 'Lerro altuera',
-        size: 'Letren neurria'
+        name: 'Tipografia'
       },
       image: {
         image: 'Irudia',

@@ -5,11 +5,9 @@
         bold: 'درشت',
         italic: 'خمیده',
         underline: 'میان خط',
-        strikethrough: 'Strike',
         clear: 'پاک کردن فرمت فونت',
         height: 'فاصله ی خطی',
-        name: 'اسم فونت',
-        size: 'اندازه ی فونت'
+        name: 'اسم فونت'
       },
       image: {
         image: 'تصویر',

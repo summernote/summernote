@@ -5,10 +5,8 @@
         bold: 'Negreta',
         italic: 'Cursiva',
         underline: 'Subratllat',
-        strikethrough: 'Ratllat',
         clear: 'Treure estil de lletra',
-        height: 'Alçada de línia',
-        size: 'Mida de lletra'
+        height: 'Alçada de línia'
       },
       image: {
         image: 'Imatge',

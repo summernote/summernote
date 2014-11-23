@@ -5,10 +5,8 @@
         bold: 'Tebal',
         italic: 'Miring',
         underline: 'Garis bawah',
-        strikethrough: 'Coret',
         clear: 'Bersihkan gaya',
-        height: 'Jarak baris',
-        size: 'Ukuran font'
+        height: 'Jarak baris'
       },
       image: {
         image: 'Gambar',

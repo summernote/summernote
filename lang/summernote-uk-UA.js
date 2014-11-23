@@ -5,13 +5,9 @@
         bold: 'Напівжирний',
         italic: 'Курсив',
         underline: 'Підкреслений',
-        strikethrough: 'Закреслений',
-        subscript: 'Нижній індекс',
-        superscript: 'Верхній індекс',
         clear: 'Прибрати стилі шрифту',
         height: 'Висота лінії',
-        name: 'Шрифт',
-        size: 'Розмір шрифту'
+        name: 'Шрифт'
       },
       image: {
         image: 'Картинка',

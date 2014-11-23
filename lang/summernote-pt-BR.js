@@ -5,10 +5,8 @@
         bold: 'Negrito',
         italic: 'Itálico',
         underline: 'Sublinhado',
-        strikethrough: 'Riscado',
         clear: 'Remover estilo da fonte',
         height: 'Altura da linha',
-        size: 'Tamanho da fonte',
         name: 'Fonte'
       },
       image: {

@@ -5,11 +5,9 @@
         bold: 'Testo in grassetto',
         italic: 'Testo in corsivo',
         underline: 'Testo sottolineato',
-        strikethrough: 'Testo barrato',
         clear: 'Elimina la formattazione del testo',
         height: 'Altezza della linea di testo',
-        name: 'Famiglia Font',
-        size: 'Dimensione del carattere'
+        name: 'Famiglia Font'
       },
       image: {
         image: 'Immagine',

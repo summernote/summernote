@@ -5,11 +5,9 @@
         bold: '太字',
         italic: '斜体',
         underline: '下線',
-        strikethrough: '取り消し線',
         clear: 'クリア',
         height: '文字高',
-        name: 'フォント',
-        size: '大きさ'
+        name: 'フォント'
       },
       image: {
         image: '画像',

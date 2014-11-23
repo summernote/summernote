@@ -5,13 +5,9 @@
         bold: 'Полужирный',
         italic: 'Курсив',
         underline: 'Подчёркнутый',
-        strikethrough: 'Зачёркнутый',
-        subscript: 'Нижний индекс',
-        superscript: 'Верхний индекс',
         clear: 'Убрать стили шрифта',
         height: 'Высота линии',
-        name: 'Шрифт',
-        size: 'Размер шрифта'
+        name: 'Шрифт'
       },
       image: {
         image: 'Картинка',

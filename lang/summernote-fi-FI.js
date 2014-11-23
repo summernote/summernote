@@ -5,11 +5,9 @@
         bold: 'Lihavoitu',
         italic: 'Kursiivi',
         underline: 'Alleviivaa',
-        strikethrough: 'Yliviivaus',
         clear: 'Tyhjennä muotoilu',
         height: 'Riviväli',
-        name: 'Kirjasintyyppi',
-        size: 'Kirjasinkoko'
+        name: 'Kirjasintyyppi'
       },
       image: {
         image: 'Kuva',

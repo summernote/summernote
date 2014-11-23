@@ -5,11 +5,9 @@
         bold: 'Fet',
         italic: 'Kursiv',
         underline: 'Understruken',
-        strikethrough: 'Genomstruken',
         clear: 'Radera formatering',
         height: 'Radavstånd',
-        name: 'Teckensnitt',
-        size: 'Teckenstorlek'
+        name: 'Teckensnitt'
       },
       image: {
         image: 'Bild',

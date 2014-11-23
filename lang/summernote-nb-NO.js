@@ -5,11 +5,9 @@
         bold: 'Fet',
         italic: 'Kursiv',
         underline: 'Understrek',
-        strikethrough: 'Gjennomstrek',
         clear: 'Fjern formatering',
         height: 'Linjehøyde',
-        name: 'Skrifttype',
-        size: 'Skriftstørrelse'
+        name: 'Skrifttype'
       },
       image: {
         image: 'Bilde',

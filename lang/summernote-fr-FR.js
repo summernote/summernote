@@ -5,13 +5,9 @@
         bold: 'Gras',
         italic: 'Italique',
         underline: 'Souligné',
-        strikethrough: 'Barré',
-        superscript: 'Exposant',
-        subscript: 'Indicé',
         clear: 'Effacer la mise en forme',
         height: 'Interligne',
-        name: 'Famille de police',
-        size: 'Taille de police'
+        name: 'Famille de police'
       },
       image: {
         image: 'Image',
