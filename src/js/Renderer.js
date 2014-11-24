@@ -565,7 +565,7 @@ define([
 
         var body = '<div class="form-group row-fluid note-group-select-from-files">' +
                      '<label>' + lang.image.selectFromFiles + '</label>' +
-                     '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
+                     '<input class="note-image-input form-control" type="file" name="files" accept="image/*" />' +
                      imageLimitation +
                    '</div>' +
                    '<div class="form-group row-fluid">' +
