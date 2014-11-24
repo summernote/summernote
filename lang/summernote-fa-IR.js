@@ -5,11 +5,9 @@
         bold: 'درشت',
         italic: 'خمیده',
         underline: 'میان خط',
-        strikethrough: 'Strike',
         clear: 'پاک کردن فرمت فونت',
         height: 'فاصله ی خطی',
-        name: 'اسم فونت',
-        size: 'اندازه ی فونت'
+        name: 'اسم فونت'
       },
       image: {
         image: 'تصویر',
@@ -33,13 +31,6 @@
         textToDisplay: 'متن جهت نمایش',
         url: 'این لینک به چه آدرسی باید برود ؟',
         openInNewWindow: 'در یک پنجره ی جدید باز شود'
-      },
-      video: {
-        video: 'ویدیو',
-        videoLink: 'لینک ویدیو',
-        insert: 'افزودن ویدیو',
-        url: 'آدرس ویدیو ؟',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, یا Youku)'
       },
       table: {
         table: 'جدول'

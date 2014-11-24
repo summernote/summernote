@@ -209,13 +209,31 @@
           providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
         }
       },
-      'ko-KR': {
+      'ar-AR': {
         video: {
-          video: '동영상',
-          videoLink: '동영상 링크',
-          insert: '동영상 추가',
-          url: '동영상 URL',
-          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, Youku 사용 가능)'
+          video: 'فيديو',
+          videoLink: 'رابط الفيديو',
+          insert: 'إدراج الفيديو',
+          url: 'رابط الفيديو',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ou Youku)'
+        }
+      },
+      'ca-ES': {
+        video: {
+          video: 'Video',
+          videoLink: 'Enllaç del video',
+          insert: 'Inserir video',
+          url: 'URL del video?',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, o Youku)'
+        }
+      },
+      'cs-CZ': {
+        video: {
+          video: 'Video',
+          videoLink: 'Odkaz videa',
+          insert: 'Vložit video',
+          url: 'URL videa?',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion nebo Youku)'
         }
       },
       'da-DK': {
@@ -225,6 +243,267 @@
           insert: 'Indsæt Video',
           url: 'Video URL?',
           providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion eller Youku)'
+        }
+      },
+      'de-DE': {
+        video: {
+          video: 'Video',
+          videoLink: 'Video Link',
+          insert: 'Video einfügen',
+          url: 'Video URL?',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, oder Youku)'
+        }
+      },
+      'es-ES': {
+        video: {
+          video: 'Video',
+          videoLink: 'Link del video',
+          insert: 'Insertar video',
+          url: '¿URL del video?',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, o Youku)'
+        }
+      },
+      'es-EU': {
+        video: {
+          video: 'Bideoa',
+          videoLink: 'Bideorako esteka',
+          insert: 'Bideo berri bat txertatu',
+          url: 'Bideoaren URL helbidea',
+          providers: '(YouTube, Vimeo, Vine, Instagram, edo DailyMotion)'
+        }
+      },
+      'fa-IR': {
+        video: {
+          video: 'ویدیو',
+          videoLink: 'لینک ویدیو',
+          insert: 'افزودن ویدیو',
+          url: 'آدرس ویدیو ؟',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, یا Youku)'
+        }
+      },
+      'fi-FI': {
+        video: {
+          video: 'Video',
+          videoLink: 'Linkki videoon',
+          insert: 'Lisää video',
+          url: 'Videon URL-osoite?',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion tai Youku)'
+        }
+      },
+      'fr-FR': {
+        video: {
+          video: 'Vidéo',
+          videoLink: 'Lien vidéo',
+          insert: 'Insérer une vidéo',
+          url: 'URL de la vidéo',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ou Youku)'
+        }
+      },
+      'he-IL': {
+        video: {
+          video: 'סרטון',
+          videoLink: 'קישור לסרטון',
+          insert: 'הוסף סרטון',
+          url: 'קישור לסרטון',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion או Youku)'
+        }
+      },
+      'hu-HU': {
+        video: {
+          video: 'Videó',
+          videoLink: 'Videó hivatkozás',
+          insert: 'Videó beszúrása',
+          url: 'Videó URL címe',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, vagy Youku)'
+        }
+      },
+      'id-ID': {
+        video: {
+          video: 'Video',
+          videoLink: 'Link video',
+          insert: 'Sisipkan video',
+          url: 'Tautan video',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, atau Youku)'
+        }
+      },
+      'it-IT': {
+        video: {
+          video: 'Video',
+          videoLink: 'Collegamento ad un Video',
+          insert: 'Inserisci Video',
+          url: 'URL del Video',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion o Youku)'
+        }
+      },
+      'ja-JP': {
+        video: {
+          video: '動画',
+          videoLink: '動画リンク',
+          insert: '動画挿入',
+          url: '動画のURL',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, Youku)'
+        }
+      },
+      'ko-KR': {
+        video: {
+          video: '동영상',
+          videoLink: '동영상 링크',
+          insert: '동영상 추가',
+          url: '동영상 URL',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, Youku 사용 가능)'
+        }
+      },
+      'nb-NO': {
+        video: {
+          video: 'Video',
+          videoLink: 'Videolenke',
+          insert: 'Sett inn video',
+          url: 'Video-URL',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion eller Youku)'
+        }
+      },
+      'nl-NL': {
+        video: {
+          video: 'Video',
+          videoLink: 'Video link',
+          insert: 'Video invoegen',
+          url: 'URL van de video',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion of Youku)'
+        }
+      },
+      'pl-PL': {
+        video: {
+          video: 'Wideo',
+          videoLink: 'Adres wideo',
+          insert: 'Wstaw wideo',
+          url: 'Adres wideo',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, lub Youku)'
+        }
+      },
+      'pt-BR': {
+        video: {
+          video: 'Vídeo',
+          videoLink: 'Link para vídeo',
+          insert: 'Inserir vídeo',
+          url: 'URL do vídeo?',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, ou Youku)'
+        }
+      },
+      'ro-RO': {
+        video: {
+          video: 'Video',
+          videoLink: 'Link video',
+          insert: 'Inserează video',
+          url: 'URL video?',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, sau Youku)'
+        }
+      },
+      'ru-RU': {
+        video: {
+          video: 'Видео',
+          videoLink: 'Ссылка на видео',
+          insert: 'Вставить видео',
+          url: 'URL видео',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion или Youku)'
+        }
+      },
+      'sk-SK': {
+        video: {
+          video: 'Video',
+          videoLink: 'Odkaz videa',
+          insert: 'Vložiť video',
+          url: 'URL videa?',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion nebo Youku)'
+        }
+      },
+      'sl-SI': {
+        video: {
+          video: 'Video',
+          videoLink: 'Video povezava',
+          insert: 'Vstavi video',
+          url: 'Povezava do videa',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ali Youku)'
+        }
+      },
+      'sr-RS': {
+        video: {
+          video: 'Видео',
+          videoLink: 'Веза ка видеу',
+          insert: 'Уметни видео',
+          url: 'URL видео',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion или Youku)'
+        }
+      },
+      'sr-RS-Latin': {
+        video: {
+          video: 'Video',
+          videoLink: 'Veza ka videu',
+          insert: 'Umetni video',
+          url: 'URL video',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ili Youku)'
+        }
+      },
+      'sv-SE': {
+        video: {
+          video: 'Filmklipp',
+          videoLink: 'Länk till filmklipp',
+          insert: 'Infoga filmklipp',
+          url: 'Länk till filmklipp',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion eller Youku)'
+        }
+      },
+      'th-TH': {
+        video: {
+          video: 'วีดีโอ',
+          videoLink: 'ลิงก์ของวีดีโอ',
+          insert: 'แทรกวีดีโอ',
+          url: 'ที่อยู่ URL ของวีดีโอ?',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion หรือ Youku)'
+        }
+      },
+      'tr-TR': {
+        video: {
+          video: 'Video',
+          videoLink: 'Video bağlantısı',
+          insert: 'Video ekle',
+          url: 'Video bağlantısı?',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion veya Youku)'
+        }
+      },
+      'uk-UA': {
+        video: {
+          video: 'Відео',
+          videoLink: 'Посилання на відео',
+          insert: 'Вставити відео',
+          url: 'URL відео',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion чи Youku)'
+        }
+      },
+      'vi-VN': {
+        video: {
+          video: 'Video',
+          videoLink: 'Đường Dẫn đến Video',
+          insert: 'Chèn Video',
+          url: 'URL',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion và Youku)'
+        }
+      },
+      'zh-CN': {
+        video: {
+          video: '视频',
+          videoLink: '视频链接',
+          insert: '插入视频',
+          url: '视频地址',
+          providers: '(优酷, Instagram, DailyMotion, Youtube等)'
+        }
+      },
+      'zh-TW': {
+        video: {
+          video: '影片',
+          videoLink: '影片連結',
+          insert: '插入影片',
+          url: '影片網址',
+          providers: '(優酷, Instagram, DailyMotion, Youtube等)'
         }
       }
     }

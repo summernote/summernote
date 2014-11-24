@@ -5,10 +5,8 @@
         bold: '粗體',
         italic: '斜體',
         underline: '底線',
-        strikethrough: '刪除線',
         clear: '清除格式',
-        height: '行高',
-        size: '字體大小'
+        height: '行高'
       },
       image: {
         image: '圖片',
@@ -31,13 +29,6 @@
         textToDisplay: '顯示文字',
         url: '連結網址',
         openInNewWindow: '在新視窗開啟'
-      },
-      video: {
-        video: '影片',
-        videoLink: '影片連結',
-        insert: '插入影片',
-        url: '影片網址',
-        providers: '(優酷, Instagram, DailyMotion, Youtube等)'
       },
       table: {
         table: '表格'

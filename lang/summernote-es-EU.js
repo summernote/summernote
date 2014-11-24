@@ -2,14 +2,12 @@
   $.extend($.summernote.lang, {
     'es-EU': {
       font: {
-        name: 'Tipografia',
         bold: 'Lodia',
         italic: 'Etzana',
         underline: 'Azpimarratua',
-        strikethrough: 'Marratua',
         clear: 'Estiloa kendu',
         height: 'Lerro altuera',
-        size: 'Letren neurria'
+        name: 'Tipografia'
       },
       image: {
         image: 'Irudia',
@@ -32,13 +30,6 @@
         textToDisplay: 'Estekaren testua',
         url: 'Estekaren URL helbidea',
         openInNewWindow: 'Leiho berri batean ireki'
-      },
-      video: {
-        video: 'Bideoa',
-        videoLink: 'Bideorako esteka',
-        insert: 'Bideo berri bat txertatu',
-        url: 'Bideoaren URL helbidea',
-        providers: '(YouTube, Vimeo, Vine, Instagram, edo DailyMotion)'
       },
       table: {
         table: 'Taula' //Tabla

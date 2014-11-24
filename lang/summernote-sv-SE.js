@@ -5,11 +5,9 @@
         bold: 'Fet',
         italic: 'Kursiv',
         underline: 'Understruken',
-        strikethrough: 'Genomstruken',
         clear: 'Radera formatering',
         height: 'Radavstånd',
-        name: 'Teckensnitt',
-        size: 'Teckenstorlek'
+        name: 'Teckensnitt'
       },
       image: {
         image: 'Bild',
@@ -33,13 +31,6 @@
         textToDisplay: 'Visningstext',
         url: 'Till vilken URL ska denna länk peka?',
         openInNewWindow: 'Öppna i ett nytt fönster'
-      },
-      video: {
-        video: 'Filmklipp',
-        videoLink: 'Länk till filmklipp',
-        insert: 'Infoga filmklipp',
-        url: 'Länk till filmklipp',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion eller Youku)'
       },
       table: {
         table: 'Tabell'

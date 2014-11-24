@@ -91,7 +91,7 @@ define('summernote/module/Dialog', function () {
         $linkDialog.one('shown.bs.modal', function () {
           $linkText.val(linkInfo.text);
 
-          $linkText.keyup(function () {
+          $linkText.on('input', function () {
             // if linktext was modified by keyup,
             // stop cloning text from linkUrl
             linkInfo.text = $linkText.val();
@@ -103,7 +103,7 @@ define('summernote/module/Dialog', function () {
             toggleBtn($linkBtn, linkInfo.text);
           }
 
-          $linkUrl.keyup(function () {
+          $linkUrl.on('input', function () {
             toggleBtn($linkBtn, $linkUrl.val());
             // display same link on `Text to display` input
             // when create a new link
@@ -127,8 +127,8 @@ define('summernote/module/Dialog', function () {
           });
         }).one('hidden.bs.modal', function () {
           // detach events
-          $linkText.off('keyup');
-          $linkUrl.off('keyup');
+          $linkText.off('input');
+          $linkUrl.off('input');
           $linkBtn.off('click');
 
           if (deferred.state() === 'pending') {

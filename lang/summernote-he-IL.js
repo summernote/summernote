@@ -5,13 +5,9 @@
         bold: 'מודגש',
         italic: 'נטוי',
         underline: 'קו תחתון',
-        strikethrough: 'קו חוצה',
-        subscript: 'כתב תחתי',
-        superscript: 'כתב עילי',
         clear: 'נקה עיצוב',
         height: 'גובה',
-        name: 'גופן',
-        size: 'גודל גופן'
+        name: 'גופן'
       },
       image: {
         image: 'תמונה',
@@ -35,13 +31,6 @@
         textToDisplay: 'טקסט להציג',
         url: 'קישור',
         openInNewWindow: 'פתח בחלון חדש'
-      },
-      video: {
-        video: 'סרטון',
-        videoLink: 'קישור לסרטון',
-        insert: 'הוסף סרטון',
-        url: 'קישור לסרטון',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion או Youku)'
       },
       table: {
         table: 'טבלה'

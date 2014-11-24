@@ -5,10 +5,9 @@
         bold: 'Negrito',
         italic: 'Itálico',
         underline: 'Sublinhado',
-        strikethrough: 'Riscado',
         clear: 'Remover estilo da fonte',
         height: 'Altura da linha',
-        size: 'Tamanho da fonte'
+        name: 'Fonte'
       },
       image: {
         image: 'Imagem',
@@ -31,13 +30,6 @@
         textToDisplay: 'Texto para exibir',
         url: 'Para qual URL esse link leva?',
         openInNewWindow: 'Abrir em uma nova janela'
-      },
-      video: {
-        video: 'Vídeo',
-        videoLink: 'Link para vídeo',
-        insert: 'Inserir vídeo',
-        url: 'URL do vídeo?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, ou Youku)'
       },
       table: {
         table: 'Tabela'

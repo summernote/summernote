@@ -5,10 +5,8 @@
         bold: 'Fett',
         italic: 'Kursiv',
         underline: 'Unterstreichen',
-        strikethrough: 'Durchgestrichen',
         clear: 'Zurücksetzen',
-        height: 'Zeilenhöhe',
-        size: 'Schriftgröße'
+        height: 'Zeilenhöhe'
       },
       image: {
         image: 'Grafik',
@@ -38,13 +36,6 @@
         textToDisplay: 'Anzeigetext',
         url: 'Ziel des Links?',
         openInNewWindow: 'In einem neuen Fenster öffnen'
-      },
-      video: {
-        video: 'Video',
-        videoLink: 'Video Link',
-        insert: 'Video einfügen',
-        url: 'Video URL?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, oder Youku)'
       },
       table: {
         table: 'Tabelle'

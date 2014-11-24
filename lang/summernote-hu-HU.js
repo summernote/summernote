@@ -5,11 +5,9 @@
         bold: 'Félkövér',
         italic: 'Dőlt',
         underline: 'Aláhúzott',
-        strikethrough: 'Áthúzott',
         clear: 'Formázás törlése',
         height: 'Sorköz',
-        name: 'Betűtípus',
-        size: 'Betűméret'
+        name: 'Betűtípus'
       },
       image: {
         image: 'Kép',
@@ -33,13 +31,6 @@
         textToDisplay: 'Megjelenítendő szöveg',
         url: 'Milyen URL címre hivatkozzon?',
         openInNewWindow: 'Megnyitás új ablakban'
-      },
-      video: {
-        video: 'Videó',
-        videoLink: 'Videó hivatkozás',
-        insert: 'Videó beszúrása',
-        url: 'Videó URL címe',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, vagy Youku)'
       },
       table: {
         table: 'Táblázat'

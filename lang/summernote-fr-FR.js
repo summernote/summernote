@@ -5,13 +5,9 @@
         bold: 'Gras',
         italic: 'Italique',
         underline: 'Souligné',
-        strikethrough: 'Barré',
-        superscript: 'Exposant',
-        subscript: 'Indicé',
         clear: 'Effacer la mise en forme',
         height: 'Interligne',
-        name: 'Famille de police',
-        size: 'Taille de police'
+        name: 'Famille de police'
       },
       image: {
         image: 'Image',
@@ -35,13 +31,6 @@
         textToDisplay: 'Texte à afficher',
         url: 'URL du lien',
         openInNewWindow: 'Ouvrir dans une nouvelle fenêtre'
-      },
-      video: {
-        video: 'Vidéo',
-        videoLink: 'Lien vidéo',
-        insert: 'Insérer une vidéo',
-        url: 'URL de la vidéo',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ou Youku)'
       },
       table: {
         table: 'Tableau'
