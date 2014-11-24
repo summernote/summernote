@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-11-16T04:26Z
+ * Date: 2014-11-20T13:38Z
  */
 (function (factory) {
   /* global define */
@@ -1953,6 +1953,9 @@
         row: 10
       },
 
+      // image
+      maximumImageFileSize: null, // size in bytes, null = no limit
+
       // callbacks
       oninit: null,             // initialize
       onfocus: null,            // editable has focus
@@ -2070,6 +2073,8 @@
           dragImageHere: 'Drag image here',
           dropImage: 'Drop image',
           selectFromFiles: 'Select from files',
+          maximumFileSize: 'Maximum file size',
+          maximumFileSizeError: 'Maximum file size exceeded.',
           url: 'Image URL',
           remove: 'Remove Image'
         },
@@ -2996,7 +3001,11 @@
      * @param {jQuery} $target
      */
     this.floatMe = function ($editable, value, $target) {
-      $target.css('float', value);
+      $target.removeClass('pull-left pull-right');
+
+      if (value && value !== 'none') {
+        $target.addClass('pull-' + value);
+      }
       afterCommand($editable);
     };
 
@@ -3622,11 +3631,15 @@
     /**
      * insert Images from file array.
      *
-     * @param {jQuery} $editable
+     * @param {Object} layoutInfo
      * @param {File[]} files
      */
-    var insertImages = function ($editable, files) {
+    var insertImages = function (layoutInfo, files) {
+      var $editor = layoutInfo.editor(),
+          $editable = layoutInfo.editable();
+
       var callbacks = $editable.data('callbacks');
+      var options = $editor.data('options');
 
       // If onImageUpload options setted
       if (callbacks.onImageUpload) {
@@ -3635,13 +3648,21 @@
       } else {
         $.each(files, function (idx, file) {
           var filename = file.name;
-          async.readFileAsDataURL(file).then(function (sDataURL) {
-            editor.insertImage($editable, sDataURL, filename);
-          }).fail(function () {
+          if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
             if (callbacks.onImageUploadError) {
-              callbacks.onImageUploadError();
+              callbacks.onImageUploadError(options.langInfo.image.maximumFileSizeError);
+            } else {
+              alert(options.langInfo.image.maximumFileSizeError);
             }
-          });
+          } else {
+            async.readFileAsDataURL(file).then(function (sDataURL) {
+              editor.insertImage($editable, sDataURL, filename);
+            }).fail(function () {
+              if (callbacks.onImageUploadError) {
+                callbacks.onImageUploadError();
+              }
+            });
+          }
         });
       }
     };
@@ -3685,7 +3706,7 @@
             editor.insertImage($editable, data);
           } else {
             // array of files
-            insertImages($editable, data);
+            insertImages(layoutInfo, data);
           }
         }).fail(function () {
           editor.restoreRange($editable);
@@ -3853,7 +3874,7 @@
       var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
 
       if (isClipboardImage) {
-        insertImages($editable, [item.getAsFile()]);
+        insertImages(layoutInfo, [item.getAsFile()]);
       }
 
       editor.afterCommand($editable);
@@ -4029,16 +4050,16 @@
      * Drag and Drop Events
      *
      * @param {Object} layoutInfo - layout Informations
-     * @param {Boolean} disableDragAndDrop
+     * @param {Object} options
      */
-    var handleDragAndDropEvent = function (layoutInfo, disableDragAndDrop) {
-      if (disableDragAndDrop) {
+    var handleDragAndDropEvent = function (layoutInfo, options) {
+      if (options.disableDragAndDrop) {
         // prevent default drop event
         $document.on('drop', function (e) {
           e.preventDefault();
         });
       } else {
-        attachDragAndDropEvent(layoutInfo);
+        attachDragAndDropEvent(layoutInfo, options);
       }
     };
 
@@ -4046,8 +4067,9 @@
      * attach Drag and Drop Events
      *
      * @param {Object} layoutInfo - layout Informations
+     * @param {Object} options
      */
-    var attachDragAndDropEvent = function (layoutInfo) {
+    var attachDragAndDropEvent = function (layoutInfo, options) {
       var collection = $(),
           $dropzone = layoutInfo.dropzone,
           $dropzoneMessage = layoutInfo.dropzone.find('.note-dropzone-message');
@@ -4059,7 +4081,7 @@
           layoutInfo.editor.addClass('dragover');
           $dropzone.width(layoutInfo.editor.width());
           $dropzone.height(layoutInfo.editor.height());
-          $dropzoneMessage.text(layoutInfo.langInfo.image.dragImageHere);
+          $dropzoneMessage.text(options.langInfo.image.dragImageHere);
         }
         collection = collection.add(e.target);
       }).on('dragleave', function (e) {
@@ -4075,10 +4097,10 @@
       // change dropzone's message on hover.
       $dropzone.on('dragenter', function () {
         $dropzone.addClass('hover');
-        $dropzoneMessage.text(layoutInfo.langInfo.image.dropImage);
+        $dropzoneMessage.text(options.langInfo.image.dropImage);
       }).on('dragleave', function () {
         $dropzone.removeClass('hover');
-        $dropzoneMessage.text(layoutInfo.langInfo.image.dragImageHere);
+        $dropzoneMessage.text(options.langInfo.image.dragImageHere);
       });
 
       // attach dropImage
@@ -4089,7 +4111,7 @@
         if (dataTransfer && dataTransfer.files) {
           var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
           layoutInfo.editable().focus();
-          insertImages(layoutInfo.editable(), dataTransfer.files);
+          insertImages(layoutInfo, dataTransfer.files);
         }
       }).on('dragover', false); // prevent default dragover event
     };
@@ -4164,7 +4186,7 @@
       // handlers for frame mode (toolbar, statusbar)
       if (!options.airMode) {
         // handler for drag and drop
-        handleDragAndDropEvent(layoutInfo, options.disableDragAndDrop);
+        handleDragAndDropEvent(layoutInfo, options);
 
         // handler for toolbar
         layoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
@@ -4811,10 +4833,19 @@
     };
 
     var tplDialogInfo = {
-      image: function (lang) {
+      image: function (lang, options) {
+        var imageLimitation = '';
+        if (options.maximumImageFileSize) {
+          var unit = Math.floor(Math.log(options.maximumImageFileSize) / Math.log(1024));
+          var readableSize = (options.maximumImageFileSize / Math.pow(1024, unit)).toFixed(2) * 1 +
+                             ' ' + ' KMGTP'[unit] + 'B';
+          imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
+        }
+
         var body = '<div class="form-group row-fluid note-group-select-from-files">' +
                      '<label>' + lang.image.selectFromFiles + '</label>' +
-                     '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
+                     '<input class="note-image-input form-control" type="file" name="files" accept="image/*" />' +
+                     imageLimitation +
                    '</div>' +
                    '<div class="form-group row-fluid">' +
                      '<label>' + lang.image.url + '</label>' +
@@ -4944,9 +4975,9 @@
      *
      * @param {jQuery} $holder
      * @param {Object} options
-     * @param {Object} langInfo
      */
-    this.createLayoutByAirMode = function ($holder, options, langInfo) {
+    this.createLayoutByAirMode = function ($holder, options) {
+      var langInfo = options.langInfo;
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       var id = func.uniqueId();
 
@@ -4987,9 +5018,10 @@
      *
      * @param {jQuery} $holder
      * @param {Object} options
-     * @param {Object} langInfo
      */
-    this.createLayoutByFrame = function ($holder, options, langInfo) {
+    this.createLayoutByFrame = function ($holder, options) {
+      var langInfo = options.langInfo;
+
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
       if (options.width) {
@@ -5077,17 +5109,16 @@
      *
      * @param {jQuery} $holder
      * @param {Object} options
-     * @param {Object} langInfo
      */
-    this.createLayout = function ($holder, options, langInfo) {
+    this.createLayout = function ($holder, options) {
       if (this.noteEditorFromHolder($holder).length) {
         return;
       }
 
       if (options.airMode) {
-        this.createLayoutByAirMode($holder, options, langInfo);
+        this.createLayoutByAirMode($holder, options);
       } else {
-        this.createLayoutByFrame($holder, options, langInfo);
+        this.createLayoutByFrame($holder, options);
       }
     };
 
@@ -5224,18 +5255,17 @@
       // extend default options
       options = $.extend({}, $.summernote.options, options);
 
+      // Include langInfo in options for later use, e.g. for image drag-n-drop
+      // Setup language info with en-US as default
+      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+
       this.each(function (idx, holder) {
         var $holder = $(holder);
 
-        // Setup language info with en-US as default
-        var langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
-        
         // createLayout with options
-        renderer.createLayout($holder, options, langInfo);
+        renderer.createLayout($holder, options);
 
         var info = renderer.layoutInfoFromHolder($holder);
-        // Include langInfo in general info for later use, e.g. for image drag-n-drop
-        info.langInfo = langInfo;
         eventHandler.attach(info, options);
 
         // Textarea: auto filling the code before form submit.
