@@ -43,13 +43,17 @@ Include the following code in the `<head>` tag of your HTML:
 ```
 
 #### 2. target elements
-And place `div` tag to somewhere in the `body` tag. This element will be placed by the visual representation of the summernote.
+
+Then place a `div` tag somewhere in the `body` tag. This element will be replaced with the summernote editor.
+
 ```html
 <div id="summernote">Hello Summernote</div>
 ```
 
 #### 3. summernote
-Finally, run script after document ready.
+
+Finally, run this script after the DOM is ready:
+
 ```javascript
 $(document).ready(function() {
   $('#summernote').summernote();
@@ -57,7 +61,8 @@ $(document).ready(function() {
 ```
 
 ### API
-Get the HTML `code` if you need it:
+
+`code` - get the HTML source code underlying the text in the editor:
 
 ```javascript
 var sHTML = $('#summernote').code();
