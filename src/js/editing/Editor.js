@@ -352,7 +352,7 @@ define([
       var rng = range.create().expand(dom.isAnchor);
 
       // Fix for wrong selection on FireFox
-      if (!$editable.find(rng.sc) || $editable[0] === rng.sc) {
+      if ($.inArray($editable[0], $(rng.sc).parents()) < 0) {
         rng = range.createFromNode($editable.children()[0]);
       }
 
