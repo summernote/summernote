@@ -5,13 +5,9 @@
         bold: 'Krepko',
         italic: 'Ležeče',
         underline: 'Podčrtano',
-        strikethrough: 'Prečrtano',
-        subscript: 'Podpisano',
-        superscript: 'Nadpisano',
         clear: 'Počisti oblikovanje izbire',
         height: 'Razmik med vrsticami',
-        name: 'Pisava',
-        size: 'Velikost pisave'
+        name: 'Pisava'
       },
       image: {
         image: 'Slika',
@@ -35,13 +31,6 @@
         textToDisplay: 'Prikazano besedilo',
         url: 'Povezava',
         openInNewWindow: 'Odpri v novem oknu'
-      },
-      video: {
-        video: 'Video',
-        videoLink: 'Video povezava',
-        insert: 'Vstavi video',
-        url: 'Povezava do videa',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ali Youku)'
       },
       table: {
         table: 'Tabela'

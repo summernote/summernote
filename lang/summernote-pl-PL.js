@@ -5,11 +5,9 @@
         bold: 'Pogrubienie',
         italic: 'Pochylenie',
         underline: 'Podkreślenie',
-        strikethrough: 'Przekreślenie',
         clear: 'Usuń formatowanie',
         height: 'Interlinia',
-        name: 'Czcionka',
-        size: 'Rozmiar'
+        name: 'Czcionka'
       },
       image: {
         image: 'Grafika',
@@ -33,13 +31,6 @@
         textToDisplay: 'Tekst do wyświetlenia',
         url: 'Na jaki URL powinien przenosić ten link?',
         openInNewWindow: 'Otwórz w nowym oknie'
-      },
-      video: {
-        video: 'Wideo',
-        videoLink: 'Adres wideo',
-        insert: 'Wstaw wideo',
-        url: 'Adres wideo',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, lub Youku)'
       },
       table: {
         table: 'Tabela'

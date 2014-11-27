@@ -5,10 +5,8 @@
         bold: 'Îngroșat',
         italic: 'Înclinat',
         underline: 'Subliniat',
-        strikethrough: 'Tăiat',
         clear: 'Înlătură formatare font',
-        height: 'Înălțime rând',
-        size: 'Dimensiune font'
+        height: 'Înălțime rând'
       },
       image: {
         image: 'Imagine',
@@ -30,13 +28,6 @@
         edit: 'Editează',
         textToDisplay: 'Text ce va fi afişat',
         url: 'Deschidere în fereastra nouă?'
-      },
-      video: {
-        video: 'Video',
-        videoLink: 'Link video',
-        insert: 'Inserează video',
-        url: 'URL video?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, sau Youku)'
       },
       table: {
         table: 'Tabel'
