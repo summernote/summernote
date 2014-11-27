@@ -90,52 +90,33 @@
   };
 
   /**
+   * get video info
+   *
    * @param {jQuery} $editable
-   * @return {String}
+   * @return {Object}
    */
-  /*var getTextOnRange = function ($editable) {
+  var getVideoInfo = function ($editable) {
     $editable.focus();
-
-    var rng = range.create();
-
-    // if range on anchor, expand range with anchor
+    
+    var rng = range.create().expand(dom.isVideo);
+    var $video = $(rng.nodes(dom.isVideo)).first();
+    if ($video.length) {
+      return {
+        range : rng,
+        url : $video.attr('data-original-url')
+      };
+    }
+    
     if (rng.isOnAnchor()) {
       var anchor = dom.ancestor(rng.sc, dom.isAnchor);
       rng = range.createFromNode(anchor);
     }
 
-    return rng.toString();
-  };*/
-  
-    /**
-     * get video info
-     *
-     * @param {jQuery} $editable
-     * @return {Object}
-     */
-    var getVideoInfo = function ($editable) {
-      $editable.focus();
-      
-      var rng = range.create().expand(dom.isVideo);
-      console.log(rng.nodes(dom.isVideo));
-      var $video = $(rng.nodes(dom.isVideo)).first();
-      if ($video.length) {
-        return {
-          range : rng,
-          url : $video.attr('data-original-url')
-        };
-      }
-      
-      if (rng.isOnAnchor()) {
-        var anchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = range.createFromNode(anchor);
-      }
-
-      return {
-        range : rng,
-        url: rng.toString()
-      };
+    return {
+      range : rng,
+      url: rng.toString()
     };
+  };
 
   /**
    * toggle button status
@@ -228,15 +209,11 @@
       showVideoDialog: function (layoutInfo) {
         var $dialog = layoutInfo.dialog(),
             $editable = layoutInfo.editable(),
-            //text = getTextOnRange($editable),
             videoInfo = getVideoInfo($editable);
 
         layoutInfo.popover().children().hide();
         layoutInfo.handle().children().hide();
-        //layoutInfo.popover.hide();
-        //layoutInfo.handle.hide();
-        
-        //console.log($dialog);
+
         // save current range
         editor.saveRange($editable);
 
@@ -249,9 +226,6 @@
           // insert video node
           editor.insertNode($editable, createVideoNode(videoInfo));
           
-          console.log(editor, $editable);
-          //popover.hide(layoutInfo.popover());
-          //handle.hide(layoutInfo.handle());
         }).fail(function () {
           // when cancel button clicked
           editor.restoreRange($editable);
