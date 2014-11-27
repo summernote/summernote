@@ -5,13 +5,9 @@
 				bold: 'ตัวหนา',
 				italic: 'ตัวเอียง',
 				underline: 'ขีดเส้นใต้',
-				strikethrough: 'ขีดฆ่า',
-				subscript: 'ตัวห้อย',
-				superscript: 'ตัวยก',
 				clear: 'ล้างรูปแบบตัวอักษร',
 				height: 'ความสูงบรรทัด',
-				name: 'แบบตัวอักษร',
-				size: 'ขนาดตัวอักษร'
+				name: 'แบบตัวอักษร'
 			},
 			image: {
 				image: 'รูปภาพ',
@@ -35,13 +31,6 @@
 				textToDisplay: 'ข้อความที่ให้แสดง',
 				url: 'ที่อยู่เว็บไซต์ที่ต้องการให้เชื่อมโยงไปถึง?',
 				openInNewWindow: 'เปิดในหน้าต่างใหม่'
-			},
-			video: {
-				video: 'วีดีโอ',
-				videoLink: 'ลิงก์ของวีดีโอ',
-				insert: 'แทรกวีดีโอ',
-				url: 'ที่อยู่ URL ของวีดีโอ?',
-				providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion หรือ Youku)'
 			},
 			table: {
 				table: 'ตาราง'

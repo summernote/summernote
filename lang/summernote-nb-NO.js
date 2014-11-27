@@ -5,11 +5,9 @@
         bold: 'Fet',
         italic: 'Kursiv',
         underline: 'Understrek',
-        strikethrough: 'Gjennomstrek',
         clear: 'Fjern formatering',
         height: 'Linjehøyde',
-        name: 'Skrifttype',
-        size: 'Skriftstørrelse'
+        name: 'Skrifttype'
       },
       image: {
         image: 'Bilde',
@@ -33,13 +31,6 @@
         textToDisplay: 'Visningstekst',
         url: 'Til hvilken URL skal denne lenken peke?',
         openInNewWindow: 'Åpne i nytt vindu'
-      },
-      video: {
-        video: 'Video',
-        videoLink: 'Videolenke',
-        insert: 'Sett inn video',
-        url: 'Video-URL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion eller Youku)'
       },
       table: {
         table: 'Tabell'

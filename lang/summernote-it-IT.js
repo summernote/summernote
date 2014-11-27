@@ -5,11 +5,9 @@
         bold: 'Testo in grassetto',
         italic: 'Testo in corsivo',
         underline: 'Testo sottolineato',
-        strikethrough: 'Testo barrato',
         clear: 'Elimina la formattazione del testo',
         height: 'Altezza della linea di testo',
-        name: 'Famiglia Font',
-        size: 'Dimensione del carattere'
+        name: 'Famiglia Font'
       },
       image: {
         image: 'Immagine',
@@ -33,13 +31,6 @@
         textToDisplay: 'Testo del collegamento',
         url: 'URL del collegamento',
         openInNewWindow: 'Apri in una nuova finestra'
-      },
-      video: {
-        video: 'Video',
-        videoLink: 'Collegamento ad un Video',
-        insert: 'Inserisci Video',
-        url: 'URL del Video',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion o Youku)'
       },
       table: {
         table: 'Tabella'

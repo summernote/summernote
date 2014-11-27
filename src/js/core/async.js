@@ -34,7 +34,7 @@ define('summernote/core/async', function () {
         $('<img>').one('load', function () {
           deferred.resolve($(this));
         }).one('error abort', function () {
-          deferred.reject($(this));
+          deferred.reject($(this).detach());
         }).css({
           display: 'none'
         }).appendTo(document.body)
