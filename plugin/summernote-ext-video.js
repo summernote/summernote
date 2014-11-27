@@ -201,6 +201,47 @@
         return tmpl.dialog('note-video-dialog', lang.video.insert, body, footer);
       }
     },
+    
+    popovers: {
+      /**
+       * @param {Object} lang
+       * @param {Object} options
+       * @return {String}
+       */
+      video: function (lang) {
+        var leftButton = tmpl.iconButton('fa fa-align-left', {
+          title: lang.image.floatLeft,
+          event: 'floatMe',
+          value: 'left'
+        });
+        var rightButton = tmpl.iconButton('fa fa-align-right', {
+          title: lang.image.floatRight,
+          event: 'floatMe',
+          value: 'right'
+        });
+        var justifyButton = tmpl.iconButton('fa fa-align-justify', {
+          title: lang.image.floatNone,
+          event: 'floatMe',
+          value: 'none'
+        });
+        
+        var videoButton = tmpl.iconButton('fa fa-edit', {
+          title: lang.video.edit,
+          event: 'showVideoDialog',
+          hide: true
+        });
+        var removeButton = tmpl.iconButton('fa fa-trash-o', {
+          title: lang.video.remove,
+          event: 'removeMedia',
+          value: 'none'
+        });
+        
+        var content = '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
+                      '<div class="btn-group">' + leftButton + rightButton + justifyButton + '</div>' +
+                      '<div class="btn-group">' + videoButton + removeButton + '</div>';
+        return tmpl.popover('note-video-popover', content);
+      }
+    },
 
     events: {
       /**

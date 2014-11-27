@@ -41,6 +41,12 @@ define([
         renderer.addDialogInfo(name, dialog);
       });
     }
+    
+    if (plugin.popovers) {
+      $.each(plugin.popovers, function (name, popover) {
+        renderer.addPopoverInfo(name, popover);
+      });
+    }
 
     if (plugin.events) {
       $.each(plugin.events, function (name, event) {

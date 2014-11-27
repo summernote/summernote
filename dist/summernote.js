@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-11-27T12:54Z
+ * Date: 2014-11-27T13:40Z
  */
 (function (factory) {
   /* global define */
@@ -4619,8 +4619,8 @@
       }
     };
 
-    var tplPopovers = function (lang, options) {
-      var tplLinkPopover = function () {
+    var tplPopoverInfo = {
+      link: function (lang) {
         var linkButton = tplIconButton('fa fa-edit', {
           title: lang.link.edit,
           event: 'showLinkDialog',
@@ -4635,43 +4635,9 @@
                         linkButton + unlinkButton +
                       '</div>';
         return tplPopover('note-link-popover', content);
-      };
+      },
       
-      var tplVideoPopover = function () {
-        var leftButton = tplIconButton('fa fa-align-left', {
-          title: lang.image.floatLeft,
-          event: 'floatMe',
-          value: 'left'
-        });
-        var rightButton = tplIconButton('fa fa-align-right', {
-          title: lang.image.floatRight,
-          event: 'floatMe',
-          value: 'right'
-        });
-        var justifyButton = tplIconButton('fa fa-align-justify', {
-          title: lang.image.floatNone,
-          event: 'floatMe',
-          value: 'none'
-        });
-        
-        var videoButton = tplIconButton('fa fa-edit', {
-          title: lang.video.edit,
-          event: 'showVideoDialog',
-          hide: true
-        });
-        var removeButton = tplIconButton('fa fa-trash-o', {
-          title: lang.video.remove,
-          event: 'removeMedia',
-          value: 'none'
-        });
-        
-        var content = '<a href="http://www.google.com" target="_blank">www.google.com</a>&nbsp;&nbsp;' +
-                      '<div class="btn-group">' + leftButton + rightButton + justifyButton + '</div>' +
-                      '<div class="btn-group">' + videoButton + removeButton + '</div>';
-        return tplPopover('note-video-popover', content);
-      };
-      
-      var tplImagePopover = function () {
+      image: function (lang) {
         var fullButton = tplButton('<span class="note-fontsize-10">100%</span>', {
           title: lang.image.resizeFull,
           event: 'resize',
@@ -4736,9 +4702,12 @@
                       '<div class="btn-group">' + roundedButton + circleButton + thumbnailButton + noneButton + '</div>' +
                       '<div class="btn-group">' + removeButton + '</div>';
         return tplPopover('note-image-popover', content);
-      };
-
-      var tplAirPopover = function () {
+      },
+      
+      air: function (lang, options) {
+        if (!options.airMode) {
+          return '';
+        }
         var content = '';
         for (var idx = 0, len = options.airPopover.length; idx < len; idx ++) {
           var group = options.airPopover[idx];
@@ -4750,14 +4719,16 @@
         }
 
         return tplPopover('note-air-popover', content);
-      };
-
-      return '<div class="note-popover">' +
-               tplLinkPopover() +
-               tplVideoPopover() +
-               tplImagePopover() +
-               (options.airMode ?  tplAirPopover() : '') +
-             '</div>';
+      }
+    };
+    
+    
+    var tplPopovers = function (lang, options) {
+      var popovers = '';
+      $.each(tplPopoverInfo, function (idx, tplPopover) {
+        popovers += tplPopover(lang, options);
+      });
+      return '<div class="note-popover">' + popovers + '</div>';
     };
 
     var tplHandles = function () {
@@ -5217,6 +5188,7 @@
       return {
         button: tplButton,
         iconButton: tplIconButton,
+        popover: tplPopover,
         dialog: tplDialog
       };
     };
@@ -5227,6 +5199,10 @@
 
     this.addDialogInfo = function (name, dialogInfo) {
       tplDialogInfo[name] = dialogInfo;
+    };
+
+    this.addPopoverInfo = function (name, popoverInfo) {
+      tplPopoverInfo[name] = popoverInfo;
     };
   };
 
@@ -5265,6 +5241,12 @@
     if (plugin.dialogs) {
       $.each(plugin.dialogs, function (name, dialog) {
         renderer.addDialogInfo(name, dialog);
+      });
+    }
+    
+    if (plugin.popovers) {
+      $.each(plugin.popovers, function (name, popover) {
+        renderer.addPopoverInfo(name, popover);
       });
     }
 
