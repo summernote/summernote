@@ -158,10 +158,7 @@ define([
         $editable = layoutInfo.editable(),
         $codable = layoutInfo.codable();
 
-        var options = $editor.data('options');
-
         var resize = function (size) {
-          $editor.css('width', size.w);
           $editable.css('height', size.h);
           $codable.css('height', size.h);
           if ($codable.data('cmeditor')) {
@@ -176,7 +173,6 @@ define([
 
           $window.on('resize', function () {
             resize({
-              w: $window.width(),
               h: $window.height() - $toolbar.outerHeight()
             });
           }).trigger('resize');
@@ -185,7 +181,6 @@ define([
         } else {
           $window.off('resize');
           resize({
-            w: options.width || '',
             h: $editable.data('orgheight')
           });
           $scrollbar.css('overflow', 'visible');
