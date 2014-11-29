@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-11-22T01:29Z
+ * Date: 2014-11-29T04:38Z
  */
 (function (factory) {
   /* global define */
@@ -1669,15 +1669,22 @@
         if (dom.isBodyContainer(sc) && dom.isEmpty(sc)) {
           sc.innerHTML = dom.emptyPara;
           return new WrappedRange(sc.firstChild, 0);
-        } else if (!dom.isInline(sc) || dom.isParaInline(sc)) {
-          return this;
+        }
+
+        if (dom.isParaInline(sc) || dom.isPara(sc)) {
+          return this.normalize();
         }
 
         // find inline top ancestor
-        var ancestors = dom.listAncestor(sc, func.not(dom.isInline));
-        var topAncestor = list.last(ancestors);
-        if (!dom.isInline(topAncestor)) {
-          topAncestor = ancestors[ancestors.length - 2] || sc.childNodes[so];
+        var topAncestor;
+        if (dom.isInline(sc)) {
+          var ancestors = dom.listAncestor(sc, func.not(dom.isInline));
+          topAncestor = list.last(ancestors);
+          if (!dom.isInline(topAncestor)) {
+            topAncestor = ancestors[ancestors.length - 2] || sc.childNodes[so];
+          }
+        } else {
+          topAncestor = sc.childNodes[so - 1];
         }
 
         // siblings not in paragraph
@@ -1690,7 +1697,7 @@
           dom.appendChildNodes(para, list.tail(inlineSiblings));
         }
 
-        return this;
+        return this.normalize();
       };
 
       /**
