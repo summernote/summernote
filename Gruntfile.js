@@ -103,10 +103,21 @@ module.exports = function (grunt) {
           livereload: true
         }
       }
+    },
+
+    // execute meteor commands
+    shell: {
+      'meteor-test': {
+        command: 'meteor/runtests.sh'
+      },
+      'meteor-publish': {
+        command: 'meteor/publish.sh'
+      }
     }
+
   });
 
-  // load grunt tasks on package.json.
+  // load grunt tasks on package.json
   require('load-grunt-tasks')(grunt);
 
   // server
@@ -116,7 +127,7 @@ module.exports = function (grunt) {
   grunt.loadTasks('build');
 
   // test: unit test on test folder
-  grunt.registerTask('test', ['jshint', 'qunit']);
+  grunt.registerTask('test', ['jshint', 'qunit', 'shell:meteor-test']);
 
   // dist
   grunt.registerTask('dist', ['build', 'test', 'uglify', 'recess']);
@@ -124,6 +135,12 @@ module.exports = function (grunt) {
   // default: build, test, dist.
   grunt.registerTask('default', ['dist']);
 
-  // meteor
-  // TODO - see https://github.com/raix/Meteor-community-discussions/issues/15
+  // Meteor tasks
+  grunt.registerTask('meteor-test', 'shell:meteor-test');
+  grunt.registerTask('meteor-publish', 'shell:meteor-publish');
+  // Ideally we'd run tests before publishing, but the chances of tests breaking (given that
+  // Meteor is orthogonal to the library) are so small that it's not worth the maintainer's time
+  // grunt.regsterTask('meteor', ['shell:meteor-test', 'shell:meteor-publish']);
+  grunt.registerTask('meteor', 'shell:meteor-publish');
+
 };
