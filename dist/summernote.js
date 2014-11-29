@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.5.10
+ * Super simple wysiwyg editor on Bootstrap v0.6.0
  * http://hackerwins.github.io/summernote/
  *
  * summernote.js
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-11-29T04:38Z
+ * Date: 2014-11-29T05:15Z
  */
 (function (factory) {
   /* global define */
@@ -1858,7 +1858,7 @@
 
   var settings = {
     // version
-    version: '0.5.10',
+    version: '0.6.0',
 
     /**
      * options
@@ -1880,6 +1880,8 @@
       disableResizeEditor: false,   // disable resizing editor
 
       shortcuts: true,              // enable keyboard shortcuts
+
+      placeholder: false,           // enable placeholder text
 
       codemirror: {                 // codemirror options
         mode: 'text/html',
@@ -3735,10 +3737,7 @@
         $editable = layoutInfo.editable(),
         $codable = layoutInfo.codable();
 
-        var options = $editor.data('options');
-
         var resize = function (size) {
-          $editor.css('width', size.w);
           $editable.css('height', size.h);
           $codable.css('height', size.h);
           if ($codable.data('cmeditor')) {
@@ -3753,7 +3752,6 @@
 
           $window.on('resize', function () {
             resize({
-              w: $window.width(),
               h: $window.height() - $toolbar.outerHeight()
             });
           }).trigger('resize');
@@ -3762,7 +3760,6 @@
         } else {
           $window.off('resize');
           resize({
-            w: options.width || '',
             h: $editable.data('orgheight')
           });
           $scrollbar.css('overflow', 'visible');
@@ -4883,7 +4880,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.10</a> · ' +
+                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.6.0</a> · ' +
                      '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
@@ -5046,8 +5043,11 @@
       if (options.direction) {
         $editable.attr('dir', options.direction);
       }
+      if (options.placeholder) {
+        $editable.attr('data-placeholder', options.placeholder);
+      }
 
-      $editable.html(dom.html($holder) || dom.emptyPara);
+      $editable.html(dom.html($holder));
 
       //031. create codable
       $('<textarea class="note-codable"></textarea>').prependTo($editor);

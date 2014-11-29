@@ -1,6 +1,6 @@
 // package metadata file for Meteor.js
 
-var packageName = 'hackerwins:summernote';  // http://atmospherejs.com/hackerswin:summernote
+var packageName = 'summernote:summernote';  // http://atmospherejs.com/summernote:summernote
 var where = 'client';  // where to install: 'client', 'server', or ['client', 'server']
 
 var packageJson = JSON.parse(Npm.require("fs").readFileSync('package.json'));
