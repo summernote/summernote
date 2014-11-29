@@ -90,7 +90,7 @@ define([
 
     /**
      * hide all popovers
-     * @param {jQuery} $popover - popover contaienr
+     * @param {jQuery} $popover - popover container
      */
     this.hide = function ($popover) {
       $popover.children().hide();

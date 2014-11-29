@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-11-29T05:15Z
+ * Date: 2014-11-29T05:20Z
  */
 (function (factory) {
   /* global define */
@@ -371,9 +371,32 @@
 
       return results;
     };
+
+    /**
+     * returns next item.
+     * @param {Array} array
+     */
+    var next = function (array, item) {
+      var idx = array.indexOf(item);
+      if (idx === -1) { return null; }
+
+      return array[idx + 1];
+    };
+
+    /**
+     * returns prev item.
+     * @param {Array} array
+     */
+    var prev = function (array, item) {
+      var idx = array.indexOf(item);
+      if (idx === -1) { return null; }
+
+      return array[idx - 1];
+    };
+
   
     return { head: head, last: last, initial: initial, tail: tail,
-             find: find, contains: contains,
+             prev: prev, next: next, find: find, contains: contains,
              all: all, sum: sum, from: from,
              clusterBy: clusterBy, compact: compact, unique: unique };
   })();
@@ -3020,6 +3043,8 @@
       if (value) {
         $target.addClass(value);
       }
+
+      afterCommand($editable);
     };
 
     /**
@@ -3381,7 +3406,7 @@
 
     /**
      * hide all popovers
-     * @param {jQuery} $popover - popover contaienr
+     * @param {jQuery} $popover - popover container
      */
     this.hide = function ($popover) {
       $popover.children().hide();
@@ -3773,7 +3798,8 @@
         $toolbar = layoutInfo.toolbar(),
         $editable = layoutInfo.editable(),
         $codable = layoutInfo.codable(),
-        $popover = layoutInfo.popover();
+        $popover = layoutInfo.popover(),
+        $handle = layoutInfo.handle();
 
         var options = $editor.data('options');
 
@@ -3787,6 +3813,7 @@
           $codable.height($editable.height());
           toolbar.deactivate($toolbar);
           popover.hide($popover);
+          handle.hide($handle);
           $codable.focus();
 
           // activate CodeMirror as codable
@@ -3912,13 +3939,12 @@
           popover.update($popover, {image: target}, isAirMode);
         }).one('mouseup', function () {
           $document.off('mousemove');
+          editor.afterCommand($editable);
         });
 
         if (!$target.data('ratio')) { // original ratio.
           $target.data('ratio', $target.height() / $target.width());
         }
-
-        editor.afterCommand($editable);
       }
     };
 
@@ -4213,10 +4239,10 @@
       layoutInfo.editor.data('options', options);
 
       // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
-      if (options.styleWithSpan && !agent.isMSIE) {
+      if (!agent.isMSIE) {
         // protect FF Error: NS_ERROR_FAILURE: Failure
         setTimeout(function () {
-          document.execCommand('styleWithCSS', 0, true);
+          document.execCommand('styleWithCSS', 0, options.styleWithSpan);
         }, 0);
       }
 
