@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-11-29T05:20Z
+ * Date: 2014-11-29T19:42Z
  */
 (function (factory) {
   /* global define */
@@ -2108,6 +2108,9 @@
           maximumFileSize: 'Maximum file size',
           maximumFileSizeError: 'Maximum file size exceeded.',
           url: 'Image URL',
+          alt: 'alt text',
+          href: 'href (will change image into anchor)',
+          title: 'anchor title (only if href is set)',
           remove: 'Remove Image'
         },
         link: {
@@ -2211,7 +2214,7 @@
      * @param {String} sUrl
      * @return {Promise} - then: $image
      */
-    var createImage = function (sUrl, filename) {
+    var createImage = function (data) {
       return $.Deferred(function (deferred) {
         $('<img>').one('load', function () {
           deferred.resolve($(this));
@@ -2220,8 +2223,9 @@
         }).css({
           display: 'none'
         }).appendTo(document.body)
-          .attr('src', sUrl)
-          .attr('data-filename', filename);
+          .attr('src', data.src)
+          .attr('alt', data.alt)
+          .attr('data-filename', data.filename);
       }).promise();
     };
 
@@ -2838,13 +2842,20 @@
      * @param {jQuery} $editable
      * @param {String} sUrl
      */
-    this.insertImage = function ($editable, sUrl, filename) {
-      async.createImage(sUrl, filename).then(function ($image) {
+    this.insertImage = function ($editable, data) {
+      async.createImage(data).then(function ($image) {
         $image.css({
           display: '',
           width: Math.min($editable.width(), $image.width())
         });
-        range.create().insertNode($image[0]);
+        if ('href' in data && !(data.href.length === 0 || !data.href.trim())) {
+          //this is supposed to be an anchor.
+          var $anchor = $('<a></a>').attr('href', data.href).attr('title', data.title);
+          $anchor.append($image);
+          range.create().insertNode($anchor[0]);
+        } else {
+          range.create().insertNode($image[0]);
+        }
         afterCommand($editable);
       }).fail(function () {
         var callbacks = $editable.data('callbacks');
@@ -3365,22 +3376,20 @@
      */
     this.update = function ($popover, styleInfo, isAirMode) {
       button.update($popover, styleInfo);
-
       var $linkPopover = $popover.find('.note-link-popover');
-      if (styleInfo.anchor) {
+      var $imagePopover = $popover.find('.note-image-popover');
+      if (styleInfo.image) {
+        showPopover($imagePopover, posFromPlaceholder(styleInfo.image, isAirMode));
+        $linkPopover.hide();
+      } else if (styleInfo.anchor) {
         var $anchor = $linkPopover.find('a');
         var href = $(styleInfo.anchor).attr('href');
         $anchor.attr('href', href).html(href);
         showPopover($linkPopover, posFromPlaceholder(styleInfo.anchor, isAirMode));
-      } else {
-        $linkPopover.hide();
-      }
-
-      var $imagePopover = $popover.find('.note-image-popover');
-      if (styleInfo.image) {
-        showPopover($imagePopover, posFromPlaceholder(styleInfo.image, isAirMode));
+        $imagePopover.hide();
       } else {
         $imagePopover.hide();
+        $linkPopover.hide();
       }
 
       var $airPopover = $popover.find('.note-air-popover');
@@ -3485,13 +3494,16 @@
 
         var $imageInput = $dialog.find('.note-image-input'),
             $imageUrl = $dialog.find('.note-image-url'),
+            $imageAlt = $dialog.find('.note-image-alt'),
+            $imageHref = $dialog.find('.note-image-href'),
+            $imageTitle = $dialog.find('.note-image-title'),
             $imageBtn = $dialog.find('.note-image-btn');
 
         $imageDialog.one('shown.bs.modal', function () {
           // Cloning imageInput to clear element.
           $imageInput.replaceWith($imageInput.clone()
             .on('change', function () {
-              deferred.resolve(this.files);
+              deferred.resolve({files: this.files, alt: $imageAlt.val(), href: $imageHref.val(), title: $imageTitle.val()});
               $imageDialog.modal('hide');
             })
             .val('')
@@ -3500,7 +3512,7 @@
           $imageBtn.click(function (event) {
             event.preventDefault();
 
-            deferred.resolve($imageUrl.val());
+            deferred.resolve({src: $imageUrl.val(), alt: $imageAlt.val(), href: $imageHref.val(), title: $imageTitle.val()});
             $imageDialog.modal('hide');
           });
 
@@ -3686,7 +3698,7 @@
             }
           } else {
             async.readFileAsDataURL(file).then(function (sDataURL) {
-              editor.insertImage($editable, sDataURL, filename);
+              editor.insertImage($editable, {src: sDataURL, filename: filename});
             }).fail(function () {
               if (callbacks.onImageUploadError) {
                 callbacks.onImageUploadError();
@@ -3730,8 +3742,7 @@
         editor.saveRange($editable);
         dialog.showImageDialog($editable, $dialog).then(function (data) {
           editor.restoreRange($editable);
-
-          if (typeof data === 'string') {
+          if ('src' in data) {
             // image url
             editor.insertImage($editable, data);
           } else {
@@ -4868,14 +4879,26 @@
           imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
         }
 
-        var body = '<div class="form-group row-fluid note-group-select-from-files">' +
-                     '<label>' + lang.image.selectFromFiles + '</label>' +
-                     '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
-                     imageLimitation +
+        var body = '<div class="form-group row-fluid">' +
+                     '<label>' + lang.image.alt + '</label>' +
+                     '<input class="note-image-alt form-control span12" type="text" />' +
+                   '</div>' +
+                   '<div class="form-group row-fluid">' +
+                     '<label>' + lang.image.href + '</label>' +
+                     '<input class="note-image-title form-control span12" type="text" />' +
+                   '</div>' +
+                   '<div class="form-group row-fluid">' +
+                     '<label>' + lang.image.title + '</label>' +
+                     '<input class="note-image-href form-control span12" type="text" />' +
                    '</div>' +
                    '<div class="form-group row-fluid">' +
                      '<label>' + lang.image.url + '</label>' +
                      '<input class="note-image-url form-control span12" type="text" />' +
+                   '</div>' +
+                   '<div class="form-group row-fluid note-group-select-from-files">' +
+                     '<label>' + lang.image.selectFromFiles + '</label>' +
+                     '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
+                     imageLimitation +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
         return tplDialog('note-image-dialog', lang.image.insert, body, footer);

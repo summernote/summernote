@@ -563,14 +563,26 @@ define([
           imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
         }
 
-        var body = '<div class="form-group row-fluid note-group-select-from-files">' +
-                     '<label>' + lang.image.selectFromFiles + '</label>' +
-                     '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
-                     imageLimitation +
+        var body = '<div class="form-group row-fluid">' +
+                     '<label>' + lang.image.alt + '</label>' +
+                     '<input class="note-image-alt form-control span12" type="text" />' +
+                   '</div>' +
+                   '<div class="form-group row-fluid">' +
+                     '<label>' + lang.image.href + '</label>' +
+                     '<input class="note-image-title form-control span12" type="text" />' +
+                   '</div>' +
+                   '<div class="form-group row-fluid">' +
+                     '<label>' + lang.image.title + '</label>' +
+                     '<input class="note-image-href form-control span12" type="text" />' +
                    '</div>' +
                    '<div class="form-group row-fluid">' +
                      '<label>' + lang.image.url + '</label>' +
                      '<input class="note-image-url form-control span12" type="text" />' +
+                   '</div>' +
+                   '<div class="form-group row-fluid note-group-select-from-files">' +
+                     '<label>' + lang.image.selectFromFiles + '</label>' +
+                     '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
+                     imageLimitation +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
         return tplDialog('note-image-dialog', lang.image.insert, body, footer);
