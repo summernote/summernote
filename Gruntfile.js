@@ -123,4 +123,7 @@ module.exports = function (grunt) {
 
   // default: build, test, dist.
   grunt.registerTask('default', ['dist']);
+
+  // meteor
+  // TODO - see https://github.com/raix/Meteor-community-discussions/issues/15
 };
