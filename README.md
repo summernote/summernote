@@ -26,6 +26,10 @@ Summernote has a few special features:
 
 Summernote uses opensouce libraries: [jQuery](http://jquery.com/), [Bootstrap](http://getbootstrap.com), [Font Awesome](https://github.com/FortAwesome/Font-Awesome).
 
+For [Meteor](http://github.com/meteor/meteor), just run `meteor add summernote:summernote`. More info in the [Meteor README](meteor/README.md).
+
+For other/no frameworks:
+
 #### 1. include JS/CSS
 
 Include the following code in the `<head>` tag of your HTML:
