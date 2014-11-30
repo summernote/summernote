@@ -20,6 +20,7 @@
     "grunt-recess": "*",
     "grunt-contrib-watch": "*",
     "grunt-contrib-connect": "*",
+    "grunt-shell": "^1.1.1",
     "connect-livereload": "*"
   },
   "dependencies": {

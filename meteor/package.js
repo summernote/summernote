@@ -1,7 +1,8 @@
 // package metadata file for Meteor.js
+'use strict';
 
 var packageName = 'summernote:summernote';  // http://atmospherejs.com/summernote:summernote
-var where = 'client';  // where to install: 'client', 'server', or ['client', 'server']
+var where = 'client';  // where to install: 'client' or 'server'. For both, pass nothing.
 
 var packageJson = JSON.parse(Npm.require("fs").readFileSync('package.json'));
 
@@ -13,16 +14,17 @@ Package.describe({
 });
 
 Package.onUse(function (api) {
-  api.versionsFrom('0.9.0');
-  api.use('jquery@1.0.1', where);
-  api.use('mizzao:bootstrap-3@3.3.1', where);
-  api.use('fortawesome:fontawesome@4.2.0', where);
+  api.versionsFrom(['METEOR@0.9.0', 'METEOR@1.0']);
+  api.use([
+    'jquery',
+    'twbs:bootstrap@3.3.1',
+    'fortawesome:fontawesome@4.2.0'
+  ], where);
   // no exports - summernote adds itself to jQuery
   api.addFiles([
     'dist/summernote.js',
     'dist/summernote.css'
-  ], where
-  );
+  ], where);
 });
 
 Package.onTest(function (api) {
