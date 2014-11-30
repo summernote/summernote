@@ -5,10 +5,8 @@
         bold: 'Tebal',
         italic: 'Miring',
         underline: 'Garis bawah',
-        strikethrough: 'Coret',
         clear: 'Bersihkan gaya',
-        height: 'Jarak baris',
-        size: 'Ukuran font'
+        height: 'Jarak baris'
       },
       image: {
         image: 'Gambar',
@@ -32,13 +30,6 @@
         textToDisplay: 'Tampilan teks',
         url: 'Tautan tujuan',
         openInNewWindow: 'Buka di jendela baru'
-      },
-      video: {
-        video: 'Video',
-        videoLink: 'Link video',
-        insert: 'Sisipkan video',
-        url: 'Tautan video',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, atau Youku)'
       },
       table: {
         table: 'Tabel'

@@ -5,11 +5,9 @@
         bold: '굵게',
         italic: '기울임꼴',
         underline: '밑줄',
-        strikethrough: '취소선',
         clear: '글자 효과 없애기',
         height: '줄간격',
-        name: '글꼴',
-        size: '글자 크기'
+        name: '글꼴'
       },
       image: {
         image: '사진',
@@ -37,13 +35,6 @@
         textToDisplay: '링크에 표시할 내용',
         url: '이동할 URL',
         openInNewWindow: '새창으로 열기'
-      },
-      video: {
-        video: '동영상',
-        videoLink: '동영상 링크',
-        insert: '동영상 추가',
-        url: '동영상 URL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, Youku 사용 가능)'
       },
       table: {
         table: '테이블'

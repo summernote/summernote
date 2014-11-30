@@ -5,10 +5,8 @@
         bold: 'Tučné',
         italic: 'Kurzíva',
         underline: 'Podtržené',
-        strikethrough: 'Přeškrtnuté',
         clear: 'Odstranit styl písma',
-        height: 'Výška řádku',
-        size: 'Velikost písma'
+        height: 'Výška řádku'
       },
       image: {
         image: 'Obrázek',
@@ -31,13 +29,6 @@
         textToDisplay: 'Zobrazovaný text',
         url: 'Na jaké URL má tento odkaz vést?',
         openInNewWindow: 'Otevřít v novém okně'
-      },
-      video: {
-        video: 'Video',
-        videoLink: 'Odkaz videa',
-        insert: 'Vložit video',
-        url: 'URL videa?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion nebo Youku)'
       },
       table: {
         table: 'Tabulka'

@@ -23,6 +23,14 @@ define([
     var bullet = new Bullet();
 
     /**
+     * create range
+     */
+    this.createRange = function ($editable) {
+      $editable.focus();
+      return range.create();
+    };
+
+    /**
      * save current range
      *
      * @param {jQuery} $editable
@@ -112,7 +120,7 @@ define([
     /**
      * handle tab key
      *
-     * @param {jQuery} $editable 
+     * @param {jQuery} $editable
      * @param {Object} options
      */
     this.tab = function ($editable, options) {
@@ -200,69 +208,25 @@ define([
     };
 
     /**
-     * insert video
-     * @param {jQuery} $editable
-     * @param {String} sUrl
+     * insert node
+     * @param {Node} $editable
+     * @param {Node} node
+     * @param {Boolean} [isInline]
      */
-    this.insertVideo = function ($editable, sUrl) {
-      // video url patterns(youtube, instagram, vimeo, dailymotion, youku)
-      var ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-      var ytMatch = sUrl.match(ytRegExp);
+    this.insertNode = function ($editable, node, isInline) {
+      range.create().insertNode(node, isInline);
+      afterCommand($editable);
+    };
 
-      var igRegExp = /\/\/instagram.com\/p\/(.[a-zA-Z0-9]*)/;
-      var igMatch = sUrl.match(igRegExp);
-
-      var vRegExp = /\/\/vine.co\/v\/(.[a-zA-Z0-9]*)/;
-      var vMatch = sUrl.match(vRegExp);
-
-      var vimRegExp = /\/\/(player.)?vimeo.com\/([a-z]*\/)*([0-9]{6,11})[?]?.*/;
-      var vimMatch = sUrl.match(vimRegExp);
-
-      var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
-      var dmMatch = sUrl.match(dmRegExp);
-
-      var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)\.html/;
-      var youkuMatch = sUrl.match(youkuRegExp);
-
-      var $video;
-      if (ytMatch && ytMatch[2].length === 11) {
-        var youtubeId = ytMatch[2];
-        $video = $('<iframe>')
-          .attr('src', '//www.youtube.com/embed/' + youtubeId)
-          .attr('width', '640').attr('height', '360');
-      } else if (igMatch && igMatch[0].length) {
-        $video = $('<iframe>')
-          .attr('src', igMatch[0] + '/embed/')
-          .attr('width', '612').attr('height', '710')
-          .attr('scrolling', 'no')
-          .attr('allowtransparency', 'true');
-      } else if (vMatch && vMatch[0].length) {
-        $video = $('<iframe>')
-          .attr('src', vMatch[0] + '/embed/simple')
-          .attr('width', '600').attr('height', '600')
-          .attr('class', 'vine-embed');
-      } else if (vimMatch && vimMatch[3].length) {
-        $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
-          .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
-          .attr('width', '640').attr('height', '360');
-      } else if (dmMatch && dmMatch[2].length) {
-        $video = $('<iframe>')
-          .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
-          .attr('width', '640').attr('height', '360');
-      } else if (youkuMatch && youkuMatch[1].length) {
-        $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
-          .attr('height', '498')
-          .attr('width', '510')
-          .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
-      } else {
-        // this is not a known video link. Now what, Cat? Now what?
-      }
-
-      if ($video) {
-        $video.attr('frameborder', 0);
-        range.create().insertNode($video[0]);
-        afterCommand($editable);
-      }
+    /**
+     * insert text
+     * @param {Node} $editable
+     * @param {String} text
+     */
+    this.insertText = function ($editable, text) {
+      var textNode = this.createRange($editable).insertNode(dom.createText(text), true);
+      range.create(textNode, dom.nodeLength(textNode)).select();
+      afterCommand($editable);
     };
 
     /**
@@ -395,27 +359,6 @@ define([
         text: rng.toString(),
         isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : true,
         url: $anchor.length ? $anchor.attr('href') : ''
-      };
-    };
-
-    /**
-     * get video info
-     *
-     * @param {jQuery} $editable
-     * @return {Object}
-     */
-    this.getVideoInfo = function ($editable) {
-      $editable.focus();
-
-      var rng = range.create();
-
-      if (rng.isOnAnchor()) {
-        var anchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = range.createFromNode(anchor);
-      }
-
-      return {
-        text: rng.toString()
       };
     };
 

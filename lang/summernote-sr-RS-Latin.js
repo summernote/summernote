@@ -5,10 +5,8 @@
         bold: 'Podebljano',
         italic: 'Kurziv',
         underline: 'Podvučeno',
-        strikethrough: 'Precrtano',
         clear: 'Ukloni stilove fonta',
-        height: 'Visina linije',
-        size: 'Veličina fonta'
+        height: 'Visina linije'
       },
       image: {
         image: 'Slika',
@@ -32,13 +30,6 @@
         textToDisplay: 'Tekst za prikaz',
         url: 'Internet adresa',
         openInNewWindow: 'Otvori u novom prozoru'
-      },
-      video: {
-        video: 'Video',
-        videoLink: 'Veza ka videu',
-        insert: 'Umetni video',
-        url: 'URL video',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ili Youku)'
       },
       table: {
         table: 'Tabela'

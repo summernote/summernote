@@ -1,8 +1,9 @@
 define([
   'summernote/core/agent', 'summernote/core/dom',
+  'summernote/core/range',
   'summernote/settings',
   'summernote/EventHandler', 'summernote/Renderer'
-], function (agent, dom, settings, EventHandler, Renderer) {
+], function (agent, dom, range, settings, EventHandler, Renderer) {
   // jQuery namespace for summernote
   $.summernote = $.summernote || {};
 
@@ -11,6 +12,54 @@ define([
 
   var renderer = new Renderer();
   var eventHandler = new EventHandler();
+
+  $.extend($.summernote, {
+    renderer: renderer,
+    eventHandler: eventHandler,
+    core: {
+      agent: agent,
+      dom: dom,
+      range: range
+    },
+    pluginEvents: {}
+  });
+
+  /**
+   * addPlugin
+   *
+   * @param {Object} plugin
+   */
+  $.summernote.addPlugin = function (plugin) {
+    if (plugin.buttons) {
+      $.each(plugin.buttons, function (name, button) {
+        renderer.addButtonInfo(name, button);
+      });
+    }
+
+    if (plugin.dialogs) {
+      $.each(plugin.dialogs, function (name, dialog) {
+        renderer.addDialogInfo(name, dialog);
+      });
+    }
+
+    if (plugin.events) {
+      $.each(plugin.events, function (name, event) {
+        $.summernote.pluginEvents[name] = event;
+      });
+    }
+
+    if (plugin.langs) {
+      $.each(plugin.langs, function (locale, lang) {
+        if ($.summernote.lang[locale]) {
+          $.extend($.summernote.lang[locale], lang);
+        }
+      });
+    }
+
+    if (plugin.options) {
+      $.extend($.summernote.options, plugin.options);
+    }
+  };
 
   /**
    * extend jquery fn
@@ -27,8 +76,12 @@ define([
       // extend default options
       options = $.extend({}, $.summernote.options, options);
 
-      this.each(function (idx, elHolder) {
-        var $holder = $(elHolder);
+      // Include langInfo in options for later use, e.g. for image drag-n-drop
+      // Setup language info with en-US as default
+      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+
+      this.each(function (idx, holder) {
+        var $holder = $(holder);
 
         // createLayout with options
         renderer.createLayout($holder, options);
@@ -39,7 +92,13 @@ define([
         // Textarea: auto filling the code before form submit.
         if (dom.isTextarea($holder[0])) {
           $holder.closest('form').submit(function () {
-            $holder.val($holder.code());
+            var contents = $holder.code();
+            $holder.val(contents);
+
+            // callback on submit
+            if (options.onsubmit) {
+              options.onsubmit(contents);
+            }
           });
         }
       });
@@ -57,7 +116,7 @@ define([
 
       return this;
     },
-    // 
+    //
 
     /**
      * get the HTML contents of note or set the HTML contents of note.
@@ -82,8 +141,8 @@ define([
       }
 
       // set the HTML contents of note
-      this.each(function (i, elHolder) {
-        var info = renderer.layoutInfoFromHolder($(elHolder));
+      this.each(function (i, holder) {
+        var info = renderer.layoutInfoFromHolder($(holder));
         if (info && info.editable) { info.editable.html(sHTML); }
       });
 
@@ -91,19 +150,20 @@ define([
     },
 
     /**
-     * destroy Editor Layout and dettach Key and Mouse Event
+     * destroy Editor Layout and detach Key and Mouse Event
+     *
      * @returns {this}
      */
     destroy: function () {
-      this.each(function (idx, elHolder) {
-        var $holder = $(elHolder);
+      this.each(function (idx, holder) {
+        var $holder = $(holder);
 
         var info = renderer.layoutInfoFromHolder($holder);
         if (!info || !info.editable) { return; }
 
         var options = info.editor.data('options');
 
-        eventHandler.dettach(info, options);
+        eventHandler.detach(info, options);
         renderer.removeLayout($holder, info, options);
       });
 
