@@ -1,5 +1,8 @@
 ### Change Log
 
+#### v0.6.1 2014-12-02
+* Plugins can access the settings through allOptions
+
 #### v0.6 2014-11-29
 * Plugin system
 * Extract fontstyle and video plugins from base code.
