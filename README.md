@@ -6,7 +6,7 @@ Super simple WYSIWYG Editor using Bootstrap (3.0 and 2.x).
 ### Summernote
 Summernote is a JavaScript library that helps you create WYSIWYG editors online.
 
-Home Page: http://hackerwins.github.io/summernote/
+Home Page: http://summernote.github.io/summernote/
 
 ### Why Summernote?
 
@@ -143,7 +143,7 @@ grunt server
 
 #### Coding convention
 * JSHint: http://www.jshint.com/about/
-* JSHint rule: https://github.com/HackerWins/summernote/blob/master/.jshintrc
+* JSHint rule: https://github.com/summernote/summernote/blob/master/.jshintrc
 
 ### Contacts
 * Email: susukang98@gmail.com
