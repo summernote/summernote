@@ -74,7 +74,7 @@ define([
      */
     summernote: function (options) {
       // extend default options
-      options = $.extend({}, $.summernote.options, options);
+      $.summernote.allOptions = options = $.extend({}, $.summernote.options, options);
 
       // Include langInfo in options for later use, e.g. for image drag-n-drop
       // Setup language info with en-US as default
