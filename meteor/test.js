@@ -5,5 +5,5 @@ Tinytest.add('Instantiation', function (test) {
   document.body.appendChild(editor);
   $(editor).summernote();
 
-  test.isTrue($(editor).code().length >= 3, 'Instantiation');
+  test.equal(typeof $(editor).code(), 'string', 'Instantiation');
 });
