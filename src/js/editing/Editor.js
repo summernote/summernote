@@ -386,6 +386,7 @@ define([
      * @param {jQuery} $target
      */
     this.floatMe = function ($editable, value, $target) {
+      $target.css('float', 'none');
       $target.removeClass('pull-left pull-right');
 
       if (value && value !== 'none') {
