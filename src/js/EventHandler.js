@@ -82,7 +82,7 @@ define([
             }
           } else {
             async.readFileAsDataURL(file).then(function (sDataURL) {
-              editor.insertImage($editable, sDataURL, filename);
+              editor.insertImage($editable, {src: sDataURL, filename: filename});
             }).fail(function () {
               if (callbacks.onImageUploadError) {
                 callbacks.onImageUploadError();
@@ -126,8 +126,7 @@ define([
         editor.saveRange($editable);
         dialog.showImageDialog($editable, $dialog).then(function (data) {
           editor.restoreRange($editable);
-
-          if (typeof data === 'string') {
+          if ('src' in data) {
             // image url
             editor.insertImage($editable, data);
           } else {
