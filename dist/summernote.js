@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-11-29T05:20Z
+ * Date: 2014-12-07T14:43Z
  */
 (function (factory) {
   /* global define */
@@ -3491,7 +3491,7 @@
           // Cloning imageInput to clear element.
           $imageInput.replaceWith($imageInput.clone()
             .on('change', function () {
-              deferred.resolve(this.files);
+              deferred.resolve(this.files || this.value);
               $imageDialog.modal('hide');
             })
             .val('')

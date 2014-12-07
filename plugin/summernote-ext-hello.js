@@ -37,7 +37,7 @@
           dropdown : dropdown
         });
       },
-      helloImage : function() {
+      helloImage : function () {
         return tmpl.iconButton('fa fa-file-image-o', {
           event : 'helloImage',
           title: 'helloImage',
@@ -62,11 +62,11 @@
         // Call insertText with 'hello'
         editor.insertText($editable, 'hello ' + value + '!!!!');
       },
-      helloImage : function(layoutInfo) {
+      helloImage : function (layoutInfo) {
         var $editable = layoutInfo.editable();
 
-        var img = $("<img src='http://upload.wikimedia.org/wikipedia/commons/b/b0/NewTux.svg' />");
-        editor.insertNode($editable, img[0], true)
+        var img = $('<img src="http://upload.wikimedia.org/wikipedia/commons/b/b0/NewTux.svg" />');
+        editor.insertNode($editable, img[0], true);
       }
     }
   });
