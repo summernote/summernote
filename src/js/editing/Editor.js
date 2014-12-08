@@ -351,6 +351,11 @@ define([
 
       var rng = range.create().expand(dom.isAnchor);
 
+      // Fix for wrong selection on FireFox
+      if ($.inArray($editable[0], $(rng.sc).parents()) < 0) {
+        rng = range.createFromNode($editable.children()[0]);
+      }
+
       // Get the first anchor on range(for edit).
       var $anchor = $(list.head(rng.nodes(dom.isAnchor)));
 
