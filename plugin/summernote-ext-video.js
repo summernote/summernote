@@ -34,13 +34,13 @@
     var youkuMatch = url.match(youkuRegExp);
 
     var mp4RegExp = /^.+.(mp4|m4v)$/;
-    var mp4Match = sUrl.match(mp4RegExp);
+    var mp4Match = url.match(mp4RegExp);
 
     var oggRegExp = /^.+.(ogg|ogv)$/;
-    var oggMatch = sUrl.match(oggRegExp);
+    var oggMatch = url.match(oggRegExp);
 
     var webmRegExp = /^.+.(webm)$/;
-    var webmMatch = sUrl.match(webmRegExp);
+    var webmMatch = url.match(webmRegExp);
 
     var $video;
     if (ytMatch && ytMatch[1].length === 11) {
@@ -80,7 +80,7 @@
         .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
     } else if (mp4Match || oggMatch || webmMatch) {
         $video = $('<video controls>')
-          .attr('src', sUrl)
+          .attr('src', url)
           .attr('width', '640').attr('height', '360');
     } else {
       // this is not a known video link. Now what, Cat? Now what?
