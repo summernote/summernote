@@ -5,10 +5,8 @@
         bold: 'Tebal',
         italic: 'Miring',
         underline: 'Garis bawah',
-        strike: 'Coret',
         clear: 'Bersihkan gaya',
-        height: 'Jarak baris',
-        size: 'Ukuran font'
+        height: 'Jarak baris'
       },
       image: {
         image: 'Gambar',
@@ -33,13 +31,6 @@
         url: 'Tautan tujuan',
         openInNewWindow: 'Buka di jendela baru'
       },
-      video: {
-        video: 'Video',
-        videoLink: 'Link video',
-        insert: 'Sisipkan video',
-        url: 'Tautan video',
-        providers: '(YouTube, Vimeo, Vine, Instagram, atau DailyMotion)'
-      },
       table: {
         table: 'Tabel'
       },
@@ -63,7 +54,7 @@
         ordered: 'Penomoran'
       },
       options: {
-        help: 'Tolong',
+        help: 'Bantuan',
         fullscreen: 'Layar penuh',
         codeview: 'Kode HTML'
       },
@@ -82,8 +73,8 @@
         background: 'Warna latar',
         foreground: 'Warna font',
         transparent: 'Transparan',
-        setTransparent: 'Set transparansi',
-        reset: 'Reset',
+        setTransparent: 'Atur transparansi',
+        reset: 'Atur ulang',
         resetToDefault: 'Kembalikan kesemula'
       },
       shortcut: {
@@ -98,7 +89,6 @@
         undo: 'Kembali',
         redo: 'Ulang'
       }
-
     }
   });
 })(jQuery);

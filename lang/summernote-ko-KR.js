@@ -5,10 +5,9 @@
         bold: '굵게',
         italic: '기울임꼴',
         underline: '밑줄',
-        strike: '취소선',
         clear: '글자 효과 없애기',
         height: '줄간격',
-        size: '글자 크기'
+        name: '글꼴'
       },
       image: {
         image: '사진',
@@ -19,6 +18,10 @@
         floatLeft: '왼쪽 정렬',
         floatRight: '오른쪽 정렬',
         floatNone: '정렬하지 않음',
+        shapeRounded: '스타일: 둥근 모서리',
+        shapeCircle: '스타일: 원형',
+        shapeThumbnail: '스타일: 액자',
+        shapeNone: '스타일: 없음',
         dragImageHere: '사진을 이곳으로 끌어오세요',
         selectFromFiles: '파일 선택',
         url: '사진 URL',
@@ -32,13 +35,6 @@
         textToDisplay: '링크에 표시할 내용',
         url: '이동할 URL',
         openInNewWindow: '새창으로 열기'
-      },
-      video: {
-        video: '동영상',
-        videoLink: '동영상 링크',
-        insert: '동영상 추가',
-        url: '동영상 URL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion 사용 가능)'
       },
       table: {
         table: '테이블'

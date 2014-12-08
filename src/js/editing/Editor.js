@@ -1,6 +1,16 @@
 define([
-  'core/agent', 'core/dom', 'core/range', 'core/async', 'editing/Style', 'editing/Table'
-], function (agent, dom, range, async, Style, Table) {
+  'summernote/core/agent',
+  'summernote/core/func',
+  'summernote/core/list',
+  'summernote/core/dom',
+  'summernote/core/range',
+  'summernote/core/async',
+  'summernote/editing/Style',
+  'summernote/editing/Typing',
+  'summernote/editing/Table',
+  'summernote/editing/Bullet'
+], function (agent, func, list, dom, range, async,
+             Style, Typing, Table, Bullet) {
   /**
    * Editor
    * @class
@@ -9,14 +19,28 @@ define([
 
     var style = new Style();
     var table = new Table();
+    var typing = new Typing();
+    var bullet = new Bullet();
+
+    /**
+     * create range
+     */
+    this.createRange = function ($editable) {
+      $editable.focus();
+      return range.create();
+    };
 
     /**
      * save current range
      *
      * @param {jQuery} $editable
      */
-    this.saveRange = function ($editable) {
+    this.saveRange = function ($editable, thenCollapse) {
+      $editable.focus();
       $editable.data('range', range.create());
+      if (thenCollapse) {
+        range.create().collapse().select();
+      }
     };
 
     /**
@@ -26,16 +50,26 @@ define([
      */
     this.restoreRange = function ($editable) {
       var rng = $editable.data('range');
-      if (rng) { rng.select(); }
+      if (rng) {
+        rng.select();
+        $editable.focus();
+      }
     };
 
     /**
      * current style
-     * @param {Element} elTarget
+     * @param {Node} target
      */
-    this.currentStyle = function (elTarget) {
+    this.currentStyle = function (target) {
       var rng = range.create();
-      return rng.isOnEditable() && style.current(rng, elTarget);
+      return rng ? rng.isOnEditable() && style.current(rng, target) : false;
+    };
+
+    var triggerOnChange = this.triggerOnChange = function ($editable) {
+      var onChange = $editable.data('callbacks').onChange;
+      if (onChange) {
+        onChange($editable.html(), $editable);
+      }
     };
 
     /**
@@ -43,7 +77,8 @@ define([
      * @param {jQuery} $editable
      */
     this.undo = function ($editable) {
-      $editable.data('NoteHistory').undo($editable);
+      $editable.data('NoteHistory').undo();
+      triggerOnChange($editable);
     };
 
     /**
@@ -51,62 +86,50 @@ define([
      * @param {jQuery} $editable
      */
     this.redo = function ($editable) {
-      $editable.data('NoteHistory').redo($editable);
+      $editable.data('NoteHistory').redo();
+      triggerOnChange($editable);
     };
 
     /**
-     * record Undo
+     * after command
      * @param {jQuery} $editable
      */
-    var recordUndo = this.recordUndo = function ($editable) {
-      $editable.data('NoteHistory').recordUndo($editable);
+    var afterCommand = this.afterCommand = function ($editable) {
+      $editable.data('NoteHistory').recordUndo();
+      triggerOnChange($editable);
     };
 
     /* jshint ignore:start */
     // native commands(with execCommand), generate function for execCommand
-    var aCmd = ['bold', 'italic', 'underline', 'strikethrough',
-                'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
-                'insertOrderedList', 'insertUnorderedList',
-                'indent', 'outdent', 'formatBlock', 'removeFormat',
-                'backColor', 'foreColor', 'insertHorizontalRule', 'fontName'];
+    var commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
+                    'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
+                    'formatBlock', 'removeFormat',
+                    'backColor', 'foreColor', 'insertHorizontalRule', 'fontName'];
 
-    for (var idx = 0, len = aCmd.length; idx < len; idx ++) {
-      this[aCmd[idx]] = (function (sCmd) {
-        return function ($editable, sValue) {
-          recordUndo($editable);
-          document.execCommand(sCmd, false, sValue);
+    for (var idx = 0, len = commands.length; idx < len; idx ++) {
+      this[commands[idx]] = (function (sCmd) {
+        return function ($editable, value) {
+          document.execCommand(sCmd, false, value);
+
+          afterCommand($editable);
         };
-      })(aCmd[idx]);
+      })(commands[idx]);
     }
     /* jshint ignore:end */
 
     /**
-     * @param {jQuery} $editable
-     * @param {WrappedRange} rng
-     * @param {Number} nTabsize
-     */
-    var insertTab = function ($editable, rng, nTabsize) {
-      recordUndo($editable);
-      var sNbsp = new Array(nTabsize + 1).join('&nbsp;');
-      rng.insertNode($('<span id="noteTab">' + sNbsp + '</span>')[0]);
-      var $tab = $('#noteTab').removeAttr('id');
-      rng = range.create($tab[0], 1);
-      rng.select();
-      dom.remove($tab[0]);
-    };
-
-    /**
      * handle tab key
+     *
      * @param {jQuery} $editable
-     * @param {Number} nTabsize
-     * @param {Boolean} bShift
+     * @param {Object} options
      */
     this.tab = function ($editable, options) {
       var rng = range.create();
       if (rng.isCollapsed() && rng.isOnCell()) {
         table.tab(rng);
       } else {
-        insertTab($editable, rng, options.tabsize);
+        typing.insertTab($editable, rng, options.tabsize);
+        afterCommand($editable);
       }
     };
 
@@ -121,19 +144,61 @@ define([
     };
 
     /**
+     * insert paragraph
+     *
+     * @param {Node} $editable
+     */
+    this.insertParagraph = function ($editable) {
+      typing.insertParagraph($editable);
+      afterCommand($editable);
+    };
+
+    /**
+     * @param {jQuery} $editable
+     */
+    this.insertOrderedList = function ($editable) {
+      bullet.insertOrderedList($editable);
+      afterCommand($editable);
+    };
+
+    /**
+     * @param {jQuery} $editable
+     */
+    this.insertUnorderedList = function ($editable) {
+      bullet.insertUnorderedList($editable);
+      afterCommand($editable);
+    };
+
+    /**
+     * @param {jQuery} $editable
+     */
+    this.indent = function ($editable) {
+      bullet.indent($editable);
+      afterCommand($editable);
+    };
+
+    /**
+     * @param {jQuery} $editable
+     */
+    this.outdent = function ($editable) {
+      bullet.outdent($editable);
+      afterCommand($editable);
+    };
+
+    /**
      * insert image
      *
      * @param {jQuery} $editable
      * @param {String} sUrl
      */
-    this.insertImage = function ($editable, sUrl) {
-      async.createImage(sUrl).then(function ($image) {
-        recordUndo($editable);
+    this.insertImage = function ($editable, sUrl, filename) {
+      async.createImage(sUrl, filename).then(function ($image) {
         $image.css({
           display: '',
           width: Math.min($editable.width(), $image.width())
         });
         range.create().insertNode($image[0]);
+        afterCommand($editable);
       }).fail(function () {
         var callbacks = $editable.data('callbacks');
         if (callbacks.onImageUploadError) {
@@ -143,95 +208,42 @@ define([
     };
 
     /**
-     * insert video
-     * @param {jQuery} $editable
-     * @param {String} sUrl
+     * insert node
+     * @param {Node} $editable
+     * @param {Node} node
+     * @param {Boolean} [isInline]
      */
-    this.insertVideo = function ($editable, sUrl) {
-      recordUndo($editable);
+    this.insertNode = function ($editable, node, isInline) {
+      range.create().insertNode(node, isInline);
+      afterCommand($editable);
+    };
 
-      // video url patterns(youtube, instagram, vine, vimeo, dailymotion, mp4, ogg, webm)
-      var ytRegExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-      var ytMatch = sUrl.match(ytRegExp);
-
-      var igRegExp = /\/\/instagram.com\/p\/(.[a-zA-Z0-9]*)/;
-      var igMatch = sUrl.match(igRegExp);
-
-      var vRegExp = /\/\/vine.co\/v\/(.[a-zA-Z0-9]*)/;
-      var vMatch = sUrl.match(vRegExp);
-
-      var vimRegExp = /\/\/(player.)?vimeo.com\/([a-z]*\/)*([0-9]{6,11})[?]?.*/;
-      var vimMatch = sUrl.match(vimRegExp);
-
-      var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
-      var dmMatch = sUrl.match(dmRegExp);
-
-      var mp4RegExp = /^.+.(mp4|m4v)$/;
-      var mp4Match = sUrl.match(mp4RegExp);
-
-      var oggRegExp = /^.+.(ogg|ogv)$/;
-      var oggMatch = sUrl.match(oggRegExp);
-
-      var webmRegExp = /^.+.(webm)$/;
-      var webmMatch = sUrl.match(webmRegExp);
-
-      var $video;
-      if (ytMatch && ytMatch[2].length === 11) {
-        var youtubeId = ytMatch[2];
-        $video = $('<iframe>')
-          .attr('frameborder', 0)
-          .attr('src', '//www.youtube.com/embed/' + youtubeId)
-          .attr('width', '640').attr('height', '360');
-      } else if (igMatch && igMatch[0].length > 0) {
-        $video = $('<iframe>')
-          .attr('frameborder', 0)
-          .attr('src', igMatch[0] + '/embed/')
-          .attr('width', '612').attr('height', '710')
-          .attr('scrolling', 'no')
-          .attr('allowtransparency', 'true');
-      } else if (vMatch && vMatch[0].length > 0) {
-        $video = $('<iframe>')
-          .attr('frameborder', 0)
-          .attr('src', vMatch[0] + '/embed/simple')
-          .attr('width', '600').attr('height', '600')
-          .attr('class', 'vine-embed');
-      } else if (vimMatch && vimMatch[3].length > 0) {
-        $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
-          .attr('frameborder', 0)
-          .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
-          .attr('width', '640').attr('height', '360');
-      } else if (dmMatch && dmMatch[2].length > 0) {
-        $video = $('<iframe>')
-          .attr('frameborder', 0)
-          .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
-          .attr('width', '640').attr('height', '360');
-      } else if (mp4Match || oggMatch || webmMatch) {
-        $video = $('<video controls>')
-          .attr('src', sUrl)
-          .attr('width', '640').attr('height', '360');
-      } else {
-        // this is not a known video link. Now what, Cat? Now what?
-      }
-
-      if ($video) {
-        range.create().insertNode($video[0]);
-      }
+    /**
+     * insert text
+     * @param {Node} $editable
+     * @param {String} text
+     */
+    this.insertText = function ($editable, text) {
+      var textNode = this.createRange($editable).insertNode(dom.createText(text), true);
+      range.create(textNode, dom.nodeLength(textNode)).select();
+      afterCommand($editable);
     };
 
     /**
      * formatBlock
      *
      * @param {jQuery} $editable
-     * @param {String} sTagName
+     * @param {String} tagName
      */
-    this.formatBlock = function ($editable, sTagName) {
-      recordUndo($editable);
-      sTagName = agent.bMSIE ? '<' + sTagName + '>' : sTagName;
-      document.execCommand('FormatBlock', false, sTagName);
+    this.formatBlock = function ($editable, tagName) {
+      tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
+      document.execCommand('FormatBlock', false, tagName);
+      afterCommand($editable);
     };
 
     this.formatPara = function ($editable) {
       this.formatBlock($editable, 'P');
+      afterCommand($editable);
     };
 
     /* jshint ignore:start */
@@ -249,127 +261,104 @@ define([
      * FIXME: Still buggy
      *
      * @param {jQuery} $editable
-     * @param {String} sValue - px
+     * @param {String} value - px
      */
-    this.fontSize = function ($editable, sValue) {
-      recordUndo($editable);
+    this.fontSize = function ($editable, value) {
       document.execCommand('fontSize', false, 3);
-      if (agent.bFF) {
-        // firefox: <font size="3"> to <span style='font-size={sValue}px;'>, buggy
-        $editable.find('font[size=3]').removeAttr('size').css('font-size', sValue + 'px');
+      if (agent.isFF) {
+        // firefox: <font size="3"> to <span style='font-size={value}px;'>, buggy
+        $editable.find('font[size=3]').removeAttr('size').css('font-size', value + 'px');
       } else {
-        // chrome: <span style="font-size: medium"> to <span style='font-size={sValue}px;'>
+        // chrome: <span style="font-size: medium"> to <span style='font-size={value}px;'>
         $editable.find('span').filter(function () {
           return this.style.fontSize === 'medium';
-        }).css('font-size', sValue + 'px');
+        }).css('font-size', value + 'px');
       }
+
+      afterCommand($editable);
     };
 
     /**
      * lineHeight
      * @param {jQuery} $editable
-     * @param {String} sValue
+     * @param {String} value
      */
-    this.lineHeight = function ($editable, sValue) {
-      recordUndo($editable);
-      style.stylePara(range.create(), {lineHeight: sValue});
+    this.lineHeight = function ($editable, value) {
+      style.stylePara(range.create(), {
+        lineHeight: value
+      });
+      afterCommand($editable);
     };
 
     /**
      * unlink
+     *
+     * @type command
+     *
      * @param {jQuery} $editable
      */
     this.unlink = function ($editable) {
       var rng = range.create();
       if (rng.isOnAnchor()) {
-        recordUndo($editable);
-        var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = range.createFromNode(elAnchor);
+        var anchor = dom.ancestor(rng.sc, dom.isAnchor);
+        rng = range.createFromNode(anchor);
         rng.select();
         document.execCommand('unlink');
+
+        afterCommand($editable);
       }
     };
 
     /**
      * create link
      *
-     * @param {jQuery} $editable
-     * @param {String} sLinkUrl
-     * @param {Boolean} bNewWindow
-     */
-    this.createLink = function ($editable, sLinkUrl, bNewWindow) {
-      var rng = range.create();
-      recordUndo($editable);
-
-      // protocol
-      var sLinkUrlWithProtocol = sLinkUrl;
-      if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
-        sLinkUrlWithProtocol =  'mailto:' + sLinkUrl;
-      } else if (sLinkUrl.indexOf('://') === -1) {
-        sLinkUrlWithProtocol = 'http://' + sLinkUrl;
-      }
-
-      // createLink when range collapsed (IE, Firefox).
-      if ((agent.bMSIE || agent.bFF) && rng.isCollapsed()) {
-        rng.insertNode($('<A id="linkAnchor">' + sLinkUrl + '</A>')[0]);
-        var $anchor = $('#linkAnchor').attr('href', sLinkUrlWithProtocol).removeAttr('id');
-        rng = range.createFromNode($anchor[0]);
-        rng.select();
-      } else {
-        document.execCommand('createlink', false, sLinkUrlWithProtocol);
-        rng = range.create();
-      }
-
-      // target
-      $.each(rng.nodes(dom.isAnchor), function (idx, elAnchor) {
-        if (bNewWindow) {
-          $(elAnchor).attr('target', '_blank');
-        } else {
-          $(elAnchor).removeAttr('target');
-        }
-      });
-    };
-
-    /**
-     * get link info
+     * @type command
      *
-     * @return {Promise}
+     * @param {jQuery} $editable
+     * @param {Object} linkInfo
+     * @param {Object} options
      */
-    this.getLinkInfo = function () {
-      var rng = range.create();
-      var bNewWindow = true;
-      var sUrl = '';
+    this.createLink = function ($editable, linkInfo, options) {
+      var linkUrl = linkInfo.url;
+      var linkText = linkInfo.text;
+      var isNewWindow = linkInfo.newWindow;
+      var rng = linkInfo.range;
 
-      // If range on anchor expand range on anchor(for edit link).
-      if (rng.isOnAnchor()) {
-        var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = range.createFromNode(elAnchor);
-        bNewWindow = $(elAnchor).attr('target') === '_blank';
-        sUrl = elAnchor.href;
+      if (options.onCreateLink) {
+        linkUrl = options.onCreateLink(linkUrl);
       }
 
-      return {
-        text: rng.toString(),
-        url: sUrl,
-        newWindow: bNewWindow
-      };
+      rng = rng.deleteContents();
+
+      // Create a new link when there is no anchor on range.
+      var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0], true);
+      $(anchor).attr({
+        href: linkUrl,
+        target: isNewWindow ? '_blank' : ''
+      });
+
+      range.createFromNode(anchor).select();
+      afterCommand($editable);
     };
 
     /**
-     * get video info
+     * returns link info
      *
      * @return {Object}
      */
-    this.getVideoInfo = function () {
-      var rng = range.create();
+    this.getLinkInfo = function ($editable) {
+      $editable.focus();
 
-      if (rng.isOnAnchor()) {
-        var elAnchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = range.createFromNode(elAnchor);
-      }
+      var rng = range.create().expand(dom.isAnchor);
+
+      // Get the first anchor on range(for edit).
+      var $anchor = $(list.head(rng.nodes(dom.isAnchor)));
 
       return {
-        text: rng.toString()
+        range: rng,
+        text: rng.toString(),
+        isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : true,
+        url: $anchor.length ? $anchor.attr('href') : ''
       };
     };
 
@@ -377,40 +366,53 @@ define([
       var oColor = JSON.parse(sObjColor);
       var foreColor = oColor.foreColor, backColor = oColor.backColor;
 
-      recordUndo($editable);
       if (foreColor) { document.execCommand('foreColor', false, foreColor); }
       if (backColor) { document.execCommand('backColor', false, backColor); }
+
+      afterCommand($editable);
     };
 
     this.insertTable = function ($editable, sDim) {
-      recordUndo($editable);
-      var aDim = sDim.split('x');
-      range.create().insertNode(table.createTable(aDim[0], aDim[1]));
+      var dimension = sDim.split('x');
+      var rng = range.create();
+      rng = rng.deleteContents();
+      rng.insertNode(table.createTable(dimension[0], dimension[1]));
+      afterCommand($editable);
     };
 
     /**
      * @param {jQuery} $editable
-     * @param {String} sValue
+     * @param {String} value
      * @param {jQuery} $target
      */
-    this.floatMe = function ($editable, sValue, $target) {
-      recordUndo($editable);
-      $target.css('float', sValue);
+    this.floatMe = function ($editable, value, $target) {
+      $target.css('float', value);
+      afterCommand($editable);
+    };
+
+    this.imageShape = function ($editable, value, $target) {
+      $target.removeClass('img-rounded img-circle img-thumbnail');
+
+      if (value) {
+        $target.addClass(value);
+      }
+
+      afterCommand($editable);
     };
 
     /**
      * resize overlay element
      * @param {jQuery} $editable
-     * @param {String} sValue
+     * @param {String} value
      * @param {jQuery} $target - target element
      */
-    this.resize = function ($editable, sValue, $target) {
-      recordUndo($editable);
-
+    this.resize = function ($editable, value, $target) {
       $target.css({
-        width: $editable.width() * sValue + 'px',
+        width: value * 100 + '%',
         height: ''
       });
+
+      afterCommand($editable);
     };
 
     /**
@@ -419,34 +421,35 @@ define([
      * @param {Boolean} [bKeepRatio] - keep ratio
      */
     this.resizeTo = function (pos, $target, bKeepRatio) {
-      var szImage;
+      var imageSize;
       if (bKeepRatio) {
         var newRatio = pos.y / pos.x;
         var ratio = $target.data('ratio');
-        szImage = {
+        imageSize = {
           width: ratio > newRatio ? pos.x : pos.y / ratio,
           height: ratio > newRatio ? pos.x * ratio : pos.y
         };
       } else {
-        szImage = {
+        imageSize = {
           width: pos.x,
           height: pos.y
         };
       }
 
-      $target.css(szImage);
+      $target.css(imageSize);
     };
 
     /**
      * remove media object
      *
      * @param {jQuery} $editable
-     * @param {String} sValue - dummy argument (for keep interface)
+     * @param {String} value - dummy argument (for keep interface)
      * @param {jQuery} $target - target element
      */
-    this.removeMedia = function ($editable, sValue, $target) {
-      recordUndo($editable);
+    this.removeMedia = function ($editable, value, $target) {
       $target.detach();
+
+      afterCommand($editable);
     };
   };
 

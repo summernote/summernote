@@ -1,55 +1,63 @@
 # Summernote
-Super Simple WYSIWYG Editor on Bootstrap(3.0 and 2.x).
+Super simple WYSIWYG Editor using Bootstrap (3.0 and 2.x).
 
 [![Build Status](https://secure.travis-ci.org/HackerWins/summernote.png)](http://travis-ci.org/HackerWins/summernote)
-[![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 
 ### Summernote
-Summernote is a javascript program that helps you to create WYSIWYG Editor on web.
+Summernote is a JavaScript library that helps you create WYSIWYG editors online.
 
 Home Page: http://hackerwins.github.io/summernote/
 
 ### Why Summernote?
 
-Summernote has something specials no like others.
+Summernote has a few special features:
+
+* Paste images from clipboard
+* Saves images directly in the content of the field using base64 encoding, so you don't need to implement image handling at all
 * Simple UI
-* Interative WYSIWYG editing
+* Interactive WYSIWYG editing
 * Handy integration with server
 
 #### Inspired by
-* Gmail WYSIWYG Editor (http://www.gmail.com)
+* Gmail's WYSIWYG editor (http://www.gmail.com)
 * Redactor (http://imperavi.com/redactor/)
 
-### Easy to install
+### Installation and dependencies
 
-Summernote uses opensouce libraries(jQuery, bootstrap, fontAwesome) 
+Summernote uses opensouce libraries: [jQuery](http://jquery.com/), [Bootstrap](http://getbootstrap.com), [Font Awesome](https://github.com/FortAwesome/Font-Awesome).
 
-#### 01. include js/css
+For [Meteor](http://github.com/meteor/meteor), just run `meteor add summernote:summernote`. More info in the [Meteor README](meteor/README.md).
 
-Include Following code into `<head>` tag of your HTML:
+For other/no frameworks:
+
+#### 1. include JS/CSS
+
+Include the following code in the `<head>` tag of your HTML:
 
 ```html
-<!-- include libries(jQuery, bootstrap, fontawesome) -->
+<!-- include libraries(jQuery, bootstrap, fontawesome) -->
 <script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.min.js"></script> 
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
 <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
 
 <!-- include summernote css/js-->
-<link rel="stylesheet" href="summernote.css" />
-<script type="text/javascript" src="summernote.min.js"></script>
+<link href="summernote.css" rel="stylesheet">
+<script src="summernote.min.js"></script>
 ```
 
-If your summernote download is placed in a different folder, don't forget to change file's paths.
+#### 2. target elements
 
-#### 02. target elements
-And place `div` tag to somewhere in the `body` tag. This element will be placed by the visual representation of the summernote.
+Then place a `div` tag somewhere in the `body` tag. This element will be replaced with the summernote editor.
+
 ```html
 <div id="summernote">Hello Summernote</div>
 ```
 
-#### 03. summernote
-Finally, run script after document ready.
+#### 3. summernote
+
+Finally, run this script after the DOM is ready:
+
 ```javascript
 $(document).ready(function() {
   $('#summernote').summernote();
@@ -57,78 +65,32 @@ $(document).ready(function() {
 ```
 
 ### API
-Get HTML `code` if you need.
+
+`code` - get the HTML source code underlying the text in the editor:
 
 ```javascript
 var sHTML = $('#summernote').code();
 ```
 
-`Destroy` summernote.
+`Destroy` summernote:
 
 ```javascript
 $('#summernote').destroy();
 ```
 
-#### Dependencies
-* jQuery: http://jquery.com/
-* bootstrap: http://twitter.github.io/bootstrap (both 2.x and 3.x)
-* fontAwesome: https://github.com/FortAwesome/Font-Awesome (both 3.x and 4.x)
+### Supported platforms
 
-### Supported platform
-* Modern Browser (Safari, Chrome, Firefox, Opera, Internet Explorer 9+)
-* OS (Windows, Mac)
+Any modern browser: Safari, Chrome, Firefox, Opera, Internet Explorer 9+.
 
 ### Upcoming Features
-* Air Mode
-* Responsive Toolbar
-* Table: Handles(Sizing, Selection) and Popover
-* support IE8
-* Clipboard
-* Media Object Selection
+* Responsive toolbar
+* Table: Handles (sizing, selection) and popover
+* IE8 Support
+* Clipboard (you can paste images already)
+* Media object selection
 
-### Change Log
 
-#### v0.5.1 2014-03-16
-* Support 15 Languages(https://github.com/HackerWins/summernote/tree/master/lang)
-* Add local-server for develop summernote.
-* Font style: Font-Family
-* And Bug patch.
-
-#### v0.5 2013-12-29
-* Support both Font-Awesome 3.x and 4.x
-* CodeMirror as Codeview
-* Insert Video (by cdownie)
-* Support 5 Languages(by hendrismit, tschiela, inomies, cverond)
-* Restructuring: jQuery build pattern
-
-#### v0.4 2013-11-01
-* Support both Bootstrap 3.0 and 2.x
-* Fullscreen
-* Codeview
-* Image Upload callback
-
-#### v0.3 2013-09-01
-* Bugs(image upload, fontsize, tab, recent color, ...)
-* Help dialog(keyboard shortcut)
-* Init options(event callbacks, custom toolbar)
-* Resize bar
-* Support IE8 Beta(some range bugs, can't insert Image)
-
-#### v0.2, 2013-08-01
-* Undo/Redo
-* Image sizing handle and popover
-* Support standalone css
-* Support Multiple Editor
-* Remove jQuery.curstyles dependency
-
-#### v0.1, 2013-07-01
-* Font style: size, color, bold, italic, underline, remove font style
-* Para style: bullet, align, outdent, indent, line height
-* Image: drag & drop, dialog
-* Link: popover and dialog
-* Table: create table with dimension picker
-
-### for Hacker
+### Developer information
 
 #### structure of summernote.js
 

@@ -1,43 +1,112 @@
-define('settings', function () {
+define('summernote/settings', function () {
   var settings = {
     // version
     version: '@VERSION',
 
     /**
-     * options for init
+     * options
      */
     options: {
       width: null,                  // set editor width
-      height: null,                 // set editable height, ex) 300
+      height: null,                 // set editor height, ex) 300
 
-      focus: false,                 // set focus after initilize summernote
+      minHeight: null,              // set minimum height of editor
+      maxHeight: null,              // set maximum height of editor
 
-      tabsize: null,                // size of tab ex) 2 or 4
-      styleWithSpan: true,          // style with span (Chrome and FF)
+      focus: false,                 // set focus to editable area after initializing summernote
+
+      tabsize: 4,                   // size of tab ex) 2 or 4
+      styleWithSpan: true,          // style with span (Chrome and FF only)
 
       disableLinkTarget: false,     // hide link Target Checkbox
       disableDragAndDrop: false,    // disable drag and drop event
+      disableResizeEditor: false,   // disable resizing editor
 
-      codemirror: null,             // codemirror options
+      shortcuts: true,              // enable keyboard shortcuts
+
+      placeholder: false,           // enable placeholder text
+
+      codemirror: {                 // codemirror options
+        mode: 'text/html',
+        htmlMode: true,
+        lineNumbers: true
+      },
 
       // language
       lang: 'en-US',                // language 'en-US', 'ko-KR', ...
       direction: null,              // text direction, ex) 'rtl'
 
-      // default toolbar
+      // toolbar
       toolbar: [
         ['style', ['style']],
         ['font', ['bold', 'italic', 'underline', 'clear']],
         ['fontname', ['fontname']],
-        // ['fontsize', ['fontsize']], Still buggy
         ['color', ['color']],
         ['para', ['ul', 'ol', 'paragraph']],
         ['height', ['height']],
         ['table', ['table']],
-        ['insert', ['link', 'picture', 'video']],
+        ['insert', ['link', 'picture', 'hr']],
         ['view', ['fullscreen', 'codeview']],
         ['help', ['help']]
       ],
+
+      // air mode: inline editor
+      airMode: false,
+      // airPopover: [
+      //   ['style', ['style']],
+      //   ['font', ['bold', 'italic', 'underline', 'clear']],
+      //   ['fontname', ['fontname']],
+      //   ['color', ['color']],
+      //   ['para', ['ul', 'ol', 'paragraph']],
+      //   ['height', ['height']],
+      //   ['table', ['table']],
+      //   ['insert', ['link', 'picture']],
+      //   ['help', ['help']]
+      // ],
+      airPopover: [
+        ['color', ['color']],
+        ['font', ['bold', 'underline', 'clear']],
+        ['para', ['ul', 'paragraph']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture']]
+      ],
+
+      // style tag
+      styleTags: ['p', 'blockquote', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+
+      // default fontName
+      defaultFontName: 'Helvetica Neue',
+
+      // fontName
+      fontNames: [
+        'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New',
+        'Helvetica Neue', 'Impact', 'Lucida Grande',
+        'Tahoma', 'Times New Roman', 'Verdana'
+      ],
+
+      // pallete colors(n x n)
+      colors: [
+        ['#000000', '#424242', '#636363', '#9C9C94', '#CEC6CE', '#EFEFEF', '#F7F7F7', '#FFFFFF'],
+        ['#FF0000', '#FF9C00', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#9C00FF', '#FF00FF'],
+        ['#F7C6CE', '#FFE7CE', '#FFEFC6', '#D6EFD6', '#CEDEE7', '#CEE7F7', '#D6D6E7', '#E7D6DE'],
+        ['#E79C9C', '#FFC69C', '#FFE79C', '#B5D6A5', '#A5C6CE', '#9CC6EF', '#B5A5D6', '#D6A5BD'],
+        ['#E76363', '#F7AD6B', '#FFD663', '#94BD7B', '#73A5AD', '#6BADDE', '#8C7BC6', '#C67BA5'],
+        ['#CE0000', '#E79439', '#EFC631', '#6BA54A', '#4A7B8C', '#3984C6', '#634AA5', '#A54A7B'],
+        ['#9C0000', '#B56308', '#BD9400', '#397B21', '#104A5A', '#085294', '#311873', '#731842'],
+        ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031']
+      ],
+
+      // lineHeight
+      lineHeights: ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'],
+
+      // insertTable max size
+      insertTableMaxSize: {
+        col: 10,
+        row: 10
+      },
+
+      // image
+      maximumImageFileSize: null, // size in bytes, null = no limit
 
       // callbacks
       oninit: null,             // initialize
@@ -46,12 +115,29 @@ define('settings', function () {
       onenter: null,            // enter key pressed
       onkeyup: null,            // keyup
       onkeydown: null,          // keydown
-      onImageUpload: null,      // imageUploadHandler
-      onImageUploadError: null, // imageUploadErrorHandler
+      onImageUpload: null,      // imageUpload
+      onImageUploadError: null, // imageUploadError
       onToolbarClick: null,
+      onsubmit: null,
+
+      /**
+       * manipulate link address when user create link
+       * @param {String} sLinkUrl
+       * @return {String}
+       */
+      onCreateLink: function (sLinkUrl) {
+        if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
+          sLinkUrl =  'mailto:' + sLinkUrl;
+        } else if (sLinkUrl.indexOf('://') === -1) {
+          sLinkUrl = 'http://' + sLinkUrl;
+        }
+
+        return sLinkUrl;
+      },
 
       keyMap: {
         pc: {
+          'ENTER': 'insertParagraph',
           'CTRL+Z': 'undo',
           'CTRL+Y': 'redo',
           'TAB': 'tab',
@@ -76,10 +162,12 @@ define('settings', function () {
           'CTRL+NUM4': 'formatH4',
           'CTRL+NUM5': 'formatH5',
           'CTRL+NUM6': 'formatH6',
-          'CTRL+ENTER': 'insertHorizontalRule'
+          'CTRL+ENTER': 'insertHorizontalRule',
+          'CTRL+K': 'showLinkDialog'
         },
 
         mac: {
+          'ENTER': 'insertParagraph',
           'CMD+Z': 'undo',
           'CMD+SHIFT+Z': 'redo',
           'TAB': 'tab',
@@ -104,7 +192,8 @@ define('settings', function () {
           'CMD+NUM4': 'formatH4',
           'CMD+NUM5': 'formatH5',
           'CMD+NUM6': 'formatH6',
-          'CMD+ENTER': 'insertHorizontalRule'
+          'CMD+ENTER': 'insertHorizontalRule',
+          'CMD+K': 'showLinkDialog'
         }
       }
     },
@@ -116,11 +205,9 @@ define('settings', function () {
           bold: 'Bold',
           italic: 'Italic',
           underline: 'Underline',
-          strike: 'Strike',
           clear: 'Remove Font Style',
           height: 'Line Height',
-          name: 'Font Family',
-          size: 'Font Size'
+          name: 'Font Family'
         },
         image: {
           image: 'Picture',
@@ -131,8 +218,15 @@ define('settings', function () {
           floatLeft: 'Float Left',
           floatRight: 'Float Right',
           floatNone: 'Float None',
-          dragImageHere: 'Drag an image here',
+          shapeRounded: 'Shape: Rounded',
+          shapeCircle: 'Shape: Circle',
+          shapeThumbnail: 'Shape: Thumbnail',
+          shapeNone: 'Shape: None',
+          dragImageHere: 'Drag image here',
+          dropImage: 'Drop image',
           selectFromFiles: 'Select from files',
+          maximumFileSize: 'Maximum file size',
+          maximumFileSizeError: 'Maximum file size exceeded.',
           url: 'Image URL',
           remove: 'Remove Image'
         },
@@ -144,13 +238,6 @@ define('settings', function () {
           textToDisplay: 'Text to display',
           url: 'To what URL should this link go?',
           openInNewWindow: 'Open in new window'
-        },
-        video: {
-          video: 'Video',
-          videoLink: 'Video Link',
-          insert: 'Insert Video',
-          url: 'Video URL?',
-          providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
         },
         table: {
           table: 'Table'
@@ -191,8 +278,8 @@ define('settings', function () {
         color: {
           recent: 'Recent Color',
           more: 'More Color',
-          background: 'BackColor',
-          foreground: 'FontColor',
+          background: 'Background Color',
+          foreground: 'Foreground Color',
           transparent: 'Transparent',
           setTransparent: 'Set transparent',
           reset: 'Reset',
@@ -216,4 +303,3 @@ define('settings', function () {
 
   return settings;
 });
-

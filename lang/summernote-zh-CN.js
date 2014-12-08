@@ -5,10 +5,9 @@
         bold: '粗体',
         italic: '斜体',
         underline: '下划线',
-        strike: '删除线',
         clear: '清除格式',
         height: '行高',
-        size: '字号'
+        name: '字体'
       },
       image: {
         image: '图片',
@@ -31,13 +30,6 @@
         textToDisplay: '显示文本',
         url: '链接地址',
         openInNewWindow: '在新窗口打开'
-      },
-      video: {
-        video: '视频',
-        videoLink: '视频链接',
-        insert: '插入视频',
-        url: '视频地址',
-        providers: '(优酷, Instagram, Youtube等)'
       },
       table: {
         table: '表格'

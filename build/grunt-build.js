@@ -45,7 +45,7 @@ module.exports = function (grunt) {
     };
 
     var config = {
-      name: 'summernote',
+      name: 'summernote/summernote',
       baseUrl: this.data.baseUrl,
       out: out,
       optimize: 'none',
@@ -60,7 +60,12 @@ module.exports = function (grunt) {
       paths: {
         jquery: 'empty:',
         CodeMirror: 'empty:'
-      }
+      },
+      packages: [{
+        name: 'summernote',
+        location: './',
+        main: 'summernote'
+      }]
     };
 
     var done = this.async();

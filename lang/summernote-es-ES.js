@@ -3,12 +3,11 @@
     'es-ES': {
       font: {
         bold: 'Negrita',
-        italic: 'Itálica',
+        italic: 'Cursiva',
         underline: 'Subrayado',
-        strike: 'Tachado',
         clear: 'Quitar estilo de fuente',
         height: 'Altura de línea',
-        size: 'Tamaño de la fuente'
+        name: 'Fuente'
       },
       image: {
         image: 'Imagen',
@@ -29,15 +28,8 @@
         unlink: 'Quitar link',
         edit: 'Editar',
         textToDisplay: 'Texto para mostrar',
-        url: 'Hacia que URL lleva el link?',
+        url: '¿Hacia que URL lleva el link?',
         openInNewWindow: 'Abrir en una nueva ventana'
-      },
-      video: {
-        video: 'Video',
-        videoLink: 'Link del video',
-        insert: 'Insertar video',
-        url: 'URL del video?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, o DailyMotion)'
       },
       table: {
         table: 'Tabla'

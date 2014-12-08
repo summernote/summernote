@@ -21,6 +21,7 @@
     "jquery": true,
     "node": true,
     "worker": true,
+    "es3": true,
     "globals": {
         "define": true,
         "test": true,

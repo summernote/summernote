@@ -1,4 +1,4 @@
-define('module/Handle', function () {
+define('summernote/module/Handle', function () {
   /**
    * Handle
    */
@@ -6,23 +6,30 @@ define('module/Handle', function () {
     /**
      * update handle
      * @param {jQuery} $handle
-     * @param {Object} oStyle
+     * @param {Object} styleInfo
+     * @param {Boolean} isAirMode
      */
-    this.update = function ($handle, oStyle) {
+    this.update = function ($handle, styleInfo, isAirMode) {
       var $selection = $handle.find('.note-control-selection');
-      if (oStyle.image) {
-        var $image = $(oStyle.image);
-        var pos = $image.position();
-        var szImage = {w: $image.width(), h: $image.height()};
+      if (styleInfo.image) {
+        var $image = $(styleInfo.image);
+        var pos = isAirMode ? $image.offset() : $image.position();
+
+        // include margin
+        var imageSize = {
+          w: $image.outerWidth(true),
+          h: $image.outerHeight(true)
+        };
+
         $selection.css({
           display: 'block',
           left: pos.left,
           top: pos.top,
-          width: szImage.w,
-          height: szImage.h
-        }).data('target', oStyle.image); // save current image element.
-        var sSizing = szImage.w + 'x' + szImage.h;
-        $selection.find('.note-control-selection-info').text(sSizing);
+          width: imageSize.w,
+          height: imageSize.h
+        }).data('target', styleInfo.image); // save current image element.
+        var sizingText = imageSize.w + 'x' + imageSize.h;
+        $selection.find('.note-control-selection-info').text(sizingText);
       } else {
         $selection.hide();
       }

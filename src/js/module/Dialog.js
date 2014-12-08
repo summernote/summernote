@@ -1,4 +1,4 @@
-define('module/Dialog', function () {
+define('summernote/module/Dialog', function () {
   /**
    * Dialog 
    *
@@ -10,11 +10,11 @@ define('module/Dialog', function () {
      * toggle button status
      *
      * @param {jQuery} $btn
-     * @param {Boolean} bEnable
+     * @param {Boolean} isEnable
      */
-    var toggleBtn = function ($btn, bEnable) {
-      $btn.toggleClass('disabled', !bEnable);
-      $btn.attr('disabled', !bEnable);
+    var toggleBtn = function ($btn, isEnable) {
+      $btn.toggleClass('disabled', !isEnable);
+      $btn.attr('disabled', !isEnable);
     };
 
     /**
@@ -32,70 +32,42 @@ define('module/Dialog', function () {
             $imageUrl = $dialog.find('.note-image-url'),
             $imageBtn = $dialog.find('.note-image-btn');
 
-        $imageDialog.one('shown.bs.modal', function (event) {
-          event.stopPropagation();
-
+        $imageDialog.one('shown.bs.modal', function () {
           // Cloning imageInput to clear element.
           $imageInput.replaceWith($imageInput.clone()
             .on('change', function () {
-              $imageDialog.modal('hide');
               deferred.resolve(this.files);
+              $imageDialog.modal('hide');
             })
+            .val('')
           );
 
           $imageBtn.click(function (event) {
             event.preventDefault();
 
-            $imageDialog.modal('hide');
             deferred.resolve($imageUrl.val());
+            $imageDialog.modal('hide');
           });
 
-          $imageUrl.keyup(function () {
-            toggleBtn($imageBtn, $imageUrl.val());
-          }).val('').focus();
-        }).one('hidden.bs.modal', function (event) {
-          event.stopPropagation();
-
-          $editable.focus();
+          $imageUrl.on('keyup paste', function (event) {
+            var url;
+            
+            if (event.type === 'paste') {
+              url = event.originalEvent.clipboardData.getData('text');
+            } else {
+              url = $imageUrl.val();
+            }
+            
+            toggleBtn($imageBtn, url);
+          }).val('').trigger('focus');
+        }).one('hidden.bs.modal', function () {
           $imageInput.off('change');
-          $imageUrl.off('keyup');
+          $imageUrl.off('keyup paste');
           $imageBtn.off('click');
-        }).modal('show');
-      });
-    };
 
-    /**
-     * Show video dialog and set event handlers on dialog controls.
-     *
-     * @param {jQuery} $dialog 
-     * @param {Object} videoInfo 
-     * @return {Promise}
-     */
-    this.showVideoDialog = function ($editable, $dialog, videoInfo) {
-      return $.Deferred(function (deferred) {
-        var $videoDialog = $dialog.find('.note-video-dialog');
-        var $videoUrl = $videoDialog.find('.note-video-url'),
-            $videoBtn = $videoDialog.find('.note-video-btn');
-
-        $videoDialog.one('shown.bs.modal', function (event) {
-          event.stopPropagation();
-
-          $videoUrl.val(videoInfo.text).keyup(function () {
-            toggleBtn($videoBtn, $videoUrl.val());
-          }).trigger('keyup').trigger('focus');
-
-          $videoBtn.click(function (event) {
-            event.preventDefault();
-
-            $videoDialog.modal('hide');
-            deferred.resolve($videoUrl.val());
-          });
-        }).one('hidden.bs.modal', function (event) {
-          event.stopPropagation();
-
-          $editable.focus();
-          $videoUrl.off('keyup');
-          $videoBtn.off('click');
+          if (deferred.state() === 'pending') {
+            deferred.reject();
+          }
         }).modal('show');
       });
     };
@@ -116,33 +88,52 @@ define('module/Dialog', function () {
         $linkBtn = $linkDialog.find('.note-link-btn'),
         $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
-        $linkDialog.one('shown.bs.modal', function (event) {
-          event.stopPropagation();
-
+        $linkDialog.one('shown.bs.modal', function () {
           $linkText.val(linkInfo.text);
 
-          $linkUrl.keyup(function () {
+          $linkText.on('input', function () {
+            // if linktext was modified by keyup,
+            // stop cloning text from linkUrl
+            linkInfo.text = $linkText.val();
+          });
+
+          // if no url was given, copy text to url
+          if (!linkInfo.url) {
+            linkInfo.url = linkInfo.text;
+            toggleBtn($linkBtn, linkInfo.text);
+          }
+
+          $linkUrl.on('input', function () {
             toggleBtn($linkBtn, $linkUrl.val());
             // display same link on `Text to display` input
             // when create a new link
             if (!linkInfo.text) {
               $linkText.val($linkUrl.val());
             }
-          }).val(linkInfo.url).trigger('focus');
+          }).val(linkInfo.url).trigger('focus').trigger('select');
 
           $openInNewWindow.prop('checked', linkInfo.newWindow);
 
           $linkBtn.one('click', function (event) {
             event.preventDefault();
 
+            deferred.resolve({
+              range: linkInfo.range,
+              url: $linkUrl.val(),
+              text: $linkText.val(),
+              newWindow: $openInNewWindow.is(':checked')
+            });
             $linkDialog.modal('hide');
-            deferred.resolve($linkUrl.val(), $openInNewWindow.is(':checked'));
           });
-        }).one('hidden.bs.modal', function (event) {
-          event.stopPropagation();
+        }).one('hidden.bs.modal', function () {
+          // detach events
+          $linkText.off('input');
+          $linkUrl.off('input');
+          $linkBtn.off('click');
 
-          $editable.focus();
-          $linkUrl.off('keyup');
+          if (deferred.state() === 'pending') {
+            deferred.reject();
+          }
         }).modal('show');
       }).promise();
     };
@@ -153,12 +144,13 @@ define('module/Dialog', function () {
      * @param {jQuery} $dialog
      */
     this.showHelpDialog = function ($editable, $dialog) {
-      var $helpDialog = $dialog.find('.note-help-dialog');
+      return $.Deferred(function (deferred) {
+        var $helpDialog = $dialog.find('.note-help-dialog');
 
-      $helpDialog.one('hidden.bs.modal', function (event) {
-        event.stopPropagation();
-        $editable.focus();
-      }).modal('show');
+        $helpDialog.one('hidden.bs.modal', function () {
+          deferred.resolve();
+        }).modal('show');
+      }).promise();
     };
   };
 

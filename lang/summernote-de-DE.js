@@ -5,10 +5,8 @@
         bold: 'Fett',
         italic: 'Kursiv',
         underline: 'Unterstreichen',
-        strike: 'Durchgestrichen',
         clear: 'Zurücksetzen',
-        height: 'Zeilenhöhe',
-        size: 'Schriftgröße'
+        height: 'Zeilenhöhe'
       },
       image: {
         image: 'Grafik',
@@ -22,7 +20,7 @@
         dragImageHere: 'Ziehen Sie ein Bild mit der Maus hierher',
         selectFromFiles: 'Wählen Sie eine Datei aus',
         url: 'Grafik URL',
-		remove: 'Grafik entfernen'
+        remove: 'Grafik entfernen'
       },
       link: {
         link: 'Link',
@@ -32,13 +30,6 @@
         textToDisplay: 'Anzeigetext',
         url: 'Ziel des Links?',
         openInNewWindow: 'In einem neuen Fenster öffnen'
-      },
-      video: {
-        video: 'Video',
-        videoLink: 'Video Link',
-        insert: 'Insert Video',
-        url: 'Video URL?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, or DailyMotion)'
       },
       table: {
         table: 'Tabelle'
@@ -60,7 +51,7 @@
       },
       lists: {
         unordered: 'Aufzählung',
-        ordered: 'Nummerieung'
+        ordered: 'Nummerierung'
       },
       options: {
         help: 'Hilfe',

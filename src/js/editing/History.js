@@ -1,43 +1,59 @@
-define(['core/range'], function (range) {
+define(['summernote/core/range'], function (range) {
   /**
    * History
    * @class
    */
-  var History = function () {
-    var aUndo = [], aRedo = [];
+  var History = function ($editable) {
+    var stack = [], stackOffset = -1;
+    var editable = $editable[0];
 
-    var makeSnap = function ($editable) {
-      var elEditable = $editable[0], rng = range.create();
+    var makeSnapshot = function () {
+      var rng = range.create();
+      var emptyBookmark = {s: {path: [0], offset: 0}, e: {path: [0], offset: 0}};
+
       return {
         contents: $editable.html(),
-        bookmark: rng.bookmark(elEditable),
-        scrollTop: $editable.scrollTop()
+        bookmark: (rng ? rng.bookmark(editable) : emptyBookmark)
       };
     };
 
-    var applySnap = function ($editable, oSnap) {
-      $editable.html(oSnap.contents).scrollTop(oSnap.scrollTop);
-      range.createFromBookmark($editable[0], oSnap.bookmark).select();
+    var applySnapshot = function (snapshot) {
+      if (snapshot.contents !== null) {
+        $editable.html(snapshot.contents);
+      }
+      if (snapshot.bookmark !== null) {
+        range.createFromBookmark(editable, snapshot.bookmark).select();
+      }
     };
 
-    this.undo = function ($editable) {
-      var oSnap = makeSnap($editable);
-      if (aUndo.length === 0) { return; }
-      applySnap($editable, aUndo.pop());
-      aRedo.push(oSnap);
+    this.undo = function () {
+      if (0 < stackOffset) {
+        stackOffset--;
+        applySnapshot(stack[stackOffset]);
+      }
     };
 
-    this.redo = function ($editable) {
-      var oSnap = makeSnap($editable);
-      if (aRedo.length === 0) { return; }
-      applySnap($editable, aRedo.pop());
-      aUndo.push(oSnap);
+    this.redo = function () {
+      if (stack.length - 1 > stackOffset) {
+        stackOffset++;
+        applySnapshot(stack[stackOffset]);
+      }
     };
 
-    this.recordUndo = function ($editable) {
-      aRedo = [];
-      aUndo.push(makeSnap($editable));
+    this.recordUndo = function () {
+      stackOffset++;
+
+      // Wash out stack after stackOffset
+      if (stack.length > stackOffset) {
+        stack = stack.slice(0, stackOffset);
+      }
+
+      // Create new snapshot and push it to the end
+      stack.push(makeSnapshot());
     };
+
+    // Create first undo stack
+    this.recordUndo();
   };
 
   return History;

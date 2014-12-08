@@ -5,10 +5,9 @@
         bold: 'Gras',
         italic: 'Italique',
         underline: 'Souligné',
-        strike: 'Barré',
         clear: 'Effacer la mise en forme',
         height: 'Interligne',
-        size: 'Taille de police'
+        name: 'Famille de police'
       },
       image: {
         image: 'Image',
@@ -32,13 +31,6 @@
         textToDisplay: 'Texte à afficher',
         url: 'URL du lien',
         openInNewWindow: 'Ouvrir dans une nouvelle fenêtre'
-      },
-      video: {
-        video: 'Vidéo',
-        videoLink: 'Lien vidéo',
-        insert: 'Insérer une vidéo',
-        url: 'URL de la vidéo',
-        providers: '(YouTube, Vimeo, Vine, Instagram ou DailyMotion)'
       },
       table: {
         table: 'Tableau'
