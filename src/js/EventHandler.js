@@ -205,7 +205,7 @@ define([
 
         var isCodeview = $editor.hasClass('codeview');
         if (isCodeview) {
-          $codable.val(dom.html($editable, true));
+          $codable.val(dom.html($editable, options.prettifyHtml));
           $codable.height($editable.height());
           toolbar.deactivate($toolbar);
           popover.hide($popover);
@@ -237,7 +237,7 @@ define([
             cmEditor.toTextArea();
           }
 
-          $editable.html(dom.value($codable) || dom.emptyPara);
+          $editable.html(dom.value($codable, options.prettifyHtml) || dom.emptyPara);
           $editable.height(options.height ? $codable.height() : 'auto');
 
           toolbar.activate($toolbar);

@@ -25,6 +25,7 @@ define('summernote/settings', function () {
       shortcuts: true,              // enable keyboard shortcuts
 
       placeholder: false,           // enable placeholder text
+      prettifyHtml: true,           // enable prettifying html while toggling codeview
 
       codemirror: {                 // codemirror options
         mode: 'text/html',
