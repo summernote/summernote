@@ -191,13 +191,20 @@ define([
      * @param {jQuery} $editable
      * @param {String} sUrl
      */
-    this.insertImage = function ($editable, sUrl, filename) {
-      async.createImage(sUrl, filename).then(function ($image) {
+    this.insertImage = function ($editable, data) {
+      async.createImage(data).then(function ($image) {
         $image.css({
           display: '',
           width: Math.min($editable.width(), $image.width())
         });
-        range.create().insertNode($image[0]);
+        if ('href' in data && !(data.href.length === 0 || !data.href.trim())) {
+          //this is supposed to be an anchor.
+          var $anchor = $('<a></a>').attr('href', data.href).attr('title', data.title);
+          $anchor.append($image);
+          range.create().insertNode($anchor[0]);
+        } else {
+          range.create().insertNode($image[0]);
+        }
         afterCommand($editable);
       }).fail(function () {
         var callbacks = $editable.data('callbacks');
@@ -395,6 +402,8 @@ define([
       if (value) {
         $target.addClass(value);
       }
+
+      afterCommand($editable);
     };
 
     /**

@@ -24,6 +24,8 @@ define('summernote/settings', function () {
 
       shortcuts: true,              // enable keyboard shortcuts
 
+      placeholder: false,           // enable placeholder text
+
       codemirror: {                 // codemirror options
         mode: 'text/html',
         htmlMode: true,
@@ -226,6 +228,9 @@ define('summernote/settings', function () {
           maximumFileSize: 'Maximum file size',
           maximumFileSizeError: 'Maximum file size exceeded.',
           url: 'Image URL',
+          alt: 'alt text',
+          href: 'href (will change image into anchor)',
+          title: 'anchor title (only if href is set)',
           remove: 'Remove Image'
         },
         link: {
