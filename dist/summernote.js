@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-12-07T15:37Z
+ * Date: 2014-12-12T12:03Z
  */
 (function (factory) {
   /* global define */
@@ -2171,7 +2171,8 @@
           textFormatting: 'Text formatting',
           action: 'Action',
           paragraphFormatting: 'Paragraph formatting',
-          documentStyle: 'Document Style'
+          documentStyle: 'Document Style',
+          extraKeys: 'Extra keys'
         },
         history: {
           undo: 'Undo',
@@ -4777,7 +4778,6 @@
         { kbd: '⌘ + B', text: lang.font.bold },
         { kbd: '⌘ + I', text: lang.font.italic },
         { kbd: '⌘ + U', text: lang.font.underline },
-        { kbd: '⌘ + ⇧ + S', text: lang.font.sdivikethrough },
         { kbd: '⌘ + \\', text: lang.font.clear }
       ];
 
@@ -4789,7 +4789,7 @@
         { kbd: '⌘ + Z', text: lang.history.undo },
         { kbd: '⌘ + ⇧ + Z', text: lang.history.redo },
         { kbd: '⌘ + ]', text: lang.paragraph.indent },
-        { kbd: '⌘ + [', text: lang.paragraph.oudivent },
+        { kbd: '⌘ + [', text: lang.paragraph.outdent },
         { kbd: '⌘ + ENTER', text: lang.hr.insert }
       ];
 
