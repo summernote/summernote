@@ -1,4 +1,13 @@
-(function ($) {
+(function (factory) {
+  /* global define */
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['jquery'], factory);
+  } else {
+    // Browser globals: jQuery
+    factory(window.jQuery);
+  }
+}(function ($) {
   // template, editor
   var tmpl = $.summernote.renderer.getTemplate();
   var editor = $.summernote.eventHandler.getEditor();
@@ -288,4 +297,4 @@
       }
     }
   });
-})(jQuery);
+}));

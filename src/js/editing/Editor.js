@@ -403,6 +403,8 @@ define([
       if (value) {
         $target.addClass(value);
       }
+
+      afterCommand($editable);
     };
 
     /**

@@ -1,12 +1,12 @@
 # Summernote
 Super simple WYSIWYG Editor using Bootstrap (3.0 and 2.x).
 
-[![Build Status](https://secure.travis-ci.org/HackerWins/summernote.png)](http://travis-ci.org/HackerWins/summernote)
+[![Build Status](https://secure.travis-ci.org/summernote/summernote.png)](http://travis-ci.org/summernote/summernote)
 
 ### Summernote
 Summernote is a JavaScript library that helps you create WYSIWYG editors online.
 
-Home Page: http://hackerwins.github.io/summernote/
+Home Page: http://summernote.org
 
 ### Why Summernote?
 
@@ -26,6 +26,10 @@ Summernote has a few special features:
 
 Summernote uses opensouce libraries: [jQuery](http://jquery.com/), [Bootstrap](http://getbootstrap.com), [Font Awesome](https://github.com/FortAwesome/Font-Awesome).
 
+For [Meteor](http://github.com/meteor/meteor), just run `meteor add summernote:summernote`. More info in the [Meteor README](meteor/README.md).
+
+For other/no frameworks:
+
 #### 1. include JS/CSS
 
 Include the following code in the `<head>` tag of your HTML:
@@ -43,13 +47,17 @@ Include the following code in the `<head>` tag of your HTML:
 ```
 
 #### 2. target elements
-And place `div` tag to somewhere in the `body` tag. This element will be placed by the visual representation of the summernote.
+
+Then place a `div` tag somewhere in the `body` tag. This element will be replaced with the summernote editor.
+
 ```html
 <div id="summernote">Hello Summernote</div>
 ```
 
 #### 3. summernote
-Finally, run script after document ready.
+
+Finally, run this script after the DOM is ready:
+
 ```javascript
 $(document).ready(function() {
   $('#summernote').summernote();
@@ -57,7 +65,8 @@ $(document).ready(function() {
 ```
 
 ### API
-Get the HTML `code` if you need it:
+
+`code` - get the HTML source code underlying the text in the editor:
 
 ```javascript
 var sHTML = $('#summernote').code();
@@ -134,7 +143,7 @@ grunt server
 
 #### Coding convention
 * JSHint: http://www.jshint.com/about/
-* JSHint rule: https://github.com/HackerWins/summernote/blob/master/.jshintrc
+* JSHint rule: https://github.com/summernote/summernote/blob/master/.jshintrc
 
 ### Contacts
 * Email: susukang98@gmail.com

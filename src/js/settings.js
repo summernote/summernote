@@ -24,6 +24,8 @@ define('summernote/settings', function () {
 
       shortcuts: true,              // enable keyboard shortcuts
 
+      placeholder: false,           // enable placeholder text
+
       codemirror: {                 // codemirror options
         mode: 'text/html',
         htmlMode: true,
@@ -289,7 +291,8 @@ define('summernote/settings', function () {
           textFormatting: 'Text formatting',
           action: 'Action',
           paragraphFormatting: 'Paragraph formatting',
-          documentStyle: 'Document Style'
+          documentStyle: 'Document Style',
+          extraKeys: 'Extra keys'
         },
         history: {
           undo: 'Undo',

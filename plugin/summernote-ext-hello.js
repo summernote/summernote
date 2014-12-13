@@ -1,4 +1,13 @@
-(function ($) {
+(function (factory) {
+  /* global define */
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['jquery'], factory);
+  } else {
+    // Browser globals: jQuery
+    factory(window.jQuery);
+  }
+}(function ($) {
   // template, editor
   var tmpl = $.summernote.renderer.getTemplate();
   var editor = $.summernote.eventHandler.getEditor();
@@ -27,6 +36,13 @@
           hide: true,
           dropdown : dropdown
         });
+      },
+      helloImage : function () {
+        return tmpl.iconButton('fa fa-file-image-o', {
+          event : 'helloImage',
+          title: 'helloImage',
+          hide: true
+        });
       }
 
     },
@@ -45,7 +61,13 @@
 
         // Call insertText with 'hello'
         editor.insertText($editable, 'hello ' + value + '!!!!');
+      },
+      helloImage : function (layoutInfo) {
+        var $editable = layoutInfo.editable();
+
+        var img = $('<img src="http://upload.wikimedia.org/wikipedia/commons/b/b0/NewTux.svg" />');
+        editor.insertNode($editable, img[0], true);
       }
     }
   });
-})(jQuery);
+}));
