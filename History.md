@@ -1,5 +1,8 @@
 ### Change Log
 
+#### v0.6.2 2014-12-15
+* Bug fix - Bullet list was throwing JS error
+
 #### v0.6.1 2014-12-02
 * Plugins can access the settings through allOptions
 
