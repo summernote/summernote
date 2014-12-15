@@ -25,7 +25,7 @@ define([
      */
     var textRangeToPoint = function (textRange, isStart) {
       var container = textRange.parentElement(), offset;
-  
+
       var tester = document.body.createTextRange(), prevContainer;
       var childNodes = list.from(container.childNodes);
       for (offset = 0; offset < childNodes.length; offset++) {
@@ -38,42 +38,42 @@ define([
         }
         prevContainer = childNodes[offset];
       }
-  
+
       if (offset !== 0 && dom.isText(childNodes[offset - 1])) {
         var textRangeStart = document.body.createTextRange(), curTextNode = null;
         textRangeStart.moveToElementText(prevContainer || container);
         textRangeStart.collapse(!prevContainer);
         curTextNode = prevContainer ? prevContainer.nextSibling : container.firstChild;
-  
+
         var pointTester = textRange.duplicate();
         pointTester.setEndPoint('StartToStart', textRangeStart);
         var textCount = pointTester.text.replace(/[\r\n]/g, '').length;
-  
+
         while (textCount > curTextNode.nodeValue.length && curTextNode.nextSibling) {
           textCount -= curTextNode.nodeValue.length;
           curTextNode = curTextNode.nextSibling;
         }
-  
+
         /* jshint ignore:start */
         var dummy = curTextNode.nodeValue; // enforce IE to re-reference curTextNode, hack
         /* jshint ignore:end */
-  
+
         if (isStart && curTextNode.nextSibling && dom.isText(curTextNode.nextSibling) &&
             textCount === curTextNode.nodeValue.length) {
           textCount -= curTextNode.nodeValue.length;
           curTextNode = curTextNode.nextSibling;
         }
-  
+
         container = curTextNode;
         offset = textCount;
       }
-  
+
       return {
         cont: container,
         offset: offset
       };
     };
-    
+
     /**
      * return TextRange from boundary point (inspired by google closure-library)
      * @param {BoundaryPoint} point
@@ -82,7 +82,7 @@ define([
     var pointToTextRange = function (point) {
       var textRangeInfo = function (container, offset) {
         var node, isCollapseToStart;
-  
+
         if (dom.isText(container)) {
           var prevTextNodes = dom.listPrev(container, func.not(dom.isText));
           var prevContainer = list.last(prevTextNodes).previousSibling;
@@ -94,27 +94,27 @@ define([
           if (dom.isText(node)) {
             return textRangeInfo(node, 0);
           }
-  
+
           offset = 0;
           isCollapseToStart = false;
         }
-  
+
         return {
           node: node,
           collapseToStart: isCollapseToStart,
           offset: offset
         };
       };
-  
+
       var textRange = document.body.createTextRange();
       var info = textRangeInfo(point.node, point.offset);
-  
+
       textRange.moveToElementText(info.node);
       textRange.collapse(info.collapseToStart);
       textRange.moveStart('character', info.offset);
       return textRange;
     };
-    
+
     /**
      * Wrapped Range
      *
@@ -128,14 +128,15 @@ define([
       this.so = so;
       this.ec = ec;
       this.eo = eo;
-  
+
       // nativeRange: get nativeRange from sc, so, ec, eo
       var nativeRange = function () {
-        if (agent.isW3CRangeSupport) {
+        if (!sc && !ec) {
+          return null;
+        } else if (agent.isW3CRangeSupport) {
           var w3cRange = document.createRange();
           w3cRange.setStart(sc, so);
           w3cRange.setEnd(ec, eo);
-
           return w3cRange;
         } else {
           var textRange = pointToTextRange({
@@ -389,7 +390,7 @@ define([
           point.offset
         );
       };
-      
+
       /**
        * makeIsOn: return isOn(pred) function
        */
@@ -399,7 +400,7 @@ define([
           return !!ancestor && (ancestor === dom.ancestor(ec, pred));
         };
       };
-  
+
       // isOnEditable: judge whether range is on editable or not
       this.isOnEditable = makeIsOn(dom.isEditable);
       // isOnList: judge whether range is on list node or not
@@ -437,10 +438,11 @@ define([
       this.wrapBodyInlineWithPara = function () {
         if (dom.isBodyContainer(sc) && dom.isEmpty(sc)) {
           sc.innerHTML = dom.emptyPara;
-          return new WrappedRange(sc.firstChild, 0);
+          //return new WrappedRange(sc.firstChild, 0);
+          return this.normalize();
         }
 
-        if (dom.isParaInline(sc) || dom.isPara(sc)) {
+        if (!sc || dom.isParaInline(sc) || dom.isPara(sc)) {
           return this.normalize();
         }
 
@@ -511,12 +513,12 @@ define([
 
         return node;
       };
-  
+
       this.toString = function () {
         var nativeRng = nativeRange();
         return agent.isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
       };
-  
+
       /**
        * create offsetPath bookmark
        * @param {Node} editable
@@ -543,7 +545,7 @@ define([
         return nativeRng.getClientRects();
       };
     };
-  
+
     return {
       /**
        * create Range Object From arguments or Browser Selection
@@ -558,12 +560,12 @@ define([
           if (agent.isW3CRangeSupport) {
             var selection = document.getSelection();
             if (selection.rangeCount === 0) {
-              return null;
+              return new WrappedRange();
             } else if (dom.isBody(selection.anchorNode)) {
               // Firefox: returns entire body as range on initialization. We won't never need it.
-              return null;
+              return new WrappedRange();
             }
-  
+
             var nativeRng = selection.getRangeAt(0);
             sc = nativeRng.startContainer;
             so = nativeRng.startOffset;
@@ -575,7 +577,7 @@ define([
             textRangeEnd.collapse(false);
             var textRangeStart = textRange;
             textRangeStart.collapse(true);
-  
+
             var startPoint = textRangeToPoint(textRangeStart, true),
             endPoint = textRangeToPoint(textRangeEnd, false);
 
