@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-12-15T21:27Z
+ * Date: 2014-12-16T11:32Z
  */
 (function (factory) {
   /* global define */
@@ -1435,14 +1435,16 @@
        */
       this.select = function () {
         var nativeRng = nativeRange();
-        if (agent.isW3CRangeSupport) {
-          var selection = document.getSelection();
-          if (selection.rangeCount > 0) {
-            selection.removeAllRanges();
+        if (nativeRng) {
+          if (agent.isW3CRangeSupport) {
+            var selection = document.getSelection();
+            if (selection.rangeCount > 0) {
+              selection.removeAllRanges();
+            }
+            selection.addRange(nativeRng);
+          } else {
+            nativeRng.select();
           }
-          selection.addRange(nativeRng);
-        } else {
-          nativeRng.select();
         }
       };
 
@@ -1770,7 +1772,11 @@
 
       this.toString = function () {
         var nativeRng = nativeRange();
-        return agent.isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
+        if (nativeRng) {
+          return agent.isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
+        } else {
+          return null;
+        }
       };
 
       /**
@@ -1796,7 +1802,11 @@
        */
       this.getClientRects = function () {
         var nativeRng = nativeRange();
-        return nativeRng.getClientRects();
+        if (nativeRng) {
+          return nativeRng.getClientRects();
+        } else {
+          return null;
+        }
       };
     };
 

@@ -181,14 +181,16 @@ define([
        */
       this.select = function () {
         var nativeRng = nativeRange();
-        if (agent.isW3CRangeSupport) {
-          var selection = document.getSelection();
-          if (selection.rangeCount > 0) {
-            selection.removeAllRanges();
+        if (nativeRng) {
+          if (agent.isW3CRangeSupport) {
+            var selection = document.getSelection();
+            if (selection.rangeCount > 0) {
+              selection.removeAllRanges();
+            }
+            selection.addRange(nativeRng);
+          } else {
+            nativeRng.select();
           }
-          selection.addRange(nativeRng);
-        } else {
-          nativeRng.select();
         }
       };
 
@@ -516,7 +518,11 @@ define([
 
       this.toString = function () {
         var nativeRng = nativeRange();
-        return agent.isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
+        if (nativeRng) {
+          return agent.isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
+        } else {
+          return null;
+        }
       };
 
       /**
@@ -542,7 +548,11 @@ define([
        */
       this.getClientRects = function () {
         var nativeRng = nativeRange();
-        return nativeRng.getClientRects();
+        if (nativeRng) {
+          return nativeRng.getClientRects();
+        } else {
+          return null;
+        }
       };
     };
 
