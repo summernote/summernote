@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-12-12T12:03Z
+ * Date: 2014-12-17T19:43Z
  */
 (function (factory) {
   /* global define */
@@ -2691,6 +2691,15 @@
       }
     };
 
+    this.saveNode = function ($editable) {
+      // copy child node reference
+      var copy = [];
+      for (var key  = 0, len = $editable[0].childNodes.length; key < len; key++) {
+        copy.push($editable[0].childNodes[key]);
+      }
+      $editable.data('childNodes', copy);
+    };
+
     /**
      * restore lately range
      *
@@ -2704,6 +2713,13 @@
       }
     };
 
+    this.restoreNode = function ($editable) {
+      $editable.html('');
+      var child = $editable.data('childNodes');
+      for (var index = 0, len = child.length; index < len; index++) {
+        $editable[0].appendChild(child[index]);
+      }
+    };
     /**
      * current style
      * @param {Node} target
@@ -3891,12 +3907,44 @@
      */
     var hPasteClipboardImage = function (event) {
       var clipboardData = event.originalEvent.clipboardData;
+      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+      var $editable = layoutInfo.editable();
+
       if (!clipboardData || !clipboardData.items || !clipboardData.items.length) {
+        var callbacks = $editable.data('callbacks');
+        // only can run if it has onImageUpload method
+        if (!callbacks.onImageUpload) {
+          return;
+        }
+
+        // save cursor
+        editor.saveNode($editable);
+        editor.saveRange($editable);
+
+        $editable.html('');
+
+        setTimeout(function () {
+          var $img = $editable.find('img');
+          var datauri = $img[0].src;
+
+          var data = atob(datauri.split(',')[1]);
+          var array = new Uint8Array(data.length);
+          for (var i = 0; i < data.length; i++) {
+            array[i] = data.charCodeAt(i);
+          }
+
+          var blob = new Blob([array], { type : 'image/png'});
+          blob.name = 'clipboard.png';
+
+          editor.restoreNode($editable);
+          editor.restoreRange($editable);
+          insertImages(layoutInfo, [blob]);
+
+          editor.afterCommand($editable);
+        }, 0);
+
         return;
       }
-
-      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target),
-          $editable = layoutInfo.editable();
 
       var item = list.head(clipboardData.items);
       var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
