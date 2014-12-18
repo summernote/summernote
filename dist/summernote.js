@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-12-16T11:32Z
+ * Date: 2014-12-18T17:34Z
  */
 (function (factory) {
   /* global define */
@@ -909,7 +909,7 @@
 
     /**
      * returns whether point is visible (can set cursor) or not.
-     * 
+     *
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
@@ -1089,6 +1089,41 @@
       return document.createTextNode(text);
     };
 
+    var createInlineHtml = function (html) {
+      var sel, textRange;
+      if (window.getSelection) {
+        // IE9 and non-IE
+        sel = window.getSelection();
+        if (sel.getRangeAt && sel.rangeCount) {
+          textRange = sel.getRangeAt(0);
+          textRange.deleteContents();
+
+          // Range.createContextualFragment() would be useful here but is
+          // only relatively recently standardized and is not supported in
+          // some browsers (IE9, for one)
+          var el = document.createElement('div');
+          el.innerHTML = html;
+          var frag = document.createDocumentFragment(), node, lastNode;
+          while ((node = el.firstChild)) {
+            lastNode = frag.appendChild(node);
+          }
+          textRange.insertNode(frag);
+
+          // Preserve the selection
+          if (lastNode) {
+            textRange = textRange.cloneRange();
+            textRange.setStartAfter(lastNode);
+            textRange.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(textRange);
+          }
+        }
+      } else if (document.selection && document.selection.type !== 'Control') {
+        // IE < 9
+        document.selection.createRange().pasteHTML(html);
+      }
+    };
+
     /**
      * remove node, (isRemoveChild: remove child or not)
      * @param {Node} node
@@ -1158,7 +1193,7 @@
     var isTextarea = makePredByNodeName('TEXTAREA');
 
     /**
-     * get the HTML contents of node 
+     * get the HTML contents of node
      *
      * @param {jQuery} $node
      * @param {Boolean} [isNewlineOnBlock]
@@ -1250,6 +1285,7 @@
       splitTree: splitTree,
       create: create,
       createText: createText,
+      createInlineHtml: createInlineHtml,
       remove: remove,
       removeWhile: removeWhile,
       replace: replace,

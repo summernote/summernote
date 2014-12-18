@@ -240,5 +240,16 @@ define(['jquery', 'summernote/core/dom', 'summernote/core/func'], function ($, d
       equalsToUpperCase($cont.html(), '<p><span><b>b</b><u>u</u></span><span><s>s</s><i>i</i></span></p>',
                         'splitBy span tag with offset 2 (1 depth, element case)');
     });
+
+    test('dom.createInlineHtml', function () {
+      var cont, $cont;
+
+      cont = '<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>';
+      $cont = $(cont);
+      dom.createInlineHtml(cont);
+      equal(dom.position($cont), 0, 'Create Inline html did not create the node at the right offset');
+      equalsToUpperCase(dom.html($cont), '<b>b</b><u>u</u><s>s</s><i>i</i>',
+                        'Create Inline html did not add the content');
+    });
   };
 });
