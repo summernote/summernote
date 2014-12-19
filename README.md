@@ -1,12 +1,12 @@
 # Summernote
 Super simple WYSIWYG Editor using Bootstrap (3.0 and 2.x).
 
-[![Build Status](https://secure.travis-ci.org/HackerWins/summernote.png)](http://travis-ci.org/HackerWins/summernote)
+[![Build Status](https://secure.travis-ci.org/summernote/summernote.png)](http://travis-ci.org/summernote/summernote)
 
 ### Summernote
 Summernote is a JavaScript library that helps you create WYSIWYG editors online.
 
-Home Page: http://hackerwins.github.io/summernote/
+Home Page: http://summernote.org
 
 ### Why Summernote?
 
@@ -143,7 +143,7 @@ grunt server
 
 #### Coding convention
 * JSHint: http://www.jshint.com/about/
-* JSHint rule: https://github.com/HackerWins/summernote/blob/master/.jshintrc
+* JSHint rule: https://github.com/summernote/summernote/blob/master/.jshintrc
 
 ### Contacts
 * Email: susukang98@gmail.com

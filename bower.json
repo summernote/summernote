@@ -15,6 +15,6 @@
   "dependencies": {
     "jquery": ">= 1.9.0",
     "bootstrap": ">= 3.0.1",
-    "fontawesome": ">= 4.1.0"
+    "font-awesome": ">=4.2.0"
   }
 }
