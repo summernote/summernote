@@ -47,37 +47,41 @@
       var youtubeId = ytMatch[1];
       $video = $('<iframe>')
         .attr('src', '//www.youtube.com/embed/' + youtubeId)
-        .attr('width', '640').attr('height', '360');
+        .attr('width', '640').attr('height', '360')
+        .attr('frameborder', 0);
     } else if (igMatch && igMatch[0].length) {
       $video = $('<iframe>')
         .attr('src', igMatch[0] + '/embed/')
         .attr('width', '612').attr('height', '710')
         .attr('scrolling', 'no')
-        .attr('allowtransparency', 'true');
+        .attr('allowtransparency', 'true')
+        .attr('frameborder', 0);
     } else if (vMatch && vMatch[0].length) {
       $video = $('<iframe>')
         .attr('src', vMatch[0] + '/embed/simple')
         .attr('width', '600').attr('height', '600')
-        .attr('class', 'vine-embed');
+        .attr('class', 'vine-embed')
+        .attr('frameborder', 0);
     } else if (vimMatch && vimMatch[3].length) {
       $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
         .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
-        .attr('width', '640').attr('height', '360');
+        .attr('width', '640').attr('height', '360')
+        .attr('frameborder', 0);
     } else if (dmMatch && dmMatch[2].length) {
       $video = $('<iframe>')
         .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
-        .attr('width', '640').attr('height', '360');
+        .attr('width', '640').attr('height', '360')
+        .attr('frameborder', 0);
     } else if (youkuMatch && youkuMatch[1].length) {
       $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
         .attr('height', '498')
         .attr('width', '510')
-        .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
+        .attr('src', '//player.youku.com/embed/' + youkuMatch[1])
+        .attr('frameborder', 0);
     } else {
       // this is not a known video link. Now what, Cat? Now what?
+      $video = $('<a href="' + url + '">' + url + '</a>');
     }
-
-    $video.attr('frameborder', 0);
-
     return $video[0];
   };
 
