@@ -126,9 +126,9 @@
           $videoBtn = $videoDialog.find('.note-video-btn');
 
       $videoDialog.one('shown.bs.modal', function () {
-        $videoUrl.val(text).keyup(function () {
+        $videoUrl.val(text).on('input', function () {
           toggleBtn($videoBtn, $videoUrl.val());
-        }).trigger('keyup').trigger('focus');
+        }).trigger('focus');
 
         $videoBtn.click(function (event) {
           event.preventDefault();
@@ -137,7 +137,7 @@
           $videoDialog.modal('hide');
         });
       }).one('hidden.bs.modal', function () {
-        $videoUrl.off('keyup');
+        $videoUrl.off('input');
         $videoBtn.off('click');
 
         if (deferred.state() === 'pending') {
