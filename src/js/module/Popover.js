@@ -70,9 +70,14 @@ define([
       var $airPopover = $popover.find('.note-air-popover');
       if (isAirMode && !styleInfo.range.isCollapsed()) {
         var bnd = func.rect2bnd(list.last(styleInfo.range.getClientRects()));
+        var parents = $(list.head(styleInfo.ancestors)).closest('.note-editable').parents();
+        var overTop = 0;
+        for(var idx = 0; idx < parents.length; idx++) {
+          overTop += parseInt(parents.eq(idx).css('marginTop'), 10);
+        }
         showPopover($airPopover, {
           left: Math.max(bnd.left + bnd.width / 2 - PX_POPOVER_ARROW_OFFSET_X, 0),
-          top: bnd.top + bnd.height
+          top: bnd.top + bnd.height - overTop
         });
       } else {
         $airPopover.hide();
