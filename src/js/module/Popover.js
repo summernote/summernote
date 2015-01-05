@@ -72,7 +72,7 @@ define([
         var bnd = func.rect2bnd(list.last(styleInfo.range.getClientRects()));
         var parents = $(list.head(styleInfo.ancestors)).closest('.note-editable').parents();
         var overTop = 0;
-        for(var idx = 0; idx < parents.length; idx++) {
+        for (var idx = 0; idx < parents.length; idx++) {
           overTop += parseInt(parents.eq(idx).css('marginTop'), 10);
         }
         showPopover($airPopover, {
