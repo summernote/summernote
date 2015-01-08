@@ -39,7 +39,7 @@ define('summernote/module/Dialog', function () {
           // Cloning imageInput to clear element.
           $imageInput.replaceWith($imageInput.clone()
             .on('change', function () {
-              deferred.resolve({files: this.files, alt: $imageAlt.val(), href: $imageHref.val(), title: $imageTitle.val()});
+              deferred.resolve({files: this.files || this.value, alt: $imageAlt.val(), href: $imageHref.val(), title: $imageTitle.val()});
               $imageDialog.modal('hide');
             })
             .val('')

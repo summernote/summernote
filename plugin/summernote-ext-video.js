@@ -1,4 +1,13 @@
-(function ($) {
+(function (factory) {
+  /* global define */
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['jquery'], factory);
+  } else {
+    // Browser globals: jQuery
+    factory(window.jQuery);
+  }
+}(function ($) {
   // template, editor
   var tmpl = $.summernote.renderer.getTemplate();
   var editor = $.summernote.eventHandler.getEditor();
@@ -132,7 +141,7 @@
   /**
    * Show video dialog and set event handlers on dialog controls.
    *
-   * @param {jQuery} $dialog 
+   * @param {jQuery} $dialog
    * @param {jQuery} $dialog
    * @param {Object} text
    * @return {Promise}
@@ -144,9 +153,9 @@
             $videoBtn = $videoDialog.find('.note-video-btn');
 
         $videoDialog.one('shown.bs.modal', function () {
-          $videoUrl.val(videoInfo.url).keyup(function () {
+          $videoUrl.val(videoInfo.url).on('input', function () {
             toggleBtn($videoBtn, $videoUrl.val());
-          }).trigger('keyup').trigger('focus');
+          }).trigger('focus');
 
           $videoBtn.click(function (event) {
             event.preventDefault();
@@ -159,7 +168,7 @@
           });
         }).one('hidden.bs.modal', function () {
           // dettach events
-          $videoUrl.off('keyup');
+          $videoUrl.off('input');
           $videoBtn.off('click');
 
           if (deferred.state() === 'pending') {
@@ -586,4 +595,4 @@
       }
     }
   });
-})(jQuery);
+}));

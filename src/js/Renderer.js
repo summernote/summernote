@@ -463,10 +463,12 @@ define([
       var body = [];
 
       for (var i in keys) {
-        body.push(
-          '<div class="' + keyClass + 'key">' + keys[i].kbd + '</div>' +
-          '<div class="' + keyClass + 'name">' + keys[i].text + '</div>'
-          );
+        if (keys.hasOwnProperty(i)) {
+          body.push(
+            '<div class="' + keyClass + 'key">' + keys[i].kbd + '</div>' +
+            '<div class="' + keyClass + 'name">' + keys[i].text + '</div>'
+            );
+        }
       }
 
       return '<div class="note-shortcut-row row"><div class="' + keyClass + 'title col-xs-offset-6">' + title + '</div></div>' +
@@ -478,7 +480,6 @@ define([
         { kbd: '⌘ + B', text: lang.font.bold },
         { kbd: '⌘ + I', text: lang.font.italic },
         { kbd: '⌘ + U', text: lang.font.underline },
-        { kbd: '⌘ + ⇧ + S', text: lang.font.sdivikethrough },
         { kbd: '⌘ + \\', text: lang.font.clear }
       ];
 
@@ -490,7 +491,7 @@ define([
         { kbd: '⌘ + Z', text: lang.history.undo },
         { kbd: '⌘ + ⇧ + Z', text: lang.history.redo },
         { kbd: '⌘ + ]', text: lang.paragraph.indent },
-        { kbd: '⌘ + [', text: lang.paragraph.oudivent },
+        { kbd: '⌘ + [', text: lang.paragraph.outdent },
         { kbd: '⌘ + ENTER', text: lang.hr.insert }
       ];
 
@@ -587,7 +588,7 @@ define([
                    '</div>' +
                    '<div class="form-group row-fluid note-group-select-from-files">' +
                      '<label>' + lang.image.selectFromFiles + '</label>' +
-                     '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
+                     '<input class="note-image-input" type="file" name="files" accept="image/*" multiple="multiple" />' +
                      imageLimitation +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
