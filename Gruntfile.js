@@ -103,10 +103,21 @@ module.exports = function (grunt) {
           livereload: true
         }
       }
+    },
+
+    // Meteor commands to test and publish package
+    exec: {
+      'meteor-test': {
+        command: 'meteor/runtests.sh'
+      },
+      'meteor-publish': {
+        command: 'meteor/publish.sh'
+      }
     }
+
   });
 
-  // load grunt tasks on package.json.
+  // load all tasks from the grunt plugins used in this file
   require('load-grunt-tasks')(grunt);
 
   // server
@@ -116,11 +127,17 @@ module.exports = function (grunt) {
   grunt.loadTasks('build');
 
   // test: unit test on test folder
-  grunt.registerTask('test', ['jshint', 'qunit']);
+  grunt.registerTask('test', ['jshint', 'qunit', 'meteor-test']);
 
   // dist
   grunt.registerTask('dist', ['build', 'test', 'uglify', 'recess']);
 
   // default: build, test, dist.
   grunt.registerTask('default', ['dist']);
+
+  // Meteor tasks
+  grunt.registerTask('meteor-test', 'exec:meteor-test');
+  grunt.registerTask('meteor-publish', 'exec:meteor-publish');
+  grunt.registerTask('meteor', ['meteor-test', 'meteor-publish']);
+
 };

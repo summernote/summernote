@@ -463,10 +463,12 @@ define([
       var body = [];
 
       for (var i in keys) {
-        body.push(
-          '<div class="' + keyClass + 'key">' + keys[i].kbd + '</div>' +
-          '<div class="' + keyClass + 'name">' + keys[i].text + '</div>'
-          );
+        if (keys.hasOwnProperty(i)) {
+          body.push(
+            '<div class="' + keyClass + 'key">' + keys[i].kbd + '</div>' +
+            '<div class="' + keyClass + 'name">' + keys[i].text + '</div>'
+            );
+        }
       }
 
       return '<div class="note-shortcut-row row"><div class="' + keyClass + 'title col-xs-offset-6">' + title + '</div></div>' +
@@ -478,7 +480,6 @@ define([
         { kbd: '⌘ + B', text: lang.font.bold },
         { kbd: '⌘ + I', text: lang.font.italic },
         { kbd: '⌘ + U', text: lang.font.underline },
-        { kbd: '⌘ + ⇧ + S', text: lang.font.sdivikethrough },
         { kbd: '⌘ + \\', text: lang.font.clear }
       ];
 
@@ -490,7 +491,7 @@ define([
         { kbd: '⌘ + Z', text: lang.history.undo },
         { kbd: '⌘ + ⇧ + Z', text: lang.history.redo },
         { kbd: '⌘ + ]', text: lang.paragraph.indent },
-        { kbd: '⌘ + [', text: lang.paragraph.oudivent },
+        { kbd: '⌘ + [', text: lang.paragraph.outdent },
         { kbd: '⌘ + ENTER', text: lang.hr.insert }
       ];
 
@@ -569,14 +570,26 @@ define([
           imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
         }
 
-        var body = '<div class="form-group row-fluid note-group-select-from-files">' +
-                     '<label>' + lang.image.selectFromFiles + '</label>' +
-                     '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
-                     imageLimitation +
+        var body = '<div class="form-group row-fluid">' +
+                     '<label>' + lang.image.alt + '</label>' +
+                     '<input class="note-image-alt form-control span12" type="text" />' +
+                   '</div>' +
+                   '<div class="form-group row-fluid">' +
+                     '<label>' + lang.image.href + '</label>' +
+                     '<input class="note-image-title form-control span12" type="text" />' +
+                   '</div>' +
+                   '<div class="form-group row-fluid">' +
+                     '<label>' + lang.image.title + '</label>' +
+                     '<input class="note-image-href form-control span12" type="text" />' +
                    '</div>' +
                    '<div class="form-group row-fluid">' +
                      '<label>' + lang.image.url + '</label>' +
                      '<input class="note-image-url form-control span12" type="text" />' +
+                   '</div>' +
+                   '<div class="form-group row-fluid note-group-select-from-files">' +
+                     '<label>' + lang.image.selectFromFiles + '</label>' +
+                     '<input class="note-image-input" type="file" name="files" accept="image/*" multiple="multiple" />' +
+                     imageLimitation +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
         return tplDialog('note-image-dialog', lang.image.insert, body, footer);
@@ -770,8 +783,11 @@ define([
       if (options.direction) {
         $editable.attr('dir', options.direction);
       }
+      if (options.placeholder) {
+        $editable.attr('data-placeholder', options.placeholder);
+      }
 
-      $editable.html(dom.html($holder) || dom.emptyPara);
+      $editable.html(dom.html($holder));
 
       //031. create codable
       $('<textarea class="note-codable"></textarea>').prependTo($editor);

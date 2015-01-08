@@ -1,7 +1,8 @@
 ### Change Log
 
-#### v0.6 2014-11-XX
+#### v0.6.0 2014-11-29
 * Plugin system
+* Extract fontstyle and video plugins from base code.
 
 #### v0.5.9 2014-09-21
 * Dom Editing: insert(Un)OrderedList, indent/outdent

@@ -43,6 +43,15 @@ define([
       }
     };
 
+    this.saveNode = function ($editable) {
+      // copy child node reference
+      var copy = [];
+      for (var key  = 0, len = $editable[0].childNodes.length; key < len; key++) {
+        copy.push($editable[0].childNodes[key]);
+      }
+      $editable.data('childNodes', copy);
+    };
+
     /**
      * restore lately range
      *
@@ -56,6 +65,13 @@ define([
       }
     };
 
+    this.restoreNode = function ($editable) {
+      $editable.html('');
+      var child = $editable.data('childNodes');
+      for (var index = 0, len = child.length; index < len; index++) {
+        $editable[0].appendChild(child[index]);
+      }
+    };
     /**
      * current style
      * @param {Node} target
@@ -191,13 +207,20 @@ define([
      * @param {jQuery} $editable
      * @param {String} sUrl
      */
-    this.insertImage = function ($editable, sUrl, filename) {
-      async.createImage(sUrl, filename).then(function ($image) {
+    this.insertImage = function ($editable, data) {
+      async.createImage(data).then(function ($image) {
         $image.css({
           display: '',
           width: Math.min($editable.width(), $image.width())
         });
-        range.create().insertNode($image[0]);
+        if ('href' in data && !(data.href.length === 0 || !data.href.trim())) {
+          //this is supposed to be an anchor.
+          var $anchor = $('<a></a>').attr('href', data.href).attr('title', data.title);
+          $anchor.append($image);
+          range.create().insertNode($anchor[0]);
+        } else {
+          range.create().insertNode($image[0]);
+        }
         afterCommand($editable);
       }).fail(function () {
         var callbacks = $editable.data('callbacks');
@@ -395,6 +418,8 @@ define([
       if (value) {
         $target.addClass(value);
       }
+
+      afterCommand($editable);
     };
 
     /**

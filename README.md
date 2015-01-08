@@ -1,12 +1,12 @@
 # Summernote
 Super simple WYSIWYG Editor using Bootstrap (3.0 and 2.x).
 
-[![Build Status](https://secure.travis-ci.org/HackerWins/summernote.png)](http://travis-ci.org/HackerWins/summernote)
+[![Build Status](https://secure.travis-ci.org/summernote/summernote.png)](http://travis-ci.org/summernote/summernote)
 
 ### Summernote
 Summernote is a JavaScript library that helps you create WYSIWYG editors online.
 
-Home Page: http://hackerwins.github.io/summernote/
+Home Page: http://summernote.org
 
 ### Why Summernote?
 
@@ -25,6 +25,10 @@ Summernote has a few special features:
 ### Installation and dependencies
 
 Summernote uses opensouce libraries: [jQuery](http://jquery.com/), [Bootstrap](http://getbootstrap.com), [Font Awesome](https://github.com/FortAwesome/Font-Awesome).
+
+For [Meteor](http://github.com/meteor/meteor), just run `meteor add summernote:summernote`. More info in the [Meteor README](meteor/README.md).
+
+For other/no frameworks:
 
 #### 1. include JS/CSS
 
@@ -139,7 +143,7 @@ grunt server
 
 #### Coding convention
 * JSHint: http://www.jshint.com/about/
-* JSHint rule: https://github.com/HackerWins/summernote/blob/master/.jshintrc
+* JSHint rule: https://github.com/summernote/summernote/blob/master/.jshintrc
 
 ### Contacts
 * Email: susukang98@gmail.com

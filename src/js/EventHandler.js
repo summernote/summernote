@@ -82,7 +82,7 @@ define([
             }
           } else {
             async.readFileAsDataURL(file).then(function (sDataURL) {
-              editor.insertImage($editable, sDataURL, filename);
+              editor.insertImage($editable, {src: sDataURL, filename: filename});
             }).fail(function () {
               if (callbacks.onImageUploadError) {
                 callbacks.onImageUploadError();
@@ -126,8 +126,7 @@ define([
         editor.saveRange($editable);
         dialog.showImageDialog($editable, $dialog).then(function (data) {
           editor.restoreRange($editable);
-
-          if (typeof data === 'string') {
+          if ('src' in data) {
             // image url
             editor.insertImage($editable, data);
           } else {
@@ -158,10 +157,7 @@ define([
         $editable = layoutInfo.editable(),
         $codable = layoutInfo.codable();
 
-        var options = $editor.data('options');
-
         var resize = function (size) {
-          $editor.css('width', size.w);
           $editable.css('height', size.h);
           $codable.css('height', size.h);
           if ($codable.data('cmeditor')) {
@@ -176,7 +172,6 @@ define([
 
           $window.on('resize', function () {
             resize({
-              w: $window.width(),
               h: $window.height() - $toolbar.outerHeight()
             });
           }).trigger('resize');
@@ -185,7 +180,6 @@ define([
         } else {
           $window.off('resize');
           resize({
-            w: options.width || '',
             h: $editable.data('orgheight')
           });
           $scrollbar.css('overflow', 'visible');
@@ -199,7 +193,8 @@ define([
         $toolbar = layoutInfo.toolbar(),
         $editable = layoutInfo.editable(),
         $codable = layoutInfo.codable(),
-        $popover = layoutInfo.popover();
+        $popover = layoutInfo.popover(),
+        $handle = layoutInfo.handle();
 
         var options = $editor.data('options');
 
@@ -213,6 +208,7 @@ define([
           $codable.height($editable.height());
           toolbar.deactivate($toolbar);
           popover.hide($popover);
+          handle.hide($handle);
           $codable.focus();
 
           // activate CodeMirror as codable
@@ -289,12 +285,44 @@ define([
      */
     var hPasteClipboardImage = function (event) {
       var clipboardData = event.originalEvent.clipboardData;
+      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+      var $editable = layoutInfo.editable();
+
       if (!clipboardData || !clipboardData.items || !clipboardData.items.length) {
+        var callbacks = $editable.data('callbacks');
+        // only can run if it has onImageUpload method
+        if (!callbacks.onImageUpload) {
+          return;
+        }
+
+        // save cursor
+        editor.saveNode($editable);
+        editor.saveRange($editable);
+
+        $editable.html('');
+
+        setTimeout(function () {
+          var $img = $editable.find('img');
+          var datauri = $img[0].src;
+
+          var data = atob(datauri.split(',')[1]);
+          var array = new Uint8Array(data.length);
+          for (var i = 0; i < data.length; i++) {
+            array[i] = data.charCodeAt(i);
+          }
+
+          var blob = new Blob([array], { type : 'image/png'});
+          blob.name = 'clipboard.png';
+
+          editor.restoreNode($editable);
+          editor.restoreRange($editable);
+          insertImages(layoutInfo, [blob]);
+
+          editor.afterCommand($editable);
+        }, 0);
+
         return;
       }
-
-      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target),
-          $editable = layoutInfo.editable();
 
       var item = list.head(clipboardData.items);
       var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
@@ -337,13 +365,12 @@ define([
           popover.update($popover, dom.isVideo(target) ? {video: target} : {image: target}, isAirMode);
         }).one('mouseup', function () {
           $document.off('mousemove');
+          editor.afterCommand($editable);
         });
 
         if (!$target.data('ratio')) { // original ratio.
           $target.data('ratio', $target.height() / $target.width());
         }
-
-        editor.afterCommand($editable);
       }
     };
 
@@ -533,10 +560,13 @@ define([
         event.preventDefault();
 
         var dataTransfer = event.originalEvent.dataTransfer;
-        if (dataTransfer && dataTransfer.files) {
-          var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-          layoutInfo.editable().focus();
+        var text = dataTransfer.getData('text/plain');
+        var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+        layoutInfo.editable().focus();
+        if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
           insertImages(layoutInfo, dataTransfer.files);
+        } else if (text) {
+          editor.insertText(layoutInfo.editable(), text);
         }
       }).on('dragover', false); // prevent default dragover event
     };
@@ -638,10 +668,10 @@ define([
       layoutInfo.editor.data('options', options);
 
       // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
-      if (options.styleWithSpan && !agent.isMSIE) {
+      if (!agent.isMSIE) {
         // protect FF Error: NS_ERROR_FAILURE: Failure
         setTimeout(function () {
-          document.execCommand('styleWithCSS', 0, true);
+          document.execCommand('styleWithCSS', 0, options.styleWithSpan);
         }, 0);
       }
 

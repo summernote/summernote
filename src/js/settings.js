@@ -24,6 +24,8 @@ define('summernote/settings', function () {
 
       shortcuts: true,              // enable keyboard shortcuts
 
+      placeholder: false,           // enable placeholder text
+
       codemirror: {                 // codemirror options
         mode: 'text/html',
         htmlMode: true,
@@ -220,12 +222,15 @@ define('summernote/settings', function () {
           shapeCircle: 'Shape: Circle',
           shapeThumbnail: 'Shape: Thumbnail',
           shapeNone: 'Shape: None',
-          dragImageHere: 'Drag image here',
-          dropImage: 'Drop image',
+          dragImageHere: 'Drag image or text here',
+          dropImage: 'Drop image or Text',
           selectFromFiles: 'Select from files',
           maximumFileSize: 'Maximum file size',
           maximumFileSizeError: 'Maximum file size exceeded.',
           url: 'Image URL',
+          alt: 'alt text',
+          href: 'href (will change image into anchor)',
+          title: 'anchor title (only if href is set)',
           remove: 'Remove Image'
         },
         link: {
@@ -289,7 +294,8 @@ define('summernote/settings', function () {
           textFormatting: 'Text formatting',
           action: 'Action',
           paragraphFormatting: 'Paragraph formatting',
-          documentStyle: 'Document Style'
+          documentStyle: 'Document Style',
+          extraKeys: 'Extra keys'
         },
         history: {
           undo: 'Undo',

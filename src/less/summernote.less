@@ -89,6 +89,11 @@
   }
 
   /* editable */
+  .note-editable[contenteditable=true]:empty:not(:focus):before {
+    content:attr(data-placeholder);
+    color: #a9a9a9;
+  }
+
   .note-editable {
     padding: 10px;
     overflow: auto;
@@ -302,6 +307,10 @@
 .note-dialog {
   &>div {
     display: none; /* BS2's hide pacth. */
+  }
+  .form-group { /* overwrite BS's form-horizontal minus margins */
+    margin-left: 0;
+    margin-right: 0;
   }
   .note-modal-form {
     margin: 0; /* overwrite BS2's form margin bottom */

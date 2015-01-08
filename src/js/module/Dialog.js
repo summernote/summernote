@@ -30,13 +30,16 @@ define('summernote/module/Dialog', function () {
 
         var $imageInput = $dialog.find('.note-image-input'),
             $imageUrl = $dialog.find('.note-image-url'),
+            $imageAlt = $dialog.find('.note-image-alt'),
+            $imageHref = $dialog.find('.note-image-href'),
+            $imageTitle = $dialog.find('.note-image-title'),
             $imageBtn = $dialog.find('.note-image-btn');
 
         $imageDialog.one('shown.bs.modal', function () {
           // Cloning imageInput to clear element.
           $imageInput.replaceWith($imageInput.clone()
             .on('change', function () {
-              deferred.resolve(this.files);
+              deferred.resolve({files: this.files || this.value, alt: $imageAlt.val(), href: $imageHref.val(), title: $imageTitle.val()});
               $imageDialog.modal('hide');
             })
             .val('')
@@ -45,7 +48,7 @@ define('summernote/module/Dialog', function () {
           $imageBtn.click(function (event) {
             event.preventDefault();
 
-            deferred.resolve($imageUrl.val());
+            deferred.resolve({src: $imageUrl.val(), alt: $imageAlt.val(), href: $imageHref.val(), title: $imageTitle.val()});
             $imageDialog.modal('hide');
           });
 

@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.5.10
+ * Super simple wysiwyg editor on Bootstrap v0.6.0
  * http://hackerwins.github.io/summernote/
  *
  * summernote.js
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-11-27T13:40Z
+ * Date: 2015-01-08T10:34Z
  */
 (function (factory) {
   /* global define */
@@ -371,9 +371,32 @@
 
       return results;
     };
+
+    /**
+     * returns next item.
+     * @param {Array} array
+     */
+    var next = function (array, item) {
+      var idx = array.indexOf(item);
+      if (idx === -1) { return null; }
+
+      return array[idx + 1];
+    };
+
+    /**
+     * returns prev item.
+     * @param {Array} array
+     */
+    var prev = function (array, item) {
+      var idx = array.indexOf(item);
+      if (idx === -1) { return null; }
+
+      return array[idx - 1];
+    };
+
   
     return { head: head, last: last, initial: initial, tail: tail,
-             find: find, contains: contains,
+             prev: prev, next: next, find: find, contains: contains,
              all: all, sum: sum, from: from,
              clusterBy: clusterBy, compact: compact, unique: unique };
   })();
@@ -1674,15 +1697,22 @@
         if (dom.isBodyContainer(sc) && dom.isEmpty(sc)) {
           sc.innerHTML = dom.emptyPara;
           return new WrappedRange(sc.firstChild, 0);
-        } else if (!dom.isInline(sc) || dom.isParaInline(sc)) {
-          return this;
+        }
+
+        if (dom.isParaInline(sc) || dom.isPara(sc)) {
+          return this.normalize();
         }
 
         // find inline top ancestor
-        var ancestors = dom.listAncestor(sc, func.not(dom.isInline));
-        var topAncestor = list.last(ancestors);
-        if (!dom.isInline(topAncestor)) {
-          topAncestor = ancestors[ancestors.length - 2] || sc.childNodes[so];
+        var topAncestor;
+        if (dom.isInline(sc)) {
+          var ancestors = dom.listAncestor(sc, func.not(dom.isInline));
+          topAncestor = list.last(ancestors);
+          if (!dom.isInline(topAncestor)) {
+            topAncestor = ancestors[ancestors.length - 2] || sc.childNodes[so];
+          }
+        } else {
+          topAncestor = sc.childNodes[so - 1];
         }
 
         // siblings not in paragraph
@@ -1695,7 +1725,7 @@
           dom.appendChildNodes(para, list.tail(inlineSiblings));
         }
 
-        return this;
+        return this.normalize();
       };
 
       /**
@@ -1856,7 +1886,7 @@
 
   var settings = {
     // version
-    version: '0.5.10',
+    version: '0.6.0',
 
     /**
      * options
@@ -1878,6 +1908,8 @@
       disableResizeEditor: false,   // disable resizing editor
 
       shortcuts: true,              // enable keyboard shortcuts
+
+      placeholder: false,           // enable placeholder text
 
       codemirror: {                 // codemirror options
         mode: 'text/html',
@@ -2075,12 +2107,15 @@
           shapeCircle: 'Shape: Circle',
           shapeThumbnail: 'Shape: Thumbnail',
           shapeNone: 'Shape: None',
-          dragImageHere: 'Drag image here',
-          dropImage: 'Drop image',
+          dragImageHere: 'Drag image or text here',
+          dropImage: 'Drop image or Text',
           selectFromFiles: 'Select from files',
           maximumFileSize: 'Maximum file size',
           maximumFileSizeError: 'Maximum file size exceeded.',
           url: 'Image URL',
+          alt: 'alt text',
+          href: 'href (will change image into anchor)',
+          title: 'anchor title (only if href is set)',
           remove: 'Remove Image'
         },
         link: {
@@ -2144,7 +2179,8 @@
           textFormatting: 'Text formatting',
           action: 'Action',
           paragraphFormatting: 'Paragraph formatting',
-          documentStyle: 'Document Style'
+          documentStyle: 'Document Style',
+          extraKeys: 'Extra keys'
         },
         history: {
           undo: 'Undo',
@@ -2184,7 +2220,7 @@
      * @param {String} sUrl
      * @return {Promise} - then: $image
      */
-    var createImage = function (sUrl, filename) {
+    var createImage = function (data) {
       return $.Deferred(function (deferred) {
         $('<img>').one('load', function () {
           deferred.resolve($(this));
@@ -2193,8 +2229,9 @@
         }).css({
           display: 'none'
         }).appendTo(document.body)
-          .attr('src', sUrl)
-          .attr('data-filename', filename);
+          .attr('src', data.src)
+          .attr('alt', data.alt)
+          .attr('data-filename', data.filename);
       }).promise();
     };
 
@@ -2664,6 +2701,15 @@
       }
     };
 
+    this.saveNode = function ($editable) {
+      // copy child node reference
+      var copy = [];
+      for (var key  = 0, len = $editable[0].childNodes.length; key < len; key++) {
+        copy.push($editable[0].childNodes[key]);
+      }
+      $editable.data('childNodes', copy);
+    };
+
     /**
      * restore lately range
      *
@@ -2677,6 +2723,13 @@
       }
     };
 
+    this.restoreNode = function ($editable) {
+      $editable.html('');
+      var child = $editable.data('childNodes');
+      for (var index = 0, len = child.length; index < len; index++) {
+        $editable[0].appendChild(child[index]);
+      }
+    };
     /**
      * current style
      * @param {Node} target
@@ -2812,13 +2865,20 @@
      * @param {jQuery} $editable
      * @param {String} sUrl
      */
-    this.insertImage = function ($editable, sUrl, filename) {
-      async.createImage(sUrl, filename).then(function ($image) {
+    this.insertImage = function ($editable, data) {
+      async.createImage(data).then(function ($image) {
         $image.css({
           display: '',
           width: Math.min($editable.width(), $image.width())
         });
-        range.create().insertNode($image[0]);
+        if ('href' in data && !(data.href.length === 0 || !data.href.trim())) {
+          //this is supposed to be an anchor.
+          var $anchor = $('<a></a>').attr('href', data.href).attr('title', data.title);
+          $anchor.append($image);
+          range.create().insertNode($anchor[0]);
+        } else {
+          range.create().insertNode($image[0]);
+        }
         afterCommand($editable);
       }).fail(function () {
         var callbacks = $editable.data('callbacks');
@@ -3016,6 +3076,8 @@
       if (value) {
         $target.addClass(value);
       }
+
+      afterCommand($editable);
     };
 
     /**
@@ -3338,12 +3400,17 @@
       button.update($popover, styleInfo);
       
       var $linkPopover = $popover.find('.note-link-popover');
-      if (styleInfo.anchor) {
+      var $imagePopover = $popover.find('.note-image-popover');
+      if (styleInfo.image) {
+        showPopover($imagePopover, posFromPlaceholder(styleInfo.image, isAirMode));
+        $linkPopover.hide();
+      } else if (styleInfo.anchor) {
         var $anchor = $linkPopover.find('a');
         var href = $(styleInfo.anchor).attr('href');
         $anchor.attr('href', href).html(href);
         showPopover($linkPopover, posFromPlaceholder(styleInfo.anchor, isAirMode));
       } else {
+        $imagePopover.hide();
         $linkPopover.hide();
       }
       
@@ -3355,13 +3422,6 @@
         showPopover($videoPopover, posFromPlaceholder(styleInfo.video, isAirMode));
       } else {
         $videoPopover.hide();
-      }
-      
-      var $imagePopover = $popover.find('.note-image-popover');
-      if (styleInfo.image) {
-        showPopover($imagePopover, posFromPlaceholder(styleInfo.image, isAirMode));
-      } else {
-        $imagePopover.hide();
       }
 
       var $airPopover = $popover.find('.note-air-popover');
@@ -3387,7 +3447,7 @@
 
     /**
      * hide all popovers
-     * @param {jQuery} $popover - popover contaienr
+     * @param {jQuery} $popover - popover container
      */
     this.hide = function ($popover) {
       $popover.children().hide();
@@ -3468,13 +3528,16 @@
 
         var $imageInput = $dialog.find('.note-image-input'),
             $imageUrl = $dialog.find('.note-image-url'),
+            $imageAlt = $dialog.find('.note-image-alt'),
+            $imageHref = $dialog.find('.note-image-href'),
+            $imageTitle = $dialog.find('.note-image-title'),
             $imageBtn = $dialog.find('.note-image-btn');
 
         $imageDialog.one('shown.bs.modal', function () {
           // Cloning imageInput to clear element.
           $imageInput.replaceWith($imageInput.clone()
             .on('change', function () {
-              deferred.resolve(this.files);
+              deferred.resolve({files: this.files || this.value, alt: $imageAlt.val(), href: $imageHref.val(), title: $imageTitle.val()});
               $imageDialog.modal('hide');
             })
             .val('')
@@ -3483,7 +3546,7 @@
           $imageBtn.click(function (event) {
             event.preventDefault();
 
-            deferred.resolve($imageUrl.val());
+            deferred.resolve({src: $imageUrl.val(), alt: $imageAlt.val(), href: $imageHref.val(), title: $imageTitle.val()});
             $imageDialog.modal('hide');
           });
 
@@ -3669,7 +3732,7 @@
             }
           } else {
             async.readFileAsDataURL(file).then(function (sDataURL) {
-              editor.insertImage($editable, sDataURL, filename);
+              editor.insertImage($editable, {src: sDataURL, filename: filename});
             }).fail(function () {
               if (callbacks.onImageUploadError) {
                 callbacks.onImageUploadError();
@@ -3713,8 +3776,7 @@
         editor.saveRange($editable);
         dialog.showImageDialog($editable, $dialog).then(function (data) {
           editor.restoreRange($editable);
-
-          if (typeof data === 'string') {
+          if ('src' in data) {
             // image url
             editor.insertImage($editable, data);
           } else {
@@ -3745,10 +3807,7 @@
         $editable = layoutInfo.editable(),
         $codable = layoutInfo.codable();
 
-        var options = $editor.data('options');
-
         var resize = function (size) {
-          $editor.css('width', size.w);
           $editable.css('height', size.h);
           $codable.css('height', size.h);
           if ($codable.data('cmeditor')) {
@@ -3763,7 +3822,6 @@
 
           $window.on('resize', function () {
             resize({
-              w: $window.width(),
               h: $window.height() - $toolbar.outerHeight()
             });
           }).trigger('resize');
@@ -3772,7 +3830,6 @@
         } else {
           $window.off('resize');
           resize({
-            w: options.width || '',
             h: $editable.data('orgheight')
           });
           $scrollbar.css('overflow', 'visible');
@@ -3786,7 +3843,8 @@
         $toolbar = layoutInfo.toolbar(),
         $editable = layoutInfo.editable(),
         $codable = layoutInfo.codable(),
-        $popover = layoutInfo.popover();
+        $popover = layoutInfo.popover(),
+        $handle = layoutInfo.handle();
 
         var options = $editor.data('options');
 
@@ -3800,6 +3858,7 @@
           $codable.height($editable.height());
           toolbar.deactivate($toolbar);
           popover.hide($popover);
+          handle.hide($handle);
           $codable.focus();
 
           // activate CodeMirror as codable
@@ -3876,12 +3935,44 @@
      */
     var hPasteClipboardImage = function (event) {
       var clipboardData = event.originalEvent.clipboardData;
+      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+      var $editable = layoutInfo.editable();
+
       if (!clipboardData || !clipboardData.items || !clipboardData.items.length) {
+        var callbacks = $editable.data('callbacks');
+        // only can run if it has onImageUpload method
+        if (!callbacks.onImageUpload) {
+          return;
+        }
+
+        // save cursor
+        editor.saveNode($editable);
+        editor.saveRange($editable);
+
+        $editable.html('');
+
+        setTimeout(function () {
+          var $img = $editable.find('img');
+          var datauri = $img[0].src;
+
+          var data = atob(datauri.split(',')[1]);
+          var array = new Uint8Array(data.length);
+          for (var i = 0; i < data.length; i++) {
+            array[i] = data.charCodeAt(i);
+          }
+
+          var blob = new Blob([array], { type : 'image/png'});
+          blob.name = 'clipboard.png';
+
+          editor.restoreNode($editable);
+          editor.restoreRange($editable);
+          insertImages(layoutInfo, [blob]);
+
+          editor.afterCommand($editable);
+        }, 0);
+
         return;
       }
-
-      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target),
-          $editable = layoutInfo.editable();
 
       var item = list.head(clipboardData.items);
       var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
@@ -3924,13 +4015,12 @@
           popover.update($popover, dom.isVideo(target) ? {video: target} : {image: target}, isAirMode);
         }).one('mouseup', function () {
           $document.off('mousemove');
+          editor.afterCommand($editable);
         });
 
         if (!$target.data('ratio')) { // original ratio.
           $target.data('ratio', $target.height() / $target.width());
         }
-
-        editor.afterCommand($editable);
       }
     };
 
@@ -4120,10 +4210,13 @@
         event.preventDefault();
 
         var dataTransfer = event.originalEvent.dataTransfer;
-        if (dataTransfer && dataTransfer.files) {
-          var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-          layoutInfo.editable().focus();
+        var text = dataTransfer.getData('text/plain');
+        var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+        layoutInfo.editable().focus();
+        if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
           insertImages(layoutInfo, dataTransfer.files);
+        } else if (text) {
+          editor.insertText(layoutInfo.editable(), text);
         }
       }).on('dragover', false); // prevent default dragover event
     };
@@ -4225,10 +4318,10 @@
       layoutInfo.editor.data('options', options);
 
       // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
-      if (options.styleWithSpan && !agent.isMSIE) {
+      if (!agent.isMSIE) {
         // protect FF Error: NS_ERROR_FAILURE: Failure
         setTimeout(function () {
-          document.execCommand('styleWithCSS', 0, true);
+          document.execCommand('styleWithCSS', 0, options.styleWithSpan);
         }, 0);
       }
 
@@ -4754,10 +4847,12 @@
       var body = [];
 
       for (var i in keys) {
-        body.push(
-          '<div class="' + keyClass + 'key">' + keys[i].kbd + '</div>' +
-          '<div class="' + keyClass + 'name">' + keys[i].text + '</div>'
-          );
+        if (keys.hasOwnProperty(i)) {
+          body.push(
+            '<div class="' + keyClass + 'key">' + keys[i].kbd + '</div>' +
+            '<div class="' + keyClass + 'name">' + keys[i].text + '</div>'
+            );
+        }
       }
 
       return '<div class="note-shortcut-row row"><div class="' + keyClass + 'title col-xs-offset-6">' + title + '</div></div>' +
@@ -4769,7 +4864,6 @@
         { kbd: '⌘ + B', text: lang.font.bold },
         { kbd: '⌘ + I', text: lang.font.italic },
         { kbd: '⌘ + U', text: lang.font.underline },
-        { kbd: '⌘ + ⇧ + S', text: lang.font.sdivikethrough },
         { kbd: '⌘ + \\', text: lang.font.clear }
       ];
 
@@ -4781,7 +4875,7 @@
         { kbd: '⌘ + Z', text: lang.history.undo },
         { kbd: '⌘ + ⇧ + Z', text: lang.history.redo },
         { kbd: '⌘ + ]', text: lang.paragraph.indent },
-        { kbd: '⌘ + [', text: lang.paragraph.oudivent },
+        { kbd: '⌘ + [', text: lang.paragraph.outdent },
         { kbd: '⌘ + ENTER', text: lang.hr.insert }
       ];
 
@@ -4860,14 +4954,26 @@
           imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
         }
 
-        var body = '<div class="form-group row-fluid note-group-select-from-files">' +
-                     '<label>' + lang.image.selectFromFiles + '</label>' +
-                     '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
-                     imageLimitation +
+        var body = '<div class="form-group row-fluid">' +
+                     '<label>' + lang.image.alt + '</label>' +
+                     '<input class="note-image-alt form-control span12" type="text" />' +
+                   '</div>' +
+                   '<div class="form-group row-fluid">' +
+                     '<label>' + lang.image.href + '</label>' +
+                     '<input class="note-image-title form-control span12" type="text" />' +
+                   '</div>' +
+                   '<div class="form-group row-fluid">' +
+                     '<label>' + lang.image.title + '</label>' +
+                     '<input class="note-image-href form-control span12" type="text" />' +
                    '</div>' +
                    '<div class="form-group row-fluid">' +
                      '<label>' + lang.image.url + '</label>' +
                      '<input class="note-image-url form-control span12" type="text" />' +
+                   '</div>' +
+                   '<div class="form-group row-fluid note-group-select-from-files">' +
+                     '<label>' + lang.image.selectFromFiles + '</label>' +
+                     '<input class="note-image-input" type="file" name="files" accept="image/*" multiple="multiple" />' +
+                     imageLimitation +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
         return tplDialog('note-image-dialog', lang.image.insert, body, footer);
@@ -4898,7 +5004,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.5.10</a> · ' +
+                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.6.0</a> · ' +
                      '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
@@ -5061,8 +5167,11 @@
       if (options.direction) {
         $editable.attr('dir', options.direction);
       }
+      if (options.placeholder) {
+        $editable.attr('data-placeholder', options.placeholder);
+      }
 
-      $editable.html(dom.html($holder) || dom.emptyPara);
+      $editable.html(dom.html($holder));
 
       //031. create codable
       $('<textarea class="note-codable"></textarea>').prependTo($editor);
