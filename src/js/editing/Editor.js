@@ -246,6 +246,16 @@ define([
     };
 
     /**
+     * insert inline html
+     * @param {Node} $editable
+     * @param {String} html
+     */
+    this.insertInlineHtml = function ($editable, html) {
+      dom.createInlineHtml(html);
+      afterCommand($editable);
+    };
+
+    /**
      * formatBlock
      *
      * @param {jQuery} $editable
