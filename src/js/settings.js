@@ -74,6 +74,9 @@ define('summernote/settings', function () {
       // style tag
       styleTags: ['p', 'blockquote', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
 
+      // fontSize
+      fontSizes: ['8', '9', '10', '11', '12', '14', '18', '24', '36'],
+
       // default fontName
       defaultFontName: 'Helvetica Neue',
 

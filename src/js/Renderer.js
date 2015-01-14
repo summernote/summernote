@@ -163,6 +163,19 @@ define([
           dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
         });
       },
+      fontsize: function (lang, options) {
+        var items = options.fontSizes.reduce(function (memo, v) {
+          return memo + '<li><a data-event="fontSize" href="#" data-value="' + v + '">' +
+                          '<i class="fa fa-check icon-ok"></i> ' + v +
+                        '</a></li>';
+        }, '');
+
+        var sLabel = '<span class="note-current-fontsize">11</span>';
+        return tplButton(sLabel, {
+          title: lang.font.size,
+          dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
+        });
+      },
       color: function (lang) {
         var colorButtonLabel = '<i class="fa fa-font" style="color:black;background-color:yellow;"></i>';
         var colorButton = tplButton(colorButtonLabel, {

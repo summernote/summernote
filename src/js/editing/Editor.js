@@ -273,24 +273,215 @@ define([
     /* jshint ignore:end */
 
     /**
+     * applyFont
+     *
+     * @param {Node} start node
+     * @param {INT} start offset
+     * @param {Node} end node
+     * @param {INT} end offset
+     * @param {String} color
+     * @param {String} bgcolor
+     * @param {String} size - px
+     */
+    this.applyFont = function ($editable, color, bgcolor, size) {
+      var rng = range.create();
+      var startPoint = rng.getStartPoint();
+      var endPoint = rng.getEndPoint();
+
+      if (rng.isCollapsed()) {
+        return {
+          sc: startPoint.node,
+          so: startPoint.offset,
+          ec: endPoint.node,
+          offset: endPoint.offset
+        };
+      }
+
+      var ancestor, node, font, $font,
+        fonts = [], nodes = [],
+        k, i, className, className2, style, style2;
+
+      // get first and last point
+      if (endPoint.offset && endPoint.offset !== dom.nodeLength(endPoint.node)) {
+        ancestor = dom.ancestor(endPoint.node, dom.isFont) || endPoint.node;
+        dom.splitTree(ancestor, endPoint);
+      }
+      if (startPoint.offset && startPoint.offset !== dom.nodeLength(startPoint.node)) {
+        ancestor = dom.ancestor(startPoint.node, dom.isFont) || startPoint.node;
+        node = dom.splitTree(ancestor, startPoint);
+        if (endPoint.node === startPoint.node) {
+          endPoint.node = node;
+          endPoint.offset = dom.nodeLength(node);
+        }
+        startPoint.node = node;
+        startPoint.offset = 0;
+      }
+
+      // get list of nodes to change
+      dom.walkPoint(startPoint, endPoint, function (point) {
+        node = point.node;
+        if ((dom.isText(node) && dom.isVisibleText(node)) ||
+          (dom.isFont(node) && !dom.isVisibleText(node))) {
+          nodes.push(point.node);
+        }
+      });
+      nodes = list.unique(nodes);
+
+      // apply font: foreColor, backColor, size (the color can be use a class text-... or bg-...)
+      if (color || bgcolor || size) {
+        for (i = 0; i < nodes.length; i++) {
+          node = nodes[i];
+
+          font = dom.ancestor(node, dom.isFont);
+          if (!font) {
+            if (node.textContent.match(/^[ ]|[ ]$/)) {
+              node.textContent = node.textContent.replace(/^[ ]|[ ]$/g, '\u00A0');
+            }
+
+            font = dom.create('font');
+            node.parentNode.insertBefore(font, node);
+            font.appendChild(node);
+          }
+
+          fonts.push(font);
+
+          className = font.className.split(/\s+/);
+
+          if (color) {
+            for (k = 0; k < className.length; k++) {
+              if (!className[k].length && className[k].slice(0, 5) === 'text-') {
+                className.splice(k, 1);
+                k--;
+              }
+            }
+
+            if (color.indexOf('text-') !== -1) {
+              font.className = className.join(' ') + ' ' + color;
+              font.style.color = 'inherit';
+            } else {
+              font.className = className.join(' ');
+              font.style.color = color;
+            }
+          }
+          if (bgcolor) {
+            for (k = 0; k < className.length; k++) {
+              if (className[k].length && className[k].slice(0, 3) === 'bg-') {
+                className.splice(k, 1);
+                k--;
+              }
+            }
+
+            if (bgcolor.indexOf('bg-') !== -1) {
+              font.className = className.join(' ') + ' ' + bgcolor;
+              font.style.backgroundColor = 'inherit';
+            } else {
+              font.className = className.join(' ');
+              font.style.backgroundColor = bgcolor;
+            }
+          }
+          if (size) {
+            font.style.fontSize = 'inherit';
+            if (parseInt(window.getComputedStyle(font).fontSize, 10) !== size) {
+              font.style.fontSize = size + 'px';
+            }
+          }
+        }
+      }
+
+      // remove empty values
+      // we must remove the value in 2 steps (applay inherit then remove) because some
+      // browser like chrome have some time an error for the rendering and/or keep inherit
+      for (i = 0; i < fonts.length; i++) {
+        font = fonts[i];
+        if (font.style.backgroundColor === 'inherit') {
+          font.style.backgroundColor = '';
+        }
+        if (font.style.color === 'inherit') {
+          font.style.color = '';
+        }
+        if (font.style.fontSize === 'inherit') {
+          font.style.fontSize = '';
+        }
+
+        $font = $(font);
+
+        if (!$font.css('color') && !$font.css('background-color') && !$font.css('font-size')) {
+          $font.removeAttr('style');
+        }
+        if (!font.className.length) {
+          $font.removeAttr('class');
+        }
+      }
+
+      // select nodes to clean (to remove empty font and merge same nodes)
+      nodes = [];
+      dom.walkPoint(startPoint, endPoint, function (point) {
+        nodes.push(point.node);
+      });
+      nodes = list.unique(nodes);
+
+      function remove(node, to) {
+        if (node === endPoint.node) {
+          endPoint = dom.prevPoint(endPoint);
+        }
+        if (to) {
+          dom.moveContent(node, to);
+        }
+        dom.remove(node);
+      }
+
+      // remove node without attributes (move content), and merge the same nodes
+      for (i = 0; i < nodes.length; i++) {
+        node = nodes[i];
+
+        if ((dom.isText(node) || dom.isBR(node)) && !dom.isVisibleText(node)) {
+          remove(node);
+          nodes.splice(i, 1);
+          i--;
+          continue;
+        }
+
+        font = dom.ancestor(node, dom.isFont);
+        node = font || dom.ancestor(node, dom.isSpan);
+
+        if (!node) {
+          continue;
+        }
+
+        $font = $(node);
+        className = dom.orderClass(node);
+        style = dom.orderStyle(node);
+
+        if (!className && !style) {
+          remove(node, node.parentNode);
+          nodes.splice(i, 1);
+          i--;
+          continue;
+        }
+
+        if (i > 0 && (font = dom.ancestor(nodes[i - 1], dom.isFont))) {
+          className2 = font.getAttribute('class');
+          style2 = font.getAttribute('style');
+          if (node !== font && className === className2 && style === style2) {
+            remove(node, font);
+            nodes.splice(i, 1);
+            i--;
+            continue;
+          }
+        }
+      }
+
+      range.create(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset).select();
+    };
+
+    /**
      * fontsize
-     * FIXME: Still buggy
      *
      * @param {jQuery} $editable
      * @param {String} value - px
      */
     this.fontSize = function ($editable, value) {
-      document.execCommand('fontSize', false, 3);
-      if (agent.isFF) {
-        // firefox: <font size="3"> to <span style='font-size={value}px;'>, buggy
-        $editable.find('font[size=3]').removeAttr('size').css('font-size', value + 'px');
-      } else {
-        // chrome: <span style="font-size: medium"> to <span style='font-size={value}px;'>
-        $editable.find('span').filter(function () {
-          return this.style.fontSize === 'medium';
-        }).css('font-size', value + 'px');
-      }
-
+      this.applyFont($editable, null, null, value);
       afterCommand($editable);
     };
 
@@ -382,9 +573,27 @@ define([
       var oColor = JSON.parse(sObjColor);
       var foreColor = oColor.foreColor, backColor = oColor.backColor;
 
-      if (foreColor) { document.execCommand('foreColor', false, foreColor); }
-      if (backColor) { document.execCommand('backColor', false, backColor); }
-
+      if (foreColor) { this.foreColor($editable, foreColor); }
+      if (backColor) { this.backColor($editable, backColor); }
+    };
+    this.foreColor = function ($editable, foreColor) {
+      this.applyFont($editable, foreColor, null, null);
+      afterCommand($editable);
+    };
+    this.backColor = function ($editable, backColor) {
+      var r = range.create();
+      if (r.isCollapsed() && r.isOnCell()) {
+        var cell = dom.ancestor(r.sc, dom.isCell);
+        cell.className = cell.className.replace(new RegExp('(^|\\s+)bg-[^\\s]+(\\s+|$)', 'gi'), '');
+        cell.style.backgroundColor = '';
+        if (backColor.indexOf('bg-') !== -1) {
+          cell.className += ' ' + backColor;
+        } else if (backColor !== 'inherit') {
+          cell.style.backgroundColor = backColor;
+        }
+        return;
+      }
+      this.applyFont($editable, null, backColor, null);
       afterCommand($editable);
     };
 

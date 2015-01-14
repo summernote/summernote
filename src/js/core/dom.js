@@ -110,6 +110,14 @@ define([
 
     var isLi = makePredByNodeName('LI');
 
+    var isFont = function (node) {
+      var nodeName = node && node.nodeName.toUpperCase();
+      return node && (nodeName === 'FONT' ||
+        (nodeName === 'SPAN' &&
+          (node.className.match(/(^|\s)(text|bg)-/i) ||
+          (node.attributes.style && node.attributes.style.value.match(/(^|\s)(color|background-color):/i)))));
+    };
+
     var isPurePara = function (node) {
       return isPara(node) && !isLi(node);
     };
@@ -179,6 +187,16 @@ define([
       }
 
       return false;
+    };
+
+    /**
+     * returns whether text node have visible char or not.
+     *
+     * @param {textNode} node
+     * @return {Boolean}
+     */
+    var isVisibleText = function (textNode) {
+      return !!textNode.textContent.match(/\S|\u00A0/);
     };
 
     /**
@@ -790,6 +808,82 @@ define([
       return val.replace(/[\n\r]/g, '');
     };
 
+    /**
+     * order the style of the node to compare 2 nodes and remove attribute if empty
+     *
+     * @param {Node} node
+     * @return {String} className
+     */
+    var orderStyle = function (node) {
+      var style = node.getAttribute('style');
+      if (!style) {
+        return null;
+      }
+      style = style.replace(/[\s\n\r]+/, ' ').replace(/^ ?;? ?| ?;? ?$/g, '').replace(/ ?; ?/g, ';');
+      if (!style.length) {
+        node.removeAttribute('style');
+        return null;
+      }
+      style = style.split(';');
+      style.sort();
+      style = style.join('; ') + ';';
+      node.setAttribute('style', style);
+      return style;
+    };
+    /**
+     * order the class of the node to compare 2 nodes and remove attribute if empty
+     *
+     * @param {Node} node
+     * @return {String} className
+     */
+    var orderClass = function (node) {
+      var className = node.getAttribute('class');
+      if (!className) {
+        return null;
+      }
+      className = className.replace(/[\s\n\r]+/, ' ').replace(/^ | $/g, '').replace(/ +/g, ' ');
+      if (!className.length) {
+        node.removeAttribute('class');
+        return null;
+      }
+      className = className.split(' ');
+      className.sort();
+      className = className.join(' ');
+      node.setAttribute('class', className);
+      return className;
+    };
+
+    /**
+     * return the current node (if text node, return parentNode)
+     *
+     * @param {Node} node
+     * @return {Node} node
+     */
+    var node = function (node) {
+      return isText(node) ? node.parentNode : node;
+    };
+    
+    /**
+     * move all childNode to an other node
+     *
+     * @param {Node} from
+     * @param {Node} to
+     */
+    var moveContent = function (from, to) {
+      if (from === to) {
+        return;
+      }
+      if (from.parentNode === to) {
+        while (from.lastChild) {
+          insertAfter(from.lastChild, from);
+        }
+      } else {
+        while (from.firstChild && from.firstChild !== to) {
+          to.appendChild(from.firstChild);
+        }
+      }
+    };
+
     return {
       NBSP_CHAR: NBSP_CHAR,
       ZERO_WIDTH_NBSP_CHAR: ZERO_WIDTH_NBSP_CHAR,
@@ -813,6 +907,7 @@ define([
       isAnchor: isAnchor,
       isDiv: makePredByNodeName('DIV'),
       isLi: isLi,
+      isFont: isFont,
       isSpan: makePredByNodeName('SPAN'),
       isB: makePredByNodeName('B'),
       isU: makePredByNodeName('U'),
@@ -821,6 +916,7 @@ define([
       isImg: makePredByNodeName('IMG'),
       isTextarea: isTextarea,
       isEmpty: isEmpty,
+      isVisibleText: isVisibleText,
       isEmptyAnchor: func.and(isAnchor, isEmpty),
       nodeLength: nodeLength,
       isLeftEdgePoint: isLeftEdgePoint,
@@ -856,7 +952,11 @@ define([
       removeWhile: removeWhile,
       replace: replace,
       html: html,
-      value: value
+      value: value,
+      orderClass: orderClass,
+      orderStyle: orderStyle,
+      node: node,
+      moveContent: moveContent
     };
   })();
 
