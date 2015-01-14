@@ -453,7 +453,7 @@ define([
             topAncestor = ancestors[ancestors.length - 2] || sc.childNodes[so];
           }
         } else {
-          topAncestor = sc.childNodes[so - 1];
+          topAncestor = sc.childNodes[so];
         }
 
         // siblings not in paragraph

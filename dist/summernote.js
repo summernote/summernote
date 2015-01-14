@@ -6,7 +6,7 @@
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-12-23T20:10Z
+ * Date: 2015-01-14T19:10Z
  */
 (function (factory) {
   /* global define */
@@ -1707,7 +1707,7 @@
             topAncestor = ancestors[ancestors.length - 2] || sc.childNodes[so];
           }
         } else {
-          topAncestor = sc.childNodes[so - 1];
+          topAncestor = sc.childNodes[so];
         }
 
         // siblings not in paragraph
@@ -4183,13 +4183,24 @@
         event.preventDefault();
 
         var dataTransfer = event.originalEvent.dataTransfer;
+        var html = dataTransfer.getData('text/html');
         var text = dataTransfer.getData('text/plain');
         var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-        layoutInfo.editable().focus();
         if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
+          layoutInfo.editable().focus();
           insertImages(layoutInfo, dataTransfer.files);
-        } else if (text) {
-          editor.insertText(layoutInfo.editable(), text);
+        } else  {
+          if (html) {
+            var $dom = $(html);
+            $dom.each(function () {
+              layoutInfo.editable().focus();
+              editor.insertNode(layoutInfo.editable(), this);
+            });
+          } else {
+            layoutInfo.editable().focus();
+            editor.insertText(layoutInfo.editable(), text);
+          }
+
         }
       }).on('dragover', false); // prevent default dragover event
     };
@@ -4814,10 +4825,12 @@
       var body = [];
 
       for (var i in keys) {
-        body.push(
-          '<div class="' + keyClass + 'key">' + keys[i].kbd + '</div>' +
-          '<div class="' + keyClass + 'name">' + keys[i].text + '</div>'
-          );
+        if (keys.hasOwnProperty(i)) {
+          body.push(
+            '<div class="' + keyClass + 'key">' + keys[i].kbd + '</div>' +
+            '<div class="' + keyClass + 'name">' + keys[i].text + '</div>'
+            );
+        }
       }
 
       return '<div class="note-shortcut-row row"><div class="' + keyClass + 'title col-xs-offset-6">' + title + '</div></div>' +

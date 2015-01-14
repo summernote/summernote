@@ -562,13 +562,24 @@ define([
         event.preventDefault();
 
         var dataTransfer = event.originalEvent.dataTransfer;
+        var html = dataTransfer.getData('text/html');
         var text = dataTransfer.getData('text/plain');
         var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-        layoutInfo.editable().focus();
         if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
+          layoutInfo.editable().focus();
           insertImages(layoutInfo, dataTransfer.files);
-        } else if (text) {
-          editor.insertText(layoutInfo.editable(), text);
+        } else  {
+          if (html) {
+            var $dom = $(html);
+            $dom.each(function () {
+              layoutInfo.editable().focus();
+              editor.insertNode(layoutInfo.editable(), this);
+            });
+          } else {
+            layoutInfo.editable().focus();
+            editor.insertText(layoutInfo.editable(), text);
+          }
+
         }
       }).on('dragover', false); // prevent default dragover event
     };
