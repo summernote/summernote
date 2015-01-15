@@ -784,10 +784,12 @@ define([
       return markup;
     };
 
-    var value = function ($textarea) {
+    var value = function ($textarea, stripLinebreaks) {
       var val = $textarea.val();
-      // strip line breaks
-      return val.replace(/[\n\r]/g, '');
+      if (stripLinebreaks) {
+        return val.replace(/[\n\r]/g, '');
+      }
+      return val;
     };
 
     return {
