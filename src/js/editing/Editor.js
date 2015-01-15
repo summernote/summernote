@@ -81,6 +81,14 @@ define([
       return rng ? rng.isOnEditable() && style.current(rng, target) : false;
     };
 
+    /*jshint unused:false*/
+    var triggerOnBeforeChange = this.triggerOnBeforeChange = function ($editable) {
+      var onBeforeChange = $editable.data('callbacks').onBeforeChange;
+      if (onBeforeChange) {
+        onBeforeChange($editable.html(), $editable);
+      }
+    };
+
     var triggerOnChange = this.triggerOnChange = function ($editable) {
       var onChange = $editable.data('callbacks').onChange;
       if (onChange) {
@@ -125,6 +133,8 @@ define([
     for (var idx = 0, len = commands.length; idx < len; idx ++) {
       this[commands[idx]] = (function (sCmd) {
         return function ($editable, value) {
+          triggerOnBeforeChange($editable);
+
           document.execCommand(sCmd, false, value);
 
           afterCommand($editable);
