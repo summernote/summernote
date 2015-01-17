@@ -2,10 +2,12 @@ define(['jquery'], function ($) {
   if (!Array.prototype.reduce) {
     /**
      * Array.prototype.reduce polyfill
-     * @see http://goo.gl/WNriQD
      *
      * @param {Function} callback
      * @param {Value} [initialValue]
+     * @return {Value}
+     *
+     * @see http://goo.gl/WNriQD
      */
     Array.prototype.reduce = function (callback) {
       var t = Object(this), len = t.length >>> 0, k = 0, value;
@@ -30,23 +32,23 @@ define(['jquery'], function ($) {
   }
 
   if ('function' !== typeof Array.prototype.filter) {
-    Array.prototype.filter = function (fun/*, thisArg*/) {
-      if (this === void 0 || this === null) {
-        throw new TypeError();
-      }
-  
-      var t = Object(this);
-      var len = t.length >>> 0;
-      if (typeof fun !== 'function') {
-        throw new TypeError();
-      }
-  
+    /**
+     * Array.prototype.filter polyfill
+     *
+     * @param {Function} func
+     * @return {Array}
+     *
+     * @see http://goo.gl/T1KFnq
+     */
+    Array.prototype.filter = function (func) {
+      var t = Object(this), len = t.length >>> 0;
+
       var res = [];
       var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
       for (var i = 0; i < len; i++) {
         if (i in t) {
           var val = t[i];
-          if (fun.call(thisArg, val, i, t)) {
+          if (func.call(thisArg, val, i, t)) {
             res.push(val);
           }
         }
@@ -60,6 +62,7 @@ define(['jquery'], function ($) {
 
   /**
    * returns whether font is installed or not.
+   *
    * @param {String} fontName
    * @return {Boolean}
    */
