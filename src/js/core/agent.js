@@ -1,30 +1,31 @@
 define(['jquery'], function ($) {
-  if ('function' !== typeof Array.prototype.reduce) {
+  if (!Array.prototype.reduce) {
     /**
-     * Array.prototype.reduce fallback
+     * Array.prototype.reduce polyfill
+     * @see http://goo.gl/WNriQD
      *
-     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
+     * @param {Function} callback
+     * @param {Value} [initialValue]
      */
-    Array.prototype.reduce = function (callback, optInitialValue) {
-      var idx, value, length = this.length >>> 0, isValueSet = false;
-      if (1 < arguments.length) {
-        value = optInitialValue;
-        isValueSet = true;
-      }
-      for (idx = 0; length > idx; ++idx) {
-        if (this.hasOwnProperty(idx)) {
-          if (isValueSet) {
-            value = callback(value, this[idx], idx, this);
-          } else {
-            value = this[idx];
-            isValueSet = true;
-          }
+    Array.prototype.reduce = function (callback) {
+        var t = Object(this), len = t.length >>> 0, k = 0, value;
+        if (arguments.length == 2) {
+            value = arguments[1];
+        } else {
+            while (k < len && ! k in t) {
+                k++; 
+            }
+            if (k >= len) {
+                throw new TypeError('Reduce of empty array with no initial value');
+            }
+            value = t[k++];
         }
-      }
-      if (!isValueSet) {
-        throw new TypeError('Reduce of empty array with no initial value');
-      }
-      return value;
+        for (; k < len; k++) {
+            if (k in t) {
+                value = callback(value, t[k], k, t);
+            }
+        }
+        return value;
     };
   }
 
