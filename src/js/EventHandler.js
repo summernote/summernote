@@ -205,7 +205,7 @@ define([
 
         var isCodeview = $editor.hasClass('codeview');
         if (isCodeview) {
-          $codable.val(dom.html($editable, true));
+          $codable.val(dom.html($editable, options.prettifyHtml));
           $codable.height($editable.height());
           toolbar.deactivate($toolbar);
           popover.hide($popover);
@@ -237,7 +237,7 @@ define([
             cmEditor.toTextArea();
           }
 
-          $editable.html(dom.value($codable) || dom.emptyPara);
+          $editable.html(dom.value($codable, options.prettifyHtml) || dom.emptyPara);
           $editable.height(options.height ? $codable.height() : 'auto');
 
           toolbar.activate($toolbar);
@@ -562,10 +562,13 @@ define([
         event.preventDefault();
 
         var dataTransfer = event.originalEvent.dataTransfer;
-        if (dataTransfer && dataTransfer.files) {
-          var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-          layoutInfo.editable().focus();
+        var text = dataTransfer.getData('text/plain');
+        var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+        layoutInfo.editable().focus();
+        if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
           insertImages(layoutInfo, dataTransfer.files);
+        } else if (text) {
+          editor.insertText(layoutInfo.editable(), text);
         }
       }).on('dragover', false); // prevent default dragover event
     };
@@ -710,6 +713,7 @@ define([
       // All editor status will be saved on editable with jquery's data
       // for support multiple editor with singleton object.
       layoutInfo.editable.data('callbacks', {
+        onBeforeChange: options.onBeforeChange,
         onChange: options.onChange,
         onAutoSave: options.onAutoSave,
         onImageUpload: options.onImageUpload,

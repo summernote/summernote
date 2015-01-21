@@ -601,15 +601,15 @@ define([
      * return element from offsetPath(array of offset)
      *
      * @param {Node} ancestor - ancestor node
-     * @param {array} aOffset - offsetPath
+     * @param {array} offsets - offsetPath
      */
-    var fromOffsetPath = function (ancestor, aOffset) {
+    var fromOffsetPath = function (ancestor, offsets) {
       var current = ancestor;
-      for (var i = 0, len = aOffset.length; i < len; i++) {
-        if (current.childNodes.length <= aOffset[i]) {
+      for (var i = 0, len = offsets.length; i < len; i++) {
+        if (current.childNodes.length <= offsets[i]) {
           current = current.childNodes[current.childNodes.length - 1];
         } else {
-          current = current.childNodes[aOffset[i]];
+          current = current.childNodes[offsets[i]];
         }
       }
       return current;
@@ -819,10 +819,12 @@ define([
       return markup;
     };
 
-    var value = function ($textarea) {
+    var value = function ($textarea, stripLinebreaks) {
       var val = $textarea.val();
-      // strip line breaks
-      return val.replace(/[\n\r]/g, '');
+      if (stripLinebreaks) {
+        return val.replace(/[\n\r]/g, '');
+      }
+      return val;
     };
 
     return {

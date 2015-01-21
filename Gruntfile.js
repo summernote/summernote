@@ -127,13 +127,13 @@ module.exports = function (grunt) {
   grunt.loadTasks('build');
 
   // test: unit test on test folder
-  grunt.registerTask('test', ['jshint', 'qunit', 'meteor-test']);
+  grunt.registerTask('test', ['jshint', 'qunit']);
 
   // dist
   grunt.registerTask('dist', ['build', 'test', 'uglify', 'recess']);
 
-  // default: build, test, dist.
-  grunt.registerTask('default', ['dist']);
+  // default: server
+  grunt.registerTask('default', ['server']);
 
   // Meteor tasks
   grunt.registerTask('meteor-test', 'exec:meteor-test');
