@@ -207,7 +207,7 @@ define([
         };
 
         var startPoint = getVisiblePoint(this.getStartPoint());
-        var endPoint = getVisiblePoint(this.getStartPoint());
+        var endPoint = getVisiblePoint(this.getEndPoint());
 
         return new WrappedRange(
           startPoint.node,
