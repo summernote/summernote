@@ -437,7 +437,7 @@ define([
       this.wrapBodyInlineWithPara = function () {
         if (dom.isBodyContainer(sc) && dom.isEmpty(sc)) {
           sc.innerHTML = dom.emptyPara;
-          return new WrappedRange(sc.firstChild, 0);
+          return new WrappedRange(sc.firstChild, 0, sc.firstChild, 0);
         }
 
         if (dom.isParaInline(sc) || dom.isPara(sc)) {
