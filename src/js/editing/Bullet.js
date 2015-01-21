@@ -110,6 +110,9 @@ define([
         }
       }
 
+      // FIXME - Fix the focus out bug when first bullet clicked.
+      // - Chrome 39.0.2171.99 (64-bit), Yosemite Version 10.10.1
+
       rng.select();
     };
 
