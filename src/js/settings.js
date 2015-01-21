@@ -25,6 +25,7 @@ define('summernote/settings', function () {
       shortcuts: true,              // enable keyboard shortcuts
 
       placeholder: false,           // enable placeholder text
+      prettifyHtml: true,           // enable prettifying html while toggling codeview
 
       codemirror: {                 // codemirror options
         mode: 'text/html',
@@ -222,8 +223,8 @@ define('summernote/settings', function () {
           shapeCircle: 'Shape: Circle',
           shapeThumbnail: 'Shape: Thumbnail',
           shapeNone: 'Shape: None',
-          dragImageHere: 'Drag image here',
-          dropImage: 'Drop image',
+          dragImageHere: 'Drag image or text here',
+          dropImage: 'Drop image or Text',
           selectFromFiles: 'Select from files',
           maximumFileSize: 'Maximum file size',
           maximumFileSizeError: 'Maximum file size exceeded.',
@@ -291,7 +292,8 @@ define('summernote/settings', function () {
           textFormatting: 'Text formatting',
           action: 'Action',
           paragraphFormatting: 'Paragraph formatting',
-          documentStyle: 'Document Style'
+          documentStyle: 'Document Style',
+          extraKeys: 'Extra keys'
         },
         history: {
           undo: 'Undo',

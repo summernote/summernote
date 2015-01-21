@@ -511,7 +511,7 @@ define([
 
     /**
      * returns whether point is visible (can set cursor) or not.
-     * 
+     *
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
@@ -601,15 +601,15 @@ define([
      * return element from offsetPath(array of offset)
      *
      * @param {Node} ancestor - ancestor node
-     * @param {array} aOffset - offsetPath
+     * @param {array} offsets - offsetPath
      */
-    var fromOffsetPath = function (ancestor, aOffset) {
+    var fromOffsetPath = function (ancestor, offsets) {
       var current = ancestor;
-      for (var i = 0, len = aOffset.length; i < len; i++) {
-        if (current.childNodes.length <= aOffset[i]) {
+      for (var i = 0, len = offsets.length; i < len; i++) {
+        if (current.childNodes.length <= offsets[i]) {
           current = current.childNodes[current.childNodes.length - 1];
         } else {
-          current = current.childNodes[aOffset[i]];
+          current = current.childNodes[offsets[i]];
         }
       }
       return current;
@@ -691,6 +691,41 @@ define([
       return document.createTextNode(text);
     };
 
+    var createInlineHtml = function (html) {
+      var sel, textRange;
+      if (window.getSelection) {
+        // IE9 and non-IE
+        sel = window.getSelection();
+        if (sel.getRangeAt && sel.rangeCount) {
+          textRange = sel.getRangeAt(0);
+          textRange.deleteContents();
+
+          // Range.createContextualFragment() would be useful here but is
+          // only relatively recently standardized and is not supported in
+          // some browsers (IE9, for one)
+          var el = document.createElement('div');
+          el.innerHTML = html;
+          var frag = document.createDocumentFragment(), node, lastNode;
+          while ((node = el.firstChild)) {
+            lastNode = frag.appendChild(node);
+          }
+          textRange.insertNode(frag);
+
+          // Preserve the selection
+          if (lastNode) {
+            textRange = textRange.cloneRange();
+            textRange.setStartAfter(lastNode);
+            textRange.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(textRange);
+          }
+        }
+      } else if (document.selection && document.selection.type !== 'Control') {
+        // IE < 9
+        document.selection.createRange().pasteHTML(html);
+      }
+    };
+
     /**
      * remove node, (isRemoveChild: remove child or not)
      * @param {Node} node
@@ -760,7 +795,7 @@ define([
     var isTextarea = makePredByNodeName('TEXTAREA');
 
     /**
-     * get the HTML contents of node 
+     * get the HTML contents of node
      *
      * @param {jQuery} $node
      * @param {Boolean} [isNewlineOnBlock]
@@ -784,10 +819,12 @@ define([
       return markup;
     };
 
-    var value = function ($textarea) {
+    var value = function ($textarea, stripLinebreaks) {
       var val = $textarea.val();
-      // strip line breaks
-      return val.replace(/[\n\r]/g, '');
+      if (stripLinebreaks) {
+        return val.replace(/[\n\r]/g, '');
+      }
+      return val;
     };
 
     return {
@@ -852,6 +889,7 @@ define([
       splitTree: splitTree,
       create: create,
       createText: createText,
+      createInlineHtml: createInlineHtml,
       remove: remove,
       removeWhile: removeWhile,
       replace: replace,

@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.6.0
+ * Super simple wysiwyg editor on Bootstrap v0.6.1
  * http://hackerwins.github.io/summernote/
  *
  * summernote.js
  * Copyright 2013-2014 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-11-29T05:20Z
+ * Date: 2014-12-19T19:50Z
  */
 (function (factory) {
   /* global define */
@@ -909,7 +909,7 @@
 
     /**
      * returns whether point is visible (can set cursor) or not.
-     * 
+     *
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
@@ -1089,6 +1089,41 @@
       return document.createTextNode(text);
     };
 
+    var createInlineHtml = function (html) {
+      var sel, textRange;
+      if (window.getSelection) {
+        // IE9 and non-IE
+        sel = window.getSelection();
+        if (sel.getRangeAt && sel.rangeCount) {
+          textRange = sel.getRangeAt(0);
+          textRange.deleteContents();
+
+          // Range.createContextualFragment() would be useful here but is
+          // only relatively recently standardized and is not supported in
+          // some browsers (IE9, for one)
+          var el = document.createElement('div');
+          el.innerHTML = html;
+          var frag = document.createDocumentFragment(), node, lastNode;
+          while ((node = el.firstChild)) {
+            lastNode = frag.appendChild(node);
+          }
+          textRange.insertNode(frag);
+
+          // Preserve the selection
+          if (lastNode) {
+            textRange = textRange.cloneRange();
+            textRange.setStartAfter(lastNode);
+            textRange.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(textRange);
+          }
+        }
+      } else if (document.selection && document.selection.type !== 'Control') {
+        // IE < 9
+        document.selection.createRange().pasteHTML(html);
+      }
+    };
+
     /**
      * remove node, (isRemoveChild: remove child or not)
      * @param {Node} node
@@ -1158,7 +1193,7 @@
     var isTextarea = makePredByNodeName('TEXTAREA');
 
     /**
-     * get the HTML contents of node 
+     * get the HTML contents of node
      *
      * @param {jQuery} $node
      * @param {Boolean} [isNewlineOnBlock]
@@ -1250,6 +1285,7 @@
       splitTree: splitTree,
       create: create,
       createText: createText,
+      createInlineHtml: createInlineHtml,
       remove: remove,
       removeWhile: removeWhile,
       replace: replace,
@@ -1279,7 +1315,7 @@
      */
     var textRangeToPoint = function (textRange, isStart) {
       var container = textRange.parentElement(), offset;
-  
+
       var tester = document.body.createTextRange(), prevContainer;
       var childNodes = list.from(container.childNodes);
       for (offset = 0; offset < childNodes.length; offset++) {
@@ -1292,42 +1328,42 @@
         }
         prevContainer = childNodes[offset];
       }
-  
+
       if (offset !== 0 && dom.isText(childNodes[offset - 1])) {
         var textRangeStart = document.body.createTextRange(), curTextNode = null;
         textRangeStart.moveToElementText(prevContainer || container);
         textRangeStart.collapse(!prevContainer);
         curTextNode = prevContainer ? prevContainer.nextSibling : container.firstChild;
-  
+
         var pointTester = textRange.duplicate();
         pointTester.setEndPoint('StartToStart', textRangeStart);
         var textCount = pointTester.text.replace(/[\r\n]/g, '').length;
-  
+
         while (textCount > curTextNode.nodeValue.length && curTextNode.nextSibling) {
           textCount -= curTextNode.nodeValue.length;
           curTextNode = curTextNode.nextSibling;
         }
-  
+
         /* jshint ignore:start */
         var dummy = curTextNode.nodeValue; // enforce IE to re-reference curTextNode, hack
         /* jshint ignore:end */
-  
+
         if (isStart && curTextNode.nextSibling && dom.isText(curTextNode.nextSibling) &&
             textCount === curTextNode.nodeValue.length) {
           textCount -= curTextNode.nodeValue.length;
           curTextNode = curTextNode.nextSibling;
         }
-  
+
         container = curTextNode;
         offset = textCount;
       }
-  
+
       return {
         cont: container,
         offset: offset
       };
     };
-    
+
     /**
      * return TextRange from boundary point (inspired by google closure-library)
      * @param {BoundaryPoint} point
@@ -1336,7 +1372,7 @@
     var pointToTextRange = function (point) {
       var textRangeInfo = function (container, offset) {
         var node, isCollapseToStart;
-  
+
         if (dom.isText(container)) {
           var prevTextNodes = dom.listPrev(container, func.not(dom.isText));
           var prevContainer = list.last(prevTextNodes).previousSibling;
@@ -1348,27 +1384,27 @@
           if (dom.isText(node)) {
             return textRangeInfo(node, 0);
           }
-  
+
           offset = 0;
           isCollapseToStart = false;
         }
-  
+
         return {
           node: node,
           collapseToStart: isCollapseToStart,
           offset: offset
         };
       };
-  
+
       var textRange = document.body.createTextRange();
       var info = textRangeInfo(point.node, point.offset);
-  
+
       textRange.moveToElementText(info.node);
       textRange.collapse(info.collapseToStart);
       textRange.moveStart('character', info.offset);
       return textRange;
     };
-    
+
     /**
      * Wrapped Range
      *
@@ -1382,14 +1418,15 @@
       this.so = so;
       this.ec = ec;
       this.eo = eo;
-  
+
       // nativeRange: get nativeRange from sc, so, ec, eo
       var nativeRange = function () {
-        if (agent.isW3CRangeSupport) {
+        if (!sc && !ec) {
+          return null;
+        } else if (agent.isW3CRangeSupport) {
           var w3cRange = document.createRange();
           w3cRange.setStart(sc, so);
           w3cRange.setEnd(ec, eo);
-
           return w3cRange;
         } else {
           var textRange = pointToTextRange({
@@ -1434,14 +1471,16 @@
        */
       this.select = function () {
         var nativeRng = nativeRange();
-        if (agent.isW3CRangeSupport) {
-          var selection = document.getSelection();
-          if (selection.rangeCount > 0) {
-            selection.removeAllRanges();
+        if (nativeRng) {
+          if (agent.isW3CRangeSupport) {
+            var selection = document.getSelection();
+            if (selection.rangeCount > 0) {
+              selection.removeAllRanges();
+            }
+            selection.addRange(nativeRng);
+          } else {
+            nativeRng.select();
           }
-          selection.addRange(nativeRng);
-        } else {
-          nativeRng.select();
         }
       };
 
@@ -1643,7 +1682,7 @@
           point.offset
         );
       };
-      
+
       /**
        * makeIsOn: return isOn(pred) function
        */
@@ -1653,7 +1692,7 @@
           return !!ancestor && (ancestor === dom.ancestor(ec, pred));
         };
       };
-  
+
       // isOnEditable: judge whether range is on editable or not
       this.isOnEditable = makeIsOn(dom.isEditable);
       // isOnList: judge whether range is on list node or not
@@ -1691,10 +1730,11 @@
       this.wrapBodyInlineWithPara = function () {
         if (dom.isBodyContainer(sc) && dom.isEmpty(sc)) {
           sc.innerHTML = dom.emptyPara;
-          return new WrappedRange(sc.firstChild, 0);
+          //return new WrappedRange(sc.firstChild, 0);
+          return this.normalize();
         }
 
-        if (dom.isParaInline(sc) || dom.isPara(sc)) {
+        if (!sc || dom.isParaInline(sc) || dom.isPara(sc)) {
           return this.normalize();
         }
 
@@ -1765,12 +1805,16 @@
 
         return node;
       };
-  
+
       this.toString = function () {
         var nativeRng = nativeRange();
-        return agent.isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
+        if (nativeRng) {
+          return agent.isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
+        } else {
+          return null;
+        }
       };
-  
+
       /**
        * create offsetPath bookmark
        * @param {Node} editable
@@ -1794,10 +1838,14 @@
        */
       this.getClientRects = function () {
         var nativeRng = nativeRange();
-        return nativeRng.getClientRects();
+        if (nativeRng) {
+          return nativeRng.getClientRects();
+        } else {
+          return null;
+        }
       };
     };
-  
+
     return {
       /**
        * create Range Object From arguments or Browser Selection
@@ -1812,12 +1860,12 @@
           if (agent.isW3CRangeSupport) {
             var selection = document.getSelection();
             if (selection.rangeCount === 0) {
-              return null;
+              return new WrappedRange();
             } else if (dom.isBody(selection.anchorNode)) {
               // Firefox: returns entire body as range on initialization. We won't never need it.
-              return null;
+              return new WrappedRange();
             }
-  
+
             var nativeRng = selection.getRangeAt(0);
             sc = nativeRng.startContainer;
             so = nativeRng.startOffset;
@@ -1829,7 +1877,7 @@
             textRangeEnd.collapse(false);
             var textRangeStart = textRange;
             textRangeStart.collapse(true);
-  
+
             var startPoint = textRangeToPoint(textRangeStart, true),
             endPoint = textRangeToPoint(textRangeEnd, false);
 
@@ -1881,7 +1929,7 @@
 
   var settings = {
     // version
-    version: '0.6.0',
+    version: '0.6.1',
 
     /**
      * options
@@ -2171,7 +2219,8 @@
           textFormatting: 'Text formatting',
           action: 'Action',
           paragraphFormatting: 'Paragraph formatting',
-          documentStyle: 'Document Style'
+          documentStyle: 'Document Style',
+          extraKeys: 'Extra keys'
         },
         history: {
           undo: 'Undo',
@@ -2690,6 +2739,15 @@
       }
     };
 
+    this.saveNode = function ($editable) {
+      // copy child node reference
+      var copy = [];
+      for (var key  = 0, len = $editable[0].childNodes.length; key < len; key++) {
+        copy.push($editable[0].childNodes[key]);
+      }
+      $editable.data('childNodes', copy);
+    };
+
     /**
      * restore lately range
      *
@@ -2703,6 +2761,13 @@
       }
     };
 
+    this.restoreNode = function ($editable) {
+      $editable.html('');
+      var child = $editable.data('childNodes');
+      for (var index = 0, len = child.length; index < len; index++) {
+        $editable[0].appendChild(child[index]);
+      }
+    };
     /**
      * current style
      * @param {Node} target
@@ -3491,7 +3556,7 @@
           // Cloning imageInput to clear element.
           $imageInput.replaceWith($imageInput.clone()
             .on('change', function () {
-              deferred.resolve(this.files);
+              deferred.resolve(this.files || this.value);
               $imageDialog.modal('hide');
             })
             .val('')
@@ -3890,12 +3955,44 @@
      */
     var hPasteClipboardImage = function (event) {
       var clipboardData = event.originalEvent.clipboardData;
+      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+      var $editable = layoutInfo.editable();
+
       if (!clipboardData || !clipboardData.items || !clipboardData.items.length) {
+        var callbacks = $editable.data('callbacks');
+        // only can run if it has onImageUpload method
+        if (!callbacks.onImageUpload) {
+          return;
+        }
+
+        // save cursor
+        editor.saveNode($editable);
+        editor.saveRange($editable);
+
+        $editable.html('');
+
+        setTimeout(function () {
+          var $img = $editable.find('img');
+          var datauri = $img[0].src;
+
+          var data = atob(datauri.split(',')[1]);
+          var array = new Uint8Array(data.length);
+          for (var i = 0; i < data.length; i++) {
+            array[i] = data.charCodeAt(i);
+          }
+
+          var blob = new Blob([array], { type : 'image/png'});
+          blob.name = 'clipboard.png';
+
+          editor.restoreNode($editable);
+          editor.restoreRange($editable);
+          insertImages(layoutInfo, [blob]);
+
+          editor.afterCommand($editable);
+        }, 0);
+
         return;
       }
-
-      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target),
-          $editable = layoutInfo.editable();
 
       var item = list.head(clipboardData.items);
       var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
@@ -4777,7 +4874,6 @@
         { kbd: '⌘ + B', text: lang.font.bold },
         { kbd: '⌘ + I', text: lang.font.italic },
         { kbd: '⌘ + U', text: lang.font.underline },
-        { kbd: '⌘ + ⇧ + S', text: lang.font.sdivikethrough },
         { kbd: '⌘ + \\', text: lang.font.clear }
       ];
 
@@ -4789,7 +4885,7 @@
         { kbd: '⌘ + Z', text: lang.history.undo },
         { kbd: '⌘ + ⇧ + Z', text: lang.history.redo },
         { kbd: '⌘ + ]', text: lang.paragraph.indent },
-        { kbd: '⌘ + [', text: lang.paragraph.oudivent },
+        { kbd: '⌘ + [', text: lang.paragraph.outdent },
         { kbd: '⌘ + ENTER', text: lang.hr.insert }
       ];
 
@@ -4870,7 +4966,7 @@
 
         var body = '<div class="form-group row-fluid note-group-select-from-files">' +
                      '<label>' + lang.image.selectFromFiles + '</label>' +
-                     '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
+                     '<input class="note-image-input" type="file" name="files" accept="image/*" multiple="multiple" />' +
                      imageLimitation +
                    '</div>' +
                    '<div class="form-group row-fluid">' +
@@ -4906,7 +5002,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.6.0</a> · ' +
+                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.6.1</a> · ' +
                      '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
@@ -5282,7 +5378,7 @@
      */
     summernote: function (options) {
       // extend default options
-      options = $.extend({}, $.summernote.options, options);
+      $.summernote.allOptions = options = $.extend({}, $.summernote.options, options);
 
       // Include langInfo in options for later use, e.g. for image drag-n-drop
       // Setup language info with en-US as default
