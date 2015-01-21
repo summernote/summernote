@@ -86,13 +86,16 @@ define([
       var rng = range.create().wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
+      var bookmark = rng.paraBookmark(paras);
       var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
 
       // paragraph to list
       if (list.find(paras, dom.isPurePara)) {
+        var wrappedParas = [];
         $.each(clustereds, function (idx, paras) {
-          self.wrapList(paras, listName);
+          wrappedParas = wrappedParas.concat(self.wrapList(paras, listName));
         });
+        paras = wrappedParas;
       // list to paragraph or change list style
       } else {
         var diffLists = rng.nodes(dom.isList, {
@@ -106,19 +109,17 @@ define([
             dom.replace(listNode, listName);
           });
         } else {
-          this.releaseList(clustereds, true);
+          paras = this.releaseList(clustereds, true);
         }
       }
 
-      // FIXME - Fix the focus out bug when first bullet clicked.
-      // - Chrome 39.0.2171.99 (64-bit), Yosemite Version 10.10.1
-
-      rng.select();
+      range.createFromParaBookmark(bookmark, paras).select();
     };
 
     /**
      * @param {Node[]} paras
      * @param {String} listName
+     * @return {Node[]}
      */
     this.wrapList = function (paras, listName) {
       var head = list.head(paras);
@@ -141,6 +142,8 @@ define([
         dom.appendChildNodes(listNode, list.from(nextList.childNodes));
         dom.remove(nextList);
       }
+
+      return paras;
     };
 
     /**

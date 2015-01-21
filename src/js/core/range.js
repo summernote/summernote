@@ -535,6 +535,24 @@ define([
       };
 
       /**
+       * create offsetPath bookmark base on paragraph
+       *
+       * @param {Node[]} paras
+       */
+      this.paraBookmark = function (paras) {
+        return {
+          s: {
+            path: list.tail(dom.makeOffsetPath(list.head(paras), sc)),
+            offset: so
+          },
+          e: {
+            path: list.tail(dom.makeOffsetPath(list.last(paras), ec)),
+            offset: eo
+          }
+        };
+      };
+
+      /**
        * getClientRects
        * @return {Rect[]}
        */
@@ -609,10 +627,10 @@ define([
       },
 
       /**
-       * create WrappedRange from Bookmark
+       * create WrappedRange from bookmark
        *
        * @param {Node} editable
-       * @param {Obkect} bookmark
+       * @param {Object} bookmark
        * @return {WrappedRange}
        */
       createFromBookmark : function (editable, bookmark) {
@@ -620,6 +638,22 @@ define([
         var so = bookmark.s.offset;
         var ec = dom.fromOffsetPath(editable, bookmark.e.path);
         var eo = bookmark.e.offset;
+        return new WrappedRange(sc, so, ec, eo);
+      },
+
+      /**
+       * create WrappedRange from paraBookmark
+       *
+       * @param {Object} bookmark
+       * @param {Node[]} paras
+       * @return {WrappedRange}
+       */
+      createFromParaBookmark: function (bookmark, paras) {
+        var so = bookmark.s.offset;
+        var eo = bookmark.e.offset;
+        var sc = dom.fromOffsetPath(list.head(paras), bookmark.s.path);
+        var ec = dom.fromOffsetPath(list.last(paras), bookmark.e.path);
+
         return new WrappedRange(sc, so, ec, eo);
       }
     };
