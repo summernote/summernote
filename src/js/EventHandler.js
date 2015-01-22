@@ -101,9 +101,35 @@ define([
         var $editor = layoutInfo.editor(),
             $dialog = layoutInfo.dialog(),
             $editable = layoutInfo.editable(),
+            $handle = layoutInfo.handle(),
             linkInfo = editor.getLinkInfo($editable);
 
         var options = $editor.data('options');
+        linkInfo.node = $handle.find('.note-control-selection').data('target');
+
+        editor.saveRange($editable);
+        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
+          editor.restoreRange($editable);
+          editor.createLink($editable, linkInfo, options);
+          // hide popover after creating link
+          popover.hide(layoutInfo.popover());
+        }).fail(function () {
+          editor.restoreRange($editable);
+        });
+      },
+
+      /**
+       * @param {Object} layoutInfo
+       */
+      showImageLinkDialog: function (layoutInfo) {
+        var $editor = layoutInfo.editor(),
+            $dialog = layoutInfo.dialog(),
+            $editable = layoutInfo.editable(),
+            $handle = layoutInfo.handle(),
+            linkInfo = editor.getLinkInfo($editable);
+
+        var options = $editor.data('options');
+        linkInfo.node = $handle.find('.note-control-selection').data('target');
 
         editor.saveRange($editable);
         dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {

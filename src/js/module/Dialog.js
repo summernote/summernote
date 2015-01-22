@@ -1,6 +1,6 @@
 define('summernote/module/Dialog', function () {
   /**
-   * Dialog 
+   * Dialog
    *
    * @class
    */
@@ -51,13 +51,13 @@ define('summernote/module/Dialog', function () {
 
           $imageUrl.on('keyup paste', function (event) {
             var url;
-            
+
             if (event.type === 'paste') {
               url = event.originalEvent.clipboardData.getData('text');
             } else {
               url = $imageUrl.val();
             }
-            
+
             toggleBtn($imageBtn, url);
           }).val('').trigger('focus');
         }).one('hidden.bs.modal', function () {
@@ -88,6 +88,9 @@ define('summernote/module/Dialog', function () {
         $linkBtn = $linkDialog.find('.note-link-btn'),
         $openInNewWindow = $linkDialog.find('input[type=checkbox]');
 
+        if (linkInfo.node !== undefined) {
+          $linkText.parent().hide();
+        }
         $linkDialog.one('shown.bs.modal', function () {
           $linkText.val(linkInfo.text);
 
@@ -121,13 +124,14 @@ define('summernote/module/Dialog', function () {
               range: linkInfo.range,
               url: $linkUrl.val(),
               text: $linkText.val(),
+              node: linkInfo.node,
               newWindow: $openInNewWindow.is(':checked')
             });
             $linkDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
           // detach events
-          $linkText.off('input');
+          $linkText.off('input').parent().show();
           $linkUrl.off('input');
           $linkBtn.off('click');
 

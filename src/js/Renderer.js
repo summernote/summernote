@@ -400,6 +400,17 @@ define([
           value: ''
         });
 
+        var linkButton = tplIconButton('fa fa-edit icon-edit', {
+          title: lang.link.edit,
+          event: 'showLinkDialog',
+          value: 'none'
+        });
+        var unlinkButton = tplIconButton('fa fa-unlink icon-unlink', {
+          title: lang.link.unlink,
+          event: 'unlink',
+          value: 'none'
+        });
+
         var removeButton = tplIconButton('fa fa-trash-o', {
           title: lang.image.remove,
           event: 'removeMedia',
@@ -409,6 +420,7 @@ define([
         var content = '<div class="btn-group">' + fullButton + halfButton + quarterButton + '</div>' +
                       '<div class="btn-group">' + leftButton + rightButton + justifyButton + '</div>' +
                       '<div class="btn-group">' + roundedButton + circleButton + thumbnailButton + noneButton + '</div>' +
+                      '<div class="btn-group">' + linkButton + unlinkButton + '</div>' +
                       '<div class="btn-group">' + removeButton + '</div>';
         return tplPopover('note-image-popover', content);
       };
