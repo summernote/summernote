@@ -195,11 +195,16 @@ define([
        * @return {WrappedRange}
        */
       this.normalize = function () {
+
+        /**
+         * @param {BoundaryPoint} point
+         * @return {BoundaryPoint}
+         */
         var getVisiblePoint = function (point) {
           if (!dom.isVisiblePoint(point)) {
             if (dom.isLeftEdgePoint(point)) {
               point = dom.nextPointUntil(point, dom.isVisiblePoint);
-            } else if (dom.isRightEdgePoint(point)) {
+            } else {
               point = dom.prevPointUntil(point, dom.isVisiblePoint);
             }
           }
@@ -387,7 +392,7 @@ define([
           point.offset,
           point.node,
           point.offset
-        );
+        ).normalize();
       };
       
       /**
@@ -437,7 +442,12 @@ define([
       this.wrapBodyInlineWithPara = function () {
         if (dom.isBodyContainer(sc) && dom.isEmpty(sc)) {
           sc.innerHTML = dom.emptyPara;
-          return new WrappedRange(sc.firstChild, 0, sc.firstChild, 0);
+          return new WrappedRange(
+            sc.firstChild,
+            0,
+            sc.firstChild,
+            0
+          );
         }
 
         if (dom.isParaInline(sc) || dom.isPara(sc)) {
@@ -480,28 +490,23 @@ define([
         var rng = this.wrapBodyInlineWithPara();
         var point = rng.getStartPoint();
 
-        var splitRoot, container, pivot;
-        if (isInline) {
-          container = dom.isPara(point.node) ? point.node : point.node.parentNode;
-          if (dom.isPara(point.node)) {
-            pivot = point.node.childNodes[point.offset];
-          } else {
-            pivot = dom.splitTree(point.node, point);
-          }
-        } else {
-          // splitRoot will be childNode of container
-          var ancestors = dom.listAncestor(point.node, dom.isBodyContainer);
-          var topAncestor = list.last(ancestors) || point.node;
+        // find splitRoot, container
+        //  - inline: splitRoot is child of paragraph
+        //  - block: splitRoot is child of bodyContainer
+        var pred = isInline ? dom.isPara : dom.isBodyContainer;
+        var ancestors = dom.listAncestor(point.node, pred);
+        var topAncestor = list.last(ancestors) || point.node;
 
-          if (dom.isBodyContainer(topAncestor)) {
-            splitRoot = ancestors[ancestors.length - 2];
-            container = topAncestor;
-          } else {
-            splitRoot = topAncestor;
-            container = splitRoot.parentNode;
-          }
-          pivot = splitRoot && dom.splitTree(splitRoot, point);
+        var splitRoot, container;
+        if (pred(topAncestor)) {
+          splitRoot = ancestors[ancestors.length - 2];
+          container = topAncestor;
+        } else {
+          splitRoot = topAncestor;
+          container = splitRoot.parentNode;
         }
+
+        var pivot = splitRoot && dom.splitTree(splitRoot, point, isInline);
 
         if (pivot) {
           pivot.parentNode.insertBefore(node, pivot);
