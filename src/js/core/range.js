@@ -195,11 +195,16 @@ define([
        * @return {WrappedRange}
        */
       this.normalize = function () {
+
+        /**
+         * @param {BoundaryPoint} point
+         * @return {BoundaryPoint}
+         */
         var getVisiblePoint = function (point) {
           if (!dom.isVisiblePoint(point)) {
             if (dom.isLeftEdgePoint(point)) {
               point = dom.nextPointUntil(point, dom.isVisiblePoint);
-            } else if (dom.isRightEdgePoint(point)) {
+            } else {
               point = dom.prevPointUntil(point, dom.isVisiblePoint);
             }
           }
@@ -387,7 +392,7 @@ define([
           point.offset,
           point.node,
           point.offset
-        );
+        ).normalize();
       };
       
       /**
@@ -437,7 +442,12 @@ define([
       this.wrapBodyInlineWithPara = function () {
         if (dom.isBodyContainer(sc) && dom.isEmpty(sc)) {
           sc.innerHTML = dom.emptyPara;
-          return new WrappedRange(sc.firstChild, 0, sc.firstChild, 0);
+          return new WrappedRange(
+            sc.firstChild,
+            0,
+            sc.firstChild,
+            0
+          );
         }
 
         if (dom.isParaInline(sc) || dom.isPara(sc)) {

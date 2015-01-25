@@ -60,5 +60,27 @@ define(['jquery', 'summernote/core/dom', 'summernote/core/range'], function ($, 
       equal(rng.commonAncestor(), $b[0].firstChild, 'rng.commonAncestor on <b>|b|</b> should returns b(#textNode)');
 
     });
+
+    test('rng.normalize', function () {
+      var rng, $cont, $p, $b, $u;
+      $cont = $('<div><p><b>b</b><u>u</u></p></div>');
+      $p = $cont.find('p');
+      $b = $cont.find('b');
+      $u = $cont.find('u');
+
+      rng = range.create($p[0], 0,  $p[0], 2).normalize();
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $b[0].firstChild, 0, $u[0].firstChild, 1
+      ], 'rng.normalize on `|<b>b</b> ~ <u>u</u>|` should returns `<b>|b</b> ~ <u>u|</u>`');
+
+      rng = range.create($p[0], 1,  $p[0], 1).normalize();
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $b[0].firstChild, 1, $b[0].firstChild, 1
+      ], 'rng.normalize on `<b>b</b>|<u>u</u>` should returns `<b>b|</b><u>u</u>`');
+    });
   };
 });
