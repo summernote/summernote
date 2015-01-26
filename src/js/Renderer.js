@@ -765,8 +765,9 @@ define([
       if (options.direction) {
         $editable.attr('dir', options.direction);
       }
-      if (options.placeholder) {
-        $editable.attr('data-placeholder', options.placeholder);
+      var placeholder = $holder.attr('placeholder') || options.placeholder;
+      if (placeholder) {
+        $editable.attr('data-placeholder', placeholder);
       }
 
       $editable.html(dom.html($holder));
