@@ -618,7 +618,7 @@ define([
         if (dom.isBR(ec)) {
           eo = dom.listPrev(ec).length - 1;
           ec = ec.parentNode;
-        } else if (dom.isVoid(ec) || dom.isImg(sc)) {
+        } else if (dom.isVoid(ec)) {
           eo = dom.listPrev(ec).length;
           ec = ec.parentNode;
         }
