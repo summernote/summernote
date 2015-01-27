@@ -116,5 +116,28 @@ define(['jquery', 'summernote/core/dom', 'summernote/core/range'], function ($, 
       range.create($b[0].firstChild, 2, $b[0].firstChild, 2).insertNode($u[0], true);
       equalsToUpperCase($cont.html(), '<p><b>bo</b><u>u</u><b>ld</b></p>', 'rng.insertNode with inline should not split paragraph.');
     });
+
+    test('rng.deleteContents', function () {
+      var $cont, $p, $b, $u;
+
+      // deleteContents on partial text
+      $cont = $('<div class="note-editable"><p><b>bold</b><u>u</u></p></div>');
+      $p = $cont.find('p');
+      $b = $cont.find('b');
+      $u = $cont.find('u');
+
+      range.create($b[0].firstChild, 1, $b[0].firstChild, 3).deleteContents();
+      equalsToUpperCase($cont.html(), '<p><b>bd</b><u>u</u></p>', 'rng.deleteContents on partial text should remove only text');
+
+      // deleteContents on full text
+      $cont = $('<div class="note-editable"><p><b>bold</b><u>u</u></p></div>');
+      $p = $cont.find('p');
+      $b = $cont.find('b');
+      $u = $cont.find('u');
+
+      range.create($b[0].firstChild, 0, $b[0].firstChild, 4).deleteContents();
+      equalsToUpperCase($cont.html(), '<p><b></b><u>u</u></p>', 'rng.deleteContents on full text should remove text');
+
+    });
   };
 });
