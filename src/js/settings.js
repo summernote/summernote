@@ -84,6 +84,7 @@ define('summernote/settings', function () {
         'Helvetica Neue', 'Impact', 'Lucida Grande',
         'Tahoma', 'Times New Roman', 'Verdana'
       ],
+      fontNamesIgnoreCheck: [],
 
       // pallete colors(n x n)
       colors: [
