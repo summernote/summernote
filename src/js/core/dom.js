@@ -511,7 +511,7 @@ define([
 
     /**
      * returns whether point is visible (can set cursor) or not.
-     * 
+     *
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
@@ -760,7 +760,7 @@ define([
     var isTextarea = makePredByNodeName('TEXTAREA');
 
     /**
-     * get the HTML contents of node 
+     * get the HTML contents of node
      *
      * @param {jQuery} $node
      * @param {Boolean} [isNewlineOnBlock]
@@ -790,6 +790,35 @@ define([
         return val.replace(/[\n\r]/g, '');
       }
       return val;
+    };
+
+    /**
+     * Sync the content of the editor with the textarea
+     *
+     * If the content is 'empty' (dom.isEmpty()) update the content with an empty string
+     *
+     * @param {jQuery} $holder
+     */
+    var sync = function ($holder) {
+      if ($holder && !dom.isTextarea($holder[0])) {
+        return;
+      }
+
+      var content = $holder.code();
+      // wrap the content in a div tag so that jQuery is happy when dom.isEmpty() is called
+      // this does not change the content that is set on the textarea
+      // this is necessary because when you backspace in the editor past the initial <p><br/></p>, the content
+      // is no longer wrapped in any element, wrapping this in a div will also send content of the entire editor to
+      // the isEmpty() call instead of only the first element that could be an empty paragraph
+      var contentData = $('<div>' + content + '</div>')[0];
+
+      if (!content || dom.isEmpty(contentData)) {
+        // set the content to an empty string to support validation
+        content = '';
+      }
+
+      // fire change and keyup events so that anything interested will be notified (validation)
+      $holder.val(content).trigger('change').trigger('keyup');
     };
 
     return {
@@ -858,7 +887,8 @@ define([
       removeWhile: removeWhile,
       replace: replace,
       html: html,
-      value: value
+      value: value,
+      sync: sync
     };
   })();
 

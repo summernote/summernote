@@ -689,6 +689,14 @@ define([
         });
       }
 
+      var $holder = layoutInfo.editor.data('holder');
+      if ($holder && $holder.length > 0) {
+        // watch for changes and sync the textarea when things change
+        layoutInfo.editable.on('blur keyup paste', function () {
+          dom.sync($holder);
+        });
+      }
+
       if (options.onfocus) { layoutInfo.editable.focus(options.onfocus); }
       if (options.onblur) { layoutInfo.editable.blur(options.onblur); }
       if (options.onkeyup) { layoutInfo.editable.keyup(options.onkeyup); }
