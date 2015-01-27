@@ -153,7 +153,7 @@ define([
           if (!agent.isFontInstalled(v) && options.fontNamesIgnoreCheck.indexOf(v) === -1) {
             return memo;
           }
-          return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '">' +
+          return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '" style="font-family:\'' + v + '\'">' +
                           '<i class="fa fa-check"></i> ' + v +
                         '</a></li>';
         }, '');
