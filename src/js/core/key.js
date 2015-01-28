@@ -19,8 +19,11 @@ define([
     isEdit: function (keyCode) {
       return list.contains([8, 9, 13, 32], keyCode);
     },
+    /**
+     * @property {Object} nameFromCode
+     * @property {String} nameFromCode.8 "BACKSPACE"
+     */
     nameFromCode: {
-      /** @property nameFromCode.8 */
       '8': 'BACKSPACE',
       '9': 'TAB',
       '13': 'ENTER',
