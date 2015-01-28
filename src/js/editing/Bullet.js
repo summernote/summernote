@@ -8,7 +8,6 @@ define([
   /**
    * @class editing.Bullet
    *
-   * @singleton
    * @alternateClassName Bullet
    */
   var Bullet = function () {
