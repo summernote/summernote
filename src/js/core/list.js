@@ -1,6 +1,11 @@
 define(['summernote/core/func'], function (func) {
   /**
+   * @class core.list
+   *
    * list utils
+   *
+   * @singleton
+   * @alternateClassName list
    */
   var list = (function () {
     /**

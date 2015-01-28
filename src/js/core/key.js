@@ -2,7 +2,12 @@ define([
   'summernote/core/list'
 ], function (list) {
   /**
+   * @class core.key
+   *
    * Object for keycodes.
+   *
+   * @singleton
+   * @alternateClassName key
    */
   var key = {
     isEdit: function (keyCode) {

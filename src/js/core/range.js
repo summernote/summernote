@@ -6,11 +6,15 @@ define([
 ], function (agent, func, list, dom) {
 
   /**
+   * @class core.range
+   *
    * Data structure
    *  - {BoundaryPoint}: a point of dom tree
    *  - {BoundaryPoints}: two boundaryPoints corresponding to the start and the end of the Range
    *
-   *  @see http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html#Level-2-Range-Position
+   * @see http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html#Level-2-Range-Position
+   * @singleton
+   * @alternateClassName range
    */
   var range = (function () {
 

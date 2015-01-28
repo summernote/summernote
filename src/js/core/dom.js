@@ -847,9 +847,13 @@ define([
     };
 
     return {
+      /** @property {String} NBSP_CHAR */
       NBSP_CHAR: NBSP_CHAR,
+      /** @property {String} ZERO_WIDTH_NBSP_CHAR */
       ZERO_WIDTH_NBSP_CHAR: ZERO_WIDTH_NBSP_CHAR,
+      /** @property {String} blank */
       blank: blankHTML,
+      /** @property {String} emptyPara */
       emptyPara: '<p>' + blankHTML + '</p>',
       isEditable: isEditable,
       isControlSizing: isControlSizing,
