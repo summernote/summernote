@@ -84,12 +84,21 @@ define(['jquery'], function ($) {
   };
 
   /**
+   * @class core.agent
+   *
    * Object which check platform and agent
+   *
+   * @singleton
+   * @alternateClassName agent
    */
   var agent = {
+    /** @property {Boolean} [isMac=false] true if this agent is Mac  */
     isMac: navigator.appVersion.indexOf('Mac') > -1,
+    /** @property {Boolean} [isMSIE=false] true if this agent is a Internet Explorer  */
     isMSIE: navigator.userAgent.indexOf('MSIE') > -1 || navigator.userAgent.indexOf('Trident') > -1,
+    /** @property {Boolean} [isFF=false] true if this agent is a Firefox  */
     isFF: navigator.userAgent.indexOf('Firefox') > -1,
+    /** @property {String} jqueryVersion current jQuery version string  */
     jqueryVersion: parseFloat($.fn.jquery),
     isSupportAmd: isSupportAmd,
     hasCodeMirror: isSupportAmd ? require.specified('CodeMirror') : !!window.CodeMirror,
