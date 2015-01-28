@@ -4,15 +4,23 @@ define([
   'summernote/module/Button'
 ], function (func, list, Button) {
   /**
+   * @class module.Popover
+   *
    * Popover (http://getbootstrap.com/javascript/#popovers)
+   *
    */
   var Popover = function () {
     var button = new Button();
 
     /**
      * returns position from placeholder
+     *
+     * @private
      * @param {Node} placeholder
      * @param {Boolean} isAirMode
+     * @return {Object}
+     * @return {Number} return.left
+     * @return {Number} return.top
      */
     var posFromPlaceholder = function (placeholder, isAirMode) {
       var $placeholder = $(placeholder);
@@ -28,6 +36,8 @@ define([
 
     /**
      * show popover
+     *
+     * @private
      * @param {jQuery} popover
      * @param {Position} pos
      */

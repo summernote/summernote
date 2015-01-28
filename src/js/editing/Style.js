@@ -3,18 +3,23 @@ define([
   'summernote/core/dom'
 ], function (agent, dom) {
   /**
+   * @class editing.Style
+   *
    * Style
-   * @class
+   *
    */
   var Style = function () {
     /**
+     * @method jQueryCSS
+     *
      * passing an array of style properties to .css()
      * will result in an object of property-value pairs.
      * (compability with version < 1.9)
      *
+     * @private
      * @param  {jQuery} $obj
      * @param  {Array} propertyNames - An array of one or more CSS properties.
-     * @returns {Object}
+     * @return {Object}
      */
     var jQueryCSS = function ($obj, propertyNames) {
       if (agent.jqueryVersion < 1.9) {

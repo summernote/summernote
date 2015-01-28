@@ -190,6 +190,84 @@ define([
      * @param {Mixed} value
      */
 
+    /**
+     * @method formatBlock
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method superscript
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method subscript
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method justifyLeft
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method justifyCenter
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method justifyRight
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method justifyFull
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method formatBlock
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method removeFormat
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method backColor
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method foreColor
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method insertHorizontalRule
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method fontName
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
     /* jshint ignore:start */
     // native commands(with execCommand), generate function for execCommand
     var commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
@@ -428,9 +506,7 @@ define([
     };
 
     /**
-     * create link
-     *
-     * @type command
+     * create link (command)
      *
      * @param {jQuery} $editable
      * @param {Object} linkInfo
@@ -464,6 +540,10 @@ define([
      * returns link info
      *
      * @return {Object}
+     * @return {WrappedRange} return.range
+     * @return {String} return.text
+     * @return {Boolean} [return.isNewWindow=true]
+     * @return {String} [return.url=""]
      */
     this.getLinkInfo = function ($editable) {
       $editable.focus();
@@ -481,6 +561,14 @@ define([
       };
     };
 
+    /**
+     * setting color
+     *
+     * @param {Node} $editable
+     * @param {Object} sObjColor  color code
+     * @param {String} sObjColor.foreColor foreground color
+     * @param {String} sObjColor.backColor background color
+     */
     this.color = function ($editable, sObjColor) {
       var oColor = JSON.parse(sObjColor);
       var foreColor = oColor.foreColor, backColor = oColor.backColor;
@@ -493,6 +581,12 @@ define([
       afterCommand($editable);
     };
 
+    /**
+     * insert Table
+     *
+     * @param {Node} $editable
+     * @param {String} sDim dimension of table (ex : "5x5")
+     */
     this.insertTable = function ($editable, sDim) {
       var dimension = sDim.split('x');
       beforeCommand($editable);
@@ -504,6 +598,8 @@ define([
     };
 
     /**
+     * float me
+     *
      * @param {jQuery} $editable
      * @param {String} value
      * @param {jQuery} $target
@@ -514,6 +610,13 @@ define([
       afterCommand($editable);
     };
 
+    /**
+     * change image shape
+     *
+     * @param {jQuery} $editable
+     * @param {String} value css class
+     * @param {Node} $target
+     */
     this.imageShape = function ($editable, value, $target) {
       beforeCommand($editable);
 

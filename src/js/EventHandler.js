@@ -18,6 +18,8 @@ define([
   }
 
   /**
+   * @class EventHandler
+   *
    * EventHandler
    */
   var EventHandler = function () {
@@ -36,8 +38,9 @@ define([
     /**
      * returns makeLayoutInfo from editor's descendant node.
      *
+     * @private
      * @param {Node} descendant
-     * @returns {Object}
+     * @return {Object}
      */
     var makeLayoutInfo = function (descendant) {
       var $target = $(descendant).closest('.note-editor, .note-air-editor, .note-air-layout');
@@ -57,6 +60,7 @@ define([
     /**
      * insert Images from file array.
      *
+     * @private
      * @param {Object} layoutInfo
      * @param {File[]} files
      */

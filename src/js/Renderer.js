@@ -2,6 +2,8 @@ define([
   'summernote/core/agent', 'summernote/core/dom', 'summernote/core/func'
 ], function (agent, dom, func) {
   /**
+   * @class Renderer
+   *
    * renderer
    *
    * rendering toolbar and editable
@@ -894,6 +896,13 @@ define([
       }
     };
 
+    /**
+     *
+     * @return {Object}
+     * @return {Function} return.button
+     * @return {Function} return.iconButton
+     * @return {Function} return.dialog
+     */
     this.getTemplate = function () {
       return {
         button: tplButton,
@@ -902,10 +911,20 @@ define([
       };
     };
 
+    /**
+     *
+     * @param {String} name
+     * @param {Object} buttonInfo
+     */
     this.addButtonInfo = function (name, buttonInfo) {
       tplButtonInfo[name] = buttonInfo;
     };
 
+    /**
+     *
+     * @param {String} name
+     * @param {Object} dialogInfo
+     */
     this.addDialogInfo = function (name, dialogInfo) {
       tplDialogInfo[name] = dialogInfo;
     };
