@@ -371,6 +371,7 @@ define([
     this.createLink = function ($editable, linkInfo, options) {
       var linkUrl = linkInfo.url;
       var linkText = linkInfo.text;
+      var linkNode = linkInfo.node;
       var isNewWindow = linkInfo.newWindow;
       var rng = linkInfo.range;
 
@@ -378,11 +379,14 @@ define([
         linkUrl = options.onCreateLink(linkUrl);
       }
 
+      // Only replace contents if anchor isn't wrapping an element (image)
       rng = rng.deleteContents();
 
+      var linkInner = (linkNode !== undefined) ? linkNode : linkText;
+
       // Create a new link when there is no anchor on range.
-      var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0], true);
-      $(anchor).attr({
+      var anchor = rng.insertNode($('<A></A>')[0], true);
+      $(anchor).append(linkInner).attr({
         href: linkUrl,
         target: isNewWindow ? '_blank' : ''
       });
