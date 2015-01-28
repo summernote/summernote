@@ -10,9 +10,24 @@ define([
    * @alternateClassName key
    */
   var key = {
+    /**
+     * @method isEdit
+     *
+     * @param {Number} keyCode
+     * @return {Boolean}
+     */
     isEdit: function (keyCode) {
       return list.contains([8, 9, 13, 32], keyCode);
     },
+    /**
+     * @property {Object} nameFromCode
+     * @property {String} nameFromCode.8
+     * @property {String} nameFromCode.9
+     * @property {String} nameFromCode.13
+     * @property {String} nameFromCode.32
+     * @property {String} nameFromCode.48
+     * @property {String} nameFromCode.49
+     */
     nameFromCode: {
       '8': 'BACKSPACE',
       '9': 'TAB',
