@@ -5,9 +5,18 @@ define([
   'summernote/core/range'
 ], function (list, func, dom, range) {
 
+  /**
+   * @class editing.Bullet
+   *
+   * @singleton
+   * @alternateClassName Bullet
+   */
   var Bullet = function () {
     /**
+     * @method insertOrderedList
+     *
      * toggle ordered list
+     *
      * @type command
      */
     this.insertOrderedList = function () {
@@ -15,7 +24,10 @@ define([
     };
 
     /**
+     * @method insertUnorderedList
+     *
      * toggle unordered list
+     *
      * @type command
      */
     this.insertUnorderedList = function () {
@@ -23,7 +35,10 @@ define([
     };
 
     /**
+     * @method indent
+     *
      * indent
+     *
      * @type command
      */
     this.indent = function () {
@@ -50,7 +65,10 @@ define([
     };
 
     /**
+     * @method outdent
+     *
      * outdent
+     *
      * @type command
      */
     this.outdent = function () {
@@ -78,7 +96,10 @@ define([
     };
 
     /**
+     * @method toggleList
+     *
      * toggle list
+     *
      * @param {String} listName - OL or UL
      */
     this.toggleList = function (listName) {
@@ -117,6 +138,8 @@ define([
     };
 
     /**
+     * @method wrapList
+     *
      * @param {Node[]} paras
      * @param {String} listName
      * @return {Node[]}
@@ -147,6 +170,8 @@ define([
     };
 
     /**
+     * @method releaseList
+     *
      * @param {Array[]} clustereds
      * @param {Boolean} isEscapseToBody
      * @return {Node[]}
