@@ -35,8 +35,8 @@ define([
     /** @property */
     eventHandler: eventHandler,
     /** 
-     * @property {Object} core
-     */  
+     * @property {Object}
+     */
     core: {
       agent: agent,
       dom: dom,
