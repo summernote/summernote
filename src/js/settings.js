@@ -1,9 +1,14 @@
 define('summernote/settings', function () {
+  /**
+   * @class settings 
+   * 
+   * @singleton
+   */
   var settings = {
     // version
     version: '@VERSION',
 
-    /**
+    /*
      * options
      */
     options: {
