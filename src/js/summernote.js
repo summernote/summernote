@@ -5,19 +5,13 @@ define([
   'summernote/EventHandler', 'summernote/Renderer'
 ], function (agent, dom, range, settings, EventHandler, Renderer) {
 
-  /**
-   * @class jQuery
-   * jQuery Object
-   */
-    
   // jQuery namespace for summernote
   /**
-   * @class summernote 
+   * @class $.summernote 
    * 
    * summernote attribute  
    * 
-   * @member jQuery
-   * @extends settings
+   * @mixin settings
    * @singleton  
    * 
    */
@@ -30,19 +24,22 @@ define([
   var eventHandler = new EventHandler();
 
   $.extend($.summernote, {
-    /** @property */
+    /** @property {Renderer} */
     renderer: renderer,
-    /** @property */
+    /** @property {EventHandler} */
     eventHandler: eventHandler,
     /** 
-     * @property {Object}
+     * @property {Object} core 
+     * @property {core.agent} core.agent 
+     * @property {core.dom} core.dom
+     * @property {core.range} core.range 
      */
     core: {
       agent: agent,
       dom: dom,
       range: range
     },
-    /** @property */
+    /** @property {Object} pluginEvents event list for plugins*/
     pluginEvents: {}
   });
 
@@ -85,15 +82,15 @@ define([
     }
   };
 
-  /**
-   * extend jquery fn
+  /*
+   * extend $.fn
    */
   $.fn.extend({
     /**
      * @method
      * nitialize summernote
      *  - create editor layout and attach Mouse and keyboard events.
-     * @member jQuery.fn
+     * @member $.fn
      * @param {Object} options
      * @returns {this}
      */
@@ -148,7 +145,7 @@ define([
      * 
      * get the HTML contents of note or set the HTML contents of note.
      *
-     * @member jQuery.fn 
+     * @member $.fn 
      * @param {String} [sHTML] - HTML contents(optional, set)
      * @returns {this|String} - context(set) or HTML contents of note(get).
      */
@@ -182,7 +179,7 @@ define([
      * 
      * destroy Editor Layout and detach Key and Mouse Event
      *
-     * @member jQuery.fn
+     * @member $.fn
      * @returns {this}
      */
     destroy: function () {

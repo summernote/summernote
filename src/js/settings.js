@@ -5,11 +5,20 @@ define('summernote/settings', function () {
    * @singleton
    */
   var settings = {
-    // version
+    /** @property */
     version: '@VERSION',
 
-    /*
-     * options
+    /**
+     * @property {Object} options 
+     * @property {String/Number} [options.width=null] set editor width 
+     * @property {String/Number} [options.height=null] set editor height, ex) 300
+     * @property {String/Number} options.minHeight set minimum height of editor
+     * @property {String/Number} options.maxHeight
+     * @property {String/Number} options.focus 
+     * @property {Number} options.tabsize 
+     * @property {Boolean} options.styleWithSpan
+     * @property {Object} options.codemirror
+     * @property {Object} [options.codemirror.mode='text/html']
      */
     options: {
       width: null,                  // set editor width
