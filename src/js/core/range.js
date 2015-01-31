@@ -372,6 +372,7 @@ define([
           fullyContains: true
         });
 
+        // find new cursor point
         var point = dom.prevPointUntil(rng.getStartPoint(), function (point) {
           return !list.contains(nodes, point.node);
         });
