@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.6.0
- * http://hackerwins.github.io/summernote/
+ * Super simple wysiwyg editor on Bootstrap v0.6.1
+ * http://summernote.org/
  *
  * summernote.js
- * Copyright 2013-2014 Alan Hong. and other contributors
+ * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2014-12-23T20:10Z
+ * Date: 2015-01-31T12:26Z
  */
 (function (factory) {
   /* global define */
@@ -21,53 +21,56 @@
   
 
 
-  if ('function' !== typeof Array.prototype.reduce) {
+  if (!Array.prototype.reduce) {
     /**
-     * Array.prototype.reduce fallback
+     * Array.prototype.reduce polyfill
      *
-     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce
+     * @param {Function} callback
+     * @param {Value} [initialValue]
+     * @return {Value}
+     *
+     * @see http://goo.gl/WNriQD
      */
-    Array.prototype.reduce = function (callback, optInitialValue) {
-      var idx, value, length = this.length >>> 0, isValueSet = false;
-      if (1 < arguments.length) {
-        value = optInitialValue;
-        isValueSet = true;
-      }
-      for (idx = 0; length > idx; ++idx) {
-        if (this.hasOwnProperty(idx)) {
-          if (isValueSet) {
-            value = callback(value, this[idx], idx, this);
-          } else {
-            value = this[idx];
-            isValueSet = true;
-          }
+    Array.prototype.reduce = function (callback) {
+      var t = Object(this), len = t.length >>> 0, k = 0, value;
+      if (arguments.length === 2) {
+        value = arguments[1];
+      } else {
+        while (k < len && !(k in t)) {
+          k++;
         }
+        if (k >= len) {
+          throw new TypeError('Reduce of empty array with no initial value');
+        }
+        value = t[k++];
       }
-      if (!isValueSet) {
-        throw new TypeError('Reduce of empty array with no initial value');
+      for (; k < len; k++) {
+        if (k in t) {
+          value = callback(value, t[k], k, t);
+        }
       }
       return value;
     };
   }
 
   if ('function' !== typeof Array.prototype.filter) {
-    Array.prototype.filter = function (fun/*, thisArg*/) {
-      if (this === void 0 || this === null) {
-        throw new TypeError();
-      }
-  
-      var t = Object(this);
-      var len = t.length >>> 0;
-      if (typeof fun !== 'function') {
-        throw new TypeError();
-      }
-  
+    /**
+     * Array.prototype.filter polyfill
+     *
+     * @param {Function} func
+     * @return {Array}
+     *
+     * @see http://goo.gl/T1KFnq
+     */
+    Array.prototype.filter = function (func) {
+      var t = Object(this), len = t.length >>> 0;
+
       var res = [];
       var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
       for (var i = 0; i < len; i++) {
         if (i in t) {
           var val = t[i];
-          if (fun.call(thisArg, val, i, t)) {
+          if (func.call(thisArg, val, i, t)) {
             res.push(val);
           }
         }
@@ -81,6 +84,7 @@
 
   /**
    * returns whether font is installed or not.
+   *
    * @param {String} fontName
    * @return {Boolean}
    */
@@ -102,12 +106,21 @@
   };
 
   /**
+   * @class core.agent
+   *
    * Object which check platform and agent
+   *
+   * @singleton
+   * @alternateClassName agent
    */
   var agent = {
+    /** @property {Boolean} [isMac=false] true if this agent is Mac  */
     isMac: navigator.appVersion.indexOf('Mac') > -1,
+    /** @property {Boolean} [isMSIE=false] true if this agent is a Internet Explorer  */
     isMSIE: navigator.userAgent.indexOf('MSIE') > -1 || navigator.userAgent.indexOf('Trident') > -1,
+    /** @property {Boolean} [isFF=false] true if this agent is a Firefox  */
     isFF: navigator.userAgent.indexOf('Firefox') > -1,
+    /** @property {String} jqueryVersion current jQuery version string  */
     jqueryVersion: parseFloat($.fn.jquery),
     isSupportAmd: isSupportAmd,
     hasCodeMirror: isSupportAmd ? require.specified('CodeMirror') : !!window.CodeMirror,
@@ -116,7 +129,12 @@
   };
 
   /**
+   * @class core.func
+   *
    * func utils (for high-order func's arg)
+   *
+   * @singleton
+   * @alternateClassName func
    */
   var func = (function () {
     var eq = function (itemA) {
@@ -225,7 +243,12 @@
   })();
 
   /**
+   * @class core.list
+   *
    * list utils
+   *
+   * @singleton
+   * @alternateClassName list
    */
   var list = (function () {
     /**
@@ -406,10 +429,17 @@
   var ZERO_WIDTH_NBSP_CHAR = '\ufeff';
 
   /**
+   * @class core.dom
+   *
    * Dom functions
+   *
+   * @singleton
+   * @alternateClassName dom
    */
   var dom = (function () {
     /**
+     * @method isEditable
+     *
      * returns whether node is `note-editable` or not.
      *
      * @param {Node} node
@@ -420,6 +450,8 @@
     };
 
     /**
+     * @method isControlSizing
+     *
      * returns whether node is `note-control-sizing` or not.
      *
      * @param {Node} node
@@ -430,10 +462,20 @@
     };
 
     /**
+     * @method  buildLayoutInfo
+     *
      * build layoutInfo from $editor(.note-editor)
      *
      * @param {jQuery} $editor
      * @return {Object}
+     * @return {Function} return.editor
+     * @return {Node} return.dropzone
+     * @return {Node} return.toolbar
+     * @return {Node} return.editable
+     * @return {Node} return.codable
+     * @return {Node} return.popover
+     * @return {Node} return.handle
+     * @return {Node} return.dialog
      */
     var buildLayoutInfo = function ($editor) {
       var makeFinder;
@@ -473,10 +515,12 @@
     };
 
     /**
+     * @method makePredByNodeName
+     *
      * returns predicate which judge whether nodeName is same
      *
      * @param {String} nodeName
-     * @return {String}
+     * @return {Function}
      */
     var makePredByNodeName = function (nodeName) {
       nodeName = nodeName.toUpperCase();
@@ -485,6 +529,14 @@
       };
     };
 
+    /**
+     * @method isText
+     *
+     *
+     *
+     * @param {Node} node
+     * @return {Boolean} true if node's type is text(3)
+     */
     var isText = function (node) {
       return node && node.nodeType === 3;
     };
@@ -548,6 +600,8 @@
     var blankHTML = agent.isMSIE ? '&nbsp;' : '<br>';
 
     /**
+     * @method nodeLength
+     *
      * returns #text's text size or element's childNodes size
      *
      * @param {Node} node
@@ -928,6 +982,8 @@
     };
 
     /**
+     * @method prevPointUtil
+     *
      * @param {BoundaryPoint} point
      * @param {Function} pred
      * @return {BoundaryPoint}
@@ -945,6 +1001,8 @@
     };
 
     /**
+     * @method nextPointUntil
+     *
      * @param {BoundaryPoint} point
      * @param {Function} pred
      * @return {BoundaryPoint}
@@ -962,6 +1020,8 @@
     };
 
     /**
+     * @method walkPoint
+     *
      * @param {BoundaryPoint} startPoint
      * @param {BoundaryPoint} endPoint
      * @param {Function} handler
@@ -985,6 +1045,8 @@
     };
 
     /**
+     * @method makeOffsetPath
+     *
      * return offsetPath(array of offset) from ancestor
      *
      * @param {Node} ancestor - ancestor node
@@ -996,24 +1058,28 @@
     };
 
     /**
+     * @method fromOffsetPath
+     *
      * return element from offsetPath(array of offset)
      *
      * @param {Node} ancestor - ancestor node
-     * @param {array} aOffset - offsetPath
+     * @param {array} offsets - offsetPath
      */
-    var fromOffsetPath = function (ancestor, aOffset) {
+    var fromOffsetPath = function (ancestor, offsets) {
       var current = ancestor;
-      for (var i = 0, len = aOffset.length; i < len; i++) {
-        if (current.childNodes.length <= aOffset[i]) {
+      for (var i = 0, len = offsets.length; i < len; i++) {
+        if (current.childNodes.length <= offsets[i]) {
           current = current.childNodes[current.childNodes.length - 1];
         } else {
-          current = current.childNodes[aOffset[i]];
+          current = current.childNodes[offsets[i]];
         }
       }
       return current;
     };
 
     /**
+     * @method splitNode
+     *
      * split element or #text
      *
      * @param {BoundaryPoint} point
@@ -1047,6 +1113,8 @@
     };
 
     /**
+     * @method splitTree
+     *
      * split tree by point
      *
      * @param {Node} root - split root
@@ -1090,7 +1158,10 @@
     };
 
     /**
+     * @method remove
+     *
      * remove node, (isRemoveChild: remove child or not)
+     *
      * @param {Node} node
      * @param {Boolean} isRemoveChild
      */
@@ -1115,6 +1186,8 @@
     };
 
     /**
+     * @method removeWhile
+     *
      * @param {Node} node
      * @param {Function} pred
      */
@@ -1131,6 +1204,8 @@
     };
 
     /**
+     * @method replace
+     *
      * replace node with provided nodeName
      *
      * @param {Node} node
@@ -1158,7 +1233,9 @@
     var isTextarea = makePredByNodeName('TEXTAREA');
 
     /**
-     * get the HTML contents of node 
+     * @method html
+     *
+     * get the HTML contents of node
      *
      * @param {jQuery} $node
      * @param {Boolean} [isNewlineOnBlock]
@@ -1182,21 +1259,28 @@
       return markup;
     };
 
-    var value = function ($textarea) {
+    var value = function ($textarea, stripLinebreaks) {
       var val = $textarea.val();
-      // strip line breaks
-      return val.replace(/[\n\r]/g, '');
+      if (stripLinebreaks) {
+        return val.replace(/[\n\r]/g, '');
+      }
+      return val;
     };
 
     return {
+      /** @property {String} NBSP_CHAR */
       NBSP_CHAR: NBSP_CHAR,
+      /** @property {String} ZERO_WIDTH_NBSP_CHAR */
       ZERO_WIDTH_NBSP_CHAR: ZERO_WIDTH_NBSP_CHAR,
+      /** @property {String} blank */
       blank: blankHTML,
+      /** @property {String} emptyPara */
       emptyPara: '<p>' + blankHTML + '</p>',
       isEditable: isEditable,
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
       isText: isText,
+      isVoid: isVoid,
       isPara: isPara,
       isPurePara: isPurePara,
       isInline: isInline,
@@ -1211,6 +1295,7 @@
       isAnchor: isAnchor,
       isDiv: makePredByNodeName('DIV'),
       isLi: isLi,
+      isBR: makePredByNodeName('BR'),
       isSpan: makePredByNodeName('SPAN'),
       isB: makePredByNodeName('B'),
       isU: makePredByNodeName('U'),
@@ -1260,11 +1345,15 @@
 
 
   /**
+   * @class core.range
+   *
    * Data structure
    *  - {BoundaryPoint}: a point of dom tree
    *  - {BoundaryPoints}: two boundaryPoints corresponding to the start and the end of the Range
    *
-   *  @see http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html#Level-2-Range-Position
+   * @see http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html#Level-2-Range-Position
+   * @singleton
+   * @alternateClassName range
    */
   var range = (function () {
 
@@ -1449,11 +1538,16 @@
        * @return {WrappedRange}
        */
       this.normalize = function () {
+
+        /**
+         * @param {BoundaryPoint} point
+         * @return {BoundaryPoint}
+         */
         var getVisiblePoint = function (point) {
           if (!dom.isVisiblePoint(point)) {
             if (dom.isLeftEdgePoint(point)) {
               point = dom.nextPointUntil(point, dom.isVisiblePoint);
-            } else if (dom.isRightEdgePoint(point)) {
+            } else {
               point = dom.prevPointUntil(point, dom.isVisiblePoint);
             }
           }
@@ -1461,7 +1555,7 @@
         };
 
         var startPoint = getVisiblePoint(this.getStartPoint());
-        var endPoint = getVisiblePoint(this.getStartPoint());
+        var endPoint = getVisiblePoint(this.getEndPoint());
 
         return new WrappedRange(
           startPoint.node,
@@ -1641,7 +1735,7 @@
           point.offset,
           point.node,
           point.offset
-        );
+        ).normalize();
       };
       
       /**
@@ -1691,7 +1785,12 @@
       this.wrapBodyInlineWithPara = function () {
         if (dom.isBodyContainer(sc) && dom.isEmpty(sc)) {
           sc.innerHTML = dom.emptyPara;
-          return new WrappedRange(sc.firstChild, 0);
+          return new WrappedRange(
+            sc.firstChild,
+            0,
+            sc.firstChild,
+            0
+          );
         }
 
         if (dom.isParaInline(sc) || dom.isPara(sc)) {
@@ -1734,28 +1833,23 @@
         var rng = this.wrapBodyInlineWithPara();
         var point = rng.getStartPoint();
 
-        var splitRoot, container, pivot;
-        if (isInline) {
-          container = dom.isPara(point.node) ? point.node : point.node.parentNode;
-          if (dom.isPara(point.node)) {
-            pivot = point.node.childNodes[point.offset];
-          } else {
-            pivot = dom.splitTree(point.node, point);
-          }
-        } else {
-          // splitRoot will be childNode of container
-          var ancestors = dom.listAncestor(point.node, dom.isBodyContainer);
-          var topAncestor = list.last(ancestors) || point.node;
+        // find splitRoot, container
+        //  - inline: splitRoot is child of paragraph
+        //  - block: splitRoot is child of bodyContainer
+        var pred = isInline ? dom.isPara : dom.isBodyContainer;
+        var ancestors = dom.listAncestor(point.node, pred);
+        var topAncestor = list.last(ancestors) || point.node;
 
-          if (dom.isBodyContainer(topAncestor)) {
-            splitRoot = ancestors[ancestors.length - 2];
-            container = topAncestor;
-          } else {
-            splitRoot = topAncestor;
-            container = splitRoot.parentNode;
-          }
-          pivot = splitRoot && dom.splitTree(splitRoot, point);
+        var splitRoot, container;
+        if (pred(topAncestor)) {
+          splitRoot = ancestors[ancestors.length - 2];
+          container = topAncestor;
+        } else {
+          splitRoot = topAncestor;
+          container = splitRoot.parentNode;
         }
+
+        var pivot = splitRoot && dom.splitTree(splitRoot, point, isInline);
 
         if (pivot) {
           pivot.parentNode.insertBefore(node, pivot);
@@ -1783,6 +1877,24 @@
           },
           e: {
             path: dom.makeOffsetPath(editable, ec),
+            offset: eo
+          }
+        };
+      };
+
+      /**
+       * create offsetPath bookmark base on paragraph
+       *
+       * @param {Node[]} paras
+       */
+      this.paraBookmark = function (paras) {
+        return {
+          s: {
+            path: list.tail(dom.makeOffsetPath(list.head(paras), sc)),
+            offset: so
+          },
+          e: {
+            path: list.tail(dom.makeOffsetPath(list.last(paras), ec)),
             offset: eo
           }
         };
@@ -1859,14 +1971,32 @@
        * @return {WrappedRange}
        */
       createFromNode: function (node) {
-        return this.create(node, 0, node, 1);
+        var sc = node;
+        var so = 0;
+        var ec = node;
+        var eo = dom.nodeLength(ec);
+
+        // browsers can't target a picture or void node
+        if (dom.isVoid(sc)) {
+          so = dom.listPrev(sc).length - 1;
+          sc = sc.parentNode;
+        }
+        if (dom.isBR(ec)) {
+          eo = dom.listPrev(ec).length - 1;
+          ec = ec.parentNode;
+        } else if (dom.isVoid(ec)) {
+          eo = dom.listPrev(ec).length;
+          ec = ec.parentNode;
+        }
+
+        return this.create(sc, so, ec, eo);
       },
 
       /**
-       * create WrappedRange from Bookmark
+       * create WrappedRange from bookmark
        *
        * @param {Node} editable
-       * @param {Obkect} bookmark
+       * @param {Object} bookmark
        * @return {WrappedRange}
        */
       createFromBookmark : function (editable, bookmark) {
@@ -1875,16 +2005,46 @@
         var ec = dom.fromOffsetPath(editable, bookmark.e.path);
         var eo = bookmark.e.offset;
         return new WrappedRange(sc, so, ec, eo);
+      },
+
+      /**
+       * create WrappedRange from paraBookmark
+       *
+       * @param {Object} bookmark
+       * @param {Node[]} paras
+       * @return {WrappedRange}
+       */
+      createFromParaBookmark: function (bookmark, paras) {
+        var so = bookmark.s.offset;
+        var eo = bookmark.e.offset;
+        var sc = dom.fromOffsetPath(list.head(paras), bookmark.s.path);
+        var ec = dom.fromOffsetPath(list.last(paras), bookmark.e.path);
+
+        return new WrappedRange(sc, so, ec, eo);
       }
     };
   })();
 
+  /**
+   * @class settings 
+   * 
+   * @singleton
+   */
   var settings = {
-    // version
-    version: '0.6.0',
+    /** @property */
+    version: '0.6.1',
 
     /**
-     * options
+     * @property {Object} options 
+     * @property {String/Number} [options.width=null] set editor width 
+     * @property {String/Number} [options.height=null] set editor height, ex) 300
+     * @property {String/Number} options.minHeight set minimum height of editor
+     * @property {String/Number} options.maxHeight
+     * @property {String/Number} options.focus 
+     * @property {Number} options.tabsize 
+     * @property {Boolean} options.styleWithSpan
+     * @property {Object} options.codemirror
+     * @property {Object} [options.codemirror.mode='text/html']
      */
     options: {
       width: null,                  // set editor width
@@ -1905,6 +2065,7 @@
       shortcuts: true,              // enable keyboard shortcuts
 
       placeholder: false,           // enable placeholder text
+      prettifyHtml: true,           // enable prettifying html while toggling codeview
 
       codemirror: {                 // codemirror options
         mode: 'text/html',
@@ -1963,6 +2124,7 @@
         'Helvetica Neue', 'Impact', 'Lucida Grande',
         'Tahoma', 'Times New Roman', 'Verdana'
       ],
+      fontNamesIgnoreCheck: [],
 
       // pallete colors(n x n)
       colors: [
@@ -1997,6 +2159,7 @@
       onkeydown: null,          // keydown
       onImageUpload: null,      // imageUpload
       onImageUploadError: null, // imageUploadError
+      onMediaDelete: null,      // media delete
       onToolbarClick: null,
       onsubmit: null,
 
@@ -2183,10 +2346,17 @@
   };
 
   /**
+   * @class core.async
+   *
    * Async functions which returns `Promise`
+   *
+   * @singleton
+   * @alternateClassName async
    */
   var async = (function () {
     /**
+     * @method readFileAsDataURL
+     *
      * read contents of file as representing URL
      *
      * @param {File} file
@@ -2207,22 +2377,30 @@
     };
   
     /**
+     * @method createImage
+     *
      * create `<image>` from url string
      *
      * @param {String} sUrl
+     * @param {String} filename
      * @return {Promise} - then: $image
      */
     var createImage = function (sUrl, filename) {
       return $.Deferred(function (deferred) {
-        $('<img>').one('load', function () {
-          deferred.resolve($(this));
+        var $img = $('<img>');
+
+        $img.one('load', function () {
+          $img.off('error abort');
+          deferred.resolve($img);
         }).one('error abort', function () {
-          deferred.reject($(this).detach());
+          $img.off('load').detach();
+          deferred.reject($img);
         }).css({
           display: 'none'
-        }).appendTo(document.body)
-          .attr('src', sUrl)
-          .attr('data-filename', filename);
+        }).appendTo(document.body).attr({
+          'src': sUrl,
+          'data-filename': filename
+        });
       }).promise();
     };
 
@@ -2233,12 +2411,27 @@
   })();
 
   /**
+   * @class core.key
+   *
    * Object for keycodes.
+   *
+   * @singleton
+   * @alternateClassName key
    */
   var key = {
+    /**
+     * @method isEdit
+     *
+     * @param {Number} keyCode
+     * @return {Boolean}
+     */
     isEdit: function (keyCode) {
       return list.contains([8, 9, 13, 32], keyCode);
     },
+    /**
+     * @property {Object} nameFromCode
+     * @property {String} nameFromCode.8 "BACKSPACE"
+     */
     nameFromCode: {
       '8': 'BACKSPACE',
       '9': 'TAB',
@@ -2277,18 +2470,23 @@
   };
 
   /**
+   * @class editing.Style
+   *
    * Style
-   * @class
+   *
    */
   var Style = function () {
     /**
+     * @method jQueryCSS
+     *
      * passing an array of style properties to .css()
      * will result in an object of property-value pairs.
      * (compability with version < 1.9)
      *
+     * @private
      * @param  {jQuery} $obj
      * @param  {Array} propertyNames - An array of one or more CSS properties.
-     * @returns {Object}
+     * @return {Object}
      */
     var jQueryCSS = function ($obj, propertyNames) {
       if (agent.jqueryVersion < 1.9) {
@@ -2364,10 +2562,18 @@
   };
 
 
+  /**
+   * @class editing.Typing
+   *
+   * Typing
+   *
+   */
   var Typing = function () {
 
     /**
-     * @param {jQuery} $editable 
+     * insert tab
+     *
+     * @param {jQuery} $editable
      * @param {WrappedRange} rng
      * @param {Number} tabsize
      */
@@ -2423,8 +2629,10 @@
   };
 
   /**
+   * @class editing.Table
+   *
    * Table
-   * @class
+   *
    */
   var Table = function () {
     /**
@@ -2468,9 +2676,17 @@
   };
 
 
+  /**
+   * @class editing.Bullet
+   *
+   * @alternateClassName Bullet
+   */
   var Bullet = function () {
     /**
+     * @method insertOrderedList
+     *
      * toggle ordered list
+     *
      * @type command
      */
     this.insertOrderedList = function () {
@@ -2478,7 +2694,10 @@
     };
 
     /**
+     * @method insertUnorderedList
+     *
      * toggle unordered list
+     *
      * @type command
      */
     this.insertUnorderedList = function () {
@@ -2486,7 +2705,10 @@
     };
 
     /**
+     * @method indent
+     *
      * indent
+     *
      * @type command
      */
     this.indent = function () {
@@ -2513,7 +2735,10 @@
     };
 
     /**
+     * @method outdent
+     *
      * outdent
+     *
      * @type command
      */
     this.outdent = function () {
@@ -2541,7 +2766,10 @@
     };
 
     /**
+     * @method toggleList
+     *
      * toggle list
+     *
      * @param {String} listName - OL or UL
      */
     this.toggleList = function (listName) {
@@ -2549,13 +2777,16 @@
       var rng = range.create().wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
+      var bookmark = rng.paraBookmark(paras);
       var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
 
       // paragraph to list
       if (list.find(paras, dom.isPurePara)) {
+        var wrappedParas = [];
         $.each(clustereds, function (idx, paras) {
-          self.wrapList(paras, listName);
+          wrappedParas = wrappedParas.concat(self.wrapList(paras, listName));
         });
+        paras = wrappedParas;
       // list to paragraph or change list style
       } else {
         var diffLists = rng.nodes(dom.isList, {
@@ -2569,16 +2800,19 @@
             dom.replace(listNode, listName);
           });
         } else {
-          this.releaseList(clustereds, true);
+          paras = this.releaseList(clustereds, true);
         }
       }
 
-      rng.select();
+      range.createFromParaBookmark(bookmark, paras).select();
     };
 
     /**
+     * @method wrapList
+     *
      * @param {Node[]} paras
      * @param {String} listName
+     * @return {Node[]}
      */
     this.wrapList = function (paras, listName) {
       var head = list.head(paras);
@@ -2601,9 +2835,13 @@
         dom.appendChildNodes(listNode, list.from(nextList.childNodes));
         dom.remove(nextList);
       }
+
+      return paras;
     };
 
     /**
+     * @method releaseList
+     *
      * @param {Array[]} clustereds
      * @param {Boolean} isEscapseToBody
      * @return {Node[]}
@@ -2660,8 +2898,10 @@
   };
 
   /**
+   * @class editing.Editor
+   *
    * Editor
-   * @class
+   *
    */
   var Editor = function () {
 
@@ -2671,7 +2911,12 @@
     var bullet = new Bullet();
 
     /**
+     * @method createRange
+     *
      * create range
+     *
+     * @param {jQuery} $editable
+     * @return {WrappedRange}
      */
     this.createRange = function ($editable) {
       $editable.focus();
@@ -2679,9 +2924,12 @@
     };
 
     /**
+     * @method saveRange
+     *
      * save current range
      *
      * @param {jQuery} $editable
+     * @param {Boolean} [thenCollapse=false]
      */
     this.saveRange = function ($editable, thenCollapse) {
       $editable.focus();
@@ -2691,6 +2939,13 @@
       }
     };
 
+    /**
+     * @method saveRange
+     *
+     * save current node list to $editable.data('childNodes')
+     *
+     * @param {jQuery} $editable
+     */
     this.saveNode = function ($editable) {
       // copy child node reference
       var copy = [];
@@ -2701,6 +2956,8 @@
     };
 
     /**
+     * @method restoreRange
+     *
      * restore lately range
      *
      * @param {jQuery} $editable
@@ -2713,6 +2970,13 @@
       }
     };
 
+    /**
+     * @method restoreNode
+     *
+     * restore lately node list
+     *
+     * @param {jQuery} $editable
+     */
     this.restoreNode = function ($editable) {
       $editable.html('');
       var child = $editable.data('childNodes');
@@ -2721,12 +2985,23 @@
       }
     };
     /**
+     * @method currentStyle
+     *
      * current style
+     *
      * @param {Node} target
+     * @return {Boolean} false if range is no
      */
     this.currentStyle = function (target) {
       var rng = range.create();
       return rng ? rng.isOnEditable() && style.current(rng, target) : false;
+    };
+
+    var triggerOnBeforeChange = this.triggerOnBeforeChange = function ($editable) {
+      var onBeforeChange = $editable.data('callbacks').onBeforeChange;
+      if (onBeforeChange) {
+        onBeforeChange($editable.html(), $editable);
+      }
     };
 
     var triggerOnChange = this.triggerOnChange = function ($editable) {
@@ -2737,24 +3012,38 @@
     };
 
     /**
+     * @method undo
      * undo
      * @param {jQuery} $editable
      */
     this.undo = function ($editable) {
+      triggerOnBeforeChange($editable);
       $editable.data('NoteHistory').undo();
       triggerOnChange($editable);
     };
 
     /**
+     * @method redo
      * redo
      * @param {jQuery} $editable
      */
     this.redo = function ($editable) {
+      triggerOnBeforeChange($editable);
       $editable.data('NoteHistory').redo();
       triggerOnChange($editable);
     };
 
     /**
+     * @method beforeCommand
+     * before command
+     * @param {jQuery} $editable
+     */
+    var beforeCommand = this.beforeCommand = function ($editable) {
+      triggerOnBeforeChange($editable);
+    };
+
+    /**
+     * @method afterCommand
      * after command
      * @param {jQuery} $editable
      */
@@ -2762,6 +3051,108 @@
       $editable.data('NoteHistory').recordUndo();
       triggerOnChange($editable);
     };
+
+    /**
+     * @method bold
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method italic
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method underline
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method strikethrough
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method formatBlock
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method superscript
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method subscript
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method justifyLeft
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method justifyCenter
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method justifyRight
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method justifyFull
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method formatBlock
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method removeFormat
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method backColor
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method foreColor
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method insertHorizontalRule
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
+
+    /**
+     * @method fontName
+     * @param {jQuery} $editable
+     * @param {Mixed} value
+     */
 
     /* jshint ignore:start */
     // native commands(with execCommand), generate function for execCommand
@@ -2773,6 +3164,8 @@
     for (var idx = 0, len = commands.length; idx < len; idx ++) {
       this[commands[idx]] = (function (sCmd) {
         return function ($editable, value) {
+          beforeCommand($editable);
+
           document.execCommand(sCmd, false, value);
 
           afterCommand($editable);
@@ -2782,6 +3175,8 @@
     /* jshint ignore:end */
 
     /**
+     * @method tab
+     *
      * handle tab key
      *
      * @param {jQuery} $editable
@@ -2792,13 +3187,17 @@
       if (rng.isCollapsed() && rng.isOnCell()) {
         table.tab(rng);
       } else {
+        beforeCommand($editable);
         typing.insertTab($editable, rng, options.tabsize);
         afterCommand($editable);
       }
     };
 
     /**
+     * @method untab
+     *
      * handle shift+tab key
+     *
      */
     this.untab = function () {
       var rng = range.create();
@@ -2808,19 +3207,25 @@
     };
 
     /**
+     * @method insertParagraph
+     *
      * insert paragraph
      *
      * @param {Node} $editable
      */
     this.insertParagraph = function ($editable) {
+      beforeCommand($editable);
       typing.insertParagraph($editable);
       afterCommand($editable);
     };
 
     /**
+     * @method insertOrderedList
+     *
      * @param {jQuery} $editable
      */
     this.insertOrderedList = function ($editable) {
+      beforeCommand($editable);
       bullet.insertOrderedList($editable);
       afterCommand($editable);
     };
@@ -2829,6 +3234,7 @@
      * @param {jQuery} $editable
      */
     this.insertUnorderedList = function ($editable) {
+      beforeCommand($editable);
       bullet.insertUnorderedList($editable);
       afterCommand($editable);
     };
@@ -2837,6 +3243,7 @@
      * @param {jQuery} $editable
      */
     this.indent = function ($editable) {
+      beforeCommand($editable);
       bullet.indent($editable);
       afterCommand($editable);
     };
@@ -2845,6 +3252,7 @@
      * @param {jQuery} $editable
      */
     this.outdent = function ($editable) {
+      beforeCommand($editable);
       bullet.outdent($editable);
       afterCommand($editable);
     };
@@ -2861,6 +3269,7 @@
           display: '',
           width: Math.min($editable.width(), $image.width())
         });
+        beforeCommand($editable);
         range.create().insertNode($image[0]);
         afterCommand($editable);
       }).fail(function () {
@@ -2872,12 +3281,14 @@
     };
 
     /**
+     * @method insertNode
      * insert node
      * @param {Node} $editable
      * @param {Node} node
-     * @param {Boolean} [isInline]
+     * @param {Boolean} [isInline=false]
      */
     this.insertNode = function ($editable, node, isInline) {
+      beforeCommand($editable);
       range.create().insertNode(node, isInline);
       afterCommand($editable);
     };
@@ -2889,6 +3300,7 @@
      */
     this.insertText = function ($editable, text) {
       var textNode = this.createRange($editable).insertNode(dom.createText(text), true);
+      beforeCommand($editable);
       range.create(textNode, dom.nodeLength(textNode)).select();
       afterCommand($editable);
     };
@@ -2901,11 +3313,13 @@
      */
     this.formatBlock = function ($editable, tagName) {
       tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
+      beforeCommand($editable);
       document.execCommand('FormatBlock', false, tagName);
       afterCommand($editable);
     };
 
     this.formatPara = function ($editable) {
+      beforeCommand($editable);
       this.formatBlock($editable, 'P');
       afterCommand($editable);
     };
@@ -2928,6 +3342,8 @@
      * @param {String} value - px
      */
     this.fontSize = function ($editable, value) {
+      beforeCommand($editable);
+
       document.execCommand('fontSize', false, 3);
       if (agent.isFF) {
         // firefox: <font size="3"> to <span style='font-size={value}px;'>, buggy
@@ -2948,6 +3364,7 @@
      * @param {String} value
      */
     this.lineHeight = function ($editable, value) {
+      beforeCommand($editable);
       style.stylePara(range.create(), {
         lineHeight: value
       });
@@ -2967,16 +3384,15 @@
         var anchor = dom.ancestor(rng.sc, dom.isAnchor);
         rng = range.createFromNode(anchor);
         rng.select();
-        document.execCommand('unlink');
 
+        beforeCommand($editable);
+        document.execCommand('unlink');
         afterCommand($editable);
       }
     };
 
     /**
-     * create link
-     *
-     * @type command
+     * create link (command)
      *
      * @param {jQuery} $editable
      * @param {Object} linkInfo
@@ -3001,6 +3417,7 @@
         target: isNewWindow ? '_blank' : ''
       });
 
+      beforeCommand($editable);
       range.createFromNode(anchor).select();
       afterCommand($editable);
     };
@@ -3009,6 +3426,10 @@
      * returns link info
      *
      * @return {Object}
+     * @return {WrappedRange} return.range
+     * @return {String} return.text
+     * @return {Boolean} [return.isNewWindow=true]
+     * @return {String} [return.url=""]
      */
     this.getLinkInfo = function ($editable) {
       $editable.focus();
@@ -3026,9 +3447,19 @@
       };
     };
 
+    /**
+     * setting color
+     *
+     * @param {Node} $editable
+     * @param {Object} sObjColor  color code
+     * @param {String} sObjColor.foreColor foreground color
+     * @param {String} sObjColor.backColor background color
+     */
     this.color = function ($editable, sObjColor) {
       var oColor = JSON.parse(sObjColor);
       var foreColor = oColor.foreColor, backColor = oColor.backColor;
+
+      beforeCommand($editable);
 
       if (foreColor) { document.execCommand('foreColor', false, foreColor); }
       if (backColor) { document.execCommand('backColor', false, backColor); }
@@ -3036,8 +3467,16 @@
       afterCommand($editable);
     };
 
+    /**
+     * insert Table
+     *
+     * @param {Node} $editable
+     * @param {String} sDim dimension of table (ex : "5x5")
+     */
     this.insertTable = function ($editable, sDim) {
       var dimension = sDim.split('x');
+      beforeCommand($editable);
+
       var rng = range.create();
       rng = rng.deleteContents();
       rng.insertNode(table.createTable(dimension[0], dimension[1]));
@@ -3045,16 +3484,28 @@
     };
 
     /**
+     * float me
+     *
      * @param {jQuery} $editable
      * @param {String} value
      * @param {jQuery} $target
      */
     this.floatMe = function ($editable, value, $target) {
+      beforeCommand($editable);
       $target.css('float', value);
       afterCommand($editable);
     };
 
+    /**
+     * change image shape
+     *
+     * @param {jQuery} $editable
+     * @param {String} value css class
+     * @param {Node} $target
+     */
     this.imageShape = function ($editable, value, $target) {
+      beforeCommand($editable);
+
       $target.removeClass('img-rounded img-circle img-thumbnail');
 
       if (value) {
@@ -3071,6 +3522,8 @@
      * @param {jQuery} $target - target element
      */
     this.resize = function ($editable, value, $target) {
+      beforeCommand($editable);
+
       $target.css({
         width: value * 100 + '%',
         height: ''
@@ -3111,15 +3564,23 @@
      * @param {jQuery} $target - target element
      */
     this.removeMedia = function ($editable, value, $target) {
+      beforeCommand($editable);
       $target.detach();
+
+      var callbacks = $editable.data('callbacks');
+      if (callbacks && callbacks.onMediaDelete) {
+        callbacks.onMediaDelete($target, this, $editable);
+      }
 
       afterCommand($editable);
     };
   };
 
   /**
-   * History
-   * @class
+   * @class editing.History
+   *
+   * Editor History
+   *
    */
   var History = function ($editable) {
     var stack = [], stackOffset = -1;
@@ -3144,6 +3605,9 @@
       }
     };
 
+    /**
+     * undo
+     */
     this.undo = function () {
       if (0 < stackOffset) {
         stackOffset--;
@@ -3151,6 +3615,9 @@
       }
     };
 
+    /**
+     * redo
+     */
     this.redo = function () {
       if (stack.length - 1 > stackOffset) {
         stackOffset++;
@@ -3158,6 +3625,9 @@
       }
     };
 
+    /**
+     * recorded undo
+     */
     this.recordUndo = function () {
       stackOffset++;
 
@@ -3175,6 +3645,8 @@
   };
 
   /**
+   * @class module.Button
+   *
    * Button
    */
   var Button = function () {
@@ -3201,6 +3673,7 @@
       /**
        * update button state(active or not).
        *
+       * @private
        * @param {String} selector
        * @param {Function} pred
        */
@@ -3287,6 +3760,8 @@
   };
 
   /**
+   * @class module.Toolbar
+   *
    * Toolbar
    */
   var Toolbar = function () {
@@ -3325,11 +3800,21 @@
               .addClass('disabled');
     };
 
+    /**
+     *
+     * @param {jQuery} $container
+     * @param {Boolean} [bFullscreen=false]
+     */
     this.updateFullscreen = function ($container, bFullscreen) {
       var $btn = $container.find('button[data-event="fullscreen"]');
       $btn.toggleClass('active', bFullscreen);
     };
 
+    /**
+     *
+     * @param {jQuery} $container
+     * @param {Boolean} [isCodeview=false]
+     */
     this.updateCodeview = function ($container, isCodeview) {
       var $btn = $container.find('button[data-event="codeview"]');
       $btn.toggleClass('active', isCodeview);
@@ -3337,15 +3822,23 @@
   };
 
   /**
+   * @class module.Popover
+   *
    * Popover (http://getbootstrap.com/javascript/#popovers)
+   *
    */
   var Popover = function () {
     var button = new Button();
 
     /**
      * returns position from placeholder
+     *
+     * @private
      * @param {Node} placeholder
      * @param {Boolean} isAirMode
+     * @return {Object}
+     * @return {Number} return.left
+     * @return {Number} return.top
      */
     var posFromPlaceholder = function (placeholder, isAirMode) {
       var $placeholder = $(placeholder);
@@ -3361,6 +3854,8 @@
 
     /**
      * show popover
+     *
+     * @private
      * @param {jQuery} popover
      * @param {Position} pos
      */
@@ -3402,11 +3897,14 @@
 
       var $airPopover = $popover.find('.note-air-popover');
       if (isAirMode && !styleInfo.range.isCollapsed()) {
-        var bnd = func.rect2bnd(list.last(styleInfo.range.getClientRects()));
-        showPopover($airPopover, {
-          left: Math.max(bnd.left + bnd.width / 2 - PX_POPOVER_ARROW_OFFSET_X, 0),
-          top: bnd.top + bnd.height
-        });
+        var rect = list.last(styleInfo.range.getClientRects());
+        if (rect) {
+          var bnd = func.rect2bnd(rect);
+          showPopover($airPopover, {
+            left: Math.max(bnd.left + bnd.width / 2 - PX_POPOVER_ARROW_OFFSET_X, 0),
+            top: bnd.top + bnd.height
+          });
+        }
       } else {
         $airPopover.hide();
       }
@@ -3431,6 +3929,8 @@
   };
 
   /**
+   * @class module.Handle
+   *
    * Handle
    */
   var Handle = function () {
@@ -3466,21 +3966,28 @@
       }
     };
 
+    /**
+     * hide
+     *
+     * @param {jQuery} $handle
+     */
     this.hide = function ($handle) {
       $handle.children().hide();
     };
   };
 
   /**
-   * Dialog 
+   * @class module.Dialog
    *
-   * @class
+   * Dialog
+   *
    */
   var Dialog = function () {
 
     /**
      * toggle button status
      *
+     * @private
      * @param {jQuery} $btn
      * @param {Boolean} isEnable
      */
@@ -3547,6 +4054,7 @@
     /**
      * Show link dialog and set event handlers on dialog controls.
      *
+     * @param {jQuery} $editable
      * @param {jQuery} $dialog
      * @param {Object} linkInfo
      * @return {Promise}
@@ -3613,7 +4121,9 @@
     /**
      * show help dialog
      *
+     * @param {jQuery} $editable
      * @param {jQuery} $dialog
+     * @return {Promise}
      */
     this.showHelpDialog = function ($editable, $dialog) {
       return $.Deferred(function (deferred) {
@@ -3639,6 +4149,8 @@
   }
 
   /**
+   * @class EventHandler
+   *
    * EventHandler
    */
   var EventHandler = function () {
@@ -3657,8 +4169,9 @@
     /**
      * returns makeLayoutInfo from editor's descendant node.
      *
+     * @private
      * @param {Node} descendant
-     * @returns {Object}
+     * @return {Object}
      */
     var makeLayoutInfo = function (descendant) {
       var $target = $(descendant).closest('.note-editor, .note-air-editor, .note-air-layout');
@@ -3678,6 +4191,7 @@
     /**
      * insert Images from file array.
      *
+     * @private
      * @param {Object} layoutInfo
      * @param {File[]} files
      */
@@ -3826,7 +4340,7 @@
 
         var isCodeview = $editor.hasClass('codeview');
         if (isCodeview) {
-          $codable.val(dom.html($editable, true));
+          $codable.val(dom.html($editable, options.prettifyHtml));
           $codable.height($editable.height());
           toolbar.deactivate($toolbar);
           popover.hide($popover);
@@ -3858,7 +4372,7 @@
             cmEditor.toTextArea();
           }
 
-          $editable.html(dom.value($codable) || dom.emptyPara);
+          $editable.html(dom.value($codable, options.prettifyHtml) || dom.emptyPara);
           $editable.height(options.height ? $codable.height() : 'auto');
 
           toolbar.activate($toolbar);
@@ -4334,12 +4848,14 @@
       // All editor status will be saved on editable with jquery's data
       // for support multiple editor with singleton object.
       layoutInfo.editable.data('callbacks', {
+        onBeforeChange: options.onBeforeChange,
         onChange: options.onChange,
         onAutoSave: options.onAutoSave,
         onImageUpload: options.onImageUpload,
         onImageUploadError: options.onImageUploadError,
         onFileUpload: options.onFileUpload,
-        onFileUploadError: options.onFileUpload
+        onFileUploadError: options.onFileUpload,
+        onMediaDelete : options.onMediaDelete
       });
     };
 
@@ -4359,6 +4875,8 @@
   };
 
   /**
+   * @class Renderer
+   *
    * renderer
    *
    * rendering toolbar and editable
@@ -4507,8 +5025,10 @@
       },
       fontname: function (lang, options) {
         var items = options.fontNames.reduce(function (memo, v) {
-          if (!agent.isFontInstalled(v)) { return memo; }
-          return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '">' +
+          if (!agent.isFontInstalled(v) && options.fontNamesIgnoreCheck.indexOf(v) === -1) {
+            return memo;
+          }
+          return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '" style="font-family:\'' + v + '\'">' +
                           '<i class="fa fa-check"></i> ' + v +
                         '</a></li>';
         }, '');
@@ -4814,10 +5334,12 @@
       var body = [];
 
       for (var i in keys) {
-        body.push(
-          '<div class="' + keyClass + 'key">' + keys[i].kbd + '</div>' +
-          '<div class="' + keyClass + 'name">' + keys[i].text + '</div>'
-          );
+        if (keys.hasOwnProperty(i)) {
+          body.push(
+            '<div class="' + keyClass + 'key">' + keys[i].kbd + '</div>' +
+            '<div class="' + keyClass + 'name">' + keys[i].text + '</div>'
+            );
+        }
       }
 
       return '<div class="note-shortcut-row row"><div class="' + keyClass + 'title col-xs-offset-6">' + title + '</div></div>' +
@@ -4957,9 +5479,9 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.6.0</a> · ' +
-                     '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
-                     '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
+                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.1</a> · ' +
+                     '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ' +
+                     '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
         return tplDialog('note-help-dialog', '', body, '');
       }
@@ -5120,8 +5642,9 @@
       if (options.direction) {
         $editable.attr('dir', options.direction);
       }
-      if (options.placeholder) {
-        $editable.attr('data-placeholder', options.placeholder);
+      var placeholder = $holder.attr('placeholder') || options.placeholder;
+      if (placeholder) {
+        $editable.attr('data-placeholder', placeholder);
       }
 
       $editable.html(dom.html($holder));
@@ -5246,6 +5769,13 @@
       }
     };
 
+    /**
+     *
+     * @return {Object}
+     * @return {Function} return.button
+     * @return {Function} return.iconButton
+     * @return {Function} return.dialog
+     */
     this.getTemplate = function () {
       return {
         button: tplButton,
@@ -5254,16 +5784,36 @@
       };
     };
 
+    /**
+     *
+     * @param {String} name
+     * @param {Object} buttonInfo
+     */
     this.addButtonInfo = function (name, buttonInfo) {
       tplButtonInfo[name] = buttonInfo;
     };
 
+    /**
+     *
+     * @param {String} name
+     * @param {Object} dialogInfo
+     */
     this.addDialogInfo = function (name, dialogInfo) {
       tplDialogInfo[name] = dialogInfo;
     };
   };
 
+
   // jQuery namespace for summernote
+  /**
+   * @class $.summernote 
+   * 
+   * summernote attribute  
+   * 
+   * @mixin settings
+   * @singleton  
+   * 
+   */
   $.summernote = $.summernote || {};
 
   // extends default `settings`
@@ -5273,19 +5823,30 @@
   var eventHandler = new EventHandler();
 
   $.extend($.summernote, {
+    /** @property {Renderer} */
     renderer: renderer,
+    /** @property {EventHandler} */
     eventHandler: eventHandler,
+    /** 
+     * @property {Object} core 
+     * @property {core.agent} core.agent 
+     * @property {core.dom} core.dom
+     * @property {core.range} core.range 
+     */
     core: {
       agent: agent,
       dom: dom,
       range: range
     },
+    /** @property {Object} pluginEvents event list for plugins*/
     pluginEvents: {}
   });
 
   /**
-   * addPlugin
+   * @method addPlugin
    *
+   * add Plugin in Summernote 
+   *  
    * @param {Object} plugin
    */
   $.summernote.addPlugin = function (plugin) {
@@ -5320,14 +5881,15 @@
     }
   };
 
-  /**
-   * extend jquery fn
+  /*
+   * extend $.fn
    */
   $.fn.extend({
     /**
-     * initialize summernote
+     * @method
+     * nitialize summernote
      *  - create editor layout and attach Mouse and keyboard events.
-     *
+     * @member $.fn
      * @param {Object} options
      * @returns {this}
      */
@@ -5378,8 +5940,11 @@
     //
 
     /**
+     * @method 
+     * 
      * get the HTML contents of note or set the HTML contents of note.
      *
+     * @member $.fn 
      * @param {String} [sHTML] - HTML contents(optional, set)
      * @returns {this|String} - context(set) or HTML contents of note(get).
      */
@@ -5409,8 +5974,11 @@
     },
 
     /**
+     * @method
+     * 
      * destroy Editor Layout and detach Key and Mouse Event
      *
+     * @member $.fn
      * @returns {this}
      */
     destroy: function () {
