@@ -139,5 +139,40 @@ define(['jquery', 'summernote/core/dom', 'summernote/core/range'], function ($, 
       equalsToUpperCase($cont.html(), '<p><b></b><u>u</u></p>', 'rng.deleteContents on full text should remove text');
 
     });
+
+    test('rng.wrapBodyInlineWithPara', function () {
+      var $cont, $b;
+
+      // empty contents case
+      $cont = $('<div class="note-editable"></div>');
+      range.create($cont[0], 0).wrapBodyInlineWithPara();
+      equalsToUpperCase($cont.html(), '<p><br></p>', 'rng.wrapBodyInlineWithPara with blank should insert empty paragraph.');
+
+      // body text case
+      $cont = $('<div class="note-editable">text</div>');
+      range.create($cont[0].firstChild, 2).wrapBodyInlineWithPara();
+      equalsToUpperCase($cont.html(), '<p>text</p>', 'rng.wrapBodyInlineWithPara with body text should wrap text with paragraph.');
+
+      // body inline case 1
+      $cont = $('<div class="note-editable"><b>bold</b></div>');
+      $b = $cont.find('b');
+      range.create($b[0].firstChild, 2).wrapBodyInlineWithPara();
+      equalsToUpperCase($cont.html(), '<p><b>bold</b></p>', 'rng.wrapBodyInlineWithPara with inline text should wrap text with paragraph.');
+
+      // body inline case 2
+      $cont = $('<div class="note-editable"><b>b</b><i>i</i></div>');
+      range.create($cont[0], 0).wrapBodyInlineWithPara();
+      equalsToUpperCase($cont.html(), '<p><b>b</b><i>i</i></p>', 'rng.wrapBodyInlineWithPara with inline should wrap text with paragraph.');
+
+      // body inline case 3
+      $cont = $('<div class="note-editable"><b>b</b><i>i</i></div>');
+      range.create($cont[0], 1).wrapBodyInlineWithPara();
+      equalsToUpperCase($cont.html(), '<p><b>b</b><i>i</i></p>', 'rng.wrapBodyInlineWithPara with inline should wrap text with paragraph.');
+
+      // body inline case 4
+      $cont = $('<div class="note-editable"><b>b</b><i>i</i></div>');
+      range.create($cont[0], 2).wrapBodyInlineWithPara();
+      equalsToUpperCase($cont.html(), '<p><b>b</b><i>i</i></p>', 'rng.wrapBodyInlineWithPara with inline should wrap text with paragraph.');
+    });
   };
 });
