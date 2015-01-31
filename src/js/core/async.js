@@ -1,9 +1,16 @@
 define('summernote/core/async', function () {
   /**
+   * @class core.async
+   *
    * Async functions which returns `Promise`
+   *
+   * @singleton
+   * @alternateClassName async
    */
   var async = (function () {
     /**
+     * @method readFileAsDataURL
+     *
      * read contents of file as representing URL
      *
      * @param {File} file
@@ -24,6 +31,8 @@ define('summernote/core/async', function () {
     };
   
     /**
+     * @method createImage
+     *
      * create `<image>` from url string
      *
      * @param {String} sUrl

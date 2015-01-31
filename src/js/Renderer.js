@@ -2,6 +2,8 @@ define([
   'summernote/core/agent', 'summernote/core/dom', 'summernote/core/func'
 ], function (agent, dom, func) {
   /**
+   * @class Renderer
+   *
    * renderer
    *
    * rendering toolbar and editable
@@ -150,7 +152,9 @@ define([
       },
       fontname: function (lang, options) {
         var items = options.fontNames.reduce(function (memo, v) {
-          if (!agent.isFontInstalled(v)) { return memo; }
+          if (!agent.isFontInstalled(v) && options.fontNamesIgnoreCheck.indexOf(v) === -1) {
+            return memo;
+          }
           return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '" style="font-family:\'' + v + '\'">' +
                           '<i class="fa fa-check"></i> ' + v +
                         '</a></li>';
@@ -892,6 +896,13 @@ define([
       }
     };
 
+    /**
+     *
+     * @return {Object}
+     * @return {Function} return.button
+     * @return {Function} return.iconButton
+     * @return {Function} return.dialog
+     */
     this.getTemplate = function () {
       return {
         button: tplButton,
@@ -900,10 +911,20 @@ define([
       };
     };
 
+    /**
+     *
+     * @param {String} name
+     * @param {Object} buttonInfo
+     */
     this.addButtonInfo = function (name, buttonInfo) {
       tplButtonInfo[name] = buttonInfo;
     };
 
+    /**
+     *
+     * @param {String} name
+     * @param {Object} dialogInfo
+     */
     this.addDialogInfo = function (name, dialogInfo) {
       tplDialogInfo[name] = dialogInfo;
     };

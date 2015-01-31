@@ -2,6 +2,8 @@ define([
   'summernote/core/list'
 ], function (list) {
   /**
+   * @class module.Button
+   *
    * Button
    */
   var Button = function () {
@@ -28,6 +30,7 @@ define([
       /**
        * update button state(active or not).
        *
+       * @private
        * @param {String} selector
        * @param {Function} pred
        */

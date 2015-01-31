@@ -4,7 +4,17 @@ define([
   'summernote/settings',
   'summernote/EventHandler', 'summernote/Renderer'
 ], function (agent, dom, range, settings, EventHandler, Renderer) {
+
   // jQuery namespace for summernote
+  /**
+   * @class $.summernote 
+   * 
+   * summernote attribute  
+   * 
+   * @mixin settings
+   * @singleton  
+   * 
+   */
   $.summernote = $.summernote || {};
 
   // extends default `settings`
@@ -14,19 +24,30 @@ define([
   var eventHandler = new EventHandler();
 
   $.extend($.summernote, {
+    /** @property {Renderer} */
     renderer: renderer,
+    /** @property {EventHandler} */
     eventHandler: eventHandler,
+    /** 
+     * @property {Object} core 
+     * @property {core.agent} core.agent 
+     * @property {core.dom} core.dom
+     * @property {core.range} core.range 
+     */
     core: {
       agent: agent,
       dom: dom,
       range: range
     },
+    /** @property {Object} pluginEvents event list for plugins*/
     pluginEvents: {}
   });
 
   /**
-   * addPlugin
+   * @method addPlugin
    *
+   * add Plugin in Summernote 
+   *  
    * @param {Object} plugin
    */
   $.summernote.addPlugin = function (plugin) {
@@ -61,14 +82,15 @@ define([
     }
   };
 
-  /**
-   * extend jquery fn
+  /*
+   * extend $.fn
    */
   $.fn.extend({
     /**
-     * initialize summernote
+     * @method
+     * nitialize summernote
      *  - create editor layout and attach Mouse and keyboard events.
-     *
+     * @member $.fn
      * @param {Object} options
      * @returns {this}
      */
@@ -119,8 +141,11 @@ define([
     //
 
     /**
+     * @method 
+     * 
      * get the HTML contents of note or set the HTML contents of note.
      *
+     * @member $.fn 
      * @param {String} [sHTML] - HTML contents(optional, set)
      * @returns {this|String} - context(set) or HTML contents of note(get).
      */
@@ -150,8 +175,11 @@ define([
     },
 
     /**
+     * @method
+     * 
      * destroy Editor Layout and detach Key and Mouse Event
      *
+     * @member $.fn
      * @returns {this}
      */
     destroy: function () {
