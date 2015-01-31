@@ -1,14 +1,16 @@
 define('summernote/module/Dialog', function () {
   /**
-   * Dialog 
+   * @class module.Dialog
    *
-   * @class
+   * Dialog
+   *
    */
   var Dialog = function () {
 
     /**
      * toggle button status
      *
+     * @private
      * @param {jQuery} $btn
      * @param {Boolean} isEnable
      */
@@ -75,6 +77,7 @@ define('summernote/module/Dialog', function () {
     /**
      * Show link dialog and set event handlers on dialog controls.
      *
+     * @param {jQuery} $editable
      * @param {jQuery} $dialog
      * @param {Object} linkInfo
      * @return {Promise}
@@ -141,7 +144,9 @@ define('summernote/module/Dialog', function () {
     /**
      * show help dialog
      *
+     * @param {jQuery} $editable
      * @param {jQuery} $dialog
+     * @return {Promise}
      */
     this.showHelpDialog = function ($editable, $dialog) {
       return $.Deferred(function (deferred) {
