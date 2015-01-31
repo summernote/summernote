@@ -449,6 +449,11 @@ define([
     this.removeMedia = function ($editable, value, $target) {
       $target.detach();
 
+      var callbacks = $editable.data('callbacks');
+      if (callbacks && callbacks.onMediaDelete) {
+        callbacks.onMediaDelete($target, this, $editable);
+      }
+
       afterCommand($editable);
     };
   };
