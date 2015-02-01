@@ -39,7 +39,25 @@ define([
       dom: dom,
       range: range
     },
-    /** @property {Object} pluginEvents event list for plugins*/
+    /** 
+     * @property {Object} 
+     * pluginEvents event list for plugins
+     * event has name and callback function.
+     * 
+     * ``` 
+     * $.summernote.addPlugin({
+     *     events : {
+     *          'hello' : function(layoutInfo, value, $target) {
+     *              console.log('event name is hello, value is ' + value );
+     *          }
+     *     }     
+     * })
+     * ```
+     * 
+     * * event name is data-event property.
+     * * layoutInfo is a summernote layout information.
+     * * value is data-value property.
+     */
     pluginEvents: {}
   });
 
@@ -47,8 +65,36 @@ define([
    * @method addPlugin
    *
    * add Plugin in Summernote 
-   *  
+   * 
+   * Summernote can make a own plugin.
+   *
+   * ```
+   * var tmpl = $.summernote.renderer.getTemplate();
+   * $.summernote.addPlugin({
+   *     buttons : {
+   *        "name" : function(lang, options) {        
+   *            return tmpl.iconButton('fa fa-header', {
+   *                event : 'hello',
+   *                value : 'hello',
+   *                hide : true
+   *            });           
+   *        }
+   *     
+   *     }
+   * });
+   * ``` 
+   *
+   *
    * @param {Object} plugin
+   * @param {Object} [plugin.buttons] 
+   * define plugin button 
+   * for detail, see to {@link Renderer#addButtonInfo}
+   * @param {Object} [plugin.dialogs] 
+   * define plugin dialog
+   * for detail, see to {@link Renderer#addDialogInfo}
+   * @param {Object} [plugin.events] add event in $.summernote.pluginEvents 
+   * @param {Object} [plugin.langs] update $.summernote.lang
+   * @param {Object} [plugin.options] update $.summernote.options
    */
   $.summernote.addPlugin = function (plugin) {
     if (plugin.buttons) {
@@ -88,8 +134,13 @@ define([
   $.fn.extend({
     /**
      * @method
-     * nitialize summernote
+     * Initialize summernote
      *  - create editor layout and attach Mouse and keyboard events.
+     * 
+     * ```
+     * $("#summernote").summernote( { options ..} );
+     * ```
+     *   
      * @member $.fn
      * @param {Object} options
      * @returns {this}
@@ -144,6 +195,16 @@ define([
      * @method 
      * 
      * get the HTML contents of note or set the HTML contents of note.
+     *
+     * * get contents 
+     * ```
+     * var content = $("#summernote").code();
+     * ```
+     * * set contents 
+     *
+     * ```
+     * $("#summernote").code(html);
+     * ```
      *
      * @member $.fn 
      * @param {String} [sHTML] - HTML contents(optional, set)
