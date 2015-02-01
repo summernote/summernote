@@ -568,22 +568,20 @@ define([
         var dataTransfer = event.originalEvent.dataTransfer;
         var html = dataTransfer.getData('text/html');
         var text = dataTransfer.getData('text/plain');
+
         var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+
         if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
           layoutInfo.editable().focus();
           insertImages(layoutInfo, dataTransfer.files);
-        } else  {
-          if (html) {
-            var $dom = $(html);
-            $dom.each(function () {
-              layoutInfo.editable().focus();
-              editor.insertNode(layoutInfo.editable(), this);
-            });
-          } else {
+        } else if (html) {
+          $(html).each(function () {
             layoutInfo.editable().focus();
-            editor.insertText(layoutInfo.editable(), text);
-          }
-
+            editor.insertNode(layoutInfo.editable(), this);
+          });
+        } else if (text) {
+          layoutInfo.editable().focus();
+          editor.insertText(layoutInfo.editable(), text);
         }
       }).on('dragover', false); // prevent default dragover event
     };
