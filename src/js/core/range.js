@@ -5,18 +5,6 @@ define([
   'summernote/core/dom'
 ], function (agent, func, list, dom) {
 
-  /**
-   * @class core.range
-   *
-   * Data structure
-   *  * {BoundaryPoint}: a point of dom tree
-   *  * {BoundaryPoints}: two boundaryPoints corresponding to the start and the end of the Range
-   *
-   * See to http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html#Level-2-Range-Position
-   *
-   * @singleton
-   * @alternateClassName range
-   */
   var range = (function () {
 
     /**
@@ -568,9 +556,23 @@ define([
         return nativeRng.getClientRects();
       };
     };
-  
+
+  /**
+   * @class core.range
+   *
+   * Data structure
+   *  * BoundaryPoint: a point of dom tree
+   *  * BoundaryPoints: two boundaryPoints corresponding to the start and the end of the Range
+   *
+   * See to http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html#Level-2-Range-Position
+   *
+   * @singleton
+   * @alternateClassName range
+   */      
     return {
       /**
+       * @method
+       * 
        * create Range Object From arguments or Browser Selection
        *
        * @param {Node} sc - start container
@@ -624,6 +626,8 @@ define([
       },
 
       /**
+       * @method 
+       * 
        * create WrappedRange from node
        *
        * @param {Node} node
@@ -652,6 +656,8 @@ define([
       },
 
       /**
+       * @method 
+       * 
        * create WrappedRange from bookmark
        *
        * @param {Node} editable
@@ -667,6 +673,8 @@ define([
       },
 
       /**
+       * @method 
+       *
        * create WrappedRange from paraBookmark
        *
        * @param {Object} bookmark
