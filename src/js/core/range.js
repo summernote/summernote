@@ -9,10 +9,10 @@ define([
    * @class core.range
    *
    * Data structure
-   * * {BoundaryPoint}: a point of dom tree
-   * * {BoundaryPoints}: two boundaryPoints corresponding to the start and the end of the Range
+   *  * {BoundaryPoint}: a point of dom tree
+   *  * {BoundaryPoints}: two boundaryPoints corresponding to the start and the end of the Range
    *
-   * See [W3C Level-2-Range-Position][http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html#Level-2-Range-Position]
+   * See to http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html#Level-2-Range-Position
    *
    * @singleton
    * @alternateClassName range
@@ -123,7 +123,6 @@ define([
     /**
      * Wrapped Range
      *
-     * @private
      * @constructor
      * @param {Node} sc - start container
      * @param {Number} so - start offset
