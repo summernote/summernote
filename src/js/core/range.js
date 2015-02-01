@@ -483,12 +483,12 @@ define([
        * insert node at current cursor
        *
        * @param {Node} node
-       * @param {Boolean} [isInline]
        * @return {Node}
        */
-      this.insertNode = function (node, isInline) {
+      this.insertNode = function (node) {
         var rng = this.wrapBodyInlineWithPara();
         var point = rng.getStartPoint();
+        var isInline = dom.isInline(node);
 
         // find splitRoot, container
         //  - inline: splitRoot is child of paragraph

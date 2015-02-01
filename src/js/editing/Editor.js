@@ -399,11 +399,10 @@ define([
      * insert node
      * @param {Node} $editable
      * @param {Node} node
-     * @param {Boolean} [isInline=false]
      */
-    this.insertNode = function ($editable, node, isInline) {
+    this.insertNode = function ($editable, node) {
       beforeCommand($editable);
-      range.create().insertNode(node, isInline);
+      range.create().insertNode(node);
       afterCommand($editable);
     };
 
@@ -413,7 +412,7 @@ define([
      * @param {String} text
      */
     this.insertText = function ($editable, text) {
-      var textNode = this.createRange($editable).insertNode(dom.createText(text), true);
+      var textNode = this.createRange($editable).insertNode(dom.createText(text));
       beforeCommand($editable);
       range.create(textNode, dom.nodeLength(textNode)).select();
       afterCommand($editable);
@@ -525,7 +524,7 @@ define([
       rng = rng.deleteContents();
 
       // Create a new link when there is no anchor on range.
-      var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0], true);
+      var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
       $(anchor).attr({
         href: linkUrl,
         target: isNewWindow ? '_blank' : ''

@@ -66,7 +66,7 @@
         var $editable = layoutInfo.editable();
 
         var img = $('<img src="http://upload.wikimedia.org/wikipedia/commons/b/b0/NewTux.svg" />');
-        editor.insertNode($editable, img[0], true);
+        editor.insertNode($editable, img[0]);
       }
     }
   });

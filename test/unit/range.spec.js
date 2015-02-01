@@ -89,23 +89,23 @@ define(['jquery', 'summernote/core/dom', 'summernote/core/range'], function ($, 
     });
 
     test('rng.insertNode', function () {
-      var $cont, $p, $b, $u;
+      var $cont, $p, $p2, $b, $u;
 
       // insertNode with block split
       $cont = $('<div class="note-editable"><p><b>bold</b></p></div>');
       $p = $cont.find('p');
       $b = $cont.find('b');
-      $u = $('<u>u</u>');
+      $p2 = $('<p>p</p>');
 
-      range.create($b[0].firstChild, 2, $b[0].firstChild, 2).insertNode($u[0]);
-      equalsToUpperCase($cont.html(), '<p><b>bo</b></p><u>u</u><p><b>ld</b></p>', 'rng.insertNode with block should split paragraph.');
+      range.create($b[0].firstChild, 2, $b[0].firstChild, 2).insertNode($p2[0]);
+      equalsToUpperCase($cont.html(), '<p><b>bo</b></p><p>p</p><p><b>ld</b></p>', 'rng.insertNode with block should split paragraph.');
 
       $cont = $('<div class="note-editable"><p>text</p></div>');
       $p = $cont.find('p');
       $u = $('<u>u</u>');
 
       // insertNode with inline split
-      range.create($p[0].firstChild, 2, $p[0].firstChild, 2).insertNode($u[0], true);
+      range.create($p[0].firstChild, 2, $p[0].firstChild, 2).insertNode($u[0]);
       equalsToUpperCase($cont.html(), '<p>te<u>u</u>xt</p>', 'rng.insertNode with inline should not split paragraph.');
 
       $cont = $('<div class="note-editable"><p><b>bold</b></p></div>');
@@ -113,7 +113,7 @@ define(['jquery', 'summernote/core/dom', 'summernote/core/range'], function ($, 
       $b = $cont.find('b');
       $u = $('<u>u</u>');
 
-      range.create($b[0].firstChild, 2, $b[0].firstChild, 2).insertNode($u[0], true);
+      range.create($b[0].firstChild, 2, $b[0].firstChild, 2).insertNode($u[0]);
       equalsToUpperCase($cont.html(), '<p><b>bo</b><u>u</u><b>ld</b></p>', 'rng.insertNode with inline should not split paragraph.');
     });
 
