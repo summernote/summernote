@@ -636,7 +636,14 @@ define([
      *
      * @param {Object} layoutInfo - layout Informations
      * @param {Object} options - user options include custom event handlers
-     * @param {Function} options.enter - enter key handler
+     * @param {function(event)} [options.onenter] - enter key handler
+     * @param {function(event)} [options.onfocus]
+     * @param {function(event)} [options.onblur]
+     * @param {function(event)} [options.onkeyup]
+     * @param {function(event)} [options.onkeydown]
+     * @param {function(event)} [options.onpaste]
+     * @param {function(event)} [options.onToolBarclick]
+     * @param {function(event)} [options.onChange]
      */
     this.attach = function (layoutInfo, options) {
       // handlers for editable

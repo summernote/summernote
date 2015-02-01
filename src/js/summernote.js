@@ -88,10 +88,10 @@ define([
    * @param {Object} plugin
    * @param {Object} [plugin.buttons] 
    * define plugin button 
-   * for detail, see to {@link Renderer#addButtonInfo}
+   * for detail, see to Renderer.addButtonInfo
    * @param {Object} [plugin.dialogs] 
    * define plugin dialog
-   * for detail, see to {@link Renderer#addDialogInfo}
+   * for detail, see to Renderer.addDialogInfo
    * @param {Object} [plugin.events] add event in $.summernote.pluginEvents 
    * @param {Object} [plugin.langs] update $.summernote.lang
    * @param {Object} [plugin.options] update $.summernote.options
@@ -142,7 +142,7 @@ define([
      * ```
      *   
      * @member $.fn
-     * @param {Object} options
+     * @param {Object} options reference to $.summernote.options
      * @returns {this}
      */
     summernote: function (options) {

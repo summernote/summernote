@@ -9,6 +9,9 @@ define('summernote/settings', function () {
     version: '@VERSION',
 
     /**
+     * 
+     * for event options, reference to EventHandler.attach
+     * 
      * @property {Object} options 
      * @property {String/Number} [options.width=null] set editor width 
      * @property {String/Number} [options.height=null] set editor height, ex) 300
@@ -19,6 +22,15 @@ define('summernote/settings', function () {
      * @property {Boolean} options.styleWithSpan
      * @property {Object} options.codemirror
      * @property {Object} [options.codemirror.mode='text/html']
+     * @property {Object} [options.codemirror.htmlMode=true]
+     * @property {Object} [options.codemirror.lineNumbers=true]
+     * @property {String} [options.lang=en-US] language 'en-US', 'ko-KR', ...
+     * @property {String} [options.direction=null] text direction, ex) 'rtl'
+     * @property {Array} [options.toolbar]
+     * @property {Boolean} [options.airMode=false]
+     * @property {Array} [options.airPopover]
+     * @property {Fucntion} [options.onInit] initialize
+     * @property {Fucntion} [options.onsubmit]
      */
     options: {
       width: null,                  // set editor width
