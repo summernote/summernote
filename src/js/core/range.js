@@ -447,12 +447,7 @@ define([
       this.wrapBodyInlineWithPara = function () {
         if (dom.isBodyContainer(sc) && dom.isEmpty(sc)) {
           sc.innerHTML = dom.emptyPara;
-          return new WrappedRange(
-            sc.firstChild,
-            0,
-            sc.firstChild,
-            0
-          );
+          return new WrappedRange(sc.firstChild, 0, sc.firstChild, 0);
         }
 
         if (dom.isParaInline(sc) || dom.isPara(sc)) {
@@ -468,7 +463,7 @@ define([
             topAncestor = ancestors[ancestors.length - 2] || sc.childNodes[so];
           }
         } else {
-          topAncestor = sc.childNodes[so - 1];
+          topAncestor = sc.childNodes[so > 0 ? so - 1 : 0];
         }
 
         // siblings not in paragraph
@@ -488,12 +483,12 @@ define([
        * insert node at current cursor
        *
        * @param {Node} node
-       * @param {Boolean} [isInline]
        * @return {Node}
        */
-      this.insertNode = function (node, isInline) {
+      this.insertNode = function (node) {
         var rng = this.wrapBodyInlineWithPara();
         var point = rng.getStartPoint();
+        var isInline = dom.isInline(node);
 
         // find splitRoot, container
         //  - inline: splitRoot is child of paragraph
