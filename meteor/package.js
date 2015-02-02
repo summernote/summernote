@@ -10,7 +10,7 @@ Package.describe({
   name: packageName,
   summary: 'summernote (official): jQuery+Bootstrap+FontAwesome WYSIWYG editor with embedded images support',
   version: packageJson.version,
-  git: 'https://github.com/HackerWins/summernote.git'
+  git: 'https://github.com/summernote/summernote.git'
 });
 
 Package.onUse(function (api) {

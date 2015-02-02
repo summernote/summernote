@@ -10,7 +10,7 @@ Package.describe({
   name: packageName,
   summary: 'summernote standalone (official): WYSIWYG editor with embedded images support, packaged without deps',
   version: packageJson.version,
-  git: 'https://github.com/HackerWins/summernote.git'
+  git: 'https://github.com/summernote/summernote.git'
 });
 
 Package.onUse(function (api) {
