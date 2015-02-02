@@ -23,7 +23,7 @@
    * @return {Node}
    */
   var createVideoNode = function (url) {
-    // video url patterns(youtube, instagram, vimeo, dailymotion, youku)
+    // video url patterns(youtube, instagram, vimeo, dailymotion, youku, mp4, ogg, webm)
     var ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
     var ytMatch = url.match(ytRegExp);
 
@@ -42,41 +42,58 @@
     var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)\.html/;
     var youkuMatch = url.match(youkuRegExp);
 
+    var mp4RegExp = /^.+.(mp4|m4v)$/;
+    var mp4Match = url.match(mp4RegExp);
+
+    var oggRegExp = /^.+.(ogg|ogv)$/;
+    var oggMatch = url.match(oggRegExp);
+
+    var webmRegExp = /^.+.(webm)$/;
+    var webmMatch = url.match(webmRegExp);
+
     var $video;
     if (ytMatch && ytMatch[1].length === 11) {
       var youtubeId = ytMatch[1];
       $video = $('<iframe>')
+        .attr('frameborder', 0)
         .attr('src', '//www.youtube.com/embed/' + youtubeId)
         .attr('width', '640').attr('height', '360');
     } else if (igMatch && igMatch[0].length) {
       $video = $('<iframe>')
+        .attr('frameborder', 0)
         .attr('src', igMatch[0] + '/embed/')
         .attr('width', '612').attr('height', '710')
         .attr('scrolling', 'no')
         .attr('allowtransparency', 'true');
     } else if (vMatch && vMatch[0].length) {
       $video = $('<iframe>')
+        .attr('frameborder', 0)
         .attr('src', vMatch[0] + '/embed/simple')
         .attr('width', '600').attr('height', '600')
         .attr('class', 'vine-embed');
     } else if (vimMatch && vimMatch[3].length) {
       $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+        .attr('frameborder', 0)
         .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
         .attr('width', '640').attr('height', '360');
     } else if (dmMatch && dmMatch[2].length) {
       $video = $('<iframe>')
+        .attr('frameborder', 0)
         .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
         .attr('width', '640').attr('height', '360');
     } else if (youkuMatch && youkuMatch[1].length) {
       $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+        .attr('frameborder', 0)
         .attr('height', '498')
         .attr('width', '510')
         .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
+    } else if (mp4Match || oggMatch || webmMatch) {
+      $video = $('<video controls>')
+        .attr('src', url)
+        .attr('width', '640').attr('height', '360');
     } else {
       // this is not a known video link. Now what, Cat? Now what?
     }
-
-    $video.attr('frameborder', 0);
 
     return $video[0];
   };
