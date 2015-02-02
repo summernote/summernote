@@ -566,12 +566,21 @@ define([
         event.preventDefault();
 
         var dataTransfer = event.originalEvent.dataTransfer;
+        var html = dataTransfer.getData('text/html');
         var text = dataTransfer.getData('text/plain');
+
         var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-        layoutInfo.editable().focus();
+
         if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
+          layoutInfo.editable().focus();
           insertImages(layoutInfo, dataTransfer.files);
+        } else if (html) {
+          $(html).each(function () {
+            layoutInfo.editable().focus();
+            editor.insertNode(layoutInfo.editable(), this);
+          });
         } else if (text) {
+          layoutInfo.editable().focus();
           editor.insertText(layoutInfo.editable(), text);
         }
       }).on('dragover', false); // prevent default dragover event
@@ -627,7 +636,14 @@ define([
      *
      * @param {Object} layoutInfo - layout Informations
      * @param {Object} options - user options include custom event handlers
-     * @param {Function} options.enter - enter key handler
+     * @param {function(event)} [options.onenter] - enter key handler
+     * @param {function(event)} [options.onfocus]
+     * @param {function(event)} [options.onblur]
+     * @param {function(event)} [options.onkeyup]
+     * @param {function(event)} [options.onkeydown]
+     * @param {function(event)} [options.onpaste]
+     * @param {function(event)} [options.onToolBarclick]
+     * @param {function(event)} [options.onChange]
      */
     this.attach = function (layoutInfo, options) {
       // handlers for editable

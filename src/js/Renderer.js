@@ -12,14 +12,15 @@ define([
 
     /**
      * bootstrap button template
-     *
-     * @param {String} label
-     * @param {Object} [options]
-     * @param {String} [options.event]
-     * @param {String} [options.value]
-     * @param {String} [options.title]
-     * @param {String} [options.dropdown]
-     * @param {String} [options.hide]
+     * @private
+     * @param {String} label button name
+     * @param {Object} [options] button options
+     * @param {String} [options.event] data-event
+     * @param {String} [options.className] button's class name
+     * @param {String} [options.value] data-value
+     * @param {String} [options.title] button's title for popup
+     * @param {String} [options.dropdown] dropdown html
+     * @param {String} [options.hide] data-hide
      */
     var tplButton = function (label, options) {
       var event = options.event;
@@ -48,7 +49,7 @@ define([
 
     /**
      * bootstrap icon button template
-     *
+     * @private
      * @param {String} iconClassName
      * @param {Object} [options]
      * @param {String} [options.event]
@@ -63,7 +64,7 @@ define([
 
     /**
      * bootstrap popover template
-     *
+     * @private
      * @param {String} className
      * @param {String} content
      */
@@ -80,9 +81,9 @@ define([
      * bootstrap dialog template
      *
      * @param {String} className
-     * @param {String} [title]
+     * @param {String} [title='']
      * @param {String} body
-     * @param {String} [footer]
+     * @param {String} [footer='']
      */
     var tplDialog = function (className, title, body, footer) {
       return '<div class="' + className + ' modal" aria-hidden="false">' +
@@ -899,9 +900,9 @@ define([
     /**
      *
      * @return {Object}
-     * @return {Function} return.button
-     * @return {Function} return.iconButton
-     * @return {Function} return.dialog
+     * @return {function(label, options=):string} return.button {@link #tplButton function to make text button}
+     * @return {function(iconClass, options=):string} return.iconButton {@link #tplIconButton function to make icon button}
+     * @return {function(className, title=, body=, footer=):string} return.dialog {@link #tplDialog function to make dialog}
      */
     this.getTemplate = function () {
       return {
@@ -912,9 +913,10 @@ define([
     };
 
     /**
+     * add button information
      *
-     * @param {String} name
-     * @param {Object} buttonInfo
+     * @param {String} name button name
+     * @param {Function} buttonInfo function to make button, reference to {@link #tplButton},{@link #tplIconButton}
      */
     this.addButtonInfo = function (name, buttonInfo) {
       tplButtonInfo[name] = buttonInfo;
@@ -923,7 +925,7 @@ define([
     /**
      *
      * @param {String} name
-     * @param {Object} dialogInfo
+     * @param {Function} dialogInfo function to make dialog, reference to {@link #tplDialog}
      */
     this.addDialogInfo = function (name, dialogInfo) {
       tplDialogInfo[name] = dialogInfo;
