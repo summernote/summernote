@@ -568,7 +568,7 @@ define([
    *
    * @singleton
    * @alternateClassName range
-   */      
+   */
     return {
       /**
        * @method

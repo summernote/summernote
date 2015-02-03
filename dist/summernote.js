@@ -1,12 +1,12 @@
 /**
  * Super simple wysiwyg editor on Bootstrap v0.6.1
- * http://hackerwins.github.io/summernote/
+ * http://summernote.org/
  *
  * summernote.js
- * Copyright 2013-2014 Alan Hong. and other contributors
+ * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-02-01T01:16Z
+ * Date: 2015-02-02T03:32Z
  */
 (function (factory) {
   /* global define */
@@ -1344,17 +1344,6 @@
   })();
 
 
-  /**
-   * @class core.range
-   *
-   * Data structure
-   *  - {BoundaryPoint}: a point of dom tree
-   *  - {BoundaryPoints}: two boundaryPoints corresponding to the start and the end of the Range
-   *
-   * @see http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html#Level-2-Range-Position
-   * @singleton
-   * @alternateClassName range
-   */
   var range = (function () {
 
     /**
@@ -1461,6 +1450,7 @@
     /**
      * Wrapped Range
      *
+     * @constructor
      * @param {Node} sc - start container
      * @param {Number} so - start offset
      * @param {Node} ec - end container
@@ -1905,9 +1895,23 @@
         return nativeRng.getClientRects();
       };
     };
-  
+
+  /**
+   * @class core.range
+   *
+   * Data structure
+   *  * BoundaryPoint: a point of dom tree
+   *  * BoundaryPoints: two boundaryPoints corresponding to the start and the end of the Range
+   *
+   * See to http://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html#Level-2-Range-Position
+   *
+   * @singleton
+   * @alternateClassName range
+   */
     return {
       /**
+       * @method
+       * 
        * create Range Object From arguments or Browser Selection
        *
        * @param {Node} sc - start container
@@ -1961,6 +1965,8 @@
       },
 
       /**
+       * @method 
+       * 
        * create WrappedRange from node
        *
        * @param {Node} node
@@ -1989,6 +1995,8 @@
       },
 
       /**
+       * @method 
+       * 
        * create WrappedRange from bookmark
        *
        * @param {Node} editable
@@ -2004,6 +2012,8 @@
       },
 
       /**
+       * @method 
+       *
        * create WrappedRange from paraBookmark
        *
        * @param {Object} bookmark
@@ -2031,6 +2041,9 @@
     version: '0.6.1',
 
     /**
+     * 
+     * for event options, reference to EventHandler.attach
+     * 
      * @property {Object} options 
      * @property {String/Number} [options.width=null] set editor width 
      * @property {String/Number} [options.height=null] set editor height, ex) 300
@@ -2041,6 +2054,15 @@
      * @property {Boolean} options.styleWithSpan
      * @property {Object} options.codemirror
      * @property {Object} [options.codemirror.mode='text/html']
+     * @property {Object} [options.codemirror.htmlMode=true]
+     * @property {Object} [options.codemirror.lineNumbers=true]
+     * @property {String} [options.lang=en-US] language 'en-US', 'ko-KR', ...
+     * @property {String} [options.direction=null] text direction, ex) 'rtl'
+     * @property {Array} [options.toolbar]
+     * @property {Boolean} [options.airMode=false]
+     * @property {Array} [options.airPopover]
+     * @property {Fucntion} [options.onInit] initialize
+     * @property {Fucntion} [options.onsubmit]
      */
     options: {
       width: null,                  // set editor width
@@ -4762,7 +4784,14 @@
      *
      * @param {Object} layoutInfo - layout Informations
      * @param {Object} options - user options include custom event handlers
-     * @param {Function} options.enter - enter key handler
+     * @param {function(event)} [options.onenter] - enter key handler
+     * @param {function(event)} [options.onfocus]
+     * @param {function(event)} [options.onblur]
+     * @param {function(event)} [options.onkeyup]
+     * @param {function(event)} [options.onkeydown]
+     * @param {function(event)} [options.onpaste]
+     * @param {function(event)} [options.onToolBarclick]
+     * @param {function(event)} [options.onChange]
      */
     this.attach = function (layoutInfo, options) {
       // handlers for editable
@@ -4889,14 +4918,15 @@
 
     /**
      * bootstrap button template
-     *
-     * @param {String} label
-     * @param {Object} [options]
-     * @param {String} [options.event]
-     * @param {String} [options.value]
-     * @param {String} [options.title]
-     * @param {String} [options.dropdown]
-     * @param {String} [options.hide]
+     * @private
+     * @param {String} label button name
+     * @param {Object} [options] button options
+     * @param {String} [options.event] data-event
+     * @param {String} [options.className] button's class name
+     * @param {String} [options.value] data-value
+     * @param {String} [options.title] button's title for popup
+     * @param {String} [options.dropdown] dropdown html
+     * @param {String} [options.hide] data-hide
      */
     var tplButton = function (label, options) {
       var event = options.event;
@@ -4925,7 +4955,7 @@
 
     /**
      * bootstrap icon button template
-     *
+     * @private
      * @param {String} iconClassName
      * @param {Object} [options]
      * @param {String} [options.event]
@@ -4940,7 +4970,7 @@
 
     /**
      * bootstrap popover template
-     *
+     * @private
      * @param {String} className
      * @param {String} content
      */
@@ -4957,9 +4987,9 @@
      * bootstrap dialog template
      *
      * @param {String} className
-     * @param {String} [title]
+     * @param {String} [title='']
      * @param {String} body
-     * @param {String} [footer]
+     * @param {String} [footer='']
      */
     var tplDialog = function (className, title, body, footer) {
       return '<div class="' + className + ' modal" aria-hidden="false">' +
@@ -5483,9 +5513,9 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote 0.6.1</a> · ' +
-                     '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
-                     '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
+                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.1</a> · ' +
+                     '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ' +
+                     '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
         return tplDialog('note-help-dialog', '', body, '');
       }
@@ -5776,9 +5806,9 @@
     /**
      *
      * @return {Object}
-     * @return {Function} return.button
-     * @return {Function} return.iconButton
-     * @return {Function} return.dialog
+     * @return {function(label, options=):string} return.button {@link #tplButton function to make text button}
+     * @return {function(iconClass, options=):string} return.iconButton {@link #tplIconButton function to make icon button}
+     * @return {function(className, title=, body=, footer=):string} return.dialog {@link #tplDialog function to make dialog}
      */
     this.getTemplate = function () {
       return {
@@ -5789,9 +5819,10 @@
     };
 
     /**
+     * add button information
      *
-     * @param {String} name
-     * @param {Object} buttonInfo
+     * @param {String} name button name
+     * @param {Function} buttonInfo function to make button, reference to {@link #tplButton},{@link #tplIconButton}
      */
     this.addButtonInfo = function (name, buttonInfo) {
       tplButtonInfo[name] = buttonInfo;
@@ -5800,7 +5831,7 @@
     /**
      *
      * @param {String} name
-     * @param {Object} dialogInfo
+     * @param {Function} dialogInfo function to make dialog, reference to {@link #tplDialog}
      */
     this.addDialogInfo = function (name, dialogInfo) {
       tplDialogInfo[name] = dialogInfo;
@@ -5842,7 +5873,25 @@
       dom: dom,
       range: range
     },
-    /** @property {Object} pluginEvents event list for plugins*/
+    /** 
+     * @property {Object} 
+     * pluginEvents event list for plugins
+     * event has name and callback function.
+     * 
+     * ``` 
+     * $.summernote.addPlugin({
+     *     events : {
+     *          'hello' : function(layoutInfo, value, $target) {
+     *              console.log('event name is hello, value is ' + value );
+     *          }
+     *     }     
+     * })
+     * ```
+     * 
+     * * event name is data-event property.
+     * * layoutInfo is a summernote layout information.
+     * * value is data-value property.
+     */
     pluginEvents: {}
   });
 
@@ -5850,8 +5899,36 @@
    * @method addPlugin
    *
    * add Plugin in Summernote 
-   *  
+   * 
+   * Summernote can make a own plugin.
+   *
+   * ```
+   * var tmpl = $.summernote.renderer.getTemplate();
+   * $.summernote.addPlugin({
+   *     buttons : {
+   *        "name" : function(lang, options) {        
+   *            return tmpl.iconButton('fa fa-header', {
+   *                event : 'hello',
+   *                value : 'hello',
+   *                hide : true
+   *            });           
+   *        }
+   *     
+   *     }
+   * });
+   * ``` 
+   *
+   *
    * @param {Object} plugin
+   * @param {Object} [plugin.buttons] 
+   * define plugin button 
+   * for detail, see to Renderer.addButtonInfo
+   * @param {Object} [plugin.dialogs] 
+   * define plugin dialog
+   * for detail, see to Renderer.addDialogInfo
+   * @param {Object} [plugin.events] add event in $.summernote.pluginEvents 
+   * @param {Object} [plugin.langs] update $.summernote.lang
+   * @param {Object} [plugin.options] update $.summernote.options
    */
   $.summernote.addPlugin = function (plugin) {
     if (plugin.buttons) {
@@ -5891,10 +5968,15 @@
   $.fn.extend({
     /**
      * @method
-     * nitialize summernote
+     * Initialize summernote
      *  - create editor layout and attach Mouse and keyboard events.
+     * 
+     * ```
+     * $("#summernote").summernote( { options ..} );
+     * ```
+     *   
      * @member $.fn
-     * @param {Object} options
+     * @param {Object} options reference to $.summernote.options
      * @returns {this}
      */
     summernote: function (options) {
@@ -5947,6 +6029,16 @@
      * @method 
      * 
      * get the HTML contents of note or set the HTML contents of note.
+     *
+     * * get contents 
+     * ```
+     * var content = $("#summernote").code();
+     * ```
+     * * set contents 
+     *
+     * ```
+     * $("#summernote").code(html);
+     * ```
      *
      * @member $.fn 
      * @param {String} [sHTML] - HTML contents(optional, set)

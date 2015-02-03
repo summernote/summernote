@@ -1,6 +1,6 @@
 Build + Meteor status: [![Build Status](https://travis-ci.org/MeteorPackaging/summernote.svg?branch=meteor-integration)](https://github.com/MeteorPackaging/summernote/tree/meteor-integration/meteor)
 
-Packaging [summernote](http://hackerwins.github.io/summernote/) for [Meteor.js](http://meteor.com).
+Packaging [summernote](http://summernote.org/) for [Meteor.js](http://meteor.com).
 
 # Versions
 

@@ -607,9 +607,9 @@ define([
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote @VERSION</a> · ' +
-                     '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
-                     '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
+                     '<a href="//summernote.org/" target="_blank">Summernote @VERSION</a> · ' +
+                     '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ' +
+                     '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
         return tplDialog('note-help-dialog', '', body, '');
       }
