@@ -6,3 +6,14 @@ before_script:
   - npm --version
   - npm install -g grunt-cli
 script: grunt test --verbose
+before_deploy:
+  - npm install
+  - grunt build
+  - grunt dist
+deploy:
+  provider: npm
+  email: susukang98@gmail.com
+  api_key:
+    secure: TYJfuTLZKbYvTskuMlmuKnQb5F35GFPN2AqSf0RtZYWGLozIaIkKcpTVbjzo859FWuxPjci53FGiJih3+0iVfIC39CDTrFZutubn8qduOfRAVTL1WzeQvdww8miJNwUY59HmoOa78OtbNCVg/N7zFSZzRXAcgje8IADQFIISwk8=
+  on:
+    tags: true
