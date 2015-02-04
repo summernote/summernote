@@ -579,6 +579,7 @@ define([
        * @param {Number} so - start offset
        * @param {Node} ec - end container
        * @param {Number} eo - end offset
+       * @return {WrappedRange}
        */
       create : function (sc, so, ec, eo) {
         if (!arguments.length) { // from Browser Selection
