@@ -379,12 +379,13 @@ define([
      */
     this.insertImage = function ($editable, sUrl, filename) {
       async.createImage(sUrl, filename).then(function ($image) {
+        beforeCommand($editable);
         $image.css({
           display: '',
           width: Math.min($editable.width(), $image.width())
         });
-        beforeCommand($editable);
         range.create().insertNode($image[0]);
+        range.createFromNode($image[0]).collapse().select();
         afterCommand($editable);
       }).fail(function () {
         var callbacks = $editable.data('callbacks');
@@ -402,7 +403,9 @@ define([
      */
     this.insertNode = function ($editable, node) {
       beforeCommand($editable);
-      range.create().insertNode(node);
+      var rng = this.createRange($editable);
+      rng.insertNode(node);
+      range.createFromNode(node).collapse().select();
       afterCommand($editable);
     };
 
@@ -412,8 +415,9 @@ define([
      * @param {String} text
      */
     this.insertText = function ($editable, text) {
-      var textNode = this.createRange($editable).insertNode(dom.createText(text));
       beforeCommand($editable);
+      var rng = this.createRange($editable);
+      var textNode = rng.insertNode(dom.createText(text));
       range.create(textNode, dom.nodeLength(textNode)).select();
       afterCommand($editable);
     };
@@ -425,8 +429,8 @@ define([
      * @param {String} tagName
      */
     this.formatBlock = function ($editable, tagName) {
-      tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       beforeCommand($editable);
+      tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       document.execCommand('FormatBlock', false, tagName);
       afterCommand($editable);
     };
