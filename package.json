@@ -1,7 +1,12 @@
 {
-  "name": "Summernote",
+  "name": "summernote",
   "description": "Super Simple WYSIWYG Editor on Bootstrap",
   "version": "0.6.1",
+  "keywords": [
+    "editor",
+    "bootstrap",
+    "WYSIWYG"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/summernote/summernote.git"
