@@ -143,7 +143,7 @@ define([
      *
      * @param {Node} button
      * @param {String} eventName
-     * @param {value} value
+     * @param {Mixed} value
      */
     this.updateRecentColor = function (button, eventName, value) {
       var $color = $(button).closest('.note-color');
