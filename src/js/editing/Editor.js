@@ -521,6 +521,8 @@ define([
       var isNewWindow = linkInfo.newWindow;
       var rng = linkInfo.range;
 
+      beforeCommand($editable);
+
       if (options.onCreateLink) {
         linkUrl = options.onCreateLink(linkUrl);
       }
@@ -534,7 +536,6 @@ define([
         target: isNewWindow ? '_blank' : ''
       });
 
-      beforeCommand($editable);
       range.createFromNode(anchor).select();
       afterCommand($editable);
     };

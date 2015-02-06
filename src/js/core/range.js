@@ -476,37 +476,23 @@ define([
        * @return {Node}
        */
       this.insertNode = function (node) {
-        var rng = this.wrapBodyInlineWithPara();
-        var point = rng.getStartPoint();
-        var isInline = dom.isInline(node);
+        var rng = this.wrapBodyInlineWithPara().deleteContents();
+        var info = dom.splitPoint(rng.getStartPoint(), dom.isInline(node));
 
-        // find splitRoot, container
-        //  - inline: splitRoot is child of paragraph
-        //  - block: splitRoot is child of bodyContainer
-        var pred = isInline ? dom.isPara : dom.isBodyContainer;
-        var ancestors = dom.listAncestor(point.node, pred);
-        var topAncestor = list.last(ancestors) || point.node;
-
-        var splitRoot, container;
-        if (pred(topAncestor)) {
-          splitRoot = ancestors[ancestors.length - 2];
-          container = topAncestor;
+        if (info.rightNode) {
+          info.rightNode.parentNode.insertBefore(node, info.rightNode);
         } else {
-          splitRoot = topAncestor;
-          container = splitRoot.parentNode;
-        }
-
-        var pivot = splitRoot && dom.splitTree(splitRoot, point, isInline);
-
-        if (pivot) {
-          pivot.parentNode.insertBefore(node, pivot);
-        } else {
-          container.appendChild(node);
+          info.container.appendChild(node);
         }
 
         return node;
       };
   
+      /**
+       * returns text in range
+       *
+       * @return {String}
+       */
       this.toString = function () {
         var nativeRng = nativeRange();
         return agent.isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
@@ -514,6 +500,7 @@ define([
   
       /**
        * create offsetPath bookmark
+       *
        * @param {Node} editable
        */
       this.bookmark = function (editable) {
