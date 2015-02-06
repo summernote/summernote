@@ -68,30 +68,52 @@ define([
    * 
    * Summernote can make a own plugin.
    *
+   * ### Define plugin
    * ```
+   * // get template function  
    * var tmpl = $.summernote.renderer.getTemplate();
+   * 
+   * // add a button   
    * $.summernote.addPlugin({
    *     buttons : {
-   *        "name" : function(lang, options) {        
+   *        // "hello"  is button's namespace.      
+   *        "hello" : function(lang, options) {
+   *            // make icon button by template function          
    *            return tmpl.iconButton('fa fa-header', {
+   *                // callback function name when button clicked 
    *                event : 'hello',
-   *                value : 'hello',
+   *                // set data-value property                 
+   *                value : 'hello',                
    *                hide : true
    *            });           
    *        }
    *     
-   *     }
+   *     }, 
+   *     
+   *     events : {
+   *        "hello" : function(layoutInfo, value) {
+   *            // here is event code 
+   *        }
+   *     }     
    * });
    * ``` 
-   *
-   *
+   * ### Use a plugin in toolbar
+   * 
+   * ``` 
+   *    $("#editor").summernote({
+   *    ...
+   *    toolbar : [
+   *        // display hello plugin in toolbar     
+   *        ['group', [ 'hello' ]]
+   *    ]
+   *    ...    
+   *    });
+   * ```
+   *  
+   *  
    * @param {Object} plugin
-   * @param {Object} [plugin.buttons] 
-   * define plugin button 
-   * for detail, see to Renderer.addButtonInfo
-   * @param {Object} [plugin.dialogs] 
-   * define plugin dialog
-   * for detail, see to Renderer.addDialogInfo
+   * @param {Object} [plugin.buttons] define plugin button. for detail, see to Renderer.addButtonInfo
+   * @param {Object} [plugin.dialogs] define plugin dialog. for detail, see to Renderer.addDialogInfo
    * @param {Object} [plugin.events] add event in $.summernote.pluginEvents 
    * @param {Object} [plugin.langs] update $.summernote.lang
    * @param {Object} [plugin.options] update $.summernote.options
