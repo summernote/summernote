@@ -22,9 +22,9 @@
     name: 'hello',
     /** 
      * @property {Object} buttons 
-     * @property {Function} hello   function to make button  
-     * @property {Function} helloDropdown   function to make button  
-     * @property {Function} helloImage   function to make button
+     * @property {Function} buttons.hello   function to make button
+     * @property {Function} buttons.helloDropdown   function to make button
+     * @property {Function} buttons.helloImage   function to make button
      */
     buttons: { // buttons
       hello: function () {
