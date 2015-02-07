@@ -18,7 +18,9 @@
 
   /**
    * createVideoNode
-   *
+   *  
+   * @member plugin.video
+   * @private
    * @param {String} url
    * @return {Node}
    */
@@ -99,6 +101,8 @@
   };
 
   /**
+   * @member plugin.video
+   * @private
    * @param {jQuery} $editable
    * @return {String}
    */
@@ -118,7 +122,9 @@
 
   /**
    * toggle button status
-   *
+   *  
+   * @member plugin.video
+   * @private
    * @param {jQuery} $btn
    * @param {Boolean} isEnable
    */
@@ -130,6 +136,8 @@
   /**
    * Show video dialog and set event handlers on dialog controls.
    *
+   * @member plugin.video
+   * @private
    * @param {jQuery} $dialog
    * @param {jQuery} $dialog
    * @param {Object} text
@@ -164,14 +172,38 @@
     });
   };
 
-  // add video plugin
+  /**
+   * @class plugin.video
+   *
+   * Video Plugin
+   *
+   * video plugin is to make embeded video tag.
+   *
+   * ### load script
+   *
+   * ```
+   * < script src="plugin/summernote-ext-video.js"></script >
+   * ```
+   *
+   * ### use a plugin in toolbar
+   * ```
+   *    $("#editor").summernote({
+   *    ...
+   *    toolbar : [
+   *        ['group', [ 'video' ]]
+   *    ]
+   *    ...    
+   *    });
+   * ```
+   */
   $.summernote.addPlugin({
+    /** @property {String} name name of plugin */      
     name: 'video',
+    /**
+     * @property {Object} buttons
+     * @property {function(object): string} buttons.video
+     */
     buttons: {
-      /**
-       * @param {Object} lang
-       * @return {String}
-       */
       video: function (lang) {
         return tmpl.iconButton('fa fa-youtube-play', {
           event: 'showVideoDialog',
@@ -181,12 +213,11 @@
       }
     },
 
+    /**
+     * @property {Object} dialogs
+     * @property {function(object, object): string} dialogs.video
+    */      
     dialogs: {
-      /**
-       * @param {Object} lang
-       * @param {Object} options
-       * @return {String}
-       */
       video: function (lang) {
         var body = '<div class="form-group row-fluid">' +
                      '<label>' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
@@ -196,11 +227,11 @@
         return tmpl.dialog('note-video-dialog', lang.video.insert, body, footer);
       }
     },
-
+    /**
+     * @property {Object} events
+     * @property {Function} events.showVideoDialog
+     */
     events: {
-      /**
-       * @param {Object} layoutInfo
-       */
       showVideoDialog: function (layoutInfo) {
         var $dialog = layoutInfo.dialog(),
             $editable = layoutInfo.editable(),
