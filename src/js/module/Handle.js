@@ -1,5 +1,7 @@
 define('summernote/module/Handle', function () {
   /**
+   * @class module.Handle
+   *
    * Handle
    */
   var Handle = function () {
@@ -35,6 +37,11 @@ define('summernote/module/Handle', function () {
       }
     };
 
+    /**
+     * hide
+     *
+     * @param {jQuery} $handle
+     */
     this.hide = function ($handle) {
       $handle.children().hide();
     };

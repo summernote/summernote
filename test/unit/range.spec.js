@@ -5,6 +5,11 @@
  */
 define(['jquery', 'summernote/core/dom', 'summernote/core/range'], function ($, dom, range) {
   return function () {
+
+    var equalsToUpperCase = function (actual, expected, comment) {
+      ok(actual.toUpperCase() === expected.toUpperCase(), comment);
+    };
+
     test('rng.nodes', function () {
       var rng, $cont, $para, $li, $h1, $h2, $b;
 
@@ -59,6 +64,115 @@ define(['jquery', 'summernote/core/dom', 'summernote/core/range'], function ($, 
       rng = range.create($b[0].firstChild, 0, $b[0].firstChild, 1);
       equal(rng.commonAncestor(), $b[0].firstChild, 'rng.commonAncestor on <b>|b|</b> should returns b(#textNode)');
 
+    });
+
+    test('rng.normalize', function () {
+      var rng, $cont, $p, $b, $u;
+      $cont = $('<div><p><b>b</b><u>u</u></p></div>');
+      $p = $cont.find('p');
+      $b = $cont.find('b');
+      $u = $cont.find('u');
+
+      rng = range.create($p[0], 0,  $p[0], 2).normalize();
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $b[0].firstChild, 0, $u[0].firstChild, 1
+      ], 'rng.normalize on `|<b>b</b> ~ <u>u</u>|` should returns `<b>|b</b> ~ <u>u|</u>`');
+
+      rng = range.create($p[0], 1,  $p[0], 1).normalize();
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $b[0].firstChild, 1, $b[0].firstChild, 1
+      ], 'rng.normalize on `<b>b</b>|<u>u</u>` should returns `<b>b|</b><u>u</u>`');
+    });
+
+    test('rng.insertNode', function () {
+      var $cont, $p, $p2, $b, $u;
+
+      // insertNode with block split
+      $cont = $('<div class="note-editable"><p><b>bold</b></p></div>');
+      $p = $cont.find('p');
+      $b = $cont.find('b');
+      $p2 = $('<p>p</p>');
+
+      range.create($b[0].firstChild, 2, $b[0].firstChild, 2).insertNode($p2[0]);
+      equalsToUpperCase($cont.html(), '<p><b>bo</b></p><p>p</p><p><b>ld</b></p>', 'rng.insertNode with block should split paragraph.');
+
+      $cont = $('<div class="note-editable"><p>text</p></div>');
+      $p = $cont.find('p');
+      $u = $('<u>u</u>');
+
+      // insertNode with inline split
+      range.create($p[0].firstChild, 2, $p[0].firstChild, 2).insertNode($u[0]);
+      equalsToUpperCase($cont.html(), '<p>te<u>u</u>xt</p>', 'rng.insertNode with inline should not split paragraph.');
+
+      $cont = $('<div class="note-editable"><p><b>bold</b></p></div>');
+      $p = $cont.find('p');
+      $b = $cont.find('b');
+      $u = $('<u>u</u>');
+
+      range.create($b[0].firstChild, 2, $b[0].firstChild, 2).insertNode($u[0]);
+      equalsToUpperCase($cont.html(), '<p><b>bo</b><u>u</u><b>ld</b></p>', 'rng.insertNode with inline should not split paragraph.');
+    });
+
+    test('rng.deleteContents', function () {
+      var $cont, $p, $b, $u;
+
+      // deleteContents on partial text
+      $cont = $('<div class="note-editable"><p><b>bold</b><u>u</u></p></div>');
+      $p = $cont.find('p');
+      $b = $cont.find('b');
+      $u = $cont.find('u');
+
+      range.create($b[0].firstChild, 1, $b[0].firstChild, 3).deleteContents();
+      equalsToUpperCase($cont.html(), '<p><b>bd</b><u>u</u></p>', 'rng.deleteContents on partial text should remove only text');
+
+      // deleteContents on full text
+      $cont = $('<div class="note-editable"><p><b>bold</b><u>u</u></p></div>');
+      $p = $cont.find('p');
+      $b = $cont.find('b');
+      $u = $cont.find('u');
+
+      range.create($b[0].firstChild, 0, $b[0].firstChild, 4).deleteContents();
+      equalsToUpperCase($cont.html(), '<p><b></b><u>u</u></p>', 'rng.deleteContents on full text should remove text');
+
+    });
+
+    test('rng.wrapBodyInlineWithPara', function () {
+      var $cont, $b;
+
+      // empty contents case
+      $cont = $('<div class="note-editable"></div>');
+      range.create($cont[0], 0).wrapBodyInlineWithPara();
+      equalsToUpperCase($cont.html(), '<p><br></p>', 'rng.wrapBodyInlineWithPara with blank should insert empty paragraph.');
+
+      // body text case
+      $cont = $('<div class="note-editable">text</div>');
+      range.create($cont[0].firstChild, 2).wrapBodyInlineWithPara();
+      equalsToUpperCase($cont.html(), '<p>text</p>', 'rng.wrapBodyInlineWithPara with body text should wrap text with paragraph.');
+
+      // body inline case 1
+      $cont = $('<div class="note-editable"><b>bold</b></div>');
+      $b = $cont.find('b');
+      range.create($b[0].firstChild, 2).wrapBodyInlineWithPara();
+      equalsToUpperCase($cont.html(), '<p><b>bold</b></p>', 'rng.wrapBodyInlineWithPara with inline text should wrap text with paragraph.');
+
+      // body inline case 2
+      $cont = $('<div class="note-editable"><b>b</b><i>i</i></div>');
+      range.create($cont[0], 0).wrapBodyInlineWithPara();
+      equalsToUpperCase($cont.html(), '<p><b>b</b><i>i</i></p>', 'rng.wrapBodyInlineWithPara with inline should wrap text with paragraph.');
+
+      // body inline case 3
+      $cont = $('<div class="note-editable"><b>b</b><i>i</i></div>');
+      range.create($cont[0], 1).wrapBodyInlineWithPara();
+      equalsToUpperCase($cont.html(), '<p><b>b</b><i>i</i></p>', 'rng.wrapBodyInlineWithPara with inline should wrap text with paragraph.');
+
+      // body inline case 4
+      $cont = $('<div class="note-editable"><b>b</b><i>i</i></div>');
+      range.create($cont[0], 2).wrapBodyInlineWithPara();
+      equalsToUpperCase($cont.html(), '<p><b>b</b><i>i</i></p>', 'rng.wrapBodyInlineWithPara with inline should wrap text with paragraph.');
     });
   };
 });

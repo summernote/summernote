@@ -4,7 +4,17 @@ define([
   'summernote/settings',
   'summernote/EventHandler', 'summernote/Renderer'
 ], function (agent, dom, range, settings, EventHandler, Renderer) {
+
   // jQuery namespace for summernote
+  /**
+   * @class $.summernote 
+   * 
+   * summernote attribute  
+   * 
+   * @mixin settings
+   * @singleton  
+   * 
+   */
   $.summernote = $.summernote || {};
 
   // extends default `settings`
@@ -14,20 +24,99 @@ define([
   var eventHandler = new EventHandler();
 
   $.extend($.summernote, {
+    /** @property {Renderer} */
     renderer: renderer,
+    /** @property {EventHandler} */
     eventHandler: eventHandler,
+    /** 
+     * @property {Object} core 
+     * @property {core.agent} core.agent 
+     * @property {core.dom} core.dom
+     * @property {core.range} core.range 
+     */
     core: {
       agent: agent,
       dom: dom,
       range: range
     },
+    /** 
+     * @property {Object} 
+     * pluginEvents event list for plugins
+     * event has name and callback function.
+     * 
+     * ``` 
+     * $.summernote.addPlugin({
+     *     events : {
+     *          'hello' : function(layoutInfo, value, $target) {
+     *              console.log('event name is hello, value is ' + value );
+     *          }
+     *     }     
+     * })
+     * ```
+     * 
+     * * event name is data-event property.
+     * * layoutInfo is a summernote layout information.
+     * * value is data-value property.
+     */
     pluginEvents: {}
   });
 
   /**
-   * addPlugin
+   * @method addPlugin
    *
+   * add Plugin in Summernote 
+   * 
+   * Summernote can make a own plugin.
+   *
+   * ### Define plugin
+   * ```
+   * // get template function  
+   * var tmpl = $.summernote.renderer.getTemplate();
+   * 
+   * // add a button   
+   * $.summernote.addPlugin({
+   *     buttons : {
+   *        // "hello"  is button's namespace.      
+   *        "hello" : function(lang, options) {
+   *            // make icon button by template function          
+   *            return tmpl.iconButton('fa fa-header', {
+   *                // callback function name when button clicked 
+   *                event : 'hello',
+   *                // set data-value property                 
+   *                value : 'hello',                
+   *                hide : true
+   *            });           
+   *        }
+   *     
+   *     }, 
+   *     
+   *     events : {
+   *        "hello" : function(layoutInfo, value) {
+   *            // here is event code 
+   *        }
+   *     }     
+   * });
+   * ``` 
+   * ### Use a plugin in toolbar
+   * 
+   * ``` 
+   *    $("#editor").summernote({
+   *    ...
+   *    toolbar : [
+   *        // display hello plugin in toolbar     
+   *        ['group', [ 'hello' ]]
+   *    ]
+   *    ...    
+   *    });
+   * ```
+   *  
+   *  
    * @param {Object} plugin
+   * @param {Object} [plugin.buttons] define plugin button. for detail, see to Renderer.addButtonInfo
+   * @param {Object} [plugin.dialogs] define plugin dialog. for detail, see to Renderer.addDialogInfo
+   * @param {Object} [plugin.events] add event in $.summernote.pluginEvents 
+   * @param {Object} [plugin.langs] update $.summernote.lang
+   * @param {Object} [plugin.options] update $.summernote.options
    */
   $.summernote.addPlugin = function (plugin) {
     if (plugin.buttons) {
@@ -61,15 +150,21 @@ define([
     }
   };
 
-  /**
-   * extend jquery fn
+  /*
+   * extend $.fn
    */
   $.fn.extend({
     /**
-     * initialize summernote
+     * @method
+     * Initialize summernote
      *  - create editor layout and attach Mouse and keyboard events.
-     *
-     * @param {Object} options
+     * 
+     * ```
+     * $("#summernote").summernote( { options ..} );
+     * ```
+     *   
+     * @member $.fn
+     * @param {Object} options reference to $.summernote.options
      * @returns {this}
      */
     summernote: function (options) {
@@ -119,8 +214,21 @@ define([
     //
 
     /**
+     * @method 
+     * 
      * get the HTML contents of note or set the HTML contents of note.
      *
+     * * get contents 
+     * ```
+     * var content = $("#summernote").code();
+     * ```
+     * * set contents 
+     *
+     * ```
+     * $("#summernote").code(html);
+     * ```
+     *
+     * @member $.fn 
      * @param {String} [sHTML] - HTML contents(optional, set)
      * @returns {this|String} - context(set) or HTML contents of note(get).
      */
@@ -150,8 +258,11 @@ define([
     },
 
     /**
+     * @method
+     * 
      * destroy Editor Layout and detach Key and Mouse Event
      *
+     * @member $.fn
      * @returns {this}
      */
     destroy: function () {
