@@ -47,6 +47,27 @@ define([
     };
 
     /**
+     * @param {WrappedRange} rng
+     * @param {String} [nodeName] - default is span
+     * @return {Node[]}
+     */
+    this.styleNodes = function (rng, nodeName) {
+      rng = rng.splitText();
+      nodeName = nodeName || 'SPAN';
+
+      if (rng.isCollapsed()) {
+        return rng.insertNode(dom.create(nodeName));
+      }
+
+      var pred = dom.makePredByNodeName(nodeName);
+      return $.map(rng.nodes(dom.isText, {
+        fullyContains: true
+      }), function (text) {
+        return dom.singleChildAncestor(text, pred) || dom.wrap(text, nodeName);
+      });
+    };
+
+    /**
      * get current style on cursor
      *
      * @param {WrappedRange} rng

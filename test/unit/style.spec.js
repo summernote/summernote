@@ -1,0 +1,91 @@
+/**
+ * Style.spec.js
+ * (c) 2015~ Summernote Team
+ * summernote may be freely distributed under the MIT license./
+ */
+define([
+  'jquery',
+  'summernote/core/dom',
+  'summernote/core/range',
+  'summernote/editing/Style'
+], function ($, dom, range, Style) {
+  return function () {
+    var style = new Style();
+
+    var equalsToUpperCase = function (actual, expected, comment) {
+      ok(actual.toUpperCase() === expected.toUpperCase(), comment);
+    };
+
+    test('style.styleNodes', function () {
+      var $cont, $p, $b, $span, rng, nodes;
+
+      $cont = $('<div class="note-editable"><p>text</p></div>');
+      $p = $cont.find('p');
+      rng = range.create($p[0].firstChild, 0, $p[0].firstChild, 4);
+      nodes = style.styleNodes(rng);
+
+      equalsToUpperCase(
+        $cont.html(),
+        '<p><span>text</span></p>',
+        'should wrap selected text with span'
+      );
+
+      $cont = $('<div class="note-editable"><p>text</p></div>');
+      $p = $cont.find('p');
+      rng = range.create($p[0].firstChild, 1, $p[0].firstChild, 3);
+      nodes = style.styleNodes(rng);
+
+      equalsToUpperCase(
+        $cont.html(),
+        '<p>t<span>ex</span>t</p>',
+        'should split text and wrap selected text with span'
+      );
+
+      $cont = $('<div class="note-editable"><p>text</p></div>');
+      $p = $cont.find('p');
+      rng = range.create($p[0].firstChild, 2, $p[0].firstChild, 2);
+      nodes = style.styleNodes(rng);
+
+      equalsToUpperCase(
+        $cont.html(),
+        '<p>te<span></span>xt</p>',
+        'should split text and insert span'
+      );
+
+      $cont = $('<div class="note-editable"><p><span>text</span></p></div>');
+      $span = $cont.find('span');
+      rng = range.create($span[0].firstChild, 0, $span[0].firstChild, 4);
+      nodes = style.styleNodes(rng);
+
+      equalsToUpperCase(
+        $cont.html(),
+        '<p><span>text</span></p>',
+        'should just return parent span'
+      );
+
+      $cont = $('<div class="note-editable"><p><b>bold</b><span>span</span></p></div>');
+      $b = $cont.find('b');
+      $span = $cont.find('span');
+      rng = range.create($b[0].firstChild, 2, $span[0].firstChild, 2);
+      nodes = style.styleNodes(rng);
+
+      equalsToUpperCase(
+        $cont.html(),
+        '<p><b>bo<span>ld</span></b><span><span>sp</span>an</span></p>',
+        'should wrap each texts with span'
+      );
+
+      $cont = $('<div class="note-editable"><p><b>bold</b><span>span</span></p></div>');
+      $b = $cont.find('b');
+      $span = $cont.find('span');
+      rng = range.create($b[0].firstChild, 2, $span[0].firstChild, 4);
+      nodes = style.styleNodes(rng);
+
+      equalsToUpperCase(
+        $cont.html(),
+        '<p><b>bo<span>ld</span></b><span>span</span></p>',
+        'should wrap each texts with span except not single blood line'
+      );
+    });
+  };
+});
