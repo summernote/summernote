@@ -197,7 +197,7 @@
    * ```
    */
   $.summernote.addPlugin({
-    /** @property {String} name name of plugin */      
+    /** @property {String} name name of plugin */
     name: 'video',
     /**
      * @property {Object} buttons
@@ -216,7 +216,7 @@
     /**
      * @property {Object} dialogs
      * @property {function(object, object): string} dialogs.video
-    */      
+    */
     dialogs: {
       video: function (lang) {
         var body = '<div class="form-group row-fluid">' +

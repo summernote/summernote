@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-02-02T03:32Z
+ * Date: 2015-02-07T16:10Z
  */
 (function (factory) {
   /* global define */
@@ -1918,6 +1918,7 @@
        * @param {Number} so - start offset
        * @param {Node} ec - end container
        * @param {Number} eo - end offset
+       * @return {WrappedRange}
        */
       create : function (sc, so, ec, eo) {
         if (!arguments.length) { // from Browser Selection
@@ -3283,12 +3284,13 @@
      */
     this.insertImage = function ($editable, sUrl, filename) {
       async.createImage(sUrl, filename).then(function ($image) {
+        beforeCommand($editable);
         $image.css({
           display: '',
           width: Math.min($editable.width(), $image.width())
         });
-        beforeCommand($editable);
         range.create().insertNode($image[0]);
+        range.createFromNode($image[0]).collapse().select();
         afterCommand($editable);
       }).fail(function () {
         var callbacks = $editable.data('callbacks');
@@ -3306,7 +3308,9 @@
      */
     this.insertNode = function ($editable, node) {
       beforeCommand($editable);
-      range.create().insertNode(node);
+      var rng = this.createRange($editable);
+      rng.insertNode(node);
+      range.createFromNode(node).collapse().select();
       afterCommand($editable);
     };
 
@@ -3316,8 +3320,9 @@
      * @param {String} text
      */
     this.insertText = function ($editable, text) {
-      var textNode = this.createRange($editable).insertNode(dom.createText(text));
       beforeCommand($editable);
+      var rng = this.createRange($editable);
+      var textNode = rng.insertNode(dom.createText(text));
       range.create(textNode, dom.nodeLength(textNode)).select();
       afterCommand($editable);
     };
@@ -3329,8 +3334,8 @@
      * @param {String} tagName
      */
     this.formatBlock = function ($editable, tagName) {
-      tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       beforeCommand($editable);
+      tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       document.execCommand('FormatBlock', false, tagName);
       afterCommand($editable);
     };
@@ -3699,6 +3704,46 @@
         $btn.toggleClass('active', pred());
       };
 
+      if (styleInfo.image) {
+        var $img = $(styleInfo.image);
+
+        btnState('button[data-event="imageShape"][data-value="img-rounded"]', function () {
+          return $img.hasClass('img-rounded');
+        });
+        btnState('button[data-event="imageShape"][data-value="img-circle"]', function () {
+          return $img.hasClass('img-circle');
+        });
+        btnState('button[data-event="imageShape"][data-value="img-thumbnail"]', function () {
+          return $img.hasClass('img-thumbnail');
+        });
+        btnState('button[data-event="imageShape"]:not([data-value])', function () {
+          return !$img.is('.img-rounded, .img-circle, .img-thumbnail');
+        });
+
+        var imgFloat = $img.css('float');
+        btnState('button[data-event="floatMe"][data-value="left"]', function () {
+          return imgFloat === 'left';
+        });
+        btnState('button[data-event="floatMe"][data-value="right"]', function () {
+          return imgFloat === 'right';
+        });
+        btnState('button[data-event="floatMe"][data-value="none"]', function () {
+          return imgFloat !== 'left' && imgFloat !== 'right';
+        });
+
+        var style = $img.attr('style');
+        btnState('button[data-event="resize"][data-value="1"]', function () {
+          return !!/(^|\s)(max-)?width\s*:\s*100%/.test(style);
+        });
+        btnState('button[data-event="resize"][data-value="0.5"]', function () {
+          return !!/(^|\s)(max-)?width\s*:\s*50%/.test(style);
+        });
+        btnState('button[data-event="resize"][data-value="0.25"]', function () {
+          return !!/(^|\s)(max-)?width\s*:\s*25%/.test(style);
+        });
+        return;
+      }
+
       // fontname
       var $fontname = $container.find('.note-fontname');
       if ($fontname.length) {
@@ -3763,7 +3808,7 @@
      *
      * @param {Node} button
      * @param {String} eventName
-     * @param {value} value
+     * @param {Mixed} value
      */
     this.updateRecentColor = function (button, eventName, value) {
       var $color = $(button).closest('.note-color');
@@ -4179,6 +4224,10 @@
     var toolbar = new Toolbar(), popover = new Popover();
     var handle = new Handle(), dialog = new Dialog();
 
+    /**
+     * get editor
+     * @returns {editing.Editor}
+     */
     this.getEditor = function () {
       return editor;
     };
@@ -4546,8 +4595,6 @@
 
         var layoutInfo = makeLayoutInfo(event.target);
 
-        event.preventDefault();
-
         // before command: detect control selection element($target)
         var $target;
         if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'imageShape']) !== -1) {
@@ -4561,14 +4608,16 @@
           $btn.parents('.popover').hide();
         }
 
-        if (editor[eventName]) { // on command
+        if ($.isFunction($.summernote.pluginEvents[eventName])) {
+          $.summernote.pluginEvents[eventName](event, editor, layoutInfo, value);
+        } else if (editor[eventName]) { // on command
           var $editable = layoutInfo.editable();
           $editable.trigger('focus');
           editor[eventName]($editable, value, $target);
+          event.preventDefault();
         } else if (commands[eventName]) {
           commands[eventName].call(this, layoutInfo);
-        } else if ($.isFunction($.summernote.pluginEvents[eventName])) {
-          $.summernote.pluginEvents[eventName](layoutInfo, value, $target);
+          event.preventDefault();
         }
 
         // after command
@@ -4698,6 +4747,11 @@
       }).on('drop', function () {
         collection = $();
         layoutInfo.editor.removeClass('dragover');
+      }).on('mouseout', function (e) {
+        collection = collection.not(e.target);
+        if (!collection.length) {
+          layoutInfo.editor.removeClass('dragover');
+        }
       });
 
       // change dropzone's message on hover.
@@ -4761,17 +4815,17 @@
 
         var eventName = keyMap[aKey.join('+')];
         if (eventName) {
-          event.preventDefault();
-
-          if (editor[eventName]) {
+          if ($.summernote.pluginEvents[eventName]) {
+            var plugin = $.summernote.pluginEvents[eventName];
+            if ($.isFunction(plugin)) {
+              plugin(event, editor, layoutInfo);
+            }
+          } else if (editor[eventName]) {
             editor[eventName]($editable, $editor.data('options'));
+            event.preventDefault();
           } else if (commands[eventName]) {
             commands[eventName].call(this, layoutInfo);
-          } else if ($.summernote.plugins[eventName]) {
-            var plugin = $.summernote.plugins[eventName];
-            if ($.isFunction(plugin.event)) {
-              plugin.event(event, editor, layoutInfo);
-            }
+            event.preventDefault();
           }
         } else if (key.isEdit(event.keyCode)) {
           editor.afterCommand($editable);
@@ -5902,30 +5956,52 @@
    * 
    * Summernote can make a own plugin.
    *
+   * ### Define plugin
    * ```
+   * // get template function  
    * var tmpl = $.summernote.renderer.getTemplate();
+   * 
+   * // add a button   
    * $.summernote.addPlugin({
    *     buttons : {
-   *        "name" : function(lang, options) {        
+   *        // "hello"  is button's namespace.      
+   *        "hello" : function(lang, options) {
+   *            // make icon button by template function          
    *            return tmpl.iconButton('fa fa-header', {
+   *                // callback function name when button clicked 
    *                event : 'hello',
-   *                value : 'hello',
+   *                // set data-value property                 
+   *                value : 'hello',                
    *                hide : true
    *            });           
    *        }
    *     
-   *     }
+   *     }, 
+   *     
+   *     events : {
+   *        "hello" : function(layoutInfo, value) {
+   *            // here is event code 
+   *        }
+   *     }     
    * });
    * ``` 
-   *
-   *
+   * ### Use a plugin in toolbar
+   * 
+   * ``` 
+   *    $("#editor").summernote({
+   *    ...
+   *    toolbar : [
+   *        // display hello plugin in toolbar     
+   *        ['group', [ 'hello' ]]
+   *    ]
+   *    ...    
+   *    });
+   * ```
+   *  
+   *  
    * @param {Object} plugin
-   * @param {Object} [plugin.buttons] 
-   * define plugin button 
-   * for detail, see to Renderer.addButtonInfo
-   * @param {Object} [plugin.dialogs] 
-   * define plugin dialog
-   * for detail, see to Renderer.addDialogInfo
+   * @param {Object} [plugin.buttons] define plugin button. for detail, see to Renderer.addButtonInfo
+   * @param {Object} [plugin.dialogs] define plugin dialog. for detail, see to Renderer.addDialogInfo
    * @param {Object} [plugin.events] add event in $.summernote.pluginEvents 
    * @param {Object} [plugin.langs] update $.summernote.lang
    * @param {Object} [plugin.options] update $.summernote.options
