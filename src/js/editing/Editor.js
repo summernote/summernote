@@ -520,22 +520,46 @@ define([
       var linkText = linkInfo.text;
       var isNewWindow = linkInfo.newWindow;
       var rng = linkInfo.range;
+      var isTextChanged = rng.toString() !== linkText;
+
+      beforeCommand($editable);
 
       if (options.onCreateLink) {
         linkUrl = options.onCreateLink(linkUrl);
       }
 
-      rng = rng.deleteContents();
+      var anchors;
+      if (isTextChanged) {
+        // Create a new link when text changed.
+        var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
+        anchors = [anchor];
+      } else {
+        anchors = style.styleNodes(rng, {
+          nodeName: 'A',
+          expandClosestSibling: true,
+          onlyPartialContains: true
+        });
+      }
 
-      // Create a new link when there is no anchor on range.
-      var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
-      $(anchor).attr({
-        href: linkUrl,
-        target: isNewWindow ? '_blank' : ''
+      $.each(anchors, function (idx, anchor) {
+        $(anchor).attr({
+          href: linkUrl,
+          target: isNewWindow ? '_blank' : ''
+        });
       });
 
-      beforeCommand($editable);
-      range.createFromNode(anchor).select();
+      var startRange = range.createFromNode(list.head(anchors)).collapse(true);
+      var startPoint = startRange.getStartPoint();
+      var endRange = range.createFromNode(list.last(anchors)).collapse();
+      var endPoint = endRange.getEndPoint();
+
+      range.create(
+        startPoint.node,
+        startPoint.offset,
+        endPoint.node,
+        endPoint.offset
+      ).select();
+
       afterCommand($editable);
     };
 
