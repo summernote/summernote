@@ -16,7 +16,7 @@ define([
       ok(actual.toUpperCase() === expected.toUpperCase(), comment);
     };
 
-    test('style.styleNodes', function () {
+    test('style.styleNodes basic', function () {
       var $cont, $p, $b, $span, rng, nodes;
 
       $cont = $('<div class="note-editable"><p>text</p></div>');
@@ -86,6 +86,38 @@ define([
         '<p><b>bo<span>ld</span></b><span>span</span></p>',
         'should wrap each texts with span except not single blood line'
       );
+    });
+
+    test('style.styleNodes options', function () {
+      $cont = $('<div class="note-editable"><p>text<b>bold</b></p></div>');
+      $p = $cont.find('p');
+      rng = range.create($p[0].firstChild, 0, $p[0].firstChild, 4);
+      nodes = style.styleNodes(rng, {
+        nodeName: 'B',
+        expandClosestSibling: true,
+      });
+
+      equalsToUpperCase(
+        $cont.html(),
+        '<p><b>textbold</b></p>',
+        'should expand b tag with expandClosestSibling option'
+      );
+
+      $cont = $('<div class="note-editable"><p>text<b>bold</b></p></div>');
+      $p = $cont.find('p');
+      rng = range.create($p[0].firstChild, 0, $p[0].firstChild, 4);
+      nodes = style.styleNodes(rng, {
+        nodeName: 'B',
+        expandClosestSibling: true,
+        onlyPartialContains: true
+      });
+
+      equalsToUpperCase(
+        $cont.html(),
+        '<p><b>text</b><b>bold</b></p>',
+        'should not expand b tag with onlyPartialContains option'
+      );
+
     });
   };
 });
