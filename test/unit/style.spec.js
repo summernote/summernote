@@ -89,12 +89,14 @@ define([
     });
 
     test('style.styleNodes options', function () {
+      var $cont, $p, rng, nodes;
+
       $cont = $('<div class="note-editable"><p>text<b>bold</b></p></div>');
       $p = $cont.find('p');
       rng = range.create($p[0].firstChild, 0, $p[0].firstChild, 4);
       nodes = style.styleNodes(rng, {
         nodeName: 'B',
-        expandClosestSibling: true,
+        expandClosestSibling: true
       });
 
       equalsToUpperCase(
