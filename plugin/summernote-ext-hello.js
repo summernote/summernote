@@ -1,11 +1,31 @@
-(function ($) {
+(function (factory) {
+  /* global define */
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['jquery'], factory);
+  } else {
+    // Browser globals: jQuery
+    factory(window.jQuery);
+  }
+}(function ($) {
   // template, editor
   var tmpl = $.summernote.renderer.getTemplate();
   var editor = $.summernote.eventHandler.getEditor();
 
-  // add plugin
+  /**
+   * @class plugin.hello 
+   * 
+   * Hello Plugin  
+   */
   $.summernote.addPlugin({
-    name: 'hello', // name of plugin
+    /** @property {String} name name of plugin */
+    name: 'hello',
+    /** 
+     * @property {Object} buttons 
+     * @property {Function} buttons.hello   function to make button
+     * @property {Function} buttons.helloDropdown   function to make button
+     * @property {Function} buttons.helloImage   function to make button
+     */
     buttons: { // buttons
       hello: function () {
 
@@ -27,10 +47,23 @@
           hide: true,
           dropdown : dropdown
         });
+      },
+      helloImage : function () {
+        return tmpl.iconButton('fa fa-file-image-o', {
+          event : 'helloImage',
+          title: 'helloImage',
+          hide: true
+        });
       }
 
     },
 
+    /**
+     * @property {Object} events 
+     * @property {Function} events.hello  run function when button that has a 'hello' event name  fires click
+     * @property {Function} events.helloDropdown run function when button that has a 'helloDropdown' event name  fires click
+     * @property {Function} events.helloImage run function when button that has a 'helloImage' event name  fires click
+     */
     events: { // events
       hello: function (layoutInfo) {
         // Get current editable node
@@ -45,7 +78,13 @@
 
         // Call insertText with 'hello'
         editor.insertText($editable, 'hello ' + value + '!!!!');
+      },
+      helloImage : function (layoutInfo) {
+        var $editable = layoutInfo.editable();
+
+        var img = $('<img src="http://upload.wikimedia.org/wikipedia/commons/b/b0/NewTux.svg" />');
+        editor.insertNode($editable, img[0]);
       }
     }
   });
-})(jQuery);
+}));

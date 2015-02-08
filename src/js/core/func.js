@@ -1,6 +1,11 @@
 define('summernote/core/func', function () {
   /**
+   * @class core.func
+   *
    * func utils (for high-order func's arg)
+   *
+   * @singleton
+   * @alternateClassName func
    */
   var func = (function () {
     var eq = function (itemA) {

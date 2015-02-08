@@ -1,6 +1,6 @@
 {
   "name": "summernote",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "main": [
     "./dist/summernote.js",
     "./dist/summernote.css"
@@ -15,6 +15,6 @@
   "dependencies": {
     "jquery": ">= 1.9.0",
     "bootstrap": ">= 3.0.1",
-    "fontawesome": ">= 4.1.0"
+    "font-awesome": ">=4.2.0"
   }
 }

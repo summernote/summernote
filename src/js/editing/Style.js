@@ -1,20 +1,27 @@
 define([
   'summernote/core/agent',
+  'summernote/core/func',
+  'summernote/core/list',
   'summernote/core/dom'
-], function (agent, dom) {
+], function (agent, func, list, dom) {
   /**
+   * @class editing.Style
+   *
    * Style
-   * @class
+   *
    */
   var Style = function () {
     /**
+     * @method jQueryCSS
+     *
      * passing an array of style properties to .css()
      * will result in an object of property-value pairs.
      * (compability with version < 1.9)
      *
+     * @private
      * @param  {jQuery} $obj
      * @param  {Array} propertyNames - An array of one or more CSS properties.
-     * @returns {Object}
+     * @return {Object}
      */
     var jQueryCSS = function ($obj, propertyNames) {
       if (agent.jqueryVersion < 1.9) {
@@ -39,6 +46,58 @@ define([
       }), function (idx, para) {
         $(para).css(styleInfo);
       });
+    };
+
+    /**
+     * insert and returns styleNodes on range.
+     *
+     * @param {WrappedRange} rng
+     * @param {Object} [options] - options for styleNodes
+     * @param {String} [options.nodeName] - default: `SPAN`
+     * @param {Boolean} [options.expandClosestSibling] - default: `false`
+     * @param {Boolean} [options.onlyPartialContains] - default: `false`
+     * @return {Node[]}
+     */
+    this.styleNodes = function (rng, options) {
+      rng = rng.splitText();
+
+      var nodeName = options && options.nodeName || 'SPAN';
+      var expandClosestSibling = !!(options && options.expandClosestSibling);
+      var onlyPartialContains = !!(options && options.onlyPartialContains);
+
+      if (rng.isCollapsed()) {
+        return rng.insertNode(dom.create(nodeName));
+      }
+
+      var pred = dom.makePredByNodeName(nodeName);
+      var nodes = $.map(rng.nodes(dom.isText, {
+        fullyContains: true
+      }), function (text) {
+        return dom.singleChildAncestor(text, pred) || dom.wrap(text, nodeName);
+      });
+
+      if (expandClosestSibling) {
+        if (onlyPartialContains) {
+          var nodesInRange = rng.nodes();
+          // compose with partial contains predication
+          pred = func.and(pred, function (node) {
+            return list.contains(nodesInRange, node);
+          });
+        }
+
+        return $.map(nodes, function (node) {
+          var siblings = dom.withClosestSiblings(node, pred);
+          var head = list.head(siblings);
+          var tails = list.tail(siblings);
+          $.each(tails, function (idx, elem) {
+            dom.appendChildNodes(head, elem.childNodes);
+            dom.remove(elem);
+          });
+          return list.head(siblings);
+        });
+      } else {
+        return nodes;
+      }
     };
 
     /**

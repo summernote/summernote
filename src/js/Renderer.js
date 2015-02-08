@@ -2,6 +2,8 @@ define([
   'summernote/core/agent', 'summernote/core/dom', 'summernote/core/func'
 ], function (agent, dom, func) {
   /**
+   * @class Renderer
+   *
    * renderer
    *
    * rendering toolbar and editable
@@ -10,14 +12,15 @@ define([
 
     /**
      * bootstrap button template
-     *
-     * @param {String} label
-     * @param {Object} [options]
-     * @param {String} [options.event]
-     * @param {String} [options.value]
-     * @param {String} [options.title]
-     * @param {String} [options.dropdown]
-     * @param {String} [options.hide]
+     * @private
+     * @param {String} label button name
+     * @param {Object} [options] button options
+     * @param {String} [options.event] data-event
+     * @param {String} [options.className] button's class name
+     * @param {String} [options.value] data-value
+     * @param {String} [options.title] button's title for popup
+     * @param {String} [options.dropdown] dropdown html
+     * @param {String} [options.hide] data-hide
      */
     var tplButton = function (label, options) {
       var event = options.event;
@@ -46,7 +49,7 @@ define([
 
     /**
      * bootstrap icon button template
-     *
+     * @private
      * @param {String} iconClassName
      * @param {Object} [options]
      * @param {String} [options.event]
@@ -61,7 +64,7 @@ define([
 
     /**
      * bootstrap popover template
-     *
+     * @private
      * @param {String} className
      * @param {String} content
      */
@@ -78,9 +81,9 @@ define([
      * bootstrap dialog template
      *
      * @param {String} className
-     * @param {String} [title]
+     * @param {String} [title='']
      * @param {String} body
-     * @param {String} [footer]
+     * @param {String} [footer='']
      */
     var tplDialog = function (className, title, body, footer) {
       return '<div class="' + className + ' modal" aria-hidden="false">' +
@@ -150,8 +153,10 @@ define([
       },
       fontname: function (lang, options) {
         var items = options.fontNames.reduce(function (memo, v) {
-          if (!agent.isFontInstalled(v)) { return memo; }
-          return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '">' +
+          if (!agent.isFontInstalled(v) && options.fontNamesIgnoreCheck.indexOf(v) === -1) {
+            return memo;
+          }
+          return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '" style="font-family:\'' + v + '\'">' +
                           '<i class="fa fa-check"></i> ' + v +
                         '</a></li>';
         }, '');
@@ -457,10 +462,12 @@ define([
       var body = [];
 
       for (var i in keys) {
-        body.push(
-          '<div class="' + keyClass + 'key">' + keys[i].kbd + '</div>' +
-          '<div class="' + keyClass + 'name">' + keys[i].text + '</div>'
-          );
+        if (keys.hasOwnProperty(i)) {
+          body.push(
+            '<div class="' + keyClass + 'key">' + keys[i].kbd + '</div>' +
+            '<div class="' + keyClass + 'name">' + keys[i].text + '</div>'
+            );
+        }
       }
 
       return '<div class="note-shortcut-row row"><div class="' + keyClass + 'title col-xs-offset-6">' + title + '</div></div>' +
@@ -472,7 +479,6 @@ define([
         { kbd: '⌘ + B', text: lang.font.bold },
         { kbd: '⌘ + I', text: lang.font.italic },
         { kbd: '⌘ + U', text: lang.font.underline },
-        { kbd: '⌘ + ⇧ + S', text: lang.font.sdivikethrough },
         { kbd: '⌘ + \\', text: lang.font.clear }
       ];
 
@@ -484,7 +490,7 @@ define([
         { kbd: '⌘ + Z', text: lang.history.undo },
         { kbd: '⌘ + ⇧ + Z', text: lang.history.redo },
         { kbd: '⌘ + ]', text: lang.paragraph.indent },
-        { kbd: '⌘ + [', text: lang.paragraph.oudivent },
+        { kbd: '⌘ + [', text: lang.paragraph.outdent },
         { kbd: '⌘ + ENTER', text: lang.hr.insert }
       ];
 
@@ -565,7 +571,7 @@ define([
 
         var body = '<div class="form-group row-fluid note-group-select-from-files">' +
                      '<label>' + lang.image.selectFromFiles + '</label>' +
-                     '<input class="note-image-input" type="file" name="files" accept="image/*" />' +
+                     '<input class="note-image-input" type="file" name="files" accept="image/*" multiple="multiple" />' +
                      imageLimitation +
                    '</div>' +
                    '<div class="form-group row-fluid">' +
@@ -601,9 +607,9 @@ define([
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote @VERSION</a> · ' +
-                     '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
-                     '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
+                     '<a href="//summernote.org/" target="_blank">Summernote @VERSION</a> · ' +
+                     '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ' +
+                     '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
         return tplDialog('note-help-dialog', '', body, '');
       }
@@ -764,8 +770,9 @@ define([
       if (options.direction) {
         $editable.attr('dir', options.direction);
       }
-      if (options.placeholder) {
-        $editable.attr('data-placeholder', options.placeholder);
+      var placeholder = $holder.attr('placeholder') || options.placeholder;
+      if (placeholder) {
+        $editable.attr('data-placeholder', placeholder);
       }
 
       $editable.html(dom.html($holder));
@@ -890,6 +897,13 @@ define([
       }
     };
 
+    /**
+     *
+     * @return {Object}
+     * @return {function(label, options=):string} return.button {@link #tplButton function to make text button}
+     * @return {function(iconClass, options=):string} return.iconButton {@link #tplIconButton function to make icon button}
+     * @return {function(className, title=, body=, footer=):string} return.dialog {@link #tplDialog function to make dialog}
+     */
     this.getTemplate = function () {
       return {
         button: tplButton,
@@ -898,10 +912,21 @@ define([
       };
     };
 
+    /**
+     * add button information
+     *
+     * @param {String} name button name
+     * @param {Function} buttonInfo function to make button, reference to {@link #tplButton},{@link #tplIconButton}
+     */
     this.addButtonInfo = function (name, buttonInfo) {
       tplButtonInfo[name] = buttonInfo;
     };
 
+    /**
+     *
+     * @param {String} name
+     * @param {Function} dialogInfo function to make dialog, reference to {@link #tplDialog}
+     */
     this.addDialogInfo = function (name, dialogInfo) {
       tplDialogInfo[name] = dialogInfo;
     };

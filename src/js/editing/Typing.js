@@ -3,10 +3,18 @@ define([
   'summernote/core/range'
 ], function (dom, range) {
 
+  /**
+   * @class editing.Typing
+   *
+   * Typing
+   *
+   */
   var Typing = function () {
 
     /**
-     * @param {jQuery} $editable 
+     * insert tab
+     *
+     * @param {jQuery} $editable
      * @param {WrappedRange} rng
      * @param {Number} tabsize
      */
