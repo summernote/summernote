@@ -554,11 +554,6 @@ define([
       }).on('drop', function () {
         collection = $();
         layoutInfo.editor.removeClass('dragover');
-      }).on('mouseout', function (e) {
-        collection = collection.not(e.target);
-        if (!collection.length) {
-          layoutInfo.editor.removeClass('dragover');
-        }
       });
 
       // change dropzone's message on hover.
