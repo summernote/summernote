@@ -754,7 +754,7 @@ define([
       var langInfo = options.langInfo;
       
       //00. create id for the editor
-      var id = func.uniqueId();            
+      var id = func.uniqueId();
       
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
