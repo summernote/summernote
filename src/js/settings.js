@@ -53,7 +53,7 @@ define('summernote/settings', function () {
 
       placeholder: false,           // enable placeholder text
       prettifyHtml: true,           // enable prettifying html while toggling codeview
-      
+
       codemirror: {                 // codemirror options
         mode: 'text/html',
         htmlMode: true,

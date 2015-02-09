@@ -262,7 +262,7 @@ define([
      * 
      * destroy Editor Layout and detach Key and Mouse Event
      *
-     * @member $.fn     
+     * @member $.fn
      * @returns {this}
      */
     destroy: function () {
