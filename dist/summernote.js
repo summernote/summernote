@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-02-07T16:10Z
+ * Date: 2015-02-08T09:50Z
  */
 (function (factory) {
   /* global define */
@@ -564,8 +564,14 @@
       return isPara(node) && !isLi(node);
     };
 
+    var isTable = makePredByNodeName('TABLE');
+
     var isInline = function (node) {
-      return !isBodyContainer(node) && !isList(node) && !isPara(node);
+      return !isBodyContainer(node) &&
+             !isList(node) &&
+             !isPara(node) &&
+             !isTable(node) &&
+             !isBlockquote(node);
     };
 
     var isList = function (node) {
@@ -593,6 +599,39 @@
     };
 
     var isBody = makePredByNodeName('BODY');
+
+    /**
+     * returns whether nodeB is closest sibling of nodeA
+     *
+     * @param {Node} nodeA
+     * @param {Node} nodeB
+     * @return {Boolean}
+     */
+    var isClosestSibling = function (nodeA, nodeB) {
+      return nodeA.nextSibling === nodeB ||
+             nodeA.previousSibling === nodeB;
+    };
+
+    /**
+     * returns array of closest siblings with node
+     *
+     * @param {Node} node
+     * @param {function} [pred] - predicate function
+     * @return {Node[]}
+     */
+    var withClosestSiblings = function (node, pred) {
+      pred = pred || func.ok;
+
+      var siblings = [];
+      if (node.previousSibling && pred(node.previousSibling)) {
+        siblings.push(node.previousSibling);
+      }
+      siblings.push(node);
+      if (node.nextSibling && pred(node.nextSibling)) {
+        siblings.push(node.nextSibling);
+      }
+      return siblings;
+    };
 
     /**
      * blank HTML for cursor position
@@ -650,6 +689,25 @@
      */
     var ancestor = function (node, pred) {
       while (node) {
+        if (pred(node)) { return node; }
+        if (isEditable(node)) { break; }
+
+        node = node.parentNode;
+      }
+      return null;
+    };
+
+    /**
+     * find nearest ancestor only single child blood line and predicate hit
+     *
+     * @param {Node} node
+     * @param {Function} pred - predicate function
+     */
+    var singleChildAncestor = function (node, pred) {
+      node = node.parentNode;
+
+      while (node) {
+        if (nodeLength(node) !== 1) { break; }
         if (pred(node)) { return node; }
         if (isEditable(node)) { break; }
 
@@ -1149,6 +1207,39 @@
       });
     };
 
+    /**
+     * split point
+     *
+     * @param {Point} point
+     * @param {Boolean} isInline
+     * @return {Object}
+     */
+    var splitPoint = function (point, isInline) {
+      // find splitRoot, container
+      //  - inline: splitRoot is a child of paragraph
+      //  - block: splitRoot is a child of bodyContainer
+      var pred = isInline ? isPara : isBodyContainer;
+      var ancestors = listAncestor(point.node, pred);
+      var topAncestor = list.last(ancestors) || point.node;
+
+      var splitRoot, container;
+      if (pred(topAncestor)) {
+        splitRoot = ancestors[ancestors.length - 2];
+        container = topAncestor;
+      } else {
+        splitRoot = topAncestor;
+        container = splitRoot.parentNode;
+      }
+
+      // split with splitTree
+      var pivot = splitRoot && splitTree(splitRoot, point, isInline);
+
+      return {
+        rightNode: pivot,
+        container: container
+      };
+    };
+
     var create = function (nodeName) {
       return document.createElement(nodeName);
     };
@@ -1276,6 +1367,7 @@
       blank: blankHTML,
       /** @property {String} emptyPara */
       emptyPara: '<p>' + blankHTML + '</p>',
+      makePredByNodeName: makePredByNodeName,
       isEditable: isEditable,
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
@@ -1288,7 +1380,7 @@
       isBody: isBody,
       isParaInline: isParaInline,
       isList: isList,
-      isTable: makePredByNodeName('TABLE'),
+      isTable: isTable,
       isCell: isCell,
       isBlockquote: isBlockquote,
       isBodyContainer: isBodyContainer,
@@ -1305,6 +1397,8 @@
       isTextarea: isTextarea,
       isEmpty: isEmpty,
       isEmptyAnchor: func.and(isAnchor, isEmpty),
+      isClosestSibling: isClosestSibling,
+      withClosestSiblings: withClosestSiblings,
       nodeLength: nodeLength,
       isLeftEdgePoint: isLeftEdgePoint,
       isRightEdgePoint: isRightEdgePoint,
@@ -1319,6 +1413,7 @@
       nextPointUntil: nextPointUntil,
       walkPoint: walkPoint,
       ancestor: ancestor,
+      singleChildAncestor: singleChildAncestor,
       listAncestor: listAncestor,
       lastAncestor: lastAncestor,
       listNext: listNext,
@@ -1333,6 +1428,7 @@
       makeOffsetPath: makeOffsetPath,
       fromOffsetPath: fromOffsetPath,
       splitTree: splitTree,
+      splitPoint: splitPoint,
       create: create,
       createText: createText,
       remove: remove,
@@ -1815,37 +1911,23 @@
        * @return {Node}
        */
       this.insertNode = function (node) {
-        var rng = this.wrapBodyInlineWithPara();
-        var point = rng.getStartPoint();
-        var isInline = dom.isInline(node);
+        var rng = this.wrapBodyInlineWithPara().deleteContents();
+        var info = dom.splitPoint(rng.getStartPoint(), dom.isInline(node));
 
-        // find splitRoot, container
-        //  - inline: splitRoot is child of paragraph
-        //  - block: splitRoot is child of bodyContainer
-        var pred = isInline ? dom.isPara : dom.isBodyContainer;
-        var ancestors = dom.listAncestor(point.node, pred);
-        var topAncestor = list.last(ancestors) || point.node;
-
-        var splitRoot, container;
-        if (pred(topAncestor)) {
-          splitRoot = ancestors[ancestors.length - 2];
-          container = topAncestor;
+        if (info.rightNode) {
+          info.rightNode.parentNode.insertBefore(node, info.rightNode);
         } else {
-          splitRoot = topAncestor;
-          container = splitRoot.parentNode;
-        }
-
-        var pivot = splitRoot && dom.splitTree(splitRoot, point, isInline);
-
-        if (pivot) {
-          pivot.parentNode.insertBefore(node, pivot);
-        } else {
-          container.appendChild(node);
+          info.container.appendChild(node);
         }
 
         return node;
       };
   
+      /**
+       * returns text in range
+       *
+       * @return {String}
+       */
       this.toString = function () {
         var nativeRng = nativeRange();
         return agent.isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
@@ -1853,6 +1935,7 @@
   
       /**
        * create offsetPath bookmark
+       *
        * @param {Node} editable
        */
       this.bookmark = function (editable) {
@@ -2530,6 +2613,58 @@
       }), function (idx, para) {
         $(para).css(styleInfo);
       });
+    };
+
+    /**
+     * insert and returns styleNodes on range.
+     *
+     * @param {WrappedRange} rng
+     * @param {Object} [options] - options for styleNodes
+     * @param {String} [options.nodeName] - default: `SPAN`
+     * @param {Boolean} [options.expandClosestSibling] - default: `false`
+     * @param {Boolean} [options.onlyPartialContains] - default: `false`
+     * @return {Node[]}
+     */
+    this.styleNodes = function (rng, options) {
+      rng = rng.splitText();
+
+      var nodeName = options && options.nodeName || 'SPAN';
+      var expandClosestSibling = !!(options && options.expandClosestSibling);
+      var onlyPartialContains = !!(options && options.onlyPartialContains);
+
+      if (rng.isCollapsed()) {
+        return rng.insertNode(dom.create(nodeName));
+      }
+
+      var pred = dom.makePredByNodeName(nodeName);
+      var nodes = $.map(rng.nodes(dom.isText, {
+        fullyContains: true
+      }), function (text) {
+        return dom.singleChildAncestor(text, pred) || dom.wrap(text, nodeName);
+      });
+
+      if (expandClosestSibling) {
+        if (onlyPartialContains) {
+          var nodesInRange = rng.nodes();
+          // compose with partial contains predication
+          pred = func.and(pred, function (node) {
+            return list.contains(nodesInRange, node);
+          });
+        }
+
+        return $.map(nodes, function (node) {
+          var siblings = dom.withClosestSiblings(node, pred);
+          var head = list.head(siblings);
+          var tails = list.tail(siblings);
+          $.each(tails, function (idx, elem) {
+            dom.appendChildNodes(head, elem.childNodes);
+            dom.remove(elem);
+          });
+          return list.head(siblings);
+        });
+      } else {
+        return nodes;
+      }
     };
 
     /**
@@ -3425,22 +3560,46 @@
       var linkText = linkInfo.text;
       var isNewWindow = linkInfo.newWindow;
       var rng = linkInfo.range;
+      var isTextChanged = rng.toString() !== linkText;
+
+      beforeCommand($editable);
 
       if (options.onCreateLink) {
         linkUrl = options.onCreateLink(linkUrl);
       }
 
-      rng = rng.deleteContents();
+      var anchors;
+      if (isTextChanged) {
+        // Create a new link when text changed.
+        var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
+        anchors = [anchor];
+      } else {
+        anchors = style.styleNodes(rng, {
+          nodeName: 'A',
+          expandClosestSibling: true,
+          onlyPartialContains: true
+        });
+      }
 
-      // Create a new link when there is no anchor on range.
-      var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
-      $(anchor).attr({
-        href: linkUrl,
-        target: isNewWindow ? '_blank' : ''
+      $.each(anchors, function (idx, anchor) {
+        $(anchor).attr({
+          href: linkUrl,
+          target: isNewWindow ? '_blank' : ''
+        });
       });
 
-      beforeCommand($editable);
-      range.createFromNode(anchor).select();
+      var startRange = range.createFromNode(list.head(anchors)).collapse(true);
+      var startPoint = startRange.getStartPoint();
+      var endRange = range.createFromNode(list.last(anchors)).collapse();
+      var endPoint = endRange.getEndPoint();
+
+      range.create(
+        startPoint.node,
+        startPoint.offset,
+        endPoint.node,
+        endPoint.offset
+      ).select();
+
       afterCommand($editable);
     };
 

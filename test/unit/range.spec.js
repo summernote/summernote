@@ -3,7 +3,11 @@
  * (c) 2013~ Alan Hong
  * summernote may be freely distributed under the MIT license./
  */
-define(['jquery', 'summernote/core/dom', 'summernote/core/range'], function ($, dom, range) {
+define([
+  'jquery',
+  'summernote/core/dom',
+  'summernote/core/range'
+], function ($, dom, range) {
   return function () {
 
     var equalsToUpperCase = function (actual, expected, comment) {
