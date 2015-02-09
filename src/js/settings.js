@@ -48,11 +48,13 @@ define('summernote/settings', function () {
       disableDragAndDrop: false,    // disable drag and drop event
       disableResizeEditor: false,   // disable resizing editor
 
-      dialogZindex: null,         // Option to override the dialog z-index, if none is set, default Bootstrap is used (1050)
-            shortcuts: true,              // enable keyboard shortcuts
+      dialogZindex: null,           // Option to override the dialog z-index, if none is set, default Bootstrap is used (1050)
+      shortcuts: true,              // enable keyboard shortcuts
 
       placeholder: false,           // enable placeholder text
-      prettifyHtml: true,           // enable prettifying html while toggling codeview            codemirror: {                 // codemirror options
+      prettifyHtml: true,           // enable prettifying html while toggling codeview
+      
+      codemirror: {                 // codemirror options
         mode: 'text/html',
         htmlMode: true,
         lineNumbers: true

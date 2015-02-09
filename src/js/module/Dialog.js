@@ -131,7 +131,8 @@ define('summernote/module/Dialog', function () {
         }).one('hidden.bs.modal', function () {
           // detach events
           $linkText.off('input');
-          $linkUrl.off('input');          $linkBtn.off('click');
+          $linkUrl.off('input');
+          $linkBtn.off('click');
 
           if (deferred.state() === 'pending') {
             deferred.reject();

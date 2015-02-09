@@ -606,7 +606,7 @@ define([
         return tplDialog('note-link-dialog', lang.link.insert, body, footer, options);
       },
 
-        return tplDialog('note-video-dialog', lang.video.insert, body, footer, options);
+      help: function (lang, options) {
         var body = '<a class="modal-close pull-right" aria-hidden="true" tabindex="-1">' + lang.shortcut.close + '</a>' +
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
@@ -752,8 +752,11 @@ define([
      */
     this.createLayoutByFrame = function ($holder, options) {
       var langInfo = options.langInfo;
-            //00. create id for the editor
-      var id = func.uniqueId();            //01. create Editor
+      
+      //00. create id for the editor
+      var id = func.uniqueId();            
+      
+      //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
       $editor.attr('id', 'note-editor-' + id);
       if (options.width) {

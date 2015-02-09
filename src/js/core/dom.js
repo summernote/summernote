@@ -879,7 +879,7 @@ define([
      * @method replace
      *
      * replace node with provided nodeName
-     *
+     * 
      * @param {Node} node
      * @param {String} nodeName
      * @return {Node} - new node
@@ -905,7 +905,8 @@ define([
     var isTextarea = makePredByNodeName('TEXTAREA');
 
     /**
-     * @method html     *
+     * @method html     
+     * 
      * get the HTML contents of node
      *
      * @param {jQuery} $node
