@@ -1,14 +1,16 @@
 define('summernote/module/Dialog', function () {
   /**
-   * Dialog 
+   * @class module.Dialog
    *
-   * @class
+   * Dialog
+   *
    */
   var Dialog = function () {
 
     /**
      * toggle button status
      *
+     * @private
      * @param {jQuery} $btn
      * @param {Boolean} isEnable
      */
@@ -36,7 +38,7 @@ define('summernote/module/Dialog', function () {
           // Cloning imageInput to clear element.
           $imageInput.replaceWith($imageInput.clone()
             .on('change', function () {
-              deferred.resolve(this.files);
+              deferred.resolve(this.files || this.value);
               $imageDialog.modal('hide');
             })
             .val('')
@@ -73,44 +75,9 @@ define('summernote/module/Dialog', function () {
     };
 
     /**
-     * Show video dialog and set event handlers on dialog controls.
-     *
-     * @param {jQuery} $dialog 
-     * @param {Object} videoInfo 
-     * @return {Promise}
-     */
-    this.showVideoDialog = function ($editable, $dialog, videoInfo) {
-      return $.Deferred(function (deferred) {
-        var $videoDialog = $dialog.find('.note-video-dialog');
-        var $videoUrl = $videoDialog.find('.note-video-url'),
-            $videoBtn = $videoDialog.find('.note-video-btn');
-
-        $videoDialog.one('shown.bs.modal', function () {
-          $videoUrl.val(videoInfo.text).keyup(function () {
-            toggleBtn($videoBtn, $videoUrl.val());
-          }).trigger('keyup').trigger('focus');
-
-          $videoBtn.click(function (event) {
-            event.preventDefault();
-
-            deferred.resolve($videoUrl.val());
-            $videoDialog.modal('hide');
-          });
-        }).one('hidden.bs.modal', function () {
-          // detach events
-          $videoUrl.off('keyup');
-          $videoBtn.off('click');
-
-          if (deferred.state() === 'pending') {
-            deferred.reject();
-          }
-        }).modal('show');
-      });
-    };
-
-    /**
      * Show link dialog and set event handlers on dialog controls.
      *
+     * @param {jQuery} $editable
      * @param {jQuery} $dialog
      * @param {Object} linkInfo
      * @return {Promise}
@@ -127,7 +94,7 @@ define('summernote/module/Dialog', function () {
         $linkDialog.one('shown.bs.modal', function () {
           $linkText.val(linkInfo.text);
 
-          $linkText.keyup(function () {
+          $linkText.on('input', function () {
             // if linktext was modified by keyup,
             // stop cloning text from linkUrl
             linkInfo.text = $linkText.val();
@@ -139,7 +106,7 @@ define('summernote/module/Dialog', function () {
             toggleBtn($linkBtn, linkInfo.text);
           }
 
-          $linkUrl.keyup(function () {
+          $linkUrl.on('input', function () {
             toggleBtn($linkBtn, $linkUrl.val());
             // display same link on `Text to display` input
             // when create a new link
@@ -163,9 +130,8 @@ define('summernote/module/Dialog', function () {
           });
         }).one('hidden.bs.modal', function () {
           // detach events
-          $linkText.off('keyup');
-          $linkUrl.off('keyup');
-          $linkBtn.off('click');
+          $linkText.off('input');
+          $linkUrl.off('input');          $linkBtn.off('click');
 
           if (deferred.state() === 'pending') {
             deferred.reject();
@@ -177,7 +143,9 @@ define('summernote/module/Dialog', function () {
     /**
      * show help dialog
      *
+     * @param {jQuery} $editable
      * @param {jQuery} $dialog
+     * @return {Promise}
      */
     this.showHelpDialog = function ($editable, $dialog) {
       return $.Deferred(function (deferred) {

@@ -18,6 +18,8 @@ define([
   }
 
   /**
+   * @class EventHandler
+   *
    * EventHandler
    */
   var EventHandler = function () {
@@ -30,10 +32,19 @@ define([
     var handle = new Handle(), dialog = new Dialog();
 
     /**
+     * get editor
+     * @returns {editing.Editor}
+     */
+    this.getEditor = function () {
+      return editor;
+    };
+
+    /**
      * returns makeLayoutInfo from editor's descendant node.
      *
+     * @private
      * @param {Node} descendant
-     * @returns {Object}
+     * @return {Object}
      */
     var makeLayoutInfo = function (descendant) {
       var $target = $(descendant).closest('.note-editor, .note-air-editor, .note-air-layout');
@@ -53,11 +64,16 @@ define([
     /**
      * insert Images from file array.
      *
-     * @param {jQuery} $editable
+     * @private
+     * @param {Object} layoutInfo
      * @param {File[]} files
      */
-    var insertImages = function ($editable, files) {
+    var insertImages = function (layoutInfo, files) {
+      var $editor = layoutInfo.editor(),
+          $editable = layoutInfo.editable();
+
       var callbacks = $editable.data('callbacks');
+      var options = $editor.data('options');
 
       // If onImageUpload options setted
       if (callbacks.onImageUpload) {
@@ -66,13 +82,21 @@ define([
       } else {
         $.each(files, function (idx, file) {
           var filename = file.name;
-          async.readFileAsDataURL(file).then(function (sDataURL) {
-            editor.insertImage($editable, sDataURL, filename);
-          }).fail(function () {
+          if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
             if (callbacks.onImageUploadError) {
-              callbacks.onImageUploadError();
+              callbacks.onImageUploadError(options.langInfo.image.maximumFileSizeError);
+            } else {
+              alert(options.langInfo.image.maximumFileSizeError);
             }
-          });
+          } else {
+            async.readFileAsDataURL(file).then(function (sDataURL) {
+              editor.insertImage($editable, sDataURL, filename);
+            }).fail(function () {
+              if (callbacks.onImageUploadError) {
+                callbacks.onImageUploadError();
+              }
+            });
+          }
         });
       }
     };
@@ -116,25 +140,8 @@ define([
             editor.insertImage($editable, data);
           } else {
             // array of files
-            insertImages($editable, data);
+            insertImages(layoutInfo, data);
           }
-        }).fail(function () {
-          editor.restoreRange($editable);
-        });
-      },
-
-      /**
-       * @param {Object} layoutInfo
-       */
-      showVideoDialog: function (layoutInfo) {
-        var $dialog = layoutInfo.dialog(),
-            $editable = layoutInfo.editable(),
-            videoInfo = editor.getVideoInfo($editable);
-
-        editor.saveRange($editable);
-        dialog.showVideoDialog($editable, $dialog, videoInfo).then(function (sUrl) {
-          editor.restoreRange($editable);
-          editor.insertVideo($editable, sUrl);
         }).fail(function () {
           editor.restoreRange($editable);
         });
@@ -159,10 +166,7 @@ define([
         $editable = layoutInfo.editable(),
         $codable = layoutInfo.codable();
 
-        var options = $editor.data('options');
-
         var resize = function (size) {
-          $editor.css('width', size.w);
           $editable.css('height', size.h);
           $codable.css('height', size.h);
           if ($codable.data('cmeditor')) {
@@ -177,7 +181,6 @@ define([
 
           $window.on('resize', function () {
             resize({
-              w: $window.width(),
               h: $window.height() - $toolbar.outerHeight()
             });
           }).trigger('resize');
@@ -186,7 +189,6 @@ define([
         } else {
           $window.off('resize');
           resize({
-            w: options.width || '',
             h: $editable.data('orgheight')
           });
           $scrollbar.css('overflow', 'visible');
@@ -200,7 +202,8 @@ define([
         $toolbar = layoutInfo.toolbar(),
         $editable = layoutInfo.editable(),
         $codable = layoutInfo.codable(),
-        $popover = layoutInfo.popover();
+        $popover = layoutInfo.popover(),
+        $handle = layoutInfo.handle();
 
         var options = $editor.data('options');
 
@@ -210,10 +213,11 @@ define([
 
         var isCodeview = $editor.hasClass('codeview');
         if (isCodeview) {
-          $codable.val(dom.html($editable, true));
+          $codable.val(dom.html($editable, options.prettifyHtml));
           $codable.height($editable.height());
           toolbar.deactivate($toolbar);
           popover.hide($popover);
+          handle.hide($handle);
           $codable.focus();
 
           // activate CodeMirror as codable
@@ -241,7 +245,7 @@ define([
             cmEditor.toTextArea();
           }
 
-          $editable.html(dom.value($codable) || dom.emptyPara);
+          $editable.html(dom.value($codable, options.prettifyHtml) || dom.emptyPara);
           $editable.height(options.height ? $codable.height() : 'auto');
 
           toolbar.activate($toolbar);
@@ -290,18 +294,50 @@ define([
      */
     var hPasteClipboardImage = function (event) {
       var clipboardData = event.originalEvent.clipboardData;
+      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+      var $editable = layoutInfo.editable();
+
       if (!clipboardData || !clipboardData.items || !clipboardData.items.length) {
+        var callbacks = $editable.data('callbacks');
+        // only can run if it has onImageUpload method
+        if (!callbacks.onImageUpload) {
+          return;
+        }
+
+        // save cursor
+        editor.saveNode($editable);
+        editor.saveRange($editable);
+
+        $editable.html('');
+
+        setTimeout(function () {
+          var $img = $editable.find('img');
+          var datauri = $img[0].src;
+
+          var data = atob(datauri.split(',')[1]);
+          var array = new Uint8Array(data.length);
+          for (var i = 0; i < data.length; i++) {
+            array[i] = data.charCodeAt(i);
+          }
+
+          var blob = new Blob([array], { type : 'image/png'});
+          blob.name = 'clipboard.png';
+
+          editor.restoreNode($editable);
+          editor.restoreRange($editable);
+          insertImages(layoutInfo, [blob]);
+
+          editor.afterCommand($editable);
+        }, 0);
+
         return;
       }
-
-      var layoutInfo = makeLayoutInfo(event.currentTarget || event.target),
-          $editable = layoutInfo.editable();
 
       var item = list.head(clipboardData.items);
       var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
 
       if (isClipboardImage) {
-        insertImages($editable, [item.getAsFile()]);
+        insertImages(layoutInfo, [item.getAsFile()]);
       }
 
       editor.afterCommand($editable);
@@ -339,13 +375,12 @@ define([
           popover.update($popover, {image: target}, isAirMode);
         }).one('mouseup', function () {
           $document.off('mousemove');
+          editor.afterCommand($editable);
         });
 
         if (!$target.data('ratio')) { // original ratio.
           $target.data('ratio', $target.height() / $target.width());
         }
-
-        editor.afterCommand($editable);
       }
     };
 
@@ -367,8 +402,6 @@ define([
 
         var layoutInfo = makeLayoutInfo(event.target);
 
-        event.preventDefault();
-
         // before command: detect control selection element($target)
         var $target;
         if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'imageShape']) !== -1) {
@@ -381,18 +414,17 @@ define([
         if (hide) {
           $btn.parents('.popover').hide();
         }
-        
-        if (editor[eventName]) { // on command
+
+        if ($.isFunction($.summernote.pluginEvents[eventName])) {
+          $.summernote.pluginEvents[eventName](event, editor, layoutInfo, value);
+        } else if (editor[eventName]) { // on command
           var $editable = layoutInfo.editable();
           $editable.trigger('focus');
           editor[eventName]($editable, value, $target);
+          event.preventDefault();
         } else if (commands[eventName]) {
           commands[eventName].call(this, layoutInfo);
-        } else if ($.summernote.plugins[eventName]) {
-          var plugin = $.summernote.plugins[eventName];
-          if ($.isFunction(plugin.event)) {
-            plugin.event(event, editor, layoutInfo);
-          }
+          event.preventDefault();
         }
 
         // after command
@@ -480,16 +512,16 @@ define([
      * Drag and Drop Events
      *
      * @param {Object} layoutInfo - layout Informations
-     * @param {Boolean} disableDragAndDrop
+     * @param {Object} options
      */
-    var handleDragAndDropEvent = function (layoutInfo, disableDragAndDrop) {
-      if (disableDragAndDrop) {
+    var handleDragAndDropEvent = function (layoutInfo, options) {
+      if (options.disableDragAndDrop) {
         // prevent default drop event
         $document.on('drop', function (e) {
           e.preventDefault();
         });
       } else {
-        attachDragAndDropEvent(layoutInfo);
+        attachDragAndDropEvent(layoutInfo, options);
       }
     };
 
@@ -497,20 +529,22 @@ define([
      * attach Drag and Drop Events
      *
      * @param {Object} layoutInfo - layout Informations
+     * @param {Object} options
      */
-    var attachDragAndDropEvent = function (layoutInfo) {
+    var attachDragAndDropEvent = function (layoutInfo, options) {
       var collection = $(),
           $dropzone = layoutInfo.dropzone,
           $dropzoneMessage = layoutInfo.dropzone.find('.note-dropzone-message');
 
-      // show dropzone on dragenter when dragging a object to document.
+      // show dropzone on dragenter when dragging a object to document
+      // -but only if the editor is visible, i.e. has a positive width and height
       $document.on('dragenter', function (e) {
         var isCodeview = layoutInfo.editor.hasClass('codeview');
-        if (!isCodeview && !collection.length) {
+        if (!isCodeview && !collection.length && layoutInfo.editor.width() > 0 && layoutInfo.editor.height() > 0) {
           layoutInfo.editor.addClass('dragover');
           $dropzone.width(layoutInfo.editor.width());
           $dropzone.height(layoutInfo.editor.height());
-          $dropzoneMessage.text('Drag Image Here');
+          $dropzoneMessage.text(options.langInfo.image.dragImageHere);
         }
         collection = collection.add(e.target);
       }).on('dragleave', function (e) {
@@ -526,10 +560,10 @@ define([
       // change dropzone's message on hover.
       $dropzone.on('dragenter', function () {
         $dropzone.addClass('hover');
-        $dropzoneMessage.text('Drop Image');
+        $dropzoneMessage.text(options.langInfo.image.dropImage);
       }).on('dragleave', function () {
         $dropzone.removeClass('hover');
-        $dropzoneMessage.text('Drag Image Here');
+        $dropzoneMessage.text(options.langInfo.image.dragImageHere);
       });
 
       // attach dropImage
@@ -537,10 +571,22 @@ define([
         event.preventDefault();
 
         var dataTransfer = event.originalEvent.dataTransfer;
-        if (dataTransfer && dataTransfer.files) {
-          var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+        var html = dataTransfer.getData('text/html');
+        var text = dataTransfer.getData('text/plain');
+
+        var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
+
+        if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
           layoutInfo.editable().focus();
-          insertImages(layoutInfo.editable(), dataTransfer.files);
+          insertImages(layoutInfo, dataTransfer.files);
+        } else if (html) {
+          $(html).each(function () {
+            layoutInfo.editable().focus();
+            editor.insertNode(layoutInfo.editable(), this);
+          });
+        } else if (text) {
+          layoutInfo.editable().focus();
+          editor.insertText(layoutInfo.editable(), text);
         }
       }).on('dragover', false); // prevent default dragover event
     };
@@ -572,17 +618,17 @@ define([
 
         var eventName = keyMap[aKey.join('+')];
         if (eventName) {
-          event.preventDefault();
-
-          if (editor[eventName]) {
+          if ($.summernote.pluginEvents[eventName]) {
+            var plugin = $.summernote.pluginEvents[eventName];
+            if ($.isFunction(plugin)) {
+              plugin(event, editor, layoutInfo);
+            }
+          } else if (editor[eventName]) {
             editor[eventName]($editable, $editor.data('options'));
+            event.preventDefault();
           } else if (commands[eventName]) {
             commands[eventName].call(this, layoutInfo);
-          } else if ($.summernote.plugins[eventName]) {
-            var plugin = $.summernote.plugins[eventName];
-            if ($.isFunction(plugin.event)) {
-              plugin.event(event, editor, layoutInfo);
-            }
+            event.preventDefault();
           }
         } else if (key.isEdit(event.keyCode)) {
           editor.afterCommand($editable);
@@ -595,11 +641,20 @@ define([
      *
      * @param {Object} layoutInfo - layout Informations
      * @param {Object} options - user options include custom event handlers
-     * @param {Function} options.enter - enter key handler
+     * @param {function(event)} [options.onenter] - enter key handler
+     * @param {function(event)} [options.onfocus]
+     * @param {function(event)} [options.onblur]
+     * @param {function(event)} [options.onkeyup]
+     * @param {function(event)} [options.onkeydown]
+     * @param {function(event)} [options.onpaste]
+     * @param {function(event)} [options.onToolBarclick]
+     * @param {function(event)} [options.onChange]
      */
     this.attach = function (layoutInfo, options) {
       // handlers for editable
-      this.bindKeyMap(layoutInfo, options.keyMap[agent.isMac ? 'mac' : 'pc']);
+      if (options.shortcuts) {
+        this.bindKeyMap(layoutInfo, options.keyMap[agent.isMac ? 'mac' : 'pc']);
+      }
       layoutInfo.editable.on('mousedown', hMousedown);
       layoutInfo.editable.on('keyup mouseup', hToolbarAndPopoverUpdate);
       layoutInfo.editable.on('scroll', hScroll);
@@ -613,7 +668,7 @@ define([
       // handlers for frame mode (toolbar, statusbar)
       if (!options.airMode) {
         // handler for drag and drop
-        handleDragAndDropEvent(layoutInfo, options.disableDragAndDrop);
+        handleDragAndDropEvent(layoutInfo, options);
 
         // handler for toolbar
         layoutInfo.toolbar.on('click', hToolbarAndPopoverClick);
@@ -640,10 +695,10 @@ define([
       layoutInfo.editor.data('options', options);
 
       // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
-      if (options.styleWithSpan && !agent.isMSIE) {
+      if (!agent.isMSIE) {
         // protect FF Error: NS_ERROR_FAILURE: Failure
         setTimeout(function () {
-          document.execCommand('styleWithCSS', 0, true);
+          document.execCommand('styleWithCSS', 0, options.styleWithSpan);
         }, 0);
       }
 
@@ -683,12 +738,14 @@ define([
       // All editor status will be saved on editable with jquery's data
       // for support multiple editor with singleton object.
       layoutInfo.editable.data('callbacks', {
+        onBeforeChange: options.onBeforeChange,
         onChange: options.onChange,
         onAutoSave: options.onAutoSave,
         onImageUpload: options.onImageUpload,
         onImageUploadError: options.onImageUploadError,
         onFileUpload: options.onFileUpload,
-        onFileUploadError: options.onFileUpload
+        onFileUploadError: options.onFileUpload,
+        onMediaDelete : options.onMediaDelete
       });
     };
 

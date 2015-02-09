@@ -5,11 +5,9 @@
         bold: 'Vet',
         italic: 'Cursief',
         underline: 'Onderstrepen',
-        strikethrough: 'Doorhalen',
         clear: 'Stijl verwijderen',
         height: 'Regelhoogte',
-        name: 'Lettertype',
-        size: 'Tekstgrootte'
+        name: 'Lettertype'
       },
       image: {
         image: 'Afbeelding',
@@ -33,13 +31,6 @@
         textToDisplay: 'Tekst van link',
         url: 'Naar welke URL moet deze link verwijzen?',
         openInNewWindow: 'Open in nieuw venster'
-      },
-      video: {
-        video: 'Video',
-        videoLink: 'Video link',
-        insert: 'Video invoegen',
-        url: 'URL van de video',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion of Youku)'
       },
       table: {
         table: 'Tabel'

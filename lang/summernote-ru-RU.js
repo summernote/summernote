@@ -5,13 +5,9 @@
         bold: 'Полужирный',
         italic: 'Курсив',
         underline: 'Подчёркнутый',
-        strikethrough: 'Зачёркнутый',
-        subscript: 'Нижний индекс',
-        superscript: 'Верхний индекс',
         clear: 'Убрать стили шрифта',
         height: 'Высота линии',
-        name: 'Шрифт',
-        size: 'Размер шрифта'
+        name: 'Шрифт'
       },
       image: {
         image: 'Картинка',
@@ -35,13 +31,6 @@
         textToDisplay: 'Отображаемый текст',
         url: 'URL для перехода',
         openInNewWindow: 'Открывать в новом окне'
-      },
-      video: {
-        video: 'Видео',
-        videoLink: 'Ссылка на видео',
-        insert: 'Вставить видео',
-        url: 'URL видео',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion или Youku)'
       },
       table: {
         table: 'Таблица'
@@ -95,7 +84,7 @@
         textFormatting: 'Форматирование текста',
         action: 'Действие',
         paragraphFormatting: 'Форматирование параграфа',
-        documentStyle: 'Стиль документа', 
+        documentStyle: 'Стиль документа',
         extraKeys: 'Дополнительные комбинации'
       },
       history: {

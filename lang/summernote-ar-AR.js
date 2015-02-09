@@ -5,11 +5,9 @@
         bold: 'عريض',
         italic: 'مائل',
         underline: 'تحته خط',
-        strikethrough: 'فى وسطه خط',
         clear: 'مسح التنسيق',
         height: 'إرتفاع السطر',
-        name: 'الخط',
-        size: 'الحجم'
+        name: 'الخط'
       },
       image: {
         image: 'صورة',
@@ -33,13 +31,6 @@
         textToDisplay: 'النص',
         url: 'مسار الرابط',
         openInNewWindow: 'فتح في نافذة جديدة'
-      },
-      video: {
-        video: 'فيديو',
-        videoLink: 'رابط الفيديو',
-        insert: 'إدراج الفيديو',
-        url: 'رابط الفيديو',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ou Youku)'
       },
       table: {
         table: 'جدول'

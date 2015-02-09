@@ -1,10 +1,36 @@
 define('summernote/settings', function () {
+  /**
+   * @class settings 
+   * 
+   * @singleton
+   */
   var settings = {
-    // version
+    /** @property */
     version: '@VERSION',
 
     /**
-     * options
+     * 
+     * for event options, reference to EventHandler.attach
+     * 
+     * @property {Object} options 
+     * @property {String/Number} [options.width=null] set editor width 
+     * @property {String/Number} [options.height=null] set editor height, ex) 300
+     * @property {String/Number} options.minHeight set minimum height of editor
+     * @property {String/Number} options.maxHeight
+     * @property {String/Number} options.focus 
+     * @property {Number} options.tabsize 
+     * @property {Boolean} options.styleWithSpan
+     * @property {Object} options.codemirror
+     * @property {Object} [options.codemirror.mode='text/html']
+     * @property {Object} [options.codemirror.htmlMode=true]
+     * @property {Object} [options.codemirror.lineNumbers=true]
+     * @property {String} [options.lang=en-US] language 'en-US', 'ko-KR', ...
+     * @property {String} [options.direction=null] text direction, ex) 'rtl'
+     * @property {Array} [options.toolbar]
+     * @property {Boolean} [options.airMode=false]
+     * @property {Array} [options.airPopover]
+     * @property {Fucntion} [options.onInit] initialize
+     * @property {Fucntion} [options.onsubmit]
      */
     options: {
       width: null,                  // set editor width
@@ -23,8 +49,10 @@ define('summernote/settings', function () {
       disableResizeEditor: false,   // disable resizing editor
 
       dialogZindex: null,         // Option to override the dialog z-index, if none is set, default Bootstrap is used (1050)
-      
-      codemirror: {                 // codemirror options
+            shortcuts: true,              // enable keyboard shortcuts
+
+      placeholder: false,           // enable placeholder text
+      prettifyHtml: true,           // enable prettifying html while toggling codeview            codemirror: {                 // codemirror options
         mode: 'text/html',
         htmlMode: true,
         lineNumbers: true
@@ -37,14 +65,13 @@ define('summernote/settings', function () {
       // toolbar
       toolbar: [
         ['style', ['style']],
-        ['font', ['bold', 'italic', 'underline', 'superscript', 'subscript', 'strikethrough', 'clear']],
+        ['font', ['bold', 'italic', 'underline', 'clear']],
         ['fontname', ['fontname']],
-        // ['fontsize', ['fontsize']], // Still buggy
         ['color', ['color']],
         ['para', ['ul', 'ol', 'paragraph']],
         ['height', ['height']],
         ['table', ['table']],
-        ['insert', ['link', 'picture', 'video', 'hr']],
+        ['insert', ['link', 'picture', 'hr']],
         ['view', ['fullscreen', 'codeview']],
         ['help', ['help']]
       ],
@@ -55,12 +82,11 @@ define('summernote/settings', function () {
       //   ['style', ['style']],
       //   ['font', ['bold', 'italic', 'underline', 'clear']],
       //   ['fontname', ['fontname']],
-      //   ['fontsize', ['fontsize']], // Still buggy
       //   ['color', ['color']],
       //   ['para', ['ul', 'ol', 'paragraph']],
       //   ['height', ['height']],
       //   ['table', ['table']],
-      //   ['insert', ['link', 'picture', 'video']],
+      //   ['insert', ['link', 'picture']],
       //   ['help', ['help']]
       // ],
       airPopover: [
@@ -83,6 +109,7 @@ define('summernote/settings', function () {
         'Helvetica Neue', 'Impact', 'Lucida Grande',
         'Tahoma', 'Times New Roman', 'Verdana'
       ],
+      fontNamesIgnoreCheck: [],
 
       // pallete colors(n x n)
       colors: [
@@ -96,9 +123,6 @@ define('summernote/settings', function () {
         ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031']
       ],
 
-      // fontSize
-      fontSizes: ['8', '9', '10', '11', '12', '14', '18', '24', '36'],
-
       // lineHeight
       lineHeights: ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'],
 
@@ -107,6 +131,9 @@ define('summernote/settings', function () {
         col: 10,
         row: 10
       },
+
+      // image
+      maximumImageFileSize: null, // size in bytes, null = no limit
 
       // callbacks
       oninit: null,             // initialize
@@ -117,7 +144,9 @@ define('summernote/settings', function () {
       onkeydown: null,          // keydown
       onImageUpload: null,      // imageUpload
       onImageUploadError: null, // imageUploadError
+      onMediaDelete: null,      // media delete
       onToolbarClick: null,
+      onsubmit: null,
 
       /**
        * manipulate link address when user create link
@@ -204,13 +233,9 @@ define('summernote/settings', function () {
           bold: 'Bold',
           italic: 'Italic',
           underline: 'Underline',
-          strikethrough: 'Strikethrough',
-          subscript: 'Subscript',
-          superscript: 'Superscript',
           clear: 'Remove Font Style',
           height: 'Line Height',
-          name: 'Font Family',
-          size: 'Font Size'
+          name: 'Font Family'
         },
         image: {
           image: 'Picture',
@@ -225,8 +250,11 @@ define('summernote/settings', function () {
           shapeCircle: 'Shape: Circle',
           shapeThumbnail: 'Shape: Thumbnail',
           shapeNone: 'Shape: None',
-          dragImageHere: 'Drag an image here',
+          dragImageHere: 'Drag image or text here',
+          dropImage: 'Drop image or Text',
           selectFromFiles: 'Select from files',
+          maximumFileSize: 'Maximum file size',
+          maximumFileSizeError: 'Maximum file size exceeded.',
           url: 'Image URL',
           remove: 'Remove Image'
         },
@@ -238,13 +266,6 @@ define('summernote/settings', function () {
           textToDisplay: 'Text to display',
           url: 'To what URL should this link go?',
           openInNewWindow: 'Open in new window'
-        },
-        video: {
-          video: 'Video',
-          videoLink: 'Video Link',
-          insert: 'Insert Video',
-          url: 'Video URL?',
-          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
         },
         table: {
           table: 'Table'
@@ -298,7 +319,8 @@ define('summernote/settings', function () {
           textFormatting: 'Text formatting',
           action: 'Action',
           paragraphFormatting: 'Paragraph formatting',
-          documentStyle: 'Document Style'
+          documentStyle: 'Document Style',
+          extraKeys: 'Extra keys'
         },
         history: {
           undo: 'Undo',

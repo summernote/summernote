@@ -1,7 +1,9 @@
 define(['summernote/core/range'], function (range) {
   /**
-   * History
-   * @class
+   * @class editing.History
+   *
+   * Editor History
+   *
    */
   var History = function ($editable) {
     var stack = [], stackOffset = -1;
@@ -26,6 +28,9 @@ define(['summernote/core/range'], function (range) {
       }
     };
 
+    /**
+     * undo
+     */
     this.undo = function () {
       if (0 < stackOffset) {
         stackOffset--;
@@ -33,6 +38,9 @@ define(['summernote/core/range'], function (range) {
       }
     };
 
+    /**
+     * redo
+     */
     this.redo = function () {
       if (stack.length - 1 > stackOffset) {
         stackOffset++;
@@ -40,6 +48,9 @@ define(['summernote/core/range'], function (range) {
       }
     };
 
+    /**
+     * recorded undo
+     */
     this.recordUndo = function () {
       stackOffset++;
 

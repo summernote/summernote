@@ -2,14 +2,12 @@
   $.extend($.summernote.lang, {
     'vi-VN': {
       font: {
-		bold: 'In Đậm',
+        bold: 'In Đậm',
         italic: 'In Nghiên',
         underline: 'Gạch Dưới',
-        strikethrough: 'Gạch Ngang',
         clear: 'Bỏ Định Dạng',
         height: 'Khoảng Cách Hàng',
-        size: 'Cỡ Chữ',
-		name: 'Phông Chữ',
+        name: 'Phông Chữ'
       },
       image: {
         image: 'Hình Ảnh',
@@ -33,13 +31,6 @@
         textToDisplay: 'Text Hiển Thị',
         url: 'URL',
         openInNewWindow: 'Mở ở Cửa Sổ Mới'
-      },
-      video: {
-        video: 'Video',
-        videoLink: 'Đường Dẫn đến Video',
-        insert: 'Chèn Video',
-        url: 'URL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion và Youku)'
       },
       table: {
         table: 'Bảng'

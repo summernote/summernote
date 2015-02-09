@@ -8,10 +8,17 @@ define([
   var ZERO_WIDTH_NBSP_CHAR = '\ufeff';
 
   /**
+   * @class core.dom
+   *
    * Dom functions
+   *
+   * @singleton
+   * @alternateClassName dom
    */
   var dom = (function () {
     /**
+     * @method isEditable
+     *
      * returns whether node is `note-editable` or not.
      *
      * @param {Node} node
@@ -22,6 +29,8 @@ define([
     };
 
     /**
+     * @method isControlSizing
+     *
      * returns whether node is `note-control-sizing` or not.
      *
      * @param {Node} node
@@ -32,10 +41,20 @@ define([
     };
 
     /**
+     * @method  buildLayoutInfo
+     *
      * build layoutInfo from $editor(.note-editor)
      *
      * @param {jQuery} $editor
      * @return {Object}
+     * @return {Function} return.editor
+     * @return {Node} return.dropzone
+     * @return {Node} return.toolbar
+     * @return {Node} return.editable
+     * @return {Node} return.codable
+     * @return {Node} return.popover
+     * @return {Node} return.handle
+     * @return {Node} return.dialog
      */
     var buildLayoutInfo = function ($editor) {
       // get the id from the editor
@@ -77,10 +96,12 @@ define([
     };
 
     /**
+     * @method makePredByNodeName
+     *
      * returns predicate which judge whether nodeName is same
      *
      * @param {String} nodeName
-     * @return {String}
+     * @return {Function}
      */
     var makePredByNodeName = function (nodeName) {
       nodeName = nodeName.toUpperCase();
@@ -89,6 +110,14 @@ define([
       };
     };
 
+    /**
+     * @method isText
+     *
+     *
+     *
+     * @param {Node} node
+     * @return {Boolean} true if node's type is text(3)
+     */
     var isText = function (node) {
       return node && node.nodeType === 3;
     };
@@ -116,8 +145,14 @@ define([
       return isPara(node) && !isLi(node);
     };
 
+    var isTable = makePredByNodeName('TABLE');
+
     var isInline = function (node) {
-      return !isBodyContainer(node) && !isList(node) && !isPara(node);
+      return !isBodyContainer(node) &&
+             !isList(node) &&
+             !isPara(node) &&
+             !isTable(node) &&
+             !isBlockquote(node);
     };
 
     var isList = function (node) {
@@ -147,11 +182,46 @@ define([
     var isBody = makePredByNodeName('BODY');
 
     /**
+     * returns whether nodeB is closest sibling of nodeA
+     *
+     * @param {Node} nodeA
+     * @param {Node} nodeB
+     * @return {Boolean}
+     */
+    var isClosestSibling = function (nodeA, nodeB) {
+      return nodeA.nextSibling === nodeB ||
+             nodeA.previousSibling === nodeB;
+    };
+
+    /**
+     * returns array of closest siblings with node
+     *
+     * @param {Node} node
+     * @param {function} [pred] - predicate function
+     * @return {Node[]}
+     */
+    var withClosestSiblings = function (node, pred) {
+      pred = pred || func.ok;
+
+      var siblings = [];
+      if (node.previousSibling && pred(node.previousSibling)) {
+        siblings.push(node.previousSibling);
+      }
+      siblings.push(node);
+      if (node.nextSibling && pred(node.nextSibling)) {
+        siblings.push(node.nextSibling);
+      }
+      return siblings;
+    };
+
+    /**
      * blank HTML for cursor position
      */
     var blankHTML = agent.isMSIE ? '&nbsp;' : '<br>';
 
     /**
+     * @method nodeLength
+     *
      * returns #text's text size or element's childNodes size
      *
      * @param {Node} node
@@ -200,6 +270,25 @@ define([
      */
     var ancestor = function (node, pred) {
       while (node) {
+        if (pred(node)) { return node; }
+        if (isEditable(node)) { break; }
+
+        node = node.parentNode;
+      }
+      return null;
+    };
+
+    /**
+     * find nearest ancestor only single child blood line and predicate hit
+     *
+     * @param {Node} node
+     * @param {Function} pred - predicate function
+     */
+    var singleChildAncestor = function (node, pred) {
+      node = node.parentNode;
+
+      while (node) {
+        if (nodeLength(node) !== 1) { break; }
         if (pred(node)) { return node; }
         if (isEditable(node)) { break; }
 
@@ -532,6 +621,8 @@ define([
     };
 
     /**
+     * @method prevPointUtil
+     *
      * @param {BoundaryPoint} point
      * @param {Function} pred
      * @return {BoundaryPoint}
@@ -549,6 +640,8 @@ define([
     };
 
     /**
+     * @method nextPointUntil
+     *
      * @param {BoundaryPoint} point
      * @param {Function} pred
      * @return {BoundaryPoint}
@@ -566,6 +659,8 @@ define([
     };
 
     /**
+     * @method walkPoint
+     *
      * @param {BoundaryPoint} startPoint
      * @param {BoundaryPoint} endPoint
      * @param {Function} handler
@@ -589,6 +684,8 @@ define([
     };
 
     /**
+     * @method makeOffsetPath
+     *
      * return offsetPath(array of offset) from ancestor
      *
      * @param {Node} ancestor - ancestor node
@@ -600,24 +697,28 @@ define([
     };
 
     /**
+     * @method fromOffsetPath
+     *
      * return element from offsetPath(array of offset)
      *
      * @param {Node} ancestor - ancestor node
-     * @param {array} aOffset - offsetPath
+     * @param {array} offsets - offsetPath
      */
-    var fromOffsetPath = function (ancestor, aOffset) {
+    var fromOffsetPath = function (ancestor, offsets) {
       var current = ancestor;
-      for (var i = 0, len = aOffset.length; i < len; i++) {
-        if (current.childNodes.length <= aOffset[i]) {
+      for (var i = 0, len = offsets.length; i < len; i++) {
+        if (current.childNodes.length <= offsets[i]) {
           current = current.childNodes[current.childNodes.length - 1];
         } else {
-          current = current.childNodes[aOffset[i]];
+          current = current.childNodes[offsets[i]];
         }
       }
       return current;
     };
 
     /**
+     * @method splitNode
+     *
      * split element or #text
      *
      * @param {BoundaryPoint} point
@@ -651,6 +752,8 @@ define([
     };
 
     /**
+     * @method splitTree
+     *
      * split tree by point
      *
      * @param {Node} root - split root
@@ -685,6 +788,39 @@ define([
       });
     };
 
+    /**
+     * split point
+     *
+     * @param {Point} point
+     * @param {Boolean} isInline
+     * @return {Object}
+     */
+    var splitPoint = function (point, isInline) {
+      // find splitRoot, container
+      //  - inline: splitRoot is a child of paragraph
+      //  - block: splitRoot is a child of bodyContainer
+      var pred = isInline ? isPara : isBodyContainer;
+      var ancestors = listAncestor(point.node, pred);
+      var topAncestor = list.last(ancestors) || point.node;
+
+      var splitRoot, container;
+      if (pred(topAncestor)) {
+        splitRoot = ancestors[ancestors.length - 2];
+        container = topAncestor;
+      } else {
+        splitRoot = topAncestor;
+        container = splitRoot.parentNode;
+      }
+
+      // split with splitTree
+      var pivot = splitRoot && splitTree(splitRoot, point, isInline);
+
+      return {
+        rightNode: pivot,
+        container: container
+      };
+    };
+
     var create = function (nodeName) {
       return document.createElement(nodeName);
     };
@@ -694,7 +830,10 @@ define([
     };
 
     /**
+     * @method remove
+     *
      * remove node, (isRemoveChild: remove child or not)
+     *
      * @param {Node} node
      * @param {Boolean} isRemoveChild
      */
@@ -719,6 +858,8 @@ define([
     };
 
     /**
+     * @method removeWhile
+     *
      * @param {Node} node
      * @param {Function} pred
      */
@@ -735,6 +876,8 @@ define([
     };
 
     /**
+     * @method replace
+     *
      * replace node with provided nodeName
      *
      * @param {Node} node
@@ -762,6 +905,7 @@ define([
     var isTextarea = makePredByNodeName('TEXTAREA');
 
     /**
+     * @method html     *
      * get the HTML contents of node
      *
      * @param {jQuery} $node
@@ -786,21 +930,29 @@ define([
       return markup;
     };
 
-    var value = function ($textarea) {
+    var value = function ($textarea, stripLinebreaks) {
       var val = $textarea.val();
-      // strip line breaks
-      return val.replace(/[\n\r]/g, '');
+      if (stripLinebreaks) {
+        return val.replace(/[\n\r]/g, '');
+      }
+      return val;
     };
 
     return {
+      /** @property {String} NBSP_CHAR */
       NBSP_CHAR: NBSP_CHAR,
+      /** @property {String} ZERO_WIDTH_NBSP_CHAR */
       ZERO_WIDTH_NBSP_CHAR: ZERO_WIDTH_NBSP_CHAR,
+      /** @property {String} blank */
       blank: blankHTML,
+      /** @property {String} emptyPara */
       emptyPara: '<p>' + blankHTML + '</p>',
+      makePredByNodeName: makePredByNodeName,
       isEditable: isEditable,
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
       isText: isText,
+      isVoid: isVoid,
       isPara: isPara,
       isPurePara: isPurePara,
       isInline: isInline,
@@ -808,13 +960,14 @@ define([
       isBody: isBody,
       isParaInline: isParaInline,
       isList: isList,
-      isTable: makePredByNodeName('TABLE'),
+      isTable: isTable,
       isCell: isCell,
       isBlockquote: isBlockquote,
       isBodyContainer: isBodyContainer,
       isAnchor: isAnchor,
       isDiv: makePredByNodeName('DIV'),
       isLi: isLi,
+      isBR: makePredByNodeName('BR'),
       isSpan: makePredByNodeName('SPAN'),
       isB: makePredByNodeName('B'),
       isU: makePredByNodeName('U'),
@@ -824,6 +977,8 @@ define([
       isTextarea: isTextarea,
       isEmpty: isEmpty,
       isEmptyAnchor: func.and(isAnchor, isEmpty),
+      isClosestSibling: isClosestSibling,
+      withClosestSiblings: withClosestSiblings,
       nodeLength: nodeLength,
       isLeftEdgePoint: isLeftEdgePoint,
       isRightEdgePoint: isRightEdgePoint,
@@ -838,6 +993,7 @@ define([
       nextPointUntil: nextPointUntil,
       walkPoint: walkPoint,
       ancestor: ancestor,
+      singleChildAncestor: singleChildAncestor,
       listAncestor: listAncestor,
       lastAncestor: lastAncestor,
       listNext: listNext,
@@ -852,6 +1008,7 @@ define([
       makeOffsetPath: makeOffsetPath,
       fromOffsetPath: fromOffsetPath,
       splitTree: splitTree,
+      splitPoint: splitPoint,
       create: create,
       createText: createText,
       remove: remove,
