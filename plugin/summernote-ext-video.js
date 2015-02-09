@@ -218,13 +218,13 @@
      * @property {function(object, object): string} dialogs.video
     */
     dialogs: {
-      video: function (lang) {
+      video: function (lang, options) {
         var body = '<div class="form-group row-fluid">' +
                      '<label>' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
                      '<input class="note-video-url form-control span12" type="text" />' +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
-        return tmpl.dialog('note-video-dialog', lang.video.insert, body, footer);
+        return tmpl.dialog('note-video-dialog', lang.video.insert, body, footer, options);
       }
     },
     /**
