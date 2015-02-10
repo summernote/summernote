@@ -24,3 +24,4 @@ deploy:
     secure: TYJfuTLZKbYvTskuMlmuKnQb5F35GFPN2AqSf0RtZYWGLozIaIkKcpTVbjzo859FWuxPjci53FGiJih3+0iVfIC39CDTrFZutubn8qduOfRAVTL1WzeQvdww8miJNwUY59HmoOa78OtbNCVg/N7zFSZzRXAcgje8IADQFIISwk8=
   on:
     tags: true
+    branch: develop
