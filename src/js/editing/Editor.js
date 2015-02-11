@@ -453,7 +453,6 @@ define([
 
     /**
      * fontsize
-     * FIXME: Still buggy
      *
      * @param {jQuery} $editable
      * @param {String} value - px
@@ -461,16 +460,13 @@ define([
     this.fontSize = function ($editable, value) {
       beforeCommand($editable);
 
-      document.execCommand('fontSize', false, 3);
-      if (agent.isFF) {
-        // firefox: <font size="3"> to <span style='font-size={value}px;'>, buggy
-        $editable.find('font[size=3]').removeAttr('size').css('font-size', value + 'px');
-      } else {
-        // chrome: <span style="font-size: medium"> to <span style='font-size={value}px;'>
-        $editable.find('span').filter(function () {
-          return this.style.fontSize === 'medium';
-        }).css('font-size', value + 'px');
-      }
+      var rng = this.createRange($editable);
+      var spans = style.styleNodes(rng);
+      $.each(spans, function (idx, span) {
+        $(span).css({
+          'font-size': value + 'px'
+        });
+      });
 
       afterCommand($editable);
     };
