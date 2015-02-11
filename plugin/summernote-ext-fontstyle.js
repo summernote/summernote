@@ -8,7 +8,7 @@
     factory(window.jQuery);
   }
 }(function ($) {
-  // template, editor
+  // template
   var tmpl = $.summernote.renderer.getTemplate();
 
   /**

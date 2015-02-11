@@ -8,9 +8,8 @@
     factory(window.jQuery);
   }
 }(function ($) {
-  // template, editor
+  // template
   var tmpl = $.summernote.renderer.getTemplate();
-  var editor = $.summernote.eventHandler.getEditor();
 
   /**
    * @class plugin.hello 
@@ -65,21 +64,21 @@
      * @property {Function} events.helloImage run function when button that has a 'helloImage' event name  fires click
      */
     events: { // events
-      hello: function (layoutInfo) {
+      hello: function (event, editor, layoutInfo) {
         // Get current editable node
         var $editable = layoutInfo.editable();
 
         // Call insertText with 'hello'
         editor.insertText($editable, 'hello ');
       },
-      helloDropdown: function (layoutInfo, value) {
+      helloDropdown: function (event, editor, layoutInfo, value) {
         // Get current editable node
         var $editable = layoutInfo.editable();
 
         // Call insertText with 'hello'
         editor.insertText($editable, 'hello ' + value + '!!!!');
       },
-      helloImage : function (layoutInfo) {
+      helloImage : function (event, editor, layoutInfo) {
         var $editable = layoutInfo.editable();
 
         var img = $('<img src="http://upload.wikimedia.org/wikipedia/commons/b/b0/NewTux.svg" />');
