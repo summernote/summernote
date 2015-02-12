@@ -152,16 +152,22 @@ define([
         });
       },
       fontname: function (lang, options) {
+        var realFontList = [];
         var items = options.fontNames.reduce(function (memo, v) {
           if (!agent.isFontInstalled(v) && options.fontNamesIgnoreCheck.indexOf(v) === -1) {
             return memo;
           }
+          realFontList.push(v);
           return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '" style="font-family:\'' + v + '\'">' +
                           '<i class="fa fa-check"></i> ' + v +
                         '</a></li>';
         }, '');
+
+        var hasDefaultFont = agent.isFontInstalled(options.defaultFontName);
+        var defaultFontName = (hasDefaultFont) ? options.defaultFontName : realFontList[0];
+          
         var label = '<span class="note-current-fontname">' +
-                       options.defaultFontName +
+                        defaultFontName +
                      '</span>';
         return tplButton(label, {
           title: lang.font.name,

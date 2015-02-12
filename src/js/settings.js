@@ -107,7 +107,7 @@ define('summernote/settings', function () {
       // fontName
       fontNames: [
         'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New',
-        'Helvetica Neue', 'Impact', 'Lucida Grande',
+        'Helvetica Neue', 'Helvetica', 'Impact', 'Lucida Grande',
         'Tahoma', 'Times New Roman', 'Verdana'
       ],
       fontNamesIgnoreCheck: [],

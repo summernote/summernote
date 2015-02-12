@@ -264,6 +264,9 @@ define([
 
     /**
      * @method fontName
+     * 
+     * change fornt name 
+     *
      * @param {jQuery} $editable
      * @param {Mixed} value
      */
