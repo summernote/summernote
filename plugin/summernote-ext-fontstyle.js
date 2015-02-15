@@ -28,7 +28,7 @@
    *    $("#editor").summernote({
    *    ...
    *    toolbar : [
-   *        ['group', [ 'fontsize' ]]
+   *        ['group', [ 'fontsize', 'strikethrough', 'superscript', 'subscript' ]]
    *    ]
    *    ...    
    *    }); 
