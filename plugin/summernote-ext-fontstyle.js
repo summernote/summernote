@@ -94,7 +94,6 @@
      */
     events: { // events
       strikethrough: function (layoutInfo) {
-        console.log(layoutInfo);
         editor.strikethrough(layoutInfo.editable());
       },
       superscript: function (layoutInfo) {
