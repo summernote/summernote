@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-02-08T09:50Z
+ * Date: 2015-02-09T19:44Z
  */
 (function (factory) {
   /* global define */
@@ -478,38 +478,40 @@
      * @return {Node} return.dialog
      */
     var buildLayoutInfo = function ($editor) {
-      var makeFinder;
+      // get the id from the editor
+      var id = list.last($editor.attr('id').split('-'));
+
+      var makeFinder = {
+        byId: function (sIdPrefix) {
+          return function () { return $(sIdPrefix + id); };
+        },
+        inEditor: function (sClassName) {
+          return function () { return $editor.find(sClassName); };
+        }
+      };
 
       // air mode
       if ($editor.hasClass('note-air-editor')) {
-        var id = list.last($editor.attr('id').split('-'));
-        makeFinder = function (sIdPrefix) {
-          return function () { return $(sIdPrefix + id); };
-        };
-
         return {
           editor: function () { return $editor; },
           editable: function () { return $editor; },
-          popover: makeFinder('#note-popover-'),
-          handle: makeFinder('#note-handle-'),
-          dialog: makeFinder('#note-dialog-')
+          popover: makeFinder.byId('#note-popover-'),
+          handle: makeFinder.byId('#note-handle-'),
+          dialog: makeFinder.byId('#note-dialog-')
         };
 
         // frame mode
       } else {
-        makeFinder = function (sClassName) {
-          return function () { return $editor.find(sClassName); };
-        };
         return {
           editor: function () { return $editor; },
-          dropzone: makeFinder('.note-dropzone'),
-          toolbar: makeFinder('.note-toolbar'),
-          editable: makeFinder('.note-editable'),
-          codable: makeFinder('.note-codable'),
-          statusbar: makeFinder('.note-statusbar'),
-          popover: makeFinder('.note-popover'),
-          handle: makeFinder('.note-handle'),
-          dialog: makeFinder('.note-dialog')
+          dropzone: makeFinder.inEditor('.note-dropzone'),
+          toolbar: makeFinder.inEditor('.note-toolbar'),
+          editable: makeFinder.inEditor('.note-editable'),
+          codable: makeFinder.inEditor('.note-codable'),
+          statusbar: makeFinder.inEditor('.note-statusbar'),
+          popover: makeFinder.inEditor('.note-popover'),
+          handle: makeFinder.inEditor('.note-handle'),
+          dialog: makeFinder.byId('#note-dialog-')
         };
       }
     };
@@ -1021,7 +1023,7 @@
 
     /**
      * returns whether point is visible (can set cursor) or not.
-     * 
+     *
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
@@ -1278,7 +1280,7 @@
 
     /**
      * @method removeWhile
-     *
+     * 
      * @param {Node} node
      * @param {Function} pred
      */
@@ -2164,6 +2166,7 @@
       disableDragAndDrop: false,    // disable drag and drop event
       disableResizeEditor: false,   // disable resizing editor
 
+      dialogZindex: null,           // Option to override the dialog z-index, if none is set, default Bootstrap is used (1050)
       shortcuts: true,              // enable keyboard shortcuts
 
       placeholder: false,           // enable placeholder text
@@ -4888,10 +4891,11 @@
           $dropzone = layoutInfo.dropzone,
           $dropzoneMessage = layoutInfo.dropzone.find('.note-dropzone-message');
 
-      // show dropzone on dragenter when dragging a object to document.
+      // show dropzone on dragenter when dragging a object to document
+      // -but only if the editor is visible, i.e. has a positive width and height
       $document.on('dragenter', function (e) {
         var isCodeview = layoutInfo.editor.hasClass('codeview');
-        if (!isCodeview && !collection.length) {
+        if (!isCodeview && !collection.length && layoutInfo.editor.width() > 0 && layoutInfo.editor.height() > 0) {
           layoutInfo.editor.addClass('dragover');
           $dropzone.width(layoutInfo.editor.width());
           $dropzone.height(layoutInfo.editor.height());
@@ -4906,11 +4910,6 @@
       }).on('drop', function () {
         collection = $();
         layoutInfo.editor.removeClass('dragover');
-      }).on('mouseout', function (e) {
-        collection = collection.not(e.target);
-        if (!collection.length) {
-          layoutInfo.editor.removeClass('dragover');
-        }
       });
 
       // change dropzone's message on hover.
@@ -5204,8 +5203,12 @@
      * @param {String} body
      * @param {String} [footer='']
      */
-    var tplDialog = function (className, title, body, footer) {
-      return '<div class="' + className + ' modal" aria-hidden="false">' +
+    var tplDialog = function (className, title, body, footer, options) {
+      return '<div class="' + className + ' modal" aria-hidden="false" ' +
+              (options.dialogZindex ?
+              'style="z-index: ' + options.dialogZindex + '"' : ''
+              ) +
+              '>' +
                '<div class="modal-dialog">' +
                  '<div class="modal-content">' +
                    (title ?
@@ -5698,7 +5701,7 @@
                      '<input class="note-image-url form-control span12" type="text" />' +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
-        return tplDialog('note-image-dialog', lang.image.insert, body, footer);
+        return tplDialog('note-image-dialog', lang.image.insert, body, footer, options);
       },
 
       link: function (lang, options) {
@@ -5718,7 +5721,7 @@
                      '</div>' : ''
                    );
         var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
-        return tplDialog('note-link-dialog', lang.link.insert, body, footer);
+        return tplDialog('note-link-dialog', lang.link.insert, body, footer, options);
       },
 
       help: function (lang, options) {
@@ -5730,7 +5733,7 @@
                      '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
-        return tplDialog('note-help-dialog', '', body, '');
+        return tplDialog('note-help-dialog', '', body, '', options);
       }
     };
 
@@ -5867,9 +5870,13 @@
      */
     this.createLayoutByFrame = function ($holder, options) {
       var langInfo = options.langInfo;
-
+      
+      //00. create id for the editor
+      var id = func.uniqueId();
+      
       //01. create Editor
       var $editor = $('<div class="note-editor"></div>');
+      $editor.attr('id', 'note-editor-' + id);
       if (options.width) {
         $editor.width(options.width);
       }
@@ -5931,10 +5938,12 @@
       $(tplHandles()).prependTo($editor);
 
       //07. create Dialog
-      var $dialog = $(tplDialogs(langInfo, options)).prependTo($editor);
+      var $dialog = $(tplDialogs(langInfo, options));
+      $dialog.attr('id', 'note-dialog-' + id);
       $dialog.find('button.close, a.modal-close').click(function () {
         $(this).closest('.modal').modal('hide');
       });
+      $dialog.appendTo(document.body);
 
       //08. create Dropzone
       $('<div class="note-dropzone"><div class="note-dropzone-message"></div></div>').prependTo($editor);
@@ -5947,8 +5956,8 @@
     this.noteEditorFromHolder = function ($holder) {
       if ($holder.hasClass('note-air-editor')) {
         return $holder;
-      } else if ($holder.next().hasClass('note-editor')) {
-        return $holder.next();
+      } else if ($holder.siblings().hasClass('note-editor')) {
+        return $holder.siblings('.note-editor');
       } else {
         return $();
       }
@@ -6012,6 +6021,7 @@
         $holder.html(layoutInfo.editable.html());
 
         layoutInfo.editor.remove();
+        layoutInfo.dialog.remove();
         $holder.show();
       }
     };

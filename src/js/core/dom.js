@@ -57,38 +57,40 @@ define([
      * @return {Node} return.dialog
      */
     var buildLayoutInfo = function ($editor) {
-      var makeFinder;
+      // get the id from the editor
+      var id = list.last($editor.attr('id').split('-'));
+
+      var makeFinder = {
+        byId: function (sIdPrefix) {
+          return function () { return $(sIdPrefix + id); };
+        },
+        inEditor: function (sClassName) {
+          return function () { return $editor.find(sClassName); };
+        }
+      };
 
       // air mode
       if ($editor.hasClass('note-air-editor')) {
-        var id = list.last($editor.attr('id').split('-'));
-        makeFinder = function (sIdPrefix) {
-          return function () { return $(sIdPrefix + id); };
-        };
-
         return {
           editor: function () { return $editor; },
           editable: function () { return $editor; },
-          popover: makeFinder('#note-popover-'),
-          handle: makeFinder('#note-handle-'),
-          dialog: makeFinder('#note-dialog-')
+          popover: makeFinder.byId('#note-popover-'),
+          handle: makeFinder.byId('#note-handle-'),
+          dialog: makeFinder.byId('#note-dialog-')
         };
 
         // frame mode
       } else {
-        makeFinder = function (sClassName) {
-          return function () { return $editor.find(sClassName); };
-        };
         return {
           editor: function () { return $editor; },
-          dropzone: makeFinder('.note-dropzone'),
-          toolbar: makeFinder('.note-toolbar'),
-          editable: makeFinder('.note-editable'),
-          codable: makeFinder('.note-codable'),
-          statusbar: makeFinder('.note-statusbar'),
-          popover: makeFinder('.note-popover'),
-          handle: makeFinder('.note-handle'),
-          dialog: makeFinder('.note-dialog')
+          dropzone: makeFinder.inEditor('.note-dropzone'),
+          toolbar: makeFinder.inEditor('.note-toolbar'),
+          editable: makeFinder.inEditor('.note-editable'),
+          codable: makeFinder.inEditor('.note-codable'),
+          statusbar: makeFinder.inEditor('.note-statusbar'),
+          popover: makeFinder.inEditor('.note-popover'),
+          handle: makeFinder.inEditor('.note-handle'),
+          dialog: makeFinder.byId('#note-dialog-')
         };
       }
     };
@@ -600,7 +602,7 @@ define([
 
     /**
      * returns whether point is visible (can set cursor) or not.
-     * 
+     *
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
@@ -857,7 +859,7 @@ define([
 
     /**
      * @method removeWhile
-     *
+     * 
      * @param {Node} node
      * @param {Function} pred
      */
