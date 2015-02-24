@@ -102,13 +102,10 @@ define([
      * @method currentStyle
      *
      * current style
-     *
-     * @param {Node} target
-     * @return {Boolean} false if range is no
      */
-    this.currentStyle = function (target) {
+    this.currentStyle = function () {
       var rng = range.create();
-      return rng ? rng.isOnEditable() && style.current(rng, target) : false;
+      return rng ? rng.isOnEditable() && style.current(rng) : false;
     };
 
     var triggerOnBeforeChange = this.triggerOnBeforeChange = function ($editable) {
@@ -624,15 +621,23 @@ define([
     };
 
     /**
+     * @return {Node} image from the current range selection
+     */
+    function getImgTarget() {
+      var rng = range.create();
+      var target = rng.sc.childNodes.length && rng.sc.childNodes[rng.so] || rng.sc;
+      return target;
+    }
+
+    /**
      * float me
      *
      * @param {jQuery} $editable
      * @param {String} value
-     * @param {jQuery} $target
      */
-    this.floatMe = function ($editable, value, $target) {
+    this.floatMe = function ($editable, value) {
       beforeCommand($editable);
-      $target.css('float', value);
+      $(getImgTarget()).css('float', value);
       afterCommand($editable);
     };
 
@@ -641,17 +646,14 @@ define([
      *
      * @param {jQuery} $editable
      * @param {String} value css class
-     * @param {Node} $target
      */
-    this.imageShape = function ($editable, value, $target) {
+    this.imageShape = function ($editable, value) {
       beforeCommand($editable);
-
+      var $target = $(getImgTarget());
       $target.removeClass('img-rounded img-circle img-thumbnail');
-
       if (value) {
         $target.addClass(value);
       }
-
       afterCommand($editable);
     };
 
@@ -659,11 +661,10 @@ define([
      * resize overlay element
      * @param {jQuery} $editable
      * @param {String} value
-     * @param {jQuery} $target - target element
      */
-    this.resize = function ($editable, value, $target) {
+    this.resize = function ($editable, value) {
       beforeCommand($editable);
-
+      var $target = $(getImgTarget());
       $target.css({
         width: value * 100 + '%',
         height: ''
@@ -700,11 +701,10 @@ define([
      * remove media object
      *
      * @param {jQuery} $editable
-     * @param {String} value - dummy argument (for keep interface)
-     * @param {jQuery} $target - target element
      */
-    this.removeMedia = function ($editable, value, $target) {
+    this.removeMedia = function ($editable) {
       beforeCommand($editable);
+      var $target = $(getImgTarget());
       $target.detach();
 
       var callbacks = $editable.data('callbacks');

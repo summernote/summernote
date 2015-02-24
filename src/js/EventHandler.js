@@ -1,8 +1,9 @@
 define([
   'summernote/core/agent', 'summernote/core/dom', 'summernote/core/async', 'summernote/core/key', 'summernote/core/list',
+  'summernote/core/range',
   'summernote/editing/Style', 'summernote/editing/Editor', 'summernote/editing/History',
   'summernote/module/Toolbar', 'summernote/module/Popover', 'summernote/module/Handle', 'summernote/module/Dialog'
-], function (agent, dom, async, key, list,
+], function (agent, dom, async, key, list, range,
              Style, Editor, History,
              Toolbar, Popover, Handle, Dialog) {
 
@@ -260,6 +261,7 @@ define([
       //preventDefault Selection for FF, IE8+
       if (dom.isImg(event.target)) {
         event.preventDefault();
+        range.createFromNode(event.target).select();
       }
     };
 
@@ -267,7 +269,11 @@ define([
       // delay for range after mouseup
       setTimeout(function () {
         var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-        var styleInfo = editor.currentStyle(event.target);
+        var $editable = layoutInfo.editable();
+        if (!event.isDefaultPrevented()) {
+          editor.saveRange($editable);
+        }
+        var styleInfo = editor.currentStyle();
         if (!styleInfo) { return; }
 
         var isAirMode = layoutInfo.editor().data('options').airMode;
@@ -394,6 +400,7 @@ define([
 
     var hToolbarAndPopoverClick = function (event) {
       var $btn = $(event.target).closest('[data-event]');
+      event.preventDefault();
 
       if ($btn.length) {
         var eventName = $btn.attr('data-event'),
@@ -401,13 +408,8 @@ define([
             hide = $btn.attr('data-hide');
 
         var layoutInfo = makeLayoutInfo(event.target);
-
-        // before command: detect control selection element($target)
-        var $target;
-        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'imageShape']) !== -1) {
-          var $selection = layoutInfo.handle().find('.note-control-selection');
-          $target = $($selection.data('target'));
-        }
+        var $editable = layoutInfo.editable();
+        editor.restoreRange($editable);
 
         // If requested, hide the popover when the button is clicked.
         // Useful for things like showHelpDialog.
@@ -418,9 +420,8 @@ define([
         if ($.isFunction($.summernote.pluginEvents[eventName])) {
           $.summernote.pluginEvents[eventName](event, editor, layoutInfo, value);
         } else if (editor[eventName]) { // on command
-          var $editable = layoutInfo.editable();
           $editable.trigger('focus');
-          editor[eventName]($editable, value, $target);
+          editor[eventName]($editable, value);
           event.preventDefault();
         } else if (commands[eventName]) {
           commands[eventName].call(this, layoutInfo);
