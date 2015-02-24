@@ -617,6 +617,17 @@ define([
         if (keyName) { aKey.push(keyName); }
 
         var eventName = keyMap[aKey.join('+')];
+        var keycode = event.keyCode;
+        if (!eventName &&
+            !event.ctrlKey && !event.metaKey && ( // special code/command
+            (keycode > 47 && keycode < 58)   || // number keys
+            keycode === 32 || keycode === 13   || // spacebar & return
+            (keycode > 64 && keycode < 91)   || // letter keys
+            (keycode > 95 && keycode < 112)  || // numpad keys
+            (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
+            (keycode > 218 && keycode < 223))) {   // [\]' (in order))
+          eventName = 'visible';
+        }
         if (eventName) {
           if ($.summernote.pluginEvents[eventName]) {
             var plugin = $.summernote.pluginEvents[eventName];
