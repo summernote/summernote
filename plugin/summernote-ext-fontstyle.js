@@ -27,11 +27,18 @@
    *    $("#editor").summernote({
    *    ...
    *    toolbar : [
-   *        ['group', [ 'fontstyle' ]]
+   *        ['group', [ 'fontsize', 'strikethrough', 'superscript', 'subscript' ]]
    *    ]
    *    ...    
    *    }); 
    * ```
+   * 
+   * ### provided features
+   * 
+   * * strikethrough 
+   * * superscript
+   * * subscript 
+   * * fontsize  ('8', '9', '10', '11', '12', '14', '18', '24', '36')
    */
   $.summernote.addPlugin({
     /** @property {String} name name of plugin */
