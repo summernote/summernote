@@ -6,7 +6,7 @@ define([
   'summernote/core/list',
   'summernote/editing/Style',
   'summernote/editing/History',
-  'summernote/module/Editor', 
+  'summernote/module/Editor',
   'summernote/module/Toolbar',
   'summernote/module/Popover',
   'summernote/module/Handle',
