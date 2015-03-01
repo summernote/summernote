@@ -831,6 +831,10 @@ define([
       $holder.hide();
     };
 
+    this.hasNoteEditor = function ($holder) {
+      return this.noteEditorFromHolder($holder).length > 0;
+    };
+
     this.noteEditorFromHolder = function ($holder) {
       if ($holder.hasClass('note-air-editor')) {
         return $holder;
@@ -848,10 +852,6 @@ define([
      * @param {Object} options
      */
     this.createLayout = function ($holder, options) {
-      if (this.noteEditorFromHolder($holder).length) {
-        return;
-      }
-
       if (options.airMode) {
         this.createLayoutByAirMode($holder, options);
       } else {
@@ -863,7 +863,7 @@ define([
      * returns layoutInfo from holder
      *
      * @param {jQuery} $holder - placeholder
-     * @returns {Object}
+     * @return {Object}
      */
     this.layoutInfoFromHolder = function ($holder) {
       var $editor = this.noteEditorFromHolder($holder);

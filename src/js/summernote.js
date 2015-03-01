@@ -1,9 +1,11 @@
 define([
-  'summernote/core/agent', 'summernote/core/dom',
+  'summernote/core/agent',
+  'summernote/core/list',
+  'summernote/core/dom',
   'summernote/core/range',
-  'summernote/settings',
+  'summernote/defaults',
   'summernote/EventHandler', 'summernote/Renderer'
-], function (agent, dom, range, settings, EventHandler, Renderer) {
+], function (agent, list, dom, range, defaults, EventHandler, Renderer) {
 
   // jQuery namespace for summernote
   /**
@@ -11,14 +13,17 @@ define([
    * 
    * summernote attribute  
    * 
-   * @mixin settings
+   * @mixin defaults
    * @singleton  
    * 
    */
   $.summernote = $.summernote || {};
 
-  // extends default `settings`
-  $.extend($.summernote, settings);
+  // extends default settings
+  //  - $.summernote.version
+  //  - $.summernote.options
+  //  - $.summernote.lang
+  $.extend($.summernote, defaults);
 
   var renderer = new Renderer();
   var eventHandler = new EventHandler();
@@ -164,54 +169,81 @@ define([
      * ```
      *   
      * @member $.fn
-     * @param {Object} options reference to $.summernote.options
-     * @returns {this}
+     * @param {Object|String} options reference to $.summernote.options
+     * @return {this}
      */
-    summernote: function (options) {
-      // extend default options
-      options = $.extend({}, $.summernote.options, options);
+    summernote: function () {
+      var type = $.type(list.head(arguments));
+
+      // if first argument's type is string, first arguments is module and method
+      var moduleAndMethod, args;
+      if (type === 'string') {
+        moduleAndMethod = list.head(list.from(arguments));
+        args = list.tail(list.from(arguments));
+      }
+
+      // extend default options with custom user options
+      var options = type === 'object' ? list.head(arguments) : {};
+      options = $.extend(true, $.summernote.options, options);
 
       // Include langInfo in options for later use, e.g. for image drag-n-drop
       // Setup language info with en-US as default
-      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+      options.langInfo = $.extend(true, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
 
       this.each(function (idx, holder) {
         var $holder = $(holder);
 
-        // createLayout with options
-        renderer.createLayout($holder, options);
+        // if layout isn't created yet, createLayout and attach events
+        if (!renderer.hasNoteEditor($holder)) {
+          renderer.createLayout($holder, options);
+          eventHandler.attach(renderer.layoutInfoFromHolder($holder), options);
 
-        var info = renderer.layoutInfoFromHolder($holder);
-        eventHandler.attach(info, options);
+          // Textarea: auto filling the code before form submit.
+          //  - TODO move below events to eventHandler.attach
+          if (dom.isTextarea(list.head($holder))) {
+            $holder.closest('form').submit(function () {
+              var contents = $holder.code();
+              $holder.val(contents);
 
-        // Textarea: auto filling the code before form submit.
-        if (dom.isTextarea($holder[0])) {
-          $holder.closest('form').submit(function () {
-            var contents = $holder.code();
-            $holder.val(contents);
-
-            // callback on submit
-            if (options.onsubmit) {
-              options.onsubmit(contents);
-            }
-          });
+              // callback on submit
+              if (options.onsubmit) {
+                options.onsubmit(contents);
+              }
+            });
+          }
         }
       });
-
-      // focus on first editable element
-      if (this.first().length && options.focus) {
-        var info = renderer.layoutInfoFromHolder(this.first());
-        info.editable.focus();
-      }
 
       // callback on init
       if (this.length && options.oninit) {
         options.oninit();
       }
 
+      var $first = this.first();
+      if ($first.length) {
+        var info = renderer.layoutInfoFromHolder($first);
+
+        // focus on first editable element
+        if (options.focus) {
+          info.editable.focus();
+        }
+
+        // TODO external API
+        //  - refactor modules and eventHandler
+        //  - now external API only works for editor
+        if (moduleAndMethod) {
+          var splits = moduleAndMethod.split('.');
+          var hasSeparator = splits.length > 1;
+          var moduleName = hasSeparator ? list.head(splits) : 'editor';
+          var methodName = hasSeparator ? list.last(splits) : list.head(splits);
+
+          var module = eventHandler.getModule(moduleName);
+          return module[methodName].apply(module, [info.editable].concat(args));
+        }
+      }
+
       return this;
     },
-    //
 
     /**
      * @method 
@@ -230,7 +262,7 @@ define([
      *
      * @member $.fn 
      * @param {String} [sHTML] - HTML contents(optional, set)
-     * @returns {this|String} - context(set) or HTML contents of note(get).
+     * @return {this|String} - context(set) or HTML contents of note(get).
      */
     code: function (sHTML) {
       // get the HTML contents of note
@@ -263,7 +295,7 @@ define([
      * destroy Editor Layout and detach Key and Mouse Event
      *
      * @member $.fn
-     * @returns {this}
+     * @return {this}
      */
     destroy: function () {
       this.each(function (idx, holder) {

@@ -1,10 +1,18 @@
 define([
-  'summernote/core/agent', 'summernote/core/dom', 'summernote/core/async', 'summernote/core/key', 'summernote/core/list',
-  'summernote/editing/Style', 'summernote/editing/Editor', 'summernote/editing/History',
-  'summernote/module/Toolbar', 'summernote/module/Popover', 'summernote/module/Handle', 'summernote/module/Dialog'
+  'summernote/core/agent',
+  'summernote/core/dom',
+  'summernote/core/async',
+  'summernote/core/key',
+  'summernote/core/list',
+  'summernote/editing/Style',
+  'summernote/editing/History',
+  'summernote/module/Editor', 
+  'summernote/module/Toolbar',
+  'summernote/module/Popover',
+  'summernote/module/Handle',
+  'summernote/module/Dialog'
 ], function (agent, dom, async, key, list,
-             Style, Editor, History,
-             Toolbar, Popover, Handle, Dialog) {
+             Style, History, Editor, Toolbar, Popover, Handle, Dialog) {
 
   var CodeMirror;
   if (agent.hasCodeMirror) {
@@ -27,16 +35,43 @@ define([
     var $document = $(document);
     var $scrollbar = $('html, body');
 
+    /**
+     * Modules
+     */
     var editor = new Editor();
-    var toolbar = new Toolbar(), popover = new Popover();
-    var handle = new Handle(), dialog = new Dialog();
+    var toolbar = new Toolbar();
+    var popover = new Popover();
+    var handle = new Handle();
+    var dialog = new Dialog();
 
     /**
      * get editor
-     * @returns {editing.Editor}
+     *
+     * @return {editing.Editor}
      */
     this.getEditor = function () {
       return editor;
+    };
+
+    /**
+     * get Module
+     *
+     * @param {String} moduleName - name of module
+     * @return {Module} - defaults is editor
+     */
+    this.getModule = function (moduleName) {
+      switch (moduleName) {
+        case 'toolbar':
+          return toolbar;
+        case 'popover':
+          return popover;
+        case 'handle':
+          return handle;
+        case 'dialog':
+          return dialog;
+        default:
+          return editor;
+      }
     };
 
     /**

@@ -1,10 +1,10 @@
-define('summernote/settings', function () {
+define('summernote/defaults', function () {
   /**
-   * @class settings 
+   * @class defaults 
    * 
    * @singleton
    */
-  var settings = {
+  var defaults = {
     /** @property */
     version: '@VERSION',
 
@@ -331,5 +331,5 @@ define('summernote/settings', function () {
     }
   };
 
-  return settings;
+  return defaults;
 });
