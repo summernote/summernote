@@ -4,8 +4,10 @@ define([
   'summernote/core/dom',
   'summernote/core/range',
   'summernote/defaults',
-  'summernote/EventHandler', 'summernote/Renderer'
-], function (agent, list, dom, range, defaults, EventHandler, Renderer) {
+  'summernote/EventHandler',
+  'summernote/Renderer'
+], function (agent, list, dom, range,
+             defaults, EventHandler, Renderer) {
 
   // jQuery namespace for summernote
   /**
@@ -215,16 +217,10 @@ define([
         }
 
         // TODO external API
-        //  - refactor modules and eventHandler
         //  - now external API only works for editor
         if (moduleAndMethod) {
-          var splits = moduleAndMethod.split('.');
-          var hasSeparator = splits.length > 1;
-          var moduleName = hasSeparator ? list.head(splits) : 'editor';
-          var methodName = hasSeparator ? list.last(splits) : list.head(splits);
-
-          var module = eventHandler.getModule(moduleName);
-          return module[methodName].apply(module, [info.editable].concat(args));
+          var params = [moduleAndMethod, info.editable].concat(args);
+          return eventHandler.invoke.apply(eventHandler, params);
         }
       }
 

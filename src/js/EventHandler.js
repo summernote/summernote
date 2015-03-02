@@ -4,31 +4,22 @@ define([
   'summernote/core/async',
   'summernote/core/key',
   'summernote/core/list',
-  'summernote/editing/Style',
   'summernote/editing/History',
   'summernote/module/Editor',
   'summernote/module/Toolbar',
   'summernote/module/Popover',
   'summernote/module/Handle',
-  'summernote/module/Dialog'
-], function (agent, dom, async, key, list,
-             Style, History, Editor, Toolbar, Popover, Handle, Dialog) {
-
-  var CodeMirror;
-  if (agent.hasCodeMirror) {
-    if (agent.isSupportAmd) {
-      require(['CodeMirror'], function (cm) {
-        CodeMirror = cm;
-      });
-    } else {
-      CodeMirror = window.CodeMirror;
-    }
-  }
+  'summernote/module/Dialog',
+  'summernote/module/Codeview'
+], function (agent, dom, async, key, list, History,
+             Editor, Toolbar, Popover, Handle, Dialog, Codeview) {
 
   /**
    * @class EventHandler
    *
    * EventHandler
+   *  - TODO: new instance per a editor
+   *  - TODO: rename EventHandler
    */
   var EventHandler = function () {
     var $window = $(window);
@@ -38,31 +29,40 @@ define([
     /**
      * Modules
      */
-    var editor = new Editor();
-    var toolbar = new Toolbar();
-    var popover = new Popover();
-    var handle = new Handle();
-    var dialog = new Dialog();
+    var modules = this.modules = {
+      editor: new Editor(this),
+      toolbar: new Toolbar(this),
+      popover: new Popover(this),
+      handle: new Handle(this),
+      dialog: new Dialog(this),
+      codeview: new Codeview(this)
+    };
+
+    //  - refactor modules and eventHandler
+    //  - now external API only works for editor
+    this.invoke = function () {
+      var moduleAndMethod = list.head(list.from(arguments));
+      var args = list.tail(list.from(arguments));
+
+      var splits = moduleAndMethod.split('.');
+      var hasSeparator = splits.length > 1;
+      var moduleName = hasSeparator && list.head(splits);
+      var methodName = hasSeparator ? list.last(splits) : list.head(splits);
+
+      var module = this.getModule(moduleName);
+      var method = module[methodName];
+
+      return method && method.apply(module, args);
+    };
 
     /**
-     * get Module
+     * returns module
      *
      * @param {String} moduleName - name of module
      * @return {Module} - defaults is editor
      */
     this.getModule = function (moduleName) {
-      switch (moduleName) {
-        case 'toolbar':
-          return toolbar;
-        case 'popover':
-          return popover;
-        case 'handle':
-          return handle;
-        case 'dialog':
-          return dialog;
-        default:
-          return editor;
-      }
+      return this.modules[moduleName] || this.modules.editor;
     };
 
     /**
@@ -103,7 +103,7 @@ define([
 
       // If onImageUpload options setted
       if (callbacks.onImageUpload) {
-        callbacks.onImageUpload(files, editor, $editable);
+        callbacks.onImageUpload(files, modules.editor, $editable);
       // else insert Image as dataURL
       } else {
         $.each(files, function (idx, file) {
@@ -116,7 +116,7 @@ define([
             }
           } else {
             async.readFileAsDataURL(file).then(function (sDataURL) {
-              editor.insertImage($editable, sDataURL, filename);
+              modules.editor.insertImage($editable, sDataURL, filename);
             }).fail(function () {
               if (callbacks.onImageUploadError) {
                 callbacks.onImageUploadError();
@@ -135,18 +135,18 @@ define([
         var $editor = layoutInfo.editor(),
             $dialog = layoutInfo.dialog(),
             $editable = layoutInfo.editable(),
-            linkInfo = editor.getLinkInfo($editable);
+            linkInfo = modules.editor.getLinkInfo($editable);
 
         var options = $editor.data('options');
 
-        editor.saveRange($editable);
-        dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
-          editor.restoreRange($editable);
-          editor.createLink($editable, linkInfo, options);
+        modules.editor.saveRange($editable);
+        modules.dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
+          modules.editor.restoreRange($editable);
+          modules.editor.createLink($editable, linkInfo, options);
           // hide popover after creating link
-          popover.hide(layoutInfo.popover());
+          modules.popover.hide(layoutInfo.popover());
         }).fail(function () {
-          editor.restoreRange($editable);
+          modules.editor.restoreRange($editable);
         });
       },
 
@@ -157,19 +157,19 @@ define([
         var $dialog = layoutInfo.dialog(),
             $editable = layoutInfo.editable();
 
-        editor.saveRange($editable);
-        dialog.showImageDialog($editable, $dialog).then(function (data) {
-          editor.restoreRange($editable);
+        modules.editor.saveRange($editable);
+        modules.dialog.showImageDialog($editable, $dialog).then(function (data) {
+          modules.editor.restoreRange($editable);
 
           if (typeof data === 'string') {
             // image url
-            editor.insertImage($editable, data);
+            modules.editor.insertImage($editable, data);
           } else {
             // array of files
             insertImages(layoutInfo, data);
           }
         }).fail(function () {
-          editor.restoreRange($editable);
+          modules.editor.restoreRange($editable);
         });
       },
 
@@ -180,9 +180,9 @@ define([
         var $dialog = layoutInfo.dialog(),
             $editable = layoutInfo.editable();
 
-        editor.saveRange($editable, true);
-        dialog.showHelpDialog($editable, $dialog).then(function () {
-          editor.restoreRange($editable);
+        modules.editor.saveRange($editable, true);
+        modules.dialog.showHelpDialog($editable, $dialog).then(function () {
+          modules.editor.restoreRange($editable);
         });
       },
 
@@ -220,65 +220,11 @@ define([
           $scrollbar.css('overflow', 'visible');
         }
 
-        toolbar.updateFullscreen($toolbar, isFullscreen);
+        modules.toolbar.updateFullscreen($toolbar, isFullscreen);
       },
 
       codeview: function (layoutInfo) {
-        var $editor = layoutInfo.editor(),
-        $toolbar = layoutInfo.toolbar(),
-        $editable = layoutInfo.editable(),
-        $codable = layoutInfo.codable(),
-        $popover = layoutInfo.popover(),
-        $handle = layoutInfo.handle();
-
-        var options = $editor.data('options');
-
-        var cmEditor, server;
-
-        $editor.toggleClass('codeview');
-
-        var isCodeview = $editor.hasClass('codeview');
-        if (isCodeview) {
-          $codable.val(dom.html($editable, options.prettifyHtml));
-          $codable.height($editable.height());
-          toolbar.deactivate($toolbar);
-          popover.hide($popover);
-          handle.hide($handle);
-          $codable.focus();
-
-          // activate CodeMirror as codable
-          if (agent.hasCodeMirror) {
-            cmEditor = CodeMirror.fromTextArea($codable[0], options.codemirror);
-
-            // CodeMirror TernServer
-            if (options.codemirror.tern) {
-              server = new CodeMirror.TernServer(options.codemirror.tern);
-              cmEditor.ternServer = server;
-              cmEditor.on('cursorActivity', function (cm) {
-                server.updateArgHints(cm);
-              });
-            }
-
-            // CodeMirror hasn't Padding.
-            cmEditor.setSize(null, $editable.outerHeight());
-            $codable.data('cmEditor', cmEditor);
-          }
-        } else {
-          // deactivate CodeMirror as codable
-          if (agent.hasCodeMirror) {
-            cmEditor = $codable.data('cmEditor');
-            $codable.val(cmEditor.getValue());
-            cmEditor.toTextArea();
-          }
-
-          $editable.html(dom.value($codable, options.prettifyHtml) || dom.emptyPara);
-          $editable.height(options.height ? $codable.height() : 'auto');
-
-          toolbar.activate($toolbar);
-          $editable.focus();
-        }
-
-        toolbar.updateCodeview(layoutInfo.toolbar(), isCodeview);
+        modules.codeview.toggle(layoutInfo);
       }
     };
 
@@ -293,24 +239,24 @@ define([
       // delay for range after mouseup
       setTimeout(function () {
         var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
-        var styleInfo = editor.currentStyle(event.target);
+        var styleInfo = modules.editor.currentStyle(event.target);
         if (!styleInfo) { return; }
 
         var isAirMode = layoutInfo.editor().data('options').airMode;
         if (!isAirMode) {
-          toolbar.update(layoutInfo.toolbar(), styleInfo);
+          modules.toolbar.update(layoutInfo.toolbar(), styleInfo);
         }
 
-        popover.update(layoutInfo.popover(), styleInfo, isAirMode);
-        handle.update(layoutInfo.handle(), styleInfo, isAirMode);
+        modules.popover.update(layoutInfo.popover(), styleInfo, isAirMode);
+        modules.handle.update(layoutInfo.handle(), styleInfo, isAirMode);
       }, 0);
     };
 
     var hScroll = function (event) {
       var layoutInfo = makeLayoutInfo(event.currentTarget || event.target);
       //hide popover and handle when scrolled
-      popover.hide(layoutInfo.popover());
-      handle.hide(layoutInfo.handle());
+      modules.popover.hide(layoutInfo.popover());
+      modules.handle.hide(layoutInfo.handle());
     };
 
     /**
@@ -331,8 +277,8 @@ define([
         }
 
         // save cursor
-        editor.saveNode($editable);
-        editor.saveRange($editable);
+        modules.editor.saveNode($editable);
+        modules.editor.saveRange($editable);
 
         $editable.html('');
 
@@ -349,11 +295,11 @@ define([
           var blob = new Blob([array], { type : 'image/png'});
           blob.name = 'clipboard.png';
 
-          editor.restoreNode($editable);
-          editor.restoreRange($editable);
+          modules.editor.restoreNode($editable);
+          modules.editor.restoreRange($editable);
           insertImages(layoutInfo, [blob]);
 
-          editor.afterCommand($editable);
+          modules.editor.afterCommand($editable);
         }, 0);
 
         return;
@@ -366,7 +312,7 @@ define([
         insertImages(layoutInfo, [item.getAsFile()]);
       }
 
-      editor.afterCommand($editable);
+      modules.editor.afterCommand($editable);
     };
 
     /**
@@ -392,16 +338,16 @@ define([
         var isAirMode = $editor.data('options').airMode;
 
         $document.on('mousemove', function (event) {
-          editor.resizeTo({
+          modules.editor.resizeTo({
             x: event.clientX - posStart.left,
             y: event.clientY - (posStart.top - scrollTop)
           }, $target, !event.shiftKey);
 
-          handle.update($handle, {image: target}, isAirMode);
-          popover.update($popover, {image: target}, isAirMode);
+          modules.handle.update($handle, {image: target}, isAirMode);
+          modules.popover.update($popover, {image: target}, isAirMode);
         }).one('mouseup', function () {
           $document.off('mousemove');
-          editor.afterCommand($editable);
+          modules.editor.afterCommand($editable);
         });
 
         if (!$target.data('ratio')) { // original ratio.
@@ -442,11 +388,11 @@ define([
         }
 
         if ($.isFunction($.summernote.pluginEvents[eventName])) {
-          $.summernote.pluginEvents[eventName](event, editor, layoutInfo, value);
-        } else if (editor[eventName]) { // on command
+          $.summernote.pluginEvents[eventName](event, modules.editor, layoutInfo, value);
+        } else if (modules.editor[eventName]) { // on command
           var $editable = layoutInfo.editable();
           $editable.trigger('focus');
-          editor[eventName]($editable, value, $target);
+          modules.editor[eventName]($editable, value, $target);
           event.preventDefault();
         } else if (commands[eventName]) {
           commands[eventName].call(this, layoutInfo);
@@ -456,7 +402,7 @@ define([
         // after command
         if ($.inArray(eventName, ['backColor', 'foreColor']) !== -1) {
           var options = layoutInfo.editor().data('options', options);
-          var module = options.airMode ? popover : toolbar;
+          var module = options.airMode ? modules.popover : modules.toolbar;
           module.updateRecentColor(list.head($btn), eventName, value);
         }
 
@@ -565,7 +511,7 @@ define([
       // show dropzone on dragenter when dragging a object to document
       // -but only if the editor is visible, i.e. has a positive width and height
       $document.on('dragenter', function (e) {
-        var isCodeview = layoutInfo.editor.hasClass('codeview');
+        var isCodeview = modules.codeview.isActivated(layoutInfo);
         if (!isCodeview && !collection.length && layoutInfo.editor.width() > 0 && layoutInfo.editor.height() > 0) {
           layoutInfo.editor.addClass('dragover');
           $dropzone.width(layoutInfo.editor.width());
@@ -608,11 +554,11 @@ define([
         } else if (html) {
           $(html).each(function () {
             layoutInfo.editable().focus();
-            editor.insertNode(layoutInfo.editable(), this);
+            modules.editor.insertNode(layoutInfo.editable(), this);
           });
         } else if (text) {
           layoutInfo.editable().focus();
-          editor.insertText(layoutInfo.editable(), text);
+          modules.editor.insertText(layoutInfo.editable(), text);
         }
       }).on('dragover', false); // prevent default dragover event
     };
@@ -647,17 +593,17 @@ define([
           if ($.summernote.pluginEvents[eventName]) {
             var plugin = $.summernote.pluginEvents[eventName];
             if ($.isFunction(plugin)) {
-              plugin(event, editor, layoutInfo);
+              plugin(event, modules.editor, layoutInfo);
             }
-          } else if (editor[eventName]) {
-            editor[eventName]($editable, $editor.data('options'));
+          } else if (modules.editor[eventName]) {
+            modules.editor[eventName]($editable, $editor.data('options'));
             event.preventDefault();
           } else if (commands[eventName]) {
             commands[eventName].call(this, layoutInfo);
             event.preventDefault();
           }
         } else if (key.isEdit(event.keyCode)) {
-          editor.afterCommand($editable);
+          modules.editor.afterCommand($editable);
         }
       });
     };
@@ -756,7 +702,7 @@ define([
       // onChange
       if (options.onChange) {
         var hChange = function () {
-          editor.triggerOnChange(layoutInfo.editable);
+          modules.editor.triggerOnChange(layoutInfo.editable);
         };
 
         if (agent.isMSIE) {
