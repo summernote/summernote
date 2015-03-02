@@ -197,20 +197,6 @@ define([
         if (!renderer.hasNoteEditor($holder)) {
           renderer.createLayout($holder, options);
           eventHandler.attach(renderer.layoutInfoFromHolder($holder), options);
-
-          // Textarea: auto filling the code before form submit.
-          //  - TODO move below events to eventHandler.attach
-          if (dom.isTextarea(list.head($holder))) {
-            $holder.closest('form').submit(function () {
-              var contents = $holder.code();
-              $holder.val(contents);
-
-              // callback on submit
-              if (options.onsubmit) {
-                options.onsubmit(contents);
-              }
-            });
-          }
         }
       });
 
@@ -268,7 +254,10 @@ define([
       // get the HTML contents of note
       if (sHTML === undefined) {
         var $holder = this.first();
-        if (!$holder.length) { return; }
+        if (!$holder.length) {
+          return;
+        }
+
         var info = renderer.layoutInfoFromHolder($holder);
         if (!!(info && info.editable)) {
           var isCodeview = info.editor.hasClass('codeview');

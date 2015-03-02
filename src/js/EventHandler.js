@@ -45,15 +45,6 @@ define([
     var dialog = new Dialog();
 
     /**
-     * get editor
-     *
-     * @return {editing.Editor}
-     */
-    this.getEditor = function () {
-      return editor;
-    };
-
-    /**
      * get Module
      *
      * @param {String} moduleName - name of module
@@ -756,7 +747,13 @@ define([
       if (options.onpaste) { layoutInfo.editable.on('paste', options.onpaste); }
 
       // callbacks for advanced features (camel)
-      if (options.onToolbarClick) { layoutInfo.toolbar.click(options.onToolbarClick); }
+
+      // onToolbarClick
+      if (options.onToolbarClick) {
+        layoutInfo.toolbar.click(options.onToolbarClick);
+      }
+
+      // onChange
       if (options.onChange) {
         var hChange = function () {
           editor.triggerOnChange(layoutInfo.editable);
@@ -782,6 +779,19 @@ define([
         onFileUploadError: options.onFileUpload,
         onMediaDelete : options.onMediaDelete
       });
+
+      // Textarea: auto filling the code before form submit.
+      if (dom.isTextarea(list.head(layoutInfo.holder))) {
+        layoutInfo.holder.closest('form').submit(function () {
+          var contents = layoutInfo.holder.code();
+          layoutInfo.holder.val(contents);
+
+          // callback on submit
+          if (options.onsubmit) {
+            options.onsubmit(contents);
+          }
+        });
+      }
     };
 
     this.detach = function (layoutInfo, options) {

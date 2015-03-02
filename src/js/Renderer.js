@@ -870,12 +870,16 @@ define([
       if (!$editor.length) { return; }
 
       var layoutInfo = dom.buildLayoutInfo($editor);
+
       // cache all properties.
       for (var key in layoutInfo) {
         if (layoutInfo.hasOwnProperty(key)) {
           layoutInfo[key] = layoutInfo[key].call();
         }
       }
+
+      layoutInfo.holder = $holder;
+
       return layoutInfo;
     };
 
