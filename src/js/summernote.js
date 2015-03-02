@@ -184,11 +184,11 @@ define([
 
       // extend default options with custom user options
       var options = type === 'object' ? list.head(arguments) : {};
-      options = $.extend(true, $.summernote.options, options);
+      options = $.extend(true, {}, $.summernote.options, options);
 
       // Include langInfo in options for later use, e.g. for image drag-n-drop
       // Setup language info with en-US as default
-      options.langInfo = $.extend(true, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
 
       this.each(function (idx, holder) {
         var $holder = $(holder);
