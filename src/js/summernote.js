@@ -212,12 +212,13 @@ define([
         var info = renderer.layoutInfoFromHolder($first);
 
         // focus on first editable element
+        //  - TODO only for initialize editor
         if (options.focus) {
           info.editable.focus();
         }
 
-        // TODO external API
-        //  - now external API only works for editor
+        // external API
+        //  - TODO now external API only works for editor
         if (moduleAndMethod) {
           var params = [moduleAndMethod, info.editable].concat(args);
           return eventHandler.invoke.apply(eventHandler, params);

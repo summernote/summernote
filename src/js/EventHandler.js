@@ -38,8 +38,8 @@ define([
       codeview: new Codeview(this)
     };
 
-    //  - refactor modules and eventHandler
-    //  - now external API only works for editor
+    // TODO refactor modules and eventHandler
+    //  - remove this method and use custom event from $holder instead
     this.invoke = function () {
       var moduleAndMethod = list.head(list.from(arguments));
       var args = list.tail(list.from(arguments));
