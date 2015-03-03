@@ -10,9 +10,10 @@ define([
   'summernote/module/Popover',
   'summernote/module/Handle',
   'summernote/module/Dialog',
+  'summernote/module/Fullscreen',
   'summernote/module/Codeview'
 ], function (agent, dom, async, key, list, History,
-             Editor, Toolbar, Popover, Handle, Dialog, Codeview) {
+             Editor, Toolbar, Popover, Handle, Dialog, Fullscreen, Codeview) {
 
   /**
    * @class EventHandler
@@ -22,9 +23,7 @@ define([
    *  - TODO: rename EventHandler
    */
   var EventHandler = function () {
-    var $window = $(window);
     var $document = $(document);
-    var $scrollbar = $('html, body');
 
     /**
      * Modules
@@ -35,6 +34,7 @@ define([
       popover: new Popover(this),
       handle: new Handle(this),
       dialog: new Dialog(this),
+      fullscreen: new Fullscreen(this),
       codeview: new Codeview(this)
     };
 
@@ -187,40 +187,7 @@ define([
       },
 
       fullscreen: function (layoutInfo) {
-        var $editor = layoutInfo.editor(),
-        $toolbar = layoutInfo.toolbar(),
-        $editable = layoutInfo.editable(),
-        $codable = layoutInfo.codable();
-
-        var resize = function (size) {
-          $editable.css('height', size.h);
-          $codable.css('height', size.h);
-          if ($codable.data('cmeditor')) {
-            $codable.data('cmeditor').setsize(null, size.h);
-          }
-        };
-
-        $editor.toggleClass('fullscreen');
-        var isFullscreen = $editor.hasClass('fullscreen');
-        if (isFullscreen) {
-          $editable.data('orgheight', $editable.css('height'));
-
-          $window.on('resize', function () {
-            resize({
-              h: $window.height() - $toolbar.outerHeight()
-            });
-          }).trigger('resize');
-
-          $scrollbar.css('overflow', 'hidden');
-        } else {
-          $window.off('resize');
-          resize({
-            h: $editable.data('orgheight')
-          });
-          $scrollbar.css('overflow', 'visible');
-        }
-
-        modules.toolbar.updateFullscreen($toolbar, isFullscreen);
+        modules.fullscreen.toggle(layoutInfo);
       },
 
       codeview: function (layoutInfo) {
