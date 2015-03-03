@@ -33,16 +33,11 @@ define([
      * @param {Object} layoutInfo
      */
     this.toggle = function (layoutInfo) {
-      var $toolbar = layoutInfo.toolbar();
-
-      var isActivated = this.isActivated(layoutInfo);
-      if (isActivated) {
+      if (this.isActivated(layoutInfo)) {
         this.deactivate(layoutInfo);
       } else {
         this.activate(layoutInfo);
       }
-
-      handler.invoke('toolbar.updateCodeview', $toolbar, isActivated);
     };
 
     /**
@@ -63,9 +58,12 @@ define([
       $codable.val(dom.html($editable, options.prettifyHtml));
       $codable.height($editable.height());
 
-      handler.invoke('toolbar.deactivate', $toolbar);
+      handler.invoke('toolbar.updateCodeview', $toolbar, true);
       handler.invoke('popover.hide', $popover);
       handler.invoke('handle.hide', $handle);
+
+      $editor.addClass('codeview');
+
       $codable.focus();
 
       // activate CodeMirror as codable
@@ -85,8 +83,6 @@ define([
         cmEditor.setSize(null, $editable.outerHeight());
         $codable.data('cmEditor', cmEditor);
       }
-
-      $editor.addClass('codeview');
     };
 
     /**
@@ -111,11 +107,11 @@ define([
 
       $editable.html(dom.value($codable, options.prettifyHtml) || dom.emptyPara);
       $editable.height(options.height ? $codable.height() : 'auto');
+      $editor.removeClass('codeview');
 
-      handler.invoke('toolbar.activate', $toolbar);
       $editable.focus();
 
-      $editor.removeClass('codeview');
+      handler.invoke('toolbar.updateCodeview', $toolbar, false);
     };
   };
 
