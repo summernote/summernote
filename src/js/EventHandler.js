@@ -292,7 +292,9 @@ define([
             array[i] = data.charCodeAt(i);
           }
 
-          var blob = new Blob([array], { type : 'image/png'});
+          var blob = new Blob([array], {
+            type : 'image/png'
+          });
           blob.name = 'clipboard.png';
 
           modules.editor.restoreNode($editable);
@@ -391,7 +393,7 @@ define([
           $.summernote.pluginEvents[eventName](event, modules.editor, layoutInfo, value);
         } else if (modules.editor[eventName]) { // on command
           var $editable = layoutInfo.editable();
-          $editable.trigger('focus');
+          $editable.focus();
           modules.editor[eventName]($editable, value, $target);
           event.preventDefault();
         } else if (commands[eventName]) {
@@ -577,18 +579,20 @@ define([
       layoutInfo = makeLayoutInfo($editable);
 
       $editable.on('keydown', function (event) {
-        var aKey = [];
+        var keys = [];
 
         // modifier
-        if (event.metaKey) { aKey.push('CMD'); }
-        if (event.ctrlKey && !event.altKey) { aKey.push('CTRL'); }
-        if (event.shiftKey) { aKey.push('SHIFT'); }
+        if (event.metaKey) { keys.push('CMD'); }
+        if (event.ctrlKey && !event.altKey) { keys.push('CTRL'); }
+        if (event.shiftKey) { keys.push('SHIFT'); }
 
         // keycode
         var keyName = key.nameFromCode[event.keyCode];
-        if (keyName) { aKey.push(keyName); }
+        if (keyName) {
+          keys.push(keyName);
+        }
 
-        var eventName = keyMap[aKey.join('+')];
+        var eventName = keyMap[keys.join('+')];
         if (eventName) {
           if ($.summernote.pluginEvents[eventName]) {
             var plugin = $.summernote.pluginEvents[eventName];
