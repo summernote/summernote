@@ -207,7 +207,7 @@ define([
 
       var $first = this.first();
       if ($first.length) {
-        var info = renderer.layoutInfoFromHolder($first);
+        var layoutInfo = renderer.layoutInfoFromHolder($first);
 
         // external API
         if (isExternalAPICalled) {
@@ -215,11 +215,11 @@ define([
           var args = list.tail(list.from(arguments));
 
           // TODO now external API only works for editor
-          var params = [moduleAndMethod, info.editable].concat(args);
+          var params = [moduleAndMethod, layoutInfo.editable()].concat(args);
           return eventHandler.invoke.apply(eventHandler, params);
         } else if (options.focus) {
           // focus on first editable element for initialize editor
-          info.editable.focus();
+          layoutInfo.editable().focus();
         }
       }
 
@@ -242,32 +242,36 @@ define([
      * ```
      *
      * @member $.fn 
-     * @param {String} [sHTML] - HTML contents(optional, set)
+     * @param {String} [html] - HTML contents(optional, set)
      * @return {this|String} - context(set) or HTML contents of note(get).
      */
-    code: function (sHTML) {
+    code: function (html) {
       // get the HTML contents of note
-      if (sHTML === undefined) {
+      if (html === undefined) {
         var $holder = this.first();
         if (!$holder.length) {
           return;
         }
 
-        var info = renderer.layoutInfoFromHolder($holder);
-        if (!!(info && info.editable)) {
-          var isCodeview = info.editor.hasClass('codeview');
-          if (isCodeview && agent.hasCodeMirror) {
-            info.codable.data('cmEditor').save();
-          }
-          return isCodeview ? info.codable.val() : info.editable.html();
+        var layoutInfo = renderer.layoutInfoFromHolder($holder);
+        var $editable = layoutInfo && layoutInfo.editable();
+
+        if ($editable && $editable.length) {
+          var isCodeview = eventHandler.invoke('codeview.isActivated', layoutInfo);
+          eventHandler.invoke('codeview.sync', layoutInfo);
+          return isCodeview ? layoutInfo.codable().val() :
+                              layoutInfo.editable().html();
         }
         return dom.isTextarea($holder[0]) ? $holder.val() : $holder.html();
       }
 
       // set the HTML contents of note
       this.each(function (i, holder) {
-        var info = renderer.layoutInfoFromHolder($(holder));
-        if (info && info.editable) { info.editable.html(sHTML); }
+        var layoutInfo = renderer.layoutInfoFromHolder($(holder));
+        var $editable = layoutInfo && layoutInfo.editable();
+        if ($editable) {
+          $editable.html(html);
+        }
       });
 
       return this;
@@ -285,10 +289,12 @@ define([
       this.each(function (idx, holder) {
         var $holder = $(holder);
 
-        var info = renderer.layoutInfoFromHolder($holder);
-        if (!info || !info.editable) { return; }
+        if (!renderer.hasNoteEditor($holder)) {
+          return;
+        }
 
-        var options = info.editor.data('options');
+        var info = renderer.layoutInfoFromHolder($holder);
+        var options = info.editor().data('options');
 
         eventHandler.detach(info, options);
         renderer.removeLayout($holder, info, options);

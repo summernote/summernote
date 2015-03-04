@@ -18,6 +18,14 @@ define([
    * @class Codeview
    */
   var Codeview = function (handler) {
+
+    this.sync = function (layoutInfo) {
+      var isCodeview = handler.invoke('codeview.isActivated', layoutInfo);
+      if (isCodeview && agent.hasCodeMirror) {
+        info.codable.data('cmEditor').save();
+      }
+    };
+
     /**
      * @param {Object} layoutInfo
      * @return {Boolean}

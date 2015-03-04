@@ -867,20 +867,15 @@ define([
      */
     this.layoutInfoFromHolder = function ($holder) {
       var $editor = this.noteEditorFromHolder($holder);
-      if (!$editor.length) { return; }
-
-      var layoutInfo = dom.buildLayoutInfo($editor);
-
-      // cache all properties.
-      for (var key in layoutInfo) {
-        if (layoutInfo.hasOwnProperty(key)) {
-          layoutInfo[key] = layoutInfo[key].call();
-        }
+      if (!$editor.length) {
+        return;
       }
 
-      layoutInfo.holder = $holder;
-
-      return layoutInfo;
+      return $.extend({
+        holder: function () {
+          return $holder;
+        }
+      }, dom.buildLayoutInfo($editor));
     };
 
     /**
@@ -896,13 +891,13 @@ define([
         $holder.removeClass('note-air-editor note-editable')
                .removeAttr('id contentEditable');
 
-        layoutInfo.popover.remove();
-        layoutInfo.handle.remove();
-        layoutInfo.dialog.remove();
+        layoutInfo.popover().remove();
+        layoutInfo.handle().remove();
+        layoutInfo.dialog().remove();
       } else {
-        $holder.html(layoutInfo.editable.html());
+        $holder.html(layoutInfo.editable().html());
 
-        layoutInfo.editor.remove();
+        layoutInfo.editor().remove();
         $holder.show();
       }
     };
