@@ -7,15 +7,18 @@ define([
   'summernote/editing/History',
   'summernote/module/Editor',
   'summernote/module/Toolbar',
+  'summernote/module/Statusbar',
   'summernote/module/Popover',
   'summernote/module/Handle',
   'summernote/module/Dialog',
   'summernote/module/Fullscreen',
   'summernote/module/Codeview',
-  'summernote/module/DragAndDrop'
+  'summernote/module/DragAndDrop',
+  'summernote/module/Clipboard'
 ], function (agent, dom, async, key, list, History,
-             Editor, Toolbar, Popover, Handle, Dialog, Fullscreen, Codeview,
-             DragAndDrop) {
+             Editor, Toolbar, Statusbar,
+             Popover, Handle, Dialog, Fullscreen, Codeview,
+             DragAndDrop, Clipboard) {
 
   /**
    * @class EventHandler
@@ -25,20 +28,20 @@ define([
    *  - TODO: rename EventHandler
    */
   var EventHandler = function () {
-    var $document = $(document);
-
     /**
      * Modules
      */
     var modules = this.modules = {
       editor: new Editor(this),
       toolbar: new Toolbar(this),
+      statusbar: new Statusbar(this),
       popover: new Popover(this),
       handle: new Handle(this),
       dialog: new Dialog(this),
       fullscreen: new Fullscreen(this),
       codeview: new Codeview(this),
-      dragAndDrop: new DragAndDrop(this)
+      dragAndDrop: new DragAndDrop(this),
+      clipboard: new Clipboard(this)
     };
 
     // TODO refactor modules and eventHandler
@@ -207,105 +210,6 @@ define([
       modules.handle.hide(layoutInfo.handle());
     };
 
-    /**
-     * paste clipboard image
-     *
-     * @param {Event} event
-     */
-    var hPasteClipboardImage = function (event) {
-      var clipboardData = event.originalEvent.clipboardData;
-      var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
-      var $editable = layoutInfo.editable();
-
-      if (!clipboardData || !clipboardData.items || !clipboardData.items.length) {
-        var callbacks = $editable.data('callbacks');
-        // only can run if it has onImageUpload method
-        if (!callbacks.onImageUpload) {
-          return;
-        }
-
-        // save cursor
-        modules.editor.saveNode($editable);
-        modules.editor.saveRange($editable);
-
-        $editable.html('');
-
-        setTimeout(function () {
-          var $img = $editable.find('img');
-          var datauri = $img[0].src;
-
-          var data = atob(datauri.split(',')[1]);
-          var array = new Uint8Array(data.length);
-          for (var i = 0; i < data.length; i++) {
-            array[i] = data.charCodeAt(i);
-          }
-
-          var blob = new Blob([array], {
-            type : 'image/png'
-          });
-          blob.name = 'clipboard.png';
-
-          modules.editor.restoreNode($editable);
-          modules.editor.restoreRange($editable);
-          insertImages(layoutInfo, [blob]);
-
-          modules.editor.afterCommand($editable);
-        }, 0);
-
-        return;
-      }
-
-      var item = list.head(clipboardData.items);
-      var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
-
-      if (isClipboardImage) {
-        insertImages(layoutInfo, [item.getAsFile()]);
-      }
-
-      modules.editor.afterCommand($editable);
-    };
-
-    /**
-     * `mousedown` event handler on $handle
-     *  - controlSizing: resize image
-     *
-     * @param {MouseEvent} event
-     */
-    var hHandleMousedown = function (event) {
-      if (dom.isControlSizing(event.target)) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        var layoutInfo = dom.makeLayoutInfo(event.target),
-            $handle = layoutInfo.handle(), $popover = layoutInfo.popover(),
-            $editable = layoutInfo.editable(),
-            $editor = layoutInfo.editor();
-
-        var target = $handle.find('.note-control-selection').data('target'),
-            $target = $(target), posStart = $target.offset(),
-            scrollTop = $document.scrollTop();
-
-        var isAirMode = $editor.data('options').airMode;
-
-        $document.on('mousemove', function (event) {
-          modules.editor.resizeTo({
-            x: event.clientX - posStart.left,
-            y: event.clientY - (posStart.top - scrollTop)
-          }, $target, !event.shiftKey);
-
-          modules.handle.update($handle, {image: target}, isAirMode);
-          modules.popover.update($popover, {image: target}, isAirMode);
-        }).one('mouseup', function () {
-          $document.off('mousemove');
-          modules.editor.afterCommand($editable);
-        });
-
-        if (!$target.data('ratio')) { // original ratio.
-          $target.data('ratio', $target.height() / $target.width());
-        }
-      }
-    };
-
     var hToolbarAndPopoverMousedown = function (event) {
       // prevent default event when insertTable (FF, Webkit)
       var $btn = $(event.target).closest('[data-event]');
@@ -358,34 +262,6 @@ define([
 
         hToolbarAndPopoverUpdate(event);
       }
-    };
-
-    var EDITABLE_PADDING = 24;
-    /**
-     * `mousedown` event handler on statusbar
-     *
-     * @param {MouseEvent} event
-     */
-    var hStatusbarMousedown = function (event) {
-      event.preventDefault();
-      event.stopPropagation();
-
-      var $editable = dom.makeLayoutInfo(event.target).editable();
-      var nEditableTop = $editable.offset().top - $document.scrollTop();
-
-      var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
-      var options = layoutInfo.editor().data('options');
-
-      $document.on('mousemove', function (event) {
-        var nHeight = event.clientY - (nEditableTop + EDITABLE_PADDING);
-
-        nHeight = (options.minHeight > 0) ? Math.max(nHeight, options.minHeight) : nHeight;
-        nHeight = (options.maxHeight > 0) ? Math.min(nHeight, options.maxHeight) : nHeight;
-
-        $editable.height(nHeight);
-      }).one('mouseup', function () {
-        $document.off('mousemove');
-      });
     };
 
     var PX_PER_EM = 18;
@@ -496,10 +372,10 @@ define([
       layoutInfo.editable().on('mousedown', hMousedown);
       layoutInfo.editable().on('keyup mouseup', hToolbarAndPopoverUpdate);
       layoutInfo.editable().on('scroll', hScroll);
-      layoutInfo.editable().on('paste', hPasteClipboardImage);
+      modules.clipboard.attach(layoutInfo, options);
 
       // handler for handle and popover
-      layoutInfo.handle().on('mousedown', hHandleMousedown);
+      modules.handle.attach(layoutInfo, options);
       layoutInfo.popover().on('click', hToolbarAndPopoverClick);
       layoutInfo.popover().on('mousedown', hToolbarAndPopoverMousedown);
 
@@ -513,9 +389,7 @@ define([
         layoutInfo.toolbar().on('mousedown', hToolbarAndPopoverMousedown);
 
         // handler for statusbar
-        if (!options.disableResizeEditor) {
-          layoutInfo.statusbar().on('mousedown', hStatusbarMousedown);
-        }
+        modules.statusbar.attach(layoutInfo, options);
       }
 
       // handler for table dimension
