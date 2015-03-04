@@ -175,17 +175,15 @@ define([
      * @return {this}
      */
     summernote: function () {
+      // check first argument's type
+      //  - {String}: External API call {{module}}.{{method}}
+      //  - {Object}: init options
       var type = $.type(list.head(arguments));
-
-      // if first argument's type is string, first arguments is module and method
-      var moduleAndMethod, args;
-      if (type === 'string') {
-        moduleAndMethod = list.head(list.from(arguments));
-        args = list.tail(list.from(arguments));
-      }
+      var isExternalAPICalled = type === 'string';
+      var isInitOptions = type === 'object';
 
       // extend default options with custom user options
-      var options = type === 'object' ? list.head(arguments) : {};
+      var options = isInitOptions ? list.head(arguments) : {};
       options = $.extend(true, {}, $.summernote.options, options);
 
       // Include langInfo in options for later use, e.g. for image drag-n-drop
@@ -203,7 +201,7 @@ define([
       });
 
       // callback on init
-      if (this.length && options.oninit) {
+      if (!isExternalAPICalled && this.length && options.oninit) {
         options.oninit();
       }
 
@@ -211,17 +209,17 @@ define([
       if ($first.length) {
         var info = renderer.layoutInfoFromHolder($first);
 
-        // focus on first editable element
-        //  - TODO only for initialize editor
-        if (options.focus) {
-          info.editable.focus();
-        }
-
         // external API
-        //  - TODO now external API only works for editor
-        if (moduleAndMethod) {
+        if (isExternalAPICalled) {
+          var moduleAndMethod = list.head(list.from(arguments));
+          var args = list.tail(list.from(arguments));
+
+          // TODO now external API only works for editor
           var params = [moduleAndMethod, info.editable].concat(args);
           return eventHandler.invoke.apply(eventHandler, params);
+        } else if (options.focus) {
+          // focus on first editable element for initialize editor
+          info.editable.focus();
         }
       }
 
