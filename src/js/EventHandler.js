@@ -10,15 +10,16 @@ define([
   'summernote/module/Statusbar',
   'summernote/module/Popover',
   'summernote/module/Handle',
-  'summernote/module/Dialog',
   'summernote/module/Fullscreen',
   'summernote/module/Codeview',
   'summernote/module/DragAndDrop',
-  'summernote/module/Clipboard'
+  'summernote/module/Clipboard',
+  'summernote/module/LinkDialog',
+  'summernote/module/ImageDialog',
+  'summernote/module/HelpDialog'
 ], function (agent, dom, async, key, list, History,
-             Editor, Toolbar, Statusbar,
-             Popover, Handle, Dialog, Fullscreen, Codeview,
-             DragAndDrop, Clipboard) {
+             Editor, Toolbar, Statusbar, Popover, Handle, Fullscreen, Codeview,
+             DragAndDrop, Clipboard, LinkDialog, ImageDialog, HelpDialog) {
 
   /**
    * @class EventHandler
@@ -37,11 +38,13 @@ define([
       statusbar: new Statusbar(this),
       popover: new Popover(this),
       handle: new Handle(this),
-      dialog: new Dialog(this),
       fullscreen: new Fullscreen(this),
       codeview: new Codeview(this),
       dragAndDrop: new DragAndDrop(this),
-      clipboard: new Clipboard(this)
+      clipboard: new Clipboard(this),
+      linkDialog: new LinkDialog(this),
+      imageDialog: new ImageDialog(this),
+      helpDialog: new HelpDialog(this)
     };
 
     // TODO refactor modules and eventHandler
@@ -78,7 +81,7 @@ define([
      * @param {Object} layoutInfo
      * @param {File[]} files
      */
-    var insertImages = this.insertImages = function (layoutInfo, files) {
+    this.insertImages = function (layoutInfo, files) {
       var $editor = layoutInfo.editor(),
           $editable = layoutInfo.editable();
 
@@ -116,64 +119,33 @@ define([
        * @param {Object} layoutInfo
        */
       showLinkDialog: function (layoutInfo) {
-        var $editor = layoutInfo.editor(),
-            $dialog = layoutInfo.dialog(),
-            $editable = layoutInfo.editable(),
-            linkInfo = modules.editor.getLinkInfo($editable);
-
-        var options = $editor.data('options');
-
-        modules.editor.saveRange($editable);
-        modules.dialog.showLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
-          modules.editor.restoreRange($editable);
-          modules.editor.createLink($editable, linkInfo, options);
-          // hide popover after creating link
-          modules.popover.hide(layoutInfo.popover());
-        }).fail(function () {
-          modules.editor.restoreRange($editable);
-        });
+        modules.linkDialog.show(layoutInfo);
       },
 
       /**
        * @param {Object} layoutInfo
        */
       showImageDialog: function (layoutInfo) {
-        var $dialog = layoutInfo.dialog(),
-            $editable = layoutInfo.editable();
-
-        modules.editor.saveRange($editable);
-        modules.dialog.showImageDialog($editable, $dialog).then(function (data) {
-          modules.editor.restoreRange($editable);
-
-          if (typeof data === 'string') {
-            // image url
-            modules.editor.insertImage($editable, data);
-          } else {
-            // array of files
-            insertImages(layoutInfo, data);
-          }
-        }).fail(function () {
-          modules.editor.restoreRange($editable);
-        });
+        modules.imageDialog.show(layoutInfo);
       },
 
       /**
        * @param {Object} layoutInfo
        */
       showHelpDialog: function (layoutInfo) {
-        var $dialog = layoutInfo.dialog(),
-            $editable = layoutInfo.editable();
-
-        modules.editor.saveRange($editable, true);
-        modules.dialog.showHelpDialog($editable, $dialog).then(function () {
-          modules.editor.restoreRange($editable);
-        });
+        modules.helpDialog.show(layoutInfo);
       },
 
+      /**
+       * @param {Object} layoutInfo
+       */
       fullscreen: function (layoutInfo) {
         modules.fullscreen.toggle(layoutInfo);
       },
 
+      /**
+       * @param {Object} layoutInfo
+       */
       codeview: function (layoutInfo) {
         modules.codeview.toggle(layoutInfo);
       }
