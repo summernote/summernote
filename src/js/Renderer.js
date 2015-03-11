@@ -107,21 +107,21 @@ define([
     };
 
     var tplButtonInfo = {
-      picture: function (lang) {
-        return tplIconButton('fa fa-picture-o', {
+      picture: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'picture-o', {
           event: 'showImageDialog',
           title: lang.image.image,
           hide: true
         });
       },
-      link: function (lang) {
-        return tplIconButton('fa fa-link', {
+      link: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'link', {
           event: 'showLinkDialog',
           title: lang.link.link,
           hide: true
         });
       },
-      table: function (lang) {
+      table: function (lang, options) {
         var dropdown = '<ul class="note-table dropdown-menu">' +
                          '<div class="note-dimension-picker">' +
                            '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>' +
@@ -130,7 +130,7 @@ define([
                          '</div>' +
                          '<div class="note-dimension-display"> 1 x 1 </div>' +
                        '</ul>';
-        return tplIconButton('fa fa-table', {
+        return tplIconButton(options.iconPrefix + 'table', {
           title: lang.table.table,
           dropdown: dropdown
         });
@@ -146,7 +146,7 @@ define([
                  '</a></li>';
         }, '');
 
-        return tplIconButton('fa fa-magic', {
+        return tplIconButton(options.iconPrefix + 'magic', {
           title: lang.style.style,
           dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
         });
@@ -159,7 +159,7 @@ define([
           }
           realFontList.push(v);
           return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '" style="font-family:\'' + v + '\'">' +
-                          '<i class="fa fa-check"></i> ' + v +
+                          '<i class="' + options.iconPrefix + 'check"></i> ' + v +
                         '</a></li>';
         }, '');
 
@@ -174,8 +174,8 @@ define([
           dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
         });
       },
-      color: function (lang) {
-        var colorButtonLabel = '<i class="fa fa-font" style="color:black;background-color:yellow;"></i>';
+      color: function (lang, options) {
+        var colorButtonLabel = '<i class="' + options.iconPrefix + 'font" style="color:black;background-color:yellow;"></i>';
         var colorButton = tplButton(colorButtonLabel, {
           className: 'note-recent-color',
           title: lang.color.recent,
@@ -210,65 +210,65 @@ define([
 
         return colorButton + moreButton;
       },
-      bold: function (lang) {
-        return tplIconButton('fa fa-bold', {
+      bold: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'bold', {
           event: 'bold',
           title: lang.font.bold
         });
       },
-      italic: function (lang) {
-        return tplIconButton('fa fa-italic', {
+      italic: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'italic', {
           event: 'italic',
           title: lang.font.italic
         });
       },
-      underline: function (lang) {
-        return tplIconButton('fa fa-underline', {
+      underline: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'underline', {
           event: 'underline',
           title: lang.font.underline
         });
       },
-      clear: function (lang) {
-        return tplIconButton('fa fa-eraser', {
+      clear: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'eraser', {
           event: 'removeFormat',
           title: lang.font.clear
         });
       },
-      ul: function (lang) {
-        return tplIconButton('fa fa-list-ul', {
+      ul: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'list-ul', {
           event: 'insertUnorderedList',
           title: lang.lists.unordered
         });
       },
-      ol: function (lang) {
-        return tplIconButton('fa fa-list-ol', {
+      ol: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'list-ol', {
           event: 'insertOrderedList',
           title: lang.lists.ordered
         });
       },
-      paragraph: function (lang) {
-        var leftButton = tplIconButton('fa fa-align-left', {
+      paragraph: function (lang, options) {
+        var leftButton = tplIconButton(options.iconPrefix + 'align-left', {
           title: lang.paragraph.left,
           event: 'justifyLeft'
         });
-        var centerButton = tplIconButton('fa fa-align-center', {
+        var centerButton = tplIconButton(options.iconPrefix + 'align-center', {
           title: lang.paragraph.center,
           event: 'justifyCenter'
         });
-        var rightButton = tplIconButton('fa fa-align-right', {
+        var rightButton = tplIconButton(options.iconPrefix + 'align-right', {
           title: lang.paragraph.right,
           event: 'justifyRight'
         });
-        var justifyButton = tplIconButton('fa fa-align-justify', {
+        var justifyButton = tplIconButton(options.iconPrefix + 'align-justify', {
           title: lang.paragraph.justify,
           event: 'justifyFull'
         });
 
-        var outdentButton = tplIconButton('fa fa-outdent', {
+        var outdentButton = tplIconButton(options.iconPrefix + 'outdent', {
           title: lang.paragraph.outdent,
           event: 'outdent'
         });
-        var indentButton = tplIconButton('fa fa-indent', {
+        var indentButton = tplIconButton(options.iconPrefix + 'indent', {
           title: lang.paragraph.indent,
           event: 'indent'
         });
@@ -282,7 +282,7 @@ define([
                          '</div>' +
                        '</div>';
 
-        return tplIconButton('fa fa-align-left', {
+        return tplIconButton(options.iconPrefix + 'align-left', {
           title: lang.paragraph.paragraph,
           dropdown: dropdown
         });
@@ -290,49 +290,49 @@ define([
       height: function (lang, options) {
         var items = options.lineHeights.reduce(function (memo, v) {
           return memo + '<li><a data-event="lineHeight" href="#" data-value="' + parseFloat(v) + '">' +
-                          '<i class="fa fa-check"></i> ' + v +
+                          '<i class="' + options.iconPrefix + 'check"></i> ' + v +
                         '</a></li>';
         }, '');
 
-        return tplIconButton('fa fa-text-height', {
+        return tplIconButton(options.iconPrefix + 'text-height', {
           title: lang.font.height,
           dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
         });
 
       },
-      help: function (lang) {
-        return tplIconButton('fa fa-question', {
+      help: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'question', {
           event: 'showHelpDialog',
           title: lang.options.help,
           hide: true
         });
       },
-      fullscreen: function (lang) {
-        return tplIconButton('fa fa-arrows-alt', {
+      fullscreen: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'arrows-alt', {
           event: 'fullscreen',
           title: lang.options.fullscreen
         });
       },
-      codeview: function (lang) {
-        return tplIconButton('fa fa-code', {
+      codeview: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'code', {
           event: 'codeview',
           title: lang.options.codeview
         });
       },
-      undo: function (lang) {
-        return tplIconButton('fa fa-undo', {
+      undo: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'undo', {
           event: 'undo',
           title: lang.history.undo
         });
       },
-      redo: function (lang) {
-        return tplIconButton('fa fa-repeat', {
+      redo: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'repeat', {
           event: 'redo',
           title: lang.history.redo
         });
       },
-      hr: function (lang) {
-        return tplIconButton('fa fa-minus', {
+      hr: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'minus', {
           event: 'insertHorizontalRule',
           title: lang.hr.insert
         });
@@ -341,12 +341,12 @@ define([
 
     var tplPopovers = function (lang, options) {
       var tplLinkPopover = function () {
-        var linkButton = tplIconButton('fa fa-edit', {
+        var linkButton = tplIconButton(options.iconPrefix + 'edit', {
           title: lang.link.edit,
           event: 'showLinkDialog',
           hide: true
         });
-        var unlinkButton = tplIconButton('fa fa-unlink', {
+        var unlinkButton = tplIconButton(options.iconPrefix + 'unlink', {
           title: lang.link.unlink,
           event: 'unlink'
         });
@@ -374,44 +374,44 @@ define([
           value: '0.25'
         });
 
-        var leftButton = tplIconButton('fa fa-align-left', {
+        var leftButton = tplIconButton(options.iconPrefix + 'align-left', {
           title: lang.image.floatLeft,
           event: 'floatMe',
           value: 'left'
         });
-        var rightButton = tplIconButton('fa fa-align-right', {
+        var rightButton = tplIconButton(options.iconPrefix + 'align-right', {
           title: lang.image.floatRight,
           event: 'floatMe',
           value: 'right'
         });
-        var justifyButton = tplIconButton('fa fa-align-justify', {
+        var justifyButton = tplIconButton(options.iconPrefix + 'align-justify', {
           title: lang.image.floatNone,
           event: 'floatMe',
           value: 'none'
         });
 
-        var roundedButton = tplIconButton('fa fa-square', {
+        var roundedButton = tplIconButton(options.iconPrefix + 'square', {
           title: lang.image.shapeRounded,
           event: 'imageShape',
           value: 'img-rounded'
         });
-        var circleButton = tplIconButton('fa fa-circle-o', {
+        var circleButton = tplIconButton(options.iconPrefix + 'circle-o', {
           title: lang.image.shapeCircle,
           event: 'imageShape',
           value: 'img-circle'
         });
-        var thumbnailButton = tplIconButton('fa fa-picture-o', {
+        var thumbnailButton = tplIconButton(options.iconPrefix + 'picture-o', {
           title: lang.image.shapeThumbnail,
           event: 'imageShape',
           value: 'img-thumbnail'
         });
-        var noneButton = tplIconButton('fa fa-times', {
+        var noneButton = tplIconButton(options.iconPrefix + 'times', {
           title: lang.image.shapeNone,
           event: 'imageShape',
           value: ''
         });
 
-        var removeButton = tplIconButton('fa fa-trash-o', {
+        var removeButton = tplIconButton(options.iconPrefix + 'trash-o', {
           title: lang.image.remove,
           event: 'removeMedia',
           value: 'none'

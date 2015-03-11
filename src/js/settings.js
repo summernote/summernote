@@ -53,6 +53,8 @@ define('summernote/settings', function () {
       placeholder: false,           // enable placeholder text
       prettifyHtml: true,           // enable prettifying html while toggling codeview
 
+      iconPrefix: 'fa fa-',         // prefix for css icon classes
+
       codemirror: {                 // codemirror options
         mode: 'text/html',
         htmlMode: true,
