@@ -94,6 +94,30 @@ define([
     };
 
     /**
+     * returns makeLayoutInfo from editor's descendant node.
+     *
+     * @private
+     * @param {Node} descendant
+     * @return {Object}
+     */
+    var makeLayoutInfo = function (descendant) {
+      var $target = $(descendant).closest('.note-editor, .note-air-editor, .note-air-layout');
+
+      if (!$target.length) {
+        return null;
+      }
+
+      var $editor;
+      if ($target.is('.note-editor, .note-air-editor')) {
+        $editor = $target;
+      } else {
+        $editor = $('#note-editor-' + list.last($target.attr('id').split('-')));
+      }
+
+      return buildLayoutInfo($editor);
+    };
+
+    /**
      * @method makePredByNodeName
      *
      * returns predicate which judge whether nodeName is same
@@ -950,6 +974,7 @@ define([
       isEditable: isEditable,
       isControlSizing: isControlSizing,
       buildLayoutInfo: buildLayoutInfo,
+      makeLayoutInfo: makeLayoutInfo,
       isText: isText,
       isVoid: isVoid,
       isPara: isPara,
