@@ -44,7 +44,6 @@ define([
     };
 
     /**
-     *
      * @param {jQuery} $container
      * @param {Boolean} [bFullscreen=false]
      */
@@ -54,13 +53,18 @@ define([
     };
 
     /**
-     *
      * @param {jQuery} $container
      * @param {Boolean} [isCodeview=false]
      */
     this.updateCodeview = function ($container, isCodeview) {
       var $btn = $container.find('button[data-event="codeview"]');
       $btn.toggleClass('active', isCodeview);
+
+      if (isCodeview) {
+        this.deactivate($container);
+      } else {
+        this.activate($container);
+      }
     };
   };
 

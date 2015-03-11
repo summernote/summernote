@@ -831,6 +831,10 @@ define([
       $holder.hide();
     };
 
+    this.hasNoteEditor = function ($holder) {
+      return this.noteEditorFromHolder($holder).length > 0;
+    };
+
     this.noteEditorFromHolder = function ($holder) {
       if ($holder.hasClass('note-air-editor')) {
         return $holder;
@@ -848,10 +852,6 @@ define([
      * @param {Object} options
      */
     this.createLayout = function ($holder, options) {
-      if (this.noteEditorFromHolder($holder).length) {
-        return;
-      }
-
       if (options.airMode) {
         this.createLayoutByAirMode($holder, options);
       } else {
@@ -863,20 +863,19 @@ define([
      * returns layoutInfo from holder
      *
      * @param {jQuery} $holder - placeholder
-     * @returns {Object}
+     * @return {Object}
      */
     this.layoutInfoFromHolder = function ($holder) {
       var $editor = this.noteEditorFromHolder($holder);
-      if (!$editor.length) { return; }
-
-      var layoutInfo = dom.buildLayoutInfo($editor);
-      // cache all properties.
-      for (var key in layoutInfo) {
-        if (layoutInfo.hasOwnProperty(key)) {
-          layoutInfo[key] = layoutInfo[key].call();
-        }
+      if (!$editor.length) {
+        return;
       }
-      return layoutInfo;
+
+      return $.extend({
+        holder: function () {
+          return $holder;
+        }
+      }, dom.buildLayoutInfo($editor));
     };
 
     /**
@@ -892,13 +891,13 @@ define([
         $holder.removeClass('note-air-editor note-editable')
                .removeAttr('id contentEditable');
 
-        layoutInfo.popover.remove();
-        layoutInfo.handle.remove();
-        layoutInfo.dialog.remove();
+        layoutInfo.popover().remove();
+        layoutInfo.handle().remove();
+        layoutInfo.dialog().remove();
       } else {
-        $holder.html(layoutInfo.editable.html());
+        $holder.html(layoutInfo.editable().html());
 
-        layoutInfo.editor.remove();
+        layoutInfo.editor().remove();
         $holder.show();
       }
     };
