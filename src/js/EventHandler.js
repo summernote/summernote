@@ -314,6 +314,7 @@ define([
           var $img = $editable.find('img');
 
           if (!$img.length || $img[0].src.indexOf('data:') === -1) {
+            // pasted content
             var html = $editable.html();
 
             editor.restoreNode($editable);
@@ -328,7 +329,7 @@ define([
             } catch (ex) {
               // insert text
               $editable.focus();
-              editor.insertNode($editable, html);
+              editor.insertText($editable, html);
             }
             return;
           }
