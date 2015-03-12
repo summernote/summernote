@@ -106,14 +106,9 @@ module.exports = function (grunt) {
     },
 
     // Meteor commands to test and publish package
-    shell: {
+    exec: {
       'meteor-test': {
-        command: 'meteor/runtests.sh',
-        options: {
-          execOptions: {
-            killSignal: 'SIGKILL'
-          }
-        }
+        command: 'meteor/runtests.sh'
       },
       'meteor-publish': {
         command: 'meteor/publish.sh'
@@ -137,15 +132,12 @@ module.exports = function (grunt) {
   // dist
   grunt.registerTask('dist', ['build', 'test', 'uglify', 'recess']);
 
-  // default: build, test, dist.
-  grunt.registerTask('default', ['dist']);
+  // default: server
+  grunt.registerTask('default', ['server']);
 
   // Meteor tasks
-  grunt.registerTask('meteor-test', 'shell:meteor-test');
-  grunt.registerTask('meteor-publish', 'shell:meteor-publish');
-  // Ideally we'd run tests before publishing, but the chances of tests breaking (given that
-  // Meteor is orthogonal to the library) are so small that it's not worth the maintainer's time
-  // grunt.regsterTask('meteor', ['shell:meteor-test', 'shell:meteor-publish']);
-  grunt.registerTask('meteor', 'shell:meteor-publish');
+  grunt.registerTask('meteor-test', 'exec:meteor-test');
+  grunt.registerTask('meteor-publish', 'exec:meteor-publish');
+  grunt.registerTask('meteor', ['meteor-test', 'meteor-publish']);
 
 };

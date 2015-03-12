@@ -1,33 +1,129 @@
 define([
-  'summernote/core/agent', 'summernote/core/dom',
+  'summernote/core/agent',
+  'summernote/core/list',
+  'summernote/core/dom',
   'summernote/core/range',
-  'summernote/settings',
-  'summernote/EventHandler', 'summernote/Renderer'
-], function (agent, dom, range, settings, EventHandler, Renderer) {
+  'summernote/defaults',
+  'summernote/EventHandler',
+  'summernote/Renderer'
+], function (agent, list, dom, range,
+             defaults, EventHandler, Renderer) {
+
   // jQuery namespace for summernote
+  /**
+   * @class $.summernote 
+   * 
+   * summernote attribute  
+   * 
+   * @mixin defaults
+   * @singleton  
+   * 
+   */
   $.summernote = $.summernote || {};
 
-  // extends default `settings`
-  $.extend($.summernote, settings);
+  // extends default settings
+  //  - $.summernote.version
+  //  - $.summernote.options
+  //  - $.summernote.lang
+  $.extend($.summernote, defaults);
 
   var renderer = new Renderer();
   var eventHandler = new EventHandler();
 
   $.extend($.summernote, {
+    /** @property {Renderer} */
     renderer: renderer,
+    /** @property {EventHandler} */
     eventHandler: eventHandler,
+    /** 
+     * @property {Object} core 
+     * @property {core.agent} core.agent 
+     * @property {core.dom} core.dom
+     * @property {core.range} core.range 
+     */
     core: {
       agent: agent,
       dom: dom,
       range: range
     },
+    /** 
+     * @property {Object} 
+     * pluginEvents event list for plugins
+     * event has name and callback function.
+     * 
+     * ``` 
+     * $.summernote.addPlugin({
+     *     events : {
+     *          'hello' : function(layoutInfo, value, $target) {
+     *              console.log('event name is hello, value is ' + value );
+     *          }
+     *     }     
+     * })
+     * ```
+     * 
+     * * event name is data-event property.
+     * * layoutInfo is a summernote layout information.
+     * * value is data-value property.
+     */
     pluginEvents: {}
   });
 
   /**
-   * addPlugin
+   * @method addPlugin
    *
+   * add Plugin in Summernote 
+   * 
+   * Summernote can make a own plugin.
+   *
+   * ### Define plugin
+   * ```
+   * // get template function  
+   * var tmpl = $.summernote.renderer.getTemplate();
+   * 
+   * // add a button   
+   * $.summernote.addPlugin({
+   *     buttons : {
+   *        // "hello"  is button's namespace.      
+   *        "hello" : function(lang, options) {
+   *            // make icon button by template function          
+   *            return tmpl.iconButton('fa fa-header', {
+   *                // callback function name when button clicked 
+   *                event : 'hello',
+   *                // set data-value property                 
+   *                value : 'hello',                
+   *                hide : true
+   *            });           
+   *        }
+   *     
+   *     }, 
+   *     
+   *     events : {
+   *        "hello" : function(layoutInfo, value) {
+   *            // here is event code 
+   *        }
+   *     }     
+   * });
+   * ``` 
+   * ### Use a plugin in toolbar
+   * 
+   * ``` 
+   *    $("#editor").summernote({
+   *    ...
+   *    toolbar : [
+   *        // display hello plugin in toolbar     
+   *        ['group', [ 'hello' ]]
+   *    ]
+   *    ...    
+   *    });
+   * ```
+   *  
+   *  
    * @param {Object} plugin
+   * @param {Object} [plugin.buttons] define plugin button. for detail, see to Renderer.addButtonInfo
+   * @param {Object} [plugin.dialogs] define plugin dialog. for detail, see to Renderer.addDialogInfo
+   * @param {Object} [plugin.events] add event in $.summernote.pluginEvents 
+   * @param {Object} [plugin.langs] update $.summernote.lang
+   * @param {Object} [plugin.options] update $.summernote.options
    */
   $.summernote.addPlugin = function (plugin) {
     if (plugin.buttons) {
@@ -61,20 +157,34 @@ define([
     }
   };
 
-  /**
-   * extend jquery fn
+  /*
+   * extend $.fn
    */
   $.fn.extend({
     /**
-     * initialize summernote
+     * @method
+     * Initialize summernote
      *  - create editor layout and attach Mouse and keyboard events.
-     *
-     * @param {Object} options
-     * @returns {this}
+     * 
+     * ```
+     * $("#summernote").summernote( { options ..} );
+     * ```
+     *   
+     * @member $.fn
+     * @param {Object|String} options reference to $.summernote.options
+     * @return {this}
      */
-    summernote: function (options) {
-      // extend default options
-      options = $.extend({}, $.summernote.options, options);
+    summernote: function () {
+      // check first argument's type
+      //  - {String}: External API call {{module}}.{{method}}
+      //  - {Object}: init options
+      var type = $.type(list.head(arguments));
+      var isExternalAPICalled = type === 'string';
+      var isInitOptions = type === 'object';
+
+      // extend default options with custom user options
+      var options = isInitOptions ? list.head(arguments) : {};
+      options = $.extend(true, {}, $.summernote.options, options);
 
       // Include langInfo in options for later use, e.g. for image drag-n-drop
       // Setup language info with en-US as default
@@ -83,85 +193,108 @@ define([
       this.each(function (idx, holder) {
         var $holder = $(holder);
 
-        // createLayout with options
-        renderer.createLayout($holder, options);
-
-        var info = renderer.layoutInfoFromHolder($holder);
-        eventHandler.attach(info, options);
-
-        // Textarea: auto filling the code before form submit.
-        if (dom.isTextarea($holder[0])) {
-          $holder.closest('form').submit(function () {
-            var contents = $holder.code();
-            $holder.val(contents);
-
-            // callback on submit
-            if (options.onsubmit) {
-              options.onsubmit(contents);
-            }
-          });
+        // if layout isn't created yet, createLayout and attach events
+        if (!renderer.hasNoteEditor($holder)) {
+          renderer.createLayout($holder, options);
+          eventHandler.attach(renderer.layoutInfoFromHolder($holder), options);
         }
       });
 
-      // focus on first editable element
-      if (this.first().length && options.focus) {
-        var info = renderer.layoutInfoFromHolder(this.first());
-        info.editable.focus();
+      // callback on init
+      if (!isExternalAPICalled && this.length && options.oninit) {
+        options.oninit();
       }
 
-      // callback on init
-      if (this.length && options.oninit) {
-        options.oninit();
+      var $first = this.first();
+      if ($first.length) {
+        var layoutInfo = renderer.layoutInfoFromHolder($first);
+
+        // external API
+        if (isExternalAPICalled) {
+          var moduleAndMethod = list.head(list.from(arguments));
+          var args = list.tail(list.from(arguments));
+
+          // TODO now external API only works for editor
+          var params = [moduleAndMethod, layoutInfo.editable()].concat(args);
+          return eventHandler.invoke.apply(eventHandler, params);
+        } else if (options.focus) {
+          // focus on first editable element for initialize editor
+          layoutInfo.editable().focus();
+        }
       }
 
       return this;
     },
-    //
 
     /**
+     * @method 
+     * 
      * get the HTML contents of note or set the HTML contents of note.
      *
-     * @param {String} [sHTML] - HTML contents(optional, set)
-     * @returns {this|String} - context(set) or HTML contents of note(get).
+     * * get contents 
+     * ```
+     * var content = $("#summernote").code();
+     * ```
+     * * set contents 
+     *
+     * ```
+     * $("#summernote").code(html);
+     * ```
+     *
+     * @member $.fn 
+     * @param {String} [html] - HTML contents(optional, set)
+     * @return {this|String} - context(set) or HTML contents of note(get).
      */
-    code: function (sHTML) {
+    code: function (html) {
       // get the HTML contents of note
-      if (sHTML === undefined) {
+      if (html === undefined) {
         var $holder = this.first();
-        if (!$holder.length) { return; }
-        var info = renderer.layoutInfoFromHolder($holder);
-        if (!!(info && info.editable)) {
-          var isCodeview = info.editor.hasClass('codeview');
-          if (isCodeview && agent.hasCodeMirror) {
-            info.codable.data('cmEditor').save();
-          }
-          return isCodeview ? info.codable.val() : info.editable.html();
+        if (!$holder.length) {
+          return;
+        }
+
+        var layoutInfo = renderer.layoutInfoFromHolder($holder);
+        var $editable = layoutInfo && layoutInfo.editable();
+
+        if ($editable && $editable.length) {
+          var isCodeview = eventHandler.invoke('codeview.isActivated', layoutInfo);
+          eventHandler.invoke('codeview.sync', layoutInfo);
+          return isCodeview ? layoutInfo.codable().val() :
+                              layoutInfo.editable().html();
         }
         return dom.isTextarea($holder[0]) ? $holder.val() : $holder.html();
       }
 
       // set the HTML contents of note
       this.each(function (i, holder) {
-        var info = renderer.layoutInfoFromHolder($(holder));
-        if (info && info.editable) { info.editable.html(sHTML); }
+        var layoutInfo = renderer.layoutInfoFromHolder($(holder));
+        var $editable = layoutInfo && layoutInfo.editable();
+        if ($editable) {
+          $editable.html(html);
+        }
       });
 
       return this;
     },
 
     /**
+     * @method
+     * 
      * destroy Editor Layout and detach Key and Mouse Event
      *
-     * @returns {this}
+     * @member $.fn
+     * @return {this}
      */
     destroy: function () {
       this.each(function (idx, holder) {
         var $holder = $(holder);
 
-        var info = renderer.layoutInfoFromHolder($holder);
-        if (!info || !info.editable) { return; }
+        if (!renderer.hasNoteEditor($holder)) {
+          return;
+        }
 
-        var options = info.editor.data('options');
+        var info = renderer.layoutInfoFromHolder($holder);
+        var options = info.editor().data('options');
 
         eventHandler.detach(info, options);
         renderer.removeLayout($holder, info, options);

@@ -6,22 +6,22 @@
 define(['jquery', 'summernote/core/dom', 'summernote/core/func'], function ($, dom, func) {
   return function () {
     test('dom.ancestor', function () {
-      var $cont, $b, elB;
+      var $cont, $b, txtB;
 
       // basic case
       $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
       $b = $cont.find('b');
-      elB = $b[0].firstChild;
+      txtB = $b[0].firstChild;
 
-      equal(dom.ancestor(elB, dom.isB), $b[0], 'find ancestor B');
-      equal(dom.ancestor(elB, dom.isDiv), $cont[0], 'find ancestor DIV');
+      equal(dom.ancestor(txtB, dom.isB), $b[0], 'find ancestor B');
+      equal(dom.ancestor(txtB, dom.isDiv), $cont[0], 'find ancestor DIV');
 
-      equal(dom.ancestor(elB, dom.isU), null, 'find ancestor U: null');
+      equal(dom.ancestor(txtB, dom.isU), null, 'find ancestor U: null');
 
       // keep boundary
       $cont = $('<ul><li><div class="note-editable"><b>b</b></div></li></ul>'); //b
-      elB = $cont.find('b')[0].firstChild;
-      equal(dom.ancestor(elB, dom.isLi), null, 'find paragraph ancestor outside note-editable: null');
+      txtB = $cont.find('b')[0].firstChild;
+      equal(dom.ancestor(txtB, dom.isLi), null, 'find paragraph ancestor outside note-editable: null');
     });
 
     test('dom.listAncestor', function () {

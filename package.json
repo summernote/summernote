@@ -1,10 +1,15 @@
 {
-  "name": "Summernote",
+  "name": "summernote",
   "description": "Super Simple WYSIWYG Editor on Bootstrap",
-  "version": "0.6.0",
+  "version": "0.6.1",
+  "keywords": [
+    "editor",
+    "bootstrap",
+    "WYSIWYG"
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/HackerWins/summernote.git"
+    "url": "https://github.com/summernote/summernote.git"
   },
   "author": {
     "name": "Hackerwins",
@@ -20,7 +25,7 @@
     "grunt-recess": "*",
     "grunt-contrib-watch": "*",
     "grunt-contrib-connect": "*",
-    "grunt-shell": "^1.1.1",
+    "grunt-exec": "^0.4.6",
     "connect-livereload": "*"
   },
   "dependencies": {

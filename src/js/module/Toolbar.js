@@ -3,6 +3,8 @@ define([
   'summernote/module/Button'
 ], function (list, Button) {
   /**
+   * @class module.Toolbar
+   *
    * Toolbar
    */
   var Toolbar = function () {
@@ -41,14 +43,28 @@ define([
               .addClass('disabled');
     };
 
+    /**
+     * @param {jQuery} $container
+     * @param {Boolean} [bFullscreen=false]
+     */
     this.updateFullscreen = function ($container, bFullscreen) {
       var $btn = $container.find('button[data-event="fullscreen"]');
       $btn.toggleClass('active', bFullscreen);
     };
 
+    /**
+     * @param {jQuery} $container
+     * @param {Boolean} [isCodeview=false]
+     */
     this.updateCodeview = function ($container, isCodeview) {
       var $btn = $container.find('button[data-event="codeview"]');
       $btn.toggleClass('active', isCodeview);
+
+      if (isCodeview) {
+        this.deactivate($container);
+      } else {
+        this.activate($container);
+      }
     };
   };
 

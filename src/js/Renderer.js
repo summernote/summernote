@@ -2,6 +2,8 @@ define([
   'summernote/core/agent', 'summernote/core/dom', 'summernote/core/func'
 ], function (agent, dom, func) {
   /**
+   * @class Renderer
+   *
    * renderer
    *
    * rendering toolbar and editable
@@ -10,14 +12,15 @@ define([
 
     /**
      * bootstrap button template
-     *
-     * @param {String} label
-     * @param {Object} [options]
-     * @param {String} [options.event]
-     * @param {String} [options.value]
-     * @param {String} [options.title]
-     * @param {String} [options.dropdown]
-     * @param {String} [options.hide]
+     * @private
+     * @param {String} label button name
+     * @param {Object} [options] button options
+     * @param {String} [options.event] data-event
+     * @param {String} [options.className] button's class name
+     * @param {String} [options.value] data-value
+     * @param {String} [options.title] button's title for popup
+     * @param {String} [options.dropdown] dropdown html
+     * @param {String} [options.hide] data-hide
      */
     var tplButton = function (label, options) {
       var event = options.event;
@@ -46,7 +49,7 @@ define([
 
     /**
      * bootstrap icon button template
-     *
+     * @private
      * @param {String} iconClassName
      * @param {Object} [options]
      * @param {String} [options.event]
@@ -61,7 +64,7 @@ define([
 
     /**
      * bootstrap popover template
-     *
+     * @private
      * @param {String} className
      * @param {String} content
      */
@@ -78,9 +81,9 @@ define([
      * bootstrap dialog template
      *
      * @param {String} className
-     * @param {String} [title]
+     * @param {String} [title='']
      * @param {String} body
-     * @param {String} [footer]
+     * @param {String} [footer='']
      */
     var tplDialog = function (className, title, body, footer) {
       return '<div class="' + className + ' modal" aria-hidden="false">' +
@@ -104,21 +107,21 @@ define([
     };
 
     var tplButtonInfo = {
-      picture: function (lang) {
-        return tplIconButton('fa fa-picture-o', {
+      picture: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'picture-o', {
           event: 'showImageDialog',
           title: lang.image.image,
           hide: true
         });
       },
-      link: function (lang) {
-        return tplIconButton('fa fa-link', {
+      link: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'link', {
           event: 'showLinkDialog',
           title: lang.link.link,
           hide: true
         });
       },
-      table: function (lang) {
+      table: function (lang, options) {
         var dropdown = '<ul class="note-table dropdown-menu">' +
                          '<div class="note-dimension-picker">' +
                            '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>' +
@@ -127,7 +130,7 @@ define([
                          '</div>' +
                          '<div class="note-dimension-display"> 1 x 1 </div>' +
                        '</ul>';
-        return tplIconButton('fa fa-table', {
+        return tplIconButton(options.iconPrefix + 'table', {
           title: lang.table.table,
           dropdown: dropdown
         });
@@ -143,28 +146,36 @@ define([
                  '</a></li>';
         }, '');
 
-        return tplIconButton('fa fa-magic', {
+        return tplIconButton(options.iconPrefix + 'magic', {
           title: lang.style.style,
           dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
         });
       },
       fontname: function (lang, options) {
+        var realFontList = [];
         var items = options.fontNames.reduce(function (memo, v) {
-          if (!agent.isFontInstalled(v)) { return memo; }
-          return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '">' +
-                          '<i class="fa fa-check"></i> ' + v +
+          if (!agent.isFontInstalled(v) && options.fontNamesIgnoreCheck.indexOf(v) === -1) {
+            return memo;
+          }
+          realFontList.push(v);
+          return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '" style="font-family:\'' + v + '\'">' +
+                          '<i class="' + options.iconPrefix + 'check"></i> ' + v +
                         '</a></li>';
         }, '');
+
+        var hasDefaultFont = agent.isFontInstalled(options.defaultFontName);
+        var defaultFontName = (hasDefaultFont) ? options.defaultFontName : realFontList[0];
+          
         var label = '<span class="note-current-fontname">' +
-                       options.defaultFontName +
+                        defaultFontName +
                      '</span>';
         return tplButton(label, {
           title: lang.font.name,
           dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
         });
       },
-      color: function (lang) {
-        var colorButtonLabel = '<i class="fa fa-font" style="color:black;background-color:yellow;"></i>';
+      color: function (lang, options) {
+        var colorButtonLabel = '<i class="' + options.iconPrefix + 'font" style="color:black;background-color:yellow;"></i>';
         var colorButton = tplButton(colorButtonLabel, {
           className: 'note-recent-color',
           title: lang.color.recent,
@@ -199,65 +210,65 @@ define([
 
         return colorButton + moreButton;
       },
-      bold: function (lang) {
-        return tplIconButton('fa fa-bold', {
+      bold: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'bold', {
           event: 'bold',
           title: lang.font.bold
         });
       },
-      italic: function (lang) {
-        return tplIconButton('fa fa-italic', {
+      italic: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'italic', {
           event: 'italic',
           title: lang.font.italic
         });
       },
-      underline: function (lang) {
-        return tplIconButton('fa fa-underline', {
+      underline: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'underline', {
           event: 'underline',
           title: lang.font.underline
         });
       },
-      clear: function (lang) {
-        return tplIconButton('fa fa-eraser', {
+      clear: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'eraser', {
           event: 'removeFormat',
           title: lang.font.clear
         });
       },
-      ul: function (lang) {
-        return tplIconButton('fa fa-list-ul', {
+      ul: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'list-ul', {
           event: 'insertUnorderedList',
           title: lang.lists.unordered
         });
       },
-      ol: function (lang) {
-        return tplIconButton('fa fa-list-ol', {
+      ol: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'list-ol', {
           event: 'insertOrderedList',
           title: lang.lists.ordered
         });
       },
-      paragraph: function (lang) {
-        var leftButton = tplIconButton('fa fa-align-left', {
+      paragraph: function (lang, options) {
+        var leftButton = tplIconButton(options.iconPrefix + 'align-left', {
           title: lang.paragraph.left,
           event: 'justifyLeft'
         });
-        var centerButton = tplIconButton('fa fa-align-center', {
+        var centerButton = tplIconButton(options.iconPrefix + 'align-center', {
           title: lang.paragraph.center,
           event: 'justifyCenter'
         });
-        var rightButton = tplIconButton('fa fa-align-right', {
+        var rightButton = tplIconButton(options.iconPrefix + 'align-right', {
           title: lang.paragraph.right,
           event: 'justifyRight'
         });
-        var justifyButton = tplIconButton('fa fa-align-justify', {
+        var justifyButton = tplIconButton(options.iconPrefix + 'align-justify', {
           title: lang.paragraph.justify,
           event: 'justifyFull'
         });
 
-        var outdentButton = tplIconButton('fa fa-outdent', {
+        var outdentButton = tplIconButton(options.iconPrefix + 'outdent', {
           title: lang.paragraph.outdent,
           event: 'outdent'
         });
-        var indentButton = tplIconButton('fa fa-indent', {
+        var indentButton = tplIconButton(options.iconPrefix + 'indent', {
           title: lang.paragraph.indent,
           event: 'indent'
         });
@@ -271,7 +282,7 @@ define([
                          '</div>' +
                        '</div>';
 
-        return tplIconButton('fa fa-align-left', {
+        return tplIconButton(options.iconPrefix + 'align-left', {
           title: lang.paragraph.paragraph,
           dropdown: dropdown
         });
@@ -279,49 +290,49 @@ define([
       height: function (lang, options) {
         var items = options.lineHeights.reduce(function (memo, v) {
           return memo + '<li><a data-event="lineHeight" href="#" data-value="' + parseFloat(v) + '">' +
-                          '<i class="fa fa-check"></i> ' + v +
+                          '<i class="' + options.iconPrefix + 'check"></i> ' + v +
                         '</a></li>';
         }, '');
 
-        return tplIconButton('fa fa-text-height', {
+        return tplIconButton(options.iconPrefix + 'text-height', {
           title: lang.font.height,
           dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
         });
 
       },
-      help: function (lang) {
-        return tplIconButton('fa fa-question', {
+      help: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'question', {
           event: 'showHelpDialog',
           title: lang.options.help,
           hide: true
         });
       },
-      fullscreen: function (lang) {
-        return tplIconButton('fa fa-arrows-alt', {
+      fullscreen: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'arrows-alt', {
           event: 'fullscreen',
           title: lang.options.fullscreen
         });
       },
-      codeview: function (lang) {
-        return tplIconButton('fa fa-code', {
+      codeview: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'code', {
           event: 'codeview',
           title: lang.options.codeview
         });
       },
-      undo: function (lang) {
-        return tplIconButton('fa fa-undo', {
+      undo: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'undo', {
           event: 'undo',
           title: lang.history.undo
         });
       },
-      redo: function (lang) {
-        return tplIconButton('fa fa-repeat', {
+      redo: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'repeat', {
           event: 'redo',
           title: lang.history.redo
         });
       },
-      hr: function (lang) {
-        return tplIconButton('fa fa-minus', {
+      hr: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'minus', {
           event: 'insertHorizontalRule',
           title: lang.hr.insert
         });
@@ -330,12 +341,12 @@ define([
 
     var tplPopovers = function (lang, options) {
       var tplLinkPopover = function () {
-        var linkButton = tplIconButton('fa fa-edit', {
+        var linkButton = tplIconButton(options.iconPrefix + 'edit', {
           title: lang.link.edit,
           event: 'showLinkDialog',
           hide: true
         });
-        var unlinkButton = tplIconButton('fa fa-unlink', {
+        var unlinkButton = tplIconButton(options.iconPrefix + 'unlink', {
           title: lang.link.unlink,
           event: 'unlink'
         });
@@ -363,44 +374,44 @@ define([
           value: '0.25'
         });
 
-        var leftButton = tplIconButton('fa fa-align-left', {
+        var leftButton = tplIconButton(options.iconPrefix + 'align-left', {
           title: lang.image.floatLeft,
           event: 'floatMe',
           value: 'left'
         });
-        var rightButton = tplIconButton('fa fa-align-right', {
+        var rightButton = tplIconButton(options.iconPrefix + 'align-right', {
           title: lang.image.floatRight,
           event: 'floatMe',
           value: 'right'
         });
-        var justifyButton = tplIconButton('fa fa-align-justify', {
+        var justifyButton = tplIconButton(options.iconPrefix + 'align-justify', {
           title: lang.image.floatNone,
           event: 'floatMe',
           value: 'none'
         });
 
-        var roundedButton = tplIconButton('fa fa-square', {
+        var roundedButton = tplIconButton(options.iconPrefix + 'square', {
           title: lang.image.shapeRounded,
           event: 'imageShape',
           value: 'img-rounded'
         });
-        var circleButton = tplIconButton('fa fa-circle-o', {
+        var circleButton = tplIconButton(options.iconPrefix + 'circle-o', {
           title: lang.image.shapeCircle,
           event: 'imageShape',
           value: 'img-circle'
         });
-        var thumbnailButton = tplIconButton('fa fa-picture-o', {
+        var thumbnailButton = tplIconButton(options.iconPrefix + 'picture-o', {
           title: lang.image.shapeThumbnail,
           event: 'imageShape',
           value: 'img-thumbnail'
         });
-        var noneButton = tplIconButton('fa fa-times', {
+        var noneButton = tplIconButton(options.iconPrefix + 'times', {
           title: lang.image.shapeNone,
           event: 'imageShape',
           value: ''
         });
 
-        var removeButton = tplIconButton('fa fa-trash-o', {
+        var removeButton = tplIconButton(options.iconPrefix + 'trash-o', {
           title: lang.image.remove,
           event: 'removeMedia',
           value: 'none'
@@ -457,10 +468,12 @@ define([
       var body = [];
 
       for (var i in keys) {
-        body.push(
-          '<div class="' + keyClass + 'key">' + keys[i].kbd + '</div>' +
-          '<div class="' + keyClass + 'name">' + keys[i].text + '</div>'
-          );
+        if (keys.hasOwnProperty(i)) {
+          body.push(
+            '<div class="' + keyClass + 'key">' + keys[i].kbd + '</div>' +
+            '<div class="' + keyClass + 'name">' + keys[i].text + '</div>'
+            );
+        }
       }
 
       return '<div class="note-shortcut-row row"><div class="' + keyClass + 'title col-xs-offset-6">' + title + '</div></div>' +
@@ -600,9 +613,9 @@ define([
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//hackerwins.github.io/summernote/" target="_blank">Summernote @VERSION</a> · ' +
-                     '<a href="//github.com/HackerWins/summernote" target="_blank">Project</a> · ' +
-                     '<a href="//github.com/HackerWins/summernote/issues" target="_blank">Issues</a>' +
+                     '<a href="//summernote.org/" target="_blank">Summernote @VERSION</a> · ' +
+                     '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ' +
+                     '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
         return tplDialog('note-help-dialog', '', body, '');
       }
@@ -763,8 +776,9 @@ define([
       if (options.direction) {
         $editable.attr('dir', options.direction);
       }
-      if (options.placeholder) {
-        $editable.attr('data-placeholder', options.placeholder);
+      var placeholder = $holder.attr('placeholder') || options.placeholder;
+      if (placeholder) {
+        $editable.attr('data-placeholder', placeholder);
       }
 
       $editable.html(dom.html($holder));
@@ -817,6 +831,10 @@ define([
       $holder.hide();
     };
 
+    this.hasNoteEditor = function ($holder) {
+      return this.noteEditorFromHolder($holder).length > 0;
+    };
+
     this.noteEditorFromHolder = function ($holder) {
       if ($holder.hasClass('note-air-editor')) {
         return $holder;
@@ -834,10 +852,6 @@ define([
      * @param {Object} options
      */
     this.createLayout = function ($holder, options) {
-      if (this.noteEditorFromHolder($holder).length) {
-        return;
-      }
-
       if (options.airMode) {
         this.createLayoutByAirMode($holder, options);
       } else {
@@ -849,20 +863,19 @@ define([
      * returns layoutInfo from holder
      *
      * @param {jQuery} $holder - placeholder
-     * @returns {Object}
+     * @return {Object}
      */
     this.layoutInfoFromHolder = function ($holder) {
       var $editor = this.noteEditorFromHolder($holder);
-      if (!$editor.length) { return; }
-
-      var layoutInfo = dom.buildLayoutInfo($editor);
-      // cache all properties.
-      for (var key in layoutInfo) {
-        if (layoutInfo.hasOwnProperty(key)) {
-          layoutInfo[key] = layoutInfo[key].call();
-        }
+      if (!$editor.length) {
+        return;
       }
-      return layoutInfo;
+
+      return $.extend({
+        holder: function () {
+          return $holder;
+        }
+      }, dom.buildLayoutInfo($editor));
     };
 
     /**
@@ -878,17 +891,24 @@ define([
         $holder.removeClass('note-air-editor note-editable')
                .removeAttr('id contentEditable');
 
-        layoutInfo.popover.remove();
-        layoutInfo.handle.remove();
-        layoutInfo.dialog.remove();
+        layoutInfo.popover().remove();
+        layoutInfo.handle().remove();
+        layoutInfo.dialog().remove();
       } else {
-        $holder.html(layoutInfo.editable.html());
+        $holder.html(layoutInfo.editable().html());
 
-        layoutInfo.editor.remove();
+        layoutInfo.editor().remove();
         $holder.show();
       }
     };
 
+    /**
+     *
+     * @return {Object}
+     * @return {function(label, options=):string} return.button {@link #tplButton function to make text button}
+     * @return {function(iconClass, options=):string} return.iconButton {@link #tplIconButton function to make icon button}
+     * @return {function(className, title=, body=, footer=):string} return.dialog {@link #tplDialog function to make dialog}
+     */
     this.getTemplate = function () {
       return {
         button: tplButton,
@@ -897,10 +917,21 @@ define([
       };
     };
 
+    /**
+     * add button information
+     *
+     * @param {String} name button name
+     * @param {Function} buttonInfo function to make button, reference to {@link #tplButton},{@link #tplIconButton}
+     */
     this.addButtonInfo = function (name, buttonInfo) {
       tplButtonInfo[name] = buttonInfo;
     };
 
+    /**
+     *
+     * @param {String} name
+     * @param {Function} dialogInfo function to make dialog, reference to {@link #tplDialog}
+     */
     this.addDialogInfo = function (name, dialogInfo) {
       tplDialogInfo[name] = dialogInfo;
     };

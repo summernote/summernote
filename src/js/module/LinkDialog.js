@@ -1,14 +1,10 @@
-define('summernote/module/Dialog', function () {
-  /**
-   * Dialog 
-   *
-   * @class
-   */
-  var Dialog = function () {
+define(function () {
+  var LinkDialog = function (handler) {
 
     /**
      * toggle button status
      *
+     * @private
      * @param {jQuery} $btn
      * @param {Boolean} isEnable
      */
@@ -18,63 +14,9 @@ define('summernote/module/Dialog', function () {
     };
 
     /**
-     * show image dialog
-     *
-     * @param {jQuery} $editable
-     * @param {jQuery} $dialog
-     * @return {Promise}
-     */
-    this.showImageDialog = function ($editable, $dialog) {
-      return $.Deferred(function (deferred) {
-        var $imageDialog = $dialog.find('.note-image-dialog');
-
-        var $imageInput = $dialog.find('.note-image-input'),
-            $imageUrl = $dialog.find('.note-image-url'),
-            $imageBtn = $dialog.find('.note-image-btn');
-
-        $imageDialog.one('shown.bs.modal', function () {
-          // Cloning imageInput to clear element.
-          $imageInput.replaceWith($imageInput.clone()
-            .on('change', function () {
-              deferred.resolve(this.files || this.value);
-              $imageDialog.modal('hide');
-            })
-            .val('')
-          );
-
-          $imageBtn.click(function (event) {
-            event.preventDefault();
-
-            deferred.resolve($imageUrl.val());
-            $imageDialog.modal('hide');
-          });
-
-          $imageUrl.on('keyup paste', function (event) {
-            var url;
-            
-            if (event.type === 'paste') {
-              url = event.originalEvent.clipboardData.getData('text');
-            } else {
-              url = $imageUrl.val();
-            }
-            
-            toggleBtn($imageBtn, url);
-          }).val('').trigger('focus');
-        }).one('hidden.bs.modal', function () {
-          $imageInput.off('change');
-          $imageUrl.off('keyup paste');
-          $imageBtn.off('click');
-
-          if (deferred.state() === 'pending') {
-            deferred.reject();
-          }
-        }).modal('show');
-      });
-    };
-
-    /**
      * Show link dialog and set event handlers on dialog controls.
      *
+     * @param {jQuery} $editable
      * @param {jQuery} $dialog
      * @param {Object} linkInfo
      * @return {Promise}
@@ -139,20 +81,28 @@ define('summernote/module/Dialog', function () {
     };
 
     /**
-     * show help dialog
-     *
-     * @param {jQuery} $dialog
+     * @param {Object} layoutInfo
      */
-    this.showHelpDialog = function ($editable, $dialog) {
-      return $.Deferred(function (deferred) {
-        var $helpDialog = $dialog.find('.note-help-dialog');
+    this.show = function (layoutInfo) {
+      var $editor = layoutInfo.editor(),
+          $dialog = layoutInfo.dialog(),
+          $editable = layoutInfo.editable(),
+          $popover = layoutInfo.popover(),
+          linkInfo = handler.invoke('editor.getLinkInfo', $editable);
 
-        $helpDialog.one('hidden.bs.modal', function () {
-          deferred.resolve();
-        }).modal('show');
-      }).promise();
+      var options = $editor.data('options');
+
+      handler.invoke('editor.saveRange', $editable);
+      this.showLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
+        handler.invoke('editor.restoreRange', $editable);
+        handler.invoke('editor.createLink', $editable, linkInfo, options);
+        // hide popover after creating link
+        handler.invoke('popover.hide', $popover);
+      }).fail(function () {
+        handler.invoke('editor.restoreRange', $editable);
+      });
     };
   };
 
-  return Dialog;
+  return LinkDialog;
 });

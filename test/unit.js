@@ -22,8 +22,9 @@ require.config({
 require([
   '../../test/unit/dom.spec',
   '../../test/unit/list.spec',
-  '../../test/unit/range.spec'
-], function (domSpec, listSpec, rangeSpec) {
+  '../../test/unit/range.spec',
+  '../../test/unit/style.spec'
+], function (domSpec, listSpec, rangeSpec, styleSpec) {
   /* global QUnit */
   QUnit.start();
 
@@ -33,4 +34,6 @@ require([
   listSpec();
   module('unit/range');
   rangeSpec();
+  module('unit/styleSpec');
+  styleSpec();
 });
