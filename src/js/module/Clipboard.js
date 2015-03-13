@@ -33,6 +33,28 @@ define([
 
         setTimeout(function () {
           var $img = $editable.find('img');
+
+          // if img is no in clipboard, insert text or dom
+          if (!$img.length || $img[0].src.indexOf('data:') === -1) {
+            var html = $editable.html();
+
+            handler.invoke('editor.restoreNode', $editable);
+            handler.invoke('editor.restoreRange', $editable);
+
+            try {
+              // insert normal dom code
+              $(html).each(function () {
+                $editable.focus();
+                handler.invoke('editor.insertNode', $editable, this);
+              });
+            } catch (ex) {
+              // insert text
+              $editable.focus();
+              handler.invoke('editor.insertNode', $editable, html);
+            }
+            return;
+          }
+
           var datauri = $img[0].src;
 
           var data = atob(datauri.split(',')[1]);
