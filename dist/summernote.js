@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.6.1
+ * Super simple wysiwyg editor on Bootstrap v0.6.2
  * http://summernote.org/
  *
  * summernote.js
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-02-08T09:50Z
+ * Date: 2015-03-14T02:36Z
  */
 (function (factory) {
   /* global define */
@@ -2122,7 +2122,7 @@
    */
   var settings = {
     /** @property */
-    version: '0.6.1',
+    version: '0.6.2',
 
     /**
      * 
@@ -5726,7 +5726,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.1</a> · ' +
+                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.2</a> · ' +
                      '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
