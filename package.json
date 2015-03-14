@@ -22,9 +22,10 @@
     "grunt-contrib-jshint": "0.7.2",
     "grunt-contrib-qunit": "*",
     "grunt-contrib-uglify": "~0.2.2",
-    "grunt-recess": "*",
     "grunt-contrib-watch": "*",
     "grunt-contrib-connect": "*",
+    "grunt-contrib-compress": "*",
+    "grunt-recess": "*",
     "grunt-exec": "^0.4.6",
     "connect-livereload": "*"
   },
