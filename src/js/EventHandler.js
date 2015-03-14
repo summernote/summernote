@@ -312,8 +312,29 @@ define([
 
         setTimeout(function () {
           var $img = $editable.find('img');
-          var datauri = $img[0].src;
 
+          if (!$img.length || $img[0].src.indexOf('data:') === -1) {
+            // pasted content
+            var html = $editable.html();
+
+            editor.restoreNode($editable);
+            editor.restoreRange($editable);
+
+            try {
+              // insert normal dom code
+              $(html).each(function () {
+                $editable.focus();
+                editor.insertNode($editable, this);
+              });
+            } catch (ex) {
+              // insert text
+              $editable.focus();
+              editor.insertText($editable, html);
+            }
+            return;
+          }
+
+          var datauri = $img[0].src;
           var data = atob(datauri.split(',')[1]);
           var array = new Uint8Array(data.length);
           for (var i = 0; i < data.length; i++) {
