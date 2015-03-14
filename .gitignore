@@ -2,8 +2,12 @@
 *.swp
 .tern-port
 .DS_Store
+
 # node modules
 node_modules
 bower_components
 *.sublime*
 .build*
+
+# zip file
+*.zip
