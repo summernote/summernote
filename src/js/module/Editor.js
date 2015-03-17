@@ -714,6 +714,15 @@ define([
 
       afterCommand($editable);
     };
+
+    /**
+     * set focus
+     *
+     * @param $editable
+     */
+    this.focus = function ($editable) {
+      $editable.focus();
+    };
   };
 
   return Editor;
