@@ -50,7 +50,7 @@ define([
             } catch (ex) {
               // insert text
               $editable.focus();
-              handler.invoke('editor.insertNode', $editable, html);
+              handler.invoke('editor.insertText', $editable, html);
             }
             return;
           }

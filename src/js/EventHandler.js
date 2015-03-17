@@ -218,7 +218,7 @@ define([
         }
 
         if ($.isFunction($.summernote.pluginEvents[eventName])) {
-          $.summernote.pluginEvents[eventName].call(layoutInfo.holder(), event, modules.editor, layoutInfo, value);
+          $.summernote.pluginEvents[eventName](event, modules.editor, layoutInfo, value);
         } else if (modules.editor[eventName]) { // on command
           var $editable = layoutInfo.editable();
           $editable.focus();
@@ -489,6 +489,7 @@ define([
 
       // callbacks for advanced features (camel)
       layoutInfo.toolbar().click(bindCustomEvent($holder, 'toolbar.click'));
+      layoutInfo.popover().click(bindCustomEvent($holder, 'popover.click'));
 
       if (agent.isMSIE) {
         var sDomEvents = 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted';
