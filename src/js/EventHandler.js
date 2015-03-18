@@ -460,11 +460,13 @@ define([
           }
         });
       }
-      
-      // define summernote custom event
-      this.attachCustomEvent(layoutInfo, options);
     };
 
+    /**
+     * attach jquery custom event
+     *
+     * @param {Object} layoutInfo - layout Informations
+     */
     this.attachCustomEvent = function (layoutInfo) {
       var $holder = layoutInfo.holder();
       var $editable = layoutInfo.editable();
@@ -504,6 +506,16 @@ define([
           var contents = $holder.code();
           bindCustomEvent($holder, 'submit').call(this, e, contents);
         });
+      }
+
+      // fire init event
+      bindCustomEvent($holder, 'init')();
+
+      // fire plugin init event
+      for (var i = 0, len = $.summernote.plugins.length; i < len; i++) {
+        if ($.isFunction($.summernote.plugins[i].init)) {
+          $.summernote.plugins[i].init(layoutInfo);
+        }
       }
     };
       
