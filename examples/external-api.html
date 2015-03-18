@@ -39,7 +39,10 @@
             // init summernote
             $summernote.summernote({height: 300, toolbar: false});
 
-            $("button").popover();
+            $("button").popover({
+              trigger : 'hover'
+              
+            });
         });
 
         function command() {
