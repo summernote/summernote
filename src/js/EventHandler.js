@@ -83,7 +83,8 @@ define([
      */
     this.insertImages = function (layoutInfo, files) {
       var $editor = layoutInfo.editor(),
-          $editable = layoutInfo.editable();
+          $editable = layoutInfo.editable(),
+          $holder = layoutInfo.holder();
 
       var callbacks = $editable.data('callbacks');
       var options = $editor.data('options');
@@ -91,6 +92,7 @@ define([
       // If onImageUpload options setted
       if (callbacks.onImageUpload) {
         callbacks.onImageUpload(files, modules.editor, $editable);
+        bindCustomEvent($holder, 'image.upload')([files]);
       // else insert Image as dataURL
       } else {
         $.each(files, function (idx, file) {
@@ -98,6 +100,7 @@ define([
           if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
             if (callbacks.onImageUploadError) {
               callbacks.onImageUploadError(options.langInfo.image.maximumFileSizeError);
+              bindCustomEvent($holder, 'image.upload.error')(options.langInfo.image.maximumFileSizeError);
             } else {
               alert(options.langInfo.image.maximumFileSizeError);
             }
@@ -107,6 +110,7 @@ define([
             }).fail(function () {
               if (callbacks.onImageUploadError) {
                 callbacks.onImageUploadError();
+                bindCustomEvent($holder, 'image.upload.error')(options.langInfo.image.maximumFileSizeError);
               }
             });
           }
@@ -277,6 +281,12 @@ define([
 
       $dimensionDisplay.html(dim.c + ' x ' + dim.r);
     };
+    
+    var bindCustomEvent = function ($holder, eventName) {
+      return function () {
+        return $holder.trigger('summernote.' + eventName, arguments);
+      };
+    };
 
     /**
      * bind KeyMap on keydown
@@ -403,7 +413,7 @@ define([
       if (options.onkeyup) { layoutInfo.editable().keyup(options.onkeyup); }
       if (options.onkeydown) { layoutInfo.editable().keydown(options.onkeydown); }
       if (options.onpaste) { layoutInfo.editable().on('paste', options.onpaste); }
-
+      
       // callbacks for advanced features (camel)
 
       // onToolbarClick
@@ -452,7 +462,65 @@ define([
       }
     };
 
+    /**
+     * attach jquery custom event
+     *
+     * @param {Object} layoutInfo - layout Informations
+     */
+    this.attachCustomEvent = function (layoutInfo) {
+      var $holder = layoutInfo.holder();
+      var $editable = layoutInfo.editable();
+
+      $editable.on('mousedown', bindCustomEvent($holder, 'mousedown'));
+      $editable.on('keyup mouseup', bindCustomEvent($holder, 'update'));
+      $editable.on('scroll', bindCustomEvent($holder, 'scroll'));
+
+      // basic event callbacks (lowercase)
+      // enter, focus, blur, keyup, keydown
+      $editable.keypress(function (event) {
+        if (event.keyCode === key.ENTER) {
+          bindCustomEvent($holder, 'enter').call(this, event);
+        }
+      });
+
+      $editable.focus(bindCustomEvent($holder, 'focus'));
+      $editable.blur(bindCustomEvent($holder, 'blur'));
+      $editable.keyup(bindCustomEvent($holder, 'keyup'));
+      $editable.keydown(bindCustomEvent($holder, 'keydown'));
+      $editable.on('paste', bindCustomEvent($holder, 'paste'));
+
+      // callbacks for advanced features (camel)
+      layoutInfo.toolbar().click(bindCustomEvent($holder, 'toolbar.click'));
+      layoutInfo.popover().click(bindCustomEvent($holder, 'popover.click'));
+
+      if (agent.isMSIE) {
+        var sDomEvents = 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted';
+        $editable.on(sDomEvents, bindCustomEvent($holder, 'change'));
+      } else {
+        $editable.on('input', bindCustomEvent($holder, 'change'));
+      }
+
+      // Textarea: auto filling the code before form submit.
+      if (dom.isTextarea(list.head($holder))) {
+        $holder.closest('form').submit(function (e) {
+          var contents = $holder.code();
+          bindCustomEvent($holder, 'submit').call(this, e, contents);
+        });
+      }
+
+      // fire init event
+      bindCustomEvent($holder, 'init')();
+
+      // fire plugin init event
+      for (var i = 0, len = $.summernote.plugins.length; i < len; i++) {
+        if ($.isFunction($.summernote.plugins[i].init)) {
+          $.summernote.plugins[i].init(layoutInfo);
+        }
+      }
+    };
+      
     this.detach = function (layoutInfo, options) {
+      layoutInfo.holder().off();
       layoutInfo.editable().off();
 
       layoutInfo.popover().off();

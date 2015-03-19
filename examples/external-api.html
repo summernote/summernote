@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>jquery old</title>
+    <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+
+    <!-- include libraries BS2 -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css"/>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"/>
+
+    <!-- include summernote -->
+    <link rel="stylesheet" href="../dist/summernote.css">
+    <script type="text/javascript" src="../dist/summernote.js"></script>
+    <style>
+        .container {
+            position: absolute;
+            left: 10%;
+            right: 10%;
+            top: 10%;
+            bottom: 10%;
+        }
+
+        .custom-toolbar {
+            padding: 5px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+    </style>
+
+    <script type="text/javascript">
+        var $summernote;
+        $(document).ready(function () {
+            $summernote = $('.summernote');
+
+            // init summernote
+            $summernote.summernote({height: 300, toolbar: false});
+
+            $("button").popover({
+              trigger : 'hover'
+              
+            });
+        });
+
+        function command() {
+            $summernote.summernote(arguments[0], arguments[1]);
+        }
+
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <h1>External API Sample</h1>
+
+    <div class="custom-toolbar">
+        My Custom Toolbar
+        <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-default" data-container="body" data-trigger="hover"
+                    data-placement="left" data-content="Sample Content" title="Sample Button"
+                    onclick="command('justifyLeft')">Left
+            </button>
+            <button type="button" class="btn btn-default" onclick="command('justifyCenter')">Middle</button>
+            <button type="button" class="btn btn-default" onclick="command('justifyRight')">Right</button>
+        </div>
+
+        <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-default" data-container="body" data-trigger="hover"
+                    data-placement="bottom" data-content="Apply bold style to selected text" title="Bold (CTRL+B)"
+                    onclick="command('bold')"><i class="fa fa-bold"></i> Bold
+            </button>
+            <button type="button" class="btn btn-default" title="Italic (CTRL+I)" onclick="command('italic')"><i
+                    class="fa fa-italic"></i> Italic
+            </button>
+            <button type="button" class="btn btn-default" title="Underline (CTRL+U)" onclick="command('underline')"><i
+                    class="fa fa-underline"></i> Underline
+            </button>
+            <button type="button" class="btn btn-default" title="Remove Font Style (CTRL+\)"
+                    onclick="command('removeFormat')" style="color:red;"><i class="fa fa-eraser"></i> Remove Format
+            </button>
+        </div>
+    </div>
+    <div class="summernote">
+        <h1
+                style="font-size: 2.25em; margin-top: 1em; margin-bottom: 16px; line-height: 1.2; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; text-align: start;">
+            External API</h1>
+
+        <p style="margin-bottom: 16px; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+            You can use summernote's external api. see below code </p>
+
+        <div class="highlight highlight-javascript"
+             style="margin-bottom: 16px; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">
+                <pre style="font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 13.6000003814697px; margin-bottom: 0px; padding: 16px; overflow: auto; line-height: 1.45; border-radius: 3px; word-wrap: normal; word-break: normal; background-color: rgb(247, 247, 247);">$(<span
+                        class="pl-s1" style="color: rgb(223, 80, 0);"><span class="pl-pds">"</span>.summernote<span
+                        class="pl-pds">"</span></span>).summernote(<span class="pl-s1"
+                                                                         style="color: rgb(223, 80, 0);"><span
+                        class="pl-pds">"</span>module.method<span class="pl-pds">"</span></span>[, params...]); </pre>
+        </div>
+        <p style="margin-bottom: 16px; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+            Default module is '<strong>editor</strong>'</p>
+
+        <div class="highlight highlight-javascript"
+             style="margin-bottom: 16px; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px; background-image: initial; background-attachment: initial; background-size: initial; background-origin: initial; background-clip: initial; background-position: initial; background-repeat: initial;">
+            <pre style="font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 13.6000003814697px; margin-bottom: 0px; padding: 16px; overflow: auto; line-height: 1.45; border-radius: 3px; word-wrap: normal; word-break: normal; background-color: rgb(247, 247, 247);">$(<span class="pl-s1" style="color: rgb(223, 80, 0);"><span class="pl-pds">"</span>.summernote<span
+                    class="pl-pds">"</span></span>).summernote(<span class="pl-s1" style="color: rgb(223, 80, 0);"><span
+                    class="pl-pds">"</span>editor.bold<span class="pl-pds">"</span></span>); == $(<span class="pl-s1" style="color: rgb(223, 80, 0);"><span class="pl-pds">"</span>.summernote<span
+                    class="pl-pds">"</span></span>).summernote(<span class="pl-s1" style="color: rgb(223, 80, 0);"><span
+                    class="pl-pds">"</span>bold<span class="pl-pds">"</span></span>);</pre>
+        </div>
+
+
+
+        <h1 style="font-size: 2.25em; margin-top: 1em; margin-bottom: 16px; line-height: 1.2; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; text-align: start;">
+            <a name="user-content-jquery-plugin-update" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#jquery-plugin-update" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>
+
+            Use API List</h1>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorsaverange---save-current-range" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorsaverange---save-current-range"
+               rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.saveRange
+            - save current range</h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorcreaterange---create-range" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorcreaterange---create-range"
+               rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.createRange
+            - create range</h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorsavenode---save-current-node-list-to-editabledatachildnodes" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorsavenode---save-current-node-list-to-editabledatachildnodes"
+               rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.saveNode
+            - save current node list to $editable.data('childNodes')</h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorrestorerange---restore-lately-range" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorrestorerange---restore-lately-range"
+               rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.restoreRange
+            - restore lately range</h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-edtiorrestorenode---restore-lately-node-list" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#edtiorrestorenode---restore-lately-node-list"
+               rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>edtior.restoreNode
+            - restore lately node list</h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorundo---undo" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorundo---undo" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.undo
+            - Undo</h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorredo---redo" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorredo---redo" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.redo
+            - Redo</h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorbeforecommand" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorbeforecommand" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.beforeCommand
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editoraftercommand" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editoraftercommand" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.afterCommand
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorbold" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorbold" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.bold
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editoritalic" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editoritalic" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.italic
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorunderline" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorunderline" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.underline
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorstrikethrough" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorstrikethrough" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.strikethrough
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorformatblock" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorformatblock" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.formatBlock
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorsuperscript" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorsuperscript" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.superscript
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorsubscript" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorsubscript" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.subscript
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorjustifyleft" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorjustifyleft" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.justifyLeft
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorjustifyright" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorjustifyright" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.justifyRight
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorjustifycenter" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorjustifycenter" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.justifyCenter
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorremoveformat" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorremoveformat" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.removeFormat
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorbackcolor" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorbackcolor" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.backColor
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorforecolor" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorforecolor" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.foreColor
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorfontname" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorfontname" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.fontName
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editortab" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editortab" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.tab
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editoruntab" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editoruntab" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.untab
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorinsertparagraph" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorinsertparagraph" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.insertParagraph
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorinsertorderedlist" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorinsertorderedlist"
+               rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.insertOrderedList
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorinsertunorderedlist" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorinsertunorderedlist"
+               rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.insertUnorderedList
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorindent" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorindent" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.indent
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editoroutdent" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editoroutdent" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.outdent
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorinsertimage" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorinsertimage" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.insertImage
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorinsertnode" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorinsertnode" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.insertNode
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorinserttext" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorinserttext" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.insertText
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorformatpara" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorformatpara" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.formatPara
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorformath16" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorformath16" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.formatH1~6
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorfontsize" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorfontsize" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.fontSize
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorlineheight" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorlineheight" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.lineHeight
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorunlink" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorunlink" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.unlink
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorcreatelink" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorcreatelink" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.createLink
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorgetlinkinfo" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorgetlinkinfo" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.getLinkInfo
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorinserttable" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorinserttable" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.insertTable
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorfloatme" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorfloatme" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.floatMe
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorresize" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorresize" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px;"></a>editor.resize
+        </h2>
+
+        <h2 style="margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; font-weight: bold; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+            <a name="user-content-editorremovemedia" class="anchor"
+               href="https://gist.github.com/easylogic/95d2dbe03ce500bd0ae1#editorremovemedia" rel="noreferrer"
+               style="color: rgb(65, 131, 196); position: absolute; top: 0px; bottom: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 8px; margin-left: -30px; line-height: 1;"><span
+                    class="octicon octicon-link"
+                    style="font-weight: normal; font-stretch: normal; font-size: 16px; font-family: octicons; line-height: 1; display: inline-block; -webkit-font-smoothing: antialiased; color: rgb(0, 0, 0); vertical-align: middle;"></span></a>editor.removeMedia
+        </h2>
+
+    </div>
+</div>
+</body>
+</html>

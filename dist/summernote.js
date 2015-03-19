@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.6.2
+ * Super simple wysiwyg editor on Bootstrap v0.6.3
  * http://summernote.org/
  *
  * summernote.js
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-03-14T03:47Z
+ * Date: 2015-03-15T19:24Z
  */
 (function (factory) {
   /* global define */
@@ -2147,7 +2147,7 @@
    */
   var defaults = {
     /** @property */
-    version: '0.6.2',
+    version: '0.6.3',
 
     /**
      * 
@@ -3849,6 +3849,15 @@
 
       afterCommand($editable);
     };
+
+    /**
+     * set focus
+     *
+     * @param $editable
+     */
+    this.focus = function ($editable) {
+      $editable.focus();
+    };
   };
 
   /**
@@ -4954,7 +4963,8 @@
      */
     this.insertImages = function (layoutInfo, files) {
       var $editor = layoutInfo.editor(),
-          $editable = layoutInfo.editable();
+          $editable = layoutInfo.editable(),
+          $holder = layoutInfo.holder();
 
       var callbacks = $editable.data('callbacks');
       var options = $editor.data('options');
@@ -4962,6 +4972,7 @@
       // If onImageUpload options setted
       if (callbacks.onImageUpload) {
         callbacks.onImageUpload(files, modules.editor, $editable);
+        bindCustomEvent($holder, 'image.upload')([files]);
       // else insert Image as dataURL
       } else {
         $.each(files, function (idx, file) {
@@ -4969,6 +4980,7 @@
           if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
             if (callbacks.onImageUploadError) {
               callbacks.onImageUploadError(options.langInfo.image.maximumFileSizeError);
+              bindCustomEvent($holder, 'image.upload.error')(options.langInfo.image.maximumFileSizeError);
             } else {
               alert(options.langInfo.image.maximumFileSizeError);
             }
@@ -4978,6 +4990,7 @@
             }).fail(function () {
               if (callbacks.onImageUploadError) {
                 callbacks.onImageUploadError();
+                bindCustomEvent($holder, 'image.upload.error')(options.langInfo.image.maximumFileSizeError);
               }
             });
           }
@@ -5085,7 +5098,7 @@
         }
 
         if ($.isFunction($.summernote.pluginEvents[eventName])) {
-          $.summernote.pluginEvents[eventName](event, modules.editor, layoutInfo, value);
+          $.summernote.pluginEvents[eventName].call(layoutInfo.holder(), event, modules.editor, layoutInfo, value);
         } else if (modules.editor[eventName]) { // on command
           var $editable = layoutInfo.editable();
           $editable.focus();
@@ -5147,6 +5160,12 @@
       }
 
       $dimensionDisplay.html(dim.c + ' x ' + dim.r);
+    };
+    
+    var bindCustomEvent = function ($holder, eventName) {
+      return function () {
+        return $holder.trigger('summernote.' + eventName, arguments);
+      };
     };
 
     /**
@@ -5274,7 +5293,7 @@
       if (options.onkeyup) { layoutInfo.editable().keyup(options.onkeyup); }
       if (options.onkeydown) { layoutInfo.editable().keydown(options.onkeydown); }
       if (options.onpaste) { layoutInfo.editable().on('paste', options.onpaste); }
-
+      
       // callbacks for advanced features (camel)
 
       // onToolbarClick
@@ -5321,9 +5340,54 @@
           }
         });
       }
+      
+      // define summernote custom event
+      this.attachCustomEvent(layoutInfo, options);
     };
 
+    this.attachCustomEvent = function (layoutInfo) {
+      var $holder = layoutInfo.holder();
+      var $editable = layoutInfo.editable();
+
+      $editable.on('mousedown', bindCustomEvent($holder, 'mousedown'));
+      $editable.on('keyup mouseup', bindCustomEvent($holder, 'update'));
+      $editable.on('scroll', bindCustomEvent($holder, 'scroll'));
+
+      // basic event callbacks (lowercase)
+      // enter, focus, blur, keyup, keydown
+      $editable.keypress(function (event) {
+        if (event.keyCode === key.ENTER) {
+          bindCustomEvent($holder, 'enter').call(this, event);
+        }
+      });
+
+      $editable.focus(bindCustomEvent($holder, 'focus'));
+      $editable.blur(bindCustomEvent($holder, 'blur'));
+      $editable.keyup(bindCustomEvent($holder, 'keyup'));
+      $editable.keydown(bindCustomEvent($holder, 'keydown'));
+      $editable.on('paste', bindCustomEvent($holder, 'paste'));
+
+      // callbacks for advanced features (camel)
+      layoutInfo.toolbar().click(bindCustomEvent($holder, 'toolbar.click'));
+
+      if (agent.isMSIE) {
+        var sDomEvents = 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted';
+        $editable.on(sDomEvents, bindCustomEvent($holder, 'change'));
+      } else {
+        $editable.on('input', bindCustomEvent($holder, 'change'));
+      }
+
+      // Textarea: auto filling the code before form submit.
+      if (dom.isTextarea(list.head($holder))) {
+        $holder.closest('form').submit(function (e) {
+          var contents = $holder.code();
+          bindCustomEvent($holder, 'submit').call(this, e, contents);
+        });
+      }
+    };
+      
     this.detach = function (layoutInfo, options) {
+      layoutInfo.holder().off();
       layoutInfo.editable().off();
 
       layoutInfo.popover().off();
@@ -5950,7 +6014,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.2</a> · ' +
+                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.3</a> · ' +
                      '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';

@@ -65,7 +65,9 @@ define([
      * * layoutInfo is a summernote layout information.
      * * value is data-value property.
      */
-    pluginEvents: {}
+    pluginEvents: {},
+
+    plugins : []
   });
 
   /**
@@ -126,6 +128,10 @@ define([
    * @param {Object} [plugin.options] update $.summernote.options
    */
   $.summernote.addPlugin = function (plugin) {
+
+    // save plugin list
+    $.summernote.plugins.push(plugin);
+
     if (plugin.buttons) {
       $.each(plugin.buttons, function (name, button) {
         renderer.addButtonInfo(name, button);
@@ -196,7 +202,12 @@ define([
         // if layout isn't created yet, createLayout and attach events
         if (!renderer.hasNoteEditor($holder)) {
           renderer.createLayout($holder, options);
-          eventHandler.attach(renderer.layoutInfoFromHolder($holder), options);
+
+          var layoutInfo = renderer.layoutInfoFromHolder($holder);
+
+          eventHandler.attach(layoutInfo, options);
+          eventHandler.attachCustomEvent(layoutInfo, options);
+
         }
       });
 
