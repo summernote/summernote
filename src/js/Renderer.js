@@ -69,12 +69,14 @@ define([
      * @param {String} content
      */
     var tplPopover = function (className, content) {
-      return '<div class="' + className + ' popover bottom in" style="display: none;">' +
+      var $popover = $('<div class="' + className + ' popover bottom in" style="display: none;">' +
                '<div class="arrow"></div>' +
                '<div class="popover-content">' +
-                 content +
                '</div>' +
-             '</div>';
+             '</div>');
+      
+      $popover.find('.popover-content').append(content);
+      return $popover;
     };
 
     /**
@@ -425,24 +427,34 @@ define([
       };
 
       var tplAirPopover = function () {
-        var content = '';
+        var $content = $('<div />');
         for (var idx = 0, len = options.airPopover.length; idx < len; idx ++) {
           var group = options.airPopover[idx];
-          content += '<div class="note-' + group[0] + ' btn-group">';
+          
+          var $group = $('<div class="note-' + group[0] + ' btn-group">');
           for (var i = 0, lenGroup = group[1].length; i < lenGroup; i++) {
-            content += tplButtonInfo[group[1][i]](lang, options);
+            var $button = $(tplButtonInfo[group[1][i]](lang, options));
+
+            $button.attr('data-name', group[1][i]);
+            
+            $group.append($button);
           }
-          content += '</div>';
+          $content.append($group);
         }
 
-        return tplPopover('note-air-popover', content);
+        return tplPopover('note-air-popover', $content.children());
       };
 
-      return '<div class="note-popover">' +
-               tplLinkPopover() +
-               tplImagePopover() +
-               (options.airMode ?  tplAirPopover() : '') +
-             '</div>';
+      var $notePopover = $('<div class="note-popover" />');
+      
+      $notePopover.append(tplLinkPopover());
+      $notePopover.append(tplImagePopover());
+      
+      if (options.airMode) {
+        $notePopover.append(tplAirPopover());
+      }
+      
+      return $notePopover;
     };
 
     var tplHandles = function () {
@@ -787,24 +799,25 @@ define([
       $('<textarea class="note-codable"></textarea>').prependTo($editor);
 
       //04. create Toolbar
-      var toolbarHTML = '';
+      var $toolbar = $('<div class="note-toolbar btn-toolbar" />');
       for (var idx = 0, len = options.toolbar.length; idx < len; idx ++) {
         var groupName = options.toolbar[idx][0];
         var groupButtons = options.toolbar[idx][1];
 
-        toolbarHTML += '<div class="note-' + groupName + ' btn-group">';
+        var $group = $('<div class="note-' + groupName + ' btn-group" />');
         for (var i = 0, btnLength = groupButtons.length; i < btnLength; i++) {
           var buttonInfo = tplButtonInfo[groupButtons[i]];
           // continue creating toolbar even if a button doesn't exist
           if (!$.isFunction(buttonInfo)) { continue; }
-          toolbarHTML += buttonInfo(langInfo, options);
+
+          var $button = $(buttonInfo(langInfo, options));
+          $button.attr('data-name', groupButtons[i]);  // set button's alias, becuase to get button element from $toolbar
+          $group.append($button);
         }
-        toolbarHTML += '</div>';
+        $toolbar.append($group);
       }
-
-      toolbarHTML = '<div class="note-toolbar btn-toolbar">' + toolbarHTML + '</div>';
-
-      var $toolbar = $(toolbarHTML).prependTo($editor);
+      
+      $toolbar.prependTo($editor);
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       createPalette($toolbar, options);
       createTooltip($toolbar, keyMap, 'bottom');

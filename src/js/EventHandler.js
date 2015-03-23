@@ -467,7 +467,7 @@ define([
      *
      * @param {Object} layoutInfo - layout Informations
      */
-    this.attachCustomEvent = function (layoutInfo) {
+    this.attachCustomEvent = function (layoutInfo, options) {
       var $holder = layoutInfo.holder();
       var $editable = layoutInfo.editable();
 
@@ -490,9 +490,11 @@ define([
       $editable.on('paste', bindCustomEvent($holder, 'paste'));
 
       // callbacks for advanced features (camel)
-      layoutInfo.toolbar().click(bindCustomEvent($holder, 'toolbar.click'));
-      layoutInfo.popover().click(bindCustomEvent($holder, 'popover.click'));
-
+      if (!options.airMode) {
+        layoutInfo.toolbar().click(bindCustomEvent($holder, 'toolbar.click'));
+        layoutInfo.popover().click(bindCustomEvent($holder, 'popover.click'));
+      }
+      
       if (agent.isMSIE) {
         var sDomEvents = 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted';
         $editable.on(sDomEvents, bindCustomEvent($holder, 'change'));
