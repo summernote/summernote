@@ -87,7 +87,7 @@ define([
      * @param {String} name
      * @param {Boolean} [isActive=true]
      */
-    this.activate = function ($editable, name, isActive) {
+    this.setButtonState = function ($editable, name, isActive) {
       isActive = (isActive === false) ? false : true;
 
       var $button = this.get($editable, name);
