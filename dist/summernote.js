@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-03-15T19:24Z
+ * Date: 2015-03-23T15:16Z
  */
 (function (factory) {
   /* global define */
@@ -4087,6 +4087,32 @@
         this.activate($container);
       }
     };
+
+    /**
+     * get button in toolbar 
+     *
+     * @param {jQuery} $editable
+     * @param {String} name
+     * @return {jQuery}
+     */
+    this.get = function ($editable, name) {
+      var $toolbar = dom.makeLayoutInfo($editable).toolbar();
+
+      return $toolbar.find('[data-name=' + name + ']');
+    };
+
+    /**
+     * set button state
+     * @param {jQuery} $editable
+     * @param {String} name
+     * @param {Boolean} isActive
+     */
+    this.active = function ($editable, name, isActive) {
+      isActive = (isActive === false) ? false : true;
+
+      var $button = this.get($editable, name);
+      $button.toggleClass('active', isActive);
+    };
   };
 
   var EDITABLE_PADDING = 24;
@@ -4637,7 +4663,7 @@
             } catch (ex) {
               // insert text
               $editable.focus();
-              handler.invoke('editor.insertNode', $editable, html);
+              handler.invoke('editor.insertText', $editable, html);
             }
             return;
           }
@@ -5098,7 +5124,7 @@
         }
 
         if ($.isFunction($.summernote.pluginEvents[eventName])) {
-          $.summernote.pluginEvents[eventName].call(layoutInfo.holder(), event, modules.editor, layoutInfo, value);
+          $.summernote.pluginEvents[eventName](event, modules.editor, layoutInfo, value);
         } else if (modules.editor[eventName]) { // on command
           var $editable = layoutInfo.editable();
           $editable.focus();
@@ -5340,12 +5366,14 @@
           }
         });
       }
-      
-      // define summernote custom event
-      this.attachCustomEvent(layoutInfo, options);
     };
 
-    this.attachCustomEvent = function (layoutInfo) {
+    /**
+     * attach jquery custom event
+     *
+     * @param {Object} layoutInfo - layout Informations
+     */
+    this.attachCustomEvent = function (layoutInfo, options) {
       var $holder = layoutInfo.holder();
       var $editable = layoutInfo.editable();
 
@@ -5368,8 +5396,11 @@
       $editable.on('paste', bindCustomEvent($holder, 'paste'));
 
       // callbacks for advanced features (camel)
-      layoutInfo.toolbar().click(bindCustomEvent($holder, 'toolbar.click'));
-
+      if (!options.airMode) {
+        layoutInfo.toolbar().click(bindCustomEvent($holder, 'toolbar.click'));
+        layoutInfo.popover().click(bindCustomEvent($holder, 'popover.click'));
+      }
+      
       if (agent.isMSIE) {
         var sDomEvents = 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted';
         $editable.on(sDomEvents, bindCustomEvent($holder, 'change'));
@@ -5383,6 +5414,16 @@
           var contents = $holder.code();
           bindCustomEvent($holder, 'submit').call(this, e, contents);
         });
+      }
+
+      // fire init event
+      bindCustomEvent($holder, 'init')();
+
+      // fire plugin init event
+      for (var i = 0, len = $.summernote.plugins.length; i < len; i++) {
+        if ($.isFunction($.summernote.plugins[i].init)) {
+          $.summernote.plugins[i].init(layoutInfo);
+        }
       }
     };
       
@@ -5470,12 +5511,14 @@
      * @param {String} content
      */
     var tplPopover = function (className, content) {
-      return '<div class="' + className + ' popover bottom in" style="display: none;">' +
+      var $popover = $('<div class="' + className + ' popover bottom in" style="display: none;">' +
                '<div class="arrow"></div>' +
                '<div class="popover-content">' +
-                 content +
                '</div>' +
-             '</div>';
+             '</div>');
+      
+      $popover.find('.popover-content').append(content);
+      return $popover;
     };
 
     /**
@@ -5826,24 +5869,34 @@
       };
 
       var tplAirPopover = function () {
-        var content = '';
+        var $content = $('<div />');
         for (var idx = 0, len = options.airPopover.length; idx < len; idx ++) {
           var group = options.airPopover[idx];
-          content += '<div class="note-' + group[0] + ' btn-group">';
+          
+          var $group = $('<div class="note-' + group[0] + ' btn-group">');
           for (var i = 0, lenGroup = group[1].length; i < lenGroup; i++) {
-            content += tplButtonInfo[group[1][i]](lang, options);
+            var $button = $(tplButtonInfo[group[1][i]](lang, options));
+
+            $button.attr('data-name', group[1][i]);
+            
+            $group.append($button);
           }
-          content += '</div>';
+          $content.append($group);
         }
 
-        return tplPopover('note-air-popover', content);
+        return tplPopover('note-air-popover', $content.children());
       };
 
-      return '<div class="note-popover">' +
-               tplLinkPopover() +
-               tplImagePopover() +
-               (options.airMode ?  tplAirPopover() : '') +
-             '</div>';
+      var $notePopover = $('<div class="note-popover" />');
+      
+      $notePopover.append(tplLinkPopover());
+      $notePopover.append(tplImagePopover());
+      
+      if (options.airMode) {
+        $notePopover.append(tplAirPopover());
+      }
+      
+      return $notePopover;
     };
 
     var tplHandles = function () {
@@ -6188,24 +6241,25 @@
       $('<textarea class="note-codable"></textarea>').prependTo($editor);
 
       //04. create Toolbar
-      var toolbarHTML = '';
+      var $toolbar = $('<div class="note-toolbar btn-toolbar" />');
       for (var idx = 0, len = options.toolbar.length; idx < len; idx ++) {
         var groupName = options.toolbar[idx][0];
         var groupButtons = options.toolbar[idx][1];
 
-        toolbarHTML += '<div class="note-' + groupName + ' btn-group">';
+        var $group = $('<div class="note-' + groupName + ' btn-group" />');
         for (var i = 0, btnLength = groupButtons.length; i < btnLength; i++) {
           var buttonInfo = tplButtonInfo[groupButtons[i]];
           // continue creating toolbar even if a button doesn't exist
           if (!$.isFunction(buttonInfo)) { continue; }
-          toolbarHTML += buttonInfo(langInfo, options);
+
+          var $button = $(buttonInfo(langInfo, options));
+          $button.attr('data-name', groupButtons[i]);  // set button's alias, becuase to get button element from $toolbar
+          $group.append($button);
         }
-        toolbarHTML += '</div>';
+        $toolbar.append($group);
       }
-
-      toolbarHTML = '<div class="note-toolbar btn-toolbar">' + toolbarHTML + '</div>';
-
-      var $toolbar = $(toolbarHTML).prependTo($editor);
+      
+      $toolbar.prependTo($editor);
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       createPalette($toolbar, options);
       createTooltip($toolbar, keyMap, 'bottom');
@@ -6395,7 +6449,9 @@
      * * layoutInfo is a summernote layout information.
      * * value is data-value property.
      */
-    pluginEvents: {}
+    pluginEvents: {},
+
+    plugins : []
   });
 
   /**
@@ -6456,6 +6512,10 @@
    * @param {Object} [plugin.options] update $.summernote.options
    */
   $.summernote.addPlugin = function (plugin) {
+
+    // save plugin list
+    $.summernote.plugins.push(plugin);
+
     if (plugin.buttons) {
       $.each(plugin.buttons, function (name, button) {
         renderer.addButtonInfo(name, button);
@@ -6526,7 +6586,12 @@
         // if layout isn't created yet, createLayout and attach events
         if (!renderer.hasNoteEditor($holder)) {
           renderer.createLayout($holder, options);
-          eventHandler.attach(renderer.layoutInfoFromHolder($holder), options);
+
+          var layoutInfo = renderer.layoutInfoFromHolder($holder);
+
+          eventHandler.attach(layoutInfo, options);
+          eventHandler.attachCustomEvent(layoutInfo, options);
+
         }
       });
 
