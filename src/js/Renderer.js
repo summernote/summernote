@@ -884,11 +884,10 @@ define([
         return;
       }
 
-      return $.extend({
-        holder: function () {
-          return $holder;
-        }
-      }, dom.buildLayoutInfo($editor));
+      // connect $holder to $editor
+      $editor.data('holder', $holder);
+
+      return dom.buildLayoutInfo($editor);
     };
 
     /**

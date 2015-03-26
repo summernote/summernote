@@ -68,6 +68,7 @@ define([
 
         return {
           editor: function () { return $editor; },
+          holder : function () { return $editor.data('holder'); },
           editable: function () { return $editor; },
           popover: makeFinder('#note-popover-'),
           handle: makeFinder('#note-handle-'),
@@ -81,6 +82,7 @@ define([
         };
         return {
           editor: function () { return $editor; },
+          holder : function () { return $editor.data('holder'); },
           dropzone: makeFinder('.note-dropzone'),
           toolbar: makeFinder('.note-toolbar'),
           editable: makeFinder('.note-editable'),
