@@ -94,6 +94,7 @@
         .attr('width', '640').attr('height', '360');
     } else {
       // this is not a known video link. Now what, Cat? Now what?
+      return false;
     }
 
     return $video[0];
@@ -244,9 +245,14 @@
 
           // restore range
           editor.restoreRange($editable);
-
-          // insert video node
-          editor.insertNode($editable, createVideoNode(url));
+          
+          // build node
+          var $node = createVideoNode(url);
+          
+          if ($node) {
+            // insert video node
+            editor.insertNode($editable, $node);
+          }
         }).fail(function () {
           // when cancel button clicked
           editor.restoreRange($editable);
