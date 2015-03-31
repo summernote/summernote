@@ -18,9 +18,16 @@
         floatLeft: 'Po lewej',
         floatRight: 'Po prawej',
         floatNone: 'Równo z tekstem',
-        dragImageHere: 'Przeciągnij grafikę tutaj',
+        shapeRounded: 'Kształt: zaokrąglone',
+        shapeCircle: 'Kształt: okrąg',
+        shapeThumbnail: 'Kształt: miniatura',
+        shapeNone: 'Kształt: brak',
+        dragImageHere: 'Przeciągnij grafikę lub tekst tutaj',
+        dropImage: 'Przeciągnij grafikę lub tekst',
         selectFromFiles: 'Wybierz z dysku',
-        url: 'URL grafiki',
+        maximumFileSize: 'Limit wielkości pliku',
+        maximumFileSizeError: 'Przekroczono limit wielkości pliku.',
+        url: 'Adres URL grafiki',
         remove: 'Usuń grafikę'
       },
       link: {
@@ -29,7 +36,7 @@
         unlink: 'Usuń odnośnik',
         edit: 'Edytuj',
         textToDisplay: 'Tekst do wyświetlenia',
-        url: 'Na jaki URL powinien przenosić ten link?',
+        url: 'Na jaki adres URL powinien przenosić ten odnośnik?',
         openInNewWindow: 'Otwórz w nowym oknie'
       },
       table: {
@@ -57,7 +64,7 @@
       options: {
         help: 'Pomoc',
         fullscreen: 'Pełny ekran',
-        codeview: 'Zródło'
+        codeview: 'Źródło'
       },
       paragraph: {
         paragraph: 'Akapit',
@@ -79,12 +86,13 @@
         resetToDefault: 'Domyślne'
       },
       shortcut: {
-        shortcuts: 'Skróty klawiszone',
+        shortcuts: 'Skróty klawiaturowe',
         close: 'Zamknij',
         textFormatting: 'Formatowanie tekstu',
         action: 'Akcja',
         paragraphFormatting: 'Formatowanie akapitu',
-        documentStyle: 'Styl dokumentu'
+        documentStyle: 'Styl dokumentu',
+        extraKeys: 'Dodatkowe klawisze'
       },
       history: {
         undo: 'Cofnij',
