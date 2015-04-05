@@ -8,9 +8,9 @@ before_script:
   - npm install -g grunt-cli
 
   # Install meteor
-  - curl https://install.meteor.com | /bin/sh
+  # - curl https://install.meteor.com | /bin/sh
   # Install spacejam, Meteor's CI helper
-  - npm install -g spacejam
+  # - npm install -g spacejam
 
 script: grunt test --verbose
 before_deploy:
