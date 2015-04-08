@@ -8,9 +8,8 @@
     factory(window.jQuery);
   }
 }(function ($) {
-  // template, editor
+  // template
   var tmpl = $.summernote.renderer.getTemplate();
-  var editor = $.summernote.eventHandler.getEditor();
 
   /**
    * @class plugin.fontstyle
@@ -28,11 +27,18 @@
    *    $("#editor").summernote({
    *    ...
    *    toolbar : [
-   *        ['group', [ 'fontstyle' ]]
+   *        ['group', [ 'fontsize', 'strikethrough', 'superscript', 'subscript' ]]
    *    ]
    *    ...    
    *    }); 
    * ```
+   * 
+   * ### provided features
+   * 
+   * * strikethrough 
+   * * superscript
+   * * subscript 
+   * * fontsize  ('8', '9', '10', '11', '12', '14', '18', '24', '36')
    */
   $.summernote.addPlugin({
     /** @property {String} name name of plugin */
@@ -86,16 +92,16 @@
      * @property {Function} events.fontSize apply font size to selected range
      */
     events: { // events
-      strikethrough: function (layoutInfo) {
+      strikethrough: function (event, editor, layoutInfo) {
         editor.strikethrough(layoutInfo.editable());
       },
-      superscript: function (layoutInfo) {
+      superscript: function (event, editor, layoutInfo) {
         editor.superscript(layoutInfo.editable());
       },
-      subscript: function (layoutInfo) {
+      subscript: function (event, editor, layoutInfo) {
         editor.subscript(layoutInfo.editable());
       },
-      fontsize: function (layoutInfo, value) {
+      fontsize: function (event, editor, layoutInfo, value) {
         editor.fontSize(layoutInfo.editable(), value);
       }
     },

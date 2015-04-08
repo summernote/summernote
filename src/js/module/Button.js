@@ -1,6 +1,7 @@
 define([
-  'summernote/core/list'
-], function (list) {
+  'summernote/core/list',
+  'summernote/core/agent'
+], function (list, agent) {
   /**
    * @class module.Button
    *
@@ -84,10 +85,18 @@ define([
       if ($fontname.length) {
         var selectedFont = styleInfo['font-family'];
         if (!!selectedFont) {
-          selectedFont = list.head(selectedFont.split(','));
-          selectedFont = selectedFont.replace(/\'/g, '');
+
+          var list = selectedFont.split(',');
+          for (var i = 0, len = list.length; i < len; i++) {
+            selectedFont = list[i].replace(/[\'\"]/g, '').replace(/\s+$/, '').replace(/^\s+/, '');
+            if (agent.isFontInstalled(selectedFont)) {
+              break;
+            }
+          }
+          
           $fontname.find('.note-current-fontname').text(selectedFont);
           checkDropdownMenu($fontname, selectedFont);
+
         }
       }
 

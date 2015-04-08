@@ -1,10 +1,10 @@
-define('summernote/settings', function () {
+define('summernote/defaults', function () {
   /**
-   * @class settings 
+   * @class defaults 
    * 
    * @singleton
    */
-  var settings = {
+  var defaults = {
     /** @property */
     version: '@VERSION',
 
@@ -52,6 +52,8 @@ define('summernote/settings', function () {
 
       placeholder: false,           // enable placeholder text
       prettifyHtml: true,           // enable prettifying html while toggling codeview
+
+      iconPrefix: 'fa fa-',         // prefix for css icon classes
 
       codemirror: {                 // codemirror options
         mode: 'text/html',
@@ -107,7 +109,7 @@ define('summernote/settings', function () {
       // fontName
       fontNames: [
         'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New',
-        'Helvetica Neue', 'Impact', 'Lucida Grande',
+        'Helvetica Neue', 'Helvetica', 'Impact', 'Lucida Grande',
         'Tahoma', 'Times New Roman', 'Verdana'
       ],
       fontNamesIgnoreCheck: [],
@@ -331,5 +333,5 @@ define('summernote/settings', function () {
     }
   };
 
-  return settings;
+  return defaults;
 });

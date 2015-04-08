@@ -264,6 +264,9 @@ define([
 
     /**
      * @method fontName
+     *
+     * change font name
+     *
      * @param {jQuery} $editable
      * @param {Mixed} value
      */
@@ -453,7 +456,6 @@ define([
 
     /**
      * fontsize
-     * FIXME: Still buggy
      *
      * @param {jQuery} $editable
      * @param {String} value - px
@@ -461,16 +463,13 @@ define([
     this.fontSize = function ($editable, value) {
       beforeCommand($editable);
 
-      document.execCommand('fontSize', false, 3);
-      if (agent.isFF) {
-        // firefox: <font size="3"> to <span style='font-size={value}px;'>, buggy
-        $editable.find('font[size=3]').removeAttr('size').css('font-size', value + 'px');
-      } else {
-        // chrome: <span style="font-size: medium"> to <span style='font-size={value}px;'>
-        $editable.find('span').filter(function () {
-          return this.style.fontSize === 'medium';
-        }).css('font-size', value + 'px');
-      }
+      var rng = this.createRange($editable);
+      var spans = style.styleNodes(rng);
+      $.each(spans, function (idx, span) {
+        $(span).css({
+          'font-size': value + 'px'
+        });
+      });
 
       afterCommand($editable);
     };
@@ -542,10 +541,12 @@ define([
       }
 
       $.each(anchors, function (idx, anchor) {
-        $(anchor).attr({
-          href: linkUrl,
-          target: isNewWindow ? '_blank' : ''
-        });
+        $(anchor).attr('href', linkUrl);
+        if (isNewWindow) {
+          $(anchor).attr('target', '_blank');
+        } else {
+          $(anchor).removeAttr('target');
+        }
       });
 
       var startRange = range.createFromNode(list.head(anchors)).collapse(true);
@@ -583,7 +584,7 @@ define([
       return {
         range: rng,
         text: rng.toString(),
-        isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : true,
+        isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : false,
         url: $anchor.length ? $anchor.attr('href') : ''
       };
     };
@@ -714,6 +715,15 @@ define([
       }
 
       afterCommand($editable);
+    };
+
+    /**
+     * set focus
+     *
+     * @param $editable
+     */
+    this.focus = function ($editable) {
+      $editable.focus();
     };
   };
 
