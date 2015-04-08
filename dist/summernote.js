@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-03-23T15:16Z
+ * Date: 2015-04-08T13:28Z
  */
 (function (factory) {
   /* global define */
@@ -489,6 +489,7 @@
 
         return {
           editor: function () { return $editor; },
+          holder : function () { return $editor.data('holder'); },
           editable: function () { return $editor; },
           popover: makeFinder('#note-popover-'),
           handle: makeFinder('#note-handle-'),
@@ -502,6 +503,7 @@
         };
         return {
           editor: function () { return $editor; },
+          holder : function () { return $editor.data('holder'); },
           dropzone: makeFinder('.note-dropzone'),
           toolbar: makeFinder('.note-toolbar'),
           editable: makeFinder('.note-editable'),
@@ -2610,7 +2612,7 @@
 
     var makeSnapshot = function () {
       var rng = range.create();
-      var emptyBookmark = {s: {path: [0], offset: 0}, e: {path: [0], offset: 0}};
+      var emptyBookmark = {s: {path: [], offset: 0}, e: {path: [], offset: 0}};
 
       return {
         contents: $editable.html(),
@@ -3399,8 +3401,8 @@
 
     /**
      * @method fontName
-     * 
-     * change fornt name 
+     *
+     * change font name
      *
      * @param {jQuery} $editable
      * @param {Mixed} value
@@ -3676,10 +3678,12 @@
       }
 
       $.each(anchors, function (idx, anchor) {
-        $(anchor).attr({
-          href: linkUrl,
-          target: isNewWindow ? '_blank' : ''
-        });
+        $(anchor).attr('href', linkUrl);
+        if (isNewWindow) {
+          $(anchor).attr('target', '_blank');
+        } else {
+          $(anchor).removeAttr('target');
+        }
       });
 
       var startRange = range.createFromNode(list.head(anchors)).collapse(true);
@@ -3717,7 +3721,7 @@
       return {
         range: rng,
         text: rng.toString(),
-        isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : true,
+        isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : false,
         url: $anchor.length ? $anchor.attr('href') : ''
       };
     };
@@ -4105,9 +4109,9 @@
      * set button state
      * @param {jQuery} $editable
      * @param {String} name
-     * @param {Boolean} isActive
+     * @param {Boolean} [isActive=true]
      */
-    this.active = function ($editable, name, isActive) {
+    this.setButtonState = function ($editable, name, isActive) {
       isActive = (isActive === false) ? false : true;
 
       var $button = this.get($editable, name);
@@ -4215,7 +4219,13 @@
       if (styleInfo.anchor) {
         var $anchor = $linkPopover.find('a');
         var href = $(styleInfo.anchor).attr('href');
+        var target = $(styleInfo.anchor).attr('target');
         $anchor.attr('href', href).html(href);
+        if (!target) {
+          $anchor.removeAttr('target');
+        } else {
+          $anchor.attr('target', '_blank');
+        }
         showPopover($linkPopover, posFromPlaceholder(styleInfo.anchor, isAirMode));
       } else {
         $linkPopover.hide();
@@ -6326,11 +6336,10 @@
         return;
       }
 
-      return $.extend({
-        holder: function () {
-          return $holder;
-        }
-      }, dom.buildLayoutInfo($editor));
+      // connect $holder to $editor
+      $editor.data('holder', $holder);
+
+      return dom.buildLayoutInfo($editor);
     };
 
     /**

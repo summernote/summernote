@@ -1,5 +1,9 @@
 ### Change Log
 
+#### v0.6.3 2015-04-08
+* Support external API access
+* Support callbacks with jquery custom event.
+
 #### v0.6.2 2015-03-14
 * Fixed text drag and drop bug.
 
