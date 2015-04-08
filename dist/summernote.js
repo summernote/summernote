@@ -2209,7 +2209,7 @@
       // toolbar
       toolbar: [
         ['style', ['style']],
-        ['font', ['bold', 'italic', 'underline', 'clear']],
+        ['font', ['bold', 'italic', 'underline', 'clear', 'superscript', 'subscript']],
         ['fontname', ['fontname']],
         ['color', ['color']],
         ['para', ['ul', 'ol', 'paragraph']],
@@ -5676,6 +5676,18 @@
         return tplIconButton(options.iconPrefix + 'eraser', {
           event: 'removeFormat',
           title: lang.font.clear
+        });
+      },
+      superscript: function (lang) {
+        return tplIconButton('fa fa-superscript', {
+          event: 'superscript',
+          title: lang.font.superscript
+        });
+      },
+			subscript: function (lang) {
+        return tplIconButton('fa fa-subscript', {
+          event: 'subscript',
+          title: lang.font.subscript
         });
       },
       ul: function (lang, options) {
