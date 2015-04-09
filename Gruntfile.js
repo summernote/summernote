@@ -92,8 +92,8 @@ module.exports = function (grunt) {
             'dist/summernote.css'
           ]
         }, {
-          src : ['plugin/*.js'],
-          dest : 'dist/'
+          src: ['plugin/*.js'],
+          dest: 'dist/'
         }]
       }
     },
