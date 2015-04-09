@@ -26,7 +26,7 @@ Please include one of the following with your issue:
 
 #### Where should the reviewer start?
 
-- start on the application_controller.rb
+- start on the src/summernote.js
 
 #### How should this be manually tested?
 
