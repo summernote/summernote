@@ -190,7 +190,7 @@ define([
 
       // extend default options with custom user options
       var options = isInitOptions ? list.head(arguments) : {};
-      options = $.extend(true, {}, $.summernote.options, options);
+      options = $.extend({}, $.summernote.options, options);
 
       // Include langInfo in options for later use, e.g. for image drag-n-drop
       // Setup language info with en-US as default
