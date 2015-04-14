@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.6.4
+ * Super simple wysiwyg editor on Bootstrap v0.6.5
  * http://summernote.org/
  *
  * summernote.js
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-04-13T12:09Z
+ * Date: 2015-04-14T07:36Z
  */
 (function (factory) {
   /* global define */
@@ -2149,7 +2149,7 @@
    */
   var defaults = {
     /** @property */
-    version: '0.6.4',
+    version: '0.6.5',
 
     /**
      * 
@@ -2290,6 +2290,7 @@
       onkeydown: null,          // keydown
       onImageUpload: null,      // imageUpload
       onImageUploadError: null, // imageUploadError
+      onImageLinkInsert: null,  // imageLinkInsert
       onMediaDelete: null,      // media delete
       onToolbarClick: null,
       onsubmit: null,
@@ -4838,7 +4839,7 @@
 
         if (typeof data === 'string') {
           // image url
-          handler.invoke('editor.insertImage', $editable, data);
+          handler.insertImageLink(layoutInfo, data);
         } else {
           // array of files
           handler.insertImages(layoutInfo, data);
@@ -4882,13 +4883,13 @@
 
           $imageUrl.on('keyup paste', function (event) {
             var url;
-            
+
             if (event.type === 'paste') {
               url = event.originalEvent.clipboardData.getData('text');
             } else {
               url = $imageUrl.val();
             }
-            
+
             toggleBtn($imageBtn, url);
           }).val('').trigger('focus');
         }).one('hidden.bs.modal', function () {
@@ -4988,6 +4989,18 @@
      */
     this.getModule = function (moduleName) {
       return this.modules[moduleName] || this.modules.editor;
+    };
+
+    this.insertImageLink = function (layoutInfo, imageUrl) {
+      var $editable = layoutInfo.editable();
+
+      var callbacks = $editable.data('callbacks');
+
+      if (callbacks.onImageLinkInsert) {
+        callbacks.onImageLinkInsert(imageUrl, modules.editor, $editable);
+      } else {
+        modules.editor.insertImage($editable, imageUrl);
+      }
     };
 
     /**
@@ -5359,6 +5372,7 @@
         onAutoSave: options.onAutoSave,
         onImageUpload: options.onImageUpload,
         onImageUploadError: options.onImageUploadError,
+        onImageLinkInsert: options.onImageLinkInsert,
         onFileUpload: options.onFileUpload,
         onFileUploadError: options.onFileUpload,
         onMediaDelete : options.onMediaDelete
@@ -6077,7 +6091,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.4</a> · ' +
+                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.5</a> · ' +
                      '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';

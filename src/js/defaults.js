@@ -147,6 +147,7 @@ define('summernote/defaults', function () {
       onkeydown: null,          // keydown
       onImageUpload: null,      // imageUpload
       onImageUploadError: null, // imageUploadError
+      onImageLinkInsert: null,  // imageLinkInsert
       onMediaDelete: null,      // media delete
       onToolbarClick: null,
       onsubmit: null,

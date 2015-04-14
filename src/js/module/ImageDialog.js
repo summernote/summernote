@@ -22,7 +22,7 @@ define(function () {
 
         if (typeof data === 'string') {
           // image url
-          handler.invoke('editor.insertImage', $editable, data);
+          handler.insertImageLink(layoutInfo, data);
         } else {
           // array of files
           handler.insertImages(layoutInfo, data);
@@ -66,13 +66,13 @@ define(function () {
 
           $imageUrl.on('keyup paste', function (event) {
             var url;
-            
+
             if (event.type === 'paste') {
               url = event.originalEvent.clipboardData.getData('text');
             } else {
               url = $imageUrl.val();
             }
-            
+
             toggleBtn($imageBtn, url);
           }).val('').trigger('focus');
         }).one('hidden.bs.modal', function () {
