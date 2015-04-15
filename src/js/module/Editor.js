@@ -383,7 +383,7 @@ define([
     this.insertImage = function ($editable, sUrl, filename) {
       async.createImage(sUrl, filename).then(function ($image) {
         beforeCommand($editable);
-        $image.addClass("img-responsive");
+        $image.addClass('img-responsive');
         $image.css({
           display: ''
         });
