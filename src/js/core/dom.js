@@ -836,8 +836,13 @@ define([
         container = splitRoot.parentNode;
       }
 
-      // split with splitTree
+      // if splitRoot is exists, split with splitTree
       var pivot = splitRoot && splitTree(splitRoot, point, isInline);
+
+      // if container is point.node, find pivot with point.offset
+      if (!pivot && container === point.node) {
+        pivot = point.node.childNodes[point.offset];
+      }
 
       return {
         rightNode: pivot,

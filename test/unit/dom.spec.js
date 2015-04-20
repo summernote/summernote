@@ -240,5 +240,22 @@ define(['jquery', 'summernote/core/dom', 'summernote/core/func'], function ($, d
       equalsToUpperCase($cont.html(), '<p><span><b>b</b><u>u</u></span><span><s>s</s><i>i</i></span></p>',
                         'splitBy span tag with offset 2 (1 depth, element case)');
     });
+
+    test('dom.splitPoint', function () {
+      var $editable, $para, $br;
+      $editable = $('<div class="note-editable"><p><br></p></div>');
+
+      $para = $editable.clone().find('p');
+      $br = $para.find('br');
+      
+      deepEqual(dom.splitPoint({
+        node: $para[0],
+        offset: 0
+      }, true), {
+        rightNode: $br[0],
+        container: $para[0]
+      }, 'splitPoint empty paragraph with inline should returns rightNode:<br> container:<p>');
+
+    });
   };
 });
