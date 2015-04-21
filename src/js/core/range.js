@@ -493,9 +493,10 @@ define([
        */
       this.pasteHTML = function (markup) {
         var self = this;
-        var rng = this.wrapBodyInlineWithPara().deleteContents();
         var contentsContainer = $('<div></div>').html(markup)[0];
         var childNodes = list.from(contentsContainer.childNodes);
+
+        this.wrapBodyInlineWithPara().deleteContents();
 
         return $.map(childNodes.reverse(), function (childNode) {
           return self.insertNode(childNode);

@@ -139,8 +139,11 @@ define([
 
       // split inline node with inline nodes
       range.create($b[0].firstChild, 2).pasteHTML(markup);
-      equalsToUpperCase($cont.html(), '<p><b>bo</b><span>span</span><i>italic</i><b>ld</b></p>', 'rng.pasteHTML with inlines should not split text.');
-
+      equalsToUpperCase(
+        $cont.html(),
+        '<p><b>bo</b><span>span</span><i>italic</i><b>ld</b></p>',
+        'rng.pasteHTML with inlines should not split text.'
+      );
     });
 
     test('rng.deleteContents', function () {

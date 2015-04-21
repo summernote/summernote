@@ -797,9 +797,6 @@ define([
       // ex) [#text, <span>, <p>]
       var ancestors = listAncestor(point.node, func.eq(root));
 
-      var isSkipPaddingBlankHTML = options && options.isSkipPaddingBlankHTML;
-      var isNotSplitEdgePoint = options && options.isNotSplitEdgePoint;
-
       if (!ancestors.length) {
         return null;
       } else if (ancestors.length === 1) {
