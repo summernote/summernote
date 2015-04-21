@@ -746,33 +746,39 @@ define([
      * split element or #text
      *
      * @param {BoundaryPoint} point
-     * @param {Boolean} [isSkipPaddingBlankHTML]
+     * @param {Object} [options]
+     * @param {Boolean} [options.isSkipPaddingBlankHTML] - default: false
+     * @param {Boolean} [options.isNotSplitEdgePoint] - default: false
      * @return {Node} right node of boundaryPoint
      */
-    var splitNode = function (point, isSkipPaddingBlankHTML) {
-      // split #text
-      if (isText(point.node)) {
-        // edge case
+    var splitNode = function (point, options) {
+      var isSkipPaddingBlankHTML = options && options.isSkipPaddingBlankHTML;
+      var isNotSplitEdgePoint = options && options.isNotSplitEdgePoint;
+
+      // edge case
+      if (isEdgePoint(point) && (isText(point.node) || isNotSplitEdgePoint)) {
         if (isLeftEdgePoint(point)) {
           return point.node;
         } else if (isRightEdgePoint(point)) {
           return point.node.nextSibling;
         }
+      }
 
+      // split #text
+      if (isText(point.node)) {
         return point.node.splitText(point.offset);
+      } else {
+        var childNode = point.node.childNodes[point.offset];
+        var clone = insertAfter(point.node.cloneNode(false), point.node);
+        appendChildNodes(clone, listNext(childNode));
+
+        if (!isSkipPaddingBlankHTML) {
+          paddingBlankHTML(point.node);
+          paddingBlankHTML(clone);
+        }
+
+        return clone;
       }
-
-      // split element
-      var childNode = point.node.childNodes[point.offset];
-      var clone = insertAfter(point.node.cloneNode(false), point.node);
-      appendChildNodes(clone, listNext(childNode));
-
-      if (!isSkipPaddingBlankHTML) {
-        paddingBlankHTML(point.node);
-        paddingBlankHTML(clone);
-      }
-
-      return clone;
     };
 
     /**
@@ -782,33 +788,33 @@ define([
      *
      * @param {Node} root - split root
      * @param {BoundaryPoint} point
-     * @param {Boolean} [isSkipPaddingBlankHTML]
+     * @param {Object} [options]
+     * @param {Boolean} [options.isSkipPaddingBlankHTML] - default: false
+     * @param {Boolean} [options.isNotSplitEdgePoint] - default: false
      * @return {Node} right node of boundaryPoint
      */
-    var splitTree = function (root, point, isSkipPaddingBlankHTML) {
+    var splitTree = function (root, point, options) {
       // ex) [#text, <span>, <p>]
       var ancestors = listAncestor(point.node, func.eq(root));
+
+      var isSkipPaddingBlankHTML = options && options.isSkipPaddingBlankHTML;
+      var isNotSplitEdgePoint = options && options.isNotSplitEdgePoint;
 
       if (!ancestors.length) {
         return null;
       } else if (ancestors.length === 1) {
-        return splitNode(point, isSkipPaddingBlankHTML);
+        return splitNode(point, options);
       }
 
       return ancestors.reduce(function (node, parent) {
-        var clone = insertAfter(parent.cloneNode(false), parent);
-
         if (node === point.node) {
-          node = splitNode(point, isSkipPaddingBlankHTML);
+          node = splitNode(point, options);
         }
 
-        appendChildNodes(clone, listNext(node));
-
-        if (!isSkipPaddingBlankHTML) {
-          paddingBlankHTML(parent);
-          paddingBlankHTML(clone);
-        }
-        return clone;
+        return splitNode({
+          node: parent,
+          offset: node ? dom.position(node) : nodeLength(parent)
+        }, options);
       });
     };
 
@@ -837,7 +843,10 @@ define([
       }
 
       // if splitRoot is exists, split with splitTree
-      var pivot = splitRoot && splitTree(splitRoot, point, isInline);
+      var pivot = splitRoot && splitTree(splitRoot, point, {
+        isSkipPaddingBlankHTML: isInline,
+        isNotSplitEdgePoint: isInline
+      });
 
       // if container is point.node, find pivot with point.offset
       if (!pivot && container === point.node) {
@@ -987,6 +996,7 @@ define([
       isPara: isPara,
       isPurePara: isPurePara,
       isInline: isInline,
+      isBlock: func.not(isInline),
       isBodyInline: isBodyInline,
       isBody: isBody,
       isParaInline: isParaInline,

@@ -426,6 +426,19 @@ define([
     };
 
     /**
+     * paste HTML
+     * @param {Node} $editable
+     * @param {String} markup
+     */
+    this.pasteHTML = function ($editable, markup) {
+      beforeCommand($editable);
+      var rng = this.createRange($editable);
+      var contents = rng.pasteHTML(markup);
+      range.createFromNode(list.last(contents)).collapse().select();
+      afterCommand($editable);
+    };
+
+    /**
      * formatBlock
      *
      * @param {jQuery} $editable
