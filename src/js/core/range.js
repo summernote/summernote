@@ -495,11 +495,11 @@ define([
         var self = this;
         var rng = this.wrapBodyInlineWithPara().deleteContents();
         var contentsContainer = $('<div></div>').html(markup)[0];
-        var childNodes = list.from(contentsContainer.childNodes);
+        var frag = document.createDocumentFragment();
+        var contents = list.from(contentsContainer.childNodes);
 
-        return $.map(childNodes.reverse(), function (childNode) {
-          return self.insertNode(childNode);
-        }).reverse();
+        this.insertNode(dom.appendChildNodes(frag, contents));
+        return contents;
       };
   
       /**
