@@ -124,13 +124,13 @@ define([
     test('rng.pasteHTML', function () {
       var $cont, $p, $b, markup;
 
-      // $cont = $('<div class="note-editable"><p>text</p></div>');
-      // $p = $cont.find('p');
-      // markup = '<span>span</span><i>italic</i>';
+      $cont = $('<div class="note-editable"><p>text</p></div>');
+      $p = $cont.find('p');
+      markup = '<span>span</span><i>italic</i>';
 
-      // // split text with inline nodes
-      // range.create($p[0].firstChild, 2).pasteHTML(markup);
-      // equalsToUpperCase($cont.html(), '<p>te<span>span</span><i>italic</i>xt</p>', 'rng.pasteHTML with inlines should not split text.');
+      // split text with inline nodes
+      range.create($p[0].firstChild, 2).pasteHTML(markup);
+      equalsToUpperCase($cont.html(), '<p>te<span>span</span><i>italic</i>xt</p>', 'rng.pasteHTML with inlines should not split text.');
 
       $cont = $('<div class="note-editable"><p><b>bold</b></p></div>');
       $p = $cont.find('p');
