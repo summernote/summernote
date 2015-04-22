@@ -14,6 +14,7 @@ define([
     /**
      * @method jQueryCSS
      *
+     * [workaround] for old jQuery
      * passing an array of style properties to .css()
      * will result in an object of property-value pairs.
      * (compability with version < 1.9)

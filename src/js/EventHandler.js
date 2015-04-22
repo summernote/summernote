@@ -390,7 +390,8 @@ define([
 
       // ret styleWithCSS for backColor / foreColor clearing with 'inherit'.
       if (!agent.isMSIE) {
-        // protect FF Error: NS_ERROR_FAILURE: Failure
+        // [workaround] for Firefox
+        //  - protect FF Error: NS_ERROR_FAILURE: Failure
         setTimeout(function () {
           document.execCommand('styleWithCSS', 0, options.styleWithSpan);
         }, 0);
@@ -427,6 +428,7 @@ define([
           modules.editor.triggerOnChange(layoutInfo.editable());
         };
 
+        // [workaround] for old IE - IE8 don't have input events
         if (agent.isMSIE) {
           var sDomEvents = 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted';
           layoutInfo.editable().on(sDomEvents, hChange);
@@ -495,6 +497,7 @@ define([
         layoutInfo.popover().click(bindCustomEvent($holder, 'popover.click'));
       }
       
+      // [workaround] for old IE - IE8 don't have input events
       if (agent.isMSIE) {
         var sDomEvents = 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted';
         $editable.on(sDomEvents, bindCustomEvent($holder, 'change'));

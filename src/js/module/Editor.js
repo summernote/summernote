@@ -446,6 +446,7 @@ define([
      */
     this.formatBlock = function ($editable, tagName) {
       beforeCommand($editable);
+      // [workaround] for MSIE, IE need `<`
       tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       document.execCommand('FormatBlock', false, tagName);
       afterCommand($editable);
@@ -736,8 +737,12 @@ define([
      * @param $editable
      */
     this.focus = function ($editable) {
-      $editable.focus();    // FIXME: if broswer is firefox, this will do not run.
-      range.createFromNode($editable[0].firstChild || $editable[0]).collapse().select();
+      $editable.focus();
+
+      // [workaround] for firefox bug http://goo.gl/lVfAaI
+      if (agent.isFF) {
+        range.createFromNode($editable[0].firstChild || $editable[0]).collapse().select();
+      }
     };
   };
 

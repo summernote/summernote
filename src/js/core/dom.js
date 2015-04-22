@@ -240,6 +240,7 @@ define([
 
     /**
      * blank HTML for cursor position
+     * - [workaround] for MSIE IE doesn't works with bogus br
      */
     var blankHTML = agent.isMSIE ? '&nbsp;' : '<br>';
 
