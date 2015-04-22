@@ -7,7 +7,9 @@
         underline: 'Understrek',
         clear: 'Fjern formatering',
         height: 'Linjehøyde',
-        name: 'Skrifttype'
+        name: 'Skrifttype',
+        strikethrough: 'Gjennomstrek',
+        size: 'Skriftstørrelse'
       },
       image: {
         image: 'Bilde',

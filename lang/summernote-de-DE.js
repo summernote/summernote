@@ -6,7 +6,9 @@
         italic: 'Kursiv',
         underline: 'Unterstreichen',
         clear: 'Zurücksetzen',
-        height: 'Zeilenhöhe'
+        height: 'Zeilenhöhe',
+        strikethrough: 'Durchgestrichen',
+        size: 'Schriftgröße'
       },
       image: {
         image: 'Grafik',

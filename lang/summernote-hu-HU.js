@@ -7,7 +7,9 @@
         underline: 'Aláhúzott',
         clear: 'Formázás törlése',
         height: 'Sorköz',
-        name: 'Betűtípus'
+        name: 'Betűtípus',
+        strikethrough: 'Áthúzott',
+        size: 'Betűméret'
       },
       image: {
         image: 'Kép',

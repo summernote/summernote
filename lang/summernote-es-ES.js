@@ -7,7 +7,11 @@
         underline: 'Subrayado',
         clear: 'Quitar estilo de fuente',
         height: 'Altura de línea',
-        name: 'Fuente'
+        name: 'Fuente',
+        strikethrough: 'Tachado',
+        superscript: 'Superíndice',
+        subscript: 'Subíndice',
+        size: 'Tamaño de la fuente'
       },
       image: {
         image: 'Imagen',

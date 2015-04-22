@@ -6,7 +6,9 @@
         italic: '斜體',
         underline: '底線',
         clear: '清除格式',
-        height: '行高'
+        height: '行高',
+        strikethrough: '刪除線',
+        size: '字體大小'
       },
       image: {
         image: '圖片',

@@ -7,7 +7,11 @@
         underline: 'Altı çizili',
         clear: 'Temizle',
         height: 'Satır yüksekliği',
-        name: 'Yazı Tipi'
+        name: 'Yazı Tipi',
+        strikethrough: 'Üstü çizili',
+        subscript: 'Subscript',
+        superscript: 'Superscript',
+        size: 'Yazı tipi boyutu'
       },
       image: {
         image: 'Resim',

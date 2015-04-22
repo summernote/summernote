@@ -7,7 +7,9 @@
         underline: 'Azpimarratua',
         clear: 'Estiloa kendu',
         height: 'Lerro altuera',
-        name: 'Tipografia'
+        name: 'Tipografia',
+        strikethrough: 'Marratua',
+        size: 'Letren neurria'
       },
       image: {
         image: 'Irudia',

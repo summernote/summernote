@@ -469,7 +469,7 @@ define([
     /* jshint ignore:end */
 
     /**
-     * fontsize
+     * fontSize
      *
      * @param {jQuery} $editable
      * @param {String} value - px

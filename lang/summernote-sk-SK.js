@@ -6,7 +6,9 @@
         italic: 'Kurzíva',
         underline: 'Podtržené',
         clear: 'Odstrániť štýl písma',
-        height: 'Výška riadku'
+        height: 'Výška riadku',
+        strikethrough: 'Preškrtnuté',
+        size: 'Veľkosť písma'
       },
       image: {
         image: 'Obrázok',

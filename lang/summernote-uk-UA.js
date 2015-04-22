@@ -7,7 +7,11 @@
         underline: 'Підкреслений',
         clear: 'Прибрати стилі шрифту',
         height: 'Висота лінії',
-        name: 'Шрифт'
+        name: 'Шрифт',
+        strikethrough: 'Закреслений',
+        subscript: 'Нижній індекс',
+        superscript: 'Верхній індекс',
+        size: 'Розмір шрифту'
       },
       image: {
         image: 'Картинка',

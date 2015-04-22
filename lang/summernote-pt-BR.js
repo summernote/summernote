@@ -7,7 +7,9 @@
         underline: 'Sublinhado',
         clear: 'Remover estilo da fonte',
         height: 'Altura da linha',
-        name: 'Fonte'
+        name: 'Fonte',
+        strikethrough: 'Riscado',
+        size: 'Tamanho da fonte'
       },
       image: {
         image: 'Imagem',

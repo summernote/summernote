@@ -6,7 +6,9 @@
         italic: 'Înclinat',
         underline: 'Subliniat',
         clear: 'Înlătură formatare font',
-        height: 'Înălțime rând'
+        height: 'Înălțime rând',
+        strikethrough: 'Tăiat',
+        size: 'Dimensiune font'
       },
       image: {
         image: 'Imagine',

@@ -7,7 +7,9 @@
         underline: 'میان خط',
         clear: 'پاک کردن فرمت فونت',
         height: 'فاصله ی خطی',
-        name: 'اسم فونت'
+        name: 'اسم فونت',
+        strikethrough: 'Strike',
+        size: 'اندازه ی فونت'
       },
       image: {
         image: 'تصویر',

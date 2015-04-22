@@ -6,7 +6,9 @@
         italic: 'Cursiva',
         underline: 'Subratllat',
         clear: 'Treure estil de lletra',
-        height: 'Alçada de línia'
+        height: 'Alçada de línia',
+        strikethrough: 'Ratllat',
+        size: 'Mida de lletra'
       },
       image: {
         image: 'Imatge',

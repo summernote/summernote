@@ -7,7 +7,11 @@
         underline: 'Подчёркнутый',
         clear: 'Убрать стили шрифта',
         height: 'Высота линии',
-        name: 'Шрифт'
+        name: 'Шрифт',
+        strikethrough: 'Зачёркнутый',
+        subscript: 'Нижний индекс',
+        superscript: 'Верхний индекс',
+        size: 'Размер шрифта'
       },
       image: {
         image: 'Картинка',
