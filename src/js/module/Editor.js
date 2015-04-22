@@ -736,7 +736,8 @@ define([
      * @param $editable
      */
     this.focus = function ($editable) {
-      $editable.focus();
+      $editable.focus();    // FIXME: if broswer is firefox, this will do not run.
+      range.createFromNode($editable[0].firstChild || $editable[0]).collapse().select();
     };
   };
 
