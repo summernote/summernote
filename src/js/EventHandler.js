@@ -511,7 +511,7 @@ define([
       }
 
       // fire init event
-      bindCustomEvent($holder, 'init')();
+      bindCustomEvent($holder, 'init')(layoutInfo);
 
       // fire plugin init event
       for (var i = 0, len = $.summernote.plugins.length; i < len; i++) {
