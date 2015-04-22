@@ -426,6 +426,19 @@ define([
     };
 
     /**
+     * paste HTML
+     * @param {Node} $editable
+     * @param {String} markup
+     */
+    this.pasteHTML = function ($editable, markup) {
+      beforeCommand($editable);
+      var rng = this.createRange($editable);
+      var contents = rng.pasteHTML(markup);
+      range.createFromNode(list.last(contents)).collapse().select();
+      afterCommand($editable);
+    };
+
+    /**
      * formatBlock
      *
      * @param {jQuery} $editable
@@ -433,6 +446,7 @@ define([
      */
     this.formatBlock = function ($editable, tagName) {
       beforeCommand($editable);
+      // [workaround] for MSIE, IE need `<`
       tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       document.execCommand('FormatBlock', false, tagName);
       afterCommand($editable);
@@ -724,6 +738,11 @@ define([
      */
     this.focus = function ($editable) {
       $editable.focus();
+
+      // [workaround] for firefox bug http://goo.gl/lVfAaI
+      if (agent.isFF) {
+        range.createFromNode($editable[0].firstChild || $editable[0]).collapse().select();
+      }
     };
   };
 
