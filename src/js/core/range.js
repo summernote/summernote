@@ -534,7 +534,7 @@ define([
           startPoint.offset,
           endPoint.node,
           endPoint.offset
-        ).normalize();
+        );
       };
   
       /**
