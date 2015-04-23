@@ -7,7 +7,9 @@
         underline: '下線',
         clear: 'クリア',
         height: '文字高',
-        name: 'フォント'
+        name: 'フォント',
+        strikethrough: '取り消し線',
+        size: '大きさ'
       },
       image: {
         image: '画像',

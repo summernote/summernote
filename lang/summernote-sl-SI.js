@@ -7,7 +7,11 @@
         underline: 'Podčrtano',
         clear: 'Počisti oblikovanje izbire',
         height: 'Razmik med vrsticami',
-        name: 'Pisava'
+        name: 'Pisava',
+        strikethrough: 'Prečrtano',
+        subscript: 'Podpisano',
+        superscript: 'Nadpisano',
+        size: 'Velikost pisave'
       },
       image: {
         image: 'Slika',

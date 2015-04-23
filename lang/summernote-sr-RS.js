@@ -6,7 +6,9 @@
         italic: 'Курзив',
         underline: 'Подвучено',
         clear: 'Уклони стилове фонта',
-        height: 'Висина линије'
+        height: 'Висина линије',
+        strikethrough: 'Прецртано',
+        size: 'Величина фонта'
       },
       image: {
         image: 'Слика',

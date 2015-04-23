@@ -7,7 +7,9 @@
         underline: 'تحته خط',
         clear: 'مسح التنسيق',
         height: 'إرتفاع السطر',
-        name: 'الخط'
+        name: 'الخط',
+        strikethrough: 'فى وسطه خط',
+        size: 'الحجم'
       },
       image: {
         image: 'صورة',

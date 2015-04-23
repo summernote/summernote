@@ -7,7 +7,11 @@
         underline: 'Souligné',
         clear: 'Effacer la mise en forme',
         height: 'Interligne',
-        name: 'Famille de police'
+        name: 'Famille de police',
+        strikethrough: 'Barré',
+        superscript: 'Exposant',
+        subscript: 'Indicé',
+        size: 'Taille de police'
       },
       image: {
         image: 'Image',

@@ -7,7 +7,9 @@
         underline: '下划线',
         clear: '清除格式',
         height: '行高',
-        name: '字体'
+        name: '字体',
+        strikethrough: '删除线',
+        size: '字号'
       },
       image: {
         image: '图片',

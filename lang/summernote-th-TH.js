@@ -7,7 +7,11 @@
 				underline: 'ขีดเส้นใต้',
 				clear: 'ล้างรูปแบบตัวอักษร',
 				height: 'ความสูงบรรทัด',
-				name: 'แบบตัวอักษร'
+				name: 'แบบตัวอักษร',
+        strikethrough: 'ขีดฆ่า',
+        subscript: 'ตัวห้อย',
+        superscript: 'ตัวยก',
+        size: 'ขนาดตัวอักษร'
 			},
 			image: {
 				image: 'รูปภาพ',

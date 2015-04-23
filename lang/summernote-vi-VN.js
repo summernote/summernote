@@ -7,7 +7,9 @@
         underline: 'Gạch Dưới',
         clear: 'Bỏ Định Dạng',
         height: 'Khoảng Cách Hàng',
-        name: 'Phông Chữ'
+        name: 'Phông Chữ',
+        strikethrough: 'Gạch Ngang',
+        size: 'Cỡ Chữ'
       },
       image: {
         image: 'Hình Ảnh',
