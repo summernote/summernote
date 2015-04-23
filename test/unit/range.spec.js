@@ -229,5 +229,54 @@ define([
       range.create($cont[0], 2).wrapBodyInlineWithPara();
       equalsToUpperCase($cont.html(), '<p><b>b</b><i>i</i></p>', 'rng.wrapBodyInlineWithPara with inline should wrap text with paragraph.');
     });
+
+    test('rng.getWordRange', function () {
+      var $cont, rng;
+
+      $cont = $('<div class="note-editable">super simple wysiwyg editor</div>');
+
+      // no word before cursor
+      rng = range.create(
+        $cont[0].firstChild, 0
+      ).getWordRange();
+
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $cont[0].firstChild, 0, $cont[0].firstChild, 0
+      ], 'rng.getWordRange with no word before cursor should return itself');
+
+      // find word before cursor
+      rng = range.create(
+        $cont[0].firstChild, 5
+      ).getWordRange();
+
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $cont[0].firstChild, 0, $cont[0].firstChild, 5
+      ], 'rng.getWordRange with word before cursor should return expanded range');
+
+      rng = range.create(
+        $cont[0].firstChild, 3
+      ).getWordRange();
+
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $cont[0].firstChild, 0, $cont[0].firstChild, 3
+      ], 'rng.getWordRange with half word before cursor should expanded range');
+
+      rng = range.create(
+        $cont[0].firstChild, 12
+      ).getWordRange();
+
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $cont[0].firstChild, 6, $cont[0].firstChild, 12
+      ], 'rng.getWordRange with half word before cursor should expanded range');
+
+    });
   };
 });

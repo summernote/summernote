@@ -684,6 +684,21 @@ define([
     };
 
     /**
+     * returns whether point has character or not.
+     *
+     * @param {Point} point
+     * @return {Boolean}
+     */
+    var isCharPoint = function (point) {
+      if (!isText(point.node)) {
+        return false;
+      }
+
+      var ch = point.node.nodeValue.charAt(point.offset - 1);
+      return ch && (ch !== ' ' && ch !== NBSP_CHAR);
+    };
+
+    /**
      * @method walkPoint
      *
      * @param {BoundaryPoint} startPoint
@@ -1030,6 +1045,7 @@ define([
       isVisiblePoint: isVisiblePoint,
       prevPointUntil: prevPointUntil,
       nextPointUntil: nextPointUntil,
+      isCharPoint: isCharPoint,
       walkPoint: walkPoint,
       ancestor: ancestor,
       singleChildAncestor: singleChildAncestor,

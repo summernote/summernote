@@ -512,6 +512,30 @@ define([
         var nativeRng = nativeRange();
         return agent.isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
       };
+
+      /**
+       * returns range for word before cursor
+       *
+       * @return {WrappedRange}
+       */
+      this.getWordRange = function () {
+        var endPoint = this.getEndPoint();
+
+        if (!dom.isCharPoint(endPoint)) {
+          return this;
+        }
+
+        var startPoint = dom.prevPointUntil(endPoint, function (point) {
+          return !dom.isCharPoint(point);
+        });
+
+        return new WrappedRange(
+          startPoint.node,
+          startPoint.offset,
+          endPoint.node,
+          endPoint.offset
+        ).normalize();
+      };
   
       /**
        * create offsetPath bookmark
