@@ -518,7 +518,7 @@ define([
        *
        * @return {WrappedRange}
        */
-      this.getWordRange = function () {
+      this.getWordRange = function (hasFullElement) {
         var endPoint = this.getEndPoint();
 
         if (!dom.isCharPoint(endPoint)) {
@@ -528,6 +528,12 @@ define([
         var startPoint = dom.prevPointUntil(endPoint, function (point) {
           return !dom.isCharPoint(point);
         });
+
+        if (hasFullElement) {
+          endPoint = dom.nextPointUntil(endPoint, function (point) {
+            return !dom.isCharPoint(point);
+          });
+        }
 
         return new WrappedRange(
           startPoint.node,
