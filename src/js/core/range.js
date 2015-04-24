@@ -516,6 +516,7 @@ define([
       /**
        * returns range for word before cursor
        *
+       * @param {Boolean} hasFullElement get range for full element  at current cursor
        * @return {WrappedRange}
        */
       this.getWordRange = function (hasFullElement) {
