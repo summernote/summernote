@@ -74,6 +74,18 @@ define([
       return this.modules[moduleName] || this.modules.editor;
     };
 
+    this.insertImageLink = function (layoutInfo, imageUrl) {
+      var $editable = layoutInfo.editable();
+
+      var callbacks = $editable.data('callbacks');
+
+      if (callbacks.onImageLinkInsert) {
+        callbacks.onImageLinkInsert(imageUrl, modules.editor, $editable);
+      } else {
+        modules.editor.insertImage($editable, imageUrl);
+      }
+    };
+
     /**
      * insert Images from file array.
      *
@@ -445,6 +457,7 @@ define([
         onAutoSave: options.onAutoSave,
         onImageUpload: options.onImageUpload,
         onImageUploadError: options.onImageUploadError,
+        onImageLinkInsert: options.onImageLinkInsert,
         onFileUpload: options.onFileUpload,
         onFileUploadError: options.onFileUpload,
         onMediaDelete : options.onMediaDelete
