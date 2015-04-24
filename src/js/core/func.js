@@ -98,6 +98,18 @@ define('summernote/core/func', function () {
       return inverted;
     };
 
+    /**
+     * @param {String} namespace
+     * @param {String} [prefix]
+     * @return {String}
+     */
+    var namespaceToCamel = function (namespace, prefix) {
+      prefix = prefix || '';
+      return prefix + namespace.split('.').map(function (name) {
+        return name.substring(0, 1).toUpperCase() + name.substring(1);
+      }).join('');
+    };
+
     return {
       eq: eq,
       eq2: eq2,
@@ -109,7 +121,8 @@ define('summernote/core/func', function () {
       and: and,
       uniqueId: uniqueId,
       rect2bnd: rect2bnd,
-      invertObject: invertObject
+      invertObject: invertObject,
+      namespaceToCamel: namespaceToCamel
     };
   })();
 

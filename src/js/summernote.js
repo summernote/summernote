@@ -273,7 +273,7 @@ define([
           return isCodeview ? layoutInfo.codable().val() :
                               layoutInfo.editable().html();
         }
-        return dom.isTextarea($holder[0]) ? $holder.val() : $holder.html();
+        return dom.value($holder);
       }
 
       // set the HTML contents of note

@@ -1,5 +1,6 @@
 define([
   'summernote/core/agent',
+  'summernote/core/func',
   'summernote/core/dom',
   'summernote/core/async',
   'summernote/core/key',
@@ -17,7 +18,7 @@ define([
   'summernote/module/LinkDialog',
   'summernote/module/ImageDialog',
   'summernote/module/HelpDialog'
-], function (agent, dom, async, key, list, History,
+], function (agent, func, dom, async, key, list, History,
              Editor, Toolbar, Statusbar, Popover, Handle, Fullscreen, Codeview,
              DragAndDrop, Clipboard, LinkDialog, ImageDialog, HelpDialog) {
 
@@ -75,6 +76,22 @@ define([
     };
 
     /**
+     * @param {jQuery} $holder
+     * @param {Object} callbacks
+     * @param {String} eventNamespace
+     * @returns {Function}
+     */
+    var bindCustomEvent = this.bindCustomEvent = function ($holder, callbacks, eventNamespace) {
+      return function () {
+        var callback = callbacks[func.namespaceToCamel(eventNamespace, 'on')];
+        if (callback) {
+          callback(arguments);
+        }
+        return $holder.trigger('summernote.' + eventNamespace, arguments);
+      };
+    };
+
+    /**
      * insert Images from file array.
      *
      * @private
@@ -91,27 +108,18 @@ define([
 
       // If onImageUpload options setted
       if (callbacks.onImageUpload) {
-        callbacks.onImageUpload(files, modules.editor, $editable);
-        bindCustomEvent($holder, 'image.upload')([files]);
+        bindCustomEvent($holder, callbacks, 'image.upload')([files]);
       // else insert Image as dataURL
       } else {
         $.each(files, function (idx, file) {
           var filename = file.name;
           if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
-            if (callbacks.onImageUploadError) {
-              callbacks.onImageUploadError(options.langInfo.image.maximumFileSizeError);
-              bindCustomEvent($holder, 'image.upload.error')(options.langInfo.image.maximumFileSizeError);
-            } else {
-              alert(options.langInfo.image.maximumFileSizeError);
-            }
+            bindCustomEvent($holder, callbacks, 'image.upload.error')(options.langInfo.image.maximumFileSizeError);
           } else {
             async.readFileAsDataURL(file).then(function (sDataURL) {
               modules.editor.insertImage($editable, sDataURL, filename);
             }).fail(function () {
-              if (callbacks.onImageUploadError) {
-                callbacks.onImageUploadError();
-                bindCustomEvent($holder, 'image.upload.error')(options.langInfo.image.maximumFileSizeError);
-              }
+              bindCustomEvent($holder, callbacks, 'image.upload.error')(options.langInfo.image.maximumFileSizeError);
             });
           }
         });
@@ -282,12 +290,6 @@ define([
       $dimensionDisplay.html(dim.c + ' x ' + dim.r);
     };
     
-    var bindCustomEvent = function ($holder, eventName) {
-      return function () {
-        return $holder.trigger('summernote.' + eventName, arguments);
-      };
-    };
-
     /**
      * bind KeyMap on keydown
      *
@@ -337,14 +339,6 @@ define([
      *
      * @param {Object} layoutInfo - layout Informations
      * @param {Object} options - user options include custom event handlers
-     * @param {function(event)} [options.onenter] - enter key handler
-     * @param {function(event)} [options.onfocus]
-     * @param {function(event)} [options.onblur]
-     * @param {function(event)} [options.onkeyup]
-     * @param {function(event)} [options.onkeydown]
-     * @param {function(event)} [options.onpaste]
-     * @param {function(event)} [options.onToolBarclick]
-     * @param {function(event)} [options.onChange]
      */
     this.attach = function (layoutInfo, options) {
       // handlers for editable
@@ -401,52 +395,21 @@ define([
       var history = new History(layoutInfo.editable());
       layoutInfo.editable().data('NoteHistory', history);
 
-      // basic event callbacks (lowercase)
-      // enter, focus, blur, keyup, keydown
-      if (options.onenter) {
-        layoutInfo.editable().keypress(function (event) {
-          if (event.keyCode === key.code.ENTER) { options.onenter(event); }
-        });
-      }
-
-      if (options.onfocus) { layoutInfo.editable().focus(options.onfocus); }
-      if (options.onblur) { layoutInfo.editable().blur(options.onblur); }
-      if (options.onkeyup) { layoutInfo.editable().keyup(options.onkeyup); }
-      if (options.onkeydown) { layoutInfo.editable().keydown(options.onkeydown); }
-      if (options.onpaste) { layoutInfo.editable().on('paste', options.onpaste); }
-      
-      // callbacks for advanced features (camel)
-
-      // onToolbarClick
-      if (options.onToolbarClick) {
-        layoutInfo.toolbar().click(options.onToolbarClick);
-      }
-
-      // onChange
-      if (options.onChange) {
-        var hChange = function () {
-          modules.editor.triggerOnChange(layoutInfo.editable());
-        };
-
-        // [workaround] for old IE - IE8 don't have input events
-        if (agent.isMSIE) {
-          var sDomEvents = 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted';
-          layoutInfo.editable().on(sDomEvents, hChange);
-        } else {
-          layoutInfo.editable().on('input', hChange);
-        }
-      }
-
       // All editor status will be saved on editable with jquery's data
       // for support multiple editor with singleton object.
       layoutInfo.editable().data('callbacks', {
-        onBeforeChange: options.onBeforeChange,
+        onInit: options.onInit,
+        onFocus: options.onFocus,
+        onBlur: options.onBlur,
+        onKeydown: options.onKeydown,
+        onKeyup: options.onKeyup,
+        onMousedown: options.onMousedown,
+        onEnter: options.onEnter,
+        onPaste: options.onPaste,
+        onBeforeCommand: options.onBeforeCommand,
         onChange: options.onChange,
-        onAutoSave: options.onAutoSave,
         onImageUpload: options.onImageUpload,
         onImageUploadError: options.onImageUploadError,
-        onFileUpload: options.onFileUpload,
-        onFileUploadError: options.onFileUpload,
         onMediaDelete : options.onMediaDelete
       });
 
@@ -472,49 +435,48 @@ define([
     this.attachCustomEvent = function (layoutInfo, options) {
       var $holder = layoutInfo.holder();
       var $editable = layoutInfo.editable();
+      var callbacks = $editable.data('callbacks');
 
-      $editable.on('mousedown', bindCustomEvent($holder, 'mousedown'));
-      $editable.on('keyup mouseup', bindCustomEvent($holder, 'update'));
-      $editable.on('scroll', bindCustomEvent($holder, 'scroll'));
+      $editable.focus(bindCustomEvent($holder, callbacks, 'focus'));
+      $editable.blur(bindCustomEvent($holder, callbacks, 'blur'));
 
-      // basic event callbacks (lowercase)
-      // enter, focus, blur, keyup, keydown
-      $editable.keypress(function (event) {
+      $editable.keydown(function (event) {
         if (event.keyCode === key.code.ENTER) {
-          bindCustomEvent($holder, 'enter').call(this, event);
+          bindCustomEvent($holder, callbacks, 'enter').call(this, event);
         }
+        bindCustomEvent($holder, callbacks, 'keydown').call(this, event);
       });
+      $editable.keyup(bindCustomEvent($holder, callbacks, 'keyup'));
 
-      $editable.focus(bindCustomEvent($holder, 'focus'));
-      $editable.blur(bindCustomEvent($holder, 'blur'));
-      $editable.keyup(bindCustomEvent($holder, 'keyup'));
-      $editable.keydown(bindCustomEvent($holder, 'keydown'));
-      $editable.on('paste', bindCustomEvent($holder, 'paste'));
+      $editable.on('mousedown', bindCustomEvent($holder, callbacks, 'mousedown'));
+      $editable.on('mouseup', bindCustomEvent($holder, callbacks, 'mouseup'));
+      $editable.on('scroll', bindCustomEvent($holder, callbacks, 'scroll'));
 
-      // callbacks for advanced features (camel)
-      if (!options.airMode) {
-        layoutInfo.toolbar().click(bindCustomEvent($holder, 'toolbar.click'));
-        layoutInfo.popover().click(bindCustomEvent($holder, 'popover.click'));
-      }
+      $editable.on('paste', bindCustomEvent($holder, callbacks, 'paste'));
       
       // [workaround] for old IE - IE8 don't have input events
       if (agent.isMSIE) {
         var sDomEvents = 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted';
-        $editable.on(sDomEvents, bindCustomEvent($holder, 'change'));
+        $editable.on(sDomEvents, bindCustomEvent($holder, callbacks, 'change'));
       } else {
-        $editable.on('input', bindCustomEvent($holder, 'change'));
+        $editable.on('input', bindCustomEvent($holder, callbacks, 'change'));
+      }
+
+      // callbacks for advanced features (camel)
+      if (!options.airMode) {
+        layoutInfo.toolbar().click(bindCustomEvent($holder, callbacks, 'toolbar.click'));
+        layoutInfo.popover().click(bindCustomEvent($holder, callbacks, 'popover.click'));
       }
 
       // Textarea: auto filling the code before form submit.
       if (dom.isTextarea(list.head($holder))) {
         $holder.closest('form').submit(function (e) {
-          var contents = $holder.code();
-          bindCustomEvent($holder, 'submit').call(this, e, contents);
+          bindCustomEvent($holder, callbacks, 'submit').call(this, e, $holder.code());
         });
       }
 
       // fire init event
-      bindCustomEvent($holder, 'init')(layoutInfo);
+      bindCustomEvent($holder, callbacks, 'init')(layoutInfo);
 
       // fire plugin init event
       for (var i = 0, len = $.summernote.plugins.length; i < len; i++) {
