@@ -405,7 +405,7 @@ define([
       // enter, focus, blur, keyup, keydown
       if (options.onenter) {
         layoutInfo.editable().keypress(function (event) {
-          if (event.keyCode === key.ENTER) { options.onenter(event); }
+          if (event.keyCode === key.code.ENTER) { options.onenter(event); }
         });
       }
 
@@ -480,7 +480,7 @@ define([
       // basic event callbacks (lowercase)
       // enter, focus, blur, keyup, keydown
       $editable.keypress(function (event) {
-        if (event.keyCode === key.ENTER) {
+        if (event.keyCode === key.code.ENTER) {
           bindCustomEvent($holder, 'enter').call(this, event);
         }
       });
