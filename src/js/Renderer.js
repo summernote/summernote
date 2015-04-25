@@ -1,5 +1,7 @@
 define([
-  'summernote/core/agent', 'summernote/core/dom', 'summernote/core/func'
+  'summernote/core/agent',
+  'summernote/core/dom',
+  'summernote/core/func'
 ], function (agent, dom, func) {
   /**
    * @class Renderer
