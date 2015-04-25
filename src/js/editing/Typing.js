@@ -76,7 +76,8 @@ define([
         }
       }
 
-      range.create(nextPara, 0).normalize().select();
+      range.create(nextPara, 0).normalize().select().focus().scrollIntoView();
+
     };
 
   };
