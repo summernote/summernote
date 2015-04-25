@@ -516,10 +516,10 @@ define([
       /**
        * returns range for word before cursor
        *
-       * @param {Boolean} hasFullElement get range for full element  at current cursor
+       * @param {Boolean} [findAfter] - find after cursor, default: false
        * @return {WrappedRange}
        */
-      this.getWordRange = function (hasFullElement) {
+      this.getWordRange = function (findAfter) {
         var endPoint = this.getEndPoint();
 
         if (!dom.isCharPoint(endPoint)) {
@@ -530,7 +530,7 @@ define([
           return !dom.isCharPoint(point);
         });
 
-        if (hasFullElement) {
+        if (findAfter) {
           endPoint = dom.nextPointUntil(endPoint, function (point) {
             return !dom.isCharPoint(point);
           });

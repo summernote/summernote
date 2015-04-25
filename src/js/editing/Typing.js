@@ -49,8 +49,13 @@ define([
       var nextPara;
       // on paragraph: split paragraph
       if (splitRoot) {
+        // if it is an empty line with li
+        if (dom.isEmpty(splitRoot) && dom.isLi(splitRoot)) {
+          // disable UL/OL and escape!
+          bullet.toggleList(splitRoot.parentNode.nodeName);
+          return;
         // if new line has content (not a line break)
-        if (!dom.isEmpty(splitRoot)) {
+        } else {
           nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
 
           var emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
@@ -59,11 +64,6 @@ define([
           $.each(emptyAnchors, function (idx, anchor) {
             dom.remove(anchor);
           });
-        // if it is an empty line
-        } else {
-          // disable UL/OL and escape!
-          bullet.toggleList(splitRoot.parentNode.nodeName);
-          return;
         }
       // no paragraph: insert empty paragraph
       } else {
