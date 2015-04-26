@@ -183,6 +183,32 @@ define([
         } else {
           nativeRng.select();
         }
+        
+        return this;
+      };
+
+      /**
+       * Moves the scrollbar to start container(sc) of current range 
+       *
+       * @return {WrappedRange}
+       */
+      this.scrollIntoView = function () {
+        if (this.sc.scrollIntoView) {
+          this.sc.scrollIntoView(false);
+        }
+        
+        return this;
+      };
+
+      /**
+       * set a focus into start container of current range 
+       *
+       * @return {WrappedRange}
+       */
+      this.focus = function () {
+        this.sc.focus();
+        
+        return this;
       };
 
       /**
