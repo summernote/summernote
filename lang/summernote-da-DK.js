@@ -7,7 +7,11 @@
         underline: 'Understreget',
         clear: 'Fjern formatering',
         height: 'Højde',
-        name: 'Skrifttype'
+        name: 'Skrifttype',
+        strikethrough: 'Gennemstreget',
+        subscript: 'Sænket skrift',
+        superscript: 'Hævet skrift',
+        size: 'Skriftstørrelse'
       },
       image: {
         image: 'Billede',

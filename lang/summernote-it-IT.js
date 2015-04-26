@@ -7,7 +7,9 @@
         underline: 'Testo sottolineato',
         clear: 'Elimina la formattazione del testo',
         height: 'Altezza della linea di testo',
-        name: 'Famiglia Font'
+        name: 'Famiglia Font',
+        strikethrough: 'Testo barrato',
+        size: 'Dimensione del carattere'
       },
       image: {
         image: 'Immagine',

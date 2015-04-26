@@ -7,7 +7,9 @@
         underline: 'Podkreślenie',
         clear: 'Usuń formatowanie',
         height: 'Interlinia',
-        name: 'Czcionka'
+        name: 'Czcionka',
+        strikethrough: 'Przekreślenie',
+        size: 'Rozmiar'
       },
       image: {
         image: 'Grafika',

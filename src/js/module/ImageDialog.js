@@ -1,4 +1,6 @@
-define(function () {
+define([
+  'summernote/core/key'
+], function (key) {
   var ImageDialog = function (handler) {
     /**
      * toggle button status
@@ -10,6 +12,21 @@ define(function () {
     var toggleBtn = function ($btn, isEnable) {
       $btn.toggleClass('disabled', !isEnable);
       $btn.attr('disabled', !isEnable);
+    };
+
+    /**
+     * bind enter key
+     *
+     * @private
+     * @param {jQuery} $input
+     * @param {jQuery} $btn
+     */
+    var bindEnterKey = function ($input, $btn) {
+      $input.on('keypress', function (event) {
+        if (event.keyCode === key.code.ENTER) {
+          $btn.trigger('click');
+        }
+      });
     };
 
     this.show = function (layoutInfo) {
@@ -75,9 +92,10 @@ define(function () {
             
             toggleBtn($imageBtn, url);
           }).val('').trigger('focus');
+          bindEnterKey($imageUrl, $imageBtn);
         }).one('hidden.bs.modal', function () {
           $imageInput.off('change');
-          $imageUrl.off('keyup paste');
+          $imageUrl.off('keyup paste keypress');
           $imageBtn.off('click');
 
           if (deferred.state() === 'pending') {

@@ -7,7 +7,11 @@
         underline: 'קו תחתון',
         clear: 'נקה עיצוב',
         height: 'גובה',
-        name: 'גופן'
+        name: 'גופן',
+        strikethrough: 'קו חוצה',
+        subscript: 'כתב תחתי',
+        superscript: 'כתב עילי',
+        size: 'גודל גופן'
       },
       image: {
         image: 'תמונה',

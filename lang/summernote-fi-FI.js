@@ -7,7 +7,9 @@
         underline: 'Alleviivaa',
         clear: 'Tyhjennä muotoilu',
         height: 'Riviväli',
-        name: 'Kirjasintyyppi'
+        name: 'Kirjasintyyppi',
+        strikethrough: 'Yliviivaus',
+        size: 'Kirjasinkoko'
       },
       image: {
         image: 'Kuva',

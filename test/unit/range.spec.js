@@ -121,6 +121,57 @@ define([
       equalsToUpperCase($cont.html(), '<p><b>bo</b><u>u</u><b>ld</b></p>', 'rng.insertNode with inline should not split paragraph.');
     });
 
+    test('rng.pasteHTML', function () {
+      var $cont, $p, $b, markup;
+
+      // split text with inline nodes
+      $cont = $('<div class="note-editable"><p>text</p></div>');
+      $p = $cont.find('p');
+      markup = '<span>span</span><i>italic</i>';
+
+      range.create($p[0].firstChild, 2).pasteHTML(markup);
+      equalsToUpperCase($cont.html(), '<p>te<span>span</span><i>italic</i>xt</p>', 'rng.pasteHTML with inlines should not split text.');
+
+      // split inline node with inline nodes
+      $cont = $('<div class="note-editable"><p><b>bold</b></p></div>');
+      $p = $cont.find('p');
+      $b = $cont.find('b');
+      markup = '<span>span</span><i>italic</i>';
+
+      range.create($b[0].firstChild, 2).pasteHTML(markup);
+      equalsToUpperCase(
+        $cont.html(),
+        '<p><b>bo</b><span>span</span><i>italic</i><b>ld</b></p>',
+        'rng.pasteHTML with inlines should not split text.'
+      );
+
+      // split inline node with inline and block nodes
+      $cont = $('<div class="note-editable"><p><b>bold</b></p></div>');
+      $p = $cont.find('p');
+      $b = $cont.find('b');
+      markup = '<span>span</span><p><i>italic</i></p>';
+
+      range.create($b[0].firstChild, 2).pasteHTML(markup);
+      equalsToUpperCase(
+        $cont.html(),
+        '<p><b>bo</b><span>span</span></p><p><i>italic</i></p><p><b>ld</b></p>',
+        'rng.pasteHTML with inlines should not split text.'
+      );
+
+      // split inline node with inline and block
+      $cont = $('<div class="note-editable"><p><b>bold</b></p></div>');
+      $p = $cont.find('p');
+      $b = $cont.find('b');
+      markup = '<span>span</span><p><i>italic</i></p>';
+
+      range.create($b[0].firstChild, 2).pasteHTML(markup);
+      equalsToUpperCase(
+        $cont.html(),
+        '<p><b>bo</b><span>span</span></p><p><i>italic</i></p><p><b>ld</b></p>',
+        'rng.pasteHTML with inlines should not split text.'
+      );
+    });
+
     test('rng.deleteContents', function () {
       var $cont, $p, $b, $u;
 
@@ -177,6 +228,55 @@ define([
       $cont = $('<div class="note-editable"><b>b</b><i>i</i></div>');
       range.create($cont[0], 2).wrapBodyInlineWithPara();
       equalsToUpperCase($cont.html(), '<p><b>b</b><i>i</i></p>', 'rng.wrapBodyInlineWithPara with inline should wrap text with paragraph.');
+    });
+
+    test('rng.getWordRange', function () {
+      var $cont, rng;
+
+      $cont = $('<div class="note-editable">super simple wysiwyg editor</div>');
+
+      // no word before cursor
+      rng = range.create(
+        $cont[0].firstChild, 0
+      ).getWordRange();
+
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $cont[0].firstChild, 0, $cont[0].firstChild, 0
+      ], 'rng.getWordRange with no word before cursor should return itself');
+
+      // find word before cursor
+      rng = range.create(
+        $cont[0].firstChild, 5
+      ).getWordRange();
+
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $cont[0].firstChild, 0, $cont[0].firstChild, 5
+      ], 'rng.getWordRange with word before cursor should return expanded range');
+
+      rng = range.create(
+        $cont[0].firstChild, 3
+      ).getWordRange();
+
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $cont[0].firstChild, 0, $cont[0].firstChild, 3
+      ], 'rng.getWordRange with half word before cursor should expanded range');
+
+      rng = range.create(
+        $cont[0].firstChild, 12
+      ).getWordRange();
+
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $cont[0].firstChild, 6, $cont[0].firstChild, 12
+      ], 'rng.getWordRange with half word before cursor should expanded range');
+
     });
   };
 });

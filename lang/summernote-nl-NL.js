@@ -7,7 +7,9 @@
         underline: 'Onderstrepen',
         clear: 'Stijl verwijderen',
         height: 'Regelhoogte',
-        name: 'Lettertype'
+        name: 'Lettertype',
+        strikethrough: 'Doorhalen',
+        size: 'Tekstgrootte'
       },
       image: {
         image: 'Afbeelding',

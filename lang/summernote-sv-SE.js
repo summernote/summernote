@@ -7,7 +7,9 @@
         underline: 'Understruken',
         clear: 'Radera formatering',
         height: 'Radavstånd',
-        name: 'Teckensnitt'
+        name: 'Teckensnitt',
+        strikethrough: 'Genomstruken',
+        size: 'Teckenstorlek'
       },
       image: {
         image: 'Bild',

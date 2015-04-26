@@ -6,7 +6,9 @@
         italic: 'Miring',
         underline: 'Garis bawah',
         clear: 'Bersihkan gaya',
-        height: 'Jarak baris'
+        height: 'Jarak baris',
+        strikethrough: 'Coret',
+        size: 'Ukuran font'
       },
       image: {
         image: 'Gambar',

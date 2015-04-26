@@ -17,7 +17,7 @@ define([
    * Editor
    *
    */
-  var Editor = function () {
+  var Editor = function (handler) {
 
     var style = new Style();
     var table = new Table();
@@ -111,18 +111,18 @@ define([
       return rng ? rng.isOnEditable() && style.current(rng, target) : false;
     };
 
-    var triggerOnBeforeChange = this.triggerOnBeforeChange = function ($editable) {
-      var onBeforeChange = $editable.data('callbacks').onBeforeChange;
-      if (onBeforeChange) {
-        onBeforeChange($editable.html(), $editable);
-      }
+    var triggerOnBeforeChange = function ($editable) {
+      // TODO find holder
+      handler.bindCustomEvent(
+        $(), $editable.data('callbacks'), 'before.command'
+      ).call($editable.html(), $editable);
     };
 
-    var triggerOnChange = this.triggerOnChange = function ($editable) {
-      var onChange = $editable.data('callbacks').onChange;
-      if (onChange) {
-        onChange($editable.html(), $editable);
-      }
+    var triggerOnChange = function ($editable) {
+      // TODO find holder
+      handler.bindCustomEvent(
+        $(), $editable.data('callbacks'), 'change'
+      ).call($editable.html(), $editable);
     };
 
     /**
@@ -160,10 +160,13 @@ define([
      * @method afterCommand
      * after command
      * @param {jQuery} $editable
+     * @param {Boolean} isPreventTrigger
      */
-    var afterCommand = this.afterCommand = function ($editable) {
+    var afterCommand = this.afterCommand = function ($editable, isPreventTrigger) {
       $editable.data('NoteHistory').recordUndo();
-      triggerOnChange($editable);
+      if (!isPreventTrigger) {
+        triggerOnChange($editable);
+      }
     };
 
     /**
@@ -285,7 +288,7 @@ define([
 
           document.execCommand(sCmd, false, value);
 
-          afterCommand($editable);
+          afterCommand($editable, true);
         };
       })(commands[idx]);
     }
@@ -426,6 +429,19 @@ define([
     };
 
     /**
+     * paste HTML
+     * @param {Node} $editable
+     * @param {String} markup
+     */
+    this.pasteHTML = function ($editable, markup) {
+      beforeCommand($editable);
+      var rng = this.createRange($editable);
+      var contents = rng.pasteHTML(markup);
+      range.createFromNode(list.last(contents)).collapse().select();
+      afterCommand($editable);
+    };
+
+    /**
      * formatBlock
      *
      * @param {jQuery} $editable
@@ -433,6 +449,7 @@ define([
      */
     this.formatBlock = function ($editable, tagName) {
       beforeCommand($editable);
+      // [workaround] for MSIE, IE need `<`
       tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       document.execCommand('FormatBlock', false, tagName);
       afterCommand($editable);
@@ -455,7 +472,7 @@ define([
     /* jshint ignore:end */
 
     /**
-     * fontsize
+     * fontSize
      *
      * @param {jQuery} $editable
      * @param {String} value - px
@@ -709,10 +726,9 @@ define([
       beforeCommand($editable);
       $target.detach();
 
-      var callbacks = $editable.data('callbacks');
-      if (callbacks && callbacks.onMediaDelete) {
-        callbacks.onMediaDelete($target, this, $editable);
-      }
+      handler.bindCustomEvent(
+        $(), $editable.data('callbacks'), 'media.delete'
+      ).call($target, this.$editable);
 
       afterCommand($editable);
     };
@@ -724,6 +740,11 @@ define([
      */
     this.focus = function ($editable) {
       $editable.focus();
+
+      // [workaround] for firefox bug http://goo.gl/lVfAaI
+      if (agent.isFF) {
+        range.createFromNode($editable[0].firstChild || $editable[0]).collapse().select();
+      }
     };
   };
 

@@ -11,7 +11,7 @@
     "unused": true,
     "trailing": true,
     "white": true,
-    "maxparams": 18,
+    "maxparams": 20,
     "maxdepth": 5,
     "maxstatements": 300,
     "maxlen": 140,

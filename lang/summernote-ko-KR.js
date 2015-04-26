@@ -1,4 +1,5 @@
 (function ($) {
+  console.log('hit');
   $.extend($.summernote.lang, {
     'ko-KR': {
       font: {
@@ -7,7 +8,11 @@
         underline: '밑줄',
         clear: '글자 효과 없애기',
         height: '줄간격',
-        name: '글꼴'
+        name: '글꼴',
+        superscript: '위 첨자',
+        subscript: '아래 첨자',
+        strikethrough: '취소선',
+        size: '글자 크기'
       },
       image: {
         image: '사진',

@@ -41,15 +41,10 @@ define([
             handler.invoke('editor.restoreNode', $editable);
             handler.invoke('editor.restoreRange', $editable);
 
+            handler.invoke('editor.focus', $editable);
             try {
-              // insert normal dom code
-              $(html).each(function () {
-                $editable.focus();
-                handler.invoke('editor.insertNode', $editable, this);
-              });
+              handler.invoke('editor.pasteHTML', $editable, html);
             } catch (ex) {
-              // insert text
-              $editable.focus();
               handler.invoke('editor.insertText', $editable, html);
             }
             return;

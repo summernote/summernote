@@ -1,5 +1,7 @@
 define([
-  'summernote/core/agent', 'summernote/core/dom', 'summernote/core/func'
+  'summernote/core/agent',
+  'summernote/core/dom',
+  'summernote/core/func'
 ], function (agent, dom, func) {
   /**
    * @class Renderer
@@ -97,12 +99,10 @@ define([
                      '<h4 class="modal-title">' + title + '</h4>' +
                    '</div>' : ''
                    ) +
-                   '<form class="note-modal-form">' +
-                     '<div class="modal-body">' + body + '</div>' +
-                     (footer ?
-                     '<div class="modal-footer">' + footer + '</div>' : ''
-                     ) +
-                   '</form>' +
+                   '<div class="modal-body">' + body + '</div>' +
+                   (footer ?
+                   '<div class="modal-footer">' + footer + '</div>' : ''
+                   ) +
                  '</div>' +
                '</div>' +
              '</div>';
@@ -176,6 +176,19 @@ define([
           dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
         });
       },
+      fontsize: function (lang, options) {
+        var items = options.fontSizes.reduce(function (memo, v) {
+          return memo + '<li><a data-event="fontSize" href="#" data-value="' + v + '">' +
+                          '<i class="fa fa-check"></i> ' + v +
+                        '</a></li>';
+        }, '');
+
+        var label = '<span class="note-current-fontsize">11</span>';
+        return tplButton(label, {
+          title: lang.font.size,
+          dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
+        });
+      },
       color: function (lang, options) {
         var colorButtonLabel = '<i class="' + options.iconPrefix + 'font" style="color:black;background-color:yellow;"></i>';
         var colorButton = tplButton(colorButtonLabel, {
@@ -228,6 +241,24 @@ define([
         return tplIconButton(options.iconPrefix + 'underline', {
           event: 'underline',
           title: lang.font.underline
+        });
+      },
+      strikethrough: function (lang) {
+        return tplIconButton('fa fa-strikethrough', {
+          event: 'strikethrough',
+          title: lang.font.strikethrough
+        });
+      },
+      superscript: function (lang) {
+        return tplIconButton('fa fa-superscript', {
+          event: 'superscript',
+          title: lang.font.superscript
+        });
+      },
+      subscript: function (lang) {
+        return tplIconButton('fa fa-subscript', {
+          event: 'subscript',
+          title: lang.font.subscript
         });
       },
       clear: function (lang, options) {
