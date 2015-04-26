@@ -1,5 +1,10 @@
 ### Change Log
 
+#### v0.6.4 ~ v0.6.5 2015-04-26
+* Support more range API: range.pasteHTML, range.getWordRange
+* Merge summernote-ext-fontstyle.js plugin with base code
+* Bugfix : #1003, #1026, #1038, some of #1012
+
 #### v0.6.3 2015-04-08
 * Support external API access
 * Support callbacks with jquery custom event.
