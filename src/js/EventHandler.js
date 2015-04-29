@@ -85,7 +85,7 @@ define([
       return function () {
         var callback = callbacks[func.namespaceToCamel(eventNamespace, 'on')];
         if (callback) {
-          callback(arguments);
+          callback.apply($holder[0], arguments);
         }
         return $holder.trigger('summernote.' + eventNamespace, arguments);
       };
@@ -108,7 +108,7 @@ define([
 
       // If onImageUpload options setted
       if (callbacks.onImageUpload) {
-        bindCustomEvent($holder, callbacks, 'image.upload')([files]);
+        bindCustomEvent($holder, callbacks, 'image.upload')(files);
       // else insert Image as dataURL
       } else {
         $.each(files, function (idx, file) {
@@ -455,12 +455,11 @@ define([
       $editable.on('paste', bindCustomEvent($holder, callbacks, 'paste'));
       
       // [workaround] for old IE - IE8 don't have input events
-      if (agent.isMSIE) {
-        var sDomEvents = 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted';
-        $editable.on(sDomEvents, bindCustomEvent($holder, callbacks, 'change'));
-      } else {
-        $editable.on('input', bindCustomEvent($holder, callbacks, 'change'));
-      }
+      //  - TODO check IE version
+      var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
+      $editable.on(changeEventName, function () {
+        bindCustomEvent($holder, callbacks, 'change')($editable.html(), $editable);
+      });
 
       // callbacks for advanced features (camel)
       if (!options.airMode) {
