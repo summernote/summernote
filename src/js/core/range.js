@@ -192,11 +192,13 @@ define([
        *
        * @return {WrappedRange}
        */
-      this.scrollIntoView = function () {
-        if (this.sc.scrollIntoView) {
-          this.sc.scrollIntoView(false);
+      this.scrollIntoView = function ($editable) {
+        if (this.sc.scrollIntoView && $editable[0].scrollHeight > $editable.innerHeight() ) {
+          $editable[0].scrollTop = this.sc.offsetTop - $editable[0].offsetTop - $editable.height()/2;
+
+          //this.sc.scrollIntoView(false);
         }
-        
+
         return this;
       };
 
@@ -206,8 +208,10 @@ define([
        * @return {WrappedRange}
        */
       this.focus = function () {
-        this.sc.focus();
-        
+        if (this.sc.focus) {
+          this.sc.focus();
+        }
+
         return this;
       };
 
