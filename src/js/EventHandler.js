@@ -27,7 +27,6 @@ define([
    *
    * EventHandler
    *  - TODO: new instance per a editor
-   *  - TODO: rename EventHandler
    */
   var EventHandler = function () {
     /**
@@ -48,8 +47,13 @@ define([
       helpDialog: new HelpDialog(this)
     };
 
-    // TODO refactor modules and eventHandler
-    //  - remove this method and use custom event from $holder instead
+    /**
+     * invoke module's method
+     *
+     * @param {String} moduleAndMethod - ex) 'editor.redo'
+     * @param {...*} arguments - arguments of method
+     * @return {*}
+     */
     this.invoke = function () {
       var moduleAndMethod = list.head(list.from(arguments));
       var args = list.tail(list.from(arguments));
