@@ -544,17 +544,17 @@ define([
         linkUrl = options.onCreateLink(linkUrl);
       }
 
-      var anchors;
+      var anchors = [];
       if (isTextChanged) {
         // Create a new link when text changed.
         var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
-        anchors = [anchor];
+        anchors.push(anchor);
       } else {
-        anchors = style.styleNodes(rng, {
+        anchors.push(style.styleNodes(rng, {
           nodeName: 'A',
           expandClosestSibling: true,
           onlyPartialContains: true
-        });
+        }));
       }
 
       $.each(anchors, function (idx, anchor) {
