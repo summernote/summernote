@@ -550,11 +550,11 @@ define([
         var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
         anchors.push(anchor);
       } else {
-        anchors.push(style.styleNodes(rng, {
+        anchors = style.styleNodes(rng, {
           nodeName: 'A',
           expandClosestSibling: true,
           onlyPartialContains: true
-        }));
+        });
       }
 
       $.each(anchors, function (idx, anchor) {
