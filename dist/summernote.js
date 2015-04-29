@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.6.5
+ * Super simple wysiwyg editor on Bootstrap v0.6.6
  * http://summernote.org/
  *
  * summernote.js
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-04-26T03:15Z
+ * Date: 2015-04-29T19:41Z
  */
 (function (factory) {
   /* global define */
@@ -1696,30 +1696,6 @@
       };
 
       /**
-       * Moves the scrollbar to start container(sc) of current range 
-       *
-       * @return {WrappedRange}
-       */
-      this.scrollIntoView = function () {
-        if (this.sc.scrollIntoView) {
-          this.sc.scrollIntoView(false);
-        }
-        
-        return this;
-      };
-
-      /**
-       * set a focus into start container of current range 
-       *
-       * @return {WrappedRange}
-       */
-      this.focus = function () {
-        this.sc.focus();
-        
-        return this;
-      };
-
-      /**
        * @return {WrappedRange}
        */
       this.normalize = function () {
@@ -2267,7 +2243,7 @@
    */
   var defaults = {
     /** @property */
-    version: '0.6.5',
+    version: '0.6.6',
 
     /**
      * 
@@ -3243,7 +3219,7 @@
         }
       }
 
-      range.create(nextPara, 0).normalize().select().focus().scrollIntoView();
+      range.create(nextPara, 0).normalize().select();
 
     };
 
@@ -3397,17 +3373,17 @@
     };
 
     var triggerOnBeforeChange = function ($editable) {
-      // TODO find holder
+      var $holder = dom.makeLayoutInfo($editable).holder();
       handler.bindCustomEvent(
-        $(), $editable.data('callbacks'), 'before.command'
-      ).call($editable.html(), $editable);
+        $holder, $editable.data('callbacks'), 'before.command'
+      )($editable.html(), $editable);
     };
 
     var triggerOnChange = function ($editable) {
-      // TODO find holder
+      var $holder = dom.makeLayoutInfo($editable).holder();
       handler.bindCustomEvent(
-        $(), $editable.data('callbacks'), 'change'
-      ).call($editable.html(), $editable);
+        $holder, $editable.data('callbacks'), 'change'
+      )($editable.html(), $editable);
     };
 
     /**
@@ -4681,7 +4657,8 @@
      * @param {Object} layoutInfo
      */
     this.deactivate = function (layoutInfo) {
-      var $editor = layoutInfo.editor(),
+      var $holder = layoutInfo.holder(),
+          $editor = layoutInfo.editor(),
           $toolbar = layoutInfo.toolbar(),
           $editable = layoutInfo.editable(),
           $codable = layoutInfo.codable();
@@ -4695,9 +4672,18 @@
         cmEditor.toTextArea();
       }
 
-      $editable.html(dom.value($codable, options.prettifyHtml) || dom.emptyPara);
+      var value = dom.value($codable, options.prettifyHtml) || dom.emptyPara;
+      var isChange = $editable.html() !== value;
+
+      $editable.html(value);
       $editable.height(options.height ? $codable.height() : 'auto');
       $editor.removeClass('codeview');
+
+      if (isChange) {
+        handler.bindCustomEvent(
+          $holder, $editable.data('callbacks'), 'change'
+        )($editable.html(), $editable);
+      }
 
       $editable.focus();
 
@@ -5140,7 +5126,6 @@
    *
    * EventHandler
    *  - TODO: new instance per a editor
-   *  - TODO: rename EventHandler
    */
   var EventHandler = function () {
     /**
@@ -5161,8 +5146,13 @@
       helpDialog: new HelpDialog(this)
     };
 
-    // TODO refactor modules and eventHandler
-    //  - remove this method and use custom event from $holder instead
+    /**
+     * invoke module's method
+     *
+     * @param {String} moduleAndMethod - ex) 'editor.redo'
+     * @param {...*} arguments - arguments of method
+     * @return {*}
+     */
     this.invoke = function () {
       var moduleAndMethod = list.head(list.from(arguments));
       var args = list.tail(list.from(arguments));
@@ -5198,7 +5188,7 @@
       return function () {
         var callback = callbacks[func.namespaceToCamel(eventNamespace, 'on')];
         if (callback) {
-          callback(arguments);
+          callback.apply($holder[0], arguments);
         }
         return $holder.trigger('summernote.' + eventNamespace, arguments);
       };
@@ -5221,7 +5211,7 @@
 
       // If onImageUpload options setted
       if (callbacks.onImageUpload) {
-        bindCustomEvent($holder, callbacks, 'image.upload')([files]);
+        bindCustomEvent($holder, callbacks, 'image.upload')(files);
       // else insert Image as dataURL
       } else {
         $.each(files, function (idx, file) {
@@ -5568,12 +5558,11 @@
       $editable.on('paste', bindCustomEvent($holder, callbacks, 'paste'));
       
       // [workaround] for old IE - IE8 don't have input events
-      if (agent.isMSIE) {
-        var sDomEvents = 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted';
-        $editable.on(sDomEvents, bindCustomEvent($holder, callbacks, 'change'));
-      } else {
-        $editable.on('input', bindCustomEvent($holder, callbacks, 'change'));
-      }
+      //  - TODO check IE version
+      var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
+      $editable.on(changeEventName, function () {
+        bindCustomEvent($holder, callbacks, 'change')($editable.html(), $editable);
+      });
 
       // callbacks for advanced features (camel)
       if (!options.airMode) {
@@ -6268,7 +6257,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.5</a> · ' +
+                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.6</a> · ' +
                      '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
