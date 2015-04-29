@@ -193,10 +193,9 @@ define([
        * @return {WrappedRange}
        */
       this.scrollIntoView = function ($editable) {
-        if (this.sc.scrollIntoView && $editable[0].scrollHeight > $editable.innerHeight() ) {
-          $editable[0].scrollTop = this.sc.offsetTop - $editable[0].offsetTop - $editable.height()/2;
-
-          //this.sc.scrollIntoView(false);
+        if ($editable[0].scrollTop + $editable.height() < this.sc.offsetTop) {
+          var rect = this.sc.getBoundingClientRect() || { height : 20 };
+          $editable[0].scrollTop = this.sc.offsetTop - $editable.innerHeight() - rect.height;
         }
 
         return this;
