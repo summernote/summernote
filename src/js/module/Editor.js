@@ -112,17 +112,17 @@ define([
     };
 
     var triggerOnBeforeChange = function ($editable) {
-      // TODO find holder
+      var $holder = dom.makeLayoutInfo($editable).holder();
       handler.bindCustomEvent(
-        $(), $editable.data('callbacks'), 'before.command'
-      ).call($editable.html(), $editable);
+        $holder, $editable.data('callbacks'), 'before.command'
+      )($editable.html(), $editable);
     };
 
     var triggerOnChange = function ($editable) {
-      // TODO find holder
+      var $holder = dom.makeLayoutInfo($editable).holder();
       handler.bindCustomEvent(
-        $(), $editable.data('callbacks'), 'change'
-      ).call($editable.html(), $editable);
+        $holder, $editable.data('callbacks'), 'change'
+      )($editable.html(), $editable);
     };
 
     /**

@@ -99,7 +99,8 @@ define([
      * @param {Object} layoutInfo
      */
     this.deactivate = function (layoutInfo) {
-      var $editor = layoutInfo.editor(),
+      var $holder = layoutInfo.holder(),
+          $editor = layoutInfo.editor(),
           $toolbar = layoutInfo.toolbar(),
           $editable = layoutInfo.editable(),
           $codable = layoutInfo.codable();
@@ -113,9 +114,18 @@ define([
         cmEditor.toTextArea();
       }
 
-      $editable.html(dom.value($codable, options.prettifyHtml) || dom.emptyPara);
+      var value = dom.value($codable, options.prettifyHtml) || dom.emptyPara;
+      var isChange = $editable.html() !== value;
+
+      $editable.html(value);
       $editable.height(options.height ? $codable.height() : 'auto');
       $editor.removeClass('codeview');
+
+      if (isChange) {
+        handler.bindCustomEvent(
+          $holder, $editable.data('callbacks'), 'change'
+        )($editable.html(), $editable);
+      }
 
       $editable.focus();
 
