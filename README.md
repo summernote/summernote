@@ -113,6 +113,23 @@ summernote.js - Renderer.js (Generate markup) - Locale.js (Locale object)
 ---------------------------------------------------------------------
 ```
 
+#### document structure
+
+```
+ - body container: <div class="note-editable">, <td>, <blockquote>, <ul>
+ - block node: <div>, <p>, <li>, <h1>, <table>
+ - void block node: <hr>
+ - inline node: <span>, <b>, <font>, <a>, ...
+ - void inline node: <img>
+ - text node: #text
+
+1. A body container has block node, but <ul> has only <li> nodes.
+2. A body container also has inline nodes sometimes. This inline nodes will be wraped with `<p>` when enter key pressed.
+4. A block node only has inline nodes.
+5. A inline nodes has another inline nodes
+6. #text and void inline node doesn't have children.
+```
+
 #### build summernote
 ```bash
 # grunt-cli is need by grunt; you might have this installed already
