@@ -165,7 +165,7 @@
             var rect = list.last(word.getClientRects());
             $popover.html(self.createTemplate(searchList)).css({
               left: rect.left,
-              top: rect.top + 20
+              top: rect.top + rect.height
             }).data('word', word).show();
 
           } else {
