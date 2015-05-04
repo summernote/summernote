@@ -43,6 +43,7 @@ define([
      */
     core: {
       agent: agent,
+      list : list,
       dom: dom,
       range: range
     },

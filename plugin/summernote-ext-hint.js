@@ -10,6 +10,7 @@
 }(function ($) {
   // import core class
   var range = $.summernote.core.range;
+  var list = $.summernote.core.list;
   /**
    * @class plugin.hello 
    * 
@@ -106,7 +107,6 @@
       var word = $popover.data('word');
 
       console.log($popover.find(".active").html());
-
       var contents = word.pasteHTML($popover.find(".active").html());
       range.createFromNode(list.last(contents)).collapse().select();
     },
@@ -156,21 +156,16 @@
 
           var word = range.getWordRange();
 
-          var list = self.searchKeyword(word.toString());
+          var searchList = self.searchKeyword(word.toString());
 
-          if (list.length) {
+          if (searchList.length) {
             layoutInfo.popover().append($popover);
 
-            var $placeholder = $(word.sc).parent();
-            var pos = $placeholder.position();
-            var height = $placeholder.outerHeight(true); // include margin
-            var width = $placeholder.outerWidth(true); // include margin
-
             // popover below placeholder.
-
-            $popover.html(self.createTemplate(list)).css({
-              left: pos.left,
-              top: pos.top + height
+            var rect = list.last(word.getClientRects());
+            $popover.html(self.createTemplate(searchList)).css({
+              left: rect.left,
+              top: rect.top + 20
             }).data('word', word).show();
 
           } else {
