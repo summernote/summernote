@@ -1,0 +1,19 @@
+.hint {
+    position: absolute;
+    background:white;
+    max-height: 350px;
+    width: 250px;
+    overflow:auto;
+    border:1px solid red;
+    border-radius: 5px;
+}
+
+.hint >  div {
+    border:1px solid black;
+    padding:5px;
+}
+
+.hint .active {
+    background:blue;
+    color:white;
+}
