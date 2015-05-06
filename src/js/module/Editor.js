@@ -80,7 +80,7 @@ define([
       var rng = $editable.data('range');
       if (rng) {
         rng.select();
-        this.focus();
+        this.focus($editable);
       }
     };
 
@@ -590,7 +590,7 @@ define([
      * @return {String} [return.url=""]
      */
     this.getLinkInfo = function ($editable) {
-      this.focus();
+      this.focus($editable);
 
       var rng = range.create().expand(dom.isAnchor);
 
@@ -726,7 +726,7 @@ define([
 
       handler.bindCustomEvent(
         $(), $editable.data('callbacks'), 'media.delete'
-      )($target, this.$editable);
+      )($target, $editable);
 
       afterCommand($editable);
     };
