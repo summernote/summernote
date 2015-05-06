@@ -740,10 +740,11 @@ define([
       $editable.focus();
 
       // [workaround] for firefox bug http://goo.gl/lVfAaI
-      if (agent.isFF) {
-        range.createFromNode(
-          $editable[0].firstChild || $editable[0]
-        ).collapse().select();
+      if (agent.isFF && !range.create().isOnEditable()) {
+        range.createFromNode($editable[0])
+             .normalize()
+             .collapse()
+             .select();
       }
     };
   };
