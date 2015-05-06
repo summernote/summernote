@@ -394,10 +394,10 @@ define([
         range.createFromNode($image[0]).collapse().select();
         afterCommand($editable);
       }).fail(function () {
-        var callbacks = $editable.data('callbacks');
-        if (callbacks.onImageUploadError) {
-          callbacks.onImageUploadError();
-        }
+        var $holder = dom.makeLayoutInfo($editable).holder();
+        handler.bindCustomEvent(
+          $holder, $editable.data('callbacks'), 'image.upload.error'
+        )();
       });
     };
 
@@ -728,7 +728,7 @@ define([
 
       handler.bindCustomEvent(
         $(), $editable.data('callbacks'), 'media.delete'
-      ).call($target, this.$editable);
+      )($target, this.$editable);
 
       afterCommand($editable);
     };
