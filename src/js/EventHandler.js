@@ -318,9 +318,16 @@ define([
           keys.push(keyName);
         }
 
-        var eventName = keyMap[keys.join('+')];
+        var keyString = keys.join('+');
+        var eventName = keyMap[keyString];
         if (eventName) {
-          if ($.summernote.pluginEvents[eventName]) {
+
+          if ($.summernote.pluginEvents[keyString]) {
+            var plugin = $.summernote.pluginEvents[keyString];
+            if ($.isFunction(plugin)) {
+              plugin(event, modules.editor, layoutInfo);
+            }
+          } else if ($.summernote.pluginEvents[eventName]) {
             var plugin = $.summernote.pluginEvents[eventName];
             if ($.isFunction(plugin)) {
               plugin(event, modules.editor, layoutInfo);

@@ -12,7 +12,7 @@
   var range = $.summernote.core.range;
   var list = $.summernote.core.list;
   /**
-   * @class plugin.hello 
+   * @class plugin.hint
    * 
    * Hello Plugin  
    */
@@ -106,9 +106,8 @@
     replace : function($popover) {
       var word = $popover.data('word');
 
-      console.log($popover.find(".active").html());
-      var contents = word.pasteHTML($popover.find(".active").html());
-      range.createFromNode(list.last(contents)).collapse().select();
+      var contents = word.insertNode(document.createTextNode($popover.find(".active").html()));
+      range.createFromNode(list.last(contents) || contents).collapse().select();
     },
 
     init : function(layoutInfo) {
@@ -123,20 +122,24 @@
       $note.on('summernote.keydown', function(customEvent, nativeEvent) {
         if (nativeEvent.keyCode == 40) {
           if ($popover.css('display') == 'block') {
+            nativeEvent.preventDefault();
             self.bottom($popover);
           }
+
         } else if (nativeEvent.keyCode == 38) {
           if ($popover.css('display') == 'block') {
+            nativeEvent.preventDefault();
             self.top($popover);
+
           }
         } else if (nativeEvent.keyCode == 13) {
           if ($popover.css('display') == 'block') {
-            self.replace($popover);
-            customEvent.preventDefault();
             nativeEvent.preventDefault();
+            self.replace($popover);
 
             $popover.hide();
-            return false;
+            $note.summernote('focus');
+
           }
         }
       });
@@ -176,6 +179,11 @@
 
 
       })
+    },
+    events : {
+      ENTER : function(event) {
+        //event.preventDefault();
+      }
     }
   });
 }));
