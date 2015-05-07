@@ -182,7 +182,7 @@
     },
     events : {
       ENTER : function(event) {
-        //event.preventDefault();
+        return false;
       }
     }
   });

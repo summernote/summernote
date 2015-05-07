@@ -322,12 +322,18 @@ define([
         var eventName = keyMap[keyString];
         if (eventName) {
 
-          if ($.summernote.pluginEvents[keyString]) {
+          if ($.summernote.pluginEvents[keyString]) {  //FIXME: plugin user define
             var plugin = $.summernote.pluginEvents[keyString];
             if ($.isFunction(plugin)) {
-              plugin(event, modules.editor, layoutInfo);
+              var isFalse = plugin(event, modules.editor, layoutInfo);
+
+              if (!!isFalse) {
+                return false;
+              }
             }
-          } else if ($.summernote.pluginEvents[eventName]) {
+          }
+
+          if ($.summernote.pluginEvents[eventName]) {
             var plugin = $.summernote.pluginEvents[eventName];
             if ($.isFunction(plugin)) {
               plugin(event, modules.editor, layoutInfo);
