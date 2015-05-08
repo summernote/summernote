@@ -46,27 +46,59 @@
       "Sarah Vaughan"
     ],
 
+    emoji : [
+      '+1', 'smile', 'angry'
+    ],
+
+    getEmojiImage : function(keyword) {
+      return "../plugin/emoji/" + keyword + ".png";
+    },
+
     searchKeyword : function(keyword) {
+
+      var triggerChar = keyword.charAt(0);
+
       if (keyword == '') {
-        return [];
+        return { type : 'empty', list : []};
+      } else if (triggerChar == ':') {
+        var trigger = keyword.toLowerCase().replace(":", "");
+        return {
+          type : 'emoji',
+          list : $.grep(this.emoji, function(item) {
+            return item.indexOf(trigger) > -1 ;
+          })
+        }
       } else {
-
-        return $.grep(this.musicians, function(item) {
-
-          return item.toLowerCase().indexOf(keyword.toLowerCase()) > -1 ;
-        });
+        var trigger = keyword.toLowerCase();
+        return {
+          type : 'keyword',
+          list : $.grep(this.musicians, function(item) {
+            return item.toLowerCase().indexOf(trigger) > -1 ;
+          })
+        };
 
       }
     },
 
-    createTemplate : function(list) {
+    createTemplate : function(search) {
       var children  = [];
-      for(var i = 0, len = list.length; i < len; i++) {
-        var div = $("<div >" + list[i] + "</div>");
+      var list = search.list;
 
-        if (i == 0) div.addClass('active');
-        children.push(div);
+      if (search.type == 'emoji') {
+        for(var i = 0, len = list.length; i < len; i++) {
+          var content = this.getEmojiImage(list[i]);
+          var div = $("<div class='emoji' data-emoji='" + content + "' ><img src='" + content + "' class='emoji' contenteditable='false' /> :" + list[i] + ":</div>");
+          children.push(div);
+        }
+      } else {
+        for(var i = 0, len = list.length; i < len; i++) {
+          var content = list[i];
+          var div = $("<div >" + content + "</div>");
+          children.push(div);
+        }
       }
+
+      children[0].addClass('active');
 
       return children;
     },
@@ -106,7 +138,16 @@
     replace : function($popover) {
       var word = $popover.data('word');
 
-      var contents = word.insertNode(document.createTextNode($popover.find(".active").html()));
+      var $active = $popover.find(".active");
+      var html = $active.html();
+
+      var node = document.createTextNode(html);
+
+      if ($active.hasClass('emoji')) {
+        node = $(html)[0];
+      }
+
+      var contents = word.insertNode(node);
       range.createFromNode(list.last(contents) || contents).collapse().select();
     },
 
@@ -161,7 +202,7 @@
 
           var searchList = self.searchKeyword(word.toString());
 
-          if (searchList.length) {
+          if (searchList.list.length) {
             layoutInfo.popover().append($popover);
 
             // popover below placeholder.
