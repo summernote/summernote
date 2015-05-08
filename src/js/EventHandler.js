@@ -198,6 +198,8 @@ define([
       modules.handle.hide(layoutInfo.handle());
     };
 
+    var hBlur = hScroll;
+    
     var hToolbarAndPopoverMousedown = function (event) {
       // prevent default event when insertTable (FF, Webkit)
       var $btn = $(event.target).closest('[data-event]');
@@ -352,6 +354,7 @@ define([
       layoutInfo.editable().on('mousedown', hMousedown);
       layoutInfo.editable().on('keyup mouseup', hToolbarAndPopoverUpdate);
       layoutInfo.editable().on('scroll', hScroll);
+      layoutInfo.editable().on('blur', hBlur);
       modules.clipboard.attach(layoutInfo, options);
 
       // handler for handle and popover
