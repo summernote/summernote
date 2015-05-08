@@ -322,7 +322,7 @@ define([
      * handle shift+tab key
      *
      */
-    this.untab = function () {
+    this.untab = function ($editable) {
       var rng = this.createRange($editable);
       if (rng.isCollapsed() && rng.isOnCell()) {
         table.tab(rng, true);
