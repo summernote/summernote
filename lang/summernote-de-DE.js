@@ -21,6 +21,8 @@
         floatNone: 'Kein Textfluss',
         dragImageHere: 'Ziehen Sie ein Bild mit der Maus hierher',
         selectFromFiles: 'Wählen Sie eine Datei aus',
+        maximumFileSize: 'Maximale Datei Größe',
+        maximumFileSizeError: 'Maximale Datei Größe überschritten.',
         url: 'Grafik URL',
         remove: 'Grafik entfernen'
       },
