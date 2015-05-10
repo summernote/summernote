@@ -422,13 +422,7 @@ define([
       // Textarea: auto filling the code before form submit.
       if (dom.isTextarea(list.head(layoutInfo.holder()))) {
         layoutInfo.holder().closest('form').submit(function () {
-          var contents = layoutInfo.holder().code();
-          layoutInfo.holder().val(contents);
-
-          // callback on submit
-          if (options.onsubmit) {
-            options.onsubmit(contents);
-          }
+          layoutInfo.holder().val(layoutInfo.holder().code());
         });
       }
     };
@@ -467,7 +461,6 @@ define([
         bindCustomEvent($holder, callbacks, 'change')($editable.html(), $editable);
       });
 
-      // callbacks for advanced features (camel)
       if (!options.airMode) {
         layoutInfo.toolbar().click(bindCustomEvent($holder, callbacks, 'toolbar.click'));
         layoutInfo.popover().click(bindCustomEvent($holder, callbacks, 'popover.click'));
