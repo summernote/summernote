@@ -191,15 +191,13 @@ define([
       }, 0);
     };
 
-    var hScroll = function (event) {
+    var hScrollOrBlur = function (event) {
       var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
       //hide popover and handle when scrolled
       modules.popover.hide(layoutInfo.popover());
       modules.handle.hide(layoutInfo.handle());
     };
 
-    var hBlur = hScroll;
-    
     var hToolbarAndPopoverMousedown = function (event) {
       // prevent default event when insertTable (FF, Webkit)
       var $btn = $(event.target).closest('[data-event]');
@@ -353,8 +351,9 @@ define([
       }
       layoutInfo.editable().on('mousedown', hMousedown);
       layoutInfo.editable().on('keyup mouseup', hToolbarAndPopoverUpdate);
-      layoutInfo.editable().on('scroll', hScroll);
-      layoutInfo.editable().on('blur', hBlur);
+      layoutInfo.editable().on('scroll blur', hScrollOrBlur);
+
+      // handler for clipboard
       modules.clipboard.attach(layoutInfo, options);
 
       // handler for handle and popover
