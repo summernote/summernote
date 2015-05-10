@@ -191,7 +191,7 @@ define([
       }, 0);
     };
 
-    var hScrollOrBlur = function (event) {
+    var hScrollAndBlur = function (event) {
       var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
       //hide popover and handle when scrolled
       modules.popover.hide(layoutInfo.popover());
@@ -351,7 +351,7 @@ define([
       }
       layoutInfo.editable().on('mousedown', hMousedown);
       layoutInfo.editable().on('keyup mouseup', hToolbarAndPopoverUpdate);
-      layoutInfo.editable().on('scroll blur', hScrollOrBlur);
+      layoutInfo.editable().on('scroll blur', hScrollAndBlur);
 
       // handler for clipboard
       modules.clipboard.attach(layoutInfo, options);
