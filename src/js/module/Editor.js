@@ -394,7 +394,7 @@ define([
           width: Math.min($editable.width(), $image.width())
         });
         range.create().insertNode($image[0]);
-        range.createFromNode($image[0]).collapse().select();
+        range.createFromNodeAfter($image[0]).select();
         afterCommand($editable);
       }).fail(function () {
         var $holder = dom.makeLayoutInfo($editable).holder();
@@ -413,7 +413,7 @@ define([
     this.insertNode = function ($editable, node) {
       beforeCommand($editable);
       range.create().insertNode(node);
-      range.createFromNode(node).collapse().select();
+      range.createFromNodeAfter(node).select();
       afterCommand($editable);
     };
 
@@ -437,7 +437,7 @@ define([
     this.pasteHTML = function ($editable, markup) {
       beforeCommand($editable);
       var contents = range.create().pasteHTML(markup);
-      range.createFromNode(list.last(contents)).collapse().select();
+      range.createFromNodeAfter(list.last(contents)).select();
       afterCommand($editable);
     };
 
@@ -565,9 +565,9 @@ define([
         }
       });
 
-      var startRange = range.createFromNode(list.head(anchors)).collapse(true);
+      var startRange = range.createFromNodeBefore(list.head(anchors));
       var startPoint = startRange.getStartPoint();
-      var endRange = range.createFromNode(list.last(anchors)).collapse();
+      var endRange = range.createFromNodeAfter(list.last(anchors));
       var endPoint = endRange.getEndPoint();
 
       range.create(
