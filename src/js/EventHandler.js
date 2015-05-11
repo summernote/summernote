@@ -178,7 +178,7 @@ define([
       var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
       modules.editor.removeBogus(layoutInfo.editable());
       hToolbarAndPopoverUpdate(event);
-    }
+    };
 
     var hToolbarAndPopoverUpdate = function (event) {
       // delay for range after mouseup
