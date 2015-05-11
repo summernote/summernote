@@ -58,6 +58,15 @@ define([
         return list.contains([8, 9, 13, 32], keyCode);
       },
       /**
+       * @method isMove
+       *
+       * @param {Number} keyCode
+       * @return {Boolean}
+       */
+      isMove: function (keyCode) {
+        return list.contains([37, 38, 39, 40], keyCode);
+      },
+      /**
        * @property {Object} nameFromCode
        * @property {String} nameFromCode.8 "BACKSPACE"
        */

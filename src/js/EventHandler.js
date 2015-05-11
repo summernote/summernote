@@ -174,6 +174,12 @@ define([
       }
     };
 
+    var hKeyupAndMouseup = function (event) {
+      var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
+      modules.editor.removeBogus(layoutInfo.editable());
+      hToolbarAndPopoverUpdate(event);
+    }
+
     var hToolbarAndPopoverUpdate = function (event) {
       // delay for range after mouseup
       setTimeout(function () {
@@ -350,7 +356,7 @@ define([
         this.bindKeyMap(layoutInfo, options.keyMap[agent.isMac ? 'mac' : 'pc']);
       }
       layoutInfo.editable().on('mousedown', hMousedown);
-      layoutInfo.editable().on('keyup mouseup', hToolbarAndPopoverUpdate);
+      layoutInfo.editable().on('keyup mouseup', hKeyupAndMouseup);
       layoutInfo.editable().on('scroll blur', hScrollAndBlur);
 
       // handler for clipboard

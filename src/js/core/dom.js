@@ -270,8 +270,11 @@ define([
 
       if (len === 0) {
         return true;
-      } else if (!dom.isText(node) && len === 1 && node.innerHTML === blankHTML) {
+      } else if (!isText(node) && len === 1 && node.innerHTML === blankHTML) {
         // ex) <p><br></p>, <span><br></span>
+        return true;
+      } else if (list.all(node.childNodes, isText) && node.innerHTML === '') {
+        // ex) <p></p>, <span></span>
         return true;
       }
 

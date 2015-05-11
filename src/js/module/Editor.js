@@ -11,6 +11,9 @@ define([
   'summernote/editing/Bullet'
 ], function (agent, func, list, dom, range, async,
              Style, Typing, Table, Bullet) {
+
+  var KEY_BOGUS = 'bogus';
+
   /**
    * @class editing.Editor
    *
@@ -478,16 +481,54 @@ define([
      * @param {String} value - px
      */
     this.fontSize = function ($editable, value) {
-      beforeCommand($editable);
+      var rng = range.create();
+      var isCollapsed = rng.isCollapsed();
 
-      var spans = style.styleNodes(range.create());
-      $.each(spans, function (idx, span) {
-        $(span).css({
+      if (isCollapsed) {
+        var spans = style.styleNodes(rng);
+        var firstSpan = list.head(spans);
+
+        $(spans).css({
           'font-size': value + 'px'
         });
-      });
 
-      afterCommand($editable);
+        // [workaround] added styled bogus span for style
+        //  - also bogus character needed for cursor position
+        if (firstSpan && !dom.nodeLength(firstSpan)) {
+          firstSpan.innerHTML = dom.ZERO_WIDTH_NBSP_CHAR;
+          range.createFromNodeAfter(firstSpan.firstChild).select();
+          $editable.data(KEY_BOGUS, firstSpan);
+        }
+      } else {
+        beforeCommand($editable);
+        $(style.styleNodes(rng)).css({
+          'font-size': value + 'px'
+        });
+        afterCommand($editable);
+      }
+    };
+
+    /**
+     * remove bogus node and character
+     */
+    this.removeBogus = function ($editable) {
+      var bogusNode = $editable.data(KEY_BOGUS);
+      if (!bogusNode) {
+        return;
+      }
+
+      var textNode = list.find(list.from(bogusNode.childNodes), dom.isText);
+
+      var bogusCharIdx = textNode.nodeValue.indexOf(dom.ZERO_WIDTH_NBSP_CHAR);
+      if (bogusCharIdx !== -1) {
+        textNode.deleteData(bogusCharIdx, 1);
+      }
+
+      if (dom.isEmpty(bogusNode)) {
+        dom.remove(bogusNode);
+      }
+
+      $editable.removeData(KEY_BOGUS);
     };
 
     /**
