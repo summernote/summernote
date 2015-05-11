@@ -173,7 +173,7 @@ define([
                      '</span>';
         return tplButton(label, {
           title: lang.font.name,
-          dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
+          dropdown: '<ul class="dropdown-menu note-check">' + items + '</ul>'
         });
       },
       fontsize: function (lang, options) {
@@ -186,7 +186,7 @@ define([
         var label = '<span class="note-current-fontsize">11</span>';
         return tplButton(label, {
           title: lang.font.size,
-          dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
+          dropdown: '<ul class="dropdown-menu note-check">' + items + '</ul>'
         });
       },
       color: function (lang, options) {
@@ -329,7 +329,7 @@ define([
 
         return tplIconButton(options.iconPrefix + 'text-height', {
           title: lang.font.height,
-          dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
+          dropdown: '<ul class="dropdown-menu note-check">' + items + '</ul>'
         });
 
       },
