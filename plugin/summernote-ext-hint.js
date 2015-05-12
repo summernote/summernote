@@ -20,111 +20,27 @@
     /** @property {String} name name of plugin */
     name: 'hint',
 
-    musicians : [
-      "Scott Joplin",
-      "Charles Bolden",
-      "Duke Ellington",
-      "Louis Armstrong",
-      "Earl Hines",
-      "Fats Waller",
-      "Count Basie",
-      "Benny Goodman",
-      "Sun Ra",
-      "Thelonious Monk",
-      "Dizzy Gillespie",
-      "Charlie Parker",
-      "Dave Brubeck",
-      "Charles Mingus",
-      "Oscar Peterson",
-      "Miles Davis",
-      "John Coltrane",
-      "Chet Baker",
-      "Ornette Coleman",
-      "Wynton Marsalis",
-      "Billie Holiday",
-      "Ella Fitzgerald",
-      "Sarah Vaughan"
-    ],
-
-    emoji : [
-      '+1', 'smile', 'angry'
-    ],
-
-    getEmojiImage : function(keyword) {
-      return "../plugin/emoji/" + keyword + ".png";
-    },
-
-    searchKeyword : function(keyword) {
-
-      var triggerChar = keyword.charAt(0);
-
-      if (keyword == '') {
-        return { type : 'empty', list : []};
-      } else if (triggerChar == ':') {
-        var trigger = keyword.toLowerCase().replace(":", "");
-        return {
-          type : 'emoji',
-          list : $.grep(this.emoji, function(item) {
-            return item.indexOf(trigger) > -1 ;
-          })
-        }
-      } else {
-        var trigger = keyword.toLowerCase();
-        return {
-          type : 'keyword',
-          list : $.grep(this.musicians, function(item) {
-            return item.toLowerCase().indexOf(trigger) > -1 ;
-          })
-        };
-
-      }
-    },
-
-    createTemplate : function(search) {
-      var children  = [];
-      var list = search.list;
-
-      if (search.type == 'emoji') {
-        for(var i = 0, len = list.length; i < len; i++) {
-          var content = this.getEmojiImage(list[i]);
-          var div = $("<div class='emoji' data-emoji='" + content + "' ><img src='" + content + "' class='emoji' contenteditable='false' /> :" + list[i] + ":</div>");
-          children.push(div);
-        }
-      } else {
-        for(var i = 0, len = list.length; i < len; i++) {
-          var content = list[i];
-          var div = $("<div >" + content + "</div>");
-          children.push(div);
-        }
-      }
-
-      children[0].addClass('active');
-
-      return children;
-    },
-
-    scroll : function($element) {
+    scroll : function ($element) {
 
       var $parent = $element.parent();
-      var rect = $element[0].getBoundingClientRect() || {height : 20 } ;
-      $parent[0].scrollTop = $element[0].offsetTop - $parent.innerHeight()/2;
+      $parent[0].scrollTop = $element[0].offsetTop - ($parent.innerHeight() / 2);
     },
 
-    bottom : function($popover) {
-      var index = $popover.find(".active").index();
-      this.active($popover, index == -1 ? 0 : (index+1) % $popover.children().length);
+    bottom : function ($popover) {
+      var index = $popover.find('.active').index();
+      this.active($popover, (index === -1) ? 0 : (index + 1) % $popover.children().length);
     },
 
-    top : function($popover) {
-      var index = $popover.find(".active").index();
-      this.active($popover, index == -1 ? 0 : (index-1) % $popover.children().length);
+    top : function ($popover) {
+      var index = $popover.find('.active').index();
+      this.active($popover, (index === -1) ? 0 : (index - 1) % $popover.children().length);
     },
 
-    active : function($popover, i) {
+    active : function ($popover, i) {
       i = i || 0;
 
       if (i < 0) {
-        i == 0;
+        i = 0;
       }
 
       $popover.children().removeClass('active');
@@ -135,46 +51,158 @@
 
     },
 
-    replace : function($popover) {
+
+    replace : function ($popover) {
       var word = $popover.data('word');
 
-      var $active = $popover.find(".active");
+      var $active = $popover.find('.active');
       var html = $active.html();
 
-      var node = document.createTextNode(html);
+      var content = this.content(html, $active.data('keyword'));
 
-      if ($active.hasClass('emoji')) {
-        node = $(html)[0];
+      if (typeof content === 'string') {
+        content = document.createTextNode(content);
       }
 
-      var contents = word.insertNode(node);
+      var contents = word.insertNode(content);
       range.createFromNode(list.last(contents) || contents).collapse().select();
     },
 
-    init : function(layoutInfo) {
+    loadEmoji : function (data) {
+      this.emoji = Object.keys(data);
+      this.emojiLink = data;
+    },
+
+
+    /** Override **/
+
+    /**
+     * search keyword in list
+     *
+     * @override
+     * @async
+     * @param keyword
+     * @param callback
+     * @returns {{type: string, list: Array}}
+     */
+    searchKeyword : function (keyword, callback) {
+
+      var triggerChar = keyword.charAt(0);
+
+      if (triggerChar === ':' && keyword.length > 1) {
+        var trigger = keyword.toLowerCase().replace(':', '');
+        callback({
+          type : 'emoji',
+          list : $.grep(this.emoji, function (item) {
+            return (item.indexOf(trigger)  === 0);
+          })
+        });
+      } else {
+        callback();
+      }
+    },
+
+    createTemplate : function (search) {
+      var children  = [];
+      var list = search.list;
+
+      for (var i = 0, len = list.length; i < len; i++) {
+
+        var div = $('<a class="list-group-item" ></a>');
+        div.append(this.createItem(list[i]));
+        div.data('keyword', list[i]);
+        children.push(div);
+      }
+
+      children[0] && children[0].addClass('active');
+
+      return children;
+    },
+
+    /**
+     * create list item template
+     *
+     * @override
+     * @param {Object} search
+     * @returns {Array}  created item list
+     */
+    createItem : function(item) {
+      var content = this.emojiLink[item];
+      return '<img src="' + content + '" contenteditable="false" width="20" /> :' + item + ':';
+    },
+
+
+    /**
+     * create inserted content to add  in summernote
+     *
+     * @override
+     * @param {String} html
+     * @param {String} keyword
+     * @return {HTMLEleemnt|String}
+     */
+    content : function (html, item) {
+
+      var url = this.emojiLink[item];
+
+      if (url) {
+        var $img = $('<img />').attr('src', url).css({
+          width : 20
+        });
+        return $img[0];
+      }
+
+      return html;
+    },
+
+    /**
+     * load search list
+     *
+     * @override
+     */
+    load : function () {
       var self = this;
+      $.getJSON('https://api.github.com/emojis', function (data) {
+        self.loadEmoji(data);
+      });
+    },
+
+    init : function (layoutInfo) {
+      var self = this;
+
       var $note = layoutInfo.holder();
-      var $popover = $("<div />").addClass('hint');
+      var $popover = $('<div />').addClass('list-group').css({
+        position: 'absolute',
+        'max-height': 300,
+        'overflow-y' : 'scroll',
+        'display' : 'none'
+      });
 
-      $(document).on('click', function() {
+      $popover.on('click', '.list-group-item', function () {
+        self.replace($popover);
+
         $popover.hide();
-      })
+        $note.summernote('focus');
+      });
 
-      $note.on('summernote.keydown', function(customEvent, nativeEvent) {
-        if (nativeEvent.keyCode == 40) {
-          if ($popover.css('display') == 'block') {
+      $(document).on('click', function () {
+        $popover.hide();
+      });
+
+      $note.on('summernote.keydown', function (customEvent, nativeEvent) {
+        if (nativeEvent.keyCode === 40) {
+          if ($popover.css('display') === 'block') {
             nativeEvent.preventDefault();
             self.bottom($popover);
           }
 
-        } else if (nativeEvent.keyCode == 38) {
-          if ($popover.css('display') == 'block') {
+        } else if (nativeEvent.keyCode === 38) {
+          if ($popover.css('display') === 'block') {
             nativeEvent.preventDefault();
             self.top($popover);
 
           }
-        } else if (nativeEvent.keyCode == 13) {
-          if ($popover.css('display') == 'block') {
+        } else if (nativeEvent.keyCode === 13) {
+          if ($popover.css('display') === 'block') {
             nativeEvent.preventDefault();
             self.replace($popover);
 
@@ -185,24 +213,33 @@
         }
       });
 
-      $note.on('summernote.keyup', function(customEvent, nativeEvent) {
+      $note.on('summernote.keyup', function (customEvent, nativeEvent) {
 
-        if (nativeEvent.keyCode == 40 || nativeEvent.keyCode == 38 || nativeEvent.keyCode == 13) {
-          if (nativeEvent.keyCode == 13) {
-            if ($popover.css('display') == 'block') {
+        if (nativeEvent.keyCode === 40 || nativeEvent.keyCode === 38 || nativeEvent.keyCode === 13) {
+          if (nativeEvent.keyCode === 13) {
+            if ($popover.css('display') === 'block') {
               customEvent.preventDefault();
               nativeEvent.preventDefault();
               return false;
             }
           }
         } else {
-          var range = $(this).summernote("createRange");
+          var range = $(this).summernote('createRange');
 
           var word = range.getWordRange();
 
-          var searchList = self.searchKeyword(word.toString());
+          self.searchKeyword(word.toString(), function (searchList) {
 
-          if (searchList.list.length) {
+            if (!searchList) {
+              $popover.hide();
+              return;
+            }
+
+            if (searchList && !searchList.list.length) {
+              $popover.hide();
+              return;
+            }
+
             layoutInfo.popover().append($popover);
 
             // popover below placeholder.
@@ -212,17 +249,15 @@
               top: rect.top + rect.height
             }).data('word', word).show();
 
-          } else {
-            $popover.hide();
-          }
+          });
         }
 
+      });
 
-
-      })
+      this.load($popover);
     },
     events : {
-      ENTER : function(event) {
+      ENTER : function () {
         return false;
       }
     }

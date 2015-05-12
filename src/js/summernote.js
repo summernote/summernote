@@ -191,11 +191,26 @@ define([
 
       // extend default options with custom user options
       var options = isInitOptions ? list.head(arguments) : {};
+
       options = $.extend({}, $.summernote.options, options);
 
       // Include langInfo in options for later use, e.g. for image drag-n-drop
       // Setup language info with en-US as default
       options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+
+      if (!isExternalAPICalled && isInitOptions) {
+        // override plugin
+        for (var i = 0, len = $.summernote.plugins.length; i < len; i++) {
+          var plugin = $.summernote.plugins[i];
+
+          if (options.plugin[plugin.name]) {
+            $.summernote.plugins[i] = $.extend(true, plugin, options.plugin[plugin.name]);
+
+            console.log($.summernote.plugins[i].searchKeyword);
+          }
+        }
+
+      }
 
       this.each(function (idx, holder) {
         var $holder = $(holder);
