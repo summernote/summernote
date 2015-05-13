@@ -11,6 +11,9 @@ define([
   'summernote/editing/Bullet'
 ], function (agent, func, list, dom, range, async,
              Style, Typing, Table, Bullet) {
+
+  var KEY_BOGUS = 'bogus';
+
   /**
    * @class editing.Editor
    *
@@ -394,7 +397,7 @@ define([
           width: Math.min($editable.width(), $image.width())
         });
         range.create().insertNode($image[0]);
-        range.createFromNode($image[0]).collapse().select();
+        range.createFromNodeAfter($image[0]).select();
         afterCommand($editable);
       }).fail(function () {
         var $holder = dom.makeLayoutInfo($editable).holder();
@@ -413,7 +416,7 @@ define([
     this.insertNode = function ($editable, node) {
       beforeCommand($editable);
       range.create().insertNode(node);
-      range.createFromNode(node).collapse().select();
+      range.createFromNodeAfter(node).select();
       afterCommand($editable);
     };
 
@@ -437,7 +440,7 @@ define([
     this.pasteHTML = function ($editable, markup) {
       beforeCommand($editable);
       var contents = range.create().pasteHTML(markup);
-      range.createFromNode(list.last(contents)).collapse().select();
+      range.createFromNodeAfter(list.last(contents)).select();
       afterCommand($editable);
     };
 
@@ -478,16 +481,54 @@ define([
      * @param {String} value - px
      */
     this.fontSize = function ($editable, value) {
-      beforeCommand($editable);
+      var rng = range.create();
+      var isCollapsed = rng.isCollapsed();
 
-      var spans = style.styleNodes(range.create());
-      $.each(spans, function (idx, span) {
-        $(span).css({
+      if (isCollapsed) {
+        var spans = style.styleNodes(rng);
+        var firstSpan = list.head(spans);
+
+        $(spans).css({
           'font-size': value + 'px'
         });
-      });
 
-      afterCommand($editable);
+        // [workaround] added styled bogus span for style
+        //  - also bogus character needed for cursor position
+        if (firstSpan && !dom.nodeLength(firstSpan)) {
+          firstSpan.innerHTML = dom.ZERO_WIDTH_NBSP_CHAR;
+          range.createFromNodeAfter(firstSpan.firstChild).select();
+          $editable.data(KEY_BOGUS, firstSpan);
+        }
+      } else {
+        beforeCommand($editable);
+        $(style.styleNodes(rng)).css({
+          'font-size': value + 'px'
+        });
+        afterCommand($editable);
+      }
+    };
+
+    /**
+     * remove bogus node and character
+     */
+    this.removeBogus = function ($editable) {
+      var bogusNode = $editable.data(KEY_BOGUS);
+      if (!bogusNode) {
+        return;
+      }
+
+      var textNode = list.find(list.from(bogusNode.childNodes), dom.isText);
+
+      var bogusCharIdx = textNode.nodeValue.indexOf(dom.ZERO_WIDTH_NBSP_CHAR);
+      if (bogusCharIdx !== -1) {
+        textNode.deleteData(bogusCharIdx, 1);
+      }
+
+      if (dom.isEmpty(bogusNode)) {
+        dom.remove(bogusNode);
+      }
+
+      $editable.removeData(KEY_BOGUS);
     };
 
     /**
@@ -565,9 +606,9 @@ define([
         }
       });
 
-      var startRange = range.createFromNode(list.head(anchors)).collapse(true);
+      var startRange = range.createFromNodeBefore(list.head(anchors));
       var startPoint = startRange.getStartPoint();
-      var endRange = range.createFromNode(list.last(anchors)).collapse();
+      var endRange = range.createFromNodeAfter(list.last(anchors));
       var endPoint = endRange.getEndPoint();
 
       range.create(

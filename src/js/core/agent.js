@@ -83,6 +83,8 @@ define(['jquery'], function ($) {
     return originalWidth !== width;
   };
 
+  var userAgent = navigator.userAgent;
+
   /**
    * @class core.agent
    *
@@ -95,9 +97,12 @@ define(['jquery'], function ($) {
     /** @property {Boolean} [isMac=false] true if this agent is Mac  */
     isMac: navigator.appVersion.indexOf('Mac') > -1,
     /** @property {Boolean} [isMSIE=false] true if this agent is a Internet Explorer  */
-    isMSIE: navigator.userAgent.indexOf('MSIE') > -1 || navigator.userAgent.indexOf('Trident') > -1,
+    isMSIE: /MSIE|Trident/i.test(userAgent),
     /** @property {Boolean} [isFF=false] true if this agent is a Firefox  */
-    isFF: navigator.userAgent.indexOf('Firefox') > -1,
+    isFF: /firefox/i.test(userAgent),
+    isWebkit: /webkit/i.test(userAgent),
+    /** @property {Boolean} [isSafari=false] true if this agent is a Safari  */
+    isSafari: /safari/i.test(userAgent),
     /** @property {String} jqueryVersion current jQuery version string  */
     jqueryVersion: parseFloat($.fn.jquery),
     isSupportAmd: isSupportAmd,
