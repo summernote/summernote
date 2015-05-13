@@ -81,7 +81,7 @@ define('summernote/defaults', function () {
         ['help', ['help']]
       ],
 
-      plugin : { } ,
+      plugin : { },
 
       // air mode: inline editor
       airMode: false,
