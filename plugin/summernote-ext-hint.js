@@ -11,6 +11,7 @@
   // import core class
   var range = $.summernote.core.range;
   var list = $.summernote.core.list;
+
   /**
    * @class plugin.hint
    * 
@@ -20,23 +21,22 @@
     /** @property {String} name name of plugin */
     name: 'hint',
 
-    scroll : function ($element) {
-
-      var $parent = $element.parent();
-      $parent[0].scrollTop = $element[0].offsetTop - ($parent.innerHeight() / 2);
+    scrollTo: function ($node) {
+      var $parent = $node.parent();
+      $parent[0].scrollTop = $node[0].offsetTop - ($parent.innerHeight() / 2);
     },
 
-    bottom : function ($popover) {
+    bottom: function ($popover) {
       var index = $popover.find('.active').index();
-      this.active($popover, (index === -1) ? 0 : (index + 1) % $popover.children().length);
+      this.activate($popover, (index === -1) ? 0 : (index + 1) % $popover.children().length);
     },
 
-    top : function ($popover) {
+    top: function ($popover) {
       var index = $popover.find('.active').index();
-      this.active($popover, (index === -1) ? 0 : (index - 1) % $popover.children().length);
+      this.activate($popover, (index === -1) ? 0 : (index - 1) % $popover.children().length);
     },
 
-    active : function ($popover, i) {
+    activate: function ($popover, i) {
       i = i || 0;
 
       if (i < 0) {
@@ -44,57 +44,49 @@
       }
 
       $popover.children().removeClass('active');
-      var $element = $popover.children().eq(i);
-      $element.addClass('active');
+      var $activeItem = $popover.children().eq(i);
+      $activeItem.addClass('active');
 
-      this.scroll($element);
-
+      this.scrollTo($activeItem);
     },
 
-
-    replace : function ($popover) {
-      var word = $popover.data('word');
-
-      var $active = $popover.find('.active');
-      var html = $active.html();
-
-      var content = this.content(html, $active.data('keyword'));
+    replace: function ($popover) {
+      var wordRange = $popover.data('wordRange');
+      var $activeItem = $popover.find('.active');
+      var content = this.content($activeItem.html(), $activeItem.data('keyword'));
 
       if (typeof content === 'string') {
         content = document.createTextNode(content);
       }
 
-      var contents = word.insertNode(content);
-      range.createFromNode(list.last(contents) || contents).collapse().select();
+      wordRange.insertNode(content);
+      range.createFromNode(content).collapse().select();
     },
 
-    loadEmoji : function (data) {
+    loadEmoji: function (data) {
       this.emoji = Object.keys(data);
       this.emojiLink = data;
     },
-
 
     /** Override **/
 
     /**
      * search keyword in list
      *
-     * @override
      * @async
-     * @param keyword
-     * @param callback
-     * @returns {{type: string, list: Array}}
+     * @param {String} keyword
+     * @param {Function} callback
+     * @returns {type: String, list: Array}
      */
-    searchKeyword : function (keyword, callback) {
-
+    searchKeyword: function (keyword, callback) {
       var triggerChar = keyword.charAt(0);
 
       if (triggerChar === ':' && keyword.length > 1) {
         var trigger = keyword.toLowerCase().replace(':', '');
         callback({
-          type : 'emoji',
-          list : $.grep(this.emoji, function (item) {
-            return (item.indexOf(trigger)  === 0);
+          type: 'emoji',
+          list: $.grep(this.emoji, function (item) {
+            return item.indexOf(trigger) === 0;
           })
         });
       } else {
@@ -102,37 +94,37 @@
       }
     },
 
-    createTemplate : function (search) {
-      var children  = [];
+    /**
+     *
+     */
+    createItems: function (search) {
+      var items = [];
       var list = search.list;
 
       for (var i = 0, len = list.length; i < len; i++) {
-
-        var div = $('<a class="list-group-item" ></a>');
-        div.append(this.createItem(list[i]));
-        div.data('keyword', list[i]);
-        children.push(div);
+        var $item = $('<a class="list-group-item"></a>');
+        $item.append(this.createItem(list[i]));
+        $item.data('keyword', list[i]);
+        items.push($item);
       }
 
-      if (children[0]) {
-        children[0].addClass('active');
+      if (items.length) {
+        items[0].addClass('active');
       }
 
-      return children;
+      return items;
     },
 
     /**
      * create list item template
      *
-     * @override
-     * @param {Object} search
-     * @returns {Array}  created item list
+     * @param {Object} item
+     * @returns {String}
      */
-    createItem : function (item) {
+    createItem: function (item) {
       var content = this.emojiLink[item];
       return '<img src="' + content + '" contenteditable="false" width="20" /> :' + item + ':';
     },
-
 
     /**
      * create inserted content to add  in summernote
@@ -140,10 +132,9 @@
      * @override
      * @param {String} html
      * @param {String} keyword
-     * @return {HTMLEleemnt|String}
+     * @return {Node|String}
      */
-    content : function (html, item) {
-
+    content: function (html, item) {
       var url = this.emojiLink[item];
 
       if (url) {
@@ -161,18 +152,18 @@
      *
      * @override
      */
-    load : function () {
+    load: function () {
       var self = this;
       $.getJSON('https://api.github.com/emojis', function (data) {
         self.loadEmoji(data);
       });
     },
 
-    init : function (layoutInfo) {
+    init: function (layoutInfo) {
       var self = this;
 
       var $note = layoutInfo.holder();
-      var $popover = $('<div />').addClass('list-group').css({
+      var $popover = $('<div class="list-group" />').css({
         position: 'absolute',
         'max-height': 300,
         'overflow-y' : 'scroll',
@@ -216,7 +207,6 @@
       });
 
       $note.on('summernote.keyup', function (customEvent, nativeEvent) {
-
         if (nativeEvent.keyCode === 40 || nativeEvent.keyCode === 38 || nativeEvent.keyCode === 13) {
           if (nativeEvent.keyCode === 13) {
             if ($popover.css('display') === 'block') {
@@ -227,39 +217,30 @@
           }
         } else {
           var range = $(this).summernote('createRange');
+          var wordRange = range.getWordRange();
 
-          var word = range.getWordRange();
-
-          self.searchKeyword(word.toString(), function (searchList) {
-
-            if (!searchList) {
-              $popover.hide();
-              return;
-            }
-
-            if (searchList && !searchList.list.length) {
+          self.searchKeyword(wordRange.toString(), function (searchList) {
+            if (!searchList || !searchList.list.length) {
               $popover.hide();
               return;
             }
 
             layoutInfo.popover().append($popover);
 
-            // popover below placeholder.
-            var rect = list.last(word.getClientRects());
-            $popover.html(self.createTemplate(searchList)).css({
+            var rect = list.last(wordRange.getClientRects());
+            $popover.html(self.createItems(searchList)).css({
               left: rect.left,
               top: rect.top + rect.height
-            }).data('word', word).show();
+            }).data('wordRange', wordRange).show();
 
           });
         }
-
       });
 
       this.load($popover);
     },
-    events : {
-      ENTER : function () {
+    events: {
+      ENTER: function () {
         return false;
       }
     }

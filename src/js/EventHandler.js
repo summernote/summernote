@@ -318,27 +318,21 @@ define([
           keys.push(keyName);
         }
 
-        var plugin;
+        var pluginEvent;
         var keyString = keys.join('+');
         var eventName = keyMap[keyString];
         if (eventName) {
-
-          if ($.summernote.pluginEvents[keyString]) {  //FIXME: plugin user define
-            plugin = $.summernote.pluginEvents[keyString];
-            if ($.isFunction(plugin)) {
-              var isFalse = plugin(event, modules.editor, layoutInfo);
-
-              if (!!isFalse) {
-                return false;
-              }
+          pluginEvent = $.summernote.pluginEvents[keyString];
+          if ($.isFunction(pluginEvent)) {
+            if (pluginEvent(event, modules.editor, layoutInfo)) {
+              return false;
             }
           }
 
-          if ($.summernote.pluginEvents[eventName]) {
-            plugin = $.summernote.pluginEvents[eventName];
-            if ($.isFunction(plugin)) {
-              plugin(event, modules.editor, layoutInfo);
-            }
+          pluginEvent = $.summernote.pluginEvents[eventName];
+
+          if ($.isFunction(pluginEvent)) {
+            pluginEvent(event, modules.editor, layoutInfo);
           } else if (modules.editor[eventName]) {
             modules.editor[eventName]($editable, $editor.data('options'));
             event.preventDefault();
