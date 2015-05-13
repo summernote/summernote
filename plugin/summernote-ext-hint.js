@@ -114,7 +114,9 @@
         children.push(div);
       }
 
-      children[0] && children[0].addClass('active');
+      if (children[0]) {
+        children[0].addClass('active');
+      }
 
       return children;
     },
@@ -126,7 +128,7 @@
      * @param {Object} search
      * @returns {Array}  created item list
      */
-    createItem : function(item) {
+    createItem : function (item) {
       var content = this.emojiLink[item];
       return '<img src="' + content + '" contenteditable="false" width="20" /> :' + item + ':';
     },
