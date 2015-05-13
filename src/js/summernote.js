@@ -205,8 +205,6 @@ define([
 
           if (options.plugin[plugin.name]) {
             $.summernote.plugins[i] = $.extend(true, plugin, options.plugin[plugin.name]);
-
-            console.log($.summernote.plugins[i].searchKeyword);
           }
         }
 
