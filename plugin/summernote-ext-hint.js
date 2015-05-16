@@ -233,7 +233,6 @@
     //  - Plugin -> Base Code
     events: {
       ENTER: function () {
-        debugger;
         // prevent ENTER key
         return false;
       }
