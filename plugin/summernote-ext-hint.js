@@ -8,7 +8,6 @@
     factory(window.jQuery);
   }
 }(function ($) {
-  // import core class
   var range = $.summernote.core.range;
   var list = $.summernote.core.list;
 
@@ -29,26 +28,39 @@
     /** @property {String} name name of plugin */
     name: 'hint',
 
+    /**
+     * @param {jQuery} $node
+     */
     scrollTo: function ($node) {
       var $parent = $node.parent();
       $parent[0].scrollTop = $node[0].offsetTop - ($parent.innerHeight() / 2);
     },
 
+    /**
+     * @param {jQuery} $popover
+     */
     moveDown: function ($popover) {
       var index = $popover.find('.active').index();
       this.activate($popover, (index === -1) ? 0 : (index + 1) % $popover.children().length);
     },
 
+    /**
+     * @param {jQuery} $popover
+     */
     moveUp: function ($popover) {
       var index = $popover.find('.active').index();
       this.activate($popover, (index === -1) ? 0 : (index - 1) % $popover.children().length);
     },
 
-    activate: function ($popover, i) {
-      i = i || 0;
+    /**
+     * @param {jQuery} $popover
+     * @param {Number} i
+     */
+    activate: function ($popover, idx) {
+      idx = idx || 0;
 
-      if (i < 0) {
-        i = $popover.children().length - 1;
+      if (idx < 0) {
+        idx = $popover.children().length - 1;
       }
 
       $popover.children().removeClass('active');
@@ -58,6 +70,9 @@
       this.scrollTo($activeItem);
     },
 
+    /**
+     * @param {jQuery} $popover
+     */
     replace: function ($popover) {
       var wordRange = $popover.data('wordRange');
       var $activeItem = $popover.find('.active');
@@ -67,35 +82,30 @@
         content = document.createTextNode(content);
       }
 
+      $popover.removeData('wordRange');
+
       wordRange.insertNode(content);
       range.createFromNode(content).collapse().select();
     },
 
-    loadEmoji: function (data) {
-      this.emoji = Object.keys(data);
-      this.emojiLink = data;
-    },
-
     /**
-     * @async
      * @param {String} keyword
-     * @param {Function} callback
-     * @return {Object}
+     * @return {Object|null}
      */
-    searchKeyword: function (keyword, callback) {
+    searchKeyword: function (keyword) {
       var triggerChar = keyword.charAt(0);
 
       if (triggerChar === ':' && keyword.length > 1) {
         var trigger = keyword.toLowerCase().replace(':', '');
-        callback({
+        return {
           type: 'emoji',
-          list: $.grep(this.emoji, function (item) {
+          list: $.grep(this.emojiKeys, function (item) {
             return item.indexOf(trigger) === 0;
           })
-        });
-      } else {
-        callback();
+        };
       }
+
+      return null;
     },
 
     /**
@@ -131,7 +141,7 @@
      * @returns {String}
      */
     createItem: function (item) {
-      var content = this.emojiLink[item];
+      var content = this.emojiInfo[item];
       return '<img src="' + content + '" width="20" /> :' + item + ':';
     },
 
@@ -143,7 +153,7 @@
      * @return {Node|String}
      */
     content: function (html, item) {
-      var url = this.emojiLink[item];
+      var url = this.emojiInfo[item];
 
       if (url) {
         var $img = $('<img />').attr('src', url).css({
@@ -155,10 +165,14 @@
       return html;
     },
 
-    load: function () {
+    /**
+     * @return {Promise}
+     */
+    loadEmojis: function () {
       var self = this;
-      $.getJSON('https://api.github.com/emojis', function (data) {
-        self.loadEmoji(data);
+      return $.getJSON('https://api.github.com/emojis').then(function (data) {
+        self.emojiKeys = Object.keys(data);
+        self.emojiInfo = data;
       });
     },
 
@@ -206,27 +220,24 @@
 
       $note.on('summernote.keyup', function (customEvent, nativeEvent) {
         if (DROPDOWN_KEYCODES.indexOf(nativeEvent.keyCode) === -1) {
-          var range = $(this).summernote('createRange');
-          var wordRange = range.getWordRange();
+          var wordRange = $(this).summernote('createRange').getWordRange();
+          var result = self.searchKeyword(wordRange.toString());
+          if (!result || !result.list.length) {
+            $popover.hide();
+            return;
+          }
 
-          self.searchKeyword(wordRange.toString(), function (result) {
-            if (!result || !result.list.length) {
-              $popover.hide();
-              return;
-            }
+          layoutInfo.popover().append($popover);
 
-            layoutInfo.popover().append($popover);
-
-            var rect = list.last(wordRange.getClientRects());
-            $popover.html(self.createItems(result)).css({
-              left: rect.left,
-              top: rect.top + rect.height
-            }).data('wordRange', wordRange).show();
-          });
+          var rect = list.last(wordRange.getClientRects());
+          $popover.html(self.createItems(result)).css({
+            left: rect.left,
+            top: rect.top + rect.height
+          }).data('wordRange', wordRange).show();
         }
       });
 
-      this.load($popover);
+      this.loadEmojis();
     },
 
     // FIXME Summernote doesn't support event pipeline yet.
