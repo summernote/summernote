@@ -322,6 +322,8 @@ define([
         var keyString = keys.join('+');
         var eventName = keyMap[keyString];
         if (eventName) {
+          // FIXME Summernote doesn't support event pipeline yet.
+          //  - Plugin -> Base Code
           pluginEvent = $.summernote.pluginEvents[keyString];
           if ($.isFunction(pluginEvent)) {
             if (pluginEvent(event, modules.editor, layoutInfo)) {

@@ -229,8 +229,12 @@
       this.load($popover);
     },
 
+    // FIXME Summernote doesn't support event pipeline yet.
+    //  - Plugin -> Base Code
     events: {
       ENTER: function () {
+        debugger;
+        // prevent ENTER key
         return false;
       }
     }
