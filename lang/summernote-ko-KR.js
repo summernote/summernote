@@ -1,5 +1,4 @@
 (function ($) {
-  console.log('hit');
   $.extend($.summernote.lang, {
     'ko-KR': {
       font: {
