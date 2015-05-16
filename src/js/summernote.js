@@ -225,11 +225,6 @@ define([
         }
       });
 
-      // callback on init
-      if (!isExternalAPICalled && this.length && options.oninit) {
-        options.oninit();
-      }
-
       var $first = this.first();
       if ($first.length) {
         var layoutInfo = renderer.layoutInfoFromHolder($first);
