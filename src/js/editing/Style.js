@@ -67,7 +67,7 @@ define([
       var onlyPartialContains = !!(options && options.onlyPartialContains);
 
       if (rng.isCollapsed()) {
-        return rng.insertNode(dom.create(nodeName));
+        return [rng.insertNode(dom.create(nodeName))];
       }
 
       var pred = dom.makePredByNodeName(nodeName);
