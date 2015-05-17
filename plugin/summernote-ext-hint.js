@@ -187,6 +187,7 @@
         'display': 'none'
       });
 
+      // FIXME We need a handler for unload resources.
       $popover.on('click', '.list-group-item', function () {
         self.replace($popover);
 
