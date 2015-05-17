@@ -258,15 +258,17 @@
       &::before { right: 9px; left: auto !important;  }
       &::after { right: 10px; left: auto !important;  }
     }
-
     /* dropdown-menu for selectbox */
-    li a i {
-      color: deepskyblue;
-      visibility: hidden;
+    &.note-check {
+      li a i {
+        color: deepskyblue;
+        visibility: hidden;
+      }
+      li a.checked i {
+        visibility: visible;
+      }
     }
-    li a.checked i {
-      visibility: visible;
-    }
+
   }
 
   .note-fontsize-10 {

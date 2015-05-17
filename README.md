@@ -96,13 +96,12 @@ Any modern browser: Safari, Chrome, Firefox, Opera, Internet Explorer 9+.
 
 ```
 summernote.js - Renderer.js (Generate markup) - Locale.js (Locale object)
-              ㄴEventHandler.js - Editor.js  (Abstract editor)
-                                ㄴStyle.js   (Style Getter and Setter)
-                                ㄴHistory.js (Store on jQuery.data)
-                                ㄴToolbar.js (Toolbar module)
+              ㄴEventHandler.js - Toolbar.js (Toolbar module)
                                 ㄴPopover.js (Popover module)
                                 ㄴHandle.js  (Handle module)
                                 ㄴDialog.js  (Dialog module)
+                                ㄴEditor.js  (Abstract editor module) - Style.js (Style Getter and Setter)
+                                                                      ㄴHistory.js (Store on jQuery.data)
 -----------------------------Core Script-----------------------------
   agent.js  (agent information)
   async.js  (aysnc utility)
@@ -112,6 +111,23 @@ summernote.js - Renderer.js (Generate markup) - Locale.js (Locale object)
   range.js  (W3CRange extention)
 ---------------------------------------------------------------------
 ```
+
+#### document structure
+
+```
+ - body container: <div class="note-editable">, <td>, <blockquote>, <ul>
+ - block node: <div>, <p>, <li>, <h1>, <table>
+ - void block node: <hr>
+ - inline node: <span>, <b>, <font>, <a>, ...
+ - void inline node: <img>
+ - text node: #text
+```
+
+1. A body container has block node, but `<ul>` has only `<li>` nodes.
+2. A body container also has inline nodes sometimes. This inline nodes will be wraped with `<p>` when enter key pressed.
+4. A block node only has inline nodes.
+5. A inline nodes has another inline nodes
+6. `#text` and void inline node doesn't have children.
 
 #### build summernote
 ```bash

@@ -43,6 +43,7 @@ define([
      */
     core: {
       agent: agent,
+      list : list,
       dom: dom,
       range: range
     },
@@ -186,15 +187,27 @@ define([
       //  - {Object}: init options
       var type = $.type(list.head(arguments));
       var isExternalAPICalled = type === 'string';
-      var isInitOptions = type === 'object';
+      var hasInitOptions = type === 'object';
 
       // extend default options with custom user options
-      var options = isInitOptions ? list.head(arguments) : {};
+      var options = hasInitOptions ? list.head(arguments) : {};
+
       options = $.extend({}, $.summernote.options, options);
 
       // Include langInfo in options for later use, e.g. for image drag-n-drop
       // Setup language info with en-US as default
       options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+
+      // override plugin options
+      if (!isExternalAPICalled && hasInitOptions) {
+        for (var i = 0, len = $.summernote.plugins.length; i < len; i++) {
+          var plugin = $.summernote.plugins[i];
+
+          if (options.plugin[plugin.name]) {
+            $.summernote.plugins[i] = $.extend(true, plugin, options.plugin[plugin.name]);
+          }
+        }
+      }
 
       this.each(function (idx, holder) {
         var $holder = $(holder);
@@ -204,17 +217,13 @@ define([
           renderer.createLayout($holder, options);
 
           var layoutInfo = renderer.layoutInfoFromHolder($holder);
+          $holder.data('layoutInfo', layoutInfo);
 
           eventHandler.attach(layoutInfo, options);
           eventHandler.attachCustomEvent(layoutInfo, options);
 
         }
       });
-
-      // callback on init
-      if (!isExternalAPICalled && this.length && options.oninit) {
-        options.oninit();
-      }
 
       var $first = this.first();
       if ($first.length) {

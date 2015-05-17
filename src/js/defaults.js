@@ -71,7 +71,7 @@ define('summernote/defaults', function () {
         ['font', ['bold', 'italic', 'underline', 'clear']],
         // ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
         ['fontname', ['fontname']],
-        // ['fontsize', ['fontsize']],
+        ['fontsize', ['fontsize']],
         ['color', ['color']],
         ['para', ['ul', 'ol', 'paragraph']],
         ['height', ['height']],
@@ -80,6 +80,8 @@ define('summernote/defaults', function () {
         ['view', ['fullscreen', 'codeview']],
         ['help', ['help']]
       ],
+
+      plugin : { },
 
       // air mode: inline editor
       airMode: false,

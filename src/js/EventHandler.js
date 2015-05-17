@@ -174,6 +174,12 @@ define([
       }
     };
 
+    var hKeyupAndMouseup = function (event) {
+      var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
+      modules.editor.removeBogus(layoutInfo.editable());
+      hToolbarAndPopoverUpdate(event);
+    };
+
     var hToolbarAndPopoverUpdate = function (event) {
       // delay for range after mouseup
       setTimeout(function () {
@@ -191,7 +197,7 @@ define([
       }, 0);
     };
 
-    var hScroll = function (event) {
+    var hScrollAndBlur = function (event) {
       var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
       //hide popover and handle when scrolled
       modules.popover.hide(layoutInfo.popover());
@@ -318,13 +324,23 @@ define([
           keys.push(keyName);
         }
 
-        var eventName = keyMap[keys.join('+')];
+        var pluginEvent;
+        var keyString = keys.join('+');
+        var eventName = keyMap[keyString];
         if (eventName) {
-          if ($.summernote.pluginEvents[eventName]) {
-            var plugin = $.summernote.pluginEvents[eventName];
-            if ($.isFunction(plugin)) {
-              plugin(event, modules.editor, layoutInfo);
+          // FIXME Summernote doesn't support event pipeline yet.
+          //  - Plugin -> Base Code
+          pluginEvent = $.summernote.pluginEvents[keyString];
+          if ($.isFunction(pluginEvent)) {
+            if (pluginEvent(event, modules.editor, layoutInfo)) {
+              return false;
             }
+          }
+
+          pluginEvent = $.summernote.pluginEvents[eventName];
+
+          if ($.isFunction(pluginEvent)) {
+            pluginEvent(event, modules.editor, layoutInfo);
           } else if (modules.editor[eventName]) {
             modules.editor[eventName]($editable, $editor.data('options'));
             event.preventDefault();
@@ -350,8 +366,10 @@ define([
         this.bindKeyMap(layoutInfo, options.keyMap[agent.isMac ? 'mac' : 'pc']);
       }
       layoutInfo.editable().on('mousedown', hMousedown);
-      layoutInfo.editable().on('keyup mouseup', hToolbarAndPopoverUpdate);
-      layoutInfo.editable().on('scroll', hScroll);
+      layoutInfo.editable().on('keyup mouseup', hKeyupAndMouseup);
+      layoutInfo.editable().on('scroll blur', hScrollAndBlur);
+
+      // handler for clipboard
       modules.clipboard.attach(layoutInfo, options);
 
       // handler for handle and popover
@@ -420,13 +438,7 @@ define([
       // Textarea: auto filling the code before form submit.
       if (dom.isTextarea(list.head(layoutInfo.holder()))) {
         layoutInfo.holder().closest('form').submit(function () {
-          var contents = layoutInfo.holder().code();
-          layoutInfo.holder().val(contents);
-
-          // callback on submit
-          if (options.onsubmit) {
-            options.onsubmit(contents);
-          }
+          layoutInfo.holder().val(layoutInfo.holder().code());
         });
       }
     };
@@ -465,7 +477,6 @@ define([
         bindCustomEvent($holder, callbacks, 'change')($editable.html(), $editable);
       });
 
-      // callbacks for advanced features (camel)
       if (!options.airMode) {
         layoutInfo.toolbar().click(bindCustomEvent($holder, callbacks, 'toolbar.click'));
         layoutInfo.popover().click(bindCustomEvent($holder, callbacks, 'popover.click'));
