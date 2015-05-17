@@ -64,7 +64,7 @@
       }
 
       $popover.children().removeClass('active');
-      var $activeItem = $popover.children().eq(i);
+      var $activeItem = $popover.children().eq(idx);
       $activeItem.addClass('active');
 
       this.scrollTo($activeItem);
