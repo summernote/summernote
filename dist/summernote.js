@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-05-16T22:26Z
+ * Date: 2015-05-17T06:58Z
  */
 (function (factory) {
   /* global define */
@@ -6853,10 +6853,10 @@
       //  - {Object}: init options
       var type = $.type(list.head(arguments));
       var isExternalAPICalled = type === 'string';
-      var isInitOptions = type === 'object';
+      var hasInitOptions = type === 'object';
 
       // extend default options with custom user options
-      var options = isInitOptions ? list.head(arguments) : {};
+      var options = hasInitOptions ? list.head(arguments) : {};
 
       options = $.extend({}, $.summernote.options, options);
 
@@ -6864,8 +6864,8 @@
       // Setup language info with en-US as default
       options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
 
-      if (!isExternalAPICalled && isInitOptions) {
-        // override plugin
+      // override plugin options
+      if (!isExternalAPICalled && hasInitOptions) {
         for (var i = 0, len = $.summernote.plugins.length; i < len; i++) {
           var plugin = $.summernote.plugins[i];
 
@@ -6873,7 +6873,6 @@
             $.summernote.plugins[i] = $.extend(true, plugin, options.plugin[plugin.name]);
           }
         }
-
       }
 
       this.each(function (idx, holder) {
@@ -6891,11 +6890,6 @@
 
         }
       });
-
-      // callback on init
-      if (!isExternalAPICalled && this.length && options.oninit) {
-        options.oninit();
-      }
 
       var $first = this.first();
       if ($first.length) {
