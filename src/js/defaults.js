@@ -345,7 +345,7 @@ define('summernote/defaults', function () {
           openInNewWindow: 'Open in new window'
         },
         table: {
-          table: 'Table'
+          table: 'table'
         },
         hr: {
           insert: 'Insert Horizontal Rule'
