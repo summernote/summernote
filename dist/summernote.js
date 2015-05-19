@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-05-19T22:36Z
+ * Date: 2015-05-19T22:38Z
  */
 (function (factory) {
   /* global define */
@@ -2348,7 +2348,7 @@
           edit: 'edit'
         },
         table: {
-          table: 'Table'
+          table: 'table'
         },
         hr: {
           insert: 'minus'
@@ -2610,7 +2610,7 @@
           openInNewWindow: 'Open in new window'
         },
         table: {
-          table: 'table'
+          table: 'Table'
         },
         hr: {
           insert: 'Insert Horizontal Rule'

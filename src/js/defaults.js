@@ -83,7 +83,7 @@ define('summernote/defaults', function () {
           edit: 'edit'
         },
         table: {
-          table: 'Table'
+          table: 'table'
         },
         hr: {
           insert: 'minus'
@@ -345,7 +345,7 @@ define('summernote/defaults', function () {
           openInNewWindow: 'Open in new window'
         },
         table: {
-          table: 'table'
+          table: 'Table'
         },
         hr: {
           insert: 'Insert Horizontal Rule'
