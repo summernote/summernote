@@ -98,16 +98,16 @@ define('summernote/defaults', function () {
         options: {
           help: 'question',
           fullscreen: 'arrows-alt',
-          codeview: 'code',
+          codeview: 'code'
         },
         paragraph: {
           paragraph: 'align-left',
           outdent: 'outdent',
-          indent: 'indent'
+          indent: 'indent',
           left: 'align-left',
           center: 'align-center',
           right: 'align-right',
-          justify: 'align-justify',
+          justify: 'align-justify'
         },
         color: {
           recent: 'font'
@@ -115,9 +115,6 @@ define('summernote/defaults', function () {
         history: {
           undo: 'undo',
           redo: 'repeat'
-        },
-        table: {
-          table: 'table'
         },
         misc: {
           check: 'check'

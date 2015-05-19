@@ -190,8 +190,10 @@ define([
         });
       },
       color: function (lang, options) {
-        var colorButtonLabel = '<i class="' + options.iconPrefix + options.icons.color.recent + '" style="color:black;background-color:yellow;"></i>';
-        var colorButton = tplButton(colorButtonLabel, {
+        var colorButtonLabel = '<i class="' +
+                                  options.iconPrefix + options.icons.color.recent +
+                                '" style="color:black;background-color:yellow;"></i>',
+          colorButton = tplButton(colorButtonLabel, {
           className: 'note-recent-color',
           title: lang.color.recent,
           event: 'color',
@@ -243,19 +245,19 @@ define([
           title: lang.font.underline
         });
       },
-      strikethrough: function (lang) {
+      strikethrough: function (lang, options) {
         return tplIconButton(options.iconPrefix + options.icons.font.strikethrough, {
           event: 'strikethrough',
           title: lang.font.strikethrough
         });
       },
-      superscript: function (lang) {
+      superscript: function (lang, options) {
         return tplIconButton(options.iconPrefix + options.icons.font.superscript, {
           event: 'superscript',
           title: lang.font.superscript
         });
       },
-      subscript: function (lang) {
+      subscript: function (lang, options) {
         return tplIconButton(options.iconPrefix + options.icons.font.subscript, {
           event: 'subscript',
           title: lang.font.subscript
