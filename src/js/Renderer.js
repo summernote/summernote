@@ -638,7 +638,7 @@ define([
                    '</div>' +
                    '<div class="form-group row-fluid">' +
                      '<label>' + lang.link.url + '</label>' +
-                     '<input class="note-link-url form-control span12" type="text" />' +
+                     '<input class="note-link-url form-control span12" type="text" value="http://" />' +
                    '</div>' +
                    (!options.disableLinkTarget ?
                      '<div class="checkbox">' +
