@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-05-19T22:38Z
+ * Date: 2015-05-20T05:20Z
  */
 (function (factory) {
   /* global define */
@@ -6925,6 +6925,7 @@
       var options = hasInitOptions ? list.head(arguments) : {};
 
       options = $.extend({}, $.summernote.options, options);
+      options.icons = $.extend({}, $.summernote.options.icons, options.icons);
 
       // Include langInfo in options for later use, e.g. for image drag-n-drop
       // Setup language info with en-US as default
