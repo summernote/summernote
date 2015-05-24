@@ -432,7 +432,8 @@ define([
         onChange: options.onChange,
         onImageUpload: options.onImageUpload,
         onImageUploadError: options.onImageUploadError,
-        onMediaDelete : options.onMediaDelete
+        onMediaDelete: options.onMediaDelete,
+        onToolbarClick: options.onToolbarClick
       });
 
       // Textarea: auto filling the code before form submit.
