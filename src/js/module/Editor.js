@@ -796,7 +796,6 @@ define([
      * @return {Boolean}
      */
     this.isEmpty = function ($editable) {
-      // TODO test more empty condition.
       return dom.isEmpty($editable[0]) || dom.emptyPara === $editable.html();
     };
   };
