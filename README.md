@@ -78,6 +78,10 @@ var sHTML = $('#summernote').code();
 $('#summernote').destroy();
 ```
 
+#### Warning - code injection
+
+The code view allows the user to enter script contents. Make sure to filter/[sanitize the HTML on the server](https://github.com/search?l=JavaScript&q=sanitize+html). Otherwise, an attacker can inject arbitrary JavaScript code into clients.
+
 ### Supported platforms
 
 Any modern browser: Safari, Chrome, Firefox, Opera, Internet Explorer 9+.
