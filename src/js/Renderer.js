@@ -32,7 +32,8 @@ define([
       var dropdown = options.dropdown;
       var hide = options.hide;
 
-      return '<button type="button"' +
+      return (dropdown ? '<div class="btn-group">' : '') +
+                 '<button type="button"' +
                  ' class="btn btn-default btn-sm btn-small' +
                    (className ? ' ' + className : '') +
                    (dropdown ? ' dropdown-toggle' : '') +
@@ -46,7 +47,8 @@ define([
                label +
                (dropdown ? ' <span class="caret"></span>' : '') +
              '</button>' +
-             (dropdown || '');
+             (dropdown || '') +
+             (dropdown ? '</div>' : '');
     };
 
     /**
