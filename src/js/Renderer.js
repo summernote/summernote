@@ -32,10 +32,11 @@ define([
       var dropdown = options.dropdown;
       var hide = options.hide;
 
-      return (dropdown ? '<div class="btn-group">' : '') +
-                 '<button type="button"' +
+      return (dropdown ? '<div class="btn-group' +
+               (className ? ' ' + className : '') + '">' : '') +
+               '<button type="button"' +
                  ' class="btn btn-default btn-sm btn-small' +
-                   (className ? ' ' + className : '') +
+                   ((!dropdown && className) ? ' ' + className : '') +
                    (dropdown ? ' dropdown-toggle' : '') +
                  '"' +
                  (dropdown ? ' data-toggle="dropdown"' : '') +
@@ -44,10 +45,10 @@ define([
                  (value ? ' data-value=\'' + value + '\'' : '') +
                  (hide ? ' data-hide=\'' + hide + '\'' : '') +
                  ' tabindex="-1">' +
-               label +
-               (dropdown ? ' <span class="caret"></span>' : '') +
-             '</button>' +
-             (dropdown || '') +
+                 label +
+                 (dropdown ? ' <span class="caret"></span>' : '') +
+               '</button>' +
+               (dropdown || '') +
              (dropdown ? '</div>' : '');
     };
 
@@ -175,6 +176,7 @@ define([
                      '</span>';
         return tplButton(label, {
           title: lang.font.name,
+          className: 'note-fontname',
           dropdown: '<ul class="dropdown-menu note-check">' + items + '</ul>'
         });
       },
@@ -188,6 +190,7 @@ define([
         var label = '<span class="note-current-fontsize">11</span>';
         return tplButton(label, {
           title: lang.font.size,
+          className: 'note-fontsize',
           dropdown: '<ul class="dropdown-menu note-check">' + items + '</ul>'
         });
       },
