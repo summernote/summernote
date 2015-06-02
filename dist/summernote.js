@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.6.8
+ * Super simple wysiwyg editor on Bootstrap v0.6.7
  * http://summernote.org/
  *
  * summernote.js
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-05-20T05:20Z
+ * Date: 2015-05-17T06:58Z
  */
 (function (factory) {
   /* global define */
@@ -2271,7 +2271,7 @@
    */
   var defaults = {
     /** @property */
-    version: '0.6.8',
+    version: '0.6.7',
 
     /**
      * 
@@ -2319,72 +2319,6 @@
       prettifyHtml: true,           // enable prettifying html while toggling codeview
 
       iconPrefix: 'fa fa-',         // prefix for css icon classes
-
-      icons: {
-        font: {
-          bold: 'bold',
-          italic: 'italic',
-          underline: 'underline',
-          clear: 'eraser',
-          height: 'text-height',
-          strikethrough: 'strikethrough',
-          superscript: 'superscript',
-          subscript: 'subscript'
-        },
-        image: {
-          image: 'picture-o',
-          floatLeft: 'align-left',
-          floatRight: 'align-right',
-          floatNone: 'align-justify',
-          shapeRounded: 'square',
-          shapeCircle: 'circle-o',
-          shapeThumbnail: 'picture-o',
-          shapeNone: 'times',
-          remove: 'trash-o'
-        },
-        link: {
-          link: 'link',
-          unlink: 'unlink',
-          edit: 'edit'
-        },
-        table: {
-          table: 'table'
-        },
-        hr: {
-          insert: 'minus'
-        },
-        style: {
-          style: 'magic'
-        },
-        lists: {
-          unordered: 'list-ul',
-          ordered: 'list-ol'
-        },
-        options: {
-          help: 'question',
-          fullscreen: 'arrows-alt',
-          codeview: 'code'
-        },
-        paragraph: {
-          paragraph: 'align-left',
-          outdent: 'outdent',
-          indent: 'indent',
-          left: 'align-left',
-          center: 'align-center',
-          right: 'align-right',
-          justify: 'align-justify'
-        },
-        color: {
-          recent: 'font'
-        },
-        history: {
-          undo: 'undo',
-          redo: 'repeat'
-        },
-        misc: {
-          check: 'check'
-        }
-      },
 
       codemirror: {                 // codemirror options
         mode: 'text/html',
@@ -2496,6 +2430,8 @@
       onCreateLink: function (sLinkUrl) {
         if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
           sLinkUrl =  'mailto:' + sLinkUrl;
+        } else if (sLinkUrl.indexOf('://') === -1) {
+          sLinkUrl = 'http://' + sLinkUrl;
         }
 
         return sLinkUrl;
@@ -5063,7 +4999,7 @@
 
           // if no url was given, copy text to url
           if (!linkInfo.url) {
-            linkInfo.url = linkInfo.text || 'http://';
+            linkInfo.url = linkInfo.text;
             toggleBtn($linkBtn, linkInfo.text);
           }
 
@@ -5868,14 +5804,14 @@
 
     var tplButtonInfo = {
       picture: function (lang, options) {
-        return tplIconButton(options.iconPrefix + options.icons.image.image, {
+        return tplIconButton(options.iconPrefix + 'picture-o', {
           event: 'showImageDialog',
           title: lang.image.image,
           hide: true
         });
       },
       link: function (lang, options) {
-        return tplIconButton(options.iconPrefix + options.icons.link.link, {
+        return tplIconButton(options.iconPrefix + 'link', {
           event: 'showLinkDialog',
           title: lang.link.link,
           hide: true
@@ -5890,7 +5826,7 @@
                          '</div>' +
                          '<div class="note-dimension-display"> 1 x 1 </div>' +
                        '</ul>';
-        return tplIconButton(options.iconPrefix + options.icons.table.table, {
+        return tplIconButton(options.iconPrefix + 'table', {
           title: lang.table.table,
           dropdown: dropdown
         });
@@ -5906,7 +5842,7 @@
                  '</a></li>';
         }, '');
 
-        return tplIconButton(options.iconPrefix + options.icons.style.style, {
+        return tplIconButton(options.iconPrefix + 'magic', {
           title: lang.style.style,
           dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
         });
@@ -5919,7 +5855,7 @@
           }
           realFontList.push(v);
           return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '" style="font-family:\'' + v + '\'">' +
-                          '<i class="' + options.iconPrefix + options.icons.misc.check + '"></i> ' + v +
+                          '<i class="' + options.iconPrefix + 'check"></i> ' + v +
                         '</a></li>';
         }, '');
 
@@ -5937,7 +5873,7 @@
       fontsize: function (lang, options) {
         var items = options.fontSizes.reduce(function (memo, v) {
           return memo + '<li><a data-event="fontSize" href="#" data-value="' + v + '">' +
-                          '<i class="' + options.iconPrefix + options.icons.misc.check + '"></i> ' + v +
+                          '<i class="fa fa-check"></i> ' + v +
                         '</a></li>';
         }, '');
 
@@ -5948,10 +5884,8 @@
         });
       },
       color: function (lang, options) {
-        var colorButtonLabel = '<i class="' +
-                                  options.iconPrefix + options.icons.color.recent +
-                                '" style="color:black;background-color:yellow;"></i>',
-          colorButton = tplButton(colorButtonLabel, {
+        var colorButtonLabel = '<i class="' + options.iconPrefix + 'font" style="color:black;background-color:yellow;"></i>';
+        var colorButton = tplButton(colorButtonLabel, {
           className: 'note-recent-color',
           title: lang.color.recent,
           event: 'color',
@@ -5986,82 +5920,82 @@
         return colorButton + moreButton;
       },
       bold: function (lang, options) {
-        return tplIconButton(options.iconPrefix + options.icons.font.bold, {
+        return tplIconButton(options.iconPrefix + 'bold', {
           event: 'bold',
           title: lang.font.bold
         });
       },
       italic: function (lang, options) {
-        return tplIconButton(options.iconPrefix + options.icons.font.italic, {
+        return tplIconButton(options.iconPrefix + 'italic', {
           event: 'italic',
           title: lang.font.italic
         });
       },
       underline: function (lang, options) {
-        return tplIconButton(options.iconPrefix + options.icons.font.underline, {
+        return tplIconButton(options.iconPrefix + 'underline', {
           event: 'underline',
           title: lang.font.underline
         });
       },
-      strikethrough: function (lang, options) {
-        return tplIconButton(options.iconPrefix + options.icons.font.strikethrough, {
+      strikethrough: function (lang) {
+        return tplIconButton('fa fa-strikethrough', {
           event: 'strikethrough',
           title: lang.font.strikethrough
         });
       },
-      superscript: function (lang, options) {
-        return tplIconButton(options.iconPrefix + options.icons.font.superscript, {
+      superscript: function (lang) {
+        return tplIconButton('fa fa-superscript', {
           event: 'superscript',
           title: lang.font.superscript
         });
       },
-      subscript: function (lang, options) {
-        return tplIconButton(options.iconPrefix + options.icons.font.subscript, {
+      subscript: function (lang) {
+        return tplIconButton('fa fa-subscript', {
           event: 'subscript',
           title: lang.font.subscript
         });
       },
       clear: function (lang, options) {
-        return tplIconButton(options.iconPrefix + options.icons.font.clear, {
+        return tplIconButton(options.iconPrefix + 'eraser', {
           event: 'removeFormat',
           title: lang.font.clear
         });
       },
       ul: function (lang, options) {
-        return tplIconButton(options.iconPrefix + options.icons.lists.unordered, {
+        return tplIconButton(options.iconPrefix + 'list-ul', {
           event: 'insertUnorderedList',
           title: lang.lists.unordered
         });
       },
       ol: function (lang, options) {
-        return tplIconButton(options.iconPrefix + options.icons.lists.ordered, {
+        return tplIconButton(options.iconPrefix + 'list-ol', {
           event: 'insertOrderedList',
           title: lang.lists.ordered
         });
       },
       paragraph: function (lang, options) {
-        var leftButton = tplIconButton(options.iconPrefix + options.icons.paragraph.left, {
+        var leftButton = tplIconButton(options.iconPrefix + 'align-left', {
           title: lang.paragraph.left,
           event: 'justifyLeft'
         });
-        var centerButton = tplIconButton(options.iconPrefix + options.icons.paragraph.center, {
+        var centerButton = tplIconButton(options.iconPrefix + 'align-center', {
           title: lang.paragraph.center,
           event: 'justifyCenter'
         });
-        var rightButton = tplIconButton(options.iconPrefix + options.icons.paragraph.right, {
+        var rightButton = tplIconButton(options.iconPrefix + 'align-right', {
           title: lang.paragraph.right,
           event: 'justifyRight'
         });
-        var justifyButton = tplIconButton(options.iconPrefix + options.icons.paragraph.justify, {
+        var justifyButton = tplIconButton(options.iconPrefix + 'align-justify', {
           title: lang.paragraph.justify,
           event: 'justifyFull'
         });
 
-        var outdentButton = tplIconButton(options.iconPrefix + options.icons.paragraph.outdent, {
+        var outdentButton = tplIconButton(options.iconPrefix + 'outdent', {
           title: lang.paragraph.outdent,
           event: 'outdent'
         });
-        var indentButton = tplIconButton(options.iconPrefix + options.icons.paragraph.indent, {
+        var indentButton = tplIconButton(options.iconPrefix + 'indent', {
           title: lang.paragraph.indent,
           event: 'indent'
         });
@@ -6075,7 +6009,7 @@
                          '</div>' +
                        '</div>';
 
-        return tplIconButton(options.iconPrefix + options.icons.paragraph.paragraph, {
+        return tplIconButton(options.iconPrefix + 'align-left', {
           title: lang.paragraph.paragraph,
           dropdown: dropdown
         });
@@ -6083,49 +6017,49 @@
       height: function (lang, options) {
         var items = options.lineHeights.reduce(function (memo, v) {
           return memo + '<li><a data-event="lineHeight" href="#" data-value="' + parseFloat(v) + '">' +
-                          '<i class="' + options.iconPrefix + options.icons.misc.check + '"></i> ' + v +
+                          '<i class="' + options.iconPrefix + 'check"></i> ' + v +
                         '</a></li>';
         }, '');
 
-        return tplIconButton(options.iconPrefix + options.icons.font.height, {
+        return tplIconButton(options.iconPrefix + 'text-height', {
           title: lang.font.height,
           dropdown: '<ul class="dropdown-menu note-check">' + items + '</ul>'
         });
 
       },
       help: function (lang, options) {
-        return tplIconButton(options.iconPrefix + options.icons.options.help, {
+        return tplIconButton(options.iconPrefix + 'question', {
           event: 'showHelpDialog',
           title: lang.options.help,
           hide: true
         });
       },
       fullscreen: function (lang, options) {
-        return tplIconButton(options.iconPrefix + options.icons.options.fullscreen, {
+        return tplIconButton(options.iconPrefix + 'arrows-alt', {
           event: 'fullscreen',
           title: lang.options.fullscreen
         });
       },
       codeview: function (lang, options) {
-        return tplIconButton(options.iconPrefix + options.icons.options.codeview, {
+        return tplIconButton(options.iconPrefix + 'code', {
           event: 'codeview',
           title: lang.options.codeview
         });
       },
       undo: function (lang, options) {
-        return tplIconButton(options.iconPrefix + options.icons.history.undo, {
+        return tplIconButton(options.iconPrefix + 'undo', {
           event: 'undo',
           title: lang.history.undo
         });
       },
       redo: function (lang, options) {
-        return tplIconButton(options.iconPrefix + options.icons.history.redo, {
+        return tplIconButton(options.iconPrefix + 'repeat', {
           event: 'redo',
           title: lang.history.redo
         });
       },
       hr: function (lang, options) {
-        return tplIconButton(options.iconPrefix + options.icons.hr.insert, {
+        return tplIconButton(options.iconPrefix + 'minus', {
           event: 'insertHorizontalRule',
           title: lang.hr.insert
         });
@@ -6134,12 +6068,12 @@
 
     var tplPopovers = function (lang, options) {
       var tplLinkPopover = function () {
-        var linkButton = tplIconButton(options.iconPrefix + options.icons.link.edit, {
+        var linkButton = tplIconButton(options.iconPrefix + 'edit', {
           title: lang.link.edit,
           event: 'showLinkDialog',
           hide: true
         });
-        var unlinkButton = tplIconButton(options.iconPrefix + options.icons.link.unlink, {
+        var unlinkButton = tplIconButton(options.iconPrefix + 'unlink', {
           title: lang.link.unlink,
           event: 'unlink'
         });
@@ -6167,44 +6101,44 @@
           value: '0.25'
         });
 
-        var leftButton = tplIconButton(options.iconPrefix + options.icons.image.floatLeft, {
+        var leftButton = tplIconButton(options.iconPrefix + 'align-left', {
           title: lang.image.floatLeft,
           event: 'floatMe',
           value: 'left'
         });
-        var rightButton = tplIconButton(options.iconPrefix + options.icons.image.floatRight, {
+        var rightButton = tplIconButton(options.iconPrefix + 'align-right', {
           title: lang.image.floatRight,
           event: 'floatMe',
           value: 'right'
         });
-        var justifyButton = tplIconButton(options.iconPrefix + options.icons.image.floatNone, {
+        var justifyButton = tplIconButton(options.iconPrefix + 'align-justify', {
           title: lang.image.floatNone,
           event: 'floatMe',
           value: 'none'
         });
 
-        var roundedButton = tplIconButton(options.iconPrefix + options.icons.image.shapeRounded, {
+        var roundedButton = tplIconButton(options.iconPrefix + 'square', {
           title: lang.image.shapeRounded,
           event: 'imageShape',
           value: 'img-rounded'
         });
-        var circleButton = tplIconButton(options.iconPrefix + options.icons.image.shapeCircle, {
+        var circleButton = tplIconButton(options.iconPrefix + 'circle-o', {
           title: lang.image.shapeCircle,
           event: 'imageShape',
           value: 'img-circle'
         });
-        var thumbnailButton = tplIconButton(options.iconPrefix + options.icons.image.shapeThumbnail, {
+        var thumbnailButton = tplIconButton(options.iconPrefix + 'picture-o', {
           title: lang.image.shapeThumbnail,
           event: 'imageShape',
           value: 'img-thumbnail'
         });
-        var noneButton = tplIconButton(options.iconPrefix + options.icons.image.shapeNone, {
+        var noneButton = tplIconButton(options.iconPrefix + 'times', {
           title: lang.image.shapeNone,
           event: 'imageShape',
           value: ''
         });
 
-        var removeButton = tplIconButton(options.iconPrefix + options.icons.image.remove, {
+        var removeButton = tplIconButton(options.iconPrefix + 'trash-o', {
           title: lang.image.remove,
           event: 'removeMedia',
           value: 'none'
@@ -6398,7 +6332,7 @@
                    '</div>' +
                    '<div class="form-group row-fluid">' +
                      '<label>' + lang.link.url + '</label>' +
-                     '<input class="note-link-url form-control span12" type="text" value="http://" />' +
+                     '<input class="note-link-url form-control span12" type="text" />' +
                    '</div>' +
                    (!options.disableLinkTarget ?
                      '<div class="checkbox">' +
@@ -6416,7 +6350,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.8</a> · ' +
+                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.7</a> · ' +
                      '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
@@ -6925,7 +6859,6 @@
       var options = hasInitOptions ? list.head(arguments) : {};
 
       options = $.extend({}, $.summernote.options, options);
-      options.icons = $.extend({}, $.summernote.options.icons, options.icons);
 
       // Include langInfo in options for later use, e.g. for image drag-n-drop
       // Setup language info with en-US as default
