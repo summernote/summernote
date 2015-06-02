@@ -59,6 +59,9 @@ module.exports = function (grunt) {
 
     // uglify: minify javascript
     uglify: {
+      options: {
+        banner: '/*! Summernote v<%=pkg.version%> | (c) 2013-2015 Alan Hong and other contributors | MIT license */\n'
+      },
       all: {
         files: { 'dist/summernote.min.js': ['dist/summernote.js'] }
       }
