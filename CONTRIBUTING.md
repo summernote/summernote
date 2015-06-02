@@ -14,6 +14,7 @@ Please include one of the following with your issue:
 # pull-requests
 
 ### If you would like to contribute code, please use this PR template(copy/paste into github PR)
+And please **DO NOT INCLUDE FILES IN DIST FOLDER**. They disturb merge processes.
 
 **go ahead and delete any lines that aren't relevant**
 
