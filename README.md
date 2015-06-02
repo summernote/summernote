@@ -78,6 +78,10 @@ var sHTML = $('#summernote').code();
 $('#summernote').destroy();
 ```
 
+#### Warning - code injection
+
+The code view allows the user to enter script contents. Make sure to filter/[sanitize the HTML on the server](https://github.com/search?l=JavaScript&q=sanitize+html). Otherwise, an attacker can inject arbitrary JavaScript code into clients.
+
 ### Supported platforms
 
 Any modern browser: Safari, Chrome, Firefox, Opera, Internet Explorer 9+.
@@ -160,6 +164,9 @@ grunt server
 #### Coding convention
 * JSHint: http://www.jshint.com/about/
 * JSHint rule: https://github.com/summernote/summernote/blob/master/.jshintrc
+
+#### Contribution guide
+* Please read [CONTRIBUTING.md](https://github.com/summernote/summernote/blob/develop/CONTRIBUTING.md) before sending pull requests.
 
 ### Contacts
 * Email: susukang98@gmail.com

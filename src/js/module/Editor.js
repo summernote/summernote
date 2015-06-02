@@ -552,7 +552,7 @@ define([
      * @param {jQuery} $editable
      */
     this.unlink = function ($editable) {
-      var rng = this.createRange();
+      var rng = this.createRange($editable);
       if (rng.isOnAnchor()) {
         var anchor = dom.ancestor(rng.sc, dom.isAnchor);
         rng = range.createFromNode(anchor);
@@ -787,6 +787,16 @@ define([
              .collapse()
              .select();
       }
+    };
+
+    /**
+     * returns whether contents is empty or not.
+     *
+     * @param {jQuery} $editable
+     * @return {Boolean}
+     */
+    this.isEmpty = function ($editable) {
+      return dom.isEmpty($editable[0]) || dom.emptyPara === $editable.html();
     };
   };
 
