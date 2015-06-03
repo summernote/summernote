@@ -10,7 +10,7 @@ define([
     this.attach = function (layoutInfo) {
 
       if (window.clipboardData || agent.isFF) {
-        pasteDiv = $("<div />").attr('contenteditable', true).css({
+        pasteDiv = $('<div />').attr('contenteditable', true).css({
           position : 'absolute',
           left : -100000,
           'opacity' : 0
@@ -19,11 +19,13 @@ define([
         pasteDiv.on('paste', hPasteClipboardImage);
       }
 
-      layoutInfo.editable().on('keydown', function(e) {
+      layoutInfo.editable().on('keydown', function (e) {
         if (e.ctrlKey && e.keyCode === 86) {
           if (window.clipboardData || agent.isFF) {
             handler.invoke('saveRange', layoutInfo.editable());
-            pasteDiv && pasteDiv.focus();
+            if (pasteDiv) {
+              pasteDiv.focus();
+            }
           }
         }
       });
@@ -51,14 +53,18 @@ define([
         }
 
         setTimeout(function () {
-          if (!pasteDiv) return;
+          if (!pasteDiv) {
+            return;
+          }
           
           var $img = pasteDiv[0].childNodes[0];
-          if (!$img) return;
+          if (!$img) {
+            return;
+          }
 
           handler.invoke('restoreRange', $editable);
           if ($img.tagName !== 'IMG') {
-              handler.invoke('pasteHTML', $editable, pasteDiv.html());
+            handler.invoke('pasteHTML', $editable, pasteDiv.html());
           } else {
             var datauri = $img.src;
 
@@ -76,7 +82,7 @@ define([
 
           pasteDiv.html('');
 
-        },1);
+        }, 1);
 
         return;
       }
