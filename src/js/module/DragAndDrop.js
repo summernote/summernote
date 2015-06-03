@@ -75,6 +75,9 @@ define([
           layoutInfo.editable().focus();
           handler.insertImages(layoutInfo, dataTransfer.files);
         } else {
+          var insertNodefunc = function () {
+            layoutInfo.holder().summernote('insertNode', this);
+          };
 
           for (var i = 0, len = dataTransfer.types.length; i < len; i++) {
             var type = dataTransfer.types[i];
@@ -83,9 +86,7 @@ define([
             if (type.toLowerCase().indexOf('text') > -1) {
               layoutInfo.holder().summernote('pasteHTML', content);
             } else {
-              $(content).each(function () {
-                layoutInfo.holder().summernote('insertNode', this);
-              });
+              $(content).each(insertNodefunc);
             }
           }
         }
