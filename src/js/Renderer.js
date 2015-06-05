@@ -163,9 +163,9 @@ define([
             return memo;
           }
           realFontList.push(v);
-          return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '" style="font-family:\'' + v + '\'">' +
-                          '<i class="' + options.iconPrefix + 'check"></i> ' + v +
-                        '</a></li>';
+          return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '">' +
+                          '<i class="' + options.iconPrefix + 'check"></i> <span style="font-family:\'' + v + '\'">' + v +
+                        '</span></a></li>';
         }, '');
 
         var hasDefaultFont = agent.isFontInstalled(options.defaultFontName);
