@@ -183,7 +183,7 @@ define([
       fontsize: function (lang, options) {
         var items = options.fontSizes.reduce(function (memo, v) {
           return memo + '<li><a data-event="fontSize" href="#" data-value="' + v + '">' +
-                          '<i class="fa fa-check"></i> ' + v +
+                          '<i class="' + options.iconPrefix + 'check"></i> ' + v +
                         '</a></li>';
         }, '');
 
@@ -248,20 +248,20 @@ define([
           title: lang.font.underline
         });
       },
-      strikethrough: function (lang) {
-        return tplIconButton('fa fa-strikethrough', {
+      strikethrough: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'strikethrough', {
           event: 'strikethrough',
           title: lang.font.strikethrough
         });
       },
-      superscript: function (lang) {
-        return tplIconButton('fa fa-superscript', {
+      superscript: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'superscript', {
           event: 'superscript',
           title: lang.font.superscript
         });
       },
-      subscript: function (lang) {
-        return tplIconButton('fa fa-subscript', {
+      subscript: function (lang, options) {
+        return tplIconButton(options.iconPrefix + 'subscript', {
           event: 'subscript',
           title: lang.font.subscript
         });

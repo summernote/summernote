@@ -89,7 +89,7 @@ define([
    *        // "hello"  is button's namespace.      
    *        "hello" : function(lang, options) {
    *            // make icon button by template function          
-   *            return tmpl.iconButton('fa fa-header', {
+   *            return tmpl.iconButton(options.iconPrefix + 'header', {
    *                // callback function name when button clicked 
    *                event : 'hello',
    *                // set data-value property                 
