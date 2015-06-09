@@ -16,7 +16,7 @@ define([
           'opacity' : 0
         });
         layoutInfo.editable().after($paste);
-        $paste.on('paste', hPasteClipboardImage);
+        $paste.one('paste', hPasteClipboardImage);
       }
 
       layoutInfo.editable().on('keydown', function (e) {
