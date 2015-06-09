@@ -25,7 +25,7 @@ define([
               $paste.focus();
             }
           }
-        });        
+        });
       }
 
       layoutInfo.editable().on('paste', hPasteClipboardImage);
@@ -54,8 +54,8 @@ define([
           if (!$paste) {
             return;
           }
-          
-          var imgNode = pasteDiv[0].firstChild;
+
+          var imgNode = $paste[0].firstChild;
           if (!imgNode) {
             return;
           }
