@@ -5,26 +5,26 @@ define([
 ], function (list, dom, agent) {
   var Clipboard = function (handler) {
 
-    var pasteDiv;
+    var $paste;
 
     this.attach = function (layoutInfo) {
 
       if (window.clipboardData || agent.isFF) {
-        pasteDiv = $('<div />').attr('contenteditable', true).css({
+        $paste = $('<div />').attr('contenteditable', true).css({
           position : 'absolute',
           left : -100000,
           'opacity' : 0
-        }, 0);
-        layoutInfo.editable().after(pasteDiv);
-        pasteDiv.on('paste', hPasteClipboardImage);
+        });
+        layoutInfo.editable().after($paste);
+        $paste.on('paste', hPasteClipboardImage);
       }
 
       layoutInfo.editable().on('keydown', function (e) {
         if (e.ctrlKey && e.keyCode === 86) {
           if (window.clipboardData || agent.isFF) {
             handler.invoke('saveRange', layoutInfo.editable());
-            if (pasteDiv) {
-              pasteDiv.focus();
+            if ($paste) {
+              $paste.focus();
             }
           }
         }
@@ -53,20 +53,20 @@ define([
         }
 
         setTimeout(function () {
-          if (!pasteDiv) {
+          if (!$paste) {
             return;
           }
           
-          var $img = pasteDiv[0].childNodes[0];
-          if (!$img) {
+          var imgNode = pasteDiv[0].firstChild;
+          if (!imgNode) {
             return;
           }
 
           handler.invoke('restoreRange', $editable);
-          if ($img.tagName !== 'IMG') {
-            handler.invoke('pasteHTML', $editable, pasteDiv.html());
+          if (!dom.isImg(imgNode)) {
+            handler.invoke('pasteHTML', $editable, $paste.html());
           } else {
-            var datauri = $img.src;
+            var datauri = imgNode.src;
 
             var data = atob(datauri.split(',')[1]);
             var array = new Uint8Array(data.length);
@@ -80,9 +80,9 @@ define([
             handler.insertImages(layoutInfo, [blob]);
           }
 
-          pasteDiv.html('');
+          $paste.html('');
 
-        }, 1);
+        }, 0);
 
         return;
       }
