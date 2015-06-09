@@ -17,18 +17,16 @@ define([
         });
         layoutInfo.editable().after($paste);
         $paste.one('paste', hPasteClipboardImage);
-      }
-
-      layoutInfo.editable().on('keydown', function (e) {
-        if (e.ctrlKey && e.keyCode === 86) {
-          if (window.clipboardData || agent.isFF) {
+        
+        layoutInfo.editable().on('keydown', function (e) {
+          if (e.ctrlKey && e.keyCode === 86) {
             handler.invoke('saveRange', layoutInfo.editable());
             if ($paste) {
               $paste.focus();
             }
           }
-        }
-      });
+        });        
+      }
 
       layoutInfo.editable().on('paste', hPasteClipboardImage);
     };
