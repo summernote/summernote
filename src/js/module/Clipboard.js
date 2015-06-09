@@ -19,7 +19,7 @@ define([
         $paste.one('paste', hPasteClipboardImage);
         
         layoutInfo.editable().on('keydown', function (e) {
-          if (e.ctrlKey && e.keyCode === 86) {
+          if (e.ctrlKey && e.keyCode === 86) {  // CTRL+V
             handler.invoke('saveRange', layoutInfo.editable());
             if ($paste) {
               $paste.focus();
