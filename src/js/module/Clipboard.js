@@ -80,7 +80,7 @@ define([
             handler.insertImages(layoutInfo, [blob]);
           }
 
-          $paste.html('');
+          $paste.remove();
 
         }, 0);
 
