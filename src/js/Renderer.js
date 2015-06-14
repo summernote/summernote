@@ -31,11 +31,12 @@ define([
       var className = options.className;
       var dropdown = options.dropdown;
       var hide = options.hide;
+      var btnStyle = options.btnStyle;
 
       return (dropdown ? '<div class="btn-group' +
                (className ? ' ' + className : '') + '">' : '') +
                '<button type="button"' +
-                 ' class="btn btn-default btn-sm btn-small' +
+                 ' class="btn ' + (btnStyle ? btnStyle : 'btn-default') + ' btn-sm btn-small' +
                    ((!dropdown && className) ? ' ' + className : '') +
                    (dropdown ? ' dropdown-toggle' : '') +
                  '"' +
@@ -79,7 +80,7 @@ define([
                '<div class="popover-content">' +
                '</div>' +
              '</div>');
-      
+
       $popover.find('.popover-content').append(content);
       return $popover;
     };
@@ -170,7 +171,7 @@ define([
 
         var hasDefaultFont = agent.isFontInstalled(options.defaultFontName);
         var defaultFontName = (hasDefaultFont) ? options.defaultFontName : realFontList[0];
-          
+
         var label = '<span class="note-current-fontname">' +
                         defaultFontName +
                      '</span>';
@@ -468,13 +469,13 @@ define([
         var $content = $('<div />');
         for (var idx = 0, len = options.airPopover.length; idx < len; idx ++) {
           var group = options.airPopover[idx];
-          
+
           var $group = $('<div class="note-' + group[0] + ' btn-group">');
           for (var i = 0, lenGroup = group[1].length; i < lenGroup; i++) {
             var $button = $(tplButtonInfo[group[1][i]](lang, options));
 
             $button.attr('data-name', group[1][i]);
-            
+
             $group.append($button);
           }
           $content.append($group);
@@ -484,14 +485,14 @@ define([
       };
 
       var $notePopover = $('<div class="note-popover" />');
-      
+
       $notePopover.append(tplLinkPopover());
       $notePopover.append(tplImagePopover());
-      
+
       if (options.airMode) {
         $notePopover.append(tplAirPopover());
       }
-      
+
       return $notePopover;
     };
 
@@ -854,7 +855,7 @@ define([
         }
         $toolbar.append($group);
       }
-      
+
       $toolbar.prependTo($editor);
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       createPalette($toolbar, options);
