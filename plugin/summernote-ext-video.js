@@ -204,8 +204,8 @@
      * @property {function(object): string} buttons.video
      */
     buttons: {
-      video: function (lang) {
-        return tmpl.iconButton('fa fa-youtube-play', {
+      video: function (lang, options) {
+        return tmpl.iconButton(options.iconPrefix + 'youtube-play', {
           event: 'showVideoDialog',
           title: lang.video.video,
           hide: true
