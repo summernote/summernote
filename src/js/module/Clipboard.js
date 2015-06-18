@@ -1,10 +1,33 @@
 define([
   'summernote/core/list',
-  'summernote/core/dom'
-], function (list, dom) {
+  'summernote/core/dom',
+  'summernote/core/agent'
+], function (list, dom, agent) {
   var Clipboard = function (handler) {
 
+    var $paste;
+
     this.attach = function (layoutInfo) {
+
+      if (window.clipboardData || agent.isFF) {
+        $paste = $('<div />').attr('contenteditable', true).css({
+          position : 'absolute',
+          left : -100000,
+          'opacity' : 0
+        });
+        layoutInfo.editable().after($paste);
+        $paste.one('paste', hPasteClipboardImage);
+        
+        layoutInfo.editable().on('keydown', function (e) {
+          if (e.ctrlKey && e.keyCode === 86) {  // CTRL+V
+            handler.invoke('saveRange', layoutInfo.editable());
+            if ($paste) {
+              $paste.focus();
+            }
+          }
+        });
+      }
+
       layoutInfo.editable().on('paste', hPasteClipboardImage);
     };
 
@@ -14,58 +37,49 @@ define([
      * @param {Event} event
      */
     var hPasteClipboardImage = function (event) {
+
       var clipboardData = event.originalEvent.clipboardData;
       var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
       var $editable = layoutInfo.editable();
 
       if (!clipboardData || !clipboardData.items || !clipboardData.items.length) {
+
         var callbacks = $editable.data('callbacks');
         // only can run if it has onImageUpload method
         if (!callbacks.onImageUpload) {
           return;
         }
 
-        // save cursor
-        handler.invoke('editor.saveNode', $editable);
-        handler.invoke('editor.saveRange', $editable);
-
-        $editable.html('');
-
         setTimeout(function () {
-          var $img = $editable.find('img');
-
-          // if img is no in clipboard, insert text or dom
-          if (!$img.length || $img[0].src.indexOf('data:') === -1) {
-            var html = $editable.html();
-
-            handler.invoke('editor.restoreNode', $editable);
-            handler.invoke('editor.restoreRange', $editable);
-
-            handler.invoke('editor.focus', $editable);
-            try {
-              handler.invoke('editor.pasteHTML', $editable, html);
-            } catch (ex) {
-              handler.invoke('editor.insertText', $editable, html);
-            }
+          if (!$paste) {
             return;
           }
 
-          var datauri = $img[0].src;
-
-          var data = atob(datauri.split(',')[1]);
-          var array = new Uint8Array(data.length);
-          for (var i = 0; i < data.length; i++) {
-            array[i] = data.charCodeAt(i);
+          var imgNode = $paste[0].firstChild;
+          if (!imgNode) {
+            return;
           }
 
-          var blob = new Blob([array], { type : 'image/png' });
-          blob.name = 'clipboard.png';
+          handler.invoke('restoreRange', $editable);
+          if (!dom.isImg(imgNode)) {
+            handler.invoke('pasteHTML', $editable, $paste.html());
+          } else {
+            var datauri = imgNode.src;
 
-          handler.invoke('editor.restoreNode', $editable);
-          handler.invoke('editor.restoreRange', $editable);
-          handler.insertImages(layoutInfo, [blob]);
+            var data = atob(datauri.split(',')[1]);
+            var array = new Uint8Array(data.length);
+            for (var i = 0; i < data.length; i++) {
+              array[i] = data.charCodeAt(i);
+            }
 
-          handler.invoke('editor.afterCommand', $editable);
+            var blob = new Blob([array], { type : 'image/png' });
+            blob.name = 'clipboard.png';
+            handler.invoke('focus', $editable);
+            handler.insertImages(layoutInfo, [blob]);
+          }
+
+          $paste.remove();
+
         }, 0);
 
         return;
