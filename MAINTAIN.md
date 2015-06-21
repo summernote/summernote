@@ -1,10 +1,13 @@
-## Build and publish new release
+## Publish new version
 
-### 01. Send pull request `develop` to `master` on github repository and merge it.
+### 1. `develop` to `master`
 
+Send pull request `develop` to `master` on github repository and merge it.
 https://github.com/summernote/summernote/compare/master...develop
 
-### 02. Build dist files on master
+### 2. Build dist files
+
+Build dist files and push to master
 ```bash
 # change branch
 git checkout master
@@ -12,10 +15,12 @@ git checkout master
 git pull
 # build dist files
 grunt dist
-# now you can find dist files on `./dist`.
+# Push new dist files to remote repository.
+git commit -a -m "Update dist files"
+git push origin
 ```
 
-### 03. Post new release with tag version on github repository.
+### 3. Release new version
 
 generate binary(.zip) for release post
 
@@ -24,16 +29,20 @@ grunt deploy
 # now you can find a binary on `./dist`.
 ```
 
+Post release note with new tag version on github
+
 https://github.com/summernote/summernote/releases/new
 
-### 04. Publish on npm
+### 4. Publish
+
+Publish on npm
 ```bash
 npm publish
 ```
 
-### 05. Publish on meteor
+Publish on meteor
 ```bash
 meteor/publish.sh
 ```
 
-### 06. Update gh-pages
+### 05. Update gh-pages
