@@ -40,7 +40,7 @@
     var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
     var dmMatch = url.match(dmRegExp);
 
-    var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)\.html/;
+    var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
     var youkuMatch = url.match(youkuRegExp);
 
     var mp4RegExp = /^.+.(mp4|m4v)$/;
