@@ -89,7 +89,7 @@ define([
    *        // "hello"  is button's namespace.      
    *        "hello" : function(lang, options) {
    *            // make icon button by template function          
-   *            return tmpl.iconButton('fa fa-header', {
+   *            return tmpl.iconButton(options.iconPrefix + 'header', {
    *                // callback function name when button clicked 
    *                event : 'hello',
    *                // set data-value property                 
@@ -193,6 +193,7 @@ define([
       var options = hasInitOptions ? list.head(arguments) : {};
 
       options = $.extend({}, $.summernote.options, options);
+      options.icons = $.extend({}, $.summernote.options.icons, options.icons);
 
       // Include langInfo in options for later use, e.g. for image drag-n-drop
       // Setup language info with en-US as default

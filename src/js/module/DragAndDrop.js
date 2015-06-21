@@ -66,25 +66,29 @@ define([
 
       // attach dropImage
       $dropzone.on('drop', function (event) {
-        event.preventDefault();
 
         var dataTransfer = event.originalEvent.dataTransfer;
-        var html = dataTransfer.getData('text/html');
-        var text = dataTransfer.getData('text/plain');
-
         var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
 
         if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
+          event.preventDefault();
           layoutInfo.editable().focus();
           handler.insertImages(layoutInfo, dataTransfer.files);
-        } else if (html) {
-          $(html).each(function () {
-            layoutInfo.editable().focus();
-            handler.invoke('editor.insertNode', layoutInfo.editable(), this);
-          });
-        } else if (text) {
-          layoutInfo.editable().focus();
-          handler.invoke('editor.insertText', layoutInfo.editable(), text);
+        } else {
+          var insertNodefunc = function () {
+            layoutInfo.holder().summernote('insertNode', this);
+          };
+
+          for (var i = 0, len = dataTransfer.types.length; i < len; i++) {
+            var type = dataTransfer.types[i];
+            var content = dataTransfer.getData(type);
+
+            if (type.toLowerCase().indexOf('text') > -1) {
+              layoutInfo.holder().summernote('pasteHTML', content);
+            } else {
+              $(content).each(insertNodefunc);
+            }
+          }
         }
       }).on('dragover', false); // prevent default dragover event
     };

@@ -197,7 +197,7 @@ define([
       }, 0);
     };
 
-    var hScrollAndBlur = function (event) {
+    var hScroll = function (event) {
       var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
       //hide popover and handle when scrolled
       modules.popover.hide(layoutInfo.popover());
@@ -367,7 +367,7 @@ define([
       }
       layoutInfo.editable().on('mousedown', hMousedown);
       layoutInfo.editable().on('keyup mouseup', hKeyupAndMouseup);
-      layoutInfo.editable().on('scroll blur', hScrollAndBlur);
+      layoutInfo.editable().on('scroll', hScroll);
 
       // handler for clipboard
       modules.clipboard.attach(layoutInfo, options);
@@ -432,7 +432,8 @@ define([
         onChange: options.onChange,
         onImageUpload: options.onImageUpload,
         onImageUploadError: options.onImageUploadError,
-        onMediaDelete : options.onMediaDelete
+        onMediaDelete: options.onMediaDelete,
+        onToolbarClick: options.onToolbarClick
       });
 
       // Textarea: auto filling the code before form submit.

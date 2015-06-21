@@ -59,7 +59,7 @@ define([
 
           // if no url was given, copy text to url
           if (!linkInfo.url) {
-            linkInfo.url = linkInfo.text;
+            linkInfo.url = linkInfo.text || 'http://';
             toggleBtn($linkBtn, linkInfo.text);
           }
 
