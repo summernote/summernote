@@ -6,8 +6,12 @@ https://github.com/summernote/summernote/compare/master...develop
 
 ### 02. Build dist files on master
 ```bash
+# change branch
+git checkout master
+# fetch all changes
+git pull
 # build dist files
-grunt build
+grunt dist
 # now you can find dist files on `./dist`.
 ```
 
