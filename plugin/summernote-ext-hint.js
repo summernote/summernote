@@ -56,7 +56,6 @@
       var word = $popover.data('word');
 
       var $active = $popover.find('.active');
-      var html = $active.html();
 
       var content = this.content($active.data('item'));
 
@@ -90,7 +89,7 @@
 
     createTemplate : function (list) {
       var children  = [];
-      list = list || [] ;
+      list = list || [];
 
       for (var i = 0, len = list.length; i < len; i++) {
 
@@ -111,7 +110,8 @@
     /** Override **/
     match : /[a-z]+/g,
 
-    search : function(keyword , callback) {
+    search : function (keyword, callback) {
+      keyword = keyword || '';
       callback();
     },
 
@@ -122,7 +122,7 @@
      * @param {Object} search
      * @returns {Array}  created item list
      */
-    template : function(item) {
+    template : function (item) {
       return item;
     },
 
