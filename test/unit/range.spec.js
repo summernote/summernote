@@ -71,11 +71,12 @@ define([
     });
 
     test('rng.normalize', function () {
-      var rng, $cont, $p, $b, $u;
-      $cont = $('<div><p><b>b</b><u>u</u></p></div>');
+      var rng, $cont, $p, $b, $u, $s;
+      $cont = $('<div><p><b>b</b><u>u</u><s>s</s></p></div>');
       $p = $cont.find('p');
       $b = $cont.find('b');
       $u = $cont.find('u');
+      $s = $cont.find('s');
 
       rng = range.create($p[0], 0,  $p[0], 2).normalize();
       deepEqual([
@@ -90,6 +91,27 @@ define([
       ], [
         $b[0].firstChild, 1, $b[0].firstChild, 1
       ], 'rng.normalize on `<b>b</b>|<u>u</u>` should returns `<b>b|</b><u>u</u>`');
+
+      rng = range.create($p[0], 1,  $p[0], 1).normalize();
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $b[0].firstChild, 1, $b[0].firstChild, 1
+      ], 'rng.normalize on `<b>b</b>|<u>u</u>` should returns `<b>b|</b><u>u</u>`');
+
+      rng = range.create($b[0].firstChild, 1,  $s[0].firstChild, 0).normalize();
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $u[0].firstChild, 0, $u[0].firstChild, 1
+      ], 'rng.normalize on `<b>b|</b><u>u</u><s>|s</s>` should returns `<b>b</b><u>|u|</u><s>s</s>`');
+
+      rng = range.create($b[0].firstChild, 1,  $b[0].firstChild, 1).normalize();
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $b[0].firstChild, 1, $b[0].firstChild, 1
+      ], 'rng.normalize on `<b>b|</b><u>u</u><s>s</s>` should returns `<b>b|</b><u>u</u><s>s</s>`');
     });
 
     test('rng.insertNode', function () {
