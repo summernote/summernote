@@ -118,7 +118,6 @@ define([
      * @param {Number} eo - end offset
      */
     var WrappedRange = function (sc, so, ec, eo) {
-      var self = this;
       this.sc = sc;
       this.so = so;
       this.ec = ec;
