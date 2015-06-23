@@ -125,6 +125,16 @@ define([
       ], [
         $p[1], 0, $p[1], 0
       ], 'rng.normalize on `<p>text</p><p>|<br></p>` should returns `<p>text</p><p>|<br></p>`');
+
+      $cont = $('<div><p>text</p><p>text</p></div>');
+      $p = $cont.find('p');
+
+      rng = range.create($p[1], 0,  $p[1], 0).normalize();
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $p[1].firstChild, 0, $p[1].firstChild, 0
+      ], 'rng.normalize on `<p>text</p><p>|<b>b<b></p>` should returns `<p>text</p><p><b>|b</b></p>`');
     });
 
 

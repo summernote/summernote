@@ -201,9 +201,22 @@ define([
           if ((dom.isVisiblePoint(point) && !dom.isEdgePoint(point)) ||
               (dom.isVisiblePoint(point) && dom.isRightEdgePoint(point) && !isLeftToRight) ||
               (dom.isVisiblePoint(point) && dom.isLeftEdgePoint(point) && isLeftToRight) ||
-              (dom.isVisiblePoint(point) && dom.isEmpty(point.node) && dom.isPara(point.node)) ||
+              (dom.isVisiblePoint(point) && dom.isBlock(point.node) && dom.isEmpty(point.node)) ||
               (dom.isEditable(point.node) && dom.isEdgePoint(point))) {
             return point;
+          }
+
+          // point on block's edge
+          var block = dom.ancestor(point.node, dom.isBlock);
+          if ((dom.isLeftEdgePointOf(point, block) && !isLeftToRight) ||
+              (dom.isRightEdgePointOf(point, block) && isLeftToRight)) {
+
+            // returns point already on visible point
+            if (dom.isVisiblePoint(point)) {
+              return point;
+            }
+            // reverse direction 
+            isLeftToRight = !isLeftToRight;
           }
 
           var nextPoint = isLeftToRight ? dom.nextPointUntil(dom.nextPoint(point), dom.isVisiblePoint) :
