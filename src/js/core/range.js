@@ -201,6 +201,7 @@ define([
           if ((dom.isVisiblePoint(point) && !dom.isEdgePoint(point)) ||
               (dom.isVisiblePoint(point) && dom.isRightEdgePoint(point) && !isLeftToRight) ||
               (dom.isVisiblePoint(point) && dom.isLeftEdgePoint(point) && isLeftToRight) ||
+              (dom.isVisiblePoint(point) && dom.isEmpty(point.node) && dom.isPara(point.node)) ||
               (dom.isEditable(point.node) && dom.isEdgePoint(point))) {
             return point;
           }
