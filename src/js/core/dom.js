@@ -77,9 +77,14 @@ define([
 
         // frame mode
       } else {
-        makeFinder = function (sClassName) {
-          return function () { return $editor.find(sClassName); };
+        makeFinder = function (sClassName, sBaseElement) {
+          var $baseElement = sBaseElement ? $(sBaseElement) : $editor;
+          return function () { return $baseElement.find(sClassName); };
         };
+
+        var options = $editor.data('options');
+        var dialogHolder = (options && options.dialogsInBody) ? document.body : null;
+
         return {
           editor: function () { return $editor; },
           holder : function () { return $editor.data('holder'); },
@@ -90,7 +95,7 @@ define([
           statusbar: makeFinder('.note-statusbar'),
           popover: makeFinder('.note-popover'),
           handle: makeFinder('.note-handle'),
-          dialog: makeFinder('.note-dialog')
+          dialog: makeFinder('.note-dialog', dialogHolder)
         };
       }
     };

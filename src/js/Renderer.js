@@ -868,8 +868,10 @@ define([
       //06. handle(control selection, ...)
       $(tplHandles()).prependTo($editor);
 
+      var $dialogContainer = options.dialogsInBody ? document.body : $editor;
+
       //07. create Dialog
-      var $dialog = $(tplDialogs(langInfo, options)).prependTo($editor);
+      var $dialog = $(tplDialogs(langInfo, options)).prependTo($dialogContainer);
       $dialog.find('button.close, a.modal-close').click(function () {
         $(this).closest('.modal').modal('hide');
       });
