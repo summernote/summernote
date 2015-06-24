@@ -111,7 +111,7 @@ define([
      * @return {Boolean} false if range is no
      */
     this.currentStyle = function (target) {
-      var rng = range.create();
+      var rng = range.create().normalize();
       return rng ? rng.isOnEditable() && style.current(rng, target) : false;
     };
 

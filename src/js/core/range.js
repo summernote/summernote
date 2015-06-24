@@ -194,21 +194,38 @@ define([
 
         /**
          * @param {BoundaryPoint} point
+         * @param {Boolean} isLeftToRight
          * @return {BoundaryPoint}
          */
-        var getVisiblePoint = function (point) {
-          if (!dom.isVisiblePoint(point)) {
-            if (dom.isLeftEdgePoint(point)) {
-              point = dom.nextPointUntil(point, dom.isVisiblePoint);
-            } else {
-              point = dom.prevPointUntil(point, dom.isVisiblePoint);
-            }
+        var getVisiblePoint = function (point, isLeftToRight) {
+          if ((dom.isVisiblePoint(point) && !dom.isEdgePoint(point)) ||
+              (dom.isVisiblePoint(point) && dom.isRightEdgePoint(point) && !isLeftToRight) ||
+              (dom.isVisiblePoint(point) && dom.isLeftEdgePoint(point) && isLeftToRight) ||
+              (dom.isVisiblePoint(point) && dom.isBlock(point.node) && dom.isEmpty(point.node)) ||
+              (dom.isEditable(point.node) && dom.isEdgePoint(point))) {
+            return point;
           }
-          return point;
+
+          // point on block's edge
+          var block = dom.ancestor(point.node, dom.isBlock);
+          if ((dom.isLeftEdgePointOf(point, block) && !isLeftToRight) ||
+              (dom.isRightEdgePointOf(point, block) && isLeftToRight)) {
+
+            // returns point already on visible point
+            if (dom.isVisiblePoint(point)) {
+              return point;
+            }
+            // reverse direction 
+            isLeftToRight = !isLeftToRight;
+          }
+
+          var nextPoint = isLeftToRight ? dom.nextPointUntil(dom.nextPoint(point), dom.isVisiblePoint) :
+                                          dom.prevPointUntil(dom.prevPoint(point), dom.isVisiblePoint);
+          return nextPoint || point;
         };
 
-        var startPoint = getVisiblePoint(this.getStartPoint());
-        var endPoint = getVisiblePoint(this.getEndPoint());
+        var endPoint = getVisiblePoint(this.getEndPoint(), false);
+        var startPoint = this.isCollapsed() ? endPoint : getVisiblePoint(this.getStartPoint(), true);
 
         return new WrappedRange(
           startPoint.node,
