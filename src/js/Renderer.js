@@ -949,6 +949,9 @@ define([
       } else {
         $holder.html(layoutInfo.editable().html());
 
+        if (options.dialogsInBody) {
+          layoutInfo.dialog().remove();
+        }
         layoutInfo.editor().remove();
         $holder.show();
       }
