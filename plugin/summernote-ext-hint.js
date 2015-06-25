@@ -183,6 +183,7 @@
       var $popover = $('<div class="list-group" />').css({
         position: 'absolute',
         'max-height': 300,
+        'z-index': 999,
         'overflow-y': 'scroll',
         'display': 'none'
       });
