@@ -155,6 +155,7 @@
       var $popover = $('<div />').addClass('list-group').css({
         'position': 'absolute',
         'max-height': 300,
+        'z-index' : 999,
         'overflow-y' : 'auto',
         'display' : 'none'
       });
