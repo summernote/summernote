@@ -79,7 +79,7 @@ define([
                '<div class="popover-content">' +
                '</div>' +
              '</div>');
-      
+
       $popover.find('.popover-content').append(content);
       return $popover;
     };
@@ -111,6 +111,23 @@ define([
              '</div>';
     };
 
+    /**
+     * bootstrap dropdown template
+     *
+     * @param {String} contents
+     * @param {String} [className='']
+     * @param {String} [tag='']
+     */
+    var tplDropdown = function (contents, className, tag) {
+      var classes = 'dropdown-menu' + (className ? ' ' + className : '');
+      tag = tag || 'ul';
+      if (contents instanceof Array) {
+        contents = contents.join('');
+      }
+
+      return '<' + tag + ' class="' + classes + '">' + contents + '</' + tag + '>';
+    };
+
     var tplButtonInfo = {
       picture: function (lang, options) {
         return tplIconButton(options.iconPrefix + options.icons.image.image, {
@@ -127,17 +144,18 @@ define([
         });
       },
       table: function (lang, options) {
-        var dropdown = '<ul class="note-table dropdown-menu">' +
-                         '<div class="note-dimension-picker">' +
-                           '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>' +
-                           '<div class="note-dimension-picker-highlighted"></div>' +
-                           '<div class="note-dimension-picker-unhighlighted"></div>' +
-                         '</div>' +
-                         '<div class="note-dimension-display"> 1 x 1 </div>' +
-                       '</ul>';
+        var dropdown = [
+          '<div class="note-dimension-picker">',
+          '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>',
+          '<div class="note-dimension-picker-highlighted"></div>',
+          '<div class="note-dimension-picker-unhighlighted"></div>',
+          '</div>',
+          '<div class="note-dimension-display"> 1 x 1 </div>'
+        ];
+
         return tplIconButton(options.iconPrefix + options.icons.table.table, {
           title: lang.table.table,
-          dropdown: dropdown
+          dropdown: tplDropdown(dropdown, 'note-table')
         });
       },
       style: function (lang, options) {
@@ -153,7 +171,7 @@ define([
 
         return tplIconButton(options.iconPrefix + options.icons.style.style, {
           title: lang.style.style,
-          dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
+          dropdown: tplDropdown(items)
         });
       },
       fontname: function (lang, options) {
@@ -170,14 +188,14 @@ define([
 
         var hasDefaultFont = agent.isFontInstalled(options.defaultFontName);
         var defaultFontName = (hasDefaultFont) ? options.defaultFontName : realFontList[0];
-          
+
         var label = '<span class="note-current-fontname">' +
                         defaultFontName +
                      '</span>';
         return tplButton(label, {
           title: lang.font.name,
           className: 'note-fontname',
-          dropdown: '<ul class="dropdown-menu note-check">' + items + '</ul>'
+          dropdown: tplDropdown(items, 'note-check')
         });
       },
       fontsize: function (lang, options) {
@@ -191,43 +209,39 @@ define([
         return tplButton(label, {
           title: lang.font.size,
           className: 'note-fontsize',
-          dropdown: '<ul class="dropdown-menu note-check">' + items + '</ul>'
+          dropdown: tplDropdown(items, 'note-check')
         });
       },
       color: function (lang, options) {
         var colorButtonLabel = '<i class="' +
                                   options.iconPrefix + options.icons.color.recent +
-                                '" style="color:black;background-color:yellow;"></i>',
-          colorButton = tplButton(colorButtonLabel, {
+                                '" style="color:black;background-color:yellow;"></i>';
+
+        var colorButton = tplButton(colorButtonLabel, {
           className: 'note-recent-color',
           title: lang.color.recent,
           event: 'color',
           value: '{"backColor":"yellow"}'
         });
 
-        var dropdown = '<ul class="dropdown-menu">' +
-                         '<li>' +
-                           '<div class="btn-group">' +
-                             '<div class="note-palette-title">' + lang.color.background + '</div>' +
-                             '<div class="note-color-reset" data-event="backColor"' +
-                               ' data-value="inherit" title="' + lang.color.transparent + '">' +
-                               lang.color.setTransparent +
-                             '</div>' +
-                             '<div class="note-color-palette" data-target-event="backColor"></div>' +
-                           '</div>' +
-                           '<div class="btn-group">' +
-                             '<div class="note-palette-title">' + lang.color.foreground + '</div>' +
-                             '<div class="note-color-reset" data-event="foreColor" data-value="inherit" title="' + lang.color.reset + '">' +
-                               lang.color.resetToDefault +
-                             '</div>' +
-                             '<div class="note-color-palette" data-target-event="foreColor"></div>' +
-                           '</div>' +
-                         '</li>' +
-                       '</ul>';
+        var items = [
+          '<li><div class="btn-group">',
+          '<div class="note-palette-title">' + lang.color.background + '</div>',
+          '<div class="note-color-reset" data-event="backColor"',
+          ' data-value="inherit" title="' + lang.color.transparent + '">' + lang.color.setTransparent + '</div>',
+          '<div class="note-color-palette" data-target-event="backColor"></div>',
+          '</div><div class="btn-group">',
+          '<div class="note-palette-title">' + lang.color.foreground + '</div>',
+          '<div class="note-color-reset" data-event="foreColor" data-value="inherit" title="' + lang.color.reset + '">',
+          lang.color.resetToDefault,
+          '</div>',
+          '<div class="note-color-palette" data-target-event="foreColor"></div>',
+          '</div></li>'
+        ];
 
         var moreButton = tplButton('', {
           title: lang.color.more,
-          dropdown: dropdown
+          dropdown: tplDropdown(items, 'note-check')
         });
 
         return colorButton + moreButton;
@@ -313,18 +327,17 @@ define([
           event: 'indent'
         });
 
-        var dropdown = '<div class="dropdown-menu">' +
-                         '<div class="note-align btn-group">' +
-                           leftButton + centerButton + rightButton + justifyButton +
-                         '</div>' +
-                         '<div class="note-list btn-group">' +
-                           indentButton + outdentButton +
-                         '</div>' +
-                       '</div>';
+        var dropdown = [
+          '<div class="note-align btn-group">',
+          leftButton + centerButton + rightButton + justifyButton,
+          '</div><div class="note-list btn-group">',
+          indentButton + outdentButton,
+          '</div>'
+        ];
 
         return tplIconButton(options.iconPrefix + options.icons.paragraph.paragraph, {
           title: lang.paragraph.paragraph,
-          dropdown: dropdown
+          dropdown: tplDropdown(dropdown, '', 'div')
         });
       },
       height: function (lang, options) {
@@ -336,7 +349,8 @@ define([
 
         return tplIconButton(options.iconPrefix + options.icons.font.height, {
           title: lang.font.height,
-          dropdown: '<ul class="dropdown-menu note-check">' + items + '</ul>'
+          dropdown: tplDropdown(items, 'note-check')
+          // dropdown: '<ul class="dropdown-menu note-check">' + items + '</ul>'
         });
 
       },
@@ -468,13 +482,13 @@ define([
         var $content = $('<div />');
         for (var idx = 0, len = options.airPopover.length; idx < len; idx ++) {
           var group = options.airPopover[idx];
-          
+
           var $group = $('<div class="note-' + group[0] + ' btn-group">');
           for (var i = 0, lenGroup = group[1].length; i < lenGroup; i++) {
             var $button = $(tplButtonInfo[group[1][i]](lang, options));
 
             $button.attr('data-name', group[1][i]);
-            
+
             $group.append($button);
           }
           $content.append($group);
@@ -484,14 +498,14 @@ define([
       };
 
       var $notePopover = $('<div class="note-popover" />');
-      
+
       $notePopover.append(tplLinkPopover());
       $notePopover.append(tplImagePopover());
-      
+
       if (options.airMode) {
         $notePopover.append(tplAirPopover());
       }
-      
+
       return $notePopover;
     };
 
@@ -854,7 +868,7 @@ define([
         }
         $toolbar.append($group);
       }
-      
+
       $toolbar.prependTo($editor);
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       createPalette($toolbar, options);
