@@ -114,18 +114,18 @@ define([
     /**
      * bootstrap dropdown template
      *
-     * @param {String} contents
+     * @param {String|String[]} contents
      * @param {String} [className='']
-     * @param {String} [tag='']
+     * @param {String} [nodeName='']
      */
-    var tplDropdown = function (contents, className, tag) {
+    var tplDropdown = function (contents, className, nodeName) {
       var classes = 'dropdown-menu' + (className ? ' ' + className : '');
-      tag = tag || 'ul';
+      nodeName = nodeName || 'ul';
       if (contents instanceof Array) {
         contents = contents.join('');
       }
 
-      return '<' + tag + ' class="' + classes + '">' + contents + '</' + tag + '>';
+      return '<' + nodeName + ' class="' + classes + '">' + contents + '</' + nodeName + '>';
     };
 
     var tplButtonInfo = {
@@ -241,7 +241,7 @@ define([
 
         var moreButton = tplButton('', {
           title: lang.color.more,
-          dropdown: tplDropdown(items, 'note-check')
+          dropdown: tplDropdown(items)
         });
 
         return colorButton + moreButton;
@@ -350,7 +350,6 @@ define([
         return tplIconButton(options.iconPrefix + options.icons.font.height, {
           title: lang.font.height,
           dropdown: tplDropdown(items, 'note-check')
-          // dropdown: '<ul class="dropdown-menu note-check">' + items + '</ul>'
         });
 
       },
