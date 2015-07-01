@@ -96,7 +96,6 @@
     searchKeyword : function (keyword, callback) {
 
       if (this.match.test(keyword)) {
-
         var matches = this.match.exec(keyword);
         this.search(matches[1], callback);
       } else {
@@ -106,13 +105,13 @@
 
 
     createTemplate : function (list) {
-      var children  = [];
+      var items  = [];
       list = list || [];
 
       for (var i = 0, len = list.length; i < len; i++) {
         var $item = $('<a class="list-group-item"></a>');
-        $item.append(this.createItem(list[i]));
-        $item.data('keyword', list[i]);
+        $item.append(this.template(list[i]));
+        $item.data('item', list[i]);
         items.push($item);
       }
 
@@ -208,13 +207,13 @@
       });
 
       $note.on('summernote.keyup', function (customEvent, nativeEvent) {
-        if (DROPDOWN_KEYCODES.indexOf(nativeEvent.keyCode) === -1) {
-          var wordRange = $(this).summernote('createRange').getWordRange();
-          var result = self.searchKeyword(wordRange.toString());
-          if (!result || !result.list.length) {
-            $popover.hide();
-            return;
+        if (DROPDOWN_KEYCODES.indexOf(nativeEvent.keyCode) > -1) {
+          if (nativeEvent.keyCode === KEY.ENTER) {
+            if ($popover.css('display') === 'block') {
+              return false;
+            }
           }
+
         } else {
           var range = $(this).summernote('createRange');
 
@@ -239,7 +238,7 @@
             $popover.html(self.createTemplate(searchList)).css({
               left: rect.left,
               top: rect.top + rect.height
-            }).data('word', word).show();
+            }).data('wordRange', word).show();
 
           });
         }
