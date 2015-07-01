@@ -574,8 +574,10 @@ define([
       var linkUrl = linkInfo.url;
       var linkText = linkInfo.text;
       var isNewWindow = linkInfo.newWindow;
-      var rng = linkInfo.range;
+      var rng = linkInfo.range || this.createRange($editable);
       var isTextChanged = rng.toString() !== linkText;
+
+      options = options || dom.makeLayoutInfo($editable).editor().data('options');
 
       beforeCommand($editable);
 
