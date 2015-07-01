@@ -154,7 +154,7 @@
       var $note = layoutInfo.holder();
       var $popover = $('<div />').addClass('list-group').css({
         'position': 'absolute',
-        'max-height': 300,
+        'max-height': 150,
         'z-index' : 999,
         'overflow' : 'hidden',
         'display' : 'none'
