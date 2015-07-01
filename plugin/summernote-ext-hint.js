@@ -10,7 +10,6 @@
 }(function ($) {
   // import core class
   var range = $.summernote.core.range;
-  var list = $.summernote.core.list;
 
   var KEY = {
     UP: 38,
@@ -18,7 +17,7 @@
     ENTER: 13
   };
 
-  var DROPDOWN_KEYCODES = [38, 40, 13];
+  var DROPDOWN_KEYCODES = [KEY.UP, KEY.DOWN, KEY.ENTER];
 
   /**
    * @class plugin.hint
@@ -26,8 +25,43 @@
    * Hint Plugin
    */
   $.summernote.addPlugin({
-    /** @property {String} name name of plugin */
+    /**
+     * name name of plugin
+     * @property {String}
+     **/
     name: 'hint',
+
+    /**
+     * @property {Regex}
+     * @interface
+     */
+    match: /[a-z]+/g,
+
+    /**
+     * create list item template
+     *
+     * @interface
+     * @param {Object} search
+     * @returns {Array}  created item list
+     */
+    template: null,
+
+    /**
+     * create inserted content to add  in summernote
+     *
+     * @interface
+     * @param {String} html
+     * @param {String} keyword
+     * @return {HTMLEleemnt|String}
+     */
+    content: null,
+
+    /**
+     * load search list
+     *
+     * @interface
+     */
+    load: null,
 
     /**
      * @param {jQuery} $node
@@ -93,8 +127,7 @@
      * @param {String} keyword
      * @return {Object|null}
      */
-    searchKeyword : function (keyword, callback) {
-
+    searchKeyword: function (keyword, callback) {
       if (this.match.test(keyword)) {
         var matches = this.match.exec(keyword);
         this.search(matches[1], callback);
@@ -104,7 +137,7 @@
     },
 
 
-    createTemplate : function (list) {
+    createTemplate: function (list) {
       var items  = [];
       list = list || [];
 
@@ -122,45 +155,9 @@
       return items;
     },
 
-
-    /** Override **/
-    match : /[a-z]+/g,
-
-    search : function (keyword, callback) {
+    search: function (keyword, callback) {
       keyword = keyword || '';
       callback();
-    },
-
-    /**
-     * create list item template
-     *
-     * @override
-     * @param {Object} search
-     * @returns {Array}  created item list
-     */
-    template : function (item) {
-      return item;
-    },
-
-    /**
-     * create inserted content to add  in summernote
-     *
-     * @override
-     * @param {String} html
-     * @param {String} keyword
-     * @return {HTMLEleemnt|String}
-     */
-    content : function (item) {
-      return item;
-    },
-
-    /**
-     * load search list
-     *
-     * @override
-     */
-    load : function () {
-
     },
 
     init : function (layoutInfo) {
@@ -216,11 +213,9 @@
 
         } else {
           var range = $(this).summernote('createRange');
-
           var word = range.getWordRange();
 
           self.searchKeyword(word.toString(), function (searchList) {
-
             if (!searchList) {
               $popover.hide();
               return;
@@ -234,12 +229,12 @@
             layoutInfo.popover().append($popover);
 
             // popover below placeholder.
-            var rect = list.last(word.getClientRects());
+            var rects = word.getClientRects();
+            var rect = rects[rects.length -1];
             $popover.html(self.createTemplate(searchList)).css({
               left: rect.left,
               top: rect.top + rect.height
             }).data('wordRange', word).show();
-
           });
         }
       });
