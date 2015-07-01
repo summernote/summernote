@@ -1,5 +1,7 @@
 {
   "name": "summernote",
+  "homepage": "http://summernote.org",
+  "license": "MIT",
   "main": [
     "./dist/summernote.js",
     "./dist/summernote.css"

@@ -11,6 +11,15 @@
   // import core class
   var range = $.summernote.core.range;
   var list = $.summernote.core.list;
+
+  var KEY = {
+    UP: 38,
+    DOWN: 40,
+    ENTER: 13
+  };
+
+  var DROPDOWN_KEYCODES = [38, 40, 13];
+
   /**
    * @class plugin.hint
    *
@@ -20,60 +29,69 @@
     /** @property {String} name name of plugin */
     name: 'hint',
 
-    scroll : function ($element) {
-
-      var $parent = $element.parent();
-      $parent[0].scrollTop = $element[0].offsetTop - ($parent.innerHeight() / 2);
+    /**
+     * @param {jQuery} $node
+     */
+    scrollTo: function ($node) {
+      var $parent = $node.parent();
+      $parent[0].scrollTop = $node[0].offsetTop - ($parent.innerHeight() / 2);
     },
 
-    bottom : function ($popover) {
+    /**
+     * @param {jQuery} $popover
+     */
+    moveDown: function ($popover) {
       var index = $popover.find('.active').index();
-      this.active($popover, (index === -1) ? 0 : (index + 1) % $popover.children().length);
+      this.activate($popover, (index === -1) ? 0 : (index + 1) % $popover.children().length);
     },
 
-    top : function ($popover) {
+    /**
+     * @param {jQuery} $popover
+     */
+    moveUp: function ($popover) {
       var index = $popover.find('.active').index();
-      this.active($popover, (index === -1) ? 0 : (index - 1) % $popover.children().length);
+      this.activate($popover, (index === -1) ? 0 : (index - 1) % $popover.children().length);
     },
 
-    active : function ($popover, i) {
-      i = i || 0;
+    /**
+     * @param {jQuery} $popover
+     * @param {Number} i
+     */
+    activate: function ($popover, idx) {
+      idx = idx || 0;
 
-      if (i < 0) {
-        i = 0;
+      if (idx < 0) {
+        idx = $popover.children().length - 1;
       }
 
       $popover.children().removeClass('active');
-      var $element = $popover.children().eq(i);
-      $element.addClass('active');
+      var $activeItem = $popover.children().eq(idx);
+      $activeItem.addClass('active');
 
-      this.scroll($element);
-
+      this.scrollTo($activeItem);
     },
 
-
-    replace : function ($popover) {
-      var word = $popover.data('word');
-
-      var $active = $popover.find('.active');
-
-      var content = this.content($active.data('item'));
+    /**
+     * @param {jQuery} $popover
+     */
+    replace: function ($popover) {
+      var wordRange = $popover.data('wordRange');
+      var $activeItem = $popover.find('.active');
+      var content = this.content($activeItem.data('item'));
 
       if (typeof content === 'string') {
         content = document.createTextNode(content);
       }
 
-      var contents = word.insertNode(content);
-      range.createFromNode(list.last(contents) || contents).collapse().select();
+      $popover.removeData('wordRange');
+
+      wordRange.insertNode(content);
+      range.createFromNode(content).collapse().select();
     },
 
     /**
-     * search keyword in list
-     *
-     * @async
-     * @param keyword
-     * @param callback
-     * @returns {{type: string, list: Array}}
+     * @param {String} keyword
+     * @return {Object|null}
      */
     searchKeyword : function (keyword, callback) {
 
@@ -92,18 +110,17 @@
       list = list || [];
 
       for (var i = 0, len = list.length; i < len; i++) {
-
-        var div = $('<a class="list-group-item" ></a>');
-        div.append(this.template(list[i]));
-        div.data('item', list[i]);
-        children.push(div);
+        var $item = $('<a class="list-group-item"></a>');
+        $item.append(this.createItem(list[i]));
+        $item.data('keyword', list[i]);
+        items.push($item);
       }
 
-      if (children[0]) {
-        children[0].addClass('active');
+      if (items.length) {
+        items[0].addClass('active');
       }
 
-      return children;
+      return items;
     },
 
 
@@ -125,7 +142,6 @@
     template : function (item) {
       return item;
     },
-
 
     /**
      * create inserted content to add  in summernote
@@ -172,37 +188,32 @@
       });
 
       $note.on('summernote.keydown', function (customEvent, nativeEvent) {
-        if (nativeEvent.keyCode === 40) {
-          if ($popover.css('display') === 'block') {
-            nativeEvent.preventDefault();
-            self.bottom($popover);
-          }
+        if ($popover.css('display') !== 'block') {
+          return;
+        }
 
-        } else if (nativeEvent.keyCode === 38) {
-          if ($popover.css('display') === 'block') {
-            nativeEvent.preventDefault();
-            self.top($popover);
+        if (nativeEvent.keyCode === KEY.DOWN) {
+          nativeEvent.preventDefault();
+          self.moveDown($popover);
+        } else if (nativeEvent.keyCode === KEY.UP) {
+          nativeEvent.preventDefault();
+          self.moveUp($popover);
+        } else if (nativeEvent.keyCode === KEY.ENTER) {
+          nativeEvent.preventDefault();
+          self.replace($popover);
 
-          }
-        } else if (nativeEvent.keyCode === 13) {
-          if ($popover.css('display') === 'block') {
-            nativeEvent.preventDefault();
-            self.replace($popover);
-
-            $popover.hide();
-            $note.summernote('focus');
-
-          }
+          $popover.hide();
+          $note.summernote('focus');
         }
       });
 
       $note.on('summernote.keyup', function (customEvent, nativeEvent) {
-
-        if (nativeEvent.keyCode === 40 || nativeEvent.keyCode === 38 || nativeEvent.keyCode === 13) {
-          if (nativeEvent.keyCode === 13) {
-            if ($popover.css('display') === 'block') {
-              return false;
-            }
+        if (DROPDOWN_KEYCODES.indexOf(nativeEvent.keyCode) === -1) {
+          var wordRange = $(this).summernote('createRange').getWordRange();
+          var result = self.searchKeyword(wordRange.toString());
+          if (!result || !result.list.length) {
+            $popover.hide();
+            return;
           }
         } else {
           var range = $(this).summernote('createRange');
@@ -232,13 +243,16 @@
 
           });
         }
-
       });
 
       this.load($popover);
     },
-    events : {
-      ENTER : function () {
+
+    // FIXME Summernote doesn't support event pipeline yet.
+    //  - Plugin -> Base Code
+    events: {
+      ENTER: function () {
+        // prevent ENTER key
         return false;
       }
     }

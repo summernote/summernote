@@ -23,10 +23,11 @@
     "worker": true,
     "es3": true,
     "globals": {
-        "define": true,
-        "test": true,
-        "ok": true,
-        "equal": true,
-        "deepEqual": true
+      "JSON": true,
+      "define": true,
+      "test": true,
+      "ok": true,
+      "equal": true,
+      "deepEqual": true
     }
 }
