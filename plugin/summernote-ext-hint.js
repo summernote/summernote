@@ -230,7 +230,7 @@
 
             // popover below placeholder.
             var rects = word.getClientRects();
-            var rect = rects[rects.length -1];
+            var rect = rects[rects.length - 1];
             $popover.html(self.createTemplate(searchList)).css({
               left: rect.left,
               top: rect.top + rect.height
