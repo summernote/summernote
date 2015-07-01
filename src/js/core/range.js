@@ -201,8 +201,7 @@ define([
           if ((dom.isVisiblePoint(point) && !dom.isEdgePoint(point)) ||
               (dom.isVisiblePoint(point) && dom.isRightEdgePoint(point) && !isLeftToRight) ||
               (dom.isVisiblePoint(point) && dom.isLeftEdgePoint(point) && isLeftToRight) ||
-              (dom.isVisiblePoint(point) && dom.isBlock(point.node) && dom.isEmpty(point.node)) ||
-              (dom.isEditable(point.node) && dom.isEdgePoint(point))) {
+              (dom.isVisiblePoint(point) && dom.isBlock(point.node) && dom.isEmpty(point.node))) {
             return point;
           }
 
@@ -459,20 +458,26 @@ define([
           return new WrappedRange(sc.firstChild, 0, sc.firstChild, 0);
         }
 
+        /**
+         * [workaround] firefox often create range on not visible point. so normalize here.
+         *  - firefox: |<p>text</p>|
+         *  - chrome: <p>|text|</p>
+         */
+        var rng = this.normalize();
         if (dom.isParaInline(sc) || dom.isPara(sc)) {
-          return this.normalize();
+          return rng;
         }
 
         // find inline top ancestor
         var topAncestor;
-        if (dom.isInline(sc)) {
-          var ancestors = dom.listAncestor(sc, func.not(dom.isInline));
+        if (dom.isInline(rng.sc)) {
+          var ancestors = dom.listAncestor(rng.sc, func.not(dom.isInline));
           topAncestor = list.last(ancestors);
           if (!dom.isInline(topAncestor)) {
-            topAncestor = ancestors[ancestors.length - 2] || sc.childNodes[so];
+            topAncestor = ancestors[ancestors.length - 2] || rng.sc.childNodes[rng.so];
           }
         } else {
-          topAncestor = sc.childNodes[so > 0 ? so - 1 : 0];
+          topAncestor = rng.sc.childNodes[rng.so > 0 ? rng.so - 1 : 0];
         }
 
         // siblings not in paragraph

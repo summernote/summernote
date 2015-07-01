@@ -134,7 +134,17 @@ define([
         rng.sc, rng.so, rng.ec, rng.eo
       ], [
         $p[1].firstChild, 0, $p[1].firstChild, 0
-      ], 'rng.normalize on `<p>text</p><p>|<b>b<b></p>` should returns `<p>text</p><p><b>|b</b></p>`');
+      ], 'rng.normalize on `<p>text</p><p>|text</p>` should returns `<p>text</p><p>|text</b></p>`');
+
+      $cont = $('<div class="note-editable"><p>text</p><p>text</p></div>');
+      $p = $cont.find('p');
+
+      rng = range.create($cont[0], 0,  $cont[0], 2).normalize();
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $p[0].firstChild, 0, $p[1].firstChild, 4
+      ], 'rng.normalize on `|<p>text</p><p>text</p>|` should returns `<p>|text</p><p>text|</b></p>`');
     });
 
 
