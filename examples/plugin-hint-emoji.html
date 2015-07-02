@@ -58,7 +58,7 @@
               return '<img src="' + content + '" width="20" /> :' + item + ':';
             },
 
-            match: /\B:([\-+\w]*)$/,
+            match: /\B:([\-+\w]+)$/,
 
             search: function (keyword, callback) {
               callback($.grep(this.emoji, function (item) {

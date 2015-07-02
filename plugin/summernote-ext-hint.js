@@ -164,26 +164,28 @@
       var self = this;
 
       var $note = layoutInfo.holder();
-      var $popover = $('<div />').addClass('list-group').css({
+      var $popover = $('<div />').addClass('hint-group').css({
         'position': 'absolute',
         'max-height': 150,
         'z-index' : 999,
         'overflow' : 'hidden',
-        'display' : 'none'
+        'display' : 'none',
+        'border' : '1px solid gray',
+        'border-radius' : '5px'
       });
 
-      $popover.on('click', '.list-group-item', function () {
+      $popover.on('click', '.list-group-item', function HintItemClick() {
         self.replace($popover);
 
         $popover.hide();
         $note.summernote('focus');
       });
 
-      $(document).on('click', function () {
+      $(document).on('click', function HintClick() {
         $popover.hide();
       });
 
-      $note.on('summernote.keydown', function (customEvent, nativeEvent) {
+      $note.on('summernote.keydown', function HintKeyDown(customEvent, nativeEvent) {
         if ($popover.css('display') !== 'block') {
           return;
         }
@@ -203,7 +205,7 @@
         }
       });
 
-      $note.on('summernote.keyup', function (customEvent, nativeEvent) {
+      $note.on('summernote.keyup', function HintKeyUp(customEvent, nativeEvent) {
         if (DROPDOWN_KEYCODES.indexOf(nativeEvent.keyCode) > -1) {
           if (nativeEvent.keyCode === KEY.ENTER) {
             if ($popover.css('display') === 'block') {
@@ -212,35 +214,41 @@
           }
 
         } else {
-          var range = $(this).summernote('createRange');
-          var word = range.getWordRange();
 
-          self.searchKeyword(word.toString(), function (searchList) {
-            if (!searchList) {
-              $popover.hide();
-              return;
-            }
+          setTimeout(function () {
+            var range = $note.summernote('createRange');
+            var word = range.getWordRange();
 
-            if (searchList && !searchList.length) {
-              $popover.hide();
-              return;
-            }
+            self.searchKeyword(word.toString(), function (searchList) {
+              if (!searchList) {
+                $popover.hide();
+                return;
+              }
 
-            layoutInfo.popover().append($popover);
+              if (searchList && !searchList.length) {
+                $popover.hide();
+                return;
+              }
 
-            // popover below placeholder.
-            var rects = word.getClientRects();
-            var rect = rects[rects.length - 1];
-            $popover.html(self.createTemplate(searchList)).css({
-              left: rect.left,
-              top: rect.top + rect.height
-            }).data('wordRange', word).show();
-          });
+              layoutInfo.popover().append($popover);
+
+              // popover below placeholder.
+              var rects = word.getClientRects();
+              var rect = rects[rects.length - 1];
+              $popover.html(self.createTemplate(searchList)).css({
+                left: rect.left,
+                top: rect.top + rect.height
+              }).data('wordRange', word).show();
+            });
+          }, self.throttle);
+
         }
       });
 
       this.load($popover);
     },
+
+    throttle : 50,
 
     // FIXME Summernote doesn't support event pipeline yet.
     //  - Plugin -> Base Code
