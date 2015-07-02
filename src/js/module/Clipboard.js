@@ -13,11 +13,11 @@ define([
         $paste = $('<div />').attr('contenteditable', true).css({
           position : 'absolute',
           left : -100000,
-          'opacity' : 0
+          opacity : 0
         });
         layoutInfo.editable().after($paste);
-        $paste.one('paste', hPasteClipboardImage);
-        
+        $paste.on('paste', hPasteClipboardImage);
+
         layoutInfo.editable().on('keydown', function (e) {
           if (e.ctrlKey && e.keyCode === 86) {  // CTRL+V
             handler.invoke('saveRange', layoutInfo.editable());
@@ -29,6 +29,15 @@ define([
       }
 
       layoutInfo.editable().on('paste', hPasteClipboardImage);
+    };
+
+    var hPasteContent = function (handler, $paste, $editable) {
+      var pasteContent = $('<div />').html($paste.html());
+
+      handler.invoke('restoreRange', $editable);
+      handler.invoke('focus', $editable);
+      handler.invoke('pasteHTML', $editable, pasteContent.html());
+      $paste.empty();
     };
 
     /**
@@ -47,6 +56,7 @@ define([
         var callbacks = $editable.data('callbacks');
         // only can run if it has onImageUpload method
         if (!callbacks.onImageUpload) {
+          hPasteContent(handler, $paste, $editable);
           return;
         }
 
@@ -57,13 +67,14 @@ define([
 
           var imgNode = $paste[0].firstChild;
           if (!imgNode) {
+            hPasteContent(handler, $paste, $editable);
             return;
           }
 
-          handler.invoke('restoreRange', $editable);
           if (!dom.isImg(imgNode)) {
-            handler.invoke('pasteHTML', $editable, $paste.html());
+            hPasteContent(handler, $paste, $editable);
           } else {
+            handler.invoke('restoreRange', $editable);
             var datauri = imgNode.src;
 
             var data = atob(datauri.split(',')[1]);
@@ -76,9 +87,9 @@ define([
             blob.name = 'clipboard.png';
             handler.invoke('focus', $editable);
             handler.insertImages(layoutInfo, [blob]);
-          }
 
-          $paste.remove();
+            $paste.empty();
+          }
 
         }, 0);
 
