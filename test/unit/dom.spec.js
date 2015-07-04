@@ -170,7 +170,7 @@ define(['jquery', 'summernote/core/dom', 'summernote/core/func'], function ($, d
     });
 
     var equalsToUpperCase = function (actual, expected, comment) {
-      ok(actual.toUpperCase() === expected.toUpperCase(), comment);
+      equal(actual.toUpperCase(), expected.toUpperCase(), comment);
     };
 
     test('dom.splitTree', function () {
