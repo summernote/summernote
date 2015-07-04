@@ -145,7 +145,8 @@ module.exports = function (grunt) {
       'all': {
         options: {
           urls: ['http://localhost:3000/test/unit.html'],
-          build: process.env.CI_BUILD_NUMBER,
+          build: process.env.TRAVIS_BUILD_NUMBER,
+          tag: process.env.TRAVIS_BRANCH,
           browsers: [{
             browserName: 'firefox',
             version: '38',
@@ -170,7 +171,7 @@ module.exports = function (grunt) {
   // test: unit test on test folder
   grunt.registerTask('test', ['jshint', 'qunit']);
 
-  // test: saucelab test
+  // test: saucelabs test
   grunt.registerTask('saucelabs-test', ['connect', 'saucelabs-qunit']);
 
   // dist: make dist files
