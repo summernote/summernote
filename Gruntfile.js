@@ -151,8 +151,8 @@ module.exports = function (grunt) {
             version: '38',
             platform: 'windows 8'
           }],
-          testname: 'qunit tests',
-          tags: ['master']
+          testname: 'unit test for summernote',
+          'public': 'public'
         }
       }
     }
