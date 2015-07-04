@@ -4,7 +4,9 @@ before_script:
 - node --version
 - npm --version
 - npm install -g grunt-cli
-script: grunt test --verbose
+script:
+- grunt test --verbose
+- grunt saucelabs-test
 before_deploy:
 - npm install
 - grunt build
