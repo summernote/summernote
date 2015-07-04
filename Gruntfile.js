@@ -146,8 +146,12 @@ module.exports = function (grunt) {
         options: {
           urls: ['http://localhost:3000/test/unit.html'],
           build: process.env.TRAVIS_BUILD_NUMBER,
-          tags: [process.env.TRAVIS_PULL_REQUEST, process.env.TRAVIS_BRANCH],
+          tags: [process.env.TRAVIS_BRANCH, process.env.TRAVIS_PULL_REQUEST],
           browsers: [{
+            browserName: 'chrome',
+            version: '43',
+            platform: 'windows 8'
+          },{
             browserName: 'firefox',
             version: '38',
             platform: 'windows 8'
