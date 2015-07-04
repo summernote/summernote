@@ -171,7 +171,7 @@ module.exports = function (grunt) {
   grunt.registerTask('test', ['jshint', 'qunit']);
 
   // test: saucelab test
-  grunt.registerTask('saucelab-test', ['connect', 'saucelabs-qunit']);
+  grunt.registerTask('saucelabs-test', ['connect', 'saucelabs-qunit']);
 
   // dist: make dist files
   grunt.registerTask('dist', ['build', 'test', 'uglify', 'recess']);
