@@ -146,7 +146,7 @@ module.exports = function (grunt) {
         options: {
           urls: ['http://localhost:3000/test/unit.html'],
           build: process.env.TRAVIS_BUILD_NUMBER,
-          tag: process.env.TRAVIS_BRANCH,
+          tags: [process.env.TRAVIS_PULL_REQUEST, process.env.TRAVIS_BRANCH],
           browsers: [{
             browserName: 'firefox',
             version: '38',
