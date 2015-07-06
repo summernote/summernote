@@ -187,7 +187,7 @@
 
       $note.on('summernote.keydown', function HintKeyDown(customEvent, nativeEvent) {
         if ($popover.css('display') !== 'block') {
-          return;
+          return true;
         }
 
         if (nativeEvent.keyCode === KEY.DOWN) {
@@ -205,6 +205,7 @@
         }
       });
 
+      var timer = null;
       $note.on('summernote.keyup', function HintKeyUp(customEvent, nativeEvent) {
         if (DROPDOWN_KEYCODES.indexOf(nativeEvent.keyCode) > -1) {
           if (nativeEvent.keyCode === KEY.ENTER) {
@@ -215,7 +216,8 @@
 
         } else {
 
-          setTimeout(function () {
+          clearTimeout(timer);
+          timer = setTimeout(function () {
             var range = $note.summernote('createRange');
             var word = range.getWordRange();
 
@@ -253,9 +255,15 @@
     // FIXME Summernote doesn't support event pipeline yet.
     //  - Plugin -> Base Code
     events: {
-      ENTER: function () {
+      ENTER: function (e, editor, layoutInfo) {
+
+        if (layoutInfo.popover().find('.hint-group').css('display') !== 'block') {
+          // apply default enter key
+          layoutInfo.holder().summernote('insertParagraph');
+        }
+
         // prevent ENTER key
-        return false;
+        return true;
       }
     }
   });
