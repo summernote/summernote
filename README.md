@@ -6,7 +6,7 @@ Super simple WYSIWYG Editor using Bootstrap (3.0 and 2.x).
 [![Build Status](https://secure.travis-ci.org/summernote/summernote.png)](http://travis-ci.org/summernote/summernote)
 [![Dependency Status](https://gemnasium.com/summernote/summernote.svg)](https://gemnasium.com/summernote/summernote)
 
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/HackerWins.svg)](https://saucelabs.com/u/HackerWins)
+[![Sauce Test Status](https://saucelabs.com/buildstatus/HackerWins)](https://saucelabs.com/u/HackerWins)
 
 ### Summernote
 Summernote is a JavaScript library that helps you create WYSIWYG editors online.
