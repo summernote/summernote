@@ -155,6 +155,10 @@ module.exports = function (grunt) {
             browserName: 'firefox',
             version: '38',
             platform: 'windows 8'
+          }, {
+            browserName: 'safari',
+            version: '8.0',
+            platform: 'OS X 10.10'
           }],
           testname: 'unit test for summernote',
           'public': 'public'
