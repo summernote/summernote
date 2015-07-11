@@ -28,22 +28,50 @@
   <script type="text/javascript" src="../plugin/summernote-ext-hint.js"></script>
 
   <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
       $('.summernote').summernote({
         height: 200,
-        tabsize: 2,
-        toolbar: [
-  		    ['style', ['bold', 'italic', 'underline', 'clear']],
-  		    ['color', ['color']],
-  		    ['para', ['ul', 'ol', 'paragraph']],
-  		    ['height', ['height']],
-  		    ['table', ['table']]
-  		  ]
+        plugin: {
+          hint: {
+            loadEmoji: function (data) {
+              this.emoji = Object.keys(data);
+              this.emojiLink = data;
+            },
+
+            load: function ($popover) {
+              var self = this;
+              $.getJSON('https://api.github.com/emojis', function (data) {
+                self.loadEmoji(data);
+              });
+            },
+
+            content: function (item) {
+              var url = this.emojiLink[item];
+              if (url) {
+                return $('<img />').attr('src', url).css({width: 20})[0];
+              }
+              return '';
+            },
+
+            template: function (item) {
+              var content = this.emojiLink[item];
+              return '<img src="' + content + '" width="20" /> :' + item + ':';
+            },
+
+            match: /\B:([\-+\w]+)$/,
+
+            search: function (keyword, callback) {
+              callback($.grep(this.emoji, function (item) {
+                return item.indexOf(keyword)  === 0;
+              }));
+            }
+          }
+        }
       });
     });
   </script>
 </head>
 <body>
-<textarea class="summernote"><p>Seasons <b>coming up</b></p></textarea>
+<textarea class="summernote">Type text start with ":". For example, :) or :+1:.</textarea>
 </body>
 </html>

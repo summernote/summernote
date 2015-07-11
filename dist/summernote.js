@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.6.7
+ * Super simple wysiwyg editor on Bootstrap v0.6.10
  * http://summernote.org/
  *
  * summernote.js
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-05-17T06:58Z
+ * Date: 2015-07-01T04:12Z
  */
 (function (factory) {
   /* global define */
@@ -516,9 +516,14 @@
 
         // frame mode
       } else {
-        makeFinder = function (sClassName) {
-          return function () { return $editor.find(sClassName); };
+        makeFinder = function (sClassName, sBaseElement) {
+          var $baseElement = sBaseElement ? $(sBaseElement) : $editor;
+          return function () { return $baseElement.find(sClassName); };
         };
+
+        var options = $editor.data('options');
+        var dialogHolder = (options && options.dialogsInBody) ? document.body : null;
+
         return {
           editor: function () { return $editor; },
           holder : function () { return $editor.data('holder'); },
@@ -529,7 +534,7 @@
           statusbar: makeFinder('.note-statusbar'),
           popover: makeFinder('.note-popover'),
           handle: makeFinder('.note-handle'),
-          dialog: makeFinder('.note-dialog')
+          dialog: makeFinder('.note-dialog', dialogHolder)
         };
       }
     };
@@ -975,6 +980,26 @@
       }
 
       return true;
+    };
+
+    /**
+     * returns whether point is left edge of ancestor or not.
+     * @param {BoundaryPoint} point
+     * @param {Node} ancestor
+     * @return {Boolean}
+     */
+    var isLeftEdgePointOf = function (point, ancestor) {
+      return isLeftEdgePoint(point) && isLeftEdgeOf(point.node, ancestor);
+    };
+
+    /**
+     * returns whether point is right edge of ancestor or not.
+     * @param {BoundaryPoint} point
+     * @param {Node} ancestor
+     * @return {Boolean}
+     */
+    var isRightEdgePointOf = function (point, ancestor) {
+      return isRightEdgePoint(point) && isRightEdgeOf(point.node, ancestor);
     };
 
     /**
@@ -1485,6 +1510,8 @@
       isEdgePoint: isEdgePoint,
       isLeftEdgeOf: isLeftEdgeOf,
       isRightEdgeOf: isRightEdgeOf,
+      isLeftEdgePointOf: isLeftEdgePointOf,
+      isRightEdgePointOf: isRightEdgePointOf,
       prevPoint: prevPoint,
       nextPoint: nextPoint,
       isSamePoint: isSamePoint,
@@ -1710,21 +1737,38 @@
 
         /**
          * @param {BoundaryPoint} point
+         * @param {Boolean} isLeftToRight
          * @return {BoundaryPoint}
          */
-        var getVisiblePoint = function (point) {
-          if (!dom.isVisiblePoint(point)) {
-            if (dom.isLeftEdgePoint(point)) {
-              point = dom.nextPointUntil(point, dom.isVisiblePoint);
-            } else {
-              point = dom.prevPointUntil(point, dom.isVisiblePoint);
-            }
+        var getVisiblePoint = function (point, isLeftToRight) {
+          if ((dom.isVisiblePoint(point) && !dom.isEdgePoint(point)) ||
+              (dom.isVisiblePoint(point) && dom.isRightEdgePoint(point) && !isLeftToRight) ||
+              (dom.isVisiblePoint(point) && dom.isLeftEdgePoint(point) && isLeftToRight) ||
+              (dom.isVisiblePoint(point) && dom.isBlock(point.node) && dom.isEmpty(point.node)) ||
+              (dom.isEditable(point.node) && dom.isEdgePoint(point))) {
+            return point;
           }
-          return point;
+
+          // point on block's edge
+          var block = dom.ancestor(point.node, dom.isBlock);
+          if ((dom.isLeftEdgePointOf(point, block) && !isLeftToRight) ||
+              (dom.isRightEdgePointOf(point, block) && isLeftToRight)) {
+
+            // returns point already on visible point
+            if (dom.isVisiblePoint(point)) {
+              return point;
+            }
+            // reverse direction 
+            isLeftToRight = !isLeftToRight;
+          }
+
+          var nextPoint = isLeftToRight ? dom.nextPointUntil(dom.nextPoint(point), dom.isVisiblePoint) :
+                                          dom.prevPointUntil(dom.prevPoint(point), dom.isVisiblePoint);
+          return nextPoint || point;
         };
 
-        var startPoint = getVisiblePoint(this.getStartPoint());
-        var endPoint = getVisiblePoint(this.getEndPoint());
+        var endPoint = getVisiblePoint(this.getEndPoint(), false);
+        var startPoint = this.isCollapsed() ? endPoint : getVisiblePoint(this.getStartPoint(), true);
 
         return new WrappedRange(
           startPoint.node,
@@ -2271,7 +2315,7 @@
    */
   var defaults = {
     /** @property */
-    version: '0.6.7',
+    version: '0.6.10',
 
     /**
      * 
@@ -2319,6 +2363,72 @@
       prettifyHtml: true,           // enable prettifying html while toggling codeview
 
       iconPrefix: 'fa fa-',         // prefix for css icon classes
+
+      icons: {
+        font: {
+          bold: 'bold',
+          italic: 'italic',
+          underline: 'underline',
+          clear: 'eraser',
+          height: 'text-height',
+          strikethrough: 'strikethrough',
+          superscript: 'superscript',
+          subscript: 'subscript'
+        },
+        image: {
+          image: 'picture-o',
+          floatLeft: 'align-left',
+          floatRight: 'align-right',
+          floatNone: 'align-justify',
+          shapeRounded: 'square',
+          shapeCircle: 'circle-o',
+          shapeThumbnail: 'picture-o',
+          shapeNone: 'times',
+          remove: 'trash-o'
+        },
+        link: {
+          link: 'link',
+          unlink: 'unlink',
+          edit: 'edit'
+        },
+        table: {
+          table: 'table'
+        },
+        hr: {
+          insert: 'minus'
+        },
+        style: {
+          style: 'magic'
+        },
+        lists: {
+          unordered: 'list-ul',
+          ordered: 'list-ol'
+        },
+        options: {
+          help: 'question',
+          fullscreen: 'arrows-alt',
+          codeview: 'code'
+        },
+        paragraph: {
+          paragraph: 'align-left',
+          outdent: 'outdent',
+          indent: 'indent',
+          left: 'align-left',
+          center: 'align-center',
+          right: 'align-right',
+          justify: 'align-justify'
+        },
+        color: {
+          recent: 'font'
+        },
+        history: {
+          undo: 'undo',
+          redo: 'repeat'
+        },
+        misc: {
+          check: 'check'
+        }
+      },
 
       codemirror: {                 // codemirror options
         mode: 'text/html',
@@ -2430,8 +2540,6 @@
       onCreateLink: function (sLinkUrl) {
         if (sLinkUrl.indexOf('@') !== -1 && sLinkUrl.indexOf(':') === -1) {
           sLinkUrl =  'mailto:' + sLinkUrl;
-        } else if (sLinkUrl.indexOf('://') === -1) {
-          sLinkUrl = 'http://' + sLinkUrl;
         }
 
         return sLinkUrl;
@@ -3322,6 +3430,7 @@
    */
   var Editor = function (handler) {
 
+    var self = this;
     var style = new Style();
     var table = new Table();
     var typing = new Typing();
@@ -3410,7 +3519,7 @@
      * @return {Boolean} false if range is no
      */
     this.currentStyle = function (target) {
-      var rng = range.create();
+      var rng = range.create().normalize();
       return rng ? rng.isOnEditable() && style.current(rng, target) : false;
     };
 
@@ -3450,7 +3559,6 @@
       triggerOnChange($editable);
     };
 
-    var self = this;
     /**
      * @method beforeCommand
      * before command
@@ -3782,9 +3890,8 @@
      */
     this.fontSize = function ($editable, value) {
       var rng = range.create();
-      var isCollapsed = rng.isCollapsed();
 
-      if (isCollapsed) {
+      if (rng.isCollapsed()) {
         var spans = style.styleNodes(rng);
         var firstSpan = list.head(spans);
 
@@ -3852,7 +3959,7 @@
      * @param {jQuery} $editable
      */
     this.unlink = function ($editable) {
-      var rng = this.createRange();
+      var rng = this.createRange($editable);
       if (rng.isOnAnchor()) {
         var anchor = dom.ancestor(rng.sc, dom.isAnchor);
         rng = range.createFromNode(anchor);
@@ -4087,6 +4194,16 @@
              .collapse()
              .select();
       }
+    };
+
+    /**
+     * returns whether contents is empty or not.
+     *
+     * @param {jQuery} $editable
+     * @return {Boolean}
+     */
+    this.isEmpty = function ($editable) {
+      return dom.isEmpty($editable[0]) || dom.emptyPara === $editable.html();
     };
   };
 
@@ -4837,25 +4954,29 @@
 
       // attach dropImage
       $dropzone.on('drop', function (event) {
-        event.preventDefault();
 
         var dataTransfer = event.originalEvent.dataTransfer;
-        var html = dataTransfer.getData('text/html');
-        var text = dataTransfer.getData('text/plain');
-
         var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
 
         if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
+          event.preventDefault();
           layoutInfo.editable().focus();
           handler.insertImages(layoutInfo, dataTransfer.files);
-        } else if (html) {
-          $(html).each(function () {
-            layoutInfo.editable().focus();
-            handler.invoke('editor.insertNode', layoutInfo.editable(), this);
-          });
-        } else if (text) {
-          layoutInfo.editable().focus();
-          handler.invoke('editor.insertText', layoutInfo.editable(), text);
+        } else {
+          var insertNodefunc = function () {
+            layoutInfo.holder().summernote('insertNode', this);
+          };
+
+          for (var i = 0, len = dataTransfer.types.length; i < len; i++) {
+            var type = dataTransfer.types[i];
+            var content = dataTransfer.getData(type);
+
+            if (type.toLowerCase().indexOf('text') > -1) {
+              layoutInfo.holder().summernote('pasteHTML', content);
+            } else {
+              $(content).each(insertNodefunc);
+            }
+          }
         }
       }).on('dragover', false); // prevent default dragover event
     };
@@ -4863,7 +4984,29 @@
 
   var Clipboard = function (handler) {
 
+    var $paste;
+
     this.attach = function (layoutInfo) {
+
+      if (window.clipboardData || agent.isFF) {
+        $paste = $('<div />').attr('contenteditable', true).css({
+          position : 'absolute',
+          left : -100000,
+          'opacity' : 0
+        });
+        layoutInfo.editable().after($paste);
+        $paste.one('paste', hPasteClipboardImage);
+        
+        layoutInfo.editable().on('keydown', function (e) {
+          if (e.ctrlKey && e.keyCode === 86) {  // CTRL+V
+            handler.invoke('saveRange', layoutInfo.editable());
+            if ($paste) {
+              $paste.focus();
+            }
+          }
+        });
+      }
+
       layoutInfo.editable().on('paste', hPasteClipboardImage);
     };
 
@@ -4873,58 +5016,49 @@
      * @param {Event} event
      */
     var hPasteClipboardImage = function (event) {
+
       var clipboardData = event.originalEvent.clipboardData;
       var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
       var $editable = layoutInfo.editable();
 
       if (!clipboardData || !clipboardData.items || !clipboardData.items.length) {
+
         var callbacks = $editable.data('callbacks');
         // only can run if it has onImageUpload method
         if (!callbacks.onImageUpload) {
           return;
         }
 
-        // save cursor
-        handler.invoke('editor.saveNode', $editable);
-        handler.invoke('editor.saveRange', $editable);
-
-        $editable.html('');
-
         setTimeout(function () {
-          var $img = $editable.find('img');
-
-          // if img is no in clipboard, insert text or dom
-          if (!$img.length || $img[0].src.indexOf('data:') === -1) {
-            var html = $editable.html();
-
-            handler.invoke('editor.restoreNode', $editable);
-            handler.invoke('editor.restoreRange', $editable);
-
-            handler.invoke('editor.focus', $editable);
-            try {
-              handler.invoke('editor.pasteHTML', $editable, html);
-            } catch (ex) {
-              handler.invoke('editor.insertText', $editable, html);
-            }
+          if (!$paste) {
             return;
           }
 
-          var datauri = $img[0].src;
-
-          var data = atob(datauri.split(',')[1]);
-          var array = new Uint8Array(data.length);
-          for (var i = 0; i < data.length; i++) {
-            array[i] = data.charCodeAt(i);
+          var imgNode = $paste[0].firstChild;
+          if (!imgNode) {
+            return;
           }
 
-          var blob = new Blob([array], { type : 'image/png' });
-          blob.name = 'clipboard.png';
+          handler.invoke('restoreRange', $editable);
+          if (!dom.isImg(imgNode)) {
+            handler.invoke('pasteHTML', $editable, $paste.html());
+          } else {
+            var datauri = imgNode.src;
 
-          handler.invoke('editor.restoreNode', $editable);
-          handler.invoke('editor.restoreRange', $editable);
-          handler.insertImages(layoutInfo, [blob]);
+            var data = atob(datauri.split(',')[1]);
+            var array = new Uint8Array(data.length);
+            for (var i = 0; i < data.length; i++) {
+              array[i] = data.charCodeAt(i);
+            }
 
-          handler.invoke('editor.afterCommand', $editable);
+            var blob = new Blob([array], { type : 'image/png' });
+            blob.name = 'clipboard.png';
+            handler.invoke('focus', $editable);
+            handler.insertImages(layoutInfo, [blob]);
+          }
+
+          $paste.remove();
+
         }, 0);
 
         return;
@@ -4999,7 +5133,7 @@
 
           // if no url was given, copy text to url
           if (!linkInfo.url) {
-            linkInfo.url = linkInfo.text;
+            linkInfo.url = linkInfo.text || 'http://';
             toggleBtn($linkBtn, linkInfo.text);
           }
 
@@ -5378,7 +5512,7 @@
       }, 0);
     };
 
-    var hScrollAndBlur = function (event) {
+    var hScroll = function (event) {
       var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
       //hide popover and handle when scrolled
       modules.popover.hide(layoutInfo.popover());
@@ -5548,7 +5682,7 @@
       }
       layoutInfo.editable().on('mousedown', hMousedown);
       layoutInfo.editable().on('keyup mouseup', hKeyupAndMouseup);
-      layoutInfo.editable().on('scroll blur', hScrollAndBlur);
+      layoutInfo.editable().on('scroll', hScroll);
 
       // handler for clipboard
       modules.clipboard.attach(layoutInfo, options);
@@ -5613,7 +5747,8 @@
         onChange: options.onChange,
         onImageUpload: options.onImageUpload,
         onImageUploadError: options.onImageUploadError,
-        onMediaDelete : options.onMediaDelete
+        onMediaDelete: options.onMediaDelete,
+        onToolbarClick: options.onToolbarClick
       });
 
       // Textarea: auto filling the code before form submit.
@@ -5726,9 +5861,11 @@
       var dropdown = options.dropdown;
       var hide = options.hide;
 
-      return '<button type="button"' +
+      return (dropdown ? '<div class="btn-group' +
+               (className ? ' ' + className : '') + '">' : '') +
+               '<button type="button"' +
                  ' class="btn btn-default btn-sm btn-small' +
-                   (className ? ' ' + className : '') +
+                   ((!dropdown && className) ? ' ' + className : '') +
                    (dropdown ? ' dropdown-toggle' : '') +
                  '"' +
                  (dropdown ? ' data-toggle="dropdown"' : '') +
@@ -5737,10 +5874,11 @@
                  (value ? ' data-value=\'' + value + '\'' : '') +
                  (hide ? ' data-hide=\'' + hide + '\'' : '') +
                  ' tabindex="-1">' +
-               label +
-               (dropdown ? ' <span class="caret"></span>' : '') +
-             '</button>' +
-             (dropdown || '');
+                 label +
+                 (dropdown ? ' <span class="caret"></span>' : '') +
+               '</button>' +
+               (dropdown || '') +
+             (dropdown ? '</div>' : '');
     };
 
     /**
@@ -5770,7 +5908,7 @@
                '<div class="popover-content">' +
                '</div>' +
              '</div>');
-      
+
       $popover.find('.popover-content').append(content);
       return $popover;
     };
@@ -5802,33 +5940,51 @@
              '</div>';
     };
 
+    /**
+     * bootstrap dropdown template
+     *
+     * @param {String|String[]} contents
+     * @param {String} [className='']
+     * @param {String} [nodeName='']
+     */
+    var tplDropdown = function (contents, className, nodeName) {
+      var classes = 'dropdown-menu' + (className ? ' ' + className : '');
+      nodeName = nodeName || 'ul';
+      if (contents instanceof Array) {
+        contents = contents.join('');
+      }
+
+      return '<' + nodeName + ' class="' + classes + '">' + contents + '</' + nodeName + '>';
+    };
+
     var tplButtonInfo = {
       picture: function (lang, options) {
-        return tplIconButton(options.iconPrefix + 'picture-o', {
+        return tplIconButton(options.iconPrefix + options.icons.image.image, {
           event: 'showImageDialog',
           title: lang.image.image,
           hide: true
         });
       },
       link: function (lang, options) {
-        return tplIconButton(options.iconPrefix + 'link', {
+        return tplIconButton(options.iconPrefix + options.icons.link.link, {
           event: 'showLinkDialog',
           title: lang.link.link,
           hide: true
         });
       },
       table: function (lang, options) {
-        var dropdown = '<ul class="note-table dropdown-menu">' +
-                         '<div class="note-dimension-picker">' +
-                           '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>' +
-                           '<div class="note-dimension-picker-highlighted"></div>' +
-                           '<div class="note-dimension-picker-unhighlighted"></div>' +
-                         '</div>' +
-                         '<div class="note-dimension-display"> 1 x 1 </div>' +
-                       '</ul>';
-        return tplIconButton(options.iconPrefix + 'table', {
+        var dropdown = [
+          '<div class="note-dimension-picker">',
+          '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>',
+          '<div class="note-dimension-picker-highlighted"></div>',
+          '<div class="note-dimension-picker-unhighlighted"></div>',
+          '</div>',
+          '<div class="note-dimension-display"> 1 x 1 </div>'
+        ];
+
+        return tplIconButton(options.iconPrefix + options.icons.table.table, {
           title: lang.table.table,
-          dropdown: dropdown
+          dropdown: tplDropdown(dropdown, 'note-table')
         });
       },
       style: function (lang, options) {
@@ -5842,9 +5998,9 @@
                  '</a></li>';
         }, '');
 
-        return tplIconButton(options.iconPrefix + 'magic', {
+        return tplIconButton(options.iconPrefix + options.icons.style.style, {
           title: lang.style.style,
-          dropdown: '<ul class="dropdown-menu">' + items + '</ul>'
+          dropdown: tplDropdown(items)
         });
       },
       fontname: function (lang, options) {
@@ -5855,36 +6011,41 @@
           }
           realFontList.push(v);
           return memo + '<li><a data-event="fontName" href="#" data-value="' + v + '" style="font-family:\'' + v + '\'">' +
-                          '<i class="' + options.iconPrefix + 'check"></i> ' + v +
+                          '<i class="' + options.iconPrefix + options.icons.misc.check + '"></i> ' + v +
                         '</a></li>';
         }, '');
 
         var hasDefaultFont = agent.isFontInstalled(options.defaultFontName);
         var defaultFontName = (hasDefaultFont) ? options.defaultFontName : realFontList[0];
-          
+
         var label = '<span class="note-current-fontname">' +
                         defaultFontName +
                      '</span>';
         return tplButton(label, {
           title: lang.font.name,
-          dropdown: '<ul class="dropdown-menu note-check">' + items + '</ul>'
+          className: 'note-fontname',
+          dropdown: tplDropdown(items, 'note-check')
         });
       },
       fontsize: function (lang, options) {
         var items = options.fontSizes.reduce(function (memo, v) {
           return memo + '<li><a data-event="fontSize" href="#" data-value="' + v + '">' +
-                          '<i class="fa fa-check"></i> ' + v +
+                          '<i class="' + options.iconPrefix + options.icons.misc.check + '"></i> ' + v +
                         '</a></li>';
         }, '');
 
         var label = '<span class="note-current-fontsize">11</span>';
         return tplButton(label, {
           title: lang.font.size,
-          dropdown: '<ul class="dropdown-menu note-check">' + items + '</ul>'
+          className: 'note-fontsize',
+          dropdown: tplDropdown(items, 'note-check')
         });
       },
       color: function (lang, options) {
-        var colorButtonLabel = '<i class="' + options.iconPrefix + 'font" style="color:black;background-color:yellow;"></i>';
+        var colorButtonLabel = '<i class="' +
+                                  options.iconPrefix + options.icons.color.recent +
+                                '" style="color:black;background-color:yellow;"></i>';
+
         var colorButton = tplButton(colorButtonLabel, {
           className: 'note-recent-color',
           title: lang.color.recent,
@@ -5892,174 +6053,168 @@
           value: '{"backColor":"yellow"}'
         });
 
-        var dropdown = '<ul class="dropdown-menu">' +
-                         '<li>' +
-                           '<div class="btn-group">' +
-                             '<div class="note-palette-title">' + lang.color.background + '</div>' +
-                             '<div class="note-color-reset" data-event="backColor"' +
-                               ' data-value="inherit" title="' + lang.color.transparent + '">' +
-                               lang.color.setTransparent +
-                             '</div>' +
-                             '<div class="note-color-palette" data-target-event="backColor"></div>' +
-                           '</div>' +
-                           '<div class="btn-group">' +
-                             '<div class="note-palette-title">' + lang.color.foreground + '</div>' +
-                             '<div class="note-color-reset" data-event="foreColor" data-value="inherit" title="' + lang.color.reset + '">' +
-                               lang.color.resetToDefault +
-                             '</div>' +
-                             '<div class="note-color-palette" data-target-event="foreColor"></div>' +
-                           '</div>' +
-                         '</li>' +
-                       '</ul>';
+        var items = [
+          '<li><div class="btn-group">',
+          '<div class="note-palette-title">' + lang.color.background + '</div>',
+          '<div class="note-color-reset" data-event="backColor"',
+          ' data-value="inherit" title="' + lang.color.transparent + '">' + lang.color.setTransparent + '</div>',
+          '<div class="note-color-palette" data-target-event="backColor"></div>',
+          '</div><div class="btn-group">',
+          '<div class="note-palette-title">' + lang.color.foreground + '</div>',
+          '<div class="note-color-reset" data-event="foreColor" data-value="inherit" title="' + lang.color.reset + '">',
+          lang.color.resetToDefault,
+          '</div>',
+          '<div class="note-color-palette" data-target-event="foreColor"></div>',
+          '</div></li>'
+        ];
 
         var moreButton = tplButton('', {
           title: lang.color.more,
-          dropdown: dropdown
+          dropdown: tplDropdown(items)
         });
 
         return colorButton + moreButton;
       },
       bold: function (lang, options) {
-        return tplIconButton(options.iconPrefix + 'bold', {
+        return tplIconButton(options.iconPrefix + options.icons.font.bold, {
           event: 'bold',
           title: lang.font.bold
         });
       },
       italic: function (lang, options) {
-        return tplIconButton(options.iconPrefix + 'italic', {
+        return tplIconButton(options.iconPrefix + options.icons.font.italic, {
           event: 'italic',
           title: lang.font.italic
         });
       },
       underline: function (lang, options) {
-        return tplIconButton(options.iconPrefix + 'underline', {
+        return tplIconButton(options.iconPrefix + options.icons.font.underline, {
           event: 'underline',
           title: lang.font.underline
         });
       },
-      strikethrough: function (lang) {
-        return tplIconButton('fa fa-strikethrough', {
+      strikethrough: function (lang, options) {
+        return tplIconButton(options.iconPrefix + options.icons.font.strikethrough, {
           event: 'strikethrough',
           title: lang.font.strikethrough
         });
       },
-      superscript: function (lang) {
-        return tplIconButton('fa fa-superscript', {
+      superscript: function (lang, options) {
+        return tplIconButton(options.iconPrefix + options.icons.font.superscript, {
           event: 'superscript',
           title: lang.font.superscript
         });
       },
-      subscript: function (lang) {
-        return tplIconButton('fa fa-subscript', {
+      subscript: function (lang, options) {
+        return tplIconButton(options.iconPrefix + options.icons.font.subscript, {
           event: 'subscript',
           title: lang.font.subscript
         });
       },
       clear: function (lang, options) {
-        return tplIconButton(options.iconPrefix + 'eraser', {
+        return tplIconButton(options.iconPrefix + options.icons.font.clear, {
           event: 'removeFormat',
           title: lang.font.clear
         });
       },
       ul: function (lang, options) {
-        return tplIconButton(options.iconPrefix + 'list-ul', {
+        return tplIconButton(options.iconPrefix + options.icons.lists.unordered, {
           event: 'insertUnorderedList',
           title: lang.lists.unordered
         });
       },
       ol: function (lang, options) {
-        return tplIconButton(options.iconPrefix + 'list-ol', {
+        return tplIconButton(options.iconPrefix + options.icons.lists.ordered, {
           event: 'insertOrderedList',
           title: lang.lists.ordered
         });
       },
       paragraph: function (lang, options) {
-        var leftButton = tplIconButton(options.iconPrefix + 'align-left', {
+        var leftButton = tplIconButton(options.iconPrefix + options.icons.paragraph.left, {
           title: lang.paragraph.left,
           event: 'justifyLeft'
         });
-        var centerButton = tplIconButton(options.iconPrefix + 'align-center', {
+        var centerButton = tplIconButton(options.iconPrefix + options.icons.paragraph.center, {
           title: lang.paragraph.center,
           event: 'justifyCenter'
         });
-        var rightButton = tplIconButton(options.iconPrefix + 'align-right', {
+        var rightButton = tplIconButton(options.iconPrefix + options.icons.paragraph.right, {
           title: lang.paragraph.right,
           event: 'justifyRight'
         });
-        var justifyButton = tplIconButton(options.iconPrefix + 'align-justify', {
+        var justifyButton = tplIconButton(options.iconPrefix + options.icons.paragraph.justify, {
           title: lang.paragraph.justify,
           event: 'justifyFull'
         });
 
-        var outdentButton = tplIconButton(options.iconPrefix + 'outdent', {
+        var outdentButton = tplIconButton(options.iconPrefix + options.icons.paragraph.outdent, {
           title: lang.paragraph.outdent,
           event: 'outdent'
         });
-        var indentButton = tplIconButton(options.iconPrefix + 'indent', {
+        var indentButton = tplIconButton(options.iconPrefix + options.icons.paragraph.indent, {
           title: lang.paragraph.indent,
           event: 'indent'
         });
 
-        var dropdown = '<div class="dropdown-menu">' +
-                         '<div class="note-align btn-group">' +
-                           leftButton + centerButton + rightButton + justifyButton +
-                         '</div>' +
-                         '<div class="note-list btn-group">' +
-                           indentButton + outdentButton +
-                         '</div>' +
-                       '</div>';
+        var dropdown = [
+          '<div class="note-align btn-group">',
+          leftButton + centerButton + rightButton + justifyButton,
+          '</div><div class="note-list btn-group">',
+          indentButton + outdentButton,
+          '</div>'
+        ];
 
-        return tplIconButton(options.iconPrefix + 'align-left', {
+        return tplIconButton(options.iconPrefix + options.icons.paragraph.paragraph, {
           title: lang.paragraph.paragraph,
-          dropdown: dropdown
+          dropdown: tplDropdown(dropdown, '', 'div')
         });
       },
       height: function (lang, options) {
         var items = options.lineHeights.reduce(function (memo, v) {
           return memo + '<li><a data-event="lineHeight" href="#" data-value="' + parseFloat(v) + '">' +
-                          '<i class="' + options.iconPrefix + 'check"></i> ' + v +
+                          '<i class="' + options.iconPrefix + options.icons.misc.check + '"></i> ' + v +
                         '</a></li>';
         }, '');
 
-        return tplIconButton(options.iconPrefix + 'text-height', {
+        return tplIconButton(options.iconPrefix + options.icons.font.height, {
           title: lang.font.height,
-          dropdown: '<ul class="dropdown-menu note-check">' + items + '</ul>'
+          dropdown: tplDropdown(items, 'note-check')
         });
 
       },
       help: function (lang, options) {
-        return tplIconButton(options.iconPrefix + 'question', {
+        return tplIconButton(options.iconPrefix + options.icons.options.help, {
           event: 'showHelpDialog',
           title: lang.options.help,
           hide: true
         });
       },
       fullscreen: function (lang, options) {
-        return tplIconButton(options.iconPrefix + 'arrows-alt', {
+        return tplIconButton(options.iconPrefix + options.icons.options.fullscreen, {
           event: 'fullscreen',
           title: lang.options.fullscreen
         });
       },
       codeview: function (lang, options) {
-        return tplIconButton(options.iconPrefix + 'code', {
+        return tplIconButton(options.iconPrefix + options.icons.options.codeview, {
           event: 'codeview',
           title: lang.options.codeview
         });
       },
       undo: function (lang, options) {
-        return tplIconButton(options.iconPrefix + 'undo', {
+        return tplIconButton(options.iconPrefix + options.icons.history.undo, {
           event: 'undo',
           title: lang.history.undo
         });
       },
       redo: function (lang, options) {
-        return tplIconButton(options.iconPrefix + 'repeat', {
+        return tplIconButton(options.iconPrefix + options.icons.history.redo, {
           event: 'redo',
           title: lang.history.redo
         });
       },
       hr: function (lang, options) {
-        return tplIconButton(options.iconPrefix + 'minus', {
+        return tplIconButton(options.iconPrefix + options.icons.hr.insert, {
           event: 'insertHorizontalRule',
           title: lang.hr.insert
         });
@@ -6068,12 +6223,12 @@
 
     var tplPopovers = function (lang, options) {
       var tplLinkPopover = function () {
-        var linkButton = tplIconButton(options.iconPrefix + 'edit', {
+        var linkButton = tplIconButton(options.iconPrefix + options.icons.link.edit, {
           title: lang.link.edit,
           event: 'showLinkDialog',
           hide: true
         });
-        var unlinkButton = tplIconButton(options.iconPrefix + 'unlink', {
+        var unlinkButton = tplIconButton(options.iconPrefix + options.icons.link.unlink, {
           title: lang.link.unlink,
           event: 'unlink'
         });
@@ -6101,44 +6256,44 @@
           value: '0.25'
         });
 
-        var leftButton = tplIconButton(options.iconPrefix + 'align-left', {
+        var leftButton = tplIconButton(options.iconPrefix + options.icons.image.floatLeft, {
           title: lang.image.floatLeft,
           event: 'floatMe',
           value: 'left'
         });
-        var rightButton = tplIconButton(options.iconPrefix + 'align-right', {
+        var rightButton = tplIconButton(options.iconPrefix + options.icons.image.floatRight, {
           title: lang.image.floatRight,
           event: 'floatMe',
           value: 'right'
         });
-        var justifyButton = tplIconButton(options.iconPrefix + 'align-justify', {
+        var justifyButton = tplIconButton(options.iconPrefix + options.icons.image.floatNone, {
           title: lang.image.floatNone,
           event: 'floatMe',
           value: 'none'
         });
 
-        var roundedButton = tplIconButton(options.iconPrefix + 'square', {
+        var roundedButton = tplIconButton(options.iconPrefix + options.icons.image.shapeRounded, {
           title: lang.image.shapeRounded,
           event: 'imageShape',
           value: 'img-rounded'
         });
-        var circleButton = tplIconButton(options.iconPrefix + 'circle-o', {
+        var circleButton = tplIconButton(options.iconPrefix + options.icons.image.shapeCircle, {
           title: lang.image.shapeCircle,
           event: 'imageShape',
           value: 'img-circle'
         });
-        var thumbnailButton = tplIconButton(options.iconPrefix + 'picture-o', {
+        var thumbnailButton = tplIconButton(options.iconPrefix + options.icons.image.shapeThumbnail, {
           title: lang.image.shapeThumbnail,
           event: 'imageShape',
           value: 'img-thumbnail'
         });
-        var noneButton = tplIconButton(options.iconPrefix + 'times', {
+        var noneButton = tplIconButton(options.iconPrefix + options.icons.image.shapeNone, {
           title: lang.image.shapeNone,
           event: 'imageShape',
           value: ''
         });
 
-        var removeButton = tplIconButton(options.iconPrefix + 'trash-o', {
+        var removeButton = tplIconButton(options.iconPrefix + options.icons.image.remove, {
           title: lang.image.remove,
           event: 'removeMedia',
           value: 'none'
@@ -6155,13 +6310,13 @@
         var $content = $('<div />');
         for (var idx = 0, len = options.airPopover.length; idx < len; idx ++) {
           var group = options.airPopover[idx];
-          
+
           var $group = $('<div class="note-' + group[0] + ' btn-group">');
           for (var i = 0, lenGroup = group[1].length; i < lenGroup; i++) {
             var $button = $(tplButtonInfo[group[1][i]](lang, options));
 
             $button.attr('data-name', group[1][i]);
-            
+
             $group.append($button);
           }
           $content.append($group);
@@ -6171,14 +6326,14 @@
       };
 
       var $notePopover = $('<div class="note-popover" />');
-      
+
       $notePopover.append(tplLinkPopover());
       $notePopover.append(tplImagePopover());
-      
+
       if (options.airMode) {
         $notePopover.append(tplAirPopover());
       }
-      
+
       return $notePopover;
     };
 
@@ -6332,7 +6487,7 @@
                    '</div>' +
                    '<div class="form-group row-fluid">' +
                      '<label>' + lang.link.url + '</label>' +
-                     '<input class="note-link-url form-control span12" type="text" />' +
+                     '<input class="note-link-url form-control span12" type="text" value="http://" />' +
                    '</div>' +
                    (!options.disableLinkTarget ?
                      '<div class="checkbox">' +
@@ -6350,7 +6505,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.7</a> · ' +
+                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.10</a> · ' +
                      '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
@@ -6541,7 +6696,7 @@
         }
         $toolbar.append($group);
       }
-      
+
       $toolbar.prependTo($editor);
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       createPalette($toolbar, options);
@@ -6555,8 +6710,10 @@
       //06. handle(control selection, ...)
       $(tplHandles()).prependTo($editor);
 
+      var $dialogContainer = options.dialogsInBody ? document.body : $editor;
+
       //07. create Dialog
-      var $dialog = $(tplDialogs(langInfo, options)).prependTo($editor);
+      var $dialog = $(tplDialogs(langInfo, options)).prependTo($dialogContainer);
       $dialog.find('button.close, a.modal-close').click(function () {
         $(this).closest('.modal').modal('hide');
       });
@@ -6634,6 +6791,9 @@
       } else {
         $holder.html(layoutInfo.editable().html());
 
+        if (options.dialogsInBody) {
+          layoutInfo.dialog().remove();
+        }
         layoutInfo.editor().remove();
         $holder.show();
       }
@@ -6755,7 +6915,7 @@
    *        // "hello"  is button's namespace.      
    *        "hello" : function(lang, options) {
    *            // make icon button by template function          
-   *            return tmpl.iconButton('fa fa-header', {
+   *            return tmpl.iconButton(options.iconPrefix + 'header', {
    *                // callback function name when button clicked 
    *                event : 'hello',
    *                // set data-value property                 
@@ -6859,6 +7019,7 @@
       var options = hasInitOptions ? list.head(arguments) : {};
 
       options = $.extend({}, $.summernote.options, options);
+      options.icons = $.extend({}, $.summernote.options.icons, options.icons);
 
       // Include langInfo in options for later use, e.g. for image drag-n-drop
       // Setup language info with en-US as default
