@@ -22,6 +22,7 @@ define([
    */
   var Editor = function (handler) {
 
+    var self = this;
     var style = new Style();
     var table = new Table();
     var typing = new Typing();
@@ -110,7 +111,7 @@ define([
      * @return {Boolean} false if range is no
      */
     this.currentStyle = function (target) {
-      var rng = range.create();
+      var rng = range.create().normalize();
       return rng ? rng.isOnEditable() && style.current(rng, target) : false;
     };
 
@@ -150,7 +151,6 @@ define([
       triggerOnChange($editable);
     };
 
-    var self = this;
     /**
      * @method beforeCommand
      * before command
@@ -482,9 +482,8 @@ define([
      */
     this.fontSize = function ($editable, value) {
       var rng = range.create();
-      var isCollapsed = rng.isCollapsed();
 
-      if (isCollapsed) {
+      if (rng.isCollapsed()) {
         var spans = style.styleNodes(rng);
         var firstSpan = list.head(spans);
 
@@ -575,8 +574,10 @@ define([
       var linkUrl = linkInfo.url;
       var linkText = linkInfo.text;
       var isNewWindow = linkInfo.newWindow;
-      var rng = linkInfo.range;
+      var rng = linkInfo.range || this.createRange($editable);
       var isTextChanged = rng.toString() !== linkText;
+
+      options = options || dom.makeLayoutInfo($editable).editor().data('options');
 
       beforeCommand($editable);
 

@@ -115,8 +115,7 @@ module.exports = function (grunt) {
               connect['static'](base),    // serve static files
               connect.directory(base)  // make empty directories browsable
             ]);
-          },
-          open: 'http://localhost:3000'
+          }
         }
       }
     },
@@ -140,8 +139,32 @@ module.exports = function (grunt) {
       'meteor-publish': {
         command: 'meteor/publish.sh'
       }
-    }
+    },
 
+    'saucelabs-qunit': {
+      'all': {
+        options: {
+          urls: ['http://localhost:3000/test/unit.html'],
+          build: process.env.TRAVIS_BUILD_NUMBER,
+          tags: [process.env.TRAVIS_BRANCH, process.env.TRAVIS_PULL_REQUEST],
+          browsers: [{
+            browserName: 'chrome',
+            version: '43',
+            platform: 'windows 8'
+          }, {
+            browserName: 'firefox',
+            version: '38',
+            platform: 'windows 8'
+          }, {
+            browserName: 'safari',
+            version: '8.0',
+            platform: 'OS X 10.10'
+          }],
+          testname: 'unit test for summernote',
+          'public': 'public'
+        }
+      }
+    }
   });
 
   // load all tasks from the grunt plugins used in this file
@@ -155,6 +178,9 @@ module.exports = function (grunt) {
 
   // test: unit test on test folder
   grunt.registerTask('test', ['jshint', 'qunit']);
+
+  // test: saucelabs test
+  grunt.registerTask('saucelabs-test', ['connect', 'saucelabs-qunit']);
 
   // dist: make dist files
   grunt.registerTask('dist', ['build', 'test', 'uglify', 'recess']);

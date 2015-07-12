@@ -8,8 +8,8 @@
     factory(window.jQuery);
   }
 }(function ($) {
+  // import core class
   var range = $.summernote.core.range;
-  var list = $.summernote.core.list;
 
   var KEY = {
     UP: 38,
@@ -17,16 +17,51 @@
     ENTER: 13
   };
 
-  var DROPDOWN_KEYCODES = [38, 40, 13];
+  var DROPDOWN_KEYCODES = [KEY.UP, KEY.DOWN, KEY.ENTER];
 
   /**
    * @class plugin.hint
-   * 
-   * Hello Plugin  
+   *
+   * Hint Plugin
    */
   $.summernote.addPlugin({
-    /** @property {String} name name of plugin */
+    /**
+     * name name of plugin
+     * @property {String}
+     **/
     name: 'hint',
+
+    /**
+     * @property {Regex}
+     * @interface
+     */
+    match: /[a-z]+/g,
+
+    /**
+     * create list item template
+     *
+     * @interface
+     * @param {Object} search
+     * @returns {Array}  created item list
+     */
+    template: null,
+
+    /**
+     * create inserted content to add  in summernote
+     *
+     * @interface
+     * @param {String} html
+     * @param {String} keyword
+     * @return {HTMLEleemnt|String}
+     */
+    content: null,
+
+    /**
+     * load search list
+     *
+     * @interface
+     */
+    load: null,
 
     /**
      * @param {jQuery} $node
@@ -76,7 +111,7 @@
     replace: function ($popover) {
       var wordRange = $popover.data('wordRange');
       var $activeItem = $popover.find('.active');
-      var content = this.content($activeItem.html(), $activeItem.data('keyword'));
+      var content = this.content($activeItem.data('item'));
 
       if (typeof content === 'string') {
         content = document.createTextNode(content);
@@ -92,38 +127,24 @@
      * @param {String} keyword
      * @return {Object|null}
      */
-    searchKeyword: function (keyword) {
-      var triggerChar = keyword.charAt(0);
-
-      if (triggerChar === ':' && keyword.length > 1) {
-        var trigger = keyword.toLowerCase().replace(':', '');
-        return {
-          type: 'emoji',
-          list: $.grep(this.emojiKeys, function (item) {
-            return item.indexOf(trigger) === 0;
-          })
-        };
+    searchKeyword: function (keyword, callback) {
+      if (this.match.test(keyword)) {
+        var matches = this.match.exec(keyword);
+        this.search(matches[1], callback);
+      } else {
+        callback();
       }
-
-      return null;
     },
 
-    /**
-     * create items
-     *
-     * @param {Object} searchResult
-     * @param {String} searchResult.type
-     * @param {String[]} searchResult.list
-     * @return {jQuery[]}
-     */
-    createItems: function (searchResult) {
-      var items = [];
-      var list = searchResult.list;
+
+    createTemplate: function (list) {
+      var items  = [];
+      list = list || [];
 
       for (var i = 0, len = list.length; i < len; i++) {
         var $item = $('<a class="list-group-item"></a>');
-        $item.append(this.createItem(list[i]));
-        $item.data('keyword', list[i]);
+        $item.append(this.template(list[i]));
+        $item.data('item', list[i]);
         items.push($item);
       }
 
@@ -134,74 +155,39 @@
       return items;
     },
 
-    /**
-     * create list item template
-     *
-     * @param {Object} item
-     * @returns {String}
-     */
-    createItem: function (item) {
-      var content = this.emojiInfo[item];
-      return '<img src="' + content + '" width="20" /> :' + item + ':';
+    search: function (keyword, callback) {
+      keyword = keyword || '';
+      callback();
     },
 
-    /**
-     * create inserted content to add in summernote
-     *
-     * @param {String} html
-     * @param {String} keyword
-     * @return {Node|String}
-     */
-    content: function (html, item) {
-      var url = this.emojiInfo[item];
-
-      if (url) {
-        var $img = $('<img />').attr('src', url).css({
-          width : 20
-        });
-        return $img[0];
-      }
-
-      return html;
-    },
-
-    /**
-     * @return {Promise}
-     */
-    loadEmojis: function () {
-      var self = this;
-      return $.getJSON('https://api.github.com/emojis').then(function (data) {
-        self.emojiKeys = Object.keys(data);
-        self.emojiInfo = data;
-      });
-    },
-
-    init: function (layoutInfo) {
+    init : function (layoutInfo) {
       var self = this;
 
       var $note = layoutInfo.holder();
-      var $popover = $('<div class="list-group" />').css({
-        position: 'absolute',
-        'max-height': 300,
-        'overflow-y': 'scroll',
-        'display': 'none'
+      var $popover = $('<div />').addClass('hint-group').css({
+        'position': 'absolute',
+        'max-height': 150,
+        'z-index' : 999,
+        'overflow' : 'hidden',
+        'display' : 'none',
+        'border' : '1px solid gray',
+        'border-radius' : '5px'
       });
 
-      // FIXME We need a handler for unload resources.
-      $popover.on('click', '.list-group-item', function () {
+      $popover.on('click', '.list-group-item', function HintItemClick() {
         self.replace($popover);
 
         $popover.hide();
         $note.summernote('focus');
       });
 
-      $(document).on('click', function () {
+      $(document).on('click', function HintClick() {
         $popover.hide();
       });
 
-      $note.on('summernote.keydown', function (customEvent, nativeEvent) {
+      $note.on('summernote.keydown', function HintKeyDown(customEvent, nativeEvent) {
         if ($popover.css('display') !== 'block') {
-          return;
+          return true;
         }
 
         if (nativeEvent.keyCode === KEY.DOWN) {
@@ -219,34 +205,65 @@
         }
       });
 
-      $note.on('summernote.keyup', function (customEvent, nativeEvent) {
-        if (DROPDOWN_KEYCODES.indexOf(nativeEvent.keyCode) === -1) {
-          var wordRange = $(this).summernote('createRange').getWordRange();
-          var result = self.searchKeyword(wordRange.toString());
-          if (!result || !result.list.length) {
-            $popover.hide();
-            return;
+      var timer = null;
+      $note.on('summernote.keyup', function HintKeyUp(customEvent, nativeEvent) {
+        if (DROPDOWN_KEYCODES.indexOf(nativeEvent.keyCode) > -1) {
+          if (nativeEvent.keyCode === KEY.ENTER) {
+            if ($popover.css('display') === 'block') {
+              return false;
+            }
           }
 
-          layoutInfo.popover().append($popover);
+        } else {
 
-          var rect = list.last(wordRange.getClientRects());
-          $popover.html(self.createItems(result)).css({
-            left: rect.left,
-            top: rect.top + rect.height
-          }).data('wordRange', wordRange).show();
+          clearTimeout(timer);
+          timer = setTimeout(function () {
+            var range = $note.summernote('createRange');
+            var word = range.getWordRange();
+
+            self.searchKeyword(word.toString(), function (searchList) {
+              if (!searchList) {
+                $popover.hide();
+                return;
+              }
+
+              if (searchList && !searchList.length) {
+                $popover.hide();
+                return;
+              }
+
+              layoutInfo.popover().append($popover);
+
+              // popover below placeholder.
+              var rects = word.getClientRects();
+              var rect = rects[rects.length - 1];
+              $popover.html(self.createTemplate(searchList)).css({
+                left: rect.left,
+                top: rect.top + rect.height
+              }).data('wordRange', word).show();
+            });
+          }, self.throttle);
+
         }
       });
 
-      this.loadEmojis();
+      this.load($popover);
     },
+
+    throttle : 50,
 
     // FIXME Summernote doesn't support event pipeline yet.
     //  - Plugin -> Base Code
     events: {
-      ENTER: function () {
+      ENTER: function (e, editor, layoutInfo) {
+
+        if (layoutInfo.popover().find('.hint-group').css('display') !== 'block') {
+          // apply default enter key
+          layoutInfo.holder().summernote('insertParagraph');
+        }
+
         // prevent ENTER key
-        return false;
+        return true;
       }
     }
   });

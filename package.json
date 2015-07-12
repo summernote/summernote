@@ -1,7 +1,7 @@
 {
   "name": "summernote",
   "description": "Super Simple WYSIWYG Editor on Bootstrap",
-  "version": "0.6.9",
+  "version": "0.6.10",
   "keywords": [
     "editor",
     "bootstrap",
@@ -16,18 +16,19 @@
     "email": "<susukang98@gmail.com>"
   },
   "devDependencies": {
-    "load-grunt-tasks": "0.2.0",
-    "requirejs": "2.1.9",
+    "connect-livereload": "*",
     "grunt": "*",
+    "grunt-contrib-compress": "*",
+    "grunt-contrib-connect": "*",
     "grunt-contrib-jshint": "0.7.2",
     "grunt-contrib-qunit": "0.5.2",
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-contrib-watch": "*",
-    "grunt-contrib-connect": "*",
-    "grunt-contrib-compress": "*",
-    "grunt-recess": "*",
     "grunt-exec": "^0.4.6",
-    "connect-livereload": "*",
-    "open": "0.0.4"
+    "grunt-recess": "*",
+    "grunt-saucelabs": "^8.6.1",
+    "load-grunt-tasks": "0.2.0",
+    "open": "0.0.4",
+    "requirejs": "2.1.9"
   }
 }
