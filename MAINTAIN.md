@@ -13,7 +13,7 @@ Build dist files and push to master
 git checkout master
 # fetch all changes
 git pull
-# build dist files
+# build dist files and binary(.zip) for release post
 grunt dist
 # Push new dist files to remote repository.
 git commit -a -m "Update dist files"
@@ -21,14 +21,6 @@ git push origin
 ```
 
 ### 3. Release new version
-
-generate binary(.zip) for release post
-
-```bash
-grunt deploy
-# now you can find a binary on `./dist`.
-```
-
 Post release note with new tag version on github
 
 https://github.com/summernote/summernote/releases/new
