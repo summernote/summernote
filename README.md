@@ -2,8 +2,8 @@
 
 Super simple WYSIWYG Editor using Bootstrap (3.0 and 2.x).
 
-[![Join the chat at https://gitter.im/summernote/summernote](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/summernote/summernote?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://secure.travis-ci.org/summernote/summernote.png)](http://travis-ci.org/summernote/summernote)
+[![npm version](https://badge.fury.io/js/summernote.svg)](http://badge.fury.io/js/summernote)
 [![Dependency Status](https://gemnasium.com/summernote/summernote.svg)](https://gemnasium.com/summernote/summernote)
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/HackerWins.svg?auth=fb19ea6fe2ec6464f03afd7e4008a24e)](https://saucelabs.com/u/HackerWins)
@@ -176,6 +176,8 @@ grunt server
 ### Contacts
 * Email: susukang98@gmail.com
 * Twitter: http://twitter.com/hackerwins
+* Chat with us:
+[![Join the chat at https://gitter.im/summernote/summernote](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/summernote/summernote?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ### License
 summernote may be freely distributed under the MIT license.

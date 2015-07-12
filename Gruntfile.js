@@ -183,10 +183,7 @@ module.exports = function (grunt) {
   grunt.registerTask('saucelabs-test', ['connect', 'saucelabs-qunit']);
 
   // dist: make dist files
-  grunt.registerTask('dist', ['build', 'test', 'uglify', 'recess']);
-
-  // deploy: compress dist files
-  grunt.registerTask('deploy', ['dist', 'compress']);
+  grunt.registerTask('dist', ['build', 'test', 'uglify', 'recess', 'compress']);
 
   // default: server
   grunt.registerTask('default', ['server']);
