@@ -522,7 +522,7 @@ define([
 
         this.wrapBodyInlineWithPara().deleteContents();
 
-        return $.map(childNodes.reverse(), function (childNode) {
+        return childNodes.reverse().map(function (childNode) {
           return self.insertNode(childNode);
         }).reverse();
       };
