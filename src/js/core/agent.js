@@ -126,6 +126,7 @@ define(['jquery'], function ($) {
 
   var userAgent = navigator.userAgent;
   var isMSIE = /MSIE|Trident/i.test(userAgent);
+  var browserVersion;
   if (isMSIE) {
     var matches = /MSIE (\d+[.]\d+)/.exec(userAgent);
     if (matches) {

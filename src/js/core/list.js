@@ -72,7 +72,7 @@ define(['summernote/core/func'], function (func) {
      * returns index of item
      */
     var indexOf = function (array, item) {
-      return $.inArray(item, array)
+      return $.inArray(item, array);
     };
 
     /**
