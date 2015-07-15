@@ -71,9 +71,9 @@ define([
       }
 
       var pred = dom.makePredByNodeName(nodeName);
-      var nodes = $.map(rng.nodes(dom.isText, {
+      var nodes = rng.nodes(dom.isText, {
         fullyContains: true
-      }), function (text) {
+      }).map(function (text) {
         return dom.singleChildAncestor(text, pred) || dom.wrap(text, nodeName);
       });
 
@@ -86,7 +86,7 @@ define([
           });
         }
 
-        return $.map(nodes, function (node) {
+        return nodes.map(function (node) {
           var siblings = dom.withClosestSiblings(node, pred);
           var head = list.head(siblings);
           var tails = list.tail(siblings);

@@ -1,8 +1,9 @@
 define([
   'summernote/core/agent',
   'summernote/core/dom',
-  'summernote/core/func'
-], function (agent, dom, func) {
+  'summernote/core/func',
+  'summernote/core/list'
+], function (agent, dom, func, list) {
   /**
    * @class Renderer
    *
@@ -177,7 +178,7 @@ define([
       fontname: function (lang, options) {
         var realFontList = [];
         var items = options.fontNames.reduce(function (memo, v) {
-          if (!agent.isFontInstalled(v) && options.fontNamesIgnoreCheck.indexOf(v) === -1) {
+          if (!agent.isFontInstalled(v) && !list.contains(options.fontNamesIgnoreCheck, v)) {
             return memo;
           }
           realFontList.push(v);
