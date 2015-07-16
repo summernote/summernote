@@ -1,15 +1,13 @@
 # Thanks for contributing to [Summernote](http://summernote.org)!
 
-## [Create Issue](#issues) or [Create PR](#pull-requests)
-
-
 # issues
 
 Please include one of the following with your issue:
 
+- [ ] steps to reproduce
+- [ ] browser version and os version
 - [ ] [gif from www.recordit.co](www.recordit.co)
 - [ ] screenshot of issue
-- [ ] steps to reproduce.
 
 # pull-requests
 
