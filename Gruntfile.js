@@ -154,6 +154,10 @@ module.exports = function (grunt) {
           tags: [process.env.TRAVIS_BRANCH, process.env.TRAVIS_PULL_REQUEST],
           browsers: [{
             browserName: 'internet explorer',
+            version: '8.0',
+            platform: 'windows XP'
+          }, {
+            browserName: 'internet explorer',
             version: '9.0',
             platform: 'windows 7'
           }, {
