@@ -1,7 +1,5 @@
 # Thanks for contributing to [Summernote](http://summernote.org)!
 
-## [Create Issue](#issues) or [Create PR](#pull-requests)
-
 # issues
 
 Please include one of the following with your issue:
