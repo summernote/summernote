@@ -5961,14 +5961,11 @@
      * @param {String} content
      */
     var tplPopover = function (className, content) {
-      var $popover = $('<div class="' + className + ' popover bottom in" style="display: none;">' +
-               '<div class="arrow"></div>' +
-               '<div class="popover-content">' +
-               '</div>' +
-             '</div>');
-
-      $popover.find('.popover-content').append(content);
-      return $popover;
+      return '<div class="' + className + ' popover bottom in" style="display: none;">' +
+              '<div class="arrow"></div>' +
+              '<div class="popover-content">' + content +
+              '</div>' +
+            '</div>';
     };
 
     /**
@@ -6279,8 +6276,8 @@
       }
     };
 
-    var tplPopovers = function (lang, options) {
-      var tplLinkPopover = function () {
+    var tplPopoverInfo = {
+      tplLinkPopover: function (lang, options) {
         var linkButton = tplIconButton(options.iconPrefix + options.icons.link.edit, {
           title: lang.link.edit,
           event: 'showLinkDialog',
@@ -6295,9 +6292,9 @@
                         linkButton + unlinkButton +
                       '</div>';
         return tplPopover('note-link-popover', content);
-      };
+      },
 
-      var tplImagePopover = function () {
+      tplImagePopover: function (lang, options) {
         var fullButton = tplButton('<span class="note-fontsize-10">100%</span>', {
           title: lang.image.resizeFull,
           event: 'resize',
@@ -6362,9 +6359,11 @@
                       '<div class="btn-group">' + roundedButton + circleButton + thumbnailButton + noneButton + '</div>' +
                       '<div class="btn-group">' + removeButton + '</div>';
         return tplPopover('note-image-popover', content);
-      };
+      }
+    };
 
-      var tplAirPopover = function () {
+    var tplAirPopoverInfo = {
+      tplAirPopover: function (lang, options) {
         var $content = $('<div />');
         for (var idx = 0, len = options.airPopover.length; idx < len; idx ++) {
           var group = options.airPopover[idx];
@@ -6381,18 +6380,23 @@
         }
 
         return tplPopover('note-air-popover', $content.children());
-      };
+      }
+    };
 
-      var $notePopover = $('<div class="note-popover" />');
+    var tplPopovers = function (lang, options) {
 
-      $notePopover.append(tplLinkPopover());
-      $notePopover.append(tplImagePopover());
+      var popovers = '';
+
+      $.each(tplPopoverInfo, function (idx, tplPopover) {
+        popovers += tplPopover(lang, options);
+      });
 
       if (options.airMode) {
-        $notePopover.append(tplAirPopover());
+        $.each(tplAirPopoverInfo, function (idx, tplAirPopover) {
+          popovers += tplAirPopover(lang, options);
+        });
       }
-
-      return $notePopover;
+      return '<div class="note-popover">' + popovers + '</div>';
     };
 
     var tplHandles = function () {
@@ -6866,12 +6870,14 @@
      * @return {function(label, options=):string} return.button {@link #tplButton function to make text button}
      * @return {function(iconClass, options=):string} return.iconButton {@link #tplIconButton function to make icon button}
      * @return {function(className, title=, body=, footer=):string} return.dialog {@link #tplDialog function to make dialog}
+     * @return {function(className, content=):string} return.popover {@link #tplPopover function to make popover}
      */
     this.getTemplate = function () {
       return {
         button: tplButton,
         iconButton: tplIconButton,
-        dialog: tplDialog
+        dialog: tplDialog,
+        popover: tplPopover
       };
     };
 
@@ -6892,6 +6898,15 @@
      */
     this.addDialogInfo = function (name, dialogInfo) {
       tplDialogInfo[name] = dialogInfo;
+    };
+
+    /**
+     *
+     * @param {String} name
+     * @param {Function} popoverInfo function to make popover, reference to {@link #tplPopover}
+     */
+    this.addPopoverInfo = function (name, popoverInfo) {
+      tplPopoverInfo[name] = popoverInfo;
     };
   };
 
@@ -7029,6 +7044,12 @@
     if (plugin.dialogs) {
       $.each(plugin.dialogs, function (name, dialog) {
         renderer.addDialogInfo(name, dialog);
+      });
+    }
+
+    if (plugin.popovers) {
+      $.each(plugin.popovers, function (name, popover) {
+        renderer.addPopoverInfo(name, popover);
       });
     }
 
