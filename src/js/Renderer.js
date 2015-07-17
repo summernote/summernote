@@ -778,7 +778,7 @@ define([
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       var id = func.uniqueId();
 
-      $holder.addClass('note-air-editor note-editable');
+      $holder.addClass('note-air-editor note-editable panel-body');
       $holder.attr({
         'id': 'note-editor-' + id,
         'contentEditable': true
@@ -820,7 +820,7 @@ define([
       var langInfo = options.langInfo;
 
       //01. create Editor
-      var $editor = $('<div class="note-editor"></div>');
+      var $editor = $('<div class="note-editor panel panel-default"></div>');
       if (options.width) {
         $editor.width(options.width);
       }
@@ -832,7 +832,7 @@ define([
 
       //03. create Editable
       var isContentEditable = !$holder.is(':disabled');
-      var $editable = $('<div class="note-editable" contentEditable="' + isContentEditable + '"></div>')
+      var $editable = $('<div class="note-editable panel-body" contentEditable="' + isContentEditable + '"></div>')
           .prependTo($editor);
       if (options.height) {
         $editable.height(options.height);
@@ -869,10 +869,11 @@ define([
         $toolbar.append($group);
       }
 
-      $toolbar.prependTo($editor);
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       createPalette($toolbar, options);
       createTooltip($toolbar, keyMap, 'bottom');
+      $toolbar.prependTo($editor);
+      $toolbar.wrap('<div class="panel-heading"></div>');
 
       //05. create Popover
       var $popover = $(tplPopovers(langInfo, options)).prependTo($editor);

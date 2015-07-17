@@ -62,8 +62,8 @@ $background-color: #f5f5f5 !default;
   }
 
   .note-toolbar {
-    background-color: $background-color;
-    border-bottom: 1px solid $border-color;
+    margin: -5px -10px 0 -10px;
+    padding: 0;
   }
 
   /* fullscreen mode */
@@ -110,10 +110,11 @@ $background-color: #f5f5f5 !default;
   /* editable */
   .note-editable[contenteditable=true]:empty:not(:focus):before {
     content:attr(data-placeholder);
-    color: #a9a9a9;
   }
 
   .note-editable {
+    background-color: #fff;
+    color: #000;
     padding: 10px;
     overflow: auto;
     outline: none;
