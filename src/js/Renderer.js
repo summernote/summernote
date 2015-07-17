@@ -851,7 +851,7 @@ define([
       $('<textarea class="note-codable"></textarea>').prependTo($editor);
 
       //04. create Toolbar
-      var $toolbar = $('<div class="note-toolbar btn-toolbar" />');
+      var $toolbar = $('<div class="note-toolbar panel-heading" />');
       for (var idx = 0, len = options.toolbar.length; idx < len; idx ++) {
         var groupName = options.toolbar[idx][0];
         var groupButtons = options.toolbar[idx][1];
@@ -873,7 +873,6 @@ define([
       createPalette($toolbar, options);
       createTooltip($toolbar, keyMap, 'bottom');
       $toolbar.prependTo($editor);
-      $toolbar.wrap('<div class="panel-heading"></div>');
 
       //05. create Popover
       var $popover = $(tplPopovers(langInfo, options)).prependTo($editor);

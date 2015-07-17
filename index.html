@@ -4,41 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Summernote</title>
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
 
     <!-- include libs stylesheets -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
-    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css" />
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/theme/blackboard.min.css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/theme/monokai.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css" />
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/theme/blackboard.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/theme/monokai.css">
 
     <!-- summernote with less and requirejs -->
     <link rel="stylesheet/less" type="text/css" href="src/less/summernote.less" />
-
-    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
   </head>
-
   <body>
-
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
             <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
+            <span class="icon-bar">&nbsp;</span>
+            <span class="icon-bar">&nbsp;</span>
+            <span class="icon-bar">&nbsp;</span>
           </button>
           <a class="navbar-brand" href="#">Summernote</a>
         </div>
@@ -46,20 +33,17 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Themes</a></li>
           </ul>
-        </div><!--/.nav-collapse -->
+        </div>
       </div>
     </nav>
-
     <div class="container" style="margin-top: 60px;">
-
-      <h4>Lately library
+      <h4>
         <span class="label label-info">Bootstrap v3.3.5</span>
         <span class="label label-success">font-awesome v4.3.0</span>
         <span class="label label-danger">CodeMirror v3.20.0</span>
       </h4>
-
       <div class="well bs-component">
-        <form class="form-horizontal">
+        <form class="form-horizontal" action="#">
           <fieldset>
             <legend>Forms</legend>
             <div class="form-group">
@@ -70,47 +54,11 @@
               </div>
             </div>
             <div class="form-group">
-              <label for="inputEmail" class="col-lg-2 control-label">Email</label>
-              <div class="col-lg-10">
-                <input type="text" class="form-control" id="inputEmail" placeholder="Email">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="inputPassword" class="col-lg-2 control-label">Password</label>
-              <div class="col-lg-10">
-                <input type="password" class="form-control" id="inputPassword" placeholder="Password">
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox"> Checkbox
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
               <label for="textArea" class="col-lg-2 control-label">Textarea</label>
               <div class="col-lg-10">
                  <div class="summernote" id="summernote"></div>
-                <span class="help-block">A longer block of help text that breaks onto a new line and may extend beyond one line.</span>
               </div>
             </div>
-            <div class="form-group">
-              <label class="col-lg-2 control-label">Radios</label>
-              <div class="col-lg-10">
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked="">
-                    Option one is this
-                  </label>
-                </div>
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
-                    Option two can be something else
-                  </label>
-                </div>
-              </div>
-            </div>
-
             <div class="form-group">
               <div class="col-lg-10 col-lg-offset-2">
                 <button type="reset" class="btn btn-default">Cancel</button>
@@ -120,10 +68,7 @@
           </fieldset>
         </form>
         <div id="source-button" class="btn btn-primary btn-xs" style="display: none;">&lt; &gt;</div></div>
-
-
     </div><!-- /.container -->
-
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -148,26 +93,26 @@
     </script>
     <script>
       var themes = {
-        "default": "//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css",
-        "cerulean" : "//bootswatch.com/cerulean/bootstrap.min.css",
-        "cosmo" : "//bootswatch.com/cosmo/bootstrap.min.css",
-        "cyborg" : "//bootswatch.com/cyborg/bootstrap.min.css",
-        "darkly" : "//bootswatch.com/darkly/bootstrap.min.css",
-        "flatly" : "//bootswatch.com/flatly/bootstrap.min.css",
-        "lumen" : "//bootswatch.com/lumen/bootstrap.min.css",
-        "paper" : "//bootswatch.com/paper/bootstrap.min.css",
-        "journal" : "//bootswatch.com/journal/bootstrap.min.css",
-        "readable" : "//bootswatch.com/readable/bootstrap.min.css",
-        "sandstone" : "//bootswatch.com/sandstone/bootstrap.min.css",
-        "simplex" : "//bootswatch.com/simplex/bootstrap.min.css",
-        "slate" : "//bootswatch.com/slate/bootstrap.min.css",
-        "spacelab" : "//bootswatch.com/spacelab/bootstrap.min.css",
-        "superhero" : "//bootswatch.com/superhero/bootstrap.min.css",
-        "united" : "//bootswatch.com/united/bootstrap.min.css",
-        "yeti" : "//bootswatch.com/yeti/bootstrap.min.css",
+        "default": "//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css",
+        "cerulean" : "//bootswatch.com/cerulean/bootstrap.css",
+        "cosmo" : "//bootswatch.com/cosmo/bootstrap.css",
+        "cyborg" : "//bootswatch.com/cyborg/bootstrap.css",
+        "darkly" : "//bootswatch.com/darkly/bootstrap.css",
+        "flatly" : "//bootswatch.com/flatly/bootstrap.css",
+        "lumen" : "//bootswatch.com/lumen/bootstrap.css",
+        "paper" : "//bootswatch.com/paper/bootstrap.css",
+        "journal" : "//bootswatch.com/journal/bootstrap.css",
+        "readable" : "//bootswatch.com/readable/bootstrap.css",
+        "sandstone" : "//bootswatch.com/sandstone/bootstrap.css",
+        "simplex" : "//bootswatch.com/simplex/bootstrap.css",
+        "slate" : "//bootswatch.com/slate/bootstrap.css",
+        "spacelab" : "//bootswatch.com/spacelab/bootstrap.css",
+        "superhero" : "//bootswatch.com/superhero/bootstrap.css",
+        "united" : "//bootswatch.com/united/bootstrap.css",
+        "yeti" : "//bootswatch.com/yeti/bootstrap.css",
       }
 
-      $(function(){
+      $(function (){
         var themesheet = $('<link href="'+themes['default']+'" rel="stylesheet" />');
         themesheet.appendTo('head');
         for (var theme in themes) {
