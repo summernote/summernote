@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-07-24T19:08Z
+ * Date: 2015-07-17T07:50Z
  */
 (function (factory) {
   /* global define */
@@ -6382,11 +6382,19 @@
         return tplPopover('note-air-popover', $content.children());
       }
     };
+<<<<<<< HEAD
 
     var tplPopovers = function (lang, options) {
 
       var popovers = '';
 
+=======
+
+    var tplPopovers = function (lang, options) {
+
+      var popovers = '';
+
+>>>>>>> Added ability to add/overide popovers using plugins
       $.each(tplPopoverInfo, function (idx, tplPopover) {
         popovers += tplPopover(lang, options);
       });

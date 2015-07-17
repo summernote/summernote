@@ -498,9 +498,7 @@ define([
     };
 
     var tplPopovers = function (lang, options) {
-
       var popovers = '';
-
       $.each(tplPopoverInfo, function (idx, tplPopover) {
         popovers += tplPopover(lang, options);
       });
