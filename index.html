@@ -59,12 +59,6 @@
                  <div class="summernote" id="summernote"></div>
               </div>
             </div>
-            <div class="form-group">
-              <div class="col-lg-10 col-lg-offset-2">
-                <button type="reset" class="btn btn-default">Cancel</button>
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </div>
-            </div>
           </fieldset>
         </form>
         <div id="source-button" class="btn btn-primary btn-xs" style="display: none;">&lt; &gt;</div></div>
@@ -113,14 +107,15 @@
       }
 
       $(function (){
-        var themesheet = $('<link href="'+themes['default']+'" rel="stylesheet" />');
-        themesheet.appendTo('head');
-        for (var theme in themes) {
-          $('#select').append('<option value="'+theme+'">'+theme+'</option>');
-        }
-        $('#select').on('change', function(){
-          var themeurl = themes[$(this).val()]; 
-          themesheet.attr('href',themeurl);
+        var $themesheet = $('<link href="'+themes['default']+'" rel="stylesheet" />')
+        $themesheet.appendTo('head');
+
+        var options = $.map(themes, function (url, theme) {
+          return '<option value="' + theme + '">' + theme + '</option>';
+        }).join('');
+
+        $('#select').html(options).on('change', function(){
+          $themesheet.attr('href', themes[$(this).val()]);
         });
       });
       </script>
