@@ -77,13 +77,13 @@ define([
 
         // frame mode
       } else {
-        makeFinder = function (sClassName, sBaseElement) {
-          var $baseElement = sBaseElement ? $(sBaseElement) : $editor;
-          return function () { return $baseElement.find(sClassName); };
+        makeFinder = function (className, $base) {
+          $base = $base || $editor;
+          return function () { return $base.find(className); };
         };
 
         var options = $editor.data('options');
-        var dialogHolder = (options && options.dialogsInBody) ? document.body : null;
+        var $dialogHolder = (options && options.dialogsInBody) ? $(document.body) : null;
 
         return {
           editor: function () { return $editor; },
@@ -95,7 +95,7 @@ define([
           statusbar: makeFinder('.note-statusbar'),
           popover: makeFinder('.note-popover'),
           handle: makeFinder('.note-handle'),
-          dialog: makeFinder('.note-dialog', dialogHolder)
+          dialog: makeFinder('.note-dialog', $dialogHolder)
         };
       }
     };
