@@ -847,7 +847,7 @@ define([
         $editable.attr('data-placeholder', placeholder);
       }
 
-      $editable.html(dom.html($holder));
+      $editable.html(dom.html($holder) || dom.emptyPara);
 
       //031. create codable
       $('<textarea class="note-codable"></textarea>').prependTo($editingArea);
