@@ -39,18 +39,15 @@ define([
       var $editable = layoutInfo.editable();
 
       if (clipboardData && clipboardData.items && clipboardData.items.length) {
+        // using clipboardData case
         var item = list.head(clipboardData.items);
         if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
           handler.insertImages(layoutInfo, [item.getAsFile()]);
         }
 
         handler.invoke('editor.afterCommand', $editable);
-      } else {
-        // only can run if it has onImageUpload method
-        if (!$editable.data('callbacks').onImageUpload || !$paste) {
-          return;
-        }
-
+      } else if ($paste && $editable.data('callbacks').onImageUpload) {
+        // using dummy contenteditable: only can run if it has onImageUpload method
         setTimeout(function () {
           var node = $paste[0].firstChild;
           if (dom.isImg(node)) {
