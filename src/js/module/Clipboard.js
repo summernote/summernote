@@ -28,15 +28,6 @@ define([
       layoutInfo.editable().on('paste', hPaste);
     };
 
-    var hPasteContent = function (handler, $paste, $editable) {
-      var pasteContent = $('<div />').html($paste.html());
-
-      handler.invoke('restoreRange', $editable);
-      handler.invoke('focus', $editable);
-      handler.invoke('pasteHTML', $editable, pasteContent.html());
-      $paste.empty();
-    };
-
     /**
      * paste clipboard image
      *
@@ -61,24 +52,27 @@ define([
         }
 
         setTimeout(function () {
-          var imgNode = $paste[0].firstChild;
-          if (!imgNode || !dom.isImg(imgNode)) {
-            hPasteContent(handler, $paste, $editable);
-          } else {
+          var node = $paste[0].firstChild;
+          if (dom.isImg(node)) {
             handler.invoke('restoreRange', $editable);
-            var dataURI = imgNode.src;
+            var dataURI = node.src;
 
-            var data = atob(dataURI.split(',')[1]);
-            var array = new Uint8Array(data.length);
-            for (var i = 0; i < data.length; i++) {
-              array[i] = data.charCodeAt(i);
+            var decodedData = atob(dataURI.split(',')[1]);
+            var array = new Uint8Array(decodedData.length);
+            for (var i = 0; i < decodedData.length; i++) {
+              array[i] = decodedData.charCodeAt(i);
             }
 
             var blob = new Blob([array], { type : 'image/png' });
             blob.name = 'clipboard.png';
             handler.invoke('focus', $editable);
             handler.insertImages(layoutInfo, [blob]);
-
+            $paste.empty();
+          } else {
+            var pasteContent = $('<div />').html($paste.html());
+            handler.invoke('restoreRange', $editable);
+            handler.invoke('focus', $editable);
+            handler.invoke('pasteHTML', $editable, pasteContent.html());
             $paste.empty();
           }
         }, 0);
