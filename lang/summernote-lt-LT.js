@@ -24,7 +24,7 @@
         floatNone: 'Jokio lygiavimo',
         shapeRounded: 'Forma: apvalūs kraštai',
         shapeCircle: 'Forma: apskritimas',
-        shapeThumbnail: 'Forma: minaitiūra',
+        shapeThumbnail: 'Forma: miniatūra',
         shapeNone: 'Forma: jokia',
         dragImageHere: 'Vilkite paveikslėlį čia',
         selectFromFiles: 'Pasirinkite failą',
