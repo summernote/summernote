@@ -6553,7 +6553,7 @@
                    '</div>' +
                    '<div class="form-group row-fluid">' +
                      '<label>' + lang.image.url + '</label>' +
-                     '<input class="note-image-url form-control span12" type="text" />' +
+                     '<input class="note-image-url form-control col-mg-12" type="text" />' +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
         return tplDialog('note-image-dialog', lang.image.insert, body, footer);
@@ -6562,11 +6562,11 @@
       link: function (lang, options) {
         var body = '<div class="form-group row-fluid">' +
                      '<label>' + lang.link.textToDisplay + '</label>' +
-                     '<input class="note-link-text form-control span12" type="text" />' +
+                     '<input class="note-link-text form-control col-mg-12" type="text" />' +
                    '</div>' +
                    '<div class="form-group row-fluid">' +
                      '<label>' + lang.link.url + '</label>' +
-                     '<input class="note-link-url form-control span12" type="text" value="http://" />' +
+                     '<input class="note-link-url form-control col-mg-12" type="text" value="http://" />' +
                    '</div>' +
                    (!options.disableLinkTarget ?
                      '<div class="checkbox">' +
@@ -6575,7 +6575,7 @@
                        '</label>' +
                      '</div>' : ''
                    );
-        var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
+        var footer = '<button href="#" type="button" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
         return tplDialog('note-link-dialog', lang.link.insert, body, footer);
       },
 
