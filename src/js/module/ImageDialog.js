@@ -58,7 +58,8 @@ define([
      */
     this.showImageDialog = function ($editable, $dialog) {
       return $.Deferred(function (deferred) {
-        var $imageDialog = $dialog.find('.note-image-dialog');
+        var $imageDialog = $dialog.find('.note-image-dialog').clone();
+        $('body').append($imageDialog);
 
         var $imageInput = $dialog.find('.note-image-input'),
             $imageUrl = $dialog.find('.note-image-url'),
@@ -83,16 +84,21 @@ define([
 
           $imageUrl.on('keyup paste', function (event) {
             var url;
-            
+
             if (event.type === 'paste') {
               url = event.originalEvent.clipboardData.getData('text');
             } else {
               url = $imageUrl.val();
             }
-            
+
             toggleBtn($imageBtn, url);
           }).val('').trigger('focus');
           bindEnterKey($imageUrl, $imageBtn);
+
+          $imageDialog.find('.close').click(function (event) {
+            event.preventDefault();
+            $imageDialog.modal('hide');
+          });
         }).one('hidden.bs.modal', function () {
           $imageInput.off('change');
           $imageUrl.off('keyup paste keypress');
@@ -101,7 +107,15 @@ define([
           if (deferred.state() === 'pending') {
             deferred.reject();
           }
+          $imageDialog.remove();
         }).modal('show');
+        // used for dialog stack
+        if ($('.modal-backdrop').length > 1) {
+          var $maskLast = $('.modal-backdrop:last'), idx = $maskLast.css('z-index');
+          $maskLast.css('z-index', parseInt(idx, 10) + 20);
+          var $dialogLast = $('.modal:last'), didx = $dialogLast.css('z-index');
+          $dialogLast.css('z-index', parseInt(didx, 10) + 20);
+        }
       });
     };
   };

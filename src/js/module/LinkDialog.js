@@ -40,7 +40,9 @@ define([
      */
     this.showLinkDialog = function ($editable, $dialog, linkInfo) {
       return $.Deferred(function (deferred) {
-        var $linkDialog = $dialog.find('.note-link-dialog');
+        var $linkDialog = $dialog.find('.note-link-dialog').clone();
+
+        $('body').append($linkDialog);
 
         var $linkText = $linkDialog.find('.note-link-text'),
         $linkUrl = $linkDialog.find('.note-link-url'),
@@ -88,6 +90,11 @@ define([
             });
             $linkDialog.modal('hide');
           });
+
+          $linkDialog.find('.close').click(function (event) {
+            event.preventDefault();
+            $linkDialog.modal('hide');
+          });
         }).one('hidden.bs.modal', function () {
           // detach events
           $linkText.off('input keypress');
@@ -97,7 +104,16 @@ define([
           if (deferred.state() === 'pending') {
             deferred.reject();
           }
+          $linkDialog.remove();
         }).modal('show');
+
+        // used for dialog stack
+        if ($('.modal-backdrop').length > 1) {
+          var $maskLast = $('.modal-backdrop:last'), idx = $maskLast.css('z-index');
+          $maskLast.css('z-index', parseInt(idx, 10) + 20);
+          var $dialogLast = $('.modal:last'), didx = $dialogLast.css('z-index');
+          $dialogLast.css('z-index', parseInt(didx, 10) + 20);
+        }
       }).promise();
     };
 
