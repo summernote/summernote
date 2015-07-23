@@ -121,7 +121,7 @@ define('summernote/defaults', function () {
         }
       },
 
-      dialogsInBody: true,          // false will add dialogs into editor
+      dialogsInBody: false,          // false will add dialogs into editor
 
       codemirror: {                 // codemirror options
         mode: 'text/html',
