@@ -106,7 +106,12 @@ module.exports = function (grunt) {
       all: {
         options: {
           port: 3000,
-          livereload: true,
+          livereload: {
+            options: {
+              open: true,
+              base: ['index.html']
+            }
+          },
           middleware: function (connect, options, middlewares) {
             var base = options.base[0];
             middlewares = middlewares || [];
@@ -148,6 +153,22 @@ module.exports = function (grunt) {
           build: process.env.TRAVIS_BUILD_NUMBER,
           tags: [process.env.TRAVIS_BRANCH, process.env.TRAVIS_PULL_REQUEST],
           browsers: [{
+            browserName: 'internet explorer',
+            version: '8.0',
+            platform: 'windows XP'
+          }, {
+            browserName: 'internet explorer',
+            version: '9.0',
+            platform: 'windows 7'
+          }, {
+            browserName: 'internet explorer',
+            version: '10.0',
+            platform: 'windows 8'
+          }, {
+            browserName: 'internet explorer',
+            version: '11.0',
+            platform: 'windows 8.1'
+          }, {
             browserName: 'chrome',
             version: '43',
             platform: 'windows 8'

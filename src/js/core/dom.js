@@ -77,13 +77,13 @@ define([
 
         // frame mode
       } else {
-        makeFinder = function (sClassName, sBaseElement) {
-          var $baseElement = sBaseElement ? $(sBaseElement) : $editor;
-          return function () { return $baseElement.find(sClassName); };
+        makeFinder = function (className, $base) {
+          $base = $base || $editor;
+          return function () { return $base.find(className); };
         };
 
         var options = $editor.data('options');
-        var dialogHolder = (options && options.dialogsInBody) ? document.body : null;
+        var $dialogHolder = (options && options.dialogsInBody) ? $(document.body) : null;
 
         return {
           editor: function () { return $editor; },
@@ -95,7 +95,7 @@ define([
           statusbar: makeFinder('.note-statusbar'),
           popover: makeFinder('.note-popover'),
           handle: makeFinder('.note-handle'),
-          dialog: makeFinder('.note-dialog', dialogHolder)
+          dialog: makeFinder('.note-dialog', $dialogHolder)
         };
       }
     };
@@ -245,9 +245,10 @@ define([
 
     /**
      * blank HTML for cursor position
-     * - [workaround] for MSIE IE doesn't works with bogus br
+     * - [workaround] old IE only works with &nbsp;
+     * - [workaround] IE11 and other browser works with bogus br
      */
-    var blankHTML = agent.isMSIE ? '&nbsp;' : '<br>';
+    var blankHTML = agent.isMSIE && agent.browserVersion < 11 ? '&nbsp;' : '<br>';
 
     /**
      * @method nodeLength
@@ -761,7 +762,7 @@ define([
      */
     var makeOffsetPath = function (ancestor, node) {
       var ancestors = listAncestor(node, func.eq(ancestor));
-      return $.map(ancestors, position).reverse();
+      return ancestors.map(position).reverse();
     };
 
     /**

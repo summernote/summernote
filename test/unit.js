@@ -20,20 +20,40 @@ require.config({
 });
 
 require([
+  'summernote/core/agent',
   '../../test/unit/dom.spec',
   '../../test/unit/list.spec',
   '../../test/unit/range.spec',
   '../../test/unit/style.spec'
-], function (domSpec, listSpec, rangeSpec, styleSpec) {
+], function (agent, domSpec, listSpec, rangeSpec, styleSpec) {
   /* global QUnit */
   QUnit.start();
 
+  var helper = {
+    equalsToUpperCase: function (actual, expected, comment) {
+      actual = actual.toUpperCase();
+      expected = expected.toUpperCase();
+
+      // [workaround] IE8-10 use &nbsp; instead of bogus br
+      if (agent.isMSIE && agent.browserVersion < 11) {
+        expected = expected.replace(/<BR>/g, '&NBSP;');
+      }
+
+      // [workaround] IE8 actual markup has newline between tags
+      if (agent.isMSIE && agent.browserVersion < 9) {
+        actual = actual.replace(/\r\n/g, '');
+      }
+
+      equal(actual, expected, comment);
+    }
+  };
+
   module('unit/dom');
-  domSpec();
+  domSpec(helper);
   module('unit/list');
-  listSpec();
+  listSpec(helper);
   module('unit/range');
-  rangeSpec();
+  rangeSpec(helper);
   module('unit/styleSpec');
   styleSpec();
 });
