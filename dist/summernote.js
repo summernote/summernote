@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.6.10
+ * Super simple wysiwyg editor on Bootstrap v0.6.11
  * http://summernote.org/
  *
  * summernote.js
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-07-17T14:16Z
+ * Date: 2015-07-24T17:43Z
  */
 (function (factory) {
   /* global define */
@@ -577,13 +577,13 @@
 
         // frame mode
       } else {
-        makeFinder = function (sClassName, sBaseElement) {
-          var $baseElement = sBaseElement ? $(sBaseElement) : $editor;
-          return function () { return $baseElement.find(sClassName); };
+        makeFinder = function (className, $base) {
+          $base = $base || $editor;
+          return function () { return $base.find(className); };
         };
 
         var options = $editor.data('options');
-        var dialogHolder = (options && options.dialogsInBody) ? document.body : null;
+        var $dialogHolder = (options && options.dialogsInBody) ? $(document.body) : null;
 
         return {
           editor: function () { return $editor; },
@@ -595,7 +595,7 @@
           statusbar: makeFinder('.note-statusbar'),
           popover: makeFinder('.note-popover'),
           handle: makeFinder('.note-handle'),
-          dialog: makeFinder('.note-dialog', dialogHolder)
+          dialog: makeFinder('.note-dialog', $dialogHolder)
         };
       }
     };
@@ -2381,7 +2381,7 @@
    */
   var defaults = {
     /** @property */
-    version: '0.6.10',
+    version: '0.6.11',
 
     /**
      * 
@@ -2495,6 +2495,8 @@
           check: 'check'
         }
       },
+
+      dialogsInBody: false,          // false will add dialogs into editor
 
       codemirror: {                 // codemirror options
         mode: 'text/html',
@@ -2883,6 +2885,7 @@
       'R': 82,
       'S': 83,
       'U': 85,
+      'V': 86,
       'Y': 89,
       'Z': 90,
 
@@ -4583,15 +4586,17 @@
      *
      * @private
      * @param {Node} placeholder
-     * @param {Boolean} isAirMode
-     * @return {Object}
-     * @return {Number} return.left
-     * @return {Number} return.top
+     * @param {Object} options
+     * @param {Boolean} options.isAirMode
+     * @return {Position}
      */
-    var posFromPlaceholder = function (placeholder, isAirMode) {
+    var posFromPlaceholder = function (placeholder, options) {
+      var isAirMode = options && options.isAirMode;
+      var isLeftTop = options && options.isLeftTop;
+
       var $placeholder = $(placeholder);
       var pos = isAirMode ? $placeholder.offset() : $placeholder.position();
-      var height = $placeholder.outerHeight(true); // include margin
+      var height = isLeftTop ? 0 : $placeholder.outerHeight(true); // include margin
 
       // popover below placeholder.
       return {
@@ -4637,14 +4642,19 @@
         } else {
           $anchor.attr('target', '_blank');
         }
-        showPopover($linkPopover, posFromPlaceholder(styleInfo.anchor, isAirMode));
+        showPopover($linkPopover, posFromPlaceholder(styleInfo.anchor, {
+          isAirMode: isAirMode
+        }));
       } else {
         $linkPopover.hide();
       }
 
       var $imagePopover = $popover.find('.note-image-popover');
       if (styleInfo.image) {
-        showPopover($imagePopover, posFromPlaceholder(styleInfo.image, isAirMode));
+        showPopover($imagePopover, posFromPlaceholder(styleInfo.image, {
+          isAirMode: isAirMode,
+          isLeftTop: true
+        }));
       } else {
         $imagePopover.hide();
       }
@@ -5051,11 +5061,9 @@
   };
 
   var Clipboard = function (handler) {
-
     var $paste;
 
     this.attach = function (layoutInfo) {
-
       if (window.clipboardData || agent.isFF) {
         $paste = $('<div />').attr('contenteditable', true).css({
           position : 'absolute',
@@ -5063,28 +5071,17 @@
           opacity : 0
         });
         layoutInfo.editable().after($paste);
-        $paste.on('paste', hPasteClipboardImage);
+        $paste.on('paste', hPaste);
 
         layoutInfo.editable().on('keydown', function (e) {
-          if (e.ctrlKey && e.keyCode === 86) {  // CTRL+V
+          if (e.ctrlKey && e.keyCode === key.code.V) {
             handler.invoke('saveRange', layoutInfo.editable());
-            if ($paste) {
-              $paste.focus();
-            }
+            $paste.focus();
           }
         });
       }
 
-      layoutInfo.editable().on('paste', hPasteClipboardImage);
-    };
-
-    var hPasteContent = function (handler, $paste, $editable) {
-      var pasteContent = $('<div />').html($paste.html());
-
-      handler.invoke('restoreRange', $editable);
-      handler.invoke('focus', $editable);
-      handler.invoke('pasteHTML', $editable, pasteContent.html());
-      $paste.empty();
+      layoutInfo.editable().on('paste', hPaste);
     };
 
     /**
@@ -5092,65 +5089,47 @@
      *
      * @param {Event} event
      */
-    var hPasteClipboardImage = function (event) {
-
+    var hPaste = function (event) {
       var clipboardData = event.originalEvent.clipboardData;
       var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
       var $editable = layoutInfo.editable();
 
-      if (!clipboardData || !clipboardData.items || !clipboardData.items.length) {
-
-        var callbacks = $editable.data('callbacks');
-        // only can run if it has onImageUpload method
-        if (!callbacks.onImageUpload) {
-          hPasteContent(handler, $paste, $editable);
-          return;
+      if (clipboardData && clipboardData.items && clipboardData.items.length) {
+        // using clipboardData case
+        var item = list.head(clipboardData.items);
+        if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
+          handler.insertImages(layoutInfo, [item.getAsFile()]);
         }
 
+        handler.invoke('editor.afterCommand', $editable);
+      } else if ($paste && $editable.data('callbacks').onImageUpload) {
+        // using dummy contenteditable: only can run if it has onImageUpload method
         setTimeout(function () {
-          if (!$paste) {
-            return;
-          }
-
-          var imgNode = $paste[0].firstChild;
-          if (!imgNode) {
-            hPasteContent(handler, $paste, $editable);
-            return;
-          }
-
-          if (!dom.isImg(imgNode)) {
-            hPasteContent(handler, $paste, $editable);
-          } else {
+          var node = $paste[0].firstChild;
+          if (dom.isImg(node)) {
             handler.invoke('restoreRange', $editable);
-            var datauri = imgNode.src;
+            var dataURI = node.src;
 
-            var data = atob(datauri.split(',')[1]);
-            var array = new Uint8Array(data.length);
-            for (var i = 0; i < data.length; i++) {
-              array[i] = data.charCodeAt(i);
+            var decodedData = atob(dataURI.split(',')[1]);
+            var array = new Uint8Array(decodedData.length);
+            for (var i = 0; i < decodedData.length; i++) {
+              array[i] = decodedData.charCodeAt(i);
             }
 
             var blob = new Blob([array], { type : 'image/png' });
             blob.name = 'clipboard.png';
             handler.invoke('focus', $editable);
             handler.insertImages(layoutInfo, [blob]);
-
+            $paste.empty();
+          } else {
+            var pasteContent = $('<div />').html($paste.html());
+            handler.invoke('restoreRange', $editable);
+            handler.invoke('focus', $editable);
+            handler.invoke('pasteHTML', $editable, pasteContent.html());
             $paste.empty();
           }
-
         }, 0);
-
-        return;
       }
-
-      var item = list.head(clipboardData.items);
-      var isClipboardImage = item.kind === 'file' && item.type.indexOf('image/') !== -1;
-
-      if (isClipboardImage) {
-        handler.insertImages(layoutInfo, [item.getAsFile()]);
-      }
-
-      handler.invoke('editor.afterCommand', $editable);
     };
   };
 
@@ -5943,7 +5922,7 @@
       return (dropdown ? '<div class="btn-group' +
                (className ? ' ' + className : '') + '">' : '') +
                '<button type="button"' +
-                 ' class="btn btn-default btn-sm btn-small' +
+                 ' class="btn btn-default btn-sm' +
                    ((!dropdown && className) ? ' ' + className : '') +
                    (dropdown ? ' dropdown-toggle' : '') +
                  '"' +
@@ -6379,7 +6358,7 @@
         });
 
         var content = '<div class="btn-group">' + fullButton + halfButton + quarterButton + '</div>' +
-                      '<div class="btn-group">' + leftButton + rightButton + justifyButton + '</div>' +
+                      '<div class="btn-group">' + leftButton + rightButton + justifyButton + '</div><br>' +
                       '<div class="btn-group">' + roundedButton + circleButton + thumbnailButton + noneButton + '</div>' +
                       '<div class="btn-group">' + removeButton + '</div>';
         return tplPopover('note-image-popover', content);
@@ -6546,27 +6525,27 @@
           imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
         }
 
-        var body = '<div class="form-group row-fluid note-group-select-from-files">' +
+        var body = '<div class="form-group row note-group-select-from-files">' +
                      '<label>' + lang.image.selectFromFiles + '</label>' +
                      '<input class="note-image-input" type="file" name="files" accept="image/*" multiple="multiple" />' +
                      imageLimitation +
                    '</div>' +
-                   '<div class="form-group row-fluid">' +
+                   '<div class="form-group row">' +
                      '<label>' + lang.image.url + '</label>' +
-                     '<input class="note-image-url form-control span12" type="text" />' +
+                     '<input class="note-image-url form-control col-md-12" type="text" />' +
                    '</div>';
         var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
         return tplDialog('note-image-dialog', lang.image.insert, body, footer);
       },
 
       link: function (lang, options) {
-        var body = '<div class="form-group row-fluid">' +
+        var body = '<div class="form-group row">' +
                      '<label>' + lang.link.textToDisplay + '</label>' +
-                     '<input class="note-link-text form-control span12" type="text" />' +
+                     '<input class="note-link-text form-control col-md-12" type="text" />' +
                    '</div>' +
-                   '<div class="form-group row-fluid">' +
+                   '<div class="form-group row">' +
                      '<label>' + lang.link.url + '</label>' +
-                     '<input class="note-link-url form-control span12" type="text" value="http://" />' +
+                     '<input class="note-link-url form-control col-md-12" type="text" value="http://" />' +
                    '</div>' +
                    (!options.disableLinkTarget ?
                      '<div class="checkbox">' +
@@ -6584,7 +6563,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.10</a> · ' +
+                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.11</a> · ' +
                      '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
@@ -6727,7 +6706,7 @@
       var langInfo = options.langInfo;
 
       //01. create Editor
-      var $editor = $('<div class="note-editor panel panel-default"></div>');
+      var $editor = $('<div class="note-editor panel panel-default" />');
       if (options.width) {
         $editor.width(options.width);
       }
@@ -6737,10 +6716,12 @@
         $('<div class="note-statusbar">' + (options.disableResizeEditor ? '' : tplStatusbar()) + '</div>').prependTo($editor);
       }
 
-      //03. create Editable
+      //03 editing area
+      var $editingArea = $('<div class="note-editing-area" />');
+      //03. create editable
       var isContentEditable = !$holder.is(':disabled');
-      var $editable = $('<div class="note-editable panel-body" contentEditable="' + isContentEditable + '"></div>')
-          .prependTo($editor);
+      var $editable = $('<div class="note-editable panel-body" contentEditable="' + isContentEditable + '"></div>').prependTo($editingArea);
+      
       if (options.height) {
         $editable.height(options.height);
       }
@@ -6752,12 +6733,22 @@
         $editable.attr('data-placeholder', placeholder);
       }
 
-      $editable.html(dom.html($holder));
+      $editable.html(dom.html($holder) || dom.emptyPara);
 
       //031. create codable
-      $('<textarea class="note-codable"></textarea>').prependTo($editor);
+      $('<textarea class="note-codable"></textarea>').prependTo($editingArea);
 
-      //04. create Toolbar
+      //04. create Popover
+      var $popover = $(tplPopovers(langInfo, options)).prependTo($editingArea);
+      createPalette($popover, options);
+      createTooltip($popover, keyMap);
+
+      //05. handle(control selection, ...)
+      $(tplHandles()).prependTo($editingArea);
+
+      $editingArea.prependTo($editor);
+
+      //06. create Toolbar
       var $toolbar = $('<div class="note-toolbar panel-heading" />');
       for (var idx = 0, len = options.toolbar.length; idx < len; idx ++) {
         var groupName = options.toolbar[idx][0];
@@ -6781,24 +6772,15 @@
       createTooltip($toolbar, keyMap, 'bottom');
       $toolbar.prependTo($editor);
 
-      //05. create Popover
-      var $popover = $(tplPopovers(langInfo, options)).prependTo($editor);
-      createPalette($popover, options);
-      createTooltip($popover, keyMap);
+      //07. create Dropzone
+      $('<div class="note-dropzone"><div class="note-dropzone-message"></div></div>').prependTo($editor);
 
-      //06. handle(control selection, ...)
-      $(tplHandles()).prependTo($editor);
-
-      var $dialogContainer = options.dialogsInBody ? document.body : $editor;
-
-      //07. create Dialog
+      //08. create Dialog
+      var $dialogContainer = options.dialogsInBody ? $(document.body) : $editor;
       var $dialog = $(tplDialogs(langInfo, options)).prependTo($dialogContainer);
       $dialog.find('button.close, a.modal-close').click(function () {
         $(this).closest('.modal').modal('hide');
       });
-
-      //08. create Dropzone
-      $('<div class="note-dropzone"><div class="note-dropzone-message"></div></div>').prependTo($editor);
 
       //09. Editor/Holder switch
       $editor.insertAfter($holder);
