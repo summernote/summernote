@@ -143,6 +143,19 @@ define([
       ], 'rng.normalize on `|<p>text</p><p>text</p>|` should returns `<p>|text</p><p>text|</b></p>`');
     });
 
+    test('rng.normalize (void element)', function () {
+      var rng, $cont, $p, $b;
+      $cont = $('<div><p><img><b>bold</b></p></div>');
+      $p = $cont.find('p');
+      $b = $cont.find('b');
+
+      rng = range.create($p[0], 1,  $p[0], 1).normalize();
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $b[0].firstChild, 0, $b[0].firstChild, 0
+      ], 'rng.normalize on `<p><img>|<b>bold</b></p>` should returns `<p><img>|<b>bold</b></p>`');
+    });
 
     test('rng.insertNode', function () {
       var $cont, $p, $p2, $b, $u;
