@@ -691,6 +691,13 @@ define([
      */
     this.floatMe = function ($editable, value, $target) {
       beforeCommand($editable);
+      // bootstrap
+      $target.removeClass('pull-left pull-right');
+      if (value && value !== 'none') {
+        $target.addClass('pull-' + value);
+      }
+
+      // fallback for non-bootstrap
       $target.css('float', value);
       afterCommand($editable);
     };
