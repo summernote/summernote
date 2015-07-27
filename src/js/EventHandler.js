@@ -435,13 +435,6 @@ define([
         onMediaDelete: options.onMediaDelete,
         onToolbarClick: options.onToolbarClick
       });
-
-      // Textarea: auto filling the code before form submit.
-      if (dom.isTextarea(list.head(layoutInfo.holder()))) {
-        layoutInfo.holder().closest('form').submit(function () {
-          layoutInfo.holder().val(layoutInfo.holder().code());
-        });
-      }
     };
 
     /**
@@ -486,6 +479,7 @@ define([
       // Textarea: auto filling the code before form submit.
       if (dom.isTextarea(list.head($holder))) {
         $holder.closest('form').submit(function (e) {
+          layoutInfo.holder().val(layoutInfo.holder().code());
           bindCustomEvent($holder, callbacks, 'submit').call(this, e, $holder.code());
         });
       }
