@@ -484,6 +484,13 @@ define([
         });
       }
 
+      // textarea auto sync
+      if (dom.isTextarea(list.head($holder)) && options.textareaAutoSync) {
+        $holder.on('summernote.change', function () {
+          layoutInfo.holder().val(layoutInfo.holder().code());
+        });
+      }
+
       // fire init event
       bindCustomEvent($holder, callbacks, 'init')(layoutInfo);
 
