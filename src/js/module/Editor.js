@@ -577,7 +577,7 @@ define([
     this.createLink = function ($editable, linkInfo, options) {
       var linkUrl = linkInfo.url;
       var linkText = linkInfo.text;
-      var isNewWindow = linkInfo.newWindow;
+      var isNewWindow = linkInfo.isNewWindow;
       var rng = linkInfo.range || this.createRange($editable);
       var isTextChanged = rng.toString() !== linkText;
 
