@@ -15,6 +15,7 @@
     "name": "Hackerwins",
     "email": "<susukang98@gmail.com>"
   },
+  "main": "dist/summernote.js",
   "devDependencies": {
     "connect-livereload": "*",
     "grunt": "*",
