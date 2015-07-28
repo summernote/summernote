@@ -112,7 +112,11 @@ define([
      */
     this.currentStyle = function (target) {
       var rng = range.create();
-      return rng && rng.isOnEditable() ? style.current(rng.normalize(), target) : false;
+      var styleInfo =  rng && rng.isOnEditable() ? style.current(rng.normalize()) : {};
+      if (dom.isImg(target)) {
+        styleInfo.image = target;
+      }
+      return styleInfo;
     };
 
     var triggerOnBeforeChange = function ($editable) {
