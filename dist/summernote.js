@@ -6382,19 +6382,9 @@
         return tplPopover('note-air-popover', $content.children());
       }
     };
-<<<<<<< HEAD
 
     var tplPopovers = function (lang, options) {
-
       var popovers = '';
-
-=======
-
-    var tplPopovers = function (lang, options) {
-
-      var popovers = '';
-
->>>>>>> Added ability to add/overide popovers using plugins
       $.each(tplPopoverInfo, function (idx, tplPopover) {
         popovers += tplPopover(lang, options);
       });
