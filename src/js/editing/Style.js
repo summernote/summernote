@@ -36,6 +36,19 @@ define([
     };
 
     /**
+     * returns style object from node
+     *
+     * @param {jQuery} $node
+     * @return {Object}
+     */
+    this.fromNode = function ($node) {
+      var properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
+      var styleInfo = jQueryCSS($node, properties) || {};
+      styleInfo['font-size'] = parseInt(styleInfo['font-size'], 10);
+      return styleInfo;
+    };
+
+    /**
      * paragraph level style
      *
      * @param {WrappedRange} rng
@@ -109,10 +122,7 @@ define([
      */
     this.current = function (rng) {
       var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
-      var properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
-      var styleInfo = jQueryCSS($cont, properties) || {};
-
-      styleInfo['font-size'] = parseInt(styleInfo['font-size'], 10);
+      var styleInfo = this.fromNode($cont);
 
       // document.queryCommandState for toggle state
       styleInfo['font-bold'] = document.queryCommandState('bold') ? 'bold' : 'normal';

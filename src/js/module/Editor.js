@@ -102,13 +102,14 @@ define([
         $editable[0].appendChild(child[index]);
       }
     };
+
     /**
      * @method currentStyle
      *
      * current style
      *
      * @param {Node} target
-     * @return {Boolean} false if range is no
+     * @return {Object|Boolean} unfocus
      */
     this.currentStyle = function (target) {
       var rng = range.create();
@@ -117,6 +118,16 @@ define([
         styleInfo.image = target;
       }
       return styleInfo;
+    };
+
+    /**
+     * style from node
+     *
+     * @param {jQuery} $node
+     * @return {Object}
+     */
+    this.styleFromNode = function ($node) {
+      return style.fromNode($node);
     };
 
     var triggerOnBeforeChange = function ($editable) {
