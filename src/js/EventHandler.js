@@ -29,6 +29,8 @@ define([
    *  - TODO: new instance per a editor
    */
   var EventHandler = function () {
+    var self = this;
+
     /**
      * Modules
      */
@@ -180,20 +182,31 @@ define([
       hToolbarAndPopoverUpdate(event);
     };
 
+    /**
+     * update sytle info
+     * @param {Object} styleInfo
+     * @param {Object} layoutInfo
+     */
+    this.updateStyleInfo = function (styleInfo, layoutInfo) {
+      if (!styleInfo) {
+        return;
+      }
+      var isAirMode = layoutInfo.editor().data('options').airMode;
+      if (!isAirMode) {
+        modules.toolbar.update(layoutInfo.toolbar(), styleInfo);
+      }
+
+      modules.popover.update(layoutInfo.popover(), styleInfo, isAirMode);
+      modules.handle.update(layoutInfo.handle(), styleInfo, isAirMode);
+    };
+
     var hToolbarAndPopoverUpdate = function (event) {
+      var target = event.target;
       // delay for range after mouseup
       setTimeout(function () {
-        var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
-        var styleInfo = modules.editor.currentStyle(event.target);
-        if (!styleInfo) { return; }
-
-        var isAirMode = layoutInfo.editor().data('options').airMode;
-        if (!isAirMode) {
-          modules.toolbar.update(layoutInfo.toolbar(), styleInfo);
-        }
-
-        modules.popover.update(layoutInfo.popover(), styleInfo, isAirMode);
-        modules.handle.update(layoutInfo.handle(), styleInfo, isAirMode);
+        var layoutInfo = dom.makeLayoutInfo(target);
+        var styleInfo = modules.editor.currentStyle(target);
+        self.updateStyleInfo(styleInfo, layoutInfo);
       }, 0);
     };
 
@@ -215,47 +228,49 @@ define([
     var hToolbarAndPopoverClick = function (event) {
       var $btn = $(event.target).closest('[data-event]');
 
-      if ($btn.length) {
-        var eventName = $btn.attr('data-event'),
-            value = $btn.attr('data-value'),
-            hide = $btn.attr('data-hide');
-
-        var layoutInfo = dom.makeLayoutInfo(event.target);
-
-        // before command: detect control selection element($target)
-        var $target;
-        if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'imageShape']) !== -1) {
-          var $selection = layoutInfo.handle().find('.note-control-selection');
-          $target = $($selection.data('target'));
-        }
-
-        // If requested, hide the popover when the button is clicked.
-        // Useful for things like showHelpDialog.
-        if (hide) {
-          $btn.parents('.popover').hide();
-        }
-
-        if ($.isFunction($.summernote.pluginEvents[eventName])) {
-          $.summernote.pluginEvents[eventName](event, modules.editor, layoutInfo, value);
-        } else if (modules.editor[eventName]) { // on command
-          var $editable = layoutInfo.editable();
-          $editable.focus();
-          modules.editor[eventName]($editable, value, $target);
-          event.preventDefault();
-        } else if (commands[eventName]) {
-          commands[eventName].call(this, layoutInfo);
-          event.preventDefault();
-        }
-
-        // after command
-        if ($.inArray(eventName, ['backColor', 'foreColor']) !== -1) {
-          var options = layoutInfo.editor().data('options', options);
-          var module = options.airMode ? modules.popover : modules.toolbar;
-          module.updateRecentColor(list.head($btn), eventName, value);
-        }
-
-        hToolbarAndPopoverUpdate(event);
+      if (!$btn.length) {
+        return;
       }
+
+      var eventName = $btn.attr('data-event'),
+          value = $btn.attr('data-value'),
+          hide = $btn.attr('data-hide');
+
+      var layoutInfo = dom.makeLayoutInfo(event.target);
+
+      // before command: detect control selection element($target)
+      var $target;
+      if ($.inArray(eventName, ['resize', 'floatMe', 'removeMedia', 'imageShape']) !== -1) {
+        var $selection = layoutInfo.handle().find('.note-control-selection');
+        $target = $($selection.data('target'));
+      }
+
+      // If requested, hide the popover when the button is clicked.
+      // Useful for things like showHelpDialog.
+      if (hide) {
+        $btn.parents('.popover').hide();
+      }
+
+      if ($.isFunction($.summernote.pluginEvents[eventName])) {
+        $.summernote.pluginEvents[eventName](event, modules.editor, layoutInfo, value);
+      } else if (modules.editor[eventName]) { // on command
+        var $editable = layoutInfo.editable();
+        $editable.focus();
+        modules.editor[eventName]($editable, value, $target);
+        event.preventDefault();
+      } else if (commands[eventName]) {
+        commands[eventName].call(this, layoutInfo);
+        event.preventDefault();
+      }
+
+      // after command
+      if ($.inArray(eventName, ['backColor', 'foreColor']) !== -1) {
+        var options = layoutInfo.editor().data('options', options);
+        var module = options.airMode ? modules.popover : modules.toolbar;
+        module.updateRecentColor(list.head($btn), eventName, value);
+      }
+
+      hToolbarAndPopoverUpdate(event);
     };
 
     var PX_PER_EM = 18;
@@ -436,12 +451,8 @@ define([
         onToolbarClick: options.onToolbarClick
       });
 
-      // Textarea: auto filling the code before form submit.
-      if (dom.isTextarea(list.head(layoutInfo.holder()))) {
-        layoutInfo.holder().closest('form').submit(function () {
-          layoutInfo.holder().val(layoutInfo.holder().code());
-        });
-      }
+      var styleInfo = modules.editor.styleFromNode(layoutInfo.editable());
+      this.updateStyleInfo(styleInfo, layoutInfo);
     };
 
     /**
@@ -486,7 +497,15 @@ define([
       // Textarea: auto filling the code before form submit.
       if (dom.isTextarea(list.head($holder))) {
         $holder.closest('form').submit(function (e) {
+          layoutInfo.holder().val(layoutInfo.holder().code());
           bindCustomEvent($holder, callbacks, 'submit').call(this, e, $holder.code());
+        });
+      }
+
+      // textarea auto sync
+      if (dom.isTextarea(list.head($holder)) && options.textareaAutoSync) {
+        $holder.on('summernote.change', function () {
+          layoutInfo.holder().val(layoutInfo.holder().code());
         });
       }
 

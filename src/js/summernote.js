@@ -222,7 +222,6 @@ define([
 
           eventHandler.attach(layoutInfo, options);
           eventHandler.attachCustomEvent(layoutInfo, options);
-
         }
       });
 

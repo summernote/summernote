@@ -43,32 +43,34 @@
 
   /* codeview mode */
   &.codeview {
-    .note-editable {
-      display: none;
+    .note-editing-area {
+      .note-editable {
+        display: none;
+      }
+      .note-codable {
+        display: block;
+      }
     }
-    .note-codable {
-      display: block;
+  }
+
+  /* fullscreen mode */
+  &.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1050; /* bs3 modal-backdrop: 1030, bs2: 1040 */
+    .note-editable {
+      background-color: white;
+    }
+    .note-resizebar {
+      display: none;
     }
   }
 
   .note-editing-area {
     position: relative;
     overflow: hidden;
-
-    /* fullscreen mode */
-    &.fullscreen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 1050; /* bs3 modal-backdrop: 1030, bs2: 1040 */
-      .note-editable {
-        background-color: white;
-      }
-      .note-resizebar {
-        display: none;
-      }
-    }
 
     /* editable */
     .note-editable {

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
   <title>summernote</title>
   <!-- include jquery -->
-  <script src="//code.jquery.com/jquery-1.9.1.min.js"></script> 
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script> 
 
   <!-- include libraries BS3 -->
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css" />
@@ -30,8 +30,15 @@
   </script>
 </head>
 <body>
-<form>
-  <textarea class="summernote"><p>Seasons <b>coming up</b></p></textarea>
+<form action="#">
+  <div class="form-group">
+    <label for="input">Text</label>
+    <input type="text" class="form-input" id="input" required="required" value="Title">
+  </div>
+  <div class="form-group">
+    <label for="contents">Contents</label>
+    <textarea name="text" class="summernote" id="contents" required="required" title="Contents"></textarea>
+  </div>
   <button type="submit" class="btn btn-default">submit</button>
 </form>
 </body>
