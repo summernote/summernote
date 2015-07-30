@@ -41,10 +41,10 @@ Include the following code in the `<head>` tag of your HTML:
 
 ```html
 <!-- include libraries(jQuery, bootstrap, fontawesome) -->
-<script type="text/javascript" src="//code.jquery.com/jquery-1.9.1.min.js"></script> 
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
-<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
+<script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script> 
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
 
 <!-- include summernote css/js-->
 <link href="summernote.css" rel="stylesheet">

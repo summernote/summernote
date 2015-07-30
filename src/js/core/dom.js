@@ -156,7 +156,7 @@ define([
      * @see http://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
      */
     var isVoid = function (node) {
-      return node && /^BR|^IMG|^HR/.test(node.nodeName.toUpperCase());
+      return node && /^BR|^IMG|^HR|^IFRAME|^BUTTON/.test(node.nodeName.toUpperCase());
     };
 
     var isPara = function (node) {
@@ -179,6 +179,7 @@ define([
     var isInline = function (node) {
       return !isBodyContainer(node) &&
              !isList(node) &&
+             !isHr(node) &&
              !isPara(node) &&
              !isTable(node) &&
              !isBlockquote(node);
@@ -187,6 +188,8 @@ define([
     var isList = function (node) {
       return node && /^UL|^OL/.test(node.nodeName.toUpperCase());
     };
+
+    var isHr = makePredByNodeName('HR');
 
     var isCell = function (node) {
       return node && /^TD|^TH/.test(node.nodeName.toUpperCase());

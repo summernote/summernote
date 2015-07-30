@@ -207,8 +207,8 @@ define([
 
           // point on block's edge
           var block = dom.ancestor(point.node, dom.isBlock);
-          if ((dom.isLeftEdgePointOf(point, block) && !isLeftToRight) ||
-              (dom.isRightEdgePointOf(point, block) && isLeftToRight)) {
+          if (((dom.isLeftEdgePointOf(point, block) || dom.isVoid(dom.prevPoint(point).node)) && !isLeftToRight) ||
+              ((dom.isRightEdgePointOf(point, block) || dom.isVoid(dom.nextPoint(point).node)) && isLeftToRight)) {
 
             // returns point already on visible point
             if (dom.isVisiblePoint(point)) {

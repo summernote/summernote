@@ -102,17 +102,32 @@ define([
         $editable[0].appendChild(child[index]);
       }
     };
+
     /**
      * @method currentStyle
      *
      * current style
      *
      * @param {Node} target
-     * @return {Boolean} false if range is no
+     * @return {Object|Boolean} unfocus
      */
     this.currentStyle = function (target) {
       var rng = range.create();
-      return rng && rng.isOnEditable() ? style.current(rng.normalize(), target) : false;
+      var styleInfo =  rng && rng.isOnEditable() ? style.current(rng.normalize()) : {};
+      if (dom.isImg(target)) {
+        styleInfo.image = target;
+      }
+      return styleInfo;
+    };
+
+    /**
+     * style from node
+     *
+     * @param {jQuery} $node
+     * @return {Object}
+     */
+    this.styleFromNode = function ($node) {
+      return style.fromNode($node);
     };
 
     var triggerOnBeforeChange = function ($editable) {
@@ -285,7 +300,7 @@ define([
     var commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
                     'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
                     'formatBlock', 'removeFormat',
-                    'backColor', 'foreColor', 'insertHorizontalRule', 'fontName'];
+                    'backColor', 'foreColor', 'fontName'];
 
     for (var idx = 0, len = commands.length; idx < len; idx ++) {
       this[commands[idx]] = (function (sCmd) {
@@ -508,6 +523,22 @@ define([
     };
 
     /**
+     * insert horizontal rule
+     * @param {jQuery} $editable
+     */
+    this.insertHorizontalRule = function ($editable) {
+      beforeCommand($editable);
+
+      var rng = range.create();
+      var hrNode = rng.insertNode($('<HR/>')[0]);
+      if (hrNode.nextSibling) {
+        range.create(hrNode.nextSibling, 0).normalize().select();
+      }
+
+      afterCommand($editable);
+    };
+
+    /**
      * remove bogus node and character
      */
     this.removeBogus = function ($editable) {
@@ -573,7 +604,7 @@ define([
     this.createLink = function ($editable, linkInfo, options) {
       var linkUrl = linkInfo.url;
       var linkText = linkInfo.text;
-      var isNewWindow = linkInfo.newWindow;
+      var isNewWindow = linkInfo.isNewWindow;
       var rng = linkInfo.range || this.createRange($editable);
       var isTextChanged = rng.toString() !== linkText;
 
@@ -691,6 +722,13 @@ define([
      */
     this.floatMe = function ($editable, value, $target) {
       beforeCommand($editable);
+      // bootstrap
+      $target.removeClass('pull-left pull-right');
+      if (value && value !== 'none') {
+        $target.addClass('pull-' + value);
+      }
+
+      // fallback for non-bootstrap
       $target.css('float', value);
       afterCommand($editable);
     };

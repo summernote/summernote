@@ -47,8 +47,11 @@ define('summernote/defaults', function () {
       disableLinkTarget: false,     // hide link Target Checkbox
       disableDragAndDrop: false,    // disable drag and drop event
       disableResizeEditor: false,   // disable resizing editor
+      disableResizeImage: false,    // disable resizing image
 
       shortcuts: true,              // enable keyboard shortcuts
+
+      textareaAutoSync: true,       // enable textarea auto sync
 
       placeholder: false,           // enable placeholder text
       prettifyHtml: true,           // enable prettifying html while toggling codeview

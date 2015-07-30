@@ -32,6 +32,11 @@ define(['summernote/core/range'], function (range) {
      * undo
      */
     this.undo = function () {
+      // Create snap shot if not yet recorded
+      if ($editable.html() !== stack[stackOffset].contents) {
+        this.recordUndo();
+      }
+
       if (0 < stackOffset) {
         stackOffset--;
         applySnapshot(stack[stackOffset]);

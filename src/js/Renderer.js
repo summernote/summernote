@@ -471,7 +471,7 @@ define([
           value: 'none'
         });
 
-        var content = '<div class="btn-group">' + fullButton + halfButton + quarterButton + '</div>' +
+        var content = (options.disableResizeImage ? '' : '<div class="btn-group">' + fullButton + halfButton + quarterButton + '</div>') +
                       '<div class="btn-group">' + leftButton + rightButton + justifyButton + '</div><br>' +
                       '<div class="btn-group">' + roundedButton + circleButton + thumbnailButton + noneButton + '</div>' +
                       '<div class="btn-group">' + removeButton + '</div>';
@@ -509,15 +509,17 @@ define([
       return $notePopover;
     };
 
-    var tplHandles = function () {
+    var tplHandles = function (options) {
       return '<div class="note-handle">' +
                '<div class="note-control-selection">' +
                  '<div class="note-control-selection-bg"></div>' +
                  '<div class="note-control-holder note-control-nw"></div>' +
                  '<div class="note-control-holder note-control-ne"></div>' +
                  '<div class="note-control-holder note-control-sw"></div>' +
-                 '<div class="note-control-sizing note-control-se"></div>' +
-                 '<div class="note-control-selection-info"></div>' +
+                 '<div class="' +
+                 (options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing') +
+                 ' note-control-se"></div>' +
+                 (options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>') +
                '</div>' +
              '</div>';
     };
@@ -641,7 +643,7 @@ define([
 
         var body = '<div class="form-group row note-group-select-from-files">' +
                      '<label>' + lang.image.selectFromFiles + '</label>' +
-                     '<input class="note-image-input" type="file" name="files" accept="image/*" multiple="multiple" />' +
+                     '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" />' +
                      imageLimitation +
                    '</div>' +
                    '<div class="form-group row">' +
@@ -858,7 +860,7 @@ define([
       createTooltip($popover, keyMap);
 
       //05. handle(control selection, ...)
-      $(tplHandles()).prependTo($editingArea);
+      $(tplHandles(options)).prependTo($editingArea);
 
       $editingArea.prependTo($editor);
 
