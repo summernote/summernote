@@ -363,6 +363,8 @@ define([
             commands[eventName].call(this, layoutInfo);
             event.preventDefault();
           }
+        } else if (modules.clipboard.checkPaste(keyMap[keyString])) {
+          modules.editor.afterCommand($editable);
         } else if (key.isEdit(event.keyCode)) {
           modules.editor.afterCommand($editable);
         }
