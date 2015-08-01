@@ -28,7 +28,7 @@
     "grunt-contrib-watch": "*",
     "grunt-exec": "^0.4.6",
     "grunt-recess": "*",
-    "grunt-saucelabs": "^8.6.1",
+    "grunt-saucelabs": "*",
     "load-grunt-tasks": "0.2.0",
     "open": "0.0.4",
     "requirejs": "2.1.9"
