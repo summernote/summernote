@@ -21,7 +21,7 @@ deploy:
     branch: develop
 env:
   global:
-  - secure: WvizJ07+XPx96ivdj96JkO9gO3+dxr002U5AITI7XuL1u6kutpTsRAINKX0haFW2iH/a8os0vNCoQYY0PPQmixijvyxvxTRpvHHyqYMaCSix5Bq317zWJPY7G2qQl9PBIcdLFxBHnhzQmFChxEbDwqfv8zgDbWlzAm4YGJnnyuo=
-  - secure: ZUvcNhCV5n45dX3NXooeB2vqrjel9463oOhWvOL7UQwbgesxcUfM9iXtoXmCbie3KWRx2zX92u7uT6jui9+gjCEnQ36NijiQ111Gs4A4asIr1o4iOHe+izzR06V96D/5prXr218d75t0GEVm5Jcq5z3XSzCqhaGsF79Q2akZcB4=
+  - secure: JwRh/BsZPWG4VCt5CmLj8PzZp/qkTEciAQK8RlcA9xMvbh7KdrU8t8/nCo3qA4oTbgSPQQ1lh+nxQItgBS5lWOM2kov4JSCnHR4mxDyjycfPB7E+Xuzlp89PtGpL6fk2VfVNceSvH2vmKCibbo2bKYRCJ5khMTKljh9FmTyFxQ0=
+  - secure: ML6bw+59g8pHDGRRwUj4Sf4rrXIEopqHv3l8l9//GUdoLMLTvTCIoLVlIKam51/6REYrvvbx/62Xi5+TZPn82FAASlS9lFK21cJYWnW+o+Rzemj2PHhKx8RFfFFur9FSpH6y0/Zx88dNF0OS83KlmNXuWy3tKYnABwyoBnx/JP4=
 addons:
-    sauce_connect: true
+  sauce_connect: true
