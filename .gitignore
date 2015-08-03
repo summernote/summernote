@@ -11,3 +11,5 @@ bower_components
 
 # zip file
 *.zip
+
+.versions

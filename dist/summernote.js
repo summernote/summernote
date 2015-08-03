@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.6.15
+ * Super simple wysiwyg editor on Bootstrap v0.6.16
  * http://summernote.org/
  *
  * summernote.js
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-07-30T16:38Z
+ * Date: 2015-08-03T16:40Z
  */
 (function (factory) {
   /* global define */
@@ -2384,7 +2384,7 @@
    */
   var defaults = {
     /** @property */
-    version: '0.6.15',
+    version: '0.6.16',
 
     /**
      * 
@@ -4717,7 +4717,7 @@
       }
 
       var $airPopover = $popover.find('.note-air-popover');
-      if (isAirMode && !styleInfo.range.isCollapsed()) {
+      if (isAirMode && styleInfo.range && !styleInfo.range.isCollapsed()) {
         var rect = list.last(styleInfo.range.getClientRects());
         if (rect) {
           var bnd = func.rect2bnd(rect);
@@ -6650,7 +6650,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.15</a> · ' +
+                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.16</a> · ' +
                      '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';
@@ -6768,7 +6768,7 @@
       createPalette($popover, options);
 
       // create Handle
-      var $handle = $(tplHandles());
+      var $handle = $(tplHandles(options));
       $handle.addClass('note-air-layout');
       $handle.attr('id', 'note-handle-' + id);
       $handle.appendTo(body);

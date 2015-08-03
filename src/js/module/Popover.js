@@ -91,7 +91,7 @@ define([
       }
 
       var $airPopover = $popover.find('.note-air-popover');
-      if (isAirMode && !styleInfo.range.isCollapsed()) {
+      if (isAirMode && styleInfo.range && !styleInfo.range.isCollapsed()) {
         var rect = list.last(styleInfo.range.getClientRects());
         if (rect) {
           var bnd = func.rect2bnd(rect);

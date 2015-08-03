@@ -105,22 +105,7 @@ module.exports = function (grunt) {
     connect: {
       all: {
         options: {
-          port: 3000,
-          livereload: {
-            options: {
-              open: true,
-              base: ['index.html']
-            }
-          },
-          middleware: function (connect, options, middlewares) {
-            var base = options.base[0];
-            middlewares = middlewares || [];
-            return middlewares.concat([
-              require('connect-livereload')(), // livereload middleware
-              connect['static'](base),    // serve static files
-              connect.directory(base)  // make empty directories browsable
-            ]);
-          }
+          port: 3000
         }
       }
     },

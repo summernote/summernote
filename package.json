@@ -1,7 +1,8 @@
 {
   "name": "summernote",
   "description": "Super Simple WYSIWYG Editor on Bootstrap",
-  "version": "0.6.15",
+  "version": "0.6.16",
+  "license": "MIT",
   "keywords": [
     "editor",
     "bootstrap",
@@ -17,7 +18,6 @@
   },
   "main": "dist/summernote.js",
   "devDependencies": {
-    "connect-livereload": "*",
     "grunt": "*",
     "grunt-contrib-compress": "*",
     "grunt-contrib-connect": "*",
@@ -27,7 +27,7 @@
     "grunt-contrib-watch": "*",
     "grunt-exec": "^0.4.6",
     "grunt-recess": "*",
-    "grunt-saucelabs": "^8.6.1",
+    "grunt-saucelabs": "*",
     "load-grunt-tasks": "0.2.0",
     "open": "0.0.4",
     "requirejs": "2.1.9"
