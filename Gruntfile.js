@@ -170,6 +170,17 @@ module.exports = function (grunt) {
           'public': 'public'
         }
       }
+    },
+
+    karma: {
+      options: {
+        configFile: './test/karma.conf.js'
+      },
+      travis: {
+        singleRun: true,
+        browsers: ['PhantomJS'],
+        reporters: ['progress']
+      }
     }
   });
 

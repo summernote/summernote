@@ -13,3 +13,4 @@ bower_components
 *.zip
 
 .versions
+coverage/
