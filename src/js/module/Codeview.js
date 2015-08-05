@@ -59,7 +59,8 @@ define([
           $editable = layoutInfo.editable(),
           $codable = layoutInfo.codable(),
           $popover = layoutInfo.popover(),
-          $handle = layoutInfo.handle();
+          $handle = layoutInfo.handle(),
+          $holder = layoutInfo.holder();
 
       var options = $editor.data('options');
 
@@ -86,6 +87,18 @@ define([
             server.updateArgHints(cm);
           });
         }
+        
+        // fire onChange event for cmEditor's onkeyup
+        cmEditor.on('keyup', function (e) {
+          var value = cmEditor.getValue();
+          var isChange = $editable.html() !== value;
+
+          if (isChange) {
+            handler.bindCustomEvent(
+                $holder, $editable.data('callbacks'), 'change'
+            )(value, $editable);
+          }
+        });
 
         // CodeMirror hasn't Padding.
         cmEditor.setSize(null, $editable.outerHeight());
