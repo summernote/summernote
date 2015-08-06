@@ -9,6 +9,79 @@ define([
   'summernote/core/func'
 ], function ($, dom, func) {
   return function (helper) {
+
+    var editorMarkup = [
+      '<div class="note-editor">',
+        '<div class="note-dialog"></div>',
+        '<div class="note-dropzone"></div>',
+        '<div class="note-toolbar"></div>',
+        '<div class="note-editing-area">',
+          '<div class="note-handle"></div>',
+          '<div class="note-popover"></div>',
+          '<div class="note-codable"></div>',
+          '<div class="note-editable"></div>',
+        '</div>',
+        '<div class="note-statusbar"></div>',
+      '</div>'
+    ].join('');
+
+    test('dom.buildLayoutInfo', function () {
+      var $editor = $(editorMarkup);
+      var layoutInfo = dom.buildLayoutInfo($editor);
+
+      deepEqual({
+        editor: 'note-editor',
+        dropzone: 'note-dropzone',
+        toolbar: 'note-toolbar',
+        editable: 'note-editable',
+        codable: 'note-codable',
+        statusbar: 'note-statusbar',
+        popover: 'note-popover',
+        handle: 'note-handle',
+        dialog: 'note-dialog'
+      }, {
+        editor: layoutInfo.editor().attr('class'),
+        dropzone: layoutInfo.dropzone().attr('class'),
+        toolbar: layoutInfo.toolbar().attr('class'),
+        editable: layoutInfo.editable().attr('class'),
+        codable: layoutInfo.codable().attr('class'),
+        statusbar: layoutInfo.statusbar().attr('class'),
+        popover: layoutInfo.popover().attr('class'),
+        handle: layoutInfo.handle().attr('class'),
+        dialog: layoutInfo.dialog().attr('class')
+      }, 'should returns layoutInfo');
+    });
+
+    test('dom.makeLayoutInfo', function () {
+      var $editor = $(editorMarkup);
+      var $editable = $editor.find('.note-editable');
+      var layoutInfo = dom.makeLayoutInfo($editable);
+
+      deepEqual({
+        editor: 'note-editor',
+        dropzone: 'note-dropzone',
+        toolbar: 'note-toolbar',
+        editable: 'note-editable',
+        codable: 'note-codable',
+        statusbar: 'note-statusbar',
+        popover: 'note-popover',
+        handle: 'note-handle',
+        dialog: 'note-dialog'
+      }, {
+        editor: layoutInfo.editor().attr('class'),
+        dropzone: layoutInfo.dropzone().attr('class'),
+        toolbar: layoutInfo.toolbar().attr('class'),
+        editable: layoutInfo.editable().attr('class'),
+        codable: layoutInfo.codable().attr('class'),
+        statusbar: layoutInfo.statusbar().attr('class'),
+        popover: layoutInfo.popover().attr('class'),
+        handle: layoutInfo.handle().attr('class'),
+        dialog: layoutInfo.dialog().attr('class')
+      }, 'should returns layoutInfo');
+
+      equal(dom.makeLayoutInfo($('<div></div>')), null, 'should returns null');
+    });
+
     test('dom.ancestor', function () {
       var $cont, $b, txtB;
       
