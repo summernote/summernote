@@ -1,4 +1,5 @@
 language: node_js
+sudo: false
 node_js: 0.1
 before_script:
 - node --version
@@ -7,6 +8,8 @@ before_script:
 script:
 - grunt test --verbose
 - grunt saucelabs-test
+- grunt karma:travis
+- grunt coveralls:travis
 before_deploy:
 - npm install
 - grunt build

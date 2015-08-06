@@ -40,6 +40,7 @@ module.exports = function (grunt) {
           'lang/**/*.js',
           'Gruntfile.js',
           'test/**/*.js',
+          '!test/coverage/**/*.js',
           'build/*.js'
         ],
         options: {
@@ -169,6 +170,25 @@ module.exports = function (grunt) {
           testname: 'unit test for summernote',
           'public': 'public'
         }
+      }
+    },
+
+    karma: {
+      options: {
+        configFile: './test/karma.conf.js'
+      },
+      travis: {
+        singleRun: true,
+        browsers: ['PhantomJS'],
+        reporters: ['progress', 'coverage']
+      }
+    },
+    coveralls: {
+      options: {
+        force: false
+      },
+      travis: {
+        src: 'test/coverage/**/lcov.info'
       }
     }
   });
