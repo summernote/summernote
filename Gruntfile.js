@@ -182,6 +182,14 @@ module.exports = function (grunt) {
         browsers: ['PhantomJS'],
         reporters: ['progress', 'coverage']
       }
+    },
+    coveralls: {
+      options: {
+        force: false
+      },
+      travis: {
+        src: 'test/coverage/**/lcov.info'
+      }
     }
   });
 
