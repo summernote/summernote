@@ -40,6 +40,7 @@ module.exports = function (grunt) {
           'lang/**/*.js',
           'Gruntfile.js',
           'test/**/*.js',
+          '!test/coverage/**/*.js',
           'build/*.js'
         ],
         options: {
@@ -179,7 +180,7 @@ module.exports = function (grunt) {
       travis: {
         singleRun: true,
         browsers: ['PhantomJS'],
-        reporters: ['progress']
+        reporters: ['progress', 'coverage']
       }
     }
   });

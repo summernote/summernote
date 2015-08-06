@@ -8,6 +8,7 @@ before_script:
 script:
 - grunt test --verbose
 - grunt saucelabs-test
+- grunt karma:travis
 before_deploy:
 - npm install
 - grunt build

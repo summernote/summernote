@@ -6,7 +6,7 @@ module.exports = function (config) {
     basePath: '../',
     frameworks: ['requirejs', 'qunit'],
     exclude: [],
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
@@ -18,6 +18,12 @@ module.exports = function (config) {
     ],
     browsers: ['PhantomJS'],
     captureTimeout: 60000,
-    singleRun: false
+    singleRun: false,
+    preprocessors: { 'src/js/**/!(app|intro|outro).js': 'coverage' },
+    coverageReporter: {
+      type : 'lcov',
+      dir : 'test/coverage/',
+      includeAllSources: true
+    }
   });
 };
