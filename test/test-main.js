@@ -31,11 +31,12 @@ requirejs.config({
   callback: function () {
     require([
       'summernote/core/agent',
+      '../../test/unit/func.spec',
       '../../test/unit/dom.spec',
       '../../test/unit/list.spec',
       '../../test/unit/range.spec',
       '../../test/unit/style.spec'
-    ], function (agent, domSpec, listSpec, rangeSpec, styleSpec) {
+    ], function (agent, funcSpec, domSpec, listSpec, rangeSpec, styleSpec) {
 
       var helper = {
         equalsToUpperCase: function (actual, expected, comment) {
@@ -56,6 +57,8 @@ requirejs.config({
         }
       };
 
+      module('unit/func');
+      funcSpec(helper);
       module('unit/dom');
       domSpec(helper);
       module('unit/list');

@@ -183,6 +183,7 @@ module.exports = function (grunt) {
         reporters: ['progress', 'coverage']
       }
     },
+
     coveralls: {
       options: {
         force: false
