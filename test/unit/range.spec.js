@@ -66,7 +66,7 @@ define([
     });
 
     test('rng.expand', function () {
-      var rng, $cont, $span, $b, $u;
+      var rng, $cont, $b, $u, $anchor;
       $cont = $('<div><a><b>b</b><u>u</u></a></div>');
       $anchor = $cont.find('a');
       $b = $cont.find('b');
@@ -81,7 +81,7 @@ define([
     });
 
     test('rng.collapse', function () {
-      var rng, $cont, $span, $b, $u;
+      var rng, $cont, $b, $u;
       $cont = $('<div><b>b</b><u>u</u></div>');
       $b = $cont.find('b');
       $u = $cont.find('u');
