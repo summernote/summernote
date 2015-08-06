@@ -22,11 +22,12 @@ require.config({
 require([
   'summernote/core/agent',
   '../../test/unit/func.spec',
+  '../../test/unit/key.spec',
   '../../test/unit/dom.spec',
   '../../test/unit/list.spec',
   '../../test/unit/range.spec',
   '../../test/unit/style.spec'
-], function (agent, funcSpec, domSpec, listSpec, rangeSpec, styleSpec) {
+], function (agent, funcSpec, keySpec, domSpec, listSpec, rangeSpec, styleSpec) {
   /* global QUnit */
   QUnit.start();
 
@@ -51,6 +52,8 @@ require([
 
   module('unit/func');
   funcSpec(helper);
+  module('unit/key');
+  keySpec(helper);
   module('unit/dom');
   domSpec(helper);
   module('unit/list');

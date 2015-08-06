@@ -17,6 +17,12 @@ define([
       'ENTER': 13,
       'SPACE': 32,
 
+      // Arrow
+      'LEFT': 37,
+      'UP': 38,
+      'RIGHT': 39,
+      'DOWN': 40,
+
       // Number: 0-9
       'NUM0': 48,
       'NUM1': 49,
@@ -56,7 +62,12 @@ define([
        * @return {Boolean}
        */
       isEdit: function (keyCode) {
-        return list.contains([8, 9, 13, 32], keyCode);
+        return list.contains([
+          keyMap.BACKSPACE,
+          keyMap.TAB,
+          keyMap.ENTER,
+          keyMap.SPACe
+        ], keyCode);
       },
       /**
        * @method isMove
@@ -65,7 +76,12 @@ define([
        * @return {Boolean}
        */
       isMove: function (keyCode) {
-        return list.contains([37, 38, 39, 40], keyCode);
+        return list.contains([
+          keyMap.LEFT,
+          keyMap.UP,
+          keyMap.RIGHT,
+          keyMap.DOWN
+        ], keyCode);
       },
       /**
        * @property {Object} nameFromCode

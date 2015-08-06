@@ -63,6 +63,35 @@ define([
 
       rng = range.create($b[0].firstChild, 0, $b[0].firstChild, 1);
       equal(rng.commonAncestor(), $b[0].firstChild, 'rng.commonAncestor on <b>|b|</b> should returns b(#textNode)');
+    });
+
+    test('rng.expand', function () {
+      var rng, $cont, $span, $b, $u;
+      $cont = $('<div><a><b>b</b><u>u</u></a></div>');
+      $anchor = $cont.find('a');
+      $b = $cont.find('b');
+      $u = $cont.find('u');
+
+      rng = range.create($b[0].firstChild, 0, $b[0].firstChild, 0).expand(dom.isAnchor);
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $anchor[0], 0, $anchor[0], 2
+      ], 'rng.expand on `<b>|b</b>` with isAnchor should returns `<b>|b</b> ~ <u>u|</u>`');
+    });
+
+    test('rng.collapse', function () {
+      var rng, $cont, $span, $b, $u;
+      $cont = $('<div><b>b</b><u>u</u></div>');
+      $b = $cont.find('b');
+      $u = $cont.find('u');
+
+      rng = range.create($b[0].firstChild, 0, $u[0].firstChild, 1).collapse();
+      deepEqual([
+        rng.sc, rng.so, rng.ec, rng.eo
+      ], [
+        $u[0].firstChild, 1, $u[0].firstChild, 1
+      ], 'rng.collapse on `<b>|b</b> ~ <u>u|</u>` should returns `<u>u|</u>`');
 
     });
 
