@@ -12,16 +12,16 @@ define([
 
     var editorMarkup = [
       '<div class="note-editor">',
-        '<div class="note-dialog"></div>',
-        '<div class="note-dropzone"></div>',
-        '<div class="note-toolbar"></div>',
-        '<div class="note-editing-area">',
-          '<div class="note-handle"></div>',
-          '<div class="note-popover"></div>',
-          '<div class="note-codable"></div>',
-          '<div class="note-editable"></div>',
-        '</div>',
-        '<div class="note-statusbar"></div>',
+      '  <div class="note-dialog"></div>',
+      '  <div class="note-dropzone"></div>',
+      '  <div class="note-toolbar"></div>',
+      '  <div class="note-editing-area">',
+      '    <div class="note-handle"></div>',
+      '    <div class="note-popover"></div>',
+      '    <div class="note-codable"></div>',
+      '    <div class="note-editable"></div>',
+      '  </div>',
+      '  <div class="note-statusbar"></div>',
       '</div>'
     ].join('');
 
