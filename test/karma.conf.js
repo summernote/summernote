@@ -16,6 +16,7 @@ module.exports = function (config) {
       {pattern: 'test/**/*.js', included: false},
       'test/test-main.js'
     ],
+    // Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS, IE
     browsers: ['PhantomJS'],
     captureTimeout: 60000,
     singleRun: false,
