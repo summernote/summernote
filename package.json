@@ -17,6 +17,7 @@
   },
   "main": "dist/summernote.js",
   "devDependencies": {
+    "chai": "^3.2.0",
     "grunt": "*",
     "grunt-contrib-compress": "*",
     "grunt-contrib-connect": "*",
@@ -34,6 +35,7 @@
     "karma-coverage": "^0.4.2",
     "karma-firefox-launcher": "^0.1.6",
     "karma-ie-launcher": "^0.2.0",
+    "karma-mocha": "^0.2.0",
     "karma-opera-launcher": "^0.2.0",
     "karma-phantomjs-launcher": "^0.2.0",
     "karma-qunit": "^0.1.5",
