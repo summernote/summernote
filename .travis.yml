@@ -7,7 +7,7 @@ before_script:
 - npm install -g grunt-cli
 script:
 - grunt test --verbose
-- grunt saucelabs-test
+- if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then grunt saucelabs-test; fi
 - grunt karma:travis
 - grunt coveralls:travis
 before_deploy:
