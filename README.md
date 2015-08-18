@@ -12,7 +12,7 @@ Super simple WYSIWYG Editor using Bootstrap (3.0 and 2.x).
 ### Summernote
 Summernote is a JavaScript library that helps you create WYSIWYG editors online.
 
-Home Page: http://summernote.org
+Home page: <http://summernote.org>
 
 ### Why Summernote?
 
