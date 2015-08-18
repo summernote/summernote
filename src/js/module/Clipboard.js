@@ -6,7 +6,6 @@ define([
 ], function (list, dom, key, agent) {
   var Clipboard = function (handler) {
     var $paste;
-    var pasteFlag = false;
 
     this.attach = function (layoutInfo) {
       // [workaround] getting image from clipboard
@@ -34,15 +33,6 @@ define([
       } else {
         layoutInfo.editable().on('paste', pasteByEvent);
       }
-    };
-
-    this.checkPaste = function (keyName) {
-      var checkPaste = pasteFlag;
-      pasteFlag = false;
-      if (keyName === 'paste') {
-        checkPaste = false;
-      }
-      return checkPaste;
     };
 
     var pasteByHook = function (layoutInfo) {
@@ -91,7 +81,6 @@ define([
         if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
           handler.insertImages(layoutInfo, [item.getAsFile()]);
         }
-        pasteFlag = true;
         handler.invoke('editor.afterCommand', $editable);
       }
     };
