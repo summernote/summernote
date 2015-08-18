@@ -324,8 +324,9 @@
         $specialCharDialog.modal('hide');
       }
 
-      function keyDownEventHandler (e) {
-        var keyCode = e.keyCode;
+      function keyDownEventHandler (event) {
+        event.preventDefault();
+        var keyCode = event.keyCode;
         if (keyCode === undefined || keyCode === null) {
           return;
         }
@@ -339,8 +340,9 @@
           }
           arrowKeyHandler(keyCode);
         } else if (keyCode === ENTER_KEY) {
-          enterKeyHandler()
+          enterKeyHandler();
         }
+        return false;
       }
 
       // remove class
@@ -381,6 +383,9 @@
       }).on('click', function () {
         $(this).tooltip('hide');
       });
+
+      // $editable blur
+      $editable.blur();
     });
   };
 
