@@ -820,7 +820,12 @@ define([
       $editable.focus();
 
       // [workaround] for firefox bug http://goo.gl/lVfAaI
-      if (agent.isFF && !range.create().isOnEditable()) {
+      if (agent.isFF) {
+        var rng = range.create();
+        if (!rng || rng.isOnEditable()) {
+          return;
+        }
+
         range.createFromNode($editable[0])
              .normalize()
              .collapse()
