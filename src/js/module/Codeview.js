@@ -89,7 +89,7 @@ define([
         }
         
         // fire onChange event for cmEditor's onkeyup
-        cmEditor.on('keyup', function (e) {
+        cmEditor.on('keyup', function () {
           var value = cmEditor.getValue();
           var isChange = $editable.html() !== value;
 
