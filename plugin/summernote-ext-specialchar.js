@@ -161,7 +161,7 @@
     '&clubs;',
     '&hearts;',
     '&diams;'
-  ]
+  ];
 
   /**
    * @member plugin.specialChar
@@ -191,14 +191,14 @@
    * @return {jQuery}
    */
   var makeSpecialCharSetTable = function () {
-    var $table = $('<table/>')
-    $.each(specialCharDataSet, function (idx, char) {
+    var $table = $('<table/>');
+    $.each(specialCharDataSet, function (idx, text) {
       var $td = $('<td/>').addClass('note-specialchar-node');
       var $tr = (idx % COLUMN_LENGTH === 0) ? $('<tr/>') : $table.find('tr').last();
 
-      $td.append($(tmpl.button(char, {
-        title: char,
-        value: encodeURIComponent(char)
+      $td.append($(tmpl.button(text, {
+        title: text,
+        value: encodeURIComponent(text)
       })).css({
         width: COLUMN_WIDTH
       }));
@@ -230,10 +230,10 @@
       var $specialCharDialog = $dialog.find('.note-specialchar-dialog');
       var $specialCharNode = $specialCharDialog.find('.note-specialchar-node');
       var $selectedNode = null;
-      var ARROW_KEYS = [KEY.UP, KEY.DOWN, KEY.LEFT, KEY.RIGHT]
-      var ENTER_KEY = KEY.ENTER
+      var ARROW_KEYS = [KEY.UP, KEY.DOWN, KEY.LEFT, KEY.RIGHT];
+      var ENTER_KEY = KEY.ENTER;
 
-      function addActiveClass ($target) {
+      function addActiveClass($target) {
         if (!$target) {
           return;
         }
@@ -241,13 +241,13 @@
         $selectedNode = $target;
       }
 
-      function removeActiveClass ($target) {
+      function removeActiveClass($target) {
         $target.find('button').removeClass('active');
         $selectedNode = null;
       }
 
       // find next node
-      function findNextNode (row, column) {
+      function findNextNode(row, column) {
         var findNode = null;
         $.each($specialCharNode, function (idx, $node) {
           var findRow = Math.ceil((idx + 1) / COLUMN_LENGTH);
@@ -260,7 +260,7 @@
         return $(findNode);
       }
 
-      function arrowKeyHandler (keyCode) {
+      function arrowKeyHandler(keyCode) {
         // left, right, up, down key
         var $nextNode;
         var lastRowColumnLength = $specialCharNode.length % totalColumn;
@@ -315,16 +315,16 @@
         }
       }
 
-      function enterKeyHandler () {
+      function enterKeyHandler() {
         if (!$selectedNode) {
-          return
+          return;
         }
 
         deferred.resolve(decodeURIComponent($selectedNode.find('button').attr('data-value')));
         $specialCharDialog.modal('hide');
       }
 
-      function keyDownEventHandler (event) {
+      function keyDownEventHandler(event) {
         event.preventDefault();
         var keyCode = event.keyCode;
         if (keyCode === undefined || keyCode === null) {
@@ -350,12 +350,11 @@
       // find selected node
       if (text) {
         for (var i = 0; i < $specialCharNode.length; i++) {
-          var $checkNode = $($specialCharNode[i])
+          var $checkNode = $($specialCharNode[i]);
           if ($checkNode.text() === text) {
             addActiveClass($checkNode);
             currentRow = Math.ceil((i + 1) / COLUMN_LENGTH);
             currentColumn = (i + 1) % COLUMN_LENGTH;
-            console.log(currentRow, currentColumn);
           }
         }
       }
@@ -481,202 +480,10 @@
           select: 'Select Special characters'
         }
       },
-      'ar-AR': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'ca-ES': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'cs-CZ': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'da-DK': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'de-DE': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'es-ES': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'es-EU': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'fa-IR': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'fi-FI': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'fr-FR': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'he-IL': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'hu-HU': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'id-ID': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'it-IT': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'ja-JP': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
       'ko-KR': {
         specialChar: {
           specialChar: '특수문자',
           select: '특수문자를 선택하세요'
-        }
-      },
-      'nb-NO': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'nl-NL': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'pl-PL': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'pt-BR': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'ro-RO': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'ru-RU': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'sk-SK': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'sl-SI': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'sr-RS': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'sr-RS-Latin': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'sv-SE': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'th-TH': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'tr-TR': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'uk-UA': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'vi-VN': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'zh-CN': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
-        }
-      },
-      'zh-TW': {
-        specialChar: {
-          specialChar: 'SPECIAL CHARACTERS',
-          select: 'Select Special characters'
         }
       }
     }
