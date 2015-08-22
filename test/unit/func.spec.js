@@ -4,56 +4,57 @@
  * summernote may be freely distributed under the MIT license./
  */
 define([
-  'summernote/base/core/func'
-], function (func) {
-  return function () {
-    test('func.eq2', function () {
-      ok(func.eq2(1, 1), 'should return true');
-      ok(!func.eq2(1, '1'), 'should return false');
+  'chai',
+  'summernote/core/func'
+], function (chai, func) {
+  'use strict';
+
+  var expect = chai.expect;
+
+  describe('core.func', function () {
+    describe('eq2', function () {
+      it('should return true if two values are same', function () {
+        expect(func.eq2(1, 1)).to.be.ok;
+      });
+
+      it('should return false if two values are not same', function () {
+        expect(func.eq2(1, '1')).to.be.not.ok;
+      });
     });
 
-    test('func.peq2', function () {
-      ok(func.peq2('prop')({
-        prop: 'hello'
-      }, {
-        prop: 'hello'
-      }), 'should return true');
+    describe('peq2', function () {
+      it('should return true when two properties are same', function () {
+        expect(func.peq2('prop')({ prop: 'hello' }, { prop: 'hello' })).to.be.ok;
+      });
 
-      ok(!func.peq2('prop')({
-        prop: 'hello'
-      }, {
-        prop: 'world'
-      }), 'should return false');
+      it('should return false when two properties are not same', function () {
+        expect(func.peq2('prop')({ prop: 'hello' }, { prop: 'world' })).to.be.not.ok;
+      });
     });
 
-    test('func.uniqueId', function () {
-      equal(func.uniqueId('note-'), 'note-1', 'should returns uniqueId with prefix');
-      equal(func.uniqueId('note-'), 'note-2', 'should returns uniqueId with prefix');
-      equal(func.uniqueId('note-'), 'note-3', 'should returns uniqueId with prefix');
+    describe('uniqueId', function () {
+      it('should return uniqueId with the prefix as a parameter', function () {
+        expect(func.uniqueId('note-')).to.be.equal('note-1');
+        expect(func.uniqueId('note-')).to.be.equal('note-2');
+        expect(func.uniqueId('note-')).to.be.equal('note-3');
+      });
     });
 
-    test('func.invertObject', function () {
-      deepEqual(func.invertObject({
-        keyA: 'valueA',
-        keyB: 'valueB'
-      }), {
-        valueA: 'keyA',
-        valueB: 'keyB'
-      }, 'should returns inverted object');
+    describe('invertObject', function () {
+      it('should return inverted object between keys and values', function () {
+        expect(func.invertObject({ keyA: 'valueA', keyB: 'valueB' }))
+                  .to.deep.equal({ valueA: 'keyA', valueB: 'keyB'});
+      });
     });
 
-    test('func.namespaceToCamel', function () {
-      equal(
-        func.namespaceToCamel('upload.image'),
-        'UploadImage',
-        'should returns camel text'
-      );
+    describe('namespaceToCamel', function () {
+      it('should return camelcase text', function () {
+        expect(func.namespaceToCamel('upload.image')).to.be.equal('UploadImage');
+      });
 
-      equal(
-        func.namespaceToCamel('upload.image', 'summernote'),
-        'summernoteUploadImage',
-        'should returns camel text with prefix'
-      );
+      it('should return prefixed camelcase text', function () {
+        expect(func.namespaceToCamel('upload.image', 'summernote')).to.be.equal('summernoteUploadImage');
+      });
     });
-  };
+  });
 });

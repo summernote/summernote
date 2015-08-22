@@ -25,6 +25,10 @@
     "predef": [
         "define",
         "describe",
+        "before",
+        "beforeEach",
+        "after",
+        "afterEach",
         "it"
     ],
     "globals": {

@@ -4,15 +4,23 @@
  * summernote may be freely distributed under the MIT license./
  */
 define([
-  'summernote/base/core/key'
-], function (key) {
-  return function () {
-    test('key.isEdit', function () {
-      ok(key.isEdit(key.code.BACKSPACE), 'isEdit with BACKSPACE should returns true');
-    });
+  'chai',
+  'summernote/core/key'
+], function (chai, key) {
+  'use strict';
 
-    test('key.isMove', function () {
-      ok(key.isMove(key.code.LEFT), 'isEdit with LEFT should returns true');
+  var expect = chai.expect;
+
+  describe('core.key', function () {
+    describe('isEdit', function () {
+      it('should return true for BACKSPACE', function () {
+        expect(key.isEdit(key.code.BACKSPACE)).to.be.true;
+      });
     });
-  };
+    describe('isMove', function () {
+      it('should return true for LEFT', function () {
+        expect(key.isMove(key.code.LEFT)).to.be.true;
+      });
+    });
+  });
 });

@@ -13,7 +13,8 @@ requirejs.config({
   paths: {
     jquery: '../../test/libs/jquery-1.9.1.min',
     CodeMirror: '../../test/libs/codemirror',
-    chai: '../../node_modules/chai/chai'
+    chai: '../../node_modules/chai/chai',
+    helper: '../../test/test-util'
   },
 
   shim: {
