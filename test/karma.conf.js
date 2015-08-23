@@ -4,7 +4,7 @@ module.exports = function (config) {
 
   config.set({
     basePath: '../',
-    frameworks: ['requirejs', 'mocha', 'qunit'],
+    frameworks: ['requirejs', 'mocha'],
     exclude: [],
     reporters: ['progress', 'coverage'],
     port: 9876,
