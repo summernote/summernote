@@ -182,6 +182,7 @@ module.exports = function (grunt) {
         configFile: './test/karma.conf.js'
       },
       all: {
+        // Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS, IE
         browsers: ['PhantomJS'],
         reporters: ['progress']
       },

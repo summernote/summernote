@@ -150,10 +150,24 @@ grunt dist
 At this point, you should now have a `build/` directory populated with everything you need to use summernote.
 
 #### test summernote
-run tests with PhantomJS
+run tests with Karma and PhantomJS
 ```bash
 grunt test
 ```
+If you want run tests on other browser,
+change the values for `broswers` properties in `Gruntfile.js`.
+
+```
+karma: {
+  all: {
+    browsers: ['PhantomJS'],
+    reporters: ['progress']
+  }
+}
+
+```
+You can use `Chrome`, `ChromeCanary`, `Firefox`, `Opera`, `Safari`, `PhantomJS` and `IE` beside `PhantomJS`.
+Once you run `grunt test`, it will watch all javascript file. Therefore karma run tests every time you chage code.
 
 #### start local server for developing summernote.
 run local server with connect and watch.
