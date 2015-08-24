@@ -14,3 +14,6 @@ bower_components
 
 .versions
 coverage/
+
+.idea/
+*.iml
