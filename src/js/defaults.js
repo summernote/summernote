@@ -82,8 +82,8 @@ define('summernote/defaults', function () {
         },
         link: {
           link: 'link',
-          unlink: 'unlink',
-          edit: 'edit'
+          unlink: 'chain-broken',
+          edit: 'pencil-square-o'
         },
         table: {
           table: 'table'
