@@ -407,9 +407,9 @@ define([
     this.insertImage = function ($editable, sUrl, filename) {
       async.createImage(sUrl, filename).then(function ($image) {
         beforeCommand($editable);
+        $image.addClass('img-responsive');
         $image.css({
-          display: '',
-          width: Math.min($editable.width(), $image.width())
+          display: ''
         });
         range.create().insertNode($image[0]);
         range.createFromNodeAfter($image[0]).select();
