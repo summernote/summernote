@@ -1,4 +1,4 @@
-define('summernote/core/async', function () {
+define(function () {
   /**
    * @class core.async
    *

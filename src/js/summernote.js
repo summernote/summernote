@@ -1,9 +1,9 @@
 define([
   'jquery',
-  'summernote/renderer',
-  'summernote/core/func',
-  'summernote/module/Editor'
-], function ($, renderer, func, Editor) {
+  'summernote/lite/settings',
+  'summernote/lite/renderer',
+  'summernote/lite/core/func'
+], function ($, settings, renderer, func, Editor) {
 
   /**
    * @class Summernote
@@ -27,7 +27,13 @@ define([
 
     this.initialize = function () {
       this.layoutInfo = this.createLayout($note);
-      this.addModule('editor', new Editor(this, this.layoutInfo.editable));
+      Object.keys(this.options.modules).forEach(function (key) {
+        var module = new self.options.modules[key](self);
+        if (module.initialize) {
+          module.initialize.apply(module);
+        }
+        self.addModule(key, module);
+      });
       $note.hide();
       return this;
     };
@@ -40,6 +46,7 @@ define([
 
     this.createLayout = function ($note) {
       var $editor = renderer.editor([
+        renderer.toolbar(),
         renderer.editingArea([
           renderer.codable(),
           renderer.editable()
@@ -50,6 +57,7 @@ define([
 
       return {
         editor: $editor,
+        toolbar: $editor.find('.note-toolbar'),
         editable: $editor.find('.note-editable')
       };
     };
@@ -67,6 +75,14 @@ define([
       delete this.modules[key];
     };
 
+    this.invoke = function (namespace, args) {
+      var splits = namespace.split('.');
+      var moduleName = splits[0];
+      var methodName = splits[1];
+
+      this.modules[moduleName][methodName].apply(this.modules[moduleName], args);
+    };
+
     return this.initialize();
   };
 
@@ -77,13 +93,12 @@ define([
      * @param {Object|String}
      * @return {this}
      */
-    summernote: function () {
+    summernote: function (options) {
+      options = $.extend({}, settings.options, options);
       this.each(function (idx, note) {
         var $note = $(note);
         if (!$note.data('summernote')) {
-          $note.data('summernote', new Summernote($note, {
-            callbacks: {}
-          }));
+          $note.data('summernote', new Summernote($note, options));
         }
       });
     }

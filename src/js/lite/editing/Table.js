@@ -1,5 +1,7 @@
 define([
-  'summernote/core/dom', 'summernote/core/range', 'summernote/core/list'
+  'summernote/lite/core/dom',
+  'summernote/lite/core/range',
+  'summernote/lite/core/list'
 ], function (dom, range, list) {
   /**
    * @class editing.Table

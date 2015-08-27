@@ -1,27 +1,31 @@
 define([
-  'summernote/core/agent',
-  'summernote/core/func',
-  'summernote/core/list',
-  'summernote/core/dom',
-  'summernote/core/range',
-  'summernote/core/async',
-  'summernote/editing/History',
-  'summernote/editing/Style',
-  'summernote/editing/Typing',
-  'summernote/editing/Table',
-  'summernote/editing/Bullet'
-], function (agent, func, list, dom, range, async,
-             History, Style, Typing, Table, Bullet) {
+  'summernote/lite/core/agent',
+  'summernote/lite/core/func',
+  'summernote/lite/core/list',
+  'summernote/lite/core/key',
+  'summernote/lite/core/dom',
+  'summernote/lite/core/range',
+  'summernote/lite/core/async',
+  'summernote/lite/editing/History',
+  'summernote/lite/editing/Style',
+  'summernote/lite/editing/Typing',
+  'summernote/lite/editing/Table',
+  'summernote/lite/editing/Bullet'
+], function (
+  agent, func, list, key, dom, range, async,
+  History, Style, Typing, Table, Bullet
+) {
 
   var KEY_BOGUS = 'bogus';
 
   /**
    * @class Editor
    * @param {Summernote} summernote
-   * @param {jQuery} $editable
    */
-  var Editor = function (summernote, $editable) {
+  var Editor = function (summernote) {
     var self = this;
+
+    var $editable = summernote.layoutInfo.editable;
 
     var style = new Style();
     var table = new Table();
@@ -30,16 +34,37 @@ define([
     var history = new History($editable);
 
     this.initialize = function () {
-      $editable.on('keydown', function (e) {
-        if (e.keyCode === 13) {
-          e.preventDefault();
-          self.insertParagraph();
-        }
-      });
+      var keyMap = summernote.options.keyMap[agent.isMac ? 'mac' : 'pc'];
+      this.bindKeyMap(keyMap, summernote.options);
     };
 
     this.destroy = function () {
       $editable.off('keydown');
+    };
+
+    this.bindKeyMap = function (keyMap, options) {
+      $editable.on('keydown', function (event) {
+        var keys = [];
+
+        if (event.metaKey) { keys.push('CMD'); }
+        if (event.ctrlKey && !event.altKey) { keys.push('CTRL'); }
+        if (event.shiftKey) { keys.push('SHIFT'); }
+
+        var keyName = key.nameFromCode[event.keyCode];
+        if (keyName) {
+          keys.push(keyName);
+        }
+
+        var eventName = keyMap[keys.join('+')];
+        if (eventName) {
+          if (self[eventName]) {
+            self[eventName](options);
+            event.preventDefault();
+          }
+        } else if (key.isEdit(event.keyCode)) {
+          self.afterCommand($editable);
+        }
+      });
     };
 
     /**
@@ -180,16 +205,14 @@ define([
      * @method tab
      *
      * handle tab key
-     *
-     * @param {Object} options
      */
-    this.tab = function (options) {
+    this.tab = function () {
       var rng = this.createRange();
       if (rng.isCollapsed() && rng.isOnCell()) {
         table.tab(rng);
       } else {
         beforeCommand();
-        typing.insertTab($editable, rng, options.tabsize);
+        typing.insertTab($editable, rng, summernote.options.tabSize);
         afterCommand();
       }
     };
@@ -432,21 +455,18 @@ define([
      * create link (command)
      *
      * @param {Object} linkInfo
-     * @param {Object} options
      */
-    this.createLink = function (linkInfo, options) {
+    this.createLink = function (linkInfo) {
       var linkUrl = linkInfo.url;
       var linkText = linkInfo.text;
       var isNewWindow = linkInfo.isNewWindow;
       var rng = linkInfo.range || this.createRange();
       var isTextChanged = rng.toString() !== linkText;
 
-      options = options || dom.makeLayoutInfo($editable).editor().data('options');
-
       beforeCommand();
 
-      if (options.onCreateLink) {
-        linkUrl = options.onCreateLink(linkUrl);
+      if (summernote.options.onCreateLink) {
+        linkUrl = summernote.options.onCreateLink(linkUrl);
       }
 
       var anchors = [];
@@ -662,8 +682,6 @@ define([
     this.isEmpty = function () {
       return dom.isEmpty($editable[0]) || dom.emptyPara === $editable.html();
     };
-
-    this.initialize();
   };
 
   return Editor;

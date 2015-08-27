@@ -1,8 +1,8 @@
 define([
-  'summernote/core/agent',
-  'summernote/core/func',
-  'summernote/core/list',
-  'summernote/core/dom'
+  'summernote/lite/core/agent',
+  'summernote/lite/core/func',
+  'summernote/lite/core/list',
+  'summernote/lite/core/dom'
 ], function (agent, func, list, dom) {
   /**
    * @class editing.Style

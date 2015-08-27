@@ -1,0 +1,56 @@
+.note-editor {
+  border: 1px solid @border-color;
+  position: relative;
+  overflow: hidden;
+
+  /* codeview mode */
+  &.codeview {
+    .note-editing-area {
+      .note-editable {
+        display: none;
+      }
+      .note-codable {
+        display: block;
+      }
+    }
+  }
+
+  .note-editing-area {
+    position: relative;
+    overflow: hidden;
+
+    /* editable */
+    .note-editable {
+      margin: 10px;
+      background-color: #fff;
+      color: #000;
+      padding: 10px;
+      overflow: auto;
+      outline: none;
+
+      &[contenteditable="false"] {
+        background-color: #e5e5e5;
+      }
+    }
+
+    /* codeable */
+    .note-codable {
+      display: none;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      box-shadow: none;
+      font-family: Menlo, Monaco, monospace, sans-serif;
+      font-size: 14px;
+      color: #ccc;
+      background-color: #222;
+      resize: none;
+
+      /* override BS2 default style */
+      .box-sizing(border-box);
+      .rounded(0);
+      margin-bottom: 0;
+    }
+  }
+}
+

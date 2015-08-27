@@ -1,4 +1,4 @@
-define(['summernote/core/func'], function (func) {
+define(['summernote/lite/core/func'], function (func) {
   /**
    * @class core.list
    *
