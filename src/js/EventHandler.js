@@ -114,7 +114,7 @@ define([
 
       // If onImageUpload options setted
       if (callbacks.onImageUpload) {
-        bindCustomEvent($holder, callbacks, 'image.upload')(files);
+        bindCustomEvent($holder, callbacks, 'image.upload')(files, this.getModule(), $editable);
       // else insert Image as dataURL
       } else {
         $.each(files, function (idx, file) {
