@@ -1,9 +1,7 @@
 define([
   'jquery',
-  'summernote/lite/settings',
-  'summernote/lite/renderer',
   'summernote/lite/core/func'
-], function ($, settings, renderer, func, Editor) {
+], function ($, func) {
 
   /**
    * @class Summernote
@@ -45,6 +43,7 @@ define([
     };
 
     this.createLayout = function ($note) {
+      var renderer = $.summernote.renderer;
       var $editor = renderer.editor([
         renderer.toolbar(),
         renderer.editingArea([
@@ -86,6 +85,8 @@ define([
     return this.initialize();
   };
 
+  $.summernote = $.summernote || {};
+
   $.fn.extend({
     /**
      * Summernote API
@@ -94,7 +95,7 @@ define([
      * @return {this}
      */
     summernote: function (options) {
-      options = $.extend({}, settings.options, options);
+      options = $.extend({}, $.summernote.options, options);
       this.each(function (idx, note) {
         var $note = $(note);
         if (!$note.data('summernote')) {

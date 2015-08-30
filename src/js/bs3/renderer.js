@@ -6,14 +6,28 @@ define(function () {
         $node.html(options.contents);
       }
 
-      if ($parent) {
-        $parent.append($node);
+      if (options && options.click) {
+        $node.click(options.click);
+      }
+
+      if (options && options.tooltip) {
+        $node.attr({
+          title: options.tooltip
+        }).tooltip({
+          container: 'body',
+          trigger: 'hover',
+          placement: 'bottom'
+        });
       }
 
       if (children) {
         children.forEach(function (child) {
           child.build($node);
         });
+      }
+
+      if ($parent) {
+        $parent.append($node);
       }
 
       return $node;
@@ -29,13 +43,13 @@ define(function () {
   };
 
   var renderer = {
-    editor: createBuilder('<div class="note-editor">'),
-    toolbar: createBuilder('<div class="note-toolbar">'),
+    editor: createBuilder('<div class="note-editor panel panel-default">'),
+    toolbar: createBuilder('<div class="note-toolbar panel-heading">'),
     editingArea: createBuilder('<div class="note-editingArea">'),
     codable: createBuilder('<div class="note-codable">'),
-    editable: createBuilder('<div class="note-editable" contentEditable="true">'),
-    buttonGroup: createBuilder('<span class="note-btn-group">'),
-    button: createBuilder('<button class="note-btn">'),
+    editable: createBuilder('<div class="note-editable panel-body" contentEditable="true">'),
+    buttonGroup: createBuilder('<div class="note-btn-group btn-group">'),
+    button: createBuilder('<button class="note-btn btn btn-default btn-sm">')
   };
 
   return renderer;

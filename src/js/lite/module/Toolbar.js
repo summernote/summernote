@@ -1,26 +1,28 @@
-define([
-  'summernote/lite/renderer'
-], function (renderer) {
+define(function () {
 
   var Toolbar = function (summernote) {
     var self = this;
 
+    var renderer = $.summernote.renderer;
     var $toolbar = summernote.layoutInfo.toolbar;
 
     this.initialize = function () {
-      var $bold = renderer.button({
-        name: 'bold'
-      }).build().click(function () {
-        summernote.invoke('editor.bold');
-      });
+      var $btnGroup = renderer.buttonGroup([
+        renderer.button({
+          contents: 'bold',
+          click: function () {
+            summernote.invoke('editor.bold');
+          }
+        }),
+        renderer.button({
+          contents: 'italic',
+          click: function () {
+            summernote.invoke('editor.italic');
+          }
+        })
+      ]).build();
 
-      var $italic = renderer.button({
-        name: 'italic'
-      }).build().click(function () {
-        summernote.invoke('editor.italic');
-      });
-
-      $toolbar.append($bold).append($italic);
+      $toolbar.append($btnGroup);
     };
 
     this.destory = function () {

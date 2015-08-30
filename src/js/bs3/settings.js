@@ -1,7 +1,7 @@
 define([
-  'summernote/lite/renderer',
+  'summernote/bs3/renderer',
   'summernote/lite/module/Editor',
-  'summernote/lite/module/Toolbar'
+  'summernote/bs3/module/Toolbar'
 ], function (renderer, Editor, Toolbar) {
   var settings = {
     version: '@VERSION',
