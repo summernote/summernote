@@ -1,6 +1,6 @@
 define([
   'jquery',
-  'summernote/lite/core/func'
+  'summernote/base/core/func'
 ], function ($, func) {
 
   /**
@@ -24,7 +24,9 @@ define([
     };
 
     this.initialize = function () {
-      this.layoutInfo = this.createLayout($note);
+      var renderer = $.summernote.renderer;
+      this.layoutInfo = renderer.createLayout($note);
+
       Object.keys(this.options.modules).forEach(function (key) {
         var module = new self.options.modules[key](self);
         if (module.initialize) {
@@ -40,25 +42,6 @@ define([
       Object.keys(this.modules).forEach(function (key) {
         self.removeModule(key);
       });
-    };
-
-    this.createLayout = function ($note) {
-      var renderer = $.summernote.renderer;
-      var $editor = renderer.editor([
-        renderer.toolbar(),
-        renderer.editingArea([
-          renderer.codable(),
-          renderer.editable()
-        ])
-      ]).build();
-
-      $editor.insertAfter($note);
-
-      return {
-        editor: $editor,
-        toolbar: $editor.find('.note-toolbar'),
-        editable: $editor.find('.note-editable')
-      };
     };
 
     this.removeLayout = function ($note) {

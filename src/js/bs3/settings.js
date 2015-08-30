@@ -1,8 +1,9 @@
 define([
   'summernote/bs3/renderer',
-  'summernote/lite/module/Editor',
-  'summernote/bs3/module/Toolbar'
-], function (renderer, Editor, Toolbar) {
+  'summernote/base/module/Editor',
+  'summernote/bs3/module/Toolbar',
+  'summernote/bs3/module/Statusbar'
+], function (renderer, Editor, Toolbar, Statusbar) {
   var settings = {
     version: '@VERSION',
     renderer: renderer,
@@ -10,7 +11,8 @@ define([
     options: {
       modules: {
         'editor': Editor,
-        'toolbar': Toolbar
+        'toolbar': Toolbar,
+        'statusbar': Statusbar,
       },
 
       width: null,

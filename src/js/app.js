@@ -19,7 +19,7 @@ require([
   'bootstrap',
   'summernote',
   'summernote/lite/settings',
-  'summernote/bs3/settings',
+  'summernote/bs3/settings'
 ], function ($, bootstrap, summernote, lite, bs3) {
   // editor type setting
   switch ($('script[data-editor-type]').data('editor-type')) {
@@ -31,7 +31,7 @@ require([
       break;
   }
 
-  // initialize
+  // initialize summernote
   $('.summernote').summernote({
     height: 300
   });

@@ -1,7 +1,7 @@
 define([
-  'summernote/lite/core/func',
-  'summernote/lite/core/list',
-  'summernote/lite/core/agent'
+  'summernote/base/core/func',
+  'summernote/base/core/list',
+  'summernote/base/core/agent'
 ], function (func, list, agent) {
 
   var NBSP_CHAR = String.fromCharCode(160);

@@ -5,8 +5,8 @@
  */
 define([
   'jquery',
-  'summernote/core/dom',
-  'summernote/core/func'
+  'summernote/base/core/dom',
+  'summernote/base/core/func'
 ], function ($, dom, func) {
   return function (helper) {
 

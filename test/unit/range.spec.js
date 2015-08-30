@@ -5,9 +5,9 @@
  */
 define([
   'jquery',
-  'summernote/core/agent',
-  'summernote/core/dom',
-  'summernote/core/range'
+  'summernote/base/core/agent',
+  'summernote/base/core/dom',
+  'summernote/base/core/range'
 ], function ($, agent, dom, range) {
   return function (helper) {
     test('rng.nodes', function () {

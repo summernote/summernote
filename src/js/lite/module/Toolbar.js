@@ -1,8 +1,5 @@
 define(function () {
-
   var Toolbar = function (summernote) {
-    var self = this;
-
     var renderer = $.summernote.renderer;
     var $toolbar = summernote.layoutInfo.toolbar;
 

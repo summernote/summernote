@@ -1,5 +1,5 @@
 define([
-  'summernote/core/dom'
+  'summernote/base/core/dom'
 ], function (dom) {
   var EDITABLE_PADDING = 24;
 

@@ -1,6 +1,6 @@
 define([
   'summernote/lite/renderer',
-  'summernote/lite/module/Editor',
+  'summernote/base/module/Editor',
   'summernote/lite/module/Toolbar'
 ], function (renderer, Editor, Toolbar) {
   var settings = {

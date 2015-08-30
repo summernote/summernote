@@ -1,7 +1,7 @@
 define([
-  'summernote/lite/core/dom',
-  'summernote/lite/core/range',
-  'summernote/lite/editing/Bullet'
+  'summernote/base/core/dom',
+  'summernote/base/core/range',
+  'summernote/base/editing/Bullet'
 ], function (dom, range, Bullet) {
 
   /**

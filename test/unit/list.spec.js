@@ -3,7 +3,10 @@
  * (c) 2013~ Alan Hong
  * summernote may be freely distributed under the MIT license./
  */
-define(['jquery', 'summernote/core/list'], function ($, list) {
+define([
+  'jquery',
+  'summernote/base/core/list'
+], function ($, list) {
   return function () {
     test('list.head', function () {
       deepEqual(list.head([1, 2, 3]), 1, 'should return the first element');

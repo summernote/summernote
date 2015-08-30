@@ -1,41 +1,33 @@
-define(function () {
-  var Builder = function (markup, children, options) {
-    this.build = function ($parent) {
-      var $node = $(markup);
-      if (options && options.contents) {
-        $node.html(options.contents);
-      }
-
-      if ($parent) {
-        $parent.append($node);
-      }
-
-      if (children) {
-        children.forEach(function (child) {
-          child.build($node);
-        });
-      }
-
-      return $node;
-    };
-  };
-
-  var createBuilder = function (markup) {
-    return function () {
-      var children = $.isArray(arguments[0]) ? arguments[0] : [];
-      var options = typeof arguments[1] === 'object' ? arguments[1] : arguments[0];
-      return new Builder(markup, children, options);
-    };
-  };
-
+define([
+  'summernote/base/builder'
+], function (builder) {
   var renderer = {
-    editor: createBuilder('<div class="note-editor">'),
-    toolbar: createBuilder('<div class="note-toolbar">'),
-    editingArea: createBuilder('<div class="note-editingArea">'),
-    codable: createBuilder('<div class="note-codable">'),
-    editable: createBuilder('<div class="note-editable" contentEditable="true">'),
-    buttonGroup: createBuilder('<span class="note-btn-group">'),
-    button: createBuilder('<button class="note-btn">'),
+    editor: builder.create('<div class="note-editor">'),
+    toolbar: builder.create('<div class="note-toolbar">'),
+    editingArea: builder.create('<div class="note-editing-area">'),
+    codable: builder.create('<div class="note-codable">'),
+    editable: builder.create('<div class="note-editable" contentEditable="true">'),
+    buttonGroup: builder.create('<span class="note-btn-group">'),
+    button: builder.create('<button class="note-btn">'),
+
+    createLayout: function ($note) {
+      var renderer = $.summernote.renderer;
+      var $editor = renderer.editor([
+        renderer.toolbar(),
+        renderer.editingArea([
+          renderer.codable(),
+          renderer.editable()
+        ])
+      ]).build();
+
+      $editor.insertAfter($note);
+
+      return {
+        editor: $editor,
+        toolbar: $editor.find('.note-toolbar'),
+        editable: $editor.find('.note-editable')
+      };
+    }
   };
 
   return renderer;

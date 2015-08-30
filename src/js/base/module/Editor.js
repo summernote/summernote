@@ -1,16 +1,16 @@
 define([
-  'summernote/lite/core/agent',
-  'summernote/lite/core/func',
-  'summernote/lite/core/list',
-  'summernote/lite/core/key',
-  'summernote/lite/core/dom',
-  'summernote/lite/core/range',
-  'summernote/lite/core/async',
-  'summernote/lite/editing/History',
-  'summernote/lite/editing/Style',
-  'summernote/lite/editing/Typing',
-  'summernote/lite/editing/Table',
-  'summernote/lite/editing/Bullet'
+  'summernote/base/core/agent',
+  'summernote/base/core/func',
+  'summernote/base/core/list',
+  'summernote/base/core/key',
+  'summernote/base/core/dom',
+  'summernote/base/core/range',
+  'summernote/base/core/async',
+  'summernote/base/editing/History',
+  'summernote/base/editing/Style',
+  'summernote/base/editing/Typing',
+  'summernote/base/editing/Table',
+  'summernote/base/editing/Bullet'
 ], function (
   agent, func, list, key, dom, range, async,
   History, Style, Typing, Table, Bullet
@@ -36,6 +36,10 @@ define([
     this.initialize = function () {
       var keyMap = summernote.options.keyMap[agent.isMac ? 'mac' : 'pc'];
       this.bindKeyMap(keyMap, summernote.options);
+
+      if (summernote.options.height) {
+        $editable.height(summernote.options.height);
+      }
     };
 
     this.destroy = function () {

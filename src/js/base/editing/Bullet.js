@@ -1,8 +1,8 @@
 define([
-  'summernote/lite/core/list',
-  'summernote/lite/core/func',
-  'summernote/lite/core/dom',
-  'summernote/lite/core/range'
+  'summernote/base/core/list',
+  'summernote/base/core/func',
+  'summernote/base/core/dom',
+  'summernote/base/core/range'
 ], function (list, func, dom, range) {
 
   /**
