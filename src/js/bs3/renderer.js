@@ -35,7 +35,8 @@ define([
       return {
         editor: $editor,
         toolbar: $editor.find('.note-toolbar'),
-        editable: $editor.find('.note-editable')
+        editable: $editor.find('.note-editable'),
+        statusbar: $editor.find('.note-statusbar')
       };
     }
   };

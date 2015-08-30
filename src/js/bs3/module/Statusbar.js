@@ -1,42 +1,38 @@
-define([
-  'summernote/base/core/dom'
-], function (dom) {
+define(function () {
   var EDITABLE_PADDING = 24;
 
-  var Statusbar = function () {
+  var Statusbar = function (summernote) {
     var $document = $(document);
+    var $statusbar = summernote.layoutInfo.statusbar;
+    var $editable = summernote.layoutInfo.editable;
 
-    this.attach = function (layoutInfo, options) {
-      if (!options.disableResizeEditor) {
-        layoutInfo.statusbar().on('mousedown', hStatusbarMousedown);
+    this.initialize = function () {
+      var options = summernote.options;
+      if (options.disableResizeEditor) {
+        return;
       }
+
+      $statusbar.on('mousedown', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        var editableTop = $editable.offset().top - $document.scrollTop();
+
+        $document.on('mousemove', function (event) {
+          var height = event.clientY - (editableTop + EDITABLE_PADDING);
+
+          height = (options.minheight > 0) ? Math.max(height, options.minheight) : height;
+          height = (options.maxHeight > 0) ? Math.min(height, options.maxHeight) : height;
+
+          $editable.height(height);
+        }).one('mouseup', function () {
+          $document.off('mousemove');
+        });
+      });
     };
 
-    /**
-     * `mousedown` event handler on statusbar
-     *
-     * @param {MouseEvent} event
-     */
-    var hStatusbarMousedown = function (event) {
-      event.preventDefault();
-      event.stopPropagation();
-
-      var $editable = dom.makeLayoutInfo(event.target).editable();
-      var editableTop = $editable.offset().top - $document.scrollTop();
-
-      var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
-      var options = layoutInfo.editor().data('options');
-
-      $document.on('mousemove', function (event) {
-        var nHeight = event.clientY - (editableTop + EDITABLE_PADDING);
-
-        nHeight = (options.minHeight > 0) ? Math.max(nHeight, options.minHeight) : nHeight;
-        nHeight = (options.maxHeight > 0) ? Math.min(nHeight, options.maxHeight) : nHeight;
-
-        $editable.height(nHeight);
-      }).one('mouseup', function () {
-        $document.off('mousemove');
-      });
+    this.destroy = function () {
+      $statusbar.off();
     };
   };
 
