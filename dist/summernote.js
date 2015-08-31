@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v0.6.16
+ * Super simple wysiwyg editor on Bootstrap v0.6.17
  * http://summernote.org/
  *
  * summernote.js
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-08-03T16:40Z
+ * Date: 2015-08-31T11:20Z
  */
 (function (factory) {
   /* global define */
@@ -649,6 +649,18 @@
      */
     var isText = function (node) {
       return node && node.nodeType === 3;
+    };
+
+    /**
+     * @method isElement
+     *
+     *
+     *
+     * @param {Node} node
+     * @return {Boolean} true if node's type is text(3)
+     */
+    var isElement = function (node) {
+      return node && node.nodeType === 1;
     };
 
     /**
@@ -1541,6 +1553,7 @@
       buildLayoutInfo: buildLayoutInfo,
       makeLayoutInfo: makeLayoutInfo,
       isText: isText,
+      isElement: isElement,
       isVoid: isVoid,
       isPara: isPara,
       isPurePara: isPurePara,
@@ -2384,7 +2397,7 @@
    */
   var defaults = {
     /** @property */
-    version: '0.6.16',
+    version: '0.6.17',
 
     /**
      * 
@@ -2870,6 +2883,12 @@
       'ENTER': 13,
       'SPACE': 32,
 
+      // Arrow
+      'LEFT': 37,
+      'UP': 38,
+      'RIGHT': 39,
+      'DOWN': 40,
+
       // Number: 0-9
       'NUM0': 48,
       'NUM1': 49,
@@ -2909,7 +2928,12 @@
        * @return {Boolean}
        */
       isEdit: function (keyCode) {
-        return list.contains([8, 9, 13, 32], keyCode);
+        return list.contains([
+          keyMap.BACKSPACE,
+          keyMap.TAB,
+          keyMap.ENTER,
+          keyMap.SPACe
+        ], keyCode);
       },
       /**
        * @method isMove
@@ -2918,7 +2942,12 @@
        * @return {Boolean}
        */
       isMove: function (keyCode) {
-        return list.contains([37, 38, 39, 40], keyCode);
+        return list.contains([
+          keyMap.LEFT,
+          keyMap.UP,
+          keyMap.RIGHT,
+          keyMap.DOWN
+        ], keyCode);
       },
       /**
        * @property {Object} nameFromCode
@@ -3119,7 +3148,7 @@
      * @return {Object} - object contains style properties.
      */
     this.current = function (rng) {
-      var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
+      var $cont = $(!dom.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
       var styleInfo = this.fromNode($cont);
 
       // document.queryCommandState for toggle state
@@ -4316,7 +4345,12 @@
       $editable.focus();
 
       // [workaround] for firefox bug http://goo.gl/lVfAaI
-      if (agent.isFF && !range.create().isOnEditable()) {
+      if (agent.isFF) {
+        var rng = range.create();
+        if (!rng || rng.isOnEditable()) {
+          return;
+        }
+
         range.createFromNode($editable[0])
              .normalize()
              .collapse()
@@ -6650,7 +6684,7 @@
                    '<div class="title">' + lang.shortcut.shortcuts + '</div>' +
                    (agent.isMac ? tplShortcutTable(lang, options) : replaceMacKeys(tplShortcutTable(lang, options))) +
                    '<p class="text-center">' +
-                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.16</a> · ' +
+                     '<a href="//summernote.org/" target="_blank">Summernote 0.6.17</a> · ' +
                      '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ' +
                      '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>' +
                    '</p>';

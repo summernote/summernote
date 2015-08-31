@@ -86,6 +86,34 @@ define([
         '<p><b>bo<span>ld</span></b><span>span</span></p>',
         'should wrap each texts with span except not single blood line'
       );
+
+    });
+
+    test('style.current basic', function () {
+      var $cont, $p, rng, styleInfo;
+
+      $cont = $('<div class="note-editable"><p style="font-family: Arial;">text</p></div>');
+      $p = $cont.find('p');
+      rng = range.create($p[0].firstChild, 0, $p[0].firstChild, 0);
+      styleInfo = style.current(rng);
+
+      equal(
+        styleInfo['font-family'],
+        'Arial',
+        'should return parent style when text node is selected'
+      );
+
+      $cont = $('<div class="note-editable"><p style="font-family: Arial;"><!-- comment --></p></div>');
+      $p = $cont.find('p');
+      rng = range.create($p[0].firstChild, 0, $p[0].firstChild, 0);
+      styleInfo = style.current(rng);
+
+      equal(
+        styleInfo['font-family'],
+        'Arial',
+        'should return parent style when comment node is selected'
+      );
+
     });
 
     test('style.styleNodes options', function () {
