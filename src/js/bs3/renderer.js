@@ -17,10 +17,23 @@ define([
       '</div>'
     ].join('')),
     buttonGroup: builder.create('<div class="note-btn-group btn-group">'),
-    button: builder.create('<button class="note-btn btn btn-default btn-sm">'),
+    button: builder.create('<button class="note-btn btn btn-default btn-sm">', function ($node, options) {
+      if (options && options.click) {
+        $node.click(options.click);
+      }
+
+      if (options && options.tooltip) {
+        $node.attr({
+          title: options.tooltip
+        }).tooltip({
+          container: 'body',
+          trigger: 'hover',
+          placement: 'bottom'
+        });
+      }
+    }),
 
     createLayout: function ($note) {
-      var renderer = $.summernote.renderer;
       var $editor = renderer.editor([
         renderer.toolbar(),
         renderer.editingArea([

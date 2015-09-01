@@ -11,7 +11,6 @@ define([
     button: builder.create('<button class="note-btn">'),
 
     createLayout: function ($note) {
-      var renderer = $.summernote.renderer;
       var $editor = renderer.editor([
         renderer.toolbar(),
         renderer.editingArea([

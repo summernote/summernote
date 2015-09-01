@@ -12,7 +12,7 @@ define([
       modules: {
         'editor': Editor,
         'toolbar': Toolbar,
-        'statusbar': Statusbar,
+        'statusbar': Statusbar
       },
 
       width: null,

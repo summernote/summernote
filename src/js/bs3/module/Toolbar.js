@@ -2,13 +2,11 @@ define([
   'jquery'
 ], function ($) {
   var Toolbar = function (summernote) {
-    var self = this;
-
     var renderer = $.summernote.renderer;
     var $toolbar = summernote.layoutInfo.toolbar;
 
     this.initialize = function () {
-      var $fontStyle = renderer.buttonGroup([
+      $toolbar.append(renderer.buttonGroup([
         renderer.button({
           contents: '<i class="fa fa-bold"></i>',
           tooltip: 'Bold (⌘+B)',
@@ -37,9 +35,7 @@ define([
             summernote.invoke('editor.removeFormat');
           }
         })
-      ]).build();
-
-      $toolbar.append($fontStyle);
+      ]).build());
     };
 
     this.destory = function () {
