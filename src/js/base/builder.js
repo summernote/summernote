@@ -6,6 +6,10 @@ define(function () {
         $node.html(options.contents);
       }
 
+      if (options && options.className) {
+        $node.addClass(options.className);
+      }
+
       if (callback) {
         callback($node, options);
       }

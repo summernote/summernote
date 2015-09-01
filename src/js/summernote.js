@@ -62,7 +62,7 @@ define([
       var moduleName = splits[0];
       var methodName = splits[1];
 
-      this.modules[moduleName][methodName].apply(this.modules[moduleName], args);
+      return this.modules[moduleName][methodName].apply(this.modules[moduleName], args);
     };
 
     return this.initialize();

@@ -37,6 +37,12 @@ define([
       var keyMap = summernote.options.keyMap[agent.isMac ? 'mac' : 'pc'];
       this.bindKeyMap(keyMap, summernote.options);
 
+      $editable.on('keyup', function (event) {
+        summernote.triggerEvent('keyup', [event]);
+      }).on('mouseup', function (event) {
+        summernote.triggerEvent('mouseup', [event]);
+      });
+
       if (summernote.options.height) {
         $editable.height(summernote.options.height);
       }
