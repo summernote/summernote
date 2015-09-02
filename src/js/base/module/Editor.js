@@ -41,6 +41,8 @@ define([
         summernote.triggerEvent('keyup', [event]);
       }).on('mouseup', function (event) {
         summernote.triggerEvent('mouseup', [event]);
+      }).on('input', function (event) {
+        summernote.triggerEvent('change', [event]);
       });
 
       if (summernote.options.height) {
@@ -146,22 +148,14 @@ define([
       return style.fromNode($node);
     };
 
-    var triggerOnBeforeChange = function () {
-      summernote.triggerEvent('before.command', [$editable.html()]);
-    };
-
-    var triggerOnChange = function () {
-      summernote.triggerEvent('change', [$editable.html()]);
-    };
-
     /**
      * @method undo
      * undo
      */
     this.undo = function () {
-      triggerOnBeforeChange($editable);
+      summernote.triggerEvent('before.command', [$editable.html()]);
       history.undo();
-      triggerOnChange($editable);
+      summernote.triggerEvent('change', [$editable.html()]);
     };
 
     /**
@@ -169,9 +163,9 @@ define([
      * redo
      */
     this.redo = function () {
-      triggerOnBeforeChange($editable);
+      summernote.triggerEvent('before.command', [$editable.html()]);
       history.redo();
-      triggerOnChange($editable);
+      summernote.triggerEvent('change', [$editable.html()]);
     };
 
     /**
@@ -179,7 +173,7 @@ define([
      * before command
      */
     var beforeCommand = this.beforeCommand = function () {
-      triggerOnBeforeChange($editable);
+      summernote.triggerEvent('before.command', [$editable.html()]);
       // keep focus on editable before command execution
       self.focus();
     };
@@ -192,7 +186,7 @@ define([
     var afterCommand = this.afterCommand = function (isPreventTrigger) {
       history.recordUndo();
       if (!isPreventTrigger) {
-        triggerOnChange($editable);
+        summernote.triggerEvent('change', [$editable.html()]);
       }
     };
 
