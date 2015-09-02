@@ -18,10 +18,6 @@ define([
     ].join('')),
     buttonGroup: builder.create('<div class="note-btn-group btn-group">'),
     button: builder.create('<button class="note-btn btn btn-default btn-sm">', function ($node, options) {
-      if (options && options.click) {
-        $node.click(options.click);
-      }
-
       if (options && options.tooltip) {
         $node.attr({
           title: options.tooltip
@@ -31,6 +27,11 @@ define([
           placement: 'bottom'
         });
       }
+    }),
+    dropdownMenu: builder.create('<div class="dropdown-menu note-check">', function ($node, options) {
+      $node.html(options.items.map(function (item) {
+        return '<li><a href="#" data-value="' + item + '"><i class="fa fa-check"></i> ' + item + '</a></li>'
+      }).join(''));
     }),
 
     createLayout: function ($note) {

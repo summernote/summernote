@@ -10,6 +10,16 @@ define(function () {
         $node.addClass(options.className);
       }
 
+      if (options && options.data) {
+        $.each(options.data, function (k, v) {
+          $node.attr('data-' + k, v);
+        });
+      }
+
+      if (options && options.click) {
+        $node.click(options.click);
+      }
+
       if (callback) {
         callback($node, options);
       }

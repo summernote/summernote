@@ -35,6 +35,8 @@ define([
         self.addModule(key, module);
       });
       $note.hide();
+
+      this.triggerEvent('ready');
       return this;
     };
 

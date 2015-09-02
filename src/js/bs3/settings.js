@@ -25,6 +25,12 @@ define([
       textareaAutoSync: true,
       direction: null,
 
+      fontNames: [
+        'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New',
+        'Helvetica Neue', 'Helvetica', 'Impact', 'Lucida Grande',
+        'Tahoma', 'Times New Roman', 'Verdana'
+      ],
+
       callbacks: {
         onInit: null,
         onFocus: null,

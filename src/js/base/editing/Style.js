@@ -125,19 +125,21 @@ define([
       var styleInfo = this.fromNode($cont);
 
       // document.queryCommandState for toggle state
-      styleInfo['font-bold'] = document.queryCommandState('bold') ? 'bold' : 'normal';
-      styleInfo['font-italic'] = document.queryCommandState('italic') ? 'italic' : 'normal';
-      styleInfo['font-underline'] = document.queryCommandState('underline') ? 'underline' : 'normal';
-      styleInfo['font-strikethrough'] = document.queryCommandState('strikeThrough') ? 'strikethrough' : 'normal';
-      styleInfo['font-superscript'] = document.queryCommandState('superscript') ? 'superscript' : 'normal';
-      styleInfo['font-subscript'] = document.queryCommandState('subscript') ? 'subscript' : 'normal';
+      styleInfo = $.extend(styleInfo, {
+        'font-bold': document.queryCommandState('bold') ? 'bold' : 'normal',
+        'font-italic': document.queryCommandState('italic') ? 'italic' : 'normal',
+        'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
+        'font-subscript': document.queryCommandState('subscript') ? 'subscript' : 'normal',
+        'font-superscript': document.queryCommandState('superscript') ? 'superscript' : 'normal',
+        'font-strikethrough': document.queryCommandState('strikeThrough') ? 'strikethrough' : 'normal'
+      });
 
       // list-style-type to list-style(unordered, ordered)
       if (!rng.isOnList()) {
         styleInfo['list-style'] = 'none';
       } else {
-        var aOrderedType = ['circle', 'disc', 'disc-leading-zero', 'square'];
-        var isUnordered = $.inArray(styleInfo['list-style-type'], aOrderedType) > -1;
+        var orderedTypes = ['circle', 'disc', 'disc-leading-zero', 'square'];
+        var isUnordered = $.inArray(styleInfo['list-style-type'], orderedTypes) > -1;
         styleInfo['list-style'] = isUnordered ? 'unordered' : 'ordered';
       }
 

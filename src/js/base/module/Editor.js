@@ -126,7 +126,10 @@ define([
      */
     this.currentStyle = function (target) {
       var rng = range.create();
-      var styleInfo =  rng && rng.isOnEditable() ? style.current(rng.normalize()) : {};
+      if (rng) {
+        rng = rng.normalize();
+      }
+      var styleInfo = rng ? style.current(rng) : style.fromNode($editable);
       if (dom.isImg(target)) {
         styleInfo.image = target;
       }
