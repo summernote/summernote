@@ -157,7 +157,7 @@ define([
      *
      *
      * @param {Node} node
-     * @return {Boolean} true if node's type is text(3)
+     * @return {Boolean} true if node's type is element(1)
      */
     var isElement = function (node) {
       return node && node.nodeType === 1;
