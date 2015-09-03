@@ -3965,7 +3965,21 @@
       beforeCommand($editable);
       // [workaround] for MSIE, IE need `<`
       tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
-      document.execCommand('FormatBlock', false, tagName);
+      if (agent.isMSIE) {
+          if (tagName == "<blockquote>") {
+              $editable[0].innerHTML = "<blockquote>" + $editable[0].innerHTML + "</blockquote>";
+          }
+          else {
+              if ($editable[0].innerHTML.indexOf("<blockquote>") >= 0) {
+                  $editable[0].innerHTML = $editable[0].innerHTML.replace("<blockquote>", "");
+                  $editable[0].innerHTML = $editable[0].innerHTML.replace("</blockquote>", "");
+              }
+              document.execCommand('FormatBlock', false, tagName);
+          }
+      }
+      else
+        document.execCommand('FormatBlock', false, tagName);
+        
       afterCommand($editable);
     };
 
