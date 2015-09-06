@@ -11,6 +11,14 @@ define([
     var $toolbar = summernote.layoutInfo.toolbar;
     var options = summernote.options;
 
+    this.createInvokeHandler = function (namespace) {
+      return function (event) {
+        event.preventDefault();
+        var value = $(event.target).data('value');
+        summernote.invoke(namespace, [value]);
+      };
+    };
+
     this.updateCurrentStyle = function () {
       var styleInfo = summernote.invoke('editor.currentStyle');
       self.updateBtnStates({
@@ -53,6 +61,15 @@ define([
         });
         $toolbar.find('.note-current-fontsize').text(fontSize);
       }
+
+      if (styleInfo['line-height']) {
+        var lineHeight = styleInfo['line-height'];
+        $toolbar.find('.dropdown-line-height li a').each(function () {
+          // always compare with string to avoid creating another func.
+          var isChecked = ($(this).data('value') + '') === (lineHeight + '');
+          this.className = isChecked ? 'checked' : '';
+        });
+      }
     };
 
     this.initialize = function () {
@@ -72,10 +89,7 @@ define([
         renderer.dropdown({
           className: 'dropdown-style',
           items: options.styleTags,
-          click: function (event) {
-            var value = $(event.target).data('value');
-            summernote.invoke('editor.formatBlock', [value]);
-          }
+          click: this.createInvokeHandler('editor.formatBlock')
         })
       ]).build());
 
@@ -84,32 +98,24 @@ define([
           className: 'note-btn-bold',
           contents: '<i class="fa fa-bold" />',
           tooltip: 'Bold (⌘+B)',
-          click: function () {
-            summernote.invoke('editor.bold');
-          }
+          click: this.createInvokeHandler('editor.bold')
         }),
         renderer.button({
           className: 'note-btn-italic',
           contents: '<i class="fa fa-italic" />',
           tooltip: 'Italic (⌘+I)',
-          click: function () {
-            summernote.invoke('editor.italic');
-          }
+          click: this.createInvokeHandler('editor.italic')
         }),
         renderer.button({
           className: 'note-btn-underline',
           contents: '<i class="fa fa-underline" />',
           tooltip: 'Underline (⌘+U)',
-          click: function () {
-            summernote.invoke('editor.italic');
-          }
+          click: this.createInvokeHandler('editor.underline')
         }),
         renderer.button({
           contents: '<i class="fa fa-eraser" />',
           tooltip: 'Remove Font Style (⌘+\\)',
-          click: function () {
-            summernote.invoke('editor.removeFormat');
-          }
+          click: this.createInvokeHandler('editor.removeFormat')
         })
       ]).build());
 
@@ -128,10 +134,7 @@ define([
             return agent.isFontInstalled(name) ||
                    list.contains(options.fontNamesIgnoreCheck, name);
           }),
-          click: function (event) {
-            var value = $(event.target).data('value');
-            summernote.invoke('editor.fontName', [value]);
-          }
+          click: this.createInvokeHandler('editor.fontName')
         })
       ]).build());
 
@@ -147,10 +150,7 @@ define([
         renderer.dropdownCheck({
           className: 'dropdown-fontsize',
           items: options.fontSizes,
-          click: function (event) {
-            var value = $(event.target).data('value');
-            summernote.invoke('editor.fontSize', [value]);
-          }
+          click: this.createInvokeHandler('editor.fontSize')
         })
       ]).build());
 
@@ -158,9 +158,7 @@ define([
         renderer.button({
           contents: '<i class="fa fa-font note-recent-color"/>',
           tooltip: 'Recent Color',
-          click: function (event) {
-            summernote.invoke('editor.color', [$(event.target).data('value')]);
-          },
+          click: this.createInvokeHandler('editor.color'),
           callback: function ($button) {
             var $recentColor = $button.find('.note-recent-color');
             $recentColor.css({
@@ -223,6 +221,80 @@ define([
       ], {
         className: 'note-color'
       }).build());
+
+      $toolbar.append(renderer.buttonGroup([
+        renderer.button({
+          contents: '<i class="fa fa-list-ul"/>',
+          tooltip: 'Unordered list (⌘+⇧+NUM7)',
+          click: this.createInvokeHandler('editor.insertUnorderedList')
+        }),
+        renderer.button({
+          contents: '<i class="fa fa-list-ol"/>',
+          tooltip: 'Ordered list (⌘+⇧+NUM8)',
+          click: this.createInvokeHandler('editor.insertOrderedList')
+        }),
+        renderer.buttonGroup([
+          renderer.button({
+            className: 'dropdown-toggle',
+            contents: '<i class="fa fa-align-left"/> <span class="caret"/>',
+            tooltip: 'More paragraph style',
+            data: {
+              toggle: 'dropdown'
+            }
+          }),
+          renderer.dropdown([
+            renderer.buttonGroup([
+              renderer.button({
+                contents: '<i class="fa fa-align-left"></i>',
+                click: this.createInvokeHandler('editor.justifyLeft')
+              }),
+              renderer.button({
+                contents: '<i class="fa fa-align-center"></i>',
+                click: this.createInvokeHandler('editor.justifyCenter')
+              }),
+              renderer.button({
+                contents: '<i class="fa fa-align-right"></i>',
+                click: this.createInvokeHandler('editor.justifyRight')
+              }),
+              renderer.button({
+                contents: '<i class="fa fa-align-justify"></i>',
+                click: this.createInvokeHandler('editor.justifyFull')
+              })
+            ], {
+              className: 'note-align'
+            }),
+            renderer.buttonGroup([
+              renderer.button({
+                contents: '<i class="fa fa-outdent"></i>',
+                click: this.createInvokeHandler('editor.outdent')
+              }),
+              renderer.button({
+                contents: '<i class="fa fa-indent"></i>',
+                click: this.createInvokeHandler('editor.indent')
+              })
+            ], {
+              className: 'note-list'
+            })
+          ])
+        ])
+      ], {
+        className: 'note-para'
+      }).build());
+
+      $toolbar.append(renderer.buttonGroup([
+        renderer.button({
+          className: 'dropdown-toggle',
+          contents: '<i class="fa fa-text-height"/> <span class="caret"/>',
+          data: {
+            toggle: 'dropdown'
+          }
+        }),
+        renderer.dropdownCheck({
+          items: options.lineHeights,
+          className: 'dropdown-line-height',
+          click: this.createInvokeHandler('editor.lineHeight')
+        })
+      ]).build());
 
       this.updateCurrentStyle();
     };
