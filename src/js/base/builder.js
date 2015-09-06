@@ -17,7 +17,7 @@ define(function () {
       }
 
       if (options && options.click) {
-        $node.click(options.click);
+        $node.on('mousedown', options.click);
       }
 
       if (callback) {

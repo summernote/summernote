@@ -69,7 +69,7 @@ define([
             toggle: 'dropdown'
           }
         }),
-        renderer.dropdownMenu({
+        renderer.dropdown({
           className: 'dropdown-style',
           items: options.styleTags,
           click: function (event) {
@@ -122,7 +122,7 @@ define([
             toggle: 'dropdown'
           }
         }),
-        renderer.dropdownMenu({
+        renderer.dropdownCheck({
           className: 'dropdown-fontname',
           items: options.fontNames.filter(function (name) {
             return agent.isFontInstalled(name) ||
@@ -144,7 +144,7 @@ define([
             toggle: 'dropdown'
           }
         }),
-        renderer.dropdownMenu({
+        renderer.dropdownCheck({
           className: 'dropdown-fontsize',
           items: options.fontSizes,
           click: function (event) {
@@ -153,6 +153,76 @@ define([
           }
         })
       ]).build());
+
+      $toolbar.append(renderer.buttonGroup([
+        renderer.button({
+          contents: '<i class="fa fa-font note-recent-color"/>',
+          tooltip: 'Recent Color',
+          click: function (event) {
+            summernote.invoke('editor.color', [$(event.target).data('value')]);
+          },
+          callback: function ($button) {
+            var $recentColor = $button.find('.note-recent-color');
+            $recentColor.css({
+              'background-color': 'yellow'
+            }).data('value', {
+              backColor: 'yellow'
+            });
+          }
+        }),
+        renderer.button({
+          className: 'dropdown-toggle',
+          contents: '<span class="caret"/>',
+          tooltip: 'More Color',
+          data: {
+            toggle: 'dropdown'
+          }
+        }),
+        renderer.dropdown({
+          items: [
+            '<li>',
+            '<div class="btn-group">',
+            '  <div class="note-palette-title">background color</div>',
+            '  <div class="note-color-reset" data-event="backColor" data-value="inherit">transparent</div>',
+            '  <div class="note-holder" data-event="backColor"/>',
+            '</div>',
+            '<div class="btn-group">',
+            '  <div class="note-palette-title">fore color</div>',
+            '  <div class="note-color-reset" data-event="foreColor" data-value="inherit">reset to default</div>',
+            '  <div class="note-holder" data-event="foreColor"/>',
+            '</div>',
+            '</li>'
+          ].join(''),
+          callback: function ($dropdown) {
+            $dropdown.find('.note-holder').each(function () {
+              var $holder = $(this);
+              $holder.append(renderer.palette({
+                colors: options.colors,
+                eventName: $holder.data('event')
+              }).build());
+            });
+          },
+          click: function (event) {
+            var $button = $(event.target);
+            var eventName = $button.data('event');
+            var value = $button.data('value');
+
+            if (eventName && value) {
+              var key = eventName === 'backColor' ? 'background-color' : 'color';
+              var $color = $button.closest('.note-color').find('.note-recent-color');
+
+              var colorInfo = $color.data('value');
+              colorInfo[eventName] = value;
+              $color.data('value', colorInfo)
+                    .css(key, value);
+
+              summernote.invoke('editor.' + eventName, [value]);
+            }
+          }
+        })
+      ], {
+        className: 'note-color'
+      }).build());
 
       this.updateCurrentStyle();
     };
