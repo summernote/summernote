@@ -34,7 +34,7 @@ define([
      * @param {Number} colCount
      * @return {Node}
      */
-    this.createTable = function (colCount, rowCount) {
+    this.createTable = function (colCount, rowCount, options) {
       var tds = [], tdHTML;
       for (var idxCol = 0; idxCol < colCount; idxCol++) {
         tds.push('<td>' + dom.blank + '</td>');
@@ -46,7 +46,12 @@ define([
         trs.push('<tr>' + tdHTML + '</tr>');
       }
       trHTML = trs.join('');
-      return $('<table class="table table-bordered">' + trHTML + '</table>')[0];
+      var $table = $('<table>' + trHTML + '</table>')[0];
+      if (options && options.tableClassName) {
+        $table.addClass(options.tableClassName);
+      }
+
+      return $table;
     };
   };
   return Table;
