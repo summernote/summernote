@@ -51,6 +51,11 @@ define([
 
       tableClassName: 'table table-bordered',
 
+      insertTableMaxSize: {
+        col: 10,
+        row: 10
+      },
+
       callbacks: {
         onInit: null,
         onFocus: null,

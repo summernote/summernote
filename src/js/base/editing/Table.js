@@ -46,12 +46,12 @@ define([
         trs.push('<tr>' + tdHTML + '</tr>');
       }
       trHTML = trs.join('');
-      var $table = $('<table>' + trHTML + '</table>')[0];
+      var $table = $('<table>' + trHTML + '</table>');
       if (options && options.tableClassName) {
         $table.addClass(options.tableClassName);
       }
 
-      return $table;
+      return $table[0];
     };
   };
   return Table;
