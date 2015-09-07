@@ -11,7 +11,6 @@ define(['jquery', 'class'], function ($, Class) {
 
 	VirtualClass.prototype.initialize = function () {
 		this.instance = this.create();
-    this.instance.data('ui', this);
 	};
 
 	/** VirtualEvent **/

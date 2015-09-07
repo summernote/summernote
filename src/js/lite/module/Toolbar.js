@@ -1,43 +1,29 @@
-define([], function () {
-
+define(function () {
   var Toolbar = function (summernote) {
     var renderer = $.summernote.renderer;
-    var $editor = renderer.layoutInfo.editor; 
-    var ui = renderer.layoutInfo.ui;
+    var $toolbar = summernote.layoutInfo.toolbar;
 
-    var $toolbar = null;
     this.initialize = function () {
+      var $btnGroup = renderer.buttonGroup([
+        renderer.button({
+          contents: 'bold',
+          click: function () {
+            summernote.invoke('editor.bold');
+          }
+        }),
+        renderer.button({
+          contents: 'italic',
+          click: function () {
+            summernote.invoke('editor.italic');
+          }
+        })
+      ]).build();
 
-      var bold = new ui.Button({
-        title : '<i class="icon-bold"></i>',
-        click : function () {
-          summernote.invoke('editor.bold');
-        }
-      });
-
-      var italic = new ui.Button({
-        title : '<i class="icon-italic"></i>',
-        click : function () {
-          summernote.invoke('editor.italic');
-        }
-      });
-
-      var buttonGroup = new ui.ButtonGroup({
-        name : 'font',
-        children : [bold, italic]
-      });
-
-      $toolbar = new ui.Toolbar({
-        className : 'note-toolbar',
-        children : [ buttonGroup]
-      });
-
-
-      $editor.prepend($toolbar.render().instance);
+      $toolbar.append($btnGroup);
     };
 
     this.destory = function () {
-      $toolbar.destroy();
+      $toolbar.children().remove();
     };
   };
 
