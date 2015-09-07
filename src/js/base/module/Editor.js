@@ -26,6 +26,7 @@ define([
     var self = this;
 
     var $editable = summernote.layoutInfo.editable;
+    var options = summernote.options;
 
     var style = new Style();
     var table = new Table();
@@ -34,8 +35,8 @@ define([
     var history = new History($editable);
 
     this.initialize = function () {
-      var keyMap = summernote.options.keyMap[agent.isMac ? 'mac' : 'pc'];
-      this.bindKeyMap(keyMap, summernote.options);
+      var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
+      this.bindKeyMap(keyMap);
 
       $editable.on('keyup', function (event) {
         summernote.triggerEvent('keyup', [event]);
@@ -45,8 +46,8 @@ define([
         summernote.triggerEvent('change', [event]);
       });
 
-      if (summernote.options.height) {
-        $editable.height(summernote.options.height);
+      if (options.height) {
+        $editable.height(options.height);
       }
     };
 
@@ -54,7 +55,7 @@ define([
       $editable.off('keydown');
     };
 
-    this.bindKeyMap = function (keyMap, options) {
+    this.bindKeyMap = function (keyMap) {
       $editable.on('keydown', function (event) {
         var keys = [];
 
@@ -219,7 +220,7 @@ define([
         table.tab(rng);
       } else {
         beforeCommand();
-        typing.insertTab($editable, rng, summernote.options.tabSize);
+        typing.insertTab($editable, rng, options.tabSize);
         afterCommand();
       }
     };
@@ -472,8 +473,8 @@ define([
 
       beforeCommand();
 
-      if (summernote.options.onCreateLink) {
-        linkUrl = summernote.options.onCreateLink(linkUrl);
+      if (options.onCreateLink) {
+        linkUrl = options.onCreateLink(linkUrl);
       }
 
       var anchors = [];
@@ -567,7 +568,7 @@ define([
       beforeCommand();
 
       var rng = range.create().deleteContents();
-      rng.insertNode(table.createTable(dimension[0], dimension[1]));
+      rng.insertNode(table.createTable(dimension[0], dimension[1], options));
       afterCommand();
     };
 
@@ -579,32 +580,7 @@ define([
      */
     this.floatMe = function (value, $target) {
       beforeCommand();
-      // bootstrap
-      $target.removeClass('pull-left pull-right');
-      if (value && value !== 'none') {
-        $target.addClass('pull-' + value);
-      }
-
-      // fallback for non-bootstrap
       $target.css('float', value);
-      afterCommand();
-    };
-
-    /**
-     * change image shape
-     *
-     * @param {String} value css class
-     * @param {Node} $target
-     */
-    this.imageShape = function (value, $target) {
-      beforeCommand();
-
-      $target.removeClass('img-rounded img-circle img-thumbnail');
-
-      if (value) {
-        $target.addClass(value);
-      }
-
       afterCommand();
     };
 

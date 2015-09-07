@@ -49,6 +49,8 @@ define([
 
       lineHeights: ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'],
 
+      tableClassName: 'table table-bordered',
+
       callbacks: {
         onInit: null,
         onFocus: null,

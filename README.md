@@ -1,6 +1,6 @@
 # Summernote
 
-Super simple WYSIWYG Editor using Bootstrap (3.0 and 2.x).
+Super simple WYSIWYG Editor using Bootstrap 3.
 
 [![Build Status](https://secure.travis-ci.org/summernote/summernote.png)](http://travis-ci.org/summernote/summernote)
 [![npm version](https://badge.fury.io/js/summernote.svg)](http://badge.fury.io/js/summernote)
