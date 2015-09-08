@@ -45,7 +45,7 @@ define([
         html.append('<td>' + dom.blank + '</td>');
       }
 
-      if (position == 'top')
+      if (position === 'top')
       {
         currentTr.before(html);
       }
@@ -75,7 +75,10 @@ define([
       {
         var r = $(table).find('tr')[idTr];
         var c = $(r).find('td')[cellPos];
-        $(c).after('<td>' + dom.blank + '</td>');
+        if (position === 'right')
+          $(c).after('<td>' + dom.blank + '</td>');
+        else
+          $(c).before('<td>' + dom.blank + '</td>');
       }
 
     };
