@@ -32,7 +32,7 @@ define([
      * @param {String} position (top/bottom)
      * @return {Node}
      */
-    this.addRow = function(rng, position){
+    this.addRow = function (rng, position){
       var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
       var table = dom.ancestor(cell, dom.isTable);
 
@@ -63,7 +63,7 @@ define([
      * @param {String} position (left/right)
      * @return {Node}
      */
-    this.addCol = function(rng, position){
+    this.addCol = function (rng, position){
       var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
       var table = dom.ancestor(cell, dom.isTable);
 
