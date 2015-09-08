@@ -24,6 +24,67 @@ define([
         range.create(nextCell, 0).select();
       }
     };
+    
+    /**
+     * Add a new row
+     *
+     * @param {WrappedRange} rng
+     * @param {String} position (top/bottom)
+     * @return {Node}
+     */
+    this.addRow = function (rng, position) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+
+      var currentTr = $(cell).closest('tr');
+      var nbCell = currentTr.find('td').length;
+
+      var html = $('<tr></tr>');
+      for (var idCell = 0; idCell < nbCell; idCell++)
+      {
+        html.append('<td>' + dom.blank + '</td>');
+      }
+
+      if (position === 'top')
+      {
+        currentTr.before(html);
+      }
+      else
+      {
+        currentTr.after(html);
+      }
+
+    };
+
+    /**
+     * Add a new col
+     *
+     * @param {WrappedRange} rng
+     * @param {String} position (left/right)
+     * @return {Node}
+     */
+    this.addCol = function (rng, position) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      var table = dom.ancestor(cell, dom.isTable);
+
+      var currentTr = $(cell).closest('tr');
+      var cellPos = currentTr.find('td').index($(cell));
+      var nbTr = $(table).find('tr').length;
+
+      for (var idTr = 0; idTr < nbTr; idTr++)
+      {
+        var r = $(table).find('tr')[idTr];
+        var c = $(r).find('td')[cellPos];
+        if (position === 'right')
+        {
+          $(c).after('<td>' + dom.blank + '</td>');
+        }
+        else
+        {
+          $(c).before('<td>' + dom.blank + '</td>');
+        }
+      }
+
+    };
 
     /**
      * create empty table element

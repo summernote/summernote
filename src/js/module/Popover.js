@@ -79,6 +79,25 @@ define([
       } else {
         $linkPopover.hide();
       }
+      
+      var $tablePopover = $popover.find('.note-table-popover');
+      var td = null;
+
+      for (var i = 0; i < styleInfo.ancestors.length; i++)
+      {
+        if (styleInfo.ancestors[i].nodeName === 'TD') {
+          td = styleInfo.ancestors[i];
+        }
+      }
+      if (td) {
+        var el = $(td);
+        showPopover($tablePopover, {
+            left: el.position().left + (el.width() / 2),
+            top: el.position().top + (el.height() * 2)
+          });
+      } else {
+        $tablePopover.hide();
+      }
 
       var $imagePopover = $popover.find('.note-image-popover');
       if (styleInfo.image) {
