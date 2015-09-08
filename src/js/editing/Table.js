@@ -42,7 +42,7 @@ define([
       var html = $('<tr></tr>');
       for (var idCell = 0; idCell < nbCell; idCell++)
       {
-        html.append('<td>'+ dom.blank +'</td>');
+        html.append('<td>' + dom.blank + '</td>');
       }
 
       if(position == 'top')
