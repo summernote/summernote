@@ -427,7 +427,7 @@ define([
           event: 'addCol',
           value: 'right'
         });
-        var content = '<div class="btn-group">' + addRowDownButton +addRowUpButton +addColLeftButton +addColRightButton + '</div>';
+        var content = '<div class="btn-group">' + addRowDownButton + addRowUpButton + addColLeftButton + addColRightButton + '</div>';
         return tplPopover('note-table-popover', content);
       };
 
