@@ -83,7 +83,7 @@ define([
       var $tablePopover = $popover.find('.note-table-popover');
       var td = null;
 
-      for (var i=0; i < styleInfo.ancestors.length; i++)
+      for (var i = 0; i < styleInfo.ancestors.length; i++)
       {
         if (styleInfo.ancestors[i].nodeName == 'TD') {
           td = styleInfo.ancestors[i];
