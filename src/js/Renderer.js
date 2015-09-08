@@ -410,6 +410,26 @@ define([
                       '</div>';
         return tplPopover('note-link-popover', content);
       };
+      var tplTablePopover = function () {
+       var addRowDownButton = tplButton('<span class="note-table-addrowdown"><i class="fa fa-arrow-circle-o-down"></i></span>', {
+          event: 'addRow',
+          value: 'bottom'
+        });
+       var addRowUpButton = tplButton('<span class="note-table-addrowdown"><i class="fa fa-arrow-circle-o-up"></i></span>', {
+          event: 'addRow',
+          value: 'top'
+        });
+       var addColLeftButton = tplButton('<span class="note-table-addrowdown"><i class="fa fa-arrow-circle-o-left"></i></span>', {
+          event: 'addCol',
+          value: 'left'
+        });
+       var addColRightButton = tplButton('<span class="note-table-addrowdown"><i class="fa fa-arrow-circle-o-right"></i></span>', {
+          event: 'addCol',
+          value: 'right'
+        });
+        var content = '<div class="btn-group">' + addRowDownButton +addRowUpButton +addColLeftButton +addColRightButton + '</div>';
+        return tplPopover('note-table-popover', content);
+      };
 
       var tplImagePopover = function () {
         var fullButton = tplButton('<span class="note-fontsize-10">100%</span>', {
