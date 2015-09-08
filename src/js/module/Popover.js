@@ -85,7 +85,7 @@ define([
 
       for (var i = 0; i < styleInfo.ancestors.length; i++)
       {
-        if (styleInfo.ancestors[i].nodeName == 'TD') {
+        if (styleInfo.ancestors[i].nodeName === 'TD') {
           td = styleInfo.ancestors[i];
         }
       }
