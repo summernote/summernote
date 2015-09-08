@@ -92,8 +92,8 @@ define([
       if (td) {
         var el = $(td);
         showPopover($tablePopover, {
-            left: el.position().left+(el.width()/2),
-            top: el.position().top+(el.height()*2)
+            left: el.position().left + (el.width() / 2),
+            top: el.position().top + (el.height() * 2)
           });
       } else {
         $tablePopover.hide();
