@@ -34,7 +34,6 @@ define([
      */
     this.addRow = function (rng, position) {
       var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-      var table = dom.ancestor(cell, dom.isTable);
 
       var currentTr = $(cell).closest('tr');
       var nbCell = currentTr.find('td').length;
