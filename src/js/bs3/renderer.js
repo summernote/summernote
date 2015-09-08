@@ -27,10 +27,6 @@ define([
         placement: 'bottom'
       });
     }
-
-    if (options && options.callback) {
-      options.callback($node);
-    }
   });
 
   var dropdown = builder.create('<div class="dropdown-menu">', function ($node, options) {
@@ -39,10 +35,6 @@ define([
     }).join('') : options.items;
 
     $node.html(markup);
-
-    if (options.callback) {
-      options.callback($node);
-    }
   });
 
   var dropdownCheck = builder.create('<div class="dropdown-menu note-check">', function ($node, options) {

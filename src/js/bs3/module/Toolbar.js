@@ -72,6 +72,54 @@ define([
       }
     };
 
+    this.updateBtnStates = function (infos) {
+      $.each(infos, function (selector, pred) {
+        $toolbar.find(selector).toggleClass('active', pred());
+      });
+    };
+
+    this.tableMoveHandler = function (event) {
+      var PX_PER_EM = 18;
+      var $picker = $(event.target.parentNode); // target is mousecatcher
+      var $dimensionDisplay = $picker.next();
+      var $catcher = $picker.find('.note-dimension-picker-mousecatcher');
+      var $highlighted = $picker.find('.note-dimension-picker-highlighted');
+      var $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
+
+      var posOffset;
+      // HTML5 with jQuery - e.offsetX is undefined in Firefox
+      if (event.offsetX === undefined) {
+        var posCatcher = $(event.target).offset();
+        posOffset = {
+          x: event.pageX - posCatcher.left,
+          y: event.pageY - posCatcher.top
+        };
+      } else {
+        posOffset = {
+          x: event.offsetX,
+          y: event.offsetY
+        };
+      }
+
+      var dim = {
+        c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
+        r: Math.ceil(posOffset.y / PX_PER_EM) || 1
+      };
+
+      $highlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });
+      $catcher.data('value', dim.c + 'x' + dim.r);
+
+      if (3 < dim.c && dim.c < options.insertTableMaxSize.col) {
+        $unhighlighted.css({ width: dim.c + 1 + 'em'});
+      }
+
+      if (3 < dim.r && dim.r < options.insertTableMaxSize.row) {
+        $unhighlighted.css({ height: dim.r + 1 + 'em'});
+      }
+
+      $dimensionDisplay.html(dim.c + ' x ' + dim.r);
+    };
+
     this.initialize = function () {
       $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
         self.updateCurrentStyle();
@@ -296,17 +344,43 @@ define([
         })
       ]).build());
 
+      $toolbar.append(renderer.buttonGroup([
+        renderer.button({
+          className: 'dropdown-toggle',
+          contents: '<i class="fa fa-table"/> <span class="caret"/>',
+          data: {
+            toggle: 'dropdown'
+          }
+        }),
+        renderer.dropdown({
+          className: 'note-table',
+          items: [
+            '<div class="note-dimension-picker">',
+            '  <div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>',
+            '  <div class="note-dimension-picker-highlighted"></div>',
+            '  <div class="note-dimension-picker-unhighlighted"></div>',
+            '</div>',
+            '<div class="note-dimension-display">1 x 1</div>'
+          ].join('')
+        })
+      ], {
+        callback: function ($node) {
+          var $catcher = $node.find('.note-dimension-picker-mousecatcher');
+          $catcher.css({
+            width: options.insertTableMaxSize.col + 'em',
+            height: options.insertTableMaxSize.row + 'em'
+          }).click(function (event) {
+            var $target = $(event.target);
+            summernote.invoke('editor.insertTable', [$target.data('value')]);
+          }).on('mousemove', self.tableMoveHandler);
+        }
+      }).build());
+
       this.updateCurrentStyle();
     };
 
     this.destory = function () {
       $toolbar.children().remove();
-    };
-
-    this.updateBtnStates = function (infos) {
-      $.each(infos, function (selector, pred) {
-        $toolbar.find(selector).toggleClass('active', pred());
-      });
     };
   };
 

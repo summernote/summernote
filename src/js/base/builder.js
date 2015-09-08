@@ -20,14 +20,18 @@ define(function () {
         $node.on('mousedown', options.click);
       }
 
-      if (callback) {
-        callback($node, options);
-      }
-
       if (children) {
         children.forEach(function (child) {
           child.build($node);
         });
+      }
+
+      if (callback) {
+        callback($node, options);
+      }
+
+      if (options && options.callback) {
+        options.callback($node);
       }
 
       if ($parent) {
