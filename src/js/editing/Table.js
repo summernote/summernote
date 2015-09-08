@@ -40,7 +40,7 @@ define([
       var nbCell = currentTr.find('td').length;
 
       var html = $('<tr></tr>');
-      for(var idCell = 0; idCell < nbCell; idCell++)
+      for (var idCell = 0; idCell < nbCell; idCell++)
       {
         html.append('<td>'+ dom.blank +'</td>');
       }
@@ -71,7 +71,7 @@ define([
       var cellPos = currentTr.find('td').index($(cell));
       var nbTr = $(table).find('tr').length;
 
-      for(var idTr = 0; idTr < nbTr; idTr++)
+      for (var idTr = 0; idTr < nbTr; idTr++)
       {
         var r = $(table).find('tr')[idTr];
         var c = $(r).find('td')[cellPos];
