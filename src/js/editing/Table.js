@@ -76,9 +76,13 @@ define([
         var r = $(table).find('tr')[idTr];
         var c = $(r).find('td')[cellPos];
         if (position === 'right')
+        {
           $(c).after('<td>' + dom.blank + '</td>');
+        }
         else
+        {
           $(c).before('<td>' + dom.blank + '</td>');
+        }
       }
 
     };
