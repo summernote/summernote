@@ -80,7 +80,7 @@ define([
         $linkPopover.hide();
       }
       
-       var $tablePopover = $popover.find('.note-table-popover');
+      var $tablePopover = $popover.find('.note-table-popover');
       var td = null;
 
       for(var i=0; i < styleInfo.ancestors.length; i++)
