@@ -521,6 +521,7 @@ define([
 
       $notePopover.append(tplLinkPopover());
       $notePopover.append(tplImagePopover());
+      $notePopover.append(tplTablePopover());
 
       if (options.airMode) {
         $notePopover.append(tplAirPopover());
