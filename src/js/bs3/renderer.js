@@ -75,18 +75,18 @@ define([
   var dialog = builder.create('<div class="modal" aria-hidden="false"/>', function ($node, options) {
     $node.html([
       '<div class="modal-dialog">',
-        '<div class="modal-content">',
-          (options.title ?
-          '<div class="modal-header">' +
-            '<button type="button" class="close" tabindex="-1">&times;</button>' +
-            '<h4 class="modal-title">' + options.title + '</h4>' +
-          '</div>' : ''
-          ),
-          '<div class="modal-body">' + options.body + '</div>',
-          (options.footer ?
-          '<div class="modal-footer">' + options.footer + '</div>' : ''
-          ),
-        '</div>',
+      '<div class="modal-content">',
+      (options.title ?
+      '<div class="modal-header">' +
+        '<button type="button" class="close" tabindex="-1">&times;</button>' +
+        '<h4 class="modal-title">' + options.title + '</h4>' +
+      '</div>' : ''
+      ),
+      '<div class="modal-body">' + options.body + '</div>',
+      (options.footer ?
+      '<div class="modal-footer">' + options.footer + '</div>' : ''
+      ),
+      '</div>',
       '</div>'
     ].join(''));
   });
