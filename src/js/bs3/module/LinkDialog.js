@@ -3,7 +3,7 @@ define([
 ], function (key) {
   var LinkDialog = function (summernote) {
     var self = this;
-    var renderer = $.summernote.renderer;
+    var ui = $.summernote.ui;
 
     var $editor = summernote.layoutInfo.editor;
     var options = summernote.options;
@@ -28,12 +28,12 @@ define([
                  );
       var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>Insert Link</button>';
 
-      $container.append(renderer.dialog({
+      $container.append(ui.dialog({
         className: 'link-dialog',
         title: 'Insert Link',
         body: body,
         footer: footer
-      }).build());
+      }).render());
 
       this.$linkDialog = $container.find('.link-dialog');
     };

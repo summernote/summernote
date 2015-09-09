@@ -1,11 +1,11 @@
 define([
-  'summernote/lite/renderer',
+  'summernote/lite/ui',
   'summernote/base/module/Editor',
   'summernote/lite/module/Toolbar'
-], function (renderer, Editor, Toolbar) {
+], function (ui, Editor, Toolbar) {
   var settings = {
     version: '@VERSION',
-    renderer: renderer,
+    ui: ui,
 
     options: {
       modules: {

@@ -1,14 +1,14 @@
 define([
-  'summernote/bs3/renderer',
+  'summernote/bs3/ui',
   'summernote/base/module/Editor',
   'summernote/bs3/module/Toolbar',
   'summernote/bs3/module/Statusbar',
   'summernote/bs3/module/LinkDialog',
   'summernote/bs3/module/ImageDialog'
-], function (renderer, Editor, Toolbar, Statusbar, LinkDialog, ImageDialog) {
+], function (ui, Editor, Toolbar, Statusbar, LinkDialog, ImageDialog) {
   var settings = {
     version: '@VERSION',
-    renderer: renderer,
+    ui: ui,
 
     options: {
       modules: {

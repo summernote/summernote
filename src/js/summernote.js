@@ -24,8 +24,8 @@ define([
     };
 
     this.initialize = function () {
-      var renderer = $.summernote.renderer;
-      this.layoutInfo = renderer.createLayout($note);
+      var ui = $.summernote.ui;
+      this.layoutInfo = ui.createLayout($note);
 
       Object.keys(this.options.modules).forEach(function (key) {
         var module = new self.options.modules[key](self);

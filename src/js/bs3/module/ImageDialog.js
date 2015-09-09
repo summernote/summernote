@@ -4,7 +4,7 @@ define([
 ], function (key, async) {
   var ImageDialog = function (summernote) {
     var self = this;
-    var renderer = $.summernote.renderer;
+    var ui = $.summernote.ui;
 
     var $editor = summernote.layoutInfo.editor;
     var options = summernote.options;
@@ -31,12 +31,12 @@ define([
                  '</div>';
       var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>Insert Image</button>';
 
-      $container.append(renderer.dialog({
+      $container.append(ui.dialog({
         className: 'note-image-dialog',
         title: 'Insert Image',
         body: body,
         footer: footer
-      }).build());
+      }).render());
 
       this.$dialog = $container.find('.note-image-dialog');
     };

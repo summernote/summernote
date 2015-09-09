@@ -1,6 +1,6 @@
 define(function () {
-  var Builder = function (markup, children, options, callback) {
-    this.build = function ($parent) {
+  var Renderer = function (markup, children, options, callback) {
+    this.render = function ($parent) {
       var $node = $(markup);
       if (options && options.contents) {
         $node.html(options.contents);
@@ -22,7 +22,7 @@ define(function () {
 
       if (children) {
         children.forEach(function (child) {
-          child.build($node);
+          child.render($node);
         });
       }
 
@@ -42,15 +42,15 @@ define(function () {
     };
   };
 
-  var builder = {
+  var renderer = {
     create: function (markup, callback) {
       return function () {
         var children = $.isArray(arguments[0]) ? arguments[0] : [];
         var options = typeof arguments[1] === 'object' ? arguments[1] : arguments[0];
-        return new Builder(markup, children, options, callback);
+        return new Renderer(markup, children, options, callback);
       };
     }
   };
 
-  return builder;
+  return renderer;
 });
