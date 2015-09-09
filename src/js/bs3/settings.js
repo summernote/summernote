@@ -5,8 +5,9 @@ define([
   'summernote/bs3/module/Statusbar',
   'summernote/bs3/module/LinkDialog',
   'summernote/bs3/module/ImageDialog',
-  'summernote/bs3/module/Fullscreen'
-], function (ui, Editor, Toolbar, Statusbar, LinkDialog, ImageDialog, Fullscreen) {
+  'summernote/bs3/module/Fullscreen',
+  'summernote/bs3/module/Codeview'
+], function (ui, Editor, Toolbar, Statusbar, LinkDialog, ImageDialog, Fullscreen, Codeview) {
   var settings = {
     version: '@VERSION',
     ui: ui,
@@ -18,7 +19,8 @@ define([
         'statusbar': Statusbar,
         'linkDialog': LinkDialog,
         'imageDialog': ImageDialog,
-        'fullscreen': Fullscreen
+        'fullscreen': Fullscreen,
+        'codeview': Codeview
       },
 
       width: null,

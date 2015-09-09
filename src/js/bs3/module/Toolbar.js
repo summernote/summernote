@@ -124,6 +124,10 @@ define([
       $toolbar.find('.btn-fullscreen').toggleClass('active', isFullscreen);
     };
 
+    this.updateCodeview = function (isCodeview) {
+      $toolbar.find('.btn-codeview').toggleClass('active', isCodeview);
+    };
+
     this.initialize = function () {
       $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
         self.updateCurrentStyle();
@@ -402,7 +406,9 @@ define([
           click: this.createInvokeHandler('fullscreen.toggle')
         }),
         ui.button({
-          contents: '<i class="fa fa-code"/>'
+          className: 'btn-codeview',
+          contents: '<i class="fa fa-code"/>',
+          click: this.createInvokeHandler('codeview.toggle')
         })
       ]).render());
 
