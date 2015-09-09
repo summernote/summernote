@@ -9,9 +9,9 @@ define([
   var statusbar = builder.create([
     '<div class="note-statusbar">',
     '  <div class="note-resizebar">',
-    '    <div class="note-icon-bar"></div>',
-    '    <div class="note-icon-bar"></div>',
-    '    <div class="note-icon-bar"></div>',
+    '    <div class="note-icon-bar"/>',
+    '    <div class="note-icon-bar"/>',
+    '    <div class="note-icon-bar"/>',
     '  </div>',
     '</div>'
   ].join(''));
@@ -44,7 +44,7 @@ define([
     $node.html(markup);
   });
 
-  var palette = builder.create('<div class="note-color-palette">', function ($node, options) {
+  var palette = builder.create('<div class="note-color-palette"/>', function ($node, options) {
     var contents = [];
     for (var row = 0, rowSize = options.colors.length; row < rowSize; row++) {
       var eventName = options.eventName;
@@ -72,6 +72,25 @@ define([
     });
   });
 
+  var dialog = builder.create('<div class="modal" aria-hidden="false"/>', function ($node, options) {
+    $node.html([
+      '<div class="modal-dialog">',
+        '<div class="modal-content">',
+          (options.title ?
+          '<div class="modal-header">' +
+            '<button type="button" class="close" tabindex="-1">&times;</button>' +
+            '<h4 class="modal-title">' + options.title + '</h4>' +
+          '</div>' : ''
+          ),
+          '<div class="modal-body">' + options.body + '</div>',
+          (options.footer ?
+          '<div class="modal-footer">' + options.footer + '</div>' : ''
+          ),
+        '</div>',
+      '</div>'
+    ].join(''));
+  });
+
   var renderer = {
     editor: editor,
     toolbar: toolbar,
@@ -84,6 +103,7 @@ define([
     dropdown: dropdown,
     dropdownCheck: dropdownCheck,
     palette: palette,
+    dialog: dialog,
 
     createLayout: function ($note) {
       var $editor = renderer.editor([

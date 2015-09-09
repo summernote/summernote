@@ -1,27 +1,52 @@
 define([
-  'summernote/core/key'
-], function (key) {
-  var ImageDialog = function (handler) {
-    /**
-     * toggle button status
-     *
-     * @private
-     * @param {jQuery} $btn
-     * @param {Boolean} isEnable
-     */
-    var toggleBtn = function ($btn, isEnable) {
+  'summernote/base/core/key',
+  'summernote/base/core/async'
+], function (key, async) {
+  var ImageDialog = function (summernote) {
+    var self = this;
+    var renderer = $.summernote.renderer;
+
+    var $editor = summernote.layoutInfo.editor;
+    var options = summernote.options;
+
+    this.initialize = function () {
+      var $container = options.dialogsInBody ? $(document.body) : $editor;
+
+      var imageLimitation = '';
+      if (options.maximumImageFileSize) {
+        var unit = Math.floor(Math.log(options.maximumImageFileSize) / Math.log(1024));
+        var readableSize = (options.maximumImageFileSize / Math.pow(1024, unit)).toFixed(2) * 1 +
+                           ' ' + ' KMGTP'[unit] + 'B';
+        imageLimitation = '<small>Maximum file size : ' + readableSize + '</small>';
+      }
+
+      var body = '<div class="form-group note-group-select-from-files">' +
+                   '<label>Select from files</label>' +
+                   '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" />' +
+                   imageLimitation +
+                 '</div>' +
+                 '<div class="form-group">' +
+                   '<label>Image URL</label>' +
+                   '<input class="note-image-url form-control col-md-12" type="text" />' +
+                 '</div>';
+      var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>Insert Image</button>';
+
+      $container.append(renderer.dialog({
+        className: 'note-image-dialog',
+        title: 'Insert Image',
+        body: body,
+        footer: footer
+      }).build());
+
+      this.$dialog = $container.find('.note-image-dialog');
+    };
+
+    this.toggleBtn = function ($btn, isEnable) {
       $btn.toggleClass('disabled', !isEnable);
       $btn.attr('disabled', !isEnable);
     };
 
-    /**
-     * bind enter key
-     *
-     * @private
-     * @param {jQuery} $input
-     * @param {jQuery} $btn
-     */
-    var bindEnterKey = function ($input, $btn) {
+    this.bindEnterKey = function ($input, $btn) {
       $input.on('keypress', function (event) {
         if (event.keyCode === key.code.ENTER) {
           $btn.trigger('click');
@@ -29,47 +54,64 @@ define([
       });
     };
 
-    this.show = function (layoutInfo) {
-      var $dialog = layoutInfo.dialog(),
-          $editable = layoutInfo.editable();
+    this.insertImages = function (files) {
+      var callbacks = options.callbacks;
 
-      handler.invoke('editor.saveRange', $editable);
-      this.showImageDialog($editable, $dialog).then(function (data) {
-        handler.invoke('editor.restoreRange', $editable);
+      // If onImageUpload options setted
+      if (callbacks.onImageUpload) {
+        summernote.triggerEvent('image.upload', [files]);
+      // else insert Image as dataURL
+      } else {
+        $.each(files, function (idx, file) {
+          var filename = file.name;
+          if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
+            summernote.triggerEvent('image.upload.error', ['image.maximum.filesize.error']);
+          } else {
+            async.readFileAsDataURL(file).then(function (dataURL) {
+              summernote.invoke('editor.insertImage', [dataURL, filename]);
+            }).fail(function () {
+              summernote.triggerEvent('image.upload.error');
+            });
+          }
+        });
+      }
+    };
+
+    this.show = function () {
+      summernote.invoke('editor.saveRange');
+      this.showImageDialog().then(function (data) {
+        summernote.invoke('editor.restoreRange');
 
         if (typeof data === 'string') {
           // image url
-          handler.invoke('editor.insertImage', $editable, data);
+          summernote.invoke('editor.insertImage', [data]);
         } else {
           // array of files
-          handler.insertImages(layoutInfo, data);
+          self.insertImages(data);
         }
       }).fail(function () {
-        handler.invoke('editor.restoreRange', $editable);
+        summernote.invoke('editor.restoreRange');
       });
     };
 
     /**
      * show image dialog
      *
-     * @param {jQuery} $editable
      * @param {jQuery} $dialog
      * @return {Promise}
      */
-    this.showImageDialog = function ($editable, $dialog) {
+    this.showImageDialog = function () {
       return $.Deferred(function (deferred) {
-        var $imageDialog = $dialog.find('.note-image-dialog');
+        var $imageInput = self.$dialog.find('.note-image-input'),
+            $imageUrl = self.$dialog.find('.note-image-url'),
+            $imageBtn = self.$dialog.find('.note-image-btn');
 
-        var $imageInput = $dialog.find('.note-image-input'),
-            $imageUrl = $dialog.find('.note-image-url'),
-            $imageBtn = $dialog.find('.note-image-btn');
-
-        $imageDialog.one('shown.bs.modal', function () {
+        self.$dialog.one('shown.bs.modal', function () {
           // Cloning imageInput to clear element.
           $imageInput.replaceWith($imageInput.clone()
             .on('change', function () {
               deferred.resolve(this.files || this.value);
-              $imageDialog.modal('hide');
+              self.$dialog.modal('hide');
             })
             .val('')
           );
@@ -78,7 +120,7 @@ define([
             event.preventDefault();
 
             deferred.resolve($imageUrl.val());
-            $imageDialog.modal('hide');
+            self.$dialog.modal('hide');
           });
 
           $imageUrl.on('keyup paste', function (event) {
@@ -90,9 +132,9 @@ define([
               url = $imageUrl.val();
             }
             
-            toggleBtn($imageBtn, url);
+            self.toggleBtn($imageBtn, url);
           }).val('').trigger('focus');
-          bindEnterKey($imageUrl, $imageBtn);
+          self.bindEnterKey($imageUrl, $imageBtn);
         }).one('hidden.bs.modal', function () {
           $imageInput.off('change');
           $imageUrl.off('keyup paste keypress');

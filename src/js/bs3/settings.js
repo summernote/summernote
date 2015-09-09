@@ -2,8 +2,10 @@ define([
   'summernote/bs3/renderer',
   'summernote/base/module/Editor',
   'summernote/bs3/module/Toolbar',
-  'summernote/bs3/module/Statusbar'
-], function (renderer, Editor, Toolbar, Statusbar) {
+  'summernote/bs3/module/Statusbar',
+  'summernote/bs3/module/LinkDialog',
+  'summernote/bs3/module/ImageDialog'
+], function (renderer, Editor, Toolbar, Statusbar, LinkDialog, ImageDialog) {
   var settings = {
     version: '@VERSION',
     renderer: renderer,
@@ -12,6 +14,8 @@ define([
       modules: {
         'editor': Editor,
         'toolbar': Toolbar,
+        'linkDialog': LinkDialog,
+        'imageDialog': ImageDialog,
         'statusbar': Statusbar
       },
 
@@ -56,6 +60,10 @@ define([
         row: 10
       },
 
+      dialogsInBody: false,
+
+      maximumImageFileSize: null,
+
       callbacks: {
         onInit: null,
         onFocus: null,
@@ -63,7 +71,9 @@ define([
         onEnter: null,
         onKeyup: null,
         onKeydown: null,
-        onSubmit: null
+        onSubmit: null,
+        onImageUpload: null,
+        onImageUploadError: null
       },
 
       keyMap: {

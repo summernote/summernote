@@ -1,28 +1,49 @@
 define([
-  'summernote/core/key'
+  'summernote/base/core/key'
 ], function (key) {
-  var LinkDialog = function (handler) {
+  var LinkDialog = function (summernote) {
+    var self = this;
+    var renderer = $.summernote.renderer;
 
-    /**
-     * toggle button status
-     *
-     * @private
-     * @param {jQuery} $btn
-     * @param {Boolean} isEnable
-     */
-    var toggleBtn = function ($btn, isEnable) {
+    var $editor = summernote.layoutInfo.editor;
+    var options = summernote.options;
+
+    this.initialize = function () {
+      var $container = options.dialogsInBody ? $(document.body) : $editor;
+
+      var body = '<div class="form-group">' +
+                   '<label>Text to display</label>' +
+                   '<input class="note-link-text form-control" type="text" />' +
+                 '</div>' +
+                 '<div class="form-group">' +
+                   '<label>To what URL should this link go?</label>' +
+                   '<input class="note-link-url form-control" type="text" value="http://" />' +
+                 '</div>' +
+                 (!options.disableLinkTarget ?
+                   '<div class="checkbox">' +
+                     '<label>' + '<input type="checkbox" checked> ' +
+                       'Open in new window' +
+                     '</label>' +
+                   '</div>' : ''
+                 );
+      var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>Insert Link</button>';
+
+      $container.append(renderer.dialog({
+        className: 'link-dialog',
+        title: 'Insert Link',
+        body: body,
+        footer: footer
+      }).build());
+
+      this.$linkDialog = $container.find('.link-dialog');
+    };
+
+    this.toggleBtn = function ($btn, isEnable) {
       $btn.toggleClass('disabled', !isEnable);
       $btn.attr('disabled', !isEnable);
     };
 
-    /**
-     * bind enter key
-     *
-     * @private
-     * @param {jQuery} $input
-     * @param {jQuery} $btn
-     */
-    var bindEnterKey = function ($input, $btn) {
+    this.bindEnterKey = function ($input, $btn) {
       $input.on('keypress', function (event) {
         if (event.keyCode === key.code.ENTER) {
           $btn.trigger('click');
@@ -33,25 +54,21 @@ define([
     /**
      * Show link dialog and set event handlers on dialog controls.
      *
-     * @param {jQuery} $editable
-     * @param {jQuery} $dialog
      * @param {Object} linkInfo
      * @return {Promise}
      */
-    this.showLinkDialog = function ($editable, $dialog, linkInfo) {
+    this.showLinkDialog = function (linkInfo) {
       return $.Deferred(function (deferred) {
-        var $linkDialog = $dialog.find('.note-link-dialog');
+        var $linkText = self.$linkDialog.find('.note-link-text'),
+        $linkUrl = self.$linkDialog.find('.note-link-url'),
+        $linkBtn = self.$linkDialog.find('.note-link-btn'),
+        $openInNewWindow = self.$linkDialog.find('input[type=checkbox]');
 
-        var $linkText = $linkDialog.find('.note-link-text'),
-        $linkUrl = $linkDialog.find('.note-link-url'),
-        $linkBtn = $linkDialog.find('.note-link-btn'),
-        $openInNewWindow = $linkDialog.find('input[type=checkbox]');
-
-        $linkDialog.one('shown.bs.modal', function () {
+        self.$linkDialog.one('shown.bs.modal', function () {
           $linkText.val(linkInfo.text);
 
           $linkText.on('input', function () {
-            toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
+            self.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
             // if linktext was modified by keyup,
             // stop cloning text from linkUrl
             linkInfo.text = $linkText.val();
@@ -60,11 +77,11 @@ define([
           // if no url was given, copy text to url
           if (!linkInfo.url) {
             linkInfo.url = linkInfo.text || 'http://';
-            toggleBtn($linkBtn, linkInfo.text);
+            self.toggleBtn($linkBtn, linkInfo.text);
           }
 
           $linkUrl.on('input', function () {
-            toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
+            self.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
             // display same link on `Text to display` input
             // when create a new link
             if (!linkInfo.text) {
@@ -72,8 +89,8 @@ define([
             }
           }).val(linkInfo.url).trigger('focus').trigger('select');
 
-          bindEnterKey($linkUrl, $linkBtn);
-          bindEnterKey($linkText, $linkBtn);
+          self.bindEnterKey($linkUrl, $linkBtn);
+          self.bindEnterKey($linkText, $linkBtn);
 
           $openInNewWindow.prop('checked', linkInfo.isNewWindow);
 
@@ -86,7 +103,7 @@ define([
               text: $linkText.val(),
               isNewWindow: $openInNewWindow.is(':checked')
             });
-            $linkDialog.modal('hide');
+            self.$linkDialog.modal('hide');
           });
         }).one('hidden.bs.modal', function () {
           // detach events
@@ -104,23 +121,15 @@ define([
     /**
      * @param {Object} layoutInfo
      */
-    this.show = function (layoutInfo) {
-      var $editor = layoutInfo.editor(),
-          $dialog = layoutInfo.dialog(),
-          $editable = layoutInfo.editable(),
-          $popover = layoutInfo.popover(),
-          linkInfo = handler.invoke('editor.getLinkInfo', $editable);
+    this.show = function () {
+      var linkInfo = summernote.invoke('editor.getLinkInfo');
 
-      var options = $editor.data('options');
-
-      handler.invoke('editor.saveRange', $editable);
-      this.showLinkDialog($editable, $dialog, linkInfo).then(function (linkInfo) {
-        handler.invoke('editor.restoreRange', $editable);
-        handler.invoke('editor.createLink', $editable, linkInfo, options);
-        // hide popover after creating link
-        handler.invoke('popover.hide', $popover);
+      summernote.invoke('editor.saveRange');
+      this.showLinkDialog(linkInfo).then(function (linkInfo) {
+        summernote.invoke('editor.restoreRange');
+        summernote.invoke('editor.createLink', [linkInfo]);
       }).fail(function () {
-        handler.invoke('editor.restoreRange', $editable);
+        summernote.invoke('editor.restoreRange');
       });
     };
   };

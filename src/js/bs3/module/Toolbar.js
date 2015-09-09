@@ -293,19 +293,19 @@ define([
           renderer.dropdown([
             renderer.buttonGroup([
               renderer.button({
-                contents: '<i class="fa fa-align-left"></i>',
+                contents: '<i class="fa fa-align-left"/>',
                 click: this.createInvokeHandler('editor.justifyLeft')
               }),
               renderer.button({
-                contents: '<i class="fa fa-align-center"></i>',
+                contents: '<i class="fa fa-align-center"/>',
                 click: this.createInvokeHandler('editor.justifyCenter')
               }),
               renderer.button({
-                contents: '<i class="fa fa-align-right"></i>',
+                contents: '<i class="fa fa-align-right"/>',
                 click: this.createInvokeHandler('editor.justifyRight')
               }),
               renderer.button({
-                contents: '<i class="fa fa-align-justify"></i>',
+                contents: '<i class="fa fa-align-justify"/>',
                 click: this.createInvokeHandler('editor.justifyFull')
               })
             ], {
@@ -313,11 +313,11 @@ define([
             }),
             renderer.buttonGroup([
               renderer.button({
-                contents: '<i class="fa fa-outdent"></i>',
+                contents: '<i class="fa fa-outdent"/>',
                 click: this.createInvokeHandler('editor.outdent')
               }),
               renderer.button({
-                contents: '<i class="fa fa-indent"></i>',
+                contents: '<i class="fa fa-indent"/>',
                 click: this.createInvokeHandler('editor.indent')
               })
             ], {
@@ -356,9 +356,9 @@ define([
           className: 'note-table',
           items: [
             '<div class="note-dimension-picker">',
-            '  <div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>',
-            '  <div class="note-dimension-picker-highlighted"></div>',
-            '  <div class="note-dimension-picker-unhighlighted"></div>',
+            '  <div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>',
+            '  <div class="note-dimension-picker-highlighted"/>',
+            '  <div class="note-dimension-picker-unhighlighted"/>',
             '</div>',
             '<div class="note-dimension-display">1 x 1</div>'
           ].join('')
@@ -375,6 +375,21 @@ define([
           }).on('mousemove', self.tableMoveHandler);
         }
       }).build());
+
+      $toolbar.append(renderer.buttonGroup([
+        renderer.button({
+          contents: '<i class="fa fa-link"/>',
+          click: this.createInvokeHandler('linkDialog.show')
+        }),
+        renderer.button({
+          contents: '<i class="fa fa-picture-o"/>',
+          click: this.createInvokeHandler('imageDialog.show')
+        }),
+        renderer.button({
+          contents: '<i class="fa fa-minus"/>',
+          click: this.createInvokeHandler('editor.insertHorizontalRule')
+        })
+      ]).build());
 
       this.updateCurrentStyle();
     };
