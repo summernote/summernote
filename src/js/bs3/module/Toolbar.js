@@ -120,6 +120,10 @@ define([
       $dimensionDisplay.html(dim.c + ' x ' + dim.r);
     };
 
+    this.updateFullscreen = function (isFullscreen) {
+      $toolbar.find('.btn-fullscreen').toggleClass('active', isFullscreen);
+    };
+
     this.initialize = function () {
       $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
         self.updateCurrentStyle();
@@ -388,6 +392,17 @@ define([
         ui.button({
           contents: '<i class="fa fa-minus"/>',
           click: this.createInvokeHandler('editor.insertHorizontalRule')
+        })
+      ]).render());
+
+      $toolbar.append(ui.buttonGroup([
+        ui.button({
+          className: 'btn-fullscreen',
+          contents: '<i class="fa fa-arrows-alt"/>',
+          click: this.createInvokeHandler('fullscreen.toggle')
+        }),
+        ui.button({
+          contents: '<i class="fa fa-code"/>'
         })
       ]).render());
 

@@ -122,6 +122,7 @@ define([
         editor: $editor,
         toolbar: $editor.find('.note-toolbar'),
         editable: $editor.find('.note-editable'),
+        codable: $editor.find('.note-codable'),
         statusbar: $editor.find('.note-statusbar')
       };
     }
