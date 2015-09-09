@@ -18,9 +18,6 @@ define([
    * @class Codeview
    */
   var Codeview = function (summernote) {
-    var self = this;
-    var ui = $.summernote.ui;
-
     var $editor = summernote.layoutInfo.editor;
     var $editable = summernote.layoutInfo.editable;
     var $codable = summernote.layoutInfo.codable;
@@ -83,10 +80,8 @@ define([
 
     /**
      * deactivate code view
-     *
-     * @param {Object} layoutInfo
      */
-    this.deactivate = function (layoutInfo) {
+    this.deactivate = function () {
       // deactivate CodeMirror as codable
       if (agent.hasCodeMirror) {
         var cmEditor = $codable.data('cmEditor');

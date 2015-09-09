@@ -2,9 +2,6 @@ define([
   'jquery'
 ], function ($) {
   var Fullscreen = function (summernote) {
-    var self = this;
-    var ui = $.summernote.ui;
-
     var $editor = summernote.layoutInfo.editor;
     var $toolbar = summernote.layoutInfo.toolbar;
     var $editable = summernote.layoutInfo.editable;
