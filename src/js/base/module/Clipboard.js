@@ -1,13 +1,17 @@
 define([
-  'summernote/core/list',
-  'summernote/core/dom',
-  'summernote/core/key',
-  'summernote/core/agent'
+  'summernote/base/core/list',
+  'summernote/base/core/dom',
+  'summernote/base/core/key',
+  'summernote/base/core/agent'
 ], function (list, dom, key, agent) {
-  var Clipboard = function (handler) {
+  var Clipboard = function (summernote) {
+    var self = this;
+    var ui = $.summernote.ui;
+
+    var $editable = summernote.layoutInfo.editable;
     var $paste;
 
-    this.attach = function (layoutInfo) {
+    this.initialize = function () {
       // [workaround] getting image from clipboard
       //  - IE11 and Firefox: CTRL+v hook
       //  - Webkit: event.clipboardData
@@ -18,25 +22,24 @@ define([
           opacity : 0
         });
 
-        layoutInfo.editable().on('keydown', function (e) {
+        $editable.on('keydown', function (e) {
           if (e.ctrlKey && e.keyCode === key.code.V) {
-            handler.invoke('saveRange', layoutInfo.editable());
+            summernote.invoke('saveRange', $editable.editable());
             $paste.focus();
 
             setTimeout(function () {
-              pasteByHook(layoutInfo);
+              self.pasteByHook();
             }, 0);
           }
         });
 
-        layoutInfo.editable().before($paste);
+        $editable.before($paste);
       } else {
-        layoutInfo.editable().on('paste', pasteByEvent);
+        $editable.on('paste', this.pasteByEvent);
       }
     };
 
-    var pasteByHook = function (layoutInfo) {
-      var $editable = layoutInfo.editable();
+    this.pasteByHook = function () {
       var node = $paste[0].firstChild;
 
       if (dom.isImg(node)) {
@@ -50,16 +53,16 @@ define([
         var blob = new Blob([array], { type : 'image/png' });
         blob.name = 'clipboard.png';
 
-        handler.invoke('restoreRange', $editable);
-        handler.invoke('focus', $editable);
-        handler.insertImages(layoutInfo, [blob]);
+        summernote.invoke('restoreRange', $editable);
+        summernote.invoke('focus', $editable);
+        summernote.invoke('imageDialog.insertImages', [[blob]]);
       } else {
         var pasteContent = $('<div />').html($paste.html()).html();
-        handler.invoke('restoreRange', $editable);
-        handler.invoke('focus', $editable);
+        summernote.invoke('restoreRange', $editable);
+        summernote.invoke('focus', $editable);
 
         if (pasteContent) {
-          handler.invoke('pasteHTML', $editable, pasteContent);
+          summernote.invoke('pasteHTML', $editable, pasteContent);
         }
       }
 
@@ -71,17 +74,14 @@ define([
      *
      * @param {Event} event
      */
-    var pasteByEvent = function (event) {
+    this.pasteByEvent = function (event) {
       var clipboardData = event.originalEvent.clipboardData;
-      var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
-      var $editable = layoutInfo.editable();
-
       if (clipboardData && clipboardData.items && clipboardData.items.length) {
         var item = list.head(clipboardData.items);
         if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
-          handler.insertImages(layoutInfo, [item.getAsFile()]);
+          summernote.invoke('imageDialog.insertImages', [[item.getAsFile()]]);
         }
-        handler.invoke('editor.afterCommand', $editable);
+        summernote.invoke('editor.afterCommand', $editable);
       }
     };
   };

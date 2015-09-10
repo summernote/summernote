@@ -126,6 +126,23 @@ define([
 
     this.updateCodeview = function (isCodeview) {
       $toolbar.find('.btn-codeview').toggleClass('active', isCodeview);
+      if (isCodeview) {
+        this.deactivate();
+      } else {
+        this.activate();
+      }
+    };
+
+    this.activate = function () {
+      $toolbar.find('button')
+              .not('.btn-codeview')
+              .removeClass('disabled');
+    };
+
+    this.deactivate = function () {
+      $toolbar.find('button')
+              .not('.btn-codeview')
+              .addClass('disabled');
     };
 
     this.initialize = function () {
