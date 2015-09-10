@@ -6,7 +6,6 @@ define([
 ], function (list, dom, key, agent) {
   var Clipboard = function (summernote) {
     var self = this;
-    var ui = $.summernote.ui;
 
     var $editable = summernote.layoutInfo.editable;
     var $paste;

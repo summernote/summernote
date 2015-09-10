@@ -1,48 +1,49 @@
-define([
-  'summernote/core/dom'
-], function (dom) {
-  var DragAndDrop = function (handler) {
+define(function () {
+  var Dropzone = function (summernote) {
+    var ui = $.summernote.ui;
+
     var $document = $(document);
+    var $editor = summernote.layoutInfo.editor;
+    var $editable = summernote.layoutInfo.editable;
+    var options = summernote.options;
+
+    var $dropzone = $([
+      '<div class="note-dropzone">',
+      '  <div class="note-dropzone-message"/>',
+      '</div>'
+    ].join('')).prependTo($editor);
 
     /**
      * attach Drag and Drop Events
-     *
-     * @param {Object} layoutInfo - layout Informations
-     * @param {Object} options
      */
-    this.attach = function (layoutInfo, options) {
+    this.initialize = function () {
       if (options.airMode || options.disableDragAndDrop) {
         // prevent default drop event
         $document.on('drop', function (e) {
           e.preventDefault();
         });
       } else {
-        this.attachDragAndDropEvent(layoutInfo, options);
+        this.attachDragAndDropEvent();
       }
     };
 
     /**
      * attach Drag and Drop Events
-     *
-     * @param {Object} layoutInfo - layout Informations
-     * @param {Object} options
      */
-    this.attachDragAndDropEvent = function (layoutInfo, options) {
+    this.attachDragAndDropEvent = function () {
       var collection = $(),
-          $editor = layoutInfo.editor(),
-          $dropzone = layoutInfo.dropzone(),
           $dropzoneMessage = $dropzone.find('.note-dropzone-message');
 
       // show dropzone on dragenter when dragging a object to document
       // -but only if the editor is visible, i.e. has a positive width and height
       $document.on('dragenter', function (e) {
-        var isCodeview = handler.invoke('codeview.isActivated', layoutInfo);
+        var isCodeview = summernote.invoke('codeview.isActivated');
         var hasEditorSize = $editor.width() > 0 && $editor.height() > 0;
         if (!isCodeview && !collection.length && hasEditorSize) {
           $editor.addClass('dragover');
           $dropzone.width($editor.width());
           $dropzone.height($editor.height());
-          $dropzoneMessage.text(options.langInfo.image.dragImageHere);
+          $dropzoneMessage.text('drag image here');
         }
         collection = collection.add(e.target);
       }).on('dragleave', function (e) {
@@ -58,35 +59,31 @@ define([
       // change dropzone's message on hover.
       $dropzone.on('dragenter', function () {
         $dropzone.addClass('hover');
-        $dropzoneMessage.text(options.langInfo.image.dropImage);
+        $dropzoneMessage.text('drop image');
       }).on('dragleave', function () {
         $dropzone.removeClass('hover');
-        $dropzoneMessage.text(options.langInfo.image.dragImageHere);
+        $dropzoneMessage.text('drag image here');
       });
 
       // attach dropImage
       $dropzone.on('drop', function (event) {
-
         var dataTransfer = event.originalEvent.dataTransfer;
-        var layoutInfo = dom.makeLayoutInfo(event.currentTarget || event.target);
 
         if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
           event.preventDefault();
-          layoutInfo.editable().focus();
-          handler.insertImages(layoutInfo, dataTransfer.files);
+          $editable.focus();
+          summernote.invoke('imageDialog.insertImages', [dataTransfer.files]);
         } else {
-          var insertNodefunc = function () {
-            layoutInfo.holder().summernote('insertNode', this);
-          };
-
           for (var i = 0, len = dataTransfer.types.length; i < len; i++) {
             var type = dataTransfer.types[i];
             var content = dataTransfer.getData(type);
 
             if (type.toLowerCase().indexOf('text') > -1) {
-              layoutInfo.holder().summernote('pasteHTML', content);
+              summernote.invoke('editor.pasteHTML', [content]);
             } else {
-              $(content).each(insertNodefunc);
+              $(content).each(function () {
+                summernote.invoke('editor.insertNode', this);
+              });
             }
           }
         }
@@ -94,5 +91,5 @@ define([
     };
   };
 
-  return DragAndDrop;
+  return Dropzone;
 });
