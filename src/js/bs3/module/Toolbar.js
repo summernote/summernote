@@ -5,7 +5,7 @@ define([
 ], function ($, list, agent) {
   var Toolbar = function (summernote) {
     var self = this;
-    var renderer = $.summernote.renderer;
+    var ui = $.summernote.ui;
 
     var $note = summernote.layoutInfo.note;
     var $toolbar = summernote.layoutInfo.toolbar;
@@ -120,13 +120,21 @@ define([
       $dimensionDisplay.html(dim.c + ' x ' + dim.r);
     };
 
+    this.updateFullscreen = function (isFullscreen) {
+      $toolbar.find('.btn-fullscreen').toggleClass('active', isFullscreen);
+    };
+
+    this.updateCodeview = function (isCodeview) {
+      $toolbar.find('.btn-codeview').toggleClass('active', isCodeview);
+    };
+
     this.initialize = function () {
       $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
         self.updateCurrentStyle();
       });
 
-      $toolbar.append(renderer.buttonGroup([
-        renderer.button({
+      $toolbar.append(ui.buttonGroup([
+        ui.button({
           className: 'dropdown-toggle',
           contents: '<i class="fa fa-magic" /> <span class="caret" />',
           tooltip: 'Style',
@@ -134,41 +142,41 @@ define([
             toggle: 'dropdown'
           }
         }),
-        renderer.dropdown({
+        ui.dropdown({
           className: 'dropdown-style',
           items: options.styleTags,
           click: this.createInvokeHandler('editor.formatBlock')
         })
-      ]).build());
+      ]).render());
 
-      $toolbar.append(renderer.buttonGroup([
-        renderer.button({
+      $toolbar.append(ui.buttonGroup([
+        ui.button({
           className: 'note-btn-bold',
           contents: '<i class="fa fa-bold" />',
           tooltip: 'Bold (⌘+B)',
           click: this.createInvokeHandler('editor.bold')
         }),
-        renderer.button({
+        ui.button({
           className: 'note-btn-italic',
           contents: '<i class="fa fa-italic" />',
           tooltip: 'Italic (⌘+I)',
           click: this.createInvokeHandler('editor.italic')
         }),
-        renderer.button({
+        ui.button({
           className: 'note-btn-underline',
           contents: '<i class="fa fa-underline" />',
           tooltip: 'Underline (⌘+U)',
           click: this.createInvokeHandler('editor.underline')
         }),
-        renderer.button({
+        ui.button({
           contents: '<i class="fa fa-eraser" />',
           tooltip: 'Remove Font Style (⌘+\\)',
           click: this.createInvokeHandler('editor.removeFormat')
         })
-      ]).build());
+      ]).render());
 
-      $toolbar.append(renderer.buttonGroup([
-        renderer.button({
+      $toolbar.append(ui.buttonGroup([
+        ui.button({
           className: 'dropdown-toggle',
           contents: '<span class="note-current-fontname" /> <span class="caret" />',
           tooltip: 'Font Family',
@@ -176,7 +184,7 @@ define([
             toggle: 'dropdown'
           }
         }),
-        renderer.dropdownCheck({
+        ui.dropdownCheck({
           className: 'dropdown-fontname',
           items: options.fontNames.filter(function (name) {
             return agent.isFontInstalled(name) ||
@@ -184,10 +192,10 @@ define([
           }),
           click: this.createInvokeHandler('editor.fontName')
         })
-      ]).build());
+      ]).render());
 
-      $toolbar.append(renderer.buttonGroup([
-        renderer.button({
+      $toolbar.append(ui.buttonGroup([
+        ui.button({
           className: 'dropdown-toggle',
           contents: '<span class="note-current-fontsize" /> <span class="caret" />',
           tooltip: 'Font Size',
@@ -195,15 +203,15 @@ define([
             toggle: 'dropdown'
           }
         }),
-        renderer.dropdownCheck({
+        ui.dropdownCheck({
           className: 'dropdown-fontsize',
           items: options.fontSizes,
           click: this.createInvokeHandler('editor.fontSize')
         })
-      ]).build());
+      ]).render());
 
-      $toolbar.append(renderer.buttonGroup([
-        renderer.button({
+      $toolbar.append(ui.buttonGroup([
+        ui.button({
           contents: '<i class="fa fa-font note-recent-color"/>',
           tooltip: 'Recent Color',
           click: this.createInvokeHandler('editor.color'),
@@ -216,7 +224,7 @@ define([
             });
           }
         }),
-        renderer.button({
+        ui.button({
           className: 'dropdown-toggle',
           contents: '<span class="caret"/>',
           tooltip: 'More Color',
@@ -224,7 +232,7 @@ define([
             toggle: 'dropdown'
           }
         }),
-        renderer.dropdown({
+        ui.dropdown({
           items: [
             '<li>',
             '<div class="btn-group">',
@@ -242,10 +250,10 @@ define([
           callback: function ($dropdown) {
             $dropdown.find('.note-holder').each(function () {
               var $holder = $(this);
-              $holder.append(renderer.palette({
+              $holder.append(ui.palette({
                 colors: options.colors,
                 eventName: $holder.data('event')
-              }).build());
+              }).render());
             });
           },
           click: function (event) {
@@ -268,21 +276,21 @@ define([
         })
       ], {
         className: 'note-color'
-      }).build());
+      }).render());
 
-      $toolbar.append(renderer.buttonGroup([
-        renderer.button({
+      $toolbar.append(ui.buttonGroup([
+        ui.button({
           contents: '<i class="fa fa-list-ul"/>',
           tooltip: 'Unordered list (⌘+⇧+NUM7)',
           click: this.createInvokeHandler('editor.insertUnorderedList')
         }),
-        renderer.button({
+        ui.button({
           contents: '<i class="fa fa-list-ol"/>',
           tooltip: 'Ordered list (⌘+⇧+NUM8)',
           click: this.createInvokeHandler('editor.insertOrderedList')
         }),
-        renderer.buttonGroup([
-          renderer.button({
+        ui.buttonGroup([
+          ui.button({
             className: 'dropdown-toggle',
             contents: '<i class="fa fa-align-left"/> <span class="caret"/>',
             tooltip: 'More paragraph style',
@@ -290,34 +298,34 @@ define([
               toggle: 'dropdown'
             }
           }),
-          renderer.dropdown([
-            renderer.buttonGroup([
-              renderer.button({
-                contents: '<i class="fa fa-align-left"></i>',
+          ui.dropdown([
+            ui.buttonGroup([
+              ui.button({
+                contents: '<i class="fa fa-align-left"/>',
                 click: this.createInvokeHandler('editor.justifyLeft')
               }),
-              renderer.button({
-                contents: '<i class="fa fa-align-center"></i>',
+              ui.button({
+                contents: '<i class="fa fa-align-center"/>',
                 click: this.createInvokeHandler('editor.justifyCenter')
               }),
-              renderer.button({
-                contents: '<i class="fa fa-align-right"></i>',
+              ui.button({
+                contents: '<i class="fa fa-align-right"/>',
                 click: this.createInvokeHandler('editor.justifyRight')
               }),
-              renderer.button({
-                contents: '<i class="fa fa-align-justify"></i>',
+              ui.button({
+                contents: '<i class="fa fa-align-justify"/>',
                 click: this.createInvokeHandler('editor.justifyFull')
               })
             ], {
               className: 'note-align'
             }),
-            renderer.buttonGroup([
-              renderer.button({
-                contents: '<i class="fa fa-outdent"></i>',
+            ui.buttonGroup([
+              ui.button({
+                contents: '<i class="fa fa-outdent"/>',
                 click: this.createInvokeHandler('editor.outdent')
               }),
-              renderer.button({
-                contents: '<i class="fa fa-indent"></i>',
+              ui.button({
+                contents: '<i class="fa fa-indent"/>',
                 click: this.createInvokeHandler('editor.indent')
               })
             ], {
@@ -327,38 +335,38 @@ define([
         ])
       ], {
         className: 'note-para'
-      }).build());
+      }).render());
 
-      $toolbar.append(renderer.buttonGroup([
-        renderer.button({
+      $toolbar.append(ui.buttonGroup([
+        ui.button({
           className: 'dropdown-toggle',
           contents: '<i class="fa fa-text-height"/> <span class="caret"/>',
           data: {
             toggle: 'dropdown'
           }
         }),
-        renderer.dropdownCheck({
+        ui.dropdownCheck({
           items: options.lineHeights,
           className: 'dropdown-line-height',
           click: this.createInvokeHandler('editor.lineHeight')
         })
-      ]).build());
+      ]).render());
 
-      $toolbar.append(renderer.buttonGroup([
-        renderer.button({
+      $toolbar.append(ui.buttonGroup([
+        ui.button({
           className: 'dropdown-toggle',
           contents: '<i class="fa fa-table"/> <span class="caret"/>',
           data: {
             toggle: 'dropdown'
           }
         }),
-        renderer.dropdown({
+        ui.dropdown({
           className: 'note-table',
           items: [
             '<div class="note-dimension-picker">',
-            '  <div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>',
-            '  <div class="note-dimension-picker-highlighted"></div>',
-            '  <div class="note-dimension-picker-unhighlighted"></div>',
+            '  <div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>',
+            '  <div class="note-dimension-picker-highlighted"/>',
+            '  <div class="note-dimension-picker-unhighlighted"/>',
             '</div>',
             '<div class="note-dimension-display">1 x 1</div>'
           ].join('')
@@ -374,7 +382,35 @@ define([
             summernote.invoke('editor.insertTable', [$target.data('value')]);
           }).on('mousemove', self.tableMoveHandler);
         }
-      }).build());
+      }).render());
+
+      $toolbar.append(ui.buttonGroup([
+        ui.button({
+          contents: '<i class="fa fa-link"/>',
+          click: this.createInvokeHandler('linkDialog.show')
+        }),
+        ui.button({
+          contents: '<i class="fa fa-picture-o"/>',
+          click: this.createInvokeHandler('imageDialog.show')
+        }),
+        ui.button({
+          contents: '<i class="fa fa-minus"/>',
+          click: this.createInvokeHandler('editor.insertHorizontalRule')
+        })
+      ]).render());
+
+      $toolbar.append(ui.buttonGroup([
+        ui.button({
+          className: 'btn-fullscreen',
+          contents: '<i class="fa fa-arrows-alt"/>',
+          click: this.createInvokeHandler('fullscreen.toggle')
+        }),
+        ui.button({
+          className: 'btn-codeview',
+          contents: '<i class="fa fa-code"/>',
+          click: this.createInvokeHandler('codeview.toggle')
+        })
+      ]).render());
 
       this.updateCurrentStyle();
     };

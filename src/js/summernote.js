@@ -24,8 +24,8 @@ define([
     };
 
     this.initialize = function () {
-      var renderer = $.summernote.renderer;
-      this.layoutInfo = renderer.createLayout($note);
+      var ui = $.summernote.ui;
+      this.layoutInfo = ui.createLayout($note);
 
       Object.keys(this.options.modules).forEach(function (key) {
         var module = new self.options.modules[key](self);
@@ -64,7 +64,10 @@ define([
       var moduleName = splits[0];
       var methodName = splits[1];
 
-      return this.modules[moduleName][methodName].apply(this.modules[moduleName], args);
+      var module = this.modules[moduleName];
+      if (module) {
+        return module[methodName].apply(module, args);
+      }
     };
 
     return this.initialize();

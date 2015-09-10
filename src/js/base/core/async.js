@@ -14,14 +14,14 @@ define(function () {
      * read contents of file as representing URL
      *
      * @param {File} file
-     * @return {Promise} - then: sDataUrl
+     * @return {Promise} - then: dataUrl
      */
     var readFileAsDataURL = function (file) {
       return $.Deferred(function (deferred) {
         $.extend(new FileReader(), {
           onload: function (e) {
-            var sDataURL = e.target.result;
-            deferred.resolve(sDataURL);
+            var dataURL = e.target.result;
+            deferred.resolve(dataURL);
           },
           onerror: function () {
             deferred.reject(this);

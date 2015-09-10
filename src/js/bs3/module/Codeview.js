@@ -1,6 +1,6 @@
 define([
-  'summernote/core/agent',
-  'summernote/core/dom'
+  'summernote/base/core/agent',
+  'summernote/base/core/dom'
 ], function (agent, dom) {
 
   var CodeMirror;
@@ -17,61 +17,46 @@ define([
   /**
    * @class Codeview
    */
-  var Codeview = function (handler) {
+  var Codeview = function (summernote) {
+    var $editor = summernote.layoutInfo.editor;
+    var $editable = summernote.layoutInfo.editable;
+    var $codable = summernote.layoutInfo.codable;
+    var options = summernote.options;
 
-    this.sync = function (layoutInfo) {
-      var isCodeview = handler.invoke('codeview.isActivated', layoutInfo);
+    this.sync = function () {
+      var isCodeview = this.isActivated();
       if (isCodeview && agent.hasCodeMirror) {
-        layoutInfo.codable().data('cmEditor').save();
+        $codable.data('cmEditor').save();
       }
     };
 
     /**
-     * @param {Object} layoutInfo
      * @return {Boolean}
      */
-    this.isActivated = function (layoutInfo) {
-      var $editor = layoutInfo.editor();
+    this.isActivated = function () {
       return $editor.hasClass('codeview');
     };
 
     /**
      * toggle codeview
-     *
-     * @param {Object} layoutInfo
      */
-    this.toggle = function (layoutInfo) {
-      if (this.isActivated(layoutInfo)) {
-        this.deactivate(layoutInfo);
+    this.toggle = function () {
+      if (this.isActivated()) {
+        this.deactivate();
       } else {
-        this.activate(layoutInfo);
+        this.activate();
       }
     };
 
     /**
      * activate code view
-     *
-     * @param {Object} layoutInfo
      */
-    this.activate = function (layoutInfo) {
-      var $editor = layoutInfo.editor(),
-          $toolbar = layoutInfo.toolbar(),
-          $editable = layoutInfo.editable(),
-          $codable = layoutInfo.codable(),
-          $popover = layoutInfo.popover(),
-          $handle = layoutInfo.handle();
-
-      var options = $editor.data('options');
-
+    this.activate = function () {
       $codable.val(dom.html($editable, options.prettifyHtml));
       $codable.height($editable.height());
 
-      handler.invoke('toolbar.updateCodeview', $toolbar, true);
-      handler.invoke('popover.hide', $popover);
-      handler.invoke('handle.hide', $handle);
-
+      summernote.invoke('toolbar.updateCodeview', [true]);
       $editor.addClass('codeview');
-
       $codable.focus();
 
       // activate CodeMirror as codable
@@ -95,18 +80,8 @@ define([
 
     /**
      * deactivate code view
-     *
-     * @param {Object} layoutInfo
      */
-    this.deactivate = function (layoutInfo) {
-      var $holder = layoutInfo.holder(),
-          $editor = layoutInfo.editor(),
-          $toolbar = layoutInfo.toolbar(),
-          $editable = layoutInfo.editable(),
-          $codable = layoutInfo.codable();
-
-      var options = $editor.data('options');
-
+    this.deactivate = function () {
       // deactivate CodeMirror as codable
       if (agent.hasCodeMirror) {
         var cmEditor = $codable.data('cmEditor');
@@ -122,14 +97,12 @@ define([
       $editor.removeClass('codeview');
 
       if (isChange) {
-        handler.bindCustomEvent(
-          $holder, $editable.data('callbacks'), 'change'
-        )($editable.html(), $editable);
+        summernote.triggerEvent('change', [$editable.html(), $editable]);
       }
 
       $editable.focus();
 
-      handler.invoke('toolbar.updateCodeview', $toolbar, false);
+      summernote.invoke('toolbar.updateCodeview', [false]);
     };
   };
 

@@ -1,20 +1,19 @@
-define(function () {
-  var Fullscreen = function (handler) {
+define([
+  'jquery'
+], function ($) {
+  var Fullscreen = function (summernote) {
+    var $editor = summernote.layoutInfo.editor;
+    var $toolbar = summernote.layoutInfo.toolbar;
+    var $editable = summernote.layoutInfo.editable;
+    var $codable = summernote.layoutInfo.codable;
+
     var $window = $(window);
     var $scrollbar = $('html, body');
 
     /**
      * toggle fullscreen
-     *
-     * @param {Object} layoutInfo
      */
-    this.toggle = function (layoutInfo) {
-
-      var $editor = layoutInfo.editor(),
-          $toolbar = layoutInfo.toolbar(),
-          $editable = layoutInfo.editable(),
-          $codable = layoutInfo.codable();
-
+    this.toggle = function () {
       var resize = function (size) {
         $editable.css('height', size.h);
         $codable.css('height', size.h);
@@ -43,7 +42,7 @@ define(function () {
         $scrollbar.css('overflow', 'visible');
       }
 
-      handler.invoke('toolbar.updateFullscreen', $toolbar, isFullscreen);
+      summernote.invoke('toolbar.updateFullscreen', [isFullscreen]);
     };
   };
 
