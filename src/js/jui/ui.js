@@ -38,7 +38,7 @@ define([
         title: options.tooltip
       });
 
-      jui.create('ui.tooltip', $node, {
+      window.jui.create('ui.tooltip', $node, {
         position : 'bottom'
       });
 
@@ -66,7 +66,7 @@ define([
       $node.append(markup);
     }
 
-    jui.create('ui.dropdown', $node);
+    window.jui.create('ui.dropdown', $node);
   });
 
   var dropdownCheck = renderer.create('<div class="dropdown note-check">', function ($node, options) {
@@ -79,7 +79,7 @@ define([
       $node.append(markup);
     }
 
-    jui.create('ui.dropdown', $node);
+    window.jui.create('ui.dropdown', $node);
   });
 
   var palette = renderer.create('<div class="note-color-palette"/>', function ($node, options) {
@@ -103,7 +103,7 @@ define([
     }
     $node.html(contents.join(''));
 
-    jui.create('ui.tooltip', $node.find('.note-color-btn'), {
+    window.jui.create('ui.tooltip', $node.find('.note-color-btn'), {
       position : 'bottom'
     });
   });
@@ -126,7 +126,7 @@ define([
       $node.append($footer);
     }
 
-    jui.create('uix.window', $node, {
+    window.jui.create('uix.window', $node, {
       modal : true
     });
 
