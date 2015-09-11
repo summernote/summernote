@@ -2,10 +2,12 @@ require.config({
   baseUrl: 'src/js',
   paths: {
     jquery: '//code.jquery.com/jquery-2.1.4',
-    bootstrap: '//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap'
+    bootstrap: '//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap',
+    jui: '//rawgit.com/seogi1004/jui/develop/dist/jui'
   },
   shim: {
-    bootstrap: ['jquery']
+    bootstrap: ['jquery'],
+    jui : ['jquery']
   },
   packages: [{
     name: 'summernote',
@@ -38,5 +40,14 @@ require([
         });
       });
       break;
+    case 'jui':
+      require(['jui', 'summernote/jui/settings'], function (jui, settings) {
+        $.summernote = $.extend($.summernote, settings);
+        // initialize summernote
+        $('.summernote').summernote({
+          height: 300
+        });
+      });
+      break;    
   }
 });
