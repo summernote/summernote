@@ -17,7 +17,7 @@ require.config({
 require([
   'jquery',
   'summernote'
-], function ($, summernote) {
+], function ($) {
   // editor type setting
   switch ($('script[data-editor-type]').data('editor-type')) {
     case 'lite':
