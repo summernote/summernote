@@ -20,34 +20,38 @@ require([
   'jquery',
   'summernote'
 ], function ($) {
+  var requireByPromise = function (paths) {
+    return $.Deferred(function (deferred) {
+      require(paths, function () {
+        deferred.resolve.apply(this, arguments);
+      });
+    });
+  };
+
+  var promise = $.Deferred();
   // editor type setting
   switch ($('script[data-editor-type]').data('editor-type')) {
     case 'lite':
-      require(['summernote/lite/settings'], function (lite) {
+      promise = requireByPromise(['summernote/lite/settings']).then(function (lite) {
         $.summernote = $.extend($.summernote, lite);
-        // initialize summernote
-        $('.summernote').summernote({
-          height: 300
-        });
       });
       break;
     case 'bs3':
-      require(['bootstrap', 'summernote/bs3/settings'], function (bootstrap, bs3) {
+      promise = requireByPromise(['bootstrap', 'summernote/bs3/settings']).then(function (bootstrap, bs3) {
         $.summernote = $.extend($.summernote, bs3);
-        // initialize summernote
-        $('.summernote').summernote({
-          height: 300
-        });
       });
       break;
     case 'jui':
-      require(['jui', 'summernote/jui/settings'], function (jui, settings) {
-        $.summernote = $.extend($.summernote, settings);
-        // initialize summernote
-        $('.summernote').summernote({
-          height: 300
-        });
+      promise = requireByPromise(['jui', 'summernote/jui/settings']).then(function (j, jui) {
+        $.summernote = $.extend($.summernote, jui);
       });
       break;
   }
+
+  promise.then(function () {
+    // initialize summernote
+    $('.summernote').summernote({
+      height: 300
+    });
+  });
 });
