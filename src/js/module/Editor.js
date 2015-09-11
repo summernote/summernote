@@ -145,6 +145,29 @@ define([
     };
 
     /**
+    * @method reset
+    * Resets the history stack completely; reverting to an empty editor.
+    * @param {jQuery} $editable
+    */
+    this.reset = function ($editable) {
+        triggerOnBeforeChange($editable);
+        $editable.data('NoteHistory').reset();
+        triggerOnChange($editable);
+    };
+
+    /**
+    * @method rewind
+    * Rewinds the history stack back to the first snapshot taken.
+    * Leaves the stack intact, so that "Redo" can still be used.
+    * @param {jQuery} $editable
+    */
+    this.rewind = function ($editable) {
+        triggerOnBeforeChange($editable);
+        $editable.data('NoteHistory').rewind();
+        triggerOnChange($editable);
+    };
+
+    /**
      * @method undo
      * undo
      * @param {jQuery} $editable
