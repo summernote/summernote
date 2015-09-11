@@ -150,9 +150,9 @@ define([
     * @param {jQuery} $editable
     */
     this.reset = function ($editable) {
-        triggerOnBeforeChange($editable);
-        $editable.data('NoteHistory').reset();
-        triggerOnChange($editable);
+      triggerOnBeforeChange($editable);
+      $editable.data('NoteHistory').reset();
+      triggerOnChange($editable);
     };
 
     /**
