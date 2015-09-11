@@ -1,13 +1,16 @@
 define([
   'summernote/jui/ui',
   'summernote/base/module/Editor',
+  'summernote/base/module/Clipboard',
+  'summernote/base/module/Dropzone',
   'summernote/base/module/Codeview',
   'summernote/base/module/Statusbar',
   'summernote/base/module/Fullscreen',
+  'summernote/base/module/Handle',
   'summernote/jui/module/Toolbar',
   'summernote/jui/module/LinkDialog',
   'summernote/jui/module/ImageDialog'
-], function (ui, Editor, Codeview, Statusbar, Fullscreen, Toolbar, LinkDialog, ImageDialog) {
+], function (ui, Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle, Toolbar, LinkDialog, ImageDialog) {
   var settings = {
     version: '@VERSION',
     ui: ui,
@@ -15,6 +18,9 @@ define([
     options: {
       modules: {
         'editor': Editor,
+        'clipboard': Clipboard,
+        'dropzone': Dropzone,
+        'handle': Handle,
         'toolbar': Toolbar,
         'linkDialog': LinkDialog,
         'imageDialog': ImageDialog,

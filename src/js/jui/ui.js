@@ -2,6 +2,7 @@ define([
   'summernote/base/renderer'
 ], function (renderer) {
 
+
   $.fn.jui = function () {
     var arr = Array.prototype.slice.call(arguments, 0);
     var method = arr.shift();
@@ -162,6 +163,7 @@ define([
         note: $note,
         editor: $editor,
         toolbar: $editor.find('.note-toolbar'),
+        editingArea: $editor.find('.note-editing-area'),
         editable: $editor.find('.note-editable'),
         codable: $editor.find('.note-codable'),
         statusbar: $editor.find('.note-statusbar')
