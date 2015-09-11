@@ -48,6 +48,6 @@ require([
           height: 300
         });
       });
-      break;    
+      break;
   }
 });

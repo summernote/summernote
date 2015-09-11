@@ -2,12 +2,12 @@ define([
   'summernote/jui/ui',
   'summernote/base/module/Editor',
   'summernote/base/module/Codeview',
+  'summernote/base/module/Statusbar',
+  'summernote/base/module/Fullscreen',
   'summernote/jui/module/Toolbar',
-  'summernote/jui/module/Statusbar',
   'summernote/jui/module/LinkDialog',
-  'summernote/jui/module/ImageDialog',
-  'summernote/jui/module/Fullscreen'
-], function (ui, Editor, Codeview, Toolbar, Statusbar, LinkDialog, ImageDialog, Fullscreen) {
+  'summernote/jui/module/ImageDialog'
+], function (ui, Editor, Codeview, Statusbar, Fullscreen, Toolbar, LinkDialog, ImageDialog) {
   var settings = {
     version: '@VERSION',
     ui: ui,
