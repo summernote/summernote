@@ -35,16 +35,16 @@ define(['summernote/core/range'], function (range) {
     */
     this.rewind = function () {
 
-        // Create snap shot if not yet recorded
-        if ($editable.html() !== stack[stackOffset].contents) {
-            this.recordUndo();
-        }
+      // Create snap shot if not yet recorded
+      if ($editable.html() !== stack[stackOffset].contents) {
+        this.recordUndo();
+      }
 
-        // Return to the first available snapshot.
-        stackOffset = 0;
+      // Return to the first available snapshot.
+      stackOffset = 0;
 
-        // Apply that snapshot.
-        applySnapshot(stack[stackOffset]);
+      // Apply that snapshot.
+      applySnapshot(stack[stackOffset]);
 
     };
 
@@ -55,17 +55,17 @@ define(['summernote/core/range'], function (range) {
     */
     this.reset = function () {
 
-        // Clear the stack.
-        stack = [];
+      // Clear the stack.
+      stack = [];
 
-        // Restore stackOffset to its original value.
-        stackOffset = -1;
+      // Restore stackOffset to its original value.
+      stackOffset = -1;
 
-        // Clear the editable area.
-        $editable.html('');
+      // Clear the editable area.
+      $editable.html('');
 
-        // Record our first snapshot (of nothing).
-        this.recordUndo();
+      // Record our first snapshot (of nothing).
+      this.recordUndo();
 
     };
 

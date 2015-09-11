@@ -162,16 +162,16 @@ define([
     * @param {jQuery} $editable
     */
     this.rewind = function ($editable) {
-        triggerOnBeforeChange($editable);
-        $editable.data('NoteHistory').rewind();
-        triggerOnChange($editable);
+      triggerOnBeforeChange($editable);
+      $editable.data('NoteHistory').rewind();
+      triggerOnChange($editable);
     };
 
     /**
-     * @method undo
-     * undo
-     * @param {jQuery} $editable
-     */
+    * @method undo
+    * undo
+    * @param {jQuery} $editable
+    */
     this.undo = function ($editable) {
       triggerOnBeforeChange($editable);
       $editable.data('NoteHistory').undo();
