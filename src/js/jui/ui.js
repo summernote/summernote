@@ -72,7 +72,7 @@ define([
 
   var dropdownCheck = renderer.create('<div class="dropdown note-check">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
-      return '<li><a href="#" data-value="' + item + '"><i class="fa fa-check" /> ' + item + '</a></li>';
+      return '<li><a href="#" data-value="' + item + '"><i class="icon-check" /> ' + item + '</a></li>';
     }).join('') : options.items;
 
     if (markup && markup !== '') {
