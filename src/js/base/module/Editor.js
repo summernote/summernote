@@ -123,20 +123,14 @@ define([
      * @method currentStyle
      *
      * current style
-     *
-     * @param {Node} target
      * @return {Object|Boolean} unfocus
      */
-    this.currentStyle = function (target) {
+    this.currentStyle = function () {
       var rng = range.create();
       if (rng) {
         rng = rng.normalize();
       }
-      var styleInfo = rng ? style.current(rng) : style.fromNode($editable);
-      if (dom.isImg(target)) {
-        styleInfo.image = target;
-      }
-      return styleInfo;
+      return rng ? style.current(rng) : style.fromNode($editable);
     };
 
     /**

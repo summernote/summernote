@@ -121,6 +121,7 @@ define([
         note: $note,
         editor: $editor,
         toolbar: $editor.find('.note-toolbar'),
+        editingArea: $editor.find('.note-editing-area'),
         editable: $editor.find('.note-editable'),
         codable: $editor.find('.note-codable'),
         statusbar: $editor.find('.note-statusbar')
