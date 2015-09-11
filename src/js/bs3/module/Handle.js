@@ -7,9 +7,7 @@ define([
     var $document = $(document);
 
     var $note = summernote.layoutInfo.note;
-    var $editor = summernote.layoutInfo.editor;
     var $editingArea = summernote.layoutInfo.editingArea;
-    var $editable = summernote.layoutInfo.editable;
     var options = summernote.options;
 
     var $handle = $([
@@ -23,7 +21,7 @@ define([
       (options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing'),
       ' note-control-se"></div>',
       (options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>'),
-      '</div>', 
+      '</div>',
       '</div>'
     ].join(''));
 
