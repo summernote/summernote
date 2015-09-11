@@ -1,7 +1,5 @@
 define(function () {
   var Dropzone = function (summernote) {
-    var ui = $.summernote.ui;
-
     var $document = $(document);
     var $editor = summernote.layoutInfo.editor;
     var $editable = summernote.layoutInfo.editable;
@@ -74,18 +72,17 @@ define(function () {
           $editable.focus();
           summernote.invoke('imageDialog.insertImages', [dataTransfer.files]);
         } else {
-          for (var i = 0, len = dataTransfer.types.length; i < len; i++) {
-            var type = dataTransfer.types[i];
+          $.each(dataTransfer.types, function (idx, type) {
             var content = dataTransfer.getData(type);
 
             if (type.toLowerCase().indexOf('text') > -1) {
               summernote.invoke('editor.pasteHTML', [content]);
             } else {
               $(content).each(function () {
-                summernote.invoke('editor.insertNode', this);
+                summernote.invoke('editor.insertNode', [this]);
               });
             }
-          }
+          });
         }
       }).on('dragover', false); // prevent default dragover event
     };
