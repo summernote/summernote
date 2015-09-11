@@ -40,7 +40,9 @@ define([
       });
 
       window.jui.create('ui.tooltip', $node, {
-        position : 'bottom'
+        position : 'bottom',
+        showType : 'mouseenter',
+        hideType : 'mouseleave'
       });
 
     }
@@ -105,7 +107,9 @@ define([
     $node.html(contents.join(''));
 
     window.jui.create('ui.tooltip', $node.find('.note-color-btn'), {
-      position : 'bottom'
+      position : 'bottom',
+      showType : 'mouseenter',
+      hideType : 'mouseleave'
     });
   });
 
