@@ -6,7 +6,7 @@ define([
   'summernote/base/module/Codeview',
   'summernote/base/module/Statusbar',
   'summernote/base/module/Fullscreen',
-  'summernote/bs3/module/Handle',
+  'summernote/base/module/Handle',
   'summernote/bs3/module/Toolbar',
   'summernote/bs3/module/LinkDialog',
   'summernote/bs3/module/ImageDialog'
