@@ -16,23 +16,27 @@ require.config({
 
 require([
   'jquery',
-  'bootstrap',
-  'summernote',
-  'summernote/lite/settings',
-  'summernote/bs3/settings'
-], function ($, bootstrap, summernote, lite, bs3) {
+  'summernote'
+], function ($, summernote) {
   // editor type setting
   switch ($('script[data-editor-type]').data('editor-type')) {
     case 'lite':
-      $.summernote = $.extend($.summernote, lite);
+      require(['summernote/lite/settings'], function (bs3) {
+        $.summernote = $.extend($.summernote, bs3);
+        // initialize summernote
+        $('.summernote').summernote({
+          height: 300
+        });
+      });
       break;
     case 'bs3':
-      $.summernote = $.extend($.summernote, bs3);
+      require(['bootstrap', 'summernote/bs3/settings'], function (bootstrap, bs3) {
+        $.summernote = $.extend($.summernote, bs3);
+        // initialize summernote
+        $('.summernote').summernote({
+          height: 300
+        });
+      });
       break;
   }
-
-  // initialize summernote
-  $('.summernote').summernote({
-    height: 300
-  });
 });
