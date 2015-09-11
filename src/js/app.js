@@ -21,8 +21,8 @@ require([
   // editor type setting
   switch ($('script[data-editor-type]').data('editor-type')) {
     case 'lite':
-      require(['summernote/lite/settings'], function (bs3) {
-        $.summernote = $.extend($.summernote, bs3);
+      require(['summernote/lite/settings'], function (lite) {
+        $.summernote = $.extend($.summernote, lite);
         // initialize summernote
         $('.summernote').summernote({
           height: 300
