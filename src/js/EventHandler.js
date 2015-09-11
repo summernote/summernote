@@ -117,6 +117,7 @@ define([
         bindCustomEvent($holder, callbacks, 'image.upload')(files);
       // else insert Image as dataURL
       } else {
+        if (options.onInsertImages) options.onInsertImages(files);        
         $.each(files, function (idx, file) {
           var filename = file.name;
           if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
