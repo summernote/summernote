@@ -4,13 +4,13 @@ define([
   'summernote/base/module/Clipboard',
   'summernote/base/module/Dropzone',
   'summernote/base/module/Codeview',
+  'summernote/base/module/Statusbar',
   'summernote/bs3/module/Handle',
   'summernote/bs3/module/Toolbar',
-  'summernote/bs3/module/Statusbar',
   'summernote/bs3/module/LinkDialog',
   'summernote/bs3/module/ImageDialog',
   'summernote/bs3/module/Fullscreen'
-], function (ui, Editor, Clipboard, Dropzone, Codeview, Handle, Toolbar, Statusbar, LinkDialog, ImageDialog, Fullscreen) {
+], function (ui, Editor, Clipboard, Dropzone, Codeview, Statusbar, Handle, Toolbar, LinkDialog, ImageDialog, Fullscreen) {
   var settings = {
     version: '@VERSION',
     ui: ui,
