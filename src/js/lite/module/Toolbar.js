@@ -22,7 +22,7 @@ define(function () {
       $toolbar.append($btnGroup);
     };
 
-    this.destory = function () {
+    this.destroy = function () {
       $toolbar.children().remove();
     };
   };

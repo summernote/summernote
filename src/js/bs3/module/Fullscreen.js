@@ -25,7 +25,7 @@ define([
       $editor.toggleClass('fullscreen');
       var isFullscreen = $editor.hasClass('fullscreen');
       if (isFullscreen) {
-        $editable.data('orgheight', $editable.css('height'));
+        $editable.data('orgHeight', $editable.css('height'));
 
         $window.on('resize', function () {
           resize({
@@ -37,7 +37,7 @@ define([
       } else {
         $window.off('resize');
         resize({
-          h: $editable.data('orgheight')
+          h: $editable.data('orgHeight')
         });
         $scrollbar.css('overflow', 'visible');
       }

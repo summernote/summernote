@@ -11,140 +11,6 @@ define([
     var $toolbar = summernote.layoutInfo.toolbar;
     var options = summernote.options;
 
-    this.createInvokeHandler = function (namespace) {
-      return function (event) {
-        event.preventDefault();
-        var value = $(event.target).data('value');
-        summernote.invoke(namespace, [value]);
-      };
-    };
-
-    this.updateCurrentStyle = function () {
-      var styleInfo = summernote.invoke('editor.currentStyle');
-      self.updateBtnStates({
-        '.note-btn-bold': function () {
-          return styleInfo['font-bold'] === 'bold';
-        },
-        '.note-btn-italic': function () {
-          return styleInfo['font-italic'] === 'italic';
-        },
-        '.note-btn-underline': function () {
-          return styleInfo['font-underline'] === 'underline';
-        }
-      });
-
-      if (styleInfo['font-family']) {
-        var fontNames = styleInfo['font-family'].split(',').map(function (name) {
-          return name.replace(/[\'\"]/g, '')
-                     .replace(/\s+$/, '')
-                     .replace(/^\s+/, '');
-        });
-        var fontName = list.find(fontNames, function (name) {
-          return agent.isFontInstalled(name) ||
-                 list.contains(options.fontNamesIgnoreCheck, name);
-        });
-
-        $toolbar.find('.dropdown-fontname li a').each(function () {
-          // always compare string to avoid creating another func.
-          var isChecked = ($(this).data('value') + '') === (fontName + '');
-          this.className = isChecked ? 'checked' : '';
-        });
-        $toolbar.find('.note-current-fontname').text(fontName);
-      }
-
-      if (styleInfo['font-size']) {
-        var fontSize = styleInfo['font-size'];
-        $toolbar.find('.dropdown-fontsize li a').each(function () {
-          // always compare with string to avoid creating another func.
-          var isChecked = ($(this).data('value') + '') === (fontSize + '');
-          this.className = isChecked ? 'checked' : '';
-        });
-        $toolbar.find('.note-current-fontsize').text(fontSize);
-      }
-
-      if (styleInfo['line-height']) {
-        var lineHeight = styleInfo['line-height'];
-        $toolbar.find('.dropdown-line-height li a').each(function () {
-          // always compare with string to avoid creating another func.
-          var isChecked = ($(this).data('value') + '') === (lineHeight + '');
-          this.className = isChecked ? 'checked' : '';
-        });
-      }
-    };
-
-    this.updateBtnStates = function (infos) {
-      $.each(infos, function (selector, pred) {
-        $toolbar.find(selector).toggleClass('active', pred());
-      });
-    };
-
-    this.tableMoveHandler = function (event) {
-      var PX_PER_EM = 18;
-      var $picker = $(event.target.parentNode); // target is mousecatcher
-      var $dimensionDisplay = $picker.next();
-      var $catcher = $picker.find('.note-dimension-picker-mousecatcher');
-      var $highlighted = $picker.find('.note-dimension-picker-highlighted');
-      var $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
-
-      var posOffset;
-      // HTML5 with jQuery - e.offsetX is undefined in Firefox
-      if (event.offsetX === undefined) {
-        var posCatcher = $(event.target).offset();
-        posOffset = {
-          x: event.pageX - posCatcher.left,
-          y: event.pageY - posCatcher.top
-        };
-      } else {
-        posOffset = {
-          x: event.offsetX,
-          y: event.offsetY
-        };
-      }
-
-      var dim = {
-        c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
-        r: Math.ceil(posOffset.y / PX_PER_EM) || 1
-      };
-
-      $highlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });
-      $catcher.data('value', dim.c + 'x' + dim.r);
-
-      if (3 < dim.c && dim.c < options.insertTableMaxSize.col) {
-        $unhighlighted.css({ width: dim.c + 1 + 'em'});
-      }
-
-      if (3 < dim.r && dim.r < options.insertTableMaxSize.row) {
-        $unhighlighted.css({ height: dim.r + 1 + 'em'});
-      }
-
-      $dimensionDisplay.html(dim.c + ' x ' + dim.r);
-    };
-
-    this.updateFullscreen = function (isFullscreen) {
-      $toolbar.find('.btn-fullscreen').toggleClass('active', isFullscreen);
-    };
-
-    this.updateCodeview = function (isCodeview) {
-      $toolbar.find('.btn-codeview').toggleClass('active', isCodeview);
-      if (isCodeview) {
-        this.deactivate();
-      } else {
-        this.activate();
-      }
-    };
-
-    this.activate = function () {
-      $toolbar.find('button')
-              .not('.btn-codeview')
-              .removeClass('disabled');
-    };
-
-    this.deactivate = function () {
-      $toolbar.find('button')
-              .not('.btn-codeview')
-              .addClass('disabled');
-    };
-
     this.initialize = function () {
       $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
         self.updateCurrentStyle();
@@ -432,8 +298,142 @@ define([
       this.updateCurrentStyle();
     };
 
-    this.destory = function () {
+    this.destroy = function () {
       $toolbar.children().remove();
+    };
+
+    this.createInvokeHandler = function (namespace) {
+      return function (event) {
+        event.preventDefault();
+        var value = $(event.target).data('value');
+        summernote.invoke(namespace, [value]);
+      };
+    };
+
+    this.updateCurrentStyle = function () {
+      var styleInfo = summernote.invoke('editor.currentStyle');
+      self.updateBtnStates({
+        '.note-btn-bold': function () {
+          return styleInfo['font-bold'] === 'bold';
+        },
+        '.note-btn-italic': function () {
+          return styleInfo['font-italic'] === 'italic';
+        },
+        '.note-btn-underline': function () {
+          return styleInfo['font-underline'] === 'underline';
+        }
+      });
+
+      if (styleInfo['font-family']) {
+        var fontNames = styleInfo['font-family'].split(',').map(function (name) {
+          return name.replace(/[\'\"]/g, '')
+                     .replace(/\s+$/, '')
+                     .replace(/^\s+/, '');
+        });
+        var fontName = list.find(fontNames, function (name) {
+          return agent.isFontInstalled(name) ||
+                 list.contains(options.fontNamesIgnoreCheck, name);
+        });
+
+        $toolbar.find('.dropdown-fontname li a').each(function () {
+          // always compare string to avoid creating another func.
+          var isChecked = ($(this).data('value') + '') === (fontName + '');
+          this.className = isChecked ? 'checked' : '';
+        });
+        $toolbar.find('.note-current-fontname').text(fontName);
+      }
+
+      if (styleInfo['font-size']) {
+        var fontSize = styleInfo['font-size'];
+        $toolbar.find('.dropdown-fontsize li a').each(function () {
+          // always compare with string to avoid creating another func.
+          var isChecked = ($(this).data('value') + '') === (fontSize + '');
+          this.className = isChecked ? 'checked' : '';
+        });
+        $toolbar.find('.note-current-fontsize').text(fontSize);
+      }
+
+      if (styleInfo['line-height']) {
+        var lineHeight = styleInfo['line-height'];
+        $toolbar.find('.dropdown-line-height li a').each(function () {
+          // always compare with string to avoid creating another func.
+          var isChecked = ($(this).data('value') + '') === (lineHeight + '');
+          this.className = isChecked ? 'checked' : '';
+        });
+      }
+    };
+
+    this.updateBtnStates = function (infos) {
+      $.each(infos, function (selector, pred) {
+        $toolbar.find(selector).toggleClass('active', pred());
+      });
+    };
+
+    this.tableMoveHandler = function (event) {
+      var PX_PER_EM = 18;
+      var $picker = $(event.target.parentNode); // target is mousecatcher
+      var $dimensionDisplay = $picker.next();
+      var $catcher = $picker.find('.note-dimension-picker-mousecatcher');
+      var $highlighted = $picker.find('.note-dimension-picker-highlighted');
+      var $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
+
+      var posOffset;
+      // HTML5 with jQuery - e.offsetX is undefined in Firefox
+      if (event.offsetX === undefined) {
+        var posCatcher = $(event.target).offset();
+        posOffset = {
+          x: event.pageX - posCatcher.left,
+          y: event.pageY - posCatcher.top
+        };
+      } else {
+        posOffset = {
+          x: event.offsetX,
+          y: event.offsetY
+        };
+      }
+
+      var dim = {
+        c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
+        r: Math.ceil(posOffset.y / PX_PER_EM) || 1
+      };
+
+      $highlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });
+      $catcher.data('value', dim.c + 'x' + dim.r);
+
+      if (3 < dim.c && dim.c < options.insertTableMaxSize.col) {
+        $unhighlighted.css({ width: dim.c + 1 + 'em'});
+      }
+
+      if (3 < dim.r && dim.r < options.insertTableMaxSize.row) {
+        $unhighlighted.css({ height: dim.r + 1 + 'em'});
+      }
+
+      $dimensionDisplay.html(dim.c + ' x ' + dim.r);
+    };
+
+    this.updateFullscreen = function (isFullscreen) {
+      $toolbar.find('.btn-fullscreen').toggleClass('active', isFullscreen);
+    };
+
+    this.updateCodeview = function (isCodeview) {
+      $toolbar.find('.btn-codeview').toggleClass('active', isCodeview);
+      if (isCodeview) {
+        this.deactivate();
+      } else {
+        this.activate();
+      }
+    };
+
+    this.activate = function () {
+      $toolbar.find('button')
+              .not('.btn-codeview')
+              .removeClass('disabled');
+    };
+
+    this.deactivate = function () {
+      $toolbar.find('button')
+              .not('.btn-codeview')
+              .addClass('disabled');
     };
   };
 
