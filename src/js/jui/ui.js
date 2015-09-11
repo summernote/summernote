@@ -19,7 +19,7 @@ define([
   var editor = renderer.create('<div class="note-editor">');
   var toolbar = renderer.create('<div class="note-toolbar">');
   var editingArea = renderer.create('<div class="note-editing-area">');
-  var codable = renderer.create('<div class="note-codable">');
+  var codable = renderer.create('<textarea class="note-codable"/>');
   var editable = renderer.create('<div class="note-editable" contentEditable="true">');
   var statusbar = renderer.create([
     '<div class="note-statusbar">',
