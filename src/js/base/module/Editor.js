@@ -44,6 +44,8 @@ define([
         summernote.triggerEvent('mouseup', event);
       }).on('input', function (event) {
         summernote.triggerEvent('change', event);
+      }).on('scroll', function (event) {
+        summernote.triggerEvent('scroll', event);
       });
 
       if (options.height) {
@@ -121,6 +123,10 @@ define([
 
     this.saveTarget = function (node) {
       $editable.data('target', node);
+    };
+
+    this.clearTarget = function () {
+      $editable.removeData('target');
     };
 
     this.restoreTarget = function () {

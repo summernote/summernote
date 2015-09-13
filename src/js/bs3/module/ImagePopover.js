@@ -55,6 +55,8 @@ define([
     this.initialize = function () {
       $note.on('summernote.keyup summernote.mouseup summernote.change', function (customEvent, event) {
         self.update(event.target);
+      }).on('summernote.scroll', function () {
+        self.update(summernote.invoke('editor.restoreTarget'));
       });
     };
 

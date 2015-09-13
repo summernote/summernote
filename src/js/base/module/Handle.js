@@ -30,6 +30,8 @@ define([
     this.initialize = function () {
       $note.on('summernote.keyup summernote.mouseup summernote.change', function (customEvent, event) {
         self.update(event.target);
+      }).on('summernote.scroll', function () {
+        self.update(summernote.invoke('editor.restoreTarget'));
       });
 
       $handle.on('mousedown', function (event) {
@@ -82,6 +84,7 @@ define([
         var sizingText = imageSize.w + 'x' + imageSize.h;
         $selection.find('.note-control-selection-info').text(sizingText);
       } else {
+        summernote.invoke('editor.clearTarget');
         $selection.hide();
       }
     };
@@ -91,7 +94,7 @@ define([
      *
      * @param {jQuery} $handle
      */
-    this.hide = function ($handle) {
+    this.hide = function () {
       $handle.children().hide();
     };
   };
