@@ -33,19 +33,16 @@ define([
       });
     };
 
-    this.posFromPlaceholder = function (placeholder, isLeftTop) {
+    this.posFromPlaceholder = function (placeholder) {
       var $placeholder = $(placeholder);
       var pos = $placeholder.position();
-      var height = isLeftTop ? 0 : $placeholder.outerHeight(true); // include margin
+      var height = $placeholder.outerHeight(true); // include margin
 
       // popover below placeholder.
       return {
         left: pos.left,
         top: pos.top + height
       };
-    };
-
-    this.showPopover = function (pos) {
     };
 
     this.update = function (targetNode) {

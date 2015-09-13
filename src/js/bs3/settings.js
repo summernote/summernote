@@ -12,7 +12,11 @@ define([
   'summernote/bs3/module/LinkPopover',
   'summernote/bs3/module/ImageDialog',
   'summernote/bs3/module/ImagePopover'
-], function (ui, Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle, Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover) {
+], function (
+  ui,
+  Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle,
+  Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover
+) {
   var settings = {
     version: '@VERSION',
     ui: ui,
@@ -30,7 +34,7 @@ define([
         'linkDialog': LinkDialog,
         'linkPopover': LinkPopover,
         'imageDialog': ImageDialog,
-        'imagePopover': ImagePopover,
+        'imagePopover': ImagePopover
       },
 
       width: null,

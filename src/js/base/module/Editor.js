@@ -125,7 +125,7 @@ define([
 
     this.restoreTarget = function () {
       return $editable.data('target');
-    }
+    };
 
     /**
      * currentStyle
@@ -628,10 +628,8 @@ define([
 
     /**
      * remove media object
-     *
-     * @param {String} value - dummy argument (for keep interface)
      */
-    this.removeMedia = function (value) {
+    this.removeMedia = function () {
       beforeCommand();
       var $target = $(this.restoreTarget()).detach();
       summernote.triggerEvent('media.delete', [$target, $editable]);
