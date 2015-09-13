@@ -81,7 +81,7 @@ define([
     };
 
     /**
-     * @method createRange
+     * createRange
      *
      * create range
      * @return {WrappedRange}
@@ -92,7 +92,7 @@ define([
     };
 
     /**
-     * @method saveRange
+     * saveRange
      *
      * save current range
      *
@@ -107,7 +107,7 @@ define([
     };
 
     /**
-     * @method restoreRange
+     * restoreRange
      *
      * restore lately range
      */
@@ -119,8 +119,16 @@ define([
       }
     };
 
+    this.saveTarget = function (node) {
+      $editable.data('target', node);
+    };
+
+    this.restoreTarget = function () {
+      return $editable.data('target');
+    }
+
     /**
-     * @method currentStyle
+     * currentStyle
      *
      * current style
      * @return {Object|Boolean} unfocus
@@ -144,7 +152,7 @@ define([
     };
 
     /**
-     * @method undo
+     * undo
      * undo
      */
     this.undo = function () {
@@ -154,7 +162,7 @@ define([
     };
 
     /**
-     * @method redo
+     * redo
      * redo
      */
     this.redo = function () {
@@ -164,7 +172,7 @@ define([
     };
 
     /**
-     * @method beforeCommand
+     * beforeCommand
      * before command
      */
     var beforeCommand = this.beforeCommand = function () {
@@ -174,7 +182,7 @@ define([
     };
 
     /**
-     * @method afterCommand
+     * afterCommand
      * after command
      * @param {Boolean} isPreventTrigger
      */
@@ -204,7 +212,7 @@ define([
     /* jshint ignore:end */
 
     /**
-     * @method tab
+     * tab
      *
      * handle tab key
      */
@@ -220,7 +228,7 @@ define([
     };
 
     /**
-     * @method untab
+     * untab
      *
      * handle shift+tab key
      *
@@ -233,7 +241,7 @@ define([
     };
 
     /**
-     * @method insertParagraph
+     * insertParagraph
      *
      * insert paragraph
      */
@@ -244,7 +252,7 @@ define([
     };
 
     /**
-     * @method insertOrderedList
+     * insertOrderedList
      */
     this.insertOrderedList = function () {
       beforeCommand();
@@ -291,7 +299,7 @@ define([
     };
 
     /**
-     * @method insertNode
+     * insertNode
      * insert node
      * @param {Node} node
      */
@@ -570,10 +578,10 @@ define([
      * float me
      *
      * @param {String} value
-     * @param {jQuery} $target
      */
-    this.floatMe = function (value, $target) {
+    this.floatMe = function (value) {
       beforeCommand();
+      var $target = $(this.restoreTarget());
       $target.css('float', value);
       afterCommand();
     };
@@ -581,11 +589,11 @@ define([
     /**
      * resize overlay element
      * @param {String} value
-     * @param {jQuery} $target - target element
      */
-    this.resize = function (value, $target) {
+    this.resize = function (value) {
       beforeCommand();
 
+      var $target = $(this.restoreTarget());
       $target.css({
         width: value * 100 + '%',
         height: ''
@@ -622,12 +630,10 @@ define([
      * remove media object
      *
      * @param {String} value - dummy argument (for keep interface)
-     * @param {jQuery} $target - target element
      */
-    this.removeMedia = function (value, $target) {
+    this.removeMedia = function (value) {
       beforeCommand();
-      $target.detach();
-
+      var $target = $(this.restoreTarget()).detach();
       summernote.triggerEvent('media.delete', [$target, $editable]);
       afterCommand();
     };
