@@ -12,23 +12,13 @@ define([
    */
   var Summernote = function ($note, options) {
     var self = this;
+
+    var ui = $.summernote.ui;
     this.modules = {};
     this.layoutInfo = {};
     this.options = options;
 
-    this.triggerEvent = function () {
-      var namespace = list.head(arguments);
-      var args = list.tail(list.from(arguments));
-
-      var callback = this.options.callbacks[func.namespaceToCamel(namespace, 'on')];
-      if (callback) {
-        callback.apply($note[0], args);
-      }
-      $note.trigger('summernote.' + namespace, args);
-    };
-
     this.initialize = function () {
-      var ui = $.summernote.ui;
       this.layoutInfo = ui.createLayout($note);
 
       Object.keys(this.options.modules).forEach(function (key) {
@@ -48,6 +38,19 @@ define([
       Object.keys(this.modules).forEach(function (key) {
         self.removeModule(key);
       });
+
+      ui.removeLayout($note, this.layoutInfo);
+    };
+
+    this.triggerEvent = function () {
+      var namespace = list.head(arguments);
+      var args = list.tail(list.from(arguments));
+
+      var callback = this.options.callbacks[func.namespaceToCamel(namespace, 'on')];
+      if (callback) {
+        callback.apply($note[0], args);
+      }
+      $note.trigger('summernote.' + namespace, args);
     };
 
     this.removeLayout = function ($note) {
@@ -59,7 +62,9 @@ define([
     };
 
     this.removeModule = function (key) {
-      this.modules[key].destroy();
+      if (this.modules[key].destroy) {
+        this.modules[key].destroy();
+      }
       delete this.modules[key];
     };
 
@@ -75,12 +80,15 @@ define([
       var args = list.tail(list.from(arguments));
 
       var splits = namespace.split('.');
-      var moduleName = splits[0];
-      var methodName = splits[1];
+      var hasSeparator = splits.length > 1;
+      var moduleName = hasSeparator && list.head(splits);
+      var methodName = hasSeparator ? list.last(splits) : list.head(splits);
 
       var module = this.modules[moduleName];
-      if (module) {
+      if (module && module[methodName]) {
         return module[methodName].apply(module, args);
+      } else if (this[methodName]) {
+        return this[methodName].apply(this, args);
       }
     };
 

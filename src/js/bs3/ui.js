@@ -134,6 +134,12 @@ define([
         codable: $editor.find('.note-codable'),
         statusbar: $editor.find('.note-statusbar')
       };
+    },
+
+    removeLayout: function ($note, layoutInfo) {
+      $note.html(layoutInfo.editable.html());
+      layoutInfo.editor.remove();
+      $note.show();
     }
   };
 
