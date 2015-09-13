@@ -59,6 +59,13 @@ define([
       delete this.modules[key];
     };
 
+    this.createInvokeHandler = function (namespace, value) {
+      return function (event) {
+        event.preventDefault();
+        self.invoke(namespace, [value || $(event.target).data('value')]);
+      };
+    };
+
     this.invoke = function (namespace, args) {
       var splits = namespace.split('.');
       var moduleName = splits[0];

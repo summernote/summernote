@@ -91,6 +91,13 @@ define([
     ].join(''));
   });
 
+  var popover = renderer.create([
+    '<div class="popover bottom in">',
+    '  <div class="arrow"/>',
+    '  <div class="popover-content note-children-container"/>',
+    '</div>'
+  ].join(''));
+
   var ui = {
     editor: editor,
     toolbar: toolbar,
@@ -104,6 +111,7 @@ define([
     dropdownCheck: dropdownCheck,
     palette: palette,
     dialog: dialog,
+    popover: popover,
 
     createLayout: function ($note) {
       var $editor = ui.editor([

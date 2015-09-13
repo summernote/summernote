@@ -9,8 +9,9 @@ define([
   'summernote/base/module/Handle',
   'summernote/bs3/module/Toolbar',
   'summernote/bs3/module/LinkDialog',
-  'summernote/bs3/module/ImageDialog'
-], function (ui, Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle, Toolbar, LinkDialog, ImageDialog) {
+  'summernote/bs3/module/ImageDialog',
+  'summernote/bs3/module/Popover'
+], function (ui, Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle, Toolbar, LinkDialog, ImageDialog, Popover) {
   var settings = {
     version: '@VERSION',
     ui: ui,
@@ -20,13 +21,14 @@ define([
         'editor': Editor,
         'clipboard': Clipboard,
         'dropzone': Dropzone,
+        'codeview': Codeview,
+        'statusbar': Statusbar,
+        'fullscreen': Fullscreen,
         'handle': Handle,
         'toolbar': Toolbar,
-        'statusbar': Statusbar,
         'linkDialog': LinkDialog,
         'imageDialog': ImageDialog,
-        'fullscreen': Fullscreen,
-        'codeview': Codeview
+        'popover': Popover
       },
 
       width: null,

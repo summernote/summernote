@@ -21,8 +21,9 @@ define(function () {
       }
 
       if (children) {
+        var $container = $node.find('.note-children-container');
         children.forEach(function (child) {
-          child.render($node);
+          child.render($container.length ? $container : $node);
         });
       }
 
@@ -47,6 +48,9 @@ define(function () {
       return function () {
         var children = $.isArray(arguments[0]) ? arguments[0] : [];
         var options = typeof arguments[1] === 'object' ? arguments[1] : arguments[0];
+        if (options && options.children) {
+          children = options.children;
+        }
         return new Renderer(markup, children, options, callback);
       };
     }

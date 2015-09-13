@@ -19,7 +19,7 @@ define([
       $toolbar.append(ui.buttonGroup([
         ui.button({
           className: 'dropdown-toggle',
-          contents: '<i class="fa fa-magic" /> <span class="caret" />',
+          contents: '<i class="fa fa-magic"/> <span class="caret"/>',
           tooltip: 'Style',
           data: {
             toggle: 'dropdown'
@@ -28,40 +28,40 @@ define([
         ui.dropdown({
           className: 'dropdown-style',
           items: options.styleTags,
-          click: this.createInvokeHandler('editor.formatBlock')
+          click: summernote.createInvokeHandler('editor.formatBlock')
         })
       ]).render());
 
       $toolbar.append(ui.buttonGroup([
         ui.button({
           className: 'note-btn-bold',
-          contents: '<i class="fa fa-bold" />',
+          contents: '<i class="fa fa-bold"/>',
           tooltip: 'Bold (⌘+B)',
-          click: this.createInvokeHandler('editor.bold')
+          click: summernote.createInvokeHandler('editor.bold')
         }),
         ui.button({
           className: 'note-btn-italic',
-          contents: '<i class="fa fa-italic" />',
+          contents: '<i class="fa fa-italic"/>',
           tooltip: 'Italic (⌘+I)',
-          click: this.createInvokeHandler('editor.italic')
+          click: summernote.createInvokeHandler('editor.italic')
         }),
         ui.button({
           className: 'note-btn-underline',
-          contents: '<i class="fa fa-underline" />',
+          contents: '<i class="fa fa-underline"/>',
           tooltip: 'Underline (⌘+U)',
-          click: this.createInvokeHandler('editor.underline')
+          click: summernote.createInvokeHandler('editor.underline')
         }),
         ui.button({
-          contents: '<i class="fa fa-eraser" />',
+          contents: '<i class="fa fa-eraser"/>',
           tooltip: 'Remove Font Style (⌘+\\)',
-          click: this.createInvokeHandler('editor.removeFormat')
+          click: summernote.createInvokeHandler('editor.removeFormat')
         })
       ]).render());
 
       $toolbar.append(ui.buttonGroup([
         ui.button({
           className: 'dropdown-toggle',
-          contents: '<span class="note-current-fontname" /> <span class="caret" />',
+          contents: '<span class="note-current-fontname"/> <span class="caret"/>',
           tooltip: 'Font Family',
           data: {
             toggle: 'dropdown'
@@ -73,14 +73,14 @@ define([
             return agent.isFontInstalled(name) ||
                    list.contains(options.fontNamesIgnoreCheck, name);
           }),
-          click: this.createInvokeHandler('editor.fontName')
+          click: summernote.createInvokeHandler('editor.fontName')
         })
       ]).render());
 
       $toolbar.append(ui.buttonGroup([
         ui.button({
           className: 'dropdown-toggle',
-          contents: '<span class="note-current-fontsize" /> <span class="caret" />',
+          contents: '<span class="note-current-fontsize"/> <span class="caret"/>',
           tooltip: 'Font Size',
           data: {
             toggle: 'dropdown'
@@ -89,135 +89,139 @@ define([
         ui.dropdownCheck({
           className: 'dropdown-fontsize',
           items: options.fontSizes,
-          click: this.createInvokeHandler('editor.fontSize')
+          click: summernote.createInvokeHandler('editor.fontSize')
         })
       ]).render());
 
-      $toolbar.append(ui.buttonGroup([
-        ui.button({
-          contents: '<i class="fa fa-font note-recent-color"/>',
-          tooltip: 'Recent Color',
-          click: this.createInvokeHandler('editor.color'),
-          callback: function ($button) {
-            var $recentColor = $button.find('.note-recent-color');
-            $recentColor.css({
-              'background-color': 'yellow'
-            }).data('value', {
-              backColor: 'yellow'
-            });
-          }
-        }),
-        ui.button({
-          className: 'dropdown-toggle',
-          contents: '<span class="caret"/>',
-          tooltip: 'More Color',
-          data: {
-            toggle: 'dropdown'
-          }
-        }),
-        ui.dropdown({
-          items: [
-            '<li>',
-            '<div class="btn-group">',
-            '  <div class="note-palette-title">background color</div>',
-            '  <div class="note-color-reset" data-event="backColor" data-value="inherit">transparent</div>',
-            '  <div class="note-holder" data-event="backColor"/>',
-            '</div>',
-            '<div class="btn-group">',
-            '  <div class="note-palette-title">fore color</div>',
-            '  <div class="note-color-reset" data-event="foreColor" data-value="inherit">reset to default</div>',
-            '  <div class="note-holder" data-event="foreColor"/>',
-            '</div>',
-            '</li>'
-          ].join(''),
-          callback: function ($dropdown) {
-            $dropdown.find('.note-holder').each(function () {
-              var $holder = $(this);
-              $holder.append(ui.palette({
-                colors: options.colors,
-                eventName: $holder.data('event')
-              }).render());
-            });
-          },
-          click: function (event) {
-            var $button = $(event.target);
-            var eventName = $button.data('event');
-            var value = $button.data('value');
-
-            if (eventName && value) {
-              var key = eventName === 'backColor' ? 'background-color' : 'color';
-              var $color = $button.closest('.note-color').find('.note-recent-color');
-
-              var colorInfo = $color.data('value');
-              colorInfo[eventName] = value;
-              $color.data('value', colorInfo)
-                    .css(key, value);
-
-              summernote.invoke('editor.' + eventName, [value]);
+      $toolbar.append(ui.buttonGroup({
+        className: 'note-color',
+        children: [
+          ui.button({
+            contents: '<i class="fa fa-font note-recent-color"/>',
+            tooltip: 'Recent Color',
+            click: summernote.createInvokeHandler('editor.color'),
+            callback: function ($button) {
+              var $recentColor = $button.find('.note-recent-color');
+              $recentColor.css({
+                'background-color': 'yellow'
+              }).data('value', {
+                backColor: 'yellow'
+              });
             }
-          }
-        })
-      ], {
-        className: 'note-color'
-      }).render());
-
-      $toolbar.append(ui.buttonGroup([
-        ui.button({
-          contents: '<i class="fa fa-list-ul"/>',
-          tooltip: 'Unordered list (⌘+⇧+NUM7)',
-          click: this.createInvokeHandler('editor.insertUnorderedList')
-        }),
-        ui.button({
-          contents: '<i class="fa fa-list-ol"/>',
-          tooltip: 'Ordered list (⌘+⇧+NUM8)',
-          click: this.createInvokeHandler('editor.insertOrderedList')
-        }),
-        ui.buttonGroup([
+          }),
           ui.button({
             className: 'dropdown-toggle',
-            contents: '<i class="fa fa-align-left"/> <span class="caret"/>',
-            tooltip: 'More paragraph style',
+            contents: '<span class="caret"/>',
+            tooltip: 'More Color',
             data: {
               toggle: 'dropdown'
             }
           }),
-          ui.dropdown([
-            ui.buttonGroup([
-              ui.button({
-                contents: '<i class="fa fa-align-left"/>',
-                click: this.createInvokeHandler('editor.justifyLeft')
-              }),
-              ui.button({
-                contents: '<i class="fa fa-align-center"/>',
-                click: this.createInvokeHandler('editor.justifyCenter')
-              }),
-              ui.button({
-                contents: '<i class="fa fa-align-right"/>',
-                click: this.createInvokeHandler('editor.justifyRight')
-              }),
-              ui.button({
-                contents: '<i class="fa fa-align-justify"/>',
-                click: this.createInvokeHandler('editor.justifyFull')
-              })
-            ], {
-              className: 'note-align'
+          ui.dropdown({
+            items: [
+              '<li>',
+              '<div class="btn-group">',
+              '  <div class="note-palette-title">background color</div>',
+              '  <div class="note-color-reset" data-event="backColor" data-value="inherit">transparent</div>',
+              '  <div class="note-holder" data-event="backColor"/>',
+              '</div>',
+              '<div class="btn-group">',
+              '  <div class="note-palette-title">fore color</div>',
+              '  <div class="note-color-reset" data-event="foreColor" data-value="inherit">reset to default</div>',
+              '  <div class="note-holder" data-event="foreColor"/>',
+              '</div>',
+              '</li>'
+            ].join(''),
+            callback: function ($dropdown) {
+              $dropdown.find('.note-holder').each(function () {
+                var $holder = $(this);
+                $holder.append(ui.palette({
+                  colors: options.colors,
+                  eventName: $holder.data('event')
+                }).render());
+              });
+            },
+            click: function (event) {
+              var $button = $(event.target);
+              var eventName = $button.data('event');
+              var value = $button.data('value');
+
+              if (eventName && value) {
+                var key = eventName === 'backColor' ? 'background-color' : 'color';
+                var $color = $button.closest('.note-color').find('.note-recent-color');
+
+                var colorInfo = $color.data('value');
+                colorInfo[eventName] = value;
+                $color.data('value', colorInfo)
+                      .css(key, value);
+
+                summernote.invoke('editor.' + eventName, [value]);
+              }
+            }
+          })
+        ]
+      }).render());
+
+      $toolbar.append(ui.buttonGroup({
+        className: 'note-para',
+        children: [
+          ui.button({
+            contents: '<i class="fa fa-list-ul"/>',
+            tooltip: 'Unordered list (⌘+⇧+NUM7)',
+            click: summernote.createInvokeHandler('editor.insertUnorderedList')
+          }),
+          ui.button({
+            contents: '<i class="fa fa-list-ol"/>',
+            tooltip: 'Ordered list (⌘+⇧+NUM8)',
+            click: summernote.createInvokeHandler('editor.insertOrderedList')
+          }),
+          ui.buttonGroup([
+            ui.button({
+              className: 'dropdown-toggle',
+              contents: '<i class="fa fa-align-left"/> <span class="caret"/>',
+              tooltip: 'More paragraph style',
+              data: {
+                toggle: 'dropdown'
+              }
             }),
-            ui.buttonGroup([
-              ui.button({
-                contents: '<i class="fa fa-outdent"/>',
-                click: this.createInvokeHandler('editor.outdent')
+            ui.dropdown([
+              ui.buttonGroup({
+                className: 'note-align',
+                children: [
+                  ui.button({
+                    contents: '<i class="fa fa-align-left"/>',
+                    click: summernote.createInvokeHandler('editor.justifyLeft')
+                  }),
+                  ui.button({
+                    contents: '<i class="fa fa-align-center"/>',
+                    click: summernote.createInvokeHandler('editor.justifyCenter')
+                  }),
+                  ui.button({
+                    contents: '<i class="fa fa-align-right"/>',
+                    click: summernote.createInvokeHandler('editor.justifyRight')
+                  }),
+                  ui.button({
+                    contents: '<i class="fa fa-align-justify"/>',
+                    click: summernote.createInvokeHandler('editor.justifyFull')
+                  })
+                ]
               }),
-              ui.button({
-                contents: '<i class="fa fa-indent"/>',
-                click: this.createInvokeHandler('editor.indent')
+              ui.buttonGroup({
+                className: 'note-list',
+                children: [
+                  ui.button({
+                    contents: '<i class="fa fa-outdent"/>',
+                    click: summernote.createInvokeHandler('editor.outdent')
+                  }),
+                  ui.button({
+                    contents: '<i class="fa fa-indent"/>',
+                    click: summernote.createInvokeHandler('editor.indent')
+                  })
+                ]
               })
-            ], {
-              className: 'note-list'
-            })
+            ])
           ])
-        ])
-      ], {
-        className: 'note-para'
+        ]
       }).render());
 
       $toolbar.append(ui.buttonGroup([
@@ -231,7 +235,7 @@ define([
         ui.dropdownCheck({
           items: options.lineHeights,
           className: 'dropdown-line-height',
-          click: this.createInvokeHandler('editor.lineHeight')
+          click: summernote.createInvokeHandler('editor.lineHeight')
         })
       ]).render());
 
@@ -260,25 +264,23 @@ define([
           $catcher.css({
             width: options.insertTableMaxSize.col + 'em',
             height: options.insertTableMaxSize.row + 'em'
-          }).click(function (event) {
-            var $target = $(event.target);
-            summernote.invoke('editor.insertTable', [$target.data('value')]);
-          }).on('mousemove', self.tableMoveHandler);
+          }).click(summernote.createInvokeHandler('editor.insertTable'))
+            .on('mousemove', self.tableMoveHandler);
         }
       }).render());
 
       $toolbar.append(ui.buttonGroup([
         ui.button({
           contents: '<i class="fa fa-link"/>',
-          click: this.createInvokeHandler('linkDialog.show')
+          click: summernote.createInvokeHandler('linkDialog.show')
         }),
         ui.button({
           contents: '<i class="fa fa-picture-o"/>',
-          click: this.createInvokeHandler('imageDialog.show')
+          click: summernote.createInvokeHandler('imageDialog.show')
         }),
         ui.button({
           contents: '<i class="fa fa-minus"/>',
-          click: this.createInvokeHandler('editor.insertHorizontalRule')
+          click: summernote.createInvokeHandler('editor.insertHorizontalRule')
         })
       ]).render());
 
@@ -286,12 +288,12 @@ define([
         ui.button({
           className: 'btn-fullscreen',
           contents: '<i class="fa fa-arrows-alt"/>',
-          click: this.createInvokeHandler('fullscreen.toggle')
+          click: summernote.createInvokeHandler('fullscreen.toggle')
         }),
         ui.button({
           className: 'btn-codeview',
           contents: '<i class="fa fa-code"/>',
-          click: this.createInvokeHandler('codeview.toggle')
+          click: summernote.createInvokeHandler('codeview.toggle')
         })
       ]).render());
 
@@ -302,17 +304,9 @@ define([
       $toolbar.children().remove();
     };
 
-    this.createInvokeHandler = function (namespace) {
-      return function (event) {
-        event.preventDefault();
-        var value = $(event.target).data('value');
-        summernote.invoke(namespace, [value]);
-      };
-    };
-
     this.updateCurrentStyle = function () {
       var styleInfo = summernote.invoke('editor.currentStyle');
-      self.updateBtnStates({
+      this.updateBtnStates({
         '.note-btn-bold': function () {
           return styleInfo['font-bold'] === 'bold';
         },

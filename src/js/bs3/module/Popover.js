@@ -1,32 +1,98 @@
 define([
-  'summernote/core/func',
-  'summernote/core/list',
-  'summernote/module/Button'
-], function (func, list, Button) {
-  /**
-   * @class module.Popover
-   *
-   * Popover (http://getbootstrap.com/javascript/#popovers)
-   *
-   */
-  var Popover = function () {
-    var button = new Button();
+  'summernote/base/core/func',
+  'summernote/base/core/list',
+  'summernote/base/core/dom',
+], function (func, list, dom) {
+  var Popover = function (summernote) {
+    var self = this;
+    var ui = $.summernote.ui;
 
-    /**
-     * returns position from placeholder
-     *
-     * @private
-     * @param {Node} placeholder
-     * @param {Object} options
-     * @param {Boolean} options.isAirMode
-     * @return {Position}
-     */
-    var posFromPlaceholder = function (placeholder, options) {
-      var isAirMode = options && options.isAirMode;
-      var isLeftTop = options && options.isLeftTop;
+    var $note = summernote.layoutInfo.note;
+    var $editingArea = summernote.layoutInfo.editingArea;
 
+    var $popover = $('<div class="note-popover">');
+
+    $popover.append(ui.popover({
+      className: 'note-link-popover',
+      children: [
+        ui.buttonGroup([
+          ui.button({
+            contents: '<i class="fa fa-link"/>',
+            click: summernote.createInvokeHandler('linkDialog.show')
+          }),
+          ui.button({
+            contents: '<i class="fa fa-unlink"/>',
+            click: summernote.createInvokeHandler('editor.unlink')
+          })
+        ])
+      ]
+    }).render());
+
+    $popover.append(ui.popover({
+      className: 'note-image-popover',
+      children: [
+        ui.buttonGroup([
+          ui.button({
+            contents: '<span class="note-fontsize-10">100%</span>',
+            click: summernote.createInvokeHandler('editor.resize', '1')
+          }),
+          ui.button({
+            contents: '<span class="note-fontsize-10">50%</span>',
+            click: summernote.createInvokeHandler('editor.resize', '0.5')
+          }),
+          ui.button({
+            contents: '<span class="note-fontsize-10">25%</span>',
+            click: summernote.createInvokeHandler('editor.resize', '0.25')
+          })
+        ]),
+        ui.buttonGroup([
+          ui.button({
+            contents: '<i class="fa fa-align-left"/>',
+            click: summernote.createInvokeHandler('editor.floatMe', 'left')
+          }),
+          ui.button({
+            contents: '<i class="fa fa-align-right"/>',
+            click: summernote.createInvokeHandler('editor.floatMe', 'right')
+          }),
+          ui.button({
+            contents: '<i class="fa fa-align-justify"/>',
+            click: summernote.createInvokeHandler('editor.floatMe', 'none')
+          })
+        ]),
+        ui.buttonGroup([
+          ui.button({
+            contents: '<i class="fa fa-square"/>'
+          }),
+          ui.button({
+            contents: '<i class="fa fa-circle-o"/>'
+          }),
+          ui.button({
+            contents: '<i class="fa fa-picture-o"/>'
+          }),
+          ui.button({
+            contents: '<i class="fa fa-times"/>'
+          })
+        ]),
+        ui.buttonGroup([
+          ui.button({
+            contents: '<i class="fa fa-trash-o"/>',
+            click: summernote.createInvokeHandler('editor.removeMedia')
+          })
+        ])
+      ]
+    }).render());
+
+    $editingArea.append($popover);
+
+    this.initialize = function () {
+      $note.on('summernote.keyup summernote.mouseup summernote.change', function (customEvent, event) {
+        self.update(event.target);
+      });
+    };
+
+    this.posFromPlaceholder = function (placeholder, isLeftTop) {
       var $placeholder = $(placeholder);
-      var pos = isAirMode ? $placeholder.offset() : $placeholder.position();
+      var pos = $placeholder.position();
       var height = isLeftTop ? 0 : $placeholder.outerHeight(true); // include margin
 
       // popover below placeholder.
@@ -36,14 +102,7 @@ define([
       };
     };
 
-    /**
-     * show popover
-     *
-     * @private
-     * @param {jQuery} popover
-     * @param {Position} pos
-     */
-    var showPopover = function ($popover, pos) {
+    this.showPopover = function ($popover, pos) {
       $popover.css({
         display: 'block',
         left: pos.left,
@@ -53,71 +112,31 @@ define([
 
     var PX_POPOVER_ARROW_OFFSET_X = 20;
 
-    /**
-     * update current state
-     * @param {jQuery} $popover - popover container
-     * @param {Object} styleInfo - style object
-     * @param {Boolean} isAirMode
-     */
-    this.update = function ($popover, styleInfo, isAirMode) {
-      button.update($popover, styleInfo);
-
+    this.update = function (targetNode) {
       var $linkPopover = $popover.find('.note-link-popover');
-      if (styleInfo.anchor) {
+      if (dom.isAnchor(targetNode)) {
         var $anchor = $linkPopover.find('a');
-        var href = $(styleInfo.anchor).attr('href');
-        var target = $(styleInfo.anchor).attr('target');
+        var href = $(targetNode).attr('href');
+        var target = $(targetNode).attr('target');
         $anchor.attr('href', href).html(href);
         if (!target) {
           $anchor.removeAttr('target');
         } else {
           $anchor.attr('target', '_blank');
         }
-        showPopover($linkPopover, posFromPlaceholder(styleInfo.anchor, {
-          isAirMode: isAirMode
-        }));
+        this.showPopover($linkPopover, this.posFromPlaceholder(targetNode));
       } else {
         $linkPopover.hide();
       }
 
       var $imagePopover = $popover.find('.note-image-popover');
-      if (styleInfo.image) {
-        showPopover($imagePopover, posFromPlaceholder(styleInfo.image, {
-          isAirMode: isAirMode,
-          isLeftTop: true
-        }));
+      if (dom.isImg(targetNode)) {
+        this.showPopover($imagePopover, this.posFromPlaceholder(targetNode));
       } else {
         $imagePopover.hide();
       }
-
-      var $airPopover = $popover.find('.note-air-popover');
-      if (isAirMode && styleInfo.range && !styleInfo.range.isCollapsed()) {
-        var rect = list.last(styleInfo.range.getClientRects());
-        if (rect) {
-          var bnd = func.rect2bnd(rect);
-          showPopover($airPopover, {
-            left: Math.max(bnd.left + bnd.width / 2 - PX_POPOVER_ARROW_OFFSET_X, 0),
-            top: bnd.top + bnd.height
-          });
-        }
-      } else {
-        $airPopover.hide();
-      }
     };
 
-    /**
-     * @param {Node} button
-     * @param {String} eventName
-     * @param {String} value
-     */
-    this.updateRecentColor = function (button, eventName, value) {
-      button.updateRecentColor(button, eventName, value);
-    };
-
-    /**
-     * hide all popovers
-     * @param {jQuery} $popover - popover container
-     */
     this.hide = function ($popover) {
       $popover.children().hide();
     };
