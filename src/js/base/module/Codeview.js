@@ -55,7 +55,7 @@ define([
       $codable.val(dom.html($editable, options.prettifyHtml));
       $codable.height($editable.height());
 
-      summernote.invoke('toolbar.updateCodeview', [true]);
+      summernote.invoke('toolbar.updateCodeview', true);
       $editor.addClass('codeview');
       $codable.focus();
 
@@ -97,12 +97,12 @@ define([
       $editor.removeClass('codeview');
 
       if (isChange) {
-        summernote.triggerEvent('change', [$editable.html(), $editable]);
+        summernote.triggerEvent('change', $editable.html(), $editable);
       }
 
       $editable.focus();
 
-      summernote.invoke('toolbar.updateCodeview', [false]);
+      summernote.invoke('toolbar.updateCodeview', false);
     };
   };
 

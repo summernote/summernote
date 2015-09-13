@@ -42,7 +42,7 @@ define([
         $scrollbar.css('overflow', 'visible');
       }
 
-      summernote.invoke('toolbar.updateFullscreen', [isFullscreen]);
+      summernote.invoke('toolbar.updateFullscreen', isFullscreen);
     };
   };
 

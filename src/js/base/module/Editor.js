@@ -39,11 +39,11 @@ define([
       this.bindKeyMap(keyMap);
 
       $editable.on('keyup', function (event) {
-        summernote.triggerEvent('keyup', [event]);
+        summernote.triggerEvent('keyup', event);
       }).on('mouseup', function (event) {
-        summernote.triggerEvent('mouseup', [event]);
+        summernote.triggerEvent('mouseup', event);
       }).on('input', function (event) {
-        summernote.triggerEvent('change', [event]);
+        summernote.triggerEvent('change', event);
       });
 
       if (options.height) {
@@ -156,9 +156,9 @@ define([
      * undo
      */
     this.undo = function () {
-      summernote.triggerEvent('before.command', [$editable.html()]);
+      summernote.triggerEvent('before.command', $editable.html());
       history.undo();
-      summernote.triggerEvent('change', [$editable.html()]);
+      summernote.triggerEvent('change', $editable.html());
     };
 
     /**
@@ -166,9 +166,9 @@ define([
      * redo
      */
     this.redo = function () {
-      summernote.triggerEvent('before.command', [$editable.html()]);
+      summernote.triggerEvent('before.command', $editable.html());
       history.redo();
-      summernote.triggerEvent('change', [$editable.html()]);
+      summernote.triggerEvent('change', $editable.html());
     };
 
     /**
@@ -176,7 +176,7 @@ define([
      * before command
      */
     var beforeCommand = this.beforeCommand = function () {
-      summernote.triggerEvent('before.command', [$editable.html()]);
+      summernote.triggerEvent('before.command', $editable.html());
       // keep focus on editable before command execution
       self.focus();
     };
@@ -189,7 +189,7 @@ define([
     var afterCommand = this.afterCommand = function (isPreventTrigger) {
       history.recordUndo();
       if (!isPreventTrigger) {
-        summernote.triggerEvent('change', [$editable.html()]);
+        summernote.triggerEvent('change', $editable.html());
       }
     };
 
@@ -632,7 +632,7 @@ define([
     this.removeMedia = function () {
       beforeCommand();
       var $target = $(this.restoreTarget()).detach();
-      summernote.triggerEvent('media.delete', [$target, $editable]);
+      summernote.triggerEvent('media.delete', $target, $editable);
       afterCommand();
     };
 

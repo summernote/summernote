@@ -70,16 +70,16 @@ define(function () {
         if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
           event.preventDefault();
           $editable.focus();
-          summernote.invoke('imageDialog.insertImages', [dataTransfer.files]);
+          summernote.invoke('imageDialog.insertImages', dataTransfer.files);
         } else {
           $.each(dataTransfer.types, function (idx, type) {
             var content = dataTransfer.getData(type);
 
             if (type.toLowerCase().indexOf('text') > -1) {
-              summernote.invoke('editor.pasteHTML', [content]);
+              summernote.invoke('editor.pasteHTML', content);
             } else {
               $(content).each(function () {
-                summernote.invoke('editor.insertNode', [this]);
+                summernote.invoke('editor.insertNode', this);
               });
             }
           });

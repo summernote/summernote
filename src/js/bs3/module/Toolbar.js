@@ -152,10 +152,9 @@ define([
 
                 var colorInfo = $color.data('value');
                 colorInfo[eventName] = value;
-                $color.data('value', colorInfo)
-                      .css(key, value);
+                $color.data('value', colorInfo).css(key, value);
 
-                summernote.invoke('editor.' + eventName, [value]);
+                summernote.invoke('editor.' + eventName, value);
               }
             }
           })

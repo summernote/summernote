@@ -1,7 +1,8 @@
 define([
   'jquery',
-  'summernote/base/core/func'
-], function ($, func) {
+  'summernote/base/core/func',
+  'summernote/base/core/list'
+], function ($, func, list) {
 
   /**
    * @class Summernote
@@ -15,7 +16,10 @@ define([
     this.layoutInfo = {};
     this.options = options;
 
-    this.triggerEvent = function (namespace, args) {
+    this.triggerEvent = function () {
+      var namespace = list.head(arguments);
+      var args = list.tail(list.from(arguments));
+
       var callback = this.options.callbacks[func.namespaceToCamel(namespace, 'on')];
       if (callback) {
         callback.apply($note[0], args);
@@ -62,11 +66,14 @@ define([
     this.createInvokeHandler = function (namespace, value) {
       return function (event) {
         event.preventDefault();
-        self.invoke(namespace, [value || $(event.target).data('value')]);
+        self.invoke(namespace, value || $(event.target).data('value'));
       };
     };
 
-    this.invoke = function (namespace, args) {
+    this.invoke = function () {
+      var namespace = list.head(arguments);
+      var args = list.tail(list.from(arguments));
+
       var splits = namespace.split('.');
       var moduleName = splits[0];
       var methodName = splits[1];
@@ -89,7 +96,13 @@ define([
      * @param {Object|String}
      * @return {this}
      */
-    summernote: function (options) {
+    summernote: function () {
+      var type = $.type(list.head(arguments));
+      var isExternalAPICalled = type === 'string';
+      var hasInitOptions = type === 'object';
+
+      var options = hasInitOptions ? list.head(arguments) : {};
+
       options = $.extend({}, $.summernote.options, options);
       this.each(function (idx, note) {
         var $note = $(note);
@@ -97,6 +110,14 @@ define([
           $note.data('summernote', new Summernote($note, options));
         }
       });
+
+      var $note = this.first();
+      if (isExternalAPICalled && $note.length) {
+        var namespace = list.head(arguments);
+        var params = list.tail(list.from(arguments));
+        var summernote = $note.data('summernote');
+        summernote.invoke(namespace, params);
+      }
     }
   });
 });

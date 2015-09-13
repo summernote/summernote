@@ -134,7 +134,7 @@ define([
       summernote.invoke('editor.saveRange');
       this.showLinkDialog(linkInfo).then(function (linkInfo) {
         summernote.invoke('editor.restoreRange');
-        summernote.invoke('editor.createLink', [linkInfo]);
+        summernote.invoke('editor.createLink', linkInfo);
       }).fail(function () {
         summernote.invoke('editor.restoreRange');
       });

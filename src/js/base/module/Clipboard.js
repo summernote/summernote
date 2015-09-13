@@ -23,7 +23,7 @@ define([
 
         $editable.on('keydown', function (e) {
           if (e.ctrlKey && e.keyCode === key.code.V) {
-            summernote.invoke('saveRange', $editable.editable());
+            summernote.invoke('editor.saveRange');
             $paste.focus();
 
             setTimeout(function () {
@@ -52,16 +52,16 @@ define([
         var blob = new Blob([array], { type : 'image/png' });
         blob.name = 'clipboard.png';
 
-        summernote.invoke('restoreRange', $editable);
-        summernote.invoke('focus', $editable);
-        summernote.invoke('imageDialog.insertImages', [[blob]]);
+        summernote.invoke('editor.restoreRange');
+        summernote.invoke('editor.focus');
+        summernote.invoke('imageDialog.insertImages', [blob]);
       } else {
         var pasteContent = $('<div />').html($paste.html()).html();
-        summernote.invoke('restoreRange', $editable);
-        summernote.invoke('focus', $editable);
+        summernote.invoke('editor.restoreRange');
+        summernote.invoke('editor.focus');
 
         if (pasteContent) {
-          summernote.invoke('pasteHTML', $editable, pasteContent);
+          summernote.invoke('editor.pasteHTML', pasteContent);
         }
       }
 
@@ -78,9 +78,9 @@ define([
       if (clipboardData && clipboardData.items && clipboardData.items.length) {
         var item = list.head(clipboardData.items);
         if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
-          summernote.invoke('imageDialog.insertImages', [[item.getAsFile()]]);
+          summernote.invoke('imageDialog.insertImages', [item.getAsFile()]);
         }
-        summernote.invoke('editor.afterCommand', $editable);
+        summernote.invoke('editor.afterCommand');
       }
     };
   };

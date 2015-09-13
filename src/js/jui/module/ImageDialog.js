@@ -59,16 +59,16 @@ define([
 
       // If onImageUpload options setted
       if (callbacks.onImageUpload) {
-        summernote.triggerEvent('image.upload', [files]);
+        summernote.triggerEvent('image.upload', files);
       // else insert Image as dataURL
       } else {
         $.each(files, function (idx, file) {
           var filename = file.name;
           if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
-            summernote.triggerEvent('image.upload.error', ['image.maximum.filesize.error']);
+            summernote.triggerEvent('image.upload.error', 'image.maximum.filesize.error');
           } else {
             async.readFileAsDataURL(file).then(function (dataURL) {
-              summernote.invoke('editor.insertImage', [dataURL, filename]);
+              summernote.invoke('editor.insertImage', dataURL, filename);
             }).fail(function () {
               summernote.triggerEvent('image.upload.error');
             });
@@ -84,7 +84,7 @@ define([
 
         if (typeof data === 'string') {
           // image url
-          summernote.invoke('editor.insertImage', [data]);
+          summernote.invoke('editor.insertImage', data);
         } else {
           // array of files
           self.insertImages(data);

@@ -79,7 +79,7 @@ define([
           top: pos.top
         });
 
-        summernote.invoke('editor.saveTarget', [target]);
+        summernote.invoke('editor.saveTarget', target);
       } else {
         $popover.hide();
       }

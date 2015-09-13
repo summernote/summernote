@@ -14,8 +14,7 @@ define([
     this.createInvokeHandler = function (namespace) {
       return function (event) {
         event.preventDefault();
-        var value = $(event.target).data('value');
-        summernote.invoke(namespace, [value]);
+        summernote.invoke(namespace, $(event.target).data('value'));
       };
     };
 
@@ -268,10 +267,9 @@ define([
 
               var colorInfo = $color.data('value');
               colorInfo[eventName] = value;
-              $color.data('value', colorInfo)
-                    .css(key, value);
+              $color.data('value', colorInfo).css(key, value);
 
-              summernote.invoke('editor.' + eventName, [value]);
+              summernote.invoke('editor.' + eventName, value);
             }
           }
         })
@@ -382,7 +380,7 @@ define([
             height: options.insertTableMaxSize.row + 'em'
           }).click(function (event) {
             var $target = $(event.target);
-            summernote.invoke('editor.insertTable', [$target.data('value')]);
+            summernote.invoke('editor.insertTable', $target.data('value'));
           }).on('mousemove', self.tableMoveHandler);
         }
       }).render());

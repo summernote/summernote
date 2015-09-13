@@ -42,10 +42,10 @@ define([
               scrollTop = $document.scrollTop();
 
           $document.on('mousemove', function (event) {
-            summernote.invoke('editor.resizeTo', [{
+            summernote.invoke('editor.resizeTo', {
               x: event.clientX - posStart.left,
               y: event.clientY - (posStart.top - scrollTop)
-            }, $target, !event.shiftKey]);
+            }, $target, !event.shiftKey);
 
             self.update($target[0]);
           }).one('mouseup', function () {
