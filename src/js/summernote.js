@@ -112,6 +112,8 @@ define([
       var options = hasInitOptions ? list.head(arguments) : {};
 
       options = $.extend({}, $.summernote.options, options);
+      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+
       this.each(function (idx, note) {
         var $note = $(note);
         if (!$note.data('summernote')) {

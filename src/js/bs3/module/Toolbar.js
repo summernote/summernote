@@ -1,8 +1,9 @@
 define([
   'jquery',
+  'summernote/base/core/func',
   'summernote/base/core/list',
   'summernote/base/core/agent'
-], function ($, list, agent) {
+], function ($, func, list, agent) {
   var Toolbar = function (summernote) {
     var self = this;
     var ui = $.summernote.ui;
@@ -10,6 +11,23 @@ define([
     var $note = summernote.layoutInfo.note;
     var $toolbar = summernote.layoutInfo.toolbar;
     var options = summernote.options;
+
+    var lang = summernote.options.langInfo;
+    var invertedKeyMap = func.invertObject(options.keyMap[agent.isMac ? 'mac' : 'pc']);
+
+    this.representShortcut = function (editorMethod) {
+      var shortcut = invertedKeyMap[editorMethod];
+      if (agent.isMac) {
+        shortcut = shortcut.replace('CMD', '⌘').replace('SHIFT', '⇧');
+      }
+
+      shortcut = shortcut.replace('BACKSLASH', '\\')
+                         .replace('SLASH', '/')
+                         .replace('LEFTBRACKET', '[')
+                         .replace('RIGHTBRACKET', ']');
+
+      return ' (' + shortcut + ')';
+    };
 
     this.initialize = function () {
       $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
@@ -20,7 +38,7 @@ define([
         ui.button({
           className: 'dropdown-toggle',
           contents: '<i class="fa fa-magic"/> <span class="caret"/>',
-          tooltip: 'Style',
+          tooltip: lang.style.style,
           data: {
             toggle: 'dropdown'
           }
@@ -36,24 +54,24 @@ define([
         ui.button({
           className: 'note-btn-bold',
           contents: '<i class="fa fa-bold"/>',
-          tooltip: 'Bold (⌘+B)',
+          tooltip: lang.font.bold + this.representShortcut('bold'),
           click: summernote.createInvokeHandler('editor.bold')
         }),
         ui.button({
           className: 'note-btn-italic',
           contents: '<i class="fa fa-italic"/>',
-          tooltip: 'Italic (⌘+I)',
+          tooltip: lang.font.italic + this.representShortcut('italic'),
           click: summernote.createInvokeHandler('editor.italic')
         }),
         ui.button({
           className: 'note-btn-underline',
           contents: '<i class="fa fa-underline"/>',
-          tooltip: 'Underline (⌘+U)',
+          tooltip: lang.font.underline + this.representShortcut('underline'),
           click: summernote.createInvokeHandler('editor.underline')
         }),
         ui.button({
           contents: '<i class="fa fa-eraser"/>',
-          tooltip: 'Remove Font Style (⌘+\\)',
+          tooltip: lang.font.clear + this.representShortcut('removeFormat'),
           click: summernote.createInvokeHandler('editor.removeFormat')
         })
       ]).render());
@@ -62,7 +80,7 @@ define([
         ui.button({
           className: 'dropdown-toggle',
           contents: '<span class="note-current-fontname"/> <span class="caret"/>',
-          tooltip: 'Font Family',
+          tooltip: lang.font.name,
           data: {
             toggle: 'dropdown'
           }
@@ -81,7 +99,7 @@ define([
         ui.button({
           className: 'dropdown-toggle',
           contents: '<span class="note-current-fontsize"/> <span class="caret"/>',
-          tooltip: 'Font Size',
+          tooltip: lang.font.size,
           data: {
             toggle: 'dropdown'
           }
@@ -98,7 +116,7 @@ define([
         children: [
           ui.button({
             contents: '<i class="fa fa-font note-recent-color"/>',
-            tooltip: 'Recent Color',
+            tooltip: lang.color.recent,
             click: summernote.createInvokeHandler('editor.color'),
             callback: function ($button) {
               var $recentColor = $button.find('.note-recent-color');
@@ -112,7 +130,7 @@ define([
           ui.button({
             className: 'dropdown-toggle',
             contents: '<span class="caret"/>',
-            tooltip: 'More Color',
+            tooltip: lang.color.more,
             data: {
               toggle: 'dropdown'
             }
@@ -121,13 +139,13 @@ define([
             items: [
               '<li>',
               '<div class="btn-group">',
-              '  <div class="note-palette-title">background color</div>',
-              '  <div class="note-color-reset" data-event="backColor" data-value="inherit">transparent</div>',
+              '  <div class="note-palette-title">' + lang.color.background + '</div>',
+              '  <div class="note-color-reset" data-event="backColor" data-value="inherit">' + lang.color.transparent + '</div>',
               '  <div class="note-holder" data-event="backColor"/>',
               '</div>',
               '<div class="btn-group">',
-              '  <div class="note-palette-title">fore color</div>',
-              '  <div class="note-color-reset" data-event="foreColor" data-value="inherit">reset to default</div>',
+              '  <div class="note-palette-title">' + lang.color.foreground + '</div>',
+              '  <div class="note-color-reset" data-event="foreColor" data-value="inherit">' + lang.color.resetToDefault + '</div>',
               '  <div class="note-holder" data-event="foreColor"/>',
               '</div>',
               '</li>'
@@ -166,19 +184,19 @@ define([
         children: [
           ui.button({
             contents: '<i class="fa fa-list-ul"/>',
-            tooltip: 'Unordered list (⌘+⇧+NUM7)',
+            tooltip: lang.lists.unordered + this.representShortcut('insertUnorderedList'),
             click: summernote.createInvokeHandler('editor.insertUnorderedList')
           }),
           ui.button({
             contents: '<i class="fa fa-list-ol"/>',
-            tooltip: 'Ordered list (⌘+⇧+NUM8)',
+            tooltip: lang.lists.ordered + this.representShortcut('insertOrderedList'),
             click: summernote.createInvokeHandler('editor.insertOrderedList')
           }),
           ui.buttonGroup([
             ui.button({
               className: 'dropdown-toggle',
               contents: '<i class="fa fa-align-left"/> <span class="caret"/>',
-              tooltip: 'More paragraph style',
+              tooltip: lang.paragraph.paragraph,
               data: {
                 toggle: 'dropdown'
               }
@@ -189,18 +207,22 @@ define([
                 children: [
                   ui.button({
                     contents: '<i class="fa fa-align-left"/>',
+                    tooltip: lang.paragraph.left + this.representShortcut('justifyLeft'),
                     click: summernote.createInvokeHandler('editor.justifyLeft')
                   }),
                   ui.button({
                     contents: '<i class="fa fa-align-center"/>',
+                    tooltip: lang.paragraph.center + this.representShortcut('justifyCenter'),
                     click: summernote.createInvokeHandler('editor.justifyCenter')
                   }),
                   ui.button({
                     contents: '<i class="fa fa-align-right"/>',
+                    tooltip: lang.paragraph.right + this.representShortcut('justifyRight'),
                     click: summernote.createInvokeHandler('editor.justifyRight')
                   }),
                   ui.button({
                     contents: '<i class="fa fa-align-justify"/>',
+                    tooltip: lang.paragraph.justify + this.representShortcut('justifyFull'),
                     click: summernote.createInvokeHandler('editor.justifyFull')
                   })
                 ]
@@ -210,10 +232,12 @@ define([
                 children: [
                   ui.button({
                     contents: '<i class="fa fa-outdent"/>',
+                    tooltip: lang.paragraph.outdent + this.representShortcut('outdent'),
                     click: summernote.createInvokeHandler('editor.outdent')
                   }),
                   ui.button({
                     contents: '<i class="fa fa-indent"/>',
+                    tooltip: lang.paragraph.indent + this.representShortcut('indent'),
                     click: summernote.createInvokeHandler('editor.indent')
                   })
                 ]
@@ -227,6 +251,7 @@ define([
         ui.button({
           className: 'dropdown-toggle',
           contents: '<i class="fa fa-text-height"/> <span class="caret"/>',
+          tooltip: lang.font.height,
           data: {
             toggle: 'dropdown'
           }
@@ -242,6 +267,7 @@ define([
         ui.button({
           className: 'dropdown-toggle',
           contents: '<i class="fa fa-table"/> <span class="caret"/>',
+          tooltip: lang.table.table,
           data: {
             toggle: 'dropdown'
           }
@@ -271,14 +297,17 @@ define([
       $toolbar.append(ui.buttonGroup([
         ui.button({
           contents: '<i class="fa fa-link"/>',
+          tooltip: lang.link.link,
           click: summernote.createInvokeHandler('linkDialog.show')
         }),
         ui.button({
           contents: '<i class="fa fa-picture-o"/>',
+          tooltip: lang.image.image,
           click: summernote.createInvokeHandler('imageDialog.show')
         }),
         ui.button({
           contents: '<i class="fa fa-minus"/>',
+          tooltip: lang.hr.insert + this.representShortcut('insertHorizontalRule'),
           click: summernote.createInvokeHandler('editor.insertHorizontalRule')
         })
       ]).render());
@@ -287,11 +316,13 @@ define([
         ui.button({
           className: 'btn-fullscreen',
           contents: '<i class="fa fa-arrows-alt"/>',
+          tooltip: lang.options.fullscreen,
           click: summernote.createInvokeHandler('fullscreen.toggle')
         }),
         ui.button({
           className: 'btn-codeview',
           contents: '<i class="fa fa-code"/>',
+          tooltip: lang.options.codeview,
           click: summernote.createInvokeHandler('codeview.toggle')
         })
       ]).render());
