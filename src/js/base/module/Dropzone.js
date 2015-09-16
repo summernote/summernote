@@ -4,6 +4,7 @@ define(function () {
     var $editor = summernote.layoutInfo.editor;
     var $editable = summernote.layoutInfo.editable;
     var options = summernote.options;
+    var lang = options.langInfo;
 
     var $dropzone = $([
       '<div class="note-dropzone">',
@@ -41,7 +42,7 @@ define(function () {
           $editor.addClass('dragover');
           $dropzone.width($editor.width());
           $dropzone.height($editor.height());
-          $dropzoneMessage.text('drag image here');
+          $dropzoneMessage.text(lang.image.dragImageHere);
         }
         collection = collection.add(e.target);
       }).on('dragleave', function (e) {
@@ -57,10 +58,10 @@ define(function () {
       // change dropzone's message on hover.
       $dropzone.on('dragenter', function () {
         $dropzone.addClass('hover');
-        $dropzoneMessage.text('drop image');
+        $dropzoneMessage.text(lang.image.dropImage);
       }).on('dragleave', function () {
         $dropzone.removeClass('hover');
-        $dropzoneMessage.text('drag image here');
+        $dropzoneMessage.text(lang.image.dragImageHere);
       });
 
       // attach dropImage

@@ -3,11 +3,13 @@ require.config({
   paths: {
     jquery: '//code.jquery.com/jquery-2.1.4',
     bootstrap: '//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap',
-    jui: '//rawgit.com/seogi1004/jui/develop/dist/jui'
+    jui: '//rawgit.com/seogi1004/jui/develop/dist/jui',
+    lang: '../../lang/summernote-ko-KR'
   },
   shim: {
     bootstrap: ['jquery'],
-    jui : ['jquery']
+    jui: ['jquery'],
+    lang: ['jquery']
   },
   packages: [{
     name: 'summernote',
@@ -39,6 +41,7 @@ require([
     case 'bs3':
       promise = requireByPromise(['bootstrap', 'summernote/bs3/settings']).then(function (bootstrap, bs3) {
         $.summernote = $.extend($.summernote, bs3);
+        return requireByPromise(['lang']);
       });
       break;
     case 'jui':
@@ -51,7 +54,8 @@ require([
   promise.then(function () {
     // initialize summernote
     $('.summernote').summernote({
-      height: 300
+      height: 300,
+      lang: 'ko-KR'
     });
   });
 });

@@ -8,6 +8,7 @@ define([
 
     var $editor = summernote.layoutInfo.editor;
     var options = summernote.options;
+    var lang = options.langInfo;
 
     this.initialize = function () {
       var $container = options.dialogsInBody ? $(document.body) : $editor;
@@ -17,23 +18,23 @@ define([
         var unit = Math.floor(Math.log(options.maximumImageFileSize) / Math.log(1024));
         var readableSize = (options.maximumImageFileSize / Math.pow(1024, unit)).toFixed(2) * 1 +
                            ' ' + ' KMGTP'[unit] + 'B';
-        imageLimitation = '<small>Maximum file size : ' + readableSize + '</small>';
+        imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
       }
 
       var body = '<div class="form-group note-group-select-from-files">' +
-                   '<label>Select from files</label>' +
+                   '<label>' + lang.image.selectFromFiles + '</label>' +
                    '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" />' +
                    imageLimitation +
                  '</div>' +
                  '<div class="form-group">' +
-                   '<label>Image URL</label>' +
+                   '<label>' + lang.image.url + '</label>' +
                    '<input class="note-image-url form-control col-md-12" type="text" />' +
                  '</div>';
-      var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>Insert Image</button>';
+      var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
 
       $container.append(ui.dialog({
         className: 'note-image-dialog',
-        title: 'Insert Image',
+        title: lang.image.insert,
         body: body,
         footer: footer
       }).render());
@@ -65,7 +66,7 @@ define([
         $.each(files, function (idx, file) {
           var filename = file.name;
           if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
-            summernote.triggerEvent('image.upload.error', 'image.maximum.filesize.error');
+            summernote.triggerEvent('image.upload.error', lang.image.maximumFileSizeError);
           } else {
             async.readFileAsDataURL(file).then(function (dataURL) {
               summernote.invoke('editor.insertImage', dataURL, filename);

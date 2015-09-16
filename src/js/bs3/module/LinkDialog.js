@@ -7,30 +7,29 @@ define([
 
     var $editor = summernote.layoutInfo.editor;
     var options = summernote.options;
+    var lang = options.langInfo;
 
     this.initialize = function () {
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
       var body = '<div class="form-group">' +
-                   '<label>Text to display</label>' +
+                   '<label>' + lang.link.textToDisplay + '</label>' +
                    '<input class="note-link-text form-control" type="text" />' +
                  '</div>' +
                  '<div class="form-group">' +
-                   '<label>To what URL should this link go?</label>' +
+                   '<label>' + lang.link.url + '</label>' +
                    '<input class="note-link-url form-control" type="text" value="http://" />' +
                  '</div>' +
                  (!options.disableLinkTarget ?
                    '<div class="checkbox">' +
-                     '<label>' + '<input type="checkbox" checked> ' +
-                       'Open in new window' +
-                     '</label>' +
+                     '<label>' + '<input type="checkbox" checked> ' + lang.link.openInNewWindow + '</label>' +
                    '</div>' : ''
                  );
-      var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>Insert Link</button>';
+      var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
 
       $container.append(ui.dialog({
         className: 'link-dialog',
-        title: 'Insert Link',
+        title: lang.link.insert,
         body: body,
         footer: footer
       }).render());

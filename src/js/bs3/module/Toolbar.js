@@ -11,8 +11,8 @@ define([
     var $note = summernote.layoutInfo.note;
     var $toolbar = summernote.layoutInfo.toolbar;
     var options = summernote.options;
+    var lang = options.langInfo;
 
-    var lang = summernote.options.langInfo;
     var invertedKeyMap = func.invertObject(options.keyMap[agent.isMac ? 'mac' : 'pc']);
 
     this.representShortcut = function (editorMethod) {

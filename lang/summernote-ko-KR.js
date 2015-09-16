@@ -16,7 +16,7 @@
       image: {
         image: '사진',
         insert: '사진 추가',
-        resizeFull: '원본 크기로 변경',
+        resizeFull: '100% 크기로 변경',
         resizeHalf: '50% 크기로 변경',
         resizeQuarter: '25% 크기로 변경',
         floatLeft: '왼쪽 정렬',
@@ -26,7 +26,8 @@
         shapeCircle: '스타일: 원형',
         shapeThumbnail: '스타일: 액자',
         shapeNone: '스타일: 없음',
-        dragImageHere: '사진을 이곳으로 끌어오세요',
+        dragImageHere: '텍스트 혹은 사진을 이곳으로 끌어오세요',
+        dropImage: '텍스트 혹은 사진을 내려놓으세요',
         selectFromFiles: '파일 선택',
         url: '사진 URL',
         remove: '사진 삭제'

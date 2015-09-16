@@ -95,7 +95,7 @@ define([
     return this.initialize();
   };
 
-  $.summernote = $.summernote || {};
+  $.summernote = $.summernote || { lang: {} };
 
   $.fn.extend({
     /**
