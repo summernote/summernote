@@ -39,6 +39,8 @@ define([
           event.preventDefault();
           event.stopPropagation();
 
+          summernote.invoke('imagePopover.hide');
+
           var $target = $handle.find('.note-control-selection').data('target'),
               posStart = $target.offset(),
               scrollTop = $document.scrollTop();

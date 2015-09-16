@@ -95,8 +95,8 @@ define([
       }
     };
 
-    this.hide = function ($popover) {
-      $popover.children().hide();
+    this.hide = function () {
+      $popover.hide();
     };
   };
 
