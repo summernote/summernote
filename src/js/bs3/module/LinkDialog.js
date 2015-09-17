@@ -34,12 +34,7 @@ define([
         footer: footer
       }).render());
 
-      this.$linkDialog = $container.find('.link-dialog');
-    };
-
-    this.toggleBtn = function ($btn, isEnable) {
-      $btn.toggleClass('disabled', !isEnable);
-      $btn.attr('disabled', !isEnable);
+      this.$dialog = $container.find('.link-dialog');
     };
 
     this.bindEnterKey = function ($input, $btn) {
@@ -58,16 +53,16 @@ define([
      */
     this.showLinkDialog = function (linkInfo) {
       return $.Deferred(function (deferred) {
-        var $linkText = self.$linkDialog.find('.note-link-text'),
-        $linkUrl = self.$linkDialog.find('.note-link-url'),
-        $linkBtn = self.$linkDialog.find('.note-link-btn'),
-        $openInNewWindow = self.$linkDialog.find('input[type=checkbox]');
+        var $linkText = self.$dialog.find('.note-link-text'),
+        $linkUrl = self.$dialog.find('.note-link-url'),
+        $linkBtn = self.$dialog.find('.note-link-btn'),
+        $openInNewWindow = self.$dialog.find('input[type=checkbox]');
 
-        self.$linkDialog.one('shown.bs.modal', function () {
+        ui.onDialogShown(self.$dialog, function () {
           $linkText.val(linkInfo.text);
 
           $linkText.on('input', function () {
-            self.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
+            ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
             // if linktext was modified by keyup,
             // stop cloning text from linkUrl
             linkInfo.text = $linkText.val();
@@ -76,11 +71,11 @@ define([
           // if no url was given, copy text to url
           if (!linkInfo.url) {
             linkInfo.url = linkInfo.text || 'http://';
-            self.toggleBtn($linkBtn, linkInfo.text);
+            ui.toggleBtn($linkBtn, linkInfo.text);
           }
 
           $linkUrl.on('input', function () {
-            self.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
+            ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
             // display same link on `Text to display` input
             // when create a new link
             if (!linkInfo.text) {
@@ -102,9 +97,11 @@ define([
               text: $linkText.val(),
               isNewWindow: $openInNewWindow.is(':checked')
             });
-            self.$linkDialog.modal('hide');
+            self.$dialog.modal('hide');
           });
-        }).one('hidden.bs.modal', function () {
+        });
+
+        ui.onDialogHidden(self.$dialog, function () {
           // detach events
           $linkText.off('input keypress');
           $linkUrl.off('input keypress');
@@ -113,7 +110,9 @@ define([
           if (deferred.state() === 'pending') {
             deferred.reject();
           }
-        }).modal('show');
+        });
+
+        ui.showDialog(self.$dialog);
       }).promise();
     };
 

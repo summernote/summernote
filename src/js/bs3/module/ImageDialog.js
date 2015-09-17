@@ -42,11 +42,6 @@ define([
       this.$dialog = $container.find('.note-image-dialog');
     };
 
-    this.toggleBtn = function ($btn, isEnable) {
-      $btn.toggleClass('disabled', !isEnable);
-      $btn.attr('disabled', !isEnable);
-    };
-
     this.bindEnterKey = function ($input, $btn) {
       $input.on('keypress', function (event) {
         if (event.keyCode === key.code.ENTER) {
@@ -107,12 +102,12 @@ define([
             $imageUrl = self.$dialog.find('.note-image-url'),
             $imageBtn = self.$dialog.find('.note-image-btn');
 
-        self.$dialog.one('shown.bs.modal', function () {
+        ui.onDialogShown(self.$dialog, function () {
           // Cloning imageInput to clear element.
           $imageInput.replaceWith($imageInput.clone()
             .on('change', function () {
               deferred.resolve(this.files || this.value);
-              self.$dialog.modal('hide');
+              ui.hideDialog(self.$dialog);
             })
             .val('')
           );
@@ -121,7 +116,7 @@ define([
             event.preventDefault();
 
             deferred.resolve($imageUrl.val());
-            self.$dialog.modal('hide');
+            ui.hideDialog(self.$dialog);
           });
 
           $imageUrl.on('keyup paste', function (event) {
@@ -133,10 +128,12 @@ define([
               url = $imageUrl.val();
             }
             
-            self.toggleBtn($imageBtn, url);
+            ui.toggleBtn($imageBtn, url);
           }).val('').trigger('focus');
           self.bindEnterKey($imageUrl, $imageBtn);
-        }).one('hidden.bs.modal', function () {
+        });
+
+        ui.onDialogHidden(self.$dialog, function () {
           $imageInput.off('change');
           $imageUrl.off('keyup paste keypress');
           $imageBtn.off('click');
@@ -144,7 +141,9 @@ define([
           if (deferred.state() === 'pending') {
             deferred.reject();
           }
-        }).modal('show');
+        });
+
+        ui.showDialog(self.$dialog);
       });
     };
   };

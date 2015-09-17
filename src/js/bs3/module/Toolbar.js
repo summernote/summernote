@@ -389,7 +389,7 @@ define([
 
     this.updateBtnStates = function (infos) {
       $.each(infos, function (selector, pred) {
-        $toolbar.find(selector).toggleClass('active', pred());
+        ui.toggleBtnActive($toolbar.find(selector), pred());
       });
     };
 
@@ -436,11 +436,11 @@ define([
     };
 
     this.updateFullscreen = function (isFullscreen) {
-      $toolbar.find('.btn-fullscreen').toggleClass('active', isFullscreen);
+      ui.toggleBtnActive($toolbar.find('.btn-fullscreen'), isFullscreen);
     };
 
     this.updateCodeview = function (isCodeview) {
-      $toolbar.find('.btn-codeview').toggleClass('active', isCodeview);
+      ui.toggleBtnActive($toolbar.find('.btn-codeview'), isCodeview);
       if (isCodeview) {
         this.deactivate();
       } else {
@@ -449,15 +449,13 @@ define([
     };
 
     this.activate = function () {
-      $toolbar.find('button')
-              .not('.btn-codeview')
-              .removeClass('disabled');
+      var $btn = $toolbar.find('button').not('.btn-codeview');
+      ui.toggleBtn($btn, true);
     };
 
     this.deactivate = function () {
-      $toolbar.find('button')
-              .not('.btn-codeview')
-              .addClass('disabled');
+      var $btn = $toolbar.find('button').not('.btn-codeview');
+      ui.toggleBtn($btn, false);
     };
   };
 
