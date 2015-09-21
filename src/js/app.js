@@ -3,12 +3,10 @@ require.config({
   paths: {
     jquery: '//code.jquery.com/jquery-2.1.4',
     bootstrap: '//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap',
-    jui: '//rawgit.com/seogi1004/jui/develop/dist/jui',
     lang: '../../lang/summernote-ko-KR'
   },
   shim: {
     bootstrap: ['jquery'],
-    jui: ['jquery'],
     lang: ['jquery']
   },
   packages: [{
@@ -42,11 +40,6 @@ require([
       promise = requireByPromise(['bootstrap', 'summernote/bs3/settings']).then(function (bootstrap, bs3) {
         $.summernote = $.extend($.summernote, bs3);
         return requireByPromise(['lang']);
-      });
-      break;
-    case 'jui':
-      promise = requireByPromise(['jui', 'summernote/jui/settings']).then(function (j, jui) {
-        $.summernote = $.extend($.summernote, jui);
       });
       break;
   }
