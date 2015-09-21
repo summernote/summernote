@@ -30,7 +30,7 @@ requirejs.config({
 
   callback: function () {
     require([
-      'summernote/core/agent',
+      'summernote/base/core/agent',
       '../../test/unit/func.spec',
       '../../test/unit/key.spec',
       '../../test/unit/dom.spec',

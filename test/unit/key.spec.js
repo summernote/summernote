@@ -4,7 +4,7 @@
  * summernote may be freely distributed under the MIT license./
  */
 define([
-  'summernote/core/key'
+  'summernote/base/core/key'
 ], function (key) {
   return function () {
     test('key.isEdit', function () {

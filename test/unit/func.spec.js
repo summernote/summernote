@@ -4,7 +4,7 @@
  * summernote may be freely distributed under the MIT license./
  */
 define([
-  'summernote/core/func'
+  'summernote/base/core/func'
 ], function (func) {
   return function () {
     test('func.eq2', function () {

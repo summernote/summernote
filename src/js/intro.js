@@ -1,5 +1,5 @@
 /**
- * Super simple wysiwyg editor on Bootstrap v@VERSION
+ * Super simple wysiwyg editor v@VERSION
  * http://summernote.org/
  *
  * summernote.js

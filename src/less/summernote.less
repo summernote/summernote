@@ -10,7 +10,6 @@
 .note-editor {
   border: 1px solid @border-color;
   position: relative;
-  overflow: hidden;
 
   /* dropzone */
   @dropzone-color: lightskyblue;
@@ -111,6 +110,8 @@
   /* statusbar */
   .note-statusbar {
     background-color: @background-color;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
     .note-resizebar {
       padding-top: 1px;
       height: 8px;
@@ -133,7 +134,7 @@
 
 /* Popover
 ------------------------------------------*/
-.note-popover .popover {
+.note-popover.popover {
   max-width: none;
   .popover-content {
     a {
@@ -145,14 +146,14 @@
       vertical-align: middle; /* for FF */
     }
   }
-  & .arrow {
-    left: 20px;
+  .arrow {
+    left: 20px important!;
   }
 }
 
 /* Popover and Toolbar (Button container)
 ------------------------------------------*/
-.note-popover .popover .popover-content, .panel-heading.note-toolbar {
+.note-popover .popover-content, .panel-heading.note-toolbar {
   margin: 0;
   padding: 0 0 5px 5px;
 
