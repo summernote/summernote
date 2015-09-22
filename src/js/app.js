@@ -32,13 +32,10 @@ require([
   // editor type setting
   switch ($('script[data-editor-type]').data('editor-type')) {
     case 'lite':
-      promise = requireByPromise(['summernote/lite/settings']).then(function (lite) {
-        $.summernote = $.extend($.summernote, lite);
-      });
+      promise = requireByPromise(['summernote/lite/settings']);
       break;
     case 'bs3':
-      promise = requireByPromise(['bootstrap', 'summernote/bs3/settings']).then(function (bootstrap, bs3) {
-        $.summernote = $.extend($.summernote, bs3);
+      promise = requireByPromise(['bootstrap', 'summernote/bs3/settings']).then(function () {
         return requireByPromise(['lang']);
       });
       break;

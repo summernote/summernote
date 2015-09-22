@@ -3,7 +3,7 @@ define([
   'summernote/base/module/Editor',
   'summernote/lite/module/Toolbar'
 ], function (ui, Editor, Toolbar) {
-  var settings = {
+  $.summernote = $.extend($.summernote, {
     version: '@VERSION',
     ui: ui,
 
@@ -93,7 +93,5 @@ define([
         }
       }
     }
-  };
-
-  return settings;
+  });
 });

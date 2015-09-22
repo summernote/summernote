@@ -17,7 +17,8 @@ define([
   Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle,
   Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover
 ) {
-  var settings = {
+
+  $.summernote = $.extend($.summernote, {
     version: '@VERSION',
     ui: ui,
 
@@ -262,7 +263,5 @@ define([
         }
       }
     }
-  };
-
-  return settings;
+  });
 });
