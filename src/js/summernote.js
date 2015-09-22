@@ -22,6 +22,11 @@ define([
     this.initialize = function () {
       this.layoutInfo = ui.createLayout($note);
 
+      Object.keys(this.options.buttons).forEach(function (key) {
+        var button = new self.options.buttons[key];
+        self.addButton(key, button);
+      });
+
       Object.keys(this.options.modules).forEach(function (key) {
         var module = new self.options.modules[key](self);
         if (module.initialize) {

@@ -144,6 +144,8 @@ define([
         'imageDialog': ImageDialog,
         'imagePopover': ImagePopover
       },
+
+      buttons : { },
       
       lang: 'en-US',
 
