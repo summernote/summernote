@@ -45,9 +45,7 @@ define([
           ui.dropdown({
             className: 'dropdown-style',
             items: summernote.options.styleTags,
-            click: function (event) {
-              summernote.invoke('editor.formatBlock', $(event.target).data('value'));
-            }
+            click: summernote.createInvokeHandler('editor.formatBlock')
           })
         ]).render();
       });
@@ -57,9 +55,7 @@ define([
           className: 'note-btn-bold',
           contents: '<i class="fa fa-bold"/>',
           tooltip: lang.font.bold + representShortcut('bold'),
-          click: function () {
-            summernote.invoke('editor.bold');
-          }
+          click: summernote.createInvokeHandler('editor.bold')
         }).render();
       });
 
@@ -68,9 +64,7 @@ define([
           className: 'note-btn-italic',
           contents: '<i class="fa fa-italic"/>',
           tooltip: lang.font.italic + representShortcut('italic'),
-          click: function () {
-            summernote.invoke('editor.italic');
-          }
+          click: summernote.createInvokeHandler('editor.italic')
         }).render();
       });
 
@@ -79,9 +73,7 @@ define([
           className: 'note-btn-underline',
           contents: '<i class="fa fa-underline"/>',
           tooltip: lang.font.underline + representShortcut('underline'),
-          click: function () {
-            summernote.invoke('editor.underline');
-          }
+          click: summernote.createInvokeHandler('editor.underline')
         }).render();
       });
 
@@ -89,9 +81,7 @@ define([
         return ui.button({
           contents: '<i class="fa fa-eraser"/>',
           tooltip: lang.font.clear + representShortcut('removeFormat'),
-          click: function () {
-            summernote.invoke('editor.removeFormat');
-          }
+          click: summernote.createInvokeHandler('editor.removeFormat')
         }).render();
       });
 
@@ -111,9 +101,7 @@ define([
               return agent.isFontInstalled(name) ||
                 list.contains(options.fontNamesIgnoreCheck, name);
             }),
-            click: function (event) {
-              summernote.invoke('editor.fontName', $(event.target).data('value'));
-            }
+            click: summernote.createInvokeHandler('editor.fontName')
           })
         ]).render();
       });
@@ -131,9 +119,7 @@ define([
           ui.dropdownCheck({
             className: 'dropdown-fontsize',
             items: options.fontSizes,
-            click: function (event) {
-              summernote.invoke('editor.fontSize', $(event.target).data('value'));
-            }
+            click: summernote.createInvokeHandler('editor.fontSize')
           })
         ]).render();
       });
@@ -143,17 +129,17 @@ define([
           className: 'note-color',
           children: [
             ui.button({
+              className : 'note-current-color-button',
               contents: '<i class="fa fa-font note-recent-color"/>',
               tooltip: lang.color.recent,
-              click: function (event) {
-                var colorInfo = $(event.target).find('.note-recent-color').data('value');
-                summernote.invoke('editor.color', colorInfo);
-              },
+              click: summernote.createInvokeHandler('editor.color'),
               callback: function ($button) {
                 var $recentColor = $button.find('.note-recent-color');
                 $recentColor.css({
                   'background-color': 'yellow'
-                }).data('value', {
+                });
+
+                $button.data('value', {
                   backColor: 'yellow'
                 });
               }
@@ -198,10 +184,12 @@ define([
                 if (eventName && value) {
                   var key = eventName === 'backColor' ? 'background-color' : 'color';
                   var $color = $button.closest('.note-color').find('.note-recent-color');
+                  var $currentButton = $button.closest('.note-color').find('.note-current-color-button');
 
-                  var colorInfo = $color.data('value');
+                  var colorInfo = $currentButton.data('value');
                   colorInfo[eventName] = value;
-                  $color.data('value', colorInfo).css(key, value);
+                  $color.css(key, value);
+                  $currentButton.data('value', colorInfo);
 
                   summernote.invoke('editor.' + eventName, value);
                 }
@@ -215,9 +203,7 @@ define([
         return ui.button({
           contents: '<i class="fa fa-list-ul"/>',
           tooltip: lang.lists.unordered + representShortcut('insertUnorderedList'),
-          click: function () {
-            summernote.invoke('editor.insertUnorderedList');
-          }
+          click: summernote.createInvokeHandler('editor.insertUnorderedList')
         }).render();
       });
 
@@ -225,9 +211,7 @@ define([
         return ui.button({
           contents: '<i class="fa fa-list-ol"/>',
           tooltip: lang.lists.ordered + representShortcut('insertOrderedList'),
-          click: function () {
-            summernote.invoke('editor.insertOrderedList');
-          }
+          click:  summernote.createInvokeHandler('editor.insertOrderedList')
         }).render();
       });
 
@@ -248,30 +232,22 @@ define([
                 ui.button({
                   contents: '<i class="fa fa-align-left"/>',
                   tooltip: lang.paragraph.left + representShortcut('justifyLeft'),
-                  click: function () {
-                    summernote.invoke('editor.justifyLeft');
-                  }
+                  click: summernote.createInvokeHandler('editor.justifyLeft')
                 }),
                 ui.button({
                   contents: '<i class="fa fa-align-center"/>',
                   tooltip: lang.paragraph.center + representShortcut('justifyCenter'),
-                  click: function () {
-                    summernote.invoke('editor.justifyCenter');
-                  }
+                  click: summernote.createInvokeHandler('editor.justifyCenter')
                 }),
                 ui.button({
                   contents: '<i class="fa fa-align-right"/>',
                   tooltip: lang.paragraph.right + representShortcut('justifyRight'),
-                  click: function () {
-                    summernote.invoke('editor.justifyRight');
-                  }
+                  click: summernote.createInvokeHandler('editor.justifyRight')
                 }),
                 ui.button({
                   contents: '<i class="fa fa-align-justify"/>',
                   tooltip: lang.paragraph.justify + representShortcut('justifyFull'),
-                  click: function () {
-                    summernote.invoke('editor.justifyFull');
-                  }
+                  click: summernote.createInvokeHandler('editor.justifyFull')
                 })
               ]
             }),
@@ -281,16 +257,12 @@ define([
                 ui.button({
                   contents: '<i class="fa fa-outdent"/>',
                   tooltip: lang.paragraph.outdent + representShortcut('outdent'),
-                  click: function () {
-                    summernote.invoke('editor.outdent');
-                  }
+                  click: summernote.createInvokeHandler('editor.outdent')
                 }),
                 ui.button({
                   contents: '<i class="fa fa-indent"/>',
                   tooltip: lang.paragraph.indent + representShortcut('indent'),
-                  click: function () {
-                    summernote.invoke('editor.indent');
-                  }
+                  click: summernote.createInvokeHandler('editor.indent')
                 })
               ]
             })
@@ -311,9 +283,7 @@ define([
           ui.dropdownCheck({
             items: options.lineHeights,
             className: 'dropdown-line-height',
-            click: function (event) {
-              summernote.invoke('editor.lineHeight', $(event.target).data('value'));
-            }
+            click: summernote.createInvokeHandler('editor.lineHeight')
           })
         ]).render();
       });
@@ -345,9 +315,8 @@ define([
             $catcher.css({
               width: options.insertTableMaxSize.col + 'em',
               height: options.insertTableMaxSize.row + 'em'
-            }).click(function (event) {
-              summernote.invoke('editor.insertTable', $(event.target).data('value'));
-            }).on('mousemove', self.tableMoveHandler);
+            }).click(summernote.createInvokeHandler('editor.insertTable'))
+              .on('mousemove', self.tableMoveHandler);
           }
         }).render();
       });
@@ -356,9 +325,7 @@ define([
         return ui.button({
           contents: '<i class="fa fa-link"/>',
           tooltip: lang.link.link,
-          click: function () {
-            summernote.invoke('linkDialog.show');
-          }
+          click: summernote.createInvokeHandler('linkDialog.show')
         }).render();
       });
 
@@ -366,9 +333,7 @@ define([
         return ui.button({
           contents: '<i class="fa fa-picture-o"/>',
           tooltip: lang.image.image,
-          click: function () {
-            summernote.invoke('imageDialog.show');
-          }
+          click: summernote.createInvokeHandler('imageDialog.show')
         }).render();
       });
 
@@ -376,9 +341,7 @@ define([
         return ui.button({
           contents: '<i class="fa fa-minus"/>',
           tooltip: lang.hr.insert + representShortcut('insertHorizontalRule'),
-          click: function () {
-            summernote.invoke('editor.insertHorizontalRule');
-          }
+          click: summernote.createInvokeHandler('editor.insertHorizontalRule')
         }).render();
       });
 
@@ -387,9 +350,7 @@ define([
           className: 'btn-fullscreen',
           contents: '<i class="fa fa-arrows-alt"/>',
           tooltip: lang.options.fullscreen,
-          click: function () {
-            summernote.invoke('fullscreen.toggle');
-          }
+          click: summernote.createInvokeHandler('fullscreen.toggle')
         }).render();
       });
 
@@ -398,9 +359,7 @@ define([
           className: 'btn-codeview',
           contents: '<i class="fa fa-code"/>',
           tooltip: lang.options.codeview,
-          click: function () {
-            summernote.invoke('codeview.toggle');
-          }
+          click: summernote.createInvokeHandler('codeview.toggle')
         }).render();
       });
 
