@@ -15,6 +15,7 @@ define([
 
     var ui = $.summernote.ui;
     this.modules = {};
+    this.buttons = {};
     this.layoutInfo = {};
     this.options = options;
 
@@ -66,6 +67,17 @@ define([
         this.modules[key].destroy();
       }
       delete this.modules[key];
+    };
+
+    this.addButton = function (key, createHandler) {
+      this.buttons[key] = createHandler;
+    };
+
+    this.removeButton = function (key) {
+      if (this.buttons[key].destroy) {
+        this.buttons[key].destroy();
+      }
+      delete this.buttons[key];
     };
 
     this.createInvokeHandler = function (namespace, value) {

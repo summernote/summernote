@@ -35,7 +35,7 @@ define([
 
         for (var buttonIndex = 0, buttonLength = buttonList.length; buttonIndex < buttonLength; buttonIndex++) {
           var buttonName = buttonList[buttonIndex];
-          var button = $.summernote.buttons[buttonName];
+          var button = summernote.buttons[buttonName];
 
           if (button) {
             $groupElement.append(typeof button === 'function' ? button.call(this, summernote) : button);

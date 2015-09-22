@@ -5,11 +5,6 @@ define([
   'summernote/base/core/agent'
 ], function ($, func, list, agent) {
 
-  function addButton(key, obj) {
-    $.summernote.buttons = $.summernote.buttons || {};
-    $.summernote.buttons[key] = obj;
-  }
-
   var Button = function (summernote) {
     var self = this;
     var ui = $.summernote.ui;
@@ -17,6 +12,7 @@ define([
     var $toolbar = summernote.layoutInfo.toolbar;
     var options = summernote.options;
     var lang = options.langInfo;
+
 
     var invertedKeyMap = func.invertObject(options.keyMap[agent.isMac ? 'mac' : 'pc']);
 
@@ -36,10 +32,7 @@ define([
 
     this.initialize = function () {
 
-
-      addButton('style', function (summernote) {
-        var ui = $.summernote.ui;
-
+      summernote.addButton('style', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -59,9 +52,7 @@ define([
         ]).render();
       });
 
-      addButton('bold', function (summernote) {
-        var ui = $.summernote.ui;
-
+      summernote.addButton('bold', function () {
         return ui.button({
           className: 'note-btn-bold',
           contents: '<i class="fa fa-bold"/>',
@@ -72,9 +63,7 @@ define([
         }).render();
       });
 
-      addButton('italic', function (summernote) {
-        var ui = $.summernote.ui;
-
+      summernote.addButton('italic', function () {
         return ui.button({
           className: 'note-btn-italic',
           contents: '<i class="fa fa-italic"/>',
@@ -85,8 +74,7 @@ define([
         }).render();
       });
 
-      addButton('underline', function (summernote) {
-        var ui = $.summernote.ui;
+      summernote.addButton('underline', function () {
         return ui.button({
           className: 'note-btn-underline',
           contents: '<i class="fa fa-underline"/>',
@@ -97,9 +85,7 @@ define([
         }).render();
       });
 
-      addButton('clear', function (summernote) {
-        var ui = $.summernote.ui;
-
+      summernote.addButton('clear', function () {
         return ui.button({
           contents: '<i class="fa fa-eraser"/>',
           tooltip: lang.font.clear + representShortcut('removeFormat'),
@@ -109,8 +95,7 @@ define([
         }).render();
       });
 
-      addButton('fontname', function (summernote) {
-        var ui = $.summernote.ui;
+      summernote.addButton('fontname', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -133,8 +118,7 @@ define([
         ]).render();
       });
 
-      addButton('fontsize', function (summernote) {
-        var ui = $.summernote.ui;
+      summernote.addButton('fontsize', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -147,14 +131,14 @@ define([
           ui.dropdownCheck({
             className: 'dropdown-fontsize',
             items: options.fontSizes,
-            click: function () {
-              summernote.invoke('editor.fontSize');
+            click: function (event) {
+              summernote.invoke('editor.fontSize', $(event.target).data('value'));
             }
           })
         ]).render();
       });
 
-      addButton('color', function (summernote) {
+      summernote.addButton('color', function () {
         return ui.buttonGroup({
           className: 'note-color',
           children: [
@@ -227,8 +211,7 @@ define([
         }).render();
       });
 
-      addButton('ol',  function (summernote) {
-        var ui = $.summernote.ui;
+      summernote.addButton('ol',  function () {
         return ui.button({
           contents: '<i class="fa fa-list-ul"/>',
           tooltip: lang.lists.unordered + representShortcut('insertUnorderedList'),
@@ -238,8 +221,7 @@ define([
         }).render();
       });
 
-      addButton('ul', function (summernote) {
-        var ui = $.summernote.ui;
+      summernote.addButton('ul', function () {
         return ui.button({
           contents: '<i class="fa fa-list-ol"/>',
           tooltip: lang.lists.ordered + representShortcut('insertOrderedList'),
@@ -249,7 +231,7 @@ define([
         }).render();
       });
 
-      addButton('paragraph', function (summernote) {
+      summernote.addButton('paragraph', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -316,8 +298,7 @@ define([
         ]).render();
       });
 
-
-      addButton('height', function (summernote) {
+      summernote.addButton('height', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -337,7 +318,7 @@ define([
         ]).render();
       });
 
-      addButton('table', function (summernote) {
+      summernote.addButton('table', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -371,9 +352,7 @@ define([
         }).render();
       });
 
-      addButton('link', function (summernote) {
-        var ui = $.summernote.ui;
-
+      summernote.addButton('link', function () {
         return ui.button({
           contents: '<i class="fa fa-link"/>',
           tooltip: lang.link.link,
@@ -383,9 +362,7 @@ define([
         }).render();
       });
 
-      addButton('picture', function (summernote) {
-        var ui = $.summernote.ui;
-
+      summernote.addButton('picture', function () {
         return ui.button({
           contents: '<i class="fa fa-picture-o"/>',
           tooltip: lang.image.image,
@@ -395,8 +372,7 @@ define([
         }).render();
       });
 
-      addButton('hr', function (summernote) {
-        var ui = $.summernote.ui;
+      summernote.addButton('hr', function () {
         return ui.button({
           contents: '<i class="fa fa-minus"/>',
           tooltip: lang.hr.insert + representShortcut('insertHorizontalRule'),
@@ -406,9 +382,7 @@ define([
         }).render();
       });
 
-      addButton('fullscreen', function (summernote) {
-        var ui = $.summernote.ui;
-
+      summernote.addButton('fullscreen', function () {
         return ui.button({
           className: 'btn-fullscreen',
           contents: '<i class="fa fa-arrows-alt"/>',
@@ -419,7 +393,7 @@ define([
         }).render();
       });
 
-      addButton('codeview', function (summernote) {
+      summernote.addButton('codeview', function () {
         return ui.button({
           className: 'btn-codeview',
           contents: '<i class="fa fa-code"/>',
