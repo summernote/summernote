@@ -83,7 +83,7 @@ define([
     this.createInvokeHandler = function (namespace, value) {
       return function (event) {
         event.preventDefault();
-        self.invoke(namespace, value || $(event.currentTarget).data('value'));
+        self.invoke(namespace, value || $(event.target).data('value') || $(event.currentTarget).data('value'));
       };
     };
 
