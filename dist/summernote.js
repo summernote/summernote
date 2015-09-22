@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-09-22T14:02Z
+ * Date: 2015-09-22T14:32Z
  */
 (function (factory) {
   /* global define */
@@ -17,8 +17,6 @@
     // Browser globals: jQuery
     factory(window.jQuery);
   }
-
-
 }(function ($) {
   
 
@@ -377,6 +375,16 @@
       ui.removeLayout($note, this.layoutInfo);
     };
 
+    this.code = function (html) {
+      if (html === undefined) {
+        var isActivated = this.invoke('codeview.isActivated');
+        this.invoke('codeview.sync');
+        return isActivated ? this.layoutInfo.codable.val() : this.layoutInfo.editable.html();
+      }
+
+      this.layoutInfo.editable.html(html);
+    };
+
     this.triggerEvent = function () {
       var namespace = list.head(arguments);
       var args = list.tail(list.from(arguments));
@@ -458,10 +466,8 @@
 
       var $note = this.first();
       if (isExternalAPICalled && $note.length) {
-        var namespace = list.head(arguments);
-        var params = list.tail(list.from(arguments));
         var summernote = $note.data('summernote');
-        summernote.invoke(namespace, params);
+        return summernote.invoke.apply(summernote, list.from(arguments));
       }
     }
   });

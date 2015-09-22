@@ -42,6 +42,16 @@ define([
       ui.removeLayout($note, this.layoutInfo);
     };
 
+    this.code = function (html) {
+      if (html === undefined) {
+        var isActivated = this.invoke('codeview.isActivated');
+        this.invoke('codeview.sync');
+        return isActivated ? this.layoutInfo.codable.val() : this.layoutInfo.editable.html();
+      }
+
+      this.layoutInfo.editable.html(html);
+    };
+
     this.triggerEvent = function () {
       var namespace = list.head(arguments);
       var args = list.tail(list.from(arguments));
@@ -123,10 +133,8 @@ define([
 
       var $note = this.first();
       if (isExternalAPICalled && $note.length) {
-        var namespace = list.head(arguments);
-        var params = list.tail(list.from(arguments));
         var summernote = $note.data('summernote');
-        summernote.invoke(namespace, params);
+        return summernote.invoke.apply(summernote, list.from(arguments));
       }
     }
   });
