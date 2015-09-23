@@ -32,6 +32,12 @@ define([
 
     this.initialize = function () {
 
+      this.makeToolbarButton();
+      this.makeImagePopoverButton();
+      this.makeLinkPopoverButton();
+    };
+
+    this.makeToolbarButton = function () {
       summernote.addButton('style', function () {
         return ui.buttonGroup([
           ui.button({
@@ -363,6 +369,92 @@ define([
         }).render();
       });
 
+    };
+
+    /**
+     *  image : [
+     ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
+     ['float', ['floatLeft', 'floatRight', 'floatNone' ]],
+     ['remove', ['removeMedia']]
+     ],
+     */
+    this.makeImagePopoverButton = function () {
+
+      // Image Size Buttons
+      summernote.addButton('imageSize100', function (summernote) {
+        return ui.button({
+          contents: '<span class="note-fontsize-10">100%</span>',
+          tooltip: lang.image.resizeFull,
+          click: summernote.createInvokeHandler('editor.resize', '1')
+        }).render();
+      });
+      summernote.addButton('imageSize50', function (summernote) {
+        return  ui.button({
+          contents: '<span class="note-fontsize-10">50%</span>',
+          tooltip: lang.image.resizeHalf,
+          click: summernote.createInvokeHandler('editor.resize', '0.5')
+        }).render();
+      });
+      summernote.addButton('imageSize25', function (summernote) {
+        return ui.button({
+          contents: '<span class="note-fontsize-10">25%</span>',
+          tooltip: lang.image.resizeQuarter,
+          click: summernote.createInvokeHandler('editor.resize', '0.25')
+        }).render();
+      });
+
+      // Float Buttons
+      summernote.addButton('floatLeft', function (summernote) {
+        return ui.button({
+          contents: '<i class="fa fa-align-left"/>',
+          tooltip: lang.image.floatLeft,
+          click: summernote.createInvokeHandler('editor.floatMe', 'left')
+        }).render();
+      });
+
+      summernote.addButton('floatRight', function (summernote) {
+        return ui.button({
+          contents: '<i class="fa fa-align-right"/>',
+          tooltip: lang.image.floatRight,
+          click: summernote.createInvokeHandler('editor.floatMe', 'right')
+        }).render();
+      });
+
+      summernote.addButton('floatNone', function (summernote) {
+        return ui.button({
+          contents: '<i class="fa fa-align-justify"/>',
+          tooltip: lang.image.floatNone,
+          click: summernote.createInvokeHandler('editor.floatMe', 'none')
+        }).render();
+      });
+
+      // Remove Buttons
+
+      summernote.addButton('removeMedia', function (summernote) {
+        return ui.button({
+          contents: '<i class="fa fa-trash-o"/>',
+          tooltip: lang.image.remove,
+          click: summernote.createInvokeHandler('editor.removeMedia')
+        }).render();
+      });
+    };
+
+    this.makeLinkPopoverButton = function () {
+      summernote.addButton('linkDialogShow', function (summernote) {
+        return ui.button({
+          contents: '<i class="fa fa-link"/>',
+          tooltip: lang.link.edit,
+          click: summernote.createInvokeHandler('linkDialog.show')
+        }).render();
+      });
+
+      summernote.addButton('unlink', function (summernote) {
+        return ui.button({
+          contents: '<i class="fa fa-unlink"/>',
+          tooltip: lang.link.unlink,
+          click: summernote.createInvokeHandler('editor.unlink')
+        }).render();
+      });
     };
 
     this.updateCurrentStyle = function () {

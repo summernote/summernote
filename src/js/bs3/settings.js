@@ -165,6 +165,17 @@ define([
         ['help', ['help']]
       ],
 
+      popover : {
+        image : [
+          ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
+          ['float', ['floatLeft', 'floatRight', 'floatNone' ]],
+          ['remove', ['removeMedia']]
+        ],
+        link : [
+          ['link', ['linkDialogShow', 'unlink']]
+        ]
+      },
+
       width: null,
       height: null,
 

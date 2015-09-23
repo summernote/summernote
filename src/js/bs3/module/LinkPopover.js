@@ -9,28 +9,18 @@ define([
 
     var $note = summernote.layoutInfo.note;
     var $editingArea = summernote.layoutInfo.editingArea;
-    var lang = summernote.options.langInfo;
+    var options = summernote.options;
 
     var $popover = ui.popover({
-      children: [
-        ui.buttonGroup([
-          ui.button({
-            contents: '<i class="fa fa-link"/>',
-            tooltip: lang.link.edit,
-            click: summernote.createInvokeHandler('linkDialog.show')
-          }),
-          ui.button({
-            contents: '<i class="fa fa-unlink"/>',
-            tooltip: lang.link.unlink,
-            click: summernote.createInvokeHandler('editor.unlink')
-          })
-        ])
-      ]
+      className: 'note-link-popover'
     }).render();
 
     $editingArea.append($popover);
 
     this.initialize = function () {
+
+      summernote.generateButtons($popover.find(".popover-content"), options.popover.link);
+
       $note.on('summernote.keyup summernote.mouseup summernote.change', function (customEvent, event) {
         self.update(event.target);
       }).on('summernote.scroll', function () {

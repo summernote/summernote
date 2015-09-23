@@ -23,7 +23,7 @@ define([
       this.layoutInfo = ui.createLayout($note);
 
       Object.keys(this.options.buttons).forEach(function (key) {
-        var button = new self.options.buttons[key];
+        var button = self.options.buttons[key];
         self.addButton(key, button);
       });
 
@@ -83,6 +83,31 @@ define([
         this.buttons[key].destroy();
       }
       delete this.buttons[key];
+    };
+
+    this.generateButtons = function ($container, buttonArray) {
+      buttonArray = buttonArray || [];
+
+      for (var groupIndex = 0, groupLength = buttonArray.length; groupIndex < groupLength; groupIndex++) {
+        var group = buttonArray[groupIndex];
+        var groupName = group[0];
+        var buttonList = group[1];
+
+        var $groupElement = ui.buttonGroup().render();
+        $groupElement.addClass('note-' + groupName);
+
+        for (var buttonIndex = 0, buttonLength = buttonList.length; buttonIndex < buttonLength; buttonIndex++) {
+          var buttonName = buttonList[buttonIndex];
+          var button = this.buttons[buttonName];
+
+          if (button) {
+            $groupElement.append(typeof button === 'function' ? button.call(this, this) : button);
+          }
+
+        }
+        $container.append($groupElement);
+      }
+
     };
 
     this.createInvokeHandler = function (namespace, value) {
