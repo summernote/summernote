@@ -7,6 +7,7 @@ define([
   'summernote/base/module/Statusbar',
   'summernote/base/module/Fullscreen',
   'summernote/base/module/Handle',
+  'summernote/bs3/module/Button',
   'summernote/bs3/module/Toolbar',
   'summernote/bs3/module/LinkDialog',
   'summernote/bs3/module/LinkPopover',
@@ -15,7 +16,7 @@ define([
 ], function (
   ui,
   Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle,
-  Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover
+  Button, Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover
 ) {
 
   $.summernote = $.extend($.summernote, {
@@ -137,14 +138,44 @@ define([
         'statusbar': Statusbar,
         'fullscreen': Fullscreen,
         'handle': Handle,
+        'button' : Button,
         'toolbar': Toolbar,
         'linkDialog': LinkDialog,
         'linkPopover': LinkPopover,
         'imageDialog': ImageDialog,
         'imagePopover': ImagePopover
       },
+
+      buttons : { },
       
       lang: 'en-US',
+
+      // toolbar
+      toolbar: [
+        ['style', ['style']],
+        ['font', ['bold', 'italic', 'underline', 'clear']],
+        // ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+        ['fontname', ['fontname']],
+        ['fontsize', ['fontsize']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['height', ['height']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture', 'hr']],
+        ['view', ['fullscreen', 'codeview']],
+        ['help', ['help']]
+      ],
+
+      popover : {
+        image : [
+          ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
+          ['float', ['floatLeft', 'floatRight', 'floatNone' ]],
+          ['remove', ['removeMedia']]
+        ],
+        link : [
+          ['link', ['linkDialogShow', 'unlink']]
+        ]
+      },
 
       width: null,
       height: null,
