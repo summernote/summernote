@@ -411,23 +411,27 @@ define([
         return tplPopover('note-link-popover', content);
       };
       var tplTablePopover = function () {
-        var addRowDownButton = tplButton('<span class="note-table-addrowdown"><i class="fa fa-arrow-circle-o-down"></i></span>', {
+        var addRowDownButton = tplButton('<span class="note-table-addrowdown"><i class="fa fa-plus"></i></span>', {
           event: 'addRow',
-          value: 'bottom'
+          value: 'bottom',
+          className: 'btn-xs'
         });
-        var addRowUpButton = tplButton('<span class="note-table-addrowdown"><i class="fa fa-arrow-circle-o-up"></i></span>', {
+        var addRowUpButton = tplButton('<span class="note-table-addrowtop"><i class="fa fa-plus"></i></span>', {
           event: 'addRow',
-          value: 'top'
+          value: 'top',
+          className: 'btn-xs'
         });
-        var addColLeftButton = tplButton('<span class="note-table-addrowdown"><i class="fa fa-arrow-circle-o-left"></i></span>', {
+        var addColLeftButton = tplButton('<span class="note-table-addcolleft"><i class="fa fa-plus"></i></span>', {
           event: 'addCol',
-          value: 'left'
+          value: 'left',
+          className: 'btn-xs'
         });
-        var addColRightButton = tplButton('<span class="note-table-addrowdown"><i class="fa fa-arrow-circle-o-right"></i></span>', {
+        var addColRightButton = tplButton('<span class="note-table-addcolrightn"><i class="fa fa-plus"></i></span>', {
           event: 'addCol',
-          value: 'right'
+          value: 'right',
+          className: 'btn-xs'
         });
-        var content = '<div class="btn-group">' + addRowDownButton + addRowUpButton + addColLeftButton + addColRightButton + '</div>';
+        var content = '<span style="margin-left:25px; margin-top:2px">' + addRowUpButton + '<br/>' + addColLeftButton + '<span style="margin-left:28px">' + addColRightButton + '</span><br/><span style="margin-left:25px">' + addRowDownButton + '</span>';
         return tplPopover('note-table-popover', content);
       };
 
