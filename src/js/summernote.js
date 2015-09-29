@@ -95,29 +95,24 @@ define([
       delete this.buttons[key];
     };
 
-    this.generateButtons = function ($container, buttonArray) {
-      buttonArray = buttonArray || [];
-
+    this.buildButtons = function ($container, buttonArray) {
       for (var groupIndex = 0, groupLength = buttonArray.length; groupIndex < groupLength; groupIndex++) {
         var group = buttonArray[groupIndex];
         var groupName = group[0];
         var buttonList = group[1];
 
-        var $groupElement = ui.buttonGroup().render();
-        $groupElement.addClass('note-' + groupName);
+        var $group = ui.buttonGroup({
+          className: 'note-' + groupName
+        }).render();
 
-        for (var buttonIndex = 0, buttonLength = buttonList.length; buttonIndex < buttonLength; buttonIndex++) {
-          var buttonName = buttonList[buttonIndex];
-          var button = this.buttons[buttonName];
-
+        for (var idx = 0, length = buttonList.length; idx < length; idx++) {
+          var button = this.buttons[buttonList[idx]];
           if (button) {
-            $groupElement.append(typeof button === 'function' ? button.call(this, this) : button);
+            $group.append(typeof button === 'function' ? button(this) : button);
           }
-
         }
-        $container.append($groupElement);
+        $container.append($group);
       }
-
     };
 
     this.createInvokeHandler = function (namespace, value) {

@@ -32,14 +32,13 @@ define([
                  '</div>';
       var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
 
-      $container.append(ui.dialog({
-        className: 'note-image-dialog',
+      this.$dialog = ui.dialog({
         title: lang.image.insert,
         body: body,
         footer: footer
-      }).render());
+      }).render();
 
-      this.$dialog = $container.find('.note-image-dialog');
+      $container.append(this.$dialog);
     };
 
     this.bindEnterKey = function ($input, $btn) {

@@ -78,7 +78,7 @@ define([
       '<div class="modal-content">',
       (options.title ?
       '<div class="modal-header">' +
-        '<button type="button" class="close" tabindex="-1">&times;</button>' +
+        '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
         '<h4 class="modal-title">' + options.title + '</h4>' +
       '</div>' : ''
       ),

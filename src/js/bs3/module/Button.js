@@ -4,7 +4,6 @@ define([
   'summernote/base/core/list',
   'summernote/base/core/agent'
 ], function ($, func, list, agent) {
-
   var Button = function (summernote) {
     var self = this;
     var ui = $.summernote.ui;
@@ -12,7 +11,6 @@ define([
     var $toolbar = summernote.layoutInfo.toolbar;
     var options = summernote.options;
     var lang = options.langInfo;
-
 
     var invertedKeyMap = func.invertObject(options.keyMap[agent.isMac ? 'mac' : 'pc']);
 
@@ -31,13 +29,12 @@ define([
     };
 
     this.initialize = function () {
-
-      this.makeToolbarButton();
-      this.makeImagePopoverButton();
-      this.makeLinkPopoverButton();
+      this.addToolbarButtons();
+      this.addImagePopoverButtons();
+      this.addLinkPopoverButtons();
     };
 
-    this.makeToolbarButton = function () {
+    this.addToolbarButtons = function () {
       summernote.addButton('style', function () {
         return ui.buttonGroup([
           ui.button({
@@ -369,6 +366,13 @@ define([
         }).render();
       });
 
+      summernote.addButton('help', function () {
+        return ui.button({
+          contents: '<i class="fa fa-question"/>',
+          tooltip: lang.options.help,
+          click: summernote.createInvokeHandler('helpDialog.show')
+        }).render();
+      });
     };
 
     /**
@@ -378,8 +382,7 @@ define([
      ['remove', ['removeMedia']]
      ],
      */
-    this.makeImagePopoverButton = function () {
-
+    this.addImagePopoverButtons = function () {
       // Image Size Buttons
       summernote.addButton('imageSize100', function (summernote) {
         return ui.button({
@@ -429,7 +432,6 @@ define([
       });
 
       // Remove Buttons
-
       summernote.addButton('removeMedia', function (summernote) {
         return ui.button({
           contents: '<i class="fa fa-trash-o"/>',
@@ -439,7 +441,7 @@ define([
       });
     };
 
-    this.makeLinkPopoverButton = function () {
+    this.addLinkPopoverButtons = function () {
       summernote.addButton('linkDialogShow', function (summernote) {
         return ui.button({
           contents: '<i class="fa fa-link"/>',
@@ -556,29 +558,6 @@ define([
       }
 
       $dimensionDisplay.html(dim.c + ' x ' + dim.r);
-    };
-
-    this.updateFullscreen = function (isFullscreen) {
-      ui.toggleBtnActive($toolbar.find('.btn-fullscreen'), isFullscreen);
-    };
-
-    this.updateCodeview = function (isCodeview) {
-      ui.toggleBtnActive($toolbar.find('.btn-codeview'), isCodeview);
-      if (isCodeview) {
-        this.deactivate();
-      } else {
-        this.activate();
-      }
-    };
-
-    this.activate = function () {
-      var $btn = $toolbar.find('button').not('.btn-codeview');
-      ui.toggleBtn($btn, true);
-    };
-
-    this.deactivate = function () {
-      var $btn = $toolbar.find('button').not('.btn-codeview');
-      ui.toggleBtn($btn, false);
     };
   };
 

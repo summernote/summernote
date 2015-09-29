@@ -12,11 +12,12 @@ define([
   'summernote/bs3/module/LinkDialog',
   'summernote/bs3/module/LinkPopover',
   'summernote/bs3/module/ImageDialog',
-  'summernote/bs3/module/ImagePopover'
+  'summernote/bs3/module/ImagePopover',
+  'summernote/bs3/module/HelpDialog'
 ], function (
   ui,
   Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle,
-  Button, Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover
+  Button, Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover, HelpDialog
 ) {
 
   $.summernote = $.extend($.summernote, {
@@ -143,10 +144,11 @@ define([
         'linkDialog': LinkDialog,
         'linkPopover': LinkPopover,
         'imageDialog': ImageDialog,
-        'imagePopover': ImagePopover
+        'imagePopover': ImagePopover,
+        'helpDialog': HelpDialog
       },
 
-      buttons : { },
+      buttons: {},
       
       lang: 'en-US',
 
@@ -154,7 +156,6 @@ define([
       toolbar: [
         ['style', ['style']],
         ['font', ['bold', 'italic', 'underline', 'clear']],
-        // ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
         ['fontname', ['fontname']],
         ['fontsize', ['fontsize']],
         ['color', ['color']],
@@ -166,13 +167,13 @@ define([
         ['help', ['help']]
       ],
 
-      popover : {
-        image : [
+      popover: {
+        image: [
           ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
-          ['float', ['floatLeft', 'floatRight', 'floatNone' ]],
+          ['float', ['floatLeft', 'floatRight', 'floatNone']],
           ['remove', ['removeMedia']]
         ],
-        link : [
+        link: [
           ['link', ['linkDialogShow', 'unlink']]
         ]
       },

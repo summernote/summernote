@@ -18,15 +18,13 @@ define([
     $editingArea.append($popover);
 
     this.initialize = function () {
-
-      summernote.generateButtons($popover.find('.popover-content'), options.popover.image);
+      summernote.buildButtons($popover.find('.popover-content'), options.popover.image);
 
       $note.on('summernote.keyup summernote.mouseup summernote.change', function (customEvent, event) {
         self.update(event.target);
       }).on('summernote.scroll', function () {
         self.update(summernote.invoke('editor.restoreTarget'));
       });
-
     };
 
     this.posFromPlaceholder = function (placeholder) {

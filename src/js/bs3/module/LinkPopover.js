@@ -19,8 +19,7 @@ define([
 
     this.initialize = function () {
 
-      summernote.generateButtons($popover.find('.popover-content'), options.popover.link);
-
+      summernote.buildButtons($popover.find('.popover-content'), options.popover.link);
       $note.on('summernote.keyup summernote.mouseup summernote.change', function (customEvent, event) {
         self.update(event.target);
       }).on('summernote.scroll', function () {
