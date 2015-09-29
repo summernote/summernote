@@ -21,7 +21,7 @@ define([
 
     this.initialize = function () {
       // create layout info
-      this.layoutInfo = ui.createLayout($note);
+      this.layoutInfo = ui.createLayout($note, options);
 
       // initialize module
       Object.keys(this.options.modules).forEach(function (key) {

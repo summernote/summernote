@@ -5,10 +5,10 @@ define(function () {
     var $document = $(document);
     var $statusbar = summernote.layoutInfo.statusbar;
     var $editable = summernote.layoutInfo.editable;
+    var options = summernote.options;
 
     this.initialize = function () {
-      var options = summernote.options;
-      if (options.disableResizeEditor) {
+      if (options.airMode || options.disableResizeEditor) {
         return;
       }
 

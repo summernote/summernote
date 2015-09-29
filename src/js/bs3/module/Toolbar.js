@@ -7,6 +7,10 @@ define([], function () {
     var options = summernote.options;
 
     this.initialize = function () {
+      if (options.airMode) {
+        return;
+      }
+
       options.toolbar = options.toolbar || [];
 
       if (!options.toolbar.length) {

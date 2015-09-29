@@ -1,7 +1,7 @@
 define([
   'summernote/base/renderer'
 ], function (renderer) {
-  var editor = renderer.create('<div class="note-editor panel panel-default"/>');
+  var editor = renderer.create('<div class="note-editor note-frame panel panel-default"/>');
   var toolbar = renderer.create('<div class="note-toolbar panel-heading"/>');
   var editingArea = renderer.create('<div class="note-editing-area"/>');
   var codable = renderer.create('<textarea class="note-codable"/>');
@@ -15,6 +15,9 @@ define([
     '  </div>',
     '</div>'
   ].join(''));
+
+  var airEditor = renderer.create('<div class="note-editor"/>');
+  var airEditable = renderer.create('<div class="note-editable" contentEditable="true"/>');
 
   var buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
   var button = renderer.create('<button class="note-btn btn btn-default btn-sm">', function ($node, options) {
@@ -105,6 +108,8 @@ define([
     codable: codable,
     editable: editable,
     statusbar: statusbar,
+    airEditor: airEditor,
+    airEditable: airEditable,
     buttonGroup: buttonGroup,
     button: button,
     dropdown: dropdown,
@@ -138,15 +143,19 @@ define([
       $dialog.modal('hide');
     },
 
-    createLayout: function ($note) {
-      var $editor = ui.editor([
+    createLayout: function ($note, options) {
+      var $editor = (options.airMode ? ui.airEditor([
+        ui.editingArea([
+          ui.airEditable()
+        ])
+      ]) : ui.editor([
         ui.toolbar(),
         ui.editingArea([
           ui.codable(),
           ui.editable()
         ]),
         ui.statusbar()
-      ]).render();
+      ])).render();
 
       $editor.insertAfter($note);
 

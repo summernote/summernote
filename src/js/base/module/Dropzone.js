@@ -16,7 +16,7 @@ define(function () {
      * attach Drag and Drop Events
      */
     this.initialize = function () {
-      if (options.airMode || options.disableDragAndDrop) {
+      if (options.disableDragAndDrop) {
         // prevent default drop event
         $document.on('drop', function (e) {
           e.preventDefault();

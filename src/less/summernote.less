@@ -5,10 +5,9 @@
 @border-color: #a9a9a9;
 @background-color: #f5f5f5;
 
-/* Frame Mode Layout
+/* Layout
  ------------------------------------------*/
 .note-editor {
-  border: 1px solid @border-color;
   position: relative;
 
   /* dropzone */
@@ -40,6 +39,20 @@
     display: table;
   }
 
+  .note-editing-area {
+    position: relative;
+
+    .note-editable {
+      outline: none;
+    }
+  }
+}
+
+/* Frame mode layout
+------------------------------------------*/
+.note-editor.note-frame {
+  border: 1px solid @border-color;
+
   /* codeview mode */
   &.codeview {
     .note-editing-area {
@@ -52,23 +65,7 @@
     }
   }
 
-  /* fullscreen mode */
-  &.fullscreen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1050; /* bs3 modal-backdrop: 1030, bs2: 1040 */
-    .note-editable {
-      background-color: white;
-    }
-    .note-resizebar {
-      display: none;
-    }
-  }
-
   .note-editing-area {
-    position: relative;
     overflow: hidden;
 
     /* editable */
@@ -77,7 +74,6 @@
       color: #000;
       padding: 10px;
       overflow: auto;
-      outline: none;
 
       &[contenteditable=true]:empty:not(:focus):before {
         content:attr(data-placeholder);
@@ -107,6 +103,21 @@
     }
   }
 
+  /* fullscreen mode */
+  &.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1050; /* bs3 modal-backdrop: 1030, bs2: 1040 */
+    .note-editable {
+      background-color: white;
+    }
+    .note-resizebar {
+      display: none;
+    }
+  }
+
   /* statusbar */
   .note-statusbar {
     background-color: @background-color;
@@ -124,12 +135,6 @@
       }
     }
   }
-}
-
-/* Air Mode Layout
-------------------------------------------*/
-.note-air-editor {
-  outline: none;
 }
 
 /* Popover

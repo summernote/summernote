@@ -25,6 +25,7 @@ define([
   var Editor = function (summernote) {
     var self = this;
 
+    var $note = summernote.layoutInfo.note;
     var $editable = summernote.layoutInfo.editable;
     var options = summernote.options;
 
@@ -50,9 +51,11 @@ define([
         summernote.triggerEvent('scroll', event);
       });
 
-      if (options.height) {
+      if (!options.airMode && options.height) {
         $editable.height(options.height);
       }
+
+      $editable.html($note.html());
     };
 
     this.destroy = function () {
