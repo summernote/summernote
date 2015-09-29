@@ -27,14 +27,12 @@ define([
                  );
       var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
 
-      $container.append(ui.dialog({
+      this.$dialog = ui.dialog({
         className: 'link-dialog',
         title: lang.link.insert,
         body: body,
         footer: footer
-      }).render());
-
-      this.$dialog = $container.find('.link-dialog');
+      }).render().appendTo($container);
     };
 
     this.bindEnterKey = function ($input, $btn) {

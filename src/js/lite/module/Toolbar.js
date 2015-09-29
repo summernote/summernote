@@ -4,7 +4,7 @@ define(function () {
     var $toolbar = summernote.layoutInfo.toolbar;
 
     this.initialize = function () {
-      var $btnGroup = ui.buttonGroup([
+      ui.buttonGroup([
         ui.button({
           contents: 'bold',
           click: summernote.createInvokeHandler('editor.bold')
@@ -13,9 +13,7 @@ define(function () {
           contents: 'italic',
           click: summernote.createInvokeHandler('editor.italic')
         })
-      ]).render();
-
-      $toolbar.append($btnGroup);
+      ]).render().appendTo($toolbar);
     };
 
     this.destroy = function () {

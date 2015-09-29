@@ -36,9 +36,7 @@ define([
         title: lang.image.insert,
         body: body,
         footer: footer
-      }).render();
-
-      $container.append(this.$dialog);
+      }).render().appendTo($container);
     };
 
     this.bindEnterKey = function ($input, $btn) {

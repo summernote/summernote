@@ -111,7 +111,7 @@ define([
             $group.append(typeof button === 'function' ? button(this) : button);
           }
         }
-        $container.append($group);
+        $group.appendTo($container);
       }
     };
 

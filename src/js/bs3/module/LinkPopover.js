@@ -13,9 +13,7 @@ define([
 
     var $popover = ui.popover({
       className: 'note-link-popover'
-    }).render();
-
-    $editingArea.append($popover);
+    }).render().appendTo($editingArea);;
 
     this.initialize = function () {
       summernote.buildButtons($popover.find('.popover-content'), options.popover.link);

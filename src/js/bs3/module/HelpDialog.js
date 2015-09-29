@@ -23,9 +23,7 @@ define([
       this.$dialog = ui.dialog({
         title: lang.options.help,
         body: body
-      }).render();
-
-      $container.append(this.$dialog);
+      }).render().appendTo($container);
     };
 
     /**
