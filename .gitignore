@@ -1,5 +1,6 @@
 # vim editing
 *.swp
+*.swo
 .tern-port
 .DS_Store
 

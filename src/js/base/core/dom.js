@@ -152,6 +152,18 @@ define([
     };
 
     /**
+     * @method isElement
+     *
+     *
+     *
+     * @param {Node} node
+     * @return {Boolean} true if node's type is element(1)
+     */
+    var isElement = function (node) {
+      return node && node.nodeType === 1;
+    };
+
+    /**
      * ex) br, col, embed, hr, img, input, ...
      * @see http://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
      */
@@ -1053,6 +1065,7 @@ define([
       buildLayoutInfo: buildLayoutInfo,
       makeLayoutInfo: makeLayoutInfo,
       isText: isText,
+      isElement: isElement,
       isVoid: isVoid,
       isPara: isPara,
       isPurePara: isPurePara,

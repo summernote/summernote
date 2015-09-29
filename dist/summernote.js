@@ -6,15 +6,18 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-09-22T14:32Z
+ * Date: 2015-09-29T07:27Z
  */
 (function (factory) {
   /* global define */
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
     define(['jquery'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    // Node/CommonJS
+    module.exports = factory(require('jquery'));
   } else {
-    // Browser globals: jQuery
+    // Browser globals
     factory(window.jQuery);
   }
 }(function ($) {
@@ -348,12 +351,15 @@
 
     var ui = $.summernote.ui;
     this.modules = {};
+    this.buttons = {};
     this.layoutInfo = {};
     this.options = options;
 
     this.initialize = function () {
+      // create layout info
       this.layoutInfo = ui.createLayout($note);
 
+      // initialize module
       Object.keys(this.options.modules).forEach(function (key) {
         var module = new self.options.modules[key](self);
         if (module.initialize) {
@@ -361,6 +367,13 @@
         }
         self.addModule(key, module);
       });
+
+      // add optional buttons
+      Object.keys(this.options.buttons).forEach(function (key) {
+        var button = self.options.buttons[key];
+        self.addButton(key, button);
+      });
+
       $note.hide();
 
       this.triggerEvent('ready');
@@ -396,10 +409,6 @@
       $note.trigger('summernote.' + namespace, args);
     };
 
-    this.removeLayout = function ($note) {
-      $note.editor.remove();
-    };
-
     this.addModule = function (key, instance) {
       this.modules[key] = instance;
     };
@@ -411,10 +420,41 @@
       delete this.modules[key];
     };
 
+    this.addButton = function (key, handler) {
+      this.buttons[key] = handler;
+    };
+
+    this.removeButton = function (key) {
+      if (this.buttons[key].destroy) {
+        this.buttons[key].destroy();
+      }
+      delete this.buttons[key];
+    };
+
+    this.buildButtons = function ($container, buttonArray) {
+      for (var groupIndex = 0, groupLength = buttonArray.length; groupIndex < groupLength; groupIndex++) {
+        var group = buttonArray[groupIndex];
+        var groupName = group[0];
+        var buttonList = group[1];
+
+        var $group = ui.buttonGroup({
+          className: 'note-' + groupName
+        }).render();
+
+        for (var idx = 0, length = buttonList.length; idx < length; idx++) {
+          var button = this.buttons[buttonList[idx]];
+          if (button) {
+            $group.append(typeof button === 'function' ? button(this) : button);
+          }
+        }
+        $group.appendTo($container);
+      }
+    };
+
     this.createInvokeHandler = function (namespace, value) {
       return function (event) {
         event.preventDefault();
-        self.invoke(namespace, value || $(event.target).data('value'));
+        self.invoke(namespace, value || $(event.target).data('value') || $(event.currentTarget).data('value'));
       };
     };
 
@@ -427,11 +467,11 @@
       var moduleName = hasSeparator && list.head(splits);
       var methodName = hasSeparator ? list.last(splits) : list.head(splits);
 
-      var module = this.modules[moduleName];
-      if (module && module[methodName]) {
-        return module[methodName].apply(module, args);
-      } else if (this[methodName]) {
+      var module = this.modules[moduleName || 'editor'];
+      if (!moduleName && this[methodName]) {
         return this[methodName].apply(this, args);
+      } else if (module && module[methodName]) {
+        return module[methodName].apply(module, args);
       }
     };
 
@@ -607,7 +647,7 @@
       '<div class="modal-content">',
       (options.title ?
       '<div class="modal-header">' +
-        '<button type="button" class="close" tabindex="-1">&times;</button>' +
+        '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
         '<h4 class="modal-title">' + options.title + '</h4>' +
       '</div>' : ''
       ),
@@ -993,6 +1033,18 @@
      */
     var isText = function (node) {
       return node && node.nodeType === 3;
+    };
+
+    /**
+     * @method isElement
+     *
+     *
+     *
+     * @param {Node} node
+     * @return {Boolean} true if node's type is element(1)
+     */
+    var isElement = function (node) {
+      return node && node.nodeType === 1;
     };
 
     /**
@@ -1870,6 +1922,18 @@
       return markup;
     };
 
+    var posFromPlaceholder = function (placeholder) {
+      var $placeholder = $(placeholder);
+      var pos = $placeholder.position();
+      var height = $placeholder.outerHeight(true); // include margin
+
+      // popover below placeholder.
+      return {
+        left: pos.left,
+        top: pos.top + height
+      };
+    };
+
     return {
       /** @property {String} NBSP_CHAR */
       NBSP_CHAR: NBSP_CHAR,
@@ -1885,6 +1949,7 @@
       buildLayoutInfo: buildLayoutInfo,
       makeLayoutInfo: makeLayoutInfo,
       isText: isText,
+      isElement: isElement,
       isVoid: isVoid,
       isPara: isPara,
       isPurePara: isPurePara,
@@ -1952,7 +2017,8 @@
       removeWhile: removeWhile,
       replace: replace,
       html: html,
-      value: value
+      value: value,
+      posFromPlaceholder: posFromPlaceholder
     };
   })();
 
@@ -2976,7 +3042,7 @@
      * @return {Object} - object contains style properties.
      */
     this.current = function (rng) {
-      var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
+      var $cont = $(!dom.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
       var styleInfo = this.fromNode($cont);
 
       // document.queryCommandState for toggle state
@@ -3391,8 +3457,10 @@
     var history = new History($editable);
 
     this.initialize = function () {
-      var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
-      this.bindKeyMap(keyMap);
+      // bind keymap
+      if (options.shortcuts) {
+        this.bindKeyMap();
+      }
 
       $editable.on('keyup', function (event) {
         summernote.triggerEvent('keyup', event);
@@ -3413,7 +3481,8 @@
       $editable.off('keydown');
     };
 
-    this.bindKeyMap = function (keyMap) {
+    this.bindKeyMap = function () {
+      var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       $editable.on('keydown', function (event) {
         var keys = [];
 
@@ -3428,12 +3497,10 @@
 
         var eventName = keyMap[keys.join('+')];
         if (eventName) {
-          if (self[eventName]) {
-            self[eventName](options);
-            event.preventDefault();
-          }
+          event.preventDefault();
+          summernote.invoke(eventName);
         } else if (key.isEdit(event.keyCode)) {
-          self.afterCommand($editable);
+          self.afterCommand();
         }
       });
     };
@@ -4484,18 +4551,17 @@
     };
   };
 
-  var Toolbar = function (summernote) {
+  var Button = function (summernote) {
     var self = this;
     var ui = $.summernote.ui;
 
-    var $note = summernote.layoutInfo.note;
     var $toolbar = summernote.layoutInfo.toolbar;
     var options = summernote.options;
     var lang = options.langInfo;
 
     var invertedKeyMap = func.invertObject(options.keyMap[agent.isMac ? 'mac' : 'pc']);
 
-    this.representShortcut = function (editorMethod) {
+    var representShortcut = this.representShortcut = function (editorMethod) {
       var shortcut = invertedKeyMap[editorMethod];
       if (agent.isMac) {
         shortcut = shortcut.replace('CMD', '⌘').replace('SHIFT', '⇧');
@@ -4510,308 +4576,434 @@
     };
 
     this.initialize = function () {
-      $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
-        self.updateCurrentStyle();
-      });
+      this.addToolbarButtons();
+      this.addImagePopoverButtons();
+      this.addLinkPopoverButtons();
+    };
 
-      $toolbar.append(ui.buttonGroup([
-        ui.button({
-          className: 'dropdown-toggle',
-          contents: '<i class="fa fa-magic"/> <span class="caret"/>',
-          tooltip: lang.style.style,
-          data: {
-            toggle: 'dropdown'
-          }
-        }),
-        ui.dropdown({
-          className: 'dropdown-style',
-          items: options.styleTags,
-          click: summernote.createInvokeHandler('editor.formatBlock')
-        })
-      ]).render());
-
-      $toolbar.append(ui.buttonGroup([
-        ui.button({
-          className: 'note-btn-bold',
-          contents: '<i class="fa fa-bold"/>',
-          tooltip: lang.font.bold + this.representShortcut('bold'),
-          click: summernote.createInvokeHandler('editor.bold')
-        }),
-        ui.button({
-          className: 'note-btn-italic',
-          contents: '<i class="fa fa-italic"/>',
-          tooltip: lang.font.italic + this.representShortcut('italic'),
-          click: summernote.createInvokeHandler('editor.italic')
-        }),
-        ui.button({
-          className: 'note-btn-underline',
-          contents: '<i class="fa fa-underline"/>',
-          tooltip: lang.font.underline + this.representShortcut('underline'),
-          click: summernote.createInvokeHandler('editor.underline')
-        }),
-        ui.button({
-          contents: '<i class="fa fa-eraser"/>',
-          tooltip: lang.font.clear + this.representShortcut('removeFormat'),
-          click: summernote.createInvokeHandler('editor.removeFormat')
-        })
-      ]).render());
-
-      $toolbar.append(ui.buttonGroup([
-        ui.button({
-          className: 'dropdown-toggle',
-          contents: '<span class="note-current-fontname"/> <span class="caret"/>',
-          tooltip: lang.font.name,
-          data: {
-            toggle: 'dropdown'
-          }
-        }),
-        ui.dropdownCheck({
-          className: 'dropdown-fontname',
-          items: options.fontNames.filter(function (name) {
-            return agent.isFontInstalled(name) ||
-                   list.contains(options.fontNamesIgnoreCheck, name);
-          }),
-          click: summernote.createInvokeHandler('editor.fontName')
-        })
-      ]).render());
-
-      $toolbar.append(ui.buttonGroup([
-        ui.button({
-          className: 'dropdown-toggle',
-          contents: '<span class="note-current-fontsize"/> <span class="caret"/>',
-          tooltip: lang.font.size,
-          data: {
-            toggle: 'dropdown'
-          }
-        }),
-        ui.dropdownCheck({
-          className: 'dropdown-fontsize',
-          items: options.fontSizes,
-          click: summernote.createInvokeHandler('editor.fontSize')
-        })
-      ]).render());
-
-      $toolbar.append(ui.buttonGroup({
-        className: 'note-color',
-        children: [
-          ui.button({
-            contents: '<i class="fa fa-font note-recent-color"/>',
-            tooltip: lang.color.recent,
-            click: summernote.createInvokeHandler('editor.color'),
-            callback: function ($button) {
-              var $recentColor = $button.find('.note-recent-color');
-              $recentColor.css({
-                'background-color': 'yellow'
-              }).data('value', {
-                backColor: 'yellow'
-              });
-            }
-          }),
+    this.addToolbarButtons = function () {
+      summernote.addButton('style', function () {
+        return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: '<span class="caret"/>',
-            tooltip: lang.color.more,
+            contents: '<i class="fa fa-magic"/> <span class="caret"/>',
+            tooltip: lang.style.style,
             data: {
               toggle: 'dropdown'
             }
           }),
           ui.dropdown({
-            items: [
-              '<li>',
-              '<div class="btn-group">',
-              '  <div class="note-palette-title">' + lang.color.background + '</div>',
-              '  <div class="note-color-reset" data-event="backColor" data-value="inherit">' + lang.color.transparent + '</div>',
-              '  <div class="note-holder" data-event="backColor"/>',
-              '</div>',
-              '<div class="btn-group">',
-              '  <div class="note-palette-title">' + lang.color.foreground + '</div>',
-              '  <div class="note-color-reset" data-event="foreColor" data-value="inherit">' + lang.color.resetToDefault + '</div>',
-              '  <div class="note-holder" data-event="foreColor"/>',
-              '</div>',
-              '</li>'
-            ].join(''),
-            callback: function ($dropdown) {
-              $dropdown.find('.note-holder').each(function () {
-                var $holder = $(this);
-                $holder.append(ui.palette({
-                  colors: options.colors,
-                  eventName: $holder.data('event')
-                }).render());
-              });
-            },
-            click: function (event) {
-              var $button = $(event.target);
-              var eventName = $button.data('event');
-              var value = $button.data('value');
-
-              if (eventName && value) {
-                var key = eventName === 'backColor' ? 'background-color' : 'color';
-                var $color = $button.closest('.note-color').find('.note-recent-color');
-
-                var colorInfo = $color.data('value');
-                colorInfo[eventName] = value;
-                $color.data('value', colorInfo).css(key, value);
-
-                summernote.invoke('editor.' + eventName, value);
-              }
-            }
+            className: 'dropdown-style',
+            items: summernote.options.styleTags,
+            click: summernote.createInvokeHandler('editor.formatBlock')
           })
-        ]
-      }).render());
+        ]).render();
+      });
 
-      $toolbar.append(ui.buttonGroup({
-        className: 'note-para',
-        children: [
+      summernote.addButton('bold', function () {
+        return ui.button({
+          className: 'note-btn-bold',
+          contents: '<i class="fa fa-bold"/>',
+          tooltip: lang.font.bold + representShortcut('bold'),
+          click: summernote.createInvokeHandler('editor.bold')
+        }).render();
+      });
+
+      summernote.addButton('italic', function () {
+        return ui.button({
+          className: 'note-btn-italic',
+          contents: '<i class="fa fa-italic"/>',
+          tooltip: lang.font.italic + representShortcut('italic'),
+          click: summernote.createInvokeHandler('editor.italic')
+        }).render();
+      });
+
+      summernote.addButton('underline', function () {
+        return ui.button({
+          className: 'note-btn-underline',
+          contents: '<i class="fa fa-underline"/>',
+          tooltip: lang.font.underline + representShortcut('underline'),
+          click: summernote.createInvokeHandler('editor.underline')
+        }).render();
+      });
+
+      summernote.addButton('clear', function () {
+        return ui.button({
+          contents: '<i class="fa fa-eraser"/>',
+          tooltip: lang.font.clear + representShortcut('removeFormat'),
+          click: summernote.createInvokeHandler('editor.removeFormat')
+        }).render();
+      });
+
+      summernote.addButton('fontname', function () {
+        return ui.buttonGroup([
           ui.button({
-            contents: '<i class="fa fa-list-ul"/>',
-            tooltip: lang.lists.unordered + this.representShortcut('insertUnorderedList'),
-            click: summernote.createInvokeHandler('editor.insertUnorderedList')
+            className: 'dropdown-toggle',
+            contents: '<span class="note-current-fontname"/> <span class="caret"/>',
+            tooltip: lang.font.name,
+            data: {
+              toggle: 'dropdown'
+            }
           }),
+          ui.dropdownCheck({
+            className: 'dropdown-fontname',
+            items: options.fontNames.filter(function (name) {
+              return agent.isFontInstalled(name) ||
+                list.contains(options.fontNamesIgnoreCheck, name);
+            }),
+            click: summernote.createInvokeHandler('editor.fontName')
+          })
+        ]).render();
+      });
+
+      summernote.addButton('fontsize', function () {
+        return ui.buttonGroup([
           ui.button({
-            contents: '<i class="fa fa-list-ol"/>',
-            tooltip: lang.lists.ordered + this.representShortcut('insertOrderedList'),
-            click: summernote.createInvokeHandler('editor.insertOrderedList')
+            className: 'dropdown-toggle',
+            contents: '<span class="note-current-fontsize"/> <span class="caret"/>',
+            tooltip: lang.font.size,
+            data: {
+              toggle: 'dropdown'
+            }
           }),
-          ui.buttonGroup([
+          ui.dropdownCheck({
+            className: 'dropdown-fontsize',
+            items: options.fontSizes,
+            click: summernote.createInvokeHandler('editor.fontSize')
+          })
+        ]).render();
+      });
+
+      summernote.addButton('color', function () {
+        return ui.buttonGroup({
+          className: 'note-color',
+          children: [
+            ui.button({
+              className : 'note-current-color-button',
+              contents: '<i class="fa fa-font note-recent-color"/>',
+              tooltip: lang.color.recent,
+              click: summernote.createInvokeHandler('editor.color'),
+              callback: function ($button) {
+                var $recentColor = $button.find('.note-recent-color');
+                $recentColor.css({
+                  'background-color': 'yellow'
+                });
+
+                $button.data('value', {
+                  backColor: 'yellow'
+                });
+              }
+            }),
             ui.button({
               className: 'dropdown-toggle',
-              contents: '<i class="fa fa-align-left"/> <span class="caret"/>',
-              tooltip: lang.paragraph.paragraph,
+              contents: '<span class="caret"/>',
+              tooltip: lang.color.more,
               data: {
                 toggle: 'dropdown'
               }
             }),
-            ui.dropdown([
-              ui.buttonGroup({
-                className: 'note-align',
-                children: [
-                  ui.button({
-                    contents: '<i class="fa fa-align-left"/>',
-                    tooltip: lang.paragraph.left + this.representShortcut('justifyLeft'),
-                    click: summernote.createInvokeHandler('editor.justifyLeft')
-                  }),
-                  ui.button({
-                    contents: '<i class="fa fa-align-center"/>',
-                    tooltip: lang.paragraph.center + this.representShortcut('justifyCenter'),
-                    click: summernote.createInvokeHandler('editor.justifyCenter')
-                  }),
-                  ui.button({
-                    contents: '<i class="fa fa-align-right"/>',
-                    tooltip: lang.paragraph.right + this.representShortcut('justifyRight'),
-                    click: summernote.createInvokeHandler('editor.justifyRight')
-                  }),
-                  ui.button({
-                    contents: '<i class="fa fa-align-justify"/>',
-                    tooltip: lang.paragraph.justify + this.representShortcut('justifyFull'),
-                    click: summernote.createInvokeHandler('editor.justifyFull')
-                  })
-                ]
-              }),
-              ui.buttonGroup({
-                className: 'note-list',
-                children: [
-                  ui.button({
-                    contents: '<i class="fa fa-outdent"/>',
-                    tooltip: lang.paragraph.outdent + this.representShortcut('outdent'),
-                    click: summernote.createInvokeHandler('editor.outdent')
-                  }),
-                  ui.button({
-                    contents: '<i class="fa fa-indent"/>',
-                    tooltip: lang.paragraph.indent + this.representShortcut('indent'),
-                    click: summernote.createInvokeHandler('editor.indent')
-                  })
-                ]
-              })
-            ])
+            ui.dropdown({
+              items: [
+                '<li>',
+                '<div class="btn-group">',
+                '  <div class="note-palette-title">' + lang.color.background + '</div>',
+                '  <div class="note-color-reset" data-event="backColor" data-value="inherit">' + lang.color.transparent + '</div>',
+                '  <div class="note-holder" data-event="backColor"/>',
+                '</div>',
+                '<div class="btn-group">',
+                '  <div class="note-palette-title">' + lang.color.foreground + '</div>',
+                '  <div class="note-color-reset" data-event="foreColor" data-value="inherit">' + lang.color.resetToDefault + '</div>',
+                '  <div class="note-holder" data-event="foreColor"/>',
+                '</div>',
+                '</li>'
+              ].join(''),
+              callback: function ($dropdown) {
+                $dropdown.find('.note-holder').each(function () {
+                  var $holder = $(this);
+                  $holder.append(ui.palette({
+                    colors: options.colors,
+                    eventName: $holder.data('event')
+                  }).render());
+                });
+              },
+              click: function (event) {
+                var $button = $(event.target);
+                var eventName = $button.data('event');
+                var value = $button.data('value');
+
+                if (eventName && value) {
+                  var key = eventName === 'backColor' ? 'background-color' : 'color';
+                  var $color = $button.closest('.note-color').find('.note-recent-color');
+                  var $currentButton = $button.closest('.note-color').find('.note-current-color-button');
+
+                  var colorInfo = $currentButton.data('value');
+                  colorInfo[eventName] = value;
+                  $color.css(key, value);
+                  $currentButton.data('value', colorInfo);
+
+                  summernote.invoke('editor.' + eventName, value);
+                }
+              }
+            })
+          ]
+        }).render();
+      });
+
+      summernote.addButton('ol',  function () {
+        return ui.button({
+          contents: '<i class="fa fa-list-ul"/>',
+          tooltip: lang.lists.unordered + representShortcut('insertUnorderedList'),
+          click: summernote.createInvokeHandler('editor.insertUnorderedList')
+        }).render();
+      });
+
+      summernote.addButton('ul', function () {
+        return ui.button({
+          contents: '<i class="fa fa-list-ol"/>',
+          tooltip: lang.lists.ordered + representShortcut('insertOrderedList'),
+          click:  summernote.createInvokeHandler('editor.insertOrderedList')
+        }).render();
+      });
+
+      summernote.addButton('paragraph', function () {
+        return ui.buttonGroup([
+          ui.button({
+            className: 'dropdown-toggle',
+            contents: '<i class="fa fa-align-left"/> <span class="caret"/>',
+            tooltip: lang.paragraph.paragraph,
+            data: {
+              toggle: 'dropdown'
+            }
+          }),
+          ui.dropdown([
+            ui.buttonGroup({
+              className: 'note-align',
+              children: [
+                ui.button({
+                  contents: '<i class="fa fa-align-left"/>',
+                  tooltip: lang.paragraph.left + representShortcut('justifyLeft'),
+                  click: summernote.createInvokeHandler('editor.justifyLeft')
+                }),
+                ui.button({
+                  contents: '<i class="fa fa-align-center"/>',
+                  tooltip: lang.paragraph.center + representShortcut('justifyCenter'),
+                  click: summernote.createInvokeHandler('editor.justifyCenter')
+                }),
+                ui.button({
+                  contents: '<i class="fa fa-align-right"/>',
+                  tooltip: lang.paragraph.right + representShortcut('justifyRight'),
+                  click: summernote.createInvokeHandler('editor.justifyRight')
+                }),
+                ui.button({
+                  contents: '<i class="fa fa-align-justify"/>',
+                  tooltip: lang.paragraph.justify + representShortcut('justifyFull'),
+                  click: summernote.createInvokeHandler('editor.justifyFull')
+                })
+              ]
+            }),
+            ui.buttonGroup({
+              className: 'note-list',
+              children: [
+                ui.button({
+                  contents: '<i class="fa fa-outdent"/>',
+                  tooltip: lang.paragraph.outdent + representShortcut('outdent'),
+                  click: summernote.createInvokeHandler('editor.outdent')
+                }),
+                ui.button({
+                  contents: '<i class="fa fa-indent"/>',
+                  tooltip: lang.paragraph.indent + representShortcut('indent'),
+                  click: summernote.createInvokeHandler('editor.indent')
+                })
+              ]
+            })
           ])
-        ]
-      }).render());
+        ]).render();
+      });
 
-      $toolbar.append(ui.buttonGroup([
-        ui.button({
-          className: 'dropdown-toggle',
-          contents: '<i class="fa fa-text-height"/> <span class="caret"/>',
-          tooltip: lang.font.height,
-          data: {
-            toggle: 'dropdown'
+      summernote.addButton('height', function () {
+        return ui.buttonGroup([
+          ui.button({
+            className: 'dropdown-toggle',
+            contents: '<i class="fa fa-text-height"/> <span class="caret"/>',
+            tooltip: lang.font.height,
+            data: {
+              toggle: 'dropdown'
+            }
+          }),
+          ui.dropdownCheck({
+            items: options.lineHeights,
+            className: 'dropdown-line-height',
+            click: summernote.createInvokeHandler('editor.lineHeight')
+          })
+        ]).render();
+      });
+
+      summernote.addButton('table', function () {
+        return ui.buttonGroup([
+          ui.button({
+            className: 'dropdown-toggle',
+            contents: '<i class="fa fa-table"/> <span class="caret"/>',
+            tooltip: lang.table.table,
+            data: {
+              toggle: 'dropdown'
+            }
+          }),
+          ui.dropdown({
+            className: 'note-table',
+            items: [
+              '<div class="note-dimension-picker">',
+              '  <div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>',
+              '  <div class="note-dimension-picker-highlighted"/>',
+              '  <div class="note-dimension-picker-unhighlighted"/>',
+              '</div>',
+              '<div class="note-dimension-display">1 x 1</div>'
+            ].join('')
+          })
+        ], {
+          callback: function ($node) {
+            var $catcher = $node.find('.note-dimension-picker-mousecatcher');
+            $catcher.css({
+              width: options.insertTableMaxSize.col + 'em',
+              height: options.insertTableMaxSize.row + 'em'
+            }).click(summernote.createInvokeHandler('editor.insertTable'))
+              .on('mousemove', self.tableMoveHandler);
           }
-        }),
-        ui.dropdownCheck({
-          items: options.lineHeights,
-          className: 'dropdown-line-height',
-          click: summernote.createInvokeHandler('editor.lineHeight')
-        })
-      ]).render());
+        }).render();
+      });
 
-      $toolbar.append(ui.buttonGroup([
-        ui.button({
-          className: 'dropdown-toggle',
-          contents: '<i class="fa fa-table"/> <span class="caret"/>',
-          tooltip: lang.table.table,
-          data: {
-            toggle: 'dropdown'
-          }
-        }),
-        ui.dropdown({
-          className: 'note-table',
-          items: [
-            '<div class="note-dimension-picker">',
-            '  <div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>',
-            '  <div class="note-dimension-picker-highlighted"/>',
-            '  <div class="note-dimension-picker-unhighlighted"/>',
-            '</div>',
-            '<div class="note-dimension-display">1 x 1</div>'
-          ].join('')
-        })
-      ], {
-        callback: function ($node) {
-          var $catcher = $node.find('.note-dimension-picker-mousecatcher');
-          $catcher.css({
-            width: options.insertTableMaxSize.col + 'em',
-            height: options.insertTableMaxSize.row + 'em'
-          }).click(summernote.createInvokeHandler('editor.insertTable'))
-            .on('mousemove', self.tableMoveHandler);
-        }
-      }).render());
-
-      $toolbar.append(ui.buttonGroup([
-        ui.button({
+      summernote.addButton('link', function () {
+        return ui.button({
           contents: '<i class="fa fa-link"/>',
           tooltip: lang.link.link,
           click: summernote.createInvokeHandler('linkDialog.show')
-        }),
-        ui.button({
+        }).render();
+      });
+
+      summernote.addButton('picture', function () {
+        return ui.button({
           contents: '<i class="fa fa-picture-o"/>',
           tooltip: lang.image.image,
           click: summernote.createInvokeHandler('imageDialog.show')
-        }),
-        ui.button({
-          contents: '<i class="fa fa-minus"/>',
-          tooltip: lang.hr.insert + this.representShortcut('insertHorizontalRule'),
-          click: summernote.createInvokeHandler('editor.insertHorizontalRule')
-        })
-      ]).render());
+        }).render();
+      });
 
-      $toolbar.append(ui.buttonGroup([
-        ui.button({
+      summernote.addButton('hr', function () {
+        return ui.button({
+          contents: '<i class="fa fa-minus"/>',
+          tooltip: lang.hr.insert + representShortcut('insertHorizontalRule'),
+          click: summernote.createInvokeHandler('editor.insertHorizontalRule')
+        }).render();
+      });
+
+      summernote.addButton('fullscreen', function () {
+        return ui.button({
           className: 'btn-fullscreen',
           contents: '<i class="fa fa-arrows-alt"/>',
           tooltip: lang.options.fullscreen,
           click: summernote.createInvokeHandler('fullscreen.toggle')
-        }),
-        ui.button({
+        }).render();
+      });
+
+      summernote.addButton('codeview', function () {
+        return ui.button({
           className: 'btn-codeview',
           contents: '<i class="fa fa-code"/>',
           tooltip: lang.options.codeview,
           click: summernote.createInvokeHandler('codeview.toggle')
-        })
-      ]).render());
+        }).render();
+      });
 
-      this.updateCurrentStyle();
+      summernote.addButton('help', function () {
+        return ui.button({
+          contents: '<i class="fa fa-question"/>',
+          tooltip: lang.options.help,
+          click: summernote.createInvokeHandler('helpDialog.show')
+        }).render();
+      });
     };
 
-    this.destroy = function () {
-      $toolbar.children().remove();
+    /**
+     *  image : [
+     ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
+     ['float', ['floatLeft', 'floatRight', 'floatNone' ]],
+     ['remove', ['removeMedia']]
+     ],
+     */
+    this.addImagePopoverButtons = function () {
+      // Image Size Buttons
+      summernote.addButton('imageSize100', function (summernote) {
+        return ui.button({
+          contents: '<span class="note-fontsize-10">100%</span>',
+          tooltip: lang.image.resizeFull,
+          click: summernote.createInvokeHandler('editor.resize', '1')
+        }).render();
+      });
+      summernote.addButton('imageSize50', function (summernote) {
+        return  ui.button({
+          contents: '<span class="note-fontsize-10">50%</span>',
+          tooltip: lang.image.resizeHalf,
+          click: summernote.createInvokeHandler('editor.resize', '0.5')
+        }).render();
+      });
+      summernote.addButton('imageSize25', function (summernote) {
+        return ui.button({
+          contents: '<span class="note-fontsize-10">25%</span>',
+          tooltip: lang.image.resizeQuarter,
+          click: summernote.createInvokeHandler('editor.resize', '0.25')
+        }).render();
+      });
+
+      // Float Buttons
+      summernote.addButton('floatLeft', function (summernote) {
+        return ui.button({
+          contents: '<i class="fa fa-align-left"/>',
+          tooltip: lang.image.floatLeft,
+          click: summernote.createInvokeHandler('editor.floatMe', 'left')
+        }).render();
+      });
+
+      summernote.addButton('floatRight', function (summernote) {
+        return ui.button({
+          contents: '<i class="fa fa-align-right"/>',
+          tooltip: lang.image.floatRight,
+          click: summernote.createInvokeHandler('editor.floatMe', 'right')
+        }).render();
+      });
+
+      summernote.addButton('floatNone', function (summernote) {
+        return ui.button({
+          contents: '<i class="fa fa-align-justify"/>',
+          tooltip: lang.image.floatNone,
+          click: summernote.createInvokeHandler('editor.floatMe', 'none')
+        }).render();
+      });
+
+      // Remove Buttons
+      summernote.addButton('removeMedia', function (summernote) {
+        return ui.button({
+          contents: '<i class="fa fa-trash-o"/>',
+          tooltip: lang.image.remove,
+          click: summernote.createInvokeHandler('editor.removeMedia')
+        }).render();
+      });
+    };
+
+    this.addLinkPopoverButtons = function () {
+      summernote.addButton('linkDialogShow', function (summernote) {
+        return ui.button({
+          contents: '<i class="fa fa-link"/>',
+          tooltip: lang.link.edit,
+          click: summernote.createInvokeHandler('linkDialog.show')
+        }).render();
+      });
+
+      summernote.addButton('unlink', function (summernote) {
+        return ui.button({
+          contents: '<i class="fa fa-unlink"/>',
+          tooltip: lang.link.unlink,
+          click: summernote.createInvokeHandler('editor.unlink')
+        }).render();
+      });
     };
 
     this.updateCurrentStyle = function () {
@@ -4831,12 +5023,12 @@
       if (styleInfo['font-family']) {
         var fontNames = styleInfo['font-family'].split(',').map(function (name) {
           return name.replace(/[\'\"]/g, '')
-                     .replace(/\s+$/, '')
-                     .replace(/^\s+/, '');
+            .replace(/\s+$/, '')
+            .replace(/^\s+/, '');
         });
         var fontName = list.find(fontNames, function (name) {
           return agent.isFontInstalled(name) ||
-                 list.contains(options.fontNamesIgnoreCheck, name);
+            list.contains(options.fontNamesIgnoreCheck, name);
         });
 
         $toolbar.find('.dropdown-fontname li a').each(function () {
@@ -4914,6 +5106,34 @@
 
       $dimensionDisplay.html(dim.c + ' x ' + dim.r);
     };
+  };
+
+  var Toolbar = function (summernote) {
+    var ui = $.summernote.ui;
+
+    var $note = summernote.layoutInfo.note;
+    var $toolbar = summernote.layoutInfo.toolbar;
+    var options = summernote.options;
+
+    this.initialize = function () {
+      options.toolbar = options.toolbar || [];
+
+      if (!options.toolbar.length) {
+        $toolbar.hide();
+      } else {
+        summernote.buildButtons($toolbar, options.toolbar);
+      }
+
+      $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
+        summernote.invoke('button.updateCurrentStyle');
+      });
+
+      summernote.invoke('button.updateCurrentStyle');
+    };
+
+    this.destroy = function () {
+      $toolbar.children().remove();
+    };
 
     this.updateFullscreen = function (isFullscreen) {
       ui.toggleBtnActive($toolbar.find('.btn-fullscreen'), isFullscreen);
@@ -4965,14 +5185,12 @@
                  );
       var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
 
-      $container.append(ui.dialog({
+      this.$dialog = ui.dialog({
         className: 'link-dialog',
         title: lang.link.insert,
         body: body,
         footer: footer
-      }).render());
-
-      this.$dialog = $container.find('.link-dialog');
+      }).render().appendTo($container);
     };
 
     this.bindEnterKey = function ($input, $btn) {
@@ -5019,7 +5237,7 @@
             if (!linkInfo.text) {
               $linkText.val($linkUrl.val());
             }
-          }).val(linkInfo.url).trigger('focus').trigger('select');
+          }).val(linkInfo.url).trigger('focus');
 
           self.bindEnterKey($linkUrl, $linkBtn);
           self.bindEnterKey($linkText, $linkBtn);
@@ -5076,28 +5294,18 @@
 
     var $note = summernote.layoutInfo.note;
     var $editingArea = summernote.layoutInfo.editingArea;
-    var lang = summernote.options.langInfo;
+    var options = summernote.options;
 
     var $popover = ui.popover({
-      children: [
-        ui.buttonGroup([
-          ui.button({
-            contents: '<i class="fa fa-link"/>',
-            tooltip: lang.link.edit,
-            click: summernote.createInvokeHandler('linkDialog.show')
-          }),
-          ui.button({
-            contents: '<i class="fa fa-unlink"/>',
-            tooltip: lang.link.unlink,
-            click: summernote.createInvokeHandler('editor.unlink')
-          })
-        ])
-      ]
-    }).render();
-
-    $editingArea.append($popover);
+      className: 'note-link-popover',
+      callback: function ($node) {
+        var $content = $node.find('.popover-content');
+        $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
+      }
+    }).render().appendTo($editingArea);
 
     this.initialize = function () {
+      summernote.buildButtons($popover.find('.popover-content'), options.popover.link);
       $note.on('summernote.keyup summernote.mouseup summernote.change', function (customEvent, event) {
         self.update(event.target);
       }).on('summernote.scroll', function () {
@@ -5105,31 +5313,13 @@
       });
     };
 
-    this.posFromPlaceholder = function (placeholder) {
-      var $placeholder = $(placeholder);
-      var pos = $placeholder.position();
-      var height = $placeholder.outerHeight(true); // include margin
-
-      // popover below placeholder.
-      return {
-        left: pos.left,
-        top: pos.top + height
-      };
-    };
-
     this.update = function (targetNode) {
       if (dom.isAnchor(targetNode)) {
         var $anchor = $popover.find('a');
         var href = $(targetNode).attr('href');
-        var target = $(targetNode).attr('target');
         $anchor.attr('href', href).html(href);
-        if (!target) {
-          $anchor.removeAttr('target');
-        } else {
-          $anchor.attr('target', '_blank');
-        }
 
-        var pos = this.posFromPlaceholder(targetNode);
+        var pos = dom.posFromPlaceholder(targetNode);
         $popover.css({
           display: 'block',
           left: pos.left,
@@ -5169,20 +5359,17 @@
                    '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" />' +
                    imageLimitation +
                  '</div>' +
-                 '<div class="form-group">' +
+                 '<div class="form-group" style="overflow:auto;">' +
                    '<label>' + lang.image.url + '</label>' +
                    '<input class="note-image-url form-control col-md-12" type="text" />' +
                  '</div>';
       var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
 
-      $container.append(ui.dialog({
-        className: 'note-image-dialog',
+      this.$dialog = ui.dialog({
         title: lang.image.insert,
         body: body,
         footer: footer
-      }).render());
-
-      this.$dialog = $container.find('.note-image-dialog');
+      }).render().appendTo($container);
     };
 
     this.bindEnterKey = function ($input, $btn) {
@@ -5297,58 +5484,15 @@
 
     var $note = summernote.layoutInfo.note;
     var $editingArea = summernote.layoutInfo.editingArea;
-    var lang = summernote.options.langInfo;
+    var options = summernote.options;
 
     var $popover = ui.popover({
-      className: 'note-image-popover',
-      children: [
-        ui.buttonGroup([
-          ui.button({
-            contents: '<span class="note-fontsize-10">100%</span>',
-            tooltip: lang.image.resizeFull,
-            click: summernote.createInvokeHandler('editor.resize', '1')
-          }),
-          ui.button({
-            contents: '<span class="note-fontsize-10">50%</span>',
-            tooltip: lang.image.resizeHalf,
-            click: summernote.createInvokeHandler('editor.resize', '0.5')
-          }),
-          ui.button({
-            contents: '<span class="note-fontsize-10">25%</span>',
-            tooltip: lang.image.resizeQuarter,
-            click: summernote.createInvokeHandler('editor.resize', '0.25')
-          })
-        ]),
-        ui.buttonGroup([
-          ui.button({
-            contents: '<i class="fa fa-align-left"/>',
-            tooltip: lang.image.floatLeft,
-            click: summernote.createInvokeHandler('editor.floatMe', 'left')
-          }),
-          ui.button({
-            contents: '<i class="fa fa-align-right"/>',
-            tooltip: lang.image.floatRight,
-            click: summernote.createInvokeHandler('editor.floatMe', 'right')
-          }),
-          ui.button({
-            contents: '<i class="fa fa-align-justify"/>',
-            tooltip: lang.image.floatNone,
-            click: summernote.createInvokeHandler('editor.floatMe', 'none')
-          })
-        ]),
-        ui.buttonGroup([
-          ui.button({
-            contents: '<i class="fa fa-trash-o"/>',
-            tooltip: lang.image.remove,
-            click: summernote.createInvokeHandler('editor.removeMedia')
-          })
-        ])
-      ]
-    }).render();
-
-    $editingArea.append($popover);
+      className: 'note-image-popover'
+    }).render().appendTo($editingArea);
 
     this.initialize = function () {
+      summernote.buildButtons($popover.find('.popover-content'), options.popover.image);
+
       $note.on('summernote.keyup summernote.mouseup summernote.change', function (customEvent, event) {
         self.update(event.target);
       }).on('summernote.scroll', function () {
@@ -5356,21 +5500,9 @@
       });
     };
 
-    this.posFromPlaceholder = function (placeholder) {
-      var $placeholder = $(placeholder);
-      var pos = $placeholder.position();
-      var height = $placeholder.outerHeight(true); // include margin
-
-      // popover below placeholder.
-      return {
-        left: pos.left,
-        top: pos.top + height
-      };
-    };
-
     this.update = function (target) {
       if (dom.isImg(target)) {
-        var pos = this.posFromPlaceholder(target);
+        var pos = dom.posFromPlaceholder(target);
         $popover.css({
           display: 'block',
           left: pos.left,
@@ -5385,6 +5517,53 @@
 
     this.hide = function () {
       $popover.hide();
+    };
+  };
+
+  var HelpDialog = function (summernote) {
+    var self = this;
+    var ui = $.summernote.ui;
+
+    var $editor = summernote.layoutInfo.editor;
+    var options = summernote.options;
+    var lang = options.langInfo;
+
+    this.initialize = function () {
+      var $container = options.dialogsInBody ? $(document.body) : $editor;
+
+      var body = [
+        '<p class="text-center">',
+        '<a href="//summernote.org/" target="_blank">Summernote 0.7.0</a> · ',
+        '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ',
+        '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>',
+        '</p>'
+      ].join('');
+
+      this.$dialog = ui.dialog({
+        title: lang.options.help,
+        body: body
+      }).render().appendTo($container);
+    };
+
+    /**
+     * show help dialog
+     *
+     * @return {Promise}
+     */
+    this.showHelpDialog = function () {
+      return $.Deferred(function (deferred) {
+        ui.onDialogHidden(self.$dialog, function () {
+          deferred.resolve();
+        });
+        ui.showDialog(self.$dialog);
+      }).promise();
+    };
+
+    this.show = function () {
+      summernote.invoke('editor.saveRange');
+      this.showHelpDialog().then(function () {
+        summernote.invoke('editor.restoreRange');
+      });
     };
   };
 
@@ -5508,14 +5687,44 @@
         'statusbar': Statusbar,
         'fullscreen': Fullscreen,
         'handle': Handle,
+        'button' : Button,
         'toolbar': Toolbar,
         'linkDialog': LinkDialog,
         'linkPopover': LinkPopover,
         'imageDialog': ImageDialog,
-        'imagePopover': ImagePopover
+        'imagePopover': ImagePopover,
+        'helpDialog': HelpDialog
       },
+
+      buttons: {},
       
       lang: 'en-US',
+
+      // toolbar
+      toolbar: [
+        ['style', ['style']],
+        ['font', ['bold', 'italic', 'underline', 'clear']],
+        ['fontname', ['fontname']],
+        ['fontsize', ['fontsize']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['height', ['height']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture', 'hr']],
+        ['view', ['fullscreen', 'codeview']],
+        ['help', ['help']]
+      ],
+
+      popover: {
+        image: [
+          ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
+          ['float', ['floatLeft', 'floatRight', 'floatNone']],
+          ['remove', ['removeMedia']]
+        ],
+        link: [
+          ['link', ['linkDialogShow', 'unlink']]
+        ]
+      },
 
       width: null,
       height: null,
@@ -5601,7 +5810,8 @@
           'CTRL+NUM4': 'formatH4',
           'CTRL+NUM5': 'formatH5',
           'CTRL+NUM6': 'formatH6',
-          'CTRL+ENTER': 'insertHorizontalRule'
+          'CTRL+ENTER': 'insertHorizontalRule',
+          'CTRL+K': 'linkDialog.show'
         },
 
         mac: {
@@ -5630,7 +5840,8 @@
           'CMD+NUM4': 'formatH4',
           'CMD+NUM5': 'formatH5',
           'CMD+NUM6': 'formatH6',
-          'CMD+ENTER': 'insertHorizontalRule'
+          'CMD+ENTER': 'insertHorizontalRule',
+          'CMD+K': 'linkDialog.show'
         }
       }
     }
