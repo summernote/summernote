@@ -1,8 +1,8 @@
 define([
   'summernote/base/core/agent',
+  'summernote/base/core/key',
   'summernote/base/core/func',
   'summernote/base/core/list',
-  'summernote/base/core/key',
   'summernote/base/core/dom',
   'summernote/base/core/range',
   'summernote/base/core/async',
@@ -12,7 +12,7 @@ define([
   'summernote/base/editing/Table',
   'summernote/base/editing/Bullet'
 ], function (
-  agent, func, list, key, dom, range, async,
+  agent, key, func, list, dom, range, async,
   History, Style, Typing, Table, Bullet
 ) {
 
@@ -35,8 +35,10 @@ define([
     var history = new History($editable);
 
     this.initialize = function () {
-      var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
-      this.bindKeyMap(keyMap);
+      // bind keymap
+      if (options.shortcuts) {
+        this.bindKeyMap();
+      }
 
       $editable.on('keyup', function (event) {
         summernote.triggerEvent('keyup', event);
@@ -57,7 +59,8 @@ define([
       $editable.off('keydown');
     };
 
-    this.bindKeyMap = function (keyMap) {
+    this.bindKeyMap = function () {
+      var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
       $editable.on('keydown', function (event) {
         var keys = [];
 
@@ -72,12 +75,10 @@ define([
 
         var eventName = keyMap[keys.join('+')];
         if (eventName) {
-          if (self[eventName]) {
-            self[eventName](options);
-            event.preventDefault();
-          }
+          event.preventDefault();
+          summernote.invoke(eventName);
         } else if (key.isEdit(event.keyCode)) {
-          self.afterCommand($editable);
+          self.afterCommand();
         }
       });
     };

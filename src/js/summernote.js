@@ -20,13 +20,10 @@ define([
     this.options = options;
 
     this.initialize = function () {
+      // create layout info
       this.layoutInfo = ui.createLayout($note);
 
-      Object.keys(this.options.buttons).forEach(function (key) {
-        var button = self.options.buttons[key];
-        self.addButton(key, button);
-      });
-
+      // initialize module
       Object.keys(this.options.modules).forEach(function (key) {
         var module = new self.options.modules[key](self);
         if (module.initialize) {
@@ -34,6 +31,13 @@ define([
         }
         self.addModule(key, module);
       });
+
+      // add optional buttons
+      Object.keys(this.options.buttons).forEach(function (key) {
+        var button = self.options.buttons[key];
+        self.addButton(key, button);
+      });
+
       $note.hide();
 
       this.triggerEvent('ready');
@@ -69,10 +73,6 @@ define([
       $note.trigger('summernote.' + namespace, args);
     };
 
-    this.removeLayout = function ($note) {
-      $note.editor.remove();
-    };
-
     this.addModule = function (key, instance) {
       this.modules[key] = instance;
     };
@@ -84,8 +84,8 @@ define([
       delete this.modules[key];
     };
 
-    this.addButton = function (key, createHandler) {
-      this.buttons[key] = createHandler;
+    this.addButton = function (key, handler) {
+      this.buttons[key] = handler;
     };
 
     this.removeButton = function (key) {
@@ -131,11 +131,11 @@ define([
       var moduleName = hasSeparator && list.head(splits);
       var methodName = hasSeparator ? list.last(splits) : list.head(splits);
 
-      var module = this.modules[moduleName];
-      if (module && module[methodName]) {
-        return module[methodName].apply(module, args);
-      } else if (this[methodName]) {
+      var module = this.modules[moduleName || 'editor'];
+      if (!moduleName && this[methodName]) {
         return this[methodName].apply(this, args);
+      } else if (module && module[methodName]) {
+        return module[methodName].apply(module, args);
       }
     };
 
