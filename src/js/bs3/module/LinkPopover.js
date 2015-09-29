@@ -12,8 +12,11 @@ define([
     var options = summernote.options;
 
     var $popover = ui.popover({
-      className: 'note-link-popover'
-    }).render().appendTo($editingArea);;
+      className: 'note-link-popover',
+      callback: function ($node) {
+        $node.find('.popover-content').prepend('<span><a target="_blank"></a>&nbsp;</span>')
+      }
+    }).render().appendTo($editingArea);
 
     this.initialize = function () {
       summernote.buildButtons($popover.find('.popover-content'), options.popover.link);
@@ -30,11 +33,6 @@ define([
         var href = $(targetNode).attr('href');
         var target = $(targetNode).attr('target');
         $anchor.attr('href', href).html(href);
-        if (!target) {
-          $anchor.removeAttr('target');
-        } else {
-          $anchor.attr('target', '_blank');
-        }
 
         var pos = dom.posFromPlaceholder(targetNode);
         $popover.css({

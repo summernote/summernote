@@ -79,7 +79,7 @@ define([
             if (!linkInfo.text) {
               $linkText.val($linkUrl.val());
             }
-          }).val(linkInfo.url).trigger('focus').trigger('select');
+          }).val(linkInfo.url).trigger('focus');
 
           self.bindEnterKey($linkUrl, $linkBtn);
           self.bindEnterKey($linkText, $linkBtn);
