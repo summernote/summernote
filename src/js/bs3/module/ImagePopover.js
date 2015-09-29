@@ -15,14 +15,22 @@ define([
       className: 'note-image-popover'
     }).render().appendTo($editingArea);
 
+    this.events = {
+      'summernote.keyup summernote.mouseup summernote.change': function (event) {
+        self.update(event.target);
+      },
+      'summernote.scroll': function () {
+        self.update(summernote.invoke('editor.restoreTarget'));
+      }
+    };
+
     this.initialize = function () {
       summernote.buildButtons($popover.find('.popover-content'), options.popover.image);
+      dom.attachEvents($note, this.events);
+    };
 
-      $note.on('summernote.keyup summernote.mouseup summernote.change', function (customEvent, event) {
-        self.update(event.target);
-      }).on('summernote.scroll', function () {
-        self.update(summernote.invoke('editor.restoreTarget'));
-      });
+    this.destroy = function () {
+      dom.detachEvents($note, this.events);
     };
 
     this.update = function (target) {

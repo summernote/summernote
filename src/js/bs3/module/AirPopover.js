@@ -1,7 +1,8 @@
 define([
   'summernote/base/core/func',
-  'summernote/base/core/list'
-], function (func, list) {
+  'summernote/base/core/list',
+  'summernote/base/core/dom'
+], function (func, list, dom) {
   var AirPopover = function (summernote) {
     var self = this;
     var ui = $.summernote.ui;
@@ -16,17 +17,23 @@ define([
 
     var AIR_MODE_POPOVER_X_OFFSET = 20;
 
+    this.events = {
+      'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function () {
+        self.update();
+      }
+    };
+
     this.initialize = function () {
       if (!options.airMode) {
         return;
       }
-      summernote.buildButtons($popover.find('.popover-content'), options.popover.air);
 
-      $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
-        self.update();
-      }).on('summernote.scroll', function () {
-        self.update();
-      });
+      summernote.buildButtons($popover.find('.popover-content'), options.popover.air);
+      dom.attachEvents($note, this.events);
+    };
+
+    this.destroy = function () {
+      dom.detachEvents($note, this.events);
     };
 
     this.update = function () {

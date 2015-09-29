@@ -1049,6 +1049,18 @@ define([
       };
     };
 
+    var attachEvents = function ($node, events) {
+      Object.keys(events).forEach(function (key) {
+        $node.on(key, events[key]);
+      });
+    };
+
+    var detachEvents = function ($node, events) {
+      Object.keys(events).forEach(function (key) {
+        $node.off(key, events[key]);
+      });
+    };
+
     return {
       /** @property {String} NBSP_CHAR */
       NBSP_CHAR: NBSP_CHAR,
@@ -1133,7 +1145,9 @@ define([
       replace: replace,
       html: html,
       value: value,
-      posFromPlaceholder: posFromPlaceholder
+      posFromPlaceholder: posFromPlaceholder,
+      attachEvents: attachEvents,
+      detachEvents: detachEvents
     };
   })();
 

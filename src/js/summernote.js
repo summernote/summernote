@@ -49,6 +49,8 @@ define([
         self.removeModule(key);
       });
 
+      $note.removeData('summernote');
+
       ui.removeLayout($note, this.layoutInfo);
     };
 
@@ -142,7 +144,9 @@ define([
     return this.initialize();
   };
 
-  $.summernote = $.summernote || { lang: {} };
+  $.summernote = $.summernote || {
+    lang: {}
+  };
 
   $.fn.extend({
     /**

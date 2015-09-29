@@ -19,13 +19,20 @@ define([
       }
     }).render().appendTo($editingArea);
 
+    this.events = {
+      'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function () {
+        self.update();
+      }
+    };
+
     this.initialize = function () {
       summernote.buildButtons($popover.find('.popover-content'), options.popover.link);
-      $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
-        self.update();
-      }).on('summernote.scroll', function () {
-        self.update();
-      });
+
+      dom.attachEvents($note, this.events);
+    };
+
+    this.destroy = function () {
+      dom.detachEvents($note, this.events);
     };
 
     this.update = function () {
