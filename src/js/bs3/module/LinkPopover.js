@@ -26,18 +26,6 @@ define([
       });
     };
 
-    this.posFromPlaceholder = function (placeholder) {
-      var $placeholder = $(placeholder);
-      var pos = $placeholder.position();
-      var height = $placeholder.outerHeight(true); // include margin
-
-      // popover below placeholder.
-      return {
-        left: pos.left,
-        top: pos.top + height
-      };
-    };
-
     this.update = function (targetNode) {
       if (dom.isAnchor(targetNode)) {
         var $anchor = $popover.find('a');
@@ -50,7 +38,7 @@ define([
           $anchor.attr('target', '_blank');
         }
 
-        var pos = this.posFromPlaceholder(targetNode);
+        var pos = dom.posFromPlaceholder(targetNode);
         $popover.css({
           display: 'block',
           left: pos.left,

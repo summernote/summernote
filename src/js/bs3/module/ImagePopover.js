@@ -27,21 +27,9 @@ define([
       });
     };
 
-    this.posFromPlaceholder = function (placeholder) {
-      var $placeholder = $(placeholder);
-      var pos = $placeholder.position();
-      var height = $placeholder.outerHeight(true); // include margin
-
-      // popover below placeholder.
-      return {
-        left: pos.left,
-        top: pos.top + height
-      };
-    };
-
     this.update = function (target) {
       if (dom.isImg(target)) {
-        var pos = this.posFromPlaceholder(target);
+        var pos = dom.posFromPlaceholder(target);
         $popover.css({
           display: 'block',
           left: pos.left,

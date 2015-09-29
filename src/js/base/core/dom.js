@@ -1026,6 +1026,18 @@ define([
       return markup;
     };
 
+    var posFromPlaceholder = function (placeholder) {
+      var $placeholder = $(placeholder);
+      var pos = $placeholder.position();
+      var height = $placeholder.outerHeight(true); // include margin
+
+      // popover below placeholder.
+      return {
+        left: pos.left,
+        top: pos.top + height
+      };
+    };
+
     return {
       /** @property {String} NBSP_CHAR */
       NBSP_CHAR: NBSP_CHAR,
@@ -1108,7 +1120,8 @@ define([
       removeWhile: removeWhile,
       replace: replace,
       html: html,
-      value: value
+      value: value,
+      posFromPlaceholder: posFromPlaceholder
     };
   })();
 
