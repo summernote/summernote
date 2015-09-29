@@ -13,7 +13,7 @@ define([
 
     var $popover = ui.popover({
       className: 'note-image-popover'
-    }).render().appendTo($popover);
+    }).render().appendTo($editingArea);
 
     this.initialize = function () {
       summernote.buildButtons($popover.find('.popover-content'), options.popover.image);

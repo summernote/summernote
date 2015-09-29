@@ -1,6 +1,5 @@
 define([], function () {
   var Toolbar = function (summernote) {
-    var self = this;
     var ui = $.summernote.ui;
 
     var $note = summernote.layoutInfo.note;

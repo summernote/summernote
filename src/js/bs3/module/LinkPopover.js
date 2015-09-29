@@ -14,7 +14,8 @@ define([
     var $popover = ui.popover({
       className: 'note-link-popover',
       callback: function ($node) {
-        $node.find('.popover-content').prepend('<span><a target="_blank"></a>&nbsp;</span>')
+        var $content = $node.find('.popover-content');
+        $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
       }
     }).render().appendTo($editingArea);
 
@@ -31,7 +32,6 @@ define([
       if (dom.isAnchor(targetNode)) {
         var $anchor = $popover.find('a');
         var href = $(targetNode).attr('href');
-        var target = $(targetNode).attr('target');
         $anchor.attr('href', href).html(href);
 
         var pos = dom.posFromPlaceholder(targetNode);

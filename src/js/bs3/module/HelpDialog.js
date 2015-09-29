@@ -1,6 +1,4 @@
-define([
-  'summernote/base/core/agent'
-], function (agent) {
+define([], function () {
   var HelpDialog = function (summernote) {
     var self = this;
     var ui = $.summernote.ui;
