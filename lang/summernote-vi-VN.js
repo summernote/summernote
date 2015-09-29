@@ -25,6 +25,13 @@
         url: 'URL',
         remove: 'Ghỡ Bỏ'
       },
+      video: {
+        video: 'Video',
+        videoLink: 'Đường Dẫn đến Video',
+        insert: 'Chèn Video',
+        url: 'URL',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion và Youku)'
+      },
       link: {
         link: 'Đường Dẫn',
         insert: 'Chèn Đường Dẫn',

@@ -34,6 +34,13 @@
         url: 'Billede URL',
         remove: 'Fjern billede'
       },
+      video: {
+        video: 'Video',
+        videoLink: 'Video Link',
+        insert: 'Indsæt Video',
+        url: 'Video URL?',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion eller Youku)'
+      },
       link: {
         link: 'Link',
         insert: 'Indsæt link',

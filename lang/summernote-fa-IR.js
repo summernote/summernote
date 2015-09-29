@@ -25,6 +25,13 @@
         url: 'آدرس تصویر',
         remove: 'حذف تصویر'
       },
+      video: {
+        video: 'ویدیو',
+        videoLink: 'لینک ویدیو',
+        insert: 'افزودن ویدیو',
+        url: 'آدرس ویدیو ؟',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, یا Youku)'
+      },
       link: {
         link: 'لینک',
         insert: 'اضافه کردن لینک',

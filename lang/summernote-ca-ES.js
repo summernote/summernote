@@ -23,6 +23,13 @@
         selectFromFiles: 'Seleccioneu des dels arxius',
         url: 'URL de la imatge'
       },
+      video: {
+        video: 'Video',
+        videoLink: 'Enllaç del video',
+        insert: 'Inserir video',
+        url: 'URL del video?',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, o Youku)'
+      },
       link: {
         link: 'Enllaç',
         insert: 'Inserir enllaç',

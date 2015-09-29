@@ -12,13 +12,14 @@ define([
   'summernote/bs3/module/LinkDialog',
   'summernote/bs3/module/LinkPopover',
   'summernote/bs3/module/ImageDialog',
+  'summernote/bs3/module/VideoDialog',
   'summernote/bs3/module/ImagePopover',
   'summernote/bs3/module/HelpDialog',
   'summernote/bs3/module/AirPopover'
 ], function (
   ui,
   Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle,
-  Button, Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover, HelpDialog, AirPopover
+  Button, Toolbar, LinkDialog, LinkPopover, ImageDialog, VideoDialog, ImagePopover, HelpDialog, AirPopover
 ) {
 
   $.summernote = $.extend($.summernote, {
@@ -59,6 +60,13 @@ define([
           maximumFileSizeError: 'Maximum file size exceeded.',
           url: 'Image URL',
           remove: 'Remove Image'
+        },
+        video: {
+          video: 'Video',
+          videoLink: 'Video Link',
+          insert: 'Insert Video',
+          url: 'Video URL?',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
         },
         link: {
           link: 'Link',
@@ -145,6 +153,7 @@ define([
         'linkDialog': LinkDialog,
         'linkPopover': LinkPopover,
         'imageDialog': ImageDialog,
+        'videoDialog': VideoDialog,
         'imagePopover': ImagePopover,
         'helpDialog': HelpDialog,
         'airPopover': AirPopover
@@ -164,7 +173,7 @@ define([
         ['para', ['ul', 'ol', 'paragraph']],
         ['height', ['height']],
         ['table', ['table']],
-        ['insert', ['link', 'picture', 'hr']],
+        ['insert', ['link', 'picture', 'video', 'hr']],
         ['view', ['fullscreen', 'codeview']],
         ['help', ['help']]
       ],
@@ -184,12 +193,12 @@ define([
           ['font', ['bold', 'underline', 'clear']],
           ['para', ['ul', 'paragraph']],
           ['table', ['table']],
-          ['insert', ['link', 'picture']]
+          ['insert', ['link', 'picture', 'video']]
         ]
       },
 
       // air mode: inline editor
-      airMode: true,
+      airMode: false,
 
       width: null,
       height: null,

@@ -33,6 +33,13 @@
         url: '图片地址',
         remove: '移除图片'
       },
+      video: {
+        video: '视频',
+        videoLink: '视频链接',
+        insert: '插入视频',
+        url: '视频地址',
+        providers: '(优酷, Instagram, DailyMotion, Youtube等)'
+      },
       link: {
         link: '链接',
         insert: '插入链接',

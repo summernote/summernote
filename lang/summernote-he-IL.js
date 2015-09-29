@@ -27,6 +27,13 @@
         url: 'נתיב לתמונה',
         remove: 'הסר תמונה'
       },
+      video: {
+        video: 'סרטון',
+        videoLink: 'קישור לסרטון',
+        insert: 'הוסף סרטון',
+        url: 'קישור לסרטון',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion או Youku)'
+      },
       link: {
         link: 'קישור',
         insert: 'הוסף קישור',
