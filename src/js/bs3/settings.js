@@ -13,11 +13,12 @@ define([
   'summernote/bs3/module/LinkPopover',
   'summernote/bs3/module/ImageDialog',
   'summernote/bs3/module/ImagePopover',
-  'summernote/bs3/module/HelpDialog'
+  'summernote/bs3/module/HelpDialog',
+  'summernote/bs3/module/AirPopover'
 ], function (
   ui,
   Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle,
-  Button, Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover, HelpDialog
+  Button, Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover, HelpDialog, AirPopover
 ) {
 
   $.summernote = $.extend($.summernote, {
@@ -145,7 +146,8 @@ define([
         'linkPopover': LinkPopover,
         'imageDialog': ImageDialog,
         'imagePopover': ImagePopover,
-        'helpDialog': HelpDialog
+        'helpDialog': HelpDialog,
+        'airPopover': AirPopover
       },
 
       buttons: {},
@@ -167,6 +169,7 @@ define([
         ['help', ['help']]
       ],
 
+      // popover
       popover: {
         image: [
           ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
@@ -175,8 +178,18 @@ define([
         ],
         link: [
           ['link', ['linkDialogShow', 'unlink']]
+        ],
+        air: [
+          ['color', ['color']],
+          ['font', ['bold', 'underline', 'clear']],
+          ['para', ['ul', 'paragraph']],
+          ['table', ['table']],
+          ['insert', ['link', 'picture']]
         ]
       },
+
+      // air mode: inline editor
+      airMode: true,
 
       width: null,
       height: null,

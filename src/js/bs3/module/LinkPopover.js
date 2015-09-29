@@ -21,20 +21,22 @@ define([
 
     this.initialize = function () {
       summernote.buildButtons($popover.find('.popover-content'), options.popover.link);
-      $note.on('summernote.keyup summernote.mouseup summernote.change', function (customEvent, event) {
-        self.update(event.target);
+      $note.on('summernote.keyup summernote.mouseup summernote.change', function (customEvent) {
+        self.update();
+        var rng = summernote.invoke('editor.createRange');
       }).on('summernote.scroll', function () {
-        self.update(summernote.invoke('editor.restoreTarget'));
+        self.update();
       });
     };
 
-    this.update = function (targetNode) {
-      if (dom.isAnchor(targetNode)) {
-        var $anchor = $popover.find('a');
-        var href = $(targetNode).attr('href');
-        $anchor.attr('href', href).html(href);
+    this.update = function () {
+      var rng = summernote.invoke('editor.createRange');
+      if (rng.isCollapsed() && rng.isOnAnchor()) {
+        var anchor = dom.ancestor(rng.sc, dom.isAnchor);
+        var href = $(anchor).attr('href');
+        $popover.find('a').attr('href', href).html(href);
 
-        var pos = dom.posFromPlaceholder(targetNode);
+        var pos = dom.posFromPlaceholder(anchor);
         $popover.css({
           display: 'block',
           left: pos.left,

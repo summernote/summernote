@@ -1043,7 +1043,6 @@ define([
       var pos = $placeholder.position();
       var height = $placeholder.outerHeight(true); // include margin
 
-      // popover below placeholder.
       return {
         left: pos.left,
         top: pos.top + height
