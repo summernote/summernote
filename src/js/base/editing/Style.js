@@ -121,7 +121,7 @@ define([
      * @return {Object} - object contains style properties.
      */
     this.current = function (rng) {
-      var $cont = $(dom.isText(rng.sc) ? rng.sc.parentNode : rng.sc);
+      var $cont = $(!dom.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
       var styleInfo = this.fromNode($cont);
 
       // document.queryCommandState for toggle state
