@@ -185,9 +185,9 @@ define([
         var $tr = (idx % COLUMN_LENGTH === 0) ? $('<tr/>') : $table.find('tr').last();
 
         var $button = ui.button({
-          tooltip : text,
           callback : function ($node) {
             $node.html(text);
+            $node.attr('title', text);
             $node.attr('data-value', encodeURIComponent(text));
             $node.css({
               width: COLUMN_WIDTH,
@@ -384,15 +384,22 @@ define([
         ui.onDialogShown(self.$dialog, function () {
 
           $(document).on('keydown', keyDownEventHandler);
+
+          self.$dialog.find('button').tooltip();
+
           $specialCharNode.on('click', function (event) {
             event.preventDefault();
             deferred.resolve(decodeURIComponent($(event.currentTarget).find('button').data('value')));
             ui.hideDialog(self.$dialog);
           });
+
+
         });
 
         ui.onDialogHidden(self.$dialog, function () {
           $specialCharNode.off('click');
+
+          self.$dialog.find('button').tooltip('destroy');
 
           $(document).off('keydown', keyDownEventHandler);
 
