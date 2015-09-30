@@ -25,6 +25,13 @@
         url: 'Kép URL címe',
         remove: 'Kép törlése'
       },
+      video: {
+        video: 'Videó',
+        videoLink: 'Videó hivatkozás',
+        insert: 'Videó beszúrása',
+        url: 'Videó URL címe',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, vagy Youku)'
+      },
       link: {
         link: 'Hivatkozás',
         insert: 'Hivatkozás beszúrása',

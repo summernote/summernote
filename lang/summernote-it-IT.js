@@ -25,6 +25,13 @@
         url: 'URL dell\'immagine',
         remove: 'Rimuovi immagine'
       },
+      video: {
+        video: 'Video',
+        videoLink: 'Collegamento ad un Video',
+        insert: 'Inserisci Video',
+        url: 'URL del Video',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion o Youku)'
+      },
       link: {
         link: 'Collegamento',
         insert: 'Inserisci Collegamento',

@@ -32,6 +32,13 @@
         url: '사진 URL',
         remove: '사진 삭제'
       },
+      video: {
+        video: '동영상',
+        videoLink: '동영상 링크',
+        insert: '동영상 추가',
+        url: '동영상 URL',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, Youku 사용 가능)'
+      },
       link: {
         link: '링크',
         insert: '링크 추가',

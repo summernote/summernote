@@ -25,6 +25,13 @@
         url: 'URL van de afbeelding',
         remove: 'Verwijder afbeelding'
       },
+      video: {
+        video: 'Video',
+        videoLink: 'Video link',
+        insert: 'Video invoegen',
+        url: 'URL van de video',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion of Youku)'
+      },
       link: {
         link: 'Link',
         insert: 'Link invoegen',

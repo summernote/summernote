@@ -27,6 +27,13 @@
         url: 'URL картинки',
         remove: 'Видалити картинку'
       },
+      video: {
+        video: 'Відео',
+        videoLink: 'Посилання на відео',
+        insert: 'Вставити відео',
+        url: 'URL відео',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion чи Youku)'
+      },
       link: {
         link: 'Посилання',
         insert: 'Вставити посилання',

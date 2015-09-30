@@ -340,6 +340,14 @@ define([
         }).render();
       });
 
+      summernote.addButton('video', function () {
+        return ui.button({
+          contents: '<i class="fa fa-youtube-play"/>',
+          tooltip: lang.video.video,
+          click: summernote.createInvokeHandler('videoDialog.show')
+        }).render();
+      });
+
       summernote.addButton('hr', function () {
         return ui.button({
           contents: '<i class="fa fa-minus"/>',
