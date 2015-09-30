@@ -8,14 +8,11 @@ define([
     var ui = $.summernote.ui;
 
     var $editor = summernote.layoutInfo.editor;
-    var $editable = summernote.layoutInfo.editable;
     var options = summernote.options;
     var lang = options.langInfo;
 
-    var getTextOnRange = function ($editable) {
-      $editable.focus();
-
-      var rng = range.create();
+    this.getTextOnRange = function () {
+      var rng = summernote.invoke('editor.createRange');
 
       // if range on anchor, expand range with anchor
       if (rng.isOnAnchor()) {
@@ -131,9 +128,7 @@ define([
 
 
     this.show = function () {
-
-      var text = getTextOnRange($editable);
-
+      var text = this.getTextOnRange();
       summernote.invoke('editor.saveRange');
       this.showVideoDialog(text).then(function (url) {
         summernote.invoke('editor.restoreRange');
