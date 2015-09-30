@@ -1,7 +1,7 @@
 require.config({
   baseUrl: 'src/js',
   paths: {
-    jquery: '//code.jquery.com/jquery-2.1.4',
+    jquery: '//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery',
     bootstrap: '//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap',
     lang: '../../lang/summernote-ko-KR'
   },

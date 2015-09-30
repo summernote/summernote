@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-09-29T09:03Z
+ * Date: 2015-09-30T05:27Z
  */
 (function (factory) {
   /* global define */
@@ -385,6 +385,8 @@
         self.removeModule(key);
       });
 
+      $note.removeData('summernote');
+
       ui.removeLayout($note, this.layoutInfo);
     };
 
@@ -478,7 +480,9 @@
     return this.initialize();
   };
 
-  $.summernote = $.summernote || { lang: {} };
+  $.summernote = $.summernote || {
+    lang: {}
+  };
 
   $.fn.extend({
     /**
@@ -802,6 +806,7 @@
     browserVersion: browserVersion,
     jqueryVersion: parseFloat($.fn.jquery),
     isSupportAmd: isSupportAmd,
+    hasCodeMirror: isSupportAmd ? require.specified('CodeMirror') : !!window.CodeMirror,
     isFontInstalled: isFontInstalled,
     isW3CRangeSupport: !!document.createRange
   };
@@ -1942,6 +1947,18 @@
       };
     };
 
+    var attachEvents = function ($node, events) {
+      Object.keys(events).forEach(function (key) {
+        $node.on(key, events[key]);
+      });
+    };
+
+    var detachEvents = function ($node, events) {
+      Object.keys(events).forEach(function (key) {
+        $node.off(key, events[key]);
+      });
+    };
+
     return {
       /** @property {String} NBSP_CHAR */
       NBSP_CHAR: NBSP_CHAR,
@@ -2026,7 +2043,9 @@
       replace: replace,
       html: html,
       value: value,
-      posFromPlaceholder: posFromPlaceholder
+      posFromPlaceholder: posFromPlaceholder,
+      attachEvents: attachEvents,
+      detachEvents: detachEvents
     };
   })();
 
@@ -4898,6 +4917,14 @@
         }).render();
       });
 
+      summernote.addButton('video', function () {
+        return ui.button({
+          contents: '<i class="fa fa-youtube-play"/>',
+          tooltip: lang.video.video,
+          click: summernote.createInvokeHandler('videoDialog.show')
+        }).render();
+      });
+
       summernote.addButton('hr', function () {
         return ui.button({
           contents: '<i class="fa fa-minus"/>',
@@ -5319,13 +5346,20 @@
       }
     }).render().appendTo($editingArea);
 
+    this.events = {
+      'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function () {
+        self.update();
+      }
+    };
+
     this.initialize = function () {
       summernote.buildButtons($popover.find('.popover-content'), options.popover.link);
-      $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
-        self.update();
-      }).on('summernote.scroll', function () {
-        self.update();
-      });
+
+      dom.attachEvents($note, this.events);
+    };
+
+    this.destroy = function () {
+      dom.detachEvents($note, this.events);
     };
 
     this.update = function () {
@@ -5494,6 +5528,189 @@
     };
   };
 
+  var VideoDialog = function (summernote) {
+    var self = this;
+    var ui = $.summernote.ui;
+
+    var $editor = summernote.layoutInfo.editor;
+    var options = summernote.options;
+    var lang = options.langInfo;
+
+    this.getTextOnRange = function () {
+      var rng = summernote.invoke('editor.createRange');
+
+      // if range on anchor, expand range with anchor
+      if (rng.isOnAnchor()) {
+        var anchor = dom.ancestor(rng.sc, dom.isAnchor);
+        rng = range.createFromNode(anchor);
+      }
+
+      return rng.toString();
+    };
+
+    this.initialize = function () {
+      var $container = options.dialogsInBody ? $(document.body) : $editor;
+
+      var body = '<div class="form-group row-fluid">' +
+          '<label>' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
+          '<input class="note-video-url form-control span12" type="text" />' +
+          '</div>';
+      var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
+
+      this.$dialog = ui.dialog({
+        title: lang.video.insert,
+        body: body,
+        footer: footer
+      }).render().appendTo($container);
+    };
+
+    this.bindEnterKey = function ($input, $btn) {
+      $input.on('keypress', function (event) {
+        if (event.keyCode === key.code.ENTER) {
+          $btn.trigger('click');
+        }
+      });
+    };
+
+    this.createVideoNode = function (url) {
+      // video url patterns(youtube, instagram, vimeo, dailymotion, youku, mp4, ogg, webm)
+      var ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+      var ytMatch = url.match(ytRegExp);
+
+      var igRegExp = /\/\/instagram.com\/p\/(.[a-zA-Z0-9_-]*)/;
+      var igMatch = url.match(igRegExp);
+
+      var vRegExp = /\/\/vine.co\/v\/(.[a-zA-Z0-9]*)/;
+      var vMatch = url.match(vRegExp);
+
+      var vimRegExp = /\/\/(player.)?vimeo.com\/([a-z]*\/)*([0-9]{6,11})[?]?.*/;
+      var vimMatch = url.match(vimRegExp);
+
+      var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
+      var dmMatch = url.match(dmRegExp);
+
+      var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
+      var youkuMatch = url.match(youkuRegExp);
+
+      var mp4RegExp = /^.+.(mp4|m4v)$/;
+      var mp4Match = url.match(mp4RegExp);
+
+      var oggRegExp = /^.+.(ogg|ogv)$/;
+      var oggMatch = url.match(oggRegExp);
+
+      var webmRegExp = /^.+.(webm)$/;
+      var webmMatch = url.match(webmRegExp);
+
+      var $video;
+      if (ytMatch && ytMatch[1].length === 11) {
+        var youtubeId = ytMatch[1];
+        $video = $('<iframe>')
+            .attr('frameborder', 0)
+            .attr('src', '//www.youtube.com/embed/' + youtubeId)
+            .attr('width', '640').attr('height', '360');
+      } else if (igMatch && igMatch[0].length) {
+        $video = $('<iframe>')
+            .attr('frameborder', 0)
+            .attr('src', igMatch[0] + '/embed/')
+            .attr('width', '612').attr('height', '710')
+            .attr('scrolling', 'no')
+            .attr('allowtransparency', 'true');
+      } else if (vMatch && vMatch[0].length) {
+        $video = $('<iframe>')
+            .attr('frameborder', 0)
+            .attr('src', vMatch[0] + '/embed/simple')
+            .attr('width', '600').attr('height', '600')
+            .attr('class', 'vine-embed');
+      } else if (vimMatch && vimMatch[3].length) {
+        $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+            .attr('frameborder', 0)
+            .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
+            .attr('width', '640').attr('height', '360');
+      } else if (dmMatch && dmMatch[2].length) {
+        $video = $('<iframe>')
+            .attr('frameborder', 0)
+            .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
+            .attr('width', '640').attr('height', '360');
+      } else if (youkuMatch && youkuMatch[1].length) {
+        $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+            .attr('frameborder', 0)
+            .attr('height', '498')
+            .attr('width', '510')
+            .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
+      } else if (mp4Match || oggMatch || webmMatch) {
+        $video = $('<video controls>')
+            .attr('src', url)
+            .attr('width', '640').attr('height', '360');
+      } else {
+        // this is not a known video link. Now what, Cat? Now what?
+        return false;
+      }
+
+      $video.addClass('note-video-clip');
+
+      return $video[0];
+    };
+
+
+    this.show = function () {
+      var text = this.getTextOnRange();
+      summernote.invoke('editor.saveRange');
+      this.showVideoDialog(text).then(function (url) {
+        summernote.invoke('editor.restoreRange');
+
+        // build node
+        var $node = self.createVideoNode(url);
+
+        if ($node) {
+          // insert video node
+          summernote.invoke('editor.insertNode', $node);
+        }
+      }).fail(function () {
+        summernote.invoke('editor.restoreRange');
+      });
+    };
+
+    /**
+     * show image dialog
+     *
+     * @param {jQuery} $dialog
+     * @return {Promise}
+     */
+    this.showVideoDialog = function (text) {
+      return $.Deferred(function (deferred) {
+        var $videoUrl = self.$dialog.find('.note-video-url'),
+            $videoBtn = self.$dialog.find('.note-video-btn');
+
+        ui.onDialogShown(self.$dialog, function () {
+
+          $videoUrl.val(text).on('input', function () {
+            ui.toggleBtn($videoBtn, $videoUrl.val());
+          }).trigger('focus');
+
+          $videoBtn.click(function (event) {
+            event.preventDefault();
+
+            deferred.resolve($videoUrl.val());
+            ui.hideDialog(self.$dialog);
+          });
+
+          self.bindEnterKey($videoUrl, $videoBtn);
+        });
+
+        ui.onDialogHidden(self.$dialog, function () {
+          $videoUrl.off('input');
+          $videoBtn.off('click');
+
+          if (deferred.state() === 'pending') {
+            deferred.reject();
+          }
+        });
+
+        ui.showDialog(self.$dialog);
+      });
+    };
+  };
+
   var ImagePopover = function (summernote) {
     var self = this;
     var ui = $.summernote.ui;
@@ -5506,14 +5723,22 @@
       className: 'note-image-popover'
     }).render().appendTo($editingArea);
 
+    this.events = {
+      'summernote.keyup summernote.mouseup summernote.change': function (event) {
+        self.update(event.target);
+      },
+      'summernote.scroll': function () {
+        self.update(summernote.invoke('editor.restoreTarget'));
+      }
+    };
+
     this.initialize = function () {
       summernote.buildButtons($popover.find('.popover-content'), options.popover.image);
+      dom.attachEvents($note, this.events);
+    };
 
-      $note.on('summernote.keyup summernote.mouseup summernote.change', function (customEvent, event) {
-        self.update(event.target);
-      }).on('summernote.scroll', function () {
-        self.update(summernote.invoke('editor.restoreTarget'));
-      });
+    this.destroy = function () {
+      dom.detachEvents($note, this.events);
     };
 
     this.update = function (target) {
@@ -5597,17 +5822,23 @@
 
     var AIR_MODE_POPOVER_X_OFFSET = 20;
 
+    this.events = {
+      'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function () {
+        self.update();
+      }
+    };
+
     this.initialize = function () {
       if (!options.airMode) {
         return;
       }
-      summernote.buildButtons($popover.find('.popover-content'), options.popover.air);
 
-      $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
-        self.update();
-      }).on('summernote.scroll', function () {
-        self.update();
-      });
+      summernote.buildButtons($popover.find('.popover-content'), options.popover.air);
+      dom.attachEvents($note, this.events);
+    };
+
+    this.destroy = function () {
+      dom.detachEvents($note, this.events);
     };
 
     this.update = function () {
@@ -5672,6 +5903,13 @@
           maximumFileSizeError: 'Maximum file size exceeded.',
           url: 'Image URL',
           remove: 'Remove Image'
+        },
+        video: {
+          video: 'Video',
+          videoLink: 'Video Link',
+          insert: 'Insert Video',
+          url: 'Video URL?',
+          providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
         },
         link: {
           link: 'Link',
@@ -5758,6 +5996,7 @@
         'linkDialog': LinkDialog,
         'linkPopover': LinkPopover,
         'imageDialog': ImageDialog,
+        'videoDialog': VideoDialog,
         'imagePopover': ImagePopover,
         'helpDialog': HelpDialog,
         'airPopover': AirPopover
@@ -5777,7 +6016,7 @@
         ['para', ['ul', 'ol', 'paragraph']],
         ['height', ['height']],
         ['table', ['table']],
-        ['insert', ['link', 'picture', 'hr']],
+        ['insert', ['link', 'picture', 'video', 'hr']],
         ['view', ['fullscreen', 'codeview']],
         ['help', ['help']]
       ],
@@ -5797,12 +6036,12 @@
           ['font', ['bold', 'underline', 'clear']],
           ['para', ['ul', 'paragraph']],
           ['table', ['table']],
-          ['insert', ['link', 'picture']]
+          ['insert', ['link', 'picture', 'video']]
         ]
       },
 
       // air mode: inline editor
-      airMode: true,
+      airMode: false,
 
       width: null,
       height: null,
@@ -5859,6 +6098,12 @@
         onSubmit: null,
         onImageUpload: null,
         onImageUploadError: null
+      },
+
+      codemirror: {
+        mode: 'text/html',
+        htmlMode: true,
+        lineNumbers: true
       },
 
       keyMap: {

@@ -257,6 +257,12 @@ define([
         onImageUploadError: null
       },
 
+      codemirror: {
+        mode: 'text/html',
+        htmlMode: true,
+        lineNumbers: true
+      },
+
       keyMap: {
         pc: {
           'ENTER': 'insertParagraph',

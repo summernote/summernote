@@ -13,7 +13,7 @@ define([
         'toolbar': Toolbar
       },
 
-      buttons : { },
+      buttons: {},
 
       width: null,
       height: null,
