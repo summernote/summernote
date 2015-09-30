@@ -105,6 +105,10 @@
       history: {
         undo: '실행 취소',
         redo: '다시 실행'
+      },
+      specialChar: {
+        specialChar: '특수문자',
+        select: '특수문자를 선택하세요'
       }
     }
   });
