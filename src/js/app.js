@@ -45,7 +45,17 @@ require([
     // initialize summernote
     $('.summernote').summernote({
       height: 300,
-      lang: 'ko-KR'
+      lang: 'ko-KR',
+      hint : {
+        match: /[a-z]+/g,
+        search : function (keyword, callback) {
+          return [
+            'a',
+            'b',
+            'c'
+          ];
+        }
+      }
     });
   });
 });
