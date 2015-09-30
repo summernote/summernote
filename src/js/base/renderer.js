@@ -2,6 +2,7 @@ define(function () {
   var Renderer = function (markup, children, options, callback) {
     this.render = function ($parent) {
       var $node = $(markup);
+
       if (options && options.contents) {
         $node.html(options.contents);
       }
