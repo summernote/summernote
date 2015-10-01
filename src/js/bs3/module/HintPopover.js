@@ -21,13 +21,7 @@ define([
     var DROPDOWN_KEYCODES = [KEY.UP, KEY.DOWN, KEY.ENTER];
 
     var $popover = ui.popover({
-      className: 'note-hint-popover',
-      callback : function ($node) {
-        $node.css({
-          'min-width': '100px',
-          'padding': '2px'
-        });
-      }
+      className: 'note-hint-popover'
     }).render().appendTo('body');
 
     var $popoverContent = $popover.find('.popover-content');
