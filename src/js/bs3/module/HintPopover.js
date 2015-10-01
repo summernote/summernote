@@ -26,10 +26,6 @@ define([
 
     var $popoverContent = $popover.find('.popover-content');
 
-
-    this.timer = null;
-
-
     this.events = {
       'summernote.keyup': function (e, nativeEvent) {
         self.update(nativeEvent);
@@ -61,8 +57,7 @@ define([
       $popoverContent.off('click');
     };
 
-    this.activate = function (item) {
-      var $activeItem = $(item);
+    this.activate = function ($activeItem) {
       $popoverContent.find('.active').removeClass('active');
       $activeItem.addClass('active');
 
@@ -87,7 +82,7 @@ define([
           $parentNext = $popoverContent.find('.hint-group').first();
         }
 
-        this.activate($($parentNext).find('.hint-item').first());
+        this.activate($parentNext.find('.hint-item').first());
       }
     };
 
@@ -104,7 +99,7 @@ define([
           $parentPrev = $popoverContent.find('.hint-group').last();
         }
 
-        this.activate($($parentPrev).find('.hint-item').last());
+        this.activate($parentPrev.find('.hint-item').last());
       }
     };
 
@@ -211,10 +206,6 @@ define([
     };
 
     this.update = function (e) {
-      if (!hint) {
-        return false;
-      }
-
       if (DROPDOWN_KEYCODES.indexOf(e.keyCode) > -1) {
         if (e.keyCode === KEY.ENTER) {
           if ($popover.css('display') === 'block') {

@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-10-01T08:22Z
+ * Date: 2015-10-01T09:12Z
  */
 (function (factory) {
   /* global define */
@@ -5863,20 +5863,10 @@
     var DROPDOWN_KEYCODES = [KEY.UP, KEY.DOWN, KEY.ENTER];
 
     var $popover = ui.popover({
-      className: 'note-hint-popover',
-      callback : function ($node) {
-        $node.css({
-          'min-width': '100px',
-          'padding': '2px'
-        });
-      }
+      className: 'note-hint-popover'
     }).render().appendTo('body');
 
     var $popoverContent = $popover.find('.popover-content');
-
-
-    this.timer = null;
-
 
     this.events = {
       'summernote.keyup': function (e, nativeEvent) {
@@ -5909,8 +5899,7 @@
       $popoverContent.off('click');
     };
 
-    this.activate = function (item) {
-      var $activeItem = $(item);
+    this.activate = function ($activeItem) {
       $popoverContent.find('.active').removeClass('active');
       $activeItem.addClass('active');
 
@@ -5935,7 +5924,7 @@
           $parentNext = $popoverContent.find('.hint-group').first();
         }
 
-        this.activate($($parentNext).find('.hint-item').first());
+        this.activate($parentNext.find('.hint-item').first());
       }
     };
 
@@ -5952,7 +5941,7 @@
           $parentPrev = $popoverContent.find('.hint-group').last();
         }
 
-        this.activate($($parentPrev).find('.hint-item').last());
+        this.activate($parentPrev.find('.hint-item').last());
       }
     };
 
@@ -6059,10 +6048,6 @@
     };
 
     this.update = function (e) {
-      if (!hint) {
-        return false;
-      }
-
       if (DROPDOWN_KEYCODES.indexOf(e.keyCode) > -1) {
         if (e.keyCode === KEY.ENTER) {
           if ($popover.css('display') === 'block') {
