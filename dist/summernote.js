@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-09-30T05:27Z
+ * Date: 2015-10-01T09:31Z
  */
 (function (factory) {
   /* global define */
@@ -520,6 +520,7 @@
   var Renderer = function (markup, children, options, callback) {
     this.render = function ($parent) {
       var $node = $(markup);
+
       if (options && options.contents) {
         $node.html(options.contents);
       }
@@ -3073,14 +3074,17 @@
       var styleInfo = this.fromNode($cont);
 
       // document.queryCommandState for toggle state
-      styleInfo = $.extend(styleInfo, {
-        'font-bold': document.queryCommandState('bold') ? 'bold' : 'normal',
-        'font-italic': document.queryCommandState('italic') ? 'italic' : 'normal',
-        'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
-        'font-subscript': document.queryCommandState('subscript') ? 'subscript' : 'normal',
-        'font-superscript': document.queryCommandState('superscript') ? 'superscript' : 'normal',
-        'font-strikethrough': document.queryCommandState('strikeThrough') ? 'strikethrough' : 'normal'
-      });
+      // [workaround] prevent Firefox nsresult: "0x80004005 (NS_ERROR_FAILURE)"
+      try {
+        styleInfo = $.extend(styleInfo, {
+          'font-bold': document.queryCommandState('bold') ? 'bold' : 'normal',
+          'font-italic': document.queryCommandState('italic') ? 'italic' : 'normal',
+          'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
+          'font-subscript': document.queryCommandState('subscript') ? 'subscript' : 'normal',
+          'font-superscript': document.queryCommandState('superscript') ? 'superscript' : 'normal',
+          'font-strikethrough': document.queryCommandState('strikeThrough') ? 'strikethrough' : 'normal'
+        });
+      } catch (e) {}
 
       // list-style-type to list-style(unordered, ordered)
       if (!rng.isOnList()) {
@@ -3501,7 +3505,7 @@
       });
 
       if (!options.airMode && options.height) {
-        $editable.height(options.height);
+        $editable.outerHeight(options.height);
       }
 
       $editable.html($note.html());
@@ -3700,42 +3704,45 @@
     };
 
     /**
+     * wrapCommand
+     *
+     * run given function between beforeCommand and afterCommand
+     */
+    this.wrapCommand = function (fn) {
+      return function () {
+        beforeCommand();
+        fn.apply(self, arguments);
+        afterCommand();
+      };
+    };
+
+    /**
      * insertParagraph
      *
      * insert paragraph
      */
-    this.insertParagraph = function () {
-      beforeCommand();
+    this.insertParagraph = this.wrapCommand(function () {
       typing.insertParagraph($editable);
-      afterCommand();
-    };
+    });
 
     /**
      * insertOrderedList
      */
-    this.insertOrderedList = function () {
-      beforeCommand();
+    this.insertOrderedList = this.wrapCommand(function () {
       bullet.insertOrderedList($editable);
-      afterCommand();
-    };
+    });
 
-    this.insertUnorderedList = function () {
-      beforeCommand();
+    this.insertUnorderedList = this.wrapCommand(function () {
       bullet.insertUnorderedList($editable);
-      afterCommand();
-    };
+    });
 
-    this.indent = function () {
-      beforeCommand();
+    this.indent = this.wrapCommand(function () {
       bullet.indent($editable);
-      afterCommand();
-    };
+    });
 
-    this.outdent = function () {
-      beforeCommand();
+    this.outdent = this.wrapCommand(function () {
       bullet.outdent($editable);
-      afterCommand();
-    };
+    });
 
     /**
      * insert image
@@ -3762,52 +3769,42 @@
      * insert node
      * @param {Node} node
      */
-    this.insertNode = function (node) {
-      beforeCommand();
+    this.insertNode = this.wrapCommand(function (node) {
       range.create().insertNode(node);
       range.createFromNodeAfter(node).select();
-      afterCommand();
-    };
+    });
 
     /**
      * insert text
      * @param {String} text
      */
-    this.insertText = function (text) {
-      beforeCommand();
+    this.insertText = this.wrapCommand(function (text) {
       var textNode = range.create().insertNode(dom.createText(text));
       range.create(textNode, dom.nodeLength(textNode)).select();
-      afterCommand();
-    };
+    });
 
     /**
      * paste HTML
      * @param {String} markup
      */
-    this.pasteHTML = function (markup) {
-      beforeCommand();
+    this.pasteHTML = this.wrapCommand(function (markup) {
       var contents = range.create().pasteHTML(markup);
       range.createFromNodeAfter(list.last(contents)).select();
-      afterCommand();
-    };
+    });
 
     /**
      * formatBlock
      *
      * @param {String} tagName
      */
-    this.formatBlock = function (tagName) {
-      beforeCommand();
+    this.formatBlock = this.wrapCommand(function (tagName) {
       // [workaround] for MSIE, IE need `<`
       tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       document.execCommand('FormatBlock', false, tagName);
-      afterCommand();
-    };
+    });
 
     this.formatPara = function () {
-      beforeCommand();
       this.formatBlock('P');
-      afterCommand();
     };
 
     /* jshint ignore:start */
@@ -3855,17 +3852,13 @@
     /**
      * insert horizontal rule
      */
-    this.insertHorizontalRule = function () {
-      beforeCommand();
-
+    this.insertHorizontalRule = this.wrapCommand(function () {
       var rng = range.create();
       var hrNode = rng.insertNode($('<HR/>')[0]);
       if (hrNode.nextSibling) {
         range.create(hrNode.nextSibling, 0).normalize().select();
       }
-
-      afterCommand();
-    };
+    });
 
     /**
      * remove bogus node and character
@@ -3894,13 +3887,11 @@
      * lineHeight
      * @param {String} value
      */
-    this.lineHeight = function (value) {
-      beforeCommand();
+    this.lineHeight = this.wrapCommand(function (value) {
       style.stylePara(range.create(), {
         lineHeight: value
       });
-      afterCommand();
-    };
+    });
 
     /**
      * unlink
@@ -3925,14 +3916,12 @@
      *
      * @param {Object} linkInfo
      */
-    this.createLink = function (linkInfo) {
+    this.createLink = this.wrapCommand(function (linkInfo) {
       var linkUrl = linkInfo.url;
       var linkText = linkInfo.text;
       var isNewWindow = linkInfo.isNewWindow;
       var rng = linkInfo.range || this.createRange();
       var isTextChanged = rng.toString() !== linkText;
-
-      beforeCommand();
 
       if (options.onCreateLink) {
         linkUrl = options.onCreateLink(linkUrl);
@@ -3971,9 +3960,7 @@
         endPoint.node,
         endPoint.offset
       ).select();
-
-      afterCommand();
-    };
+    });
 
     /**
      * returns link info
@@ -4007,59 +3994,47 @@
      * @param {String} sObjColor.foreColor foreground color
      * @param {String} sObjColor.backColor background color
      */
-    this.color = function (colorInfo) {
+    this.color = this.wrapCommand(function (colorInfo) {
       var foreColor = colorInfo.foreColor;
       var backColor = colorInfo.backColor;
 
-      beforeCommand();
-
       if (foreColor) { document.execCommand('foreColor', false, foreColor); }
       if (backColor) { document.execCommand('backColor', false, backColor); }
-
-      afterCommand();
-    };
+    });
 
     /**
      * insert Table
      *
      * @param {String} sDim dimension of table (ex : "5x5")
      */
-    this.insertTable = function (sDim) {
+    this.insertTable = this.wrapCommand(function (sDim) {
       var dimension = sDim.split('x');
-      beforeCommand();
 
       var rng = range.create().deleteContents();
       rng.insertNode(table.createTable(dimension[0], dimension[1], options));
-      afterCommand();
-    };
+    });
 
     /**
      * float me
      *
      * @param {String} value
      */
-    this.floatMe = function (value) {
-      beforeCommand();
+    this.floatMe = this.wrapCommand(function (value) {
       var $target = $(this.restoreTarget());
       $target.css('float', value);
-      afterCommand();
-    };
+    });
 
     /**
      * resize overlay element
      * @param {String} value
      */
-    this.resize = function (value) {
-      beforeCommand();
-
+    this.resize = this.wrapCommand(function (value) {
       var $target = $(this.restoreTarget());
       $target.css({
         width: value * 100 + '%',
         height: ''
       });
-
-      afterCommand();
-    };
+    });
 
     /**
      * @param {Position} pos
@@ -4088,12 +4063,10 @@
     /**
      * remove media object
      */
-    this.removeMedia = function () {
-      beforeCommand();
+    this.removeMedia = this.wrapCommand(function () {
       var $target = $(this.restoreTarget()).detach();
       summernote.triggerEvent('media.delete', $target, $editable);
-      afterCommand();
-    };
+    });
 
     /**
      * set focus
@@ -4956,6 +4929,14 @@
           contents: '<i class="fa fa-question"/>',
           tooltip: lang.options.help,
           click: summernote.createInvokeHandler('helpDialog.show')
+        }).render();
+      });
+
+      summernote.addButton('specialchar', function () {
+        return ui.button({
+          contents: '<i class="fa fa-font fa-flip-vertical"/>',
+          tooltip: lang.specialChar.specialChar,
+          click: summernote.createInvokeHandler('specialCharDialog.show')
         }).render();
       });
     };
@@ -5864,6 +5845,417 @@
     };
   };
 
+  var SpecialCharDialog = function (summernote) {
+    var self = this;
+    var ui = $.summernote.ui;
+
+    var $editor = summernote.layoutInfo.editor;
+    var options = summernote.options;
+    var lang = options.langInfo;
+
+    var KEY = {
+      UP: 38,
+      DOWN: 40,
+      LEFT: 37,
+      RIGHT: 39,
+      ENTER: 13
+    };
+    var COLUMN_LENGTH = 15;
+    var COLUMN_WIDTH = 35;
+
+    var currentColumn, currentRow, totalColumn, totalRow = 0;
+
+    // special characters data set
+    var specialCharDataSet = [
+      '&quot;',   // "
+      '&amp;',    // &
+      '&lt;',     // <
+      '&gt;',     // >
+      '&iexcl;',
+      '&cent;',
+      '&pound;',
+      '&curren;',
+      '&yen;',
+      '&brvbar;',
+      '&sect;',
+      '&uml;',
+      '&copy;',
+      '&ordf;',
+      '&laquo;',
+      '&not;',
+      //'&shy;',
+      '&reg;',
+      '&macr;',
+      '&deg;',
+      '&plusmn;',
+      '&sup2;',
+      '&sup3;',
+      '&acute;',
+      '&micro;',
+      '&para;',
+      '&middot;',
+      '&cedil;',
+      '&sup1;',
+      '&ordm;',
+      '&raquo;',
+      '&frac14;',
+      '&frac12;',
+      '&frac34;',
+      '&iquest;',
+      '&times;',
+      '&divide;',
+      '&fnof;',
+      '&circ;',
+      '&tilde;',
+      /*'&ensp;',
+       '&emsp;',
+       '&thinsp;',
+       '&zwnj;',
+       '&zwj;',
+       '&lrm;',
+       '&rlm;',*/
+      '&ndash;',
+      '&mdash;',
+      '&lsquo;',
+      '&rsquo;',
+      '&sbquo;',
+      '&ldquo;',
+      '&rdquo;',
+      '&bdquo;',
+      '&dagger;',
+      '&Dagger;',
+      '&bull;',
+      '&hellip;',
+      '&permil;',
+      '&prime;',
+      '&Prime;',
+      '&lsaquo;',
+      '&rsaquo;',
+      '&oline;',
+      '&frasl;',
+      '&euro;',
+      '&image;',
+      '&weierp;',
+      '&real;',
+      '&trade;',
+      '&alefsym;',
+      '&larr;',
+      '&uarr;',
+      '&rarr;',
+      '&darr;',
+      '&harr;',
+      '&crarr;',
+      '&lArr;',
+      '&uArr;',
+      '&rArr;',
+      '&dArr;',
+      '&hArr;',
+      '&forall;',
+      '&part;',
+      '&exist;',
+      '&empty;',
+      '&nabla;',
+      '&isin;',
+      '&notin;',
+      '&ni;',
+      '&prod;',
+      '&sum;',
+      '&minus;',
+      '&lowast;',
+      '&radic;',
+      '&prop;',
+      '&infin;',
+      '&ang;',
+      '&and;',
+      '&or;',
+      '&cap;',
+      '&cup;',
+      '&int;',
+      '&there4;',
+      '&sim;',
+      '&cong;',
+      '&asymp;',
+      '&ne;',
+      '&equiv;',
+      '&le;',
+      '&ge;',
+      '&sub;',
+      '&sup;',
+      '&nsub;',
+      '&sube;',
+      '&supe;',
+      '&oplus;',
+      '&otimes;',
+      '&perp;',
+      '&sdot;',
+      '&lceil;',
+      '&rceil;',
+      '&lfloor;',
+      '&rfloor;',
+      //'&lang;',
+      //'&rang;',
+      '&loz;',
+      '&spades;',
+      '&clubs;',
+      '&hearts;',
+      '&diams;'
+    ];
+
+    this.getTextOnRange = function () {
+      var rng = summernote.invoke('editor.createRange');
+
+      // if range on anchor, expand range with anchor
+      if (rng.isOnAnchor()) {
+        var anchor = dom.ancestor(rng.sc, dom.isAnchor);
+        rng = range.createFromNode(anchor);
+      }
+
+      return rng.toString();
+    };
+
+    /**
+     * Make Special Characters Table
+     *
+     * @member plugin.specialChar
+     * @private
+     * @return {jQuery}
+     */
+    this.makeSpecialCharSetTable = function () {
+      var $table = $('<table/>');
+      $.each(specialCharDataSet, function (idx, text) {
+        var $td = $('<td/>').addClass('note-specialchar-node');
+        var $tr = (idx % COLUMN_LENGTH === 0) ? $('<tr/>') : $table.find('tr').last();
+
+        var $button = ui.button({
+          callback : function ($node) {
+            $node.html(text);
+            $node.attr('title', text);
+            $node.attr('data-value', encodeURIComponent(text));
+            $node.css({
+              width: COLUMN_WIDTH,
+              'margin-right' : '2px',
+              'margin-bottom' : '2px'
+            });
+          }
+        }).render();
+
+        $td.append($button);
+
+        $tr.append($td);
+        if (idx % COLUMN_LENGTH === 0) {
+          $table.append($tr);
+        }
+      });
+
+      totalRow = $table.find('tr').length;
+      totalColumn = COLUMN_LENGTH;
+
+      return $table;
+    };
+
+    this.initialize = function () {
+      var $container = options.dialogsInBody ? $(document.body) : $editor;
+
+      var body = '<div class="form-group row-fluid">' + this.makeSpecialCharSetTable()[0].outerHTML + '</div>';
+
+      this.$dialog = ui.dialog({
+        title: lang.specialChar.select,
+        body: body
+      }).render().appendTo($container);
+    };
+
+    this.show = function () {
+      var text = this.getTextOnRange();
+      summernote.invoke('editor.saveRange');
+      this.showSpecialCharDialog(text).then(function (selectChar) {
+        summernote.invoke('editor.restoreRange');
+
+        // build node
+        var $node = $('<span></span>').html(selectChar)[0];
+
+        if ($node) {
+          // insert video node
+          summernote.invoke('editor.insertNode', $node);
+        }
+      }).fail(function () {
+        summernote.invoke('editor.restoreRange');
+      });
+    };
+
+    /**
+     * show image dialog
+     *
+     * @param {jQuery} $dialog
+     * @return {Promise}
+     */
+    this.showSpecialCharDialog = function (text) {
+      return $.Deferred(function (deferred) {
+        var $specialCharDialog = self.$dialog;
+        var $specialCharNode = $specialCharDialog.find('.note-specialchar-node');
+        var $selectedNode = null;
+        var ARROW_KEYS = [KEY.UP, KEY.DOWN, KEY.LEFT, KEY.RIGHT];
+        var ENTER_KEY = KEY.ENTER;
+
+        function addActiveClass($target) {
+          if (!$target) {
+            return;
+          }
+          $target.find('button').addClass('active');
+          $selectedNode = $target;
+        }
+
+        function removeActiveClass($target) {
+          $target.find('button').removeClass('active');
+          $selectedNode = null;
+        }
+
+        // find next node
+        function findNextNode(row, column) {
+          var findNode = null;
+          $.each($specialCharNode, function (idx, $node) {
+            var findRow = Math.ceil((idx + 1) / COLUMN_LENGTH);
+            var findColumn = ((idx + 1) % COLUMN_LENGTH === 0) ? COLUMN_LENGTH : (idx + 1) % COLUMN_LENGTH;
+            if (findRow === row && findColumn === column) {
+              findNode = $node;
+              return false;
+            }
+          });
+          return $(findNode);
+        }
+
+        function arrowKeyHandler(keyCode) {
+          // left, right, up, down key
+          var $nextNode;
+          var lastRowColumnLength = $specialCharNode.length % totalColumn;
+
+          if (KEY.LEFT === keyCode) {
+
+            if (currentColumn > 1) {
+              currentColumn = currentColumn - 1;
+            } else if (currentRow === 1 && currentColumn === 1) {
+              currentColumn = lastRowColumnLength;
+              currentRow = totalRow;
+            } else {
+              currentColumn = totalColumn;
+              currentRow = currentRow - 1;
+            }
+
+          } else if (KEY.RIGHT === keyCode) {
+
+            if (currentRow === totalRow && lastRowColumnLength === currentColumn) {
+              currentColumn = 1;
+              currentRow = 1;
+            } else if (currentColumn < totalColumn) {
+              currentColumn = currentColumn + 1;
+            } else {
+              currentColumn = 1;
+              currentRow = currentRow + 1;
+            }
+
+          } else if (KEY.UP === keyCode) {
+            if (currentRow === 1 && lastRowColumnLength < currentColumn) {
+              currentRow = totalRow - 1;
+            } else {
+              currentRow = currentRow - 1;
+            }
+          } else if (KEY.DOWN === keyCode) {
+            currentRow = currentRow + 1;
+          }
+
+          if (currentRow === totalRow && currentColumn > lastRowColumnLength) {
+            currentRow = 1;
+          } else if (currentRow > totalRow) {
+            currentRow = 1;
+          } else if (currentRow < 1) {
+            currentRow = totalRow;
+          }
+
+          $nextNode = findNextNode(currentRow, currentColumn);
+
+          if ($nextNode) {
+            removeActiveClass($selectedNode);
+            addActiveClass($nextNode);
+          }
+        }
+
+        function enterKeyHandler() {
+          if (!$selectedNode) {
+            return;
+          }
+
+          deferred.resolve(decodeURIComponent($selectedNode.find('button').data('value')));
+          $specialCharDialog.modal('hide');
+        }
+
+        function keyDownEventHandler(event) {
+          event.preventDefault();
+          var keyCode = event.keyCode;
+          if (keyCode === undefined || keyCode === null) {
+            return;
+          }
+          // check arrowKeys match
+          if (ARROW_KEYS.indexOf(keyCode) > -1) {
+            if ($selectedNode === null) {
+              addActiveClass($specialCharNode.eq(0));
+              currentColumn = 1;
+              currentRow = 1;
+              return;
+            }
+            arrowKeyHandler(keyCode);
+          } else if (keyCode === ENTER_KEY) {
+            enterKeyHandler();
+          }
+          return false;
+        }
+
+        // remove class
+        removeActiveClass($specialCharNode);
+
+        // find selected node
+        if (text) {
+          for (var i = 0; i < $specialCharNode.length; i++) {
+            var $checkNode = $($specialCharNode[i]);
+            if ($checkNode.text() === text) {
+              addActiveClass($checkNode);
+              currentRow = Math.ceil((i + 1) / COLUMN_LENGTH);
+              currentColumn = (i + 1) % COLUMN_LENGTH;
+            }
+          }
+        }
+
+        ui.onDialogShown(self.$dialog, function () {
+
+          $(document).on('keydown', keyDownEventHandler);
+
+          self.$dialog.find('button').tooltip();
+
+          $specialCharNode.on('click', function (event) {
+            event.preventDefault();
+            deferred.resolve(decodeURIComponent($(event.currentTarget).find('button').data('value')));
+            ui.hideDialog(self.$dialog);
+          });
+
+
+        });
+
+        ui.onDialogHidden(self.$dialog, function () {
+          $specialCharNode.off('click');
+
+          self.$dialog.find('button').tooltip('destroy');
+
+          $(document).off('keydown', keyDownEventHandler);
+
+          if (deferred.state() === 'pending') {
+            deferred.reject();
+          }
+        });
+
+        ui.showDialog(self.$dialog);
+
+      });
+    };
+  };
+
 
   $.summernote = $.extend($.summernote, {
     version: '0.7.0',
@@ -5978,6 +6370,10 @@
         history: {
           undo: 'Undo',
           redo: 'Redo'
+        },
+        specialChar: {
+          specialChar: 'SPECIAL CHARACTERS',
+          select: 'Select Special characters'
         }
       }
     },
@@ -5999,7 +6395,8 @@
         'videoDialog': VideoDialog,
         'imagePopover': ImagePopover,
         'helpDialog': HelpDialog,
-        'airPopover': AirPopover
+        'airPopover': AirPopover,
+        'specialCharDialog' : SpecialCharDialog
       },
 
       buttons: {},
@@ -6016,7 +6413,7 @@
         ['para', ['ul', 'ol', 'paragraph']],
         ['height', ['height']],
         ['table', ['table']],
-        ['insert', ['link', 'picture', 'video', 'hr']],
+        ['insert', ['link', 'picture', 'video', 'hr', 'specialchar']],
         ['view', ['fullscreen', 'codeview']],
         ['help', ['help']]
       ],
