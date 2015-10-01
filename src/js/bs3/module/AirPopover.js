@@ -17,7 +17,7 @@ define([
       'summernote.keyup summernote.mouseup summernote.scroll': function () {
         self.update();
       },
-      'summernote.change': function (we, e) {
+      'summernote.change': function () {
         self.hide();
       },
       'summernote.focusout': function (we, e) {
