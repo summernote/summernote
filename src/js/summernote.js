@@ -40,7 +40,7 @@ define([
 
       $note.hide();
 
-      this.triggerEvent('ready');
+      this.triggerEvent('init');
       return this;
     };
 
