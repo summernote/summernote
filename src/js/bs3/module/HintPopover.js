@@ -2,8 +2,9 @@ define([
   'summernote/base/core/func',
   'summernote/base/core/list',
   'summernote/base/core/dom',
-  'summernote/base/core/range'
-], function (func, list, dom, range) {
+  'summernote/base/core/range',
+  'summernote/base/core/key'
+], function (func, list, dom, range, key) {
   var HintPopover = function (summernote) {
     var self = this;
     var ui = $.summernote.ui;
@@ -15,11 +16,7 @@ define([
       hint = [hint];
     }
 
-    var KEY = {
-      UP: 38,
-      DOWN: 40,
-      ENTER: 13
-    };
+    var KEY = key.code;
 
     var DROPDOWN_KEYCODES = [KEY.UP, KEY.DOWN, KEY.ENTER];
 
@@ -27,8 +24,8 @@ define([
       className: 'note-hint-popover',
       callback : function ($node) {
         $node.css({
-          'min-width' : '100px',
-          'padding' : '2px'
+          'min-width': '100px',
+          'padding': '2px'
         });
       }
     }).render().appendTo('body');
@@ -70,8 +67,8 @@ define([
       $popoverContent.off('click');
     };
 
-    this.activate = function ($activeItem) {
-      $activeItem = $($activeItem);
+    this.activate = function (item) {
+      var $activeItem = $(item);
       $popoverContent.find('.active').removeClass('active');
       $activeItem.addClass('active');
 
@@ -93,10 +90,10 @@ define([
         var $parentNext = $old.parent().next();
 
         if (!$parentNext.length) {
-          $parentNext = $popoverContent.find('.hint-group')[0];
+          $parentNext = $popoverContent.find('.hint-group').first();
         }
 
-        this.activate($($parentNext).find('.hint-item')[0]);
+        this.activate($($parentNext).find('.hint-item').first());
       }
     };
 
@@ -110,10 +107,10 @@ define([
         var $parentPrev = $old.parent().prev();
 
         if (!$parentPrev.length) {
-          $parentPrev = $popoverContent.find('.hint-group:last');
+          $parentPrev = $popoverContent.find('.hint-group').last();
         }
 
-        this.activate($($parentPrev).find('.hint-item:last'));
+        this.activate($($parentPrev).find('.hint-item').last());
       }
     };
 
@@ -142,9 +139,7 @@ define([
 
     this.searchKeyword = function (hint, keyword, callback) {
       if (hint && hint.match.test(keyword)) {
-        //console.log(keyword, hint.match, hint.match.exec(keyword));
         var matches = hint.match.exec(keyword);
-        //console.log(hint.match, matches);
         this.search(hint, matches[1], callback);
       } else {
         callback();

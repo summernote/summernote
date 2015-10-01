@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-10-01T07:56Z
+ * Date: 2015-10-01T08:22Z
  */
 (function (factory) {
   /* global define */
@@ -3074,14 +3074,17 @@
       var styleInfo = this.fromNode($cont);
 
       // document.queryCommandState for toggle state
-      styleInfo = $.extend(styleInfo, {
-        'font-bold': document.queryCommandState('bold') ? 'bold' : 'normal',
-        'font-italic': document.queryCommandState('italic') ? 'italic' : 'normal',
-        'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
-        'font-subscript': document.queryCommandState('subscript') ? 'subscript' : 'normal',
-        'font-superscript': document.queryCommandState('superscript') ? 'superscript' : 'normal',
-        'font-strikethrough': document.queryCommandState('strikeThrough') ? 'strikethrough' : 'normal'
-      });
+      // [workaround] prevent Firefox nsresult: "0x80004005 (NS_ERROR_FAILURE)"
+      try {
+        styleInfo = $.extend(styleInfo, {
+          'font-bold': document.queryCommandState('bold') ? 'bold' : 'normal',
+          'font-italic': document.queryCommandState('italic') ? 'italic' : 'normal',
+          'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
+          'font-subscript': document.queryCommandState('subscript') ? 'subscript' : 'normal',
+          'font-superscript': document.queryCommandState('superscript') ? 'superscript' : 'normal',
+          'font-strikethrough': document.queryCommandState('strikeThrough') ? 'strikethrough' : 'normal'
+        });
+      } catch (e) {}
 
       // list-style-type to list-style(unordered, ordered)
       if (!rng.isOnList()) {
@@ -3703,42 +3706,45 @@
     };
 
     /**
+     * wrapCommand
+     *
+     * run given function between beforeCommand and afterCommand
+     */
+    this.wrapCommand = function (fn) {
+      return function () {
+        beforeCommand();
+        fn.apply(self, arguments);
+        afterCommand();
+      };
+    };
+
+    /**
      * insertParagraph
      *
      * insert paragraph
      */
-    this.insertParagraph = function () {
-      beforeCommand();
+    this.insertParagraph = this.wrapCommand(function () {
       typing.insertParagraph($editable);
-      afterCommand();
-    };
+    });
 
     /**
      * insertOrderedList
      */
-    this.insertOrderedList = function () {
-      beforeCommand();
+    this.insertOrderedList = this.wrapCommand(function () {
       bullet.insertOrderedList($editable);
-      afterCommand();
-    };
+    });
 
-    this.insertUnorderedList = function () {
-      beforeCommand();
+    this.insertUnorderedList = this.wrapCommand(function () {
       bullet.insertUnorderedList($editable);
-      afterCommand();
-    };
+    });
 
-    this.indent = function () {
-      beforeCommand();
+    this.indent = this.wrapCommand(function () {
       bullet.indent($editable);
-      afterCommand();
-    };
+    });
 
-    this.outdent = function () {
-      beforeCommand();
+    this.outdent = this.wrapCommand(function () {
       bullet.outdent($editable);
-      afterCommand();
-    };
+    });
 
     /**
      * insert image
@@ -3765,52 +3771,42 @@
      * insert node
      * @param {Node} node
      */
-    this.insertNode = function (node) {
-      beforeCommand();
+    this.insertNode = this.wrapCommand(function (node) {
       range.create().insertNode(node);
       range.createFromNodeAfter(node).select();
-      afterCommand();
-    };
+    });
 
     /**
      * insert text
      * @param {String} text
      */
-    this.insertText = function (text) {
-      beforeCommand();
+    this.insertText = this.wrapCommand(function (text) {
       var textNode = range.create().insertNode(dom.createText(text));
       range.create(textNode, dom.nodeLength(textNode)).select();
-      afterCommand();
-    };
+    });
 
     /**
      * paste HTML
      * @param {String} markup
      */
-    this.pasteHTML = function (markup) {
-      beforeCommand();
+    this.pasteHTML = this.wrapCommand(function (markup) {
       var contents = range.create().pasteHTML(markup);
       range.createFromNodeAfter(list.last(contents)).select();
-      afterCommand();
-    };
+    });
 
     /**
      * formatBlock
      *
      * @param {String} tagName
      */
-    this.formatBlock = function (tagName) {
-      beforeCommand();
+    this.formatBlock = this.wrapCommand(function (tagName) {
       // [workaround] for MSIE, IE need `<`
       tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       document.execCommand('FormatBlock', false, tagName);
-      afterCommand();
-    };
+    });
 
     this.formatPara = function () {
-      beforeCommand();
       this.formatBlock('P');
-      afterCommand();
     };
 
     /* jshint ignore:start */
@@ -3858,17 +3854,13 @@
     /**
      * insert horizontal rule
      */
-    this.insertHorizontalRule = function () {
-      beforeCommand();
-
+    this.insertHorizontalRule = this.wrapCommand(function () {
       var rng = range.create();
       var hrNode = rng.insertNode($('<HR/>')[0]);
       if (hrNode.nextSibling) {
         range.create(hrNode.nextSibling, 0).normalize().select();
       }
-
-      afterCommand();
-    };
+    });
 
     /**
      * remove bogus node and character
@@ -3897,13 +3889,11 @@
      * lineHeight
      * @param {String} value
      */
-    this.lineHeight = function (value) {
-      beforeCommand();
+    this.lineHeight = this.wrapCommand(function (value) {
       style.stylePara(range.create(), {
         lineHeight: value
       });
-      afterCommand();
-    };
+    });
 
     /**
      * unlink
@@ -3928,14 +3918,12 @@
      *
      * @param {Object} linkInfo
      */
-    this.createLink = function (linkInfo) {
+    this.createLink = this.wrapCommand(function (linkInfo) {
       var linkUrl = linkInfo.url;
       var linkText = linkInfo.text;
       var isNewWindow = linkInfo.isNewWindow;
       var rng = linkInfo.range || this.createRange();
       var isTextChanged = rng.toString() !== linkText;
-
-      beforeCommand();
 
       if (options.onCreateLink) {
         linkUrl = options.onCreateLink(linkUrl);
@@ -3974,9 +3962,7 @@
         endPoint.node,
         endPoint.offset
       ).select();
-
-      afterCommand();
-    };
+    });
 
     /**
      * returns link info
@@ -4010,59 +3996,47 @@
      * @param {String} sObjColor.foreColor foreground color
      * @param {String} sObjColor.backColor background color
      */
-    this.color = function (colorInfo) {
+    this.color = this.wrapCommand(function (colorInfo) {
       var foreColor = colorInfo.foreColor;
       var backColor = colorInfo.backColor;
 
-      beforeCommand();
-
       if (foreColor) { document.execCommand('foreColor', false, foreColor); }
       if (backColor) { document.execCommand('backColor', false, backColor); }
-
-      afterCommand();
-    };
+    });
 
     /**
      * insert Table
      *
      * @param {String} sDim dimension of table (ex : "5x5")
      */
-    this.insertTable = function (sDim) {
+    this.insertTable = this.wrapCommand(function (sDim) {
       var dimension = sDim.split('x');
-      beforeCommand();
 
       var rng = range.create().deleteContents();
       rng.insertNode(table.createTable(dimension[0], dimension[1], options));
-      afterCommand();
-    };
+    });
 
     /**
      * float me
      *
      * @param {String} value
      */
-    this.floatMe = function (value) {
-      beforeCommand();
+    this.floatMe = this.wrapCommand(function (value) {
       var $target = $(this.restoreTarget());
       $target.css('float', value);
-      afterCommand();
-    };
+    });
 
     /**
      * resize overlay element
      * @param {String} value
      */
-    this.resize = function (value) {
-      beforeCommand();
-
+    this.resize = this.wrapCommand(function (value) {
       var $target = $(this.restoreTarget());
       $target.css({
         width: value * 100 + '%',
         height: ''
       });
-
-      afterCommand();
-    };
+    });
 
     /**
      * @param {Position} pos
@@ -4091,12 +4065,10 @@
     /**
      * remove media object
      */
-    this.removeMedia = function () {
-      beforeCommand();
+    this.removeMedia = this.wrapCommand(function () {
       var $target = $(this.restoreTarget()).detach();
       summernote.triggerEvent('media.delete', $target, $editable);
-      afterCommand();
-    };
+    });
 
     /**
      * set focus
@@ -5886,11 +5858,7 @@
       hint = [hint];
     }
 
-    var KEY = {
-      UP: 38,
-      DOWN: 40,
-      ENTER: 13
-    };
+    var KEY = key.code;
 
     var DROPDOWN_KEYCODES = [KEY.UP, KEY.DOWN, KEY.ENTER];
 
@@ -5898,8 +5866,8 @@
       className: 'note-hint-popover',
       callback : function ($node) {
         $node.css({
-          'min-width' : '100px',
-          'padding' : '2px'
+          'min-width': '100px',
+          'padding': '2px'
         });
       }
     }).render().appendTo('body');
@@ -5941,8 +5909,8 @@
       $popoverContent.off('click');
     };
 
-    this.activate = function ($activeItem) {
-      $activeItem = $($activeItem);
+    this.activate = function (item) {
+      var $activeItem = $(item);
       $popoverContent.find('.active').removeClass('active');
       $activeItem.addClass('active');
 
@@ -5964,10 +5932,10 @@
         var $parentNext = $old.parent().next();
 
         if (!$parentNext.length) {
-          $parentNext = $popoverContent.find('.hint-group')[0];
+          $parentNext = $popoverContent.find('.hint-group').first();
         }
 
-        this.activate($($parentNext).find('.hint-item')[0]);
+        this.activate($($parentNext).find('.hint-item').first());
       }
     };
 
@@ -5981,10 +5949,10 @@
         var $parentPrev = $old.parent().prev();
 
         if (!$parentPrev.length) {
-          $parentPrev = $popoverContent.find('.hint-group:last');
+          $parentPrev = $popoverContent.find('.hint-group').last();
         }
 
-        this.activate($($parentPrev).find('.hint-item:last'));
+        this.activate($($parentPrev).find('.hint-item').last());
       }
     };
 
@@ -6013,9 +5981,7 @@
 
     this.searchKeyword = function (hint, keyword, callback) {
       if (hint && hint.match.test(keyword)) {
-        //console.log(keyword, hint.match, hint.match.exec(keyword));
         var matches = hint.match.exec(keyword);
-        //console.log(hint.match, matches);
         this.search(hint, matches[1], callback);
       } else {
         callback();
