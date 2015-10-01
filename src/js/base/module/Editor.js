@@ -252,14 +252,13 @@ define([
 
     /**
      * wrapCommand
+     *
      * run given function between beforeCommand and afterCommand
-     * @param {Boolean} isPreventTrigger
      */
     this.wrapCommand = function (fn) {
-      var that = this;
       return function () {
         beforeCommand();
-        fn.apply(that, arguments);
+        fn.apply(self, arguments);
         afterCommand();
       };
     };
