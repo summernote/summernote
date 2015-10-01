@@ -25,48 +25,40 @@
 
   <script type="text/javascript" src="../dist/summernote.js"></script>
   <script type="text/javascript" src="../lang/summernote-ko-KR.js"></script>
-  <script type="text/javascript" src="../plugin/summernote-ext-hint.js"></script>
 
   <script type="text/javascript">
     $(document).ready(function () {
+      var self = this;
+      var emoji, emojiLink;
+
+      // load github's emoji list
+      $.getJSON('https://api.github.com/emojis', function (data) {
+        emoji = Object.keys(data);
+        emojiLink = data;
+      });
+
+
       $('.summernote').summernote({
         height: 200,
-        plugin: {
-          hint: {
-            loadEmoji: function (data) {
-              this.emoji = Object.keys(data);
-              this.emojiLink = data;
-            },
-
-            load: function ($popover) {
-              var self = this;
-              $.getJSON('https://api.github.com/emojis', function (data) {
-                self.loadEmoji(data);
-              });
-            },
-
-            content: function (item) {
-              var url = this.emojiLink[item];
-              if (url) {
-                return $('<img />').attr('src', url).css({width: 20})[0];
-              }
-              return '';
-            },
-
-            template: function (item) {
-              var content = this.emojiLink[item];
-              return '<img src="' + content + '" width="20" /> :' + item + ':';
-            },
-
-            match: /\B:([\-+\w]+)$/,
-
-            search: function (keyword, callback) {
-              callback($.grep(this.emoji, function (item) {
-                return item.indexOf(keyword)  === 0;
-              }));
+        hint : [{
+          match: /\B:([\-+\w]+)$/,
+          search: function (keyword, callback) {
+            callback($.grep(emoji, function (item) {
+              return item.indexOf(keyword)  === 0;
+            }));
+          },
+          template : function (item) {
+            var content = emojiLink[item];
+            return '<img src="' + content + '" width="20" /> :' + item + ':';
+          },
+          content : function (item) {
+            var url = emojiLink[item];
+            if (url) {
+              return $('<img />').attr('src', url).css({width: 20})[0];
             }
+            return '';
           }
-        }
+        }]
       });
     });
   </script>

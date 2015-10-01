@@ -473,3 +473,30 @@
     }
   }
 }
+
+.note-hint-popover {
+
+  .popover-content {
+    padding: 3px;
+    max-height: 150px;
+    overflow: auto;
+  }
+}
+
+.hint-item {
+  display: block !important;
+  padding: 3px;
+
+  &.active, &:hover {
+    display: block;
+    clear: both;
+    font-weight: 400;
+    line-height: 1.42857143;
+    color: white;
+    white-space: nowrap;
+    text-decoration: none;
+    background-color: #428bca;
+    outline: 0;
+    cursor: pointer;
+  }
+}
