@@ -20,6 +20,9 @@ define([
     this.events = {
       'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function () {
         self.update();
+      },
+      'summernote.blur': function () {
+        self.hide();
       }
     };
 
@@ -45,7 +48,7 @@ define([
           var posEditingArea = $editingArea.offset();
           $popover.css({
             display: 'block',
-            left: Math.max(bnd.left + bnd.width / 2, 0) - AIR_MODE_POPOVER_X_OFFSET,
+            left: Math.max(bnd.left + bnd.width / 2, 0) - posEditingArea.left - AIR_MODE_POPOVER_X_OFFSET,
             top: bnd.top + bnd.height - posEditingArea.top
           });
         }

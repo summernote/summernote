@@ -43,6 +43,8 @@ define([
 
       $editable.on('keyup', function (event) {
         summernote.triggerEvent('keyup', event);
+      }).on('blur', function (event) {
+        summernote.triggerEvent('blur', event);
       }).on('mouseup', function (event) {
         summernote.triggerEvent('mouseup', event);
       }).on('input', function (event) {
