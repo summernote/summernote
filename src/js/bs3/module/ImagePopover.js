@@ -12,11 +12,11 @@ define([
     var options = summernote.options;
 
     this.events = {
-      'summernote.keyup summernote.mouseup summernote.change': function (event) {
-        self.update(event.target);
+      'summernote.keyup summernote.mouseup summernote.change': function () {
+        self.update();
       },
       'summernote.scroll': function () {
-        self.update(summernote.invoke('editor.restoreTarget'));
+        self.update();
       }
     };
 
@@ -42,8 +42,6 @@ define([
           left: pos.left,
           top: pos.top
         });
-
-        summernote.invoke('editor.saveTarget', target);
       } else {
         this.hide();
       }

@@ -41,6 +41,10 @@ define([
     };
 
     this.destroy = function () {
+      if (!options.airMode) {
+        return;
+      }
+
       this.$popover.remove();
       dom.detachEvents($note, this.events);
     };
