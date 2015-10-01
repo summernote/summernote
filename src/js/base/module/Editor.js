@@ -26,6 +26,7 @@ define([
     var self = this;
 
     var $note = summernote.layoutInfo.note;
+    var $editor = summernote.layoutInfo.editor;
     var $editable = summernote.layoutInfo.editable;
     var options = summernote.options;
 
@@ -63,6 +64,12 @@ define([
         summernote.triggerEvent('scroll', event);
       }).on('paste', function (event) {
         summernote.triggerEvent('paste', event);
+      });
+
+      $editor.on('focusin', function (event) {
+        summernote.triggerEvent('focusin', event);
+      }).on('focusout', function (event) {
+        summernote.triggerEvent('focusout', event);
       });
 
       if (!options.airMode && options.height) {

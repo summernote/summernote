@@ -18,11 +18,16 @@ define([
     var AIR_MODE_POPOVER_X_OFFSET = 20;
 
     this.events = {
-      'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function () {
+      'summernote.keyup summernote.mouseup summernote.scroll': function () {
         self.update();
       },
-      'summernote.change': function () {
+      'summernote.change': function (we, e) {
         self.hide();
+      },
+      'summernote.focusout': function (we, e) {
+        if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq($editingArea[0]))) {
+          self.hide();
+        }
       }
     };
 
