@@ -21,18 +21,18 @@ define([
 
     this.initialize = function () {
       this.$handle = $([
-          '<div class="note-handle">',
-          '<div class="note-control-selection">',
-          '<div class="note-control-selection-bg"></div>',
-          '<div class="note-control-holder note-control-nw"></div>',
-          '<div class="note-control-holder note-control-ne"></div>',
-          '<div class="note-control-holder note-control-sw"></div>',
-          '<div class="',
-          (options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing'),
-          ' note-control-se"></div>',
-          (options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>'),
-          '</div>',
-          '</div>'
+        '<div class="note-handle">',
+        '<div class="note-control-selection">',
+        '<div class="note-control-selection-bg"></div>',
+        '<div class="note-control-holder note-control-nw"></div>',
+        '<div class="note-control-holder note-control-ne"></div>',
+        '<div class="note-control-holder note-control-sw"></div>',
+        '<div class="',
+        (options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing'),
+        ' note-control-se"></div>',
+        (options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>'),
+        '</div>',
+        '</div>'
       ].join('')).prependTo($editingArea);
 
       dom.attachEvents($note, this.events);
