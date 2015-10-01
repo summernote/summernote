@@ -46,13 +46,13 @@ define([
       equal(
         func.namespaceToCamel('upload.image'),
         'UploadImage',
-        'shuold returns camel text'
+        'should returns camel text'
       );
 
       equal(
         func.namespaceToCamel('upload.image', 'summernote'),
         'summernoteUploadImage',
-        'shuold returns camel text with prefix'
+        'should returns camel text with prefix'
       );
     });
   };
