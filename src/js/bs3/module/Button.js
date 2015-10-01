@@ -381,6 +381,14 @@ define([
           click: summernote.createInvokeHandler('helpDialog.show')
         }).render();
       });
+
+      summernote.addButton('specialchar', function () {
+        return ui.button({
+          contents: '<i class="fa fa-font fa-flip-vertical"/>',
+          tooltip: lang.specialChar.specialChar,
+          click: summernote.createInvokeHandler('specialCharDialog.show')
+        }).render();
+      });
     };
 
     /**

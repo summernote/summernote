@@ -125,14 +125,17 @@ define([
       var styleInfo = this.fromNode($cont);
 
       // document.queryCommandState for toggle state
-      styleInfo = $.extend(styleInfo, {
-        'font-bold': document.queryCommandState('bold') ? 'bold' : 'normal',
-        'font-italic': document.queryCommandState('italic') ? 'italic' : 'normal',
-        'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
-        'font-subscript': document.queryCommandState('subscript') ? 'subscript' : 'normal',
-        'font-superscript': document.queryCommandState('superscript') ? 'superscript' : 'normal',
-        'font-strikethrough': document.queryCommandState('strikeThrough') ? 'strikethrough' : 'normal'
-      });
+      // [workaround] prevent Firefox nsresult: "0x80004005 (NS_ERROR_FAILURE)"
+      try {
+        styleInfo = $.extend(styleInfo, {
+          'font-bold': document.queryCommandState('bold') ? 'bold' : 'normal',
+          'font-italic': document.queryCommandState('italic') ? 'italic' : 'normal',
+          'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
+          'font-subscript': document.queryCommandState('subscript') ? 'subscript' : 'normal',
+          'font-superscript': document.queryCommandState('superscript') ? 'superscript' : 'normal',
+          'font-strikethrough': document.queryCommandState('strikeThrough') ? 'strikethrough' : 'normal'
+        });
+      } catch (e) {}
 
       // list-style-type to list-style(unordered, ordered)
       if (!rng.isOnList()) {

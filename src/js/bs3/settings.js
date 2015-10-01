@@ -15,11 +15,12 @@ define([
   'summernote/bs3/module/VideoDialog',
   'summernote/bs3/module/ImagePopover',
   'summernote/bs3/module/HelpDialog',
-  'summernote/bs3/module/AirPopover'
+  'summernote/bs3/module/AirPopover',
+  'summernote/bs3/module/SpecialCharDialog'
 ], function (
   ui,
   Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle,
-  Button, Toolbar, LinkDialog, LinkPopover, ImageDialog, VideoDialog, ImagePopover, HelpDialog, AirPopover
+  Button, Toolbar, LinkDialog, LinkPopover, ImageDialog, VideoDialog, ImagePopover, HelpDialog, AirPopover, SpecialCharDialog
 ) {
 
   $.summernote = $.extend($.summernote, {
@@ -135,6 +136,10 @@ define([
         history: {
           undo: 'Undo',
           redo: 'Redo'
+        },
+        specialChar: {
+          specialChar: 'SPECIAL CHARACTERS',
+          select: 'Select Special characters'
         }
       }
     },
@@ -156,7 +161,8 @@ define([
         'videoDialog': VideoDialog,
         'imagePopover': ImagePopover,
         'helpDialog': HelpDialog,
-        'airPopover': AirPopover
+        'airPopover': AirPopover,
+        'specialCharDialog' : SpecialCharDialog
       },
 
       buttons: {},
@@ -173,7 +179,7 @@ define([
         ['para', ['ul', 'ol', 'paragraph']],
         ['height', ['height']],
         ['table', ['table']],
-        ['insert', ['link', 'picture', 'video', 'hr']],
+        ['insert', ['link', 'picture', 'video', 'hr', 'specialchar']],
         ['view', ['fullscreen', 'codeview']],
         ['help', ['help']]
       ],

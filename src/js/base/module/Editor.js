@@ -52,7 +52,7 @@ define([
       });
 
       if (!options.airMode && options.height) {
-        $editable.height(options.height);
+        $editable.outerHeight(options.height);
       }
 
       $editable.html($note.html());
