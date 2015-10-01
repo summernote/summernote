@@ -56,6 +56,7 @@ define([
       }
 
       $editable.html($note.html());
+      history.recordUndo();
     };
 
     this.destroy = function () {
