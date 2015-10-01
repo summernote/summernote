@@ -41,90 +41,6 @@ define([
     };
 
     /**
-     * @method  buildLayoutInfo
-     *
-     * build layoutInfo from $editor(.note-editor)
-     *
-     * @param {jQuery} $editor
-     * @return {Object}
-     * @return {Function} return.editor
-     * @return {Node} return.dropzone
-     * @return {Node} return.toolbar
-     * @return {Node} return.editable
-     * @return {Node} return.codable
-     * @return {Node} return.popover
-     * @return {Node} return.handle
-     * @return {Node} return.dialog
-     */
-    var buildLayoutInfo = function ($editor) {
-      var makeFinder;
-
-      // air mode
-      if ($editor.hasClass('note-air-editor')) {
-        var id = list.last($editor.attr('id').split('-'));
-        makeFinder = function (sIdPrefix) {
-          return function () { return $(sIdPrefix + id); };
-        };
-
-        return {
-          editor: function () { return $editor; },
-          holder : function () { return $editor.data('holder'); },
-          editable: function () { return $editor; },
-          popover: makeFinder('#note-popover-'),
-          handle: makeFinder('#note-handle-'),
-          dialog: makeFinder('#note-dialog-')
-        };
-
-        // frame mode
-      } else {
-        makeFinder = function (className, $base) {
-          $base = $base || $editor;
-          return function () { return $base.find(className); };
-        };
-
-        var options = $editor.data('options');
-        var $dialogHolder = (options && options.dialogsInBody) ? $(document.body) : null;
-
-        return {
-          editor: function () { return $editor; },
-          holder : function () { return $editor.data('holder'); },
-          dropzone: makeFinder('.note-dropzone'),
-          toolbar: makeFinder('.note-toolbar'),
-          editable: makeFinder('.note-editable'),
-          codable: makeFinder('.note-codable'),
-          statusbar: makeFinder('.note-statusbar'),
-          popover: makeFinder('.note-popover'),
-          handle: makeFinder('.note-handle'),
-          dialog: makeFinder('.note-dialog', $dialogHolder)
-        };
-      }
-    };
-
-    /**
-     * returns makeLayoutInfo from editor's descendant node.
-     *
-     * @private
-     * @param {Node} descendant
-     * @return {Object}
-     */
-    var makeLayoutInfo = function (descendant) {
-      var $target = $(descendant).closest('.note-editor, .note-air-editor, .note-air-layout');
-
-      if (!$target.length) {
-        return null;
-      }
-
-      var $editor;
-      if ($target.is('.note-editor, .note-air-editor')) {
-        $editor = $target;
-      } else {
-        $editor = $('#note-editor-' + list.last($target.attr('id').split('-')));
-      }
-
-      return buildLayoutInfo($editor);
-    };
-
-    /**
      * @method makePredByNodeName
      *
      * returns predicate which judge whether nodeName is same
@@ -1073,8 +989,6 @@ define([
       makePredByNodeName: makePredByNodeName,
       isEditable: isEditable,
       isControlSizing: isControlSizing,
-      buildLayoutInfo: buildLayoutInfo,
-      makeLayoutInfo: makeLayoutInfo,
       isText: isText,
       isElement: isElement,
       isVoid: isVoid,
