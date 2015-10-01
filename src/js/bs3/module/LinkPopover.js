@@ -11,14 +11,6 @@ define([
     var $editingArea = summernote.layoutInfo.editingArea;
     var options = summernote.options;
 
-    var $popover = ui.popover({
-      className: 'note-link-popover',
-      callback: function ($node) {
-        var $content = $node.find('.popover-content');
-        $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
-      }
-    }).render().appendTo($editingArea);
-
     this.events = {
       'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function () {
         self.update();
@@ -26,12 +18,22 @@ define([
     };
 
     this.initialize = function () {
-      summernote.buildButtons($popover.find('.popover-content'), options.popover.link);
+      this.$popover = ui.popover({
+        className: 'note-link-popover',
+        callback: function ($node) {
+          var $content = $node.find('.popover-content');
+          $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
+        }
+      }).render().appendTo($editingArea);
+
+
+      summernote.buildButtons(this.$popover.find('.popover-content'), options.popover.link);
 
       dom.attachEvents($note, this.events);
     };
 
     this.destroy = function () {
+      this.$popover.remove();
       dom.detachEvents($note, this.events);
     };
 
@@ -40,21 +42,21 @@ define([
       if (rng.isCollapsed() && rng.isOnAnchor()) {
         var anchor = dom.ancestor(rng.sc, dom.isAnchor);
         var href = $(anchor).attr('href');
-        $popover.find('a').attr('href', href).html(href);
+        this.$popover.find('a').attr('href', href).html(href);
 
         var pos = dom.posFromPlaceholder(anchor);
-        $popover.css({
+        this.$popover.css({
           display: 'block',
           left: pos.left,
           top: pos.top
         });
       } else {
-        $popover.hide();
+        this.hide();
       }
     };
 
     this.hide = function () {
-      $popover.hide();
+      this.$popover.hide();
     };
   };
 

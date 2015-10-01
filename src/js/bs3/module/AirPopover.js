@@ -11,10 +11,6 @@ define([
     var $editingArea = summernote.layoutInfo.editingArea;
     var options = summernote.options;
 
-    var $popover = ui.popover({
-      className: 'note-air-popover'
-    }).render().appendTo($editingArea);
-
     var AIR_MODE_POPOVER_X_OFFSET = 20;
 
     this.events = {
@@ -36,11 +32,16 @@ define([
         return;
       }
 
-      summernote.buildButtons($popover.find('.popover-content'), options.popover.air);
+      this.$popover = ui.popover({
+        className: 'note-air-popover'
+      }).render().appendTo($editingArea);
+
+      summernote.buildButtons(this.$popover.find('.popover-content'), options.popover.air);
       dom.attachEvents($note, this.events);
     };
 
     this.destroy = function () {
+      this.$popover.remove();
       dom.detachEvents($note, this.events);
     };
 
@@ -51,19 +52,19 @@ define([
         if (rect) {
           var bnd = func.rect2bnd(rect);
           var posEditingArea = $editingArea.offset();
-          $popover.css({
+          this.$popover.css({
             display: 'block',
             left: Math.max(bnd.left + bnd.width / 2, 0) - posEditingArea.left - AIR_MODE_POPOVER_X_OFFSET,
             top: bnd.top + bnd.height - posEditingArea.top
           });
         }
       } else {
-        $popover.hide();
+        this.hide();
       }
     };
 
     this.hide = function () {
-      $popover.hide();
+      this.$popover.hide();
     };
   };
 
