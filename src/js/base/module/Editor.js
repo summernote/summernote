@@ -184,7 +184,6 @@ define([
 
     /**
      * undo
-     * undo
      */
     this.undo = function () {
       context.triggerEvent('before.command', $editable.html());
@@ -194,11 +193,22 @@ define([
 
     /**
      * redo
-     * redo
      */
     this.redo = function () {
       context.triggerEvent('before.command', $editable.html());
       history.redo();
+      context.triggerEvent('change', $editable.html());
+    };
+
+    this.reset = function () {
+      context.triggerEvent('before.command', $editable.html());
+      history.reset();
+      context.triggerEvent('change', $editable.html());
+    };
+
+    this.rewind = function () {
+      context.triggerEvent('before.command', $editable.html());
+      history.rewind();
       context.triggerEvent('change', $editable.html());
     };
 
