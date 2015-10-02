@@ -50,17 +50,14 @@ define([
         summernote.triggerEvent('keydown', event);
       }).on('keyup', function (event) {
         summernote.triggerEvent('keyup', event);
-<<<<<<< HEAD
       }).on('keydown', function (event) {
         summernote.triggerEvent('keydown', event);
-=======
       }).on('focus', function (event) {
         summernote.triggerEvent('focus', event);
       }).on('blur', function (event) {
         summernote.triggerEvent('blur', event);
       }).on('mousedown', function (event) {
         summernote.triggerEvent('mousedown', event);
->>>>>>> develop
       }).on('mouseup', function (event) {
         summernote.triggerEvent('mouseup', event);
       }).on('input', function (event) {
