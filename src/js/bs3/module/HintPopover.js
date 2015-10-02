@@ -26,6 +26,8 @@ define([
 
     var $popoverContent = $popover.find('.popover-content');
 
+    this.lastWordRange = null;
+
     this.events = {
       'summernote.keyup': function (e, nativeEvent) {
         self.update(nativeEvent);
@@ -41,7 +43,7 @@ define([
       }
       dom.attachEvents($note, this.events);
 
-      $popoverContent.on('click', '.hint-item', function () {
+      $popoverContent.on('click', '.note-hint-item', function () {
         $popoverContent.find('.active').removeClass('active');
         $(this).addClass('active');
         self.replace();
@@ -70,7 +72,7 @@ define([
     };
 
     this.moveDown = function () {
-      var $old = $popoverContent.find('.hint-item.active');
+      var $old = $popoverContent.find('.note-hint-item.active');
       var $next = $old.next();
 
       if ($next.length) {
@@ -79,15 +81,15 @@ define([
         var $parentNext = $old.parent().next();
 
         if (!$parentNext.length) {
-          $parentNext = $popoverContent.find('.hint-group').first();
+          $parentNext = $popoverContent.find('.note-hint-group').first();
         }
 
-        this.activate($parentNext.find('.hint-item').first());
+        this.activate($parentNext.find('.note-hint-item').first());
       }
     };
 
     this.moveUp = function () {
-      var $old = $popoverContent.find('.hint-item.active');
+      var $old = $popoverContent.find('.note-hint-item.active');
       var $prev = $old.prev();
 
       if ($prev.length) {
@@ -96,15 +98,14 @@ define([
         var $parentPrev = $old.parent().prev();
 
         if (!$parentPrev.length) {
-          $parentPrev = $popoverContent.find('.hint-group').last();
+          $parentPrev = $popoverContent.find('.note-hint-group').last();
         }
 
-        this.activate($parentPrev.find('.hint-item').last());
+        this.activate($parentPrev.find('.note-hint-item').last());
       }
     };
 
     this.replace = function () {
-      var wordRange = $popover.data('wordRange');
       var $activeItem = $popoverContent.find('.active');
       var content = this.content($activeItem.data('index'), $activeItem.data('item'));
 
@@ -112,10 +113,10 @@ define([
         content = document.createTextNode(content);
       }
 
-      $popover.removeData('wordRange');
-
-      wordRange.insertNode(content);
+      this.lastWordRange.insertNode(content);
       range.createFromNode(content).collapse().select();
+
+      this.lastWordRange = null;
     };
 
     this.content = function (index, obj) {
@@ -126,32 +127,33 @@ define([
       }
     };
 
-    this.searchKeyword = function (hint, keyword, callback) {
-      if (hint && hint.match.test(keyword)) {
-        var matches = hint.match.exec(keyword);
-        this.search(hint, matches[1], callback);
+    this.searchKeyword = function (index, keyword, callback) {
+      var hintObject = hint[index];
+      if (hintObject && hintObject.match.test(keyword)) {
+        var matches = hintObject.match.exec(keyword);
+        this.search(index, matches[1], callback);
       } else {
         callback();
       }
     };
 
-    this.search = function (hint, keyword, callback) {
-
-      if (hint && hint.search) {
-        hint.search(keyword, callback);
+    this.search = function (index, keyword, callback) {
+      var hintObject = hint[index];
+      if (hintObject && hintObject.search) {
+        hintObject.search(keyword, callback);
       } else {
         callback();
       }
 
     };
 
-    this.createListTemplate = function (index, hint, list) {
+    this.createListTemplate = function (index, list) {
       var items  = [];
       list = list || [];
 
       for (var i = 0, len = list.length; i < len; i++) {
-        var $item = $('<div class="hint-item"></div>');
-        $item.append(this.createItemTemplate(hint, list[i]));
+        var $item = $('<div class="note-hint-item"></div>');
+        $item.append(this.createItemTemplate(index, list[i]));
         $item.data({ 'index' : index, 'item' : list[i] });
         items.push($item);
       }
@@ -163,11 +165,12 @@ define([
       return items;
     };
 
-    this.createItemTemplate = function (hint, obj) {
-      if (hint && hint.template) {
-        return hint.template(obj);
+    this.createItemTemplate = function (index, obj) {
+      var hintObject = hint[index];
+      if (hintObject && hintObject.template) {
+        return hintObject.template(obj);
       } else {
-        return '';
+        return obj + '';
       }
     };
 
@@ -193,10 +196,10 @@ define([
       }
     };
 
-    this.invokeHint = function (index, hint, keyword) {
-      this.searchKeyword(hint, keyword, function (list) {
-        var $group = $popoverContent.find('.hint-group-' + index);
-        var templateList = self.createListTemplate(index, hint, list);
+    this.createHint = function (index, keyword) {
+      this.searchKeyword(index, keyword, function (list) {
+        var $group = $popoverContent.find('.note-hint-group-' + index);
+        var templateList = self.createListTemplate(index, list);
         $group.html(templateList);
 
         if (templateList.length) {
@@ -224,16 +227,21 @@ define([
 
           var rects = word.getClientRects();
           var rect = rects[rects.length - 1];
-          $popover.css({
-            left: rect.left,
-            top: rect.top + rect.height
-          }).data('wordRange', word).hide();
 
-          for (var i = 0, len = hint.length; i < len; i++) {
-            if (hint[i].match.test(keyword)) {
-              $popoverContent.append('<div class="hint-group hint-group-' + i + '"></div>');
+          if (rect) {
+            $popover.css({
+              left: rect.left,
+              top: rect.top + rect.height
+            }).hide();
 
-              this.invokeHint(i, hint[i], keyword);
+            this.lastWordRange = word;
+
+            for (var i = 0, len = hint.length; i < len; i++) {
+              if (hint[i].match.test(keyword)) {
+                $popoverContent.append('<div class="note-hint-group note-hint-group-' + i + '"></div>');
+
+                this.createHint(i, keyword);
+              }
             }
           }
 

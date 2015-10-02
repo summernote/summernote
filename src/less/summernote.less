@@ -484,22 +484,23 @@
     overflow: auto;
 
 
+    .note-hint-group {
+      .note-hint-item {
+        display: block !important;
+        padding: 3px;
 
-    .hint-item {
-      display: block !important;
-      padding: 3px;
-
-      &.active, &:hover {
-        display: block;
-        clear: both;
-        font-weight: 400;
-        line-height: 1.42857143;
-        color: white;
-        white-space: nowrap;
-        text-decoration: none;
-        background-color: #428bca;
-        outline: 0;
-        cursor: pointer;
+        &.active, &:hover {
+          display: block;
+          clear: both;
+          font-weight: 400;
+          line-height: 1.4;
+          color: white;
+          white-space: nowrap;
+          text-decoration: none;
+          background-color: #428bca;
+          outline: 0;
+          cursor: pointer;
+        }
       }
     }
   }
