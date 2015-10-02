@@ -34,7 +34,7 @@ define([
 
       this.$popover = ui.popover({
         className: 'note-air-popover'
-      }).render().appendTo($editingArea);
+      }).render().appendTo('body');
 
       summernote.buildButtons(this.$popover.find('.popover-content'), options.popover.air);
       dom.attachEvents($note, this.events);
@@ -55,11 +55,10 @@ define([
         var rect = list.last(styleInfo.range.getClientRects());
         if (rect) {
           var bnd = func.rect2bnd(rect);
-          var posEditingArea = $editingArea.offset();
           this.$popover.css({
             display: 'block',
-            left: Math.max(bnd.left + bnd.width / 2, 0) - posEditingArea.left - AIR_MODE_POPOVER_X_OFFSET,
-            top: bnd.top + bnd.height - posEditingArea.top
+            left: Math.max(bnd.left + bnd.width / 2, 0) - AIR_MODE_POPOVER_X_OFFSET,
+            top: bnd.top + bnd.height
           });
         }
       } else {

@@ -8,7 +8,6 @@ define([
     var ui = $.summernote.ui;
 
     var $note = summernote.layoutInfo.note;
-    var $editingArea = summernote.layoutInfo.editingArea;
     var options = summernote.options;
 
     this.events = {
@@ -23,7 +22,7 @@ define([
     this.initialize = function () {
       this.$popover = ui.popover({
         className: 'note-image-popover'
-      }).render().appendTo($editingArea);
+      }).render().appendTo('body');
 
       summernote.buildButtons(this.$popover.find('.popover-content'), options.popover.image);
       dom.attachEvents($note, this.events);

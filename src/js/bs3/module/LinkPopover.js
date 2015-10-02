@@ -8,7 +8,6 @@ define([
     var ui = $.summernote.ui;
 
     var $note = summernote.layoutInfo.note;
-    var $editingArea = summernote.layoutInfo.editingArea;
     var options = summernote.options;
 
     this.events = {
@@ -24,7 +23,7 @@ define([
           var $content = $node.find('.popover-content');
           $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
         }
-      }).render().appendTo($editingArea);
+      }).render().appendTo('body');
 
 
       summernote.buildButtons(this.$popover.find('.popover-content'), options.popover.link);
