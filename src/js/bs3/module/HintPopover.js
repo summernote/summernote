@@ -175,14 +175,14 @@ define([
       if (list.contains([key.code.ENTER, key.code.UP, key.code.DOWN], e.keyCode)) {
         if (e.keyCode === key.code.ENTER) {
           if (this.$popover.is(':visible')) {
-            return false;
+            return;
           }
         }
       } else {
         var wordRange = summernote.invoke('editor.createRange').getWordRange();
         var keyword = wordRange.toString();
         if (hints.length && keyword) {
-          this.$content.empty().data('count', 0);
+          this.$content.empty();
 
           var bnd = func.rect2bnd(list.last(wordRange.getClientRects()));
           if (bnd) {
