@@ -24,6 +24,11 @@ define([], function () {
       }).render().appendTo($container);
     };
 
+    this.destroy = function () {
+      ui.hideDialog(this.$dialog);
+      this.$dialog.remove();
+    };
+
     /**
      * show help dialog
      *

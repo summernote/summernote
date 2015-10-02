@@ -35,6 +35,11 @@ define([
       }).render().appendTo($container);
     };
 
+    this.destroy = function () {
+      ui.hideDialog(this.$dialog);
+      this.$dialog.remove();
+    };
+
     this.bindEnterKey = function ($input, $btn) {
       $input.on('keypress', function (event) {
         if (event.keyCode === key.code.ENTER) {
