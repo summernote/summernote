@@ -20,15 +20,14 @@ define([
 
   /**
    * @class Editor
-   * @param {Summernote} summernote
    */
-  var Editor = function (summernote) {
+  var Editor = function (context) {
     var self = this;
 
-    var $note = summernote.layoutInfo.note;
-    var $editor = summernote.layoutInfo.editor;
-    var $editable = summernote.layoutInfo.editable;
-    var options = summernote.options;
+    var $note = context.layoutInfo.note;
+    var $editor = context.layoutInfo.editor;
+    var $editable = context.layoutInfo.editable;
+    var options = context.options;
 
     var style = new Style();
     var table = new Table();
@@ -45,31 +44,31 @@ define([
       // bind custom events
       $editable.on('keydown', function (event) {
         if (event.keyCode === key.code.ENTER) {
-          summernote.triggerEvent('enter', event);
+          context.triggerEvent('enter', event);
         }
-        summernote.triggerEvent('keydown', event);
+        context.triggerEvent('keydown', event);
       }).on('keyup', function (event) {
-        summernote.triggerEvent('keyup', event);
+        context.triggerEvent('keyup', event);
       }).on('focus', function (event) {
-        summernote.triggerEvent('focus', event);
+        context.triggerEvent('focus', event);
       }).on('blur', function (event) {
-        summernote.triggerEvent('blur', event);
+        context.triggerEvent('blur', event);
       }).on('mousedown', function (event) {
-        summernote.triggerEvent('mousedown', event);
+        context.triggerEvent('mousedown', event);
       }).on('mouseup', function (event) {
-        summernote.triggerEvent('mouseup', event);
+        context.triggerEvent('mouseup', event);
       }).on('input', function (event) {
-        summernote.triggerEvent('change', event);
+        context.triggerEvent('change', event);
       }).on('scroll', function (event) {
-        summernote.triggerEvent('scroll', event);
+        context.triggerEvent('scroll', event);
       }).on('paste', function (event) {
-        summernote.triggerEvent('paste', event);
+        context.triggerEvent('paste', event);
       });
 
       $editor.on('focusin', function (event) {
-        summernote.triggerEvent('focusin', event);
+        context.triggerEvent('focusin', event);
       }).on('focusout', function (event) {
-        summernote.triggerEvent('focusout', event);
+        context.triggerEvent('focusout', event);
       });
 
       if (!options.airMode && options.height) {
@@ -101,7 +100,7 @@ define([
         var eventName = keyMap[keys.join('+')];
         if (eventName) {
           event.preventDefault();
-          summernote.invoke(eventName);
+          context.invoke(eventName);
         } else if (key.isEdit(event.keyCode)) {
           self.afterCommand();
         }
@@ -188,9 +187,9 @@ define([
      * undo
      */
     this.undo = function () {
-      summernote.triggerEvent('before.command', $editable.html());
+      context.triggerEvent('before.command', $editable.html());
       history.undo();
-      summernote.triggerEvent('change', $editable.html());
+      context.triggerEvent('change', $editable.html());
     };
 
     /**
@@ -198,9 +197,9 @@ define([
      * redo
      */
     this.redo = function () {
-      summernote.triggerEvent('before.command', $editable.html());
+      context.triggerEvent('before.command', $editable.html());
       history.redo();
-      summernote.triggerEvent('change', $editable.html());
+      context.triggerEvent('change', $editable.html());
     };
 
     /**
@@ -208,7 +207,7 @@ define([
      * before command
      */
     var beforeCommand = this.beforeCommand = function () {
-      summernote.triggerEvent('before.command', $editable.html());
+      context.triggerEvent('before.command', $editable.html());
       // keep focus on editable before command execution
       self.focus();
     };
@@ -221,7 +220,7 @@ define([
     var afterCommand = this.afterCommand = function (isPreventTrigger) {
       history.recordUndo();
       if (!isPreventTrigger) {
-        summernote.triggerEvent('change', $editable.html());
+        context.triggerEvent('change', $editable.html());
       }
     };
 
@@ -329,7 +328,7 @@ define([
         range.createFromNodeAfter($image[0]).select();
         afterCommand();
       }).fail(function () {
-        summernote.triggerEvent('image.upload.error');
+        context.triggerEvent('image.upload.error');
       });
     };
 
@@ -634,7 +633,7 @@ define([
      */
     this.removeMedia = this.wrapCommand(function () {
       var $target = $(this.restoreTarget()).detach();
-      summernote.triggerEvent('media.delete', $target, $editable);
+      context.triggerEvent('media.delete', $target, $editable);
     });
 
     /**

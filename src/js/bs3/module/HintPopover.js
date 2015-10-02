@@ -5,12 +5,12 @@ define([
   'summernote/base/core/range',
   'summernote/base/core/key'
 ], function (func, list, dom, range, key) {
-  var HintPopover = function (summernote) {
+  var HintPopover = function (context) {
     var self = this;
     var ui = $.summernote.ui;
 
-    var $note = summernote.layoutInfo.note;
-    var hint = summernote.options.hint || [];
+    var $note = context.layoutInfo.note;
+    var hint = context.options.hint || [];
     var hints = $.isArray(hint) ? hint : [hint];
 
     this.events = {
@@ -101,7 +101,7 @@ define([
 
       this.lastWordRange = null;
       this.hide();
-      summernote.invoke('editor.focus');
+      context.invoke('editor.focus');
     };
 
     this.nodeFromItem = function ($item) {
@@ -179,7 +179,7 @@ define([
           }
         }
       } else {
-        var wordRange = summernote.invoke('editor.createRange').getWordRange();
+        var wordRange = context.invoke('editor.createRange').getWordRange();
         var keyword = wordRange.toString();
         if (hints.length && keyword) {
           this.$content.empty();

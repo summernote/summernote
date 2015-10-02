@@ -17,11 +17,11 @@ define([
   /**
    * @class Codeview
    */
-  var Codeview = function (summernote) {
-    var $editor = summernote.layoutInfo.editor;
-    var $editable = summernote.layoutInfo.editable;
-    var $codable = summernote.layoutInfo.codable;
-    var options = summernote.options;
+  var Codeview = function (context) {
+    var $editor = context.layoutInfo.editor;
+    var $editable = context.layoutInfo.editable;
+    var $codable = context.layoutInfo.codable;
+    var options = context.options;
 
     this.sync = function () {
       var isCodeview = this.isActivated();
@@ -55,7 +55,7 @@ define([
       $codable.val(dom.html($editable, options.prettifyHtml));
       $codable.height($editable.height());
 
-      summernote.invoke('toolbar.updateCodeview', true);
+      context.invoke('toolbar.updateCodeview', true);
       $editor.addClass('codeview');
       $codable.focus();
 
@@ -97,12 +97,12 @@ define([
       $editor.removeClass('codeview');
 
       if (isChange) {
-        summernote.triggerEvent('change', $editable.html(), $editable);
+        context.triggerEvent('change', $editable.html(), $editable);
       }
 
       $editable.focus();
 
-      summernote.invoke('toolbar.updateCodeview', false);
+      context.invoke('toolbar.updateCodeview', false);
     };
   };
 

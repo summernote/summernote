@@ -3,16 +3,16 @@ define([
   'summernote/base/core/range',
   'summernote/base/core/dom'
 ], function (key, range, dom) {
-  var VideoDialog = function (summernote) {
+  var VideoDialog = function (context) {
     var self = this;
     var ui = $.summernote.ui;
 
-    var $editor = summernote.layoutInfo.editor;
-    var options = summernote.options;
+    var $editor = context.layoutInfo.editor;
+    var options = context.options;
     var lang = options.langInfo;
 
     this.getTextOnRange = function () {
-      var rng = summernote.invoke('editor.createRange');
+      var rng = context.invoke('editor.createRange');
 
       // if range on anchor, expand range with anchor
       if (rng.isOnAnchor()) {
@@ -134,19 +134,19 @@ define([
 
     this.show = function () {
       var text = this.getTextOnRange();
-      summernote.invoke('editor.saveRange');
+      context.invoke('editor.saveRange');
       this.showVideoDialog(text).then(function (url) {
-        summernote.invoke('editor.restoreRange');
+        context.invoke('editor.restoreRange');
 
         // build node
         var $node = self.createVideoNode(url);
 
         if ($node) {
           // insert video node
-          summernote.invoke('editor.insertNode', $node);
+          context.invoke('editor.insertNode', $node);
         }
       }).fail(function () {
-        summernote.invoke('editor.restoreRange');
+        context.invoke('editor.restoreRange');
       });
     };
 

@@ -1,11 +1,11 @@
 define([
   'jquery'
 ], function ($) {
-  var Fullscreen = function (summernote) {
-    var $editor = summernote.layoutInfo.editor;
-    var $toolbar = summernote.layoutInfo.toolbar;
-    var $editable = summernote.layoutInfo.editable;
-    var $codable = summernote.layoutInfo.codable;
+  var Fullscreen = function (context) {
+    var $editor = context.layoutInfo.editor;
+    var $toolbar = context.layoutInfo.toolbar;
+    var $editable = context.layoutInfo.editable;
+    var $codable = context.layoutInfo.codable;
 
     var $window = $(window);
     var $scrollbar = $('html, body');
@@ -42,7 +42,7 @@ define([
         $scrollbar.css('overflow', 'visible');
       }
 
-      summernote.invoke('toolbar.updateFullscreen', isFullscreen);
+      context.invoke('toolbar.updateFullscreen', isFullscreen);
     };
   };
 

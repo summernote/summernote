@@ -3,13 +3,13 @@ define([
   'summernote/base/core/list',
   'summernote/base/core/dom'
 ], function (func, list, dom) {
-  var AirPopover = function (summernote) {
+  var AirPopover = function (context) {
     var self = this;
     var ui = $.summernote.ui;
 
-    var $note = summernote.layoutInfo.note;
-    var $editingArea = summernote.layoutInfo.editingArea;
-    var options = summernote.options;
+    var $note = context.layoutInfo.note;
+    var $editingArea = context.layoutInfo.editingArea;
+    var options = context.options;
 
     var AIR_MODE_POPOVER_X_OFFSET = 20;
 
@@ -36,7 +36,7 @@ define([
         className: 'note-air-popover'
       }).render().appendTo('body');
 
-      summernote.buildButtons(this.$popover.find('.popover-content'), options.popover.air);
+      context.buildButtons(this.$popover.find('.popover-content'), options.popover.air);
       dom.attachEvents($note, this.events);
     };
 
@@ -50,7 +50,7 @@ define([
     };
 
     this.update = function () {
-      var styleInfo = summernote.invoke('editor.currentStyle');
+      var styleInfo = context.invoke('editor.currentStyle');
       if (styleInfo.range && !styleInfo.range.isCollapsed()) {
         var rect = list.last(styleInfo.range.getClientRects());
         if (rect) {

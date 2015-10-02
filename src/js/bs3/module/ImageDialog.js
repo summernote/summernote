@@ -2,12 +2,12 @@ define([
   'summernote/base/core/key',
   'summernote/base/core/async'
 ], function (key, async) {
-  var ImageDialog = function (summernote) {
+  var ImageDialog = function (context) {
     var self = this;
     var ui = $.summernote.ui;
 
-    var $editor = summernote.layoutInfo.editor;
-    var options = summernote.options;
+    var $editor = context.layoutInfo.editor;
+    var options = context.options;
     var lang = options.langInfo;
 
     this.initialize = function () {
@@ -57,18 +57,18 @@ define([
 
       // If onImageUpload options setted
       if (callbacks.onImageUpload) {
-        summernote.triggerEvent('image.upload', files);
+        context.triggerEvent('image.upload', files);
       // else insert Image as dataURL
       } else {
         $.each(files, function (idx, file) {
           var filename = file.name;
           if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
-            summernote.triggerEvent('image.upload.error', lang.image.maximumFileSizeError);
+            context.triggerEvent('image.upload.error', lang.image.maximumFileSizeError);
           } else {
             async.readFileAsDataURL(file).then(function (dataURL) {
-              summernote.invoke('editor.insertImage', dataURL, filename);
+              context.invoke('editor.insertImage', dataURL, filename);
             }).fail(function () {
-              summernote.triggerEvent('image.upload.error');
+              context.triggerEvent('image.upload.error');
             });
           }
         });
@@ -76,19 +76,19 @@ define([
     };
 
     this.show = function () {
-      summernote.invoke('editor.saveRange');
+      context.invoke('editor.saveRange');
       this.showImageDialog().then(function (data) {
-        summernote.invoke('editor.restoreRange');
+        context.invoke('editor.restoreRange');
 
         if (typeof data === 'string') {
           // image url
-          summernote.invoke('editor.insertImage', data);
+          context.invoke('editor.insertImage', data);
         } else {
           // array of files
           self.insertImages(data);
         }
       }).fail(function () {
-        summernote.invoke('editor.restoreRange');
+        context.invoke('editor.restoreRange');
       });
     };
 

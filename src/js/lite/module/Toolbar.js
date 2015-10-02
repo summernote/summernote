@@ -1,17 +1,17 @@
 define(function () {
-  var Toolbar = function (summernote) {
+  var Toolbar = function (context) {
     var ui = $.summernote.ui;
-    var $toolbar = summernote.layoutInfo.toolbar;
+    var $toolbar = context.layoutInfo.toolbar;
 
     this.initialize = function () {
       ui.buttonGroup([
         ui.button({
           contents: 'bold',
-          click: summernote.createInvokeHandler('editor.bold')
+          click: context.createInvokeHandler('editor.bold')
         }),
         ui.button({
           contents: 'italic',
-          click: summernote.createInvokeHandler('editor.italic')
+          click: context.createInvokeHandler('editor.italic')
         })
       ]).render().appendTo($toolbar);
     };

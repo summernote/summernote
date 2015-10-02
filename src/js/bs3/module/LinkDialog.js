@@ -1,12 +1,12 @@
 define([
   'summernote/base/core/key'
 ], function (key) {
-  var LinkDialog = function (summernote) {
+  var LinkDialog = function (context) {
     var self = this;
     var ui = $.summernote.ui;
 
-    var $editor = summernote.layoutInfo.editor;
-    var options = summernote.options;
+    var $editor = context.layoutInfo.editor;
+    var options = context.options;
     var lang = options.langInfo;
 
     this.initialize = function () {
@@ -123,14 +123,14 @@ define([
      * @param {Object} layoutInfo
      */
     this.show = function () {
-      var linkInfo = summernote.invoke('editor.getLinkInfo');
+      var linkInfo = context.invoke('editor.getLinkInfo');
 
-      summernote.invoke('editor.saveRange');
+      context.invoke('editor.saveRange');
       this.showLinkDialog(linkInfo).then(function (linkInfo) {
-        summernote.invoke('editor.restoreRange');
-        summernote.invoke('editor.createLink', linkInfo);
+        context.invoke('editor.restoreRange');
+        context.invoke('editor.createLink', linkInfo);
       }).fail(function () {
-        summernote.invoke('editor.restoreRange');
+        context.invoke('editor.restoreRange');
       });
     };
   };

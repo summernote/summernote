@@ -3,12 +3,12 @@ define([
   'summernote/base/core/list',
   'summernote/base/core/dom'
 ], function (func, list, dom) {
-  var ImagePopover = function (summernote) {
+  var ImagePopover = function (context) {
     var self = this;
     var ui = $.summernote.ui;
 
-    var $note = summernote.layoutInfo.note;
-    var options = summernote.options;
+    var $note = context.layoutInfo.note;
+    var options = context.options;
 
     this.events = {
       'summernote.keyup summernote.mouseup summernote.change': function () {
@@ -24,7 +24,7 @@ define([
         className: 'note-image-popover'
       }).render().appendTo('body');
 
-      summernote.buildButtons(this.$popover.find('.popover-content'), options.popover.image);
+      context.buildButtons(this.$popover.find('.popover-content'), options.popover.image);
       dom.attachEvents($note, this.events);
     };
 

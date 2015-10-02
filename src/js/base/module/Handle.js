@@ -1,14 +1,14 @@
 define([
   'summernote/base/core/dom'
 ], function (dom) {
-  var Handle = function (summernote) {
+  var Handle = function (context) {
     var self = this;
 
     var $document = $(document);
 
-    var $note = summernote.layoutInfo.note;
-    var $editingArea = summernote.layoutInfo.editingArea;
-    var options = summernote.options;
+    var $note = context.layoutInfo.note;
+    var $editingArea = context.layoutInfo.editingArea;
+    var options = context.options;
 
     this.events = {
       'summernote.mousedown': function (we, e) {
@@ -47,7 +47,7 @@ define([
               scrollTop = $document.scrollTop();
 
           $document.on('mousemove', function (event) {
-            summernote.invoke('editor.resizeTo', {
+            context.invoke('editor.resizeTo', {
               x: event.clientX - posStart.left,
               y: event.clientY - (posStart.top - scrollTop)
             }, $target, !event.shiftKey);
@@ -56,7 +56,7 @@ define([
           }).one('mouseup', function (e) {
             e.preventDefault();
             $document.off('mousemove');
-            summernote.invoke('editor.afterCommand');
+            context.invoke('editor.afterCommand');
           });
 
           if (!$target.data('ratio')) { // original ratio.
@@ -72,7 +72,7 @@ define([
     };
 
     this.update = function (target) {
-      summernote.invoke('imagePopover.update', target);
+      context.invoke('imagePopover.update', target);
       var $selection = this.$handle.find('.note-control-selection');
 
       if (dom.isImg(target)) {
@@ -95,7 +95,7 @@ define([
 
         var sizingText = imageSize.w + 'x' + imageSize.h;
         $selection.find('.note-control-selection-info').text(sizingText);
-        summernote.invoke('editor.saveTarget', target);
+        context.invoke('editor.saveTarget', target);
       } else {
         this.hide();
       }
@@ -107,7 +107,7 @@ define([
      * @param {jQuery} $handle
      */
     this.hide = function () {
-      summernote.invoke('editor.clearTarget');
+      context.invoke('editor.clearTarget');
       this.$handle.children().hide();
     };
   };

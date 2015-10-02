@@ -4,12 +4,12 @@ define([
   'summernote/base/core/list',
   'summernote/base/core/agent'
 ], function ($, func, list, agent) {
-  var Button = function (summernote) {
+  var Button = function (context) {
     var self = this;
     var ui = $.summernote.ui;
 
-    var $toolbar = summernote.layoutInfo.toolbar;
-    var options = summernote.options;
+    var $toolbar = context.layoutInfo.toolbar;
+    var options = context.options;
     var lang = options.langInfo;
 
     var invertedKeyMap = func.invertObject(options.keyMap[agent.isMac ? 'mac' : 'pc']);
@@ -35,7 +35,7 @@ define([
     };
 
     this.addToolbarButtons = function () {
-      summernote.addButton('style', function () {
+      context.addButton('style', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -47,48 +47,48 @@ define([
           }),
           ui.dropdown({
             className: 'dropdown-style',
-            items: summernote.options.styleTags,
-            click: summernote.createInvokeHandler('editor.formatBlock')
+            items: context.options.styleTags,
+            click: context.createInvokeHandler('editor.formatBlock')
           })
         ]).render();
       });
 
-      summernote.addButton('bold', function () {
+      context.addButton('bold', function () {
         return ui.button({
           className: 'note-btn-bold',
           contents: '<i class="fa fa-bold"/>',
           tooltip: lang.font.bold + representShortcut('bold'),
-          click: summernote.createInvokeHandler('editor.bold')
+          click: context.createInvokeHandler('editor.bold')
         }).render();
       });
 
-      summernote.addButton('italic', function () {
+      context.addButton('italic', function () {
         return ui.button({
           className: 'note-btn-italic',
           contents: '<i class="fa fa-italic"/>',
           tooltip: lang.font.italic + representShortcut('italic'),
-          click: summernote.createInvokeHandler('editor.italic')
+          click: context.createInvokeHandler('editor.italic')
         }).render();
       });
 
-      summernote.addButton('underline', function () {
+      context.addButton('underline', function () {
         return ui.button({
           className: 'note-btn-underline',
           contents: '<i class="fa fa-underline"/>',
           tooltip: lang.font.underline + representShortcut('underline'),
-          click: summernote.createInvokeHandler('editor.underline')
+          click: context.createInvokeHandler('editor.underline')
         }).render();
       });
 
-      summernote.addButton('clear', function () {
+      context.addButton('clear', function () {
         return ui.button({
           contents: '<i class="fa fa-eraser"/>',
           tooltip: lang.font.clear + representShortcut('removeFormat'),
-          click: summernote.createInvokeHandler('editor.removeFormat')
+          click: context.createInvokeHandler('editor.removeFormat')
         }).render();
       });
 
-      summernote.addButton('fontname', function () {
+      context.addButton('fontname', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -104,12 +104,12 @@ define([
               return agent.isFontInstalled(name) ||
                 list.contains(options.fontNamesIgnoreCheck, name);
             }),
-            click: summernote.createInvokeHandler('editor.fontName')
+            click: context.createInvokeHandler('editor.fontName')
           })
         ]).render();
       });
 
-      summernote.addButton('fontsize', function () {
+      context.addButton('fontsize', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -122,12 +122,12 @@ define([
           ui.dropdownCheck({
             className: 'dropdown-fontsize',
             items: options.fontSizes,
-            click: summernote.createInvokeHandler('editor.fontSize')
+            click: context.createInvokeHandler('editor.fontSize')
           })
         ]).render();
       });
 
-      summernote.addButton('color', function () {
+      context.addButton('color', function () {
         return ui.buttonGroup({
           className: 'note-color',
           children: [
@@ -135,7 +135,7 @@ define([
               className : 'note-current-color-button',
               contents: '<i class="fa fa-font note-recent-color"/>',
               tooltip: lang.color.recent,
-              click: summernote.createInvokeHandler('editor.color'),
+              click: context.createInvokeHandler('editor.color'),
               callback: function ($button) {
                 var $recentColor = $button.find('.note-recent-color');
                 $recentColor.css({
@@ -194,7 +194,7 @@ define([
                   $color.css(key, value);
                   $currentButton.data('value', colorInfo);
 
-                  summernote.invoke('editor.' + eventName, value);
+                  context.invoke('editor.' + eventName, value);
                 }
               }
             })
@@ -202,23 +202,23 @@ define([
         }).render();
       });
 
-      summernote.addButton('ol',  function () {
+      context.addButton('ol',  function () {
         return ui.button({
           contents: '<i class="fa fa-list-ul"/>',
           tooltip: lang.lists.unordered + representShortcut('insertUnorderedList'),
-          click: summernote.createInvokeHandler('editor.insertUnorderedList')
+          click: context.createInvokeHandler('editor.insertUnorderedList')
         }).render();
       });
 
-      summernote.addButton('ul', function () {
+      context.addButton('ul', function () {
         return ui.button({
           contents: '<i class="fa fa-list-ol"/>',
           tooltip: lang.lists.ordered + representShortcut('insertOrderedList'),
-          click:  summernote.createInvokeHandler('editor.insertOrderedList')
+          click:  context.createInvokeHandler('editor.insertOrderedList')
         }).render();
       });
 
-      summernote.addButton('paragraph', function () {
+      context.addButton('paragraph', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -235,22 +235,22 @@ define([
                 ui.button({
                   contents: '<i class="fa fa-align-left"/>',
                   tooltip: lang.paragraph.left + representShortcut('justifyLeft'),
-                  click: summernote.createInvokeHandler('editor.justifyLeft')
+                  click: context.createInvokeHandler('editor.justifyLeft')
                 }),
                 ui.button({
                   contents: '<i class="fa fa-align-center"/>',
                   tooltip: lang.paragraph.center + representShortcut('justifyCenter'),
-                  click: summernote.createInvokeHandler('editor.justifyCenter')
+                  click: context.createInvokeHandler('editor.justifyCenter')
                 }),
                 ui.button({
                   contents: '<i class="fa fa-align-right"/>',
                   tooltip: lang.paragraph.right + representShortcut('justifyRight'),
-                  click: summernote.createInvokeHandler('editor.justifyRight')
+                  click: context.createInvokeHandler('editor.justifyRight')
                 }),
                 ui.button({
                   contents: '<i class="fa fa-align-justify"/>',
                   tooltip: lang.paragraph.justify + representShortcut('justifyFull'),
-                  click: summernote.createInvokeHandler('editor.justifyFull')
+                  click: context.createInvokeHandler('editor.justifyFull')
                 })
               ]
             }),
@@ -260,12 +260,12 @@ define([
                 ui.button({
                   contents: '<i class="fa fa-outdent"/>',
                   tooltip: lang.paragraph.outdent + representShortcut('outdent'),
-                  click: summernote.createInvokeHandler('editor.outdent')
+                  click: context.createInvokeHandler('editor.outdent')
                 }),
                 ui.button({
                   contents: '<i class="fa fa-indent"/>',
                   tooltip: lang.paragraph.indent + representShortcut('indent'),
-                  click: summernote.createInvokeHandler('editor.indent')
+                  click: context.createInvokeHandler('editor.indent')
                 })
               ]
             })
@@ -273,7 +273,7 @@ define([
         ]).render();
       });
 
-      summernote.addButton('height', function () {
+      context.addButton('height', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -286,12 +286,12 @@ define([
           ui.dropdownCheck({
             items: options.lineHeights,
             className: 'dropdown-line-height',
-            click: summernote.createInvokeHandler('editor.lineHeight')
+            click: context.createInvokeHandler('editor.lineHeight')
           })
         ]).render();
       });
 
-      summernote.addButton('table', function () {
+      context.addButton('table', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -318,75 +318,75 @@ define([
             $catcher.css({
               width: options.insertTableMaxSize.col + 'em',
               height: options.insertTableMaxSize.row + 'em'
-            }).click(summernote.createInvokeHandler('editor.insertTable'))
+            }).click(context.createInvokeHandler('editor.insertTable'))
               .on('mousemove', self.tableMoveHandler);
           }
         }).render();
       });
 
-      summernote.addButton('link', function () {
+      context.addButton('link', function () {
         return ui.button({
           contents: '<i class="fa fa-link"/>',
           tooltip: lang.link.link,
-          click: summernote.createInvokeHandler('linkDialog.show')
+          click: context.createInvokeHandler('linkDialog.show')
         }).render();
       });
 
-      summernote.addButton('picture', function () {
+      context.addButton('picture', function () {
         return ui.button({
           contents: '<i class="fa fa-picture-o"/>',
           tooltip: lang.image.image,
-          click: summernote.createInvokeHandler('imageDialog.show')
+          click: context.createInvokeHandler('imageDialog.show')
         }).render();
       });
 
-      summernote.addButton('video', function () {
+      context.addButton('video', function () {
         return ui.button({
           contents: '<i class="fa fa-youtube-play"/>',
           tooltip: lang.video.video,
-          click: summernote.createInvokeHandler('videoDialog.show')
+          click: context.createInvokeHandler('videoDialog.show')
         }).render();
       });
 
-      summernote.addButton('hr', function () {
+      context.addButton('hr', function () {
         return ui.button({
           contents: '<i class="fa fa-minus"/>',
           tooltip: lang.hr.insert + representShortcut('insertHorizontalRule'),
-          click: summernote.createInvokeHandler('editor.insertHorizontalRule')
+          click: context.createInvokeHandler('editor.insertHorizontalRule')
         }).render();
       });
 
-      summernote.addButton('fullscreen', function () {
+      context.addButton('fullscreen', function () {
         return ui.button({
           className: 'btn-fullscreen',
           contents: '<i class="fa fa-arrows-alt"/>',
           tooltip: lang.options.fullscreen,
-          click: summernote.createInvokeHandler('fullscreen.toggle')
+          click: context.createInvokeHandler('fullscreen.toggle')
         }).render();
       });
 
-      summernote.addButton('codeview', function () {
+      context.addButton('codeview', function () {
         return ui.button({
           className: 'btn-codeview',
           contents: '<i class="fa fa-code"/>',
           tooltip: lang.options.codeview,
-          click: summernote.createInvokeHandler('codeview.toggle')
+          click: context.createInvokeHandler('codeview.toggle')
         }).render();
       });
 
-      summernote.addButton('help', function () {
+      context.addButton('help', function () {
         return ui.button({
           contents: '<i class="fa fa-question"/>',
           tooltip: lang.options.help,
-          click: summernote.createInvokeHandler('helpDialog.show')
+          click: context.createInvokeHandler('helpDialog.show')
         }).render();
       });
 
-      summernote.addButton('specialchar', function () {
+      context.addButton('specialchar', function () {
         return ui.button({
           contents: '<i class="fa fa-font fa-flip-vertical"/>',
           tooltip: lang.specialChar.specialChar,
-          click: summernote.createInvokeHandler('specialCharDialog.show')
+          click: context.createInvokeHandler('specialCharDialog.show')
         }).render();
       });
     };
@@ -400,83 +400,83 @@ define([
      */
     this.addImagePopoverButtons = function () {
       // Image Size Buttons
-      summernote.addButton('imageSize100', function (summernote) {
+      context.addButton('imageSize100', function (context) {
         return ui.button({
           contents: '<span class="note-fontsize-10">100%</span>',
           tooltip: lang.image.resizeFull,
-          click: summernote.createInvokeHandler('editor.resize', '1')
+          click: context.createInvokeHandler('editor.resize', '1')
         }).render();
       });
-      summernote.addButton('imageSize50', function (summernote) {
+      context.addButton('imageSize50', function (context) {
         return  ui.button({
           contents: '<span class="note-fontsize-10">50%</span>',
           tooltip: lang.image.resizeHalf,
-          click: summernote.createInvokeHandler('editor.resize', '0.5')
+          click: context.createInvokeHandler('editor.resize', '0.5')
         }).render();
       });
-      summernote.addButton('imageSize25', function (summernote) {
+      context.addButton('imageSize25', function (context) {
         return ui.button({
           contents: '<span class="note-fontsize-10">25%</span>',
           tooltip: lang.image.resizeQuarter,
-          click: summernote.createInvokeHandler('editor.resize', '0.25')
+          click: context.createInvokeHandler('editor.resize', '0.25')
         }).render();
       });
 
       // Float Buttons
-      summernote.addButton('floatLeft', function (summernote) {
+      context.addButton('floatLeft', function (context) {
         return ui.button({
           contents: '<i class="fa fa-align-left"/>',
           tooltip: lang.image.floatLeft,
-          click: summernote.createInvokeHandler('editor.floatMe', 'left')
+          click: context.createInvokeHandler('editor.floatMe', 'left')
         }).render();
       });
 
-      summernote.addButton('floatRight', function (summernote) {
+      context.addButton('floatRight', function (context) {
         return ui.button({
           contents: '<i class="fa fa-align-right"/>',
           tooltip: lang.image.floatRight,
-          click: summernote.createInvokeHandler('editor.floatMe', 'right')
+          click: context.createInvokeHandler('editor.floatMe', 'right')
         }).render();
       });
 
-      summernote.addButton('floatNone', function (summernote) {
+      context.addButton('floatNone', function (context) {
         return ui.button({
           contents: '<i class="fa fa-align-justify"/>',
           tooltip: lang.image.floatNone,
-          click: summernote.createInvokeHandler('editor.floatMe', 'none')
+          click: context.createInvokeHandler('editor.floatMe', 'none')
         }).render();
       });
 
       // Remove Buttons
-      summernote.addButton('removeMedia', function (summernote) {
+      context.addButton('removeMedia', function (context) {
         return ui.button({
           contents: '<i class="fa fa-trash-o"/>',
           tooltip: lang.image.remove,
-          click: summernote.createInvokeHandler('editor.removeMedia')
+          click: context.createInvokeHandler('editor.removeMedia')
         }).render();
       });
     };
 
     this.addLinkPopoverButtons = function () {
-      summernote.addButton('linkDialogShow', function (summernote) {
+      context.addButton('linkDialogShow', function (context) {
         return ui.button({
           contents: '<i class="fa fa-link"/>',
           tooltip: lang.link.edit,
-          click: summernote.createInvokeHandler('linkDialog.show')
+          click: context.createInvokeHandler('linkDialog.show')
         }).render();
       });
 
-      summernote.addButton('unlink', function (summernote) {
+      context.addButton('unlink', function (context) {
         return ui.button({
           contents: '<i class="fa fa-unlink"/>',
           tooltip: lang.link.unlink,
-          click: summernote.createInvokeHandler('editor.unlink')
+          click: context.createInvokeHandler('editor.unlink')
         }).render();
       });
     };
 
     this.updateCurrentStyle = function () {
-      var styleInfo = summernote.invoke('editor.currentStyle');
+      var styleInfo = context.invoke('editor.currentStyle');
       this.updateBtnStates({
         '.note-btn-bold': function () {
           return styleInfo['font-bold'] === 'bold';

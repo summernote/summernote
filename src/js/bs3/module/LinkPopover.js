@@ -3,12 +3,12 @@ define([
   'summernote/base/core/list',
   'summernote/base/core/dom'
 ], function (func, list, dom) {
-  var LinkPopover = function (summernote) {
+  var LinkPopover = function (context) {
     var self = this;
     var ui = $.summernote.ui;
 
-    var $note = summernote.layoutInfo.note;
-    var options = summernote.options;
+    var $note = context.layoutInfo.note;
+    var options = context.options;
 
     this.events = {
       'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function () {
@@ -26,7 +26,7 @@ define([
       }).render().appendTo('body');
 
 
-      summernote.buildButtons(this.$popover.find('.popover-content'), options.popover.link);
+      context.buildButtons(this.$popover.find('.popover-content'), options.popover.link);
 
       dom.attachEvents($note, this.events);
     };
@@ -37,7 +37,7 @@ define([
     };
 
     this.update = function () {
-      var rng = summernote.invoke('editor.createRange');
+      var rng = context.invoke('editor.createRange');
       if (rng.isCollapsed() && rng.isOnAnchor()) {
         var anchor = dom.ancestor(rng.sc, dom.isAnchor);
         var href = $(anchor).attr('href');

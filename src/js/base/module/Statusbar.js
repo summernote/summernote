@@ -1,11 +1,11 @@
 define(function () {
   var EDITABLE_PADDING = 24;
 
-  var Statusbar = function (summernote) {
+  var Statusbar = function (context) {
     var $document = $(document);
-    var $statusbar = summernote.layoutInfo.statusbar;
-    var $editable = summernote.layoutInfo.editable;
-    var options = summernote.options;
+    var $statusbar = context.layoutInfo.statusbar;
+    var $editable = context.layoutInfo.editable;
+    var options = context.options;
 
     this.initialize = function () {
       if (options.airMode || options.disableResizeEditor) {

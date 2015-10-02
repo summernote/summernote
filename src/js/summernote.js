@@ -5,12 +5,11 @@ define([
 ], function ($, func, list) {
 
   /**
-   * @class Summernote
    * @param {jQuery} $note
    * @param {Object} options
-   * @return {Summernote}
+   * @return {Context}
    */
-  var Summernote = function ($note, options) {
+  var Context = function ($note, options) {
     var self = this;
 
     var ui = $.summernote.ui;
@@ -39,8 +38,6 @@ define([
       });
 
       $note.hide();
-
-      this.triggerEvent('init');
       return this;
     };
 
@@ -168,14 +165,17 @@ define([
       this.each(function (idx, note) {
         var $note = $(note);
         if (!$note.data('summernote')) {
-          $note.data('summernote', new Summernote($note, options));
+          $note.data('summernote', new Context($note, options));
+          $note.data('summernote').triggerEvent('init');
         }
       });
 
       var $note = this.first();
       if (isExternalAPICalled && $note.length) {
-        var summernote = $note.data('summernote');
-        return summernote.invoke.apply(summernote, list.from(arguments));
+        var context = $note.data('summernote');
+        return context.invoke.apply(context, list.from(arguments));
+      } else {
+        return this;
       }
     }
   });

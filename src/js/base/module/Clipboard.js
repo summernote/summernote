@@ -4,10 +4,10 @@ define([
   'summernote/base/core/key',
   'summernote/base/core/agent'
 ], function (list, dom, key, agent) {
-  var Clipboard = function (summernote) {
+  var Clipboard = function (context) {
     var self = this;
 
-    var $editable = summernote.layoutInfo.editable;
+    var $editable = context.layoutInfo.editable;
     var $paste;
 
     this.initialize = function () {
@@ -23,7 +23,7 @@ define([
 
         $editable.on('keydown', function (e) {
           if (e.ctrlKey && e.keyCode === key.code.V) {
-            summernote.invoke('editor.saveRange');
+            context.invoke('editor.saveRange');
             $paste.focus();
 
             setTimeout(function () {
@@ -52,16 +52,16 @@ define([
         var blob = new Blob([array], { type : 'image/png' });
         blob.name = 'clipboard.png';
 
-        summernote.invoke('editor.restoreRange');
-        summernote.invoke('editor.focus');
-        summernote.invoke('imageDialog.insertImages', [blob]);
+        context.invoke('editor.restoreRange');
+        context.invoke('editor.focus');
+        context.invoke('imageDialog.insertImages', [blob]);
       } else {
         var pasteContent = $('<div />').html($paste.html()).html();
-        summernote.invoke('editor.restoreRange');
-        summernote.invoke('editor.focus');
+        context.invoke('editor.restoreRange');
+        context.invoke('editor.focus');
 
         if (pasteContent) {
-          summernote.invoke('editor.pasteHTML', pasteContent);
+          context.invoke('editor.pasteHTML', pasteContent);
         }
       }
 
@@ -78,9 +78,9 @@ define([
       if (clipboardData && clipboardData.items && clipboardData.items.length) {
         var item = list.head(clipboardData.items);
         if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
-          summernote.invoke('imageDialog.insertImages', [item.getAsFile()]);
+          context.invoke('imageDialog.insertImages', [item.getAsFile()]);
         }
-        summernote.invoke('editor.afterCommand');
+        context.invoke('editor.afterCommand');
       }
     };
   };

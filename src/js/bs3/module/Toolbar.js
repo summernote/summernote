@@ -1,10 +1,10 @@
 define([], function () {
-  var Toolbar = function (summernote) {
+  var Toolbar = function (context) {
     var ui = $.summernote.ui;
 
-    var $note = summernote.layoutInfo.note;
-    var $toolbar = summernote.layoutInfo.toolbar;
-    var options = summernote.options;
+    var $note = context.layoutInfo.note;
+    var $toolbar = context.layoutInfo.toolbar;
+    var options = context.options;
 
     this.initialize = function () {
       if (options.airMode) {
@@ -16,14 +16,14 @@ define([], function () {
       if (!options.toolbar.length) {
         $toolbar.hide();
       } else {
-        summernote.buildButtons($toolbar, options.toolbar);
+        context.buildButtons($toolbar, options.toolbar);
       }
 
       $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
-        summernote.invoke('button.updateCurrentStyle');
+        context.invoke('button.updateCurrentStyle');
       });
 
-      summernote.invoke('button.updateCurrentStyle');
+      context.invoke('button.updateCurrentStyle');
     };
 
     this.destroy = function () {
