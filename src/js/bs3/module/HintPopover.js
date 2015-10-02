@@ -15,10 +15,10 @@ define([
 
     this.events = {
       'summernote.keyup': function (we, e) {
-        self.update(e);
+        self.handleKeyup(e);
       },
       'summernote.keydown' : function (we, e) {
-        self.updateKeydown(e);
+        self.handleKeydown(e);
       }
     };
 
@@ -131,9 +131,9 @@ define([
       });
     };
 
-    this.updateKeydown = function (e) {
+    this.handleKeydown = function (e) {
       if (!this.$popover.is(':visible')) {
-        return true;
+        return;
       }
 
       if (e.keyCode === key.code.ENTER) {
@@ -171,7 +171,7 @@ define([
       return $group;
     };
 
-    this.update = function (e) {
+    this.handleKeyup = function (e) {
       if (list.contains([key.code.ENTER, key.code.UP, key.code.DOWN], e.keyCode)) {
         if (e.keyCode === key.code.ENTER) {
           if (this.$popover.is(':visible')) {
@@ -179,8 +179,9 @@ define([
           }
         }
       } else {
-        if (hints.length) {
-          var wordRange = summernote.invoke('editor.createRange').getWordRange();
+        var wordRange = summernote.invoke('editor.createRange').getWordRange();
+        var keyword = wordRange.toString();
+        if (hints.length && keyword) {
           this.$content.empty().data('count', 0);
 
           var bnd = func.rect2bnd(list.last(wordRange.getClientRects()));
@@ -192,7 +193,6 @@ define([
 
             this.lastWordRange = wordRange;
 
-            var keyword = wordRange.toString();
             hints.forEach(function (hint, idx) {
               if (hint.match.test(keyword)) {
                 self.createGroup(idx, keyword).appendTo(self.$content);

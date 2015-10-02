@@ -29,35 +29,36 @@
   <script type="text/javascript">
     $(document).ready(function () {
       var self = this;
-      var emoji, emojiLink;
 
       // load github's emoji list
-      $.getJSON('https://api.github.com/emojis', function (data) {
-        emoji = Object.keys(data);
-        emojiLink = data;
-      });
+      $.ajax({
+        url: 'https://api.github.com/emojis'
+      }).then(function (data) {
+        var emojis = Object.keys(data);
+        var emojiUrls = data;
 
-      $('.summernote').summernote({
-        height: 300,
-        hint : [{
-          search: function (keyword, callback) {
-            callback($.grep(emoji, function (item) {
-              return item.indexOf(keyword)  === 0;
-            }));
-          },
-          match: /\B:([\-+\w]+)$/,
-          template: function (item) {
-            var content = emojiLink[item];
-            return '<img src="' + content + '" width="20" /> :' + item + ':';
-          },
-          content: function (item) {
-            var url = emojiLink[item];
-            if (url) {
-              return $('<img />').attr('src', url).css({width: 20})[0];
+        $('.summernote').summernote({
+          height: 300,
+          hint: [{
+            search: function (keyword, callback) {
+              callback($.grep(emojis, function (item) {
+                return item.indexOf(keyword)  === 0;
+              }));
+            },
+            match: /\B:([\-+\w]+)$/,
+            template: function (item) {
+              var content = emojiUrls[item];
+              return '<img src="' + content + '" width="20" /> :' + item + ':';
+            },
+            content: function (item) {
+              var url = emojiUrls[item];
+              if (url) {
+                return $('<img />').attr('src', url).css('width', 20)[0];
+              }
+              return '';
             }
-            return '';
-          }
-        }]
+          }]
+        });
       });
     });
   </script>

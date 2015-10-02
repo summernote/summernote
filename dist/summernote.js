@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-10-02T07:51Z
+ * Date: 2015-10-02T08:24Z
  */
 (function (factory) {
   /* global define */
@@ -5813,10 +5813,10 @@
 
     this.events = {
       'summernote.keyup': function (we, e) {
-        self.update(e);
+        self.handleKeyup(e);
       },
       'summernote.keydown' : function (we, e) {
-        self.updateKeydown(e);
+        self.handleKeydown(e);
       }
     };
 
@@ -5929,9 +5929,9 @@
       });
     };
 
-    this.updateKeydown = function (e) {
+    this.handleKeydown = function (e) {
       if (!this.$popover.is(':visible')) {
-        return true;
+        return;
       }
 
       if (e.keyCode === key.code.ENTER) {
@@ -5969,7 +5969,7 @@
       return $group;
     };
 
-    this.update = function (e) {
+    this.handleKeyup = function (e) {
       if (list.contains([key.code.ENTER, key.code.UP, key.code.DOWN], e.keyCode)) {
         if (e.keyCode === key.code.ENTER) {
           if (this.$popover.is(':visible')) {
@@ -5977,8 +5977,9 @@
           }
         }
       } else {
-        if (hints.length) {
-          var wordRange = summernote.invoke('editor.createRange').getWordRange();
+        var wordRange = summernote.invoke('editor.createRange').getWordRange();
+        var keyword = wordRange.toString();
+        if (hints.length && keyword) {
           this.$content.empty().data('count', 0);
 
           var bnd = func.rect2bnd(list.last(wordRange.getClientRects()));
@@ -5990,7 +5991,6 @@
 
             this.lastWordRange = wordRange;
 
-            var keyword = wordRange.toString();
             hints.forEach(function (hint, idx) {
               if (hint.match.test(keyword)) {
                 self.createGroup(idx, keyword).appendTo(self.$content);
