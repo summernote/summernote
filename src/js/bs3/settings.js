@@ -16,11 +16,12 @@ define([
   'summernote/bs3/module/ImagePopover',
   'summernote/bs3/module/HelpDialog',
   'summernote/bs3/module/AirPopover',
+  'summernote/bs3/module/HintPopover',
   'summernote/bs3/module/SpecialCharDialog'
 ], function (
   ui,
   Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle,
-  Button, Toolbar, LinkDialog, LinkPopover, ImageDialog, VideoDialog, ImagePopover, HelpDialog, AirPopover, SpecialCharDialog
+  Button, Toolbar, LinkDialog, LinkPopover, ImageDialog, VideoDialog, ImagePopover, HelpDialog, AirPopover, HintPopover, SpecialCharDialog
 ) {
 
   $.summernote = $.extend($.summernote, {
@@ -162,6 +163,7 @@ define([
         'imagePopover': ImagePopover,
         'helpDialog': HelpDialog,
         'airPopover': AirPopover,
+        'hintPopover': HintPopover,
         'specialCharDialog' : SpecialCharDialog
       },
 

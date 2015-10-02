@@ -25,53 +25,35 @@
 
   <script type="text/javascript" src="../dist/summernote.js"></script>
   <script type="text/javascript" src="../lang/summernote-ko-KR.js"></script>
-  <script type="text/javascript" src="../plugin/summernote-ext-hint.js"></script>
+
+  <script src="https://www.google.com/jsapi" type="text/javascript"></script>
 
   <script type="text/javascript">
-    $(document).ready(function () {
+    $(document).ready(function() {
       $('.summernote').summernote({
         height: 200,
-        plugin: {
-          hint: {
-            loadEmoji: function (data) {
-              this.emoji = Object.keys(data);
-              this.emojiLink = data;
+        hint : {
+            content : function(item) {
+              return "[" + item.full_name + "] " + item.description;
             },
 
-            load: function ($popover) {
-              var self = this;
-              $.getJSON('https://api.github.com/emojis', function (data) {
-                self.loadEmoji(data);
-              });
+            template : function(item) {
+              return "[<strong>" + item.full_name + "</strong>] " + item.description;
             },
 
-            content: function (item) {
-              var url = this.emojiLink[item];
-              if (url) {
-                return $('<img />').attr('src', url).css({width: 20})[0];
-              }
-              return '';
-            },
+            match : /#(\w{2,})$/,
 
-            template: function (item) {
-              var content = this.emojiLink[item];
-              return '<img src="' + content + '" width="20" /> :' + item + ':';
-            },
-
-            match: /\B:([\-+\w]+)$/,
-
-            search: function (keyword, callback) {
-              callback($.grep(this.emoji, function (item) {
-                return item.indexOf(keyword)  === 0;
-              }));
+            search : function(keyword, callback) {
+                $.getJSON('https://api.github.com/search/repositories?q=' + keyword + '&order=asc', function(data) {
+                  callback(data.items);
+                });
             }
-          }
         }
       });
     });
   </script>
 </head>
 <body>
-<textarea class="summernote">Type text start with ":". For example, :) or :+1:.</textarea>
+<textarea class="summernote"><p>Seasons <b>coming up</b></p></textarea>
 </body>
 </html>

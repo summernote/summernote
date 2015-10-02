@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
   <title>summernote</title>
   <!-- include jquery -->
-  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script> 
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script> 
 
   <!-- include libraries BS3 -->
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
@@ -25,50 +25,45 @@
 
   <script type="text/javascript" src="../dist/summernote.js"></script>
   <script type="text/javascript" src="../lang/summernote-ko-KR.js"></script>
-  <script type="text/javascript" src="../plugin/summernote-ext-hint.js"></script>
-
-  <script src="https://www.google.com/jsapi" type="text/javascript"></script>
 
   <script type="text/javascript">
-    $(document).ready(function() {
-      $('.summernote').summernote({
-        height: 200,
-        tabsize: 2,
-        toolbar: [
-  		    ['style', ['bold', 'italic', 'underline', 'clear']],
-  		    ['color', ['color']],
-  		    ['para', ['ul', 'ol', 'paragraph']],
-  		    ['height', ['height']],
-  		    ['table', ['table']]
-  		  ],
-        plugin : {
-          hint : {
-            load : function($popover) {
-                $popover.css({ 'max-width' : '500px'  })
+    $(document).ready(function () {
+      var self = this;
+
+      // load github's emoji list
+      $.ajax({
+        url: 'https://api.github.com/emojis'
+      }).then(function (data) {
+        var emojis = Object.keys(data);
+        var emojiUrls = data;
+
+        $('.summernote').summernote({
+          height: 300,
+          hint: [{
+            search: function (keyword, callback) {
+              callback($.grep(emojis, function (item) {
+                return item.indexOf(keyword)  === 0;
+              }));
             },
-
-            content : function(item) {
-              return "[" + item.full_name + "] " + item.description;
+            match: /\B:([\-+\w]+)$/,
+            template: function (item) {
+              var content = emojiUrls[item];
+              return '<img src="' + content + '" width="20" /> :' + item + ':';
             },
-
-            template : function(item) {
-              return "[<strong>" + item.full_name + "</strong>] " + item.description;
-            },
-
-            match : /#(\w{2,})$/,
-
-            search : function(keyword, callback) {
-                $.getJSON('https://api.github.com/search/repositories?q=' + keyword + '&order=asc', function(data) {
-                  callback(data.items);
-                });
+            content: function (item) {
+              var url = emojiUrls[item];
+              if (url) {
+                return $('<img />').attr('src', url).css('width', 20)[0];
+              }
+              return '';
             }
-          }
-        }
+          }]
+        });
       });
     });
   </script>
 </head>
 <body>
-<textarea class="summernote"><p>Seasons <b>coming up</b></p></textarea>
+<textarea class="summernote">Type text start with ":". For example, :smile or :+1:.</textarea>
 </body>
 </html>
