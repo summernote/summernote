@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-10-02T03:02Z
+ * Date: 2015-10-02T07:38Z
  */
 (function (factory) {
   /* global define */
@@ -3414,8 +3414,6 @@
         summernote.triggerEvent('keydown', event);
       }).on('keyup', function (event) {
         summernote.triggerEvent('keyup', event);
-      }).on('keydown', function (event) {
-        summernote.triggerEvent('keydown', event);
       }).on('focus', function (event) {
         summernote.triggerEvent('focus', event);
       }).on('blur', function (event) {
@@ -5813,12 +5811,6 @@
     var hint = summernote.options.hint || [];
     var hints = (hint instanceof Array) ? hint : [hint];
 
-    var KEY = key.code;
-
-    var DROPDOWN_KEYCODES = [KEY.UP, KEY.DOWN, KEY.ENTER];
-
-    this.lastWordRange = null;
-
     this.events = {
       'summernote.keyup': function (e, nativeEvent) {
         self.update(nativeEvent);
@@ -5833,6 +5825,7 @@
         return;
       }
 
+      this.lastWordRange = null;
       this.$popover = ui.popover({
         className: 'note-hint-popover'
       }).render().appendTo('body');
@@ -5845,7 +5838,6 @@
         self.$popoverContent.find('.active').removeClass('active');
         $(this).addClass('active');
         self.replace();
-        self.hide();
       });
     };
 
@@ -5853,203 +5845,163 @@
       if (!hints.length) {
         return;
       }
+
       this.$popover.remove();
       dom.detachEvents($note, this.events);
-      this.$popoverContent.off('click');
     };
 
-    this.activate = function ($activeItem) {
+    this.selectItem = function ($item) {
       this.$popoverContent.find('.active').removeClass('active');
-      $activeItem.addClass('active');
+      $item.addClass('active');
 
-      this.scrollTo($activeItem);
-    };
-
-    this.scrollTo = function ($node) {
-      var $parent = $node.parent().parent();
-      $parent[0].scrollTop = $node[0].offsetTop - ($parent.innerHeight() / 2);
+      var $container = $item.parent().parent();
+      $container[0].scrollTop = $item[0].offsetTop - ($container.innerHeight() / 2);
     };
 
     this.moveDown = function () {
-      var $old = this.$popoverContent.find('.note-hint-item.active');
-      var $next = $old.next();
+      var $current = this.$popoverContent.find('.note-hint-item.active');
+      var $next = $current.next();
 
       if ($next.length) {
-        this.activate($next);
+        this.selectItem($next);
       } else {
-        var $parentNext = $old.parent().next();
+        var $nextGroup = $current.parent().next();
 
-        if (!$parentNext.length) {
-          $parentNext = this.$popoverContent.find('.note-hint-group').first();
+        if (!$nextGroup.length) {
+          $nextGroup = this.$popoverContent.find('.note-hint-group').first();
         }
 
-        this.activate($parentNext.find('.note-hint-item').first());
+        this.selectItem($nextGroup.find('.note-hint-item').first());
       }
     };
 
     this.moveUp = function () {
-      var $old = this.$popoverContent.find('.note-hint-item.active');
-      var $prev = $old.prev();
+      var $current = this.$popoverContent.find('.note-hint-item.active');
+      var $prev = $current.prev();
 
       if ($prev.length) {
-        this.activate($prev);
+        this.selectItem($prev);
       } else {
-        var $parentPrev = $old.parent().prev();
+        var $prevGroup = $current.parent().prev();
 
-        if (!$parentPrev.length) {
-          $parentPrev = this.$popoverContent.find('.note-hint-group').last();
+        if (!$prevGroup.length) {
+          $prevGroup = this.$popoverContent.find('.note-hint-group').last();
         }
 
-        this.activate($parentPrev.find('.note-hint-item').last());
+        this.selectItem($prevGroup.find('.note-hint-item').last());
       }
     };
 
     this.replace = function () {
-      var $activeItem = this.$popoverContent.find('.active');
-      var content = this.content($activeItem.data('index'), $activeItem.data('item'));
-
-      if (typeof content === 'string') {
-        content = document.createTextNode(content);
-      }
-
-      this.lastWordRange.insertNode(content);
-      range.createFromNode(content).collapse().select();
+      var $item = this.$popoverContent.find('.note-hint-item.active');
+      var node = this.nodeFromItem($item);
+      this.lastWordRange.insertNode(node);
+      range.createFromNode(node).collapse().select();
 
       this.lastWordRange = null;
+      this.hide();
+      summernote.invoke('editor.focus');
     };
 
-    this.content = function (index, obj) {
-      if (hints[index] && hints[index].content) {
-        return hints[index].content(obj);
-      } else {
-        return obj;
+    this.nodeFromItem = function ($item) {
+      var hint = hints[$item.data('index')];
+      var item = $item.data('item');
+      var node = hint.content ? hint.content(item) : item;
+      if (typeof node === 'string') {
+        node = dom.createText(node);
       }
+      return node;
     };
 
-    this.searchKeyword = function (index, keyword, callback) {
-      var hintObject = hints[index];
-      if (hintObject && hintObject.match.test(keyword)) {
-        var matches = hintObject.match.exec(keyword);
-        this.search(index, matches[1], callback);
-      } else {
-        callback();
-      }
-    };
+    this.createItemTemplates = function (hintIdx, items) {
+      var hint = hints[hintIdx];
+      return items.map(function (item, idx) {
+        var $item = $('<div class="note-hint-item"/>');
+        $item.append(hint.template ? hint.template(item) : item + '');
+        $item.data({
+          'index': hintIdx,
+          'item': item
+        });
 
-    this.search = function (index, keyword, callback) {
-      var hintObject = hints[index];
-      if (hintObject && hintObject.search) {
-        hintObject.search(keyword, callback);
-      } else {
-        callback();
-      }
-
-    };
-
-    this.createListTemplate = function (index, list) {
-      var items  = [];
-      list = list || [];
-
-      for (var i = 0, len = list.length; i < len; i++) {
-        var $item = $('<div class="note-hint-item"></div>');
-        $item.append(this.createItemTemplate(index, list[i]));
-        $item.data({ 'index' : index, 'item' : list[i] });
-        items.push($item);
-      }
-
-      if (index === 0 && items.length) {
-        items[0].addClass('active');
-      }
-
-      return items;
-    };
-
-    this.createItemTemplate = function (index, obj) {
-      var hintObject = hints[index];
-      if (hintObject && hintObject.template) {
-        return hintObject.template(obj);
-      } else {
-        return obj + '';
-      }
+        if (hintIdx === 0 && idx === 0) {
+          $item.addClass('active');
+        }
+        return $item;
+      });
     };
 
     this.updateKeydown = function (e) {
-      if (this.$popover.css('display') === 'none') {
+      if (!this.$popover.is(':visible')) {
         return true;
       }
 
-      if (e.keyCode === KEY.ENTER) {
+      if (e.keyCode === key.code.ENTER) {
         e.preventDefault();
-        // replace
         this.replace();
-        this.hide();
-        summernote.invoke('editor.focus');
-      } else if (e.keyCode === KEY.UP) {
+      } else if (e.keyCode === key.code.UP) {
         e.preventDefault();
-        // popover cursor up
         this.moveUp();
-      } else if (e.keyCode === KEY.DOWN) {
+      } else if (e.keyCode === key.code.DOWN) {
         e.preventDefault();
-        // popover cursor down
         this.moveDown();
       }
     };
 
-    this.createHint = function (index, keyword) {
-      this.searchKeyword(index, keyword, function (list) {
-        var $group = self.$popoverContent.find('.note-hint-group-' + index);
-        var templateList = self.createListTemplate(index, list);
-        $group.html(templateList);
+    this.searchKeyword = function (index, keyword, callback) {
+      var hint = hints[index];
+      if (hint && hint.match.test(keyword) && hint.search) {
+        var matches = hint.match.exec(keyword);
+        hint.search(matches[1], callback);
+      } else {
+        callback();
+      }
+    };
 
-        if (templateList.length) {
+    this.createGroup = function (idx, keyword) {
+      var $group = $('<div class="note-hint-group note-hint-group-' + idx + '"/>');
+      this.searchKeyword(idx, keyword, function (items) {
+        items = items || [];
+        if (items.length) {
+          $group.html(self.createItemTemplates(idx, items));
           self.show();
         }
       });
+
+      return $group;
     };
 
     this.update = function (e) {
-      if (DROPDOWN_KEYCODES.indexOf(e.keyCode) > -1) {
-        if (e.keyCode === KEY.ENTER) {
-          if (this.$popover.css('display') === 'block') {
+      if (list.contains([key.code.ENTER, key.code.UP, key.code.DOWN], e.keyCode)) {
+        if (e.keyCode === key.code.ENTER) {
+          if (this.$popover.is(':visible')) {
             return false;
           }
         }
-
       } else {
-
-        if (hints && hints.length) {
-          var range = summernote.invoke('editor.createRange');
-          var word = range.getWordRange();
-          var keyword = word.toString();
-
+        if (hints.length) {
+          var wordRange = summernote.invoke('editor.createRange').getWordRange();
           this.$popoverContent.empty().data('count', 0);
 
-          var rects = word.getClientRects();
-          var rect = rects[rects.length - 1];
-
+          var rect = list.last(wordRange.getClientRects());
           if (rect) {
             this.$popover.css({
               left: rect.left,
               top: rect.top + rect.height
             }).hide();
 
-            this.lastWordRange = word;
+            this.lastWordRange = wordRange;
 
-            for (var i = 0, len = hints.length; i < len; i++) {
-              if (hints[i].match.test(keyword)) {
-                this.$popoverContent.append('<div class="note-hint-group note-hint-group-' + i + '"></div>');
-
-                this.createHint(i, keyword);
+            var keyword = wordRange.toString();
+            hints.forEach(function (hint, idx) {
+              if (hint.match.test(keyword)) {
+                self.createGroup(idx, keyword).appendTo(self.$popoverContent);
               }
-            }
+            });
           }
-
         } else {
           this.hide();
         }
-
       }
-
     };
 
     this.show = function () {
