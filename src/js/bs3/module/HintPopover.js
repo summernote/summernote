@@ -11,7 +11,7 @@ define([
 
     var $note = summernote.layoutInfo.note;
     var hint = summernote.options.hint || [];
-    var hints = (hint instanceof Array) ? hint : [hint];
+    var hints = $.isArray(hint) ? hint : [hint];
 
     this.events = {
       'summernote.keyup': function (we, e) {
