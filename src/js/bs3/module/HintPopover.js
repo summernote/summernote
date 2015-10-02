@@ -53,6 +53,7 @@ define([
       if (!hints.length) {
         return;
       }
+      this.$popover.remove();
       dom.detachEvents($note, this.events);
       this.$popoverContent.off('click');
     };
