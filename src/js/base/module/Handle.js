@@ -10,38 +10,39 @@ define([
     var $editingArea = summernote.layoutInfo.editingArea;
     var options = summernote.options;
 
-    var $handle = $([
-      '<div class="note-handle">',
-      '<div class="note-control-selection">',
-      '<div class="note-control-selection-bg"></div>',
-      '<div class="note-control-holder note-control-nw"></div>',
-      '<div class="note-control-holder note-control-ne"></div>',
-      '<div class="note-control-holder note-control-sw"></div>',
-      '<div class="',
-      (options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing'),
-      ' note-control-se"></div>',
-      (options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>'),
-      '</div>',
-      '</div>'
-    ].join(''));
-
-    $handle.prependTo($editingArea);
+    this.events = {
+      'summernote.mousedown': function (we, e) {
+        self.update(e.target);
+      },
+      'summernote.keyup summernote.scroll summernote.change': function () {
+        self.hide();
+      }
+    };
 
     this.initialize = function () {
-      $note.on('summernote.keyup summernote.mouseup summernote.change', function (customEvent, event) {
-        self.update(event.target);
-      }).on('summernote.scroll', function () {
-        self.update(summernote.invoke('editor.restoreTarget'));
-      });
+      this.$handle = $([
+        '<div class="note-handle">',
+        '<div class="note-control-selection">',
+        '<div class="note-control-selection-bg"></div>',
+        '<div class="note-control-holder note-control-nw"></div>',
+        '<div class="note-control-holder note-control-ne"></div>',
+        '<div class="note-control-holder note-control-sw"></div>',
+        '<div class="',
+        (options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing'),
+        ' note-control-se"></div>',
+        (options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>'),
+        '</div>',
+        '</div>'
+      ].join('')).prependTo($editingArea);
 
-      $handle.on('mousedown', function (event) {
+      dom.attachEvents($note, this.events);
+
+      this.$handle.on('mousedown', function (event) {
         if (dom.isControlSizing(event.target)) {
           event.preventDefault();
           event.stopPropagation();
 
-          summernote.invoke('imagePopover.hide');
-
-          var $target = $handle.find('.note-control-selection').data('target'),
+          var $target = self.$handle.find('.note-control-selection').data('target'),
               posStart = $target.offset(),
               scrollTop = $document.scrollTop();
 
@@ -52,7 +53,8 @@ define([
             }, $target, !event.shiftKey);
 
             self.update($target[0]);
-          }).one('mouseup', function () {
+          }).one('mouseup', function (e) {
+            e.preventDefault();
             $document.off('mousemove');
             summernote.invoke('editor.afterCommand');
           });
@@ -64,8 +66,15 @@ define([
       });
     };
 
+    this.destroy = function () {
+      this.$handle.remove();
+      dom.detachEvents($note, this.events);
+    };
+
     this.update = function (target) {
-      var $selection = $handle.find('.note-control-selection');
+      summernote.invoke('imagePopover.update', target);
+      var $selection = this.$handle.find('.note-control-selection');
+
       if (dom.isImg(target)) {
         var $image = $(target);
         var pos = $image.position();
@@ -83,11 +92,12 @@ define([
           width: imageSize.w,
           height: imageSize.h
         }).data('target', $image); // save current image element.
+
         var sizingText = imageSize.w + 'x' + imageSize.h;
         $selection.find('.note-control-selection-info').text(sizingText);
+        summernote.invoke('editor.saveTarget', target);
       } else {
-        summernote.invoke('editor.clearTarget');
-        $selection.hide();
+        this.hide();
       }
     };
 
@@ -97,7 +107,8 @@ define([
      * @param {jQuery} $handle
      */
     this.hide = function () {
-      $handle.children().hide();
+      summernote.invoke('editor.clearTarget');
+      this.$handle.children().hide();
     };
   };
 

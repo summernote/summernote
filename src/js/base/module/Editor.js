@@ -26,6 +26,7 @@ define([
     var self = this;
 
     var $note = summernote.layoutInfo.note;
+    var $editor = summernote.layoutInfo.editor;
     var $editable = summernote.layoutInfo.editable;
     var options = summernote.options;
 
@@ -41,16 +42,39 @@ define([
         this.bindKeyMap();
       }
 
-      $editable.on('keyup', function (event) {
+      // bind custom events
+      $editable.on('keydown', function (event) {
+        if (event.keyCode === key.code.ENTER) {
+          summernote.triggerEvent('enter', event);
+        }
+        summernote.triggerEvent('keydown', event);
+      }).on('keyup', function (event) {
         summernote.triggerEvent('keyup', event);
+<<<<<<< HEAD
       }).on('keydown', function (event) {
         summernote.triggerEvent('keydown', event);
+=======
+      }).on('focus', function (event) {
+        summernote.triggerEvent('focus', event);
+      }).on('blur', function (event) {
+        summernote.triggerEvent('blur', event);
+      }).on('mousedown', function (event) {
+        summernote.triggerEvent('mousedown', event);
+>>>>>>> develop
       }).on('mouseup', function (event) {
         summernote.triggerEvent('mouseup', event);
       }).on('input', function (event) {
         summernote.triggerEvent('change', event);
       }).on('scroll', function (event) {
         summernote.triggerEvent('scroll', event);
+      }).on('paste', function (event) {
+        summernote.triggerEvent('paste', event);
+      });
+
+      $editor.on('focusin', function (event) {
+        summernote.triggerEvent('focusin', event);
+      }).on('focusout', function (event) {
+        summernote.triggerEvent('focusout', event);
       });
 
       if (!options.airMode && options.height) {
@@ -58,10 +82,11 @@ define([
       }
 
       $editable.html($note.html());
+      history.recordUndo();
     };
 
     this.destroy = function () {
-      $editable.off('keydown');
+      $editable.off();
     };
 
     this.bindKeyMap = function () {

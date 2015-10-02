@@ -67,9 +67,6 @@ define(['summernote/base/core/range'], function (range) {
       // Create new snapshot and push it to the end
       stack.push(makeSnapshot());
     };
-
-    // Create first undo stack
-    this.recordUndo();
   };
 
   return History;
