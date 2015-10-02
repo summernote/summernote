@@ -14,11 +14,11 @@ define([
     var hints = (hint instanceof Array) ? hint : [hint];
 
     this.events = {
-      'summernote.keyup': function (e, nativeEvent) {
-        self.update(nativeEvent);
+      'summernote.keyup': function (we, e) {
+        self.update(e);
       },
-      'summernote.keydown' : function (e, nativeEvent) {
-        self.updateKeydown(nativeEvent);
+      'summernote.keydown' : function (we, e) {
+        self.updateKeydown(e);
       }
     };
 
@@ -32,12 +32,12 @@ define([
         className: 'note-hint-popover'
       }).render().appendTo('body');
 
-      this.$popoverContent = this.$popover.find('.popover-content');
+      this.$content = this.$popover.find('.popover-content');
 
       dom.attachEvents($note, this.events);
 
-      this.$popoverContent.on('click', '.note-hint-item', function () {
-        self.$popoverContent.find('.active').removeClass('active');
+      this.$content.on('click', '.note-hint-item', function () {
+        self.$content.find('.active').removeClass('active');
         $(this).addClass('active');
         self.replace();
       });
@@ -53,15 +53,14 @@ define([
     };
 
     this.selectItem = function ($item) {
-      this.$popoverContent.find('.active').removeClass('active');
+      this.$content.find('.active').removeClass('active');
       $item.addClass('active');
 
-      var $container = $item.parent().parent();
-      $container[0].scrollTop = $item[0].offsetTop - ($container.innerHeight() / 2);
+      this.$content[0].scrollTop = $item[0].offsetTop - (this.$content.innerHeight() / 2);
     };
 
     this.moveDown = function () {
-      var $current = this.$popoverContent.find('.note-hint-item.active');
+      var $current = this.$content.find('.note-hint-item.active');
       var $next = $current.next();
 
       if ($next.length) {
@@ -70,7 +69,7 @@ define([
         var $nextGroup = $current.parent().next();
 
         if (!$nextGroup.length) {
-          $nextGroup = this.$popoverContent.find('.note-hint-group').first();
+          $nextGroup = this.$content.find('.note-hint-group').first();
         }
 
         this.selectItem($nextGroup.find('.note-hint-item').first());
@@ -78,7 +77,7 @@ define([
     };
 
     this.moveUp = function () {
-      var $current = this.$popoverContent.find('.note-hint-item.active');
+      var $current = this.$content.find('.note-hint-item.active');
       var $prev = $current.prev();
 
       if ($prev.length) {
@@ -87,7 +86,7 @@ define([
         var $prevGroup = $current.parent().prev();
 
         if (!$prevGroup.length) {
-          $prevGroup = this.$popoverContent.find('.note-hint-group').last();
+          $prevGroup = this.$content.find('.note-hint-group').last();
         }
 
         this.selectItem($prevGroup.find('.note-hint-item').last());
@@ -95,7 +94,7 @@ define([
     };
 
     this.replace = function () {
-      var $item = this.$popoverContent.find('.note-hint-item.active');
+      var $item = this.$content.find('.note-hint-item.active');
       var node = this.nodeFromItem($item);
       this.lastWordRange.insertNode(node);
       range.createFromNode(node).collapse().select();
@@ -182,13 +181,13 @@ define([
       } else {
         if (hints.length) {
           var wordRange = summernote.invoke('editor.createRange').getWordRange();
-          this.$popoverContent.empty().data('count', 0);
+          this.$content.empty().data('count', 0);
 
-          var rect = list.last(wordRange.getClientRects());
-          if (rect) {
+          var bnd = func.rect2bnd(list.last(wordRange.getClientRects()));
+          if (bnd) {
             this.$popover.css({
-              left: rect.left,
-              top: rect.top + rect.height
+              left: bnd.left,
+              top: bnd.top + bnd.height
             }).hide();
 
             this.lastWordRange = wordRange;
@@ -196,7 +195,7 @@ define([
             var keyword = wordRange.toString();
             hints.forEach(function (hint, idx) {
               if (hint.match.test(keyword)) {
-                self.createGroup(idx, keyword).appendTo(self.$popoverContent);
+                self.createGroup(idx, keyword).appendTo(self.$content);
               }
             });
           }
