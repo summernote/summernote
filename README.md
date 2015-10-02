@@ -25,10 +25,6 @@ Summernote has a few special features:
 * Interactive WYSIWYG editing
 * Handy integration with server
 
-#### Inspired by
-* Gmail's WYSIWYG editor (http://www.gmail.com)
-* Redactor (http://imperavi.com/redactor/)
-
 ### Installation and dependencies
 
 Summernote uses opensource libraries: [jQuery](http://jquery.com/), [Bootstrap](http://getbootstrap.com), [Font Awesome](https://github.com/FortAwesome/Font-Awesome).
@@ -43,14 +39,14 @@ Include the following code in the `<head>` tag of your HTML:
 
 ```html
 <!-- include libraries(jQuery, bootstrap, fontawesome) -->
-<script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script> 
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
-<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script> 
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" />
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css" />
 
 <!-- include summernote css/js-->
 <link href="summernote.css" rel="stylesheet">
-<script src="summernote.min.js"></script>
+<script src="summernote.js"></script>
 ```
 
 #### 2. target elements
@@ -99,7 +95,6 @@ Any modern browser: Safari, Chrome, Firefox, Opera, Internet Explorer 9+.
 * IE8 Support
 * Clipboard (you can paste images already)
 * Media object selection
-
 
 ### Developer information
 
