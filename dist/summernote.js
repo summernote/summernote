@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-10-01T09:31Z
+ * Date: 2015-10-02T03:01Z
  */
 (function (factory) {
   /* global define */
@@ -376,7 +376,7 @@
 
       $note.hide();
 
-      this.triggerEvent('ready');
+      this.triggerEvent('init');
       return this;
     };
 
@@ -937,90 +937,6 @@
      */
     var isControlSizing = function (node) {
       return node && $(node).hasClass('note-control-sizing');
-    };
-
-    /**
-     * @method  buildLayoutInfo
-     *
-     * build layoutInfo from $editor(.note-editor)
-     *
-     * @param {jQuery} $editor
-     * @return {Object}
-     * @return {Function} return.editor
-     * @return {Node} return.dropzone
-     * @return {Node} return.toolbar
-     * @return {Node} return.editable
-     * @return {Node} return.codable
-     * @return {Node} return.popover
-     * @return {Node} return.handle
-     * @return {Node} return.dialog
-     */
-    var buildLayoutInfo = function ($editor) {
-      var makeFinder;
-
-      // air mode
-      if ($editor.hasClass('note-air-editor')) {
-        var id = list.last($editor.attr('id').split('-'));
-        makeFinder = function (sIdPrefix) {
-          return function () { return $(sIdPrefix + id); };
-        };
-
-        return {
-          editor: function () { return $editor; },
-          holder : function () { return $editor.data('holder'); },
-          editable: function () { return $editor; },
-          popover: makeFinder('#note-popover-'),
-          handle: makeFinder('#note-handle-'),
-          dialog: makeFinder('#note-dialog-')
-        };
-
-        // frame mode
-      } else {
-        makeFinder = function (className, $base) {
-          $base = $base || $editor;
-          return function () { return $base.find(className); };
-        };
-
-        var options = $editor.data('options');
-        var $dialogHolder = (options && options.dialogsInBody) ? $(document.body) : null;
-
-        return {
-          editor: function () { return $editor; },
-          holder : function () { return $editor.data('holder'); },
-          dropzone: makeFinder('.note-dropzone'),
-          toolbar: makeFinder('.note-toolbar'),
-          editable: makeFinder('.note-editable'),
-          codable: makeFinder('.note-codable'),
-          statusbar: makeFinder('.note-statusbar'),
-          popover: makeFinder('.note-popover'),
-          handle: makeFinder('.note-handle'),
-          dialog: makeFinder('.note-dialog', $dialogHolder)
-        };
-      }
-    };
-
-    /**
-     * returns makeLayoutInfo from editor's descendant node.
-     *
-     * @private
-     * @param {Node} descendant
-     * @return {Object}
-     */
-    var makeLayoutInfo = function (descendant) {
-      var $target = $(descendant).closest('.note-editor, .note-air-editor, .note-air-layout');
-
-      if (!$target.length) {
-        return null;
-      }
-
-      var $editor;
-      if ($target.is('.note-editor, .note-air-editor')) {
-        $editor = $target;
-      } else {
-        $editor = $('#note-editor-' + list.last($target.attr('id').split('-')));
-      }
-
-      return buildLayoutInfo($editor);
     };
 
     /**
@@ -1972,8 +1888,6 @@
       makePredByNodeName: makePredByNodeName,
       isEditable: isEditable,
       isControlSizing: isControlSizing,
-      buildLayoutInfo: buildLayoutInfo,
-      makeLayoutInfo: makeLayoutInfo,
       isText: isText,
       isElement: isElement,
       isVoid: isVoid,
@@ -2948,9 +2862,6 @@
       // Create new snapshot and push it to the end
       stack.push(makeSnapshot());
     };
-
-    // Create first undo stack
-    this.recordUndo();
   };
 
   /**
@@ -3479,6 +3390,7 @@
     var self = this;
 
     var $note = summernote.layoutInfo.note;
+    var $editor = summernote.layoutInfo.editor;
     var $editable = summernote.layoutInfo.editable;
     var options = summernote.options;
 
@@ -3494,14 +3406,34 @@
         this.bindKeyMap();
       }
 
-      $editable.on('keyup', function (event) {
+      // bind custom events
+      $editable.on('keydown', function (event) {
+        if (event.keyCode === key.code.ENTER) {
+          summernote.triggerEvent('enter', event);
+        }
+        summernote.triggerEvent('keydown', event);
+      }).on('keyup', function (event) {
         summernote.triggerEvent('keyup', event);
+      }).on('focus', function (event) {
+        summernote.triggerEvent('focus', event);
+      }).on('blur', function (event) {
+        summernote.triggerEvent('blur', event);
+      }).on('mousedown', function (event) {
+        summernote.triggerEvent('mousedown', event);
       }).on('mouseup', function (event) {
         summernote.triggerEvent('mouseup', event);
       }).on('input', function (event) {
         summernote.triggerEvent('change', event);
       }).on('scroll', function (event) {
         summernote.triggerEvent('scroll', event);
+      }).on('paste', function (event) {
+        summernote.triggerEvent('paste', event);
+      });
+
+      $editor.on('focusin', function (event) {
+        summernote.triggerEvent('focusin', event);
+      }).on('focusout', function (event) {
+        summernote.triggerEvent('focusout', event);
       });
 
       if (!options.airMode && options.height) {
@@ -3509,10 +3441,11 @@
       }
 
       $editable.html($note.html());
+      history.recordUndo();
     };
 
     this.destroy = function () {
-      $editable.off('keydown');
+      $editable.off();
     };
 
     this.bindKeyMap = function () {
@@ -4463,38 +4396,39 @@
     var $editingArea = summernote.layoutInfo.editingArea;
     var options = summernote.options;
 
-    var $handle = $([
-      '<div class="note-handle">',
-      '<div class="note-control-selection">',
-      '<div class="note-control-selection-bg"></div>',
-      '<div class="note-control-holder note-control-nw"></div>',
-      '<div class="note-control-holder note-control-ne"></div>',
-      '<div class="note-control-holder note-control-sw"></div>',
-      '<div class="',
-      (options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing'),
-      ' note-control-se"></div>',
-      (options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>'),
-      '</div>',
-      '</div>'
-    ].join(''));
-
-    $handle.prependTo($editingArea);
+    this.events = {
+      'summernote.mousedown': function (we, e) {
+        self.update(e.target);
+      },
+      'summernote.keyup summernote.scroll summernote.change': function () {
+        self.hide();
+      }
+    };
 
     this.initialize = function () {
-      $note.on('summernote.keyup summernote.mouseup summernote.change', function (customEvent, event) {
-        self.update(event.target);
-      }).on('summernote.scroll', function () {
-        self.update(summernote.invoke('editor.restoreTarget'));
-      });
+      this.$handle = $([
+        '<div class="note-handle">',
+        '<div class="note-control-selection">',
+        '<div class="note-control-selection-bg"></div>',
+        '<div class="note-control-holder note-control-nw"></div>',
+        '<div class="note-control-holder note-control-ne"></div>',
+        '<div class="note-control-holder note-control-sw"></div>',
+        '<div class="',
+        (options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing'),
+        ' note-control-se"></div>',
+        (options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>'),
+        '</div>',
+        '</div>'
+      ].join('')).prependTo($editingArea);
 
-      $handle.on('mousedown', function (event) {
+      dom.attachEvents($note, this.events);
+
+      this.$handle.on('mousedown', function (event) {
         if (dom.isControlSizing(event.target)) {
           event.preventDefault();
           event.stopPropagation();
 
-          summernote.invoke('imagePopover.hide');
-
-          var $target = $handle.find('.note-control-selection').data('target'),
+          var $target = self.$handle.find('.note-control-selection').data('target'),
               posStart = $target.offset(),
               scrollTop = $document.scrollTop();
 
@@ -4505,7 +4439,8 @@
             }, $target, !event.shiftKey);
 
             self.update($target[0]);
-          }).one('mouseup', function () {
+          }).one('mouseup', function (e) {
+            e.preventDefault();
             $document.off('mousemove');
             summernote.invoke('editor.afterCommand');
           });
@@ -4517,8 +4452,15 @@
       });
     };
 
+    this.destroy = function () {
+      this.$handle.remove();
+      dom.detachEvents($note, this.events);
+    };
+
     this.update = function (target) {
-      var $selection = $handle.find('.note-control-selection');
+      summernote.invoke('imagePopover.update', target);
+      var $selection = this.$handle.find('.note-control-selection');
+
       if (dom.isImg(target)) {
         var $image = $(target);
         var pos = $image.position();
@@ -4536,11 +4478,12 @@
           width: imageSize.w,
           height: imageSize.h
         }).data('target', $image); // save current image element.
+
         var sizingText = imageSize.w + 'x' + imageSize.h;
         $selection.find('.note-control-selection-info').text(sizingText);
+        summernote.invoke('editor.saveTarget', target);
       } else {
-        summernote.invoke('editor.clearTarget');
-        $selection.hide();
+        this.hide();
       }
     };
 
@@ -4550,7 +4493,8 @@
      * @param {jQuery} $handle
      */
     this.hide = function () {
-      $handle.children().hide();
+      summernote.invoke('editor.clearTarget');
+      this.$handle.children().hide();
     };
   };
 
@@ -5319,14 +5263,6 @@
     var $editingArea = summernote.layoutInfo.editingArea;
     var options = summernote.options;
 
-    var $popover = ui.popover({
-      className: 'note-link-popover',
-      callback: function ($node) {
-        var $content = $node.find('.popover-content');
-        $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
-      }
-    }).render().appendTo($editingArea);
-
     this.events = {
       'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function () {
         self.update();
@@ -5334,12 +5270,22 @@
     };
 
     this.initialize = function () {
-      summernote.buildButtons($popover.find('.popover-content'), options.popover.link);
+      this.$popover = ui.popover({
+        className: 'note-link-popover',
+        callback: function ($node) {
+          var $content = $node.find('.popover-content');
+          $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
+        }
+      }).render().appendTo($editingArea);
+
+
+      summernote.buildButtons(this.$popover.find('.popover-content'), options.popover.link);
 
       dom.attachEvents($note, this.events);
     };
 
     this.destroy = function () {
+      this.$popover.remove();
       dom.detachEvents($note, this.events);
     };
 
@@ -5348,21 +5294,21 @@
       if (rng.isCollapsed() && rng.isOnAnchor()) {
         var anchor = dom.ancestor(rng.sc, dom.isAnchor);
         var href = $(anchor).attr('href');
-        $popover.find('a').attr('href', href).html(href);
+        this.$popover.find('a').attr('href', href).html(href);
 
         var pos = dom.posFromPlaceholder(anchor);
-        $popover.css({
+        this.$popover.css({
           display: 'block',
           left: pos.left,
           top: pos.top
         });
       } else {
-        $popover.hide();
+        this.hide();
       }
     };
 
     this.hide = function () {
-      $popover.hide();
+      this.$popover.hide();
     };
   };
 
@@ -5700,45 +5646,44 @@
     var $editingArea = summernote.layoutInfo.editingArea;
     var options = summernote.options;
 
-    var $popover = ui.popover({
-      className: 'note-image-popover'
-    }).render().appendTo($editingArea);
-
     this.events = {
-      'summernote.keyup summernote.mouseup summernote.change': function (event) {
-        self.update(event.target);
+      'summernote.keyup summernote.mouseup summernote.change': function () {
+        self.update();
       },
       'summernote.scroll': function () {
-        self.update(summernote.invoke('editor.restoreTarget'));
+        self.update();
       }
     };
 
     this.initialize = function () {
-      summernote.buildButtons($popover.find('.popover-content'), options.popover.image);
+      this.$popover = ui.popover({
+        className: 'note-image-popover'
+      }).render().appendTo($editingArea);
+
+      summernote.buildButtons(this.$popover.find('.popover-content'), options.popover.image);
       dom.attachEvents($note, this.events);
     };
 
     this.destroy = function () {
+      this.$popover.remove();
       dom.detachEvents($note, this.events);
     };
 
     this.update = function (target) {
       if (dom.isImg(target)) {
         var pos = dom.posFromPlaceholder(target);
-        $popover.css({
+        this.$popover.css({
           display: 'block',
           left: pos.left,
           top: pos.top
         });
-
-        summernote.invoke('editor.saveTarget', target);
       } else {
-        $popover.hide();
+        this.hide();
       }
     };
 
     this.hide = function () {
-      $popover.hide();
+      this.$popover.hide();
     };
   };
 
@@ -5797,15 +5742,19 @@
     var $editingArea = summernote.layoutInfo.editingArea;
     var options = summernote.options;
 
-    var $popover = ui.popover({
-      className: 'note-air-popover'
-    }).render().appendTo($editingArea);
-
     var AIR_MODE_POPOVER_X_OFFSET = 20;
 
     this.events = {
-      'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function () {
+      'summernote.keyup summernote.mouseup summernote.scroll': function () {
         self.update();
+      },
+      'summernote.change': function () {
+        self.hide();
+      },
+      'summernote.focusout': function (we, e) {
+        if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq($editingArea[0]))) {
+          self.hide();
+        }
       }
     };
 
@@ -5814,11 +5763,20 @@
         return;
       }
 
-      summernote.buildButtons($popover.find('.popover-content'), options.popover.air);
+      this.$popover = ui.popover({
+        className: 'note-air-popover'
+      }).render().appendTo($editingArea);
+
+      summernote.buildButtons(this.$popover.find('.popover-content'), options.popover.air);
       dom.attachEvents($note, this.events);
     };
 
     this.destroy = function () {
+      if (!options.airMode) {
+        return;
+      }
+
+      this.$popover.remove();
       dom.detachEvents($note, this.events);
     };
 
@@ -5829,19 +5787,19 @@
         if (rect) {
           var bnd = func.rect2bnd(rect);
           var posEditingArea = $editingArea.offset();
-          $popover.css({
+          this.$popover.css({
             display: 'block',
-            left: Math.max(bnd.left + bnd.width / 2, 0) - AIR_MODE_POPOVER_X_OFFSET,
+            left: Math.max(bnd.left + bnd.width / 2, 0) - posEditingArea.left - AIR_MODE_POPOVER_X_OFFSET,
             top: bnd.top + bnd.height - posEditingArea.top
           });
         }
       } else {
-        $popover.hide();
+        this.hide();
       }
     };
 
     this.hide = function () {
-      $popover.hide();
+      this.$popover.hide();
     };
   };
 
