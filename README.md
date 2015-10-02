@@ -76,13 +76,13 @@ $(document).ready(function() {
 `code` - get the HTML source code underlying the text in the editor:
 
 ```javascript
-var sHTML = $('#summernote').code();
+var html = $('#summernote').summernote('code');
 ```
 
 `Destroy` summernote:
 
 ```javascript
-$('#summernote').destroy();
+$('#summernote').summernote('destroy');
 ```
 
 #### Warning - code injection
