@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>summernote</title>
+  <title>summernote - bs3fa4</title>
 
   <!-- include jquery -->
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script> 
@@ -13,14 +13,6 @@
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css" />
 
-  <!-- code mirror -->
-  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css" />
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/theme/blackboard.min.css">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/theme/monokai.min.css">
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/xml/xml.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js"></script>
-
   <!-- include summernote -->
   <link rel="stylesheet" href="../dist/summernote.css">
   <script type="text/javascript" src="../dist/summernote.js"></script>
@@ -29,13 +21,7 @@
     $(document).ready(function() {
       $('.summernote').summernote({
         height: 300,
-        tabsize: 2,
-        codemirror: {
-          mode: 'text/html',
-          htmlMode: true,
-          lineNumbers: true,
-          theme: 'monokai'
-        }
+        tabsize: 2
       });
     });
   </script>
