@@ -1,10 +1,10 @@
 define([], function () {
-  var HelpDialog = function (summernote) {
+  var HelpDialog = function (context) {
     var self = this;
     var ui = $.summernote.ui;
 
-    var $editor = summernote.layoutInfo.editor;
-    var options = summernote.options;
+    var $editor = context.layoutInfo.editor;
+    var options = context.options;
     var lang = options.langInfo;
 
     this.initialize = function () {
@@ -44,9 +44,9 @@ define([], function () {
     };
 
     this.show = function () {
-      summernote.invoke('editor.saveRange');
+      context.invoke('editor.saveRange');
       this.showHelpDialog().then(function () {
-        summernote.invoke('editor.restoreRange');
+        context.invoke('editor.restoreRange');
       });
     };
   };
