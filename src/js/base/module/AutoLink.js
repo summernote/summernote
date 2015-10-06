@@ -28,6 +28,9 @@ define([
     };
 
     this.replace = function () {
+      if (!this.lastWordRange) {
+        return;
+      }
 
       var keyword = this.lastWordRange.toString();
 
