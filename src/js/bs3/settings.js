@@ -7,6 +7,7 @@ define([
   'summernote/base/module/Statusbar',
   'summernote/base/module/Fullscreen',
   'summernote/base/module/Handle',
+  'summernote/base/module/AutoLink',
   'summernote/bs3/module/Button',
   'summernote/bs3/module/Toolbar',
   'summernote/bs3/module/LinkDialog',
@@ -20,7 +21,7 @@ define([
   'summernote/bs3/module/SpecialCharDialog'
 ], function (
   ui,
-  Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle,
+  Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle, AutoLink,
   Button, Toolbar, LinkDialog, LinkPopover, ImageDialog, VideoDialog, ImagePopover, HelpDialog, AirPopover, HintPopover, SpecialCharDialog
 ) {
 
@@ -147,6 +148,7 @@ define([
 
     options: {
       modules: {
+        'autolink' : AutoLink,
         'editor': Editor,
         'clipboard': Clipboard,
         'dropzone': Dropzone,
