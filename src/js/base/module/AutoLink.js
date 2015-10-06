@@ -5,7 +5,7 @@ define([
   'summernote/base/core/range',
   'summernote/base/core/key'
 ], function (func, list, dom, range, key) {
-  var AutLink = function (context) {
+  var AutoLink = function (context) {
     var self = this;
 
     var linkPattern = /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+-]+@)(.+)$/i;
@@ -65,5 +65,5 @@ define([
     };
   };
 
-  return AutLink;
+  return AutoLink;
 });
