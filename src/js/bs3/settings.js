@@ -148,6 +148,7 @@ define([
 
     options: {
       modules: {
+        'autolink' : AutoLink,
         'editor': Editor,
         'clipboard': Clipboard,
         'dropzone': Dropzone,
@@ -155,7 +156,6 @@ define([
         'statusbar': Statusbar,
         'fullscreen': Fullscreen,
         'handle': Handle,
-        'autolink' : AutoLink,
         'button' : Button,
         'toolbar': Toolbar,
         'linkDialog': LinkDialog,

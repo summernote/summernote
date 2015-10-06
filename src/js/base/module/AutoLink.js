@@ -14,6 +14,9 @@ define([
     this.events = {
       'summernote.keyup': function (we, e) {
         self.handleKeyup(e);
+      },
+      'summernote.keydown': function (we, e) {
+        self.handleKeydown(e);
       }
     };
 
@@ -48,12 +51,16 @@ define([
       return $('<a />').html(keyword).attr('href', keyword)[0];
     };
 
+    this.handleKeydown = function (e) {
+      if (list.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
+        var wordRange = context.invoke('editor.createRange').getWordRange();
+        this.lastWordRange = wordRange;
+      }
+    };
+
     this.handleKeyup = function (e) {
       if (list.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
         this.replace();
-      } else {
-        var wordRange = context.invoke('editor.createRange').getWordRange();
-        this.lastWordRange = wordRange;
       }
     };
   };

@@ -36,11 +36,6 @@ define([
     var history = new History($editable);
 
     this.initialize = function () {
-      // bind keymap
-      if (options.shortcuts) {
-        this.bindKeyMap();
-      }
-
       // bind custom events
       $editable.on('keydown', function (event) {
         if (event.keyCode === key.code.ENTER) {
@@ -70,6 +65,11 @@ define([
       }).on('focusout', function (event) {
         context.triggerEvent('focusout', event);
       });
+
+      // bind keymap
+      if (options.shortcuts) {
+        this.bindKeyMap();
+      }
 
       if (!options.airMode && options.height) {
         $editable.outerHeight(options.height);
