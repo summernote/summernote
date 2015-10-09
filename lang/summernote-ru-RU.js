@@ -22,7 +22,12 @@
         floatLeft: 'Расположить слева',
         floatRight: 'Расположить справа',
         floatNone: 'Расположение по-умолчанию',
+        shapeRounded: 'Форма: Закругленная',
+        shapeCircle: 'Форма: Круг',
+        shapeThumbnail: 'Форма: Миниатюра',
+        shapeNone: 'Форма: Нет',
         dragImageHere: 'Перетащите сюда картинку',
+        dropImage: 'Перетащите картинку',
         selectFromFiles: 'Выбрать из файлов',
         url: 'URL картинки',
         remove: 'Удалить картинку'
