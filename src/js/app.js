@@ -3,6 +3,7 @@ require.config({
   paths: {
     jquery: '//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery',
     bootstrap: '//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap',
+    bootstrap4: '//rawgit.com/twbs/bootstrap/master/dist/js/bootstrap',
     lang: '../../lang/summernote-ko-KR'
   },
   shim: {
@@ -36,6 +37,11 @@ require([
       break;
     case 'bs3':
       promise = requireByPromise(['bootstrap', 'summernote/bs3/settings']).then(function () {
+        return requireByPromise(['lang']);
+      });
+      break;
+    case 'bs4':
+      promise = requireByPromise(['bootstrap4', 'summernote/bs4/settings']).then(function () {
         return requireByPromise(['lang']);
       });
       break;

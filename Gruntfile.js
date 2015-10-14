@@ -73,7 +73,8 @@ module.exports = function (grunt) {
       dist: {
         options: { compile: true, compress: true },
         files: {
-          'dist/summernote.css': ['src/less/summernote.less']
+          'dist/summernote.css': ['src/less/summernote.less'],
+          'dist/summernote-bs4.css': ['src/less/summernote-bs4.less']
         }
       }
     },
