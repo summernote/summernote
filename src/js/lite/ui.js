@@ -22,6 +22,7 @@ define([
       $editor.insertAfter($note);
 
       return {
+        note: $note,
         editor: $editor,
         toolbar: $editor.find('.note-toolbar'),
         editable: $editor.find('.note-editable')

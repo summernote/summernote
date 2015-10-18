@@ -1,4 +1,4 @@
-define([], function () {
+define(function () {
   var Toolbar = function (context) {
     var ui = $.summernote.ui;
 

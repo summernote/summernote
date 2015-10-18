@@ -1,8 +1,9 @@
 define([
   'summernote/lite/ui',
+  '../../../../lang/summernote-en-US',
   'summernote/base/module/Editor',
   'summernote/lite/module/Toolbar'
-], function (ui, Editor, Toolbar) {
+], function (ui, lang, Editor, Toolbar) {
   $.summernote = $.extend($.summernote, {
     version: '@VERSION',
     ui: ui,
