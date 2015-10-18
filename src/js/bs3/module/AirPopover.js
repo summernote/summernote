@@ -35,8 +35,9 @@ define([
       this.$popover = ui.popover({
         className: 'note-air-popover'
       }).render().appendTo('body');
+      var $content = this.$popover.find('.popover-content');
 
-      context.buildButtons(this.$popover.find('.popover-content'), options.popover.air);
+      context.invoke('buttons.build', $content, options.popover.air);
       dom.attachEvents($note, this.events);
     };
 

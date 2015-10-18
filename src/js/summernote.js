@@ -94,26 +94,6 @@ define([
       delete this.buttons[key];
     };
 
-    this.buildButtons = function ($container, buttonArray) {
-      for (var groupIndex = 0, groupLength = buttonArray.length; groupIndex < groupLength; groupIndex++) {
-        var group = buttonArray[groupIndex];
-        var groupName = group[0];
-        var buttonList = group[1];
-
-        var $group = ui.buttonGroup({
-          className: 'note-' + groupName
-        }).render();
-
-        for (var idx = 0, length = buttonList.length; idx < length; idx++) {
-          var button = this.buttons[buttonList[idx]];
-          if (button) {
-            $group.append(typeof button === 'function' ? button(this) : button);
-          }
-        }
-        $group.appendTo($container);
-      }
-    };
-
     this.createInvokeHandler = function (namespace, value) {
       return function (event) {
         event.preventDefault();

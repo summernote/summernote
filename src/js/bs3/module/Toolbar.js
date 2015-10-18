@@ -16,14 +16,14 @@ define([], function () {
       if (!options.toolbar.length) {
         $toolbar.hide();
       } else {
-        context.buildButtons($toolbar, options.toolbar);
+        context.invoke('buttons.build', $toolbar, options.toolbar);
       }
 
       $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
-        context.invoke('button.updateCurrentStyle');
+        context.invoke('buttons.updateCurrentStyle');
       });
 
-      context.invoke('button.updateCurrentStyle');
+      context.invoke('buttons.updateCurrentStyle');
     };
 
     this.destroy = function () {

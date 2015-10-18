@@ -24,9 +24,9 @@ define([
           $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
         }
       }).render().appendTo('body');
+      var $content = this.$popover.find('.popover-content');
 
-
-      context.buildButtons(this.$popover.find('.popover-content'), options.popover.link);
+      context.invoke('buttons.build', $content, options.popover.link);
 
       dom.attachEvents($note, this.events);
     };

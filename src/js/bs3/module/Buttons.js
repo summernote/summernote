@@ -4,7 +4,7 @@ define([
   'summernote/base/core/list',
   'summernote/base/core/agent'
 ], function ($, func, list, agent) {
-  var Button = function (context) {
+  var Buttons = function (context) {
     var self = this;
     var ui = $.summernote.ui;
 
@@ -392,29 +392,29 @@ define([
     };
 
     /**
-     *  image : [
-     ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
-     ['float', ['floatLeft', 'floatRight', 'floatNone' ]],
-     ['remove', ['removeMedia']]
-     ],
+     * image : [
+     *   ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
+     *   ['float', ['floatLeft', 'floatRight', 'floatNone' ]],
+     *   ['remove', ['removeMedia']]
+     * ],
      */
     this.addImagePopoverButtons = function () {
       // Image Size Buttons
-      context.addButton('imageSize100', function (context) {
+      context.addButton('imageSize100', function () {
         return ui.button({
           contents: '<span class="note-fontsize-10">100%</span>',
           tooltip: lang.image.resizeFull,
           click: context.createInvokeHandler('editor.resize', '1')
         }).render();
       });
-      context.addButton('imageSize50', function (context) {
+      context.addButton('imageSize50', function () {
         return  ui.button({
           contents: '<span class="note-fontsize-10">50%</span>',
           tooltip: lang.image.resizeHalf,
           click: context.createInvokeHandler('editor.resize', '0.5')
         }).render();
       });
-      context.addButton('imageSize25', function (context) {
+      context.addButton('imageSize25', function () {
         return ui.button({
           contents: '<span class="note-fontsize-10">25%</span>',
           tooltip: lang.image.resizeQuarter,
@@ -423,7 +423,7 @@ define([
       });
 
       // Float Buttons
-      context.addButton('floatLeft', function (context) {
+      context.addButton('floatLeft', function () {
         return ui.button({
           contents: '<i class="fa fa-align-left"/>',
           tooltip: lang.image.floatLeft,
@@ -431,7 +431,7 @@ define([
         }).render();
       });
 
-      context.addButton('floatRight', function (context) {
+      context.addButton('floatRight', function () {
         return ui.button({
           contents: '<i class="fa fa-align-right"/>',
           tooltip: lang.image.floatRight,
@@ -439,7 +439,7 @@ define([
         }).render();
       });
 
-      context.addButton('floatNone', function (context) {
+      context.addButton('floatNone', function () {
         return ui.button({
           contents: '<i class="fa fa-align-justify"/>',
           tooltip: lang.image.floatNone,
@@ -448,7 +448,7 @@ define([
       });
 
       // Remove Buttons
-      context.addButton('removeMedia', function (context) {
+      context.addButton('removeMedia', function () {
         return ui.button({
           contents: '<i class="fa fa-trash-o"/>',
           tooltip: lang.image.remove,
@@ -458,7 +458,7 @@ define([
     };
 
     this.addLinkPopoverButtons = function () {
-      context.addButton('linkDialogShow', function (context) {
+      context.addButton('linkDialogShow', function () {
         return ui.button({
           contents: '<i class="fa fa-link"/>',
           tooltip: lang.link.edit,
@@ -466,13 +466,33 @@ define([
         }).render();
       });
 
-      context.addButton('unlink', function (context) {
+      context.addButton('unlink', function () {
         return ui.button({
           contents: '<i class="fa fa-unlink"/>',
           tooltip: lang.link.unlink,
           click: context.createInvokeHandler('editor.unlink')
         }).render();
       });
+    };
+
+    this.build = function ($container, groups) {
+      for (var groupIdx = 0, groupLen = groups.length; groupIdx < groupLen; groupIdx++) {
+        var group = groups[groupIdx];
+        var groupName = group[0];
+        var buttons = group[1];
+
+        var $group = ui.buttonGroup({
+          className: 'note-' + groupName
+        }).render();
+
+        for (var idx = 0, len = buttons.length; idx < len; idx++) {
+          var button = context.buttons[buttons[idx]];
+          if (button) {
+            $group.append(typeof button === 'function' ? button(context) : button);
+          }
+        }
+        $group.appendTo($container);
+      }
     };
 
     this.updateCurrentStyle = function () {
@@ -577,5 +597,5 @@ define([
     };
   };
 
-  return Button;
+  return Buttons;
 });

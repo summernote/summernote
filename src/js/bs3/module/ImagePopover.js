@@ -23,8 +23,9 @@ define([
       this.$popover = ui.popover({
         className: 'note-image-popover'
       }).render().appendTo('body');
+      var $content = this.$popover.find('.popover-content');
 
-      context.buildButtons(this.$popover.find('.popover-content'), options.popover.image);
+      context.invoke('buttons.build', $content, options.popover.image);
       dom.attachEvents($note, this.events);
     };
 
