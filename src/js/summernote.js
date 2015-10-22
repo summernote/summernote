@@ -24,11 +24,7 @@ define([
 
       // initialize module
       Object.keys(this.options.modules).forEach(function (key) {
-        var module = new self.options.modules[key](self);
-        if (module.initialize) {
-          module.initialize.apply(module);
-        }
-        self.addModule(key, module);
+        self.addModule(key, self.options.modules[key]);
       });
 
       // add optional buttons
@@ -72,7 +68,12 @@ define([
       $note.trigger('summernote.' + namespace, args);
     };
 
-    this.addModule = function (key, instance) {
+    this.addModule = function (key, ModuleClass) {
+      var instance = new ModuleClass(this);
+      if (instance.initialize) {
+        instance.initialize.apply(instance);
+      }
+
       this.modules[key] = instance;
     };
 
