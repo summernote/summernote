@@ -22,16 +22,25 @@ define([
       // create layout info
       this.layoutInfo = ui.createLayout($note, options);
 
-      // initialize module
-      Object.keys(this.options.modules).forEach(function (key) {
-        self.addModule(key, self.options.modules[key]);
-      });
-
       // add optional buttons
-      Object.keys(this.options.buttons).forEach(function (key) {
-        var button = self.options.buttons[key];
+      var allButtons = $.extend({}, this.options.buttons, $.summernote.buttons || {});
+      Object.keys(allButtons).forEach(function (key) {
+        var button = allButtons[key];
         self.addButton(key, button);
       });
+
+      // initialize module
+      var allModules = $.extend({}, this.options.modules, $.summernote.modules || {});
+      Object.keys(allModules).forEach(function (key) {
+        self.addModule(key, allModules[key]);
+      });
+
+      Object.keys(this.modules).forEach(function (key) {
+        if (self.modules[key].initialize) {
+          self.modules[key].initialize();
+        }
+      });
+
 
       $note.hide();
       return this;
@@ -69,12 +78,7 @@ define([
     };
 
     this.addModule = function (key, ModuleClass) {
-      var instance = new ModuleClass(this);
-      if (instance.initialize) {
-        instance.initialize.apply(instance);
-      }
-
-      this.modules[key] = instance;
+      this.modules[key] = new ModuleClass(this);
     };
 
     this.removeModule = function (key) {
