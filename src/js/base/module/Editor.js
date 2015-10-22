@@ -650,7 +650,11 @@ define([
      * set focus
      */
     this.focus = function () {
-      $editable.focus();
+      // [workaround] Screen will move when page is scolled in IE.
+      //  - do focus when not focused
+      if (!$editable.is(':focus')) {
+        $editable.focus();
+      }
 
       // [workaround] for firefox bug http://goo.gl/lVfAaI
       if (agent.isFF) {
