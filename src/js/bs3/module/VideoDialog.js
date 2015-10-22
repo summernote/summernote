@@ -136,6 +136,8 @@ define([
       var text = this.getTextOnRange();
       context.invoke('editor.saveRange');
       this.showVideoDialog(text).then(function (url) {
+        // [workaround] hide dialog before restore range for IE range focus
+        ui.hideDialog(self.$dialog);
         context.invoke('editor.restoreRange');
 
         // build node
@@ -171,7 +173,6 @@ define([
             event.preventDefault();
 
             deferred.resolve($videoUrl.val());
-            ui.hideDialog(self.$dialog);
           });
 
           self.bindEnterKey($videoUrl, $videoBtn);
