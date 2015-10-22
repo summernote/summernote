@@ -121,15 +121,8 @@ define([
             ui.hideDialog(self.$dialog);
           });
 
-          $imageUrl.on('keyup paste', function (event) {
-            var url;
-            
-            if (event.type === 'paste') {
-              url = event.originalEvent.clipboardData.getData('text');
-            } else {
-              url = $imageUrl.val();
-            }
-            
+          $imageUrl.on('keyup paste', function () {
+            var url = $imageUrl.val();
             ui.toggleBtn($imageBtn, url);
           }).val('').trigger('focus');
           self.bindEnterKey($imageUrl, $imageBtn);
