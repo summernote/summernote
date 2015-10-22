@@ -78,6 +78,8 @@ define([
     this.show = function () {
       context.invoke('editor.saveRange');
       this.showImageDialog().then(function (data) {
+        // [workaround] hide dialog before restore range for IE range focus
+        ui.hideDialog(self.$dialog);
         context.invoke('editor.restoreRange');
 
         if (typeof data === 'string') {
@@ -109,7 +111,6 @@ define([
           $imageInput.replaceWith($imageInput.clone()
             .on('change', function () {
               deferred.resolve(this.files || this.value);
-              ui.hideDialog(self.$dialog);
             })
             .val('')
           );
@@ -118,7 +119,6 @@ define([
             event.preventDefault();
 
             deferred.resolve($imageUrl.val());
-            ui.hideDialog(self.$dialog);
           });
 
           $imageUrl.on('keyup paste', function () {
