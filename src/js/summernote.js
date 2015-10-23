@@ -23,16 +23,15 @@ define([
       this.layoutInfo = ui.createLayout($note, options);
 
       // add optional buttons
-      var allButtons = $.extend({}, this.options.buttons, $.summernote.buttons || {});
-      Object.keys(allButtons).forEach(function (key) {
-        var button = allButtons[key];
-        self.addButton(key, button);
+      var buttons = $.extend({}, this.options.buttons, $.summernote.buttons || {});
+      Object.keys(buttons).forEach(function (key) {
+        self.addButton(key, buttons[key]);
       });
 
       // initialize module
-      var allModules = $.extend({}, this.options.modules, $.summernote.modules || {});
-      Object.keys(allModules).forEach(function (key) {
-        self.addModule(key, allModules[key]);
+      var modules = $.extend({}, this.options.modules, $.summernote.modules || {});
+      Object.keys(modules).forEach(function (key) {
+        self.addModule(key, modules[key]);
       });
 
       Object.keys(this.modules).forEach(function (key) {
@@ -40,7 +39,6 @@ define([
           self.modules[key].initialize();
         }
       });
-
 
       $note.hide();
       return this;
