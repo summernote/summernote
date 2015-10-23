@@ -6,8 +6,8 @@
 define([
   'chai',
   'jquery',
-  'summernote/core/range',
-  'summernote/editing/Style'
+  'summernote/base/core/range',
+  'summernote/base/editing/Style'
 ], function (chai, $, range, Style) {
   'use strict';
 

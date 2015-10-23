@@ -3,7 +3,11 @@
  * (c) 2013~ Alan Hong
  * summernote may be freely distributed under the MIT license./
  */
-define(['chai', 'jquery', 'summernote/core/list'], function (chai, $, list) {
+define([
+  'chai',
+  'jquery',
+  'summernote/base/core/list'
+], function (chai, $, list) {
   'use strict';
 
   var expect = chai.expect;

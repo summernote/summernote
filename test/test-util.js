@@ -1,5 +1,5 @@
 define([
-  'summernote/core/agent'
+  'summernote/base/core/agent'
 ], function (agent) {
   return {
     equalsToUpperCase: function (actual, expected, assert) {

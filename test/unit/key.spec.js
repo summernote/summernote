@@ -5,7 +5,7 @@
  */
 define([
   'chai',
-  'summernote/core/key'
+  'summernote/base/core/key'
 ], function (chai, key) {
   'use strict';
 
