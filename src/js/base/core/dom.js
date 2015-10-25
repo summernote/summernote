@@ -96,6 +96,10 @@ define([
       return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName.toUpperCase());
     };
 
+    var isHeading = function (node) {
+      return node && /^H[1-7]/.test(node.nodeName.toUpperCase());
+    };
+
     var isLi = makePredByNodeName('LI');
 
     var isPurePara = function (node) {
@@ -994,6 +998,7 @@ define([
       isVoid: isVoid,
       isPara: isPara,
       isPurePara: isPurePara,
+      isHeading: isHeading,
       isInline: isInline,
       isBlock: func.not(isInline),
       isBodyInline: isBodyInline,

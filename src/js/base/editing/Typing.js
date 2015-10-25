@@ -64,6 +64,11 @@ define([
           $.each(emptyAnchors, function (idx, anchor) {
             dom.remove(anchor);
           });
+
+          // replace empty heading with P tag
+          if (dom.isHeading(nextPara) && dom.isEmpty(nextPara)) {
+            nextPara = dom.replace(nextPara, 'p');
+          }
         }
       // no paragraph: insert empty paragraph
       } else {
@@ -77,9 +82,7 @@ define([
       }
 
       range.create(nextPara, 0).normalize().select();
-
     };
-
   };
 
   return Typing;
