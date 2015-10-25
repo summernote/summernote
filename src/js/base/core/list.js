@@ -190,7 +190,7 @@ define(['summernote/base/core/func'], function (func) {
 
     return { head: head, last: last, initial: initial, tail: tail,
              prev: prev, next: next, find: find, contains: contains,
-             all: all, sum: sum, from: from, isEmpty, isEmpty,
+             all: all, sum: sum, from: from, isEmpty: isEmpty,
              clusterBy: clusterBy, compact: compact, unique: unique };
   })();
 
