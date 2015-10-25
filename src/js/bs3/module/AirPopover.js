@@ -28,7 +28,7 @@ define([
     };
 
     this.initialize = function () {
-      if (!options.airMode) {
+      if (!options.airMode || list.isEmpty(options.popover.air)) {
         return;
       }
 
@@ -42,7 +42,7 @@ define([
     };
 
     this.destroy = function () {
-      if (!options.airMode) {
+      if (!options.airMode || list.isEmpty(options.popover.air)) {
         return;
       }
 

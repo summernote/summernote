@@ -20,6 +20,10 @@ define([
     };
 
     this.initialize = function () {
+      if (list.isEmpty(options.popover.image)) {
+        return;
+      }
+
       this.$popover = ui.popover({
         className: 'note-image-popover'
       }).render().appendTo('body');
@@ -30,11 +34,19 @@ define([
     };
 
     this.destroy = function () {
+      if (list.isEmpty(options.popover.image)) {
+        return;
+      }
+
       this.$popover.remove();
       dom.detachEvents($note, this.events);
     };
 
     this.update = function (target) {
+      if (list.isEmpty(options.popover.image)) {
+        return;
+      }
+
       if (dom.isImg(target)) {
         var pos = dom.posFromPlaceholder(target);
         this.$popover.css({
@@ -48,6 +60,10 @@ define([
     };
 
     this.hide = function () {
+      if (list.isEmpty(options.popover.image)) {
+        return;
+      }
+
       this.$popover.hide();
     };
   };

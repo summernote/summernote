@@ -17,6 +17,10 @@ define([
     };
 
     this.initialize = function () {
+      if (list.isEmpty(options.popover.link)) {
+        return;
+      }
+
       this.$popover = ui.popover({
         className: 'note-link-popover',
         callback: function ($node) {
@@ -32,6 +36,10 @@ define([
     };
 
     this.destroy = function () {
+      if (list.isEmpty(options.popover.link)) {
+        return;
+      }
+
       this.$popover.remove();
       dom.detachEvents($note, this.events);
     };

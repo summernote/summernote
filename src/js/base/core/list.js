@@ -106,6 +106,13 @@ define(['summernote/base/core/func'], function (func) {
       }
       return result;
     };
+
+    /**
+     * returns whether list is empty or not
+     */
+    var isEmpty = function (array) {
+      return !array || !array.length;
+    };
   
     /**
      * cluster elements by predicate function.
@@ -180,10 +187,10 @@ define(['summernote/base/core/func'], function (func) {
 
       return array[idx - 1];
     };
-  
+
     return { head: head, last: last, initial: initial, tail: tail,
              prev: prev, next: next, find: find, contains: contains,
-             all: all, sum: sum, from: from,
+             all: all, sum: sum, from: from, isEmpty, isEmpty,
              clusterBy: clusterBy, compact: compact, unique: unique };
   })();
 
