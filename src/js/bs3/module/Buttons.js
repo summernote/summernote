@@ -318,7 +318,7 @@ define([
             $catcher.css({
               width: options.insertTableMaxSize.col + 'em',
               height: options.insertTableMaxSize.row + 'em'
-            }).click(context.createInvokeHandler('editor.insertTable'))
+            }).mousedown(context.createInvokeHandler('editor.insertTable'))
               .on('mousemove', self.tableMoveHandler);
           }
         }).render();
