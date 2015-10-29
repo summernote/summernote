@@ -1,8 +1,9 @@
 define([
   'jquery',
   'summernote/base/core/func',
-  'summernote/base/core/list'
-], function ($, func, list) {
+  'summernote/base/core/list',
+  'summernote/base/core/dom'
+], function ($, func, list, dom) {
 
   /**
    * @param {jQuery} $note
@@ -28,16 +29,14 @@ define([
         self.addButton(key, buttons[key]);
       });
 
-      // initialize module
+      // add module
       var modules = $.extend({}, this.options.modules, $.summernote.modules || {});
       Object.keys(modules).forEach(function (key) {
-        self.addModule(key, modules[key]);
+        self.addModule(key, modules[key], true);
       });
 
       Object.keys(this.modules).forEach(function (key) {
-        if (self.modules[key].initialize) {
-          self.modules[key].initialize();
-        }
+        self.initializeModule(key);
       });
 
       $note.hide();
@@ -75,15 +74,46 @@ define([
       $note.trigger('summernote.' + namespace, args);
     };
 
-    this.addModule = function (key, ModuleClass) {
+    this.initializeModule = function (key) {
+      var module = this.modules[key];
+      module.shouldInitialize = module.shouldInitialize || func.ok;
+      if (!module.shouldInitialize()) {
+        return;
+      }
+
+      // initialize module
+      if (module.initialize) {
+        module.initialize();
+      }
+
+      // attach events
+      if (module.events) {
+        dom.attachEvents($note, module.events);
+      }
+    };
+
+    this.addModule = function (key, ModuleClass, withoutIntialize) {
       this.modules[key] = new ModuleClass(this);
+
+      if (!withoutIntialize) {
+        this.initializeModule(key);
+      }
     };
 
     this.removeModule = function (key) {
-      if (this.modules[key].destroy) {
-        this.modules[key].destroy();
+      var module = this.modules[key];
+      if (module.shouldInitialize()) {
+        if (module.events) {
+          dom.detachEvents($note, module.events);
+        }
+
+        if (module.destroy) {
+          module.destroy();
+        }
       }
+
       delete this.modules[key];
+      this.modules[key] = null;
     };
 
     this.addButton = function (key, handler) {
@@ -116,7 +146,7 @@ define([
       var module = this.modules[moduleName || 'editor'];
       if (!moduleName && this[methodName]) {
         return this[methodName].apply(this, args);
-      } else if (module && module[methodName]) {
+      } else if (module && module[methodName] && module.shouldInitialize()) {
         return module[methodName].apply(module, args);
       }
     };

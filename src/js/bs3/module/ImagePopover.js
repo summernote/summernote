@@ -7,7 +7,6 @@ define([
     var self = this;
     var ui = $.summernote.ui;
 
-    var $note = context.layoutInfo.note;
     var options = context.options;
 
     this.events = {
@@ -19,34 +18,24 @@ define([
       }
     };
 
-    this.initialize = function () {
-      if (list.isEmpty(options.popover.image)) {
-        return;
-      }
+    this.shouldInitialize = function () {
+      return !list.isEmpty(options.popover.image);
+    };
 
+    this.initialize = function () {
       this.$popover = ui.popover({
         className: 'note-image-popover'
       }).render().appendTo('body');
       var $content = this.$popover.find('.popover-content');
 
       context.invoke('buttons.build', $content, options.popover.image);
-      dom.attachEvents($note, this.events);
     };
 
     this.destroy = function () {
-      if (list.isEmpty(options.popover.image)) {
-        return;
-      }
-
       this.$popover.remove();
-      dom.detachEvents($note, this.events);
     };
 
     this.update = function (target) {
-      if (list.isEmpty(options.popover.image)) {
-        return;
-      }
-
       if (dom.isImg(target)) {
         var pos = dom.posFromPlaceholder(target);
         this.$popover.css({
@@ -60,10 +49,6 @@ define([
     };
 
     this.hide = function () {
-      if (list.isEmpty(options.popover.image)) {
-        return;
-      }
-
       this.$popover.hide();
     };
   };

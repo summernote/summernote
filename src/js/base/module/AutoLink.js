@@ -9,7 +9,6 @@ define([
     var self = this;
 
     var linkPattern = /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+-]+@)(.+)$/i;
-    var $note = context.layoutInfo.note;
 
     this.events = {
       'summernote.keyup': function (we, e) {
@@ -22,12 +21,10 @@ define([
 
     this.initialize = function () {
       this.lastWordRange = null;
-      dom.attachEvents($note, this.events);
     };
 
     this.destroy = function () {
       this.lastWordRange = null;
-      dom.detachEvents($note, this.events);
     };
 
     this.replace = function () {

@@ -6,11 +6,11 @@ define(function () {
     var $toolbar = context.layoutInfo.toolbar;
     var options = context.options;
 
-    this.initialize = function () {
-      if (options.airMode) {
-        return;
-      }
+    this.shouldInitialize = function () {
+      return !options.airMode;
+    }
 
+    this.initialize = function () {
       options.toolbar = options.toolbar || [];
 
       if (!options.toolbar.length) {
