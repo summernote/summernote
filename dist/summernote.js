@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-10-18T10:17Z
+ * Date: 2015-10-29T16:03Z
  */
 (function (factory) {
   /* global define */
@@ -258,6 +258,13 @@
       }
       return result;
     };
+
+    /**
+     * returns whether list is empty or not
+     */
+    var isEmpty = function (array) {
+      return !array || !array.length;
+    };
   
     /**
      * cluster elements by predicate function.
@@ -332,522 +339,12 @@
 
       return array[idx - 1];
     };
-  
+
     return { head: head, last: last, initial: initial, tail: tail,
              prev: prev, next: next, find: find, contains: contains,
-             all: all, sum: sum, from: from,
+             all: all, sum: sum, from: from, isEmpty: isEmpty,
              clusterBy: clusterBy, compact: compact, unique: unique };
   })();
-
-
-  /**
-   * @param {jQuery} $note
-   * @param {Object} options
-   * @return {Context}
-   */
-  var Context = function ($note, options) {
-    var self = this;
-
-    var ui = $.summernote.ui;
-    this.modules = {};
-    this.buttons = {};
-    this.layoutInfo = {};
-    this.options = options;
-
-    this.initialize = function () {
-      // create layout info
-      this.layoutInfo = ui.createLayout($note, options);
-
-      // initialize module
-      Object.keys(this.options.modules).forEach(function (key) {
-        var module = new self.options.modules[key](self);
-        if (module.initialize) {
-          module.initialize.apply(module);
-        }
-        self.addModule(key, module);
-      });
-
-      // add optional buttons
-      Object.keys(this.options.buttons).forEach(function (key) {
-        var button = self.options.buttons[key];
-        self.addButton(key, button);
-      });
-
-      $note.hide();
-      return this;
-    };
-
-    this.destroy = function () {
-      Object.keys(this.modules).forEach(function (key) {
-        self.removeModule(key);
-      });
-
-      $note.removeData('summernote');
-
-      ui.removeLayout($note, this.layoutInfo);
-    };
-
-    this.code = function (html) {
-      if (html === undefined) {
-        var isActivated = this.invoke('codeview.isActivated');
-        this.invoke('codeview.sync');
-        return isActivated ? this.layoutInfo.codable.val() : this.layoutInfo.editable.html();
-      }
-
-      this.layoutInfo.editable.html(html);
-    };
-
-    this.triggerEvent = function () {
-      var namespace = list.head(arguments);
-      var args = list.tail(list.from(arguments));
-
-      var callback = this.options.callbacks[func.namespaceToCamel(namespace, 'on')];
-      if (callback) {
-        callback.apply($note[0], args);
-      }
-      $note.trigger('summernote.' + namespace, args);
-    };
-
-    this.addModule = function (key, instance) {
-      this.modules[key] = instance;
-    };
-
-    this.removeModule = function (key) {
-      if (this.modules[key].destroy) {
-        this.modules[key].destroy();
-      }
-      delete this.modules[key];
-    };
-
-    this.addButton = function (key, handler) {
-      this.buttons[key] = handler;
-    };
-
-    this.removeButton = function (key) {
-      if (this.buttons[key].destroy) {
-        this.buttons[key].destroy();
-      }
-      delete this.buttons[key];
-    };
-
-    this.createInvokeHandler = function (namespace, value) {
-      return function (event) {
-        event.preventDefault();
-        self.invoke(namespace, value || $(event.target).data('value') || $(event.currentTarget).data('value'));
-      };
-    };
-
-    this.invoke = function () {
-      var namespace = list.head(arguments);
-      var args = list.tail(list.from(arguments));
-
-      var splits = namespace.split('.');
-      var hasSeparator = splits.length > 1;
-      var moduleName = hasSeparator && list.head(splits);
-      var methodName = hasSeparator ? list.last(splits) : list.head(splits);
-
-      var module = this.modules[moduleName || 'editor'];
-      if (!moduleName && this[methodName]) {
-        return this[methodName].apply(this, args);
-      } else if (module && module[methodName]) {
-        return module[methodName].apply(module, args);
-      }
-    };
-
-    return this.initialize();
-  };
-
-  $.summernote = $.summernote || {
-    lang: {}
-  };
-
-  $.fn.extend({
-    /**
-     * Summernote API
-     *
-     * @param {Object|String}
-     * @return {this}
-     */
-    summernote: function () {
-      var type = $.type(list.head(arguments));
-      var isExternalAPICalled = type === 'string';
-      var hasInitOptions = type === 'object';
-
-      var options = hasInitOptions ? list.head(arguments) : {};
-
-      options = $.extend({}, $.summernote.options, options);
-      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
-
-      this.each(function (idx, note) {
-        var $note = $(note);
-        if (!$note.data('summernote')) {
-          $note.data('summernote', new Context($note, options));
-          $note.data('summernote').triggerEvent('init');
-        }
-      });
-
-      var $note = this.first();
-      if (isExternalAPICalled && $note.length) {
-        var context = $note.data('summernote');
-        return context.invoke.apply(context, list.from(arguments));
-      } else {
-        return this;
-      }
-    }
-  });
-
-
-  var Renderer = function (markup, children, options, callback) {
-    this.render = function ($parent) {
-      var $node = $(markup);
-
-      if (options && options.contents) {
-        $node.html(options.contents);
-      }
-
-      if (options && options.className) {
-        $node.addClass(options.className);
-      }
-
-      if (options && options.data) {
-        $.each(options.data, function (k, v) {
-          $node.attr('data-' + k, v);
-        });
-      }
-
-      if (options && options.click) {
-        $node.on('mousedown', options.click);
-      }
-
-      if (children) {
-        var $container = $node.find('.note-children-container');
-        children.forEach(function (child) {
-          child.render($container.length ? $container : $node);
-        });
-      }
-
-      if (callback) {
-        callback($node, options);
-      }
-
-      if (options && options.callback) {
-        options.callback($node);
-      }
-
-      if ($parent) {
-        $parent.append($node);
-      }
-
-      return $node;
-    };
-  };
-
-  var renderer = {
-    create: function (markup, callback) {
-      return function () {
-        var children = $.isArray(arguments[0]) ? arguments[0] : [];
-        var options = typeof arguments[1] === 'object' ? arguments[1] : arguments[0];
-        if (options && options.children) {
-          children = options.children;
-        }
-        return new Renderer(markup, children, options, callback);
-      };
-    }
-  };
-
-  var editor = renderer.create('<div class="note-editor note-frame panel panel-default"/>');
-  var toolbar = renderer.create('<div class="note-toolbar panel-heading"/>');
-  var editingArea = renderer.create('<div class="note-editing-area"/>');
-  var codable = renderer.create('<textarea class="note-codable"/>');
-  var editable = renderer.create('<div class="note-editable panel-body" contentEditable="true"/>');
-  var statusbar = renderer.create([
-    '<div class="note-statusbar">',
-    '  <div class="note-resizebar">',
-    '    <div class="note-icon-bar"/>',
-    '    <div class="note-icon-bar"/>',
-    '    <div class="note-icon-bar"/>',
-    '  </div>',
-    '</div>'
-  ].join(''));
-
-  var airEditor = renderer.create('<div class="note-editor"/>');
-  var airEditable = renderer.create('<div class="note-editable" contentEditable="true"/>');
-
-  var buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
-  var button = renderer.create('<button type="button" class="note-btn btn btn-default btn-sm">', function ($node, options) {
-    if (options && options.tooltip) {
-      $node.attr({
-        title: options.tooltip
-      }).tooltip({
-        container: 'body',
-        trigger: 'hover',
-        placement: 'bottom'
-      });
-    }
-  });
-
-  var dropdown = renderer.create('<div class="dropdown-menu">', function ($node, options) {
-    var markup = $.isArray(options.items) ? options.items.map(function (item) {
-      return '<li><a href="#" data-value="' + item + '">' + item + '</a></li>';
-    }).join('') : options.items;
-
-    $node.html(markup);
-  });
-
-  var dropdownCheck = renderer.create('<div class="dropdown-menu note-check">', function ($node, options) {
-    var markup = $.isArray(options.items) ? options.items.map(function (item) {
-      return '<li><a href="#" data-value="' + item + '"><i class="fa fa-check" /> ' + item + '</a></li>';
-    }).join('') : options.items;
-    $node.html(markup);
-  });
-
-  var palette = renderer.create('<div class="note-color-palette"/>', function ($node, options) {
-    var contents = [];
-    for (var row = 0, rowSize = options.colors.length; row < rowSize; row++) {
-      var eventName = options.eventName;
-      var colors = options.colors[row];
-      var buttons = [];
-      for (var col = 0, colSize = colors.length; col < colSize; col++) {
-        var color = colors[col];
-        buttons.push([
-          '<button type="button" class="note-color-btn"',
-          'style="background-color:', color, '" ',
-          'data-event="', eventName, '" ',
-          'data-value="', color, '" ',
-          'title="', color, '" ',
-          'data-toggle="button" tabindex="-1"></button>'
-        ].join(''));
-      }
-      contents.push('<div class="note-color-row">' + buttons.join('') + '</div>');
-    }
-    $node.html(contents.join(''));
-
-    $node.find('.note-color-btn').tooltip({
-      container: 'body',
-      trigger: 'hover',
-      placement: 'bottom'
-    });
-  });
-
-  var dialog = renderer.create('<div class="modal" aria-hidden="false"/>', function ($node, options) {
-    $node.html([
-      '<div class="modal-dialog">',
-      '<div class="modal-content">',
-      (options.title ?
-      '<div class="modal-header">' +
-        '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-        '<h4 class="modal-title">' + options.title + '</h4>' +
-      '</div>' : ''
-      ),
-      '<div class="modal-body">' + options.body + '</div>',
-      (options.footer ?
-      '<div class="modal-footer">' + options.footer + '</div>' : ''
-      ),
-      '</div>',
-      '</div>'
-    ].join(''));
-  });
-
-  var popover = renderer.create([
-    '<div class="note-popover popover bottom in">',
-    '  <div class="arrow"/>',
-    '  <div class="popover-content note-children-container"/>',
-    '</div>'
-  ].join(''));
-
-  var ui = {
-    editor: editor,
-    toolbar: toolbar,
-    editingArea: editingArea,
-    codable: codable,
-    editable: editable,
-    statusbar: statusbar,
-    airEditor: airEditor,
-    airEditable: airEditable,
-    buttonGroup: buttonGroup,
-    button: button,
-    dropdown: dropdown,
-    dropdownCheck: dropdownCheck,
-    palette: palette,
-    dialog: dialog,
-    popover: popover,
-
-    toggleBtn: function ($btn, isEnable) {
-      $btn.toggleClass('disabled', !isEnable);
-      $btn.attr('disabled', !isEnable);
-    },
-
-    toggleBtnActive: function ($btn, isActive) {
-      $btn.toggleClass('active', isActive);
-    },
-
-    onDialogShown: function ($dialog, handler) {
-      $dialog.one('shown.bs.modal', handler);
-    },
-
-    onDialogHidden: function ($dialog, handler) {
-      $dialog.one('hidden.bs.modal', handler);
-    },
-
-    showDialog: function ($dialog) {
-      $dialog.modal('show');
-    },
-
-    hideDialog: function ($dialog) {
-      $dialog.modal('hide');
-    },
-
-    createLayout: function ($note, options) {
-      var $editor = (options.airMode ? ui.airEditor([
-        ui.editingArea([
-          ui.airEditable()
-        ])
-      ]) : ui.editor([
-        ui.toolbar(),
-        ui.editingArea([
-          ui.codable(),
-          ui.editable()
-        ]),
-        ui.statusbar()
-      ])).render();
-
-      $editor.insertAfter($note);
-
-      return {
-        note: $note,
-        editor: $editor,
-        toolbar: $editor.find('.note-toolbar'),
-        editingArea: $editor.find('.note-editing-area'),
-        editable: $editor.find('.note-editable'),
-        codable: $editor.find('.note-codable'),
-        statusbar: $editor.find('.note-statusbar')
-      };
-    },
-
-    removeLayout: function ($note, layoutInfo) {
-      $note.html(layoutInfo.editable.html());
-      layoutInfo.editor.remove();
-      $note.show();
-    }
-  };
-
-  $.extend($.summernote.lang, {
-    'en-US': {
-      font: {
-        bold: 'Bold',
-        italic: 'Italic',
-        underline: 'Underline',
-        clear: 'Remove Font Style',
-        height: 'Line Height',
-        name: 'Font Family',
-        strikethrough: 'Strikethrough',
-        subscript: 'Subscript',
-        superscript: 'Superscript',
-        size: 'Font Size'
-      },
-      image: {
-        image: 'Picture',
-        insert: 'Insert Image',
-        resizeFull: 'Resize Full',
-        resizeHalf: 'Resize Half',
-        resizeQuarter: 'Resize Quarter',
-        floatLeft: 'Float Left',
-        floatRight: 'Float Right',
-        floatNone: 'Float None',
-        shapeRounded: 'Shape: Rounded',
-        shapeCircle: 'Shape: Circle',
-        shapeThumbnail: 'Shape: Thumbnail',
-        shapeNone: 'Shape: None',
-        dragImageHere: 'Drag image or text here',
-        dropImage: 'Drop image or Text',
-        selectFromFiles: 'Select from files',
-        maximumFileSize: 'Maximum file size',
-        maximumFileSizeError: 'Maximum file size exceeded.',
-        url: 'Image URL',
-        remove: 'Remove Image'
-      },
-      video: {
-        video: 'Video',
-        videoLink: 'Video Link',
-        insert: 'Insert Video',
-        url: 'Video URL?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
-      },
-      link: {
-        link: 'Link',
-        insert: 'Insert Link',
-        unlink: 'Unlink',
-        edit: 'Edit',
-        textToDisplay: 'Text to display',
-        url: 'To what URL should this link go?',
-        openInNewWindow: 'Open in new window'
-      },
-      table: {
-        table: 'Table'
-      },
-      hr: {
-        insert: 'Insert Horizontal Rule'
-      },
-      style: {
-        style: 'Style',
-        normal: 'Normal',
-        blockquote: 'Quote',
-        pre: 'Code',
-        h1: 'Header 1',
-        h2: 'Header 2',
-        h3: 'Header 3',
-        h4: 'Header 4',
-        h5: 'Header 5',
-        h6: 'Header 6'
-      },
-      lists: {
-        unordered: 'Unordered list',
-        ordered: 'Ordered list'
-      },
-      options: {
-        help: 'Help',
-        fullscreen: 'Full Screen',
-        codeview: 'Code View'
-      },
-      paragraph: {
-        paragraph: 'Paragraph',
-        outdent: 'Outdent',
-        indent: 'Indent',
-        left: 'Align left',
-        center: 'Align center',
-        right: 'Align right',
-        justify: 'Justify full'
-      },
-      color: {
-        recent: 'Recent Color',
-        more: 'More Color',
-        background: 'Background Color',
-        foreground: 'Foreground Color',
-        transparent: 'Transparent',
-        setTransparent: 'Set transparent',
-        reset: 'Reset',
-        resetToDefault: 'Reset to default'
-      },
-      shortcut: {
-        shortcuts: 'Keyboard shortcuts',
-        close: 'Close',
-        textFormatting: 'Text formatting',
-        action: 'Action',
-        paragraphFormatting: 'Paragraph formatting',
-        documentStyle: 'Document Style',
-        extraKeys: 'Extra keys'
-      },
-      history: {
-        undo: 'Undo',
-        redo: 'Redo'
-      },
-      specialChar: {
-        specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
-      }
-    }
-  });
-
 
   var isSupportAmd = typeof define === 'function' && define.amd;
 
@@ -909,96 +406,6 @@
     isFontInstalled: isFontInstalled,
     isW3CRangeSupport: !!document.createRange
   };
-
-  /**
-   * @class core.key
-   *
-   * Object for keycodes.
-   *
-   * @singleton
-   * @alternateClassName key
-   */
-  var key = (function () {
-    var keyMap = {
-      'BACKSPACE': 8,
-      'TAB': 9,
-      'ENTER': 13,
-      'SPACE': 32,
-
-      // Arrow
-      'LEFT': 37,
-      'UP': 38,
-      'RIGHT': 39,
-      'DOWN': 40,
-
-      // Number: 0-9
-      'NUM0': 48,
-      'NUM1': 49,
-      'NUM2': 50,
-      'NUM3': 51,
-      'NUM4': 52,
-      'NUM5': 53,
-      'NUM6': 54,
-      'NUM7': 55,
-      'NUM8': 56,
-
-      // Alphabet: a-z
-      'B': 66,
-      'E': 69,
-      'I': 73,
-      'J': 74,
-      'K': 75,
-      'L': 76,
-      'R': 82,
-      'S': 83,
-      'U': 85,
-      'V': 86,
-      'Y': 89,
-      'Z': 90,
-
-      'SLASH': 191,
-      'LEFTBRACKET': 219,
-      'BACKSLASH': 220,
-      'RIGHTBRACKET': 221
-    };
-
-    return {
-      /**
-       * @method isEdit
-       *
-       * @param {Number} keyCode
-       * @return {Boolean}
-       */
-      isEdit: function (keyCode) {
-        return list.contains([
-          keyMap.BACKSPACE,
-          keyMap.TAB,
-          keyMap.ENTER,
-          keyMap.SPACe
-        ], keyCode);
-      },
-      /**
-       * @method isMove
-       *
-       * @param {Number} keyCode
-       * @return {Boolean}
-       */
-      isMove: function (keyCode) {
-        return list.contains([
-          keyMap.LEFT,
-          keyMap.UP,
-          keyMap.RIGHT,
-          keyMap.DOWN
-        ], keyCode);
-      },
-      /**
-       * @property {Object} nameFromCode
-       * @property {String} nameFromCode.8 "BACKSPACE"
-       */
-      nameFromCode: func.invertObject(keyMap),
-      code: keyMap
-    };
-  })();
 
 
   var NBSP_CHAR = String.fromCharCode(160);
@@ -1091,6 +498,10 @@
 
       // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
       return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName.toUpperCase());
+    };
+
+    var isHeading = function (node) {
+      return node && /^H[1-7]/.test(node.nodeName.toUpperCase());
     };
 
     var isLi = makePredByNodeName('LI');
@@ -1991,6 +1402,7 @@
       isVoid: isVoid,
       isPara: isPara,
       isPurePara: isPurePara,
+      isHeading: isHeading,
       isInline: isInline,
       isBlock: func.not(isInline),
       isBodyInline: isBodyInline,
@@ -2059,6 +1471,639 @@
       posFromPlaceholder: posFromPlaceholder,
       attachEvents: attachEvents,
       detachEvents: detachEvents
+    };
+  })();
+
+
+  /**
+   * @param {jQuery} $note
+   * @param {Object} options
+   * @return {Context}
+   */
+  var Context = function ($note, options) {
+    var self = this;
+
+    var ui = $.summernote.ui;
+    this.modules = {};
+    this.buttons = {};
+    this.layoutInfo = {};
+    this.options = options;
+
+    this.initialize = function () {
+      // create layout info
+      this.layoutInfo = ui.createLayout($note, options);
+
+      // add optional buttons
+      var buttons = $.extend({}, this.options.buttons);
+      Object.keys(buttons).forEach(function (key) {
+        self.addButton(key, buttons[key]);
+      });
+
+      var modules = $.extend({}, this.options.modules, $.summernote.plugins || {});
+
+      // add module
+      Object.keys(modules).forEach(function (key) {
+        self.addModule(key, modules[key], true);
+      });
+
+      Object.keys(this.modules).forEach(function (key) {
+        self.initializeModule(key);
+      });
+
+      $note.hide();
+      return this;
+    };
+
+    this.destroy = function () {
+      Object.keys(this.modules).forEach(function (key) {
+        self.removeModule(key);
+      });
+
+      $note.removeData('summernote');
+
+      ui.removeLayout($note, this.layoutInfo);
+    };
+
+    this.code = function (html) {
+      if (html === undefined) {
+        var isActivated = this.invoke('codeview.isActivated');
+        this.invoke('codeview.sync');
+        return isActivated ? this.layoutInfo.codable.val() : this.layoutInfo.editable.html();
+      }
+
+      this.layoutInfo.editable.html(html);
+    };
+
+    this.triggerEvent = function () {
+      var namespace = list.head(arguments);
+      var args = list.tail(list.from(arguments));
+
+      var callback = this.options.callbacks[func.namespaceToCamel(namespace, 'on')];
+      if (callback) {
+        callback.apply($note[0], args);
+      }
+      $note.trigger('summernote.' + namespace, args);
+    };
+
+    this.initializeModule = function (key) {
+      var module = this.modules[key];
+      module.shouldInitialize = module.shouldInitialize || func.ok;
+      if (!module.shouldInitialize()) {
+        return;
+      }
+
+      // initialize module
+      if (module.initialize) {
+        module.initialize();
+      }
+
+      // attach events
+      if (module.events) {
+        dom.attachEvents($note, module.events);
+      }
+    };
+
+    this.addModule = function (key, ModuleClass, withoutIntialize) {
+      this.modules[key] = new ModuleClass(this);
+
+      if (!withoutIntialize) {
+        this.initializeModule(key);
+      }
+    };
+
+    this.removeModule = function (key) {
+      var module = this.modules[key];
+      if (module.shouldInitialize()) {
+        if (module.events) {
+          dom.detachEvents($note, module.events);
+        }
+
+        if (module.destroy) {
+          module.destroy();
+        }
+      }
+
+      delete this.modules[key];
+      this.modules[key] = null;
+    };
+
+    this.addButton = function (key, handler) {
+      this.buttons[key] = handler;
+    };
+
+    this.removeButton = function (key) {
+      if (this.buttons[key].destroy) {
+        this.buttons[key].destroy();
+      }
+      delete this.buttons[key];
+    };
+
+    this.createInvokeHandler = function (namespace, value) {
+      return function (event) {
+        event.preventDefault();
+        self.invoke(namespace, value || $(event.target).data('value') || $(event.currentTarget).data('value'));
+      };
+    };
+
+    this.invoke = function () {
+      var namespace = list.head(arguments);
+      var args = list.tail(list.from(arguments));
+
+      var splits = namespace.split('.');
+      var hasSeparator = splits.length > 1;
+      var moduleName = hasSeparator && list.head(splits);
+      var methodName = hasSeparator ? list.last(splits) : list.head(splits);
+
+      var module = this.modules[moduleName || 'editor'];
+      if (!moduleName && this[methodName]) {
+        return this[methodName].apply(this, args);
+      } else if (module && module[methodName] && module.shouldInitialize()) {
+        return module[methodName].apply(module, args);
+      }
+    };
+
+    return this.initialize();
+  };
+
+  $.summernote = $.summernote || {
+    lang: {}
+  };
+
+  $.fn.extend({
+    /**
+     * Summernote API
+     *
+     * @param {Object|String}
+     * @return {this}
+     */
+    summernote: function () {
+      var type = $.type(list.head(arguments));
+      var isExternalAPICalled = type === 'string';
+      var hasInitOptions = type === 'object';
+
+      var options = hasInitOptions ? list.head(arguments) : {};
+
+      options = $.extend({}, $.summernote.options, options);
+      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+
+      this.each(function (idx, note) {
+        var $note = $(note);
+        if (!$note.data('summernote')) {
+          $note.data('summernote', new Context($note, options));
+          $note.data('summernote').triggerEvent('init');
+        }
+      });
+
+      var $note = this.first();
+      if (isExternalAPICalled && $note.length) {
+        var context = $note.data('summernote');
+        return context.invoke.apply(context, list.from(arguments));
+      } else {
+        return this;
+      }
+    }
+  });
+
+
+  var Renderer = function (markup, children, options, callback) {
+    this.render = function ($parent) {
+      var $node = $(markup);
+
+      if (options && options.contents) {
+        $node.html(options.contents);
+      }
+
+      if (options && options.className) {
+        $node.addClass(options.className);
+      }
+
+      if (options && options.data) {
+        $.each(options.data, function (k, v) {
+          $node.attr('data-' + k, v);
+        });
+      }
+
+      if (options && options.click) {
+        $node.on('mousedown', options.click);
+      }
+
+      if (children) {
+        var $container = $node.find('.note-children-container');
+        children.forEach(function (child) {
+          child.render($container.length ? $container : $node);
+        });
+      }
+
+      if (callback) {
+        callback($node, options);
+      }
+
+      if (options && options.callback) {
+        options.callback($node);
+      }
+
+      if ($parent) {
+        $parent.append($node);
+      }
+
+      return $node;
+    };
+  };
+
+  var renderer = {
+    create: function (markup, callback) {
+      return function () {
+        var children = $.isArray(arguments[0]) ? arguments[0] : [];
+        var options = typeof arguments[1] === 'object' ? arguments[1] : arguments[0];
+        if (options && options.children) {
+          children = options.children;
+        }
+        return new Renderer(markup, children, options, callback);
+      };
+    }
+  };
+
+  var editor = renderer.create('<div class="note-editor note-frame panel panel-default"/>');
+  var toolbar = renderer.create('<div class="note-toolbar panel-heading"/>');
+  var editingArea = renderer.create('<div class="note-editing-area"/>');
+  var codable = renderer.create('<textarea class="note-codable"/>');
+  var editable = renderer.create('<div class="note-editable panel-body" contentEditable="true"/>');
+  var statusbar = renderer.create([
+    '<div class="note-statusbar">',
+    '  <div class="note-resizebar">',
+    '    <div class="note-icon-bar"/>',
+    '    <div class="note-icon-bar"/>',
+    '    <div class="note-icon-bar"/>',
+    '  </div>',
+    '</div>'
+  ].join(''));
+
+  var airEditor = renderer.create('<div class="note-editor"/>');
+  var airEditable = renderer.create('<div class="note-editable" contentEditable="true"/>');
+
+  var buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
+  var button = renderer.create('<button type="button" class="note-btn btn btn-default btn-sm">', function ($node, options) {
+    if (options && options.tooltip) {
+      $node.attr({
+        title: options.tooltip
+      }).tooltip({
+        container: 'body',
+        trigger: 'hover',
+        placement: 'bottom'
+      });
+    }
+  });
+
+  var dropdown = renderer.create('<div class="dropdown-menu">', function ($node, options) {
+    var markup = $.isArray(options.items) ? options.items.map(function (item) {
+      return '<li><a href="#" data-value="' + item + '">' + item + '</a></li>';
+    }).join('') : options.items;
+
+    $node.html(markup);
+  });
+
+  var dropdownCheck = renderer.create('<div class="dropdown-menu note-check">', function ($node, options) {
+    var markup = $.isArray(options.items) ? options.items.map(function (item) {
+      return '<li><a href="#" data-value="' + item + '"><i class="fa fa-check" /> ' + item + '</a></li>';
+    }).join('') : options.items;
+    $node.html(markup);
+  });
+
+  var palette = renderer.create('<div class="note-color-palette"/>', function ($node, options) {
+    var contents = [];
+    for (var row = 0, rowSize = options.colors.length; row < rowSize; row++) {
+      var eventName = options.eventName;
+      var colors = options.colors[row];
+      var buttons = [];
+      for (var col = 0, colSize = colors.length; col < colSize; col++) {
+        var color = colors[col];
+        buttons.push([
+          '<button type="button" class="note-color-btn"',
+          'style="background-color:', color, '" ',
+          'data-event="', eventName, '" ',
+          'data-value="', color, '" ',
+          'title="', color, '" ',
+          'data-toggle="button" tabindex="-1"></button>'
+        ].join(''));
+      }
+      contents.push('<div class="note-color-row">' + buttons.join('') + '</div>');
+    }
+    $node.html(contents.join(''));
+
+    $node.find('.note-color-btn').tooltip({
+      container: 'body',
+      trigger: 'hover',
+      placement: 'bottom'
+    });
+  });
+
+  var dialog = renderer.create('<div class="modal" aria-hidden="false"/>', function ($node, options) {
+    $node.html([
+      '<div class="modal-dialog">',
+      '<div class="modal-content">',
+      (options.title ?
+      '<div class="modal-header">' +
+        '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+        '<h4 class="modal-title">' + options.title + '</h4>' +
+      '</div>' : ''
+      ),
+      '<div class="modal-body">' + options.body + '</div>',
+      (options.footer ?
+      '<div class="modal-footer">' + options.footer + '</div>' : ''
+      ),
+      '</div>',
+      '</div>'
+    ].join(''));
+  });
+
+  var popover = renderer.create([
+    '<div class="note-popover popover bottom in">',
+    '  <div class="arrow"/>',
+    '  <div class="popover-content note-children-container"/>',
+    '</div>'
+  ].join(''));
+
+  var ui = {
+    editor: editor,
+    toolbar: toolbar,
+    editingArea: editingArea,
+    codable: codable,
+    editable: editable,
+    statusbar: statusbar,
+    airEditor: airEditor,
+    airEditable: airEditable,
+    buttonGroup: buttonGroup,
+    button: button,
+    dropdown: dropdown,
+    dropdownCheck: dropdownCheck,
+    palette: palette,
+    dialog: dialog,
+    popover: popover,
+
+    toggleBtn: function ($btn, isEnable) {
+      $btn.toggleClass('disabled', !isEnable);
+      $btn.attr('disabled', !isEnable);
+    },
+
+    toggleBtnActive: function ($btn, isActive) {
+      $btn.toggleClass('active', isActive);
+    },
+
+    onDialogShown: function ($dialog, handler) {
+      $dialog.one('shown.bs.modal', handler);
+    },
+
+    onDialogHidden: function ($dialog, handler) {
+      $dialog.one('hidden.bs.modal', handler);
+    },
+
+    showDialog: function ($dialog) {
+      $dialog.modal('show');
+    },
+
+    hideDialog: function ($dialog) {
+      $dialog.modal('hide');
+    },
+
+    createLayout: function ($note, options) {
+      var $editor = (options.airMode ? ui.airEditor([
+        ui.editingArea([
+          ui.airEditable()
+        ])
+      ]) : ui.editor([
+        ui.toolbar(),
+        ui.editingArea([
+          ui.codable(),
+          ui.editable()
+        ]),
+        ui.statusbar()
+      ])).render();
+
+      $editor.insertAfter($note);
+
+      return {
+        note: $note,
+        editor: $editor,
+        toolbar: $editor.find('.note-toolbar'),
+        editingArea: $editor.find('.note-editing-area'),
+        editable: $editor.find('.note-editable'),
+        codable: $editor.find('.note-codable'),
+        statusbar: $editor.find('.note-statusbar')
+      };
+    },
+
+    removeLayout: function ($note, layoutInfo) {
+      $note.html(layoutInfo.editable.html());
+      layoutInfo.editor.remove();
+      $note.show();
+    }
+  };
+
+  $.extend($.summernote.lang, {
+    'en-US': {
+      font: {
+        bold: 'Bold',
+        italic: 'Italic',
+        underline: 'Underline',
+        clear: 'Remove Font Style',
+        height: 'Line Height',
+        name: 'Font Family',
+        strikethrough: 'Strikethrough',
+        subscript: 'Subscript',
+        superscript: 'Superscript',
+        size: 'Font Size'
+      },
+      image: {
+        image: 'Picture',
+        insert: 'Insert Image',
+        resizeFull: 'Resize Full',
+        resizeHalf: 'Resize Half',
+        resizeQuarter: 'Resize Quarter',
+        floatLeft: 'Float Left',
+        floatRight: 'Float Right',
+        floatNone: 'Float None',
+        shapeRounded: 'Shape: Rounded',
+        shapeCircle: 'Shape: Circle',
+        shapeThumbnail: 'Shape: Thumbnail',
+        shapeNone: 'Shape: None',
+        dragImageHere: 'Drag image or text here',
+        dropImage: 'Drop image or Text',
+        selectFromFiles: 'Select from files',
+        maximumFileSize: 'Maximum file size',
+        maximumFileSizeError: 'Maximum file size exceeded.',
+        url: 'Image URL',
+        remove: 'Remove Image'
+      },
+      video: {
+        video: 'Video',
+        videoLink: 'Video Link',
+        insert: 'Insert Video',
+        url: 'Video URL?',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
+      },
+      link: {
+        link: 'Link',
+        insert: 'Insert Link',
+        unlink: 'Unlink',
+        edit: 'Edit',
+        textToDisplay: 'Text to display',
+        url: 'To what URL should this link go?',
+        openInNewWindow: 'Open in new window'
+      },
+      table: {
+        table: 'Table'
+      },
+      hr: {
+        insert: 'Insert Horizontal Rule'
+      },
+      style: {
+        style: 'Style',
+        normal: 'Normal',
+        blockquote: 'Quote',
+        pre: 'Code',
+        h1: 'Header 1',
+        h2: 'Header 2',
+        h3: 'Header 3',
+        h4: 'Header 4',
+        h5: 'Header 5',
+        h6: 'Header 6'
+      },
+      lists: {
+        unordered: 'Unordered list',
+        ordered: 'Ordered list'
+      },
+      options: {
+        help: 'Help',
+        fullscreen: 'Full Screen',
+        codeview: 'Code View'
+      },
+      paragraph: {
+        paragraph: 'Paragraph',
+        outdent: 'Outdent',
+        indent: 'Indent',
+        left: 'Align left',
+        center: 'Align center',
+        right: 'Align right',
+        justify: 'Justify full'
+      },
+      color: {
+        recent: 'Recent Color',
+        more: 'More Color',
+        background: 'Background Color',
+        foreground: 'Foreground Color',
+        transparent: 'Transparent',
+        setTransparent: 'Set transparent',
+        reset: 'Reset',
+        resetToDefault: 'Reset to default'
+      },
+      shortcut: {
+        shortcuts: 'Keyboard shortcuts',
+        close: 'Close',
+        textFormatting: 'Text formatting',
+        action: 'Action',
+        paragraphFormatting: 'Paragraph formatting',
+        documentStyle: 'Document Style',
+        extraKeys: 'Extra keys'
+      },
+      history: {
+        undo: 'Undo',
+        redo: 'Redo'
+      },
+      specialChar: {
+        specialChar: 'SPECIAL CHARACTERS',
+        select: 'Select Special characters'
+      }
+    }
+  });
+
+
+  /**
+   * @class core.key
+   *
+   * Object for keycodes.
+   *
+   * @singleton
+   * @alternateClassName key
+   */
+  var key = (function () {
+    var keyMap = {
+      'BACKSPACE': 8,
+      'TAB': 9,
+      'ENTER': 13,
+      'SPACE': 32,
+
+      // Arrow
+      'LEFT': 37,
+      'UP': 38,
+      'RIGHT': 39,
+      'DOWN': 40,
+
+      // Number: 0-9
+      'NUM0': 48,
+      'NUM1': 49,
+      'NUM2': 50,
+      'NUM3': 51,
+      'NUM4': 52,
+      'NUM5': 53,
+      'NUM6': 54,
+      'NUM7': 55,
+      'NUM8': 56,
+
+      // Alphabet: a-z
+      'B': 66,
+      'E': 69,
+      'I': 73,
+      'J': 74,
+      'K': 75,
+      'L': 76,
+      'R': 82,
+      'S': 83,
+      'U': 85,
+      'V': 86,
+      'Y': 89,
+      'Z': 90,
+
+      'SLASH': 191,
+      'LEFTBRACKET': 219,
+      'BACKSLASH': 220,
+      'RIGHTBRACKET': 221
+    };
+
+    return {
+      /**
+       * @method isEdit
+       *
+       * @param {Number} keyCode
+       * @return {Boolean}
+       */
+      isEdit: function (keyCode) {
+        return list.contains([
+          keyMap.BACKSPACE,
+          keyMap.TAB,
+          keyMap.ENTER,
+          keyMap.SPACe
+        ], keyCode);
+      },
+      /**
+       * @method isMove
+       *
+       * @param {Number} keyCode
+       * @return {Boolean}
+       */
+      isMove: function (keyCode) {
+        return list.contains([
+          keyMap.LEFT,
+          keyMap.UP,
+          keyMap.RIGHT,
+          keyMap.DOWN
+        ], keyCode);
+      },
+      /**
+       * @property {Object} nameFromCode
+       * @property {String} nameFromCode.8 "BACKSPACE"
+       */
+      nameFromCode: func.invertObject(keyMap),
+      code: keyMap
     };
   })();
 
@@ -3448,6 +3493,11 @@
           $.each(emptyAnchors, function (idx, anchor) {
             dom.remove(anchor);
           });
+
+          // replace empty heading with P tag
+          if (dom.isHeading(nextPara) && dom.isEmpty(nextPara)) {
+            nextPara = dom.replace(nextPara, 'p');
+          }
         }
       // no paragraph: insert empty paragraph
       } else {
@@ -3461,9 +3511,7 @@
       }
 
       range.create(nextPara, 0).normalize().select();
-
     };
-
   };
 
   /**
@@ -3865,6 +3913,21 @@
     });
 
     /**
+     * return selected plain text
+     * @return {String} text
+     */
+    this.getSelectedText = function () {
+      var rng = this.createRange();
+
+      // if range on anchor, expand range with anchor
+      if (rng.isOnAnchor()) {
+        rng = range.createFromNode(dom.ancestor(rng.sc, dom.isAnchor));
+      }
+
+      return rng.toString();
+    };
+
+    /**
      * paste HTML
      * @param {String} markup
      */
@@ -4153,7 +4216,11 @@
      * set focus
      */
     this.focus = function () {
-      $editable.focus();
+      // [workaround] Screen will move when page is scolled in IE.
+      //  - do focus when not focused
+      if (!$editable.is(':focus')) {
+        $editable.focus();
+      }
 
       // [workaround] for firefox bug http://goo.gl/lVfAaI
       if (agent.isFF) {
@@ -4540,7 +4607,6 @@
 
     var $document = $(document);
 
-    var $note = context.layoutInfo.note;
     var $editingArea = context.layoutInfo.editingArea;
     var options = context.options;
 
@@ -4568,8 +4634,6 @@
         '</div>',
         '</div>'
       ].join('')).prependTo($editingArea);
-
-      dom.attachEvents($note, this.events);
 
       this.$handle.on('mousedown', function (event) {
         if (dom.isControlSizing(event.target)) {
@@ -4602,7 +4666,6 @@
 
     this.destroy = function () {
       this.$handle.remove();
-      dom.detachEvents($note, this.events);
     };
 
     this.update = function (target) {
@@ -4643,6 +4706,63 @@
     this.hide = function () {
       context.invoke('editor.clearTarget');
       this.$handle.children().hide();
+    };
+  };
+
+  var AutoLink = function (context) {
+    var self = this;
+
+    var linkPattern = /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+-]+@)(.+)$/i;
+
+    this.events = {
+      'summernote.keyup': function (we, e) {
+        self.handleKeyup(e);
+      },
+      'summernote.keydown': function (we, e) {
+        self.handleKeydown(e);
+      }
+    };
+
+    this.initialize = function () {
+      this.lastWordRange = null;
+    };
+
+    this.destroy = function () {
+      this.lastWordRange = null;
+    };
+
+    this.replace = function () {
+      if (!this.lastWordRange) {
+        return;
+      }
+
+      var keyword = this.lastWordRange.toString();
+
+      if (linkPattern.test(keyword)) {
+        var node = this.nodeFromKeyword(keyword);
+
+        this.lastWordRange.insertNode(node);
+        this.lastWordRange = null;
+        context.invoke('editor.focus');
+      }
+
+    };
+
+    this.nodeFromKeyword = function (keyword) {
+      return $('<a />').html(keyword).attr('href', keyword)[0];
+    };
+
+    this.handleKeydown = function (e) {
+      if (list.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
+        var wordRange = context.invoke('editor.createRange').getWordRange();
+        this.lastWordRange = wordRange;
+      }
+    };
+
+    this.handleKeyup = function (e) {
+      if (list.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
+        this.replace();
+      }
     };
   };
 
@@ -4960,7 +5080,7 @@
             $catcher.css({
               width: options.insertTableMaxSize.col + 'em',
               height: options.insertTableMaxSize.row + 'em'
-            }).click(context.createInvokeHandler('editor.insertTable'))
+            }).mousedown(context.createInvokeHandler('editor.insertTable'))
               .on('mousemove', self.tableMoveHandler);
           }
         }).render();
@@ -5021,14 +5141,6 @@
           contents: '<i class="fa fa-question"/>',
           tooltip: lang.options.help,
           click: context.createInvokeHandler('helpDialog.show')
-        }).render();
-      });
-
-      context.addButton('specialchar', function () {
-        return ui.button({
-          contents: '<i class="fa fa-font fa-flip-vertical"/>',
-          tooltip: lang.specialChar.specialChar,
-          click: context.createInvokeHandler('specialCharDialog.show')
         }).render();
       });
     };
@@ -5246,11 +5358,11 @@
     var $toolbar = context.layoutInfo.toolbar;
     var options = context.options;
 
-    this.initialize = function () {
-      if (options.airMode) {
-        return;
-      }
+    this.shouldInitialize = function () {
+      return !options.airMode;
+    };
 
+    this.initialize = function () {
       options.toolbar = options.toolbar || [];
 
       if (!options.toolbar.length) {
@@ -5432,13 +5544,16 @@
     var self = this;
     var ui = $.summernote.ui;
 
-    var $note = context.layoutInfo.note;
     var options = context.options;
 
     this.events = {
       'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function () {
         self.update();
       }
+    };
+
+    this.shouldInitailize = function () {
+      return !list.isEmpty(options.popover.link);
     };
 
     this.initialize = function () {
@@ -5452,13 +5567,10 @@
       var $content = this.$popover.find('.popover-content');
 
       context.invoke('buttons.build', $content, options.popover.link);
-
-      dom.attachEvents($note, this.events);
     };
 
     this.destroy = function () {
       this.$popover.remove();
-      dom.detachEvents($note, this.events);
     };
 
     this.update = function () {
@@ -5560,6 +5672,8 @@
     this.show = function () {
       context.invoke('editor.saveRange');
       this.showImageDialog().then(function (data) {
+        // [workaround] hide dialog before restore range for IE range focus
+        ui.hideDialog(self.$dialog);
         context.invoke('editor.restoreRange');
 
         if (typeof data === 'string') {
@@ -5591,7 +5705,6 @@
           $imageInput.replaceWith($imageInput.clone()
             .on('change', function () {
               deferred.resolve(this.files || this.value);
-              ui.hideDialog(self.$dialog);
             })
             .val('')
           );
@@ -5600,18 +5713,10 @@
             event.preventDefault();
 
             deferred.resolve($imageUrl.val());
-            ui.hideDialog(self.$dialog);
           });
 
-          $imageUrl.on('keyup paste', function (event) {
-            var url;
-            
-            if (event.type === 'paste') {
-              url = event.originalEvent.clipboardData.getData('text');
-            } else {
-              url = $imageUrl.val();
-            }
-            
+          $imageUrl.on('keyup paste', function () {
+            var url = $imageUrl.val();
             ui.toggleBtn($imageBtn, url);
           }).val('').trigger('focus');
           self.bindEnterKey($imageUrl, $imageBtn);
@@ -5636,7 +5741,6 @@
     var self = this;
     var ui = $.summernote.ui;
 
-    var $note = context.layoutInfo.note;
     var options = context.options;
 
     this.events = {
@@ -5648,6 +5752,10 @@
       }
     };
 
+    this.shouldInitialize = function () {
+      return !list.isEmpty(options.popover.image);
+    };
+
     this.initialize = function () {
       this.$popover = ui.popover({
         className: 'note-image-popover'
@@ -5655,12 +5763,10 @@
       var $content = this.$popover.find('.popover-content');
 
       context.invoke('buttons.build', $content, options.popover.image);
-      dom.attachEvents($note, this.events);
     };
 
     this.destroy = function () {
       this.$popover.remove();
-      dom.detachEvents($note, this.events);
     };
 
     this.update = function (target) {
@@ -5678,6 +5784,183 @@
 
     this.hide = function () {
       this.$popover.hide();
+    };
+  };
+
+  var VideoDialog = function (context) {
+    var self = this;
+    var ui = $.summernote.ui;
+
+    var $editor = context.layoutInfo.editor;
+    var options = context.options;
+    var lang = options.langInfo;
+
+    this.initialize = function () {
+      var $container = options.dialogsInBody ? $(document.body) : $editor;
+
+      var body = '<div class="form-group row-fluid">' +
+          '<label>' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
+          '<input class="note-video-url form-control span12" type="text" />' +
+          '</div>';
+      var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
+
+      this.$dialog = ui.dialog({
+        title: lang.video.insert,
+        body: body,
+        footer: footer
+      }).render().appendTo($container);
+    };
+
+    this.destroy = function () {
+      ui.hideDialog(this.$dialog);
+      this.$dialog.remove();
+    };
+
+    this.bindEnterKey = function ($input, $btn) {
+      $input.on('keypress', function (event) {
+        if (event.keyCode === key.code.ENTER) {
+          $btn.trigger('click');
+        }
+      });
+    };
+
+    this.createVideoNode = function (url) {
+      // video url patterns(youtube, instagram, vimeo, dailymotion, youku, mp4, ogg, webm)
+      var ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+      var ytMatch = url.match(ytRegExp);
+
+      var igRegExp = /\/\/instagram.com\/p\/(.[a-zA-Z0-9_-]*)/;
+      var igMatch = url.match(igRegExp);
+
+      var vRegExp = /\/\/vine.co\/v\/(.[a-zA-Z0-9]*)/;
+      var vMatch = url.match(vRegExp);
+
+      var vimRegExp = /\/\/(player.)?vimeo.com\/([a-z]*\/)*([0-9]{6,11})[?]?.*/;
+      var vimMatch = url.match(vimRegExp);
+
+      var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
+      var dmMatch = url.match(dmRegExp);
+
+      var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
+      var youkuMatch = url.match(youkuRegExp);
+
+      var mp4RegExp = /^.+.(mp4|m4v)$/;
+      var mp4Match = url.match(mp4RegExp);
+
+      var oggRegExp = /^.+.(ogg|ogv)$/;
+      var oggMatch = url.match(oggRegExp);
+
+      var webmRegExp = /^.+.(webm)$/;
+      var webmMatch = url.match(webmRegExp);
+
+      var $video;
+      if (ytMatch && ytMatch[1].length === 11) {
+        var youtubeId = ytMatch[1];
+        $video = $('<iframe>')
+            .attr('frameborder', 0)
+            .attr('src', '//www.youtube.com/embed/' + youtubeId)
+            .attr('width', '640').attr('height', '360');
+      } else if (igMatch && igMatch[0].length) {
+        $video = $('<iframe>')
+            .attr('frameborder', 0)
+            .attr('src', igMatch[0] + '/embed/')
+            .attr('width', '612').attr('height', '710')
+            .attr('scrolling', 'no')
+            .attr('allowtransparency', 'true');
+      } else if (vMatch && vMatch[0].length) {
+        $video = $('<iframe>')
+            .attr('frameborder', 0)
+            .attr('src', vMatch[0] + '/embed/simple')
+            .attr('width', '600').attr('height', '600')
+            .attr('class', 'vine-embed');
+      } else if (vimMatch && vimMatch[3].length) {
+        $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+            .attr('frameborder', 0)
+            .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
+            .attr('width', '640').attr('height', '360');
+      } else if (dmMatch && dmMatch[2].length) {
+        $video = $('<iframe>')
+            .attr('frameborder', 0)
+            .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
+            .attr('width', '640').attr('height', '360');
+      } else if (youkuMatch && youkuMatch[1].length) {
+        $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+            .attr('frameborder', 0)
+            .attr('height', '498')
+            .attr('width', '510')
+            .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
+      } else if (mp4Match || oggMatch || webmMatch) {
+        $video = $('<video controls>')
+            .attr('src', url)
+            .attr('width', '640').attr('height', '360');
+      } else {
+        // this is not a known video link. Now what, Cat? Now what?
+        return false;
+      }
+
+      $video.addClass('note-video-clip');
+
+      return $video[0];
+    };
+
+
+    this.show = function () {
+      var text = context.invoke('editor.getSelectedText');
+      context.invoke('editor.saveRange');
+      this.showVideoDialog(text).then(function (url) {
+        // [workaround] hide dialog before restore range for IE range focus
+        ui.hideDialog(self.$dialog);
+        context.invoke('editor.restoreRange');
+
+        // build node
+        var $node = self.createVideoNode(url);
+
+        if ($node) {
+          // insert video node
+          context.invoke('editor.insertNode', $node);
+        }
+      }).fail(function () {
+        context.invoke('editor.restoreRange');
+      });
+    };
+
+    /**
+     * show image dialog
+     *
+     * @param {jQuery} $dialog
+     * @return {Promise}
+     */
+    this.showVideoDialog = function (text) {
+      return $.Deferred(function (deferred) {
+        var $videoUrl = self.$dialog.find('.note-video-url'),
+            $videoBtn = self.$dialog.find('.note-video-btn');
+
+        ui.onDialogShown(self.$dialog, function () {
+
+          $videoUrl.val(text).on('input', function () {
+            ui.toggleBtn($videoBtn, $videoUrl.val());
+          }).trigger('focus');
+
+          $videoBtn.click(function (event) {
+            event.preventDefault();
+
+            deferred.resolve($videoUrl.val());
+          });
+
+          self.bindEnterKey($videoUrl, $videoBtn);
+        });
+
+        ui.onDialogHidden(self.$dialog, function () {
+          $videoUrl.off('input');
+          $videoBtn.off('click');
+
+          if (deferred.state() === 'pending') {
+            deferred.reject();
+          }
+        });
+
+        ui.showDialog(self.$dialog);
+      });
     };
   };
 
@@ -5737,7 +6020,6 @@
     var self = this;
     var ui = $.summernote.ui;
 
-    var $note = context.layoutInfo.note;
     var $editingArea = context.layoutInfo.editingArea;
     var options = context.options;
 
@@ -5757,27 +6039,21 @@
       }
     };
 
-    this.initialize = function () {
-      if (!options.airMode) {
-        return;
-      }
+    this.shouldInitialize = function () {
+      return options.airMode && !list.isEmpty(options.popover.air);
+    };
 
+    this.initialize = function () {
       this.$popover = ui.popover({
         className: 'note-air-popover'
       }).render().appendTo('body');
       var $content = this.$popover.find('.popover-content');
 
       context.invoke('buttons.build', $content, options.popover.air);
-      dom.attachEvents($note, this.events);
     };
 
     this.destroy = function () {
-      if (!options.airMode) {
-        return;
-      }
-
       this.$popover.remove();
-      dom.detachEvents($note, this.events);
     };
 
     this.update = function () {
@@ -5806,7 +6082,6 @@
     var self = this;
     var ui = $.summernote.ui;
 
-    var $note = context.layoutInfo.note;
     var hint = context.options.hint || [];
     var hints = $.isArray(hint) ? hint : [hint];
 
@@ -5819,19 +6094,17 @@
       }
     };
 
-    this.initialize = function () {
-      if (!hints.length) {
-        return;
-      }
+    this.shouldInitialize = function () {
+      return hints.length > 0;
+    };
 
+    this.initialize = function () {
       this.lastWordRange = null;
       this.$popover = ui.popover({
         className: 'note-hint-popover'
       }).render().appendTo('body');
 
       this.$content = this.$popover.find('.popover-content');
-
-      dom.attachEvents($note, this.events);
 
       this.$content.on('click', '.note-hint-item', function () {
         self.$content.find('.active').removeClass('active');
@@ -5841,12 +6114,7 @@
     };
 
     this.destroy = function () {
-      if (!hints.length) {
-        return;
-      }
-
       this.$popover.remove();
-      dom.detachEvents($note, this.events);
     };
 
     this.selectItem = function ($item) {
@@ -6016,6 +6284,8 @@
     version: '0.7.0',
     ui: ui,
 
+    plugins: {},
+
     options: {
       modules: {
         'editor': Editor,
@@ -6025,12 +6295,14 @@
         'statusbar': Statusbar,
         'fullscreen': Fullscreen,
         'handle': Handle,
+        'autoLink': AutoLink,
         'buttons' : Buttons,
         'toolbar': Toolbar,
         'linkDialog': LinkDialog,
         'linkPopover': LinkPopover,
         'imageDialog': ImageDialog,
         'imagePopover': ImagePopover,
+        'videoDialog': VideoDialog,
         'helpDialog': HelpDialog,
         'airPopover': AirPopover,
         'hintPopover': HintPopover
@@ -6048,7 +6320,7 @@
         ['color', ['color']],
         ['para', ['ul', 'ol', 'paragraph']],
         ['table', ['table']],
-        ['insert', ['link', 'picture']],
+        ['insert', ['link', 'picture', 'video']],
         ['view', ['fullscreen', 'codeview', 'help']]
       ],
 

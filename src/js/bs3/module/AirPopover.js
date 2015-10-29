@@ -7,7 +7,6 @@ define([
     var self = this;
     var ui = $.summernote.ui;
 
-    var $note = context.layoutInfo.note;
     var $editingArea = context.layoutInfo.editingArea;
     var options = context.options;
 
@@ -27,27 +26,21 @@ define([
       }
     };
 
-    this.initialize = function () {
-      if (!options.airMode || list.isEmpty(options.popover.air)) {
-        return;
-      }
+    this.shouldInitialize = function () {
+      return options.airMode && !list.isEmpty(options.popover.air);
+    };
 
+    this.initialize = function () {
       this.$popover = ui.popover({
         className: 'note-air-popover'
       }).render().appendTo('body');
       var $content = this.$popover.find('.popover-content');
 
       context.invoke('buttons.build', $content, options.popover.air);
-      dom.attachEvents($note, this.events);
     };
 
     this.destroy = function () {
-      if (!options.airMode || list.isEmpty(options.popover.air)) {
-        return;
-      }
-
       this.$popover.remove();
-      dom.detachEvents($note, this.events);
     };
 
     this.update = function () {

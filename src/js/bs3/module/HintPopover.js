@@ -9,7 +9,6 @@ define([
     var self = this;
     var ui = $.summernote.ui;
 
-    var $note = context.layoutInfo.note;
     var hint = context.options.hint || [];
     var hints = $.isArray(hint) ? hint : [hint];
 
@@ -22,19 +21,17 @@ define([
       }
     };
 
-    this.initialize = function () {
-      if (!hints.length) {
-        return;
-      }
+    this.shouldInitialize = function () {
+      return hints.length > 0;
+    };
 
+    this.initialize = function () {
       this.lastWordRange = null;
       this.$popover = ui.popover({
         className: 'note-hint-popover'
       }).render().appendTo('body');
 
       this.$content = this.$popover.find('.popover-content');
-
-      dom.attachEvents($note, this.events);
 
       this.$content.on('click', '.note-hint-item', function () {
         self.$content.find('.active').removeClass('active');
@@ -44,12 +41,7 @@ define([
     };
 
     this.destroy = function () {
-      if (!hints.length) {
-        return;
-      }
-
       this.$popover.remove();
-      dom.detachEvents($note, this.events);
     };
 
     this.selectItem = function ($item) {

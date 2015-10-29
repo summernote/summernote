@@ -1,8 +1,6 @@
 define([
-  'summernote/base/core/key',
-  'summernote/base/core/range',
-  'summernote/base/core/dom'
-], function (key, range, dom) {
+  'summernote/base/core/key'
+], function (key) {
   var VideoDialog = function (context) {
     var self = this;
     var ui = $.summernote.ui;
@@ -10,18 +8,6 @@ define([
     var $editor = context.layoutInfo.editor;
     var options = context.options;
     var lang = options.langInfo;
-
-    this.getTextOnRange = function () {
-      var rng = context.invoke('editor.createRange');
-
-      // if range on anchor, expand range with anchor
-      if (rng.isOnAnchor()) {
-        var anchor = dom.ancestor(rng.sc, dom.isAnchor);
-        rng = range.createFromNode(anchor);
-      }
-
-      return rng.toString();
-    };
 
     this.initialize = function () {
       var $container = options.dialogsInBody ? $(document.body) : $editor;
@@ -133,7 +119,7 @@ define([
 
 
     this.show = function () {
-      var text = this.getTextOnRange();
+      var text = context.invoke('editor.getSelectedText');
       context.invoke('editor.saveRange');
       this.showVideoDialog(text).then(function (url) {
         // [workaround] hide dialog before restore range for IE range focus

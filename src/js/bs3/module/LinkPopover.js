@@ -7,7 +7,6 @@ define([
     var self = this;
     var ui = $.summernote.ui;
 
-    var $note = context.layoutInfo.note;
     var options = context.options;
 
     this.events = {
@@ -16,11 +15,11 @@ define([
       }
     };
 
-    this.initialize = function () {
-      if (list.isEmpty(options.popover.link)) {
-        return;
-      }
+    this.shouldInitailize = function () {
+      return !list.isEmpty(options.popover.link);
+    };
 
+    this.initialize = function () {
       this.$popover = ui.popover({
         className: 'note-link-popover',
         callback: function ($node) {
@@ -31,17 +30,10 @@ define([
       var $content = this.$popover.find('.popover-content');
 
       context.invoke('buttons.build', $content, options.popover.link);
-
-      dom.attachEvents($note, this.events);
     };
 
     this.destroy = function () {
-      if (list.isEmpty(options.popover.link)) {
-        return;
-      }
-
       this.$popover.remove();
-      dom.detachEvents($note, this.events);
     };
 
     this.update = function () {

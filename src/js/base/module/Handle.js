@@ -6,7 +6,6 @@ define([
 
     var $document = $(document);
 
-    var $note = context.layoutInfo.note;
     var $editingArea = context.layoutInfo.editingArea;
     var options = context.options;
 
@@ -34,8 +33,6 @@ define([
         '</div>',
         '</div>'
       ].join('')).prependTo($editingArea);
-
-      dom.attachEvents($note, this.events);
 
       this.$handle.on('mousedown', function (event) {
         if (dom.isControlSizing(event.target)) {
@@ -68,7 +65,6 @@ define([
 
     this.destroy = function () {
       this.$handle.remove();
-      dom.detachEvents($note, this.events);
     };
 
     this.update = function (target) {

@@ -24,27 +24,22 @@
   <link rel="stylesheet" href="../dist/summernote.css">
   <script type="text/javascript" src="../dist/summernote.js"></script>
   <script type="text/javascript" src="../lang/summernote-ko-KR.js"></script>
-  <script type="text/javascript" src="../plugin/summernote-ext-hello.js"></script>
+  <script type="text/javascript" src="../plugin/hello/summernote-ext-hello.js"></script>
 
   <script type="text/javascript">
-    $(document).ready(function() {
+    $(function() {
       $('.summernote').summernote({
         height: 200,
         tabsize: 2,
         toolbar: [
   		    ['style', ['bold', 'italic', 'underline', 'clear']],
-  		    ['color', ['color']],
-  		    ['para', ['ul', 'ol', 'paragraph']],
-  		    ['height', ['height']],
-  		    ['table', ['table']],
-  		    ['insert', ['hello', 'helloImage']],
-  		    ['insert2', ['helloDropdown']],
+  		    ['insert', ['hello']]
   		  ]
       });
     });
   </script>
 </head>
 <body>
-<textarea class="summernote"><p>Seasons <b>coming up</b></p></textarea>
+<textarea class="summernote">Seasons coming up</textarea>
 </body>
 </html>
