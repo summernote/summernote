@@ -18,6 +18,9 @@ define([
       },
       'summernote.keydown' : function (we, e) {
         self.handleKeydown(e);
+      },
+      'summernote.dialog.shown': function () {
+        self.hide();
       }
     };
 

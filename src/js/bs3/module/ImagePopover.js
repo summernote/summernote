@@ -15,6 +15,9 @@ define([
       },
       'summernote.scroll': function () {
         self.update();
+      },
+      'summernote.dialog.shown': function () {
+        self.hide();
       }
     };
 
