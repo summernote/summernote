@@ -107,6 +107,8 @@ define([
             $imageBtn = self.$dialog.find('.note-image-btn');
 
         ui.onDialogShown(self.$dialog, function () {
+          context.triggerEvent('dialog.shown');
+
           // Cloning imageInput to clear element.
           $imageInput.replaceWith($imageInput.clone()
             .on('change', function () {

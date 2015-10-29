@@ -150,6 +150,7 @@ define([
             $videoBtn = self.$dialog.find('.note-video-btn');
 
         ui.onDialogShown(self.$dialog, function () {
+          context.triggerEvent('dialog.shown');
 
           $videoUrl.val(text).on('input', function () {
             ui.toggleBtn($videoBtn, $videoUrl.val());

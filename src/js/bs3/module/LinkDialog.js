@@ -63,6 +63,7 @@ define([
 
         ui.onDialogShown(self.$dialog, function () {
           context.triggerEvent('dialog.shown');
+
           $linkText.val(linkInfo.text);
 
           $linkText.on('input', function () {

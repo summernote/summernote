@@ -37,6 +37,7 @@ define([], function () {
     this.showHelpDialog = function () {
       return $.Deferred(function (deferred) {
         ui.onDialogHidden(self.$dialog, function () {
+          context.triggerEvent('dialog.shown');
           deferred.resolve();
         });
         ui.showDialog(self.$dialog);
