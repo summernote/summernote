@@ -12,7 +12,7 @@
   }
 }(function ($) {
   $.extend($.summernote.plugins, {
-    'specialCharacter': function (context) {
+    'specialchars': function (context) {
       var self = this;
       var ui = $.summernote.ui;
 
