@@ -12,6 +12,9 @@ define([
     this.events = {
       'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function () {
         self.update();
+      },
+      'summernote.dialog.shown': function () {
+        self.hide();
       }
     };
 
