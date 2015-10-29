@@ -8,7 +8,7 @@ define(function () {
 
     this.shouldInitialize = function () {
       return !options.airMode;
-    }
+    };
 
     this.initialize = function () {
       options.toolbar = options.toolbar || [];

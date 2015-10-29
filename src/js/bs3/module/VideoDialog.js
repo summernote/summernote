@@ -1,5 +1,5 @@
 define([
-  'summernote/base/core/key',
+  'summernote/base/core/key'
 ], function (key) {
   var VideoDialog = function (context) {
     var self = this;
