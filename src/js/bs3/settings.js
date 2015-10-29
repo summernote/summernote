@@ -8,19 +8,21 @@ define([
   'summernote/base/module/Statusbar',
   'summernote/base/module/Fullscreen',
   'summernote/base/module/Handle',
+  'summernote/base/module/AutoLink',
   'summernote/bs3/module/Buttons',
   'summernote/bs3/module/Toolbar',
   'summernote/bs3/module/LinkDialog',
   'summernote/bs3/module/LinkPopover',
   'summernote/bs3/module/ImageDialog',
   'summernote/bs3/module/ImagePopover',
+  'summernote/bs3/module/VideoDialog',
   'summernote/bs3/module/HelpDialog',
   'summernote/bs3/module/AirPopover',
   'summernote/bs3/module/HintPopover'
 ], function (
   ui, lang,
-  Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle,
-  Buttons, Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover, HelpDialog, AirPopover, HintPopover
+  Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle, AutoLink,
+  Buttons, Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover, VideoDialog, HelpDialog, AirPopover, HintPopover
 ) {
 
   $.summernote = $.extend($.summernote, {
@@ -36,12 +38,14 @@ define([
         'statusbar': Statusbar,
         'fullscreen': Fullscreen,
         'handle': Handle,
+        'autoLink': AutoLink,
         'buttons' : Buttons,
         'toolbar': Toolbar,
         'linkDialog': LinkDialog,
         'linkPopover': LinkPopover,
         'imageDialog': ImageDialog,
         'imagePopover': ImagePopover,
+        'videoDialog': VideoDialog,
         'helpDialog': HelpDialog,
         'airPopover': AirPopover,
         'hintPopover': HintPopover
@@ -59,7 +63,7 @@ define([
         ['color', ['color']],
         ['para', ['ul', 'ol', 'paragraph']],
         ['table', ['table']],
-        ['insert', ['link', 'picture']],
+        ['insert', ['link', 'picture', 'video']],
         ['view', ['fullscreen', 'codeview', 'help']]
       ],
 
