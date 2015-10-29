@@ -362,6 +362,21 @@ define([
     });
 
     /**
+     * return selected plain text
+     * @return {String} text
+     */
+    this.getSelectedText = function () {
+      var rng = this.createRange();
+
+      // if range on anchor, expand range with anchor
+      if (rng.isOnAnchor()) {
+        rng = range.createFromNode(dom.ancestor(rng.sc, dom.isAnchor));
+      }
+
+      return rng.toString();
+    };
+
+    /**
      * paste HTML
      * @param {String} markup
      */

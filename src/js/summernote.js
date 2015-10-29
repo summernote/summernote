@@ -24,13 +24,14 @@ define([
       this.layoutInfo = ui.createLayout($note, options);
 
       // add optional buttons
-      var buttons = $.extend({}, this.options.buttons, $.summernote.buttons || {});
+      var buttons = $.extend({}, this.options.buttons);
       Object.keys(buttons).forEach(function (key) {
         self.addButton(key, buttons[key]);
       });
 
+      var modules = $.extend({}, this.options.modules, $.summernote.plugins || {});
+
       // add module
-      var modules = $.extend({}, this.options.modules, $.summernote.modules || {});
       Object.keys(modules).forEach(function (key) {
         self.addModule(key, modules[key], true);
       });

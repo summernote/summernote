@@ -381,14 +381,6 @@ define([
           click: context.createInvokeHandler('helpDialog.show')
         }).render();
       });
-
-      context.addButton('specialchar', function () {
-        return ui.button({
-          contents: '<i class="fa fa-font fa-flip-vertical"/>',
-          tooltip: lang.specialChar.specialChar,
-          click: context.createInvokeHandler('specialCharDialog.show')
-        }).render();
-      });
     };
 
     /**

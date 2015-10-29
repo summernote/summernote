@@ -3,7 +3,8 @@ require.config({
   paths: {
     jquery: '//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery',
     bootstrap: '//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap',
-    lang: '../../lang/summernote-ko-KR'
+    lang: '../../lang/summernote-ko-KR',
+    specialCharacter: '../../plugin/specialCharacter/SpecialCharacter'
   },
   shim: {
     bootstrap: ['jquery'],
@@ -37,6 +38,8 @@ require([
     case 'bs3':
       promise = requireByPromise(['bootstrap', 'summernote/bs3/settings']).then(function () {
         return requireByPromise(['lang']);
+      }).then(function () {
+        return requireByPromise(['specialCharacter']);
       });
       break;
   }
@@ -45,7 +48,10 @@ require([
     // initialize summernote
     $('.summernote').summernote({
       height: 300,
-      lang: 'ko-KR'
+      lang: 'ko-KR',
+      toolbar: [
+        ['specialCharacter', ['specialCharacter']]
+      ]
     });
   });
 });

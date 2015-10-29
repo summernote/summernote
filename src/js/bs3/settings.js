@@ -29,6 +29,8 @@ define([
     version: '@VERSION',
     ui: ui,
 
+    plugins: {},
+
     options: {
       modules: {
         'editor': Editor,
