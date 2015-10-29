@@ -11,39 +11,55 @@
     factory(window.jQuery);
   }
 }(function ($) {
-  $.extend($.summernote.plugins, {
-    'hello': function (context) {
 
+  // Extends plugins for adding hello.
+  //  - plugin is external module for customizing.
+  $.extend($.summernote.plugins, {
+    /**
+     * @param {Object} context - context object has status of editor.
+     */
+    'hello': function (context) {
       var self = this;
+
+      // ui has renders to build ui elements.
+      //  - you can create a button with `ui.button`
       var ui = $.summernote.ui;
 
-      // define hello button
+      // add hello button
       context.addButton('hello', function () {
-        return ui.button({
-          contents: '<i class="fa fa-font fa-flip-vertical" /> Hello',
+        // create button
+        var button = ui.button({
+          contents: '<i class="fa fa-child"/> Hello',
           tooltip: 'hello',
           click: function () {
-            alert('Hello, World!');
-            self.show().hide(1000);
+            self.$panel.show();
+            self.$panel.hide(500);
+            // invoke insertText method with 'hello' on editor module.
+            context.invoke('editor.insertText', 'hello');
           }
-        }).render();
+        });
+
+        // create jQuery object from button instance.
+        var $hello = button.render();
+        return $hello;
       });
 
-      // define summernote custom event
+      // This events will be attached when editor is initialized.
       this.events = {
-        'summernote.init' : function (we, e) {
-          console.log('summernote initialized');
+        // This will be called after modules are initialized.
+        'summernote.init': function (we, e) {
+          console.log('summernote initialized', we, e);
         },
-        'summernote.keyup' : function (we, e) {
-          console.log('summernote keyup');
+        // This will be called when user releases a key on editable.
+        'summernote.keyup': function (we, e) {
+          console.log('summernote keyup', we, e);
         }
-      }
+      };
 
-      // define initialize method
+      // This method will be called when editor is initialized by $('..').summernote();
+      // You can create elements for plugin
       this.initialize = function () {
-        // something to do
-
-        this.$panel = $("<div class='hello-panel'></div>").css({
+        this.$panel = $('<div class="hello-panel"/>').css({
           position: 'absolute',
           width: 100,
           height: 100,
@@ -51,18 +67,16 @@
           top: '50%',
           background: 'red'
         }).hide();
+
         this.$panel.appendTo('body');
       };
 
-      this.show = function () {
-        this.$panel.show();
-      };
-
-      // when destroy summernote or remove module
-      this.destroy = function() {
+      // This methods will be called when editor is destroyed by $('..').summernote('destroy');
+      // You should remove elements on `initialize`.
+      this.destroy = function () {
         this.$panel.remove();
         this.$panel = null;
-      }
+      };
     }
   });
 }));
