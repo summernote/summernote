@@ -68,6 +68,9 @@ define([
     };
 
     this.hide = function () {
+      if (!options.airMode || list.isEmpty(options.popover.air)) {
+        return;
+      }
       this.$popover.hide();
     };
   };
