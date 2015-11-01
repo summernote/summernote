@@ -16,6 +16,7 @@ define([
     var ui = $.summernote.ui;
     this.modules = {};
     this.buttons = {};
+    this.helps = {};
     this.layoutInfo = {};
     this.options = options;
 
@@ -126,6 +127,10 @@ define([
         this.buttons[key].destroy();
       }
       delete this.buttons[key];
+    };
+
+    this.addHelp = function (key, description) {
+      this.helps[key] = description;
     };
 
     this.createInvokeHandler = function (namespace, value) {

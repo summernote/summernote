@@ -302,6 +302,7 @@ define([
     this.insertParagraph = this.wrapCommand(function () {
       typing.insertParagraph($editable);
     });
+    context.addHelp('insertParagraph', options.langInfo.help.insertParagraph);
 
     /**
      * insertOrderedList

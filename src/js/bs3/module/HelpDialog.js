@@ -1,4 +1,7 @@
-define([], function () {
+define([
+  'jquery',
+  'summernote/base/core/agent'
+], function ($, agent) {
   var HelpDialog = function (context) {
     var self = this;
     var ui = $.summernote.ui;
@@ -6,6 +9,31 @@ define([], function () {
     var $editor = context.layoutInfo.editor;
     var options = context.options;
     var lang = options.langInfo;
+
+
+    this.createShortCutList = function () {
+      var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
+
+      var $list = $('<div />');
+      for (var keyString in keyMap) {
+        var $row = $('<div class="help-list-item"/>');
+
+        var command = keyMap[keyString];
+        var str = context.helps[command] ? context.helps[command] : command;
+        var $keyString = $('<label />').css({
+          'width' : '300px',
+          'max-width' : '280px',
+          'margin-right' : '10px'
+        }).html(keyString);
+        var $description = $('<span />').html(str);
+
+        $row.html($keyString).append($description);
+
+        $list.append($row);
+      }
+
+      return $list.html();
+    };
 
     this.initialize = function () {
       var $container = options.dialogsInBody ? $(document.body) : $editor;
@@ -20,7 +48,14 @@ define([], function () {
 
       this.$dialog = ui.dialog({
         title: lang.options.help,
-        body: body
+        body: this.createShortCutList(),
+        footer : body,
+        callback : function ($node) {
+          $node.find(".modal-body").css({
+            'max-height' : '300px',
+            'overflow': 'scroll'
+          })
+        }
       }).render().appendTo($container);
     };
 
