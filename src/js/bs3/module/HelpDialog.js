@@ -10,27 +10,26 @@ define([
     var options = context.options;
     var lang = options.langInfo;
 
-
     this.createShortCutList = function () {
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
 
-      var $list = $('<div />');
-      for (var keyString in keyMap) {
+      var $list = $('<div/>');
+      Object.keys(keyMap).forEach(function (key) {
         var $row = $('<div class="help-list-item"/>');
 
-        var command = keyMap[keyString];
-        var str = context.helps[command] ? context.helps[command] : command;
-        var $keyString = $('<label />').css({
-          'width' : '300px',
-          'max-width' : '280px',
-          'margin-right' : '10px'
-        }).html(keyString);
-        var $description = $('<span />').html(str);
+        var command = keyMap[key];
+        var text = context.helps[command] ? context.helps[command] : command;
+        var $key = $('<label/>').css({
+          'width': 300,
+          'max-width': 280,
+          'margin-right': 10
+        }).html(key);
+        var $description = $('<span/>').html(text);
 
-        $row.html($keyString).append($description);
+        $row.html($key).append($description);
 
         $list.append($row);
-      }
+      });
 
       return $list.html();
     };
@@ -49,12 +48,12 @@ define([
       this.$dialog = ui.dialog({
         title: lang.options.help,
         body: this.createShortCutList(),
-        footer : body,
-        callback : function ($node) {
-          $node.find(".modal-body").css({
-            'max-height' : '300px',
+        footer: body,
+        callback: function ($node) {
+          $node.find('.modal-body').css({
+            'max-height': 300,
             'overflow': 'scroll'
-          })
+          });
         }
       }).render().appendTo($container);
     };
