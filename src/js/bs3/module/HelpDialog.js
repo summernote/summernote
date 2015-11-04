@@ -54,7 +54,7 @@ define([
           $node.find('.modal-body').css({
             'max-height': 300,
             'overflow': 'scroll'
-          })
+          });
         }
       }).render().appendTo($container);
     };
