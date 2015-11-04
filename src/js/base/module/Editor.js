@@ -190,6 +190,7 @@ define([
       history.undo();
       context.triggerEvent('change', $editable.html());
     };
+    context.memo('help.undo', options.langInfo.help.undo);
 
     /**
      * redo
@@ -199,6 +200,7 @@ define([
       history.redo();
       context.triggerEvent('change', $editable.html());
     };
+    context.memo('help.redo', options.langInfo.help.redo);
 
     this.reset = function () {
       context.triggerEvent('before.command', $editable.html());
@@ -249,6 +251,7 @@ define([
           afterCommand(true);
         };
       })(commands[idx]);
+      context.memo('help.' + commands[idx], options.langInfo.help[commands[idx]]);
     }
     /* jshint ignore:end */
 
@@ -267,6 +270,7 @@ define([
         afterCommand();
       }
     };
+    context.memo('help.tab', options.langInfo.help.tab);
 
     /**
      * untab
@@ -280,6 +284,7 @@ define([
         table.tab(rng, true);
       }
     };
+    context.memo('help.untab', options.langInfo.help.untab);
 
     /**
      * wrapCommand
@@ -302,7 +307,7 @@ define([
     this.insertParagraph = this.wrapCommand(function () {
       typing.insertParagraph($editable);
     });
-    context.addHelp('insertParagraph', options.langInfo.help.insertParagraph);
+    context.memo('help.insertParagraph', options.langInfo.help.insertParagraph);
 
     /**
      * insertOrderedList
@@ -310,18 +315,22 @@ define([
     this.insertOrderedList = this.wrapCommand(function () {
       bullet.insertOrderedList($editable);
     });
+    context.memo('help.insertOrderedList', options.langInfo.help.insertOrderedList);
 
     this.insertUnorderedList = this.wrapCommand(function () {
       bullet.insertUnorderedList($editable);
     });
+    context.memo('help.insertUnorderedList', options.langInfo.help.insertUnorderedList);
 
     this.indent = this.wrapCommand(function () {
       bullet.indent($editable);
     });
+    context.memo('help.indent', options.langInfo.help.indent);
 
     this.outdent = this.wrapCommand(function () {
       bullet.outdent($editable);
     });
+    context.memo('help.outdent', options.langInfo.help.outdent);
 
     /**
      * insert image
@@ -400,6 +409,7 @@ define([
     this.formatPara = function () {
       this.formatBlock('P');
     };
+    context.memo('help.formatPara', options.langInfo.help.formatPara);
 
     /* jshint ignore:start */
     for (var idx = 1; idx <= 6; idx ++) {
@@ -408,8 +418,10 @@ define([
           this.formatBlock('H' + idx);
         };
       }(idx);
+      context.memo('help.formatH'+idx, options.langInfo.help['formatH' + idx]);
     };
     /* jshint ignore:end */
+
 
     /**
      * fontSize
@@ -453,6 +465,8 @@ define([
         range.create(hrNode.nextSibling, 0).normalize().select();
       }
     });
+    context.memo('help.insertHorizontalRule', options.langInfo.help.insertHorizontalRule);
+
 
     /**
      * remove bogus node and character

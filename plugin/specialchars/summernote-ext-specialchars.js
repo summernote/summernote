@@ -61,7 +61,7 @@
         '&diams;'
       ];
 
-      context.addButton('specialCharacter', function () {
+      context.memo('button.specialCharacter', function () {
         return ui.button({
           contents: '<i class="fa fa-font fa-flip-vertical">',
           tooltip: lang.specialChar.specialChar,

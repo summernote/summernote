@@ -135,7 +135,7 @@ define([
         context.invoke('editor.restoreRange');
       });
     };
-    context.addHelp('linkDialog.show', 'Show Link Dialog');
+    context.memo('help.linkDialog.show', options.langInfo.help['linkDialog.show']);
   };
 
   return LinkDialog;

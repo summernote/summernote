@@ -14,9 +14,8 @@ define([
     var self = this;
 
     var ui = $.summernote.ui;
+    this.memos = {};
     this.modules = {};
-    this.buttons = {};
-    this.helps = {};
     this.layoutInfo = {};
     this.options = options;
 
@@ -27,14 +26,14 @@ define([
       // add optional buttons
       var buttons = $.extend({}, this.options.buttons);
       Object.keys(buttons).forEach(function (key) {
-        self.addButton(key, buttons[key]);
+        self.memo('button.' + key, buttons[key]);
       });
 
       var modules = $.extend({}, this.options.modules, $.summernote.plugins || {});
 
       // add module
       Object.keys(modules).forEach(function (key) {
-        self.addModule(key, modules[key], true);
+        self.module(key, modules[key], true);
       });
 
       Object.keys(this.modules).forEach(function (key) {
@@ -48,6 +47,10 @@ define([
     this.destroy = function () {
       Object.keys(this.modules).forEach(function (key) {
         self.removeModule(key);
+      });
+
+      Object.keys(this.memos).forEach(function (key) {
+        self.removeMemo(key);
       });
 
       $note.removeData('summernote');
@@ -94,7 +97,11 @@ define([
       }
     };
 
-    this.addModule = function (key, ModuleClass, withoutIntialize) {
+    this.module = function (key, ModuleClass, withoutIntialize) {
+      if (arguments.length === 1) {
+        return this.modules[key];
+      }
+
       this.modules[key] = new ModuleClass(this);
 
       if (!withoutIntialize) {
@@ -118,19 +125,19 @@ define([
       this.modules[key] = null;
     };
 
-    this.addButton = function (key, handler) {
-      this.buttons[key] = handler;
-    };
+    this.memo = function (key, obj) {
 
-    this.removeButton = function (key) {
-      if (this.buttons[key].destroy) {
-        this.buttons[key].destroy();
+      if (arguments.length === 1) {
+        return this.memos[key];
       }
-      delete this.buttons[key];
+      this.memos[key] = obj;
     };
 
-    this.addHelp = function (key, description) {
-      this.helps[key] = description;
+    this.removeMemo = function (key) {
+      if (this.memos[key].destroy) {
+        this.memos[key].destroy();
+      }
+      delete this.memos[key];
     };
 
     this.createInvokeHandler = function (namespace, value) {

@@ -19,10 +19,10 @@ define([
         var $row = $('<div class="help-list-item"/>');
 
         var command = keyMap[keyString];
-        var str = context.helps[command] ? context.helps[command] : command;
+        var str = context.memo('help.' + command) ? context.memo('help.' + command) : command;
         var $keyString = $('<label />').css({
-          'width' : '300px',
-          'max-width' : '280px',
+          'width' : '180px',
+          'max-width' : '200px',
           'margin-right' : '10px'
         }).html(keyString);
         var $description = $('<span />').html(str);
@@ -51,10 +51,10 @@ define([
         body: this.createShortCutList(),
         footer : body,
         callback : function ($node) {
-          $node.find(".modal-body").css({
+          $node.find('.modal-body').css({
             'max-height' : '300px',
             'overflow': 'scroll'
-          })
+          });
         }
       }).render().appendTo($container);
     };
