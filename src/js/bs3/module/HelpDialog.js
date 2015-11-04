@@ -49,12 +49,12 @@ define([
       this.$dialog = ui.dialog({
         title: lang.options.help,
         body: this.createShortCutList(),
-        footer : body,
-        callback : function ($node) {
+        footer: body,
+        callback: function ($node) {
           $node.find('.modal-body').css({
-            'max-height' : '300px',
+            'max-height': 300,
             'overflow': 'scroll'
-          });
+          })
         }
       }).render().appendTo($container);
     };
