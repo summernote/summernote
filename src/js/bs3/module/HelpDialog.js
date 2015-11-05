@@ -15,22 +15,23 @@ define([
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
 
       var $list = $('<div />');
-      for (var keyString in keyMap) {
+
+      Object.keys(keyMap).forEach(function(keyString) {
         var $row = $('<div class="help-list-item"/>');
 
         var command = keyMap[keyString];
         var str = context.memo('help.' + command) ? context.memo('help.' + command) : command;
         var $keyString = $('<label />').css({
-          'width' : '180px',
-          'max-width' : '200px',
-          'margin-right' : '10px'
+          'width': 180,
+          'max-width': 200,
+          'margin-right': 10
         }).html(keyString);
         var $description = $('<span />').html(str);
 
         $row.html($keyString).append($description);
 
         $list.append($row);
-      }
+      });
 
       return $list.html();
     };
