@@ -16,7 +16,7 @@ define([
 
       var $list = $('<div />');
 
-      Object.keys(keyMap).forEach(function(keyString) {
+      Object.keys(keyMap).forEach(function (keyString) {
         var $row = $('<div class="help-list-item"/>');
 
         var command = keyMap[keyString];
