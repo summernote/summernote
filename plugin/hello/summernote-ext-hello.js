@@ -26,7 +26,7 @@
       var ui = $.summernote.ui;
 
       // add hello button
-      context.addButton('hello', function () {
+      context.memo('button.hello', function () {
         // create button
         var button = ui.button({
           contents: '<i class="fa fa-child"/> Hello',

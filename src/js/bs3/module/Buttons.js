@@ -35,7 +35,7 @@ define([
     };
 
     this.addToolbarButtons = function () {
-      context.addButton('style', function () {
+      context.memo('button.style', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -53,7 +53,7 @@ define([
         ]).render();
       });
 
-      context.addButton('bold', function () {
+      context.memo('button.bold', function () {
         return ui.button({
           className: 'note-btn-bold',
           contents: '<i class="fa fa-bold"/>',
@@ -62,7 +62,7 @@ define([
         }).render();
       });
 
-      context.addButton('italic', function () {
+      context.memo('button.italic', function () {
         return ui.button({
           className: 'note-btn-italic',
           contents: '<i class="fa fa-italic"/>',
@@ -71,7 +71,7 @@ define([
         }).render();
       });
 
-      context.addButton('underline', function () {
+      context.memo('button.underline', function () {
         return ui.button({
           className: 'note-btn-underline',
           contents: '<i class="fa fa-underline"/>',
@@ -80,7 +80,7 @@ define([
         }).render();
       });
 
-      context.addButton('clear', function () {
+      context.memo('button.clear', function () {
         return ui.button({
           contents: '<i class="fa fa-eraser"/>',
           tooltip: lang.font.clear + representShortcut('removeFormat'),
@@ -88,7 +88,7 @@ define([
         }).render();
       });
 
-      context.addButton('fontname', function () {
+      context.memo('button.fontname', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -109,7 +109,7 @@ define([
         ]).render();
       });
 
-      context.addButton('fontsize', function () {
+      context.memo('button.fontsize', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -127,7 +127,7 @@ define([
         ]).render();
       });
 
-      context.addButton('color', function () {
+      context.memo('button.color', function () {
         return ui.buttonGroup({
           className: 'note-color',
           children: [
@@ -202,7 +202,7 @@ define([
         }).render();
       });
 
-      context.addButton('ol',  function () {
+      context.memo('button.ol',  function () {
         return ui.button({
           contents: '<i class="fa fa-list-ul"/>',
           tooltip: lang.lists.unordered + representShortcut('insertUnorderedList'),
@@ -210,7 +210,7 @@ define([
         }).render();
       });
 
-      context.addButton('ul', function () {
+      context.memo('button.ul', function () {
         return ui.button({
           contents: '<i class="fa fa-list-ol"/>',
           tooltip: lang.lists.ordered + representShortcut('insertOrderedList'),
@@ -218,7 +218,7 @@ define([
         }).render();
       });
 
-      context.addButton('paragraph', function () {
+      context.memo('button.paragraph', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -273,7 +273,7 @@ define([
         ]).render();
       });
 
-      context.addButton('height', function () {
+      context.memo('button.height', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -291,7 +291,7 @@ define([
         ]).render();
       });
 
-      context.addButton('table', function () {
+      context.memo('button.table', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -324,7 +324,7 @@ define([
         }).render();
       });
 
-      context.addButton('link', function () {
+      context.memo('button.link', function () {
         return ui.button({
           contents: '<i class="fa fa-link"/>',
           tooltip: lang.link.link,
@@ -332,7 +332,7 @@ define([
         }).render();
       });
 
-      context.addButton('picture', function () {
+      context.memo('button.picture', function () {
         return ui.button({
           contents: '<i class="fa fa-picture-o"/>',
           tooltip: lang.image.image,
@@ -340,7 +340,7 @@ define([
         }).render();
       });
 
-      context.addButton('video', function () {
+      context.memo('button.video', function () {
         return ui.button({
           contents: '<i class="fa fa-youtube-play"/>',
           tooltip: lang.video.video,
@@ -348,7 +348,7 @@ define([
         }).render();
       });
 
-      context.addButton('hr', function () {
+      context.memo('button.hr', function () {
         return ui.button({
           contents: '<i class="fa fa-minus"/>',
           tooltip: lang.hr.insert + representShortcut('insertHorizontalRule'),
@@ -356,7 +356,7 @@ define([
         }).render();
       });
 
-      context.addButton('fullscreen', function () {
+      context.memo('button.fullscreen', function () {
         return ui.button({
           className: 'btn-fullscreen',
           contents: '<i class="fa fa-arrows-alt"/>',
@@ -365,7 +365,7 @@ define([
         }).render();
       });
 
-      context.addButton('codeview', function () {
+      context.memo('button.codeview', function () {
         return ui.button({
           className: 'btn-codeview',
           contents: '<i class="fa fa-code"/>',
@@ -374,7 +374,7 @@ define([
         }).render();
       });
 
-      context.addButton('help', function () {
+      context.memo('button.help', function () {
         return ui.button({
           contents: '<i class="fa fa-question"/>',
           tooltip: lang.options.help,
@@ -392,21 +392,21 @@ define([
      */
     this.addImagePopoverButtons = function () {
       // Image Size Buttons
-      context.addButton('imageSize100', function () {
+      context.memo('button.imageSize100', function () {
         return ui.button({
           contents: '<span class="note-fontsize-10">100%</span>',
           tooltip: lang.image.resizeFull,
           click: context.createInvokeHandler('editor.resize', '1')
         }).render();
       });
-      context.addButton('imageSize50', function () {
+      context.memo('button.imageSize50', function () {
         return  ui.button({
           contents: '<span class="note-fontsize-10">50%</span>',
           tooltip: lang.image.resizeHalf,
           click: context.createInvokeHandler('editor.resize', '0.5')
         }).render();
       });
-      context.addButton('imageSize25', function () {
+      context.memo('button.imageSize25', function () {
         return ui.button({
           contents: '<span class="note-fontsize-10">25%</span>',
           tooltip: lang.image.resizeQuarter,
@@ -415,7 +415,7 @@ define([
       });
 
       // Float Buttons
-      context.addButton('floatLeft', function () {
+      context.memo('button.floatLeft', function () {
         return ui.button({
           contents: '<i class="fa fa-align-left"/>',
           tooltip: lang.image.floatLeft,
@@ -423,7 +423,7 @@ define([
         }).render();
       });
 
-      context.addButton('floatRight', function () {
+      context.memo('button.floatRight', function () {
         return ui.button({
           contents: '<i class="fa fa-align-right"/>',
           tooltip: lang.image.floatRight,
@@ -431,7 +431,7 @@ define([
         }).render();
       });
 
-      context.addButton('floatNone', function () {
+      context.memo('button.floatNone', function () {
         return ui.button({
           contents: '<i class="fa fa-align-justify"/>',
           tooltip: lang.image.floatNone,
@@ -440,7 +440,7 @@ define([
       });
 
       // Remove Buttons
-      context.addButton('removeMedia', function () {
+      context.memo('button.removeMedia', function () {
         return ui.button({
           contents: '<i class="fa fa-trash-o"/>',
           tooltip: lang.image.remove,
@@ -450,7 +450,7 @@ define([
     };
 
     this.addLinkPopoverButtons = function () {
-      context.addButton('linkDialogShow', function () {
+      context.memo('button.linkDialogShow', function () {
         return ui.button({
           contents: '<i class="fa fa-link"/>',
           tooltip: lang.link.edit,
@@ -458,7 +458,7 @@ define([
         }).render();
       });
 
-      context.addButton('unlink', function () {
+      context.memo('button.unlink', function () {
         return ui.button({
           contents: '<i class="fa fa-unlink"/>',
           tooltip: lang.link.unlink,
@@ -478,7 +478,7 @@ define([
         }).render();
 
         for (var idx = 0, len = buttons.length; idx < len; idx++) {
-          var button = context.buttons[buttons[idx]];
+          var button = context.memo('button.' + buttons[idx]);
           if (button) {
             $group.append(typeof button === 'function' ? button(context) : button);
           }
