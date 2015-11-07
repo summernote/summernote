@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-10-29T16:03Z
+ * Date: 2015-11-07T08:07Z
  */
 (function (factory) {
   /* global define */
@@ -1484,8 +1484,8 @@
     var self = this;
 
     var ui = $.summernote.ui;
+    this.memos = {};
     this.modules = {};
-    this.buttons = {};
     this.layoutInfo = {};
     this.options = options;
 
@@ -1496,14 +1496,14 @@
       // add optional buttons
       var buttons = $.extend({}, this.options.buttons);
       Object.keys(buttons).forEach(function (key) {
-        self.addButton(key, buttons[key]);
+        self.memo('button.' + key, buttons[key]);
       });
 
       var modules = $.extend({}, this.options.modules, $.summernote.plugins || {});
 
       // add module
       Object.keys(modules).forEach(function (key) {
-        self.addModule(key, modules[key], true);
+        self.module(key, modules[key], true);
       });
 
       Object.keys(this.modules).forEach(function (key) {
@@ -1519,19 +1519,28 @@
         self.removeModule(key);
       });
 
+      Object.keys(this.memos).forEach(function (key) {
+        self.removeMemo(key);
+      });
+
       $note.removeData('summernote');
 
       ui.removeLayout($note, this.layoutInfo);
     };
 
     this.code = function (html) {
+      var isActivated = this.invoke('codeview.isActivated');
+
       if (html === undefined) {
-        var isActivated = this.invoke('codeview.isActivated');
         this.invoke('codeview.sync');
         return isActivated ? this.layoutInfo.codable.val() : this.layoutInfo.editable.html();
+      } else {
+        if (isActivated) {
+          this.layoutInfo.codable.val(html);
+        } else {
+          this.layoutInfo.editable.html(html);
+        }
       }
-
-      this.layoutInfo.editable.html(html);
     };
 
     this.triggerEvent = function () {
@@ -1563,7 +1572,11 @@
       }
     };
 
-    this.addModule = function (key, ModuleClass, withoutIntialize) {
+    this.module = function (key, ModuleClass, withoutIntialize) {
+      if (arguments.length === 1) {
+        return this.modules[key];
+      }
+
       this.modules[key] = new ModuleClass(this);
 
       if (!withoutIntialize) {
@@ -1587,15 +1600,18 @@
       this.modules[key] = null;
     };
 
-    this.addButton = function (key, handler) {
-      this.buttons[key] = handler;
+    this.memo = function (key, obj) {
+      if (arguments.length === 1) {
+        return this.memos[key];
+      }
+      this.memos[key] = obj;
     };
 
-    this.removeButton = function (key) {
-      if (this.buttons[key].destroy) {
-        this.buttons[key].destroy();
+    this.removeMemo = function (key) {
+      if (this.memos[key].destroy) {
+        this.memos[key].destroy();
       }
-      delete this.buttons[key];
+      delete this.memos[key];
     };
 
     this.createInvokeHandler = function (namespace, value) {
@@ -2004,6 +2020,35 @@
         paragraphFormatting: 'Paragraph formatting',
         documentStyle: 'Document Style',
         extraKeys: 'Extra keys'
+      },
+      help : {
+        'insertParagraph': 'Insert Paragraph',
+        'undo': 'Undoes the last command',
+        'redo': 'Redoes the last command',
+        'tab': 'Tab',
+        'untab': 'Untab',
+        'bold': 'Set a bold style',
+        'italic': 'Set a italic style',
+        'underline': 'Set a underline style',
+        'strikethrough': 'Set a strikethrough style',
+        'removeFormat': 'Clean a style',
+        'justifyLeft': 'Set left align',
+        'justifyCenter': 'Set center align',
+        'justifyRight': 'Set right align',
+        'justifyFull': 'Set full align',
+        'insertUnorderedList': 'Toggle unordered list',
+        'insertOrderedList': 'Toggle ordered list',
+        'outdent': 'Outdent on current paragraph',
+        'indent': 'Indent on current paragraph',
+        'formatPara': 'Change current block\'s format as a paragraph(P tag)',
+        'formatH1': 'Change current block\'s format as H1',
+        'formatH2': 'Change current block\'s format as H2',
+        'formatH3': 'Change current block\'s format as H3',
+        'formatH4': 'Change current block\'s format as H4',
+        'formatH5': 'Change current block\'s format as H5',
+        'formatH6': 'Change current block\'s format as H6',
+        'insertHorizontalRule': 'Insert horizontal rule',
+        'linkDialog.show': 'Show Link Dialog'
       },
       history: {
         undo: 'Undo',
@@ -3741,6 +3786,7 @@
       history.undo();
       context.triggerEvent('change', $editable.html());
     };
+    context.memo('help.undo', options.langInfo.help.undo);
 
     /**
      * redo
@@ -3750,6 +3796,7 @@
       history.redo();
       context.triggerEvent('change', $editable.html());
     };
+    context.memo('help.redo', options.langInfo.help.redo);
 
     this.reset = function () {
       context.triggerEvent('before.command', $editable.html());
@@ -3800,6 +3847,7 @@
           afterCommand(true);
         };
       })(commands[idx]);
+      context.memo('help.' + commands[idx], options.langInfo.help[commands[idx]]);
     }
     /* jshint ignore:end */
 
@@ -3818,6 +3866,7 @@
         afterCommand();
       }
     };
+    context.memo('help.tab', options.langInfo.help.tab);
 
     /**
      * untab
@@ -3831,6 +3880,7 @@
         table.tab(rng, true);
       }
     };
+    context.memo('help.untab', options.langInfo.help.untab);
 
     /**
      * wrapCommand
@@ -3853,6 +3903,7 @@
     this.insertParagraph = this.wrapCommand(function () {
       typing.insertParagraph($editable);
     });
+    context.memo('help.insertParagraph', options.langInfo.help.insertParagraph);
 
     /**
      * insertOrderedList
@@ -3860,18 +3911,22 @@
     this.insertOrderedList = this.wrapCommand(function () {
       bullet.insertOrderedList($editable);
     });
+    context.memo('help.insertOrderedList', options.langInfo.help.insertOrderedList);
 
     this.insertUnorderedList = this.wrapCommand(function () {
       bullet.insertUnorderedList($editable);
     });
+    context.memo('help.insertUnorderedList', options.langInfo.help.insertUnorderedList);
 
     this.indent = this.wrapCommand(function () {
       bullet.indent($editable);
     });
+    context.memo('help.indent', options.langInfo.help.indent);
 
     this.outdent = this.wrapCommand(function () {
       bullet.outdent($editable);
     });
+    context.memo('help.outdent', options.langInfo.help.outdent);
 
     /**
      * insert image
@@ -3950,6 +4005,7 @@
     this.formatPara = function () {
       this.formatBlock('P');
     };
+    context.memo('help.formatPara', options.langInfo.help.formatPara);
 
     /* jshint ignore:start */
     for (var idx = 1; idx <= 6; idx ++) {
@@ -3958,8 +4014,10 @@
           this.formatBlock('H' + idx);
         };
       }(idx);
+      context.memo('help.formatH'+idx, options.langInfo.help['formatH' + idx]);
     };
     /* jshint ignore:end */
+
 
     /**
      * fontSize
@@ -4003,6 +4061,8 @@
         range.create(hrNode.nextSibling, 0).normalize().select();
       }
     });
+    context.memo('help.insertHorizontalRule', options.langInfo.help.insertHorizontalRule);
+
 
     /**
      * remove bogus node and character
@@ -4766,6 +4826,23 @@
     };
   };
 
+  /**
+   * textarea auto sync.
+   */
+  var AutoSync = function (context) {
+    var $note = context.layoutInfo.note;
+
+    this.events = {
+      'summernote.change': function () {
+        $note.val(context.invoke('code'));
+      }
+    };
+
+    this.shouldInitialize = function () {
+      return dom.isTextarea($note[0]);
+    };
+  };
+
   var Buttons = function (context) {
     var self = this;
     var ui = $.summernote.ui;
@@ -4797,7 +4874,7 @@
     };
 
     this.addToolbarButtons = function () {
-      context.addButton('style', function () {
+      context.memo('button.style', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -4815,7 +4892,7 @@
         ]).render();
       });
 
-      context.addButton('bold', function () {
+      context.memo('button.bold', function () {
         return ui.button({
           className: 'note-btn-bold',
           contents: '<i class="fa fa-bold"/>',
@@ -4824,7 +4901,7 @@
         }).render();
       });
 
-      context.addButton('italic', function () {
+      context.memo('button.italic', function () {
         return ui.button({
           className: 'note-btn-italic',
           contents: '<i class="fa fa-italic"/>',
@@ -4833,7 +4910,7 @@
         }).render();
       });
 
-      context.addButton('underline', function () {
+      context.memo('button.underline', function () {
         return ui.button({
           className: 'note-btn-underline',
           contents: '<i class="fa fa-underline"/>',
@@ -4842,7 +4919,7 @@
         }).render();
       });
 
-      context.addButton('clear', function () {
+      context.memo('button.clear', function () {
         return ui.button({
           contents: '<i class="fa fa-eraser"/>',
           tooltip: lang.font.clear + representShortcut('removeFormat'),
@@ -4850,7 +4927,7 @@
         }).render();
       });
 
-      context.addButton('fontname', function () {
+      context.memo('button.fontname', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -4871,7 +4948,7 @@
         ]).render();
       });
 
-      context.addButton('fontsize', function () {
+      context.memo('button.fontsize', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -4889,7 +4966,7 @@
         ]).render();
       });
 
-      context.addButton('color', function () {
+      context.memo('button.color', function () {
         return ui.buttonGroup({
           className: 'note-color',
           children: [
@@ -4964,7 +5041,7 @@
         }).render();
       });
 
-      context.addButton('ol',  function () {
+      context.memo('button.ol',  function () {
         return ui.button({
           contents: '<i class="fa fa-list-ul"/>',
           tooltip: lang.lists.unordered + representShortcut('insertUnorderedList'),
@@ -4972,7 +5049,7 @@
         }).render();
       });
 
-      context.addButton('ul', function () {
+      context.memo('button.ul', function () {
         return ui.button({
           contents: '<i class="fa fa-list-ol"/>',
           tooltip: lang.lists.ordered + representShortcut('insertOrderedList'),
@@ -4980,7 +5057,7 @@
         }).render();
       });
 
-      context.addButton('paragraph', function () {
+      context.memo('button.paragraph', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -5035,7 +5112,7 @@
         ]).render();
       });
 
-      context.addButton('height', function () {
+      context.memo('button.height', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -5053,7 +5130,7 @@
         ]).render();
       });
 
-      context.addButton('table', function () {
+      context.memo('button.table', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
@@ -5086,7 +5163,7 @@
         }).render();
       });
 
-      context.addButton('link', function () {
+      context.memo('button.link', function () {
         return ui.button({
           contents: '<i class="fa fa-link"/>',
           tooltip: lang.link.link,
@@ -5094,7 +5171,7 @@
         }).render();
       });
 
-      context.addButton('picture', function () {
+      context.memo('button.picture', function () {
         return ui.button({
           contents: '<i class="fa fa-picture-o"/>',
           tooltip: lang.image.image,
@@ -5102,7 +5179,7 @@
         }).render();
       });
 
-      context.addButton('video', function () {
+      context.memo('button.video', function () {
         return ui.button({
           contents: '<i class="fa fa-youtube-play"/>',
           tooltip: lang.video.video,
@@ -5110,7 +5187,7 @@
         }).render();
       });
 
-      context.addButton('hr', function () {
+      context.memo('button.hr', function () {
         return ui.button({
           contents: '<i class="fa fa-minus"/>',
           tooltip: lang.hr.insert + representShortcut('insertHorizontalRule'),
@@ -5118,7 +5195,7 @@
         }).render();
       });
 
-      context.addButton('fullscreen', function () {
+      context.memo('button.fullscreen', function () {
         return ui.button({
           className: 'btn-fullscreen',
           contents: '<i class="fa fa-arrows-alt"/>',
@@ -5127,7 +5204,7 @@
         }).render();
       });
 
-      context.addButton('codeview', function () {
+      context.memo('button.codeview', function () {
         return ui.button({
           className: 'btn-codeview',
           contents: '<i class="fa fa-code"/>',
@@ -5136,7 +5213,7 @@
         }).render();
       });
 
-      context.addButton('help', function () {
+      context.memo('button.help', function () {
         return ui.button({
           contents: '<i class="fa fa-question"/>',
           tooltip: lang.options.help,
@@ -5154,21 +5231,21 @@
      */
     this.addImagePopoverButtons = function () {
       // Image Size Buttons
-      context.addButton('imageSize100', function () {
+      context.memo('button.imageSize100', function () {
         return ui.button({
           contents: '<span class="note-fontsize-10">100%</span>',
           tooltip: lang.image.resizeFull,
           click: context.createInvokeHandler('editor.resize', '1')
         }).render();
       });
-      context.addButton('imageSize50', function () {
+      context.memo('button.imageSize50', function () {
         return  ui.button({
           contents: '<span class="note-fontsize-10">50%</span>',
           tooltip: lang.image.resizeHalf,
           click: context.createInvokeHandler('editor.resize', '0.5')
         }).render();
       });
-      context.addButton('imageSize25', function () {
+      context.memo('button.imageSize25', function () {
         return ui.button({
           contents: '<span class="note-fontsize-10">25%</span>',
           tooltip: lang.image.resizeQuarter,
@@ -5177,7 +5254,7 @@
       });
 
       // Float Buttons
-      context.addButton('floatLeft', function () {
+      context.memo('button.floatLeft', function () {
         return ui.button({
           contents: '<i class="fa fa-align-left"/>',
           tooltip: lang.image.floatLeft,
@@ -5185,7 +5262,7 @@
         }).render();
       });
 
-      context.addButton('floatRight', function () {
+      context.memo('button.floatRight', function () {
         return ui.button({
           contents: '<i class="fa fa-align-right"/>',
           tooltip: lang.image.floatRight,
@@ -5193,7 +5270,7 @@
         }).render();
       });
 
-      context.addButton('floatNone', function () {
+      context.memo('button.floatNone', function () {
         return ui.button({
           contents: '<i class="fa fa-align-justify"/>',
           tooltip: lang.image.floatNone,
@@ -5202,7 +5279,7 @@
       });
 
       // Remove Buttons
-      context.addButton('removeMedia', function () {
+      context.memo('button.removeMedia', function () {
         return ui.button({
           contents: '<i class="fa fa-trash-o"/>',
           tooltip: lang.image.remove,
@@ -5212,7 +5289,7 @@
     };
 
     this.addLinkPopoverButtons = function () {
-      context.addButton('linkDialogShow', function () {
+      context.memo('button.linkDialogShow', function () {
         return ui.button({
           contents: '<i class="fa fa-link"/>',
           tooltip: lang.link.edit,
@@ -5220,7 +5297,7 @@
         }).render();
       });
 
-      context.addButton('unlink', function () {
+      context.memo('button.unlink', function () {
         return ui.button({
           contents: '<i class="fa fa-unlink"/>',
           tooltip: lang.link.unlink,
@@ -5240,7 +5317,7 @@
         }).render();
 
         for (var idx = 0, len = buttons.length; idx < len; idx++) {
-          var button = context.buttons[buttons[idx]];
+          var button = context.memo('button.' + buttons[idx]);
           if (button) {
             $group.append(typeof button === 'function' ? button(context) : button);
           }
@@ -5467,6 +5544,8 @@
         $openInNewWindow = self.$dialog.find('input[type=checkbox]');
 
         ui.onDialogShown(self.$dialog, function () {
+          context.triggerEvent('dialog.shown');
+
           $linkText.val(linkInfo.text);
 
           $linkText.on('input', function () {
@@ -5538,6 +5617,7 @@
         context.invoke('editor.restoreRange');
       });
     };
+    context.memo('help.linkDialog.show', options.langInfo.help['linkDialog.show']);
   };
 
   var LinkPopover = function (context) {
@@ -5549,6 +5629,9 @@
     this.events = {
       'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function () {
         self.update();
+      },
+      'summernote.dialog.shown': function () {
+        self.hide();
       }
     };
 
@@ -5701,6 +5784,8 @@
             $imageBtn = self.$dialog.find('.note-image-btn');
 
         ui.onDialogShown(self.$dialog, function () {
+          context.triggerEvent('dialog.shown');
+
           // Cloning imageInput to clear element.
           $imageInput.replaceWith($imageInput.clone()
             .on('change', function () {
@@ -5749,6 +5834,9 @@
       },
       'summernote.scroll': function () {
         self.update();
+      },
+      'summernote.dialog.shown': function () {
+        self.hide();
       }
     };
 
@@ -5936,6 +6024,7 @@
             $videoBtn = self.$dialog.find('.note-video-btn');
 
         ui.onDialogShown(self.$dialog, function () {
+          context.triggerEvent('dialog.shown');
 
           $videoUrl.val(text).on('input', function () {
             ui.toggleBtn($videoBtn, $videoUrl.val());
@@ -5972,6 +6061,32 @@
     var options = context.options;
     var lang = options.langInfo;
 
+
+    this.createShortCutList = function () {
+      var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
+
+      var $list = $('<div />');
+
+      Object.keys(keyMap).forEach(function (keyString) {
+        var $row = $('<div class="help-list-item"/>');
+
+        var command = keyMap[keyString];
+        var str = context.memo('help.' + command) ? context.memo('help.' + command) : command;
+        var $keyString = $('<label />').css({
+          'width': 180,
+          'max-width': 200,
+          'margin-right': 10
+        }).html(keyString);
+        var $description = $('<span />').html(str);
+
+        $row.html($keyString).append($description);
+
+        $list.append($row);
+      });
+
+      return $list.html();
+    };
+
     this.initialize = function () {
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
@@ -5985,7 +6100,14 @@
 
       this.$dialog = ui.dialog({
         title: lang.options.help,
-        body: body
+        body: this.createShortCutList(),
+        footer: body,
+        callback: function ($node) {
+          $node.find('.modal-body').css({
+            'max-height': 300,
+            'overflow': 'scroll'
+          });
+        }
       }).render().appendTo($container);
     };
 
@@ -6002,6 +6124,7 @@
     this.showHelpDialog = function () {
       return $.Deferred(function (deferred) {
         ui.onDialogHidden(self.$dialog, function () {
+          context.triggerEvent('dialog.shown');
           deferred.resolve();
         });
         ui.showDialog(self.$dialog);
@@ -6029,7 +6152,7 @@
       'summernote.keyup summernote.mouseup summernote.scroll': function () {
         self.update();
       },
-      'summernote.change': function () {
+      'summernote.change summernote.dialog.shown': function () {
         self.hide();
       },
       'summernote.focusout': function (we, e) {
@@ -6091,6 +6214,9 @@
       },
       'summernote.keydown' : function (we, e) {
         self.handleKeydown(e);
+      },
+      'summernote.dialog.shown': function () {
+        self.hide();
       }
     };
 
@@ -6296,6 +6422,7 @@
         'fullscreen': Fullscreen,
         'handle': Handle,
         'autoLink': AutoLink,
+        'autoSync': AutoSync,
         'buttons' : Buttons,
         'toolbar': Toolbar,
         'linkDialog': LinkDialog,

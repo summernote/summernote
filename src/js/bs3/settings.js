@@ -9,6 +9,7 @@ define([
   'summernote/base/module/Fullscreen',
   'summernote/base/module/Handle',
   'summernote/base/module/AutoLink',
+  'summernote/base/module/AutoSync',
   'summernote/bs3/module/Buttons',
   'summernote/bs3/module/Toolbar',
   'summernote/bs3/module/LinkDialog',
@@ -21,7 +22,7 @@ define([
   'summernote/bs3/module/HintPopover'
 ], function (
   ui, lang,
-  Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle, AutoLink,
+  Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle, AutoLink, AutoSync,
   Buttons, Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover, VideoDialog, HelpDialog, AirPopover, HintPopover
 ) {
 
@@ -41,6 +42,7 @@ define([
         'fullscreen': Fullscreen,
         'handle': Handle,
         'autoLink': AutoLink,
+        'autoSync': AutoSync,
         'buttons' : Buttons,
         'toolbar': Toolbar,
         'linkDialog': LinkDialog,
