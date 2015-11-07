@@ -51,9 +51,14 @@ define([
       if (splitRoot) {
         // if it is an empty line with li
         if (dom.isEmpty(splitRoot) && dom.isLi(splitRoot)) {
-          // disable UL/OL and escape!
+          // toogle UL/OL and escape
           bullet.toggleList(splitRoot.parentNode.nodeName);
           return;
+        // if it is an empty line with para on blockquote
+        } else if (dom.isEmpty(splitRoot) && dom.isPara(splitRoot) && dom.isBlockquote(splitRoot.parentNode)) {
+          // escape blockquote
+          dom.insertAfter(splitRoot, splitRoot.parentNode);
+          nextPara = splitRoot;
         // if new line has content (not a line break)
         } else {
           nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
