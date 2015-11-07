@@ -131,7 +131,6 @@ define([
     };
 
     this.memo = function (key, obj) {
-
       if (arguments.length === 1) {
         return this.memos[key];
       }
