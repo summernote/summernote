@@ -11,10 +11,12 @@ define([
 
     this.events = {
       'summernote.mousedown': function (we, e) {
-        self.update(e.target);
+        if (self.update(e.target)) {
+          e.preventDefault();
+        }
       },
-      'summernote.keyup summernote.scroll summernote.change': function () {
-        self.hide();
+      'summernote.keyup summernote.scroll summernote.change summernote.dialog.shown': function () {
+        self.update();
       }
     };
 
@@ -68,10 +70,12 @@ define([
     };
 
     this.update = function (target) {
-      context.invoke('imagePopover.update', target);
+      var isImage = dom.isImg(target);
       var $selection = this.$handle.find('.note-control-selection');
 
-      if (dom.isImg(target)) {
+      context.invoke('imagePopover.update', target);
+
+      if (isImage) {
         var $image = $(target);
         var pos = $image.position();
 
@@ -95,6 +99,8 @@ define([
       } else {
         this.hide();
       }
+
+      return isImage;
     };
 
     /**

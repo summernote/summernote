@@ -9,18 +9,6 @@ define([
 
     var options = context.options;
 
-    this.events = {
-      'summernote.keyup summernote.mouseup summernote.change': function () {
-        self.update();
-      },
-      'summernote.scroll': function () {
-        self.update();
-      },
-      'summernote.dialog.shown': function () {
-        self.hide();
-      }
-    };
-
     this.shouldInitialize = function () {
       return !list.isEmpty(options.popover.image);
     };
