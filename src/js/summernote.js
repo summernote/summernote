@@ -59,13 +59,18 @@ define([
     };
 
     this.code = function (html) {
+      var isActivated = this.invoke('codeview.isActivated');
+
       if (html === undefined) {
-        var isActivated = this.invoke('codeview.isActivated');
         this.invoke('codeview.sync');
         return isActivated ? this.layoutInfo.codable.val() : this.layoutInfo.editable.html();
+      } else {
+        if (isActivated) {
+          this.layoutInfo.codable.val(html);
+        } else {
+          this.layoutInfo.editable.html(html);
+        }
       }
-
-      this.layoutInfo.editable.html(html);
     };
 
     this.triggerEvent = function () {
