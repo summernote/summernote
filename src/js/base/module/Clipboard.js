@@ -8,38 +8,53 @@ define([
     var self = this;
 
     var $editable = context.layoutInfo.editable;
-    var $paste;
 
-    this.initialize = function () {
-      // [workaround] getting image from clipboard
-      //  - IE11 and Firefox: CTRL+v hook
-      //  - Webkit: event.clipboardData
-      if ((agent.isMSIE && agent.browserVersion > 10) || agent.isFF) {
-        $paste = $('<div />').attr('contenteditable', true).css({
-          position : 'absolute',
-          left : -100000,
-          opacity : 0
-        });
-
-        $editable.on('keydown', function (e) {
-          if (e.ctrlKey && e.keyCode === key.code.V) {
+    this.events = {
+      'summernote.keydown': function (we, e) {
+        if (self.needKeydownHook()) {
+          if ((e.ctrlKey || e.metaKey) && e.keyCode === key.code.V) {
             context.invoke('editor.saveRange');
-            $paste.focus();
+            self.$paste.focus();
 
             setTimeout(function () {
               self.pasteByHook();
             }, 0);
           }
-        });
+        }
+      }
+    };
 
-        $editable.before($paste);
+    this.needKeydownHook = function () {
+      return (agent.isMSIE && agent.browserVersion > 10) || agent.isFF;
+    };
+
+    this.initialize = function () {
+      // [workaround] getting image from clipboard
+      //  - IE11 and Firefox: CTRL+v hook
+      //  - Webkit: event.clipboardData
+      if (this.needKeydownHook()) {
+        this.$paste = $('<div />').attr('contenteditable', true).css({
+          position : 'absolute',
+          left : -100000,
+          opacity : 0
+        });
+        $editable.before(this.$paste);
+
+        this.$paste.on('paste', function (event) {
+          context.triggerEvent('paste', event);
+        });
       } else {
         $editable.on('paste', this.pasteByEvent);
       }
     };
 
+    this.destroy = function () {
+      this.$paste.remove();
+      this.$paste = null;
+    };
+
     this.pasteByHook = function () {
-      var node = $paste[0].firstChild;
+      var node = this.$paste[0].firstChild;
 
       if (dom.isImg(node)) {
         var dataURI = node.src;
@@ -56,7 +71,7 @@ define([
         context.invoke('editor.focus');
         context.invoke('imageDialog.insertImages', [blob]);
       } else {
-        var pasteContent = $('<div />').html($paste.html()).html();
+        var pasteContent = $('<div />').html(this.$paste.html()).html();
         context.invoke('editor.restoreRange');
         context.invoke('editor.focus');
 
@@ -65,7 +80,7 @@ define([
         }
       }
 
-      $paste.empty();
+      this.$paste.empty();
     };
 
     /**
