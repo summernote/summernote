@@ -684,19 +684,14 @@ define([
       //  - do focus when not focused
       if (!$editable.is(':focus')) {
         $editable.focus();
-      }
 
-      // [workaround] for firefox bug http://goo.gl/lVfAaI
-      if (agent.isFF) {
-        var rng = range.create();
-        if (!rng || rng.isOnEditable()) {
-          return;
+        // [workaround] for firefox bug http://goo.gl/lVfAaI
+        if (agent.isFF) {
+          range.createFromNode($editable[0])
+               .normalize()
+               .collapse()
+               .select();
         }
-
-        range.createFromNode($editable[0])
-             .normalize()
-             .collapse()
-             .select();
       }
     };
 
