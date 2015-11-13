@@ -74,10 +74,10 @@ define([
       if (!options.airMode && options.height) {
         $editable.outerHeight(options.height);
       }
-      if(!options.airMode && options.maxHeight){ 
+      if (!options.airMode && options.maxHeight) {
         $editable.css('max-height', options.maxHeight);
       }
-      if(!options.airMode && options.minHeight){ 
+      if (!options.airMode && options.minHeight) {
         $editable.css('min-height', options.minHeight);
       }
 
