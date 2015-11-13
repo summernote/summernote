@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-11-07T08:07Z
+ * Date: 2015-11-13T01:45Z
  */
 (function (factory) {
   /* global define */
@@ -1608,10 +1608,12 @@
     };
 
     this.removeMemo = function (key) {
-      if (this.memos[key].destroy) {
+      if (this.memos[key] && this.memos[key].destroy) {
         this.memos[key].destroy();
       }
+
       delete this.memos[key];
+      this.memos[key] = null;
     };
 
     this.createInvokeHandler = function (namespace, value) {
@@ -3525,9 +3527,14 @@
       if (splitRoot) {
         // if it is an empty line with li
         if (dom.isEmpty(splitRoot) && dom.isLi(splitRoot)) {
-          // disable UL/OL and escape!
+          // toogle UL/OL and escape
           bullet.toggleList(splitRoot.parentNode.nodeName);
           return;
+        // if it is an empty line with para on blockquote
+        } else if (dom.isEmpty(splitRoot) && dom.isPara(splitRoot) && dom.isBlockquote(splitRoot.parentNode)) {
+          // escape blockquote
+          dom.insertAfter(splitRoot, splitRoot.parentNode);
+          nextPara = splitRoot;
         // if new line has content (not a line break)
         } else {
           nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
@@ -4280,19 +4287,14 @@
       //  - do focus when not focused
       if (!$editable.is(':focus')) {
         $editable.focus();
-      }
 
-      // [workaround] for firefox bug http://goo.gl/lVfAaI
-      if (agent.isFF) {
-        var rng = range.create();
-        if (!rng || rng.isOnEditable()) {
-          return;
+        // [workaround] for firefox bug http://goo.gl/lVfAaI
+        if (agent.isFF) {
+          range.createFromNode($editable[0])
+               .normalize()
+               .collapse()
+               .select();
         }
-
-        range.createFromNode($editable[0])
-             .normalize()
-             .collapse()
-             .select();
       }
     };
 
@@ -4309,38 +4311,55 @@
     var self = this;
 
     var $editable = context.layoutInfo.editable;
-    var $paste;
 
-    this.initialize = function () {
-      // [workaround] getting image from clipboard
-      //  - IE11 and Firefox: CTRL+v hook
-      //  - Webkit: event.clipboardData
-      if ((agent.isMSIE && agent.browserVersion > 10) || agent.isFF) {
-        $paste = $('<div />').attr('contenteditable', true).css({
-          position : 'absolute',
-          left : -100000,
-          opacity : 0
-        });
-
-        $editable.on('keydown', function (e) {
-          if (e.ctrlKey && e.keyCode === key.code.V) {
+    this.events = {
+      'summernote.keydown': function (we, e) {
+        if (self.needKeydownHook()) {
+          if ((e.ctrlKey || e.metaKey) && e.keyCode === key.code.V) {
             context.invoke('editor.saveRange');
-            $paste.focus();
+            self.$paste.focus();
 
             setTimeout(function () {
               self.pasteByHook();
             }, 0);
           }
-        });
+        }
+      }
+    };
 
-        $editable.before($paste);
+    this.needKeydownHook = function () {
+      return (agent.isMSIE && agent.browserVersion > 10) || agent.isFF;
+    };
+
+    this.initialize = function () {
+      // [workaround] getting image from clipboard
+      //  - IE11 and Firefox: CTRL+v hook
+      //  - Webkit: event.clipboardData
+      if (this.needKeydownHook()) {
+        this.$paste = $('<div />').attr('contenteditable', true).css({
+          position : 'absolute',
+          left : -100000,
+          opacity : 0
+        });
+        $editable.before(this.$paste);
+
+        this.$paste.on('paste', function (event) {
+          context.triggerEvent('paste', event);
+        });
       } else {
         $editable.on('paste', this.pasteByEvent);
       }
     };
 
+    this.destroy = function () {
+      if (this.needKeydownHook()) {
+        this.$paste.remove();
+        this.$paste = null;
+      }
+    };
+
     this.pasteByHook = function () {
-      var node = $paste[0].firstChild;
+      var node = this.$paste[0].firstChild;
 
       if (dom.isImg(node)) {
         var dataURI = node.src;
@@ -4357,7 +4376,7 @@
         context.invoke('editor.focus');
         context.invoke('imageDialog.insertImages', [blob]);
       } else {
-        var pasteContent = $('<div />').html($paste.html()).html();
+        var pasteContent = $('<div />').html(this.$paste.html()).html();
         context.invoke('editor.restoreRange');
         context.invoke('editor.focus');
 
@@ -4366,7 +4385,7 @@
         }
       }
 
-      $paste.empty();
+      this.$paste.empty();
     };
 
     /**
@@ -4672,10 +4691,12 @@
 
     this.events = {
       'summernote.mousedown': function (we, e) {
-        self.update(e.target);
+        if (self.update(e.target)) {
+          e.preventDefault();
+        }
       },
-      'summernote.keyup summernote.scroll summernote.change': function () {
-        self.hide();
+      'summernote.keyup summernote.scroll summernote.change summernote.dialog.shown': function () {
+        self.update();
       }
     };
 
@@ -4729,10 +4750,12 @@
     };
 
     this.update = function (target) {
-      context.invoke('imagePopover.update', target);
+      var isImage = dom.isImg(target);
       var $selection = this.$handle.find('.note-control-selection');
 
-      if (dom.isImg(target)) {
+      context.invoke('imagePopover.update', target);
+
+      if (isImage) {
         var $image = $(target);
         var pos = $image.position();
 
@@ -4756,6 +4779,8 @@
       } else {
         this.hide();
       }
+
+      return isImage;
     };
 
     /**
@@ -5823,22 +5848,9 @@
   };
 
   var ImagePopover = function (context) {
-    var self = this;
     var ui = $.summernote.ui;
 
     var options = context.options;
-
-    this.events = {
-      'summernote.keyup summernote.mouseup summernote.change': function () {
-        self.update();
-      },
-      'summernote.scroll': function () {
-        self.update();
-      },
-      'summernote.dialog.shown': function () {
-        self.hide();
-      }
-    };
 
     this.shouldInitialize = function () {
       return !list.isEmpty(options.popover.image);

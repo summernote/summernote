@@ -49,8 +49,10 @@ define([
     };
 
     this.destroy = function () {
-      this.$paste.remove();
-      this.$paste = null;
+      if (this.needKeydownHook()) {
+        this.$paste.remove();
+        this.$paste = null;
+      }
     };
 
     this.pasteByHook = function () {

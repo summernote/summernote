@@ -138,10 +138,12 @@ define([
     };
 
     this.removeMemo = function (key) {
-      if (this.memos[key].destroy) {
+      if (this.memos[key] && this.memos[key].destroy) {
         this.memos[key].destroy();
       }
+
       delete this.memos[key];
+      this.memos[key] = null;
     };
 
     this.createInvokeHandler = function (namespace, value) {
