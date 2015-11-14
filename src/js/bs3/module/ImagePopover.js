@@ -4,7 +4,6 @@ define([
   'summernote/base/core/dom'
 ], function (func, list, dom) {
   var ImagePopover = function (context) {
-    var self = this;
     var ui = $.summernote.ui;
 
     var options = context.options;
