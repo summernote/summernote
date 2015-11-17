@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-11-13T01:45Z
+ * Date: 2015-11-17T01:32Z
  */
 (function (factory) {
   /* global define */
@@ -385,6 +385,24 @@
     }
   }
 
+  var hasCodeMirror = !!window.CodeMirror;
+
+  if (!hasCodeMirror && isSupportAmd && require) {
+    if (require.hasOwnProperty('resolve')) {
+      try {
+        // If CodeMirror can't be resolved, `require.resolve` will throw an
+        // exception and `hasCodeMirror` won't be set to `true`.
+        require.resolve('CodeMirror');
+
+        hasCodeMirror = true;
+      } catch (e) {
+        hasCodeMirror = false;
+      }
+    } else if (require.hasOwnProperty('specified')) {
+      hasCodeMirror = require.specified('CodeMirror');
+    }
+  }
+
   /**
    * @class core.agent
    *
@@ -402,7 +420,7 @@
     browserVersion: browserVersion,
     jqueryVersion: parseFloat($.fn.jquery),
     isSupportAmd: isSupportAmd,
-    hasCodeMirror: isSupportAmd ? require.specified('CodeMirror') : !!window.CodeMirror,
+    hasCodeMirror: hasCodeMirror,
     isFontInstalled: isFontInstalled,
     isW3CRangeSupport: !!document.createRange
   };
