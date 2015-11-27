@@ -88,6 +88,30 @@ define([
         }).render();
       });
 
+      context.memo('button.strikethrough', function () {
+        return ui.button({
+          contents: '<i class="fa fa-strikethrough"/>',
+          tooltip: lang.font.strikethrough + representShortcut('strikethrough'),
+          click: context.createInvokeHandler('editor.strikethrough')
+        }).render();
+      });
+
+      context.memo('button.superscript', function () {
+        return ui.button({
+          contents: '<i class="fa fa-superscript"/>',
+          tooltip: lang.font.superscript,
+          click: context.createInvokeHandler('editor.superscript')
+        }).render();
+      });
+
+      context.memo('button.subscript', function () {
+        return ui.button({
+          contents: '<i class="fa fa-subscript"/>',
+          tooltip: lang.font.subscript,
+          click: context.createInvokeHandler('editor.subscript')
+        }).render();
+      });
+
       context.memo('button.fontname', function () {
         return ui.buttonGroup([
           ui.button({
@@ -371,6 +395,22 @@ define([
           contents: '<i class="fa fa-code"/>',
           tooltip: lang.options.codeview,
           click: context.createInvokeHandler('codeview.toggle')
+        }).render();
+      });
+
+      context.memo('button.redo', function () {
+        return ui.button({
+          contents: '<i class="fa fa-repeat"/>',
+          tooltip: lang.history.redo + representShortcut('redo'),
+          click: context.createInvokeHandler('editor.redo')
+        }).render();
+      });
+
+      context.memo('button.undo', function () {
+        return ui.button({
+          contents: '<i class="fa fa-undo"/>',
+          tooltip: lang.history.undo + representShortcut('undo'),
+          click: context.createInvokeHandler('editor.undo')
         }).render();
       });
 
