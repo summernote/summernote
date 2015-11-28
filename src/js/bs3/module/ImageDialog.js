@@ -1,7 +1,6 @@
 define([
-  'summernote/base/core/key',
-  'summernote/base/core/async'
-], function (key, async) {
+  'summernote/base/core/key'
+], function (key) {
   var ImageDialog = function (context) {
     var self = this;
     var ui = $.summernote.ui;

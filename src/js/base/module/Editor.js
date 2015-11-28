@@ -28,6 +28,7 @@ define([
     var $editor = context.layoutInfo.editor;
     var $editable = context.layoutInfo.editable;
     var options = context.options;
+    var lang = options.langInfo;
 
     var style = new Style();
     var table = new Table();
@@ -190,7 +191,7 @@ define([
       history.undo();
       context.triggerEvent('change', $editable.html());
     };
-    context.memo('help.undo', options.langInfo.help.undo);
+    context.memo('help.undo', lang.help.undo);
 
     /**
      * redo
@@ -200,7 +201,7 @@ define([
       history.redo();
       context.triggerEvent('change', $editable.html());
     };
-    context.memo('help.redo', options.langInfo.help.redo);
+    context.memo('help.redo', lang.help.redo);
 
     this.reset = function () {
       context.triggerEvent('before.command', $editable.html());
@@ -251,7 +252,7 @@ define([
           afterCommand(true);
         };
       })(commands[idx]);
-      context.memo('help.' + commands[idx], options.langInfo.help[commands[idx]]);
+      context.memo('help.' + commands[idx], lang.help[commands[idx]]);
     }
     /* jshint ignore:end */
 
@@ -270,7 +271,7 @@ define([
         afterCommand();
       }
     };
-    context.memo('help.tab', options.langInfo.help.tab);
+    context.memo('help.tab', lang.help.tab);
 
     /**
      * untab
@@ -284,7 +285,7 @@ define([
         table.tab(rng, true);
       }
     };
-    context.memo('help.untab', options.langInfo.help.untab);
+    context.memo('help.untab', lang.help.untab);
 
     /**
      * wrapCommand
@@ -307,7 +308,7 @@ define([
     this.insertParagraph = this.wrapCommand(function () {
       typing.insertParagraph($editable);
     });
-    context.memo('help.insertParagraph', options.langInfo.help.insertParagraph);
+    context.memo('help.insertParagraph', lang.help.insertParagraph);
 
     /**
      * insertOrderedList
@@ -315,22 +316,22 @@ define([
     this.insertOrderedList = this.wrapCommand(function () {
       bullet.insertOrderedList($editable);
     });
-    context.memo('help.insertOrderedList', options.langInfo.help.insertOrderedList);
+    context.memo('help.insertOrderedList', lang.help.insertOrderedList);
 
     this.insertUnorderedList = this.wrapCommand(function () {
       bullet.insertUnorderedList($editable);
     });
-    context.memo('help.insertUnorderedList', options.langInfo.help.insertUnorderedList);
+    context.memo('help.insertUnorderedList', lang.help.insertUnorderedList);
 
     this.indent = this.wrapCommand(function () {
       bullet.indent($editable);
     });
-    context.memo('help.indent', options.langInfo.help.indent);
+    context.memo('help.indent', lang.help.indent);
 
     this.outdent = this.wrapCommand(function () {
       bullet.outdent($editable);
     });
-    context.memo('help.outdent', options.langInfo.help.outdent);
+    context.memo('help.outdent', lang.help.outdent);
 
     /**
      * insert image
@@ -364,7 +365,7 @@ define([
           context.triggerEvent('image.upload.error', lang.image.maximumFileSizeError);
         } else {
           async.readFileAsDataURL(file).then(function (dataURL) {
-            self.insertImage(dataURL, filename);
+            return self.insertImage(dataURL, filename);
           }).fail(function () {
             context.triggerEvent('image.upload.error');
           });
@@ -445,7 +446,7 @@ define([
     this.formatPara = function () {
       this.formatBlock('P');
     };
-    context.memo('help.formatPara', options.langInfo.help.formatPara);
+    context.memo('help.formatPara', lang.help.formatPara);
 
     /* jshint ignore:start */
     for (var idx = 1; idx <= 6; idx ++) {
@@ -454,7 +455,7 @@ define([
           this.formatBlock('H' + idx);
         };
       }(idx);
-      context.memo('help.formatH'+idx, options.langInfo.help['formatH' + idx]);
+      context.memo('help.formatH'+idx, lang.help['formatH' + idx]);
     };
     /* jshint ignore:end */
 
@@ -501,7 +502,7 @@ define([
         range.create(hrNode.nextSibling, 0).normalize().select();
       }
     });
-    context.memo('help.insertHorizontalRule', options.langInfo.help.insertHorizontalRule);
+    context.memo('help.insertHorizontalRule', lang.help.insertHorizontalRule);
 
 
     /**
