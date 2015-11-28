@@ -52,29 +52,6 @@ define([
       });
     };
 
-    this.insertImages = function (files) {
-      var callbacks = options.callbacks;
-
-      // If onImageUpload options setted
-      if (callbacks.onImageUpload) {
-        context.triggerEvent('image.upload', files);
-      // else insert Image as dataURL
-      } else {
-        $.each(files, function (idx, file) {
-          var filename = file.name;
-          if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
-            context.triggerEvent('image.upload.error', lang.image.maximumFileSizeError);
-          } else {
-            async.readFileAsDataURL(file).then(function (dataURL) {
-              context.invoke('editor.insertImage', dataURL, filename);
-            }).fail(function () {
-              context.triggerEvent('image.upload.error');
-            });
-          }
-        });
-      }
-    };
-
     this.show = function () {
       context.invoke('editor.saveRange');
       this.showImageDialog().then(function (data) {
@@ -82,12 +59,10 @@ define([
         ui.hideDialog(self.$dialog);
         context.invoke('editor.restoreRange');
 
-        if (typeof data === 'string') {
-          // image url
+        if (typeof data === 'string') { // image url
           context.invoke('editor.insertImage', data);
-        } else {
-          // array of files
-          self.insertImages(data);
+        } else { // array of files
+          context.invoke('editor.insertImagesOrCallback', data);
         }
       }).fail(function () {
         context.invoke('editor.restoreRange');

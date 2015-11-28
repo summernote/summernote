@@ -71,7 +71,7 @@ define([
 
         context.invoke('editor.restoreRange');
         context.invoke('editor.focus');
-        context.invoke('imageDialog.insertImages', [blob]);
+        context.invoke('editor.insertImagesOrCallback', [blob]);
       } else {
         var pasteContent = $('<div />').html(this.$paste.html()).html();
         context.invoke('editor.restoreRange');
@@ -95,7 +95,7 @@ define([
       if (clipboardData && clipboardData.items && clipboardData.items.length) {
         var item = list.head(clipboardData.items);
         if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
-          context.invoke('imageDialog.insertImages', [item.getAsFile()]);
+          context.invoke('editor.insertImagesOrCallback', [item.getAsFile()]);
         }
         context.invoke('editor.afterCommand');
       }

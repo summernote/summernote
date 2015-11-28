@@ -71,7 +71,7 @@ define(function () {
         if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
           event.preventDefault();
           $editable.focus();
-          context.invoke('imageDialog.insertImages', dataTransfer.files);
+          context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
         } else {
           $.each(dataTransfer.types, function (idx, type) {
             var content = dataTransfer.getData(type);
