@@ -1,33 +1,13 @@
-/* Theme Mixins
- ------------------------------------------*/
-
-@mixin opacity($opacity) {
-  opacity: $opacity;
-  // IE8 filter
-  $opacity-ie: ($opacity * 100);
-  filter: #{alpha(opacity=$opacity-ie)};
-}
-
-@mixin box-shadow($shadow...) {
-  -webkit-box-shadow: $shadow; // iOS <4.3 & Android <4.1
-          box-shadow: $shadow;
-}
-
-@mixin box-sizing($boxmodel) {
-  -webkit-box-sizing: $boxmodel;
-     -moz-box-sizing: $boxmodel;
-          box-sizing: $boxmodel;
-}
+@import "elements.scss";
 
 /* Theme Variables
  ------------------------------------------*/
-$border-color: #a9a9a9 !default;
-$background-color: #f5f5f5 !default;
+$border-color: #a9a9a9;
+$background-color: #f5f5f5;
 
-/* Frame Mode Layout
+/* Layout
  ------------------------------------------*/
 .note-editor {
-  border: 1px solid $border-color;
   position: relative;
 
   /* dropzone */
@@ -37,10 +17,9 @@ $background-color: #f5f5f5 !default;
     position: absolute;
     display: none;
     z-index: 100;
-    border: 2px dashed $dropzone-color;
     color: $dropzone-color;
     background-color: white;
-    @include opacity(.95);
+    opacity: 0.95;
     pointer-event: none;
 
     .note-dropzone-message {
@@ -52,13 +31,73 @@ $background-color: #f5f5f5 !default;
     }
 
     &.hover {
-      border: 2px dashed $dropzone-active-color;
       color: $dropzone-active-color;
     }
   }
 
   &.dragover .note-dropzone {
     display: table;
+  }
+
+  .note-editing-area {
+    position: relative;
+
+    .note-editable {
+      outline: none;
+    }
+  }
+}
+
+/* Frame mode layout
+------------------------------------------*/
+.note-editor.note-frame {
+  border: 1px solid $border-color;
+
+  /* codeview mode */
+  &.codeview {
+    .note-editing-area {
+      .note-editable {
+        display: none;
+      }
+      .note-codable {
+        display: block;
+      }
+    }
+  }
+
+  .note-editing-area {
+    overflow: hidden;
+
+    /* editable */
+    .note-editable {
+      background-color: #fff;
+      color: #000;
+      padding: 10px;
+      overflow: auto;
+
+      &[contenteditable="false"] {
+        background-color: #e5e5e5;
+      }
+    }
+
+    /* codeable */
+    .note-codable {
+      display: none;
+      width: 100%;
+      padding: 10px;
+      border: none;
+      box-shadow: none;
+      font-family: Menlo, Monaco, monospace, sans-serif;
+      font-size: 14px;
+      color: #ccc;
+      background-color: #222;
+      resize: none;
+
+      /* override BS2 default style */
+      @include box-sizing(border-box);
+      @include rounded(0);
+      margin-bottom: 0;
+    }
   }
 
   /* fullscreen mode */
@@ -76,23 +115,15 @@ $background-color: #f5f5f5 !default;
     }
   }
 
-  /* codeview mode */
-  &.codeview {
-    .note-editable {
-      display: none;
-    }
-    .note-codable {
-      display: block;
-    }
-  }
-
   /* statusbar */
   .note-statusbar {
     background-color: $background-color;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
     .note-resizebar {
+      padding-top: 1px;
       height: 8px;
       width: 100%;
-      border-top: 1px solid $border-color;
       cursor: ns-resize;
       .note-icon-bar {
         width: 20px;
@@ -101,52 +132,14 @@ $background-color: #f5f5f5 !default;
       }
     }
   }
-
-  /* editable */
-  .note-editable[contenteditable=true]:empty:not(:focus):before {
-    content:attr(data-placeholder);
-  }
-
-  .note-editable {
-    background-color: #fff;
-    color: #000;
+  .note-placeholder {
     padding: 10px;
-    overflow: auto;
-    outline: none;
   }
-  .note-editable[contenteditable="false"] {
-    background-color: #e5e5e5;
-  }
-
-  /* codeable */
-  .note-codable {
-    display: none;
-    width: 100%;
-    padding: 10px;
-    border: none;
-    box-shadow: none;
-    font-family: Menlo, Monaco, monospace, sans-serif;
-    font-size: 14px;
-    color: #ccc;
-    background-color: #222;
-    resize: none;
-
-    /* override BS2 default style */
-    @include box-sizing(border-box);
-    border-radius: 0;
-    margin-bottom: 0;
-  }
-}
-
-/* Air Mode Layout
- ------------------------------------------*/
-.note-air-editor {
-  outline: none;
 }
 
 /* Popover
- ------------------------------------------*/
-.note-popover .popover {
+------------------------------------------*/
+.note-popover.popover {
   max-width: none;
   .popover-content {
     a {
@@ -158,14 +151,14 @@ $background-color: #f5f5f5 !default;
       vertical-align: middle; /* for FF */
     }
   }
-  & .arrow {
-    left: 20px;
+  .arrow {
+    left: 20px !important;
   }
 }
 
 /* Popover and Toolbar (Button container)
- ------------------------------------------*/
-.note-popover .popover .popover-content, .panel-heading.note-toolbar {
+------------------------------------------*/
+.note-popover .popover-content, .panel-heading.note-toolbar {
   margin: 0;
   padding: 0 0 5px 5px;
 
@@ -237,7 +230,7 @@ $background-color: #f5f5f5 !default;
           margin: 3px;
           padding: 0 3px;
           cursor: pointer;
-          border-radius: 5px;
+          @include rounded(5px);
         }
 
         .note-color-row {
@@ -273,15 +266,17 @@ $background-color: #f5f5f5 !default;
       &::before { right: 9px; left: auto !important;  }
       &::after { right: 10px; left: auto !important;  }
     }
-
     /* dropdown-menu for selectbox */
-    li a i {
-      color: deepskyblue;
-      visibility: hidden;
+    &.note-check {
+      li a i {
+        color: deepskyblue;
+        visibility: hidden;
+      }
+      li a.checked i {
+        visibility: visible;
+      }
     }
-    li a.checked i {
-      visibility: visible;
-    }
+
   }
 
   .note-fontsize-10 {
@@ -307,9 +302,9 @@ $background-color: #f5f5f5 !default;
 }
 
 /* Dialog
- ------------------------------------------*/
+------------------------------------------*/
 .note-dialog {
-  & > div {
+  &>div {
     display: none; /* BS2's hide pacth. */
   }
   .form-group { /* overwrite BS's form-horizontal minus margins */
@@ -330,78 +325,18 @@ $background-color: #f5f5f5 !default;
       margin-bottom: 10px;
     }
   }
-  .note-help-dialog {
-    $note-shortcut-hl: #dd0;
-    font-size: 12px;
-    color: #ccc;
-    background-color: #222 !important;
-    @include opacity(.9);
-    .modal-content {
-      background: transparent;
-      border: 1px solid white;
-      @include box-shadow(none);
-      border-radius: 5px;
-    }
+}
 
-    /* BS2's background pacth. */
-    background: transparent;
-    border: none;
-
-    a {
-      font-size: 12px;
-      color: white;
-    }
-
-    .title {
-      color: white;
-      font-size: 14px;
-      font-weight: bold;
-      padding-bottom: 5px;
-      margin-bottom: 10px;
-      border-bottom: white 1px solid;
-    }
-
-    .modal-close {
-      font-size: 14px;
-      color: $note-shortcut-hl;
-      cursor: pointer;
-    }
-
-    .text-center {
-      margin: 10px 0 0;
-    }
-
-    .note-shortcut {
-      padding-top: 8px;
-      padding-bottom: 8px;
-
-      &-row {
-        margin-right: -5px;
-        margin-left: -5px;
-      }
-
-      &-col {
-        padding-right: 5px;
-        padding-left: 5px;
-      }
-
-      &-title {
-        font-size: 13px;
-        font-weight: bold;
-        color: $note-shortcut-hl;
-      }
-
-      &-key {
-        font-family: "Courier New";
-        color: $note-shortcut-hl;
-        text-align: right;
-      }
-    }
-  }
+/* Placeholder
+------------------------------------------*/
+.note-placeholder {
+  position: absolute;
+  display: none;
+  color: gray;
 }
 
 /* Handle
- ------------------------------------------*/
+------------------------------------------*/
 .note-handle {
   /* control selection */
   .note-control-selection {
@@ -414,7 +349,7 @@ $background-color: #f5f5f5 !default;
       width: 100%;
       height: 100%;
       background-color: black;
-      @include opacity(.30);
+      .opacity(0.30)
     }
 
     .note-control-handle {
@@ -424,11 +359,11 @@ $background-color: #f5f5f5 !default;
     }
 
     .note-control-holder {
-      @extend .note-control-handle;
+      @include note-control-handle;
     }
 
     .note-control-sizing {
-      @extend .note-control-handle;
+      @include note-control-handle;
       background-color: white;
     }
 
@@ -473,8 +408,39 @@ $background-color: #f5f5f5 !default;
       color: white;
       background-color: black;
       font-size: 12px;
-      border-radius: 5px;
-      @include opacity(.7);
+      @include rounded(5px);
+      @include opacity(0.7);
+    }
+  }
+}
+
+.note-hint-popover {
+  min-width: 100px;
+  padding: 2px;
+
+  .popover-content {
+    padding: 3px;
+    max-height: 150px;
+    overflow: auto;
+
+    .note-hint-group {
+      .note-hint-item {
+        display: block !important;
+        padding: 3px;
+
+        &.active, &:hover {
+          display: block;
+          clear: both;
+          font-weight: 400;
+          line-height: 1.4;
+          color: white;
+          white-space: nowrap;
+          text-decoration: none;
+          background-color: #428bca;
+          outline: 0;
+          cursor: pointer;
+        }
+      }
     }
   }
 }

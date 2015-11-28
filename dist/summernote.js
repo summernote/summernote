@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-11-13T01:45Z
+ * Date: 2015-11-28T05:10Z
  */
 (function (factory) {
   /* global define */
@@ -4685,7 +4685,6 @@
     var self = this;
 
     var $document = $(document);
-
     var $editingArea = context.layoutInfo.editingArea;
     var options = context.options;
 
@@ -4868,6 +4867,38 @@
     };
   };
 
+  var Placeholder = function (context) {
+    var self = this;
+    var $editingArea = context.layoutInfo.editingArea;
+    var options = context.options;
+
+    this.events = {
+      'summernote.init summernote.change': function () {
+        self.update();
+      }
+    };
+
+    this.shouldInitialize = function () {
+      return !!options.placeholder;
+    };
+
+    this.initialize = function () {
+      this.$placeholder = $('<div class="note-placeholder">');
+      this.$placeholder.on('click', function () {
+        context.invoke('focus');
+      }).text(options.placeholder).prependTo($editingArea);
+    };
+
+    this.destroy = function () {
+      this.$placeholder.remove();
+    };
+
+    this.update = function () {
+      var isEmpty = context.invoke('editor.isEmpty');
+      this.$placeholder.toggle(isEmpty);
+    };
+  };
+
   var Buttons = function (context) {
     var self = this;
     var ui = $.summernote.ui;
@@ -4949,6 +4980,30 @@
           contents: '<i class="fa fa-eraser"/>',
           tooltip: lang.font.clear + representShortcut('removeFormat'),
           click: context.createInvokeHandler('editor.removeFormat')
+        }).render();
+      });
+
+      context.memo('button.strikethrough', function () {
+        return ui.button({
+          contents: '<i class="fa fa-strikethrough"/>',
+          tooltip: lang.font.strikethrough + representShortcut('strikethrough'),
+          click: context.createInvokeHandler('editor.strikethrough')
+        }).render();
+      });
+
+      context.memo('button.superscript', function () {
+        return ui.button({
+          contents: '<i class="fa fa-superscript"/>',
+          tooltip: lang.font.superscript,
+          click: context.createInvokeHandler('editor.superscript')
+        }).render();
+      });
+
+      context.memo('button.subscript', function () {
+        return ui.button({
+          contents: '<i class="fa fa-subscript"/>',
+          tooltip: lang.font.subscript,
+          click: context.createInvokeHandler('editor.subscript')
         }).render();
       });
 
@@ -5235,6 +5290,22 @@
           contents: '<i class="fa fa-code"/>',
           tooltip: lang.options.codeview,
           click: context.createInvokeHandler('codeview.toggle')
+        }).render();
+      });
+
+      context.memo('button.redo', function () {
+        return ui.button({
+          contents: '<i class="fa fa-repeat"/>',
+          tooltip: lang.history.redo + representShortcut('redo'),
+          click: context.createInvokeHandler('editor.redo')
+        }).render();
+      });
+
+      context.memo('button.undo', function () {
+        return ui.button({
+          contents: '<i class="fa fa-undo"/>',
+          tooltip: lang.history.undo + representShortcut('undo'),
+          click: context.createInvokeHandler('editor.undo')
         }).render();
       });
 
@@ -6435,6 +6506,7 @@
         'handle': Handle,
         'autoLink': AutoLink,
         'autoSync': AutoSync,
+        'placeholder': Placeholder,
         'buttons' : Buttons,
         'toolbar': Toolbar,
         'linkDialog': LinkDialog,
