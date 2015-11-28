@@ -75,9 +75,6 @@
       padding: 10px;
       overflow: auto;
 
-      &[contenteditable=true]:empty:not(:focus):before {
-        content:attr(data-placeholder);
-      }
       &[contenteditable="false"] {
         background-color: #e5e5e5;
       }
@@ -134,6 +131,9 @@
         border-top: 1px solid @border-color;
       }
     }
+  }
+  .note-placeholder {
+    padding: 10px;
   }
 }
 
@@ -325,6 +325,14 @@
       margin-bottom: 10px;
     }
   }
+}
+
+/* Placeholder
+------------------------------------------*/
+.note-placeholder {
+  position: absolute;
+  display: none;
+  color: gray;
 }
 
 /* Handle

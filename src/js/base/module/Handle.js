@@ -5,7 +5,6 @@ define([
     var self = this;
 
     var $document = $(document);
-
     var $editingArea = context.layoutInfo.editingArea;
     var options = context.options;
 
