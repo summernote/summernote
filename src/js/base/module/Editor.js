@@ -336,9 +336,10 @@ define([
      * insert image
      *
      * @param {String} sUrl
+     * @return {Promise}
      */
     this.insertImage = function (sUrl, filename) {
-      async.createImage(sUrl, filename).then(function ($image) {
+      return async.createImage(sUrl, filename).then(function ($image) {
         beforeCommand();
         $image.css({
           display: '',
