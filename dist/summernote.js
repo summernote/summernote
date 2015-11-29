@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-11-28T05:10Z
+ * Date: 2015-11-29T11:16Z
  */
 (function (factory) {
   /* global define */
@@ -3631,6 +3631,7 @@
     var $editor = context.layoutInfo.editor;
     var $editable = context.layoutInfo.editable;
     var options = context.options;
+    var lang = options.langInfo;
 
     var style = new Style();
     var table = new Table();
@@ -3793,7 +3794,7 @@
       history.undo();
       context.triggerEvent('change', $editable.html());
     };
-    context.memo('help.undo', options.langInfo.help.undo);
+    context.memo('help.undo', lang.help.undo);
 
     /**
      * redo
@@ -3803,7 +3804,7 @@
       history.redo();
       context.triggerEvent('change', $editable.html());
     };
-    context.memo('help.redo', options.langInfo.help.redo);
+    context.memo('help.redo', lang.help.redo);
 
     this.reset = function () {
       context.triggerEvent('before.command', $editable.html());
@@ -3854,7 +3855,7 @@
           afterCommand(true);
         };
       })(commands[idx]);
-      context.memo('help.' + commands[idx], options.langInfo.help[commands[idx]]);
+      context.memo('help.' + commands[idx], lang.help[commands[idx]]);
     }
     /* jshint ignore:end */
 
@@ -3873,7 +3874,7 @@
         afterCommand();
       }
     };
-    context.memo('help.tab', options.langInfo.help.tab);
+    context.memo('help.tab', lang.help.tab);
 
     /**
      * untab
@@ -3887,7 +3888,7 @@
         table.tab(rng, true);
       }
     };
-    context.memo('help.untab', options.langInfo.help.untab);
+    context.memo('help.untab', lang.help.untab);
 
     /**
      * wrapCommand
@@ -3910,7 +3911,7 @@
     this.insertParagraph = this.wrapCommand(function () {
       typing.insertParagraph($editable);
     });
-    context.memo('help.insertParagraph', options.langInfo.help.insertParagraph);
+    context.memo('help.insertParagraph', lang.help.insertParagraph);
 
     /**
      * insertOrderedList
@@ -3918,30 +3919,31 @@
     this.insertOrderedList = this.wrapCommand(function () {
       bullet.insertOrderedList($editable);
     });
-    context.memo('help.insertOrderedList', options.langInfo.help.insertOrderedList);
+    context.memo('help.insertOrderedList', lang.help.insertOrderedList);
 
     this.insertUnorderedList = this.wrapCommand(function () {
       bullet.insertUnorderedList($editable);
     });
-    context.memo('help.insertUnorderedList', options.langInfo.help.insertUnorderedList);
+    context.memo('help.insertUnorderedList', lang.help.insertUnorderedList);
 
     this.indent = this.wrapCommand(function () {
       bullet.indent($editable);
     });
-    context.memo('help.indent', options.langInfo.help.indent);
+    context.memo('help.indent', lang.help.indent);
 
     this.outdent = this.wrapCommand(function () {
       bullet.outdent($editable);
     });
-    context.memo('help.outdent', options.langInfo.help.outdent);
+    context.memo('help.outdent', lang.help.outdent);
 
     /**
      * insert image
      *
      * @param {String} sUrl
+     * @return {Promise}
      */
     this.insertImage = function (sUrl, filename) {
-      async.createImage(sUrl, filename).then(function ($image) {
+      return async.createImage(sUrl, filename).then(function ($image) {
         beforeCommand();
         $image.css({
           display: '',
@@ -3953,6 +3955,41 @@
       }).fail(function () {
         context.triggerEvent('image.upload.error');
       });
+    };
+
+    /**
+     * insertImages
+     * @param {File[]} files
+     */
+    this.insertImages = function (files) {
+      $.each(files, function (idx, file) {
+        var filename = file.name;
+        if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
+          context.triggerEvent('image.upload.error', lang.image.maximumFileSizeError);
+        } else {
+          async.readFileAsDataURL(file).then(function (dataURL) {
+            return self.insertImage(dataURL, filename);
+          }).fail(function () {
+            context.triggerEvent('image.upload.error');
+          });
+        }
+      });
+    };
+
+    /**
+     * insertImagesOrCallback
+     * @param {File[]} files
+     */
+    this.insertImagesOrCallback = function (files) {
+      var callbacks = options.callbacks;
+
+      // If onImageUpload options setted
+      if (callbacks.onImageUpload) {
+        context.triggerEvent('image.upload', files);
+      // else insert Image as dataURL
+      } else {
+        this.insertImages(files);
+      }
     };
 
     /**
@@ -4012,7 +4049,7 @@
     this.formatPara = function () {
       this.formatBlock('P');
     };
-    context.memo('help.formatPara', options.langInfo.help.formatPara);
+    context.memo('help.formatPara', lang.help.formatPara);
 
     /* jshint ignore:start */
     for (var idx = 1; idx <= 6; idx ++) {
@@ -4021,7 +4058,7 @@
           this.formatBlock('H' + idx);
         };
       }(idx);
-      context.memo('help.formatH'+idx, options.langInfo.help['formatH' + idx]);
+      context.memo('help.formatH'+idx, lang.help['formatH' + idx]);
     };
     /* jshint ignore:end */
 
@@ -4068,7 +4105,7 @@
         range.create(hrNode.nextSibling, 0).normalize().select();
       }
     });
-    context.memo('help.insertHorizontalRule', options.langInfo.help.insertHorizontalRule);
+    context.memo('help.insertHorizontalRule', lang.help.insertHorizontalRule);
 
 
     /**
@@ -4374,7 +4411,7 @@
 
         context.invoke('editor.restoreRange');
         context.invoke('editor.focus');
-        context.invoke('imageDialog.insertImages', [blob]);
+        context.invoke('editor.insertImagesOrCallback', [blob]);
       } else {
         var pasteContent = $('<div />').html(this.$paste.html()).html();
         context.invoke('editor.restoreRange');
@@ -4398,7 +4435,7 @@
       if (clipboardData && clipboardData.items && clipboardData.items.length) {
         var item = list.head(clipboardData.items);
         if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
-          context.invoke('imageDialog.insertImages', [item.getAsFile()]);
+          context.invoke('editor.insertImagesOrCallback', [item.getAsFile()]);
         }
         context.invoke('editor.afterCommand');
       }
@@ -4477,7 +4514,7 @@
         if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
           event.preventDefault();
           $editable.focus();
-          context.invoke('imageDialog.insertImages', dataTransfer.files);
+          context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
         } else {
           $.each(dataTransfer.types, function (idx, type) {
             var content = dataTransfer.getData(type);
@@ -5825,29 +5862,6 @@
       });
     };
 
-    this.insertImages = function (files) {
-      var callbacks = options.callbacks;
-
-      // If onImageUpload options setted
-      if (callbacks.onImageUpload) {
-        context.triggerEvent('image.upload', files);
-      // else insert Image as dataURL
-      } else {
-        $.each(files, function (idx, file) {
-          var filename = file.name;
-          if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
-            context.triggerEvent('image.upload.error', lang.image.maximumFileSizeError);
-          } else {
-            async.readFileAsDataURL(file).then(function (dataURL) {
-              context.invoke('editor.insertImage', dataURL, filename);
-            }).fail(function () {
-              context.triggerEvent('image.upload.error');
-            });
-          }
-        });
-      }
-    };
-
     this.show = function () {
       context.invoke('editor.saveRange');
       this.showImageDialog().then(function (data) {
@@ -5855,12 +5869,10 @@
         ui.hideDialog(self.$dialog);
         context.invoke('editor.restoreRange');
 
-        if (typeof data === 'string') {
-          // image url
+        if (typeof data === 'string') { // image url
           context.invoke('editor.insertImage', data);
-        } else {
-          // array of files
-          self.insertImages(data);
+        } else { // array of files
+          context.invoke('editor.insertImagesOrCallback', data);
         }
       }).fail(function () {
         context.invoke('editor.restoreRange');
