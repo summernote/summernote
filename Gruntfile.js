@@ -96,7 +96,7 @@ module.exports = function (grunt) {
             'dist/*.css'
           ]
         }, {
-          src: ['plugin/*.js'],
+          src: ['plugin/**/*.js', 'lang/**/*.js'],
           dest: 'dist/'
         }]
       }
