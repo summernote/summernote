@@ -7,7 +7,6 @@ define([
     var self = this;
     var ui = $.summernote.ui;
 
-    var $editingArea = context.layoutInfo.editingArea;
     var options = context.options;
 
     var AIR_MODE_POPOVER_X_OFFSET = 20;
