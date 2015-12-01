@@ -57,12 +57,17 @@ define([
         context.triggerEvent('mousedown', event);
       }).on('mouseup', function (event) {
         context.triggerEvent('mouseup', event);
-      }).on('input', function (event) {
-        context.triggerEvent('change', event);
       }).on('scroll', function (event) {
         context.triggerEvent('scroll', event);
       }).on('paste', function (event) {
         context.triggerEvent('paste', event);
+      });
+
+      // [workaround] IE doesn't have input events for contentEditable
+      // - see: https://goo.gl/4bfIvA
+      var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified' : 'input';
+      $editable.on(changeEventName, function (event) {
+        context.triggerEvent('change', event);
       });
 
       $editor.on('focusin', function (event) {
