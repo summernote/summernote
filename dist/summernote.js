@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-12-01T09:54Z
+ * Date: 2015-12-01T12:44Z
  */
 (function (factory) {
   /* global define */
@@ -3652,6 +3652,10 @@
           context.triggerEvent('enter', event);
         }
         context.triggerEvent('keydown', event);
+
+        if (options.shortcuts && !event.isDefaultPrevented()) {
+          self.handleKeyMap(event);
+        }
       }).on('keyup', function (event) {
         context.triggerEvent('keyup', event);
       }).on('focus', function (event) {
@@ -3676,11 +3680,6 @@
         context.triggerEvent('focusout', event);
       });
 
-      // bind keymap
-      if (options.shortcuts) {
-        this.bindKeyMap();
-      }
-
       if (!options.airMode && options.height) {
         $editable.outerHeight(options.height);
       }
@@ -3693,28 +3692,26 @@
       $editable.off();
     };
 
-    this.bindKeyMap = function () {
+    this.handleKeyMap = function (event) {
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
-      $editable.on('keydown', function (event) {
-        var keys = [];
+      var keys = [];
 
-        if (event.metaKey) { keys.push('CMD'); }
-        if (event.ctrlKey && !event.altKey) { keys.push('CTRL'); }
-        if (event.shiftKey) { keys.push('SHIFT'); }
+      if (event.metaKey) { keys.push('CMD'); }
+      if (event.ctrlKey && !event.altKey) { keys.push('CTRL'); }
+      if (event.shiftKey) { keys.push('SHIFT'); }
 
-        var keyName = key.nameFromCode[event.keyCode];
-        if (keyName) {
-          keys.push(keyName);
-        }
+      var keyName = key.nameFromCode[event.keyCode];
+      if (keyName) {
+        keys.push(keyName);
+      }
 
-        var eventName = keyMap[keys.join('+')];
-        if (eventName) {
-          event.preventDefault();
-          context.invoke(eventName);
-        } else if (key.isEdit(event.keyCode)) {
-          self.afterCommand();
-        }
-      });
+      var eventName = keyMap[keys.join('+')];
+      if (eventName) {
+        event.preventDefault();
+        context.invoke(eventName);
+      } else if (key.isEdit(event.keyCode)) {
+        this.afterCommand();
+      }
     };
 
     /**
@@ -4843,7 +4840,9 @@
 
     this.events = {
       'summernote.keyup': function (we, e) {
-        self.handleKeyup(e);
+        if (!e.isDefaultPrevented()) {
+          self.handleKeyup(e);
+        }
       },
       'summernote.keydown': function (we, e) {
         self.handleKeydown(e);
@@ -6313,7 +6312,9 @@
 
     this.events = {
       'summernote.keyup': function (we, e) {
-        self.handleKeyup(e);
+        if (!e.isDefaultPrevented()) {
+          self.handleKeyup(e);
+        }
       },
       'summernote.keydown' : function (we, e) {
         self.handleKeydown(e);
@@ -6524,6 +6525,9 @@
         'statusbar': Statusbar,
         'fullscreen': Fullscreen,
         'handle': Handle,
+        // FIXME: HintPopover must be front of autolink
+        //  - Script error about range when Enter key is pressed on hint popover
+        'hintPopover': HintPopover,
         'autoLink': AutoLink,
         'autoSync': AutoSync,
         'placeholder': Placeholder,
@@ -6535,8 +6539,7 @@
         'imagePopover': ImagePopover,
         'videoDialog': VideoDialog,
         'helpDialog': HelpDialog,
-        'airPopover': AirPopover,
-        'hintPopover': HintPopover
+        'airPopover': AirPopover
       },
 
       buttons: {},
