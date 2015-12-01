@@ -103,7 +103,7 @@ define([
 
   var icon = function (iconClassName, tagName) {
     tagName = tagName || 'i';
-    return '<' + tagName + ' class="' + iconClassName + '">';
+    return '<' + tagName + ' class="' + iconClassName + '"/>';
   };
 
   var ui = {
