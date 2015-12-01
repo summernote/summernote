@@ -42,7 +42,7 @@ define([
 
   var dropdownCheck = renderer.create('<div class="dropdown-menu note-check">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
-      return '<li><a href="#" data-value="' + item + '"><i class="fa fa-check" /> ' + item + '</a></li>';
+      return '<li><a href="#" data-value="' + item + '">' + icon(options.checkClassName) + ' ' + item + '</a></li>';
     }).join('') : options.items;
     $node.html(markup);
   });
@@ -80,14 +80,14 @@ define([
       '<div class="modal-dialog">',
       '<div class="modal-content">',
       (options.title ?
-      '<div class="modal-header">' +
-        '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-        '<h4 class="modal-title">' + options.title + '</h4>' +
-      '</div>' : ''
+          '<div class="modal-header">' +
+          '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+          '<h4 class="modal-title">' + options.title + '</h4>' +
+          '</div>' : ''
       ),
       '<div class="modal-body">' + options.body + '</div>',
       (options.footer ?
-      '<div class="modal-footer">' + options.footer + '</div>' : ''
+          '<div class="modal-footer">' + options.footer + '</div>' : ''
       ),
       '</div>',
       '</div>'
@@ -100,6 +100,11 @@ define([
     '  <div class="popover-content note-children-container"/>',
     '</div>'
   ].join(''));
+
+  var icon = function (iconClassName, tag) {
+    tag = tag || 'i';
+    return '<' + tag + ' class="' + iconClassName + '" />';
+  };
 
   var ui = {
     editor: editor,
@@ -117,6 +122,7 @@ define([
     palette: palette,
     dialog: dialog,
     popover: popover,
+    icon: icon,
 
     toggleBtn: function ($btn, isEnable) {
       $btn.toggleClass('disabled', !isEnable);
