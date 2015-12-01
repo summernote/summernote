@@ -20,7 +20,7 @@ define([
         self.hide();
       },
       'summernote.focusout': function (we, e) {
-        if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq($editingArea[0]))) {
+        if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq(self.$popover[0]))) {
           self.hide();
         }
       }
