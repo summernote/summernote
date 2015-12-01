@@ -46,6 +46,7 @@ define([
       } else {
         this.activate();
       }
+      context.triggerEvent('codeview.toggled');
     };
 
     /**

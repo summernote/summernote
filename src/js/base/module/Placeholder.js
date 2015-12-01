@@ -7,6 +7,9 @@ define(function () {
     this.events = {
       'summernote.init summernote.change': function () {
         self.update();
+      },
+      'summernote.codeview.toggled': function () {
+        self.update();
       }
     };
 
@@ -26,8 +29,8 @@ define(function () {
     };
 
     this.update = function () {
-      var isEmpty = context.invoke('editor.isEmpty');
-      this.$placeholder.toggle(isEmpty);
+      var isShow = !context.invoke('codeview.isActivated') && context.invoke('editor.isEmpty');
+      this.$placeholder.toggle(isShow);
     };
   };
 
