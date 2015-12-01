@@ -101,9 +101,9 @@ define([
     '</div>'
   ].join(''));
 
-  var icon = function (iconClassName, tag) {
-    tag = tag || 'i';
-    return '<' + tag + ' class="' + iconClassName + '" />';
+  var icon = function (iconClassName, tagName) {
+    tagName = tagName || 'i';
+    return '<' + tagName + ' class="' + iconClassName + '">';
   };
 
   var ui = {
