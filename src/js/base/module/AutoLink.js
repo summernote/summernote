@@ -12,7 +12,9 @@ define([
 
     this.events = {
       'summernote.keyup': function (we, e) {
-        self.handleKeyup(e);
+        if (!e.isDefaultPrevented()) {
+          self.handleKeyup(e);
+        }
       },
       'summernote.keydown': function (we, e) {
         self.handleKeydown(e);
