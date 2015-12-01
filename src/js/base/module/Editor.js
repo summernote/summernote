@@ -43,6 +43,10 @@ define([
           context.triggerEvent('enter', event);
         }
         context.triggerEvent('keydown', event);
+
+        if (options.shortcuts && !event.isDefaultPrevented()) {
+          self.handleKeyMap(event);
+        }
       }).on('keyup', function (event) {
         context.triggerEvent('keyup', event);
       }).on('focus', function (event) {
@@ -67,11 +71,6 @@ define([
         context.triggerEvent('focusout', event);
       });
 
-      // bind keymap
-      if (options.shortcuts) {
-        this.bindKeyMap();
-      }
-
       if (!options.airMode && options.height) {
         $editable.outerHeight(options.height);
       }
@@ -84,28 +83,26 @@ define([
       $editable.off();
     };
 
-    this.bindKeyMap = function () {
+    this.handleKeyMap = function (event) {
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
-      $editable.on('keydown', function (event) {
-        var keys = [];
+      var keys = [];
 
-        if (event.metaKey) { keys.push('CMD'); }
-        if (event.ctrlKey && !event.altKey) { keys.push('CTRL'); }
-        if (event.shiftKey) { keys.push('SHIFT'); }
+      if (event.metaKey) { keys.push('CMD'); }
+      if (event.ctrlKey && !event.altKey) { keys.push('CTRL'); }
+      if (event.shiftKey) { keys.push('SHIFT'); }
 
-        var keyName = key.nameFromCode[event.keyCode];
-        if (keyName) {
-          keys.push(keyName);
-        }
+      var keyName = key.nameFromCode[event.keyCode];
+      if (keyName) {
+        keys.push(keyName);
+      }
 
-        var eventName = keyMap[keys.join('+')];
-        if (eventName) {
-          event.preventDefault();
-          context.invoke(eventName);
-        } else if (key.isEdit(event.keyCode)) {
-          self.afterCommand();
-        }
-      });
+      var eventName = keyMap[keys.join('+')];
+      if (eventName) {
+        event.preventDefault();
+        context.invoke(eventName);
+      } else if (key.isEdit(event.keyCode)) {
+        this.afterCommand();
+      }
     };
 
     /**
