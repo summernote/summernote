@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-11-29T11:16Z
+ * Date: 2015-12-01T09:54Z
  */
 (function (factory) {
   /* global define */
@@ -1782,7 +1782,7 @@
 
   var dropdownCheck = renderer.create('<div class="dropdown-menu note-check">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
-      return '<li><a href="#" data-value="' + item + '"><i class="fa fa-check" /> ' + item + '</a></li>';
+      return '<li><a href="#" data-value="' + item + '">' + icon(options.checkClassName) + ' ' + item + '</a></li>';
     }).join('') : options.items;
     $node.html(markup);
   });
@@ -1818,18 +1818,18 @@
   var dialog = renderer.create('<div class="modal" aria-hidden="false"/>', function ($node, options) {
     $node.html([
       '<div class="modal-dialog">',
-      '<div class="modal-content">',
+      '  <div class="modal-content">',
       (options.title ?
-      '<div class="modal-header">' +
-        '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-        '<h4 class="modal-title">' + options.title + '</h4>' +
-      '</div>' : ''
+      '    <div class="modal-header">' +
+      '      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+      '      <h4 class="modal-title">' + options.title + '</h4>' +
+      '    </div>' : ''
       ),
-      '<div class="modal-body">' + options.body + '</div>',
+      '    <div class="modal-body">' + options.body + '</div>',
       (options.footer ?
-      '<div class="modal-footer">' + options.footer + '</div>' : ''
+      '    <div class="modal-footer">' + options.footer + '</div>' : ''
       ),
-      '</div>',
+      '  </div>',
       '</div>'
     ].join(''));
   });
@@ -1840,6 +1840,11 @@
     '  <div class="popover-content note-children-container"/>',
     '</div>'
   ].join(''));
+
+  var icon = function (iconClassName, tagName) {
+    tagName = tagName || 'i';
+    return '<' + tagName + ' class="' + iconClassName + '"/>';
+  };
 
   var ui = {
     editor: editor,
@@ -1857,6 +1862,7 @@
     palette: palette,
     dialog: dialog,
     popover: popover,
+    icon: icon,
 
     toggleBtn: function ($btn, isEnable) {
       $btn.toggleClass('disabled', !isEnable);
@@ -4971,7 +4977,7 @@
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: '<i class="fa fa-magic"/> <span class="caret"/>',
+            contents: ui.icon(options.icons.magic) + ' ' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.style.style,
             data: {
               toggle: 'dropdown'
@@ -4988,7 +4994,7 @@
       context.memo('button.bold', function () {
         return ui.button({
           className: 'note-btn-bold',
-          contents: '<i class="fa fa-bold"/>',
+          contents: ui.icon(options.icons.bold),
           tooltip: lang.font.bold + representShortcut('bold'),
           click: context.createInvokeHandler('editor.bold')
         }).render();
@@ -4997,7 +5003,7 @@
       context.memo('button.italic', function () {
         return ui.button({
           className: 'note-btn-italic',
-          contents: '<i class="fa fa-italic"/>',
+          contents: ui.icon(options.icons.italic),
           tooltip: lang.font.italic + representShortcut('italic'),
           click: context.createInvokeHandler('editor.italic')
         }).render();
@@ -5006,7 +5012,7 @@
       context.memo('button.underline', function () {
         return ui.button({
           className: 'note-btn-underline',
-          contents: '<i class="fa fa-underline"/>',
+          contents: ui.icon(options.icons.underline),
           tooltip: lang.font.underline + representShortcut('underline'),
           click: context.createInvokeHandler('editor.underline')
         }).render();
@@ -5014,7 +5020,7 @@
 
       context.memo('button.clear', function () {
         return ui.button({
-          contents: '<i class="fa fa-eraser"/>',
+          contents: ui.icon(options.icons.eraser),
           tooltip: lang.font.clear + representShortcut('removeFormat'),
           click: context.createInvokeHandler('editor.removeFormat')
         }).render();
@@ -5022,7 +5028,7 @@
 
       context.memo('button.strikethrough', function () {
         return ui.button({
-          contents: '<i class="fa fa-strikethrough"/>',
+          contents: ui.icon(options.icons.strikethrough),
           tooltip: lang.font.strikethrough + representShortcut('strikethrough'),
           click: context.createInvokeHandler('editor.strikethrough')
         }).render();
@@ -5030,7 +5036,7 @@
 
       context.memo('button.superscript', function () {
         return ui.button({
-          contents: '<i class="fa fa-superscript"/>',
+          contents: ui.icon(options.icons.superscript),
           tooltip: lang.font.superscript,
           click: context.createInvokeHandler('editor.superscript')
         }).render();
@@ -5038,7 +5044,7 @@
 
       context.memo('button.subscript', function () {
         return ui.button({
-          contents: '<i class="fa fa-subscript"/>',
+          contents: ui.icon(options.icons.subscript),
           tooltip: lang.font.subscript,
           click: context.createInvokeHandler('editor.subscript')
         }).render();
@@ -5048,7 +5054,7 @@
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: '<span class="note-current-fontname"/> <span class="caret"/>',
+            contents: '<span class="note-current-fontname"/> ' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.font.name,
             data: {
               toggle: 'dropdown'
@@ -5056,6 +5062,7 @@
           }),
           ui.dropdownCheck({
             className: 'dropdown-fontname',
+            checkClassName : options.icons.menuCheck,
             items: options.fontNames.filter(function (name) {
               return agent.isFontInstalled(name) ||
                 list.contains(options.fontNamesIgnoreCheck, name);
@@ -5069,7 +5076,7 @@
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: '<span class="note-current-fontsize"/> <span class="caret"/>',
+            contents: '<span class="note-current-fontsize"/>' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.font.size,
             data: {
               toggle: 'dropdown'
@@ -5077,6 +5084,7 @@
           }),
           ui.dropdownCheck({
             className: 'dropdown-fontsize',
+            checkClassName : options.icons['menu-check'],
             items: options.fontSizes,
             click: context.createInvokeHandler('editor.fontSize')
           })
@@ -5089,7 +5097,7 @@
           children: [
             ui.button({
               className : 'note-current-color-button',
-              contents: '<i class="fa fa-font note-recent-color"/>',
+              contents: ui.icon(options.icons.font + ' note-recent-color'),
               tooltip: lang.color.recent,
               click: context.createInvokeHandler('editor.color'),
               callback: function ($button) {
@@ -5105,7 +5113,7 @@
             }),
             ui.button({
               className: 'dropdown-toggle',
-              contents: '<span class="caret"/>',
+              contents: ui.icon(options.icons.caret, 'span'),
               tooltip: lang.color.more,
               data: {
                 toggle: 'dropdown'
@@ -5160,7 +5168,7 @@
 
       context.memo('button.ol',  function () {
         return ui.button({
-          contents: '<i class="fa fa-list-ul"/>',
+          contents: ui.icon(options.icons.unorderedlist),
           tooltip: lang.lists.unordered + representShortcut('insertUnorderedList'),
           click: context.createInvokeHandler('editor.insertUnorderedList')
         }).render();
@@ -5168,7 +5176,7 @@
 
       context.memo('button.ul', function () {
         return ui.button({
-          contents: '<i class="fa fa-list-ol"/>',
+          contents: ui.icon(options.icons.orderedlist),
           tooltip: lang.lists.ordered + representShortcut('insertOrderedList'),
           click:  context.createInvokeHandler('editor.insertOrderedList')
         }).render();
@@ -5178,7 +5186,7 @@
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: '<i class="fa fa-align-left"/> <span class="caret"/>',
+            contents: ui.icon(options.icons.align) + ' ' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.paragraph.paragraph,
             data: {
               toggle: 'dropdown'
@@ -5189,22 +5197,22 @@
               className: 'note-align',
               children: [
                 ui.button({
-                  contents: '<i class="fa fa-align-left"/>',
+                  contents: ui.icon(options.icons.alignLeft),
                   tooltip: lang.paragraph.left + representShortcut('justifyLeft'),
                   click: context.createInvokeHandler('editor.justifyLeft')
                 }),
                 ui.button({
-                  contents: '<i class="fa fa-align-center"/>',
+                  contents: ui.icon(options.icons.alignCenter),
                   tooltip: lang.paragraph.center + representShortcut('justifyCenter'),
                   click: context.createInvokeHandler('editor.justifyCenter')
                 }),
                 ui.button({
-                  contents: '<i class="fa fa-align-right"/>',
+                  contents: ui.icon(options.icons.alignRight),
                   tooltip: lang.paragraph.right + representShortcut('justifyRight'),
                   click: context.createInvokeHandler('editor.justifyRight')
                 }),
                 ui.button({
-                  contents: '<i class="fa fa-align-justify"/>',
+                  contents: ui.icon(options.icons.alignJustify),
                   tooltip: lang.paragraph.justify + representShortcut('justifyFull'),
                   click: context.createInvokeHandler('editor.justifyFull')
                 })
@@ -5214,12 +5222,12 @@
               className: 'note-list',
               children: [
                 ui.button({
-                  contents: '<i class="fa fa-outdent"/>',
+                  contents: ui.icon(options.icons.outdent),
                   tooltip: lang.paragraph.outdent + representShortcut('outdent'),
                   click: context.createInvokeHandler('editor.outdent')
                 }),
                 ui.button({
-                  contents: '<i class="fa fa-indent"/>',
+                  contents: ui.icon(options.icons.indent),
                   tooltip: lang.paragraph.indent + representShortcut('indent'),
                   click: context.createInvokeHandler('editor.indent')
                 })
@@ -5233,7 +5241,7 @@
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: '<i class="fa fa-text-height"/> <span class="caret"/>',
+            contents: ui.icon(options.icons.textHeight) + ' ' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.font.height,
             data: {
               toggle: 'dropdown'
@@ -5241,6 +5249,7 @@
           }),
           ui.dropdownCheck({
             items: options.lineHeights,
+            checkClassName : options.icons['menu-check'],
             className: 'dropdown-line-height',
             click: context.createInvokeHandler('editor.lineHeight')
           })
@@ -5251,7 +5260,7 @@
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: '<i class="fa fa-table"/> <span class="caret"/>',
+            contents: ui.icon(options.icons.table) + ' ' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.table.table,
             data: {
               toggle: 'dropdown'
@@ -5282,7 +5291,7 @@
 
       context.memo('button.link', function () {
         return ui.button({
-          contents: '<i class="fa fa-link"/>',
+          contents: ui.icon(options.icons.link),
           tooltip: lang.link.link,
           click: context.createInvokeHandler('linkDialog.show')
         }).render();
@@ -5290,7 +5299,7 @@
 
       context.memo('button.picture', function () {
         return ui.button({
-          contents: '<i class="fa fa-picture-o"/>',
+          contents: ui.icon(options.icons.picture),
           tooltip: lang.image.image,
           click: context.createInvokeHandler('imageDialog.show')
         }).render();
@@ -5298,7 +5307,7 @@
 
       context.memo('button.video', function () {
         return ui.button({
-          contents: '<i class="fa fa-youtube-play"/>',
+          contents: ui.icon(options.icons.video),
           tooltip: lang.video.video,
           click: context.createInvokeHandler('videoDialog.show')
         }).render();
@@ -5306,7 +5315,7 @@
 
       context.memo('button.hr', function () {
         return ui.button({
-          contents: '<i class="fa fa-minus"/>',
+          contents: ui.icon(options.icons.minus),
           tooltip: lang.hr.insert + representShortcut('insertHorizontalRule'),
           click: context.createInvokeHandler('editor.insertHorizontalRule')
         }).render();
@@ -5315,7 +5324,7 @@
       context.memo('button.fullscreen', function () {
         return ui.button({
           className: 'btn-fullscreen',
-          contents: '<i class="fa fa-arrows-alt"/>',
+          contents: ui.icon(options.icons.arrowsAlt),
           tooltip: lang.options.fullscreen,
           click: context.createInvokeHandler('fullscreen.toggle')
         }).render();
@@ -5324,7 +5333,7 @@
       context.memo('button.codeview', function () {
         return ui.button({
           className: 'btn-codeview',
-          contents: '<i class="fa fa-code"/>',
+          contents: ui.icon(options.icons.code),
           tooltip: lang.options.codeview,
           click: context.createInvokeHandler('codeview.toggle')
         }).render();
@@ -5332,7 +5341,7 @@
 
       context.memo('button.redo', function () {
         return ui.button({
-          contents: '<i class="fa fa-repeat"/>',
+          contents: ui.icon(options.icons.redo),
           tooltip: lang.history.redo + representShortcut('redo'),
           click: context.createInvokeHandler('editor.redo')
         }).render();
@@ -5340,7 +5349,7 @@
 
       context.memo('button.undo', function () {
         return ui.button({
-          contents: '<i class="fa fa-undo"/>',
+          contents: ui.icon(options.icons.undo),
           tooltip: lang.history.undo + representShortcut('undo'),
           click: context.createInvokeHandler('editor.undo')
         }).render();
@@ -5348,7 +5357,7 @@
 
       context.memo('button.help', function () {
         return ui.button({
-          contents: '<i class="fa fa-question"/>',
+          contents: ui.icon(options.icons.question),
           tooltip: lang.options.help,
           click: context.createInvokeHandler('helpDialog.show')
         }).render();
@@ -5389,7 +5398,7 @@
       // Float Buttons
       context.memo('button.floatLeft', function () {
         return ui.button({
-          contents: '<i class="fa fa-align-left"/>',
+          contents: ui.icon(options.icons['align-left']),
           tooltip: lang.image.floatLeft,
           click: context.createInvokeHandler('editor.floatMe', 'left')
         }).render();
@@ -5397,7 +5406,7 @@
 
       context.memo('button.floatRight', function () {
         return ui.button({
-          contents: '<i class="fa fa-align-right"/>',
+          contents: ui.icon(options.icons['align-right']),
           tooltip: lang.image.floatRight,
           click: context.createInvokeHandler('editor.floatMe', 'right')
         }).render();
@@ -5405,7 +5414,7 @@
 
       context.memo('button.floatNone', function () {
         return ui.button({
-          contents: '<i class="fa fa-align-justify"/>',
+          contents: ui.icon(options.icons['align-justify']),
           tooltip: lang.image.floatNone,
           click: context.createInvokeHandler('editor.floatMe', 'none')
         }).render();
@@ -5414,7 +5423,7 @@
       // Remove Buttons
       context.memo('button.removeMedia', function () {
         return ui.button({
-          contents: '<i class="fa fa-trash-o"/>',
+          contents: ui.icon(options.icons.trash),
           tooltip: lang.image.remove,
           click: context.createInvokeHandler('editor.removeMedia')
         }).render();
@@ -5424,7 +5433,7 @@
     this.addLinkPopoverButtons = function () {
       context.memo('button.linkDialogShow', function () {
         return ui.button({
-          contents: '<i class="fa fa-link"/>',
+          contents: ui.icon(options.icons.link),
           tooltip: lang.link.edit,
           click: context.createInvokeHandler('linkDialog.show')
         }).render();
@@ -5432,7 +5441,7 @@
 
       context.memo('button.unlink', function () {
         return ui.button({
-          contents: '<i class="fa fa-unlink"/>',
+          contents: ui.icon(options.icons.unlink),
           tooltip: lang.link.unlink,
           click: context.createInvokeHandler('editor.unlink')
         }).render();
@@ -6238,7 +6247,6 @@
     var self = this;
     var ui = $.summernote.ui;
 
-    var $editingArea = context.layoutInfo.editingArea;
     var options = context.options;
 
     var AIR_MODE_POPOVER_X_OFFSET = 20;
@@ -6251,7 +6259,7 @@
         self.hide();
       },
       'summernote.focusout': function (we, e) {
-        if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq($editingArea[0]))) {
+        if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq(self.$popover[0]))) {
           self.hide();
         }
       }
@@ -6692,6 +6700,46 @@
           'CMD+ENTER': 'insertHorizontalRule',
           'CMD+K': 'linkDialog.show'
         }
+      },
+      icons: {
+        'align': 'fa fa-align-left',
+        'alignCenter': 'fa fa-align-center',
+        'alignJustify': 'fa fa-align-justify',
+        'alignLeft': 'fa fa-align-left',
+        'alignRight': 'fa fa-align-right',
+        'indent': 'fa fa-indent',
+        'outdent': 'fa fa-outdent',
+        'arrowsAlt': 'fa fa-arrows-alt',
+        'bold': 'fa fa-bold',
+        'caret': 'caret',
+        'circle': 'fa fa-circle',
+        'close': 'fa fa-close',
+        'code': 'fa fa-code',
+        'eraser': 'fa fa-eraser',
+        'font': 'fa fa-font',
+        'frame': 'fa fa-frame',
+        'italic': 'fa fa-italic',
+        'link': 'fa fa-link',
+        'unlink': 'fa fa-chain-broken',
+        'magic': 'fa fa-magic',
+        'menuCheck': 'fa fa-check',
+        'minus': 'fa fa-minus',
+        'orderedlist': 'fa fa-list-ol',
+        'pencil': 'fa fa-pencil',
+        'picture': 'fa fa-picture-o',
+        'question': 'fa fa-question',
+        'redo': 'fa fa-repeat',
+        'square': 'fa fa-square',
+        'strikethrough': 'fa fa-strikethrough',
+        'subscript': 'fa fa-subscript',
+        'superscript': 'fa fa-superscript',
+        'table': 'fa fa-table',
+        'textHeight': 'fa fa-text-height',
+        'trash': 'fa fa-trash',
+        'underline': 'fa fa-underline',
+        'undo': 'fa fa-undo',
+        'unorderedlist': 'fa fa-list-ul',
+        'video': 'fa fa-youtube-play'
       }
     }
   });
