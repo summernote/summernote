@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-12-01T12:44Z
+ * Date: 2015-12-02T14:56Z
  */
 (function (factory) {
   /* global define */
@@ -1702,7 +1702,7 @@
       }
 
       if (options && options.click) {
-        $node.on('mousedown', options.click);
+        $node.on('click', options.click);
       }
 
       if (children) {
@@ -3666,12 +3666,17 @@
         context.triggerEvent('mousedown', event);
       }).on('mouseup', function (event) {
         context.triggerEvent('mouseup', event);
-      }).on('input', function (event) {
-        context.triggerEvent('change', event);
       }).on('scroll', function (event) {
         context.triggerEvent('scroll', event);
       }).on('paste', function (event) {
         context.triggerEvent('paste', event);
+      });
+
+      // [workaround] IE doesn't have input events for contentEditable
+      // - see: https://goo.gl/4bfIvA
+      var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified' : 'input';
+      $editable.on(changeEventName, function (event) {
+        context.triggerEvent('change', event);
       });
 
       $editor.on('focusin', function (event) {
@@ -4329,7 +4334,7 @@
         $editable.focus();
 
         // [workaround] for firefox bug http://goo.gl/lVfAaI
-        if (agent.isFF) {
+        if (!$editable.is(':focus') && agent.isFF) {
           range.createFromNode($editable[0])
                .normalize()
                .collapse()
@@ -4579,6 +4584,7 @@
       } else {
         this.activate();
       }
+      context.triggerEvent('codeview.toggled');
     };
 
     /**
@@ -4917,6 +4923,9 @@
     this.events = {
       'summernote.init summernote.change': function () {
         self.update();
+      },
+      'summernote.codeview.toggled': function () {
+        self.update();
       }
     };
 
@@ -4936,8 +4945,8 @@
     };
 
     this.update = function () {
-      var isEmpty = context.invoke('editor.isEmpty');
-      this.$placeholder.toggle(isEmpty);
+      var isShow = !context.invoke('codeview.isActivated') && context.invoke('editor.isEmpty');
+      this.$placeholder.toggle(isShow);
     };
   };
 

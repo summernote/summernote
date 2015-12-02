@@ -45,7 +45,8 @@ require([
     // initialize summernote
     $('.summernote').summernote({
       height: 300,
-      lang: 'ko-KR'
+      lang: 'ko-KR',
+      placeholder: 'type here...'
     });
   });
 });
