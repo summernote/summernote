@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-12-02T15:16Z
+ * Date: 2015-12-02T15:40Z
  */
 (function (factory) {
   /* global define */
@@ -3674,7 +3674,7 @@
 
       // [workaround] IE doesn't have input events for contentEditable
       // - see: https://goo.gl/4bfIvA
-      var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified' : 'input';
+      var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
       $editable.on(changeEventName, function (event) {
         context.triggerEvent('change', event);
       });
