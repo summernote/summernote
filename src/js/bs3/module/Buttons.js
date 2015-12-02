@@ -460,7 +460,7 @@ define([
       // Float Buttons
       context.memo('button.floatLeft', function () {
         return ui.button({
-          contents: ui.icon(options.icons['align-left']),
+          contents: ui.icon(options.icons.alignLeft),
           tooltip: lang.image.floatLeft,
           click: context.createInvokeHandler('editor.floatMe', 'left')
         }).render();
@@ -468,7 +468,7 @@ define([
 
       context.memo('button.floatRight', function () {
         return ui.button({
-          contents: ui.icon(options.icons['align-right']),
+          contents: ui.icon(options.icons.alignRight),
           tooltip: lang.image.floatRight,
           click: context.createInvokeHandler('editor.floatMe', 'right')
         }).render();
@@ -476,7 +476,7 @@ define([
 
       context.memo('button.floatNone', function () {
         return ui.button({
-          contents: ui.icon(options.icons['align-justify']),
+          contents: ui.icon(options.icons.alignJustify),
           tooltip: lang.image.floatNone,
           click: context.createInvokeHandler('editor.floatMe', 'none')
         }).render();

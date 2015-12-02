@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-12-02T15:11Z
+ * Date: 2015-12-02T15:16Z
  */
 (function (factory) {
   /* global define */
@@ -5407,7 +5407,7 @@
       // Float Buttons
       context.memo('button.floatLeft', function () {
         return ui.button({
-          contents: ui.icon(options.icons['align-left']),
+          contents: ui.icon(options.icons.alignLeft),
           tooltip: lang.image.floatLeft,
           click: context.createInvokeHandler('editor.floatMe', 'left')
         }).render();
@@ -5415,7 +5415,7 @@
 
       context.memo('button.floatRight', function () {
         return ui.button({
-          contents: ui.icon(options.icons['align-right']),
+          contents: ui.icon(options.icons.alignRight),
           tooltip: lang.image.floatRight,
           click: context.createInvokeHandler('editor.floatMe', 'right')
         }).render();
@@ -5423,7 +5423,7 @@
 
       context.memo('button.floatNone', function () {
         return ui.button({
-          contents: ui.icon(options.icons['align-justify']),
+          contents: ui.icon(options.icons.alignJustify),
           tooltip: lang.image.floatNone,
           click: context.createInvokeHandler('editor.floatMe', 'none')
         }).render();
