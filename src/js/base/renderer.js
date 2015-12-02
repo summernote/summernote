@@ -18,7 +18,7 @@ define(function () {
       }
 
       if (options && options.click) {
-        $node.on('mousedown', options.click);
+        $node.on('click', options.click);
       }
 
       if (children) {
