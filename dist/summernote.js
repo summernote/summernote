@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-12-02T15:06Z
+ * Date: 2015-12-02T15:11Z
  */
 (function (factory) {
   /* global define */
@@ -5093,7 +5093,7 @@
           }),
           ui.dropdownCheck({
             className: 'dropdown-fontsize',
-            checkClassName : options.icons['menu-check'],
+            checkClassName : options.icons.menuCheck,
             items: options.fontSizes,
             click: context.createInvokeHandler('editor.fontSize')
           })
@@ -5258,7 +5258,7 @@
           }),
           ui.dropdownCheck({
             items: options.lineHeights,
-            checkClassName : options.icons['menu-check'],
+            checkClassName : options.icons.menuCheck,
             className: 'dropdown-line-height',
             click: context.createInvokeHandler('editor.lineHeight')
           })

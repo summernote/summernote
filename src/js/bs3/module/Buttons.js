@@ -146,7 +146,7 @@ define([
           }),
           ui.dropdownCheck({
             className: 'dropdown-fontsize',
-            checkClassName : options.icons['menu-check'],
+            checkClassName : options.icons.menuCheck,
             items: options.fontSizes,
             click: context.createInvokeHandler('editor.fontSize')
           })
@@ -311,7 +311,7 @@ define([
           }),
           ui.dropdownCheck({
             items: options.lineHeights,
-            checkClassName : options.icons['menu-check'],
+            checkClassName : options.icons.menuCheck,
             className: 'dropdown-line-height',
             click: context.createInvokeHandler('editor.lineHeight')
           })
