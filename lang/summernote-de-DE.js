@@ -30,6 +30,13 @@
         url: 'Grafik URL',
         remove: 'Grafik entfernen'
       },
+      video: {
+        video: 'Video',
+        videoLink: 'Video Link',
+        insert: 'Video einfügen',
+        url: 'Video URL?',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, oder Youku)'
+      },
       link: {
         link: 'Link',
         insert: 'Link einfügen',

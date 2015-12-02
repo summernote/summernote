@@ -1,5 +1,6 @@
 # vim editing
 *.swp
+*.swo
 .tern-port
 .DS_Store
 
@@ -13,3 +14,7 @@ bower_components
 *.zip
 
 .versions
+coverage/
+
+.idea/
+*.iml

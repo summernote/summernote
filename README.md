@@ -1,17 +1,19 @@
 # Summernote
 
-Super simple WYSIWYG Editor using Bootstrap (3.0 and 2.x).
+Super simple WYSIWYG Editor.
 
-[![Build Status](https://secure.travis-ci.org/summernote/summernote.png)](http://travis-ci.org/summernote/summernote)
+[![Build Status](https://secure.travis-ci.org/summernote/summernote.svg)](http://travis-ci.org/summernote/summernote)
 [![npm version](https://badge.fury.io/js/summernote.svg)](http://badge.fury.io/js/summernote)
 [![Dependency Status](https://gemnasium.com/summernote/summernote.svg)](https://gemnasium.com/summernote/summernote)
+[![Coverage Status](https://coveralls.io/repos/summernote/summernote/badge.svg?branch=develop&service=github)](https://coveralls.io/github/summernote/summernote?branch=develop)
+[![Gratipay](https://img.shields.io/gratipay/HackerWins.svg)](https://gratipay.com/~HackerWins/)
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/summernoteis.svg)](https://saucelabs.com/u/summernoteis)
 
 ### Summernote
 Summernote is a JavaScript library that helps you create WYSIWYG editors online.
 
-Home Page: http://summernote.org
+Home page: <http://summernote.org>
 
 ### Why Summernote?
 
@@ -22,10 +24,6 @@ Summernote has a few special features:
 * Simple UI
 * Interactive WYSIWYG editing
 * Handy integration with server
-
-#### Inspired by
-* Gmail's WYSIWYG editor (http://www.gmail.com)
-* Redactor (http://imperavi.com/redactor/)
 
 ### Installation and dependencies
 
@@ -41,14 +39,14 @@ Include the following code in the `<head>` tag of your HTML:
 
 ```html
 <!-- include libraries(jQuery, bootstrap, fontawesome) -->
-<script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script> 
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
-<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script> 
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" />
+<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css" />
 
 <!-- include summernote css/js-->
 <link href="summernote.css" rel="stylesheet">
-<script src="summernote.min.js"></script>
+<script src="summernote.js"></script>
 ```
 
 #### 2. target elements
@@ -74,13 +72,13 @@ $(document).ready(function() {
 `code` - get the HTML source code underlying the text in the editor:
 
 ```javascript
-var sHTML = $('#summernote').code();
+var html = $('#summernote').summernote('code');
 ```
 
 `Destroy` summernote:
 
 ```javascript
-$('#summernote').destroy();
+$('#summernote').summernote('destroy');
 ```
 
 #### Warning - code injection
@@ -97,7 +95,6 @@ Any modern browser: Safari, Chrome, Firefox, Opera, Internet Explorer 9+.
 * IE8 Support
 * Clipboard (you can paste images already)
 * Media object selection
-
 
 ### Developer information
 

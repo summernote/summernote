@@ -1,11 +1,10 @@
 {
   "name": "summernote",
-  "description": "Super Simple WYSIWYG Editor on Bootstrap",
-  "version": "0.6.16",
+  "description": "Super simple WYSIWYG editor",
+  "version": "0.7.0",
   "license": "MIT",
   "keywords": [
     "editor",
-    "bootstrap",
     "WYSIWYG"
   ],
   "repository": {
@@ -13,7 +12,7 @@
     "url": "https://github.com/summernote/summernote.git"
   },
   "author": {
-    "name": "Hackerwins",
+    "name": "hackerwins",
     "email": "<susukang98@gmail.com>"
   },
   "main": "dist/summernote.js",
@@ -25,11 +24,19 @@
     "grunt-contrib-qunit": "0.5.2",
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-contrib-watch": "*",
+    "grunt-coveralls": "^1.0.0",
     "grunt-exec": "^0.4.6",
+    "grunt-karma": "^0.12.0",
     "grunt-recess": "*",
     "grunt-saucelabs": "*",
+    "karma": "^0.13.3",
+    "karma-coverage": "^0.4.2",
+    "karma-phantomjs-launcher": "^0.2.0",
+    "karma-qunit": "^0.1.5",
+    "karma-requirejs": "^0.2.2",
     "load-grunt-tasks": "0.2.0",
     "open": "0.0.4",
+    "phantomjs": "^1.9.17",
     "requirejs": "2.1.9"
   }
 }

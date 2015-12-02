@@ -24,6 +24,13 @@
         selectFromFiles: 'Selecione a partir dos arquivos',
         url: 'URL da image'
       },
+      video: {
+        video: 'Vídeo',
+        videoLink: 'Link para vídeo',
+        insert: 'Inserir vídeo',
+        url: 'URL do vídeo?',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, ou Youku)'
+      },
       link: {
         link: 'Link',
         insert: 'Inserir link',

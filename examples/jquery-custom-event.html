@@ -32,21 +32,16 @@
   </style>
 
   <script type="text/javascript">
-    $(document).ready(function() {
-      $('.summernote')
-              .on('summernote.init', function() {
-                console.log('summernote initialize!')
-              })
-              .on('summernote.change', function() {
-                console.log(' changed content ')
-              })
-              .on('summernote.keyup', function(event) {
-                console.log('you can use keyboard event', event);
-              })
-              .on('summernote.enter', function(event) {
-                console.log('check enter key ');
-              })
-              .summernote({ height : 300 });
+    $(function() {
+      $('.summernote').on('summernote.init', function() {
+        console.log('summernote initialize!')
+      }).on('summernote.change', function() {
+        console.log(' changed content ')
+      }).on('summernote.keyup', function(event) {
+        console.log('you can use keyboard event', event);
+      }).on('summernote.enter', function(event) {
+        console.log('check enter key ');
+      }).summernote({ height : 300 });
 
     });
   </script>

@@ -1,4 +1,5 @@
 language: node_js
+sudo: false
 node_js: 0.1
 before_script:
 - node --version
@@ -6,7 +7,9 @@ before_script:
 - npm install -g grunt-cli
 script:
 - grunt test --verbose
-- grunt saucelabs-test
+- if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then grunt saucelabs-test; fi
+- grunt karma:travis
+- grunt coveralls:travis
 before_deploy:
 - npm install
 - grunt build
@@ -21,7 +24,7 @@ deploy:
     branch: develop
 env:
   global:
-  - secure: JwRh/BsZPWG4VCt5CmLj8PzZp/qkTEciAQK8RlcA9xMvbh7KdrU8t8/nCo3qA4oTbgSPQQ1lh+nxQItgBS5lWOM2kov4JSCnHR4mxDyjycfPB7E+Xuzlp89PtGpL6fk2VfVNceSvH2vmKCibbo2bKYRCJ5khMTKljh9FmTyFxQ0=
-  - secure: ML6bw+59g8pHDGRRwUj4Sf4rrXIEopqHv3l8l9//GUdoLMLTvTCIoLVlIKam51/6REYrvvbx/62Xi5+TZPn82FAASlS9lFK21cJYWnW+o+Rzemj2PHhKx8RFfFFur9FSpH6y0/Zx88dNF0OS83KlmNXuWy3tKYnABwyoBnx/JP4=
+    - secure: ibiQ8diku1ooO82fPlv4xhKnlBYZf0jye0p41dmJzkFRLLQY8D9gvG5vLE2VXLzGKLTleUN8oFvas7gIQ/qdXz3LwNOlO9+ZTj53+CgiqUPRok5A4sEfL1d4vYyAngux8QUCO+OrTPn18yGAUo9TwT4LOLm7FFYZOmrwheYdIM8=
+    - secure: epuVi8LA7A06e5nuIUdgCZlXpBo2B3eJsYeylvyItsXxZe5+k0NVdQBivotNO/keLIDDEuCITYcWQuAxcyEdMBHncwRxFcsKbrMqv/YTxOo0BkcpZU507WT1rhWLPFkp3UIwzBmec5R5L87wmyI5y4kIHrk+57Y3a4dKjB3zVIM=
 addons:
   sauce_connect: true

@@ -5,12 +5,10 @@
 @border-color: #a9a9a9;
 @background-color: #f5f5f5;
 
-/* Frame Mode Layout
+/* Layout
  ------------------------------------------*/
 .note-editor {
-  border: 1px solid @border-color;
   position: relative;
-  overflow: hidden;
 
   /* dropzone */
   @dropzone-color: lightskyblue;
@@ -41,6 +39,20 @@
     display: table;
   }
 
+  .note-editing-area {
+    position: relative;
+
+    .note-editable {
+      outline: none;
+    }
+  }
+}
+
+/* Frame mode layout
+------------------------------------------*/
+.note-editor.note-frame {
+  border: 1px solid @border-color;
+
   /* codeview mode */
   &.codeview {
     .note-editing-area {
@@ -53,23 +65,7 @@
     }
   }
 
-  /* fullscreen mode */
-  &.fullscreen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1050; /* bs3 modal-backdrop: 1030, bs2: 1040 */
-    .note-editable {
-      background-color: white;
-    }
-    .note-resizebar {
-      display: none;
-    }
-  }
-
   .note-editing-area {
-    position: relative;
     overflow: hidden;
 
     /* editable */
@@ -78,11 +74,7 @@
       color: #000;
       padding: 10px;
       overflow: auto;
-      outline: none;
 
-      &[contenteditable=true]:empty:not(:focus):before {
-        content:attr(data-placeholder);
-      }
       &[contenteditable="false"] {
         background-color: #e5e5e5;
       }
@@ -108,9 +100,26 @@
     }
   }
 
+  /* fullscreen mode */
+  &.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1050; /* bs3 modal-backdrop: 1030, bs2: 1040 */
+    .note-editable {
+      background-color: white;
+    }
+    .note-resizebar {
+      display: none;
+    }
+  }
+
   /* statusbar */
   .note-statusbar {
     background-color: @background-color;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
     .note-resizebar {
       padding-top: 1px;
       height: 8px;
@@ -123,17 +132,14 @@
       }
     }
   }
-}
-
-/* Air Mode Layout
-------------------------------------------*/
-.note-air-editor {
-  outline: none;
+  .note-placeholder {
+    padding: 10px;
+  }
 }
 
 /* Popover
 ------------------------------------------*/
-.note-popover .popover {
+.note-popover.popover {
   max-width: none;
   .popover-content {
     a {
@@ -145,14 +151,14 @@
       vertical-align: middle; /* for FF */
     }
   }
-  & .arrow {
-    left: 20px;
+  .arrow {
+    left: 20px !important;
   }
 }
 
 /* Popover and Toolbar (Button container)
 ------------------------------------------*/
-.note-popover .popover .popover-content, .panel-heading.note-toolbar {
+.note-popover .popover-content, .panel-heading.note-toolbar {
   margin: 0;
   padding: 0 0 5px 5px;
 
@@ -319,74 +325,14 @@
       margin-bottom: 10px;
     }
   }
-  .note-help-dialog {
-    @note-shortcut-hl: #dd0;
-    font-size: 12px;
-    color: #ccc;
-    background-color: #222 !important;
-    .opacity(0.9);
-    .modal-content {
-      background: transparent;
-      border: 1px solid white;
-      .box-shadow(none);
-      .rounded(5px);
-    }
+}
 
-    /* BS2's background pacth. */
-    background: transparent;
-    border: none;
-
-    a {
-      font-size: 12px;
-      color: white;
-    }
-
-    .title {
-      color: white;
-      font-size: 14px;
-      font-weight: bold;
-      padding-bottom: 5px;
-      margin-bottom: 10px;
-      border-bottom: white 1px solid;
-    }
-
-    .modal-close {
-      font-size: 14px;
-      color: @note-shortcut-hl;
-      cursor: pointer;
-    }
-
-    .text-center {
-      margin: 10px 0 0;
-    }
-
-    .note-shortcut {
-      padding-top: 8px;
-      padding-bottom: 8px;
-
-      &-row {
-        margin-right: -5px;
-        margin-left: -5px;
-      }
-
-      &-col {
-        padding-right: 5px;
-        padding-left: 5px;
-      }
-
-      &-title {
-        font-size: 13px;
-        font-weight: bold;
-        color: @note-shortcut-hl;
-      }
-
-      &-key {
-        font-family: "Courier New";
-        color: @note-shortcut-hl;
-        text-align: right;
-      }
-    }
-  }
+/* Placeholder
+------------------------------------------*/
+.note-placeholder {
+  position: absolute;
+  display: none;
+  color: gray;
 }
 
 /* Handle
@@ -464,6 +410,37 @@
       font-size: 12px;
       .rounded(5px);
       .opacity(0.7);
+    }
+  }
+}
+
+.note-hint-popover {
+  min-width: 100px;
+  padding: 2px;
+
+  .popover-content {
+    padding: 3px;
+    max-height: 150px;
+    overflow: auto;
+
+    .note-hint-group {
+      .note-hint-item {
+        display: block !important;
+        padding: 3px;
+
+        &.active, &:hover {
+          display: block;
+          clear: both;
+          font-weight: 400;
+          line-height: 1.4;
+          color: white;
+          white-space: nowrap;
+          text-decoration: none;
+          background-color: #428bca;
+          outline: 0;
+          cursor: pointer;
+        }
+      }
     }
   }
 }
