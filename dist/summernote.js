@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-12-02T14:56Z
+ * Date: 2015-12-02T15:06Z
  */
 (function (factory) {
   /* global define */
@@ -4077,9 +4077,10 @@
      * @param {String} value - px
      */
     this.fontSize = function (value) {
+      this.focus();
       var rng = range.create();
 
-      if (rng.isCollapsed()) {
+      if (rng && rng.isCollapsed()) {
         var spans = style.styleNodes(rng);
         var firstSpan = list.head(spans);
 
