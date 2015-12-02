@@ -468,9 +468,10 @@ define([
      * @param {String} value - px
      */
     this.fontSize = function (value) {
+      this.focus();
       var rng = range.create();
 
-      if (rng.isCollapsed()) {
+      if (rng && rng.isCollapsed()) {
         var spans = style.styleNodes(rng);
         var firstSpan = list.head(spans);
 
