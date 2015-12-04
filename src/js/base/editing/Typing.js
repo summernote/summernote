@@ -70,8 +70,8 @@ define([
             dom.remove(anchor);
           });
 
-          // replace empty heading with P tag
-          if (dom.isHeading(nextPara) && dom.isEmpty(nextPara)) {
+          // replace empty heading or pre with P tag
+          if ((dom.isHeading(nextPara) || dom.isPre(nextPara)) && dom.isEmpty(nextPara)) {
             nextPara = dom.replace(nextPara, 'p');
           }
         }
