@@ -100,6 +100,8 @@ define([
       return node && /^H[1-7]/.test(node.nodeName.toUpperCase());
     };
 
+    var isPre = makePredByNodeName('PRE');
+
     var isLi = makePredByNodeName('LI');
 
     var isPurePara = function (node) {
@@ -1004,6 +1006,7 @@ define([
       isBodyInline: isBodyInline,
       isBody: isBody,
       isParaInline: isParaInline,
+      isPre: isPre,
       isList: isList,
       isTable: isTable,
       isCell: isCell,
