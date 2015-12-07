@@ -14,7 +14,7 @@ define([
 
   var expect = chai.expect;
 
-  describe('core.dom', function () {
+  describe('base:core.dom', function () {
     describe('ancestor', function () {
       var $cont, $b, txtB;
       before(function () {

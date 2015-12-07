@@ -1,5 +1,5 @@
 /**
- * dom.spec.js
+ * key.spec.js
  * (c) 2013~ Alan Hong
  * summernote may be freely distributed under the MIT license./
  */
@@ -11,7 +11,7 @@ define([
 
   var expect = chai.expect;
 
-  describe('core.key', function () {
+  describe('base:core.key', function () {
     describe('isEdit', function () {
       it('should return true for BACKSPACE', function () {
         expect(key.isEdit(key.code.BACKSPACE)).to.be.true;

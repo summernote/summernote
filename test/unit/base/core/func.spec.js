@@ -1,5 +1,5 @@
 /**
- * dom.spec.js
+ * func.spec.js
  * (c) 2013~ Alan Hong
  * summernote may be freely distributed under the MIT license./
  */
@@ -11,7 +11,7 @@ define([
 
   var expect = chai.expect;
 
-  describe('core.func', function () {
+  describe('base:core.func', function () {
     describe('eq2', function () {
       it('should return true if two values are same', function () {
         expect(func.eq2(1, 1)).to.be.ok;

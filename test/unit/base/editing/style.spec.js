@@ -13,7 +13,7 @@ define([
 
   var expect = chai.expect;
 
-  describe('editing.Style', function () {
+  describe('base:editing.Style', function () {
     var style = new Style();
 
     describe('styleNodes', function () {

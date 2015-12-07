@@ -12,7 +12,7 @@ define([
 
   var expect = chai.expect;
 
-  describe('core.list', function () {
+  describe('base:core.list', function () {
     describe('head', function () {
       it('should return the first element', function () {
         expect(list.head([1, 2, 3])).to.be.equal(1);

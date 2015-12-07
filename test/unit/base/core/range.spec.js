@@ -14,7 +14,7 @@ define([
 
   var expect = chai.expect;
 
-  describe('core.range', function () {
+  describe('base:core.range', function () {
     describe('nodes', function () {
       describe('1 depth', function () {
         var $para;
