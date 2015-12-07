@@ -43,13 +43,19 @@ define(function () {
       }
     };
 
-    this.activate = function () {
-      var $btn = $toolbar.find('button').not('.btn-codeview');
+    this.activate = function (isIncludeCodeview) {
+      var $btn = $toolbar.find('button');
+      if (!isIncludeCodeview) {
+        $btn = $btn.not('.btn-codeview');
+      }
       ui.toggleBtn($btn, true);
     };
 
-    this.deactivate = function () {
-      var $btn = $toolbar.find('button').not('.btn-codeview');
+    this.deactivate = function (isIncludeCodeview) {
+      var $btn = $toolbar.find('button');
+      if (!isIncludeCodeview) {
+        $btn = $btn.not('.btn-codeview');
+      }
       ui.toggleBtn($btn, false);
     };
   };
