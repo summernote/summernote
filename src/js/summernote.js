@@ -83,6 +83,10 @@ define([
     };
 
     this.disable = function () {
+      // close codeview if codeview is opend
+      if (this.invoke('codeview.isActivated')) {
+        this.invoke('codeview.deactivate');
+      }
       this.layoutInfo.editable.attr('contenteditable', false);
       this.invoke('toolbar.deactivate', true);
     };

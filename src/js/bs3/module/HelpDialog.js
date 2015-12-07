@@ -10,7 +10,6 @@ define([
     var options = context.options;
     var lang = options.langInfo;
 
-
     this.createShortCutList = function () {
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
 
