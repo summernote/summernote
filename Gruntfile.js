@@ -98,11 +98,6 @@ module.exports = function (grunt) {
       }
     },
 
-    // qunit: javascript unit test.
-    qunit: {
-      all: [ 'test/*.html' ]
-    },
-
     // uglify: minify javascript
     uglify: {
       options: {
@@ -160,7 +155,7 @@ module.exports = function (grunt) {
     watch: {
       all: {
         files: ['src/less/*.less', 'src/js/**/*.js'],
-        tasks: ['recess', 'jshint', 'qunit'],
+        tasks: ['recess', 'jshint'],
         options: {
           livereload: true
         }
