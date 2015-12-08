@@ -4,7 +4,7 @@ module.exports = function (config) {
 
   config.set({
     basePath: '../',
-    frameworks: ['requirejs', 'qunit'],
+    frameworks: ['requirejs', 'mocha'],
     exclude: [],
     reporters: ['progress', 'coverage'],
     port: 9876,
@@ -14,9 +14,11 @@ module.exports = function (config) {
     files: [
       {pattern: 'src/js/**/*.js', included: false},
       {pattern: 'test/**/*.js', included: false},
+      {pattern: 'node_modules/chai/*.js', included: false},
       'test/test-main.js'
     ],
-    browsers: ['PhantomJS'],
+    // Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS, IE
+    browsers: ['Chrome'],
     captureTimeout: 60000,
     singleRun: false,
     preprocessors: { 'src/js/**/!(app|intro|outro).js': 'coverage' },
