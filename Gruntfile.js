@@ -181,6 +181,10 @@ module.exports = function (grunt) {
         browsers: ['PhantomJS'],
         reporters: ['progress']
       },
+      dist: {
+        singleRun: true,
+        browsers: ['PhantomJS']
+      },
       travis: {
         singleRun: true,
         browsers: ['PhantomJS'],
@@ -229,7 +233,7 @@ module.exports = function (grunt) {
   grunt.registerTask('saucelabs-test', ['karma:saucelabs']);
 
   // dist: make dist files
-  grunt.registerTask('dist', ['build', 'test', 'uglify', 'recess', 'compress']);
+  grunt.registerTask('dist', ['build', 'jshint', 'karma:dist', 'uglify', 'recess', 'compress']);
 
   // default: server
   grunt.registerTask('default', ['server']);
