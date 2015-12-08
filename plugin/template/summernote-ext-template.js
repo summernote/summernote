@@ -24,8 +24,6 @@
      * @param {Object} context - context object has status of editor.
      */
     'template': function (context) {
-      var self    = this;
-
       // ui has renders to build ui elements.
       //  - you can create a button with `ui.button`
       var ui      = $.summernote.ui;
@@ -47,16 +45,16 @@
             className: 'dropdown-template',
             items: options.list,
             click: function (event) {
-                var $button = $(event.target);
-                var value   = $button.data('value');
-                var path    = options.path + '/' + value + '.html';
+              var $button = $(event.target);
+              var value   = $button.data('value');
+              var path    = options.path + '/' + value + '.html';
 
-                $.get(path)
-                .done(function(data) {
-                  context.invoke('editor.pasteHTML', data);
-                }).fail(function() { 
-                  alert('template not found in ' + path);
-                });
+              $.get(path)
+              .done(function (data) {
+                context.invoke('editor.pasteHTML', data);
+              }).fail(function () {
+                alert('template not found in ' + path);
+              });
             }
           })
         ]);
