@@ -104,7 +104,16 @@ module.exports = function (grunt) {
         banner: '/*! Summernote v<%=pkg.version%> | (c) 2013-2015 Alan Hong and other contributors | MIT license */\n'
       },
       all: {
-        files: { 'dist/summernote.min.js': ['dist/summernote.js'] }
+        files: [
+          { 'dist/summernote.min.js': ['dist/summernote.js'] },
+          {
+            expand: true,
+            cwd: 'dist/lang',
+            src: '**/*.js',
+            dest: 'dist/lang',
+            ext: '.min.js'
+          }
+        ]
       }
     },
 
@@ -181,6 +190,10 @@ module.exports = function (grunt) {
         browsers: ['PhantomJS'],
         reporters: ['progress']
       },
+      dist: {
+        singleRun: true,
+        browsers: ['PhantomJS']
+      },
       travis: {
         singleRun: true,
         browsers: ['PhantomJS'],
@@ -207,6 +220,16 @@ module.exports = function (grunt) {
       travis: {
         src: 'test/coverage/**/lcov.info'
       }
+    },
+    clean: {
+      dist: ['dist']
+    },
+    copy: {
+      dist: {
+        files: [
+          {src: 'lang/*', dest: 'dist/'}
+        ]
+      }
     }
   });
 
@@ -229,7 +252,11 @@ module.exports = function (grunt) {
   grunt.registerTask('saucelabs-test', ['karma:saucelabs']);
 
   // dist: make dist files
-  grunt.registerTask('dist', ['build', 'test', 'uglify', 'recess', 'compress']);
+  grunt.registerTask('dist', [
+    'clean:dist',
+    'build', 'jshint', 'karma:dist',
+    'copy:dist', 'uglify', 'recess', 'compress'
+  ]);
 
   // default: server
   grunt.registerTask('default', ['server']);

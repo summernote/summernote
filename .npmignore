@@ -1,0 +1,10 @@
+# dot files
+.agignore
+.jshintignore
+.jshintrc
+.travis.yml
+
+Gruntfile.js
+MAINTAIN.md
+grunts/
+test/
