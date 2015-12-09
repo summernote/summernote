@@ -215,8 +215,9 @@ define([
       this.each(function (idx, note) {
         var $note = $(note);
         if (!$note.data('summernote')) {
-          $note.data('summernote', new Context($note, options));
-          $note.data('summernote').triggerEvent('init');
+          var context = new Context($note, options);
+          $note.data('summernote', context);
+          $note.data('summernote').triggerEvent('init', context.layoutInfo);
         }
       });
 
