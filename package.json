@@ -19,8 +19,10 @@
   "devDependencies": {
     "chai": "^3.2.0",
     "grunt": "*",
+    "grunt-contrib-clean": "^0.7.0",
     "grunt-contrib-compress": "*",
     "grunt-contrib-connect": "*",
+    "grunt-contrib-copy": "^0.8.2",
     "grunt-contrib-jshint": "0.7.2",
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-contrib-watch": "*",
