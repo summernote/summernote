@@ -25,10 +25,10 @@
         $('.dropping').destroy();
       });
 
-        $('.nav.nav-tabs a').click(function (e) {
-            e.preventDefault()
-            $(this).tab('show')
-        })
+      $('.nav.nav-tabs a').click(function (e) {
+        e.preventDefault()
+          $(this).tab('show')
+      })
     });
   </script>
 </head>
@@ -38,33 +38,26 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">
-
-          <div role="tabpanel">
-              <!-- Nav tabs -->
-              <ul class="nav nav-tabs" role="tablist">
-                  <li role="presentation" class="active"><a href="#tab1" aria-controls="tab1" role="tab" data-toggle="tab">Tab 1</a></li>
-                  <li role="presentation"><a href="#tab2" aria-controls="tab2" role="tab" data-toggle="tab">Tab 2</a></li>
-              </ul>
-
-              <!-- Tab panes -->
-              <div class="tab-content">
-                  <div role="tabpanel" class="tab-pane active" id="tab1">
-                      <div class="dropping">text...</div>
-                      
-                  </div>
-                  <div role="tabpanel" class="tab-pane" id="tab2">
-                      <div class="dropping">text...</div>
-                      
-                  </div>
-              </div>
-
-          </div>          
-          
-
+        <div role="tabpanel">
+          <!-- Nav tabs -->
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#tab1" aria-controls="tab1" role="tab" data-toggle="tab">Tab 1</a></li>
+            <li role="presentation"><a href="#tab2" aria-controls="tab2" role="tab" data-toggle="tab">Tab 2</a></li>
+          </ul>
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="tab1">
+              <div class="dropping">text...</div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="tab2">
+              <div class="dropping">text...</div>
+            </div>
+          </div>
+        </div>          
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default pull-left">
-          <span class='fa fa-paperclip '></span>
+          <span class="fa fa-paperclip"></span>
           Attach Digital Assets
         </button>
         <div class="btn-group">
@@ -73,7 +66,7 @@
           </button>
           <button type="button" class="btn btn-warning" href="javascript:postDrop()">
             Post Status Update
-            <span class='fa fa-bullhorn '></span>
+            <span class="fa fa-bullhorn"></span>
           </button>
         </div>
       </div>
@@ -82,4 +75,3 @@
 </div> 
 </body>
 </html>
-

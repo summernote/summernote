@@ -22,9 +22,24 @@
         floatLeft: 'Flotar a la izquierda',
         floatRight: 'Flotar a la derecha',
         floatNone: 'No flotar',
-        dragImageHere: 'Arrastrar una imagen aquí',
+        shapeRounded: 'Forma: Redondeado',
+        shapeCircle: 'Forma: Círculo',
+        shapeThumbnail: 'Forma: Marco',
+        shapeNone: 'Forma: Ninguna',
+        dragImageHere: 'Arrastrar una imagen o texto aquí',
+        dropImage: 'Suelta la imagen o texto',
         selectFromFiles: 'Seleccionar desde los archivos',
-        url: 'URL de la imagen'
+        maximumFileSize: 'Tamaño máximo del archivo',
+        maximumFileSizeError: 'Has superado el tamaño máximo del archivo.',
+        url: 'URL de la imagen',
+        remove: 'Eliminar imagen'
+      },
+      video: {
+        video: 'Vídeo',
+        videoLink: 'Link del vídeo',
+        insert: 'Insertar vídeo',
+        url: '¿URL del vídeo?',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, o Youku)'
       },
       link: {
         link: 'Link',
@@ -87,11 +102,45 @@
         textFormatting: 'Formato de texto',
         action: 'Acción',
         paragraphFormatting: 'Formato de párrafo',
-        documentStyle: 'Estilo de documento'
+        documentStyle: 'Estilo de documento',
+        extraKeys: 'Teclas adicionales'
+      },
+      help : {
+        'insertParagraph': 'Insertar párrafo',
+        'undo': 'Deshacer última acción',
+        'redo': 'Rehacer última acción',
+        'tab': 'Tabular',
+        'untab': 'Eliminar tabulación',
+        'bold': 'Establecer estilo negrita',
+        'italic': 'Establecer estilo cursiva',
+        'underline': 'Establecer estilo subrayado',
+        'strikethrough': 'Establecer estilo tachado',
+        'removeFormat': 'Limpiar estilo',
+        'justifyLeft': 'Alinear a la izquierda',
+        'justifyCenter': 'Alinear al centro',
+        'justifyRight': 'Alinear a la derecha',
+        'justifyFull': 'Justificar',
+        'insertUnorderedList': 'Insertar lista desordenada',
+        'insertOrderedList': 'Insertar lista ordenada',
+        'outdent': 'Reducir tabulación del párrafo',
+        'indent': 'Aumentar tabulación del párrafo',
+        'formatPara': 'Cambiar estilo del bloque a párrafo (etiqueta P)',
+        'formatH1': 'Cambiar estilo del bloque a H1',
+        'formatH2': 'Cambiar estilo del bloque a H2',
+        'formatH3': 'Cambiar estilo del bloque a H3',
+        'formatH4': 'Cambiar estilo del bloque a H4',
+        'formatH5': 'Cambiar estilo del bloque a H5',
+        'formatH6': 'Cambiar estilo del bloque a H6',
+        'insertHorizontalRule': 'Insertar línea horizontal',
+        'linkDialog.show': 'Mostrar panel enlaces'
       },
       history: {
         undo: 'Deshacer',
         redo: 'Rehacer'
+      },
+      specialChar: {
+        specialChar: 'CARACTERES ESPECIALES',
+        select: 'Selecciona Caracteres especiales'
       }
     }
   });

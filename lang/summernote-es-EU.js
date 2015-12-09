@@ -24,6 +24,13 @@
         selectFromFiles: 'Zure fitxategi bat aukeratu',
         url: 'Irudiaren URL helbidea'
       },
+      video: {
+        video: 'Bideoa',
+        videoLink: 'Bideorako esteka',
+        insert: 'Bideo berri bat txertatu',
+        url: 'Bideoaren URL helbidea',
+        providers: '(YouTube, Vimeo, Vine, Instagram, edo DailyMotion)'
+      },
       link: {
         link: 'Esteka',
         insert: 'Esteka bat txertatu',

@@ -40,6 +40,7 @@ module.exports = function (grunt) {
           'lang/**/*.js',
           'Gruntfile.js',
           'test/**/*.js',
+          '!test/coverage/**/*.js',
           'build/*.js'
         ],
         options: {
@@ -92,10 +93,10 @@ module.exports = function (grunt) {
           expand: true,
           src: [
             'dist/*.js',
-            'dist/summernote.css'
+            'dist/*.css'
           ]
         }, {
-          src: ['plugin/*.js'],
+          src: ['plugin/**/*.js', 'lang/**/*.js'],
           dest: 'dist/'
         }]
       }
@@ -105,22 +106,7 @@ module.exports = function (grunt) {
     connect: {
       all: {
         options: {
-          port: 3000,
-          livereload: {
-            options: {
-              open: true,
-              base: ['index.html']
-            }
-          },
-          middleware: function (connect, options, middlewares) {
-            var base = options.base[0];
-            middlewares = middlewares || [];
-            return middlewares.concat([
-              require('connect-livereload')(), // livereload middleware
-              connect['static'](base),    // serve static files
-              connect.directory(base)  // make empty directories browsable
-            ]);
-          }
+          port: 3000
         }
       }
     },
@@ -184,6 +170,26 @@ module.exports = function (grunt) {
           testname: 'unit test for summernote',
           'public': 'public'
         }
+      }
+    },
+
+    karma: {
+      options: {
+        configFile: './test/karma.conf.js'
+      },
+      travis: {
+        singleRun: true,
+        browsers: ['PhantomJS'],
+        reporters: ['progress', 'coverage']
+      }
+    },
+
+    coveralls: {
+      options: {
+        force: false
+      },
+      travis: {
+        src: 'test/coverage/**/lcov.info'
       }
     }
   });
