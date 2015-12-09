@@ -86,8 +86,7 @@ define([
         $editable.css('min-height', options.minHeight);
       }
 
-
-      $editable.html($note.html());
+      $editable.html(dom.html($note) || dom.emptyPara);
       history.recordUndo();
     };
 
