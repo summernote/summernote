@@ -187,6 +187,20 @@ define([
         return this;
       };
 
+
+      /**
+       * Moves the scrollbar to start container(sc) of current range
+       *
+       * @return {WrappedRange}
+       */
+      this.scrollIntoView = function ($container) {
+        if ($container[0].scrollTop + $container.height() < this.sc.offsetTop) {
+          $container[0].scrollTop += Math.abs($container[0].scrollTop + $container.height() - this.sc.offsetTop);
+        }
+
+        return this;
+      };
+
       /**
        * @return {WrappedRange}
        */

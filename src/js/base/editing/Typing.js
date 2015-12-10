@@ -34,7 +34,7 @@ define([
     /**
      * insert paragraph
      */
-    this.insertParagraph = function () {
+    this.insertParagraph = function ($editable) {
       var rng = range.create();
 
       // deleteContents on range.
@@ -86,7 +86,7 @@ define([
         }
       }
 
-      range.create(nextPara, 0).normalize().select();
+      range.create(nextPara, 0).normalize().select().scrollIntoView($editable);
     };
   };
 
