@@ -53,11 +53,11 @@ module.exports = function (grunt) {
         }
         return contents;
       },
-      excludeShallow: ['jquery', 'CodeMirror', 'app'],
+      excludeShallow: ['jquery', 'codemirror', 'app'],
       include: ['summernote/bs3/settings'],
       paths: {
         jquery: 'empty:',
-        CodeMirror: 'empty:'
+        codemirror: 'empty:'
       },
       packages: [{
         name: 'summernote',
