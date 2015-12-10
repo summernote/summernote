@@ -33,7 +33,7 @@
     "grunt-saucelabs": "*",
     "karma": "^0.13.3",
     "karma-chrome-launcher": "^0.2.0",
-    "karma-coverage": "^0.4.2",
+    "karma-coverage": "^0.5.3",
     "karma-firefox-launcher": "^0.1.6",
     "karma-ie-launcher": "^0.2.0",
     "karma-mocha": "^0.2.0",
@@ -42,9 +42,9 @@
     "karma-requirejs": "^0.2.2",
     "karma-safari-launcher": "^0.1.1",
     "karma-sauce-launcher": "^0.3.0",
-    "load-grunt-tasks": "0.2.0",
+    "load-grunt-tasks": "^3.3.0",
     "open": "0.0.4",
     "phantomjs": "^1.9.17",
-    "requirejs": "2.1.9"
+    "requirejs": "^2.1.22"
   }
 }
