@@ -23,7 +23,6 @@ deploy:
     branch: develop
 env:
   global:
-    - secure: ibiQ8diku1ooO82fPlv4xhKnlBYZf0jye0p41dmJzkFRLLQY8D9gvG5vLE2VXLzGKLTleUN8oFvas7gIQ/qdXz3LwNOlO9+ZTj53+CgiqUPRok5A4sEfL1d4vYyAngux8QUCO+OrTPn18yGAUo9TwT4LOLm7FFYZOmrwheYdIM8=
-    - secure: epuVi8LA7A06e5nuIUdgCZlXpBo2B3eJsYeylvyItsXxZe5+k0NVdQBivotNO/keLIDDEuCITYcWQuAxcyEdMBHncwRxFcsKbrMqv/YTxOo0BkcpZU507WT1rhWLPFkp3UIwzBmec5R5L87wmyI5y4kIHrk+57Y3a4dKjB3zVIM=
+    secure: UthjfVQ67TlebNYGcxFmjypivlxiblqTJ+GY2keHOzmHtx91aaP3k8LfylDuwGbGV9REApCJvHeS0pOLy9ZFDMzoKhiXoO7NwrJZIjNmzOVxDbdDMxxX2oBsCN78DRsQsuQLt720Hv94qP7SRQ4x1/IC8MIk5ybchuOvFOMA694=
 addons:
   sauce_connect: true
