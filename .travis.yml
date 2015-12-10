@@ -21,8 +21,6 @@ deploy:
   on:
     tags: true
     branch: develop
-addons:
-  sauce_connect: true
 env:
   global:
     - SAUCE_USERNAME: summernoteis
