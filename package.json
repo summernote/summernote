@@ -41,7 +41,7 @@
     "karma-phantomjs-launcher": "^0.2.0",
     "karma-requirejs": "^0.2.2",
     "karma-safari-launcher": "^0.1.1",
-    "karma-sauce-launcher": "^0.2.14",
+    "karma-sauce-launcher": "^0.3.0",
     "load-grunt-tasks": "0.2.0",
     "open": "0.0.4",
     "phantomjs": "^1.9.17",
