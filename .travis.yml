@@ -22,8 +22,7 @@ deploy:
     tags: true
     branch: develop
 addons:
-  sauce_connect: true
-env:
-  global:
-    - SAUCE_USERNAME: summernoteis
-    - SAUCE_ACCESS_KEY: b4657a9b-6a55-4f89-92ef-c507e89b69fb
+  sauce_connect:
+    username: 'summernoteis'
+    access_key:
+      secure: "E9Mq/lKN1xNA+PungEtlDEYqx5Dm52GPuvRMjZPkv5GiuFjof70CuqOIbqSh5YcDvn6/FmPlmlcZVNcXGzKkkSY9qqFpsbmsu2VXmbHlmpjr0Yhm7LQLoZYj+fmrO3WITai6yEyvb8cjGTjHhTjULDORJgC9U4DLfzju5OQFW0Q="
