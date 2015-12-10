@@ -1,14 +1,14 @@
 language: node_js
 sudo: false
-node_js: 0.1
+node_js: 4.1
 before_script:
 - node --version
 - npm --version
 - npm install -g grunt-cli
 script:
 - grunt test-travis --verbose
-- if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then grunt saucelabs-test; fi
 - grunt coveralls:travis
+- if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then grunt saucelabs-test; fi
 before_deploy:
 - npm install
 - grunt build
