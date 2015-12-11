@@ -730,14 +730,6 @@ define([
       //  - do focus when not focused
       if (!$editable.is(':focus')) {
         $editable.focus();
-
-        // [workaround] for firefox bug http://goo.gl/lVfAaI
-        if (!$editable.is(':focus') && agent.isFF) {
-          range.createFromNode($editable[0])
-               .normalize()
-               .collapse()
-               .select();
-        }
       }
     };
 
