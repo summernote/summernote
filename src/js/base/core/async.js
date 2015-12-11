@@ -36,10 +36,9 @@ define(function () {
      * create `<image>` from url string
      *
      * @param {String} url
-     * @param {String|Function} param
      * @return {Promise} - then: $image
      */
-    var createImage = function (url, param) {
+    var createImage = function (url) {
       return $.Deferred(function (deferred) {
         var $img = $('<img>');
 
@@ -52,12 +51,6 @@ define(function () {
         }).css({
           display: 'none'
         }).appendTo(document.body).attr('src', url);
-
-        if (typeof param === 'string') {
-          $img.attr('data-filename', param);
-        } else if (typeof param === 'function') {
-          param($img);
-        }
       }).promise();
     };
 
