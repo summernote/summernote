@@ -105,6 +105,12 @@ define([
 
       context.invoke('toolbar.updateCodeview', false);
     };
+
+    this.destroy = function () {
+      if (this.isActivated()) {
+        this.deactivate();
+      }
+    };
   };
 
   return Codeview;
