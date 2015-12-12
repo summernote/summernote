@@ -344,16 +344,24 @@ define([
     /**
      * insert image
      *
-     * @param {String} sUrl
+     * @param {String} src
+     * @param {String|Function} param
      * @return {Promise}
      */
-    this.insertImage = function (sUrl, filename) {
-      return async.createImage(sUrl, filename).then(function ($image) {
+    this.insertImage = function (src, param) {
+      return async.createImage(src, param).then(function ($image) {
         beforeCommand();
-        $image.css({
-          display: '',
-          width: Math.min($editable.width(), $image.width())
-        });
+
+        if (typeof param === 'function') {
+          param($image);
+        } else {
+          if (typeof param === 'string') {
+            $image.attr('data-filename', param);
+          }
+          $image.css('width', Math.min($editable.width(), $image.width()));
+        }
+
+        $image.show();
         range.create().insertNode($image[0]);
         range.createFromNodeAfter($image[0]).select();
         afterCommand();
