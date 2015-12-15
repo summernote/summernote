@@ -70,6 +70,8 @@ define([
         } else {
           this.layoutInfo.editable.html(html);
         }
+
+        this.triggerEvent('change', html);
       }
     };
 
