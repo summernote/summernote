@@ -90,6 +90,7 @@ define([
           this.layoutInfo.editable.html(html);
         }
         $note.val(html);
+        this.triggerEvent('change', html);
       }
     };
 

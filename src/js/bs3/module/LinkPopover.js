@@ -18,7 +18,7 @@ define([
       }
     };
 
-    this.shouldInitailize = function () {
+    this.shouldInitialize = function () {
       return !list.isEmpty(options.popover.link);
     };
 
