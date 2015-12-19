@@ -7,7 +7,6 @@ before_script:
 - npm install -g grunt-cli
 script:
 - grunt test-travis --verbose
-- grunt coveralls:travis
 - if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then grunt saucelabs-test; fi
 before_deploy:
 - npm install
@@ -26,3 +25,5 @@ addons:
     username: 'summernoteis'
     access_key:
       secure: "E9Mq/lKN1xNA+PungEtlDEYqx5Dm52GPuvRMjZPkv5GiuFjof70CuqOIbqSh5YcDvn6/FmPlmlcZVNcXGzKkkSY9qqFpsbmsu2VXmbHlmpjr0Yhm7LQLoZYj+fmrO3WITai6yEyvb8cjGTjHhTjULDORJgC9U4DLfzju5OQFW0Q="
+after_success:
+- grunt coveralls:travis
