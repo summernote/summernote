@@ -12,12 +12,14 @@ requirejs.config({
 
   paths: {
     jquery: '../../test/libs/jquery-1.9.1.min',
+    es5shim: '../../test/libs/es5-shim',
     codemirror: '../../test/libs/codemirror',
     chai: '../../node_modules/chai/chai',
     helper: '../../test/test-util'
   },
 
   shim: {
+    es5shim: { exports: 'es5shim' },
     codemirror: { exports: 'codemirror' }
   },
 
