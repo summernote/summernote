@@ -61,7 +61,6 @@ module.exports = function (grunt) {
       },
       packages: [{
         name: 'summernote',
-        main: 'summernote',
         location: './'
       }]
     }, function () {
