@@ -157,7 +157,8 @@ module.exports = function (grunt) {
     connect: {
       all: {
         options: {
-          port: 3000
+          port: 3000,
+          useAvailablePort: true
         }
       }
     },
@@ -225,9 +226,40 @@ module.exports = function (grunt) {
         src: 'test/coverage/**/lcov.info'
       }
     },
+
+    nightwatch: {
+      options: {
+        standalone: true,
+
+        // download settings
+        'jar_version': '2.48.2',
+        'jar_path': 'test/libs/selenium-server.jar',
+        'jar_url': 'http://selenium-release.storage.googleapis.com/2.48/selenium-server-standalone-2.48.2.jar',
+
+        'config_path': 'test/nightwatch.json',
+
+        'test_settings': (function () {
+          var browserTargets = {};
+          for (var key in customLaunchers) {
+            browserTargets[key] = {
+              'launch_url': 'http://localhost:3000/test/e2e/html',
+              'silent': true,
+              'selenium_host': 'ondemand.saucelabs.com',
+              'selenium_port': 80,
+              'username': process.env.SAUCE_USERNAME,
+              'access_key': process.env.SAUCE_ACCESS_KEY,
+              'desiredCapabilities': customLaunchers[key]
+            };
+          }
+          return browserTargets;
+        })()
+      }
+    },
+
     clean: {
       dist: ['dist']
     },
+
     copy: {
       dist: {
         files: [
@@ -254,6 +286,15 @@ module.exports = function (grunt) {
 
   // test: saucelabs test
   grunt.registerTask('saucelabs-test', ['karma:saucelabs']);
+
+  // test: e2e tests
+  var e2eTagets = [];
+  if (process.env.TRAVIS) {
+    for (var key in customLaunchers) { e2eTagets.push(key); }
+    grunt.registerTask('e2e', ['connect', 'nightwatch:' + e2eTagets.join(':')]);
+  } else {
+    grunt.registerTask('e2e', ['connect', 'nightwatch']);
+  }
 
   // dist: make dist files
   grunt.registerTask('dist', [
