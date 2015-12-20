@@ -18,12 +18,14 @@ module.exports = function (grunt) {
   };
 
   var customLaunchers = {
+    /*
     'SL_IE8': {
       base: 'SauceLabs',
       browserName: 'internet explorer',
       version: '8.0',
       platform: 'windows XP'
     },
+    */
     'SL_IE9': {
       base: 'SauceLabs',
       browserName: 'internet explorer',
