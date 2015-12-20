@@ -19,10 +19,35 @@ define([
     this.layoutInfo = {};
     this.options = options;
 
+    /**
+     * create layout and initialize modules and other resources
+     */
     this.initialize = function () {
-      // create layout info
       this.layoutInfo = ui.createLayout($note, options);
+      this._initialize();
+      $note.hide();
+      return this;
+    };
 
+    /**
+     * destroy modules and other resources and remove layout
+     */
+    this.destroy = function () {
+      this._destroy();
+      $note.removeData('summernote');
+      ui.removeLayout($note, this.layoutInfo);
+    };
+
+    /**
+     * destory modules and other resources and initialize it again
+     */
+    this.reset = function () {
+      this.code(dom.emptyPara);
+      this._destroy();
+      this._initialize();
+    };
+
+    this._initialize = function () {
       // add optional buttons
       var buttons = $.extend({}, this.options.buttons);
       Object.keys(buttons).forEach(function (key) {
@@ -31,7 +56,7 @@ define([
 
       var modules = $.extend({}, this.options.modules, $.summernote.plugins || {});
 
-      // add module
+      // add and initialize modules
       Object.keys(modules).forEach(function (key) {
         self.module(key, modules[key], true);
       });
@@ -39,23 +64,17 @@ define([
       Object.keys(this.modules).forEach(function (key) {
         self.initializeModule(key);
       });
-
-      $note.hide();
-      return this;
     };
 
-    this.destroy = function () {
-      Object.keys(this.modules).forEach(function (key) {
+    this._destroy = function () {
+      // destroy modules with reversed order
+      Object.keys(this.modules).reverse().forEach(function (key) {
         self.removeModule(key);
       });
 
       Object.keys(this.memos).forEach(function (key) {
         self.removeMemo(key);
       });
-
-      $note.removeData('summernote');
-
-      ui.removeLayout($note, this.layoutInfo);
     };
 
     this.code = function (html) {
@@ -70,7 +89,7 @@ define([
         } else {
           this.layoutInfo.editable.html(html);
         }
-
+        $note.val(html);
         this.triggerEvent('change', html);
       }
     };
@@ -147,7 +166,6 @@ define([
       }
 
       delete this.modules[key];
-      this.modules[key] = null;
     };
 
     this.memo = function (key, obj) {
@@ -163,7 +181,6 @@ define([
       }
 
       delete this.memos[key];
-      this.memos[key] = null;
     };
 
     this.createInvokeHandler = function (namespace, value) {

@@ -211,18 +211,6 @@ define([
     };
     context.memo('help.redo', lang.help.redo);
 
-    this.reset = function () {
-      context.triggerEvent('before.command', $editable.html());
-      history.reset();
-      context.triggerEvent('change', $editable.html());
-    };
-
-    this.rewind = function () {
-      context.triggerEvent('before.command', $editable.html());
-      history.rewind();
-      context.triggerEvent('change', $editable.html());
-    };
-
     /**
      * beforeCommand
      * before command
