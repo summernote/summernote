@@ -76,7 +76,7 @@
   -moz-opacity: $opacity;
   opacity: $opacity;
   $opperc: $opacity * 100;
-  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(opacity=$opperc);
+  -ms-filter: progid:DXImageTransform.Microsoft.Alpha(opacity=#{$opperc});
   filter: alpha(opacity=$opperc);
 }
 @mixin transition-duration($duration: 0.2s) {
