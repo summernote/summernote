@@ -61,9 +61,6 @@ module.exports = {
                    .to.have.attribute('data-original-title').which.equal('Code View');
       client.expect.element('.note-btn-group.note-view > .note-btn:nth-child(3)')
                    .to.have.attribute('data-original-title').which.equal('Help');
-  },
-
-  after: function (client) {
     client.end();
   }
 };
