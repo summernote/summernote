@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-12-10T08:15Z
+ * Date: 2015-12-27T06:18Z
  */
 (function (factory) {
   /* global define */
@@ -21,8 +21,7 @@
     factory(window.jQuery);
   }
 }(function ($) {
-  
-
+  'use strict';
 
   /**
    * @class core.func
@@ -1492,10 +1491,35 @@
     this.layoutInfo = {};
     this.options = options;
 
+    /**
+     * create layout and initialize modules and other resources
+     */
     this.initialize = function () {
-      // create layout info
       this.layoutInfo = ui.createLayout($note, options);
+      this._initialize();
+      $note.hide();
+      return this;
+    };
 
+    /**
+     * destroy modules and other resources and remove layout
+     */
+    this.destroy = function () {
+      this._destroy();
+      $note.removeData('summernote');
+      ui.removeLayout($note, this.layoutInfo);
+    };
+
+    /**
+     * destory modules and other resources and initialize it again
+     */
+    this.reset = function () {
+      this.code(dom.emptyPara);
+      this._destroy();
+      this._initialize();
+    };
+
+    this._initialize = function () {
       // add optional buttons
       var buttons = $.extend({}, this.options.buttons);
       Object.keys(buttons).forEach(function (key) {
@@ -1504,7 +1528,7 @@
 
       var modules = $.extend({}, this.options.modules, $.summernote.plugins || {});
 
-      // add module
+      // add and initialize modules
       Object.keys(modules).forEach(function (key) {
         self.module(key, modules[key], true);
       });
@@ -1512,23 +1536,17 @@
       Object.keys(this.modules).forEach(function (key) {
         self.initializeModule(key);
       });
-
-      $note.hide();
-      return this;
     };
 
-    this.destroy = function () {
-      Object.keys(this.modules).forEach(function (key) {
+    this._destroy = function () {
+      // destroy modules with reversed order
+      Object.keys(this.modules).reverse().forEach(function (key) {
         self.removeModule(key);
       });
 
       Object.keys(this.memos).forEach(function (key) {
         self.removeMemo(key);
       });
-
-      $note.removeData('summernote');
-
-      ui.removeLayout($note, this.layoutInfo);
     };
 
     this.code = function (html) {
@@ -1543,6 +1561,8 @@
         } else {
           this.layoutInfo.editable.html(html);
         }
+        $note.val(html);
+        this.triggerEvent('change', html);
       }
     };
 
@@ -1618,7 +1638,6 @@
       }
 
       delete this.modules[key];
-      this.modules[key] = null;
     };
 
     this.memo = function (key, obj) {
@@ -1634,7 +1653,6 @@
       }
 
       delete this.memos[key];
-      this.memos[key] = null;
     };
 
     this.createInvokeHandler = function (namespace, value) {
@@ -1695,12 +1713,16 @@
       });
 
       var $note = this.first();
-      if (isExternalAPICalled && $note.length) {
+      if ($note.length) {
         var context = $note.data('summernote');
-        return context.invoke.apply(context, list.from(arguments));
-      } else {
-        return this;
+        if (isExternalAPICalled) {
+          return context.invoke.apply(context, list.from(arguments));
+        } else if (options.focus) {
+          context.invoke('editor.focus');
+        }
       }
+
+      return this;
     }
   });
 
@@ -2365,6 +2387,20 @@
         return this;
       };
 
+
+      /**
+       * Moves the scrollbar to start container(sc) of current range
+       *
+       * @return {WrappedRange}
+       */
+      this.scrollIntoView = function ($container) {
+        if ($container[0].scrollTop + $container.height() < this.sc.offsetTop) {
+          $container[0].scrollTop += Math.abs($container[0].scrollTop + $container.height() - this.sc.offsetTop);
+        }
+
+        return this;
+      };
+
       /**
        * @return {WrappedRange}
        */
@@ -2983,11 +3019,10 @@
      *
      * create `<image>` from url string
      *
-     * @param {String} sUrl
-     * @param {String} filename
+     * @param {String} url
      * @return {Promise} - then: $image
      */
-    var createImage = function (sUrl, filename) {
+    var createImage = function (url) {
       return $.Deferred(function (deferred) {
         var $img = $('<img>');
 
@@ -2999,10 +3034,7 @@
           deferred.reject($img);
         }).css({
           display: 'none'
-        }).appendTo(document.body).attr({
-          'src': sUrl,
-          'data-filename': filename
-        });
+        }).appendTo(document.body).attr('src', url);
       }).promise();
     };
 
@@ -3538,7 +3570,7 @@
     /**
      * insert paragraph
      */
-    this.insertParagraph = function () {
+    this.insertParagraph = function ($editable) {
       var rng = range.create();
 
       // deleteContents on range.
@@ -3590,7 +3622,7 @@
         }
       }
 
-      range.create(nextPara, 0).normalize().select();
+      range.create(nextPara, 0).normalize().select().scrollIntoView($editable);
     };
   };
 
@@ -3842,18 +3874,6 @@
     };
     context.memo('help.redo', lang.help.redo);
 
-    this.reset = function () {
-      context.triggerEvent('before.command', $editable.html());
-      history.reset();
-      context.triggerEvent('change', $editable.html());
-    };
-
-    this.rewind = function () {
-      context.triggerEvent('before.command', $editable.html());
-      history.rewind();
-      context.triggerEvent('change', $editable.html());
-    };
-
     /**
      * beforeCommand
      * before command
@@ -3975,16 +3995,24 @@
     /**
      * insert image
      *
-     * @param {String} sUrl
+     * @param {String} src
+     * @param {String|Function} param
      * @return {Promise}
      */
-    this.insertImage = function (sUrl, filename) {
-      return async.createImage(sUrl, filename).then(function ($image) {
+    this.insertImage = function (src, param) {
+      return async.createImage(src, param).then(function ($image) {
         beforeCommand();
-        $image.css({
-          display: '',
-          width: Math.min($editable.width(), $image.width())
-        });
+
+        if (typeof param === 'function') {
+          param($image);
+        } else {
+          if (typeof param === 'string') {
+            $image.attr('data-filename', param);
+          }
+          $image.css('width', Math.min($editable.width(), $image.width()));
+        }
+
+        $image.show();
         range.create().insertNode($image[0]);
         range.createFromNodeAfter($image[0]).select();
         afterCommand();
@@ -4672,6 +4700,12 @@
 
       context.invoke('toolbar.updateCodeview', false);
     };
+
+    this.destroy = function () {
+      if (this.isActivated()) {
+        this.deactivate();
+      }
+    };
   };
 
   var EDITABLE_PADDING = 24;
@@ -5161,12 +5195,20 @@
                 '<li>',
                 '<div class="btn-group">',
                 '  <div class="note-palette-title">' + lang.color.background + '</div>',
-                '  <div class="note-color-reset" data-event="backColor" data-value="inherit">' + lang.color.transparent + '</div>',
+                '  <div>',
+                '    <button class="note-color-reset btn btn-default" data-event="backColor" data-value="inherit">',
+                lang.color.transparent,
+                '    </button>',
+                '  </div>',
                 '  <div class="note-holder" data-event="backColor"/>',
                 '</div>',
                 '<div class="btn-group">',
                 '  <div class="note-palette-title">' + lang.color.foreground + '</div>',
-                '  <div class="note-color-reset" data-event="foreColor" data-value="inherit">' + lang.color.resetToDefault + '</div>',
+                '  <div>',
+                '    <button class="note-color-reset btn btn-default" data-event="removeFormat" data-value="foreColor">',
+                lang.color.resetToDefault,
+                '    </button>',
+                '  </div>',
                 '  <div class="note-holder" data-event="foreColor"/>',
                 '</div>',
                 '</li>'
@@ -5820,7 +5862,7 @@
       }
     };
 
-    this.shouldInitailize = function () {
+    this.shouldInitialize = function () {
       return !list.isEmpty(options.popover.link);
     };
 
@@ -6301,6 +6343,12 @@
         self.hide();
       },
       'summernote.focusout': function (we, e) {
+        // [workaround] Firefox doesn't support relatedTarget on focusout
+        //  - Ignore hide action on focus out in FF.
+        if (agent.isFF) {
+          return;
+        }
+
         if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq(self.$popover[0]))) {
           self.hide();
         }
@@ -6789,4 +6837,5 @@
       }
     }
   });
+
 }));
