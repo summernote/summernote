@@ -63,12 +63,15 @@ define([
         context.triggerEvent('paste', event);
       });
 
+
+      $editable.html(dom.html($note) || dom.emptyPara);
       // [workaround] IE doesn't have input events for contentEditable
       // - see: https://goo.gl/4bfIvA
       var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
-      $editable.on(changeEventName, function () {
+      var delayedCount = agent.isMSIE ? 1 : 0;
+      $editable.on(changeEventName, func.delayedCallback(function () {
         context.triggerEvent('change', $editable.html());
-      });
+      }, delayedCount));
 
       $editor.on('focusin', function (event) {
         context.triggerEvent('focusin', event);
@@ -86,7 +89,6 @@ define([
         $editable.css('min-height', options.minHeight);
       }
 
-      $editable.html(dom.html($note) || dom.emptyPara);
       history.recordUndo();
     };
 

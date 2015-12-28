@@ -110,6 +110,27 @@ define(function () {
       }).join('');
     };
 
+    /**
+     * return delayed function
+     *
+     * callback is run when count is zero
+     *
+     * @param {Function} callback
+     * @param {Number} count default is zero
+     * @param {Object} context
+     * @returns {Function}
+     */
+    var delayedCallback = function (callback, count, context) {
+      var total = count || 0;
+      return function () {
+        if (total === 0) {
+          callback.apply(context, arguments);
+        } else {
+          total--;
+        }
+      };
+    };
+
     return {
       eq: eq,
       eq2: eq2,
@@ -122,7 +143,8 @@ define(function () {
       uniqueId: uniqueId,
       rect2bnd: rect2bnd,
       invertObject: invertObject,
-      namespaceToCamel: namespaceToCamel
+      namespaceToCamel: namespaceToCamel,
+      delayedCallback : delayedCallback
     };
   })();
 
