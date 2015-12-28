@@ -21,9 +21,9 @@ define([
       }
 
       shortcut = shortcut.replace('BACKSLASH', '\\')
-        .replace('SLASH', '/')
-        .replace('LEFTBRACKET', '[')
-        .replace('RIGHTBRACKET', ']');
+                         .replace('SLASH', '/')
+                         .replace('LEFTBRACKET', '[')
+                         .replace('RIGHTBRACKET', ']');
 
       return ' (' + shortcut + ')';
     };
