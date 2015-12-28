@@ -41,7 +41,7 @@ define([
           tooltip: lang.style.style,
           className: 'dropdown-style',
           items: context.options.styleTags,
-          template : function (item) {
+          template: function (item) {
 
             if (typeof item === 'string') {
               item = { tag : item, title : item };
@@ -127,7 +127,7 @@ define([
             return agent.isFontInstalled(name) ||
               list.contains(options.fontNamesIgnoreCheck, name);
           }),
-          template : function (item) {
+          template: function (item) {
             return '<span style="font-family:' + item + '" data-value="' + item + '">' + item + '</span>';
           },
           dropdownClick: context.createInvokeHandler('editor.fontName')
@@ -155,11 +155,11 @@ define([
           buttonClassName : 'note-current-color-button',
           contents: ui.icon(options.icons.font + ' note-recent-color'),
           tooltip: lang.color.recent,
-          colors : options.colors,
-          defaults : {
-            background : 'yellow'
+          colors: options.colors,
+          defaults: {
+            background: 'yellow'
           },
-          lang : lang,
+          lang: lang,
           click: context.createInvokeHandler('editor.color'),
           selectColor : function (type, color) {
             context.invoke('editor.' + type, color);
