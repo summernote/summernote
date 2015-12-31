@@ -6,7 +6,7 @@ define([
   var CodeMirror;
   if (agent.hasCodeMirror) {
     if (agent.isSupportAmd) {
-      require(['CodeMirror'], function (cm) {
+      require(['codemirror'], function (cm) {
         CodeMirror = cm;
       });
     } else {
@@ -104,6 +104,12 @@ define([
       $editable.focus();
 
       context.invoke('toolbar.updateCodeview', false);
+    };
+
+    this.destroy = function () {
+      if (this.isActivated()) {
+        this.deactivate();
+      }
     };
   };
 

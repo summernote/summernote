@@ -8,10 +8,12 @@
   ],
   "ignore": [
     "**/.*",
+    "Gruntfile.js",
+    "MAINTAIN.md",
+    "grunts",
     "node_modules",
     "bower_components",
-    "test",
-    "tests"
+    "test"
   ],
   "dependencies": {
     "jquery": ">= 1.9.0",

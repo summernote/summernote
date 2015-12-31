@@ -38,12 +38,6 @@ meteor/publish.sh
 ```
 
 ### 05. Update summernote.github.io
+Update summernote version in _config.yml.
 
-Update summernote and other bower components.
-```bash
-bower update
-```
-
-Replace binary path with new version on `getting-started.html`. This binary is generated at `3. Release new version`.
-
-https://github.com/summernote/summernote.github.io/blob/master/html/getting-started.html
+TODO...

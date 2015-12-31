@@ -19,10 +19,35 @@ define([
     this.layoutInfo = {};
     this.options = options;
 
+    /**
+     * create layout and initialize modules and other resources
+     */
     this.initialize = function () {
-      // create layout info
       this.layoutInfo = ui.createLayout($note, options);
+      this._initialize();
+      $note.hide();
+      return this;
+    };
 
+    /**
+     * destroy modules and other resources and remove layout
+     */
+    this.destroy = function () {
+      this._destroy();
+      $note.removeData('summernote');
+      ui.removeLayout($note, this.layoutInfo);
+    };
+
+    /**
+     * destory modules and other resources and initialize it again
+     */
+    this.reset = function () {
+      this.code(dom.emptyPara);
+      this._destroy();
+      this._initialize();
+    };
+
+    this._initialize = function () {
       // add optional buttons
       var buttons = $.extend({}, this.options.buttons);
       Object.keys(buttons).forEach(function (key) {
@@ -31,7 +56,7 @@ define([
 
       var modules = $.extend({}, this.options.modules, $.summernote.plugins || {});
 
-      // add module
+      // add and initialize modules
       Object.keys(modules).forEach(function (key) {
         self.module(key, modules[key], true);
       });
@@ -39,23 +64,17 @@ define([
       Object.keys(this.modules).forEach(function (key) {
         self.initializeModule(key);
       });
-
-      $note.hide();
-      return this;
     };
 
-    this.destroy = function () {
-      Object.keys(this.modules).forEach(function (key) {
+    this._destroy = function () {
+      // destroy modules with reversed order
+      Object.keys(this.modules).reverse().forEach(function (key) {
         self.removeModule(key);
       });
 
       Object.keys(this.memos).forEach(function (key) {
         self.removeMemo(key);
       });
-
-      $note.removeData('summernote');
-
-      ui.removeLayout($note, this.layoutInfo);
     };
 
     this.code = function (html) {
@@ -70,7 +89,27 @@ define([
         } else {
           this.layoutInfo.editable.html(html);
         }
+        $note.val(html);
+        this.triggerEvent('change', html);
       }
+    };
+
+    this.isDisabled = function () {
+      return this.layoutInfo.editable.attr('contenteditable') === 'false';
+    };
+
+    this.enable = function () {
+      this.layoutInfo.editable.attr('contenteditable', true);
+      this.invoke('toolbar.activate', true);
+    };
+
+    this.disable = function () {
+      // close codeview if codeview is opend
+      if (this.invoke('codeview.isActivated')) {
+        this.invoke('codeview.deactivate');
+      }
+      this.layoutInfo.editable.attr('contenteditable', false);
+      this.invoke('toolbar.deactivate', true);
     };
 
     this.triggerEvent = function () {
@@ -127,7 +166,6 @@ define([
       }
 
       delete this.modules[key];
-      this.modules[key] = null;
     };
 
     this.memo = function (key, obj) {
@@ -143,7 +181,6 @@ define([
       }
 
       delete this.memos[key];
-      this.memos[key] = null;
     };
 
     this.createInvokeHandler = function (namespace, value) {
@@ -197,18 +234,23 @@ define([
       this.each(function (idx, note) {
         var $note = $(note);
         if (!$note.data('summernote')) {
-          $note.data('summernote', new Context($note, options));
-          $note.data('summernote').triggerEvent('init');
+          var context = new Context($note, options);
+          $note.data('summernote', context);
+          $note.data('summernote').triggerEvent('init', context.layoutInfo);
         }
       });
 
       var $note = this.first();
-      if (isExternalAPICalled && $note.length) {
+      if ($note.length) {
         var context = $note.data('summernote');
-        return context.invoke.apply(context, list.from(arguments));
-      } else {
-        return this;
+        if (isExternalAPICalled) {
+          return context.invoke.apply(context, list.from(arguments));
+        } else if (options.focus) {
+          context.invoke('editor.focus');
+        }
       }
+
+      return this;
     }
   });
 });

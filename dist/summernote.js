@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor v0.7.0
+ * Super simple wysiwyg editor v0.7.1
  * http://summernote.org/
  *
  * summernote.js
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2015-12-02T16:01Z
+ * Date: 2015-12-27T06:18Z
  */
 (function (factory) {
   /* global define */
@@ -21,8 +21,7 @@
     factory(window.jQuery);
   }
 }(function ($) {
-  
-
+  'use strict';
 
   /**
    * @class core.func
@@ -402,7 +401,7 @@
     browserVersion: browserVersion,
     jqueryVersion: parseFloat($.fn.jquery),
     isSupportAmd: isSupportAmd,
-    hasCodeMirror: isSupportAmd ? require.specified('CodeMirror') : !!window.CodeMirror,
+    hasCodeMirror: isSupportAmd ? require.specified('codemirror') : !!window.CodeMirror,
     isFontInstalled: isFontInstalled,
     isW3CRangeSupport: !!document.createRange
   };
@@ -503,6 +502,8 @@
     var isHeading = function (node) {
       return node && /^H[1-7]/.test(node.nodeName.toUpperCase());
     };
+
+    var isPre = makePredByNodeName('PRE');
 
     var isLi = makePredByNodeName('LI');
 
@@ -1408,6 +1409,7 @@
       isBodyInline: isBodyInline,
       isBody: isBody,
       isParaInline: isParaInline,
+      isPre: isPre,
       isList: isList,
       isTable: isTable,
       isCell: isCell,
@@ -1489,10 +1491,35 @@
     this.layoutInfo = {};
     this.options = options;
 
+    /**
+     * create layout and initialize modules and other resources
+     */
     this.initialize = function () {
-      // create layout info
       this.layoutInfo = ui.createLayout($note, options);
+      this._initialize();
+      $note.hide();
+      return this;
+    };
 
+    /**
+     * destroy modules and other resources and remove layout
+     */
+    this.destroy = function () {
+      this._destroy();
+      $note.removeData('summernote');
+      ui.removeLayout($note, this.layoutInfo);
+    };
+
+    /**
+     * destory modules and other resources and initialize it again
+     */
+    this.reset = function () {
+      this.code(dom.emptyPara);
+      this._destroy();
+      this._initialize();
+    };
+
+    this._initialize = function () {
       // add optional buttons
       var buttons = $.extend({}, this.options.buttons);
       Object.keys(buttons).forEach(function (key) {
@@ -1501,7 +1528,7 @@
 
       var modules = $.extend({}, this.options.modules, $.summernote.plugins || {});
 
-      // add module
+      // add and initialize modules
       Object.keys(modules).forEach(function (key) {
         self.module(key, modules[key], true);
       });
@@ -1509,23 +1536,17 @@
       Object.keys(this.modules).forEach(function (key) {
         self.initializeModule(key);
       });
-
-      $note.hide();
-      return this;
     };
 
-    this.destroy = function () {
-      Object.keys(this.modules).forEach(function (key) {
+    this._destroy = function () {
+      // destroy modules with reversed order
+      Object.keys(this.modules).reverse().forEach(function (key) {
         self.removeModule(key);
       });
 
       Object.keys(this.memos).forEach(function (key) {
         self.removeMemo(key);
       });
-
-      $note.removeData('summernote');
-
-      ui.removeLayout($note, this.layoutInfo);
     };
 
     this.code = function (html) {
@@ -1540,7 +1561,27 @@
         } else {
           this.layoutInfo.editable.html(html);
         }
+        $note.val(html);
+        this.triggerEvent('change', html);
       }
+    };
+
+    this.isDisabled = function () {
+      return this.layoutInfo.editable.attr('contenteditable') === 'false';
+    };
+
+    this.enable = function () {
+      this.layoutInfo.editable.attr('contenteditable', true);
+      this.invoke('toolbar.activate', true);
+    };
+
+    this.disable = function () {
+      // close codeview if codeview is opend
+      if (this.invoke('codeview.isActivated')) {
+        this.invoke('codeview.deactivate');
+      }
+      this.layoutInfo.editable.attr('contenteditable', false);
+      this.invoke('toolbar.deactivate', true);
     };
 
     this.triggerEvent = function () {
@@ -1597,7 +1638,6 @@
       }
 
       delete this.modules[key];
-      this.modules[key] = null;
     };
 
     this.memo = function (key, obj) {
@@ -1613,7 +1653,6 @@
       }
 
       delete this.memos[key];
-      this.memos[key] = null;
     };
 
     this.createInvokeHandler = function (namespace, value) {
@@ -1667,18 +1706,23 @@
       this.each(function (idx, note) {
         var $note = $(note);
         if (!$note.data('summernote')) {
-          $note.data('summernote', new Context($note, options));
-          $note.data('summernote').triggerEvent('init');
+          var context = new Context($note, options);
+          $note.data('summernote', context);
+          $note.data('summernote').triggerEvent('init', context.layoutInfo);
         }
       });
 
       var $note = this.first();
-      if (isExternalAPICalled && $note.length) {
+      if ($note.length) {
         var context = $note.data('summernote');
-        return context.invoke.apply(context, list.from(arguments));
-      } else {
-        return this;
+        if (isExternalAPICalled) {
+          return context.invoke.apply(context, list.from(arguments));
+        } else if (options.focus) {
+          context.invoke('editor.focus');
+        }
       }
+
+      return this;
     }
   });
 
@@ -2343,6 +2387,20 @@
         return this;
       };
 
+
+      /**
+       * Moves the scrollbar to start container(sc) of current range
+       *
+       * @return {WrappedRange}
+       */
+      this.scrollIntoView = function ($container) {
+        if ($container[0].scrollTop + $container.height() < this.sc.offsetTop) {
+          $container[0].scrollTop += Math.abs($container[0].scrollTop + $container.height() - this.sc.offsetTop);
+        }
+
+        return this;
+      };
+
       /**
        * @return {WrappedRange}
        */
@@ -2961,11 +3019,10 @@
      *
      * create `<image>` from url string
      *
-     * @param {String} sUrl
-     * @param {String} filename
+     * @param {String} url
      * @return {Promise} - then: $image
      */
-    var createImage = function (sUrl, filename) {
+    var createImage = function (url) {
       return $.Deferred(function (deferred) {
         var $img = $('<img>');
 
@@ -2977,10 +3034,7 @@
           deferred.reject($img);
         }).css({
           display: 'none'
-        }).appendTo(document.body).attr({
-          'src': sUrl,
-          'data-filename': filename
-        });
+        }).appendTo(document.body).attr('src', url);
       }).promise();
     };
 
@@ -3516,7 +3570,7 @@
     /**
      * insert paragraph
      */
-    this.insertParagraph = function () {
+    this.insertParagraph = function ($editable) {
       var rng = range.create();
 
       // deleteContents on range.
@@ -3552,8 +3606,8 @@
             dom.remove(anchor);
           });
 
-          // replace empty heading with P tag
-          if (dom.isHeading(nextPara) && dom.isEmpty(nextPara)) {
+          // replace empty heading or pre with P tag
+          if ((dom.isHeading(nextPara) || dom.isPre(nextPara)) && dom.isEmpty(nextPara)) {
             nextPara = dom.replace(nextPara, 'p');
           }
         }
@@ -3568,7 +3622,7 @@
         }
       }
 
-      range.create(nextPara, 0).normalize().select();
+      range.create(nextPara, 0).normalize().select().scrollIntoView($editable);
     };
   };
 
@@ -3675,8 +3729,8 @@
       // [workaround] IE doesn't have input events for contentEditable
       // - see: https://goo.gl/4bfIvA
       var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
-      $editable.on(changeEventName, function (event) {
-        context.triggerEvent('change', event);
+      $editable.on(changeEventName, function () {
+        context.triggerEvent('change', $editable.html());
       });
 
       $editor.on('focusin', function (event) {
@@ -3688,8 +3742,14 @@
       if (!options.airMode && options.height) {
         $editable.outerHeight(options.height);
       }
+      if (!options.airMode && options.maxHeight) {
+        $editable.css('max-height', options.maxHeight);
+      }
+      if (!options.airMode && options.minHeight) {
+        $editable.css('min-height', options.minHeight);
+      }
 
-      $editable.html($note.html());
+      $editable.html(dom.html($note) || dom.emptyPara);
       history.recordUndo();
     };
 
@@ -3814,18 +3874,6 @@
     };
     context.memo('help.redo', lang.help.redo);
 
-    this.reset = function () {
-      context.triggerEvent('before.command', $editable.html());
-      history.reset();
-      context.triggerEvent('change', $editable.html());
-    };
-
-    this.rewind = function () {
-      context.triggerEvent('before.command', $editable.html());
-      history.rewind();
-      context.triggerEvent('change', $editable.html());
-    };
-
     /**
      * beforeCommand
      * before command
@@ -3947,16 +3995,24 @@
     /**
      * insert image
      *
-     * @param {String} sUrl
+     * @param {String} src
+     * @param {String|Function} param
      * @return {Promise}
      */
-    this.insertImage = function (sUrl, filename) {
-      return async.createImage(sUrl, filename).then(function ($image) {
+    this.insertImage = function (src, param) {
+      return async.createImage(src, param).then(function ($image) {
         beforeCommand();
-        $image.css({
-          display: '',
-          width: Math.min($editable.width(), $image.width())
-        });
+
+        if (typeof param === 'function') {
+          param($image);
+        } else {
+          if (typeof param === 'string') {
+            $image.attr('data-filename', param);
+          }
+          $image.css('width', Math.min($editable.width(), $image.width()));
+        }
+
+        $image.show();
         range.create().insertNode($image[0]);
         range.createFromNodeAfter($image[0]).select();
         afterCommand();
@@ -4545,7 +4601,7 @@
   var CodeMirror;
   if (agent.hasCodeMirror) {
     if (agent.isSupportAmd) {
-      require(['CodeMirror'], function (cm) {
+      require(['codemirror'], function (cm) {
         CodeMirror = cm;
       });
     } else {
@@ -4643,6 +4699,12 @@
       $editable.focus();
 
       context.invoke('toolbar.updateCodeview', false);
+    };
+
+    this.destroy = function () {
+      if (this.isActivated()) {
+        this.deactivate();
+      }
     };
   };
 
@@ -5133,12 +5195,20 @@
                 '<li>',
                 '<div class="btn-group">',
                 '  <div class="note-palette-title">' + lang.color.background + '</div>',
-                '  <div class="note-color-reset" data-event="backColor" data-value="inherit">' + lang.color.transparent + '</div>',
+                '  <div>',
+                '    <button class="note-color-reset btn btn-default" data-event="backColor" data-value="inherit">',
+                lang.color.transparent,
+                '    </button>',
+                '  </div>',
                 '  <div class="note-holder" data-event="backColor"/>',
                 '</div>',
                 '<div class="btn-group">',
                 '  <div class="note-palette-title">' + lang.color.foreground + '</div>',
-                '  <div class="note-color-reset" data-event="foreColor" data-value="inherit">' + lang.color.resetToDefault + '</div>',
+                '  <div>',
+                '    <button class="note-color-reset btn btn-default" data-event="removeFormat" data-value="foreColor">',
+                lang.color.resetToDefault,
+                '    </button>',
+                '  </div>',
                 '  <div class="note-holder" data-event="foreColor"/>',
                 '</div>',
                 '</li>'
@@ -5623,13 +5693,19 @@
       }
     };
 
-    this.activate = function () {
-      var $btn = $toolbar.find('button').not('.btn-codeview');
+    this.activate = function (isIncludeCodeview) {
+      var $btn = $toolbar.find('button');
+      if (!isIncludeCodeview) {
+        $btn = $btn.not('.btn-codeview');
+      }
       ui.toggleBtn($btn, true);
     };
 
-    this.deactivate = function () {
-      var $btn = $toolbar.find('button').not('.btn-codeview');
+    this.deactivate = function (isIncludeCodeview) {
+      var $btn = $toolbar.find('button');
+      if (!isIncludeCodeview) {
+        $btn = $btn.not('.btn-codeview');
+      }
       ui.toggleBtn($btn, false);
     };
   };
@@ -5786,7 +5862,7 @@
       }
     };
 
-    this.shouldInitailize = function () {
+    this.shouldInitialize = function () {
       return !list.isEmpty(options.popover.link);
     };
 
@@ -6174,7 +6250,6 @@
     var options = context.options;
     var lang = options.langInfo;
 
-
     this.createShortCutList = function () {
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
 
@@ -6205,7 +6280,7 @@
 
       var body = [
         '<p class="text-center">',
-        '<a href="//summernote.org/" target="_blank">Summernote 0.7.0</a> · ',
+        '<a href="//summernote.org/" target="_blank">Summernote 0.7.1</a> · ',
         '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ',
         '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>',
         '</p>'
@@ -6268,6 +6343,12 @@
         self.hide();
       },
       'summernote.focusout': function (we, e) {
+        // [workaround] Firefox doesn't support relatedTarget on focusout
+        //  - Ignore hide action on focus out in FF.
+        if (agent.isFF) {
+          return;
+        }
+
         if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq(self.$popover[0]))) {
           self.hide();
         }
@@ -6521,7 +6602,7 @@
 
 
   $.summernote = $.extend($.summernote, {
-    version: '0.7.0',
+    version: '0.7.1',
     ui: ui,
 
     plugins: {},
@@ -6756,4 +6837,5 @@
       }
     }
   });
+
 }));

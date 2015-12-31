@@ -1,7 +1,7 @@
 {
   "name": "summernote",
   "description": "Super simple WYSIWYG editor",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "license": "MIT",
   "keywords": [
     "editor",
@@ -17,11 +17,13 @@
   },
   "main": "dist/summernote.js",
   "devDependencies": {
+    "chai": "^3.2.0",
     "grunt": "*",
+    "grunt-contrib-clean": "^0.7.0",
     "grunt-contrib-compress": "*",
     "grunt-contrib-connect": "*",
+    "grunt-contrib-copy": "^0.8.2",
     "grunt-contrib-jshint": "0.7.2",
-    "grunt-contrib-qunit": "0.5.2",
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-contrib-watch": "*",
     "grunt-coveralls": "^1.0.0",
@@ -30,13 +32,20 @@
     "grunt-recess": "*",
     "grunt-saucelabs": "*",
     "karma": "^0.13.3",
-    "karma-coverage": "^0.4.2",
+    "karma-chrome-launcher": "^0.2.0",
+    "karma-coverage": "^0.5.3",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-ie-launcher": "^0.2.0",
+    "karma-mocha": "^0.2.0",
+    "karma-opera-launcher": "^0.3.0",
     "karma-phantomjs-launcher": "^0.2.0",
-    "karma-qunit": "^0.1.5",
     "karma-requirejs": "^0.2.2",
+    "karma-safari-launcher": "^0.1.1",
+    "karma-sauce-launcher": "^0.3.0",
     "load-grunt-tasks": "0.2.0",
+    "mocha": "^2.3.4",
     "open": "0.0.4",
     "phantomjs": "^1.9.17",
-    "requirejs": "2.1.9"
+    "requirejs": "^2.1.22"
   }
 }

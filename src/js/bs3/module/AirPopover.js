@@ -1,8 +1,9 @@
 define([
+  'summernote/base/core/agent',
   'summernote/base/core/func',
   'summernote/base/core/list',
   'summernote/base/core/dom'
-], function (func, list, dom) {
+], function (agent, func, list, dom) {
   var AirPopover = function (context) {
     var self = this;
     var ui = $.summernote.ui;
@@ -19,6 +20,12 @@ define([
         self.hide();
       },
       'summernote.focusout': function (we, e) {
+        // [workaround] Firefox doesn't support relatedTarget on focusout
+        //  - Ignore hide action on focus out in FF.
+        if (agent.isFF) {
+          return;
+        }
+
         if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq(self.$popover[0]))) {
           self.hide();
         }

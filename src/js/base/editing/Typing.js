@@ -34,7 +34,7 @@ define([
     /**
      * insert paragraph
      */
-    this.insertParagraph = function () {
+    this.insertParagraph = function ($editable) {
       var rng = range.create();
 
       // deleteContents on range.
@@ -70,8 +70,8 @@ define([
             dom.remove(anchor);
           });
 
-          // replace empty heading with P tag
-          if (dom.isHeading(nextPara) && dom.isEmpty(nextPara)) {
+          // replace empty heading or pre with P tag
+          if ((dom.isHeading(nextPara) || dom.isPre(nextPara)) && dom.isEmpty(nextPara)) {
             nextPara = dom.replace(nextPara, 'p');
           }
         }
@@ -86,7 +86,7 @@ define([
         }
       }
 
-      range.create(nextPara, 0).normalize().select();
+      range.create(nextPara, 0).normalize().select().scrollIntoView($editable);
     };
   };
 

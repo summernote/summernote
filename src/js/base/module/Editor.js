@@ -66,8 +66,8 @@ define([
       // [workaround] IE doesn't have input events for contentEditable
       // - see: https://goo.gl/4bfIvA
       var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
-      $editable.on(changeEventName, function (event) {
-        context.triggerEvent('change', event);
+      $editable.on(changeEventName, function () {
+        context.triggerEvent('change', $editable.html());
       });
 
       $editor.on('focusin', function (event) {
@@ -79,8 +79,14 @@ define([
       if (!options.airMode && options.height) {
         $editable.outerHeight(options.height);
       }
+      if (!options.airMode && options.maxHeight) {
+        $editable.css('max-height', options.maxHeight);
+      }
+      if (!options.airMode && options.minHeight) {
+        $editable.css('min-height', options.minHeight);
+      }
 
-      $editable.html($note.html());
+      $editable.html(dom.html($note) || dom.emptyPara);
       history.recordUndo();
     };
 
@@ -205,18 +211,6 @@ define([
     };
     context.memo('help.redo', lang.help.redo);
 
-    this.reset = function () {
-      context.triggerEvent('before.command', $editable.html());
-      history.reset();
-      context.triggerEvent('change', $editable.html());
-    };
-
-    this.rewind = function () {
-      context.triggerEvent('before.command', $editable.html());
-      history.rewind();
-      context.triggerEvent('change', $editable.html());
-    };
-
     /**
      * beforeCommand
      * before command
@@ -338,16 +332,24 @@ define([
     /**
      * insert image
      *
-     * @param {String} sUrl
+     * @param {String} src
+     * @param {String|Function} param
      * @return {Promise}
      */
-    this.insertImage = function (sUrl, filename) {
-      return async.createImage(sUrl, filename).then(function ($image) {
+    this.insertImage = function (src, param) {
+      return async.createImage(src, param).then(function ($image) {
         beforeCommand();
-        $image.css({
-          display: '',
-          width: Math.min($editable.width(), $image.width())
-        });
+
+        if (typeof param === 'function') {
+          param($image);
+        } else {
+          if (typeof param === 'string') {
+            $image.attr('data-filename', param);
+          }
+          $image.css('width', Math.min($editable.width(), $image.width()));
+        }
+
+        $image.show();
         range.create().insertNode($image[0]);
         range.createFromNodeAfter($image[0]).select();
         afterCommand();

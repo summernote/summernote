@@ -98,26 +98,6 @@ Any modern browser: Safari, Chrome, Firefox, Opera, Internet Explorer 9+.
 
 ### Developer information
 
-#### structure of summernote.js
-
-```
-summernote.js - Renderer.js (Generate markup) - Locale.js (Locale object)
-              ㄴEventHandler.js - Toolbar.js (Toolbar module)
-                                ㄴPopover.js (Popover module)
-                                ㄴHandle.js  (Handle module)
-                                ㄴDialog.js  (Dialog module)
-                                ㄴEditor.js  (Abstract editor module) - Style.js (Style Getter and Setter)
-                                                                      ㄴHistory.js (Store on jQuery.data)
------------------------------Core Script-----------------------------
-  agent.js  (agent information)
-  async.js  (aysnc utility)
-  key.js    (keycode object)
-  dom.js    (dom functions)
-  list.js   (list functions)
-  range.js  (W3CRange extention)
----------------------------------------------------------------------
-```
-
 #### document structure
 
 ```
@@ -150,10 +130,24 @@ grunt dist
 At this point, you should now have a `build/` directory populated with everything you need to use summernote.
 
 #### test summernote
-run tests with PhantomJS
+run tests with Karma and PhantomJS
 ```bash
 grunt test
 ```
+If you want run tests on other browser,
+change the values for `broswers` properties in `Gruntfile.js`.
+
+```
+karma: {
+  all: {
+    browsers: ['PhantomJS'],
+    reporters: ['progress']
+  }
+}
+
+```
+You can use `Chrome`, `ChromeCanary`, `Firefox`, `Opera`, `Safari`, `PhantomJS` and `IE` beside `PhantomJS`.
+Once you run `grunt test`, it will watch all javascript file. Therefore karma run tests every time you chage code.
 
 #### start local server for developing summernote.
 run local server with connect and watch.
