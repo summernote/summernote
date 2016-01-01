@@ -46,16 +46,10 @@ define([
         '</p>'
       ].join('');
 
-      this.$dialog = ui.dialog({
+      this.$dialog = ui.helpDialog({
         title: lang.options.help,
         body: this.createShortCutList(),
-        footer: body,
-        callback: function ($node) {
-          $node.find('.modal-body').css({
-            'max-height': 300,
-            'overflow': 'scroll'
-          });
-        }
+        footer: body
       }).render().appendTo($container);
     };
 

@@ -184,58 +184,31 @@ define([
       });
 
       context.memo('button.paragraph', function () {
-        return ui.buttonGroup([
-          ui.button({
-            className: 'dropdown-toggle',
-            contents: ui.icon(options.icons.align) + ' ' + ui.icon(options.icons.caret, 'span'),
-            tooltip: lang.paragraph.paragraph,
-            data: {
-              toggle: 'dropdown'
-            }
-          }),
-          ui.dropdown([
-            ui.buttonGroup({
-              className: 'note-align',
-              children: [
-                ui.button({
-                  contents: ui.icon(options.icons.alignLeft),
-                  tooltip: lang.paragraph.left + representShortcut('justifyLeft'),
-                  click: context.createInvokeHandler('editor.justifyLeft')
-                }),
-                ui.button({
-                  contents: ui.icon(options.icons.alignCenter),
-                  tooltip: lang.paragraph.center + representShortcut('justifyCenter'),
-                  click: context.createInvokeHandler('editor.justifyCenter')
-                }),
-                ui.button({
-                  contents: ui.icon(options.icons.alignRight),
-                  tooltip: lang.paragraph.right + representShortcut('justifyRight'),
-                  click: context.createInvokeHandler('editor.justifyRight')
-                }),
-                ui.button({
-                  contents: ui.icon(options.icons.alignJustify),
-                  tooltip: lang.paragraph.justify + representShortcut('justifyFull'),
-                  click: context.createInvokeHandler('editor.justifyFull')
-                })
-              ]
-            }),
-            ui.buttonGroup({
-              className: 'note-list',
-              children: [
-                ui.button({
-                  contents: ui.icon(options.icons.outdent),
-                  tooltip: lang.paragraph.outdent + representShortcut('outdent'),
-                  click: context.createInvokeHandler('editor.outdent')
-                }),
-                ui.button({
-                  contents: ui.icon(options.icons.indent),
-                  tooltip: lang.paragraph.indent + representShortcut('indent'),
-                  click: context.createInvokeHandler('editor.indent')
-                })
-              ]
-            })
-          ])
-        ]).render();
+        return ui.paragraphButton({
+          icons: {
+            paragraph: options.icons.align,
+            left: options.icons.alignLeft,
+            right: options.icons.alignRight,
+            center: options.icons.alignCenter,
+            justify: options.icons.alignJustify,
+            indent: options.icons.indent,
+            outdent: options.icons.outdent
+
+          },
+          tooltip: {
+            paragraph: lang.paragraph.paragraph,
+            left: lang.paragraph.left + representShortcut('justifyLeft'),
+            right: lang.paragraph.right + representShortcut('justifyRight'),
+            center: lang.paragraph.center + representShortcut('justifyCenter'),
+            justify: lang.paragraph.justify + representShortcut('justifyFull'),
+            indent: lang.paragraph.indent + representShortcut('indent'),
+            outdent: lang.paragraph.outdent + representShortcut('outdent')
+          },
+          click : function (e, command) {
+            context.invoke('editor.' + command);
+          }
+        }).render();
+
       });
 
       context.memo('button.height', function () {
