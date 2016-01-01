@@ -728,8 +728,8 @@ define([
         $editable.focus();
 
         // [workaround] for firefox bug http://goo.gl/lVfAaI
-        if (!$editable.is(':focus') && agent.isFF) {
-          range.createFromNode($editable[0])
+        if (agent.isFF) {
+          range.createFromNodeAfter($editable[0].firstChild)
                .normalize()
                .collapse()
                .select();
