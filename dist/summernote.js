@@ -5223,6 +5223,8 @@
                 });
               },
               click: function (event) {
+                event.preventDefault();
+                
                 var $button = $(event.target);
                 var eventName = $button.data('event');
                 var value = $button.data('value');
