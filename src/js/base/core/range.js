@@ -657,16 +657,27 @@ define([
             var selection = document.getSelection();
             if (!selection || selection.rangeCount === 0) {
               return null;
-            } else if (dom.isBody(selection.anchorNode)) {
+            } else if (dom.isBody(selection.anchorNode) && dom.isBody(document.activeElement)) {
               // Firefox: returns entire body as range on initialization. We won't never need it.
               return null;
             }
-  
+
             var nativeRng = selection.getRangeAt(0);
-            sc = nativeRng.startContainer;
-            so = nativeRng.startOffset;
-            ec = nativeRng.endContainer;
-            eo = nativeRng.endOffset;
+            var isEditableOrBody = (dom.isEditable(nativeRng.startContainer)  ||  dom.isBody(nativeRng.startContainer));
+
+            if (dom.isEditable(document.activeElement) && isEditableOrBody) {
+              sc = document.activeElement;
+              so = 0;
+              ec = document.activeElement;
+              eo = 0;
+            } else {
+
+              sc = nativeRng.startContainer;
+              so = nativeRng.startOffset;
+              ec = nativeRng.endContainer;
+              eo = nativeRng.endOffset;
+            }
+
           } else { // IE8: TextRange
             var textRange = document.selection.createRange();
             var textRangeEnd = textRange.duplicate();
