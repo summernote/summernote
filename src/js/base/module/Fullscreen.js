@@ -10,6 +10,8 @@ define([
     var $window = $(window);
     var $scrollbar = $('html, body');
 
+    var $clone;
+
     /**
      * toggle fullscreen
      */
@@ -25,6 +27,18 @@ define([
       $editor.toggleClass('fullscreen');
       var isFullscreen = $editor.hasClass('fullscreen');
       if (isFullscreen) {
+
+        // when summernote became fullscreen mode, add $editor's clone and move $editor into body
+        $clone = $editor.clone();
+        $clone.addClass('clone');
+        $editor.after($clone);
+        $editor.appendTo('body');
+
+        // set fullscreen class about fullscreen mode
+        $('.note-modal').addClass('fullscreen-dialog');
+        $('.modal-backdrop').addClass('old-dialog-backdrop');
+        $('body').addClass('note-fullscreen');
+
         $editable.data('orgHeight', $editable.css('height'));
 
         $window.on('resize', function () {
@@ -35,6 +49,15 @@ define([
 
         $scrollbar.css('overflow', 'hidden');
       } else {
+        // delete clone
+        $clone.after($editor);
+        $clone.remove();
+
+        // remove fullscreen class
+        $('.note-modal').removeClass('fullscreen-dialog');
+        $('body').removeClass('note-fullscreen');
+        $('.old-dialog-backdrop').removeClass('old-dialog-backdrop');
+
         $window.off('resize');
         resize({
           h: $editable.data('orgHeight')
