@@ -268,6 +268,22 @@ define([
           helper.equalsToUpperCase($para.html(), '<b>b</b><u>u</u><s>strike</s><i>i</i>', expect);
           helper.equalsToUpperCase($para.next().html(), '<i><br></i>', expect); // right hand side
         });
+
+        it('should discard first split if empty and isDiscardEmptySplits=true', function () {
+          var $u = $para.find('u');
+          dom.splitTree($para[0], {node: $u[0], offset: 0 }, { isDiscardEmptySplits: true });
+
+          helper.equalsToUpperCase($para.html(), '<b>b</b>', expect);
+          helper.equalsToUpperCase($para.next().html(), '<u>u</u><s>strike</s><i>i</i>', expect); // right hand side
+        });
+
+        it('should discard second split if empty and isDiscardEmptySplits=true', function () {
+          var $u = $para.find('u');
+          dom.splitTree($para[0], {node: $u[0], offset: 1 }, { isDiscardEmptySplits: true });
+
+          helper.equalsToUpperCase($para.html(), '<b>b</b><u>u</u>', expect);
+          helper.equalsToUpperCase($para.next().html(), '<s>strike</s><i>i</i>', expect); // right hand side
+        });
       });
 
       describe('textNode case', function () {

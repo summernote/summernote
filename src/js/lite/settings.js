@@ -25,6 +25,7 @@ define([
       shortcuts: true,
       textareaAutoSync: true,
       direction: null,
+      blockquoteBreakingLevel: 2,
 
       callbacks: {
         onInit: null,

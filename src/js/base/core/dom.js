@@ -731,11 +731,17 @@ define([
      * @param {Object} [options]
      * @param {Boolean} [options.isSkipPaddingBlankHTML] - default: false
      * @param {Boolean} [options.isNotSplitEdgePoint] - default: false
+     * @param {Boolean} [options.isDiscardEmptySplits] - default: false, implies: isSkipPaddingBlankHTML
      * @return {Node} right node of boundaryPoint
      */
     var splitNode = function (point, options) {
       var isSkipPaddingBlankHTML = options && options.isSkipPaddingBlankHTML;
       var isNotSplitEdgePoint = options && options.isNotSplitEdgePoint;
+      var isDiscardEmptySplits = options && options.isDiscardEmptySplits;
+
+      if (isDiscardEmptySplits) {
+        isSkipPaddingBlankHTML = true;
+      }
 
       // edge case
       if (isEdgePoint(point) && (isText(point.node) || isNotSplitEdgePoint)) {
@@ -757,6 +763,18 @@ define([
         if (!isSkipPaddingBlankHTML) {
           paddingBlankHTML(point.node);
           paddingBlankHTML(clone);
+        }
+
+        if (isDiscardEmptySplits) {
+          if (isEmpty(point.node)) {
+            remove(point.node);
+          }
+
+          if (isEmpty(clone)) {
+            remove(clone);
+
+            return point.node.nextSibling;
+          }
         }
 
         return clone;
