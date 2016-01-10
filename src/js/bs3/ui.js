@@ -95,11 +95,19 @@ define([
   });
 
   var popover = renderer.create([
-    '<div class="note-popover popover bottom in">',
+    '<div class="note-popover popover in">',
     '  <div class="arrow"/>',
     '  <div class="popover-content note-children-container"/>',
     '</div>'
-  ].join(''));
+  ].join(''), function ($node, options) {
+    var direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
+
+    $node.addClass(direction);
+
+    if (options.hideArrow) {
+      $node.find('.arrow').hide();
+    }
+  });
 
   var icon = function (iconClassName, tagName) {
     tagName = tagName || 'i';
