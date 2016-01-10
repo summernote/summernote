@@ -48,6 +48,12 @@ define(function () {
       return a;
     };
 
+    var invoke = function (obj, method) {
+      return function () {
+        return obj[method].apply(obj, arguments);
+      };
+    };
+
     var idCounter = 0;
 
     /**
@@ -119,6 +125,7 @@ define(function () {
       self: self,
       not: not,
       and: and,
+      invoke: invoke,
       uniqueId: uniqueId,
       rect2bnd: rect2bnd,
       invertObject: invertObject,
