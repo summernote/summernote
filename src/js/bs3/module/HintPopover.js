@@ -36,8 +36,8 @@ define([
       this.lastWordRange = null;
       this.$popover = ui.popover({
         className: 'note-hint-popover',
-        hideArrow : true,
-        direction : ''
+        hideArrow: true,
+        direction: ''
       }).render().appendTo('body');
 
       this.$popover.hide();

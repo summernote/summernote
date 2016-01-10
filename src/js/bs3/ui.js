@@ -100,7 +100,7 @@ define([
     '  <div class="popover-content note-children-container"/>',
     '</div>'
   ].join(''), function ($node, options) {
-    var direction = typeof options.direction !== 'undefined' ? options.direction  :  'bottom';
+    var direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
 
     $node.addClass(direction);
 
