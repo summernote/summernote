@@ -42,7 +42,8 @@ define([
 
   var dropdownCheck = renderer.create('<div class="dropdown-menu note-check">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
-      return '<li><a href="#" data-value="' + item + '">' + icon(options.checkClassName) + ' ' + item + '</a></li>';
+      return '<li><a href="#" data-value="' + item + '">' +
+      icon(options.checkClassName) + ' ' + (options.display ? options.display(item) : item) + '</a></li>';
     }).join('') : options.items;
     $node.html(markup);
   });

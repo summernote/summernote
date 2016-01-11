@@ -129,6 +129,9 @@ define([
               return agent.isFontInstalled(name) ||
                 list.contains(options.fontNamesIgnoreCheck, name);
             }),
+            display: function (item) {
+              return '<span style="font-family:' + item + '">' + item + '</span>';
+            },
             click: context.createInvokeHandler('editor.fontName')
           })
         ]).render();
