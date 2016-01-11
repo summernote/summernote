@@ -48,6 +48,19 @@ define([
           ui.dropdown({
             className: 'dropdown-style',
             items: context.options.styleTags,
+            template : function (item) {
+
+              if (typeof item === 'string') {
+                item = { tag : item, title : item };
+              }
+
+              var tag = item.tag;
+              var title = item.title;
+              var style = item.style ? ' style="' + item.style + '" ' : '';
+              var className = item.className ? ' className="' + item.className + '"' : '';
+
+              return '<' + tag + style + className + '>' + title + '</' + tag +  '>';
+            },
             click: context.createInvokeHandler('editor.formatBlock')
           })
         ]).render();
