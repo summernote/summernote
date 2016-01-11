@@ -75,7 +75,7 @@ define([
     });
   });
 
-  var dialog = renderer.create('<div class="modal" aria-hidden="false"/>', function ($node, options) {
+  var dialog = renderer.create('<div class="modal" aria-hidden="false" tabindex="-1"/>', function ($node, options) {
     $node.html([
       '<div class="modal-dialog">',
       '  <div class="modal-content">',
