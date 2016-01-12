@@ -9,6 +9,7 @@ define([
     var self = this;
 
     var linkPattern = /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+-]+@)(.+)$/i;
+    var schemePattern = /^([a-z]+:)(\/\/)?/i;
 
     this.events = {
       'summernote.keyup': function (we, e) {
@@ -47,7 +48,8 @@ define([
     };
 
     this.nodeFromKeyword = function (keyword) {
-      return $('<a />').html(keyword).attr('href', keyword)[0];
+      var link = schemePattern.test(keyword) ? keyword : 'http://' + keyword;
+      return $('<a />').html(keyword).attr('href', link)[0];
     };
 
     this.handleKeydown = function (e) {
