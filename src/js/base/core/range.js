@@ -651,7 +651,7 @@ define([
        * @param {Number} eo - end offset
        * @return {WrappedRange}
        */
-      create : function (sc, so, ec, eo) {
+      create: function (sc, so, ec, eo) {
         if (!arguments.length) { // from Browser Selection
           if (agent.isW3CRangeSupport) {
             var selection = document.getSelection();
@@ -755,7 +755,7 @@ define([
        * @param {Object} bookmark
        * @return {WrappedRange}
        */
-      createFromBookmark : function (editable, bookmark) {
+      createFromBookmark: function (editable, bookmark) {
         var sc = dom.fromOffsetPath(editable, bookmark.s.path);
         var so = bookmark.s.offset;
         var ec = dom.fromOffsetPath(editable, bookmark.e.path);

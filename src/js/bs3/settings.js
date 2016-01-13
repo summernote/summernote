@@ -48,7 +48,7 @@ define([
         'autoLink': AutoLink,
         'autoSync': AutoSync,
         'placeholder': Placeholder,
-        'buttons' : Buttons,
+        'buttons': Buttons,
         'toolbar': Toolbar,
         'linkDialog': LinkDialog,
         'linkPopover': LinkPopover,
