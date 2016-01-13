@@ -565,7 +565,7 @@ define([
           return styleInfo['font-underline'] === 'underline';
         },
         '.note-btn-subscript': function () {
-          return styleInfo['font-subscript'] === 'bold';
+          return styleInfo['font-subscript'] === 'subscript';
         },
         '.note-btn-superscript': function () {
           return styleInfo['font-superscript'] === 'superscript';
