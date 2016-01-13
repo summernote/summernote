@@ -103,6 +103,7 @@ define([
 
       context.memo('button.strikethrough', function () {
         return ui.button({
+          className: 'note-btn-strikethrough',
           contents: ui.icon(options.icons.strikethrough),
           tooltip: lang.font.strikethrough + representShortcut('strikethrough'),
           click: context.createInvokeHandler('editor.strikethrough')
@@ -111,6 +112,7 @@ define([
 
       context.memo('button.superscript', function () {
         return ui.button({
+          className: 'note-btn-superscript',
           contents: ui.icon(options.icons.superscript),
           tooltip: lang.font.superscript,
           click: context.createInvokeHandler('editor.superscript')
@@ -119,6 +121,7 @@ define([
 
       context.memo('button.subscript', function () {
         return ui.button({
+          className: 'note-btn-subscript',
           contents: ui.icon(options.icons.subscript),
           tooltip: lang.font.subscript,
           click: context.createInvokeHandler('editor.subscript')
@@ -576,6 +579,15 @@ define([
         },
         '.note-btn-underline': function () {
           return styleInfo['font-underline'] === 'underline';
+        },
+        '.note-btn-subscript': function () {
+          return styleInfo['font-subscript'] === 'subscript';
+        },
+        '.note-btn-superscript': function () {
+          return styleInfo['font-superscript'] === 'superscript';
+        },
+        '.note-btn-strikethrough': function () {
+          return styleInfo['font-strikethrough'] === 'strikethrough';
         }
       });
 
