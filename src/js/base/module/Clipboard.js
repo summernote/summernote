@@ -34,9 +34,9 @@ define([
       //  - Webkit: event.clipboardData
       if (this.needKeydownHook()) {
         this.$paste = $('<div />').attr('contenteditable', true).css({
-          position : 'absolute',
-          left : -100000,
-          opacity : 0
+          position: 'absolute',
+          left: -100000,
+          opacity: 0
         });
         $editable.before(this.$paste);
 
@@ -66,7 +66,7 @@ define([
           array[i] = decodedData.charCodeAt(i);
         }
 
-        var blob = new Blob([array], { type : 'image/png' });
+        var blob = new Blob([array], { type: 'image/png' });
         blob.name = 'clipboard.png';
 
         context.invoke('editor.restoreRange');

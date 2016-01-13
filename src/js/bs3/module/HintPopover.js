@@ -20,7 +20,7 @@ define([
           self.handleKeyup(e);
         }
       },
-      'summernote.keydown' : function (we, e) {
+      'summernote.keydown': function (we, e) {
         self.handleKeydown(e);
       },
       'summernote.dialog.shown': function () {
