@@ -133,7 +133,7 @@ define([
           'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
           'font-subscript': document.queryCommandState('subscript') ? 'subscript' : 'normal',
           'font-superscript': document.queryCommandState('superscript') ? 'superscript' : 'normal',
-          'font-strikethrough': document.queryCommandState('strikeThrough') ? 'strikethrough' : 'normal'
+          'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal'
         });
       } catch (e) {}
 
