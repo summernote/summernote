@@ -2,7 +2,7 @@ var script = document.getElementById('start');
 var isIE8 = script && script.getAttribute('data-browser') === 'ie8';
 var requireJquery = 'jquery';
 
-var jqueryLink = (isIE8) ? '//code.jquery.com/jquery-1.11.3' : '//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery';
+var jqueryLink = isIE8 ? '//code.jquery.com/jquery-1.11.3' : '//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery';
 require.config({
   baseUrl: 'src/js',
   paths: {
@@ -20,7 +20,6 @@ require.config({
     location: './'
   }]
 });
-
 
 require(['jquery', 'summernote'], function ($) {
   var requireByPromise = function (paths) {

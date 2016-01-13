@@ -48,6 +48,19 @@ define([
           ui.dropdown({
             className: 'dropdown-style',
             items: context.options.styleTags,
+            template: function (item) {
+
+              if (typeof item === 'string') {
+                item = { tag: item, title: item };
+              }
+
+              var tag = item.tag;
+              var title = item.title;
+              var style = item.style ? ' style="' + item.style + '" ' : '';
+              var className = item.className ? ' className="' + item.className + '"' : '';
+
+              return '<' + tag + style + className + '>' + title + '</' + tag +  '>';
+            },
             click: context.createInvokeHandler('editor.formatBlock')
           })
         ]).render();
@@ -90,6 +103,7 @@ define([
 
       context.memo('button.strikethrough', function () {
         return ui.button({
+          className: 'note-btn-strikethrough',
           contents: ui.icon(options.icons.strikethrough),
           tooltip: lang.font.strikethrough + representShortcut('strikethrough'),
           click: context.createInvokeHandler('editor.strikethrough')
@@ -98,6 +112,7 @@ define([
 
       context.memo('button.superscript', function () {
         return ui.button({
+          className: 'note-btn-superscript',
           contents: ui.icon(options.icons.superscript),
           tooltip: lang.font.superscript,
           click: context.createInvokeHandler('editor.superscript')
@@ -106,6 +121,7 @@ define([
 
       context.memo('button.subscript', function () {
         return ui.button({
+          className: 'note-btn-subscript',
           contents: ui.icon(options.icons.subscript),
           tooltip: lang.font.subscript,
           click: context.createInvokeHandler('editor.subscript')
@@ -124,11 +140,14 @@ define([
           }),
           ui.dropdownCheck({
             className: 'dropdown-fontname',
-            checkClassName : options.icons.menuCheck,
+            checkClassName: options.icons.menuCheck,
             items: options.fontNames.filter(function (name) {
               return agent.isFontInstalled(name) ||
                 list.contains(options.fontNamesIgnoreCheck, name);
             }),
+            template: function (item) {
+              return '<span style="font-family:' + item + '">' + item + '</span>';
+            },
             click: context.createInvokeHandler('editor.fontName')
           })
         ]).render();
@@ -146,7 +165,7 @@ define([
           }),
           ui.dropdownCheck({
             className: 'dropdown-fontsize',
-            checkClassName : options.icons.menuCheck,
+            checkClassName: options.icons.menuCheck,
             items: options.fontSizes,
             click: context.createInvokeHandler('editor.fontSize')
           })
@@ -158,7 +177,7 @@ define([
           className: 'note-color',
           children: [
             ui.button({
-              className : 'note-current-color-button',
+              className: 'note-current-color-button',
               contents: ui.icon(options.icons.font + ' note-recent-color'),
               tooltip: lang.color.recent,
               click: context.createInvokeHandler('editor.color'),
@@ -187,7 +206,7 @@ define([
                 '<div class="btn-group">',
                 '  <div class="note-palette-title">' + lang.color.background + '</div>',
                 '  <div>',
-                '    <button class="note-color-reset btn btn-default" data-event="backColor" data-value="inherit">',
+                '    <button type="button" class="note-color-reset btn btn-default" data-event="backColor" data-value="inherit">',
                 lang.color.transparent,
                 '    </button>',
                 '  </div>',
@@ -196,7 +215,7 @@ define([
                 '<div class="btn-group">',
                 '  <div class="note-palette-title">' + lang.color.foreground + '</div>',
                 '  <div>',
-                '    <button class="note-color-reset btn btn-default" data-event="removeFormat" data-value="foreColor">',
+                '    <button type="button" class="note-color-reset btn btn-default" data-event="removeFormat" data-value="foreColor">',
                 lang.color.resetToDefault,
                 '    </button>',
                 '  </div>',
@@ -252,6 +271,49 @@ define([
         }).render();
       });
 
+      var justifyLeft = ui.button({
+        contents: ui.icon(options.icons.alignLeft),
+        tooltip: lang.paragraph.left + representShortcut('justifyLeft'),
+        click: context.createInvokeHandler('editor.justifyLeft')
+      });
+
+      var justifyCenter = ui.button({
+        contents: ui.icon(options.icons.alignCenter),
+        tooltip: lang.paragraph.center + representShortcut('justifyCenter'),
+        click: context.createInvokeHandler('editor.justifyCenter')
+      });
+
+      var justifyRight = ui.button({
+        contents: ui.icon(options.icons.alignRight),
+        tooltip: lang.paragraph.right + representShortcut('justifyRight'),
+        click: context.createInvokeHandler('editor.justifyRight')
+      });
+
+      var justifyFull = ui.button({
+        contents: ui.icon(options.icons.alignJustify),
+        tooltip: lang.paragraph.justify + representShortcut('justifyFull'),
+        click: context.createInvokeHandler('editor.justifyFull')
+      });
+
+      var outdent = ui.button({
+        contents: ui.icon(options.icons.outdent),
+        tooltip: lang.paragraph.outdent + representShortcut('outdent'),
+        click: context.createInvokeHandler('editor.outdent')
+      });
+
+      var indent = ui.button({
+        contents: ui.icon(options.icons.indent),
+        tooltip: lang.paragraph.indent + representShortcut('indent'),
+        click: context.createInvokeHandler('editor.indent')
+      });
+
+      context.memo('button.justifyLeft', func.invoke(justifyLeft, 'render'));
+      context.memo('button.justifyCenter', func.invoke(justifyCenter, 'render'));
+      context.memo('button.justifyRight', func.invoke(justifyRight, 'render'));
+      context.memo('button.justifyFull', func.invoke(justifyFull, 'render'));
+      context.memo('button.outdent', func.invoke(outdent, 'render'));
+      context.memo('button.indent', func.invoke(indent, 'render'));
+
       context.memo('button.paragraph', function () {
         return ui.buttonGroup([
           ui.button({
@@ -265,43 +327,11 @@ define([
           ui.dropdown([
             ui.buttonGroup({
               className: 'note-align',
-              children: [
-                ui.button({
-                  contents: ui.icon(options.icons.alignLeft),
-                  tooltip: lang.paragraph.left + representShortcut('justifyLeft'),
-                  click: context.createInvokeHandler('editor.justifyLeft')
-                }),
-                ui.button({
-                  contents: ui.icon(options.icons.alignCenter),
-                  tooltip: lang.paragraph.center + representShortcut('justifyCenter'),
-                  click: context.createInvokeHandler('editor.justifyCenter')
-                }),
-                ui.button({
-                  contents: ui.icon(options.icons.alignRight),
-                  tooltip: lang.paragraph.right + representShortcut('justifyRight'),
-                  click: context.createInvokeHandler('editor.justifyRight')
-                }),
-                ui.button({
-                  contents: ui.icon(options.icons.alignJustify),
-                  tooltip: lang.paragraph.justify + representShortcut('justifyFull'),
-                  click: context.createInvokeHandler('editor.justifyFull')
-                })
-              ]
+              children: [justifyLeft, justifyCenter, justifyRight, justifyFull]
             }),
             ui.buttonGroup({
               className: 'note-list',
-              children: [
-                ui.button({
-                  contents: ui.icon(options.icons.outdent),
-                  tooltip: lang.paragraph.outdent + representShortcut('outdent'),
-                  click: context.createInvokeHandler('editor.outdent')
-                }),
-                ui.button({
-                  contents: ui.icon(options.icons.indent),
-                  tooltip: lang.paragraph.indent + representShortcut('indent'),
-                  click: context.createInvokeHandler('editor.indent')
-                })
-              ]
+              children: [outdent, indent]
             })
           ])
         ]).render();
@@ -319,7 +349,7 @@ define([
           }),
           ui.dropdownCheck({
             items: options.lineHeights,
-            checkClassName : options.icons.menuCheck,
+            checkClassName: options.icons.menuCheck,
             className: 'dropdown-line-height',
             click: context.createInvokeHandler('editor.lineHeight')
           })
@@ -531,7 +561,7 @@ define([
         for (var idx = 0, len = buttons.length; idx < len; idx++) {
           var button = context.memo('button.' + buttons[idx]);
           if (button) {
-            $group.append(typeof button === 'function' ? button(context) : button);
+            $group.append(typeof button === 'function' ? button() : button);
           }
         }
         $group.appendTo($container);
@@ -549,6 +579,15 @@ define([
         },
         '.note-btn-underline': function () {
           return styleInfo['font-underline'] === 'underline';
+        },
+        '.note-btn-subscript': function () {
+          return styleInfo['font-subscript'] === 'subscript';
+        },
+        '.note-btn-superscript': function () {
+          return styleInfo['font-superscript'] === 'superscript';
+        },
+        '.note-btn-strikethrough': function () {
+          return styleInfo['font-strikethrough'] === 'strikethrough';
         }
       });
 

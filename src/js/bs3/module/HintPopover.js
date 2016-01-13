@@ -9,7 +9,9 @@ define([
     var self = this;
     var ui = $.summernote.ui;
 
+    var POPOVER_DIST = 5;
     var hint = context.options.hint || [];
+    var direction = context.options.hintDirection || 'bottom';
     var hints = $.isArray(hint) ? hint : [hint];
 
     this.events = {
@@ -18,7 +20,7 @@ define([
           self.handleKeyup(e);
         }
       },
-      'summernote.keydown' : function (we, e) {
+      'summernote.keydown': function (we, e) {
         self.handleKeydown(e);
       },
       'summernote.dialog.shown': function () {
@@ -33,8 +35,12 @@ define([
     this.initialize = function () {
       this.lastWordRange = null;
       this.$popover = ui.popover({
-        className: 'note-hint-popover'
+        className: 'note-hint-popover',
+        hideArrow: true,
+        direction: ''
       }).render().appendTo('body');
+
+      this.$popover.hide();
 
       this.$content = this.$popover.find('.popover-content');
 
@@ -92,13 +98,17 @@ define([
 
     this.replace = function () {
       var $item = this.$content.find('.note-hint-item.active');
-      var node = this.nodeFromItem($item);
-      this.lastWordRange.insertNode(node);
-      range.createFromNode(node).collapse().select();
 
-      this.lastWordRange = null;
-      this.hide();
-      context.invoke('editor.focus');
+      if ($item.length) {
+        var node = this.nodeFromItem($item);
+        this.lastWordRange.insertNode(node);
+        range.createFromNode(node).collapse().select();
+
+        this.lastWordRange = null;
+        this.hide();
+        context.invoke('editor.focus');
+      }
+
     };
 
     this.nodeFromItem = function ($item) {
@@ -183,10 +193,8 @@ define([
 
           var bnd = func.rect2bnd(list.last(wordRange.getClientRects()));
           if (bnd) {
-            this.$popover.css({
-              left: bnd.left,
-              top: bnd.top + bnd.height
-            }).hide();
+
+            this.$popover.hide();
 
             this.lastWordRange = wordRange;
 
@@ -195,6 +203,20 @@ define([
                 self.createGroup(idx, keyword).appendTo(self.$content);
               }
             });
+
+            // set position for popover after group is created
+            if (direction === 'top') {
+              this.$popover.css({
+                left: bnd.left,
+                top: bnd.top - this.$popover.outerHeight() - POPOVER_DIST
+              });
+            } else {
+              this.$popover.css({
+                left: bnd.left,
+                top: bnd.top + bnd.height + POPOVER_DIST
+              });
+            }
+
           }
         } else {
           this.hide();

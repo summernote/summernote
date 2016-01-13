@@ -19,6 +19,10 @@ define(function () {
         context.invoke('buttons.build', $toolbar, options.toolbar);
       }
 
+      if (options.toolbarContainer) {
+        $toolbar.appendTo(options.toolbarContainer);
+      }
+
       $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
         context.invoke('buttons.updateCurrentStyle');
       });

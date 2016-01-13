@@ -719,16 +719,23 @@ define([
     });
 
     /**
+     * returns whether editable area has focus or not.
+     */
+    this.hasFocus = function () {
+      return $editable.is(':focus');
+    };
+
+    /**
      * set focus
      */
     this.focus = function () {
       // [workaround] Screen will move when page is scolled in IE.
       //  - do focus when not focused
-      if (!$editable.is(':focus')) {
+      if (!this.hasFocus()) {
         $editable.focus();
 
         // [workaround] for firefox bug http://goo.gl/lVfAaI
-        if (!$editable.is(':focus') && agent.isFF) {
+        if (!this.hasFocus() && agent.isFF) {
           range.createFromNode($editable[0])
                .normalize()
                .collapse()
