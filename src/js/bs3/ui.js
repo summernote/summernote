@@ -34,7 +34,9 @@ define([
 
   var dropdown = renderer.create('<div class="dropdown-menu">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
-      return '<li><a href="#" data-value="' + item + '">' + item + '</a></li>';
+      var value = (typeof item === 'string') ? item : (item.value || '');
+      var content = options.template ? options.template(item) : item;
+      return '<li><a href="#" data-value="' + value + '">' + content + '</a></li>';
     }).join('') : options.items;
 
     $node.html(markup);
@@ -42,7 +44,9 @@ define([
 
   var dropdownCheck = renderer.create('<div class="dropdown-menu note-check">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
-      return '<li><a href="#" data-value="' + item + '">' + icon(options.checkClassName) + ' ' + item + '</a></li>';
+      var value = (typeof item === 'string') ? item : (item.value || '');
+      var content = options.template ? options.template(item) : item;
+      return '<li><a href="#" data-value="' + value + '">' + icon(options.checkClassName) + ' ' + content + '</a></li>';
     }).join('') : options.items;
     $node.html(markup);
   });

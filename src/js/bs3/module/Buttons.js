@@ -48,6 +48,19 @@ define([
           ui.dropdown({
             className: 'dropdown-style',
             items: context.options.styleTags,
+            template: function (item) {
+
+              if (typeof item === 'string') {
+                item = { tag: item, title: item };
+              }
+
+              var tag = item.tag;
+              var title = item.title;
+              var style = item.style ? ' style="' + item.style + '" ' : '';
+              var className = item.className ? ' className="' + item.className + '"' : '';
+
+              return '<' + tag + style + className + '>' + title + '</' + tag +  '>';
+            },
             click: context.createInvokeHandler('editor.formatBlock')
           })
         ]).render();
@@ -124,11 +137,14 @@ define([
           }),
           ui.dropdownCheck({
             className: 'dropdown-fontname',
-            checkClassName : options.icons.menuCheck,
+            checkClassName: options.icons.menuCheck,
             items: options.fontNames.filter(function (name) {
               return agent.isFontInstalled(name) ||
                 list.contains(options.fontNamesIgnoreCheck, name);
             }),
+            template: function (item) {
+              return '<span style="font-family:' + item + '">' + item + '</span>';
+            },
             click: context.createInvokeHandler('editor.fontName')
           })
         ]).render();
@@ -146,7 +162,7 @@ define([
           }),
           ui.dropdownCheck({
             className: 'dropdown-fontsize',
-            checkClassName : options.icons.menuCheck,
+            checkClassName: options.icons.menuCheck,
             items: options.fontSizes,
             click: context.createInvokeHandler('editor.fontSize')
           })
@@ -158,7 +174,7 @@ define([
           className: 'note-color',
           children: [
             ui.button({
-              className : 'note-current-color-button',
+              className: 'note-current-color-button',
               contents: ui.icon(options.icons.font + ' note-recent-color'),
               tooltip: lang.color.recent,
               click: context.createInvokeHandler('editor.color'),
@@ -330,7 +346,7 @@ define([
           }),
           ui.dropdownCheck({
             items: options.lineHeights,
-            checkClassName : options.icons.menuCheck,
+            checkClassName: options.icons.menuCheck,
             className: 'dropdown-line-height',
             click: context.createInvokeHandler('editor.lineHeight')
           })
