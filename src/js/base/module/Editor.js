@@ -751,6 +751,17 @@ define([
     this.isEmpty = function () {
       return dom.isEmpty($editable[0]) || dom.emptyPara === $editable.html();
     };
+
+    /**
+     * Removes all contents and restores the editable instance to an _emptyPara_.
+     *
+     * @returns {String} The new HTML contents of the editable instance.
+     */
+    this.empty = function () {
+      $editable.html(dom.emptyPara);
+
+      return $editable.html();
+    };
   };
 
   return Editor;
