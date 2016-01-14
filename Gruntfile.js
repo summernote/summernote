@@ -100,6 +100,12 @@ module.exports = function (grunt) {
       }
     },
 
+    jscs: {
+      src: 'src',
+      gruntfile: 'Gruntfile.js',
+      build: 'build'
+    },
+
     // uglify: minify javascript
     uglify: {
       options: {
@@ -166,7 +172,7 @@ module.exports = function (grunt) {
     watch: {
       all: {
         files: ['src/less/*.less', 'src/js/**/*.js'],
-        tasks: ['recess', 'jshint'],
+        tasks: ['recess', 'lint'],
         options: {
           livereload: true
         }
@@ -246,11 +252,14 @@ module.exports = function (grunt) {
   // server: runt server for development
   grunt.registerTask('server', ['connect', 'watch']);
 
+  // lint
+  grunt.registerTask('lint', ['jshint', 'jscs']);
+
   // test: unit test on test folder
-  grunt.registerTask('test', ['jshint', 'karma:all']);
+  grunt.registerTask('test', ['lint', 'karma:all']);
 
   // test: unit test on travis
-  grunt.registerTask('test-travis', ['jshint', 'karma:travis']);
+  grunt.registerTask('test-travis', ['lint', 'karma:travis']);
 
   // test: saucelabs test
   grunt.registerTask('saucelabs-test', ['karma:saucelabs']);
