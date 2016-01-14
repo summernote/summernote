@@ -36,6 +36,7 @@ define([
 
       this.$dialog = ui.dialog({
         title: lang.options.help,
+        fade: options.dialogsFade,
         body: this.createShortCutList(),
         footer: body,
         callback: function ($node) {
