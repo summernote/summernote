@@ -139,6 +139,7 @@ define([
       },
 
       dialogsInBody: false,
+      dialogsFade: false,
 
       maximumImageFileSize: null,
 

@@ -20,6 +20,7 @@ define([
 
       this.$dialog = ui.dialog({
         title: lang.video.insert,
+        fade: options.dialogsFade,
         body: body,
         footer: footer
       }).render().appendTo($container);
