@@ -1,15 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 1024 1024" style="enable-background:new 0 0 1024 1024;" xml:space="preserve">
-<style type="text/css">
-	.st0{fill:#010202;}
-</style>
-<g>
-	<g>
-		<path class="st0" d="M964.4,158.6H289.6v142.9h674.8V158.6L964.4,158.6z M290.2,442.6v141.6h674.9V442.6H290.2z M289.6,867.1
-			h674.8V725.6H289.6V867.1z M231.9,158.6h-143v142.9h143V158.6L231.9,158.6z M89.3,584.2h143.1V442.6H89.3V584.2z M89,867.1h143
-			V725.6H89V867.1L89,867.1z"/>
-	</g>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #000;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path d="M1015.200,105.000 L278.900,105.000 L278.900,269.400 L1015.200,269.400 L1015.200,105.000 L1015.200,105.000 ZM279.600,431.700 L279.600,594.600 L1016.000,594.600 L1016.000,431.700 L279.600,431.700 ZM278.900,920.000 L1015.200,920.000 L1015.200,757.300 L278.900,757.300 L278.900,920.000 ZM172.500,105.000 L8.000,105.000 L8.000,269.400 L172.500,269.400 L172.500,105.000 L172.500,105.000 ZM8.500,594.600 L173.100,594.600 L173.100,431.700 L8.500,431.700 L8.500,594.600 ZM8.100,920.000 L172.600,920.000 L172.600,757.300 L8.100,757.300 L8.100,920.000 L8.100,920.000 Z" class="cls-1"/>
 </svg>
