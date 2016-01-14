@@ -1,7 +1,7 @@
 {
   "name": "summernote",
   "description": "Super simple WYSIWYG editor",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "license": "MIT",
   "keywords": [
     "editor",
@@ -28,6 +28,7 @@
     "grunt-contrib-watch": "*",
     "grunt-coveralls": "^1.0.0",
     "grunt-exec": "^0.4.6",
+    "grunt-jscs": "^2.6.0",
     "grunt-karma": "^0.12.0",
     "grunt-recess": "*",
     "grunt-saucelabs": "*",

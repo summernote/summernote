@@ -80,6 +80,9 @@ define([
   });
 
   var dialog = renderer.create('<div class="modal" aria-hidden="false" tabindex="-1"/>', function ($node, options) {
+    if (options.fade) {
+      $node.addClass('fade');
+    }
     $node.html([
       '<div class="modal-dialog">',
       '  <div class="modal-content">',
