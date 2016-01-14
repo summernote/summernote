@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor v0.7.2
+ * Super simple wysiwyg editor v0.7.3
  * http://summernote.org/
  *
  * summernote.js
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2016-01-13T13:10Z
+ * Date: 2016-01-14T12:56Z
  */
 (function (factory) {
   /* global define */
@@ -1665,7 +1665,7 @@
     this.createInvokeHandler = function (namespace, value) {
       return function (event) {
         event.preventDefault();
-        self.invoke(namespace, value || $(event.target).data('value') || $(event.currentTarget).data('value'));
+        self.invoke(namespace, value || $(event.target).closest('[data-value]').data('value'));
       };
     };
 
@@ -4433,6 +4433,13 @@
     this.isEmpty = function () {
       return dom.isEmpty($editable[0]) || dom.emptyPara === $editable.html();
     };
+
+    /**
+     * Removes all contents and restores the editable instance to an _emptyPara_.
+     */
+    this.empty = function () {
+      context.invoke('code', dom.emptyPara);
+    };
   };
 
   var Clipboard = function (context) {
@@ -6341,7 +6348,7 @@
 
       var body = [
         '<p class="text-center">',
-        '<a href="//summernote.org/" target="_blank">Summernote 0.7.2</a> · ',
+        '<a href="//summernote.org/" target="_blank">Summernote 0.7.3</a> · ',
         '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ',
         '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>',
         '</p>'
@@ -6685,7 +6692,7 @@
 
 
   $.summernote = $.extend($.summernote, {
-    version: '0.7.2',
+    version: '0.7.3',
     ui: ui,
 
     plugins: {},
