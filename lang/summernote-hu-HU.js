@@ -20,7 +20,8 @@
         floatLeft: 'Igazítás balra',
         floatRight: 'Igazítás jobbra',
         floatNone: 'Igazítás törlése',
-        dragImageHere: 'Ide húzhatod a képet',
+        dragImageHere: 'Ide húzhat képet vagy szöveget',
+        dropImage: 'Engedje el a képet vagy szöveget',
         selectFromFiles: 'Fájlok kiválasztása',
         url: 'Kép URL címe',
         remove: 'Kép törlése'
