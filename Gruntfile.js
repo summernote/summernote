@@ -171,7 +171,7 @@ module.exports = function (grunt) {
     // watch source code change
     watch: {
       all: {
-        files: ['src/less/*.less', 'src/js/**/*.js'],
+        files: ['src/less/*.less', 'src/js/**/*.js', 'test/unit/**/*.js'],
         tasks: ['recess', 'lint'],
         options: {
           livereload: true
