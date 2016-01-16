@@ -51,6 +51,7 @@ define(['jquery'], function ($) {
     isMSIE: isMSIE,
     isFF: /firefox/i.test(userAgent),
     isWebkit: /webkit/i.test(userAgent),
+    isChrome: /chrome/i.test(userAgent),
     isSafari: /safari/i.test(userAgent),
     browserVersion: browserVersion,
     jqueryVersion: parseFloat($.fn.jquery),
