@@ -37,7 +37,7 @@ define([
       var keyword = this.lastWordRange.toString();
       var match = keyword.match(linkPattern);
 
-      if (match[1] || match[2]) {
+      if (match && (match[1] || match[2])) {
         var link = match[1] ? keyword : defaultScheme + keyword;
         var node = $('<a />').html(keyword).attr('href', link)[0];
 

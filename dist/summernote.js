@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2016-01-14T12:56Z
+ * Date: 2016-01-14T13:17Z
  */
 (function (factory) {
   /* global define */
@@ -1871,6 +1871,9 @@
   });
 
   var dialog = renderer.create('<div class="modal" aria-hidden="false" tabindex="-1"/>', function ($node, options) {
+    if (options.fade) {
+      $node.addClass('fade');
+    }
     $node.html([
       '<div class="modal-dialog">',
       '  <div class="modal-content">',
@@ -4967,7 +4970,7 @@
       var keyword = this.lastWordRange.toString();
       var match = keyword.match(linkPattern);
 
-      if (match[1] || match[2]) {
+      if (match && (match[1] || match[2])) {
         var link = match[1] ? keyword : defaultScheme + keyword;
         var node = $('<a />').html(keyword).attr('href', link)[0];
 
@@ -5813,6 +5816,7 @@
       this.$dialog = ui.dialog({
         className: 'link-dialog',
         title: lang.link.insert,
+        fade: options.dialogsFade,
         body: body,
         footer: footer
       }).render().appendTo($container);
@@ -6018,6 +6022,7 @@
 
       this.$dialog = ui.dialog({
         title: lang.image.insert,
+        fade: options.dialogsFade,
         body: body,
         footer: footer
       }).render().appendTo($container);
@@ -6163,6 +6168,7 @@
 
       this.$dialog = ui.dialog({
         title: lang.video.insert,
+        fade: options.dialogsFade,
         body: body,
         footer: footer
       }).render().appendTo($container);
@@ -6356,6 +6362,7 @@
 
       this.$dialog = ui.dialog({
         title: lang.options.help,
+        fade: options.dialogsFade,
         body: this.createShortCutList(),
         footer: body,
         callback: function ($node) {
@@ -6803,6 +6810,7 @@
       },
 
       dialogsInBody: false,
+      dialogsFade: false,
 
       maximumImageFileSize: null,
 
