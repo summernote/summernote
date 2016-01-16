@@ -3,10 +3,6 @@ define([
   'summernote/base/core/list',
   'summernote/base/Context'
 ], function ($, list, Context) {
-  $.summernote = $.summernote || {
-    lang: {}
-  };
-
   $.fn.extend({
     /**
      * Summernote API

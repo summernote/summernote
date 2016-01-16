@@ -30,6 +30,8 @@ define([
     var options = context.options;
     var lang = options.langInfo;
 
+    var editable = $editable[0];
+
     var style = new Style();
     var table = new Table();
     var typing = new Typing();
@@ -124,7 +126,7 @@ define([
      */
     this.createRange = function () {
       this.focus();
-      return range.create();
+      return range.create(editable);
     };
 
     /**
@@ -408,7 +410,8 @@ define([
      * @param {String} text
      */
     this.insertText = this.wrapCommand(function (text) {
-      var textNode = range.create().insertNode(dom.createText(text));
+      var rng = this.createRange();
+      var textNode = rng.insertNode(dom.createText(text));
       range.create(textNode, dom.nodeLength(textNode)).select();
     });
 

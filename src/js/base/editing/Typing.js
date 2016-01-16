@@ -35,7 +35,7 @@ define([
      * insert paragraph
      */
     this.insertParagraph = function ($editable) {
-      var rng = range.create();
+      var rng = range.create($editable[0]);
 
       // deleteContents on range.
       rng = rng.deleteContents();

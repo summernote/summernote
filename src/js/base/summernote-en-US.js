@@ -1,6 +1,10 @@
 define([
   'jquery'
 ], function ($) {
+  $.summernote = $.summernote || {
+    lang: {}
+  };
+
   $.extend($.summernote.lang, {
     'en-US': {
       font: {
