@@ -30,9 +30,9 @@ define([
     /**
      * indent
      */
-    this.indent = function () {
+    this.indent = function (editable) {
       var self = this;
-      var rng = range.create().wrapBodyInlineWithPara();
+      var rng = range.create(editable).wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
       var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
@@ -56,9 +56,9 @@ define([
     /**
      * outdent
      */
-    this.outdent = function () {
+    this.outdent = function (editable) {
       var self = this;
-      var rng = range.create().wrapBodyInlineWithPara();
+      var rng = range.create(editable).wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
       var clustereds = list.clusterBy(paras, func.peq2('parentNode'));

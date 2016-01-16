@@ -119,8 +119,6 @@ define([
     };
 
     /**
-     * createRange
-     *
      * create range
      * @return {WrappedRange}
      */
@@ -308,12 +306,12 @@ define([
     context.memo('help.insertUnorderedList', lang.help.insertUnorderedList);
 
     this.indent = this.wrapCommand(function () {
-      bullet.indent($editable);
+      bullet.indent(editable);
     });
     context.memo('help.indent', lang.help.indent);
 
     this.outdent = this.wrapCommand(function () {
-      bullet.outdent($editable);
+      bullet.outdent(editable);
     });
     context.memo('help.outdent', lang.help.outdent);
 

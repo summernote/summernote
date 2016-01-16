@@ -84,6 +84,22 @@ define([
       });
     });
 
+    describe('indent and outdent', function () {
+      it('should indent and outdent paragraph', function () {
+        editor.indent();
+        helper.equalsToUpperCase(
+          '<p style="margin-left: 25px; ">hello</p>',
+          context.layoutInfo.editable.html(), expect
+        );
+
+        editor.outdent();
+        helper.equalsToUpperCase(
+          '<p style="">hello</p>',
+          context.layoutInfo.editable.html(), expect
+        );
+      });
+    });
+
     describe('insertNode', function () {
       it('should insert node', function () {
         editor.insertNode($('<span> world</span>')[0]);
