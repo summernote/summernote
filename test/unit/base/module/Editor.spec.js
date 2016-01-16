@@ -24,7 +24,7 @@ define([
     beforeEach(function () {
       var options = $.extend({}, $.summernote.options);
       options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
-      context = new Context($('<div>'), options);
+      context = new Context($('<div>hello</div>'), options);
       editor = context.modules.editor;
     });
 
@@ -32,21 +32,17 @@ define([
       it('should insert paragraph', function () {
         editor.insertParagraph();
         helper.equalsToUpperCase(
-          context.layoutInfo.editable.html(),
-          '<p><br></p><p><br></p>', expect
+          '<p>hello</p><p><br></p>', 
+          context.layoutInfo.editable.html(), expect
         );
       });
     });
 
     describe('insertText', function () {
       it('should insert text', function () {
-        // [workaround]
-        //  - cursor position difference
-        var contents = agent.isWebkit ? '<p>hello<br></p>' : '<p><br>hello</p>';
-
-        editor.insertText('hello');
+        editor.insertText(' world');
         helper.equalsToUpperCase(
-          contents,
+          '<p>hello world</p>',
           context.layoutInfo.editable.html(),
           expect
         );
