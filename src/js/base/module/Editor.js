@@ -259,7 +259,7 @@ define([
         table.tab(rng);
       } else {
         beforeCommand();
-        typing.insertTab($editable, rng, options.tabSize);
+        typing.insertTab(rng, options.tabSize);
         afterCommand();
       }
     };
@@ -291,7 +291,7 @@ define([
      * insert paragraph
      */
     this.insertParagraph = this.wrapCommand(function () {
-      typing.insertParagraph($editable);
+      typing.insertParagraph(editable);
     });
     context.memo('help.insertParagraph', lang.help.insertParagraph);
 
@@ -339,8 +339,8 @@ define([
         range.create().insertNode($image[0]);
         range.createFromNodeAfter($image[0]).select();
         afterCommand();
-      }).fail(function () {
-        context.triggerEvent('image.upload.error');
+      }).fail(function (e) {
+        context.triggerEvent('image.upload.error', e);
       });
     };
 
@@ -420,7 +420,7 @@ define([
      * @param {String} markup
      */
     this.pasteHTML = this.wrapCommand(function (markup) {
-      var contents = range.create().pasteHTML(markup);
+      var contents = this.createRange().pasteHTML(markup);
       range.createFromNodeAfter(list.last(contents)).select();
     });
 
@@ -489,8 +489,7 @@ define([
      * insert horizontal rule
      */
     this.insertHorizontalRule = this.wrapCommand(function () {
-      var rng = range.create();
-      var hrNode = rng.insertNode($('<HR/>')[0]);
+      var hrNode = this.createRange().insertNode(dom.create('HR'));
       if (hrNode.nextSibling) {
         range.create(hrNode.nextSibling, 0).normalize().select();
       }

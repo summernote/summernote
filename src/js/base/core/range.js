@@ -1,10 +1,10 @@
 define([
+  'jquery',
   'summernote/base/core/agent',
   'summernote/base/core/func',
   'summernote/base/core/list',
   'summernote/base/core/dom'
-], function (agent, func, list, dom) {
-
+], function ($, agent, func, list, dom) {
   var range = (function () {
 
     /**
@@ -193,9 +193,10 @@ define([
        *
        * @return {WrappedRange}
        */
-      this.scrollIntoView = function ($container) {
-        if ($container[0].scrollTop + $container.height() < this.sc.offsetTop) {
-          $container[0].scrollTop += Math.abs($container[0].scrollTop + $container.height() - this.sc.offsetTop);
+      this.scrollIntoView = function (container) {
+        var height = $(container).height();
+        if (container.scrollTop + height < this.sc.offsetTop) {
+          container.scrollTop += Math.abs(container.scrollTop + height - this.sc.offsetTop);
         }
 
         return this;
