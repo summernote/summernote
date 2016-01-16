@@ -214,7 +214,6 @@ define([
     context.memo('help.redo', lang.help.redo);
 
     /**
-     * beforeCommand
      * before command
      */
     var beforeCommand = this.beforeCommand = function () {
@@ -224,7 +223,6 @@ define([
     };
 
     /**
-     * afterCommand
      * after command
      * @param {Boolean} isPreventTrigger
      */
@@ -255,8 +253,6 @@ define([
     /* jshint ignore:end */
 
     /**
-     * tab
-     *
      * handle tab key
      */
     this.tab = function () {
@@ -272,10 +268,7 @@ define([
     context.memo('help.tab', lang.help.tab);
 
     /**
-     * untab
-     *
      * handle shift+tab key
-     *
      */
     this.untab = function () {
       var rng = this.createRange();
@@ -286,8 +279,6 @@ define([
     context.memo('help.untab', lang.help.untab);
 
     /**
-     * wrapCommand
-     *
      * run given function between beforeCommand and afterCommand
      */
     this.wrapCommand = function (fn) {
@@ -299,8 +290,6 @@ define([
     };
 
     /**
-     * insertParagraph
-     *
      * insert paragraph
      */
     this.insertParagraph = this.wrapCommand(function () {
@@ -308,16 +297,13 @@ define([
     });
     context.memo('help.insertParagraph', lang.help.insertParagraph);
 
-    /**
-     * insertOrderedList
-     */
     this.insertOrderedList = this.wrapCommand(function () {
-      bullet.insertOrderedList($editable);
+      bullet.insertOrderedList(editable);
     });
     context.memo('help.insertOrderedList', lang.help.insertOrderedList);
 
     this.insertUnorderedList = this.wrapCommand(function () {
-      bullet.insertUnorderedList($editable);
+      bullet.insertUnorderedList(editable);
     });
     context.memo('help.insertUnorderedList', lang.help.insertUnorderedList);
 
@@ -401,7 +387,8 @@ define([
      * @param {Node} node
      */
     this.insertNode = this.wrapCommand(function (node) {
-      range.create().insertNode(node);
+      var rng = this.createRange();
+      rng.insertNode(node);
       range.createFromNodeAfter(node).select();
     });
 
@@ -736,14 +723,6 @@ define([
       //  - do focus when not focused
       if (!this.hasFocus()) {
         $editable.focus();
-
-        // [workaround] for firefox bug http://goo.gl/lVfAaI
-        if (!this.hasFocus() && agent.isFF) {
-          range.createFromNode($editable[0])
-               .normalize()
-               .collapse()
-               .select();
-        }
       }
     };
 
