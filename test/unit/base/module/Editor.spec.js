@@ -9,10 +9,11 @@ define([
   'helper',
   'jquery',
   'summernote/lite/settings',
+  'summernote/base/core/agent',
   'summernote/base/core/dom',
   'summernote/base/Context',
   'summernote/base/module/Editor'
-], function (chai, helper, $, settings, dom, Context, Editor) {
+], function (chai, helper, $, settings, agent, dom, Context, Editor) {
   'use strict';
 
   var expect = chai.expect;
@@ -39,10 +40,15 @@ define([
 
     describe('insertText', function () {
       it('should insert text', function () {
+        // [workaround]
+        //  - cursor position difference
+        var contents = agent.isWebkit ? '<p>hello<br></p>' : '<p><br>hello</p>';
+
         editor.insertText('hello');
         helper.equalsToUpperCase(
+          contents,
           context.layoutInfo.editable.html(),
-          '<p>hello<br></p>', expect
+          expect
         );
       });
     });
