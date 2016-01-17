@@ -50,6 +50,7 @@ define(['jquery'], function ($) {
     isMac: navigator.appVersion.indexOf('Mac') > -1,
     isMSIE: isMSIE,
     isFF: /firefox/i.test(userAgent),
+    isPhantom: /PhantomJS/i.test(userAgent),
     isWebkit: /webkit/i.test(userAgent),
     isChrome: /chrome/i.test(userAgent),
     isSafari: /safari/i.test(userAgent),

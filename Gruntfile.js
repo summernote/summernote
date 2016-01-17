@@ -204,7 +204,7 @@ module.exports = function (grunt) {
       },
       travis: {
         singleRun: true,
-        browsers: ['PhantomJS', 'Chrome', 'Firefox'],
+        browsers: ['PhantomJS'],
         reporters: ['progress', 'coverage']
       },
       saucelabs: {

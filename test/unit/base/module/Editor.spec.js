@@ -108,28 +108,29 @@ define([
       });
     });
 
-    if (agent.isChrome) {
-      // [workaround]
-      //  - style is different by browser
-      describe('indent and outdent', function () {
+    describe('indent and outdent', function () {
+      // [workaround] style is different by browser
+      if (agent.isPhantom) {
         it('should indent and outdent paragraph', function () {
           editor.indent();
-          expectContents(context, '<p style="margin-left: 25px;">hello</p>');
+          expectContents(context, '<p style="margin-left: 25px; ">hello</p>');
 
           editor.outdent();
-          expectContents(context, '<p>hello</p>');
-
-          editor.insertOrderedList();
-          expectContents(context, '<ol><li>hello</li></ol>');
-
-          editor.indent();
-          expectContents(context, '<ol><ol><li>hello</li></ol></ol>');
-
-          editor.outdent();
-          expectContents(context, '<ol><li>hello</li></ol>');
+          expectContents(context, '<p style="">hello</p>');
         });
+      }
+
+      it('should indent and outdent list', function () {
+        editor.insertOrderedList();
+        expectContents(context, '<ol><li>hello</li></ol>');
+
+        editor.indent();
+        expectContents(context, '<ol><ol><li>hello</li></ol></ol>');
+
+        editor.outdent();
+        expectContents(context, '<ol><li>hello</li></ol>');
       });
-    }
+    });
 
     describe('insertNode', function () {
       it('should insert node', function () {
