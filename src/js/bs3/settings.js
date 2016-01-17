@@ -222,7 +222,7 @@ define([
         }
       },
       icons: {
-        'align': 'note-icon-align-left',
+        'align': 'note-icon-align',
         'alignCenter': 'note-icon-align-center',
         'alignJustify': 'note-icon-align-justify',
         'alignLeft': 'note-icon-align-left',
