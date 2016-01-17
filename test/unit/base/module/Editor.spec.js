@@ -19,15 +19,7 @@ define([
 
   var expectContents = function (context, markup) {
     // [workaround] Firefox need setTimeout for applying contents
-    if (agent.isFF) {
-      setTimeout(function () {
-        helper.equalsToUpperCase(
-          markup,
-          context.layoutInfo.editable.html(),
-          expect
-        );
-      });
-    } else {
+    if (agent.isWebkit) {
       helper.equalsToUpperCase(
         markup,
         context.layoutInfo.editable.html(),
@@ -71,18 +63,20 @@ define([
       });
     });
 
-    describe('undo and redo', function () {
-      it('should control history', function () {
-        editor.insertText(' world');
-        expectContents(context, '<p>hello world</p>');
+    if (agent.isWebkit) {
+      describe('undo and redo', function () {
+        it('should control history', function () {
+          editor.insertText(' world');
+          expectContents(context, '<p>hello world</p>');
 
-        editor.undo();
-        expectContents(context, '<p>hello</p>');
+          editor.undo();
+          expectContents(context, '<p>hello</p>');
 
-        editor.redo();
-        expectContents(context, '<p>hello world</p>');
+          editor.redo();
+          expectContents(context, '<p>hello world</p>');
+        });
       });
-    });
+    }
 
     describe('tab', function () {
       it('should insert tab', function () {
@@ -124,6 +118,15 @@ define([
 
           editor.outdent();
           expectContents(context, '<p>hello</p>');
+
+          editor.insertOrderedList();
+          expectContents(context, '<ol><li>hello</li></ol>');
+
+          editor.indent();
+          expectContents(context, '<ol><ol><li>hello</li></ol></ol>');
+
+          editor.outdent();
+          expectContents(context, '<ol><li>hello</li></ol>');
         });
       });
     }
@@ -153,6 +156,18 @@ define([
       it('should insert horizontal rule', function () {
         editor.insertHorizontalRule();
         expectContents(context, '<p>hello</p><hr><p><br></p>');
+      });
+    });
+
+    describe('insertTable', function () {
+      it('should insert table', function () {
+        var markup = [
+          '<p>hello</p>',
+          '<table><tbody><tr><td><br></td><td><br></td></tr><tr><td><br></td><td><br></td></tr></tbody></table>',
+          '<p><br></p>'
+        ].join('')
+        editor.insertTable('2x2');
+        expectContents(context, markup);
       });
     });
 
