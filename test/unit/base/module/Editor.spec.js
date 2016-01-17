@@ -5,33 +5,43 @@
  */
 define([
   'chai',
+  'spies',
   'helper',
   'jquery',
   'summernote/lite/settings',
   'summernote/base/core/agent',
   'summernote/base/core/dom',
   'summernote/base/Context'
-], function (chai, helper, $, settings, agent, dom, Context) {
+], function (chai, spies, helper, $, settings, agent, dom, Context) {
   'use strict';
   var expect = chai.expect;
+  chai.use(spies);
 
   var expectContents = function (context, markup) {
-    var checkHandler = function () {
+    // [workaround] Firefox need setTimeout for applying contents
+    if (agent.isFF) {
+      setTimeout(function () {
+        helper.equalsToUpperCase(
+          markup,
+          context.layoutInfo.editable.html(),
+          expect
+        );
+      });
+    } else {
       helper.equalsToUpperCase(
         markup,
         context.layoutInfo.editable.html(),
         expect
       );
-    };
-
-    // [workaround] Firefox need setTimeout for applying contents
-    if (agent.isFF) {
-      setTimeout(function () {
-        checkHandler();
-      });
-    } else {
-      checkHandler();
     }
+  };
+
+  var expectToHaveBeenCalled = function (context, customEvent, handler) {
+    var $note = context.layoutInfo.note;
+    var spy = chai.spy();
+    $note.on(customEvent, spy);
+    handler();
+    expect(spy).to.have.been.called();
   };
 
   describe('Editor', function () {
@@ -42,6 +52,23 @@ define([
       options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
       context = new Context($('<div><p>hello</p></div>'), options);
       editor = context.modules.editor;
+    });
+
+    describe('initialize', function () {
+      it('should bind custom events', function () {
+        [
+          'keydown', 'keyup', 'blur', 'mousedown', 'mouseup',
+          'scroll', 'paste', 'focusin', 'focusout'
+        ].forEach(function (eventName) {
+          expectToHaveBeenCalled(context, 'summernote.' + eventName, function () {
+            context.layoutInfo.editable.trigger(eventName);
+          });
+        });
+
+        expectToHaveBeenCalled(context, 'summernote.change', function () {
+          editor.insertText('hello');
+        });
+      });
     });
 
     describe('undo and redo', function () {

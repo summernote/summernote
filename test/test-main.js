@@ -15,6 +15,7 @@ requirejs.config({
     es5shim: '../../test/libs/es5-shim',
     codemirror: '../../test/libs/codemirror',
     chai: '../../node_modules/chai/chai',
+    spies: '../../node_modules/chai-spies/chai-spies',
     helper: '../../test/test-util'
   },
 
