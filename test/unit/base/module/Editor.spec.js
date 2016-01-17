@@ -165,7 +165,7 @@ define([
           '<p>hello</p>',
           '<table><tbody><tr><td><br></td><td><br></td></tr><tr><td><br></td><td><br></td></tr></tbody></table>',
           '<p><br></p>'
-        ].join('')
+        ].join('');
         editor.insertTable('2x2');
         expectContents(context, markup);
       });
