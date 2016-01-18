@@ -30,6 +30,7 @@ define([
       this.$dialog = ui.dialog({
         className: 'link-dialog',
         title: lang.link.insert,
+        fade: options.dialogsFade,
         body: body,
         footer: footer
       }).render().appendTo($container);

@@ -12,27 +12,15 @@ define([
 
     this.createShortCutList = function () {
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
-
-      var $list = $('<div />');
-
-      Object.keys(keyMap).forEach(function (keyString) {
-        var $row = $('<div class="help-list-item"/>');
-
-        var command = keyMap[keyString];
-        var str = context.memo('help.' + command) ? context.memo('help.' + command) : command;
-        var $keyString = $('<label />').css({
+      return Object.keys(keyMap).map(function (key) {
+        var command = keyMap[key];
+        var $row = $('<div><div class="help-list-item"/></div>');
+        $row.append($('<label><kbd>' + key + '</kdb></label>').css({
           'width': 180,
-          'max-width': 200,
           'margin-right': 10
-        }).html(keyString);
-        var $description = $('<span />').html(str);
-
-        $row.html($keyString).append($description);
-
-        $list.append($row);
-      });
-
-      return $list.html();
+        })).append($('<span/>').html(context.memo('help.' + command) || command));
+        return $row.html();
+      }).join('');
     };
 
     this.initialize = function () {
@@ -48,6 +36,7 @@ define([
 
       this.$dialog = ui.dialog({
         title: lang.options.help,
+        fade: options.dialogsFade,
         body: this.createShortCutList(),
         footer: body,
         callback: function ($node) {
@@ -71,7 +60,7 @@ define([
      */
     this.showHelpDialog = function () {
       return $.Deferred(function (deferred) {
-        ui.onDialogHidden(self.$dialog, function () {
+        ui.onDialogShown(self.$dialog, function () {
           context.triggerEvent('dialog.shown');
           deferred.resolve();
         });

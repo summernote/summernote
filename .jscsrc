@@ -1,0 +1,7 @@
+{
+  "disallowSpaceAfterObjectKeys": true,
+  "excludeFiles": [
+    "src/js/intro.js",
+    "src/js/outro.js"
+  ]
+}

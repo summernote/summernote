@@ -48,7 +48,7 @@ define([
         'autoLink': AutoLink,
         'autoSync': AutoSync,
         'placeholder': Placeholder,
-        'buttons' : Buttons,
+        'buttons': Buttons,
         'toolbar': Toolbar,
         'linkDialog': LinkDialog,
         'linkPopover': LinkPopover,
@@ -139,6 +139,7 @@ define([
       },
 
       dialogsInBody: false,
+      dialogsFade: false,
 
       maximumImageFileSize: null,
 

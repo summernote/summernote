@@ -7,8 +7,8 @@ define([
 ], function (func, list, dom, range, key) {
   var AutoLink = function (context) {
     var self = this;
-
-    var linkPattern = /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+-]+@)(.+)$/i;
+    var defaultScheme = 'http://';
+    var linkPattern = /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
 
     this.events = {
       'summernote.keyup': function (we, e) {
@@ -35,19 +35,17 @@ define([
       }
 
       var keyword = this.lastWordRange.toString();
+      var match = keyword.match(linkPattern);
 
-      if (linkPattern.test(keyword)) {
-        var node = this.nodeFromKeyword(keyword);
+      if (match && (match[1] || match[2])) {
+        var link = match[1] ? keyword : defaultScheme + keyword;
+        var node = $('<a />').html(keyword).attr('href', link)[0];
 
         this.lastWordRange.insertNode(node);
         this.lastWordRange = null;
         context.invoke('editor.focus');
       }
 
-    };
-
-    this.nodeFromKeyword = function (keyword) {
-      return $('<a />').html(keyword).attr('href', keyword)[0];
     };
 
     this.handleKeydown = function (e) {

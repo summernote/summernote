@@ -33,6 +33,7 @@ define([
 
       this.$dialog = ui.dialog({
         title: lang.image.insert,
+        fade: options.dialogsFade,
         body: body,
         footer: footer
       }).render().appendTo($container);

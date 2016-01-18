@@ -107,7 +107,7 @@ define([
         documentStyle: 'Document Style',
         extraKeys: 'Extra keys'
       },
-      help : {
+      help: {
         'insertParagraph': 'Insert Paragraph',
         'undo': 'Undoes the last command',
         'redo': 'Redoes the last command',
