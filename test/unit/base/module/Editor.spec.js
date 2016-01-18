@@ -17,15 +17,19 @@ define([
   var expect = chai.expect;
   chai.use(spies);
 
+  // [workaround]
+  //  - Firefox need setTimeout for applying contents
+  //  - IE8-11 can't create range in headless mode
+  if (!(agent.isWebkit && agent.isEdge)) {
+    return;
+  }
+
   var expectContents = function (context, markup) {
-    // [workaround] Firefox need setTimeout for applying contents
-    if (agent.isWebkit) {
-      helper.equalsToUpperCase(
-        markup,
-        context.layoutInfo.editable.html(),
-        expect
-      );
-    }
+    helper.equalsToUpperCase(
+      markup,
+      context.layoutInfo.editable.html(),
+      expect
+    );
   };
 
   var expectToHaveBeenCalled = function (context, customEvent, handler) {

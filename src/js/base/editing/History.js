@@ -10,7 +10,7 @@ define(['summernote/base/core/range'], function (range) {
     var editable = $editable[0];
 
     var makeSnapshot = function () {
-      var rng = range.create();
+      var rng = range.create(editable);
       var emptyBookmark = {s: {path: [], offset: 0}, e: {path: [], offset: 0}};
 
       return {
@@ -34,7 +34,6 @@ define(['summernote/base/core/range'], function (range) {
     * Leaves the stack intact, so that "Redo" can still be used.
     */
     this.rewind = function () {
-
       // Create snap shot if not yet recorded
       if ($editable.html() !== stack[stackOffset].contents) {
         this.recordUndo();
@@ -45,7 +44,6 @@ define(['summernote/base/core/range'], function (range) {
 
       // Apply that snapshot.
       applySnapshot(stack[stackOffset]);
-
     };
 
 
@@ -54,7 +52,6 @@ define(['summernote/base/core/range'], function (range) {
     * Resets the history stack completely; reverting to an empty editor.
     */
     this.reset = function () {
-
       // Clear the stack.
       stack = [];
 
@@ -66,7 +63,6 @@ define(['summernote/base/core/range'], function (range) {
 
       // Record our first snapshot (of nothing).
       this.recordUndo();
-
     };
 
     /**

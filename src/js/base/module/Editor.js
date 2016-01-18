@@ -31,6 +31,7 @@ define([
     var lang = options.langInfo;
 
     var editable = $editable[0];
+    var lastRange = null;
 
     var style = new Style();
     var table = new Table();
@@ -135,10 +136,9 @@ define([
      * @param {Boolean} [thenCollapse=false]
      */
     this.saveRange = function (thenCollapse) {
-      this.focus();
-      $editable.data('range', range.create());
+      lastRange = this.createRange();
       if (thenCollapse) {
-        range.create().collapse().select();
+        lastRange.collapse().select();
       }
     };
 
@@ -148,9 +148,8 @@ define([
      * restore lately range
      */
     this.restoreRange = function () {
-      var rng = $editable.data('range');
-      if (rng) {
-        rng.select();
+      if (lastRange) {
+        lastRange.select();
         this.focus();
       }
     };
@@ -336,7 +335,7 @@ define([
         }
 
         $image.show();
-        range.create().insertNode($image[0]);
+        range.create(editable).insertNode($image[0]);
         range.createFromNodeAfter($image[0]).select();
         afterCommand();
       }).fail(function (e) {
@@ -458,8 +457,7 @@ define([
      * @param {String} value - px
      */
     this.fontSize = function (value) {
-      this.focus();
-      var rng = range.create();
+      var rng = this.createRange();
 
       if (rng && rng.isCollapsed()) {
         var spans = style.styleNodes(rng);
@@ -525,7 +523,7 @@ define([
      * @param {String} value
      */
     this.lineHeight = this.wrapCommand(function (value) {
-      style.stylePara(range.create(), {
+      style.stylePara(this.createRange(), {
         lineHeight: value
       });
     });
@@ -609,9 +607,7 @@ define([
      * @return {String} [return.url=""]
      */
     this.getLinkInfo = function () {
-      this.focus();
-
-      var rng = range.create().expand(dom.isAnchor);
+      var rng = this.createRange().expand(dom.isAnchor);
 
       // Get the first anchor on range(for edit).
       var $anchor = $(list.head(rng.nodes(dom.isAnchor)));
