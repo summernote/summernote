@@ -38,6 +38,8 @@ define(['jquery'], function ($) {
     }
   }
 
+  var isEdge = /Edge\/\d+/.test(userAgent);
+
   /**
    * @class core.agent
    *
@@ -49,9 +51,12 @@ define(['jquery'], function ($) {
   var agent = {
     isMac: navigator.appVersion.indexOf('Mac') > -1,
     isMSIE: isMSIE,
-    isFF: /firefox/i.test(userAgent),
-    isWebkit: /webkit/i.test(userAgent),
-    isSafari: /safari/i.test(userAgent),
+    isEdge: isEdge,
+    isFF: !isEdge && /firefox/i.test(userAgent),
+    isPhantom: /PhantomJS/i.test(userAgent),
+    isWebkit: !isEdge && /webkit/i.test(userAgent),
+    isChrome: !isEdge && /chrome/i.test(userAgent),
+    isSafari: !isEdge && /safari/i.test(userAgent),
     browserVersion: browserVersion,
     jqueryVersion: parseFloat($.fn.jquery),
     isSupportAmd: isSupportAmd,

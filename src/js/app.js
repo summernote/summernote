@@ -1,6 +1,5 @@
 var script = document.getElementById('start');
 var isIE8 = script && script.getAttribute('data-browser') === 'ie8';
-var requireJquery = 'jquery';
 
 var jqueryLink = isIE8 ? '//code.jquery.com/jquery-1.11.3' : '//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery';
 require.config({
@@ -11,8 +10,8 @@ require.config({
     lang: '../../lang/summernote-ko-KR'
   },
   shim: {
-    bootstrap: [requireJquery],
-    lang: [requireJquery]
+    bootstrap: ['jquery'],
+    lang: ['jquery']
   },
   packages: [{
     name: 'summernote',

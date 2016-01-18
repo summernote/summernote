@@ -44,6 +44,12 @@ module.exports = function (grunt) {
       version: '11.0',
       platform: 'windows 8.1'
     },
+    'SL_EDGE': {
+      base: 'SauceLabs',
+      browserName: 'microsoftedge',
+      version: '20',
+      platform: 'windows 10'
+    },
     'SL_CHROME': {
       base: 'SauceLabs',
       browserName: 'chrome',
@@ -171,7 +177,7 @@ module.exports = function (grunt) {
     // watch source code change
     watch: {
       all: {
-        files: ['src/less/*.less', 'src/js/**/*.js'],
+        files: ['src/less/*.less', 'src/js/**/*.js', 'test/unit/**/*.js'],
         tasks: ['recess', 'lint'],
         options: {
           livereload: true
