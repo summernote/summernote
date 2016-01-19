@@ -31,8 +31,12 @@ define([
       var context = new Context($note, options);
       expect(spy).to.have.not.been.called();
 
-      context.invoke('insertText', 'hello');
-      expect(spy).to.have.been.called();
+      // [workaround]
+      //  - IE8-11 can't create range in headless mode
+      if (!agent.isMSIE) {
+        context.invoke('insertText', 'hello');
+        expect(spy).to.have.been.called();
+      }
     });
   });
 });
