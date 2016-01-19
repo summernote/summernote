@@ -238,7 +238,7 @@ module.exports = function (grunt) {
       dist: {
         files: [
           {src: 'lang/*', dest: 'dist/'},
-          {expand: true, cwd: 'src/icons/results/', src: ['**'], dest: 'dist/icons/'}
+          {expand: true, cwd: 'src/icons/results/', src: ['**', '!*.html'], dest: 'dist/icons/'}
         ]
       }
     },

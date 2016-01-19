@@ -4,10 +4,10 @@
 
 @font-face {
   font-family:"summernote";
-src:url("summernote.eot?7be9ad7b61513f6c7efcaf5d1c000aa0");
+src:url("summernote.eot?44368136daaa019037dc6a99de1bacac");
 src:url("summernote.eot?#iefix") format("embedded-opentype"),
-		url("summernote.woff?7be9ad7b61513f6c7efcaf5d1c000aa0") format("woff"),
-		url("summernote.ttf?7be9ad7b61513f6c7efcaf5d1c000aa0") format("truetype");
+		url("summernote.woff?44368136daaa019037dc6a99de1bacac") format("woff"),
+		url("summernote.ttf?44368136daaa019037dc6a99de1bacac") format("truetype");
 font-weight:normal;
 font-style:normal;
 }
@@ -19,7 +19,7 @@ font-style:normal;
   display:inline-block;
   vertical-align:middle;
   line-height:1;
-  font: normal normal normal 14px/1 summernote;
+  font: normal normal normal 14px summernote;
   font-size: inherit;
   speak:none;
   text-decoration:inherit;
@@ -220,49 +220,55 @@ font-style:normal;
 
 
 
-.note-icon-superscript:before {
+.note-icon-summernote:before {
   content:"\f120";
 }
 
 
 
-.note-icon-table:before {
+.note-icon-superscript:before {
   content:"\f121";
 }
 
 
 
-.note-icon-text-height:before {
+.note-icon-table:before {
   content:"\f122";
 }
 
 
 
-.note-icon-trash:before {
+.note-icon-text-height:before {
   content:"\f123";
 }
 
 
 
-.note-icon-underline:before {
+.note-icon-trash:before {
   content:"\f124";
 }
 
 
 
-.note-icon-undo:before {
+.note-icon-underline:before {
   content:"\f125";
 }
 
 
 
-.note-icon-unorderedlist:before {
+.note-icon-undo:before {
   content:"\f126";
 }
 
 
 
-.note-icon-video:before {
+.note-icon-unorderedlist:before {
   content:"\f127";
+}
+
+
+
+.note-icon-video:before {
+  content:"\f128";
 }
 
