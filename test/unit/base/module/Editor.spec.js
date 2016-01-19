@@ -20,7 +20,7 @@ define([
   // [workaround]
   //  - Firefox need setTimeout for applying contents
   //  - IE8-11 can't create range in headless mode
-  if (!(agent.isWebkit && agent.isEdge)) {
+  if (!(agent.isWebkit || agent.isEdge)) {
     return;
   }
 
