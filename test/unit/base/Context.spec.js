@@ -19,22 +19,20 @@ define([
   var expect = chai.expect;
   chai.use(spies);
 
-  describe('Context.Initialize.Check', function () {
-    var options = $.extend({}, $.summernote.options);
-    options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
-    var context = new Context($('<div><p>hello</p></div>'), options);
+  describe('Context', function () {
+    it('should be initialized without calling callback', function () {
+      var options = $.extend({}, $.summernote.options);
+      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
 
-    var $note = context.layoutInfo.note;
-    var spy = chai.spy();
+      var spy = chai.spy();
+      var $note = $('<div><p>hello</p></div>');
+      $note.on('summernote.change', spy);
 
-    $note.on('summernote.change', spy);
+      var context = new Context($note, options);
+      expect(spy).to.have.not.been.called();
 
-    expect(spy).to.have.not.been.called();
-
-    var expectToHaveBeenCalled = function () {
+      context.invoke('insertText', 'hello');
       expect(spy).to.have.been.called();
-    };
-
-    expect(expectToHaveBeenCalled).throw(chai.AssertionError);
+    });
   });
 });
