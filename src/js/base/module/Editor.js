@@ -66,6 +66,10 @@ define([
         context.triggerEvent('paste', event);
       });
 
+
+      // init content before set event
+      $editable.html(dom.html($note) || dom.emptyPara);
+
       // [workaround] IE doesn't have input events for contentEditable
       // - see: https://goo.gl/4bfIvA
       var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
@@ -89,7 +93,6 @@ define([
         $editable.css('min-height', options.minHeight);
       }
 
-      $editable.html(dom.html($note) || dom.emptyPara);
       history.recordUndo();
     };
 
