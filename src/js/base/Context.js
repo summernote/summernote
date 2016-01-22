@@ -185,7 +185,12 @@ define([
     this.createInvokeHandler = function (namespace, value) {
       return function (event) {
         event.preventDefault();
-        self.invoke(namespace, value || $(event.target).closest('[data-value]').data('value'));
+
+        var $t = $(event.target);
+        var $ct = $(event.currentTarget);
+
+        var currentValue = value || $t.closest('[data-value]').data('value') || $t.data('value') || $ct.data('value');
+        self.invoke(namespace, currentValue);
       };
     };
 
