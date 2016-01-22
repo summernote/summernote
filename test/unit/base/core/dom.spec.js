@@ -161,7 +161,7 @@ define([
         $i = $cont.find('i');
       });
 
-      it('should return the positon of element', function () {
+      it('should return the position of element', function () {
         expect(dom.position($b[0])).to.be.equal(0);
         expect(dom.position($u[0])).to.be.equal(1);
         expect(dom.position($s[0])).to.be.equal(2);

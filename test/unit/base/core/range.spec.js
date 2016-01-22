@@ -353,7 +353,7 @@ define([
         helper.equalsToUpperCase($cont.html(), '<p><b>b</b><i>i</i></p>', expect);
       });
 
-      it('should wrap inline nodes with paragraph when selection soem of text in the inline nodes #2', function () {
+      it('should wrap inline nodes with paragraph when selection some of text in the inline nodes #2', function () {
         var $cont = $('<div class="note-editable"><b>b</b><i>i</i></div>');
 
         var rng = range.create($cont[0], 2);
