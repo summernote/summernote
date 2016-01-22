@@ -237,7 +237,7 @@ define([
       });
 
       describe('element pivot case', function () {
-        it('should be splited by u tag with offset 0', function () {
+        it('should be split by u tag with offset 0', function () {
           var $u = $para.find('u');
           dom.splitTree($para[0], {node: $u[0], offset: 0 });
 
@@ -245,7 +245,7 @@ define([
           helper.equalsToUpperCase($para.next().html(), '<u>u</u><s>strike</s><i>i</i>', expect); // right hand side
         });
 
-        it('should be splited by u tag with offset 1', function () {
+        it('should be split by u tag with offset 1', function () {
           var $u = $para.find('u');
           dom.splitTree($para[0], {node: $u[0], offset: 1 });
 
@@ -253,7 +253,7 @@ define([
           helper.equalsToUpperCase($para.next().html(), '<u><br></u><s>strike</s><i>i</i>', expect); // right hand side
         });
 
-        it('should be splited by b tag with offset 0 (left edge case)', function () {
+        it('should be split by b tag with offset 0 (left edge case)', function () {
           var $b = $para.find('b');
           dom.splitTree($para[0], {node: $b[0], offset: 0 });
 
@@ -261,7 +261,7 @@ define([
           helper.equalsToUpperCase($para.next().html(), '<b>b</b><u>u</u><s>strike</s><i>i</i>', expect); // right hand side
         });
 
-        it('should be splited by i tag with offset 1 (right edge case)', function () {
+        it('should be split by i tag with offset 1 (right edge case)', function () {
           var $i = $para.find('i');
           dom.splitTree($para[0], {node: $i[0], offset: 1 });
 
@@ -271,7 +271,7 @@ define([
       });
 
       describe('textNode case', function () {
-        it('should be splited by s tag with offset 3 (middle case)', function () {
+        it('should be split by s tag with offset 3 (middle case)', function () {
           var $s = $para.find('s');
           dom.splitTree($para[0], {node: $s[0].firstChild, offset: 3 });
 
@@ -279,7 +279,7 @@ define([
           helper.equalsToUpperCase($para.next().html(), '<s>ike</s><i>i</i>', expect); // right hand side
         });
 
-        it('should be splited by s tag with offset 0 (left edge case)', function () {
+        it('should be split by s tag with offset 0 (left edge case)', function () {
           var $s = $para.find('s');
           dom.splitTree($para[0], {node: $s[0].firstChild, offset: 0 });
 
@@ -287,7 +287,7 @@ define([
           helper.equalsToUpperCase($para.next().html(), '<s>strike</s><i>i</i>', expect); // right hand side
         });
 
-        it('should be splited by s tag with offset 6 (right edge case)', function () {
+        it('should be split by s tag with offset 6 (right edge case)', function () {
           var $s = $para.find('s');
           dom.splitTree($para[0], {node: $s[0].firstChild, offset: 6 });
 
@@ -295,21 +295,21 @@ define([
           helper.equalsToUpperCase($para.next().html(), '<s><br></s><i>i</i>', expect); // right hand side
         });
 
-        it('should be splited by s tag with offset 3 (2 depth case)', function () {
+        it('should be split by s tag with offset 3 (2 depth case)', function () {
           var $s = $para.find('s');
           dom.splitTree($s[0], {node: $s[0].firstChild, offset: 3 });
 
           helper.equalsToUpperCase($para.html(), '<b>b</b><u>u</u><s>str</s><s>ike</s><i>i</i>', expect);
         });
 
-        it('should be splited by s tag with offset 3 (1 depth and textNode case)', function () {
+        it('should be split by s tag with offset 3 (1 depth and textNode case)', function () {
           var $s = $para.find('s');
           dom.splitTree($s[0].firstChild, {node: $s[0].firstChild, offset: 3 });
 
           helper.equalsToUpperCase($para.html(), '<b>b</b><u>u</u><s>strike</s><i>i</i>', expect);
         });
 
-        it('should be splited by span tag with offset 2 (1 depth and element case)', function () {
+        it('should be split by span tag with offset 2 (1 depth and element case)', function () {
           var $cont = $('<div class="note-editable"><p><span><b>b</b><u>u</u><s>s</s><i>i</i></span></p></div>'); //busi
           var $span = $cont.find('span');
           dom.splitTree($span[0], {node: $span[0], offset: 2 });
