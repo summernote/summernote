@@ -38,5 +38,19 @@ define([
         expect(spy).to.have.been.called();
       }
     });
+
+    it('should preserve disabled status after reset', function () {
+      var options = $.extend({}, $.summernote.options);
+      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+
+      var $note = $('<div><p>hello</p></div>');
+      var context = new Context($note, options);
+
+      expect(context.isDisabled()).to.be.false;
+      context.disable();
+      expect(context.isDisabled()).to.be.true;
+      context.reset();
+      expect(context.isDisabled()).to.be.true;
+    });
   });
 });
