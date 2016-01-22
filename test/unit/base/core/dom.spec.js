@@ -123,7 +123,7 @@ define([
         expect(dom.listNext($i[0])).to.deep.equal([$i[0]]);
       });
 
-      it('should restun an array of next sibling elements before predicate is true', function () {
+      it('should return an array of next sibling elements before predicate is true', function () {
         expect(dom.listNext($s[0], func.eq($i[0]))).to.deep.equal([$s[0]]);
       });
     });
@@ -320,7 +320,7 @@ define([
     });
 
     describe('splitPoint', function () {
-      it('should retun rightNode and container for empty paragraph with inline', function () {
+      it('should return rightNode and container for empty paragraph with inline', function () {
         var $editable = $('<div class="note-editable"><p><br></p></div>');
         var $para = $editable.clone().find('p');
         var $br = $para.find('br');

@@ -66,7 +66,7 @@ define([
           keyMap.BACKSPACE,
           keyMap.TAB,
           keyMap.ENTER,
-          keyMap.SPACe
+          keyMap.SPACE
         ], keyCode);
       },
       /**
