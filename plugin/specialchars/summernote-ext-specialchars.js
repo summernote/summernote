@@ -241,7 +241,7 @@
               return;
             }
 
-            deferred.resolve(decodeURIComponent($selectedNode.find('button').data('value')));
+            deferred.resolve(decodeURIComponent($selectedNode.find('button').attr('data-value')));
             $specialCharDialog.modal('hide');
           }
 
@@ -289,7 +289,7 @@
 
             $specialCharNode.on('click', function (event) {
               event.preventDefault();
-              deferred.resolve(decodeURIComponent($(event.currentTarget).find('button').data('value')));
+              deferred.resolve(decodeURIComponent($(event.currentTarget).find('button').attr('data-value')));
               ui.hideDialog(self.$dialog);
             });
 

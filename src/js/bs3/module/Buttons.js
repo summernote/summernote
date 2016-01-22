@@ -180,16 +180,20 @@ define([
               className: 'note-current-color-button',
               contents: ui.icon(options.icons.font + ' note-recent-color'),
               tooltip: lang.color.recent,
-              click: context.createInvokeHandler('editor.color'),
+              click: function (e) {
+                var $button = $(e.currentTarget);
+                context.invoke('editor.color', {
+                  backColor: $button.attr('data-backColor'),
+                  foreColor: $button.attr('data-foreColor')
+                });
+              },
               callback: function ($button) {
                 var $recentColor = $button.find('.note-recent-color');
                 $recentColor.css({
                   'background-color': 'yellow'
                 });
 
-                $button.data('value', {
-                  backColor: 'yellow'
-                });
+                $button.attr('data-backColor', 'yellow');
               }
             }),
             ui.button({
@@ -242,11 +246,8 @@ define([
                   var $color = $button.closest('.note-color').find('.note-recent-color');
                   var $currentButton = $button.closest('.note-color').find('.note-current-color-button');
 
-                  var colorInfo = $currentButton.data('value');
-                  colorInfo[eventName] = value;
                   $color.css(key, value);
-                  $currentButton.data('value', colorInfo);
-
+                  $currentButton.attr('data-' + eventName, value);
                   context.invoke('editor.' + eventName, value);
                 }
               }
