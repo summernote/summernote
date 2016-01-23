@@ -50,7 +50,7 @@ define([
 
     it('should get or set contents with code', function () {
       expect(context.code()).to.equalIgnoreCase('<p>hello</p>');
-      context.code('<p>hello2</p>')
+      context.code('<p>hello2</p>');
       expect(context.code()).to.equalIgnoreCase('<p>hello2</p>');
     });
 
