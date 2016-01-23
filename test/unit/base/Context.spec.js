@@ -3,23 +3,23 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-/* jshint unused: false */
 define([
   'chai',
   'spies',
-  'helper',
+  'chaidom',
   'jquery',
   'summernote/lite/settings',
   'summernote/base/core/agent',
   'summernote/base/core/dom',
   'summernote/base/Context'
-], function (chai, spies, helper, $, settings, agent, dom, Context) {
+], function (chai, spies, chaidom, $, settings, agent, dom, Context) {
   'use strict';
 
   var expect = chai.expect;
   chai.use(spies);
+  chai.use(chaidom);
 
-  describe('Context', function () {
+  describe('Context initialization', function () {
     it('should be initialized without calling callback', function () {
       var options = $.extend({}, $.summernote.options);
       options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
@@ -38,14 +38,31 @@ define([
         expect(spy).to.have.been.called();
       }
     });
+  });
 
-    it('should preserve disabled status after reset', function () {
+  describe('Context', function () {
+    var context;
+    beforeEach(function () {
       var options = $.extend({}, $.summernote.options);
       options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+      context = new Context($('<div><p>hello</p></div>'), options);
+    });
 
-      var $note = $('<div><p>hello</p></div>');
-      var context = new Context($note, options);
+    it('should get or set contents with code', function () {
+      expect(context.code()).to.equalIgnoreCase('<p>hello</p>');
+      context.code('<p>hello2</p>');
+      expect(context.code()).to.equalIgnoreCase('<p>hello2</p>');
+    });
 
+    it('should enable or disable editor', function () {
+      expect(context.isDisabled()).to.be.false;
+      context.disable();
+      expect(context.isDisabled()).to.be.true;
+      context.enable();
+      expect(context.isDisabled()).to.be.false;
+    });
+
+    it('should preserve disabled status after reset', function () {
       expect(context.isDisabled()).to.be.false;
       context.disable();
       expect(context.isDisabled()).to.be.true;

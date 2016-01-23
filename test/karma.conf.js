@@ -24,8 +24,8 @@ module.exports = function (config) {
     singleRun: false,
     preprocessors: { 'src/js/**/!(app|intro|outro).js': 'coverage' },
     coverageReporter: {
-      type : 'lcov',
-      dir : 'test/coverage/',
+      type: 'lcov',
+      dir: 'test/coverage/',
       includeAllSources: true
     }
   });
