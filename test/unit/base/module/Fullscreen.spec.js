@@ -6,15 +6,16 @@
 define([
   'chai',
   'summernote/lite/settings',
-  'summernote/base/module/Fullscreen',
-  'summernote/base/Context'
-], function (chai, settings, Fullscreen, Context) {
+  'summernote/base/Context',
+  'summernote/base/module/Fullscreen'
+], function (chai, settings, Context, Fullscreen) {
   'use strict';
 
   var expect = chai.expect;
 
   describe('Fullscreen', function () {
     var fullscreen, context;
+
     beforeEach(function () {
       var options = $.extend({}, $.summernote.options);
       options.langInfo = $.extend(true, {
