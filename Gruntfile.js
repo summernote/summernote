@@ -107,7 +107,7 @@ module.exports = function (grunt) {
     },
 
     jscs: {
-      src: 'src',
+      src: '*.js',
       gruntfile: 'Gruntfile.js',
       build: 'build'
     },
