@@ -5,10 +5,9 @@
  */
 define([
   'chai',
-  'summernote/lite/settings',
   'summernote/base/Context',
   'summernote/base/module/Codeview'
-], function (chai, settings, Context, Codeview) {
+], function (chai, Context, Codeview) {
   'use strict';
 
   var expect = chai.expect;

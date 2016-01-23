@@ -5,10 +5,9 @@
  */
 define([
   'chai',
-  'summernote/lite/settings',
   'summernote/base/Context',
   'summernote/base/module/Fullscreen'
-], function (chai, settings, Context, Fullscreen) {
+], function (chai, Context, Fullscreen) {
   'use strict';
 
   var expect = chai.expect;
