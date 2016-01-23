@@ -48,16 +48,26 @@ define([
       context = new Context($('<div><p>hello</p></div>'), options);
     });
 
+    it('should get or set contents with code', function () {
+      expect(context.code()).to.equalIgnoreCase('<p>hello</p>');
+      context.code('<p>hello2</p>')
+      expect(context.code()).to.equalIgnoreCase('<p>hello2</p>');
+    });
+
+    it('should enable or disable editor', function () {
+      expect(context.isDisabled()).to.be.false;
+      context.disable();
+      expect(context.isDisabled()).to.be.true;
+      context.enable();
+      expect(context.isDisabled()).to.be.false;
+    });
+
     it('should preserve disabled status after reset', function () {
       expect(context.isDisabled()).to.be.false;
       context.disable();
       expect(context.isDisabled()).to.be.true;
       context.reset();
       expect(context.isDisabled()).to.be.true;
-    });
-
-    it('should returns contents when code is called with no arguments', function () {
-      expect(context.code()).to.equalIgnoreCase('<p>hello</p>');
     });
   });
 });
