@@ -41,9 +41,14 @@ define([
      * destory modules and other resources and initialize it again
      */
     this.reset = function () {
+      var disabled = self.isDisabled();
       this.code(dom.emptyPara);
       this._destroy();
       this._initialize();
+
+      if (disabled) {
+        self.disable();
+      }
     };
 
     this._initialize = function () {
@@ -185,7 +190,7 @@ define([
     this.createInvokeHandler = function (namespace, value) {
       return function (event) {
         event.preventDefault();
-        self.invoke(namespace, value || $(event.target).closest('[data-value]').attr('data-value'));
+        self.invoke(namespace, value || $(event.target).closest('[data-value]').data('value'));
       };
     };
 

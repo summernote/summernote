@@ -6,16 +6,16 @@
 define([
   'chai',
   'spies',
-  'helper',
+  'chaidom',
   'jquery',
-  'summernote/lite/settings',
   'summernote/base/core/agent',
   'summernote/base/core/dom',
   'summernote/base/Context'
-], function (chai, spies, helper, $, settings, agent, dom, Context) {
+], function (chai, spies, chaidom, $, agent, dom, Context) {
   'use strict';
   var expect = chai.expect;
   chai.use(spies);
+  chai.use(chaidom);
 
   // [workaround]
   //  - Firefox need setTimeout for applying contents
@@ -25,11 +25,7 @@ define([
   }
 
   var expectContents = function (context, markup) {
-    helper.equalsToUpperCase(
-      markup,
-      context.layoutInfo.editable.html(),
-      expect
-    );
+    expect(context.layoutInfo.editable.html()).to.equalIgnoreCase(markup);
   };
 
   var expectToHaveBeenCalled = function (context, customEvent, handler) {
@@ -54,7 +50,7 @@ define([
       it('should bind custom events', function () {
         [
           'keydown', 'keyup', 'blur', 'mousedown', 'mouseup',
-          'scroll', 'paste', 'focusin', 'focusout'
+          'scroll', 'focusin', 'focusout'
         ].forEach(function (eventName) {
           expectToHaveBeenCalled(context, 'summernote.' + eventName, function () {
             context.layoutInfo.editable.trigger(eventName);
@@ -168,7 +164,10 @@ define([
       it('should insert table', function () {
         var markup = [
           '<p>hello</p>',
-          '<table><tbody><tr><td><br></td><td><br></td></tr><tr><td><br></td><td><br></td></tr></tbody></table>',
+          '<table class="table table-bordered"><tbody>',
+          '<tr><td><br></td><td><br></td></tr>',
+          '<tr><td><br></td><td><br></td></tr>',
+          '</tbody></table>',
           '<p><br></p>'
         ].join('');
         editor.insertTable('2x2');

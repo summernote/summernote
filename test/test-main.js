@@ -12,14 +12,16 @@ requirejs.config({
 
   paths: {
     jquery: '../../test/libs/jquery-1.9.1.min',
+    bootstrap: '../../test/libs/bootstrap',
     es5shim: '../../test/libs/es5-shim',
     codemirror: '../../test/libs/codemirror',
     chai: '../../node_modules/chai/chai',
     spies: '../../node_modules/chai-spies/chai-spies',
-    helper: '../../test/test-util'
+    chaidom: '../../test/chaidom'
   },
 
   shim: {
+    bootstrap: ['jquery'],
     es5shim: { exports: 'es5shim' },
     codemirror: { exports: 'codemirror' }
   },
@@ -33,5 +35,9 @@ requirejs.config({
   // ask Require.js to load these files (all our tests)
   deps: tests,
 
-  callback: window.__karma__.start
+  callback: function () {
+    require(['jquery', 'bootstrap', 'summernote/bs3/settings'], function () {
+      window.__karma__.start();
+    });
+  }
 });
