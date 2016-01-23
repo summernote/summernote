@@ -6,9 +6,10 @@
 define([
   'chai',
   'jquery',
+  'summernote/base/core/agent',
   'summernote/base/core/range',
   'summernote/base/Context'
-], function (chai, $, range, Context) {
+], function (chai, $, agent, range, Context) {
   'use strict';
 
   var expect = chai.expect;
