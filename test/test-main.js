@@ -16,7 +16,7 @@ requirejs.config({
     codemirror: '../../test/libs/codemirror',
     chai: '../../node_modules/chai/chai',
     spies: '../../node_modules/chai-spies/chai-spies',
-    helper: '../../test/test-util'
+    chaidom: '../../test/chaidom'
   },
 
   shim: {

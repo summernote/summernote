@@ -6,16 +6,17 @@
 define([
   'chai',
   'spies',
-  'helper',
+  'chaidom',
   'jquery',
   'summernote/lite/settings',
   'summernote/base/core/agent',
   'summernote/base/core/dom',
   'summernote/base/Context'
-], function (chai, spies, helper, $, settings, agent, dom, Context) {
+], function (chai, spies, chaiDom, $, settings, agent, dom, Context) {
   'use strict';
   var expect = chai.expect;
   chai.use(spies);
+  chai.use(chaiDom);
 
   // [workaround]
   //  - Firefox need setTimeout for applying contents
@@ -25,11 +26,7 @@ define([
   }
 
   var expectContents = function (context, markup) {
-    helper.equalsToUpperCase(
-      markup,
-      context.layoutInfo.editable.html(),
-      expect
-    );
+    expect(context.layoutInfo.editable.html()).to.equalIgnoreCase(markup);
   };
 
   var expectToHaveBeenCalled = function (context, customEvent, handler) {
