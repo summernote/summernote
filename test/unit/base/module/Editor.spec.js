@@ -12,11 +12,11 @@ define([
   'summernote/base/core/agent',
   'summernote/base/core/dom',
   'summernote/base/Context'
-], function (chai, spies, chaiDom, $, settings, agent, dom, Context) {
+], function (chai, spies, chaidom, $, settings, agent, dom, Context) {
   'use strict';
   var expect = chai.expect;
   chai.use(spies);
-  chai.use(chaiDom);
+  chai.use(chaidom);
 
   // [workaround]
   //  - Firefox need setTimeout for applying contents

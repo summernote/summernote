@@ -9,11 +9,11 @@ define([
   'jquery',
   'summernote/base/core/dom',
   'summernote/base/core/range'
-], function (chai, chaiDom, $, dom, range) {
+], function (chai, chaidom, $, dom, range) {
   'use strict';
 
   var expect = chai.expect;
-  chai.use(chaiDom);
+  chai.use(chaidom);
 
   describe('base:core.range', function () {
     describe('nodes', function () {
