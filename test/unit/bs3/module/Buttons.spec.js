@@ -13,6 +13,12 @@ define([
 
   var expect = chai.expect;
 
+  // [workaround]
+  //  - IE8~11 can't create range in headless mode
+  if (agent.isMSIE) {
+    return;
+  }
+
   describe('Buttons', function () {
     var context, $toolbar, $editable, $dummy;
 
