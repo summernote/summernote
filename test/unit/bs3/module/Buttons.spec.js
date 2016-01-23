@@ -5,33 +5,25 @@
  */
 define([
   'chai',
-  'chaidom',
   'jquery',
-  'bootstrap',
-  'summernote/bs3/settings',
-  'summernote/base/core/agent',
-  'summernote/base/core/dom',
   'summernote/base/core/range',
   'summernote/base/Context'
-], function (chai, chaidom, $, bootstrap, settings, agent, dom, range, Context) {
+], function (chai, $, range, Context) {
   'use strict';
 
   var expect = chai.expect;
 
-  describe('bs3:module.Buttons', function () {
-    var editor, context, $note, $toolbar, $editable, $dummy;
+  describe('Buttons', function () {
+    var context, $toolbar, $editable, $dummy;
 
     beforeEach(function () {
-      $note = $('<div><p>hello</p></div>');
-
-      $note.appendTo('body');
+      var $note = $('<div><p>hello</p></div>').appendTo('body');
 
       var options = $.extend({}, $.summernote.options);
       options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
       context = new Context($note, options);
       context.initialize();
 
-      editor = context.modules.editor;
       $toolbar = context.layoutInfo.toolbar;
       $editable = context.layoutInfo.editable;
 
