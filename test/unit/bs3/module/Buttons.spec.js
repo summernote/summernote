@@ -6,14 +6,15 @@
 /* jshint unused: false */
 define([
   'chai',
-  'helper',
+  'chaidom',
   'jquery',
+  'bootstrap',
   'summernote/lite/settings',
   'summernote/base/core/agent',
   'summernote/base/core/dom',
   'summernote/base/core/range',
   'summernote/base/Context'
-], function (chai, helper, $, settings, agent, dom, range, Context) {
+], function (chai, chaidom, $,bootstrap, settings, agent, dom, range, Context) {
   'use strict';
 
   var expect = chai.expect;
