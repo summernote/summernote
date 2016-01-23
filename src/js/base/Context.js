@@ -41,9 +41,14 @@ define([
      * destory modules and other resources and initialize it again
      */
     this.reset = function () {
+      var disabled = self.isDisabled();
       this.code(dom.emptyPara);
       this._destroy();
       this._initialize();
+
+      if (disabled) {
+        self.disable();
+      }
     };
 
     this._initialize = function () {
