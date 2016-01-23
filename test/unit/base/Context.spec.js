@@ -8,11 +8,10 @@ define([
   'spies',
   'chaidom',
   'jquery',
-  'summernote/lite/settings',
   'summernote/base/core/agent',
   'summernote/base/core/dom',
   'summernote/base/Context'
-], function (chai, spies, chaidom, $, settings, agent, dom, Context) {
+], function (chai, spies, chaidom, $, agent, dom, Context) {
   'use strict';
 
   var expect = chai.expect;
