@@ -69,7 +69,7 @@ define(function () {
     /**
      * returns bnd (bounds) from rect
      *
-     * - IE Compatability Issue: http://goo.gl/sRLOAo
+     * - IE Compatibility Issue: http://goo.gl/sRLOAo
      * - Scroll Issue: http://goo.gl/sNjUc
      *
      * @param {Rect} rect
