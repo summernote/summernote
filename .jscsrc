@@ -1,5 +1,6 @@
 {
   "disallowSpaceAfterObjectKeys": true,
+  "disallowMultipleLineBreaks": true,
   "excludeFiles": [
     "src/js/intro.js",
     "src/js/outro.js"
