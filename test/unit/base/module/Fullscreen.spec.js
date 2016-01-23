@@ -27,6 +27,8 @@ define([
       expect(fullscreen.isFullscreen()).to.be.false;
       fullscreen.toggle();
       expect(fullscreen.isFullscreen()).to.be.true;
+      fullscreen.toggle();
+      expect(fullscreen.isFullscreen()).to.be.false;
     });
   });
 });
