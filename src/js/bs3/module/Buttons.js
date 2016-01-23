@@ -190,10 +190,10 @@ define([
               callback: function ($button) {
                 var $recentColor = $button.find('.note-recent-color');
                 $recentColor.css({
-                  'background-color': 'yellow'
+                  'background-color': '#FFFF00'
                 });
 
-                $button.attr('data-backColor', 'yellow');
+                $button.attr('data-backColor', '#FFFF00');
               }
             }),
             ui.button({
