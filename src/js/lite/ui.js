@@ -25,7 +25,8 @@ define([
         note: $note,
         editor: $editor,
         toolbar: $editor.find('.note-toolbar'),
-        editable: $editor.find('.note-editable')
+        editable: $editor.find('.note-editable'),
+        codable: $editor.find('.note-codable')
       };
     }
   };
