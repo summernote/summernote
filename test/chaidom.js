@@ -4,7 +4,7 @@ define([
   return function (chai) {
     chai.dom = chai.dom || {};
 
-    chai.dom.equalIgnoreCase = function (str1, str2) {
+    chai.dom.equalsIgnoreCase = function (str1, str2) {
       str1 = str1.toUpperCase();
       str2 = str2.toUpperCase();
 
@@ -21,25 +21,37 @@ define([
       return str1 === str2;
     };
 
-    chai.Assertion.addChainableMethod('equalIgnoreCase', function (expected) {
+    chai.dom.equalsStyle = function ($node, expected, style) {
+      var $tester = $('<div />').css(style, expected);
+      return $node.css(style) === $tester.css(style);
+    };
+
+    chai.Assertion.addChainableMethod('equalsIgnoreCase', function (expected) {
       var actual = this._obj;
 
       return this.assert(
-          chai.dom.equalIgnoreCase(actual, expected),
-          'expected ' + this._obj + ' to equal ' + expected + ' ignoring case',
-          'expected ' + this._obj + ' not to equal ' + expected + ' ignoring case'
-          );
+        chai.dom.equalsIgnoreCase(actual, expected),
+        'expected ' + this._obj + ' to equal ' + expected + ' ignoring case',
+        'expected ' + this._obj + ' not to equal ' + expected + ' ignoring case'
+      );
     });
 
-    var assert = chai.assert;
+    chai.Assertion.addChainableMethod('equalsStyle', function (expected, style) {
+      var $node = this._obj;
 
-    assert.equalIgnoreCase = function (val, exp, msg) {
-      new chai.Assertion(val, msg).to.be.equalIgnoreCase(exp);
+      return this.assert(
+        chai.dom.equalsStyle($node, expected, style),
+        'expected ' + this._obj + ' to equal ' + expected + ' style',
+        'expected ' + this._obj + ' not to equal ' + expected + ' style'
+      );
+    });
+
+    chai.assert.equalsIgnoreCase = function (val, exp, msg) {
+      new chai.Assertion(val, msg).to.be.equalsIgnoreCase(exp);
     };
 
-    assert.notEqualIgnoreCase = function (val, exp, msg) {
-      new chai.Assertion(val, msg).to.not.be.equalIgnoreCase(exp);
+    chai.assert.notequalsIgnoreCase = function (val, exp, msg) {
+      new chai.Assertion(val, msg).to.not.be.equalsIgnoreCase(exp);
     };
-
   };
 });

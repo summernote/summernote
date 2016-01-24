@@ -25,7 +25,7 @@ define([
   }
 
   var expectContents = function (context, markup) {
-    expect(context.layoutInfo.editable.html()).to.equalIgnoreCase(markup);
+    expect(context.layoutInfo.editable.html()).to.equalsIgnoreCase(markup);
   };
 
   var expectToHaveBeenCalled = function (context, customEvent, handler) {
