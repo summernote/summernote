@@ -238,14 +238,16 @@ module.exports = function (grunt) {
       dist: {
         files: [
           {src: 'lang/*', dest: 'dist/'},
-          {expand: true, cwd: 'src/icons/results/', src: ['**', '!*.html'], dest: 'dist/icons/'}
+          {expand: true, cwd: 'src/icons/results/icons/', src: ['**', '!*.html'], dest: 'dist/icons/'},
+          {src: 'src/icons/results/summernote.css', dest: 'dist/summernote-icon.css'}
         ]
       }
     },
     webfont: {
       icons: {
         src: 'src/icons/*.svg',
-        dest: 'src/icons/results/',
+        dest: 'src/icons/results/icons',
+        destCss: 'src/icons/results/',
         options: {
           font: 'summernote',
           template: 'src/icons/templates/summernote.css'

@@ -4,10 +4,10 @@
 
 @font-face {
   font-family:"summernote";
-src:url("summernote.eot?44368136daaa019037dc6a99de1bacac");
-src:url("summernote.eot?#iefix") format("embedded-opentype"),
-		url("summernote.woff?44368136daaa019037dc6a99de1bacac") format("woff"),
-		url("summernote.ttf?44368136daaa019037dc6a99de1bacac") format("truetype");
+src:url("icons/summernote.eot?5b9de879944ea30916b869c238cbe422");
+src:url("icons/summernote.eot?#iefix") format("embedded-opentype"),
+		url("icons/summernote.woff?5b9de879944ea30916b869c238cbe422") format("woff"),
+		url("icons/summernote.ttf?5b9de879944ea30916b869c238cbe422") format("truetype");
 font-weight:normal;
 font-style:normal;
 }
