@@ -31,8 +31,8 @@
     "grunt-exec": "^0.4.6",
     "grunt-jscs": "^2.6.0",
     "grunt-karma": "^0.12.0",
+    "grunt-nightwatch": "^0.5.2",
     "grunt-recess": "*",
-    "grunt-saucelabs": "*",
     "karma": "^0.13.3",
     "karma-chrome-launcher": "^0.2.0",
     "karma-coverage": "^0.5.3",
@@ -46,6 +46,7 @@
     "karma-sauce-launcher": "^0.3.0",
     "load-grunt-tasks": "0.2.0",
     "mocha": "^2.3.4",
+    "nightwatch": "^0.8.9",
     "open": "0.0.4",
     "phantomjs": "^1.9.17",
     "requirejs": "^2.1.22"

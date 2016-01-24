@@ -15,6 +15,9 @@ bower_components
 
 .versions
 coverage/
+selenium-debug.log
+test/reports/
+selenium-server.jar
 
 .idea/
 *.iml

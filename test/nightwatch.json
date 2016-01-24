@@ -1,0 +1,24 @@
+{
+  "src_folders" : ["e2e"],
+  "output_folder" : "reports",
+
+  "selenium" : {
+    "start_process" : true,
+    "server_path" : "libs/selenium-server.jar",
+    "host" : "127.0.0.1",
+    "port" : 4444
+  },
+
+  "test_settings" : {
+    "default" : {
+      "launch_url" : "http://localhost:3000/test/e2e/html",
+      "selenium_port"  : 4444,
+      "selenium_host"  : "localhost",
+      "desiredCapabilities": {
+        "browserName": "firefox",
+        "javascriptEnabled": true
+      },
+      "filter": "e2e/**/*.test.js"
+    }
+  }
+}

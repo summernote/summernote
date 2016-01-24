@@ -81,6 +81,12 @@ module.exports = function (grunt) {
         startFile: 'intro.js',    // intro part
         endFile: 'outro.js',      // outro part
         outFile: 'dist/summernote.js' // out file
+      },
+      e2e: {
+        baseUrl: 'src/js',        // base url
+        startFile: 'intro.js',    // intro part
+        endFile: 'outro.js',      // outro part
+        outFile: 'test/e2e/temp/summernote.js' // out file
       }
     },
 
@@ -138,6 +144,12 @@ module.exports = function (grunt) {
         files: {
           'dist/summernote.css': ['src/less/summernote.less']
         }
+      },
+      e2e: {
+        options: { compile: true, compress: true },
+        files: {
+          'test/e2e/temp/summernote.css': ['src/less/summernote.less']
+        }
       }
     },
 
@@ -169,7 +181,8 @@ module.exports = function (grunt) {
     connect: {
       all: {
         options: {
-          port: 3000
+          port: 3000,
+          useAvailablePort: true
         }
       }
     },
@@ -237,13 +250,50 @@ module.exports = function (grunt) {
         src: 'test/coverage/**/lcov.info'
       }
     },
-    clean: {
-      dist: ['dist']
+
+    nightwatch: {
+      options: {
+        standalone: true,
+
+        // download settings
+        'jar_version': '2.48.2',
+        'jar_path': 'test/libs/selenium-server.jar',
+        'jar_url': 'http://selenium-release.storage.googleapis.com/2.48/selenium-server-standalone-2.48.2.jar',
+
+        'config_path': 'test/nightwatch.json',
+
+        'test_settings': (function () {
+          var browserTargets = {};
+          for (var key in customLaunchers) {
+            browserTargets[key] = {
+              'launch_url': 'http://localhost:3000/test/e2e/html',
+              'silent': true,
+              'selenium_host': 'ondemand.saucelabs.com',
+              'selenium_port': 80,
+              'username': process.env.SAUCE_USERNAME,
+              'access_key': process.env.SAUCE_ACCESS_KEY,
+              'desiredCapabilities': customLaunchers[key]
+            };
+          }
+          return browserTargets;
+        })()
+      }
     },
+
+    clean: {
+      dist: ['dist'],
+      e2e: ['test/e2e/temp']
+    },
+
     copy: {
       dist: {
         files: [
           {src: 'lang/*', dest: 'dist/'}
+        ]
+      },
+      e2e: {
+        files: [
+          {src: 'lang/*', dest: 'test/e2e/temp/'}
         ]
       }
     }
@@ -270,11 +320,23 @@ module.exports = function (grunt) {
   // test: saucelabs test
   grunt.registerTask('saucelabs-test', ['karma:saucelabs']);
 
+  // test: e2e tests
+  grunt.registerTask('e2e-build', ['clean:e2e', 'build:e2e', 'copy:e2e', 'recess:e2e']);
+  var e2eTagets = [];
+  if (process.env.TRAVIS) {
+    for (var key in customLaunchers) { e2eTagets.push(key); }
+    grunt.registerTask('e2e', ['e2e-build', 'connect', 'nightwatch:' + e2eTagets.join(':')]);
+  } else {
+    grunt.registerTask('e2e', ['e2e-build', 'connect', 'nightwatch']);
+  }
+
+
+
   // dist: make dist files
   grunt.registerTask('dist', [
     'clean:dist',
-    'build', 'jshint', 'karma:dist',
-    'copy:dist', 'uglify', 'recess', 'compress'
+    'build:all', 'jshint', 'karma:dist',
+    'copy:dist', 'uglify:all', 'recess:dist', 'compress'
   ]);
 
   // default: server

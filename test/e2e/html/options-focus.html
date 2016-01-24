@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
+  <title>summernote</title>
+  <!-- include jquery -->
+  <script src="../../../bower_components/jquery/dist/jquery.min.js"></script>
+
+  <!-- include libraries BS3 -->
+  <link rel="stylesheet" href="../../../bower_components/bootstrap/dist/css/bootstrap.min.css" />
+  <script type="text/javascript" src="../../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="../../../bower_components/font-awesome/css/font-awesome.min.css" />
+
+  <!-- include summernote -->
+  <link rel="stylesheet" href="../temp/summernote.css">
+  <script type="text/javascript" src="../temp/summernote.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('#summernote').summernote({
+        focus: true
+      });
+    });
+  </script>
+</head>
+<body>
+<div id="summernote"></div>
+</body>
+</html>
