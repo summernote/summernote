@@ -189,10 +189,7 @@ define([
               },
               callback: function ($button) {
                 var $recentColor = $button.find('.note-recent-color');
-                $recentColor.css({
-                  'background-color': '#FFFF00'
-                });
-
+                $recentColor.css('background-color', '#FFFF00');
                 $button.attr('data-backColor', '#FFFF00');
               }
             }),
