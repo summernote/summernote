@@ -24,7 +24,7 @@ Package.onUse(function (api) {
 
 Package.onTest(function (api) {
   // load dependencies for test only, before loading the package
-  api.use(['twbs:bootstrap@3.3.1', 'fortawesome:fontawesome@4.2.0'], where);
+  api.use(['twbs:bootstrap@3.3.1'], where);
 
   // load our package
   api.use(packageName, where);
