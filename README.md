@@ -27,7 +27,7 @@ Summernote has a few special features:
 
 ### Installation and dependencies
 
-Summernote uses opensource libraries: [jQuery](http://jquery.com/), [Bootstrap](http://getbootstrap.com), [Font Awesome](https://github.com/FortAwesome/Font-Awesome).
+Summernote uses opensource libraries: [jQuery](http://jquery.com/), [Bootstrap](http://getbootstrap.com).
 
 For [Meteor](http://github.com/meteor/meteor), just run `meteor add summernote:summernote`. More info in the [Meteor README](meteor/README.md).
 
@@ -38,11 +38,10 @@ For other/no frameworks:
 Include the following code in the `<head>` tag of your HTML:
 
 ```html
-<!-- include libraries(jQuery, bootstrap, fontawesome) -->
+<!-- include libraries(jQuery, bootstrap) -->
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> 
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" />
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" />
 
 <!-- include summernote css/js-->
 <link href="summernote.css" rel="stylesheet">
