@@ -16,7 +16,7 @@ define([
 
   // [workaround]
   //  - IE8~11 can't create range in headless mode
-  if (agent.isMSIE) {
+  if (agent.isMSIE && agent.isEdge) {
     return;
   }
 
