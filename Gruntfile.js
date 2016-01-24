@@ -243,17 +243,17 @@ module.exports = function (grunt) {
     copy: {
       dist: {
         files: [
-          {src: 'lang/*', dest: 'dist/'},
-          {expand: true, cwd: 'src/icons/results/icons/', src: ['**', '!*.html'], dest: 'dist/icons/'},
-          {src: 'src/icons/results/summernote.css', dest: 'dist/summernote-icon.css'}
+          { src: 'lang/*', dest: 'dist/' },
+          { expand: true, cwd: 'src/icons/dist/font/', src: ['**', '!*.html'], dest: 'dist/font/' },
+          { src: 'src/icons/dist/summernote.css', dest: 'src/icons/dist/summernote.less' }
         ]
       }
     },
     webfont: {
       icons: {
         src: 'src/icons/*.svg',
-        dest: 'src/icons/results/icons',
-        destCss: 'src/icons/results/',
+        dest: 'src/icons/dist/font',
+        destCss: 'src/icons/dist/',
         options: {
           font: 'summernote',
           template: 'src/icons/templates/summernote.css'
@@ -286,7 +286,7 @@ module.exports = function (grunt) {
   // dist: make dist files
   grunt.registerTask('dist', [
     'clean:dist',
-    'build', 'jshint', 'karma:dist',
+    'build', 'webfont', 'lint', 'karma:dist',
     'copy:dist', 'uglify', 'recess', 'compress'
   ]);
 
@@ -297,5 +297,4 @@ module.exports = function (grunt) {
   grunt.registerTask('meteor-test', 'exec:meteor-test');
   grunt.registerTask('meteor-publish', 'exec:meteor-publish');
   grunt.registerTask('meteor', ['meteor-test', 'meteor-publish']);
-
 };
