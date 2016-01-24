@@ -21,7 +21,7 @@ define([
   }
 
   describe('Buttons', function () {
-    var context, $toolbar, $editable, $dummy;
+    var context, $toolbar, $editable;
 
     beforeEach(function () {
       var $note = $('<div><p>hello</p></div>').appendTo('body');
@@ -33,62 +33,50 @@ define([
 
       $toolbar = context.layoutInfo.toolbar;
       $editable = context.layoutInfo.editable;
-
-      $dummy = $('<div />');
     });
 
+    describe('bold button', function () {
+      it('should execute bold command when it is clicked', function () {
+        range.createFromNode($editable.find('p')[0]).normalize().select();
 
-    describe('bold click', function () {
-      it('should be clicked bold button ', function () {
-
-        // select any node
-        var p = $editable.find('p')[0];
-        range.createFromNode(p).normalize().select();
-
-        // bold click
         $toolbar.find('.note-btn-bold').click();
-
-        // check element count
-        var count = $(context.invoke('code')).find('b').length;
-        expect(count).to.be.equal(1);
-
+        expect($editable.html()).to.equalsIgnoreCase('<p><b>hello</b></p>');
       });
     });
 
-    describe('color button click', function () {
-      it('should be clicked color button ', function () {
+    describe('recent color button', function () {
+      it('should execute color command when it is clicked', function () {
+        range.createFromNode($editable.find('p')[0]).normalize().select();
 
-        // select any node
-        var p = $editable.find('p')[0];
-        range.createFromNode(p).normalize().select();
-
-        // bold click
         $toolbar.find('.note-current-color-button').click();
 
-        // check first current color
-        $dummy.css('background-color', '#FFFF00');
-        expect($(p).find('> :first').css('background-color')).to.be.equal($dummy.css('background-color'));
-
-        // click fore color btn
-        var $colorButton = $toolbar.find('[data-event=foreColor] .note-color-btn:nth-child(2)').eq(0);
-        var selectColor = $colorButton.data('value');
-
-        $colorButton.click();
-        expect($(p).find('font[color=' + selectColor + ']').length).to.be.equal(1);
-
-        // click back color btn
-        var $backColorButton = $toolbar.find('[data-event=backColor] .note-color-btn:nth-child(2)').eq(0);
-        var selectBackColor = $backColorButton.data('value');
-
-        $backColorButton.click();
-
-        // convert hex to rgb
-        $dummy.css('background-color', selectBackColor);
-
-        expect($(p).find('> :first').css('background-color')).to.be.equal($dummy.css('background-color'));
+        var $span = $editable.find('span');
+        expect($span).to.be.equalsStyle('#FFFF00', 'background-color');
       });
     });
 
-  });
+    describe('fore color button', function () {
+      it('should execute fore color command when it is clicked', function () {
+        range.createFromNode($editable.find('p')[0]).normalize().select();
 
+        var $button = $toolbar.find('[data-event=foreColor]').eq(10);
+        $button.click();
+
+        var $font = $editable.find('font');
+        expect($font).to.be.equalsStyle($button.data('value'), 'color');
+      });
+    });
+
+    describe('back color button', function () {
+      it('should execute back color command when it is clicked', function () {
+        range.createFromNode($editable.find('p')[0]).normalize().select();
+
+        var $button = $toolbar.find('[data-event=backColor]').eq(10);
+        $button.click();
+
+        var $span = $editable.find('span');
+        expect($span).to.be.equalsStyle($button.data('value'), 'background-color');
+      });
+    });
+  });
 });
