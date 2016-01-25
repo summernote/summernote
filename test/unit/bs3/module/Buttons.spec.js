@@ -28,6 +28,16 @@ define([
 
       var options = $.extend({}, $.summernote.options);
       options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+      options.toolbar = [
+        ['font1', ['style', 'clear']],
+        ['font2', ['bold', 'underline', 'italic', 'superscript', 'subscript', 'strikethrough']],
+        ['font3', ['fontname', 'fontsize']],
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['table', ['table']],
+        ['insert', ['link', 'picture', 'video']],
+        ['view', ['fullscreen', 'codeview', 'help']]
+      ];
       context = new Context($note, options);
       context.initialize();
 
@@ -41,6 +51,51 @@ define([
 
         $toolbar.find('.note-btn-bold').click();
         expect($editable.html()).to.equalsIgnoreCase('<p><b>hello</b></p>');
+      });
+    });
+
+    describe('italic button', function () {
+      it('should execute italic command when it is clicked', function () {
+        range.createFromNode($editable.find('p')[0]).normalize().select();
+
+        $toolbar.find('.note-btn-italic').click();
+        expect($editable.html()).to.equalsIgnoreCase('<p><i>hello</i></p>');
+      });
+    });
+
+    describe('underline button', function () {
+      it('should execute underline command when it is clicked', function () {
+        range.createFromNode($editable.find('p')[0]).normalize().select();
+
+        $toolbar.find('.note-btn-underline').click();
+        expect($editable.html()).to.equalsIgnoreCase('<p><u>hello</u></p>');
+      });
+    });
+
+    describe('superscript button', function () {
+      it('should execute superscript command when it is clicked', function () {
+        range.createFromNode($editable.find('p')[0]).normalize().select();
+
+        $toolbar.find('.note-btn-superscript').click();
+        expect($editable.html()).to.equalsIgnoreCase('<p><sup>hello</sup></p>');
+      });
+    });
+
+    describe('subscript button', function () {
+      it('should execute subscript command when it is clicked', function () {
+        range.createFromNode($editable.find('p')[0]).normalize().select();
+
+        $toolbar.find('.note-btn-subscript').click();
+        expect($editable.html()).to.equalsIgnoreCase('<p><sub>hello</sub></p>');
+      });
+    });
+
+    describe('strikethrough button', function () {
+      it('should execute strikethrough command when it is clicked', function () {
+        range.createFromNode($editable.find('p')[0]).normalize().select();
+
+        $toolbar.find('.note-btn-strikethrough').click();
+        expect($editable.html()).to.equalsIgnoreCase('<p><strike>hello</strike></p>');
       });
     });
 
