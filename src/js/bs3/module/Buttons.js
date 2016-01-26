@@ -32,6 +32,20 @@ define([
       this.addToolbarButtons();
       this.addImagePopoverButtons();
       this.addLinkPopoverButtons();
+      this.fontInstalledMap = {};
+    };
+
+    this.destroy = function () {
+      delete this.fontInstalledMap;
+    };
+
+    this.isFontInstalled = function (name) {
+      if (!self.fontInstalledMap.hasOwnProperty(name)) {
+        self.fontInstalledMap[name] = agent.isFontInstalled(name) ||
+          list.contains(options.fontNamesIgnoreCheck, name);
+      }
+
+      return self.fontInstalledMap[name];
     };
 
     this.addToolbarButtons = function () {
@@ -141,10 +155,7 @@ define([
           ui.dropdownCheck({
             className: 'dropdown-fontname',
             checkClassName: options.icons.menuCheck,
-            items: options.fontNames.filter(function (name) {
-              return agent.isFontInstalled(name) ||
-                list.contains(options.fontNamesIgnoreCheck, name);
-            }),
+            items: options.fontNames.filter(self.isFontInstalled),
             template: function (item) {
               return '<span style="font-family:' + item + '">' + item + '</span>';
             },
@@ -595,10 +606,7 @@ define([
             .replace(/\s+$/, '')
             .replace(/^\s+/, '');
         });
-        var fontName = list.find(fontNames, function (name) {
-          return agent.isFontInstalled(name) ||
-            list.contains(options.fontNamesIgnoreCheck, name);
-        });
+        var fontName = list.find(fontNames, self.isFontInstalled);
 
         $toolbar.find('.dropdown-fontname li a').each(function () {
           // always compare string to avoid creating another func.
