@@ -249,7 +249,7 @@ define([
         'pencil': 'note-icon-pencil',
         'picture': 'note-icon-picture',
         'question': 'note-icon-question',
-        'redo': 'note-icon-repeat',
+        'redo': 'note-icon-redo',
         'square': 'note-icon-square',
         'strikethrough': 'note-icon-strikethrough',
         'subscript': 'note-icon-subscript',

@@ -26,7 +26,6 @@ font-style:normal;
 .ligature-icons<% } %> {
   display:inline-block;
   vertical-align:middle;
-  line-height:1;
   font: normal normal normal 14px <%= fontBaseName %>;
   font-size: inherit;
   speak:none;
