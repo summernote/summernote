@@ -84,7 +84,7 @@ define([
       });
 
       if (!options.airMode && options.height) {
-        $editable.outerHeight(options.height);
+        this.setHeight(options.height);
       }
       if (!options.airMode && options.maxHeight) {
         $editable.css('max-height', options.maxHeight);
@@ -566,16 +566,31 @@ define([
       }
 
       var anchors = [];
-      if (isTextChanged) {
-        // Create a new link when text changed.
-        var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
-        anchors.push(anchor);
-      } else {
-        anchors = style.styleNodes(rng, {
-          nodeName: 'A',
-          expandClosestSibling: true,
-          onlyPartialContains: true
-        });
+      if (linkInfo.range) {   // if already a tag range is exists
+        // Get the first anchor on range(for edit).
+        var a = list.head(linkInfo.range.nodes(dom.isAnchor));
+
+        if (!a) {
+          a = rng.insertNode($('<A>' + linkText + '</A>')[0]);
+        }
+
+        if (isTextChanged) {
+          $(a).text(linkText);
+        }
+
+        anchors.push(a);
+      } else {              // create a new link
+        if (isTextChanged) {
+          // Create a new link when text changed.
+          var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
+          anchors.push(anchor);
+        } else {
+          anchors = style.styleNodes(rng, {
+            nodeName: 'A',
+            expandClosestSibling: true,
+            onlyPartialContains: true
+          });
+        }
       }
 
       $.each(anchors, function (idx, anchor) {
@@ -735,6 +750,13 @@ define([
      */
     this.empty = function () {
       context.invoke('code', dom.emptyPara);
+    };
+
+    /**
+     * set height for editable
+     */
+    this.setHeight = function (height) {
+      $editable.outerHeight(height);
     };
   };
 
