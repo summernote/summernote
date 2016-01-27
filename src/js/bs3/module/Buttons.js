@@ -570,7 +570,7 @@ define([
         for (var idx = 0, len = buttons.length; idx < len; idx++) {
           var button = context.memo('button.' + buttons[idx]);
           if (button) {
-            $group.append(typeof button === 'function' ? button() : button);
+            $group.append(typeof button === 'function' ? button(context) : button);
           }
         }
         $group.appendTo($container);
