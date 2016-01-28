@@ -568,17 +568,17 @@ define([
       var anchors = [];
       if (linkInfo.range) {   // if already a tag range is exists
         // Get the first anchor on range(for edit).
-        var a = list.head(linkInfo.range.nodes(dom.isAnchor));
+        var anchorNode = list.head(linkInfo.range.nodes(dom.isAnchor));
 
-        if (!a) {
-          a = rng.insertNode($('<A>' + linkText + '</A>')[0]);
+        if (!anchorNode) {
+          anchorNode = rng.insertNode($('<A>' + linkText + '</A>')[0]);
         }
 
         if (isTextChanged) {
-          $(a).text(linkText);
+          $(anchorNode).text(linkText);
         }
 
-        anchors.push(a);
+        anchors.push(anchorNode);
       } else {              // create a new link
         if (isTextChanged) {
           // Create a new link when text changed.
