@@ -184,7 +184,7 @@ define([
     });
 
     describe('createLink', function () {
-      it('should make normal link', function () {
+      it('should create normal link', function () {
         var text = 'hello';
 
         var editable = context.layoutInfo.editable;
@@ -204,7 +204,7 @@ define([
         expectContents(context, '<p>hello<a href="http://summernote.org">summernote</a></p>');
       });
 
-      it('should make a link with range', function () {
+      it('should create a link with range', function () {
         var text = 'hello';
         var editable = context.layoutInfo.editable;
         var pNode = editable.find('p')[0];
@@ -223,7 +223,7 @@ define([
         expectContents(context, '<p><a href="http://summernote.org">summernote</a></p>');
       });
 
-      it('should make a link with isNewWindow', function () {
+      it('should create a link with isNewWindow', function () {
         var text = 'hello';
         var editable = context.layoutInfo.editable;
         var pNode = editable.find('p')[0];
@@ -243,7 +243,7 @@ define([
         expectContents(context, '<p><a href="http://summernote.org" target="_blank">summernote</a></p>');
       });
 
-      it('should modify a link ', function () {
+      it('should modify a link', function () {
         context.invoke('code', '<p><a href="http://summernote.org">hello world</a></p>');
 
         var editable = context.layoutInfo.editable;
@@ -252,11 +252,11 @@ define([
 
         editor.createLink({
           url: 'http://wow.summernote.org',
-          text: 'summernote Wow',
+          text: 'summernote wow',
           range: rng
         });
 
-        expectContents(context, '<p><a href="http://wow.summernote.org">summernote Wow</a></p>');
+        expectContents(context, '<p><a href="http://wow.summernote.org">summernote wow</a></p>');
       });
     });
   });

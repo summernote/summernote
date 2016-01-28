@@ -563,31 +563,16 @@ define([
       }
 
       var anchors = [];
-      if (linkInfo.range) {   // if already a tag range is exists
-        // Get the first anchor on range(for edit).
-        var anchorNode = list.head(linkInfo.range.nodes(dom.isAnchor));
-
-        if (!anchorNode) {
-          anchorNode = rng.insertNode($('<A>' + linkText + '</A>')[0]);
-        }
-
-        if (isTextChanged) {
-          $(anchorNode).text(linkText);
-        }
-
-        anchors.push(anchorNode);
-      } else {              // create a new link
-        if (isTextChanged) {
-          // Create a new link when text changed.
-          var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
-          anchors.push(anchor);
-        } else {
-          anchors = style.styleNodes(rng, {
-            nodeName: 'A',
-            expandClosestSibling: true,
-            onlyPartialContains: true
-          });
-        }
+      if (isTextChanged) {
+        rng = rng.deleteContents();
+        var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
+        anchors.push(anchor);
+      } else {
+        anchors = style.styleNodes(rng, {
+          nodeName: 'A',
+          expandClosestSibling: true,
+          onlyPartialContains: true
+        });
       }
 
       $.each(anchors, function (idx, anchor) {
