@@ -229,7 +229,6 @@ define([
       });
     });
 
-
     describe('splitTree', function () {
       var $para;
       beforeEach(function () {

@@ -10,8 +10,9 @@ define([
   'jquery',
   'summernote/base/core/agent',
   'summernote/base/core/dom',
+  'summernote/base/core/range',
   'summernote/base/Context'
-], function (chai, spies, chaidom, $, agent, dom, Context) {
+], function (chai, spies, chaidom, $, agent, dom, range, Context) {
   'use strict';
   var expect = chai.expect;
   chai.use(spies);
@@ -179,6 +180,83 @@ define([
       it('should make contents empty', function () {
         editor.empty();
         expect(editor.isEmpty()).to.be.true;
+      });
+    });
+
+    describe('createLink', function () {
+      it('should create normal link', function () {
+        var text = 'hello';
+
+        var editable = context.layoutInfo.editable;
+        var pNode = editable.find('p')[0];
+        var textNode = pNode.childNodes[0];
+        var startIndex = textNode.wholeText.indexOf(text);
+        var endIndex = startIndex + text.length;
+
+        range.create(textNode, startIndex, textNode, endIndex).normalize().select();
+
+        // check creation normal link
+        editor.createLink({
+          url: 'http://summernote.org',
+          text: 'summernote'
+        });
+
+        expectContents(context, '<p>hello<a href="http://summernote.org">summernote</a></p>');
+      });
+
+      it('should create a link with range', function () {
+        var text = 'hello';
+        var editable = context.layoutInfo.editable;
+        var pNode = editable.find('p')[0];
+        var textNode = pNode.childNodes[0];
+        var startIndex = textNode.wholeText.indexOf(text);
+        var endIndex = startIndex + text.length;
+
+        var rng = range.create(textNode, startIndex, textNode, endIndex);
+
+        editor.createLink({
+          url: 'http://summernote.org',
+          text: 'summernote',
+          range: rng
+        });
+
+        expectContents(context, '<p><a href="http://summernote.org">summernote</a></p>');
+      });
+
+      it('should create a link with isNewWindow', function () {
+        var text = 'hello';
+        var editable = context.layoutInfo.editable;
+        var pNode = editable.find('p')[0];
+        var textNode = pNode.childNodes[0];
+        var startIndex = textNode.wholeText.indexOf(text);
+        var endIndex = startIndex + text.length;
+
+        var rng = range.create(textNode, startIndex, textNode, endIndex);
+
+        editor.createLink({
+          url: 'http://summernote.org',
+          text: 'summernote',
+          range: rng,
+          isNewWindow: true
+        });
+
+        expectContents(context, '<p><a href="http://summernote.org" target="_blank">summernote</a></p>');
+      });
+
+      it('should modify a link', function () {
+        context.invoke('code', '<p><a href="http://summernote.org">hello world</a></p>');
+
+        var editable = context.layoutInfo.editable;
+        var anchorNode = editable.find('a')[0];
+        var rng = range.createFromNode(anchorNode);
+
+        editor.createLink({
+          url: 'http://wow.summernote.org',
+          text: 'summernote wow',
+          range: rng
+        });
+
+        expectContents(context, '<p><a href="http://wow.summernote.org">summernote wow</a></p>');
       });
     });
   });

@@ -66,7 +66,6 @@ define([
         context.triggerEvent('paste', event);
       });
 
-
       // init content before set event
       $editable.html(dom.html($note) || dom.emptyPara);
 
@@ -84,7 +83,7 @@ define([
       });
 
       if (!options.airMode && options.height) {
-        $editable.outerHeight(options.height);
+        this.setHeight(options.height);
       }
       if (!options.airMode && options.maxHeight) {
         $editable.css('max-height', options.maxHeight);
@@ -453,7 +452,6 @@ define([
     };
     /* jshint ignore:end */
 
-
     /**
      * fontSize
      *
@@ -496,7 +494,6 @@ define([
       }
     });
     context.memo('help.insertHorizontalRule', lang.help.insertHorizontalRule);
-
 
     /**
      * remove bogus node and character
@@ -567,7 +564,7 @@ define([
 
       var anchors = [];
       if (isTextChanged) {
-        // Create a new link when text changed.
+        rng = rng.deleteContents();
         var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
         anchors.push(anchor);
       } else {
@@ -735,6 +732,13 @@ define([
      */
     this.empty = function () {
       context.invoke('code', dom.emptyPara);
+    };
+
+    /**
+     * set height for editable
+     */
+    this.setHeight = function (height) {
+      $editable.outerHeight(height);
     };
   };
 
