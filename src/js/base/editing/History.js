@@ -46,7 +46,6 @@ define(['summernote/base/core/range'], function (range) {
       applySnapshot(stack[stackOffset]);
     };
 
-
     /**
     * @method reset
     * Resets the history stack completely; reverting to an empty editor.

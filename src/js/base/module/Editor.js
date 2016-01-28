@@ -66,7 +66,6 @@ define([
         context.triggerEvent('paste', event);
       });
 
-
       // init content before set event
       $editable.html(dom.html($note) || dom.emptyPara);
 
@@ -453,7 +452,6 @@ define([
     };
     /* jshint ignore:end */
 
-
     /**
      * fontSize
      *
@@ -496,7 +494,6 @@ define([
       }
     });
     context.memo('help.insertHorizontalRule', lang.help.insertHorizontalRule);
-
 
     /**
      * remove bogus node and character

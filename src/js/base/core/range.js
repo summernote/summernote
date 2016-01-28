@@ -187,7 +187,6 @@ define([
         return this;
       };
 
-
       /**
        * Moves the scrollbar to start container(sc) of current range
        *

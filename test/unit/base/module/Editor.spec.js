@@ -185,8 +185,6 @@ define([
 
     describe('createLink', function () {
       it('should make normal link', function () {
-        //context.invoke('code', '<p>Hello World</p>');
-
         var text = 'hello';
 
         var editable = context.layoutInfo.editable;
@@ -199,26 +197,15 @@ define([
 
         // check creation normal link
         editor.createLink({
-          url : 'http://summernote.org',
-          text : 'summernote'
+          url: 'http://summernote.org',
+          text: 'summernote'
         });
 
-        // wheather a tag is created
-        expect(editable.find('a').length).to.equal(1);
-
-        // check href
-        expect(editable.find('a').attr('href')).to.equal('http://summernote.org');
-
-        // check text
-        expect(editable.find('a').html()).to.equal('summernote');
+        expectContents(context, '<p>hello<a href="http://summernote.org">summernote</a></p>');
       });
 
-
       it('should make a link with range', function () {
-        //context.invoke('code', '<p>Hello World</p>');
-
         var text = 'hello';
-
         var editable = context.layoutInfo.editable;
         var pNode = editable.find('p')[0];
         var textNode = pNode.childNodes[0];
@@ -227,31 +214,17 @@ define([
 
         var rng = range.create(textNode, startIndex, textNode, endIndex);
 
-        // check creation normal link
         editor.createLink({
-          url : 'http://summernote.org',
-          text : 'summernote',
-          range : rng
+          url: 'http://summernote.org',
+          text: 'summernote',
+          range: rng
         });
 
-        // wheather a tag is created
-        expect(editable.find('a').length).to.equal(1);
-
-        // check href
-        expect(editable.find('a').attr('href')).to.equal('http://summernote.org');
-
-        // check text
-        expect(editable.find('a').html()).to.equal('summernote');
-
-        // check full text
         expectContents(context, '<p><a href="http://summernote.org">summernote</a></p>');
       });
 
       it('should make a link with isNewWindow', function () {
-        //context.invoke('code', '<p>Hello World</p>');
-
         var text = 'hello';
-
         var editable = context.layoutInfo.editable;
         var pNode = editable.find('p')[0];
         var textNode = pNode.childNodes[0];
@@ -260,53 +233,29 @@ define([
 
         var rng = range.create(textNode, startIndex, textNode, endIndex);
 
-        // check creation normal link
         editor.createLink({
-          url : 'http://summernote.org',
-          text : 'summernote',
-          range : rng,
-          isNewWindow : true
+          url: 'http://summernote.org',
+          text: 'summernote',
+          range: rng,
+          isNewWindow: true
         });
 
-        // wheather a tag is created
-        expect(editable.find('a').length).to.equal(1);
-
-        // check href
-        expect(editable.find('a').attr('href')).to.equal('http://summernote.org');
-
-        // check target
-        expect(editable.find('a').attr('target')).to.equal('_blank');
-
-        // check text
-        expect(editable.find('a').html()).to.equal('summernote');
-
-        // check full text
         expectContents(context, '<p><a href="http://summernote.org" target="_blank">summernote</a></p>');
       });
-
 
       it('should modify a link ', function () {
         context.invoke('code', '<p><a href="http://summernote.org">hello world</a></p>');
 
         var editable = context.layoutInfo.editable;
         var anchorNode = editable.find('a')[0];
-
         var rng = range.createFromNode(anchorNode);
 
-        // check creation normal link
         editor.createLink({
-          url : 'http://wow.summernote.org',
-          text : 'summernote Wow',
-          range : rng
+          url: 'http://wow.summernote.org',
+          text: 'summernote Wow',
+          range: rng
         });
 
-        // check href
-        expect(editable.find('a').attr('href')).to.equal('http://wow.summernote.org');
-
-        // check text
-        expect(editable.find('a').html()).to.equal('summernote Wow');
-
-        // check full text
         expectContents(context, '<p><a href="http://wow.summernote.org">summernote Wow</a></p>');
       });
     });
