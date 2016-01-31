@@ -18,7 +18,7 @@ define([
   chai.use(spies);
   chai.use(chaidom);
 
-  describe('Context initialization', function () {
+  describe('Context lifecycle', function () {
     it('should be initialized without calling callback', function () {
       var options = $.extend({}, $.summernote.options);
       options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
@@ -36,6 +36,21 @@ define([
         context.invoke('insertText', 'hello');
         expect(spy).to.have.been.called();
       }
+    });
+
+    it('should preserve user events handler after destroy', function () {
+      var options = $.extend({}, $.summernote.options);
+      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+
+      var spy = chai.spy();
+      var $note = $('<div><p>hello</p></div>');
+      $note.on('click', spy);
+
+      var context = new Context($note, options);
+      context.destroy();
+
+      $note.trigger('click');
+      expect(spy).to.have.been.called();
     });
   });
 
