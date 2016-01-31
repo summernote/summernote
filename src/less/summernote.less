@@ -327,6 +327,13 @@
       margin-bottom: 10px;
     }
   }
+
+  // [workaround] firefox fileinput
+  @-moz-document url-prefix() {
+    .note-image-input {
+      height: auto;
+    }
+  }
 }
 
 /* Placeholder
