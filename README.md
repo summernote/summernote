@@ -47,7 +47,7 @@ Include the following code in the `<head>` tag of your HTML:
 <script src="summernote.js"></script>
 ```
 
-#### 2. target elements
+#### 2. target a element
 
 Then place a `div` tag somewhere in the `body` tag. This element will be replaced with the summernote editor.
 
@@ -73,28 +73,11 @@ $(document).ready(function() {
 var html = $('#summernote').summernote('code');
 ```
 
-`Destroy` summernote:
-
-```javascript
-$('#summernote').summernote('destroy');
-```
+For more detail about API, please refer to [document](http://summernote.org/getting-started/#basic-api).
 
 #### Warning - code injection
 
 The code view allows the user to enter script contents. Make sure to filter/[sanitize the HTML on the server](https://github.com/search?l=JavaScript&q=sanitize+html). Otherwise, an attacker can inject arbitrary JavaScript code into clients.
-
-### Supported platforms
-
-Any modern browser: Safari, Chrome, Firefox, Opera, Internet Explorer 9+.
-
-### Upcoming Features
-* Responsive toolbar
-* Table: Handles (sizing, selection) and popover
-* IE8 Support
-* Clipboard (you can paste images already)
-* Media object selection
-
-### Developer information
 
 #### document structure
 
