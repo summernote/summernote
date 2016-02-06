@@ -65,6 +65,8 @@ $(document).ready(function() {
 });
 ```
 
+For more examples, please visit to [homepage](http://summernote.org/examples).
+
 ### API
 
 `code` - get the HTML source code underlying the text in the editor:
