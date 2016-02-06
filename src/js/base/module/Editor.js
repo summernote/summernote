@@ -30,6 +30,9 @@ define([
     var options = context.options;
     var lang = options.langInfo;
 
+    var editable = $editable[0];
+    var lastRange = null;
+
     var style = new Style();
     var table = new Table();
     var typing = new Typing();
@@ -63,6 +66,9 @@ define([
         context.triggerEvent('paste', event);
       });
 
+      // init content before set event
+      $editable.html(dom.html($note) || dom.emptyPara);
+
       // [workaround] IE doesn't have input events for contentEditable
       // - see: https://goo.gl/4bfIvA
       var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
@@ -77,7 +83,7 @@ define([
       });
 
       if (!options.airMode && options.height) {
-        $editable.outerHeight(options.height);
+        this.setHeight(options.height);
       }
       if (!options.airMode && options.maxHeight) {
         $editable.css('max-height', options.maxHeight);
@@ -86,7 +92,6 @@ define([
         $editable.css('min-height', options.minHeight);
       }
 
-      $editable.html(dom.html($note) || dom.emptyPara);
       history.recordUndo();
     };
 
@@ -117,14 +122,12 @@ define([
     };
 
     /**
-     * createRange
-     *
      * create range
      * @return {WrappedRange}
      */
     this.createRange = function () {
       this.focus();
-      return range.create();
+      return range.create(editable);
     };
 
     /**
@@ -135,10 +138,9 @@ define([
      * @param {Boolean} [thenCollapse=false]
      */
     this.saveRange = function (thenCollapse) {
-      this.focus();
-      $editable.data('range', range.create());
+      lastRange = this.createRange();
       if (thenCollapse) {
-        range.create().collapse().select();
+        lastRange.collapse().select();
       }
     };
 
@@ -148,9 +150,8 @@ define([
      * restore lately range
      */
     this.restoreRange = function () {
-      var rng = $editable.data('range');
-      if (rng) {
-        rng.select();
+      if (lastRange) {
+        lastRange.select();
         this.focus();
       }
     };
@@ -212,7 +213,6 @@ define([
     context.memo('help.redo', lang.help.redo);
 
     /**
-     * beforeCommand
      * before command
      */
     var beforeCommand = this.beforeCommand = function () {
@@ -222,7 +222,6 @@ define([
     };
 
     /**
-     * afterCommand
      * after command
      * @param {Boolean} isPreventTrigger
      */
@@ -253,8 +252,6 @@ define([
     /* jshint ignore:end */
 
     /**
-     * tab
-     *
      * handle tab key
      */
     this.tab = function () {
@@ -263,17 +260,14 @@ define([
         table.tab(rng);
       } else {
         beforeCommand();
-        typing.insertTab($editable, rng, options.tabSize);
+        typing.insertTab(rng, options.tabSize);
         afterCommand();
       }
     };
     context.memo('help.tab', lang.help.tab);
 
     /**
-     * untab
-     *
      * handle shift+tab key
-     *
      */
     this.untab = function () {
       var rng = this.createRange();
@@ -284,8 +278,6 @@ define([
     context.memo('help.untab', lang.help.untab);
 
     /**
-     * wrapCommand
-     *
      * run given function between beforeCommand and afterCommand
      */
     this.wrapCommand = function (fn) {
@@ -297,35 +289,30 @@ define([
     };
 
     /**
-     * insertParagraph
-     *
      * insert paragraph
      */
     this.insertParagraph = this.wrapCommand(function () {
-      typing.insertParagraph($editable);
+      typing.insertParagraph(editable);
     });
     context.memo('help.insertParagraph', lang.help.insertParagraph);
 
-    /**
-     * insertOrderedList
-     */
     this.insertOrderedList = this.wrapCommand(function () {
-      bullet.insertOrderedList($editable);
+      bullet.insertOrderedList(editable);
     });
     context.memo('help.insertOrderedList', lang.help.insertOrderedList);
 
     this.insertUnorderedList = this.wrapCommand(function () {
-      bullet.insertUnorderedList($editable);
+      bullet.insertUnorderedList(editable);
     });
     context.memo('help.insertUnorderedList', lang.help.insertUnorderedList);
 
     this.indent = this.wrapCommand(function () {
-      bullet.indent($editable);
+      bullet.indent(editable);
     });
     context.memo('help.indent', lang.help.indent);
 
     this.outdent = this.wrapCommand(function () {
-      bullet.outdent($editable);
+      bullet.outdent(editable);
     });
     context.memo('help.outdent', lang.help.outdent);
 
@@ -350,11 +337,11 @@ define([
         }
 
         $image.show();
-        range.create().insertNode($image[0]);
+        range.create(editable).insertNode($image[0]);
         range.createFromNodeAfter($image[0]).select();
         afterCommand();
-      }).fail(function () {
-        context.triggerEvent('image.upload.error');
+      }).fail(function (e) {
+        context.triggerEvent('image.upload.error', e);
       });
     };
 
@@ -399,7 +386,8 @@ define([
      * @param {Node} node
      */
     this.insertNode = this.wrapCommand(function (node) {
-      range.create().insertNode(node);
+      var rng = this.createRange();
+      rng.insertNode(node);
       range.createFromNodeAfter(node).select();
     });
 
@@ -408,7 +396,8 @@ define([
      * @param {String} text
      */
     this.insertText = this.wrapCommand(function (text) {
-      var textNode = range.create().insertNode(dom.createText(text));
+      var rng = this.createRange();
+      var textNode = rng.insertNode(dom.createText(text));
       range.create(textNode, dom.nodeLength(textNode)).select();
     });
 
@@ -432,7 +421,7 @@ define([
      * @param {String} markup
      */
     this.pasteHTML = this.wrapCommand(function (markup) {
-      var contents = range.create().pasteHTML(markup);
+      var contents = this.createRange().pasteHTML(markup);
       range.createFromNodeAfter(list.last(contents)).select();
     });
 
@@ -463,15 +452,13 @@ define([
     };
     /* jshint ignore:end */
 
-
     /**
      * fontSize
      *
      * @param {String} value - px
      */
     this.fontSize = function (value) {
-      this.focus();
-      var rng = range.create();
+      var rng = this.createRange();
 
       if (rng && rng.isCollapsed()) {
         var spans = style.styleNodes(rng);
@@ -501,14 +488,12 @@ define([
      * insert horizontal rule
      */
     this.insertHorizontalRule = this.wrapCommand(function () {
-      var rng = range.create();
-      var hrNode = rng.insertNode($('<HR/>')[0]);
+      var hrNode = this.createRange().insertNode(dom.create('HR'));
       if (hrNode.nextSibling) {
         range.create(hrNode.nextSibling, 0).normalize().select();
       }
     });
     context.memo('help.insertHorizontalRule', lang.help.insertHorizontalRule);
-
 
     /**
      * remove bogus node and character
@@ -538,7 +523,7 @@ define([
      * @param {String} value
      */
     this.lineHeight = this.wrapCommand(function (value) {
-      style.stylePara(range.create(), {
+      style.stylePara(this.createRange(), {
         lineHeight: value
       });
     });
@@ -579,7 +564,7 @@ define([
 
       var anchors = [];
       if (isTextChanged) {
-        // Create a new link when text changed.
+        rng = rng.deleteContents();
         var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
         anchors.push(anchor);
       } else {
@@ -622,9 +607,7 @@ define([
      * @return {String} [return.url=""]
      */
     this.getLinkInfo = function () {
-      this.focus();
-
-      var rng = range.create().expand(dom.isAnchor);
+      var rng = this.createRange().expand(dom.isAnchor);
 
       // Get the first anchor on range(for edit).
       var $anchor = $(list.head(rng.nodes(dom.isAnchor)));
@@ -655,12 +638,12 @@ define([
     /**
      * insert Table
      *
-     * @param {String} sDim dimension of table (ex : "5x5")
+     * @param {String} dimension of table (ex : "5x5")
      */
-    this.insertTable = this.wrapCommand(function (sDim) {
-      var dimension = sDim.split('x');
+    this.insertTable = this.wrapCommand(function (dim) {
+      var dimension = dim.split('x');
 
-      var rng = range.create().deleteContents();
+      var rng = this.createRange().deleteContents();
       rng.insertNode(table.createTable(dimension[0], dimension[1], options));
     });
 
@@ -733,14 +716,6 @@ define([
       //  - do focus when not focused
       if (!this.hasFocus()) {
         $editable.focus();
-
-        // [workaround] for firefox bug http://goo.gl/lVfAaI
-        if (!this.hasFocus() && agent.isFF) {
-          range.createFromNode($editable[0])
-               .normalize()
-               .collapse()
-               .select();
-        }
       }
     };
 
@@ -757,6 +732,13 @@ define([
      */
     this.empty = function () {
       context.invoke('code', dom.emptyPara);
+    };
+
+    /**
+     * set height for editable
+     */
+    this.setHeight = function (height) {
+      $editable.outerHeight(height);
     };
   };
 

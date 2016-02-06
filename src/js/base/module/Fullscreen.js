@@ -23,8 +23,7 @@ define([
       };
 
       $editor.toggleClass('fullscreen');
-      var isFullscreen = $editor.hasClass('fullscreen');
-      if (isFullscreen) {
+      if (this.isFullscreen()) {
         $editable.data('orgHeight', $editable.css('height'));
 
         $window.on('resize', function () {
@@ -42,7 +41,11 @@ define([
         $scrollbar.css('overflow', 'visible');
       }
 
-      context.invoke('toolbar.updateFullscreen', isFullscreen);
+      context.invoke('toolbar.updateFullscreen', this.isFullscreen());
+    };
+
+    this.isFullscreen = function () {
+      return $editor.hasClass('fullscreen');
     };
   };
 

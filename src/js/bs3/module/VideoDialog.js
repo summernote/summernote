@@ -118,7 +118,6 @@ define([
       return $video[0];
     };
 
-
     this.show = function () {
       var text = context.invoke('editor.getSelectedText');
       context.invoke('editor.saveRange');

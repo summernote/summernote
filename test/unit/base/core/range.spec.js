@@ -5,14 +5,15 @@
  */
 define([
   'chai',
-  'helper',
+  'chaidom',
   'jquery',
   'summernote/base/core/dom',
   'summernote/base/core/range'
-], function (chai, helper, $, dom, range) {
+], function (chai, chaidom, $, dom, range) {
   'use strict';
 
   var expect = chai.expect;
+  chai.use(chaidom);
 
   describe('base:core.range', function () {
     describe('nodes', function () {
@@ -225,7 +226,7 @@ define([
         var rng = range.create($b[0].firstChild, 2, $b[0].firstChild, 2);
         rng.insertNode($p2[0]);
 
-        helper.equalsToUpperCase($cont.html(), '<p><b>bo</b></p><p>p</p><p><b>ld</b></p>', expect);
+        expect($cont.html()).to.equalsIgnoreCase('<p><b>bo</b></p><p>p</p><p><b>ld</b></p>');
       });
 
       it('should not split paragraph when inserting an inline element', function () {
@@ -235,7 +236,7 @@ define([
 
         var rng = range.create($p[0].firstChild, 2, $p[0].firstChild, 2);
         rng.insertNode($u[0]);
-        helper.equalsToUpperCase($cont.html(), '<p>te<u>u</u>xt</p>', expect);
+        expect($cont.html()).to.equalsIgnoreCase('<p>te<u>u</u>xt</p>');
       });
 
       it('should not split paragraph when inserting an inline element case 2', function () {
@@ -245,7 +246,7 @@ define([
 
         var rng = range.create($b[0].firstChild, 2, $b[0].firstChild, 2);
         rng.insertNode($u[0]);
-        helper.equalsToUpperCase($cont.html(), '<p><b>bo</b><u>u</u><b>ld</b></p>', expect);
+        expect($cont.html()).to.equalsIgnoreCase('<p><b>bo</b><u>u</u><b>ld</b></p>');
       });
     });
 
@@ -258,7 +259,7 @@ define([
         var rng = range.create($p[0].firstChild, 2);
         rng.pasteHTML(markup);
 
-        helper.equalsToUpperCase($cont.html(), '<p>te<span>span</span><i>italic</i>xt</p>', expect);
+        expect($cont.html()).to.equalsIgnoreCase('<p>te<span>span</span><i>italic</i>xt</p>');
       });
 
       it('should split an inline element when pasting inline elements into it', function () {
@@ -269,7 +270,7 @@ define([
         var rng = range.create($b[0].firstChild, 2);
         rng.pasteHTML(markup);
 
-        helper.equalsToUpperCase($cont.html(), '<p><b>bo</b><span>span</span><i>italic</i><b>ld</b></p>', expect);
+        expect($cont.html()).to.equalsIgnoreCase('<p><b>bo</b><span>span</span><i>italic</i><b>ld</b></p>');
       });
 
       it('should split inline node when pasting an inline node and a block node into it', function () {
@@ -280,7 +281,7 @@ define([
         var rng = range.create($b[0].firstChild, 2);
         rng.pasteHTML(markup);
 
-        helper.equalsToUpperCase($cont.html(), '<p><b>bo</b><span>span</span></p><p><i>italic</i></p><p><b>ld</b></p>', expect);
+        expect($cont.html()).to.equalsIgnoreCase('<p><b>bo</b><span>span</span></p><p><i>italic</i></p><p><b>ld</b></p>');
       });
     });
 
@@ -295,14 +296,14 @@ define([
         var rng = range.create($b[0].firstChild, 1, $b[0].firstChild, 3);
         rng.deleteContents();
 
-        helper.equalsToUpperCase($cont.html(), '<p><b>bd</b><u>u</u></p>', expect);
+        expect($cont.html()).to.equalsIgnoreCase('<p><b>bd</b><u>u</u></p>');
       });
 
       it('should remove text for entire text', function () {
         var rng = range.create($b[0].firstChild, 0, $b[0].firstChild, 4);
         rng.deleteContents();
 
-        helper.equalsToUpperCase($cont.html(), '<p><b></b><u>u</u></p>', expect);
+        expect($cont.html()).to.equalsIgnoreCase('<p><b></b><u>u</u></p>');
       });
     });
 
@@ -313,7 +314,7 @@ define([
         var rng = range.create($cont[0], 0);
         rng.wrapBodyInlineWithPara();
 
-        helper.equalsToUpperCase($cont.html(), '<p><br></p>', expect);
+        expect($cont.html()).to.equalsIgnoreCase('<p><br></p>');
       });
 
       it('should wrap text with paragraph for text', function () {
@@ -322,7 +323,7 @@ define([
         var rng = range.create($cont[0].firstChild, 2);
         rng.wrapBodyInlineWithPara();
 
-        helper.equalsToUpperCase($cont.html(), '<p>text</p>', expect);
+        expect($cont.html()).to.equalsIgnoreCase('<p>text</p>');
       });
 
       it('should wrap an inline node with paragraph when selecting text in the inline node', function () {
@@ -332,7 +333,7 @@ define([
         var rng = range.create($b[0].firstChild, 2);
         rng.wrapBodyInlineWithPara();
 
-        helper.equalsToUpperCase($cont.html(), '<p><b>bold</b></p>', expect);
+        expect($cont.html()).to.equalsIgnoreCase('<p><b>bold</b></p>');
       });
 
       it('should wrap inline nodes with paragraph when selecting text in the inline nodes', function () {
@@ -341,7 +342,7 @@ define([
         var rng = range.create($cont[0], 0);
         rng.wrapBodyInlineWithPara();
 
-        helper.equalsToUpperCase($cont.html(), '<p><b>b</b><i>i</i></p>', expect);
+        expect($cont.html()).to.equalsIgnoreCase('<p><b>b</b><i>i</i></p>');
       });
 
       it('should wrap inline nodes with paragraph when selection some of text in the inline nodes #1', function () {
@@ -350,16 +351,16 @@ define([
         var rng = range.create($cont[0], 1);
         rng.wrapBodyInlineWithPara();
 
-        helper.equalsToUpperCase($cont.html(), '<p><b>b</b><i>i</i></p>', expect);
+        expect($cont.html()).to.equalsIgnoreCase('<p><b>b</b><i>i</i></p>');
       });
 
-      it('should wrap inline nodes with paragraph when selection soem of text in the inline nodes #2', function () {
+      it('should wrap inline nodes with paragraph when selection some of text in the inline nodes #2', function () {
         var $cont = $('<div class="note-editable"><b>b</b><i>i</i></div>');
 
         var rng = range.create($cont[0], 2);
         rng.wrapBodyInlineWithPara();
 
-        helper.equalsToUpperCase($cont.html(), '<p><b>b</b><i>i</i></p>', expect);
+        expect($cont.html()).to.equalsIgnoreCase('<p><b>b</b><i>i</i></p>');
       });
     });
 

@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor v0.7.3
+ * Super simple wysiwyg editor v0.7.4
  * http://summernote.org/
  *
  * summernote.js
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2016-01-14T13:17Z
+ * Date: 2016-02-06T08:27Z
  */
 (function (factory) {
   /* global define */
@@ -93,7 +93,7 @@
     /**
      * returns bnd (bounds) from rect
      *
-     * - IE Compatability Issue: http://goo.gl/sRLOAo
+     * - IE Compatibility Issue: http://goo.gl/sRLOAo
      * - Scroll Issue: http://goo.gl/sNjUc
      *
      * @param {Rect} rect
@@ -391,6 +391,24 @@
     }
   }
 
+  var isEdge = /Edge\/\d+/.test(userAgent);
+
+  var hasCodeMirror = !!window.CodeMirror;
+  if (!hasCodeMirror && isSupportAmd && require) {
+    if (require.hasOwnProperty('resolve')) {
+      try {
+        // If CodeMirror can't be resolved, `require.resolve` will throw an
+        // exception and `hasCodeMirror` won't be set to `true`.
+        require.resolve('codemirror');
+        hasCodeMirror = true;
+      } catch (e) {
+        hasCodeMirror = false;
+      }
+    } else if (require.hasOwnProperty('specified')) {
+      hasCodeMirror = require.specified('codemirror');
+    }
+  }
+
   /**
    * @class core.agent
    *
@@ -402,13 +420,16 @@
   var agent = {
     isMac: navigator.appVersion.indexOf('Mac') > -1,
     isMSIE: isMSIE,
-    isFF: /firefox/i.test(userAgent),
-    isWebkit: /webkit/i.test(userAgent),
-    isSafari: /safari/i.test(userAgent),
+    isEdge: isEdge,
+    isFF: !isEdge && /firefox/i.test(userAgent),
+    isPhantom: /PhantomJS/i.test(userAgent),
+    isWebkit: !isEdge && /webkit/i.test(userAgent),
+    isChrome: !isEdge && /chrome/i.test(userAgent),
+    isSafari: !isEdge && /safari/i.test(userAgent),
     browserVersion: browserVersion,
     jqueryVersion: parseFloat($.fn.jquery),
     isSupportAmd: isSupportAmd,
-    hasCodeMirror: isSupportAmd ? require.specified('codemirror') : !!window.CodeMirror,
+    hasCodeMirror: hasCodeMirror,
     isFontInstalled: isFontInstalled,
     isW3CRangeSupport: !!document.createRange
   };
@@ -763,20 +784,20 @@
      * @param {Function} [pred] - predicate function
      */
     var listDescendant = function (node, pred) {
-      var descendents = [];
+      var descendants = [];
       pred = pred || func.ok;
 
       // start DFS(depth first search) with node
       (function fnWalk(current) {
         if (node !== current && pred(current)) {
-          descendents.push(current);
+          descendants.push(current);
         }
         for (var idx = 0, len = current.childNodes.length; idx < len; idx++) {
           fnWalk(current.childNodes[idx]);
         }
       })(node);
 
-      return descendents;
+      return descendants;
     };
 
     /**
@@ -856,7 +877,7 @@
     };
 
     /**
-     * returns wheter node is left edge of ancestor or not.
+     * returns whether node is left edge of ancestor or not.
      *
      * @param {Node} node
      * @param {Node} ancestor
@@ -1483,7 +1504,6 @@
     };
   })();
 
-
   /**
    * @param {jQuery} $note
    * @param {Object} options
@@ -1521,9 +1541,14 @@
      * destory modules and other resources and initialize it again
      */
     this.reset = function () {
+      var disabled = self.isDisabled();
       this.code(dom.emptyPara);
       this._destroy();
       this._initialize();
+
+      if (disabled) {
+        self.disable();
+      }
     };
 
     this._initialize = function () {
@@ -1687,10 +1712,6 @@
     };
 
     return this.initialize();
-  };
-
-  $.summernote = $.summernote || {
-    lang: {}
   };
 
   $.fn.extend({
@@ -1989,6 +2010,10 @@
     }
   };
 
+  $.summernote = $.summernote || {
+    lang: {}
+  };
+
   $.extend($.summernote.lang, {
     'en-US': {
       font: {
@@ -2200,7 +2225,7 @@
           keyMap.BACKSPACE,
           keyMap.TAB,
           keyMap.ENTER,
-          keyMap.SPACe
+          keyMap.SPACE
         ], keyCode);
       },
       /**
@@ -2225,7 +2250,6 @@
       code: keyMap
     };
   })();
-
 
   var range = (function () {
 
@@ -2409,15 +2433,15 @@
         return this;
       };
 
-
       /**
        * Moves the scrollbar to start container(sc) of current range
        *
        * @return {WrappedRange}
        */
-      this.scrollIntoView = function ($container) {
-        if ($container[0].scrollTop + $container.height() < this.sc.offsetTop) {
-          $container[0].scrollTop += Math.abs($container[0].scrollTop + $container.height() - this.sc.offsetTop);
+      this.scrollIntoView = function (container) {
+        var height = $(container).height();
+        if (container.scrollTop + height < this.sc.offsetTop) {
+          container.scrollTop += Math.abs(container.scrollTop + height - this.sc.offsetTop);
         }
 
         return this;
@@ -2863,8 +2887,6 @@
    */
     return {
       /**
-       * @method
-       * 
        * create Range Object From arguments or Browser Selection
        *
        * @param {Node} sc - start container
@@ -2874,47 +2896,62 @@
        * @return {WrappedRange}
        */
       create: function (sc, so, ec, eo) {
-        if (!arguments.length) { // from Browser Selection
-          if (agent.isW3CRangeSupport) {
-            var selection = document.getSelection();
-            if (!selection || selection.rangeCount === 0) {
-              return null;
-            } else if (dom.isBody(selection.anchorNode)) {
-              // Firefox: returns entire body as range on initialization. We won't never need it.
-              return null;
-            }
-  
-            var nativeRng = selection.getRangeAt(0);
-            sc = nativeRng.startContainer;
-            so = nativeRng.startOffset;
-            ec = nativeRng.endContainer;
-            eo = nativeRng.endOffset;
-          } else { // IE8: TextRange
-            var textRange = document.selection.createRange();
-            var textRangeEnd = textRange.duplicate();
-            textRangeEnd.collapse(false);
-            var textRangeStart = textRange;
-            textRangeStart.collapse(true);
-  
-            var startPoint = textRangeToPoint(textRangeStart, true),
-            endPoint = textRangeToPoint(textRangeEnd, false);
-
-            // same visible point case: range was collapsed.
-            if (dom.isText(startPoint.node) && dom.isLeftEdgePoint(startPoint) &&
-                dom.isTextNode(endPoint.node) && dom.isRightEdgePoint(endPoint) &&
-                endPoint.node.nextSibling === startPoint.node) {
-              startPoint = endPoint;
-            }
-
-            sc = startPoint.cont;
-            so = startPoint.offset;
-            ec = endPoint.cont;
-            eo = endPoint.offset;
-          }
+        if (arguments.length === 4) {
+          return new WrappedRange(sc, so, ec, eo);
         } else if (arguments.length === 2) { //collapsed
           ec = sc;
           eo = so;
+          return new WrappedRange(sc, so, ec, eo);
+        } else {
+          var wrappedRange = this.createFromSelection();
+          if (!wrappedRange && arguments.length === 1) {
+            wrappedRange = this.createFromNode(arguments[0]);
+            return wrappedRange.collapse(dom.emptyPara === arguments[0].innerHTML);
+          }
+          return wrappedRange;
         }
+      },
+
+      createFromSelection: function () {
+        var sc, so, ec, eo;
+        if (agent.isW3CRangeSupport) {
+          var selection = document.getSelection();
+          if (!selection || selection.rangeCount === 0) {
+            return null;
+          } else if (dom.isBody(selection.anchorNode)) {
+            // Firefox: returns entire body as range on initialization.
+            // We won't never need it.
+            return null;
+          }
+
+          var nativeRng = selection.getRangeAt(0);
+          sc = nativeRng.startContainer;
+          so = nativeRng.startOffset;
+          ec = nativeRng.endContainer;
+          eo = nativeRng.endOffset;
+        } else { // IE8: TextRange
+          var textRange = document.selection.createRange();
+          var textRangeEnd = textRange.duplicate();
+          textRangeEnd.collapse(false);
+          var textRangeStart = textRange;
+          textRangeStart.collapse(true);
+
+          var startPoint = textRangeToPoint(textRangeStart, true),
+          endPoint = textRangeToPoint(textRangeEnd, false);
+
+          // same visible point case: range was collapsed.
+          if (dom.isText(startPoint.node) && dom.isLeftEdgePoint(startPoint) &&
+              dom.isTextNode(endPoint.node) && dom.isRightEdgePoint(endPoint) &&
+              endPoint.node.nextSibling === startPoint.node) {
+            startPoint = endPoint;
+          }
+
+          sc = startPoint.cont;
+          so = startPoint.offset;
+          ec = endPoint.cont;
+          eo = endPoint.offset;
+        }
+
         return new WrappedRange(sc, so, ec, eo);
       },
 
@@ -3077,7 +3114,7 @@
     var editable = $editable[0];
 
     var makeSnapshot = function () {
-      var rng = range.create();
+      var rng = range.create(editable);
       var emptyBookmark = {s: {path: [], offset: 0}, e: {path: [], offset: 0}};
 
       return {
@@ -3101,7 +3138,6 @@
     * Leaves the stack intact, so that "Redo" can still be used.
     */
     this.rewind = function () {
-
       // Create snap shot if not yet recorded
       if ($editable.html() !== stack[stackOffset].contents) {
         this.recordUndo();
@@ -3112,16 +3148,13 @@
 
       // Apply that snapshot.
       applySnapshot(stack[stackOffset]);
-
     };
-
 
     /**
     * @method reset
     * Resets the history stack completely; reverting to an empty editor.
     */
     this.reset = function () {
-
       // Clear the stack.
       stack = [];
 
@@ -3133,7 +3166,6 @@
 
       // Record our first snapshot (of nothing).
       this.recordUndo();
-
     };
 
     /**
@@ -3342,38 +3374,28 @@
    * @alternateClassName Bullet
    */
   var Bullet = function () {
+    var self = this;
+
     /**
-     * @method insertOrderedList
-     *
      * toggle ordered list
-     *
-     * @type command
      */
-    this.insertOrderedList = function () {
-      this.toggleList('OL');
+    this.insertOrderedList = function (editable) {
+      this.toggleList('OL', editable);
     };
 
     /**
-     * @method insertUnorderedList
-     *
      * toggle unordered list
-     *
-     * @type command
      */
-    this.insertUnorderedList = function () {
-      this.toggleList('UL');
+    this.insertUnorderedList = function (editable) {
+      this.toggleList('UL', editable);
     };
 
     /**
-     * @method indent
-     *
      * indent
-     *
-     * @type command
      */
-    this.indent = function () {
+    this.indent = function (editable) {
       var self = this;
-      var rng = range.create().wrapBodyInlineWithPara();
+      var rng = range.create(editable).wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
       var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
@@ -3395,15 +3417,11 @@
     };
 
     /**
-     * @method outdent
-     *
      * outdent
-     *
-     * @type command
      */
-    this.outdent = function () {
+    this.outdent = function (editable) {
       var self = this;
-      var rng = range.create().wrapBodyInlineWithPara();
+      var rng = range.create(editable).wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
       var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
@@ -3426,15 +3444,12 @@
     };
 
     /**
-     * @method toggleList
-     *
      * toggle list
      *
      * @param {String} listName - OL or UL
      */
-    this.toggleList = function (listName) {
-      var self = this;
-      var rng = range.create().wrapBodyInlineWithPara();
+    this.toggleList = function (listName, editable) {
+      var rng = range.create(editable).wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
       var bookmark = rng.paraBookmark(paras);
@@ -3468,8 +3483,6 @@
     };
 
     /**
-     * @method wrapList
-     *
      * @param {Node[]} paras
      * @param {String} listName
      * @return {Node[]}
@@ -3576,11 +3589,10 @@
     /**
      * insert tab
      *
-     * @param {jQuery} $editable
      * @param {WrappedRange} rng
      * @param {Number} tabsize
      */
-    this.insertTab = function ($editable, rng, tabsize) {
+    this.insertTab = function (rng, tabsize) {
       var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
       rng = rng.deleteContents();
       rng.insertNode(tab, true);
@@ -3592,8 +3604,8 @@
     /**
      * insert paragraph
      */
-    this.insertParagraph = function ($editable) {
-      var rng = range.create();
+    this.insertParagraph = function (editable) {
+      var rng = range.create(editable);
 
       // deleteContents on range.
       rng = rng.deleteContents();
@@ -3644,7 +3656,7 @@
         }
       }
 
-      range.create(nextPara, 0).normalize().select().scrollIntoView($editable);
+      range.create(nextPara, 0).normalize().select().scrollIntoView(editable);
     };
   };
 
@@ -3715,6 +3727,9 @@
     var options = context.options;
     var lang = options.langInfo;
 
+    var editable = $editable[0];
+    var lastRange = null;
+
     var style = new Style();
     var table = new Table();
     var typing = new Typing();
@@ -3748,6 +3763,9 @@
         context.triggerEvent('paste', event);
       });
 
+      // init content before set event
+      $editable.html(dom.html($note) || dom.emptyPara);
+
       // [workaround] IE doesn't have input events for contentEditable
       // - see: https://goo.gl/4bfIvA
       var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
@@ -3762,7 +3780,7 @@
       });
 
       if (!options.airMode && options.height) {
-        $editable.outerHeight(options.height);
+        this.setHeight(options.height);
       }
       if (!options.airMode && options.maxHeight) {
         $editable.css('max-height', options.maxHeight);
@@ -3771,7 +3789,6 @@
         $editable.css('min-height', options.minHeight);
       }
 
-      $editable.html(dom.html($note) || dom.emptyPara);
       history.recordUndo();
     };
 
@@ -3802,14 +3819,12 @@
     };
 
     /**
-     * createRange
-     *
      * create range
      * @return {WrappedRange}
      */
     this.createRange = function () {
       this.focus();
-      return range.create();
+      return range.create(editable);
     };
 
     /**
@@ -3820,10 +3835,9 @@
      * @param {Boolean} [thenCollapse=false]
      */
     this.saveRange = function (thenCollapse) {
-      this.focus();
-      $editable.data('range', range.create());
+      lastRange = this.createRange();
       if (thenCollapse) {
-        range.create().collapse().select();
+        lastRange.collapse().select();
       }
     };
 
@@ -3833,9 +3847,8 @@
      * restore lately range
      */
     this.restoreRange = function () {
-      var rng = $editable.data('range');
-      if (rng) {
-        rng.select();
+      if (lastRange) {
+        lastRange.select();
         this.focus();
       }
     };
@@ -3897,7 +3910,6 @@
     context.memo('help.redo', lang.help.redo);
 
     /**
-     * beforeCommand
      * before command
      */
     var beforeCommand = this.beforeCommand = function () {
@@ -3907,7 +3919,6 @@
     };
 
     /**
-     * afterCommand
      * after command
      * @param {Boolean} isPreventTrigger
      */
@@ -3938,8 +3949,6 @@
     /* jshint ignore:end */
 
     /**
-     * tab
-     *
      * handle tab key
      */
     this.tab = function () {
@@ -3948,17 +3957,14 @@
         table.tab(rng);
       } else {
         beforeCommand();
-        typing.insertTab($editable, rng, options.tabSize);
+        typing.insertTab(rng, options.tabSize);
         afterCommand();
       }
     };
     context.memo('help.tab', lang.help.tab);
 
     /**
-     * untab
-     *
      * handle shift+tab key
-     *
      */
     this.untab = function () {
       var rng = this.createRange();
@@ -3969,8 +3975,6 @@
     context.memo('help.untab', lang.help.untab);
 
     /**
-     * wrapCommand
-     *
      * run given function between beforeCommand and afterCommand
      */
     this.wrapCommand = function (fn) {
@@ -3982,35 +3986,30 @@
     };
 
     /**
-     * insertParagraph
-     *
      * insert paragraph
      */
     this.insertParagraph = this.wrapCommand(function () {
-      typing.insertParagraph($editable);
+      typing.insertParagraph(editable);
     });
     context.memo('help.insertParagraph', lang.help.insertParagraph);
 
-    /**
-     * insertOrderedList
-     */
     this.insertOrderedList = this.wrapCommand(function () {
-      bullet.insertOrderedList($editable);
+      bullet.insertOrderedList(editable);
     });
     context.memo('help.insertOrderedList', lang.help.insertOrderedList);
 
     this.insertUnorderedList = this.wrapCommand(function () {
-      bullet.insertUnorderedList($editable);
+      bullet.insertUnorderedList(editable);
     });
     context.memo('help.insertUnorderedList', lang.help.insertUnorderedList);
 
     this.indent = this.wrapCommand(function () {
-      bullet.indent($editable);
+      bullet.indent(editable);
     });
     context.memo('help.indent', lang.help.indent);
 
     this.outdent = this.wrapCommand(function () {
-      bullet.outdent($editable);
+      bullet.outdent(editable);
     });
     context.memo('help.outdent', lang.help.outdent);
 
@@ -4035,11 +4034,11 @@
         }
 
         $image.show();
-        range.create().insertNode($image[0]);
+        range.create(editable).insertNode($image[0]);
         range.createFromNodeAfter($image[0]).select();
         afterCommand();
-      }).fail(function () {
-        context.triggerEvent('image.upload.error');
+      }).fail(function (e) {
+        context.triggerEvent('image.upload.error', e);
       });
     };
 
@@ -4084,7 +4083,8 @@
      * @param {Node} node
      */
     this.insertNode = this.wrapCommand(function (node) {
-      range.create().insertNode(node);
+      var rng = this.createRange();
+      rng.insertNode(node);
       range.createFromNodeAfter(node).select();
     });
 
@@ -4093,7 +4093,8 @@
      * @param {String} text
      */
     this.insertText = this.wrapCommand(function (text) {
-      var textNode = range.create().insertNode(dom.createText(text));
+      var rng = this.createRange();
+      var textNode = rng.insertNode(dom.createText(text));
       range.create(textNode, dom.nodeLength(textNode)).select();
     });
 
@@ -4117,7 +4118,7 @@
      * @param {String} markup
      */
     this.pasteHTML = this.wrapCommand(function (markup) {
-      var contents = range.create().pasteHTML(markup);
+      var contents = this.createRange().pasteHTML(markup);
       range.createFromNodeAfter(list.last(contents)).select();
     });
 
@@ -4148,15 +4149,13 @@
     };
     /* jshint ignore:end */
 
-
     /**
      * fontSize
      *
      * @param {String} value - px
      */
     this.fontSize = function (value) {
-      this.focus();
-      var rng = range.create();
+      var rng = this.createRange();
 
       if (rng && rng.isCollapsed()) {
         var spans = style.styleNodes(rng);
@@ -4186,14 +4185,12 @@
      * insert horizontal rule
      */
     this.insertHorizontalRule = this.wrapCommand(function () {
-      var rng = range.create();
-      var hrNode = rng.insertNode($('<HR/>')[0]);
+      var hrNode = this.createRange().insertNode(dom.create('HR'));
       if (hrNode.nextSibling) {
         range.create(hrNode.nextSibling, 0).normalize().select();
       }
     });
     context.memo('help.insertHorizontalRule', lang.help.insertHorizontalRule);
-
 
     /**
      * remove bogus node and character
@@ -4223,7 +4220,7 @@
      * @param {String} value
      */
     this.lineHeight = this.wrapCommand(function (value) {
-      style.stylePara(range.create(), {
+      style.stylePara(this.createRange(), {
         lineHeight: value
       });
     });
@@ -4264,7 +4261,7 @@
 
       var anchors = [];
       if (isTextChanged) {
-        // Create a new link when text changed.
+        rng = rng.deleteContents();
         var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
         anchors.push(anchor);
       } else {
@@ -4307,9 +4304,7 @@
      * @return {String} [return.url=""]
      */
     this.getLinkInfo = function () {
-      this.focus();
-
-      var rng = range.create().expand(dom.isAnchor);
+      var rng = this.createRange().expand(dom.isAnchor);
 
       // Get the first anchor on range(for edit).
       var $anchor = $(list.head(rng.nodes(dom.isAnchor)));
@@ -4340,12 +4335,12 @@
     /**
      * insert Table
      *
-     * @param {String} sDim dimension of table (ex : "5x5")
+     * @param {String} dimension of table (ex : "5x5")
      */
-    this.insertTable = this.wrapCommand(function (sDim) {
-      var dimension = sDim.split('x');
+    this.insertTable = this.wrapCommand(function (dim) {
+      var dimension = dim.split('x');
 
-      var rng = range.create().deleteContents();
+      var rng = this.createRange().deleteContents();
       rng.insertNode(table.createTable(dimension[0], dimension[1], options));
     });
 
@@ -4418,14 +4413,6 @@
       //  - do focus when not focused
       if (!this.hasFocus()) {
         $editable.focus();
-
-        // [workaround] for firefox bug http://goo.gl/lVfAaI
-        if (!this.hasFocus() && agent.isFF) {
-          range.createFromNode($editable[0])
-               .normalize()
-               .collapse()
-               .select();
-        }
       }
     };
 
@@ -4442,6 +4429,13 @@
      */
     this.empty = function () {
       context.invoke('code', dom.emptyPara);
+    };
+
+    /**
+     * set height for editable
+     */
+    this.setHeight = function (height) {
+      $editable.outerHeight(height);
     };
   };
 
@@ -4803,8 +4797,7 @@
       };
 
       $editor.toggleClass('fullscreen');
-      var isFullscreen = $editor.hasClass('fullscreen');
-      if (isFullscreen) {
+      if (this.isFullscreen()) {
         $editable.data('orgHeight', $editable.css('height'));
 
         $window.on('resize', function () {
@@ -4822,7 +4815,11 @@
         $scrollbar.css('overflow', 'visible');
       }
 
-      context.invoke('toolbar.updateFullscreen', isFullscreen);
+      context.invoke('toolbar.updateFullscreen', this.isFullscreen());
+    };
+
+    this.isFullscreen = function () {
+      return $editor.hasClass('fullscreen');
     };
   };
 
@@ -5075,6 +5072,20 @@
       this.addToolbarButtons();
       this.addImagePopoverButtons();
       this.addLinkPopoverButtons();
+      this.fontInstalledMap = {};
+    };
+
+    this.destroy = function () {
+      delete this.fontInstalledMap;
+    };
+
+    this.isFontInstalled = function (name) {
+      if (!self.fontInstalledMap.hasOwnProperty(name)) {
+        self.fontInstalledMap[name] = agent.isFontInstalled(name) ||
+          list.contains(options.fontNamesIgnoreCheck, name);
+      }
+
+      return self.fontInstalledMap[name];
     };
 
     this.addToolbarButtons = function () {
@@ -5184,10 +5195,7 @@
           ui.dropdownCheck({
             className: 'dropdown-fontname',
             checkClassName: options.icons.menuCheck,
-            items: options.fontNames.filter(function (name) {
-              return agent.isFontInstalled(name) ||
-                list.contains(options.fontNamesIgnoreCheck, name);
-            }),
+            items: options.fontNames.filter(self.isFontInstalled),
             template: function (item) {
               return '<span style="font-family:' + item + '">' + item + '</span>';
             },
@@ -5223,16 +5231,17 @@
               className: 'note-current-color-button',
               contents: ui.icon(options.icons.font + ' note-recent-color'),
               tooltip: lang.color.recent,
-              click: context.createInvokeHandler('editor.color'),
+              click: function (e) {
+                var $button = $(e.currentTarget);
+                context.invoke('editor.color', {
+                  backColor: $button.attr('data-backColor'),
+                  foreColor: $button.attr('data-foreColor')
+                });
+              },
               callback: function ($button) {
                 var $recentColor = $button.find('.note-recent-color');
-                $recentColor.css({
-                  'background-color': 'yellow'
-                });
-
-                $button.data('value', {
-                  backColor: 'yellow'
-                });
+                $recentColor.css('background-color', '#FFFF00');
+                $button.attr('data-backColor', '#FFFF00');
               }
             }),
             ui.button({
@@ -5285,11 +5294,8 @@
                   var $color = $button.closest('.note-color').find('.note-recent-color');
                   var $currentButton = $button.closest('.note-color').find('.note-current-color-button');
 
-                  var colorInfo = $currentButton.data('value');
-                  colorInfo[eventName] = value;
                   $color.css(key, value);
-                  $currentButton.data('value', colorInfo);
-
+                  $currentButton.attr('data-' + eventName, value);
                   context.invoke('editor.' + eventName, value);
                 }
               }
@@ -5298,7 +5304,7 @@
         }).render();
       });
 
-      context.memo('button.ol',  function () {
+      context.memo('button.ul',  function () {
         return ui.button({
           contents: ui.icon(options.icons.unorderedlist),
           tooltip: lang.lists.unordered + representShortcut('insertUnorderedList'),
@@ -5306,7 +5312,7 @@
         }).render();
       });
 
-      context.memo('button.ul', function () {
+      context.memo('button.ol', function () {
         return ui.button({
           contents: ui.icon(options.icons.orderedlist),
           tooltip: lang.lists.ordered + representShortcut('insertOrderedList'),
@@ -5361,7 +5367,7 @@
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: ui.icon(options.icons.align) + ' ' + ui.icon(options.icons.caret, 'span'),
+            contents: ui.icon(options.icons.alignLeft) + ' ' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.paragraph.paragraph,
             data: {
               toggle: 'dropdown'
@@ -5604,7 +5610,7 @@
         for (var idx = 0, len = buttons.length; idx < len; idx++) {
           var button = context.memo('button.' + buttons[idx]);
           if (button) {
-            $group.append(typeof button === 'function' ? button() : button);
+            $group.append(typeof button === 'function' ? button(context) : button);
           }
         }
         $group.appendTo($container);
@@ -5640,10 +5646,7 @@
             .replace(/\s+$/, '')
             .replace(/^\s+/, '');
         });
-        var fontName = list.find(fontNames, function (name) {
-          return agent.isFontInstalled(name) ||
-            list.contains(options.fontNamesIgnoreCheck, name);
-        });
+        var fontName = list.find(fontNames, self.isFontInstalled);
 
         $toolbar.find('.dropdown-fontname li a').each(function () {
           // always compare string to avoid creating another func.
@@ -6266,7 +6269,6 @@
       return $video[0];
     };
 
-
     this.show = function () {
       var text = context.invoke('editor.getSelectedText');
       context.invoke('editor.saveRange');
@@ -6354,7 +6356,7 @@
 
       var body = [
         '<p class="text-center">',
-        '<a href="//summernote.org/" target="_blank">Summernote 0.7.3</a> · ',
+        '<a href="//summernote.org/" target="_blank">Summernote 0.7.4</a> · ',
         '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ',
         '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>',
         '</p>'
@@ -6699,7 +6701,7 @@
 
 
   $.summernote = $.extend($.summernote, {
-    version: '0.7.3',
+    version: '0.7.4',
     ui: ui,
 
     plugins: {},
@@ -6894,44 +6896,44 @@
         }
       },
       icons: {
-        'align': 'fa fa-align-left',
-        'alignCenter': 'fa fa-align-center',
-        'alignJustify': 'fa fa-align-justify',
-        'alignLeft': 'fa fa-align-left',
-        'alignRight': 'fa fa-align-right',
-        'indent': 'fa fa-indent',
-        'outdent': 'fa fa-outdent',
-        'arrowsAlt': 'fa fa-arrows-alt',
-        'bold': 'fa fa-bold',
-        'caret': 'caret',
-        'circle': 'fa fa-circle',
-        'close': 'fa fa-close',
-        'code': 'fa fa-code',
-        'eraser': 'fa fa-eraser',
-        'font': 'fa fa-font',
-        'frame': 'fa fa-frame',
-        'italic': 'fa fa-italic',
-        'link': 'fa fa-link',
-        'unlink': 'fa fa-chain-broken',
-        'magic': 'fa fa-magic',
-        'menuCheck': 'fa fa-check',
-        'minus': 'fa fa-minus',
-        'orderedlist': 'fa fa-list-ol',
-        'pencil': 'fa fa-pencil',
-        'picture': 'fa fa-picture-o',
-        'question': 'fa fa-question',
-        'redo': 'fa fa-repeat',
-        'square': 'fa fa-square',
-        'strikethrough': 'fa fa-strikethrough',
-        'subscript': 'fa fa-subscript',
-        'superscript': 'fa fa-superscript',
-        'table': 'fa fa-table',
-        'textHeight': 'fa fa-text-height',
-        'trash': 'fa fa-trash',
-        'underline': 'fa fa-underline',
-        'undo': 'fa fa-undo',
-        'unorderedlist': 'fa fa-list-ul',
-        'video': 'fa fa-youtube-play'
+        'align': 'note-icon-align',
+        'alignCenter': 'note-icon-align-center',
+        'alignJustify': 'note-icon-align-justify',
+        'alignLeft': 'note-icon-align-left',
+        'alignRight': 'note-icon-align-right',
+        'indent': 'note-icon-align-indent',
+        'outdent': 'note-icon-align-outdent',
+        'arrowsAlt': 'note-icon-arrows-alt',
+        'bold': 'note-icon-bold',
+        'caret': 'note-icon-caret',
+        'circle': 'note-icon-circle',
+        'close': 'note-icon-close',
+        'code': 'note-icon-code',
+        'eraser': 'note-icon-eraser',
+        'font': 'note-icon-font',
+        'frame': 'note-icon-frame',
+        'italic': 'note-icon-italic',
+        'link': 'note-icon-link',
+        'unlink': 'note-icon-chain-broken',
+        'magic': 'note-icon-magic',
+        'menuCheck': 'note-icon-check',
+        'minus': 'note-icon-minus',
+        'orderedlist': 'note-icon-orderedlist',
+        'pencil': 'note-icon-pencil',
+        'picture': 'note-icon-picture',
+        'question': 'note-icon-question',
+        'redo': 'note-icon-redo',
+        'square': 'note-icon-square',
+        'strikethrough': 'note-icon-strikethrough',
+        'subscript': 'note-icon-subscript',
+        'superscript': 'note-icon-superscript',
+        'table': 'note-icon-table',
+        'textHeight': 'note-icon-text-height',
+        'trash': 'note-icon-trash',
+        'underline': 'note-icon-underline',
+        'undo': 'note-icon-undo',
+        'unorderedlist': 'note-icon-unorderedlist',
+        'video': 'note-icon-video'
       }
     }
   });

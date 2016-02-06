@@ -5,14 +5,15 @@
  */
 define([
   'chai',
-  'helper',
+  'chaidom',
   'jquery',
   'summernote/base/core/dom',
   'summernote/base/core/func'
-], function (chai, helper, $, dom, func) {
+], function (chai, chaidom, $, dom, func) {
   'use strict';
 
   var expect = chai.expect;
+  chai.use(chaidom);
 
   describe('base:core.dom', function () {
     describe('ancestor', function () {
@@ -123,7 +124,7 @@ define([
         expect(dom.listNext($i[0])).to.deep.equal([$i[0]]);
       });
 
-      it('should restun an array of next sibling elements before predicate is true', function () {
+      it('should return an array of next sibling elements before predicate is true', function () {
         expect(dom.listNext($s[0], func.eq($i[0]))).to.deep.equal([$s[0]]);
       });
     });
@@ -161,7 +162,7 @@ define([
         $i = $cont.find('i');
       });
 
-      it('should return the positon of element', function () {
+      it('should return the position of element', function () {
         expect(dom.position($b[0])).to.be.equal(0);
         expect(dom.position($u[0])).to.be.equal(1);
         expect(dom.position($s[0])).to.be.equal(2);
@@ -228,7 +229,6 @@ define([
       });
     });
 
-
     describe('splitTree', function () {
       var $para;
       beforeEach(function () {
@@ -237,90 +237,90 @@ define([
       });
 
       describe('element pivot case', function () {
-        it('should be splited by u tag with offset 0', function () {
+        it('should be split by u tag with offset 0', function () {
           var $u = $para.find('u');
           dom.splitTree($para[0], {node: $u[0], offset: 0 });
 
-          helper.equalsToUpperCase($para.html(), '<b>b</b><u><br></u>', expect);
-          helper.equalsToUpperCase($para.next().html(), '<u>u</u><s>strike</s><i>i</i>', expect); // right hand side
+          expect($para.html()).to.equalsIgnoreCase('<b>b</b><u><br></u>');
+          expect($para.next().html()).to.equalsIgnoreCase('<u>u</u><s>strike</s><i>i</i>');
         });
 
-        it('should be splited by u tag with offset 1', function () {
+        it('should be split by u tag with offset 1', function () {
           var $u = $para.find('u');
           dom.splitTree($para[0], {node: $u[0], offset: 1 });
 
-          helper.equalsToUpperCase($para.html(), '<b>b</b><u>u</u>', expect);
-          helper.equalsToUpperCase($para.next().html(), '<u><br></u><s>strike</s><i>i</i>', expect); // right hand side
+          expect($para.html()).to.equalsIgnoreCase('<b>b</b><u>u</u>');
+          expect($para.next().html()).to.equalsIgnoreCase('<u><br></u><s>strike</s><i>i</i>');
         });
 
-        it('should be splited by b tag with offset 0 (left edge case)', function () {
+        it('should be split by b tag with offset 0 (left edge case)', function () {
           var $b = $para.find('b');
           dom.splitTree($para[0], {node: $b[0], offset: 0 });
 
-          helper.equalsToUpperCase($para.html(), '<b><br></b>', expect);
-          helper.equalsToUpperCase($para.next().html(), '<b>b</b><u>u</u><s>strike</s><i>i</i>', expect); // right hand side
+          expect($para.html()).to.equalsIgnoreCase('<b><br></b>');
+          expect($para.next().html()).to.equalsIgnoreCase('<b>b</b><u>u</u><s>strike</s><i>i</i>');
         });
 
-        it('should be splited by i tag with offset 1 (right edge case)', function () {
+        it('should be split by i tag with offset 1 (right edge case)', function () {
           var $i = $para.find('i');
           dom.splitTree($para[0], {node: $i[0], offset: 1 });
 
-          helper.equalsToUpperCase($para.html(), '<b>b</b><u>u</u><s>strike</s><i>i</i>', expect);
-          helper.equalsToUpperCase($para.next().html(), '<i><br></i>', expect); // right hand side
+          expect($para.html()).to.equalsIgnoreCase('<b>b</b><u>u</u><s>strike</s><i>i</i>');
+          expect($para.next().html()).to.equalsIgnoreCase('<i><br></i>');
         });
       });
 
       describe('textNode case', function () {
-        it('should be splited by s tag with offset 3 (middle case)', function () {
+        it('should be split by s tag with offset 3 (middle case)', function () {
           var $s = $para.find('s');
           dom.splitTree($para[0], {node: $s[0].firstChild, offset: 3 });
 
-          helper.equalsToUpperCase($para.html(), '<b>b</b><u>u</u><s>str</s>', expect);
-          helper.equalsToUpperCase($para.next().html(), '<s>ike</s><i>i</i>', expect); // right hand side
+          expect($para.html()).to.equalsIgnoreCase('<b>b</b><u>u</u><s>str</s>');
+          expect($para.next().html()).to.equalsIgnoreCase('<s>ike</s><i>i</i>');
         });
 
-        it('should be splited by s tag with offset 0 (left edge case)', function () {
+        it('should be split by s tag with offset 0 (left edge case)', function () {
           var $s = $para.find('s');
           dom.splitTree($para[0], {node: $s[0].firstChild, offset: 0 });
 
-          helper.equalsToUpperCase($para.html(), '<b>b</b><u>u</u><s><br></s>', expect);
-          helper.equalsToUpperCase($para.next().html(), '<s>strike</s><i>i</i>', expect); // right hand side
+          expect($para.html()).to.equalsIgnoreCase('<b>b</b><u>u</u><s><br></s>');
+          expect($para.next().html()).to.equalsIgnoreCase('<s>strike</s><i>i</i>');
         });
 
-        it('should be splited by s tag with offset 6 (right edge case)', function () {
+        it('should be split by s tag with offset 6 (right edge case)', function () {
           var $s = $para.find('s');
           dom.splitTree($para[0], {node: $s[0].firstChild, offset: 6 });
 
-          helper.equalsToUpperCase($para.html(), '<b>b</b><u>u</u><s>strike</s>', expect);
-          helper.equalsToUpperCase($para.next().html(), '<s><br></s><i>i</i>', expect); // right hand side
+          expect($para.html()).to.equalsIgnoreCase('<b>b</b><u>u</u><s>strike</s>');
+          expect($para.next().html()).to.equalsIgnoreCase('<s><br></s><i>i</i>');
         });
 
-        it('should be splited by s tag with offset 3 (2 depth case)', function () {
+        it('should be split by s tag with offset 3 (2 depth case)', function () {
           var $s = $para.find('s');
           dom.splitTree($s[0], {node: $s[0].firstChild, offset: 3 });
 
-          helper.equalsToUpperCase($para.html(), '<b>b</b><u>u</u><s>str</s><s>ike</s><i>i</i>', expect);
+          expect($para.html()).to.equalsIgnoreCase('<b>b</b><u>u</u><s>str</s><s>ike</s><i>i</i>');
         });
 
-        it('should be splited by s tag with offset 3 (1 depth and textNode case)', function () {
+        it('should be split by s tag with offset 3 (1 depth and textNode case)', function () {
           var $s = $para.find('s');
           dom.splitTree($s[0].firstChild, {node: $s[0].firstChild, offset: 3 });
 
-          helper.equalsToUpperCase($para.html(), '<b>b</b><u>u</u><s>strike</s><i>i</i>', expect);
+          expect($para.html()).to.equalsIgnoreCase('<b>b</b><u>u</u><s>strike</s><i>i</i>');
         });
 
-        it('should be splited by span tag with offset 2 (1 depth and element case)', function () {
+        it('should be split by span tag with offset 2 (1 depth and element case)', function () {
           var $cont = $('<div class="note-editable"><p><span><b>b</b><u>u</u><s>s</s><i>i</i></span></p></div>'); //busi
           var $span = $cont.find('span');
           dom.splitTree($span[0], {node: $span[0], offset: 2 });
 
-          helper.equalsToUpperCase($cont.html(), '<p><span><b>b</b><u>u</u></span><span><s>s</s><i>i</i></span></p>', expect);
+          expect($cont.html()).to.equalsIgnoreCase('<p><span><b>b</b><u>u</u></span><span><s>s</s><i>i</i></span></p>');
         });
       });
     });
 
     describe('splitPoint', function () {
-      it('should retun rightNode and container for empty paragraph with inline', function () {
+      it('should return rightNode and container for empty paragraph with inline', function () {
         var $editable = $('<div class="note-editable"><p><br></p></div>');
         var $para = $editable.clone().find('p');
         var $br = $para.find('br');

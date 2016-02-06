@@ -44,6 +44,12 @@ module.exports = function (grunt) {
       version: '11.0',
       platform: 'windows 8.1'
     },
+    'SL_EDGE': {
+      base: 'SauceLabs',
+      browserName: 'microsoftedge',
+      version: '20',
+      platform: 'windows 10'
+    },
     'SL_CHROME': {
       base: 'SauceLabs',
       browserName: 'chrome',
@@ -101,7 +107,7 @@ module.exports = function (grunt) {
     },
 
     jscs: {
-      src: 'src',
+      src: ['*.js', 'src/**/*.js', 'test/**/*.js'],
       gruntfile: 'Gruntfile.js',
       build: 'build'
     },
@@ -171,7 +177,7 @@ module.exports = function (grunt) {
     // watch source code change
     watch: {
       all: {
-        files: ['src/less/*.less', 'src/js/**/*.js'],
+        files: ['src/less/*.less', 'src/js/**/*.js', 'test/unit/**/*.js'],
         tasks: ['recess', 'lint'],
         options: {
           livereload: true
@@ -232,13 +238,26 @@ module.exports = function (grunt) {
       }
     },
     clean: {
-      dist: ['dist']
+      dist: ['dist/**/*']
     },
     copy: {
       dist: {
         files: [
-          {src: 'lang/*', dest: 'dist/'}
+          { src: 'lang/*', dest: 'dist/' },
+          { expand: true, cwd: 'src/icons/dist/font/', src: ['**', '!*.html'], dest: 'dist/font/' },
+          { src: 'src/icons/dist/summernote.css', dest: 'src/icons/dist/summernote.less' }
         ]
+      }
+    },
+    webfont: {
+      icons: {
+        src: 'src/icons/*.svg',
+        dest: 'src/icons/dist/font',
+        destCss: 'src/icons/dist/',
+        options: {
+          font: 'summernote',
+          template: 'src/icons/templates/summernote.css'
+        }
       }
     }
   });
@@ -267,7 +286,7 @@ module.exports = function (grunt) {
   // dist: make dist files
   grunt.registerTask('dist', [
     'clean:dist',
-    'build', 'jshint', 'karma:dist',
+    'build', 'webfont', 'lint', 'karma:dist',
     'copy:dist', 'uglify', 'recess', 'compress'
   ]);
 
@@ -278,5 +297,4 @@ module.exports = function (grunt) {
   grunt.registerTask('meteor-test', 'exec:meteor-test');
   grunt.registerTask('meteor-publish', 'exec:meteor-publish');
   grunt.registerTask('meteor', ['meteor-test', 'meteor-publish']);
-
 };

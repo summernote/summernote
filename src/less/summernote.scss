@@ -44,6 +44,14 @@ $background-color: #f5f5f5;
 
     .note-editable {
       outline: none;
+
+      sup {
+        vertical-align: super;
+      }
+
+      sub {
+        vertical-align: sub;
+      }
     }
   }
 }

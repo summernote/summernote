@@ -1,4 +1,5 @@
 @import "elements.less";
+@import "../icons/dist/summernote.less";
 
 /* Theme Variables
  ------------------------------------------*/
@@ -44,6 +45,14 @@
 
     .note-editable {
       outline: none;
+
+      sup {
+        vertical-align: super;
+      }
+
+      sub {
+        vertical-align: sub;
+      }
     }
   }
 }
@@ -326,6 +335,13 @@
       margin-bottom: 10px;
     }
   }
+
+  // [workaround] firefox fileinput
+  @-moz-document url-prefix() {
+    .note-image-input {
+      height: auto;
+    }
+  }
 }
 
 /* Placeholder
@@ -444,13 +460,4 @@
       }
     }
   }
-}
-
-/* Browser bug workarounds
-------------------------------------------*/
-sup {
-  vertical-align: super;
-}
-sub {
-  vertical-align: sub
 }

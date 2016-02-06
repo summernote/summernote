@@ -15,6 +15,7 @@ module.exports = function (config) {
       {pattern: 'src/js/**/*.js', included: false},
       {pattern: 'test/**/*.js', included: false},
       {pattern: 'node_modules/chai/*.js', included: false},
+      {pattern: 'node_modules/chai-spies/*.js', included: false},
       'test/test-main.js'
     ],
     // Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS, IE
@@ -23,8 +24,8 @@ module.exports = function (config) {
     singleRun: false,
     preprocessors: { 'src/js/**/!(app|intro|outro).js': 'coverage' },
     coverageReporter: {
-      type : 'lcov',
-      dir : 'test/coverage/',
+      type: 'lcov',
+      dir: 'test/coverage/',
       includeAllSources: true
     }
   });
