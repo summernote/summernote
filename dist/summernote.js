@@ -6,7 +6,7 @@
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2016-01-24T17:08Z
+ * Date: 2016-02-06T08:27Z
  */
 (function (factory) {
   /* global define */
@@ -393,6 +393,22 @@
 
   var isEdge = /Edge\/\d+/.test(userAgent);
 
+  var hasCodeMirror = !!window.CodeMirror;
+  if (!hasCodeMirror && isSupportAmd && require) {
+    if (require.hasOwnProperty('resolve')) {
+      try {
+        // If CodeMirror can't be resolved, `require.resolve` will throw an
+        // exception and `hasCodeMirror` won't be set to `true`.
+        require.resolve('codemirror');
+        hasCodeMirror = true;
+      } catch (e) {
+        hasCodeMirror = false;
+      }
+    } else if (require.hasOwnProperty('specified')) {
+      hasCodeMirror = require.specified('codemirror');
+    }
+  }
+
   /**
    * @class core.agent
    *
@@ -413,7 +429,7 @@
     browserVersion: browserVersion,
     jqueryVersion: parseFloat($.fn.jquery),
     isSupportAmd: isSupportAmd,
-    hasCodeMirror: isSupportAmd ? require.specified('codemirror') : !!window.CodeMirror,
+    hasCodeMirror: hasCodeMirror,
     isFontInstalled: isFontInstalled,
     isW3CRangeSupport: !!document.createRange
   };
@@ -2417,7 +2433,6 @@
         return this;
       };
 
-
       /**
        * Moves the scrollbar to start container(sc) of current range
        *
@@ -3135,7 +3150,6 @@
       applySnapshot(stack[stackOffset]);
     };
 
-
     /**
     * @method reset
     * Resets the history stack completely; reverting to an empty editor.
@@ -3749,7 +3763,6 @@
         context.triggerEvent('paste', event);
       });
 
-
       // init content before set event
       $editable.html(dom.html($note) || dom.emptyPara);
 
@@ -3767,7 +3780,7 @@
       });
 
       if (!options.airMode && options.height) {
-        $editable.outerHeight(options.height);
+        this.setHeight(options.height);
       }
       if (!options.airMode && options.maxHeight) {
         $editable.css('max-height', options.maxHeight);
@@ -4136,7 +4149,6 @@
     };
     /* jshint ignore:end */
 
-
     /**
      * fontSize
      *
@@ -4179,7 +4191,6 @@
       }
     });
     context.memo('help.insertHorizontalRule', lang.help.insertHorizontalRule);
-
 
     /**
      * remove bogus node and character
@@ -4250,7 +4261,7 @@
 
       var anchors = [];
       if (isTextChanged) {
-        // Create a new link when text changed.
+        rng = rng.deleteContents();
         var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
         anchors.push(anchor);
       } else {
@@ -4418,6 +4429,13 @@
      */
     this.empty = function () {
       context.invoke('code', dom.emptyPara);
+    };
+
+    /**
+     * set height for editable
+     */
+    this.setHeight = function (height) {
+      $editable.outerHeight(height);
     };
   };
 
@@ -5054,6 +5072,20 @@
       this.addToolbarButtons();
       this.addImagePopoverButtons();
       this.addLinkPopoverButtons();
+      this.fontInstalledMap = {};
+    };
+
+    this.destroy = function () {
+      delete this.fontInstalledMap;
+    };
+
+    this.isFontInstalled = function (name) {
+      if (!self.fontInstalledMap.hasOwnProperty(name)) {
+        self.fontInstalledMap[name] = agent.isFontInstalled(name) ||
+          list.contains(options.fontNamesIgnoreCheck, name);
+      }
+
+      return self.fontInstalledMap[name];
     };
 
     this.addToolbarButtons = function () {
@@ -5163,10 +5195,7 @@
           ui.dropdownCheck({
             className: 'dropdown-fontname',
             checkClassName: options.icons.menuCheck,
-            items: options.fontNames.filter(function (name) {
-              return agent.isFontInstalled(name) ||
-                list.contains(options.fontNamesIgnoreCheck, name);
-            }),
+            items: options.fontNames.filter(self.isFontInstalled),
             template: function (item) {
               return '<span style="font-family:' + item + '">' + item + '</span>';
             },
@@ -5581,7 +5610,7 @@
         for (var idx = 0, len = buttons.length; idx < len; idx++) {
           var button = context.memo('button.' + buttons[idx]);
           if (button) {
-            $group.append(typeof button === 'function' ? button() : button);
+            $group.append(typeof button === 'function' ? button(context) : button);
           }
         }
         $group.appendTo($container);
@@ -5617,10 +5646,7 @@
             .replace(/\s+$/, '')
             .replace(/^\s+/, '');
         });
-        var fontName = list.find(fontNames, function (name) {
-          return agent.isFontInstalled(name) ||
-            list.contains(options.fontNamesIgnoreCheck, name);
-        });
+        var fontName = list.find(fontNames, self.isFontInstalled);
 
         $toolbar.find('.dropdown-fontname li a').each(function () {
           // always compare string to avoid creating another func.
@@ -6242,7 +6268,6 @@
 
       return $video[0];
     };
-
 
     this.show = function () {
       var text = context.invoke('editor.getSelectedText');
@@ -6897,7 +6922,7 @@
         'pencil': 'note-icon-pencil',
         'picture': 'note-icon-picture',
         'question': 'note-icon-question',
-        'redo': 'note-icon-repeat',
+        'redo': 'note-icon-redo',
         'square': 'note-icon-square',
         'strikethrough': 'note-icon-strikethrough',
         'subscript': 'note-icon-subscript',
