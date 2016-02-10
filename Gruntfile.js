@@ -156,7 +156,8 @@ module.exports = function (grunt) {
           expand: true,
           src: [
             'dist/*.js',
-            'dist/*.css'
+            'dist/*.css',
+            'dist/font/*'
           ]
         }, {
           src: ['plugin/**/*.js', 'lang/**/*.js'],
