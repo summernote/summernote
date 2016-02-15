@@ -20,6 +20,12 @@ Package.onUse(function (api) {
     'dist/summernote.js',
     'dist/summernote.css'
   ], where);
+
+  api.addAssets([
+    'dist/font/summernote.eot',
+    'dist/font/summernote.ttf',
+    'dist/font/summernote.woff'
+  ], where);
 });
 
 Package.onTest(function (api) {
