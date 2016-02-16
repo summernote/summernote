@@ -84,7 +84,7 @@ define([
 
       if (!options.airMode) {
         if (options.width) {
-          $editable.outerWidth(options.width);
+          $editor.outerWidth(options.width);
         }
         if (options.height) {
           $editable.outerHeight(options.height);

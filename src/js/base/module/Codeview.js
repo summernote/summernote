@@ -54,7 +54,6 @@ define([
      */
     this.activate = function () {
       $codable.val(dom.html($editable, options.prettifyHtml));
-      $codable.width($editable.width());
       $codable.height($editable.height());
 
       context.invoke('toolbar.updateCodeview', true);
@@ -75,7 +74,7 @@ define([
         }
 
         // CodeMirror hasn't Padding.
-        cmEditor.setSize($editable.outerWidth(), $editable.outerHeight());
+        cmEditor.setSize(null, $editable.outerHeight());
         $codable.data('cmEditor', cmEditor);
       }
     };
@@ -95,6 +94,7 @@ define([
       var isChange = $editable.html() !== value;
 
       $editable.html(value);
+      $editable.height(options.height ? $codable.height() : 'auto');
       $editor.removeClass('codeview');
 
       if (isChange) {
