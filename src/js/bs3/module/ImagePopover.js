@@ -31,8 +31,8 @@ define([
         var pos = dom.posFromPlaceholder(target);
         this.$popover.css({
           display: 'block',
-          left: e.clientX - 21,
-          top: e.clientY + 32
+          left: event.clientX - 21,
+          top: event.clientY + 32
         });
       } else {
         this.hide();
