@@ -32,7 +32,7 @@ define([
         this.$popover.css({
           display: 'block',
           left: event.clientX - 21,
-          top: event.clientY + 32
+          top: event.clientY + 58
         });
       } else {
         this.hide();
