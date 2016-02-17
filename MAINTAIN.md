@@ -40,4 +40,5 @@ meteor/publish.sh
 ### 05. Update summernote.github.io
 Update summernote version in _config.yml.
 
-TODO...
+### 06. Update connector
+ - [summernote-rails](https://github.com/summernote/summernote-rails/blob/master/MAINTAIN.md)
