@@ -10,7 +10,7 @@ define([
 
     this.events = {
       'summernote.mousedown': function (we, e) {
-        if (self.update(e)) {
+        if (self.update(e.target)) {
           e.preventDefault();
         }
       },
@@ -68,12 +68,11 @@ define([
       this.$handle.remove();
     };
 
-    this.update = function (event) {
-      var target = event ? event.target : undefined;
+    this.update = function (target) {
       var isImage = dom.isImg(target);
       var $selection = this.$handle.find('.note-control-selection');
 
-      context.invoke('imagePopover.update', event);
+      context.invoke('imagePopover.update', target);
 
       if (isImage) {
         var $image = $(target);
