@@ -555,6 +555,7 @@ define([
       var linkUrl = linkInfo.url;
       var linkText = linkInfo.text;
       var isNewWindow = linkInfo.isNewWindow;
+      var isNoFollow = linkInfo.isNoFollow;
       var rng = linkInfo.range || this.createRange();
       var isTextChanged = rng.toString() !== linkText;
 
@@ -581,6 +582,11 @@ define([
           $(anchor).attr('target', '_blank');
         } else {
           $(anchor).removeAttr('target');
+        }
+        if (isNoFollow) {
+          $(anchor).attr('rel', 'nofollow');
+        } else {
+          $(anchor).removeAttr('rel');
         }
       });
 
@@ -616,6 +622,7 @@ define([
         range: rng,
         text: rng.toString(),
         isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : false,
+        isNoFollow: $anchor.length ? $anchor.attr('rel') === 'nofollow' : false,
         url: $anchor.length ? $anchor.attr('href') : ''
       };
     };

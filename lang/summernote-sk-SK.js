@@ -37,7 +37,8 @@
         edit: 'Upraviť',
         textToDisplay: 'Zobrazovaný text',
         url: 'Na akú URL adresu má tento odkaz viesť?',
-        openInNewWindow: 'Otvoriť v novom okne'
+        openInNewWindow: 'Otvoriť v novom okne',
+        noFollow: 'Pridať rel="nofollow" do odkazu'
       },
       table: {
         table: 'Tabuľka'

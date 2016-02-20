@@ -54,7 +54,8 @@ define([
         edit: 'Edit',
         textToDisplay: 'Text to display',
         url: 'To what URL should this link go?',
-        openInNewWindow: 'Open in new window'
+        openInNewWindow: 'Open in new window',
+        noFollow: 'Add rel="nofollow" to link'
       },
       table: {
         table: 'Table'

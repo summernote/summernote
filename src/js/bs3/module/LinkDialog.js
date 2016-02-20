@@ -22,9 +22,12 @@ define([
                  '</div>' +
                  (!options.disableLinkTarget ?
                    '<div class="checkbox">' +
-                     '<label>' + '<input type="checkbox" checked> ' + lang.link.openInNewWindow + '</label>' +
+                     '<label>' + '<input class="note-link-new-window" type="checkbox" checked> ' + lang.link.openInNewWindow + '</label>' +
                    '</div>' : ''
-                 );
+                 ) +
+                 '<div class="checkbox">' +
+                   '<label>' + '<input class="note-link-nofollow" type="checkbox" checked> ' + lang.link.noFollow + '</label>' +
+                 '</div>';
       var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
 
       this.$dialog = ui.dialog({
@@ -60,7 +63,8 @@ define([
         var $linkText = self.$dialog.find('.note-link-text'),
         $linkUrl = self.$dialog.find('.note-link-url'),
         $linkBtn = self.$dialog.find('.note-link-btn'),
-        $openInNewWindow = self.$dialog.find('input[type=checkbox]');
+        $openInNewWindow = self.$dialog.find('.note-link-new-window'),
+        $noFollow = self.$dialog.find('.note-link-nofollow');
 
         ui.onDialogShown(self.$dialog, function () {
           context.triggerEvent('dialog.shown');
@@ -93,6 +97,7 @@ define([
           self.bindEnterKey($linkText, $linkBtn);
 
           $openInNewWindow.prop('checked', linkInfo.isNewWindow);
+          $noFollow.prop('checked', linkInfo.isNoFollow);
 
           $linkBtn.one('click', function (event) {
             event.preventDefault();
@@ -101,7 +106,8 @@ define([
               range: linkInfo.range,
               url: $linkUrl.val(),
               text: $linkText.val(),
-              isNewWindow: $openInNewWindow.is(':checked')
+              isNewWindow: $openInNewWindow.is(':checked'),
+              isNoFollow: $noFollow.is(':checked')
             });
             self.$dialog.modal('hide');
           });
