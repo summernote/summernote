@@ -22,7 +22,7 @@
         floatNone: 'Float None',
         dragImageHere: 'Arraste uma imagem para cá',
         selectFromFiles: 'Selecione a partir dos arquivos',
-        url: 'URL da image'
+        url: 'URL da imagem'
       },
       video: {
         video: 'Vídeo',
