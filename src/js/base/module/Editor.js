@@ -254,7 +254,7 @@ define([
     var commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
                     'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
                     'formatBlock', 'removeFormat',
-                    'backColor', 'foreColor', 'fontName'];
+                    'backColor', 'fontName'];
 
     for (var idx = 0, len = commands.length; idx < len; idx ++) {
       this[commands[idx]] = (function (sCmd) {
@@ -659,6 +659,16 @@ define([
 
       if (foreColor) { document.execCommand('foreColor', false, foreColor); }
       if (backColor) { document.execCommand('backColor', false, backColor); }
+    });
+
+    /**
+     * Set foreground color
+     *
+     * @param {String} colorCode foreground color code
+     */
+    this.foreColor = this.wrapCommand(function (colorInfo) {
+      document.execCommand('styleWithCSS', false, true);
+      document.execCommand('foreColor', false, colorInfo);
     });
 
     /**
