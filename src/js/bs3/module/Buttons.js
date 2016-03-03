@@ -15,6 +15,9 @@ define([
     var invertedKeyMap = func.invertObject(options.keyMap[agent.isMac ? 'mac' : 'pc']);
 
     var representShortcut = this.representShortcut = function (editorMethod) {
+      if (!options.shortcuts) {
+        return '';
+      }
       var shortcut = invertedKeyMap[editorMethod];
       if (agent.isMac) {
         shortcut = shortcut.replace('CMD', '⌘').replace('SHIFT', '⇧');
