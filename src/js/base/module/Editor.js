@@ -47,8 +47,12 @@ define([
         }
         context.triggerEvent('keydown', event);
 
-        if (options.shortcuts && !event.isDefaultPrevented()) {
-          self.handleKeyMap(event);
+        if (!event.isDefaultPrevented()) {
+          if (options.shortcuts) {
+            self.handleKeyMap(event);
+          } else {
+            return self.preventDefaultEditableShortCuts(event);
+          }
         }
       }).on('keyup', function (event) {
         context.triggerEvent('keyup', event);
@@ -124,6 +128,15 @@ define([
       } else if (key.isEdit(event.keyCode)) {
         this.afterCommand();
       }
+    };
+
+    this.preventDefaultEditableShortCuts = function (event) {
+      if ((event.ctrlKey || event.metaKey) &&
+        //              Bold / Italic / Underline
+        list.contains([66, 98, 73, 105, 85, 117], event.keyCode)) {
+        return false;
+      }
+      return true;
     };
 
     /**
