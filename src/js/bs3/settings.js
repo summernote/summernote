@@ -243,7 +243,7 @@ define([
         'link': 'note-icon-link',
         'unlink': 'note-icon-chain-broken',
         'magic': 'note-icon-magic',
-        'menuCheck': 'note-icon-check',
+        'menuCheck': 'note-icon-menu-check',
         'minus': 'note-icon-minus',
         'orderedlist': 'note-icon-orderedlist',
         'pencil': 'note-icon-pencil',

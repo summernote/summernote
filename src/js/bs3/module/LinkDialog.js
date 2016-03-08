@@ -12,28 +12,12 @@ define([
     this.initialize = function () {
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
-      var body = '<div class="form-group">' +
-                   '<label>' + lang.link.textToDisplay + '</label>' +
-                   '<input class="note-link-text form-control" type="text" />' +
-                 '</div>' +
-                 '<div class="form-group">' +
-                   '<label>' + lang.link.url + '</label>' +
-                   '<input class="note-link-url form-control" type="text" value="http://" />' +
-                 '</div>' +
-                 (!options.disableLinkTarget ?
-                   '<div class="checkbox">' +
-                     '<label>' + '<input type="checkbox" checked> ' + lang.link.openInNewWindow + '</label>' +
-                   '</div>' : ''
-                 );
-      var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
-
-      this.$dialog = ui.dialog({
-        className: 'link-dialog',
-        title: lang.link.insert,
-        fade: options.dialogsFade,
-        body: body,
-        footer: footer
-      }).render().appendTo($container);
+      this.$dialog = ui.linkDialog({
+        lang: lang,
+        disableLinkTarget: options.disableLinkTarget,
+        fade: options.dialogsFade
+      });
+      this.$dialog.appendTo($container);
     };
 
     this.destroy = function () {

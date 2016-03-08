@@ -40,7 +40,7 @@ define([
         body: this.createShortCutList(),
         footer: body,
         callback: function ($node) {
-          $node.find('.modal-body').css({
+          ui.getDialogBody($node).css({
             'max-height': 300,
             'overflow': 'scroll'
           });

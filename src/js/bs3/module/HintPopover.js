@@ -42,7 +42,7 @@ define([
 
       this.$popover.hide();
 
-      this.$content = this.$popover.find('.popover-content');
+      this.$content = ui.getPopoverContent(this.$popover);
 
       this.$content.on('click', '.note-hint-item', function () {
         self.$content.find('.active').removeClass('active');

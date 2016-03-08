@@ -52,40 +52,48 @@ define([
     };
 
     this.addToolbarButtons = function () {
+
+      /**
+       * define style buttons
+       *
+       * styleTags : [item, item, ...]
+       *
+       * 1. if item is string , convert string to object. and go 2.
+       *
+       * { tag : item, title : item }
+       *
+       * 2. if item is object
+       *
+       * { tag : '', title : '', className : '', style : '', click : callback }
+       *
+       */
       context.memo('button.style', function () {
-        return ui.buttonGroup([
-          ui.button({
-            className: 'dropdown-toggle',
-            contents: ui.icon(options.icons.magic) + ' ' + ui.icon(options.icons.caret, 'span'),
-            tooltip: lang.style.style,
-            data: {
-              toggle: 'dropdown'
+
+        return ui.dropdownButton({
+          title: ui.icon(options.icons.magic),
+          className: 'dropdown-style',
+          tooltip: lang.style.style,
+          items: context.options.styleTags,
+          template: function (item) {
+
+            if (typeof item === 'string') {
+              item = { tag: item, title: item };
             }
-          }),
-          ui.dropdown({
-            className: 'dropdown-style',
-            items: context.options.styleTags,
-            template: function (item) {
 
-              if (typeof item === 'string') {
-                item = { tag: item, title: item };
-              }
+            var tag = item.tag;
+            var title = item.title || tag;
+            var style = item.style ? ' style="' + item.style + '" ' : '';
+            var className = item.className ? ' class="' + item.className + '"' : '';
 
-              var tag = item.tag;
-              var title = item.title;
-              var style = item.style ? ' style="' + item.style + '" ' : '';
-              var className = item.className ? ' className="' + item.className + '"' : '';
+            return '<' + tag + style + className + '>' + title + '</' + tag +  '>';
+          },
+          itemClick: context.createInvokeHandler('editor.formatBlock')
+        });
 
-              return '<' + tag + style + className + '>' + title + '</' + tag +  '>';
-            },
-            click: context.createInvokeHandler('editor.formatBlock')
-          })
-        ]).render();
       });
 
       context.memo('button.bold', function () {
         return ui.button({
-          className: 'note-btn-bold',
           contents: ui.icon(options.icons.bold),
           tooltip: lang.font.bold + representShortcut('bold'),
           click: context.createInvokeHandler('editor.bold')
@@ -94,7 +102,6 @@ define([
 
       context.memo('button.italic', function () {
         return ui.button({
-          className: 'note-btn-italic',
           contents: ui.icon(options.icons.italic),
           tooltip: lang.font.italic + representShortcut('italic'),
           click: context.createInvokeHandler('editor.italic')
@@ -103,7 +110,6 @@ define([
 
       context.memo('button.underline', function () {
         return ui.button({
-          className: 'note-btn-underline',
           contents: ui.icon(options.icons.underline),
           tooltip: lang.font.underline + representShortcut('underline'),
           click: context.createInvokeHandler('editor.underline')
@@ -120,7 +126,6 @@ define([
 
       context.memo('button.strikethrough', function () {
         return ui.button({
-          className: 'note-btn-strikethrough',
           contents: ui.icon(options.icons.strikethrough),
           tooltip: lang.font.strikethrough + representShortcut('strikethrough'),
           click: context.createInvokeHandler('editor.strikethrough')
@@ -129,7 +134,6 @@ define([
 
       context.memo('button.superscript', function () {
         return ui.button({
-          className: 'note-btn-superscript',
           contents: ui.icon(options.icons.superscript),
           tooltip: lang.font.superscript,
           click: context.createInvokeHandler('editor.superscript')
@@ -138,7 +142,6 @@ define([
 
       context.memo('button.subscript', function () {
         return ui.button({
-          className: 'note-btn-subscript',
           contents: ui.icon(options.icons.subscript),
           tooltip: lang.font.subscript,
           click: context.createInvokeHandler('editor.subscript')
@@ -146,125 +149,54 @@ define([
       });
 
       context.memo('button.fontname', function () {
-        return ui.buttonGroup([
-          ui.button({
-            className: 'dropdown-toggle',
-            contents: '<span class="note-current-fontname"/> ' + ui.icon(options.icons.caret, 'span'),
-            tooltip: lang.font.name,
-            data: {
-              toggle: 'dropdown'
-            }
-          }),
-          ui.dropdownCheck({
-            className: 'dropdown-fontname',
-            checkClassName: options.icons.menuCheck,
-            items: options.fontNames.filter(self.isFontInstalled),
-            template: function (item) {
-              return '<span style="font-family:' + item + '">' + item + '</span>';
-            },
-            click: context.createInvokeHandler('editor.fontName')
-          })
-        ]).render();
+        return ui.dropdownCheckButton({
+          title: '<span class="note-current-fontname"/>',
+          className: 'dropdown-fontname',
+          tooltip: lang.font.name,
+          checkClassName: options.icons.menuCheck,
+          items: options.fontNames.filter(self.isFontInstalled),
+          template: function (item) {
+            return '<span style="font-family:' + item + '">' + item + '</span>';
+          },
+          itemClick: context.createInvokeHandler('editor.fontName')
+        });
       });
 
       context.memo('button.fontsize', function () {
-        return ui.buttonGroup([
-          ui.button({
-            className: 'dropdown-toggle',
-            contents: '<span class="note-current-fontsize"/>' + ui.icon(options.icons.caret, 'span'),
-            tooltip: lang.font.size,
-            data: {
-              toggle: 'dropdown'
-            }
-          }),
-          ui.dropdownCheck({
-            className: 'dropdown-fontsize',
-            checkClassName: options.icons.menuCheck,
-            items: options.fontSizes,
-            click: context.createInvokeHandler('editor.fontSize')
-          })
-        ]).render();
+        return ui.dropdownCheckButton({
+          title: '<span class="note-current-fontsize"/>',
+          className: 'dropdown-fontsize',
+          tooltip: lang.font.size,
+          checkClassName: options.icons.menuCheck,
+          items: options.fontSizes,
+          template: function (item) {
+            return '<span style="font-family:' + item + '">' + item + '</span>';
+          },
+          itemClick: context.createInvokeHandler('editor.fontSize')
+        });
       });
 
+      var createColorButton = function (type) {
+        return ui.colorDropdownButton({
+          title: ui.icon(options.icons.font + ' note-recent-color'),
+          lang: lang,
+          currentClick: function (e) {
+            var $button = $(e.currentTarget);
+
+            context.invoke('editor.color', {
+              backColor: $button.attr('data-backColor'),
+              foreColor: $button.attr('data-foreColor')
+            });
+          },
+          colors: options.colors,
+          itemClick: function (eventName, value) {
+            context.invoke('editor.' + eventName, value);
+          }
+        }, type || '');
+      };
+
       context.memo('button.color', function () {
-        return ui.buttonGroup({
-          className: 'note-color',
-          children: [
-            ui.button({
-              className: 'note-current-color-button',
-              contents: ui.icon(options.icons.font + ' note-recent-color'),
-              tooltip: lang.color.recent,
-              click: function (e) {
-                var $button = $(e.currentTarget);
-                context.invoke('editor.color', {
-                  backColor: $button.attr('data-backColor'),
-                  foreColor: $button.attr('data-foreColor')
-                });
-              },
-              callback: function ($button) {
-                var $recentColor = $button.find('.note-recent-color');
-                $recentColor.css('background-color', '#FFFF00');
-                $button.attr('data-backColor', '#FFFF00');
-              }
-            }),
-            ui.button({
-              className: 'dropdown-toggle',
-              contents: ui.icon(options.icons.caret, 'span'),
-              tooltip: lang.color.more,
-              data: {
-                toggle: 'dropdown'
-              }
-            }),
-            ui.dropdown({
-              items: [
-                '<li>',
-                '<div class="btn-group">',
-                '  <div class="note-palette-title">' + lang.color.background + '</div>',
-                '  <div>',
-                '    <button type="button" class="note-color-reset btn btn-default" data-event="backColor" data-value="inherit">',
-                lang.color.transparent,
-                '    </button>',
-                '  </div>',
-                '  <div class="note-holder" data-event="backColor"/>',
-                '</div>',
-                '<div class="btn-group">',
-                '  <div class="note-palette-title">' + lang.color.foreground + '</div>',
-                '  <div>',
-                '    <button type="button" class="note-color-reset btn btn-default" data-event="removeFormat" data-value="foreColor">',
-                lang.color.resetToDefault,
-                '    </button>',
-                '  </div>',
-                '  <div class="note-holder" data-event="foreColor"/>',
-                '</div>',
-                '</li>'
-              ].join(''),
-              callback: function ($dropdown) {
-                $dropdown.find('.note-holder').each(function () {
-                  var $holder = $(this);
-                  $holder.append(ui.palette({
-                    colors: options.colors,
-                    eventName: $holder.data('event')
-                  }).render());
-                });
-              },
-              click: function (event) {
-                var $button = $(event.target);
-                var eventName = $button.data('event');
-                var value = $button.data('value');
-
-                if (eventName && value) {
-                  var key = eventName === 'backColor' ? 'background-color' : 'color';
-                  var $color = $button.closest('.note-color').find('.note-recent-color');
-                  var $currentButton = $button.closest('.note-color').find('.note-current-color-button');
-
-                  $color.css(key, value);
-                  $currentButton.attr('data-' + eventName, value);
-                  context.invoke('editor.' + eventName, value);
-                }
-              }
-            })
-          ]
-        }).render();
+        return createColorButton();
       });
 
       context.memo('button.ul',  function () {
@@ -327,78 +259,38 @@ define([
       context.memo('button.indent', func.invoke(indent, 'render'));
 
       context.memo('button.paragraph', function () {
-        return ui.buttonGroup([
-          ui.button({
-            className: 'dropdown-toggle',
-            contents: ui.icon(options.icons.alignLeft) + ' ' + ui.icon(options.icons.caret, 'span'),
-            tooltip: lang.paragraph.paragraph,
-            data: {
-              toggle: 'dropdown'
-            }
-          }),
-          ui.dropdown([
-            ui.buttonGroup({
-              className: 'note-align',
-              children: [justifyLeft, justifyCenter, justifyRight, justifyFull]
-            }),
-            ui.buttonGroup({
-              className: 'note-list',
-              children: [outdent, indent]
-            })
-          ])
-        ]).render();
+        return ui.paragraphDropdownButton({
+          title: ui.icon(options.icons.alignLeft),
+          tooltip: lang.paragraph.paragraph,
+          items: [
+            [justifyLeft, justifyCenter, justifyRight, justifyFull],
+            [outdent, indent]
+          ]
+        });
+
       });
 
       context.memo('button.height', function () {
-        return ui.buttonGroup([
-          ui.button({
-            className: 'dropdown-toggle',
-            contents: ui.icon(options.icons.textHeight) + ' ' + ui.icon(options.icons.caret, 'span'),
-            tooltip: lang.font.height,
-            data: {
-              toggle: 'dropdown'
-            }
-          }),
-          ui.dropdownCheck({
-            items: options.lineHeights,
-            checkClassName: options.icons.menuCheck,
-            className: 'dropdown-line-height',
-            click: context.createInvokeHandler('editor.lineHeight')
-          })
-        ]).render();
+        return ui.dropdownCheckButton({
+          title: ui.icon(options.icons.textHeight),
+          className: 'dropdown-line-height',
+          tooltip: lang.font.height,
+          items: options.lineHeights,
+          checkClassName: options.icons.menuCheck,
+          itemClick: context.createInvokeHandler('editor.lineHeight')
+        });
       });
 
       context.memo('button.table', function () {
-        return ui.buttonGroup([
-          ui.button({
-            className: 'dropdown-toggle',
-            contents: ui.icon(options.icons.table) + ' ' + ui.icon(options.icons.caret, 'span'),
-            tooltip: lang.table.table,
-            data: {
-              toggle: 'dropdown'
-            }
-          }),
-          ui.dropdown({
-            className: 'note-table',
-            items: [
-              '<div class="note-dimension-picker">',
-              '  <div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>',
-              '  <div class="note-dimension-picker-highlighted"/>',
-              '  <div class="note-dimension-picker-unhighlighted"/>',
-              '</div>',
-              '<div class="note-dimension-display">1 x 1</div>'
-            ].join('')
-          })
-        ], {
-          callback: function ($node) {
-            var $catcher = $node.find('.note-dimension-picker-mousecatcher');
-            $catcher.css({
-              width: options.insertTableMaxSize.col + 'em',
-              height: options.insertTableMaxSize.row + 'em'
-            }).mousedown(context.createInvokeHandler('editor.insertTable'))
-              .on('mousemove', self.tableMoveHandler);
-          }
-        }).render();
+
+        return ui.tableDropdownButton({
+          title: ui.icon(options.icons.table),
+          tooltip: lang.table.table,
+          col: options.insertTableMaxSize.col,
+          row: options.insertTableMaxSize.row,
+          itemClick: context.createInvokeHandler('editor.insertTable')
+        });
+
       });
 
       context.memo('button.link', function () {
@@ -435,7 +327,6 @@ define([
 
       context.memo('button.fullscreen', function () {
         return ui.button({
-          className: 'btn-fullscreen',
           contents: ui.icon(options.icons.arrowsAlt),
           tooltip: lang.options.fullscreen,
           click: context.createInvokeHandler('fullscreen.toggle')
@@ -444,7 +335,6 @@ define([
 
       context.memo('button.codeview', function () {
         return ui.button({
-          className: 'btn-codeview',
           contents: ui.icon(options.icons.code),
           tooltip: lang.options.codeview,
           click: context.createInvokeHandler('codeview.toggle')
@@ -477,7 +367,7 @@ define([
     };
 
     /**
-     * image : [
+     * image: [
      *   ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
      *   ['float', ['floatLeft', 'floatRight', 'floatNone' ]],
      *   ['remove', ['removeMedia']]
@@ -573,7 +463,10 @@ define([
         for (var idx = 0, len = buttons.length; idx < len; idx++) {
           var button = context.memo('button.' + buttons[idx]);
           if (button) {
-            $group.append(typeof button === 'function' ? button(context) : button);
+            // create button and then add class note-btn-xxx
+            var buttonObject = typeof button === 'function' ? button(context) : button;
+            var $btn = $(buttonObject).addClass('note-btn-' + buttons[idx]);
+            $group.append($btn);
           }
         }
         $group.appendTo($container);
@@ -582,6 +475,7 @@ define([
 
     this.updateCurrentStyle = function () {
       var styleInfo = context.invoke('editor.currentStyle');
+
       this.updateBtnStates({
         '.note-btn-bold': function () {
           return styleInfo['font-bold'] === 'bold';
@@ -610,32 +504,21 @@ define([
             .replace(/^\s+/, '');
         });
         var fontName = list.find(fontNames, self.isFontInstalled);
-
-        $toolbar.find('.dropdown-fontname li a').each(function () {
-          // always compare string to avoid creating another func.
-          var isChecked = ($(this).data('value') + '') === (fontName + '');
-          this.className = isChecked ? 'checked' : '';
+        ui.check($toolbar.find('.dropdown-fontname'), fontName);
+        $toolbar.find('.note-current-fontname').text(fontName).css({
+          'font-family': fontName
         });
-        $toolbar.find('.note-current-fontname').text(fontName);
       }
 
       if (styleInfo['font-size']) {
         var fontSize = styleInfo['font-size'];
-        $toolbar.find('.dropdown-fontsize li a').each(function () {
-          // always compare with string to avoid creating another func.
-          var isChecked = ($(this).data('value') + '') === (fontSize + '');
-          this.className = isChecked ? 'checked' : '';
-        });
+        ui.check($toolbar.find('.dropdown-fontsize'), fontSize);
         $toolbar.find('.note-current-fontsize').text(fontSize);
       }
 
       if (styleInfo['line-height']) {
         var lineHeight = styleInfo['line-height'];
-        $toolbar.find('.dropdown-line-height li a').each(function () {
-          // always compare with string to avoid creating another func.
-          var isChecked = ($(this).data('value') + '') === (lineHeight + '');
-          this.className = isChecked ? 'checked' : '';
-        });
+        ui.check($toolbar.find('.dropdown-line-height'), lineHeight);
       }
     };
 
@@ -643,48 +526,6 @@ define([
       $.each(infos, function (selector, pred) {
         ui.toggleBtnActive($toolbar.find(selector), pred());
       });
-    };
-
-    this.tableMoveHandler = function (event) {
-      var PX_PER_EM = 18;
-      var $picker = $(event.target.parentNode); // target is mousecatcher
-      var $dimensionDisplay = $picker.next();
-      var $catcher = $picker.find('.note-dimension-picker-mousecatcher');
-      var $highlighted = $picker.find('.note-dimension-picker-highlighted');
-      var $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
-
-      var posOffset;
-      // HTML5 with jQuery - e.offsetX is undefined in Firefox
-      if (event.offsetX === undefined) {
-        var posCatcher = $(event.target).offset();
-        posOffset = {
-          x: event.pageX - posCatcher.left,
-          y: event.pageY - posCatcher.top
-        };
-      } else {
-        posOffset = {
-          x: event.offsetX,
-          y: event.offsetY
-        };
-      }
-
-      var dim = {
-        c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
-        r: Math.ceil(posOffset.y / PX_PER_EM) || 1
-      };
-
-      $highlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });
-      $catcher.data('value', dim.c + 'x' + dim.r);
-
-      if (3 < dim.c && dim.c < options.insertTableMaxSize.col) {
-        $unhighlighted.css({ width: dim.c + 1 + 'em'});
-      }
-
-      if (3 < dim.r && dim.r < options.insertTableMaxSize.row) {
-        $unhighlighted.css({ height: dim.r + 1 + 'em'});
-      }
-
-      $dimensionDisplay.html(dim.c + ' x ' + dim.r);
     };
   };
 
