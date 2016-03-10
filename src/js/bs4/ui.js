@@ -1,11 +1,11 @@
 define([
   'summernote/base/renderer'
 ], function (renderer) {
-  var editor = renderer.create('<div class="note-editor note-frame panel panel-default"/>');
-  var toolbar = renderer.create('<div class="note-toolbar panel-heading"/>');
+  var editor = renderer.create('<div class="note-editor note-frame card"/>');
+  var toolbar = renderer.create('<div class="note-toolbar card-header btn-toolbar"/>');
   var editingArea = renderer.create('<div class="note-editing-area"/>');
   var codable = renderer.create('<textarea class="note-codable"/>');
-  var editable = renderer.create('<div class="note-editable panel-body" contentEditable="true"/>');
+  var editable = renderer.create('<div class="note-editable card-block" contentEditable="true"/>');
   var statusbar = renderer.create([
     '<div class="note-statusbar">',
     '  <div class="note-resizebar">',
@@ -20,7 +20,12 @@ define([
   var airEditable = renderer.create('<div class="note-editable" contentEditable="true"/>');
 
   var buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
-  var button = renderer.create('<button type="button" class="note-btn btn btn-default btn-sm">', function ($node, options) {
+  var button = renderer.create('<button type="button" class="note-btn btn btn-sm">', function ($node, options) {
+
+    // set button type
+    var buttonClass = ['btn', '-' + (options.type || 'secondary'), options.outline ? '-outline' : ''].join('');
+    $node.addClass(buttonClass);
+
     if (options && options.tooltip) {
       $node.attr({
         title: options.tooltip
@@ -32,20 +37,20 @@ define([
     }
   });
 
-  var dropdown = renderer.create('<ul class="dropdown-menu">', function ($node, options) {
+  var dropdown = renderer.create('<div class="dropdown-menu">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
       var value = (typeof item === 'string') ? item : (item.value || '');
       var content = options.template ? options.template(item) : item;
-      var $temp = $('<li><a href="#" data-value="' + value + '"></a></li>');
+      var $temp = $('<a class="dropdown-item" href="#" data-value="' + value + '"></a>');
 
-      $temp.find('a').html(content).data('item', item);
+      $temp.html(content).data('item', item);
 
       return $temp;
     }) : options.items;
 
     $node.html(markup);
 
-    $node.on('click', 'li > a', function (e) {
+    $node.on('click', '> .dropdown-item', function (e) {
       var $a = $(this);
 
       var item = $a.data('item');
@@ -60,19 +65,19 @@ define([
     });
   });
 
-  var dropdownCheck = renderer.create('<ul class="dropdown-menu note-check">', function ($node, options) {
+  var dropdownCheck = renderer.create('<div class="dropdown-menu note-check">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
       var value = (typeof item === 'string') ? item : (item.value || '');
       var content = options.template ? options.template(item) : item;
 
-      var $temp = $('<li><a href="#" data-value="' + value + '"></a></li>');
-      $temp.find('a').html([icon(options.checkClassName), ' ', content]).data('item', item);
+      var $temp = $('<a class="dropdown-item" href="#" data-value="' + value + '"></a>');
+      $temp.html([icon(options.checkClassName), ' ', content]).data('item', item);
       return $temp;
     }) : options.items;
 
     $node.html(markup);
 
-    $node.on('click', 'li > a', function (e) {
+    $node.on('click', '> .dropdown-item', function (e) {
       var $a = $(this);
 
       var item = $a.data('item');
@@ -286,11 +291,12 @@ define([
         }),
         dropdown({
           items: [
-            '<li>',
+            '<div>',
             '<div class="btn-group btn-background-color">',
             '  <div class="note-palette-title">' + opt.lang.color.background + '</div>',
             '  <div>',
-            '    <button type="button" class="note-color-reset btn btn-default" data-event="backColor" data-value="inherit">',
+            '<button type="button" class="note-color-reset btn btn-secondary btn-block" ' +
+            ' data-event="backColor" data-value="inherit">',
             opt.lang.color.transparent,
             '    </button>',
             '  </div>',
@@ -299,13 +305,14 @@ define([
             '<div class="btn-group btn-foreground-color">',
             '  <div class="note-palette-title">' + opt.lang.color.foreground + '</div>',
             '  <div>',
-            '    <button type="button" class="note-color-reset btn btn-default" data-event="removeFormat" data-value="foreColor">',
+            '<button type="button" class="note-color-reset btn btn-secondary btn-block" ' +
+            ' data-event="removeFormat" data-value="foreColor">',
             opt.lang.color.resetToDefault,
             '    </button>',
             '  </div>',
             '  <div class="note-holder" data-event="foreColor"/>',
             '</div>',
-            '</li>'
+            '</div>'
           ].join(''),
           callback: function ($dropdown) {
             $dropdown.find('.note-holder').each(function () {
@@ -447,14 +454,14 @@ define([
   };
 
   var popover = renderer.create([
-    '<div class="note-popover popover in">',
+    '<div class="note-popover popover fade in">',
     '  <div class="arrow"/>',
     '  <div class="popover-content note-children-container"/>',
     '</div>'
   ].join(''), function ($node, options) {
     var direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
 
-    $node.addClass(direction);
+    $node.addClass(direction).hide();
 
     if (options.hideArrow) {
       $node.find('.arrow').hide();

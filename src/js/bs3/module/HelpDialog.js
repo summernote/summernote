@@ -42,7 +42,7 @@ define([
         callback: function ($node) {
           ui.getDialogBody($node).css({
             'max-height': 300,
-            'overflow': 'scroll'
+            'overflow-y': 'auto'
           });
         }
       }).render().appendTo($container);

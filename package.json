@@ -17,6 +17,7 @@
   },
   "main": "dist/summernote.js",
   "devDependencies": {
+    "bootstrap": "^4.0.0-alpha.2",
     "chai": "^3.2.0",
     "chai-spies": "^0.7.1",
     "grunt": "*",
@@ -25,6 +26,7 @@
     "grunt-contrib-connect": "*",
     "grunt-contrib-copy": "^0.8.2",
     "grunt-contrib-jshint": "0.7.2",
+    "grunt-contrib-sass": "^1.0.0",
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-contrib-watch": "*",
     "grunt-coveralls": "^1.0.0",
@@ -49,6 +51,7 @@
     "mocha": "^2.3.4",
     "open": "0.0.4",
     "phantomjs": "^1.9.17",
-    "requirejs": "^2.1.22"
+    "requirejs": "^2.1.22",
+    "tether": "^1.2.0"
   }
 }

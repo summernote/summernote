@@ -1,12 +1,11 @@
-@import "elements.scss";
+@import "elements";
+@import "../icons/dist/_summernote.scss";
 
-/* Theme Variables
- ------------------------------------------*/
+/* Theme Variables ------------------------------------------*/
 $border-color: #a9a9a9;
 $background-color: #f5f5f5;
 
-/* Layout
- ------------------------------------------*/
+/* Layout  ------------------------------------------*/
 .note-editor {
   position: relative;
 
@@ -166,7 +165,7 @@ $background-color: #f5f5f5;
 
 /* Popover and Toolbar (Button container)
 ------------------------------------------*/
-.note-popover .popover-content, .panel-heading.note-toolbar {
+.note-popover .popover-content, .note-toolbar {
   margin: 0;
   padding: 0 0 5px 5px;
 
@@ -215,7 +214,6 @@ $background-color: #f5f5f5;
 
   .note-color {
     .dropdown-toggle {
-      width: 20px;
       padding-left: 5px;
     }
     .dropdown-menu {
@@ -276,11 +274,11 @@ $background-color: #f5f5f5;
     }
     /* dropdown-menu for selectbox */
     &.note-check {
-      li a i {
+      .dropdown-item i {
         color: deepskyblue;
         visibility: hidden;
       }
-      li a.checked i {
+      .dropdown-item.checked i {
         visibility: visible;
       }
     }
