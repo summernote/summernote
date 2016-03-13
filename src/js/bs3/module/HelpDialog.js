@@ -15,7 +15,7 @@ define([
       return Object.keys(keyMap).map(function (key) {
         var command = keyMap[key];
         var $row = $('<div><div class="help-list-item"/></div>');
-        $row.append($('<label><kbd>' + key + '</kdb></label>').css({
+        $row.find('.help-list-item').append($('<label><kbd>' + key + '</kbd></label>').css({
           'width': 180,
           'margin-right': 10
         })).append($('<span/>').html(context.memo('help.' + command) || command));

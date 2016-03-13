@@ -1,0 +1,95 @@
+.note-modal {
+  position:absolute;
+  left:0px;
+  right:0px;
+  top:0px;
+  bottom:0px;
+  overflow:hidden;
+  z-index: @zindex-modal;
+  .opacity(1);
+  display:none;
+
+  &.open {
+    display:block;
+  }
+}
+
+
+
+
+.note-modal-content {
+  position: relative;
+  width: auto;
+  margin: 30px 20px;
+  border: 1px solid @modal-content-border-color;
+  background: @modal-content-bg;
+  background-clip: border-box;
+  outline:0;
+}
+
+.note-modal-header {
+  padding-top: 30px;
+  padding-bottom:20px;
+  padding-right:20px;
+  padding-left:20px;
+  border: 1px solid #ededef;
+
+  .close {
+    margin-top:-10px;
+  }
+
+}
+
+.note-modal-body {
+  position:relative;
+  padding: 20px 30px;
+}
+
+.note-modal-footer {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 10px;
+  padding-left: 10px;
+  text-align:center;
+
+}
+
+.note-modal-title {
+  text-align: center;
+  font-size: 26px;
+  color: #42515f;
+  margin: 0px;
+  line-height: 1.4;
+}
+
+.note-modal-backdrop {
+  position:absolute;
+  left:0px;
+  right:0px;
+  bottom:0px;
+  top:0px;
+  z-index: @zindex-modal-background;
+  background: @modal-backdrop-bg;
+  .opacity(0.5);
+  display:none;
+
+  &.open {
+    display:block;
+  }
+}
+
+
+// Scale up the modal
+@media (min-width: 768px) {
+  // Automatically set modal's width for larger viewports
+  .note-modal-content {
+    width: 600px;
+    margin: 30px auto;
+  }
+}
+
+@media (min-width: 992px) {
+  .note-modal-content-large {
+    width: 900px;
+  }
+}
