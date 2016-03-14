@@ -131,13 +131,9 @@ define([
     };
 
     this.preventDefaultEditableShortCuts = function (event) {
+      // B(Bold, 66) / I(Italic, 73) / U(Underline, 85)
       if ((event.ctrlKey || event.metaKey) &&
-        /**
-         *            Bold      : B(66) / b(98)
-         *            Italic    : I(73) / i(105)
-         *            Underline : U(85) / u(117)
-         */
-        list.contains([66, 98, 73, 105, 85, 117], event.keyCode)) {
+        list.contains([66, 73, 85], event.keyCode)) {
         return false;
       }
       return true;
