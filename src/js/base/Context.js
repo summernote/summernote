@@ -17,6 +17,7 @@ define([
     this.modules = {};
     this.layoutInfo = {};
     this.options = options;
+    this.dom = dom;
 
     /**
      * create layout and initialize modules and other resources
