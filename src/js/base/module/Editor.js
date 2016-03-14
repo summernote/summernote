@@ -51,7 +51,7 @@ define([
           if (options.shortcuts) {
             self.handleKeyMap(event);
           } else {
-            return self.preventDefaultEditableShortCuts(event);
+            self.preventDefaultEditableShortCuts(event);
           }
         }
       }).on('keyup', function (event) {
@@ -132,7 +132,11 @@ define([
 
     this.preventDefaultEditableShortCuts = function (event) {
       if ((event.ctrlKey || event.metaKey) &&
-        //              Bold / Italic / Underline
+        /**
+         *            Bold      : B(66) / b(98)
+         *            Italic    : I(73) / i(105)
+         *            Underline : U(85) / u(117)
+         */
         list.contains([66, 98, 73, 105, 85, 117], event.keyCode)) {
         return false;
       }
