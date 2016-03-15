@@ -11,6 +11,14 @@ module.exports = function (grunt) {
   grunt.registerMultiTask('build', 'concatenate source: summernote.js', function () {
     var self = this;
 
+    var includeFile;
+
+    switch (this.data.name) {
+      case 'bootstrap4' :  includeFile = 'summernote/bs4/settings'; break;
+      case 'lite' :  includeFile = 'summernote/lite/settings'; break;
+      default :  includeFile = 'summernote/bs3/settings'; break;
+    }
+
     var done = this.async();
     requirejs.optimize({
       name: 'summernote/summernote',
@@ -54,7 +62,7 @@ module.exports = function (grunt) {
         return contents;
       },
       excludeShallow: ['jquery', 'codemirror', 'app'],
-      include: ['summernote/bs3/settings'],
+      include: [ includeFile ],
       paths: {
         jquery: 'empty:',
         codemirror: 'empty:'

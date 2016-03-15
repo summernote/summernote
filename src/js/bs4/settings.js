@@ -1,5 +1,5 @@
 define([
-  'summernote/bs3/ui',
+  'summernote/bs4/ui',
   'summernote/base/summernote-en-US',
   'summernote/base/module/Editor',
   'summernote/base/module/Clipboard',
@@ -107,7 +107,7 @@ define([
       textareaAutoSync: true,
       direction: null,
 
-      styleTags: ['p', 'blockquote', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+      styleTags: ['p', { tag: 'blockquote', className: 'blockquote'}, 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
 
       fontNames: [
         'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New',

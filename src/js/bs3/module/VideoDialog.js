@@ -12,18 +12,11 @@ define([
     this.initialize = function () {
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
-      var body = '<div class="form-group row-fluid">' +
-          '<label>' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
-          '<input class="note-video-url form-control span12" type="text" />' +
-          '</div>';
-      var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
-
-      this.$dialog = ui.dialog({
-        title: lang.video.insert,
-        fade: options.dialogsFade,
-        body: body,
-        footer: footer
-      }).render().appendTo($container);
+      this.$dialog = ui.videoDialog({
+        lang: lang,
+        fade: options.dialogsFade
+      });
+      this.$dialog.appendTo($container);
     };
 
     this.destroy = function () {

@@ -3,6 +3,7 @@ define(function () {
     var ui = $.summernote.ui;
 
     var $note = context.layoutInfo.note;
+    var $editor = context.layoutInfo.editor;
     var $toolbar = context.layoutInfo.toolbar;
     var options = context.options;
 
@@ -19,9 +20,7 @@ define(function () {
         context.invoke('buttons.build', $toolbar, options.toolbar);
       }
 
-      if (options.toolbarContainer) {
-        $toolbar.appendTo(options.toolbarContainer);
-      }
+      this.changeContainer(false);
 
       $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
         context.invoke('buttons.updateCurrentStyle');
@@ -34,12 +33,24 @@ define(function () {
       $toolbar.children().remove();
     };
 
+    this.changeContainer = function (isFullscreen) {
+      if (isFullscreen) {
+        $toolbar.prependTo($editor);
+      } else {
+        if (options.toolbarContainer) {
+          $toolbar.appendTo(options.toolbarContainer);
+        }
+      }
+    };
+
     this.updateFullscreen = function (isFullscreen) {
-      ui.toggleBtnActive($toolbar.find('.btn-fullscreen'), isFullscreen);
+      ui.toggleBtnActive($toolbar.find('.note-btn-fullscreen'), isFullscreen);
+
+      this.changeContainer(isFullscreen);
     };
 
     this.updateCodeview = function (isCodeview) {
-      ui.toggleBtnActive($toolbar.find('.btn-codeview'), isCodeview);
+      ui.toggleBtnActive($toolbar.find('.note-btn-codeview'), isCodeview);
       if (isCodeview) {
         this.deactivate();
       } else {
@@ -50,7 +61,7 @@ define(function () {
     this.activate = function (isIncludeCodeview) {
       var $btn = $toolbar.find('button');
       if (!isIncludeCodeview) {
-        $btn = $btn.not('.btn-codeview');
+        $btn = $btn.not('.note-btn-codeview');
       }
       ui.toggleBtn($btn, true);
     };
@@ -58,7 +69,7 @@ define(function () {
     this.deactivate = function (isIncludeCodeview) {
       var $btn = $toolbar.find('button');
       if (!isIncludeCodeview) {
-        $btn = $btn.not('.btn-codeview');
+        $btn = $btn.not('.note-btn-codeview');
       }
       ui.toggleBtn($btn, false);
     };

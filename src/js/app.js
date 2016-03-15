@@ -2,15 +2,18 @@ var script = document.getElementById('start');
 var isIE8 = script && script.getAttribute('data-browser') === 'ie8';
 
 var jqueryLink = isIE8 ? '//code.jquery.com/jquery-1.11.3' : '//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery';
+
 require.config({
   baseUrl: 'src/js',
   paths: {
     jquery: jqueryLink,
     bootstrap: '//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap',
+    bootstrap4: '../../node_modules/bootstrap/dist/js/bootstrap',
     lang: '../../lang/summernote-ko-KR'
   },
   shim: {
     bootstrap: ['jquery'],
+    bootstrap4: ['jquery'],
     lang: ['jquery']
   },
   packages: [{
@@ -37,6 +40,11 @@ require(['jquery', 'summernote'], function ($) {
       break;
     case 'bs3':
       promise = requireByPromise(['bootstrap', 'summernote/bs3/settings']).then(function () {
+        return requireByPromise(['lang']);
+      });
+      break;
+    case 'bs4':
+      promise = requireByPromise(['bootstrap4', 'summernote/bs4/settings']).then(function () {
         return requireByPromise(['lang']);
       });
       break;

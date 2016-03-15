@@ -76,12 +76,28 @@ module.exports = function (grunt) {
 
     // bulid source(grunt-build.js).
     build: {
-      all: {
+      bs3: {
+        name: 'bootstrap3',
         baseUrl: 'src/js',        // base url
         startFile: 'intro.js',    // intro part
         endFile: 'outro.js',      // outro part
-        outFile: 'dist/summernote.js' // out file
+        outFile: 'dist/bs3/summernote.js' // out file
+      },
+      bs4: {
+        name: 'bootstrap4',
+        baseUrl: 'src/js',        // base url
+        startFile: 'intro.js',    // intro part
+        endFile: 'outro.js',      // outro part
+        outFile: 'dist/bs4/summernote.js' // out file
       }
+      /*,
+      lite: {
+        name: 'lite',
+        baseUrl: 'src/js',        // base url
+        startFile: 'intro.js',    // intro part
+        endFile: 'outro.js',      // outro part
+        outFile: 'dist/lite/summernote.js' // out file
+      }*/
     },
 
     // for javascript convention.
@@ -119,7 +135,9 @@ module.exports = function (grunt) {
       },
       all: {
         files: [
-          { 'dist/summernote.min.js': ['dist/summernote.js'] },
+          { 'dist/bs3/summernote.min.js': ['dist/bs3/summernote.js'] },
+          { 'dist/bs4/summernote.min.js': ['dist/bs4/summernote.js'] },
+          //{ 'dist/lite/summernote.min.js': ['dist/lite/summernote.js'] },
           {
             expand: true,
             cwd: 'dist/lang',
@@ -136,7 +154,19 @@ module.exports = function (grunt) {
       dist: {
         options: { compile: true, compress: true },
         files: {
-          'dist/summernote.css': ['src/less/summernote.less']
+          'dist/bs3/summernote.css': ['src/less/summernote.less']
+        }
+      }
+    },
+
+    // sass : compile scss to css
+    sass: {
+      dist: {
+        options: {
+          style: 'expanded'
+        },
+        files: {                         // Dictionary of files
+          'dist/bs4/summernote.css': 'src/scss/summernote-bs4.scss'
         }
       }
     },
@@ -155,8 +185,8 @@ module.exports = function (grunt) {
         files: [{
           expand: true,
           src: [
-            'dist/*.js',
-            'dist/*.css',
+            'dist/bs3/*',
+            'dist/bs4/*',
             'dist/font/*'
           ]
         }, {
@@ -178,8 +208,8 @@ module.exports = function (grunt) {
     // watch source code change
     watch: {
       all: {
-        files: ['src/less/*.less', 'src/js/**/*.js', 'test/unit/**/*.js'],
-        tasks: ['recess', 'lint'],
+        files: ['src/less/*.less', 'src/less/*.scss', 'src/js/**/*.js', 'test/unit/**/*.js'],
+        tasks: ['recess', 'sass', 'lint'],
         options: {
           livereload: true
         }
@@ -245,19 +275,31 @@ module.exports = function (grunt) {
       dist: {
         files: [
           { src: 'lang/*', dest: 'dist/' },
-          { expand: true, cwd: 'src/icons/dist/font/', src: ['**', '!*.html'], dest: 'dist/font/' },
-          { src: 'src/icons/dist/summernote.css', dest: 'src/icons/dist/summernote.less' }
+          { expand: true, cwd: 'src/icons/dist/font/', src: ['**', '!*.html'], dest: 'dist/font/' }
         ]
       }
     },
     webfont: {
-      icons: {
+      less: {
         src: 'src/icons/*.svg',
         dest: 'src/icons/dist/font',
         destCss: 'src/icons/dist/',
         options: {
           font: 'summernote',
-          template: 'src/icons/templates/summernote.css'
+          template: 'src/icons/templates/summernote.css',
+          stylesheet: 'less',
+          relativeFontPath: '../font'
+        }
+      },
+      scss: {
+        src: 'src/icons/*.svg',
+        dest: 'src/icons/dist/font',
+        destCss: 'src/icons/dist/',
+        options: {
+          font: 'summernote',
+          template: 'src/icons/templates/summernote.css',
+          stylesheet: 'scss',
+          relativeFontPath: '../font'
         }
       }
     }
@@ -288,7 +330,7 @@ module.exports = function (grunt) {
   grunt.registerTask('dist', [
     'clean:dist',
     'build', 'webfont', 'lint', 'karma:dist',
-    'copy:dist', 'uglify', 'recess', 'compress'
+    'copy:dist', 'uglify', 'recess', 'sass', 'compress'
   ]);
 
   // default: server
