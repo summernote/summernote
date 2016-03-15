@@ -134,9 +134,8 @@ define([
       // B(Bold, 66) / I(Italic, 73) / U(Underline, 85)
       if ((event.ctrlKey || event.metaKey) &&
         list.contains([66, 73, 85], event.keyCode)) {
-        return false;
+        event.preventDefault();
       }
-      return true;
     };
 
     /**
