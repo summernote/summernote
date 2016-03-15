@@ -47,8 +47,12 @@ define([
         }
         context.triggerEvent('keydown', event);
 
-        if (options.shortcuts && !event.isDefaultPrevented()) {
-          self.handleKeyMap(event);
+        if (!event.isDefaultPrevented()) {
+          if (options.shortcuts) {
+            self.handleKeyMap(event);
+          } else {
+            self.preventDefaultEditableShortCuts(event);
+          }
         }
       }).on('keyup', function (event) {
         context.triggerEvent('keyup', event);
@@ -123,6 +127,14 @@ define([
         context.invoke(eventName);
       } else if (key.isEdit(event.keyCode)) {
         this.afterCommand();
+      }
+    };
+
+    this.preventDefaultEditableShortCuts = function (event) {
+      // B(Bold, 66) / I(Italic, 73) / U(Underline, 85)
+      if ((event.ctrlKey || event.metaKey) &&
+        list.contains([66, 73, 85], event.keyCode)) {
+        event.preventDefault();
       }
     };
 
