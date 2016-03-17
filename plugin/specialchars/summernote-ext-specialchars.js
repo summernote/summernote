@@ -85,14 +85,14 @@
           var $tr = (idx % COLUMN_LENGTH === 0) ? $('<tr/>') : $table.find('tr').last();
 
           var $button = ui.button({
-            callback : function ($node) {
+            callback: function ($node) {
               $node.html(text);
               $node.attr('title', text);
               $node.attr('data-value', encodeURIComponent(text));
               $node.css({
                 width: COLUMN_WIDTH,
-                'margin-right' : '2px',
-                'margin-bottom' : '2px'
+                'margin-right': '2px',
+                'margin-bottom': '2px'
               });
             }
           }).render();
@@ -292,7 +292,6 @@
               deferred.resolve(decodeURIComponent($(event.currentTarget).find('button').attr('data-value')));
               ui.hideDialog(self.$dialog);
             });
-
 
           });
 
