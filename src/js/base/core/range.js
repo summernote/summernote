@@ -513,9 +513,9 @@ define([
        * @param {Node} node
        * @return {Node}
        */
-      this.insertNode = function (node) {
+      this.insertNode = function (node, isSkipBlankHTML) {
         var rng = this.wrapBodyInlineWithPara().deleteContents();
-        var info = dom.splitPoint(rng.getStartPoint(), dom.isInline(node));
+        var info = dom.splitPoint(rng.getStartPoint(), dom.isInline(node), isSkipBlankHTML);
 
         if (info.rightNode) {
           info.rightNode.parentNode.insertBefore(node, info.rightNode);
@@ -529,14 +529,14 @@ define([
       /**
        * insert html at current cursor
        */
-      this.pasteHTML = function (markup) {
+      this.pasteHTML = function (markup, isSkipBlankHTML) {
         var contentsContainer = $('<div></div>').html(markup)[0];
         var childNodes = list.from(contentsContainer.childNodes);
 
         var rng = this.wrapBodyInlineWithPara().deleteContents();
 
         return childNodes.reverse().map(function (childNode) {
-          return rng.insertNode(childNode);
+          return rng.insertNode(childNode, isSkipBlankHTML);
         }).reverse();
       };
   

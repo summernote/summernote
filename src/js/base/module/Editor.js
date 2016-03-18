@@ -55,6 +55,7 @@ define([
           }
         }
       }).on('keyup', function (event) {
+        context.memo('lastRange', range.create(editable));
         context.triggerEvent('keyup', event);
       }).on('focus', function (event) {
         context.triggerEvent('focus', event);
@@ -63,6 +64,7 @@ define([
       }).on('mousedown', function (event) {
         context.triggerEvent('mousedown', event);
       }).on('mouseup', function (event) {
+        context.memo('lastRange', range.create(editable));
         context.triggerEvent('mouseup', event);
       }).on('scroll', function (event) {
         context.triggerEvent('scroll', event);
@@ -409,6 +411,18 @@ define([
     });
 
     /**
+     * insertNodeAfter
+     * insert node after focus
+     * @param {Node} node
+     */
+    this.insertNodeAfter = this.wrapCommand(function (node) {
+      var rng = (context.memo('lastRange') || this.createRange()).select();
+      rng.insertNode(node, true);
+      lastRange = range.create(node, 1, node, 1).select();
+      lastRange.scrollIntoView(editable);
+    });
+
+    /**
      * insert text
      * @param {String} text
      */
@@ -416,6 +430,17 @@ define([
       var rng = this.createRange();
       var textNode = rng.insertNode(dom.createText(text));
       range.create(textNode, dom.nodeLength(textNode)).select();
+    });
+
+    /**
+     * insert text after focus
+     * @param {String} text
+     */
+    this.insertTextAfter = this.wrapCommand(function (text) {
+      var rng = (context.memo('lastRange') || this.createRange()).select();
+      var textNode = rng.insertNode(dom.createText(text), true);
+      lastRange = range.create(textNode, dom.nodeLength(textNode)).select();
+      lastRange.scrollIntoView(editable);
     });
 
     /**
@@ -440,6 +465,16 @@ define([
     this.pasteHTML = this.wrapCommand(function (markup) {
       var contents = this.createRange().pasteHTML(markup);
       range.createFromNodeAfter(list.last(contents)).select();
+    });
+
+    /**
+     * paste HTML after focus
+     * @param {String} markup
+     */
+    this.pasteHTMLAfter = this.wrapCommand(function (markup) {
+      var contents = (context.memo('lastRange') || this.createRange()).select().pasteHTML(markup);
+      lastRange = range.createFromNodeAfter(list.last(contents)).select();
+      lastRange.scrollIntoView(editable);
     });
 
     /**

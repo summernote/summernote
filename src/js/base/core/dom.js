@@ -802,9 +802,10 @@ define([
      *
      * @param {Point} point
      * @param {Boolean} isInline
+     * @param {Boolean} isSkipBlankHTML
      * @return {Object}
      */
-    var splitPoint = function (point, isInline) {
+    var splitPoint = function (point, isInline, isSkipBlankHTML) {
       // find splitRoot, container
       //  - inline: splitRoot is a child of paragraph
       //  - block: splitRoot is a child of bodyContainer
@@ -822,9 +823,11 @@ define([
       }
 
       // if splitRoot is exists, split with splitTree
+      var isSkipPaddingBlankHTML = (typeof isSkipBlankHTML !== 'undefined') ? isSkipBlankHTML : isInline;
+      var isNotSplitEdgePoint = (typeof isSkipBlankHTML !== 'undefined') ? isSkipBlankHTML : isInline;
       var pivot = splitRoot && splitTree(splitRoot, point, {
-        isSkipPaddingBlankHTML: isInline,
-        isNotSplitEdgePoint: isInline
+        isSkipPaddingBlankHTML: isSkipPaddingBlankHTML,
+        isNotSplitEdgePoint: isNotSplitEdgePoint
       });
 
       // if container is point.node, find pivot with point.offset
