@@ -50,7 +50,7 @@
       },
       style: {
         style: 'Stílus',
-        normal: 'Normál',
+        p: 'Normál',
         blockquote: 'Idézet',
         pre: 'Kód',
         h1: 'Fejléc 1',

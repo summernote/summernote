@@ -58,7 +58,7 @@
       },
       style: {
         style: 'Estilo',
-        normal: 'Normal',
+        p: 'p',
         blockquote: 'Cita',
         pre: 'Código',
         h1: 'Título 1',

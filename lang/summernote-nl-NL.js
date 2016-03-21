@@ -49,7 +49,7 @@
       },
       style: {
         style: 'Stijl',
-        normal: 'Normaal',
+        p: 'Normaal',
         blockquote: 'Quote',
         pre: 'Code',
         h1: 'Kop 1',

@@ -58,7 +58,7 @@
       },
       style: {
         style: 'Estil',
-        normal: 'Normal',
+        p: 'p',
         blockquote: 'Cita',
         pre: 'Codi',
         h1: 'Títol 1',
