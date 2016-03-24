@@ -29,7 +29,7 @@
         videoLink: 'Bideorako esteka',
         insert: 'Bideo berri bat txertatu',
         url: 'Bideoaren URL helbidea',
-        providers: '(YouTube, Vimeo, Vine, Instagram, edo DailyMotion)'
+        providers: '(YouTube, Vimeo, Vine, Instagram edo DailyMotion)'
       },
       link: {
         link: 'Esteka',

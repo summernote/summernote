@@ -37,7 +37,7 @@
         videoLink: 'Adres wideo',
         insert: 'Wstaw wideo',
         url: 'Adres wideo',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, lub Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion lub Youku)'
       },
       link: {
         link: 'Odnośnik',
