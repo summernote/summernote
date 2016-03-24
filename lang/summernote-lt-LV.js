@@ -50,7 +50,7 @@
       },
       style: {
         style: 'Stils',
-        normal: 'Parasts',
+        p: 'Parasts',
         blockquote: 'Citāts',
         pre: 'Kods',
         h1: 'Virsraksts h1',

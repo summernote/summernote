@@ -56,7 +56,7 @@
       },
       style: {
         style: 'Style',
-        normal: 'Normalny',
+        p: 'pny',
         blockquote: 'Cytat',
         pre: 'Kod',
         h1: 'Nagłówek 1',

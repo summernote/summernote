@@ -46,7 +46,7 @@
       },
       style: {
         style: 'Stil',
-        normal: 'Normal',
+        p: 'p',
         blockquote: 'Citat',
         pre: 'Preformatat',
         h1: 'Titlu 1',

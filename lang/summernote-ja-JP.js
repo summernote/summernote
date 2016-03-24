@@ -49,7 +49,7 @@
       },
       style: {
         style: 'スタイル',
-        normal: '標準',
+        p: '標準',
         blockquote: '引用',
         pre: 'コード',
         h1: '見出し1',

@@ -48,7 +48,7 @@
       },
       style: {
         style: 'Estiloa',
-        normal: 'Normal',
+        p: 'p',
         blockquote: 'Aipamena',
         pre: 'Kodea',
         h1: '1. izenburua',

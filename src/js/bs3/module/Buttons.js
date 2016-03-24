@@ -68,7 +68,7 @@ define([
             template: function (item) {
 
               if (typeof item === 'string') {
-                item = { tag: item, title: item };
+                item = { tag: item, title: (lang.style.hasOwnProperty(item) ? lang.style[item] : item) };
               }
 
               var tag = item.tag;

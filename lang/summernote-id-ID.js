@@ -48,7 +48,7 @@
       },
       style: {
         style: 'Gaya',
-        normal: 'Normal',
+        p: 'p',
         blockquote: 'Kutipan',
         pre: 'Kode',
         h1: 'Heading 1',
