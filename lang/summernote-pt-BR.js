@@ -48,6 +48,7 @@
       },
       style: {
         style: 'Estilo',
+        normal: 'Normal',
         p: 'p',
         blockquote: 'Citação',
         pre: 'Código',
