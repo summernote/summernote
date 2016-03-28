@@ -49,7 +49,6 @@
       style: {
         style: 'Estilo',
         normal: 'Normal',
-        p: 'p',
         blockquote: 'Citação',
         pre: 'Código',
         h1: 'Título 1',
