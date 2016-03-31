@@ -55,7 +55,7 @@
       },
       style: {
         style: 'Biçim',
-        normal: 'Normal',
+        p: 'p',
         blockquote: 'Alıntı',
         pre: 'Önbiçimli',
         h1: 'Başlık 1',

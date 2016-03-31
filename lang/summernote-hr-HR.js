@@ -1,6 +1,6 @@
 (function ($) {
   $.extend($.summernote.lang, {
-    'sr-RS': {
+    'hr-HR': {
       font: {
         bold: 'Podebljano',
         italic: 'Kurziv',
@@ -12,28 +12,28 @@
       },
       image: {
         image: 'Slika',
-        insert: 'Umetni sliku',
+        insert: 'Ubaci sliku',
         resizeFull: 'Puna veličina',
         resizeHalf: 'Umanji na 50%',
         resizeQuarter: 'Umanji na 25%',
-        floatLeft: 'Uz levu ivicu',
-        floatRight: 'Uz desnu ivicu',
-        floatNone: 'Bez ravnanja',
-        dragImageHere: 'Prevuci sliku ovde',
+        floatLeft: 'Poravnaj lijevo',
+        floatRight: 'Poravnaj desno',
+        floatNone: 'Bez poravnanja',
+        dragImageHere: 'Povuci sliku ovdje',
         selectFromFiles: 'Izaberi iz datoteke',
         url: 'Adresa slike',
         remove: 'Ukloni sliku'
       },
       video: {
         video: 'Video',
-        videoLink: 'Veza ka videu',
-        insert: 'Umetni video',
+        videoLink: 'Veza na video',
+        insert: 'Ubaci video',
         url: 'URL video',
         providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ili Youku)'
       },
       link: {
         link: 'Veza',
-        insert: 'Umetni vezu',
+        insert: 'Ubaci vezu',
         unlink: 'Ukloni vezu',
         edit: 'Uredi',
         textToDisplay: 'Tekst za prikaz',
@@ -41,53 +41,53 @@
         openInNewWindow: 'Otvori u novom prozoru'
       },
       table: {
-        table: 'Tabela'
+        table: 'Tablica'
       },
       hr: {
-        insert: 'Umetni horizontalnu liniju'
+        insert: 'Ubaci horizontalnu liniju'
       },
       style: {
         style: 'Stil',
         p: 'pni',
         blockquote: 'Citat',
-        pre: 'Kod',
-        h1: 'Zaglavlje 1',
-        h2: 'Zaglavlje 2',
-        h3: 'Zaglavlje 3',
-        h4: 'Zaglavlje 4',
-        h5: 'Zaglavlje 5',
-        h6: 'Zaglavlje 6'
+        pre: 'Kôd',
+        h1: 'Naslov 1',
+        h2: 'Naslov 2',
+        h3: 'Naslov 3',
+        h4: 'Naslov 4',
+        h5: 'Naslov 5',
+        h6: 'Naslov 6'
       },
       lists: {
         unordered: 'Obična lista',
-        ordered: 'Numerisana lista'
+        ordered: 'Numerirana lista'
       },
       options: {
         help: 'Pomoć',
-        fullscreen: 'Preko celog ekrana',
-        codeview: 'Izvorni kod'
+        fullscreen: 'Preko cijelog ekrana',
+        codeview: 'Izvorni kôd'
       },
       paragraph: {
         paragraph: 'Paragraf',
         outdent: 'Smanji uvlačenje',
-        indent: 'Povečaj uvlačenje',
-        left: 'Poravnaj u levo',
+        indent: 'Povećaj uvlačenje',
+        left: 'Poravnaj lijevo',
         center: 'Centrirano',
-        right: 'Poravnaj u desno',
+        right: 'Poravnaj desno',
         justify: 'Poravnaj obostrano'
       },
       color: {
-        recent: 'Poslednja boja',
+        recent: 'Posljednja boja',
         more: 'Više boja',
         background: 'Boja pozadine',
         foreground: 'Boja teksta',
-        transparent: 'Providna',
-        setTransparent: 'Providna',
-        reset: 'Opoziv',
-        resetToDefault: 'Podrazumevana'
+        transparent: 'Prozirna',
+        setTransparent: 'Prozirna',
+        reset: 'Poništi',
+        resetToDefault: 'Podrazumijevana'
       },
       shortcut: {
-        shortcuts: 'Prečice sa tastature',
+        shortcuts: 'Prečice s tipkovnice',
         close: 'Zatvori',
         textFormatting: 'Formatiranje teksta',
         action: 'Akcija',

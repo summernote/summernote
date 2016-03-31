@@ -56,7 +56,7 @@
       },
       style: {
         style: '스타일',
-        normal: '본문',
+        p: '본문',
         blockquote: '인용구',
         pre: '코드',
         h1: '제목 1',

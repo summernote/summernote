@@ -29,7 +29,7 @@
         videoLink: 'Link video',
         insert: 'Sisipkan video',
         url: 'Tautan video',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, atau Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion atau Youku)'
       },
       link: {
         link: 'Tautan',
@@ -48,7 +48,7 @@
       },
       style: {
         style: 'Gaya',
-        normal: 'Normal',
+        p: 'p',
         blockquote: 'Kutipan',
         pre: 'Kode',
         h1: 'Heading 1',
