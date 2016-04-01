@@ -471,6 +471,9 @@ define([
      * @return {Boolean}
      */
     var isRightEdgeOf = function (node, ancestor) {
+      if (!ancestor) {
+        return false;
+      }
       while (node && node !== ancestor) {
         if (position(node) !== nodeLength(node.parentNode) - 1) {
           return false;
@@ -593,7 +596,7 @@ define([
 
     /**
      * returns whether point is visible (can set cursor) or not.
-     * 
+     *
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
