@@ -36,15 +36,15 @@
       },
       video: {
         video: 'Vídeo',
-        videoLink: 'Link del vídeo',
+        videoLink: 'Enlace del vídeo',
         insert: 'Insertar vídeo',
         url: '¿URL del vídeo?',
         providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion o Youku)'
       },
       link: {
-        link: 'Link',
-        insert: 'Insertar link',
-        unlink: 'Quitar link',
+        link: 'Enlace',
+        insert: 'Insertar enlace',
+        unlink: 'Quitar enlace',
         edit: 'Editar',
         textToDisplay: 'Texto para mostrar',
         url: '¿Hacia que URL lleva el enlace?',
