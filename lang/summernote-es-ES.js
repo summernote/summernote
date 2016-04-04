@@ -47,7 +47,7 @@
         unlink: 'Quitar link',
         edit: 'Editar',
         textToDisplay: 'Texto para mostrar',
-        url: '¿Hacia que URL lleva el link?',
+        url: '¿Hacia que URL lleva el enlace?',
         openInNewWindow: 'Abrir en una nueva ventana'
       },
       table: {
