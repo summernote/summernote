@@ -80,7 +80,7 @@ define([
 
           // if no url was given, copy text to url
           if (!linkInfo.url) {
-            if ($('<input>').attr('type', 'url').val(linkInfo.text).checkValidity()) {
+            if ($('<input>').attr('type', 'url').val(linkInfo.text).get(0).checkValidity()) {
               //only copy if it's valid (note that empty string is valid because of missing required attribute)
               linkInfo.url = linkInfo.text;
             }
