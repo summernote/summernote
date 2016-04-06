@@ -671,6 +671,10 @@ define([
      */
     this.floatMe = this.wrapCommand(function (value) {
       var $target = $(this.restoreTarget());
+      $target.css({
+        'margin-left': value === 'right' ? '10px' : '',
+        'margin-right': value === 'left' ? '10px' : ''
+      });
       $target.css('float', value);
     });
 
