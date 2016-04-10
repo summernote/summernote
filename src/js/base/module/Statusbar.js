@@ -33,6 +33,7 @@ define(function () {
 
     this.destroy = function () {
       $statusbar.off();
+      $statusbar.remove();
     };
   };
 
