@@ -107,7 +107,7 @@ module.exports = function (grunt) {
     },
 
     jscs: {
-      src: ['*.js', 'src/**/*.js', 'test/**/*.js'],
+      src: ['*.js', 'src/**/*.js', 'test/**/*.js', 'plugin/**/*.js'],
       gruntfile: 'Gruntfile.js',
       build: 'build'
     },
@@ -126,6 +126,13 @@ module.exports = function (grunt) {
             src: '**/*.js',
             dest: 'dist/lang',
             ext: '.min.js'
+          },
+          {
+            expand: true,
+            cwd: 'dist/plugin',
+            src: '**/*.js',
+            dest: 'dist/plugin',
+            ext: '.min.js'
           }
         ]
       }
@@ -135,9 +142,18 @@ module.exports = function (grunt) {
     recess: {
       dist: {
         options: { compile: true, compress: true },
-        files: {
-          'dist/summernote.css': ['src/less/summernote.less']
-        }
+        files: [
+          {
+            'dist/summernote.css': ['src/less/summernote.less']
+          },
+          {
+            expand: true,
+            cwd: 'dist/plugin',
+            src: '**/*.css',
+            dest: 'dist/plugin',
+            ext: '.min.css'
+          }
+        ]
       }
     },
 
@@ -160,7 +176,7 @@ module.exports = function (grunt) {
             'dist/font/*'
           ]
         }, {
-          src: ['plugin/**/*.js', 'lang/**/*.js'],
+          src: ['plugin/**/*.js', 'plugin/**/*.css', 'lang/**/*.js'],
           dest: 'dist/'
         }]
       }
@@ -245,6 +261,7 @@ module.exports = function (grunt) {
       dist: {
         files: [
           { src: 'lang/*', dest: 'dist/' },
+          { src: 'plugin/**/*', dest: 'dist/' },
           { expand: true, cwd: 'src/icons/dist/font/', src: ['**', '!*.html'], dest: 'dist/font/' },
           { src: 'src/icons/dist/summernote.css', dest: 'src/icons/dist/summernote.less' }
         ]
