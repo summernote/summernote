@@ -150,7 +150,6 @@ define([
         onEnter: null,
         onKeyup: null,
         onKeydown: null,
-        onSubmit: null,
         onImageUpload: null,
         onImageUploadError: null
       },
