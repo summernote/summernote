@@ -570,19 +570,22 @@ define([
      */
     this.createLink = this.wrapCommand(function (linkInfo) {
       var linkUrl = linkInfo.url;
+      var linkNode = linkInfo.node;
       var linkText = linkInfo.text;
       var isNewWindow = linkInfo.isNewWindow;
       var rng = linkInfo.range || this.createRange();
-      var isTextChanged = rng.toString() !== linkText;
+      var rebuild = linkNode || rng.toString() !== linkText;
+      var contents = linkNode || linkText;
 
       if (options.onCreateLink) {
         linkUrl = options.onCreateLink(linkUrl);
       }
 
       var anchors = [];
-      if (isTextChanged) {
+      if (rebuild) {
         rng = rng.deleteContents();
-        var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
+        var anchor = rng.insertNode($('<A></A>')[0]);
+        $(anchor).append(contents);
         anchors.push(anchor);
       } else {
         anchors = style.styleNodes(rng, {
@@ -624,14 +627,45 @@ define([
      * @return {String} [return.url=""]
      */
     this.getLinkInfo = function () {
-      var rng = this.createRange().expand(dom.isAnchor);
+      var rng, node = null, $anchor = $();
 
-      // Get the first anchor on range(for edit).
-      var $anchor = $(list.head(rng.nodes(dom.isAnchor)));
+      var $target = $(this.restoreTarget());
+      if ($target.is('img')) {
+        //img selected and clicked in link toolbar button
+        var $parent = $target.parent();
+        if ($parent.is('a')) {
+          $anchor = $parent;
+          rng = range.createFromNode($parent.get(0));
+        }
+        else {
+          rng = range.createFromNode($target.get(0));
+        }
+        node = $target.get(0);
+      }
+      else {
+        rng = this.createRange().expand(dom.isAnchor);
+
+        // Get the first anchor on range(for edit).
+        $anchor = $(list.head(rng.nodes(dom.isAnchor)));
+
+        if ($anchor.size()) {
+          if ($anchor.find('img').size()) {
+            node = $anchor.contents();
+          }
+        }
+        else {
+          rng = this.createRange().expand(dom.isImg);
+          var $img = $(list.head(rng.nodes(dom.isImg)));
+          if ($img.size()) {
+            node = $img.get(0);
+          }
+        }
+      }
 
       return {
         range: rng,
-        text: rng.toString(),
+        node: node,
+        text: node ? null : rng.toString(),
         isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : false,
         url: $anchor.length ? $anchor.attr('href') : ''
       };
