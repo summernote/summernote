@@ -5,6 +5,9 @@
 $border-color: #a9a9a9;
 $background-color: #f5f5f5;
 
+$img-margin-left: 10px;
+$img-margin-right: 10px;
+
 /* Layout
  ------------------------------------------*/
 .note-editor {
@@ -51,6 +54,14 @@ $background-color: #f5f5f5;
 
       sub {
         vertical-align: sub;
+      }
+
+      img.note-float-left {
+        margin-right: $img-margin-right;
+      }
+
+      img.note-float-right {
+        margin-left: $img-margin-left;
       }
     }
   }
