@@ -12,7 +12,7 @@ define([
     this.initialize = function () {
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
-      var body = '<div class="form-group">' +
+      var body = '<div class="form-group note-group-link-text">' +
                    '<label>' + lang.link.textToDisplay + '</label>' +
                    '<input class="note-link-text form-control" type="text" />' +
                  '</div>' +
@@ -62,13 +62,19 @@ define([
         $linkBtn = self.$dialog.find('.note-link-btn'),
         $openInNewWindow = self.$dialog.find('input[type=checkbox]');
 
+        var toggleSubmitBtn = function () {
+          return ui.toggleBtn($linkBtn, (linkInfo.node || $linkText.val()) && $linkUrl.val());
+        };
+
         ui.onDialogShown(self.$dialog, function () {
           context.triggerEvent('dialog.shown');
+
+          self.$dialog.find('.note-group-link-text').toggleClass('hidden', !!linkInfo.node);
 
           $linkText.val(linkInfo.text);
 
           $linkText.on('input', function () {
-            ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
+            toggleSubmitBtn();
             // if linktext was modified by keyup,
             // stop cloning text from linkUrl
             linkInfo.text = $linkText.val();
@@ -77,11 +83,10 @@ define([
           // if no url was given, copy text to url
           if (!linkInfo.url) {
             linkInfo.url = linkInfo.text || 'http://';
-            ui.toggleBtn($linkBtn, linkInfo.text);
           }
 
           $linkUrl.on('input', function () {
-            ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
+            toggleSubmitBtn();
             // display same link on `Text to display` input
             // when create a new link
             if (!linkInfo.text) {
@@ -101,10 +106,13 @@ define([
               range: linkInfo.range,
               url: $linkUrl.val(),
               text: $linkText.val(),
-              isNewWindow: $openInNewWindow.is(':checked')
+              isNewWindow: $openInNewWindow.is(':checked'),
+              node: linkInfo.node
             });
             self.$dialog.modal('hide');
           });
+
+          toggleSubmitBtn();
         });
 
         ui.onDialogHidden(self.$dialog, function () {
