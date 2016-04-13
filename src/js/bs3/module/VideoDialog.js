@@ -12,10 +12,13 @@ define([
     this.initialize = function () {
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
-      var body = '<div class="form-group row-fluid">' +
-          '<label>' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
-          '<input class="note-video-url form-control span12" type="text" />' +
-          '</div>';
+      var body = '<div class="form-group">' +
+                  '<label class="control-label col-xs-3">' + lang.video.url + '</label>' +
+                  '<div class="input-group col-xs-9">' +
+                    '<input class="note-video-url form-control" type="text">' +
+                    '<div class="help-text">' + lang.video.providers + '</div>' +
+                  '</div>' +
+                '</div>';
       var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
 
       this.$dialog = ui.dialog({
