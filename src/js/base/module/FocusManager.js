@@ -1,11 +1,10 @@
 define([
-  'jquery',
   'summernote/base/core/func',
   'summernote/base/core/list',
   'summernote/base/core/dom',
   'summernote/base/core/range',
   'summernote/base/editing/Table'
-], function ($, func, list, dom, range, Table) {
+], function (func, list, dom, range, Table) {
   var FocusManager = function (context) {
     var callback = {};
     var options = context.options;
@@ -19,7 +18,7 @@ define([
 
     this.events = {
       'summernote.keyup': function () {
-        self.saveLastRange(context.invoke(editable), false);
+        self.saveLastRange(range.create(editable), false);
       },
       'summernote.mouseup': function () {
         self.saveLastRange(range.create(editable), false);
