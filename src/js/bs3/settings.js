@@ -62,7 +62,7 @@ define([
       },
 
       buttons: {},
-      
+
       lang: 'en-US',
 
       // toolbar
@@ -82,7 +82,8 @@ define([
         image: [
           ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
           ['float', ['floatLeft', 'floatRight', 'floatNone']],
-          ['remove', ['removeMedia']]
+          ['remove', ['removeMedia']],
+          ['link', ['linkDialogShow', 'unlink']]
         ],
         link: [
           ['link', ['linkDialogShow', 'unlink']]

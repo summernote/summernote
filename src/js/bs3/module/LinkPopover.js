@@ -49,15 +49,22 @@ define([
       var rng = context.invoke('editor.createRange');
       if (rng.isCollapsed() && rng.isOnAnchor()) {
         var anchor = dom.ancestor(rng.sc, dom.isAnchor);
-        var href = $(anchor).attr('href');
-        this.$popover.find('a').attr('href', href).html(href);
+        var $anchor = $(anchor);
+        if ($anchor.find('img')) {
+          //don't show link popover if contains an image (prevents appear both popovers)
+          this.hide();
+        }
+        else {
+          var href = $anchor.attr('href');
+          this.$popover.find('a').attr('href', href).html(href);
 
-        var pos = dom.posFromPlaceholder(anchor);
-        this.$popover.css({
-          display: 'block',
-          left: pos.left,
-          top: pos.top
-        });
+          var pos = dom.posFromPlaceholder(anchor);
+          this.$popover.css({
+            display: 'block',
+            left: pos.left,
+            top: pos.top
+          });
+        }
       } else {
         this.hide();
       }
