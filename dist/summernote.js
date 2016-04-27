@@ -6,7 +6,7 @@
  * Copyright 2013-2016 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2016-04-23T04:19Z
+ * Date: 2016-04-23T04:53Z
  */
 (function (factory) {
   /* global define */
@@ -1848,7 +1848,8 @@
   var button = renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
     if (options && options.tooltip) {
       $node.attr({
-        title: options.tooltip
+        title: options.tooltip,
+        "aria-title": options.tooltip
       }).tooltip({
         container: 'body',
         trigger: 'hover',
