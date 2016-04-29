@@ -38,7 +38,7 @@
         videoLink: '影片連結',
         insert: '插入影片',
         url: '影片網址',
-        providers: '(優酷, Instagram, DailyMotion, Youtube等)'
+        providers: '(優酷, 騰訊, Instagram, DailyMotion, Youtube等)'
       },
       link: {
         link: '連結',
@@ -57,7 +57,7 @@
       },
       style: {
         style: '樣式',
-        normal: '一般',
+        p: '一般',
         blockquote: '引用區塊',
         pre: '程式碼區塊',
         h1: '標題 1',

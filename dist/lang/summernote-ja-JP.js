@@ -30,7 +30,7 @@
         videoLink: '動画リンク',
         insert: '動画挿入',
         url: '動画のURL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ, Youku)'
       },
       link: {
         link: 'リンク',
@@ -49,7 +49,7 @@
       },
       style: {
         style: 'スタイル',
-        normal: '標準',
+        p: '標準',
         blockquote: '引用',
         pre: 'コード',
         h1: '見出し1',

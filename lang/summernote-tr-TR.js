@@ -39,7 +39,7 @@
         videoLink: 'Video bağlantısı',
         insert: 'Video ekle',
         url: 'Video bağlantısı?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion veya Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ veya Youku)'
       },
       link: {
         link: 'Bağlantı',

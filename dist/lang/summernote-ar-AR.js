@@ -30,7 +30,7 @@
         videoLink: 'رابط الفيديو',
         insert: 'إدراج الفيديو',
         url: 'رابط الفيديو',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ou Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ ou Youku)'
       },
       link: {
         link: 'رابط رابط',
@@ -49,7 +49,7 @@
       },
       style: {
         style: 'تنسيق',
-        normal: 'عادي',
+        p: 'عادي',
         blockquote: 'إقتباس',
         pre: 'شفيرة',
         h1: 'عنوان رئيسي 1',

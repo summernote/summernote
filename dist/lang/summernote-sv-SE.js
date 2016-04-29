@@ -30,7 +30,7 @@
         videoLink: 'Länk till filmklipp',
         insert: 'Infoga filmklipp',
         url: 'Länk till filmklipp',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion eller Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ eller Youku)'
       },
       link: {
         link: 'Länk',
@@ -49,7 +49,7 @@
       },
       style: {
         style: 'Stil',
-        normal: 'Normal',
+        p: 'p',
         blockquote: 'Citat',
         pre: 'Kod',
         h1: 'Rubrik 1',

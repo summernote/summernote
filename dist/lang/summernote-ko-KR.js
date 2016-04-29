@@ -37,7 +37,7 @@
         videoLink: '동영상 링크',
         insert: '동영상 추가',
         url: '동영상 URL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, Youku 사용 가능)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ, Youku 사용 가능)'
       },
       link: {
         link: '링크',
@@ -56,7 +56,7 @@
       },
       style: {
         style: '스타일',
-        normal: '본문',
+        p: '본문',
         blockquote: '인용구',
         pre: '코드',
         h1: '제목 1',

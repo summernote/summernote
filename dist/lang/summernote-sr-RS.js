@@ -29,7 +29,7 @@
         videoLink: 'Веза ка видеу',
         insert: 'Уметни видео',
         url: 'URL видео',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion или Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ или Youku)'
       },
       link: {
         link: 'Веза',
@@ -48,7 +48,7 @@
       },
       style: {
         style: 'Стил',
-        normal: 'Нормални',
+        p: 'Нормални',
         blockquote: 'Цитат',
         pre: 'Код',
         h1: 'Заглавље 1',

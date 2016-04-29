@@ -29,7 +29,7 @@
         videoLink: 'Veza na video',
         insert: 'Ubaci video',
         url: 'URL video',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ili Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ ili Youku)'
       },
       link: {
         link: 'Veza',
@@ -48,7 +48,7 @@
       },
       style: {
         style: 'Stil',
-        normal: 'Normalni',
+        p: 'pni',
         blockquote: 'Citat',
         pre: 'Kôd',
         h1: 'Naslov 1',

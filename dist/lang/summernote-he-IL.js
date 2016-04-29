@@ -32,7 +32,7 @@
         videoLink: 'קישור לסרטון',
         insert: 'הוסף סרטון',
         url: 'קישור לסרטון',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion או Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ או Youku)'
       },
       link: {
         link: 'קישור',
@@ -51,7 +51,7 @@
       },
       style: {
         style: 'עיצוב',
-        normal: 'טקסט רגיל',
+        p: 'טקסט רגיל',
         blockquote: 'ציטוט',
         pre: 'קוד',
         h1: 'כותרת 1',
