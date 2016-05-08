@@ -65,6 +65,11 @@ define([
         ui.onDialogShown(self.$dialog, function () {
           context.triggerEvent('dialog.shown');
 
+          // if no url was given, copy text to url
+          if (!linkInfo.url) {
+            linkInfo.url = linkInfo.text;
+          }
+
           $linkText.val(linkInfo.text);
 
           $linkText.on('input', function () {
@@ -74,12 +79,6 @@ define([
             linkInfo.text = $linkText.val();
           });
 
-          // if no url was given, copy text to url
-          if (!linkInfo.url) {
-            linkInfo.url = linkInfo.text || 'http://';
-            ui.toggleBtn($linkBtn, linkInfo.text);
-          }
-
           $linkUrl.on('input', function () {
             ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
             // display same link on `Text to display` input
@@ -88,6 +87,8 @@ define([
               $linkText.val($linkUrl.val());
             }
           }).val(linkInfo.url).trigger('focus');
+
+          ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
 
           self.bindEnterKey($linkUrl, $linkBtn);
           self.bindEnterKey($linkText, $linkBtn);
