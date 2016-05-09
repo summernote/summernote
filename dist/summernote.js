@@ -2930,7 +2930,7 @@
           ec = nativeRng.endContainer;
           eo = nativeRng.endOffset;
         } else { // IE8: TextRange
-          var textRange = document.body.createTextRange();
+          var textRange = document.document.createRange();
           var textRangeEnd = textRange.duplicate();
           textRangeEnd.collapse(false);
           var textRangeStart = textRange;
