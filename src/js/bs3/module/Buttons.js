@@ -71,7 +71,7 @@ define([
               var tag = item.tag;
               var title = item.title;
               var style = item.style ? ' style="' + item.style + '" ' : '';
-              var className = item.className ? ' className="' + item.className + '"' : '';
+              var className = item.className ? ' class="' + item.className + '"' : '';
 
               return '<' + tag + style + className + '>' + title + '</' + tag +  '>';
             },
