@@ -1835,7 +1835,8 @@
   var button = renderer.create('<button type="button" class="note-btn btn btn-default btn-sm">', function ($node, options) {
     if (options && options.tooltip) {
       $node.attr({
-        title: options.tooltip
+        title: options.tooltip,
+	"aria-label": options.tooltip
       }).tooltip({
         container: 'body',
         trigger: 'hover',
