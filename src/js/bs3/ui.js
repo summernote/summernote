@@ -1,6 +1,7 @@
 define([
+  'summernote/base/core/agent',
   'summernote/base/renderer'
-], function (renderer) {
+], function (agent, renderer) {
   var editor = renderer.create('<div class="note-editor note-frame panel panel-default"/>');
   var toolbar = renderer.create('<div class="note-toolbar panel-heading"/>');
   var editingArea = renderer.create('<div class="note-editing-area"/>');
@@ -20,17 +21,6 @@ define([
   var airEditable = renderer.create('<div class="note-editable" contentEditable="true"/>');
 
   var buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
-  var button = renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
-    if (options && options.tooltip) {
-      $node.attr({
-        title: options.tooltip
-      }).tooltip({
-        container: 'body',
-        trigger: 'hover',
-        placement: 'bottom'
-      });
-    }
-  });
 
   var dropdown = renderer.create('<div class="dropdown-menu">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
@@ -131,13 +121,28 @@ define([
     airEditor: airEditor,
     airEditable: airEditable,
     buttonGroup: buttonGroup,
-    button: button,
     dropdown: dropdown,
     dropdownCheck: dropdownCheck,
     palette: palette,
     dialog: dialog,
     popover: popover,
     icon: icon,
+    options: {},
+
+    button: function ($node, options) {
+      var showTooltips = (self.options.tooltip === true) || (self.options.tooltip === 'auto' && !agent.isSupportTouch);
+      return renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
+        if (options && options.tooltip && showTooltips) {
+          $node.attr({
+            title: options.tooltip
+          }).tooltip({
+            container: 'body',
+            trigger: 'hover',
+            placement: 'bottom'
+          });
+        }
+      })($node, options);
+    },
 
     toggleBtn: function ($btn, isEnable) {
       $btn.toggleClass('disabled', !isEnable);
@@ -165,6 +170,7 @@ define([
     },
 
     createLayout: function ($note, options) {
+      self.options = options;
       var $editor = (options.airMode ? ui.airEditor([
         ui.editingArea([
           ui.airEditable()
