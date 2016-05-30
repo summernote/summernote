@@ -9,30 +9,20 @@
         height: 'Altura da linha',
         name: 'Fonte',
         strikethrough: 'Riscado',
-        superscript: 'Sobrescrito',
-        subscript: 'Subscrito',
         size: 'Tamanho da fonte'
       },
       image: {
         image: 'Imagem',
         insert: 'Inserir imagem',
-        resizeFull: 'Redimensionar ao tamanho completo',
-        resizeHalf: 'Redimensionar à metade',
-        resizeQuarter: 'Redimensionar à um quarto',
-        floatLeft: 'Flutuar à Esquerda',
-        floatRight: 'Flutuar à Direita',
-        floatNone: 'Não Flutuar',
-        shapeRounded: 'Formato: Arredondado',
-        shapeCircle: 'Formato: Círculo',
-        shapeThumbnail: 'Formato: Miniatura',
-        shapeNone: 'Formato: Nenhum',
-        dragImageHere: 'Arraste imagem ou texto para cá',
-        dropImage: 'Soltar imagem ou texto',
+        resizeFull: 'Resize Full',
+        resizeHalf: 'Resize Half',
+        resizeQuarter: 'Resize Quarter',
+        floatLeft: 'Float Left',
+        floatRight: 'Float Right',
+        floatNone: 'Float None',
+        dragImageHere: 'Arraste uma imagem para cá',
         selectFromFiles: 'Selecione a partir dos arquivos',
-        maximumFileSize: 'Tamanho máximo de arquivo',
-        maximumFileSizeError: 'Tamanho máximo de arquivo excedido.',
-        url: 'URL da imagem',
-        remove: 'Remover imagem'
+        url: 'URL da image'
       },
       video: {
         video: 'Vídeo',
@@ -89,8 +79,8 @@
       color: {
         recent: 'Cor recente',
         more: 'Mais cores',
-        background: 'Cor do Fundo',
-        foreground: 'Cor da Fonte',
+        background: 'Fundo',
+        foreground: 'Fonte',
         transparent: 'Transparente',
         setTransparent: 'Fundo transparente',
         reset: 'Restaurar',
@@ -102,45 +92,11 @@
         textFormatting: 'Formatação de texto',
         action: 'Ação',
         paragraphFormatting: 'Formatação de parágrafo',
-        documentStyle: 'Estilo de documento',
-        extraKeys: 'Teclas Extras'
-      },
-      help: {
-        'insertParagraph': 'Inserir Parágrafo',
-        'undo': 'Desfaz o último comando',
-        'redo': 'Refaz o último comando',
-        'tab': 'Tabular',
-        'untab': 'Destabular',
-        'bold': 'Define o estilo como <b>negrito</b>',
-        'italic': 'Define o estilo como <i>itálico</i>',
-        'underline': 'Define o estilo como <u>sublinhado</u>',
-        'strikethrough': 'Define o estilo como <s>riscado</s>',
-        'removeFormat': 'Limpa o estilo',
-        'justifyLeft': 'Define o alinhamento à esquerda',
-        'justifyCenter': 'Define o alinhamento ao centro',
-        'justifyRight': 'Define o alinhamento à direita',
-        'justifyFull': 'Define o alinhamento como justificado',
-        'insertUnorderedList': 'Alterna entre lista com marcadores',
-        'insertOrderedList': 'Alterna entre lista numerada',
-        'outdent': 'Diminui tabulação no parágrafo atual',
-        'indent': 'Aumenta tabulação no parágrafo atual',
-        'formatPara': 'Altera formatação do bloco atual como um Páragrafo (tag P)',
-        'formatH1': 'Altera formatação do bloco atual como Título 1 (tag H1)',
-        'formatH2': 'Altera formatação do bloco atual como Título 2 (tag H2)',
-        'formatH3': 'Altera formatação do bloco atual como Título 3 (tag H3)',
-        'formatH4': 'Altera formatação do bloco atual como Título 4 (tag H4)',
-        'formatH5': 'Altera formatação do bloco atual como Título 5 (tag H5)',
-        'formatH6': 'Altera formatação do bloco atual como Título 6 (tag H6)',
-        'insertHorizontalRule': 'Inserir linha horizontal',
-        'linkDialog.show': 'Mostrar janela de inserção de Link'
+        documentStyle: 'Estilo de documento'
       },
       history: {
         undo: 'Desfazer',
         redo: 'Refazer'
-      },
-      specialChar: {
-        specialChar: 'CARACTERES ESPECIAIS',
-        select: 'Selecionar Caracteres Especiais'
       }
     }
   });
