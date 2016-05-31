@@ -72,14 +72,14 @@ define([
 
           $linkText.val(linkInfo.text);
 
-          $linkText.on('input', function () {
+          $linkText.on('input paste', function () {
             ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
             // if linktext was modified by keyup,
             // stop cloning text from linkUrl
             linkInfo.text = $linkText.val();
           });
 
-          $linkUrl.on('input', function () {
+          $linkUrl.on('input paste', function () {
             ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
             // display same link on `Text to display` input
             // when create a new link
