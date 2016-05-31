@@ -1,7 +1,6 @@
 define([
-  'summernote/base/core/agent',
   'summernote/base/renderer'
-], function (agent, renderer) {
+], function (renderer) {
   var editor = renderer.create('<div class="note-editor note-frame panel panel-default"/>');
   var toolbar = renderer.create('<div class="note-toolbar panel-heading"/>');
   var editingArea = renderer.create('<div class="note-editing-area"/>');
@@ -130,9 +129,8 @@ define([
     options: {},
 
     button: function ($node, options) {
-      var showTooltips = (self.options.tooltip === true) || (self.options.tooltip === 'auto' && !agent.isSupportTouch);
       return renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
-        if (options && options.tooltip && showTooltips) {
+        if (options && options.tooltip && self.options.tooltip) {
           $node.attr({
             title: options.tooltip
           }).tooltip({
