@@ -64,6 +64,17 @@ $(document).ready(function() {
   $('#summernote').summernote();
 });
 ```
+##### Note
+If you have multiple on page that need to enable the summernote editor, please use below JS code
+```javascript
+$(document).ready(function() {
+  $('.summernote').summernote();
+});
+```
+and for the HTML elements, you should change to use below 
+```html
+<div class="summernote">Hello Summernote</div>
+```
 
 For more examples, please visit to [homepage](http://summernote.org/examples).
 
