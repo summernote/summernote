@@ -36,6 +36,7 @@ define([
       this.addToolbarButtons();
       this.addImagePopoverButtons();
       this.addLinkPopoverButtons();
+      this.addTablePopoverButtons();
       this.fontInstalledMap = {};
     };
 
@@ -557,6 +558,64 @@ define([
           contents: ui.icon(options.icons.unlink),
           tooltip: lang.link.unlink,
           click: context.createInvokeHandler('editor.unlink')
+        }).render();
+      });
+    };
+
+    /**
+     * table : [
+     *
+     *
+     *
+     * ],
+     */
+    this.addTablePopoverButtons = function () {
+      context.memo('button.addRowUp', function () {
+        return ui.button({
+          className: 'btn-md',
+          contents: ui.icon(options.icons.arrowUp),
+          tooltip: 'Add row before',
+          click: context.createInvokeHandler('editor.addRow', 'top')
+        }).render();
+      });
+      context.memo('button.addRowDown', function () {
+        return ui.button({
+          className: 'btn-md',
+          contents: ui.icon(options.icons.arrowDown),
+          tooltip: 'Add row after',
+          click: context.createInvokeHandler('editor.addRow', 'bottom')
+        }).render();
+      });
+      context.memo('button.addColLeft', function () {
+        return ui.button({
+          className: 'btn-md',
+          contents: ui.icon(options.icons.arrowLeft),
+          tooltip: 'Add column  left',
+          click: context.createInvokeHandler('editor.addCol', 'left')
+        }).render();
+      });
+      context.memo('button.addColRight', function () {
+        return ui.button({
+          className: 'btn-md',
+          contents: ui.icon(options.icons.arrowRight),
+          tooltip: 'Add column right',
+          click: context.createInvokeHandler('editor.addCol', 'right')
+        }).render();
+      });
+      context.memo('button.deleteRow', function () {
+        return ui.button({
+          className: 'btn-md',
+          contents: ui.icon(options.icons.arrowsH),
+          tooltip: 'delete row',
+          click: context.createInvokeHandler('editor.deleteRow')
+        }).render();
+      });
+      context.memo('button.deleteCol', function () {
+        return ui.button({
+          className: 'btn-md',
+          contents: ui.icon(options.icons.arrowsV),
+          tooltip: 'delete col',
+          click: context.createInvokeHandler('editor.deleteCol')
         }).render();
       });
     };

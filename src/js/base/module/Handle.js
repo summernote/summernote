@@ -69,6 +69,14 @@ define([
     };
 
     this.update = function (target) {
+
+      if (dom.isCell(target)) {
+        context.invoke('tablePopover.update', target);
+        return;
+      } else {
+        context.invoke('tablePopover.hide', target);
+      }
+
       var isImage = dom.isImg(target);
       var $selection = this.$handle.find('.note-control-selection');
 

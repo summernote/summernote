@@ -28,6 +28,90 @@ define([
     };
 
     /**
+     * Add a new row
+     *
+     * @param {WrappedRange} rng
+     * @param {String} position (top/bottom)
+     * @return {Node}
+     */
+    this.addRow = function (rng, position) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+
+      var currentTr = $(cell).closest('tr');
+      var nbCell = currentTr.find('td').length;
+
+      var html = $('<tr></tr>');
+      for (var idCell = 0; idCell < nbCell; idCell++)
+      {
+        html.append('<td>' + dom.blank + '</td>');
+      }
+
+      if (position === 'top')
+      {
+        currentTr.before(html);
+      }
+      else
+      {
+        currentTr.after(html);
+      }
+
+    };
+
+    /**
+     * Add a new col
+     *
+     * @param {WrappedRange} rng
+     * @param {String} position (left/right)
+     * @return {Node}
+     */
+    this.addCol = function (rng, position) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      var table = dom.ancestor(cell, dom.isTable);
+
+      var currentTr = $(cell).closest('tr');
+      var cellPos = currentTr.find('td').index($(cell));
+      var nbTr = $(table).find('tr').length;
+
+      for (var idTr = 0; idTr < nbTr; idTr++)
+      {
+        var r = $(table).find('tr')[idTr];
+        var c = $(r).find('td')[cellPos];
+        if (position === 'right')
+        {
+          $(c).after('<td>' + dom.blank + '</td>');
+        }
+        else
+        {
+          $(c).before('<td>' + dom.blank + '</td>');
+        }
+      }
+
+    };
+
+    /**
+     * Delete current row
+     *
+     * @param {WrappedRange} rng
+     * @return {Node}
+     */
+    this.deleteRow = function (rng) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      $(cell).closest('tr').remove();
+    };
+
+    /**
+     * Delete current col
+     *
+     * @param {WrappedRange} rng
+     * @return {Node}
+     */
+    this.deleteCol = function (rng) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      var colPos = $(cell).closest('td,th').prevAll('td,th').length;
+      $(cell).closest('table').find('tr').find('td:eq(' + colPos + '),th:eq(' + colPos + ')').remove();
+    };
+
+    /**
      * create empty table element
      *
      * @param {Number} rowCount
