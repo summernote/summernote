@@ -18,7 +18,7 @@ define(function () {
         $document.off(key.substr(2).toLowerCase(), documentEventHandlers[key]);
       });
       documentEventHandlers = {};
-    }
+    };
 
     /**
      * attach Drag and Drop Events
