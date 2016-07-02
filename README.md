@@ -14,6 +14,8 @@ Summernote is a JavaScript library that helps you create WYSIWYG editors online.
 
 Home page: <http://summernote.org>
 
+Also there's an adaptation for React: [react-summernote](https://github.com/Vnkitaev/react-summernote)
+
 ### Why Summernote?
 
 Summernote has a few special features:
