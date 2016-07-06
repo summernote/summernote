@@ -16,20 +16,21 @@ define([
       if (options.maximumImageFileSize) {
         var unit = Math.floor(Math.log(options.maximumImageFileSize) / Math.log(1024));
         var readableSize = (options.maximumImageFileSize / Math.pow(1024, unit)).toFixed(2) * 1 +
-                           ' ' + ' KMGTP'[unit] + 'B';
-        imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
+          ' ' + ' KMGTP'[unit] + 'B';
+        imageLimitation = '<small>(' + lang.image.maximumFileSize + ' : ' + readableSize + ')</small>';
       }
 
-      var body = '<div class="form-group note-group-select-from-files">' +
-                   '<label>' + lang.image.selectFromFiles + '</label>' +
-                   '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" />' +
-                   imageLimitation +
-                 '</div>' +
-                 '<div class="form-group note-group-image-url" style="overflow:auto;">' +
-                   '<label>' + lang.image.url + '</label>' +
-                   '<input class="note-image-url form-control col-md-12" type="text" />' +
-                 '</div>';
-      var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
+      var body =
+        '<div class="input-group note-group-image-url" style="overflow:auto;">' +
+        '<input class="note-image-input" style="display:none" type="file" name="files" accept="image/*" multiple="multiple" />' +
+        '<span class="input-group-addon">' + lang.image.url + '</span>' +
+        //  '<label>' + lang.image.url + '</label>' +
+        '<input class="note-image-url form-control col-md-12" type="text"/>' +
+        '</div>';
+      var footer = '<button type="button" class="btn btn-default btn-sm note-image-input-button">' +
+        lang.image.selectFromFiles + imageLimitation +
+        '</button>' +
+        '<button href="#" class="btn btn-primary btn-sm note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
 
       this.$dialog = ui.dialog({
         title: lang.image.insert,
@@ -78,12 +79,17 @@ define([
     this.showImageDialog = function () {
       return $.Deferred(function (deferred) {
         var $imageInput = self.$dialog.find('.note-image-input'),
-            $imageUrl = self.$dialog.find('.note-image-url'),
-            $imageBtn = self.$dialog.find('.note-image-btn');
+          $imageInputBtn = self.$dialog.find('.note-image-input-button'),
+          $imageUrl = self.$dialog.find('.note-image-url'),
+          $imageBtn = self.$dialog.find('.note-image-btn');
 
         ui.onDialogShown(self.$dialog, function () {
           context.triggerEvent('dialog.shown');
 
+          $imageInputBtn.click(function (event) {
+            event.preventDefault();
+            self.$dialog.find('.note-image-input').trigger('click');
+          });
           // Cloning imageInput to clear element.
           $imageInput.replaceWith($imageInput.clone()
             .on('change', function () {
@@ -106,6 +112,7 @@ define([
         });
 
         ui.onDialogHidden(self.$dialog, function () {
+          $imageInputBtn.off('click');
           $imageInput.off('change');
           $imageUrl.off('keyup paste keypress');
           $imageBtn.off('click');

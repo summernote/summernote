@@ -15,7 +15,7 @@ define([
   agent, key, func, list, dom, range, async,
   History, Style, Typing, Table, Bullet
 ) {
-
+  var URL_REGX = /^(?:[a-z][a-z0-9+-.]:\/\/)(?:[a-z0-9]+(?:[.-]\w+)*)+(?:\.[a-z]{2,6})+/gi
   var KEY_BOGUS = 'bogus';
 
   /**
@@ -252,11 +252,11 @@ define([
     /* jshint ignore:start */
     // native commands(with execCommand), generate function for execCommand
     var commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
-                    'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
-                    'formatBlock', 'removeFormat',
-                    'backColor', 'foreColor', 'fontName'];
+      'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
+      'formatBlock', 'removeFormat',
+      'backColor', 'foreColor', 'fontName'];
 
-    for (var idx = 0, len = commands.length; idx < len; idx ++) {
+    for (var idx = 0, len = commands.length; idx < len; idx++) {
       this[commands[idx]] = (function (sCmd) {
         return function (value) {
           beforeCommand();
@@ -350,6 +350,7 @@ define([
           if (typeof param === 'string') {
             $image.attr('data-filename', param);
           }
+          $image.attr('width', $image.width());
           $image.css('width', Math.min($editable.width(), $image.width()));
         }
 
@@ -391,7 +392,7 @@ define([
       // If onImageUpload options setted
       if (callbacks.onImageUpload) {
         context.triggerEvent('image.upload', files);
-      // else insert Image as dataURL
+        // else insert Image as dataURL
       } else {
         this.insertImages(files);
       }
@@ -459,13 +460,13 @@ define([
     context.memo('help.formatPara', lang.help.formatPara);
 
     /* jshint ignore:start */
-    for (var idx = 1; idx <= 6; idx ++) {
+    for (var idx = 1; idx <= 6; idx++) {
       this['formatH' + idx] = function (idx) {
         return function () {
           this.formatBlock('H' + idx);
         };
-      }(idx);
-      context.memo('help.formatH'+idx, lang.help['formatH' + idx]);
+      } (idx);
+      context.memo('help.formatH' + idx, lang.help['formatH' + idx]);
     };
     /* jshint ignore:end */
 
@@ -599,10 +600,10 @@ define([
 
       $.each(anchors, function (idx, anchor) {
         // if url doesn't match an URL schema, set http:// as default
-        linkUrl = /^[A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?/.test(linkUrl) ?
+        linkUrl = /^[a-z][a-z0-9+-.]*\:[\/\/]?/i.test(linkUrl) ?
           linkUrl : 'http://' + linkUrl;
-
-        $(anchor).attr('href', linkUrl);
+        //URL_REGX.test(linkUrl) if not a url
+        $(anchor).attr('href', encodeURI(linkUrl));
         if (isNewWindow) {
           $(anchor).attr('target', '_blank');
         } else {
@@ -689,8 +690,10 @@ define([
      */
     this.resize = this.wrapCommand(function (value) {
       var $target = $(this.restoreTarget());
+      var imgWidth = $target.attr('width') || 0;
+      imgWidth = imgWidth > 0 ? value * imgWidth : (value * 100 + '%');
       $target.css({
-        width: value * 100 + '%',
+        width: imgWidth,
         height: ''
       });
     });
