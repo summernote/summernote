@@ -32,7 +32,7 @@
 				videoLink: 'ลิงก์ของวีดีโอ',
 				insert: 'แทรกวีดีโอ',
 				url: 'ที่อยู่ URL ของวีดีโอ?',
-				providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion หรือ Youku)'
+				providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ หรือ Youku)'
 			},
 			link: {
 				link: 'ตัวเชื่อมโยง',

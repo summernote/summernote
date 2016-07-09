@@ -29,7 +29,7 @@
         videoLink: 'Veza ka videu',
         insert: 'Umetni video',
         url: 'URL video',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ili Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ ili Youku)'
       },
       link: {
         link: 'Veza',

@@ -32,7 +32,7 @@
         videoLink: 'Video povezava',
         insert: 'Vstavi video',
         url: 'Povezava do videa',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ali Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ ali Youku)'
       },
       link: {
         link: 'Povezava',
@@ -51,7 +51,7 @@
       },
       style: {
         style: 'Slogi',
-        normal: 'Navadno besedilo',
+        p: 'Navadno besedilo',
         blockquote: 'Citat',
         pre: 'Koda',
         h1: 'Naslov 1',

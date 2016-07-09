@@ -30,7 +30,7 @@
         videoLink: 'Collegamento ad un Video',
         insert: 'Inserisci Video',
         url: 'URL del Video',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion o Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ o Youku)'
       },
       link: {
         link: 'Collegamento',

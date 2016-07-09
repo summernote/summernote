@@ -30,7 +30,7 @@
         videoLink: 'Videolenke',
         insert: 'Sett inn video',
         url: 'Video-URL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion eller Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ eller Youku)'
       },
       link: {
         link: 'Lenke',
@@ -49,7 +49,7 @@
       },
       style: {
         style: 'Stil',
-        normal: 'Normal',
+        p: 'p',
         blockquote: 'Sitat',
         pre: 'Kode',
         h1: 'Overskrift 1',

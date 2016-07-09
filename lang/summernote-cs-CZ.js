@@ -28,7 +28,7 @@
         videoLink: 'Odkaz videa',
         insert: 'Vložit video',
         url: 'URL videa?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion nebo Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ nebo Youku)'
       },
       link: {
         link: 'Odkaz',

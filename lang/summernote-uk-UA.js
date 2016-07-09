@@ -37,7 +37,7 @@
         videoLink: 'Посилання на відео',
         insert: 'Вставити відео',
         url: 'URL відео',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion чи Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ чи Youku)'
       },
       link: {
         link: 'Посилання',

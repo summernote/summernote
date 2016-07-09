@@ -30,7 +30,7 @@
         videoLink: 'Link đến Video',
         insert: 'Chèn Video',
         url: 'URL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion và Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ và Youku)'
       },
       link: {
         link: 'Link',

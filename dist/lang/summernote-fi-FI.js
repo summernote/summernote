@@ -30,7 +30,7 @@
         videoLink: 'Linkki videoon',
         insert: 'Lisää video',
         url: 'Videon URL-osoite?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion tai Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ tai Youku)'
       },
       link: {
         link: 'Linkki',
@@ -49,7 +49,7 @@
       },
       style: {
         style: 'Tyyli',
-        normal: 'Normaali',
+        p: 'Normaali',
         blockquote: 'Lainaus',
         pre: 'Koodi',
         h1: 'Otsikko 1',

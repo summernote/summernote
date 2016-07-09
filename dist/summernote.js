@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor v0.8.1
+ * Super simple wysiwyg editor v0.8.2
  * http://summernote.org/
  *
  * summernote.js
- * Copyright 2013-2015 Alan Hong. and other contributors
+ * Copyright 2013-2016 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2016-02-15T18:35Z
+ * Date: 2016-04-29T07:31Z
  */
 (function (factory) {
   /* global define */
@@ -394,18 +394,18 @@
   var isEdge = /Edge\/\d+/.test(userAgent);
 
   var hasCodeMirror = !!window.CodeMirror;
-  if (!hasCodeMirror && isSupportAmd && require) {
-    if (require.hasOwnProperty('resolve')) {
+  if (!hasCodeMirror && isSupportAmd && typeof require !== 'undefined') {
+    if (typeof require.resolve !== 'undefined') {
       try {
         // If CodeMirror can't be resolved, `require.resolve` will throw an
         // exception and `hasCodeMirror` won't be set to `true`.
         require.resolve('codemirror');
         hasCodeMirror = true;
       } catch (e) {
-        hasCodeMirror = false;
+        // Do nothing.
       }
-    } else if (require.hasOwnProperty('specified')) {
-      hasCodeMirror = require.specified('codemirror');
+    } else if (typeof eval('require').specified !== 'undefined') {
+      hasCodeMirror = eval('require').specified('codemirror');
     }
   }
 
@@ -541,13 +541,16 @@
 
     var isTable = makePredByNodeName('TABLE');
 
+    var isData = makePredByNodeName('DATA');
+
     var isInline = function (node) {
       return !isBodyContainer(node) &&
              !isList(node) &&
              !isHr(node) &&
              !isPara(node) &&
              !isTable(node) &&
-             !isBlockquote(node);
+             !isBlockquote(node) &&
+             !isData(node);
     };
 
     var isList = function (node) {
@@ -629,8 +632,13 @@
       if (isText(node)) {
         return node.nodeValue.length;
       }
-
-      return node.childNodes.length;
+      
+      if (node) {
+        return node.childNodes.length;
+      }
+      
+      return 0;
+      
     };
 
     /**
@@ -902,6 +910,9 @@
      * @return {Boolean}
      */
     var isRightEdgeOf = function (node, ancestor) {
+      if (!ancestor) {
+        return false;
+      }
       while (node && node !== ancestor) {
         if (position(node) !== nodeLength(node.parentNode) - 1) {
           return false;
@@ -1024,7 +1035,7 @@
 
     /**
      * returns whether point is visible (can set cursor) or not.
-     * 
+     *
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
@@ -1440,6 +1451,7 @@
       isPre: isPre,
       isList: isList,
       isTable: isTable,
+      isData: isData,
       isCell: isCell,
       isBlockquote: isBlockquote,
       isBodyContainer: isBodyContainer,
@@ -1730,6 +1742,7 @@
 
       options = $.extend({}, $.summernote.options, options);
       options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+      options.icons = $.extend(true, {}, $.summernote.options.icons, options.icons);
 
       this.each(function (idx, note) {
         var $note = $(note);
@@ -1832,7 +1845,7 @@
   var airEditable = renderer.create('<div class="note-editable" contentEditable="true"/>');
 
   var buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
-  var button = renderer.create('<button type="button" class="note-btn btn btn-default btn-sm">', function ($node, options) {
+  var button = renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
     if (options && options.tooltip) {
       $node.attr({
         title: options.tooltip
@@ -2054,7 +2067,7 @@
         videoLink: 'Video Link',
         insert: 'Insert Video',
         url: 'Video URL?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, Youku or QQ)'
       },
       link: {
         link: 'Link',
@@ -2684,8 +2697,10 @@
       this.isOnList = makeIsOn(dom.isList);
       // isOnAnchor: judge whether range is on anchor node or not
       this.isOnAnchor = makeIsOn(dom.isAnchor);
-      // isOnAnchor: judge whether range is on cell node or not
+      // isOnCell: judge whether range is on cell node or not
       this.isOnCell = makeIsOn(dom.isCell);
+      // isOnData: judge whether range is on data node or not
+      this.isOnData = makeIsOn(dom.isData);
 
       /**
        * @param {Function} pred
@@ -3744,8 +3759,12 @@
         }
         context.triggerEvent('keydown', event);
 
-        if (options.shortcuts && !event.isDefaultPrevented()) {
-          self.handleKeyMap(event);
+        if (!event.isDefaultPrevented()) {
+          if (options.shortcuts) {
+            self.handleKeyMap(event);
+          } else {
+            self.preventDefaultEditableShortCuts(event);
+          }
         }
       }).on('keyup', function (event) {
         context.triggerEvent('keyup', event);
@@ -3779,14 +3798,19 @@
         context.triggerEvent('focusout', event);
       });
 
-      if (!options.airMode && options.height) {
-        this.setHeight(options.height);
-      }
-      if (!options.airMode && options.maxHeight) {
-        $editable.css('max-height', options.maxHeight);
-      }
-      if (!options.airMode && options.minHeight) {
-        $editable.css('min-height', options.minHeight);
+      if (!options.airMode) {
+        if (options.width) {
+          $editor.outerWidth(options.width);
+        }
+        if (options.height) {
+          $editable.outerHeight(options.height);
+        }
+        if (options.maxHeight) {
+          $editable.css('max-height', options.maxHeight);
+        }
+        if (options.minHeight) {
+          $editable.css('min-height', options.minHeight);
+        }
       }
 
       history.recordUndo();
@@ -3815,6 +3839,14 @@
         context.invoke(eventName);
       } else if (key.isEdit(event.keyCode)) {
         this.afterCommand();
+      }
+    };
+
+    this.preventDefaultEditableShortCuts = function (event) {
+      // B(Bold, 66) / I(Italic, 73) / U(Underline, 85)
+      if ((event.ctrlKey || event.metaKey) &&
+        list.contains([66, 73, 85], event.keyCode)) {
+        event.preventDefault();
       }
     };
 
@@ -4430,13 +4462,6 @@
     this.empty = function () {
       context.invoke('code', dom.emptyPara);
     };
-
-    /**
-     * set height for editable
-     */
-    this.setHeight = function (height) {
-      $editable.outerHeight(height);
-    };
   };
 
   var Clipboard = function (context) {
@@ -4468,7 +4493,7 @@
       //  - IE11 and Firefox: CTRL+v hook
       //  - Webkit: event.clipboardData
       if (this.needKeydownHook()) {
-        this.$paste = $('<div />').attr('contenteditable', true).css({
+        this.$paste = $('<div tabindex="-1" />').attr('contenteditable', true).css({
           position: 'absolute',
           left: -100000,
           opacity: 0
@@ -4772,6 +4797,7 @@
 
     this.destroy = function () {
       $statusbar.off();
+      $statusbar.remove();
     };
   };
 
@@ -4938,7 +4964,7 @@
   var AutoLink = function (context) {
     var self = this;
     var defaultScheme = 'http://';
-    var linkPattern = /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
+    var linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
 
     this.events = {
       'summernote.keyup': function (we, e) {
@@ -5055,6 +5081,9 @@
     var invertedKeyMap = func.invertObject(options.keyMap[agent.isMac ? 'mac' : 'pc']);
 
     var representShortcut = this.representShortcut = function (editorMethod) {
+      if (!options.shortcuts) {
+        return '';
+      }
       var shortcut = invertedKeyMap[editorMethod];
       if (agent.isMac) {
         shortcut = shortcut.replace('CMD', '⌘').replace('SHIFT', '⇧');
@@ -5105,7 +5134,7 @@
             template: function (item) {
 
               if (typeof item === 'string') {
-                item = { tag: item, title: item };
+                item = { tag: item, title: (lang.style.hasOwnProperty(item) ? lang.style[item] : item) };
               }
 
               var tag = item.tag;
@@ -5441,7 +5470,7 @@
       context.memo('button.link', function () {
         return ui.button({
           contents: ui.icon(options.icons.link),
-          tooltip: lang.link.link,
+          tooltip: lang.link.link + representShortcut('linkDialog.show'),
           click: context.createInvokeHandler('linkDialog.show')
         }).render();
       });
@@ -6017,7 +6046,7 @@
                    '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" />' +
                    imageLimitation +
                  '</div>' +
-                 '<div class="form-group" style="overflow:auto;">' +
+                 '<div class="form-group note-group-image-url" style="overflow:auto;">' +
                    '<label>' + lang.image.url + '</label>' +
                    '<input class="note-image-url form-control col-md-12" type="text" />' +
                  '</div>';
@@ -6210,6 +6239,12 @@
       var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
       var youkuMatch = url.match(youkuRegExp);
 
+      var qqRegExp = /\/\/v\.qq\.com.*?vid=(.+)/;
+      var qqMatch = url.match(qqRegExp);
+
+      var qqRegExp2 = /\/\/v\.qq\.com\/page.*?\/([^\/]+)\.html/;
+      var qqMatch2 = url.match(qqRegExp2);
+      
       var mp4RegExp = /^.+.(mp4|m4v)$/;
       var mp4Match = url.match(mp4RegExp);
 
@@ -6255,6 +6290,13 @@
             .attr('height', '498')
             .attr('width', '510')
             .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
+      } else if ((qqMatch && qqMatch[1].length) || (qqMatch2 && qqMatch2[1].length)) {
+        var vid = ((qqMatch && qqMatch[1].length) ? qqMatch[1]:qqMatch2[1]);
+        $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+            .attr('frameborder', 0)
+            .attr('height', '310')
+            .attr('width', '500')
+            .attr('src', 'http://v.qq.com/iframe/player.html?vid=' + vid + '&amp;auto=0');
       } else if (mp4Match || oggMatch || webmMatch) {
         $video = $('<video controls>')
             .attr('src', url)
@@ -6356,9 +6398,9 @@
 
       var body = [
         '<p class="text-center">',
-        '<a href="//summernote.org/" target="_blank">Summernote 0.8.1</a> · ',
-        '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ',
-        '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>',
+        '<a href="http://summernote.org/" target="_blank">Summernote 0.8.2</a> · ',
+        '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ',
+        '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>',
         '</p>'
       ].join('');
 
@@ -6701,8 +6743,9 @@
 
 
   $.summernote = $.extend($.summernote, {
-    version: '0.8.1',
+    version: '0.8.2',
     ui: ui,
+    dom: dom,
 
     plugins: {},
 
@@ -6823,7 +6866,6 @@
         onEnter: null,
         onKeyup: null,
         onKeydown: null,
-        onSubmit: null,
         onImageUpload: null,
         onImageUploadError: null
       },

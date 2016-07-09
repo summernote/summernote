@@ -28,7 +28,7 @@
         videoLink: 'Odkaz videa',
         insert: 'Vložiť video',
         url: 'URL videa?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion alebo Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ alebo Youku)'
       },
       link: {
         link: 'Odkaz',
@@ -47,7 +47,7 @@
       },
       style: {
         style: 'Štýl',
-        normal: 'Normálny',
+        p: 'Normálny',
         blockquote: 'Citácia',
         pre: 'Kód',
         h1: 'Nadpis 1',

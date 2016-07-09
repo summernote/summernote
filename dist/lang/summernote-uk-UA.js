@@ -37,7 +37,7 @@
         videoLink: 'Посилання на відео',
         insert: 'Вставити відео',
         url: 'URL відео',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion чи Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, QQ чи Youku)'
       },
       link: {
         link: 'Посилання',
@@ -56,7 +56,7 @@
       },
       style: {
         style: 'Стиль',
-        normal: 'Нормальний',
+        p: 'Нормальний',
         blockquote: 'Цитата',
         pre: 'Код',
         h1: 'Заголовок 1',
