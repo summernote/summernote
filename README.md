@@ -14,8 +14,6 @@ Summernote is a JavaScript library that helps you create WYSIWYG editors online.
 
 Home page: <http://summernote.org>
 
-Also there's an adaptation for React: [react-summernote](https://github.com/Vnkitaev/react-summernote)
-
 ### Why Summernote?
 
 Summernote has a few special features:
@@ -31,6 +29,9 @@ Summernote has a few special features:
 Summernote uses opensource libraries: [jQuery](http://jquery.com/), [Bootstrap](http://getbootstrap.com).
 
 For [Meteor](http://github.com/meteor/meteor), just run `meteor add summernote:summernote`. More info in the [Meteor README](meteor/README.md).
+
+Also there's an adaptation for React: [react-summernote](https://github.com/Vnkitaev/react-summernote)
+
 
 For other/no frameworks:
 
