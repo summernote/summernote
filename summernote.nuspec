@@ -26,18 +26,13 @@
     </releaseNotes>
     <copyright>Copyright 2013</copyright>
     <tags>summernote, Bootstrap, jQuery, editor, WYSIWYG</tags>
-    <contentFiles>
-      <files include="**/Content/*.*" buildAction="EmbeddedResource" />
-      <files include="**/fonts/*.*" buildAction="EmbeddedResource" />
-      <files include="**/Scripts/*.*" buildAction="EmbeddedResource" />
-    </contentFiles>
     <dependencies>
       <dependency id="Twitter.Bootstrap" version="3.0.1" />
     </dependencies>
   </metadata>
   <files>
-    <file src="dist\**\*.css" target="contentFiles\any\any\Content" />
-    <file src="dist\font\*.*" target="contentFiles\any\any\fonts" />
-    <file src="dist\**\*.js" target="contentFiles\any\any\Scripts" />
+    <file src="dist\**\*.css" target="content\Content" />
+    <file src="dist\font\*.*" target="content\Content\fonts" />
+    <file src="dist\**\*.js" target="content\Scripts" />
   </files>
 </package>
