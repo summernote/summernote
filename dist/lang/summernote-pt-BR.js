@@ -22,14 +22,14 @@
         floatNone: 'Float None',
         dragImageHere: 'Arraste uma imagem para cá',
         selectFromFiles: 'Selecione a partir dos arquivos',
-        url: 'URL da image'
+        url: 'URL da imagem'
       },
       video: {
         video: 'Vídeo',
         videoLink: 'Link para vídeo',
         insert: 'Inserir vídeo',
         url: 'URL do vídeo?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, ou Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ou Youku)'
       },
       link: {
         link: 'Link',
@@ -97,6 +97,35 @@
       history: {
         undo: 'Desfazer',
         redo: 'Refazer'
+      },
+      help: {
+        'insertParagraph': 'Inserir Parágrafo',
+        'undo': 'Desfazer o último comando',
+        'redo': 'Refazer o último comando',
+        'tab': 'Tab',
+        'untab': 'Desfazer tab',
+        'bold': 'Colocar em negrito',
+        'italic': 'Colocar em itálico',
+        'underline': 'Sublinhado',
+        'strikethrough': 'Tachado',
+        'removeFormat': 'Remover estilo',
+        'justifyLeft': 'Alinhar à esquerda',
+        'justifyCenter': 'Centralizar',
+        'justifyRight': 'Alinhar à esquerda',
+        'justifyFull': 'Justificar',
+        'insertUnorderedList': 'Lista não ordenada',
+        'insertOrderedList': 'Lista ordenada',
+        'outdent': 'Recuar parágrafo atual',
+        'indent': 'Avançar parágrafo atual',
+        'formatPara': 'Alterar formato do bloco para parágrafo(tag P)',
+        'formatH1': 'Alterar formato do bloco para H1',
+        'formatH2': 'Alterar formato do bloco para H2',
+        'formatH3': 'Alterar formato do bloco para H3',
+        'formatH4': 'Alterar formato do bloco para H4',
+        'formatH5': 'Alterar formato do bloco para H5',
+        'formatH6': 'Alterar formato do bloco para H6',
+        'insertHorizontalRule': 'Inserir régua horizontal',
+        'linkDialog.show': 'Inserir um Hiperlink'
       }
     }
   });

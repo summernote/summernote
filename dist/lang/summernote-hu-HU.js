@@ -31,7 +31,7 @@
         videoLink: 'Videó hivatkozás',
         insert: 'Videó beszúrása',
         url: 'Videó URL címe',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, vagy Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion vagy Youku)'
       },
       link: {
         link: 'Hivatkozás',
@@ -50,7 +50,7 @@
       },
       style: {
         style: 'Stílus',
-        normal: 'Normál',
+        p: 'Normál',
         blockquote: 'Idézet',
         pre: 'Kód',
         h1: 'Fejléc 1',
