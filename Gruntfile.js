@@ -44,12 +44,14 @@ module.exports = function (grunt) {
       version: '11.0',
       platform: 'windows 8.1'
     },
+    /*
     'SL_EDGE': {
       base: 'SauceLabs',
       browserName: 'microsoftedge',
       version: '20',
       platform: 'windows 10'
     },
+    */
     'SL_CHROME': {
       base: 'SauceLabs',
       browserName: 'chrome',
