@@ -30,6 +30,9 @@ Summernote uses opensource libraries: [jQuery](http://jquery.com/), [Bootstrap](
 
 For [Meteor](http://github.com/meteor/meteor), just run `meteor add summernote:summernote`. More info in the [Meteor README](meteor/README.md).
 
+Also there's an adaptation for React: [react-summernote](https://github.com/Vnkitaev/react-summernote)
+
+
 For other/no frameworks:
 
 #### 1. include JS/CSS

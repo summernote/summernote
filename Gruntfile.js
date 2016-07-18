@@ -286,7 +286,7 @@ module.exports = function (grunt) {
   // load all grunts/*.js
   grunt.loadTasks('grunts');
 
-  // server: runt server for development
+  // server: run server for development
   grunt.registerTask('server', ['connect', 'watch']);
 
   // lint
