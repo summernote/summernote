@@ -108,7 +108,7 @@ define([
     });
 
     describe('compact', function () {
-      it('should remove all elements has falsy value', function () {
+      it('should remove all elements has false value', function () {
         expect(list.compact([0, 1, false, 2, '', 3])).to.deep.equal([1, 2, 3]);
       });
     });
