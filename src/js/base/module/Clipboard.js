@@ -33,7 +33,7 @@ define([
       //  - IE11 and Firefox: CTRL+v hook
       //  - Webkit: event.clipboardData
       if (this.needKeydownHook()) {
-        this.$paste = $('<div />').attr('contenteditable', true).css({
+        this.$paste = $('<div tabindex="-1" />').attr('contenteditable', true).css({
           position: 'absolute',
           left: -100000,
           opacity: 0

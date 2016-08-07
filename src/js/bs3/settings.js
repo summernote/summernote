@@ -1,5 +1,6 @@
 define([
   'summernote/bs3/ui',
+  'summernote/base/core/dom',
   'summernote/base/summernote-en-US',
   'summernote/base/module/Editor',
   'summernote/base/module/Clipboard',
@@ -22,7 +23,7 @@ define([
   'summernote/bs3/module/AirPopover',
   'summernote/bs3/module/HintPopover'
 ], function (
-  ui, lang,
+  ui, dom, lang,
   Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle, AutoLink, AutoSync, Placeholder,
   Buttons, Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover, VideoDialog, HelpDialog, AirPopover, HintPopover
 ) {
@@ -30,6 +31,7 @@ define([
   $.summernote = $.extend($.summernote, {
     version: '@VERSION',
     ui: ui,
+    dom: dom,
 
     plugins: {},
 
@@ -150,7 +152,6 @@ define([
         onEnter: null,
         onKeyup: null,
         onKeydown: null,
-        onSubmit: null,
         onImageUpload: null,
         onImageUploadError: null
       },

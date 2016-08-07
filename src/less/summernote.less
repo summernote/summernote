@@ -21,7 +21,6 @@
     color: @dropzone-color;
     background-color: white;
     opacity: 0.95;
-    pointer-event: none;
 
     .note-dropzone-message {
       display: table-cell;
@@ -114,7 +113,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 100% !important;
     z-index: 1050; /* bs3 modal-backdrop: 1030, bs2: 1040 */
     .note-editable {
       background-color: white;

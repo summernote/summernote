@@ -32,8 +32,7 @@ define([
         onBlur: null,
         onEnter: null,
         onKeyup: null,
-        onKeydown: null,
-        onSubmit: null
+        onKeydown: null
       },
 
       keyMap: {

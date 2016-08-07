@@ -30,6 +30,9 @@ Summernote uses opensource libraries: [jQuery](http://jquery.com/), [Bootstrap](
 
 For [Meteor](http://github.com/meteor/meteor), just run `meteor add summernote:summernote`. More info in the [Meteor README](meteor/README.md).
 
+Also there's an adaptation for React: [react-summernote](https://github.com/Vnkitaev/react-summernote)
+
+
 For other/no frameworks:
 
 #### 1. include JS/CSS
@@ -47,7 +50,7 @@ Include the following code in the `<head>` tag of your HTML:
 <script src="summernote.js"></script>
 ```
 
-#### 2. target elements
+#### 2. target a element
 
 Then place a `div` tag somewhere in the `body` tag. This element will be replaced with the summernote editor.
 
@@ -65,6 +68,8 @@ $(document).ready(function() {
 });
 ```
 
+For more examples, please visit to [homepage](http://summernote.org/examples).
+
 ### API
 
 `code` - get the HTML source code underlying the text in the editor:
@@ -73,28 +78,11 @@ $(document).ready(function() {
 var html = $('#summernote').summernote('code');
 ```
 
-`Destroy` summernote:
-
-```javascript
-$('#summernote').summernote('destroy');
-```
+For more detail about API, please refer to [document](http://summernote.org/getting-started/#basic-api).
 
 #### Warning - code injection
 
 The code view allows the user to enter script contents. Make sure to filter/[sanitize the HTML on the server](https://github.com/search?l=JavaScript&q=sanitize+html). Otherwise, an attacker can inject arbitrary JavaScript code into clients.
-
-### Supported platforms
-
-Any modern browser: Safari, Chrome, Firefox, Opera, Internet Explorer 9+.
-
-### Upcoming Features
-* Responsive toolbar
-* Table: Handles (sizing, selection) and popover
-* IE8 Support
-* Clipboard (you can paste images already)
-* Media object selection
-
-### Developer information
 
 #### document structure
 
