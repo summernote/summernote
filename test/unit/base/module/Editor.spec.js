@@ -152,6 +152,23 @@ define([
         editor.pasteHTML('<span> world</span>');
         expectContents(context, '<p>hello<span> world</span></p>');
       });
+
+      it('should not call change change event more than once per paste event', function () {
+        var generateLargeHtml = function () {
+          var html = '<div>';
+          for (var i = 0; i < 1000; i++) {
+            html += '<p>HTML element #' + i + '</p>';
+          }
+          html += '</div>';
+          return html;
+        };
+        var $note = context.layoutInfo.note;
+        var spy = chai.spy();
+        $note.on('summernote.change', spy);
+        var html = generateLargeHtml();
+        editor.pasteHTML(html);
+        expect(spy).to.have.been.called.once;
+      });
     });
 
     describe('insertHorizontalRule', function () {

@@ -76,9 +76,9 @@ define([
       // [workaround] IE doesn't have input events for contentEditable
       // - see: https://goo.gl/4bfIvA
       var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
-      $editable.on(changeEventName, function () {
+      $editable.on(changeEventName, func.debounce(function () {
         context.triggerEvent('change', $editable.html());
-      });
+      }, 250));
 
       $editor.on('focusin', function (event) {
         context.triggerEvent('focusin', event);
