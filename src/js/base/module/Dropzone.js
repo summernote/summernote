@@ -85,8 +85,10 @@ define(function () {
       $dropzone.on('drop', function (event) {
         var dataTransfer = event.originalEvent.dataTransfer;
 
+        // stop the browser from opening the dropped content
+        event.preventDefault();
+
         if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
-          event.preventDefault();
           $editable.focus();
           context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
         } else {
