@@ -13,6 +13,7 @@ define([
     var hint = context.options.hint || [];
     var direction = context.options.hintDirection || 'bottom';
     var hints = $.isArray(hint) ? hint : [hint];
+    var container = context.options.container;
 
     this.events = {
       'summernote.keyup': function (we, e) {
@@ -38,7 +39,7 @@ define([
         className: 'note-hint-popover',
         hideArrow: true,
         direction: ''
-      }).render().appendTo('body');
+      }).render().appendTo(container);
 
       this.$popover.hide();
 
