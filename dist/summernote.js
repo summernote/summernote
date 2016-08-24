@@ -6,7 +6,7 @@
  * Copyright 2013-2016 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2016-08-24T19:10Z
+ * Date: 2016-08-24T19:24Z
  */
 (function (factory) {
   /* global define */
@@ -5380,6 +5380,7 @@
                 $dropdown.find('.note-holder').each(function () {
                   var $holder = $(this);
                   $holder.append(ui.palette({
+                    container: options.container,
                     colors: options.colors,
                     eventName: $holder.data('event')
                   }).render());

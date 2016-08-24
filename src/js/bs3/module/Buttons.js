@@ -254,6 +254,7 @@ define([
                 $dropdown.find('.note-holder').each(function () {
                   var $holder = $(this);
                   $holder.append(ui.palette({
+                    container: options.container,
                     colors: options.colors,
                     eventName: $holder.data('event')
                   }).render());
