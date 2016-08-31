@@ -22,7 +22,7 @@ define([
 
       var body = '<div class="form-group note-group-select-from-files">' +
                    '<label>' + lang.image.selectFromFiles + '</label>' +
-                   '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" />' +
+                   '<input class="note-image-input form-control" type="file" name="files" accept="image/jpg, image/jpeg, image/webp, image/bmp, image/png, image/svg, image/gif" multiple="multiple" />' +
                    imageLimitation +
                  '</div>' +
                  '<div class="form-group note-group-image-url" style="overflow:auto;">' +
