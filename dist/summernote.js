@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor v0.7.1
+ * Super simple wysiwyg editor v0.7.2
  * http://summernote.org/
  *
  * summernote.js
  * Copyright 2013-2015 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2016-01-01T15:51Z
+ * Date: 2016-09-08T20:26Z
  */
 (function (factory) {
   /* global define */
@@ -1859,7 +1859,7 @@
     });
   });
 
-  var dialog = renderer.create('<div class="modal" aria-hidden="false"/>', function ($node, options) {
+  var dialog = renderer.create('<div class="modal note-modal" aria-hidden="false"/>', function ($node, options) {
     $node.html([
       '<div class="modal-dialog">',
       '  <div class="modal-content">',
@@ -4382,16 +4382,23 @@
     });
 
     /**
+     * returns whether editable area has focus or not.
+     */
+    this.hasFocus = function () {
+      return $editable.is(':focus');
+    };
+
+    /**
      * set focus
      */
     this.focus = function () {
       // [workaround] Screen will move when page is scolled in IE.
       //  - do focus when not focused
-      if (!$editable.is(':focus')) {
+      if (!this.hasFocus()) {
         $editable.focus();
 
         // [workaround] for firefox bug http://goo.gl/lVfAaI
-        if (!$editable.is(':focus') && agent.isFF) {
+        if (!this.hasFocus() && agent.isFF) {
           range.createFromNode($editable[0])
                .normalize()
                .collapse()
@@ -4754,6 +4761,8 @@
     var $window = $(window);
     var $scrollbar = $('html, body');
 
+    var $clone;
+
     /**
      * toggle fullscreen
      */
@@ -4769,6 +4778,18 @@
       $editor.toggleClass('fullscreen');
       var isFullscreen = $editor.hasClass('fullscreen');
       if (isFullscreen) {
+
+        // when summernote became fullscreen mode, add $editor's clone and move $editor into body
+        $clone = $editor.clone();
+        $clone.addClass('clone');
+        $editor.after($clone);
+        $editor.appendTo('body');
+
+        // set fullscreen class about fullscreen mode
+        $('.note-modal').addClass('fullscreen-dialog');
+        $('.modal-backdrop').addClass('old-dialog-backdrop');
+        $('body').addClass('note-fullscreen');
+
         $editable.data('orgHeight', $editable.css('height'));
 
         $window.on('resize', function () {
@@ -4779,6 +4800,15 @@
 
         $scrollbar.css('overflow', 'hidden');
       } else {
+        // delete clone
+        $clone.after($editor);
+        $clone.remove();
+
+        // remove fullscreen class
+        $('.note-modal').removeClass('fullscreen-dialog');
+        $('body').removeClass('note-fullscreen');
+        $('.old-dialog-backdrop').removeClass('old-dialog-backdrop');
+
         $window.off('resize');
         resize({
           h: $editable.data('orgHeight')
@@ -5662,7 +5692,7 @@
 
     this.initialize = function () {
       options.toolbar = options.toolbar || [];
-
+ 
       if (!options.toolbar.length) {
         $toolbar.hide();
       } else {
@@ -5671,6 +5701,11 @@
 
       $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
         context.invoke('buttons.updateCurrentStyle');
+      });
+
+      $('.note-editor button.note-btn').on('click.summernote', function () {
+        var $this = $(this);
+        ui.toggleBtnActive($this, !$this.hasClass('active'));
       });
 
       context.invoke('buttons.updateCurrentStyle');
@@ -5884,6 +5919,12 @@
     };
 
     this.update = function () {
+      // Prevent focusing on editable when invoke('code') is executed
+      if (!context.invoke('editor.hasFocus')) {
+        this.hide();
+        return;
+      }
+
       var rng = context.invoke('editor.createRange');
       if (rng.isCollapsed() && rng.isOnAnchor()) {
         var anchor = dom.ancestor(rng.sc, dom.isAnchor);
@@ -6280,7 +6321,7 @@
 
       var body = [
         '<p class="text-center">',
-        '<a href="//summernote.org/" target="_blank">Summernote 0.7.1</a> · ',
+        '<a href="//summernote.org/" target="_blank">Summernote 0.7.2</a> · ',
         '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ',
         '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>',
         '</p>'
@@ -6602,7 +6643,7 @@
 
 
   $.summernote = $.extend($.summernote, {
-    version: '0.7.1',
+    version: '0.7.2',
     ui: ui,
 
     plugins: {},

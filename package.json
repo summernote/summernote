@@ -18,7 +18,7 @@
   "main": "dist/summernote.js",
   "devDependencies": {
     "chai": "^3.2.0",
-    "grunt": "*",
+    "grunt": "~0.4.5",
     "grunt-contrib-clean": "^0.7.0",
     "grunt-contrib-compress": "*",
     "grunt-contrib-connect": "*",

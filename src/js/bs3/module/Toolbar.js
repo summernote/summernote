@@ -12,7 +12,7 @@ define(function () {
 
     this.initialize = function () {
       options.toolbar = options.toolbar || [];
-
+ 
       if (!options.toolbar.length) {
         $toolbar.hide();
       } else {
@@ -21,6 +21,11 @@ define(function () {
 
       $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
         context.invoke('buttons.updateCurrentStyle');
+      });
+
+      $('.note-editor button.note-btn').on('click.summernote', function () {
+        var $this = $(this);
+        ui.toggleBtnActive($this, !$this.hasClass('active'));
       });
 
       context.invoke('buttons.updateCurrentStyle');
