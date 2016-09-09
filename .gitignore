@@ -25,3 +25,6 @@ coverage/
 
 # NuGet
 build/
+
+#log files
+*.log
