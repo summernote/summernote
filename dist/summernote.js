@@ -6,7 +6,7 @@
  * Copyright 2013-2016 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2016-09-09T02:46Z
+ * Date: 2016-09-09T02:51Z
  */
 (function (factory) {
   /* global define */
@@ -5566,7 +5566,7 @@
         return ui.button({
           contents: ui.icon(options.icons.minus),
           tooltip: lang.hr.insert + representShortcut('insertHorizontalRule'),
-          click: context.createInvokeHandlerAndUpdateState('editor.insertHorizontalRule')
+          click: context.createInvokeHandler('editor.insertHorizontalRule')
         }).render();
       });
 

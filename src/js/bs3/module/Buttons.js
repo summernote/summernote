@@ -430,7 +430,7 @@ define([
         return ui.button({
           contents: ui.icon(options.icons.minus),
           tooltip: lang.hr.insert + representShortcut('insertHorizontalRule'),
-          click: context.createInvokeHandlerAndUpdateState('editor.insertHorizontalRule')
+          click: context.createInvokeHandler('editor.insertHorizontalRule')
         }).render();
       });
 
