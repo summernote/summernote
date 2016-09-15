@@ -6,7 +6,7 @@
  * Copyright 2013-2016 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2016-09-09T02:51Z
+ * Date: 2016-09-15T10:38Z
  */
 (function (factory) {
   /* global define */
@@ -3393,7 +3393,8 @@
           'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
           'font-subscript': document.queryCommandState('subscript') ? 'subscript' : 'normal',
           'font-superscript': document.queryCommandState('superscript') ? 'superscript' : 'normal',
-          'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal'
+          'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal',
+          'font-family': document.queryCommandValue('fontname') || styleInfo['font-family']
         });
       } catch (e) {}
 
@@ -5299,7 +5300,7 @@
             template: function (item) {
               return '<span style="font-family:' + item + '">' + item + '</span>';
             },
-            click: context.createInvokeHandler('editor.fontName')
+            click: context.createInvokeHandlerAndUpdateState('editor.fontName')
           })
         ]).render();
       });

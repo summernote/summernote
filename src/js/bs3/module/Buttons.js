@@ -163,7 +163,7 @@ define([
             template: function (item) {
               return '<span style="font-family:' + item + '">' + item + '</span>';
             },
-            click: context.createInvokeHandler('editor.fontName')
+            click: context.createInvokeHandlerAndUpdateState('editor.fontName')
           })
         ]).render();
       });

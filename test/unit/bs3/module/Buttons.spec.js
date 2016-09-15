@@ -171,6 +171,17 @@ define([
       });
     });
 
+    describe('font family button', function () {
+      it('should select the right font family name in the dropdown list when it is clicked', function () {
+        var $li = $toolbar.find('.dropdown-fontname li>a[data-value="Comic Sans MS"]');
+        var $span = $toolbar.find('span.note-current-fontname');
+        assert.isTrue($li.length === 1);
+        assert.isTrue($span.text() !== 'Comic Sans MS');
+        $li.click();
+        assert.isTrue($span.text() === 'Comic Sans MS');
+      });
+    });
+
     describe('recent color button', function () {
       it('should execute color command when it is clicked', function () {
         range.createFromNode($editable.find('p')[0]).normalize().select();
