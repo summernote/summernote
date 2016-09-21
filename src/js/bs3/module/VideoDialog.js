@@ -62,7 +62,7 @@ define([
       var qqRegExp = /\/\/v\.qq\.com.*?vid=(.+)/;
       var qqMatch = url.match(qqRegExp);
 
-      var qqRegExp2 = /\/\/v\.qq\.com\/x?\/?page.*?\/([^\/]+)\.html/;
+      var qqRegExp2 = /\/\/v\.qq\.com\/x?\/?(page|cover).*?\/([^\/]+)\.html\??.*/;
       var qqMatch2 = url.match(qqRegExp2);
 
       var mp4RegExp = /^.+.(mp4|m4v)$/;
@@ -110,8 +110,8 @@ define([
             .attr('height', '498')
             .attr('width', '510')
             .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
-      } else if ((qqMatch && qqMatch[1].length) || (qqMatch2 && qqMatch2[1].length)) {
-        var vid = ((qqMatch && qqMatch[1].length) ? qqMatch[1]:qqMatch2[1]);
+      } else if ((qqMatch && qqMatch[1].length) || (qqMatch2 && qqMatch2[2].length)) {
+        var vid = ((qqMatch && qqMatch[1].length) ? qqMatch[1]:qqMatch2[2]);
         $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
             .attr('frameborder', 0)
             .attr('height', '310')
