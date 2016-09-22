@@ -665,6 +665,21 @@ define([
     };
 
     /**
+     * returns whether point has space or not.
+     *
+     * @param {Point} point
+     * @return {Boolean}
+     */
+    var isSpacePoint = function (point) {
+      if (!isText(point.node)) {
+        return false;
+      }
+
+      var ch = point.node.nodeValue.charAt(point.offset - 1);
+      return ch === ' ' || ch === NBSP_CHAR;
+    };
+
+    /**
      * @method walkPoint
      *
      * @param {BoundaryPoint} startPoint
@@ -1042,6 +1057,7 @@ define([
       prevPointUntil: prevPointUntil,
       nextPointUntil: nextPointUntil,
       isCharPoint: isCharPoint,
+      isSpacePoint: isSpacePoint,
       walkPoint: walkPoint,
       ancestor: ancestor,
       singleChildAncestor: singleChildAncestor,

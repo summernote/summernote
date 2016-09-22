@@ -102,7 +102,15 @@ define([
       if ($item.length) {
         var node = this.nodeFromItem($item);
         this.lastWordRange.insertNode(node);
-        range.createFromNode(node).collapse().select();
+
+        if (context.options.hintSelect === 'next') {
+          var blank = document.createTextNode('');
+          $(node).after(blank);
+          range.createFromNodeBefore(blank).select();
+        }
+        else {
+          range.createFromNodeAfter(node).select();
+        }
 
         this.lastWordRange = null;
         this.hide();
@@ -186,8 +194,31 @@ define([
           }
         }
       } else {
-        var wordRange = context.invoke('editor.createRange').getWordRange();
-        var keyword = wordRange.toString();
+        var range = context.invoke('editor.createRange');
+        var wordRange, keyword;
+        if (context.options.hintMode === 'words') {
+          wordRange = range.getWordsRange(range);
+          keyword = wordRange.toString();
+
+          hints.forEach(function (hint) {
+            if (hint.match.test(keyword)) {
+              wordRange = range.getWordsMatchRange(hint.match);
+              return false;
+            }
+          });
+
+          if (!wordRange) {
+            this.hide();
+            return;
+          }
+
+          keyword = wordRange.toString();
+        }
+        else {
+          wordRange = range.getWordRange();
+          keyword = wordRange.toString();
+        }
+
         if (hints.length && keyword) {
           this.$content.empty();
 

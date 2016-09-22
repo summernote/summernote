@@ -97,6 +97,9 @@ define([
       // air mode: inline editor
       airMode: false,
 
+      hintMode: 'word', //allow: word, words
+      hintSelect: 'after', //allow: after, next
+
       width: null,
       height: null,
 
