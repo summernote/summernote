@@ -1859,7 +1859,7 @@
   var editor = renderer.create('<div class="note-editor note-frame panel panel-default"/>');
   var toolbar = renderer.create('<div class="note-toolbar panel-heading"/>');
   var editingArea = renderer.create('<div class="note-editing-area"/>');
-  var codable = renderer.create('<textarea class="note-codable" aria-label="codable"/>');
+  var codable = renderer.create('<textarea class="note-codable"/>');
   var editable = renderer.create('<div class="note-editable panel-body" contentEditable="true"/>');
   var statusbar = renderer.create([
     '<div class="note-statusbar">',
@@ -1878,8 +1878,7 @@
   var button = renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
     if (options && options.tooltip) {
       $node.attr({
-        title: options.tooltip,
-        "aria-label": options.tooltip
+        title: options.tooltip
       }).tooltip({
         container: 'body',
         trigger: 'hover',
@@ -1921,7 +1920,6 @@
           'data-event="', eventName, '" ',
           'data-value="', color, '" ',
           'title="', color, '" ',
-          'aria-label="', color,'" ',
           'data-toggle="button" tabindex="-1"></button>'
         ].join(''));
       }
@@ -5894,16 +5892,16 @@
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
       var body = '<div class="form-group">' +
-                   '<label id="textToDisplay">' + lang.link.textToDisplay + '</label>' +
+                   '<label>' + lang.link.textToDisplay + '</label>' +
                    '<input class="note-link-text form-control" type="text" />' +
                  '</div>' +
                  '<div class="form-group">' +
-                   '<label id="url">' + lang.link.url + '</label>' +
-                   '<input class="note-link-url form-control" type="text" value="http://" aria-labelledby="url" />' +
+                   '<label>' + lang.link.url + '</label>' +
+                   '<input class="note-link-url form-control" type="text" value="http://" />' +
                  '</div>' +
                  (!options.disableLinkTarget ?
                    '<div class="checkbox">' +
-                     '<label id="openInNewWindow">' + '<input type="checkbox" aria-labelledby="openInNewWindow" checked> ' + lang.link.openInNewWindow + '</label>' +
+                     '<label>' + '<input type="checkbox" checked> ' + lang.link.openInNewWindow + '</label>' +
                    '</div>' : ''
                  );
       var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
@@ -6120,13 +6118,13 @@
       }
 
       var body = '<div class="form-group note-group-select-from-files">' +
-                   '<label id="selectFromFiles">' + lang.image.selectFromFiles + '</label>' +
-                   '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" aria-labelledby="selectFromFiles" />' +
+                   '<label>' + lang.image.selectFromFiles + '</label>' +
+                   '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" />' +
                    imageLimitation +
                  '</div>' +
                  '<div class="form-group note-group-image-url" style="overflow:auto;">' +
-                   '<label id="imageURL">' + lang.image.url + '</label>' +
-                   '<input class="note-image-url form-control col-md-12" type="text" aria-labelledby="imageURL" />' +
+                   '<label>' + lang.image.url + '</label>' +
+                   '<input class="note-image-url form-control col-md-12" type="text" />' +
                  '</div>';
       var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
 
@@ -6271,8 +6269,8 @@
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
       var body = '<div class="form-group row-fluid">' +
-          '<label id="videoURL">' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
-          '<input class="note-video-url form-control span12" type="text" aria-labelledby="videoURL" />' +
+          '<label>' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
+          '<input class="note-video-url form-control span12" type="text" />' +
           '</div>';
       var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
 
