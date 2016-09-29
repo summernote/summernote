@@ -1879,7 +1879,7 @@
     if (options && options.tooltip) {
       $node.attr({
         title: options.tooltip,
-        "aria-label": options.tooltip
+        'aria-label': options.tooltip
       }).tooltip({
         container: 'body',
         trigger: 'hover',
@@ -1921,7 +1921,7 @@
           'data-event="', eventName, '" ',
           'data-value="', color, '" ',
           'title="', color, '" ',
-          'aria-label="', color,'" ',
+          'aria-label="', color, '" ',
           'data-toggle="button" tabindex="-1"></button>'
         ].join(''));
       }
@@ -5903,7 +5903,9 @@
                  '</div>' +
                  (!options.disableLinkTarget ?
                    '<div class="checkbox">' +
-                     '<label id="openInNewWindow">' + '<input type="checkbox" aria-labelledby="openInNewWindow" checked> ' + lang.link.openInNewWindow + '</label>' +
+                     '<label id="NewWindow">' + 
+                     '<input type="checkbox" aria-labelledby="NewWindow" checked> ' + 
+                     lang.link.openInNewWindow + '</label>' +
                    '</div>' : ''
                  );
       var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
@@ -6120,9 +6122,9 @@
       }
 
       var body = '<div class="form-group note-group-select-from-files">' +
-                   '<label id="selectFromFiles">' + lang.image.selectFromFiles + '</label>' +
-                   '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" aria-labelledby="selectFromFiles" />' +
-                   imageLimitation +
+                  '<label id="Files">' + lang.image.selectFromFiles + '</label>' +
+                  '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" aria-labelledby="Files" />' +
+                 imageLimitation +
                  '</div>' +
                  '<div class="form-group note-group-image-url" style="overflow:auto;">' +
                    '<label id="imageURL">' + lang.image.url + '</label>' +
