@@ -5894,8 +5894,8 @@
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
       var body = '<div class="form-group">' +
-                   '<label id="textToDisplay">' + lang.link.textToDisplay + '</label>' +
-                   '<input class="note-link-text form-control" type="text" />' +
+                   '<label id="Display">' + lang.link.textToDisplay + '</label>' +
+                   '<input class="note-link-text form-control" type="text" aria-labelledby="Display" />' +
                  '</div>' +
                  '<div class="form-group">' +
                    '<label id="url">' + lang.link.url + '</label>' +
@@ -5903,7 +5903,8 @@
                  '</div>' +
                  (!options.disableLinkTarget ?
                    '<div class="checkbox">' +
-                     '<label id="openInNewWindow">' + '<input type="checkbox" aria-labelledby="openInNewWindow" checked> ' + lang.link.openInNewWindow + '</label>' +
+                     '<label id="NewWindow">' + '<input type="checkbox" aria-labelledby="NewWindow" checked> ' + 
+                     lang.link.openInNewWindow + '</label>' +
                    '</div>' : ''
                  );
       var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
@@ -6121,8 +6122,8 @@
 
       var body = '<div class="form-group note-group-select-from-files">' +
                    '<label id="selectFromFiles">' + lang.image.selectFromFiles + '</label>' +
-                   '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" aria-labelledby="selectFromFiles" />' +
-                   imageLimitation +
+                   '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple"',
+                   'aria-labelledby="selectFromFiles" />' + imageLimitation +
                  '</div>' +
                  '<div class="form-group note-group-image-url" style="overflow:auto;">' +
                    '<label id="imageURL">' + lang.image.url + '</label>' +
