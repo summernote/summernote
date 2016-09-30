@@ -1921,7 +1921,7 @@
           'data-event="', eventName, '" ',
           'data-value="', color, '" ',
           'title="', color, '" ',
-          'aria-label="', color,'" ',
+          'aria-label="', color, '" ',
           'data-toggle="button" tabindex="-1"></button>'
         ].join(''));
       }
@@ -5903,7 +5903,7 @@
                  '</div>' +
                  (!options.disableLinkTarget ?
                    '<div class="checkbox">' +
-                     '<label id="New">' + '<input type="checkbox" checked aria-labelledby="New"> ' + lang.link.openInNewWindow + '</label>' +
+                     '<label>' + '<input type="checkbox" checked> ' + lang.link.openInNewWindow + '</label>' +
                    '</div>' : ''
                  );
       var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
@@ -6120,8 +6120,8 @@
       }
 
       var body = '<div class="form-group note-group-select-from-files">' +
-                   '<label id="Files">' + lang.image.selectFromFiles + '</label>' +
-                   '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" aria-labelledby="Files" />' +
+                   '<label>' + lang.image.selectFromFiles + '</label>' +
+                   '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" />' +
                    imageLimitation +
                  '</div>' +
                  '<div class="form-group note-group-image-url" style="overflow:auto;">' +
