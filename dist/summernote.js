@@ -1859,7 +1859,7 @@
   var editor = renderer.create('<div class="note-editor note-frame panel panel-default"/>');
   var toolbar = renderer.create('<div class="note-toolbar panel-heading"/>');
   var editingArea = renderer.create('<div class="note-editing-area"/>');
-  var codable = renderer.create('<textarea class="note-codable" aria-label="codable"/>');
+  var codable = renderer.create('<textarea class="note-codable" aria-label="varCodable"/>');
   var editable = renderer.create('<div class="note-editable panel-body" contentEditable="true"/>');
   var statusbar = renderer.create([
     '<div class="note-statusbar">',
@@ -5894,12 +5894,12 @@
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
       var body = '<div class="form-group">' +
-                   '<label id="Display">' + lang.link.textToDisplay + '</label>' +
-                   '<input class="note-link-text form-control" type="text" aria-labelledby="Display" />' +
+                   '<label id="textToDisplay">' + lang.link.textToDisplay + '</label>' +
+                   '<input class="note-link-text form-control" type="text" aria-labelledby="textToDisplay" />' +
                  '</div>' +
                  '<div class="form-group">' +
-                   '<label id="url">' + lang.link.url + '</label>' +
-                   '<input class="note-link-url form-control" type="text" value="http://" aria-labelledby="url" />' +
+                   '<label id="LinkUrl">' + lang.link.url + '</label>' +
+                   '<input class="note-link-url form-control" type="text" value="http://" aria-labelledby="LinkUrl" />' +
                  '</div>' +
                  (!options.disableLinkTarget ?
                    '<div class="checkbox">' +
@@ -6125,8 +6125,8 @@
                    imageLimitation +
                  '</div>' +
                  '<div class="form-group note-group-image-url" style="overflow:auto;">' +
-                   '<label id="imageURL">' + lang.image.url + '</label>' +
-                   '<input class="note-image-url form-control col-md-12" type="text" aria-labelledby="imageURL" />' +
+                   '<label id="ImageURL">' + lang.image.url + '</label>' +
+                   '<input class="note-image-url form-control col-md-12" type="text" aria-labelledby="ImageURL" />' +
                  '</div>';
       var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
 
@@ -6271,8 +6271,8 @@
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
       var body = '<div class="form-group row-fluid">' +
-          '<label id="videoURL">' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
-          '<input class="note-video-url form-control span12" type="text" aria-labelledby="videoURL" />' +
+          '<label id="VideoUrl">' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
+          '<input class="note-video-url form-control span12" type="text" aria-labelledby="VideoUrl" />' +
           '</div>';
       var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
 
