@@ -5894,12 +5894,12 @@
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
       var body = '<div class="form-group">' +
-                   '<label id="textToDisplay">' + lang.link.textToDisplay + '</label>' +
-                   '<input class="note-link-text form-control" type="text" aria-labelledby="textToDisplay" />' +
+                   '<label>' + lang.link.textToDisplay + '</label>' +
+                   '<input class="note-link-text form-control" type="text" />' +
                  '</div>' +
                  '<div class="form-group">' +
-                   '<label id="LinkUrl">' + lang.link.url + '</label>' +
-                   '<input class="note-link-url form-control" type="text" value="http://" aria-labelledby="LinkUrl" />' +
+                   '<label>' + lang.link.url + '</label>' +
+                   '<input class="note-link-url form-control" type="text" value="http://" />' +
                  '</div>' +
                  (!options.disableLinkTarget ?
                    '<div class="checkbox">' +
@@ -6125,8 +6125,8 @@
                    imageLimitation +
                  '</div>' +
                  '<div class="form-group note-group-image-url" style="overflow:auto;">' +
-                   '<label id="ImageURL">' + lang.image.url + '</label>' +
-                   '<input class="note-image-url form-control col-md-12" type="text" aria-labelledby="ImageURL" />' +
+                   '<label>' + lang.image.url + '</label>' +
+                   '<input class="note-image-url form-control col-md-12" type="text" />' +
                  '</div>';
       var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
 
@@ -6271,8 +6271,8 @@
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
       var body = '<div class="form-group row-fluid">' +
-          '<label id="VideoURL">' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
-          '<input class="note-video-url form-control span12" type="text" aria-labelledby="VideoURL" />' +
+          '<label>' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
+          '<input class="note-video-url form-control span12" type="text" />' +
           '</div>';
       var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
 
