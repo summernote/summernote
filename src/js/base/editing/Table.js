@@ -39,11 +39,16 @@ define([
 
       var currentTr = $(cell).closest('tr');
       var nbCell = currentTr.find('td').length;
+      var cells = currentTr.find('td');
 
-      var html = $('<tr></tr>');
+      var trAttributes = this.recoverAttributes(currentTr);
+      var html = $('<tr' + trAttributes + '></tr>');
+      
       for (var idCell = 0; idCell < nbCell; idCell++)
       {
-        html.append('<td>' + dom.blank + '</td>');
+        var currentCell = cells[idCell];
+        var tdAttributes = this.recoverAttributes(currentCell);
+        html.append('<td' + tdAttributes + '>' + dom.blank + '</td>');
       }
 
       if (position === 'top')
@@ -76,17 +81,43 @@ define([
       {
         var r = $(table).find('tr')[idTr];
         var c = $(r).find('td')[cellPos];
+        var tdAttributes = this.recoverAttributes(c);
+
         if (position === 'right')
         {
-          $(c).after('<td>' + dom.blank + '</td>');
+          $(c).after('<td' + tdAttributes + '>' + dom.blank + '</td>');
         }
         else
         {
-          $(c).before('<td>' + dom.blank + '</td>');
+          $(c).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
         }
       }
 
     };
+
+    /*
+    * Copy attributes from element.
+    *
+    * @param {object} Element to recover attributes.
+    * @return {string} Copied string elements.
+    */
+    this.recoverAttributes = function (el) {
+        var resultStr = '';
+        
+        if (!el) {
+          return resultStr;
+        }
+
+        var attrList = el.attributes || [];
+
+        for (var i = 0; i < attrList.length; i++) {
+          if (attrList[i].specified) {
+            resultStr += ' ' + attrList[i].name + '=\'' + attrList[i].value + '\'';
+          }
+        }
+
+        return resultStr;
+      };
 
     /**
      * Delete current row

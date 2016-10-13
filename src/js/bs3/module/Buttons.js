@@ -564,9 +564,8 @@ define([
 
     /**
      * table : [
-     *
-     *
-     *
+     *  ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
+     *  ['delete', ['deleteRow', 'deleteCol']]
      * ],
      */
     this.addTablePopoverButtons = function () {
