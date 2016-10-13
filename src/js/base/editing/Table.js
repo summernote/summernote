@@ -71,16 +71,14 @@ define([
      */
     this.addCol = function (rng, position) {
       var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-      var table = dom.ancestor(cell, dom.isTable);
+      var row = $(cell).closest('tr');
+      var rowsGroup = $(row).siblings();
+      rowsGroup.push(row);
+      var cellPos = row.children('td, th').index($(cell));
 
-      var currentTr = $(cell).closest('tr');
-      var cellPos = currentTr.find('td').index($(cell));
-      var nbTr = $(table).find('tr').length;
-
-      for (var idTr = 0; idTr < nbTr; idTr++)
-      {
-        var r = $(table).find('tr')[idTr];
-        var c = $(r).find('td')[cellPos];
+      for (var idTr = 0; idTr < rowsGroup.length; idTr++) {
+        var r = rowsGroup[idTr];
+        var c = $(r).children('td, th')[cellPos];
         var tdAttributes = this.recoverAttributes(c);
 
         if (position === 'right')
@@ -92,7 +90,6 @@ define([
           $(c).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
         }
       }
-
     };
 
     /*
@@ -111,6 +108,10 @@ define([
         var attrList = el.attributes || [];
 
         for (var i = 0; i < attrList.length; i++) {
+          if (attrList[i].name.toLowerCase() === 'id') {
+            continue;
+          }
+
           if (attrList[i].specified) {
             resultStr += ' ' + attrList[i].name + '=\'' + attrList[i].value + '\'';
           }
