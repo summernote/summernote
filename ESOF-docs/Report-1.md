@@ -13,7 +13,7 @@
 
 Summernote is a JavaScript library built upon open source libraries (jQuery and Bootstrap), licensed under the free MIT software license, that helps to create WYSIWYG editors online. WYSIWYG -  "what you see is what you get" -  implies a user interface that allows the user to view something very similar to the end result while the document is being created. 
 
-![Sample]https://github.com/ei12134/summernote/tree/develop/ESOF-docs/resources/summernote-sample.png)
+![Sample](https://github.com/ei12134/summernote/blob/develop/ESOF-docs/resources/summernote-sample.png)
 *Printscreen of a local server running a sample web page including the summernote editor*
 
 Summernote has more than some simple features like editing or styling text. Image manipulation features are available, the user interface can be themed using bootswatch and it also supports plugin extensions like emoticons or connectors.
@@ -32,7 +32,7 @@ GitHub repository: https://github.com/summernote/summernote
 
 The Summernote GitHub repository was created on 21 April 2013. Although the project in itself isn't too big, it had during its development the participation of 149 contributors. The first commit was done on 27 April 2013 along with a funny comment “summer is coming”. Since the initial release, 2100 new commits were done from a grand total of 2226 commits. It has 18 branches, although at the moment of writing, only master and develop branches can really be considered active. The project currently has 655 open issues that need to be addressed and marked as solved after a pull request is made and the changes accepted and merged into the master branch. Looking at the GitHub graphical project overview we can say that nowadays, the project seems a bit stalled, as no new big changes have been introduced and the release cycle seems slower than it once was.
 
-![Evolution of contributions]https://github.com/ei12134/summernote/tree/develop/ESOF-docs/resources/contributions-develop.png)
+![Evolution of contributions](https://github.com/ei12134/summernote/blob/develop/ESOF-docs/resources/contributions-develop.png)
 *Contributions to develop, excluding merge commits between Apr 21, 2013 – Oct 15, 2016*
 
 ### Information Gathering
