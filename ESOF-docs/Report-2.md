@@ -1,0 +1,18 @@
+# Report 2 - Requirements Elicitation Assignment 
+
+## Group Members Identification
+
+|               Name              |         Email        | Contribution |
+|---------------------------------|:--------------------:|:------------:|
+| Artur Sousa Ferreira            | ei12168@fe.up.pt     |      25%     |
+| José Filipe de Monteiro Peixoto | ei12134@fe.up.pt     |      25%     |
+| Nuno Miguel Rainho Valente      | up200204376@fe.up.pt |      25%     |
+| Urvish Sanjay Desai                    | up201602683@fe.up.pt |      25%     |
+
+## Requirements: Introduction, Purpose/Scope, and Description
+
+## Specific Requirements and Features (Functional and Non-Functional requirements)
+
+## Use Cases (including diagrams)
+
+## Domain Model
