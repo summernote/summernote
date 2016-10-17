@@ -139,8 +139,18 @@ define([
      */
     this.deleteCol = function (rng) {
       var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-      var colPos = $(cell).closest('td,th').prevAll('td,th').length;
-      $(cell).closest('table').find('tr').find('td:eq(' + colPos + '),th:eq(' + colPos + ')').remove();
+      var row = $(cell).closest('tr');
+      var rowsGroup = $(row).siblings();
+      rowsGroup.push(row);
+      var cellPos = row.children('td, th').index($(cell));
+
+      for (var idTr = 0; idTr < rowsGroup.length; idTr++) {
+        var r = rowsGroup[idTr];
+        var c = $(r).children('td, th')[cellPos];
+        if (c) {
+          c.remove();
+        }
+      }
     };
 
     /**
