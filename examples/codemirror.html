@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
+  <title>summernote - codemirror</title>
+
+  <!-- include jquery -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script> 
+
+  <!-- include libs stylesheets -->
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" />
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+
+  <!-- include codemirror (codemirror.css, codemirror.js, xml.js, formatting.js)-->
+  <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.9.0/codemirror.min.css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.9.0/theme/blackboard.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.9.0/theme/monokai.min.css">
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.9.0/codemirror.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.9.0/mode/xml/xml.min.js"></script>
+
+  <!-- include summernote -->
+  <link rel="stylesheet" href="../dist/summernote.css">
+  <script type="text/javascript" src="../dist/summernote.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('.summernote').summernote({
+        height: 200,
+        tabsize: 2,
+        codemirror: {
+          mode: 'text/html',
+          htmlMode: true,
+          lineNumbers: true,
+          theme: 'monokai'
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+<textarea class="summernote"><p>Seasons <b>coming up</b></p></textarea>
+</body>
+</html>

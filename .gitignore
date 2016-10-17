@@ -1,0 +1,27 @@
+# vim editing
+*.swp
+*.swo
+.tern-port
+.DS_Store
+
+# node modules
+node_modules
+bower_components
+
+*.sublime*
+.build*
+
+# zip file
+*.zip
+
+# webfont temp
+src/icons/dist/*
+
+.versions
+coverage/
+
+.idea/
+*.iml
+
+# NuGet
+build/

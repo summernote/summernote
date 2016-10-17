@@ -1,0 +1,29 @@
+language: node_js
+sudo: false
+node_js: 5.1
+before_script:
+- node --version
+- npm --version
+- npm install -g grunt-cli
+script:
+- grunt test-travis --verbose
+- if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then grunt saucelabs-test; fi
+before_deploy:
+- npm install
+- grunt build
+- grunt dist
+deploy:
+  provider: npm
+  email: susukang98@gmail.com
+  api_key:
+    secure: TYJfuTLZKbYvTskuMlmuKnQb5F35GFPN2AqSf0RtZYWGLozIaIkKcpTVbjzo859FWuxPjci53FGiJih3+0iVfIC39CDTrFZutubn8qduOfRAVTL1WzeQvdww8miJNwUY59HmoOa78OtbNCVg/N7zFSZzRXAcgje8IADQFIISwk8=
+  on:
+    tags: true
+    branch: develop
+addons:
+  sauce_connect:
+    username: 'summernoteis'
+    access_key:
+      secure: "E9Mq/lKN1xNA+PungEtlDEYqx5Dm52GPuvRMjZPkv5GiuFjof70CuqOIbqSh5YcDvn6/FmPlmlcZVNcXGzKkkSY9qqFpsbmsu2VXmbHlmpjr0Yhm7LQLoZYj+fmrO3WITai6yEyvb8cjGTjHhTjULDORJgC9U4DLfzju5OQFW0Q="
+after_success:
+- grunt coveralls:travis

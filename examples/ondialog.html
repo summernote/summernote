@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> 
+  <title>summernote</title>
+
+  <!-- include jquery -->
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script> 
+
+  <!-- include libraries BS3 -->
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
+  <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+  <!-- include summernote -->
+  <link rel="stylesheet" href="../dist/summernote.css">
+  <script type="text/javascript" src="../dist/summernote.js"></script>
+
+  <script>
+    $(function () {
+      $('#dropper').on('shown.bs.modal', function() {
+        $('#dropping').summernote({ height: 300, focus: true });
+      }).on('hidden.bs.modal', function () {
+        $('#dropping').destroy();
+      });
+    });
+  </script>
+</head>
+<body>
+<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#dropper">Show Dialog</button>
+<div id="dropper" class="modal fade" tabindex="-1" data-backdrop="static" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div id="dropping">text...</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default pull-left">
+          <span class="fa fa-paperclip"></span>
+          Attach Digital Assets
+        </button>
+        <div class="btn-group">
+          <button type="button" class="btn btn-default opacity75" class="close" data-dismiss="modal">
+            &times; Cancel
+          </button>
+          <button type="button" class="btn btn-warning" href="javascript:postDrop()">
+            Post Status Update
+            <span class="fa fa-bullhorn"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
+</body>
+</html>
+

@@ -1,0 +1,22 @@
+{
+  "name": "summernote",
+  "homepage": "http://summernote.org",
+  "license": "MIT",
+  "main": [
+    "./dist/summernote.js",
+    "./dist/summernote.css"
+  ],
+  "ignore": [
+    "**/.*",
+    "Gruntfile.js",
+    "MAINTAIN.md",
+    "grunts",
+    "node_modules",
+    "bower_components",
+    "test"
+  ],
+  "dependencies": {
+    "jquery": ">= 1.9.0",
+    "bootstrap": ">= 3.0.1"
+  }
+}

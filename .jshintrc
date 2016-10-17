@@ -1,0 +1,32 @@
+{
+    "camelcase": true,
+    "curly": true,
+    "eqeqeq": true,
+    "immed": true,
+    "indent": 2,
+    "newcap": true,
+    "noarg": true,
+    "quotmark": "single",
+    "undef": true,
+    "unused": true,
+    "trailing": true,
+    "white": true,
+    "maxdepth": 5,
+    "maxstatements": 300,
+    "maxlen": 140,
+    "evil": true,
+    "browser": true,
+    "devel": true,
+    "jquery": true,
+    "node": true,
+    "worker": true,
+    "es3": true,
+    "globals": {
+      "JSON": true,
+      "define": true,
+      "test": true,
+      "ok": true,
+      "equal": true,
+      "deepEqual": true
+    }
+}
