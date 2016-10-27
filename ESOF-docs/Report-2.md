@@ -14,6 +14,14 @@
 ABC
 ## Domain Model
 
+It seems to us that we are in the presence of an application that have a very simple Domain Model.
+
+
+Packages that seem to exist in your application are:
+- Webserver
+- Plugins
+- Tools (external tools)
+
 ![DomainModel](https://github.com/ei12134/summernote/blob/doc/requirements-elicitation/ESOF-docs/resources/domain_model.png)
 
 
