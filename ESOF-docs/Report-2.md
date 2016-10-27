@@ -14,6 +14,9 @@
 ABC
 ## Domain Model
 
+
+The domain model is a representation of meaningful real-world concepts pertinent to the domain that need to be modeled in software. Generally uses the vocabulary of the domain so that a representation of the model can be used to communicate with non-technical stakeholders.
+
 It seems to us that we are in the presence of an application that have a very simple Domain Model.
 
 
