@@ -14,7 +14,7 @@
 ABC
 ## Domain Model
 
-![DomainModel](https://github.com/ei12134/summernote/blob/develop/ESOF-docs/resources/domain_model.png)
+![DomainModel](https://github.com/ei12134/summernote/blob/doc/requirements-elicitation/ESOF-docs/resources/domain_model.png)
 
 
 ## Group Members Identification
