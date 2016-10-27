@@ -14,6 +14,9 @@
 ABC
 ## Domain Model
 
+![DomainModel](https://github.com/ei12134/summernote/blob/develop/ESOF-docs/resources/domain_model.png)
+
+
 ## Group Members Identification
 
 |               Name              |         Email        | Contribution |
