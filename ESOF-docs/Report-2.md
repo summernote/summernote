@@ -22,7 +22,7 @@
 
 There are several specific requirements required for the software. We have classified them as follows:
 
-* Interface/User Requirements:
+##### 1. Interface/User Requirements:
 
 - Different styles such as quote, text, code and header. All the styles should be able to change amongst themselves easily.
 
@@ -42,7 +42,7 @@ There are several specific requirements required for the software. We have class
 
 - Adjustable height and width of the editor in the browser
 
-* System Requirements:
+##### 2. System Requirements:
 
 - The editor should be compatible with the most widely used browsers like Google Chrome, Mozilla Firefox, Internet Explorer and Safari in their latest versions.
 
@@ -52,9 +52,13 @@ There are several specific requirements required for the software. We have class
 
 - //More about plugins
 
-* Business Requirements
+##### 3. Business Requirements
 
 - The code is open source and the source is available on github. The editor should be easy to install, and readily available.
+
+#### Non-Functional Requirements
+
+-
 
 
 <a name="UseCases"> </a>
