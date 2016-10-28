@@ -6,7 +6,8 @@
 4. [Domain Model](#DomainModel)
 5. [Group Members Identification](#Group)
 
-## Requirements: Introduction, Purpose/Scope, and Description <a name="Requirements"> </a>
+<a name="Requirements"> </a>
+## Requirements: Introduction, Purpose/Scope, and Description 
 
 ### Introduction
 
@@ -14,7 +15,8 @@
 
 ### Description
 
-## Specific Requirements and Features (Functional and Non-Functional requirements) <a name="SpecificReq"> </a>
+<a name="SpecificReq"> </a>
+## Specific Requirements and Features (Functional and Non-Functional requirements) 
 
 -user
 -system
@@ -22,11 +24,9 @@
 
 ## Use Cases (including diagrams) <a name="UseCases"> </a>
 ABC
-## Domain Model <a name="DomainModel"> </a>
 
-<<<<<<< HEAD
-
-=======
+<a name="DomainModel"> </a>
+## Domain Model 
 
 The domain model is a representation of meaningful real-world concepts pertinent to the domain that need to be modeled in software. Generally uses the vocabulary of the domain so that a representation of the model can be used to communicate with non-technical stakeholders.
 
@@ -40,8 +40,8 @@ Packages that seem to exist in our application are:
 
 ![DomainModel](https://github.com/ei12134/summernote/blob/doc/requirements-elicitation/ESOF-docs/resources/domain_model.png)
 
-## Group Members Identification <a name="Group"> </a>
->>>>>>> 678fb90058e95e19208cc6ed3f8b3f6e03a1019a
+<a name="Group"> </a>
+## Group Members Identification 
 
 |               Name              |         Email        | Contribution |
 |---------------------------------|:--------------------:|:------------:|
