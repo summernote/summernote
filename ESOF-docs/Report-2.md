@@ -18,9 +18,44 @@
 <a name="SpecificReq"> </a>
 ## Specific Requirements and Features (Functional and Non-Functional requirements) 
 
--user
--system
--business
+#### Functional Requirements:
+
+There are several specific requirements required for the software. We have classified them as follows:
+
+* Interface/User Requirements:
+
+- Different styles such as quote, text, code and header. All the styles should be able to change amongst themselves easily.
+
+- Common formatting tools such as Bold, Italics and Underline can be implemented.
+
+- Change font face and font color.
+
+- Options of ordered and unordered lists as well as paragraphs.
+
+- Insert links, images and videos.
+
+- Editing in full screen mode.
+
+- Insert and format tables.
+
+- Feature for automatic code format
+
+- Adjustable height and width of the editor in the browser
+
+* System Requirements:
+
+- The editor should be compatible with the most widely used browsers like Google Chrome, Mozilla Firefox, Internet Explorer and Safari in their latest versions.
+
+- Easily switch between text, quotes and code style formats
+
+- Readily available plugins for javascript and CSS.
+
+- //More about plugins
+
+* Business Requirements
+
+- The code is open source and the source is available on github. The editor should be easy to install, and readily available.
+
 
 <a name="UseCases"> </a>
 ## Use Cases (including diagrams) 
