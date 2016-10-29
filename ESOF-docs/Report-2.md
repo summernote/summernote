@@ -74,7 +74,7 @@ Packages that seem to exist in our application are:
 - Plugins
 - Tools (external tools)
 
-![DomainModel](https://github.com/ei12134/summernote/blob/doc/requirements-elicitation/ESOF-docs/resources/domain_model.png)
+![DomainModel](resources/domain-model.png?raw=true "Domain Model")
 
 <a name="Group"> </a>
 ## Group Members Identification 
