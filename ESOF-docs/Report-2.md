@@ -11,6 +11,7 @@
 
 #### Introduction
 The generic purpose of the requirements elicitation process is the gathering of information regarding the real stakeholders needs concerning the development of the software. Requirements elicitation is non-trivial because you can never be sure you get all requirements from the user and customer by just asking them what the system should do OR NOT do (for Safety and Reliability). Requirements elicitation practices include interviews, questionnaires, user observation, workshops, brainstorming, use cases, role playing and prototyping.
+
 In the summernote's case, as it is an open source software and follows an open development design concept, besides the initially established project goals upon its inception, the requirements predominantly originate from its user's inputs in the form of issues or pull-requests openly available and accessible at the GitHub repository. The main purpose of the issues tab is to receive feedback from the community about the project's problems or new feature requests. The statements should be as clearly defined as possible and get an understanding of the required properties of a solution to solve a given problem.
 
 #### Handling of issues
