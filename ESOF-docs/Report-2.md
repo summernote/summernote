@@ -88,7 +88,7 @@ In order to correctly implement the functional requirements, we need a set of op
 - Summernote is licensed and can be distributed under the MIT license, thus open-source.
 
 <a name="UseCases"> </a>
-## Use Cases (including diagrams) 
+## Use Cases
 
 Use case analysis is an important and valuable requirement analysis technique that has been widely used in modern software engineering. It is a methodology used in system analysis to identify, clarify, and organize system requirements.
 
@@ -114,7 +114,7 @@ Packages that seem to exist in our application are:
 ![DomainModel](resources/domain-model.png?raw=true "Domain Model")
 
 <a name="Group"> </a>
-## Group Members Identification 
+## Group Members
 
 |               Name              |         Email        | Contribution |
 |---------------------------------|:--------------------:|:------------:|
