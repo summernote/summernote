@@ -59,7 +59,8 @@ There are several specific requirements required for the software. We have class
 
 ##### 3. Business Requirements
 
-- The code is open source and the source is available on github. The editor should be easy to install, and readily available.
+- The code is open source and the source is available on github.
+- The editor should be easy to install, and readily available.
 
 #### Non-Functional Requirements
 
