@@ -21,41 +21,31 @@ When a user/developer opens an issue, usually to report a bug, the input text bo
 Another possible scenario is to directly make a [pull-request](https://github.com/summernote/summernote/pull/732) to the `summernote:develop` branch (the default branch) from a develop fork where the new features and/or fixes are clearly described and the official developer team debates and decides if commits are important and have the required quality to include in a release. At the moment there are also two useful automatic checks available to make the merge decision: continuous integration tool `Travis-CI` assessment of the merge and also code coverage differential analysis provided by `coverage/coveralls`.
 
 <a name="SpecificReq"> </a>
-## Specific Requirements and Features (Functional and Non-Functional requirements) 
+## Specific Requirements and Features
 
-#### Functional Requirements:
+### Functional Requirements:
 
-There are several specific requirements required for the software. We have classified them as follows:
+In order to implement a [WYSIWYG](https://en.wikipedia.org/wiki/WYSIWYG) editor, it is very important to provide user with specific requirements and features that make the input provided, readable and realistic for a printable format. We can define the behaviour of the software using functional requirements. This primarily describes what Summernote can do and what functions Summernote must be able to perform. We have classified these functional requirements as follows:
 
 ##### 1. Interface/User Requirements:
 
-- Different styles such as quote, text, code and header. All the styles should be able to change amongst themselves easily.
-
-- Common formatting tools such as Bold, Italics and Underline can be implemented.
-
-- Change font face and font color.
-
-- Options of ordered and unordered lists as well as paragraphs.
-
+- The basic toolbar contains options for different styles such as quote, text, code and header. All the styles should be able to change amongst themselves easily.
+- Tools like place holder, fontnames are customizable and the toolbar itself is also customisable in javascript. 
+- Common formatting tools such as Bold, Underline, font face, font color, lists can be implemented in the basic toolbar while more options of formatting can be added externally.
+- Different dynamic methods of mouse and keyboard can be implemented.
 - Insert links, images and videos.
-
 - Editing in full screen mode.
-
 - Insert and format tables.
+- Feature for automatic code format.
+- Adjustable height and width of the editor in the browser.
+- Editor can be used using the shortcuts provided in the help menu.
+- A custom button can be implemented with different options on clicking.
 
-- Feature for automatic code format
-
-- Adjustable height and width of the editor in the browser
 
 ##### 2. System Requirements:
 
 - The editor should be compatible with the most widely used browsers like Google Chrome, Mozilla Firefox, Internet Explorer and Safari in their latest versions.
-
-- Easily switch between text, quotes and code style formats
-
-- Readily available plugins for javascript and CSS.
-
-- //More about plugins
+- There must be plugins available for javascript and CSS.
 
 ##### 3. Business Requirements
 
@@ -64,8 +54,30 @@ There are several specific requirements required for the software. We have class
 
 #### Non-Functional Requirements
 
--
+In order to correctly implement the functional requirements, we need a set of operations defining how the software shall work. For this, we need to show the quality factors through non-functional requirements. We must have a proper system design to ensure that the quality of the software remains high during execution as well as in background evolution. The non-functional requirements can be given as:
 
+1. System design
+- The software can be implemented in a basic mode or in a customized user version using the [Deep Dive](http://summernote.org/deep-dive/) guide available on the summernote website.
+- The expandable features can be supported by the module system that was inspired by the spring framework.
+- This can be done through the implementation given in the API of the software.
+- The API is used for the implementation of all the interface requirements and uses the javascript language.
+
+2. Maintainablity and Extensibility:
+- As Summernote is an open-source project, all the issues can be reported using the Github link.
+- These issues are solved by the team and other contributors using pull requests.
+- New features too are added to Summernote by release of latest versions (Currently on the version v0.8.2).
+
+3. Stability:
+- As Summernote is based on JQuery and Bootstrap libraries of Javascript, it is very stable and rarely faces any issues with stability.
+
+4. Portability:
+- The code of Summernote can be easily ported to different browsers as it is based on Bootstrap and JQuery.
+
+5. Price:
+- The Summernote editor is free of cost and hence the source code of the same is available on [github/summernote](https://github.com/summernote/summernote).
+
+6. Certification:
+- Summernote is licensed and can be distributed under the MIT license, thus open-source.
 
 <a name="UseCases"> </a>
 ## Use Cases (including diagrams) 
