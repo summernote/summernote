@@ -69,7 +69,11 @@ There are several specific requirements required for the software. We have class
 <a name="UseCases"> </a>
 ## Use Cases (including diagrams) 
 
-In this point we present the Use Case Diagram. Is our intention allow the reader to view the different types of roles in the system that we've been talking and how those roles interact with that same system. So, following, without going deeper into inner workings of the system we provide a high level view:
+Use case analysis is an important and valuable requirement analysis technique that has been widely used in modern software engineering. It is a methodology used in system analysis to identify, clarify, and organize system requirements.
+
+The use case is made up of a set of possible sequences of interactions between systems and users in a particular environment and related to a particular goal.
+
+Is our intention allow the reader to view the different types of roles in the system that we've been talking and how those roles interact with that same system. So, following, without going deeper into inner workings of the system we provide a high level view:
 
 ![UseCases](resources/use-cases.png?raw=true "Use Cases")
 
