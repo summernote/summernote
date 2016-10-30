@@ -66,7 +66,10 @@ There are several specific requirements required for the software. We have class
 
 <a name="UseCases"> </a>
 ## Use Cases (including diagrams) 
-ABC
+
+In this point we present the Use Case Diagram. Is our intention allow the reader to view the different types of roles in the system that we've been talking and how those roles interact with that same system. So, following, without going deeper into inner workings of the system we provide a high level view:
+
+![UseCases](resources/use-cases.png?raw=true "Use Cases")
 
 <a name="DomainModel"> </a>
 ## Domain Model 
