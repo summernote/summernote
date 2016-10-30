@@ -44,39 +44,47 @@ In order to implement a [WYSIWYG](https://en.wikipedia.org/wiki/WYSIWYG) editor,
 
 ##### 2. System Requirements:
 
+- Summernote is available in compiled CSS, JavaScript version, through source code implementation, through clone or fork via Github and installation with Bower.
 - The editor should be compatible with the most widely used browsers like Google Chrome, Mozilla Firefox, Internet Explorer and Safari in their latest versions.
-- There must be plugins available for javascript and CSS.
+- Summernote can be compiled using other 3rd party integration like Django, Ruby on Rails, AngularJS, Apache Wicket, Webpack and Meteor.
+- This editor is available in 39 other languages.
 
 ##### 3. Business Requirements
 
-- The code is open source and the source is available on github.
-- The editor should be easy to install, and readily available.
+- Summernote is free to use and easily available for all web developers.
 
 #### Non-Functional Requirements
 
 In order to correctly implement the functional requirements, we need a set of operations defining how the software shall work. For this, we need to show the quality factors through non-functional requirements. We must have a proper system design to ensure that the quality of the software remains high during execution as well as in background evolution. The non-functional requirements can be given as:
 
-1. System design
+#####1. System design
+
 - The software can be implemented in a basic mode or in a customized user version using the [Deep Dive](http://summernote.org/deep-dive/) guide available on the summernote website.
 - The expandable features can be supported by the module system that was inspired by the spring framework.
 - This can be done through the implementation given in the API of the software.
-- The API is used for the implementation of all the interface requirements and uses the javascript language.
+- The API is used for the implementation of all the interface requirements and uses the javascript libraries.
+- Summernote can be set up in different languages by including the respective lang file found [here](https://github.com/summernote/summernote/tree/master/lang).
 
-2. Maintainablity and Extensibility:
+#####2. Maintainablity and Extensibility:
+
 - As Summernote is an open-source project, all the issues can be reported using the Github link.
 - These issues are solved by the team and other contributors using pull requests.
 - New features too are added to Summernote by release of latest versions (Currently on the version v0.8.2).
 
-3. Stability:
+#####3. Stability:
+
 - As Summernote is based on JQuery and Bootstrap libraries of Javascript, it is very stable and rarely faces any issues with stability.
 
-4. Portability:
+#####4. Portability:
+
 - The code of Summernote can be easily ported to different browsers as it is based on Bootstrap and JQuery.
 
-5. Price:
+#####5. Price:
+
 - The Summernote editor is free of cost and hence the source code of the same is available on [github/summernote](https://github.com/summernote/summernote).
 
-6. Certification:
+#####6. Certification:
+
 - Summernote is licensed and can be distributed under the MIT license, thus open-source.
 
 <a name="UseCases"> </a>
