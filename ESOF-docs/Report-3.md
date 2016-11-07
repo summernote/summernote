@@ -21,6 +21,8 @@
 <a name="ProcessView"> </a>
 ## Process View
 
+In this diagram ...
+
 <a name="Group"> </a>
 ## Group Members Identification 
 
