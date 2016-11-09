@@ -10,9 +10,9 @@
 <a name="Introduction"> </a>
 ## Requirements: Introduction
 
-In this report we'll use a model for describing the architecture of Summernote software system, based on the use of multiple, concurrent views. This use of multiple views has some advantages such like addressing separately the concerns of the various stakeholders of the architecture like clients, developers, systems engineers, project managers and so on and still allows to handle separately the functional and non functional requirements, already presented in the [last report](ESOF-docs/Report-2.md/#SpecificReq).
+In this report we'll use a model for describing the architecture of Summernote software system, based on the use of multiple, concurrent views. This use of multiple views has some advantages such like addressing separately the concerns of the various stakeholders of the architecture like clients, developers, systems engineers, project managers and so on and still allows to handle separately the functional and non functional requirements, already presented in the [last report](Report-2.md/#SpecificReq).
 
-Our approach to the architecture of Summernote software system will be based on the 4 + 1 software architecture view model, which follows below. The four views represent the logical view, deployment/physical view, process view and implementation view, having the additional view, use cases, also been presented in the [previous report](ESOF-docs/Report-2.md/#UseCases).
+Our approach to the architecture of Summernote software system will be based on the 4 + 1 software architecture view model, which follows below. The four views represent the logical view, deployment/physical view, process view and implementation view, having the additional view, use cases, also been presented in the [previous report](Report-2.md/#UseCases).
 
 ![4+1 view model](resources/view4+1.jpg?raw=true "4+1 View Model of Software Architecture")
 
