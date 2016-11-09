@@ -23,6 +23,10 @@
 
 In this diagram ...
 
+
+![ProcessView](resources/process-view.png?raw=true "Process View")
+
+
 <a name="Group"> </a>
 ## Group Members Identification 
 
