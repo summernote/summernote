@@ -21,7 +21,12 @@
 <a name="ProcessView"> </a>
 ## Process View
 
-In this diagram ...
+This view considers non-functional aspects such as performance, scalability and
+throughput. It shows the main abstractions from the Logical View executing over a thread as an operation. It is important to refer that a `process` is a group of tasks that form an executable unit; a software system is partitioned into sets of tasks. 
+
+In this section we will describe the tasks, which include processes that are involved in the execution and interactions of the Summernote system. We chose from different diagrams the activity diagram to present the information above. 
+
+An `activity diagram` is similar to flowcharts and have a wide range of uses in different view points. In the process view, they can be used to depict the program flows and complex business logic with actions, decision points, branching, merging and parallel processing. This activity diagram shows how, at run-time, the system is composed of interacting processes and is present below:
 
 
 ![ProcessView](resources/process-view.png?raw=true "Process View")
