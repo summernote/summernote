@@ -31,9 +31,11 @@ There are many recognized architectural patterns and styles but we think that in
 
 This model have some advantages because we can see by the last example announced that it allows the data and its representation to change independently and supports presentation, once we can have the text wrote in different fonts and other styles without changing that text. 
 
-<a name="LogicalView"> </a> [Go to top](#TOP)
+[Go to top](#TOP)
+<a name="LogicalView">
 ## Logical View
 
+[Go to top](#TOP)
 <a name="DevelopmentView"> </a>
 ## Development View
 
@@ -57,10 +59,12 @@ dependencies both in black-box and white-box views.
 
 ![DevelopmentView](resources/development-view.png?raw=true "Development View")
 
-
+[Go to top](#TOP)
 <a name="DeploymentView"> </a>
 ## Deployment View
 
+
+[Go to top](#TOP)
 <a name="ProcessView"> </a>
 ## Process View
 
@@ -82,7 +86,7 @@ Just one more note to mention that it is possible before writing something in th
  
 ![Toolbar](resources/toolbar.png?raw=true "Toolbar")
 
-
+[Go to top](#TOP)
 <a name="Group"> </a>
 ## Group Members Identification 
 
@@ -92,3 +96,5 @@ Just one more note to mention that it is possible before writing something in th
 | José Filipe de Monteiro Peixoto | ei12134@fe.up.pt     |      25%     |
 | Nuno Miguel Rainho Valente      | up200204376@fe.up.pt |      25%     |
 | Urvish Sanjay Desai                    | up201602683@fe.up.pt |      25%     |
+
+[Go to top](#TOP)
