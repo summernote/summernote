@@ -4,7 +4,7 @@
 2. [Logical View](#LogicalView)
 3. [Deployment View](#DeploymentView)
 4. [Process View](#ProcessView)
-5. [Implementation View](#ImplementationView)
+5. [Development View](#DevelopmentView)
 6. [Group Members Identification](#Group)
 
 <a name="Introduction"> </a>
@@ -30,7 +30,7 @@ There are many recognized architectural patterns and styles but we think that in
 
 This model have some advantages because we can see by the last example announced that it allows the data and its representation to change independently and supports presentation, once we can have the text wrote in different fonts and other styles without changing that text. 
 
-<a name="LogicView"> </a>
+<a name="LogicalView"> </a>
 ## Logical View
 
 <a name="DevelopmentView"> </a>
