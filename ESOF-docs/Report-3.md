@@ -15,10 +15,11 @@
 <a name="DevelopmentView"> </a>
 ## Development View
 
-The development view illustrates a system from a programmer's perspective and is concerned with software management. This view is also known as the implementation view. It uses the UML Component diagram to describe system components.
+The development view illustrates a system from a programmer's perspective and is concerned with software management. 
+This view is also known as the implementation view. It uses the UML Component diagram to describe system components.
 
-This is a view of a system’s architecture that encompasses the components used to
-assemble and release a physical system. This view focuses on configuration management
+This is a view of the architecture of a system that includes the components used to mount and release a physical system. 
+This view focuses on configuration management
 and actual software module organization in the development environment. The software is
 actually packaged into components that can be developed and tested by the development
 team. While the Logical View is at the conceptual level, the diagrams in this view
