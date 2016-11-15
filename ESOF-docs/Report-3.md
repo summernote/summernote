@@ -15,6 +15,13 @@
 <a name="DevelopmentView"> </a>
 ## Development View
 
+This is a view of a system’s architecture that encompasses the components used to
+assemble and release a physical system. This view focuses on configuration management
+and actual software module organization in the development environment. The software is
+actually packaged into components that can be developed and tested by the development
+team. While the Logical View is at the conceptual level, the diagrams in this view
+represent the physical-level artifacts that are built by the team.
+
 ![DevelopmentView](resources/development-view.png?raw=true "Development View")
 
 
