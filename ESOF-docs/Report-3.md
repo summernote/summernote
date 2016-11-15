@@ -15,6 +15,8 @@
 <a name="DevelopmentView"> </a>
 ## Development View
 
+The development view illustrates a system from a programmer's perspective and is concerned with software management. This view is also known as the implementation view. It uses the UML Component diagram to describe system components. UML Diagrams used to represent the development view include the Package diagram.
+
 This is a view of a system’s architecture that encompasses the components used to
 assemble and release a physical system. This view focuses on configuration management
 and actual software module organization in the development environment. The software is
