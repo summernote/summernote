@@ -22,6 +22,14 @@ actually packaged into components that can be developed and tested by the develo
 team. While the Logical View is at the conceptual level, the diagrams in this view
 represent the physical-level artifacts that are built by the team.
 
+Component Diagrams are used to represent the Implementation View. These diagrams
+show different components, the ports available and the dependencies on the environment
+in terms of provided and required interfaces. UML 2 has improved the Component
+Diagrams specifically with the interfaces and ports. The components can be tied to the
+classes and composite structures that realize these components. These diagrams can
+now be used to precisely represent the software components built in a system and their
+dependencies both in black-box and white-box views.
+
 ![DevelopmentView](resources/development-view.png?raw=true "Development View")
 
 
