@@ -15,6 +15,9 @@
 <a name="DevelopmentView"> </a>
 ## Development View
 
+![DevelopmentView](resources/development-view.png?raw=true "Development View")
+
+
 <a name="DeploymentView"> </a>
 ## Deployment View
 
