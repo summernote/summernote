@@ -31,6 +31,14 @@ An `activity diagram` is similar to flowcharts and have a wide range of uses in 
 
 ![ProcessView](resources/process-view.png?raw=true "Process View")
 
+In the above diagram we refer style button and in that case we mean buttons that change the style of presentation / formatting the "text", like `bold` button or `color` button. In the following toolbar of Summernote we can also insert some picture, video, table or link, for example, and because of this reason we distinguish style buttons from other buttons. 
+
+
+Just one more note to mention that it is possible before writing something in the editor to click a button and then to write something already with that type of defined format or vice versa. This is the reason for the existence of the initial branch on the activity diagram.
+ 
+ 
+![Toolbar](resources/toolbar.png?raw=true "Toolbar")
+
 
 <a name="Group"> </a>
 ## Group Members Identification 
