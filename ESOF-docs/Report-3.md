@@ -1,5 +1,6 @@
-# Report 3 - Software Design 
 <a name="TOP"> </a>
+# Report 3 - Software Design 
+
 ## Index
 1. [Introduction](#Introduction)
 2. [Logical View](#LogicalView)
@@ -34,7 +35,14 @@ This model have some advantages because we can see by the last example announced
 [Go to top](#TOP)
 <a name="LogicalView">
 ## Logical View
-Test
+
+The logical view model shows the key abstractions in the system as object or object classes, or their packages. It is concerned with the functionality that the system provides to end-users. UML diagrams used to represent the logical view include package diagrams, activity diagrams, class diagrams, and state diagrams. Here we have used package diagrams for the representation of the logical view of Summernote project model.
+
+A package diagram depicts the dependencies between the packages that make up a model. It considers the functional requirements that the system should provide to its users in terms of services. The logical view is designed to address the end user's concerns about ensuring that all of their desired functionality is captured by the system. In our system, we have mapped the required functionality to the components that provide that functionality.
+
+![LogicalView](resources/logical-view.png?raw=true "Logical View")
+
+The diagram we have used has blue and grey colored packages. This is to denote if the package requires more code(grey). As we see, the logical view gives a view to the end user about all the functional requirements of the summernote software including installation, customization, features and integration.
 
 [Go to top](#TOP)
 <a name="DevelopmentView"> </a>
