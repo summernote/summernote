@@ -30,7 +30,7 @@ Following traditional building architecture, a 'software architectural style' is
 
 There are many recognized architectural patterns and styles but we think that in this case is being used the `Model View Controller` architectural pattern and we begin to explain: this model separates application data, inside the model, from graphical presentation components - the view, and input-processing logic - the controller. In Summernote project, a user, for example, inputs text, from the keyboard and formats this text using the mouse by clicking on a editor button. The program stores this text and format information into a series of data structures, then displays this information on screen for the user to read what has been inputted. When a user provides some input, the controller modifies the model's data with the given input. When the model changes, it notifies the view of the change and the view can update its presentation with the changed data. A basic example is when the application displays characters using a particular font. 
 
-This model have some advantages because we can see by the last example announced that it allows the data and its representation to change independently and supports presentation, once we can have the text wrote in different fonts and other styles without changing that text. 
+This model has some advantages because we can see by the last example announced that it allows the data and its representation to change independently and supports presentation, once we can have the text wrote in different fonts and other styles without changing that text. 
 
 [Go to top](#TOP)
 <a name="LogicalView">
@@ -42,7 +42,7 @@ A package diagram depicts the dependencies between the packages that make up a m
 
 ![LogicalView](resources/logical-view.png?raw=true "Logical View")
 
-The diagram we have used has blue and grey colored packages. This is to denote if the package requires more code(grey). As we see, the logical view gives a view to the end user about all the functional requirements of the summernote software including installation, customization, features and integration.
+The diagram we have used, has blue and grey colored packages. This is to denote if the package requires more code(grey). As we see, the logical view gives a view to the end user about all the functional requirements of the summernote software including installation, customization, features and integration.
 
 [Go to top](#TOP)
 <a name="DevelopmentView"> </a>
