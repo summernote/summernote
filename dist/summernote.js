@@ -5357,7 +5357,7 @@
                 '<div class="btn-group">',
                 '  <div class="note-palette-title">' + lang.color.foreground + '</div>',
                 '  <div>',
-                '    <button type="button" class="note-color-reset btn btn-default" data-event="removeFormat" data-value="foreColor">',
+                '    <button type="button" class="note-color-reset btn btn-default" data-event="foreColor" data-value="#000">',
                 lang.color.resetToDefault,
                 '    </button>',
                 '  </div>',
