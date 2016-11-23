@@ -5316,7 +5316,7 @@
       context.memo('button.color', function () {
         var $defaultForeColor = $('.note-editor.note-frame .note-editing-area .note-editable').css('color');
         if (!$defaultForeColor) {
-        $defaultForeColor = '#000';
+          $defaultForeColor = '#000';
         }
         return ui.buttonGroup({
           className: 'note-color',
@@ -5361,7 +5361,7 @@
                 '<div class="btn-group">',
                 '  <div class="note-palette-title">' + lang.color.foreground + '</div>',
                 '  <div>',
-                '    <button type="button" class="note-color-reset btn btn-default" data-event="foreColor"    '+
+                '    <button type="button" class="note-color-reset btn btn-default" data-event="foreColor"    ' +
                 ', data-value="' + $defaultForeColor + '">',
                 lang.color.resetToDefault,
                 '    </button>',
