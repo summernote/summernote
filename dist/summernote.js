@@ -5263,6 +5263,12 @@
                 '    </button>',
                 '  </div>',
                 '  <div class="note-holder" data-event="backColor"/>',
+
+                '  <div class="btn-sm">',
+                '    <input type="color" id="html5backcolorpicker" class="note-btn btn-default" value="#EFEFEF" style="width:100%;" data-value="colorpicker">',
+                '    <button type="button" class="note-color-reset btn" data-event="backColor" data-value="cpbackColor">select</button>',
+                '  </div>',
+                
                 '</div>',
                 '<div class="btn-group">',
                 '  <div class="note-palette-title">' + lang.color.foreground + '</div>',
@@ -5272,6 +5278,12 @@
                 '    </button>',
                 '  </div>',
                 '  <div class="note-holder" data-event="foreColor"/>',
+                
+                '  <div class="btn-sm">',
+                '    <input type="color" id="html5forecolorpicker" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="colorpicker">',
+                '    <button type="button" class="note-color-reset btn" data-event="foreColor" data-value="cpforeColor">select</button>',
+                '  </div>',
+
                 '</div>',
                 '</li>'
               ].join(''),
@@ -5289,6 +5301,15 @@
                 var eventName = $button.data('event');
                 var value = $button.data('value');
 
+                var foreinput = document.getElementById("html5forecolorpicker").value;
+                var backinput = document.getElementById("html5backcolorpicker").value;
+                if (value ==='colorpicker')
+                	event.stopPropagation();
+                else if (value === 'cpbackColor')
+                  value = backinput;
+                else if (value === 'cpforeColor')
+                  value = foreinput;
+                
                 if (eventName && value) {
                   var key = eventName === 'backColor' ? 'background-color' : 'color';
                   var $color = $button.closest('.note-color').find('.note-recent-color');
