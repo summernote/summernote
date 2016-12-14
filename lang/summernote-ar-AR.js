@@ -86,7 +86,7 @@
         setTransparent: 'بدون خلفية',
         reset: 'إعادة الضبط',
         resetToDefault: 'إعادة الضبط',
-        cpSelect: 'اختار',
+        cpSelect: 'اختار'
       },
       shortcut: {
         shortcuts: 'إختصارات',
