@@ -5266,7 +5266,7 @@
                 '  <div class="note-holder" data-event="backColor"/>',
 
                 '  <div class="btn-sm">',
-                '    <input type="color" id="html5backcolorpicker" class="note-btn btn-default" value="#EFEFEF" style="width:100%;" data-value="colorpicker">',
+                '    <input type="color" id="html5bcp" class="note-btn btn-default" value="#EFEFEF" style="width:100%;" data-value="cp">',
                 '    <button type="button" class="note-color-reset btn" data-event="backColor" data-value="cpbackColor">',
                 lang.color.cpSelect,
                 '    </button>',
@@ -5283,7 +5283,7 @@
                 '  <div class="note-holder" data-event="foreColor"/>',
                 
                 '  <div class="btn-sm">',
-                '    <input type="color" id="html5forecolorpicker" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="colorpicker">',
+                '    <input type="color" id="html5fcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
                 '    <button type="button" class="note-color-reset btn" data-event="foreColor" data-value="cpforeColor">',
                 lang.color.cpSelect,
                 '    </button>',
@@ -5306,14 +5306,17 @@
                 var eventName = $button.data('event');
                 var value = $button.data('value');
 
-                var foreinput = document.getElementById("html5forecolorpicker").value;
-                var backinput = document.getElementById("html5backcolorpicker").value;
-                if (value ==='colorpicker')
-                	event.stopPropagation();
-                else if (value === 'cpbackColor')
+                var foreinput = document.getElementById('html5fcp').value;
+                var backinput = document.getElementById('html5bcp').value;
+                if (value === 'cp') {
+                  event.stopPropagation();
+                }
+                else if (value === 'cpbackColor') {
                   value = backinput;
-                else if (value === 'cpforeColor')
+                }
+                else if (value === 'cpforeColor') {
                   value = foreinput;
+                }
                 
                 if (eventName && value) {
                   var key = eventName === 'backColor' ? 'background-color' : 'color';
