@@ -106,6 +106,7 @@ define([
 
         this.lastWordRange = null;
         this.hide();
+        context.triggerEvent('change', context.layoutInfo.editable.html(), context.layoutInfo.editable);
         context.invoke('editor.focus');
       }
 
