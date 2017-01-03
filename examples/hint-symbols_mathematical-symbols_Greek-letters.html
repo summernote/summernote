@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 Data Source: http://www.htmlhelp.com/reference/html40/entities/symbols.html
 HTML To Convert JSON http://convertjson.com/html-table-to-json.htm
 Creator : ARGE|LOG﻿ github@argelog.com.tr
@@ -23,17 +23,17 @@ Creator : ARGE|LOG﻿ github@argelog.com.tr
   <script src="https://www.google.com/jsapi" type="text/javascript"></script>
 
   <script type="text/javascript">
+
     $(function() {
       $('.summernote').summernote({
         height: 200,
-        hintDirection: 'top',
         hint: {
-          match: /:math(\w{0,})$/,
+          match: /math:(\w{0,})$/,
           search: function(keyword, callback) {
             $.ajax({
               url: 'symbols_mathematical-symbols_Greek-letters.json?v=1'
             }).then(function (data) {
-              callback(data);
+         callback(data.filter(function(item){return item.Character.indexOf(keyword)>-1 || item.FIELD6.indexOf(keyword)>-1;}));
             });
           },
           content: function(item) {
