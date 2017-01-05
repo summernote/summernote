@@ -6,7 +6,7 @@
  * Copyright 2013-2016 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2017-01-05T10:39Z
+ * Date: 2017-01-05T13:45Z
  */
 (function (factory) {
   /* global define */
@@ -4342,11 +4342,10 @@
       $.each(anchors, function (idx, anchor) {
         // if url doesn't match an URL schema, set http:// as default
         
-        var hasProtocol = /^(https?|s?ftp)\:\/\//.test(linkUrl);
-        var isMailto = /^mailto\:/.test(linkUrl);
-        var isRelative = /^\//.test(linkUrl);
+        var hasProtocol = /^[a-zA-Z]+\:/.test(linkUrl);
+        var isRelative = /^(\/|\#)/.test(linkUrl);
 
-        if (!(hasProtocol || isMailto || isRelative)) {
+        if (!(hasProtocol || isRelative)) {
           linkUrl = 'http://' + linkUrl;
         }
 
