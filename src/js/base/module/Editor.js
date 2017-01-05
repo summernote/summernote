@@ -600,11 +600,10 @@ define([
       $.each(anchors, function (idx, anchor) {
         // if url doesn't match an URL schema, set http:// as default
         
-        var hasProtocol = /^(https?|s?ftp)\:\/\//.test(linkUrl);
-        var isMailto = /^mailto\:/.test(linkUrl);
-        var isRelative = /^\//.test(linkUrl);
+        var hasProtocol = /^[a-zA-Z]+\:/.test(linkUrl);
+        var isRelative = /^(\/|\#)/.test(linkUrl);
 
-        if (!(hasProtocol || isMailto || isRelative)) {
+        if (!(hasProtocol || isRelative)) {
           linkUrl = 'http://' + linkUrl;
         }
 
