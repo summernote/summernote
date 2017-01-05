@@ -599,8 +599,14 @@ define([
 
       $.each(anchors, function (idx, anchor) {
         // if url doesn't match an URL schema, set http:// as default
-        linkUrl = /^[A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?/.test(linkUrl) ?
-          linkUrl : 'http://' + linkUrl;
+        
+        var has_protocol = /^(https?|s?ftp)\:\/\//.test(linkUrl);
+        var is_mailto = /^mailto\:/.test(linkUrl);
+        var is_relative = /^\//.test(linkUrl);
+
+        if (!has_protocol && !is_mailto && !is_relative) {
+          linkUrl = "http://" + linkUrl;
+        }
 
         $(anchor).attr('href', linkUrl);
         if (isNewWindow) {
