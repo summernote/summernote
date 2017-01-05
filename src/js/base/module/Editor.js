@@ -604,7 +604,7 @@ define([
         var is_mailto = /^mailto\:/.test(linkUrl);
         var is_relative = /^\//.test(linkUrl);
 
-        if (!has_protocol && !is_mailto && !is_relative) {
+        if (!(has_protocol || is_mailto || is_relative)) {
           linkUrl = "http://" + linkUrl;
         }
 
