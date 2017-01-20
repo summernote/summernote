@@ -12,11 +12,11 @@ define([
     this.initialize = function () {
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
-      var body = '<div class="form-group row-fluid">' +
-          '<label>' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
-          '<input class="note-video-url form-control span12" type="text" />' +
-          '</div>';
-      var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
+      var body = '<div class="input-group row-fluid">' +
+        '<span class="input-group-addon">' + lang.video.url + '</span>' +
+        '<input class="note-video-url form-control span12" type="text" placeholder="' + lang.video.providers + '"/>' +
+        '</div>';
+      var footer = '<button  class="btn btn-sm btn-primary note-video-btn" disabled>' + lang.video.insert + '</button>';
 
       this.$dialog = ui.dialog({
         title: lang.video.insert,
@@ -72,42 +72,42 @@ define([
       if (ytMatch && ytMatch[1].length === 11) {
         var youtubeId = ytMatch[1];
         $video = $('<iframe>')
-            .attr('frameborder', 0)
-            .attr('src', '//www.youtube.com/embed/' + youtubeId)
-            .attr('width', '640').attr('height', '360');
+          .attr('frameborder', 0)
+          .attr('src', '//www.youtube.com/embed/' + youtubeId)
+          .attr('width', '640').attr('height', '360');
       } else if (igMatch && igMatch[0].length) {
         $video = $('<iframe>')
-            .attr('frameborder', 0)
-            .attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/')
-            .attr('width', '612').attr('height', '710')
-            .attr('scrolling', 'no')
-            .attr('allowtransparency', 'true');
+          .attr('frameborder', 0)
+          .attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/')
+          .attr('width', '612').attr('height', '710')
+          .attr('scrolling', 'no')
+          .attr('allowtransparency', 'true');
       } else if (vMatch && vMatch[0].length) {
         $video = $('<iframe>')
-            .attr('frameborder', 0)
-            .attr('src', vMatch[0] + '/embed/simple')
-            .attr('width', '600').attr('height', '600')
-            .attr('class', 'vine-embed');
+          .attr('frameborder', 0)
+          .attr('src', vMatch[0] + '/embed/simple')
+          .attr('width', '600').attr('height', '600')
+          .attr('class', 'vine-embed');
       } else if (vimMatch && vimMatch[3].length) {
         $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
-            .attr('frameborder', 0)
-            .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
-            .attr('width', '640').attr('height', '360');
+          .attr('frameborder', 0)
+          .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
+          .attr('width', '640').attr('height', '360');
       } else if (dmMatch && dmMatch[2].length) {
         $video = $('<iframe>')
-            .attr('frameborder', 0)
-            .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
-            .attr('width', '640').attr('height', '360');
+          .attr('frameborder', 0)
+          .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
+          .attr('width', '640').attr('height', '360');
       } else if (youkuMatch && youkuMatch[1].length) {
         $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
-            .attr('frameborder', 0)
-            .attr('height', '498')
-            .attr('width', '510')
-            .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
+          .attr('frameborder', 0)
+          .attr('height', '498')
+          .attr('width', '510')
+          .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
       } else if (mp4Match || oggMatch || webmMatch) {
         $video = $('<video controls>')
-            .attr('src', url)
-            .attr('width', '640').attr('height', '360');
+          .attr('src', url)
+          .attr('width', '640').attr('height', '360');
       } else {
         // this is not a known video link. Now what, Cat? Now what?
         return false;
@@ -147,7 +147,7 @@ define([
     this.showVideoDialog = function (text) {
       return $.Deferred(function (deferred) {
         var $videoUrl = self.$dialog.find('.note-video-url'),
-            $videoBtn = self.$dialog.find('.note-video-btn');
+          $videoBtn = self.$dialog.find('.note-video-btn');
 
         ui.onDialogShown(self.$dialog, function () {
           context.triggerEvent('dialog.shown');
