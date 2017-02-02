@@ -11,7 +11,7 @@
         strikethrough: 'குறுக்குக் கோடு',
         size: 'எழுத்துரு அளவு',
         superscript: 'மேல் ஒட்டு',
-        subscript: 'கீழ் ஒட்டு'	
+        subscript: 'கீழ் ஒட்டு'
       },
       image: {
         image: 'உருவப்படம்',
