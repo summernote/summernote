@@ -9,6 +9,7 @@ define(function () {
 
     this.initialize = function () {
       if (options.airMode || options.disableResizeEditor) {
+        this.destroy();
         return;
       }
 
