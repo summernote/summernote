@@ -58,7 +58,7 @@
       },
       style: {
         style: 'Style',
-        p: 'p',
+        p: 'Normal',
         blockquote: 'Citation',
         pre: 'Code source',
         h1: 'Titre 1',
