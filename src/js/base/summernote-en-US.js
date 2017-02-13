@@ -63,7 +63,8 @@ define([
         addColLeft: 'Add column left',
         addColRight: 'Add column right',
         delRow: 'Delete row',
-        delCol: 'Delete column'
+        delCol: 'Delete column',
+        delTable: 'Delete table'
       },
       hr: {
         insert: 'Insert Horizontal Rule'

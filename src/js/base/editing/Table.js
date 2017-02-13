@@ -43,7 +43,7 @@ define([
 
       var trAttributes = this.recoverAttributes(currentTr);
       var html = $('<tr' + trAttributes + '></tr>');
-      
+
       for (var idCell = 0; idCell < nbCell; idCell++)
       {
         var currentCell = cells[idCell];
@@ -100,7 +100,7 @@ define([
     */
     this.recoverAttributes = function (el) {
         var resultStr = '';
-        
+
         if (!el) {
           return resultStr;
         }
@@ -179,7 +179,17 @@ define([
 
       return $table[0];
     };
+
+    /**
+     * Delete current table
+     *
+     * @param {WrappedRange} rng
+     * @return {Node}
+     */
+    this.deleteTable = function (rng) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      $(cell).closest('table').remove();
+    };
   };
   return Table;
 });
-
