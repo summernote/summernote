@@ -91,7 +91,7 @@ define([
         ],
         table: [
           ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
-          ['delete', ['deleteRow', 'deleteCol']]
+          ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]
         ],
         air: [
           ['color', ['color']],

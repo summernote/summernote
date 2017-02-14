@@ -730,6 +730,20 @@ define([
     };
 
     /**
+     * @method deleteTable
+     *
+     *
+     */
+    this.deleteTable = function () {
+      var rng = this.createRange($editable);
+      if (rng.isCollapsed() && rng.isOnCell()) {
+        beforeCommand();
+        table.deleteTable(rng);
+        afterCommand();
+      }
+    };
+
+    /**
      * float me
      *
      * @param {String} value

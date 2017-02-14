@@ -6,7 +6,7 @@
  * Copyright 2013-2016 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2016-10-17T19:37Z
+ * Date: 2017-02-13T17:07Z
  */
 (function (factory) {
   /* global define */
@@ -2085,7 +2085,8 @@
         addColLeft: 'Add column left',
         addColRight: 'Add column right',
         delRow: 'Delete row',
-        delCol: 'Delete column'
+        delCol: 'Delete column',
+        delTable: 'Delete table'
       },
       hr: {
         insert: 'Insert Horizontal Rule'
@@ -3721,7 +3722,7 @@
 
       var trAttributes = this.recoverAttributes(currentTr);
       var html = $('<tr' + trAttributes + '></tr>');
-      
+
       for (var idCell = 0; idCell < nbCell; idCell++)
       {
         var currentCell = cells[idCell];
@@ -3778,7 +3779,7 @@
     */
     this.recoverAttributes = function (el) {
         var resultStr = '';
-        
+
         if (!el) {
           return resultStr;
         }
@@ -3856,6 +3857,17 @@
       }
 
       return $table[0];
+    };
+
+    /**
+     * Delete current table
+     *
+     * @param {WrappedRange} rng
+     * @return {Node}
+     */
+    this.deleteTable = function (rng) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      $(cell).closest('table').remove();
     };
   };
 
@@ -4569,6 +4581,20 @@
       if (rng.isCollapsed() && rng.isOnCell()) {
         beforeCommand();
         table.deleteCol(rng);
+        afterCommand();
+      }
+    };
+
+    /**
+     * @method deleteTable
+     *
+     *
+     */
+    this.deleteTable = function () {
+      var rng = this.createRange($editable);
+      if (rng.isCollapsed() && rng.isOnCell()) {
+        beforeCommand();
+        table.deleteTable(rng);
         afterCommand();
       }
     };
@@ -5290,7 +5316,7 @@
       if (!options.shortcuts || !shortcut) {
         return '';
       }
-      
+
       if (agent.isMac) {
         shortcut = shortcut.replace('CMD', '⌘').replace('SHIFT', '⇧');
       }
@@ -5836,7 +5862,7 @@
     /**
      * table : [
      *  ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
-     *  ['delete', ['deleteRow', 'deleteCol']]
+     *  ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]
      * ],
      */
     this.addTablePopoverButtons = function () {
@@ -5886,6 +5912,14 @@
           contents: ui.icon(options.icons.colRemove),
           tooltip: lang.table.delCol,
           click: context.createInvokeHandler('editor.deleteCol')
+        }).render();
+      });
+      context.memo('button.deleteTable', function () {
+        return ui.button({
+          className: 'btn-md',
+          contents: ui.icon(options.icons.trash),
+          tooltip: lang.table.delTable,
+          click: context.createInvokeHandler('editor.deleteTable')
         }).render();
       });
     };
@@ -7096,7 +7130,7 @@
         ],
         table: [
           ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
-          ['delete', ['deleteRow', 'deleteCol']]
+          ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]
         ],
         air: [
           ['color', ['color']],

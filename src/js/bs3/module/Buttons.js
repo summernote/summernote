@@ -19,7 +19,7 @@ define([
       if (!options.shortcuts || !shortcut) {
         return '';
       }
-      
+
       if (agent.isMac) {
         shortcut = shortcut.replace('CMD', '⌘').replace('SHIFT', '⇧');
       }
@@ -565,7 +565,7 @@ define([
     /**
      * table : [
      *  ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
-     *  ['delete', ['deleteRow', 'deleteCol']]
+     *  ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]
      * ],
      */
     this.addTablePopoverButtons = function () {
@@ -615,6 +615,14 @@ define([
           contents: ui.icon(options.icons.colRemove),
           tooltip: lang.table.delCol,
           click: context.createInvokeHandler('editor.deleteCol')
+        }).render();
+      });
+      context.memo('button.deleteTable', function () {
+        return ui.button({
+          className: 'btn-md',
+          contents: ui.icon(options.icons.trash),
+          tooltip: lang.table.delTable,
+          click: context.createInvokeHandler('editor.deleteTable')
         }).render();
       });
     };
