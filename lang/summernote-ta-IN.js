@@ -16,12 +16,12 @@
       image: {
         image: 'படம்',
         insert: 'படத்தை செருகு',
-        resizeFull: 'பட முழு அளவை',
-        resizeHalf: 'பட அரை அளவை',
-        resizeQuarter: 'பட கால் அளவை',
-        floatLeft: 'இடப்பக்கம் இழு',
-        floatRight: 'வலப்பக்கம் இழு',
-        floatNone: 'நிலை நிறுத்து',
+        resizeFull: 'முழு அளவை',
+        resizeHalf: 'அரை அளவை',
+        resizeQuarter: 'கால் அளவை',
+        floatLeft: 'இடப்பக்கமாக வை',
+        floatRight: 'வலப்பக்கமாக வை',
+        floatNone: 'இயல்பு நிலையில் வை',
         dragImageHere: 'படத்தை இங்கே வை',
         selectFromFiles: 'கோப்புகளை தேர்வு செய்',
         url: 'இணையதள முகவரி',
@@ -77,7 +77,7 @@
         left: 'இடது சீரமைப்பு',
         center: 'நடு சீரமைப்பு',
         right: 'வலது சீரமைப்பு',
-        justify: 'நேர்த்தி செய்'
+        justify: 'இருபுற சீரமைப்பு'
       },
       color: {
         recent: 'அண்மை நிறம்',
