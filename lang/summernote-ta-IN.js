@@ -22,8 +22,15 @@
         floatLeft: 'இடப்பக்கமாக வை',
         floatRight: 'வலப்பக்கமாக வை',
         floatNone: 'இயல்பு நிலையில் வை',
-        dragImageHere: 'படத்தை இங்கே வை',
+        shapeRounded: 'வட்டமான வடிவம்',
+        shapeCircle: 'வட்ட வடிவம்',
+        shapeThumbnail: 'சிறு வடிவம்',
+        shapeNone: 'வடிவத்தை நீக்கு',
+        dragImageHere: 'படத்தை இங்கே இழுத்து வை',
+        dropImage: 'படத்தை விடு',
         selectFromFiles: 'கோப்புகளை தேர்வு செய்',
+        maximumFileSize: 'அதிகபட்ச கோப்பு அளவு',
+        maximumFileSizeError: 'கோப்பு அதிகபட்ச அளவை மீறிவிட்டது',
         url: 'இணையதள முகவரி',
         remove: 'படத்தை நீக்கு'
       },
@@ -67,7 +74,7 @@
       },
       options: {
         help: 'உதவி',
-        fullscreen: 'முழு திரை',
+        fullscreen: 'முழுத்திரை',
         codeview: 'நிரலாக்க காட்சி'
       },
       paragraph: {
