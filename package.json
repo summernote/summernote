@@ -16,6 +16,10 @@
     "email": "<susukang98@gmail.com>"
   },
   "main": "dist/summernote.js",
+  "dependencies": {
+    "jquery": "^2.2.4",
+    "bootstrap": "^3.3.7"
+  },
   "devDependencies": {
     "chai": "^3.2.0",
     "chai-spies": "^0.7.1",
