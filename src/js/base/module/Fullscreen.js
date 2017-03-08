@@ -38,7 +38,7 @@ define([
         resize({
           h: $editable.data('orgHeight')
         });
-        $scrollbar.css('overflow', 'visible');
+        $scrollbar.css('overflow', '');
       }
 
       context.invoke('toolbar.updateFullscreen', this.isFullscreen());

@@ -7,7 +7,7 @@ require.config({
   paths: {
     jquery: jqueryLink,
     bootstrap: '//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap',
-    lang: '../../lang/summernote-ko-KR'
+    lang: '../../lang/summernote-zh-CN'
   },
   shim: {
     bootstrap: ['jquery'],
@@ -46,7 +46,9 @@ require(['jquery', 'summernote'], function ($) {
     // initialize summernote
     $('.summernote').summernote({
       height: 300,
-      lang: 'ko-KR',
+      disableLinkTarget: true,
+      maximumImageFileSize: 30 * 1024 * 1024,
+      lang: 'zh-CN',
       placeholder: 'type here...'
     });
   });
