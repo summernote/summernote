@@ -6,7 +6,7 @@
  * Copyright 2013-2016 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2016-08-07T05:11Z
+ * Date: 2017-01-05T13:45Z
  */
 (function (factory) {
   /* global define */
@@ -4341,8 +4341,13 @@
 
       $.each(anchors, function (idx, anchor) {
         // if url doesn't match an URL schema, set http:// as default
-        linkUrl = /^[A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?/.test(linkUrl) ?
-          linkUrl : 'http://' + linkUrl;
+        
+        var hasProtocol = /^[a-zA-Z]+\:/.test(linkUrl);
+        var isRelative = /^(\/|\#)/.test(linkUrl);
+
+        if (!(hasProtocol || isRelative)) {
+          linkUrl = 'http://' + linkUrl;
+        }
 
         $(anchor).attr('href', linkUrl);
         if (isNewWindow) {
