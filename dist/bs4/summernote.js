@@ -1832,7 +1832,7 @@
   var airEditable = renderer.create('<div class="note-editable" contentEditable="true"/>');
 
   var buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
-  var button = renderer.create('<button type="button" class="note-btn btn btn-sm">', function ($node, options) {
+  var button = renderer.create('<button type="button" class="note-btn btn">', function ($node, options) {
 
     // set button type
     var buttonClass = ['btn', '-' + (options.type || 'secondary'), options.outline ? '-outline' : ''].join('');
@@ -2179,8 +2179,8 @@
       '  <div class="modal-content">',
       (options.title ?
       '    <div class="modal-header">' +
-      '      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
       '      <h4 class="modal-title">' + options.title + '</h4>' +
+      '      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
       '    </div>' : ''
       ),
       '    <div class="modal-body">' + options.body + '</div>',

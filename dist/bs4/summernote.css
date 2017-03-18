@@ -587,4 +587,14 @@
   cursor: pointer;
 }
 
+.note-toolbar{
+
+    padding: 0 0 5px 5px !important
+}
+
+.btn-background-color, .btn-foreground-color{
+
+    display: inline-block !important
+}
+
 /*# sourceMappingURL=summernote.css.map */
