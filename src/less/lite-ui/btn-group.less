@@ -1,0 +1,51 @@
+.note-btn-group {
+  position: relative;
+  display: inline-block;
+  margin-right: 8px;
+
+  > .note-btn-group {
+    margin-right:0px;
+  }
+
+  > .note-btn,
+  > .note-btn-group {
+    margin-left: -4px;
+    border-radius: 0px;
+
+    &.focus,
+    &.active {
+      border-radius:0px;
+    }
+
+
+    &:first-child {
+      margin-left: 0px;
+      border-top-left-radius: 1px;
+      border-bottom-left-radius: 1px;
+
+      &.focus,
+      &.active {
+        border-top-left-radius: 1px;
+        border-bottom-left-radius: 1px;
+      }
+    }
+
+    &:last-child:not(.note-dropdown) {
+      border-top-right-radius: 1px;
+      border-bottom-right-radius: 1px;
+
+      &.focus,
+      &.active {
+        border-top-right-radius: 1px;
+        border-bottom-right-radius: 1px;
+      }
+    }
+  }
+
+  &.open {
+    > .note-dropdown {
+      display:block;
+    }
+
+  }
+}

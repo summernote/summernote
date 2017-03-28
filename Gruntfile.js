@@ -89,15 +89,14 @@ module.exports = function (grunt) {
         startFile: 'intro.js',    // intro part
         endFile: 'outro.js',      // outro part
         outFile: 'dist/bs4/summernote.js' // out file
-      }
-      /*,
+      },
       lite: {
         name: 'lite',
         baseUrl: 'src/js',        // base url
         startFile: 'intro.js',    // intro part
         endFile: 'outro.js',      // outro part
         outFile: 'dist/lite/summernote.js' // out file
-      }*/
+      }
     },
 
     // for javascript convention.
@@ -137,7 +136,7 @@ module.exports = function (grunt) {
         files: [
           { 'dist/bs3/summernote.min.js': ['dist/bs3/summernote.js'] },
           { 'dist/bs4/summernote.min.js': ['dist/bs4/summernote.js'] },
-          //{ 'dist/lite/summernote.min.js': ['dist/lite/summernote.js'] },
+          { 'dist/lite/summernote.min.js': ['dist/lite/summernote.js'] },
           {
             expand: true,
             cwd: 'dist/lang',
@@ -154,7 +153,8 @@ module.exports = function (grunt) {
       dist: {
         options: { compile: true, compress: true },
         files: {
-          'dist/bs3/summernote.css': ['src/less/summernote.less']
+          'dist/bs3/summernote.css': ['src/less/summernote.less'],
+          'dist/lite/summernote.css': ['src/less/summernote-lite.less']
         }
       }
     },
@@ -187,6 +187,7 @@ module.exports = function (grunt) {
           src: [
             'dist/bs3/*',
             'dist/bs4/*',
+            'dist/lite/*',
             'dist/font/*'
           ]
         }, {
