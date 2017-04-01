@@ -79,6 +79,8 @@ define([
       Object.keys(this.memos).forEach(function (key) {
         self.removeMemo(key);
       });
+      // trigger custom onDestroy callback
+      this.triggerEvent('destroy', this);
     };
 
     this.code = function (html) {
