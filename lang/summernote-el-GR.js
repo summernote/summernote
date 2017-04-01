@@ -32,7 +32,7 @@
         maximumFileSize: 'Μέγιστο μέγεθος αρχείου',
         maximumFileSizeError: 'Το μέγεθος είναι μεγαλύτερο από το μέγιστο επιτρεπτό.',
         url: 'URL',
-		remove: 'Αφαίρεση'
+        remove: 'Αφαίρεση'
       },
       link: {
         link: 'Σύνδεσμος',
