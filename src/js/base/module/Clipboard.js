@@ -58,7 +58,8 @@ define([
     this.pasteByHook = function () {
       var node = this.$paste[0].firstChild;
 
-      if (dom.isImg(node) && node.src.startsWith('data:')) {
+      var src = node && node.src;
+      if (dom.isImg(node) && src.indexOf('data:') === 0) {
         var decodedData = atob(node.src.split(',')[1]);
         var array = new Uint8Array(decodedData.length);
         for (var i = 0; i < decodedData.length; i++) {
