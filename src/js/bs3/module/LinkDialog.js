@@ -13,17 +13,24 @@ define([
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
       var body = '<div class="form-group">' +
-                   '<label>' + lang.link.textToDisplay + '</label>' +
-                   '<input class="note-link-text form-control" type="text" />' +
-                 '</div>' +
-                 '<div class="form-group">' +
-                   '<label>' + lang.link.url + '</label>' +
-                   '<input class="note-link-url form-control" type="text" value="http://" />' +
-                 '</div>' +
+                    '<label class="control-label col-xs-4">' + lang.link.textToDisplay + '</label>' +
+                    '<div class="input-group col-xs-8">' +
+                      '<input class="note-link-text form-control" type="text">' +
+                    '</div>' +
+                  '</div>' +
+                  '<div class="form-group">' +
+                    '<label class="control-label col-xs-4">' + lang.link.url + '</label>' +
+                    '<div class="input-group col-xs-8">' +
+                      '<input class="note-link-url form-control" type="text" value="http://" />' +
+                    '</div>'
+                  '</div>' +
                  (!options.disableLinkTarget ?
-                   '<div class="checkbox">' +
-                     '<label>' + '<input type="checkbox" checked> ' + lang.link.openInNewWindow + '</label>' +
-                   '</div>' : ''
+                  '<div class="form-group checkbox">' +
+                    '<label class="control-label col-xs-4">' + lang.link.openInNewWindow + '</label>' +
+                    '<div class="input-group col-xs-8">' +
+                      '<input type="checkbox" checked> ' +
+                    '</div>' +
+                  '</div>' : ''
                  );
       var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
 
