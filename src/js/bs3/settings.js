@@ -96,6 +96,8 @@ define([
         ]
       },
 
+      container: 'body',
+
       // air mode: inline editor
       airMode: false,
 

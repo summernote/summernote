@@ -6,7 +6,7 @@
  * Copyright 2013-2016 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2016-08-07T05:11Z
+ * Date: 2016-08-24T19:24Z
  */
 (function (factory) {
   /* global define */
@@ -1880,7 +1880,7 @@
       $node.attr({
         title: options.tooltip
       }).tooltip({
-        container: 'body',
+        container: options.container,
         trigger: 'hover',
         placement: 'bottom'
       });
@@ -1928,7 +1928,7 @@
     $node.html(contents.join(''));
 
     $node.find('.note-color-btn').tooltip({
-      container: 'body',
+      container: options.container,
       trigger: 'hover',
       placement: 'bottom'
     });
@@ -5213,6 +5213,7 @@
       context.memo('button.bold', function () {
         return ui.button({
           className: 'note-btn-bold',
+          container: options.container,
           contents: ui.icon(options.icons.bold),
           tooltip: lang.font.bold + representShortcut('bold'),
           click: context.createInvokeHandler('editor.bold')
@@ -5222,6 +5223,7 @@
       context.memo('button.italic', function () {
         return ui.button({
           className: 'note-btn-italic',
+          container: options.container,
           contents: ui.icon(options.icons.italic),
           tooltip: lang.font.italic + representShortcut('italic'),
           click: context.createInvokeHandler('editor.italic')
@@ -5231,6 +5233,7 @@
       context.memo('button.underline', function () {
         return ui.button({
           className: 'note-btn-underline',
+          container: options.container,
           contents: ui.icon(options.icons.underline),
           tooltip: lang.font.underline + representShortcut('underline'),
           click: context.createInvokeHandler('editor.underline')
@@ -5240,6 +5243,7 @@
       context.memo('button.clear', function () {
         return ui.button({
           contents: ui.icon(options.icons.eraser),
+          container: options.container,
           tooltip: lang.font.clear + representShortcut('removeFormat'),
           click: context.createInvokeHandler('editor.removeFormat')
         }).render();
@@ -5248,6 +5252,7 @@
       context.memo('button.strikethrough', function () {
         return ui.button({
           className: 'note-btn-strikethrough',
+          container: options.container,
           contents: ui.icon(options.icons.strikethrough),
           tooltip: lang.font.strikethrough + representShortcut('strikethrough'),
           click: context.createInvokeHandler('editor.strikethrough')
@@ -5257,6 +5262,7 @@
       context.memo('button.superscript', function () {
         return ui.button({
           className: 'note-btn-superscript',
+          container: options.container,
           contents: ui.icon(options.icons.superscript),
           tooltip: lang.font.superscript,
           click: context.createInvokeHandler('editor.superscript')
@@ -5266,6 +5272,7 @@
       context.memo('button.subscript', function () {
         return ui.button({
           className: 'note-btn-subscript',
+          container: options.container,
           contents: ui.icon(options.icons.subscript),
           tooltip: lang.font.subscript,
           click: context.createInvokeHandler('editor.subscript')
@@ -5276,6 +5283,7 @@
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
+            container: options.container,
             contents: '<span class="note-current-fontname"/> ' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.font.name,
             data: {
@@ -5298,6 +5306,7 @@
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
+            container: options.container,
             contents: '<span class="note-current-fontsize"/>' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.font.size,
             data: {
@@ -5319,6 +5328,7 @@
           children: [
             ui.button({
               className: 'note-current-color-button',
+              container: options.container,
               contents: ui.icon(options.icons.font + ' note-recent-color'),
               tooltip: lang.color.recent,
               click: function (e) {
@@ -5336,6 +5346,7 @@
             }),
             ui.button({
               className: 'dropdown-toggle',
+              container: options.container,
               contents: ui.icon(options.icons.caret, 'span'),
               tooltip: lang.color.more,
               data: {
@@ -5369,6 +5380,7 @@
                 $dropdown.find('.note-holder').each(function () {
                   var $holder = $(this);
                   $holder.append(ui.palette({
+                    container: options.container,
                     colors: options.colors,
                     eventName: $holder.data('event')
                   }).render());
@@ -5396,6 +5408,7 @@
 
       context.memo('button.ul',  function () {
         return ui.button({
+          container: options.container,
           contents: ui.icon(options.icons.unorderedlist),
           tooltip: lang.lists.unordered + representShortcut('insertUnorderedList'),
           click: context.createInvokeHandler('editor.insertUnorderedList')
@@ -5404,6 +5417,7 @@
 
       context.memo('button.ol', function () {
         return ui.button({
+          container: options.container,
           contents: ui.icon(options.icons.orderedlist),
           tooltip: lang.lists.ordered + representShortcut('insertOrderedList'),
           click:  context.createInvokeHandler('editor.insertOrderedList')
@@ -5411,36 +5425,42 @@
       });
 
       var justifyLeft = ui.button({
+        container: options.container,
         contents: ui.icon(options.icons.alignLeft),
         tooltip: lang.paragraph.left + representShortcut('justifyLeft'),
         click: context.createInvokeHandler('editor.justifyLeft')
       });
 
       var justifyCenter = ui.button({
+        container: options.container,
         contents: ui.icon(options.icons.alignCenter),
         tooltip: lang.paragraph.center + representShortcut('justifyCenter'),
         click: context.createInvokeHandler('editor.justifyCenter')
       });
 
       var justifyRight = ui.button({
+        container: options.container,
         contents: ui.icon(options.icons.alignRight),
         tooltip: lang.paragraph.right + representShortcut('justifyRight'),
         click: context.createInvokeHandler('editor.justifyRight')
       });
 
       var justifyFull = ui.button({
+        container: options.container,
         contents: ui.icon(options.icons.alignJustify),
         tooltip: lang.paragraph.justify + representShortcut('justifyFull'),
         click: context.createInvokeHandler('editor.justifyFull')
       });
 
       var outdent = ui.button({
+        container: options.container,
         contents: ui.icon(options.icons.outdent),
         tooltip: lang.paragraph.outdent + representShortcut('outdent'),
         click: context.createInvokeHandler('editor.outdent')
       });
 
       var indent = ui.button({
+        container: options.container,
         contents: ui.icon(options.icons.indent),
         tooltip: lang.paragraph.indent + representShortcut('indent'),
         click: context.createInvokeHandler('editor.indent')
@@ -5457,6 +5477,7 @@
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
+            container: options.container,
             contents: ui.icon(options.icons.alignLeft) + ' ' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.paragraph.paragraph,
             data: {
@@ -5480,6 +5501,7 @@
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
+            container: options.container,
             contents: ui.icon(options.icons.textHeight) + ' ' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.font.height,
             data: {
@@ -5499,6 +5521,7 @@
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
+            container: options.container,
             contents: ui.icon(options.icons.table) + ' ' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.table.table,
             data: {
@@ -5530,6 +5553,7 @@
 
       context.memo('button.link', function () {
         return ui.button({
+          container: options.container,
           contents: ui.icon(options.icons.link),
           tooltip: lang.link.link + representShortcut('linkDialog.show'),
           click: context.createInvokeHandler('linkDialog.show')
@@ -5538,6 +5562,7 @@
 
       context.memo('button.picture', function () {
         return ui.button({
+          container: options.container,
           contents: ui.icon(options.icons.picture),
           tooltip: lang.image.image,
           click: context.createInvokeHandler('imageDialog.show')
@@ -5546,6 +5571,7 @@
 
       context.memo('button.video', function () {
         return ui.button({
+          container: options.container,
           contents: ui.icon(options.icons.video),
           tooltip: lang.video.video,
           click: context.createInvokeHandler('videoDialog.show')
@@ -5554,6 +5580,7 @@
 
       context.memo('button.hr', function () {
         return ui.button({
+          container: options.container,
           contents: ui.icon(options.icons.minus),
           tooltip: lang.hr.insert + representShortcut('insertHorizontalRule'),
           click: context.createInvokeHandler('editor.insertHorizontalRule')
@@ -5563,6 +5590,7 @@
       context.memo('button.fullscreen', function () {
         return ui.button({
           className: 'btn-fullscreen',
+          container: options.container,
           contents: ui.icon(options.icons.arrowsAlt),
           tooltip: lang.options.fullscreen,
           click: context.createInvokeHandler('fullscreen.toggle')
@@ -5572,6 +5600,7 @@
       context.memo('button.codeview', function () {
         return ui.button({
           className: 'btn-codeview',
+          container: options.container,
           contents: ui.icon(options.icons.code),
           tooltip: lang.options.codeview,
           click: context.createInvokeHandler('codeview.toggle')
@@ -5580,6 +5609,7 @@
 
       context.memo('button.redo', function () {
         return ui.button({
+          container: options.container,
           contents: ui.icon(options.icons.redo),
           tooltip: lang.history.redo + representShortcut('redo'),
           click: context.createInvokeHandler('editor.redo')
@@ -5588,6 +5618,7 @@
 
       context.memo('button.undo', function () {
         return ui.button({
+          container: options.container,
           contents: ui.icon(options.icons.undo),
           tooltip: lang.history.undo + representShortcut('undo'),
           click: context.createInvokeHandler('editor.undo')
@@ -5596,6 +5627,7 @@
 
       context.memo('button.help', function () {
         return ui.button({
+          container: options.container,
           contents: ui.icon(options.icons.question),
           tooltip: lang.options.help,
           click: context.createInvokeHandler('helpDialog.show')
@@ -5614,6 +5646,7 @@
       // Image Size Buttons
       context.memo('button.imageSize100', function () {
         return ui.button({
+          container: options.container,
           contents: '<span class="note-fontsize-10">100%</span>',
           tooltip: lang.image.resizeFull,
           click: context.createInvokeHandler('editor.resize', '1')
@@ -5621,6 +5654,7 @@
       });
       context.memo('button.imageSize50', function () {
         return  ui.button({
+          container: options.container,
           contents: '<span class="note-fontsize-10">50%</span>',
           tooltip: lang.image.resizeHalf,
           click: context.createInvokeHandler('editor.resize', '0.5')
@@ -5628,6 +5662,7 @@
       });
       context.memo('button.imageSize25', function () {
         return ui.button({
+          container: options.container,
           contents: '<span class="note-fontsize-10">25%</span>',
           tooltip: lang.image.resizeQuarter,
           click: context.createInvokeHandler('editor.resize', '0.25')
@@ -5637,6 +5672,7 @@
       // Float Buttons
       context.memo('button.floatLeft', function () {
         return ui.button({
+          container: options.container,
           contents: ui.icon(options.icons.alignLeft),
           tooltip: lang.image.floatLeft,
           click: context.createInvokeHandler('editor.floatMe', 'left')
@@ -5645,6 +5681,7 @@
 
       context.memo('button.floatRight', function () {
         return ui.button({
+          container: options.container,
           contents: ui.icon(options.icons.alignRight),
           tooltip: lang.image.floatRight,
           click: context.createInvokeHandler('editor.floatMe', 'right')
@@ -5653,6 +5690,7 @@
 
       context.memo('button.floatNone', function () {
         return ui.button({
+          container: options.container,
           contents: ui.icon(options.icons.alignJustify),
           tooltip: lang.image.floatNone,
           click: context.createInvokeHandler('editor.floatMe', 'none')
@@ -5662,6 +5700,7 @@
       // Remove Buttons
       context.memo('button.removeMedia', function () {
         return ui.button({
+          container: options.container,
           contents: ui.icon(options.icons.trash),
           tooltip: lang.image.remove,
           click: context.createInvokeHandler('editor.removeMedia')
@@ -5672,6 +5711,7 @@
     this.addLinkPopoverButtons = function () {
       context.memo('button.linkDialogShow', function () {
         return ui.button({
+          container: options.container,
           contents: ui.icon(options.icons.link),
           tooltip: lang.link.edit,
           click: context.createInvokeHandler('linkDialog.show')
@@ -5680,6 +5720,7 @@
 
       context.memo('button.unlink', function () {
         return ui.button({
+          container: options.container,
           contents: ui.icon(options.icons.unlink),
           tooltip: lang.link.unlink,
           click: context.createInvokeHandler('editor.unlink')
@@ -6059,7 +6100,7 @@
           var $content = $node.find('.popover-content');
           $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
         }
-      }).render().appendTo('body');
+      }).render().appendTo(options.container);
       var $content = this.$popover.find('.popover-content');
 
       context.invoke('buttons.build', $content, options.popover.link);
@@ -6229,7 +6270,7 @@
     this.initialize = function () {
       this.$popover = ui.popover({
         className: 'note-image-popover'
-      }).render().appendTo('body');
+      }).render().appendTo(options.container);
       var $content = this.$popover.find('.popover-content');
 
       context.invoke('buttons.build', $content, options.popover.image);
@@ -6544,7 +6585,7 @@
     this.initialize = function () {
       this.$popover = ui.popover({
         className: 'note-air-popover'
-      }).render().appendTo('body');
+      }).render().appendTo(options.container);
       var $content = this.$popover.find('.popover-content');
 
       context.invoke('buttons.build', $content, options.popover.air);
@@ -6584,6 +6625,7 @@
     var hint = context.options.hint || [];
     var direction = context.options.hintDirection || 'bottom';
     var hints = $.isArray(hint) ? hint : [hint];
+    var container = context.options.container;
 
     this.events = {
       'summernote.keyup': function (we, e) {
@@ -6609,7 +6651,7 @@
         className: 'note-hint-popover',
         hideArrow: true,
         direction: ''
-      }).render().appendTo('body');
+      }).render().appendTo(container);
 
       this.$popover.hide();
 
@@ -6872,6 +6914,8 @@
           ['insert', ['link', 'picture']]
         ]
       },
+
+      container: 'body',
 
       // air mode: inline editor
       airMode: false,
