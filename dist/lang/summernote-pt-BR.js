@@ -14,12 +14,12 @@
       image: {
         image: 'Imagem',
         insert: 'Inserir imagem',
-        resizeFull: 'Resize Full',
-        resizeHalf: 'Resize Half',
-        resizeQuarter: 'Resize Quarter',
-        floatLeft: 'Float Left',
-        floatRight: 'Float Right',
-        floatNone: 'Float None',
+        resizeFull: 'Redimensionar Completamente',
+        resizeHalf: 'Redimensionar pela Metade',
+        resizeQuarter: 'Redimensionar um Quarto',
+        floatLeft: 'Flutuar para Esquerda',
+        floatRight: 'Flutuar para Direira',
+        floatNone: 'Não Flutuar',
         dragImageHere: 'Arraste uma imagem para cá',
         selectFromFiles: 'Selecione a partir dos arquivos',
         url: 'URL da imagem'
