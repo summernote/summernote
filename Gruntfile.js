@@ -218,6 +218,7 @@ module.exports = function (grunt) {
       },
       all: {
         // Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS, IE
+        singleRun: true,
         browsers: ['PhantomJS'],
         reporters: ['progress']
       },
