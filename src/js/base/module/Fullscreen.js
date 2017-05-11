@@ -25,7 +25,7 @@ define([
         resize({
           h: $window.height() - $toolbar.outerHeight()
         });
-      }
+      };
 
       $editor.toggleClass('fullscreen');
       if (this.isFullscreen()) {
