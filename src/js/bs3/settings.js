@@ -62,7 +62,7 @@ define([
       },
 
       buttons: {},
-      
+
       lang: 'en-US',
 
       // toolbar
@@ -101,6 +101,7 @@ define([
 
       width: null,
       height: null,
+      linkTargetBlank: null,
 
       focus: false,
       tabSize: 4,
