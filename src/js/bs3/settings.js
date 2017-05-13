@@ -101,7 +101,7 @@ define([
 
       width: null,
       height: null,
-      linkTargetBlank: null,
+      linkTargetBlank: true,
 
       focus: false,
       tabSize: 4,

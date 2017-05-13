@@ -109,7 +109,10 @@ define([
           self.bindEnterKey($linkUrl, $linkBtn);
           self.bindEnterKey($linkText, $linkBtn);
 
-          $openInNewWindow.prop('checked', context.options.linkTargetBlank || linkInfo.isNewWindow);
+          var isChecked = linkInfo.isNewWindow !== undefined ?
+            linkInfo.isNewWindow : context.options.linkTargetBlank;
+
+          $openInNewWindow.prop('checked', isChecked);
 
           $linkBtn.one('click', function (event) {
             event.preventDefault();
