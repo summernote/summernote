@@ -21,20 +21,21 @@ define([
           $codable.data('cmeditor').setsize(null, size.h);
         }
       };
+      var fullscreenResize = function () {
+        resize({
+          h: $window.height() - $toolbar.outerHeight()
+        });
+      };
 
       $editor.toggleClass('fullscreen');
       if (this.isFullscreen()) {
         $editable.data('orgHeight', $editable.css('height'));
 
-        $window.on('resize', function () {
-          resize({
-            h: $window.height() - $toolbar.outerHeight()
-          });
-        }).trigger('resize');
+        $window.on('resize', fullscreenResize).trigger('resize');
 
         $scrollbar.css('overflow', 'hidden');
       } else {
-        $window.off('resize');
+        $window.off('resize', fullscreenResize);
         resize({
           h: $editable.data('orgHeight')
         });
