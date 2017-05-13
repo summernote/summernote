@@ -101,6 +101,7 @@ define([
 
       if ($item.length) {
         var node = this.nodeFromItem($item);
+        // XXX: consider to move codes to editor for recording redo/undo.
         this.lastWordRange.insertNode(node);
         range.createFromNode(node).collapse().select();
 
