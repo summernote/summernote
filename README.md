@@ -147,8 +147,8 @@ grunt server
 * JSHint: http://www.jshint.com/about/
 * JSHint rule: https://github.com/summernote/summernote/blob/master/.jshintrc
 
-#### Contribution guide
-* Please read [CONTRIBUTING.md](https://github.com/summernote/summernote/blob/develop/CONTRIBUTING.md) before sending pull requests.
+#### Contributing
+* Pull requests are welcome
 
 ### Contacts
 * Email: susukang98@gmail.com
