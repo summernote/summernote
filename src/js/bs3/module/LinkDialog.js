@@ -22,7 +22,8 @@ define([
                  '</div>' +
                  (!options.disableLinkTarget ?
                    '<div class="checkbox">' +
-                     '<label>' + '<input type="checkbox" checked> ' + lang.link.openInNewWindow + '</label>' +
+                     '<input type="checkbox" id="checkbox-open-in-new-window" checked> ' +
+                     '<label for="checkbox-open-in-new-window">' + lang.link.openInNewWindow + '</label>' +
                    '</div>' : ''
                  );
       var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
