@@ -27,6 +27,7 @@ define([
     var $note = context.layoutInfo.note;
     var $editor = context.layoutInfo.editor;
     var $editable = context.layoutInfo.editable;
+    var $codable = context.layoutInfo.codable;
     var options = context.options;
     var lang = options.langInfo;
 
@@ -78,9 +79,15 @@ define([
       var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
       $editable.on(changeEventName, func.debounce(function () {
         context.triggerEvent('change', $editable.html());
-      }, 250));
+      }, 250)).on('focusin', function (event) {
+        context.triggerEvent('focusin', event);
+      }).on('focusout', function (event) {
+        context.triggerEvent('focusout', event);
+      });
 
-      $editor.on('focusin', function (event) {
+      $codable.on(changeEventName, func.debounce(function () {
+        context.triggerEvent('change', $editable.html());
+      }, 250)).on('focusin', function (event) {
         context.triggerEvent('focusin', event);
       }).on('focusout', function (event) {
         context.triggerEvent('focusout', event);
