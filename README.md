@@ -147,6 +147,7 @@ npm run server
 
 #### Contributing
 * Pull requests are welcome
+* Please don't include dist/* files on your commits.
 
 ### Contacts
 * Email: susukang98@gmail.com
