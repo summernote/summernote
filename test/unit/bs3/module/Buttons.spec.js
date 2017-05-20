@@ -18,7 +18,7 @@ define([
   // [workaround]
   //  - Firefox need setTimeout for applying contents
   //  - IE8~11 can't create range in headless mode
-  if (agent.isFF || agent.isMSIE) {
+  if (agent.isFF || agent.isMSIE || agent.isEdge) {
     return;
   }
 
