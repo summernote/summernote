@@ -492,8 +492,11 @@ define([
           if (!dom.isInline(topAncestor)) {
             topAncestor = ancestors[ancestors.length - 2] || rng.sc.childNodes[rng.so];
           }
-        } else {
-          topAncestor = rng.sc.childNodes[rng.so > 0 ? rng.so - 1 : 0];
+        } else if (rng.so > 0) {
+          topAncestor = rng.sc.childNodes[rng.so - 1];
+        }
+        else {
+          topAncestor = rng.sc;
         }
 
         // siblings not in paragraph
@@ -502,8 +505,23 @@ define([
 
         // wrap with paragraph
         if (inlineSiblings.length) {
+          var startNode = so > 0 ? sc.childNodes[so - 1] : sc;
+          var endNode = eo > 0 ? ec.childNodes[eo - 1] : ec;
+
           var para = dom.wrap(list.head(inlineSiblings), 'p');
           dom.appendChildNodes(para, list.tail(inlineSiblings));
+
+          //update range
+          var startNodeIndex = inlineSiblings.indexOf(startNode);
+          if (startNodeIndex !== -1) {
+            sc = para;
+            so = startNodeIndex + 1;
+            var endNodeIndex = inlineSiblings.indexOf(endNode);
+            if (endNodeIndex !== -1) {
+              ec = para;
+              eo = endNodeIndex + 1;
+            }
+          }
         }
 
         return this.normalize();
