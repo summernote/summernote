@@ -16,8 +16,9 @@ define([
     assert = chai.assert;
 
   // [workaround]
+  //  - Firefox need setTimeout for applying contents
   //  - IE8~11 can't create range in headless mode
-  if (agent.isMSIE || agent.isEdge) {
+  if (agent.isFF || agent.isMSIE) {
     return;
   }
 
