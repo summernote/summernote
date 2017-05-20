@@ -107,6 +107,35 @@
       history: {
         undo: '撤销',
         redo: '重做'
+      },
+      help: {
+        insertParagraph: '插入段落',
+        undo: '撤销',
+        redo: '重做',
+        tab: '增加缩进',
+        untab: '减少缩进',
+        bold: '粗体',
+        italic: '斜体',
+        underline: '下划线',
+        strikethrough: '删除线',
+        removeFormat: '清除格式',
+        justifyLeft: '左对齐',
+        justifyCenter: '居中对齐',
+        justifyRight: '右对齐',
+        justifyFull: '两端对齐',
+        insertUnorderedList: '无序列表',
+        insertOrderedList: '有序列表',
+        outdent: '减少缩进',
+        indent: '增加缩进',
+        formatPara: '设置选中内容样式为 普通',
+        formatH1: '设置选中内容样式为 标题1',
+        formatH2: '设置选中内容样式为 标题2',
+        formatH3: '设置选中内容样式为 标题3',
+        formatH4: '设置选中内容样式为 标题4',
+        formatH5: '设置选中内容样式为 标题5',
+        formatH6: '设置选中内容样式为 标题6',
+        insertHorizontalRule: '插入水平线',
+        'linkDialog.show': '显示链接对话框'
       }
     }
   });

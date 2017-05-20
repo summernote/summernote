@@ -114,7 +114,7 @@ define([
       if (agent.isPhantom) {
         it('should indent and outdent paragraph', function () {
           editor.indent();
-          expectContents(context, '<p style="margin-left: 25px; ">hello</p>');
+          expectContents(context, '<p style="margin-left: 25px;">hello</p>');
 
           editor.outdent();
           expectContents(context, '<p style="">hello</p>');

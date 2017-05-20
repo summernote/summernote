@@ -56,6 +56,11 @@ define(['jquery'], function ($) {
     }
   }
 
+  var isSupportTouch =
+    (('ontouchstart' in window) ||
+     (navigator.MaxTouchPoints > 0) ||
+     (navigator.msMaxTouchPoints > 0));
+
   /**
    * @class core.agent
    *
@@ -76,6 +81,7 @@ define(['jquery'], function ($) {
     browserVersion: browserVersion,
     jqueryVersion: parseFloat($.fn.jquery),
     isSupportAmd: isSupportAmd,
+    isSupportTouch: isSupportTouch,
     hasCodeMirror: hasCodeMirror,
     isFontInstalled: isFontInstalled,
     isW3CRangeSupport: !!document.createRange

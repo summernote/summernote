@@ -101,11 +101,13 @@ define([
 
       if ($item.length) {
         var node = this.nodeFromItem($item);
+        // XXX: consider to move codes to editor for recording redo/undo.
         this.lastWordRange.insertNode(node);
         range.createFromNode(node).collapse().select();
 
         this.lastWordRange = null;
         this.hide();
+        context.triggerEvent('change', context.layoutInfo.editable.html(), context.layoutInfo.editable);
         context.invoke('editor.focus');
       }
 

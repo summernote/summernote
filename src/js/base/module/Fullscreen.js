@@ -2,6 +2,7 @@ define([
   'jquery'
 ], function ($) {
   var Fullscreen = function (context) {
+    var self = this;
     var $editor = context.layoutInfo.editor;
     var $toolbar = context.layoutInfo.toolbar;
     var $editable = context.layoutInfo.editable;
@@ -10,34 +11,32 @@ define([
     var $window = $(window);
     var $scrollbar = $('html, body');
 
+    this.resizeTo = function (size) {
+      $editable.css('height', size.h);
+      $codable.css('height', size.h);
+      if ($codable.data('cmeditor')) {
+        $codable.data('cmeditor').setsize(null, size.h);
+      }
+    };
+
+    this.onResize = function () {
+      self.resizeTo({
+        h: $window.height() - $toolbar.outerHeight()
+      });
+    };
+
     /**
      * toggle fullscreen
      */
     this.toggle = function () {
-      var resize = function (size) {
-        $editable.css('height', size.h);
-        $codable.css('height', size.h);
-        if ($codable.data('cmeditor')) {
-          $codable.data('cmeditor').setsize(null, size.h);
-        }
-      };
-
       $editor.toggleClass('fullscreen');
       if (this.isFullscreen()) {
         $editable.data('orgHeight', $editable.css('height'));
-
-        $window.on('resize', function () {
-          resize({
-            h: $window.height() - $toolbar.outerHeight()
-          });
-        }).trigger('resize');
-
+        $window.on('resize', this.onResize).trigger('resize');
         $scrollbar.css('overflow', 'hidden');
       } else {
-        $window.off('resize');
-        resize({
-          h: $editable.data('orgHeight')
-        });
+        $window.off('resize', this.onResize);
+        this.resizeTo({ h: $editable.data('orgHeight') });
         $scrollbar.css('overflow', 'visible');
       }
 
