@@ -43,6 +43,7 @@ $background-color: #f5f5f5;
 
     .note-editable {
       outline: none;
+      display: table;
 
       sup {
         vertical-align: super;
