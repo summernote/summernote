@@ -119,7 +119,7 @@
         'justifyLeft': 'Yazıyı sola hizalar',
         'justifyCenter': 'Yazıyı ortalar',
         'justifyRight': 'Yazıyı sağa hizalar',
-        'justifyFull': 'Yazıyı her iki tarafa yaslar',
+        'justifyFull': 'Yazıyı her iki tarafa yazlar',
         'insertUnorderedList': 'Madde işaretli liste ekler',
         'insertOrderedList': 'Numaralı liste ekler',
         'outdent': 'Aktif paragrafın girintisini azaltır',
