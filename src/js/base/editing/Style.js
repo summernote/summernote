@@ -133,7 +133,8 @@ define([
           'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
           'font-subscript': document.queryCommandState('subscript') ? 'subscript' : 'normal',
           'font-superscript': document.queryCommandState('superscript') ? 'superscript' : 'normal',
-          'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal'
+          'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal',
+          'font-family': document.queryCommandValue('fontname') || styleInfo['font-family']
         });
       } catch (e) {}
 

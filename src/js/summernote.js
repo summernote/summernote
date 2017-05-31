@@ -1,8 +1,9 @@
 define([
   'jquery',
+  'summernote/base/core/agent',
   'summernote/base/core/list',
   'summernote/base/Context'
-], function ($, list, Context) {
+], function ($, agent, list, Context) {
   $.fn.extend({
     /**
      * Summernote API
@@ -18,8 +19,11 @@ define([
       var options = hasInitOptions ? list.head(arguments) : {};
 
       options = $.extend({}, $.summernote.options, options);
+
+      // Update options
       options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
       options.icons = $.extend(true, {}, $.summernote.options.icons, options.icons);
+      options.tooltip = options.tooltip === 'auto' ? !agent.isSupportTouch : options.tooltip;
 
       this.each(function (idx, note) {
         var $note = $(note);

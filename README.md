@@ -103,22 +103,20 @@ The code view allows the user to enter script contents. Make sure to filter/[san
 
 #### build summernote
 ```bash
-# grunt-cli is need by grunt; you might have this installed already
-npm install -g grunt-cli
 npm install
 
 # build full version of summernote: dist/summernote.js
-grunt build
+npm run build
 
 # generate minified copy: dist/summernote.min.js, dist/summernote.css
-grunt dist
+npm run dist
 ```
 At this point, you should now have a `build/` directory populated with everything you need to use summernote.
 
 #### test summernote
 run tests with Karma and PhantomJS
 ```bash
-grunt test
+npm test
 ```
 If you want run tests on other browser,
 change the values for `broswers` properties in `Gruntfile.js`.
@@ -133,12 +131,12 @@ karma: {
 
 ```
 You can use `Chrome`, `ChromeCanary`, `Firefox`, `Opera`, `Safari`, `PhantomJS` and `IE` beside `PhantomJS`.
-Once you run `grunt test`, it will watch all javascript file. Therefore karma run tests every time you chage code.
+Once you run `npm test`, it will watch all javascript file. Therefore karma run tests every time you chage code.
 
 #### start local server for developing summernote.
 run local server with connect and watch.
 ```bash
-grunt server
+npm run server
 # Open a browser on http://localhost:3000.
 # If you change source code, automatically reload your page.
 ```
@@ -147,8 +145,9 @@ grunt server
 * JSHint: http://www.jshint.com/about/
 * JSHint rule: https://github.com/summernote/summernote/blob/master/.jshintrc
 
-#### Contribution guide
-* Please read [CONTRIBUTING.md](https://github.com/summernote/summernote/blob/develop/CONTRIBUTING.md) before sending pull requests.
+#### Contributing
+* Pull requests are welcome
+* Please don't include dist/* files on your commits.
 
 ### Contacts
 * Email: susukang98@gmail.com

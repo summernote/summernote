@@ -22,7 +22,9 @@ define([
                  '</div>' +
                  (!options.disableLinkTarget ?
                    '<div class="checkbox">' +
-                     '<label>' + '<input type="checkbox" checked> ' + lang.link.openInNewWindow + '</label>' +
+                     '<label for="sn-checkbox-open-in-new-window">' + 
+                       '<input type="checkbox" id="sn-checkbox-open-in-new-window" checked />' + lang.link.openInNewWindow +
+                     '</label>' +
                    '</div>' : ''
                  );
       var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
@@ -107,7 +109,10 @@ define([
           self.bindEnterKey($linkUrl, $linkBtn);
           self.bindEnterKey($linkText, $linkBtn);
 
-          $openInNewWindow.prop('checked', linkInfo.isNewWindow);
+          var isChecked = linkInfo.isNewWindow !== undefined ?
+            linkInfo.isNewWindow : context.options.linkTargetBlank;
+
+          $openInNewWindow.prop('checked', isChecked);
 
           $linkBtn.one('click', function (event) {
             event.preventDefault();

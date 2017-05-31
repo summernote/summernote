@@ -1731,6 +1731,16 @@
       delete this.memos[key];
     };
 
+    /**
+     *Some buttons need to change their visual style immediately once they get pressed
+     */
+    this.createInvokeHandlerAndUpdateState = function (namespace, value) {
+      return function (event) {
+        self.createInvokeHandler(namespace, value)(event);
+        self.invoke('buttons.updateCurrentStyle');
+      };
+    };
+
     this.createInvokeHandler = function (namespace, value) {
       return function (event) {
         event.preventDefault();
@@ -1861,7 +1871,7 @@
   var editor = renderer.create('<div class="note-editor note-frame panel panel-default"/>');
   var toolbar = renderer.create('<div class="note-toolbar panel-heading"/>');
   var editingArea = renderer.create('<div class="note-editing-area"/>');
-  var codable = renderer.create('<textarea class="note-codable"/>');
+  var codable = renderer.create('<textarea class="note-codable" aria-label="codable"/>');
   var editable = renderer.create('<div class="note-editable panel-body" contentEditable="true"/>');
   var statusbar = renderer.create([
     '<div class="note-statusbar">',
@@ -1880,7 +1890,8 @@
   var button = renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
     if (options && options.tooltip) {
       $node.attr({
-        title: options.tooltip
+        title: options.tooltip,
+        'aria-label': options.tooltip
       }).tooltip({
         container: 'body',
         trigger: 'hover',
@@ -1922,6 +1933,7 @@
           'data-event="', eventName, '" ',
           'data-value="', color, '" ',
           'title="', color, '" ',
+          'aria-label="', color, '" ',
           'data-toggle="button" tabindex="-1"></button>'
         ].join(''));
       }
@@ -3385,7 +3397,8 @@
           'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
           'font-subscript': document.queryCommandState('subscript') ? 'subscript' : 'normal',
           'font-superscript': document.queryCommandState('superscript') ? 'superscript' : 'normal',
-          'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal'
+          'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal',
+          'font-family': document.queryCommandValue('fontname') || styleInfo['font-family']
         });
       } catch (e) {}
 
@@ -5218,7 +5231,7 @@
           className: 'note-btn-bold',
           contents: ui.icon(options.icons.bold),
           tooltip: lang.font.bold + representShortcut('bold'),
-          click: context.createInvokeHandler('editor.bold')
+          click: context.createInvokeHandlerAndUpdateState('editor.bold')
         }).render();
       });
 
@@ -5227,7 +5240,7 @@
           className: 'note-btn-italic',
           contents: ui.icon(options.icons.italic),
           tooltip: lang.font.italic + representShortcut('italic'),
-          click: context.createInvokeHandler('editor.italic')
+          click: context.createInvokeHandlerAndUpdateState('editor.italic')
         }).render();
       });
 
@@ -5236,7 +5249,7 @@
           className: 'note-btn-underline',
           contents: ui.icon(options.icons.underline),
           tooltip: lang.font.underline + representShortcut('underline'),
-          click: context.createInvokeHandler('editor.underline')
+          click: context.createInvokeHandlerAndUpdateState('editor.underline')
         }).render();
       });
 
@@ -5253,7 +5266,7 @@
           className: 'note-btn-strikethrough',
           contents: ui.icon(options.icons.strikethrough),
           tooltip: lang.font.strikethrough + representShortcut('strikethrough'),
-          click: context.createInvokeHandler('editor.strikethrough')
+          click: context.createInvokeHandlerAndUpdateState('editor.strikethrough')
         }).render();
       });
 
@@ -5262,7 +5275,7 @@
           className: 'note-btn-superscript',
           contents: ui.icon(options.icons.superscript),
           tooltip: lang.font.superscript,
-          click: context.createInvokeHandler('editor.superscript')
+          click: context.createInvokeHandlerAndUpdateState('editor.superscript')
         }).render();
       });
 
@@ -5271,7 +5284,7 @@
           className: 'note-btn-subscript',
           contents: ui.icon(options.icons.subscript),
           tooltip: lang.font.subscript,
-          click: context.createInvokeHandler('editor.subscript')
+          click: context.createInvokeHandlerAndUpdateState('editor.subscript')
         }).render();
       });
 
@@ -5292,7 +5305,7 @@
             template: function (item) {
               return '<span style="font-family:' + item + '">' + item + '</span>';
             },
-            click: context.createInvokeHandler('editor.fontName')
+            click: context.createInvokeHandlerAndUpdateState('editor.fontName')
           })
         ]).render();
       });

@@ -18,17 +18,20 @@ define(function () {
         event.stopPropagation();
 
         var editableTop = $editable.offset().top - $document.scrollTop();
-
-        $document.on('mousemove', function (event) {
+        var onMouseMove = function (event) {
           var height = event.clientY - (editableTop + EDITABLE_PADDING);
 
           height = (options.minheight > 0) ? Math.max(height, options.minheight) : height;
           height = (options.maxHeight > 0) ? Math.min(height, options.maxHeight) : height;
 
           $editable.height(height);
-        }).one('mouseup', function () {
-          $document.off('mousemove');
-        });
+        };
+
+        $document
+          .on('mousemove', onMouseMove)
+          .one('mouseup', function () {
+            $document.off('mousemove', onMouseMove);
+          });
       });
     };
 

@@ -1,7 +1,7 @@
 {
   "name": "summernote",
   "description": "Super simple WYSIWYG editor",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "license": "MIT",
   "keywords": [
     "editor",
@@ -16,6 +16,12 @@
     "email": "<susukang98@gmail.com>"
   },
   "main": "dist/summernote.js",
+  "scripts": {
+    "test": "grunt test",
+    "server": "grunt server",
+    "build": "grunt build",
+    "dist": "grunt dist"
+  },
   "dependencies": {
     "jquery": "^2.2.4",
     "bootstrap": "^3.3.7"
@@ -24,7 +30,8 @@
     "chai": "^3.2.0",
     "chai-spies": "^0.7.1",
     "grunt": "*",
-    "grunt-contrib-clean": "^1.0.0",
+    "grunt-cli": "*",
+    "grunt-contrib-clean": "^1.1.0",
     "grunt-contrib-compress": "*",
     "grunt-contrib-connect": "*",
     "grunt-contrib-copy": "^1.0.0",
@@ -38,21 +45,21 @@
     "grunt-recess": "*",
     "grunt-saucelabs": "*",
     "grunt-webfont": "^1.0.2",
-    "karma": "^1.5.0",
+    "karma": "1.5.0",
     "karma-chrome-launcher": "^2.0.0",
     "karma-coverage": "^1.1.1",
     "karma-firefox-launcher": "^1.0.1",
     "karma-ie-launcher": "^1.0.0",
     "karma-mocha": "^1.3.0",
     "karma-opera-launcher": "^1.0.0",
-    "karma-phantomjs-launcher": "^1.0.2",
+    "karma-phantomjs-launcher": "^1.0.4",
     "karma-requirejs": "^1.1.0",
     "karma-safari-launcher": "^1.0.0",
     "karma-sauce-launcher": "^1.1.0",
     "load-grunt-tasks": "3.5.2",
     "mocha": "^3.2.0",
     "open": "0.0.5",
-    "phantomjs": "^2.1.7",
+    "phantomjs-prebuilt": "^2.1.7",
     "requirejs": "^2.1.22"
   }
 }
