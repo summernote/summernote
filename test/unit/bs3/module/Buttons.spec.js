@@ -12,11 +12,13 @@ define([
 ], function (chai, $, agent, range, Context) {
   'use strict';
 
-  var expect = chai.expect;
+  var expect = chai.expect,
+    assert = chai.assert;
 
   // [workaround]
+  //  - Firefox need setTimeout for applying contents
   //  - IE8~11 can't create range in headless mode
-  if (agent.isMSIE || agent.isEdge) {
+  if (agent.isFF || agent.isMSIE || agent.isEdge) {
     return;
   }
 
@@ -24,6 +26,7 @@ define([
     var context, $toolbar, $editable;
 
     beforeEach(function () {
+      $('body').empty(); //important !
       var $note = $('<div><p>hello</p></div>').appendTo('body');
 
       var options = $.extend({}, $.summernote.options);
@@ -54,12 +57,32 @@ define([
       });
     });
 
+    describe('bold button state updated', function () {
+      it('should look toggled immediately when clicked', function () {
+        var $button = $toolbar.find('.note-btn-bold');
+        assert.isTrue($button.length === 1);
+        assert.isFalse($button.hasClass('active'));
+        $button.click();
+        assert.isTrue($button.hasClass('active'), 'button is now active');
+      });
+    });
+
     describe('italic button', function () {
       it('should execute italic command when it is clicked', function () {
         range.createFromNode($editable.find('p')[0]).normalize().select();
 
         $toolbar.find('.note-btn-italic').click();
         expect($editable.html()).to.equalsIgnoreCase('<p><i>hello</i></p>');
+      });
+    });
+
+    describe('italic button state updated', function () {
+      it('should look toggled immediately when clicked', function () {
+        var $button = $toolbar.find('.note-btn-italic');
+        assert.isTrue($button.length === 1);
+        assert.isFalse($button.hasClass('active'));
+        $button.click();
+        assert.isTrue($button.hasClass('active'), 'button is now active');
       });
     });
 
@@ -72,12 +95,32 @@ define([
       });
     });
 
+    describe('underline button state updated', function () {
+      it('should look toggled immediately when clicked', function () {
+        var $button = $toolbar.find('.note-btn-underline');
+        assert.isTrue($button.length === 1);
+        assert.isFalse($button.hasClass('active'));
+        $button.click();
+        assert.isTrue($button.hasClass('active'), 'button is now active');
+      });
+    });
+
     describe('superscript button', function () {
       it('should execute superscript command when it is clicked', function () {
         range.createFromNode($editable.find('p')[0]).normalize().select();
 
         $toolbar.find('.note-btn-superscript').click();
         expect($editable.html()).to.equalsIgnoreCase('<p><sup>hello</sup></p>');
+      });
+    });
+
+    describe('superscript button state updated', function () {
+      it('should look toggled immediately when clicked', function () {
+        var $button = $toolbar.find('.note-btn-superscript');
+        assert.isTrue($button.length === 1);
+        assert.isFalse($button.hasClass('active'));
+        $button.click();
+        assert.isTrue($button.hasClass('active'), 'button is now active');
       });
     });
 
@@ -90,12 +133,53 @@ define([
       });
     });
 
+    describe('subscript button state updated', function () {
+      it('should look toggled immediately when clicked', function () {
+        var $button = $toolbar.find('.note-btn-subscript');
+        assert.isTrue($button.length === 1);
+        assert.isFalse($button.hasClass('active'));
+        $button.click();
+        assert.isTrue($button.hasClass('active'), 'button is now active');
+      });
+    });
+
     describe('strikethrough button', function () {
       it('should execute strikethrough command when it is clicked', function () {
         range.createFromNode($editable.find('p')[0]).normalize().select();
 
         $toolbar.find('.note-btn-strikethrough').click();
         expect($editable.html()).to.equalsIgnoreCase('<p><strike>hello</strike></p>');
+      });
+    });
+
+    describe('strikethrough button state updated', function () {
+      it('should look toggled immediately when clicked', function () {
+        var $button = $toolbar.find('.note-btn-strikethrough');
+        assert.isTrue($button.length === 1);
+        assert.isFalse($button.hasClass('active'));
+        $button.click();
+        assert.isTrue($button.hasClass('active'), 'button is now active');
+      });
+    });
+
+    describe('clear button state not updated when clicked', function () {
+      it('should never look toggled when clicked', function () {
+        var $button = $toolbar.find('i.note-icon-eraser').parent();
+        assert.isTrue($button.length === 1);
+        assert.isFalse($button.hasClass('active'));
+        $button.click();
+        assert.isFalse($button.hasClass('active'), 'button is now active');
+      });
+    });
+
+    describe('font family button', function () {
+      it('should select the right font family name in the dropdown list when it is clicked', function () {
+        var $li = $toolbar.find('.dropdown-fontname li>a[data-value="Comic Sans MS"]');
+        var $span = $toolbar.find('span.note-current-fontname');
+        assert.isTrue($li.length === 1);
+        assert.isTrue($span.text() !== 'Comic Sans MS');
+        $li.click();
+        assert.isTrue($span.text() === 'Comic Sans MS');
       });
     });
 

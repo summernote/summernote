@@ -44,18 +44,22 @@ define([
               posStart = $target.offset(),
               scrollTop = $document.scrollTop();
 
-          $document.on('mousemove', function (event) {
+          var onMouseMove = function (event) {
             context.invoke('editor.resizeTo', {
               x: event.clientX - posStart.left,
               y: event.clientY - (posStart.top - scrollTop)
             }, $target, !event.shiftKey);
 
             self.update($target[0]);
-          }).one('mouseup', function (e) {
-            e.preventDefault();
-            $document.off('mousemove');
-            context.invoke('editor.afterCommand');
-          });
+          };
+
+          $document
+            .on('mousemove', onMouseMove)
+            .one('mouseup', function (e) {
+              e.preventDefault();
+              $document.off('mousemove', onMouseMove);
+              context.invoke('editor.afterCommand');
+            });
 
           if (!$target.data('ratio')) { // original ratio.
             $target.data('ratio', $target.height() / $target.width());

@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor v0.8.2
+ * Super simple wysiwyg editor v0.8.3
  * http://summernote.org/
  *
  * summernote.js
  * Copyright 2013-2016 Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2017-02-13T17:07Z
+ * Date: 2017-04-01T13:43Z
  */
 (function (factory) {
   /* global define */
@@ -140,6 +140,35 @@
       }).join('');
     };
 
+    /**
+     * Returns a function, that, as long as it continues to be invoked, will not
+     * be triggered. The function will be called after it stops being called for
+     * N milliseconds. If `immediate` is passed, trigger the function on the
+     * leading edge, instead of the trailing.
+     * @param {Function} func
+     * @param {Number} wait
+     * @param {Boolean} immediate
+     * @return {Function}
+     */
+    var debounce = function (func, wait, immediate) {
+      var timeout;
+      return function () {
+        var context = this, args = arguments;
+        var later = function () {
+          timeout = null;
+          if (!immediate) {
+            func.apply(context, args);
+          }
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) {
+          func.apply(context, args);
+        }
+      };
+    };
+
     return {
       eq: eq,
       eq2: eq2,
@@ -153,7 +182,8 @@
       uniqueId: uniqueId,
       rect2bnd: rect2bnd,
       invertObject: invertObject,
-      namespaceToCamel: namespaceToCamel
+      namespaceToCamel: namespaceToCamel,
+      debounce: debounce
     };
   })();
 
@@ -294,7 +324,7 @@
     };
   
     /**
-     * returns a copy of the array with all falsy values removed
+     * returns a copy of the array with all false values removed
      *
      * @param {Array} array - array
      * @param {Function} fn - predicate function for cluster rule
@@ -1591,6 +1621,8 @@
       Object.keys(this.memos).forEach(function (key) {
         self.removeMemo(key);
       });
+      // trigger custom onDestroy callback
+      this.triggerEvent('destroy', this);
     };
 
     this.code = function (html) {
@@ -1697,6 +1729,16 @@
       }
 
       delete this.memos[key];
+    };
+
+    /**
+     *Some buttons need to change their visual style immediately once they get pressed
+     */
+    this.createInvokeHandlerAndUpdateState = function (namespace, value) {
+      return function (event) {
+        self.createInvokeHandler(namespace, value)(event);
+        self.invoke('buttons.updateCurrentStyle');
+      };
     };
 
     this.createInvokeHandler = function (namespace, value) {
@@ -1829,7 +1871,7 @@
   var editor = renderer.create('<div class="note-editor note-frame panel panel-default"/>');
   var toolbar = renderer.create('<div class="note-toolbar panel-heading"/>');
   var editingArea = renderer.create('<div class="note-editing-area"/>');
-  var codable = renderer.create('<textarea class="note-codable"/>');
+  var codable = renderer.create('<textarea class="note-codable" aria-label="codable"/>');
   var editable = renderer.create('<div class="note-editable panel-body" contentEditable="true"/>');
   var statusbar = renderer.create([
     '<div class="note-statusbar">',
@@ -1848,7 +1890,8 @@
   var button = renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
     if (options && options.tooltip) {
       $node.attr({
-        title: options.tooltip
+        title: options.tooltip,
+        'aria-label': options.tooltip
       }).tooltip({
         container: 'body',
         trigger: 'hover',
@@ -1890,6 +1933,7 @@
           'data-event="', eventName, '" ',
           'data-value="', color, '" ',
           'title="', color, '" ',
+          'aria-label="', color, '" ',
           'data-toggle="button" tabindex="-1"></button>'
         ].join(''));
       }
@@ -2093,7 +2137,7 @@
       },
       style: {
         style: 'Style',
-        normal: 'Normal',
+        p: 'Normal',
         blockquote: 'Quote',
         pre: 'Code',
         h1: 'Header 1',
@@ -3360,7 +3404,8 @@
           'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
           'font-subscript': document.queryCommandState('subscript') ? 'subscript' : 'normal',
           'font-superscript': document.queryCommandState('superscript') ? 'superscript' : 'normal',
-          'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal'
+          'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal',
+          'font-family': document.queryCommandValue('fontname') || styleInfo['font-family']
         });
       } catch (e) {}
 
@@ -3932,9 +3977,9 @@
       // [workaround] IE doesn't have input events for contentEditable
       // - see: https://goo.gl/4bfIvA
       var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
-      $editable.on(changeEventName, function () {
+      $editable.on(changeEventName, func.debounce(function () {
         context.triggerEvent('change', $editable.html());
-      });
+      }, 250));
 
       $editor.on('focusin', function (event) {
         context.triggerEvent('focusin', event);
@@ -4438,6 +4483,10 @@
 
       if (options.onCreateLink) {
         linkUrl = options.onCreateLink(linkUrl);
+      } else {
+        // if url doesn't match an URL schema, set http:// as default
+        linkUrl = /^[A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?/.test(linkUrl) ?
+          linkUrl : 'http://' + linkUrl;
       }
 
       var anchors = [];
@@ -4791,6 +4840,7 @@
     var $editable = context.layoutInfo.editable;
     var options = context.options;
     var lang = options.langInfo;
+    var documentEventHandlers = {};
 
     var $dropzone = $([
       '<div class="note-dropzone">',
@@ -4798,15 +4848,23 @@
       '</div>'
     ].join('')).prependTo($editor);
 
+    var detachDocumentEvent = function () {
+      Object.keys(documentEventHandlers).forEach(function (key) {
+        $document.off(key.substr(2).toLowerCase(), documentEventHandlers[key]);
+      });
+      documentEventHandlers = {};
+    };
+
     /**
      * attach Drag and Drop Events
      */
     this.initialize = function () {
       if (options.disableDragAndDrop) {
         // prevent default drop event
-        $document.on('drop', function (e) {
+        documentEventHandlers.onDrop = function (e) {
           e.preventDefault();
-        });
+        };
+        $document.on('drop', documentEventHandlers.onDrop);
       } else {
         this.attachDragAndDropEvent();
       }
@@ -4819,9 +4877,7 @@
       var collection = $(),
           $dropzoneMessage = $dropzone.find('.note-dropzone-message');
 
-      // show dropzone on dragenter when dragging a object to document
-      // -but only if the editor is visible, i.e. has a positive width and height
-      $document.on('dragenter', function (e) {
+      documentEventHandlers.onDragenter = function (e) {
         var isCodeview = context.invoke('codeview.isActivated');
         var hasEditorSize = $editor.width() > 0 && $editor.height() > 0;
         if (!isCodeview && !collection.length && hasEditorSize) {
@@ -4831,15 +4887,25 @@
           $dropzoneMessage.text(lang.image.dragImageHere);
         }
         collection = collection.add(e.target);
-      }).on('dragleave', function (e) {
+      };
+
+      documentEventHandlers.onDragleave = function (e) {
         collection = collection.not(e.target);
         if (!collection.length) {
           $editor.removeClass('dragover');
         }
-      }).on('drop', function () {
+      };
+
+      documentEventHandlers.onDrop = function () {
         collection = $();
         $editor.removeClass('dragover');
-      });
+      };
+
+      // show dropzone on dragenter when dragging a object to document
+      // -but only if the editor is visible, i.e. has a positive width and height
+      $document.on('dragenter', documentEventHandlers.onDragenter)
+        .on('dragleave', documentEventHandlers.onDragleave)
+        .on('drop', documentEventHandlers.onDrop);
 
       // change dropzone's message on hover.
       $dropzone.on('dragenter', function () {
@@ -4872,6 +4938,10 @@
           });
         }
       }).on('dragover', false); // prevent default dragover event
+    };
+
+    this.destroy = function () {
+      detachDocumentEvent();
     };
   };
 
@@ -4996,6 +5066,7 @@
 
     this.initialize = function () {
       if (options.airMode || options.disableResizeEditor) {
+        this.destroy();
         return;
       }
 
@@ -5316,7 +5387,7 @@
       if (!options.shortcuts || !shortcut) {
         return '';
       }
-
+      
       if (agent.isMac) {
         shortcut = shortcut.replace('CMD', '⌘').replace('SHIFT', '⇧');
       }
@@ -5387,7 +5458,7 @@
           className: 'note-btn-bold',
           contents: ui.icon(options.icons.bold),
           tooltip: lang.font.bold + representShortcut('bold'),
-          click: context.createInvokeHandler('editor.bold')
+          click: context.createInvokeHandlerAndUpdateState('editor.bold')
         }).render();
       });
 
@@ -5396,7 +5467,7 @@
           className: 'note-btn-italic',
           contents: ui.icon(options.icons.italic),
           tooltip: lang.font.italic + representShortcut('italic'),
-          click: context.createInvokeHandler('editor.italic')
+          click: context.createInvokeHandlerAndUpdateState('editor.italic')
         }).render();
       });
 
@@ -5405,7 +5476,7 @@
           className: 'note-btn-underline',
           contents: ui.icon(options.icons.underline),
           tooltip: lang.font.underline + representShortcut('underline'),
-          click: context.createInvokeHandler('editor.underline')
+          click: context.createInvokeHandlerAndUpdateState('editor.underline')
         }).render();
       });
 
@@ -5422,7 +5493,7 @@
           className: 'note-btn-strikethrough',
           contents: ui.icon(options.icons.strikethrough),
           tooltip: lang.font.strikethrough + representShortcut('strikethrough'),
-          click: context.createInvokeHandler('editor.strikethrough')
+          click: context.createInvokeHandlerAndUpdateState('editor.strikethrough')
         }).render();
       });
 
@@ -5431,7 +5502,7 @@
           className: 'note-btn-superscript',
           contents: ui.icon(options.icons.superscript),
           tooltip: lang.font.superscript,
-          click: context.createInvokeHandler('editor.superscript')
+          click: context.createInvokeHandlerAndUpdateState('editor.superscript')
         }).render();
       });
 
@@ -5440,7 +5511,7 @@
           className: 'note-btn-subscript',
           contents: ui.icon(options.icons.subscript),
           tooltip: lang.font.subscript,
-          click: context.createInvokeHandler('editor.subscript')
+          click: context.createInvokeHandlerAndUpdateState('editor.subscript')
         }).render();
       });
 
@@ -5461,7 +5532,7 @@
             template: function (item) {
               return '<span style="font-family:' + item + '">' + item + '</span>';
             },
-            click: context.createInvokeHandler('editor.fontName')
+            click: context.createInvokeHandlerAndUpdateState('editor.fontName')
           })
         ]).render();
       });
@@ -6166,6 +6237,13 @@
     };
 
     /**
+     * toggle update button
+     */
+    this.toggleLinkBtn = function ($linkBtn, $linkText, $linkUrl) {
+      ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
+    };
+
+    /**
      * Show link dialog and set event handlers on dialog controls.
      *
      * @param {Object} linkInfo
@@ -6188,23 +6266,35 @@
 
           $linkText.val(linkInfo.text);
 
-          $linkText.on('input', function () {
-            ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
+          var handleLinkTextUpdate = function () {
+            self.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
             // if linktext was modified by keyup,
             // stop cloning text from linkUrl
             linkInfo.text = $linkText.val();
-          });
+          };
 
-          $linkUrl.on('input', function () {
-            ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
+          // if no url was given, copy text to url
+          if (!linkInfo.url) {
+            linkInfo.url = linkInfo.text || 'http://';
+          }
+          
+          $linkText.on('input', handleLinkTextUpdate).on('paste', function () {
+            setTimeout(handleLinkTextUpdate, 0);
+          });
+          var handleLinkUrlUpdate = function () {
+            self.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
             // display same link on `Text to display` input
             // when create a new link
             if (!linkInfo.text) {
               $linkText.val($linkUrl.val());
             }
+          };
+
+          $linkUrl.on('input', handleLinkUrlUpdate).on('paste', function () {
+            setTimeout(handleLinkUrlUpdate, 0);
           }).val(linkInfo.url).trigger('focus');
 
-          ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
+          self.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
 
           self.bindEnterKey($linkUrl, $linkBtn);
           self.bindEnterKey($linkText, $linkBtn);
@@ -6226,8 +6316,8 @@
 
         ui.onDialogHidden(self.$dialog, function () {
           // detach events
-          $linkText.off('input keypress');
-          $linkUrl.off('input keypress');
+          $linkText.off('input paste keypress');
+          $linkUrl.off('input paste keypress');
           $linkBtn.off('click');
 
           if (deferred.state() === 'pending') {
@@ -6724,7 +6814,7 @@
 
       var body = [
         '<p class="text-center">',
-        '<a href="http://summernote.org/" target="_blank">Summernote 0.8.2</a> · ',
+        '<a href="http://summernote.org/" target="_blank">Summernote 0.8.3</a> · ',
         '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ',
         '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>',
         '</p>'
@@ -7069,7 +7159,7 @@
 
 
   $.summernote = $.extend($.summernote, {
-    version: '0.8.2',
+    version: '0.8.3',
     ui: ui,
     dom: dom,
 

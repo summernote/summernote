@@ -107,6 +107,7 @@ define([
 
       width: null,
       height: null,
+      linkTargetBlank: true,
 
       focus: false,
       tabSize: 4,
@@ -114,6 +115,7 @@ define([
       shortcuts: true,
       textareaAutoSync: true,
       direction: null,
+      tooltip: 'auto',
 
       styleTags: ['p', 'blockquote', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
 

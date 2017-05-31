@@ -136,7 +136,7 @@ define(['summernote/base/core/func'], function (func) {
     };
   
     /**
-     * returns a copy of the array with all falsy values removed
+     * returns a copy of the array with all false values removed
      *
      * @param {Array} array - array
      * @param {Function} fn - predicate function for cluster rule

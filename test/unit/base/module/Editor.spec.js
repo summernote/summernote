@@ -114,7 +114,7 @@ define([
       if (agent.isPhantom) {
         it('should indent and outdent paragraph', function () {
           editor.indent();
-          expectContents(context, '<p style="margin-left: 25px; ">hello</p>');
+          expectContents(context, '<p style="margin-left: 25px;">hello</p>');
 
           editor.outdent();
           expectContents(context, '<p style="">hello</p>');
@@ -151,6 +151,23 @@ define([
       it('should paste html', function () {
         editor.pasteHTML('<span> world</span>');
         expectContents(context, '<p>hello<span> world</span></p>');
+      });
+
+      it('should not call change change event more than once per paste event', function () {
+        var generateLargeHtml = function () {
+          var html = '<div>';
+          for (var i = 0; i < 1000; i++) {
+            html += '<p>HTML element #' + i + '</p>';
+          }
+          html += '</div>';
+          return html;
+        };
+        var $note = context.layoutInfo.note;
+        var spy = chai.spy();
+        $note.on('summernote.change', spy);
+        var html = generateLargeHtml();
+        editor.pasteHTML(html);
+        expect(spy).to.have.been.called.once;
       });
     });
 

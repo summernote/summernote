@@ -90,7 +90,7 @@ define([
           className: 'note-btn-bold',
           contents: ui.icon(options.icons.bold),
           tooltip: lang.font.bold + representShortcut('bold'),
-          click: context.createInvokeHandler('editor.bold')
+          click: context.createInvokeHandlerAndUpdateState('editor.bold')
         }).render();
       });
 
@@ -99,7 +99,7 @@ define([
           className: 'note-btn-italic',
           contents: ui.icon(options.icons.italic),
           tooltip: lang.font.italic + representShortcut('italic'),
-          click: context.createInvokeHandler('editor.italic')
+          click: context.createInvokeHandlerAndUpdateState('editor.italic')
         }).render();
       });
 
@@ -108,7 +108,7 @@ define([
           className: 'note-btn-underline',
           contents: ui.icon(options.icons.underline),
           tooltip: lang.font.underline + representShortcut('underline'),
-          click: context.createInvokeHandler('editor.underline')
+          click: context.createInvokeHandlerAndUpdateState('editor.underline')
         }).render();
       });
 
@@ -125,7 +125,7 @@ define([
           className: 'note-btn-strikethrough',
           contents: ui.icon(options.icons.strikethrough),
           tooltip: lang.font.strikethrough + representShortcut('strikethrough'),
-          click: context.createInvokeHandler('editor.strikethrough')
+          click: context.createInvokeHandlerAndUpdateState('editor.strikethrough')
         }).render();
       });
 
@@ -134,7 +134,7 @@ define([
           className: 'note-btn-superscript',
           contents: ui.icon(options.icons.superscript),
           tooltip: lang.font.superscript,
-          click: context.createInvokeHandler('editor.superscript')
+          click: context.createInvokeHandlerAndUpdateState('editor.superscript')
         }).render();
       });
 
@@ -143,7 +143,7 @@ define([
           className: 'note-btn-subscript',
           contents: ui.icon(options.icons.subscript),
           tooltip: lang.font.subscript,
-          click: context.createInvokeHandler('editor.subscript')
+          click: context.createInvokeHandlerAndUpdateState('editor.subscript')
         }).render();
       });
 
@@ -164,7 +164,7 @@ define([
             template: function (item) {
               return '<span style="font-family:' + item + '">' + item + '</span>';
             },
-            click: context.createInvokeHandler('editor.fontName')
+            click: context.createInvokeHandlerAndUpdateState('editor.fontName')
           })
         ]).render();
       });

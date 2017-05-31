@@ -79,6 +79,8 @@ define([
       Object.keys(this.memos).forEach(function (key) {
         self.removeMemo(key);
       });
+      // trigger custom onDestroy callback
+      this.triggerEvent('destroy', this);
     };
 
     this.code = function (html) {
@@ -187,10 +189,21 @@ define([
       delete this.memos[key];
     };
 
+    /**
+     *Some buttons need to change their visual style immediately once they get pressed
+     */
+    this.createInvokeHandlerAndUpdateState = function (namespace, value) {
+      return function (event) {
+        self.createInvokeHandler(namespace, value)(event);
+        self.invoke('buttons.updateCurrentStyle');
+      };
+    };
+
     this.createInvokeHandler = function (namespace, value) {
       return function (event) {
         event.preventDefault();
-        self.invoke(namespace, value || $(event.target).closest('[data-value]').data('value'));
+        var $target = $(event.target);
+        self.invoke(namespace, value || $target.closest('[data-value]').data('value'), $target);
       };
     };
 

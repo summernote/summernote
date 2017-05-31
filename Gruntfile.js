@@ -47,7 +47,7 @@ module.exports = function (grunt) {
     'SL_EDGE': {
       base: 'SauceLabs',
       browserName: 'microsoftedge',
-      version: '20',
+      version: 'latest',
       platform: 'windows 10'
     },
     'SL_CHROME': {
@@ -218,6 +218,7 @@ module.exports = function (grunt) {
       },
       all: {
         // Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS, IE
+        singleRun: true,
         browsers: ['PhantomJS'],
         reporters: ['progress']
       },
@@ -286,7 +287,7 @@ module.exports = function (grunt) {
   // load all grunts/*.js
   grunt.loadTasks('grunts');
 
-  // server: runt server for development
+  // server: run server for development
   grunt.registerTask('server', ['connect', 'watch']);
 
   // lint

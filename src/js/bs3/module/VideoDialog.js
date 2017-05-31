@@ -50,7 +50,7 @@ define([
       var vRegExp = /\/\/vine\.co\/v\/([a-zA-Z0-9]+)/;
       var vMatch = url.match(vRegExp);
 
-      var vimRegExp = /\/\/(player\.)?vimeo\.com\/([a-z]*\/)*([0-9]{6,11})[?]?.*/;
+      var vimRegExp = /\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*/;
       var vimMatch = url.match(vimRegExp);
 
       var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
