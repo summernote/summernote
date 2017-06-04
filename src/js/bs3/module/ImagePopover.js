@@ -25,13 +25,14 @@ define([
       this.$popover.remove();
     };
 
-    this.update = function (target) {
+    this.update = function (event) {
+      var target = event ? event.target : undefined;
       if (dom.isImg(target)) {
         var pos = dom.posFromPlaceholder(target);
         this.$popover.css({
           display: 'block',
-          left: pos.left,
-          top: pos.top
+          left: event.clientX - 21,
+          top: event.clientY + 58
         });
       } else {
         this.hide();
