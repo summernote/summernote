@@ -21,14 +21,18 @@ define([
       }
 
       var body = '<div class="form-group note-group-select-from-files">' +
-                   '<label>' + lang.image.selectFromFiles + '</label>' +
-                   '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" />' +
-                   imageLimitation +
-                 '</div>' +
-                 '<div class="form-group note-group-image-url" style="overflow:auto;">' +
-                   '<label>' + lang.image.url + '</label>' +
-                   '<input class="note-image-url form-control col-md-12" type="text" />' +
-                 '</div>';
+                   '<label class="control-label col-xs-3">' + lang.image.selectFromFiles + '</label>' +
+                    '<div class="input-group col-xs-9">' +
+                      '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple">' +
+                      '<div class="help-text">' + imageLimitation + '</div>' +
+                    '</div>' +
+                  '</div>' +
+                  '<div class="form-group note-group-image-url" style="overflow:auto;">' +
+                    '<label class="control-label col-xs-3">' + lang.image.url + '</label>' +
+                    '<div class="input-group col-xs-9">' +
+                      '<input class="note-image-url form-control col-md-12" type="text">' +
+                    '</div>' +                   
+                  '</div>';
       var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
 
       this.$dialog = ui.dialog({
