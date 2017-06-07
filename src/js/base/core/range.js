@@ -686,7 +686,7 @@ define([
           ec = nativeRng.endContainer;
           eo = nativeRng.endOffset;
         } else { // IE8: TextRange
-          var textRange = document.selection.createRange();
+          var textRange = document.body.createTextRange();
           var textRangeEnd = textRange.duplicate();
           textRangeEnd.collapse(false);
           var textRangeStart = textRange;
