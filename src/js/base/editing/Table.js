@@ -123,7 +123,63 @@ define([
      */
     this.deleteRow = function (rng) {
       var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-      $(cell).closest('tr').remove();
+      var toDeleteRow = $(cell).closest('tr');
+      var rowCells = toDeleteRow.children('td, th');
+      var rowCellCount = rowCells.length;
+      var previousRowWithDiffCellCount;
+      var nextRowWithDiffCellCount;
+
+      // Find if exists previous row with different count
+      var prevRow = toDeleteRow[0].previousSibling;
+      while (prevRow && prevRow.tagName.toLowerCase() === 'tr') {
+        if (prevRow.cells.length !== rowCellCount) {
+          previousRowWithDiffCellCount = prevRow;
+          break;
+        }
+        prevRow = prevRow.previousSibling;
+      }
+
+      // Find if exists next row with different count
+      var nextRow = toDeleteRow[0].nextSibling;
+      while (nextRow && nextRow.tagName.toLowerCase() === 'tr') {
+        if (nextRow.cells.length !== rowCellCount) {
+          nextRowWithDiffCellCount = nextRow;
+          break;
+        }
+        nextRow = nextRow.nextSibling;
+      }
+
+      if (previousRowWithDiffCellCount) {
+        for (var prevCellIndex = 0; prevCellIndex < previousRowWithDiffCellCount.cells.length; prevCellIndex++) {
+          var prevCell = previousRowWithDiffCellCount.cells[prevCellIndex];
+          var hasPrevRowspan =prevCell.attributes.rowspan;
+          var rowspanPrevNumber = hasPrevRowspan ? parseInt(prevCell.attributes.rowspan.value, 10) : 0;
+          if (hasPrevRowspan && rowspanPrevNumber > 2) {
+            rowspanPrevNumber--;
+            prevCell.setAttribute('rowspan', rowspanPrevNumber);
+          } else if (hasPrevRowspan && rowspanPrevNumber === 2) {
+            prevCell.removeAttribute('rowspan');
+          }
+        }
+      } else if (nextRowWithDiffCellCount && nextRowWithDiffCellCount.cells.length < rowCellCount) {
+        for (var cellIndex = 0; cellIndex < rowCellCount; cellIndex++) {
+          var hasRowspan = rowCells[cellIndex].attributes.rowspan;
+          var rowspanNumber = hasRowspan ? parseInt(rowCells[cellIndex].attributes.rowspan.value, 10) : 0;
+          var cloneRow = rowCells[cellIndex];
+          if (hasRowspan && rowspanNumber > 2) {
+            rowspanNumber--;
+            nextRowWithDiffCellCount.insertBefore(cloneRow, nextRowWithDiffCellCount.cells[cellIndex]);
+            nextRowWithDiffCellCount.cells[cellIndex].setAttribute('rowspan', rowspanNumber);
+            nextRowWithDiffCellCount.cells[cellIndex].innerHTML = '';
+          } else if (hasRowspan && rowspanNumber === 2) {
+            nextRowWithDiffCellCount.insertBefore(cloneRow, nextRowWithDiffCellCount.cells[cellIndex]);
+            nextRowWithDiffCellCount.cells[cellIndex].removeAttribute('rowspan');
+            nextRowWithDiffCellCount.cells[cellIndex].innerHTML = '';
+          }
+        }
+      }
+
+      toDeleteRow.remove();
     };
 
     /**
