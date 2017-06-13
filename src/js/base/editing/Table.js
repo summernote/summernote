@@ -44,19 +44,16 @@ define([
       var trAttributes = this.recoverAttributes(currentTr);
       var html = $('<tr' + trAttributes + '></tr>');
 
-      for (var idCell = 0; idCell < nbCell; idCell++)
-      {
+      for (var idCell = 0; idCell < nbCell; idCell++) {
         var currentCell = cells[idCell];
         var tdAttributes = this.recoverAttributes(currentCell);
         html.append('<td' + tdAttributes + '>' + dom.blank + '</td>');
       }
 
-      if (position === 'top')
-      {
+      if (position === 'top') {
         currentTr.before(html);
       }
-      else
-      {
+      else {
         currentTr.after(html);
       }
 
@@ -81,12 +78,10 @@ define([
         var c = $(r).children('td, th')[cellPos];
         var tdAttributes = this.recoverAttributes(c);
 
-        if (position === 'right')
-        {
+        if (position === 'right') {
           $(c).after('<td' + tdAttributes + '>' + dom.blank + '</td>');
         }
-        else
-        {
+        else {
           $(c).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
         }
       }
@@ -99,26 +94,26 @@ define([
     * @return {string} Copied string elements.
     */
     this.recoverAttributes = function (el) {
-        var resultStr = '';
+      var resultStr = '';
 
-        if (!el) {
-          return resultStr;
-        }
-
-        var attrList = el.attributes || [];
-
-        for (var i = 0; i < attrList.length; i++) {
-          if (attrList[i].name.toLowerCase() === 'id') {
-            continue;
-          }
-
-          if (attrList[i].specified) {
-            resultStr += ' ' + attrList[i].name + '=\'' + attrList[i].value + '\'';
-          }
-        }
-
+      if (!el) {
         return resultStr;
-      };
+      }
+
+      var attrList = el.attributes || [];
+
+      for (var i = 0; i < attrList.length; i++) {
+        if (attrList[i].name.toLowerCase() === 'id') {
+          continue;
+        }
+
+        if (attrList[i].specified) {
+          resultStr += ' ' + attrList[i].name + '=\'' + attrList[i].value + '\'';
+        }
+      }
+
+      return resultStr;
+    };
 
     /**
      * Delete current row
@@ -146,9 +141,32 @@ define([
 
       for (var idTr = 0; idTr < rowsGroup.length; idTr++) {
         var r = rowsGroup[idTr];
-        var c = $(r).children('td, th')[cellPos];
-        if (c) {
-          c.remove();
+        var previousCount = 0;
+        var cellCount = 0;
+        for (var cIndex = 0; cIndex < $(r).children('td, th').length; cIndex++) {
+          var c = $(r).children('td, th')[cIndex];
+          var hasColspan = c.attributes.colspan;
+          var colspanNumber = hasColspan ? parseInt(c.attributes.colspan.value, 10) : 0;
+
+          previousCount = cellCount;
+          if (!hasColspan) {
+            cellCount++;
+          } else {
+            cellCount += colspanNumber;
+          }
+
+          if (cellPos >= previousCount && cellPos < cellCount) {
+            if (hasColspan && colspanNumber > 2) {
+              colspanNumber--;
+              c.setAttribute('colspan', colspanNumber);
+              if (c.cellIndex === cellPos) { c.innerHTML = ''; }
+            } else if (hasColspan && colspanNumber === 2) {
+              c.removeAttribute('colspan');
+              if (c.cellIndex === cellPos) { c.innerHTML = ''; }
+            } else {
+              c.remove();
+            }
+          }
         }
       }
     };
