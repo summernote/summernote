@@ -116,6 +116,9 @@ define([
       if (rowspanNumber > 1) {
         for (var rp = 1; rp < rowspanNumber; rp++) {
           var rowspanIndex = row.rowIndex + rp;
+          if(rowspanIndex === _startPoint.rowPos && cell.cellIndex <= cellIndex) {
+            _startPoint.colPos++;
+          }
           setVirtualTablePosition(rowspanIndex, cellIndex, row, cell, true, cellHasColspan, true);
         }
       }
