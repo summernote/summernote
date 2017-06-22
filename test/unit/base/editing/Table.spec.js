@@ -246,7 +246,7 @@ define([
         var baseTr1 = '<tr><td rowspan="3" id="tr1td1">Row1-Span</td><td id="tr1td2">Col2</td></tr>';
         var baseTr2 = '<tr><td id="tr2td2">Col2</td></tr>';
         var baseTr3 = '<tr><td id="tr3td2">Col2</td></tr>';
-        var baseTr4 = '<tr><td id="tr4td1">Col1</td><td id="tr3td2">Col2</td></tr>';
+        var baseTr4 = '<tr><td id="tr4td1">Col1</td><td id="tr4td2">Col2</td></tr>';
         baseTable.append(baseTr1);
         baseTable.append(baseTr2);
         baseTable.append(baseTr3);
@@ -261,7 +261,7 @@ define([
         var resultTable = $('<table><tbody></tbody></table>');
         var resultTr1 = '<tr><td rowspan="2" id="tr1td1">Row1-Span</td><td id="tr1td2">Col2</td></tr>';
         var resultTr3 = '<tr><td id="tr3td2">Col2</td></tr>';
-        var resultTr4 = '<tr><td id="tr4td1">Col1</td><td id="tr3td2">Col2</td></tr>';
+        var resultTr4 = '<tr><td id="tr4td1">Col1</td><td id="tr4td2">Col2</td></tr>';
         resultTable.append(resultTr1);
         resultTable.append(resultTr3);
         resultTable.append(resultTr4);

@@ -45,12 +45,13 @@ define([
      * @param {object} baseCell Cell affected by this position.
      * @param {bool} isSpan Inform if it is an span cell/row.
      */
-    function setVirtualTablePosition(rowIndex, cellIndex, baseRow, baseCell, isRowSpan, isColSpan) {
+    function setVirtualTablePosition(rowIndex, cellIndex, baseRow, baseCell, isRowSpan, isColSpan, isVirtualCell) {
       var objPosition = {
         'baseRow': baseRow,
         'baseCell': baseCell,
         'isRowSpan': isRowSpan,
-        'isColSpan': isColSpan
+        'isColSpan': isColSpan,
+        'isVirtual': isVirtualCell
       };
       if (!_virtualTable[rowIndex]) {
         _virtualTable[rowIndex] = [];
@@ -64,10 +65,14 @@ define([
      * @param {object} virtualTableCellObj Object of specific position on virtual table.
      * @param {enum} resultAction Action to be applied in that item.
      */
-    function getActionCell(virtualTableCellObj, resultAction) {
+    function getActionCell(virtualTableCellObj, resultAction, virtualRowPosition, virtualColPosition) {
       return {
         'baseCell': virtualTableCellObj.baseCell,
-        'action': resultAction
+        'action': resultAction,
+        'virtualTable': {
+          'rowIndex': virtualRowPosition,
+          'cellIndex': virtualColPosition
+        }
       };
     }
 
@@ -104,23 +109,23 @@ define([
       var cellIndex = recoverCellIndex(row.rowIndex, cell.cellIndex);
       var cellHasColspan = (cell.colSpan > 1);
       var cellHasRowspan = (cell.rowSpan > 1);
-      setVirtualTablePosition(row.rowIndex, cellIndex, row, cell, cellHasRowspan, cellHasColspan);
+      setVirtualTablePosition(row.rowIndex, cellIndex, row, cell, cellHasRowspan, cellHasColspan, false);
 
       // Add span rows to virtual Table.
-      var rowspanNumber = cell.attributes.rowspan ? parseInt(cell.attributes.rowspan.value, 10) : 0;
+      var rowspanNumber = cell.attributes.rowSpan ? parseInt(cell.attributes.rowSpan.value, 10) : 0;
       if (rowspanNumber > 1) {
         for (var rp = 1; rp < rowspanNumber; rp++) {
           var rowspanIndex = row.rowIndex + rp;
-          setVirtualTablePosition(rowspanIndex, cellIndex, row, cell, true, cellHasColspan);
+          setVirtualTablePosition(rowspanIndex, cellIndex, row, cell, true, cellHasColspan, true);
         }
       }
 
       // Add span cols to virtual table.
-      var colspanNumber = cell.attributes.colspan ? parseInt(cell.attributes.colspan.value, 10) : 0;
+      var colspanNumber = cell.attributes.colSpan ? parseInt(cell.attributes.colSpan.value, 10) : 0;
       if (colspanNumber > 1) {
         for (var cp = 1; cp < colspanNumber; cp++) {
           var cellspanIndex = recoverCellIndex(row.rowIndex, (cellIndex + cp));
-          setVirtualTablePosition(row.rowIndex, cellspanIndex, row, cell, cellHasRowspan, true);
+          setVirtualTablePosition(row.rowIndex, cellspanIndex, row, cell, cellHasRowspan, true, true);
         }
       }
     }
@@ -143,7 +148,7 @@ define([
      * 
      * @param {object} cell virtual table cell to apply action
      */
-    function getResultActionToCell(cell) {
+    function getDeleteResultActionToCell(cell) {
       switch (where) {
         case TableResultAction.where.Column:
           if (cell.isColSpan) {
@@ -151,7 +156,10 @@ define([
           }
           break;
         case TableResultAction.where.Row:
-          if (cell.isRowSpan) {
+          if(!cell.isVirtual && cell.isRowSpan){
+            return TableResultAction.resultAction.AddCell;
+          }
+          else if (cell.isRowSpan) {
             return TableResultAction.resultAction.SubtractSpanCount;
           }
           break;
@@ -172,18 +180,20 @@ define([
      * Recover array os what to do in table.
      */
     this.getActionList = function () {
-      var fixedRow = (action === TableResultAction.where.Row) ? _startPoint.rowPos : -1;
-      var fixedCol = (action === TableResultAction.where.Column) ? _startPoint.colPos : -1;
+      var fixedRow = (where === TableResultAction.where.Row) ? _startPoint.rowPos : -1;
+      var fixedCol = (where === TableResultAction.where.Column) ? _startPoint.colPos : -1;
 
       var actualPosition = 0;
       var canContinue = true;
       while (canContinue) {
-        var row = (fixedRow >= 0) ? _virtualTable[fixedRow] : _virtualTable[actualPosition];
+        var rowPosition = (fixedRow >= 0) ? fixedRow : actualPosition;
+        var colPosition = (fixedCol >= 0) ? fixedCol : actualPosition;
+        var row = _virtualTable[rowPosition];
         if (!row) {
           canContinue = false;
           return _actionCellList;
         }
-        var cell = (fixedCol >= 0) ? row[fixedCol] : row[actualPosition];
+        var cell = row[colPosition];
         if (!cell) {
           canContinue = false;
           return _actionCellList;
@@ -196,10 +206,10 @@ define([
             console.warn('Not implemented');
             break;
           case TableResultAction.requestAction.Delete:
-            resultAction = getResultActionToCell(cell);
+            resultAction = getDeleteResultActionToCell(cell);
             break;
         }
-        _actionCellList.push(getActionCell(cell, resultAction));
+        _actionCellList.push(getActionCell(cell, resultAction, rowPosition, colPosition));
         actualPosition++;
       }
 
@@ -222,7 +232,7 @@ define([
   * 
   * Result action to be executed enum.
   */
-  TableResultAction.resultAction = { 'Ignore': 0, 'SubtractSpanCount': 1, 'RemoveCell': 2 };
+  TableResultAction.resultAction = { 'Ignore': 0, 'SubtractSpanCount': 1, 'RemoveCell': 2, 'AddCell': 3 };
 
   /**
    * 
@@ -345,63 +355,61 @@ define([
      */
     this.deleteRow = function (rng) {
       var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-      var toDeleteRow = $(cell).closest('tr');
-      var rowCells = toDeleteRow.children('td, th');
-      var rowCellCount = rowCells.length;
-      var previousRowWithDiffCellCount;
-      var nextRowWithDiffCellCount;
+      var row = $(cell).closest('tr');
+      var cellPos = row.children('td, th').index($(cell));
+      var rowPos = row[0].rowIndex;
 
-      // Find if exists previous row with different count
-      var prevRow = toDeleteRow.prev('tr')[0];
-      while (prevRow && prevRow.tagName.toLowerCase() === 'tr') {
-        if (prevRow.cells.length !== rowCellCount) {
-          previousRowWithDiffCellCount = prevRow;
-          break;
+      var vTable = new TableResultAction(cell, TableResultAction.where.Row, 
+        TableResultAction.requestAction.Delete, $(row).closest('table')[0]);
+      var actions = vTable.getActionList();
+
+      for (var actionIndex = 0; actionIndex < actions.length; actionIndex++) {
+        if (!actions[actionIndex]) {
+          continue;
         }
-        prevRow = $(prevRow).prev('tr')[0];
+
+        var baseCell = actions[actionIndex].baseCell;
+        var virtualPosition = actions[actionIndex].virtualTable;
+        var hasRowspan = (baseCell.rowSpan && baseCell.rowSpan > 1);
+        var rowspanNumber = (hasRowspan) ? parseInt(baseCell.rowSpan, 10) : 0;
+        switch (actions[actionIndex].action) {
+          case TableResultAction.resultAction.Ignore:
+            continue;
+          case TableResultAction.resultAction.AddCell:
+            var nextRow = row.next('tr')[0];
+            if(!nextRow) { continue; }
+            var cloneRow = row[0].cells[cellPos];
+            if(hasRowspan){
+              if (rowspanNumber > 2) {
+                rowspanNumber--;
+                nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
+                nextRow.cells[cellPos].setAttribute('rowSpan', rowspanNumber);
+                nextRow.cells[cellPos].innerHTML = '';
+              } else if (rowspanNumber === 2) {
+                nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
+                nextRow.cells[cellPos].removeAttribute('rowSpan');
+                nextRow.cells[cellPos].innerHTML = '';
+              }
+            }
+            continue;
+          case TableResultAction.resultAction.SubtractSpanCount:
+            if (hasRowspan) {
+              if (rowspanNumber > 2) {
+                rowspanNumber--;
+                baseCell.setAttribute('rowSpan', rowspanNumber);
+                if ( virtualPosition.rowIndex !== rowPos && baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
+              } else if (rowspanNumber === 2) {
+                baseCell.removeAttribute('rowSpan');
+                if ( virtualPosition.rowIndex !== rowPos && baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
+              }
+            }
+            continue;
+          case TableResultAction.resultAction.RemoveCell:
+            // Do not need remove cell because row will be deleted.
+            continue;
+        }
       }
-
-      // Find if exists next row with different count
-      var nextRow = toDeleteRow.next('tr')[0];
-      while (nextRow && nextRow.tagName.toLowerCase() === 'tr') {
-        if (nextRow.cells.length !== rowCellCount) {
-          nextRowWithDiffCellCount = nextRow;
-          break;
-        }
-        nextRow = $(nextRow).next('tr')[0];
-      }
-
-      if (previousRowWithDiffCellCount) {
-        for (var prevCellIndex = 0; prevCellIndex < previousRowWithDiffCellCount.cells.length; prevCellIndex++) {
-          var prevCell = previousRowWithDiffCellCount.cells[prevCellIndex];
-          var hasPrevRowspan = prevCell.attributes.rowspan;
-          var rowspanPrevNumber = hasPrevRowspan ? parseInt(prevCell.attributes.rowspan.value, 10) : 0;
-          if (hasPrevRowspan && rowspanPrevNumber > 2) {
-            rowspanPrevNumber--;
-            prevCell.setAttribute('rowspan', rowspanPrevNumber);
-          } else if (hasPrevRowspan && rowspanPrevNumber === 2) {
-            prevCell.removeAttribute('rowspan');
-          }
-        }
-      } else if (nextRowWithDiffCellCount && nextRowWithDiffCellCount.cells.length < rowCellCount) {
-        for (var cellIndex = 0; cellIndex < rowCellCount; cellIndex++) {
-          var hasRowspan = rowCells[cellIndex].attributes.rowspan;
-          var rowspanNumber = hasRowspan ? parseInt(rowCells[cellIndex].attributes.rowspan.value, 10) : 0;
-          var cloneRow = rowCells[cellIndex];
-          if (hasRowspan && rowspanNumber > 2) {
-            rowspanNumber--;
-            nextRowWithDiffCellCount.insertBefore(cloneRow, nextRowWithDiffCellCount.cells[cellIndex]);
-            nextRowWithDiffCellCount.cells[cellIndex].setAttribute('rowspan', rowspanNumber);
-            nextRowWithDiffCellCount.cells[cellIndex].innerHTML = '';
-          } else if (hasRowspan && rowspanNumber === 2) {
-            nextRowWithDiffCellCount.insertBefore(cloneRow, nextRowWithDiffCellCount.cells[cellIndex]);
-            nextRowWithDiffCellCount.cells[cellIndex].removeAttribute('rowspan');
-            nextRowWithDiffCellCount.cells[cellIndex].innerHTML = '';
-          }
-        }
-      }
-
-      toDeleteRow.remove();
+      row.remove();
     };
 
     /**
@@ -413,12 +421,12 @@ define([
     this.deleteCol = function (rng) {
       var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
       var row = $(cell).closest('tr');
-      //var rowsGroup = $(row).parent().children('tr');
       var cellPos = row.children('td, th').index($(cell));
 
-      var vTable = new TableResultAction(cell, TableResultAction.where.Column,
+      var vTable = new TableResultAction(cell, TableResultAction.where.Column, 
         TableResultAction.requestAction.Delete, $(row).closest('table')[0]);
       var actions = vTable.getActionList();
+      
       for (var actionIndex = 0; actionIndex < actions.length; actionIndex++) {
         if (!actions[actionIndex]) {
           continue;
@@ -428,15 +436,15 @@ define([
             continue;
           case TableResultAction.resultAction.SubtractSpanCount:
             var baseCell = actions[actionIndex].baseCell;
-            var hasColspan = baseCell.attributes.colspan;
-            if (baseCell.attributes) {
-              var colspanNumber = (baseCell.attributes.colspan) ? parseInt(baseCell.attributes.colspan.value, 10) : 0;
+            var hasColspan = (baseCell.colSpan && baseCell.colSpan > 1);
+            if (hasColspan) {
+              var colspanNumber = (baseCell.colSpan) ? parseInt(baseCell.colSpan, 10) : 0;
               if (colspanNumber > 2) {
                 colspanNumber--;
-                baseCell.setAttribute('colspan', colspanNumber);
+                baseCell.setAttribute('colSpan', colspanNumber);
                 if (baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
-              } else if (hasColspan && colspanNumber === 2) {
-                baseCell.removeAttribute('colspan');
+              } else if (colspanNumber === 2) {
+                baseCell.removeAttribute('colSpan');
                 if (baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
               }
             }
