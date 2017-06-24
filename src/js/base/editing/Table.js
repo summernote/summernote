@@ -315,8 +315,7 @@ define([
               var baseCellTr = currentCell.baseCell.parent;
               var isTopFromRowSpan = (!baseCellTr ? 0 : currentCell.baseCell.closest('tr').rowIndex) <= currentTr[0].rowIndex;
               if (isTopFromRowSpan) {
-                var newTd = $('<td' + tdAttributes + '>' + dom.blank + '</td>');
-                newTd.removeAttr('rowspan');
+                var newTd = $('<div></div>').append($('<td' + tdAttributes + '>' + dom.blank + '</td>').removeAttr('rowspan')).html();
                 html.append(newTd);
                 break;
               }
@@ -332,9 +331,14 @@ define([
         currentTr.before(html);
       }
       else {
+        var cellHasRowspan = (cell.rowSpan > 1);
+        if(cellHasRowspan) {
+          var lastTrIndex = currentTr[0].rowIndex + (cell.rowSpan -2);
+          $($(currentTr).parent().find('tr')[lastTrIndex]).after($(html));
+          return;
+        }
         currentTr.after(html);
       }
-
     };
 
     /**
