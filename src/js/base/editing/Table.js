@@ -180,12 +180,14 @@ define([
         case TableResultAction.where.Column:
           if (cell.isColSpan) {
             return TableResultAction.resultAction.SumSpanCount;
+          } else if(cell.isRowSpan && cell.isVirtual) {
+            return TableResultAction.resultAction.Ignore;
           }
           break;
         case TableResultAction.where.Row:
           if (cell.isRowSpan) {
             return TableResultAction.resultAction.SumSpanCount;
-          } else if(cell.isColSpan && cell.isVirtual) {
+          } else if (cell.isColSpan && cell.isVirtual) {
             return TableResultAction.resultAction.Ignore;
           }
           break;
@@ -332,8 +334,8 @@ define([
       }
       else {
         var cellHasRowspan = (cell.rowSpan > 1);
-        if(cellHasRowspan) {
-          var lastTrIndex = currentTr[0].rowIndex + (cell.rowSpan -2);
+        if (cellHasRowspan) {
+          var lastTrIndex = currentTr[0].rowIndex + (cell.rowSpan - 2);
           $($(currentTr).parent().find('tr')[lastTrIndex]).after($(html));
           return;
         }
@@ -353,18 +355,31 @@ define([
       var row = $(cell).closest('tr');
       var rowsGroup = $(row).siblings();
       rowsGroup.push(row);
-      var cellPos = row.children('td, th').index($(cell));
 
-      for (var idTr = 0; idTr < rowsGroup.length; idTr++) {
-        var r = rowsGroup[idTr];
-        var c = $(r).children('td, th')[cellPos];
-        var tdAttributes = this.recoverAttributes(c);
+      var vTable = new TableResultAction(cell, TableResultAction.where.Column,
+        TableResultAction.requestAction.Add, $(row).closest('table')[0]);
+      var actions = vTable.getActionList();
 
-        if (position === 'right') {
-          $(c).after('<td' + tdAttributes + '>' + dom.blank + '</td>');
-        }
-        else {
-          $(c).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
+      for (var actionIndex = 0; actionIndex < actions.length; actionIndex++) {
+        var currentCell = actions[actionIndex];
+        var tdAttributes = this.recoverAttributes(currentCell.baseCell);
+        switch (currentCell.action) {
+          case TableResultAction.resultAction.AddCell:
+            if (position === 'right') {
+              $(currentCell.baseCell).after('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            } else {
+              $(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            }
+            break;
+          case TableResultAction.resultAction.SumSpanCount:
+            if (position === 'right') {
+              var colspanNumber = parseInt(currentCell.baseCell.colSpan, 10);
+              colspanNumber++;
+              currentCell.baseCell.setAttribute('rowSpan', colspanNumber);
+            } else {
+              $(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            }
+            break;
         }
       }
     };
