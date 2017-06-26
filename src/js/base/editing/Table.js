@@ -117,9 +117,7 @@ define([
       if (rowspanNumber > 1) {
         for (var rp = 1; rp < rowspanNumber; rp++) {
           var rowspanIndex = row.rowIndex + rp;
-          if (rowspanIndex === _startPoint.rowPos && cell.cellIndex <= cellIndex && !isThisSelectedCell) {
-            _startPoint.colPos++;
-          }
+          adjustStartPoint(rowspanIndex, cellIndex, cell, isThisSelectedCell);
           setVirtualTablePosition(rowspanIndex, cellIndex, row, cell, true, cellHasColspan, true);
         }
       }
@@ -129,11 +127,23 @@ define([
       if (colspanNumber > 1) {
         for (var cp = 1; cp < colspanNumber; cp++) {
           var cellspanIndex = recoverCellIndex(row.rowIndex, (cellIndex + cp));
-          if (row.rowIndex === _startPoint.rowPos && cell.cellIndex <= cellspanIndex && !isThisSelectedCell) {
-            _startPoint.colPos++;
-          }
+          adjustStartPoint(row.rowIndex, cellspanIndex, cell, isThisSelectedCell);
           setVirtualTablePosition(row.rowIndex, cellspanIndex, row, cell, cellHasRowspan, true, true);
         }
+      }
+    }
+
+    /**
+     * Process validation and adjust of start point if needed
+     * 
+     * @param {int} rowIndex 
+     * @param {int} cellIndex 
+     * @param {object} cell 
+     * @param {bool} isSelectedCell 
+     */
+    function adjustStartPoint(rowIndex, cellIndex, cell, isSelectedCell) {
+      if (rowIndex === _startPoint.rowPos && _startPoint.colPos >= cell.cellIndex && cell.cellIndex <= cellIndex && !isSelectedCell) {
+        _startPoint.colPos++;
       }
     }
 
@@ -379,7 +389,7 @@ define([
             if (position === 'right') {
               var colspanNumber = parseInt(currentCell.baseCell.colSpan, 10);
               colspanNumber++;
-              currentCell.baseCell.setAttribute('rowSpan', colspanNumber);
+              currentCell.baseCell.setAttribute('colSpan', colspanNumber);
             } else {
               $(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
             }

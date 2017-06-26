@@ -505,9 +505,54 @@ define([
         expect(expectedResult).to.deep.equal($cont.html());
       });
 
-      // CASOS Adicionais
-      // 1 - Caso que tenha uma linha/coluna afetada com intersexão de colspan e rowspan
-      // 2 - Caso de colspan que remova uma linha anterior / posterior
+      it('should remove column before colspan column.', function () {
+        var baseTable = $('<table><tbody></tbody></table> ');
+        var baseTr1 = '<tr><td id="tr1td1">TR1TD1</td><td id="tr1td2" colspan="2">TR1TD2-COLSPAN</td>';
+        baseTr1 += '<td id="tr1td4">TR1TD4</td></tr>';
+        var baseTr2 = '<tr><td id="tr2td1">TR2TD1</td><td id="tr2td2">TR2TD2</td><td id="tr2td3">TR2TD3</td>';
+        baseTr2 += '<td id="tr2td4">TR2TD4</td></tr>';
+        baseTable.append(baseTr1);
+        baseTable.append(baseTr2);
+        var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
+        var $cont = $(htmlContent);
+        
+        var $cell = $cont.find('#tr1td1');
+        var rng = range.create($cell[0].firstChild, 1);
+        table.deleteCol(rng);
+
+        var resultTable = $('<table><tbody></tbody></table> ');
+        var resultTr1 = '<tr><td id="tr1td2" colspan="2">TR1TD2-COLSPAN</td>';
+        resultTr1 += '<td id="tr1td4">TR1TD4</td></tr>';
+        var resultTr2 = '<tr><td id="tr2td2">TR2TD2</td><td id="tr2td3">TR2TD3</td><td id="tr2td4">TR2TD4</td></tr>';
+        resultTable.append(resultTr1);
+        resultTable.append(resultTr2);
+        var expectedResult = '<table>' + $(resultTable).html() + '</table>';
+
+        expect(expectedResult).to.deep.equal($cont.html());
+      });
+
+      it('should add column before colspan column.', function () {
+        var baseTable = $('<table><tbody></tbody></table> ');
+        var baseTr1 = '<tr><td id="tr1td1">TR1TD1</td><td id="tr1td2">TR1TD2</td></tr>';
+        var baseTr2 = '<tr><td id="tr2td1" colspan="2">TR2TD1</td></tr>';
+        baseTable.append(baseTr1);
+        baseTable.append(baseTr2);
+        var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
+        var $cont = $(htmlContent);
+        
+        var $cell = $cont.find('#tr1td1');
+        var rng = range.create($cell[0].firstChild, 1);
+        table.addCol(rng, 'right');
+
+        var resultTable = $('<table><tbody></tbody></table> ');
+        var resultTr1 = '<tr><td id="tr1td1">TR1TD1</td><td><br></td><td id="tr1td2">TR1TD2</td></tr>';
+        var resultTr2 = '<tr><td id="tr2td1" colspan="3">TR2TD1</td></tr>';
+        resultTable.append(resultTr1);
+        resultTable.append(resultTr2);
+        var expectedResult = '<table>' + $(resultTable).html() + '</table>';
+
+        expect(expectedResult).to.deep.equal($cont.html());
+      });
 
     });
   });
