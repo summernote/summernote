@@ -41,7 +41,13 @@ define([
     };
 
     this.update = function (target) {
-      if (dom.isCell(target)) {
+      if (context.isDisabled()) {
+        return false;
+      }
+
+      var isCell = dom.isCell(target);
+
+      if (isCell) {
         var pos = dom.posFromPlaceholder(target);
         this.$popover.css({
           display: 'block',
@@ -51,6 +57,8 @@ define([
       } else {
         this.hide();
       }
+
+      return isCell;
     };
 
     this.hide = function () {
