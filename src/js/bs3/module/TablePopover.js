@@ -1,8 +1,9 @@
 define([
+  'summernote/base/core/agent',
   'summernote/base/core/func',
   'summernote/base/core/list',
   'summernote/base/core/dom'
-], function (func, list, dom) {
+], function (agent, func, list, dom) {
   var TablePopover = function (context) {
     var self = this;
     var ui = $.summernote.ui;
@@ -11,7 +12,7 @@ define([
 
     this.events = {
       'summernote.mousedown': function (we, e) {
-        self.update(e.target)
+        self.update(e.target);
       },
       'summernote.keyup summernote.scroll summernote.change': function () {
         self.update();
@@ -32,6 +33,11 @@ define([
       var $content = this.$popover.find('.popover-content');
 
       context.invoke('buttons.build', $content, options.popover.table);
+
+      // [workaround] Disable Firefox's default table editor
+      if (agent.isFF) {
+        document.execCommand('enableInlineTableEditing', false, false);
+      }
     };
 
     this.destroy = function () {
