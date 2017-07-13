@@ -16,6 +16,9 @@ define([
       },
       'summernote.keyup summernote.scroll summernote.change summernote.dialog.shown': function () {
         self.update();
+      },
+      'summernote.disable': function () {
+        self.hide();
       }
     };
 
@@ -73,12 +76,8 @@ define([
     };
 
     this.update = function (target) {
-
-      if (dom.isCell(target)) {
-        context.invoke('tablePopover.update', target);
-        return;
-      } else {
-        context.invoke('tablePopover.hide', target);
+      if (context.isDisabled()) {
+        return false;
       }
 
       var isImage = dom.isImg(target);

@@ -4,9 +4,24 @@ define([
   'summernote/base/core/dom'
 ], function (func, list, dom) {
   var TablePopover = function (context) {
+    var self = this;
     var ui = $.summernote.ui;
 
     var options = context.options;
+
+    this.events = {
+      'summernote.mousedown': function (we, e) {
+        if (self.update(e.target)) {
+          e.preventDefault();
+        }
+      },
+      'summernote.keyup summernote.scroll summernote.change': function () {
+        self.update();
+      },
+      'summernote.disable': function () {
+        self.hide();
+      }
+    };
 
     this.shouldInitialize = function () {
       return !list.isEmpty(options.popover.table);

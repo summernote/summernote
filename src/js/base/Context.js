@@ -107,6 +107,7 @@ define([
     this.enable = function () {
       this.layoutInfo.editable.attr('contenteditable', true);
       this.invoke('toolbar.activate', true);
+      this.triggerEvent('disable', false);
     };
 
     this.disable = function () {
@@ -116,6 +117,8 @@ define([
       }
       this.layoutInfo.editable.attr('contenteditable', false);
       this.invoke('toolbar.deactivate', true);
+
+      this.triggerEvent('disable', true);
     };
 
     this.triggerEvent = function () {
