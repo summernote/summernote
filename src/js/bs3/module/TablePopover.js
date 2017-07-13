@@ -11,9 +11,7 @@ define([
 
     this.events = {
       'summernote.mousedown': function (we, e) {
-        if (self.update(e.target)) {
-          e.preventDefault();
-        }
+        self.update(e.target)
       },
       'summernote.keyup summernote.scroll summernote.change': function () {
         self.update();
