@@ -16,6 +16,9 @@ define([
       },
       'summernote.keyup summernote.scroll summernote.change summernote.dialog.shown': function () {
         self.update();
+      },
+      'summernote.disable': function () {
+        self.hide();
       }
     };
 
@@ -73,6 +76,10 @@ define([
     };
 
     this.update = function (target) {
+      if (context.isDisabled()) {
+        return false;
+      }
+
       var isImage = dom.isImg(target);
       var $selection = this.$handle.find('.note-control-selection');
 

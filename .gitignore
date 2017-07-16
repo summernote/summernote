@@ -4,10 +4,15 @@
 .tern-port
 .DS_Store
 
+# vscode editing
+.vscode
+
 # node modules
 npm-debug.log
 node_modules
 bower_components
+# node lock file
+package-lock.json
 
 *.sublime*
 .build*
@@ -29,3 +34,6 @@ build/
 
 #log files
 *.log
+
+# Ignoring dist folder content
+dist/*

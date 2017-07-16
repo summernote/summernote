@@ -57,7 +57,14 @@ define([
         openInNewWindow: 'Open in new window'
       },
       table: {
-        table: 'Table'
+        table: 'Table',
+        addRowAbove: 'Add row above',
+        addRowBelow: 'Add row below',
+        addColLeft: 'Add column left',
+        addColRight: 'Add column right',
+        delRow: 'Delete row',
+        delCol: 'Delete column',
+        delTable: 'Delete table'
       },
       hr: {
         insert: 'Insert Horizontal Rule'
