@@ -529,7 +529,7 @@ define([
             }
             continue;
           case TableResultAction.resultAction.RemoveCell:
-            actions[actionIndex].baseCell.remove();
+            dom.remove(actions[actionIndex].baseCell, true);
             continue;
         }
       }
