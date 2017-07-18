@@ -16,6 +16,9 @@ define([
       it('should return true for BACKSPACE', function () {
         expect(key.isEdit(key.code.BACKSPACE)).to.be.true;
       });
+       it('should return true for DELETE', function () {
+        expect(key.isEdit(key.code.DELETE)).to.be.true;
+      });
     });
     describe('isMove', function () {
       it('should return true for LEFT', function () {
