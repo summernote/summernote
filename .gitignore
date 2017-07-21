@@ -36,4 +36,4 @@ build/
 *.log
 
 # Ignoring dist folder content
-dist/*
+# dist/*
