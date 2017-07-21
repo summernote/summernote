@@ -69,6 +69,12 @@ define([
           }
         }
       });
+
+      // Listen for scrolling on the handle overlay.
+      this.$handle.on('wheel', function (e) {
+        e.preventDefault();
+        self.update();
+      });
     };
 
     this.destroy = function () {
