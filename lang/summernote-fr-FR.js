@@ -51,13 +51,13 @@
         openInNewWindow: 'Ouvrir dans une nouvelle fenêtre'
       },
       table: {
-        table: 'Tableau',                                                                                                                                                                                                                    │
-        addRowAbove: 'Ajouter une ligne au-dessus',                                                                                                                                                                                          │
-        addRowBelow: 'Ajouter une ligne en dessous',                                                                                                                                                                                         │
-        addColLeft: 'Ajouter une colonne à gauche',                                                                                                                                                                                          │
-        addColRight: 'Ajouter une colonne à droite',                                                                                                                                                                                         │
-        delRow: 'Supprimer la ligne',                                                                                                                                                                                                        │
-        delCol: 'Supprimer la colonne',                                                                                                                                                                                                      │
+        table: 'Tableau',
+        addRowAbove: 'Ajouter une ligne au-dessus',
+        addRowBelow: 'Ajouter une ligne en dessous',
+        addColLeft: 'Ajouter une colonne à gauche',
+        addColRight: 'Ajouter une colonne à droite',
+        delRow: 'Supprimer la ligne',
+        delCol: 'Supprimer la colonne',
         delTable: 'Supprimer le tableau'
       },
       hr: {
