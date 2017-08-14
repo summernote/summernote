@@ -245,7 +245,8 @@ define([
                   var $holder = $(this);
                   $holder.append(ui.palette({
                     colors: options.colors,
-                    eventName: $holder.data('event')
+                    eventName: $holder.data('event'),
+                    tooltip: options.tooltip
                   }).render());
                 });
               },
