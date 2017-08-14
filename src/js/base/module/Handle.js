@@ -19,6 +19,9 @@ define([
       },
       'summernote.disable': function () {
         self.hide();
+      },
+      'summernote.codeview.toggled': function() {
+        self.update();
       }
     };
 
