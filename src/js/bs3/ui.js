@@ -65,11 +65,13 @@ define([
     }
     $node.html(contents.join(''));
 
-    $node.find('.note-color-btn').tooltip({
-      container: 'body',
-      trigger: 'hover',
-      placement: 'bottom'
-    });
+    if (options.tooltip) {
+      $node.find('.note-color-btn').tooltip({
+        container: 'body',
+        trigger: 'hover',
+        placement: 'bottom'
+      });
+    }
   });
 
   var dialog = renderer.create('<div class="modal" aria-hidden="false" tabindex="-1"/>', function ($node, options) {
