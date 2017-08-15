@@ -13,6 +13,8 @@ define([
     var self = this;
     var ui = $.summernote.ui;
 
+    var $editable = context.layoutInfo.editable;
+    var editable = $editable[0];
     var options = context.options;
 
     this.events = {
@@ -41,10 +43,12 @@ define([
     this.update = function (target) {
       if (dom.isImg(target)) {
         var pos = dom.posFromPlaceholder(target);
+        var posEditor = dom.posFromPlaceholder(editable);
+
         this.$popover.css({
           display: 'block',
           left: pos.left,
-          top: pos.top
+          top: Math.min(pos.top, posEditor.top)
         });
       } else {
         this.hide();

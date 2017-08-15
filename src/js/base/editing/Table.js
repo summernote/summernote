@@ -109,7 +109,7 @@ define([
       var cellIndex = recoverCellIndex(row.rowIndex, cell.cellIndex);
       var cellHasColspan = (cell.colSpan > 1);
       var cellHasRowspan = (cell.rowSpan > 1);
-      var isThisSelectedCell = (row.rowIndex === _startPoint.rowPos && cell.cellIndex === _startPoint.colPos); 
+      var isThisSelectedCell = (row.rowIndex === _startPoint.rowPos && cell.cellIndex === _startPoint.colPos);
       setVirtualTablePosition(row.rowIndex, cellIndex, row, cell, cellHasRowspan, cellHasColspan, false);
 
       // Add span rows to virtual Table.
@@ -194,7 +194,7 @@ define([
         case TableResultAction.where.Column:
           if (cell.isColSpan) {
             return TableResultAction.resultAction.SumSpanCount;
-          } else if(cell.isRowSpan && cell.isVirtual) {
+          } else if (cell.isRowSpan && cell.isVirtual) {
             return TableResultAction.resultAction.Ignore;
           }
           break;

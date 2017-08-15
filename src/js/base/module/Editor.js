@@ -764,6 +764,8 @@ define([
      */
     this.floatMe = this.wrapCommand(function (value) {
       var $target = $(this.restoreTarget());
+      $target.toggleClass('note-float-left', value === 'left');
+      $target.toggleClass('note-float-right', value === 'right');
       $target.css('float', value);
     });
 

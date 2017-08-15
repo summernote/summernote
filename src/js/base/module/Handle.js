@@ -19,6 +19,9 @@ define([
       },
       'summernote.disable': function () {
         self.hide();
+      },
+      'summernote.codeview.toggled': function () {
+        self.update();
       }
     };
 
@@ -69,6 +72,12 @@ define([
           }
         }
       });
+
+      // Listen for scrolling on the handle overlay.
+      this.$handle.on('wheel', function (e) {
+        e.preventDefault();
+        self.update();
+      });
     };
 
     this.destroy = function () {
@@ -87,12 +96,16 @@ define([
 
       if (isImage) {
         var $image = $(target);
-        var pos = $image.position();
+        var position = $image.position();
+        var pos = {
+          left: position.left + parseInt($image.css('marginLeft'), 10),
+          top: position.top + parseInt($image.css('marginTop'), 10)
+        };
 
-        // include margin
+        // exclude margin
         var imageSize = {
-          w: $image.outerWidth(true),
-          h: $image.outerHeight(true)
+          w: $image.outerWidth(false),
+          h: $image.outerHeight(false)
         };
 
         $selection.css({
