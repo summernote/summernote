@@ -96,7 +96,11 @@ define([
 
       if (isImage) {
         var $image = $(target);
-        var pos = $image.position();
+        var position = $image.position();
+        var pos = {
+          left: position.left + parseInt($image.css('marginLeft'), 10),
+          top: position.top + parseInt($image.css('marginTop'), 10)
+        };
 
         // exclude margin
         var imageSize = {
