@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor v0.8.6
+ * Super simple wysiwyg editor v0.8.7
  * http://summernote.org/
  *
  * summernote.js
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2017-07-16T16:33Z
+ * Date: 2017-08-15T06:23Z
  */
 (function (factory) {
   /* global define */
@@ -1958,11 +1958,13 @@
     }
     $node.html(contents.join(''));
 
-    $node.find('.note-color-btn').tooltip({
-      container: 'body',
-      trigger: 'hover',
-      placement: 'bottom'
-    });
+    if (options.tooltip) {
+      $node.find('.note-color-btn').tooltip({
+        container: 'body',
+        trigger: 'hover',
+        placement: 'bottom'
+      });
+    }
   });
 
   var dialog = renderer.create('<div class="modal" aria-hidden="false" tabindex="-1"/>', function ($node, options) {
@@ -2271,6 +2273,7 @@
       'TAB': 9,
       'ENTER': 13,
       'SPACE': 32,
+      'DELETE': 46,
 
       // Arrow
       'LEFT': 37,
@@ -2321,7 +2324,8 @@
           keyMap.BACKSPACE,
           keyMap.TAB,
           keyMap.ENTER,
-          keyMap.SPACE
+          keyMap.SPACE,
+          keyMap.DELETE
         ], keyCode);
       },
       /**
@@ -3865,7 +3869,7 @@
       var cellIndex = recoverCellIndex(row.rowIndex, cell.cellIndex);
       var cellHasColspan = (cell.colSpan > 1);
       var cellHasRowspan = (cell.rowSpan > 1);
-      var isThisSelectedCell = (row.rowIndex === _startPoint.rowPos && cell.cellIndex === _startPoint.colPos); 
+      var isThisSelectedCell = (row.rowIndex === _startPoint.rowPos && cell.cellIndex === _startPoint.colPos);
       setVirtualTablePosition(row.rowIndex, cellIndex, row, cell, cellHasRowspan, cellHasColspan, false);
 
       // Add span rows to virtual Table.
@@ -3950,7 +3954,7 @@
         case TableResultAction.where.Column:
           if (cell.isColSpan) {
             return TableResultAction.resultAction.SumSpanCount;
-          } else if(cell.isRowSpan && cell.isVirtual) {
+          } else if (cell.isRowSpan && cell.isVirtual) {
             return TableResultAction.resultAction.Ignore;
           }
           break;
@@ -5079,6 +5083,8 @@
      */
     this.floatMe = this.wrapCommand(function (value) {
       var $target = $(this.restoreTarget());
+      $target.toggleClass('note-float-left', value === 'left');
+      $target.toggleClass('note-float-right', value === 'right');
       $target.css('float', value);
     });
 
@@ -5587,6 +5593,9 @@
       },
       'summernote.disable': function () {
         self.hide();
+      },
+      'summernote.codeview.toggled': function () {
+        self.update();
       }
     };
 
@@ -5637,6 +5646,12 @@
           }
         }
       });
+
+      // Listen for scrolling on the handle overlay.
+      this.$handle.on('wheel', function (e) {
+        e.preventDefault();
+        self.update();
+      });
     };
 
     this.destroy = function () {
@@ -5655,12 +5670,16 @@
 
       if (isImage) {
         var $image = $(target);
-        var pos = $image.position();
+        var position = $image.position();
+        var pos = {
+          left: position.left + parseInt($image.css('marginLeft'), 10),
+          top: position.top + parseInt($image.css('marginTop'), 10)
+        };
 
-        // include margin
+        // exclude margin
         var imageSize = {
-          w: $image.outerWidth(true),
-          h: $image.outerHeight(true)
+          w: $image.outerWidth(false),
+          h: $image.outerHeight(false)
         };
 
         $selection.css({
@@ -6042,7 +6061,8 @@
                   var $holder = $(this);
                   $holder.append(ui.palette({
                     colors: options.colors,
-                    eventName: $holder.data('event')
+                    eventName: $holder.data('event'),
+                    tooltip: options.tooltip
                   }).render());
                 });
               },
@@ -6638,7 +6658,7 @@
                  '</div>' +
                  (!options.disableLinkTarget ?
                    '<div class="checkbox">' +
-                     '<label for="sn-checkbox-open-in-new-window">' + 
+                     '<label for="sn-checkbox-open-in-new-window">' +
                        '<input type="checkbox" id="sn-checkbox-open-in-new-window" checked />' + lang.link.openInNewWindow +
                      '</label>' +
                    '</div>' : ''
@@ -6969,6 +6989,8 @@
     var self = this;
     var ui = $.summernote.ui;
 
+    var $editable = context.layoutInfo.editable;
+    var editable = $editable[0];
     var options = context.options;
 
     this.events = {
@@ -6997,10 +7019,12 @@
     this.update = function (target) {
       if (dom.isImg(target)) {
         var pos = dom.posFromPlaceholder(target);
+        var posEditor = dom.posFromPlaceholder(editable);
+
         this.$popover.css({
           display: 'block',
           left: pos.left,
-          top: pos.top
+          top: Math.min(pos.top, posEditor.top)
         });
       } else {
         this.hide();
@@ -7295,7 +7319,7 @@
 
       var body = [
         '<p class="text-center">',
-        '<a href="http://summernote.org/" target="_blank">Summernote 0.8.6</a> · ',
+        '<a href="http://summernote.org/" target="_blank">Summernote 0.8.7</a> · ',
         '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ',
         '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>',
         '</p>'
@@ -7642,7 +7666,7 @@
 
 
   $.summernote = $.extend($.summernote, {
-    version: '0.8.6',
+    version: '0.8.7',
     ui: ui,
     dom: dom,
 
