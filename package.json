@@ -17,8 +17,8 @@
   },
   "main": "dist/summernote.js",
   "scripts": {
+    "start": "grunt server",
     "test": "grunt test",
-    "server": "grunt server",
     "build": "grunt build",
     "dist": "grunt dist"
   },
