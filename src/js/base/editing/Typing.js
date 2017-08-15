@@ -18,11 +18,10 @@ define([
     /**
      * insert tab
      *
-     * @param {jQuery} $editable
      * @param {WrappedRange} rng
      * @param {Number} tabsize
      */
-    this.insertTab = function ($editable, rng, tabsize) {
+    this.insertTab = function (rng, tabsize) {
       var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
       rng = rng.deleteContents();
       rng.insertNode(tab, true);
@@ -34,8 +33,8 @@ define([
     /**
      * insert paragraph
      */
-    this.insertParagraph = function ($editable) {
-      var rng = range.create();
+    this.insertParagraph = function (editable) {
+      var rng = range.create(editable);
 
       // deleteContents on range.
       rng = rng.deleteContents();
@@ -70,8 +69,8 @@ define([
             dom.remove(anchor);
           });
 
-          // replace empty heading or pre with P tag
-          if ((dom.isHeading(nextPara) || dom.isPre(nextPara)) && dom.isEmpty(nextPara)) {
+          // replace empty heading, pre or custom-made styleTag with P tag
+          if ((dom.isHeading(nextPara) || dom.isPre(nextPara) || dom.isCustomStyleTag(nextPara)) && dom.isEmpty(nextPara)) {
             nextPara = dom.replace(nextPara, 'p');
           }
         }
@@ -86,7 +85,7 @@ define([
         }
       }
 
-      range.create(nextPara, 0).normalize().select().scrollIntoView($editable);
+      range.create(nextPara, 0).normalize().select().scrollIntoView(editable);
     };
   };
 

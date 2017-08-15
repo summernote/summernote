@@ -16,6 +16,7 @@ define([
       'TAB': 9,
       'ENTER': 13,
       'SPACE': 32,
+      'DELETE': 46,
 
       // Arrow
       'LEFT': 37,
@@ -66,7 +67,8 @@ define([
           keyMap.BACKSPACE,
           keyMap.TAB,
           keyMap.ENTER,
-          keyMap.SPACe
+          keyMap.SPACE,
+          keyMap.DELETE
         ], keyCode);
       },
       /**

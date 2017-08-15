@@ -20,6 +20,7 @@ define([
 
       this.$dialog = ui.dialog({
         title: lang.video.insert,
+        fade: options.dialogsFade,
         body: body,
         footer: footer
       }).render().appendTo($container);
@@ -43,13 +44,13 @@ define([
       var ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
       var ytMatch = url.match(ytRegExp);
 
-      var igRegExp = /\/\/instagram.com\/p\/(.[a-zA-Z0-9_-]*)/;
+      var igRegExp = /(?:www\.|\/\/)instagram\.com\/p\/(.[a-zA-Z0-9_-]*)/;
       var igMatch = url.match(igRegExp);
 
-      var vRegExp = /\/\/vine.co\/v\/(.[a-zA-Z0-9]*)/;
+      var vRegExp = /\/\/vine\.co\/v\/([a-zA-Z0-9]+)/;
       var vMatch = url.match(vRegExp);
 
-      var vimRegExp = /\/\/(player.)?vimeo.com\/([a-z]*\/)*([0-9]{6,11})[?]?.*/;
+      var vimRegExp = /\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*/;
       var vimMatch = url.match(vimRegExp);
 
       var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
@@ -57,6 +58,12 @@ define([
 
       var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
       var youkuMatch = url.match(youkuRegExp);
+
+      var qqRegExp = /\/\/v\.qq\.com.*?vid=(.+)/;
+      var qqMatch = url.match(qqRegExp);
+
+      var qqRegExp2 = /\/\/v\.qq\.com\/x?\/?(page|cover).*?\/([^\/]+)\.html\??.*/;
+      var qqMatch2 = url.match(qqRegExp2);
 
       var mp4RegExp = /^.+.(mp4|m4v)$/;
       var mp4Match = url.match(mp4RegExp);
@@ -77,7 +84,7 @@ define([
       } else if (igMatch && igMatch[0].length) {
         $video = $('<iframe>')
             .attr('frameborder', 0)
-            .attr('src', igMatch[0] + '/embed/')
+            .attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/')
             .attr('width', '612').attr('height', '710')
             .attr('scrolling', 'no')
             .attr('allowtransparency', 'true');
@@ -103,6 +110,13 @@ define([
             .attr('height', '498')
             .attr('width', '510')
             .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
+      } else if ((qqMatch && qqMatch[1].length) || (qqMatch2 && qqMatch2[2].length)) {
+        var vid = ((qqMatch && qqMatch[1].length) ? qqMatch[1]:qqMatch2[2]);
+        $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+            .attr('frameborder', 0)
+            .attr('height', '310')
+            .attr('width', '500')
+            .attr('src', 'http://v.qq.com/iframe/player.html?vid=' + vid + '&amp;auto=0');
       } else if (mp4Match || oggMatch || webmMatch) {
         $video = $('<video controls>')
             .attr('src', url)
@@ -116,7 +130,6 @@ define([
 
       return $video[0];
     };
-
 
     this.show = function () {
       var text = context.invoke('editor.getSelectedText');

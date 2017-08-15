@@ -20,11 +20,17 @@ Package.onUse(function (api) {
     'dist/summernote.js',
     'dist/summernote.css'
   ], where);
+
+  api.addAssets([
+    'dist/font/summernote.eot',
+    'dist/font/summernote.ttf',
+    'dist/font/summernote.woff'
+  ], where);
 });
 
 Package.onTest(function (api) {
   // load dependencies for test only, before loading the package
-  api.use(['twbs:bootstrap@3.3.1', 'fortawesome:fontawesome@4.2.0'], where);
+  api.use(['twbs:bootstrap@3.3.1'], where);
 
   // load our package
   api.use(packageName, where);

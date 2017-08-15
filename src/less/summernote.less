@@ -1,10 +1,13 @@
 @import "elements.less";
+@import "../icons/dist/summernote.less";
 
 /* Theme Variables
  ------------------------------------------*/
 @border-color: #a9a9a9;
 @background-color: #f5f5f5;
 
+@img-margin-left: 10px;
+@img-margin-right: 10px;
 
 /* Layout
  ------------------------------------------*/
@@ -21,7 +24,6 @@
     color: @dropzone-color;
     background-color: white;
     opacity: 0.95;
-    pointer-event: none;
 
     .note-dropzone-message {
       display: table-cell;
@@ -45,6 +47,22 @@
 
     .note-editable {
       outline: none;
+
+      sup {
+        vertical-align: super;
+      }
+
+      sub {
+        vertical-align: sub;
+      }
+    }
+
+    img.note-float-left {
+      margin-right: @img-margin-right;
+    }
+
+    img.note-float-right {
+      margin-left: @img-margin-left;
     }
   }
 }
@@ -106,7 +124,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 100% !important;
     height: 100%;
     z-index: 1050; /* bs3 modal-backdrop: 1030, bs2: 1040 */
     .note-editable {
@@ -343,6 +361,13 @@ body.note-fullscreen {
       text-align: center;
       border: 4px dashed lightgray;
       margin-bottom: 10px;
+    }
+  }
+
+  // [workaround] firefox fileinput
+  @-moz-document url-prefix() {
+    .note-image-input {
+      height: auto;
     }
   }
 }

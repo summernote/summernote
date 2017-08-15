@@ -20,21 +20,16 @@ define([
   var airEditable = renderer.create('<div class="note-editable" contentEditable="true"/>');
 
   var buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
-  var button = renderer.create('<button type="button" class="note-btn btn btn-default btn-sm">', function ($node, options) {
-    if (options && options.tooltip) {
-      $node.attr({
-        title: options.tooltip
-      }).tooltip({
-        container: 'body',
-        trigger: 'hover',
-        placement: 'bottom'
-      });
-    }
-  });
 
   var dropdown = renderer.create('<div class="dropdown-menu">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
-      return '<li><a href="#" data-value="' + item + '">' + item + '</a></li>';
+      var value = (typeof item === 'string') ? item : (item.value || '');
+      var content = options.template ? options.template(item) : item;
+      var option = (typeof item === 'object') ? item.option : undefined;
+
+      var dataValue = 'data-value="' + value + '"';
+      var dataOption = (option !== undefined) ? ' data-option="' + option + '"' : '';
+      return '<li><a href="#" ' + (dataValue + dataOption) + '>' + content + '</a></li>';
     }).join('') : options.items;
 
     $node.html(markup);
@@ -42,7 +37,9 @@ define([
 
   var dropdownCheck = renderer.create('<div class="dropdown-menu note-check">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
-      return '<li><a href="#" data-value="' + item + '">' + icon(options.checkClassName) + ' ' + item + '</a></li>';
+      var value = (typeof item === 'string') ? item : (item.value || '');
+      var content = options.template ? options.template(item) : item;
+      return '<li><a href="#" data-value="' + value + '">' + icon(options.checkClassName) + ' ' + content + '</a></li>';
     }).join('') : options.items;
     $node.html(markup);
   });
@@ -68,14 +65,19 @@ define([
     }
     $node.html(contents.join(''));
 
-    $node.find('.note-color-btn').tooltip({
-      container: 'body',
-      trigger: 'hover',
-      placement: 'bottom'
-    });
+    if (options.tooltip) {
+      $node.find('.note-color-btn').tooltip({
+        container: 'body',
+        trigger: 'hover',
+        placement: 'bottom'
+      });
+    }
   });
 
-  var dialog = renderer.create('<div class="modal note-modal" aria-hidden="false"/>', function ($node, options) {
+  var dialog = renderer.create('<div class="modal note-modal" aria-hidden="false" tabindex="-1"/>', function ($node, options) {
+    if (options.fade) {
+      $node.addClass('fade');
+    }
     $node.html([
       '<div class="modal-dialog">',
       '  <div class="modal-content">',
@@ -95,11 +97,19 @@ define([
   });
 
   var popover = renderer.create([
-    '<div class="note-popover popover bottom in">',
+    '<div class="note-popover popover in">',
     '  <div class="arrow"/>',
     '  <div class="popover-content note-children-container"/>',
     '</div>'
-  ].join(''));
+  ].join(''), function ($node, options) {
+    var direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
+
+    $node.addClass(direction);
+
+    if (options.hideArrow) {
+      $node.find('.arrow').hide();
+    }
+  });
 
   var icon = function (iconClassName, tagName) {
     tagName = tagName || 'i';
@@ -116,13 +126,27 @@ define([
     airEditor: airEditor,
     airEditable: airEditable,
     buttonGroup: buttonGroup,
-    button: button,
     dropdown: dropdown,
     dropdownCheck: dropdownCheck,
     palette: palette,
     dialog: dialog,
     popover: popover,
     icon: icon,
+    options: {},
+
+    button: function ($node, options) {
+      return renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
+        if (options && options.tooltip && self.options.tooltip) {
+          $node.attr({
+            title: options.tooltip
+          }).tooltip({
+            container: 'body',
+            trigger: 'hover',
+            placement: 'bottom'
+          });
+        }
+      })($node, options);
+    },
 
     toggleBtn: function ($btn, isEnable) {
       $btn.toggleClass('disabled', !isEnable);
@@ -150,6 +174,7 @@ define([
     },
 
     createLayout: function ($note, options) {
+      self.options = options;
       var $editor = (options.airMode ? ui.airEditor([
         ui.editingArea([
           ui.airEditable()

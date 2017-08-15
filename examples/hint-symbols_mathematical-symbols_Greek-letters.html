@@ -1,0 +1,53 @@
+<!--
+Data Source: http://www.htmlhelp.com/reference/html40/entities/symbols.html
+HTML To Convert JSON http://convertjson.com/html-table-to-json.htm
+Creator : ARGE|LOG﻿ github@argelog.com.tr
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>summernote</title>
+  <!-- include jquery -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+
+  <!-- include libs stylesheets -->
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" />
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+
+  <!-- include summernote -->
+  <link rel="stylesheet" href="../dist/summernote.css">
+  <script type="text/javascript" src="../dist/summernote.js"></script>
+
+  <script src="https://www.google.com/jsapi" type="text/javascript"></script>
+
+  <script type="text/javascript">
+
+    $(function() {
+      $('.summernote').summernote({
+        height: 200,
+        hint: {
+          match: /=(\w{0,})$/,
+          search: function(keyword, callback) {
+            $.ajax({
+              url: 'symbols_mathematical-symbols_Greek-letters.json?v=1'
+            }).then(function (data) {
+         callback(data.filter(function(item){return item.Character.indexOf(keyword)>-1 || item.FIELD6.indexOf(keyword)>-1;}));
+            });
+          },
+          content: function(item) {
+            return item.FIELD6;
+          },
+          template: function(item) {
+            return '[<strong>' + item.FIELD6 + '</strong>] ' + item.Character;
+          }
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+<textarea class="summernote">type #su</textarea>
+</body>
+</html>

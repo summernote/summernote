@@ -13,7 +13,7 @@ define([
       'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function () {
         self.update();
       },
-      'summernote.dialog.shown': function () {
+      'summernote.disable summernote.dialog.shown': function () {
         self.hide();
       }
     };

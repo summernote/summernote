@@ -4,10 +4,10 @@
       font: {
         bold: 'Tučné',
         italic: 'Kurzíva',
-        underline: 'Podtržené',
+        underline: 'Podčiarknutie',
         clear: 'Odstrániť štýl písma',
         height: 'Výška riadku',
-        strikethrough: 'Preškrtnuté',
+        strikethrough: 'Prečiarknuté',
         size: 'Veľkosť písma'
       },
       image: {
@@ -28,7 +28,7 @@
         videoLink: 'Odkaz videa',
         insert: 'Vložiť video',
         url: 'URL videa?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion nebo Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion alebo Youku)'
       },
       link: {
         link: 'Odkaz',
@@ -47,7 +47,7 @@
       },
       style: {
         style: 'Štýl',
-        normal: 'Normálny',
+        p: 'Normálny',
         blockquote: 'Citácia',
         pre: 'Kód',
         h1: 'Nadpis 1',
@@ -67,8 +67,8 @@
         codeview: 'HTML kód'
       },
       paragraph: {
-        paragraph: 'Odstavec',
-        outdent: 'Zvečiť odsadenie',
+        paragraph: 'Odsek',
+        outdent: 'Zväčšiť odsadenie',
         indent: 'Zmenšiť odsadenie',
         left: 'Zarovnať doľava',
         center: 'Zarovnať na stred',
@@ -80,7 +80,7 @@
         more: 'Dalšie farby',
         background: 'Farba pozadia',
         foreground: 'Farba písma',
-        transparent: 'Priehľednosť',
+        transparent: 'Priehľadnosť',
         setTransparent: 'Nastaviť priehľadnosť',
         reset: 'Obnoviť',
         resetToDefault: 'Obnoviť prednastavené'
@@ -90,7 +90,7 @@
         close: 'Zavrieť',
         textFormatting: 'Formátovanie textu',
         action: 'Akcia',
-        paragraphFormatting: 'Formátovánie odstavca',
+        paragraphFormatting: 'Formátovanie odseku',
         documentStyle: 'Štýl dokumentu'
       },
       history: {

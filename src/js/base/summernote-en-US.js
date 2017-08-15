@@ -1,6 +1,10 @@
 define([
   'jquery'
 ], function ($) {
+  $.summernote = $.summernote || {
+    lang: {}
+  };
+
   $.extend($.summernote.lang, {
     'en-US': {
       font: {
@@ -53,14 +57,21 @@ define([
         openInNewWindow: 'Open in new window'
       },
       table: {
-        table: 'Table'
+        table: 'Table',
+        addRowAbove: 'Add row above',
+        addRowBelow: 'Add row below',
+        addColLeft: 'Add column left',
+        addColRight: 'Add column right',
+        delRow: 'Delete row',
+        delCol: 'Delete column',
+        delTable: 'Delete table'
       },
       hr: {
         insert: 'Insert Horizontal Rule'
       },
       style: {
         style: 'Style',
-        normal: 'Normal',
+        p: 'Normal',
         blockquote: 'Quote',
         pre: 'Code',
         h1: 'Header 1',
@@ -107,7 +118,7 @@ define([
         documentStyle: 'Document Style',
         extraKeys: 'Extra keys'
       },
-      help : {
+      help: {
         'insertParagraph': 'Insert Paragraph',
         'undo': 'Undoes the last command',
         'redo': 'Redoes the last command',

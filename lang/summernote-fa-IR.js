@@ -30,7 +30,7 @@
         videoLink: 'لینک ویدیو',
         insert: 'افزودن ویدیو',
         url: 'آدرس ویدیو ؟',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, یا Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion یا Youku)'
       },
       link: {
         link: 'لینک',
@@ -49,7 +49,7 @@
       },
       style: {
         style: 'استیل',
-        normal: 'نرمال',
+        p: 'نرمال',
         blockquote: 'نقل قول',
         pre: 'کد',
         h1: 'سرتیتر 1',

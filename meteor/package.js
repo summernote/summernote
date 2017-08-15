@@ -8,7 +8,7 @@ var packageJson = JSON.parse(Npm.require("fs").readFileSync('package.json'));
 
 Package.describe({
   name: packageName,
-  summary: 'summernote (official): jQuery+Bootstrap+FontAwesome WYSIWYG editor with embedded images support',
+  summary: 'summernote (official): jQuery+Bootstrap WYSIWYG editor with embedded images support',
   version: packageJson.version,
   git: 'https://github.com/summernote/summernote.git'
 });
@@ -17,13 +17,18 @@ Package.onUse(function (api) {
   api.versionsFrom(['METEOR@0.9.0', 'METEOR@1.0']);
   api.use([
     'jquery',
-    'twbs:bootstrap@3.3.1',
-    'fortawesome:fontawesome@4.2.0'
+    'twbs:bootstrap@3.3.1'
   ], where);
   // no exports - summernote adds itself to jQuery
   api.addFiles([
     'dist/summernote.js',
     'dist/summernote.css'
+  ], where);
+
+  api.addAssets([
+    'dist/font/summernote.eot',
+    'dist/font/summernote.ttf',
+    'dist/font/summernote.woff'
   ], where);
 });
 

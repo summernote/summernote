@@ -84,7 +84,7 @@ define([
      * @see http://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
      */
     var isVoid = function (node) {
-      return node && /^BR|^IMG|^HR|^IFRAME|^BUTTON/.test(node.nodeName.toUpperCase());
+      return node && /^BR|^IMG|^HR|^IFRAME|^BUTTON|^INPUT/.test(node.nodeName.toUpperCase());
     };
 
     var isPara = function (node) {
@@ -110,13 +110,16 @@ define([
 
     var isTable = makePredByNodeName('TABLE');
 
+    var isData = makePredByNodeName('DATA');
+
     var isInline = function (node) {
       return !isBodyContainer(node) &&
              !isList(node) &&
              !isHr(node) &&
              !isPara(node) &&
              !isTable(node) &&
-             !isBlockquote(node);
+             !isBlockquote(node) &&
+             !isData(node);
     };
 
     var isList = function (node) {
@@ -198,8 +201,13 @@ define([
       if (isText(node)) {
         return node.nodeValue.length;
       }
-
-      return node.childNodes.length;
+      
+      if (node) {
+        return node.childNodes.length;
+      }
+      
+      return 0;
+      
     };
 
     /**
@@ -353,20 +361,20 @@ define([
      * @param {Function} [pred] - predicate function
      */
     var listDescendant = function (node, pred) {
-      var descendents = [];
+      var descendants = [];
       pred = pred || func.ok;
 
       // start DFS(depth first search) with node
       (function fnWalk(current) {
         if (node !== current && pred(current)) {
-          descendents.push(current);
+          descendants.push(current);
         }
         for (var idx = 0, len = current.childNodes.length; idx < len; idx++) {
           fnWalk(current.childNodes[idx]);
         }
       })(node);
 
-      return descendents;
+      return descendants;
     };
 
     /**
@@ -446,7 +454,7 @@ define([
     };
 
     /**
-     * returns wheter node is left edge of ancestor or not.
+     * returns whether node is left edge of ancestor or not.
      *
      * @param {Node} node
      * @param {Node} ancestor
@@ -471,6 +479,9 @@ define([
      * @return {Boolean}
      */
     var isRightEdgeOf = function (node, ancestor) {
+      if (!ancestor) {
+        return false;
+      }
       while (node && node !== ancestor) {
         if (position(node) !== nodeLength(node.parentNode) - 1) {
           return false;
@@ -593,7 +604,7 @@ define([
 
     /**
      * returns whether point is visible (can set cursor) or not.
-     * 
+     *
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
@@ -983,6 +994,18 @@ define([
       });
     };
 
+    /**
+     * @method isCustomStyleTag
+     *
+     * assert if a node contains a "note-styletag" class,
+     * which implies that's a custom-made style tag node
+     *
+     * @param {Node} an HTML DOM node
+     */
+    var isCustomStyleTag = function (node) {
+      return node && !dom.isText(node) && list.contains(node.classList, 'note-styletag');
+    };
+
     return {
       /** @property {String} NBSP_CHAR */
       NBSP_CHAR: NBSP_CHAR,
@@ -1009,6 +1032,7 @@ define([
       isPre: isPre,
       isList: isList,
       isTable: isTable,
+      isData: isData,
       isCell: isCell,
       isBlockquote: isBlockquote,
       isBodyContainer: isBodyContainer,
@@ -1069,7 +1093,8 @@ define([
       value: value,
       posFromPlaceholder: posFromPlaceholder,
       attachEvents: attachEvents,
-      detachEvents: detachEvents
+      detachEvents: detachEvents,
+      isCustomStyleTag: isCustomStyleTag
     };
   })();
 

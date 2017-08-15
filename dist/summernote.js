@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor v0.7.1
+ * Super simple wysiwyg editor v0.8.7
  * http://summernote.org/
  *
  * summernote.js
- * Copyright 2013-2015 Alan Hong. and other contributors
+ * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2016-01-01T15:51Z
+ * Date: 2017-08-15T06:23Z
  */
 (function (factory) {
   /* global define */
@@ -22,6 +22,94 @@
   }
 }(function ($) {
   'use strict';
+
+  var isSupportAmd = typeof define === 'function' && define.amd;
+
+  /**
+   * returns whether font is installed or not.
+   *
+   * @param {String} fontName
+   * @return {Boolean}
+   */
+  var isFontInstalled = function (fontName) {
+    var testFontName = fontName === 'Comic Sans MS' ? 'Courier New' : 'Comic Sans MS';
+    var $tester = $('<div>').css({
+      position: 'absolute',
+      left: '-9999px',
+      top: '-9999px',
+      fontSize: '200px'
+    }).text('mmmmmmmmmwwwwwww').appendTo(document.body);
+
+    var originalWidth = $tester.css('fontFamily', testFontName).width();
+    var width = $tester.css('fontFamily', fontName + ',' + testFontName).width();
+
+    $tester.remove();
+
+    return originalWidth !== width;
+  };
+
+  var userAgent = navigator.userAgent;
+  var isMSIE = /MSIE|Trident/i.test(userAgent);
+  var browserVersion;
+  if (isMSIE) {
+    var matches = /MSIE (\d+[.]\d+)/.exec(userAgent);
+    if (matches) {
+      browserVersion = parseFloat(matches[1]);
+    }
+    matches = /Trident\/.*rv:([0-9]{1,}[\.0-9]{0,})/.exec(userAgent);
+    if (matches) {
+      browserVersion = parseFloat(matches[1]);
+    }
+  }
+
+  var isEdge = /Edge\/\d+/.test(userAgent);
+
+  var hasCodeMirror = !!window.CodeMirror;
+  if (!hasCodeMirror && isSupportAmd && typeof require !== 'undefined') {
+    if (typeof require.resolve !== 'undefined') {
+      try {
+        // If CodeMirror can't be resolved, `require.resolve` will throw an
+        // exception and `hasCodeMirror` won't be set to `true`.
+        require.resolve('codemirror');
+        hasCodeMirror = true;
+      } catch (e) {
+        // Do nothing.
+      }
+    } else if (typeof eval('require').specified !== 'undefined') {
+      hasCodeMirror = eval('require').specified('codemirror');
+    }
+  }
+
+  var isSupportTouch =
+    (('ontouchstart' in window) ||
+     (navigator.MaxTouchPoints > 0) ||
+     (navigator.msMaxTouchPoints > 0));
+
+  /**
+   * @class core.agent
+   *
+   * Object which check platform and agent
+   *
+   * @singleton
+   * @alternateClassName agent
+   */
+  var agent = {
+    isMac: navigator.appVersion.indexOf('Mac') > -1,
+    isMSIE: isMSIE,
+    isEdge: isEdge,
+    isFF: !isEdge && /firefox/i.test(userAgent),
+    isPhantom: /PhantomJS/i.test(userAgent),
+    isWebkit: !isEdge && /webkit/i.test(userAgent),
+    isChrome: !isEdge && /chrome/i.test(userAgent),
+    isSafari: !isEdge && /safari/i.test(userAgent),
+    browserVersion: browserVersion,
+    jqueryVersion: parseFloat($.fn.jquery),
+    isSupportAmd: isSupportAmd,
+    isSupportTouch: isSupportTouch,
+    hasCodeMirror: hasCodeMirror,
+    isFontInstalled: isFontInstalled,
+    isW3CRangeSupport: !!document.createRange
+  };
 
   /**
    * @class core.func
@@ -72,6 +160,12 @@
       return a;
     };
 
+    var invoke = function (obj, method) {
+      return function () {
+        return obj[method].apply(obj, arguments);
+      };
+    };
+
     var idCounter = 0;
 
     /**
@@ -87,7 +181,7 @@
     /**
      * returns bnd (bounds) from rect
      *
-     * - IE Compatability Issue: http://goo.gl/sRLOAo
+     * - IE Compatibility Issue: http://goo.gl/sRLOAo
      * - Scroll Issue: http://goo.gl/sNjUc
      *
      * @param {Rect} rect
@@ -134,6 +228,35 @@
       }).join('');
     };
 
+    /**
+     * Returns a function, that, as long as it continues to be invoked, will not
+     * be triggered. The function will be called after it stops being called for
+     * N milliseconds. If `immediate` is passed, trigger the function on the
+     * leading edge, instead of the trailing.
+     * @param {Function} func
+     * @param {Number} wait
+     * @param {Boolean} immediate
+     * @return {Function}
+     */
+    var debounce = function (func, wait, immediate) {
+      var timeout;
+      return function () {
+        var context = this, args = arguments;
+        var later = function () {
+          timeout = null;
+          if (!immediate) {
+            func.apply(context, args);
+          }
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) {
+          func.apply(context, args);
+        }
+      };
+    };
+
     return {
       eq: eq,
       eq2: eq2,
@@ -143,10 +266,12 @@
       self: self,
       not: not,
       and: and,
+      invoke: invoke,
       uniqueId: uniqueId,
       rect2bnd: rect2bnd,
       invertObject: invertObject,
-      namespaceToCamel: namespaceToCamel
+      namespaceToCamel: namespaceToCamel,
+      debounce: debounce
     };
   })();
 
@@ -287,7 +412,7 @@
     };
   
     /**
-     * returns a copy of the array with all falsy values removed
+     * returns a copy of the array with all false values removed
      *
      * @param {Array} array - array
      * @param {Function} fn - predicate function for cluster rule
@@ -344,67 +469,6 @@
              all: all, sum: sum, from: from, isEmpty: isEmpty,
              clusterBy: clusterBy, compact: compact, unique: unique };
   })();
-
-  var isSupportAmd = typeof define === 'function' && define.amd;
-
-  /**
-   * returns whether font is installed or not.
-   *
-   * @param {String} fontName
-   * @return {Boolean}
-   */
-  var isFontInstalled = function (fontName) {
-    var testFontName = fontName === 'Comic Sans MS' ? 'Courier New' : 'Comic Sans MS';
-    var $tester = $('<div>').css({
-      position: 'absolute',
-      left: '-9999px',
-      top: '-9999px',
-      fontSize: '200px'
-    }).text('mmmmmmmmmwwwwwww').appendTo(document.body);
-
-    var originalWidth = $tester.css('fontFamily', testFontName).width();
-    var width = $tester.css('fontFamily', fontName + ',' + testFontName).width();
-
-    $tester.remove();
-
-    return originalWidth !== width;
-  };
-
-  var userAgent = navigator.userAgent;
-  var isMSIE = /MSIE|Trident/i.test(userAgent);
-  var browserVersion;
-  if (isMSIE) {
-    var matches = /MSIE (\d+[.]\d+)/.exec(userAgent);
-    if (matches) {
-      browserVersion = parseFloat(matches[1]);
-    }
-    matches = /Trident\/.*rv:([0-9]{1,}[\.0-9]{0,})/.exec(userAgent);
-    if (matches) {
-      browserVersion = parseFloat(matches[1]);
-    }
-  }
-
-  /**
-   * @class core.agent
-   *
-   * Object which check platform and agent
-   *
-   * @singleton
-   * @alternateClassName agent
-   */
-  var agent = {
-    isMac: navigator.appVersion.indexOf('Mac') > -1,
-    isMSIE: isMSIE,
-    isFF: /firefox/i.test(userAgent),
-    isWebkit: /webkit/i.test(userAgent),
-    isSafari: /safari/i.test(userAgent),
-    browserVersion: browserVersion,
-    jqueryVersion: parseFloat($.fn.jquery),
-    isSupportAmd: isSupportAmd,
-    hasCodeMirror: isSupportAmd ? require.specified('codemirror') : !!window.CodeMirror,
-    isFontInstalled: isFontInstalled,
-    isW3CRangeSupport: !!document.createRange
-  };
 
 
   var NBSP_CHAR = String.fromCharCode(160);
@@ -487,7 +551,7 @@
      * @see http://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
      */
     var isVoid = function (node) {
-      return node && /^BR|^IMG|^HR|^IFRAME|^BUTTON/.test(node.nodeName.toUpperCase());
+      return node && /^BR|^IMG|^HR|^IFRAME|^BUTTON|^INPUT/.test(node.nodeName.toUpperCase());
     };
 
     var isPara = function (node) {
@@ -513,13 +577,16 @@
 
     var isTable = makePredByNodeName('TABLE');
 
+    var isData = makePredByNodeName('DATA');
+
     var isInline = function (node) {
       return !isBodyContainer(node) &&
              !isList(node) &&
              !isHr(node) &&
              !isPara(node) &&
              !isTable(node) &&
-             !isBlockquote(node);
+             !isBlockquote(node) &&
+             !isData(node);
     };
 
     var isList = function (node) {
@@ -601,8 +668,13 @@
       if (isText(node)) {
         return node.nodeValue.length;
       }
-
-      return node.childNodes.length;
+      
+      if (node) {
+        return node.childNodes.length;
+      }
+      
+      return 0;
+      
     };
 
     /**
@@ -756,20 +828,20 @@
      * @param {Function} [pred] - predicate function
      */
     var listDescendant = function (node, pred) {
-      var descendents = [];
+      var descendants = [];
       pred = pred || func.ok;
 
       // start DFS(depth first search) with node
       (function fnWalk(current) {
         if (node !== current && pred(current)) {
-          descendents.push(current);
+          descendants.push(current);
         }
         for (var idx = 0, len = current.childNodes.length; idx < len; idx++) {
           fnWalk(current.childNodes[idx]);
         }
       })(node);
 
-      return descendents;
+      return descendants;
     };
 
     /**
@@ -849,7 +921,7 @@
     };
 
     /**
-     * returns wheter node is left edge of ancestor or not.
+     * returns whether node is left edge of ancestor or not.
      *
      * @param {Node} node
      * @param {Node} ancestor
@@ -874,6 +946,9 @@
      * @return {Boolean}
      */
     var isRightEdgeOf = function (node, ancestor) {
+      if (!ancestor) {
+        return false;
+      }
       while (node && node !== ancestor) {
         if (position(node) !== nodeLength(node.parentNode) - 1) {
           return false;
@@ -996,7 +1071,7 @@
 
     /**
      * returns whether point is visible (can set cursor) or not.
-     * 
+     *
      * @param {BoundaryPoint} point
      * @return {Boolean}
      */
@@ -1386,6 +1461,18 @@
       });
     };
 
+    /**
+     * @method isCustomStyleTag
+     *
+     * assert if a node contains a "note-styletag" class,
+     * which implies that's a custom-made style tag node
+     *
+     * @param {Node} an HTML DOM node
+     */
+    var isCustomStyleTag = function (node) {
+      return node && !dom.isText(node) && list.contains(node.classList, 'note-styletag');
+    };
+
     return {
       /** @property {String} NBSP_CHAR */
       NBSP_CHAR: NBSP_CHAR,
@@ -1412,6 +1499,7 @@
       isPre: isPre,
       isList: isList,
       isTable: isTable,
+      isData: isData,
       isCell: isCell,
       isBlockquote: isBlockquote,
       isBodyContainer: isBodyContainer,
@@ -1472,10 +1560,10 @@
       value: value,
       posFromPlaceholder: posFromPlaceholder,
       attachEvents: attachEvents,
-      detachEvents: detachEvents
+      detachEvents: detachEvents,
+      isCustomStyleTag: isCustomStyleTag
     };
   })();
-
 
   /**
    * @param {jQuery} $note
@@ -1514,9 +1602,14 @@
      * destory modules and other resources and initialize it again
      */
     this.reset = function () {
+      var disabled = self.isDisabled();
       this.code(dom.emptyPara);
       this._destroy();
       this._initialize();
+
+      if (disabled) {
+        self.disable();
+      }
     };
 
     this._initialize = function () {
@@ -1547,6 +1640,8 @@
       Object.keys(this.memos).forEach(function (key) {
         self.removeMemo(key);
       });
+      // trigger custom onDestroy callback
+      this.triggerEvent('destroy', this);
     };
 
     this.code = function (html) {
@@ -1573,6 +1668,7 @@
     this.enable = function () {
       this.layoutInfo.editable.attr('contenteditable', true);
       this.invoke('toolbar.activate', true);
+      this.triggerEvent('disable', false);
     };
 
     this.disable = function () {
@@ -1582,6 +1678,8 @@
       }
       this.layoutInfo.editable.attr('contenteditable', false);
       this.invoke('toolbar.deactivate', true);
+
+      this.triggerEvent('disable', true);
     };
 
     this.triggerEvent = function () {
@@ -1655,10 +1753,21 @@
       delete this.memos[key];
     };
 
+    /**
+     *Some buttons need to change their visual style immediately once they get pressed
+     */
+    this.createInvokeHandlerAndUpdateState = function (namespace, value) {
+      return function (event) {
+        self.createInvokeHandler(namespace, value)(event);
+        self.invoke('buttons.updateCurrentStyle');
+      };
+    };
+
     this.createInvokeHandler = function (namespace, value) {
       return function (event) {
         event.preventDefault();
-        self.invoke(namespace, value || $(event.target).data('value') || $(event.currentTarget).data('value'));
+        var $target = $(event.target);
+        self.invoke(namespace, value || $target.closest('[data-value]').data('value'), $target);
       };
     };
 
@@ -1682,10 +1791,6 @@
     return this.initialize();
   };
 
-  $.summernote = $.summernote || {
-    lang: {}
-  };
-
   $.fn.extend({
     /**
      * Summernote API
@@ -1701,7 +1806,11 @@
       var options = hasInitOptions ? list.head(arguments) : {};
 
       options = $.extend({}, $.summernote.options, options);
+
+      // Update options
       options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+      options.icons = $.extend(true, {}, $.summernote.options.icons, options.icons);
+      options.tooltip = options.tooltip === 'auto' ? !agent.isSupportTouch : options.tooltip;
 
       this.each(function (idx, note) {
         var $note = $(note);
@@ -1804,21 +1913,16 @@
   var airEditable = renderer.create('<div class="note-editable" contentEditable="true"/>');
 
   var buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
-  var button = renderer.create('<button type="button" class="note-btn btn btn-default btn-sm">', function ($node, options) {
-    if (options && options.tooltip) {
-      $node.attr({
-        title: options.tooltip
-      }).tooltip({
-        container: 'body',
-        trigger: 'hover',
-        placement: 'bottom'
-      });
-    }
-  });
 
   var dropdown = renderer.create('<div class="dropdown-menu">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
-      return '<li><a href="#" data-value="' + item + '">' + item + '</a></li>';
+      var value = (typeof item === 'string') ? item : (item.value || '');
+      var content = options.template ? options.template(item) : item;
+      var option = (typeof item === 'object') ? item.option : undefined;
+
+      var dataValue = 'data-value="' + value + '"';
+      var dataOption = (option !== undefined) ? ' data-option="' + option + '"' : '';
+      return '<li><a href="#" ' + (dataValue + dataOption) + '>' + content + '</a></li>';
     }).join('') : options.items;
 
     $node.html(markup);
@@ -1826,7 +1930,9 @@
 
   var dropdownCheck = renderer.create('<div class="dropdown-menu note-check">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
-      return '<li><a href="#" data-value="' + item + '">' + icon(options.checkClassName) + ' ' + item + '</a></li>';
+      var value = (typeof item === 'string') ? item : (item.value || '');
+      var content = options.template ? options.template(item) : item;
+      return '<li><a href="#" data-value="' + value + '">' + icon(options.checkClassName) + ' ' + content + '</a></li>';
     }).join('') : options.items;
     $node.html(markup);
   });
@@ -1852,14 +1958,19 @@
     }
     $node.html(contents.join(''));
 
-    $node.find('.note-color-btn').tooltip({
-      container: 'body',
-      trigger: 'hover',
-      placement: 'bottom'
-    });
+    if (options.tooltip) {
+      $node.find('.note-color-btn').tooltip({
+        container: 'body',
+        trigger: 'hover',
+        placement: 'bottom'
+      });
+    }
   });
 
-  var dialog = renderer.create('<div class="modal" aria-hidden="false"/>', function ($node, options) {
+  var dialog = renderer.create('<div class="modal" aria-hidden="false" tabindex="-1"/>', function ($node, options) {
+    if (options.fade) {
+      $node.addClass('fade');
+    }
     $node.html([
       '<div class="modal-dialog">',
       '  <div class="modal-content">',
@@ -1879,11 +1990,19 @@
   });
 
   var popover = renderer.create([
-    '<div class="note-popover popover bottom in">',
+    '<div class="note-popover popover in">',
     '  <div class="arrow"/>',
     '  <div class="popover-content note-children-container"/>',
     '</div>'
-  ].join(''));
+  ].join(''), function ($node, options) {
+    var direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
+
+    $node.addClass(direction);
+
+    if (options.hideArrow) {
+      $node.find('.arrow').hide();
+    }
+  });
 
   var icon = function (iconClassName, tagName) {
     tagName = tagName || 'i';
@@ -1900,13 +2019,27 @@
     airEditor: airEditor,
     airEditable: airEditable,
     buttonGroup: buttonGroup,
-    button: button,
     dropdown: dropdown,
     dropdownCheck: dropdownCheck,
     palette: palette,
     dialog: dialog,
     popover: popover,
     icon: icon,
+    options: {},
+
+    button: function ($node, options) {
+      return renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
+        if (options && options.tooltip && self.options.tooltip) {
+          $node.attr({
+            title: options.tooltip
+          }).tooltip({
+            container: 'body',
+            trigger: 'hover',
+            placement: 'bottom'
+          });
+        }
+      })($node, options);
+    },
 
     toggleBtn: function ($btn, isEnable) {
       $btn.toggleClass('disabled', !isEnable);
@@ -1934,6 +2067,7 @@
     },
 
     createLayout: function ($note, options) {
+      self.options = options;
       var $editor = (options.airMode ? ui.airEditor([
         ui.editingArea([
           ui.airEditable()
@@ -1965,6 +2099,10 @@
       layoutInfo.editor.remove();
       $note.show();
     }
+  };
+
+  $.summernote = $.summernote || {
+    lang: {}
   };
 
   $.extend($.summernote.lang, {
@@ -2019,14 +2157,21 @@
         openInNewWindow: 'Open in new window'
       },
       table: {
-        table: 'Table'
+        table: 'Table',
+        addRowAbove: 'Add row above',
+        addRowBelow: 'Add row below',
+        addColLeft: 'Add column left',
+        addColRight: 'Add column right',
+        delRow: 'Delete row',
+        delCol: 'Delete column',
+        delTable: 'Delete table'
       },
       hr: {
         insert: 'Insert Horizontal Rule'
       },
       style: {
         style: 'Style',
-        normal: 'Normal',
+        p: 'Normal',
         blockquote: 'Quote',
         pre: 'Code',
         h1: 'Header 1',
@@ -2073,7 +2218,7 @@
         documentStyle: 'Document Style',
         extraKeys: 'Extra keys'
       },
-      help : {
+      help: {
         'insertParagraph': 'Insert Paragraph',
         'undo': 'Undoes the last command',
         'redo': 'Redoes the last command',
@@ -2128,6 +2273,7 @@
       'TAB': 9,
       'ENTER': 13,
       'SPACE': 32,
+      'DELETE': 46,
 
       // Arrow
       'LEFT': 37,
@@ -2178,7 +2324,8 @@
           keyMap.BACKSPACE,
           keyMap.TAB,
           keyMap.ENTER,
-          keyMap.SPACe
+          keyMap.SPACE,
+          keyMap.DELETE
         ], keyCode);
       },
       /**
@@ -2203,7 +2350,6 @@
       code: keyMap
     };
   })();
-
 
   var range = (function () {
 
@@ -2387,15 +2533,15 @@
         return this;
       };
 
-
       /**
        * Moves the scrollbar to start container(sc) of current range
        *
        * @return {WrappedRange}
        */
-      this.scrollIntoView = function ($container) {
-        if ($container[0].scrollTop + $container.height() < this.sc.offsetTop) {
-          $container[0].scrollTop += Math.abs($container[0].scrollTop + $container.height() - this.sc.offsetTop);
+      this.scrollIntoView = function (container) {
+        var height = $(container).height();
+        if (container.scrollTop + height < this.sc.offsetTop) {
+          container.scrollTop += Math.abs(container.scrollTop + height - this.sc.offsetTop);
         }
 
         return this;
@@ -2638,8 +2784,10 @@
       this.isOnList = makeIsOn(dom.isList);
       // isOnAnchor: judge whether range is on anchor node or not
       this.isOnAnchor = makeIsOn(dom.isAnchor);
-      // isOnAnchor: judge whether range is on cell node or not
+      // isOnCell: judge whether range is on cell node or not
       this.isOnCell = makeIsOn(dom.isCell);
+      // isOnData: judge whether range is on data node or not
+      this.isOnData = makeIsOn(dom.isData);
 
       /**
        * @param {Function} pred
@@ -2841,8 +2989,6 @@
    */
     return {
       /**
-       * @method
-       * 
        * create Range Object From arguments or Browser Selection
        *
        * @param {Node} sc - start container
@@ -2851,48 +2997,63 @@
        * @param {Number} eo - end offset
        * @return {WrappedRange}
        */
-      create : function (sc, so, ec, eo) {
-        if (!arguments.length) { // from Browser Selection
-          if (agent.isW3CRangeSupport) {
-            var selection = document.getSelection();
-            if (!selection || selection.rangeCount === 0) {
-              return null;
-            } else if (dom.isBody(selection.anchorNode)) {
-              // Firefox: returns entire body as range on initialization. We won't never need it.
-              return null;
-            }
-  
-            var nativeRng = selection.getRangeAt(0);
-            sc = nativeRng.startContainer;
-            so = nativeRng.startOffset;
-            ec = nativeRng.endContainer;
-            eo = nativeRng.endOffset;
-          } else { // IE8: TextRange
-            var textRange = document.selection.createRange();
-            var textRangeEnd = textRange.duplicate();
-            textRangeEnd.collapse(false);
-            var textRangeStart = textRange;
-            textRangeStart.collapse(true);
-  
-            var startPoint = textRangeToPoint(textRangeStart, true),
-            endPoint = textRangeToPoint(textRangeEnd, false);
-
-            // same visible point case: range was collapsed.
-            if (dom.isText(startPoint.node) && dom.isLeftEdgePoint(startPoint) &&
-                dom.isTextNode(endPoint.node) && dom.isRightEdgePoint(endPoint) &&
-                endPoint.node.nextSibling === startPoint.node) {
-              startPoint = endPoint;
-            }
-
-            sc = startPoint.cont;
-            so = startPoint.offset;
-            ec = endPoint.cont;
-            eo = endPoint.offset;
-          }
+      create: function (sc, so, ec, eo) {
+        if (arguments.length === 4) {
+          return new WrappedRange(sc, so, ec, eo);
         } else if (arguments.length === 2) { //collapsed
           ec = sc;
           eo = so;
+          return new WrappedRange(sc, so, ec, eo);
+        } else {
+          var wrappedRange = this.createFromSelection();
+          if (!wrappedRange && arguments.length === 1) {
+            wrappedRange = this.createFromNode(arguments[0]);
+            return wrappedRange.collapse(dom.emptyPara === arguments[0].innerHTML);
+          }
+          return wrappedRange;
         }
+      },
+
+      createFromSelection: function () {
+        var sc, so, ec, eo;
+        if (agent.isW3CRangeSupport) {
+          var selection = document.getSelection();
+          if (!selection || selection.rangeCount === 0) {
+            return null;
+          } else if (dom.isBody(selection.anchorNode)) {
+            // Firefox: returns entire body as range on initialization.
+            // We won't never need it.
+            return null;
+          }
+
+          var nativeRng = selection.getRangeAt(0);
+          sc = nativeRng.startContainer;
+          so = nativeRng.startOffset;
+          ec = nativeRng.endContainer;
+          eo = nativeRng.endOffset;
+        } else { // IE8: TextRange
+          var textRange = document.selection.createRange();
+          var textRangeEnd = textRange.duplicate();
+          textRangeEnd.collapse(false);
+          var textRangeStart = textRange;
+          textRangeStart.collapse(true);
+
+          var startPoint = textRangeToPoint(textRangeStart, true),
+          endPoint = textRangeToPoint(textRangeEnd, false);
+
+          // same visible point case: range was collapsed.
+          if (dom.isText(startPoint.node) && dom.isLeftEdgePoint(startPoint) &&
+              dom.isTextNode(endPoint.node) && dom.isRightEdgePoint(endPoint) &&
+              endPoint.node.nextSibling === startPoint.node) {
+            startPoint = endPoint;
+          }
+
+          sc = startPoint.cont;
+          so = startPoint.offset;
+          ec = endPoint.cont;
+          eo = endPoint.offset;
+        }
+
         return new WrappedRange(sc, so, ec, eo);
       },
 
@@ -2955,7 +3116,7 @@
        * @param {Object} bookmark
        * @return {WrappedRange}
        */
-      createFromBookmark : function (editable, bookmark) {
+      createFromBookmark: function (editable, bookmark) {
         var sc = dom.fromOffsetPath(editable, bookmark.s.path);
         var so = bookmark.s.offset;
         var ec = dom.fromOffsetPath(editable, bookmark.e.path);
@@ -3055,7 +3216,7 @@
     var editable = $editable[0];
 
     var makeSnapshot = function () {
-      var rng = range.create();
+      var rng = range.create(editable);
       var emptyBookmark = {s: {path: [], offset: 0}, e: {path: [], offset: 0}};
 
       return {
@@ -3079,7 +3240,6 @@
     * Leaves the stack intact, so that "Redo" can still be used.
     */
     this.rewind = function () {
-
       // Create snap shot if not yet recorded
       if ($editable.html() !== stack[stackOffset].contents) {
         this.recordUndo();
@@ -3090,16 +3250,13 @@
 
       // Apply that snapshot.
       applySnapshot(stack[stackOffset]);
-
     };
-
 
     /**
     * @method reset
     * Resets the history stack completely; reverting to an empty editor.
     */
     this.reset = function () {
-
       // Clear the stack.
       stack = [];
 
@@ -3111,7 +3268,6 @@
 
       // Record our first snapshot (of nothing).
       this.recordUndo();
-
     };
 
     /**
@@ -3284,7 +3440,8 @@
           'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
           'font-subscript': document.queryCommandState('subscript') ? 'subscript' : 'normal',
           'font-superscript': document.queryCommandState('superscript') ? 'superscript' : 'normal',
-          'font-strikethrough': document.queryCommandState('strikeThrough') ? 'strikethrough' : 'normal'
+          'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal',
+          'font-family': document.queryCommandValue('fontname') || styleInfo['font-family']
         });
       } catch (e) {}
 
@@ -3320,38 +3477,28 @@
    * @alternateClassName Bullet
    */
   var Bullet = function () {
+    var self = this;
+
     /**
-     * @method insertOrderedList
-     *
      * toggle ordered list
-     *
-     * @type command
      */
-    this.insertOrderedList = function () {
-      this.toggleList('OL');
+    this.insertOrderedList = function (editable) {
+      this.toggleList('OL', editable);
     };
 
     /**
-     * @method insertUnorderedList
-     *
      * toggle unordered list
-     *
-     * @type command
      */
-    this.insertUnorderedList = function () {
-      this.toggleList('UL');
+    this.insertUnorderedList = function (editable) {
+      this.toggleList('UL', editable);
     };
 
     /**
-     * @method indent
-     *
      * indent
-     *
-     * @type command
      */
-    this.indent = function () {
+    this.indent = function (editable) {
       var self = this;
-      var rng = range.create().wrapBodyInlineWithPara();
+      var rng = range.create(editable).wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
       var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
@@ -3373,15 +3520,11 @@
     };
 
     /**
-     * @method outdent
-     *
      * outdent
-     *
-     * @type command
      */
-    this.outdent = function () {
+    this.outdent = function (editable) {
       var self = this;
-      var rng = range.create().wrapBodyInlineWithPara();
+      var rng = range.create(editable).wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
       var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
@@ -3404,15 +3547,12 @@
     };
 
     /**
-     * @method toggleList
-     *
      * toggle list
      *
      * @param {String} listName - OL or UL
      */
-    this.toggleList = function (listName) {
-      var self = this;
-      var rng = range.create().wrapBodyInlineWithPara();
+    this.toggleList = function (listName, editable) {
+      var rng = range.create(editable).wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
       var bookmark = rng.paraBookmark(paras);
@@ -3446,8 +3586,6 @@
     };
 
     /**
-     * @method wrapList
-     *
      * @param {Node[]} paras
      * @param {String} listName
      * @return {Node[]}
@@ -3554,11 +3692,10 @@
     /**
      * insert tab
      *
-     * @param {jQuery} $editable
      * @param {WrappedRange} rng
      * @param {Number} tabsize
      */
-    this.insertTab = function ($editable, rng, tabsize) {
+    this.insertTab = function (rng, tabsize) {
       var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
       rng = rng.deleteContents();
       rng.insertNode(tab, true);
@@ -3570,8 +3707,8 @@
     /**
      * insert paragraph
      */
-    this.insertParagraph = function ($editable) {
-      var rng = range.create();
+    this.insertParagraph = function (editable) {
+      var rng = range.create(editable);
 
       // deleteContents on range.
       rng = rng.deleteContents();
@@ -3606,8 +3743,8 @@
             dom.remove(anchor);
           });
 
-          // replace empty heading or pre with P tag
-          if ((dom.isHeading(nextPara) || dom.isPre(nextPara)) && dom.isEmpty(nextPara)) {
+          // replace empty heading, pre or custom-made styleTag with P tag
+          if ((dom.isHeading(nextPara) || dom.isPre(nextPara) || dom.isCustomStyleTag(nextPara)) && dom.isEmpty(nextPara)) {
             nextPara = dom.replace(nextPara, 'p');
           }
         }
@@ -3622,11 +3759,285 @@
         }
       }
 
-      range.create(nextPara, 0).normalize().select().scrollIntoView($editable);
+      range.create(nextPara, 0).normalize().select().scrollIntoView(editable);
     };
   };
 
+
   /**
+   * @class Create a virtual table to create what actions to do in change.
+   * @param {object} startPoint Cell selected to apply change.
+   * @param {enum} where  Where change will be applied Row or Col. Use enum: TableResultAction.where
+   * @param {enum} action Action to be applied. Use enum: TableResultAction.requestAction
+   * @param {object} domTable Dom element of table to make changes.
+   */
+  var TableResultAction = function (startPoint, where, action, domTable) {
+    var _startPoint = { 'colPos': 0, 'rowPos': 0 };
+    var _virtualTable = [];
+    var _actionCellList = [];
+
+    //////////////////////////////////////////////
+    // Private functions
+    //////////////////////////////////////////////
+
+    /**
+     * Set the startPoint of action.
+     */
+    function setStartPoint() {
+      if (!startPoint || !startPoint.tagName || (startPoint.tagName.toLowerCase() !== 'td' && startPoint.tagName.toLowerCase() !== 'th')) {
+        console.error('Impossible to identify start Cell point.', startPoint);
+        return;
+      }
+      _startPoint.colPos = startPoint.cellIndex;
+      if (!startPoint.parentElement || !startPoint.parentElement.tagName || startPoint.parentElement.tagName.toLowerCase() !== 'tr') {
+        console.error('Impossible to identify start Row point.', startPoint);
+        return;
+      }
+      _startPoint.rowPos = startPoint.parentElement.rowIndex;
+    }
+
+    /**
+     * Define virtual table position info object.
+     * 
+     * @param {int} rowIndex Index position in line of virtual table.
+     * @param {int} cellIndex Index position in column of virtual table.
+     * @param {object} baseRow Row affected by this position.
+     * @param {object} baseCell Cell affected by this position.
+     * @param {bool} isSpan Inform if it is an span cell/row.
+     */
+    function setVirtualTablePosition(rowIndex, cellIndex, baseRow, baseCell, isRowSpan, isColSpan, isVirtualCell) {
+      var objPosition = {
+        'baseRow': baseRow,
+        'baseCell': baseCell,
+        'isRowSpan': isRowSpan,
+        'isColSpan': isColSpan,
+        'isVirtual': isVirtualCell
+      };
+      if (!_virtualTable[rowIndex]) {
+        _virtualTable[rowIndex] = [];
+      }
+      _virtualTable[rowIndex][cellIndex] = objPosition;
+    }
+
+    /**
+     * Create action cell object.
+     * 
+     * @param {object} virtualTableCellObj Object of specific position on virtual table.
+     * @param {enum} resultAction Action to be applied in that item.
+     */
+    function getActionCell(virtualTableCellObj, resultAction, virtualRowPosition, virtualColPosition) {
+      return {
+        'baseCell': virtualTableCellObj.baseCell,
+        'action': resultAction,
+        'virtualTable': {
+          'rowIndex': virtualRowPosition,
+          'cellIndex': virtualColPosition
+        }
+      };
+    }
+
+    /**
+     * Recover free index of row to append Cell.
+     * 
+     * @param {int} rowIndex Index of row to find free space.
+     * @param {int} cellIndex Index of cell to find free space in table.
+     */
+    function recoverCellIndex(rowIndex, cellIndex) {
+      if (!_virtualTable[rowIndex]) {
+        return cellIndex;
+      }
+      if (!_virtualTable[rowIndex][cellIndex]) {
+        return cellIndex;
+      }
+
+      var newCellIndex = cellIndex;
+      while (_virtualTable[rowIndex][newCellIndex]) {
+        newCellIndex++;
+        if (!_virtualTable[rowIndex][newCellIndex]) {
+          return newCellIndex;
+        }
+      }
+    }
+
+    /**
+     * Recover info about row and cell and add information to virtual table.
+     * 
+     * @param {object} row Row to recover information.
+     * @param {object} cell Cell to recover information.
+     */
+    function addCellInfoToVirtual(row, cell) {
+      var cellIndex = recoverCellIndex(row.rowIndex, cell.cellIndex);
+      var cellHasColspan = (cell.colSpan > 1);
+      var cellHasRowspan = (cell.rowSpan > 1);
+      var isThisSelectedCell = (row.rowIndex === _startPoint.rowPos && cell.cellIndex === _startPoint.colPos);
+      setVirtualTablePosition(row.rowIndex, cellIndex, row, cell, cellHasRowspan, cellHasColspan, false);
+
+      // Add span rows to virtual Table.
+      var rowspanNumber = cell.attributes.rowSpan ? parseInt(cell.attributes.rowSpan.value, 10) : 0;
+      if (rowspanNumber > 1) {
+        for (var rp = 1; rp < rowspanNumber; rp++) {
+          var rowspanIndex = row.rowIndex + rp;
+          adjustStartPoint(rowspanIndex, cellIndex, cell, isThisSelectedCell);
+          setVirtualTablePosition(rowspanIndex, cellIndex, row, cell, true, cellHasColspan, true);
+        }
+      }
+
+      // Add span cols to virtual table.
+      var colspanNumber = cell.attributes.colSpan ? parseInt(cell.attributes.colSpan.value, 10) : 0;
+      if (colspanNumber > 1) {
+        for (var cp = 1; cp < colspanNumber; cp++) {
+          var cellspanIndex = recoverCellIndex(row.rowIndex, (cellIndex + cp));
+          adjustStartPoint(row.rowIndex, cellspanIndex, cell, isThisSelectedCell);
+          setVirtualTablePosition(row.rowIndex, cellspanIndex, row, cell, cellHasRowspan, true, true);
+        }
+      }
+    }
+
+    /**
+     * Process validation and adjust of start point if needed
+     * 
+     * @param {int} rowIndex 
+     * @param {int} cellIndex 
+     * @param {object} cell 
+     * @param {bool} isSelectedCell 
+     */
+    function adjustStartPoint(rowIndex, cellIndex, cell, isSelectedCell) {
+      if (rowIndex === _startPoint.rowPos && _startPoint.colPos >= cell.cellIndex && cell.cellIndex <= cellIndex && !isSelectedCell) {
+        _startPoint.colPos++;
+      }
+    }
+
+    /**
+     * Create virtual table of cells with all cells, including span cells.
+     */
+    function createVirtualTable() {
+      var rows = domTable.rows;
+      for (var rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+        var cells = rows[rowIndex].cells;
+        for (var cellIndex = 0; cellIndex < cells.length; cellIndex++) {
+          addCellInfoToVirtual(rows[rowIndex], cells[cellIndex]);
+        }
+      }
+    }
+
+    /**
+     * Get action to be applied on the cell.
+     * 
+     * @param {object} cell virtual table cell to apply action
+     */
+    function getDeleteResultActionToCell(cell) {
+      switch (where) {
+        case TableResultAction.where.Column:
+          if (cell.isColSpan) {
+            return TableResultAction.resultAction.SubtractSpanCount;
+          }
+          break;
+        case TableResultAction.where.Row:
+          if (!cell.isVirtual && cell.isRowSpan) {
+            return TableResultAction.resultAction.AddCell;
+          }
+          else if (cell.isRowSpan) {
+            return TableResultAction.resultAction.SubtractSpanCount;
+          }
+          break;
+      }
+      return TableResultAction.resultAction.RemoveCell;
+    }
+
+    /**
+     * Get action to be applied on the cell.
+     * 
+     * @param {object} cell virtual table cell to apply action
+     */
+    function getAddResultActionToCell(cell) {
+      switch (where) {
+        case TableResultAction.where.Column:
+          if (cell.isColSpan) {
+            return TableResultAction.resultAction.SumSpanCount;
+          } else if (cell.isRowSpan && cell.isVirtual) {
+            return TableResultAction.resultAction.Ignore;
+          }
+          break;
+        case TableResultAction.where.Row:
+          if (cell.isRowSpan) {
+            return TableResultAction.resultAction.SumSpanCount;
+          } else if (cell.isColSpan && cell.isVirtual) {
+            return TableResultAction.resultAction.Ignore;
+          }
+          break;
+      }
+      return TableResultAction.resultAction.AddCell;
+    }
+
+    function init() {
+      setStartPoint();
+      createVirtualTable();
+    }
+
+    //////////////////////////////////////////////
+    // Public functions
+    //////////////////////////////////////////////
+
+    /**
+     * Recover array os what to do in table.
+     */
+    this.getActionList = function () {
+      var fixedRow = (where === TableResultAction.where.Row) ? _startPoint.rowPos : -1;
+      var fixedCol = (where === TableResultAction.where.Column) ? _startPoint.colPos : -1;
+
+      var actualPosition = 0;
+      var canContinue = true;
+      while (canContinue) {
+        var rowPosition = (fixedRow >= 0) ? fixedRow : actualPosition;
+        var colPosition = (fixedCol >= 0) ? fixedCol : actualPosition;
+        var row = _virtualTable[rowPosition];
+        if (!row) {
+          canContinue = false;
+          return _actionCellList;
+        }
+        var cell = row[colPosition];
+        if (!cell) {
+          canContinue = false;
+          return _actionCellList;
+        }
+
+        // Define action to be applied in this cell
+        var resultAction = TableResultAction.resultAction.Ignore;
+        switch (action) {
+          case TableResultAction.requestAction.Add:
+            resultAction = getAddResultActionToCell(cell);
+            break;
+          case TableResultAction.requestAction.Delete:
+            resultAction = getDeleteResultActionToCell(cell);
+            break;
+        }
+        _actionCellList.push(getActionCell(cell, resultAction, rowPosition, colPosition));
+        actualPosition++;
+      }
+
+      return _actionCellList;
+    };
+
+    init();
+  };
+  /**
+  * 
+  * Where action occours enum.
+  */
+  TableResultAction.where = { 'Row': 0, 'Column': 1 };
+  /**
+  * 
+  * Requested action to apply enum.
+  */
+  TableResultAction.requestAction = { 'Add': 0, 'Delete': 1 };
+  /**
+  * 
+  * Result action to be executed enum.
+  */
+  TableResultAction.resultAction = { 'Ignore': 0, 'SubtractSpanCount': 1, 'RemoveCell': 2, 'AddCell': 3, 'SumSpanCount': 4 };
+
+  /**
+   * 
    * @class editing.Table
    *
    * Table
@@ -3647,6 +4058,240 @@
       var nextCell = list[isShift ? 'prev' : 'next'](cells, cell);
       if (nextCell) {
         range.create(nextCell, 0).select();
+      }
+    };
+
+    /**
+     * Add a new row
+     *
+     * @param {WrappedRange} rng
+     * @param {String} position (top/bottom)
+     * @return {Node}
+     */
+    this.addRow = function (rng, position) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+
+      var currentTr = $(cell).closest('tr');
+      var trAttributes = this.recoverAttributes(currentTr);
+      var html = $('<tr' + trAttributes + '></tr>');
+
+      var vTable = new TableResultAction(cell, TableResultAction.where.Row,
+        TableResultAction.requestAction.Add, $(currentTr).closest('table')[0]);
+      var actions = vTable.getActionList();
+
+      for (var idCell = 0; idCell < actions.length; idCell++) {
+        var currentCell = actions[idCell];
+        var tdAttributes = this.recoverAttributes(currentCell.baseCell);
+        switch (currentCell.action) {
+          case TableResultAction.resultAction.AddCell:
+            html.append('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            break;
+          case TableResultAction.resultAction.SumSpanCount:
+            if (position === 'top') {
+              var baseCellTr = currentCell.baseCell.parent;
+              var isTopFromRowSpan = (!baseCellTr ? 0 : currentCell.baseCell.closest('tr').rowIndex) <= currentTr[0].rowIndex;
+              if (isTopFromRowSpan) {
+                var newTd = $('<div></div>').append($('<td' + tdAttributes + '>' + dom.blank + '</td>').removeAttr('rowspan')).html();
+                html.append(newTd);
+                break;
+              }
+            }
+            var rowspanNumber = parseInt(currentCell.baseCell.rowSpan, 10);
+            rowspanNumber++;
+            currentCell.baseCell.setAttribute('rowSpan', rowspanNumber);
+            break;
+        }
+      }
+
+      if (position === 'top') {
+        currentTr.before(html);
+      }
+      else {
+        var cellHasRowspan = (cell.rowSpan > 1);
+        if (cellHasRowspan) {
+          var lastTrIndex = currentTr[0].rowIndex + (cell.rowSpan - 2);
+          $($(currentTr).parent().find('tr')[lastTrIndex]).after($(html));
+          return;
+        }
+        currentTr.after(html);
+      }
+    };
+
+    /**
+     * Add a new col
+     *
+     * @param {WrappedRange} rng
+     * @param {String} position (left/right)
+     * @return {Node}
+     */
+    this.addCol = function (rng, position) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      var row = $(cell).closest('tr');
+      var rowsGroup = $(row).siblings();
+      rowsGroup.push(row);
+
+      var vTable = new TableResultAction(cell, TableResultAction.where.Column,
+        TableResultAction.requestAction.Add, $(row).closest('table')[0]);
+      var actions = vTable.getActionList();
+
+      for (var actionIndex = 0; actionIndex < actions.length; actionIndex++) {
+        var currentCell = actions[actionIndex];
+        var tdAttributes = this.recoverAttributes(currentCell.baseCell);
+        switch (currentCell.action) {
+          case TableResultAction.resultAction.AddCell:
+            if (position === 'right') {
+              $(currentCell.baseCell).after('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            } else {
+              $(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            }
+            break;
+          case TableResultAction.resultAction.SumSpanCount:
+            if (position === 'right') {
+              var colspanNumber = parseInt(currentCell.baseCell.colSpan, 10);
+              colspanNumber++;
+              currentCell.baseCell.setAttribute('colSpan', colspanNumber);
+            } else {
+              $(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            }
+            break;
+        }
+      }
+    };
+
+    /*
+    * Copy attributes from element.
+    *
+    * @param {object} Element to recover attributes.
+    * @return {string} Copied string elements.
+    */
+    this.recoverAttributes = function (el) {
+      var resultStr = '';
+
+      if (!el) {
+        return resultStr;
+      }
+
+      var attrList = el.attributes || [];
+
+      for (var i = 0; i < attrList.length; i++) {
+        if (attrList[i].name.toLowerCase() === 'id') {
+          continue;
+        }
+
+        if (attrList[i].specified) {
+          resultStr += ' ' + attrList[i].name + '=\'' + attrList[i].value + '\'';
+        }
+      }
+
+      return resultStr;
+    };
+
+    /**
+     * Delete current row
+     *
+     * @param {WrappedRange} rng
+     * @return {Node}
+     */
+    this.deleteRow = function (rng) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      var row = $(cell).closest('tr');
+      var cellPos = row.children('td, th').index($(cell));
+      var rowPos = row[0].rowIndex;
+
+      var vTable = new TableResultAction(cell, TableResultAction.where.Row,
+        TableResultAction.requestAction.Delete, $(row).closest('table')[0]);
+      var actions = vTable.getActionList();
+
+      for (var actionIndex = 0; actionIndex < actions.length; actionIndex++) {
+        if (!actions[actionIndex]) {
+          continue;
+        }
+
+        var baseCell = actions[actionIndex].baseCell;
+        var virtualPosition = actions[actionIndex].virtualTable;
+        var hasRowspan = (baseCell.rowSpan && baseCell.rowSpan > 1);
+        var rowspanNumber = (hasRowspan) ? parseInt(baseCell.rowSpan, 10) : 0;
+        switch (actions[actionIndex].action) {
+          case TableResultAction.resultAction.Ignore:
+            continue;
+          case TableResultAction.resultAction.AddCell:
+            var nextRow = row.next('tr')[0];
+            if (!nextRow) { continue; }
+            var cloneRow = row[0].cells[cellPos];
+            if (hasRowspan) {
+              if (rowspanNumber > 2) {
+                rowspanNumber--;
+                nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
+                nextRow.cells[cellPos].setAttribute('rowSpan', rowspanNumber);
+                nextRow.cells[cellPos].innerHTML = '';
+              } else if (rowspanNumber === 2) {
+                nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
+                nextRow.cells[cellPos].removeAttribute('rowSpan');
+                nextRow.cells[cellPos].innerHTML = '';
+              }
+            }
+            continue;
+          case TableResultAction.resultAction.SubtractSpanCount:
+            if (hasRowspan) {
+              if (rowspanNumber > 2) {
+                rowspanNumber--;
+                baseCell.setAttribute('rowSpan', rowspanNumber);
+                if (virtualPosition.rowIndex !== rowPos && baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
+              } else if (rowspanNumber === 2) {
+                baseCell.removeAttribute('rowSpan');
+                if (virtualPosition.rowIndex !== rowPos && baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
+              }
+            }
+            continue;
+          case TableResultAction.resultAction.RemoveCell:
+            // Do not need remove cell because row will be deleted.
+            continue;
+        }
+      }
+      row.remove();
+    };
+
+    /**
+     * Delete current col
+     *
+     * @param {WrappedRange} rng
+     * @return {Node}
+     */
+    this.deleteCol = function (rng) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      var row = $(cell).closest('tr');
+      var cellPos = row.children('td, th').index($(cell));
+
+      var vTable = new TableResultAction(cell, TableResultAction.where.Column,
+        TableResultAction.requestAction.Delete, $(row).closest('table')[0]);
+      var actions = vTable.getActionList();
+
+      for (var actionIndex = 0; actionIndex < actions.length; actionIndex++) {
+        if (!actions[actionIndex]) {
+          continue;
+        }
+        switch (actions[actionIndex].action) {
+          case TableResultAction.resultAction.Ignore:
+            continue;
+          case TableResultAction.resultAction.SubtractSpanCount:
+            var baseCell = actions[actionIndex].baseCell;
+            var hasColspan = (baseCell.colSpan && baseCell.colSpan > 1);
+            if (hasColspan) {
+              var colspanNumber = (baseCell.colSpan) ? parseInt(baseCell.colSpan, 10) : 0;
+              if (colspanNumber > 2) {
+                colspanNumber--;
+                baseCell.setAttribute('colSpan', colspanNumber);
+                if (baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
+              } else if (colspanNumber === 2) {
+                baseCell.removeAttribute('colSpan');
+                if (baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
+              }
+            }
+            continue;
+          case TableResultAction.resultAction.RemoveCell:
+            dom.remove(actions[actionIndex].baseCell, true);
+            continue;
+        }
       }
     };
 
@@ -3676,6 +4321,17 @@
 
       return $table[0];
     };
+
+    /**
+     * Delete current table
+     *
+     * @param {WrappedRange} rng
+     * @return {Node}
+     */
+    this.deleteTable = function (rng) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      $(cell).closest('table').remove();
+    };
   };
 
 
@@ -3693,6 +4349,9 @@
     var options = context.options;
     var lang = options.langInfo;
 
+    var editable = $editable[0];
+    var lastRange = null;
+
     var style = new Style();
     var table = new Table();
     var typing = new Typing();
@@ -3707,8 +4366,12 @@
         }
         context.triggerEvent('keydown', event);
 
-        if (options.shortcuts && !event.isDefaultPrevented()) {
-          self.handleKeyMap(event);
+        if (!event.isDefaultPrevented()) {
+          if (options.shortcuts) {
+            self.handleKeyMap(event);
+          } else {
+            self.preventDefaultEditableShortCuts(event);
+          }
         }
       }).on('keyup', function (event) {
         context.triggerEvent('keyup', event);
@@ -3726,12 +4389,15 @@
         context.triggerEvent('paste', event);
       });
 
+      // init content before set event
+      $editable.html(dom.html($note) || dom.emptyPara);
+
       // [workaround] IE doesn't have input events for contentEditable
       // - see: https://goo.gl/4bfIvA
       var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
-      $editable.on(changeEventName, function () {
+      $editable.on(changeEventName, func.debounce(function () {
         context.triggerEvent('change', $editable.html());
-      });
+      }, 250));
 
       $editor.on('focusin', function (event) {
         context.triggerEvent('focusin', event);
@@ -3739,17 +4405,21 @@
         context.triggerEvent('focusout', event);
       });
 
-      if (!options.airMode && options.height) {
-        $editable.outerHeight(options.height);
-      }
-      if (!options.airMode && options.maxHeight) {
-        $editable.css('max-height', options.maxHeight);
-      }
-      if (!options.airMode && options.minHeight) {
-        $editable.css('min-height', options.minHeight);
+      if (!options.airMode) {
+        if (options.width) {
+          $editor.outerWidth(options.width);
+        }
+        if (options.height) {
+          $editable.outerHeight(options.height);
+        }
+        if (options.maxHeight) {
+          $editable.css('max-height', options.maxHeight);
+        }
+        if (options.minHeight) {
+          $editable.css('min-height', options.minHeight);
+        }
       }
 
-      $editable.html(dom.html($note) || dom.emptyPara);
       history.recordUndo();
     };
 
@@ -3779,15 +4449,21 @@
       }
     };
 
+    this.preventDefaultEditableShortCuts = function (event) {
+      // B(Bold, 66) / I(Italic, 73) / U(Underline, 85)
+      if ((event.ctrlKey || event.metaKey) &&
+        list.contains([66, 73, 85], event.keyCode)) {
+        event.preventDefault();
+      }
+    };
+
     /**
-     * createRange
-     *
      * create range
      * @return {WrappedRange}
      */
     this.createRange = function () {
       this.focus();
-      return range.create();
+      return range.create(editable);
     };
 
     /**
@@ -3798,10 +4474,9 @@
      * @param {Boolean} [thenCollapse=false]
      */
     this.saveRange = function (thenCollapse) {
-      this.focus();
-      $editable.data('range', range.create());
+      lastRange = this.createRange();
       if (thenCollapse) {
-        range.create().collapse().select();
+        lastRange.collapse().select();
       }
     };
 
@@ -3811,9 +4486,8 @@
      * restore lately range
      */
     this.restoreRange = function () {
-      var rng = $editable.data('range');
-      if (rng) {
-        rng.select();
+      if (lastRange) {
+        lastRange.select();
         this.focus();
       }
     };
@@ -3875,7 +4549,6 @@
     context.memo('help.redo', lang.help.redo);
 
     /**
-     * beforeCommand
      * before command
      */
     var beforeCommand = this.beforeCommand = function () {
@@ -3885,7 +4558,6 @@
     };
 
     /**
-     * afterCommand
      * after command
      * @param {Boolean} isPreventTrigger
      */
@@ -3916,8 +4588,6 @@
     /* jshint ignore:end */
 
     /**
-     * tab
-     *
      * handle tab key
      */
     this.tab = function () {
@@ -3926,17 +4596,14 @@
         table.tab(rng);
       } else {
         beforeCommand();
-        typing.insertTab($editable, rng, options.tabSize);
+        typing.insertTab(rng, options.tabSize);
         afterCommand();
       }
     };
     context.memo('help.tab', lang.help.tab);
 
     /**
-     * untab
-     *
      * handle shift+tab key
-     *
      */
     this.untab = function () {
       var rng = this.createRange();
@@ -3947,8 +4614,6 @@
     context.memo('help.untab', lang.help.untab);
 
     /**
-     * wrapCommand
-     *
      * run given function between beforeCommand and afterCommand
      */
     this.wrapCommand = function (fn) {
@@ -3960,35 +4625,30 @@
     };
 
     /**
-     * insertParagraph
-     *
      * insert paragraph
      */
     this.insertParagraph = this.wrapCommand(function () {
-      typing.insertParagraph($editable);
+      typing.insertParagraph(editable);
     });
     context.memo('help.insertParagraph', lang.help.insertParagraph);
 
-    /**
-     * insertOrderedList
-     */
     this.insertOrderedList = this.wrapCommand(function () {
-      bullet.insertOrderedList($editable);
+      bullet.insertOrderedList(editable);
     });
     context.memo('help.insertOrderedList', lang.help.insertOrderedList);
 
     this.insertUnorderedList = this.wrapCommand(function () {
-      bullet.insertUnorderedList($editable);
+      bullet.insertUnorderedList(editable);
     });
     context.memo('help.insertUnorderedList', lang.help.insertUnorderedList);
 
     this.indent = this.wrapCommand(function () {
-      bullet.indent($editable);
+      bullet.indent(editable);
     });
     context.memo('help.indent', lang.help.indent);
 
     this.outdent = this.wrapCommand(function () {
-      bullet.outdent($editable);
+      bullet.outdent(editable);
     });
     context.memo('help.outdent', lang.help.outdent);
 
@@ -4013,11 +4673,11 @@
         }
 
         $image.show();
-        range.create().insertNode($image[0]);
+        range.create(editable).insertNode($image[0]);
         range.createFromNodeAfter($image[0]).select();
         afterCommand();
-      }).fail(function () {
-        context.triggerEvent('image.upload.error');
+      }).fail(function (e) {
+        context.triggerEvent('image.upload.error', e);
       });
     };
 
@@ -4062,7 +4722,8 @@
      * @param {Node} node
      */
     this.insertNode = this.wrapCommand(function (node) {
-      range.create().insertNode(node);
+      var rng = this.createRange();
+      rng.insertNode(node);
       range.createFromNodeAfter(node).select();
     });
 
@@ -4071,7 +4732,8 @@
      * @param {String} text
      */
     this.insertText = this.wrapCommand(function (text) {
-      var textNode = range.create().insertNode(dom.createText(text));
+      var rng = this.createRange();
+      var textNode = rng.insertNode(dom.createText(text));
       range.create(textNode, dom.nodeLength(textNode)).select();
     });
 
@@ -4095,7 +4757,7 @@
      * @param {String} markup
      */
     this.pasteHTML = this.wrapCommand(function (markup) {
-      var contents = range.create().pasteHTML(markup);
+      var contents = this.createRange().pasteHTML(markup);
       range.createFromNodeAfter(list.last(contents)).select();
     });
 
@@ -4104,11 +4766,20 @@
      *
      * @param {String} tagName
      */
-    this.formatBlock = this.wrapCommand(function (tagName) {
+    this.formatBlock = this.wrapCommand(function (tagName, $target) {
+      var onApplyCustomStyle = context.options.callbacks.onApplyCustomStyle;
+      if (onApplyCustomStyle) {
+        onApplyCustomStyle.call(this, $target, context, this.onFormatBlock);
+      } else {
+        this.onFormatBlock(tagName);
+      }
+    });
+
+    this.onFormatBlock = function (tagName) {
       // [workaround] for MSIE, IE need `<`
       tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       document.execCommand('FormatBlock', false, tagName);
-    });
+    };
 
     this.formatPara = function () {
       this.formatBlock('P');
@@ -4126,15 +4797,13 @@
     };
     /* jshint ignore:end */
 
-
     /**
      * fontSize
      *
      * @param {String} value - px
      */
     this.fontSize = function (value) {
-      this.focus();
-      var rng = range.create();
+      var rng = this.createRange();
 
       if (rng && rng.isCollapsed()) {
         var spans = style.styleNodes(rng);
@@ -4164,14 +4833,12 @@
      * insert horizontal rule
      */
     this.insertHorizontalRule = this.wrapCommand(function () {
-      var rng = range.create();
-      var hrNode = rng.insertNode($('<HR/>')[0]);
+      var hrNode = this.createRange().insertNode(dom.create('HR'));
       if (hrNode.nextSibling) {
         range.create(hrNode.nextSibling, 0).normalize().select();
       }
     });
     context.memo('help.insertHorizontalRule', lang.help.insertHorizontalRule);
-
 
     /**
      * remove bogus node and character
@@ -4201,7 +4868,7 @@
      * @param {String} value
      */
     this.lineHeight = this.wrapCommand(function (value) {
-      style.stylePara(range.create(), {
+      style.stylePara(this.createRange(), {
         lineHeight: value
       });
     });
@@ -4236,13 +4903,22 @@
       var rng = linkInfo.range || this.createRange();
       var isTextChanged = rng.toString() !== linkText;
 
+      // handle spaced urls from input
+      if (typeof linkUrl === 'string') {
+        linkUrl = linkUrl.trim();
+      }
+
       if (options.onCreateLink) {
         linkUrl = options.onCreateLink(linkUrl);
+      } else {
+        // if url doesn't match an URL schema, set http:// as default
+        linkUrl = /^[A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?/.test(linkUrl) ?
+          linkUrl : 'http://' + linkUrl;
       }
 
       var anchors = [];
       if (isTextChanged) {
-        // Create a new link when text changed.
+        rng = rng.deleteContents();
         var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
         anchors.push(anchor);
       } else {
@@ -4285,19 +4961,22 @@
      * @return {String} [return.url=""]
      */
     this.getLinkInfo = function () {
-      this.focus();
-
-      var rng = range.create().expand(dom.isAnchor);
+      var rng = this.createRange().expand(dom.isAnchor);
 
       // Get the first anchor on range(for edit).
       var $anchor = $(list.head(rng.nodes(dom.isAnchor)));
-
-      return {
+      var linkInfo = {
         range: rng,
         text: rng.toString(),
-        isNewWindow: $anchor.length ? $anchor.attr('target') === '_blank' : false,
         url: $anchor.length ? $anchor.attr('href') : ''
       };
+
+      // Define isNewWindow when anchor exists.
+      if ($anchor.length) {
+        linkInfo.isNewWindow = $anchor.attr('target') === '_blank';
+      }
+
+      return linkInfo;
     };
 
     /**
@@ -4318,14 +4997,84 @@
     /**
      * insert Table
      *
-     * @param {String} sDim dimension of table (ex : "5x5")
+     * @param {String} dimension of table (ex : "5x5")
      */
-    this.insertTable = this.wrapCommand(function (sDim) {
-      var dimension = sDim.split('x');
+    this.insertTable = this.wrapCommand(function (dim) {
+      var dimension = dim.split('x');
 
-      var rng = range.create().deleteContents();
+      var rng = this.createRange().deleteContents();
       rng.insertNode(table.createTable(dimension[0], dimension[1], options));
     });
+
+     /**
+     * @method addRow
+     *
+     *
+     */
+    this.addRow = function (position) {
+      var rng = this.createRange($editable);
+      if (rng.isCollapsed() && rng.isOnCell()) {
+        beforeCommand();
+        table.addRow(rng, position);
+        afterCommand();
+      }
+    };
+
+     /**
+     * @method addCol
+     *
+     *
+     */
+    this.addCol = function (position) {
+      var rng = this.createRange($editable);
+      if (rng.isCollapsed() && rng.isOnCell()) {
+        beforeCommand();
+        table.addCol(rng, position);
+        afterCommand();
+      }
+    };
+
+    /**
+     * @method deleteRow
+     *
+     *
+     */
+    this.deleteRow = function () {
+      var rng = this.createRange($editable);
+      if (rng.isCollapsed() && rng.isOnCell()) {
+        beforeCommand();
+        table.deleteRow(rng);
+        afterCommand();
+      }
+    };
+
+    /**
+     * @method deleteCol
+     *
+     *
+     */
+    this.deleteCol = function () {
+      var rng = this.createRange($editable);
+      if (rng.isCollapsed() && rng.isOnCell()) {
+        beforeCommand();
+        table.deleteCol(rng);
+        afterCommand();
+      }
+    };
+
+    /**
+     * @method deleteTable
+     *
+     *
+     */
+    this.deleteTable = function () {
+      var rng = this.createRange($editable);
+      if (rng.isCollapsed() && rng.isOnCell()) {
+        beforeCommand();
+        table.deleteTable(rng);
+        afterCommand();
+      }
+    };
 
     /**
      * float me
@@ -4334,6 +5083,8 @@
      */
     this.floatMe = this.wrapCommand(function (value) {
       var $target = $(this.restoreTarget());
+      $target.toggleClass('note-float-left', value === 'left');
+      $target.toggleClass('note-float-right', value === 'right');
       $target.css('float', value);
     });
 
@@ -4382,21 +5133,20 @@
     });
 
     /**
+     * returns whether editable area has focus or not.
+     */
+    this.hasFocus = function () {
+      return $editable.is(':focus');
+    };
+
+    /**
      * set focus
      */
     this.focus = function () {
       // [workaround] Screen will move when page is scolled in IE.
       //  - do focus when not focused
-      if (!$editable.is(':focus')) {
+      if (!this.hasFocus()) {
         $editable.focus();
-
-        // [workaround] for firefox bug http://goo.gl/lVfAaI
-        if (!$editable.is(':focus') && agent.isFF) {
-          range.createFromNode($editable[0])
-               .normalize()
-               .collapse()
-               .select();
-        }
       }
     };
 
@@ -4406,6 +5156,13 @@
      */
     this.isEmpty = function () {
       return dom.isEmpty($editable[0]) || dom.emptyPara === $editable.html();
+    };
+
+    /**
+     * Removes all contents and restores the editable instance to an _emptyPara_.
+     */
+    this.empty = function () {
+      context.invoke('code', dom.emptyPara);
     };
   };
 
@@ -4438,10 +5195,10 @@
       //  - IE11 and Firefox: CTRL+v hook
       //  - Webkit: event.clipboardData
       if (this.needKeydownHook()) {
-        this.$paste = $('<div />').attr('contenteditable', true).css({
-          position : 'absolute',
-          left : -100000,
-          opacity : 0
+        this.$paste = $('<div tabindex="-1" />').attr('contenteditable', true).css({
+          position: 'absolute',
+          left: -100000,
+          opacity: 0
         });
         $editable.before(this.$paste);
 
@@ -4463,15 +5220,15 @@
     this.pasteByHook = function () {
       var node = this.$paste[0].firstChild;
 
-      if (dom.isImg(node)) {
-        var dataURI = node.src;
-        var decodedData = atob(dataURI.split(',')[1]);
+      var src = node && node.src;
+      if (dom.isImg(node) && src.indexOf('data:') === 0) {
+        var decodedData = atob(node.src.split(',')[1]);
         var array = new Uint8Array(decodedData.length);
         for (var i = 0; i < decodedData.length; i++) {
           array[i] = decodedData.charCodeAt(i);
         }
 
-        var blob = new Blob([array], { type : 'image/png' });
+        var blob = new Blob([array], { type: 'image/png' });
         blob.name = 'clipboard.png';
 
         context.invoke('editor.restoreRange');
@@ -4513,6 +5270,7 @@
     var $editable = context.layoutInfo.editable;
     var options = context.options;
     var lang = options.langInfo;
+    var documentEventHandlers = {};
 
     var $dropzone = $([
       '<div class="note-dropzone">',
@@ -4520,15 +5278,23 @@
       '</div>'
     ].join('')).prependTo($editor);
 
+    var detachDocumentEvent = function () {
+      Object.keys(documentEventHandlers).forEach(function (key) {
+        $document.off(key.substr(2).toLowerCase(), documentEventHandlers[key]);
+      });
+      documentEventHandlers = {};
+    };
+
     /**
      * attach Drag and Drop Events
      */
     this.initialize = function () {
       if (options.disableDragAndDrop) {
         // prevent default drop event
-        $document.on('drop', function (e) {
+        documentEventHandlers.onDrop = function (e) {
           e.preventDefault();
-        });
+        };
+        $document.on('drop', documentEventHandlers.onDrop);
       } else {
         this.attachDragAndDropEvent();
       }
@@ -4541,9 +5307,7 @@
       var collection = $(),
           $dropzoneMessage = $dropzone.find('.note-dropzone-message');
 
-      // show dropzone on dragenter when dragging a object to document
-      // -but only if the editor is visible, i.e. has a positive width and height
-      $document.on('dragenter', function (e) {
+      documentEventHandlers.onDragenter = function (e) {
         var isCodeview = context.invoke('codeview.isActivated');
         var hasEditorSize = $editor.width() > 0 && $editor.height() > 0;
         if (!isCodeview && !collection.length && hasEditorSize) {
@@ -4553,15 +5317,25 @@
           $dropzoneMessage.text(lang.image.dragImageHere);
         }
         collection = collection.add(e.target);
-      }).on('dragleave', function (e) {
+      };
+
+      documentEventHandlers.onDragleave = function (e) {
         collection = collection.not(e.target);
         if (!collection.length) {
           $editor.removeClass('dragover');
         }
-      }).on('drop', function () {
+      };
+
+      documentEventHandlers.onDrop = function () {
         collection = $();
         $editor.removeClass('dragover');
-      });
+      };
+
+      // show dropzone on dragenter when dragging a object to document
+      // -but only if the editor is visible, i.e. has a positive width and height
+      $document.on('dragenter', documentEventHandlers.onDragenter)
+        .on('dragleave', documentEventHandlers.onDragleave)
+        .on('drop', documentEventHandlers.onDrop);
 
       // change dropzone's message on hover.
       $dropzone.on('dragenter', function () {
@@ -4594,6 +5368,10 @@
           });
         }
       }).on('dragover', false); // prevent default dragover event
+    };
+
+    this.destroy = function () {
+      detachDocumentEvent();
     };
   };
 
@@ -4718,6 +5496,7 @@
 
     this.initialize = function () {
       if (options.airMode || options.disableResizeEditor) {
+        this.destroy();
         return;
       }
 
@@ -4726,26 +5505,31 @@
         event.stopPropagation();
 
         var editableTop = $editable.offset().top - $document.scrollTop();
-
-        $document.on('mousemove', function (event) {
+        var onMouseMove = function (event) {
           var height = event.clientY - (editableTop + EDITABLE_PADDING);
 
           height = (options.minheight > 0) ? Math.max(height, options.minheight) : height;
           height = (options.maxHeight > 0) ? Math.min(height, options.maxHeight) : height;
 
           $editable.height(height);
-        }).one('mouseup', function () {
-          $document.off('mousemove');
-        });
+        };
+
+        $document
+          .on('mousemove', onMouseMove)
+          .one('mouseup', function () {
+            $document.off('mousemove', onMouseMove);
+          });
       });
     };
 
     this.destroy = function () {
       $statusbar.off();
+      $statusbar.remove();
     };
   };
 
   var Fullscreen = function (context) {
+    var self = this;
     var $editor = context.layoutInfo.editor;
     var $toolbar = context.layoutInfo.toolbar;
     var $editable = context.layoutInfo.editable;
@@ -4754,39 +5538,40 @@
     var $window = $(window);
     var $scrollbar = $('html, body');
 
+    this.resizeTo = function (size) {
+      $editable.css('height', size.h);
+      $codable.css('height', size.h);
+      if ($codable.data('cmeditor')) {
+        $codable.data('cmeditor').setsize(null, size.h);
+      }
+    };
+
+    this.onResize = function () {
+      self.resizeTo({
+        h: $window.height() - $toolbar.outerHeight()
+      });
+    };
+
     /**
      * toggle fullscreen
      */
     this.toggle = function () {
-      var resize = function (size) {
-        $editable.css('height', size.h);
-        $codable.css('height', size.h);
-        if ($codable.data('cmeditor')) {
-          $codable.data('cmeditor').setsize(null, size.h);
-        }
-      };
-
       $editor.toggleClass('fullscreen');
-      var isFullscreen = $editor.hasClass('fullscreen');
-      if (isFullscreen) {
+      if (this.isFullscreen()) {
         $editable.data('orgHeight', $editable.css('height'));
-
-        $window.on('resize', function () {
-          resize({
-            h: $window.height() - $toolbar.outerHeight()
-          });
-        }).trigger('resize');
-
+        $window.on('resize', this.onResize).trigger('resize');
         $scrollbar.css('overflow', 'hidden');
       } else {
-        $window.off('resize');
-        resize({
-          h: $editable.data('orgHeight')
-        });
+        $window.off('resize', this.onResize);
+        this.resizeTo({ h: $editable.data('orgHeight') });
         $scrollbar.css('overflow', 'visible');
       }
 
-      context.invoke('toolbar.updateFullscreen', isFullscreen);
+      context.invoke('toolbar.updateFullscreen', this.isFullscreen());
+    };
+
+    this.isFullscreen = function () {
+      return $editor.hasClass('fullscreen');
     };
   };
 
@@ -4804,6 +5589,12 @@
         }
       },
       'summernote.keyup summernote.scroll summernote.change summernote.dialog.shown': function () {
+        self.update();
+      },
+      'summernote.disable': function () {
+        self.hide();
+      },
+      'summernote.codeview.toggled': function () {
         self.update();
       }
     };
@@ -4833,23 +5624,33 @@
               posStart = $target.offset(),
               scrollTop = $document.scrollTop();
 
-          $document.on('mousemove', function (event) {
+          var onMouseMove = function (event) {
             context.invoke('editor.resizeTo', {
               x: event.clientX - posStart.left,
               y: event.clientY - (posStart.top - scrollTop)
             }, $target, !event.shiftKey);
 
             self.update($target[0]);
-          }).one('mouseup', function (e) {
-            e.preventDefault();
-            $document.off('mousemove');
-            context.invoke('editor.afterCommand');
-          });
+          };
+
+          $document
+            .on('mousemove', onMouseMove)
+            .one('mouseup', function (e) {
+              e.preventDefault();
+              $document.off('mousemove', onMouseMove);
+              context.invoke('editor.afterCommand');
+            });
 
           if (!$target.data('ratio')) { // original ratio.
             $target.data('ratio', $target.height() / $target.width());
           }
         }
+      });
+
+      // Listen for scrolling on the handle overlay.
+      this.$handle.on('wheel', function (e) {
+        e.preventDefault();
+        self.update();
       });
     };
 
@@ -4858,6 +5659,10 @@
     };
 
     this.update = function (target) {
+      if (context.isDisabled()) {
+        return false;
+      }
+
       var isImage = dom.isImg(target);
       var $selection = this.$handle.find('.note-control-selection');
 
@@ -4865,12 +5670,16 @@
 
       if (isImage) {
         var $image = $(target);
-        var pos = $image.position();
+        var position = $image.position();
+        var pos = {
+          left: position.left + parseInt($image.css('marginLeft'), 10),
+          top: position.top + parseInt($image.css('marginTop'), 10)
+        };
 
-        // include margin
+        // exclude margin
         var imageSize = {
-          w: $image.outerWidth(true),
-          h: $image.outerHeight(true)
+          w: $image.outerWidth(false),
+          h: $image.outerHeight(false)
         };
 
         $selection.css({
@@ -4904,8 +5713,8 @@
 
   var AutoLink = function (context) {
     var self = this;
-
-    var linkPattern = /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+-]+@)(.+)$/i;
+    var defaultScheme = 'http://';
+    var linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
 
     this.events = {
       'summernote.keyup': function (we, e) {
@@ -4932,19 +5741,17 @@
       }
 
       var keyword = this.lastWordRange.toString();
+      var match = keyword.match(linkPattern);
 
-      if (linkPattern.test(keyword)) {
-        var node = this.nodeFromKeyword(keyword);
+      if (match && (match[1] || match[2])) {
+        var link = match[1] ? keyword : defaultScheme + keyword;
+        var node = $('<a />').html(keyword).attr('href', link)[0];
 
         this.lastWordRange.insertNode(node);
         this.lastWordRange = null;
         context.invoke('editor.focus');
       }
 
-    };
-
-    this.nodeFromKeyword = function (keyword) {
-      return $('<a />').html(keyword).attr('href', keyword)[0];
     };
 
     this.handleKeydown = function (e) {
@@ -5025,6 +5832,10 @@
 
     var representShortcut = this.representShortcut = function (editorMethod) {
       var shortcut = invertedKeyMap[editorMethod];
+      if (!options.shortcuts || !shortcut) {
+        return '';
+      }
+
       if (agent.isMac) {
         shortcut = shortcut.replace('CMD', '⌘').replace('SHIFT', '⇧');
       }
@@ -5041,6 +5852,21 @@
       this.addToolbarButtons();
       this.addImagePopoverButtons();
       this.addLinkPopoverButtons();
+      this.addTablePopoverButtons();
+      this.fontInstalledMap = {};
+    };
+
+    this.destroy = function () {
+      delete this.fontInstalledMap;
+    };
+
+    this.isFontInstalled = function (name) {
+      if (!self.fontInstalledMap.hasOwnProperty(name)) {
+        self.fontInstalledMap[name] = agent.isFontInstalled(name) ||
+          list.contains(options.fontNamesIgnoreCheck, name);
+      }
+
+      return self.fontInstalledMap[name];
     };
 
     this.addToolbarButtons = function () {
@@ -5057,6 +5883,19 @@
           ui.dropdown({
             className: 'dropdown-style',
             items: context.options.styleTags,
+            template: function (item) {
+
+              if (typeof item === 'string') {
+                item = { tag: item, title: (lang.style.hasOwnProperty(item) ? lang.style[item] : item) };
+              }
+
+              var tag = item.tag;
+              var title = item.title;
+              var style = item.style ? ' style="' + item.style + '" ' : '';
+              var className = item.className ? ' class="' + item.className + '"' : '';
+
+              return '<' + tag + style + className + '>' + title + '</' + tag +  '>';
+            },
             click: context.createInvokeHandler('editor.formatBlock')
           })
         ]).render();
@@ -5067,7 +5906,7 @@
           className: 'note-btn-bold',
           contents: ui.icon(options.icons.bold),
           tooltip: lang.font.bold + representShortcut('bold'),
-          click: context.createInvokeHandler('editor.bold')
+          click: context.createInvokeHandlerAndUpdateState('editor.bold')
         }).render();
       });
 
@@ -5076,7 +5915,7 @@
           className: 'note-btn-italic',
           contents: ui.icon(options.icons.italic),
           tooltip: lang.font.italic + representShortcut('italic'),
-          click: context.createInvokeHandler('editor.italic')
+          click: context.createInvokeHandlerAndUpdateState('editor.italic')
         }).render();
       });
 
@@ -5085,7 +5924,7 @@
           className: 'note-btn-underline',
           contents: ui.icon(options.icons.underline),
           tooltip: lang.font.underline + representShortcut('underline'),
-          click: context.createInvokeHandler('editor.underline')
+          click: context.createInvokeHandlerAndUpdateState('editor.underline')
         }).render();
       });
 
@@ -5099,25 +5938,28 @@
 
       context.memo('button.strikethrough', function () {
         return ui.button({
+          className: 'note-btn-strikethrough',
           contents: ui.icon(options.icons.strikethrough),
           tooltip: lang.font.strikethrough + representShortcut('strikethrough'),
-          click: context.createInvokeHandler('editor.strikethrough')
+          click: context.createInvokeHandlerAndUpdateState('editor.strikethrough')
         }).render();
       });
 
       context.memo('button.superscript', function () {
         return ui.button({
+          className: 'note-btn-superscript',
           contents: ui.icon(options.icons.superscript),
           tooltip: lang.font.superscript,
-          click: context.createInvokeHandler('editor.superscript')
+          click: context.createInvokeHandlerAndUpdateState('editor.superscript')
         }).render();
       });
 
       context.memo('button.subscript', function () {
         return ui.button({
+          className: 'note-btn-subscript',
           contents: ui.icon(options.icons.subscript),
           tooltip: lang.font.subscript,
-          click: context.createInvokeHandler('editor.subscript')
+          click: context.createInvokeHandlerAndUpdateState('editor.subscript')
         }).render();
       });
 
@@ -5133,12 +5975,12 @@
           }),
           ui.dropdownCheck({
             className: 'dropdown-fontname',
-            checkClassName : options.icons.menuCheck,
-            items: options.fontNames.filter(function (name) {
-              return agent.isFontInstalled(name) ||
-                list.contains(options.fontNamesIgnoreCheck, name);
-            }),
-            click: context.createInvokeHandler('editor.fontName')
+            checkClassName: options.icons.menuCheck,
+            items: options.fontNames.filter(self.isFontInstalled),
+            template: function (item) {
+              return '<span style="font-family:' + item + '">' + item + '</span>';
+            },
+            click: context.createInvokeHandlerAndUpdateState('editor.fontName')
           })
         ]).render();
       });
@@ -5155,7 +5997,7 @@
           }),
           ui.dropdownCheck({
             className: 'dropdown-fontsize',
-            checkClassName : options.icons.menuCheck,
+            checkClassName: options.icons.menuCheck,
             items: options.fontSizes,
             click: context.createInvokeHandler('editor.fontSize')
           })
@@ -5167,19 +6009,20 @@
           className: 'note-color',
           children: [
             ui.button({
-              className : 'note-current-color-button',
+              className: 'note-current-color-button',
               contents: ui.icon(options.icons.font + ' note-recent-color'),
               tooltip: lang.color.recent,
-              click: context.createInvokeHandler('editor.color'),
+              click: function (e) {
+                var $button = $(e.currentTarget);
+                context.invoke('editor.color', {
+                  backColor: $button.attr('data-backColor'),
+                  foreColor: $button.attr('data-foreColor')
+                });
+              },
               callback: function ($button) {
                 var $recentColor = $button.find('.note-recent-color');
-                $recentColor.css({
-                  'background-color': 'yellow'
-                });
-
-                $button.data('value', {
-                  backColor: 'yellow'
-                });
+                $recentColor.css('background-color', '#FFFF00');
+                $button.attr('data-backColor', '#FFFF00');
               }
             }),
             ui.button({
@@ -5218,7 +6061,8 @@
                   var $holder = $(this);
                   $holder.append(ui.palette({
                     colors: options.colors,
-                    eventName: $holder.data('event')
+                    eventName: $holder.data('event'),
+                    tooltip: options.tooltip
                   }).render());
                 });
               },
@@ -5232,11 +6076,8 @@
                   var $color = $button.closest('.note-color').find('.note-recent-color');
                   var $currentButton = $button.closest('.note-color').find('.note-current-color-button');
 
-                  var colorInfo = $currentButton.data('value');
-                  colorInfo[eventName] = value;
                   $color.css(key, value);
-                  $currentButton.data('value', colorInfo);
-
+                  $currentButton.attr('data-' + eventName, value);
                   context.invoke('editor.' + eventName, value);
                 }
               }
@@ -5245,7 +6086,7 @@
         }).render();
       });
 
-      context.memo('button.ol',  function () {
+      context.memo('button.ul',  function () {
         return ui.button({
           contents: ui.icon(options.icons.unorderedlist),
           tooltip: lang.lists.unordered + representShortcut('insertUnorderedList'),
@@ -5253,7 +6094,7 @@
         }).render();
       });
 
-      context.memo('button.ul', function () {
+      context.memo('button.ol', function () {
         return ui.button({
           contents: ui.icon(options.icons.orderedlist),
           tooltip: lang.lists.ordered + representShortcut('insertOrderedList'),
@@ -5261,11 +6102,54 @@
         }).render();
       });
 
+      var justifyLeft = ui.button({
+        contents: ui.icon(options.icons.alignLeft),
+        tooltip: lang.paragraph.left + representShortcut('justifyLeft'),
+        click: context.createInvokeHandler('editor.justifyLeft')
+      });
+
+      var justifyCenter = ui.button({
+        contents: ui.icon(options.icons.alignCenter),
+        tooltip: lang.paragraph.center + representShortcut('justifyCenter'),
+        click: context.createInvokeHandler('editor.justifyCenter')
+      });
+
+      var justifyRight = ui.button({
+        contents: ui.icon(options.icons.alignRight),
+        tooltip: lang.paragraph.right + representShortcut('justifyRight'),
+        click: context.createInvokeHandler('editor.justifyRight')
+      });
+
+      var justifyFull = ui.button({
+        contents: ui.icon(options.icons.alignJustify),
+        tooltip: lang.paragraph.justify + representShortcut('justifyFull'),
+        click: context.createInvokeHandler('editor.justifyFull')
+      });
+
+      var outdent = ui.button({
+        contents: ui.icon(options.icons.outdent),
+        tooltip: lang.paragraph.outdent + representShortcut('outdent'),
+        click: context.createInvokeHandler('editor.outdent')
+      });
+
+      var indent = ui.button({
+        contents: ui.icon(options.icons.indent),
+        tooltip: lang.paragraph.indent + representShortcut('indent'),
+        click: context.createInvokeHandler('editor.indent')
+      });
+
+      context.memo('button.justifyLeft', func.invoke(justifyLeft, 'render'));
+      context.memo('button.justifyCenter', func.invoke(justifyCenter, 'render'));
+      context.memo('button.justifyRight', func.invoke(justifyRight, 'render'));
+      context.memo('button.justifyFull', func.invoke(justifyFull, 'render'));
+      context.memo('button.outdent', func.invoke(outdent, 'render'));
+      context.memo('button.indent', func.invoke(indent, 'render'));
+
       context.memo('button.paragraph', function () {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: ui.icon(options.icons.align) + ' ' + ui.icon(options.icons.caret, 'span'),
+            contents: ui.icon(options.icons.alignLeft) + ' ' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.paragraph.paragraph,
             data: {
               toggle: 'dropdown'
@@ -5274,43 +6158,11 @@
           ui.dropdown([
             ui.buttonGroup({
               className: 'note-align',
-              children: [
-                ui.button({
-                  contents: ui.icon(options.icons.alignLeft),
-                  tooltip: lang.paragraph.left + representShortcut('justifyLeft'),
-                  click: context.createInvokeHandler('editor.justifyLeft')
-                }),
-                ui.button({
-                  contents: ui.icon(options.icons.alignCenter),
-                  tooltip: lang.paragraph.center + representShortcut('justifyCenter'),
-                  click: context.createInvokeHandler('editor.justifyCenter')
-                }),
-                ui.button({
-                  contents: ui.icon(options.icons.alignRight),
-                  tooltip: lang.paragraph.right + representShortcut('justifyRight'),
-                  click: context.createInvokeHandler('editor.justifyRight')
-                }),
-                ui.button({
-                  contents: ui.icon(options.icons.alignJustify),
-                  tooltip: lang.paragraph.justify + representShortcut('justifyFull'),
-                  click: context.createInvokeHandler('editor.justifyFull')
-                })
-              ]
+              children: [justifyLeft, justifyCenter, justifyRight, justifyFull]
             }),
             ui.buttonGroup({
               className: 'note-list',
-              children: [
-                ui.button({
-                  contents: ui.icon(options.icons.outdent),
-                  tooltip: lang.paragraph.outdent + representShortcut('outdent'),
-                  click: context.createInvokeHandler('editor.outdent')
-                }),
-                ui.button({
-                  contents: ui.icon(options.icons.indent),
-                  tooltip: lang.paragraph.indent + representShortcut('indent'),
-                  click: context.createInvokeHandler('editor.indent')
-                })
-              ]
+              children: [outdent, indent]
             })
           ])
         ]).render();
@@ -5328,7 +6180,7 @@
           }),
           ui.dropdownCheck({
             items: options.lineHeights,
-            checkClassName : options.icons.menuCheck,
+            checkClassName: options.icons.menuCheck,
             className: 'dropdown-line-height',
             click: context.createInvokeHandler('editor.lineHeight')
           })
@@ -5371,7 +6223,7 @@
       context.memo('button.link', function () {
         return ui.button({
           contents: ui.icon(options.icons.link),
-          tooltip: lang.link.link,
+          tooltip: lang.link.link + representShortcut('linkDialog.show'),
           click: context.createInvokeHandler('linkDialog.show')
         }).render();
       });
@@ -5527,6 +6379,71 @@
       });
     };
 
+    /**
+     * table : [
+     *  ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
+     *  ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]
+     * ],
+     */
+    this.addTablePopoverButtons = function () {
+      context.memo('button.addRowUp', function () {
+        return ui.button({
+          className: 'btn-md',
+          contents: ui.icon(options.icons.rowAbove),
+          tooltip: lang.table.addRowAbove,
+          click: context.createInvokeHandler('editor.addRow', 'top')
+        }).render();
+      });
+      context.memo('button.addRowDown', function () {
+        return ui.button({
+          className: 'btn-md',
+          contents: ui.icon(options.icons.rowBelow),
+          tooltip: lang.table.addRowBelow,
+          click: context.createInvokeHandler('editor.addRow', 'bottom')
+        }).render();
+      });
+      context.memo('button.addColLeft', function () {
+        return ui.button({
+          className: 'btn-md',
+          contents: ui.icon(options.icons.colBefore),
+          tooltip: lang.table.addColLeft,
+          click: context.createInvokeHandler('editor.addCol', 'left')
+        }).render();
+      });
+      context.memo('button.addColRight', function () {
+        return ui.button({
+          className: 'btn-md',
+          contents: ui.icon(options.icons.colAfter),
+          tooltip: lang.table.addColRight,
+          click: context.createInvokeHandler('editor.addCol', 'right')
+        }).render();
+      });
+      context.memo('button.deleteRow', function () {
+        return ui.button({
+          className: 'btn-md',
+          contents: ui.icon(options.icons.rowRemove),
+          tooltip: lang.table.delRow,
+          click: context.createInvokeHandler('editor.deleteRow')
+        }).render();
+      });
+      context.memo('button.deleteCol', function () {
+        return ui.button({
+          className: 'btn-md',
+          contents: ui.icon(options.icons.colRemove),
+          tooltip: lang.table.delCol,
+          click: context.createInvokeHandler('editor.deleteCol')
+        }).render();
+      });
+      context.memo('button.deleteTable', function () {
+        return ui.button({
+          className: 'btn-md',
+          contents: ui.icon(options.icons.trash),
+          tooltip: lang.table.delTable,
+          click: context.createInvokeHandler('editor.deleteTable')
+        }).render();
+      });
+    };
+
     this.build = function ($container, groups) {
       for (var groupIdx = 0, groupLen = groups.length; groupIdx < groupLen; groupIdx++) {
         var group = groups[groupIdx];
@@ -5558,6 +6475,15 @@
         },
         '.note-btn-underline': function () {
           return styleInfo['font-underline'] === 'underline';
+        },
+        '.note-btn-subscript': function () {
+          return styleInfo['font-subscript'] === 'subscript';
+        },
+        '.note-btn-superscript': function () {
+          return styleInfo['font-superscript'] === 'superscript';
+        },
+        '.note-btn-strikethrough': function () {
+          return styleInfo['font-strikethrough'] === 'strikethrough';
         }
       });
 
@@ -5567,10 +6493,7 @@
             .replace(/\s+$/, '')
             .replace(/^\s+/, '');
         });
-        var fontName = list.find(fontNames, function (name) {
-          return agent.isFontInstalled(name) ||
-            list.contains(options.fontNamesIgnoreCheck, name);
-        });
+        var fontName = list.find(fontNames, self.isFontInstalled);
 
         $toolbar.find('.dropdown-fontname li a').each(function () {
           // always compare string to avoid creating another func.
@@ -5669,6 +6592,10 @@
         context.invoke('buttons.build', $toolbar, options.toolbar);
       }
 
+      if (options.toolbarContainer) {
+        $toolbar.appendTo(options.toolbarContainer);
+      }
+
       $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
         context.invoke('buttons.updateCurrentStyle');
       });
@@ -5731,7 +6658,9 @@
                  '</div>' +
                  (!options.disableLinkTarget ?
                    '<div class="checkbox">' +
-                     '<label>' + '<input type="checkbox" checked> ' + lang.link.openInNewWindow + '</label>' +
+                     '<label for="sn-checkbox-open-in-new-window">' +
+                       '<input type="checkbox" id="sn-checkbox-open-in-new-window" checked />' + lang.link.openInNewWindow +
+                     '</label>' +
                    '</div>' : ''
                  );
       var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
@@ -5739,6 +6668,7 @@
       this.$dialog = ui.dialog({
         className: 'link-dialog',
         title: lang.link.insert,
+        fade: options.dialogsFade,
         body: body,
         footer: footer
       }).render().appendTo($container);
@@ -5758,6 +6688,13 @@
     };
 
     /**
+     * toggle update button
+     */
+    this.toggleLinkBtn = function ($linkBtn, $linkText, $linkUrl) {
+      ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
+    };
+
+    /**
      * Show link dialog and set event handlers on dialog controls.
      *
      * @param {Object} linkInfo
@@ -5773,34 +6710,45 @@
         ui.onDialogShown(self.$dialog, function () {
           context.triggerEvent('dialog.shown');
 
+          // if no url was given, copy text to url
+          if (!linkInfo.url) {
+            linkInfo.url = linkInfo.text;
+          }
+
           $linkText.val(linkInfo.text);
 
-          $linkText.on('input', function () {
-            ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
+          var handleLinkTextUpdate = function () {
+            self.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
             // if linktext was modified by keyup,
             // stop cloning text from linkUrl
             linkInfo.text = $linkText.val();
+          };
+
+          $linkText.on('input', handleLinkTextUpdate).on('paste', function () {
+            setTimeout(handleLinkTextUpdate, 0);
           });
 
-          // if no url was given, copy text to url
-          if (!linkInfo.url) {
-            linkInfo.url = linkInfo.text || 'http://';
-            ui.toggleBtn($linkBtn, linkInfo.text);
-          }
-
-          $linkUrl.on('input', function () {
-            ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
+          var handleLinkUrlUpdate = function () {
+            self.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
             // display same link on `Text to display` input
             // when create a new link
             if (!linkInfo.text) {
               $linkText.val($linkUrl.val());
             }
+          };
+
+          $linkUrl.on('input', handleLinkUrlUpdate).on('paste', function () {
+            setTimeout(handleLinkUrlUpdate, 0);
           }).val(linkInfo.url).trigger('focus');
 
+          self.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
           self.bindEnterKey($linkUrl, $linkBtn);
           self.bindEnterKey($linkText, $linkBtn);
 
-          $openInNewWindow.prop('checked', linkInfo.isNewWindow);
+          var isChecked = linkInfo.isNewWindow !== undefined ?
+            linkInfo.isNewWindow : context.options.linkTargetBlank;
+
+          $openInNewWindow.prop('checked', isChecked);
 
           $linkBtn.one('click', function (event) {
             event.preventDefault();
@@ -5817,8 +6765,8 @@
 
         ui.onDialogHidden(self.$dialog, function () {
           // detach events
-          $linkText.off('input keypress');
-          $linkUrl.off('input keypress');
+          $linkText.off('input paste keypress');
+          $linkUrl.off('input paste keypress');
           $linkBtn.off('click');
 
           if (deferred.state() === 'pending') {
@@ -5857,7 +6805,7 @@
       'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function () {
         self.update();
       },
-      'summernote.dialog.shown': function () {
+      'summernote.disable summernote.dialog.shown': function () {
         self.hide();
       }
     };
@@ -5884,6 +6832,12 @@
     };
 
     this.update = function () {
+      // Prevent focusing on editable when invoke('code') is executed
+      if (!context.invoke('editor.hasFocus')) {
+        this.hide();
+        return;
+      }
+
       var rng = context.invoke('editor.createRange');
       if (rng.isCollapsed() && rng.isOnAnchor()) {
         var anchor = dom.ancestor(rng.sc, dom.isAnchor);
@@ -5930,7 +6884,7 @@
                    '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" />' +
                    imageLimitation +
                  '</div>' +
-                 '<div class="form-group" style="overflow:auto;">' +
+                 '<div class="form-group note-group-image-url" style="overflow:auto;">' +
                    '<label>' + lang.image.url + '</label>' +
                    '<input class="note-image-url form-control col-md-12" type="text" />' +
                  '</div>';
@@ -5938,6 +6892,7 @@
 
       this.$dialog = ui.dialog({
         title: lang.image.insert,
+        fade: options.dialogsFade,
         body: body,
         footer: footer
       }).render().appendTo($container);
@@ -6024,10 +6979,25 @@
     };
   };
 
+
+  /**
+   * Image popover module
+   *  mouse events that show/hide popover will be handled by Handle.js.
+   *  Handle.js will receive the events and invoke 'imagePopover.update'.
+   */
   var ImagePopover = function (context) {
+    var self = this;
     var ui = $.summernote.ui;
 
+    var $editable = context.layoutInfo.editable;
+    var editable = $editable[0];
     var options = context.options;
+
+    this.events = {
+      'summernote.disable': function () {
+        self.hide();
+      }
+    };
 
     this.shouldInitialize = function () {
       return !list.isEmpty(options.popover.image);
@@ -6049,6 +7019,72 @@
     this.update = function (target) {
       if (dom.isImg(target)) {
         var pos = dom.posFromPlaceholder(target);
+        var posEditor = dom.posFromPlaceholder(editable);
+
+        this.$popover.css({
+          display: 'block',
+          left: pos.left,
+          top: Math.min(pos.top, posEditor.top)
+        });
+      } else {
+        this.hide();
+      }
+    };
+
+    this.hide = function () {
+      this.$popover.hide();
+    };
+  };
+
+  var TablePopover = function (context) {
+    var self = this;
+    var ui = $.summernote.ui;
+
+    var options = context.options;
+
+    this.events = {
+      'summernote.mousedown': function (we, e) {
+        self.update(e.target);
+      },
+      'summernote.keyup summernote.scroll summernote.change': function () {
+        self.update();
+      },
+      'summernote.disable': function () {
+        self.hide();
+      }
+    };
+
+    this.shouldInitialize = function () {
+      return !list.isEmpty(options.popover.table);
+    };
+
+    this.initialize = function () {
+      this.$popover = ui.popover({
+        className: 'note-table-popover'
+      }).render().appendTo('body');
+      var $content = this.$popover.find('.popover-content');
+
+      context.invoke('buttons.build', $content, options.popover.table);
+
+      // [workaround] Disable Firefox's default table editor
+      if (agent.isFF) {
+        document.execCommand('enableInlineTableEditing', false, false);
+      }
+    };
+
+    this.destroy = function () {
+      this.$popover.remove();
+    };
+
+    this.update = function (target) {
+      if (context.isDisabled()) {
+        return false;
+      }
+
+      var isCell = dom.isCell(target);
+
+      if (isCell) {
+        var pos = dom.posFromPlaceholder(target);
         this.$popover.css({
           display: 'block',
           left: pos.left,
@@ -6057,6 +7093,8 @@
       } else {
         this.hide();
       }
+
+      return isCell;
     };
 
     this.hide = function () {
@@ -6083,6 +7121,7 @@
 
       this.$dialog = ui.dialog({
         title: lang.video.insert,
+        fade: options.dialogsFade,
         body: body,
         footer: footer
       }).render().appendTo($container);
@@ -6106,13 +7145,13 @@
       var ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
       var ytMatch = url.match(ytRegExp);
 
-      var igRegExp = /\/\/instagram.com\/p\/(.[a-zA-Z0-9_-]*)/;
+      var igRegExp = /(?:www\.|\/\/)instagram\.com\/p\/(.[a-zA-Z0-9_-]*)/;
       var igMatch = url.match(igRegExp);
 
-      var vRegExp = /\/\/vine.co\/v\/(.[a-zA-Z0-9]*)/;
+      var vRegExp = /\/\/vine\.co\/v\/([a-zA-Z0-9]+)/;
       var vMatch = url.match(vRegExp);
 
-      var vimRegExp = /\/\/(player.)?vimeo.com\/([a-z]*\/)*([0-9]{6,11})[?]?.*/;
+      var vimRegExp = /\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*/;
       var vimMatch = url.match(vimRegExp);
 
       var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
@@ -6120,6 +7159,12 @@
 
       var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
       var youkuMatch = url.match(youkuRegExp);
+
+      var qqRegExp = /\/\/v\.qq\.com.*?vid=(.+)/;
+      var qqMatch = url.match(qqRegExp);
+
+      var qqRegExp2 = /\/\/v\.qq\.com\/x?\/?(page|cover).*?\/([^\/]+)\.html\??.*/;
+      var qqMatch2 = url.match(qqRegExp2);
 
       var mp4RegExp = /^.+.(mp4|m4v)$/;
       var mp4Match = url.match(mp4RegExp);
@@ -6140,7 +7185,7 @@
       } else if (igMatch && igMatch[0].length) {
         $video = $('<iframe>')
             .attr('frameborder', 0)
-            .attr('src', igMatch[0] + '/embed/')
+            .attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/')
             .attr('width', '612').attr('height', '710')
             .attr('scrolling', 'no')
             .attr('allowtransparency', 'true');
@@ -6166,6 +7211,13 @@
             .attr('height', '498')
             .attr('width', '510')
             .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
+      } else if ((qqMatch && qqMatch[1].length) || (qqMatch2 && qqMatch2[2].length)) {
+        var vid = ((qqMatch && qqMatch[1].length) ? qqMatch[1]:qqMatch2[2]);
+        $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+            .attr('frameborder', 0)
+            .attr('height', '310')
+            .attr('width', '500')
+            .attr('src', 'http://v.qq.com/iframe/player.html?vid=' + vid + '&amp;auto=0');
       } else if (mp4Match || oggMatch || webmMatch) {
         $video = $('<video controls>')
             .attr('src', url)
@@ -6179,7 +7231,6 @@
 
       return $video[0];
     };
-
 
     this.show = function () {
       var text = context.invoke('editor.getSelectedText');
@@ -6252,27 +7303,15 @@
 
     this.createShortCutList = function () {
       var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
-
-      var $list = $('<div />');
-
-      Object.keys(keyMap).forEach(function (keyString) {
-        var $row = $('<div class="help-list-item"/>');
-
-        var command = keyMap[keyString];
-        var str = context.memo('help.' + command) ? context.memo('help.' + command) : command;
-        var $keyString = $('<label />').css({
+      return Object.keys(keyMap).map(function (key) {
+        var command = keyMap[key];
+        var $row = $('<div><div class="help-list-item"/></div>');
+        $row.append($('<label><kbd>' + key + '</kdb></label>').css({
           'width': 180,
-          'max-width': 200,
           'margin-right': 10
-        }).html(keyString);
-        var $description = $('<span />').html(str);
-
-        $row.html($keyString).append($description);
-
-        $list.append($row);
-      });
-
-      return $list.html();
+        })).append($('<span/>').html(context.memo('help.' + command) || command));
+        return $row.html();
+      }).join('');
     };
 
     this.initialize = function () {
@@ -6280,14 +7319,15 @@
 
       var body = [
         '<p class="text-center">',
-        '<a href="//summernote.org/" target="_blank">Summernote 0.7.1</a> · ',
-        '<a href="//github.com/summernote/summernote" target="_blank">Project</a> · ',
-        '<a href="//github.com/summernote/summernote/issues" target="_blank">Issues</a>',
+        '<a href="http://summernote.org/" target="_blank">Summernote 0.8.7</a> · ',
+        '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ',
+        '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>',
         '</p>'
       ].join('');
 
       this.$dialog = ui.dialog({
         title: lang.options.help,
+        fade: options.dialogsFade,
         body: this.createShortCutList(),
         footer: body,
         callback: function ($node) {
@@ -6311,7 +7351,7 @@
      */
     this.showHelpDialog = function () {
       return $.Deferred(function (deferred) {
-        ui.onDialogHidden(self.$dialog, function () {
+        ui.onDialogShown(self.$dialog, function () {
           context.triggerEvent('dialog.shown');
           deferred.resolve();
         });
@@ -6339,7 +7379,7 @@
       'summernote.keyup summernote.mouseup summernote.scroll': function () {
         self.update();
       },
-      'summernote.change summernote.dialog.shown': function () {
+      'summernote.disable summernote.change summernote.dialog.shown': function () {
         self.hide();
       },
       'summernote.focusout': function (we, e) {
@@ -6398,7 +7438,9 @@
     var self = this;
     var ui = $.summernote.ui;
 
+    var POPOVER_DIST = 5;
     var hint = context.options.hint || [];
+    var direction = context.options.hintDirection || 'bottom';
     var hints = $.isArray(hint) ? hint : [hint];
 
     this.events = {
@@ -6407,10 +7449,10 @@
           self.handleKeyup(e);
         }
       },
-      'summernote.keydown' : function (we, e) {
+      'summernote.keydown': function (we, e) {
         self.handleKeydown(e);
       },
-      'summernote.dialog.shown': function () {
+      'summernote.disable summernote.dialog.shown': function () {
         self.hide();
       }
     };
@@ -6422,8 +7464,12 @@
     this.initialize = function () {
       this.lastWordRange = null;
       this.$popover = ui.popover({
-        className: 'note-hint-popover'
+        className: 'note-hint-popover',
+        hideArrow: true,
+        direction: ''
       }).render().appendTo('body');
+
+      this.$popover.hide();
 
       this.$content = this.$popover.find('.popover-content');
 
@@ -6481,13 +7527,19 @@
 
     this.replace = function () {
       var $item = this.$content.find('.note-hint-item.active');
-      var node = this.nodeFromItem($item);
-      this.lastWordRange.insertNode(node);
-      range.createFromNode(node).collapse().select();
 
-      this.lastWordRange = null;
-      this.hide();
-      context.invoke('editor.focus');
+      if ($item.length) {
+        var node = this.nodeFromItem($item);
+        // XXX: consider to move codes to editor for recording redo/undo.
+        this.lastWordRange.insertNode(node);
+        range.createFromNode(node).collapse().select();
+
+        this.lastWordRange = null;
+        this.hide();
+        context.triggerEvent('change', context.layoutInfo.editable.html(), context.layoutInfo.editable);
+        context.invoke('editor.focus');
+      }
+
     };
 
     this.nodeFromItem = function ($item) {
@@ -6572,10 +7624,8 @@
 
           var bnd = func.rect2bnd(list.last(wordRange.getClientRects()));
           if (bnd) {
-            this.$popover.css({
-              left: bnd.left,
-              top: bnd.top + bnd.height
-            }).hide();
+
+            this.$popover.hide();
 
             this.lastWordRange = wordRange;
 
@@ -6584,6 +7634,20 @@
                 self.createGroup(idx, keyword).appendTo(self.$content);
               }
             });
+
+            // set position for popover after group is created
+            if (direction === 'top') {
+              this.$popover.css({
+                left: bnd.left,
+                top: bnd.top - this.$popover.outerHeight() - POPOVER_DIST
+              });
+            } else {
+              this.$popover.css({
+                left: bnd.left,
+                top: bnd.top + bnd.height + POPOVER_DIST
+              });
+            }
+
           }
         } else {
           this.hide();
@@ -6602,8 +7666,9 @@
 
 
   $.summernote = $.extend($.summernote, {
-    version: '0.7.1',
+    version: '0.8.7',
     ui: ui,
+    dom: dom,
 
     plugins: {},
 
@@ -6622,19 +7687,20 @@
         'autoLink': AutoLink,
         'autoSync': AutoSync,
         'placeholder': Placeholder,
-        'buttons' : Buttons,
+        'buttons': Buttons,
         'toolbar': Toolbar,
         'linkDialog': LinkDialog,
         'linkPopover': LinkPopover,
         'imageDialog': ImageDialog,
         'imagePopover': ImagePopover,
+        'tablePopover': TablePopover,
         'videoDialog': VideoDialog,
         'helpDialog': HelpDialog,
         'airPopover': AirPopover
       },
 
       buttons: {},
-      
+
       lang: 'en-US',
 
       // toolbar
@@ -6659,6 +7725,10 @@
         link: [
           ['link', ['linkDialogShow', 'unlink']]
         ],
+        table: [
+          ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
+          ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]
+        ],
         air: [
           ['color', ['color']],
           ['font', ['bold', 'underline', 'clear']],
@@ -6673,6 +7743,7 @@
 
       width: null,
       height: null,
+      linkTargetBlank: true,
 
       focus: false,
       tabSize: 4,
@@ -6680,6 +7751,7 @@
       shortcuts: true,
       textareaAutoSync: true,
       direction: null,
+      tooltip: 'auto',
 
       styleTags: ['p', 'blockquote', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
 
@@ -6713,6 +7785,7 @@
       },
 
       dialogsInBody: false,
+      dialogsFade: false,
 
       maximumImageFileSize: null,
 
@@ -6723,7 +7796,6 @@
         onEnter: null,
         onKeyup: null,
         onKeydown: null,
-        onSubmit: null,
         onImageUpload: null,
         onImageUploadError: null
       },
@@ -6796,44 +7868,50 @@
         }
       },
       icons: {
-        'align': 'fa fa-align-left',
-        'alignCenter': 'fa fa-align-center',
-        'alignJustify': 'fa fa-align-justify',
-        'alignLeft': 'fa fa-align-left',
-        'alignRight': 'fa fa-align-right',
-        'indent': 'fa fa-indent',
-        'outdent': 'fa fa-outdent',
-        'arrowsAlt': 'fa fa-arrows-alt',
-        'bold': 'fa fa-bold',
-        'caret': 'caret',
-        'circle': 'fa fa-circle',
-        'close': 'fa fa-close',
-        'code': 'fa fa-code',
-        'eraser': 'fa fa-eraser',
-        'font': 'fa fa-font',
-        'frame': 'fa fa-frame',
-        'italic': 'fa fa-italic',
-        'link': 'fa fa-link',
-        'unlink': 'fa fa-chain-broken',
-        'magic': 'fa fa-magic',
-        'menuCheck': 'fa fa-check',
-        'minus': 'fa fa-minus',
-        'orderedlist': 'fa fa-list-ol',
-        'pencil': 'fa fa-pencil',
-        'picture': 'fa fa-picture-o',
-        'question': 'fa fa-question',
-        'redo': 'fa fa-repeat',
-        'square': 'fa fa-square',
-        'strikethrough': 'fa fa-strikethrough',
-        'subscript': 'fa fa-subscript',
-        'superscript': 'fa fa-superscript',
-        'table': 'fa fa-table',
-        'textHeight': 'fa fa-text-height',
-        'trash': 'fa fa-trash',
-        'underline': 'fa fa-underline',
-        'undo': 'fa fa-undo',
-        'unorderedlist': 'fa fa-list-ul',
-        'video': 'fa fa-youtube-play'
+        'align': 'note-icon-align',
+        'alignCenter': 'note-icon-align-center',
+        'alignJustify': 'note-icon-align-justify',
+        'alignLeft': 'note-icon-align-left',
+        'alignRight': 'note-icon-align-right',
+        'rowBelow': 'note-icon-row-below',
+        'colBefore': 'note-icon-col-before',
+        'colAfter': 'note-icon-col-after',
+        'rowAbove': 'note-icon-row-above',
+        'rowRemove': 'note-icon-row-remove',
+        'colRemove': 'note-icon-col-remove',
+        'indent': 'note-icon-align-indent',
+        'outdent': 'note-icon-align-outdent',
+        'arrowsAlt': 'note-icon-arrows-alt',
+        'bold': 'note-icon-bold',
+        'caret': 'note-icon-caret',
+        'circle': 'note-icon-circle',
+        'close': 'note-icon-close',
+        'code': 'note-icon-code',
+        'eraser': 'note-icon-eraser',
+        'font': 'note-icon-font',
+        'frame': 'note-icon-frame',
+        'italic': 'note-icon-italic',
+        'link': 'note-icon-link',
+        'unlink': 'note-icon-chain-broken',
+        'magic': 'note-icon-magic',
+        'menuCheck': 'note-icon-check',
+        'minus': 'note-icon-minus',
+        'orderedlist': 'note-icon-orderedlist',
+        'pencil': 'note-icon-pencil',
+        'picture': 'note-icon-picture',
+        'question': 'note-icon-question',
+        'redo': 'note-icon-redo',
+        'square': 'note-icon-square',
+        'strikethrough': 'note-icon-strikethrough',
+        'subscript': 'note-icon-subscript',
+        'superscript': 'note-icon-superscript',
+        'table': 'note-icon-table',
+        'textHeight': 'note-icon-text-height',
+        'trash': 'note-icon-trash',
+        'underline': 'note-icon-underline',
+        'undo': 'note-icon-undo',
+        'unorderedlist': 'note-icon-unorderedlist',
+        'video': 'note-icon-video'
       }
     }
   });

@@ -44,16 +44,22 @@ module.exports = function (grunt) {
       version: '11.0',
       platform: 'windows 8.1'
     },
+    'SL_EDGE': {
+      base: 'SauceLabs',
+      browserName: 'microsoftedge',
+      version: 'latest',
+      platform: 'windows 10'
+    },
     'SL_CHROME': {
       base: 'SauceLabs',
       browserName: 'chrome',
-      version: '43',
+      version: '59',
       platform: 'windows 8'
     },
     'SL_FIREFOX': {
       base: 'SauceLabs',
       browserName: 'firefox',
-      version: '38',
+      version: '54',
       platform: 'windows 8'
     },
     'SL_SAFARI': {
@@ -100,10 +106,16 @@ module.exports = function (grunt) {
       }
     },
 
+    jscs: {
+      src: ['*.js', 'src/**/*.js', 'test/**/*.js', 'plugin/**/*.js'],
+      gruntfile: 'Gruntfile.js',
+      build: 'build'
+    },
+
     // uglify: minify javascript
     uglify: {
       options: {
-        banner: '/*! Summernote v<%=pkg.version%> | (c) 2013-2015 Alan Hong and other contributors | MIT license */\n'
+        banner: '/*! Summernote v<%=pkg.version%> | (c) 2013- Alan Hong and other contributors | MIT license */\n'
       },
       all: {
         files: [
@@ -114,6 +126,13 @@ module.exports = function (grunt) {
             src: '**/*.js',
             dest: 'dist/lang',
             ext: '.min.js'
+          },
+          {
+            expand: true,
+            cwd: 'dist/plugin',
+            src: '**/*.js',
+            dest: 'dist/plugin',
+            ext: '.min.js'
           }
         ]
       }
@@ -123,9 +142,18 @@ module.exports = function (grunt) {
     recess: {
       dist: {
         options: { compile: true, compress: true },
-        files: {
-          'dist/summernote.css': ['src/less/summernote.less']
-        }
+        files: [
+          {
+            'dist/summernote.css': ['src/less/summernote.less']
+          },
+          {
+            expand: true,
+            cwd: 'dist/plugin',
+            src: '**/*.css',
+            dest: 'dist/plugin',
+            ext: '.min.css'
+          }
+        ]
       }
     },
 
@@ -144,10 +172,11 @@ module.exports = function (grunt) {
           expand: true,
           src: [
             'dist/*.js',
-            'dist/*.css'
+            'dist/*.css',
+            'dist/font/*'
           ]
         }, {
-          src: ['plugin/**/*.js', 'lang/**/*.js'],
+          src: ['plugin/**/*.js', 'plugin/**/*.css', 'lang/**/*.js'],
           dest: 'dist/'
         }]
       }
@@ -165,8 +194,8 @@ module.exports = function (grunt) {
     // watch source code change
     watch: {
       all: {
-        files: ['src/less/*.less', 'src/js/**/*.js'],
-        tasks: ['recess', 'jshint'],
+        files: ['src/less/*.less', 'src/js/**/*.js', 'test/unit/**/*.js'],
+        tasks: ['recess', 'lint'],
         options: {
           livereload: true
         }
@@ -189,6 +218,7 @@ module.exports = function (grunt) {
       },
       all: {
         // Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS, IE
+        singleRun: true,
         browsers: ['PhantomJS'],
         reporters: ['progress']
       },
@@ -226,13 +256,27 @@ module.exports = function (grunt) {
       }
     },
     clean: {
-      dist: ['dist']
+      dist: ['dist/**/*']
     },
     copy: {
       dist: {
         files: [
-          {src: 'lang/*', dest: 'dist/'}
+          { src: 'lang/*', dest: 'dist/' },
+          { src: 'plugin/**/*', dest: 'dist/' },
+          { expand: true, cwd: 'src/icons/dist/font/', src: ['**', '!*.html'], dest: 'dist/font/' },
+          { src: 'src/icons/dist/summernote.css', dest: 'src/icons/dist/summernote.less' }
         ]
+      }
+    },
+    webfont: {
+      icons: {
+        src: 'src/icons/*.svg',
+        dest: 'src/icons/dist/font',
+        destCss: 'src/icons/dist/',
+        options: {
+          font: 'summernote',
+          template: 'src/icons/templates/summernote.css'
+        }
       }
     }
   });
@@ -243,14 +287,17 @@ module.exports = function (grunt) {
   // load all grunts/*.js
   grunt.loadTasks('grunts');
 
-  // server: runt server for development
+  // server: run server for development
   grunt.registerTask('server', ['connect', 'watch']);
 
+  // lint
+  grunt.registerTask('lint', ['jshint', 'jscs']);
+
   // test: unit test on test folder
-  grunt.registerTask('test', ['jshint', 'karma:all']);
+  grunt.registerTask('test', ['lint', 'karma:all']);
 
   // test: unit test on travis
-  grunt.registerTask('test-travis', ['jshint', 'karma:travis']);
+  grunt.registerTask('test-travis', ['lint', 'karma:travis']);
 
   // test: saucelabs test
   grunt.registerTask('saucelabs-test', ['karma:saucelabs']);
@@ -258,7 +305,7 @@ module.exports = function (grunt) {
   // dist: make dist files
   grunt.registerTask('dist', [
     'clean:dist',
-    'build', 'jshint', 'karma:dist',
+    'build', 'webfont', 'lint', 'karma:dist',
     'copy:dist', 'uglify', 'recess', 'compress'
   ]);
 
@@ -269,5 +316,4 @@ module.exports = function (grunt) {
   grunt.registerTask('meteor-test', 'exec:meteor-test');
   grunt.registerTask('meteor-publish', 'exec:meteor-publish');
   grunt.registerTask('meteor', ['meteor-test', 'meteor-publish']);
-
 };

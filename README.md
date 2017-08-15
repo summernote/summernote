@@ -2,11 +2,10 @@
 
 Super simple WYSIWYG Editor.
 
-[![Build Status](https://secure.travis-ci.org/summernote/summernote.svg)](http://travis-ci.org/summernote/summernote)
+[![Build Status](https://travis-ci.org/summernote/summernote.svg?branch=develop)](http://travis-ci.org/summernote/summernote)
 [![npm version](https://badge.fury.io/js/summernote.svg)](http://badge.fury.io/js/summernote)
 [![Dependency Status](https://gemnasium.com/summernote/summernote.svg)](https://gemnasium.com/summernote/summernote)
 [![Coverage Status](https://coveralls.io/repos/summernote/summernote/badge.svg?branch=develop&service=github)](https://coveralls.io/github/summernote/summernote?branch=develop)
-[![Gratipay](https://img.shields.io/gratipay/HackerWins.svg)](https://gratipay.com/~HackerWins/)
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/summernoteis.svg)](https://saucelabs.com/u/summernoteis)
 
@@ -27,9 +26,12 @@ Summernote has a few special features:
 
 ### Installation and dependencies
 
-Summernote uses opensource libraries: [jQuery](http://jquery.com/), [Bootstrap](http://getbootstrap.com), [Font Awesome](https://github.com/FortAwesome/Font-Awesome).
+Summernote uses opensource libraries: [jQuery](http://jquery.com/), [Bootstrap](http://getbootstrap.com).
 
 For [Meteor](http://github.com/meteor/meteor), just run `meteor add summernote:summernote`. More info in the [Meteor README](meteor/README.md).
+
+Also there's an adaptation for React: [react-summernote](https://github.com/Vnkitaev/react-summernote)
+
 
 For other/no frameworks:
 
@@ -38,18 +40,17 @@ For other/no frameworks:
 Include the following code in the `<head>` tag of your HTML:
 
 ```html
-<!-- include libraries(jQuery, bootstrap, fontawesome) -->
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> 
+<!-- include libraries(jQuery, bootstrap) -->
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" />
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" />
 
 <!-- include summernote css/js-->
 <link href="summernote.css" rel="stylesheet">
 <script src="summernote.js"></script>
 ```
 
-#### 2. target elements
+#### 2. target a element
 
 Then place a `div` tag somewhere in the `body` tag. This element will be replaced with the summernote editor.
 
@@ -67,6 +68,8 @@ $(document).ready(function() {
 });
 ```
 
+For more examples, please visit to [homepage](http://summernote.org/examples).
+
 ### API
 
 `code` - get the HTML source code underlying the text in the editor:
@@ -75,28 +78,11 @@ $(document).ready(function() {
 var html = $('#summernote').summernote('code');
 ```
 
-`Destroy` summernote:
-
-```javascript
-$('#summernote').summernote('destroy');
-```
+For more detail about API, please refer to [document](http://summernote.org/getting-started/#basic-api).
 
 #### Warning - code injection
 
 The code view allows the user to enter script contents. Make sure to filter/[sanitize the HTML on the server](https://github.com/search?l=JavaScript&q=sanitize+html). Otherwise, an attacker can inject arbitrary JavaScript code into clients.
-
-### Supported platforms
-
-Any modern browser: Safari, Chrome, Firefox, Opera, Internet Explorer 9+.
-
-### Upcoming Features
-* Responsive toolbar
-* Table: Handles (sizing, selection) and popover
-* IE8 Support
-* Clipboard (you can paste images already)
-* Media object selection
-
-### Developer information
 
 #### document structure
 
@@ -117,22 +103,20 @@ Any modern browser: Safari, Chrome, Firefox, Opera, Internet Explorer 9+.
 
 #### build summernote
 ```bash
-# grunt-cli is need by grunt; you might have this installed already
-npm install -g grunt-cli
 npm install
 
 # build full version of summernote: dist/summernote.js
-grunt build
+npm run build
 
 # generate minified copy: dist/summernote.min.js, dist/summernote.css
-grunt dist
+npm run dist
 ```
 At this point, you should now have a `build/` directory populated with everything you need to use summernote.
 
 #### test summernote
 run tests with Karma and PhantomJS
 ```bash
-grunt test
+npm test
 ```
 If you want run tests on other browser,
 change the values for `broswers` properties in `Gruntfile.js`.
@@ -147,12 +131,12 @@ karma: {
 
 ```
 You can use `Chrome`, `ChromeCanary`, `Firefox`, `Opera`, `Safari`, `PhantomJS` and `IE` beside `PhantomJS`.
-Once you run `grunt test`, it will watch all javascript file. Therefore karma run tests every time you chage code.
+Once you run `npm test`, it will watch all javascript file. Therefore karma run tests every time you chage code.
 
 #### start local server for developing summernote.
 run local server with connect and watch.
 ```bash
-grunt server
+npm run server
 # Open a browser on http://localhost:3000.
 # If you change source code, automatically reload your page.
 ```
@@ -161,14 +145,13 @@ grunt server
 * JSHint: http://www.jshint.com/about/
 * JSHint rule: https://github.com/summernote/summernote/blob/master/.jshintrc
 
-#### Contribution guide
-* Please read [CONTRIBUTING.md](https://github.com/summernote/summernote/blob/develop/CONTRIBUTING.md) before sending pull requests.
+#### Contributing
+* Pull requests are welcome
+* Please don't include dist/* files on your commits.
 
 ### Contacts
-* Email: susukang98@gmail.com
+* Facebook user group: https://www.facebook.com/groups/summernote
 * Twitter: http://twitter.com/hackerwins
-* Chat with us:
-[![Join the chat at https://gitter.im/summernote/summernote](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/summernote/summernote?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ### License
 summernote may be freely distributed under the MIT license.

@@ -1,6 +1,6 @@
 define([
   'summernote/lite/ui',
-  '../../../../lang/summernote-en-US',
+  'summernote/base/summernote-en-US',
   'summernote/base/module/Editor',
   'summernote/lite/module/Toolbar'
 ], function (ui, lang, Editor, Toolbar) {
@@ -32,8 +32,7 @@ define([
         onBlur: null,
         onEnter: null,
         onKeyup: null,
-        onKeydown: null,
-        onSubmit: null
+        onKeydown: null
       },
 
       keyMap: {

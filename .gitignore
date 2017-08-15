@@ -4,17 +4,36 @@
 .tern-port
 .DS_Store
 
+# vscode editing
+.vscode
+
 # node modules
+npm-debug.log
 node_modules
 bower_components
+# node lock file
+package-lock.json
+
 *.sublime*
 .build*
 
 # zip file
 *.zip
 
+# webfont temp
+src/icons/dist/*
+
 .versions
 coverage/
 
 .idea/
 *.iml
+
+# NuGet
+build/
+
+#log files
+*.log
+
+# Ignoring dist folder content
+# dist/*

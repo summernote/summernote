@@ -11,38 +11,28 @@ define([
    * @alternateClassName Bullet
    */
   var Bullet = function () {
+    var self = this;
+
     /**
-     * @method insertOrderedList
-     *
      * toggle ordered list
-     *
-     * @type command
      */
-    this.insertOrderedList = function () {
-      this.toggleList('OL');
+    this.insertOrderedList = function (editable) {
+      this.toggleList('OL', editable);
     };
 
     /**
-     * @method insertUnorderedList
-     *
      * toggle unordered list
-     *
-     * @type command
      */
-    this.insertUnorderedList = function () {
-      this.toggleList('UL');
+    this.insertUnorderedList = function (editable) {
+      this.toggleList('UL', editable);
     };
 
     /**
-     * @method indent
-     *
      * indent
-     *
-     * @type command
      */
-    this.indent = function () {
+    this.indent = function (editable) {
       var self = this;
-      var rng = range.create().wrapBodyInlineWithPara();
+      var rng = range.create(editable).wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
       var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
@@ -64,15 +54,11 @@ define([
     };
 
     /**
-     * @method outdent
-     *
      * outdent
-     *
-     * @type command
      */
-    this.outdent = function () {
+    this.outdent = function (editable) {
       var self = this;
-      var rng = range.create().wrapBodyInlineWithPara();
+      var rng = range.create(editable).wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
       var clustereds = list.clusterBy(paras, func.peq2('parentNode'));
@@ -95,15 +81,12 @@ define([
     };
 
     /**
-     * @method toggleList
-     *
      * toggle list
      *
      * @param {String} listName - OL or UL
      */
-    this.toggleList = function (listName) {
-      var self = this;
-      var rng = range.create().wrapBodyInlineWithPara();
+    this.toggleList = function (listName, editable) {
+      var rng = range.create(editable).wrapBodyInlineWithPara();
 
       var paras = rng.nodes(dom.isPara, { includeAncestor: true });
       var bookmark = rng.paraBookmark(paras);
@@ -137,8 +120,6 @@ define([
     };
 
     /**
-     * @method wrapList
-     *
      * @param {Node[]} paras
      * @param {String} listName
      * @return {Node[]}
