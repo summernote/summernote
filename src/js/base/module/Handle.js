@@ -98,10 +98,10 @@ define([
         var $image = $(target);
         var pos = $image.position();
 
-        // include margin
+        // exclude margin
         var imageSize = {
-          w: $image.outerWidth(true),
-          h: $image.outerHeight(true)
+          w: $image.outerWidth(false),
+          h: $image.outerHeight(false)
         };
 
         $selection.css({
