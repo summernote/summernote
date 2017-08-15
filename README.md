@@ -150,9 +150,8 @@ npm run server
 * Please don't include dist/* files on your commits.
 
 ### Contacts
-* Email: susukang98@gmail.com
-* Twitter: http://twitter.com/hackerwins
 * Facebook user group: https://www.facebook.com/groups/summernote
+* Twitter: http://twitter.com/hackerwins
 
 ### License
 summernote may be freely distributed under the MIT license.
