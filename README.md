@@ -152,8 +152,7 @@ npm run server
 ### Contacts
 * Email: susukang98@gmail.com
 * Twitter: http://twitter.com/hackerwins
-* Chat with us:
-[![Join the chat at https://gitter.im/summernote/summernote](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/summernote/summernote?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+* Facebook user group: https://www.facebook.com/groups/summernote
 
 ### License
 summernote may be freely distributed under the MIT license.
