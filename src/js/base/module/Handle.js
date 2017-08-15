@@ -20,7 +20,7 @@ define([
       'summernote.disable': function () {
         self.hide();
       },
-      'summernote.codeview.toggled': function() {
+      'summernote.codeview.toggled': function () {
         self.update();
       }
     };

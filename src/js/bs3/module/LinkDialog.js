@@ -22,7 +22,7 @@ define([
                  '</div>' +
                  (!options.disableLinkTarget ?
                    '<div class="checkbox">' +
-                     '<label for="sn-checkbox-open-in-new-window">' + 
+                     '<label for="sn-checkbox-open-in-new-window">' +
                        '<input type="checkbox" id="sn-checkbox-open-in-new-window" checked />' + lang.link.openInNewWindow +
                      '</label>' +
                    '</div>' : ''
