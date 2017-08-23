@@ -136,8 +136,8 @@
         'formatH2': 'Changer le paragraphe en cours en entête H2',
         'formatH3': 'Changer le paragraphe en cours en entête H3',
         'formatH4': 'Changer le paragraphe en cours en entête H4',
-        'formatH5': 'Changer le paragraphe en cours en H5',
-        'formatH6': 'Changer le paragraphe en cours en H6',
+        'formatH5': 'Changer le paragraphe en cours en entête H5',
+        'formatH6': 'Changer le paragraphe en cours en entête H6',
         'insertHorizontalRule': 'Insérer séparation horizontale',
         'linkDialog.show': 'Afficher fenêtre d\'hyperlien'
       },
