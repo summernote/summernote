@@ -136,7 +136,7 @@ Once you run `npm test`, it will watch all javascript file. Therefore karma run 
 #### start local server for developing summernote.
 run local server with connect and watch.
 ```bash
-npm run server
+npm run start
 # Open a browser on http://localhost:3000.
 # If you change source code, automatically reload your page.
 ```
