@@ -76,12 +76,19 @@ module.exports = function (grunt) {
 
     // bulid source(grunt-build.js).
     build: {
-      all: {
-        baseUrl: 'src/js',        // base url
-        startFile: 'intro.js',    // intro part
-        endFile: 'outro.js',      // outro part
-        outFile: 'dist/summernote.js' // out file
-      }
+      all: [{
+        baseUrl: 'src/js',
+        startFile: 'intro.js',
+        endFile: 'outro.js',
+        entryFile: 'summernote/bs3/settings',
+        outFile: 'dist/summernote-bs3.js'
+      }, {
+        baseUrl: 'src/js',
+        startFile: 'intro.js',
+        endFile: 'outro.js',
+        entryFile: 'summernote/bs4/settings',
+        outFile: 'dist/summernote.js'
+      }]
     },
 
     // for javascript convention.

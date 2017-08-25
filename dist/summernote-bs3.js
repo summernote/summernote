@@ -1894,11 +1894,11 @@
     }
   };
 
-  var editor = renderer.create('<div class="note-editor note-frame card"/>');
-  var toolbar = renderer.create('<div class="note-toolbar card-header"/>');
+  var editor = renderer.create('<div class="note-editor note-frame panel panel-default"/>');
+  var toolbar = renderer.create('<div class="note-toolbar panel-heading"/>');
   var editingArea = renderer.create('<div class="note-editing-area"/>');
   var codable = renderer.create('<textarea class="note-codable"/>');
-  var editable = renderer.create('<div class="note-editable card-block" contentEditable="true"/>');
+  var editable = renderer.create('<div class="note-editable panel-body" contentEditable="true"/>');
   var statusbar = renderer.create([
     '<div class="note-statusbar">',
     '  <div class="note-resizebar">',
@@ -1922,21 +1922,21 @@
 
       var dataValue = 'data-value="' + value + '"';
       var dataOption = (option !== undefined) ? ' data-option="' + option + '"' : '';
-      return '<a class="dropdown-item" href="#" ' + (dataValue + dataOption) + '>' + content + '</a>';
+      return '<li><a href="#" ' + (dataValue + dataOption) + '>' + content + '</a></li>';
     }).join('') : options.items;
 
     $node.html(markup);
   });
 
-  var dropdownButtonContents = function (contents) {
-    return contents;
+  var dropdownButtonContents = function (contents, options) {
+    return contents + ' ' + icon(options.icons.caret, 'span');
   };
 
   var dropdownCheck = renderer.create('<div class="dropdown-menu note-check">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
       var value = (typeof item === 'string') ? item : (item.value || '');
       var content = options.template ? options.template(item) : item;
-      return '<a class="dropdown-item" href="#" data-value="' + value + '">' + icon(options.checkClassName) + ' ' + content + '</a>';
+      return '<li><a href="#" data-value="' + value + '">' + icon(options.checkClassName) + ' ' + content + '</a></li>';
     }).join('') : options.items;
     $node.html(markup);
   });
@@ -2033,7 +2033,7 @@
     options: {},
 
     button: function ($node, options) {
-      return renderer.create('<button type="button" class="note-btn btn btn-light btn-sm" tabindex="-1">', function ($node, options) {
+      return renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
         if (options && options.tooltip && self.options.tooltip) {
           $node.attr({
             title: options.tooltip

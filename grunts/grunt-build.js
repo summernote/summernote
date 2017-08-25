@@ -8,13 +8,10 @@ module.exports = function (grunt) {
   var rDefineEndWithReturn = /\s*return\s+[^\}]+(\}\);[^\w\}]*)$/;
   var rDefineEnd = /\}\);[^}\w]*$/;
 
-  grunt.registerMultiTask('build', 'concatenate source: summernote.js', function () {
-    var self = this;
-
-    var done = this.async();
+  var optimize = function(data, callback) {
     requirejs.optimize({
       name: 'summernote/summernote',
-      baseUrl: this.data.baseUrl,
+      baseUrl: data.baseUrl,
       /**
        * Handle final output from the optimizer
        */
@@ -27,12 +24,12 @@ module.exports = function (grunt) {
         var date = (new Date()).toISOString().replace(/:\d+\.\d+Z$/, 'Z');
         compiled = compiled.replace(/@DATE/g, date);
 
-        grunt.file.write(self.data.outFile, compiled);
+        grunt.file.write(data.outFile, compiled);
       },
       optimize: 'none',
       wrap: {
-        startFile: path.join(this.data.baseUrl, this.data.startFile),
-        endFile: path.join(this.data.baseUrl, this.data.endFile)
+        startFile: path.join(data.baseUrl, data.startFile),
+        endFile: path.join(data.baseUrl, data.endFile)
       },
       findNestedDependencies: true,
       skipSemiColonInsertion: true,
@@ -54,7 +51,7 @@ module.exports = function (grunt) {
         return contents;
       },
       excludeShallow: ['jquery', 'codemirror', 'app'],
-      include: ['summernote/bs4/settings'],
+      include: [data.entryFile],
       paths: {
         jquery: 'empty:',
         codemirror: 'empty:'
@@ -64,9 +61,23 @@ module.exports = function (grunt) {
         location: './'
       }]
     }, function () {
-      done();
+      callback();
     }, function (err) {
-      done(err);
+      callback();
+    });
+  };
+
+  grunt.registerMultiTask('build', 'concatenate source: summernote.js', function () {
+    var done = this.async();
+    var counter = this.data.length;
+
+    this.data.forEach(function(datum) {
+      optimize(datum, function () {
+        counter -= 1;
+        if (counter == 0) {
+          done();
+        }
+      });
     });
   });
 };
