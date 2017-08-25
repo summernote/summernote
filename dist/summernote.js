@@ -6,7 +6,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2017-08-25T08:45Z
+ * Date: 2017-08-25T10:19Z
  */
 (function (factory) {
   /* global define */
@@ -6040,26 +6040,24 @@
             }),
             ui.dropdown({
               items: [
-                '<li>',
-                '<div class="btn-group">',
+                '<div class="note-palette">',
                 '  <div class="note-palette-title">' + lang.color.background + '</div>',
                 '  <div>',
-                '    <button type="button" class="note-color-reset btn btn-default" data-event="backColor" data-value="inherit">',
+                '    <button type="button" class="note-color-reset btn btn-light" data-event="backColor" data-value="inherit">',
                 lang.color.transparent,
                 '    </button>',
                 '  </div>',
                 '  <div class="note-holder" data-event="backColor"/>',
                 '</div>',
-                '<div class="btn-group">',
+                '<div class="note-palette">',
                 '  <div class="note-palette-title">' + lang.color.foreground + '</div>',
                 '  <div>',
-                '    <button type="button" class="note-color-reset btn btn-default" data-event="removeFormat" data-value="foreColor">',
+                '    <button type="button" class="note-color-reset btn btn-light" data-event="removeFormat" data-value="foreColor">',
                 lang.color.resetToDefault,
                 '    </button>',
                 '  </div>',
                 '  <div class="note-holder" data-event="foreColor"/>',
-                '</div>',
-                '</li>'
+                '</div>'
               ].join(''),
               callback: function ($dropdown) {
                 $dropdown.find('.note-holder').each(function () {
