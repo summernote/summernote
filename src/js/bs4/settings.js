@@ -1,5 +1,5 @@
 define([
-  'summernote/bs3/ui',
+  'summernote/bs4/ui',
   'summernote/base/core/dom',
   'summernote/base/summernote-en-US',
   'summernote/base/module/Editor',

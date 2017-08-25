@@ -6,12 +6,12 @@
 /* jshint unused: false */
 define([
   'chai',
-  'summernote/bs3/module/LinkDialog'
+  'summernote/bs/module/LinkDialog'
 ], function (chai, LinkDialog) {
   'use strict';
 
   var expect = chai.expect;
 
-  describe('bs3:module.LinkDialog', function () {
+  describe('bs:module.LinkDialog', function () {
   });
 });

@@ -133,12 +133,12 @@
         'indent': 'Augmenter le retrait du paragraphe',
         'formatPara': 'Changer le paragraphe en cours en normal (P)',
         'formatH1': 'Changer le paragraphe en cours en entête H1',
-        'formatH2': 'Change current block\'s format as entête H2',
-        'formatH3': 'Change current block\'s format as entête H3',
-        'formatH4': 'Change current block\'s format as entête H4',
-        'formatH5': 'Change current block\'s format as entête H5',
-        'formatH6': 'Change current block\'s format as entête H6',
-        'insertHorizontalRule': 'Insérer ligne horizontale',
+        'formatH2': 'Changer le paragraphe en cours en entête H2',
+        'formatH3': 'Changer le paragraphe en cours en entête H3',
+        'formatH4': 'Changer le paragraphe en cours en entête H4',
+        'formatH5': 'Changer le paragraphe en cours en entête H5',
+        'formatH6': 'Changer le paragraphe en cours en entête H6',
+        'insertHorizontalRule': 'Insérer séparation horizontale',
         'linkDialog.show': 'Afficher fenêtre d\'hyperlien'
       },
       history: {

@@ -1,12 +1,12 @@
 /**
- * Super simple wysiwyg editor v0.8.7
+ * Super simple wysiwyg editor v0.8.8
  * http://summernote.org/
  *
  * summernote.js
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2017-08-15T06:23Z
+ * Date: 2017-08-25T08:03Z
  */
 (function (factory) {
   /* global define */
@@ -1894,11 +1894,11 @@
     }
   };
 
-  var editor = renderer.create('<div class="note-editor note-frame panel panel-default"/>');
-  var toolbar = renderer.create('<div class="note-toolbar panel-heading"/>');
+  var editor = renderer.create('<div class="note-editor note-frame card"/>');
+  var toolbar = renderer.create('<div class="note-toolbar card-header"/>');
   var editingArea = renderer.create('<div class="note-editing-area"/>');
   var codable = renderer.create('<textarea class="note-codable"/>');
-  var editable = renderer.create('<div class="note-editable panel-body" contentEditable="true"/>');
+  var editable = renderer.create('<div class="note-editable card-block" contentEditable="true"/>');
   var statusbar = renderer.create([
     '<div class="note-statusbar">',
     '  <div class="note-resizebar">',
@@ -1922,17 +1922,21 @@
 
       var dataValue = 'data-value="' + value + '"';
       var dataOption = (option !== undefined) ? ' data-option="' + option + '"' : '';
-      return '<li><a href="#" ' + (dataValue + dataOption) + '>' + content + '</a></li>';
+      return '<a class="dropdown-item" href="#" ' + (dataValue + dataOption) + '>' + content + '</a>';
     }).join('') : options.items;
 
     $node.html(markup);
   });
 
+  var dropdownButtonContents = function (contents) {
+    return contents;
+  };
+
   var dropdownCheck = renderer.create('<div class="dropdown-menu note-check">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
       var value = (typeof item === 'string') ? item : (item.value || '');
       var content = options.template ? options.template(item) : item;
-      return '<li><a href="#" data-value="' + value + '">' + icon(options.checkClassName) + ' ' + content + '</a></li>';
+      return '<a class="dropdown-item" href="#" data-value="' + value + '">' + icon(options.checkClassName) + ' ' + content + '</a>';
     }).join('') : options.items;
     $node.html(markup);
   });
@@ -2020,6 +2024,7 @@
     airEditable: airEditable,
     buttonGroup: buttonGroup,
     dropdown: dropdown,
+    dropdownButtonContents: dropdownButtonContents,
     dropdownCheck: dropdownCheck,
     palette: palette,
     dialog: dialog,
@@ -2028,7 +2033,7 @@
     options: {},
 
     button: function ($node, options) {
-      return renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
+      return renderer.create('<button type="button" class="note-btn btn btn-light btn-sm" tabindex="-1">', function ($node, options) {
         if (options && options.tooltip && self.options.tooltip) {
           $node.attr({
             title: options.tooltip
@@ -5874,7 +5879,7 @@
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: ui.icon(options.icons.magic) + ' ' + ui.icon(options.icons.caret, 'span'),
+            contents: ui.dropdownButtonContents(ui.icon(options.icons.magic), options),
             tooltip: lang.style.style,
             data: {
               toggle: 'dropdown'
@@ -5967,7 +5972,7 @@
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: '<span class="note-current-fontname"/> ' + ui.icon(options.icons.caret, 'span'),
+            contents: ui.dropdownButtonContents('<span class="note-current-fontname"/>', options),
             tooltip: lang.font.name,
             data: {
               toggle: 'dropdown'
@@ -5989,7 +5994,7 @@
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: '<span class="note-current-fontsize"/>' + ui.icon(options.icons.caret, 'span'),
+            contents: ui.dropdownButtonContents('<span class="note-current-fontsize"/>', options),
             tooltip: lang.font.size,
             data: {
               toggle: 'dropdown'
@@ -6027,7 +6032,7 @@
             }),
             ui.button({
               className: 'dropdown-toggle',
-              contents: ui.icon(options.icons.caret, 'span'),
+              contents: ui.dropdownButtonContents('', options),
               tooltip: lang.color.more,
               data: {
                 toggle: 'dropdown'
@@ -6149,7 +6154,7 @@
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: ui.icon(options.icons.alignLeft) + ' ' + ui.icon(options.icons.caret, 'span'),
+            contents: ui.dropdownButtonContents(ui.icon(options.icons.alignLeft), options),
             tooltip: lang.paragraph.paragraph,
             data: {
               toggle: 'dropdown'
@@ -6172,7 +6177,7 @@
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: ui.icon(options.icons.textHeight) + ' ' + ui.icon(options.icons.caret, 'span'),
+            contents: ui.dropdownButtonContents(ui.icon(options.icons.textHeight), options),
             tooltip: lang.font.height,
             data: {
               toggle: 'dropdown'
@@ -6191,7 +6196,7 @@
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: ui.icon(options.icons.table) + ' ' + ui.icon(options.icons.caret, 'span'),
+            contents: ui.dropdownButtonContents(ui.icon(options.icons.table), options),
             tooltip: lang.table.table,
             data: {
               toggle: 'dropdown'
@@ -6495,20 +6500,22 @@
         });
         var fontName = list.find(fontNames, self.isFontInstalled);
 
-        $toolbar.find('.dropdown-fontname li a').each(function () {
+        $toolbar.find('.dropdown-fontname a').each(function () {
+          var $item = $(this);
           // always compare string to avoid creating another func.
-          var isChecked = ($(this).data('value') + '') === (fontName + '');
-          this.className = isChecked ? 'checked' : '';
+          var isChecked = ($item.data('value') + '') === (fontName + '');
+          $item.toggleClass('checked', isChecked);
         });
         $toolbar.find('.note-current-fontname').text(fontName);
       }
 
       if (styleInfo['font-size']) {
         var fontSize = styleInfo['font-size'];
-        $toolbar.find('.dropdown-fontsize li a').each(function () {
+        $toolbar.find('.dropdown-fontsize a').each(function () {
+          var $item = $(this);
           // always compare with string to avoid creating another func.
-          var isChecked = ($(this).data('value') + '') === (fontSize + '');
-          this.className = isChecked ? 'checked' : '';
+          var isChecked = ($item.data('value') + '') === (fontSize + '');
+          $item.toggleClass('checked', isChecked);
         });
         $toolbar.find('.note-current-fontsize').text(fontSize);
       }
@@ -7319,7 +7326,7 @@
 
       var body = [
         '<p class="text-center">',
-        '<a href="http://summernote.org/" target="_blank">Summernote 0.8.7</a> · ',
+        '<a href="http://summernote.org/" target="_blank">Summernote 0.8.8</a> · ',
         '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ',
         '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>',
         '</p>'
@@ -7666,7 +7673,7 @@
 
 
   $.summernote = $.extend($.summernote, {
-    version: '0.8.7',
+    version: '0.8.8',
     ui: ui,
     dom: dom,
 
@@ -7894,7 +7901,7 @@
         'link': 'note-icon-link',
         'unlink': 'note-icon-chain-broken',
         'magic': 'note-icon-magic',
-        'menuCheck': 'note-icon-check',
+        'menuCheck': 'note-icon-menu-check',
         'minus': 'note-icon-minus',
         'orderedlist': 'note-icon-orderedlist',
         'pencil': 'note-icon-pencil',
