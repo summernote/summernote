@@ -20,6 +20,9 @@ module.exports = function (grunt) {
         var version = grunt.config('pkg.version');
         compiled = compiled.replace(/@VERSION/g, version);
 
+        // 02. Output file
+        compiled = compiled.replace(/@FILENAME/g, path.basename(data.outFile));
+
         // 02.  Embed Date
         var date = (new Date()).toISOString().replace(/:\d+\.\d+Z$/, 'Z');
         compiled = compiled.replace(/@DATE/g, date);

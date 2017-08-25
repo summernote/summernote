@@ -2,11 +2,11 @@
  * Super simple wysiwyg editor v0.8.8
  * http://summernote.org/
  *
- * summernote.js
+ * summernote-bs3.js
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2017-08-25T10:19Z
+ * Date: 2017-08-25T12:51Z
  */
 (function (factory) {
   /* global define */
