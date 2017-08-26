@@ -81,13 +81,13 @@ module.exports = function (grunt) {
         startFile: 'intro.js',
         endFile: 'outro.js',
         entryFile: 'summernote/bs3/settings',
-        outFile: 'dist/summernote-bs3.js'
+        outFile: 'dist/summernote.js'
       }, {
         baseUrl: 'src/js',
         startFile: 'intro.js',
         endFile: 'outro.js',
         entryFile: 'summernote/bs4/settings',
-        outFile: 'dist/summernote.js'
+        outFile: 'dist/summernote-bs4.js'
       }]
     },
 
@@ -152,7 +152,7 @@ module.exports = function (grunt) {
         files: [
           {
             'dist/summernote.css': ['src/less/summernote.less'],
-            'dist/summernote-bs3.css': ['src/less/summernote-bs3.less']
+            'dist/summernote-bs4.css': ['src/less/summernote-bs4.less']
           },
           {
             expand: true,

@@ -159,7 +159,6 @@
 /* Popover
 ------------------------------------------*/
 .note-popover.popover {
-  display: none;
   max-width: none;
   .popover-content {
     a {
@@ -178,7 +177,7 @@
 
 /* Popover and Toolbar (Button container)
 ------------------------------------------*/
-.note-popover .popover-content, .card-header.note-toolbar {
+.note-popover .popover-content, .panel-heading.note-toolbar {
   margin: 0;
   padding: 0 0 5px 5px;
 
@@ -291,11 +290,11 @@
     }
     /* dropdown-menu for selectbox */
     &.note-check {
-      a i {
+      li a i {
         color: deepskyblue;
         visibility: hidden;
       }
-      a.checked i {
+      li a.checked i {
         visibility: visible;
       }
     }
