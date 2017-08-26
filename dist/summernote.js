@@ -2207,7 +2207,8 @@
         transparent: 'Transparent',
         setTransparent: 'Set transparent',
         reset: 'Reset',
-        resetToDefault: 'Reset to default'
+        resetToDefault: 'Reset to default',
+        cpSelect: 'Select'
       },
       shortcut: {
         shortcuts: 'Keyboard shortcuts',
@@ -6044,6 +6045,14 @@
                 '    </button>',
                 '  </div>',
                 '  <div class="note-holder" data-event="backColor"/>',
+
+                '  <div class="btn-sm">',
+                '    <input type="color" id="html5bcp" class="note-btn btn-default" value="#EFEFEF" style="width:100%;" data-value="cp">',
+                '    <button type="button" class="note-color-reset btn" data-event="backColor" data-value="cpbackColor">',
+                lang.color.cpSelect,
+                '    </button>',
+                '  </div>',
+                
                 '</div>',
                 '<div class="btn-group">',
                 '  <div class="note-palette-title">' + lang.color.foreground + '</div>',
@@ -6053,6 +6062,14 @@
                 '    </button>',
                 '  </div>',
                 '  <div class="note-holder" data-event="foreColor"/>',
+
+                '  <div class="btn-sm">',
+                '    <input type="color" id="html5fcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
+                '    <button type="button" class="note-color-reset btn" data-event="foreColor" data-value="cpforeColor">',
+                lang.color.cpSelect,
+                '    </button>',
+                '  </div>',
+
                 '</div>',
                 '</li>'
               ].join(''),
@@ -6071,6 +6088,18 @@
                 var eventName = $button.data('event');
                 var value = $button.data('value');
 
+                var foreinput = document.getElementById('html5fcp').value;
+                var backinput = document.getElementById('html5bcp').value;
+                if (value === 'cp') {
+                  event.stopPropagation();
+                }
+                else if (value === 'cpbackColor') {
+                  value = backinput;
+                }
+                else if (value === 'cpforeColor') {
+                  value = foreinput;
+                }
+                
                 if (eventName && value) {
                   var key = eventName === 'backColor' ? 'background-color' : 'color';
                   var $color = $button.closest('.note-color').find('.note-recent-color');
