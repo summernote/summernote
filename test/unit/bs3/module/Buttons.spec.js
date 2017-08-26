@@ -218,5 +218,21 @@ define([
         expect($span).to.be.equalsStyle($button.data('value'), 'background-color');
       });
     });
+
+    describe('font size button', function () {
+      it('should update font size button value when changing font size with empty content', function () {
+        var $fontSizeDropdown = $toolbar.find('.dropdown-fontsize');
+        var $fontSizeButton = $fontSizeDropdown.siblings('button');
+        var $fontSizeList = $fontSizeDropdown.find('a');
+        var selectedSize = '36';
+
+        // click on dropdown button
+        $fontSizeButton.trigger('click');
+        // select a font size
+        $fontSizeList.filter('[data-value="' + selectedSize + '"]').trigger('click');
+
+        expect($fontSizeButton.text()).to.equal(selectedSize);
+      });
+    });
   });
 });
