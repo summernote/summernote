@@ -183,7 +183,7 @@ define([
             className: 'dropdown-fontsize',
             checkClassName: options.icons.menuCheck,
             items: options.fontSizes,
-            click: context.createInvokeHandler('editor.fontSize')
+            click: context.createInvokeHandlerAndUpdateState('editor.fontSize')
           })
         ]).render();
       });

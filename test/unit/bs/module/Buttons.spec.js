@@ -202,10 +202,8 @@ define([
         var $button = $toolbar.find('[data-event=foreColor]').eq(10);
         $button.click();
 
-        // TODO <font> tag deprecated in HTML5
-        //  - https://github.com/summernote/summernote/issues/745
-        var $font = $editable.find('font');
-        expect($font).to.be.equalsStyle($button.data('value'), 'color');
+        var $span = $editable.find('span');
+        expect($span).to.be.equalsStyle('#FF9C00', 'color');
       });
     });
 
@@ -218,6 +216,22 @@ define([
 
         var $span = $editable.find('span');
         expect($span).to.be.equalsStyle($button.data('value'), 'background-color');
+      });
+    });
+
+    describe('font size button', function () {
+      it('should update font size button value when changing font size with empty content', function () {
+        var $fontSizeDropdown = $toolbar.find('.dropdown-fontsize');
+        var $fontSizeButton = $fontSizeDropdown.siblings('button');
+        var $fontSizeList = $fontSizeDropdown.find('a');
+        var selectedSize = '36';
+
+        // click on dropdown button
+        $fontSizeButton.trigger('click');
+        // select a font size
+        $fontSizeList.filter('[data-value="' + selectedSize + '"]').trigger('click');
+
+        expect($fontSizeButton.text()).to.equal(selectedSize);
       });
     });
   });
