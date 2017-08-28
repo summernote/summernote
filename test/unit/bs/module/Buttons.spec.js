@@ -231,7 +231,7 @@ define([
         // select a font size
         $fontSizeList.filter('[data-value="' + selectedSize + '"]').trigger('click');
 
-        expect($fontSizeButton.text()).to.equal(selectedSize);
+        expect($fontSizeButton.text().trim()).to.equal(selectedSize);
       });
     });
   });
