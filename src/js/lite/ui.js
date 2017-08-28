@@ -45,7 +45,7 @@ define([
       var content = options.template ? options.template(item) : item;
       var $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '"></a>');
 
-      $temp.html(content).data('item', item);
+      $temp.html(content).data('item', item); 
 
       return $temp;
     }) : options.items;

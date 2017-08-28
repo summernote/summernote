@@ -12,7 +12,7 @@ define(function () {
 
       this.setEvent = function () {
         this.$button.on('click', function () {
-          self.toggle();
+          self.toggle(); 
         });
       };
 
