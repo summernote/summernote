@@ -6,7 +6,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2017-08-26T03:08Z
+ * Date: 2017-08-28T08:26Z
  */
 (function (factory) {
   /* global define */
@@ -6591,6 +6591,7 @@
     var ui = $.summernote.ui;
 
     var $note = context.layoutInfo.note;
+    var $editor = context.layoutInfo.editor;
     var $toolbar = context.layoutInfo.toolbar;
     var options = context.options;
 
@@ -6611,6 +6612,8 @@
         $toolbar.appendTo(options.toolbarContainer);
       }
 
+      this.changeContainer(false);
+
       $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
         context.invoke('buttons.updateCurrentStyle');
       });
@@ -6622,8 +6625,20 @@
       $toolbar.children().remove();
     };
 
+    this.changeContainer = function (isFullscreen) {
+      if (isFullscreen) {
+        $toolbar.prependTo($editor);
+      } else {
+        if (options.toolbarContainer) {
+          $toolbar.appendTo(options.toolbarContainer);
+        }
+      }
+    };
+
     this.updateFullscreen = function (isFullscreen) {
       ui.toggleBtnActive($toolbar.find('.btn-fullscreen'), isFullscreen);
+
+      this.changeContainer(isFullscreen);
     };
 
     this.updateCodeview = function (isCodeview) {
