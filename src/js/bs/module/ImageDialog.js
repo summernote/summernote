@@ -20,16 +20,19 @@ define([
         imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
       }
 
-      var body = '<div class="form-group note-group-select-from-files">' +
-                   '<label>' + lang.image.selectFromFiles + '</label>' +
-                   '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" />' +
+      var body = '<div class="form-group note-form-group note-group-select-from-files">' +
+                   '<label class="note-form-label">' + lang.image.selectFromFiles + '</label>' +
+                   '<input class="note-image-input form-control note-form-control note-input" '+
+                   ' type="file" name="files" accept="image/*" multiple="multiple" />' +
                    imageLimitation +
-                 '</div>' +
+                 '</div>' + 
                  '<div class="form-group note-group-image-url" style="overflow:auto;">' +
-                   '<label>' + lang.image.url + '</label>' +
-                   '<input class="note-image-url form-control col-md-12" type="text" />' +
+                   '<label class="note-form-label">' + lang.image.url + '</label>' +
+                   '<input class="note-image-url form-control note-form-control note-input ' +
+                   ' col-md-12" type="text" />' +
                  '</div>';
-      var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
+      var footer = '<button href="#" class="btn btn-primary note-btn note-btn-primary ' +
+      'note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
 
       this.$dialog = ui.dialog({
         title: lang.image.insert,

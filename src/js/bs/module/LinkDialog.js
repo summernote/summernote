@@ -12,13 +12,15 @@ define([
     this.initialize = function () {
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
-      var body = '<div class="form-group">' +
-                   '<label>' + lang.link.textToDisplay + '</label>' +
-                   '<input class="note-link-text form-control" type="text" />' +
+      var body = '<div class="form-group note-form-group">' +
+                   '<label class="note-form-label">' + lang.link.textToDisplay + '</label>' +
+                   '<input class="note-link-text form-control '+ 
+                   ' note-form-control  note-input" type="text" />' +
                  '</div>' +
-                 '<div class="form-group">' +
-                   '<label>' + lang.link.url + '</label>' +
-                   '<input class="note-link-url form-control" type="text" value="http://" />' +
+                 '<div class="form-group note-form-group">' +
+                   '<label class="note-form-label">' + lang.link.url + '</label>' +
+                   '<input class="note-link-url form-control note-form-control ' +
+                   'note-input" type="text" value="http://" />' +
                  '</div>' +
                  (!options.disableLinkTarget ?
                    '<div class="checkbox">' +
@@ -27,7 +29,8 @@ define([
                      '</label>' +
                    '</div>' : ''
                  );
-      var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
+      var footer = '<button href="#" class="btn btn-primary note-btn note-btn-primary ' +
+      'note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
 
       this.$dialog = ui.dialog({
         className: 'link-dialog',

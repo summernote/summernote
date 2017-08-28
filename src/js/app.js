@@ -40,7 +40,7 @@ require(['jquery', 'summernote'], function ($) {
     });
   };
 
-  var promise = $.Deferred();
+  var promise = $.Deferred(); 
   // editor type setting
   switch ($('script[data-editor-type]').data('editor-type')) {
     case 'lite':

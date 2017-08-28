@@ -30,7 +30,10 @@ define([
         title: options.tooltip
       });
     }
-
+    if (options.contents) {
+      $node.html(options.contents);
+    }
+    
     if (options && options.data && options.data.toggle === 'dropdown') {
       DropdownUI.create($node);
     }
