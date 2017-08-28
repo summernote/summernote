@@ -270,9 +270,7 @@ module.exports = function (grunt) {
       dist: {
         files: [
           { src: 'lang/*', dest: 'dist/' },
-          { src: 'plugin/**/*', dest: 'dist/' },
-          { expand: true, cwd: 'src/icons/dist/font/', src: ['**', '!*.html'], dest: 'dist/font/' },
-          { src: 'src/icons/dist/summernote.css', dest: 'src/icons/dist/summernote.less' }
+          { expand: true, cwd: 'src/icons/dist/font/', src: ['**', '!*.html'], dest: 'dist/font/' }
         ]
       }
     },
@@ -283,6 +281,8 @@ module.exports = function (grunt) {
         destCss: 'src/icons/dist/',
         options: {
           font: 'summernote',
+          relativeFontPath: './font/',
+          stylesheet: 'less',
           template: 'src/icons/templates/summernote.css'
         }
       }
