@@ -79,8 +79,6 @@ define([
     $node.on('click', '> .note-dropdown-item', function (e) {
       var $a = $(this);
 
-      console.log($a);
-
       var item = $a.data('item');
       var value = $a.data('value');
 
