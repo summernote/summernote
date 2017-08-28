@@ -126,7 +126,7 @@ define([
               text: $linkText.val(),
               isNewWindow: $openInNewWindow.is(':checked')
             });
-            self.$dialog.modal('hide');
+            ui.hideDialog(self.$dialog);
           });
         });
 
