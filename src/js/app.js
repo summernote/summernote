@@ -1,16 +1,27 @@
 var script = document.getElementById('start');
 var isIE8 = script && script.getAttribute('data-browser') === 'ie8';
+var jqueryVersion = script && script.getAttribute('data-jquery-version');
 
-var jqueryLink = isIE8 ? '//code.jquery.com/jquery-1.11.3' : '//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery';
+var jqueryPath;
+if (jqueryVersion) {
+  jqueryPath = '//cdnjs.cloudflare.com/ajax/libs/jquery/' + jqueryVersion + '/jquery';
+} else {
+  jqueryPath = isIE8 ? '//code.jquery.com/jquery-1.11.3' : '//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery';
+}
+
 require.config({
   baseUrl: 'src/js',
   paths: {
-    jquery: jqueryLink,
-    bootstrap: '//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap',
+    jquery: jqueryPath,
+    bs3: '//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap',
+    popper: '//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper',
+    bs4: '//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap',
     lang: '../../lang/summernote-ko-KR'
   },
   shim: {
-    bootstrap: ['jquery'],
+    bs3: ['jquery'],
+    popper: ['jquery'],
+    bs4: ['jquery', 'popper'],
     lang: ['jquery']
   },
   packages: [{
@@ -36,8 +47,16 @@ require(['jquery', 'summernote'], function ($) {
       promise = requireByPromise(['summernote/lite/settings']);
       break;
     case 'bs3':
-      promise = requireByPromise(['bootstrap', 'summernote/bs3/settings']).then(function () {
+      promise = requireByPromise(['bs3', 'summernote/bs3/settings']).then(function () {
         return requireByPromise(['lang']);
+      });
+      break;
+    case 'bs4':
+      promise = requireByPromise(['popper']).then(function (popper) {
+        window.Popper = popper;
+        return requireByPromise(['bs4', 'summernote/bs4/settings']).then(function () {
+          return requireByPromise(['lang']);
+        });
       });
       break;
   }

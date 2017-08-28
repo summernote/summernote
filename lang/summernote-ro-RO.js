@@ -28,7 +28,7 @@
         videoLink: 'Link video',
         insert: 'Inserează video',
         url: 'URL video?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, sau Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion sau Youku)'
       },
       link: {
         link: 'Link',
@@ -46,7 +46,7 @@
       },
       style: {
         style: 'Stil',
-        normal: 'Normal',
+        p: 'p',
         blockquote: 'Citat',
         pre: 'Preformatat',
         h1: 'Titlu 1',

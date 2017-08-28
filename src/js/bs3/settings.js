@@ -1,5 +1,6 @@
 define([
   'summernote/bs3/ui',
+  'summernote/base/core/dom',
   'summernote/base/summernote-en-US',
   'summernote/base/module/Editor',
   'summernote/base/module/Clipboard',
@@ -11,25 +12,27 @@ define([
   'summernote/base/module/AutoLink',
   'summernote/base/module/AutoSync',
   'summernote/base/module/Placeholder',
-  'summernote/bs3/module/Buttons',
-  'summernote/bs3/module/Toolbar',
-  'summernote/bs3/module/LinkDialog',
-  'summernote/bs3/module/LinkPopover',
-  'summernote/bs3/module/ImageDialog',
-  'summernote/bs3/module/ImagePopover',
-  'summernote/bs3/module/VideoDialog',
-  'summernote/bs3/module/HelpDialog',
-  'summernote/bs3/module/AirPopover',
-  'summernote/bs3/module/HintPopover'
+  'summernote/bs/module/Buttons',
+  'summernote/bs/module/Toolbar',
+  'summernote/bs/module/LinkDialog',
+  'summernote/bs/module/LinkPopover',
+  'summernote/bs/module/ImageDialog',
+  'summernote/bs/module/ImagePopover',
+  'summernote/bs/module/TablePopover',
+  'summernote/bs/module/VideoDialog',
+  'summernote/bs/module/HelpDialog',
+  'summernote/bs/module/AirPopover',
+  'summernote/bs/module/HintPopover'
 ], function (
-  ui, lang,
+  ui, dom, lang,
   Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle, AutoLink, AutoSync, Placeholder,
-  Buttons, Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover, VideoDialog, HelpDialog, AirPopover, HintPopover
+  Buttons, Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover, TablePopover, VideoDialog, HelpDialog, AirPopover, HintPopover
 ) {
 
   $.summernote = $.extend($.summernote, {
     version: '@VERSION',
     ui: ui,
+    dom: dom,
 
     plugins: {},
 
@@ -54,13 +57,14 @@ define([
         'linkPopover': LinkPopover,
         'imageDialog': ImageDialog,
         'imagePopover': ImagePopover,
+        'tablePopover': TablePopover,
         'videoDialog': VideoDialog,
         'helpDialog': HelpDialog,
         'airPopover': AirPopover
       },
 
       buttons: {},
-      
+
       lang: 'en-US',
 
       // toolbar
@@ -85,6 +89,10 @@ define([
         link: [
           ['link', ['linkDialogShow', 'unlink']]
         ],
+        table: [
+          ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
+          ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]
+        ],
         air: [
           ['color', ['color']],
           ['font', ['bold', 'underline', 'clear']],
@@ -99,6 +107,7 @@ define([
 
       width: null,
       height: null,
+      linkTargetBlank: true,
 
       focus: false,
       tabSize: 4,
@@ -106,6 +115,7 @@ define([
       shortcuts: true,
       textareaAutoSync: true,
       direction: null,
+      tooltip: 'auto',
 
       styleTags: ['p', 'blockquote', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
 
@@ -150,7 +160,6 @@ define([
         onEnter: null,
         onKeyup: null,
         onKeydown: null,
-        onSubmit: null,
         onImageUpload: null,
         onImageUploadError: null
       },
@@ -228,6 +237,12 @@ define([
         'alignJustify': 'note-icon-align-justify',
         'alignLeft': 'note-icon-align-left',
         'alignRight': 'note-icon-align-right',
+        'rowBelow': 'note-icon-row-below',
+        'colBefore': 'note-icon-col-before',
+        'colAfter': 'note-icon-col-after',
+        'rowAbove': 'note-icon-row-above',
+        'rowRemove': 'note-icon-row-remove',
+        'colRemove': 'note-icon-col-remove',
         'indent': 'note-icon-align-indent',
         'outdent': 'note-icon-align-outdent',
         'arrowsAlt': 'note-icon-arrows-alt',
@@ -243,7 +258,7 @@ define([
         'link': 'note-icon-link',
         'unlink': 'note-icon-chain-broken',
         'magic': 'note-icon-magic',
-        'menuCheck': 'note-icon-check',
+        'menuCheck': 'note-icon-menu-check',
         'minus': 'note-icon-minus',
         'orderedlist': 'note-icon-orderedlist',
         'pencil': 'note-icon-pencil',

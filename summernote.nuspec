@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>summernote</id>
+    <version>$version$</version>
+    <authors>summernote</authors>
+    <owners>summernote</owners>
+    <licenseUrl>https://github.com/summernote/summernote#license</licenseUrl>
+    <projectUrl>https://github.com/summernote/summernote</projectUrl>
+    <iconUrl>http://summernote.org/img/icons/icon_ios_120x120.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <summary>
+      Super Simple WYSIWYG Editor on Bootstrap    
+    </summary>
+    <description>
+      <![CDATA[
+        Super Simple WYSIWYG Editor on Bootstrap
+      ]]>
+    </description>
+    <releaseNotes>
+      <![CDATA[
+        Bug fix
+
+          * Added fonts on meteor package.
+      ]]>
+    </releaseNotes>
+    <copyright>Copyright 2013</copyright>
+    <tags>summernote, Bootstrap, jQuery, editor, WYSIWYG</tags>
+    <dependencies>
+      <dependency id="Twitter.Bootstrap" version="3.0.1" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="dist\**\*.css" target="content\Content" />
+    <file src="dist\font\*.*" target="content\Content\fonts" />
+    <file src="dist\**\*.js" target="content\Scripts" />
+  </files>
+</package>

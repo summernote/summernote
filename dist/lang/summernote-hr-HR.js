@@ -48,7 +48,7 @@
       },
       style: {
         style: 'Stil',
-        normal: 'Normalni',
+        p: 'pni',
         blockquote: 'Citat',
         pre: 'Kôd',
         h1: 'Naslov 1',

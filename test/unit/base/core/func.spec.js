@@ -96,5 +96,48 @@ define([
         expect(func.namespaceToCamel('upload.image', 'summernote')).to.be.equal('summernoteUploadImage');
       });
     });
+
+    describe('debounce', function () {
+      it('shouldnt execute immediately', function () {
+        var hasHappened = false;
+        var fn = func.debounce(function () {
+          hasHappened = true;
+        }, 100);
+
+        expect(hasHappened).to.be.false;
+        fn();
+        expect(hasHappened).to.be.false;
+      });
+
+      it('should execute after delay', function (done) {
+        var hasHappened = false;
+        var fn = func.debounce(function () {
+          hasHappened = true;
+        }, 100);
+
+        fn();
+
+        setTimeout(function () {
+          expect(hasHappened).to.be.true;
+          done();
+        }, 101);
+      });
+
+      it('should only happen once', function (done) {
+        var count = 0;
+        var fn = func.debounce(function () {
+          count += 1;
+        }, 100);
+
+        fn();
+        fn();
+        fn();
+
+        setTimeout(function () {
+          expect(count).to.be.equal(1);
+          done();
+        }, 101);
+      });
+    });
   });
 });

@@ -51,14 +51,21 @@
         openInNewWindow: 'Ouvrir dans une nouvelle fenêtre'
       },
       table: {
-        table: 'Tableau'
+        table: 'Tableau',
+        addRowAbove: 'Ajouter une ligne au-dessus',
+        addRowBelow: 'Ajouter une ligne en dessous',
+        addColLeft: 'Ajouter une colonne à gauche',
+        addColRight: 'Ajouter une colonne à droite',
+        delRow: 'Supprimer la ligne',
+        delCol: 'Supprimer la colonne',
+        delTable: 'Supprimer le tableau'
       },
       hr: {
         insert: 'Insérer une ligne horizontale'
       },
       style: {
         style: 'Style',
-        normal: 'Normal',
+        p: 'Normal',
         blockquote: 'Citation',
         pre: 'Code source',
         h1: 'Titre 1',
@@ -105,11 +112,43 @@
         documentStyle: 'Style du document',
         extraKeys: 'Touches supplémentaires'
       },
+      help: {
+        'insertParagraph': 'Insérer paragraphe',
+        'undo': 'Défaire la dernière commande',
+        'redo': 'Refaire la dernière commande',
+        'tab': 'Tabulation',
+        'untab': 'Tabulation arrière',
+        'bold': 'Mettre en caractère gras',
+        'italic': 'Mettre en italique',
+        'underline': 'Mettre en souligné',
+        'strikethrough': 'Mettre en texte barré',
+        'removeFormat': 'Nettoyer les styles',
+        'justifyLeft': 'Aligner à gauche',
+        'justifyCenter': 'Centrer',
+        'justifyRight': 'Aligner à droite',
+        'justifyFull': 'Justifier à gauche et à droite',
+        'insertUnorderedList': 'Basculer liste à puces',
+        'insertOrderedList': 'Basculer liste ordonnée',
+        'outdent': 'Diminuer le retrait du paragraphe',
+        'indent': 'Augmenter le retrait du paragraphe',
+        'formatPara': 'Changer le paragraphe en cours en normal (P)',
+        'formatH1': 'Changer le paragraphe en cours en entête H1',
+        'formatH2': 'Changer le paragraphe en cours en entête H2',
+        'formatH3': 'Changer le paragraphe en cours en entête H3',
+        'formatH4': 'Changer le paragraphe en cours en entête H4',
+        'formatH5': 'Changer le paragraphe en cours en entête H5',
+        'formatH6': 'Changer le paragraphe en cours en entête H6',
+        'insertHorizontalRule': 'Insérer séparation horizontale',
+        'linkDialog.show': 'Afficher fenêtre d\'hyperlien'
+      },
       history: {
         undo: 'Annuler la dernière action',
         redo: 'Restaurer la dernière action annulée'
+      },
+      specialChar: {
+        specialChar: 'CARACTÈRES SPÉCIAUX',
+        select: 'Choisir des caractères spéciaux'
       }
-
     }
   });
 })(jQuery);

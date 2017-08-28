@@ -49,7 +49,7 @@
       },
       style: {
         style: 'Kiểu chữ',
-        normal: 'Chữ thường',
+        p: 'Chữ thường',
         blockquote: 'Đoạn trích',
         pre: 'Mã Code',
         h1: 'H1',
