@@ -2,8 +2,8 @@
  * Super simple wysiwyg editor v@VERSION
  * http://summernote.org/
  *
- * summernote.js
- * Copyright 2013-2016 Alan Hong. and other contributors
+ * @FILENAME
+ * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
  * Date: @DATE

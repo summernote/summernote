@@ -24,6 +24,13 @@
         selectFromFiles: 'Selecione a partir dos arquivos',
         url: 'Endereço da imagem'
       },
+      video: {
+        video: 'Vídeo',
+        videoLink: 'Link para vídeo',
+        insert: 'Inserir vídeo',
+        url: 'URL do vídeo?',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ou Youku)'
+      },
       link: {
         link: 'Link',
         insert: 'Inserir ligação',
@@ -41,7 +48,7 @@
       },
       style: {
         style: 'Estilo',
-        normal: 'Normal',
+        p: 'p',
         blockquote: 'Citação',
         pre: 'Código',
         h1: 'Título 1',
