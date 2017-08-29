@@ -47,21 +47,19 @@ require(['jquery', 'summernote'], function ($) {
       promise = requireByPromise(['summernote/lite/settings']);
       break;
     case 'bs3':
-      promise = requireByPromise(['bs3', 'summernote/bs3/settings']).then(function () {
-        return requireByPromise(['lang']);
-      });
+      promise = requireByPromise(['bs3', 'summernote/bs3/settings']);
       break;
     case 'bs4':
       promise = requireByPromise(['popper']).then(function (popper) {
         window.Popper = popper;
-        return requireByPromise(['bs4', 'summernote/bs4/settings']).then(function () {
-          return requireByPromise(['lang']);
-        });
+        return requireByPromise(['bs4', 'summernote/bs4/settings']);
       });
       break;
   }
 
   promise.then(function () {
+    return requireByPromise(['lang']);
+  }).then(function () {
     // initialize summernote
     $('.summernote').summernote({
       height: 300,
