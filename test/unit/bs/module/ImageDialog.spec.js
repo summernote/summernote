@@ -6,7 +6,7 @@
 /* jshint unused: false */
 define([
   'chai',
-  'summernote/bs/module/ImageDialog'
+  'summernote/base/module/ImageDialog'
 ], function (chai, ImageDialog) {
   'use strict';
 

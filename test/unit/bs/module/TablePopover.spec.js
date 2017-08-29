@@ -6,7 +6,7 @@
 /* jshint unused: false */
 define([
   'chai',
-  'summernote/bs/module/TablePopover'
+  'summernote/base/module/TablePopover'
 ], function (chai, TablePopover) {
   'use strict';
 

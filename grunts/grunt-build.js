@@ -66,7 +66,7 @@ module.exports = function (grunt) {
     }, function () {
       callback();
     }, function (err) {
-      callback();
+      callback(err);
     });
   };
 
@@ -75,8 +75,13 @@ module.exports = function (grunt) {
     var counter = this.data.length;
 
     this.data.forEach(function(datum) {
-      optimize(datum, function () {
+      optimize(datum, function (err) {
         counter -= 1;
+
+        if (err) {
+          grunt.log.error(err);
+        }
+
         if (counter == 0) {
           done();
         }

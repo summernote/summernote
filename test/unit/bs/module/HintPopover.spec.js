@@ -6,7 +6,7 @@
 /* jshint unused: false */
 define([
   'chai',
-  'summernote/bs/module/HintPopover'
+  'summernote/base/module/HintPopover'
 ], function (chai, HintPopover) {
   'use strict';
 

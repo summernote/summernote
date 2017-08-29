@@ -6,7 +6,7 @@
 /* jshint unused: false */
 define([
   'chai',
-  'summernote/bs/module/AirPopover'
+  'summernote/base/module/AirPopover'
 ], function (chai, AirPopover) {
   'use strict';
 

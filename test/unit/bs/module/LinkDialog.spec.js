@@ -6,7 +6,7 @@
 /* jshint unused: false */
 define([
   'chai',
-  'summernote/bs/module/LinkDialog'
+  'summernote/base/module/LinkDialog'
 ], function (chai, LinkDialog) {
   'use strict';
 

@@ -6,7 +6,7 @@
 /* jshint unused: false */
 define([
   'chai',
-  'summernote/bs/module/HelpDialog'
+  'summernote/base/module/HelpDialog'
 ], function (chai, HelpDialog) {
   'use strict';
 

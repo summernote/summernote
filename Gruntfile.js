@@ -88,8 +88,7 @@ module.exports = function (grunt) {
         endFile: 'outro.js',
         entryFile: 'summernote/bs4/settings',
         outFile: 'dist/summernote-bs4.js'
-      },
-      {
+      }, {
         baseUrl: 'src/js',        // base url
         startFile: 'intro.js',    // intro part
         endFile: 'outro.js',      // outro part

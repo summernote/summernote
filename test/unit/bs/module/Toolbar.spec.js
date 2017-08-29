@@ -6,7 +6,7 @@
 /* jshint unused: false */
 define([
   'chai',
-  'summernote/bs/module/Toolbar'
+  'summernote/base/module/Toolbar'
 ], function (chai, Toolbar) {
   'use strict';
 

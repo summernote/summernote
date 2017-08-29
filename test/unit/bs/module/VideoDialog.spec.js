@@ -8,7 +8,7 @@ define([
   'chai',
   'jquery',
   'summernote/base/Context',
-  'summernote/bs/module/VideoDialog'
+  'summernote/base/module/VideoDialog'
 ], function (chai, $, Context, VideoDialog) {
   'use strict';
 
