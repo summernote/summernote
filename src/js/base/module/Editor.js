@@ -78,7 +78,7 @@ define([
       var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
       $editable.on(changeEventName, func.debounce(function () {
         context.triggerEvent('change', $editable.html());
-      }, 250));
+      }, 100));
 
       $editor.on('focusin', function (event) {
         context.triggerEvent('focusin', event);
