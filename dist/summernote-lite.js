@@ -6,7 +6,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2017-08-28T08:26Z
+ * Date: 2017-08-29T05:36Z
  */
 (function (factory) {
   /* global define */
@@ -2016,7 +2016,7 @@
 
       this.setEvent = function () {
         this.$button.on('click', function () {
-          self.toggle();
+          self.toggle(); 
         });
       };
 
@@ -2155,7 +2155,10 @@
         title: options.tooltip
       });
     }
-
+    if (options.contents) {
+      $node.html(options.contents);
+    }
+    
     if (options && options.data && options.data.toggle === 'dropdown') {
       DropdownUI.create($node);
     }
@@ -2167,7 +2170,7 @@
       var content = options.template ? options.template(item) : item;
       var $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '"></a>');
 
-      $temp.html(content).data('item', item);
+      $temp.html(content).data('item', item); 
 
       return $temp;
     }) : options.items;
@@ -2204,8 +2207,6 @@
     $node.on('click', '> .note-dropdown-item', function (e) {
       var $a = $(this);
 
-      console.log($a);
-
       var item = $a.data('item');
       var value = $a.data('value');
 
@@ -2216,6 +2217,10 @@
       }
     });
   });
+
+  var dropdownButtonContents = function (contents, options) {
+    return contents + ' ' + icon(options.icons.caret, 'span');
+  };
 
   var dropdownButton = function (opt, callback) {
     return buttonGroup([
@@ -2615,6 +2620,7 @@
     dropdown: dropdown,
     dropdownCheck: dropdownCheck,
     dropdownButton: dropdownButton,
+    dropdownButtonContents: dropdownButtonContents,
     dropdownCheckButton: dropdownCheckButton,
     paragraphDropdownButton: paragraphDropdownButton,
     tableDropdownButton: tableDropdownButton,
@@ -5008,7 +5014,7 @@
       var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
       $editable.on(changeEventName, func.debounce(function () {
         context.triggerEvent('change', $editable.html());
-      }, 250));
+      }, 100));
 
       $editor.on('focusin', function (event) {
         context.triggerEvent('focusin', event);
@@ -7284,13 +7290,15 @@
     this.initialize = function () {
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
-      var body = '<div class="form-group">' +
-                   '<label>' + lang.link.textToDisplay + '</label>' +
-                   '<input class="note-link-text form-control" type="text" />' +
+      var body = '<div class="form-group note-form-group">' +
+                   '<label class="note-form-label">' + lang.link.textToDisplay + '</label>' +
+                   '<input class="note-link-text form-control '+ 
+                   ' note-form-control  note-input" type="text" />' +
                  '</div>' +
-                 '<div class="form-group">' +
-                   '<label>' + lang.link.url + '</label>' +
-                   '<input class="note-link-url form-control" type="text" value="http://" />' +
+                 '<div class="form-group note-form-group">' +
+                   '<label class="note-form-label">' + lang.link.url + '</label>' +
+                   '<input class="note-link-url form-control note-form-control ' +
+                   'note-input" type="text" value="http://" />' +
                  '</div>' +
                  (!options.disableLinkTarget ?
                    '<div class="checkbox">' +
@@ -7299,7 +7307,8 @@
                      '</label>' +
                    '</div>' : ''
                  );
-      var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
+      var footer = '<button href="#" class="btn btn-primary note-btn note-btn-primary ' +
+      'note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
 
       this.$dialog = ui.dialog({
         className: 'link-dialog',
@@ -7395,7 +7404,7 @@
               text: $linkText.val(),
               isNewWindow: $openInNewWindow.is(':checked')
             });
-            self.$dialog.modal('hide');
+            ui.hideDialog(self.$dialog);
           });
         });
 
@@ -7454,11 +7463,11 @@
       this.$popover = ui.popover({
         className: 'note-link-popover',
         callback: function ($node) {
-          var $content = $node.find('.popover-content');
+          var $content = $node.find('.popover-content,.note-popover-content');
           $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
         }
       }).render().appendTo('body');
-      var $content = this.$popover.find('.popover-content');
+      var $content = this.$popover.find('.popover-content,.note-popover-content');
 
       context.invoke('buttons.build', $content, options.popover.link);
     };
@@ -7515,16 +7524,19 @@
         imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
       }
 
-      var body = '<div class="form-group note-group-select-from-files">' +
-                   '<label>' + lang.image.selectFromFiles + '</label>' +
-                   '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" />' +
+      var body = '<div class="form-group note-form-group note-group-select-from-files">' +
+                   '<label class="note-form-label">' + lang.image.selectFromFiles + '</label>' +
+                   '<input class="note-image-input form-control note-form-control note-input" '+
+                   ' type="file" name="files" accept="image/*" multiple="multiple" />' +
                    imageLimitation +
-                 '</div>' +
+                 '</div>' + 
                  '<div class="form-group note-group-image-url" style="overflow:auto;">' +
-                   '<label>' + lang.image.url + '</label>' +
-                   '<input class="note-image-url form-control col-md-12" type="text" />' +
+                   '<label class="note-form-label">' + lang.image.url + '</label>' +
+                   '<input class="note-image-url form-control note-form-control note-input ' +
+                   ' col-md-12" type="text" />' +
                  '</div>';
-      var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
+      var footer = '<button href="#" class="btn btn-primary note-btn note-btn-primary ' +
+      'note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
 
       this.$dialog = ui.dialog({
         title: lang.image.insert,
@@ -7643,7 +7655,7 @@
       this.$popover = ui.popover({
         className: 'note-image-popover'
       }).render().appendTo('body');
-      var $content = this.$popover.find('.popover-content');
+      var $content = this.$popover.find('.popover-content,.note-popover-content');
 
       context.invoke('buttons.build', $content, options.popover.image);
     };
@@ -7683,11 +7695,13 @@
     this.initialize = function () {
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
-      var body = '<div class="form-group row-fluid">' +
-          '<label>' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
-          '<input class="note-video-url form-control span12" type="text" />' +
+      var body = '<div class="form-group note-form-group row-fluid">' +
+          '<label class="note-form-label">' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
+          '<input class="note-video-url form-control  note-form-control note-input span12" ' + 
+          ' type="text" />' +
           '</div>';
-      var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
+      var footer = '<button href="#" class="btn btn-primary note-btn note-btn-primary ' + 
+      ' note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
 
       this.$dialog = ui.dialog({
         title: lang.video.insert,
@@ -7901,7 +7915,7 @@
         body: this.createShortCutList(),
         footer: body,
         callback: function ($node) {
-          $node.find('.modal-body').css({
+          $node.find('.modal-body,.note-modal-body').css({
             'max-height': 300,
             'overflow': 'scroll'
           });
@@ -8041,7 +8055,7 @@
 
       this.$popover.hide();
 
-      this.$content = this.$popover.find('.popover-content');
+      this.$content = this.$popover.find('.popover-content,.note-popover-content');
 
       this.$content.on('click', '.note-hint-item', function () {
         self.$content.find('.active').removeClass('active');
