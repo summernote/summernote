@@ -30,7 +30,7 @@ define([
       this.$popover = ui.popover({
         className: 'note-table-popover'
       }).render().appendTo('body');
-      var $content = this.$popover.find('.popover-content');
+      var $content = this.$popover.find('.popover-content,.note-popover-content');
 
       context.invoke('buttons.build', $content, options.popover.table);
 
