@@ -17,6 +17,7 @@ define([
   'summernote/bs/module/LinkPopover',
   'summernote/bs/module/ImageDialog',
   'summernote/bs/module/ImagePopover',
+  'summernote/bs/module/TablePopover',
   'summernote/bs/module/VideoDialog',
   'summernote/bs/module/HelpDialog',
   'summernote/bs/module/AirPopover',
@@ -24,7 +25,7 @@ define([
 ], function (
   ui, lang,
   Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle, AutoLink, AutoSync, Placeholder,
-  Buttons, Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover, VideoDialog, HelpDialog, AirPopover, HintPopover
+  Buttons, Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover, TablePopover, VideoDialog, HelpDialog, AirPopover, HintPopover
 ) {
 
   $.summernote = $.extend($.summernote, {
@@ -54,6 +55,7 @@ define([
         'linkPopover': LinkPopover,
         'imageDialog': ImageDialog,
         'imagePopover': ImagePopover,
+        'tablePopover': TablePopover,
         'videoDialog': VideoDialog,
         'helpDialog': HelpDialog,
         'airPopover': AirPopover
@@ -85,6 +87,10 @@ define([
         ],
         link: [
           ['link', ['linkDialogShow', 'unlink']]
+        ],
+        table: [
+          ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
+          ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]
         ],
         air: [
           ['color', ['color']],
@@ -229,6 +235,12 @@ define([
         'alignJustify': 'note-icon-align-justify',
         'alignLeft': 'note-icon-align-left',
         'alignRight': 'note-icon-align-right',
+        'rowBelow': 'note-icon-row-below',
+        'colBefore': 'note-icon-col-before',
+        'colAfter': 'note-icon-col-after',
+        'rowAbove': 'note-icon-row-above',
+        'rowRemove': 'note-icon-row-remove',
+        'colRemove': 'note-icon-col-remove',
         'indent': 'note-icon-align-indent',
         'outdent': 'note-icon-align-outdent',
         'arrowsAlt': 'note-icon-arrows-alt',
