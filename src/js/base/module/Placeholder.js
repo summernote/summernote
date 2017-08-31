@@ -22,6 +22,8 @@ define(function () {
       this.$placeholder.on('click', function () {
         context.invoke('focus');
       }).text(options.placeholder).prependTo($editingArea);
+
+      this.update();
     };
 
     this.destroy = function () {
