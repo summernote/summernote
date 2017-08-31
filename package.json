@@ -20,7 +20,10 @@
     "start": "grunt server",
     "test": "grunt test",
     "build": "grunt build",
-    "dist": "grunt dist"
+    "dist": "grunt dist",
+    "test-travis": "grunt test-travis --verbose",
+    "test-saucelabs": "grunt saucelabs-test",
+    "coveralls": "grunt coveralls:travis"
   },
   "dependencies": {
     "bootstrap": "^3.3.7"
