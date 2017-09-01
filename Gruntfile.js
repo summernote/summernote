@@ -119,7 +119,10 @@ module.exports = function (grunt) {
       },
       all: {
         files: [
-          { 'dist/summernote.min.js': ['dist/summernote.js'] },
+            {
+                'dist/summernote.min.js': ['dist/summernote.js'],
+                'dist/summernote-bs4.min.js': ['dist/summernote-bs4.js']
+            },
           {
             expand: true,
             cwd: 'dist/lang',
@@ -306,7 +309,7 @@ module.exports = function (grunt) {
   // dist: make dist files
   grunt.registerTask('dist', [
     'clean:dist',
-    'build', 'webfont', 'lint', 'karma:dist',
+    'build',  'lint', 'karma:dist',
     'copy:dist', 'uglify', 'recess', 'compress'
   ]);
 
