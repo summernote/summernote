@@ -14,7 +14,7 @@ define([
 
       var body = '<div class="form-group note-form-group">' +
                    '<label class="note-form-label">' + lang.link.textToDisplay + '</label>' +
-                   '<input class="note-link-text form-control '+ 
+                   '<input class="note-link-text form-control '+
                    ' note-form-control  note-input" type="text" />' +
                  '</div>' +
                  '<div class="form-group note-form-group">' +
@@ -22,13 +22,10 @@ define([
                    '<input class="note-link-url form-control note-form-control ' +
                    'note-input" type="text" value="http://" />' +
                  '</div>' +
-                 (!options.disableLinkTarget ?
-                   '<div class="checkbox">' +
-                     '<label for="sn-checkbox-open-in-new-window">' +
-                       '<input type="checkbox" id="sn-checkbox-open-in-new-window" checked />' + lang.link.openInNewWindow +
-                     '</label>' +
-                   '</div>' : ''
-                 );
+      (!options.disableLinkTarget ?
+          $('<div/>').append(ui.checkbox({ id: 'sn-checkbox-open-in-new-window', text: lang.link.openInNewWindow, checked: true }).render())
+              .html()
+          : '');
       var footer = '<button href="#" class="btn btn-primary note-btn note-btn-primary ' +
       'note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
 

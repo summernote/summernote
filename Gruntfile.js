@@ -132,7 +132,8 @@ module.exports = function (grunt) {
       },
       all: {
         files: [
-          { 'dist/summernote.min.js': ['dist/summernote.js'] },
+            { 'dist/summernote.min.js': ['dist/summernote.js'] },
+            { 'dist/summernote-bs4.min.js': ['dist/summernote-bs4.js'] },
           {
             expand: true,
             cwd: 'dist/lang',
@@ -159,7 +160,7 @@ module.exports = function (grunt) {
           {
             'dist/summernote.css': ['src/less/summernote.less'],
             'dist/summernote-bs4.css': ['src/less/summernote-bs4.less'],
-            'dist/summernote-lite.css': ['src/less/summernote-lite.less']            
+            'dist/summernote-lite.css': ['src/less/summernote-lite.less']
 
           },
           {
