@@ -40,4 +40,4 @@ build/
 
 
 # Ignore Visual Studio folders
-.vs/*
+.vs
