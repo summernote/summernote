@@ -58,7 +58,7 @@ define([
                 return ui.buttonGroup([
                     ui.button({
                         className: 'dropdown-toggle',
-                        contents: ui.dropdownButtonContents(ui.icon(options.icons.magic), options),
+                        contents: ui.icon(options.icons.magic) + ' ' + ui.icon(options.icons.caret, 'span'),
                         tooltip: lang.style.style,
                         data: {
                             toggle: 'dropdown'
@@ -151,7 +151,7 @@ define([
                 return ui.buttonGroup([
                     ui.button({
                         className: 'dropdown-toggle',
-                        contents: ui.dropdownButtonContents('<span class="note-current-fontname"/>', options),
+                        contents: '<span class="note-current-fontname"/> ' + ui.icon(options.icons.caret, 'span'),
                         tooltip: lang.font.name,
                         data: {
                             toggle: 'dropdown'
@@ -173,7 +173,7 @@ define([
                 return ui.buttonGroup([
                     ui.button({
                         className: 'dropdown-toggle',
-                        contents: ui.dropdownButtonContents('<span class="note-current-fontsize"/>', options),
+                        contents: '<span class="note-current-fontsize"/>' + ui.icon(options.icons.caret, 'span'),
                         tooltip: lang.font.size,
                         data: {
                             toggle: 'dropdown'
@@ -183,7 +183,7 @@ define([
                         className: 'dropdown-fontsize',
                         checkClassName: options.icons.menuCheck,
                         items: options.fontSizes,
-                        click: context.createInvokeHandlerAndUpdateState('editor.fontSize')
+                        click: context.createInvokeHandler('editor.fontSize')
                     })
                 ]).render();
             });
@@ -211,7 +211,7 @@ define([
                         }),
                         ui.button({
                             className: 'dropdown-toggle',
-                            contents: ui.dropdownButtonContents('', options),
+                            contents: ui.icon(options.icons.caret, 'span'),
                             tooltip: lang.color.more,
                             data: {
                                 toggle: 'dropdown'
@@ -219,26 +219,28 @@ define([
                         }),
                         ui.dropdown({
                             items: [
-                                '<div class="note-palette">',
+                                '<li>',
+                                '<div class="note-btn-group">',
                                 '  <div class="note-palette-title">' + lang.color.background + '</div>',
                                 '  <div>',
-                                '    <button type="button" class="note-color-reset btn btn-light" ' +
-                                            'data-event="backColor" data-value="inherit">',
+                                '    <button type="button" class="note-color-reset btn btn-secondary" ' +
+                                             'data-event="backColor" data-value="inherit">',
                                 lang.color.transparent,
                                 '    </button>',
                                 '  </div>',
                                 '  <div class="note-holder" data-event="backColor"/>',
                                 '</div>',
-                                '<div class="note-palette">',
+                                '<div class="note-btn-group">',
                                 '  <div class="note-palette-title">' + lang.color.foreground + '</div>',
                                 '  <div>',
-                                '    <button type="button" class="note-color-reset btn btn-light" ' +
-                                            'data-event="removeFormat" data-value="foreColor">',
+                                '    <button type="button" class="note-color-reset btn btn-secondary" ' +
+                                             'data-event="removeFormat" data-value="foreColor">',
                                 lang.color.resetToDefault,
                                 '    </button>',
                                 '  </div>',
                                 '  <div class="note-holder" data-event="foreColor"/>',
-                                '</div>'
+                                '</div>',
+                                '</li>'
                             ].join(''),
                             callback: function ($dropdown) {
                                 $dropdown.find('.note-holder').each(function () {
@@ -333,7 +335,7 @@ define([
                 return ui.buttonGroup([
                     ui.button({
                         className: 'dropdown-toggle',
-                        contents: ui.dropdownButtonContents(ui.icon(options.icons.alignLeft), options),
+                        contents: ui.icon(options.icons.alignLeft) + ' ' + ui.icon(options.icons.caret, 'span'),
                         tooltip: lang.paragraph.paragraph,
                         data: {
                             toggle: 'dropdown'
@@ -356,7 +358,7 @@ define([
                 return ui.buttonGroup([
                     ui.button({
                         className: 'dropdown-toggle',
-                        contents: ui.dropdownButtonContents(ui.icon(options.icons.textHeight), options),
+                        contents: ui.icon(options.icons.textHeight) + ' ' + ui.icon(options.icons.caret, 'span'),
                         tooltip: lang.font.height,
                         data: {
                             toggle: 'dropdown'
@@ -375,7 +377,7 @@ define([
                 return ui.buttonGroup([
                     ui.button({
                         className: 'dropdown-toggle',
-                        contents: ui.dropdownButtonContents(ui.icon(options.icons.table), options),
+                        contents: ui.icon(options.icons.table) + ' ' + ui.icon(options.icons.caret, 'span'),
                         tooltip: lang.table.table,
                         data: {
                             toggle: 'dropdown'
@@ -679,22 +681,20 @@ define([
                 });
                 var fontName = list.find(fontNames, self.isFontInstalled);
 
-                $toolbar.find('.dropdown-fontname a').each(function () {
-                    var $item = $(this);
+                $toolbar.find('.dropdown-fontname li a').each(function () {
                     // always compare string to avoid creating another func.
-                    var isChecked = ($item.data('value') + '') === (fontName + '');
-                    $item.toggleClass('checked', isChecked);
+                    var isChecked = ($(this).data('value') + '') === (fontName + '');
+                    this.className = isChecked ? 'checked' : '';
                 });
                 $toolbar.find('.note-current-fontname').text(fontName);
             }
 
             if (styleInfo['font-size']) {
                 var fontSize = styleInfo['font-size'];
-                $toolbar.find('.dropdown-fontsize a').each(function () {
-                    var $item = $(this);
+                $toolbar.find('.dropdown-fontsize li a').each(function () {
                     // always compare with string to avoid creating another func.
-                    var isChecked = ($item.data('value') + '') === (fontSize + '');
-                    $item.toggleClass('checked', isChecked);
+                    var isChecked = ($(this).data('value') + '') === (fontSize + '');
+                    this.className = isChecked ? 'checked' : '';
                 });
                 $toolbar.find('.note-current-fontsize').text(fontSize);
             }

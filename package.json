@@ -23,8 +23,9 @@
     "dist": "grunt dist"
   },
   "dependencies": {
-    "jquery": "^2.2.4",
-    "bootstrap": "^3.3.7"
+    "bootstrap": "^3.3.7",
+    "fontforge": "0.0.4",
+    "jquery": "^2.2.4"
   },
   "devDependencies": {
     "chai": "^3.2.0",

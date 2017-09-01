@@ -1,5 +1,5 @@
 @import "elements.less";
-@import "../icons/dist/summernote.less";
+@import "font.less";
 
 /* Theme Variables
  ------------------------------------------*/
@@ -13,10 +13,10 @@
  ------------------------------------------*/
 .note-editor {
   position: relative;
-
   /* dropzone */
   @dropzone-color: lightskyblue;
   @dropzone-active-color: darken(@dropzone-color, 30);
+
   .note-dropzone {
     position: absolute;
     display: none;
@@ -71,13 +71,13 @@
 ------------------------------------------*/
 .note-editor.note-frame {
   border: 1px solid @border-color;
-
   /* codeview mode */
   &.codeview {
     .note-editing-area {
       .note-editable {
         display: none;
       }
+
       .note-codable {
         display: block;
       }
@@ -86,7 +86,6 @@
 
   .note-editing-area {
     overflow: hidden;
-
     /* editable */
     .note-editable {
       background-color: #fff;
@@ -98,7 +97,6 @@
         background-color: #e5e5e5;
       }
     }
-
     /* codeable */
     .note-codable {
       display: none;
@@ -111,14 +109,12 @@
       color: #ccc;
       background-color: #222;
       resize: none;
-
       /* override BS2 default style */
       .box-sizing(border-box);
       .rounded(0);
       margin-bottom: 0;
     }
   }
-
   /* fullscreen mode */
   &.fullscreen {
     position: fixed;
@@ -129,21 +125,23 @@
     .note-editable {
       background-color: white;
     }
+
     .note-resizebar {
       display: none;
     }
   }
-
   /* statusbar */
   .note-statusbar {
     background-color: @background-color;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
+
     .note-resizebar {
       padding-top: 1px;
       height: 8px;
       width: 100%;
       cursor: ns-resize;
+
       .note-icon-bar {
         width: 20px;
         margin: 1px auto;
@@ -151,6 +149,7 @@
       }
     }
   }
+
   .note-placeholder {
     padding: 10px;
   }
@@ -160,16 +159,18 @@
 ------------------------------------------*/
 .note-popover.popover {
   max-width: none;
+
   .popover-content {
     a {
       display: inline-block;
       max-width: 200px;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;    /* for FF */
+      white-space: nowrap; /* for FF */
       vertical-align: middle; /* for FF */
     }
   }
+
   .arrow {
     left: 20px !important;
   }
@@ -181,7 +182,7 @@
   margin: 0;
   padding: 0 0 5px 5px;
 
-  &>.btn-group {
+  & > .btn-group {
     margin-top: 5px;
     margin-left: 0;
     margin-right: 5px;
@@ -191,8 +192,10 @@
     .note-table {
       min-width: 0;
       padding: 5px;
+
       .note-dimension-picker {
         font-size: 18px;
+
         .note-dimension-picker-mousecatcher {
           position: absolute !important;
           z-index: 3;
@@ -200,6 +203,7 @@
           height: 10em;
           cursor: pointer;
         }
+
         .note-dimension-picker-unhighlighted {
           position: relative !important;
           z-index: 1;
@@ -207,6 +211,7 @@
           height: 5em;
           background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASAgMAAAAroGbEAAAACVBMVEUAAIj4+Pjp6ekKlAqjAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfYAR0BKhmnaJzPAAAAG0lEQVQI12NgAAOtVatWMTCohoaGUY+EmIkEAEruEzK2J7tvAAAAAElFTkSuQmCC') repeat;
         }
+
         .note-dimension-picker-highlighted {
           position: absolute !important;
           z-index: 2;
@@ -229,10 +234,15 @@
       width: 20px;
       padding-left: 5px;
     }
+
     .dropdown-menu {
-      min-width: 340px;
-      .btn-group {
+      min-width: 337px;
+
+      .note-palette {
+        display: inline-block;
         margin: 0;
+        width: 160px;
+
         &:first-child {
           margin: 0 5px;
         }
@@ -268,23 +278,30 @@
     .dropdown-menu {
       min-width: 216px;
       padding: 5px;
-      &>div:first-child {
+
+      & > div:first-child {
         margin-right: 5px;
       }
     }
   }
-
   /* dropdown-menu for toolbar and popover */
   .dropdown-menu {
     min-width: 90px;
-
     /* dropdown-menu right position */
     /* http://forrst.com/posts/Bootstrap_right_positioned_dropdown-2KB */
     &.right {
       right: 0;
       left: auto;
-      &::before { right: 9px; left: auto !important;  }
-      &::after { right: 10px; left: auto !important;  }
+
+      &::before {
+        right: 9px;
+        left: auto !important;
+      }
+
+      &::after {
+        right: 10px;
+        left: auto !important;
+      }
     }
     /* dropdown-menu for selectbox */
     &.note-check {
@@ -292,20 +309,20 @@
         color: deepskyblue;
         visibility: hidden;
       }
+
       li a.checked i {
         visibility: visible;
       }
     }
-
   }
 
   .note-fontsize-10 {
     font-size: 10px;
   }
-
   /* color palette for toolbar and popover */
   .note-color-palette {
     line-height: 1;
+
     div {
       .note-color-btn {
         width: 20px;
@@ -314,6 +331,7 @@
         margin: 0;
         border: 1px solid #fff;
       }
+
       .note-color-btn:hover {
         border: 1px solid #000;
       }
@@ -324,16 +342,19 @@
 /* Dialog
 ------------------------------------------*/
 .note-dialog {
-  &>div {
+  & > div {
     display: none; /* BS2's hide pacth. */
   }
+
   .form-group { /* overwrite BS's form-horizontal minus margins */
     margin-left: 0;
     margin-right: 0;
   }
+
   .note-modal-form {
     margin: 0; /* overwrite BS2's form margin bottom */
   }
+
   .note-image-dialog {
     .note-dropzone {
       min-height: 100px;
@@ -345,7 +366,6 @@
       margin-bottom: 10px;
     }
   }
-
   // [workaround] firefox fileinput
   @-moz-document url-prefix() {
     .note-image-input {
@@ -370,7 +390,10 @@
     position: absolute;
     display: none;
     border: 1px solid black;
-    &>div { position: absolute; }
+
+    & > div {
+      position: absolute;
+    }
 
     .note-control-selection-bg {
       width: 100%;
