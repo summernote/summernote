@@ -87,8 +87,8 @@ define([
       '  <div class="modal-content">',
       (options.title ?
       '    <div class="modal-header">' +
-      '      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
       '      <h4 class="modal-title">' + options.title + '</h4>' +
+      '      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
       '    </div>' : ''
       ),
       '    <div class="modal-body">' + options.body + '</div>',
@@ -115,6 +115,19 @@ define([
     }
   });
 
+  var checkbox = renderer.create('<label class="custom-control custom-checkbox"></label>', function ($node, options) {
+      if (options.id) {
+          $node.attr('for', options.id);
+      }
+      $node.html([
+          ' <input type="checkbox" class="custom-control-input"' + (options.id ? ' id="' + options.id + '"' : ''),
+          (options.checked ? ' checked' : '') + '/>',
+          ' <span class="custom-control-indicator"></span>',
+          ' <span class="custom-control-description">' + (options.text ? options.text : '') + '</span>',
+          '</label>'
+      ].join(''));
+  });
+
   var icon = function (iconClassName, tagName) {
     tagName = tagName || 'i';
     return '<' + tagName + ' class="' + iconClassName + '"/>';
@@ -137,6 +150,7 @@ define([
     dialog: dialog,
     popover: popover,
     icon: icon,
+    checkbox:checkbox,
     options: {},
 
     button: function ($node, options) {
