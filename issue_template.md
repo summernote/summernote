@@ -3,8 +3,9 @@
 2.
 3.
 
-#### browser version and os version
+#### browser version and os version and summernote version
 What is your browser and OS?
+What is your summernote version?
 
 #### screenshot of issue
 Add screenshots which shows your issue(if needed).
