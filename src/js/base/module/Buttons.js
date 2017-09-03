@@ -646,9 +646,14 @@ define([
       }
     };
 
-    this.updateCurrentStyle = function () {
+    /**
+     * @param {jQuery} [$container]
+     */
+    this.updateCurrentStyle = function ($container) {
+      var $cont = $container || $toolbar;
+      
       var styleInfo = context.invoke('editor.currentStyle');
-      this.updateBtnStates({
+      this.updateBtnStates($cont, {
         '.note-btn-bold': function () {
           return styleInfo['font-bold'] === 'bold';
         },
@@ -677,29 +682,29 @@ define([
         });
         var fontName = list.find(fontNames, self.isFontInstalled);
 
-        $toolbar.find('.dropdown-fontname a').each(function () {
+        $cont.find('.dropdown-fontname a').each(function () {
           var $item = $(this);
           // always compare string to avoid creating another func.
           var isChecked = ($item.data('value') + '') === (fontName + '');
           $item.toggleClass('checked', isChecked);
         });
-        $toolbar.find('.note-current-fontname').text(fontName);
+        $cont.find('.note-current-fontname').text(fontName);
       }
 
       if (styleInfo['font-size']) {
         var fontSize = styleInfo['font-size'];
-        $toolbar.find('.dropdown-fontsize a').each(function () {
+        $cont.find('.dropdown-fontsize a').each(function () {
           var $item = $(this);
           // always compare with string to avoid creating another func.
           var isChecked = ($item.data('value') + '') === (fontSize + '');
           $item.toggleClass('checked', isChecked);
         });
-        $toolbar.find('.note-current-fontsize').text(fontSize);
+        $cont.find('.note-current-fontsize').text(fontSize);
       }
 
       if (styleInfo['line-height']) {
         var lineHeight = styleInfo['line-height'];
-        $toolbar.find('.dropdown-line-height li a').each(function () {
+        $cont.find('.dropdown-line-height li a').each(function () {
           // always compare with string to avoid creating another func.
           var isChecked = ($(this).data('value') + '') === (lineHeight + '');
           this.className = isChecked ? 'checked' : '';
@@ -707,9 +712,9 @@ define([
       }
     };
 
-    this.updateBtnStates = function (infos) {
+    this.updateBtnStates = function ($container, infos) {
       $.each(infos, function (selector, pred) {
-        ui.toggleBtnActive($toolbar.find(selector), pred());
+        ui.toggleBtnActive($container.find(selector), pred());
       });
     };
 

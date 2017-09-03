@@ -60,6 +60,7 @@ define([
             left: Math.max(bnd.left + bnd.width / 2, 0) - AIR_MODE_POPOVER_X_OFFSET,
             top: bnd.top + bnd.height
           });
+          context.invoke('buttons.updateCurrentStyle', this.$popover);
         }
       } else {
         this.hide();
