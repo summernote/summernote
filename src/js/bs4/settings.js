@@ -67,6 +67,10 @@ define([
 
       lang: 'en-US',
 
+      // following toolbar
+      followingToolbar: true,
+      otherStaticBarClass: 'topBar',
+
       // toolbar
       toolbar: [
         ['style', ['style']],

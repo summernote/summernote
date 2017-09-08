@@ -11,6 +11,46 @@ define(function () {
       return !options.airMode;
     };
 
+    // following toolbar
+    this.followingToolbar = function() {
+        var isFullscreen = $editor.hasClass('fullscreen');
+
+        if (isFullscreen) {
+          return false;
+        }
+
+        var $toolbarWrapper = $toolbar.parent('.note-toolbar-wrapper');
+        var editorHeight = $editor.outerHeight();
+        var editorWidth = $editor.width();
+        var toolbarOffset, editorOffsetTop, editorOffsetBottom, toolbarHeight;
+        var activateOffset, deactivateOffsetTop, deactivateOffsetBottom;
+        var currentOffset;
+        var otherBarHeight;
+
+        toolbarHeight = $toolbar.height();
+        $toolbarWrapper.css({height: toolbarHeight});
+
+        // check if the web app is currently using another static bar
+        otherBarHeight = $('.' + options.otherStaticBarClass).outerHeight();
+        if (!otherBarHeight) {
+            otherBarHeight = 0;
+        }
+
+        currentOffset = $(document).scrollTop();
+        toolbarOffset = $toolbar.offset().top;
+        editorOffsetTop = $editor.offset().top;
+        editorOffsetBottom = editorOffsetTop + editorHeight;
+        activateOffset = editorOffsetTop - otherBarHeight;
+        deactivateOffsetBottom = editorOffsetBottom - otherBarHeight - toolbarHeight;
+        deactivateOffsetTop = editorOffsetTop - otherBarHeight;
+
+        if ((currentOffset > activateOffset) && (currentOffset < deactivateOffsetBottom)) {
+            $toolbar.css({position: 'fixed', top: otherBarHeight, width: editorWidth});
+        } else {
+            $toolbar.css({position: 'relative', top: 0, width: '100%'});
+        }
+    };
+
     this.initialize = function () {
       options.toolbar = options.toolbar || [];
 
@@ -31,6 +71,12 @@ define(function () {
       });
 
       context.invoke('buttons.updateCurrentStyle');
+
+      if (options.followingToolbar) {
+        $(window).on('scroll resize', () => {
+          this.followingToolbar();
+        });
+      }
     };
 
     this.destroy = function () {
