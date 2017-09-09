@@ -476,6 +476,16 @@ define([
     }
   });
 
+  var checkbox = renderer.create('<div class="checkbox"></div>', function ($node, options) {
+    $node.html([
+      ' <label' + (options.id ? ' for="' + options.id + '"' : '') + '>',
+      ' <input type="checkbox"' + (options.id ? ' id="' + options.id + '"' : ''),
+      (options.checked ? ' checked' : '') + '/>',
+      (options.text ? options.text : ''),
+      '</label>'
+    ].join(''));
+  });
+
   var icon = function (iconClassName, tagName) {
     tagName = tagName || 'i';
     return '<' + tagName + ' class="' + iconClassName + '"/>';
@@ -506,6 +516,7 @@ define([
     imageDialog: imageDialog,
     linkDialog: linkDialog,
     popover: popover,
+    checkbox: checkbox,
     icon: icon,
 
     toggleBtn: function ($btn, isEnable) {
