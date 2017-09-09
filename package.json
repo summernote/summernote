@@ -1,7 +1,7 @@
 {
   "name": "summernote",
   "description": "Super simple WYSIWYG editor",
-  "version": "0.8.7",
+  "version": "0.8.8",
   "license": "MIT",
   "keywords": [
     "editor",
@@ -17,13 +17,15 @@
   },
   "main": "dist/summernote.js",
   "scripts": {
+    "start": "grunt server",
     "test": "grunt test",
-    "server": "grunt server",
     "build": "grunt build",
-    "dist": "grunt dist"
+    "dist": "grunt dist",
+    "test-travis": "grunt test-travis --verbose",
+    "test-saucelabs": "grunt saucelabs-test",
+    "coveralls": "grunt coveralls:travis"
   },
   "dependencies": {
-    "jquery": "^2.2.4",
     "bootstrap": "^3.3.7"
   },
   "devDependencies": {

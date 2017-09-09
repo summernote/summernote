@@ -37,3 +37,6 @@ build/
 
 # Ignoring dist folder content
 # dist/*
+
+# Ignoring visual studio
+.vs

@@ -53,19 +53,19 @@ module.exports = function (grunt) {
     'SL_CHROME': {
       base: 'SauceLabs',
       browserName: 'chrome',
-      version: '59',
+      version: 'latest',
       platform: 'windows 8'
     },
     'SL_FIREFOX': {
       base: 'SauceLabs',
       browserName: 'firefox',
-      version: '54',
+      version: 'latest',
       platform: 'windows 8'
     },
     'SL_SAFARI': {
       base: 'SauceLabs',
       browserName: 'safari',
-      version: '8.0',
+      version: 'latest',
       platform: 'OS X 10.10'
     }
   };
@@ -76,12 +76,25 @@ module.exports = function (grunt) {
 
     // bulid source(grunt-build.js).
     build: {
-      all: {
+      all: [{
+        baseUrl: 'src/js',
+        startFile: 'intro.js',
+        endFile: 'outro.js',
+        entryFile: 'summernote/bs3/settings',
+        outFile: 'dist/summernote.js'
+      }, {
+        baseUrl: 'src/js',
+        startFile: 'intro.js',
+        endFile: 'outro.js',
+        entryFile: 'summernote/bs4/settings',
+        outFile: 'dist/summernote-bs4.js'
+      }, {
         baseUrl: 'src/js',        // base url
         startFile: 'intro.js',    // intro part
         endFile: 'outro.js',      // outro part
-        outFile: 'dist/summernote.js' // out file
-      }
+        entryFile: 'summernote/lite/settings',
+        outFile: 'dist/summernote-lite.js' // out file
+      }]
     },
 
     // for javascript convention.
@@ -119,7 +132,8 @@ module.exports = function (grunt) {
       },
       all: {
         files: [
-          { 'dist/summernote.min.js': ['dist/summernote.js'] },
+            { 'dist/summernote.min.js': ['dist/summernote.js'] },
+            { 'dist/summernote-bs4.min.js': ['dist/summernote-bs4.js'] },
           {
             expand: true,
             cwd: 'dist/lang',
@@ -144,7 +158,10 @@ module.exports = function (grunt) {
         options: { compile: true, compress: true },
         files: [
           {
-            'dist/summernote.css': ['src/less/summernote.less']
+            'dist/summernote.css': ['src/less/summernote.less'],
+            'dist/summernote-bs4.css': ['src/less/summernote-bs4.less'],
+            'dist/summernote-lite.css': ['src/less/summernote-lite.less']
+
           },
           {
             expand: true,
@@ -262,9 +279,7 @@ module.exports = function (grunt) {
       dist: {
         files: [
           { src: 'lang/*', dest: 'dist/' },
-          { src: 'plugin/**/*', dest: 'dist/' },
-          { expand: true, cwd: 'src/icons/dist/font/', src: ['**', '!*.html'], dest: 'dist/font/' },
-          { src: 'src/icons/dist/summernote.css', dest: 'src/icons/dist/summernote.less' }
+          { expand: true, cwd: 'src/icons/dist/font/', src: ['**', '!*.html'], dest: 'dist/font/' }
         ]
       }
     },
@@ -275,6 +290,8 @@ module.exports = function (grunt) {
         destCss: 'src/icons/dist/',
         options: {
           font: 'summernote',
+          relativeFontPath: './font/',
+          stylesheet: 'less',
           template: 'src/icons/templates/summernote.css'
         }
       }

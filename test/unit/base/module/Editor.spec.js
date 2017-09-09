@@ -96,6 +96,19 @@ define([
       });
     });
 
+    if (agent.isWebkit) {
+      /* jshint ignore:start */
+      describe('insertImage', function () {
+        it('should insert image', function () {
+          var source = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAF0lEQVQYGWP8////fwYsgAmLGFiIHhIAT+oECGHuN2UAAAAASUVORK5CYII=';
+          return editor.insertImage(source, 'image').then(function () {
+            expectContents(context, '<p>hello<img src="' + source + '" data-filename="image" style="width: 0px;"></p>');
+          });
+        });
+      });
+      /* jshint ignore:end */
+    }
+
     describe('insertOrderedList and insertUnorderedList', function () {
       it('should toggle paragraph to list', function () {
         editor.insertOrderedList();

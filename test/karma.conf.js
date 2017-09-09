@@ -22,7 +22,9 @@ module.exports = function (config) {
     browsers: ['Chrome'],
     captureTimeout: 60000,
     singleRun: false,
-    preprocessors: { 'src/js/**/!(app|intro|outro).js': 'coverage' },
+    preprocessors: {
+      'src/js/**/!(app|intro|outro|ui|settings).js': 'coverage'
+    },
     coverageReporter: {
       type: 'lcov',
       dir: 'test/coverage/',

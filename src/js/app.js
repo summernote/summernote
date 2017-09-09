@@ -13,11 +13,15 @@ require.config({
   baseUrl: 'src/js',
   paths: {
     jquery: jqueryPath,
-    bootstrap: '//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap',
+    bs3: '//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap',
+    popper: '//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper',
+    bs4: '//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap',
     lang: '../../lang/summernote-ko-KR'
   },
   shim: {
-    bootstrap: ['jquery'],
+    bs3: ['jquery'],
+    popper: ['jquery'],
+    bs4: ['jquery', 'popper'],
     lang: ['jquery']
   },
   packages: [{
@@ -43,13 +47,19 @@ require(['jquery', 'summernote'], function ($) {
       promise = requireByPromise(['summernote/lite/settings']);
       break;
     case 'bs3':
-      promise = requireByPromise(['bootstrap', 'summernote/bs3/settings']).then(function () {
-        return requireByPromise(['lang']);
+      promise = requireByPromise(['bs3', 'summernote/bs3/settings']);
+      break;
+    case 'bs4':
+      promise = requireByPromise(['popper']).then(function (popper) {
+        window.Popper = popper;
+        return requireByPromise(['bs4', 'summernote/bs4/settings']);
       });
       break;
   }
 
   promise.then(function () {
+    return requireByPromise(['lang']);
+  }).then(function () {
     // initialize summernote
     $('.summernote').summernote({
       height: 300,

@@ -35,6 +35,10 @@ define([
     $node.html(markup);
   });
 
+  var dropdownButtonContents = function (contents, options) {
+    return contents + ' ' + icon(options.icons.caret, 'span');
+  };
+
   var dropdownCheck = renderer.create('<div class="dropdown-menu note-check">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
       var value = (typeof item === 'string') ? item : (item.value || '');
@@ -111,6 +115,16 @@ define([
     }
   });
 
+  var checkbox = renderer.create('<div class="checkbox"></div>', function ($node, options) {
+      $node.html([
+          ' <label' + (options.id ? ' for="' + options.id + '"' : '') + '>',
+          ' <input type="checkbox"' + (options.id ? ' id="' + options.id + '"' : ''),
+          (options.checked ? ' checked' : '') + '/>',
+          (options.text ? options.text : ''),
+          '</label>'
+      ].join(''));
+  });
+
   var icon = function (iconClassName, tagName) {
     tagName = tagName || 'i';
     return '<' + tagName + ' class="' + iconClassName + '"/>';
@@ -127,10 +141,12 @@ define([
     airEditable: airEditable,
     buttonGroup: buttonGroup,
     dropdown: dropdown,
+    dropdownButtonContents: dropdownButtonContents,
     dropdownCheck: dropdownCheck,
     palette: palette,
     dialog: dialog,
     popover: popover,
+    checkbox: checkbox,
     icon: icon,
     options: {},
 
