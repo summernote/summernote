@@ -6,7 +6,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2017-08-28T13:45Z
+ * Date: 2017-08-26T03:08Z
  */
 (function (factory) {
   /* global define */
@@ -5182,10 +5182,54 @@
   };
 
   var Clipboard = function (context) {
+    var self = this;
+
     var $editable = context.layoutInfo.editable;
 
+    this.events = {
+      'summernote.keydown': function (we, e) {
+        if (self.needKeydownHook()) {
+          if ((e.ctrlKey || e.metaKey) && e.keyCode === key.code.V) {
+            context.invoke('editor.saveRange');
+            self.$paste.focus();
+
+            setTimeout(function () {
+              self.pasteByHook();
+            }, 0);
+          }
+        }
+      }
+    };
+
+    this.needKeydownHook = function () {
+      return (agent.isMSIE && agent.browserVersion > 10) || agent.isFF;
+    };
+
     this.initialize = function () {
-      $editable.on('paste', this.pasteByEvent);
+      // [workaround] getting image from clipboard
+      //  - IE11 and Firefox: CTRL+v hook
+      //  - Webkit: event.clipboardData
+      if (this.needKeydownHook()) {
+        this.$paste = $('<div tabindex="-1" />').attr('contenteditable', true).css({
+          position: 'absolute',
+          left: -100000,
+          opacity: 0
+        });
+        $editable.before(this.$paste);
+
+        this.$paste.on('paste', function (event) {
+          context.triggerEvent('paste', event);
+        });
+      } else {
+        $editable.on('paste', this.pasteByEvent);
+      }
+    };
+
+    this.destroy = function () {
+      if (this.needKeydownHook()) {
+        this.$paste.remove();
+        this.$paste = null;
+      }
     };
 
     this.pasteByHook = function () {
@@ -6547,7 +6591,6 @@
     var ui = $.summernote.ui;
 
     var $note = context.layoutInfo.note;
-    var $editor = context.layoutInfo.editor;
     var $toolbar = context.layoutInfo.toolbar;
     var options = context.options;
 
@@ -6568,8 +6611,6 @@
         $toolbar.appendTo(options.toolbarContainer);
       }
 
-      this.changeContainer(false);
-
       $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
         context.invoke('buttons.updateCurrentStyle');
       });
@@ -6581,20 +6622,8 @@
       $toolbar.children().remove();
     };
 
-    this.changeContainer = function (isFullscreen) {
-      if (isFullscreen) {
-        $toolbar.prependTo($editor);
-      } else {
-        if (options.toolbarContainer) {
-          $toolbar.appendTo(options.toolbarContainer);
-        }
-      }
-    };
-
     this.updateFullscreen = function (isFullscreen) {
       ui.toggleBtnActive($toolbar.find('.btn-fullscreen'), isFullscreen);
-
-      this.changeContainer(isFullscreen);
     };
 
     this.updateCodeview = function (isCodeview) {
