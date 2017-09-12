@@ -277,6 +277,9 @@ define([
       if (rng.isCollapsed() && rng.isOnCell()) {
         table.tab(rng);
       } else {
+        if (options.tabSize === 0) {
+          return false;
+        }
         beforeCommand();
         typing.insertTab(rng, options.tabSize);
         afterCommand();
@@ -291,6 +294,10 @@ define([
       var rng = this.createRange();
       if (rng.isCollapsed() && rng.isOnCell()) {
         table.tab(rng, true);
+      } else {
+        if (options.tabSize === 0) {
+          return false;
+        }
       }
     };
     context.memo('help.untab', lang.help.untab);
