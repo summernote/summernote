@@ -25,7 +25,7 @@ define([
   var buttonGroup = renderer.create('<div class="note-btn-group">');
   var button = renderer.create('<button type="button" class="note-btn">', function ($node, options) {
     // set button type
-    if (options && options.tooltip) {
+    if (options && options.tooltip && self.options.tooltip) {
       TooltipUI.create($node, {
         title: options.tooltip
       });
@@ -260,10 +260,11 @@ define([
     }
     $node.html(contents.join(''));
 
-    $node.find('.note-color-btn').each(function () {
-      TooltipUI.create($(this));
-    });
-
+    if(self.options.tooltip) {
+      $node.find('.note-color-btn').each(function () {
+        TooltipUI.create($(this));
+      });
+    }
   });
 
   var colorDropdownButton = function (opt, type) {
@@ -570,6 +571,7 @@ define([
     },
 
     createLayout: function ($note, options) {
+      self.options = options;
       var $editor = (options.airMode ? ui.airEditor([
         ui.editingArea([
           ui.airEditable()
