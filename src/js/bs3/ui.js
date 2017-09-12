@@ -69,7 +69,7 @@ define([
     }
     $node.html(contents.join(''));
 
-    if (options.tooltip) {
+    if (self.options.tooltip) {
       $node.find('.note-color-btn').tooltip({
         container: 'body',
         trigger: 'hover',
