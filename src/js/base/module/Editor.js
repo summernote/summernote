@@ -123,8 +123,9 @@ define([
 
       var eventName = keyMap[keys.join('+')];
       if (eventName) {
-        event.preventDefault();
-        context.invoke(eventName);
+        if (context.invoke(eventName) !== false) {
+          event.preventDefault();
+        }
       } else if (key.isEdit(event.keyCode)) {
         this.afterCommand();
       }
