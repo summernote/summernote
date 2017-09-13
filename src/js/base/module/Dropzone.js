@@ -32,7 +32,6 @@ define(function () {
         // do not consider outside of dropzone
         $eventListener = $dropzone;
         $eventListener.on('drop', documentEventHandlers.onDrop);
-        });
       } else {
         this.attachDragAndDropEvent();
       }
