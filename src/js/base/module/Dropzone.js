@@ -1,6 +1,6 @@
 define(function () {
   var Dropzone = function (context) {
-    var $document = $(document);
+    var $eventListener = $(document);
     var $editor = context.layoutInfo.editor;
     var $editable = context.layoutInfo.editable;
     var options = context.options;
@@ -15,7 +15,7 @@ define(function () {
 
     var detachDocumentEvent = function () {
       Object.keys(documentEventHandlers).forEach(function (key) {
-        $document.off(key.substr(2).toLowerCase(), documentEventHandlers[key]);
+        $eventListener.off(key.substr(2).toLowerCase(), documentEventHandlers[key]);
       });
       documentEventHandlers = {};
     };
@@ -29,7 +29,10 @@ define(function () {
         documentEventHandlers.onDrop = function (e) {
           e.preventDefault();
         };
-        $document.on('drop', documentEventHandlers.onDrop);
+        // do not consider outside of dropzone
+        $eventListener = $dropzone;
+        $eventListener.on('drop', documentEventHandlers.onDrop);
+        });
       } else {
         this.attachDragAndDropEvent();
       }
@@ -68,7 +71,7 @@ define(function () {
 
       // show dropzone on dragenter when dragging a object to document
       // -but only if the editor is visible, i.e. has a positive width and height
-      $document.on('dragenter', documentEventHandlers.onDragenter)
+      $eventListener.on('dragenter', documentEventHandlers.onDragenter)
         .on('dragleave', documentEventHandlers.onDragleave)
         .on('drop', documentEventHandlers.onDrop);
 
