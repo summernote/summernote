@@ -213,6 +213,25 @@ define([
       });
     });
 
+    describe('formatBlock', function () {
+      it('should apply formatBlock', function () {
+        context.layoutInfo.editable.appendTo('body');
+        editor.formatBlock('blockquote');
+
+        // start <p>hello</p> => <blockquote>hello</blockquote>
+        expectContents(context, '<blockquote>hello</blockquote>');
+      });
+
+      it('should apply custom className in formatBlock', function () {
+        context.layoutInfo.editable.appendTo('body');
+        var $target = $('<blockquote class="blockquote" />');
+        editor.formatBlock('blockquote', $target);
+
+        // start <p>hello</p> => <blockquote class="blockquote">hello</blockquote>
+        expectContents(context, '<blockquote class="blockquote">hello</blockquote>');
+      });
+    });
+
     describe('createLink', function () {
       it('should create normal link', function () {
         var text = 'hello';
