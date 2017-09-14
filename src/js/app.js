@@ -13,7 +13,7 @@ require.config({
   baseUrl: 'src/js',
   paths: {
     jquery: jqueryPath,
-    bs3: '//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap',
+    bs3: '//netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap',
     popper: '//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper',
     bs4: '//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap',
     lang: '../../lang/summernote-ko-KR'
