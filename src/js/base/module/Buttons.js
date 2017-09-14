@@ -494,7 +494,7 @@ define([
         }).render();
       });
       context.memo('button.imageSize50', function () {
-        return  ui.button({
+        return ui.button({
           contents: '<span class="note-fontsize-10">50%</span>',
           tooltip: lang.image.resizeHalf,
           click: context.createInvokeHandler('editor.resize', '0.5')
