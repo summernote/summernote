@@ -217,9 +217,16 @@ $img-margin-right: 10px;
     }
   }
 
-  .note-style {
-    h1, h2, h3, h4, h5, h6, blockquote {
-      margin: 0;
+  .note-style { 
+    .dropdown-style {
+      blockquote, pre {
+          margin: 0;
+          padding: 5px 10px;
+      }
+      h1, h2, h3, h4, h5, h6, p {
+          margin: 0;
+          padding: 0;
+      }
     }
   }
 
