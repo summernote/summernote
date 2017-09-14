@@ -32,6 +32,13 @@ define([
       return ' (' + shortcut + ')';
     };
 
+    var button = function(o) {
+      if (!options.tooltip && o.tooltip) {
+        delete o.tooltip;
+      }
+      return ui.button(o);
+    };
+
     this.initialize = function () {
       this.addToolbarButtons();
       this.addImagePopoverButtons();
@@ -56,7 +63,7 @@ define([
     this.addToolbarButtons = function () {
       context.memo('button.style', function () {
         return ui.buttonGroup([
-          ui.button({
+          button({
             className: 'dropdown-toggle',
             contents: ui.dropdownButtonContents(ui.icon(options.icons.magic), options),
             tooltip: lang.style.style,
@@ -86,7 +93,7 @@ define([
       });
 
       context.memo('button.bold', function () {
-        return ui.button({
+        return button({
           className: 'note-btn-bold',
           contents: ui.icon(options.icons.bold),
           tooltip: lang.font.bold + representShortcut('bold'),
@@ -95,7 +102,7 @@ define([
       });
 
       context.memo('button.italic', function () {
-        return ui.button({
+        return button({
           className: 'note-btn-italic',
           contents: ui.icon(options.icons.italic),
           tooltip: lang.font.italic + representShortcut('italic'),
@@ -104,7 +111,7 @@ define([
       });
 
       context.memo('button.underline', function () {
-        return ui.button({
+        return button({
           className: 'note-btn-underline',
           contents: ui.icon(options.icons.underline),
           tooltip: lang.font.underline + representShortcut('underline'),
@@ -113,7 +120,7 @@ define([
       });
 
       context.memo('button.clear', function () {
-        return ui.button({
+        return button({
           contents: ui.icon(options.icons.eraser),
           tooltip: lang.font.clear + representShortcut('removeFormat'),
           click: context.createInvokeHandler('editor.removeFormat')
@@ -121,7 +128,7 @@ define([
       });
 
       context.memo('button.strikethrough', function () {
-        return ui.button({
+        return button({
           className: 'note-btn-strikethrough',
           contents: ui.icon(options.icons.strikethrough),
           tooltip: lang.font.strikethrough + representShortcut('strikethrough'),
@@ -130,7 +137,7 @@ define([
       });
 
       context.memo('button.superscript', function () {
-        return ui.button({
+        return button({
           className: 'note-btn-superscript',
           contents: ui.icon(options.icons.superscript),
           tooltip: lang.font.superscript,
@@ -139,7 +146,7 @@ define([
       });
 
       context.memo('button.subscript', function () {
-        return ui.button({
+        return button({
           className: 'note-btn-subscript',
           contents: ui.icon(options.icons.subscript),
           tooltip: lang.font.subscript,
@@ -149,7 +156,7 @@ define([
 
       context.memo('button.fontname', function () {
         return ui.buttonGroup([
-          ui.button({
+          button({
             className: 'dropdown-toggle',
             contents: ui.dropdownButtonContents('<span class="note-current-fontname"/>', options),
             tooltip: lang.font.name,
@@ -171,7 +178,7 @@ define([
 
       context.memo('button.fontsize', function () {
         return ui.buttonGroup([
-          ui.button({
+          button({
             className: 'dropdown-toggle',
             contents: ui.dropdownButtonContents('<span class="note-current-fontsize"/>', options),
             tooltip: lang.font.size,
@@ -192,7 +199,7 @@ define([
         return ui.buttonGroup({
           className: 'note-color',
           children: [
-            ui.button({
+            button({
               className: 'note-current-color-button',
               contents: ui.icon(options.icons.font + ' note-recent-color'),
               tooltip: lang.color.recent,
@@ -209,7 +216,7 @@ define([
                 $button.attr('data-backColor', '#FFFF00');
               }
             }),
-            ui.button({
+            button({
               className: 'dropdown-toggle',
               contents: ui.dropdownButtonContents('', options),
               tooltip: lang.color.more,
@@ -269,7 +276,7 @@ define([
       });
 
       context.memo('button.ul',  function () {
-        return ui.button({
+        return button({
           contents: ui.icon(options.icons.unorderedlist),
           tooltip: lang.lists.unordered + representShortcut('insertUnorderedList'),
           click: context.createInvokeHandler('editor.insertUnorderedList')
@@ -277,44 +284,44 @@ define([
       });
 
       context.memo('button.ol', function () {
-        return ui.button({
+        return button({
           contents: ui.icon(options.icons.orderedlist),
           tooltip: lang.lists.ordered + representShortcut('insertOrderedList'),
           click:  context.createInvokeHandler('editor.insertOrderedList')
         }).render();
       });
 
-      var justifyLeft = ui.button({
+      var justifyLeft = button({
         contents: ui.icon(options.icons.alignLeft),
         tooltip: lang.paragraph.left + representShortcut('justifyLeft'),
         click: context.createInvokeHandler('editor.justifyLeft')
       });
 
-      var justifyCenter = ui.button({
+      var justifyCenter = button({
         contents: ui.icon(options.icons.alignCenter),
         tooltip: lang.paragraph.center + representShortcut('justifyCenter'),
         click: context.createInvokeHandler('editor.justifyCenter')
       });
 
-      var justifyRight = ui.button({
+      var justifyRight = button({
         contents: ui.icon(options.icons.alignRight),
         tooltip: lang.paragraph.right + representShortcut('justifyRight'),
         click: context.createInvokeHandler('editor.justifyRight')
       });
 
-      var justifyFull = ui.button({
+      var justifyFull = button({
         contents: ui.icon(options.icons.alignJustify),
         tooltip: lang.paragraph.justify + representShortcut('justifyFull'),
         click: context.createInvokeHandler('editor.justifyFull')
       });
 
-      var outdent = ui.button({
+      var outdent = button({
         contents: ui.icon(options.icons.outdent),
         tooltip: lang.paragraph.outdent + representShortcut('outdent'),
         click: context.createInvokeHandler('editor.outdent')
       });
 
-      var indent = ui.button({
+      var indent = button({
         contents: ui.icon(options.icons.indent),
         tooltip: lang.paragraph.indent + representShortcut('indent'),
         click: context.createInvokeHandler('editor.indent')
@@ -329,7 +336,7 @@ define([
 
       context.memo('button.paragraph', function () {
         return ui.buttonGroup([
-          ui.button({
+          button({
             className: 'dropdown-toggle',
             contents: ui.dropdownButtonContents(ui.icon(options.icons.alignLeft), options),
             tooltip: lang.paragraph.paragraph,
@@ -352,7 +359,7 @@ define([
 
       context.memo('button.height', function () {
         return ui.buttonGroup([
-          ui.button({
+          button({
             className: 'dropdown-toggle',
             contents: ui.dropdownButtonContents(ui.icon(options.icons.textHeight), options),
             tooltip: lang.font.height,
@@ -371,7 +378,7 @@ define([
 
       context.memo('button.table', function () {
         return ui.buttonGroup([
-          ui.button({
+          button({
             className: 'dropdown-toggle',
             contents: ui.dropdownButtonContents(ui.icon(options.icons.table), options),
             tooltip: lang.table.table,
@@ -403,7 +410,7 @@ define([
       });
 
       context.memo('button.link', function () {
-        return ui.button({
+        return button({
           contents: ui.icon(options.icons.link),
           tooltip: lang.link.link + representShortcut('linkDialog.show'),
           click: context.createInvokeHandler('linkDialog.show')
@@ -411,7 +418,7 @@ define([
       });
 
       context.memo('button.picture', function () {
-        return ui.button({
+        return button({
           contents: ui.icon(options.icons.picture),
           tooltip: lang.image.image,
           click: context.createInvokeHandler('imageDialog.show')
@@ -419,7 +426,7 @@ define([
       });
 
       context.memo('button.video', function () {
-        return ui.button({
+        return button({
           contents: ui.icon(options.icons.video),
           tooltip: lang.video.video,
           click: context.createInvokeHandler('videoDialog.show')
@@ -427,7 +434,7 @@ define([
       });
 
       context.memo('button.hr', function () {
-        return ui.button({
+        return button({
           contents: ui.icon(options.icons.minus),
           tooltip: lang.hr.insert + representShortcut('insertHorizontalRule'),
           click: context.createInvokeHandler('editor.insertHorizontalRule')
@@ -435,7 +442,7 @@ define([
       });
 
       context.memo('button.fullscreen', function () {
-        return ui.button({
+        return button({
           className: 'btn-fullscreen',
           contents: ui.icon(options.icons.arrowsAlt),
           tooltip: lang.options.fullscreen,
@@ -444,7 +451,7 @@ define([
       });
 
       context.memo('button.codeview', function () {
-        return ui.button({
+        return button({
           className: 'btn-codeview',
           contents: ui.icon(options.icons.code),
           tooltip: lang.options.codeview,
@@ -453,7 +460,7 @@ define([
       });
 
       context.memo('button.redo', function () {
-        return ui.button({
+        return button({
           contents: ui.icon(options.icons.redo),
           tooltip: lang.history.redo + representShortcut('redo'),
           click: context.createInvokeHandler('editor.redo')
@@ -461,7 +468,7 @@ define([
       });
 
       context.memo('button.undo', function () {
-        return ui.button({
+        return button({
           contents: ui.icon(options.icons.undo),
           tooltip: lang.history.undo + representShortcut('undo'),
           click: context.createInvokeHandler('editor.undo')
@@ -469,7 +476,7 @@ define([
       });
 
       context.memo('button.help', function () {
-        return ui.button({
+        return button({
           contents: ui.icon(options.icons.question),
           tooltip: lang.options.help,
           click: context.createInvokeHandler('helpDialog.show')
@@ -487,21 +494,21 @@ define([
     this.addImagePopoverButtons = function () {
       // Image Size Buttons
       context.memo('button.imageSize100', function () {
-        return ui.button({
+        return button({
           contents: '<span class="note-fontsize-10">100%</span>',
           tooltip: lang.image.resizeFull,
           click: context.createInvokeHandler('editor.resize', '1')
         }).render();
       });
       context.memo('button.imageSize50', function () {
-        return  ui.button({
+        return button({
           contents: '<span class="note-fontsize-10">50%</span>',
           tooltip: lang.image.resizeHalf,
           click: context.createInvokeHandler('editor.resize', '0.5')
         }).render();
       });
       context.memo('button.imageSize25', function () {
-        return ui.button({
+        return button({
           contents: '<span class="note-fontsize-10">25%</span>',
           tooltip: lang.image.resizeQuarter,
           click: context.createInvokeHandler('editor.resize', '0.25')
@@ -510,7 +517,7 @@ define([
 
       // Float Buttons
       context.memo('button.floatLeft', function () {
-        return ui.button({
+        return button({
           contents: ui.icon(options.icons.alignLeft),
           tooltip: lang.image.floatLeft,
           click: context.createInvokeHandler('editor.floatMe', 'left')
@@ -518,7 +525,7 @@ define([
       });
 
       context.memo('button.floatRight', function () {
-        return ui.button({
+        return button({
           contents: ui.icon(options.icons.alignRight),
           tooltip: lang.image.floatRight,
           click: context.createInvokeHandler('editor.floatMe', 'right')
@@ -526,7 +533,7 @@ define([
       });
 
       context.memo('button.floatNone', function () {
-        return ui.button({
+        return button({
           contents: ui.icon(options.icons.alignJustify),
           tooltip: lang.image.floatNone,
           click: context.createInvokeHandler('editor.floatMe', 'none')
@@ -535,7 +542,7 @@ define([
 
       // Remove Buttons
       context.memo('button.removeMedia', function () {
-        return ui.button({
+        return button({
           contents: ui.icon(options.icons.trash),
           tooltip: lang.image.remove,
           click: context.createInvokeHandler('editor.removeMedia')
@@ -545,7 +552,7 @@ define([
 
     this.addLinkPopoverButtons = function () {
       context.memo('button.linkDialogShow', function () {
-        return ui.button({
+        return button({
           contents: ui.icon(options.icons.link),
           tooltip: lang.link.edit,
           click: context.createInvokeHandler('linkDialog.show')
@@ -553,7 +560,7 @@ define([
       });
 
       context.memo('button.unlink', function () {
-        return ui.button({
+        return button({
           contents: ui.icon(options.icons.unlink),
           tooltip: lang.link.unlink,
           click: context.createInvokeHandler('editor.unlink')
@@ -569,7 +576,7 @@ define([
      */
     this.addTablePopoverButtons = function () {
       context.memo('button.addRowUp', function () {
-        return ui.button({
+        return button({
           className: 'btn-md',
           contents: ui.icon(options.icons.rowAbove),
           tooltip: lang.table.addRowAbove,
@@ -577,7 +584,7 @@ define([
         }).render();
       });
       context.memo('button.addRowDown', function () {
-        return ui.button({
+        return button({
           className: 'btn-md',
           contents: ui.icon(options.icons.rowBelow),
           tooltip: lang.table.addRowBelow,
@@ -585,7 +592,7 @@ define([
         }).render();
       });
       context.memo('button.addColLeft', function () {
-        return ui.button({
+        return button({
           className: 'btn-md',
           contents: ui.icon(options.icons.colBefore),
           tooltip: lang.table.addColLeft,
@@ -593,7 +600,7 @@ define([
         }).render();
       });
       context.memo('button.addColRight', function () {
-        return ui.button({
+        return button({
           className: 'btn-md',
           contents: ui.icon(options.icons.colAfter),
           tooltip: lang.table.addColRight,
@@ -601,7 +608,7 @@ define([
         }).render();
       });
       context.memo('button.deleteRow', function () {
-        return ui.button({
+        return button({
           className: 'btn-md',
           contents: ui.icon(options.icons.rowRemove),
           tooltip: lang.table.delRow,
@@ -609,7 +616,7 @@ define([
         }).render();
       });
       context.memo('button.deleteCol', function () {
-        return ui.button({
+        return button({
           className: 'btn-md',
           contents: ui.icon(options.icons.colRemove),
           tooltip: lang.table.delCol,
@@ -617,7 +624,7 @@ define([
         }).render();
       });
       context.memo('button.deleteTable', function () {
-        return ui.button({
+        return button({
           className: 'btn-md',
           contents: ui.icon(options.icons.trash),
           tooltip: lang.table.delTable,

@@ -152,7 +152,7 @@ define([
 
     button: function ($node, options) {
       return renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
-        if (options && options.tooltip && self.options.tooltip) {
+        if (options && options.tooltip) {
           $node.attr({
             title: options.tooltip
           }).tooltip({
@@ -190,7 +190,6 @@ define([
     },
 
     createLayout: function ($note, options) {
-      self.options = options;
       var $editor = (options.airMode ? ui.airEditor([
         ui.editingArea([
           ui.airEditable()
