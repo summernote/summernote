@@ -22,7 +22,7 @@ define([
 
       var body = '<div class="form-group note-form-group note-group-select-from-files">' +
                    '<label class="note-form-label">' + lang.image.selectFromFiles + '</label>' +
-                   '<input class="note-image-input form-control note-form-control note-input" '+
+                   '<input class="note-image-input note-form-control note-input" '+
                    ' type="file" name="files" accept="image/*" multiple="multiple" />' +
                    imageLimitation +
                  '</div>' + 
@@ -31,8 +31,8 @@ define([
                    '<input class="note-image-url form-control note-form-control note-input ' +
                    ' col-md-12" type="text" />' +
                  '</div>';
-      var footer = '<button href="#" class="btn btn-primary note-btn note-btn-primary ' +
-      'note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
+      var footer = '<button type="submit" href="#" class="btn btn-primary note-btn note-btn-primary ' +
+      'note-image-btn" disabled>' + lang.image.insert + '</button>';
 
       this.$dialog = ui.dialog({
         title: lang.image.insert,

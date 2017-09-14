@@ -26,8 +26,8 @@ define([
           $('<div/>').append(ui.checkbox({ id: 'sn-checkbox-open-in-new-window', text: lang.link.openInNewWindow, checked: true }).render())
               .html()
           : '');
-      var footer = '<button href="#" class="btn btn-primary note-btn note-btn-primary ' +
-      'note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
+      var footer = '<button type="submit" href="#" class="btn btn-primary note-btn note-btn-primary ' +
+      'note-link-btn" disabled>' + lang.link.insert + '</button>';
 
       this.$dialog = ui.dialog({
         className: 'link-dialog',
