@@ -121,10 +121,7 @@ define([
         keys.push(keyName);
       }
 
-      console.log(keys);
-
       var eventName = keyMap[keys.join('+')];
-      console.log(eventName);
       if (eventName) {
         event.preventDefault();
         context.invoke(eventName);
