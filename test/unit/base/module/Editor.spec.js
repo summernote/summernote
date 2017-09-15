@@ -222,6 +222,60 @@ define([
         expectContents(context, '<blockquote>hello</blockquote>');
       });
 
+      it('should apply multi formatBlock', function () {
+
+        // set multi block html 
+        var codes = [
+          '<p><a href="http://summernote.org">hello world</a></p>',
+          '<p><a href="http://summernote.org">hello world</a></p>',
+          '<p><a href="http://summernote.org">hello world</a></p>'
+        ];
+
+        context.invoke('code', codes.join(''));
+
+        // append to body 
+        var editable = context.layoutInfo.editable;
+        editable.appendTo('body');
+
+        // run formatBlock 
+        editor.formatBlock('blockquote');
+
+        // check current range position in blockquote element 
+
+        var nodeName = editable.children()[0].nodeName;
+        expect(nodeName).to.equalsIgnoreCase('blockquote');
+
+      });      
+
+      it('should apply multi test 2 - formatBlock', function () {
+
+        var codes = [
+          '<p><a href="http://summernote.org">hello world</a></p>',
+          '<p><a href="http://summernote.org">hello world</a></p>',
+          '<p><a href="http://summernote.org">hello world</a></p>'
+        ];
+
+        context.invoke('code', codes.join(''));
+
+        var editable = context.layoutInfo.editable;
+        editable.appendTo('body');
+                
+        var startNode = editable.find('p').first()[0];
+        var endNode = editable.find('p').last()[0];
+
+        // all p tags is wrapped
+        range.create(startNode, 1, endNode, 1).normalize().select();
+
+        editor.formatBlock('blockquote');
+
+        var nodeName = editable.children()[0].nodeName;
+        expect(nodeName).to.equalsIgnoreCase('blockquote');
+
+        // p -> blockquote, p is none 
+        expect(editable.find('p').length).to.equals(0);
+
+      });      
+
       it('should apply custom className in formatBlock', function () {
         context.layoutInfo.editable.appendTo('body');
         var $target = $('<blockquote class="blockquote" />');
