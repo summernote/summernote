@@ -5,7 +5,11 @@ define(function () {
     var Dropdown = function ($node, options) {
       var self = this;
 
-      this.init = function () {
+      this.init = function (options) {
+        this.options = $.extend({}, {
+          target: options.container
+        }, options);
+
         this.$button = $node;
         this.setEvent();
       };
@@ -30,10 +34,10 @@ define(function () {
         var offset = $dropdown.offset();
         var width = $dropdown.outerWidth();
         var windowWidth = $(window).width();
-        var bodyMarginRight = parseFloat($('body').css('margin-right'));
+        var targetMarginRight = parseFloat($(this.options.target).css('margin-right'));
 
-        if (offset.left + width > windowWidth - bodyMarginRight) {
-          $dropdown.css('margin-left', windowWidth - bodyMarginRight - (offset.left + width));
+        if (offset.left + width > windowWidth - targetMarginRight) {
+          $dropdown.css('margin-left', windowWidth - targetMarginRight - (offset.left + width));
         } else {
           $dropdown.css('margin-left', '');
         }

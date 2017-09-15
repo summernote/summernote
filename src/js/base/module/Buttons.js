@@ -36,6 +36,7 @@ define([
       if (!options.tooltip && o.tooltip) {
         delete o.tooltip;
       }
+      o.container = options.container;
       return ui.button(o);
     };
 
@@ -251,6 +252,7 @@ define([
                   $holder.append(ui.palette({
                     colors: options.colors,
                     eventName: $holder.data('event'),
+                    container: options.container,
                     tooltip: options.tooltip
                   }).render());
                 });

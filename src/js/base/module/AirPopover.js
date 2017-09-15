@@ -39,7 +39,7 @@ define([
     this.initialize = function () {
       this.$popover = ui.popover({
         className: 'note-air-popover'
-      }).render().appendTo('body');
+      }).render().appendTo(options.container);
       var $content = this.$popover.find('.popover-content');
 
       context.invoke('buttons.build', $content, options.popover.air);

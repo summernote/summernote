@@ -29,7 +29,7 @@ define([
           var $content = $node.find('.popover-content,.note-popover-content');
           $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
         }
-      }).render().appendTo('body');
+      }).render().appendTo(options.container);
       var $content = this.$popover.find('.popover-content,.note-popover-content');
 
       context.invoke('buttons.build', $content, options.popover.link);

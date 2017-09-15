@@ -6,7 +6,7 @@ define(function () {
       this.init = function (options) {
         this.options = $.extend({}, {
           title: '',
-          target: 'body',
+          target: options.container,
           trigger: 'hover focus',
           placement: 'bottom'
         }, options);

@@ -71,7 +71,7 @@ define([
 
     if (options.tooltip) {
       $node.find('.note-color-btn').tooltip({
-        container: 'body',
+        container: options.container,
         trigger: 'hover',
         placement: 'bottom'
       });
@@ -159,7 +159,7 @@ define([
           $node.attr({
             title: options.tooltip
           }).tooltip({
-            container: 'body',
+            container: options.container,
             trigger: 'hover',
             placement: 'bottom'
           });
