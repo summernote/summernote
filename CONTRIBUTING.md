@@ -1,12 +1,12 @@
-#### Contributing
+## Contributing
 * Pull requests are welcome
 * Please don't include dist/* files on your commits.
 
-#### Coding convention
+## Coding convention
 * JSHint: http://www.jshint.com/about/
 * JSHint rule: https://github.com/summernote/summernote/blob/master/.jshintrc
 
-#### document structure
+## Document structure
 
 ```
  - body container: <div class="note-editable">, <td>, <blockquote>, <ul>
@@ -23,7 +23,7 @@
 5. A inline nodes has another inline nodes
 6. `#text` and void inline node doesn't have children.
 
-#### build summernote
+#### Build summernote
 ```bash
 npm install
 
@@ -35,7 +35,7 @@ npm run dist
 ```
 At this point, you should now have a `build/` directory populated with everything you need to use summernote.
 
-#### start local server for developing summernote.
+## Start local server for developing summernote.
 run local server with connect and watch.
 ```bash
 npm run start
@@ -43,7 +43,7 @@ npm run start
 # If you change source code, automatically reload your page.
 ```
 
-#### test summernote
+## Test summernote
 run tests with Karma and PhantomJS
 ```bash
 npm test
