@@ -1,6 +1,6 @@
 ## Contributing
 * Pull requests are welcome
-* Please don't include dist/* files on your commits.
+* Please `don't include dist/* files` on your commits.
 
 ## Coding convention
 * JSHint: http://www.jshint.com/about/
