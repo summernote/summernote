@@ -114,6 +114,7 @@ define([
       textareaAutoSync: true,
       direction: null,
       tooltip: 'auto',
+      container: 'body',
 
       styleTags: ['p', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
 

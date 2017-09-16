@@ -10,8 +10,9 @@ define([
     var ui = $.summernote.ui;
 
     var POPOVER_DIST = 5;
-    var hint = context.options.hint || [];
-    var direction = context.options.hintDirection || 'bottom';
+    var options = context.options;
+    var hint = options.hint || [];
+    var direction = options.hintDirection || 'bottom';
     var hints = $.isArray(hint) ? hint : [hint];
 
     this.events = {
@@ -38,7 +39,7 @@ define([
         className: 'note-hint-popover',
         hideArrow: true,
         direction: ''
-      }).render().appendTo('body');
+      }).render().appendTo(options.container);
 
       this.$popover.hide();
 

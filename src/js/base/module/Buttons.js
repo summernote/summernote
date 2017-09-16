@@ -36,6 +36,7 @@ define([
       if (!options.tooltip && o.tooltip) {
         delete o.tooltip;
       }
+      o.container = options.container;
       return ui.button(o);
     };
 
@@ -251,6 +252,7 @@ define([
                   $holder.append(ui.palette({
                     colors: options.colors,
                     eventName: $holder.data('event'),
+                    container: options.container,
                     tooltip: options.tooltip
                   }).render());
                 });
@@ -644,9 +646,9 @@ define([
         }).render();
 
         for (var idx = 0, len = buttons.length; idx < len; idx++) {
-          var button = context.memo('button.' + buttons[idx]);
-          if (button) {
-            $group.append(typeof button === 'function' ? button(context) : button);
+          var btn = context.memo('button.' + buttons[idx]);
+          if (btn) {
+            $group.append(typeof btn === 'function' ? btn(context) : btn);
           }
         }
         $group.appendTo($container);

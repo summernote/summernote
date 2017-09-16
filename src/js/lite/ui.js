@@ -27,7 +27,8 @@ define([
     // set button type
     if (options && options.tooltip) {
       TooltipUI.create($node, {
-        title: options.tooltip
+        title: options.tooltip,
+        container: options.container
       });
     }
     if (options.contents) {
@@ -35,7 +36,9 @@ define([
     }
     
     if (options && options.data && options.data.toggle === 'dropdown') {
-      DropdownUI.create($node);
+      DropdownUI.create($node, {
+        container: options.container
+      });
     }
   });
 
@@ -261,7 +264,9 @@ define([
     $node.html(contents.join(''));
 
     $node.find('.note-color-btn').each(function () {
-      TooltipUI.create($(this));
+      TooltipUI.create($(this), {
+        container: options.container
+      });
     });
 
   });

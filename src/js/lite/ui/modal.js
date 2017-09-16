@@ -6,7 +6,7 @@ define(function () {
 
       this.init = function (options) {
         this.options = $.extend({}, {
-          target: 'body'
+          target: options.container
         }, options);
 
         this.$modal = $node;

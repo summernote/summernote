@@ -9,7 +9,7 @@ define(function () {
         this.options = $.extend({}, {
           title: '',
           content: '',
-          target: 'body',
+          target: options.container,
           trigger: 'hover focus',
           placement: 'bottom'
         }, options);
