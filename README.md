@@ -84,7 +84,7 @@ For more detail about API, please refer to [document](http://summernote.org/gett
 
 The code view allows the user to enter script contents. Make sure to filter/[sanitize the HTML on the server](https://github.com/search?l=JavaScript&q=sanitize+html). Otherwise, an attacker can inject arbitrary JavaScript code into clients.
 
-#### For contributing
+### For contributing
 https://github.com/summernote/summernote/blob/develop/CONTRIBUTING.md
 
 ### Contacts
@@ -92,4 +92,4 @@ https://github.com/summernote/summernote/blob/develop/CONTRIBUTING.md
 * Twitter: http://twitter.com/hackerwins
 
 ### License
-summernote may be freely distributed under the MIT license.
+Summernote may be freely distributed under the MIT license.
