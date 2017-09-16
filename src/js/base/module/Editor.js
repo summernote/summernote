@@ -460,14 +460,26 @@ define([
       if (onApplyCustomStyle) {
         onApplyCustomStyle.call(this, $target, context, this.onFormatBlock);
       } else {
-        this.onFormatBlock(tagName);
+        this.onFormatBlock(tagName, $target);
       }
     });
 
-    this.onFormatBlock = function (tagName) {
+    this.onFormatBlock = function (tagName, $target) {
       // [workaround] for MSIE, IE need `<`
       tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       document.execCommand('FormatBlock', false, tagName);
+
+      // support custom class 
+      if ($target && $target.length) {
+        var className = $target[0].className || '';
+        if (className) {
+          var currentRange = this.createRange();
+  
+          var $parent = $([currentRange.sc, currentRange.ec]).closest(tagName);
+          $parent.addClass(className);
+        }
+      }
+
     };
 
     this.formatPara = function () {
