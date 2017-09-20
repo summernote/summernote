@@ -262,6 +262,8 @@ define([
         return function (value) {
           beforeCommand();
           document.execCommand(sCmd, false, value);
+          // support formatter for execCommand   
+          context.invoke('formatter.'+sCmd);
           afterCommand(true);
         };
       })(commands[idx]);

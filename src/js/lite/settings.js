@@ -3,6 +3,7 @@ define([
   'summernote/base/summernote-en-US',
   'summernote/base/module/Editor',
   'summernote/base/module/Clipboard',
+  'summernote/base/module/Formatter',  
   'summernote/base/module/Dropzone',
   'summernote/base/module/Codeview',
   'summernote/base/module/Statusbar',
@@ -24,7 +25,7 @@ define([
   'summernote/base/module/HintPopover'
 ], function (
   ui, lang,
-  Editor, Clipboard, Dropzone, Codeview, Statusbar, Fullscreen, Handle, AutoLink, AutoSync, Placeholder,
+  Editor, Clipboard, Formatter, Dropzone, Codeview, Statusbar, Fullscreen, Handle, AutoLink, AutoSync, Placeholder,
   Buttons, Toolbar, LinkDialog, LinkPopover, ImageDialog, ImagePopover, TablePopover, VideoDialog, HelpDialog, AirPopover, HintPopover
 ) {
 
@@ -38,6 +39,7 @@ define([
       modules: {
         'editor': Editor,
         'clipboard': Clipboard,
+        'formatter': Formatter,
         'dropzone': Dropzone,
         'codeview': Codeview,
         'statusbar': Statusbar,
