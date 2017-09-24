@@ -254,8 +254,7 @@ define([
     // native commands(with execCommand), generate function for execCommand
     var commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
                     'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
-                    'formatBlock', 'removeFormat',
-                    'backColor', 'fontName'];
+                    'formatBlock', 'removeFormat','backColor'];
 
     for (var idx = 0, len = commands.length; idx < len; idx ++) {
       this[commands[idx]] = (function (sCmd) {
@@ -268,6 +267,22 @@ define([
       context.memo('help.' + commands[idx], lang.help[commands[idx]]);
     }
     /* jshint ignore:end */
+
+    /**
+     * fontName Command for document.execCommand 
+     */
+    this.fontName = function (fontFamily) { 
+      beforeCommand();
+
+      // if font family has a  space, it wrap qoute char in chrome browser 
+      if (agent.isChrome && fontFamily.indexOf(' ') > -1) {
+        fontFamily = '"' + fontFamily + '"';
+      }
+
+      document.execCommand('fontName', false, fontFamily);
+      afterCommand(true);
+    };
+    context.memo('help.fontName', lang.help.fontName);    
 
     /**
      * handle tab key
