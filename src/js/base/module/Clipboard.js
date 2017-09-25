@@ -1,58 +1,12 @@
 define([
   'summernote/base/core/list',
-  'summernote/base/core/dom',
-  'summernote/base/core/key',
-  'summernote/base/core/agent'
-], function (list, dom, key, agent) {
+  'summernote/base/core/dom'
+], function (list, dom) {
   var Clipboard = function (context) {
-    var self = this;
-
     var $editable = context.layoutInfo.editable;
 
-    this.events = {
-      'summernote.keydown': function (we, e) {
-        if (self.needKeydownHook()) {
-          if ((e.ctrlKey || e.metaKey) && e.keyCode === key.code.V) {
-            context.invoke('editor.saveRange');
-            self.$paste.focus();
-
-            setTimeout(function () {
-              self.pasteByHook();
-            }, 0);
-          }
-        }
-      }
-    };
-
-    this.needKeydownHook = function () {
-      return (agent.isMSIE && agent.browserVersion > 10) || agent.isFF;
-    };
-
     this.initialize = function () {
-      // [workaround] getting image from clipboard
-      //  - IE11 and Firefox: CTRL+v hook
-      //  - Webkit: event.clipboardData
-      if (this.needKeydownHook()) {
-        this.$paste = $('<div tabindex="-1" />').attr('contenteditable', true).css({
-          position: 'absolute',
-          left: -100000,
-          opacity: 0
-        });
-        $editable.before(this.$paste);
-
-        this.$paste.on('paste', function (event) {
-          context.triggerEvent('paste', event);
-        });
-      } else {
-        $editable.on('paste', this.pasteByEvent);
-      }
-    };
-
-    this.destroy = function () {
-      if (this.needKeydownHook()) {
-        this.$paste.remove();
-        this.$paste = null;
-      }
+      $editable.on('paste', this.pasteByEvent);
     };
 
     this.pasteByHook = function () {

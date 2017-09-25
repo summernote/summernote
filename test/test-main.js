@@ -36,7 +36,13 @@ requirejs.config({
   deps: tests,
 
   callback: function () {
-    require(['jquery', 'bootstrap', 'summernote/bs3/settings'], function () {
+    require([
+      'jquery',
+      'bootstrap',
+      'summernote/bs3/settings',
+      'summernote/bs4/settings',
+      'summernote/lite/settings'
+    ], function () {
       window.__karma__.start();
     });
   }

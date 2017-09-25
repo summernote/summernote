@@ -36,7 +36,7 @@ define([
         var $cell = $cont.find('td');
         var rng = range.create($cell[0].firstChild, 1);
         table.addRow(rng, 'top');
-        expect('<table><tbody><tr><td><br></td></tr><tr><td>content</td></tr></tbody></table>').to.deep.equal($cont.html());
+        expect('<table><tbody><tr><td><br></td></tr><tr><td>content</td></tr></tbody></table>').to.equalsIgnoreCase($cont.html());
       });
 
       it('should add simple row to table on bottom', function () {
@@ -44,7 +44,7 @@ define([
         var $cell = $cont.find('td');
         var rng = range.create($cell[0].firstChild, 1);
         table.addRow(rng, 'bottom');
-        expect('<table><tbody><tr><td>content</td></tr><tr><td><br></td></tr></tbody></table>').to.deep.equal($cont.html());
+        expect('<table><tbody><tr><td>content</td></tr><tr><td><br></td></tr></tbody></table>').to.equalsIgnoreCase($cont.html());
       });
 
       it('should add simple row to table on top between two rows', function () {
@@ -57,7 +57,7 @@ define([
         $(resultTable).append('<tr><td><br/></td></tr>');
         $(resultTable).append('<tr><td id="td2">content2</td></tr>');
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should add simple row to table on bottom between two rows', function () {
@@ -74,7 +74,7 @@ define([
         $(resultTable).append('<tr><td id="td2">content2</td></tr>');
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should add simple col to table on left between two cols', function () {
@@ -91,7 +91,7 @@ define([
         $(resultTable).append('<tr><td id="td1">content1</td><td><br/></td><td id="td2">content2</td></tr>');
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should add simple col to table on right between two cols', function () {
@@ -108,7 +108,7 @@ define([
         $(resultTable).append('<tr><td id="td1">content1</td><td><br/></td><td id="td2">content2</td></tr>');
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should delete row to table between two other rows', function () {
@@ -127,7 +127,7 @@ define([
         $(resultTable).append('<tr><td id="td1">content1</td></tr><tr><td id="td3">content3</td></tr>');
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should delete col to table between two other cols', function () {
@@ -144,7 +144,7 @@ define([
         $(resultTable).append('<tr><td id="td1">content1</td><td id="td3">content3</td></tr>');
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should delete first col to table with colspan in column with colspan', function () {
@@ -167,7 +167,7 @@ define([
         resultTable.append(resultTr2);
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should delete second col to table with colspan in column', function () {
@@ -190,7 +190,7 @@ define([
         resultTable.append(resultTr2);
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should delete second col to table with colspan in 3 columns', function () {
@@ -213,7 +213,7 @@ define([
         resultTable.append(resultTr2);
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should delete first row to table with rowspan in line with rowspan', function () {
@@ -238,7 +238,7 @@ define([
         resultTable.append(resultTr3);
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should delete second row to table with rowspan in line without rowspan', function () {
@@ -267,7 +267,7 @@ define([
         resultTable.append(resultTr4);
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should delete second col to table with rowspan in 2 rows', function () {
@@ -294,7 +294,7 @@ define([
         resultTable.append(resultTr3);
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should delete second col to table with rowspan in 2 rows on second row', function () {
@@ -321,7 +321,7 @@ define([
         resultTable.append(resultTr3);
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should add row on bottom rowspan cell.', function () {
@@ -350,7 +350,7 @@ define([
         resultTable.append(resultTr4);
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should add row on bottom colspan cell.', function () {
@@ -379,7 +379,7 @@ define([
         resultTable.append(resultTr4);
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should add row above rowspan cell.', function () {
@@ -408,7 +408,7 @@ define([
         resultTable.append(resultTr4);
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should add row on bottom rowspan cell and with aditional column.', function () {
@@ -433,7 +433,7 @@ define([
         resultTable.append(resultTr3);
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should add column on right having rowspan cell and with aditional column.', function () {
@@ -456,7 +456,7 @@ define([
         resultTable.append(resultTr2);
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should add column on right having rowspan cell and with aditional column with focus on rowspan column.', function () {
@@ -479,7 +479,7 @@ define([
         resultTable.append(resultTr2);
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should remove column after colspan column.', function () {
@@ -502,7 +502,7 @@ define([
         resultTable.append(resultTr2);
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should remove column before colspan column.', function () {
@@ -528,7 +528,7 @@ define([
         resultTable.append(resultTr2);
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
       it('should add column before colspan column.', function () {
@@ -551,7 +551,7 @@ define([
         resultTable.append(resultTr2);
         var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-        expect(expectedResult).to.deep.equal($cont.html());
+        expect(expectedResult).to.equalsIgnoreCase($cont.html());
       });
 
     });

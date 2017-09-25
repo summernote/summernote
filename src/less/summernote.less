@@ -6,6 +6,9 @@
 @border-color: #a9a9a9;
 @background-color: #f5f5f5;
 
+@img-margin-left: 10px;
+@img-margin-right: 10px;
+
 /* Layout
  ------------------------------------------*/
 .note-editor {
@@ -52,6 +55,14 @@
       sub {
         vertical-align: sub;
       }
+    }
+
+    img.note-float-left {
+      margin-right: @img-margin-right;
+    }
+
+    img.note-float-right {
+      margin-left: @img-margin-left;
     }
   }
 }
@@ -207,9 +218,16 @@
     }
   }
 
-  .note-style {
-    h1, h2, h3, h4, h5, h6, blockquote {
-      margin: 0;
+  .note-style { 
+    .dropdown-style {
+      blockquote, pre {
+          margin: 0;
+          padding: 5px 10px;
+      }
+      h1, h2, h3, h4, h5, h6, p {
+          margin: 0;
+          padding: 0;
+      }
     }
   }
 
@@ -219,9 +237,11 @@
       padding-left: 5px;
     }
     .dropdown-menu {
-      min-width: 340px;
-      .btn-group {
+      min-width: 337px;
+      .note-palette {
+        display: inline-block;
         margin: 0;
+        width: 160px;
         &:first-child {
           margin: 0 5px;
         }

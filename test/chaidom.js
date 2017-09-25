@@ -10,7 +10,8 @@ define([
 
       // [workaround] IE8-10 use &nbsp; instead of bogus br
       if (agent.isMSIE && agent.browserVersion < 11) {
-        str2 = str2.replace(/<BR>/g, '&NBSP;');
+        str2 = str2.replace(/<BR\/?>/g, '&NBSP;');
+        str1 = str1.replace(/<BR\/?>/g, '&NBSP;');
       }
 
       // [workaround] IE8 str1 markup has newline between tags

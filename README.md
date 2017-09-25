@@ -2,7 +2,7 @@
 
 Super simple WYSIWYG Editor.
 
-[![Build Status](https://secure.travis-ci.org/summernote/summernote.svg)](http://travis-ci.org/summernote/summernote)
+[![Build Status](https://travis-ci.org/summernote/summernote.svg?branch=develop)](http://travis-ci.org/summernote/summernote)
 [![npm version](https://badge.fury.io/js/summernote.svg)](http://badge.fury.io/js/summernote)
 [![Dependency Status](https://gemnasium.com/summernote/summernote.svg)](https://gemnasium.com/summernote/summernote)
 [![Coverage Status](https://coveralls.io/repos/summernote/summernote/badge.svg?branch=develop&service=github)](https://coveralls.io/github/summernote/summernote?branch=develop)
@@ -41,7 +41,7 @@ Include the following code in the `<head>` tag of your HTML:
 
 ```html
 <!-- include libraries(jQuery, bootstrap) -->
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> 
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" />
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
@@ -84,76 +84,12 @@ For more detail about API, please refer to [document](http://summernote.org/gett
 
 The code view allows the user to enter script contents. Make sure to filter/[sanitize the HTML on the server](https://github.com/search?l=JavaScript&q=sanitize+html). Otherwise, an attacker can inject arbitrary JavaScript code into clients.
 
-#### document structure
-
-```
- - body container: <div class="note-editable">, <td>, <blockquote>, <ul>
- - block node: <div>, <p>, <li>, <h1>, <table>
- - void block node: <hr>
- - inline node: <span>, <b>, <font>, <a>, ...
- - void inline node: <img>
- - text node: #text
-```
-
-1. A body container has block node, but `<ul>` has only `<li>` nodes.
-2. A body container also has inline nodes sometimes. This inline nodes will be wraped with `<p>` when enter key pressed.
-4. A block node only has inline nodes.
-5. A inline nodes has another inline nodes
-6. `#text` and void inline node doesn't have children.
-
-#### build summernote
-```bash
-npm install
-
-# build full version of summernote: dist/summernote.js
-npm run build
-
-# generate minified copy: dist/summernote.min.js, dist/summernote.css
-npm run dist
-```
-At this point, you should now have a `build/` directory populated with everything you need to use summernote.
-
-#### test summernote
-run tests with Karma and PhantomJS
-```bash
-npm test
-```
-If you want run tests on other browser,
-change the values for `broswers` properties in `Gruntfile.js`.
-
-```
-karma: {
-  all: {
-    browsers: ['PhantomJS'],
-    reporters: ['progress']
-  }
-}
-
-```
-You can use `Chrome`, `ChromeCanary`, `Firefox`, `Opera`, `Safari`, `PhantomJS` and `IE` beside `PhantomJS`.
-Once you run `npm test`, it will watch all javascript file. Therefore karma run tests every time you chage code.
-
-#### start local server for developing summernote.
-run local server with connect and watch.
-```bash
-npm run server
-# Open a browser on http://localhost:3000.
-# If you change source code, automatically reload your page.
-```
-
-#### Coding convention
-* JSHint: http://www.jshint.com/about/
-* JSHint rule: https://github.com/summernote/summernote/blob/master/.jshintrc
-
-#### Contributing
-* Pull requests are welcome
-* Please don't include dist/* files on your commits.
+### For contributing
+https://github.com/summernote/summernote/blob/develop/CONTRIBUTING.md
 
 ### Contacts
-* Email: susukang98@gmail.com
+* Facebook user group: https://www.facebook.com/groups/summernote
 * Twitter: http://twitter.com/hackerwins
-* Chat with us:
-[![Join the chat at https://gitter.im/summernote/summernote](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/summernote/summernote?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ### License
-summernote may be freely distributed under the MIT license.
+Summernote may be freely distributed under the MIT license.

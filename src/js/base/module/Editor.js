@@ -78,7 +78,7 @@ define([
       var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
       $editable.on(changeEventName, func.debounce(function () {
         context.triggerEvent('change', $editable.html());
-      }, 250));
+      }, 100));
 
       $editor.on('focusin', function (event) {
         context.triggerEvent('focusin', event);
@@ -123,8 +123,9 @@ define([
 
       var eventName = keyMap[keys.join('+')];
       if (eventName) {
-        event.preventDefault();
-        context.invoke(eventName);
+        if (context.invoke(eventName) !== false) {
+          event.preventDefault();
+        }
       } else if (key.isEdit(event.keyCode)) {
         this.afterCommand();
       }
@@ -254,7 +255,7 @@ define([
     var commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
                     'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
                     'formatBlock', 'removeFormat',
-                    'backColor', 'foreColor', 'fontName'];
+                    'backColor', 'fontName'];
 
     for (var idx = 0, len = commands.length; idx < len; idx ++) {
       this[commands[idx]] = (function (sCmd) {
@@ -276,6 +277,9 @@ define([
       if (rng.isCollapsed() && rng.isOnCell()) {
         table.tab(rng);
       } else {
+        if (options.tabSize === 0) {
+          return false;
+        }
         beforeCommand();
         typing.insertTab(rng, options.tabSize);
         afterCommand();
@@ -290,6 +294,10 @@ define([
       var rng = this.createRange();
       if (rng.isCollapsed() && rng.isOnCell()) {
         table.tab(rng, true);
+      } else {
+        if (options.tabSize === 0) {
+          return false;
+        }
       }
     };
     context.memo('help.untab', lang.help.untab);
@@ -452,14 +460,26 @@ define([
       if (onApplyCustomStyle) {
         onApplyCustomStyle.call(this, $target, context, this.onFormatBlock);
       } else {
-        this.onFormatBlock(tagName);
+        this.onFormatBlock(tagName, $target);
       }
     });
 
-    this.onFormatBlock = function (tagName) {
+    this.onFormatBlock = function (tagName, $target) {
       // [workaround] for MSIE, IE need `<`
       tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
       document.execCommand('FormatBlock', false, tagName);
+
+      // support custom class 
+      if ($target && $target.length) {
+        var className = $target[0].className || '';
+        if (className) {
+          var currentRange = this.createRange();
+  
+          var $parent = $([currentRange.sc, currentRange.ec]).closest(tagName);
+          $parent.addClass(className);
+        }
+      }
+
     };
 
     this.formatPara = function () {
@@ -676,6 +696,16 @@ define([
     });
 
     /**
+     * Set foreground color
+     *
+     * @param {String} colorCode foreground color code
+     */
+    this.foreColor = this.wrapCommand(function (colorInfo) {
+      document.execCommand('styleWithCSS', false, true);
+      document.execCommand('foreColor', false, colorInfo);
+    });
+
+    /**
      * insert Table
      *
      * @param {String} dimension of table (ex : "5x5")
@@ -764,6 +794,8 @@ define([
      */
     this.floatMe = this.wrapCommand(function (value) {
       var $target = $(this.restoreTarget());
+      $target.toggleClass('note-float-left', value === 'left');
+      $target.toggleClass('note-float-right', value === 'right');
       $target.css('float', value);
     });
 
