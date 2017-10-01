@@ -9,13 +9,13 @@ module.exports = function (grunt) {
       version: '8.0',
       platform: 'windows XP'
     },
+    */
     'SL_IE9': {
       base: 'SauceLabs',
       browserName: 'internet explorer',
       version: '9.0',
       platform: 'windows 7'
     },
-    */
     'SL_IE10': {
       base: 'SauceLabs',
       browserName: 'internet explorer',
@@ -209,8 +209,8 @@ module.exports = function (grunt) {
       all: {
         // Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS, IE
         singleRun: true,
-        browsers: ['PhantomJS'],
-        reporters: ['progress']
+        browsers: ['Safari'],
+        reporters: ['dots']
       },
       dist: {
         singleRun: true,
@@ -219,7 +219,7 @@ module.exports = function (grunt) {
       travis: {
         singleRun: true,
         browsers: ['PhantomJS'],
-        reporters: ['progress', 'coverage']
+        reporters: ['dots', 'coverage']
       },
       saucelabs: {
         reporters: ['saucelabs'],
