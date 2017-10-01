@@ -27,8 +27,12 @@ module.exports = function (config) {
       bundlerOptions: {
         entrypoints: /\.spec\.js$/,
         transforms: [
-          require("karma-typescript-es6-transform")()
-        ]
+          require('karma-typescript-es6-transform')()
+        ],
+        exclude: [
+          'node_modules'
+        ],
+        addNodeGlobals: false
       }
     }
   });
