@@ -50,7 +50,7 @@ module.exports = function (grunt) {
       base: 'SauceLabs',
       browserName: 'safari',
       version: 'latest',
-      platform: 'OS X 10.10'
+      platform: 'OS X 10.12'
     }
   };
 
