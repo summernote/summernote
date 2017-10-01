@@ -1,22 +1,18 @@
-define([
-  'summernote/base/core/dom'
-], function (dom) {
-  /**
-   * textarea auto sync.
-   */
-  var AutoSync = function (context) {
-    var $note = context.layoutInfo.note;
+import dom from '../core/dom';
 
-    this.events = {
-      'summernote.change': function () {
-        $note.val(context.invoke('code'));
-      }
-    };
+/**
+ * textarea auto sync.
+ */
+export default function (context) {
+  var $note = context.layoutInfo.note;
 
-    this.shouldInitialize = function () {
-      return dom.isTextarea($note[0]);
-    };
+  this.events = {
+    'summernote.change': function () {
+      $note.val(context.invoke('code'));
+    }
   };
 
-  return AutoSync;
-});
+  this.shouldInitialize = function () {
+    return dom.isTextarea($note[0]);
+  };
+}

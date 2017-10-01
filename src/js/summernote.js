@@ -1,50 +1,48 @@
-define([
-  'jquery',
-  'summernote/base/core/agent',
-  'summernote/base/core/list',
-  'summernote/base/Context'
-], function ($, agent, list, Context) {
-  $.fn.extend({
-    /**
-     * Summernote API
-     *
-     * @param {Object|String}
-     * @return {this}
-     */
-    summernote: function () {
-      var type = $.type(list.head(arguments));
-      var isExternalAPICalled = type === 'string';
-      var hasInitOptions = type === 'object';
+import $ from 'jquery';
+import agent from './base/core/agent';
+import list from './base/core/list';
+import Context from './base/Context';
 
-      var options = hasInitOptions ? list.head(arguments) : {};
+$.fn.extend({
+  /**
+   * Summernote API
+   *
+   * @param {Object|String}
+   * @return {this}
+   */
+  summernote: function () {
+    var type = $.type(list.head(arguments));
+    var isExternalAPICalled = type === 'string';
+    var hasInitOptions = type === 'object';
 
-      options = $.extend({}, $.summernote.options, options);
+    var options = hasInitOptions ? list.head(arguments) : {};
 
-      // Update options
-      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
-      options.icons = $.extend(true, {}, $.summernote.options.icons, options.icons);
-      options.tooltip = options.tooltip === 'auto' ? !agent.isSupportTouch : options.tooltip;
+    options = $.extend({}, $.summernote.options, options);
 
-      this.each(function (idx, note) {
-        var $note = $(note);
-        if (!$note.data('summernote')) {
-          var context = new Context($note, options);
-          $note.data('summernote', context);
-          $note.data('summernote').triggerEvent('init', context.layoutInfo);
-        }
-      });
+    // Update options
+    options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+    options.icons = $.extend(true, {}, $.summernote.options.icons, options.icons);
+    options.tooltip = options.tooltip === 'auto' ? !agent.isSupportTouch : options.tooltip;
 
-      var $note = this.first();
-      if ($note.length) {
-        var context = $note.data('summernote');
-        if (isExternalAPICalled) {
-          return context.invoke.apply(context, list.from(arguments));
-        } else if (options.focus) {
-          context.invoke('editor.focus');
-        }
+    this.each(function (idx, note) {
+      var $note = $(note);
+      if (!$note.data('summernote')) {
+        var context = new Context($note, options);
+        $note.data('summernote', context);
+        $note.data('summernote').triggerEvent('init', context.layoutInfo);
       }
+    });
 
-      return this;
+    var $note = this.first();
+    if ($note.length) {
+      var context = $note.data('summernote');
+      if (isExternalAPICalled) {
+        return context.invoke.apply(context, list.from(arguments));
+      } else if (options.focus) {
+        context.invoke('editor.focus');
+      }
     }
-  });
+
+    return this;
+  }
 });

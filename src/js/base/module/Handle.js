@@ -1,141 +1,138 @@
-define([
-  'summernote/base/core/dom'
-], function (dom) {
-  var Handle = function (context) {
-    var self = this;
+import $ from 'jquery';
+import dom from '../core/dom';
 
-    var $document = $(document);
-    var $editingArea = context.layoutInfo.editingArea;
-    var options = context.options;
+export default function (context) {
+  var self = this;
 
-    this.events = {
-      'summernote.mousedown': function (we, e) {
-        if (self.update(e.target)) {
-          e.preventDefault();
-        }
-      },
-      'summernote.keyup summernote.scroll summernote.change summernote.dialog.shown': function () {
-        self.update();
-      },
-      'summernote.disable': function () {
-        self.hide();
-      },
-      'summernote.codeview.toggled': function () {
-        self.update();
-      }
-    };
+  var $document = $(document);
+  var $editingArea = context.layoutInfo.editingArea;
+  var options = context.options;
 
-    this.initialize = function () {
-      this.$handle = $([
-        '<div class="note-handle">',
-        '<div class="note-control-selection">',
-        '<div class="note-control-selection-bg"></div>',
-        '<div class="note-control-holder note-control-nw"></div>',
-        '<div class="note-control-holder note-control-ne"></div>',
-        '<div class="note-control-holder note-control-sw"></div>',
-        '<div class="',
-        (options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing'),
-        ' note-control-se"></div>',
-        (options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>'),
-        '</div>',
-        '</div>'
-      ].join('')).prependTo($editingArea);
-
-      this.$handle.on('mousedown', function (event) {
-        if (dom.isControlSizing(event.target)) {
-          event.preventDefault();
-          event.stopPropagation();
-
-          var $target = self.$handle.find('.note-control-selection').data('target'),
-              posStart = $target.offset(),
-              scrollTop = $document.scrollTop();
-
-          var onMouseMove = function (event) {
-            context.invoke('editor.resizeTo', {
-              x: event.clientX - posStart.left,
-              y: event.clientY - (posStart.top - scrollTop)
-            }, $target, !event.shiftKey);
-
-            self.update($target[0]);
-          };
-
-          $document
-            .on('mousemove', onMouseMove)
-            .one('mouseup', function (e) {
-              e.preventDefault();
-              $document.off('mousemove', onMouseMove);
-              context.invoke('editor.afterCommand');
-            });
-
-          if (!$target.data('ratio')) { // original ratio.
-            $target.data('ratio', $target.height() / $target.width());
-          }
-        }
-      });
-
-      // Listen for scrolling on the handle overlay.
-      this.$handle.on('wheel', function (e) {
+  this.events = {
+    'summernote.mousedown': function (we, e) {
+      if (self.update(e.target)) {
         e.preventDefault();
-        self.update();
-      });
-    };
-
-    this.destroy = function () {
-      this.$handle.remove();
-    };
-
-    this.update = function (target) {
-      if (context.isDisabled()) {
-        return false;
       }
-
-      var isImage = dom.isImg(target);
-      var $selection = this.$handle.find('.note-control-selection');
-
-      context.invoke('imagePopover.update', target);
-
-      if (isImage) {
-        var $image = $(target);
-        var position = $image.position();
-        var pos = {
-          left: position.left + parseInt($image.css('marginLeft'), 10),
-          top: position.top + parseInt($image.css('marginTop'), 10)
-        };
-
-        // exclude margin
-        var imageSize = {
-          w: $image.outerWidth(false),
-          h: $image.outerHeight(false)
-        };
-
-        $selection.css({
-          display: 'block',
-          left: pos.left,
-          top: pos.top,
-          width: imageSize.w,
-          height: imageSize.h
-        }).data('target', $image); // save current image element.
-
-        var sizingText = imageSize.w + 'x' + imageSize.h;
-        $selection.find('.note-control-selection-info').text(sizingText);
-        context.invoke('editor.saveTarget', target);
-      } else {
-        this.hide();
-      }
-
-      return isImage;
-    };
-
-    /**
-     * hide
-     *
-     * @param {jQuery} $handle
-     */
-    this.hide = function () {
-      context.invoke('editor.clearTarget');
-      this.$handle.children().hide();
-    };
+    },
+    'summernote.keyup summernote.scroll summernote.change summernote.dialog.shown': function () {
+      self.update();
+    },
+    'summernote.disable': function () {
+      self.hide();
+    },
+    'summernote.codeview.toggled': function () {
+      self.update();
+    }
   };
 
-  return Handle;
-});
+  this.initialize = function () {
+    this.$handle = $([
+      '<div class="note-handle">',
+      '<div class="note-control-selection">',
+      '<div class="note-control-selection-bg"></div>',
+      '<div class="note-control-holder note-control-nw"></div>',
+      '<div class="note-control-holder note-control-ne"></div>',
+      '<div class="note-control-holder note-control-sw"></div>',
+      '<div class="',
+      (options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing'),
+      ' note-control-se"></div>',
+      (options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>'),
+      '</div>',
+      '</div>'
+    ].join('')).prependTo($editingArea);
+
+    this.$handle.on('mousedown', function (event) {
+      if (dom.isControlSizing(event.target)) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        var $target = self.$handle.find('.note-control-selection').data('target'),
+            posStart = $target.offset(),
+            scrollTop = $document.scrollTop();
+
+        var onMouseMove = function (event) {
+          context.invoke('editor.resizeTo', {
+            x: event.clientX - posStart.left,
+            y: event.clientY - (posStart.top - scrollTop)
+          }, $target, !event.shiftKey);
+
+          self.update($target[0]);
+        };
+
+        $document
+          .on('mousemove', onMouseMove)
+          .one('mouseup', function (e) {
+            e.preventDefault();
+            $document.off('mousemove', onMouseMove);
+            context.invoke('editor.afterCommand');
+          });
+
+        if (!$target.data('ratio')) { // original ratio.
+          $target.data('ratio', $target.height() / $target.width());
+        }
+      }
+    });
+
+    // Listen for scrolling on the handle overlay.
+    this.$handle.on('wheel', function (e) {
+      e.preventDefault();
+      self.update();
+    });
+  };
+
+  this.destroy = function () {
+    this.$handle.remove();
+  };
+
+  this.update = function (target) {
+    if (context.isDisabled()) {
+      return false;
+    }
+
+    var isImage = dom.isImg(target);
+    var $selection = this.$handle.find('.note-control-selection');
+
+    context.invoke('imagePopover.update', target);
+
+    if (isImage) {
+      var $image = $(target);
+      var position = $image.position();
+      var pos = {
+        left: position.left + parseInt($image.css('marginLeft'), 10),
+        top: position.top + parseInt($image.css('marginTop'), 10)
+      };
+
+      // exclude margin
+      var imageSize = {
+        w: $image.outerWidth(false),
+        h: $image.outerHeight(false)
+      };
+
+      $selection.css({
+        display: 'block',
+        left: pos.left,
+        top: pos.top,
+        width: imageSize.w,
+        height: imageSize.h
+      }).data('target', $image); // save current image element.
+
+      var sizingText = imageSize.w + 'x' + imageSize.h;
+      $selection.find('.note-control-selection-info').text(sizingText);
+      context.invoke('editor.saveTarget', target);
+    } else {
+      this.hide();
+    }
+
+    return isImage;
+  };
+
+  /**
+   * hide
+   *
+   * @param {jQuery} $handle
+   */
+  this.hide = function () {
+    context.invoke('editor.clearTarget');
+    this.$handle.children().hide();
+  };
+}

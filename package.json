@@ -1,7 +1,7 @@
 {
   "name": "summernote",
   "description": "Super simple WYSIWYG editor",
-  "version": "0.8.8",
+  "version": "0.8.9",
   "license": "MIT",
   "keywords": [
     "editor",
@@ -55,13 +55,15 @@
     "karma-mocha": "^1.3.0",
     "karma-opera-launcher": "^1.0.0",
     "karma-phantomjs-launcher": "^1.0.4",
-    "karma-requirejs": "^1.1.0",
     "karma-safari-launcher": "^1.0.0",
     "karma-sauce-launcher": "^1.1.0",
+    "karma-typescript": "^3.0.7",
+    "karma-typescript-es6-transform": "^1.0.2",
     "load-grunt-tasks": "3.5.2",
     "mocha": "^3.2.0",
     "open": "0.0.5",
     "phantomjs-prebuilt": "^2.1.7",
-    "requirejs": "^2.1.22"
+    "rollup": "^0.50.0",
+    "typescript": "^2.5.3"
   }
 }

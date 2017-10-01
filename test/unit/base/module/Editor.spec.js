@@ -3,21 +3,20 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-define([
-  'chai',
-  'spies',
-  'chaidom',
-  'jquery',
-  'summernote/base/core/agent',
-  'summernote/base/core/dom',
-  'summernote/base/core/range',
-  'summernote/base/Context'
-], function (chai, spies, chaidom, $, agent, dom, range, Context) {
-  'use strict';
-  var expect = chai.expect;
-  chai.use(spies);
-  chai.use(chaidom);
 
+import chai from 'chai';
+import spies from 'chai-spies';
+import chaidom from '../../../chaidom';
+import $ from 'jquery';
+import agent from '../../../../src/js/base/core/agent';
+import range from '../../../../src/js/base/core/range';
+import Context from '../../../../src/js/base/Context';
+
+var expect = chai.expect;
+chai.use(spies);
+chai.use(chaidom);
+
+var expectContents = function (context, markup) {
   // [workaround]
   //  - Firefox need setTimeout for applying contents
   //  - IE8-11 can't create range in headless mode
@@ -25,342 +24,347 @@ define([
     return;
   }
 
-  var expectContents = function (context, markup) {
-    expect(context.layoutInfo.editable.html()).to.equalsIgnoreCase(markup);
-  };
+  expect(context.layoutInfo.editable.html()).to.equalsIgnoreCase(markup);
+};
 
-  var expectToHaveBeenCalled = function (context, customEvent, handler) {
-    var $note = context.layoutInfo.note;
-    var spy = chai.spy();
-    $note.on(customEvent, spy);
-    handler();
-    expect(spy).to.have.been.called();
-  };
+var expectToHaveBeenCalled = function (context, customEvent, handler) {
+  // [workaround]
+  //  - Firefox need setTimeout for applying contents
+  //  - IE8-11 can't create range in headless mode
+  if (!(agent.isWebkit || agent.isEdge)) {
+    return;
+  }
 
-  describe('Editor', function () {
-    var editor, context;
+  var $note = context.layoutInfo.note;
+  var spy = chai.spy();
+  $note.on(customEvent, spy);
+  handler();
+  expect(spy).to.have.been.called();
+};
 
-    beforeEach(function () {
-      var options = $.extend({}, $.summernote.options);
-      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
-      context = new Context($('<div><p>hello</p></div>'), options);
-      editor = context.modules.editor;
-    });
+describe('Editor', function () {
+  var editor, context;
 
-    describe('initialize', function () {
-      it('should bind custom events', function () {
-        [
-          'keydown', 'keyup', 'blur', 'mousedown', 'mouseup',
-          'scroll', 'focusin', 'focusout'
-        ].forEach(function (eventName) {
-          expectToHaveBeenCalled(context, 'summernote.' + eventName, function () {
-            context.layoutInfo.editable.trigger(eventName);
-          });
-        });
+  beforeEach(function () {
+    var options = $.extend({}, $.summernote.options);
+    options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+    context = new Context($('<div><p>hello</p></div>'), options);
+    editor = context.modules.editor;
+  });
 
-        expectToHaveBeenCalled(context, 'summernote.change', function () {
-          editor.insertText('hello');
-        });
-      });
-    });
-
-    if (agent.isWebkit) {
-      describe('undo and redo', function () {
-        it('should control history', function () {
-          editor.insertText(' world');
-          expectContents(context, '<p>hello world</p>');
-
-          editor.undo();
-          expectContents(context, '<p>hello</p>');
-
-          editor.redo();
-          expectContents(context, '<p>hello world</p>');
+  describe('initialize', function () {
+    it('should bind custom events', function () {
+      [
+        'keydown', 'keyup', 'blur', 'mousedown', 'mouseup',
+        'scroll', 'focusin', 'focusout'
+      ].forEach(function (eventName) {
+        expectToHaveBeenCalled(context, 'summernote.' + eventName, function () {
+          context.layoutInfo.editable.trigger(eventName);
         });
       });
-    }
 
-    describe('tab', function () {
-      it('should insert tab', function () {
-        editor.tab();
-        expectContents(context, '<p>hello&nbsp;&nbsp;&nbsp;&nbsp;</p>');
+      expectToHaveBeenCalled(context, 'summernote.change', function () {
+        editor.insertText('hello');
       });
     });
+  });
 
-    describe('insertParagraph', function () {
-      it('should insert paragraph', function () {
-        editor.insertParagraph();
-        expectContents(context, '<p>hello</p><p><br></p>');
-
-        editor.insertParagraph();
-        expectContents(context, '<p>hello</p><p><br></p><p><br></p>');
-      });
-    });
-
-    if (agent.isWebkit) {
-      /* jshint ignore:start */
-      describe('insertImage', function () {
-        it('should insert image', function () {
-          var source = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAF0lEQVQYGWP8////fwYsgAmLGFiIHhIAT+oECGHuN2UAAAAASUVORK5CYII=';
-          return editor.insertImage(source, 'image').then(function () {
-            expectContents(context, '<p>hello<img src="' + source + '" data-filename="image" style="width: 0px;"></p>');
-          });
-        });
-      });
-      /* jshint ignore:end */
-    }
-
-    describe('insertOrderedList and insertUnorderedList', function () {
-      it('should toggle paragraph to list', function () {
-        editor.insertOrderedList();
-        expectContents(context, '<ol><li>hello</li></ol>');
-
-        editor.insertUnorderedList();
-        expectContents(context, '<ul><li>hello</li></ul>');
-
-        editor.insertUnorderedList();
-        expectContents(context, '<p>hello</p>');
-      });
-    });
-
-    describe('indent and outdent', function () {
-      // [workaround] style is different by browser
-      if (agent.isPhantom) {
-        it('should indent and outdent paragraph', function () {
-          editor.indent();
-          expectContents(context, '<p style="margin-left: 25px;">hello</p>');
-
-          editor.outdent();
-          expectContents(context, '<p style="">hello</p>');
-        });
-      }
-
-      it('should indent and outdent list', function () {
-        editor.insertOrderedList();
-        expectContents(context, '<ol><li>hello</li></ol>');
-
-        editor.indent();
-        expectContents(context, '<ol><ol><li>hello</li></ol></ol>');
-
-        editor.outdent();
-        expectContents(context, '<ol><li>hello</li></ol>');
-      });
-    });
-
-    describe('insertNode', function () {
-      it('should insert node', function () {
-        editor.insertNode($('<span> world</span>')[0]);
-        expectContents(context, '<p>hello<span> world</span></p>');
-      });
-    });
-
-    describe('insertText', function () {
-      it('should insert text', function () {
+  if (agent.isWebkit) {
+    describe('undo and redo', function () {
+      it('should control history', function () {
         editor.insertText(' world');
+        expectContents(context, '<p>hello world</p>');
+
+        editor.undo();
+        expectContents(context, '<p>hello</p>');
+
+        editor.redo();
         expectContents(context, '<p>hello world</p>');
       });
     });
+  }
 
-    describe('pasteHTML', function () {
-      it('should paste html', function () {
-        editor.pasteHTML('<span> world</span>');
-        expectContents(context, '<p>hello<span> world</span></p>');
-      });
-
-      it('should not call change change event more than once per paste event', function () {
-        var generateLargeHtml = function () {
-          var html = '<div>';
-          for (var i = 0; i < 1000; i++) {
-            html += '<p>HTML element #' + i + '</p>';
-          }
-          html += '</div>';
-          return html;
-        };
-        var $note = context.layoutInfo.note;
-        var spy = chai.spy();
-        $note.on('summernote.change', spy);
-        var html = generateLargeHtml();
-        editor.pasteHTML(html);
-        expect(spy).to.have.been.called.once;
-      });
+  describe('tab', function () {
+    it('should insert tab', function () {
+      editor.tab();
+      expectContents(context, '<p>hello&nbsp;&nbsp;&nbsp;&nbsp;</p>');
     });
+  });
 
-    describe('insertHorizontalRule', function () {
-      it('should insert horizontal rule', function () {
-        editor.insertHorizontalRule();
-        expectContents(context, '<p>hello</p><hr><p><br></p>');
-      });
+  describe('insertParagraph', function () {
+    it('should insert paragraph', function () {
+      editor.insertParagraph();
+      expectContents(context, '<p>hello</p><p><br></p>');
+
+      editor.insertParagraph();
+      expectContents(context, '<p>hello</p><p><br></p><p><br></p>');
     });
+  });
 
-    describe('insertTable', function () {
-      it('should insert table', function () {
-        var markup = [
-          '<p>hello</p>',
-          '<table class="table table-bordered"><tbody>',
-          '<tr><td><br></td><td><br></td></tr>',
-          '<tr><td><br></td><td><br></td></tr>',
-          '</tbody></table>',
-          '<p><br></p>'
-        ].join('');
-        editor.insertTable('2x2');
-        expectContents(context, markup);
-      });
-    });
-
-    describe('empty', function () {
-      it('should make contents empty', function () {
-        editor.empty();
-        expect(editor.isEmpty()).to.be.true;
-      });
-    });
-
-    describe('formatBlock', function () {
-      it('should apply formatBlock', function () {
-        context.layoutInfo.editable.appendTo('body');
-        editor.formatBlock('blockquote');
-
-        // start <p>hello</p> => <blockquote>hello</blockquote>
-        expectContents(context, '<blockquote>hello</blockquote>');
-      });
-
-      it('should apply multi formatBlock', function () {
-
-        // set multi block html 
-        var codes = [
-          '<p><a href="http://summernote.org">hello world</a></p>',
-          '<p><a href="http://summernote.org">hello world</a></p>',
-          '<p><a href="http://summernote.org">hello world</a></p>'
-        ];
-
-        context.invoke('code', codes.join(''));
-
-        // append to body 
-        var editable = context.layoutInfo.editable;
-        editable.appendTo('body');
-
-        // run formatBlock 
-        editor.formatBlock('blockquote');
-
-        // check current range position in blockquote element 
-
-        var nodeName = editable.children()[0].nodeName;
-        expect(nodeName).to.equalsIgnoreCase('blockquote');
-
-      });      
-
-      it('should apply multi test 2 - formatBlock', function () {
-
-        var codes = [
-          '<p><a href="http://summernote.org">hello world</a></p>',
-          '<p><a href="http://summernote.org">hello world</a></p>',
-          '<p><a href="http://summernote.org">hello world</a></p>'
-        ];
-
-        context.invoke('code', codes.join(''));
-
-        var editable = context.layoutInfo.editable;
-        editable.appendTo('body');
-                
-        var startNode = editable.find('p').first()[0];
-        var endNode = editable.find('p').last()[0];
-
-        // all p tags is wrapped
-        range.create(startNode, 1, endNode, 1).normalize().select();
-
-        editor.formatBlock('blockquote');
-
-        var nodeName = editable.children()[0].nodeName;
-        expect(nodeName).to.equalsIgnoreCase('blockquote');
-
-        // p -> blockquote, p is none 
-        expect(editable.find('p').length).to.equals(0);
-
-      });      
-
-      it('should apply custom className in formatBlock', function () {
-        context.layoutInfo.editable.appendTo('body');
-        var $target = $('<blockquote class="blockquote" />');
-        editor.formatBlock('blockquote', $target);
-
-        // start <p>hello</p> => <blockquote class="blockquote">hello</blockquote>
-        expectContents(context, '<blockquote class="blockquote">hello</blockquote>');
-      });
-    });
-
-    describe('createLink', function () {
-      it('should create normal link', function () {
-        var text = 'hello';
-
-        var editable = context.layoutInfo.editable;
-        var pNode = editable.find('p')[0];
-        var textNode = pNode.childNodes[0];
-        var startIndex = textNode.wholeText.indexOf(text);
-        var endIndex = startIndex + text.length;
-
-        range.create(textNode, startIndex, textNode, endIndex).normalize().select();
-
-        // check creation normal link
-        editor.createLink({
-          url: 'http://summernote.org',
-          text: 'summernote'
+  if (agent.isWebkit) {
+    /* jshint ignore:start */
+    describe('insertImage', function () {
+      it('should insert image', function () {
+        var source = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAF0lEQVQYGWP8////fwYsgAmLGFiIHhIAT+oECGHuN2UAAAAASUVORK5CYII=';
+        return editor.insertImage(source, 'image').then(function () {
+          expectContents(context, '<p>hello<img src="' + source + '" data-filename="image" style="width: 0px;"></p>');
         });
+      });
+    });
+    /* jshint ignore:end */
+  }
 
-        expectContents(context, '<p>hello<a href="http://summernote.org">summernote</a></p>');
+  describe('insertOrderedList and insertUnorderedList', function () {
+    it('should toggle paragraph to list', function () {
+      editor.insertOrderedList();
+      expectContents(context, '<ol><li>hello</li></ol>');
+
+      editor.insertUnorderedList();
+      expectContents(context, '<ul><li>hello</li></ul>');
+
+      editor.insertUnorderedList();
+      expectContents(context, '<p>hello</p>');
+    });
+  });
+
+  describe('indent and outdent', function () {
+    // [workaround] style is different by browser
+    if (agent.isPhantom) {
+      it('should indent and outdent paragraph', function () {
+        editor.indent();
+        expectContents(context, '<p style="margin-left: 25px;">hello</p>');
+
+        editor.outdent();
+        expectContents(context, '<p style="">hello</p>');
+      });
+    }
+
+    it('should indent and outdent list', function () {
+      editor.insertOrderedList();
+      expectContents(context, '<ol><li>hello</li></ol>');
+
+      editor.indent();
+      expectContents(context, '<ol><ol><li>hello</li></ol></ol>');
+
+      editor.outdent();
+      expectContents(context, '<ol><li>hello</li></ol>');
+    });
+  });
+
+  describe('insertNode', function () {
+    it('should insert node', function () {
+      editor.insertNode($('<span> world</span>')[0]);
+      expectContents(context, '<p>hello<span> world</span></p>');
+    });
+  });
+
+  describe('insertText', function () {
+    it('should insert text', function () {
+      editor.insertText(' world');
+      expectContents(context, '<p>hello world</p>');
+    });
+  });
+
+  describe('pasteHTML', function () {
+    it('should paste html', function () {
+      editor.pasteHTML('<span> world</span>');
+      expectContents(context, '<p>hello<span> world</span></p>');
+    });
+
+    it('should not call change change event more than once per paste event', function () {
+      var generateLargeHtml = function () {
+        var html = '<div>';
+        for (var i = 0; i < 1000; i++) {
+          html += '<p>HTML element #' + i + '</p>';
+        }
+        html += '</div>';
+        return html;
+      };
+      var $note = context.layoutInfo.note;
+      var spy = chai.spy();
+      $note.on('summernote.change', spy);
+      var html = generateLargeHtml();
+      editor.pasteHTML(html);
+      expect(spy).to.have.been.called.once;
+    });
+  });
+
+  describe('insertHorizontalRule', function () {
+    it('should insert horizontal rule', function () {
+      editor.insertHorizontalRule();
+      expectContents(context, '<p>hello</p><hr><p><br></p>');
+    });
+  });
+
+  describe('insertTable', function () {
+    it('should insert table', function () {
+      var markup = [
+        '<p>hello</p>',
+        '<table class="table table-bordered"><tbody>',
+        '<tr><td><br></td><td><br></td></tr>',
+        '<tr><td><br></td><td><br></td></tr>',
+        '</tbody></table>',
+        '<p><br></p>'
+      ].join('');
+      editor.insertTable('2x2');
+      expectContents(context, markup);
+    });
+  });
+
+  describe('empty', function () {
+    it('should make contents empty', function () {
+      editor.empty();
+      expect(editor.isEmpty()).to.be.true;
+    });
+  });
+
+  describe('formatBlock', function () {
+    it('should apply formatBlock', function () {
+      context.layoutInfo.editable.appendTo('body');
+      editor.formatBlock('blockquote');
+
+      // start <p>hello</p> => <blockquote>hello</blockquote>
+      expectContents(context, '<blockquote>hello</blockquote>');
+    });
+
+    it('should apply multi formatBlock', function () {
+
+      // set multi block html 
+      var codes = [
+        '<p><a href="http://summernote.org">hello world</a></p>',
+        '<p><a href="http://summernote.org">hello world</a></p>',
+        '<p><a href="http://summernote.org">hello world</a></p>'
+      ];
+
+      context.invoke('code', codes.join(''));
+
+      // append to body 
+      var editable = context.layoutInfo.editable;
+      editable.appendTo('body');
+
+      // run formatBlock 
+      editor.formatBlock('blockquote');
+
+      // check current range position in blockquote element 
+
+      var nodeName = editable.children()[0].nodeName;
+      expect(nodeName).to.equalsIgnoreCase('blockquote');
+
+    });      
+
+    it('should apply multi test 2 - formatBlock', function () {
+
+      var codes = [
+        '<p><a href="http://summernote.org">hello world</a></p>',
+        '<p><a href="http://summernote.org">hello world</a></p>',
+        '<p><a href="http://summernote.org">hello world</a></p>'
+      ];
+
+      context.invoke('code', codes.join(''));
+
+      var editable = context.layoutInfo.editable;
+      editable.appendTo('body');
+              
+      var startNode = editable.find('p').first()[0];
+      var endNode = editable.find('p').last()[0];
+
+      // all p tags is wrapped
+      range.create(startNode, 1, endNode, 1).normalize().select();
+
+      editor.formatBlock('blockquote');
+
+      var nodeName = editable.children()[0].nodeName;
+      expect(nodeName).to.equalsIgnoreCase('blockquote');
+
+      // p -> blockquote, p is none 
+      expect(editable.find('p').length).to.equals(0);
+
+    });      
+
+    it('should apply custom className in formatBlock', function () {
+      context.layoutInfo.editable.appendTo('body');
+      var $target = $('<blockquote class="blockquote" />');
+      editor.formatBlock('blockquote', $target);
+
+      // start <p>hello</p> => <blockquote class="blockquote">hello</blockquote>
+      expectContents(context, '<blockquote class="blockquote">hello</blockquote>');
+    });
+  });
+
+  describe('createLink', function () {
+    it('should create normal link', function () {
+      var text = 'hello';
+
+      var editable = context.layoutInfo.editable;
+      var pNode = editable.find('p')[0];
+      var textNode = pNode.childNodes[0];
+      var startIndex = textNode.wholeText.indexOf(text);
+      var endIndex = startIndex + text.length;
+
+      range.create(textNode, startIndex, textNode, endIndex).normalize().select();
+
+      // check creation normal link
+      editor.createLink({
+        url: 'http://summernote.org',
+        text: 'summernote'
       });
 
-      it('should create a link with range', function () {
-        var text = 'hello';
-        var editable = context.layoutInfo.editable;
-        var pNode = editable.find('p')[0];
-        var textNode = pNode.childNodes[0];
-        var startIndex = textNode.wholeText.indexOf(text);
-        var endIndex = startIndex + text.length;
+      expectContents(context, '<p>hello<a href="http://summernote.org">summernote</a></p>');
+    });
 
-        var rng = range.create(textNode, startIndex, textNode, endIndex);
+    it('should create a link with range', function () {
+      var text = 'hello';
+      var editable = context.layoutInfo.editable;
+      var pNode = editable.find('p')[0];
+      var textNode = pNode.childNodes[0];
+      var startIndex = textNode.wholeText.indexOf(text);
+      var endIndex = startIndex + text.length;
 
-        editor.createLink({
-          url: 'http://summernote.org',
-          text: 'summernote',
-          range: rng
-        });
+      var rng = range.create(textNode, startIndex, textNode, endIndex);
 
-        expectContents(context, '<p><a href="http://summernote.org">summernote</a></p>');
+      editor.createLink({
+        url: 'http://summernote.org',
+        text: 'summernote',
+        range: rng
       });
 
-      it('should create a link with isNewWindow', function () {
-        var text = 'hello';
-        var editable = context.layoutInfo.editable;
-        var pNode = editable.find('p')[0];
-        var textNode = pNode.childNodes[0];
-        var startIndex = textNode.wholeText.indexOf(text);
-        var endIndex = startIndex + text.length;
+      expectContents(context, '<p><a href="http://summernote.org">summernote</a></p>');
+    });
 
-        var rng = range.create(textNode, startIndex, textNode, endIndex);
+    it('should create a link with isNewWindow', function () {
+      var text = 'hello';
+      var editable = context.layoutInfo.editable;
+      var pNode = editable.find('p')[0];
+      var textNode = pNode.childNodes[0];
+      var startIndex = textNode.wholeText.indexOf(text);
+      var endIndex = startIndex + text.length;
 
-        editor.createLink({
-          url: 'http://summernote.org',
-          text: 'summernote',
-          range: rng,
-          isNewWindow: true
-        });
+      var rng = range.create(textNode, startIndex, textNode, endIndex);
 
-        expectContents(context, '<p><a href="http://summernote.org" target="_blank">summernote</a></p>');
+      editor.createLink({
+        url: 'http://summernote.org',
+        text: 'summernote',
+        range: rng,
+        isNewWindow: true
       });
 
-      it('should modify a link', function () {
-        context.invoke('code', '<p><a href="http://summernote.org">hello world</a></p>');
+      expectContents(context, '<p><a href="http://summernote.org" target="_blank">summernote</a></p>');
+    });
 
-        var editable = context.layoutInfo.editable;
-        var anchorNode = editable.find('a')[0];
-        var rng = range.createFromNode(anchorNode);
+    it('should modify a link', function () {
+      context.invoke('code', '<p><a href="http://summernote.org">hello world</a></p>');
 
-        editor.createLink({
-          url: 'http://wow.summernote.org',
-          text: 'summernote wow',
-          range: rng
-        });
+      var editable = context.layoutInfo.editable;
+      var anchorNode = editable.find('a')[0];
+      var rng = range.createFromNode(anchorNode);
 
-        expectContents(context, '<p><a href="http://wow.summernote.org">summernote wow</a></p>');
+      editor.createLink({
+        url: 'http://wow.summernote.org',
+        text: 'summernote wow',
+        range: rng
       });
+
+      expectContents(context, '<p><a href="http://wow.summernote.org">summernote wow</a></p>');
     });
   });
 });

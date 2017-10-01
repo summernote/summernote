@@ -20,7 +20,9 @@
     "jquery": true,
     "node": true,
     "worker": true,
-    "es3": true,
+    "esversion": 6,
+    "mocha": true,
+    "expr": true,
     "globals": {
       "JSON": true,
       "define": true,

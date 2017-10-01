@@ -1,22 +1,6 @@
 module.exports = function (grunt) {
   'use strict';
 
-  /**
-   * read optional JSON from filepath
-   * @param {String} filepath
-   * @return {Object}
-   */
-  var readOptionalJSON = function (filepath) {
-    var data = {};
-    try {
-      data = grunt.file.readJSON(filepath);
-      // The concatenated file won't pass onevar
-      // But our modules can
-      delete data.onever;
-    } catch (e) { }
-    return data;
-  };
-
   var customLaunchers = {
     /*
     'SL_IE8': {
@@ -76,25 +60,18 @@ module.exports = function (grunt) {
 
     // bulid source(grunt-build.js).
     build: {
-      all: [{
-        baseUrl: 'src/js',
-        startFile: 'intro.js',
-        endFile: 'outro.js',
-        entryFile: 'summernote/bs3/settings',
-        outFile: 'dist/summernote.js'
-      }, {
-        baseUrl: 'src/js',
-        startFile: 'intro.js',
-        endFile: 'outro.js',
-        entryFile: 'summernote/bs4/settings',
-        outFile: 'dist/summernote-bs4.js'
-      }, {
-        baseUrl: 'src/js',        // base url
-        startFile: 'intro.js',    // intro part
-        endFile: 'outro.js',      // outro part
-        entryFile: 'summernote/lite/settings',
-        outFile: 'dist/summernote-lite.js' // out file
-      }]
+      bs3: {
+        input: './src/js/bs3/settings',
+        output: './dist/summernote.js'
+      },
+      bs4: {
+        input: './src/js/bs4/settings',
+        output: './dist/summernote-bs4.js'
+      },
+      lite: {
+        input: './src/js/lite/settings',
+        output: './dist/summernote-lite.js'
+      }
     },
 
     // for javascript convention.
@@ -112,10 +89,6 @@ module.exports = function (grunt) {
         options: {
           jshintrc: true
         }
-      },
-      dist: {
-        src: 'dist/summernote.js',
-        options: readOptionalJSON('.jshintrc')
       }
     },
 
@@ -212,7 +185,7 @@ module.exports = function (grunt) {
     watch: {
       all: {
         files: ['src/less/*.less', 'src/js/**/*.js', 'test/unit/**/*.js'],
-        tasks: ['recess', 'lint'],
+        tasks: ['recess', 'lint', 'build'],
         options: {
           livereload: true
         }
@@ -231,7 +204,7 @@ module.exports = function (grunt) {
 
     karma: {
       options: {
-        configFile: './test/karma.conf.js'
+        configFile: './karma.conf.js'
       },
       all: {
         // Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS, IE
