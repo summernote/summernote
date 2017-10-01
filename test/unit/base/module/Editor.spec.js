@@ -12,29 +12,15 @@ import agent from '../../../../src/js/base/core/agent';
 import range from '../../../../src/js/base/core/range';
 import Context from '../../../../src/js/base/Context';
 
-var expect = chai.expect;
+const expect = chai.expect;
 chai.use(spies);
 chai.use(chaidom);
 
 var expectContents = function (context, markup) {
-  // [workaround]
-  //  - Firefox need setTimeout for applying contents
-  //  - IE8-11 can't create range in headless mode
-  if (!(agent.isWebkit || agent.isEdge)) {
-    return;
-  }
-
   expect(context.layoutInfo.editable.html()).to.equalsIgnoreCase(markup);
 };
 
 var expectToHaveBeenCalled = function (context, customEvent, handler) {
-  // [workaround]
-  //  - Firefox need setTimeout for applying contents
-  //  - IE8-11 can't create range in headless mode
-  if (!(agent.isWebkit || agent.isEdge)) {
-    return;
-  }
-
   var $note = context.layoutInfo.note;
   var spy = chai.spy();
   $note.on(customEvent, spy);
@@ -50,6 +36,13 @@ describe('Editor', function () {
     options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
     context = new Context($('<div><p>hello</p></div>'), options);
     editor = context.modules.editor;
+
+    // [workaround]
+    //  - Firefox need setTimeout for applying contents
+    //  - IE8-11 can't create range in headless mode
+    if (!(agent.isWebkit || agent.isEdge)) {
+      this.skip();
+    }
   });
 
   describe('initialize', function () {

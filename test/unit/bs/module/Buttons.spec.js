@@ -6,11 +6,12 @@
 
 import chai from 'chai';
 import $ from 'jquery';
+import agent from '../../../../src/js/base/core/agent';
 import range from '../../../../src/js/base/core/range';
 import Context from '../../../../src/js/base/Context';
 
-var expect = chai.expect,
-  assert = chai.assert;
+const expect = chai.expect;
+const assert = chai.assert;
 
 describe('Buttons', function () {
   var context, $toolbar, $editable;
@@ -36,6 +37,13 @@ describe('Buttons', function () {
 
     $toolbar = context.layoutInfo.toolbar;
     $editable = context.layoutInfo.editable;
+
+    // [workaround]
+    //  - Firefox need setTimeout for applying contents
+    //  - IE8~11 can't create range in headless mode
+    if (agent.isFF || agent.isMSIE || agent.isEdge) {
+      this.skip();
+    }
   });
 
   describe('bold button', function () {
