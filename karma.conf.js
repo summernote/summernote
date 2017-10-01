@@ -22,6 +22,7 @@ module.exports = function (config) {
       dir: 'test/coverage/',
       includeAllSources: true
     },
+    browserNoActivityTimeout: 30000,
     karmaTypescriptConfig: {
       tsconfig: './tsconfig.json',
       bundlerOptions: {
