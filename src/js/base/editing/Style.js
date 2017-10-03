@@ -4,13 +4,7 @@ import func from '../core/func';
 import list from '../core/list';
 import dom from '../core/dom';
 
-/**
- * @class editing.Style
- *
- * Style
- *
- */
-export default function () {
+export default class Style {
   /**
    * @method jQueryCSS
    *
@@ -24,16 +18,16 @@ export default function () {
    * @param  {Array} propertyNames - An array of one or more CSS properties.
    * @return {Object}
    */
-  var jQueryCSS = function ($obj, propertyNames) {
+  jQueryCSS($obj, propertyNames) {
     if (agent.jqueryVersion < 1.9) {
-      var result = {};
-      $.each(propertyNames, function (idx, propertyName) {
+      const result = {};
+      $.each(propertyNames, (idx, propertyName) => {
         result[propertyName] = $obj.css(propertyName);
       });
       return result;
     }
     return $obj.css.call($obj, propertyNames);
-  };
+  }
 
   /**
    * returns style object from node
@@ -41,12 +35,12 @@ export default function () {
    * @param {jQuery} $node
    * @return {Object}
    */
-  this.fromNode = function ($node) {
-    var properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
-    var styleInfo = jQueryCSS($node, properties) || {};
+  fromNode($node) {
+    const properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
+    const styleInfo = this.jQueryCSS($node, properties) || {};
     styleInfo['font-size'] = parseInt(styleInfo['font-size'], 10);
     return styleInfo;
-  };
+  }
 
   /**
    * paragraph level style
@@ -54,13 +48,13 @@ export default function () {
    * @param {WrappedRange} rng
    * @param {Object} styleInfo
    */
-  this.stylePara = function (rng, styleInfo) {
+  stylePara(rng, styleInfo) {
     $.each(rng.nodes(dom.isPara, {
       includeAncestor: true
-    }), function (idx, para) {
+    }), (idx, para) => {
       $(para).css(styleInfo);
     });
-  };
+  }
 
   /**
    * insert and returns styleNodes on range.
@@ -72,38 +66,38 @@ export default function () {
    * @param {Boolean} [options.onlyPartialContains] - default: `false`
    * @return {Node[]}
    */
-  this.styleNodes = function (rng, options) {
+  styleNodes(rng, options) {
     rng = rng.splitText();
 
-    var nodeName = options && options.nodeName || 'SPAN';
-    var expandClosestSibling = !!(options && options.expandClosestSibling);
-    var onlyPartialContains = !!(options && options.onlyPartialContains);
+    const nodeName = options && options.nodeName || 'SPAN';
+    const expandClosestSibling = !!(options && options.expandClosestSibling);
+    const onlyPartialContains = !!(options && options.onlyPartialContains);
 
     if (rng.isCollapsed()) {
       return [rng.insertNode(dom.create(nodeName))];
     }
 
-    var pred = dom.makePredByNodeName(nodeName);
-    var nodes = rng.nodes(dom.isText, {
+    let pred = dom.makePredByNodeName(nodeName);
+    const nodes = rng.nodes(dom.isText, {
       fullyContains: true
-    }).map(function (text) {
+    }).map((text) => {
       return dom.singleChildAncestor(text, pred) || dom.wrap(text, nodeName);
     });
 
     if (expandClosestSibling) {
       if (onlyPartialContains) {
-        var nodesInRange = rng.nodes();
+        const nodesInRange = rng.nodes();
         // compose with partial contains predication
-        pred = func.and(pred, function (node) {
+        pred = func.and(pred, (node) => {
           return list.contains(nodesInRange, node);
         });
       }
 
-      return nodes.map(function (node) {
-        var siblings = dom.withClosestSiblings(node, pred);
-        var head = list.head(siblings);
-        var tails = list.tail(siblings);
-        $.each(tails, function (idx, elem) {
+      return nodes.map((node) => {
+        const siblings = dom.withClosestSiblings(node, pred);
+        const head = list.head(siblings);
+        const tails = list.tail(siblings);
+        $.each(tails, (idx, elem) => {
           dom.appendChildNodes(head, elem.childNodes);
           dom.remove(elem);
         });
@@ -112,7 +106,7 @@ export default function () {
     } else {
       return nodes;
     }
-  };
+  }
 
   /**
    * get current style on cursor
@@ -120,9 +114,9 @@ export default function () {
    * @param {WrappedRange} rng
    * @return {Object} - object contains style properties.
    */
-  this.current = function (rng) {
-    var $cont = $(!dom.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
-    var styleInfo = this.fromNode($cont);
+  current(rng) {
+    const $cont = $(!dom.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
+    let styleInfo = this.fromNode($cont);
 
     // document.queryCommandState for toggle state
     // [workaround] prevent Firefox nsresult: "0x80004005 (NS_ERROR_FAILURE)"
@@ -142,16 +136,16 @@ export default function () {
     if (!rng.isOnList()) {
       styleInfo['list-style'] = 'none';
     } else {
-      var orderedTypes = ['circle', 'disc', 'disc-leading-zero', 'square'];
-      var isUnordered = $.inArray(styleInfo['list-style-type'], orderedTypes) > -1;
+      const orderedTypes = ['circle', 'disc', 'disc-leading-zero', 'square'];
+      const isUnordered = $.inArray(styleInfo['list-style-type'], orderedTypes) > -1;
       styleInfo['list-style'] = isUnordered ? 'unordered' : 'ordered';
     }
 
-    var para = dom.ancestor(rng.sc, dom.isPara);
+    const para = dom.ancestor(rng.sc, dom.isPara);
     if (para && para.style['line-height']) {
       styleInfo['line-height'] = para.style.lineHeight;
     } else {
-      var lineHeight = parseInt(styleInfo['line-height'], 10) / parseInt(styleInfo['font-size'], 10);
+      const lineHeight = parseInt(styleInfo['line-height'], 10) / parseInt(styleInfo['font-size'], 10);
       styleInfo['line-height'] = lineHeight.toFixed(1);
     }
 
@@ -160,5 +154,5 @@ export default function () {
     styleInfo.range = rng;
 
     return styleInfo;
-  };
+  }
 }

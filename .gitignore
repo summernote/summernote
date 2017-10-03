@@ -40,3 +40,6 @@ dist/*
 
 # Ignoring visual studio
 .vs
+
+# Ignoring rpt2_cache
+.rpt2_cache

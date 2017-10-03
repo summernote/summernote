@@ -1,107 +1,105 @@
 import range from '../core/range';
 
-/**
- * @class editing.History
- *
- * Editor History
- *
- */
-export default function ($editable) {
-  var stack = [], stackOffset = -1;
-  var editable = $editable[0];
+export default class History {
+  constructor($editable) {
+    this.stack = [];
+    this.stackOffset = -1;
+    this.$editable = $editable;
+    this.editable = $editable[0];
+  }
 
-  var makeSnapshot = function () {
-    var rng = range.create(editable);
-    var emptyBookmark = {s: {path: [], offset: 0}, e: {path: [], offset: 0}};
+  makeSnapshot() {
+    const rng = range.create(this.editable);
+    const emptyBookmark = {s: {path: [], offset: 0}, e: {path: [], offset: 0}};
 
     return {
-      contents: $editable.html(),
-      bookmark: (rng ? rng.bookmark(editable) : emptyBookmark)
+      contents: this.$editable.html(),
+      bookmark: (rng ? rng.bookmark(this.editable) : emptyBookmark)
     };
-  };
+  }
 
-  var applySnapshot = function (snapshot) {
+  applySnapshot(snapshot) {
     if (snapshot.contents !== null) {
-      $editable.html(snapshot.contents);
+      this.$editable.html(snapshot.contents);
     }
     if (snapshot.bookmark !== null) {
-      range.createFromBookmark(editable, snapshot.bookmark).select();
+      range.createFromBookmark(this.editable, snapshot.bookmark).select();
     }
-  };
+  }
 
   /**
   * @method rewind
   * Rewinds the history stack back to the first snapshot taken.
   * Leaves the stack intact, so that "Redo" can still be used.
   */
-  this.rewind = function () {
+  rewind() {
     // Create snap shot if not yet recorded
-    if ($editable.html() !== stack[stackOffset].contents) {
+    if (this.$editable.html() !== this.stack[this.stackOffset].contents) {
       this.recordUndo();
     }
 
     // Return to the first available snapshot.
-    stackOffset = 0;
+    this.stackOffset = 0;
 
     // Apply that snapshot.
-    applySnapshot(stack[stackOffset]);
-  };
+    this.applySnapshot(this.stack[this.stackOffset]);
+  }
 
   /**
   * @method reset
   * Resets the history stack completely; reverting to an empty editor.
   */
-  this.reset = function () {
+  reset() {
     // Clear the stack.
-    stack = [];
+    this.stack = [];
 
     // Restore stackOffset to its original value.
-    stackOffset = -1;
+    this.stackOffset = -1;
 
     // Clear the editable area.
-    $editable.html('');
+    this.$editable.html('');
 
     // Record our first snapshot (of nothing).
     this.recordUndo();
-  };
+  }
 
   /**
    * undo
    */
-  this.undo = function () {
+  undo() {
     // Create snap shot if not yet recorded
-    if ($editable.html() !== stack[stackOffset].contents) {
+    if (this.$editable.html() !== this.stack[this.stackOffset].contents) {
       this.recordUndo();
     }
 
-    if (0 < stackOffset) {
-      stackOffset--;
-      applySnapshot(stack[stackOffset]);
+    if (0 < this.stackOffset) {
+      this.stackOffset--;
+      this.applySnapshot(this.stack[this.stackOffset]);
     }
-  };
+  }
 
   /**
    * redo
    */
-  this.redo = function () {
-    if (stack.length - 1 > stackOffset) {
-      stackOffset++;
-      applySnapshot(stack[stackOffset]);
+  redo() {
+    if (this.stack.length - 1 > this.stackOffset) {
+      this.stackOffset++;
+      this.applySnapshot(this.stack[this.stackOffset]);
     }
-  };
+  }
 
   /**
    * recorded undo
    */
-  this.recordUndo = function () {
-    stackOffset++;
+  recordUndo() {
+    this.stackOffset++;
 
     // Wash out stack after stackOffset
-    if (stack.length > stackOffset) {
-      stack = stack.slice(0, stackOffset);
+    if (this.stack.length > this.stackOffset) {
+      this.stack = this.stack.slice(0, this.stackOffset);
     }
 
     // Create new snapshot and push it to the end
-    stack.push(makeSnapshot());
-  };
+    this.stack.push(this.makeSnapshot());
+  }
 }

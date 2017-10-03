@@ -83,7 +83,7 @@ module.exports = function (grunt) {
           'lang/**/*.js',
           'Gruntfile.js',
           'test/**/*.js',
-          '!test/coverage/**/*.js',
+          '!coverage/**/*.js',
           'build/*.js'
         ],
         options: {
@@ -183,9 +183,16 @@ module.exports = function (grunt) {
 
     // watch source code change
     watch: {
-      all: {
-        files: ['src/less/*.less', 'src/js/**/*.js', 'test/unit/**/*.js'],
-        tasks: ['recess', 'lint', 'build'],
+      less: {
+        files: ['src/less/*.less'],
+        tasks: ['recess'],
+        options: {
+          livereload: true
+        }
+      },
+      script: {
+        files: ['src/js/**/*.js', 'test/unit/**/*.js'],
+        tasks: ['lint', 'build', 'karma:all'],
         options: {
           livereload: true
         }
@@ -206,11 +213,14 @@ module.exports = function (grunt) {
       options: {
         configFile: './karma.conf.js'
       },
+      watch: {
+        background: false,
+        singleRun: false
+      },
       all: {
         // Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS, IE
         singleRun: true,
-        browsers: ['Safari'],
-        reporters: ['dots']
+        browsers: ['PhantomJS'],
       },
       dist: {
         singleRun: true,
@@ -242,7 +252,7 @@ module.exports = function (grunt) {
         force: false
       },
       travis: {
-        src: 'test/coverage/**/lcov.info'
+        src: 'coverage/**/lcov.info'
       }
     },
     clean: {
@@ -284,7 +294,7 @@ module.exports = function (grunt) {
   grunt.registerTask('lint', ['jshint', 'jscs']);
 
   // test: unit test on test folder
-  grunt.registerTask('test', ['lint', 'karma:all']);
+  grunt.registerTask('test', ['lint', 'karma:watch']);
 
   // test: unit test on travis
   grunt.registerTask('test-travis', ['lint', 'karma:travis']);

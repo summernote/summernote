@@ -13,28 +13,33 @@ module.exports = function (grunt) {
     ` * Date: ${date}`,
     ` */`
   ].join('\n');
-  
-  const input = {
-    external: ['jquery']
+ 
+  const rollup = require('rollup');
+  const rollupTypescript = require('rollup-plugin-typescript2');
+ 
+  const inputOptions = {
+    external: ['jquery'],
+    plugins: [rollupTypescript({
+      include: ["*.js+(|x)", "**/*.js+(|x)"]
+    })]
   };
   
-  const output = {
+  const outputOptions = {
     banner,
     format: 'umd',
+    sourcemap: true,
     globals: {
       'jquery': 'jQuery'
     }
   };
 
-  const rollup = require('rollup');
-
   grunt.registerMultiTask('build', 'concatenate source: summernote.js', function () {
     const done = this.async();
     
-    rollup.rollup(Object.assign(input, {
+    rollup.rollup(Object.assign(inputOptions, {
       input: this.data.input
     })).then((bundle) => {
-      return bundle.write(Object.assign(output, {
+      return bundle.write(Object.assign(outputOptions, {
         file: this.data.output
       }));
     }).then((result) => {
