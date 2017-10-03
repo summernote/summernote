@@ -9,10 +9,11 @@ import Bullet from '../editing/Bullet';
  * Typing
  *
  */
-export default function () {
-
-  // a Bullet instance to toggle lists off
-  var bullet = new Bullet();
+export default class Typing {
+  constructor() {
+    // a Bullet instance to toggle lists off
+    this.bullet = new Bullet();
+  }
 
   /**
    * insert tab
@@ -20,20 +21,20 @@ export default function () {
    * @param {WrappedRange} rng
    * @param {Number} tabsize
    */
-  this.insertTab = function (rng, tabsize) {
-    var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
+  insertTab(rng, tabsize) {
+    const tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
     rng = rng.deleteContents();
     rng.insertNode(tab, true);
 
     rng = range.create(tab, tabsize);
     rng.select();
-  };
+  }
 
   /**
    * insert paragraph
    */
-  this.insertParagraph = function (editable) {
-    var rng = range.create(editable);
+  insertParagraph (editable) {
+    let rng = range.create(editable);
 
     // deleteContents on range.
     rng = rng.deleteContents();
@@ -42,15 +43,15 @@ export default function () {
     rng = rng.wrapBodyInlineWithPara();
 
     // finding paragraph
-    var splitRoot = dom.ancestor(rng.sc, dom.isPara);
+    const splitRoot = dom.ancestor(rng.sc, dom.isPara);
 
-    var nextPara;
+    let nextPara;
     // on paragraph: split paragraph
     if (splitRoot) {
       // if it is an empty line with li
       if (dom.isEmpty(splitRoot) && dom.isLi(splitRoot)) {
         // toogle UL/OL and escape
-        bullet.toggleList(splitRoot.parentNode.nodeName);
+        this.bullet.toggleList(splitRoot.parentNode.nodeName);
         return;
       // if it is an empty line with para on blockquote
       } else if (dom.isEmpty(splitRoot) && dom.isPara(splitRoot) && dom.isBlockquote(splitRoot.parentNode)) {
@@ -61,10 +62,10 @@ export default function () {
       } else {
         nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
 
-        var emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
+        let emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
         emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
 
-        $.each(emptyAnchors, function (idx, anchor) {
+        $.each(emptyAnchors, (idx, anchor) => {
           dom.remove(anchor);
         });
 
@@ -75,7 +76,7 @@ export default function () {
       }
     // no paragraph: insert empty paragraph
     } else {
-      var next = rng.sc.childNodes[rng.so];
+      const next = rng.sc.childNodes[rng.so];
       nextPara = $(dom.emptyPara)[0];
       if (next) {
         rng.sc.insertBefore(nextPara, next);
@@ -85,5 +86,5 @@ export default function () {
     }
 
     range.create(nextPara, 0).normalize().select().scrollIntoView(editable);
-  };
+  }
 }

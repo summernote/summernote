@@ -2,59 +2,61 @@ import $ from 'jquery';
 import list from '../core/list';
 import key from '../core/key';
 
-export default function (context) {
-  var self = this;
-  var defaultScheme = 'http://';
-  var linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
+const defaultScheme = 'http://';
+const linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
 
-  this.events = {
-    'summernote.keyup': function (we, e) {
-      if (!e.isDefaultPrevented()) {
-        self.handleKeyup(e);
+export default class AutoLink {
+  constructor(context) {
+    this.context = context;
+    this.events = {
+      'summernote.keyup': (we, e) => {
+        if (!e.isDefaultPrevented()) {
+          this.handleKeyup(e);
+        }
+      },
+      'summernote.keydown': (we, e) => {
+        this.handleKeydown(e);
       }
-    },
-    'summernote.keydown': function (we, e) {
-      self.handleKeydown(e);
-    }
-  };
+    };
+  }
 
-  this.initialize = function () {
+  initialize() {
     this.lastWordRange = null;
-  };
+  }
 
-  this.destroy = function () {
+  destroy() {
     this.lastWordRange = null;
-  };
+  }
 
-  this.replace = function () {
+  replace() {
     if (!this.lastWordRange) {
       return;
     }
 
-    var keyword = this.lastWordRange.toString();
-    var match = keyword.match(linkPattern);
+    const keyword = this.lastWordRange.toString();
+    const match = keyword.match(linkPattern);
 
     if (match && (match[1] || match[2])) {
-      var link = match[1] ? keyword : defaultScheme + keyword;
-      var node = $('<a />').html(keyword).attr('href', link)[0];
+      const link = match[1] ? keyword : defaultScheme + keyword;
+      const node = $('<a />').html(keyword).attr('href', link)[0];
 
       this.lastWordRange.insertNode(node);
       this.lastWordRange = null;
-      context.invoke('editor.focus');
+      this.context.invoke('editor.focus');
     }
 
-  };
+  }
 
-  this.handleKeydown = function (e) {
+  handleKeydown(e) {
     if (list.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
-      var wordRange = context.invoke('editor.createRange').getWordRange();
+      const wordRange = this.context.invoke('editor.createRange').getWordRange();
       this.lastWordRange = wordRange;
     }
-  };
+  }
 
-  this.handleKeyup = function (e) {
+  handleKeyup(e) {
     if (list.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
       this.replace();
     }
-  };
+  }
 }

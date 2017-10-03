@@ -3,16 +3,17 @@ import dom from '../core/dom';
 /**
  * textarea auto sync.
  */
-export default function (context) {
-  var $note = context.layoutInfo.note;
+export default class AutoSync {
+  constructor(context) {
+    this.$note = context.layoutInfo.note;
+    this.events = {
+      'summernote.change': () => {
+        this.$note.val(context.invoke('code'));
+      }
+    };
+  }
 
-  this.events = {
-    'summernote.change': function () {
-      $note.val(context.invoke('code'));
-    }
-  };
-
-  this.shouldInitialize = function () {
-    return dom.isTextarea($note[0]);
-  };
+  shouldInitialize() {
+    return dom.isTextarea(this.$note[0]);
+  }
 }

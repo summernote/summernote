@@ -4,70 +4,70 @@ import func from '../core/func';
 import list from '../core/list';
 import dom from '../core/dom';
 
-export default function (context) {
-  var self = this;
-  var ui = $.summernote.ui;
+const AIR_MODE_POPOVER_X_OFFSET = 20;
 
-  var options = context.options;
+export default class AirPopover {
+  constructor(context) {
+    this.context = context;
+    this.ui = $.summernote.ui;
+    this.options = context.options;
+    this.events = {
+      'summernote.keyup summernote.mouseup summernote.scroll': () => {
+        this.update();
+      },
+      'summernote.disable summernote.change summernote.dialog.shown': () => {
+        this.hide();
+      },
+      'summernote.focusout': (we, e) => {
+        // [workaround] Firefox doesn't support relatedTarget on focusout
+        //  - Ignore hide action on focus out in FF.
+        if (agent.isFF) {
+          return;
+        }
 
-  var AIR_MODE_POPOVER_X_OFFSET = 20;
-
-  this.events = {
-    'summernote.keyup summernote.mouseup summernote.scroll': function () {
-      self.update();
-    },
-    'summernote.disable summernote.change summernote.dialog.shown': function () {
-      self.hide();
-    },
-    'summernote.focusout': function (we, e) {
-      // [workaround] Firefox doesn't support relatedTarget on focusout
-      //  - Ignore hide action on focus out in FF.
-      if (agent.isFF) {
-        return;
+        if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq(this.$popover[0]))) {
+          this.hide();
+        }
       }
+    };
+  }
 
-      if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq(self.$popover[0]))) {
-        self.hide();
-      }
-    }
-  };
+  shouldInitialize() {
+    return this.options.airMode && !list.isEmpty(this.options.popover.air);
+  }
 
-  this.shouldInitialize = function () {
-    return options.airMode && !list.isEmpty(options.popover.air);
-  };
-
-  this.initialize = function () {
-    this.$popover = ui.popover({
+  initialize() {
+    this.$popover = this.ui.popover({
       className: 'note-air-popover'
-    }).render().appendTo(options.container);
-    var $content = this.$popover.find('.popover-content');
+    }).render().appendTo(this.options.container);
+    const $content = this.$popover.find('.popover-content');
 
-    context.invoke('buttons.build', $content, options.popover.air);
-  };
+    this.context.invoke('buttons.build', $content, this.options.popover.air);
+  }
 
-  this.destroy = function () {
+  destroy() {
     this.$popover.remove();
-  };
+  }
 
-  this.update = function () {
-    var styleInfo = context.invoke('editor.currentStyle');
+  update() {
+    const styleInfo = this.context.invoke('editor.currentStyle');
     if (styleInfo.range && !styleInfo.range.isCollapsed()) {
-      var rect = list.last(styleInfo.range.getClientRects());
+      const rect = list.last(styleInfo.range.getClientRects());
       if (rect) {
-        var bnd = func.rect2bnd(rect);
+        const bnd = func.rect2bnd(rect);
         this.$popover.css({
           display: 'block',
           left: Math.max(bnd.left + bnd.width / 2, 0) - AIR_MODE_POPOVER_X_OFFSET,
           top: bnd.top + bnd.height
         });
-        context.invoke('buttons.updateCurrentStyle', this.$popover);
+        this.context.invoke('buttons.updateCurrentStyle', this.$popover);
       }
     } else {
       this.hide();
     }
-  };
+  }
 
-  this.hide = function () {
+  hide() {
     this.$popover.hide();
-  };
+  }
 }
