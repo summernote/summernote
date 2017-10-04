@@ -40,3 +40,8 @@ build/
 
 # Ignoring visual studio
 .vs
+
+# e2e tests
+selenium-server-standalone.jar
+test/reports/
+selenium-debug.log
