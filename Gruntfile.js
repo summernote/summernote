@@ -35,13 +35,13 @@ module.exports = function (grunt) {
       version: 'latest',
       platform: 'windows 10'
     },
+    */
     'SL_SAFARI': {
       base: 'SauceLabs',
       browserName: 'safari',
       version: 'latest',
       platform: 'OS X 10.12'
     },
-    */
     'SL_CHROME': {
       base: 'SauceLabs',
       browserName: 'chrome',
