@@ -3,8 +3,6 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-/* jshint unused: false */
-
 import chai from 'chai';
 import $ from 'jquery';
 import Context from '../../../../src/js/base/Context';
@@ -13,9 +11,6 @@ import VideoDialog from '../../../../src/js/base/module/VideoDialog';
 var expect = chai.expect;
 
 describe('bs:module.VideoDialog', () => {
-
-  var context, $video, $toolbar, $editable;
-
   function expectUrl(source, target) {
     var iframe = $video.createVideoNode(source);
     expect(iframe).to.not.equal(false);
@@ -23,6 +18,7 @@ describe('bs:module.VideoDialog', () => {
     expect(iframe.src).to.equal(target);
   }
 
+  var context, $video;
   beforeEach(() => {
     var $note = $('<div></div>').appendTo('body');
     var options = $.extend({}, $.summernote.options);
@@ -34,9 +30,6 @@ describe('bs:module.VideoDialog', () => {
     context.initialize();
 
     $video = new VideoDialog(context);
-
-    $toolbar = context.layoutInfo.toolbar;
-    $editable = context.layoutInfo.editable;
   });
 
   describe('#createVideoNode', () => {
@@ -52,5 +45,4 @@ describe('bs:module.VideoDialog', () => {
         'http://v.qq.com/iframe/player.html?vid=p0330y279lm&amp;auto=0');
     });
   });
-
 });

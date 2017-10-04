@@ -44,7 +44,6 @@ export default class AutoLink {
       this.lastWordRange = null;
       this.context.invoke('editor.focus');
     }
-
   }
 
   handleKeydown(e) {

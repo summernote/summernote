@@ -31,7 +31,7 @@ function expectToHaveBeenCalled(context, customEvent, handler) {
 describe('Editor', () => {
   var editor, context;
 
-  beforeEach(function () {
+  beforeEach(function() {
     var options = $.extend({}, $.summernote.options);
     options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
     context = new Context($('<div><p>hello</p></div>'), options);
@@ -95,7 +95,6 @@ describe('Editor', () => {
   });
 
   if (env.isWebkit) {
-    /* jshint ignore:start */
     describe('insertImage', () => {
       it('should insert image', () => {
         var source = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAF0lEQVQYGWP8////fwYsgAmLGFiIHhIAT+oECGHuN2UAAAAASUVORK5CYII=';
@@ -104,7 +103,6 @@ describe('Editor', () => {
         });
       });
     });
-    /* jshint ignore:end */
   }
 
   describe('insertOrderedList and insertUnorderedList', () => {
@@ -221,7 +219,6 @@ describe('Editor', () => {
     });
 
     it('should apply multi formatBlock', () => {
-
       // set multi block html 
       var codes = [
         '<p><a href="http://summernote.org">hello world</a></p>',
@@ -242,11 +239,9 @@ describe('Editor', () => {
 
       var nodeName = editable.children()[0].nodeName;
       expect(nodeName).to.equalsIgnoreCase('blockquote');
-
-    });      
+    });
 
     it('should apply multi test 2 - formatBlock', () => {
-
       var codes = [
         '<p><a href="http://summernote.org">hello world</a></p>',
         '<p><a href="http://summernote.org">hello world</a></p>',
@@ -257,7 +252,7 @@ describe('Editor', () => {
 
       var editable = context.layoutInfo.editable;
       editable.appendTo('body');
-              
+
       var startNode = editable.find('p').first()[0];
       var endNode = editable.find('p').last()[0];
 
@@ -271,8 +266,7 @@ describe('Editor', () => {
 
       // p -> blockquote, p is none 
       expect(editable.find('p').length).to.equals(0);
-
-    });      
+    });
 
     it('should apply custom className in formatBlock', () => {
       context.layoutInfo.editable.appendTo('body');

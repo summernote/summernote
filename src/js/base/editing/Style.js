@@ -26,7 +26,7 @@ export default class Style {
       });
       return result;
     }
-    return $obj.css.call($obj, propertyNames);
+    return $obj.css(propertyNames);
   }
 
   /**
@@ -69,7 +69,7 @@ export default class Style {
   styleNodes(rng, options) {
     rng = rng.splitText();
 
-    const nodeName = options && options.nodeName || 'SPAN';
+    const nodeName = (options && options.nodeName) || 'SPAN';
     const expandClosestSibling = !!(options && options.expandClosestSibling);
     const onlyPartialContains = !!(options && options.onlyPartialContains);
 

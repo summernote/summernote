@@ -16,8 +16,8 @@ const assert = chai.assert;
 describe('Buttons', () => {
   var context, $toolbar, $editable;
 
-  beforeEach(function () {
-    $('body').empty(); //important !
+  beforeEach(function() {
+    $('body').empty(); // important !
     var $note = $('<div><p>hello</p></div>').appendTo('body');
 
     var options = $.extend({}, $.summernote.options);

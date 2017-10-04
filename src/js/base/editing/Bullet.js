@@ -168,8 +168,8 @@ export default class Bullet {
         isSkipPaddingBlankHTML: true
       });
 
-      paras = isEscapseToBody ? dom.listDescendant(middleList, dom.isLi) :
-                                lists.from(middleList.childNodes).filter(dom.isLi);
+      paras = isEscapseToBody ? dom.listDescendant(middleList, dom.isLi)
+        : lists.from(middleList.childNodes).filter(dom.isLi);
 
       // LI to P
       if (isEscapseToBody || !dom.isList(headList.parentNode)) {

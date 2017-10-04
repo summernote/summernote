@@ -1,9 +1,8 @@
-var popover = (function () {
-  var Popover = function ($node, options) {
+var popover = (function() {
+  var Popover = function($node, options) {
     var self = this;
 
-    this.init = function (options) {
-
+    this.init = function(options) {
       this.options = $.extend({}, {
         title: '',
         content: '',
@@ -22,24 +21,24 @@ var popover = (function () {
 
       // define event
       if (this.options.trigger !== 'manual') {
-        this.options.trigger.split(' ').forEach(function (eventName) {
+        this.options.trigger.split(' ').forEach(function(eventName) {
           if (eventName === 'hover') {
-            $node.off('mouseenter').on('mouseenter', function () {
+            $node.off('mouseenter').on('mouseenter', function() {
               self.show($node);
             });
 
-            $node.off('mouseleave').on('mouseleave', function () {
+            $node.off('mouseleave').on('mouseleave', function() {
               self.hide($node);
             });
-          } else if (eventName === 'click')  {
-            $node.on('click', function () {
+          } else if (eventName === 'click') {
+            $node.on('click', function() {
               self.toggle($node);
             });
           } else if (eventName === 'focus') {
-            $node.on('focus', function () {
+            $node.on('focus', function() {
               self.show($node);
             });
-            $node.on('blur', function () {
+            $node.on('blur', function() {
               self.hide($node);
             });
           }
@@ -47,8 +46,7 @@ var popover = (function () {
       }
     };
 
-    this.show = function () {
-
+    this.show = function() {
       var offset = $node.offset();
       var $popover = this.$popover;
       var content = this.options.content || $node.data('content');
@@ -88,12 +86,12 @@ var popover = (function () {
       }
     };
 
-    this.hide = function () {
+    this.hide = function() {
       this.$popover.removeClass('in');
       this.$popover.remove();
     };
 
-    this.toggle = function () {
+    this.toggle = function() {
       if (this.$popover.hasClass('in')) {
         this.hide();
       } else {
@@ -105,7 +103,7 @@ var popover = (function () {
   };
 
   return {
-    create: function ($node, options) {
+    create: function($node, options) {
       return new Popover($node, options);
     }
   };

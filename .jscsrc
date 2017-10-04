@@ -1,7 +1,0 @@
-{
-  "disallowSpaceAfterObjectKeys": true,
-  "disallowMultipleLineBreaks": true,
-  "excludeFiles": [
-    "test/libs/*.js"
-  ]
-}

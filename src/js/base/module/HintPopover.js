@@ -181,13 +181,7 @@ export default class HintPopover {
   }
 
   handleKeyup(e) {
-    if (lists.contains([key.code.ENTER, key.code.UP, key.code.DOWN], e.keyCode)) {
-      if (e.keyCode === key.code.ENTER) {
-        if (this.$popover.is(':visible')) {
-          return;
-        }
-      }
-    } else {
+    if (!lists.contains([key.code.ENTER, key.code.UP, key.code.DOWN], e.keyCode)) {
       const wordRange = this.context.invoke('editor.createRange').getWordRange();
       const keyword = wordRange.toString();
       if (this.hints.length && keyword) {
@@ -215,7 +209,6 @@ export default class HintPopover {
               top: bnd.top + bnd.height + POPOVER_DIST
             });
           }
-
         }
       } else {
         this.hide();

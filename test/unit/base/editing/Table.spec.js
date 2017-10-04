@@ -3,8 +3,6 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-/* jshint unused: false */
-
 import chai from 'chai';
 import $ from 'jquery';
 import range from '../../../../src/js/base/core/range';
@@ -153,7 +151,7 @@ describe('base:editing.Table', () => {
       baseTable.append(baseTr2);
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
       var $cont = $(htmlContent);
-      
+
       var $cell = $cont.find('#tr1td1');
       var rng = range.create($cell[0].firstChild, 1);
       table.deleteCol(rng);
@@ -176,7 +174,7 @@ describe('base:editing.Table', () => {
       baseTable.append(baseTr2);
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
       var $cont = $(htmlContent);
-      
+
       var $cell = $cont.find('#tr2td2');
       var rng = range.create($cell[0].firstChild, 1);
       table.deleteCol(rng);
@@ -199,7 +197,7 @@ describe('base:editing.Table', () => {
       baseTable.append(baseTr2);
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
       var $cont = $(htmlContent);
-      
+
       var $cell = $cont.find('#tr2td2');
       var rng = range.create($cell[0].firstChild, 1);
       table.deleteCol(rng);
@@ -224,7 +222,7 @@ describe('base:editing.Table', () => {
       baseTable.append(baseTr3);
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
       var $cont = $(htmlContent);
-      
+
       var $cell = $cont.find('#tr1td1');
       var rng = range.create($cell[0].firstChild, 1);
       table.deleteRow(rng);
@@ -251,7 +249,7 @@ describe('base:editing.Table', () => {
       baseTable.append(baseTr4);
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
       var $cont = $(htmlContent);
-      
+
       var $cell = $cont.find('#tr2td2');
       var rng = range.create($cell[0].firstChild, 1);
       table.deleteRow(rng);
@@ -278,7 +276,7 @@ describe('base:editing.Table', () => {
       baseTable.append(baseTr3);
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
       var $cont = $(htmlContent);
-      
+
       var $cell = $cont.find('#tr1td2');
       var rng = range.create($cell[0].firstChild, 1);
       table.deleteCol(rng);
@@ -305,7 +303,7 @@ describe('base:editing.Table', () => {
       baseTable.append(baseTr3);
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
       var $cont = $(htmlContent);
-      
+
       var $cell = $cont.find('#tr2td2');
       var rng = range.create($cell[0].firstChild, 1);
       table.deleteCol(rng);
@@ -332,7 +330,7 @@ describe('base:editing.Table', () => {
       baseTable.append(baseTr3);
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
       var $cont = $(htmlContent);
-      
+
       var $cell = $cont.find('#tr2td2');
       var rng = range.create($cell[0].firstChild, 1);
       table.addRow(rng);
@@ -361,7 +359,7 @@ describe('base:editing.Table', () => {
       baseTable.append(baseTr3);
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
       var $cont = $(htmlContent);
-      
+
       var $cell = $cont.find('#tr1td1');
       var rng = range.create($cell[0].firstChild, 1);
       table.addRow(rng, 'bottom');
@@ -390,7 +388,7 @@ describe('base:editing.Table', () => {
       baseTable.append(baseTr3);
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
       var $cont = $(htmlContent);
-      
+
       var $cell = $cont.find('#tr1td1');
       var rng = range.create($cell[0].firstChild, 1);
       table.addRow(rng, 'top');
@@ -417,7 +415,7 @@ describe('base:editing.Table', () => {
       baseTable.append(baseTr2);
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
       var $cont = $(htmlContent);
-      
+
       var $cell = $cont.find('#tr1td1');
       var rng = range.create($cell[0].firstChild, 1);
       table.addRow(rng, 'bottom');
@@ -442,7 +440,7 @@ describe('base:editing.Table', () => {
       baseTable.append(baseTr2);
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
       var $cont = $(htmlContent);
-      
+
       var $cell = $cont.find('#tr1td2');
       var rng = range.create($cell[0].firstChild, 1);
       table.addCol(rng, 'right');
@@ -465,7 +463,7 @@ describe('base:editing.Table', () => {
       baseTable.append(baseTr2);
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
       var $cont = $(htmlContent);
-      
+
       var $cell = $cont.find('#tr1td1');
       var rng = range.create($cell[0].firstChild, 1);
       table.addCol(rng, 'right');
@@ -488,7 +486,7 @@ describe('base:editing.Table', () => {
       baseTable.append(baseTr2);
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
       var $cont = $(htmlContent);
-      
+
       var $cell = $cont.find('#tr1td4');
       var rng = range.create($cell[0].firstChild, 1);
       table.deleteCol(rng);
@@ -513,7 +511,7 @@ describe('base:editing.Table', () => {
       baseTable.append(baseTr2);
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
       var $cont = $(htmlContent);
-      
+
       var $cell = $cont.find('#tr1td1');
       var rng = range.create($cell[0].firstChild, 1);
       table.deleteCol(rng);
@@ -537,7 +535,7 @@ describe('base:editing.Table', () => {
       baseTable.append(baseTr2);
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
       var $cont = $(htmlContent);
-      
+
       var $cell = $cont.find('#tr1td1');
       var rng = range.create($cell[0].firstChild, 1);
       table.addCol(rng, 'right');
@@ -551,6 +549,5 @@ describe('base:editing.Table', () => {
 
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
-
   });
 });

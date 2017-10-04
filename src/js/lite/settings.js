@@ -57,7 +57,7 @@ $.summernote = $.extend($.summernote, {
     },
 
     buttons: {},
-    
+
     lang: 'en-US',
 
     // toolbar
@@ -275,4 +275,4 @@ $.summernote = $.extend($.summernote, {
   }
 });
 
-import '../summernote';
+import '../summernote'; // eslint-disable-line

@@ -72,7 +72,7 @@ export default class History {
       this.recordUndo();
     }
 
-    if (0 < this.stackOffset) {
+    if (this.stackOffset > 0) {
       this.stackOffset--;
       this.applySnapshot(this.stack[this.stackOffset]);
     }

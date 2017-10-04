@@ -114,8 +114,8 @@ $.summernote = $.extend($.summernote, {
     container: 'body',
 
     styleTags: [
-      'p', 
-      { title: 'Blockquote', tag: 'blockquote', className: 'blockquote', value: 'blockquote' }, 
+      'p',
+      { title: 'Blockquote', tag: 'blockquote', className: 'blockquote', value: 'blockquote' },
       'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'
     ],
 
@@ -280,4 +280,4 @@ $.summernote = $.extend($.summernote, {
   }
 });
 
-import '../summernote';
+import '../summernote'; // eslint-disable-line

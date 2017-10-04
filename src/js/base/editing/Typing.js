@@ -33,7 +33,7 @@ export default class Typing {
   /**
    * insert paragraph
    */
-  insertParagraph (editable) {
+  insertParagraph(editable) {
     let rng = range.create(editable);
 
     // deleteContents on range.

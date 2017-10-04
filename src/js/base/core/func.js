@@ -7,7 +7,7 @@
  * @alternateClassName func
  */
 function eq(itemA) {
-  return function (itemB) {
+  return function(itemB) {
     return itemA === itemB;
   };
 }
@@ -17,7 +17,7 @@ function eq2(itemA, itemB) {
 }
 
 function peq2(propName) {
-  return function (itemA, itemB) {
+  return function(itemA, itemB) {
     return itemA[propName] === itemB[propName];
   };
 }
@@ -37,7 +37,7 @@ function not(f) {
 }
 
 function and(fA, fB) {
-  return function (item) {
+  return function(item) {
     return fA(item) && fB(item);
   };
 }
@@ -109,7 +109,7 @@ function invertObject(obj) {
  */
 function namespaceToCamel(namespace, prefix) {
   prefix = prefix || '';
-  return prefix + namespace.split('.').map(function (name) {
+  return prefix + namespace.split('.').map(function(name) {
     return name.substring(0, 1).toUpperCase() + name.substring(1);
   }).join('');
 }
@@ -127,7 +127,8 @@ function namespaceToCamel(namespace, prefix) {
 function debounce(func, wait, immediate) {
   let timeout;
   return () => {
-    const context = this, args = arguments;
+    const context = this;
+    const args = arguments;
     const later = () => {
       timeout = null;
       if (!immediate) {

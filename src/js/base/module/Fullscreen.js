@@ -12,11 +12,11 @@ export default class Fullscreen {
     this.$window = $(window);
     this.$scrollbar = $('html, body');
 
-    this.onResize = (() => {
+    this.onResize = () => {
       this.resizeTo({
         h: this.$window.height() - this.$toolbar.outerHeight()
       });
-    }).bind(this);
+    };
   }
 
   resizeTo(size) {

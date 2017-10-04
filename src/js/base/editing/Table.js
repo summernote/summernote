@@ -10,14 +10,14 @@ import lists from '../core/lists';
  * @param {enum} action Action to be applied. Use enum: TableResultAction.requestAction
  * @param {object} domTable Dom element of table to make changes.
  */
-const TableResultAction = function (startPoint, where, action, domTable) {
+const TableResultAction = function(startPoint, where, action, domTable) {
   const _startPoint = { 'colPos': 0, 'rowPos': 0 };
   const _virtualTable = [];
   const _actionCellList = [];
 
-  //////////////////////////////////////////////
+  /// ///////////////////////////////////////////
   // Private functions
-  //////////////////////////////////////////////
+  /// ///////////////////////////////////////////
 
   /**
    * Set the startPoint of action.
@@ -174,8 +174,7 @@ const TableResultAction = function (startPoint, where, action, domTable) {
       case TableResultAction.where.Row:
         if (!cell.isVirtual && cell.isRowSpan) {
           return TableResultAction.resultAction.AddCell;
-        }
-        else if (cell.isRowSpan) {
+        } else if (cell.isRowSpan) {
           return TableResultAction.resultAction.SubtractSpanCount;
         }
         break;
@@ -213,14 +212,14 @@ const TableResultAction = function (startPoint, where, action, domTable) {
     createVirtualTable();
   }
 
-  //////////////////////////////////////////////
+  /// ///////////////////////////////////////////
   // Public functions
-  //////////////////////////////////////////////
+  /// ///////////////////////////////////////////
 
   /**
    * Recover array os what to do in table.
    */
-  this.getActionList = function () {
+  this.getActionList = function() {
     const fixedRow = (where === TableResultAction.where.Row) ? _startPoint.rowPos : -1;
     const fixedCol = (where === TableResultAction.where.Column) ? _startPoint.colPos : -1;
 
@@ -344,8 +343,7 @@ export default class Table {
 
     if (position === 'top') {
       currentTr.before(html);
-    }
-    else {
+    } else {
       const cellHasRowspan = (cell.rowSpan > 1);
       if (cellHasRowspan) {
         const lastTrIndex = currentTr[0].rowIndex + (cell.rowSpan - 2);

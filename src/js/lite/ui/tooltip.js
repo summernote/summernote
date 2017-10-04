@@ -1,8 +1,8 @@
-var tooltip = (function () {
-  var Tooltip = function ($node, options) {
+var tooltip = (function() {
+  var Tooltip = function($node, options) {
     var self = this;
 
-    this.init = function (options) {
+    this.init = function(options) {
       this.options = $.extend({}, {
         title: '',
         target: options.container,
@@ -20,23 +20,23 @@ var tooltip = (function () {
 
       // define event
       if (this.options.trigger !== 'manual') {
-        this.options.trigger.split(' ').forEach(function (eventName) {
+        this.options.trigger.split(' ').forEach(function(eventName) {
           if (eventName === 'hover') {
             $node.off('mouseenter mouseleave');
 
-            $node.on('mouseenter', function () {
+            $node.on('mouseenter', function() {
               self.show($node);
-            }).on('mouseleave', function () {
+            }).on('mouseleave', function() {
               self.hide($node);
             });
-          } else if (eventName === 'click')  {
-            $node.on('click', function () {
+          } else if (eventName === 'click') {
+            $node.on('click', function() {
               self.toggle($node);
             });
           } else if (eventName === 'focus') {
-            $node.on('focus', function () {
+            $node.on('focus', function() {
               self.show($node);
-            }).on('blur', function () {
+            }).on('blur', function() {
               self.hide($node);
             });
           }
@@ -44,7 +44,7 @@ var tooltip = (function () {
       }
     };
 
-    this.show = function () {
+    this.show = function() {
       var offset = $node.offset();
 
       var $tooltip = this.$tooltip;
@@ -84,12 +84,12 @@ var tooltip = (function () {
       }
     };
 
-    this.hide = function () {
+    this.hide = function() {
       this.$tooltip.removeClass('in');
       this.$tooltip.remove();
     };
 
-    this.toggle = function () {
+    this.toggle = function() {
       if (this.$tooltip.hasClass('in')) {
         this.hide();
       } else {
@@ -101,7 +101,7 @@ var tooltip = (function () {
   };
 
   return {
-    create: function ($node, options) {
+    create: function($node, options) {
       return new Tooltip($node, options);
     }
   };

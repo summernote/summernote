@@ -125,7 +125,7 @@ describe('base:core.range', () => {
       var $b = $cont.find('b');
       var $u = $cont.find('u');
 
-      var rng = range.create($p[0], 0,  $p[0], 2).normalize();
+      var rng = range.create($p[0], 0, $p[0], 2).normalize();
       expect(rng.sc).to.deep.equal($b[0].firstChild);
       expect(rng.so).to.equal(0);
       expect(rng.ec).to.deep.equal($u[0].firstChild);
@@ -136,7 +136,7 @@ describe('base:core.range', () => {
       var $p = $cont.find('p');
       var $b = $cont.find('b');
 
-      var rng = range.create($p[0], 1,  $p[0], 1).normalize();
+      var rng = range.create($p[0], 1, $p[0], 1).normalize();
       expect(rng.sc).to.deep.equal($b[0].firstChild);
       expect(rng.so).to.equal(1);
       expect(rng.ec).to.deep.equal($b[0].firstChild);
@@ -148,7 +148,7 @@ describe('base:core.range', () => {
       var $u = $cont.find('u');
       var $s = $cont.find('s');
 
-      var rng = range.create($b[0].firstChild, 1,  $s[0].firstChild, 0).normalize();
+      var rng = range.create($b[0].firstChild, 1, $s[0].firstChild, 0).normalize();
       expect(rng.sc).to.deep.equal($u[0].firstChild);
       expect(rng.so).to.equal(0);
       expect(rng.ec).to.deep.equal($u[0].firstChild);
@@ -158,7 +158,7 @@ describe('base:core.range', () => {
     it('should return <b>b|</b><u>u</u><s>s</s> for <b>b|</b><u>u</u><s>s</s>', () => {
       var $b = $cont.find('b');
 
-      var rng = range.create($b[0].firstChild, 1,  $b[0].firstChild, 1).normalize();
+      var rng = range.create($b[0].firstChild, 1, $b[0].firstChild, 1).normalize();
       expect(rng.sc).to.deep.equal($b[0].firstChild);
       expect(rng.so).to.equal(1);
       expect(rng.ec).to.deep.equal($b[0].firstChild);
@@ -171,7 +171,7 @@ describe('base:core.range', () => {
       var $cont = $('<div><p>text</p><p><br></p></div>');
       var $p = $cont.find('p');
 
-      var rng = range.create($p[1], 0,  $p[1], 0).normalize();
+      var rng = range.create($p[1], 0, $p[1], 0).normalize();
       expect(rng.sc).to.deep.equal($p[1]);
       expect(rng.so).to.equal(0);
       expect(rng.ec).to.deep.equal($p[1]);
@@ -182,7 +182,7 @@ describe('base:core.range', () => {
       var $cont = $('<div><p>text</p><p>text</p></div>');
       var $p = $cont.find('p');
 
-      var rng = range.create($p[1], 0,  $p[1], 0).normalize();
+      var rng = range.create($p[1], 0, $p[1], 0).normalize();
       expect(rng.sc).to.deep.equal($p[1].firstChild);
       expect(rng.so).to.equal(0);
       expect(rng.ec).to.deep.equal($p[1].firstChild);
@@ -193,7 +193,7 @@ describe('base:core.range', () => {
       var $cont = $('<div class="note-editable"><p>text</p><p>text</p></div>');
       var $p = $cont.find('p');
 
-      var rng = range.create($cont[0], 0,  $cont[0], 2).normalize();
+      var rng = range.create($cont[0], 0, $cont[0], 2).normalize();
       expect(rng.sc).to.deep.equal($p[0].firstChild);
       expect(rng.so).to.equal(0);
       expect(rng.ec).to.deep.equal($p[1].firstChild);
@@ -207,7 +207,7 @@ describe('base:core.range', () => {
       var $p = $cont.find('p');
       var $b = $cont.find('b');
 
-      var rng = range.create($p[0], 1,  $p[0], 1).normalize();
+      var rng = range.create($p[0], 1, $p[0], 1).normalize();
       expect(rng.sc).to.deep.equal($b[0].firstChild);
       expect(rng.so).to.equal(0);
       expect(rng.ec).to.deep.equal($b[0].firstChild);

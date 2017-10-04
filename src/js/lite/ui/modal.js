@@ -1,18 +1,17 @@
-var modal = (function () {
-  var Modal = function ($node, options) {
+var modal = (function() {
+  var Modal = function($node, options) {
     var self = this;
 
-    this.init = function (options) {
+    this.init = function(options) {
       this.options = $.extend({}, {
         target: options.container
       }, options);
 
       this.$modal = $node;
       this.$backdrop = $('<div class="note-modal-backdrop" />');
-
     };
 
-    this.show = function () {
+    this.show = function() {
       if (this.options.target === 'body') {
         this.$backdrop.css('position', 'fixed');
         this.$modal.css('position', 'fixed');
@@ -25,12 +24,12 @@ var modal = (function () {
       this.$modal.appendTo(this.options.target).addClass('open').show();
 
       this.$modal.trigger('note.modal.show');
-      this.$modal.off('click', '.close').on('click', '.close', function () {
+      this.$modal.off('click', '.close').on('click', '.close', function() {
         self.hide();
       });
     };
 
-    this.hide = function () {
+    this.hide = function() {
       this.$modal.removeClass('open').hide();
       this.$backdrop.hide();
       this.$modal.trigger('note.modal.hide');
@@ -40,7 +39,7 @@ var modal = (function () {
   };
 
   return {
-    create: function ($node, options) {
+    create: function($node, options) {
       return new Modal($node, options);
     }
   };

@@ -1,4 +1,4 @@
-module.exports = function (grunt) {
+module.exports = function(grunt) {
   'use strict';
 
   var customLaunchers = {
@@ -18,8 +18,8 @@ module.exports = function (grunt) {
     'SL_SAFARI': {
       base: 'SauceLabs',
       browserName: 'safari',
-      version: 'latest',
-      platform: 'OS X 10.12'
+      version: 'latest',
+      platform: 'OS X 10.12'
     },
     */
     'SL_IE9': {
@@ -50,7 +50,7 @@ module.exports = function (grunt) {
       base: 'SauceLabs',
       browserName: 'firefox',
       version: 'latest',
-      platform: 'windows 8'
+      platform: 'windows 8'
     }
   };
 
@@ -75,27 +75,16 @@ module.exports = function (grunt) {
     },
 
     // for javascript convention.
-    jshint: {
-      all: {
-        src: [
-          'src/**/*.js',
-          'plugin/**/*.js',
-          'lang/**/*.js',
-          'Gruntfile.js',
-          'test/**/*.js',
-          '!coverage/**/*.js',
-          'build/*.js'
-        ],
-        options: {
-          jshintrc: true
-        }
-      }
-    },
-
-    jscs: {
-      src: ['*.js', 'src/**/*.js', 'test/**/*.js', 'plugin/**/*.js'],
-      gruntfile: 'Gruntfile.js',
-      build: 'build'
+    eslint: {
+      target: [
+        'src/**/*.js',
+        'plugin/**/*.js',
+        'lang/**/*.js',
+        'Gruntfile.js',
+        'test/**/*.js',
+        '!coverage/**/*.js',
+        'build/*.js'
+      ]
     },
 
     // uglify: minify javascript
@@ -105,8 +94,8 @@ module.exports = function (grunt) {
       },
       all: {
         files: [
-            { 'dist/summernote.min.js': ['dist/summernote.js'] },
-            { 'dist/summernote-bs4.min.js': ['dist/summernote-bs4.js'] },
+          { 'dist/summernote.min.js': ['dist/summernote.js'] },
+          { 'dist/summernote-bs4.min.js': ['dist/summernote-bs4.js'] },
           {
             expand: true,
             cwd: 'dist/lang',
@@ -151,7 +140,7 @@ module.exports = function (grunt) {
     compress: {
       main: {
         options: {
-          archive: function () {
+          archive: function() {
             return 'dist/summernote-{{version}}-dist.zip'.replace(
               '{{version}}',
               grunt.config('pkg.version')
@@ -220,7 +209,7 @@ module.exports = function (grunt) {
       all: {
         // Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS, IE
         singleRun: true,
-        browsers: ['PhantomJS'],
+        browsers: ['PhantomJS']
       },
       dist: {
         singleRun: true,
@@ -291,7 +280,7 @@ module.exports = function (grunt) {
   grunt.registerTask('server', ['connect', 'watch']);
 
   // lint
-  grunt.registerTask('lint', ['jshint', 'jscs']);
+  grunt.registerTask('lint', ['eslint']);
 
   // test: unit test on test folder
   grunt.registerTask('test', ['lint', 'karma:watch']);

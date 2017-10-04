@@ -40,7 +40,7 @@ function isControlSizing(node) {
  */
 function makePredByNodeName(nodeName) {
   nodeName = nodeName.toUpperCase();
-  return function (node) {
+  return function(node) {
     return node && node.nodeName.toUpperCase() === nodeName;
   };
 }
@@ -191,13 +191,12 @@ function nodeLength(node) {
   if (isText(node)) {
     return node.nodeValue.length;
   }
-  
+
   if (node) {
     return node.childNodes.length;
   }
-  
+
   return 0;
-  
 }
 
 /**
@@ -276,7 +275,7 @@ function listAncestor(node, pred) {
   pred = pred || func.fail;
 
   const ancestors = [];
-  ancestor(node, function (el) {
+  ancestor(node, function(el) {
     if (!isEditable(el)) {
       ancestors.push(el);
     }
@@ -391,7 +390,8 @@ function wrap(node, wrapperName) {
  * @param {Node} preceding - predicate function
  */
 function insertAfter(node, preceding) {
-  const next = preceding.nextSibling, parent = preceding.parentNode;
+  const next = preceding.nextSibling;
+  let parent = preceding.parentNode;
   if (next) {
     parent.insertBefore(node, next);
   } else {
@@ -407,7 +407,7 @@ function insertAfter(node, preceding) {
  * @param {Collection} aChild
  */
 function appendChildNodes(node, aChild) {
-  $.each(aChild, function (idx, child) {
+  $.each(aChild, function(idx, child) {
     node.appendChild(child);
   });
   return node;
@@ -787,7 +787,7 @@ function splitTree(root, point, options) {
     return splitNode(point, options);
   }
 
-  return ancestors.reduce(function (node, parent) {
+  return ancestors.reduce(function(node, parent) {
     if (node === point.node) {
       node = splitNode(point, options);
     }
@@ -947,7 +947,7 @@ function html($node, isNewlineOnBlock) {
 
   if (isNewlineOnBlock) {
     const regexTag = /<(\/?)(\b(?!!)[^>\s]*)(.*?)(\s*\/?>)/g;
-    markup = markup.replace(regexTag, function (match, endSlash, name) {
+    markup = markup.replace(regexTag, function(match, endSlash, name) {
       name = name.toUpperCase();
       const isEndOfInlineContainer = /^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) &&
                                    !!endSlash;
@@ -973,13 +973,13 @@ function posFromPlaceholder(placeholder) {
 }
 
 function attachEvents($node, events) {
-  Object.keys(events).forEach(function (key) {
+  Object.keys(events).forEach(function(key) {
     $node.on(key, events[key]);
   });
 }
 
 function detachEvents($node, events) {
-  Object.keys(events).forEach(function (key) {
+  Object.keys(events).forEach(function(key) {
     $node.off(key, events[key]);
   });
 }

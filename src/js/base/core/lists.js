@@ -41,7 +41,7 @@ function tail(array) {
  * returns item of array
  */
 function find(array, pred) {
-  for (let idx = 0, len = array.length; idx < len; idx ++) {
+  for (let idx = 0, len = array.length; idx < len; idx++) {
     const item = array[idx];
     if (pred(item)) {
       return item;
@@ -53,7 +53,7 @@ function find(array, pred) {
  * returns true if all of the values in the array pass the predicate truth test.
  */
 function all(array, pred) {
-  for (let idx = 0, len = array.length; idx < len; idx ++) {
+  for (let idx = 0, len = array.length; idx < len; idx++) {
     if (!pred(array[idx])) {
       return false;
     }
@@ -83,7 +83,7 @@ function contains(array, item) {
  */
 function sum(array, fn) {
   fn = fn || func.self;
-  return array.reduce(function (memo, v) {
+  return array.reduce(function(memo, v) {
     return memo + fn(v);
   }, 0);
 }
@@ -119,7 +119,7 @@ function isEmpty(array) {
 function clusterBy(array, fn) {
   if (!array.length) { return []; }
   const aTail = tail(array);
-  return aTail.reduce(function (memo, v) {
+  return aTail.reduce(function(memo, v) {
     const aLast = last(memo);
     if (fn(last(aLast), v)) {
       aLast[aLast.length] = v;
@@ -138,7 +138,7 @@ function clusterBy(array, fn) {
  */
 function compact(array) {
   const aResult = [];
-  for (let idx = 0, len = array.length; idx < len; idx ++) {
+  for (let idx = 0, len = array.length; idx < len; idx++) {
     if (array[idx]) { aResult.push(array[idx]); }
   }
   return aResult;
@@ -152,7 +152,7 @@ function compact(array) {
 function unique(array) {
   const results = [];
 
-  for (let idx = 0, len = array.length; idx < len; idx ++) {
+  for (let idx = 0, len = array.length; idx < len; idx++) {
     if (!contains(results, array[idx])) {
       results.push(array[idx]);
     }
@@ -192,8 +192,19 @@ function prev(array, item) {
  * @alternateClassName list
  */
 export default {
-  head, last, initial, tail,
-  prev, next, find, contains,
-  all, sum, from, isEmpty,
-  clusterBy, compact, unique
+  head,
+  last,
+  initial,
+  tail,
+  prev,
+  next,
+  find,
+  contains,
+  all,
+  sum,
+  from,
+  isEmpty,
+  clusterBy,
+  compact,
+  unique
 };

@@ -26,9 +26,9 @@ export default class Buttons {
     }
 
     shortcut = shortcut.replace('BACKSLASH', '\\')
-                       .replace('SLASH', '/')
-                       .replace('LEFTBRACKET', '[')
-                       .replace('RIGHTBRACKET', ']');
+      .replace('SLASH', '/')
+      .replace('LEFTBRACKET', '[')
+      .replace('RIGHTBRACKET', ']');
 
     return ' (' + shortcut + ')';
   }
@@ -79,7 +79,6 @@ export default class Buttons {
           className: 'dropdown-style',
           items: this.options.styleTags,
           template: (item) => {
-
             if (typeof item === 'string') {
               item = { tag: item, title: (this.lang.style.hasOwnProperty(item) ? this.lang.style[item] : item) };
             }
@@ -89,7 +88,7 @@ export default class Buttons {
             const style = item.style ? ' style="' + item.style + '" ' : '';
             const className = item.className ? ' class="' + item.className + '"' : '';
 
-            return '<' + tag + style + className + '>' + title + '</' + tag +  '>';
+            return '<' + tag + style + className + '>' + title + '</' + tag + '>';
           },
           click: this.context.createInvokeHandler('editor.formatBlock')
         })
@@ -294,7 +293,7 @@ export default class Buttons {
       return this.button({
         contents: this.ui.icon(this.options.icons.orderedlist),
         tooltip: this.lang.lists.ordered + this.representShortcut('insertOrderedList'),
-        click:  this.context.createInvokeHandler('editor.insertOrderedList')
+        click: this.context.createInvokeHandler('editor.insertOrderedList')
       }).render();
     });
 
@@ -665,7 +664,7 @@ export default class Buttons {
    */
   updateCurrentStyle($container) {
     const $cont = $container || this.$toolbar;
-    
+
     const styleInfo = this.context.invoke('editor.currentStyle');
     this.updateBtnStates($cont, {
       '.note-btn-bold': () => {
@@ -763,12 +762,12 @@ export default class Buttons {
     $highlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });
     $catcher.data('value', dim.c + 'x' + dim.r);
 
-    if (3 < dim.c && dim.c < this.options.insertTableMaxSize.col) {
-      $unhighlighted.css({ width: dim.c + 1 + 'em'});
+    if (dim.c > 3 && dim.c < this.options.insertTableMaxSize.col) {
+      $unhighlighted.css({ width: dim.c + 1 + 'em' });
     }
 
-    if (3 < dim.r && dim.r < this.options.insertTableMaxSize.row) {
-      $unhighlighted.css({ height: dim.r + 1 + 'em'});
+    if (dim.r > 3 && dim.r < this.options.insertTableMaxSize.row) {
+      $unhighlighted.css({ height: dim.r + 1 + 'em' });
     }
 
     $dimensionDisplay.html(dim.c + ' x ' + dim.r);

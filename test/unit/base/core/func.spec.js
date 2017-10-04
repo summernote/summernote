@@ -80,7 +80,7 @@ describe('base:core.func', () => {
   describe('invertObject', () => {
     it('should return inverted object between keys and values', () => {
       expect(func.invertObject({ keyA: 'valueA', keyB: 'valueB' }))
-                .to.deep.equal({ valueA: 'keyA', valueB: 'keyB'});
+        .to.deep.equal({ valueA: 'keyA', valueB: 'keyB' });
     });
   });
 

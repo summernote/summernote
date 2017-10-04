@@ -1,5 +1,5 @@
 import $ from 'jquery';
-const isSupportAmd = typeof define === 'function' && define.amd;
+const isSupportAmd = typeof define === 'function' && define.amd; // eslint-disable-line
 
 /**
  * returns whether font is installed or not.
@@ -7,7 +7,7 @@ const isSupportAmd = typeof define === 'function' && define.amd;
  * @param {String} fontName
  * @return {Boolean}
  */
-function isFontInstalled (fontName) {
+function isFontInstalled(fontName) {
   const testFontName = fontName === 'Comic Sans MS' ? 'Courier New' : 'Comic Sans MS';
   const $tester = $('<div>').css({
     position: 'absolute',
@@ -32,7 +32,7 @@ if (isMSIE) {
   if (matches) {
     browserVersion = parseFloat(matches[1]);
   }
-  matches = /Trident\/.*rv:([0-9]{1,}[\.0-9]{0,})/.exec(userAgent);
+  matches = /Trident\/.*rv:([0-9]{1,}[.0-9]{0,})/.exec(userAgent);
   if (matches) {
     browserVersion = parseFloat(matches[1]);
   }
@@ -43,7 +43,7 @@ const isEdge = /Edge\/\d+/.test(userAgent);
 let hasCodeMirror = !!window.CodeMirror;
 if (!hasCodeMirror && isSupportAmd) {
   // Webpack
-  if (typeof __webpack_require__ === 'function') { // jshint ignore:line
+  if (typeof __webpack_require__ === 'function') { // eslint-disable-line
     try {
       // If CodeMirror can't be resolved, `require.resolve` will throw an
       // exception and `hasCodeMirror` won't be set to `true`.

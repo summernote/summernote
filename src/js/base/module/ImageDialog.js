@@ -22,17 +22,19 @@ export default class ImageDialog {
       imageLimitation = `<small>${this.lang.image.maximumFileSize + ' : ' + readableSize}</small>`;
     }
 
-    const body = '<div class="form-group note-form-group note-group-select-from-files">' +
-                 '<label class="note-form-label">' + this.lang.image.selectFromFiles + '</label>' +
-                 '<input class="note-image-input note-form-control note-input" '+
-                 ' type="file" name="files" accept="image/*" multiple="multiple" />' +
-                 imageLimitation +
-               '</div>' + 
-               '<div class="form-group note-group-image-url" style="overflow:auto;">' +
-                 '<label class="note-form-label">' + this.lang.image.url + '</label>' +
-                 '<input class="note-image-url form-control note-form-control note-input ' +
-                 ' col-md-12" type="text" />' +
-               '</div>';
+    const body = [
+      '<div class="form-group note-form-group note-group-select-from-files">',
+      '<label class="note-form-label">' + this.lang.image.selectFromFiles + '</label>',
+      '<input class="note-image-input note-form-control note-input" ',
+      ' type="file" name="files" accept="image/*" multiple="multiple" />',
+      imageLimitation,
+      '</div>',
+      '<div class="form-group note-group-image-url" style="overflow:auto;">',
+      '<label class="note-form-label">' + this.lang.image.url + '</label>',
+      '<input class="note-image-url form-control note-form-control note-input ',
+      ' col-md-12" type="text" />',
+      '</div>'
+    ].join('');
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-image-btn';
     const footer = `<button type="submit" href="#" class="${buttonClass}" disabled>${this.lang.image.insert}</button>`;
 
@@ -82,9 +84,9 @@ export default class ImageDialog {
    */
   showImageDialog() {
     return $.Deferred((deferred) => {
-      const $imageInput = this.$dialog.find('.note-image-input'),
-          $imageUrl = this.$dialog.find('.note-image-url'),
-          $imageBtn = this.$dialog.find('.note-image-btn');
+      const $imageInput = this.$dialog.find('.note-image-input');
+      const $imageUrl = this.$dialog.find('.note-image-url');
+      const $imageBtn = this.$dialog.find('.note-image-btn');
 
       this.ui.onDialogShown(this.$dialog, () => {
         this.context.triggerEvent('dialog.shown');

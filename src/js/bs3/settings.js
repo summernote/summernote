@@ -276,4 +276,4 @@ $.summernote = $.extend($.summernote, {
   }
 });
 
-import '../summernote';
+import '../summernote'; // eslint-disable-line

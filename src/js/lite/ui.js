@@ -22,7 +22,7 @@ const airEditor = renderer.create('<div class="note-editor"/>');
 const airEditable = renderer.create('<div class="note-editable" contentEditable="true"/>');
 
 const buttonGroup = renderer.create('<div class="note-btn-group">');
-const button = renderer.create('<button type="button" class="note-btn">', function ($node, options) {
+const button = renderer.create('<button type="button" class="note-btn">', function($node, options) {
   // set button type
   if (options && options.tooltip) {
     TooltipUI.create($node, {
@@ -33,7 +33,7 @@ const button = renderer.create('<button type="button" class="note-btn">', functi
   if (options.contents) {
     $node.html(options.contents);
   }
-  
+
   if (options && options.data && options.data.toggle === 'dropdown') {
     DropdownUI.create($node, {
       container: options.container
@@ -41,20 +41,20 @@ const button = renderer.create('<button type="button" class="note-btn">', functi
   }
 });
 
-const dropdown = renderer.create('<div class="note-dropdown-menu">', function ($node, options) {
-  const markup = $.isArray(options.items) ? options.items.map(function (item) {
+const dropdown = renderer.create('<div class="note-dropdown-menu">', function($node, options) {
+  const markup = $.isArray(options.items) ? options.items.map(function(item) {
     const value = (typeof item === 'string') ? item : (item.value || '');
     const content = options.template ? options.template(item) : item;
     const $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '"></a>');
 
-    $temp.html(content).data('item', item); 
+    $temp.html(content).data('item', item);
 
     return $temp;
   }) : options.items;
 
   $node.html(markup);
 
-  $node.on('click', '> .note-dropdown-item', function (e) {
+  $node.on('click', '> .note-dropdown-item', function(e) {
     const $a = $(this);
 
     const item = $a.data('item');
@@ -65,12 +65,11 @@ const dropdown = renderer.create('<div class="note-dropdown-menu">', function ($
     } else if (options.itemClick) {
       options.itemClick(e, item, value);
     }
-
   });
 });
 
-const dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check">', function ($node, options) {
-  const markup = $.isArray(options.items) ? options.items.map(function (item) {
+const dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check">', function($node, options) {
+  const markup = $.isArray(options.items) ? options.items.map(function(item) {
     const value = (typeof item === 'string') ? item : (item.value || '');
     const content = options.template ? options.template(item) : item;
 
@@ -81,7 +80,7 @@ const dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check
 
   $node.html(markup);
 
-  $node.on('click', '> .note-dropdown-item', function (e) {
+  $node.on('click', '> .note-dropdown-item', function(e) {
     const $a = $(this);
 
     const item = $a.data('item');
@@ -95,11 +94,11 @@ const dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check
   });
 });
 
-const dropdownButtonContents = function (contents, options) {
+const dropdownButtonContents = function(contents, options) {
   return contents + ' ' + icon(options.icons.caret, 'span');
 };
 
-const dropdownButton = function (opt, callback) {
+const dropdownButton = function(opt, callback) {
   return buttonGroup([
     button({
       className: 'dropdown-toggle',
@@ -118,7 +117,7 @@ const dropdownButton = function (opt, callback) {
   ], { callback: callback }).render();
 };
 
-const dropdownCheckButton = function (opt, callback) {
+const dropdownCheckButton = function(opt, callback) {
   return buttonGroup([
     button({
       className: 'dropdown-toggle',
@@ -138,8 +137,7 @@ const dropdownCheckButton = function (opt, callback) {
   ], { callback: callback }).render();
 };
 
-const paragraphDropdownButton = function (opt) {
-
+const paragraphDropdownButton = function(opt) {
   return buttonGroup([
     button({
       className: 'dropdown-toggle',
@@ -162,7 +160,7 @@ const paragraphDropdownButton = function (opt) {
   ]).render();
 };
 
-const tableMoveHandler = function (event, col, row) {
+const tableMoveHandler = function(event, col, row) {
   const PX_PER_EM = 18;
   const $picker = $(event.target.parentNode); // target is mousecatcher
   const $dimensionDisplay = $picker.next();
@@ -193,19 +191,18 @@ const tableMoveHandler = function (event, col, row) {
   $highlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });
   $catcher.data('value', dim.c + 'x' + dim.r);
 
-  if (3 < dim.c && dim.c < col) {
-    $unhighlighted.css({ width: dim.c + 1 + 'em'});
+  if (dim.c > 3 && dim.c < col) {
+    $unhighlighted.css({ width: dim.c + 1 + 'em' });
   }
 
-  if (3 < dim.r && dim.r < row) {
-    $unhighlighted.css({ height: dim.r + 1 + 'em'});
+  if (dim.r > 3 && dim.r < row) {
+    $unhighlighted.css({ height: dim.r + 1 + 'em' });
   }
 
   $dimensionDisplay.html(dim.c + ' x ' + dim.r);
 };
 
-const tableDropdownButton = function (opt) {
-
+const tableDropdownButton = function(opt) {
   return buttonGroup([
     button({
       className: 'dropdown-toggle',
@@ -227,21 +224,21 @@ const tableDropdownButton = function (opt) {
       ].join('')
     })
   ], {
-    callback: function ($node) {
+    callback: function($node) {
       const $catcher = $node.find('.note-dimension-picker-mousecatcher');
       $catcher.css({
         width: opt.col + 'em',
         height: opt.row + 'em'
       })
-      .mousedown(opt.itemClick)
-      .mousemove(function (e) {
-        tableMoveHandler(e, opt.col, opt.row);
-      });
+        .mousedown(opt.itemClick)
+        .mousemove(function(e) {
+          tableMoveHandler(e, opt.col, opt.row);
+        });
     }
   }).render();
 };
 
-const palette = renderer.create('<div class="note-color-palette"/>', function ($node, options) {
+const palette = renderer.create('<div class="note-color-palette"/>', function($node, options) {
   const contents = [];
   for (let row = 0, rowSize = options.colors.length; row < rowSize; row++) {
     const eventName = options.eventName;
@@ -262,16 +259,14 @@ const palette = renderer.create('<div class="note-color-palette"/>', function ($
   }
   $node.html(contents.join(''));
 
-  $node.find('.note-color-btn').each(function () {
+  $node.find('.note-color-btn').each(function() {
     TooltipUI.create($(this), {
       container: options.container
     });
   });
-
 });
 
-const colorDropdownButton = function (opt, type) {
-
+const colorDropdownButton = function(opt, type) {
   return buttonGroup({
     className: 'note-color',
     children: [
@@ -280,14 +275,13 @@ const colorDropdownButton = function (opt, type) {
         contents: opt.title,
         tooltip: opt.lang.color.recent,
         click: opt.currentClick,
-        callback: function ($button) {
+        callback: function($button) {
           const $recentColor = $button.find('.note-recent-color');
 
           if (type !== 'foreColor') {
             $recentColor.css('background-color', '#FFFF00');
             $button.attr('data-backColor', '#FFFF00');
           }
-
         }
       }),
       button({
@@ -323,8 +317,8 @@ const colorDropdownButton = function (opt, type) {
           '</div>',
           '</div>'
         ].join(''),
-        callback: function ($dropdown) {
-          $dropdown.find('.note-holder').each(function () {
+        callback: function($dropdown) {
+          $dropdown.find('.note-holder').each(function() {
             const $holder = $(this);
             $holder.append(palette({
               colors: opt.colors,
@@ -340,13 +334,13 @@ const colorDropdownButton = function (opt, type) {
             $dropdown.css({ 'min-width': '210px' });
           }
         },
-        click: function (event) {
+        click: function(event) {
           const $button = $(event.target);
           const eventName = $button.data('event');
           const value = $button.data('value');
 
           if (eventName && value) {
-            const key = eventName === 'backColor' ? 'background-color': 'color';
+            const key = eventName === 'backColor' ? 'background-color' : 'color';
             const $color = $button.closest('.note-color').find('.note-recent-color');
             const $currentButton = $button.closest('.note-color').find('.note-current-color-button');
 
@@ -367,21 +361,21 @@ const colorDropdownButton = function (opt, type) {
   }).render();
 };
 
-const dialog = renderer.create('<div class="note-modal" tabindex="-1"/>', function ($node, options) {
+const dialog = renderer.create('<div class="note-modal" tabindex="-1"/>', function($node, options) {
   if (options.fade) {
     $node.addClass('fade');
   }
   $node.html([
     '  <div class="note-modal-content">',
-    (options.title ?
-    '    <div class="note-modal-header">' +
+    (options.title
+      ? '    <div class="note-modal-header">' +
     '      <button type="button" class="close"><i class="note-icon-close"></i></button>' +
     '      <h4 class="note-modal-title">' + options.title + '</h4>' +
     '    </div>' : ''
     ),
     '    <div class="note-modal-body">' + options.body + '</div>',
-    (options.footer ?
-    '    <div class="note-modal-footer">' + options.footer + '</div>' : ''
+    (options.footer
+      ? '    <div class="note-modal-footer">' + options.footer + '</div>' : ''
     ),
     '  </div>'
   ].join(''));
@@ -389,8 +383,7 @@ const dialog = renderer.create('<div class="note-modal" tabindex="-1"/>', functi
   $node.data('modal', ModalUI.create($node, options));
 });
 
-const videoDialog = function (opt) {
-
+const videoDialog = function(opt) {
   const body = '<div class="note-form-group">' +
     '<label class="note-form-label">' +
     opt.lang.video.url + ' <small class="text-muted">' +
@@ -412,7 +405,7 @@ const videoDialog = function (opt) {
   }).render();
 };
 
-const imageDialog = function (opt) {
+const imageDialog = function(opt) {
   const body = '<div class="note-form-group note-group-select-from-files">' +
     '<label class="note-form-label">' + opt.lang.image.selectFromFiles + '</label>' +
     '<input class="note-note-image-input note-input" type="file" name="files" accept="image/*" multiple="multiple" />' +
@@ -436,7 +429,7 @@ const imageDialog = function (opt) {
   }).render();
 };
 
-const linkDialog = function (opt) {
+const linkDialog = function(opt) {
   const body = '<div class="note-form-group">' +
     '<label class="note-form-label">' + opt.lang.link.textToDisplay + '</label>' +
     '<input class="note-link-text note-input" type="text" />' +
@@ -445,8 +438,8 @@ const linkDialog = function (opt) {
     '<label class="note-form-label">' + opt.lang.link.url + '</label>' +
     '<input class="note-link-url note-input" type="text" value="http://" />' +
     '</div>' +
-    (!opt.disableLinkTarget ?
-      '<div class="checkbox">' +
+    (!opt.disableLinkTarget
+      ? '<div class="checkbox">' +
       '<label>' + '<input type="checkbox" checked> ' + opt.lang.link.openInNewWindow + '</label>' +
       '</div>' : ''
     );
@@ -470,7 +463,7 @@ const popover = renderer.create([
   '  <div class="note-popover-arrow"/>',
   '  <div class="note-popover-content note-children-container"/>',
   '</div>'
-].join(''), function ($node, options) {
+].join(''), function($node, options) {
   const direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
 
   $node.addClass(direction).hide();
@@ -480,7 +473,7 @@ const popover = renderer.create([
   }
 });
 
-const checkbox = renderer.create('<div class="checkbox"></div>', function ($node, options) {
+const checkbox = renderer.create('<div class="checkbox"></div>', function($node, options) {
   $node.html([
     ' <label' + (options.id ? ' for="' + options.id + '"' : '') + '>',
     ' <input type="checkbox"' + (options.id ? ' id="' + options.id + '"' : ''),
@@ -490,7 +483,7 @@ const checkbox = renderer.create('<div class="checkbox"></div>', function ($node
   ].join(''));
 });
 
-const icon = function (iconClassName, tagName) {
+const icon = function(iconClassName, tagName) {
   tagName = tagName || 'i';
   return '<' + tagName + ' class="' + iconClassName + '"/>';
 };
@@ -523,33 +516,33 @@ const ui = {
   checkbox: checkbox,
   icon: icon,
 
-  toggleBtn: function ($btn, isEnable) {
+  toggleBtn: function($btn, isEnable) {
     $btn.toggleClass('disabled', !isEnable);
     $btn.attr('disabled', !isEnable);
   },
 
-  toggleBtnActive: function ($btn, isActive) {
+  toggleBtnActive: function($btn, isActive) {
     $btn.toggleClass('active', isActive);
   },
 
-  check: function ($dom, value) {
+  check: function($dom, value) {
     $dom.find('.checked').removeClass('checked');
     $dom.find('[data-value="' + value + '"]').addClass('checked');
   },
 
-  onDialogShown: function ($dialog, handler) {
+  onDialogShown: function($dialog, handler) {
     $dialog.one('note.modal.show', handler);
   },
 
-  onDialogHidden: function ($dialog, handler) {
+  onDialogHidden: function($dialog, handler) {
     $dialog.one('note.modal.hide', handler);
   },
 
-  showDialog: function ($dialog) {
+  showDialog: function($dialog) {
     $dialog.data('modal').show();
   },
 
-  hideDialog: function ($dialog) {
+  hideDialog: function($dialog) {
     $dialog.data('modal').hide();
   },
 
@@ -559,7 +552,7 @@ const ui = {
    * @param $popover
    * @returns {*}
    */
-  getPopoverContent: function ($popover) {
+  getPopoverContent: function($popover) {
     return $popover.find('.note-popover-content');
   },
 
@@ -569,11 +562,11 @@ const ui = {
    * @param $dialog
    * @returns {*}
    */
-  getDialogBody: function ($dialog) {
+  getDialogBody: function($dialog) {
     return $dialog.find('.note-modal-body');
   },
 
-  createLayout: function ($note, options) {
+  createLayout: function($note, options) {
     const $editor = (options.airMode ? ui.airEditor([
       ui.editingArea([
         ui.airEditable()
@@ -600,10 +593,10 @@ const ui = {
     };
   },
 
-  removeLayout: function ($note, layoutInfo) {
+  removeLayout: function($note, layoutInfo) {
     $note.html(layoutInfo.editable.html());
     layoutInfo.editor.remove();
-    $note.off('summernote');      // remove summernote custom event
+    $note.off('summernote'); // remove summernote custom event
     $note.show();
   }
 };

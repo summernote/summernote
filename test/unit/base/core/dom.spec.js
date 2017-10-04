@@ -17,7 +17,7 @@ describe('base:core.dom', () => {
     let $cont, $b, txtB;
     before(() => {
       // basic case
-      $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
+      $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
       $b = $cont.find('b');
       txtB = $b[0].firstChild;
     });
@@ -30,7 +30,7 @@ describe('base:core.dom', () => {
       expect(dom.ancestor(txtB, dom.isDiv)).to.deep.equal($cont[0]);
     });
 
-      it('should return null when finding ancestor U does not exist', () => {
+    it('should return null when finding ancestor U does not exist', () => {
       expect(dom.ancestor(txtB, dom.isU)).to.be.null;
     });
 
@@ -42,7 +42,7 @@ describe('base:core.dom', () => {
   describe('listAncestor', () => {
     let $cont, $b, $u, $s, $i;
     before(() => {
-      $cont = $('<div class="note-editable"><i><s><u><b>b</b></u></s></i></div>'); //busi
+      $cont = $('<div class="note-editable"><i><s><u><b>b</b></u></s></i></div>'); // busi
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -63,7 +63,7 @@ describe('base:core.dom', () => {
   describe('listDescendant', () => {
     let $cont, $b, $u, $s, $i;
     before(() => {
-      $cont = $('<div class="note-editable"><b></b><u></u><s></s><i></i></div>'); //busi
+      $cont = $('<div class="note-editable"><b></b><u></u><s></s><i></i></div>'); // busi
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -83,7 +83,7 @@ describe('base:core.dom', () => {
   });
 
   describe('commonAncestor', () => {
-    let $cont, $span, $div, $b, $u, $s, $i;
+    let $cont, $span, $div, $b, $u, $s;
     before(() => {
       $cont = $('<div class="note-editable"><div><span><b>b</b><u>u</u></span><span><s>s</s><i>i</i></span></div></div>');
       $span = $cont.find('span');
@@ -91,7 +91,6 @@ describe('base:core.dom', () => {
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
-      $i = $cont.find('i');
     });
 
     it('should return a common element in ancestors', () => {
@@ -104,10 +103,9 @@ describe('base:core.dom', () => {
   });
 
   describe('listNext', () => {
-    let $cont, $b, $u, $s, $i;
+    let $cont, $u, $s, $i;
     before(() => {
-      $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
-      $b = $cont.find('b');
+      $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
       $u = $cont.find('u');
       $s = $cont.find('s');
       $i = $cont.find('i');
@@ -129,7 +127,7 @@ describe('base:core.dom', () => {
   describe('listPrev', () => {
     let $cont, $b, $u, $s, $i;
     before(() => {
-      $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
+      $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -152,7 +150,7 @@ describe('base:core.dom', () => {
   describe('position', () => {
     let $cont, $b, $u, $s, $i;
     before(() => {
-      $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
+      $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -174,7 +172,7 @@ describe('base:core.dom', () => {
   describe('makeOffsetPath', () => {
     let $cont, $b, $u, $s, $i;
     before(() => {
-      $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
+      $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -209,7 +207,7 @@ describe('base:core.dom', () => {
   describe('fromOffsetPath', () => {
     let $cont, $b, $u, $s, $i;
     before(() => {
-      $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); //busi
+      $cont = $('<div class="note-editable"><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -229,14 +227,14 @@ describe('base:core.dom', () => {
   describe('splitTree', () => {
     let $para;
     beforeEach(() => {
-      let $busi = $('<div class="note-editable"><p><b>b</b><u>u</u><s>strike</s><i>i</i></p></div>'); //busi
+      let $busi = $('<div class="note-editable"><p><b>b</b><u>u</u><s>strike</s><i>i</i></p></div>'); // busi
       $para = $busi.clone().find('p');
     });
 
     describe('element pivot case', () => {
       it('should be split by u tag with offset 0', () => {
         let $u = $para.find('u');
-        dom.splitTree($para[0], {node: $u[0], offset: 0 });
+        dom.splitTree($para[0], { node: $u[0], offset: 0 });
 
         expect($para.html()).to.equalsIgnoreCase('<b>b</b><u><br></u>');
         expect($para.next().html()).to.equalsIgnoreCase('<u>u</u><s>strike</s><i>i</i>');
@@ -244,7 +242,7 @@ describe('base:core.dom', () => {
 
       it('should be split by u tag with offset 1', () => {
         let $u = $para.find('u');
-        dom.splitTree($para[0], {node: $u[0], offset: 1 });
+        dom.splitTree($para[0], { node: $u[0], offset: 1 });
 
         expect($para.html()).to.equalsIgnoreCase('<b>b</b><u>u</u>');
         expect($para.next().html()).to.equalsIgnoreCase('<u><br></u><s>strike</s><i>i</i>');
@@ -252,7 +250,7 @@ describe('base:core.dom', () => {
 
       it('should be split by b tag with offset 0 (left edge case)', () => {
         let $b = $para.find('b');
-        dom.splitTree($para[0], {node: $b[0], offset: 0 });
+        dom.splitTree($para[0], { node: $b[0], offset: 0 });
 
         expect($para.html()).to.equalsIgnoreCase('<b><br></b>');
         expect($para.next().html()).to.equalsIgnoreCase('<b>b</b><u>u</u><s>strike</s><i>i</i>');
@@ -260,7 +258,7 @@ describe('base:core.dom', () => {
 
       it('should be split by i tag with offset 1 (right edge case)', () => {
         let $i = $para.find('i');
-        dom.splitTree($para[0], {node: $i[0], offset: 1 });
+        dom.splitTree($para[0], { node: $i[0], offset: 1 });
 
         expect($para.html()).to.equalsIgnoreCase('<b>b</b><u>u</u><s>strike</s><i>i</i>');
         expect($para.next().html()).to.equalsIgnoreCase('<i><br></i>');
@@ -270,7 +268,7 @@ describe('base:core.dom', () => {
     describe('textNode case', () => {
       it('should be split by s tag with offset 3 (middle case)', () => {
         let $s = $para.find('s');
-        dom.splitTree($para[0], {node: $s[0].firstChild, offset: 3 });
+        dom.splitTree($para[0], { node: $s[0].firstChild, offset: 3 });
 
         expect($para.html()).to.equalsIgnoreCase('<b>b</b><u>u</u><s>str</s>');
         expect($para.next().html()).to.equalsIgnoreCase('<s>ike</s><i>i</i>');
@@ -278,7 +276,7 @@ describe('base:core.dom', () => {
 
       it('should be split by s tag with offset 0 (left edge case)', () => {
         let $s = $para.find('s');
-        dom.splitTree($para[0], {node: $s[0].firstChild, offset: 0 });
+        dom.splitTree($para[0], { node: $s[0].firstChild, offset: 0 });
 
         expect($para.html()).to.equalsIgnoreCase('<b>b</b><u>u</u><s><br></s>');
         expect($para.next().html()).to.equalsIgnoreCase('<s>strike</s><i>i</i>');
@@ -286,7 +284,7 @@ describe('base:core.dom', () => {
 
       it('should be split by s tag with offset 6 (right edge case)', () => {
         let $s = $para.find('s');
-        dom.splitTree($para[0], {node: $s[0].firstChild, offset: 6 });
+        dom.splitTree($para[0], { node: $s[0].firstChild, offset: 6 });
 
         expect($para.html()).to.equalsIgnoreCase('<b>b</b><u>u</u><s>strike</s>');
         expect($para.next().html()).to.equalsIgnoreCase('<s><br></s><i>i</i>');
@@ -294,22 +292,22 @@ describe('base:core.dom', () => {
 
       it('should be split by s tag with offset 3 (2 depth case)', () => {
         let $s = $para.find('s');
-        dom.splitTree($s[0], {node: $s[0].firstChild, offset: 3 });
+        dom.splitTree($s[0], { node: $s[0].firstChild, offset: 3 });
 
         expect($para.html()).to.equalsIgnoreCase('<b>b</b><u>u</u><s>str</s><s>ike</s><i>i</i>');
       });
 
       it('should be split by s tag with offset 3 (1 depth and textNode case)', () => {
         let $s = $para.find('s');
-        dom.splitTree($s[0].firstChild, {node: $s[0].firstChild, offset: 3 });
+        dom.splitTree($s[0].firstChild, { node: $s[0].firstChild, offset: 3 });
 
         expect($para.html()).to.equalsIgnoreCase('<b>b</b><u>u</u><s>strike</s><i>i</i>');
       });
 
       it('should be split by span tag with offset 2 (1 depth and element case)', () => {
-        let $cont = $('<div class="note-editable"><p><span><b>b</b><u>u</u><s>s</s><i>i</i></span></p></div>'); //busi
+        let $cont = $('<div class="note-editable"><p><span><b>b</b><u>u</u><s>s</s><i>i</i></span></p></div>'); // busi
         let $span = $cont.find('span');
-        dom.splitTree($span[0], {node: $span[0], offset: 2 });
+        dom.splitTree($span[0], { node: $span[0], offset: 2 });
 
         expect($cont.html()).to.equalsIgnoreCase('<p><span><b>b</b><u>u</u></span><span><s>s</s><i>i</i></span></p>');
       });
@@ -324,7 +322,6 @@ describe('base:core.dom', () => {
 
       let result = dom.splitPoint({ node: $para[0], offset: 0 }, true);
       expect(result).to.deep.equal({ rightNode: $br[0], container: $para[0] });
-
     });
   });
 });
