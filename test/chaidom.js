@@ -4,7 +4,7 @@ import env from '../src/js/base/core/env';
 export default function (chai) {
   chai.dom = chai.dom || {};
 
-  chai.dom.equalsIgnoreCase = (str1, str2) => {
+  chai.dom.equalsIgnoreCase = function (str1, str2) {
     str1 = str1.toUpperCase();
     str2 = str2.toUpperCase();
 
@@ -22,7 +22,7 @@ export default function (chai) {
     return str1 === str2;
   };
 
-  chai.dom.equalsStyle = ($node, expected, style) => {
+  chai.dom.equalsStyle = function ($node, expected, style) {
     var $tester = $('<div />').css(style, expected);
     return $node.css(style) === $tester.css(style);
   };
@@ -47,11 +47,11 @@ export default function (chai) {
     );
   });
 
-  chai.assert.equalsIgnoreCase = (val, exp, msg) => {
+  chai.assert.equalsIgnoreCase = function (val, exp, msg) {
     new chai.Assertion(val, msg).to.be.equalsIgnoreCase(exp);
   };
 
-  chai.assert.notequalsIgnoreCase = (val, exp, msg) => {
+  chai.assert.notequalsIgnoreCase = function (val, exp, msg) {
     new chai.Assertion(val, msg).to.not.be.equalsIgnoreCase(exp);
   };
 }
