@@ -31,7 +31,7 @@ function expectToHaveBeenCalled(context, customEvent, handler) {
 describe('Editor', () => {
   var editor, context;
 
-  beforeEach(() => {
+  beforeEach(function () {
     var options = $.extend({}, $.summernote.options);
     options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
     context = new Context($('<div><p>hello</p></div>'), options);
