@@ -11,13 +11,11 @@ $.fn.extend({
    * @return {this}
    */
   summernote: function () {
-    var type = $.type(lists.head(arguments));
-    var isExternalAPICalled = type === 'string';
-    var hasInitOptions = type === 'object';
+    const type = $.type(lists.head(arguments));
+    const isExternalAPICalled = type === 'string';
+    const hasInitOptions = type === 'object';
 
-    var options = hasInitOptions ? lists.head(arguments) : {};
-
-    options = $.extend({}, $.summernote.options, options);
+    const options = $.extend({}, $.summernote.options, hasInitOptions ? lists.head(arguments) : {});
 
     // Update options
     options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
@@ -25,17 +23,17 @@ $.fn.extend({
     options.tooltip = options.tooltip === 'auto' ? !env.isSupportTouch : options.tooltip;
 
     this.each((idx, note) => {
-      var $note = $(note);
+      const $note = $(note);
       if (!$note.data('summernote')) {
-        var context = new Context($note, options);
+        const context = new Context($note, options);
         $note.data('summernote', context);
         $note.data('summernote').triggerEvent('init', context.layoutInfo);
       }
     });
 
-    var $note = this.first();
+    const $note = this.first();
     if ($note.length) {
-      var context = $note.data('summernote');
+      const context = $note.data('summernote');
       if (isExternalAPICalled) {
         return context.invoke.apply(context, lists.from(arguments));
       } else if (options.focus) {

@@ -37,12 +37,12 @@ export default class Dropzone {
    * attach Drag and Drop Events
    */
   attachDragAndDropEvent() {
-    var collection = $();
-    var $dropzoneMessage = this.$dropzone.find('.note-dropzone-message');
+    let collection = $();
+    const $dropzoneMessage = this.$dropzone.find('.note-dropzone-message');
 
     this.documentEventHandlers.onDragenter = (e) => {
-      var isCodeview = this.context.invoke('codeview.isActivated');
-      var hasEditorSize = this.$editor.width() > 0 && this.$editor.height() > 0;
+      const isCodeview = this.context.invoke('codeview.isActivated');
+      const hasEditorSize = this.$editor.width() > 0 && this.$editor.height() > 0;
       if (!isCodeview && !collection.length && hasEditorSize) {
         this.$editor.addClass('dragover');
         this.$dropzone.width(this.$editor.width());
@@ -81,7 +81,7 @@ export default class Dropzone {
 
     // attach dropImage
     this.$dropzone.on('drop', (event) => {
-      var dataTransfer = event.originalEvent.dataTransfer;
+      const dataTransfer = event.originalEvent.dataTransfer;
 
       if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
         event.preventDefault();
@@ -89,7 +89,7 @@ export default class Dropzone {
         this.context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
       } else {
         $.each(dataTransfer.types, (idx, type) => {
-          var content = dataTransfer.getData(type);
+          const content = dataTransfer.getData(type);
 
           if (type.toLowerCase().indexOf('text') > -1) {
             this.context.invoke('editor.pasteHTML', content);

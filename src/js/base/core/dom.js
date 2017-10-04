@@ -3,8 +3,8 @@ import func from './func';
 import lists from './lists';
 import env from './env';
 
-var NBSP_CHAR = String.fromCharCode(160);
-var ZERO_WIDTH_NBSP_CHAR = '\ufeff';
+const NBSP_CHAR = String.fromCharCode(160);
+const ZERO_WIDTH_NBSP_CHAR = '\ufeff';
 
 /**
  * @method isEditable
@@ -90,17 +90,17 @@ function isHeading(node) {
   return node && /^H[1-7]/.test(node.nodeName.toUpperCase());
 }
 
-var isPre = makePredByNodeName('PRE');
+const isPre = makePredByNodeName('PRE');
 
-var isLi = makePredByNodeName('LI');
+const isLi = makePredByNodeName('LI');
 
 function isPurePara(node) {
   return isPara(node) && !isLi(node);
 }
 
-var isTable = makePredByNodeName('TABLE');
+const isTable = makePredByNodeName('TABLE');
 
-var isData = makePredByNodeName('DATA');
+const isData = makePredByNodeName('DATA');
 
 function isInline(node) {
   return !isBodyContainer(node) &&
@@ -116,19 +116,19 @@ function isList(node) {
   return node && /^UL|^OL/.test(node.nodeName.toUpperCase());
 }
 
-var isHr = makePredByNodeName('HR');
+const isHr = makePredByNodeName('HR');
 
 function isCell(node) {
   return node && /^TD|^TH/.test(node.nodeName.toUpperCase());
 }
 
-var isBlockquote = makePredByNodeName('BLOCKQUOTE');
+const isBlockquote = makePredByNodeName('BLOCKQUOTE');
 
 function isBodyContainer(node) {
   return isCell(node) || isBlockquote(node) || isEditable(node);
 }
 
-var isAnchor = makePredByNodeName('A');
+const isAnchor = makePredByNodeName('A');
 
 function isParaInline(node) {
   return isInline(node) && !!ancestor(node, isPara);
@@ -138,7 +138,7 @@ function isBodyInline(node) {
   return isInline(node) && !ancestor(node, isPara);
 }
 
-var isBody = makePredByNodeName('BODY');
+const isBody = makePredByNodeName('BODY');
 
 /**
  * returns whether nodeB is closest sibling of nodeA
@@ -162,7 +162,7 @@ function isClosestSibling(nodeA, nodeB) {
 function withClosestSiblings(node, pred) {
   pred = pred || func.ok;
 
-  var siblings = [];
+  const siblings = [];
   if (node.previousSibling && pred(node.previousSibling)) {
     siblings.push(node.previousSibling);
   }
@@ -178,7 +178,7 @@ function withClosestSiblings(node, pred) {
  * - [workaround] old IE only works with &nbsp;
  * - [workaround] IE11 and other browser works with bogus br
  */
-var blankHTML = env.isMSIE && env.browserVersion < 11 ? '&nbsp;' : '<br>';
+const blankHTML = env.isMSIE && env.browserVersion < 11 ? '&nbsp;' : '<br>';
 
 /**
  * @method nodeLength
@@ -207,7 +207,7 @@ function nodeLength(node) {
  * @return {Boolean}
  */
 function isEmpty(node) {
-  var len = nodeLength(node);
+  const len = nodeLength(node);
 
   if (len === 0) {
     return true;
@@ -275,7 +275,7 @@ function singleChildAncestor(node, pred) {
 function listAncestor(node, pred) {
   pred = pred || func.fail;
 
-  var ancestors = [];
+  const ancestors = [];
   ancestor(node, function (el) {
     if (!isEditable(el)) {
       ancestors.push(el);
@@ -290,7 +290,7 @@ function listAncestor(node, pred) {
  * find farthest ancestor predicate hit
  */
 function lastAncestor(node, pred) {
-  var ancestors = listAncestor(node);
+  const ancestors = listAncestor(node);
   return lists.last(ancestors.filter(pred));
 }
 
@@ -301,8 +301,8 @@ function lastAncestor(node, pred) {
  * @param {Node} nodeB
  */
 function commonAncestor(nodeA, nodeB) {
-  var ancestors = listAncestor(nodeA);
-  for (var n = nodeB; n; n = n.parentNode) {
+  const ancestors = listAncestor(nodeA);
+  for (let n = nodeB; n; n = n.parentNode) {
     if ($.inArray(n, ancestors) > -1) { return n; }
   }
   return null; // difference document area
@@ -317,7 +317,7 @@ function commonAncestor(nodeA, nodeB) {
 function listPrev(node, pred) {
   pred = pred || func.fail;
 
-  var nodes = [];
+  const nodes = [];
   while (node) {
     if (pred(node)) { break; }
     nodes.push(node);
@@ -335,7 +335,7 @@ function listPrev(node, pred) {
 function listNext(node, pred) {
   pred = pred || func.fail;
 
-  var nodes = [];
+  const nodes = [];
   while (node) {
     if (pred(node)) { break; }
     nodes.push(node);
@@ -351,7 +351,7 @@ function listNext(node, pred) {
  * @param {Function} [pred] - predicate function
  */
 function listDescendant(node, pred) {
-  var descendants = [];
+  const descendants = [];
   pred = pred || func.ok;
 
   // start DFS(depth first search) with node
@@ -359,7 +359,7 @@ function listDescendant(node, pred) {
     if (node !== current && pred(current)) {
       descendants.push(current);
     }
-    for (var idx = 0, len = current.childNodes.length; idx < len; idx++) {
+    for (let idx = 0, len = current.childNodes.length; idx < len; idx++) {
       fnWalk(current.childNodes[idx]);
     }
   })(node);
@@ -375,8 +375,8 @@ function listDescendant(node, pred) {
  * @return {Node} - wrapper
  */
 function wrap(node, wrapperName) {
-  var parent = node.parentNode;
-  var wrapper = $('<' + wrapperName + '>')[0];
+  const parent = node.parentNode;
+  const wrapper = $('<' + wrapperName + '>')[0];
 
   parent.insertBefore(wrapper, node);
   wrapper.appendChild(node);
@@ -391,7 +391,7 @@ function wrap(node, wrapperName) {
  * @param {Node} preceding - predicate function
  */
 function insertAfter(node, preceding) {
-  var next = preceding.nextSibling, parent = preceding.parentNode;
+  const next = preceding.nextSibling, parent = preceding.parentNode;
   if (next) {
     parent.insertBefore(node, next);
   } else {
@@ -508,7 +508,7 @@ function isRightEdgePointOf(point, ancestor) {
  * @param {Node} node
  */
 function position(node) {
-  var offset = 0;
+  let offset = 0;
   while ((node = node.previousSibling)) {
     offset += 1;
   }
@@ -527,7 +527,8 @@ function hasChildren(node) {
  * @return {BoundaryPoint}
  */
 function prevPoint(point, isSkipInnerOffset) {
-  var node, offset;
+  let node;
+  let offset;
 
   if (point.offset === 0) {
     if (isEditable(point.node)) {
@@ -558,7 +559,7 @@ function prevPoint(point, isSkipInnerOffset) {
  * @return {BoundaryPoint}
  */
 function nextPoint(point, isSkipInnerOffset) {
-  var node, offset;
+  let node, offset;
 
   if (nodeLength(point.node) === point.offset) {
     if (isEditable(point.node)) {
@@ -603,8 +604,8 @@ function isVisiblePoint(point) {
     return true;
   }
 
-  var leftNode = point.node.childNodes[point.offset - 1];
-  var rightNode = point.node.childNodes[point.offset];
+  const leftNode = point.node.childNodes[point.offset - 1];
+  const rightNode = point.node.childNodes[point.offset];
   if ((!leftNode || isVoid(leftNode)) && (!rightNode || isVoid(rightNode))) {
     return true;
   }
@@ -661,7 +662,7 @@ function isCharPoint(point) {
     return false;
   }
 
-  var ch = point.node.nodeValue.charAt(point.offset - 1);
+  const ch = point.node.nodeValue.charAt(point.offset - 1);
   return ch && (ch !== ' ' && ch !== NBSP_CHAR);
 }
 
@@ -674,7 +675,7 @@ function isCharPoint(point) {
  * @param {Boolean} isSkipInnerOffset
  */
 function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
-  var point = startPoint;
+  let point = startPoint;
 
   while (point) {
     handler(point);
@@ -683,7 +684,7 @@ function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
       break;
     }
 
-    var isSkipOffset = isSkipInnerOffset &&
+    const isSkipOffset = isSkipInnerOffset &&
                        startPoint.node !== point.node &&
                        endPoint.node !== point.node;
     point = nextPoint(point, isSkipOffset);
@@ -699,7 +700,7 @@ function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
  * @param {Node} node
  */
 function makeOffsetPath(ancestor, node) {
-  var ancestors = listAncestor(node, func.eq(ancestor));
+  const ancestors = listAncestor(node, func.eq(ancestor));
   return ancestors.map(position).reverse();
 }
 
@@ -712,8 +713,8 @@ function makeOffsetPath(ancestor, node) {
  * @param {array} offsets - offsetPath
  */
 function fromOffsetPath(ancestor, offsets) {
-  var current = ancestor;
-  for (var i = 0, len = offsets.length; i < len; i++) {
+  let current = ancestor;
+  for (let i = 0, len = offsets.length; i < len; i++) {
     if (current.childNodes.length <= offsets[i]) {
       current = current.childNodes[current.childNodes.length - 1];
     } else {
@@ -735,8 +736,8 @@ function fromOffsetPath(ancestor, offsets) {
  * @return {Node} right node of boundaryPoint
  */
 function splitNode(point, options) {
-  var isSkipPaddingBlankHTML = options && options.isSkipPaddingBlankHTML;
-  var isNotSplitEdgePoint = options && options.isNotSplitEdgePoint;
+  const isSkipPaddingBlankHTML = options && options.isSkipPaddingBlankHTML;
+  const isNotSplitEdgePoint = options && options.isNotSplitEdgePoint;
 
   // edge case
   if (isEdgePoint(point) && (isText(point.node) || isNotSplitEdgePoint)) {
@@ -751,8 +752,8 @@ function splitNode(point, options) {
   if (isText(point.node)) {
     return point.node.splitText(point.offset);
   } else {
-    var childNode = point.node.childNodes[point.offset];
-    var clone = insertAfter(point.node.cloneNode(false), point.node);
+    const childNode = point.node.childNodes[point.offset];
+    const clone = insertAfter(point.node.cloneNode(false), point.node);
     appendChildNodes(clone, listNext(childNode));
 
     if (!isSkipPaddingBlankHTML) {
@@ -778,7 +779,7 @@ function splitNode(point, options) {
  */
 function splitTree(root, point, options) {
   // ex) [#text, <span>, <p>]
-  var ancestors = listAncestor(point.node, func.eq(root));
+  const ancestors = listAncestor(point.node, func.eq(root));
 
   if (!ancestors.length) {
     return null;
@@ -809,11 +810,11 @@ function splitPoint(point, isInline) {
   // find splitRoot, container
   //  - inline: splitRoot is a child of paragraph
   //  - block: splitRoot is a child of bodyContainer
-  var pred = isInline ? isPara : isBodyContainer;
-  var ancestors = listAncestor(point.node, pred);
-  var topAncestor = lists.last(ancestors) || point.node;
+  const pred = isInline ? isPara : isBodyContainer;
+  const ancestors = listAncestor(point.node, pred);
+  const topAncestor = lists.last(ancestors) || point.node;
 
-  var splitRoot, container;
+  let splitRoot, container;
   if (pred(topAncestor)) {
     splitRoot = ancestors[ancestors.length - 2];
     container = topAncestor;
@@ -823,7 +824,7 @@ function splitPoint(point, isInline) {
   }
 
   // if splitRoot is exists, split with splitTree
-  var pivot = splitRoot && splitTree(splitRoot, point, {
+  let pivot = splitRoot && splitTree(splitRoot, point, {
     isSkipPaddingBlankHTML: isInline,
     isNotSplitEdgePoint: isInline
   });
@@ -859,15 +860,14 @@ function remove(node, isRemoveChild) {
   if (!node || !node.parentNode) { return; }
   if (node.removeNode) { return node.removeNode(isRemoveChild); }
 
-  var parent = node.parentNode;
+  const parent = node.parentNode;
   if (!isRemoveChild) {
-    var nodes = [];
-    var i, len;
-    for (i = 0, len = node.childNodes.length; i < len; i++) {
+    const nodes = [];
+    for (let i = 0, len = node.childNodes.length; i < len; i++) {
       nodes.push(node.childNodes[i]);
     }
 
-    for (i = 0, len = nodes.length; i < len; i++) {
+    for (let i = 0, len = nodes.length; i < len; i++) {
       parent.insertBefore(nodes[i], node);
     }
   }
@@ -887,7 +887,7 @@ function removeWhile(node, pred) {
       break;
     }
 
-    var parent = node.parentNode;
+    const parent = node.parentNode;
     remove(node);
     node = parent;
   }
@@ -907,7 +907,7 @@ function replace(node, nodeName) {
     return node;
   }
 
-  var newNode = create(nodeName);
+  const newNode = create(nodeName);
 
   if (node.style.cssText) {
     newNode.style.cssText = node.style.cssText;
@@ -920,14 +920,14 @@ function replace(node, nodeName) {
   return newNode;
 }
 
-var isTextarea = makePredByNodeName('TEXTAREA');
+const isTextarea = makePredByNodeName('TEXTAREA');
 
 /**
  * @param {jQuery} $node
  * @param {Boolean} [stripLinebreaks] - default: false
  */
 function value($node, stripLinebreaks) {
-  var val = isTextarea($node[0]) ? $node.val() : $node.html();
+  const val = isTextarea($node[0]) ? $node.val() : $node.html();
   if (stripLinebreaks) {
     return val.replace(/[\n\r]/g, '');
   }
@@ -943,15 +943,15 @@ function value($node, stripLinebreaks) {
  * @param {Boolean} [isNewlineOnBlock]
  */
 function html($node, isNewlineOnBlock) {
-  var markup = value($node);
+  let markup = value($node);
 
   if (isNewlineOnBlock) {
-    var regexTag = /<(\/?)(\b(?!!)[^>\s]*)(.*?)(\s*\/?>)/g;
+    const regexTag = /<(\/?)(\b(?!!)[^>\s]*)(.*?)(\s*\/?>)/g;
     markup = markup.replace(regexTag, function (match, endSlash, name) {
       name = name.toUpperCase();
-      var isEndOfInlineContainer = /^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) &&
+      const isEndOfInlineContainer = /^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) &&
                                    !!endSlash;
-      var isBlockNode = /^BLOCKQUOTE|^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
+      const isBlockNode = /^BLOCKQUOTE|^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
 
       return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
     });
@@ -962,9 +962,9 @@ function html($node, isNewlineOnBlock) {
 }
 
 function posFromPlaceholder(placeholder) {
-  var $placeholder = $(placeholder);
-  var pos = $placeholder.offset();
-  var height = $placeholder.outerHeight(true); // include margin
+  const $placeholder = $(placeholder);
+  const pos = $placeholder.offset();
+  const height = $placeholder.outerHeight(true); // include margin
 
   return {
     left: pos.left,

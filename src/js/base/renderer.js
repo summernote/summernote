@@ -9,7 +9,7 @@ class Renderer {
   }
 
   render($parent) {
-    var $node = $(this.markup);
+    const $node = $(this.markup);
 
     if (this.options && this.options.contents) {
       $node.html(this.options.contents);
@@ -30,7 +30,7 @@ class Renderer {
     }
 
     if (this.children) {
-      var $container = $node.find('.note-children-container');
+      const $container = $node.find('.note-children-container');
       this.children.forEach((child) => {
         child.render($container.length ? $container : $node);
       });
@@ -55,8 +55,8 @@ class Renderer {
 export default {
   create: (markup, callback) => {
     return () => {
-      var children = $.isArray(arguments[0]) ? arguments[0] : [];
-      var options = typeof arguments[1] === 'object' ? arguments[1] : arguments[0];
+      const options = typeof arguments[1] === 'object' ? arguments[1] : arguments[0];
+      let children = $.isArray(arguments[0]) ? arguments[0] : [];
       if (options && options.children) {
         children = options.children;
       }

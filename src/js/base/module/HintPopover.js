@@ -64,13 +64,13 @@ export default class HintPopover {
   }
 
   moveDown() {
-    var $current = this.$content.find('.note-hint-item.active');
-    var $next = $current.next();
+    const $current = this.$content.find('.note-hint-item.active');
+    const $next = $current.next();
 
     if ($next.length) {
       this.selectItem($next);
     } else {
-      var $nextGroup = $current.parent().next();
+      let $nextGroup = $current.parent().next();
 
       if (!$nextGroup.length) {
         $nextGroup = this.$content.find('.note-hint-group').first();
@@ -81,13 +81,13 @@ export default class HintPopover {
   }
 
   moveUp() {
-    var $current = this.$content.find('.note-hint-item.active');
-    var $prev = $current.prev();
+    const $current = this.$content.find('.note-hint-item.active');
+    const $prev = $current.prev();
 
     if ($prev.length) {
       this.selectItem($prev);
     } else {
-      var $prevGroup = $current.parent().prev();
+      let $prevGroup = $current.parent().prev();
 
       if (!$prevGroup.length) {
         $prevGroup = this.$content.find('.note-hint-group').last();
@@ -98,10 +98,10 @@ export default class HintPopover {
   }
 
   replace() {
-    var $item = this.$content.find('.note-hint-item.active');
+    const $item = this.$content.find('.note-hint-item.active');
 
     if ($item.length) {
-      var node = this.nodeFromItem($item);
+      const node = this.nodeFromItem($item);
       // XXX: consider to move codes to editor for recording redo/undo.
       this.lastWordRange.insertNode(node);
       range.createFromNode(node).collapse().select();
@@ -114,9 +114,9 @@ export default class HintPopover {
   }
 
   nodeFromItem($item) {
-    var hint = this.hints[$item.data('index')];
-    var item = $item.data('item');
-    var node = hint.content ? hint.content(item) : item;
+    const hint = this.hints[$item.data('index')];
+    const item = $item.data('item');
+    let node = hint.content ? hint.content(item) : item;
     if (typeof node === 'string') {
       node = dom.createText(node);
     }
@@ -124,9 +124,9 @@ export default class HintPopover {
   }
 
   createItemTemplates(hintIdx, items) {
-    var hint = this.hints[hintIdx];
+    const hint = this.hints[hintIdx];
     return items.map((item, idx) => {
-      var $item = $('<div class="note-hint-item"/>');
+      const $item = $('<div class="note-hint-item"/>');
       $item.append(hint.template ? hint.template(item) : item + '');
       $item.data({
         'index': hintIdx,
@@ -158,9 +158,9 @@ export default class HintPopover {
   }
 
   searchKeyword(index, keyword, callback) {
-    var hint = this.hints[index];
+    const hint = this.hints[index];
     if (hint && hint.match.test(keyword) && hint.search) {
-      var matches = hint.match.exec(keyword);
+      const matches = hint.match.exec(keyword);
       hint.search(matches[1], callback);
     } else {
       callback();
@@ -168,7 +168,7 @@ export default class HintPopover {
   }
 
   createGroup(idx, keyword) {
-    var $group = $('<div class="note-hint-group note-hint-group-' + idx + '"/>');
+    const $group = $('<div class="note-hint-group note-hint-group-' + idx + '"/>');
     this.searchKeyword(idx, keyword, (items) => {
       items = items || [];
       if (items.length) {
@@ -188,12 +188,12 @@ export default class HintPopover {
         }
       }
     } else {
-      var wordRange = this.context.invoke('editor.createRange').getWordRange();
-      var keyword = wordRange.toString();
+      const wordRange = this.context.invoke('editor.createRange').getWordRange();
+      const keyword = wordRange.toString();
       if (this.hints.length && keyword) {
         this.$content.empty();
 
-        var bnd = func.rect2bnd(lists.last(wordRange.getClientRects()));
+        const bnd = func.rect2bnd(lists.last(wordRange.getClientRects()));
         if (bnd) {
           this.$popover.hide();
           this.lastWordRange = wordRange;

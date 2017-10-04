@@ -16,7 +16,7 @@ export default class Buttons {
   }
 
   representShortcut(editorMethod) {
-    var shortcut = this.invertedKeyMap[editorMethod];
+    let shortcut = this.invertedKeyMap[editorMethod];
     if (!this.options.shortcuts || !shortcut) {
       return '';
     }
@@ -84,10 +84,10 @@ export default class Buttons {
               item = { tag: item, title: (this.lang.style.hasOwnProperty(item) ? this.lang.style[item] : item) };
             }
 
-            var tag = item.tag;
-            var title = item.title;
-            var style = item.style ? ' style="' + item.style + '" ' : '';
-            var className = item.className ? ' class="' + item.className + '"' : '';
+            const tag = item.tag;
+            const title = item.title;
+            const style = item.style ? ' style="' + item.style + '" ' : '';
+            const className = item.className ? ' class="' + item.className + '"' : '';
 
             return '<' + tag + style + className + '>' + title + '</' + tag +  '>';
           },
@@ -210,14 +210,14 @@ export default class Buttons {
             contents: this.ui.icon(this.options.icons.font + ' note-recent-color'),
             tooltip: this.lang.color.recent,
             click: (e) => {
-              var $button = $(e.currentTarget);
+              const $button = $(e.currentTarget);
               this.context.invoke('editor.color', {
                 backColor: $button.attr('data-backColor'),
                 foreColor: $button.attr('data-foreColor')
               });
             },
             callback: ($button) => {
-              var $recentColor = $button.find('.note-recent-color');
+              const $recentColor = $button.find('.note-recent-color');
               $recentColor.css('background-color', '#FFFF00');
               $button.attr('data-backColor', '#FFFF00');
             }
@@ -253,7 +253,7 @@ export default class Buttons {
             ].join(''),
             callback: ($dropdown) => {
               $dropdown.find('.note-holder').each((idx, item) => {
-                var $holder = $(item);
+                const $holder = $(item);
                 $holder.append(this.ui.palette({
                   colors: this.options.colors,
                   eventName: $holder.data('event'),
@@ -263,14 +263,14 @@ export default class Buttons {
               });
             },
             click: (event) => {
-              var $button = $(event.target);
-              var eventName = $button.data('event');
-              var value = $button.data('value');
+              const $button = $(event.target);
+              const eventName = $button.data('event');
+              const value = $button.data('value');
 
               if (eventName && value) {
-                var key = eventName === 'backColor' ? 'background-color' : 'color';
-                var $color = $button.closest('.note-color').find('.note-recent-color');
-                var $currentButton = $button.closest('.note-color').find('.note-current-color-button');
+                const key = eventName === 'backColor' ? 'background-color' : 'color';
+                const $color = $button.closest('.note-color').find('.note-recent-color');
+                const $currentButton = $button.closest('.note-color').find('.note-current-color-button');
 
                 $color.css(key, value);
                 $currentButton.attr('data-' + eventName, value);
@@ -298,37 +298,37 @@ export default class Buttons {
       }).render();
     });
 
-    var justifyLeft = this.button({
+    const justifyLeft = this.button({
       contents: this.ui.icon(this.options.icons.alignLeft),
       tooltip: this.lang.paragraph.left + this.representShortcut('justifyLeft'),
       click: this.context.createInvokeHandler('editor.justifyLeft')
     });
 
-    var justifyCenter = this.button({
+    const justifyCenter = this.button({
       contents: this.ui.icon(this.options.icons.alignCenter),
       tooltip: this.lang.paragraph.center + this.representShortcut('justifyCenter'),
       click: this.context.createInvokeHandler('editor.justifyCenter')
     });
 
-    var justifyRight = this.button({
+    const justifyRight = this.button({
       contents: this.ui.icon(this.options.icons.alignRight),
       tooltip: this.lang.paragraph.right + this.representShortcut('justifyRight'),
       click: this.context.createInvokeHandler('editor.justifyRight')
     });
 
-    var justifyFull = this.button({
+    const justifyFull = this.button({
       contents: this.ui.icon(this.options.icons.alignJustify),
       tooltip: this.lang.paragraph.justify + this.representShortcut('justifyFull'),
       click: this.context.createInvokeHandler('editor.justifyFull')
     });
 
-    var outdent = this.button({
+    const outdent = this.button({
       contents: this.ui.icon(this.options.icons.outdent),
       tooltip: this.lang.paragraph.outdent + this.representShortcut('outdent'),
       click: this.context.createInvokeHandler('editor.outdent')
     });
 
-    var indent = this.button({
+    const indent = this.button({
       contents: this.ui.icon(this.options.icons.indent),
       tooltip: this.lang.paragraph.indent + this.representShortcut('indent'),
       click: this.context.createInvokeHandler('editor.indent')
@@ -406,7 +406,7 @@ export default class Buttons {
         })
       ], {
         callback: ($node) => {
-          var $catcher = $node.find('.note-dimension-picker-mousecatcher');
+          const $catcher = $node.find('.note-dimension-picker-mousecatcher');
           $catcher.css({
             width: this.options.insertTableMaxSize.col + 'em',
             height: this.options.insertTableMaxSize.row + 'em'
@@ -641,17 +641,17 @@ export default class Buttons {
   }
 
   build($container, groups) {
-    for (var groupIdx = 0, groupLen = groups.length; groupIdx < groupLen; groupIdx++) {
-      var group = groups[groupIdx];
-      var groupName = group[0];
-      var buttons = group[1];
+    for (let groupIdx = 0, groupLen = groups.length; groupIdx < groupLen; groupIdx++) {
+      const group = groups[groupIdx];
+      const groupName = group[0];
+      const buttons = group[1];
 
-      var $group = this.ui.buttonGroup({
+      const $group = this.ui.buttonGroup({
         className: 'note-' + groupName
       }).render();
 
-      for (var idx = 0, len = buttons.length; idx < len; idx++) {
-        var btn = this.context.memo('button.' + buttons[idx]);
+      for (let idx = 0, len = buttons.length; idx < len; idx++) {
+        const btn = this.context.memo('button.' + buttons[idx]);
         if (btn) {
           $group.append(typeof btn === 'function' ? btn(this.context) : btn);
         }
@@ -664,9 +664,9 @@ export default class Buttons {
    * @param {jQuery} [$container]
    */
   updateCurrentStyle($container) {
-    var $cont = $container || this.$toolbar;
+    const $cont = $container || this.$toolbar;
     
-    var styleInfo = this.context.invoke('editor.currentStyle');
+    const styleInfo = this.context.invoke('editor.currentStyle');
     this.updateBtnStates($cont, {
       '.note-btn-bold': () => {
         return styleInfo['font-bold'] === 'bold';
@@ -689,38 +689,38 @@ export default class Buttons {
     });
 
     if (styleInfo['font-family']) {
-      var fontNames = styleInfo['font-family'].split(',').map((name) => {
+      const fontNames = styleInfo['font-family'].split(',').map((name) => {
         return name.replace(/[\'\"]/g, '')
           .replace(/\s+$/, '')
           .replace(/^\s+/, '');
       });
-      var fontName = lists.find(fontNames, this.isFontInstalled.bind(this));
+      const fontName = lists.find(fontNames, this.isFontInstalled.bind(this));
 
       $cont.find('.dropdown-fontname a').each((idx, item) => {
-        var $item = $(item);
+        const $item = $(item);
         // always compare string to avoid creating another func.
-        var isChecked = ($item.data('value') + '') === (fontName + '');
+        const isChecked = ($item.data('value') + '') === (fontName + '');
         $item.toggleClass('checked', isChecked);
       });
       $cont.find('.note-current-fontname').text(fontName);
     }
 
     if (styleInfo['font-size']) {
-      var fontSize = styleInfo['font-size'];
+      const fontSize = styleInfo['font-size'];
       $cont.find('.dropdown-fontsize a').each((idx, item) => {
-        var $item = $(item);
+        const $item = $(item);
         // always compare with string to avoid creating another func.
-        var isChecked = ($item.data('value') + '') === (fontSize + '');
+        const isChecked = ($item.data('value') + '') === (fontSize + '');
         $item.toggleClass('checked', isChecked);
       });
       $cont.find('.note-current-fontsize').text(fontSize);
     }
 
     if (styleInfo['line-height']) {
-      var lineHeight = styleInfo['line-height'];
+      const lineHeight = styleInfo['line-height'];
       $cont.find('.dropdown-line-height li a').each((idx, item) => {
         // always compare with string to avoid creating another func.
-        var isChecked = ($(item).data('value') + '') === (lineHeight + '');
+        const isChecked = ($(item).data('value') + '') === (lineHeight + '');
         this.className = isChecked ? 'checked' : '';
       });
     }
@@ -733,17 +733,17 @@ export default class Buttons {
   }
 
   tableMoveHandler(event) {
-    var PX_PER_EM = 18;
-    var $picker = $(event.target.parentNode); // target is mousecatcher
-    var $dimensionDisplay = $picker.next();
-    var $catcher = $picker.find('.note-dimension-picker-mousecatcher');
-    var $highlighted = $picker.find('.note-dimension-picker-highlighted');
-    var $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
+    const PX_PER_EM = 18;
+    const $picker = $(event.target.parentNode); // target is mousecatcher
+    const $dimensionDisplay = $picker.next();
+    const $catcher = $picker.find('.note-dimension-picker-mousecatcher');
+    const $highlighted = $picker.find('.note-dimension-picker-highlighted');
+    const $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
 
-    var posOffset;
+    let posOffset;
     // HTML5 with jQuery - e.offsetX is undefined in Firefox
     if (event.offsetX === undefined) {
-      var posCatcher = $(event.target).offset();
+      const posCatcher = $(event.target).offset();
       posOffset = {
         x: event.pageX - posCatcher.left,
         y: event.pageY - posCatcher.top
@@ -755,7 +755,7 @@ export default class Buttons {
       };
     }
 
-    var dim = {
+    const dim = {
       c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
       r: Math.ceil(posOffset.y / PX_PER_EM) || 1
     };

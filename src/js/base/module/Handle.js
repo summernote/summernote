@@ -47,11 +47,11 @@ export default class Handle {
         event.preventDefault();
         event.stopPropagation();
 
-        var $target = this.$handle.find('.note-control-selection').data('target');
-        var posStart = $target.offset();
-        var scrollTop = this.$document.scrollTop();
+        const $target = this.$handle.find('.note-control-selection').data('target');
+        const posStart = $target.offset();
+        const scrollTop = this.$document.scrollTop();
 
-        var onMouseMove = (event) => {
+        const onMouseMove = (event) => {
           this.context.invoke('editor.resizeTo', {
             x: event.clientX - posStart.left,
             y: event.clientY - (posStart.top - scrollTop)
@@ -90,21 +90,21 @@ export default class Handle {
       return false;
     }
 
-    var isImage = dom.isImg(target);
-    var $selection = this.$handle.find('.note-control-selection');
+    const isImage = dom.isImg(target);
+    const $selection = this.$handle.find('.note-control-selection');
 
     this.context.invoke('imagePopover.update', target);
 
     if (isImage) {
-      var $image = $(target);
-      var position = $image.position();
-      var pos = {
+      const $image = $(target);
+      const position = $image.position();
+      const pos = {
         left: position.left + parseInt($image.css('marginLeft'), 10),
         top: position.top + parseInt($image.css('marginTop'), 10)
       };
 
       // exclude margin
-      var imageSize = {
+      const imageSize = {
         w: $image.outerWidth(false),
         h: $image.outerHeight(false)
       };
@@ -117,7 +117,7 @@ export default class Handle {
         height: imageSize.h
       }).data('target', $image); // save current image element.
 
-      var sizingText = imageSize.w + 'x' + imageSize.h;
+      const sizingText = imageSize.w + 'x' + imageSize.h;
       $selection.find('.note-control-selection-info').text(sizingText);
       this.context.invoke('editor.saveTarget', target);
     } else {

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-var EDITABLE_PADDING = 24;
+const EDITABLE_PADDING = 24;
 
 export default class Statusbar {
   constructor(context) {
@@ -19,9 +19,9 @@ export default class Statusbar {
       event.preventDefault();
       event.stopPropagation();
 
-      var editableTop = this.$editable.offset().top - this.$document.scrollTop();
-      var onMouseMove = (event) => {
-        var height = event.clientY - (editableTop + EDITABLE_PADDING);
+      const editableTop = this.$editable.offset().top - this.$document.scrollTop();
+      const onMouseMove = (event) => {
+        let height = event.clientY - (editableTop + EDITABLE_PADDING);
 
         height = (this.options.minheight > 0) ? Math.max(height, this.options.minheight) : height;
         height = (this.options.maxHeight > 0) ? Math.min(height, this.options.maxHeight) : height;

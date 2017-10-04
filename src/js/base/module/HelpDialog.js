@@ -13,9 +13,9 @@ export default class HelpDialog {
   }
 
   initialize() {
-    var $container = this.options.dialogsInBody ? this.$body : this.$editor;
+    const $container = this.options.dialogsInBody ? this.$body : this.$editor;
 
-    var body = [
+    const body = [
       '<p class="text-center">',
       '<a href="http://summernote.org/" target="_blank">Summernote @VERSION</a> · ',
       '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ',
@@ -43,10 +43,10 @@ export default class HelpDialog {
   }
 
   createShortcutList() {
-    var keyMap = this.options.keyMap[env.isMac ? 'mac' : 'pc'];
+    const keyMap = this.options.keyMap[env.isMac ? 'mac' : 'pc'];
     return Object.keys(keyMap).map((key) => {
-      var command = keyMap[key];
-      var $row = $('<div><div class="help-list-item"/></div>');
+      const command = keyMap[key];
+      const $row = $('<div><div class="help-list-item"/></div>');
       $row.append($('<label><kbd>' + key + '</kdb></label>').css({
         'width': 180,
         'margin-right': 10

@@ -12,7 +12,7 @@ export function readFileAsDataURL(file) {
   return $.Deferred((deferred) => {
     $.extend(new FileReader(), {
       onload: (e) => {
-        var dataURL = e.target.result;
+        const dataURL = e.target.result;
         deferred.resolve(dataURL);
       },
       onerror: (err) => {
@@ -32,7 +32,7 @@ export function readFileAsDataURL(file) {
  */
 export function createImage(url) {
   return $.Deferred((deferred) => {
-    var $img = $('<img>');
+    const $img = $('<img>');
 
     $img.one('load', () => {
       $img.off('error abort');

@@ -3,12 +3,12 @@ import TooltipUI from './ui/tooltip';
 import DropdownUI from './ui/dropdown';
 import ModalUI from './ui/modal';
 
-var editor = renderer.create('<div class="note-editor note-frame"/>');
-var toolbar = renderer.create('<div class="note-toolbar"/>');
-var editingArea = renderer.create('<div class="note-editing-area"/>');
-var codable = renderer.create('<textarea class="note-codable"/>');
-var editable = renderer.create('<div class="note-editable" contentEditable="true"/>');
-var statusbar = renderer.create([
+const editor = renderer.create('<div class="note-editor note-frame"/>');
+const toolbar = renderer.create('<div class="note-toolbar"/>');
+const editingArea = renderer.create('<div class="note-editing-area"/>');
+const codable = renderer.create('<textarea class="note-codable"/>');
+const editable = renderer.create('<div class="note-editable" contentEditable="true"/>');
+const statusbar = renderer.create([
   '<div class="note-statusbar">',
   '  <div class="note-resizebar">',
   '    <div class="note-icon-bar"/>',
@@ -18,11 +18,11 @@ var statusbar = renderer.create([
   '</div>'
 ].join(''));
 
-var airEditor = renderer.create('<div class="note-editor"/>');
-var airEditable = renderer.create('<div class="note-editable" contentEditable="true"/>');
+const airEditor = renderer.create('<div class="note-editor"/>');
+const airEditable = renderer.create('<div class="note-editable" contentEditable="true"/>');
 
-var buttonGroup = renderer.create('<div class="note-btn-group">');
-var button = renderer.create('<button type="button" class="note-btn">', function ($node, options) {
+const buttonGroup = renderer.create('<div class="note-btn-group">');
+const button = renderer.create('<button type="button" class="note-btn">', function ($node, options) {
   // set button type
   if (options && options.tooltip) {
     TooltipUI.create($node, {
@@ -41,11 +41,11 @@ var button = renderer.create('<button type="button" class="note-btn">', function
   }
 });
 
-var dropdown = renderer.create('<div class="note-dropdown-menu">', function ($node, options) {
-  var markup = $.isArray(options.items) ? options.items.map(function (item) {
-    var value = (typeof item === 'string') ? item : (item.value || '');
-    var content = options.template ? options.template(item) : item;
-    var $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '"></a>');
+const dropdown = renderer.create('<div class="note-dropdown-menu">', function ($node, options) {
+  const markup = $.isArray(options.items) ? options.items.map(function (item) {
+    const value = (typeof item === 'string') ? item : (item.value || '');
+    const content = options.template ? options.template(item) : item;
+    const $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '"></a>');
 
     $temp.html(content).data('item', item); 
 
@@ -55,10 +55,10 @@ var dropdown = renderer.create('<div class="note-dropdown-menu">', function ($no
   $node.html(markup);
 
   $node.on('click', '> .note-dropdown-item', function (e) {
-    var $a = $(this);
+    const $a = $(this);
 
-    var item = $a.data('item');
-    var value = $a.data('value');
+    const item = $a.data('item');
+    const value = $a.data('value');
 
     if (item.click) {
       item.click($a);
@@ -69,12 +69,12 @@ var dropdown = renderer.create('<div class="note-dropdown-menu">', function ($no
   });
 });
 
-var dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check">', function ($node, options) {
-  var markup = $.isArray(options.items) ? options.items.map(function (item) {
-    var value = (typeof item === 'string') ? item : (item.value || '');
-    var content = options.template ? options.template(item) : item;
+const dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check">', function ($node, options) {
+  const markup = $.isArray(options.items) ? options.items.map(function (item) {
+    const value = (typeof item === 'string') ? item : (item.value || '');
+    const content = options.template ? options.template(item) : item;
 
-    var $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '"></a>');
+    const $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '"></a>');
     $temp.html([icon(options.checkClassName), ' ', content]).data('item', item);
     return $temp;
   }) : options.items;
@@ -82,10 +82,10 @@ var dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check">
   $node.html(markup);
 
   $node.on('click', '> .note-dropdown-item', function (e) {
-    var $a = $(this);
+    const $a = $(this);
 
-    var item = $a.data('item');
-    var value = $a.data('value');
+    const item = $a.data('item');
+    const value = $a.data('value');
 
     if (item.click) {
       item.click($a);
@@ -95,11 +95,11 @@ var dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check">
   });
 });
 
-var dropdownButtonContents = function (contents, options) {
+const dropdownButtonContents = function (contents, options) {
   return contents + ' ' + icon(options.icons.caret, 'span');
 };
 
-var dropdownButton = function (opt, callback) {
+const dropdownButton = function (opt, callback) {
   return buttonGroup([
     button({
       className: 'dropdown-toggle',
@@ -118,7 +118,7 @@ var dropdownButton = function (opt, callback) {
   ], { callback: callback }).render();
 };
 
-var dropdownCheckButton = function (opt, callback) {
+const dropdownCheckButton = function (opt, callback) {
   return buttonGroup([
     button({
       className: 'dropdown-toggle',
@@ -138,7 +138,7 @@ var dropdownCheckButton = function (opt, callback) {
   ], { callback: callback }).render();
 };
 
-var paragraphDropdownButton = function (opt) {
+const paragraphDropdownButton = function (opt) {
 
   return buttonGroup([
     button({
@@ -162,18 +162,18 @@ var paragraphDropdownButton = function (opt) {
   ]).render();
 };
 
-var tableMoveHandler = function (event, col, row) {
-  var PX_PER_EM = 18;
-  var $picker = $(event.target.parentNode); // target is mousecatcher
-  var $dimensionDisplay = $picker.next();
-  var $catcher = $picker.find('.note-dimension-picker-mousecatcher');
-  var $highlighted = $picker.find('.note-dimension-picker-highlighted');
-  var $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
+const tableMoveHandler = function (event, col, row) {
+  const PX_PER_EM = 18;
+  const $picker = $(event.target.parentNode); // target is mousecatcher
+  const $dimensionDisplay = $picker.next();
+  const $catcher = $picker.find('.note-dimension-picker-mousecatcher');
+  const $highlighted = $picker.find('.note-dimension-picker-highlighted');
+  const $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
 
-  var posOffset;
+  let posOffset;
   // HTML5 with jQuery - e.offsetX is undefined in Firefox
   if (event.offsetX === undefined) {
-    var posCatcher = $(event.target).offset();
+    const posCatcher = $(event.target).offset();
     posOffset = {
       x: event.pageX - posCatcher.left,
       y: event.pageY - posCatcher.top
@@ -185,7 +185,7 @@ var tableMoveHandler = function (event, col, row) {
     };
   }
 
-  var dim = {
+  const dim = {
     c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
     r: Math.ceil(posOffset.y / PX_PER_EM) || 1
   };
@@ -204,7 +204,7 @@ var tableMoveHandler = function (event, col, row) {
   $dimensionDisplay.html(dim.c + ' x ' + dim.r);
 };
 
-var tableDropdownButton = function (opt) {
+const tableDropdownButton = function (opt) {
 
   return buttonGroup([
     button({
@@ -228,7 +228,7 @@ var tableDropdownButton = function (opt) {
     })
   ], {
     callback: function ($node) {
-      var $catcher = $node.find('.note-dimension-picker-mousecatcher');
+      const $catcher = $node.find('.note-dimension-picker-mousecatcher');
       $catcher.css({
         width: opt.col + 'em',
         height: opt.row + 'em'
@@ -241,14 +241,14 @@ var tableDropdownButton = function (opt) {
   }).render();
 };
 
-var palette = renderer.create('<div class="note-color-palette"/>', function ($node, options) {
-  var contents = [];
-  for (var row = 0, rowSize = options.colors.length; row < rowSize; row++) {
-    var eventName = options.eventName;
-    var colors = options.colors[row];
-    var buttons = [];
-    for (var col = 0, colSize = colors.length; col < colSize; col++) {
-      var color = colors[col];
+const palette = renderer.create('<div class="note-color-palette"/>', function ($node, options) {
+  const contents = [];
+  for (let row = 0, rowSize = options.colors.length; row < rowSize; row++) {
+    const eventName = options.eventName;
+    const colors = options.colors[row];
+    const buttons = [];
+    for (let col = 0, colSize = colors.length; col < colSize; col++) {
+      const color = colors[col];
       buttons.push([
         '<button type="button" class="note-btn note-color-btn"',
         'style="background-color:', color, '" ',
@@ -270,7 +270,7 @@ var palette = renderer.create('<div class="note-color-palette"/>', function ($no
 
 });
 
-var colorDropdownButton = function (opt, type) {
+const colorDropdownButton = function (opt, type) {
 
   return buttonGroup({
     className: 'note-color',
@@ -281,7 +281,7 @@ var colorDropdownButton = function (opt, type) {
         tooltip: opt.lang.color.recent,
         click: opt.currentClick,
         callback: function ($button) {
-          var $recentColor = $button.find('.note-recent-color');
+          const $recentColor = $button.find('.note-recent-color');
 
           if (type !== 'foreColor') {
             $recentColor.css('background-color', '#FFFF00');
@@ -325,7 +325,7 @@ var colorDropdownButton = function (opt, type) {
         ].join(''),
         callback: function ($dropdown) {
           $dropdown.find('.note-holder').each(function () {
-            var $holder = $(this);
+            const $holder = $(this);
             $holder.append(palette({
               colors: opt.colors,
               eventName: $holder.data('event')
@@ -341,14 +341,14 @@ var colorDropdownButton = function (opt, type) {
           }
         },
         click: function (event) {
-          var $button = $(event.target);
-          var eventName = $button.data('event');
-          var value = $button.data('value');
+          const $button = $(event.target);
+          const eventName = $button.data('event');
+          const value = $button.data('value');
 
           if (eventName && value) {
-            var key = eventName === 'backColor' ? 'background-color': 'color';
-            var $color = $button.closest('.note-color').find('.note-recent-color');
-            var $currentButton = $button.closest('.note-color').find('.note-current-color-button');
+            const key = eventName === 'backColor' ? 'background-color': 'color';
+            const $color = $button.closest('.note-color').find('.note-recent-color');
+            const $currentButton = $button.closest('.note-color').find('.note-current-color-button');
 
             $color.css(key, value);
             $currentButton.attr('data-' + eventName, value);
@@ -367,7 +367,7 @@ var colorDropdownButton = function (opt, type) {
   }).render();
 };
 
-var dialog = renderer.create('<div class="note-modal" tabindex="-1"/>', function ($node, options) {
+const dialog = renderer.create('<div class="note-modal" tabindex="-1"/>', function ($node, options) {
   if (options.fade) {
     $node.addClass('fade');
   }
@@ -389,16 +389,16 @@ var dialog = renderer.create('<div class="note-modal" tabindex="-1"/>', function
   $node.data('modal', ModalUI.create($node, options));
 });
 
-var videoDialog = function (opt) {
+const videoDialog = function (opt) {
 
-  var body = '<div class="note-form-group">' +
+  const body = '<div class="note-form-group">' +
     '<label class="note-form-label">' +
     opt.lang.video.url + ' <small class="text-muted">' +
     opt.lang.video.providers + '</small>' +
     '</label>' +
     '<input class="note-video-url note-input" type="text" />' +
     '</div>';
-  var footer = [
+  const footer = [
     '<button type="button" href="#" class="note-btn note-btn-primary note-video-btn disabled" disabled>',
     opt.lang.video.insert,
     '</button>'
@@ -412,8 +412,8 @@ var videoDialog = function (opt) {
   }).render();
 };
 
-var imageDialog = function (opt) {
-  var body = '<div class="note-form-group note-group-select-from-files">' +
+const imageDialog = function (opt) {
+  const body = '<div class="note-form-group note-group-select-from-files">' +
     '<label class="note-form-label">' + opt.lang.image.selectFromFiles + '</label>' +
     '<input class="note-note-image-input note-input" type="file" name="files" accept="image/*" multiple="multiple" />' +
     opt.imageLimitation +
@@ -422,7 +422,7 @@ var imageDialog = function (opt) {
     '<label class="note-form-label">' + opt.lang.image.url + '</label>' +
     '<input class="note-image-url note-input" type="text" />' +
     '</div>';
-  var footer = [
+  const footer = [
     '<button href="#" type="button" class="note-btn note-btn-primary note-btn-large note-image-btn disabled" disabled>',
     opt.lang.image.insert,
     '</button>'
@@ -436,8 +436,8 @@ var imageDialog = function (opt) {
   }).render();
 };
 
-var linkDialog = function (opt) {
-  var body = '<div class="note-form-group">' +
+const linkDialog = function (opt) {
+  const body = '<div class="note-form-group">' +
     '<label class="note-form-label">' + opt.lang.link.textToDisplay + '</label>' +
     '<input class="note-link-text note-input" type="text" />' +
     '</div>' +
@@ -450,7 +450,7 @@ var linkDialog = function (opt) {
       '<label>' + '<input type="checkbox" checked> ' + opt.lang.link.openInNewWindow + '</label>' +
       '</div>' : ''
     );
-  var footer = [
+  const footer = [
     '<button href="#" type="button" class="note-btn note-btn-primary note-link-btn disabled" disabled>',
     opt.lang.link.insert,
     '</button>'
@@ -465,13 +465,13 @@ var linkDialog = function (opt) {
   }).render();
 };
 
-var popover = renderer.create([
+const popover = renderer.create([
   '<div class="note-popover bottom">',
   '  <div class="note-popover-arrow"/>',
   '  <div class="note-popover-content note-children-container"/>',
   '</div>'
 ].join(''), function ($node, options) {
-  var direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
+  const direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
 
   $node.addClass(direction).hide();
 
@@ -480,7 +480,7 @@ var popover = renderer.create([
   }
 });
 
-var checkbox = renderer.create('<div class="checkbox"></div>', function ($node, options) {
+const checkbox = renderer.create('<div class="checkbox"></div>', function ($node, options) {
   $node.html([
     ' <label' + (options.id ? ' for="' + options.id + '"' : '') + '>',
     ' <input type="checkbox"' + (options.id ? ' id="' + options.id + '"' : ''),
@@ -490,12 +490,12 @@ var checkbox = renderer.create('<div class="checkbox"></div>', function ($node, 
   ].join(''));
 });
 
-var icon = function (iconClassName, tagName) {
+const icon = function (iconClassName, tagName) {
   tagName = tagName || 'i';
   return '<' + tagName + ' class="' + iconClassName + '"/>';
 };
 
-var ui = {
+const ui = {
   editor: editor,
   toolbar: toolbar,
   editingArea: editingArea,
@@ -574,7 +574,7 @@ var ui = {
   },
 
   createLayout: function ($note, options) {
-    var $editor = (options.airMode ? ui.airEditor([
+    const $editor = (options.airMode ? ui.airEditor([
       ui.editingArea([
         ui.airEditable()
       ])

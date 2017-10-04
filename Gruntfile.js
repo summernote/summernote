@@ -9,6 +9,18 @@ module.exports = function (grunt) {
       version: '8.0',
       platform: 'windows XP'
     },
+    'SL_EDGE': {
+      base: 'SauceLabs',
+      browserName: 'microsoftedge',
+      version: 'latest',
+      platform: 'windows 10'
+    },
+    'SL_SAFARI': {
+      base: 'SauceLabs',
+      browserName: 'safari',
+      version: 'latest',
+      platform: 'OS X 10.12'
+    },
     */
     'SL_IE9': {
       base: 'SauceLabs',
@@ -27,20 +39,6 @@ module.exports = function (grunt) {
       browserName: 'internet explorer',
       version: '11.0',
       platform: 'windows 8.1'
-    },
-    /* TODO comment below
-    'SL_EDGE': {
-      base: 'SauceLabs',
-      browserName: 'microsoftedge',
-      version: 'latest',
-      platform: 'windows 10'
-    },
-    */
-    'SL_SAFARI': {
-      base: 'SauceLabs',
-      browserName: 'safari',
-      version: 'latest',
-      platform: 'OS X 10.12'
     },
     'SL_CHROME': {
       base: 'SauceLabs',

@@ -13,16 +13,16 @@ export default class VideoDialog {
   }
 
   initialize() {
-    var $container = this.options.dialogsInBody ? this.$body : this.$editor;
+    const $container = this.options.dialogsInBody ? this.$body : this.$editor;
 
-    var body = [
+    const body = [
       '<div class="form-group note-form-group row-fluid">',
         `<label class="note-form-label">${this.lang.video.url} <small class="text-muted">${this.lang.video.providers}</small></label>`,
         '<input class="note-video-url form-control note-form-control note-input" type="text" />',
       '</div>'
     ].join('');
-    var buttonClass = 'btn btn-primary note-btn note-btn-primary note-video-btn';
-    var footer = `<button type="submit" href="#" class="${buttonClass}" disabled>${this.lang.video.insert}</button>`;
+    const buttonClass = 'btn btn-primary note-btn note-btn-primary note-video-btn';
+    const footer = `<button type="submit" href="#" class="${buttonClass}" disabled>${this.lang.video.insert}</button>`;
 
     this.$dialog = this.ui.dialog({
       title: this.lang.video.insert,
@@ -47,42 +47,42 @@ export default class VideoDialog {
 
   createVideoNode(url) {
     // video url patterns(youtube, instagram, vimeo, dailymotion, youku, mp4, ogg, webm)
-    var ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
-    var ytMatch = url.match(ytRegExp);
+    const ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+    const ytMatch = url.match(ytRegExp);
 
-    var igRegExp = /(?:www\.|\/\/)instagram\.com\/p\/(.[a-zA-Z0-9_-]*)/;
-    var igMatch = url.match(igRegExp);
+    const igRegExp = /(?:www\.|\/\/)instagram\.com\/p\/(.[a-zA-Z0-9_-]*)/;
+    const igMatch = url.match(igRegExp);
 
-    var vRegExp = /\/\/vine\.co\/v\/([a-zA-Z0-9]+)/;
-    var vMatch = url.match(vRegExp);
+    const vRegExp = /\/\/vine\.co\/v\/([a-zA-Z0-9]+)/;
+    const vMatch = url.match(vRegExp);
 
-    var vimRegExp = /\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*/;
-    var vimMatch = url.match(vimRegExp);
+    const vimRegExp = /\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*/;
+    const vimMatch = url.match(vimRegExp);
 
-    var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
-    var dmMatch = url.match(dmRegExp);
+    const dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
+    const dmMatch = url.match(dmRegExp);
 
-    var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
-    var youkuMatch = url.match(youkuRegExp);
+    const youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
+    const youkuMatch = url.match(youkuRegExp);
 
-    var qqRegExp = /\/\/v\.qq\.com.*?vid=(.+)/;
-    var qqMatch = url.match(qqRegExp);
+    const qqRegExp = /\/\/v\.qq\.com.*?vid=(.+)/;
+    const qqMatch = url.match(qqRegExp);
 
-    var qqRegExp2 = /\/\/v\.qq\.com\/x?\/?(page|cover).*?\/([^\/]+)\.html\??.*/;
-    var qqMatch2 = url.match(qqRegExp2);
+    const qqRegExp2 = /\/\/v\.qq\.com\/x?\/?(page|cover).*?\/([^\/]+)\.html\??.*/;
+    const qqMatch2 = url.match(qqRegExp2);
 
-    var mp4RegExp = /^.+.(mp4|m4v)$/;
-    var mp4Match = url.match(mp4RegExp);
+    const mp4RegExp = /^.+.(mp4|m4v)$/;
+    const mp4Match = url.match(mp4RegExp);
 
-    var oggRegExp = /^.+.(ogg|ogv)$/;
-    var oggMatch = url.match(oggRegExp);
+    const oggRegExp = /^.+.(ogg|ogv)$/;
+    const oggMatch = url.match(oggRegExp);
 
-    var webmRegExp = /^.+.(webm)$/;
-    var webmMatch = url.match(webmRegExp);
+    const webmRegExp = /^.+.(webm)$/;
+    const webmMatch = url.match(webmRegExp);
 
-    var $video;
+    let $video;
     if (ytMatch && ytMatch[1].length === 11) {
-      var youtubeId = ytMatch[1];
+      const youtubeId = ytMatch[1];
       $video = $('<iframe>')
           .attr('frameborder', 0)
           .attr('src', '//www.youtube.com/embed/' + youtubeId)
@@ -117,7 +117,7 @@ export default class VideoDialog {
           .attr('width', '510')
           .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
     } else if ((qqMatch && qqMatch[1].length) || (qqMatch2 && qqMatch2[2].length)) {
-      var vid = ((qqMatch && qqMatch[1].length) ? qqMatch[1]:qqMatch2[2]);
+      const vid = ((qqMatch && qqMatch[1].length) ? qqMatch[1]:qqMatch2[2]);
       $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
           .attr('frameborder', 0)
           .attr('height', '310')
@@ -138,7 +138,7 @@ export default class VideoDialog {
   }
 
   show() {
-    var text = this.context.invoke('editor.getSelectedText');
+    const text = this.context.invoke('editor.getSelectedText');
     this.context.invoke('editor.saveRange');
     this.showVideoDialog(text).then((url) => {
       // [workaround] hide dialog before restore range for IE range focus
@@ -146,7 +146,7 @@ export default class VideoDialog {
       this.context.invoke('editor.restoreRange');
 
       // build node
-      var $node = this.createVideoNode(url);
+      const $node = this.createVideoNode(url);
 
       if ($node) {
         // insert video node
@@ -165,7 +165,7 @@ export default class VideoDialog {
    */
   showVideoDialog(text) {
     return $.Deferred((deferred) => {
-      var $videoUrl = this.$dialog.find('.note-video-url'),
+      const $videoUrl = this.$dialog.find('.note-video-url'),
           $videoBtn = this.$dialog.find('.note-video-btn');
 
       this.ui.onDialogShown(this.$dialog, () => {

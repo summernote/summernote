@@ -52,7 +52,7 @@ function invoke(obj, method) {
   };
 }
 
-var idCounter = 0;
+let idCounter = 0;
 
 /**
  * generate a globally-unique id
@@ -60,7 +60,7 @@ var idCounter = 0;
  * @param {String} [prefix]
  */
 function uniqueId(prefix) {
-  var id = ++idCounter + '';
+  const id = ++idCounter + '';
   return prefix ? prefix + id : id;
 }
 
@@ -78,7 +78,7 @@ function uniqueId(prefix) {
  * @return {Number} bounds.height
  */
 function rect2bnd(rect) {
-  var $document = $(document);
+  const $document = $(document);
   return {
     top: rect.top + $document.scrollTop(),
     left: rect.left + $document.scrollLeft(),
@@ -93,8 +93,8 @@ function rect2bnd(rect) {
  * @return {Object}
  */
 function invertObject(obj) {
-  var inverted = {};
-  for (var key in obj) {
+  const inverted = {};
+  for (const key in obj) {
     if (obj.hasOwnProperty(key)) {
       inverted[obj[key]] = key;
     }
@@ -125,16 +125,16 @@ function namespaceToCamel(namespace, prefix) {
  * @return {Function}
  */
 function debounce(func, wait, immediate) {
-  var timeout;
+  let timeout;
   return () => {
-    var context = this, args = arguments;
-    var later = () => {
+    const context = this, args = arguments;
+    const later = () => {
       timeout = null;
       if (!immediate) {
         func.apply(context, args);
       }
     };
-    var callNow = immediate && !timeout;
+    const callNow = immediate && !timeout;
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
     if (callNow) {

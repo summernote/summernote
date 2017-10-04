@@ -30,7 +30,7 @@ export default class ImagePopover {
     this.$popover = this.ui.popover({
       className: 'note-image-popover'
     }).render().appendTo(this.options.container);
-    var $content = this.$popover.find('.popover-content,.note-popover-content');
+    const $content = this.$popover.find('.popover-content,.note-popover-content');
     this.context.invoke('buttons.build', $content, this.options.popover.image);
   }
 
@@ -40,8 +40,8 @@ export default class ImagePopover {
 
   update(target) {
     if (dom.isImg(target)) {
-      var pos = dom.posFromPlaceholder(target);
-      var posEditor = dom.posFromPlaceholder(this.editable);
+      const pos = dom.posFromPlaceholder(target);
+      const posEditor = dom.posFromPlaceholder(this.editable);
 
       this.$popover.css({
         display: 'block',

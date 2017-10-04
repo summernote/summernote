@@ -12,17 +12,17 @@ export default class ImageDialog {
   }
 
   initialize() {
-    var $container = this.options.dialogsInBody ? this.$body : this.$editor;
+    const $container = this.options.dialogsInBody ? this.$body : this.$editor;
 
-    var imageLimitation = '';
+    let imageLimitation = '';
     if (this.options.maximumImageFileSize) {
-      var unit = Math.floor(Math.log(this.options.maximumImageFileSize) / Math.log(1024));
-      var readableSize = (this.options.maximumImageFileSize / Math.pow(1024, unit)).toFixed(2) * 1 +
+      const unit = Math.floor(Math.log(this.options.maximumImageFileSize) / Math.log(1024));
+      const readableSize = (this.options.maximumImageFileSize / Math.pow(1024, unit)).toFixed(2) * 1 +
                          ' ' + ' KMGTP'[unit] + 'B';
       imageLimitation = `<small>${this.lang.image.maximumFileSize + ' : ' + readableSize}</small>`;
     }
 
-    var body = '<div class="form-group note-form-group note-group-select-from-files">' +
+    const body = '<div class="form-group note-form-group note-group-select-from-files">' +
                  '<label class="note-form-label">' + this.lang.image.selectFromFiles + '</label>' +
                  '<input class="note-image-input note-form-control note-input" '+
                  ' type="file" name="files" accept="image/*" multiple="multiple" />' +
@@ -33,8 +33,8 @@ export default class ImageDialog {
                  '<input class="note-image-url form-control note-form-control note-input ' +
                  ' col-md-12" type="text" />' +
                '</div>';
-    var buttonClass = 'btn btn-primary note-btn note-btn-primary note-image-btn';
-    var footer = `<button type="submit" href="#" class="${buttonClass}" disabled>${this.lang.image.insert}</button>`;
+    const buttonClass = 'btn btn-primary note-btn note-btn-primary note-image-btn';
+    const footer = `<button type="submit" href="#" class="${buttonClass}" disabled>${this.lang.image.insert}</button>`;
 
     this.$dialog = this.ui.dialog({
       title: this.lang.image.insert,
@@ -82,7 +82,7 @@ export default class ImageDialog {
    */
   showImageDialog() {
     return $.Deferred((deferred) => {
-      var $imageInput = this.$dialog.find('.note-image-input'),
+      const $imageInput = this.$dialog.find('.note-image-input'),
           $imageUrl = this.$dialog.find('.note-image-url'),
           $imageBtn = this.$dialog.find('.note-image-btn');
 
@@ -101,7 +101,7 @@ export default class ImageDialog {
         });
 
         $imageUrl.on('keyup paste', () => {
-          var url = $imageUrl.val();
+          const url = $imageUrl.val();
           this.ui.toggleBtn($imageBtn, url);
         }).val('').trigger('focus');
         this.bindEnterKey($imageUrl, $imageBtn);

@@ -66,7 +66,7 @@ export default class Toolbar {
   }
 
   activate(isIncludeCodeview) {
-    var $btn = this.$toolbar.find('button');
+    let $btn = this.$toolbar.find('button');
     if (!isIncludeCodeview) {
       $btn = $btn.not('.btn-codeview');
     }
@@ -74,7 +74,7 @@ export default class Toolbar {
   }
 
   deactivate(isIncludeCodeview) {
-    var $btn = this.$toolbar.find('button');
+    let $btn = this.$toolbar.find('button');
     if (!isIncludeCodeview) {
       $btn = $btn.not('.btn-codeview');
     }

@@ -15,9 +15,9 @@ export default class LinkDialog {
   }
 
   initialize() {
-    var $container = this.options.dialogsInBody ? this.$body : this.$editor;
+    const $container = this.options.dialogsInBody ? this.$body : this.$editor;
 
-    var body = [
+    const body = [
       '<div class="form-group note-form-group">',
         `<label class="note-form-label">${this.lang.link.textToDisplay}</label>`,
         '<input class="note-link-text form-control note-form-control  note-input" type="text" />',
@@ -35,8 +35,8 @@ export default class LinkDialog {
         : ''
       ].join('');
 
-    var buttonClass = 'btn btn-primary note-btn note-btn-primary note-link-btn';
-    var footer = `<button type="submit" href="#" class="${buttonClass}" disabled>${this.lang.link.insert}</button>`;
+    const buttonClass = 'btn btn-primary note-btn note-btn-primary note-link-btn';
+    const footer = `<button type="submit" href="#" class="${buttonClass}" disabled>${this.lang.link.insert}</button>`;
 
     this.$dialog = this.ui.dialog({
       className: 'link-dialog',
@@ -75,7 +75,7 @@ export default class LinkDialog {
    */
   showLinkDialog(linkInfo) {
     return $.Deferred((deferred) => {
-      var $linkText = this.$dialog.find('.note-link-text'),
+      const $linkText = this.$dialog.find('.note-link-text'),
       $linkUrl = this.$dialog.find('.note-link-url'),
       $linkBtn = this.$dialog.find('.note-link-btn'),
       $openInNewWindow = this.$dialog.find('input[type=checkbox]');
@@ -90,7 +90,7 @@ export default class LinkDialog {
 
         $linkText.val(linkInfo.text);
 
-        var handleLinkTextUpdate = () => {
+        const handleLinkTextUpdate = () => {
           this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
           // if linktext was modified by keyup,
           // stop cloning text from linkUrl
@@ -101,7 +101,7 @@ export default class LinkDialog {
           setTimeout(handleLinkTextUpdate, 0);
         });
 
-        var handleLinkUrlUpdate = () => {
+        const handleLinkUrlUpdate = () => {
           this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
           // display same link on `Text to display` input
           // when create a new link
@@ -118,7 +118,7 @@ export default class LinkDialog {
         this.bindEnterKey($linkUrl, $linkBtn);
         this.bindEnterKey($linkText, $linkBtn);
 
-        var isChecked = linkInfo.isNewWindow !== undefined ?
+        const isChecked = linkInfo.isNewWindow !== undefined ?
           linkInfo.isNewWindow : this.context.options.linkTargetBlank;
 
         $openInNewWindow.prop('checked', isChecked);
@@ -155,7 +155,7 @@ export default class LinkDialog {
    * @param {Object} layoutInfo
    */
   show() {
-    var linkInfo = this.context.invoke('editor.getLinkInfo');
+    const linkInfo = this.context.invoke('editor.getLinkInfo');
 
     this.context.invoke('editor.saveRange');
     this.showLinkDialog(linkInfo).then((linkInfo) => {

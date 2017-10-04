@@ -43,7 +43,7 @@ export default class Context {
    * destory modules and other resources and initialize it again
    */
   reset() {
-    var disabled = this.isDisabled();
+    const disabled = this.isDisabled();
     this.code(dom.emptyPara);
     this._destroy();
     this._initialize();
@@ -55,12 +55,12 @@ export default class Context {
 
   _initialize() {
     // add optional buttons
-    var buttons = $.extend({}, this.options.buttons);
+    const buttons = $.extend({}, this.options.buttons);
     Object.keys(buttons).forEach((key) => {
       this.memo('button.' + key, buttons[key]);
     });
 
-    var modules = $.extend({}, this.options.modules, $.summernote.plugins || {});
+    const modules = $.extend({}, this.options.modules, $.summernote.plugins || {});
 
     // add and initialize modules
     Object.keys(modules).forEach((key) => {
@@ -86,7 +86,7 @@ export default class Context {
   }
 
   code(html) {
-    var isActivated = this.invoke('codeview.isActivated');
+    const isActivated = this.invoke('codeview.isActivated');
 
     if (html === undefined) {
       this.invoke('codeview.sync');
@@ -124,10 +124,10 @@ export default class Context {
   }
 
   triggerEvent() {
-    var namespace = lists.head(arguments);
-    var args = lists.tail(lists.from(arguments));
+    const namespace = lists.head(arguments);
+    const args = lists.tail(lists.from(arguments));
 
-    var callback = this.options.callbacks[func.namespaceToCamel(namespace, 'on')];
+    const callback = this.options.callbacks[func.namespaceToCamel(namespace, 'on')];
     if (callback) {
       callback.apply(this.$note[0], args);
     }
@@ -135,7 +135,7 @@ export default class Context {
   }
 
   initializeModule(key) {
-    var module = this.modules[key];
+    const module = this.modules[key];
     module.shouldInitialize = module.shouldInitialize || func.ok;
     if (!module.shouldInitialize()) {
       return;
@@ -165,7 +165,7 @@ export default class Context {
   }
 
   removeModule(key) {
-    var module = this.modules[key];
+    const module = this.modules[key];
     if (module.shouldInitialize()) {
       if (module.events) {
         dom.detachEvents(this.$note, module.events);
@@ -207,21 +207,21 @@ export default class Context {
   createInvokeHandler(namespace, value) {
     return (event) => {
       event.preventDefault();
-      var $target = $(event.target);
+      const $target = $(event.target);
       this.invoke(namespace, value || $target.closest('[data-value]').data('value'), $target);
     };
   }
 
   invoke() {
-    var namespace = lists.head(arguments);
-    var args = lists.tail(lists.from(arguments));
+    const namespace = lists.head(arguments);
+    const args = lists.tail(lists.from(arguments));
 
-    var splits = namespace.split('.');
-    var hasSeparator = splits.length > 1;
-    var moduleName = hasSeparator && lists.head(splits);
-    var methodName = hasSeparator ? lists.last(splits) : lists.head(splits);
+    const splits = namespace.split('.');
+    const hasSeparator = splits.length > 1;
+    const moduleName = hasSeparator && lists.head(splits);
+    const methodName = hasSeparator ? lists.last(splits) : lists.head(splits);
 
-    var module = this.modules[moduleName || 'editor'];
+    const module = this.modules[moduleName || 'editor'];
     if (!moduleName && this[methodName]) {
       return this[methodName].apply(this, args);
     } else if (module && module[methodName] && module.shouldInitialize()) {

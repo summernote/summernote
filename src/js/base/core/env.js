@@ -1,5 +1,5 @@
 import $ from 'jquery';
-var isSupportAmd = typeof define === 'function' && define.amd;
+const isSupportAmd = typeof define === 'function' && define.amd;
 
 /**
  * returns whether font is installed or not.
@@ -7,28 +7,28 @@ var isSupportAmd = typeof define === 'function' && define.amd;
  * @param {String} fontName
  * @return {Boolean}
  */
-var isFontInstalled = function (fontName) {
-  var testFontName = fontName === 'Comic Sans MS' ? 'Courier New' : 'Comic Sans MS';
-  var $tester = $('<div>').css({
+function isFontInstalled (fontName) {
+  const testFontName = fontName === 'Comic Sans MS' ? 'Courier New' : 'Comic Sans MS';
+  const $tester = $('<div>').css({
     position: 'absolute',
     left: '-9999px',
     top: '-9999px',
     fontSize: '200px'
   }).text('mmmmmmmmmwwwwwww').appendTo(document.body);
 
-  var originalWidth = $tester.css('fontFamily', testFontName).width();
-  var width = $tester.css('fontFamily', fontName + ',' + testFontName).width();
+  const originalWidth = $tester.css('fontFamily', testFontName).width();
+  const width = $tester.css('fontFamily', fontName + ',' + testFontName).width();
 
   $tester.remove();
 
   return originalWidth !== width;
-};
+}
 
-var userAgent = navigator.userAgent;
-var isMSIE = /MSIE|Trident/i.test(userAgent);
-var browserVersion;
+const userAgent = navigator.userAgent;
+const isMSIE = /MSIE|Trident/i.test(userAgent);
+let browserVersion;
 if (isMSIE) {
-  var matches = /MSIE (\d+[.]\d+)/.exec(userAgent);
+  let matches = /MSIE (\d+[.]\d+)/.exec(userAgent);
   if (matches) {
     browserVersion = parseFloat(matches[1]);
   }
@@ -38,9 +38,9 @@ if (isMSIE) {
   }
 }
 
-var isEdge = /Edge\/\d+/.test(userAgent);
+const isEdge = /Edge\/\d+/.test(userAgent);
 
-var hasCodeMirror = !!window.CodeMirror;
+let hasCodeMirror = !!window.CodeMirror;
 if (!hasCodeMirror && isSupportAmd) {
   // Webpack
   if (typeof __webpack_require__ === 'function') { // jshint ignore:line
@@ -70,7 +70,7 @@ if (!hasCodeMirror && isSupportAmd) {
   }
 }
 
-var isSupportTouch =
+const isSupportTouch =
   (('ontouchstart' in window) ||
    (navigator.MaxTouchPoints > 0) ||
    (navigator.msMaxTouchPoints > 0));
@@ -85,18 +85,18 @@ var isSupportTouch =
  */
 export default {
   isMac: navigator.appVersion.indexOf('Mac') > -1,
-  isMSIE: isMSIE,
-  isEdge: isEdge,
+  isMSIE,
+  isEdge,
   isFF: !isEdge && /firefox/i.test(userAgent),
   isPhantom: /PhantomJS/i.test(userAgent),
   isWebkit: !isEdge && /webkit/i.test(userAgent),
   isChrome: !isEdge && /chrome/i.test(userAgent),
   isSafari: !isEdge && /safari/i.test(userAgent),
-  browserVersion: browserVersion,
+  browserVersion,
   jqueryVersion: parseFloat($.fn.jquery),
-  isSupportAmd: isSupportAmd,
-  isSupportTouch: isSupportTouch,
-  hasCodeMirror: hasCodeMirror,
-  isFontInstalled: isFontInstalled,
+  isSupportAmd,
+  isSupportTouch,
+  hasCodeMirror,
+  isFontInstalled,
   isW3CRangeSupport: !!document.createRange
 };

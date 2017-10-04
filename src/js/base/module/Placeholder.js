@@ -33,7 +33,7 @@ export default class Placeholder {
   }
 
   update() {
-    var isShow = !this.context.invoke('codeview.isActivated') && this.context.invoke('editor.isEmpty');
+    const isShow = !this.context.invoke('codeview.isActivated') && this.context.invoke('editor.isEmpty');
     this.$placeholder.toggle(isShow);
   }
 }

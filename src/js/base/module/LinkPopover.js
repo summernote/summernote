@@ -26,11 +26,11 @@ export default class LinkPopover {
     this.$popover = this.ui.popover({
       className: 'note-link-popover',
       callback: ($node) => {
-        var $content = $node.find('.popover-content,.note-popover-content');
+        const $content = $node.find('.popover-content,.note-popover-content');
         $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
       }
     }).render().appendTo(this.options.container);
-    var $content = this.$popover.find('.popover-content,.note-popover-content');
+    const $content = this.$popover.find('.popover-content,.note-popover-content');
 
     this.context.invoke('buttons.build', $content, this.options.popover.link);
   }
@@ -46,13 +46,13 @@ export default class LinkPopover {
       return;
     }
 
-    var rng = this.context.invoke('editor.createRange');
+    const rng = this.context.invoke('editor.createRange');
     if (rng.isCollapsed() && rng.isOnAnchor()) {
-      var anchor = dom.ancestor(rng.sc, dom.isAnchor);
-      var href = $(anchor).attr('href');
+      const anchor = dom.ancestor(rng.sc, dom.isAnchor);
+      const href = $(anchor).attr('href');
       this.$popover.find('a').attr('href', href).html(href);
 
-      var pos = dom.posFromPlaceholder(anchor);
+      const pos = dom.posFromPlaceholder(anchor);
       this.$popover.css({
         display: 'block',
         left: pos.left,

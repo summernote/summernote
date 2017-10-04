@@ -30,7 +30,7 @@ export default class TablePopover {
     this.$popover = this.ui.popover({
       className: 'note-table-popover'
     }).render().appendTo(this.options.container);
-    var $content = this.$popover.find('.popover-content,.note-popover-content');
+    const $content = this.$popover.find('.popover-content,.note-popover-content');
 
     this.context.invoke('buttons.build', $content, this.options.popover.table);
 
@@ -49,10 +49,10 @@ export default class TablePopover {
       return false;
     }
 
-    var isCell = dom.isCell(target);
+    const isCell = dom.isCell(target);
 
     if (isCell) {
-      var pos = dom.posFromPlaceholder(target);
+      const pos = dom.posFromPlaceholder(target);
       this.$popover.css({
         display: 'block',
         left: pos.left,
