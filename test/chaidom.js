@@ -27,7 +27,7 @@ export default function (chai) {
     return $node.css(style) === $tester.css(style);
   };
 
-  chai.Assertion.addChainableMethod('equalsIgnoreCase', (expected) => {
+  chai.Assertion.addChainableMethod('equalsIgnoreCase', function (expected) {
     var actual = this._obj;
 
     return this.assert(
@@ -37,7 +37,7 @@ export default function (chai) {
     );
   });
 
-  chai.Assertion.addChainableMethod('equalsStyle', (expected, style) => {
+  chai.Assertion.addChainableMethod('equalsStyle', function (expected, style) {
     var $node = this._obj;
 
     return this.assert(

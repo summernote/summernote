@@ -28,12 +28,18 @@ module.exports = function (grunt) {
       version: '11.0',
       platform: 'windows 8.1'
     },
-    /*
+    /* TODO comment below
     'SL_EDGE': {
       base: 'SauceLabs',
       browserName: 'microsoftedge',
       version: 'latest',
       platform: 'windows 10'
+    },
+    'SL_SAFARI': {
+      base: 'SauceLabs',
+      browserName: 'safari',
+      version: 'latest',
+      platform: 'OS X 10.12'
     },
     */
     'SL_CHROME': {
@@ -48,14 +54,6 @@ module.exports = function (grunt) {
       version: 'latest',
       platform: 'windows 8'
     }
-    /*,
-    'SL_SAFARI': {
-      base: 'SauceLabs',
-      browserName: 'safari',
-      version: 'latest',
-      platform: 'OS X 10.12'
-    }
-    */
   };
 
   grunt.initConfig({
