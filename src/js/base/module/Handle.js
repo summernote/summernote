@@ -1,31 +1,32 @@
 import $ from 'jquery';
 import dom from '../core/dom';
 
-export default function (context) {
-  var self = this;
+export default class Handle {
+  constructor(context) {
+    this.context = context;
+    this.$document = $(document);
+    this.$editingArea = context.layoutInfo.editingArea;
+    this.options = context.options;
 
-  var $document = $(document);
-  var $editingArea = context.layoutInfo.editingArea;
-  var options = context.options;
-
-  this.events = {
-    'summernote.mousedown': function (we, e) {
-      if (self.update(e.target)) {
-        e.preventDefault();
+    this.events = {
+      'summernote.mousedown': (we, e) => {
+        if (this.update(e.target)) {
+          e.preventDefault();
+        }
+      },
+      'summernote.keyup summernote.scroll summernote.change summernote.dialog.shown': () => {
+        this.update();
+      },
+      'summernote.disable': () => {
+        this.hide();
+      },
+      'summernote.codeview.toggled': () => {
+        this.update();
       }
-    },
-    'summernote.keyup summernote.scroll summernote.change summernote.dialog.shown': function () {
-      self.update();
-    },
-    'summernote.disable': function () {
-      self.hide();
-    },
-    'summernote.codeview.toggled': function () {
-      self.update();
-    }
-  };
+    };
+  }
 
-  this.initialize = function () {
+  initialize() {
     this.$handle = $([
       '<div class="note-handle">',
       '<div class="note-control-selection">',
@@ -34,37 +35,37 @@ export default function (context) {
       '<div class="note-control-holder note-control-ne"></div>',
       '<div class="note-control-holder note-control-sw"></div>',
       '<div class="',
-      (options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing'),
+      (this.options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing'),
       ' note-control-se"></div>',
-      (options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>'),
+      (this.options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>'),
       '</div>',
       '</div>'
-    ].join('')).prependTo($editingArea);
+    ].join('')).prependTo(this.$editingArea);
 
-    this.$handle.on('mousedown', function (event) {
+    this.$handle.on('mousedown', (event) => {
       if (dom.isControlSizing(event.target)) {
         event.preventDefault();
         event.stopPropagation();
 
-        var $target = self.$handle.find('.note-control-selection').data('target'),
-            posStart = $target.offset(),
-            scrollTop = $document.scrollTop();
+        var $target = this.$handle.find('.note-control-selection').data('target');
+        var posStart = $target.offset();
+        var scrollTop = this.$document.scrollTop();
 
-        var onMouseMove = function (event) {
-          context.invoke('editor.resizeTo', {
+        var onMouseMove = (event) => {
+          this.context.invoke('editor.resizeTo', {
             x: event.clientX - posStart.left,
             y: event.clientY - (posStart.top - scrollTop)
           }, $target, !event.shiftKey);
 
-          self.update($target[0]);
+          this.update($target[0]);
         };
 
-        $document
+        this.$document
           .on('mousemove', onMouseMove)
-          .one('mouseup', function (e) {
+          .one('mouseup', (e) => {
             e.preventDefault();
-            $document.off('mousemove', onMouseMove);
-            context.invoke('editor.afterCommand');
+            this.$document.off('mousemove', onMouseMove);
+            this.context.invoke('editor.afterCommand');
           });
 
         if (!$target.data('ratio')) { // original ratio.
@@ -74,25 +75,25 @@ export default function (context) {
     });
 
     // Listen for scrolling on the handle overlay.
-    this.$handle.on('wheel', function (e) {
+    this.$handle.on('wheel', (e) => {
       e.preventDefault();
-      self.update();
+      this.update();
     });
-  };
+  }
 
-  this.destroy = function () {
+  destroy() {
     this.$handle.remove();
-  };
+  }
 
-  this.update = function (target) {
-    if (context.isDisabled()) {
+  update(target) {
+    if (this.context.isDisabled()) {
       return false;
     }
 
     var isImage = dom.isImg(target);
     var $selection = this.$handle.find('.note-control-selection');
 
-    context.invoke('imagePopover.update', target);
+    this.context.invoke('imagePopover.update', target);
 
     if (isImage) {
       var $image = $(target);
@@ -118,21 +119,21 @@ export default function (context) {
 
       var sizingText = imageSize.w + 'x' + imageSize.h;
       $selection.find('.note-control-selection-info').text(sizingText);
-      context.invoke('editor.saveTarget', target);
+      this.context.invoke('editor.saveTarget', target);
     } else {
       this.hide();
     }
 
     return isImage;
-  };
+  }
 
   /**
    * hide
    *
    * @param {jQuery} $handle
    */
-  this.hide = function () {
-    context.invoke('editor.clearTarget');
+  hide() {
+    this.context.invoke('editor.clearTarget');
     this.$handle.children().hide();
-  };
+  }
 }

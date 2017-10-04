@@ -1,88 +1,91 @@
 import $ from 'jquery';
 import func from './core/func';
-import list from './core/list';
+import lists from './core/lists';
 import dom from './core/dom';
 
-/**
- * @param {jQuery} $note
- * @param {Object} options
- * @return {Context}
- */
-export default function ($note, options) {
-  var self = this;
+export default class Context {
+  /**
+   * @param {jQuery} $note
+   * @param {Object} options
+   */
+  constructor($note, options) {
+    this.ui = $.summernote.ui;
+    this.$note = $note;
 
-  var ui = $.summernote.ui;
-  this.memos = {};
-  this.modules = {};
-  this.layoutInfo = {};
-  this.options = options;
+    this.memos = {};
+    this.modules = {};
+    this.layoutInfo = {};
+    this.options = options;
+
+    this.initialize();
+  }
 
   /**
    * create layout and initialize modules and other resources
    */
-  this.initialize = function () {
-    this.layoutInfo = ui.createLayout($note, options);
+  initialize() {
+    this.layoutInfo = this.ui.createLayout(this.$note, this.options);
     this._initialize();
-    $note.hide();
+    this.$note.hide();
     return this;
-  };
+  }
 
   /**
    * destroy modules and other resources and remove layout
    */
-  this.destroy = function () {
+  destroy() {
     this._destroy();
-    $note.removeData('summernote');
-    ui.removeLayout($note, this.layoutInfo);
-  };
+    this.$note.removeData('summernote');
+    this.ui.removeLayout(this.$note, this.layoutInfo);
+  }
 
   /**
    * destory modules and other resources and initialize it again
    */
-  this.reset = function () {
-    var disabled = self.isDisabled();
+  reset() {
+    var disabled = this.isDisabled();
     this.code(dom.emptyPara);
     this._destroy();
     this._initialize();
 
     if (disabled) {
-      self.disable();
+      this.disable();
     }
-  };
+  }
 
-  this._initialize = function () {
+  _initialize() {
     // add optional buttons
     var buttons = $.extend({}, this.options.buttons);
-    Object.keys(buttons).forEach(function (key) {
-      self.memo('button.' + key, buttons[key]);
+    Object.keys(buttons).forEach((key) => {
+      this.memo('button.' + key, buttons[key]);
     });
 
     var modules = $.extend({}, this.options.modules, $.summernote.plugins || {});
 
     // add and initialize modules
-    Object.keys(modules).forEach(function (key) {
-      self.module(key, modules[key], true);
+    Object.keys(modules).forEach((key) => {
+      this.module(key, modules[key], true);
     });
 
-    Object.keys(this.modules).forEach(function (key) {
-      self.initializeModule(key);
+    Object.keys(this.modules).forEach((key) => {
+      this.initializeModule(key);
     });
-  };
+  }
 
-  this._destroy = function () {
+  _destroy() {
     // destroy modules with reversed order
-    Object.keys(this.modules).reverse().forEach(function (key) {
-      self.removeModule(key);
+    Object.keys(this.modules).reverse().forEach((key) => {
+      this.removeModule(key);
     });
 
-    Object.keys(this.memos).forEach(function (key) {
-      self.removeMemo(key);
+    Object.keys(this.memos).forEach((key) => {
+      this.removeMemo(key);
     });
     // trigger custom onDestroy callback
     this.triggerEvent('destroy', this);
-  };
+  }
 
-  this.code = function (html) {
+  code(html) {
     var isActivated = this.invoke('codeview.isActivated');
 
     if (html === undefined) {
@@ -94,22 +97,22 @@ export default function ($note, options) {
       } else {
         this.layoutInfo.editable.html(html);
       }
-      $note.val(html);
+      this.$note.val(html);
       this.triggerEvent('change', html);
     }
-  };
+  }
 
-  this.isDisabled = function () {
+  isDisabled() {
     return this.layoutInfo.editable.attr('contenteditable') === 'false';
-  };
+  }
 
-  this.enable = function () {
+  enable() {
     this.layoutInfo.editable.attr('contenteditable', true);
     this.invoke('toolbar.activate', true);
     this.triggerEvent('disable', false);
-  };
+  }
 
-  this.disable = function () {
+  disable() {
     // close codeview if codeview is opend
     if (this.invoke('codeview.isActivated')) {
       this.invoke('codeview.deactivate');
@@ -118,20 +121,20 @@ export default function ($note, options) {
     this.invoke('toolbar.deactivate', true);
 
     this.triggerEvent('disable', true);
-  };
+  }
 
-  this.triggerEvent = function () {
-    var namespace = list.head(arguments);
-    var args = list.tail(list.from(arguments));
+  triggerEvent() {
+    var namespace = lists.head(arguments);
+    var args = lists.tail(lists.from(arguments));
 
     var callback = this.options.callbacks[func.namespaceToCamel(namespace, 'on')];
     if (callback) {
-      callback.apply($note[0], args);
+      callback.apply(this.$note[0], args);
     }
-    $note.trigger('summernote.' + namespace, args);
-  };
+    this.$note.trigger('summernote.' + namespace, args);
+  }
 
-  this.initializeModule = function (key) {
+  initializeModule(key) {
     var module = this.modules[key];
     module.shouldInitialize = module.shouldInitialize || func.ok;
     if (!module.shouldInitialize()) {
@@ -145,11 +148,11 @@ export default function ($note, options) {
 
     // attach events
     if (module.events) {
-      dom.attachEvents($note, module.events);
+      dom.attachEvents(this.$note, module.events);
     }
-  };
+  }
 
-  this.module = function (key, ModuleClass, withoutIntialize) {
+  module(key, ModuleClass, withoutIntialize) {
     if (arguments.length === 1) {
       return this.modules[key];
     }
@@ -159,13 +162,13 @@ export default function ($note, options) {
     if (!withoutIntialize) {
       this.initializeModule(key);
     }
-  };
+  }
 
-  this.removeModule = function (key) {
+  removeModule(key) {
     var module = this.modules[key];
     if (module.shouldInitialize()) {
       if (module.events) {
-        dom.detachEvents($note, module.events);
+        dom.detachEvents(this.$note, module.events);
       }
 
       if (module.destroy) {
@@ -174,49 +177,49 @@ export default function ($note, options) {
     }
 
     delete this.modules[key];
-  };
+  }
 
-  this.memo = function (key, obj) {
+  memo(key, obj) {
     if (arguments.length === 1) {
       return this.memos[key];
     }
     this.memos[key] = obj;
-  };
+  }
 
-  this.removeMemo = function (key) {
+  removeMemo(key) {
     if (this.memos[key] && this.memos[key].destroy) {
       this.memos[key].destroy();
     }
 
     delete this.memos[key];
-  };
+  }
 
   /**
    *Some buttons need to change their visual style immediately once they get pressed
    */
-  this.createInvokeHandlerAndUpdateState = function (namespace, value) {
-    return function (event) {
-      self.createInvokeHandler(namespace, value)(event);
-      self.invoke('buttons.updateCurrentStyle');
+  createInvokeHandlerAndUpdateState(namespace, value) {
+    return (event) => {
+      this.createInvokeHandler(namespace, value)(event);
+      this.invoke('buttons.updateCurrentStyle');
     };
-  };
+  }
 
-  this.createInvokeHandler = function (namespace, value) {
-    return function (event) {
+  createInvokeHandler(namespace, value) {
+    return (event) => {
       event.preventDefault();
       var $target = $(event.target);
-      self.invoke(namespace, value || $target.closest('[data-value]').data('value'), $target);
+      this.invoke(namespace, value || $target.closest('[data-value]').data('value'), $target);
     };
-  };
+  }
 
-  this.invoke = function () {
-    var namespace = list.head(arguments);
-    var args = list.tail(list.from(arguments));
+  invoke() {
+    var namespace = lists.head(arguments);
+    var args = lists.tail(lists.from(arguments));
 
     var splits = namespace.split('.');
     var hasSeparator = splits.length > 1;
-    var moduleName = hasSeparator && list.head(splits);
-    var methodName = hasSeparator ? list.last(splits) : list.head(splits);
+    var moduleName = hasSeparator && lists.head(splits);
+    var methodName = hasSeparator ? lists.last(splits) : lists.head(splits);
 
     var module = this.modules[moduleName || 'editor'];
     if (!moduleName && this[methodName]) {
@@ -224,7 +227,5 @@ export default function ($note, options) {
     } else if (module && module[methodName] && module.shouldInitialize()) {
       return module[methodName].apply(module, args);
     }
-  };
-
-  return this.initialize();
+  }
 }

@@ -1,113 +1,112 @@
 import $ from 'jquery';
-export default function (context) {
-  var $eventListener = $(document);
-  var $editor = context.layoutInfo.editor;
-  var $editable = context.layoutInfo.editable;
-  var options = context.options;
-  var lang = options.langInfo;
-  var documentEventHandlers = {};
+export default class Dropzone {
+  constructor(context) {
+    this.context = context;
+    this.$eventListener = $(document);
+    this.$editor = context.layoutInfo.editor;
+    this.$editable = context.layoutInfo.editable;
+    this.options = context.options;
+    this.lang = this.options.langInfo;
+    this.documentEventHandlers = {};
 
-  var $dropzone = $([
-    '<div class="note-dropzone">',
-    '  <div class="note-dropzone-message"/>',
-    '</div>'
-  ].join('')).prependTo($editor);
-
-  var detachDocumentEvent = function () {
-    Object.keys(documentEventHandlers).forEach(function (key) {
-      $eventListener.off(key.substr(2).toLowerCase(), documentEventHandlers[key]);
-    });
-    documentEventHandlers = {};
-  };
+    this.$dropzone = $([
+      '<div class="note-dropzone">',
+      '  <div class="note-dropzone-message"/>',
+      '</div>'
+    ].join('')).prependTo(this.$editor);
+  }
 
   /**
    * attach Drag and Drop Events
    */
-  this.initialize = function () {
-    if (options.disableDragAndDrop) {
+  initialize() {
+    if (this.options.disableDragAndDrop) {
       // prevent default drop event
-      documentEventHandlers.onDrop = function (e) {
+      this.documentEventHandlers.onDrop = (e) => {
         e.preventDefault();
       };
       // do not consider outside of dropzone
-      $eventListener = $dropzone;
-      $eventListener.on('drop', documentEventHandlers.onDrop);
+      this.$eventListener = this.$dropzone;
+      this.$eventListener.on('drop', this.documentEventHandlers.onDrop);
     } else {
       this.attachDragAndDropEvent();
     }
-  };
+  }
 
   /**
    * attach Drag and Drop Events
    */
-  this.attachDragAndDropEvent = function () {
-    var collection = $(),
-        $dropzoneMessage = $dropzone.find('.note-dropzone-message');
+  attachDragAndDropEvent() {
+    var collection = $();
+    var $dropzoneMessage = this.$dropzone.find('.note-dropzone-message');
 
-    documentEventHandlers.onDragenter = function (e) {
-      var isCodeview = context.invoke('codeview.isActivated');
-      var hasEditorSize = $editor.width() > 0 && $editor.height() > 0;
+    this.documentEventHandlers.onDragenter = (e) => {
+      var isCodeview = this.context.invoke('codeview.isActivated');
+      var hasEditorSize = this.$editor.width() > 0 && this.$editor.height() > 0;
       if (!isCodeview && !collection.length && hasEditorSize) {
-        $editor.addClass('dragover');
-        $dropzone.width($editor.width());
-        $dropzone.height($editor.height());
-        $dropzoneMessage.text(lang.image.dragImageHere);
+        this.$editor.addClass('dragover');
+        this.$dropzone.width(this.$editor.width());
+        this.$dropzone.height(this.$editor.height());
+        $dropzoneMessage.text(this.lang.image.dragImageHere);
       }
       collection = collection.add(e.target);
     };
 
-    documentEventHandlers.onDragleave = function (e) {
+    this.documentEventHandlers.onDragleave = (e) => {
       collection = collection.not(e.target);
       if (!collection.length) {
-        $editor.removeClass('dragover');
+        this.$editor.removeClass('dragover');
       }
     };
 
-    documentEventHandlers.onDrop = function () {
+    this.documentEventHandlers.onDrop = () => {
       collection = $();
-      $editor.removeClass('dragover');
+      this.$editor.removeClass('dragover');
     };
 
     // show dropzone on dragenter when dragging a object to document
     // -but only if the editor is visible, i.e. has a positive width and height
-    $eventListener.on('dragenter', documentEventHandlers.onDragenter)
-      .on('dragleave', documentEventHandlers.onDragleave)
-      .on('drop', documentEventHandlers.onDrop);
+    this.$eventListener.on('dragenter', this.documentEventHandlers.onDragenter)
+      .on('dragleave', this.documentEventHandlers.onDragleave)
+      .on('drop', this.documentEventHandlers.onDrop);
 
     // change dropzone's message on hover.
-    $dropzone.on('dragenter', function () {
-      $dropzone.addClass('hover');
-      $dropzoneMessage.text(lang.image.dropImage);
-    }).on('dragleave', function () {
-      $dropzone.removeClass('hover');
-      $dropzoneMessage.text(lang.image.dragImageHere);
+    this.$dropzone.on('dragenter', () => {
+      this.$dropzone.addClass('hover');
+      $dropzoneMessage.text(this.lang.image.dropImage);
+    }).on('dragleave', () => {
+      this.$dropzone.removeClass('hover');
+      $dropzoneMessage.text(this.lang.image.dragImageHere);
     });
 
     // attach dropImage
-    $dropzone.on('drop', function (event) {
+    this.$dropzone.on('drop', (event) => {
       var dataTransfer = event.originalEvent.dataTransfer;
 
       if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
         event.preventDefault();
-        $editable.focus();
-        context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
+        this.$editable.focus();
+        this.context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
       } else {
-        $.each(dataTransfer.types, function (idx, type) {
+        $.each(dataTransfer.types, (idx, type) => {
           var content = dataTransfer.getData(type);
 
           if (type.toLowerCase().indexOf('text') > -1) {
-            context.invoke('editor.pasteHTML', content);
+            this.context.invoke('editor.pasteHTML', content);
           } else {
-            $(content).each(function () {
-              context.invoke('editor.insertNode', this);
+            $(content).each((idx, item) => {
+              this.context.invoke('editor.insertNode', item);
             });
           }
         });
       }
     }).on('dragover', false); // prevent default dragover event
-  };
+  }
 
-  this.destroy = function () {
-    detachDocumentEvent();
-  };
+  destroy() {
+    Object.keys(this.documentEventHandlers).forEach((key) => {
+      this.$eventListener.off(key.substr(2).toLowerCase(), this.documentEventHandlers[key]);
+    });
+    this.documentEventHandlers = {};
+  }
 }

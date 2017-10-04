@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import list from '../core/list';
+import lists from '../core/lists';
 import dom from '../core/dom';
 
 /**
@@ -7,41 +7,41 @@ import dom from '../core/dom';
  *  mouse events that show/hide popover will be handled by Handle.js.
  *  Handle.js will receive the events and invoke 'imagePopover.update'.
  */
-export default function (context) {
-  var self = this;
-  var ui = $.summernote.ui;
+export default class ImagePopover {
+  constructor(context) {
+    this.context = context;
+    this.ui = $.summernote.ui;
 
-  var $editable = context.layoutInfo.editable;
-  var editable = $editable[0];
-  var options = context.options;
+    this.editable = context.layoutInfo.editable[0];
+    this.options = context.options;
 
-  this.events = {
-    'summernote.disable': function () {
-      self.hide();
-    }
-  };
+    this.events = {
+      'summernote.disable': () => {
+        this.hide();
+      }
+    };
+  }
 
-  this.shouldInitialize = function () {
-    return !list.isEmpty(options.popover.image);
-  };
+  shouldInitialize() {
+    return !lists.isEmpty(this.options.popover.image);
+  }
 
-  this.initialize = function () {
-    this.$popover = ui.popover({
+  initialize() {
+    this.$popover = this.ui.popover({
       className: 'note-image-popover'
-    }).render().appendTo(options.container);
+    }).render().appendTo(this.options.container);
     var $content = this.$popover.find('.popover-content,.note-popover-content');
+    this.context.invoke('buttons.build', $content, this.options.popover.image);
+  }
 
-    context.invoke('buttons.build', $content, options.popover.image);
-  };
-
-  this.destroy = function () {
+  destroy() {
     this.$popover.remove();
-  };
+  }
 
-  this.update = function (target) {
+  update(target) {
     if (dom.isImg(target)) {
       var pos = dom.posFromPlaceholder(target);
-      var posEditor = dom.posFromPlaceholder(editable);
+      var posEditor = dom.posFromPlaceholder(this.editable);
 
       this.$popover.css({
         display: 'block',
@@ -51,9 +51,9 @@ export default function (context) {
     } else {
       this.hide();
     }
-  };
+  }
 
-  this.hide = function () {
+  hide() {
     this.$popover.hide();
-  };
+  }
 }

@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import dom from '../core/dom';
 import range from '../core/range';
-import list from '../core/list';
+import lists from '../core/lists';
 
 /**
  * @class Create a virtual table to create what actions to do in change.
@@ -294,7 +294,7 @@ export default class Table {
     const table = dom.ancestor(cell, dom.isTable);
     const cells = dom.listDescendant(table, dom.isCell);
 
-    const nextCell = list[isShift ? 'prev' : 'next'](cells, cell);
+    const nextCell = lists[isShift ? 'prev' : 'next'](cells, cell);
     if (nextCell) {
       range.create(nextCell, 0).select();
     }

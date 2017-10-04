@@ -28,12 +28,14 @@ module.exports = function (grunt) {
       version: '11.0',
       platform: 'windows 8.1'
     },
+    /*
     'SL_EDGE': {
       base: 'SauceLabs',
       browserName: 'microsoftedge',
       version: 'latest',
       platform: 'windows 10'
     },
+    */
     'SL_CHROME': {
       base: 'SauceLabs',
       browserName: 'chrome',
@@ -45,13 +47,15 @@ module.exports = function (grunt) {
       browserName: 'firefox',
       version: 'latest',
       platform: 'windows 8'
-    },
+    }
+    /*,
     'SL_SAFARI': {
       base: 'SauceLabs',
       browserName: 'safari',
       version: 'latest',
       platform: 'OS X 10.12'
     }
+    */
   };
 
   grunt.initConfig({

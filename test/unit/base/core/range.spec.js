@@ -13,28 +13,28 @@ import range from '../../../../src/js/base/core/range';
 var expect = chai.expect;
 chai.use(chaidom);
 
-describe('base:core.range', function () {
-  describe('nodes', function () {
-    describe('1 depth', function () {
+describe('base:core.range', () => {
+  describe('nodes', () => {
+    describe('1 depth', () => {
       var $para;
-      before(function () {
+      before(() => {
         var $cont = $('<div class="note-editable"><p>para1</p><p>para2</p></div>');
         $para = $cont.find('p');
       });
 
-      it('should return array of two paragraphs', function () {
+      it('should return array of two paragraphs', () => {
         var rng = range.create($para[0].firstChild, 0, $para[1].firstChild, 1);
         expect(rng.nodes(dom.isPara, {includeAncestor: true})).to.have.length(2);
       });
 
-      it('should return array of a paragraph', function () {
+      it('should return array of a paragraph', () => {
         var rng = range.create($para[0].firstChild, 0, $para[0].firstChild, 0);
         expect(rng.nodes(dom.isPara, { includeAncestor: true })).to.have.length(1);
       });
     });
 
-    describe('multi depth', function () {
-      it('should return array of a paragraph', function () {
+    describe('multi depth', () => {
+      it('should return array of a paragraph', () => {
         var $cont = $('<div class="note-editable"><p>p<b>ar</b>a1</p><p>para2</p></div>');
         var $b = $cont.find('b');
         var rng = range.create($b[0].firstChild, 0, $b[0].firstChild, 0);
@@ -43,8 +43,8 @@ describe('base:core.range', function () {
       });
     });
 
-    describe('on list, on heading', function () {
-      it('should return array of list paragraphs', function () {
+    describe('on list, on heading', () => {
+      it('should return array of list paragraphs', () => {
         var $cont = $('<div class="note-editable"><ul><li>para1</li><li>para2</li></ul></div>');
         var $li = $cont.find('li');
         var rng = range.create($li[0].firstChild, 0, $li[1].firstChild, 1);
@@ -52,7 +52,7 @@ describe('base:core.range', function () {
         expect(rng.nodes(dom.isPara, { includeAncestor: true })).to.have.length(2);
       });
 
-      it('should return array of list paragraphs', function () {
+      it('should return array of list paragraphs', () => {
         var $cont = $('<div class="note-editable"><h1>heading1</h1><h2>heading2</h2></div>');
         var $h1 = $cont.find('h1');
         var $h2 = $cont.find('h2');
@@ -63,13 +63,13 @@ describe('base:core.range', function () {
     });
   });
 
-  describe('commonAncestor', function () {
+  describe('commonAncestor', () => {
     var $cont;
-    before(function () {
+    before(() => {
       $cont = $('<div><span><b>b</b><u>u</u></span></div>');
     });
 
-    it('should return <span> for <b>|b</b> and <u>u|</u>', function () {
+    it('should return <span> for <b>|b</b> and <u>u|</u>', () => {
       var $span = $cont.find('span');
       var $b = $cont.find('b');
       var $u = $cont.find('u');
@@ -78,7 +78,7 @@ describe('base:core.range', function () {
       expect(rng.commonAncestor()).to.deep.equal($span[0]);
     });
 
-    it('should return b(#textNode) for <b>|b|</b>', function () {
+    it('should return b(#textNode) for <b>|b|</b>', () => {
       var $b = $cont.find('b');
 
       var rng = range.create($b[0].firstChild, 0, $b[0].firstChild, 1);
@@ -86,8 +86,8 @@ describe('base:core.range', function () {
     });
   });
 
-  describe('expand', function () {
-    it('should return <b>|b</b> ~ <u>u|</u> for <b>|b</b> with isAnchor', function () {
+  describe('expand', () => {
+    it('should return <b>|b</b> ~ <u>u|</u> for <b>|b</b> with isAnchor', () => {
       var $cont = $('<div><a><b>b</b><u>u</u></a></div>');
       var $anchor = $cont.find('a');
       var $b = $cont.find('b');
@@ -100,8 +100,8 @@ describe('base:core.range', function () {
     });
   });
 
-  describe('collapse', function () {
-    it('should return <u>u|</u> for <b>|b</b> ~ <u>u|</u>', function () {
+  describe('collapse', () => {
+    it('should return <u>u|</u> for <b>|b</b> ~ <u>u|</u>', () => {
       var $cont = $('<div><b>b</b><u>u</u></div>');
       var $b = $cont.find('b');
       var $u = $cont.find('u');
@@ -114,13 +114,13 @@ describe('base:core.range', function () {
     });
   });
 
-  describe('normalize', function () {
+  describe('normalize', () => {
     var $cont;
-    before(function () {
+    before(() => {
       $cont = $('<div><p><b>b</b><u>u</u><s>s</s></p></div>');
     });
 
-    it('should return <b>|b</b> ~ <u>u|</u> for |<b>b</b> ~ <u>u</u>|', function () {
+    it('should return <b>|b</b> ~ <u>u|</u> for |<b>b</b> ~ <u>u</u>|', () => {
       var $p = $cont.find('p');
       var $b = $cont.find('b');
       var $u = $cont.find('u');
@@ -132,7 +132,7 @@ describe('base:core.range', function () {
       expect(rng.eo).to.equal(1);
     });
 
-    it('should return <b>b|</b><u>u</u> for <b>b</b>|<u>u</u>', function () {
+    it('should return <b>b|</b><u>u</u> for <b>b</b>|<u>u</u>', () => {
       var $p = $cont.find('p');
       var $b = $cont.find('b');
 
@@ -143,7 +143,7 @@ describe('base:core.range', function () {
       expect(rng.eo).to.equal(1);
     });
 
-    it('should return <b>b</b><u>|u|</u><s>s</s> for <b>b|</b><u>u</u><s>|s</s>', function () {
+    it('should return <b>b</b><u>|u|</u><s>s</s> for <b>b|</b><u>u</u><s>|s</s>', () => {
       var $b = $cont.find('b');
       var $u = $cont.find('u');
       var $s = $cont.find('s');
@@ -155,7 +155,7 @@ describe('base:core.range', function () {
       expect(rng.eo).to.equal(1);
     });
 
-    it('should return <b>b|</b><u>u</u><s>s</s> for <b>b|</b><u>u</u><s>s</s>', function () {
+    it('should return <b>b|</b><u>u</u><s>s</s> for <b>b|</b><u>u</u><s>s</s>', () => {
       var $b = $cont.find('b');
 
       var rng = range.create($b[0].firstChild, 1,  $b[0].firstChild, 1).normalize();
@@ -166,8 +166,8 @@ describe('base:core.range', function () {
     });
   });
 
-  describe('normalize (block mode)', function () {
-    it('should return <p>text</p><p>|<br></p> for <p>text</p><p>|<br></p>', function () {
+  describe('normalize (block mode)', () => {
+    it('should return <p>text</p><p>|<br></p> for <p>text</p><p>|<br></p>', () => {
       var $cont = $('<div><p>text</p><p><br></p></div>');
       var $p = $cont.find('p');
 
@@ -178,7 +178,7 @@ describe('base:core.range', function () {
       expect(rng.eo).to.equal(0);
     });
 
-    it('should return <p>text</p><p>|text</b></p> for <p>text</p><p>|text</p>', function () {
+    it('should return <p>text</p><p>|text</b></p> for <p>text</p><p>|text</p>', () => {
       var $cont = $('<div><p>text</p><p>text</p></div>');
       var $p = $cont.find('p');
 
@@ -189,7 +189,7 @@ describe('base:core.range', function () {
       expect(rng.eo).to.equal(0);
     });
 
-    it('should return <p>|text</p><p>text|</b></p> for |<p>text</p><p>text</p>|', function () {
+    it('should return <p>|text</p><p>text|</b></p> for |<p>text</p><p>text</p>|', () => {
       var $cont = $('<div class="note-editable"><p>text</p><p>text</p></div>');
       var $p = $cont.find('p');
 
@@ -201,8 +201,8 @@ describe('base:core.range', function () {
     });
   });
 
-  describe('normalize (void element)', function () {
-    it('should return <p><img>|<b>bold</b></p> for <p><img>|<b>bold</b></p>', function () {
+  describe('normalize (void element)', () => {
+    it('should return <p><img>|<b>bold</b></p> for <p><img>|<b>bold</b></p>', () => {
       var $cont = $('<div><p><img><b>bold</b></p></div>');
       var $p = $cont.find('p');
       var $b = $cont.find('b');
@@ -215,8 +215,8 @@ describe('base:core.range', function () {
     });
   });
 
-  describe('insertNode', function () {
-    it('should split paragraph when inserting a block element', function () {
+  describe('insertNode', () => {
+    it('should split paragraph when inserting a block element', () => {
       var $cont = $('<div class="note-editable"><p><b>bold</b></p></div>');
       var $b = $cont.find('b');
       var $p2 = $('<p>p</p>');
@@ -227,7 +227,7 @@ describe('base:core.range', function () {
       expect($cont.html()).to.equalsIgnoreCase('<p><b>bo</b></p><p>p</p><p><b>ld</b></p>');
     });
 
-    it('should not split paragraph when inserting an inline element', function () {
+    it('should not split paragraph when inserting an inline element', () => {
       var $cont = $('<div class="note-editable"><p>text</p></div>');
       var $p = $cont.find('p');
       var $u = $('<u>u</u>');
@@ -237,7 +237,7 @@ describe('base:core.range', function () {
       expect($cont.html()).to.equalsIgnoreCase('<p>te<u>u</u>xt</p>');
     });
 
-    it('should not split paragraph when inserting an inline element case 2', function () {
+    it('should not split paragraph when inserting an inline element case 2', () => {
       var $cont = $('<div class="note-editable"><p><b>bold</b></p></div>');
       var $b = $cont.find('b');
       var $u = $('<u>u</u>');
@@ -248,8 +248,8 @@ describe('base:core.range', function () {
     });
   });
 
-  describe('pasteHTML', function () {
-    it('should not split a block element when inserting inline elements into it', function () {
+  describe('pasteHTML', () => {
+    it('should not split a block element when inserting inline elements into it', () => {
       var $cont = $('<div class="note-editable"><p>text</p></div>');
       var $p = $cont.find('p');
       var markup = '<span>span</span><i>italic</i>';
@@ -260,7 +260,7 @@ describe('base:core.range', function () {
       expect($cont.html()).to.equalsIgnoreCase('<p>te<span>span</span><i>italic</i>xt</p>');
     });
 
-    it('should split an inline element when pasting inline elements into it', function () {
+    it('should split an inline element when pasting inline elements into it', () => {
       var $cont = $('<div class="note-editable"><p><b>bold</b></p></div>');
       var $b = $cont.find('b');
       var markup = '<span>span</span><i>italic</i>';
@@ -271,7 +271,7 @@ describe('base:core.range', function () {
       expect($cont.html()).to.equalsIgnoreCase('<p><b>bo</b><span>span</span><i>italic</i><b>ld</b></p>');
     });
 
-    it('should split inline node when pasting an inline node and a block node into it', function () {
+    it('should split inline node when pasting an inline node and a block node into it', () => {
       var $cont = $('<div class="note-editable"><p><b>bold</b></p></div>');
       var $b = $cont.find('b');
       var markup = '<span>span</span><p><i>italic</i></p>';
@@ -283,21 +283,21 @@ describe('base:core.range', function () {
     });
   });
 
-  describe('deleteContents', function () {
+  describe('deleteContents', () => {
     var $cont, $b;
-    beforeEach(function () {
+    beforeEach(() => {
       $cont = $('<div class="note-editable"><p><b>bold</b><u>u</u></p></div>');
       $b = $cont.find('b');
     });
 
-    it('should remove text only for partial text', function () {
+    it('should remove text only for partial text', () => {
       var rng = range.create($b[0].firstChild, 1, $b[0].firstChild, 3);
       rng.deleteContents();
 
       expect($cont.html()).to.equalsIgnoreCase('<p><b>bd</b><u>u</u></p>');
     });
 
-    it('should remove text for entire text', function () {
+    it('should remove text for entire text', () => {
       var rng = range.create($b[0].firstChild, 0, $b[0].firstChild, 4);
       rng.deleteContents();
 
@@ -305,8 +305,8 @@ describe('base:core.range', function () {
     });
   });
 
-  describe('wrapBodyInlineWithPara', function () {
-    it('should insert an empty paragraph when there is no contents', function () {
+  describe('wrapBodyInlineWithPara', () => {
+    it('should insert an empty paragraph when there is no contents', () => {
       var $cont = $('<div class="note-editable"></div>');
 
       var rng = range.create($cont[0], 0);
@@ -315,7 +315,7 @@ describe('base:core.range', function () {
       expect($cont.html()).to.equalsIgnoreCase('<p><br></p>');
     });
 
-    it('should wrap text with paragraph for text', function () {
+    it('should wrap text with paragraph for text', () => {
       var $cont = $('<div class="note-editable">text</div>');
 
       var rng = range.create($cont[0].firstChild, 2);
@@ -324,7 +324,7 @@ describe('base:core.range', function () {
       expect($cont.html()).to.equalsIgnoreCase('<p>text</p>');
     });
 
-    it('should wrap an inline node with paragraph when selecting text in the inline node', function () {
+    it('should wrap an inline node with paragraph when selecting text in the inline node', () => {
       var $cont = $('<div class="note-editable"><b>bold</b></div>');
       var $b = $cont.find('b');
 
@@ -334,7 +334,7 @@ describe('base:core.range', function () {
       expect($cont.html()).to.equalsIgnoreCase('<p><b>bold</b></p>');
     });
 
-    it('should wrap inline nodes with paragraph when selecting text in the inline nodes', function () {
+    it('should wrap inline nodes with paragraph when selecting text in the inline nodes', () => {
       var $cont = $('<div class="note-editable"><b>b</b><i>i</i></div>');
 
       var rng = range.create($cont[0], 0);
@@ -343,7 +343,7 @@ describe('base:core.range', function () {
       expect($cont.html()).to.equalsIgnoreCase('<p><b>b</b><i>i</i></p>');
     });
 
-    it('should wrap inline nodes with paragraph when selection some of text in the inline nodes #1', function () {
+    it('should wrap inline nodes with paragraph when selection some of text in the inline nodes #1', () => {
       var $cont = $('<div class="note-editable"><b>b</b><i>i</i></div>');
 
       var rng = range.create($cont[0], 1);
@@ -352,7 +352,7 @@ describe('base:core.range', function () {
       expect($cont.html()).to.equalsIgnoreCase('<p><b>b</b><i>i</i></p>');
     });
 
-    it('should wrap inline nodes with paragraph when selection some of text in the inline nodes #2', function () {
+    it('should wrap inline nodes with paragraph when selection some of text in the inline nodes #2', () => {
       var $cont = $('<div class="note-editable"><b>b</b><i>i</i></div>');
 
       var rng = range.create($cont[0], 2);
@@ -362,13 +362,13 @@ describe('base:core.range', function () {
     });
   });
 
-  describe('getWordRange', function () {
+  describe('getWordRange', () => {
     var $cont;
-    before(function () {
+    before(() => {
       $cont = $('<div class="note-editable">super simple wysiwyg editor</div>');
     });
 
-    it('should return the range itself when there is no word before cursor', function () {
+    it('should return the range itself when there is no word before cursor', () => {
       var rng = range.create($cont[0].firstChild, 0).getWordRange();
 
       expect(rng.sc).to.deep.equal($cont[0].firstChild);
@@ -377,7 +377,7 @@ describe('base:core.range', function () {
       expect(rng.eo).to.equal(0);
     });
 
-    it('should return expanded range when there is a word before cursor', function () {
+    it('should return expanded range when there is a word before cursor', () => {
       var rng = range.create($cont[0].firstChild, 5).getWordRange();
 
       expect(rng.sc).to.deep.equal($cont[0].firstChild);
@@ -386,7 +386,7 @@ describe('base:core.range', function () {
       expect(rng.eo).to.equal(5);
     });
 
-    it('should return expanded range when there is a half word before cursor', function () {
+    it('should return expanded range when there is a half word before cursor', () => {
       var rng = range.create($cont[0].firstChild, 3).getWordRange();
 
       expect(rng.sc).to.deep.equal($cont[0].firstChild);
@@ -395,7 +395,7 @@ describe('base:core.range', function () {
       expect(rng.eo).to.equal(3);
     });
 
-    it('should return expanded range when there are words before cursor', function () {
+    it('should return expanded range when there are words before cursor', () => {
       var rng = range.create($cont[0].firstChild, 12).getWordRange();
 
       expect(rng.sc).to.deep.equal($cont[0].firstChild);

@@ -1,69 +1,69 @@
 import $ from 'jquery';
 import func from '../core/func';
-import list from '../core/list';
+import lists from '../core/lists';
 import dom from '../core/dom';
 import range from '../core/range';
 import key from '../core/key';
 
-export default function (context) {
-  var self = this;
-  var ui = $.summernote.ui;
+const POPOVER_DIST = 5;
 
-  var POPOVER_DIST = 5;
-  var options = context.options;
-  var hint = options.hint || [];
-  var direction = options.hintDirection || 'bottom';
-  var hints = $.isArray(hint) ? hint : [hint];
+export default class HintPopover {
+  constructor(context) {
+    this.ui = $.summernote.ui;
+    this.$editable = context.layoutInfo.editable;
+    this.options = context.options;
+    this.hint = this.options.hint || [];
+    this.direction = this.options.hintDirection || 'bottom';
+    this.hints = $.isArray(this.hint) ? this.hint : [this.hint];
 
-  this.events = {
-    'summernote.keyup': function (we, e) {
-      if (!e.isDefaultPrevented()) {
-        self.handleKeyup(e);
+    this.events = {
+      'summernote.keyup': (we, e) => {
+        if (!e.isDefaultPrevented()) {
+          this.handleKeyup(e);
+        }
+      },
+      'summernote.keydown': (we, e) => {
+        this.handleKeydown(e);
+      },
+      'summernote.disable summernote.dialog.shown': () => {
+        this.hide();
       }
-    },
-    'summernote.keydown': function (we, e) {
-      self.handleKeydown(e);
-    },
-    'summernote.disable summernote.dialog.shown': function () {
-      self.hide();
-    }
-  };
+    };
+  }
 
-  this.shouldInitialize = function () {
-    return hints.length > 0;
-  };
+  shouldInitialize() {
+    return this.hints.length > 0;
+  }
 
-  this.initialize = function () {
+  initialize() {
     this.lastWordRange = null;
-    this.$popover = ui.popover({
+    this.$popover = this.ui.popover({
       className: 'note-hint-popover',
       hideArrow: true,
       direction: ''
-    }).render().appendTo(options.container);
+    }).render().appendTo(this.options.container);
 
     this.$popover.hide();
-
     this.$content = this.$popover.find('.popover-content,.note-popover-content');
-
-    this.$content.on('click', '.note-hint-item', function () {
-      self.$content.find('.active').removeClass('active');
+    this.$content.on('click', '.note-hint-item', () => {
+      this.$content.find('.active').removeClass('active');
       $(this).addClass('active');
-      self.replace();
+      this.replace();
     });
-  };
+  }
 
-  this.destroy = function () {
+  destroy() {
     this.$popover.remove();
-  };
+  }
 
-  this.selectItem = function ($item) {
+  selectItem($item) {
     this.$content.find('.active').removeClass('active');
     $item.addClass('active');
 
     this.$content[0].scrollTop = $item[0].offsetTop - (this.$content.innerHeight() / 2);
-  };
+  }
 
-  this.moveDown = function () {
+  moveDown() {
     var $current = this.$content.find('.note-hint-item.active');
     var $next = $current.next();
 
@@ -78,9 +78,9 @@ export default function (context) {
 
       this.selectItem($nextGroup.find('.note-hint-item').first());
     }
-  };
+  }
 
-  this.moveUp = function () {
+  moveUp() {
     var $current = this.$content.find('.note-hint-item.active');
     var $prev = $current.prev();
 
@@ -95,9 +95,9 @@ export default function (context) {
 
       this.selectItem($prevGroup.find('.note-hint-item').last());
     }
-  };
+  }
 
-  this.replace = function () {
+  replace() {
     var $item = this.$content.find('.note-hint-item.active');
 
     if ($item.length) {
@@ -108,25 +108,24 @@ export default function (context) {
 
       this.lastWordRange = null;
       this.hide();
-      context.triggerEvent('change', context.layoutInfo.editable.html(), context.layoutInfo.editable);
-      context.invoke('editor.focus');
+      this.context.triggerEvent('change', this.$editable.html(), this.$editable[0]);
+      this.context.invoke('editor.focus');
     }
+  }
 
-  };
-
-  this.nodeFromItem = function ($item) {
-    var hint = hints[$item.data('index')];
+  nodeFromItem($item) {
+    var hint = this.hints[$item.data('index')];
     var item = $item.data('item');
     var node = hint.content ? hint.content(item) : item;
     if (typeof node === 'string') {
       node = dom.createText(node);
     }
     return node;
-  };
+  }
 
-  this.createItemTemplates = function (hintIdx, items) {
-    var hint = hints[hintIdx];
-    return items.map(function (item, idx) {
+  createItemTemplates(hintIdx, items) {
+    var hint = this.hints[hintIdx];
+    return items.map((item, idx) => {
       var $item = $('<div class="note-hint-item"/>');
       $item.append(hint.template ? hint.template(item) : item + '');
       $item.data({
@@ -139,9 +138,9 @@ export default function (context) {
       }
       return $item;
     });
-  };
+  }
 
-  this.handleKeydown = function (e) {
+  handleKeydown(e) {
     if (!this.$popover.is(':visible')) {
       return;
     }
@@ -156,59 +155,56 @@ export default function (context) {
       e.preventDefault();
       this.moveDown();
     }
-  };
+  }
 
-  this.searchKeyword = function (index, keyword, callback) {
-    var hint = hints[index];
+  searchKeyword(index, keyword, callback) {
+    var hint = this.hints[index];
     if (hint && hint.match.test(keyword) && hint.search) {
       var matches = hint.match.exec(keyword);
       hint.search(matches[1], callback);
     } else {
       callback();
     }
-  };
+  }
 
-  this.createGroup = function (idx, keyword) {
+  createGroup(idx, keyword) {
     var $group = $('<div class="note-hint-group note-hint-group-' + idx + '"/>');
-    this.searchKeyword(idx, keyword, function (items) {
+    this.searchKeyword(idx, keyword, (items) => {
       items = items || [];
       if (items.length) {
-        $group.html(self.createItemTemplates(idx, items));
-        self.show();
+        $group.html(this.createItemTemplates(idx, items));
+        this.show();
       }
     });
 
     return $group;
-  };
+  }
 
-  this.handleKeyup = function (e) {
-    if (list.contains([key.code.ENTER, key.code.UP, key.code.DOWN], e.keyCode)) {
+  handleKeyup(e) {
+    if (lists.contains([key.code.ENTER, key.code.UP, key.code.DOWN], e.keyCode)) {
       if (e.keyCode === key.code.ENTER) {
         if (this.$popover.is(':visible')) {
           return;
         }
       }
     } else {
-      var wordRange = context.invoke('editor.createRange').getWordRange();
+      var wordRange = this.context.invoke('editor.createRange').getWordRange();
       var keyword = wordRange.toString();
-      if (hints.length && keyword) {
+      if (this.hints.length && keyword) {
         this.$content.empty();
 
-        var bnd = func.rect2bnd(list.last(wordRange.getClientRects()));
+        var bnd = func.rect2bnd(lists.last(wordRange.getClientRects()));
         if (bnd) {
-
           this.$popover.hide();
-
           this.lastWordRange = wordRange;
-
-          hints.forEach(function (hint, idx) {
+          this.hints.forEach((hint, idx) => {
             if (hint.match.test(keyword)) {
-              self.createGroup(idx, keyword).appendTo(self.$content);
+              this.createGroup(idx, keyword).appendTo(this.$content);
             }
           });
 
           // set position for popover after group is created
-          if (direction === 'top') {
+          if (this.direction === 'top') {
             this.$popover.css({
               left: bnd.left,
               top: bnd.top - this.$popover.outerHeight() - POPOVER_DIST
@@ -225,13 +221,13 @@ export default function (context) {
         this.hide();
       }
     }
-  };
+  }
 
-  this.show = function () {
+  show() {
     this.$popover.show();
-  };
+  }
 
-  this.hide = function () {
+  hide() {
     this.$popover.hide();
-  };
+  }
 }

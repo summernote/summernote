@@ -1,62 +1,71 @@
 import $ from 'jquery';
 import key from '../core/key';
 
-export default function (context) {
-  var self = this;
-  var ui = $.summernote.ui;
+export default class LinkDialog {
+  constructor(context) {
+    this.context = context;
 
-  var $editor = context.layoutInfo.editor;
-  var options = context.options;
-  var lang = options.langInfo;
+    this.ui = $.summernote.ui;
+    this.$body = $(document.body);
+    this.$editor = context.layoutInfo.editor;
+    this.options = context.options;
+    this.lang = this.options.langInfo;
 
-  this.initialize = function () {
-    var $container = options.dialogsInBody ? $(document.body) : $editor;
+    context.memo('help.linkDialog.show', this.options.langInfo.help['linkDialog.show']);
+  }
 
-    var body = '<div class="form-group note-form-group">' +
-                 '<label class="note-form-label">' + lang.link.textToDisplay + '</label>' +
-                 '<input class="note-link-text form-control '+
-                 ' note-form-control  note-input" type="text" />' +
-               '</div>' +
-               '<div class="form-group note-form-group">' +
-                 '<label class="note-form-label">' + lang.link.url + '</label>' +
-                 '<input class="note-link-url form-control note-form-control ' +
-                 'note-input" type="text" value="http://" />' +
-               '</div>' +
-    (!options.disableLinkTarget ?
-        $('<div/>').append(ui.checkbox({ id: 'sn-checkbox-open-in-new-window', text: lang.link.openInNewWindow, checked: true }).render())
-            .html()
-        : '');
-    var footer = '<button type="submit" href="#" class="btn btn-primary note-btn note-btn-primary ' +
-    'note-link-btn" disabled>' + lang.link.insert + '</button>';
+  initialize() {
+    var $container = this.options.dialogsInBody ? this.$body : this.$editor;
 
-    this.$dialog = ui.dialog({
+    var body = [
+      '<div class="form-group note-form-group">',
+        `<label class="note-form-label">${this.lang.link.textToDisplay}</label>`,
+        '<input class="note-link-text form-control note-form-control  note-input" type="text" />',
+      '</div>',
+      '<div class="form-group note-form-group">',
+        `<label class="note-form-label">${this.lang.link.url}</label>`,
+        '<input class="note-link-url form-control note-form-control note-input" type="text" value="http://" />',
+      '</div>',
+      !this.options.disableLinkTarget ?
+        $('<div/>').append(this.ui.checkbox({
+          id: 'sn-checkbox-open-in-new-window',
+          text: this.lang.link.openInNewWindow,
+          checked: true
+        }).render()).html()
+        : ''
+      ].join('');
+
+    var buttonClass = 'btn btn-primary note-btn note-btn-primary note-link-btn';
+    var footer = `<button type="submit" href="#" class="${buttonClass}" disabled>${this.lang.link.insert}</button>`;
+
+    this.$dialog = this.ui.dialog({
       className: 'link-dialog',
-      title: lang.link.insert,
-      fade: options.dialogsFade,
+      title: this.lang.link.insert,
+      fade: this.options.dialogsFade,
       body: body,
       footer: footer
     }).render().appendTo($container);
-  };
+  }
 
-  this.destroy = function () {
-    ui.hideDialog(this.$dialog);
+  destroy() {
+    this.ui.hideDialog(this.$dialog);
     this.$dialog.remove();
-  };
+  }
 
-  this.bindEnterKey = function ($input, $btn) {
-    $input.on('keypress', function (event) {
+  bindEnterKey($input, $btn) {
+    $input.on('keypress', (event) => {
       if (event.keyCode === key.code.ENTER) {
         $btn.trigger('click');
       }
     });
-  };
+  }
 
   /**
    * toggle update button
    */
-  this.toggleLinkBtn = function ($linkBtn, $linkText, $linkUrl) {
-    ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
-  };
+  toggleLinkBtn($linkBtn, $linkText, $linkUrl) {
+    this.ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
+  }
 
   /**
    * Show link dialog and set event handlers on dialog controls.
@@ -64,15 +73,15 @@ export default function (context) {
    * @param {Object} linkInfo
    * @return {Promise}
    */
-  this.showLinkDialog = function (linkInfo) {
-    return $.Deferred(function (deferred) {
-      var $linkText = self.$dialog.find('.note-link-text'),
-      $linkUrl = self.$dialog.find('.note-link-url'),
-      $linkBtn = self.$dialog.find('.note-link-btn'),
-      $openInNewWindow = self.$dialog.find('input[type=checkbox]');
+  showLinkDialog(linkInfo) {
+    return $.Deferred((deferred) => {
+      var $linkText = this.$dialog.find('.note-link-text'),
+      $linkUrl = this.$dialog.find('.note-link-url'),
+      $linkBtn = this.$dialog.find('.note-link-btn'),
+      $openInNewWindow = this.$dialog.find('input[type=checkbox]');
 
-      ui.onDialogShown(self.$dialog, function () {
-        context.triggerEvent('dialog.shown');
+      this.ui.onDialogShown(this.$dialog, () => {
+        this.context.triggerEvent('dialog.shown');
 
         // if no url was given, copy text to url
         if (!linkInfo.url) {
@@ -81,19 +90,19 @@ export default function (context) {
 
         $linkText.val(linkInfo.text);
 
-        var handleLinkTextUpdate = function () {
-          self.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
+        var handleLinkTextUpdate = () => {
+          this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
           // if linktext was modified by keyup,
           // stop cloning text from linkUrl
           linkInfo.text = $linkText.val();
         };
 
-        $linkText.on('input', handleLinkTextUpdate).on('paste', function () {
+        $linkText.on('input', handleLinkTextUpdate).on('paste', () => {
           setTimeout(handleLinkTextUpdate, 0);
         });
 
-        var handleLinkUrlUpdate = function () {
-          self.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
+        var handleLinkUrlUpdate = () => {
+          this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
           // display same link on `Text to display` input
           // when create a new link
           if (!linkInfo.text) {
@@ -101,20 +110,20 @@ export default function (context) {
           }
         };
 
-        $linkUrl.on('input', handleLinkUrlUpdate).on('paste', function () {
+        $linkUrl.on('input', handleLinkUrlUpdate).on('paste', () => {
           setTimeout(handleLinkUrlUpdate, 0);
         }).val(linkInfo.url).trigger('focus');
 
-        self.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
-        self.bindEnterKey($linkUrl, $linkBtn);
-        self.bindEnterKey($linkText, $linkBtn);
+        this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
+        this.bindEnterKey($linkUrl, $linkBtn);
+        this.bindEnterKey($linkText, $linkBtn);
 
         var isChecked = linkInfo.isNewWindow !== undefined ?
-          linkInfo.isNewWindow : context.options.linkTargetBlank;
+          linkInfo.isNewWindow : this.context.options.linkTargetBlank;
 
         $openInNewWindow.prop('checked', isChecked);
 
-        $linkBtn.one('click', function (event) {
+        $linkBtn.one('click', (event) => {
           event.preventDefault();
 
           deferred.resolve({
@@ -123,11 +132,11 @@ export default function (context) {
             text: $linkText.val(),
             isNewWindow: $openInNewWindow.is(':checked')
           });
-          ui.hideDialog(self.$dialog);
+          this.ui.hideDialog(this.$dialog);
         });
       });
 
-      ui.onDialogHidden(self.$dialog, function () {
+      this.ui.onDialogHidden(this.$dialog, () => {
         // detach events
         $linkText.off('input paste keypress');
         $linkUrl.off('input paste keypress');
@@ -138,23 +147,22 @@ export default function (context) {
         }
       });
 
-      ui.showDialog(self.$dialog);
+      this.ui.showDialog(this.$dialog);
     }).promise();
-  };
+  }
 
   /**
    * @param {Object} layoutInfo
    */
-  this.show = function () {
-    var linkInfo = context.invoke('editor.getLinkInfo');
+  show() {
+    var linkInfo = this.context.invoke('editor.getLinkInfo');
 
-    context.invoke('editor.saveRange');
-    this.showLinkDialog(linkInfo).then(function (linkInfo) {
-      context.invoke('editor.restoreRange');
-      context.invoke('editor.createLink', linkInfo);
-    }).fail(function () {
-      context.invoke('editor.restoreRange');
+    this.context.invoke('editor.saveRange');
+    this.showLinkDialog(linkInfo).then((linkInfo) => {
+      this.context.invoke('editor.restoreRange');
+      this.context.invoke('editor.createLink', linkInfo);
+    }).fail(() => {
+      this.context.invoke('editor.restoreRange');
     });
-  };
-  context.memo('help.linkDialog.show', options.langInfo.help['linkDialog.show']);
+  }
 }

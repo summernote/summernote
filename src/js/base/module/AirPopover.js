@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import agent from '../core/agent';
+import env from '../core/env';
 import func from '../core/func';
-import list from '../core/list';
+import lists from '../core/lists';
 import dom from '../core/dom';
 
 const AIR_MODE_POPOVER_X_OFFSET = 20;
@@ -21,7 +21,7 @@ export default class AirPopover {
       'summernote.focusout': (we, e) => {
         // [workaround] Firefox doesn't support relatedTarget on focusout
         //  - Ignore hide action on focus out in FF.
-        if (agent.isFF) {
+        if (env.isFF) {
           return;
         }
 
@@ -33,7 +33,7 @@ export default class AirPopover {
   }
 
   shouldInitialize() {
-    return this.options.airMode && !list.isEmpty(this.options.popover.air);
+    return this.options.airMode && !lists.isEmpty(this.options.popover.air);
   }
 
   initialize() {
@@ -52,7 +52,7 @@ export default class AirPopover {
   update() {
     const styleInfo = this.context.invoke('editor.currentStyle');
     if (styleInfo.range && !styleInfo.range.isCollapsed()) {
-      const rect = list.last(styleInfo.range.getClientRects());
+      const rect = lists.last(styleInfo.range.getClientRects());
       if (rect) {
         const bnd = func.rect2bnd(rect);
         this.$popover.css({

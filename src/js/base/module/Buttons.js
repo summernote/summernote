@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import func from '../core/func';
-import list from '../core/list';
-import agent from '../core/agent';
+import lists from '../core/lists';
+import env from '../core/env';
 
 export default class Buttons {
   constructor(context) {
@@ -11,7 +11,7 @@ export default class Buttons {
     this.options = context.options;
     this.lang = this.options.langInfo;
     this.invertedKeyMap = func.invertObject(
-      this.options.keyMap[agent.isMac ? 'mac' : 'pc']
+      this.options.keyMap[env.isMac ? 'mac' : 'pc']
     );
   }
 
@@ -21,7 +21,7 @@ export default class Buttons {
       return '';
     }
 
-    if (agent.isMac) {
+    if (env.isMac) {
       shortcut = shortcut.replace('CMD', '⌘').replace('SHIFT', '⇧');
     }
 
@@ -55,8 +55,8 @@ export default class Buttons {
 
   isFontInstalled(name) {
     if (!this.fontInstalledMap.hasOwnProperty(name)) {
-      this.fontInstalledMap[name] = agent.isFontInstalled(name) ||
-        list.contains(this.options.fontNamesIgnoreCheck, name);
+      this.fontInstalledMap[name] = env.isFontInstalled(name) ||
+        lists.contains(this.options.fontNamesIgnoreCheck, name);
     }
 
     return this.fontInstalledMap[name];
@@ -694,7 +694,7 @@ export default class Buttons {
           .replace(/\s+$/, '')
           .replace(/^\s+/, '');
       });
-      var fontName = list.find(fontNames, this.isFontInstalled.bind(this));
+      var fontName = lists.find(fontNames, this.isFontInstalled.bind(this));
 
       $cont.find('.dropdown-fontname a').each((idx, item) => {
         var $item = $(item);

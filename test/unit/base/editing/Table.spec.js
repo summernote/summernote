@@ -12,16 +12,16 @@ import Table from '../../../../src/js/base/editing/Table';
 
 var expect = chai.expect;
 
-describe('base:editing.Table', function () {
+describe('base:editing.Table', () => {
   var table = new Table();
-  describe('tableWorker', function () {
-    it('should create simple 1x1 table', function () {
+  describe('tableWorker', () => {
+    it('should create simple 1x1 table', () => {
       var resultTable = table.createTable(1, 1);
       expect(1).to.deep.equal(resultTable.rows.length);
       expect(1).to.deep.equal(resultTable.rows[0].cells.length);
     });
 
-    it('should delete simple 1x1 table', function () {
+    it('should delete simple 1x1 table', () => {
       var $cont = $('<div class="note-editable"><table><tr><td>content</td></tr></table></div>');
       var $cell = $cont.find('td');
       var rng = range.create($cell[0].firstChild, 1);
@@ -29,7 +29,7 @@ describe('base:editing.Table', function () {
       expect('').to.deep.equal($cont.html());
     });
 
-    it('should add simple row to table on top', function () {
+    it('should add simple row to table on top', () => {
       var $cont = $('<div class="note-editable"><table><tr><td>content</td></tr></table></div>');
       var $cell = $cont.find('td');
       var rng = range.create($cell[0].firstChild, 1);
@@ -37,7 +37,7 @@ describe('base:editing.Table', function () {
       expect('<table><tbody><tr><td><br></td></tr><tr><td>content</td></tr></tbody></table>').to.equalsIgnoreCase($cont.html());
     });
 
-    it('should add simple row to table on bottom', function () {
+    it('should add simple row to table on bottom', () => {
       var $cont = $('<div class="note-editable"><table><tr><td>content</td></tr></table></div>');
       var $cell = $cont.find('td');
       var rng = range.create($cell[0].firstChild, 1);
@@ -45,7 +45,7 @@ describe('base:editing.Table', function () {
       expect('<table><tbody><tr><td>content</td></tr><tr><td><br></td></tr></tbody></table>').to.equalsIgnoreCase($cont.html());
     });
 
-    it('should add simple row to table on top between two rows', function () {
+    it('should add simple row to table on top between two rows', () => {
       var htmlContent = '<div class="note-editable"><table><tr><td>content1</td></tr><tr><td id="td2">content2</td></tr></table></div>';
       var $cont = $(htmlContent);
       var $cell = $cont.find('#td2');
@@ -58,7 +58,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should add simple row to table on bottom between two rows', function () {
+    it('should add simple row to table on bottom between two rows', () => {
       var baseTable = $('<table><tbody><tr><td id="td1">content1</td></tr></tbody></table>');
       $(baseTable).append('<tr><td id="td2">content2</td></tr>');
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
@@ -75,7 +75,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should add simple col to table on left between two cols', function () {
+    it('should add simple col to table on left between two cols', () => {
       var baseTable = $('<table><tbody></tbody></table>');
       var baseTr = '<tr><td id="td1">content1</td><td id="td2">content2</td></tr>';
       baseTable.append(baseTr);
@@ -92,7 +92,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should add simple col to table on right between two cols', function () {
+    it('should add simple col to table on right between two cols', () => {
       var baseTable = $('<table><tbody></tbody></table>');
       var baseTr = '<tr><td id="td1">content1</td><td id="td2">content2</td></tr>';
       baseTable.append(baseTr);
@@ -109,7 +109,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should delete row to table between two other rows', function () {
+    it('should delete row to table between two other rows', () => {
       var baseTable = $('<table><tbody></tbody></table>');
       var baseTr = '<tr><td id="td1">content1</td></tr>';
       baseTr += '<td id="td2">content2</td></tr>';
@@ -128,7 +128,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should delete col to table between two other cols', function () {
+    it('should delete col to table between two other cols', () => {
       var baseTable = $('<table><tbody></tbody></table>');
       var baseTr = '<tr><td id="td1">content1</td><td id="td2">content2</td><td id="td3">content3</td></tr>';
       baseTable.append(baseTr);
@@ -145,7 +145,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should delete first col to table with colspan in column with colspan', function () {
+    it('should delete first col to table with colspan in column with colspan', () => {
       var baseTable = $('<table><tbody></tbody></table> ');
       var baseTr1 = '<tr><td colspan="2" id="tr1td1">Col1-Span</td><td id="tr1td2">Col2</td></tr>';
       var baseTr2 = '<tr><td id="tr2td1">Col1</td><td id="tr2td2">Col2</td><td id="tr2td3">Col3</td></tr>';
@@ -168,7 +168,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should delete second col to table with colspan in column', function () {
+    it('should delete second col to table with colspan in column', () => {
       var baseTable = $('<table><tbody></tbody></table> ');
       var baseTr1 = '<tr><td colspan="2" id="tr1td1">Col1-Span</td><td id="tr1td2">Col2</td></tr>';
       var baseTr2 = '<tr><td id="tr2td1">Col1</td><td id="tr2td2">Col2</td><td id="tr2td3">Col3</td></tr>';
@@ -191,7 +191,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should delete second col to table with colspan in 3 columns', function () {
+    it('should delete second col to table with colspan in 3 columns', () => {
       var baseTable = $('<table><tbody></tbody></table> ');
       var baseTr1 = '<tr><td colspan="3" id="tr1td1">Col1-Span</td><td id="tr1td4">Col4</td></tr>';
       var baseTr2 = '<tr><td id="tr2td1">Col1</td><td id="tr2td2">Col2</td><td id="tr2td3">Col3</td><td id="tr2td4">Col4</td></tr>';
@@ -214,7 +214,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should delete first row to table with rowspan in line with rowspan', function () {
+    it('should delete first row to table with rowspan in line with rowspan', () => {
       var baseTable = $('<table><tbody></tbody></table>');
       var baseTr1 = '<tr><td class="test" rowspan="2" id="tr1td1">Row1-Span</td><td id="tr1td2">Col2</td></tr>';
       var baseTr2 = '<tr><td id="tr2td2">Col2</td></tr>';
@@ -239,7 +239,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should delete second row to table with rowspan in line without rowspan', function () {
+    it('should delete second row to table with rowspan in line without rowspan', () => {
       var baseTable = $('<table><tbody></tbody></table>');
       var baseTr1 = '<tr><td rowspan="3" id="tr1td1">Row1-Span</td><td id="tr1td2">Col2</td></tr>';
       var baseTr2 = '<tr><td id="tr2td2">Col2</td></tr>';
@@ -268,7 +268,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should delete second col to table with rowspan in 2 rows', function () {
+    it('should delete second col to table with rowspan in 2 rows', () => {
       var baseTable = $('<table><tbody></tbody></table> ');
       var baseTr1 = '<tr><td rowspan="2" id="tr1td1">Col1-Span</td><td id="tr1td2">Col2</td></tr>';
       var baseTr2 = '<tr><td id="tr2td2">Col2</td></tr>';
@@ -295,7 +295,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should delete second col to table with rowspan in 2 rows on second row', function () {
+    it('should delete second col to table with rowspan in 2 rows on second row', () => {
       var baseTable = $('<table><tbody></tbody></table> ');
       var baseTr1 = '<tr><td rowspan="2" id="tr1td1">Col1-Span</td><td id="tr1td2">Col2</td></tr>';
       var baseTr2 = '<tr><td id="tr2td2">Col2</td></tr>';
@@ -322,7 +322,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should add row on bottom rowspan cell.', function () {
+    it('should add row on bottom rowspan cell.', () => {
       var baseTable = $('<table><tbody></tbody></table> ');
       var baseTr1 = '<tr><td rowspan="2" id="tr1td1">Col1-Span</td><td id="tr1td2">Col2</td></tr>';
       var baseTr2 = '<tr><td id="tr2td2">Col2</td></tr>';
@@ -351,7 +351,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should add row on bottom colspan cell.', function () {
+    it('should add row on bottom colspan cell.', () => {
       var baseTable = $('<table><tbody></tbody></table> ');
       var baseTr1 = '<tr><td colspan="2" id="tr1td1">Col1-Span</td></tr>';
       var baseTr2 = '<tr><td id="tr2td1">Col1</td><td id="tr2td2">Col2</td></tr>';
@@ -380,7 +380,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should add row above rowspan cell.', function () {
+    it('should add row above rowspan cell.', () => {
       var baseTable = $('<table><tbody></tbody></table> ');
       var baseTr1 = '<tr><td rowspan="2" id="tr1td1">Col1-Span</td><td id="tr1td2">Col2</td></tr>';
       var baseTr2 = '<tr><td id="tr2td2">Col1</td></tr>';
@@ -409,7 +409,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should add row on bottom rowspan cell and with aditional column.', function () {
+    it('should add row on bottom rowspan cell and with aditional column.', () => {
       var baseTable = $('<table><tbody></tbody></table> ');
       var baseTr1 = '<tr><td rowspan="2" id="tr1td1">Col1-Span</td><td id="tr1td2">Col2</td></tr>';
       var baseTr2 = '<tr><td id="tr2td2">Col1</td></tr>';
@@ -434,7 +434,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should add column on right having rowspan cell and with aditional column.', function () {
+    it('should add column on right having rowspan cell and with aditional column.', () => {
       var baseTable = $('<table><tbody></tbody></table> ');
       var baseTr1 = '<tr><td rowspan="2" id="tr1td1">Col1-Span</td><td id="tr1td2">Col2</td></tr>';
       var baseTr2 = '<tr><td id="tr2td2">Col1</td></tr>';
@@ -457,7 +457,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should add column on right having rowspan cell and with aditional column with focus on rowspan column.', function () {
+    it('should add column on right having rowspan cell and with aditional column with focus on rowspan column.', () => {
       var baseTable = $('<table><tbody></tbody></table> ');
       var baseTr1 = '<tr><td rowspan="2" id="tr1td1">Col1-Span</td><td id="tr1td2">Col2</td></tr>';
       var baseTr2 = '<tr><td id="tr2td2">Col1</td></tr>';
@@ -480,7 +480,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should remove column after colspan column.', function () {
+    it('should remove column after colspan column.', () => {
       var baseTable = $('<table><tbody></tbody></table> ');
       var baseTr1 = '<tr><td id="tr1td1">Col1</td><td colspan="2" id="tr1td2">Col2-Span</td><td id="tr1td4">Col4</td></tr>';
       var baseTr2 = '<tr><td id="tr2td1">Col1</td><td id="tr2td2">Col2</td><td id="tr2td3">Col3</td><td id="tr2td4">Col4</td></tr>';
@@ -503,7 +503,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should remove column before colspan column.', function () {
+    it('should remove column before colspan column.', () => {
       var baseTable = $('<table><tbody></tbody></table> ');
       var baseTr1 = '<tr><td id="tr1td1">TR1TD1</td><td id="tr1td2" colspan="2">TR1TD2-COLSPAN</td>';
       baseTr1 += '<td id="tr1td4">TR1TD4</td></tr>';
@@ -529,7 +529,7 @@ describe('base:editing.Table', function () {
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
     });
 
-    it('should add column before colspan column.', function () {
+    it('should add column before colspan column.', () => {
       var baseTable = $('<table><tbody></tbody></table> ');
       var baseTr1 = '<tr><td id="tr1td1">TR1TD1</td><td id="tr1td2">TR1TD2</td></tr>';
       var baseTr2 = '<tr><td id="tr2td1" colspan="2">TR2TD1</td></tr>';

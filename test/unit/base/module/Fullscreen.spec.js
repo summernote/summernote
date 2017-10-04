@@ -11,10 +11,10 @@ import Fullscreen from '../../../../src/js/base/module/Fullscreen';
 
 var expect = chai.expect;
 
-describe('Fullscreen', function () {
+describe('Fullscreen', () => {
   var fullscreen, context;
 
-  beforeEach(function () {
+  beforeEach(() => {
     var options = $.extend({}, $.summernote.options);
     options.langInfo = $.extend(true, {
     }, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
@@ -22,7 +22,7 @@ describe('Fullscreen', function () {
     fullscreen = new Fullscreen(context);
   });
 
-  it('should toggle fullscreen mode', function () {
+  it('should toggle fullscreen mode', () => {
     expect(fullscreen.isFullscreen()).to.be.false;
     fullscreen.toggle();
     expect(fullscreen.isFullscreen()).to.be.true;

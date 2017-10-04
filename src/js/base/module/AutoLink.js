@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import list from '../core/list';
+import lists from '../core/lists';
 import key from '../core/key';
 
 const defaultScheme = 'http://';
@@ -48,14 +48,14 @@ export default class AutoLink {
   }
 
   handleKeydown(e) {
-    if (list.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
+    if (lists.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
       const wordRange = this.context.invoke('editor.createRange').getWordRange();
       this.lastWordRange = wordRange;
     }
   }
 
   handleKeyup(e) {
-    if (list.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
+    if (lists.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
       this.replace();
     }
   }

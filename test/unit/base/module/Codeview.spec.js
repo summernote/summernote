@@ -11,10 +11,10 @@ import Codeview from '../../../../src/js/base/module/Codeview';
 
 var expect = chai.expect;
 
-describe('Codeview', function () {
+describe('Codeview', () => {
   var codeview, context;
 
-  beforeEach(function () {
+  beforeEach(() => {
     var options = $.extend({}, $.summernote.options);
     options.langInfo = $.extend(true, {
     }, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
@@ -22,7 +22,7 @@ describe('Codeview', function () {
     codeview = new Codeview(context);
   });
 
-  it('should toggle codeview mode', function () {
+  it('should toggle codeview mode', () => {
     expect(codeview.isActivated()).to.be.false;
     codeview.toggle();
     expect(codeview.isActivated()).to.be.true;

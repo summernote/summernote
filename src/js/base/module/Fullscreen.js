@@ -1,48 +1,51 @@
 import $ from 'jquery';
 
-export default function (context) {
-  var self = this;
-  var $editor = context.layoutInfo.editor;
-  var $toolbar = context.layoutInfo.toolbar;
-  var $editable = context.layoutInfo.editable;
-  var $codable = context.layoutInfo.codable;
+export default class Fullscreen {
+  constructor(context) {
+    this.context = context;
 
-  var $window = $(window);
-  var $scrollbar = $('html, body');
+    this.$editor = context.layoutInfo.editor;
+    this.$toolbar = context.layoutInfo.toolbar;
+    this.$editable = context.layoutInfo.editable;
+    this.$codable = context.layoutInfo.codable;
 
-  this.resizeTo = function (size) {
-    $editable.css('height', size.h);
-    $codable.css('height', size.h);
-    if ($codable.data('cmeditor')) {
-      $codable.data('cmeditor').setsize(null, size.h);
+    this.$window = $(window);
+    this.$scrollbar = $('html, body');
+
+    this.onResize = (() => {
+      this.resizeTo({
+        h: this.$window.height() - this.$toolbar.outerHeight()
+      });
+    }).bind(this);
+  }
+
+  resizeTo(size) {
+    this.$editable.css('height', size.h);
+    this.$codable.css('height', size.h);
+    if (this.$codable.data('cmeditor')) {
+      this.$codable.data('cmeditor').setsize(null, size.h);
     }
-  };
-
-  this.onResize = function () {
-    self.resizeTo({
-      h: $window.height() - $toolbar.outerHeight()
-    });
-  };
+  }
 
   /**
    * toggle fullscreen
    */
-  this.toggle = function () {
-    $editor.toggleClass('fullscreen');
+  toggle() {
+    this.$editor.toggleClass('fullscreen');
     if (this.isFullscreen()) {
-      $editable.data('orgHeight', $editable.css('height'));
-      $window.on('resize', this.onResize).trigger('resize');
-      $scrollbar.css('overflow', 'hidden');
+      this.$editable.data('orgHeight', this.$editable.css('height'));
+      this.$window.on('resize', this.onResize).trigger('resize');
+      this.$scrollbar.css('overflow', 'hidden');
     } else {
-      $window.off('resize', this.onResize);
-      this.resizeTo({ h: $editable.data('orgHeight') });
-      $scrollbar.css('overflow', 'visible');
+      this.$window.off('resize', this.onResize);
+      this.resizeTo({ h: this.$editable.data('orgHeight') });
+      this.$scrollbar.css('overflow', 'visible');
     }
 
-    context.invoke('toolbar.updateFullscreen', this.isFullscreen());
-  };
+    this.context.invoke('toolbar.updateFullscreen', this.isFullscreen());
+  }
 
-  this.isFullscreen = function () {
-    return $editor.hasClass('fullscreen');
-  };
+  isFullscreen() {
+    return this.$editor.hasClass('fullscreen');
+  }
 }

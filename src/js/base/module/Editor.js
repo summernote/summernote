@@ -1,11 +1,11 @@
 import $ from 'jquery';
-import agent from '../core/agent';
+import env from '../core/env';
 import key from '../core/key';
 import func from '../core/func';
-import list from '../core/list';
+import lists from '../core/lists';
 import dom from '../core/dom';
 import range from '../core/range';
-import async from '../core/async';
+import { readFileAsDataURL, createImage } from '../core/async';
 import History from '../editing/History';
 import Style from '../editing/Style';
 import Typing from '../editing/Typing';
@@ -71,7 +71,7 @@ export default function (context) {
 
     // [workaround] IE doesn't have input events for contentEditable
     // - see: https://goo.gl/4bfIvA
-    var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
+    var changeEventName = env.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
     $editable.on(changeEventName, func.debounce(function () {
       context.triggerEvent('change', $editable.html());
     }, 100));
@@ -105,7 +105,7 @@ export default function (context) {
   };
 
   this.handleKeyMap = function (event) {
-    var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
+    var keyMap = options.keyMap[env.isMac ? 'mac' : 'pc'];
     var keys = [];
 
     if (event.metaKey) { keys.push('CMD'); }
@@ -130,7 +130,7 @@ export default function (context) {
   this.preventDefaultEditableShortCuts = function (event) {
     // B(Bold, 66) / I(Italic, 73) / U(Underline, 85)
     if ((event.ctrlKey || event.metaKey) &&
-      list.contains([66, 73, 85], event.keyCode)) {
+      lists.contains([66, 73, 85], event.keyCode)) {
       event.preventDefault();
     }
   };
@@ -345,7 +345,7 @@ export default function (context) {
    * @return {Promise}
    */
   this.insertImage = function (src, param) {
-    return async.createImage(src, param).then(function ($image) {
+    return createImage(src, param).then(function ($image) {
       beforeCommand();
 
       if (typeof param === 'function') {
@@ -376,7 +376,7 @@ export default function (context) {
       if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
         context.triggerEvent('image.upload.error', lang.image.maximumFileSizeError);
       } else {
-        async.readFileAsDataURL(file).then(function (dataURL) {
+        readFileAsDataURL(file).then(function (dataURL) {
           return self.insertImage(dataURL, filename);
         }).fail(function () {
           context.triggerEvent('image.upload.error');
@@ -443,7 +443,7 @@ export default function (context) {
    */
   this.pasteHTML = this.wrapCommand(function (markup) {
     var contents = this.createRange().pasteHTML(markup);
-    range.createFromNodeAfter(list.last(contents)).select();
+    range.createFromNodeAfter(lists.last(contents)).select();
   });
 
   /**
@@ -462,7 +462,7 @@ export default function (context) {
 
   this.onFormatBlock = function (tagName, $target) {
     // [workaround] for MSIE, IE need `<`
-    tagName = agent.isMSIE ? '<' + tagName + '>' : tagName;
+    tagName = env.isMSIE ? '<' + tagName + '>' : tagName;
     document.execCommand('FormatBlock', false, tagName);
 
     // support custom class 
@@ -504,7 +504,7 @@ export default function (context) {
 
     if (rng && rng.isCollapsed()) {
       var spans = style.styleNodes(rng);
-      var firstSpan = list.head(spans);
+      var firstSpan = lists.head(spans);
 
       $(spans).css({
         'font-size': value + 'px'
@@ -546,7 +546,7 @@ export default function (context) {
       return;
     }
 
-    var textNode = list.find(list.from(bogusNode.childNodes), dom.isText);
+    var textNode = lists.find(lists.from(bogusNode.childNodes), dom.isText);
 
     var bogusCharIdx = textNode.nodeValue.indexOf(dom.ZERO_WIDTH_NBSP_CHAR);
     if (bogusCharIdx !== -1) {
@@ -635,9 +635,9 @@ export default function (context) {
       }
     });
 
-    var startRange = range.createFromNodeBefore(list.head(anchors));
+    var startRange = range.createFromNodeBefore(lists.head(anchors));
     var startPoint = startRange.getStartPoint();
-    var endRange = range.createFromNodeAfter(list.last(anchors));
+    var endRange = range.createFromNodeAfter(lists.last(anchors));
     var endPoint = endRange.getEndPoint();
 
     range.create(
@@ -661,7 +661,7 @@ export default function (context) {
     var rng = this.createRange().expand(dom.isAnchor);
 
     // Get the first anchor on range(for edit).
-    var $anchor = $(list.head(rng.nodes(dom.isAnchor)));
+    var $anchor = $(lists.head(rng.nodes(dom.isAnchor)));
     var linkInfo = {
       range: rng,
       text: rng.toString(),

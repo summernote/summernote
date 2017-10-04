@@ -1,42 +1,42 @@
 import $ from 'jquery';
 var EDITABLE_PADDING = 24;
 
-export default function (context) {
-  var $document = $(document);
-  var $statusbar = context.layoutInfo.statusbar;
-  var $editable = context.layoutInfo.editable;
-  var options = context.options;
+export default class Statusbar {
+  constructor(context) {
+    this.$document = $(document);
+    this.$statusbar = context.layoutInfo.statusbar;
+    this.$editable = context.layoutInfo.editable;
+    this.options = context.options;
+  }
 
-  this.initialize = function () {
-    if (options.airMode || options.disableResizeEditor) {
+  initialize() {
+    if (this.options.airMode || this.options.disableResizeEditor) {
       this.destroy();
       return;
     }
 
-    $statusbar.on('mousedown', function (event) {
+    this.$statusbar.on('mousedown', (event) => {
       event.preventDefault();
       event.stopPropagation();
 
-      var editableTop = $editable.offset().top - $document.scrollTop();
-      var onMouseMove = function (event) {
+      var editableTop = this.$editable.offset().top - this.$document.scrollTop();
+      var onMouseMove = (event) => {
         var height = event.clientY - (editableTop + EDITABLE_PADDING);
 
-        height = (options.minheight > 0) ? Math.max(height, options.minheight) : height;
-        height = (options.maxHeight > 0) ? Math.min(height, options.maxHeight) : height;
+        height = (this.options.minheight > 0) ? Math.max(height, this.options.minheight) : height;
+        height = (this.options.maxHeight > 0) ? Math.min(height, this.options.maxHeight) : height;
 
-        $editable.height(height);
+        this.$editable.height(height);
       };
 
-      $document
-        .on('mousemove', onMouseMove)
-        .one('mouseup', function () {
-          $document.off('mousemove', onMouseMove);
-        });
+      this.$document.on('mousemove', onMouseMove).one('mouseup', () => {
+        this.$document.off('mousemove', onMouseMove);
+      });
     });
-  };
+  }
 
-  this.destroy = function () {
-    $statusbar.off();
-    $statusbar.remove();
-  };
+  destroy() {
+    this.$statusbar.off();
+    this.$statusbar.remove();
+  }
 }

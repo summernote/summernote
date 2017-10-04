@@ -190,8 +190,8 @@ export default (function () {
     return array[idx - 1];
   };
 
-  return { head: head, last: last, initial: initial, tail: tail,
-           prev: prev, next: next, find: find, contains: contains,
-           all: all, sum: sum, from: from, isEmpty: isEmpty,
-           clusterBy: clusterBy, compact: compact, unique: unique };
+  return { head, last, initial, tail,
+           prev, next, find, contains,
+           all, sum, from, isEmpty,
+           clusterBy, compact, unique };
 })();

@@ -12,7 +12,7 @@ import VideoDialog from '../../../../src/js/base/module/VideoDialog';
 
 var expect = chai.expect;
 
-describe('bs:module.VideoDialog', function () {
+describe('bs:module.VideoDialog', () => {
 
   var context, $video, $toolbar, $editable;
 
@@ -23,7 +23,7 @@ describe('bs:module.VideoDialog', function () {
     expect(iframe.src).to.equal(target);
   }
 
-  beforeEach(function () {
+  beforeEach(() => {
     var $note = $('<div></div>').appendTo('body');
     var options = $.extend({}, $.summernote.options);
     options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
@@ -39,13 +39,13 @@ describe('bs:module.VideoDialog', function () {
     $editable = context.layoutInfo.editable;
   });
 
-  describe('#createVideoNode', function () {
-    it('should execute when insert other url', function () {
+  describe('#createVideoNode', () => {
+    it('should execute when insert other url', () => {
       expect($video.createVideoNode('http://www.google.com')).to.equal(false);
       expect($video.createVideoNode('http://www.youtube.com')).to.equal(false);
       expect($video.createVideoNode('http://www.facebook.com')).to.equal(false);
     });
-    it('should execute when insert v.qq.com', function () {
+    it('should execute when insert v.qq.com', () => {
       expectUrl('http://v.qq.com/cover/6/640ewqy2v071ppd.html?vid=f0196y2b2cx',
         'http://v.qq.com/iframe/player.html?vid=f0196y2b2cx&amp;auto=0');
       expectUrl('http://v.qq.com/x/page/p0330y279lm.html',

@@ -1,51 +1,52 @@
 import $ from 'jquery';
-import list from '../core/list';
+import lists from '../core/lists';
 import dom from '../core/dom';
 
-export default function (context) {
-  var self = this;
-  var ui = $.summernote.ui;
+export default class LinkPopover {
+  constructor(context) {
+    this.context = context;
 
-  var options = context.options;
+    this.ui = $.summernote.ui;
+    this.options = context.options;
+    this.events = {
+      'summernote.keyup summernote.mouseup summernote.change summernote.scroll': () => {
+        this.update();
+      },
+      'summernote.disable summernote.dialog.shown': () => {
+        this.hide();
+      }
+    };
+  }
 
-  this.events = {
-    'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function () {
-      self.update();
-    },
-    'summernote.disable summernote.dialog.shown': function () {
-      self.hide();
-    }
-  };
+  shouldInitialize() {
+    return !lists.isEmpty(this.options.popover.link);
+  }
 
-  this.shouldInitialize = function () {
-    return !list.isEmpty(options.popover.link);
-  };
-
-  this.initialize = function () {
-    this.$popover = ui.popover({
+  initialize() {
+    this.$popover = this.ui.popover({
       className: 'note-link-popover',
-      callback: function ($node) {
+      callback: ($node) => {
         var $content = $node.find('.popover-content,.note-popover-content');
         $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
       }
-    }).render().appendTo(options.container);
+    }).render().appendTo(this.options.container);
     var $content = this.$popover.find('.popover-content,.note-popover-content');
 
-    context.invoke('buttons.build', $content, options.popover.link);
-  };
+    this.context.invoke('buttons.build', $content, this.options.popover.link);
+  }
 
-  this.destroy = function () {
+  destroy() {
     this.$popover.remove();
-  };
+  }
 
-  this.update = function () {
+  update() {
     // Prevent focusing on editable when invoke('code') is executed
-    if (!context.invoke('editor.hasFocus')) {
+    if (!this.context.invoke('editor.hasFocus')) {
       this.hide();
       return;
     }
 
-    var rng = context.invoke('editor.createRange');
+    var rng = this.context.invoke('editor.createRange');
     if (rng.isCollapsed() && rng.isOnAnchor()) {
       var anchor = dom.ancestor(rng.sc, dom.isAnchor);
       var href = $(anchor).attr('href');
@@ -60,9 +61,9 @@ export default function (context) {
     } else {
       this.hide();
     }
-  };
+  }
 
-  this.hide = function () {
+  hide() {
     this.$popover.hide();
-  };
+  }
 }

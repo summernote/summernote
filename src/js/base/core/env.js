@@ -76,12 +76,12 @@ var isSupportTouch =
    (navigator.msMaxTouchPoints > 0));
 
 /**
- * @class core.agent
+ * @class core.env
  *
  * Object which check platform and agent
  *
  * @singleton
- * @alternateClassName agent
+ * @alternateClassName env
  */
 export default {
   isMac: navigator.appVersion.indexOf('Mac') > -1,

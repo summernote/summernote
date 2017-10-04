@@ -1,76 +1,78 @@
 import $ from 'jquery';
 import key from '../core/key';
 
-export default function (context) {
-  var self = this;
-  var ui = $.summernote.ui;
+export default class ImageDialog {
+  constructor(context) {
+    this.context = context;
+    this.ui = $.summernote.ui;
+    this.$body = $(document.body);
+    this.$editor = context.layoutInfo.editor;
+    this.options = context.options;
+    this.lang = this.options.langInfo;
+  }
 
-  var $editor = context.layoutInfo.editor;
-  var options = context.options;
-  var lang = options.langInfo;
-
-  this.initialize = function () {
-    var $container = options.dialogsInBody ? $(document.body) : $editor;
+  initialize() {
+    var $container = this.options.dialogsInBody ? this.$body : this.$editor;
 
     var imageLimitation = '';
-    if (options.maximumImageFileSize) {
-      var unit = Math.floor(Math.log(options.maximumImageFileSize) / Math.log(1024));
-      var readableSize = (options.maximumImageFileSize / Math.pow(1024, unit)).toFixed(2) * 1 +
+    if (this.options.maximumImageFileSize) {
+      var unit = Math.floor(Math.log(this.options.maximumImageFileSize) / Math.log(1024));
+      var readableSize = (this.options.maximumImageFileSize / Math.pow(1024, unit)).toFixed(2) * 1 +
                          ' ' + ' KMGTP'[unit] + 'B';
-      imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
+      imageLimitation = `<small>${this.lang.image.maximumFileSize + ' : ' + readableSize}</small>`;
     }
 
     var body = '<div class="form-group note-form-group note-group-select-from-files">' +
-                 '<label class="note-form-label">' + lang.image.selectFromFiles + '</label>' +
+                 '<label class="note-form-label">' + this.lang.image.selectFromFiles + '</label>' +
                  '<input class="note-image-input note-form-control note-input" '+
                  ' type="file" name="files" accept="image/*" multiple="multiple" />' +
                  imageLimitation +
                '</div>' + 
                '<div class="form-group note-group-image-url" style="overflow:auto;">' +
-                 '<label class="note-form-label">' + lang.image.url + '</label>' +
+                 '<label class="note-form-label">' + this.lang.image.url + '</label>' +
                  '<input class="note-image-url form-control note-form-control note-input ' +
                  ' col-md-12" type="text" />' +
                '</div>';
-    var footer = '<button type="submit" href="#" class="btn btn-primary note-btn note-btn-primary ' +
-    'note-image-btn" disabled>' + lang.image.insert + '</button>';
+    var buttonClass = 'btn btn-primary note-btn note-btn-primary note-image-btn';
+    var footer = `<button type="submit" href="#" class="${buttonClass}" disabled>${this.lang.image.insert}</button>`;
 
-    this.$dialog = ui.dialog({
-      title: lang.image.insert,
-      fade: options.dialogsFade,
+    this.$dialog = this.ui.dialog({
+      title: this.lang.image.insert,
+      fade: this.options.dialogsFade,
       body: body,
       footer: footer
     }).render().appendTo($container);
-  };
+  }
 
-  this.destroy = function () {
-    ui.hideDialog(this.$dialog);
+  destroy() {
+    this.ui.hideDialog(this.$dialog);
     this.$dialog.remove();
-  };
+  }
 
-  this.bindEnterKey = function ($input, $btn) {
-    $input.on('keypress', function (event) {
+  bindEnterKey($input, $btn) {
+    $input.on('keypress', (event) => {
       if (event.keyCode === key.code.ENTER) {
         $btn.trigger('click');
       }
     });
-  };
+  }
 
-  this.show = function () {
-    context.invoke('editor.saveRange');
-    this.showImageDialog().then(function (data) {
+  show() {
+    this.context.invoke('editor.saveRange');
+    this.showImageDialog().then((data) => {
       // [workaround] hide dialog before restore range for IE range focus
-      ui.hideDialog(self.$dialog);
-      context.invoke('editor.restoreRange');
+      this.ui.hideDialog(this.$dialog);
+      this.context.invoke('editor.restoreRange');
 
       if (typeof data === 'string') { // image url
-        context.invoke('editor.insertImage', data);
+        this.context.invoke('editor.insertImage', data);
       } else { // array of files
-        context.invoke('editor.insertImagesOrCallback', data);
+        this.context.invoke('editor.insertImagesOrCallback', data);
       }
-    }).fail(function () {
-      context.invoke('editor.restoreRange');
+    }).fail(() => {
+      this.context.invoke('editor.restoreRange');
     });
-  };
+  }
 
   /**
    * show image dialog
@@ -78,37 +80,34 @@ export default function (context) {
    * @param {jQuery} $dialog
    * @return {Promise}
    */
-  this.showImageDialog = function () {
-    return $.Deferred(function (deferred) {
-      var $imageInput = self.$dialog.find('.note-image-input'),
-          $imageUrl = self.$dialog.find('.note-image-url'),
-          $imageBtn = self.$dialog.find('.note-image-btn');
+  showImageDialog() {
+    return $.Deferred((deferred) => {
+      var $imageInput = this.$dialog.find('.note-image-input'),
+          $imageUrl = this.$dialog.find('.note-image-url'),
+          $imageBtn = this.$dialog.find('.note-image-btn');
 
-      ui.onDialogShown(self.$dialog, function () {
-        context.triggerEvent('dialog.shown');
+      this.ui.onDialogShown(this.$dialog, () => {
+        this.context.triggerEvent('dialog.shown');
 
         // Cloning imageInput to clear element.
-        $imageInput.replaceWith($imageInput.clone()
-          .on('change', function () {
-            deferred.resolve(this.files || this.value);
-          })
-          .val('')
-        );
+        $imageInput.replaceWith($imageInput.clone().on('change', (event) => {
+          deferred.resolve(event.target.files || event.target.value);
+        }).val(''));
 
-        $imageBtn.click(function (event) {
+        $imageBtn.click((event) => {
           event.preventDefault();
 
           deferred.resolve($imageUrl.val());
         });
 
-        $imageUrl.on('keyup paste', function () {
+        $imageUrl.on('keyup paste', () => {
           var url = $imageUrl.val();
-          ui.toggleBtn($imageBtn, url);
+          this.ui.toggleBtn($imageBtn, url);
         }).val('').trigger('focus');
-        self.bindEnterKey($imageUrl, $imageBtn);
+        this.bindEnterKey($imageUrl, $imageBtn);
       });
 
-      ui.onDialogHidden(self.$dialog, function () {
+      this.ui.onDialogHidden(this.$dialog, () => {
         $imageInput.off('change');
         $imageUrl.off('keyup paste keypress');
         $imageBtn.off('click');
@@ -118,7 +117,7 @@ export default function (context) {
         }
       });
 
-      ui.showDialog(self.$dialog);
+      this.ui.showDialog(this.$dialog);
     });
-  };
+  }
 }

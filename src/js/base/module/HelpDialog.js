@@ -1,29 +1,19 @@
 import $ from 'jquery';
-import agent from '../core/agent';
+import env from '../core/env';
 
-export default function (context) {
-  var self = this;
-  var ui = $.summernote.ui;
+export default class HelpDialog {
+  constructor(context) {
+    this.context = context;
 
-  var $editor = context.layoutInfo.editor;
-  var options = context.options;
-  var lang = options.langInfo;
+    this.ui = $.summernote.ui;
+    this.$body = $(document.body);
+    this.$editor = context.layoutInfo.editor;
+    this.options = context.options;
+    this.lang = this.options.langInfo;
+  }
 
-  this.createShortCutList = function () {
-    var keyMap = options.keyMap[agent.isMac ? 'mac' : 'pc'];
-    return Object.keys(keyMap).map(function (key) {
-      var command = keyMap[key];
-      var $row = $('<div><div class="help-list-item"/></div>');
-      $row.append($('<label><kbd>' + key + '</kdb></label>').css({
-        'width': 180,
-        'margin-right': 10
-      })).append($('<span/>').html(context.memo('help.' + command) || command));
-      return $row.html();
-    }).join('');
-  };
-
-  this.initialize = function () {
-    var $container = options.dialogsInBody ? $(document.body) : $editor;
+  initialize() {
+    var $container = this.options.dialogsInBody ? this.$body : this.$editor;
 
     var body = [
       '<p class="text-center">',
@@ -33,44 +23,57 @@ export default function (context) {
       '</p>'
     ].join('');
 
-    this.$dialog = ui.dialog({
-      title: lang.options.help,
-      fade: options.dialogsFade,
-      body: this.createShortCutList(),
+    this.$dialog = this.ui.dialog({
+      title: this.lang.options.help,
+      fade: this.options.dialogsFade,
+      body: this.createShortcutList(),
       footer: body,
-      callback: function ($node) {
+      callback: ($node) => {
         $node.find('.modal-body,.note-modal-body').css({
           'max-height': 300,
           'overflow': 'scroll'
         });
       }
     }).render().appendTo($container);
-  };
+  }
 
-  this.destroy = function () {
-    ui.hideDialog(this.$dialog);
+  destroy() {
+    this.ui.hideDialog(this.$dialog);
     this.$dialog.remove();
-  };
+  }
+
+  createShortcutList() {
+    var keyMap = this.options.keyMap[env.isMac ? 'mac' : 'pc'];
+    return Object.keys(keyMap).map((key) => {
+      var command = keyMap[key];
+      var $row = $('<div><div class="help-list-item"/></div>');
+      $row.append($('<label><kbd>' + key + '</kdb></label>').css({
+        'width': 180,
+        'margin-right': 10
+      })).append($('<span/>').html(this.context.memo('help.' + command) || command));
+      return $row.html();
+    }).join('');
+  }
 
   /**
    * show help dialog
    *
    * @return {Promise}
    */
-  this.showHelpDialog = function () {
-    return $.Deferred(function (deferred) {
-      ui.onDialogShown(self.$dialog, function () {
-        context.triggerEvent('dialog.shown');
+  showHelpDialog() {
+    return $.Deferred((deferred) => {
+      this.ui.onDialogShown(this.$dialog, () => {
+        this.context.triggerEvent('dialog.shown');
         deferred.resolve();
       });
-      ui.showDialog(self.$dialog);
+      this.ui.showDialog(this.$dialog);
     }).promise();
-  };
+  }
 
-  this.show = function () {
-    context.invoke('editor.saveRange');
-    this.showHelpDialog().then(function () {
-      context.invoke('editor.restoreRange');
+  show() {
+    this.context.invoke('editor.saveRange');
+    this.showHelpDialog().then(() => {
+      this.context.invoke('editor.restoreRange');
     });
-  };
+  }
 }

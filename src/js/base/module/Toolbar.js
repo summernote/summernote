@@ -1,80 +1,83 @@
 import $ from 'jquery';
-export default function (context) {
-  var ui = $.summernote.ui;
+export default class Toolbar {
+  constructor(context) {
+    this.context = context;
 
-  var $note = context.layoutInfo.note;
-  var $editor = context.layoutInfo.editor;
-  var $toolbar = context.layoutInfo.toolbar;
-  var options = context.options;
+    this.ui = $.summernote.ui;
+    this.$note = context.layoutInfo.note;
+    this.$editor = context.layoutInfo.editor;
+    this.$toolbar = context.layoutInfo.toolbar;
+    this.options = context.options;
+  }
 
-  this.shouldInitialize = function () {
-    return !options.airMode;
-  };
+  shouldInitialize() {
+    return !this.options.airMode;
+  }
 
-  this.initialize = function () {
-    options.toolbar = options.toolbar || [];
+  initialize() {
+    this.options.toolbar = this.options.toolbar || [];
 
-    if (!options.toolbar.length) {
-      $toolbar.hide();
+    if (!this.options.toolbar.length) {
+      this.$toolbar.hide();
     } else {
-      context.invoke('buttons.build', $toolbar, options.toolbar);
+      this.context.invoke('buttons.build', this.$toolbar, this.options.toolbar);
     }
 
-    if (options.toolbarContainer) {
-      $toolbar.appendTo(options.toolbarContainer);
+    if (this.options.toolbarContainer) {
+      this.$toolbar.appendTo(this.options.toolbarContainer);
     }
 
     this.changeContainer(false);
 
-    $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
-      context.invoke('buttons.updateCurrentStyle');
+    this.$note.on('summernote.keyup summernote.mouseup summernote.change', () => {
+      this.context.invoke('buttons.updateCurrentStyle');
     });
 
-    context.invoke('buttons.updateCurrentStyle');
-  };
+    this.context.invoke('buttons.updateCurrentStyle');
+  }
 
-  this.destroy = function () {
-    $toolbar.children().remove();
-  };
+  destroy() {
+    this.$toolbar.children().remove();
+  }
 
-  this.changeContainer = function (isFullscreen) {
+  changeContainer(isFullscreen) {
     if (isFullscreen) {
-      $toolbar.prependTo($editor);
+      this.$toolbar.prependTo(this.$editor);
     } else {
-      if (options.toolbarContainer) {
-        $toolbar.appendTo(options.toolbarContainer);
+      if (this.options.toolbarContainer) {
+        this.$toolbar.appendTo(this.options.toolbarContainer);
       }
     }
-  };
+  }
 
-  this.updateFullscreen = function (isFullscreen) {
-    ui.toggleBtnActive($toolbar.find('.btn-fullscreen'), isFullscreen);
+  updateFullscreen(isFullscreen) {
+    this.ui.toggleBtnActive(this.$toolbar.find('.btn-fullscreen'), isFullscreen);
 
     this.changeContainer(isFullscreen);
-  };
+  }
 
-  this.updateCodeview = function (isCodeview) {
-    ui.toggleBtnActive($toolbar.find('.btn-codeview'), isCodeview);
+  updateCodeview(isCodeview) {
+    this.ui.toggleBtnActive(this.$toolbar.find('.btn-codeview'), isCodeview);
     if (isCodeview) {
       this.deactivate();
     } else {
       this.activate();
     }
-  };
+  }
 
-  this.activate = function (isIncludeCodeview) {
-    var $btn = $toolbar.find('button');
+  activate(isIncludeCodeview) {
+    var $btn = this.$toolbar.find('button');
     if (!isIncludeCodeview) {
       $btn = $btn.not('.btn-codeview');
     }
-    ui.toggleBtn($btn, true);
-  };
+    this.ui.toggleBtn($btn, true);
+  }
 
-  this.deactivate = function (isIncludeCodeview) {
-    var $btn = $toolbar.find('button');
+  deactivate(isIncludeCodeview) {
+    var $btn = this.$toolbar.find('button');
     if (!isIncludeCodeview) {
       $btn = $btn.not('.btn-codeview');
     }
-    ui.toggleBtn($btn, false);
-  };
+    this.ui.toggleBtn($btn, false);
+  }
 }

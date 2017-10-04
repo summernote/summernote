@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import agent from './base/core/agent';
-import list from './base/core/list';
+import env from './base/core/env';
+import lists from './base/core/lists';
 import Context from './base/Context';
 
 $.fn.extend({
@@ -11,20 +11,20 @@ $.fn.extend({
    * @return {this}
    */
   summernote: function () {
-    var type = $.type(list.head(arguments));
+    var type = $.type(lists.head(arguments));
     var isExternalAPICalled = type === 'string';
     var hasInitOptions = type === 'object';
 
-    var options = hasInitOptions ? list.head(arguments) : {};
+    var options = hasInitOptions ? lists.head(arguments) : {};
 
     options = $.extend({}, $.summernote.options, options);
 
     // Update options
     options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
     options.icons = $.extend(true, {}, $.summernote.options.icons, options.icons);
-    options.tooltip = options.tooltip === 'auto' ? !agent.isSupportTouch : options.tooltip;
+    options.tooltip = options.tooltip === 'auto' ? !env.isSupportTouch : options.tooltip;
 
-    this.each(function (idx, note) {
+    this.each((idx, note) => {
       var $note = $(note);
       if (!$note.data('summernote')) {
         var context = new Context($note, options);
@@ -37,7 +37,7 @@ $.fn.extend({
     if ($note.length) {
       var context = $note.data('summernote');
       if (isExternalAPICalled) {
-        return context.invoke.apply(context, list.from(arguments));
+        return context.invoke.apply(context, lists.from(arguments));
       } else if (options.focus) {
         context.invoke('editor.focus');
       }

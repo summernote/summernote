@@ -1,47 +1,51 @@
 import $ from 'jquery';
 import key from '../core/key';
 
-export default function (context) {
-  var self = this;
-  var ui = $.summernote.ui;
+export default class VideoDialog {
+  constructor(context) {
+    this.context = context;
 
-  var $editor = context.layoutInfo.editor;
-  var options = context.options;
-  var lang = options.langInfo;
+    this.ui = $.summernote.ui;
+    this.$body = $(document.body);
+    this.$editor = context.layoutInfo.editor;
+    this.options = context.options;
+    this.lang = this.options.langInfo;
+  }
 
-  this.initialize = function () {
-    var $container = options.dialogsInBody ? $(document.body) : $editor;
+  initialize() {
+    var $container = this.options.dialogsInBody ? this.$body : this.$editor;
 
-    var body = '<div class="form-group note-form-group row-fluid">' +
-        '<label class="note-form-label">' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
-        '<input class="note-video-url form-control note-form-control note-input" ' +
-        ' type="text" />' +
-        '</div>';
-    var footer = '<button type="submit" href="#" class="btn btn-primary note-btn note-btn-primary ' +
-    ' note-video-btn" disabled>' + lang.video.insert + '</button>';
+    var body = [
+      '<div class="form-group note-form-group row-fluid">',
+        `<label class="note-form-label">${this.lang.video.url} <small class="text-muted">${this.lang.video.providers}</small></label>`,
+        '<input class="note-video-url form-control note-form-control note-input" type="text" />',
+      '</div>'
+    ].join('');
+    var buttonClass = 'btn btn-primary note-btn note-btn-primary note-video-btn';
+    var footer = `<button type="submit" href="#" class="${buttonClass}" disabled>${this.lang.video.insert}</button>`;
 
-    this.$dialog = ui.dialog({
-      title: lang.video.insert,
-      fade: options.dialogsFade,
+    this.$dialog = this.ui.dialog({
+      title: this.lang.video.insert,
+      fade: this.options.dialogsFade,
       body: body,
       footer: footer
     }).render().appendTo($container);
-  };
+  }
 
-  this.destroy = function () {
-    ui.hideDialog(this.$dialog);
+  destroy() {
+    this.ui.hideDialog(this.$dialog);
     this.$dialog.remove();
-  };
+  }
 
-  this.bindEnterKey = function ($input, $btn) {
-    $input.on('keypress', function (event) {
+  bindEnterKey($input, $btn) {
+    $input.on('keypress', (event) => {
       if (event.keyCode === key.code.ENTER) {
         $btn.trigger('click');
       }
     });
-  };
+  }
 
-  this.createVideoNode = function (url) {
+  createVideoNode(url) {
     // video url patterns(youtube, instagram, vimeo, dailymotion, youku, mp4, ogg, webm)
     var ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
     var ytMatch = url.match(ytRegExp);
@@ -131,27 +135,27 @@ export default function (context) {
     $video.addClass('note-video-clip');
 
     return $video[0];
-  };
+  }
 
-  this.show = function () {
-    var text = context.invoke('editor.getSelectedText');
-    context.invoke('editor.saveRange');
-    this.showVideoDialog(text).then(function (url) {
+  show() {
+    var text = this.context.invoke('editor.getSelectedText');
+    this.context.invoke('editor.saveRange');
+    this.showVideoDialog(text).then((url) => {
       // [workaround] hide dialog before restore range for IE range focus
-      ui.hideDialog(self.$dialog);
-      context.invoke('editor.restoreRange');
+      this.ui.hideDialog(this.$dialog);
+      this.context.invoke('editor.restoreRange');
 
       // build node
-      var $node = self.createVideoNode(url);
+      var $node = this.createVideoNode(url);
 
       if ($node) {
         // insert video node
-        context.invoke('editor.insertNode', $node);
+        this.context.invoke('editor.insertNode', $node);
       }
-    }).fail(function () {
-      context.invoke('editor.restoreRange');
+    }).fail(() => {
+      this.context.invoke('editor.restoreRange');
     });
-  };
+  }
 
   /**
    * show image dialog
@@ -159,28 +163,28 @@ export default function (context) {
    * @param {jQuery} $dialog
    * @return {Promise}
    */
-  this.showVideoDialog = function (text) {
-    return $.Deferred(function (deferred) {
-      var $videoUrl = self.$dialog.find('.note-video-url'),
-          $videoBtn = self.$dialog.find('.note-video-btn');
+  showVideoDialog(text) {
+    return $.Deferred((deferred) => {
+      var $videoUrl = this.$dialog.find('.note-video-url'),
+          $videoBtn = this.$dialog.find('.note-video-btn');
 
-      ui.onDialogShown(self.$dialog, function () {
-        context.triggerEvent('dialog.shown');
+      this.ui.onDialogShown(this.$dialog, () => {
+        this.context.triggerEvent('dialog.shown');
 
-        $videoUrl.val(text).on('input', function () {
-          ui.toggleBtn($videoBtn, $videoUrl.val());
+        $videoUrl.val(text).on('input', () => {
+          this.ui.toggleBtn($videoBtn, $videoUrl.val());
         }).trigger('focus');
 
-        $videoBtn.click(function (event) {
+        $videoBtn.click((event) => {
           event.preventDefault();
 
           deferred.resolve($videoUrl.val());
         });
 
-        self.bindEnterKey($videoUrl, $videoBtn);
+        this.bindEnterKey($videoUrl, $videoBtn);
       });
 
-      ui.onDialogHidden(self.$dialog, function () {
+      this.ui.onDialogHidden(this.$dialog, () => {
         $videoUrl.off('input');
         $videoBtn.off('click');
 
@@ -189,7 +193,7 @@ export default function (context) {
         }
       });
 
-      ui.showDialog(self.$dialog);
+      this.ui.showDialog(this.$dialog);
     });
-  };
+  }
 }

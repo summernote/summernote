@@ -8,15 +8,15 @@ import spies from 'chai-spies';
 import $ from 'jquery'; window.jQuery = $;
 import 'bootstrap';
 import chaidom from '../../chaidom';
-import agent from '../../../src/js/base/core/agent';
+import env from '../../../src/js/base/core/env';
 import Context from '../../../src/js/base/Context';
 
 var expect = chai.expect;
 chai.use(spies);
 chai.use(chaidom);
 
-describe('Context lifecycle', function () {
-  it('should be initialized without calling callback', function () {
+describe('Context lifecycle', () => {
+  it('should be initialized without calling callback', () => {
     var options = $.extend({}, $.summernote.options);
     options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
 
@@ -29,13 +29,13 @@ describe('Context lifecycle', function () {
 
     // [workaround]
     //  - IE8-11 can't create range in headless mode
-    if (!agent.isMSIE) {
+    if (!env.isMSIE) {
       context.invoke('insertText', 'hello');
       expect(spy).to.have.been.called();
     }
   });
 
-  it('should preserve user events handler after destroy', function () {
+  it('should preserve user events handler after destroy', () => {
     var options = $.extend({}, $.summernote.options);
     options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
 
@@ -51,21 +51,21 @@ describe('Context lifecycle', function () {
   });
 });
 
-describe('Context', function () {
+describe('Context', () => {
   var context;
-  beforeEach(function () {
+  beforeEach(() => {
     var options = $.extend({}, $.summernote.options);
     options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
     context = new Context($('<div><p>hello</p></div>'), options);
   });
 
-  it('should get or set contents with code', function () {
+  it('should get or set contents with code', () => {
     expect(context.code()).to.equalsIgnoreCase('<p>hello</p>');
     context.code('<p>hello2</p>');
     expect(context.code()).to.equalsIgnoreCase('<p>hello2</p>');
   });
 
-  it('should enable or disable editor', function () {
+  it('should enable or disable editor', () => {
     expect(context.isDisabled()).to.be.false;
     context.disable();
     expect(context.isDisabled()).to.be.true;
@@ -73,7 +73,7 @@ describe('Context', function () {
     expect(context.isDisabled()).to.be.false;
   });
 
-  it('should preserve disabled status after reset', function () {
+  it('should preserve disabled status after reset', () => {
     expect(context.isDisabled()).to.be.false;
     context.disable();
     expect(context.isDisabled()).to.be.true;

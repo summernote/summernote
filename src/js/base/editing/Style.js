@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import agent from '../core/agent';
+import env from '../core/env';
 import func from '../core/func';
-import list from '../core/list';
+import lists from '../core/lists';
 import dom from '../core/dom';
 
 export default class Style {
@@ -19,7 +19,7 @@ export default class Style {
    * @return {Object}
    */
   jQueryCSS($obj, propertyNames) {
-    if (agent.jqueryVersion < 1.9) {
+    if (env.jqueryVersion < 1.9) {
       const result = {};
       $.each(propertyNames, (idx, propertyName) => {
         result[propertyName] = $obj.css(propertyName);
@@ -89,19 +89,19 @@ export default class Style {
         const nodesInRange = rng.nodes();
         // compose with partial contains predication
         pred = func.and(pred, (node) => {
-          return list.contains(nodesInRange, node);
+          return lists.contains(nodesInRange, node);
         });
       }
 
       return nodes.map((node) => {
         const siblings = dom.withClosestSiblings(node, pred);
-        const head = list.head(siblings);
-        const tails = list.tail(siblings);
+        const head = lists.head(siblings);
+        const tails = lists.tail(siblings);
         $.each(tails, (idx, elem) => {
           dom.appendChildNodes(head, elem.childNodes);
           dom.remove(elem);
         });
-        return list.head(siblings);
+        return lists.head(siblings);
       });
     } else {
       return nodes;

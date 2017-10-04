@@ -1,50 +1,51 @@
 import $ from 'jquery';
-import agent from '../core/agent';
-import list from '../core/list';
+import env from '../core/env';
+import lists from '../core/lists';
 import dom from '../core/dom';
 
-export default function (context) {
-  var self = this;
-  var ui = $.summernote.ui;
+export default class TablePopover {
+  constructor(context) {
+    this.context = context;
 
-  var options = context.options;
+    this.ui = $.summernote.ui;
+    this.options = context.options;
+    this.events = {
+      'summernote.mousedown': (we, e) => {
+        this.update(e.target);
+      },
+      'summernote.keyup summernote.scroll summernote.change': () => {
+        this.update();
+      },
+      'summernote.disable': () => {
+        this.hide();
+      }
+    };
+  }
 
-  this.events = {
-    'summernote.mousedown': function (we, e) {
-      self.update(e.target);
-    },
-    'summernote.keyup summernote.scroll summernote.change': function () {
-      self.update();
-    },
-    'summernote.disable': function () {
-      self.hide();
-    }
-  };
+  shouldInitialize() {
+    return !lists.isEmpty(this.options.popover.table);
+  }
 
-  this.shouldInitialize = function () {
-    return !list.isEmpty(options.popover.table);
-  };
-
-  this.initialize = function () {
-    this.$popover = ui.popover({
+  initialize() {
+    this.$popover = this.ui.popover({
       className: 'note-table-popover'
-    }).render().appendTo(options.container);
+    }).render().appendTo(this.options.container);
     var $content = this.$popover.find('.popover-content,.note-popover-content');
 
-    context.invoke('buttons.build', $content, options.popover.table);
+    this.context.invoke('buttons.build', $content, this.options.popover.table);
 
     // [workaround] Disable Firefox's default table editor
-    if (agent.isFF) {
+    if (env.isFF) {
       document.execCommand('enableInlineTableEditing', false, false);
     }
-  };
+  }
 
-  this.destroy = function () {
+  destroy() {
     this.$popover.remove();
-  };
+  }
 
-  this.update = function (target) {
-    if (context.isDisabled()) {
+  update(target) {
+    if (this.context.isDisabled()) {
       return false;
     }
 
@@ -62,9 +63,9 @@ export default function (context) {
     }
 
     return isCell;
-  };
+  }
 
-  this.hide = function () {
+  hide() {
     this.$popover.hide();
-  };
+  }
 }
