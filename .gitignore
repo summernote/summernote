@@ -41,5 +41,10 @@ dist/*
 # Ignoring visual studio
 .vs
 
+# e2e tests
+selenium-server-standalone.jar
+test/reports/
+selenium-debug.log
+
 # Ignoring rpt2_cache
 .rpt2_cache
