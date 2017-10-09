@@ -9,6 +9,8 @@ const POPOVER_DIST = 5;
 
 export default class HintPopover {
   constructor(context) {
+    this.context = context;
+
     this.ui = $.summernote.ui;
     this.$editable = context.layoutInfo.editable;
     this.options = context.options;
