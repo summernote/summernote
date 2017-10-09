@@ -1,61 +1,66 @@
-define(function () {
-  var Renderer = function (markup, children, options, callback) {
-    this.render = function ($parent) {
-      var $node = $(markup);
+import $ from 'jquery';
 
-      if (options && options.contents) {
-        $node.html(options.contents);
-      }
+class Renderer {
+  constructor(markup, children, options, callback) {
+    this.markup = markup;
+    this.children = children;
+    this.options = options;
+    this.callback = callback;
+  }
 
-      if (options && options.className) {
-        $node.addClass(options.className);
-      }
+  render($parent) {
+    const $node = $(this.markup);
 
-      if (options && options.data) {
-        $.each(options.data, function (k, v) {
-          $node.attr('data-' + k, v);
-        });
-      }
-
-      if (options && options.click) {
-        $node.on('click', options.click);
-      }
-
-      if (children) {
-        var $container = $node.find('.note-children-container');
-        children.forEach(function (child) {
-          child.render($container.length ? $container : $node);
-        });
-      }
-
-      if (callback) {
-        callback($node, options);
-      }
-
-      if (options && options.callback) {
-        options.callback($node);
-      }
-
-      if ($parent) {
-        $parent.append($node);
-      }
-
-      return $node;
-    };
-  };
-
-  var renderer = {
-    create: function (markup, callback) {
-      return function () {
-        var children = $.isArray(arguments[0]) ? arguments[0] : [];
-        var options = typeof arguments[1] === 'object' ? arguments[1] : arguments[0];
-        if (options && options.children) {
-          children = options.children;
-        }
-        return new Renderer(markup, children, options, callback);
-      };
+    if (this.options && this.options.contents) {
+      $node.html(this.options.contents);
     }
-  };
 
-  return renderer;
-});
+    if (this.options && this.options.className) {
+      $node.addClass(this.options.className);
+    }
+
+    if (this.options && this.options.data) {
+      $.each(this.options.data, (k, v) => {
+        $node.attr('data-' + k, v);
+      });
+    }
+
+    if (this.options && this.options.click) {
+      $node.on('click', this.options.click);
+    }
+
+    if (this.children) {
+      const $container = $node.find('.note-children-container');
+      this.children.forEach((child) => {
+        child.render($container.length ? $container : $node);
+      });
+    }
+
+    if (this.callback) {
+      this.callback($node, this.options);
+    }
+
+    if (this.options && this.options.callback) {
+      this.options.callback($node);
+    }
+
+    if ($parent) {
+      $parent.append($node);
+    }
+
+    return $node;
+  }
+}
+
+export default {
+  create: (markup, callback) => {
+    return () => {
+      const options = typeof arguments[1] === 'object' ? arguments[1] : arguments[0];
+      let children = $.isArray(arguments[0]) ? arguments[0] : [];
+      if (options && options.children) {
+        children = options.children;
+      }
+      return new Renderer(markup, children, options, callback);
+    };
+  }
+};

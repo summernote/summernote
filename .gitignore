@@ -36,7 +36,10 @@ build/
 *.log
 
 # Ignoring dist folder content
-# dist/*
+dist/*
 
 # Ignoring visual studio
 .vs
+
+# Ignoring rpt2_cache
+.rpt2_cache

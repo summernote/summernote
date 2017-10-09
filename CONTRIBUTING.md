@@ -3,8 +3,8 @@
 * Please `don't include dist/* files` on your commits.
 
 ## Coding convention
-* JSHint: http://www.jshint.com/about/
-* JSHint rule: https://github.com/summernote/summernote/blob/master/.jshintrc
+* eslint: https://eslint.org
+* eslint rule: https://github.com/summernote/summernote/blob/master/.eslintrc
 
 ## Document structure
 

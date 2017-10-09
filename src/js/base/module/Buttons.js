@@ -1,774 +1,775 @@
-define([
-  'jquery',
-  'summernote/base/core/func',
-  'summernote/base/core/list',
-  'summernote/base/core/agent'
-], function ($, func, list, agent) {
-  var Buttons = function (context) {
-    var self = this;
-    var ui = $.summernote.ui;
+import $ from 'jquery';
+import func from '../core/func';
+import lists from '../core/lists';
+import env from '../core/env';
 
-    var $toolbar = context.layoutInfo.toolbar;
-    var options = context.options;
-    var lang = options.langInfo;
+export default class Buttons {
+  constructor(context) {
+    this.ui = $.summernote.ui;
+    this.context = context;
+    this.$toolbar = context.layoutInfo.toolbar;
+    this.options = context.options;
+    this.lang = this.options.langInfo;
+    this.invertedKeyMap = func.invertObject(
+      this.options.keyMap[env.isMac ? 'mac' : 'pc']
+    );
+  }
 
-    var invertedKeyMap = func.invertObject(options.keyMap[agent.isMac ? 'mac' : 'pc']);
+  representShortcut(editorMethod) {
+    let shortcut = this.invertedKeyMap[editorMethod];
+    if (!this.options.shortcuts || !shortcut) {
+      return '';
+    }
 
-    var representShortcut = this.representShortcut = function (editorMethod) {
-      var shortcut = invertedKeyMap[editorMethod];
-      if (!options.shortcuts || !shortcut) {
-        return '';
-      }
+    if (env.isMac) {
+      shortcut = shortcut.replace('CMD', '⌘').replace('SHIFT', '⇧');
+    }
 
-      if (agent.isMac) {
-        shortcut = shortcut.replace('CMD', '⌘').replace('SHIFT', '⇧');
-      }
+    shortcut = shortcut.replace('BACKSLASH', '\\')
+      .replace('SLASH', '/')
+      .replace('LEFTBRACKET', '[')
+      .replace('RIGHTBRACKET', ']');
 
-      shortcut = shortcut.replace('BACKSLASH', '\\')
-                         .replace('SLASH', '/')
-                         .replace('LEFTBRACKET', '[')
-                         .replace('RIGHTBRACKET', ']');
+    return ' (' + shortcut + ')';
+  }
 
-      return ' (' + shortcut + ')';
-    };
+  button(o) {
+    if (!this.options.tooltip && o.tooltip) {
+      delete o.tooltip;
+    }
+    o.container = this.options.container;
+    return this.ui.button(o);
+  }
 
-    var button = function(o) {
-      if (!options.tooltip && o.tooltip) {
-        delete o.tooltip;
-      }
-      o.container = options.container;
-      return ui.button(o);
-    };
+  initialize() {
+    this.addToolbarButtons();
+    this.addImagePopoverButtons();
+    this.addLinkPopoverButtons();
+    this.addTablePopoverButtons();
+    this.fontInstalledMap = {};
+  }
 
-    this.initialize = function () {
-      this.addToolbarButtons();
-      this.addImagePopoverButtons();
-      this.addLinkPopoverButtons();
-      this.addTablePopoverButtons();
-      this.fontInstalledMap = {};
-    };
+  destroy() {
+    delete this.fontInstalledMap;
+  }
 
-    this.destroy = function () {
-      delete this.fontInstalledMap;
-    };
+  isFontInstalled(name) {
+    if (!this.fontInstalledMap.hasOwnProperty(name)) {
+      this.fontInstalledMap[name] = env.isFontInstalled(name) ||
+        lists.contains(this.options.fontNamesIgnoreCheck, name);
+    }
 
-    this.isFontInstalled = function (name) {
-      if (!self.fontInstalledMap.hasOwnProperty(name)) {
-        self.fontInstalledMap[name] = agent.isFontInstalled(name) ||
-          list.contains(options.fontNamesIgnoreCheck, name);
-      }
+    return this.fontInstalledMap[name];
+  }
 
-      return self.fontInstalledMap[name];
-    };
-
-    this.addToolbarButtons = function () {
-      context.memo('button.style', function () {
-        return ui.buttonGroup([
-          button({
-            className: 'dropdown-toggle',
-            contents: ui.dropdownButtonContents(ui.icon(options.icons.magic), options),
-            tooltip: lang.style.style,
-            data: {
-              toggle: 'dropdown'
+  addToolbarButtons() {
+    this.context.memo('button.style', () => {
+      return this.ui.buttonGroup([
+        this.button({
+          className: 'dropdown-toggle',
+          contents: this.ui.dropdownButtonContents(
+            this.ui.icon(this.options.icons.magic), this.options
+          ),
+          tooltip: this.lang.style.style,
+          data: {
+            toggle: 'dropdown'
+          }
+        }),
+        this.ui.dropdown({
+          className: 'dropdown-style',
+          items: this.options.styleTags,
+          template: (item) => {
+            if (typeof item === 'string') {
+              item = { tag: item, title: (this.lang.style.hasOwnProperty(item) ? this.lang.style[item] : item) };
             }
-          }),
-          ui.dropdown({
-            className: 'dropdown-style',
-            items: context.options.styleTags,
-            template: function (item) {
 
-              if (typeof item === 'string') {
-                item = { tag: item, title: (lang.style.hasOwnProperty(item) ? lang.style[item] : item) };
-              }
+            const tag = item.tag;
+            const title = item.title;
+            const style = item.style ? ' style="' + item.style + '" ' : '';
+            const className = item.className ? ' class="' + item.className + '"' : '';
 
-              var tag = item.tag;
-              var title = item.title;
-              var style = item.style ? ' style="' + item.style + '" ' : '';
-              var className = item.className ? ' class="' + item.className + '"' : '';
+            return '<' + tag + style + className + '>' + title + '</' + tag + '>';
+          },
+          click: this.context.createInvokeHandler('editor.formatBlock')
+        })
+      ]).render();
+    });
 
-              return '<' + tag + style + className + '>' + title + '</' + tag +  '>';
+    this.context.memo('button.bold', () => {
+      return this.button({
+        className: 'note-btn-bold',
+        contents: this.ui.icon(this.options.icons.bold),
+        tooltip: this.lang.font.bold + this.representShortcut('bold'),
+        click: this.context.createInvokeHandlerAndUpdateState('editor.bold')
+      }).render();
+    });
+
+    this.context.memo('button.italic', () => {
+      return this.button({
+        className: 'note-btn-italic',
+        contents: this.ui.icon(this.options.icons.italic),
+        tooltip: this.lang.font.italic + this.representShortcut('italic'),
+        click: this.context.createInvokeHandlerAndUpdateState('editor.italic')
+      }).render();
+    });
+
+    this.context.memo('button.underline', () => {
+      return this.button({
+        className: 'note-btn-underline',
+        contents: this.ui.icon(this.options.icons.underline),
+        tooltip: this.lang.font.underline + this.representShortcut('underline'),
+        click: this.context.createInvokeHandlerAndUpdateState('editor.underline')
+      }).render();
+    });
+
+    this.context.memo('button.clear', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.eraser),
+        tooltip: this.lang.font.clear + this.representShortcut('removeFormat'),
+        click: this.context.createInvokeHandler('editor.removeFormat')
+      }).render();
+    });
+
+    this.context.memo('button.strikethrough', () => {
+      return this.button({
+        className: 'note-btn-strikethrough',
+        contents: this.ui.icon(this.options.icons.strikethrough),
+        tooltip: this.lang.font.strikethrough + this.representShortcut('strikethrough'),
+        click: this.context.createInvokeHandlerAndUpdateState('editor.strikethrough')
+      }).render();
+    });
+
+    this.context.memo('button.superscript', () => {
+      return this.button({
+        className: 'note-btn-superscript',
+        contents: this.ui.icon(this.options.icons.superscript),
+        tooltip: this.lang.font.superscript,
+        click: this.context.createInvokeHandlerAndUpdateState('editor.superscript')
+      }).render();
+    });
+
+    this.context.memo('button.subscript', () => {
+      return this.button({
+        className: 'note-btn-subscript',
+        contents: this.ui.icon(this.options.icons.subscript),
+        tooltip: this.lang.font.subscript,
+        click: this.context.createInvokeHandlerAndUpdateState('editor.subscript')
+      }).render();
+    });
+
+    this.context.memo('button.fontname', () => {
+      return this.ui.buttonGroup([
+        this.button({
+          className: 'dropdown-toggle',
+          contents: this.ui.dropdownButtonContents(
+            '<span class="note-current-fontname"/>', this.options
+          ),
+          tooltip: this.lang.font.name,
+          data: {
+            toggle: 'dropdown'
+          }
+        }),
+        this.ui.dropdownCheck({
+          className: 'dropdown-fontname',
+          checkClassName: this.options.icons.menuCheck,
+          items: this.options.fontNames.filter(this.isFontInstalled.bind(this)),
+          template: (item) => {
+            return '<span style="font-family:' + item + '">' + item + '</span>';
+          },
+          click: this.context.createInvokeHandlerAndUpdateState('editor.fontName')
+        })
+      ]).render();
+    });
+
+    this.context.memo('button.fontsize', () => {
+      return this.ui.buttonGroup([
+        this.button({
+          className: 'dropdown-toggle',
+          contents: this.ui.dropdownButtonContents('<span class="note-current-fontsize"/>', this.options),
+          tooltip: this.lang.font.size,
+          data: {
+            toggle: 'dropdown'
+          }
+        }),
+        this.ui.dropdownCheck({
+          className: 'dropdown-fontsize',
+          checkClassName: this.options.icons.menuCheck,
+          items: this.options.fontSizes,
+          click: this.context.createInvokeHandlerAndUpdateState('editor.fontSize')
+        })
+      ]).render();
+    });
+
+    this.context.memo('button.color', () => {
+      return this.ui.buttonGroup({
+        className: 'note-color',
+        children: [
+          this.button({
+            className: 'note-current-color-button',
+            contents: this.ui.icon(this.options.icons.font + ' note-recent-color'),
+            tooltip: this.lang.color.recent,
+            click: (e) => {
+              const $button = $(e.currentTarget);
+              this.context.invoke('editor.color', {
+                backColor: $button.attr('data-backColor'),
+                foreColor: $button.attr('data-foreColor')
+              });
             },
-            click: context.createInvokeHandler('editor.formatBlock')
-          })
-        ]).render();
-      });
-
-      context.memo('button.bold', function () {
-        return button({
-          className: 'note-btn-bold',
-          contents: ui.icon(options.icons.bold),
-          tooltip: lang.font.bold + representShortcut('bold'),
-          click: context.createInvokeHandlerAndUpdateState('editor.bold')
-        }).render();
-      });
-
-      context.memo('button.italic', function () {
-        return button({
-          className: 'note-btn-italic',
-          contents: ui.icon(options.icons.italic),
-          tooltip: lang.font.italic + representShortcut('italic'),
-          click: context.createInvokeHandlerAndUpdateState('editor.italic')
-        }).render();
-      });
-
-      context.memo('button.underline', function () {
-        return button({
-          className: 'note-btn-underline',
-          contents: ui.icon(options.icons.underline),
-          tooltip: lang.font.underline + representShortcut('underline'),
-          click: context.createInvokeHandlerAndUpdateState('editor.underline')
-        }).render();
-      });
-
-      context.memo('button.clear', function () {
-        return button({
-          contents: ui.icon(options.icons.eraser),
-          tooltip: lang.font.clear + representShortcut('removeFormat'),
-          click: context.createInvokeHandler('editor.removeFormat')
-        }).render();
-      });
-
-      context.memo('button.strikethrough', function () {
-        return button({
-          className: 'note-btn-strikethrough',
-          contents: ui.icon(options.icons.strikethrough),
-          tooltip: lang.font.strikethrough + representShortcut('strikethrough'),
-          click: context.createInvokeHandlerAndUpdateState('editor.strikethrough')
-        }).render();
-      });
-
-      context.memo('button.superscript', function () {
-        return button({
-          className: 'note-btn-superscript',
-          contents: ui.icon(options.icons.superscript),
-          tooltip: lang.font.superscript,
-          click: context.createInvokeHandlerAndUpdateState('editor.superscript')
-        }).render();
-      });
-
-      context.memo('button.subscript', function () {
-        return button({
-          className: 'note-btn-subscript',
-          contents: ui.icon(options.icons.subscript),
-          tooltip: lang.font.subscript,
-          click: context.createInvokeHandlerAndUpdateState('editor.subscript')
-        }).render();
-      });
-
-      context.memo('button.fontname', function () {
-        return ui.buttonGroup([
-          button({
+            callback: ($button) => {
+              const $recentColor = $button.find('.note-recent-color');
+              $recentColor.css('background-color', '#FFFF00');
+              $button.attr('data-backColor', '#FFFF00');
+            }
+          }),
+          this.button({
             className: 'dropdown-toggle',
-            contents: ui.dropdownButtonContents('<span class="note-current-fontname"/>', options),
-            tooltip: lang.font.name,
+            contents: this.ui.dropdownButtonContents('', this.options),
+            tooltip: this.lang.color.more,
             data: {
               toggle: 'dropdown'
             }
           }),
-          ui.dropdownCheck({
-            className: 'dropdown-fontname',
-            checkClassName: options.icons.menuCheck,
-            items: options.fontNames.filter(self.isFontInstalled),
-            template: function (item) {
-              return '<span style="font-family:' + item + '">' + item + '</span>';
-            },
-            click: context.createInvokeHandlerAndUpdateState('editor.fontName')
-          })
-        ]).render();
-      });
-
-      context.memo('button.fontsize', function () {
-        return ui.buttonGroup([
-          button({
-            className: 'dropdown-toggle',
-            contents: ui.dropdownButtonContents('<span class="note-current-fontsize"/>', options),
-            tooltip: lang.font.size,
-            data: {
-              toggle: 'dropdown'
-            }
-          }),
-          ui.dropdownCheck({
-            className: 'dropdown-fontsize',
-            checkClassName: options.icons.menuCheck,
-            items: options.fontSizes,
-            click: context.createInvokeHandlerAndUpdateState('editor.fontSize')
-          })
-        ]).render();
-      });
-
-      context.memo('button.color', function () {
-        return ui.buttonGroup({
-          className: 'note-color',
-          children: [
-            button({
-              className: 'note-current-color-button',
-              contents: ui.icon(options.icons.font + ' note-recent-color'),
-              tooltip: lang.color.recent,
-              click: function (e) {
-                var $button = $(e.currentTarget);
-                context.invoke('editor.color', {
-                  backColor: $button.attr('data-backColor'),
-                  foreColor: $button.attr('data-foreColor')
-                });
-              },
-              callback: function ($button) {
-                var $recentColor = $button.find('.note-recent-color');
-                $recentColor.css('background-color', '#FFFF00');
-                $button.attr('data-backColor', '#FFFF00');
-              }
-            }),
-            button({
-              className: 'dropdown-toggle',
-              contents: ui.dropdownButtonContents('', options),
-              tooltip: lang.color.more,
-              data: {
-                toggle: 'dropdown'
-              }
-            }),
-            ui.dropdown({
-              items: [
-                '<div class="note-palette">',
-                '  <div class="note-palette-title">' + lang.color.background + '</div>',
-                '  <div>',
-                '    <button type="button" class="note-color-reset btn btn-light" data-event="backColor" data-value="inherit">',
-                lang.color.transparent,
-                '    </button>',
-                '  </div>',
-                '  <div class="note-holder" data-event="backColor"/>',
-                '</div>',
-                '<div class="note-palette">',
-                '  <div class="note-palette-title">' + lang.color.foreground + '</div>',
-                '  <div>',
-                '    <button type="button" class="note-color-reset btn btn-light" data-event="removeFormat" data-value="foreColor">',
-                lang.color.resetToDefault,
-                '    </button>',
-                '  </div>',
-                '  <div class="note-holder" data-event="foreColor"/>',
-                '</div>'
-              ].join(''),
-              callback: function ($dropdown) {
-                $dropdown.find('.note-holder').each(function () {
-                  var $holder = $(this);
-                  $holder.append(ui.palette({
-                    colors: options.colors,
-                    eventName: $holder.data('event'),
-                    container: options.container,
-                    tooltip: options.tooltip
-                  }).render());
-                });
-              },
-              click: function (event) {
-                var $button = $(event.target);
-                var eventName = $button.data('event');
-                var value = $button.data('value');
-
-                if (eventName && value) {
-                  var key = eventName === 'backColor' ? 'background-color' : 'color';
-                  var $color = $button.closest('.note-color').find('.note-recent-color');
-                  var $currentButton = $button.closest('.note-color').find('.note-current-color-button');
-
-                  $color.css(key, value);
-                  $currentButton.attr('data-' + eventName, value);
-                  context.invoke('editor.' + eventName, value);
-                }
-              }
-            })
-          ]
-        }).render();
-      });
-
-      context.memo('button.ul',  function () {
-        return button({
-          contents: ui.icon(options.icons.unorderedlist),
-          tooltip: lang.lists.unordered + representShortcut('insertUnorderedList'),
-          click: context.createInvokeHandler('editor.insertUnorderedList')
-        }).render();
-      });
-
-      context.memo('button.ol', function () {
-        return button({
-          contents: ui.icon(options.icons.orderedlist),
-          tooltip: lang.lists.ordered + representShortcut('insertOrderedList'),
-          click:  context.createInvokeHandler('editor.insertOrderedList')
-        }).render();
-      });
-
-      var justifyLeft = button({
-        contents: ui.icon(options.icons.alignLeft),
-        tooltip: lang.paragraph.left + representShortcut('justifyLeft'),
-        click: context.createInvokeHandler('editor.justifyLeft')
-      });
-
-      var justifyCenter = button({
-        contents: ui.icon(options.icons.alignCenter),
-        tooltip: lang.paragraph.center + representShortcut('justifyCenter'),
-        click: context.createInvokeHandler('editor.justifyCenter')
-      });
-
-      var justifyRight = button({
-        contents: ui.icon(options.icons.alignRight),
-        tooltip: lang.paragraph.right + representShortcut('justifyRight'),
-        click: context.createInvokeHandler('editor.justifyRight')
-      });
-
-      var justifyFull = button({
-        contents: ui.icon(options.icons.alignJustify),
-        tooltip: lang.paragraph.justify + representShortcut('justifyFull'),
-        click: context.createInvokeHandler('editor.justifyFull')
-      });
-
-      var outdent = button({
-        contents: ui.icon(options.icons.outdent),
-        tooltip: lang.paragraph.outdent + representShortcut('outdent'),
-        click: context.createInvokeHandler('editor.outdent')
-      });
-
-      var indent = button({
-        contents: ui.icon(options.icons.indent),
-        tooltip: lang.paragraph.indent + representShortcut('indent'),
-        click: context.createInvokeHandler('editor.indent')
-      });
-
-      context.memo('button.justifyLeft', func.invoke(justifyLeft, 'render'));
-      context.memo('button.justifyCenter', func.invoke(justifyCenter, 'render'));
-      context.memo('button.justifyRight', func.invoke(justifyRight, 'render'));
-      context.memo('button.justifyFull', func.invoke(justifyFull, 'render'));
-      context.memo('button.outdent', func.invoke(outdent, 'render'));
-      context.memo('button.indent', func.invoke(indent, 'render'));
-
-      context.memo('button.paragraph', function () {
-        return ui.buttonGroup([
-          button({
-            className: 'dropdown-toggle',
-            contents: ui.dropdownButtonContents(ui.icon(options.icons.alignLeft), options),
-            tooltip: lang.paragraph.paragraph,
-            data: {
-              toggle: 'dropdown'
-            }
-          }),
-          ui.dropdown([
-            ui.buttonGroup({
-              className: 'note-align',
-              children: [justifyLeft, justifyCenter, justifyRight, justifyFull]
-            }),
-            ui.buttonGroup({
-              className: 'note-list',
-              children: [outdent, indent]
-            })
-          ])
-        ]).render();
-      });
-
-      context.memo('button.height', function () {
-        return ui.buttonGroup([
-          button({
-            className: 'dropdown-toggle',
-            contents: ui.dropdownButtonContents(ui.icon(options.icons.textHeight), options),
-            tooltip: lang.font.height,
-            data: {
-              toggle: 'dropdown'
-            }
-          }),
-          ui.dropdownCheck({
-            items: options.lineHeights,
-            checkClassName: options.icons.menuCheck,
-            className: 'dropdown-line-height',
-            click: context.createInvokeHandler('editor.lineHeight')
-          })
-        ]).render();
-      });
-
-      context.memo('button.table', function () {
-        return ui.buttonGroup([
-          button({
-            className: 'dropdown-toggle',
-            contents: ui.dropdownButtonContents(ui.icon(options.icons.table), options),
-            tooltip: lang.table.table,
-            data: {
-              toggle: 'dropdown'
-            }
-          }),
-          ui.dropdown({
-            className: 'note-table',
+          this.ui.dropdown({
             items: [
-              '<div class="note-dimension-picker">',
-              '  <div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>',
-              '  <div class="note-dimension-picker-highlighted"/>',
-              '  <div class="note-dimension-picker-unhighlighted"/>',
+              '<div class="note-palette">',
+              '  <div class="note-palette-title">' + this.lang.color.background + '</div>',
+              '  <div>',
+              '    <button type="button" class="note-color-reset btn btn-light" data-event="backColor" data-value="inherit">',
+              this.lang.color.transparent,
+              '    </button>',
+              '  </div>',
+              '  <div class="note-holder" data-event="backColor"/>',
               '</div>',
-              '<div class="note-dimension-display">1 x 1</div>'
-            ].join('')
+              '<div class="note-palette">',
+              '  <div class="note-palette-title">' + this.lang.color.foreground + '</div>',
+              '  <div>',
+              '    <button type="button" class="note-color-reset btn btn-light" data-event="removeFormat" data-value="foreColor">',
+              this.lang.color.resetToDefault,
+              '    </button>',
+              '  </div>',
+              '  <div class="note-holder" data-event="foreColor"/>',
+              '</div>'
+            ].join(''),
+            callback: ($dropdown) => {
+              $dropdown.find('.note-holder').each((idx, item) => {
+                const $holder = $(item);
+                $holder.append(this.ui.palette({
+                  colors: this.options.colors,
+                  eventName: $holder.data('event'),
+                  container: this.options.container,
+                  tooltip: this.options.tooltip
+                }).render());
+              });
+            },
+            click: (event) => {
+              const $button = $(event.target);
+              const eventName = $button.data('event');
+              const value = $button.data('value');
+
+              if (eventName && value) {
+                const key = eventName === 'backColor' ? 'background-color' : 'color';
+                const $color = $button.closest('.note-color').find('.note-recent-color');
+                const $currentButton = $button.closest('.note-color').find('.note-current-color-button');
+
+                $color.css(key, value);
+                $currentButton.attr('data-' + eventName, value);
+                this.context.invoke('editor.' + eventName, value);
+              }
+            }
           })
-        ], {
-          callback: function ($node) {
-            var $catcher = $node.find('.note-dimension-picker-mousecatcher');
-            $catcher.css({
-              width: options.insertTableMaxSize.col + 'em',
-              height: options.insertTableMaxSize.row + 'em'
-            }).mousedown(context.createInvokeHandler('editor.insertTable'))
-              .on('mousemove', self.tableMoveHandler);
+        ]
+      }).render();
+    });
+
+    this.context.memo('button.ul', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.unorderedlist),
+        tooltip: this.lang.lists.unordered + this.representShortcut('insertUnorderedList'),
+        click: this.context.createInvokeHandler('editor.insertUnorderedList')
+      }).render();
+    });
+
+    this.context.memo('button.ol', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.orderedlist),
+        tooltip: this.lang.lists.ordered + this.representShortcut('insertOrderedList'),
+        click: this.context.createInvokeHandler('editor.insertOrderedList')
+      }).render();
+    });
+
+    const justifyLeft = this.button({
+      contents: this.ui.icon(this.options.icons.alignLeft),
+      tooltip: this.lang.paragraph.left + this.representShortcut('justifyLeft'),
+      click: this.context.createInvokeHandler('editor.justifyLeft')
+    });
+
+    const justifyCenter = this.button({
+      contents: this.ui.icon(this.options.icons.alignCenter),
+      tooltip: this.lang.paragraph.center + this.representShortcut('justifyCenter'),
+      click: this.context.createInvokeHandler('editor.justifyCenter')
+    });
+
+    const justifyRight = this.button({
+      contents: this.ui.icon(this.options.icons.alignRight),
+      tooltip: this.lang.paragraph.right + this.representShortcut('justifyRight'),
+      click: this.context.createInvokeHandler('editor.justifyRight')
+    });
+
+    const justifyFull = this.button({
+      contents: this.ui.icon(this.options.icons.alignJustify),
+      tooltip: this.lang.paragraph.justify + this.representShortcut('justifyFull'),
+      click: this.context.createInvokeHandler('editor.justifyFull')
+    });
+
+    const outdent = this.button({
+      contents: this.ui.icon(this.options.icons.outdent),
+      tooltip: this.lang.paragraph.outdent + this.representShortcut('outdent'),
+      click: this.context.createInvokeHandler('editor.outdent')
+    });
+
+    const indent = this.button({
+      contents: this.ui.icon(this.options.icons.indent),
+      tooltip: this.lang.paragraph.indent + this.representShortcut('indent'),
+      click: this.context.createInvokeHandler('editor.indent')
+    });
+
+    this.context.memo('button.justifyLeft', func.invoke(justifyLeft, 'render'));
+    this.context.memo('button.justifyCenter', func.invoke(justifyCenter, 'render'));
+    this.context.memo('button.justifyRight', func.invoke(justifyRight, 'render'));
+    this.context.memo('button.justifyFull', func.invoke(justifyFull, 'render'));
+    this.context.memo('button.outdent', func.invoke(outdent, 'render'));
+    this.context.memo('button.indent', func.invoke(indent, 'render'));
+
+    this.context.memo('button.paragraph', () => {
+      return this.ui.buttonGroup([
+        this.button({
+          className: 'dropdown-toggle',
+          contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.alignLeft), this.options),
+          tooltip: this.lang.paragraph.paragraph,
+          data: {
+            toggle: 'dropdown'
           }
-        }).render();
-      });
+        }),
+        this.ui.dropdown([
+          this.ui.buttonGroup({
+            className: 'note-align',
+            children: [justifyLeft, justifyCenter, justifyRight, justifyFull]
+          }),
+          this.ui.buttonGroup({
+            className: 'note-list',
+            children: [outdent, indent]
+          })
+        ])
+      ]).render();
+    });
 
-      context.memo('button.link', function () {
-        return button({
-          contents: ui.icon(options.icons.link),
-          tooltip: lang.link.link + representShortcut('linkDialog.show'),
-          click: context.createInvokeHandler('linkDialog.show')
-        }).render();
-      });
-
-      context.memo('button.picture', function () {
-        return button({
-          contents: ui.icon(options.icons.picture),
-          tooltip: lang.image.image,
-          click: context.createInvokeHandler('imageDialog.show')
-        }).render();
-      });
-
-      context.memo('button.video', function () {
-        return button({
-          contents: ui.icon(options.icons.video),
-          tooltip: lang.video.video,
-          click: context.createInvokeHandler('videoDialog.show')
-        }).render();
-      });
-
-      context.memo('button.hr', function () {
-        return button({
-          contents: ui.icon(options.icons.minus),
-          tooltip: lang.hr.insert + representShortcut('insertHorizontalRule'),
-          click: context.createInvokeHandler('editor.insertHorizontalRule')
-        }).render();
-      });
-
-      context.memo('button.fullscreen', function () {
-        return button({
-          className: 'btn-fullscreen',
-          contents: ui.icon(options.icons.arrowsAlt),
-          tooltip: lang.options.fullscreen,
-          click: context.createInvokeHandler('fullscreen.toggle')
-        }).render();
-      });
-
-      context.memo('button.codeview', function () {
-        return button({
-          className: 'btn-codeview',
-          contents: ui.icon(options.icons.code),
-          tooltip: lang.options.codeview,
-          click: context.createInvokeHandler('codeview.toggle')
-        }).render();
-      });
-
-      context.memo('button.redo', function () {
-        return button({
-          contents: ui.icon(options.icons.redo),
-          tooltip: lang.history.redo + representShortcut('redo'),
-          click: context.createInvokeHandler('editor.redo')
-        }).render();
-      });
-
-      context.memo('button.undo', function () {
-        return button({
-          contents: ui.icon(options.icons.undo),
-          tooltip: lang.history.undo + representShortcut('undo'),
-          click: context.createInvokeHandler('editor.undo')
-        }).render();
-      });
-
-      context.memo('button.help', function () {
-        return button({
-          contents: ui.icon(options.icons.question),
-          tooltip: lang.options.help,
-          click: context.createInvokeHandler('helpDialog.show')
-        }).render();
-      });
-    };
-
-    /**
-     * image : [
-     *   ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
-     *   ['float', ['floatLeft', 'floatRight', 'floatNone' ]],
-     *   ['remove', ['removeMedia']]
-     * ],
-     */
-    this.addImagePopoverButtons = function () {
-      // Image Size Buttons
-      context.memo('button.imageSize100', function () {
-        return button({
-          contents: '<span class="note-fontsize-10">100%</span>',
-          tooltip: lang.image.resizeFull,
-          click: context.createInvokeHandler('editor.resize', '1')
-        }).render();
-      });
-      context.memo('button.imageSize50', function () {
-        return button({
-          contents: '<span class="note-fontsize-10">50%</span>',
-          tooltip: lang.image.resizeHalf,
-          click: context.createInvokeHandler('editor.resize', '0.5')
-        }).render();
-      });
-      context.memo('button.imageSize25', function () {
-        return button({
-          contents: '<span class="note-fontsize-10">25%</span>',
-          tooltip: lang.image.resizeQuarter,
-          click: context.createInvokeHandler('editor.resize', '0.25')
-        }).render();
-      });
-
-      // Float Buttons
-      context.memo('button.floatLeft', function () {
-        return button({
-          contents: ui.icon(options.icons.alignLeft),
-          tooltip: lang.image.floatLeft,
-          click: context.createInvokeHandler('editor.floatMe', 'left')
-        }).render();
-      });
-
-      context.memo('button.floatRight', function () {
-        return button({
-          contents: ui.icon(options.icons.alignRight),
-          tooltip: lang.image.floatRight,
-          click: context.createInvokeHandler('editor.floatMe', 'right')
-        }).render();
-      });
-
-      context.memo('button.floatNone', function () {
-        return button({
-          contents: ui.icon(options.icons.alignJustify),
-          tooltip: lang.image.floatNone,
-          click: context.createInvokeHandler('editor.floatMe', 'none')
-        }).render();
-      });
-
-      // Remove Buttons
-      context.memo('button.removeMedia', function () {
-        return button({
-          contents: ui.icon(options.icons.trash),
-          tooltip: lang.image.remove,
-          click: context.createInvokeHandler('editor.removeMedia')
-        }).render();
-      });
-    };
-
-    this.addLinkPopoverButtons = function () {
-      context.memo('button.linkDialogShow', function () {
-        return button({
-          contents: ui.icon(options.icons.link),
-          tooltip: lang.link.edit,
-          click: context.createInvokeHandler('linkDialog.show')
-        }).render();
-      });
-
-      context.memo('button.unlink', function () {
-        return button({
-          contents: ui.icon(options.icons.unlink),
-          tooltip: lang.link.unlink,
-          click: context.createInvokeHandler('editor.unlink')
-        }).render();
-      });
-    };
-
-    /**
-     * table : [
-     *  ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
-     *  ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]
-     * ],
-     */
-    this.addTablePopoverButtons = function () {
-      context.memo('button.addRowUp', function () {
-        return button({
-          className: 'btn-md',
-          contents: ui.icon(options.icons.rowAbove),
-          tooltip: lang.table.addRowAbove,
-          click: context.createInvokeHandler('editor.addRow', 'top')
-        }).render();
-      });
-      context.memo('button.addRowDown', function () {
-        return button({
-          className: 'btn-md',
-          contents: ui.icon(options.icons.rowBelow),
-          tooltip: lang.table.addRowBelow,
-          click: context.createInvokeHandler('editor.addRow', 'bottom')
-        }).render();
-      });
-      context.memo('button.addColLeft', function () {
-        return button({
-          className: 'btn-md',
-          contents: ui.icon(options.icons.colBefore),
-          tooltip: lang.table.addColLeft,
-          click: context.createInvokeHandler('editor.addCol', 'left')
-        }).render();
-      });
-      context.memo('button.addColRight', function () {
-        return button({
-          className: 'btn-md',
-          contents: ui.icon(options.icons.colAfter),
-          tooltip: lang.table.addColRight,
-          click: context.createInvokeHandler('editor.addCol', 'right')
-        }).render();
-      });
-      context.memo('button.deleteRow', function () {
-        return button({
-          className: 'btn-md',
-          contents: ui.icon(options.icons.rowRemove),
-          tooltip: lang.table.delRow,
-          click: context.createInvokeHandler('editor.deleteRow')
-        }).render();
-      });
-      context.memo('button.deleteCol', function () {
-        return button({
-          className: 'btn-md',
-          contents: ui.icon(options.icons.colRemove),
-          tooltip: lang.table.delCol,
-          click: context.createInvokeHandler('editor.deleteCol')
-        }).render();
-      });
-      context.memo('button.deleteTable', function () {
-        return button({
-          className: 'btn-md',
-          contents: ui.icon(options.icons.trash),
-          tooltip: lang.table.delTable,
-          click: context.createInvokeHandler('editor.deleteTable')
-        }).render();
-      });
-    };
-
-    this.build = function ($container, groups) {
-      for (var groupIdx = 0, groupLen = groups.length; groupIdx < groupLen; groupIdx++) {
-        var group = groups[groupIdx];
-        var groupName = group[0];
-        var buttons = group[1];
-
-        var $group = ui.buttonGroup({
-          className: 'note-' + groupName
-        }).render();
-
-        for (var idx = 0, len = buttons.length; idx < len; idx++) {
-          var btn = context.memo('button.' + buttons[idx]);
-          if (btn) {
-            $group.append(typeof btn === 'function' ? btn(context) : btn);
+    this.context.memo('button.height', () => {
+      return this.ui.buttonGroup([
+        this.button({
+          className: 'dropdown-toggle',
+          contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.textHeight), this.options),
+          tooltip: this.lang.font.height,
+          data: {
+            toggle: 'dropdown'
           }
+        }),
+        this.ui.dropdownCheck({
+          items: this.options.lineHeights,
+          checkClassName: this.options.icons.menuCheck,
+          className: 'dropdown-line-height',
+          click: this.context.createInvokeHandler('editor.lineHeight')
+        })
+      ]).render();
+    });
+
+    this.context.memo('button.table', () => {
+      return this.ui.buttonGroup([
+        this.button({
+          className: 'dropdown-toggle',
+          contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.table), this.options),
+          tooltip: this.lang.table.table,
+          data: {
+            toggle: 'dropdown'
+          }
+        }),
+        this.ui.dropdown({
+          className: 'note-table',
+          items: [
+            '<div class="note-dimension-picker">',
+            '  <div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>',
+            '  <div class="note-dimension-picker-highlighted"/>',
+            '  <div class="note-dimension-picker-unhighlighted"/>',
+            '</div>',
+            '<div class="note-dimension-display">1 x 1</div>'
+          ].join('')
+        })
+      ], {
+        callback: ($node) => {
+          const $catcher = $node.find('.note-dimension-picker-mousecatcher');
+          $catcher.css({
+            width: this.options.insertTableMaxSize.col + 'em',
+            height: this.options.insertTableMaxSize.row + 'em'
+          }).mousedown(this.context.createInvokeHandler('editor.insertTable'))
+            .on('mousemove', this.tableMoveHandler);
         }
-        $group.appendTo($container);
-      }
-    };
+      }).render();
+    });
 
-    /**
-     * @param {jQuery} [$container]
-     */
-    this.updateCurrentStyle = function ($container) {
-      var $cont = $container || $toolbar;
-      
-      var styleInfo = context.invoke('editor.currentStyle');
-      this.updateBtnStates($cont, {
-        '.note-btn-bold': function () {
-          return styleInfo['font-bold'] === 'bold';
-        },
-        '.note-btn-italic': function () {
-          return styleInfo['font-italic'] === 'italic';
-        },
-        '.note-btn-underline': function () {
-          return styleInfo['font-underline'] === 'underline';
-        },
-        '.note-btn-subscript': function () {
-          return styleInfo['font-subscript'] === 'subscript';
-        },
-        '.note-btn-superscript': function () {
-          return styleInfo['font-superscript'] === 'superscript';
-        },
-        '.note-btn-strikethrough': function () {
-          return styleInfo['font-strikethrough'] === 'strikethrough';
+    this.context.memo('button.link', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.link),
+        tooltip: this.lang.link.link + this.representShortcut('linkDialog.show'),
+        click: this.context.createInvokeHandler('linkDialog.show')
+      }).render();
+    });
+
+    this.context.memo('button.picture', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.picture),
+        tooltip: this.lang.image.image,
+        click: this.context.createInvokeHandler('imageDialog.show')
+      }).render();
+    });
+
+    this.context.memo('button.video', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.video),
+        tooltip: this.lang.video.video,
+        click: this.context.createInvokeHandler('videoDialog.show')
+      }).render();
+    });
+
+    this.context.memo('button.hr', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.minus),
+        tooltip: this.lang.hr.insert + this.representShortcut('insertHorizontalRule'),
+        click: this.context.createInvokeHandler('editor.insertHorizontalRule')
+      }).render();
+    });
+
+    this.context.memo('button.fullscreen', () => {
+      return this.button({
+        className: 'btn-fullscreen',
+        contents: this.ui.icon(this.options.icons.arrowsAlt),
+        tooltip: this.options.fullscreen,
+        click: this.context.createInvokeHandler('fullscreen.toggle')
+      }).render();
+    });
+
+    this.context.memo('button.codeview', () => {
+      return this.button({
+        className: 'btn-codeview',
+        contents: this.ui.icon(this.options.icons.code),
+        tooltip: this.options.codeview,
+        click: this.context.createInvokeHandler('codeview.toggle')
+      }).render();
+    });
+
+    this.context.memo('button.redo', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.redo),
+        tooltip: this.lang.history.redo + this.representShortcut('redo'),
+        click: this.context.createInvokeHandler('editor.redo')
+      }).render();
+    });
+
+    this.context.memo('button.undo', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.undo),
+        tooltip: this.lang.history.undo + this.representShortcut('undo'),
+        click: this.context.createInvokeHandler('editor.undo')
+      }).render();
+    });
+
+    this.context.memo('button.help', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.question),
+        tooltip: this.options.help,
+        click: this.context.createInvokeHandler('helpDialog.show')
+      }).render();
+    });
+  }
+
+  /**
+   * image : [
+   *   ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
+   *   ['float', ['floatLeft', 'floatRight', 'floatNone' ]],
+   *   ['remove', ['removeMedia']]
+   * ],
+   */
+  addImagePopoverButtons() {
+    // Image Size Buttons
+    this.context.memo('button.imageSize100', () => {
+      return this.button({
+        contents: '<span class="note-fontsize-10">100%</span>',
+        tooltip: this.lang.image.resizeFull,
+        click: this.context.createInvokeHandler('editor.resize', '1')
+      }).render();
+    });
+    this.context.memo('button.imageSize50', () => {
+      return this.button({
+        contents: '<span class="note-fontsize-10">50%</span>',
+        tooltip: this.lang.image.resizeHalf,
+        click: this.context.createInvokeHandler('editor.resize', '0.5')
+      }).render();
+    });
+    this.context.memo('button.imageSize25', () => {
+      return this.button({
+        contents: '<span class="note-fontsize-10">25%</span>',
+        tooltip: this.lang.image.resizeQuarter,
+        click: this.context.createInvokeHandler('editor.resize', '0.25')
+      }).render();
+    });
+
+    // Float Buttons
+    this.context.memo('button.floatLeft', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.alignLeft),
+        tooltip: this.lang.image.floatLeft,
+        click: this.context.createInvokeHandler('editor.floatMe', 'left')
+      }).render();
+    });
+
+    this.context.memo('button.floatRight', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.alignRight),
+        tooltip: this.lang.image.floatRight,
+        click: this.context.createInvokeHandler('editor.floatMe', 'right')
+      }).render();
+    });
+
+    this.context.memo('button.floatNone', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.alignJustify),
+        tooltip: this.lang.image.floatNone,
+        click: this.context.createInvokeHandler('editor.floatMe', 'none')
+      }).render();
+    });
+
+    // Remove Buttons
+    this.context.memo('button.removeMedia', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.trash),
+        tooltip: this.lang.image.remove,
+        click: this.context.createInvokeHandler('editor.removeMedia')
+      }).render();
+    });
+  }
+
+  addLinkPopoverButtons() {
+    this.context.memo('button.linkDialogShow', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.link),
+        tooltip: this.lang.link.edit,
+        click: this.context.createInvokeHandler('linkDialog.show')
+      }).render();
+    });
+
+    this.context.memo('button.unlink', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.unlink),
+        tooltip: this.lang.link.unlink,
+        click: this.context.createInvokeHandler('editor.unlink')
+      }).render();
+    });
+  }
+
+  /**
+   * table : [
+   *  ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
+   *  ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]
+   * ],
+   */
+  addTablePopoverButtons() {
+    this.context.memo('button.addRowUp', () => {
+      return this.button({
+        className: 'btn-md',
+        contents: this.ui.icon(this.options.icons.rowAbove),
+        tooltip: this.lang.table.addRowAbove,
+        click: this.context.createInvokeHandler('editor.addRow', 'top')
+      }).render();
+    });
+    this.context.memo('button.addRowDown', () => {
+      return this.button({
+        className: 'btn-md',
+        contents: this.ui.icon(this.options.icons.rowBelow),
+        tooltip: this.lang.table.addRowBelow,
+        click: this.context.createInvokeHandler('editor.addRow', 'bottom')
+      }).render();
+    });
+    this.context.memo('button.addColLeft', () => {
+      return this.button({
+        className: 'btn-md',
+        contents: this.ui.icon(this.options.icons.colBefore),
+        tooltip: this.lang.table.addColLeft,
+        click: this.context.createInvokeHandler('editor.addCol', 'left')
+      }).render();
+    });
+    this.context.memo('button.addColRight', () => {
+      return this.button({
+        className: 'btn-md',
+        contents: this.ui.icon(this.options.icons.colAfter),
+        tooltip: this.lang.table.addColRight,
+        click: this.context.createInvokeHandler('editor.addCol', 'right')
+      }).render();
+    });
+    this.context.memo('button.deleteRow', () => {
+      return this.button({
+        className: 'btn-md',
+        contents: this.ui.icon(this.options.icons.rowRemove),
+        tooltip: this.lang.table.delRow,
+        click: this.context.createInvokeHandler('editor.deleteRow')
+      }).render();
+    });
+    this.context.memo('button.deleteCol', () => {
+      return this.button({
+        className: 'btn-md',
+        contents: this.ui.icon(this.options.icons.colRemove),
+        tooltip: this.lang.table.delCol,
+        click: this.context.createInvokeHandler('editor.deleteCol')
+      }).render();
+    });
+    this.context.memo('button.deleteTable', () => {
+      return this.button({
+        className: 'btn-md',
+        contents: this.ui.icon(this.options.icons.trash),
+        tooltip: this.lang.table.delTable,
+        click: this.context.createInvokeHandler('editor.deleteTable')
+      }).render();
+    });
+  }
+
+  build($container, groups) {
+    for (let groupIdx = 0, groupLen = groups.length; groupIdx < groupLen; groupIdx++) {
+      const group = groups[groupIdx];
+      const groupName = group[0];
+      const buttons = group[1];
+
+      const $group = this.ui.buttonGroup({
+        className: 'note-' + groupName
+      }).render();
+
+      for (let idx = 0, len = buttons.length; idx < len; idx++) {
+        const btn = this.context.memo('button.' + buttons[idx]);
+        if (btn) {
+          $group.append(typeof btn === 'function' ? btn(this.context) : btn);
         }
+      }
+      $group.appendTo($container);
+    }
+  }
+
+  /**
+   * @param {jQuery} [$container]
+   */
+  updateCurrentStyle($container) {
+    const $cont = $container || this.$toolbar;
+
+    const styleInfo = this.context.invoke('editor.currentStyle');
+    this.updateBtnStates($cont, {
+      '.note-btn-bold': () => {
+        return styleInfo['font-bold'] === 'bold';
+      },
+      '.note-btn-italic': () => {
+        return styleInfo['font-italic'] === 'italic';
+      },
+      '.note-btn-underline': () => {
+        return styleInfo['font-underline'] === 'underline';
+      },
+      '.note-btn-subscript': () => {
+        return styleInfo['font-subscript'] === 'subscript';
+      },
+      '.note-btn-superscript': () => {
+        return styleInfo['font-superscript'] === 'superscript';
+      },
+      '.note-btn-strikethrough': () => {
+        return styleInfo['font-strikethrough'] === 'strikethrough';
+      }
+    });
+
+    if (styleInfo['font-family']) {
+      const fontNames = styleInfo['font-family'].split(',').map((name) => {
+        return name.replace(/[\'\"]/g, '')
+          .replace(/\s+$/, '')
+          .replace(/^\s+/, '');
       });
+      const fontName = lists.find(fontNames, this.isFontInstalled.bind(this));
 
-      if (styleInfo['font-family']) {
-        var fontNames = styleInfo['font-family'].split(',').map(function (name) {
-          return name.replace(/[\'\"]/g, '')
-            .replace(/\s+$/, '')
-            .replace(/^\s+/, '');
-        });
-        var fontName = list.find(fontNames, self.isFontInstalled);
-
-        $cont.find('.dropdown-fontname a').each(function () {
-          var $item = $(this);
-          // always compare string to avoid creating another func.
-          var isChecked = ($item.data('value') + '') === (fontName + '');
-          $item.toggleClass('checked', isChecked);
-        });
-        $cont.find('.note-current-fontname').text(fontName);
-      }
-
-      if (styleInfo['font-size']) {
-        var fontSize = styleInfo['font-size'];
-        $cont.find('.dropdown-fontsize a').each(function () {
-          var $item = $(this);
-          // always compare with string to avoid creating another func.
-          var isChecked = ($item.data('value') + '') === (fontSize + '');
-          $item.toggleClass('checked', isChecked);
-        });
-        $cont.find('.note-current-fontsize').text(fontSize);
-      }
-
-      if (styleInfo['line-height']) {
-        var lineHeight = styleInfo['line-height'];
-        $cont.find('.dropdown-line-height li a').each(function () {
-          // always compare with string to avoid creating another func.
-          var isChecked = ($(this).data('value') + '') === (lineHeight + '');
-          this.className = isChecked ? 'checked' : '';
-        });
-      }
-    };
-
-    this.updateBtnStates = function ($container, infos) {
-      $.each(infos, function (selector, pred) {
-        ui.toggleBtnActive($container.find(selector), pred());
+      $cont.find('.dropdown-fontname a').each((idx, item) => {
+        const $item = $(item);
+        // always compare string to avoid creating another func.
+        const isChecked = ($item.data('value') + '') === (fontName + '');
+        $item.toggleClass('checked', isChecked);
       });
-    };
+      $cont.find('.note-current-fontname').text(fontName);
+    }
 
-    this.tableMoveHandler = function (event) {
-      var PX_PER_EM = 18;
-      var $picker = $(event.target.parentNode); // target is mousecatcher
-      var $dimensionDisplay = $picker.next();
-      var $catcher = $picker.find('.note-dimension-picker-mousecatcher');
-      var $highlighted = $picker.find('.note-dimension-picker-highlighted');
-      var $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
+    if (styleInfo['font-size']) {
+      const fontSize = styleInfo['font-size'];
+      $cont.find('.dropdown-fontsize a').each((idx, item) => {
+        const $item = $(item);
+        // always compare with string to avoid creating another func.
+        const isChecked = ($item.data('value') + '') === (fontSize + '');
+        $item.toggleClass('checked', isChecked);
+      });
+      $cont.find('.note-current-fontsize').text(fontSize);
+    }
 
-      var posOffset;
-      // HTML5 with jQuery - e.offsetX is undefined in Firefox
-      if (event.offsetX === undefined) {
-        var posCatcher = $(event.target).offset();
-        posOffset = {
-          x: event.pageX - posCatcher.left,
-          y: event.pageY - posCatcher.top
-        };
-      } else {
-        posOffset = {
-          x: event.offsetX,
-          y: event.offsetY
-        };
-      }
+    if (styleInfo['line-height']) {
+      const lineHeight = styleInfo['line-height'];
+      $cont.find('.dropdown-line-height li a').each((idx, item) => {
+        // always compare with string to avoid creating another func.
+        const isChecked = ($(item).data('value') + '') === (lineHeight + '');
+        this.className = isChecked ? 'checked' : '';
+      });
+    }
+  }
 
-      var dim = {
-        c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
-        r: Math.ceil(posOffset.y / PX_PER_EM) || 1
+  updateBtnStates($container, infos) {
+    $.each(infos, (selector, pred) => {
+      this.ui.toggleBtnActive($container.find(selector), pred());
+    });
+  }
+
+  tableMoveHandler(event) {
+    const PX_PER_EM = 18;
+    const $picker = $(event.target.parentNode); // target is mousecatcher
+    const $dimensionDisplay = $picker.next();
+    const $catcher = $picker.find('.note-dimension-picker-mousecatcher');
+    const $highlighted = $picker.find('.note-dimension-picker-highlighted');
+    const $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
+
+    let posOffset;
+    // HTML5 with jQuery - e.offsetX is undefined in Firefox
+    if (event.offsetX === undefined) {
+      const posCatcher = $(event.target).offset();
+      posOffset = {
+        x: event.pageX - posCatcher.left,
+        y: event.pageY - posCatcher.top
       };
+    } else {
+      posOffset = {
+        x: event.offsetX,
+        y: event.offsetY
+      };
+    }
 
-      $highlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });
-      $catcher.data('value', dim.c + 'x' + dim.r);
-
-      if (3 < dim.c && dim.c < options.insertTableMaxSize.col) {
-        $unhighlighted.css({ width: dim.c + 1 + 'em'});
-      }
-
-      if (3 < dim.r && dim.r < options.insertTableMaxSize.row) {
-        $unhighlighted.css({ height: dim.r + 1 + 'em'});
-      }
-
-      $dimensionDisplay.html(dim.c + ' x ' + dim.r);
+    const dim = {
+      c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
+      r: Math.ceil(posOffset.y / PX_PER_EM) || 1
     };
-  };
 
-  return Buttons;
-});
+    $highlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });
+    $catcher.data('value', dim.c + 'x' + dim.r);
+
+    if (dim.c > 3 && dim.c < this.options.insertTableMaxSize.col) {
+      $unhighlighted.css({ width: dim.c + 1 + 'em' });
+    }
+
+    if (dim.r > 3 && dim.r < this.options.insertTableMaxSize.row) {
+      $unhighlighted.css({ height: dim.r + 1 + 'em' });
+    }
+
+    $dimensionDisplay.html(dim.c + ' x ' + dim.r);
+  }
+}
