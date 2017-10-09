@@ -1,117 +1,115 @@
-define([
-  'summernote/base/core/agent',
-  'summernote/base/core/dom'
-], function (agent, dom) {
+import env from '../core/env';
+import dom from '../core/dom';
 
-  var CodeMirror;
-  if (agent.hasCodeMirror) {
-    if (agent.isSupportAmd) {
-      require(['codemirror'], function (cm) {
-        CodeMirror = cm;
-      });
-    } else {
-      CodeMirror = window.CodeMirror;
+let CodeMirror;
+if (env.hasCodeMirror) {
+  if (env.isSupportAmd) {
+    require(['codemirror'], function(cm) {
+      CodeMirror = cm;
+    });
+  } else {
+    CodeMirror = window.CodeMirror;
+  }
+}
+
+/**
+ * @class Codeview
+ */
+export default class CodeView {
+  constructor(context) {
+    this.context = context;
+    this.$editor = context.layoutInfo.editor;
+    this.$editable = context.layoutInfo.editable;
+    this.$codable = context.layoutInfo.codable;
+    this.options = context.options;
+  }
+
+  sync() {
+    const isCodeview = this.isActivated();
+    if (isCodeview && env.hasCodeMirror) {
+      this.$codable.data('cmEditor').save();
     }
   }
 
   /**
-   * @class Codeview
+   * @return {Boolean}
    */
-  var Codeview = function (context) {
-    var $editor = context.layoutInfo.editor;
-    var $editable = context.layoutInfo.editable;
-    var $codable = context.layoutInfo.codable;
-    var options = context.options;
+  isActivated() {
+    return this.$editor.hasClass('codeview');
+  }
 
-    this.sync = function () {
-      var isCodeview = this.isActivated();
-      if (isCodeview && agent.hasCodeMirror) {
-        $codable.data('cmEditor').save();
-      }
-    };
+  /**
+   * toggle codeview
+   */
+  toggle() {
+    if (this.isActivated()) {
+      this.deactivate();
+    } else {
+      this.activate();
+    }
+    this.context.triggerEvent('codeview.toggled');
+  }
 
-    /**
-     * @return {Boolean}
-     */
-    this.isActivated = function () {
-      return $editor.hasClass('codeview');
-    };
+  /**
+   * activate code view
+   */
+  activate() {
+    this.$codable.val(dom.html(this.$editable, this.options.prettifyHtml));
+    this.$codable.height(this.$editable.height());
 
-    /**
-     * toggle codeview
-     */
-    this.toggle = function () {
-      if (this.isActivated()) {
-        this.deactivate();
-      } else {
-        this.activate();
-      }
-      context.triggerEvent('codeview.toggled');
-    };
+    this.context.invoke('toolbar.updateCodeview', true);
+    this.$editor.addClass('codeview');
+    this.$codable.focus();
 
-    /**
-     * activate code view
-     */
-    this.activate = function () {
-      $codable.val(dom.html($editable, options.prettifyHtml));
-      $codable.height($editable.height());
+    // activate CodeMirror as codable
+    if (env.hasCodeMirror) {
+      const cmEditor = CodeMirror.fromTextArea(this.$codable[0], this.options.codemirror);
 
-      context.invoke('toolbar.updateCodeview', true);
-      $editor.addClass('codeview');
-      $codable.focus();
-
-      // activate CodeMirror as codable
-      if (agent.hasCodeMirror) {
-        var cmEditor = CodeMirror.fromTextArea($codable[0], options.codemirror);
-
-        // CodeMirror TernServer
-        if (options.codemirror.tern) {
-          var server = new CodeMirror.TernServer(options.codemirror.tern);
-          cmEditor.ternServer = server;
-          cmEditor.on('cursorActivity', function (cm) {
-            server.updateArgHints(cm);
-          });
-        }
-
-        // CodeMirror hasn't Padding.
-        cmEditor.setSize(null, $editable.outerHeight());
-        $codable.data('cmEditor', cmEditor);
-      }
-    };
-
-    /**
-     * deactivate code view
-     */
-    this.deactivate = function () {
-      // deactivate CodeMirror as codable
-      if (agent.hasCodeMirror) {
-        var cmEditor = $codable.data('cmEditor');
-        $codable.val(cmEditor.getValue());
-        cmEditor.toTextArea();
+      // CodeMirror TernServer
+      if (this.options.codemirror.tern) {
+        const server = new CodeMirror.TernServer(this.options.codemirror.tern);
+        cmEditor.ternServer = server;
+        cmEditor.on('cursorActivity', (cm) => {
+          server.updateArgHints(cm);
+        });
       }
 
-      var value = dom.value($codable, options.prettifyHtml) || dom.emptyPara;
-      var isChange = $editable.html() !== value;
+      // CodeMirror hasn't Padding.
+      cmEditor.setSize(null, this.$editable.outerHeight());
+      this.$codable.data('cmEditor', cmEditor);
+    }
+  }
 
-      $editable.html(value);
-      $editable.height(options.height ? $codable.height() : 'auto');
-      $editor.removeClass('codeview');
+  /**
+   * deactivate code view
+   */
+  deactivate() {
+    // deactivate CodeMirror as codable
+    if (env.hasCodeMirror) {
+      const cmEditor = this.$codable.data('cmEditor');
+      this.$codable.val(cmEditor.getValue());
+      cmEditor.toTextArea();
+    }
 
-      if (isChange) {
-        context.triggerEvent('change', $editable.html(), $editable);
-      }
+    const value = dom.value(this.$codable, this.options.prettifyHtml) || dom.emptyPara;
+    const isChange = this.$editable.html() !== value;
 
-      $editable.focus();
+    this.$editable.html(value);
+    this.$editable.height(this.options.height ? this.$codable.height() : 'auto');
+    this.$editor.removeClass('codeview');
 
-      context.invoke('toolbar.updateCodeview', false);
-    };
+    if (isChange) {
+      this.context.triggerEvent('change', this.$editable.html(), this.$editable);
+    }
 
-    this.destroy = function () {
-      if (this.isActivated()) {
-        this.deactivate();
-      }
-    };
-  };
+    this.$editable.focus();
 
-  return Codeview;
-});
+    this.context.invoke('toolbar.updateCodeview', false);
+  }
+
+  destroy() {
+    if (this.isActivated()) {
+      this.deactivate();
+    }
+  }
+}

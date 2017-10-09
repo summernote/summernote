@@ -36,7 +36,7 @@ build/
 *.log
 
 # Ignoring dist folder content
-# dist/*
+dist/*
 
 # Ignoring visual studio
 .vs
@@ -45,3 +45,6 @@ build/
 selenium-server-standalone.jar
 test/reports/
 selenium-debug.log
+
+# Ignoring rpt2_cache
+.rpt2_cache

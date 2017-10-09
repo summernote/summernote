@@ -1,4 +1,4 @@
-(function ($) {
+(function($) {
   $.extend($.summernote.lang, {
     'es-EU': {
       font: {
@@ -41,10 +41,10 @@
         openInNewWindow: 'Leiho berri batean ireki'
       },
       table: {
-        table: 'Taula' //Tabla
+        table: 'Taula' // Tabla
       },
       hr: {
-        insert: 'Marra horizontala txertatu' //Insertar línea horizontal
+        insert: 'Marra horizontala txertatu' // Insertar línea horizontal
       },
       style: {
         style: 'Estiloa',
