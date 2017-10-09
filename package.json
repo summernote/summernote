@@ -73,7 +73,7 @@
     "karma-typescript-es6-transform": "^1.0.2",
     "load-grunt-tasks": "3.5.2",
     "nightwatch": "^0.9.16",
-    "serve-static": "^1.13.1"
+    "serve-static": "^1.13.1",
     "mocha": "^4.0.0",
     "phantomjs-prebuilt": "^2.1.15",
     "rollup": "^0.50.0",
