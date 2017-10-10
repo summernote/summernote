@@ -70,33 +70,15 @@ export default class Editor {
     /**
      * fontName Command for document.execCommand 
      */
-    this.fontName = this.wrapCommand((fontFamily) => { 
+    this.fontName = this.wrapCommand((fontFamily) => {
       // [workaround]
       //  - If the font family has spaces, you must enclose it in quotation marks.
-      if (agent.isChrome && fontFamily.indexOf(' ') > -1) {
+      if (env.isChrome && fontFamily.indexOf(' ') > -1) {
         fontFamily = '"' + fontFamily + '"';
       }
       document.execCommand('fontName', false, fontFamily);
     });
-    context.memo('help.fontName', lang.help.fontName);    
-
-    /**
-     * handle tab key
-     */
-    this.tab = function () {
-      var rng = this.createRange();
-      if (rng.isCollapsed() && rng.isOnCell()) {
-        table.tab(rng);
-      } else {
-        if (options.tabSize === 0) {
-          return false;
-        }
-        beforeCommand();
-        typing.insertTab(rng, options.tabSize);
-        afterCommand();
-      }
-    };
-    context.memo('help.tab', lang.help.tab);
+    context.memo('help.fontName', this.lang.help.fontName);
 
     for (let idx = 1; idx <= 6; idx++) {
       this['formatH' + idx] = ((idx) => {
