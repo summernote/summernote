@@ -69,13 +69,13 @@ export default class Editor {
     /**
      * fontName Command for document.execCommand 
      */
-    this.fontName = this.wrapCommand((fontFamily) => {
+    this.fontName = this.wrapCommand((fontName) => {
       // [workaround]
       //  - If the font family has spaces, you must enclose it in quotation marks.
-      if (env.isChrome && fontFamily.indexOf(' ') > -1) {
-        fontFamily = '"' + fontFamily + '"';
+      if (env.isChrome && fontName.indexOf(' ') > -1) {
+        fontName = `"${fontName}"`;
       }
-      document.execCommand('fontName', false, fontFamily);
+      document.execCommand('fontName', false, fontName);
     });
     context.memo('help.fontName', this.lang.help.fontName);
 
