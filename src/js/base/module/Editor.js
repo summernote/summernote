@@ -65,7 +65,6 @@ export default class Editor {
       })(commands[idx]);
       this.context.memo('help.' + commands[idx], this.lang.help[commands[idx]]);
     }
-    /* jshint ignore:end */
 
     /**
      * fontName Command for document.execCommand 
