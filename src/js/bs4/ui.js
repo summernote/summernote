@@ -2,7 +2,7 @@ import $ from 'jquery';
 import renderer from '../base/renderer';
 
 const editor = renderer.create('<div class="note-editor note-frame card"/>');
-const toolbar = renderer.create('<div class="note-toolbar card-header"/>');
+const toolbar = renderer.create('<div class="note-toolbar-wrapper"><div class="note-toolbar card-header"></div></div>');
 const editingArea = renderer.create('<div class="note-editing-area"/>');
 const codable = renderer.create('<textarea class="note-codable"/>');
 const editable = renderer.create('<div class="note-editable card-block" contentEditable="true"/>');
