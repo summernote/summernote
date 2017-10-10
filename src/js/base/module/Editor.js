@@ -52,7 +52,7 @@ export default class Editor {
     const commands = [
       'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
       'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
-      'formatBlock', 'removeFormat', 'backColor', 'fontName'
+      'formatBlock', 'removeFormat', 'backColor'
     ];
 
     for (let idx = 0, len = commands.length; idx < len; idx++) {
@@ -65,6 +65,19 @@ export default class Editor {
       })(commands[idx]);
       this.context.memo('help.' + commands[idx], this.lang.help[commands[idx]]);
     }
+
+    /**
+     * fontName Command for document.execCommand 
+     */
+    this.fontName = this.wrapCommand((fontName) => {
+      // [workaround]
+      //  - If the font family has spaces, you must enclose it in quotation marks.
+      if (env.isChrome && fontName.indexOf(' ') > -1) {
+        fontName = `"${fontName}"`;
+      }
+      document.execCommand('fontName', false, fontName);
+    });
+    context.memo('help.fontName', this.lang.help.fontName);
 
     for (let idx = 1; idx <= 6; idx++) {
       this['formatH' + idx] = ((idx) => {
