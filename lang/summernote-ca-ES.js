@@ -1,4 +1,4 @@
-(function ($) {
+(function($) {
   $.extend($.summernote.lang, {
     'ca-ES': {
       font: {
@@ -105,7 +105,7 @@
         documentStyle: 'Estil del document',
         extraKeys: 'Tecles adicionals'
       },
-      help : {
+      help: {
         'insertParagraph': 'Inserir paràgraf',
         'undo': 'Desfer l\'última acció',
         'redo': 'Refer l\'última acció',

@@ -3,8 +3,8 @@
 * Please `don't include dist/* files` on your commits.
 
 ## Coding convention
-* JSHint: http://www.jshint.com/about/
-* JSHint rule: https://github.com/summernote/summernote/blob/master/.jshintrc
+* eslint: https://eslint.org
+* eslint rule: https://github.com/summernote/summernote/blob/master/.eslintrc
 
 ## Document structure
 
@@ -18,7 +18,7 @@
 ```
 
 1. A body container has block node, but `<ul>` has only `<li>` nodes.
-2. A body container also has inline nodes sometimes. This inline nodes will be wraped with `<p>` when enter key pressed.
+2. A body container also has inline nodes sometimes. This inline nodes will be wrapped with `<p>` when enter key pressed.
 4. A block node only has inline nodes.
 5. A inline nodes has another inline nodes
 6. `#text` and void inline node doesn't have children.
@@ -61,4 +61,4 @@ karma: {
 
 ```
 You can use `Chrome`, `ChromeCanary`, `Firefox`, `Opera`, `Safari`, `PhantomJS` and `IE` beside `PhantomJS`.
-Once you run `npm test`, it will watch all javascript file. Therefore karma run tests every time you chage code.
+Once you run `npm test`, it will watch all javascript file. Therefore karma run tests every time you change code.

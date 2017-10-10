@@ -1,6 +1,6 @@
 // Starsoft Mongolia LLC Temuujin Ariunbold
 
-(function ($) {
+(function($) {
   $.extend($.summernote.lang, {
     'mn-MN': {
       font: {

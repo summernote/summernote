@@ -1,66 +1,61 @@
-define([
-  'summernote/base/core/func',
-  'summernote/base/core/list',
-  'summernote/base/core/dom',
-  'summernote/base/core/range',
-  'summernote/base/core/key'
-], function (func, list, dom, range, key) {
-  var AutoLink = function (context) {
-    var self = this;
-    var defaultScheme = 'http://';
-    var linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
+import $ from 'jquery';
+import lists from '../core/lists';
+import key from '../core/key';
 
+const defaultScheme = 'http://';
+const linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
+
+export default class AutoLink {
+  constructor(context) {
+    this.context = context;
     this.events = {
-      'summernote.keyup': function (we, e) {
+      'summernote.keyup': (we, e) => {
         if (!e.isDefaultPrevented()) {
-          self.handleKeyup(e);
+          this.handleKeyup(e);
         }
       },
-      'summernote.keydown': function (we, e) {
-        self.handleKeydown(e);
+      'summernote.keydown': (we, e) => {
+        this.handleKeydown(e);
       }
     };
+  }
 
-    this.initialize = function () {
+  initialize() {
+    this.lastWordRange = null;
+  }
+
+  destroy() {
+    this.lastWordRange = null;
+  }
+
+  replace() {
+    if (!this.lastWordRange) {
+      return;
+    }
+
+    const keyword = this.lastWordRange.toString();
+    const match = keyword.match(linkPattern);
+
+    if (match && (match[1] || match[2])) {
+      const link = match[1] ? keyword : defaultScheme + keyword;
+      const node = $('<a />').html(keyword).attr('href', link)[0];
+
+      this.lastWordRange.insertNode(node);
       this.lastWordRange = null;
-    };
+      this.context.invoke('editor.focus');
+    }
+  }
 
-    this.destroy = function () {
-      this.lastWordRange = null;
-    };
+  handleKeydown(e) {
+    if (lists.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
+      const wordRange = this.context.invoke('editor.createRange').getWordRange();
+      this.lastWordRange = wordRange;
+    }
+  }
 
-    this.replace = function () {
-      if (!this.lastWordRange) {
-        return;
-      }
-
-      var keyword = this.lastWordRange.toString();
-      var match = keyword.match(linkPattern);
-
-      if (match && (match[1] || match[2])) {
-        var link = match[1] ? keyword : defaultScheme + keyword;
-        var node = $('<a />').html(keyword).attr('href', link)[0];
-
-        this.lastWordRange.insertNode(node);
-        this.lastWordRange = null;
-        context.invoke('editor.focus');
-      }
-
-    };
-
-    this.handleKeydown = function (e) {
-      if (list.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
-        var wordRange = context.invoke('editor.createRange').getWordRange();
-        this.lastWordRange = wordRange;
-      }
-    };
-
-    this.handleKeyup = function (e) {
-      if (list.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
-        this.replace();
-      }
-    };
-  };
-
-  return AutoLink;
-});
+  handleKeyup(e) {
+    if (lists.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
+      this.replace();
+    }
+  }
+}

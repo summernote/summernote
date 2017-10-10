@@ -1,21 +1,5 @@
-module.exports = function (grunt) {
+module.exports = function(grunt) {
   'use strict';
-
-  /**
-   * read optional JSON from filepath
-   * @param {String} filepath
-   * @return {Object}
-   */
-  var readOptionalJSON = function (filepath) {
-    var data = {};
-    try {
-      data = grunt.file.readJSON(filepath);
-      // The concatenated file won't pass onevar
-      // But our modules can
-      delete data.onever;
-    } catch (e) { }
-    return data;
-  };
 
   var customLaunchers = {
     /*
@@ -24,6 +8,18 @@ module.exports = function (grunt) {
       browserName: 'internet explorer',
       version: '8.0',
       platform: 'windows XP'
+    },
+    'SL_EDGE': {
+      base: 'SauceLabs',
+      browserName: 'microsoftedge',
+      version: 'latest',
+      platform: 'windows 10'
+    },
+    'SL_SAFARI': {
+      base: 'SauceLabs',
+      browserName: 'safari',
+      version: 'latest',
+      platform: 'OS X 10.12'
     },
     */
     'SL_IE9': {
@@ -44,12 +40,6 @@ module.exports = function (grunt) {
       version: '11.0',
       platform: 'windows 8.1'
     },
-    'SL_EDGE': {
-      base: 'SauceLabs',
-      browserName: 'microsoftedge',
-      version: 'latest',
-      platform: 'windows 10'
-    },
     'SL_CHROME': {
       base: 'SauceLabs',
       browserName: 'chrome',
@@ -60,13 +50,7 @@ module.exports = function (grunt) {
       base: 'SauceLabs',
       browserName: 'firefox',
       version: 'latest',
-      platform: 'windows 8'
-    },
-    'SL_SAFARI': {
-      base: 'SauceLabs',
-      browserName: 'safari',
-      version: 'latest',
-      platform: 'OS X 10.10'
+      platform: 'windows 8'
     }
   };
 
@@ -76,53 +60,31 @@ module.exports = function (grunt) {
 
     // bulid source(grunt-build.js).
     build: {
-      all: [{
-        baseUrl: 'src/js',
-        startFile: 'intro.js',
-        endFile: 'outro.js',
-        entryFile: 'summernote/bs3/settings',
-        outFile: 'dist/summernote.js'
-      }, {
-        baseUrl: 'src/js',
-        startFile: 'intro.js',
-        endFile: 'outro.js',
-        entryFile: 'summernote/bs4/settings',
-        outFile: 'dist/summernote-bs4.js'
-      }, {
-        baseUrl: 'src/js',        // base url
-        startFile: 'intro.js',    // intro part
-        endFile: 'outro.js',      // outro part
-        entryFile: 'summernote/lite/settings',
-        outFile: 'dist/summernote-lite.js' // out file
-      }]
-    },
-
-    // for javascript convention.
-    jshint: {
-      all: {
-        src: [
-          'src/**/*.js',
-          'plugin/**/*.js',
-          'lang/**/*.js',
-          'Gruntfile.js',
-          'test/**/*.js',
-          '!test/coverage/**/*.js',
-          'build/*.js'
-        ],
-        options: {
-          jshintrc: true
-        }
+      bs3: {
+        input: './src/js/bs3/settings',
+        output: './dist/summernote.js'
       },
-      dist: {
-        src: 'dist/summernote.js',
-        options: readOptionalJSON('.jshintrc')
+      bs4: {
+        input: './src/js/bs4/settings',
+        output: './dist/summernote-bs4.js'
+      },
+      lite: {
+        input: './src/js/lite/settings',
+        output: './dist/summernote-lite.js'
       }
     },
 
-    jscs: {
-      src: ['*.js', 'src/**/*.js', 'test/**/*.js', 'plugin/**/*.js'],
-      gruntfile: 'Gruntfile.js',
-      build: 'build'
+    // for javascript convention.
+    eslint: {
+      target: [
+        'src/**/*.js',
+        'plugin/**/*.js',
+        'lang/**/*.js',
+        'Gruntfile.js',
+        'test/**/*.js',
+        '!coverage/**/*.js',
+        'build/*.js'
+      ]
     },
 
     // uglify: minify javascript
@@ -132,8 +94,8 @@ module.exports = function (grunt) {
       },
       all: {
         files: [
-            { 'dist/summernote.min.js': ['dist/summernote.js'] },
-            { 'dist/summernote-bs4.min.js': ['dist/summernote-bs4.js'] },
+          { 'dist/summernote.min.js': ['dist/summernote.js'] },
+          { 'dist/summernote-bs4.min.js': ['dist/summernote-bs4.js'] },
           {
             expand: true,
             cwd: 'dist/lang',
@@ -178,7 +140,7 @@ module.exports = function (grunt) {
     compress: {
       main: {
         options: {
-          archive: function () {
+          archive: function() {
             return 'dist/summernote-{{version}}-dist.zip'.replace(
               '{{version}}',
               grunt.config('pkg.version')
@@ -210,9 +172,16 @@ module.exports = function (grunt) {
 
     // watch source code change
     watch: {
-      all: {
-        files: ['src/less/*.less', 'src/js/**/*.js', 'test/unit/**/*.js'],
-        tasks: ['recess', 'lint'],
+      less: {
+        files: ['src/less/*.less'],
+        tasks: ['recess'],
+        options: {
+          livereload: true
+        }
+      },
+      script: {
+        files: ['src/js/**/*.js', 'test/unit/**/*.js'],
+        tasks: ['lint', 'build', 'karma:all'],
         options: {
           livereload: true
         }
@@ -231,13 +200,16 @@ module.exports = function (grunt) {
 
     karma: {
       options: {
-        configFile: './test/karma.conf.js'
+        configFile: './karma.conf.js'
+      },
+      watch: {
+        background: false,
+        singleRun: false
       },
       all: {
         // Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS, IE
         singleRun: true,
-        browsers: ['PhantomJS'],
-        reporters: ['progress']
+        browsers: ['PhantomJS']
       },
       dist: {
         singleRun: true,
@@ -246,7 +218,7 @@ module.exports = function (grunt) {
       travis: {
         singleRun: true,
         browsers: ['PhantomJS'],
-        reporters: ['progress', 'coverage']
+        reporters: ['dots', 'coverage']
       },
       saucelabs: {
         reporters: ['saucelabs'],
@@ -269,7 +241,7 @@ module.exports = function (grunt) {
         force: false
       },
       travis: {
-        src: 'test/coverage/**/lcov.info'
+        src: 'coverage/**/lcov.info'
       }
     },
     clean: {
@@ -308,10 +280,10 @@ module.exports = function (grunt) {
   grunt.registerTask('server', ['connect', 'watch']);
 
   // lint
-  grunt.registerTask('lint', ['jshint', 'jscs']);
+  grunt.registerTask('lint', ['eslint']);
 
   // test: unit test on test folder
-  grunt.registerTask('test', ['lint', 'karma:all']);
+  grunt.registerTask('test', ['lint', 'karma:watch']);
 
   // test: unit test on travis
   grunt.registerTask('test-travis', ['lint', 'karma:travis']);

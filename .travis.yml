@@ -1,15 +1,20 @@
 language: node_js
 sudo: false
-node_js: 7
+node_js: 8
 cache:
   directories:
     - node_modules
+before_install:
+- sudo add-apt-repository ppa:fontforge/fontforge -y
+- sudo apt-get update -q
+- sudo apt-get install fontforge ttfautohint -y
 before_script:
 - node --version
 - npm --version
 script:
 - npm run test-travis
 - if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then npm run test-saucelabs; fi
+- if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then npm run test:e2e-saucelabs; fi
 before_deploy:
 - npm install
 - npm run build

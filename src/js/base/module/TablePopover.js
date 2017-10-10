@@ -1,74 +1,71 @@
-define([
-  'summernote/base/core/agent',
-  'summernote/base/core/func',
-  'summernote/base/core/list',
-  'summernote/base/core/dom'
-], function (agent, func, list, dom) {
-  var TablePopover = function (context) {
-    var self = this;
-    var ui = $.summernote.ui;
+import $ from 'jquery';
+import env from '../core/env';
+import lists from '../core/lists';
+import dom from '../core/dom';
 
-    var options = context.options;
+export default class TablePopover {
+  constructor(context) {
+    this.context = context;
 
+    this.ui = $.summernote.ui;
+    this.options = context.options;
     this.events = {
-      'summernote.mousedown': function (we, e) {
-        self.update(e.target);
+      'summernote.mousedown': (we, e) => {
+        this.update(e.target);
       },
-      'summernote.keyup summernote.scroll summernote.change': function () {
-        self.update();
+      'summernote.keyup summernote.scroll summernote.change': () => {
+        this.update();
       },
-      'summernote.disable': function () {
-        self.hide();
-      }
-    };
-
-    this.shouldInitialize = function () {
-      return !list.isEmpty(options.popover.table);
-    };
-
-    this.initialize = function () {
-      this.$popover = ui.popover({
-        className: 'note-table-popover'
-      }).render().appendTo(options.container);
-      var $content = this.$popover.find('.popover-content,.note-popover-content');
-
-      context.invoke('buttons.build', $content, options.popover.table);
-
-      // [workaround] Disable Firefox's default table editor
-      if (agent.isFF) {
-        document.execCommand('enableInlineTableEditing', false, false);
-      }
-    };
-
-    this.destroy = function () {
-      this.$popover.remove();
-    };
-
-    this.update = function (target) {
-      if (context.isDisabled()) {
-        return false;
-      }
-
-      var isCell = dom.isCell(target);
-
-      if (isCell) {
-        var pos = dom.posFromPlaceholder(target);
-        this.$popover.css({
-          display: 'block',
-          left: pos.left,
-          top: pos.top
-        });
-      } else {
+      'summernote.disable': () => {
         this.hide();
       }
-
-      return isCell;
     };
+  }
 
-    this.hide = function () {
-      this.$popover.hide();
-    };
-  };
+  shouldInitialize() {
+    return !lists.isEmpty(this.options.popover.table);
+  }
 
-  return TablePopover;
-});
+  initialize() {
+    this.$popover = this.ui.popover({
+      className: 'note-table-popover'
+    }).render().appendTo(this.options.container);
+    const $content = this.$popover.find('.popover-content,.note-popover-content');
+
+    this.context.invoke('buttons.build', $content, this.options.popover.table);
+
+    // [workaround] Disable Firefox's default table editor
+    if (env.isFF) {
+      document.execCommand('enableInlineTableEditing', false, false);
+    }
+  }
+
+  destroy() {
+    this.$popover.remove();
+  }
+
+  update(target) {
+    if (this.context.isDisabled()) {
+      return false;
+    }
+
+    const isCell = dom.isCell(target);
+
+    if (isCell) {
+      const pos = dom.posFromPlaceholder(target);
+      this.$popover.css({
+        display: 'block',
+        left: pos.left,
+        top: pos.top
+      });
+    } else {
+      this.hide();
+    }
+
+    return isCell;
+  }
+
+  hide() {
+    this.$popover.hide();
+  }
+}
