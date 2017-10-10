@@ -14,12 +14,12 @@
 
 #### Any background context you want to provide?
 
-- the gem needed to be updated... yada yada
+- the gem needed to be updated...
 
 #### What are the relevant tickets?
 
 
-#### Screenshots (if for frontend)
+#### Screenshot (if for frontend)
 
 
 ### Checklist
