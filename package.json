@@ -29,10 +29,8 @@
     "test-saucelabs": "grunt saucelabs-test",
     "coveralls": "grunt coveralls:travis"
   },
-  "dependencies": {
-    "bootstrap": "^3.3.7"
-  },
   "devDependencies": {
+    "bootstrap": "^3.3.7",
     "chai": "^4.1.2",
     "chai-spies": "^0.7.1",
     "chromedriver": "^2.32.3",
@@ -57,7 +55,7 @@
     "grunt-karma": "^2.0.0",
     "grunt-recess": "^1.0.1",
     "grunt-saucelabs": "^9.0.0",
-    "grunt-webfont": "^1.6.0",
+    "grunt-webfont": "^1.7.1",
     "jquery": "^3.2.1",
     "karma": "1.7.1",
     "karma-chrome-launcher": "^2.2.0",
@@ -74,7 +72,7 @@
     "load-grunt-tasks": "3.5.2",
     "nightwatch": "^0.9.16",
     "serve-static": "^1.13.1",
-    "mocha": "^4.0.0",
+    "mocha": "^4.0.1",
     "phantomjs-prebuilt": "^2.1.15",
     "rollup": "^0.50.0",
     "rollup-plugin-eslint": "^4.0.0",
