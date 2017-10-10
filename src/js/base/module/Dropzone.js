@@ -1,4 +1,5 @@
 import $ from 'jquery';
+
 export default class Dropzone {
   constructor(context) {
     this.context = context;

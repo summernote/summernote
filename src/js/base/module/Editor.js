@@ -12,137 +12,387 @@ import Typing from '../editing/Typing';
 import Table from '../editing/Table';
 import Bullet from '../editing/Bullet';
 
-var KEY_BOGUS = 'bogus';
+const KEY_BOGUS = 'bogus';
 
 /**
  * @class Editor
  */
-export default function(context) {
-  var self = this;
+export default class Editor {
+  constructor(context) {
+    this.context = context;
 
-  var $note = context.layoutInfo.note;
-  var $editor = context.layoutInfo.editor;
-  var $editable = context.layoutInfo.editable;
-  var options = context.options;
-  var lang = options.langInfo;
+    this.$note = context.layoutInfo.note;
+    this.$editor = context.layoutInfo.editor;
+    this.$editable = context.layoutInfo.editable;
+    this.options = context.options;
+    this.lang = this.options.langInfo;
 
-  var editable = $editable[0];
-  var lastRange = null;
+    this.editable = this.$editable[0];
+    this.lastRange = null;
 
-  var style = new Style();
-  var table = new Table();
-  var typing = new Typing();
-  var bullet = new Bullet();
-  var history = new History($editable);
+    this.style = new Style();
+    this.table = new Table();
+    this.typing = new Typing();
+    this.bullet = new Bullet();
+    this.history = new History(this.$editable);
 
-  this.initialize = function() {
-    // bind custom events
-    $editable.on('keydown', function(event) {
-      if (event.keyCode === key.code.ENTER) {
-        context.triggerEvent('enter', event);
+    this.context.memo('help.undo', this.lang.help.undo);
+    this.context.memo('help.redo', this.lang.help.redo);
+    this.context.memo('help.tab', this.lang.help.tab);
+    this.context.memo('help.untab', this.lang.help.untab);
+    this.context.memo('help.insertParagraph', this.lang.help.insertParagraph);
+    this.context.memo('help.insertOrderedList', this.lang.help.insertOrderedList);
+    this.context.memo('help.insertUnorderedList', this.lang.help.insertUnorderedList);
+    this.context.memo('help.indent', this.lang.help.indent);
+    this.context.memo('help.outdent', this.lang.help.outdent);
+    this.context.memo('help.formatPara', this.lang.help.formatPara);
+    this.context.memo('help.insertHorizontalRule', this.lang.help.insertHorizontalRule);
+
+    // native commands(with execCommand), generate function for execCommand
+    const commands = [
+      'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
+      'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
+      'formatBlock', 'removeFormat', 'backColor', 'fontName'
+    ];
+
+    for (let idx = 0, len = commands.length; idx < len; idx++) {
+      this[commands[idx]] = ((sCmd) => {
+        return (value) => {
+          this.beforeCommand();
+          document.execCommand(sCmd, false, value);
+          this.afterCommand(true);
+        };
+      })(commands[idx]);
+      this.context.memo('help.' + commands[idx], this.lang.help[commands[idx]]);
+    }
+
+    for (let idx = 1; idx <= 6; idx++) {
+      this['formatH' + idx] = ((idx) => {
+        return () => {
+          this.formatBlock('H' + idx);
+        };
+      })(idx);
+      this.context.memo('help.formatH' + idx, this.lang.help['formatH' + idx]);
+    };
+
+    this.insertParagraph = this.wrapCommand(() => {
+      this.typing.insertParagraph(this.editable);
+    });
+
+    this.insertOrderedList = this.wrapCommand(() => {
+      this.bullet.insertOrderedList(this.editable);
+    });
+
+    this.insertUnorderedList = this.wrapCommand(() => {
+      this.bullet.insertUnorderedList(this.editable);
+    });
+
+    this.indent = this.wrapCommand(() => {
+      this.bullet.indent(this.editable);
+    });
+
+    this.outdent = this.wrapCommand(() => {
+      this.bullet.outdent(this.editable);
+    });
+
+    /**
+     * insertNode
+     * insert node
+     * @param {Node} node
+     */
+    this.insertNode = this.wrapCommand((node) => {
+      const rng = this.createRange();
+      rng.insertNode(node);
+      range.createFromNodeAfter(node).select();
+    });
+
+    /**
+     * insert text
+     * @param {String} text
+     */
+    this.insertText = this.wrapCommand((text) => {
+      const rng = this.createRange();
+      const textNode = rng.insertNode(dom.createText(text));
+      range.create(textNode, dom.nodeLength(textNode)).select();
+    });
+    /**
+     * paste HTML
+     * @param {String} markup
+     */
+    this.pasteHTML = this.wrapCommand((markup) => {
+      const contents = this.createRange().pasteHTML(markup);
+      range.createFromNodeAfter(lists.last(contents)).select();
+    });
+
+    /**
+     * formatBlock
+     *
+     * @param {String} tagName
+     */
+    this.formatBlock = this.wrapCommand((tagName, $target) => {
+      const onApplyCustomStyle = this.options.callbacks.onApplyCustomStyle;
+      if (onApplyCustomStyle) {
+        onApplyCustomStyle.call(this, $target, this.context, this.onFormatBlock);
+      } else {
+        this.onFormatBlock(tagName, $target);
       }
-      context.triggerEvent('keydown', event);
+    });
+
+    /**
+     * insert horizontal rule
+     */
+    this.insertHorizontalRule = this.wrapCommand(() => {
+      const hrNode = this.createRange().insertNode(dom.create('HR'));
+      if (hrNode.nextSibling) {
+        range.create(hrNode.nextSibling, 0).normalize().select();
+      }
+    });
+
+    /**
+     * lineHeight
+     * @param {String} value
+     */
+    this.lineHeight = this.wrapCommand((value) => {
+      this.style.stylePara(this.createRange(), {
+        lineHeight: value
+      });
+    });
+
+    /**
+     * create link (command)
+     *
+     * @param {Object} linkInfo
+     */
+    this.createLink = this.wrapCommand((linkInfo) => {
+      let linkUrl = linkInfo.url;
+      const linkText = linkInfo.text;
+      const isNewWindow = linkInfo.isNewWindow;
+      let rng = linkInfo.range || this.createRange();
+      const isTextChanged = rng.toString() !== linkText;
+
+      // handle spaced urls from input
+      if (typeof linkUrl === 'string') {
+        linkUrl = linkUrl.trim();
+      }
+
+      if (this.options.onCreateLink) {
+        linkUrl = this.options.onCreateLink(linkUrl);
+      } else {
+        // if url doesn't match an URL schema, set http:// as default
+        linkUrl = /^[A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?/.test(linkUrl)
+          ? linkUrl : 'http://' + linkUrl;
+      }
+
+      let anchors = [];
+      if (isTextChanged) {
+        rng = rng.deleteContents();
+        const anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
+        anchors.push(anchor);
+      } else {
+        anchors = this.style.styleNodes(rng, {
+          nodeName: 'A',
+          expandClosestSibling: true,
+          onlyPartialContains: true
+        });
+      }
+
+      $.each(anchors, (idx, anchor) => {
+        $(anchor).attr('href', linkUrl);
+        if (isNewWindow) {
+          $(anchor).attr('target', '_blank');
+        } else {
+          $(anchor).removeAttr('target');
+        }
+      });
+
+      const startRange = range.createFromNodeBefore(lists.head(anchors));
+      const startPoint = startRange.getStartPoint();
+      const endRange = range.createFromNodeAfter(lists.last(anchors));
+      const endPoint = endRange.getEndPoint();
+
+      range.create(
+        startPoint.node,
+        startPoint.offset,
+        endPoint.node,
+        endPoint.offset
+      ).select();
+    });
+
+    /**
+     * setting color
+     *
+     * @param {Object} sObjColor  color code
+     * @param {String} sObjColor.foreColor foreground color
+     * @param {String} sObjColor.backColor background color
+     */
+    this.color = this.wrapCommand((colorInfo) => {
+      const foreColor = colorInfo.foreColor;
+      const backColor = colorInfo.backColor;
+
+      if (foreColor) { document.execCommand('foreColor', false, foreColor); }
+      if (backColor) { document.execCommand('backColor', false, backColor); }
+    });
+
+    /**
+     * Set foreground color
+     *
+     * @param {String} colorCode foreground color code
+     */
+    this.foreColor = this.wrapCommand((colorInfo) => {
+      document.execCommand('styleWithCSS', false, true);
+      document.execCommand('foreColor', false, colorInfo);
+    });
+
+    /**
+     * insert Table
+     *
+     * @param {String} dimension of table (ex : "5x5")
+     */
+    this.insertTable = this.wrapCommand((dim) => {
+      const dimension = dim.split('x');
+
+      const rng = this.createRange().deleteContents();
+      rng.insertNode(this.table.createTable(dimension[0], dimension[1], this.options));
+    });
+
+    /**
+     * remove media object
+     */
+    this.removeMedia = this.wrapCommand(() => {
+      const $target = $(this.restoreTarget()).detach();
+      this.context.triggerEvent('media.delete', $target, this.$editable);
+    });
+
+    /**
+     * float me
+     *
+     * @param {String} value
+     */
+    this.floatMe = this.wrapCommand((value) => {
+      const $target = $(this.restoreTarget());
+      $target.toggleClass('note-float-left', value === 'left');
+      $target.toggleClass('note-float-right', value === 'right');
+      $target.css('float', value);
+    });
+
+    /**
+     * resize overlay element
+     * @param {String} value
+     */
+    this.resize = this.wrapCommand((value) => {
+      const $target = $(this.restoreTarget());
+      $target.css({
+        width: value * 100 + '%',
+        height: ''
+      });
+    });
+  }
+
+  initialize() {
+    // bind custom events
+    this.$editable.on('keydown', (event) => {
+      if (event.keyCode === key.code.ENTER) {
+        this.context.triggerEvent('enter', event);
+      }
+      this.context.triggerEvent('keydown', event);
 
       if (!event.isDefaultPrevented()) {
-        if (options.shortcuts) {
-          self.handleKeyMap(event);
+        if (this.options.shortcuts) {
+          this.handleKeyMap(event);
         } else {
-          self.preventDefaultEditableShortCuts(event);
+          this.preventDefaultEditableShortCuts(event);
         }
       }
-    }).on('keyup', function(event) {
-      context.triggerEvent('keyup', event);
-    }).on('focus', function(event) {
-      context.triggerEvent('focus', event);
-    }).on('blur', function(event) {
-      context.triggerEvent('blur', event);
-    }).on('mousedown', function(event) {
-      context.triggerEvent('mousedown', event);
-    }).on('mouseup', function(event) {
-      context.triggerEvent('mouseup', event);
-    }).on('scroll', function(event) {
-      context.triggerEvent('scroll', event);
-    }).on('paste', function(event) {
-      context.triggerEvent('paste', event);
+    }).on('keyup', (event) => {
+      this.context.triggerEvent('keyup', event);
+    }).on('focus', (event) => {
+      this.context.triggerEvent('focus', event);
+    }).on('blur', (event) => {
+      this.context.triggerEvent('blur', event);
+    }).on('mousedown', (event) => {
+      this.context.triggerEvent('mousedown', event);
+    }).on('mouseup', (event) => {
+      this.context.triggerEvent('mouseup', event);
+    }).on('scroll', (event) => {
+      this.context.triggerEvent('scroll', event);
+    }).on('paste', (event) => {
+      this.context.triggerEvent('paste', event);
     });
 
     // init content before set event
-    $editable.html(dom.html($note) || dom.emptyPara);
+    this.$editable.html(dom.html(this.$note) || dom.emptyPara);
 
-    // [workaround] IE doesn't have input events for contentEditable
-    // - see: https://goo.gl/4bfIvA
-    var changeEventName = env.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
-    $editable.on(changeEventName, func.debounce(function() {
-      context.triggerEvent('change', $editable.html());
+    this.$editable.on(env.inputEventName, func.debounce(() => {
+      this.context.triggerEvent('change', this.$editable.html());
     }, 100));
 
-    $editor.on('focusin', function(event) {
-      context.triggerEvent('focusin', event);
-    }).on('focusout', function(event) {
-      context.triggerEvent('focusout', event);
+    this.$editor.on('focusin', (event) => {
+      this.context.triggerEvent('focusin', event);
+    }).on('focusout', (event) => {
+      this.context.triggerEvent('focusout', event);
     });
 
-    if (!options.airMode) {
-      if (options.width) {
-        $editor.outerWidth(options.width);
+    if (!this.options.airMode) {
+      if (this.options.width) {
+        this.$editor.outerWidth(this.options.width);
       }
-      if (options.height) {
-        $editable.outerHeight(options.height);
+      if (this.options.height) {
+        this.$editable.outerHeight(this.options.height);
       }
-      if (options.maxHeight) {
-        $editable.css('max-height', options.maxHeight);
+      if (this.options.maxHeight) {
+        this.$editable.css('max-height', this.options.maxHeight);
       }
-      if (options.minHeight) {
-        $editable.css('min-height', options.minHeight);
+      if (this.options.minHeight) {
+        this.$editable.css('min-height', this.options.minHeight);
       }
     }
 
-    history.recordUndo();
-  };
+    this.history.recordUndo();
+  }
 
-  this.destroy = function() {
-    $editable.off();
-  };
+  destroy() {
+    this.$editable.off();
+  }
 
-  this.handleKeyMap = function(event) {
-    var keyMap = options.keyMap[env.isMac ? 'mac' : 'pc'];
-    var keys = [];
+  handleKeyMap(event) {
+    const keyMap = this.options.keyMap[env.isMac ? 'mac' : 'pc'];
+    const keys = [];
 
     if (event.metaKey) { keys.push('CMD'); }
     if (event.ctrlKey && !event.altKey) { keys.push('CTRL'); }
     if (event.shiftKey) { keys.push('SHIFT'); }
 
-    var keyName = key.nameFromCode[event.keyCode];
+    const keyName = key.nameFromCode[event.keyCode];
     if (keyName) {
       keys.push(keyName);
     }
 
-    var eventName = keyMap[keys.join('+')];
+    const eventName = keyMap[keys.join('+')];
     if (eventName) {
-      if (context.invoke(eventName) !== false) {
+      if (this.context.invoke(eventName) !== false) {
         event.preventDefault();
       }
     } else if (key.isEdit(event.keyCode)) {
       this.afterCommand();
     }
-  };
+  }
 
-  this.preventDefaultEditableShortCuts = function(event) {
+  preventDefaultEditableShortCuts(event) {
     // B(Bold, 66) / I(Italic, 73) / U(Underline, 85)
     if ((event.ctrlKey || event.metaKey) &&
       lists.contains([66, 73, 85], event.keyCode)) {
       event.preventDefault();
     }
-  };
+  }
 
   /**
    * create range
    * @return {WrappedRange}
    */
-  this.createRange = function() {
+  createRange() {
     this.focus();
-    return range.create(editable);
-  };
+    return range.create(this.editable);
+  }
 
   /**
    * saveRange
@@ -151,36 +401,36 @@ export default function(context) {
    *
    * @param {Boolean} [thenCollapse=false]
    */
-  this.saveRange = function(thenCollapse) {
-    lastRange = this.createRange();
+  saveRange(thenCollapse) {
+    this.lastRange = this.createRange();
     if (thenCollapse) {
-      lastRange.collapse().select();
+      this.lastRange.collapse().select();
     }
-  };
+  }
 
   /**
    * restoreRange
    *
    * restore lately range
    */
-  this.restoreRange = function() {
-    if (lastRange) {
-      lastRange.select();
+  restoreRange() {
+    if (this.lastRange) {
+      this.lastRange.select();
       this.focus();
     }
-  };
+  }
 
-  this.saveTarget = function(node) {
-    $editable.data('target', node);
-  };
+  saveTarget(node) {
+    this.$editable.data('target', node);
+  }
 
-  this.clearTarget = function() {
-    $editable.removeData('target');
-  };
+  clearTarget() {
+    this.$editable.removeData('target');
+  }
 
-  this.restoreTarget = function() {
-    return $editable.data('target');
-  };
+  restoreTarget() {
+    return this.$editable.data('target');
+  }
 
   /**
    * currentStyle
@@ -188,13 +438,13 @@ export default function(context) {
    * current style
    * @return {Object|Boolean} unfocus
    */
-  this.currentStyle = function() {
-    var rng = range.create();
+  currentStyle() {
+    let rng = range.create();
     if (rng) {
       rng = rng.normalize();
     }
-    return rng ? style.current(rng) : style.fromNode($editable);
-  };
+    return rng ? this.style.current(rng) : this.style.fromNode(this.$editable);
+  }
 
   /**
    * style from node
@@ -202,138 +452,89 @@ export default function(context) {
    * @param {jQuery} $node
    * @return {Object}
    */
-  this.styleFromNode = function($node) {
-    return style.fromNode($node);
-  };
+  styleFromNode($node) {
+    return this.style.fromNode($node);
+  }
 
   /**
    * undo
    */
-  this.undo = function() {
-    context.triggerEvent('before.command', $editable.html());
-    history.undo();
-    context.triggerEvent('change', $editable.html());
-  };
-  context.memo('help.undo', lang.help.undo);
+  undo() {
+    this.context.triggerEvent('before.command', this.$editable.html());
+    this.history.undo();
+    this.context.triggerEvent('change', this.$editable.html());
+  }
 
   /**
    * redo
    */
-  this.redo = function() {
-    context.triggerEvent('before.command', $editable.html());
-    history.redo();
-    context.triggerEvent('change', $editable.html());
-  };
-  context.memo('help.redo', lang.help.redo);
+  redo() {
+    this.context.triggerEvent('before.command', this.$editable.html());
+    this.history.redo();
+    this.context.triggerEvent('change', this.$editable.html());
+  }
 
   /**
    * before command
    */
-  var beforeCommand = this.beforeCommand = function() {
-    context.triggerEvent('before.command', $editable.html());
+  beforeCommand() {
+    this.context.triggerEvent('before.command', this.$editable.html());
     // keep focus on editable before command execution
-    self.focus();
-  };
+    this.focus();
+  }
 
   /**
    * after command
    * @param {Boolean} isPreventTrigger
    */
-  var afterCommand = this.afterCommand = function(isPreventTrigger) {
-    history.recordUndo();
+  afterCommand(isPreventTrigger) {
+    this.history.recordUndo();
     if (!isPreventTrigger) {
-      context.triggerEvent('change', $editable.html());
+      this.context.triggerEvent('change', this.$editable.html());
     }
-  };
-
-  // native commands(with execCommand), generate function for execCommand
-  var commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
-    'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
-    'formatBlock', 'removeFormat',
-    'backColor', 'fontName'];
-
-  for (var idx = 0, len = commands.length; idx < len; idx++) {
-    this[commands[idx]] = (function(sCmd) {
-      return function(value) {
-        beforeCommand();
-        document.execCommand(sCmd, false, value);
-        afterCommand(true);
-      };
-    })(commands[idx]);
-    context.memo('help.' + commands[idx], lang.help[commands[idx]]);
   }
 
   /**
    * handle tab key
    */
-  this.tab = function() {
-    var rng = this.createRange();
+  tab() {
+    const rng = this.createRange();
     if (rng.isCollapsed() && rng.isOnCell()) {
-      table.tab(rng);
+      this.table.tab(rng);
     } else {
-      if (options.tabSize === 0) {
+      if (this.options.tabSize === 0) {
         return false;
       }
-      beforeCommand();
-      typing.insertTab(rng, options.tabSize);
-      afterCommand();
+      this.beforeCommand();
+      this.typing.insertTab(rng, this.options.tabSize);
+      this.afterCommand();
     }
-  };
-  context.memo('help.tab', lang.help.tab);
+  }
 
   /**
    * handle shift+tab key
    */
-  this.untab = function() {
-    var rng = this.createRange();
+  untab() {
+    const rng = this.createRange();
     if (rng.isCollapsed() && rng.isOnCell()) {
-      table.tab(rng, true);
+      this.table.tab(rng, true);
     } else {
-      if (options.tabSize === 0) {
+      if (this.options.tabSize === 0) {
         return false;
       }
     }
-  };
-  context.memo('help.untab', lang.help.untab);
+  }
 
   /**
    * run given function between beforeCommand and afterCommand
    */
-  this.wrapCommand = function(fn) {
-    return function() {
-      beforeCommand();
-      fn.apply(self, arguments);
-      afterCommand();
+  wrapCommand(fn) {
+    return () => {
+      this.beforeCommand();
+      fn.apply(this, arguments);
+      this.afterCommand();
     };
-  };
-
-  /**
-   * insert paragraph
-   */
-  this.insertParagraph = this.wrapCommand(function() {
-    typing.insertParagraph(editable);
-  });
-  context.memo('help.insertParagraph', lang.help.insertParagraph);
-
-  this.insertOrderedList = this.wrapCommand(function() {
-    bullet.insertOrderedList(editable);
-  });
-  context.memo('help.insertOrderedList', lang.help.insertOrderedList);
-
-  this.insertUnorderedList = this.wrapCommand(function() {
-    bullet.insertUnorderedList(editable);
-  });
-  context.memo('help.insertUnorderedList', lang.help.insertUnorderedList);
-
-  this.indent = this.wrapCommand(function() {
-    bullet.indent(editable);
-  });
-  context.memo('help.indent', lang.help.indent);
-
-  this.outdent = this.wrapCommand(function() {
-    bullet.outdent(editable);
-  });
-  context.memo('help.outdent', lang.help.outdent);
+  }
 
   /**
    * insert image
@@ -342,9 +543,9 @@ export default function(context) {
    * @param {String|Function} param
    * @return {Promise}
    */
-  this.insertImage = function(src, param) {
-    return createImage(src, param).then(function($image) {
-      beforeCommand();
+  insertImage(src, param) {
+    return createImage(src, param).then(($image) => {
+      this.beforeCommand();
 
       if (typeof param === 'function') {
         param($image);
@@ -352,80 +553,59 @@ export default function(context) {
         if (typeof param === 'string') {
           $image.attr('data-filename', param);
         }
-        $image.css('width', Math.min($editable.width(), $image.width()));
+        $image.css('width', Math.min(this.$editable.width(), $image.width()));
       }
 
       $image.show();
-      range.create(editable).insertNode($image[0]);
+      range.create(this.editable).insertNode($image[0]);
       range.createFromNodeAfter($image[0]).select();
-      afterCommand();
-    }).fail(function(e) {
-      context.triggerEvent('image.upload.error', e);
+      this.afterCommand();
+    }).fail((e) => {
+      this.context.triggerEvent('image.upload.error', e);
     });
-  };
+  }
 
   /**
    * insertImages
    * @param {File[]} files
    */
-  this.insertImages = function(files) {
-    $.each(files, function(idx, file) {
-      var filename = file.name;
-      if (options.maximumImageFileSize && options.maximumImageFileSize < file.size) {
-        context.triggerEvent('image.upload.error', lang.image.maximumFileSizeError);
+  insertImages(files) {
+    $.each(files, (idx, file) => {
+      const filename = file.name;
+      if (this.options.maximumImageFileSize && this.options.maximumImageFileSize < file.size) {
+        this.context.triggerEvent('image.upload.error', this.lang.image.maximumFileSizeError);
       } else {
-        readFileAsDataURL(file).then(function(dataURL) {
-          return self.insertImage(dataURL, filename);
-        }).fail(function() {
-          context.triggerEvent('image.upload.error');
+        readFileAsDataURL(file).then((dataURL) => {
+          return this.insertImage(dataURL, filename);
+        }).fail(() => {
+          this.context.triggerEvent('image.upload.error');
         });
       }
     });
-  };
+  }
 
   /**
    * insertImagesOrCallback
    * @param {File[]} files
    */
-  this.insertImagesOrCallback = function(files) {
-    var callbacks = options.callbacks;
+  insertImagesOrCallback(files) {
+    const callbacks = this.options.callbacks;
 
-    // If onImageUpload options setted
+    // If onImageUpload this.options setted
     if (callbacks.onImageUpload) {
-      context.triggerEvent('image.upload', files);
-    // else insert Image as dataURL
+      this.context.triggerEvent('image.upload', files);
+      // else insert Image as dataURL
     } else {
       this.insertImages(files);
     }
-  };
-
-  /**
-   * insertNode
-   * insert node
-   * @param {Node} node
-   */
-  this.insertNode = this.wrapCommand(function(node) {
-    var rng = this.createRange();
-    rng.insertNode(node);
-    range.createFromNodeAfter(node).select();
-  });
-
-  /**
-   * insert text
-   * @param {String} text
-   */
-  this.insertText = this.wrapCommand(function(text) {
-    var rng = this.createRange();
-    var textNode = rng.insertNode(dom.createText(text));
-    range.create(textNode, dom.nodeLength(textNode)).select();
-  });
+  }
 
   /**
    * return selected plain text
    * @return {String} text
    */
-  this.getSelectedText = function() {
-    var rng = this.createRange();
+  getSelectedText() {
+    let rng = this.createRange();
 
     // if range on anchor, expand range with anchor
     if (rng.isOnAnchor()) {
@@ -433,73 +613,40 @@ export default function(context) {
     }
 
     return rng.toString();
-  };
+  }
 
-  /**
-   * paste HTML
-   * @param {String} markup
-   */
-  this.pasteHTML = this.wrapCommand(function(markup) {
-    var contents = this.createRange().pasteHTML(markup);
-    range.createFromNodeAfter(lists.last(contents)).select();
-  });
-
-  /**
-   * formatBlock
-   *
-   * @param {String} tagName
-   */
-  this.formatBlock = this.wrapCommand(function(tagName, $target) {
-    var onApplyCustomStyle = context.options.callbacks.onApplyCustomStyle;
-    if (onApplyCustomStyle) {
-      onApplyCustomStyle.call(this, $target, context, this.onFormatBlock);
-    } else {
-      this.onFormatBlock(tagName, $target);
-    }
-  });
-
-  this.onFormatBlock = function(tagName, $target) {
+  onFormatBlock(tagName, $target) {
     // [workaround] for MSIE, IE need `<`
     tagName = env.isMSIE ? '<' + tagName + '>' : tagName;
     document.execCommand('FormatBlock', false, tagName);
 
     // support custom class 
     if ($target && $target.length) {
-      var className = $target[0].className || '';
+      const className = $target[0].className || '';
       if (className) {
-        var currentRange = this.createRange();
+        const currentRange = this.createRange();
 
-        var $parent = $([currentRange.sc, currentRange.ec]).closest(tagName);
+        const $parent = $([currentRange.sc, currentRange.ec]).closest(tagName);
         $parent.addClass(className);
       }
     }
-  };
+  }
 
-  this.formatPara = function() {
+  formatPara() {
     this.formatBlock('P');
-  };
-  context.memo('help.formatPara', lang.help.formatPara);
-
-  for (idx = 1; idx <= 6; idx++) {
-    this['formatH' + idx] = (function(idx) {
-      return function() {
-        this.formatBlock('H' + idx);
-      };
-    }(idx));
-    context.memo('help.formatH' + idx, lang.help['formatH' + idx]);
-  };
+  }
 
   /**
    * fontSize
    *
    * @param {String} value - px
    */
-  this.fontSize = function(value) {
-    var rng = this.createRange();
+  fontSize(value) {
+    const rng = this.createRange();
 
     if (rng && rng.isCollapsed()) {
-      var spans = style.styleNodes(rng);
-      var firstSpan = lists.head(spans);
+      const spans = this.style.styleNodes(rng);
+      const firstSpan = lists.head(spans);
 
       $(spans).css({
         'font-size': value + 'px'
@@ -510,138 +657,34 @@ export default function(context) {
       if (firstSpan && !dom.nodeLength(firstSpan)) {
         firstSpan.innerHTML = dom.ZERO_WIDTH_NBSP_CHAR;
         range.createFromNodeAfter(firstSpan.firstChild).select();
-        $editable.data(KEY_BOGUS, firstSpan);
+        this.$editable.data(KEY_BOGUS, firstSpan);
       }
     } else {
-      beforeCommand();
-      $(style.styleNodes(rng)).css({
+      this.beforeCommand();
+      $(this.style.styleNodes(rng)).css({
         'font-size': value + 'px'
       });
-      afterCommand();
+      this.afterCommand();
     }
-  };
-
-  /**
-   * insert horizontal rule
-   */
-  this.insertHorizontalRule = this.wrapCommand(function() {
-    var hrNode = this.createRange().insertNode(dom.create('HR'));
-    if (hrNode.nextSibling) {
-      range.create(hrNode.nextSibling, 0).normalize().select();
-    }
-  });
-  context.memo('help.insertHorizontalRule', lang.help.insertHorizontalRule);
-
-  /**
-   * remove bogus node and character
-   */
-  this.removeBogus = function() {
-    var bogusNode = $editable.data(KEY_BOGUS);
-    if (!bogusNode) {
-      return;
-    }
-
-    var textNode = lists.find(lists.from(bogusNode.childNodes), dom.isText);
-
-    var bogusCharIdx = textNode.nodeValue.indexOf(dom.ZERO_WIDTH_NBSP_CHAR);
-    if (bogusCharIdx !== -1) {
-      textNode.deleteData(bogusCharIdx, 1);
-    }
-
-    if (dom.isEmpty(bogusNode)) {
-      dom.remove(bogusNode);
-    }
-
-    $editable.removeData(KEY_BOGUS);
-  };
-
-  /**
-   * lineHeight
-   * @param {String} value
-   */
-  this.lineHeight = this.wrapCommand(function(value) {
-    style.stylePara(this.createRange(), {
-      lineHeight: value
-    });
-  });
+  }
 
   /**
    * unlink
    *
    * @type command
    */
-  this.unlink = function() {
-    var rng = this.createRange();
+  unlink() {
+    let rng = this.createRange();
     if (rng.isOnAnchor()) {
-      var anchor = dom.ancestor(rng.sc, dom.isAnchor);
+      const anchor = dom.ancestor(rng.sc, dom.isAnchor);
       rng = range.createFromNode(anchor);
       rng.select();
 
-      beforeCommand();
+      this.beforeCommand();
       document.execCommand('unlink');
-      afterCommand();
+      this.afterCommand();
     }
-  };
-
-  /**
-   * create link (command)
-   *
-   * @param {Object} linkInfo
-   */
-  this.createLink = this.wrapCommand(function(linkInfo) {
-    var linkUrl = linkInfo.url;
-    var linkText = linkInfo.text;
-    var isNewWindow = linkInfo.isNewWindow;
-    var rng = linkInfo.range || this.createRange();
-    var isTextChanged = rng.toString() !== linkText;
-
-    // handle spaced urls from input
-    if (typeof linkUrl === 'string') {
-      linkUrl = linkUrl.trim();
-    }
-
-    if (options.onCreateLink) {
-      linkUrl = options.onCreateLink(linkUrl);
-    } else {
-      // if url doesn't match an URL schema, set http:// as default
-      linkUrl = /^[A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?/.test(linkUrl)
-        ? linkUrl : 'http://' + linkUrl;
-    }
-
-    var anchors = [];
-    if (isTextChanged) {
-      rng = rng.deleteContents();
-      var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
-      anchors.push(anchor);
-    } else {
-      anchors = style.styleNodes(rng, {
-        nodeName: 'A',
-        expandClosestSibling: true,
-        onlyPartialContains: true
-      });
-    }
-
-    $.each(anchors, function(idx, anchor) {
-      $(anchor).attr('href', linkUrl);
-      if (isNewWindow) {
-        $(anchor).attr('target', '_blank');
-      } else {
-        $(anchor).removeAttr('target');
-      }
-    });
-
-    var startRange = range.createFromNodeBefore(lists.head(anchors));
-    var startPoint = startRange.getStartPoint();
-    var endRange = range.createFromNodeAfter(lists.last(anchors));
-    var endPoint = endRange.getEndPoint();
-
-    range.create(
-      startPoint.node,
-      startPoint.offset,
-      endPoint.node,
-      endPoint.offset
-    ).select();
-  });
+  }
 
   /**
    * returns link info
@@ -652,12 +695,12 @@ export default function(context) {
    * @return {Boolean} [return.isNewWindow=true]
    * @return {String} [return.url=""]
    */
-  this.getLinkInfo = function() {
-    var rng = this.createRange().expand(dom.isAnchor);
+  getLinkInfo() {
+    const rng = this.createRange().expand(dom.isAnchor);
 
     // Get the first anchor on range(for edit).
-    var $anchor = $(lists.head(rng.nodes(dom.isAnchor)));
-    var linkInfo = {
+    const $anchor = $(lists.head(rng.nodes(dom.isAnchor)));
+    const linkInfo = {
       range: rng,
       text: rng.toString(),
       url: $anchor.length ? $anchor.attr('href') : ''
@@ -669,149 +712,63 @@ export default function(context) {
     }
 
     return linkInfo;
-  };
+  }
 
-  /**
-   * setting color
-   *
-   * @param {Object} sObjColor  color code
-   * @param {String} sObjColor.foreColor foreground color
-   * @param {String} sObjColor.backColor background color
-   */
-  this.color = this.wrapCommand(function(colorInfo) {
-    var foreColor = colorInfo.foreColor;
-    var backColor = colorInfo.backColor;
-
-    if (foreColor) { document.execCommand('foreColor', false, foreColor); }
-    if (backColor) { document.execCommand('backColor', false, backColor); }
-  });
-
-  /**
-   * Set foreground color
-   *
-   * @param {String} colorCode foreground color code
-   */
-  this.foreColor = this.wrapCommand(function(colorInfo) {
-    document.execCommand('styleWithCSS', false, true);
-    document.execCommand('foreColor', false, colorInfo);
-  });
-
-  /**
-   * insert Table
-   *
-   * @param {String} dimension of table (ex : "5x5")
-   */
-  this.insertTable = this.wrapCommand(function(dim) {
-    var dimension = dim.split('x');
-
-    var rng = this.createRange().deleteContents();
-    rng.insertNode(table.createTable(dimension[0], dimension[1], options));
-  });
-
-  /**
-   * @method addRow
-   *
-   *
-   */
-  this.addRow = function(position) {
-    var rng = this.createRange($editable);
+  addRow(position) {
+    const rng = this.createRange(this.$editable);
     if (rng.isCollapsed() && rng.isOnCell()) {
-      beforeCommand();
-      table.addRow(rng, position);
-      afterCommand();
+      this.beforeCommand();
+      this.table.addRow(rng, position);
+      this.afterCommand();
     }
-  };
+  }
 
-  /**
-   * @method addCol
-   *
-   *
-   */
-  this.addCol = function(position) {
-    var rng = this.createRange($editable);
+  addCol(position) {
+    const rng = this.createRange(this.$editable);
     if (rng.isCollapsed() && rng.isOnCell()) {
-      beforeCommand();
-      table.addCol(rng, position);
-      afterCommand();
+      this.beforeCommand();
+      this.table.addCol(rng, position);
+      this.afterCommand();
     }
-  };
+  }
 
-  /**
-   * @method deleteRow
-   *
-   *
-   */
-  this.deleteRow = function() {
-    var rng = this.createRange($editable);
+  deleteRow() {
+    const rng = this.createRange(this.$editable);
     if (rng.isCollapsed() && rng.isOnCell()) {
-      beforeCommand();
-      table.deleteRow(rng);
-      afterCommand();
+      this.beforeCommand();
+      this.table.deleteRow(rng);
+      this.afterCommand();
     }
-  };
+  }
 
-  /**
-   * @method deleteCol
-   *
-   *
-   */
-  this.deleteCol = function() {
-    var rng = this.createRange($editable);
+  deleteCol() {
+    const rng = this.createRange(this.$editable);
     if (rng.isCollapsed() && rng.isOnCell()) {
-      beforeCommand();
-      table.deleteCol(rng);
-      afterCommand();
+      this.beforeCommand();
+      this.table.deleteCol(rng);
+      this.afterCommand();
     }
-  };
+  }
 
-  /**
-   * @method deleteTable
-   *
-   *
-   */
-  this.deleteTable = function() {
-    var rng = this.createRange($editable);
+  deleteTable() {
+    const rng = this.createRange(this.$editable);
     if (rng.isCollapsed() && rng.isOnCell()) {
-      beforeCommand();
-      table.deleteTable(rng);
-      afterCommand();
+      this.beforeCommand();
+      this.table.deleteTable(rng);
+      this.afterCommand();
     }
-  };
-
-  /**
-   * float me
-   *
-   * @param {String} value
-   */
-  this.floatMe = this.wrapCommand(function(value) {
-    var $target = $(this.restoreTarget());
-    $target.toggleClass('note-float-left', value === 'left');
-    $target.toggleClass('note-float-right', value === 'right');
-    $target.css('float', value);
-  });
-
-  /**
-   * resize overlay element
-   * @param {String} value
-   */
-  this.resize = this.wrapCommand(function(value) {
-    var $target = $(this.restoreTarget());
-    $target.css({
-      width: value * 100 + '%',
-      height: ''
-    });
-  });
+  }
 
   /**
    * @param {Position} pos
    * @param {jQuery} $target - target element
    * @param {Boolean} [bKeepRatio] - keep ratio
    */
-  this.resizeTo = function(pos, $target, bKeepRatio) {
-    var imageSize;
+  resizeTo(pos, $target, bKeepRatio) {
+    let imageSize;
     if (bKeepRatio) {
-      var newRatio = pos.y / pos.x;
-      var ratio = $target.data('ratio');
+      const newRatio = pos.y / pos.x;
+      const ratio = $target.data('ratio');
       imageSize = {
         width: ratio > newRatio ? pos.x : pos.y / ratio,
         height: ratio > newRatio ? pos.x * ratio : pos.y
@@ -824,46 +781,38 @@ export default function(context) {
     }
 
     $target.css(imageSize);
-  };
-
-  /**
-   * remove media object
-   */
-  this.removeMedia = this.wrapCommand(function() {
-    var $target = $(this.restoreTarget()).detach();
-    context.triggerEvent('media.delete', $target, $editable);
-  });
+  }
 
   /**
    * returns whether editable area has focus or not.
    */
-  this.hasFocus = function() {
-    return $editable.is(':focus');
-  };
+  hasFocus() {
+    return this.$editable.is(':focus');
+  }
 
   /**
    * set focus
    */
-  this.focus = function() {
+  focus() {
     // [workaround] Screen will move when page is scolled in IE.
     //  - do focus when not focused
     if (!this.hasFocus()) {
-      $editable.focus();
+      this.$editable.focus();
     }
-  };
+  }
 
   /**
    * returns whether contents is empty or not.
    * @return {Boolean}
    */
-  this.isEmpty = function() {
-    return dom.isEmpty($editable[0]) || dom.emptyPara === $editable.html();
-  };
+  isEmpty() {
+    return dom.isEmpty(this.$editable[0]) || dom.emptyPara === this.$editable.html();
+  }
 
   /**
    * Removes all contents and restores the editable instance to an _emptyPara_.
    */
-  this.empty = function() {
-    context.invoke('code', dom.emptyPara);
-  };
+  empty() {
+    this.context.invoke('code', dom.emptyPara);
+  }
 }

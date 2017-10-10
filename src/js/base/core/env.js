@@ -75,6 +75,10 @@ const isSupportTouch =
    (navigator.MaxTouchPoints > 0) ||
    (navigator.msMaxTouchPoints > 0));
 
+// [workaround] IE doesn't have input events for contentEditable
+// - see: https://goo.gl/4bfIvA
+const inputEventName = isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
+
 /**
  * @class core.env
  *
@@ -98,5 +102,6 @@ export default {
   isSupportTouch,
   hasCodeMirror,
   isFontInstalled,
-  isW3CRangeSupport: !!document.createRange
+  isW3CRangeSupport: !!document.createRange,
+  inputEventName
 };
