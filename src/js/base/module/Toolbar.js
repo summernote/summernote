@@ -3,11 +3,16 @@ export default class Toolbar {
   constructor(context) {
     this.context = context;
 
+    this.$window = $(window);
+    this.$document = $(document);
+
     this.ui = $.summernote.ui;
     this.$note = context.layoutInfo.note;
     this.$editor = context.layoutInfo.editor;
     this.$toolbar = context.layoutInfo.toolbar;
     this.options = context.options;
+
+    this.followScroll = this.followScroll.bind(this);
   }
 
   shouldInitialize() {
@@ -34,10 +39,58 @@ export default class Toolbar {
     });
 
     this.context.invoke('buttons.updateCurrentStyle');
+    if (this.options.followingToolbar) {
+      this.$window.on('scroll resize', this.followScroll);
+    }
   }
 
   destroy() {
     this.$toolbar.children().remove();
+
+    if (this.options.followingToolbar) {
+      this.$window.off('scroll resize', this.followScroll);
+    }
+  }
+
+  followScroll() {
+    if (this.$editor.hasClass('fullscreen')) {
+      return false;
+    }
+
+    const $toolbarWrapper = this.$toolbar.parent('.note-toolbar-wrapper');
+    const editorHeight = this.$editor.outerHeight();
+    const editorWidth = this.$editor.width();
+
+    const toolbarHeight = this.$toolbar.height();
+    $toolbarWrapper.css({
+      height: toolbarHeight
+    });
+
+    // check if the web app is currently using another static bar
+    let otherBarHeight = 0;
+    if (this.options.otherStaticBar) {
+      otherBarHeight = $(this.options.otherStaticBar).outerHeight();
+    }
+
+    const currentOffset = this.$document.scrollTop();
+    const editorOffsetTop = this.$editor.offset().top;
+    const editorOffsetBottom = editorOffsetTop + editorHeight;
+    const activateOffset = editorOffsetTop - otherBarHeight;
+    const deactivateOffsetBottom = editorOffsetBottom - otherBarHeight - toolbarHeight;
+
+    if ((currentOffset > activateOffset) && (currentOffset < deactivateOffsetBottom)) {
+      this.$toolbar.css({
+        position: 'fixed',
+        top: otherBarHeight,
+        width: editorWidth
+      });
+    } else {
+      this.$toolbar.css({
+        position: 'relative',
+        top: 0,
+        width: '100%'
+      });
+    }
   }
 
   changeContainer(isFullscreen) {
