@@ -28,49 +28,63 @@ module.exports = (() => {
         desiredCapabilities: {
           browserName: 'internet explorer',
           platform: 'Windows 7',
-          version: '9.0'
+          version: '9.0',
+          build: 'build-' + process.env.TRAVIS_JOB_NUMBER,
+          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
         }
       },
       ie10: {
         desiredCapabilities: {
           browserName: 'internet explorer',
           platform: 'Windows 8',
-          version: '10.0'
+          version: '10.0',
+          build: 'build-' + process.env.TRAVIS_JOB_NUMBER,
+          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
         }
       },
       ie11: {
         desiredCapabilities: {
           browserName: 'internet explorer',
           platform: 'Windows 8.1',
-          version: '11.0'
+          version: '11.0',
+          build: 'build-' + process.env.TRAVIS_JOB_NUMBER,
+          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
         }
       },
       ie_edge: {
         desiredCapabilities: {
           browserName: 'microsoftedge',
           platform: 'Windows 10',
-          version: 'latest'
+          version: 'latest',
+          build: 'build-' + process.env.TRAVIS_JOB_NUMBER,
+          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
         }
       },
       chrome: {
         desiredCapabilities: {
           browserName: 'chrome',
           platform: 'Windows 8',
-          version: 'latest'
+          version: 'latest',
+          build: 'build-' + process.env.TRAVIS_JOB_NUMBER,
+          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
         }
       },
       firefox: {
         desiredCapabilities: {
           browserName: 'firefox',
           platform: 'Windows 8',
-          version: 'latest'
+          version: 'latest',
+          build: 'build-' + process.env.TRAVIS_JOB_NUMBER,
+          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
         }
       },
       safari: {
         desiredCapabilities: {
           browserName: 'safari',
           platform: 'OS X 10.10',
-          version: 'latest'
+          version: 'latest',
+          build: 'build-' + process.env.TRAVIS_JOB_NUMBER,
+          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
         }
       }
     }
@@ -78,13 +92,12 @@ module.exports = (() => {
 
   if (process.env.TRAVIS) {
     config.test_settings.default = {
+      launch_url: 'http://localhost:3000/test/e2e/html',
       silent: true,
       selenium_host: 'ondemand.saucelabs.com',
       selenium_port: 80,
       username: process.env.SAUCE_USERNAME,
       access_key: process.env.SAUCE_ACCESS_KEY,
-      build: 'build-' + process.env.TRAVIS_JOB_NUMBER,
-      'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
       filter: 'test/e2e/**/*.test.js'
     };
   }
