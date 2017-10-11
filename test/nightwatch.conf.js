@@ -84,7 +84,8 @@ module.exports = (() => {
       username: process.env.SAUCE_USERNAME,
       access_key: process.env.SAUCE_ACCESS_KEY,
       build: 'build-' + process.env.TRAVIS_JOB_NUMBER,
-      'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
+      'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+      filter: 'test/e2e/**/*.test.js'
     };
   }
 
