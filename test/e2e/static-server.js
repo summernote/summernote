@@ -11,9 +11,10 @@ var server = http.createServer(function onRequest(req, res) {
 
 // Listen
 server.listen(3000, function() {
-  console.log('Launched static-server on 3000 port.');
+  console.log('Launched static-server on 3000 port');
 });
 
 process.on('SIGTERM', function() {
+  console.log('static-server terminated');
   process.exit(0);
 });
