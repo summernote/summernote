@@ -77,6 +77,7 @@ $.summernote = $.extend($.summernote, {
     ],
 
     // popover
+    popatmouse: true, // true|false toggle if popover (image) opens at mouse position
     popover: {
       image: [
         ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
