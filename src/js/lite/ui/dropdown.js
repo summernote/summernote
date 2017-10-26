@@ -1,4 +1,4 @@
-var dropdown = (function() {
+var DropdownUI = (function() {
   var Dropdown = function($node, options) {
     var self = this;
 
@@ -77,4 +77,4 @@ $(document).on('click.note-dropdown-menu', function(e) {
   $(e.target).closest('.note-dropdown-menu').parent().removeClass('open');
 });
 
-export default dropdown;
+export default DropdownUI;

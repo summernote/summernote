@@ -1,4 +1,4 @@
-var popover = (function() {
+var PopoverUI = (function() {
   var Popover = function($node, options) {
     var self = this;
 
@@ -109,4 +109,4 @@ var popover = (function() {
   };
 })();
 
-export default popover;
+export default PopoverUI;
