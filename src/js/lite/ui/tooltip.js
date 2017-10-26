@@ -1,4 +1,4 @@
-var tooltip = (function() {
+var TooltipUI = (function() {
   var Tooltip = function($node, options) {
     var self = this;
 
@@ -106,4 +106,4 @@ var tooltip = (function() {
     }
   };
 })();
-export default tooltip;
+export default TooltipUI;

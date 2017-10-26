@@ -1,4 +1,4 @@
-var modal = (function() {
+var ModalUI = (function() {
   var Modal = function($node, options) {
     var self = this;
 
@@ -45,4 +45,4 @@ var modal = (function() {
   };
 })();
 
-export default modal;
+export default ModalUI;
