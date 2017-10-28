@@ -40,14 +40,14 @@ export default class ImagePopover {
 
   update(target) {
     if (dom.isImg(target)) {
-        const pos = dom.posFromPlaceholder(target);
-        const posEditor = dom.posFromPlaceholder(this.editable);
+      const pos = dom.posFromPlaceholder(target);
+      const posEditor = dom.posFromPlaceholder(this.editable);
 
-        this.$popover.css({
-          display: 'block',
-          left: options.popatmouse ? event.pageX -20 : pos.left,
-          top: options.popatmouse ? event.pageY : Math.min(pos.top, posEditor.top)
-        });
+      this.$popover.css({
+        display: 'block',
+        left: options.popatmouse ? event.pageX -20 : pos.left,
+        top: options.popatmouse ? event.pageY : Math.min(pos.top, posEditor.top)
+      });
 
     } else {
       this.hide();
