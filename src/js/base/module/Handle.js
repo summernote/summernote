@@ -120,7 +120,7 @@ export default class Handle {
       const origImageObj = new Image();
       origImageObj.src = $image.attr("src");
 
-      const sizingText = imageSize.w + 'x' + imageSize.h + ' (Original: '+ origImageObj.width + 'x' + origImageObj.height +')';
+      const sizingText = imageSize.w + 'x' + imageSize.h + ' (Original: '+ origImageObj.width + 'x' + origImageObj.height + ')';
       this.context.invoke('editor.saveTarget', target);
     } else {
       this.hide();
