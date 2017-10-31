@@ -77,6 +77,7 @@ $.summernote = $.extend($.summernote, {
     ],
 
     // popover
+    popatmouse: true,
     popover: {
       image: [
         ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
