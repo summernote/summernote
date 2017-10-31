@@ -117,8 +117,10 @@ export default class Handle {
         height: imageSize.h
       }).data('target', $image); // save current image element.
 
-      const sizingText = imageSize.w + 'x' + imageSize.h;
-      $selection.find('.note-control-selection-info').text(sizingText);
+      const originalSizeObject = new Image();
+      originalSizeObject.src = $image.attr("src");
+
+      const sizingText = imageSize.w + 'x' + imageSize.h + ' ('+ originalSizeObject.width + 'x' + originalSizeObject.height +')';
       this.context.invoke('editor.saveTarget', target);
     } else {
       this.hide();
