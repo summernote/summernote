@@ -118,9 +118,10 @@ export default class Handle {
       }).data('target', $image); // save current image element.
 
       const origImageObj = new Image();
-      origImageObj.src = $image.attr("src");
+      origImageObj.src = $image.attr('src');
 
-      const sizingText = imageSize.w + 'x' + imageSize.h + ' (Original: '+ origImageObj.width + 'x' + origImageObj.height + ')';
+      const sizingText = imageSize.w + 'x' + imageSize.h + ' (Original: ' + origImageObj.width + 'x' + origImageObj.height + ')';
+      $selection.find('.note-control-selection-info').text(sizingText);
       this.context.invoke('editor.saveTarget', target);
     } else {
       this.hide();
