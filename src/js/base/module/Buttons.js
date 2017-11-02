@@ -701,7 +701,7 @@ export default class Buttons {
         const isChecked = ($item.data('value') + '') === (fontName + '');
         $item.toggleClass('checked', isChecked);
       });
-      $cont.find('.note-current-fontname').text(fontName);
+      $cont.find('.note-current-fontname').text(fontName).css('font-family', fontName);
     }
 
     if (styleInfo['font-size']) {
