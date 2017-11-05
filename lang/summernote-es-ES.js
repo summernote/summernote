@@ -32,7 +32,8 @@
         maximumFileSize: 'Tamaño máximo del archivo',
         maximumFileSizeError: 'Has superado el tamaño máximo del archivo.',
         url: 'URL de la imagen',
-        remove: 'Eliminar imagen'
+        remove: 'Eliminar imagen',
+        original: 'Original'
       },
       video: {
         video: 'Vídeo',

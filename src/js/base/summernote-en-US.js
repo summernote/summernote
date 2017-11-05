@@ -37,7 +37,8 @@ $.extend($.summernote.lang, {
       maximumFileSize: 'Maximum file size',
       maximumFileSizeError: 'Maximum file size exceeded.',
       url: 'Image URL',
-      remove: 'Remove Image'
+      remove: 'Remove Image',
+      original: 'Original'
     },
     video: {
       video: 'Video',
