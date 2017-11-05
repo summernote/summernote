@@ -8,7 +8,7 @@
         clear: 'Fjern formatering',
         height: 'Linjehøyde',
         name: 'Skrifttype',
-        strikethrough: 'Gjennomstrek',,
+        strikethrough: 'Gjennomstrek',
         subscript: 'Subscript',
         superscript: 'Superscript',
         size: 'Skriftstørrelse'

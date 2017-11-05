@@ -7,6 +7,7 @@ export default class Handle {
     this.$document = $(document);
     this.$editingArea = context.layoutInfo.editingArea;
     this.options = context.options;
+    this.lang = this.options.langInfo;
 
     this.events = {
       'summernote.mousedown': (we, e) => {
