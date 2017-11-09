@@ -29,8 +29,11 @@
         dragImageHere: 'Перетащите сюда картинку',
         dropImage: 'Перетащите картинку',
         selectFromFiles: 'Выбрать из файлов',
+        maximumFileSize: 'Maximum file size',
+        maximumFileSizeError: 'Maximum file size exceeded.',
         url: 'URL картинки',
-        remove: 'Удалить картинку'
+        remove: 'Удалить картинку',
+        original: 'Original'
       },
       video: {
         video: 'Видео',
@@ -49,7 +52,14 @@
         openInNewWindow: 'Открывать в новом окне'
       },
       table: {
-        table: 'Таблица'
+        table: 'Таблица',
+        addRowAbove: 'Add row above',
+        addRowBelow: 'Add row below',
+        addColLeft: 'Add column left',
+        addColRight: 'Add column right',
+        delRow: 'Delete row',
+        delCol: 'Delete column',
+        delTable: 'Delete table'
       },
       hr: {
         insert: 'Вставить горизонтальную линию'
@@ -103,9 +113,42 @@
         documentStyle: 'Стиль документа',
         extraKeys: 'Дополнительные комбинации'
       },
+      help: {
+        'insertParagraph': 'Insert Paragraph',
+        'undo': 'Undoes the last command',
+        'redo': 'Redoes the last command',
+        'tab': 'Tab',
+        'untab': 'Untab',
+        'bold': 'Set a bold style',
+        'italic': 'Set a italic style',
+        'underline': 'Set a underline style',
+        'strikethrough': 'Set a strikethrough style',
+        'removeFormat': 'Clean a style',
+        'justifyLeft': 'Set left align',
+        'justifyCenter': 'Set center align',
+        'justifyRight': 'Set right align',
+        'justifyFull': 'Set full align',
+        'insertUnorderedList': 'Toggle unordered list',
+        'insertOrderedList': 'Toggle ordered list',
+        'outdent': 'Outdent on current paragraph',
+        'indent': 'Indent on current paragraph',
+        'formatPara': 'Change current block\'s format as a paragraph(P tag)',
+        'formatH1': 'Change current block\'s format as H1',
+        'formatH2': 'Change current block\'s format as H2',
+        'formatH3': 'Change current block\'s format as H3',
+        'formatH4': 'Change current block\'s format as H4',
+        'formatH5': 'Change current block\'s format as H5',
+        'formatH6': 'Change current block\'s format as H6',
+        'insertHorizontalRule': 'Insert horizontal rule',
+        'linkDialog.show': 'Show Link Dialog'
+      },
       history: {
         undo: 'Отменить',
         redo: 'Повтор'
+      },
+      specialChar: {
+        specialChar: 'SPECIAL CHARACTERS',
+        select: 'Select Special characters'
       }
     }
   });

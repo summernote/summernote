@@ -7,6 +7,7 @@ export default class Handle {
     this.$document = $(document);
     this.$editingArea = context.layoutInfo.editingArea;
     this.options = context.options;
+    this.lang = this.options.langInfo;
 
     this.events = {
       'summernote.mousedown': (we, e) => {
@@ -120,7 +121,7 @@ export default class Handle {
       const origImageObj = new Image();
       origImageObj.src = $image.attr('src');
 
-      const sizingText = imageSize.w + 'x' + imageSize.h + ' (Original: ' + origImageObj.width + 'x' + origImageObj.height + ')';
+      const sizingText = imageSize.w + 'x' + imageSize.h + ' (' + this.lang.image.original + ': ' + origImageObj.width + 'x' + origImageObj.height + ')';
       $selection.find('.note-control-selection-info').text(sizingText);
       this.context.invoke('editor.saveTarget', target);
     } else {

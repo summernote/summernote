@@ -32,7 +32,8 @@
         maximumFileSize: 'Dimensiune maximă fișier',
         maximumFileSizeError: 'Dimensiune maximă fișier depășită.',
         url: 'URL imagine',
-        remove: 'Șterge imagine'
+        remove: 'Șterge imagine',
+        original: 'Original'
       },
       video: {
         video: 'Video',
@@ -149,7 +150,6 @@
         specialChar: 'CARACTERE SPECIALE',
         select: 'Alege caractere speciale'
       }
-
     }
   });
 })(jQuery);
