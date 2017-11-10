@@ -10,6 +10,7 @@ import Statusbar from '../base/module/Statusbar';
 import Fullscreen from '../base/module/Fullscreen';
 import Handle from '../base/module/Handle';
 import AutoLink from '../base/module/AutoLink';
+import AutoReplace from '../base/module/AutoReplace';
 import AutoSync from '../base/module/AutoSync';
 import Placeholder from '../base/module/Placeholder';
 import Buttons from '../base/module/Buttons';
@@ -44,6 +45,7 @@ $.summernote = $.extend($.summernote, {
       //  - Script error about range when Enter key is pressed on hint popover
       'hintPopover': HintPopover,
       'autoLink': AutoLink,
+      'autoReplace': AutoReplace,
       'autoSync': AutoSync,
       'placeholder': Placeholder,
       'buttons': Buttons,
