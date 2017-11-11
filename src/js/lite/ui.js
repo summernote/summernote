@@ -1,7 +1,7 @@
 import renderer from '../base/renderer';
-import TooltipUI from './ui/tooltip';
-import DropdownUI from './ui/dropdown';
-import ModalUI from './ui/modal';
+import TooltipUI from './ui/TooltipUI';
+import DropdownUI from './ui/DropdownUI';
+import ModalUI from './ui/ModalUI';
 
 const editor = renderer.create('<div class="note-editor note-frame"/>');
 const toolbar = renderer.create('<div class="note-toolbar"/>');
@@ -25,19 +25,19 @@ const buttonGroup = renderer.create('<div class="note-btn-group">');
 const button = renderer.create('<button type="button" class="note-btn">', function($node, options) {
   // set button type
   if (options && options.tooltip) {
-    TooltipUI.create($node, {
+    $node.data('_lite_tooltip', new TooltipUI($node, {
       title: options.tooltip,
       container: options.container
-    });
+    }));
   }
   if (options.contents) {
     $node.html(options.contents);
   }
 
   if (options && options.data && options.data.toggle === 'dropdown') {
-    DropdownUI.create($node, {
+    $node.data('_lite_dropdown', new DropdownUI($node, {
       container: options.container
-    });
+    }));
   }
 });
 
@@ -260,9 +260,9 @@ const palette = renderer.create('<div class="note-color-palette"/>', function($n
   $node.html(contents.join(''));
 
   $node.find('.note-color-btn').each(function() {
-    TooltipUI.create($(this), {
+    $(this).data('_lite_tooltip', new TooltipUI($(this), {
       container: options.container
-    });
+    }));
   });
 });
 
@@ -380,7 +380,7 @@ const dialog = renderer.create('<div class="note-modal" tabindex="-1"/>', functi
     '  </div>'
   ].join(''));
 
-  $node.data('modal', ModalUI.create($node, options));
+  $node.data('modal', new ModalUI($node, options));
 });
 
 const videoDialog = function(opt) {

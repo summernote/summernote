@@ -410,7 +410,7 @@ export default class Buttons {
             width: this.options.insertTableMaxSize.col + 'em',
             height: this.options.insertTableMaxSize.row + 'em'
           }).mousedown(this.context.createInvokeHandler('editor.insertTable'))
-            .on('mousemove', this.tableMoveHandler);
+            .on('mousemove', this.tableMoveHandler.bind(this));
         }
       }).render();
     });
