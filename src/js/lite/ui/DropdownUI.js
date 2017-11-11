@@ -4,12 +4,11 @@ class DropdownUI {
     this.options = $.extend({}, {
       target: options.container
     }, options);
-    
     this.setEvent();
   }
 
   setEvent() {
-    const self = this; 
+    const self = this;
     this.$button.on('click', function() {
       self.toggle();
     });

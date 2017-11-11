@@ -46,7 +46,7 @@ class PopoverUI {
   }
 
   show() {
-    const $node = this.$node; 
+    const $node = this.$node;
     const offset = $node.offset();
     const $popover = this.$popover;
     const content = this.options.content || $node.data('content');
