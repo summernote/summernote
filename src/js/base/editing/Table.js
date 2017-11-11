@@ -37,7 +37,7 @@ const TableResultAction = function(startPoint, where, action, domTable) {
 
   /**
    * Define virtual table position info object.
-   * 
+   *
    * @param {int} rowIndex Index position in line of virtual table.
    * @param {int} cellIndex Index position in column of virtual table.
    * @param {object} baseRow Row affected by this position.
@@ -60,7 +60,7 @@ const TableResultAction = function(startPoint, where, action, domTable) {
 
   /**
    * Create action cell object.
-   * 
+   *
    * @param {object} virtualTableCellObj Object of specific position on virtual table.
    * @param {enum} resultAction Action to be applied in that item.
    */
@@ -77,7 +77,7 @@ const TableResultAction = function(startPoint, where, action, domTable) {
 
   /**
    * Recover free index of row to append Cell.
-   * 
+   *
    * @param {int} rowIndex Index of row to find free space.
    * @param {int} cellIndex Index of cell to find free space in table.
    */
@@ -100,7 +100,7 @@ const TableResultAction = function(startPoint, where, action, domTable) {
 
   /**
    * Recover info about row and cell and add information to virtual table.
-   * 
+   *
    * @param {object} row Row to recover information.
    * @param {object} cell Cell to recover information.
    */
@@ -134,11 +134,11 @@ const TableResultAction = function(startPoint, where, action, domTable) {
 
   /**
    * Process validation and adjust of start point if needed
-   * 
-   * @param {int} rowIndex 
-   * @param {int} cellIndex 
-   * @param {object} cell 
-   * @param {bool} isSelectedCell 
+   *
+   * @param {int} rowIndex
+   * @param {int} cellIndex
+   * @param {object} cell
+   * @param {bool} isSelectedCell
    */
   function adjustStartPoint(rowIndex, cellIndex, cell, isSelectedCell) {
     if (rowIndex === _startPoint.rowPos && _startPoint.colPos >= cell.cellIndex && cell.cellIndex <= cellIndex && !isSelectedCell) {
@@ -161,7 +161,7 @@ const TableResultAction = function(startPoint, where, action, domTable) {
 
   /**
    * Get action to be applied on the cell.
-   * 
+   *
    * @param {object} cell virtual table cell to apply action
    */
   function getDeleteResultActionToCell(cell) {
@@ -184,7 +184,7 @@ const TableResultAction = function(startPoint, where, action, domTable) {
 
   /**
    * Get action to be applied on the cell.
-   * 
+   *
    * @param {object} cell virtual table cell to apply action
    */
   function getAddResultActionToCell(cell) {
@@ -259,23 +259,23 @@ const TableResultAction = function(startPoint, where, action, domTable) {
   init();
 };
 /**
-* 
+*
 * Where action occours enum.
 */
 TableResultAction.where = { 'Row': 0, 'Column': 1 };
 /**
-* 
+*
 * Requested action to apply enum.
 */
 TableResultAction.requestAction = { 'Add': 0, 'Delete': 1 };
 /**
-* 
+*
 * Result action to be executed enum.
 */
 TableResultAction.resultAction = { 'Ignore': 0, 'SubtractSpanCount': 1, 'RemoveCell': 2, 'AddCell': 3, 'SumSpanCount': 4 };
 
 /**
- * 
+ *
  * @class editing.Table
  *
  * Table

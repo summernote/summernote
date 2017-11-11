@@ -219,7 +219,7 @@ describe('Editor', () => {
     });
 
     it('should apply multi formatBlock', () => {
-      // set multi block html 
+      // set multi block html
       var codes = [
         '<p><a href="http://summernote.org">hello world</a></p>',
         '<p><a href="http://summernote.org">hello world</a></p>',
@@ -228,14 +228,14 @@ describe('Editor', () => {
 
       context.invoke('code', codes.join(''));
 
-      // append to body 
+      // append to body
       var editable = context.layoutInfo.editable;
       editable.appendTo('body');
 
-      // run formatBlock 
+      // run formatBlock
       editor.formatBlock('blockquote');
 
-      // check current range position in blockquote element 
+      // check current range position in blockquote element
 
       var nodeName = editable.children()[0].nodeName;
       expect(nodeName).to.equalsIgnoreCase('blockquote');
@@ -264,7 +264,7 @@ describe('Editor', () => {
       var nodeName = editable.children()[0].nodeName;
       expect(nodeName).to.equalsIgnoreCase('blockquote');
 
-      // p -> blockquote, p is none 
+      // p -> blockquote, p is none
       expect(editable.find('p').length).to.equals(0);
     });
 

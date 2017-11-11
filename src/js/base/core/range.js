@@ -238,7 +238,7 @@ class WrappedRange {
         if (dom.isVisiblePoint(point)) {
           return point;
         }
-        // reverse direction 
+        // reverse direction
         isLeftToRight = !isLeftToRight;
       }
 
@@ -706,8 +706,8 @@ export default {
   },
 
   /**
-   * @method 
-   * 
+   * @method
+   *
    * create WrappedRange from node
    *
    * @param {Node} node
@@ -756,8 +756,8 @@ export default {
   },
 
   /**
-   * @method 
-   * 
+   * @method
+   *
    * create WrappedRange from bookmark
    *
    * @param {Node} editable
@@ -773,7 +773,7 @@ export default {
   },
 
   /**
-   * @method 
+   * @method
    *
    * create WrappedRange from paraBookmark
    *

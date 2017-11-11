@@ -67,7 +67,7 @@ export default class Editor {
     }
 
     /**
-     * fontName Command for document.execCommand 
+     * fontName Command for document.execCommand
      */
     this.fontName = this.wrapCommand((fontName) => {
       // [workaround]
@@ -633,7 +633,7 @@ export default class Editor {
     tagName = env.isMSIE ? '<' + tagName + '>' : tagName;
     document.execCommand('FormatBlock', false, tagName);
 
-    // support custom class 
+    // support custom class
     if ($target && $target.length) {
       const className = $target[0].className || '';
       if (className) {
