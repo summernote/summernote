@@ -4,7 +4,7 @@ var modal = (function() {
 
     this.init = function(options) {
       this.options = $.extend({}, {
-        target: options.container
+        target: options.container || 'body'
       }, options);
 
       this.$modal = $node;
