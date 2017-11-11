@@ -1,7 +1,7 @@
 class TooltipUI {
-  constructor ($node, options) {
-    const self = this; 
-    this.$node = $node; 
+  constructor($node, options) {
+    const self = this;
+    this.$node = $node;
     this.options = $.extend({}, {
       title: '',
       target: options.container,
@@ -43,8 +43,8 @@ class TooltipUI {
     }
   }
 
-  show () {
-    const $node = this.$node; 
+  show() {
+    const $node = this.$node;
     const offset = $node.offset();
 
     const $tooltip = this.$tooltip;
@@ -84,12 +84,12 @@ class TooltipUI {
     }
   }
 
-  hide () {
+  hide() {
     this.$tooltip.removeClass('in');
     this.$tooltip.remove();
   }
 
-  toggle () {
+  toggle() {
     if (this.$tooltip.hasClass('in')) {
       this.hide();
     } else {

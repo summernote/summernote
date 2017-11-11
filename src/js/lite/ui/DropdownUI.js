@@ -1,15 +1,14 @@
 class DropdownUI {
-
-  constructor ($node, options) {
+  constructor($node, options) {
     this.$button = $node;
     this.options = $.extend({}, {
-      target: options.container 
+      target: options.container
     }, options);
     
     this.setEvent();
   }
 
-  setEvent () {
+  setEvent() {
     const self = this; 
     this.$button.on('click', function() {
       self.toggle();
@@ -39,10 +38,10 @@ class DropdownUI {
     }
   }
 
-  hide () {
+  hide() {
     this.$button.removeClass('active');
     this.$button.parent().removeClass('open');
-  };
+  }
 
   toggle() {
     var isOpened = this.$button.parent().hasClass('open');
@@ -57,7 +56,6 @@ class DropdownUI {
   }
 }
 
-
 $(document).on('click', function(e) {
   if (!$(e.target).closest('.note-btn-group').length) {
     $('.note-btn-group.open').removeClass('open');
@@ -67,6 +65,5 @@ $(document).on('click', function(e) {
 $(document).on('click.note-dropdown-menu', function(e) {
   $(e.target).closest('.note-dropdown-menu').parent().removeClass('open');
 });
-
 
 export default DropdownUI;

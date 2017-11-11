@@ -1,7 +1,7 @@
 class PopoverUI {
   constructor($node, options) {
-    const self = this; 
-    this.$node = $node; 
+    const self = this;
+    this.$node = $node;
     this.options = $.extend({}, {
       title: '',
       content: '',
@@ -17,7 +17,6 @@ class PopoverUI {
       ' <div class="note-popover-content" />',
       '</div>'
     ].join(''));
-
 
     // define event
     if (this.options.trigger !== 'manual') {
@@ -46,7 +45,7 @@ class PopoverUI {
     }
   }
 
-  show () {
+  show() {
     const $node = this.$node; 
     const offset = $node.offset();
     const $popover = this.$popover;
@@ -92,7 +91,7 @@ class PopoverUI {
     this.$popover.remove();
   }
 
-  toggle () {
+  toggle() {
     if (this.$popover.hasClass('in')) {
       this.hide();
     } else {

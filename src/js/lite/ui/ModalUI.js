@@ -8,8 +8,8 @@ class ModalUI {
     this.$backdrop = $('<div class="note-modal-backdrop" />');
   }
 
-  show () {
-    const self = this; 
+  show() {
+    const self = this;
     if (this.options.target === 'body') {
       this.$backdrop.css('position', 'fixed');
       this.$modal.css('position', 'fixed');
@@ -27,7 +27,7 @@ class ModalUI {
     });
   }
 
-  hide () {
+  hide() {
     this.$modal.removeClass('open').hide();
     this.$backdrop.hide();
     this.$modal.trigger('note.modal.hide');

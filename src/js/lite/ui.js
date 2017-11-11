@@ -25,19 +25,19 @@ const buttonGroup = renderer.create('<div class="note-btn-group">');
 const button = renderer.create('<button type="button" class="note-btn">', function($node, options) {
   // set button type
   if (options && options.tooltip) {
-    new TooltipUI($node, {
+    $node.data('_lite_tooltip', new TooltipUI($node, {
       title: options.tooltip,
       container: options.container
-    });
+    }));
   }
   if (options.contents) {
     $node.html(options.contents);
   }
 
   if (options && options.data && options.data.toggle === 'dropdown') {
-    new DropdownUI($node, {
+    $node.data('_lite_dropdown', new DropdownUI($node, {
       container: options.container
-    });
+    }));
   }
 });
 
@@ -260,9 +260,9 @@ const palette = renderer.create('<div class="note-color-palette"/>', function($n
   $node.html(contents.join(''));
 
   $node.find('.note-color-btn').each(function() {
-    new TooltipUI($(this), {
+    $(this).data('_lite_tooltip', new TooltipUI($(this), {
       container: options.container
-    });
+    }));
   });
 });
 
@@ -380,7 +380,7 @@ const dialog = renderer.create('<div class="note-modal" tabindex="-1"/>', functi
     '  </div>'
   ].join(''));
 
-  $node.data('modal', new ModalUI($node, options));  
+  $node.data('modal', new ModalUI($node, options));
 });
 
 const videoDialog = function(opt) {
