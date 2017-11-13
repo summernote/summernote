@@ -21,7 +21,7 @@ class PopoverUI {
     if (this.options.trigger !== 'manual') {
       const showCallback = this.show.bind(this);
       const hideCallback = this.hide.bind(this);
-      const toggleCallback = this.toggle.bind(this);      
+      const toggleCallback = this.toggle.bind(this);
       this.options.trigger.split(' ').forEach(function(eventName) {
         if (eventName === 'hover') {
           $node.off('mouseenter').on('mouseenter', showCallback);

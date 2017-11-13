@@ -1,6 +1,5 @@
 class TooltipUI {
   constructor($node, options) {
-    const self = this;
     this.$node = $node;
     this.options = $.extend({}, {
       title: '',
@@ -17,7 +16,6 @@ class TooltipUI {
       '</div>'
     ].join(''));
 
-    
     // define event
     if (this.options.trigger !== 'manual') {
       const showCallback = this.show.bind(this);
