@@ -8,10 +8,7 @@ class DropdownUI {
   }
 
   setEvent() {
-    const self = this;
-    this.$button.on('click', function() {
-      self.toggle();
-    });
+    this.$button.on('click', this.toggle.bind(this));
   }
 
   clear() {
