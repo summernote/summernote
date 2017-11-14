@@ -84,8 +84,10 @@ export default class Dropzone {
     this.$dropzone.on('drop', (event) => {
       const dataTransfer = event.originalEvent.dataTransfer;
 
+      // stop the browser from opening the dropped content
+      event.preventDefault();
+
       if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
-        event.preventDefault();
         this.$editable.focus();
         this.context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
       } else {
