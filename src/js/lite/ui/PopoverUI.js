@@ -1,6 +1,5 @@
 class PopoverUI {
   constructor($node, options) {
-    const self = this;
     this.$node = $node;
     this.options = $.extend({}, {
       title: '',
@@ -20,26 +19,18 @@ class PopoverUI {
 
     // define event
     if (this.options.trigger !== 'manual') {
+      const showCallback = this.show.bind(this);
+      const hideCallback = this.hide.bind(this);
+      const toggleCallback = this.toggle.bind(this);
       this.options.trigger.split(' ').forEach(function(eventName) {
         if (eventName === 'hover') {
-          $node.off('mouseenter').on('mouseenter', function() {
-            self.show($node);
-          });
-
-          $node.off('mouseleave').on('mouseleave', function() {
-            self.hide($node);
-          });
+          $node.off('mouseenter').on('mouseenter', showCallback);
+          $node.off('mouseleave').on('mouseleave', hideCallback);
         } else if (eventName === 'click') {
-          $node.on('click', function() {
-            self.toggle($node);
-          });
+          $node.on('click', toggleCallback);
         } else if (eventName === 'focus') {
-          $node.on('focus', function() {
-            self.show($node);
-          });
-          $node.on('blur', function() {
-            self.hide($node);
-          });
+          $node.on('focus', showCallback);
+          $node.on('blur', hideCallback);
         }
       });
     }

@@ -1,6 +1,5 @@
 class TooltipUI {
   constructor($node, options) {
-    const self = this;
     this.$node = $node;
     this.options = $.extend({}, {
       title: '',
@@ -19,25 +18,18 @@ class TooltipUI {
 
     // define event
     if (this.options.trigger !== 'manual') {
+      const showCallback = this.show.bind(this);
+      const hideCallback = this.hide.bind(this);
+      const toggleCallback = this.toggle.bind(this);
+
       this.options.trigger.split(' ').forEach(function(eventName) {
         if (eventName === 'hover') {
           $node.off('mouseenter mouseleave');
-
-          $node.on('mouseenter', function() {
-            self.show($node);
-          }).on('mouseleave', function() {
-            self.hide($node);
-          });
+          $node.on('mouseenter', showCallback).on('mouseleave', hideCallback);
         } else if (eventName === 'click') {
-          $node.on('click', function() {
-            self.toggle($node);
-          });
+          $node.on('click', toggleCallback);
         } else if (eventName === 'focus') {
-          $node.on('focus', function() {
-            self.show($node);
-          }).on('blur', function() {
-            self.hide($node);
-          });
+          $node.on('focus', showCallback).on('blur', hideCallback);
         }
       });
     }

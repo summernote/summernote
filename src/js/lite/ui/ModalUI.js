@@ -9,7 +9,6 @@ class ModalUI {
   }
 
   show() {
-    const self = this;
     if (this.options.target === 'body') {
       this.$backdrop.css('position', 'fixed');
       this.$modal.css('position', 'fixed');
@@ -22,9 +21,7 @@ class ModalUI {
     this.$modal.appendTo(this.options.target).addClass('open').show();
 
     this.$modal.trigger('note.modal.show');
-    this.$modal.off('click', '.close').on('click', '.close', function() {
-      self.hide();
-    });
+    this.$modal.off('click', '.close').on('click', '.close', this.hide.bind(this));
   }
 
   hide() {
