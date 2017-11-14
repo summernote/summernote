@@ -147,12 +147,34 @@ describe('Editor', () => {
       editor.insertNode($('<span> world</span>')[0]);
       expectContents(context, '<p>hello<span> world</span></p>');
     });
+
+    it('should be limited', () => {
+      var options = $.extend({}, $.summernote.options);
+      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+      options.maxTextLength = 5;
+      context = new Context($('<div><p>hello</p></div>'), options);
+      editor = context.modules.editor;
+
+      editor.insertNode($('<span> world</span>')[0]);
+      expectContents(context, '<p>hello</p>');
+    });
   });
 
   describe('insertText', () => {
     it('should insert text', () => {
       editor.insertText(' world');
       expectContents(context, '<p>hello world</p>');
+    });
+
+    it('should be limited', () => {
+      var options = $.extend({}, $.summernote.options);
+      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+      options.maxTextLength = 5;
+      context = new Context($('<div><p>hello</p></div>'), options);
+      editor = context.modules.editor;
+
+      editor.insertText(' world');
+      expectContents(context, '<p>hello</p>');
     });
   });
 
@@ -177,6 +199,17 @@ describe('Editor', () => {
       var html = generateLargeHtml();
       editor.pasteHTML(html);
       expect(spy).to.have.been.called.once;
+    });
+
+    it('should be limited', () => {
+      var options = $.extend({}, $.summernote.options);
+      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+      options.maxTextLength = 5;
+      context = new Context($('<div><p>hello</p></div>'), options);
+      editor = context.modules.editor;
+
+      editor.pasteHTML('<span> world</span>');
+      expectContents(context, '<p>hello</p>');
     });
   });
 

@@ -114,6 +114,9 @@ export default class Editor {
      * @param {Node} node
      */
     this.insertNode = this.wrapCommand((node) => {
+      if (this.isLimited($(node).text().length)) {
+        return;
+      }
       const rng = this.createRange();
       rng.insertNode(node);
       range.createFromNodeAfter(node).select();
@@ -124,6 +127,9 @@ export default class Editor {
      * @param {String} text
      */
     this.insertText = this.wrapCommand((text) => {
+      if (this.isLimited(text.length)) {
+        return;
+      }
       const rng = this.createRange();
       const textNode = rng.insertNode(dom.createText(text));
       range.create(textNode, dom.nodeLength(textNode)).select();
@@ -133,6 +139,9 @@ export default class Editor {
      * @param {String} markup
      */
     this.pasteHTML = this.wrapCommand((markup) => {
+      if (this.isLimited(markup.length)) {
+        return;
+      }
       const contents = this.createRange().pasteHTML(markup);
       range.createFromNodeAfter(lists.last(contents)).select();
     });
@@ -316,6 +325,9 @@ export default class Editor {
           this.preventDefaultEditableShortCuts(event);
         }
       }
+      if (this.isLimited(1, event)) {
+        return false;
+      }
     }).on('keyup', (event) => {
       this.context.triggerEvent('keyup', event);
     }).on('focus', (event) => {
@@ -398,6 +410,24 @@ export default class Editor {
     }
   }
 
+  isLimited(pad, event) {
+    pad = pad || 0;
+
+    if (typeof event !== 'undefined') {
+      if (key.isMove(event.keyCode) ||
+          (event.ctrlKey || event.metaKey) ||
+          lists.contains([key.code.BACKSPACE, key.code.DELETE], event.keyCode)) {
+        return false;
+      }
+    }
+
+    if (this.options.maxTextLength > 0) {
+      if ((this.$editable.text().length + pad) >= this.options.maxTextLength) {
+        return true;
+      }
+    }
+    return false;
+  }
   /**
    * create range
    * @return {WrappedRange}
@@ -518,9 +548,12 @@ export default class Editor {
       if (this.options.tabSize === 0) {
         return false;
       }
-      this.beforeCommand();
-      this.typing.insertTab(rng, this.options.tabSize);
-      this.afterCommand();
+
+      if (!this.isLimited(this.options.tabSize)) {
+        this.beforeCommand();
+        this.typing.insertTab(rng, this.options.tabSize);
+        this.afterCommand();
+      }
     }
   }
 
