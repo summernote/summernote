@@ -83,6 +83,7 @@ module.exports = function(grunt) {
         'Gruntfile.js',
         'test/**/*.js',
         '!coverage/**/*.js',
+        '!test/coverage/**/*.js',
         'build/*.js'
       ]
     },
