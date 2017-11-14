@@ -12,7 +12,7 @@ Super simple WYSIWYG Editor.
 ### Summernote
 Summernote is a JavaScript library that helps you create WYSIWYG editors online.
 
-Home page: <http://summernote.org>
+Home page: <https://summernote.org>
 
 ### Why Summernote?
 
@@ -23,19 +23,14 @@ Summernote has a few special features:
 * Simple UI
 * Interactive WYSIWYG editing
 * Handy integration with server
+* Supports Bootstrap 3 and 4 integrities
+* Lots of [plugins and connectors](https://github.com/summernote/awesome-summernote) provided together
 
 ### Installation and dependencies
 
-Summernote uses opensource libraries: [jQuery](http://jquery.com/), [Bootstrap](http://getbootstrap.com).
+Summernote is built on [jQuery](http://jquery.com/).
 
-For [Meteor](http://github.com/meteor/meteor), just run `meteor add summernote:summernote`. More info in the [Meteor README](meteor/README.md).
-
-Also there's an adaptation for React: [react-summernote](https://github.com/Vnkitaev/react-summernote)
-
-
-For other/no frameworks:
-
-#### 1. include JS/CSS
+#### 1. Include JS/CSS
 
 Include the following code in the `<head>` tag of your HTML:
 
@@ -50,7 +45,7 @@ Include the following code in the `<head>` tag of your HTML:
 <script src="summernote.js"></script>
 ```
 
-#### 2. target a element
+#### 2. Target a element
 
 Then place a `div` tag somewhere in the `body` tag. This element will be replaced with the summernote editor.
 
@@ -58,7 +53,7 @@ Then place a `div` tag somewhere in the `body` tag. This element will be replace
 <div id="summernote">Hello Summernote</div>
 ```
 
-#### 3. summernote
+#### 3. Summernote it!
 
 Finally, run this script after the DOM is ready:
 
