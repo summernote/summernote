@@ -95,6 +95,7 @@ $img-margin-right: 10px;
 
       &[contenteditable="false"] {
         background-color: #e5e5e5;
+        word-wrap: break-word;
       }
     }
 
