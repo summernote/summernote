@@ -1,7 +1,7 @@
 const sauce = require('../libs/sauce');
 
 module.exports = {
-  after: sauce.reportPassed,
+  after: sauce.reportResult,
 
   'Initialization': (client) => {
     /* eslint-disable */
