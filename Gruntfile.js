@@ -224,7 +224,7 @@ module.exports = function(grunt) {
       saucelabs: {
         reporters: ['saucelabs'],
         sauceLabs: {
-          testName: '[Travis] unit tests for summernote',
+          testName: 'unit tests for summernote',
           startConnect: false,
           tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
           build: process.env.TRAVIS_BUILD_NUMBER,

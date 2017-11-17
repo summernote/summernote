@@ -22,7 +22,7 @@
     "test": "grunt test",
     "download:selenium": "if [ ! -e test/libs/selenium-server-standalone.jar ]; then wget http://selenium-release.storage.googleapis.com/3.6/selenium-server-standalone-3.6.0.jar -O test/libs/selenium-server-standalone.jar; fi",
     "test:e2e": "npm run download:selenium && concurrently --kill-others 'node test/e2e/static-server.js' 'nightwatch --config test/nightwatch.conf.js'",
-    "test:e2e-saucelabs": "npx bower install && npm run dist && npm run download:selenium && nightwatch --config test/nightwatch.conf.js --env ie9,ie10,ie11,ie_edge,chrome,firefox,safari",
+    "test:e2e-saucelabs": "npx bower install && npm run dist && npm run download:selenium && nightwatch --config test/nightwatch.conf.js --env ie9,ie10,ie11,chrome,firefox",
     "build": "grunt build",
     "dist": "grunt dist",
     "test-travis": "grunt test-travis --verbose",

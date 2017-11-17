@@ -1,5 +1,9 @@
+const sauce = require('../libs/sauce');
+
 module.exports = {
-  'Initialization': function(client) {
+  after: sauce.reportResult,
+
+  'Initialization': (client) => {
     /* eslint-disable */
     client.url(client.launch_url + '/initialization.html').pause(1000);
 
