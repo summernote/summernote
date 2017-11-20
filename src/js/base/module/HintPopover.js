@@ -134,10 +134,6 @@ export default class HintPopover {
         'index': hintIdx,
         'item': item
       });
-
-      if (idx === 0) {
-        $item.addClass('active');
-      }
       return $item;
     });
   }
@@ -198,6 +194,8 @@ export default class HintPopover {
               this.createGroup(idx, keyword).appendTo(this.$content);
             }
           });
+          // select first .note-hint-item
+          this.$content.find('.note-hint-item:first').addClass('active');
 
           // set position for popover after group is created
           if (this.direction === 'top') {
