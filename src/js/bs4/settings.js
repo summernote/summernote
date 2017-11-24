@@ -116,6 +116,7 @@ $.summernote = $.extend($.summernote, {
     hintDirection: 'bottom',
     tooltip: 'auto',
     container: 'body',
+    maxTextLength: 0,
 
     styleTags: [
       'p',
