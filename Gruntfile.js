@@ -189,16 +189,6 @@ module.exports = function(grunt) {
       }
     },
 
-    // Meteor commands to test and publish package
-    exec: {
-      'meteor-test': {
-        command: 'meteor/runtests.sh'
-      },
-      'meteor-publish': {
-        command: 'meteor/publish.sh'
-      }
-    },
-
     karma: {
       options: {
         configFile: './karma.conf.js'
@@ -301,9 +291,4 @@ module.exports = function(grunt) {
 
   // default: server
   grunt.registerTask('default', ['server']);
-
-  // Meteor tasks
-  grunt.registerTask('meteor-test', 'exec:meteor-test');
-  grunt.registerTask('meteor-publish', 'exec:meteor-publish');
-  grunt.registerTask('meteor', ['meteor-test', 'meteor-publish']);
 };

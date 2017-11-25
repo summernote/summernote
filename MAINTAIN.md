@@ -31,10 +31,6 @@ Publish on npm
 ```bash
 npm publish
 ```
-
-Publish on meteor
-```bash
-meteor/publish.sh
 ```
 
 ### 05. Update summernote.github.io
