@@ -156,6 +156,7 @@ $.summernote = $.extend($.summernote, {
       onInit: null,
       onFocus: null,
       onBlur: null,
+      onBlurCodeview: null,
       onEnter: null,
       onKeyup: null,
       onKeydown: null,
