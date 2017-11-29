@@ -655,8 +655,8 @@ export default class Buttons {
   build($container, groups) {
     for (let groupIdx = 0, groupLen = groups.length; groupIdx < groupLen; groupIdx++) {
       const group = groups[groupIdx];
-      const groupName = group[0];
-      const buttons = (group.length === 1) ? [group[0]] : group[1];
+      const groupName = $.isArray(group) ? group[0] : group;
+      const buttons = $.isArray(group) ? ((group.length === 1) ? [group[0]] : group[1]) : [group];
 
       const $group = this.ui.buttonGroup({
         className: 'note-' + groupName
