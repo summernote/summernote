@@ -95,6 +95,19 @@ export default class Buttons {
       ]).render();
     });
 
+    for (let styleIdx = 0, styleLen = this.options.styleTags.length; styleIdx < styleLen; styleIdx++) {
+      const item = this.options.styleTags[styleIdx];
+
+      this.context.memo('button.style.' + item, () => {
+        return this.button({
+          className: 'note-btn-style-' + item,
+          contents: '<div data-value="' + item + '">' + item.toUpperCase() + '</div>',
+          tooltip: item.toUpperCase(),
+          click: this.context.createInvokeHandler('editor.formatBlock')
+        }).render();
+      });
+    }
+
     this.context.memo('button.bold', () => {
       return this.button({
         className: 'note-btn-bold',
