@@ -62,6 +62,13 @@ export default class Buttons {
     return this.fontInstalledMap[name];
   }
 
+  isFontDeservedToAdd(name) {
+    const genericFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
+    name = name.toLowerCase();
+
+    return ((name !== '') && this.isFontInstalled(name) && ($.inArray(name, genericFamilies) === -1));
+  }
+
   addToolbarButtons() {
     this.context.memo('button.style', () => {
       return this.ui.buttonGroup([
@@ -171,6 +178,18 @@ export default class Buttons {
     });
 
     this.context.memo('button.fontname', () => {
+      const styleInfo = this.context.invoke('editor.currentStyle');
+
+      // Add 'default' fonts into the fontnames array if not exist
+      $.each(styleInfo['font-family'].split(','), (idx, fontname) => {
+        fontname = fontname.trim().replace(/['"]+/g, '');
+        if (this.isFontDeservedToAdd(fontname)) {
+          if ($.inArray(fontname, this.options.fontNames) === -1) {
+            this.options.fontNames.push(fontname);
+          }
+        }
+      });
+
       return this.ui.buttonGroup([
         this.button({
           className: 'dropdown-toggle',
@@ -187,7 +206,7 @@ export default class Buttons {
           checkClassName: this.options.icons.menuCheck,
           items: this.options.fontNames.filter(this.isFontInstalled.bind(this)),
           template: (item) => {
-            return '<span style="font-family:' + item + '">' + item + '</span>';
+            return '<span style="font-family: \'' + item + '\'">' + item + '</span>';
           },
           click: this.context.createInvokeHandlerAndUpdateState('editor.fontName')
         })
