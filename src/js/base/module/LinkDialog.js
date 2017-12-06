@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import env from '../core/env';
 import key from '../core/key';
 
 export default class LinkDialog {
@@ -112,7 +113,11 @@ export default class LinkDialog {
 
         $linkUrl.on('input', handleLinkUrlUpdate).on('paste', () => {
           setTimeout(handleLinkUrlUpdate, 0);
-        }).val(linkInfo.url).trigger('focus');
+        }).val(linkInfo.url);
+
+        if (!env.isSupportTouch) {
+          $linkUrl.trigger('focus');
+        }
 
         this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
         this.bindEnterKey($linkUrl, $linkBtn);
