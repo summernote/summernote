@@ -47,6 +47,7 @@ export default class Editor {
     this.context.memo('help.outdent', this.lang.help.outdent);
     this.context.memo('help.formatPara', this.lang.help.formatPara);
     this.context.memo('help.insertHorizontalRule', this.lang.help.insertHorizontalRule);
+    this.context.memo('help.fontName', this.lang.help.fontName);
 
     // native commands(with execCommand), generate function for execCommand
     const commands = [
@@ -66,18 +67,13 @@ export default class Editor {
       this.context.memo('help.' + commands[idx], this.lang.help[commands[idx]]);
     }
 
-    /**
-     * fontName Command for document.execCommand
-     */
-    this.fontName = this.wrapCommand((fontName) => {
-      // [workaround]
-      //  - If the font family has spaces, you must enclose it in quotation marks.
-      if (env.isChrome && fontName.indexOf(' ') > -1) {
-        fontName = `"${fontName}"`;
-      }
-      document.execCommand('fontName', false, fontName);
+    this.fontName = this.wrapCommand((value) => {
+      return this.fontStyling('font-family', "\'" + value + "\'");
     });
-    context.memo('help.fontName', this.lang.help.fontName);
+
+    this.fontSize = this.wrapCommand((value) => {
+      return this.fontStyling('font-size', value + 'px');
+    });
 
     for (let idx = 1; idx <= 6; idx++) {
       this['formatH' + idx] = ((idx) => {
@@ -682,35 +678,23 @@ export default class Editor {
     this.formatBlock('P');
   }
 
-  /**
-   * fontSize
-   *
-   * @param {String} value - px
-   */
-  fontSize(value) {
+  fontStyling(target, value) {
     const rng = this.createRange();
 
-    if (rng && rng.isCollapsed()) {
+    if (rng) {
       const spans = this.style.styleNodes(rng);
-      const firstSpan = lists.head(spans);
-
-      $(spans).css({
-        'font-size': value + 'px'
-      });
+      $(spans).css(target, value);
 
       // [workaround] added styled bogus span for style
       //  - also bogus character needed for cursor position
-      if (firstSpan && !dom.nodeLength(firstSpan)) {
-        firstSpan.innerHTML = dom.ZERO_WIDTH_NBSP_CHAR;
-        range.createFromNodeAfter(firstSpan.firstChild).select();
-        this.$editable.data(KEY_BOGUS, firstSpan);
+      if (rng.isCollapsed()) {
+        const firstSpan = lists.head(spans);
+        if (firstSpan && !dom.nodeLength(firstSpan)) {
+          firstSpan.innerHTML = dom.ZERO_WIDTH_NBSP_CHAR;
+          range.createFromNodeAfter(firstSpan.firstChild).select();
+          this.$editable.data(KEY_BOGUS, firstSpan);
+        }
       }
-    } else {
-      this.beforeCommand();
-      $(this.style.styleNodes(rng)).css({
-        'font-size': value + 'px'
-      });
-      this.afterCommand();
     }
   }
 
