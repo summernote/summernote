@@ -274,10 +274,15 @@ export default class Editor {
     });
 
     /**
-     * remove media object
+     * remove media object and Figure Elements if media object is img with Figure.
      */
     this.removeMedia = this.wrapCommand(() => {
-      const $target = $(this.restoreTarget()).detach();
+      const $target = $$1(_this.restoreTarget()).parent();
+      if ($target.parent('figure').length) {
+        $target.parent('figure').remove();
+      }else{
+        const $target = $$1(_this.restoreTarget()).detach();
+      }
       this.context.triggerEvent('media.delete', $target, this.$editable);
     });
 
