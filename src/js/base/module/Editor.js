@@ -277,7 +277,7 @@ export default class Editor {
      * remove media object and Figure Elements if media object is img with Figure.
      */
     this.removeMedia = this.wrapCommand(() => {
-      const $target = $(this.restoreTarget()).parent();
+      let $target = $(this.restoreTarget()).parent();
       if ($target.parent('figure').length) {
         $target.parent('figure').remove();
       } else {
