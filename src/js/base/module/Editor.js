@@ -280,7 +280,7 @@ export default class Editor {
       const $target = $$1(_this.restoreTarget()).parent();
       if ($target.parent('figure').length) {
         $target.parent('figure').remove();
-      }else{
+      } else {
         const $target = $$1(_this.restoreTarget()).detach();
       }
       this.context.triggerEvent('media.delete', $target, this.$editable);
