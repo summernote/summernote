@@ -195,7 +195,7 @@ export default class Context {
   }
 
   /**
-   *Some buttons need to change their visual style immediately once they get pressed
+   * Some buttons need to change their visual style immediately once they get pressed
    */
   createInvokeHandlerAndUpdateState(namespace, value) {
     return (event) => {
