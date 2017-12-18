@@ -99,8 +99,8 @@
         more: 'もっと見る',
         background: '背景色',
         foreground: '文字色',
-        transparent: '透過率',
-        setTransparent: '透過率を設定',
+        transparent: '透明',
+        setTransparent: '透明にする',
         reset: '標準',
         resetToDefault: '標準に戻す'
       },
