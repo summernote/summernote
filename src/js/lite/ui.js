@@ -56,7 +56,7 @@ const dropdown = renderer.create('<div class="note-dropdown-menu" role="list">',
     return $temp;
   }) : options.items;
 
-  $node.html(markup).attr({"aria-label": options.title});
+  $node.html(markup).attr({'aria-label': options.title});
 
   $node.on('click', '> .note-dropdown-item', function(e) {
     const $a = $(this);
