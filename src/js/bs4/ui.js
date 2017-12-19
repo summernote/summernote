@@ -33,7 +33,7 @@ const dropdown = renderer.create('<div class="dropdown-menu" role="list">', func
     return '<a class="dropdown-item" href="#" ' + (dataValue + dataOption) + ' role="listitem" aria-label="' + item + '">' + content + '</a>';
   }).join('') : options.items;
 
-  $node.html(markup).attr({"aria-label": options.title});
+  $node.html(markup).attr({'aria-label': options.title});
 });
 
 const dropdownButtonContents = function(contents) {
@@ -46,7 +46,7 @@ const dropdownCheck = renderer.create('<div class="dropdown-menu note-check" rol
     const content = options.template ? options.template(item) : item;
     return '<a class="dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + item + '">' + icon(options.checkClassName) + ' ' + content + '</a>';
   }).join('') : options.items;
-  $node.html(markup).attr({"aria-label": options.title});
+  $node.html(markup).attr({'aria-label': options.title});
 });
 
 const palette = renderer.create('<div class="note-color-palette"/>', function($node, options) {
@@ -87,7 +87,7 @@ const dialog = renderer.create('<div class="modal" aria-hidden="false" tabindex=
     $node.addClass('fade');
   }
   $node.attr({
-    "aria-label": options.title
+    'aria-label': options.title
   });
   $node.html([
     '<div class="modal-dialog">',
@@ -166,7 +166,7 @@ const ui = {
       if (options && options.tooltip) {
         $node.attr({
           title: options.tooltip,
-          "aria-label": options.tooltip
+          'aria-label': options.tooltip
         }).tooltip({
           container: options.container,
           trigger: 'hover',

@@ -27,7 +27,7 @@ const button = renderer.create('<button type="button" class="note-btn" role="but
   // set button type
   if (options && options.tooltip) {
     $node.attr({
-      "aria-label": options.tooltip
+      'aria-label': options.tooltip
     });
     $node.data('_lite_tooltip', new TooltipUI($node, {
       title: options.tooltip,
@@ -82,7 +82,7 @@ const dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check
     return $temp;
   }) : options.items;
 
-  $node.html(markup).attr({"aria-label": options.title});
+  $node.html(markup).attr({'aria-label': options.title});
 
   $node.on('click', '> .note-dropdown-item', function(e) {
     const $a = $(this);
@@ -247,7 +247,7 @@ const palette = renderer.create('<div class="note-color-palette"/>', function($n
   for (let row = 0, rowSize = options.colors.length; row < rowSize; row++) {
     const eventName = options.eventName;
     const colors = options.colors[row];
-    const colorsName = opions.colorsName[row];
+    const colorsName = options.colorsName[row];
     const buttons = [];
     for (let col = 0, colSize = colors.length; col < colSize; col++) {
       const color = colors[col];
@@ -373,7 +373,7 @@ const dialog = renderer.create('<div class="note-modal" aria-hidden="false" tabi
     $node.addClass('fade');
   }
   $node.attr({
-    "aria-label": options.title
+    'aria-label': options.title
   });
   $node.html([
     '  <div class="note-modal-content">',

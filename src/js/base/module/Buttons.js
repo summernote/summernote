@@ -290,7 +290,7 @@ export default class Buttons {
                 const $holder = $(item);
                 $holder.append(this.ui.palette({
                   colors: this.options.colors,
-                  colorsName: _this.options.colorsName,
+                  colorsName: this.options.colorsName,
                   eventName: $holder.data('event'),
                   container: this.options.container,
                   tooltip: this.options.tooltip
