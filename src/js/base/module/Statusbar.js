@@ -37,6 +37,5 @@ export default class Statusbar {
 
   destroy() {
     this.$statusbar.off();
-    this.$statusbar.remove();
   }
 }
