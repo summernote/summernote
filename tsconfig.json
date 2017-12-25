@@ -6,6 +6,6 @@
     "experimentalDecorators": true
   },
   "include": [
-    "./src/**/*.js"
+    "./src/**/*.(js|ts)"
   ]
 }

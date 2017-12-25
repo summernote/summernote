@@ -4,9 +4,9 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     files: [{
-      pattern: 'src/js/**/*.js'
+      pattern: 'src/js/**/*.(js|ts)'
     }, {
-      pattern: 'test/**/*.spec.js'
+      pattern: 'test/**/*.spec.(js|ts)'
     }],
     // Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS, IE
     browsers: ['PhantomJS'],
