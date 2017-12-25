@@ -1,4 +1,4 @@
-(function (factory) {
+(function(factory) {
   /* global define */
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
@@ -10,9 +10,9 @@
     // Browser globals
     factory(window.jQuery);
   }
-}(function ($) {
+}(function($) {
   $.extend($.summernote.plugins, {
-    'specialchars': function (context) {
+    'specialchars': function(context) {
       var self = this;
       var ui = $.summernote.ui;
 
@@ -30,7 +30,10 @@
       var COLUMN_LENGTH = 15;
       var COLUMN_WIDTH = 35;
 
-      var currentColumn, currentRow, totalColumn, totalRow = 0;
+      var currentColumn = 0;
+      var currentRow = 0;
+      var totalColumn = 0;
+      var totalRow = 0;
 
       // special characters data set
       var specialCharDataSet = [
@@ -61,11 +64,11 @@
         '&diams;'
       ];
 
-      context.memo('button.specialCharacter', function () {
+      context.memo('button.specialchars', function() {
         return ui.button({
           contents: '<i class="fa fa-font fa-flip-vertical">',
           tooltip: lang.specialChar.specialChar,
-          click: function () {
+          click: function() {
             self.show();
           }
         }).render();
@@ -78,14 +81,14 @@
        * @private
        * @return {jQuery}
        */
-      this.makeSpecialCharSetTable = function () {
+      this.makeSpecialCharSetTable = function() {
         var $table = $('<table/>');
-        $.each(specialCharDataSet, function (idx, text) {
+        $.each(specialCharDataSet, function(idx, text) {
           var $td = $('<td/>').addClass('note-specialchar-node');
           var $tr = (idx % COLUMN_LENGTH === 0) ? $('<tr/>') : $table.find('tr').last();
 
           var $button = ui.button({
-            callback: function ($node) {
+            callback: function($node) {
               $node.html(text);
               $node.attr('title', text);
               $node.attr('data-value', encodeURIComponent(text));
@@ -111,7 +114,7 @@
         return $table;
       };
 
-      this.initialize = function () {
+      this.initialize = function() {
         var $container = options.dialogsInBody ? $(document.body) : $editor;
 
         var body = '<div class="form-group row-fluid">' + this.makeSpecialCharSetTable()[0].outerHTML + '</div>';
@@ -122,10 +125,10 @@
         }).render().appendTo($container);
       };
 
-      this.show = function () {
+      this.show = function() {
         var text = context.invoke('editor.getSelectedText');
         context.invoke('editor.saveRange');
-        this.showSpecialCharDialog(text).then(function (selectChar) {
+        this.showSpecialCharDialog(text).then(function(selectChar) {
           context.invoke('editor.restoreRange');
 
           // build node
@@ -135,7 +138,7 @@
             // insert video node
             context.invoke('editor.insertNode', $node);
           }
-        }).fail(function () {
+        }).fail(function() {
           context.invoke('editor.restoreRange');
         });
       };
@@ -146,8 +149,8 @@
        * @param {jQuery} $dialog
        * @return {Promise}
        */
-      this.showSpecialCharDialog = function (text) {
-        return $.Deferred(function (deferred) {
+      this.showSpecialCharDialog = function(text) {
+        return $.Deferred(function(deferred) {
           var $specialCharDialog = self.$dialog;
           var $specialCharNode = $specialCharDialog.find('.note-specialchar-node');
           var $selectedNode = null;
@@ -170,7 +173,7 @@
           // find next node
           function findNextNode(row, column) {
             var findNode = null;
-            $.each($specialCharNode, function (idx, $node) {
+            $.each($specialCharNode, function(idx, $node) {
               var findRow = Math.ceil((idx + 1) / COLUMN_LENGTH);
               var findColumn = ((idx + 1) % COLUMN_LENGTH === 0) ? COLUMN_LENGTH : (idx + 1) % COLUMN_LENGTH;
               if (findRow === row && findColumn === column) {
@@ -187,7 +190,6 @@
             var lastRowColumnLength = $specialCharNode.length % totalColumn;
 
             if (KEY.LEFT === keyCode) {
-
               if (currentColumn > 1) {
                 currentColumn = currentColumn - 1;
               } else if (currentRow === 1 && currentColumn === 1) {
@@ -197,9 +199,7 @@
                 currentColumn = totalColumn;
                 currentRow = currentRow - 1;
               }
-
             } else if (KEY.RIGHT === keyCode) {
-
               if (currentRow === totalRow && lastRowColumnLength === currentColumn) {
                 currentColumn = 1;
                 currentRow = 1;
@@ -209,7 +209,6 @@
                 currentColumn = 1;
                 currentRow = currentRow + 1;
               }
-
             } else if (KEY.UP === keyCode) {
               if (currentRow === 1 && lastRowColumnLength < currentColumn) {
                 currentRow = totalRow - 1;
@@ -281,21 +280,19 @@
             }
           }
 
-          ui.onDialogShown(self.$dialog, function () {
-
+          ui.onDialogShown(self.$dialog, function() {
             $(document).on('keydown', keyDownEventHandler);
 
             self.$dialog.find('button').tooltip();
 
-            $specialCharNode.on('click', function (event) {
+            $specialCharNode.on('click', function(event) {
               event.preventDefault();
               deferred.resolve(decodeURIComponent($(event.currentTarget).find('button').attr('data-value')));
               ui.hideDialog(self.$dialog);
             });
-
           });
 
-          ui.onDialogHidden(self.$dialog, function () {
+          ui.onDialogHidden(self.$dialog, function() {
             $specialCharNode.off('click');
 
             self.$dialog.find('button').tooltip('destroy');

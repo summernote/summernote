@@ -12,7 +12,7 @@ Super simple WYSIWYG Editor.
 ### Summernote
 Summernote is a JavaScript library that helps you create WYSIWYG editors online.
 
-Home page: <http://summernote.org>
+Home page: <https://summernote.org>
 
 ### Why Summernote?
 
@@ -23,19 +23,14 @@ Summernote has a few special features:
 * Simple UI
 * Interactive WYSIWYG editing
 * Handy integration with server
+* Supports Bootstrap 3 and 4 integrities
+* Lots of [plugins and connectors](https://github.com/summernote/awesome-summernote) provided together
 
 ### Installation and dependencies
 
-Summernote uses opensource libraries: [jQuery](http://jquery.com/), [Bootstrap](http://getbootstrap.com).
+Summernote is built on [jQuery](http://jquery.com/).
 
-For [Meteor](http://github.com/meteor/meteor), just run `meteor add summernote:summernote`. More info in the [Meteor README](meteor/README.md).
-
-Also there's an adaptation for React: [react-summernote](https://github.com/Vnkitaev/react-summernote)
-
-
-For other/no frameworks:
-
-#### 1. include JS/CSS
+#### 1. Include JS/CSS
 
 Include the following code in the `<head>` tag of your HTML:
 
@@ -50,7 +45,7 @@ Include the following code in the `<head>` tag of your HTML:
 <script src="summernote.js"></script>
 ```
 
-#### 2. target a element
+#### 2. Target a element
 
 Then place a `div` tag somewhere in the `body` tag. This element will be replaced with the summernote editor.
 
@@ -58,7 +53,7 @@ Then place a `div` tag somewhere in the `body` tag. This element will be replace
 <div id="summernote">Hello Summernote</div>
 ```
 
-#### 3. summernote
+#### 3. Summernote it!
 
 Finally, run this script after the DOM is ready:
 
@@ -84,74 +79,12 @@ For more detail about API, please refer to [document](http://summernote.org/gett
 
 The code view allows the user to enter script contents. Make sure to filter/[sanitize the HTML on the server](https://github.com/search?l=JavaScript&q=sanitize+html). Otherwise, an attacker can inject arbitrary JavaScript code into clients.
 
-#### document structure
-
-```
- - body container: <div class="note-editable">, <td>, <blockquote>, <ul>
- - block node: <div>, <p>, <li>, <h1>, <table>
- - void block node: <hr>
- - inline node: <span>, <b>, <font>, <a>, ...
- - void inline node: <img>
- - text node: #text
-```
-
-1. A body container has block node, but `<ul>` has only `<li>` nodes.
-2. A body container also has inline nodes sometimes. This inline nodes will be wraped with `<p>` when enter key pressed.
-4. A block node only has inline nodes.
-5. A inline nodes has another inline nodes
-6. `#text` and void inline node doesn't have children.
-
-#### build summernote
-```bash
-npm install
-
-# build full version of summernote: dist/summernote.js
-npm run build
-
-# generate minified copy: dist/summernote.min.js, dist/summernote.css
-npm run dist
-```
-At this point, you should now have a `build/` directory populated with everything you need to use summernote.
-
-#### test summernote
-run tests with Karma and PhantomJS
-```bash
-npm test
-```
-If you want run tests on other browser,
-change the values for `broswers` properties in `Gruntfile.js`.
-
-```
-karma: {
-  all: {
-    browsers: ['PhantomJS'],
-    reporters: ['progress']
-  }
-}
-
-```
-You can use `Chrome`, `ChromeCanary`, `Firefox`, `Opera`, `Safari`, `PhantomJS` and `IE` beside `PhantomJS`.
-Once you run `npm test`, it will watch all javascript file. Therefore karma run tests every time you chage code.
-
-#### start local server for developing summernote.
-run local server with connect and watch.
-```bash
-npm run start
-# Open a browser on http://localhost:3000.
-# If you change source code, automatically reload your page.
-```
-
-#### Coding convention
-* JSHint: http://www.jshint.com/about/
-* JSHint rule: https://github.com/summernote/summernote/blob/master/.jshintrc
-
-#### Contributing
-* Pull requests are welcome
-* Please don't include dist/* files on your commits.
+### For contributing
+https://github.com/summernote/summernote/blob/develop/CONTRIBUTING.md
 
 ### Contacts
 * Facebook user group: https://www.facebook.com/groups/summernote
 * Twitter: http://twitter.com/hackerwins
 
 ### License
-summernote may be freely distributed under the MIT license.
+Summernote may be freely distributed under the MIT license.

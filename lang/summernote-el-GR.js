@@ -1,4 +1,4 @@
-(function ($) {
+(function($) {
   $.extend($.summernote.lang, {
     'el-GR': {
       font: {
@@ -32,7 +32,8 @@
         maximumFileSize: 'Μέγιστο μέγεθος αρχείου',
         maximumFileSizeError: 'Το μέγεθος είναι μεγαλύτερο από το μέγιστο επιτρεπτό.',
         url: 'URL',
-        remove: 'Αφαίρεση'
+        remove: 'Αφαίρεση',
+        original: 'Original'
       },
       link: {
         link: 'Σύνδεσμος',
@@ -51,7 +52,14 @@
         providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
       },
       table: {
-        table: 'Πίνακας'
+        table: 'Πίνακας',
+        addRowAbove: 'Add row above',
+        addRowBelow: 'Add row below',
+        addColLeft: 'Add column left',
+        addColRight: 'Add column right',
+        delRow: 'Delete row',
+        delCol: 'Delete column',
+        delTable: 'Delete table'
       },
       hr: {
         insert: 'Εισαγωγή οριζόντιας γραμμής'

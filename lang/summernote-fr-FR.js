@@ -1,4 +1,4 @@
-(function ($) {
+(function($) {
   $.extend($.summernote.lang, {
     'fr-FR': {
       font: {
@@ -32,7 +32,8 @@
         maximumFileSize: 'Taille de fichier maximale',
         maximumFileSizeError: 'Taille maximale du fichier dépassée',
         url: 'URL de l\'image',
-        remove: 'Supprimer l\'image'
+        remove: 'Supprimer l\'image',
+        original: 'Original'
       },
       video: {
         video: 'Vidéo',

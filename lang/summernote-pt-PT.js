@@ -1,4 +1,4 @@
-(function ($) {
+(function($) {
   $.extend($.summernote.lang, {
     'pt-PT': {
       font: {
@@ -9,6 +9,8 @@
         height: 'Altura da linha',
         name: 'Fonte',
         strikethrough: 'Riscado',
+        subscript: 'Subscript',
+        superscript: 'Superscript',
         size: 'Tamanho da fonte'
       },
       image: {
@@ -20,9 +22,18 @@
         floatLeft: 'Float Esquerda',
         floatRight: 'Float Direita',
         floatNone: 'Sem Float',
+        shapeRounded: 'Shape: Rounded',
+        shapeCircle: 'Shape: Circle',
+        shapeThumbnail: 'Shape: Thumbnail',
+        shapeNone: 'Shape: None',
         dragImageHere: 'Arraste uma imagem para aqui',
+        dropImage: 'Drop image or Text',
         selectFromFiles: 'Selecione a partir dos arquivos',
-        url: 'Endereço da imagem'
+        maximumFileSize: 'Maximum file size',
+        maximumFileSizeError: 'Maximum file size exceeded.',
+        url: 'Endereço da imagem',
+        remove: 'Remove Image',
+        original: 'Original'
       },
       video: {
         video: 'Vídeo',
@@ -41,7 +52,14 @@
         openInNewWindow: 'Abrir numa nova janela'
       },
       table: {
-        table: 'Tabela'
+        table: 'Tabela',
+        addRowAbove: 'Add row above',
+        addRowBelow: 'Add row below',
+        addColLeft: 'Add column left',
+        addColRight: 'Add column right',
+        delRow: 'Delete row',
+        delCol: 'Delete column',
+        delTable: 'Delete table'
       },
       hr: {
         insert: 'Inserir linha horizontal'
@@ -94,9 +112,42 @@
         paragraphFormatting: 'Formatação de parágrafo',
         documentStyle: 'Estilo de documento'
       },
+      help: {
+        'insertParagraph': 'Insert Paragraph',
+        'undo': 'Undoes the last command',
+        'redo': 'Redoes the last command',
+        'tab': 'Tab',
+        'untab': 'Untab',
+        'bold': 'Set a bold style',
+        'italic': 'Set a italic style',
+        'underline': 'Set a underline style',
+        'strikethrough': 'Set a strikethrough style',
+        'removeFormat': 'Clean a style',
+        'justifyLeft': 'Set left align',
+        'justifyCenter': 'Set center align',
+        'justifyRight': 'Set right align',
+        'justifyFull': 'Set full align',
+        'insertUnorderedList': 'Toggle unordered list',
+        'insertOrderedList': 'Toggle ordered list',
+        'outdent': 'Outdent on current paragraph',
+        'indent': 'Indent on current paragraph',
+        'formatPara': 'Change current block\'s format as a paragraph(P tag)',
+        'formatH1': 'Change current block\'s format as H1',
+        'formatH2': 'Change current block\'s format as H2',
+        'formatH3': 'Change current block\'s format as H3',
+        'formatH4': 'Change current block\'s format as H4',
+        'formatH5': 'Change current block\'s format as H5',
+        'formatH6': 'Change current block\'s format as H6',
+        'insertHorizontalRule': 'Insert horizontal rule',
+        'linkDialog.show': 'Show Link Dialog'
+      },
       history: {
         undo: 'Desfazer',
         redo: 'Refazer'
+      },
+      specialChar: {
+        specialChar: 'SPECIAL CHARACTERS',
+        select: 'Select Special characters'
       }
     }
   });

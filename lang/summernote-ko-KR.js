@@ -1,4 +1,4 @@
-(function ($) {
+(function($) {
   $.extend($.summernote.lang, {
     'ko-KR': {
       font: {
@@ -29,8 +29,11 @@
         dragImageHere: '텍스트 혹은 사진을 이곳으로 끌어오세요',
         dropImage: '텍스트 혹은 사진을 내려놓으세요',
         selectFromFiles: '파일 선택',
+        maximumFileSize: 'Maximum file size',
+        maximumFileSizeError: 'Maximum file size exceeded.',
         url: '사진 URL',
-        remove: '사진 삭제'
+        remove: '사진 삭제',
+        original: 'Original'
       },
       video: {
         video: '동영상',
@@ -49,7 +52,14 @@
         openInNewWindow: '새창으로 열기'
       },
       table: {
-        table: '테이블'
+        table: '테이블',
+        addRowAbove: 'Add row above',
+        addRowBelow: 'Add row below',
+        addColLeft: 'Add column left',
+        addColRight: 'Add column right',
+        delRow: 'Delete row',
+        delCol: 'Delete column',
+        delTable: 'Delete table'
       },
       hr: {
         insert: '구분선 추가'
@@ -100,7 +110,37 @@
         textFormatting: '글자 스타일 적용',
         action: '기능',
         paragraphFormatting: '문단 스타일 적용',
-        documentStyle: '문서 스타일 적용'
+        documentStyle: '문서 스타일 적용',
+        extraKeys: 'Extra keys'
+      },
+      help: {
+        'insertParagraph': 'Insert Paragraph',
+        'undo': 'Undoes the last command',
+        'redo': 'Redoes the last command',
+        'tab': 'Tab',
+        'untab': 'Untab',
+        'bold': 'Set a bold style',
+        'italic': 'Set a italic style',
+        'underline': 'Set a underline style',
+        'strikethrough': 'Set a strikethrough style',
+        'removeFormat': 'Clean a style',
+        'justifyLeft': 'Set left align',
+        'justifyCenter': 'Set center align',
+        'justifyRight': 'Set right align',
+        'justifyFull': 'Set full align',
+        'insertUnorderedList': 'Toggle unordered list',
+        'insertOrderedList': 'Toggle ordered list',
+        'outdent': 'Outdent on current paragraph',
+        'indent': 'Indent on current paragraph',
+        'formatPara': 'Change current block\'s format as a paragraph(P tag)',
+        'formatH1': 'Change current block\'s format as H1',
+        'formatH2': 'Change current block\'s format as H2',
+        'formatH3': 'Change current block\'s format as H3',
+        'formatH4': 'Change current block\'s format as H4',
+        'formatH5': 'Change current block\'s format as H5',
+        'formatH6': 'Change current block\'s format as H6',
+        'insertHorizontalRule': 'Insert horizontal rule',
+        'linkDialog.show': 'Show Link Dialog'
       },
       history: {
         undo: '실행 취소',

@@ -1,4 +1,4 @@
-(function ($) {
+(function($) {
   $.extend($.summernote.lang, {
     'ta-IN': {
       font: {
@@ -32,7 +32,8 @@
         maximumFileSize: 'அதிகபட்ச கோப்பு அளவு',
         maximumFileSizeError: 'கோப்பு அதிகபட்ச அளவை மீறிவிட்டது',
         url: 'இணையதள முகவரி',
-        remove: 'படத்தை நீக்கு'
+        remove: 'படத்தை நீக்கு',
+        original: 'Original'
       },
       video: {
         video: 'காணொளி',
@@ -51,7 +52,14 @@
         openInNewWindow: 'புதிய சாளரத்தில் திறக்க'
       },
       table: {
-        table: 'அட்டவணை'
+        table: 'அட்டவணை',
+        addRowAbove: 'Add row above',
+        addRowBelow: 'Add row below',
+        addColLeft: 'Add column left',
+        addColRight: 'Add column right',
+        delRow: 'Delete row',
+        delCol: 'Delete column',
+        delTable: 'Delete table'
       },
       hr: {
         insert: 'கிடைமட்ட கோடு'
@@ -102,11 +110,45 @@
         textFormatting: 'எழுத்து வடிவமைப்பு',
         action: 'செயல்படுத்து',
         paragraphFormatting: 'பத்தி வடிவமைப்பு',
-        documentStyle: 'ஆவண பாணி'
+        documentStyle: 'ஆவண பாணி',
+        extraKeys: 'Extra keys'
+      },
+      help: {
+        'insertParagraph': 'Insert Paragraph',
+        'undo': 'Undoes the last command',
+        'redo': 'Redoes the last command',
+        'tab': 'Tab',
+        'untab': 'Untab',
+        'bold': 'Set a bold style',
+        'italic': 'Set a italic style',
+        'underline': 'Set a underline style',
+        'strikethrough': 'Set a strikethrough style',
+        'removeFormat': 'Clean a style',
+        'justifyLeft': 'Set left align',
+        'justifyCenter': 'Set center align',
+        'justifyRight': 'Set right align',
+        'justifyFull': 'Set full align',
+        'insertUnorderedList': 'Toggle unordered list',
+        'insertOrderedList': 'Toggle ordered list',
+        'outdent': 'Outdent on current paragraph',
+        'indent': 'Indent on current paragraph',
+        'formatPara': 'Change current block\'s format as a paragraph(P tag)',
+        'formatH1': 'Change current block\'s format as H1',
+        'formatH2': 'Change current block\'s format as H2',
+        'formatH3': 'Change current block\'s format as H3',
+        'formatH4': 'Change current block\'s format as H4',
+        'formatH5': 'Change current block\'s format as H5',
+        'formatH6': 'Change current block\'s format as H6',
+        'insertHorizontalRule': 'Insert horizontal rule',
+        'linkDialog.show': 'Show Link Dialog'
       },
       history: {
         undo: 'மீளமை',
         redo: 'மீண்டும்'
+      },
+      specialChar: {
+        specialChar: 'SPECIAL CHARACTERS',
+        select: 'Select Special characters'
       }
     }
   });

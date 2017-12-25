@@ -1,4 +1,4 @@
-(function ($) {
+(function($) {
   $.extend($.summernote.lang, {
     'lv-LV': {
       font: {
@@ -27,11 +27,20 @@
         shapeThumbnail: 'Forma: rāmītis',
         shapeNone: 'Forma: orģināla',
         dragImageHere: 'Ievēlciet attēlu šeit',
+        dropImage: 'Drop image or Text',
         selectFromFiles: 'Izvēlēties failu',
         maximumFileSize: 'Maksimālais faila izmērs',
         maximumFileSizeError: 'Faila izmērs pārāk liels!',
         url: 'Attēla URL',
-        remove: 'Dzēst attēlu'
+        remove: 'Dzēst attēlu',
+        original: 'Original'
+      },
+      video: {
+        video: 'Video',
+        videoLink: 'Video Link',
+        insert: 'Insert Video',
+        url: 'Video URL?',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
       },
       link: {
         link: 'Saite',
@@ -43,7 +52,14 @@
         openInNewWindow: 'Atvērt jaunā logā'
       },
       table: {
-        table: 'Tabula'
+        table: 'Tabula',
+        addRowAbove: 'Add row above',
+        addRowBelow: 'Add row below',
+        addColLeft: 'Add column left',
+        addColRight: 'Add column right',
+        delRow: 'Delete row',
+        delCol: 'Delete column',
+        delTable: 'Delete table'
       },
       hr: {
         insert: 'Ievietot līniju'
@@ -97,10 +113,6 @@
         documentStyle: 'Dokumenta stils',
         extraKeys: 'Citas taustiņu kombinācijas'
       },
-      history: {
-        undo: 'Atsauks (undo)',
-        redo: 'Atkārtot (redo)'
-      },
       help: {
         insertParagraph: 'Ievietot Paragrāfu',
         undo: 'Atcelt iepriekšējo darbību',
@@ -129,6 +141,14 @@
         formatH6: 'Mainīt bloka tipu uz virsrakstu H6',
         insertHorizontalRule: 'Ievietot horizontālu līniju',
         'linkDialog.show': 'Parādīt saites logu'
+      },
+      history: {
+        undo: 'Atsauks (undo)',
+        redo: 'Atkārtot (redo)'
+      },
+      specialChar: {
+        specialChar: 'SPECIAL CHARACTERS',
+        select: 'Select Special characters'
       }
     }
   });

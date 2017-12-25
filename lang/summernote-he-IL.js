@@ -1,4 +1,4 @@
-﻿(function ($) {
+(function($) {
   $.extend($.summernote.lang, {
     'he-IL': {
       font: {
@@ -22,10 +22,18 @@
         floatLeft: 'יישור לשמאל',
         floatRight: 'יישור לימין',
         floatNone: 'ישר',
+        shapeRounded: 'Shape: Rounded',
+        shapeCircle: 'Shape: Circle',
+        shapeThumbnail: 'Shape: Thumbnail',
+        shapeNone: 'Shape: None',
         dragImageHere: 'גרור תמונה לכאן',
+        dropImage: 'Drop image or Text',
         selectFromFiles: 'בחר מתוך קבצים',
+        maximumFileSize: 'Maximum file size',
+        maximumFileSizeError: 'Maximum file size exceeded.',
         url: 'נתיב לתמונה',
-        remove: 'הסר תמונה'
+        remove: 'הסר תמונה',
+        original: 'Original'
       },
       video: {
         video: 'סרטון',
@@ -44,7 +52,14 @@
         openInNewWindow: 'פתח בחלון חדש'
       },
       table: {
-        table: 'טבלה'
+        table: 'טבלה',
+        addRowAbove: 'Add row above',
+        addRowBelow: 'Add row below',
+        addColLeft: 'Add column left',
+        addColRight: 'Add column right',
+        delRow: 'Delete row',
+        delCol: 'Delete column',
+        delTable: 'Delete table'
       },
       hr: {
         insert: 'הוסף קו'
@@ -98,9 +113,42 @@
         documentStyle: 'עיצוב המסמך',
         extraKeys: 'קיצורים נוספים'
       },
+      help: {
+        'insertParagraph': 'Insert Paragraph',
+        'undo': 'Undoes the last command',
+        'redo': 'Redoes the last command',
+        'tab': 'Tab',
+        'untab': 'Untab',
+        'bold': 'Set a bold style',
+        'italic': 'Set a italic style',
+        'underline': 'Set a underline style',
+        'strikethrough': 'Set a strikethrough style',
+        'removeFormat': 'Clean a style',
+        'justifyLeft': 'Set left align',
+        'justifyCenter': 'Set center align',
+        'justifyRight': 'Set right align',
+        'justifyFull': 'Set full align',
+        'insertUnorderedList': 'Toggle unordered list',
+        'insertOrderedList': 'Toggle ordered list',
+        'outdent': 'Outdent on current paragraph',
+        'indent': 'Indent on current paragraph',
+        'formatPara': 'Change current block\'s format as a paragraph(P tag)',
+        'formatH1': 'Change current block\'s format as H1',
+        'formatH2': 'Change current block\'s format as H2',
+        'formatH3': 'Change current block\'s format as H3',
+        'formatH4': 'Change current block\'s format as H4',
+        'formatH5': 'Change current block\'s format as H5',
+        'formatH6': 'Change current block\'s format as H6',
+        'insertHorizontalRule': 'Insert horizontal rule',
+        'linkDialog.show': 'Show Link Dialog'
+      },
       history: {
         undo: 'בטל פעולה',
         redo: 'בצע שוב'
+      },
+      specialChar: {
+        specialChar: 'SPECIAL CHARACTERS',
+        select: 'Select Special characters'
       }
     }
   });

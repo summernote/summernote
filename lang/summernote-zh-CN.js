@@ -1,4 +1,4 @@
-(function ($) {
+(function($) {
   $.extend($.summernote.lang, {
     'zh-CN': {
       font: {
@@ -27,11 +27,13 @@
         shapeThumbnail: '形状: 缩略图',
         shapeNone: '形状: 无',
         dragImageHere: '将图片拖拽至此处',
+        dropImage: 'Drop image or Text',
         selectFromFiles: '从本地上传',
         maximumFileSize: '文件大小最大值',
         maximumFileSizeError: '文件大小超出最大值。',
         url: '图片地址',
-        remove: '移除图片'
+        remove: '移除图片',
+        original: 'Original'
       },
       video: {
         video: '视频',
@@ -50,7 +52,14 @@
         openInNewWindow: '在新窗口打开'
       },
       table: {
-        table: '表格'
+        table: '表格',
+        addRowAbove: 'Add row above',
+        addRowBelow: 'Add row below',
+        addColLeft: 'Add column left',
+        addColRight: 'Add column right',
+        delRow: 'Delete row',
+        delCol: 'Delete column',
+        delTable: 'Delete table'
       },
       hr: {
         insert: '水平线'
@@ -104,10 +113,6 @@
         documentStyle: '文档样式',
         extraKeys: '额外按键'
       },
-      history: {
-        undo: '撤销',
-        redo: '重做'
-      },
       help: {
         insertParagraph: '插入段落',
         undo: '撤销',
@@ -136,6 +141,14 @@
         formatH6: '设置选中内容样式为 标题6',
         insertHorizontalRule: '插入水平线',
         'linkDialog.show': '显示链接对话框'
+      },
+      history: {
+        undo: '撤销',
+        redo: '重做'
+      },
+      specialChar: {
+        specialChar: 'SPECIAL CHARACTERS',
+        select: 'Select Special characters'
       }
     }
   });
