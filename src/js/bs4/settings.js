@@ -25,7 +25,7 @@ import AirPopover from '../base/module/AirPopover';
 import HintPopover from '../base/module/HintPopover';
 
 $.summernote = $.extend($.summernote, {
-  version: '@VERSION',
+  version: '@@VERSION@@',
   ui: ui,
   dom: dom,
 

@@ -79,6 +79,7 @@
     "phantomjs-prebuilt": "^2.1.16",
     "rollup": "^0.53.0",
     "rollup-plugin-eslint": "^4.0.0",
+    "rollup-plugin-replace": "^2.0.0",
     "rollup-plugin-typescript": "^0.8.1",
     "serve-static": "^1.13.1",
     "typescript": "^2.6.2"

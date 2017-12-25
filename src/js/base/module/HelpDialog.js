@@ -17,7 +17,7 @@ export default class HelpDialog {
 
     const body = [
       '<p class="text-center">',
-      '<a href="http://summernote.org/" target="_blank">Summernote @VERSION</a> · ',
+      '<a href="http://summernote.org/" target="_blank">Summernote @@VERSION@@</a> · ',
       '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ',
       '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>',
       '</p>'
