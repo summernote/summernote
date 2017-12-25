@@ -13,8 +13,8 @@ before_script:
 - npm --version
 - if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then node test/e2e/static-server.js & fi
 script:
-- npm run test-travis
-- if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then npm run test-saucelabs; fi
+- npm run test:travis
+- if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then npm run test:saucelabs; fi
 - if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then npm run test:e2e-saucelabs; fi
 - if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then pkill node; fi
 before_deploy:
