@@ -6,24 +6,7 @@
 * eslint: https://eslint.org
 * eslint rule: https://github.com/summernote/summernote/blob/master/.eslintrc
 
-## Document structure
-
-```
- - body container: <div class="note-editable">, <td>, <blockquote>, <ul>
- - block node: <div>, <p>, <li>, <h1>, <table>
- - void block node: <hr>
- - inline node: <span>, <b>, <font>, <a>, ...
- - void inline node: <img>
- - text node: #text
-```
-
-1. A body container has block node, but `<ul>` has only `<li>` nodes.
-2. A body container also has inline nodes sometimes. This inline nodes will be wrapped with `<p>` when enter key pressed.
-4. A block node only has inline nodes.
-5. A inline nodes has another inline nodes
-6. `#text` and void inline node doesn't have children.
-
-#### Build summernote
+## Build summernote
 ```bash
 npm install
 
@@ -46,10 +29,10 @@ npm run start
 ## Test summernote
 run tests with Karma and PhantomJS
 ```bash
-npm test
+npm run test
 ```
 If you want run tests on other browser,
-change the values for `broswers` properties in `Gruntfile.js`.
+change the values for `broswers` properties in `karma.conf.js`.
 
 ```
 karma: {
@@ -62,3 +45,23 @@ karma: {
 ```
 You can use `Chrome`, `ChromeCanary`, `Firefox`, `Opera`, `Safari`, `PhantomJS` and `IE` beside `PhantomJS`.
 Once you run `npm test`, it will watch all javascript file. Therefore karma run tests every time you change code.
+
+## Prepush Hooks
+As part of this repo, we use the NPM package husky to implement git hooks. We leverage the prepush hook to prevent bad commits.
+
+## Document structure
+
+```
+ - body container: <div class="note-editable">, <td>, <blockquote>, <ul>
+ - block node: <div>, <p>, <li>, <h1>, <table>
+ - void block node: <hr>
+ - inline node: <span>, <b>, <font>, <a>, ...
+ - void inline node: <img>
+ - text node: #text
+```
+
+1. A body container has block node, but `<ul>` has only `<li>` nodes.
+2. A body container also has inline nodes sometimes. This inline nodes will be wrapped with `<p>` when enter key pressed.
+4. A block node only has inline nodes.
+5. A inline nodes has another inline nodes
+6. `#text` and void inline node doesn't have children.
