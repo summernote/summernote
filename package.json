@@ -23,7 +23,7 @@
     "start": "grunt server",
     "lint": "eslint --fix src/js plugin lang test Gruntfile.js",
     "download:selenium": "if [ ! -e test/libs/selenium-server-standalone.jar ]; then wget http://selenium-release.storage.googleapis.com/3.6/selenium-server-standalone-3.6.0.jar -O test/libs/selenium-server-standalone.jar; fi",
-    "test": "grunt test",
+    "test": "karma start karma.conf.js --single-run",
     "test:e2e": "npm run download:selenium && concurrently --kill-others 'node test/e2e/static-server.js' 'nightwatch --config test/nightwatch.conf.js'",
     "test:e2e-saucelabs": "npm run dist && npm run download:selenium && nightwatch --config test/nightwatch.conf.js --env ie9,ie10,ie11,chrome,firefox",
     "test:travis": "grunt test-travis --verbose",
