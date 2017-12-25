@@ -22,7 +22,7 @@ module.exports = function (grunt) {
     external: ['jquery'],
     plugins: [rollupTypescript({
       typescript: typescript,
-      include: ['**/*.(js|ts)']
+      include: ['**/*.js', '**/*.ts']
     })]
   };
   

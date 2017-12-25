@@ -3,11 +3,10 @@ module.exports = function (config) {
     frameworks: ['mocha', 'karma-typescript'],
     colors: true,
     logLevel: config.LOG_INFO,
-    files: [{
-      pattern: 'src/js/**/*.(js|ts)'
-    }, {
-      pattern: 'test/**/*.spec.(js|ts)'
-    }],
+    files: [
+      { pattern: 'src/js/**/*.js' },
+      { pattern: 'test/**/*.spec.js' }
+    ],
     // Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS, IE
     browsers: ['PhantomJS'],
     preprocessors: {
