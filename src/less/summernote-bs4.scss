@@ -150,6 +150,39 @@ $img-margin-right: 10px;
         border-top: 1px solid $border-color;
       }
     }
+    .note-editor.note-frame .note-statusbar .note-status-output {
+      font-size: 12px;
+      height: 25px;
+    }
+    .note-editor.note-frame .note-statusbar .note-status-output .alert {
+      margin:-7px 0 0 0;
+      padding: 2px 10px;
+      border: 1px solid transparent;
+      border-radius: 0;
+    }
+    .note-editor.note-frame .note-statusbar .note-status-output .alert .note-icon {
+      margin-right: 5px;
+    }
+    .note-editor.note-frame .note-statusbar .note-status-output .alert .alert-success {
+      color: #3c763d;
+      background-color: #dff0d8;
+      border-color: #d6e9c6;
+    }
+    .note-editor.note-frame .note-statusbar .note-status-output .alert .alert-info {
+      color: #31708f;
+      background-color: #d9edf7;
+      border-color: #bce8f1;
+    }
+    .note-editor.note-frame .note-statusbar .note-status-output .alert .alert-warning {
+      color: #8a6d3b;
+      background-color: #fcf8e3;
+      border-color: #faebcc;
+    }
+    .note-editor.note-frame .note-statusbar .note-status-output .alert .alert-danger {
+      color: #a94442;
+      background-color: #f2dede;
+      border-color: #ebccd1;
+    }
   }
   .note-placeholder {
     padding: 10px;
