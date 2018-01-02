@@ -10,7 +10,7 @@ const codable = renderer.create('<textarea class="note-codable" role="textbox" a
 const editable = renderer.create('<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>');
 const statusbar = renderer.create([
   '<div class="note-statusbar" role="status">',
-  '  <output id="note-status-output" aria-live="polite"></output>',
+  '  <output class="note-status-output" aria-live="polite"></output>',
   '  <div class="note-resizebar" role="seperator" aria-orientation="horizontal" aria-label="resize">',
   '    <div class="note-icon-bar"/>',
   '    <div class="note-icon-bar"/>',
