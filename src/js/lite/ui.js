@@ -9,8 +9,8 @@ const editingArea = renderer.create('<div class="note-editing-area"/>');
 const codable = renderer.create('<textarea class="note-codable" role="textbox" aria-multiline="true"/>');
 const editable = renderer.create('<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>');
 const statusbar = renderer.create([
-  '<div class="note-statusbar" role="status">',
-  '  <output class="note-status-output" aria-live="polite"></output>',
+  '<output class="note-status-output" role="status" aria-live="polite"/>',
+  '<div class="note-statusbar" role="resize">',
   '  <div class="note-resizebar" role="seperator" aria-orientation="horizontal" aria-label="resize">',
   '    <div class="note-icon-bar"/>',
   '    <div class="note-icon-bar"/>',
@@ -20,7 +20,10 @@ const statusbar = renderer.create([
 ].join(''));
 
 const airEditor = renderer.create('<div class="note-editor"/>');
-const airEditable = renderer.create('<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>');
+const airEditable = renderer.create([
+  '<output class="note-status-output" role="status" aria-live="polite"/>',
+  '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>'
+].join(''));
 
 const buttonGroup = renderer.create('<div class="note-btn-group">');
 const button = renderer.create('<button type="button" class="note-btn" role="button" tabindex="-1">', function($node, options) {
