@@ -6,7 +6,6 @@
   vertical-align: middle;
   touch-action: manipulation;
   cursor: pointer;
-  background-color: #fff;
   background-image: none;
   border: 1px solid @btn-default-border;
   white-space: nowrap;
@@ -18,10 +17,10 @@
   &:hover,
   &:focus,
   &.focus {
-    color: #333;
+    color: @btn-default-color;
     text-decoration: none;
-    border: 1px solid #fff;
-    background-color: #f4f4f4; 
+    border: 1px solid @btn-default-border;
+    background-color: @btn-default-hover-bg;
     outline: 0;
     .rounded(1px);
   }
@@ -41,7 +40,6 @@
     .box-shadow(none);
   }
 
-
 }
 
 .note-btn-primary {
@@ -53,7 +51,7 @@
   &.focus {
     color: #fff;
     text-decoration: none;
-    border: 1px solid #fff;
+    border: 1px solid @btn-default-border;
     background-color: #fa6362;
     .rounded(1px);
   }

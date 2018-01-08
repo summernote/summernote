@@ -21,7 +21,7 @@ $img-margin-right: 10px;
     display: none;
     z-index: 100;
     color: $dropzone-color;
-    background-color: white;
+    background-color: #fff;
     opacity: 0.95;
 
     .note-dropzone-message {
@@ -29,7 +29,7 @@ $img-margin-right: 10px;
       vertical-align: middle;
       text-align: center;
       font-size: 28px;
-      font-weight: bold;
+      font-weight: 700;
     }
 
     &.hover {
@@ -127,7 +127,7 @@ $img-margin-right: 10px;
     width: 100% !important;
     z-index: 1050; /* bs3 modal-backdrop: 1030, bs2: 1040 */
     .note-editable {
-      background-color: white;
+      background-color: #fff;
     }
     .note-resizebar {
       display: none;
@@ -228,39 +228,6 @@ $img-margin-right: 10px;
         margin: 1px auto;
         border-top: 1px solid $border-color;
       }
-    }
-    .note-status-output {
-      font-size: 12px;
-      height: 25px;
-    }
-    .note-status-output .alert {
-      margin:-7px 0 0 0;
-      padding: 2px 10px;
-      border: 1px solid transparent;
-      border-radius: 0;
-    }
-    .note-status-output .alert .note-icon {
-      margin-right: 5px;
-    }
-    .note-status-output .alert .alert-success {
-      color: #3c763d;
-      background-color: #dff0d8;
-      border-color: #d6e9c6;
-    }
-    .note-status-output .alert .alert-info {
-      color: #31708f;
-      background-color: #d9edf7;
-      border-color: #bce8f1;
-    }
-    .note-status-output .alert .alert-warning {
-      color: #8a6d3b;
-      background-color: #fcf8e3;
-      border-color: #faebcc;
-    }
-    .note-status-output .alert .alert-danger {
-      color: #a94442;
-      background-color: #f2dede;
-      border-color: #ebccd1;
     }
   }
   .note-placeholder {
@@ -480,20 +447,20 @@ $img-margin-right: 10px;
   .note-control-selection {
     position: absolute;
     display: none;
-    border: 1px solid black;
+    border: 1px solid #000;
     &>div { position: absolute; }
 
     .note-control-selection-bg {
       width: 100%;
       height: 100%;
-      background-color: black;
+      background-color: #000;
       @include opacity(0.3);
     }
 
     .note-control-handle {
       width: 7px;
       height: 7px;
-      border: 1px solid black;
+      border: 1px solid #000;
     }
 
     .note-control-holder {
@@ -502,7 +469,7 @@ $img-margin-right: 10px;
 
     .note-control-sizing {
       @extend .note-control-handle;
-      background-color: white;
+      background-color: #000;
     }
 
     .note-control-nw {
@@ -543,8 +510,8 @@ $img-margin-right: 10px;
       bottom: 0;
       padding: 5px;
       margin: 5px;
-      color: white;
-      background-color: black;
+      color: #fff;
+      background-color: #000;
       font-size: 12px;
       @include rounded(5px);
       @include opacity(0.7);
