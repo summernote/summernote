@@ -1,13 +1,13 @@
 .note-modal {
-  position:absolute;
-  left:0px;
-  right:0px;
-  top:0px;
-  bottom:0px;
-  overflow:hidden;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
   z-index: @zindex-modal;
   .opacity(1);
-  display:none;
+  display: none;
 
   &.open {
     display:block;
@@ -28,53 +28,62 @@
 }
 
 .note-modal-header {
-  padding-top: 30px;
-  padding-bottom:20px;
-  padding-right:20px;
-  padding-left:20px;
+  padding: 30px 20px 20px 20px;
   border: 1px solid #ededef;
 
   .close {
-    margin-top:-10px;
+    margin-top: -10px;
   }
 
 }
 
 .note-modal-body {
-  position:relative;
+  position: relative;
   padding: 20px 30px;
 }
 
 .note-modal-footer {
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-right: 10px;
-  padding-left: 10px;
-  text-align:center;
+  height: 40px;
+  padding: 10px;
+  text-align: center;
 
 }
 
+.note-modal-footer a {
+  color: #337ab7;
+  text-decoration: none
+}
+
+.note-modal-footer a:hover,
+.note-modal-footer a:focus {
+  color: #23527c;
+  text-decoration: underline
+}
+
+.note-modal-footer .note-btn {
+  float: right
+}
+
 .note-modal-title {
-  text-align: center;
   font-size: 26px;
   color: #42515f;
-  margin: 0px;
+  margin: 0;
   line-height: 1.4;
 }
 
 .note-modal-backdrop {
-  position:absolute;
-  left:0px;
-  right:0px;
-  bottom:0px;
-  top:0px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
   z-index: @zindex-modal-background;
   background: @modal-backdrop-bg;
   .opacity(0.5);
-  display:none;
+  display: none;
 
   &.open {
-    display:block;
+    display: block;
   }
 }
 

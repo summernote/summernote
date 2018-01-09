@@ -6,12 +6,12 @@
   // So reset our font and text properties to avoid inheriting weird values.
   font-size: 13px;
 
-  display:none;
+  display: none;
   background: @popover-bg;
   border: 1px solid @popover-border-color;
   border: 1px solid @popover-fallback-border-color;
 
-  &.in     { display:block; }
+  &.in     { display: block; }
   &.top    { margin-top:  -3px; padding: 5 0; }
   &.right  { margin-left:  3px; padding: 0 5; }
   &.bottom { margin-top:   3px; padding: 5 0; }
@@ -23,7 +23,7 @@
     top: -11px;
     left: 50%;
     margin-left: -@popover-arrow-width;
-    border-top-width: 0 ;
+    border-top-width: 0;
     border-bottom-color: @popover-arrow-outer-fallback-color;
     border-bottom-color: @popover-arrow-outer-color;
 
@@ -93,9 +93,7 @@
   position: absolute;
   width: 0;
   height: 0;
-  border-color: transparent;
-  border-style: solid;
-  border-width: 11px;
+  border: 11px solid transparent;
 
   &::after {
     position: absolute;
