@@ -46,6 +46,21 @@ export default class History {
   }
 
   /**
+  *  @method commit
+  *  Resets history stack, but keeps current editor's content.
+  */
+  commit() {
+    // Clear the stack.
+    this.stack = [];
+
+    // Restore stackOffset to its original value.
+    this.stackOffset = -1;
+
+    // Record our first snapshot (of nothing).
+    this.recordUndo();
+  }
+
+  /**
   * @method reset
   * Resets the history stack completely; reverting to an empty editor.
   */
