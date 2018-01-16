@@ -532,6 +532,7 @@ export default class Editor {
    * @param {Boolean} isPreventTrigger
    */
   afterCommand(isPreventTrigger) {
+    this.normalizeContent();
     this.history.recordUndo();
     if (!isPreventTrigger) {
       this.context.triggerEvent('change', this.$editable.html());
@@ -849,5 +850,12 @@ export default class Editor {
    */
   empty() {
     this.context.invoke('code', dom.emptyPara);
+  }
+
+  /**
+   * normalize content
+   */
+  normalizeContent() {
+    this.$editable[0].normalize();
   }
 }
