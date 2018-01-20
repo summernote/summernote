@@ -110,7 +110,7 @@ export default class Buttons {
         return this.button({
           className: 'note-btn-style-' + item,
           contents: '<div data-value="' + item + '">' + item.toUpperCase() + '</div>',
-          tooltip: item.toUpperCase(),
+          tooltip: this.lang.style[item],
           click: this.context.createInvokeHandler('editor.formatBlock')
         }).render();
       });
