@@ -162,7 +162,7 @@ export default class VideoDialog {
   }
 
   /**
-   * show image dialog
+   * show video dialog
    *
    * @param {jQuery} $dialog
    * @return {Promise}
