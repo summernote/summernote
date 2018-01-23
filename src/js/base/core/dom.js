@@ -109,6 +109,7 @@ function isInline(node) {
          !isPara(node) &&
          !isTable(node) &&
          !isBlockquote(node) &&
+         !isVideo(node) &&
          !isData(node);
 }
 
