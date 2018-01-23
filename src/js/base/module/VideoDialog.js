@@ -139,7 +139,6 @@ export default class VideoDialog {
     const $wrapper = $('<div class="note-video-clip-wrapper"></div>').append($video);
 
     return $wrapper[0];
-  
   }
 
   show() {

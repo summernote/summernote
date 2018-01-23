@@ -31,7 +31,7 @@ export default class VideoPopover {
       className: 'note-video-popover'
     }).render().appendTo(this.options.container);
     const $content = this.$popover.find('.popover-content,.note-popover-content');
-    
+
     this.context.invoke('buttons.build', $content, this.options.popover.video);
   }
 

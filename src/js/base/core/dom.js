@@ -998,13 +998,13 @@ function isCustomStyleTag(node) {
 
 /**
  * @method isVideo
- * 
+ *
  * assert if a node contains a "note-styletag" class,
  * which implies that's a custom-made style tag node
  *
  * @param {Node} an HTML DOM node
  */
-var isVideo = function (node) {
+function isVideo(node) {
   return node && $(node).hasClass('note-video-clip-wrapper');
 };
 

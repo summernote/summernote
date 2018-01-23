@@ -93,12 +93,11 @@ export default class Handle {
 
     const isImage = dom.isImg(target);
     const isVideo = dom.isVideo(target);
-    
+
     const $selection = this.$handle.find('.note-control-selection');
 
     this.context.invoke('imagePopover.update', target);
     this.context.invoke('videoPopover.update', target);
-
 
     if (isImage) {
       const $image = $(target);
@@ -131,7 +130,7 @@ export default class Handle {
     } else {
       this.hide();
     }
-    
+
     if (isVideo) {
       const $video = $(target);
       const position = $video.position();
@@ -152,8 +151,8 @@ export default class Handle {
         top: pos.top,
         width: videoSize.w,
         height: videoSize.h
-      }).data('target', $video); // save current image element.
-      
+      }).data('target', $video); // save current video element.
+
       const sizingText = videoSize.w + 'x' + videoSize.h;
       $selection.find('.note-control-selection-info').text(sizingText);
       this.context.invoke('editor.saveTarget', target);
@@ -161,7 +160,8 @@ export default class Handle {
       this.hide();
     }
 
-    return isImage ? isImage : isVideo;
+    if (isImage) return isImage;
+    if (isVideo) return isVideo;
   }
 
   /**
