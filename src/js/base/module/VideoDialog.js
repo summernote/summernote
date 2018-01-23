@@ -135,7 +135,6 @@ export default class VideoDialog {
     }
 
     $video.addClass('note-video-clip');
-    $video.attr('frameborder', 0);
     const $wrapper = $('<div class="note-video-clip-wrapper"></div>').append($video);
 
     return $wrapper[0];
