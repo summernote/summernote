@@ -67,6 +67,12 @@ export default class VideoDialog {
     const youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
     const youkuMatch = url.match(youkuRegExp);
 
+    const qqRegExp = /\/\/v\.qq\.com.*?vid=(.+)/;
+    const qqMatch = url.match(qqRegExp);
+
+    const qqRegExp2 = /\/\/v\.qq\.com\/x?\/?(page|cover).*?\/([^\/]+)\.html\??.*/;
+    const qqMatch2 = url.match(qqRegExp2);
+
     const mp4RegExp = /^.+.(mp4|m4v)$/;
     const mp4Match = url.match(mp4RegExp);
 
@@ -112,6 +118,13 @@ export default class VideoDialog {
         .attr('height', '498')
         .attr('width', '510')
         .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
+    } else if ((qqMatch && qqMatch[1].length) || (qqMatch2 && qqMatch2[2].length)) {
+      const vid = ((qqMatch && qqMatch[1].length) ? qqMatch[1] : qqMatch2[2]);
+      $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+        .attr('frameborder', 0)
+        .attr('height', '310')
+        .attr('width', '500')
+        .attr('src', '//v.qq.com/iframe/player.html?vid=' + vid + '&auto=0');
     } else if (mp4Match || oggMatch || webmMatch) {
       $video = $('<video controls>')
         .attr('src', url)
@@ -122,9 +135,9 @@ export default class VideoDialog {
     }
 
     $video.addClass('note-video-clip');
-    const $wrapper = $('<div class="note-video-clip-wrapper"></div>').append($video);
+    $video = $('<div class="note-video-clip-wrapper"></div>').append($video);
 
-    return $wrapper[0];
+    return $video[0];
   }
 
   show() {
