@@ -118,13 +118,6 @@ export default class VideoDialog {
         .attr('height', '498')
         .attr('width', '510')
         .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
-    } else if ((qqMatch && qqMatch[1].length) || (qqMatch2 && qqMatch2[2].length)) {
-      const vid = ((qqMatch && qqMatch[1].length) ? qqMatch[1] : qqMatch2[2]);
-      $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
-        .attr('frameborder', 0)
-        .attr('height', '310')
-        .attr('width', '500')
-        .attr('src', '//v.qq.com/iframe/player.html?vid=' + vid + '&auto=0');
     } else if (mp4Match || oggMatch || webmMatch) {
       $video = $('<video controls>')
         .attr('src', url)
@@ -135,9 +128,9 @@ export default class VideoDialog {
     }
 
     $video.addClass('note-video-clip');
-    const $wrapper = $('<div class="note-video-clip-wrapper"></div>').append($video[0]);
+    const $wrapper = $('<div class="note-video-clip-wrapper"></div>').append($video);
 
-    return $wrapper;
+    return $wrapper[0];
   }
 
   show() {
