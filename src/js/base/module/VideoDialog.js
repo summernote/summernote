@@ -124,7 +124,7 @@ export default class VideoDialog {
         .attr('frameborder', 0)
         .attr('height', '310')
         .attr('width', '500')
-        .attr('src', 'http://v.qq.com/iframe/player.html?vid=' + vid + '&amp;auto=0');
+        .attr('src', '//v.qq.com/iframe/player.html?vid=' + vid + '&auto=0');
     } else if (mp4Match || oggMatch || webmMatch) {
       $video = $('<video controls>')
         .attr('src', url)
