@@ -67,12 +67,6 @@ export default class VideoDialog {
     const youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
     const youkuMatch = url.match(youkuRegExp);
 
-    const qqRegExp = /\/\/v\.qq\.com.*?vid=(.+)/;
-    const qqMatch = url.match(qqRegExp);
-
-    const qqRegExp2 = /\/\/v\.qq\.com\/x?\/?(page|cover).*?\/([^\/]+)\.html\??.*/;
-    const qqMatch2 = url.match(qqRegExp2);
-
     const mp4RegExp = /^.+.(mp4|m4v)$/;
     const mp4Match = url.match(mp4RegExp);
 
