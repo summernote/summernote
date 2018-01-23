@@ -996,6 +996,18 @@ function isCustomStyleTag(node) {
   return node && !isText(node) && lists.contains(node.classList, 'note-styletag');
 }
 
+/**
+ * @method isVideo
+ * 
+ * assert if a node contains a "note-styletag" class,
+ * which implies that's a custom-made style tag node
+ *
+ * @param {Node} an HTML DOM node
+ */
+var isVideo = function (node) {
+  return node && $(node).hasClass('note-video-clip-wrapper');
+};
+
 export default {
   /** @property {String} NBSP_CHAR */
   NBSP_CHAR,
@@ -1036,6 +1048,7 @@ export default {
   isS: makePredByNodeName('S'),
   isI: makePredByNodeName('I'),
   isImg: makePredByNodeName('IMG'),
+  isVideo,
   isTextarea,
   isEmpty,
   isEmptyAnchor: func.and(isAnchor, isEmpty),

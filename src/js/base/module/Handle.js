@@ -92,9 +92,13 @@ export default class Handle {
     }
 
     const isImage = dom.isImg(target);
+    const isVideo = dom.isVideo(target);
+    
     const $selection = this.$handle.find('.note-control-selection');
 
     this.context.invoke('imagePopover.update', target);
+    this.context.invoke('videoPopover.update', target);
+
 
     if (isImage) {
       const $image = $(target);
@@ -127,8 +131,37 @@ export default class Handle {
     } else {
       this.hide();
     }
+    
+    if (isVideo) {
+      const $video = $(target);
+      const position = $video.position();
+      const pos = {
+        left: position.left + parseInt($video.css('marginLeft'), 10),
+        top: position.top + parseInt($video.css('marginTop'), 10)
+      };
 
-    return isImage;
+      // exclude margin
+      const videoSize = {
+        w: $video.outerWidth(false),
+        h: $video.outerHeight(false)
+      };
+
+      $selection.css({
+        display: 'block',
+        left: pos.left,
+        top: pos.top,
+        width: videoSize.w,
+        height: videoSize.h
+      }).data('target', $video); // save current image element.
+      
+      const sizingText = videoSize.w + 'x' + videoSize.h;
+      $selection.find('.note-control-selection-info').text(sizingText);
+      this.context.invoke('editor.saveTarget', target);
+    } else {
+      this.hide();
+    }
+
+    return isImage ? isImage : isVideo;
   }
 
   /**

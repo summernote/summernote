@@ -447,6 +447,7 @@ $img-margin-right: 10px;
   .note-control-selection {
     position: absolute;
     display: none;
+    z-index: 1040;
     border: 1px solid black;
     &>div { position: absolute; }
 
@@ -517,6 +518,21 @@ $img-margin-right: 10px;
       @include opacity(0.7);
     }
   }
+}
+
+.note-video-clip-wrapper {
+  position: relative;
+}
+.note-video-clip-wrapper:after {
+  content: '';
+  position: absolute;
+  display: block;
+  top: 0;
+  right: 55px;
+  bottom: 0;
+  left: 0;
+  background-color: #000;
+  opacity: 0;
 }
 
 .note-hint-popover {
