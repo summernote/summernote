@@ -145,7 +145,7 @@ export default class VideoDialog {
     }
 
     $video.addClass('note-video-clip');
-    
+
     return $video[0];
   }
 

@@ -161,7 +161,6 @@ export default class Handle {
     } else {
       this.hide();
     }
-
   }
 
   /**
