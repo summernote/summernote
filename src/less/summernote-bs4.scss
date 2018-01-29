@@ -520,19 +520,17 @@ $img-margin-right: 10px;
   }
 }
 
-.note-video-clip-wrapper {
+/* Video Wrapper
+------------------------------------------*/
+.note-video-clip {
   position: relative;
+  display: inline-block;
 }
-.note-video-clip-wrapper:after {
-  content: '';
-  position: absolute;
-  display: block;
-  top: 0;
-  right: 55px;
-  bottom: 0;
-  left: 0;
-  background-color: #000;
-  opacity: 0;
+
+.note-video-clip:hover{
+  content: 'Click to Edit';
+  padding-left: 100px;
+  background: rgba(0, 0, 0, .5) url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAALCAYAAADoWAqZAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4gEdAhUSz8P16QAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAARLSURBVEjHtZZdaBxVFMfP3d2YZNVq09JWUPtQUSRULXkSxPogKIgWQYJCrCAU3/rQvoiCotKKH/Qh2IdibYWqEYlWolJRaUpSbBWSEEPSaqChRhKtzdd2d/Zj7vn/ffBsHIbd2bTBA5eZMzP33DO/+Z85V8QsDMMmAGsBbLSxTlWzhULBiYiQfID/2k3mv0OSsgIjGZIclBUayTaSG2WVRrKZ5C0kN8XG+oQ5z0ffi2RfzN8QnZ8SEalUKpvT6fQB59ykiPxp45Jz7uvW1ta76qz1k4h8Kv+PnbQcVmuPi8iMiMzGxq9XEeM7Efkw4v8lIiNVJ5PL5W7MZDLHRWQbyYMkT4lISURud851isgWETkf+0rOOdcrIr0kU0NDQ+jo6BDnXMNswjCUpqamZV9VJZ1OV+NWY8yLSBhbs2Z8kjIxMSHt7e01l7PjYyKiket5EZFSqSQtLS1JCnbOuffsPO2cUxFZFJG56AvsIckwDLeTdFNTU2LBnapmAKTqlPD+eAmr6l4AkwDyAE6EYXh3rRL23j9Nkqr6bo2kn+N/VrJjxuA/BGAQwBUAF1X11eq88fHxWgB2ROdHrVgsilXfVgBjAOYB7FPVrljJ9pL0dn7I4sFyKwmAMZJ93vuWfD6f9DXiAN+KLgTguN2/SHKM5O8kv4oAHDDIOwFQVburCoyt8wTJiiU5bPHS3vtHLf7fJMdJXiBJAP0JOVcBbiN5T2TcaRA3ASDJKxbzDwDnYwC/rPokXyGpJIskR0iOCoAQwIEV/JDrAlTVR0h6AJ+Uy+V1puA2AA9GAJ5R1V0G781yuZyuVY52PEmyEr0HYAjApKreJyKSz+ezqvq+KfmpBgDjNm8xPyAZqmqnKfw2AMP1AJq/QHI0mlgAoHs1AAHsJslCobAhoQsXARRVdVcQBKla6os8P0gyjAEkgBej13K53M2mwteuRYGmtpnYOnsbAFwkORbtwsPOuXu992vqwQPQiG/KVFdMeKZZRFpISjabxTV21fLZs2eXnYWFhWJ0/QQbc879Ehm/2fW0iCzD6erqEhHxV5WRqj5jZbDbe7+8v5mbm8uo6h0A1q5AgTssxv4gCJoNZhbAlogCRwActBLeEwSBS/hg/TUUOAngtKreKiIyOzubUtWXTIE7kxSYsM5nJAPv/XYr4TYA3yYpEMBlkueWgywuLjYD6DE4P5P8iORRAH32w36yEcBcLtcKYMDu/wDgKMnvSX4RAXjKEvjYYL9cr4wBVLvd5yR7SKZU9Vm7NgzgGMlvDN5IPp+/oUEJHyF5ODJeN2BbI43vGMkBADMNAPZbI+khebiqtutUtQvAjwCK1ljOAdhXVWWjLjw/P389gLcBXALgAZz23t8f38Z47zMAjhjEN2q9eBAE6wGcAFCpbkOmp6dT3vtOAKMW/zKA7qWlpTXRBrTCJjIe2VI9DOACgBKAQwBeSAJYKpU2AzgDwJPkP4ggwCvkhJE9AAAAAElFTkSuQmCC) no-repeat 10px 10px;
 }
 
 .note-hint-popover {

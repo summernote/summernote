@@ -127,6 +127,7 @@ export default class Handle {
       const sizingText = imageSize.w + 'x' + imageSize.h + ' (' + this.lang.image.original + ': ' + origImageObj.width + 'x' + origImageObj.height + ')';
       $selection.find('.note-control-selection-info').text(sizingText);
       this.context.invoke('editor.saveTarget', target);
+      return isImage;
     } else {
       this.hide();
     }
@@ -156,12 +157,11 @@ export default class Handle {
       const sizingText = videoSize.w + 'x' + videoSize.h;
       $selection.find('.note-control-selection-info').text(sizingText);
       this.context.invoke('editor.saveTarget', target);
+      return isVideo;
     } else {
       this.hide();
     }
 
-    if (isImage) return isImage;
-    if (isVideo) return isVideo;
   }
 
   /**

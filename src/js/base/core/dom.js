@@ -108,8 +108,8 @@ function isInline(node) {
          !isHr(node) &&
          !isPara(node) &&
          !isTable(node) &&
-         !isBlockquote(node) &&
          !isVideo(node) &&
+         !isBlockquote(node) &&
          !isData(node);
 }
 
@@ -1006,7 +1006,7 @@ function isCustomStyleTag(node) {
  * @param {Node} an HTML DOM node
  */
 function isVideo(node) {
-  return node && $(node).hasClass('note-video-clip-wrapper');
+  return node && $(node).hasClass('note-video-clip');
 };
 
 export default {

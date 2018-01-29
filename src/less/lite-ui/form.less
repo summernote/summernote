@@ -41,3 +41,92 @@
 .note-input:-ms-input-placeholder {
   color: @gray-lighter;
 }
+
+.note-input-group {
+  position: relative;
+  display: inline-table;
+  width: 75%;
+  border-collapse: separate;
+  float: none;
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.note-input-group .note-form-control {
+  position: relative;
+  z-index: 2;
+  float: left;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.note-input-group-addon,
+.note-input-group-btn,
+.note-input-group .form-control {
+  display: table-cell;
+}
+
+.note-input-group-addon:not(:first-child):not(:last-child),
+.note-input-group-btn:not(:first-child):not(:last-child),
+.note-input-group .form-control:not(:first-child):not(:last-child) {
+  border-radius: 0;
+}
+
+.note-input-group-addon,
+.note-input-group-btn {
+  width: 1%;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.note-input-group-addon {
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1;
+  color: #555;
+  text-align: center;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.input-group-addon input[type="radio"],
+.input-group-addon input[type="checkbox"] {
+  margin-top: 0;
+}
+
+.note-input-group .note-form-control:first-child,
+.note-input-group-addon:first-child,
+.note-input-group-btn:first-child > .note-btn,
+.note-input-group-btn:first-child > .note-btn-group > .note-btn,
+.note-input-group-btn:last-child > .note-btn-group:not(:last-child) > .note-btn {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.note-input-group-addon:first-child {
+  border-right: 0;
+}
+.note-input-group .form-control:last-child,
+.note-input-group-addon:last-child,
+.note-input-group-btn:last-child > .note-btn,
+.note-input-group-btn:last-child > .note-btn-group > .note-btn,
+.note-input-group-btn:first-child > .note-btn:not(:first-child),
+.note-input-group-btn:first-child > .note-btn-group:not(:first-child) > .note-btn {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.note-input-group-addon:last-child {
+  border-left: 0;
+}
+
+.note-help-block {
+  display: block;
+  font-size: 80%;
+  margin-top: 0;
+  margin-bottom: 5px;
+  color: #737373;
+  text-align: right;
+}

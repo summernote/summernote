@@ -18,8 +18,9 @@ export default class VideoDialog {
 
     const body = [
       '<div class="form-group note-form-group row-fluid">',
-      `<label class="note-form-label">${this.lang.video.url} <small class="text-muted">${this.lang.video.providers}</small></label>`,
+      `<label class="note-form-label">${this.lang.video.url} </label>`,
       '<input class="note-video-url form-control note-form-control note-input" type="text" />',
+      `<small class="help-block text-muted">${this.lang.video.providers}</small>`,
       '</div>'
     ].join('');
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-video-btn';
@@ -88,11 +89,14 @@ export default class VideoDialog {
       $video = $('<iframe>')
         .attr('frameborder', 0)
         .attr('src', '//www.youtube.com/embed/' + youtubeId)
-        .attr('width', '640').attr('height', '360');
+        .attr('data-target', '//www.youtube.com/embed/' + youtubeId)
+        .attr('width', '640')
+        .attr('height', '360');
     } else if (igMatch && igMatch[0].length) {
       $video = $('<iframe>')
         .attr('frameborder', 0)
         .attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/')
+        .attr('data-target', 'https://instagram.com/p/' + igMatch[1] + '/embed/')
         .attr('width', '612').attr('height', '710')
         .attr('scrolling', 'no')
         .attr('allowtransparency', 'true');
@@ -100,48 +104,55 @@ export default class VideoDialog {
       $video = $('<iframe>')
         .attr('frameborder', 0)
         .attr('src', vMatch[0] + '/embed/simple')
+        .attr('data-target', vMatch[0] + '/embed/simple')
         .attr('width', '600').attr('height', '600')
         .attr('class', 'vine-embed');
     } else if (vimMatch && vimMatch[3].length) {
       $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
         .attr('frameborder', 0)
         .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
+        .attr('data-target', '//player.vimeo.com/video/' + vimMatch[3])
         .attr('width', '640').attr('height', '360');
     } else if (dmMatch && dmMatch[2].length) {
       $video = $('<iframe>')
         .attr('frameborder', 0)
         .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
+        .attr('data-target', '//www.dailymotion.com/embed/video/' + dmMatch[2])
         .attr('width', '640').attr('height', '360');
     } else if (youkuMatch && youkuMatch[1].length) {
       $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
         .attr('frameborder', 0)
         .attr('height', '498')
         .attr('width', '510')
-        .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
+        .attr('src', '//player.youku.com/embed/' + youkuMatch[1])
+        .attr('data-target', '//player.youku.com/embed/' + youkuMatch[1]);
     } else if ((qqMatch && qqMatch[1].length) || (qqMatch2 && qqMatch2[2].length)) {
       const vid = ((qqMatch && qqMatch[1].length) ? qqMatch[1] : qqMatch2[2]);
       $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
         .attr('frameborder', 0)
         .attr('height', '310')
         .attr('width', '500')
-        .attr('src', '//v.qq.com/iframe/player.html?vid=' + vid + '&auto=0');
+        .attr('src', 'http://v.qq.com/iframe/player.html?vid=' + vid + '&amp;auto=0')
+        .attr('data-target', 'http://v.qq.com/iframe/player.html?vid=' + vid + '&amp;auto=0');
     } else if (mp4Match || oggMatch || webmMatch) {
       $video = $('<video controls>')
         .attr('src', url)
+        .attr('data-target', url)
         .attr('width', '640').attr('height', '360');
     } else {
       // this is not a known video link. Now what, Cat? Now what?
       return false;
     }
 
-    const $wrapper = $('<div class="note-video-clip-wrapper"></div>').append($video);
-
-    return $wrapper[0];
+    $video.addClass('note-video-clip');
+    
+    return $video[0];
   }
 
   show() {
     const text = this.context.invoke('editor.getSelectedText');
     this.context.invoke('editor.saveRange');
+
     this.showVideoDialog(text).then((url) => {
       // [workaround] hide dialog before restore range for IE range focus
       this.ui.hideDialog(this.$dialog);
