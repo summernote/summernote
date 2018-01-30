@@ -230,6 +230,15 @@
         border-top: 1px solid @border-color;
       }
     }
+
+    &.locked {
+      .note-resizebar {
+        cursor: default;
+        .note-icon-bar {
+          display: none;
+        }
+      }
+    }
   }
   .note-placeholder {
     padding: 10px;
