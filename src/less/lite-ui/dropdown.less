@@ -4,11 +4,11 @@
 }
 
 .note-dropdown-menu {
-  display:none;
-  min-width:100px;
+  display: none;
+  min-width: 100px;
   position: absolute;
   top: 100%;
-  left: 0px;
+  left: 0;
   z-index : @zindex-dropdown;
   float: left;
   text-align:left;
@@ -20,21 +20,20 @@
 }
 
 .note-btn-group.open .note-dropdown-menu {
-  display:block;
+  display: block;
 }
 
 .note-dropdown-item {
-  display:block;
+  display: block;
 
   &:hover {
-    background-color:@btn-default-hover-bg;
+    background-color: @btn-default-hover-bg;
   }
 }
 
-
-
-
-a.note-dropdown-item {
-  color:black;
+a.note-dropdown-item,
+a.note-dropdown-item:hover {
+  margin: 2px 0;
+  color: #000;
   text-decoration: none;
 }

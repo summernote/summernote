@@ -7,10 +7,10 @@
         underline: 'Unterstreichen',
         clear: 'Zurücksetzen',
         height: 'Zeilenhöhe',
-        name: 'Font Family',
+        name: 'Schriftart',
         strikethrough: 'Durchgestrichen',
-        subscript: 'Subscript',
-        superscript: 'Superscript',
+        subscript: 'Tiefgestellt',
+        superscript: 'Hochgestellt',
         size: 'Schriftgröße'
       },
       image: {
@@ -53,13 +53,13 @@
       },
       table: {
         table: 'Tabelle',
-        addRowAbove: 'Add row above',
-        addRowBelow: 'Add row below',
-        addColLeft: 'Add column left',
-        addColRight: 'Add column right',
-        delRow: 'Delete row',
-        delCol: 'Delete column',
-        delTable: 'Delete table'
+        addRowAbove: 'Zeile oberhalb einfügen',
+        addRowBelow: 'Zeile unterhalb einfügen',
+        addColLeft: 'Spalte links einfügen',
+        addColRight: 'Spalte rechts einfügen',
+        delRow: 'Zeile löschen',
+        delCol: 'Spalte löschen',
+        delTable: 'Tabelle löschen'
       },
       hr: {
         insert: 'Eine horizontale Linie einfügen'
@@ -146,8 +146,8 @@
         redo: 'Wiederholen'
       },
       specialChar: {
-        specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
+        specialChar: 'SONDERZEICHEN',
+        select: 'Sonderzeichen auswählen'
       }
     }
   });

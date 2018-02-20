@@ -85,6 +85,7 @@ export default class Buttons {
         this.ui.dropdown({
           className: 'dropdown-style',
           items: this.options.styleTags,
+          title: this.lang.style.style,
           template: (item) => {
             if (typeof item === 'string') {
               item = { tag: item, title: (this.lang.style.hasOwnProperty(item) ? this.lang.style[item] : item) };
@@ -109,7 +110,7 @@ export default class Buttons {
         return this.button({
           className: 'note-btn-style-' + item,
           contents: '<div data-value="' + item + '">' + item.toUpperCase() + '</div>',
-          tooltip: item.toUpperCase(),
+          tooltip: this.lang.style[item],
           click: this.context.createInvokeHandler('editor.formatBlock')
         }).render();
       });
@@ -205,6 +206,7 @@ export default class Buttons {
           className: 'dropdown-fontname',
           checkClassName: this.options.icons.menuCheck,
           items: this.options.fontNames.filter(this.isFontInstalled.bind(this)),
+          title: this.lang.font.name,
           template: (item) => {
             return '<span style="font-family: \'' + item + '\'">' + item + '</span>';
           },
@@ -227,6 +229,7 @@ export default class Buttons {
           className: 'dropdown-fontsize',
           checkClassName: this.options.icons.menuCheck,
           items: this.options.fontSizes,
+          title: this.lang.font.size,
           click: this.context.createInvokeHandlerAndUpdateState('editor.fontSize')
         })
       ]).render();
@@ -287,6 +290,7 @@ export default class Buttons {
                 const $holder = $(item);
                 $holder.append(this.ui.palette({
                   colors: this.options.colors,
+                  colorsName: this.options.colorsName,
                   eventName: $holder.data('event'),
                   container: this.options.container,
                   tooltip: this.options.tooltip
@@ -409,6 +413,7 @@ export default class Buttons {
           items: this.options.lineHeights,
           checkClassName: this.options.icons.menuCheck,
           className: 'dropdown-line-height',
+          title: this.lang.font.height,
           click: this.context.createInvokeHandler('editor.lineHeight')
         })
       ]).render();
@@ -425,6 +430,7 @@ export default class Buttons {
           }
         }),
         this.ui.dropdown({
+          title: this.lang.table.table,
           className: 'note-table',
           items: [
             '<div class="note-dimension-picker">',
@@ -483,7 +489,7 @@ export default class Buttons {
       return this.button({
         className: 'btn-fullscreen',
         contents: this.ui.icon(this.options.icons.arrowsAlt),
-        tooltip: this.options.fullscreen,
+        tooltip: this.lang.options.fullscreen,
         click: this.context.createInvokeHandler('fullscreen.toggle')
       }).render();
     });
@@ -492,7 +498,7 @@ export default class Buttons {
       return this.button({
         className: 'btn-codeview',
         contents: this.ui.icon(this.options.icons.code),
-        tooltip: this.options.codeview,
+        tooltip: this.lang.options.codeview,
         click: this.context.createInvokeHandler('codeview.toggle')
       }).render();
     });
@@ -516,7 +522,7 @@ export default class Buttons {
     this.context.memo('button.help', () => {
       return this.button({
         contents: this.ui.icon(this.options.icons.question),
-        tooltip: this.options.help,
+        tooltip: this.lang.options.help,
         click: this.context.createInvokeHandler('helpDialog.show')
       }).render();
     });
