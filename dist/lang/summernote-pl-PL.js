@@ -9,8 +9,8 @@
         height: 'Interlinia',
         name: 'Czcionka',
         strikethrough: 'Przekreślenie',
-        subscript: 'Subscript',
-        superscript: 'Superscript',
+        subscript: 'Indeks dolny',
+        superscript: 'Indeks górny',
         size: 'Rozmiar'
       },
       image: {

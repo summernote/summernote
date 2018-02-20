@@ -1,11 +1,11 @@
 /**
- * Super simple wysiwyg editor v0.8.9
+ * Super simple wysiwyg editor v0.8.10
  * https://summernote.org
  *
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2017-12-25T06:39Z
+ * Date: 2018-02-20T00:34Z
  */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -246,13 +246,14 @@ var ModalUI = /** @class */ (function () {
 }());
 
 var editor = renderer.create('<div class="note-editor note-frame"/>');
-var toolbar = renderer.create('<div class="note-toolbar"/>');
+var toolbar = renderer.create('<div class="note-toolbar" role="toolbar"/>');
 var editingArea = renderer.create('<div class="note-editing-area"/>');
-var codable = renderer.create('<textarea class="note-codable"/>');
-var editable = renderer.create('<div class="note-editable" contentEditable="true"/>');
+var codable = renderer.create('<textarea class="note-codable" role="textbox" aria-multiline="true"/>');
+var editable = renderer.create('<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>');
 var statusbar = renderer.create([
-    '<div class="note-statusbar">',
-    '  <div class="note-resizebar">',
+    '<output class="note-status-output" role="status" aria-live="polite"/>',
+    '<div class="note-statusbar" role="resize">',
+    '  <div class="note-resizebar" role="seperator" aria-orientation="horizontal" aria-label="resize">',
     '    <div class="note-icon-bar"/>',
     '    <div class="note-icon-bar"/>',
     '    <div class="note-icon-bar"/>',
@@ -260,11 +261,17 @@ var statusbar = renderer.create([
     '</div>'
 ].join(''));
 var airEditor = renderer.create('<div class="note-editor"/>');
-var airEditable = renderer.create('<div class="note-editable" contentEditable="true"/>');
+var airEditable = renderer.create([
+    '<output class="note-status-output" role="status" aria-live="polite"/>',
+    '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>'
+].join(''));
 var buttonGroup = renderer.create('<div class="note-btn-group">');
-var button = renderer.create('<button type="button" class="note-btn">', function ($node, options) {
+var button = renderer.create('<button type="button" class="note-btn" role="button" tabindex="-1">', function ($node, options) {
     // set button type
     if (options && options.tooltip) {
+        $node.attr({
+            'aria-label': options.tooltip
+        });
         $node.data('_lite_tooltip', new TooltipUI($node, {
             title: options.tooltip,
             container: options.container
@@ -279,15 +286,15 @@ var button = renderer.create('<button type="button" class="note-btn">', function
         }));
     }
 });
-var dropdown = renderer.create('<div class="note-dropdown-menu">', function ($node, options) {
+var dropdown = renderer.create('<div class="note-dropdown-menu" role="list">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
         var value = (typeof item === 'string') ? item : (item.value || '');
         var content = options.template ? options.template(item) : item;
-        var $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '"></a>');
+        var $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + item + '"></a>');
         $temp.html(content).data('item', item);
         return $temp;
     }) : options.items;
-    $node.html(markup);
+    $node.html(markup).attr({ 'aria-label': options.title });
     $node.on('click', '> .note-dropdown-item', function (e) {
         var $a = $(this);
         var item = $a.data('item');
@@ -300,15 +307,15 @@ var dropdown = renderer.create('<div class="note-dropdown-menu">', function ($no
         }
     });
 });
-var dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check">', function ($node, options) {
+var dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check" role="list">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
         var value = (typeof item === 'string') ? item : (item.value || '');
         var content = options.template ? options.template(item) : item;
-        var $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '"></a>');
+        var $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + item + '"></a>');
         $temp.html([icon(options.checkClassName), ' ', content]).data('item', item);
         return $temp;
     }) : options.items;
-    $node.html(markup);
+    $node.html(markup).attr({ 'aria-label': options.title });
     $node.on('click', '> .note-dropdown-item', function (e) {
         var $a = $(this);
         var item = $a.data('item');
@@ -459,15 +466,18 @@ var palette = renderer.create('<div class="note-color-palette"/>', function ($no
     for (var row = 0, rowSize = options.colors.length; row < rowSize; row++) {
         var eventName = options.eventName;
         var colors = options.colors[row];
+        var colorsName = options.colorsName[row];
         var buttons = [];
         for (var col = 0, colSize = colors.length; col < colSize; col++) {
             var color = colors[col];
+            var colorName = colorsName[col];
             buttons.push([
                 '<button type="button" class="note-btn note-color-btn"',
                 'style="background-color:', color, '" ',
                 'data-event="', eventName, '" ',
                 'data-value="', color, '" ',
-                'title="', color, '" ',
+                'title="', colorName, '" ',
+                'aria-label="', colorName, '" ',
                 'data-toggle="button" tabindex="-1"></button>'
             ].join(''));
         }
@@ -572,15 +582,18 @@ var colorDropdownButton = function (opt, type) {
         ]
     }).render();
 };
-var dialog = renderer.create('<div class="note-modal" tabindex="-1"/>', function ($node, options) {
+var dialog = renderer.create('<div class="note-modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function ($node, options) {
     if (options.fade) {
         $node.addClass('fade');
     }
+    $node.attr({
+        'aria-label': options.title
+    });
     $node.html([
         '  <div class="note-modal-content">',
         (options.title
             ? '    <div class="note-modal-header">' +
-                '      <button type="button" class="close"><i class="note-icon-close"></i></button>' +
+                '      <button type="button" class="close" aria-label="Close" aria-hidden="true"><i class="note-icon-close"></i></button>' +
                 '      <h4 class="note-modal-title">' + options.title + '</h4>' +
                 '    </div>' : ''),
         '    <div class="note-modal-body">' + options.body + '</div>',
@@ -673,8 +686,9 @@ var popover = renderer.create([
 var checkbox = renderer.create('<div class="checkbox"></div>', function ($node, options) {
     $node.html([
         ' <label' + (options.id ? ' for="' + options.id + '"' : '') + '>',
-        ' <input type="checkbox"' + (options.id ? ' id="' + options.id + '"' : ''),
-        (options.checked ? ' checked' : '') + '/>',
+        ' <input role="checkbox" type="checkbox"' + (options.id ? ' id="' + options.id + '"' : ''),
+        (options.checked ? ' checked' : ''),
+        ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',
         (options.text ? options.text : ''),
         '</label>'
     ].join(''));
@@ -4679,6 +4693,7 @@ var Editor = /** @class */ (function () {
      * @param {Boolean} isPreventTrigger
      */
     Editor.prototype.afterCommand = function (isPreventTrigger) {
+        this.normalizeContent();
         this.history.recordUndo();
         if (!isPreventTrigger) {
             this.context.triggerEvent('change', this.$editable.html());
@@ -4969,6 +4984,12 @@ var Editor = /** @class */ (function () {
     Editor.prototype.empty = function () {
         this.context.invoke('code', dom.emptyPara);
     };
+    /**
+     * normalize content
+     */
+    Editor.prototype.normalizeContent = function () {
+        this.$editable[0].normalize();
+    };
     return Editor;
 }());
 
@@ -5245,6 +5266,7 @@ var Statusbar = /** @class */ (function () {
     };
     Statusbar.prototype.destroy = function () {
         this.$statusbar.off();
+        this.$statusbar.addClass('locked');
     };
     return Statusbar;
 }());
@@ -5593,6 +5615,7 @@ var Buttons = /** @class */ (function () {
                 _this.ui.dropdown({
                     className: 'dropdown-style',
                     items: _this.options.styleTags,
+                    title: _this.lang.style.style,
                     template: function (item) {
                         if (typeof item === 'string') {
                             item = { tag: item, title: (_this.lang.style.hasOwnProperty(item) ? _this.lang.style[item] : item) };
@@ -5613,7 +5636,7 @@ var Buttons = /** @class */ (function () {
                 return _this.button({
                     className: 'note-btn-style-' + item,
                     contents: '<div data-value="' + item + '">' + item.toUpperCase() + '</div>',
-                    tooltip: item.toUpperCase(),
+                    tooltip: _this.lang.style[item],
                     click: _this.context.createInvokeHandler('editor.formatBlock')
                 }).render();
             });
@@ -5701,6 +5724,7 @@ var Buttons = /** @class */ (function () {
                     className: 'dropdown-fontname',
                     checkClassName: _this.options.icons.menuCheck,
                     items: _this.options.fontNames.filter(_this.isFontInstalled.bind(_this)),
+                    title: _this.lang.font.name,
                     template: function (item) {
                         return '<span style="font-family: \'' + item + '\'">' + item + '</span>';
                     },
@@ -5722,6 +5746,7 @@ var Buttons = /** @class */ (function () {
                     className: 'dropdown-fontsize',
                     checkClassName: _this.options.icons.menuCheck,
                     items: _this.options.fontSizes,
+                    title: _this.lang.font.size,
                     click: _this.context.createInvokeHandlerAndUpdateState('editor.fontSize')
                 })
             ]).render();
@@ -5781,6 +5806,7 @@ var Buttons = /** @class */ (function () {
                                 var $holder = $$1(item);
                                 $holder.append(_this.ui.palette({
                                     colors: _this.options.colors,
+                                    colorsName: _this.options.colorsName,
                                     eventName: $holder.data('event'),
                                     container: _this.options.container,
                                     tooltip: _this.options.tooltip
@@ -5890,6 +5916,7 @@ var Buttons = /** @class */ (function () {
                     items: _this.options.lineHeights,
                     checkClassName: _this.options.icons.menuCheck,
                     className: 'dropdown-line-height',
+                    title: _this.lang.font.height,
                     click: _this.context.createInvokeHandler('editor.lineHeight')
                 })
             ]).render();
@@ -5905,6 +5932,7 @@ var Buttons = /** @class */ (function () {
                     }
                 }),
                 _this.ui.dropdown({
+                    title: _this.lang.table.table,
                     className: 'note-table',
                     items: [
                         '<div class="note-dimension-picker">',
@@ -5958,7 +5986,7 @@ var Buttons = /** @class */ (function () {
             return _this.button({
                 className: 'btn-fullscreen',
                 contents: _this.ui.icon(_this.options.icons.arrowsAlt),
-                tooltip: _this.options.fullscreen,
+                tooltip: _this.lang.options.fullscreen,
                 click: _this.context.createInvokeHandler('fullscreen.toggle')
             }).render();
         });
@@ -5966,7 +5994,7 @@ var Buttons = /** @class */ (function () {
             return _this.button({
                 className: 'btn-codeview',
                 contents: _this.ui.icon(_this.options.icons.code),
-                tooltip: _this.options.codeview,
+                tooltip: _this.lang.options.codeview,
                 click: _this.context.createInvokeHandler('codeview.toggle')
             }).render();
         });
@@ -5987,7 +6015,7 @@ var Buttons = /** @class */ (function () {
         this.context.memo('button.help', function () {
             return _this.button({
                 contents: _this.ui.icon(_this.options.icons.question),
-                tooltip: _this.options.help,
+                tooltip: _this.lang.options.help,
                 click: _this.context.createInvokeHandler('helpDialog.show')
             }).render();
         });
@@ -7000,7 +7028,7 @@ var HelpDialog = /** @class */ (function () {
         var $container = this.options.dialogsInBody ? this.$body : this.$editor;
         var body = [
             '<p class="text-center">',
-            '<a href="http://summernote.org/" target="_blank">Summernote 0.8.9</a> · ',
+            '<a href="http://summernote.org/" target="_blank">Summernote 0.8.10</a> · ',
             '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ',
             '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>',
             '</p>'
@@ -7560,7 +7588,7 @@ $$1.fn.extend({
 });
 
 $$1.summernote = $$1.extend($$1.summernote, {
-    version: '0.8.9',
+    version: '0.8.10',
     ui: ui,
     plugins: {},
     options: {
@@ -7658,6 +7686,17 @@ $$1.summernote = $$1.extend($$1.summernote, {
             ['#CE0000', '#E79439', '#EFC631', '#6BA54A', '#4A7B8C', '#3984C6', '#634AA5', '#A54A7B'],
             ['#9C0000', '#B56308', '#BD9400', '#397B21', '#104A5A', '#085294', '#311873', '#731842'],
             ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031']
+        ],
+        // http://chir.ag/projects/name-that-color/
+        colorsName: [
+            ['Black', 'Tundora', 'Dove Gray', 'Star Dust', 'Pale Slate', 'Gallery', 'Alabaster', 'White'],
+            ['Red', 'Orange Peel', 'Yellow', 'Green', 'Cyan', 'Blue', 'Electric Violet', 'Magenta'],
+            ['Azalea', 'Karry', 'Egg White', 'Zanah', 'Botticelli', 'Tropical Blue', 'Mischka', 'Twilight'],
+            ['Tonys Pink', 'Peach Orange', 'Cream Brulee', 'Sprout', 'Casper', 'Perano', 'Cold Purple', 'Careys Pink'],
+            ['Mandy', 'Rajah', 'Dandelion', 'Olivine', 'Gulf Stream', 'Viking', 'Blue Marguerite', 'Puce'],
+            ['Guardsman Red', 'Fire Bush', 'Golden Dream', 'Chelsea Cucumber', 'Smalt Blue', 'Boston Blue', 'Butterfly Bush', 'Cadillac'],
+            ['Sangria', 'Mai Tai', 'Buddha Gold', 'Forest Green', 'Eden', 'Venice Blue', 'Meteorite', 'Claret'],
+            ['Rosewood', 'Cinnamon', 'Olive', 'Parsley', 'Tiber', 'Midnight Blue', 'Valentino', 'Loulou']
         ],
         lineHeights: ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'],
         tableClassName: 'table table-bordered',
