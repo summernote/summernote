@@ -47,9 +47,9 @@ export default class HintPopover {
 
     this.$popover.hide();
     this.$content = this.$popover.find('.popover-content,.note-popover-content');
-    this.$content.on('click', '.note-hint-item', () => {
+    this.$content.on('click', '.note-hint-item', (e) => {
       this.$content.find('.active').removeClass('active');
-      $(this).addClass('active');
+      $(e.currentTarget).addClass('active');
       this.replace();
     });
   }
