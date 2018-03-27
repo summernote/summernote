@@ -146,7 +146,7 @@ export default class HintPopover {
     if (!this.$popover.is(':visible')) {
       return;
     }
-
+    
     if (e.keyCode === key.code.ENTER) {
       e.preventDefault();
       this.replace();
