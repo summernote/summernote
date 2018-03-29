@@ -18,7 +18,14 @@ export default class Clipboard {
   pasteByEvent(event) {
     const clipboardData = event.originalEvent.clipboardData;
     if (clipboardData && clipboardData.items && clipboardData.items.length) {
-      const item = lists.head(clipboardData.items);
+      // paste img file
+      if (clipboardData.items.length > 1) {
+        const item = clipboardData.items[1];
+      } else {
+        const item = lists.head(clipboardData.items);
+      }
+
+      // const item = lists.head(clipboardData.items);
       if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
         this.context.invoke('editor.insertImagesOrCallback', [item.getAsFile()]);
       }
