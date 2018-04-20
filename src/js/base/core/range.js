@@ -532,13 +532,19 @@ class WrappedRange {
    */
   pasteHTML(markup) {
     const contentsContainer = $('<div></div>').html(markup)[0];
-    const childNodes = lists.from(contentsContainer.childNodes);
-
+    let childNodes = lists.from(contentsContainer.childNodes);
     const rng = this.wrapBodyInlineWithPara().deleteContents();
 
-    return childNodes.reverse().map(function(childNode) {
+    if (rng.so > 0) {
+      childNodes = childNodes.reverse();
+    }
+    childNodes = childNodes.map(function(childNode) {
       return rng.insertNode(childNode);
-    }).reverse();
+    });
+    if (rng.so > 0) {
+      childNodes = childNodes.reverse();
+    }
+    return childNodes;
   }
 
   /**
