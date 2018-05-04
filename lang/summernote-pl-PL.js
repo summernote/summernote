@@ -33,7 +33,7 @@
         maximumFileSizeError: 'Przekroczono limit wielkości pliku.',
         url: 'Adres URL grafiki',
         remove: 'Usuń grafikę',
-        original: 'Original'
+        original: 'Oryginał'
       },
       video: {
         video: 'Wideo',
@@ -53,19 +53,19 @@
       },
       table: {
         table: 'Tabela',
-        addRowAbove: 'Add row above',
-        addRowBelow: 'Add row below',
-        addColLeft: 'Add column left',
-        addColRight: 'Add column right',
-        delRow: 'Delete row',
-        delCol: 'Delete column',
-        delTable: 'Delete table'
+        addRowAbove: 'Dodaj wiersz powyżej',
+        addRowBelow: 'Dodaj wiersz poniżej',
+        addColLeft: 'Dodaj kolumnę po lewej',
+        addColRight: 'Dodaj kolumnę po prawej',
+        delRow: 'Usuń wiersz',
+        delCol: 'Usuń kolumnę',
+        delTable: 'Usuń tabelę'
       },
       hr: {
         insert: 'Wstaw poziomą linię'
       },
       style: {
-        style: 'Style',
+        style: 'Styl',
         p: 'pny',
         blockquote: 'Cytat',
         pre: 'Kod',
@@ -101,7 +101,7 @@
         foreground: 'Czcionka',
         transparent: 'Przeźroczysty',
         setTransparent: 'Przeźroczyste',
-        reset: 'Reset',
+        reset: 'Zresetuj',
         resetToDefault: 'Domyślne'
       },
       shortcut: {
@@ -114,41 +114,41 @@
         extraKeys: 'Dodatkowe klawisze'
       },
       help: {
-        'insertParagraph': 'Insert Paragraph',
-        'undo': 'Undoes the last command',
-        'redo': 'Redoes the last command',
-        'tab': 'Tab',
-        'untab': 'Untab',
-        'bold': 'Set a bold style',
-        'italic': 'Set a italic style',
-        'underline': 'Set a underline style',
-        'strikethrough': 'Set a strikethrough style',
-        'removeFormat': 'Clean a style',
-        'justifyLeft': 'Set left align',
-        'justifyCenter': 'Set center align',
-        'justifyRight': 'Set right align',
-        'justifyFull': 'Set full align',
-        'insertUnorderedList': 'Toggle unordered list',
-        'insertOrderedList': 'Toggle ordered list',
-        'outdent': 'Outdent on current paragraph',
-        'indent': 'Indent on current paragraph',
-        'formatPara': 'Change current block\'s format as a paragraph(P tag)',
-        'formatH1': 'Change current block\'s format as H1',
-        'formatH2': 'Change current block\'s format as H2',
-        'formatH3': 'Change current block\'s format as H3',
-        'formatH4': 'Change current block\'s format as H4',
-        'formatH5': 'Change current block\'s format as H5',
-        'formatH6': 'Change current block\'s format as H6',
-        'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
+        'insertParagraph': 'Wstaw paragraf',
+        'undo': 'Cofnij poprzednią operację',
+        'redo': 'Przywróć poprzednią operację',
+        'tab': 'Tabulacja',
+        'untab': 'Usuń tabulację',
+        'bold': 'Pogrubienie',
+        'italic': 'Kursywa',
+        'underline': 'Podkreślenie',
+        'strikethrough': 'Przekreślenie',
+        'removeFormat': 'Usuń formatowanie',
+        'justifyLeft': 'Wyrównaj do lewej',
+        'justifyCenter': 'Wyrównaj do środka',
+        'justifyRight': 'Wyrównaj do prawej',
+        'justifyFull': 'Justyfikacja',
+        'insertUnorderedList': 'Nienumerowana lista',
+        'insertOrderedList': 'Wypunktowana lista',
+        'outdent': 'Zmniejsz wcięcie paragrafu',
+        'indent': 'Zwiększ wcięcie paragrafu',
+        'formatPara': 'Zamień format bloku na paragraf (tag P)',
+        'formatH1': 'Zamień format bloku na H1',
+        'formatH2': 'Zamień format bloku na H2',
+        'formatH3': 'Zamień format bloku na H3',
+        'formatH4': 'Zamień format bloku na H4',
+        'formatH5': 'Zamień format bloku na H5',
+        'formatH6': 'Zamień format bloku na H6',
+        'insertHorizontalRule': 'Wstaw poziomą linię',
+        'linkDialog.show': 'Pokaż dialog linkowania'
       },
       history: {
         undo: 'Cofnij',
         redo: 'Ponów'
       },
       specialChar: {
-        specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
+        specialChar: 'ZNAKI SPECJALNE',
+        select: 'Wybierz Znak specjalny'
       }
     }
   });
