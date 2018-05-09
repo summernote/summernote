@@ -27,13 +27,13 @@
         shapeThumbnail: '形状: 缩略图',
         shapeNone: '形状: 无',
         dragImageHere: '将图片拖拽至此处',
-        dropImage: 'Drop image or Text',
+        dropImage: '拖放图片或文字',
         selectFromFiles: '从本地上传',
         maximumFileSize: '文件大小最大值',
         maximumFileSizeError: '文件大小超出最大值。',
         url: '图片地址',
         remove: '移除图片',
-        original: 'Original'
+        original: '原始'
       },
       video: {
         video: '视频',
@@ -53,13 +53,13 @@
       },
       table: {
         table: '表格',
-        addRowAbove: 'Add row above',
-        addRowBelow: 'Add row below',
-        addColLeft: 'Add column left',
-        addColRight: 'Add column right',
-        delRow: 'Delete row',
-        delCol: 'Delete column',
-        delTable: 'Delete table'
+        addRowAbove: '上方插入行',
+        addRowBelow: '下方插入行',
+        addColLeft: '左边插入列',
+        addColRight: '右边插入列',
+        delRow: '删除行',
+        delCol: '删除列',
+        delTable: '删除表格'
       },
       hr: {
         insert: '水平线'
@@ -147,8 +147,8 @@
         redo: '重做'
       },
       specialChar: {
-        specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
+        specialChar: '特殊字符',
+        select: '选择特殊字符'
       }
     }
   });
