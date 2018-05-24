@@ -750,6 +750,26 @@ export default class Editor {
     return linkInfo;
   }
 
+  getTablePropertiesInfo() {
+    const rng = this.createRange(this.$editable);
+
+    const tablePropertiesInfo = {
+      range: rng,
+      isNewWindow: true,
+      border: '',
+      width: '',
+      bgcolor: '',
+      bordercolor: ''
+    };
+
+    return tablePropertiesInfo;
+  }
+
+  setTableProperties(tablePropertiesInfo) {
+    const rng = tablePropertiesInfo.range;
+    this.table.setTableProperties(rng, tablePropertiesInfo);
+  }
+
   addRow(position) {
     const rng = this.createRange(this.$editable);
     if (rng.isCollapsed() && rng.isOnCell()) {
@@ -791,6 +811,15 @@ export default class Editor {
     if (rng.isCollapsed() && rng.isOnCell()) {
       this.beforeCommand();
       this.table.deleteTable(rng);
+      this.afterCommand();
+    }
+  }
+
+  tableProperties() {
+    const rng = this.createRange(this.$editable);
+    if (rng.isCollapsed() && rng.isOnCell()) {
+      this.beforeCommand();
+      this.table.tableProperties(rng);
       this.afterCommand();
     }
   }
