@@ -59,7 +59,14 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
+        tableProperties: 'Propietats de la taula',
+        border: 'Frontera',
+        bordercolor: 'Color de la vora',
+        width: 'Ample',
+        backgrundcolor: 'Color de fons',
+        insert: 'Insereix propietats de la taula',
+        saveProperties: 'Desa'
       },
       hr: {
         insert: 'Inserir línia horitzontal'

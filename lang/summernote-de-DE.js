@@ -59,7 +59,14 @@
         addColRight: 'Spalte rechts einfügen',
         delRow: 'Zeile löschen',
         delCol: 'Spalte löschen',
-        delTable: 'Tabelle löschen'
+        delTable: 'Tabelle löschen',
+        tableProperties: 'Tabelleneigenschaften',
+        border: 'Rand',
+        bordercolor: 'Randfarbe',
+        width: 'Breite',
+        backgrundcolor: 'Hintergrundfarbe',
+        insert: 'Einfügen von Tabelleneigenschaften',
+        saveProperties: 'sparen'
       },
       hr: {
         insert: 'Eine horizontale Linie einfügen'

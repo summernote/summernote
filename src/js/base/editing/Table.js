@@ -311,11 +311,13 @@ export default class Table {
     const tableBorder = setTableProperties.border;
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
     const table = dom.ancestor(cell, dom.isTable);
-    $(table).attr('border', tableBorder);
-    $(table).attr('width', setTableProperties.width);
-    $(table).attr('bgcolor', setTableProperties.bgcolor);
-    $(table).attr('data-bordercolor', setTableProperties.bordercolor);
-    $(table).css({'width': setTableProperties.width, 'background-color': setTableProperties.bgcolor, 'border': setTableProperties.border + 'px solid' + setTableProperties.bordercolor});
+    $(table).attr({'data-border': tableBorder,
+      'data-width': setTableProperties.width,
+      'data-bgcolor': setTableProperties.bgcolor,
+      'data-bordercolor': setTableProperties.bordercolor});
+    $(table).css({'width': setTableProperties.width,
+      'background-color': setTableProperties.bgcolor,
+      'border': setTableProperties.border + 'px solid' + setTableProperties.bordercolor});
     if (!tableBorder) {
       $(table).addClass('noBorder');
     } else {

@@ -59,7 +59,14 @@
         addColRight: 'Adaugă coloană dreapta',
         delRow: 'Șterge rând',
         delCol: 'Șterge coloană',
-        delTable: 'Șterge tabel'
+        delTable: 'Șterge tabel',
+        tableProperties: 'Table Properties',
+        border: 'Border',
+        bordercolor: 'Border Color',
+        width: 'Width',
+        backgrundcolor: 'Background Color',
+        insert: 'Insert Table Properties',
+        saveProperties: 'Save'
       },
       hr: {
         insert: 'Inserează o linie orizontală'

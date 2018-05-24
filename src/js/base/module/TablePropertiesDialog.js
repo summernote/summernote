@@ -80,9 +80,9 @@ export default class TablePropertiesDialog {
       const $tableBtn = this.$dialog.find('.note-table-btn');
 
       if (table) {
-        $tableWidth.val($(table).attr('width') ? $(table).attr('width') : '100%');
-        $tableBorder.val($(table).attr('border') ? $(table).attr('border') : 1);
-        $tableBackgroundColor.val($(table).attr('bgcolor') ? $(table).attr('bgcolor') : '#FFFFFF');
+        $tableWidth.val($(table).attr('data-width') ? $(table).attr('data-width') : '100%');
+        $tableBorder.val($(table).attr('data-border') ? $(table).attr('data-border') : 1);
+        $tableBackgroundColor.val($(table).attr('data-bgcolor') ? $(table).attr('data-bgcolor') : '#FFFFFF');
         $tableBorderColor.val($(table).attr('data-bordercolor') ? $(table).attr('data-bordercolor') : '#d4d4d4');
       }
 

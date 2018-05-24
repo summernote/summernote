@@ -59,7 +59,14 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
+        tableProperties: 'Таблица свойства',
+        border: 'граница',
+        bordercolor: 'Цвят на границата',
+        width: 'широчина',
+        backgrundcolor: 'Цвят на фона',
+        insert: 'Вмъкване на свойствата на таблицата',
+        saveProperties: 'Запази'
       },
       hr: {
         insert: 'Добави хоризонтална линия'

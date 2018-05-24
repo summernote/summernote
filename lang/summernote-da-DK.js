@@ -59,7 +59,14 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
+        tableProperties: 'Tabelegenskaber',
+        border: 'Grænse',
+        bordercolor: 'Border Color',
+        width: 'Bredde',
+        backgrundcolor: 'Baggrundsfarve',
+        insert: 'Indsæt tabelegenskaber',
+        saveProperties: 'Gemme'
       },
       hr: {
         insert: 'Indsæt horisontal linje'

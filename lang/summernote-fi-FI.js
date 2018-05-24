@@ -58,7 +58,14 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
+        tableProperties: 'Taulukon ominaisuudet',
+        border: 'reunus',
+        bordercolor: 'Reunuksen väri',
+        width: 'Leveys',
+        backgrundcolor: 'Taustaväri',
+        insert: 'Lisää taulukkoominaisuudet',
+        saveProperties: 'Tallentaa'
       },
       hr: {
         insert: 'Lisää vaakaviiva'

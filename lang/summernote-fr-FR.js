@@ -22,7 +22,7 @@
         floatLeft: 'Aligné à gauche',
         floatRight: 'Aligné à droite',
         floatNone: 'Pas d\'alignement',
-        shapeRounded: 'Forme: Rectangle arrondi',
+        shapeRounded: 'Forme: Rectangle arrondie',
         shapeCircle: 'Forme: Cercle',
         shapeThumbnail: 'Forme: Vignette',
         shapeNone: 'Forme: Aucune',
@@ -59,7 +59,14 @@
         addColRight: 'Ajouter une colonne à droite',
         delRow: 'Supprimer la ligne',
         delCol: 'Supprimer la colonne',
-        delTable: 'Supprimer le tableau'
+        delTable: 'Supprimer le tableau',
+        tableProperties: 'Propriétés du tableau',
+        border: 'Frontière',
+        bordercolor: 'Couleur de la bordure',
+        width: 'Largeur',
+        backgrundcolor: 'Couleur de fond',
+        insert: 'Insérer les propriétés du tableau',
+        saveProperties: 'sauvegarder'
       },
       hr: {
         insert: 'Insérer une ligne horizontale'

@@ -54,7 +54,14 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
+        tableProperties: 'Vlastnosti tabulky',
+        border: 'okraj',
+        bordercolor: 'Barva okraje',
+        width: 'Šířka',
+        backgrundcolor: 'Barva pozadí',
+        insert: 'Vložit vlastnosti tabulky',
+        saveProperties: 'Uložit'
       },
       hr: {
         insert: 'Vložit vodorovnou čáru'

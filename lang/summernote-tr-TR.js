@@ -59,7 +59,14 @@
         addColRight: 'Sağa sütun ekle',
         delRow: 'Satırı sil',
         delCol: 'Sütunu sil',
-        delTable: 'Tabloyu sil'
+        delTable: 'Tabloyu sil',
+        tableProperties: 'Table Properties',
+        border: 'Border',
+        bordercolor: 'Border Color',
+        width: 'Width',
+        backgrundcolor: 'Background Color',
+        insert: 'Insert Table Properties',
+        saveProperties: 'Save'
       },
       hr: {
         insert: 'Yatay çizgi ekle'

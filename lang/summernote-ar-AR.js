@@ -59,7 +59,14 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
+        tableProperties: 'خصائص الجدول',
+        border: 'الحدود',
+        bordercolor: 'لون الحدود',
+        width: 'عرض',
+        backgrundcolor: 'لون الخلفية',
+        insert: 'إدراج خصائص الجدول',
+        saveProperties: 'حفظ'
       },
       hr: {
         insert: 'إدراج خط أفقي'

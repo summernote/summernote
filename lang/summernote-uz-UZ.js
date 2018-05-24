@@ -49,7 +49,21 @@
         openInNewWindow: 'Янги дарчада очиш'
       },
       table: {
-        table: 'Жадвал'
+        table: 'Жадвал',
+        addRowAbove: 'Add row above',
+        addRowBelow: 'Add row below',
+        addColLeft: 'Add column left',
+        addColRight: 'Add column right',
+        delRow: 'Delete row',
+        delCol: 'Delete column',
+        delTable: 'Delete table',
+        tableProperties: 'Table Properties',
+        border: 'Border',
+        bordercolor: 'Border Color',
+        width: 'Width',
+        backgrundcolor: 'Background Color',
+        insert: 'Insert Table Properties',
+        saveProperties: 'Save'
       },
       hr: {
         insert: 'Горизонтал чизиқни қўйиш'

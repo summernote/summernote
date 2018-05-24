@@ -59,7 +59,14 @@
         addColRight: 'Añadir columna derecha',
         delRow: 'Borrar fila',
         delCol: 'Eliminar columna',
-        delTable: 'Eliminar tabla'
+        delTable: 'Eliminar tabla',
+        tableProperties: 'Propiedades de la tabla',
+        border: 'Frontera',
+        bordercolor: 'Color del borde',
+        width: 'Anchura',
+        backgrundcolor: 'Color de fondo',
+        insert: 'Insertar propiedades de tabla',
+        saveProperties: 'Salvar'
       },
       hr: {
         insert: 'Insertar línea horizontal'

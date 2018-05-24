@@ -59,7 +59,14 @@
         addColRight: 'Добавить столбец справа',
         delRow: 'Удалить строку',
         delCol: 'Удалить столбец',
-        delTable: 'Удалить таблицу'
+        delTable: 'Удалить таблицу',
+        tableProperties: 'Table Properties',
+        border: 'Border',
+        bordercolor: 'Border Color',
+        width: 'Width',
+        backgrundcolor: 'Background Color',
+        insert: 'Insert Table Properties',
+        saveProperties: 'Save'
       },
       hr: {
         insert: 'Вставить горизонтальную линию'

@@ -59,7 +59,14 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
+        tableProperties: 'Ιδιότητες πίνακα',
+        border: 'Σύνορο',
+        bordercolor: 'Χρώμα πλαισίου',
+        width: 'Πλάτος',
+        backgrundcolor: 'Χρώμα του φόντου',
+        insert: 'Εισαγωγή ιδιοτήτων πίνακα',
+        saveProperties: 'Αποθηκεύσετε'
       },
       hr: {
         insert: 'Εισαγωγή οριζόντιας γραμμής'

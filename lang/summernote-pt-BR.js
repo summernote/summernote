@@ -22,17 +22,17 @@
         floatLeft: 'Flutuar para Esquerda',
         floatRight: 'Flutuar para Direira',
         floatNone: 'Não Flutuar',
-        shapeRounded: 'Shape: Rounded',
-        shapeCircle: 'Shape: Circle',
-        shapeThumbnail: 'Shape: Thumbnail',
-        shapeNone: 'Shape: None',
+        shapeRounded: 'Forma: Arredondado',
+        shapeCircle: 'Forma: Círculo',
+        shapeThumbnail: 'Forma: Minhatura',
+        shapeNone: 'Forma: Nenhum',
         dragImageHere: 'Arraste uma imagem para cá',
-        dropImage: 'Drop image or Text',
+        dropImage: 'Arraste uma imgem ou texto',
         selectFromFiles: 'Selecione a partir dos arquivos',
-        maximumFileSize: 'Maximum file size',
-        maximumFileSizeError: 'Maximum file size exceeded.',
+        maximumFileSize: 'Tamanho máximo do arquivo',
+        maximumFileSizeError: 'Tamanho máximo do fixeiro é maior que o arquivo.',
         url: 'URL da imagem',
-        remove: 'Remove Image',
+        remove: 'Remover Imagem',
         original: 'Original'
       },
       video: {
@@ -59,7 +59,14 @@
         addColRight: 'Adicionar coluna a direita',
         delRow: 'Excluir linha',
         delCol: 'Excluir coluna',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
+        tableProperties: 'Table Properties',
+        border: 'Border',
+        bordercolor: 'Border Color',
+        width: 'Width',
+        backgrundcolor: 'Background Color',
+        insert: 'Insert Table Properties',
+        saveProperties: 'Save'
       },
       hr: {
         insert: 'Inserir linha horizontal'
