@@ -17,6 +17,7 @@ import LinkDialog from '../base/module/LinkDialog';
 import LinkPopover from '../base/module/LinkPopover';
 import ImageDialog from '../base/module/ImageDialog';
 import ImagePopover from '../base/module/ImagePopover';
+import TablePropertiesDialog from '../base/module/TablePropertiesDialog';
 import TablePopover from '../base/module/TablePopover';
 import VideoDialog from '../base/module/VideoDialog';
 import HelpDialog from '../base/module/HelpDialog';
@@ -50,6 +51,7 @@ $.summernote = $.extend($.summernote, {
       'linkPopover': LinkPopover,
       'imageDialog': ImageDialog,
       'imagePopover': ImagePopover,
+      'tablePropertiesDialog': TablePropertiesDialog,
       'tablePopover': TablePopover,
       'videoDialog': VideoDialog,
       'helpDialog': HelpDialog,
@@ -89,7 +91,8 @@ $.summernote = $.extend($.summernote, {
       ],
       table: [
         ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
-        ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]
+        ['delete', ['deleteRow', 'deleteCol', 'deleteTable']],
+        ['tableProperties', ['tableProperties']]
       ],
       air: [
         ['color', ['color']],

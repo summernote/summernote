@@ -300,6 +300,30 @@ export default class Table {
   }
 
   /**
+  * Add a Table setTableProperties
+  *
+  * @param {WrappedRange} rng
+  * @param {String} setTableProperties (border)
+  * @return {Node}
+  */
+
+  setTableProperties(rng, setTableProperties) {
+    const tableBorder = setTableProperties.border;
+    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+    const table = dom.ancestor(cell, dom.isTable);
+    $(table).attr('border', tableBorder);
+    $(table).attr('width', setTableProperties.width);
+    $(table).attr('bgcolor', setTableProperties.bgcolor);
+    $(table).attr('data-bordercolor', setTableProperties.bordercolor);
+    $(table).css({'width': setTableProperties.width, 'background-color': setTableProperties.bgcolor, 'border': setTableProperties.border + 'px solid' + setTableProperties.bordercolor});
+    if (!tableBorder) {
+      $(table).addClass('noBorder');
+    } else {
+      $(table).removeClass('noBorder');
+    }
+  };
+
+  /**
    * Add a new row
    *
    * @param {WrappedRange} rng

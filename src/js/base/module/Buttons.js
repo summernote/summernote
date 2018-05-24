@@ -675,6 +675,14 @@ export default class Buttons {
         click: this.context.createInvokeHandler('editor.deleteTable')
       }).render();
     });
+    this.context.memo('button.tableProperties', () => {
+      return this.button({
+        className: 'btn-md',
+        contents: 'Table Properties',
+        tooltip: 'Table Properties',
+        click: this.context.createInvokeHandler('tablePropertiesDialog.show')
+      }).render();
+    });
   }
 
   build($container, groups) {
