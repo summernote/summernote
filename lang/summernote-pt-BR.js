@@ -20,7 +20,7 @@
         resizeHalf: 'Redimensionar pela Metade',
         resizeQuarter: 'Redimensionar um Quarto',
         floatLeft: 'Flutuar para Esquerda',
-        floatRight: 'Flutuar para Direira',
+        floatRight: 'Flutuar para Direita',
         floatNone: 'Não Flutuar',
         shapeRounded: 'Forma: Arredondado',
         shapeCircle: 'Forma: Círculo',
