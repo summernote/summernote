@@ -9,8 +9,8 @@
         height: 'Altura da linha',
         name: 'Fonte',
         strikethrough: 'Riscado',
-        subscript: 'Subscript',
-        superscript: 'Superscript',
+        subscript: 'Subscrito',
+        superscript: 'Sobrescrito',
         size: 'Tamanho da fonte'
       },
       image: {
@@ -18,19 +18,19 @@
         insert: 'Inserir imagem',
         resizeFull: 'Redimensionar Completamente',
         resizeHalf: 'Redimensionar pela Metade',
-        resizeQuarter: 'Redimensionar um Quarto',
+        resizeQuarter: 'Redimensionar a um Quarto',
         floatLeft: 'Flutuar para Esquerda',
         floatRight: 'Flutuar para Direita',
         floatNone: 'Não Flutuar',
         shapeRounded: 'Forma: Arredondado',
         shapeCircle: 'Forma: Círculo',
-        shapeThumbnail: 'Forma: Minhatura',
+        shapeThumbnail: 'Forma: Miniatura',
         shapeNone: 'Forma: Nenhum',
-        dragImageHere: 'Arraste uma imagem para cá',
-        dropImage: 'Arraste uma imgem ou texto',
+        dragImageHere: 'Arraste Imagem ou Texto para cá',
+        dropImage: 'Solte Imagem ou Texto',
         selectFromFiles: 'Selecione a partir dos arquivos',
         maximumFileSize: 'Tamanho máximo do arquivo',
-        maximumFileSizeError: 'Tamanho máximo do fixeiro é maior que o arquivo.',
+        maximumFileSizeError: 'Tamanho máximo do arquivo excedido.',
         url: 'URL da imagem',
         remove: 'Remover Imagem',
         original: 'Original'
@@ -48,21 +48,21 @@
         unlink: 'Remover link',
         edit: 'Editar',
         textToDisplay: 'Texto para exibir',
-        url: 'Para qual URL esse link leva?',
+        url: 'Para qual URL este link leva?',
         openInNewWindow: 'Abrir em uma nova janela'
       },
       table: {
         table: 'Tabela',
         addRowAbove: 'Adicionar linha acima',
         addRowBelow: 'Adicionar linha abaixo',
-        addColLeft: 'Adicionar coluna a esquerda',
-        addColRight: 'Adicionar coluna a direita',
+        addColLeft: 'Adicionar coluna à esquerda',
+        addColRight: 'Adicionar coluna à direita',
         delRow: 'Excluir linha',
         delCol: 'Excluir coluna',
-        delTable: 'Delete table'
+        delTable: 'Excluir tabela'
       },
       hr: {
-        insert: 'Inserir linha horizontal'
+        insert: 'Linha horizontal'
       },
       style: {
         style: 'Estilo',
@@ -139,7 +139,7 @@
         'formatH4': 'Alterar formato do bloco para H4',
         'formatH5': 'Alterar formato do bloco para H5',
         'formatH6': 'Alterar formato do bloco para H6',
-        'insertHorizontalRule': 'Inserir régua horizontal',
+        'insertHorizontalRule': 'Linha horizontal',
         'linkDialog.show': 'Inserir um Hiperlink'
       },
       history: {
@@ -147,8 +147,8 @@
         redo: 'Refazer'
       },
       specialChar: {
-        specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
+        specialChar: 'CARACTERES ESPECIAIS',
+        select: 'Selecionar Caracteres Especiais'
       }
     }
   });
