@@ -139,7 +139,7 @@
         'formatH4': 'Alterar formato do bloco para H4',
         'formatH5': 'Alterar formato do bloco para H5',
         'formatH6': 'Alterar formato do bloco para H6',
-        'insertHorizontalRule': 'Linha horizontal',
+        'insertHorizontalRule': 'Inserir Régua horizontal',
         'linkDialog.show': 'Inserir um Hiperlink'
       },
       history: {
