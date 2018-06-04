@@ -639,7 +639,7 @@ export default class Editor {
   insertImagesOrCallback(files) {
     const callbacks = this.options.callbacks;
 
-    // If onImageUpload this.options setted
+    // If onImageUpload set,
     if (callbacks.onImageUpload) {
       this.context.triggerEvent('image.upload', files);
       // else insert Image as dataURL
