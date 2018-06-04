@@ -41,8 +41,8 @@ describe('bs:module.VideoDialog', () => {
 
     it('should get proper iframe src when insert valid video urls', () => {
       // YouTube
-      expectUrl('https://www.youtube.com/watch?v=HisIM3pkEF0',
-        '//www.youtube.com/embed/HisIM3pkEF0');
+      expectUrl('https://www.youtube.com/watch?v=jNQXAC9IVRw',
+        '//www.youtube.com/embed/jNQXAC9IVRw');
       // Instagram
       expectUrl('https://www.instagram.com/p/Bi9cbsxjn-F',
         '//instagram.com/p/Bi9cbsxjn-F/embed/');
