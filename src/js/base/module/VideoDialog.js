@@ -49,7 +49,8 @@ export default class VideoDialog {
 
   createVideoNode(url) {
     // video url patterns(youtube, instagram, vimeo, dailymotion, youku, mp4, ogg, webm)
-    const ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+    const ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w|-]{11})(?:(?:[\?&]t=)(\S+))?$/;
+    const ytRegExpForStart = /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/;
     const ytMatch = url.match(ytRegExp);
 
     const igRegExp = /(?:www\.|\/\/)instagram\.com\/p\/(.[a-zA-Z0-9_-]*)/;
@@ -85,9 +86,18 @@ export default class VideoDialog {
     let $video;
     if (ytMatch && ytMatch[1].length === 11) {
       const youtubeId = ytMatch[1];
+      var start = 0;
+      if (typeof ytMatch[2] !== 'undefined') {
+        const ytMatchForStart = ytMatch[2].match(ytRegExpForStart);
+        if (ytMatchForStart) {
+          for (var n = [3600, 60, 1], i = 0, r = n.length; i < r; i++) {
+            start += (typeof ytMatchForStart[i + 1] !== 'undefined' ? n[i] * parseInt(ytMatchForStart[i + 1], 10) : 0);
+          }
+        }
+      }
       $video = $('<iframe>')
         .attr('frameborder', 0)
-        .attr('src', '//www.youtube.com/embed/' + youtubeId)
+        .attr('src', '//www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : ''))
         .attr('width', '640').attr('height', '360');
     } else if (igMatch && igMatch[0].length) {
       $video = $('<iframe>')

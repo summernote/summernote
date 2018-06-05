@@ -15,7 +15,7 @@ describe('bs:module.VideoDialog', () => {
     var iframe = $video.createVideoNode(source);
     expect(iframe).to.not.equal(false);
     expect(iframe.tagName).to.equal('IFRAME');
-    expect(iframe.src).to.equal(target);
+    expect(iframe.src).to.be.have.string(target);
   }
 
   var context, $video;
@@ -33,16 +33,29 @@ describe('bs:module.VideoDialog', () => {
   });
 
   describe('#createVideoNode', () => {
-    it('should execute when insert other url', () => {
+    it('should get false when insert invalid urls', () => {
       expect($video.createVideoNode('http://www.google.com')).to.equal(false);
       expect($video.createVideoNode('http://www.youtube.com')).to.equal(false);
       expect($video.createVideoNode('http://www.facebook.com')).to.equal(false);
     });
-    it('should execute when insert v.qq.com', () => {
+
+    it('should get proper iframe src when insert valid video urls', () => {
+      // YouTube
+      expectUrl('https://www.youtube.com/watch?v=jNQXAC9IVRw',
+        '//www.youtube.com/embed/jNQXAC9IVRw');
+      // Instagram
+      expectUrl('https://www.instagram.com/p/Bi9cbsxjn-F',
+        '//instagram.com/p/Bi9cbsxjn-F/embed/');
+      // v.qq.com
       expectUrl('http://v.qq.com/cover/6/640ewqy2v071ppd.html?vid=f0196y2b2cx',
-        'http://v.qq.com/iframe/player.html?vid=f0196y2b2cx&amp;auto=0');
+        '//v.qq.com/iframe/player.html?vid=f0196y2b2cx&amp;auto=0');
       expectUrl('http://v.qq.com/x/page/p0330y279lm.html',
-        'http://v.qq.com/iframe/player.html?vid=p0330y279lm&amp;auto=0');
+        '//v.qq.com/iframe/player.html?vid=p0330y279lm&amp;auto=0');
+    });
+
+    it('should be embedded start parameter when insert YouTube video with t', () => {
+      expectUrl('https://youtu.be/wZZ7oFKsKzY?t=4h2m42s',
+        '//www.youtube.com/embed/wZZ7oFKsKzY?start=14562');
     });
   });
 });
