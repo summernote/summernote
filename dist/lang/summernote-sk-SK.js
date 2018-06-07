@@ -1,31 +1,35 @@
 (function($) {
   $.extend($.summernote.lang, {
-    'cs-CZ': {
+    'sk-SK': {
       font: {
         bold: 'Tučné',
         italic: 'Kurzíva',
-        underline: 'Podtržené',
-        clear: 'Odstranit styl písma',
-        height: 'Výška řádku',
-        strikethrough: 'Přeškrtnuté',
-        size: 'Velikost písma'
+        underline: 'Podčiarknutie',
+        clear: 'Odstrániť štýl písma',
+        height: 'Výška riadku',
+        strikethrough: 'Prečiarknuté',
+        subscript: 'Subscript',
+        superscript: 'Superscript',
+        size: 'Veľkosť písma'
       },
       image: {
-        image: 'Obrázek',
-        insert: 'Vložit obrázek',
-        resizeFull: 'Původní velikost',
-        resizeHalf: 'Poloviční velikost',
-        resizeQuarter: 'Čtvrteční velikost',
-        floatLeft: 'Umístit doleva',
-        floatRight: 'Umístit doprava',
-        floatNone: 'Neobtékat textem',
+        image: 'Obrázok',
+        insert: 'Vložiť obrázok',
+        resizeFull: 'Pôvodná veľkosť',
+        resizeHalf: 'Polovičná veľkosť',
+        resizeQuarter: 'Štvrtinová veľkosť',
+        floatLeft: 'Umiestniť doľava',
+        floatRight: 'Umiestniť doprava',
+        floatNone: 'Bez zarovnania',
         shapeRounded: 'Shape: Rounded',
         shapeCircle: 'Shape: Circle',
         shapeThumbnail: 'Shape: Thumbnail',
         shapeNone: 'Shape: None',
-        dragImageHere: 'Přetáhnout sem obrázek',
+        dragImageHere: 'Pretiahnuť sem obrázok',
         dropImage: 'Drop image or Text',
-        selectFromFiles: 'Vybrat soubor',
+        selectFromFiles: 'Vybrať súbor',
+        maximumFileSize: 'Maximum file size',
+        maximumFileSizeError: 'Maximum file size exceeded.',
         url: 'URL obrázku',
         remove: 'Remove Image',
         original: 'Original'
@@ -33,21 +37,21 @@
       video: {
         video: 'Video',
         videoLink: 'Odkaz videa',
-        insert: 'Vložit video',
+        insert: 'Vložiť video',
         url: 'URL videa?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion nebo Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion alebo Youku)'
       },
       link: {
         link: 'Odkaz',
-        insert: 'Vytvořit odkaz',
-        unlink: 'Zrušit odkaz',
-        edit: 'Upravit',
+        insert: 'Vytvoriť odkaz',
+        unlink: 'Zrušiť odkaz',
+        edit: 'Upraviť',
         textToDisplay: 'Zobrazovaný text',
-        url: 'Na jaké URL má tento odkaz vést?',
-        openInNewWindow: 'Otevřít v novém okně'
+        url: 'Na akú URL adresu má tento odkaz viesť?',
+        openInNewWindow: 'Otvoriť v novom okne'
       },
       table: {
-        table: 'Tabulka',
+        table: 'Tabuľka',
         addRowAbove: 'Add row above',
         addRowBelow: 'Add row below',
         addColLeft: 'Add column left',
@@ -57,12 +61,12 @@
         delTable: 'Delete table'
       },
       hr: {
-        insert: 'Vložit vodorovnou čáru'
+        insert: 'Vložit vodorovnú čiaru'
       },
       style: {
-        style: 'Styl',
-        p: 'Normální',
-        blockquote: 'Citace',
+        style: 'Štýl',
+        p: 'Normálny',
+        blockquote: 'Citácia',
         pre: 'Kód',
         h1: 'Nadpis 1',
         h2: 'Nadpis 2',
@@ -72,41 +76,40 @@
         h6: 'Nadpis 6'
       },
       lists: {
-        unordered: 'Odrážkový seznam',
-        ordered: 'Číselný seznam'
+        unordered: 'Odrážkový zoznam',
+        ordered: 'Číselný zoznam'
       },
       options: {
-        help: 'Nápověda',
+        help: 'Pomoc',
         fullscreen: 'Celá obrazovka',
         codeview: 'HTML kód'
       },
       paragraph: {
-        paragraph: 'Odstavec',
-        outdent: 'Zvětšit odsazení',
-        indent: 'Zmenšit odsazení',
-        left: 'Zarovnat doleva',
-        center: 'Zarovnat na střed',
-        right: 'Zarovnat doprava',
-        justify: 'Zarovnat oboustranně'
+        paragraph: 'Odsek',
+        outdent: 'Zväčšiť odsadenie',
+        indent: 'Zmenšiť odsadenie',
+        left: 'Zarovnať doľava',
+        center: 'Zarovnať na stred',
+        right: 'Zarovnať doprava',
+        justify: 'Zarovnať obojstranne'
       },
       color: {
-        recent: 'Aktuální barva',
-        more: 'Další barvy',
-        background: 'Barva pozadí',
-        foreground: 'Barva písma',
-        transparent: 'Průhlednost',
-        setTransparent: 'Nastavit průhlednost',
-        reset: 'Obnovit',
-        resetToDefault: 'Obnovit výchozí',
-        cpSelect: 'Vybrat'
+        recent: 'Aktuálna farba',
+        more: 'Dalšie farby',
+        background: 'Farba pozadia',
+        foreground: 'Farba písma',
+        transparent: 'Priehľadnosť',
+        setTransparent: 'Nastaviť priehľadnosť',
+        reset: 'Obnoviť',
+        resetToDefault: 'Obnoviť prednastavené'
       },
       shortcut: {
-        shortcuts: 'Klávesové zkratky',
-        close: 'Zavřít',
-        textFormatting: 'Formátování textu',
-        action: 'Akce',
-        paragraphFormatting: 'Formátování odstavce',
-        documentStyle: 'Styl dokumentu'
+        shortcuts: 'Klávesové skratky',
+        close: 'Zavrieť',
+        textFormatting: 'Formátovanie textu',
+        action: 'Akcia',
+        paragraphFormatting: 'Formátovanie odseku',
+        documentStyle: 'Štýl dokumentu'
       },
       help: {
         'insertParagraph': 'Insert Paragraph',
@@ -139,7 +142,7 @@
       },
       history: {
         undo: 'Krok vzad',
-        redo: 'Krok vpřed'
+        redo: 'Krok dopredu'
       },
       specialChar: {
         specialChar: 'SPECIAL CHARACTERS',
