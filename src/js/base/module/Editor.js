@@ -617,7 +617,7 @@ export default class Editor {
    * insertImages
    * @param {File[]} files
    */
-  insertImages(files) {
+  insertImagesAsDataURL(files) {
     $.each(files, (idx, file) => {
       const filename = file.name;
       if (this.options.maximumImageFileSize && this.options.maximumImageFileSize < file.size) {
@@ -630,22 +630,6 @@ export default class Editor {
         });
       }
     });
-  }
-
-  /**
-   * insertImagesOrCallback
-   * @param {File[]} files
-   */
-  insertImagesOrCallback(files) {
-    const callbacks = this.options.callbacks;
-
-    // If onImageUpload set,
-    if (callbacks.onImageUpload) {
-      this.context.triggerEvent('image.upload', files);
-      // else insert Image as dataURL
-    } else {
-      this.insertImages(files);
-    }
   }
 
   /**
