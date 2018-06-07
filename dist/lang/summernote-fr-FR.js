@@ -22,7 +22,7 @@
         floatLeft: 'Aligné à gauche',
         floatRight: 'Aligné à droite',
         floatNone: 'Pas d\'alignement',
-        shapeRounded: 'Forme: Rectangle arrondi',
+        shapeRounded: 'Forme: Rectangle arrondie',
         shapeCircle: 'Forme: Cercle',
         shapeThumbnail: 'Forme: Vignette',
         shapeNone: 'Forme: Aucune',
