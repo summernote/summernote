@@ -386,5 +386,39 @@ describe('Editor', () => {
 
       expectContents(context, '<p><a href="http://wow.summernote.org">summernote wow</a></p>');
     });
+
+    it('should be limited when creating a link', () => {
+      var options = $.extend({}, $.summernote.options);
+      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+      options.maxTextLength = 5;
+      context = new Context($('<div><p>hello</p></div>'), options);
+      editor = context.modules.editor;
+
+      editor.createLink({
+        url: 'http://summernote.org',
+        text: 'summernote'
+      });
+      expectContents(context, '<p>hello</p>');
+    });
+
+    it('should be limited when modifying a link', () => {
+      var options = $.extend({}, $.summernote.options);
+      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+      options.maxTextLength = 5;
+      context = new Context($('<p><a href="http://summernote.org">hello</a></p>'), options);
+
+      var editable = context.layoutInfo.editable;
+      var anchorNode = editable.find('a')[0];
+      var rng = range.createFromNode(anchorNode);
+      editor = context.modules.editor;
+
+      editor.createLink({
+        url: 'http://summernote.org',
+        text: 'hello world',
+        range: rng
+      });
+
+      expectContents(context, '<a href="http://summernote.org">hello</a>');
+    });
   });
 });

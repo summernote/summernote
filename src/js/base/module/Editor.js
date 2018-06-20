@@ -186,6 +186,10 @@ export default class Editor {
       const linkText = linkInfo.text;
       const isNewWindow = linkInfo.isNewWindow;
       let rng = linkInfo.range || this.createRange();
+      const additionalTextLength = linkText.length - rng.toString().length;
+      if (additionalTextLength > 0 && this.isLimited(additionalTextLength)) {
+        return;
+      }
       const isTextChanged = rng.toString() !== linkText;
 
       // handle spaced urls from input
