@@ -1,4 +1,4 @@
-(function ($) {
+(function($) {
   $.extend($.summernote.lang, {
     'de-DE': {
       font: {
@@ -54,12 +54,12 @@
       table: {
         table: 'Tabelle',
         addRowAbove: '+ Zeile oberhalb',
-		    addRowBelow: '+ Zeile unterhalb',
-		    addColLeft: '+ Spalte links',
-		    addColRight: '+ Spalte rechts',
-		    delRow: 'Reihe löschen',
-		    delCol: 'Spalte löschen',
-		    delTable: 'Tabelle löschen'
+        addRowBelow: '+ Zeile unterhalb',
+        addColLeft: '+ Spalte links',
+        addColRight: '+ Spalte rechts',
+        delRow: 'Reihe löschen',
+        delCol: 'Spalte löschen',
+        delTable: 'Tabelle löschen'
       },
       hr: {
         insert: 'Horizontale Linie einfügen'
