@@ -66,7 +66,7 @@
       },
       style: {
         style: 'Estilo',
-        normal: 'Normal',
+        p: 'Normal',
         blockquote: 'Cita',
         pre: 'Código',
         h1: 'Título 1',
