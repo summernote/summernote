@@ -37,7 +37,10 @@ class TooltipUI {
 
   show() {
     const $node = this.$node;
-    const offset = $node.offset();
+    const offset = {
+      top: $node.offset().top - $node.parents(this.options.container).offset().top,
+      left: $node.offset().left - $node.parents(this.options.container).offset().left
+    };
 
     const $tooltip = this.$tooltip;
     const title = this.options.title || $node.attr('title') || $node.data('title');
