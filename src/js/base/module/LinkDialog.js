@@ -80,7 +80,7 @@ export default class LinkDialog {
       const $linkText = this.$dialog.find('.note-link-text');
       const $linkUrl = this.$dialog.find('.note-link-url');
       const $linkBtn = this.$dialog.find('.note-link-btn');
-      const $openInNewWindow = this.$dialog.find('input[type=checkbox]');
+      const $openInNewWindow = this.$dialog.find('#sn-checkbox-open-in-new-window');
 
       this.ui.onDialogShown(this.$dialog, () => {
         this.context.triggerEvent('dialog.shown');
@@ -124,10 +124,10 @@ export default class LinkDialog {
         this.bindEnterKey($linkUrl, $linkBtn);
         this.bindEnterKey($linkText, $linkBtn);
 
-        const isChecked = linkInfo.isNewWindow !== undefined
+        const isNewWindowChecked = linkInfo.isNewWindow !== undefined
           ? linkInfo.isNewWindow : this.context.options.linkTargetBlank;
 
-        $openInNewWindow.prop('checked', isChecked);
+        $openInNewWindow.prop('checked', isNewWindowChecked);
 
         $linkBtn.one('click', (event) => {
           event.preventDefault();
