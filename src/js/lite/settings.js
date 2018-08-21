@@ -105,6 +105,7 @@ $.summernote = $.extend($.summernote, {
 
     width: null,
     height: null,
+    linkTargetBlank: true,
 
     focus: false,
     tabSize: 4,
