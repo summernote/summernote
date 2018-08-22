@@ -196,9 +196,12 @@ export default class Editor {
       if (this.options.onCreateLink) {
         linkUrl = this.options.onCreateLink(linkUrl);
       } else {
-        // if url doesn't match an URL schema, set http:// as default
-        linkUrl = /^[A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?/.test(linkUrl)
-          ? linkUrl : 'http://' + linkUrl;
+        // if url is not relative,
+        if (!/^\.?\/(.*)/.test(linkUrl)) {
+          // if url doesn't match an URL schema, set http:// as default
+          linkUrl = /^[A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?/.test(linkUrl)
+            ? linkUrl : 'http://' + linkUrl;
+        }
       }
 
       let anchors = [];
@@ -617,7 +620,7 @@ export default class Editor {
    * insertImages
    * @param {File[]} files
    */
-  insertImages(files) {
+  insertImagesAsDataURL(files) {
     $.each(files, (idx, file) => {
       const filename = file.name;
       if (this.options.maximumImageFileSize && this.options.maximumImageFileSize < file.size) {
@@ -630,22 +633,6 @@ export default class Editor {
         });
       }
     });
-  }
-
-  /**
-   * insertImagesOrCallback
-   * @param {File[]} files
-   */
-  insertImagesOrCallback(files) {
-    const callbacks = this.options.callbacks;
-
-    // If onImageUpload set,
-    if (callbacks.onImageUpload) {
-      this.context.triggerEvent('image.upload', files);
-      // else insert Image as dataURL
-    } else {
-      this.insertImages(files);
-    }
   }
 
   /**
@@ -742,8 +729,9 @@ export default class Editor {
       url: $anchor.length ? $anchor.attr('href') : ''
     };
 
-    // Define isNewWindow when anchor exists.
+    // When anchor exists,
     if ($anchor.length) {
+      // Set isNewWindow by checking its target.
       linkInfo.isNewWindow = $anchor.attr('target') === '_blank';
     }
 

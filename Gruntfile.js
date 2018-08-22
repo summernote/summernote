@@ -97,6 +97,7 @@ module.exports = function(grunt) {
         files: [
           { 'dist/summernote.min.js': ['dist/summernote.js'] },
           { 'dist/summernote-bs4.min.js': ['dist/summernote-bs4.js'] },
+          { 'dist/summernote-lite.min.js': ['dist/summernote-lite.js'] },
           {
             expand: true,
             cwd: 'dist/lang',

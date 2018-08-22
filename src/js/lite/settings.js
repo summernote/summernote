@@ -105,6 +105,7 @@ $.summernote = $.extend($.summernote, {
 
     width: null,
     height: null,
+    linkTargetBlank: true,
 
     focus: false,
     tabSize: 4,
@@ -174,7 +175,8 @@ $.summernote = $.extend($.summernote, {
       onKeydown: null,
       onSubmit: null,
       onImageUpload: null,
-      onImageUploadError: null
+      onImageUploadError: null,
+      onImageLinkInsert: null
     },
 
     codemirror: {

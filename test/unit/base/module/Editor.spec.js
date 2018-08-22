@@ -371,6 +371,26 @@ describe('Editor', () => {
       expectContents(context, '<p><a href="http://summernote.org" target="_blank">summernote</a></p>');
     });
 
+    it('should create a relative link without scheme', () => {
+      var text = 'hello';
+      var editable = context.layoutInfo.editable;
+      var pNode = editable.find('p')[0];
+      var textNode = pNode.childNodes[0];
+      var startIndex = textNode.wholeText.indexOf(text);
+      var endIndex = startIndex + text.length;
+
+      var rng = range.create(textNode, startIndex, textNode, endIndex);
+
+      editor.createLink({
+        url: '/relative/url',
+        text: 'summernote',
+        range: rng,
+        isNewWindow: true
+      });
+
+      expectContents(context, '<p><a href="/relative/url" target="_blank">summernote</a></p>');
+    });
+
     it('should modify a link', () => {
       context.invoke('code', '<p><a href="http://summernote.org">hello world</a></p>');
 

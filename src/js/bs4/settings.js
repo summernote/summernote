@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import ui from '../bs4/ui';
 import dom from '../base/core/dom';
+import range from '../base/core/range';
 import '../base/summernote-en-US';
 import Editor from '../base/module/Editor';
 import Clipboard from '../base/module/Clipboard';
@@ -28,6 +29,7 @@ $.summernote = $.extend($.summernote, {
   version: '@@VERSION@@',
   ui: ui,
   dom: dom,
+  range: range,
 
   plugins: {},
 
@@ -179,7 +181,8 @@ $.summernote = $.extend($.summernote, {
       onKeyup: null,
       onKeydown: null,
       onImageUpload: null,
-      onImageUploadError: null
+      onImageUploadError: null,
+      onImageLinkInsert: null
     },
 
     codemirror: {
