@@ -102,7 +102,8 @@
         transparent: 'Прозрачен',
         setTransparent: 'Направете прозрачен',
         reset: 'Възстанови',
-        resetToDefault: 'Възстанови оригиналните'
+        resetToDefault: 'Възстанови оригиналните',
+        cpSelect: 'Изберете'
       },
       shortcut: {
         shortcuts: 'Клавишни комбинации',

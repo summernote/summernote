@@ -274,6 +274,12 @@ export default class Buttons {
               '    </button>',
               '  </div>',
               '  <div class="note-holder" data-event="backColor"/>',
+              '  <div class="btn-sm">',
+              '    <input type="color" id="html5bcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
+              '    <button type="button" class="note-color-reset btn" data-event="backColor" data-value="cpbackColor">',
+              this.lang.color.cpSelect,
+              '    </button>',
+              '  </div>',
               '</div>',
               '<div class="note-palette">',
               '  <div class="note-palette-title">' + this.lang.color.foreground + '</div>',
@@ -283,6 +289,11 @@ export default class Buttons {
               '    </button>',
               '  </div>',
               '  <div class="note-holder" data-event="foreColor"/>',
+              '  <div class="btn-sm">',
+              '    <input type="color" id="html5fcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
+              '    <button type="button" class="note-color-reset btn" data-event="foreColor" data-value="cpforeColor">',
+              this.lang.color.cpSelect,
+              '    </button>',
               '</div>'
             ].join(''),
             callback: ($dropdown) => {
@@ -300,7 +311,16 @@ export default class Buttons {
             click: (event) => {
               const $button = $(event.target);
               const eventName = $button.data('event');
-              const value = $button.data('value');
+              let value = $button.data('value');
+              const foreinput = document.getElementById('html5fcp').value;
+              const backinput = document.getElementById('html5bcp').value;
+              if (value === 'cp') {
+                event.stopPropagation();
+              } else if (value === 'cpbackColor') {
+                value = backinput;
+              } else if (value === 'cpforeColor') {
+                value = foreinput;
+              }
 
               if (eventName && value) {
                 const key = eventName === 'backColor' ? 'background-color' : 'color';
