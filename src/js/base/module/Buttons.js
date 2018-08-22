@@ -274,12 +274,13 @@ export default class Buttons {
               '    </button>',
               '  </div>',
               '  <div class="note-holder" data-event="backColor"/>',
-              '  <div class="btn-sm">',
-              '    <input type="color" id="html5bcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
-              '    <button type="button" class="note-color-reset btn" data-event="backColor" data-value="cpbackColor">',
+              '  <div>',
+              '    <button type="button" class="note-color-select btn" data-event="openPalette" data-value="backColorPicker">',
               this.lang.color.cpSelect,
               '    </button>',
+              '    <input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="#FFFF00" data-event="backColorPalette">',
               '  </div>',
+              '  <div class="note-holder-custom" id="backColorPalette" data-event="backColor"/>',
               '</div>',
               '<div class="note-palette">',
               '  <div class="note-palette-title">' + this.lang.color.foreground + '</div>',
@@ -289,11 +290,12 @@ export default class Buttons {
               '    </button>',
               '  </div>',
               '  <div class="note-holder" data-event="foreColor"/>',
-              '  <div class="btn-sm">',
-              '    <input type="color" id="html5fcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
-              '    <button type="button" class="note-color-reset btn" data-event="foreColor" data-value="cpforeColor">',
+              '  <div>',
+              '    <button type="button" class="note-color-select btn" data-event="openPalette" data-value="foreColorPicker">',
               this.lang.color.cpSelect,
               '    </button>',
+              '    <input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="#000000" data-event="foreColorPalette">',
+              '  <div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"/>',
               '</div>'
             ].join(''),
             callback: ($dropdown) => {
@@ -307,22 +309,55 @@ export default class Buttons {
                   tooltip: this.options.tooltip
                 }).render());
               });
+              /* TODO: do we have to record recent custom colors within cookies? */
+              var customColors = [
+                ['#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF']
+              ];
+              $dropdown.find('.note-holder-custom').each((idx, item) => {
+                const $holder = $(item);
+                $holder.append(this.ui.palette({
+                  colors: customColors,
+                  colorsName: customColors,
+                  eventName: $holder.data('event'),
+                  container: this.options.container,
+                  tooltip: this.options.tooltip
+                }).render());
+              });
+              $dropdown.find('input[type=color]').each((idx, item) => {
+                $(item).change(function() {
+                  const $chip = $('#' + $(this).data('event')).find('.note-color-btn').first();
+                  const color = this.value.toUpperCase();
+                  $chip.css('background-color', color)
+                    .attr('aria-label', color)
+                    .attr('data-value', color)
+                    .attr('data-original-title', color);
+                  $chip.click();
+                });
+              });
             },
             click: (event) => {
+              event.stopPropagation();
+
               const $button = $(event.target);
               const eventName = $button.data('event');
-              let value = $button.data('value');
-              const foreinput = document.getElementById('html5fcp').value;
-              const backinput = document.getElementById('html5bcp').value;
-              if (value === 'cp') {
-                event.stopPropagation();
-              } else if (value === 'cpbackColor') {
-                value = backinput;
-              } else if (value === 'cpforeColor') {
-                value = foreinput;
-              }
+              let value = $button.attr('data-value');
 
-              if (eventName && value) {
+              if (eventName === 'openPalette') {
+                const $picker = $('#' + value);
+                const $palette = $($('#' + $picker.data('event')).find('.note-color-row')[0]);
+
+                // Shift palette chips
+                const $chip = $palette.find('.note-color-btn').last().detach();
+
+                // Set chip attributes
+                const color = $picker.val();
+                $chip.css('background-color', color)
+                  .attr('aria-label', color)
+                  .attr('data-value', color)
+                  .attr('data-original-title', color);
+                $palette.prepend($chip);
+                $picker.click();
+              } else if (lists.contains(['backColor', 'foreColor'], eventName)) {
                 const key = eventName === 'backColor' ? 'background-color' : 'color';
                 const $color = $button.closest('.note-color').find('.note-recent-color');
                 const $currentButton = $button.closest('.note-color').find('.note-current-color-button');
