@@ -12,35 +12,40 @@ import env from '../../../../src/js/base/core/env';
 import range from '../../../../src/js/base/core/range';
 import Context from '../../../../src/js/base/Context';
 
-const expect = chai.expect;
-chai.use(spies);
-chai.use(chaidom);
-
-function expectContents(context, markup) {
-  expect(context.layoutInfo.editable.html()).to.equalsIgnoreCase(markup);
-}
-
-function expectToHaveBeenCalled(context, customEvent, handler) {
-  const $note = context.layoutInfo.note;
-  const spy = chai.spy();
-  $note.on(customEvent, spy);
-  handler();
-  expect(spy).to.have.been.called();
-}
-
 describe('Editor', () => {
-  var editor, context;
+  var expect = chai.expect;
+  chai.use(spies);
+  chai.use(chaidom);
+
+  var editor, context, $editable;
+
+  function expectContents(context, markup) {
+    expect($editable.html()).to.equalsIgnoreCase(markup);
+  }
+
+  function expectToHaveBeenCalled(context, customEvent, handler) {
+    const $note = context.layoutInfo.note;
+    const spy = chai.spy();
+    $note.on(customEvent, spy);
+    handler();
+    expect(spy).to.have.been.called();
+  }
 
   beforeEach(function() {
+    $('body').empty(); // important !
+    var $note = $('<div><p>hello</p></div>');
+
     var options = $.extend({}, $.summernote.options);
     options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
-    context = new Context($('<div><p>hello</p></div>'), options);
+    context = new Context($note, options);
+
     editor = context.modules.editor;
+    $editable = context.layoutInfo.editable;
 
     // [workaround]
     //  - Firefox need setTimeout for applying contents
     //  - IE8-11 can't create range in headless mode
-    if (!(env.isWebkit || env.isEdge)) {
+    if (env.isFF || env.isMSIE || env.isEdge) {
       this.skip();
     }
   });
@@ -52,7 +57,7 @@ describe('Editor', () => {
         'scroll', 'focusin', 'focusout'
       ].forEach((eventName) => {
         expectToHaveBeenCalled(context, 'summernote.' + eventName, () => {
-          context.layoutInfo.editable.trigger(eventName);
+          $editable.trigger(eventName);
         });
       });
 
@@ -244,7 +249,7 @@ describe('Editor', () => {
 
   describe('formatBlock', () => {
     it('should apply formatBlock', () => {
-      context.layoutInfo.editable.appendTo('body');
+      $editable.appendTo('body');
       editor.formatBlock('blockquote');
 
       // start <p>hello</p> => <blockquote>hello</blockquote>
@@ -261,16 +266,13 @@ describe('Editor', () => {
 
       context.invoke('code', codes.join(''));
 
-      // append to body
-      var editable = context.layoutInfo.editable;
-      editable.appendTo('body');
-
       // run formatBlock
+      $editable.appendTo('body');
       editor.formatBlock('blockquote');
 
       // check current range position in blockquote element
 
-      var nodeName = editable.children()[0].nodeName;
+      var nodeName = $editable.children()[0].nodeName;
       expect(nodeName).to.equalsIgnoreCase('blockquote');
     });
 
@@ -282,28 +284,26 @@ describe('Editor', () => {
       ];
 
       context.invoke('code', codes.join(''));
+      $editable.appendTo('body');
 
-      var editable = context.layoutInfo.editable;
-      editable.appendTo('body');
-
-      var startNode = editable.find('p').first()[0];
-      var endNode = editable.find('p').last()[0];
+      var startNode = $editable.find('p').first()[0];
+      var endNode = $editable.find('p').last()[0];
 
       // all p tags is wrapped
       range.create(startNode, 1, endNode, 1).normalize().select();
 
       editor.formatBlock('blockquote');
 
-      var nodeName = editable.children()[0].nodeName;
+      var nodeName = $editable.children()[0].nodeName;
       expect(nodeName).to.equalsIgnoreCase('blockquote');
 
       // p -> blockquote, p is none
-      expect(editable.find('p').length).to.equals(0);
+      expect($editable.find('p').length).to.equals(0);
     });
 
     it('should apply custom className in formatBlock', () => {
-      context.layoutInfo.editable.appendTo('body');
       var $target = $('<blockquote class="blockquote" />');
+      $editable.appendTo('body');
       editor.formatBlock('blockquote', $target);
 
       // start <p>hello</p> => <blockquote class="blockquote">hello</blockquote>
@@ -314,9 +314,7 @@ describe('Editor', () => {
   describe('createLink', () => {
     it('should create normal link', () => {
       var text = 'hello';
-
-      var editable = context.layoutInfo.editable;
-      var pNode = editable.find('p')[0];
+      var pNode = $editable.find('p')[0];
       var textNode = pNode.childNodes[0];
       var startIndex = textNode.wholeText.indexOf(text);
       var endIndex = startIndex + text.length;
@@ -334,8 +332,7 @@ describe('Editor', () => {
 
     it('should create a link with range', () => {
       var text = 'hello';
-      var editable = context.layoutInfo.editable;
-      var pNode = editable.find('p')[0];
+      var pNode = $editable.find('p')[0];
       var textNode = pNode.childNodes[0];
       var startIndex = textNode.wholeText.indexOf(text);
       var endIndex = startIndex + text.length;
@@ -353,8 +350,7 @@ describe('Editor', () => {
 
     it('should create a link with isNewWindow', () => {
       var text = 'hello';
-      var editable = context.layoutInfo.editable;
-      var pNode = editable.find('p')[0];
+      var pNode = $editable.find('p')[0];
       var textNode = pNode.childNodes[0];
       var startIndex = textNode.wholeText.indexOf(text);
       var endIndex = startIndex + text.length;
@@ -373,8 +369,7 @@ describe('Editor', () => {
 
     it('should create a relative link without scheme', () => {
       var text = 'hello';
-      var editable = context.layoutInfo.editable;
-      var pNode = editable.find('p')[0];
+      var pNode = $editable.find('p')[0];
       var textNode = pNode.childNodes[0];
       var startIndex = textNode.wholeText.indexOf(text);
       var endIndex = startIndex + text.length;
@@ -394,8 +389,7 @@ describe('Editor', () => {
     it('should modify a link', () => {
       context.invoke('code', '<p><a href="http://summernote.org">hello world</a></p>');
 
-      var editable = context.layoutInfo.editable;
-      var anchorNode = editable.find('a')[0];
+      var anchorNode = $editable.find('a')[0];
       var rng = range.createFromNode(anchorNode);
 
       editor.createLink({

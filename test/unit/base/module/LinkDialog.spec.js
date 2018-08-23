@@ -9,9 +9,8 @@ import range from '../../../../src/js/base/core/range';
 import Context from '../../../../src/js/base/Context';
 import LinkDialog from '../../../../src/js/base/module/LinkDialog';
 
-var expect = chai.expect;
-
-describe('bs:module.LinkDialog', () => {
+describe('LinkDialog', () => {
+  var expect = chai.expect;
   var context, dialog, $editable;
 
   beforeEach(() => {

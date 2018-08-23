@@ -9,9 +9,8 @@ import $ from 'jquery';
 import Context from '../../../../src/js/base/Context';
 import Fullscreen from '../../../../src/js/base/module/Fullscreen';
 
-var expect = chai.expect;
-
 describe('Fullscreen', () => {
+  var expect = chai.expect;
   var fullscreen, context;
 
   beforeEach(() => {

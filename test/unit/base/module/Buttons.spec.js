@@ -10,10 +10,9 @@ import env from '../../../../src/js/base/core/env';
 import range from '../../../../src/js/base/core/range';
 import Context from '../../../../src/js/base/Context';
 
-const expect = chai.expect;
-const assert = chai.assert;
-
 describe('Buttons', () => {
+  var expect = chai.expect;
+  var assert = chai.assert;
   var context, $toolbar, $editable;
 
   beforeEach(function() {

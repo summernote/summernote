@@ -8,9 +8,9 @@ import $ from 'jquery';
 import Context from '../../../../src/js/base/Context';
 import VideoDialog from '../../../../src/js/base/module/VideoDialog';
 
-var expect = chai.expect;
+describe('VideoDialog', () => {
+  var expect = chai.expect;
 
-describe('bs:module.VideoDialog', () => {
   function expectUrl(source, target) {
     var iframe = $video.createVideoNode(source);
     expect(iframe).to.not.equal(false);
