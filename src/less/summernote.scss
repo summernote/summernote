@@ -319,13 +319,18 @@ $img-margin-right: 10px;
     }
   }
 
+  .note-color-all {
+    .dropdown-menu {
+      min-width: 337px;
+    }
+  }
+
   .note-color {
     .dropdown-toggle {
       width: 20px;
       padding-left: 5px;
     }
     .dropdown-menu {
-      min-width: 340px;
       .btn-group {
         margin: 0;
         &:first-child {
