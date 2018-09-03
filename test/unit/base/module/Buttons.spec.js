@@ -25,7 +25,7 @@ describe('Buttons', () => {
       ['font1', ['style', 'clear']],
       ['font2', ['bold', 'underline', 'italic', 'superscript', 'subscript', 'strikethrough']],
       ['font3', ['fontname', 'fontsize']],
-      ['color', ['color']],
+      ['color', ['color', 'forecolor', 'backcolor']],
       ['para', ['ul', 'ol', 'paragraph']],
       ['table', ['table']],
       ['insert', ['link', 'picture', 'video']],
@@ -181,22 +181,22 @@ describe('Buttons', () => {
     });
   });
 
-  describe('recent color button', () => {
+  describe('recent color button in all color button', () => {
     it('should execute color command when it is clicked', () => {
       range.createFromNode($editable.find('p')[0]).normalize().select();
 
-      $toolbar.find('.note-current-color-button').click();
+      $toolbar.find('.note-color-all').find('.note-current-color-button').click();
 
       var $span = $editable.find('span');
       expect($span).to.be.equalsStyle('#FFFF00', 'background-color');
     });
   });
 
-  describe('fore color button', () => {
+  describe('fore color button in all color button', () => {
     it('should execute fore color command when it is clicked', () => {
       range.createFromNode($editable.find('p')[0]).normalize().select();
 
-      var $button = $toolbar.find('[data-event=foreColor]').eq(10);
+      var $button = $toolbar.find('.note-color-all').find('[data-event=foreColor]').eq(10);
       $button.click();
 
       var $span = $editable.find('span');
@@ -204,11 +204,35 @@ describe('Buttons', () => {
     });
   });
 
-  describe('back color button', () => {
+  describe('back color button in all color button', () => {
     it('should execute back color command when it is clicked', () => {
       range.createFromNode($editable.find('p')[0]).normalize().select();
 
-      var $button = $toolbar.find('[data-event=backColor]').eq(10);
+      var $button = $toolbar.find('.note-color-all').find('[data-event=backColor]').eq(10);
+      $button.click();
+
+      var $span = $editable.find('span');
+      expect($span).to.be.equalsStyle($button.data('value'), 'background-color');
+    });
+  });
+
+  describe('color button in fore color button', () => {
+    it('should execute fore color command when it is clicked', () => {
+      range.createFromNode($editable.find('p')[0]).normalize().select();
+
+      var $button = $toolbar.find('.note-color-fore').find('[data-event=foreColor]').eq(4);
+      $button.click();
+
+      var $span = $editable.find('span');
+      expect($span).to.be.equalsStyle($button.data('value'), 'color');
+    });
+  });
+
+  describe('back color button in back color button', () => {
+    it('should execute back color command when it is clicked', () => {
+      range.createFromNode($editable.find('p')[0]).normalize().select();
+
+      var $button = $toolbar.find('.note-color-back').find('[data-event=backColor]').eq(20);
       $button.click();
 
       var $span = $editable.find('span');
