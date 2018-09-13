@@ -29,7 +29,7 @@ module.exports = (() => {
           browserName: 'internet explorer',
           platform: 'Windows 7',
           version: '9.0',
-          build: 'build-' + process.env.TRAVIS_JOB_NUMBER,
+          build: process.env.TRAVIS_BUILD_NUMBER,
           'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
         }
       },
@@ -38,7 +38,7 @@ module.exports = (() => {
           browserName: 'internet explorer',
           platform: 'Windows 8',
           version: '10.0',
-          build: 'build-' + process.env.TRAVIS_JOB_NUMBER,
+          build: process.env.TRAVIS_BUILD_NUMBER,
           'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
         }
       },
@@ -47,7 +47,7 @@ module.exports = (() => {
           browserName: 'internet explorer',
           platform: 'Windows 8.1',
           version: '11.0',
-          build: 'build-' + process.env.TRAVIS_JOB_NUMBER,
+          build: process.env.TRAVIS_BUILD_NUMBER,
           'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
         }
       },
@@ -56,7 +56,7 @@ module.exports = (() => {
           browserName: 'microsoftedge',
           platform: 'Windows 10',
           version: 'latest',
-          build: 'build-' + process.env.TRAVIS_JOB_NUMBER,
+          build: process.env.TRAVIS_BUILD_NUMBER,
           'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
         }
       },
@@ -65,7 +65,7 @@ module.exports = (() => {
           browserName: 'chrome',
           platform: 'Windows 8',
           version: 'latest',
-          build: 'build-' + process.env.TRAVIS_JOB_NUMBER,
+          build: process.env.TRAVIS_BUILD_NUMBER,
           'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
         }
       },
@@ -74,7 +74,7 @@ module.exports = (() => {
           browserName: 'firefox',
           platform: 'Windows 8',
           version: 'latest',
-          build: 'build-' + process.env.TRAVIS_JOB_NUMBER,
+          build: process.env.TRAVIS_BUILD_NUMBER,
           'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
         }
       },
@@ -83,7 +83,7 @@ module.exports = (() => {
           browserName: 'safari',
           platform: 'OS X 10.10',
           version: 'latest',
-          build: 'build-' + process.env.TRAVIS_JOB_NUMBER,
+          build: process.env.TRAVIS_BUILD_NUMBER,
           'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
         }
       }

@@ -1,8 +1,8 @@
 .note-btn {
-  display:inline-block;
-  font-weight: normal;
-  margin-bottom:0px;
-  text-align:center;
+  display: inline-block;
+  font-weight: 400;
+  margin-bottom: 0;
+  text-align: center;
   vertical-align: middle;
   touch-action: manipulation;
   cursor: pointer;
@@ -20,7 +20,7 @@
     color: @btn-default-color;
     text-decoration: none;
     border: 1px solid @btn-default-border;
-    background-color: @btn-default-hover-bg; 
+    background-color: @btn-default-hover-bg;
     outline: 0;
     .rounded(1px);
   }
@@ -40,17 +40,16 @@
     .box-shadow(none);
   }
 
-
 }
 
 .note-btn-primary {
   background: #fa6362;
-  color: white;
+  color: #fff;
 
   &:hover,
   &:focus,
   &.focus {
-    color: white;
+    color: #fff;
     text-decoration: none;
     border: 1px solid @btn-default-border;
     background-color: #fa6362;
@@ -59,14 +58,9 @@
 
 }
 
-.note-btn-large {
-  font-size:16px;
-  padding: 8px 34px;
-}
-
 .note-btn-block {
   display: block;
-  width:100%;
+  width: 100%;
 }
 
 .note-btn-block + .note-btn-block {
@@ -83,10 +77,10 @@ input[type="button"] {
 }
 
 button.close {
-  padding:0px;
-  cursor:pointer;
-  background:transparent;
-  border: 0px;
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
   -webkit-appearance: none;
 }
 
@@ -96,4 +90,13 @@ button.close {
   line-height: 1;
   color: #000;
   opacity: .2;
+}
+
+.close:hover {
+  -webkit-opacity: 1;
+   -khtml-opacity: 1;
+     -moz-opacity: 1;
+       -ms-filter: alpha(opacity=100);
+           filter: alpha(opacity=100);
+          opacity: 1
 }

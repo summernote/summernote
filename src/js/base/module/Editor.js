@@ -47,6 +47,7 @@ export default class Editor {
     this.context.memo('help.outdent', this.lang.help.outdent);
     this.context.memo('help.formatPara', this.lang.help.formatPara);
     this.context.memo('help.insertHorizontalRule', this.lang.help.insertHorizontalRule);
+    this.context.memo('help.fontName', this.lang.help.fontName);
 
     // native commands(with execCommand), generate function for execCommand
     const commands = [
@@ -66,18 +67,13 @@ export default class Editor {
       this.context.memo('help.' + commands[idx], this.lang.help[commands[idx]]);
     }
 
-    /**
-     * fontName Command for document.execCommand
-     */
-    this.fontName = this.wrapCommand((fontName) => {
-      // [workaround]
-      //  - If the font family has spaces, you must enclose it in quotation marks.
-      if (env.isChrome && fontName.indexOf(' ') > -1) {
-        fontName = `"${fontName}"`;
-      }
-      document.execCommand('fontName', false, fontName);
+    this.fontName = this.wrapCommand((value) => {
+      return this.fontStyling('font-family', "\'" + value + "\'");
     });
-    context.memo('help.fontName', this.lang.help.fontName);
+
+    this.fontSize = this.wrapCommand((value) => {
+      return this.fontStyling('font-size', value + 'px');
+    });
 
     for (let idx = 1; idx <= 6; idx++) {
       this['formatH' + idx] = ((idx) => {
@@ -114,6 +110,9 @@ export default class Editor {
      * @param {Node} node
      */
     this.insertNode = this.wrapCommand((node) => {
+      if (this.isLimited($(node).text().length)) {
+        return;
+      }
       const rng = this.createRange();
       rng.insertNode(node);
       range.createFromNodeAfter(node).select();
@@ -124,6 +123,9 @@ export default class Editor {
      * @param {String} text
      */
     this.insertText = this.wrapCommand((text) => {
+      if (this.isLimited(text.length)) {
+        return;
+      }
       const rng = this.createRange();
       const textNode = rng.insertNode(dom.createText(text));
       range.create(textNode, dom.nodeLength(textNode)).select();
@@ -133,6 +135,9 @@ export default class Editor {
      * @param {String} markup
      */
     this.pasteHTML = this.wrapCommand((markup) => {
+      if (this.isLimited(markup.length)) {
+        return;
+      }
       const contents = this.createRange().pasteHTML(markup);
       range.createFromNodeAfter(lists.last(contents)).select();
     });
@@ -269,10 +274,15 @@ export default class Editor {
     });
 
     /**
-     * remove media object
+     * remove media object and Figure Elements if media object is img with Figure.
      */
     this.removeMedia = this.wrapCommand(() => {
-      const $target = $(this.restoreTarget()).detach();
+      let $target = $(this.restoreTarget()).parent();
+      if ($target.parent('figure').length) {
+        $target.parent('figure').remove();
+      } else {
+        $target = $(this.restoreTarget()).detach();
+      }
       this.context.triggerEvent('media.delete', $target, this.$editable);
     });
 
@@ -315,6 +325,9 @@ export default class Editor {
         } else {
           this.preventDefaultEditableShortCuts(event);
         }
+      }
+      if (this.isLimited(1, event)) {
+        return false;
       }
     }).on('keyup', (event) => {
       this.context.triggerEvent('keyup', event);
@@ -398,6 +411,24 @@ export default class Editor {
     }
   }
 
+  isLimited(pad, event) {
+    pad = pad || 0;
+
+    if (typeof event !== 'undefined') {
+      if (key.isMove(event.keyCode) ||
+          (event.ctrlKey || event.metaKey) ||
+          lists.contains([key.code.BACKSPACE, key.code.DELETE], event.keyCode)) {
+        return false;
+      }
+    }
+
+    if (this.options.maxTextLength > 0) {
+      if ((this.$editable.text().length + pad) >= this.options.maxTextLength) {
+        return true;
+      }
+    }
+    return false;
+  }
   /**
    * create range
    * @return {WrappedRange}
@@ -501,6 +532,7 @@ export default class Editor {
    * @param {Boolean} isPreventTrigger
    */
   afterCommand(isPreventTrigger) {
+    this.normalizeContent();
     this.history.recordUndo();
     if (!isPreventTrigger) {
       this.context.triggerEvent('change', this.$editable.html());
@@ -518,9 +550,12 @@ export default class Editor {
       if (this.options.tabSize === 0) {
         return false;
       }
-      this.beforeCommand();
-      this.typing.insertTab(rng, this.options.tabSize);
-      this.afterCommand();
+
+      if (!this.isLimited(this.options.tabSize)) {
+        this.beforeCommand();
+        this.typing.insertTab(rng, this.options.tabSize);
+        this.afterCommand();
+      }
     }
   }
 
@@ -649,35 +684,23 @@ export default class Editor {
     this.formatBlock('P');
   }
 
-  /**
-   * fontSize
-   *
-   * @param {String} value - px
-   */
-  fontSize(value) {
+  fontStyling(target, value) {
     const rng = this.createRange();
 
-    if (rng && rng.isCollapsed()) {
+    if (rng) {
       const spans = this.style.styleNodes(rng);
-      const firstSpan = lists.head(spans);
-
-      $(spans).css({
-        'font-size': value + 'px'
-      });
+      $(spans).css(target, value);
 
       // [workaround] added styled bogus span for style
       //  - also bogus character needed for cursor position
-      if (firstSpan && !dom.nodeLength(firstSpan)) {
-        firstSpan.innerHTML = dom.ZERO_WIDTH_NBSP_CHAR;
-        range.createFromNodeAfter(firstSpan.firstChild).select();
-        this.$editable.data(KEY_BOGUS, firstSpan);
+      if (rng.isCollapsed()) {
+        const firstSpan = lists.head(spans);
+        if (firstSpan && !dom.nodeLength(firstSpan)) {
+          firstSpan.innerHTML = dom.ZERO_WIDTH_NBSP_CHAR;
+          range.createFromNodeAfter(firstSpan.firstChild).select();
+          this.$editable.data(KEY_BOGUS, firstSpan);
+        }
       }
-    } else {
-      this.beforeCommand();
-      $(this.style.styleNodes(rng)).css({
-        'font-size': value + 'px'
-      });
-      this.afterCommand();
     }
   }
 
@@ -827,5 +850,12 @@ export default class Editor {
    */
   empty() {
     this.context.invoke('code', dom.emptyPara);
+  }
+
+  /**
+   * normalize content
+   */
+  normalizeContent() {
+    this.$editable[0].normalize();
   }
 }

@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import env from '../core/env';
 import key from '../core/key';
 
 export default class VideoDialog {
@@ -40,6 +41,7 @@ export default class VideoDialog {
   bindEnterKey($input, $btn) {
     $input.on('keypress', (event) => {
       if (event.keyCode === key.code.ENTER) {
+        event.preventDefault();
         $btn.trigger('click');
       }
     });
@@ -173,7 +175,11 @@ export default class VideoDialog {
 
         $videoUrl.val(text).on('input', () => {
           this.ui.toggleBtn($videoBtn, $videoUrl.val());
-        }).trigger('focus');
+        });
+
+        if (!env.isSupportTouch) {
+          $videoUrl.trigger('focus');
+        }
 
         $videoBtn.click((event) => {
           event.preventDefault();

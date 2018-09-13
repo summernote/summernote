@@ -84,7 +84,7 @@ https://github.com/summernote/summernote/blob/develop/CONTRIBUTING.md
 
 ### Contacts
 * Facebook user group: https://www.facebook.com/groups/summernote
-* Twitter: http://twitter.com/hackerwins
+* Summernote Slack: [Join the Summernote Slack community](https://communityinviter.com/apps/summernote/summernote)
 
 ### License
 Summernote may be freely distributed under the MIT license.

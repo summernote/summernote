@@ -62,6 +62,13 @@ export default class Buttons {
     return this.fontInstalledMap[name];
   }
 
+  isFontDeservedToAdd(name) {
+    const genericFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
+    name = name.toLowerCase();
+
+    return ((name !== '') && this.isFontInstalled(name) && ($.inArray(name, genericFamilies) === -1));
+  }
+
   addToolbarButtons() {
     this.context.memo('button.style', () => {
       return this.ui.buttonGroup([
@@ -78,6 +85,7 @@ export default class Buttons {
         this.ui.dropdown({
           className: 'dropdown-style',
           items: this.options.styleTags,
+          title: this.lang.style.style,
           template: (item) => {
             if (typeof item === 'string') {
               item = { tag: item, title: (this.lang.style.hasOwnProperty(item) ? this.lang.style[item] : item) };
@@ -94,6 +102,19 @@ export default class Buttons {
         })
       ]).render();
     });
+
+    for (let styleIdx = 0, styleLen = this.options.styleTags.length; styleIdx < styleLen; styleIdx++) {
+      const item = this.options.styleTags[styleIdx];
+
+      this.context.memo('button.style.' + item, () => {
+        return this.button({
+          className: 'note-btn-style-' + item,
+          contents: '<div data-value="' + item + '">' + item.toUpperCase() + '</div>',
+          tooltip: this.lang.style[item],
+          click: this.context.createInvokeHandler('editor.formatBlock')
+        }).render();
+      });
+    }
 
     this.context.memo('button.bold', () => {
       return this.button({
@@ -158,6 +179,18 @@ export default class Buttons {
     });
 
     this.context.memo('button.fontname', () => {
+      const styleInfo = this.context.invoke('editor.currentStyle');
+
+      // Add 'default' fonts into the fontnames array if not exist
+      $.each(styleInfo['font-family'].split(','), (idx, fontname) => {
+        fontname = fontname.trim().replace(/['"]+/g, '');
+        if (this.isFontDeservedToAdd(fontname)) {
+          if ($.inArray(fontname, this.options.fontNames) === -1) {
+            this.options.fontNames.push(fontname);
+          }
+        }
+      });
+
       return this.ui.buttonGroup([
         this.button({
           className: 'dropdown-toggle',
@@ -173,8 +206,9 @@ export default class Buttons {
           className: 'dropdown-fontname',
           checkClassName: this.options.icons.menuCheck,
           items: this.options.fontNames.filter(this.isFontInstalled.bind(this)),
+          title: this.lang.font.name,
           template: (item) => {
-            return '<span style="font-family:' + item + '">' + item + '</span>';
+            return '<span style="font-family: \'' + item + '\'">' + item + '</span>';
           },
           click: this.context.createInvokeHandlerAndUpdateState('editor.fontName')
         })
@@ -195,6 +229,7 @@ export default class Buttons {
           className: 'dropdown-fontsize',
           checkClassName: this.options.icons.menuCheck,
           items: this.options.fontSizes,
+          title: this.lang.font.size,
           click: this.context.createInvokeHandlerAndUpdateState('editor.fontSize')
         })
       ]).render();
@@ -255,6 +290,7 @@ export default class Buttons {
                 const $holder = $(item);
                 $holder.append(this.ui.palette({
                   colors: this.options.colors,
+                  colorsName: this.options.colorsName,
                   eventName: $holder.data('event'),
                   container: this.options.container,
                   tooltip: this.options.tooltip
@@ -377,6 +413,7 @@ export default class Buttons {
           items: this.options.lineHeights,
           checkClassName: this.options.icons.menuCheck,
           className: 'dropdown-line-height',
+          title: this.lang.font.height,
           click: this.context.createInvokeHandler('editor.lineHeight')
         })
       ]).render();
@@ -393,6 +430,7 @@ export default class Buttons {
           }
         }),
         this.ui.dropdown({
+          title: this.lang.table.table,
           className: 'note-table',
           items: [
             '<div class="note-dimension-picker">',
@@ -451,7 +489,7 @@ export default class Buttons {
       return this.button({
         className: 'btn-fullscreen',
         contents: this.ui.icon(this.options.icons.arrowsAlt),
-        tooltip: this.options.fullscreen,
+        tooltip: this.lang.options.fullscreen,
         click: this.context.createInvokeHandler('fullscreen.toggle')
       }).render();
     });
@@ -460,7 +498,7 @@ export default class Buttons {
       return this.button({
         className: 'btn-codeview',
         contents: this.ui.icon(this.options.icons.code),
-        tooltip: this.options.codeview,
+        tooltip: this.lang.options.codeview,
         click: this.context.createInvokeHandler('codeview.toggle')
       }).render();
     });
@@ -484,7 +522,7 @@ export default class Buttons {
     this.context.memo('button.help', () => {
       return this.button({
         contents: this.ui.icon(this.options.icons.question),
-        tooltip: this.options.help,
+        tooltip: this.lang.options.help,
         click: this.context.createInvokeHandler('helpDialog.show')
       }).render();
     });
@@ -642,8 +680,8 @@ export default class Buttons {
   build($container, groups) {
     for (let groupIdx = 0, groupLen = groups.length; groupIdx < groupLen; groupIdx++) {
       const group = groups[groupIdx];
-      const groupName = group[0];
-      const buttons = group[1];
+      const groupName = $.isArray(group) ? group[0] : group;
+      const buttons = $.isArray(group) ? ((group.length === 1) ? [group[0]] : group[1]) : [group];
 
       const $group = this.ui.buttonGroup({
         className: 'note-' + groupName

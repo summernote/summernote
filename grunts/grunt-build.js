@@ -15,13 +15,22 @@ module.exports = function (grunt) {
   ].join('\n');
  
   const rollup = require('rollup');
-  const rollupTypescript = require('rollup-plugin-typescript2');
+  const rollupTypescript = require('rollup-plugin-typescript');
+  const typescript = require('typescript');
+  const replace = require('rollup-plugin-replace');
  
   const inputOptions = {
     external: ['jquery'],
-    plugins: [rollupTypescript({
-      include: ["*.js+(|x)", "**/*.js+(|x)"]
-    })]
+    plugins: [
+      rollupTypescript({
+        typescript: typescript,
+        include: ['**/*.js', '**/*.ts']
+      }),
+      replace({
+        delimiters: ['@@', '@@'],
+        VERSION: version
+      })
+    ]
   };
   
   const outputOptions = {

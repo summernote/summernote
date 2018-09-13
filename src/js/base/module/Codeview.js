@@ -74,9 +74,17 @@ export default class CodeView {
         });
       }
 
+      cmEditor.on('blur', (event) => {
+        this.context.triggerEvent('blur.codeview', cmEditor.getValue(), event);
+      });
+
       // CodeMirror hasn't Padding.
       cmEditor.setSize(null, this.$editable.outerHeight());
       this.$codable.data('cmEditor', cmEditor);
+    } else {
+      this.$codable.on('blur', (event) => {
+        this.context.triggerEvent('blur.codeview', this.$codable.val(), event);
+      });
     }
   }
 
