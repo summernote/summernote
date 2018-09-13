@@ -74,16 +74,15 @@ export default class Style {
     const onlyPartialContains = !!(options && options.onlyPartialContains);
 
     if (rng.isCollapsed()) {
-      //-- Text exist : not empty editor
+      // -- Text exist : not empty editor
       if (rng.so > 0) {
         rng.so -= 1;
-        // extend of 1 : if contain NBSP_INVISIBLE : do nothing, else insert empty node
-        if (rng.toString().charCodeAt(0).toString(16) != "feff") {
+        // -- Extend of 1 : if contain NBSP_INVISIBLE : do nothing, else insert empty node
+        if (rng.toString().charCodeAt(0).toString(16) !== 'feff') {
           rng.so += 1;
           return [rng.insertNode(dom.create(nodeName))];
-        }         
-      }
-      else {
+        }
+      } else {
         return [rng.insertNode(dom.create(nodeName))];
       }
     }
