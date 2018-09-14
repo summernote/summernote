@@ -126,18 +126,14 @@ const popover = renderer.create([
   }
 });
 
-const checkbox = renderer.create('<label class="custom-control custom-checkbox"></label>', function($node, options) {
-  if (options.id) {
-    $node.attr('for', options.id);
-  }
-  $node.html([
-    ' <input role="checkbox" type="checkbox" class="custom-control-input"' + (options.id ? ' id="' + options.id + '"' : ''),
-    (options.checked ? ' checked' : ''),
-    ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',
-    ' <span class="custom-control-indicator"></span>',
-    ' <span class="custom-control-description">' + (options.text ? options.text : '') + '</span>',
-    '</label>'
-  ].join(''));
+var checkbox = renderer.create('<div class="custom-control custom-checkbox"></div>', function ($node, options) {
+    $node.html([
+        ' <input role="checkbox" type="checkbox" class="custom-control-input"' + (options.id ? ' id="' + options.id + '"' : ''),
+        (options.checked ? ' checked' : ''),
+        ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',
+        ' <label class="custom-control-label" for="'+options.id+'">Check this custom checkbox</label>',
+        '</div>'
+    ].join(''));
 });
 
 const icon = function(iconClassName, tagName) {
