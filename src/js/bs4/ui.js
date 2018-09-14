@@ -126,7 +126,7 @@ const popover = renderer.create([
   }
 });
 
-var checkbox = renderer.create('<div class="custom-control custom-checkbox"></div>', function ($node, options) {
+const checkbox = renderer.create('<div class="custom-control custom-checkbox"></div>', function ($node, options) {
     $node.html([
         ' <input role="checkbox" type="checkbox" class="custom-control-input"' + (options.id ? ' id="' + options.id + '"' : ''),
         (options.checked ? ' checked' : ''),
