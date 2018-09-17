@@ -106,14 +106,14 @@ export default class HintPopover {
     if ($item.length) {
       const node = this.nodeFromItem($item);
       // If matchingWord length = 0 -> capture OK / open hint / but as mention capture "" (\w*)
-      if(this.matchingWord !== null && this.matchingWord.length === 0) {
-          this.lastWordRange.so = this.lastWordRange.eo;
+      if (this.matchingWord !== null && this.matchingWord.length === 0) {
+        this.lastWordRange.so = this.lastWordRange.eo;
       // Else si > 0 and normal case -> adjust range "before" for correct position of insertion
-      } else if(this.matchingWord !== null && this.matchingWord.length > 0 && !this.lastWordRange.isCollapsed()) {
-          let rangeCompute = this.lastWordRange.eo - this.lastWordRange.so - this.matchingWord.length;
-          if(rangeCompute > 0 ) {
-              this.lastWordRange.so += rangeCompute;
-          }
+      } else if (this.matchingWord !== null && this.matchingWord.length > 0 && !this.lastWordRange.isCollapsed()) {
+        let rangeCompute = this.lastWordRange.eo - this.lastWordRange.so - this.matchingWord.length;
+        if (rangeCompute > 0) {
+            this.lastWordRange.so += rangeCompute;
+        }
       }
       // XXX: consider to move codes to editor for recording redo/undo.
       this.lastWordRange.insertNode(node);
