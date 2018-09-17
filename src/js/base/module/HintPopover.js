@@ -39,6 +39,7 @@ export default class HintPopover {
 
   initialize() {
     this.lastWordRange = null;
+    this.matchingWord = null;
     this.$popover = this.ui.popover({
       className: 'note-hint-popover',
       hideArrow: true,
@@ -104,11 +105,22 @@ export default class HintPopover {
 
     if ($item.length) {
       const node = this.nodeFromItem($item);
+      // If matchingWord length = 0 -> capture OK / open hint / but as mention capture "" (\w*)
+      if(this.matchingWord !== null && this.matchingWord.length === 0) {
+          this.lastWordRange.so = this.lastWordRange.eo;
+      // Else si > 0 and normal case -> adjust range "before" for correct position of insertion
+      } else if(this.matchingWord !== null && this.matchingWord.length > 0 && !this.lastWordRange.isCollapsed()) {
+          let rangeCompute = this.lastWordRange.eo - this.lastWordRange.so - this.matchingWord.length;
+          if(rangeCompute > 0 ) {
+              this.lastWordRange.so += rangeCompute;
+          }
+      }
       // XXX: consider to move codes to editor for recording redo/undo.
       this.lastWordRange.insertNode(node);
       range.createFromNode(node).collapse().select();
 
       this.lastWordRange = null;
+      this.matchingWord = null;
       this.hide();
       this.context.triggerEvent('change', this.$editable.html(), this.$editable[0]);
       this.context.invoke('editor.focus');
@@ -159,6 +171,7 @@ export default class HintPopover {
     const hint = this.hints[index];
     if (hint && hint.match.test(keyword) && hint.search) {
       const matches = hint.match.exec(keyword);
+      this.matchingWord = matches[1];
       hint.search(matches[1], callback);
     } else {
       callback();
