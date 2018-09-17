@@ -112,7 +112,7 @@ export default class HintPopover {
       } else if (this.matchingWord !== null && this.matchingWord.length > 0 && !this.lastWordRange.isCollapsed()) {
         let rangeCompute = this.lastWordRange.eo - this.lastWordRange.so - this.matchingWord.length;
         if (rangeCompute > 0) {
-            this.lastWordRange.so += rangeCompute;
+          this.lastWordRange.so += rangeCompute;
         }
       }
       // XXX: consider to move codes to editor for recording redo/undo.
