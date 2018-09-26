@@ -85,9 +85,9 @@ export default class LinkDialog {
       this.ui.onDialogShown(this.$dialog, () => {
         this.context.triggerEvent('dialog.shown');
 
-        // if no url was given, copy text to url
+        // if no url was given, use empty string
         if (!linkInfo.url) {
-          linkInfo.url = linkInfo.text;
+          linkInfo.url = '';
         }
 
         $linkText.val(linkInfo.text);
