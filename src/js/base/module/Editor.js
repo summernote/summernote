@@ -580,7 +580,7 @@ export default class Editor {
    * run given function between beforeCommand and afterCommand
    */
   wrapCommand(fn) {
-    return () => {
+    return function() {
       this.beforeCommand();
       fn.apply(this, arguments);
       this.afterCommand();
