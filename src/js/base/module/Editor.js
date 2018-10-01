@@ -516,6 +516,15 @@ export default class Editor {
     this.context.triggerEvent('change', this.$editable.html());
   }
 
+  /*
+  * commit
+  */
+  commit() {
+    this.context.triggerEvent('before.command', this.$editable.html());
+    this.history.commit();
+    this.context.triggerEvent('change', this.$editable.html());
+  }
+
   /**
    * redo
    */
