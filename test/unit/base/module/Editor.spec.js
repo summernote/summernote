@@ -20,7 +20,7 @@ describe('Editor', () => {
   var editor, context, $editable;
 
   function expectContents(context, markup) {
-    expect($editable.html()).to.equalsIgnoreCase(markup);
+    expect(context.layoutInfo.editable.html()).to.equalsIgnoreCase(markup);
   }
 
   function expectToHaveBeenCalled(context, customEvent, handler) {
