@@ -31,7 +31,6 @@ Publish on npm
 ```bash
 npm publish
 ```
-```
 
 ### 05. Update summernote.github.io
 Update summernote version in _config.yml.
