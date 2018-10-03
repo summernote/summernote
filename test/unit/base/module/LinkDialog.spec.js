@@ -40,7 +40,9 @@ describe('LinkDialog', () => {
       range.createFromNode($editable.find('a')[0]).normalize().select();
       dialog.show();
 
-      var checked = dialog.$dialog.find('#sn-checkbox-open-in-new-window').is(':checked');
+      var checked = dialog.$dialog
+        .find('.sn-checkbox-open-in-new-window input[type=checkbox]')
+        .is(':checked');
       expect(checked).to.be.true;
     });
 
@@ -48,7 +50,9 @@ describe('LinkDialog', () => {
       range.createFromNode($editable.find('a')[1]).normalize().select();
       dialog.show();
 
-      var checked = dialog.$dialog.find('#sn-checkbox-open-in-new-window').is(':checked');
+      var checked = dialog.$dialog
+        .find('.sn-checkbox-open-in-new-window input[type=checkbox]')
+        .is(':checked');
       expect(checked).to.be.false;
     });
   });
