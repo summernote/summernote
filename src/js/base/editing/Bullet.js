@@ -31,7 +31,16 @@ export default class Bullet {
     $.each(clustereds, (idx, paras) => {
       const head = lists.head(paras);
       if (dom.isLi(head)) {
-        this.wrapList(paras, head.parentNode.nodeName);
+        const previousList = this.findList(head.previousSibling);
+        if (previousList) {
+          paras
+            .map(para => previousList.appendChild(para));
+        } else {
+          this.wrapList(paras, head.parentNode.nodeName);
+          paras
+            .map((para) => para.parentNode)
+            .map((para) => this.appendToPrevious(para));
+        }
       } else {
         $.each(paras, (idx, para) => {
           $(para).css('marginLeft', (idx, val) => {
@@ -197,5 +206,34 @@ export default class Bullet {
     });
 
     return releasedParas;
+  }
+
+  /**
+   * @method appendToPrevious
+   *
+   * Appends list to previous list item, if
+   * none exist it wraps the list in a new list item.
+   *
+   * @param {HTMLNode} ListItem
+   * @return {HTMLNode}
+   */
+  appendToPrevious(node) {
+    return node.previousSibling
+      ? dom.appendChildNodes(node.previousSibling, [node])
+      : this.wrapList([node], 'LI');
+  }
+
+  /**
+   * @method findList
+   *
+   * Finds an existing list in list item
+   *
+   * @param {HTMLNode} ListItem
+   * @return {Array[]}
+   */
+  findList(node) {
+    return node
+      ? lists.find(node.children, child => ['OL', 'UL'].indexOf(child.nodeName) > -1)
+      : null;
   }
 }
