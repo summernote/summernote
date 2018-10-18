@@ -29,6 +29,7 @@ export default class LinkDialog {
       '</div>',
       !this.options.disableLinkTarget
         ? $('<div/>').append(this.ui.checkbox({
+          id: `sn-checkbox-open-in-new-window-${Math.floor(Math.random() * 10000)}`,
           className: 'sn-checkbox-open-in-new-window',
           text: this.lang.link.openInNewWindow,
           checked: true
