@@ -118,7 +118,7 @@
         return;
       }
 
-      var rng = context.invoke('editor.createRange');
+      var rng = context.invoke('editor.getLastRange');
       var visible = false;
 
       if (rng.isOnData()) {
@@ -152,7 +152,7 @@
 
     // define plugin dialog
     self.getInfo = function() {
-      var rng = context.invoke('editor.createRange');
+      var rng = context.invoke('editor.getLastRange');
 
       if (rng.isOnData()) {
         var $data = $(rng.sc).closest('data.ext-databasic');

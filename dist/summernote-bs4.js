@@ -5,7 +5,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2018-02-20T00:34Z
+ * Date: 2018-10-30T11:28Z
  */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -71,7 +71,7 @@ var renderer = {
 };
 
 var editor = renderer.create('<div class="note-editor note-frame card"/>');
-var toolbar = renderer.create('<div class="note-toolbar-wrapper"><div class="note-toolbar card-header" role="toolbar"></div></div>');
+var toolbar = renderer.create('<div class="note-toolbar card-header" role="toolbar"></div>');
 var editingArea = renderer.create('<div class="note-editing-area"/>');
 var codable = renderer.create('<textarea class="note-codable" role="textbox" aria-multiline="true"/>');
 var editable = renderer.create('<div class="note-editable card-block" contentEditable="true" role="textbox" aria-multiline="true"/>');
@@ -179,17 +179,14 @@ var popover = renderer.create([
         $node.find('.arrow').hide();
     }
 });
-var checkbox = renderer.create('<label class="custom-control custom-checkbox"></label>', function ($node, options) {
-    if (options.id) {
-        $node.attr('for', options.id);
-    }
+var checkbox = renderer.create('<div class="custom-control custom-checkbox"></div>', function ($node, options) {
     $node.html([
-        ' <input role="checkbox" type="checkbox" class="custom-control-input"' + (options.id ? ' id="' + options.id + '"' : ''),
+        '<input role="checkbox" type="checkbox" class="custom-control-input"' + (options.id ? ' id="' + options.id + '"' : ''),
         (options.checked ? ' checked' : ''),
+        ' aria-label="' + (options.text ? options.text : '') + '"',
         ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',
-        ' <span class="custom-control-indicator"></span>',
-        ' <span class="custom-control-description">' + (options.text ? options.text : '') + '</span>',
-        '</label>'
+        '<label class="custom-control-label"' + (options.id ? ' for="' + options.id + '"' : ''),
+        '">' + (options.text ? options.text : '') + '</label>'
     ].join(''));
 });
 var icon = function (iconClassName, tagName) {
@@ -392,10 +389,9 @@ function namespaceToCamel(namespace, prefix) {
  * @return {Function}
  */
 function debounce(func, wait, immediate) {
-    var _this = this;
     var timeout;
     return function () {
-        var context = _this;
+        var context = this;
         var args = arguments;
         var later = function () {
             timeout = null;
@@ -662,7 +658,7 @@ var isEdge = /Edge\/\d+/.test(userAgent);
 var hasCodeMirror = !!window.CodeMirror;
 if (!hasCodeMirror && isSupportAmd) {
     // Webpack
-    if (typeof __webpack_require__ === 'function') {
+    if (typeof __webpack_require__ === 'function') { // eslint-disable-line
         try {
             // If CodeMirror can't be resolved, `require.resolve` will throw an
             // exception and `hasCodeMirror` won't be set to `true`.
@@ -1708,248 +1704,6 @@ var dom = {
     isCustomStyleTag: isCustomStyleTag
 };
 
-$$1.summernote = $$1.summernote || {
-    lang: {}
-};
-$$1.extend($$1.summernote.lang, {
-    'en-US': {
-        font: {
-            bold: 'Bold',
-            italic: 'Italic',
-            underline: 'Underline',
-            clear: 'Remove Font Style',
-            height: 'Line Height',
-            name: 'Font Family',
-            strikethrough: 'Strikethrough',
-            subscript: 'Subscript',
-            superscript: 'Superscript',
-            size: 'Font Size'
-        },
-        image: {
-            image: 'Picture',
-            insert: 'Insert Image',
-            resizeFull: 'Resize Full',
-            resizeHalf: 'Resize Half',
-            resizeQuarter: 'Resize Quarter',
-            floatLeft: 'Float Left',
-            floatRight: 'Float Right',
-            floatNone: 'Float None',
-            shapeRounded: 'Shape: Rounded',
-            shapeCircle: 'Shape: Circle',
-            shapeThumbnail: 'Shape: Thumbnail',
-            shapeNone: 'Shape: None',
-            dragImageHere: 'Drag image or text here',
-            dropImage: 'Drop image or Text',
-            selectFromFiles: 'Select from files',
-            maximumFileSize: 'Maximum file size',
-            maximumFileSizeError: 'Maximum file size exceeded.',
-            url: 'Image URL',
-            remove: 'Remove Image',
-            original: 'Original'
-        },
-        video: {
-            video: 'Video',
-            videoLink: 'Video Link',
-            insert: 'Insert Video',
-            url: 'Video URL',
-            providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
-        },
-        link: {
-            link: 'Link',
-            insert: 'Insert Link',
-            unlink: 'Unlink',
-            edit: 'Edit',
-            textToDisplay: 'Text to display',
-            url: 'To what URL should this link go?',
-            openInNewWindow: 'Open in new window'
-        },
-        table: {
-            table: 'Table',
-            addRowAbove: 'Add row above',
-            addRowBelow: 'Add row below',
-            addColLeft: 'Add column left',
-            addColRight: 'Add column right',
-            delRow: 'Delete row',
-            delCol: 'Delete column',
-            delTable: 'Delete table'
-        },
-        hr: {
-            insert: 'Insert Horizontal Rule'
-        },
-        style: {
-            style: 'Style',
-            p: 'Normal',
-            blockquote: 'Quote',
-            pre: 'Code',
-            h1: 'Header 1',
-            h2: 'Header 2',
-            h3: 'Header 3',
-            h4: 'Header 4',
-            h5: 'Header 5',
-            h6: 'Header 6'
-        },
-        lists: {
-            unordered: 'Unordered list',
-            ordered: 'Ordered list'
-        },
-        options: {
-            help: 'Help',
-            fullscreen: 'Full Screen',
-            codeview: 'Code View'
-        },
-        paragraph: {
-            paragraph: 'Paragraph',
-            outdent: 'Outdent',
-            indent: 'Indent',
-            left: 'Align left',
-            center: 'Align center',
-            right: 'Align right',
-            justify: 'Justify full'
-        },
-        color: {
-            recent: 'Recent Color',
-            more: 'More Color',
-            background: 'Background Color',
-            foreground: 'Foreground Color',
-            transparent: 'Transparent',
-            setTransparent: 'Set transparent',
-            reset: 'Reset',
-            resetToDefault: 'Reset to default'
-        },
-        shortcut: {
-            shortcuts: 'Keyboard shortcuts',
-            close: 'Close',
-            textFormatting: 'Text formatting',
-            action: 'Action',
-            paragraphFormatting: 'Paragraph formatting',
-            documentStyle: 'Document Style',
-            extraKeys: 'Extra keys'
-        },
-        help: {
-            'insertParagraph': 'Insert Paragraph',
-            'undo': 'Undoes the last command',
-            'redo': 'Redoes the last command',
-            'tab': 'Tab',
-            'untab': 'Untab',
-            'bold': 'Set a bold style',
-            'italic': 'Set a italic style',
-            'underline': 'Set a underline style',
-            'strikethrough': 'Set a strikethrough style',
-            'removeFormat': 'Clean a style',
-            'justifyLeft': 'Set left align',
-            'justifyCenter': 'Set center align',
-            'justifyRight': 'Set right align',
-            'justifyFull': 'Set full align',
-            'insertUnorderedList': 'Toggle unordered list',
-            'insertOrderedList': 'Toggle ordered list',
-            'outdent': 'Outdent on current paragraph',
-            'indent': 'Indent on current paragraph',
-            'formatPara': 'Change current block\'s format as a paragraph(P tag)',
-            'formatH1': 'Change current block\'s format as H1',
-            'formatH2': 'Change current block\'s format as H2',
-            'formatH3': 'Change current block\'s format as H3',
-            'formatH4': 'Change current block\'s format as H4',
-            'formatH5': 'Change current block\'s format as H5',
-            'formatH6': 'Change current block\'s format as H6',
-            'insertHorizontalRule': 'Insert horizontal rule',
-            'linkDialog.show': 'Show Link Dialog'
-        },
-        history: {
-            undo: 'Undo',
-            redo: 'Redo'
-        },
-        specialChar: {
-            specialChar: 'SPECIAL CHARACTERS',
-            select: 'Select Special characters'
-        }
-    }
-});
-
-var KEY_MAP = {
-    'BACKSPACE': 8,
-    'TAB': 9,
-    'ENTER': 13,
-    'SPACE': 32,
-    'DELETE': 46,
-    // Arrow
-    'LEFT': 37,
-    'UP': 38,
-    'RIGHT': 39,
-    'DOWN': 40,
-    // Number: 0-9
-    'NUM0': 48,
-    'NUM1': 49,
-    'NUM2': 50,
-    'NUM3': 51,
-    'NUM4': 52,
-    'NUM5': 53,
-    'NUM6': 54,
-    'NUM7': 55,
-    'NUM8': 56,
-    // Alphabet: a-z
-    'B': 66,
-    'E': 69,
-    'I': 73,
-    'J': 74,
-    'K': 75,
-    'L': 76,
-    'R': 82,
-    'S': 83,
-    'U': 85,
-    'V': 86,
-    'Y': 89,
-    'Z': 90,
-    'SLASH': 191,
-    'LEFTBRACKET': 219,
-    'BACKSLASH': 220,
-    'RIGHTBRACKET': 221
-};
-/**
- * @class core.key
- *
- * Object for keycodes.
- *
- * @singleton
- * @alternateClassName key
- */
-var key = {
-    /**
-     * @method isEdit
-     *
-     * @param {Number} keyCode
-     * @return {Boolean}
-     */
-    isEdit: function (keyCode) {
-        return lists.contains([
-            KEY_MAP.BACKSPACE,
-            KEY_MAP.TAB,
-            KEY_MAP.ENTER,
-            KEY_MAP.SPACE,
-            KEY_MAP.DELETE
-        ], keyCode);
-    },
-    /**
-     * @method isMove
-     *
-     * @param {Number} keyCode
-     * @return {Boolean}
-     */
-    isMove: function (keyCode) {
-        return lists.contains([
-            KEY_MAP.LEFT,
-            KEY_MAP.UP,
-            KEY_MAP.RIGHT,
-            KEY_MAP.DOWN
-        ], keyCode);
-    },
-    /**
-     * @property {Object} nameFromCode
-     * @property {String} nameFromCode.8 "BACKSPACE"
-     */
-    nameFromCode: func.invertObject(KEY_MAP),
-    code: KEY_MAP
-};
-
 /**
  * return boundaryPoint from TextRange, inspired by Andy Na's HuskyRange.js
  *
@@ -2395,9 +2149,16 @@ var WrappedRange = /** @class */ (function () {
         var contentsContainer = $$1('<div></div>').html(markup)[0];
         var childNodes = lists.from(contentsContainer.childNodes);
         var rng = this.wrapBodyInlineWithPara().deleteContents();
-        return childNodes.reverse().map(function (childNode) {
+        if (rng.so > 0) {
+            childNodes = childNodes.reverse();
+        }
+        childNodes = childNodes.map(function (childNode) {
             return rng.insertNode(childNode);
-        }).reverse();
+        });
+        if (rng.so > 0) {
+            childNodes = childNodes.reverse();
+        }
+        return childNodes;
     };
     /**
      * returns text in range
@@ -2494,7 +2255,7 @@ var range = {
         if (arguments.length === 4) {
             return new WrappedRange(sc, so, ec, eo);
         }
-        else if (arguments.length === 2) {
+        else if (arguments.length === 2) { // collapsed
             ec = sc;
             eo = so;
             return new WrappedRange(sc, so, ec, eo);
@@ -2526,7 +2287,7 @@ var range = {
             ec = nativeRng.endContainer;
             eo = nativeRng.endOffset;
         }
-        else {
+        else { // IE8: TextRange
             var textRange = document.selection.createRange();
             var textRangeEnd = textRange.duplicate();
             textRangeEnd.collapse(false);
@@ -2627,6 +2388,253 @@ var range = {
     }
 };
 
+$$1.summernote = $$1.summernote || {
+    lang: {}
+};
+$$1.extend($$1.summernote.lang, {
+    'en-US': {
+        font: {
+            bold: 'Bold',
+            italic: 'Italic',
+            underline: 'Underline',
+            clear: 'Remove Font Style',
+            height: 'Line Height',
+            name: 'Font Family',
+            strikethrough: 'Strikethrough',
+            subscript: 'Subscript',
+            superscript: 'Superscript',
+            size: 'Font Size'
+        },
+        image: {
+            image: 'Picture',
+            insert: 'Insert Image',
+            resizeFull: 'Resize Full',
+            resizeHalf: 'Resize Half',
+            resizeQuarter: 'Resize Quarter',
+            floatLeft: 'Float Left',
+            floatRight: 'Float Right',
+            floatNone: 'Float None',
+            shapeRounded: 'Shape: Rounded',
+            shapeCircle: 'Shape: Circle',
+            shapeThumbnail: 'Shape: Thumbnail',
+            shapeNone: 'Shape: None',
+            dragImageHere: 'Drag image or text here',
+            dropImage: 'Drop image or Text',
+            selectFromFiles: 'Select from files',
+            maximumFileSize: 'Maximum file size',
+            maximumFileSizeError: 'Maximum file size exceeded.',
+            url: 'Image URL',
+            remove: 'Remove Image',
+            original: 'Original'
+        },
+        video: {
+            video: 'Video',
+            videoLink: 'Video Link',
+            insert: 'Insert Video',
+            url: 'Video URL',
+            providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
+        },
+        link: {
+            link: 'Link',
+            insert: 'Insert Link',
+            unlink: 'Unlink',
+            edit: 'Edit',
+            textToDisplay: 'Text to display',
+            url: 'To what URL should this link go?',
+            openInNewWindow: 'Open in new window'
+        },
+        table: {
+            table: 'Table',
+            addRowAbove: 'Add row above',
+            addRowBelow: 'Add row below',
+            addColLeft: 'Add column left',
+            addColRight: 'Add column right',
+            delRow: 'Delete row',
+            delCol: 'Delete column',
+            delTable: 'Delete table'
+        },
+        hr: {
+            insert: 'Insert Horizontal Rule'
+        },
+        style: {
+            style: 'Style',
+            p: 'Normal',
+            blockquote: 'Quote',
+            pre: 'Code',
+            h1: 'Header 1',
+            h2: 'Header 2',
+            h3: 'Header 3',
+            h4: 'Header 4',
+            h5: 'Header 5',
+            h6: 'Header 6'
+        },
+        lists: {
+            unordered: 'Unordered list',
+            ordered: 'Ordered list'
+        },
+        options: {
+            help: 'Help',
+            fullscreen: 'Full Screen',
+            codeview: 'Code View'
+        },
+        paragraph: {
+            paragraph: 'Paragraph',
+            outdent: 'Outdent',
+            indent: 'Indent',
+            left: 'Align left',
+            center: 'Align center',
+            right: 'Align right',
+            justify: 'Justify full'
+        },
+        color: {
+            recent: 'Recent Color',
+            more: 'More Color',
+            background: 'Background Color',
+            foreground: 'Foreground Color',
+            transparent: 'Transparent',
+            setTransparent: 'Set transparent',
+            reset: 'Reset',
+            resetToDefault: 'Reset to default',
+            cpSelect: 'Select'
+        },
+        shortcut: {
+            shortcuts: 'Keyboard shortcuts',
+            close: 'Close',
+            textFormatting: 'Text formatting',
+            action: 'Action',
+            paragraphFormatting: 'Paragraph formatting',
+            documentStyle: 'Document Style',
+            extraKeys: 'Extra keys'
+        },
+        help: {
+            'insertParagraph': 'Insert Paragraph',
+            'undo': 'Undoes the last command',
+            'redo': 'Redoes the last command',
+            'tab': 'Tab',
+            'untab': 'Untab',
+            'bold': 'Set a bold style',
+            'italic': 'Set a italic style',
+            'underline': 'Set a underline style',
+            'strikethrough': 'Set a strikethrough style',
+            'removeFormat': 'Clean a style',
+            'justifyLeft': 'Set left align',
+            'justifyCenter': 'Set center align',
+            'justifyRight': 'Set right align',
+            'justifyFull': 'Set full align',
+            'insertUnorderedList': 'Toggle unordered list',
+            'insertOrderedList': 'Toggle ordered list',
+            'outdent': 'Outdent on current paragraph',
+            'indent': 'Indent on current paragraph',
+            'formatPara': 'Change current block\'s format as a paragraph(P tag)',
+            'formatH1': 'Change current block\'s format as H1',
+            'formatH2': 'Change current block\'s format as H2',
+            'formatH3': 'Change current block\'s format as H3',
+            'formatH4': 'Change current block\'s format as H4',
+            'formatH5': 'Change current block\'s format as H5',
+            'formatH6': 'Change current block\'s format as H6',
+            'insertHorizontalRule': 'Insert horizontal rule',
+            'linkDialog.show': 'Show Link Dialog'
+        },
+        history: {
+            undo: 'Undo',
+            redo: 'Redo'
+        },
+        specialChar: {
+            specialChar: 'SPECIAL CHARACTERS',
+            select: 'Select Special characters'
+        }
+    }
+});
+
+var KEY_MAP = {
+    // punctuation characters
+    'PERIOD': 190,
+    'COMMA': 188,
+    'SEMICOLON': 186,
+    'BACKSPACE': 8,
+    'TAB': 9,
+    'ENTER': 13,
+    'SPACE': 32,
+    'DELETE': 46,
+    // Arrow
+    'LEFT': 37,
+    'UP': 38,
+    'RIGHT': 39,
+    'DOWN': 40,
+    // Number: 0-9
+    'NUM0': 48,
+    'NUM1': 49,
+    'NUM2': 50,
+    'NUM3': 51,
+    'NUM4': 52,
+    'NUM5': 53,
+    'NUM6': 54,
+    'NUM7': 55,
+    'NUM8': 56,
+    // Alphabet: a-z
+    'B': 66,
+    'E': 69,
+    'I': 73,
+    'J': 74,
+    'K': 75,
+    'L': 76,
+    'R': 82,
+    'S': 83,
+    'U': 85,
+    'V': 86,
+    'Y': 89,
+    'Z': 90,
+    'SLASH': 191,
+    'LEFTBRACKET': 219,
+    'BACKSLASH': 220,
+    'RIGHTBRACKET': 221
+};
+/**
+ * @class core.key
+ *
+ * Object for keycodes.
+ *
+ * @singleton
+ * @alternateClassName key
+ */
+var key = {
+    /**
+     * @method isEdit
+     *
+     * @param {Number} keyCode
+     * @return {Boolean}
+     */
+    isEdit: function (keyCode) {
+        return lists.contains([
+            KEY_MAP.BACKSPACE,
+            KEY_MAP.TAB,
+            KEY_MAP.ENTER,
+            KEY_MAP.SPACE,
+            KEY_MAP.DELETE
+        ], keyCode);
+    },
+    /**
+     * @method isMove
+     *
+     * @param {Number} keyCode
+     * @return {Boolean}
+     */
+    isMove: function (keyCode) {
+        return lists.contains([
+            KEY_MAP.LEFT,
+            KEY_MAP.UP,
+            KEY_MAP.RIGHT,
+            KEY_MAP.DOWN
+        ], keyCode);
+    },
+    /**
+     * @property {Object} nameFromCode
+     * @property {String} nameFromCode.8 "BACKSPACE"
+     */
+    nameFromCode: func.invertObject(KEY_MAP),
+    code: KEY_MAP
+};
+
 /**
  * @method readFileAsDataURL
  *
@@ -2708,6 +2716,18 @@ var History = /** @class */ (function () {
         this.stackOffset = 0;
         // Apply that snapshot.
         this.applySnapshot(this.stack[this.stackOffset]);
+    };
+    /**
+    *  @method commit
+    *  Resets history stack, but keeps current editor's content.
+    */
+    History.prototype.commit = function () {
+        // Clear the stack.
+        this.stack = [];
+        // Restore stackOffset to its original value.
+        this.stackOffset = -1;
+        // Record our first snapshot (of nothing).
+        this.recordUndo();
     };
     /**
     * @method reset
@@ -3789,7 +3809,7 @@ var Editor = /** @class */ (function () {
             if (_this.isLimited($$1(node).text().length)) {
                 return;
             }
-            var rng = _this.createRange();
+            var rng = _this.getLastRange();
             rng.insertNode(node);
             range.createFromNodeAfter(node).select();
         });
@@ -3801,7 +3821,7 @@ var Editor = /** @class */ (function () {
             if (_this.isLimited(text.length)) {
                 return;
             }
-            var rng = _this.createRange();
+            var rng = _this.getLastRange();
             var textNode = rng.insertNode(dom.createText(text));
             range.create(textNode, dom.nodeLength(textNode)).select();
         });
@@ -3813,7 +3833,7 @@ var Editor = /** @class */ (function () {
             if (_this.isLimited(markup.length)) {
                 return;
             }
-            var contents = _this.createRange().pasteHTML(markup);
+            var contents = _this.getLastRange().pasteHTML(markup);
             range.createFromNodeAfter(lists.last(contents)).select();
         });
         /**
@@ -3834,7 +3854,7 @@ var Editor = /** @class */ (function () {
          * insert horizontal rule
          */
         this.insertHorizontalRule = this.wrapCommand(function () {
-            var hrNode = _this.createRange().insertNode(dom.create('HR'));
+            var hrNode = _this.getLastRange().insertNode(dom.create('HR'));
             if (hrNode.nextSibling) {
                 range.create(hrNode.nextSibling, 0).normalize().select();
             }
@@ -3844,7 +3864,7 @@ var Editor = /** @class */ (function () {
          * @param {String} value
          */
         this.lineHeight = this.wrapCommand(function (value) {
-            _this.style.stylePara(_this.createRange(), {
+            _this.style.stylePara(_this.getLastRange(), {
                 lineHeight: value
             });
         });
@@ -3857,7 +3877,11 @@ var Editor = /** @class */ (function () {
             var linkUrl = linkInfo.url;
             var linkText = linkInfo.text;
             var isNewWindow = linkInfo.isNewWindow;
-            var rng = linkInfo.range || _this.createRange();
+            var rng = linkInfo.range || _this.getLastRange();
+            var additionalTextLength = linkText.length - rng.toString().length;
+            if (additionalTextLength > 0 && _this.isLimited(additionalTextLength)) {
+                return;
+            }
             var isTextChanged = rng.toString() !== linkText;
             // handle spaced urls from input
             if (typeof linkUrl === 'string') {
@@ -3867,9 +3891,12 @@ var Editor = /** @class */ (function () {
                 linkUrl = _this.options.onCreateLink(linkUrl);
             }
             else {
-                // if url doesn't match an URL schema, set http:// as default
-                linkUrl = /^[A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?/.test(linkUrl)
-                    ? linkUrl : 'http://' + linkUrl;
+                // if url is not relative,
+                if (!/^\.?\/(.*)/.test(linkUrl)) {
+                    // if url doesn't match an URL schema, set http:// as default
+                    linkUrl = /^[A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?/.test(linkUrl)
+                        ? linkUrl : 'http://' + linkUrl;
+                }
             }
             var anchors = [];
             if (isTextChanged) {
@@ -3932,7 +3959,7 @@ var Editor = /** @class */ (function () {
          */
         this.insertTable = this.wrapCommand(function (dim) {
             var dimension = dim.split('x');
-            var rng = _this.createRange().deleteContents();
+            var rng = _this.getLastRange().deleteContents();
             rng.insertNode(_this.table.createTable(dimension[0], dimension[1], _this.options));
         });
         /**
@@ -3991,18 +4018,22 @@ var Editor = /** @class */ (function () {
                 return false;
             }
         }).on('keyup', function (event) {
+            _this.setLastRange();
             _this.context.triggerEvent('keyup', event);
         }).on('focus', function (event) {
+            _this.setLastRange();
             _this.context.triggerEvent('focus', event);
         }).on('blur', function (event) {
             _this.context.triggerEvent('blur', event);
         }).on('mousedown', function (event) {
             _this.context.triggerEvent('mousedown', event);
         }).on('mouseup', function (event) {
+            _this.setLastRange();
             _this.context.triggerEvent('mouseup', event);
         }).on('scroll', function (event) {
             _this.context.triggerEvent('scroll', event);
         }).on('paste', function (event) {
+            _this.setLastRange();
             _this.context.triggerEvent('paste', event);
         });
         // init content before set event
@@ -4030,6 +4061,7 @@ var Editor = /** @class */ (function () {
             }
         }
         this.history.recordUndo();
+        this.setLastRange();
     };
     Editor.prototype.destroy = function () {
         this.$editable.off();
@@ -4089,7 +4121,18 @@ var Editor = /** @class */ (function () {
      */
     Editor.prototype.createRange = function () {
         this.focus();
-        return range.create(this.editable);
+        // return range.create(this.editable);
+        this.setLastRange();
+        return this.getLastRange();
+    };
+    Editor.prototype.setLastRange = function () {
+        this.lastRange = range.create(this.editable);
+    };
+    Editor.prototype.getLastRange = function () {
+        if (!this.lastRange) {
+            this.setLastRange();
+        }
+        return this.lastRange;
     };
     /**
      * saveRange
@@ -4099,9 +4142,8 @@ var Editor = /** @class */ (function () {
      * @param {Boolean} [thenCollapse=false]
      */
     Editor.prototype.saveRange = function (thenCollapse) {
-        this.lastRange = this.createRange();
         if (thenCollapse) {
-            this.lastRange.collapse().select();
+            this.getLastRange().collapse().select();
         }
     };
     /**
@@ -4154,6 +4196,14 @@ var Editor = /** @class */ (function () {
         this.history.undo();
         this.context.triggerEvent('change', this.$editable.html());
     };
+    /*
+    * commit
+    */
+    Editor.prototype.commit = function () {
+        this.context.triggerEvent('before.command', this.$editable.html());
+        this.history.commit();
+        this.context.triggerEvent('change', this.$editable.html());
+    };
     /**
      * redo
      */
@@ -4185,7 +4235,7 @@ var Editor = /** @class */ (function () {
      * handle tab key
      */
     Editor.prototype.tab = function () {
-        var rng = this.createRange();
+        var rng = this.getLastRange();
         if (rng.isCollapsed() && rng.isOnCell()) {
             this.table.tab(rng);
         }
@@ -4204,7 +4254,7 @@ var Editor = /** @class */ (function () {
      * handle shift+tab key
      */
     Editor.prototype.untab = function () {
-        var rng = this.createRange();
+        var rng = this.getLastRange();
         if (rng.isCollapsed() && rng.isOnCell()) {
             this.table.tab(rng, true);
         }
@@ -4218,11 +4268,10 @@ var Editor = /** @class */ (function () {
      * run given function between beforeCommand and afterCommand
      */
     Editor.prototype.wrapCommand = function (fn) {
-        var _this = this;
         return function () {
-            _this.beforeCommand();
-            fn.apply(_this, arguments);
-            _this.afterCommand();
+            this.beforeCommand();
+            fn.apply(this, arguments);
+            this.afterCommand();
         };
     };
     /**
@@ -4257,7 +4306,7 @@ var Editor = /** @class */ (function () {
      * insertImages
      * @param {File[]} files
      */
-    Editor.prototype.insertImages = function (files) {
+    Editor.prototype.insertImagesAsDataURL = function (files) {
         var _this = this;
         $$1.each(files, function (idx, file) {
             var filename = file.name;
@@ -4274,26 +4323,11 @@ var Editor = /** @class */ (function () {
         });
     };
     /**
-     * insertImagesOrCallback
-     * @param {File[]} files
-     */
-    Editor.prototype.insertImagesOrCallback = function (files) {
-        var callbacks = this.options.callbacks;
-        // If onImageUpload this.options setted
-        if (callbacks.onImageUpload) {
-            this.context.triggerEvent('image.upload', files);
-            // else insert Image as dataURL
-        }
-        else {
-            this.insertImages(files);
-        }
-    };
-    /**
      * return selected plain text
      * @return {String} text
      */
     Editor.prototype.getSelectedText = function () {
-        var rng = this.createRange();
+        var rng = this.getLastRange();
         // if range on anchor, expand range with anchor
         if (rng.isOnAnchor()) {
             rng = range.createFromNode(dom.ancestor(rng.sc, dom.isAnchor));
@@ -4318,7 +4352,7 @@ var Editor = /** @class */ (function () {
         this.formatBlock('P');
     };
     Editor.prototype.fontStyling = function (target, value) {
-        var rng = this.createRange();
+        var rng = this.getLastRange();
         if (rng) {
             var spans = this.style.styleNodes(rng);
             $$1(spans).css(target, value);
@@ -4340,7 +4374,7 @@ var Editor = /** @class */ (function () {
      * @type command
      */
     Editor.prototype.unlink = function () {
-        var rng = this.createRange();
+        var rng = this.getLastRange();
         if (rng.isOnAnchor()) {
             var anchor = dom.ancestor(rng.sc, dom.isAnchor);
             rng = range.createFromNode(anchor);
@@ -4360,7 +4394,7 @@ var Editor = /** @class */ (function () {
      * @return {String} [return.url=""]
      */
     Editor.prototype.getLinkInfo = function () {
-        var rng = this.createRange().expand(dom.isAnchor);
+        var rng = this.getLastRange().expand(dom.isAnchor);
         // Get the first anchor on range(for edit).
         var $anchor = $$1(lists.head(rng.nodes(dom.isAnchor)));
         var linkInfo = {
@@ -4368,14 +4402,15 @@ var Editor = /** @class */ (function () {
             text: rng.toString(),
             url: $anchor.length ? $anchor.attr('href') : ''
         };
-        // Define isNewWindow when anchor exists.
+        // When anchor exists,
         if ($anchor.length) {
+            // Set isNewWindow by checking its target.
             linkInfo.isNewWindow = $anchor.attr('target') === '_blank';
         }
         return linkInfo;
     };
     Editor.prototype.addRow = function (position) {
-        var rng = this.createRange(this.$editable);
+        var rng = this.getLastRange(this.$editable);
         if (rng.isCollapsed() && rng.isOnCell()) {
             this.beforeCommand();
             this.table.addRow(rng, position);
@@ -4383,7 +4418,7 @@ var Editor = /** @class */ (function () {
         }
     };
     Editor.prototype.addCol = function (position) {
-        var rng = this.createRange(this.$editable);
+        var rng = this.getLastRange(this.$editable);
         if (rng.isCollapsed() && rng.isOnCell()) {
             this.beforeCommand();
             this.table.addCol(rng, position);
@@ -4391,7 +4426,7 @@ var Editor = /** @class */ (function () {
         }
     };
     Editor.prototype.deleteRow = function () {
-        var rng = this.createRange(this.$editable);
+        var rng = this.getLastRange(this.$editable);
         if (rng.isCollapsed() && rng.isOnCell()) {
             this.beforeCommand();
             this.table.deleteRow(rng);
@@ -4399,7 +4434,7 @@ var Editor = /** @class */ (function () {
         }
     };
     Editor.prototype.deleteCol = function () {
-        var rng = this.createRange(this.$editable);
+        var rng = this.getLastRange(this.$editable);
         if (rng.isCollapsed() && rng.isOnCell()) {
             this.beforeCommand();
             this.table.deleteCol(rng);
@@ -4407,7 +4442,7 @@ var Editor = /** @class */ (function () {
         }
     };
     Editor.prototype.deleteTable = function () {
-        var rng = this.createRange(this.$editable);
+        var rng = this.getLastRange(this.$editable);
         if (rng.isCollapsed() && rng.isOnCell()) {
             this.beforeCommand();
             this.table.deleteTable(rng);
@@ -4861,7 +4896,7 @@ var Handle = /** @class */ (function () {
                     _this.$document.off('mousemove', onMouseMove_1);
                     _this.context.invoke('editor.afterCommand');
                 });
-                if (!$target_1.data('ratio')) {
+                if (!$target_1.data('ratio')) { // original ratio.
                     $target_1.data('ratio', $target_1.height() / $target_1.width());
                 }
             }
@@ -4925,7 +4960,7 @@ var Handle = /** @class */ (function () {
 }());
 
 var defaultScheme = 'http://';
-var linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
+var linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/]{2}|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
 var AutoLink = /** @class */ (function () {
     function AutoLink(context) {
         var _this = this;
@@ -4963,7 +4998,7 @@ var AutoLink = /** @class */ (function () {
     };
     AutoLink.prototype.handleKeydown = function (e) {
         if (lists.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
-            var wordRange = this.context.invoke('editor.createRange').getWordRange();
+            var wordRange = this.context.invoke('editor.getLastRange').getWordRange();
             this.lastWordRange = wordRange;
         }
     };
@@ -4992,6 +5027,67 @@ var AutoSync = /** @class */ (function () {
         return dom.isTextarea(this.$note[0]);
     };
     return AutoSync;
+}());
+
+var AutoReplace = /** @class */ (function () {
+    function AutoReplace(context) {
+        var _this = this;
+        this.context = context;
+        this.options = context.options.replace || {};
+        this.keys = [key.code.ENTER, key.code.SPACE, key.code.PERIOD, key.code.COMMA, key.code.SEMICOLON, key.code.SLASH];
+        this.previousKeydownCode = null;
+        this.events = {
+            'summernote.keyup': function (we, e) {
+                if (!e.isDefaultPrevented()) {
+                    _this.handleKeyup(e);
+                }
+            },
+            'summernote.keydown': function (we, e) {
+                _this.handleKeydown(e);
+            }
+        };
+    }
+    AutoReplace.prototype.shouldInitialize = function () {
+        return !$$1.isEmptyObject(this.options);
+    };
+    AutoReplace.prototype.initialize = function () {
+        this.lastWord = null;
+    };
+    AutoReplace.prototype.destroy = function () {
+        this.lastWord = null;
+    };
+    AutoReplace.prototype.replace = function () {
+        if (!this.lastWord) {
+            return;
+        }
+        var keyword = this.lastWord.toString();
+        var match = this.options.match(keyword);
+        if (match) {
+            var node = dom.createText(match);
+            this.lastWord.insertNode(node);
+            this.lastWord = null;
+            this.context.invoke('editor.focus');
+        }
+    };
+    AutoReplace.prototype.handleKeydown = function (e) {
+        // this forces it to remember the last whole word, even if multiple termination keys are pressed
+        // before the previous key is let go.
+        if (this.previousKeydownCode && lists.contains(this.keys, this.previousKeydownCode)) {
+            this.previousKeydownCode = e.keyCode;
+            return;
+        }
+        if (lists.contains(this.keys, e.keyCode)) {
+            var wordRange = this.context.invoke('editor.createRange').getWordRange();
+            this.lastWord = wordRange;
+        }
+        this.previousKeydownCode = e.keyCode;
+    };
+    AutoReplace.prototype.handleKeyup = function (e) {
+        if (lists.contains(this.keys, e.keyCode)) {
+            this.replace();
+        }
+    };
+    return AutoReplace;
 }());
 
 var Placeholder = /** @class */ (function () {
@@ -5081,6 +5177,159 @@ var Buttons = /** @class */ (function () {
         var genericFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
         name = name.toLowerCase();
         return ((name !== '') && this.isFontInstalled(name) && ($$1.inArray(name, genericFamilies) === -1));
+    };
+    Buttons.prototype.colorPalette = function (className, tooltip, backColor, foreColor) {
+        var _this = this;
+        return this.ui.buttonGroup({
+            className: 'note-color ' + className,
+            children: [
+                this.button({
+                    className: 'note-current-color-button',
+                    contents: this.ui.icon(this.options.icons.font + ' note-recent-color'),
+                    tooltip: tooltip,
+                    click: function (e) {
+                        var $button = $$1(e.currentTarget);
+                        if (backColor && foreColor) {
+                            _this.context.invoke('editor.color', {
+                                backColor: $button.attr('data-backColor'),
+                                foreColor: $button.attr('data-foreColor')
+                            });
+                        }
+                        else if (backColor) {
+                            _this.context.invoke('editor.color', {
+                                backColor: $button.attr('data-backColor')
+                            });
+                        }
+                        else if (foreColor) {
+                            _this.context.invoke('editor.color', {
+                                foreColor: $button.attr('data-foreColor')
+                            });
+                        }
+                    },
+                    callback: function ($button) {
+                        var $recentColor = $button.find('.note-recent-color');
+                        if (backColor) {
+                            $recentColor.css('background-color', '#FFFF00');
+                            $button.attr('data-backColor', '#FFFF00');
+                        }
+                        if (!foreColor) {
+                            $recentColor.css('color', 'transparent');
+                        }
+                    }
+                }),
+                this.button({
+                    className: 'dropdown-toggle',
+                    contents: this.ui.dropdownButtonContents('', this.options),
+                    tooltip: this.lang.color.more,
+                    data: {
+                        toggle: 'dropdown'
+                    }
+                }),
+                this.ui.dropdown({
+                    items: (backColor ? [
+                        '<div class="note-palette">',
+                        '  <div class="note-palette-title">' + this.lang.color.background + '</div>',
+                        '  <div>',
+                        '    <button type="button" class="note-color-reset btn btn-light" data-event="backColor" data-value="inherit">',
+                        this.lang.color.transparent,
+                        '    </button>',
+                        '  </div>',
+                        '  <div class="note-holder" data-event="backColor"/>',
+                        '  <div>',
+                        '    <button type="button" class="note-color-select btn" data-event="openPalette" data-value="backColorPicker">',
+                        this.lang.color.cpSelect,
+                        '    </button>',
+                        '    <input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="#FFFF00" data-event="backColorPalette">',
+                        '  </div>',
+                        '  <div class="note-holder-custom" id="backColorPalette" data-event="backColor"/>',
+                        '</div>'
+                    ].join('') : '') +
+                        (foreColor ? [
+                            '<div class="note-palette">',
+                            '  <div class="note-palette-title">' + this.lang.color.foreground + '</div>',
+                            '  <div>',
+                            '    <button type="button" class="note-color-reset btn btn-light" data-event="removeFormat" data-value="foreColor">',
+                            this.lang.color.resetToDefault,
+                            '    </button>',
+                            '  </div>',
+                            '  <div class="note-holder" data-event="foreColor"/>',
+                            '  <div>',
+                            '    <button type="button" class="note-color-select btn" data-event="openPalette" data-value="foreColorPicker">',
+                            this.lang.color.cpSelect,
+                            '    </button>',
+                            '    <input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="#000000" data-event="foreColorPalette">',
+                            '  <div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"/>',
+                            '</div>'
+                        ].join('') : ''),
+                    callback: function ($dropdown) {
+                        $dropdown.find('.note-holder').each(function (idx, item) {
+                            var $holder = $$1(item);
+                            $holder.append(_this.ui.palette({
+                                colors: _this.options.colors,
+                                colorsName: _this.options.colorsName,
+                                eventName: $holder.data('event'),
+                                container: _this.options.container,
+                                tooltip: _this.options.tooltip
+                            }).render());
+                        });
+                        /* TODO: do we have to record recent custom colors within cookies? */
+                        var customColors = [
+                            ['#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF']
+                        ];
+                        $dropdown.find('.note-holder-custom').each(function (idx, item) {
+                            var $holder = $$1(item);
+                            $holder.append(_this.ui.palette({
+                                colors: customColors,
+                                colorsName: customColors,
+                                eventName: $holder.data('event'),
+                                container: _this.options.container,
+                                tooltip: _this.options.tooltip
+                            }).render());
+                        });
+                        $dropdown.find('input[type=color]').each(function (idx, item) {
+                            $$1(item).change(function () {
+                                var $chip = $dropdown.find('#' + $$1(this).data('event')).find('.note-color-btn').first();
+                                var color = this.value.toUpperCase();
+                                $chip.css('background-color', color)
+                                    .attr('aria-label', color)
+                                    .attr('data-value', color)
+                                    .attr('data-original-title', color);
+                                $chip.click();
+                            });
+                        });
+                    },
+                    click: function (event) {
+                        event.stopPropagation();
+                        var $parent = $$1('.' + className);
+                        var $button = $$1(event.target);
+                        var eventName = $button.data('event');
+                        var value = $button.attr('data-value');
+                        if (eventName === 'openPalette') {
+                            var $picker = $parent.find('#' + value);
+                            var $palette = $$1($parent.find('#' + $picker.data('event')).find('.note-color-row')[0]);
+                            // Shift palette chips
+                            var $chip = $palette.find('.note-color-btn').last().detach();
+                            // Set chip attributes
+                            var color = $picker.val();
+                            $chip.css('background-color', color)
+                                .attr('aria-label', color)
+                                .attr('data-value', color)
+                                .attr('data-original-title', color);
+                            $palette.prepend($chip);
+                            $picker.click();
+                        }
+                        else if (lists.contains(['backColor', 'foreColor'], eventName)) {
+                            var key = eventName === 'backColor' ? 'background-color' : 'color';
+                            var $color = $button.closest('.note-color').find('.note-recent-color');
+                            var $currentButton = $button.closest('.note-color').find('.note-current-color-button');
+                            $color.css(key, value);
+                            $currentButton.attr('data-' + eventName, value);
+                            _this.context.invoke('editor.' + eventName, value);
+                        }
+                    }
+                })
+            ]
+        }).render();
     };
     Buttons.prototype.addToolbarButtons = function () {
         var _this = this;
@@ -5234,83 +5483,13 @@ var Buttons = /** @class */ (function () {
             ]).render();
         });
         this.context.memo('button.color', function () {
-            return _this.ui.buttonGroup({
-                className: 'note-color',
-                children: [
-                    _this.button({
-                        className: 'note-current-color-button',
-                        contents: _this.ui.icon(_this.options.icons.font + ' note-recent-color'),
-                        tooltip: _this.lang.color.recent,
-                        click: function (e) {
-                            var $button = $$1(e.currentTarget);
-                            _this.context.invoke('editor.color', {
-                                backColor: $button.attr('data-backColor'),
-                                foreColor: $button.attr('data-foreColor')
-                            });
-                        },
-                        callback: function ($button) {
-                            var $recentColor = $button.find('.note-recent-color');
-                            $recentColor.css('background-color', '#FFFF00');
-                            $button.attr('data-backColor', '#FFFF00');
-                        }
-                    }),
-                    _this.button({
-                        className: 'dropdown-toggle',
-                        contents: _this.ui.dropdownButtonContents('', _this.options),
-                        tooltip: _this.lang.color.more,
-                        data: {
-                            toggle: 'dropdown'
-                        }
-                    }),
-                    _this.ui.dropdown({
-                        items: [
-                            '<div class="note-palette">',
-                            '  <div class="note-palette-title">' + _this.lang.color.background + '</div>',
-                            '  <div>',
-                            '    <button type="button" class="note-color-reset btn btn-light" data-event="backColor" data-value="inherit">',
-                            _this.lang.color.transparent,
-                            '    </button>',
-                            '  </div>',
-                            '  <div class="note-holder" data-event="backColor"/>',
-                            '</div>',
-                            '<div class="note-palette">',
-                            '  <div class="note-palette-title">' + _this.lang.color.foreground + '</div>',
-                            '  <div>',
-                            '    <button type="button" class="note-color-reset btn btn-light" data-event="removeFormat" data-value="foreColor">',
-                            _this.lang.color.resetToDefault,
-                            '    </button>',
-                            '  </div>',
-                            '  <div class="note-holder" data-event="foreColor"/>',
-                            '</div>'
-                        ].join(''),
-                        callback: function ($dropdown) {
-                            $dropdown.find('.note-holder').each(function (idx, item) {
-                                var $holder = $$1(item);
-                                $holder.append(_this.ui.palette({
-                                    colors: _this.options.colors,
-                                    colorsName: _this.options.colorsName,
-                                    eventName: $holder.data('event'),
-                                    container: _this.options.container,
-                                    tooltip: _this.options.tooltip
-                                }).render());
-                            });
-                        },
-                        click: function (event) {
-                            var $button = $$1(event.target);
-                            var eventName = $button.data('event');
-                            var value = $button.data('value');
-                            if (eventName && value) {
-                                var key = eventName === 'backColor' ? 'background-color' : 'color';
-                                var $color = $button.closest('.note-color').find('.note-recent-color');
-                                var $currentButton = $button.closest('.note-color').find('.note-current-color-button');
-                                $color.css(key, value);
-                                $currentButton.attr('data-' + eventName, value);
-                                _this.context.invoke('editor.' + eventName, value);
-                            }
-                        }
-                    })
-                ]
-            }).render();
+            return _this.colorPalette('note-color-all', _this.lang.color.recent, true, true);
+        });
+        this.context.memo('button.forecolor', function () {
+            return _this.colorPalette('note-color-fore', _this.lang.color.foreground, false, true);
+        });
+        this.context.memo('button.backcolor', function () {
+            return _this.colorPalette('note-color-back', _this.lang.color.background, true, false);
         });
         this.context.memo('button.ul', function () {
             return _this.button({
@@ -5956,7 +6135,7 @@ var LinkDialog = /** @class */ (function () {
             var $linkText = _this.$dialog.find('.note-link-text');
             var $linkUrl = _this.$dialog.find('.note-link-url');
             var $linkBtn = _this.$dialog.find('.note-link-btn');
-            var $openInNewWindow = _this.$dialog.find('input[type=checkbox]');
+            var $openInNewWindow = _this.$dialog.find('#sn-checkbox-open-in-new-window');
             _this.ui.onDialogShown(_this.$dialog, function () {
                 _this.context.triggerEvent('dialog.shown');
                 // if no url was given, copy text to url
@@ -5990,9 +6169,9 @@ var LinkDialog = /** @class */ (function () {
                 _this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
                 _this.bindEnterKey($linkUrl, $linkBtn);
                 _this.bindEnterKey($linkText, $linkBtn);
-                var isChecked = linkInfo.isNewWindow !== undefined
+                var isNewWindowChecked = linkInfo.isNewWindow !== undefined
                     ? linkInfo.isNewWindow : _this.context.options.linkTargetBlank;
-                $openInNewWindow.prop('checked', isChecked);
+                $openInNewWindow.prop('checked', isNewWindowChecked);
                 $linkBtn.one('click', function (event) {
                     event.preventDefault();
                     deferred.resolve({
@@ -6071,7 +6250,7 @@ var LinkPopover = /** @class */ (function () {
             this.hide();
             return;
         }
-        var rng = this.context.invoke('editor.createRange');
+        var rng = this.context.invoke('editor.getLastRange');
         if (rng.isCollapsed() && rng.isOnAnchor()) {
             var anchor = dom.ancestor(rng.sc, dom.isAnchor);
             var href = $$1(anchor).attr('href');
@@ -6152,11 +6331,24 @@ var ImageDialog = /** @class */ (function () {
             // [workaround] hide dialog before restore range for IE range focus
             _this.ui.hideDialog(_this.$dialog);
             _this.context.invoke('editor.restoreRange');
-            if (typeof data === 'string') {
-                _this.context.invoke('editor.insertImage', data);
+            if (typeof data === 'string') { // image url
+                // If onImageLinkInsert set,
+                if (_this.options.callbacks.onImageLinkInsert) {
+                    _this.context.triggerEvent('image.link.insert', data);
+                }
+                else {
+                    _this.context.invoke('editor.insertImage', data);
+                }
             }
-            else {
-                _this.context.invoke('editor.insertImagesOrCallback', data);
+            else { // array of files
+                // If onImageUpload set,
+                if (_this.options.callbacks.onImageUpload) {
+                    _this.context.triggerEvent('image.upload', data);
+                }
+                else {
+                    // else insert Image as dataURL
+                    _this.context.invoke('editor.insertImagesAsDataURL', data);
+                }
             }
         }).fail(function () {
             _this.context.invoke('editor.restoreRange');
@@ -6357,7 +6549,8 @@ var VideoDialog = /** @class */ (function () {
     };
     VideoDialog.prototype.createVideoNode = function (url) {
         // video url patterns(youtube, instagram, vimeo, dailymotion, youku, mp4, ogg, webm)
-        var ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
+        var ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w|-]{11})(?:(?:[\?&]t=)(\S+))?$/;
+        var ytRegExpForStart = /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/;
         var ytMatch = url.match(ytRegExp);
         var igRegExp = /(?:www\.|\/\/)instagram\.com\/p\/(.[a-zA-Z0-9_-]*)/;
         var igMatch = url.match(igRegExp);
@@ -6382,9 +6575,18 @@ var VideoDialog = /** @class */ (function () {
         var $video;
         if (ytMatch && ytMatch[1].length === 11) {
             var youtubeId = ytMatch[1];
+            var start = 0;
+            if (typeof ytMatch[2] !== 'undefined') {
+                var ytMatchForStart = ytMatch[2].match(ytRegExpForStart);
+                if (ytMatchForStart) {
+                    for (var n = [3600, 60, 1], i = 0, r = n.length; i < r; i++) {
+                        start += (typeof ytMatchForStart[i + 1] !== 'undefined' ? n[i] * parseInt(ytMatchForStart[i + 1], 10) : 0);
+                    }
+                }
+            }
             $video = $$1('<iframe>')
                 .attr('frameborder', 0)
-                .attr('src', '//www.youtube.com/embed/' + youtubeId)
+                .attr('src', '//www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : ''))
                 .attr('width', '640').attr('height', '360');
         }
         else if (igMatch && igMatch[0].length) {
@@ -6671,9 +6873,9 @@ var HintPopover = /** @class */ (function () {
         }).render().appendTo(this.options.container);
         this.$popover.hide();
         this.$content = this.$popover.find('.popover-content,.note-popover-content');
-        this.$content.on('click', '.note-hint-item', function () {
+        this.$content.on('click', '.note-hint-item', function (e) {
             _this.$content.find('.active').removeClass('active');
-            $$1(_this).addClass('active');
+            $$1(e.currentTarget).addClass('active');
             _this.replace();
         });
     };
@@ -6789,7 +6991,7 @@ var HintPopover = /** @class */ (function () {
     HintPopover.prototype.handleKeyup = function (e) {
         var _this = this;
         if (!lists.contains([key.code.ENTER, key.code.UP, key.code.DOWN], e.keyCode)) {
-            var wordRange = this.context.invoke('editor.createRange').getWordRange();
+            var wordRange = this.context.invoke('editor.getLastRange').getWordRange();
             var keyword_1 = wordRange.toString();
             if (this.hints.length && keyword_1) {
                 this.$content.empty();
@@ -6833,246 +7035,11 @@ var HintPopover = /** @class */ (function () {
     return HintPopover;
 }());
 
-var Context = /** @class */ (function () {
-    /**
-     * @param {jQuery} $note
-     * @param {Object} options
-     */
-    function Context($note, options) {
-        this.ui = $$1.summernote.ui;
-        this.$note = $note;
-        this.memos = {};
-        this.modules = {};
-        this.layoutInfo = {};
-        this.options = options;
-        this.initialize();
-    }
-    /**
-     * create layout and initialize modules and other resources
-     */
-    Context.prototype.initialize = function () {
-        this.layoutInfo = this.ui.createLayout(this.$note, this.options);
-        this._initialize();
-        this.$note.hide();
-        return this;
-    };
-    /**
-     * destroy modules and other resources and remove layout
-     */
-    Context.prototype.destroy = function () {
-        this._destroy();
-        this.$note.removeData('summernote');
-        this.ui.removeLayout(this.$note, this.layoutInfo);
-    };
-    /**
-     * destory modules and other resources and initialize it again
-     */
-    Context.prototype.reset = function () {
-        var disabled = this.isDisabled();
-        this.code(dom.emptyPara);
-        this._destroy();
-        this._initialize();
-        if (disabled) {
-            this.disable();
-        }
-    };
-    Context.prototype._initialize = function () {
-        var _this = this;
-        // add optional buttons
-        var buttons = $$1.extend({}, this.options.buttons);
-        Object.keys(buttons).forEach(function (key) {
-            _this.memo('button.' + key, buttons[key]);
-        });
-        var modules = $$1.extend({}, this.options.modules, $$1.summernote.plugins || {});
-        // add and initialize modules
-        Object.keys(modules).forEach(function (key) {
-            _this.module(key, modules[key], true);
-        });
-        Object.keys(this.modules).forEach(function (key) {
-            _this.initializeModule(key);
-        });
-    };
-    Context.prototype._destroy = function () {
-        var _this = this;
-        // destroy modules with reversed order
-        Object.keys(this.modules).reverse().forEach(function (key) {
-            _this.removeModule(key);
-        });
-        Object.keys(this.memos).forEach(function (key) {
-            _this.removeMemo(key);
-        });
-        // trigger custom onDestroy callback
-        this.triggerEvent('destroy', this);
-    };
-    Context.prototype.code = function (html) {
-        var isActivated = this.invoke('codeview.isActivated');
-        if (html === undefined) {
-            this.invoke('codeview.sync');
-            return isActivated ? this.layoutInfo.codable.val() : this.layoutInfo.editable.html();
-        }
-        else {
-            if (isActivated) {
-                this.layoutInfo.codable.val(html);
-            }
-            else {
-                this.layoutInfo.editable.html(html);
-            }
-            this.$note.val(html);
-            this.triggerEvent('change', html);
-        }
-    };
-    Context.prototype.isDisabled = function () {
-        return this.layoutInfo.editable.attr('contenteditable') === 'false';
-    };
-    Context.prototype.enable = function () {
-        this.layoutInfo.editable.attr('contenteditable', true);
-        this.invoke('toolbar.activate', true);
-        this.triggerEvent('disable', false);
-    };
-    Context.prototype.disable = function () {
-        // close codeview if codeview is opend
-        if (this.invoke('codeview.isActivated')) {
-            this.invoke('codeview.deactivate');
-        }
-        this.layoutInfo.editable.attr('contenteditable', false);
-        this.invoke('toolbar.deactivate', true);
-        this.triggerEvent('disable', true);
-    };
-    Context.prototype.triggerEvent = function () {
-        var namespace = lists.head(arguments);
-        var args = lists.tail(lists.from(arguments));
-        var callback = this.options.callbacks[func.namespaceToCamel(namespace, 'on')];
-        if (callback) {
-            callback.apply(this.$note[0], args);
-        }
-        this.$note.trigger('summernote.' + namespace, args);
-    };
-    Context.prototype.initializeModule = function (key) {
-        var module = this.modules[key];
-        module.shouldInitialize = module.shouldInitialize || func.ok;
-        if (!module.shouldInitialize()) {
-            return;
-        }
-        // initialize module
-        if (module.initialize) {
-            module.initialize();
-        }
-        // attach events
-        if (module.events) {
-            dom.attachEvents(this.$note, module.events);
-        }
-    };
-    Context.prototype.module = function (key, ModuleClass, withoutIntialize) {
-        if (arguments.length === 1) {
-            return this.modules[key];
-        }
-        this.modules[key] = new ModuleClass(this);
-        if (!withoutIntialize) {
-            this.initializeModule(key);
-        }
-    };
-    Context.prototype.removeModule = function (key) {
-        var module = this.modules[key];
-        if (module.shouldInitialize()) {
-            if (module.events) {
-                dom.detachEvents(this.$note, module.events);
-            }
-            if (module.destroy) {
-                module.destroy();
-            }
-        }
-        delete this.modules[key];
-    };
-    Context.prototype.memo = function (key, obj) {
-        if (arguments.length === 1) {
-            return this.memos[key];
-        }
-        this.memos[key] = obj;
-    };
-    Context.prototype.removeMemo = function (key) {
-        if (this.memos[key] && this.memos[key].destroy) {
-            this.memos[key].destroy();
-        }
-        delete this.memos[key];
-    };
-    /**
-     * Some buttons need to change their visual style immediately once they get pressed
-     */
-    Context.prototype.createInvokeHandlerAndUpdateState = function (namespace, value) {
-        var _this = this;
-        return function (event) {
-            _this.createInvokeHandler(namespace, value)(event);
-            _this.invoke('buttons.updateCurrentStyle');
-        };
-    };
-    Context.prototype.createInvokeHandler = function (namespace, value) {
-        var _this = this;
-        return function (event) {
-            event.preventDefault();
-            var $target = $$1(event.target);
-            _this.invoke(namespace, value || $target.closest('[data-value]').data('value'), $target);
-        };
-    };
-    Context.prototype.invoke = function () {
-        var namespace = lists.head(arguments);
-        var args = lists.tail(lists.from(arguments));
-        var splits = namespace.split('.');
-        var hasSeparator = splits.length > 1;
-        var moduleName = hasSeparator && lists.head(splits);
-        var methodName = hasSeparator ? lists.last(splits) : lists.head(splits);
-        var module = this.modules[moduleName || 'editor'];
-        if (!moduleName && this[methodName]) {
-            return this[methodName].apply(this, args);
-        }
-        else if (module && module[methodName] && module.shouldInitialize()) {
-            return module[methodName].apply(module, args);
-        }
-    };
-    return Context;
-}());
-
-$$1.fn.extend({
-    /**
-     * Summernote API
-     *
-     * @param {Object|String}
-     * @return {this}
-     */
-    summernote: function () {
-        var type = $$1.type(lists.head(arguments));
-        var isExternalAPICalled = type === 'string';
-        var hasInitOptions = type === 'object';
-        var options = $$1.extend({}, $$1.summernote.options, hasInitOptions ? lists.head(arguments) : {});
-        // Update options
-        options.langInfo = $$1.extend(true, {}, $$1.summernote.lang['en-US'], $$1.summernote.lang[options.lang]);
-        options.icons = $$1.extend(true, {}, $$1.summernote.options.icons, options.icons);
-        options.tooltip = options.tooltip === 'auto' ? !env.isSupportTouch : options.tooltip;
-        this.each(function (idx, note) {
-            var $note = $$1(note);
-            if (!$note.data('summernote')) {
-                var context = new Context($note, options);
-                $note.data('summernote', context);
-                $note.data('summernote').triggerEvent('init', context.layoutInfo);
-            }
-        });
-        var $note = this.first();
-        if ($note.length) {
-            var context = $note.data('summernote');
-            if (isExternalAPICalled) {
-                return context.invoke.apply(context, lists.from(arguments));
-            }
-            else if (options.focus) {
-                context.invoke('editor.focus');
-            }
-        }
-        return this;
-    }
-});
-
 $$1.summernote = $$1.extend($$1.summernote, {
     version: '0.8.10',
     ui: ui,
     dom: dom,
+    range: range,
     plugins: {},
     options: {
         modules: {
@@ -7088,6 +7055,7 @@ $$1.summernote = $$1.extend($$1.summernote, {
             'hintPopover': HintPopover,
             'autoLink': AutoLink,
             'autoSync': AutoSync,
+            'autoReplace': AutoReplace,
             'placeholder': Placeholder,
             'buttons': Buttons,
             'toolbar': Toolbar,
@@ -7203,7 +7171,8 @@ $$1.summernote = $$1.extend($$1.summernote, {
             onKeyup: null,
             onKeydown: null,
             onImageUpload: null,
-            onImageUploadError: null
+            onImageUploadError: null,
+            onImageLinkInsert: null
         },
         codemirror: {
             mode: 'text/html',

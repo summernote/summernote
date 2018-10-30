@@ -113,7 +113,7 @@ export default class Editor {
       if (this.isLimited($(node).text().length)) {
         return;
       }
-      const rng = this.createRange();
+      const rng = this.getLastRange();
       rng.insertNode(node);
       range.createFromNodeAfter(node).select();
     });
@@ -126,7 +126,7 @@ export default class Editor {
       if (this.isLimited(text.length)) {
         return;
       }
-      const rng = this.createRange();
+      const rng = this.getLastRange();
       const textNode = rng.insertNode(dom.createText(text));
       range.create(textNode, dom.nodeLength(textNode)).select();
     });
@@ -138,7 +138,7 @@ export default class Editor {
       if (this.isLimited(markup.length)) {
         return;
       }
-      const contents = this.createRange().pasteHTML(markup);
+      const contents = this.getLastRange().pasteHTML(markup);
       range.createFromNodeAfter(lists.last(contents)).select();
     });
 
@@ -160,7 +160,7 @@ export default class Editor {
      * insert horizontal rule
      */
     this.insertHorizontalRule = this.wrapCommand(() => {
-      const hrNode = this.createRange().insertNode(dom.create('HR'));
+      const hrNode = this.getLastRange().insertNode(dom.create('HR'));
       if (hrNode.nextSibling) {
         range.create(hrNode.nextSibling, 0).normalize().select();
       }
@@ -171,7 +171,7 @@ export default class Editor {
      * @param {String} value
      */
     this.lineHeight = this.wrapCommand((value) => {
-      this.style.stylePara(this.createRange(), {
+      this.style.stylePara(this.getLastRange(), {
         lineHeight: value
       });
     });
@@ -185,7 +185,7 @@ export default class Editor {
       let linkUrl = linkInfo.url;
       const linkText = linkInfo.text;
       const isNewWindow = linkInfo.isNewWindow;
-      let rng = linkInfo.range || this.createRange();
+      let rng = linkInfo.range || this.getLastRange();
       const additionalTextLength = linkText.length - rng.toString().length;
       if (additionalTextLength > 0 && this.isLimited(additionalTextLength)) {
         return;
@@ -276,7 +276,7 @@ export default class Editor {
     this.insertTable = this.wrapCommand((dim) => {
       const dimension = dim.split('x');
 
-      const rng = this.createRange().deleteContents();
+      const rng = this.getLastRange().deleteContents();
       rng.insertNode(this.table.createTable(dimension[0], dimension[1], this.options));
     });
 
@@ -337,18 +337,22 @@ export default class Editor {
         return false;
       }
     }).on('keyup', (event) => {
+      this.setLastRange();
       this.context.triggerEvent('keyup', event);
     }).on('focus', (event) => {
+      this.setLastRange();
       this.context.triggerEvent('focus', event);
     }).on('blur', (event) => {
       this.context.triggerEvent('blur', event);
     }).on('mousedown', (event) => {
       this.context.triggerEvent('mousedown', event);
     }).on('mouseup', (event) => {
+      this.setLastRange();
       this.context.triggerEvent('mouseup', event);
     }).on('scroll', (event) => {
       this.context.triggerEvent('scroll', event);
     }).on('paste', (event) => {
+      this.setLastRange();
       this.context.triggerEvent('paste', event);
     });
 
@@ -381,6 +385,7 @@ export default class Editor {
     }
 
     this.history.recordUndo();
+    this.setLastRange();
   }
 
   destroy() {
@@ -442,7 +447,20 @@ export default class Editor {
    */
   createRange() {
     this.focus();
-    return range.create(this.editable);
+    // return range.create(this.editable);
+    this.setLastRange();
+    return this.getLastRange();
+  }
+
+  setLastRange() {
+    this.lastRange = range.create(this.editable);
+  }
+
+  getLastRange() {
+    if (!this.lastRange) {
+      this.setLastRange();
+    }
+    return this.lastRange;
   }
 
   /**
@@ -453,9 +471,8 @@ export default class Editor {
    * @param {Boolean} [thenCollapse=false]
    */
   saveRange(thenCollapse) {
-    this.lastRange = this.createRange();
     if (thenCollapse) {
-      this.lastRange.collapse().select();
+      this.getLastRange().collapse().select();
     }
   }
 
@@ -559,7 +576,7 @@ export default class Editor {
    * handle tab key
    */
   tab() {
-    const rng = this.createRange();
+    const rng = this.getLastRange();
     if (rng.isCollapsed() && rng.isOnCell()) {
       this.table.tab(rng);
     } else {
@@ -579,7 +596,7 @@ export default class Editor {
    * handle shift+tab key
    */
   untab() {
-    const rng = this.createRange();
+    const rng = this.getLastRange();
     if (rng.isCollapsed() && rng.isOnCell()) {
       this.table.tab(rng, true);
     } else {
@@ -653,7 +670,7 @@ export default class Editor {
    * @return {String} text
    */
   getSelectedText() {
-    let rng = this.createRange();
+    let rng = this.getLastRange();
 
     // if range on anchor, expand range with anchor
     if (rng.isOnAnchor()) {
@@ -685,7 +702,7 @@ export default class Editor {
   }
 
   fontStyling(target, value) {
-    const rng = this.createRange();
+    const rng = this.getLastRange();
 
     if (rng) {
       const spans = this.style.styleNodes(rng);
@@ -710,7 +727,7 @@ export default class Editor {
    * @type command
    */
   unlink() {
-    let rng = this.createRange();
+    let rng = this.getLastRange();
     if (rng.isOnAnchor()) {
       const anchor = dom.ancestor(rng.sc, dom.isAnchor);
       rng = range.createFromNode(anchor);
@@ -732,7 +749,7 @@ export default class Editor {
    * @return {String} [return.url=""]
    */
   getLinkInfo() {
-    const rng = this.createRange().expand(dom.isAnchor);
+    const rng = this.getLastRange().expand(dom.isAnchor);
 
     // Get the first anchor on range(for edit).
     const $anchor = $(lists.head(rng.nodes(dom.isAnchor)));
@@ -752,7 +769,7 @@ export default class Editor {
   }
 
   addRow(position) {
-    const rng = this.createRange(this.$editable);
+    const rng = this.getLastRange(this.$editable);
     if (rng.isCollapsed() && rng.isOnCell()) {
       this.beforeCommand();
       this.table.addRow(rng, position);
@@ -761,7 +778,7 @@ export default class Editor {
   }
 
   addCol(position) {
-    const rng = this.createRange(this.$editable);
+    const rng = this.getLastRange(this.$editable);
     if (rng.isCollapsed() && rng.isOnCell()) {
       this.beforeCommand();
       this.table.addCol(rng, position);
@@ -770,7 +787,7 @@ export default class Editor {
   }
 
   deleteRow() {
-    const rng = this.createRange(this.$editable);
+    const rng = this.getLastRange(this.$editable);
     if (rng.isCollapsed() && rng.isOnCell()) {
       this.beforeCommand();
       this.table.deleteRow(rng);
@@ -779,7 +796,7 @@ export default class Editor {
   }
 
   deleteCol() {
-    const rng = this.createRange(this.$editable);
+    const rng = this.getLastRange(this.$editable);
     if (rng.isCollapsed() && rng.isOnCell()) {
       this.beforeCommand();
       this.table.deleteCol(rng);
@@ -788,7 +805,7 @@ export default class Editor {
   }
 
   deleteTable() {
-    const rng = this.createRange(this.$editable);
+    const rng = this.getLastRange(this.$editable);
     if (rng.isCollapsed() && rng.isOnCell()) {
       this.beforeCommand();
       this.table.deleteTable(rng);

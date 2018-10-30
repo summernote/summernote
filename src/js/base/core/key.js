@@ -2,6 +2,11 @@ import lists from './lists';
 import func from './func';
 
 const KEY_MAP = {
+  // punctuation characters
+  'PERIOD': 190,
+  'COMMA': 188,
+  'SEMICOLON': 186,
+
   'BACKSPACE': 8,
   'TAB': 9,
   'ENTER': 13,
