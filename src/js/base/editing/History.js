@@ -10,7 +10,7 @@ export default class History {
 
   makeSnapshot() {
     const rng = range.create(this.editable);
-    const emptyBookmark = {s: {path: [], offset: 0}, e: {path: [], offset: 0}};
+    const emptyBookmark = { s: { path: [], offset: 0 }, e: { path: [], offset: 0 } };
 
     return {
       contents: this.$editable.html(),
