@@ -8,7 +8,7 @@ module.exports = function (config) {
       { pattern: 'test/**/*.spec.js' }
     ],
     // Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS, IE
-    browsers: ['PhantomJS'],
+    browsers: ['ChromeHeadless'],
     preprocessors: {
       'src/js/**/*.js': ['karma-typescript'],
       'test/**/*.spec.js': ['karma-typescript']

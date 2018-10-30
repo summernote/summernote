@@ -18,8 +18,8 @@ const reportResult = (client, done) => {
         username: user,
         password: key
       },
-      headers: {'content-type': 'application/json'},
-      body: JSON.stringify({passed: passed})
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ passed: passed })
     }, function(res, status, body) {
       console.log('Sauce response:', body);
       done();
