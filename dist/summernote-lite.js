@@ -5,7 +5,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2018-10-30T11:28Z
+ * Date: 2018-07-11T12:53Z
  */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -527,12 +527,6 @@ var colorDropdownButton = function (opt, type) {
                     '    </button>',
                     '  </div>',
                     '  <div class="note-holder" data-event="backColor"/>',
-                    '  <div class="btn-sm">',
-                    '    <input type="color" id="html5bcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
-                    '    <button type="button" class="note-color-reset btn" data-event="backColor" data-value="cpbackColor">',
-                    opt.lang.color.cpSelect,
-                    '    </button>',
-                    '  </div>',
                     '</div>',
                     '<div class="note-btn-group btn-foreground-color">',
                     '  <div class="note-palette-title">' + opt.lang.color.foreground + '</div>',
@@ -543,12 +537,6 @@ var colorDropdownButton = function (opt, type) {
                     '    </button>',
                     '  </div>',
                     '  <div class="note-holder" data-event="foreColor"/>',
-                    '  <div class="btn-sm">',
-                    '    <input type="color" id="html5fcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
-                    '    <button type="button" class="note-color-reset btn" data-event="foreColor" data-value="cpforeColor">',
-                    opt.lang.color.cpSelect,
-                    '    </button>',
-                    '  </div>',
                     '</div>',
                     '</div>'
                 ].join(''),
@@ -573,17 +561,6 @@ var colorDropdownButton = function (opt, type) {
                     var $button = $(event.target);
                     var eventName = $button.data('event');
                     var value = $button.data('value');
-                    var foreinput = document.getElementById('html5fcp').value;
-                    var backinput = document.getElementById('html5bcp').value;
-                    if (value === 'cp') {
-                        event.stopPropagation();
-                    }
-                    else if (value === 'cpbackColor') {
-                        value = backinput;
-                    }
-                    else if (value === 'cpforeColor') {
-                        value = foreinput;
-                    }
                     if (eventName && value) {
                         var key = eventName === 'backColor' ? 'background-color' : 'color';
                         var $color = $button.closest('.note-color').find('.note-recent-color');
@@ -926,8 +903,7 @@ $$1.extend($$1.summernote.lang, {
             transparent: 'Transparent',
             setTransparent: 'Set transparent',
             reset: 'Reset',
-            resetToDefault: 'Reset to default',
-            cpSelect: 'Select'
+            resetToDefault: 'Reset to default'
         },
         shortcut: {
             shortcuts: 'Keyboard shortcuts',
@@ -1015,7 +991,7 @@ var isEdge = /Edge\/\d+/.test(userAgent);
 var hasCodeMirror = !!window.CodeMirror;
 if (!hasCodeMirror && isSupportAmd) {
     // Webpack
-    if (typeof __webpack_require__ === 'function') { // eslint-disable-line
+    if (typeof __webpack_require__ === 'function') {
         try {
             // If CodeMirror can't be resolved, `require.resolve` will throw an
             // exception and `hasCodeMirror` won't be set to `true`.
@@ -1191,9 +1167,10 @@ function namespaceToCamel(namespace, prefix) {
  * @return {Function}
  */
 function debounce(func, wait, immediate) {
+    var _this = this;
     var timeout;
     return function () {
-        var context = this;
+        var context = _this;
         var args = arguments;
         var later = function () {
             timeout = null;
@@ -1424,10 +1401,6 @@ var lists = {
 };
 
 var KEY_MAP = {
-    // punctuation characters
-    'PERIOD': 190,
-    'COMMA': 188,
-    'SEMICOLON': 186,
     'BACKSPACE': 8,
     'TAB': 9,
     'ENTER': 13,
@@ -3046,7 +3019,7 @@ var range = {
         if (arguments.length === 4) {
             return new WrappedRange(sc, so, ec, eo);
         }
-        else if (arguments.length === 2) { // collapsed
+        else if (arguments.length === 2) {
             ec = sc;
             eo = so;
             return new WrappedRange(sc, so, ec, eo);
@@ -3078,7 +3051,7 @@ var range = {
             ec = nativeRng.endContainer;
             eo = nativeRng.endOffset;
         }
-        else { // IE8: TextRange
+        else {
             var textRange = document.selection.createRange();
             var textRangeEnd = textRange.duplicate();
             textRangeEnd.collapse(false);
@@ -3260,18 +3233,6 @@ var History = /** @class */ (function () {
         this.stackOffset = 0;
         // Apply that snapshot.
         this.applySnapshot(this.stack[this.stackOffset]);
-    };
-    /**
-    *  @method commit
-    *  Resets history stack, but keeps current editor's content.
-    */
-    History.prototype.commit = function () {
-        // Clear the stack.
-        this.stack = [];
-        // Restore stackOffset to its original value.
-        this.stackOffset = -1;
-        // Record our first snapshot (of nothing).
-        this.recordUndo();
     };
     /**
     * @method reset
@@ -4353,7 +4314,7 @@ var Editor = /** @class */ (function () {
             if (_this.isLimited($$1(node).text().length)) {
                 return;
             }
-            var rng = _this.getLastRange();
+            var rng = _this.createRange();
             rng.insertNode(node);
             range.createFromNodeAfter(node).select();
         });
@@ -4365,7 +4326,7 @@ var Editor = /** @class */ (function () {
             if (_this.isLimited(text.length)) {
                 return;
             }
-            var rng = _this.getLastRange();
+            var rng = _this.createRange();
             var textNode = rng.insertNode(dom.createText(text));
             range.create(textNode, dom.nodeLength(textNode)).select();
         });
@@ -4377,7 +4338,7 @@ var Editor = /** @class */ (function () {
             if (_this.isLimited(markup.length)) {
                 return;
             }
-            var contents = _this.getLastRange().pasteHTML(markup);
+            var contents = _this.createRange().pasteHTML(markup);
             range.createFromNodeAfter(lists.last(contents)).select();
         });
         /**
@@ -4398,7 +4359,7 @@ var Editor = /** @class */ (function () {
          * insert horizontal rule
          */
         this.insertHorizontalRule = this.wrapCommand(function () {
-            var hrNode = _this.getLastRange().insertNode(dom.create('HR'));
+            var hrNode = _this.createRange().insertNode(dom.create('HR'));
             if (hrNode.nextSibling) {
                 range.create(hrNode.nextSibling, 0).normalize().select();
             }
@@ -4408,7 +4369,7 @@ var Editor = /** @class */ (function () {
          * @param {String} value
          */
         this.lineHeight = this.wrapCommand(function (value) {
-            _this.style.stylePara(_this.getLastRange(), {
+            _this.style.stylePara(_this.createRange(), {
                 lineHeight: value
             });
         });
@@ -4421,11 +4382,7 @@ var Editor = /** @class */ (function () {
             var linkUrl = linkInfo.url;
             var linkText = linkInfo.text;
             var isNewWindow = linkInfo.isNewWindow;
-            var rng = linkInfo.range || _this.getLastRange();
-            var additionalTextLength = linkText.length - rng.toString().length;
-            if (additionalTextLength > 0 && _this.isLimited(additionalTextLength)) {
-                return;
-            }
+            var rng = linkInfo.range || _this.createRange();
             var isTextChanged = rng.toString() !== linkText;
             // handle spaced urls from input
             if (typeof linkUrl === 'string') {
@@ -4435,12 +4392,9 @@ var Editor = /** @class */ (function () {
                 linkUrl = _this.options.onCreateLink(linkUrl);
             }
             else {
-                // if url is not relative,
-                if (!/^\.?\/(.*)/.test(linkUrl)) {
-                    // if url doesn't match an URL schema, set http:// as default
-                    linkUrl = /^[A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?/.test(linkUrl)
-                        ? linkUrl : 'http://' + linkUrl;
-                }
+                // if url doesn't match an URL schema, set http:// as default
+                linkUrl = /^[A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?/.test(linkUrl)
+                    ? linkUrl : 'http://' + linkUrl;
             }
             var anchors = [];
             if (isTextChanged) {
@@ -4503,7 +4457,7 @@ var Editor = /** @class */ (function () {
          */
         this.insertTable = this.wrapCommand(function (dim) {
             var dimension = dim.split('x');
-            var rng = _this.getLastRange().deleteContents();
+            var rng = _this.createRange().deleteContents();
             rng.insertNode(_this.table.createTable(dimension[0], dimension[1], _this.options));
         });
         /**
@@ -4562,22 +4516,18 @@ var Editor = /** @class */ (function () {
                 return false;
             }
         }).on('keyup', function (event) {
-            _this.setLastRange();
             _this.context.triggerEvent('keyup', event);
         }).on('focus', function (event) {
-            _this.setLastRange();
             _this.context.triggerEvent('focus', event);
         }).on('blur', function (event) {
             _this.context.triggerEvent('blur', event);
         }).on('mousedown', function (event) {
             _this.context.triggerEvent('mousedown', event);
         }).on('mouseup', function (event) {
-            _this.setLastRange();
             _this.context.triggerEvent('mouseup', event);
         }).on('scroll', function (event) {
             _this.context.triggerEvent('scroll', event);
         }).on('paste', function (event) {
-            _this.setLastRange();
             _this.context.triggerEvent('paste', event);
         });
         // init content before set event
@@ -4605,7 +4555,6 @@ var Editor = /** @class */ (function () {
             }
         }
         this.history.recordUndo();
-        this.setLastRange();
     };
     Editor.prototype.destroy = function () {
         this.$editable.off();
@@ -4665,18 +4614,7 @@ var Editor = /** @class */ (function () {
      */
     Editor.prototype.createRange = function () {
         this.focus();
-        // return range.create(this.editable);
-        this.setLastRange();
-        return this.getLastRange();
-    };
-    Editor.prototype.setLastRange = function () {
-        this.lastRange = range.create(this.editable);
-    };
-    Editor.prototype.getLastRange = function () {
-        if (!this.lastRange) {
-            this.setLastRange();
-        }
-        return this.lastRange;
+        return range.create(this.editable);
     };
     /**
      * saveRange
@@ -4686,8 +4624,9 @@ var Editor = /** @class */ (function () {
      * @param {Boolean} [thenCollapse=false]
      */
     Editor.prototype.saveRange = function (thenCollapse) {
+        this.lastRange = this.createRange();
         if (thenCollapse) {
-            this.getLastRange().collapse().select();
+            this.lastRange.collapse().select();
         }
     };
     /**
@@ -4740,14 +4679,6 @@ var Editor = /** @class */ (function () {
         this.history.undo();
         this.context.triggerEvent('change', this.$editable.html());
     };
-    /*
-    * commit
-    */
-    Editor.prototype.commit = function () {
-        this.context.triggerEvent('before.command', this.$editable.html());
-        this.history.commit();
-        this.context.triggerEvent('change', this.$editable.html());
-    };
     /**
      * redo
      */
@@ -4779,7 +4710,7 @@ var Editor = /** @class */ (function () {
      * handle tab key
      */
     Editor.prototype.tab = function () {
-        var rng = this.getLastRange();
+        var rng = this.createRange();
         if (rng.isCollapsed() && rng.isOnCell()) {
             this.table.tab(rng);
         }
@@ -4798,7 +4729,7 @@ var Editor = /** @class */ (function () {
      * handle shift+tab key
      */
     Editor.prototype.untab = function () {
-        var rng = this.getLastRange();
+        var rng = this.createRange();
         if (rng.isCollapsed() && rng.isOnCell()) {
             this.table.tab(rng, true);
         }
@@ -4812,10 +4743,11 @@ var Editor = /** @class */ (function () {
      * run given function between beforeCommand and afterCommand
      */
     Editor.prototype.wrapCommand = function (fn) {
+        var _this = this;
         return function () {
-            this.beforeCommand();
-            fn.apply(this, arguments);
-            this.afterCommand();
+            _this.beforeCommand();
+            fn.apply(_this, arguments);
+            _this.afterCommand();
         };
     };
     /**
@@ -4871,7 +4803,7 @@ var Editor = /** @class */ (function () {
      * @return {String} text
      */
     Editor.prototype.getSelectedText = function () {
-        var rng = this.getLastRange();
+        var rng = this.createRange();
         // if range on anchor, expand range with anchor
         if (rng.isOnAnchor()) {
             rng = range.createFromNode(dom.ancestor(rng.sc, dom.isAnchor));
@@ -4896,7 +4828,7 @@ var Editor = /** @class */ (function () {
         this.formatBlock('P');
     };
     Editor.prototype.fontStyling = function (target, value) {
-        var rng = this.getLastRange();
+        var rng = this.createRange();
         if (rng) {
             var spans = this.style.styleNodes(rng);
             $$1(spans).css(target, value);
@@ -4918,7 +4850,7 @@ var Editor = /** @class */ (function () {
      * @type command
      */
     Editor.prototype.unlink = function () {
-        var rng = this.getLastRange();
+        var rng = this.createRange();
         if (rng.isOnAnchor()) {
             var anchor = dom.ancestor(rng.sc, dom.isAnchor);
             rng = range.createFromNode(anchor);
@@ -4938,7 +4870,7 @@ var Editor = /** @class */ (function () {
      * @return {String} [return.url=""]
      */
     Editor.prototype.getLinkInfo = function () {
-        var rng = this.getLastRange().expand(dom.isAnchor);
+        var rng = this.createRange().expand(dom.isAnchor);
         // Get the first anchor on range(for edit).
         var $anchor = $$1(lists.head(rng.nodes(dom.isAnchor)));
         var linkInfo = {
@@ -4946,15 +4878,14 @@ var Editor = /** @class */ (function () {
             text: rng.toString(),
             url: $anchor.length ? $anchor.attr('href') : ''
         };
-        // When anchor exists,
+        // Define isNewWindow when anchor exists.
         if ($anchor.length) {
-            // Set isNewWindow by checking its target.
             linkInfo.isNewWindow = $anchor.attr('target') === '_blank';
         }
         return linkInfo;
     };
     Editor.prototype.addRow = function (position) {
-        var rng = this.getLastRange(this.$editable);
+        var rng = this.createRange(this.$editable);
         if (rng.isCollapsed() && rng.isOnCell()) {
             this.beforeCommand();
             this.table.addRow(rng, position);
@@ -4962,7 +4893,7 @@ var Editor = /** @class */ (function () {
         }
     };
     Editor.prototype.addCol = function (position) {
-        var rng = this.getLastRange(this.$editable);
+        var rng = this.createRange(this.$editable);
         if (rng.isCollapsed() && rng.isOnCell()) {
             this.beforeCommand();
             this.table.addCol(rng, position);
@@ -4970,7 +4901,7 @@ var Editor = /** @class */ (function () {
         }
     };
     Editor.prototype.deleteRow = function () {
-        var rng = this.getLastRange(this.$editable);
+        var rng = this.createRange(this.$editable);
         if (rng.isCollapsed() && rng.isOnCell()) {
             this.beforeCommand();
             this.table.deleteRow(rng);
@@ -4978,7 +4909,7 @@ var Editor = /** @class */ (function () {
         }
     };
     Editor.prototype.deleteCol = function () {
-        var rng = this.getLastRange(this.$editable);
+        var rng = this.createRange(this.$editable);
         if (rng.isCollapsed() && rng.isOnCell()) {
             this.beforeCommand();
             this.table.deleteCol(rng);
@@ -4986,7 +4917,7 @@ var Editor = /** @class */ (function () {
         }
     };
     Editor.prototype.deleteTable = function () {
-        var rng = this.getLastRange(this.$editable);
+        var rng = this.createRange(this.$editable);
         if (rng.isCollapsed() && rng.isOnCell()) {
             this.beforeCommand();
             this.table.deleteTable(rng);
@@ -5440,7 +5371,7 @@ var Handle = /** @class */ (function () {
                     _this.$document.off('mousemove', onMouseMove_1);
                     _this.context.invoke('editor.afterCommand');
                 });
-                if (!$target_1.data('ratio')) { // original ratio.
+                if (!$target_1.data('ratio')) {
                     $target_1.data('ratio', $target_1.height() / $target_1.width());
                 }
             }
@@ -5504,7 +5435,7 @@ var Handle = /** @class */ (function () {
 }());
 
 var defaultScheme = 'http://';
-var linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/]{2}|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
+var linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
 var AutoLink = /** @class */ (function () {
     function AutoLink(context) {
         var _this = this;
@@ -5542,7 +5473,7 @@ var AutoLink = /** @class */ (function () {
     };
     AutoLink.prototype.handleKeydown = function (e) {
         if (lists.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
-            var wordRange = this.context.invoke('editor.getLastRange').getWordRange();
+            var wordRange = this.context.invoke('editor.createRange').getWordRange();
             this.lastWordRange = wordRange;
         }
     };
@@ -5660,159 +5591,6 @@ var Buttons = /** @class */ (function () {
         var genericFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
         name = name.toLowerCase();
         return ((name !== '') && this.isFontInstalled(name) && ($$1.inArray(name, genericFamilies) === -1));
-    };
-    Buttons.prototype.colorPalette = function (className, tooltip, backColor, foreColor) {
-        var _this = this;
-        return this.ui.buttonGroup({
-            className: 'note-color ' + className,
-            children: [
-                this.button({
-                    className: 'note-current-color-button',
-                    contents: this.ui.icon(this.options.icons.font + ' note-recent-color'),
-                    tooltip: tooltip,
-                    click: function (e) {
-                        var $button = $$1(e.currentTarget);
-                        if (backColor && foreColor) {
-                            _this.context.invoke('editor.color', {
-                                backColor: $button.attr('data-backColor'),
-                                foreColor: $button.attr('data-foreColor')
-                            });
-                        }
-                        else if (backColor) {
-                            _this.context.invoke('editor.color', {
-                                backColor: $button.attr('data-backColor')
-                            });
-                        }
-                        else if (foreColor) {
-                            _this.context.invoke('editor.color', {
-                                foreColor: $button.attr('data-foreColor')
-                            });
-                        }
-                    },
-                    callback: function ($button) {
-                        var $recentColor = $button.find('.note-recent-color');
-                        if (backColor) {
-                            $recentColor.css('background-color', '#FFFF00');
-                            $button.attr('data-backColor', '#FFFF00');
-                        }
-                        if (!foreColor) {
-                            $recentColor.css('color', 'transparent');
-                        }
-                    }
-                }),
-                this.button({
-                    className: 'dropdown-toggle',
-                    contents: this.ui.dropdownButtonContents('', this.options),
-                    tooltip: this.lang.color.more,
-                    data: {
-                        toggle: 'dropdown'
-                    }
-                }),
-                this.ui.dropdown({
-                    items: (backColor ? [
-                        '<div class="note-palette">',
-                        '  <div class="note-palette-title">' + this.lang.color.background + '</div>',
-                        '  <div>',
-                        '    <button type="button" class="note-color-reset btn btn-light" data-event="backColor" data-value="inherit">',
-                        this.lang.color.transparent,
-                        '    </button>',
-                        '  </div>',
-                        '  <div class="note-holder" data-event="backColor"/>',
-                        '  <div>',
-                        '    <button type="button" class="note-color-select btn" data-event="openPalette" data-value="backColorPicker">',
-                        this.lang.color.cpSelect,
-                        '    </button>',
-                        '    <input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="#FFFF00" data-event="backColorPalette">',
-                        '  </div>',
-                        '  <div class="note-holder-custom" id="backColorPalette" data-event="backColor"/>',
-                        '</div>'
-                    ].join('') : '') +
-                        (foreColor ? [
-                            '<div class="note-palette">',
-                            '  <div class="note-palette-title">' + this.lang.color.foreground + '</div>',
-                            '  <div>',
-                            '    <button type="button" class="note-color-reset btn btn-light" data-event="removeFormat" data-value="foreColor">',
-                            this.lang.color.resetToDefault,
-                            '    </button>',
-                            '  </div>',
-                            '  <div class="note-holder" data-event="foreColor"/>',
-                            '  <div>',
-                            '    <button type="button" class="note-color-select btn" data-event="openPalette" data-value="foreColorPicker">',
-                            this.lang.color.cpSelect,
-                            '    </button>',
-                            '    <input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="#000000" data-event="foreColorPalette">',
-                            '  <div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"/>',
-                            '</div>'
-                        ].join('') : ''),
-                    callback: function ($dropdown) {
-                        $dropdown.find('.note-holder').each(function (idx, item) {
-                            var $holder = $$1(item);
-                            $holder.append(_this.ui.palette({
-                                colors: _this.options.colors,
-                                colorsName: _this.options.colorsName,
-                                eventName: $holder.data('event'),
-                                container: _this.options.container,
-                                tooltip: _this.options.tooltip
-                            }).render());
-                        });
-                        /* TODO: do we have to record recent custom colors within cookies? */
-                        var customColors = [
-                            ['#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF']
-                        ];
-                        $dropdown.find('.note-holder-custom').each(function (idx, item) {
-                            var $holder = $$1(item);
-                            $holder.append(_this.ui.palette({
-                                colors: customColors,
-                                colorsName: customColors,
-                                eventName: $holder.data('event'),
-                                container: _this.options.container,
-                                tooltip: _this.options.tooltip
-                            }).render());
-                        });
-                        $dropdown.find('input[type=color]').each(function (idx, item) {
-                            $$1(item).change(function () {
-                                var $chip = $dropdown.find('#' + $$1(this).data('event')).find('.note-color-btn').first();
-                                var color = this.value.toUpperCase();
-                                $chip.css('background-color', color)
-                                    .attr('aria-label', color)
-                                    .attr('data-value', color)
-                                    .attr('data-original-title', color);
-                                $chip.click();
-                            });
-                        });
-                    },
-                    click: function (event) {
-                        event.stopPropagation();
-                        var $parent = $$1('.' + className);
-                        var $button = $$1(event.target);
-                        var eventName = $button.data('event');
-                        var value = $button.attr('data-value');
-                        if (eventName === 'openPalette') {
-                            var $picker = $parent.find('#' + value);
-                            var $palette = $$1($parent.find('#' + $picker.data('event')).find('.note-color-row')[0]);
-                            // Shift palette chips
-                            var $chip = $palette.find('.note-color-btn').last().detach();
-                            // Set chip attributes
-                            var color = $picker.val();
-                            $chip.css('background-color', color)
-                                .attr('aria-label', color)
-                                .attr('data-value', color)
-                                .attr('data-original-title', color);
-                            $palette.prepend($chip);
-                            $picker.click();
-                        }
-                        else if (lists.contains(['backColor', 'foreColor'], eventName)) {
-                            var key = eventName === 'backColor' ? 'background-color' : 'color';
-                            var $color = $button.closest('.note-color').find('.note-recent-color');
-                            var $currentButton = $button.closest('.note-color').find('.note-current-color-button');
-                            $color.css(key, value);
-                            $currentButton.attr('data-' + eventName, value);
-                            _this.context.invoke('editor.' + eventName, value);
-                        }
-                    }
-                })
-            ]
-        }).render();
     };
     Buttons.prototype.addToolbarButtons = function () {
         var _this = this;
@@ -5966,13 +5744,83 @@ var Buttons = /** @class */ (function () {
             ]).render();
         });
         this.context.memo('button.color', function () {
-            return _this.colorPalette('note-color-all', _this.lang.color.recent, true, true);
-        });
-        this.context.memo('button.forecolor', function () {
-            return _this.colorPalette('note-color-fore', _this.lang.color.foreground, false, true);
-        });
-        this.context.memo('button.backcolor', function () {
-            return _this.colorPalette('note-color-back', _this.lang.color.background, true, false);
+            return _this.ui.buttonGroup({
+                className: 'note-color',
+                children: [
+                    _this.button({
+                        className: 'note-current-color-button',
+                        contents: _this.ui.icon(_this.options.icons.font + ' note-recent-color'),
+                        tooltip: _this.lang.color.recent,
+                        click: function (e) {
+                            var $button = $$1(e.currentTarget);
+                            _this.context.invoke('editor.color', {
+                                backColor: $button.attr('data-backColor'),
+                                foreColor: $button.attr('data-foreColor')
+                            });
+                        },
+                        callback: function ($button) {
+                            var $recentColor = $button.find('.note-recent-color');
+                            $recentColor.css('background-color', '#FFFF00');
+                            $button.attr('data-backColor', '#FFFF00');
+                        }
+                    }),
+                    _this.button({
+                        className: 'dropdown-toggle',
+                        contents: _this.ui.dropdownButtonContents('', _this.options),
+                        tooltip: _this.lang.color.more,
+                        data: {
+                            toggle: 'dropdown'
+                        }
+                    }),
+                    _this.ui.dropdown({
+                        items: [
+                            '<div class="note-palette">',
+                            '  <div class="note-palette-title">' + _this.lang.color.background + '</div>',
+                            '  <div>',
+                            '    <button type="button" class="note-color-reset btn btn-light" data-event="backColor" data-value="inherit">',
+                            _this.lang.color.transparent,
+                            '    </button>',
+                            '  </div>',
+                            '  <div class="note-holder" data-event="backColor"/>',
+                            '</div>',
+                            '<div class="note-palette">',
+                            '  <div class="note-palette-title">' + _this.lang.color.foreground + '</div>',
+                            '  <div>',
+                            '    <button type="button" class="note-color-reset btn btn-light" data-event="removeFormat" data-value="foreColor">',
+                            _this.lang.color.resetToDefault,
+                            '    </button>',
+                            '  </div>',
+                            '  <div class="note-holder" data-event="foreColor"/>',
+                            '</div>'
+                        ].join(''),
+                        callback: function ($dropdown) {
+                            $dropdown.find('.note-holder').each(function (idx, item) {
+                                var $holder = $$1(item);
+                                $holder.append(_this.ui.palette({
+                                    colors: _this.options.colors,
+                                    colorsName: _this.options.colorsName,
+                                    eventName: $holder.data('event'),
+                                    container: _this.options.container,
+                                    tooltip: _this.options.tooltip
+                                }).render());
+                            });
+                        },
+                        click: function (event) {
+                            var $button = $$1(event.target);
+                            var eventName = $button.data('event');
+                            var value = $button.data('value');
+                            if (eventName && value) {
+                                var key = eventName === 'backColor' ? 'background-color' : 'color';
+                                var $color = $button.closest('.note-color').find('.note-recent-color');
+                                var $currentButton = $button.closest('.note-color').find('.note-current-color-button');
+                                $color.css(key, value);
+                                $currentButton.attr('data-' + eventName, value);
+                                _this.context.invoke('editor.' + eventName, value);
+                            }
+                        }
+                    })
+                ]
+            }).render();
         });
         this.context.memo('button.ul', function () {
             return _this.button({
@@ -6618,7 +6466,7 @@ var LinkDialog = /** @class */ (function () {
             var $linkText = _this.$dialog.find('.note-link-text');
             var $linkUrl = _this.$dialog.find('.note-link-url');
             var $linkBtn = _this.$dialog.find('.note-link-btn');
-            var $openInNewWindow = _this.$dialog.find('#sn-checkbox-open-in-new-window');
+            var $openInNewWindow = _this.$dialog.find('input[type=checkbox]');
             _this.ui.onDialogShown(_this.$dialog, function () {
                 _this.context.triggerEvent('dialog.shown');
                 // if no url was given, copy text to url
@@ -6652,9 +6500,9 @@ var LinkDialog = /** @class */ (function () {
                 _this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
                 _this.bindEnterKey($linkUrl, $linkBtn);
                 _this.bindEnterKey($linkText, $linkBtn);
-                var isNewWindowChecked = linkInfo.isNewWindow !== undefined
+                var isChecked = linkInfo.isNewWindow !== undefined
                     ? linkInfo.isNewWindow : _this.context.options.linkTargetBlank;
-                $openInNewWindow.prop('checked', isNewWindowChecked);
+                $openInNewWindow.prop('checked', isChecked);
                 $linkBtn.one('click', function (event) {
                     event.preventDefault();
                     deferred.resolve({
@@ -6733,7 +6581,7 @@ var LinkPopover = /** @class */ (function () {
             this.hide();
             return;
         }
-        var rng = this.context.invoke('editor.getLastRange');
+        var rng = this.context.invoke('editor.createRange');
         if (rng.isCollapsed() && rng.isOnAnchor()) {
             var anchor = dom.ancestor(rng.sc, dom.isAnchor);
             var href = $$1(anchor).attr('href');
@@ -6814,7 +6662,7 @@ var ImageDialog = /** @class */ (function () {
             // [workaround] hide dialog before restore range for IE range focus
             _this.ui.hideDialog(_this.$dialog);
             _this.context.invoke('editor.restoreRange');
-            if (typeof data === 'string') { // image url
+            if (typeof data === 'string') {
                 // If onImageLinkInsert set,
                 if (_this.options.callbacks.onImageLinkInsert) {
                     _this.context.triggerEvent('image.link.insert', data);
@@ -6823,7 +6671,7 @@ var ImageDialog = /** @class */ (function () {
                     _this.context.invoke('editor.insertImage', data);
                 }
             }
-            else { // array of files
+            else {
                 // If onImageUpload set,
                 if (_this.options.callbacks.onImageUpload) {
                     _this.context.triggerEvent('image.upload', data);
@@ -7474,7 +7322,7 @@ var HintPopover = /** @class */ (function () {
     HintPopover.prototype.handleKeyup = function (e) {
         var _this = this;
         if (!lists.contains([key.code.ENTER, key.code.UP, key.code.DOWN], e.keyCode)) {
-            var wordRange = this.context.invoke('editor.getLastRange').getWordRange();
+            var wordRange = this.context.invoke('editor.createRange').getWordRange();
             var keyword_1 = wordRange.toString();
             if (this.hints.length && keyword_1) {
                 this.$content.empty();
@@ -7516,67 +7364,6 @@ var HintPopover = /** @class */ (function () {
         this.$popover.hide();
     };
     return HintPopover;
-}());
-
-var AutoReplace = /** @class */ (function () {
-    function AutoReplace(context) {
-        var _this = this;
-        this.context = context;
-        this.options = context.options.replace || {};
-        this.keys = [key.code.ENTER, key.code.SPACE, key.code.PERIOD, key.code.COMMA, key.code.SEMICOLON, key.code.SLASH];
-        this.previousKeydownCode = null;
-        this.events = {
-            'summernote.keyup': function (we, e) {
-                if (!e.isDefaultPrevented()) {
-                    _this.handleKeyup(e);
-                }
-            },
-            'summernote.keydown': function (we, e) {
-                _this.handleKeydown(e);
-            }
-        };
-    }
-    AutoReplace.prototype.shouldInitialize = function () {
-        return !$$1.isEmptyObject(this.options);
-    };
-    AutoReplace.prototype.initialize = function () {
-        this.lastWord = null;
-    };
-    AutoReplace.prototype.destroy = function () {
-        this.lastWord = null;
-    };
-    AutoReplace.prototype.replace = function () {
-        if (!this.lastWord) {
-            return;
-        }
-        var keyword = this.lastWord.toString();
-        var match = this.options.match(keyword);
-        if (match) {
-            var node = dom.createText(match);
-            this.lastWord.insertNode(node);
-            this.lastWord = null;
-            this.context.invoke('editor.focus');
-        }
-    };
-    AutoReplace.prototype.handleKeydown = function (e) {
-        // this forces it to remember the last whole word, even if multiple termination keys are pressed
-        // before the previous key is let go.
-        if (this.previousKeydownCode && lists.contains(this.keys, this.previousKeydownCode)) {
-            this.previousKeydownCode = e.keyCode;
-            return;
-        }
-        if (lists.contains(this.keys, e.keyCode)) {
-            var wordRange = this.context.invoke('editor.createRange').getWordRange();
-            this.lastWord = wordRange;
-        }
-        this.previousKeydownCode = e.keyCode;
-    };
-    AutoReplace.prototype.handleKeyup = function (e) {
-        if (lists.contains(this.keys, e.keyCode)) {
-            this.replace();
-        }
-    };
-    return AutoReplace;
 }());
 
 var Context = /** @class */ (function () {
@@ -7833,7 +7620,6 @@ $$1.summernote = $$1.extend($$1.summernote, {
             'hintPopover': HintPopover,
             'autoLink': AutoLink,
             'autoSync': AutoSync,
-            'autoReplace': AutoReplace,
             'placeholder': Placeholder,
             'buttons': Buttons,
             'toolbar': Toolbar,
@@ -7889,7 +7675,6 @@ $$1.summernote = $$1.extend($$1.summernote, {
         airMode: false,
         width: null,
         height: null,
-        linkTargetBlank: true,
         focus: false,
         tabSize: 4,
         styleWithSpan: true,

@@ -302,3 +302,5 @@ $.summernote = $.extend($.summernote, {
     }
   }
 });
+
+import '../summernote'; // eslint-disable-line

@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import lists from '../core/lists';
 import dom from '../core/dom';
 import key from '../core/key';
@@ -24,7 +23,7 @@ export default class AutoReplace {
   }
 
   shouldInitialize() {
-    return !$.isEmptyObject(this.options);
+    return !!this.options.match;
   }
 
   initialize() {
@@ -35,21 +34,35 @@ export default class AutoReplace {
     this.lastWord = null;
   }
 
+  /**
+   * options.replace.match = function(word, done){ if(word=='this') done('that') else done();
+   */
+
   replace() {
     if (!this.lastWord) {
       return;
     }
 
+    const self = this;
     const keyword = this.lastWord.toString();
-    const match = this.options.match(keyword);
+    this.options.match(keyword, function(match) {
+      if (match) {
+        let node = '';
 
-    if (match) {
-      const node = dom.createText(match);
+        if (typeof match === 'string') {
+          node = dom.createText(match);
+        } else if (match instanceof jQuery) {
+          node = match[0];
+        } else if (match instanceof Node) {
+          node = match;
+        }
 
-      this.lastWord.insertNode(node);
-      this.lastWord = null;
-      this.context.invoke('editor.focus');
-    }
+        if (!node) return;
+        self.lastWord.insertNode(node);
+        self.lastWord = null;
+        self.context.invoke('editor.focus');
+      }
+    });
   }
 
   handleKeydown(e) {

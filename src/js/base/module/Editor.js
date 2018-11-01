@@ -447,7 +447,6 @@ export default class Editor {
    */
   createRange() {
     this.focus();
-    // return range.create(this.editable);
     this.setLastRange();
     return this.getLastRange();
   }
