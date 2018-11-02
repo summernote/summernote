@@ -737,7 +737,7 @@ function fromOffsetPath(ancestor, offsets) {
  * @return {Node} right node of boundaryPoint
  */
 function splitNode(point, options) {
-  var isSkipPaddingBlankHTML = options && options.isSkipPaddingBlankHTML;
+  let isSkipPaddingBlankHTML = options && options.isSkipPaddingBlankHTML;
   const isNotSplitEdgePoint = options && options.isNotSplitEdgePoint;
   const isDiscardEmptySplits = options && options.isDiscardEmptySplits;
 
