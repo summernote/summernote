@@ -140,7 +140,13 @@ describe('Editor', () => {
       expectContents(context, '<ol><li>hello</li></ol>');
 
       editor.indent();
-      expectContents(context, '<ol><ol><li>hello</li></ol></ol>');
+      expectContents(context, '<ol><li><ol><li>hello</li></ol></li></ol>');
+
+      editor.indent();
+      expectContents(context, '<ol><li><ol><li><ol><li>hello</li></ol></li></ol></li></ol>');
+
+      editor.outdent();
+      expectContents(context, '<ol><li><ol><li>hello</li></ol></li></ol>');
 
       editor.outdent();
       expectContents(context, '<ol><li>hello</li></ol>');
