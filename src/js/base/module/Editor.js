@@ -32,7 +32,7 @@ export default class Editor {
 
     this.style = new Style();
     this.table = new Table();
-    this.typing = new Typing();
+    this.typing = new Typing(context);
     this.bullet = new Bullet();
     this.history = new History(this.$editable);
 
