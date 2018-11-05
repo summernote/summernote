@@ -41,7 +41,6 @@ describe('Editor', () => {
 
     editor = context.modules.editor;
     $editable = context.layoutInfo.editable;
-
     // [workaround]
     //  - Firefox need setTimeout for applying contents
     //  - IE8-11 can't create range in headless mode
@@ -163,6 +162,15 @@ describe('Editor', () => {
       editor.insertNode($('<span> world</span>')[0]);
       expectContents(context, '<p>hello</p>');
     });
+
+    it('should insert node in last focus', () => {
+      $editable.appendTo('body');
+      context.invoke('editor.focus');
+      editor.insertNode($('<span> world</span>')[0]);
+      document.body.focus();
+      editor.insertNode($('<span> world</span>')[0]);
+      expectContents(context, '<p><span> world</span><span> world</span>hello</p>');
+    })
   });
 
   describe('insertText', () => {
@@ -181,6 +189,16 @@ describe('Editor', () => {
       editor.insertText(' world');
       expectContents(context, '<p>hello</p>');
     });
+
+    it('should insert text in last focus', () => {
+      $editable.appendTo('body');
+      context.invoke('editor.focus');
+      editor.insertText(' world');
+      document.body.focus();
+      editor.insertText(' summernote');
+      expectContents(context, '<p> world summernotehello</p>');
+    })
+
   });
 
   describe('pasteHTML', () => {
