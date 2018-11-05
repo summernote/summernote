@@ -170,7 +170,7 @@ describe('Editor', () => {
       document.body.focus();
       editor.insertNode($('<span> world</span>')[0]);
       expectContents(context, '<p><span> world</span><span> world</span>hello</p>');
-    })
+    });
   });
 
   describe('insertText', () => {
@@ -197,8 +197,7 @@ describe('Editor', () => {
       document.body.focus();
       editor.insertText(' summernote');
       expectContents(context, '<p> world summernotehello</p>');
-    })
-
+    });
   });
 
   describe('pasteHTML', () => {
