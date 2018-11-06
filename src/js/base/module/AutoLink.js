@@ -51,7 +51,7 @@ export default class AutoLink {
 
   handleKeydown(e) {
     if (lists.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
-      const wordRange = this.context.invoke('editor.createRange').getWordRange();
+      const wordRange = this.context.invoke('editor.getLastRange').getWordRange();
       this.lastWordRange = wordRange;
     }
   }
