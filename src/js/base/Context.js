@@ -17,6 +17,8 @@ export default class Context {
     this.layoutInfo = {};
     this.options = options;
 
+    this.randomId = Math.floor(Math.random() * 10000);
+
     this.initialize();
   }
 
