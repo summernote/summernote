@@ -357,7 +357,7 @@ export default class Editor {
 
     this.$editable.on(env.inputEventName, func.debounce(() => {
       this.context.triggerEvent('change', this.$editable.html());
-    }, 100));
+    }, 10));
 
     this.$editor.on('focusin', (event) => {
       this.context.triggerEvent('focusin', event);
