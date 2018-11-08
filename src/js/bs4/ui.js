@@ -126,14 +126,14 @@ const popover = renderer.create([
   }
 });
 
-const checkbox = renderer.create('<div class="custom-control custom-checkbox"></div>', function($node, options) {
+const checkbox = renderer.create('<div class="form-check"></div>', function($node, options) {
   $node.html([
-    '<input role="checkbox" type="checkbox" class="custom-control-input"' + (options.id ? ' id="' + options.id + '"' : ''),
+    '<label class="form-check-label"' + (options.id ? ' for="' + options.id + '"' : '') + '>',
+    ' <input role="checkbox" type="checkbox" class="form-check-input"' + (options.id ? ' id="' + options.id + '"' : ''),
     (options.checked ? ' checked' : ''),
     ' aria-label="' + (options.text ? options.text : '') + '"',
     ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',
-    '<label class="custom-control-label"' + (options.id ? ' for="' + options.id + '"' : ''),
-    '">' + (options.text ? options.text : '') + '</label>'
+    (options.text ? options.text : '') + '</label>'
   ].join(''));
 });
 
