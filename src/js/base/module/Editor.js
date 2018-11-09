@@ -32,7 +32,7 @@ export default class Editor {
 
     this.style = new Style();
     this.table = new Table();
-    this.typing = new Typing();
+    this.typing = new Typing(context);
     this.bullet = new Bullet();
     this.history = new History(this.$editable);
 
@@ -357,7 +357,7 @@ export default class Editor {
 
     this.$editable.on(env.inputEventName, func.debounce(() => {
       this.context.triggerEvent('change', this.$editable.html());
-    }, 100));
+    }, 10));
 
     this.$editor.on('focusin', (event) => {
       this.context.triggerEvent('focusin', event);

@@ -24,7 +24,7 @@ describe('base:core.range', () => {
 
       it('should return array of two paragraphs', () => {
         var rng = range.create($para[0].firstChild, 0, $para[1].firstChild, 1);
-        expect(rng.nodes(dom.isPara, {includeAncestor: true})).to.have.length(2);
+        expect(rng.nodes(dom.isPara, { includeAncestor: true })).to.have.length(2);
       });
 
       it('should return array of a paragraph', () => {

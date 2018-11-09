@@ -10,9 +10,10 @@ import Bullet from '../editing/Bullet';
  *
  */
 export default class Typing {
-  constructor() {
+  constructor(context) {
     // a Bullet instance to toggle lists off
     this.bullet = new Bullet();
+    this.options = context.options;
   }
 
   /**
@@ -32,9 +33,17 @@ export default class Typing {
 
   /**
    * insert paragraph
+   *
+   * @param {jQuery} $editable
+   * @param {WrappedRange} rng Can be used in unit tests to "mock" the range
+   *
+   * blockquoteBreakingLevel
+   *   0 - No break, the new paragraph remains inside the quote
+   *   1 - Break the first blockquote in the ancestors list
+   *   2 - Break all blockquotes, so that the new paragraph is not quoted (this is the default)
    */
-  insertParagraph(editable) {
-    let rng = range.create(editable);
+  insertParagraph(editable, rng) {
+    rng = rng || range.create(editable);
 
     // deleteContents on range.
     rng = rng.deleteContents();
@@ -53,25 +62,43 @@ export default class Typing {
         // toogle UL/OL and escape
         this.bullet.toggleList(splitRoot.parentNode.nodeName);
         return;
-      // if it is an empty line with para on blockquote
-      } else if (dom.isEmpty(splitRoot) && dom.isPara(splitRoot) && dom.isBlockquote(splitRoot.parentNode)) {
-        // escape blockquote
-        dom.insertAfter(splitRoot, splitRoot.parentNode);
-        nextPara = splitRoot;
-      // if new line has content (not a line break)
       } else {
-        nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
+        let blockquote = null;
+        if (this.options.blockquoteBreakingLevel === 1) {
+          blockquote = dom.ancestor(splitRoot, dom.isBlockquote);
+        } else if (this.options.blockquoteBreakingLevel === 2) {
+          blockquote = dom.lastAncestor(splitRoot, dom.isBlockquote);
+        }
 
-        let emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
-        emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
+        if (blockquote) {
+          // We're inside a blockquote and options ask us to break it
+          nextPara = $(dom.emptyPara)[0];
+          // If the split is right before a <br>, remove it so that there's no "empty line"
+          // after the split in the new blockquote created
+          if (dom.isRightEdgePoint(rng.getStartPoint()) && dom.isBR(rng.sc.nextSibling)) {
+            $(rng.sc.nextSibling).remove();
+          }
+          const split = dom.splitTree(blockquote, rng.getStartPoint(), { isDiscardEmptySplits: true });
+          if (split) {
+            split.parentNode.insertBefore(nextPara, split);
+          } else {
+            dom.insertAfter(nextPara, blockquote); // There's no split if we were at the end of the blockquote
+          }
+        } else {
+          nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
 
-        $.each(emptyAnchors, (idx, anchor) => {
-          dom.remove(anchor);
-        });
+          // not a blockquote, just insert the paragraph
+          let emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
+          emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
 
-        // replace empty heading, pre or custom-made styleTag with P tag
-        if ((dom.isHeading(nextPara) || dom.isPre(nextPara) || dom.isCustomStyleTag(nextPara)) && dom.isEmpty(nextPara)) {
-          nextPara = dom.replace(nextPara, 'p');
+          $.each(emptyAnchors, (idx, anchor) => {
+            dom.remove(anchor);
+          });
+
+          // replace empty heading, pre or custom-made styleTag with P tag
+          if ((dom.isHeading(nextPara) || dom.isPre(nextPara) || dom.isCustomStyleTag(nextPara)) && dom.isEmpty(nextPara)) {
+            nextPara = dom.replace(nextPara, 'p');
+          }
         }
       }
     // no paragraph: insert empty paragraph

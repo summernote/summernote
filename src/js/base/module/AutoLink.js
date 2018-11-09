@@ -39,6 +39,9 @@ export default class AutoLink {
     if (match && (match[1] || match[2])) {
       const link = match[1] ? keyword : defaultScheme + keyword;
       const node = $('<a />').html(keyword).attr('href', link)[0];
+      if (this.context.options.linkTargetBlank) {
+        $(node).attr('target', '_blank');
+      }
 
       this.lastWordRange.insertNode(node);
       this.lastWordRange = null;

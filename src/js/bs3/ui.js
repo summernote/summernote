@@ -36,7 +36,7 @@ const dropdown = renderer.create('<ul class="dropdown-menu" role="list">', funct
     return '<li role="listitem" aria-label="' + item + '"><a href="#" ' + (dataValue + dataOption) + '>' + content + '</a></li>';
   }).join('') : options.items;
 
-  $node.html(markup).attr({'aria-label': options.title});
+  $node.html(markup).attr({ 'aria-label': options.title });
 });
 
 const dropdownButtonContents = function(contents, options) {
@@ -49,7 +49,7 @@ const dropdownCheck = renderer.create('<ul class="dropdown-menu note-check" role
     const content = options.template ? options.template(item) : item;
     return '<li role="listitem" aria-label="' + item + '"><a href="#" data-value="' + value + '">' + icon(options.checkClassName) + ' ' + content + '</a></li>';
   }).join('') : options.items;
-  $node.html(markup).attr({'aria-label': options.title});
+  $node.html(markup).attr({ 'aria-label': options.title });
 });
 
 const palette = renderer.create('<div class="note-color-palette"/>', function($node, options) {
@@ -127,7 +127,7 @@ const popover = renderer.create([
 
 const checkbox = renderer.create('<div class="checkbox"></div>', function($node, options) {
   $node.html([
-    ' <label' + (options.id ? ' for="' + options.id + '"' : '') + '>',
+    '<label' + (options.id ? ' for="' + options.id + '"' : '') + '>',
     ' <input role="checkbox" type="checkbox"' + (options.id ? ' id="' + options.id + '"' : ''),
     (options.checked ? ' checked' : ''),
     ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',

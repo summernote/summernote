@@ -31,7 +31,16 @@ export default class Bullet {
     $.each(clustereds, (idx, paras) => {
       const head = lists.head(paras);
       if (dom.isLi(head)) {
-        this.wrapList(paras, head.parentNode.nodeName);
+        const previousList = this.findList(head.previousSibling);
+        if (previousList) {
+          paras
+            .map(para => previousList.appendChild(para));
+        } else {
+          this.wrapList(paras, head.parentNode.nodeName);
+          paras
+            .map((para) => para.parentNode)
+            .map((para) => this.appendToPrevious(para));
+        }
       } else {
         $.each(paras, (idx, para) => {
           $(para).css('marginLeft', (idx, val) => {
@@ -154,48 +163,124 @@ export default class Bullet {
       const last = lists.last(paras);
 
       const headList = isEscapseToBody ? dom.lastAncestor(head, dom.isList) : head.parentNode;
-      const lastList = headList.childNodes.length > 1 ? dom.splitTree(headList, {
-        node: last.parentNode,
-        offset: dom.position(last) + 1
-      }, {
-        isSkipPaddingBlankHTML: true
-      }) : null;
+      const parentItem = headList.parentNode;
 
-      const middleList = dom.splitTree(headList, {
-        node: head.parentNode,
-        offset: dom.position(head)
-      }, {
-        isSkipPaddingBlankHTML: true
-      });
+      if (headList.parentNode.nodeName === 'LI') {
+        paras.map(para => {
+          const newList = this.findNextSiblings(para);
 
-      paras = isEscapseToBody ? dom.listDescendant(middleList, dom.isLi)
-        : lists.from(middleList.childNodes).filter(dom.isLi);
+          if (parentItem.nextSibling) {
+            parentItem.parentNode.insertBefore(
+              para,
+              parentItem.nextSibling
+            );
+          } else {
+            parentItem.parentNode.appendChild(para);
+          }
 
-      // LI to P
-      if (isEscapseToBody || !dom.isList(headList.parentNode)) {
-        paras = paras.map((para) => {
-          return dom.replace(para, 'P');
-        });
-      }
-
-      $.each(lists.from(paras).reverse(), (idx, para) => {
-        dom.insertAfter(para, headList);
-      });
-
-      // remove empty lists
-      const rootLists = lists.compact([headList, middleList, lastList]);
-      $.each(rootLists, (idx, rootList) => {
-        const listNodes = [rootList].concat(dom.listDescendant(rootList, dom.isList));
-        $.each(listNodes.reverse(), (idx, listNode) => {
-          if (!dom.nodeLength(listNode)) {
-            dom.remove(listNode, true);
+          if (newList.length) {
+            this.wrapList(newList, headList.nodeName);
+            para.appendChild(newList[0].parentNode);
           }
         });
-      });
+
+        if (headList.children.length === 0) {
+          parentItem.removeChild(headList);
+        }
+
+        if (parentItem.childNodes.length === 0) {
+          parentItem.parentNode.removeChild(parentItem);
+        }
+      } else {
+        const lastList = headList.childNodes.length > 1 ? dom.splitTree(headList, {
+          node: last.parentNode,
+          offset: dom.position(last) + 1
+        }, {
+          isSkipPaddingBlankHTML: true
+        }) : null;
+
+        const middleList = dom.splitTree(headList, {
+          node: head.parentNode,
+          offset: dom.position(head)
+        }, {
+          isSkipPaddingBlankHTML: true
+        });
+
+        paras = isEscapseToBody ? dom.listDescendant(middleList, dom.isLi)
+          : lists.from(middleList.childNodes).filter(dom.isLi);
+
+        // LI to P
+        if (isEscapseToBody || !dom.isList(headList.parentNode)) {
+          paras = paras.map((para) => {
+            return dom.replace(para, 'P');
+          });
+        }
+
+        $.each(lists.from(paras).reverse(), (idx, para) => {
+          dom.insertAfter(para, headList);
+        });
+
+        // remove empty lists
+        const rootLists = lists.compact([headList, middleList, lastList]);
+        $.each(rootLists, (idx, rootList) => {
+          const listNodes = [rootList].concat(dom.listDescendant(rootList, dom.isList));
+          $.each(listNodes.reverse(), (idx, listNode) => {
+            if (!dom.nodeLength(listNode)) {
+              dom.remove(listNode, true);
+            }
+          });
+        });
+      }
 
       releasedParas = releasedParas.concat(paras);
     });
 
     return releasedParas;
+  }
+
+  /**
+   * @method appendToPrevious
+   *
+   * Appends list to previous list item, if
+   * none exist it wraps the list in a new list item.
+   *
+   * @param {HTMLNode} ListItem
+   * @return {HTMLNode}
+   */
+  appendToPrevious(node) {
+    return node.previousSibling
+      ? dom.appendChildNodes(node.previousSibling, [node])
+      : this.wrapList([node], 'LI');
+  }
+
+  /**
+   * @method findList
+   *
+   * Finds an existing list in list item
+   *
+   * @param {HTMLNode} ListItem
+   * @return {Array[]}
+   */
+  findList(node) {
+    return node
+      ? lists.find(node.children, child => ['OL', 'UL'].indexOf(child.nodeName) > -1)
+      : null;
+  }
+
+  /**
+   * @method findNextSiblings
+   *
+   * Finds all list item siblings that follow it
+   *
+   * @param {HTMLNode} ListItem
+   * @return {HTMLNode}
+   */
+  findNextSiblings(node) {
+    const siblings = [];
+    while (node.nextSibling) {
+      siblings.push(node.nextSibling);
+      node = node.nextSibling;
+    }
+    return siblings;
   }
 }

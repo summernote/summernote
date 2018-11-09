@@ -59,7 +59,7 @@ const dropdown = renderer.create('<div class="note-dropdown-menu" role="list">',
     return $temp;
   }) : options.items;
 
-  $node.html(markup).attr({'aria-label': options.title});
+  $node.html(markup).attr({ 'aria-label': options.title });
 
   $node.on('click', '> .note-dropdown-item', function(e) {
     const $a = $(this);
@@ -85,7 +85,7 @@ const dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check
     return $temp;
   }) : options.items;
 
-  $node.html(markup).attr({'aria-label': options.title});
+  $node.html(markup).attr({ 'aria-label': options.title });
 
   $node.on('click', '> .note-dropdown-item', function(e) {
     const $a = $(this);
@@ -509,7 +509,7 @@ const popover = renderer.create([
 
 const checkbox = renderer.create('<div class="checkbox"></div>', function($node, options) {
   $node.html([
-    ' <label' + (options.id ? ' for="' + options.id + '"' : '') + '>',
+    '<label' + (options.id ? ' for="' + options.id + '"' : '') + '>',
     ' <input role="checkbox" type="checkbox"' + (options.id ? ' id="' + options.id + '"' : ''),
     (options.checked ? ' checked' : ''),
     ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',
