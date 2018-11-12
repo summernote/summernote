@@ -133,7 +133,7 @@ const checkbox = renderer.create('<div class="form-check"></div>', function($nod
     (options.checked ? ' checked' : ''),
     ' aria-label="' + (options.text ? options.text : '') + '"',
     ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',
-    (options.text ? options.text : '') + '</label>'
+    ' ' + (options.text ? options.text : '') + '</label>'
   ].join(''));
 });
 
