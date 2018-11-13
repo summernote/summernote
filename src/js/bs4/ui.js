@@ -169,7 +169,7 @@ const ui = {
           title: options.tooltip,
           'aria-label': options.tooltip
         }).tooltip({
-          container: options.container,
+          container: (options.container !== undefined) ? options.container : 'body',
           trigger: 'hover',
           placement: 'bottom'
         });
