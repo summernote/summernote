@@ -3,34 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <title>jquery old</title>
-  <script src="http://code.jquery.com/jquery-1.11.3.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
 
   <!-- include libraries -->
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.css" />
-  <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.js"></script>
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.js"></script> 
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.css" />
+  <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.5/umd/popper.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.js"></script>
 
   <!-- include summernote -->
   <link rel="stylesheet" href="../dist/summernote-bs4.css">
   <script type="text/javascript" src="../dist/summernote-bs4.js"></script>
-  <style>
-    .container {
-      position: absolute;
-      left: 10%;
-      right: 10%;
-      top: 10%;
-      bottom: 10%;
-    }
 
-    .custom-toolbar {
-      padding: 5px;
-    }
-
-    h1 {
-      text-align: center;
-    }
-  </style>
-
+  <link rel="stylesheet" href="example.css">
   <script type="text/javascript">
     $(function() {
       $('.summernote').on('summernote.init', function() {
@@ -41,7 +25,7 @@
         console.log('you can use keyboard event', event);
       }).on('summernote.enter', function(event) {
         console.log('check enter key ');
-      }).summernote({ height : 300 });
+      }).summernote({ height : 500 });
 
     });
   </script>
