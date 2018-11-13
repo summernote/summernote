@@ -21,8 +21,8 @@ const statusbar = renderer.create([
 
 const airEditor = renderer.create('<div class="note-editor"/>');
 const airEditable = renderer.create([
-  '<output class="note-status-output" role="status" aria-live="polite"/>',
-  '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>'
+  '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>',
+  '<output class="note-status-output" role="status" aria-live="polite"/>'
 ].join(''));
 
 const buttonGroup = renderer.create('<div class="note-btn-group">');
