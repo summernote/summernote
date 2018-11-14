@@ -115,7 +115,7 @@
       },
       help: {
         'insertParagraph': 'Indsæt paragraf',
-        'undo': 'Undoes the last commandp',
+        'undo': 'Undoes the last command',
         'redo': 'Redoes the last command',
         'tab': 'Tab',
         'untab': 'Untab',
