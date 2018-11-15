@@ -495,7 +495,7 @@ const linkDialog = function(opt) {
 const popover = renderer.create([
   '<div class="note-popover bottom">',
   '  <div class="note-popover-arrow"/>',
-  '  <div class="note-popover-content note-children-container"/>',
+  '  <div class="popover-content note-children-container"/>',
   '</div>'
 ].join(''), function($node, options) {
   const direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
