@@ -74,7 +74,7 @@ function isElement(node) {
  * @see http://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
  */
 function isVoid(node) {
-  return node && /^BR|^IMG|^HR|^IFRAME|^BUTTON|^INPUT/.test(node.nodeName.toUpperCase());
+  return node && /^BR|^IMG|^HR|^IFRAME|^BUTTON|^INPUT|^VIDEO|^EMBED/.test(node.nodeName.toUpperCase());
 }
 
 function isPara(node) {
