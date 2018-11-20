@@ -17,23 +17,21 @@
   <link rel="stylesheet" href="../dist/summernote-bs4.css">
   <script type="text/javascript" src="../dist/summernote-bs4.js"></script>
 
+  <link rel="stylesheet" href="example.css">
   <script type="text/javascript">
     $(document).ready(function() {
       $('.summernote').summernote({
         height: 300,
         tabsize: 2,
-        placeholder: 'Enter text here'
+        placeholder: '<b>Enter text here</b><br>... even with multi-line placeholder'
       });
     });
   </script>
 </head>
 <body>
-  <div class="container">
-    <h5>
-      <i class="note-icon-summernote"></i> Summernote
-      <span class="badge badge-pill badge-info">Bootstrap v4.1.3</span>
-    </h5>
-    <div class="summernote"></div>
-  </div>
+<div class="container">
+  <h1>Summernote with Placeholder</h1>
+  <div class="summernote"></div>
+</div>
 </body>
 </html>
