@@ -8,7 +8,10 @@ class DropdownUI {
   }
 
   setEvent() {
-    this.$button.on('click', this.toggle.bind(this));
+    this.$button.on('click', (e) => {
+      this.toggle();
+      e.stopImmediatePropagation();
+    });
   }
 
   clear() {
