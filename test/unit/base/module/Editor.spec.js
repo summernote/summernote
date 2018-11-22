@@ -174,9 +174,11 @@ describe('Editor', () => {
       $editable.appendTo('body');
       context.invoke('editor.focus');
       editor.insertNode($('<span> world</span>')[0]);
-      document.body.focus();
+      $('body').focus();
       editor.insertNode($('<span> hello</span>')[0]);
       expectContents(context, '<p><span> world</span><span> hello</span>hello</p>');
+
+      $editable.remove();      
     });
   });
 
@@ -201,9 +203,11 @@ describe('Editor', () => {
       $editable.appendTo('body');
       context.invoke('editor.focus');
       editor.insertText(' world');
-      document.body.focus();
+      $('body').focus();
       editor.insertText(' summernote ');
       expectContents(context, '<p> world summernote hello</p>');
+
+      $editable.remove();
     });
   });
 
