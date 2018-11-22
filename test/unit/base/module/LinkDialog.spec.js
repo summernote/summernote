@@ -49,7 +49,7 @@ describe('LinkDialog', () => {
       dialog.show();
 
       var checked = dialog.$dialog.find('#sn-checkbox-open-in-new-window').is(':checked');
-      expect(checked).to.be.true;
+      expect(checked).to.be.false;
     });
   });
 });
