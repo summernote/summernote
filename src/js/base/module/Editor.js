@@ -116,6 +116,7 @@ export default class Editor {
       const rng = this.getLastRange();
       rng.insertNode(node);
       range.createFromNodeAfter(node).select();
+      this.setLastRange();
     });
 
     /**
@@ -129,6 +130,7 @@ export default class Editor {
       const rng = this.getLastRange();
       const textNode = rng.insertNode(dom.createText(text));
       range.create(textNode, dom.nodeLength(textNode)).select();
+      this.setLastRange();
     });
     /**
      * paste HTML
@@ -140,6 +142,7 @@ export default class Editor {
       }
       const contents = this.getLastRange().pasteHTML(markup);
       range.createFromNodeAfter(lists.last(contents)).select();
+      this.setLastRange();      
     });
 
     /**
@@ -163,6 +166,7 @@ export default class Editor {
       const hrNode = this.getLastRange().insertNode(dom.create('HR'));
       if (hrNode.nextSibling) {
         range.create(hrNode.nextSibling, 0).normalize().select();
+        this.setLastRange();
       }
     });
 
@@ -241,6 +245,7 @@ export default class Editor {
         endPoint.node,
         endPoint.offset
       ).select();
+      this.setLastRange();
     });
 
     /**
@@ -639,6 +644,7 @@ export default class Editor {
       $image.show();
       range.create(this.editable).insertNode($image[0]);
       range.createFromNodeAfter($image[0]).select();
+      this.setLastRange();
       this.afterCommand();
     }).fail((e) => {
       this.context.triggerEvent('image.upload.error', e);
@@ -714,6 +720,7 @@ export default class Editor {
         if (firstSpan && !dom.nodeLength(firstSpan)) {
           firstSpan.innerHTML = dom.ZERO_WIDTH_NBSP_CHAR;
           range.createFromNodeAfter(firstSpan.firstChild).select();
+          this.setLastRange();
           this.$editable.data(KEY_BOGUS, firstSpan);
         }
       }
@@ -731,6 +738,7 @@ export default class Editor {
       const anchor = dom.ancestor(rng.sc, dom.isAnchor);
       rng = range.createFromNode(anchor);
       rng.select();
+      this.setLastRange();
 
       this.beforeCommand();
       document.execCommand('unlink');
@@ -749,7 +757,6 @@ export default class Editor {
    */
   getLinkInfo() {
     const rng = this.getLastRange().expand(dom.isAnchor);
-
     // Get the first anchor on range(for edit).
     const $anchor = $(lists.head(rng.nodes(dom.isAnchor)));
     const linkInfo = {
