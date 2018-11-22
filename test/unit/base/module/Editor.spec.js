@@ -178,7 +178,7 @@ describe('Editor', () => {
       editor.insertNode($('<span> hello</span>')[0]);
       expectContents(context, '<p><span> world</span><span> hello</span>hello</p>');
 
-      $editable.remove();      
+      $editable.remove();
     });
   });
 
