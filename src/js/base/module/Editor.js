@@ -142,7 +142,7 @@ export default class Editor {
       }
       const contents = this.getLastRange().pasteHTML(markup);
       range.createFromNodeAfter(lists.last(contents)).select();
-      this.setLastRange();      
+      this.setLastRange();
     });
 
     /**
