@@ -188,6 +188,9 @@ $.summernote = $.extend($.summernote, {
       lineNumbers: true
     },
 
+    codeviewFilter: false,
+    codeviewRegex: /<\/*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|ilayer|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|t(?:itle|extarea)|xml)[^>]*?>/gi,
+
     keyMap: {
       pc: {
         'ENTER': 'insertParagraph',

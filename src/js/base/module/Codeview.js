@@ -51,6 +51,18 @@ export default class CodeView {
   }
 
   /**
+   * purify code view
+   * @param value
+   * @returns {*}
+   */
+  purify(value) {
+    if (this.options.codeviewFilter) {
+      value = value.replace(this.options.codeviewRegex, '');
+    }
+    return value;
+  }
+
+  /**
    * activate code view
    */
   activate() {
@@ -99,7 +111,7 @@ export default class CodeView {
       cmEditor.toTextArea();
     }
 
-    const value = dom.value(this.$codable, this.options.prettifyHtml) || dom.emptyPara;
+    const value = this.purify(dom.value(this.$codable, this.options.prettifyHtml) || dom.emptyPara);
     const isChange = this.$editable.html() !== value;
 
     this.$editable.html(value);
