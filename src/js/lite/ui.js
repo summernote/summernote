@@ -21,8 +21,8 @@ const statusbar = renderer.create([
 
 const airEditor = renderer.create('<div class="note-editor"/>');
 const airEditable = renderer.create([
-  '<output class="note-status-output" role="status" aria-live="polite"/>',
-  '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>'
+  '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>',
+  '<output class="note-status-output" role="status" aria-live="polite"/>'
 ].join(''));
 
 const buttonGroup = renderer.create('<div class="note-btn-group">');
@@ -59,7 +59,7 @@ const dropdown = renderer.create('<div class="note-dropdown-menu" role="list">',
     return $temp;
   }) : options.items;
 
-  $node.html(markup).attr({'aria-label': options.title});
+  $node.html(markup).attr({ 'aria-label': options.title });
 
   $node.on('click', '> .note-dropdown-item', function(e) {
     const $a = $(this);
@@ -85,7 +85,7 @@ const dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check
     return $temp;
   }) : options.items;
 
-  $node.html(markup).attr({'aria-label': options.title});
+  $node.html(markup).attr({ 'aria-label': options.title });
 
   $node.on('click', '> .note-dropdown-item', function(e) {
     const $a = $(this);
@@ -314,6 +314,12 @@ const colorDropdownButton = function(opt, type) {
           '    </button>',
           '  </div>',
           '  <div class="note-holder" data-event="backColor"/>',
+          '  <div class="btn-sm">',
+          '    <input type="color" id="html5bcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
+          '    <button type="button" class="note-color-reset btn" data-event="backColor" data-value="cpbackColor">',
+          opt.lang.color.cpSelect,
+          '    </button>',
+          '  </div>',
           '</div>',
           '<div class="note-btn-group btn-foreground-color">',
           '  <div class="note-palette-title">' + opt.lang.color.foreground + '</div>',
@@ -324,6 +330,12 @@ const colorDropdownButton = function(opt, type) {
           '    </button>',
           '  </div>',
           '  <div class="note-holder" data-event="foreColor"/>',
+          '  <div class="btn-sm">',
+          '    <input type="color" id="html5fcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
+          '    <button type="button" class="note-color-reset btn" data-event="foreColor" data-value="cpforeColor">',
+          opt.lang.color.cpSelect,
+          '    </button>',
+          '  </div>',
           '</div>',
           '</div>'
         ].join(''),
@@ -347,7 +359,16 @@ const colorDropdownButton = function(opt, type) {
         click: function(event) {
           const $button = $(event.target);
           const eventName = $button.data('event');
-          const value = $button.data('value');
+          let value = $button.data('value');
+          const foreinput = document.getElementById('html5fcp').value;
+          const backinput = document.getElementById('html5bcp').value;
+          if (value === 'cp') {
+            event.stopPropagation();
+          } else if (value === 'cpbackColor') {
+            value = backinput;
+          } else if (value === 'cpforeColor') {
+            value = foreinput;
+          }
 
           if (eventName && value) {
             const key = eventName === 'backColor' ? 'background-color' : 'color';
@@ -474,7 +495,7 @@ const linkDialog = function(opt) {
 const popover = renderer.create([
   '<div class="note-popover bottom">',
   '  <div class="note-popover-arrow"/>',
-  '  <div class="note-popover-content note-children-container"/>',
+  '  <div class="popover-content note-children-container"/>',
   '</div>'
 ].join(''), function($node, options) {
   const direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
@@ -488,7 +509,7 @@ const popover = renderer.create([
 
 const checkbox = renderer.create('<div class="checkbox"></div>', function($node, options) {
   $node.html([
-    ' <label' + (options.id ? ' for="' + options.id + '"' : '') + '>',
+    '<label' + (options.id ? ' for="' + options.id + '"' : '') + '>',
     ' <input role="checkbox" type="checkbox"' + (options.id ? ' id="' + options.id + '"' : ''),
     (options.checked ? ' checked' : ''),
     ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',

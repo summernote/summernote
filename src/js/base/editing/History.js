@@ -10,7 +10,7 @@ export default class History {
 
   makeSnapshot() {
     const rng = range.create(this.editable);
-    const emptyBookmark = {s: {path: [], offset: 0}, e: {path: [], offset: 0}};
+    const emptyBookmark = { s: { path: [], offset: 0 }, e: { path: [], offset: 0 } };
 
     return {
       contents: this.$editable.html(),
@@ -43,6 +43,21 @@ export default class History {
 
     // Apply that snapshot.
     this.applySnapshot(this.stack[this.stackOffset]);
+  }
+
+  /**
+  *  @method commit
+  *  Resets history stack, but keeps current editor's content.
+  */
+  commit() {
+    // Clear the stack.
+    this.stack = [];
+
+    // Restore stackOffset to its original value.
+    this.stackOffset = -1;
+
+    // Record our first snapshot (of nothing).
+    this.recordUndo();
   }
 
   /**

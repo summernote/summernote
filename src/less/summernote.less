@@ -325,13 +325,18 @@
     }
   }
 
+  .note-color-all {
+    .dropdown-menu {
+      min-width: 337px;
+    }
+  }
+
   .note-color {
     .dropdown-toggle {
       width: 20px;
       padding-left: 5px;
     }
     .dropdown-menu {
-      min-width: 337px;
       .note-palette {
         display: inline-block;
         margin: 0;
@@ -347,7 +352,8 @@
           border-bottom: 1px solid #eee;
         }
 
-        .note-color-reset {
+        .note-color-reset,
+        .note-color-select {
           margin: 3px;
           padding: 0 3px;
           width: 100%;
@@ -362,6 +368,16 @@
 
         .note-color-reset:hover {
           background: #eee;
+        }
+
+        .note-color-select-btn {
+          display: none;
+        }
+
+        .note-holder-custom {
+          .note-color-btn {
+            border: 1px solid #eee;
+          }
         }
       }
     }

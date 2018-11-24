@@ -32,7 +32,7 @@ export default class Editor {
 
     this.style = new Style();
     this.table = new Table();
-    this.typing = new Typing();
+    this.typing = new Typing(context);
     this.bullet = new Bullet();
     this.history = new History(this.$editable);
 
@@ -186,6 +186,10 @@ export default class Editor {
       const linkText = linkInfo.text;
       const isNewWindow = linkInfo.isNewWindow;
       let rng = linkInfo.range || this.createRange();
+      const additionalTextLength = linkText.length - rng.toString().length;
+      if (additionalTextLength > 0 && this.isLimited(additionalTextLength)) {
+        return;
+      }
       const isTextChanged = rng.toString() !== linkText;
 
       // handle spaced urls from input
@@ -196,9 +200,12 @@ export default class Editor {
       if (this.options.onCreateLink) {
         linkUrl = this.options.onCreateLink(linkUrl);
       } else {
-        // if url doesn't match an URL schema, set http:// as default
-        linkUrl = /^[A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?/.test(linkUrl)
-          ? linkUrl : 'http://' + linkUrl;
+        // if url is not relative,
+        if (!/^\.?\/(.*)/.test(linkUrl)) {
+          // if url doesn't match an URL schema, set http:// as default
+          linkUrl = /^[A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?/.test(linkUrl)
+            ? linkUrl : 'http://' + linkUrl;
+        }
       }
 
       let anchors = [];
@@ -350,7 +357,7 @@ export default class Editor {
 
     this.$editable.on(env.inputEventName, func.debounce(() => {
       this.context.triggerEvent('change', this.$editable.html());
-    }, 100));
+    }, 10));
 
     this.$editor.on('focusin', (event) => {
       this.context.triggerEvent('focusin', event);
@@ -509,6 +516,15 @@ export default class Editor {
     this.context.triggerEvent('change', this.$editable.html());
   }
 
+  /*
+  * commit
+  */
+  commit() {
+    this.context.triggerEvent('before.command', this.$editable.html());
+    this.history.commit();
+    this.context.triggerEvent('change', this.$editable.html());
+  }
+
   /**
    * redo
    */
@@ -577,7 +593,7 @@ export default class Editor {
    * run given function between beforeCommand and afterCommand
    */
   wrapCommand(fn) {
-    return () => {
+    return function() {
       this.beforeCommand();
       fn.apply(this, arguments);
       this.afterCommand();
@@ -617,7 +633,7 @@ export default class Editor {
    * insertImages
    * @param {File[]} files
    */
-  insertImages(files) {
+  insertImagesAsDataURL(files) {
     $.each(files, (idx, file) => {
       const filename = file.name;
       if (this.options.maximumImageFileSize && this.options.maximumImageFileSize < file.size) {
@@ -630,22 +646,6 @@ export default class Editor {
         });
       }
     });
-  }
-
-  /**
-   * insertImagesOrCallback
-   * @param {File[]} files
-   */
-  insertImagesOrCallback(files) {
-    const callbacks = this.options.callbacks;
-
-    // If onImageUpload this.options setted
-    if (callbacks.onImageUpload) {
-      this.context.triggerEvent('image.upload', files);
-      // else insert Image as dataURL
-    } else {
-      this.insertImages(files);
-    }
   }
 
   /**
@@ -742,8 +742,9 @@ export default class Editor {
       url: $anchor.length ? $anchor.attr('href') : ''
     };
 
-    // Define isNewWindow when anchor exists.
+    // When anchor exists,
     if ($anchor.length) {
+      // Set isNewWindow by checking its target.
       linkInfo.isNewWindow = $anchor.attr('target') === '_blank';
     }
 

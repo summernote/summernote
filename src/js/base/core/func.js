@@ -31,7 +31,7 @@ function fail() {
 }
 
 function not(f) {
-  return () => {
+  return function() {
     return !f.apply(f, arguments);
   };
 }
@@ -47,7 +47,7 @@ function self(a) {
 }
 
 function invoke(obj, method) {
-  return () => {
+  return function() {
     return obj[method].apply(obj, arguments);
   };
 }
@@ -126,7 +126,7 @@ function namespaceToCamel(namespace, prefix) {
  */
 function debounce(func, wait, immediate) {
   let timeout;
-  return () => {
+  return function() {
     const context = this;
     const args = arguments;
     const later = () => {

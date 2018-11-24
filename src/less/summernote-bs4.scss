@@ -265,9 +265,10 @@ $img-margin-right: 10px;
 
 /* Popover and Toolbar (Button container)
 ------------------------------------------*/
-.note-popover .popover-content, .panel-heading.note-toolbar {
+.note-popover .popover-content, .card-header.note-toolbar {
   margin: 0;
   padding: 0 0 5px 5px;
+  background: $background-color;
 
   &>.btn-group {
     margin-top: 5px;
@@ -319,13 +320,18 @@ $img-margin-right: 10px;
     }
   }
 
+  .note-color-all {
+    .dropdown-menu {
+      min-width: 337px;
+    }
+  }
+
   .note-color {
     .dropdown-toggle {
       width: 20px;
       padding-left: 5px;
     }
     .dropdown-menu {
-      min-width: 340px;
       .btn-group {
         margin: 0;
         &:first-child {
@@ -339,7 +345,8 @@ $img-margin-right: 10px;
           border-bottom: 1px solid #eee;
         }
 
-        .note-color-reset {
+        .note-color-reset,
+        .note-color-select {
           font-size: 11px;
           margin: 3px;
           padding: 0 3px;
@@ -353,6 +360,16 @@ $img-margin-right: 10px;
 
         .note-color-reset:hover {
           background: #eee;
+        }
+
+        .note-color-select-btn {
+          display: none;
+        }
+
+        .note-holder-custom {
+          .note-color-btn {
+            border: 1px solid #eee;
+          }
         }
       }
     }

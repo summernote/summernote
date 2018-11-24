@@ -97,7 +97,8 @@
         transparent: 'Průhlednost',
         setTransparent: 'Nastavit průhlednost',
         reset: 'Obnovit',
-        resetToDefault: 'Obnovit výchozí'
+        resetToDefault: 'Obnovit výchozí',
+        cpSelect: 'Vybrat'
       },
       shortcut: {
         shortcuts: 'Klávesové zkratky',

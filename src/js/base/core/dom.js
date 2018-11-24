@@ -74,7 +74,7 @@ function isElement(node) {
  * @see http://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
  */
 function isVoid(node) {
-  return node && /^BR|^IMG|^HR|^IFRAME|^BUTTON|^INPUT/.test(node.nodeName.toUpperCase());
+  return node && /^BR|^IMG|^HR|^IFRAME|^BUTTON|^INPUT|^VIDEO|^EMBED/.test(node.nodeName.toUpperCase());
 }
 
 function isPara(node) {
@@ -733,11 +733,17 @@ function fromOffsetPath(ancestor, offsets) {
  * @param {Object} [options]
  * @param {Boolean} [options.isSkipPaddingBlankHTML] - default: false
  * @param {Boolean} [options.isNotSplitEdgePoint] - default: false
+ * @param {Boolean} [options.isDiscardEmptySplits] - default: false
  * @return {Node} right node of boundaryPoint
  */
 function splitNode(point, options) {
-  const isSkipPaddingBlankHTML = options && options.isSkipPaddingBlankHTML;
+  let isSkipPaddingBlankHTML = options && options.isSkipPaddingBlankHTML;
   const isNotSplitEdgePoint = options && options.isNotSplitEdgePoint;
+  const isDiscardEmptySplits = options && options.isDiscardEmptySplits;
+
+  if (isDiscardEmptySplits) {
+    isSkipPaddingBlankHTML = true;
+  }
 
   // edge case
   if (isEdgePoint(point) && (isText(point.node) || isNotSplitEdgePoint)) {
@@ -759,6 +765,16 @@ function splitNode(point, options) {
     if (!isSkipPaddingBlankHTML) {
       paddingBlankHTML(point.node);
       paddingBlankHTML(clone);
+    }
+
+    if (isDiscardEmptySplits) {
+      if (isEmpty(point.node)) {
+        remove(point.node);
+      }
+      if (isEmpty(clone)) {
+        remove(clone);
+        return point.node.nextSibling;
+      }
     }
 
     return clone;

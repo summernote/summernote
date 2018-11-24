@@ -53,13 +53,13 @@
       },
       table: {
         table: 'Tabel',
-        addRowAbove: 'Add row above',
-        addRowBelow: 'Add row below',
-        addColLeft: 'Add column left',
-        addColRight: 'Add column right',
-        delRow: 'Delete row',
-        delCol: 'Delete column',
-        delTable: 'Delete table'
+        addRowAbove: 'Tilføj række over',
+        addRowBelow: 'Tilføj række under',
+        addColLeft: 'Tilføj venstre kolonne',
+        addColRight: 'Tilføj højre kolonne',
+        delRow: 'Slet række',
+        delCol: 'Slet kolonne',
+        delTable: 'Slet tabel'
       },
       hr: {
         insert: 'Indsæt horisontal linje'
@@ -114,7 +114,7 @@
         extraKeys: 'Extra keys'
       },
       help: {
-        'insertParagraph': 'Insert Paragraph',
+        'insertParagraph': 'Indsæt paragraf',
         'undo': 'Undoes the last command',
         'redo': 'Redoes the last command',
         'tab': 'Tab',
@@ -140,7 +140,7 @@
         'formatH5': 'Change current block\'s format as H5',
         'formatH6': 'Change current block\'s format as H6',
         'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
+        'linkDialog.show': 'Vis Link Dialog'
       },
       history: {
         undo: 'Fortryd',
@@ -148,7 +148,7 @@
       },
       specialChar: {
         specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
+        select: 'Vælg special karakterer'
       }
     }
   });

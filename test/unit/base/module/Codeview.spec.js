@@ -9,9 +9,8 @@ import chai from 'chai';
 import Context from '../../../../src/js/base/Context';
 import Codeview from '../../../../src/js/base/module/Codeview';
 
-var expect = chai.expect;
-
 describe('Codeview', () => {
+  var expect = chai.expect;
   var codeview, context;
 
   beforeEach(() => {

@@ -37,7 +37,7 @@ export default class ImageDialog {
       '</div>'
     ].join('');
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-image-btn';
-    const footer = `<button type="submit" href="#" class="${buttonClass}" disabled>${this.lang.image.insert}</button>`;
+    const footer = `<input type="button" href="#" class="${buttonClass}" value="${this.lang.image.insert}" disabled>`;
 
     this.$dialog = this.ui.dialog({
       title: this.lang.image.insert,
@@ -69,9 +69,20 @@ export default class ImageDialog {
       this.context.invoke('editor.restoreRange');
 
       if (typeof data === 'string') { // image url
-        this.context.invoke('editor.insertImage', data);
+        // If onImageLinkInsert set,
+        if (this.options.callbacks.onImageLinkInsert) {
+          this.context.triggerEvent('image.link.insert', data);
+        } else {
+          this.context.invoke('editor.insertImage', data);
+        }
       } else { // array of files
-        this.context.invoke('editor.insertImagesOrCallback', data);
+        // If onImageUpload set,
+        if (this.options.callbacks.onImageUpload) {
+          this.context.triggerEvent('image.upload', data);
+        } else {
+          // else insert Image as dataURL
+          this.context.invoke('editor.insertImagesAsDataURL', data);
+        }
       }
     }).fail(() => {
       this.context.invoke('editor.restoreRange');

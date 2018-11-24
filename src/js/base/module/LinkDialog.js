@@ -21,7 +21,7 @@ export default class LinkDialog {
     const body = [
       '<div class="form-group note-form-group">',
       `<label class="note-form-label">${this.lang.link.textToDisplay}</label>`,
-      '<input class="note-link-text form-control note-form-control  note-input" type="text" />',
+      '<input class="note-link-text form-control note-form-control note-input" type="text" />',
       '</div>',
       '<div class="form-group note-form-group">',
       `<label class="note-form-label">${this.lang.link.url}</label>`,
@@ -29,7 +29,7 @@ export default class LinkDialog {
       '</div>',
       !this.options.disableLinkTarget
         ? $('<div/>').append(this.ui.checkbox({
-          id: 'sn-checkbox-open-in-new-window',
+          className: 'sn-checkbox-open-in-new-window',
           text: this.lang.link.openInNewWindow,
           checked: true
         }).render()).html()
@@ -37,7 +37,7 @@ export default class LinkDialog {
     ].join('');
 
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-link-btn';
-    const footer = `<button type="submit" href="#" class="${buttonClass}" disabled>${this.lang.link.insert}</button>`;
+    const footer = `<input type="button" href="#" class="${buttonClass}" value="${this.lang.link.insert}" disabled>`;
 
     this.$dialog = this.ui.dialog({
       className: 'link-dialog',
@@ -80,7 +80,8 @@ export default class LinkDialog {
       const $linkText = this.$dialog.find('.note-link-text');
       const $linkUrl = this.$dialog.find('.note-link-url');
       const $linkBtn = this.$dialog.find('.note-link-btn');
-      const $openInNewWindow = this.$dialog.find('input[type=checkbox]');
+      const $openInNewWindow = this.$dialog
+        .find('.sn-checkbox-open-in-new-window input[type=checkbox]');
 
       this.ui.onDialogShown(this.$dialog, () => {
         this.context.triggerEvent('dialog.shown');
@@ -124,10 +125,10 @@ export default class LinkDialog {
         this.bindEnterKey($linkUrl, $linkBtn);
         this.bindEnterKey($linkText, $linkBtn);
 
-        const isChecked = linkInfo.isNewWindow !== undefined
+        const isNewWindowChecked = linkInfo.isNewWindow !== undefined
           ? linkInfo.isNewWindow : this.context.options.linkTargetBlank;
 
-        $openInNewWindow.prop('checked', isChecked);
+        $openInNewWindow.prop('checked', isNewWindowChecked);
 
         $linkBtn.one('click', (event) => {
           event.preventDefault();
