@@ -2,15 +2,15 @@
   $.extend($.summernote.lang, {
     'fi-FI': {
       font: {
-        bold: 'Lihavoitu',
-        italic: 'Kursiivi',
-        underline: 'Alleviivaa',
+        bold: 'Lihavointi',
+        italic: 'Kursivointi',
+        underline: 'Alleviivaus',
         clear: 'Tyhjennä muotoilu',
         height: 'Riviväli',
         name: 'Kirjasintyyppi',
         strikethrough: 'Yliviivaus',
-        subscript: 'Subscript',
-        superscript: 'Superscript',
+        subscript: 'Alaindeksi',
+        superscript: 'Yläindeksi',
         size: 'Kirjasinkoko'
       },
       image: {
@@ -22,23 +22,23 @@
         floatLeft: 'Sijoita vasemmalle',
         floatRight: 'Sijoita oikealle',
         floatNone: 'Ei sijoitusta',
-        shapeRounded: 'Shape: Rounded',
-        shapeCircle: 'Shape: Circle',
-        shapeThumbnail: 'Shape: Thumbnail',
-        shapeNone: 'Shape: None',
+        shapeRounded: 'Muoto: Pyöristetty',
+        shapeCircle: 'Muoto: Ympyrä',
+        shapeThumbnail: 'Muoto: Esikatselukuva',
+        shapeNone: 'Muoto: Ei muotoilua',
         dragImageHere: 'Vedä kuva tähän',
         selectFromFiles: 'Valitse tiedostoista',
-        maximumFileSize: 'Maximum file size',
-        maximumFileSizeError: 'Maximum file size exceeded.',
+        maximumFileSize: 'Maksimi tiedosto koko',
+        maximumFileSizeError: 'Maksimi tiedosto koko ylitetty.',
         url: 'URL-osoitteen mukaan',
         remove: 'Poista kuva',
-        original: 'Original'
+        original: 'Alkuperäinen'
       },
       video: {
         video: 'Video',
         videoLink: 'Linkki videoon',
         insert: 'Lisää video',
-        url: 'Videon URL-osoite?',
+        url: 'Videon URL-osoite',
         providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion tai Youku)'
       },
       link: {
@@ -47,18 +47,18 @@
         unlink: 'Poista linkki',
         edit: 'Muokkaa',
         textToDisplay: 'Näytettävä teksti',
-        url: 'Linkin URL-osoite?',
+        url: 'Linkin URL-osoite',
         openInNewWindow: 'Avaa uudessa ikkunassa'
       },
       table: {
         table: 'Taulukko',
-        addRowAbove: 'Add row above',
-        addRowBelow: 'Add row below',
-        addColLeft: 'Add column left',
-        addColRight: 'Add column right',
-        delRow: 'Delete row',
-        delCol: 'Delete column',
-        delTable: 'Delete table'
+        addRowAbove: 'Lisää rivi yläpuolelle',
+        addRowBelow: 'Lisää rivi alapuolelle',
+        addColLeft: 'Lisää sarake vasemmalle puolelle',
+        addColRight: 'Lisää sarake oikealle puolelle',
+        delRow: 'Poista rivi',
+        delCol: 'Poista sarake',
+        delTable: 'Poista taulukko'
       },
       hr: {
         insert: 'Lisää vaakaviiva'
@@ -88,15 +88,15 @@
         paragraph: 'Kappale',
         outdent: 'Pienennä sisennystä',
         indent: 'Suurenna sisennystä',
-        left: 'Tasaus vasemmalle',
+        left: 'Tasaa vasemmalle',
         center: 'Keskitä',
-        right: 'Tasaus oikealle',
+        right: 'Tasaa oikealle',
         justify: 'Tasaa'
       },
       color: {
         recent: 'Viimeisin väri',
         more: 'Lisää värejä',
-        background: 'Taustaväri',
+        background: 'Korostusväri',
         foreground: 'Tekstin väri',
         transparent: 'Läpinäkyvä',
         setTransparent: 'Aseta läpinäkyväksi',
@@ -112,41 +112,41 @@
         documentStyle: 'Asiakirjan tyyli'
       },
       help: {
-        'insertParagraph': 'Insert Paragraph',
-        'undo': 'Undoes the last command',
-        'redo': 'Redoes the last command',
-        'tab': 'Tab',
-        'untab': 'Untab',
-        'bold': 'Set a bold style',
-        'italic': 'Set a italic style',
-        'underline': 'Set a underline style',
-        'strikethrough': 'Set a strikethrough style',
-        'removeFormat': 'Clean a style',
-        'justifyLeft': 'Set left align',
-        'justifyCenter': 'Set center align',
-        'justifyRight': 'Set right align',
-        'justifyFull': 'Set full align',
-        'insertUnorderedList': 'Toggle unordered list',
-        'insertOrderedList': 'Toggle ordered list',
-        'outdent': 'Outdent on current paragraph',
-        'indent': 'Indent on current paragraph',
-        'formatPara': 'Change current block\'s format as a paragraph(P tag)',
-        'formatH1': 'Change current block\'s format as H1',
-        'formatH2': 'Change current block\'s format as H2',
-        'formatH3': 'Change current block\'s format as H3',
-        'formatH4': 'Change current block\'s format as H4',
-        'formatH5': 'Change current block\'s format as H5',
-        'formatH6': 'Change current block\'s format as H6',
-        'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
+        'insertParagraph': 'Lisää kappale',
+        'undo': 'Kumoa viimeisin komento',
+        'redo': 'Tee uudelleen kumottu komento',
+        'tab': 'Sarkain',
+        'untab': 'Sarkainmerkin poisto',
+        'bold': 'Lihavointi',
+        'italic': 'Kursiivi',
+        'underline': 'Alleviivaus',
+        'strikethrough': 'Yliviivaus',
+        'removeFormat': 'Poista asetetut tyylit',
+        'justifyLeft': 'Tasaa vasemmalle',
+        'justifyCenter': 'Keskitä',
+        'justifyRight': 'Tasaa oikealle',
+        'justifyFull': 'Tasaa',
+        'insertUnorderedList': 'Luettelomerkillä varustettu lista',
+        'insertOrderedList': 'Numeroitu lista',
+        'outdent': 'Pienennä sisennystä',
+        'indent': 'Suurenna sisennystä',
+        'formatPara': 'Muuta kappaleen formaatti p',
+        'formatH1': 'Muuta kappaleen formaatti H1',
+        'formatH2': 'Muuta kappaleen formaatti H2',
+        'formatH3': 'Muuta kappaleen formaatti H3',
+        'formatH4': 'Muuta kappaleen formaatti H4',
+        'formatH5': 'Muuta kappaleen formaatti H5',
+        'formatH6': 'Muuta kappaleen formaatti H6',
+        'insertHorizontalRule': 'Lisää vaakaviiva',
+        'linkDialog.show': 'Lisää linkki'
       },
       history: {
         undo: 'Kumoa',
         redo: 'Toista'
       },
       specialChar: {
-        specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
+        specialChar: 'ERIKOISMERKIT',
+        select: 'Valitse erikoismerkit'
       }
     }
   });
