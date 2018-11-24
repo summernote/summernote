@@ -174,7 +174,6 @@ $.summernote = $.extend($.summernote, {
       onEnter: null,
       onKeyup: null,
       onKeydown: null,
-      onSubmit: null,
       onImageUpload: null,
       onImageUploadError: null,
       onImageLinkInsert: null
