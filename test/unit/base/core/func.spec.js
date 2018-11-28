@@ -136,4 +136,16 @@ describe('base:core.func', () => {
       }, 101);
     });
   });
+
+  describe('isValidUrl', () => {
+    it('should return true with valid URLs', () => {
+      expect(func.isValidUrl('https://www.summernote.org')).to.be.ok;
+      expect(func.isValidUrl('http://summernote.org')).to.be.ok;
+      expect(func.isValidUrl('summernote.org')).to.be.ok;
+    });
+
+    it('should return false with invalid URLs', () => {
+      expect(func.isValidUrl('summernote')).to.be.not.ok;
+    });
+  });
 });

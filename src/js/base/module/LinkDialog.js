@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import env from '../core/env';
 import key from '../core/key';
+import func from '../core/func';
 
 export default class LinkDialog {
   constructor(context) {
@@ -86,8 +87,8 @@ export default class LinkDialog {
       this.ui.onDialogShown(this.$dialog, () => {
         this.context.triggerEvent('dialog.shown');
 
-        // if no url was given, copy text to url
-        if (!linkInfo.url) {
+        // if no url was given and given text is valid URL then copy that into URL Field
+        if (!linkInfo.url && func.isValidUrl(linkInfo.text)) {
           linkInfo.url = linkInfo.text;
         }
 
