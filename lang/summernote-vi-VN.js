@@ -11,7 +11,7 @@
         strikethrough: 'Gạch ngang',
         subscript: 'Subscript',
         superscript: 'Superscript',
-        size: 'Cỡ chữ'
+        size: 'Cỡ chữ',
       },
       image: {
         image: 'Hình ảnh',
@@ -33,14 +33,14 @@
         maximumFileSizeError: 'Maximum file size exceeded.',
         url: 'URL',
         remove: 'Xóa',
-        original: 'Original'
+        original: 'Original',
       },
       video: {
         video: 'Video',
         videoLink: 'Link đến Video',
         insert: 'Chèn Video',
         url: 'URL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion và Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion và Youku)',
       },
       link: {
         link: 'Link',
@@ -49,7 +49,7 @@
         edit: 'Sửa',
         textToDisplay: 'Văn bản hiển thị',
         url: 'URL',
-        openInNewWindow: 'Mở ở Cửa sổ mới'
+        openInNewWindow: 'Mở ở Cửa sổ mới',
       },
       table: {
         table: 'Bảng',
@@ -59,10 +59,10 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
       },
       hr: {
-        insert: 'Chèn'
+        insert: 'Chèn',
       },
       style: {
         style: 'Kiểu chữ',
@@ -74,16 +74,16 @@
         h3: 'H3',
         h4: 'H4',
         h5: 'H5',
-        h6: 'H6'
+        h6: 'H6',
       },
       lists: {
         unordered: 'Liệt kê danh sách',
-        ordered: 'Liệt kê theo thứ tự'
+        ordered: 'Liệt kê theo thứ tự',
       },
       options: {
         help: 'Trợ giúp',
         fullscreen: 'Toàn Màn hình',
-        codeview: 'Xem Code'
+        codeview: 'Xem Code',
       },
       paragraph: {
         paragraph: 'Canh lề',
@@ -92,7 +92,7 @@
         left: 'Canh trái',
         center: 'Canh giữa',
         right: 'Canh phải',
-        justify: 'Canh đều'
+        justify: 'Canh đều',
       },
       color: {
         recent: 'Màu chữ',
@@ -102,7 +102,7 @@
         transparent: 'trong suốt',
         setTransparent: 'Nền trong suốt',
         reset: 'Thiết lập lại',
-        resetToDefault: 'Trở lại ban đầu'
+        resetToDefault: 'Trở lại ban đầu',
       },
       shortcut: {
         shortcuts: 'Phím tắt',
@@ -111,7 +111,7 @@
         action: 'Hành động',
         paragraphFormatting: 'Định dạng',
         documentStyle: 'Kiểu văn bản',
-        extraKeys: 'Extra keys'
+        extraKeys: 'Extra keys',
       },
       help: {
         'insertParagraph': 'Insert Paragraph',
@@ -140,16 +140,16 @@
         'formatH5': 'Change current block\'s format as H5',
         'formatH6': 'Change current block\'s format as H6',
         'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
+        'linkDialog.show': 'Show Link Dialog',
       },
       history: {
         undo: 'Lùi lại',
-        redo: 'Làm lại'
+        redo: 'Làm lại',
       },
       specialChar: {
         specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
-      }
-    }
+        select: 'Select Special characters',
+      },
+    },
   });
 })(jQuery);

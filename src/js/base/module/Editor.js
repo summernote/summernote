@@ -53,7 +53,7 @@ export default class Editor {
     const commands = [
       'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
       'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
-      'formatBlock', 'removeFormat', 'backColor'
+      'formatBlock', 'removeFormat', 'backColor',
     ];
 
     for (let idx = 0, len = commands.length; idx < len; idx++) {
@@ -172,7 +172,7 @@ export default class Editor {
      */
     this.lineHeight = this.wrapCommand((value) => {
       this.style.stylePara(this.createRange(), {
-        lineHeight: value
+        lineHeight: value,
       });
     });
 
@@ -217,7 +217,7 @@ export default class Editor {
         anchors = this.style.styleNodes(rng, {
           nodeName: 'A',
           expandClosestSibling: true,
-          onlyPartialContains: true
+          onlyPartialContains: true,
         });
       }
 
@@ -313,7 +313,7 @@ export default class Editor {
       const $target = $(this.restoreTarget());
       $target.css({
         width: value * 100 + '%',
-        height: ''
+        height: '',
       });
     });
   }
@@ -739,7 +739,7 @@ export default class Editor {
     const linkInfo = {
       range: rng,
       text: rng.toString(),
-      url: $anchor.length ? $anchor.attr('href') : ''
+      url: $anchor.length ? $anchor.attr('href') : '',
     };
 
     // When anchor exists,
@@ -808,12 +808,12 @@ export default class Editor {
       const ratio = $target.data('ratio');
       imageSize = {
         width: ratio > newRatio ? pos.x : pos.y / ratio,
-        height: ratio > newRatio ? pos.x * ratio : pos.y
+        height: ratio > newRatio ? pos.x * ratio : pos.y,
       };
     } else {
       imageSize = {
         width: pos.x,
-        height: pos.y
+        height: pos.y,
       };
     }
 

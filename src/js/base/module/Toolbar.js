@@ -63,7 +63,7 @@ export default class Toolbar {
 
     const toolbarHeight = this.$toolbar.height();
     $toolbarWrapper.css({
-      height: toolbarHeight
+      height: toolbarHeight,
     });
 
     // check if the web app is currently using another static bar
@@ -82,13 +82,13 @@ export default class Toolbar {
       this.$toolbar.css({
         position: 'fixed',
         top: otherBarHeight,
-        width: editorWidth
+        width: editorWidth,
       });
     } else {
       this.$toolbar.css({
         position: 'relative',
         top: 0,
-        width: '100%'
+        width: '100%',
       });
     }
   }

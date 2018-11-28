@@ -11,7 +11,7 @@
         strikethrough: 'Ratllat',
         subscript: 'Subíndex',
         superscript: 'Superíndex',
-        size: 'Mida de lletra'
+        size: 'Mida de lletra',
       },
       image: {
         image: 'Imatge',
@@ -33,14 +33,14 @@
         maximumFileSizeError: 'La mida màxima de l\'arxiu s\'ha superat.',
         url: 'URL de la imatge',
         remove: 'Eliminar imatge',
-        original: 'Original'
+        original: 'Original',
       },
       video: {
         video: 'Vídeo',
         videoLink: 'Enllaç del vídeo',
         insert: 'Inserir vídeo',
         url: 'URL del vídeo?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion o Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion o Youku)',
       },
       link: {
         link: 'Enllaç',
@@ -49,7 +49,7 @@
         edit: 'Editar',
         textToDisplay: 'Text per mostrar',
         url: 'Cap a quina URL porta l\'enllaç?',
-        openInNewWindow: 'Obrir en una finestra nova'
+        openInNewWindow: 'Obrir en una finestra nova',
       },
       table: {
         table: 'Taula',
@@ -59,10 +59,10 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
       },
       hr: {
-        insert: 'Inserir línia horitzontal'
+        insert: 'Inserir línia horitzontal',
       },
       style: {
         style: 'Estil',
@@ -74,16 +74,16 @@
         h3: 'Títol 3',
         h4: 'Títol 4',
         h5: 'Títol 5',
-        h6: 'Títol 6'
+        h6: 'Títol 6',
       },
       lists: {
         unordered: 'Llista desendreçada',
-        ordered: 'Llista endreçada'
+        ordered: 'Llista endreçada',
       },
       options: {
         help: 'Ajut',
         fullscreen: 'Pantalla sencera',
-        codeview: 'Veure codi font'
+        codeview: 'Veure codi font',
       },
       paragraph: {
         paragraph: 'Paràgraf',
@@ -92,7 +92,7 @@
         left: 'Alinear a l\'esquerra',
         center: 'Alinear al mig',
         right: 'Alinear a la dreta',
-        justify: 'Justificar'
+        justify: 'Justificar',
       },
       color: {
         recent: 'Últim color',
@@ -102,7 +102,7 @@
         transparent: 'Transparent',
         setTransparent: 'Establir transparent',
         reset: 'Restablir',
-        resetToDefault: 'Restablir per defecte'
+        resetToDefault: 'Restablir per defecte',
       },
       shortcut: {
         shortcuts: 'Dreceres de teclat',
@@ -111,7 +111,7 @@
         action: 'Acció',
         paragraphFormatting: 'Format de paràgraf',
         documentStyle: 'Estil del document',
-        extraKeys: 'Tecles adicionals'
+        extraKeys: 'Tecles adicionals',
       },
       help: {
         'insertParagraph': 'Inserir paràgraf',
@@ -140,16 +140,16 @@
         'formatH5': 'Canviar l\'estil del bloc com a un H5',
         'formatH6': 'Canviar l\'estil del bloc com a un H6',
         'insertHorizontalRule': 'Inserir una línia horitzontal',
-        'linkDialog.show': 'Mostrar panel d\'enllaços'
+        'linkDialog.show': 'Mostrar panel d\'enllaços',
       },
       history: {
         undo: 'Desfer',
-        redo: 'Refer'
+        redo: 'Refer',
       },
       specialChar: {
         specialChar: 'CARÀCTERS ESPECIALS',
-        select: 'Selecciona caràcters especials'
-      }
-    }
+        select: 'Selecciona caràcters especials',
+      },
+    },
   });
 })(jQuery);

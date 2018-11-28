@@ -34,7 +34,7 @@ export default class ImageDialog {
       '<label class="note-form-label">' + this.lang.image.url + '</label>',
       '<input class="note-image-url form-control note-form-control note-input ',
       ' col-md-12" type="text" />',
-      '</div>'
+      '</div>',
     ].join('');
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-image-btn';
     const footer = `<input type="button" href="#" class="${buttonClass}" value="${this.lang.image.insert}" disabled>`;
@@ -43,7 +43,7 @@ export default class ImageDialog {
       title: this.lang.image.insert,
       fade: this.options.dialogsFade,
       body: body,
-      footer: footer
+      footer: footer,
     }).render().appendTo($container);
   }
 

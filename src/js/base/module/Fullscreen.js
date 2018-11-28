@@ -14,7 +14,7 @@ export default class Fullscreen {
 
     this.onResize = () => {
       this.resizeTo({
-        h: this.$window.height() - this.$toolbar.outerHeight()
+        h: this.$window.height() - this.$toolbar.outerHeight(),
       });
     };
   }

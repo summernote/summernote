@@ -62,5 +62,5 @@ export default {
       }
       return new Renderer(markup, children, options, callback);
     };
-  }
+  },
 };

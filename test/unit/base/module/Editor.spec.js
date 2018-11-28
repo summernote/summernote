@@ -54,7 +54,7 @@ describe('Editor', () => {
     it('should bind custom events', () => {
       [
         'keydown', 'keyup', 'blur', 'mousedown', 'mouseup',
-        'scroll', 'focusin', 'focusout'
+        'scroll', 'focusin', 'focusout',
       ].forEach((eventName) => {
         expectToHaveBeenCalled(context, 'summernote.' + eventName, () => {
           $editable.trigger(eventName);
@@ -239,7 +239,7 @@ describe('Editor', () => {
         '<tr><td><br></td><td><br></td></tr>',
         '<tr><td><br></td><td><br></td></tr>',
         '</tbody></table>',
-        '<p><br></p>'
+        '<p><br></p>',
       ].join('');
       editor.insertTable('2x2');
       expectContents(context, markup);
@@ -267,7 +267,7 @@ describe('Editor', () => {
       var codes = [
         '<p><a href="http://summernote.org">hello world</a></p>',
         '<p><a href="http://summernote.org">hello world</a></p>',
-        '<p><a href="http://summernote.org">hello world</a></p>'
+        '<p><a href="http://summernote.org">hello world</a></p>',
       ];
 
       context.invoke('code', codes.join(''));
@@ -286,7 +286,7 @@ describe('Editor', () => {
       var codes = [
         '<p><a href="http://summernote.org">hello world</a></p>',
         '<p><a href="http://summernote.org">hello world</a></p>',
-        '<p><a href="http://summernote.org">hello world</a></p>'
+        '<p><a href="http://summernote.org">hello world</a></p>',
       ];
 
       context.invoke('code', codes.join(''));
@@ -330,7 +330,7 @@ describe('Editor', () => {
       // check creation normal link
       editor.createLink({
         url: 'http://summernote.org',
-        text: 'summernote'
+        text: 'summernote',
       });
 
       expectContents(context, '<p>hello<a href="http://summernote.org">summernote</a></p>');
@@ -348,7 +348,7 @@ describe('Editor', () => {
       editor.createLink({
         url: 'http://summernote.org',
         text: 'summernote',
-        range: rng
+        range: rng,
       });
 
       expectContents(context, '<p><a href="http://summernote.org">summernote</a></p>');
@@ -367,7 +367,7 @@ describe('Editor', () => {
         url: 'http://summernote.org',
         text: 'summernote',
         range: rng,
-        isNewWindow: true
+        isNewWindow: true,
       });
 
       expectContents(context, '<p><a href="http://summernote.org" target="_blank">summernote</a></p>');
@@ -386,7 +386,7 @@ describe('Editor', () => {
         url: '/relative/url',
         text: 'summernote',
         range: rng,
-        isNewWindow: true
+        isNewWindow: true,
       });
 
       expectContents(context, '<p><a href="/relative/url" target="_blank">summernote</a></p>');
@@ -401,7 +401,7 @@ describe('Editor', () => {
       editor.createLink({
         url: 'http://wow.summernote.org',
         text: 'summernote wow',
-        range: rng
+        range: rng,
       });
 
       expectContents(context, '<p><a href="http://wow.summernote.org">summernote wow</a></p>');
@@ -416,7 +416,7 @@ describe('Editor', () => {
 
       editor.createLink({
         url: 'http://summernote.org',
-        text: 'summernote'
+        text: 'summernote',
       });
       expectContents(context, '<p>hello</p>');
     });
@@ -435,7 +435,7 @@ describe('Editor', () => {
       editor.createLink({
         url: 'http://summernote.org',
         text: 'hello world',
-        range: rng
+        range: rng,
       });
 
       expectContents(context, '<a href="http://summernote.org">hello</a>');

@@ -17,7 +17,7 @@ describe('LinkDialog', () => {
     var options = $.extend({}, $.summernote.options);
     options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
     options.toolbar = [
-      ['insert', ['link']]
+      ['insert', ['link']],
     ];
     context = new Context(
       $('<div>' +

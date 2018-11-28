@@ -31,9 +31,9 @@ export default class LinkDialog {
         ? $('<div/>').append(this.ui.checkbox({
           className: 'sn-checkbox-open-in-new-window',
           text: this.lang.link.openInNewWindow,
-          checked: true
+          checked: true,
         }).render()).html()
-        : ''
+        : '',
     ].join('');
 
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-link-btn';
@@ -44,7 +44,7 @@ export default class LinkDialog {
       title: this.lang.link.insert,
       fade: this.options.dialogsFade,
       body: body,
-      footer: footer
+      footer: footer,
     }).render().appendTo($container);
   }
 
@@ -137,7 +137,7 @@ export default class LinkDialog {
             range: linkInfo.range,
             url: $linkUrl.val(),
             text: $linkText.val(),
-            isNewWindow: $openInNewWindow.is(':checked')
+            isNewWindow: $openInNewWindow.is(':checked'),
           });
           this.ui.hideDialog(this.$dialog);
         });

@@ -11,7 +11,7 @@
         strikethrough: 'குறுக்குக் கோடு',
         size: 'எழுத்துரு அளவு',
         superscript: 'மேல் ஒட்டு',
-        subscript: 'கீழ் ஒட்டு'
+        subscript: 'கீழ் ஒட்டு',
       },
       image: {
         image: 'படம்',
@@ -33,14 +33,14 @@
         maximumFileSizeError: 'கோப்பு அதிகபட்ச அளவை மீறிவிட்டது',
         url: 'இணையதள முகவரி',
         remove: 'படத்தை நீக்கு',
-        original: 'Original'
+        original: 'Original',
       },
       video: {
         video: 'காணொளி',
         videoLink: 'காணொளி இணைப்பு',
         insert: 'காணொளியை செருகு',
         url: 'இணையதள முகவரி',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)',
       },
       link: {
         link: 'இணைப்பு',
@@ -49,7 +49,7 @@
         edit: 'இணைப்பை தொகு',
         textToDisplay: 'காட்சி வாசகம்',
         url: 'இணையதள முகவரி',
-        openInNewWindow: 'புதிய சாளரத்தில் திறக்க'
+        openInNewWindow: 'புதிய சாளரத்தில் திறக்க',
       },
       table: {
         table: 'அட்டவணை',
@@ -59,10 +59,10 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
       },
       hr: {
-        insert: 'கிடைமட்ட கோடு'
+        insert: 'கிடைமட்ட கோடு',
       },
       style: {
         style: 'தொகுப்பு',
@@ -74,16 +74,16 @@
         h3: 'தலைப்பு 3',
         h4: 'தலைப்பு 4',
         h5: 'தலைப்பு 5',
-        h6: 'தலைப்பு 6'
+        h6: 'தலைப்பு 6',
       },
       lists: {
         unordered: 'வரிசையிடாத',
-        ordered: 'வரிசையிட்ட'
+        ordered: 'வரிசையிட்ட',
       },
       options: {
         help: 'உதவி',
         fullscreen: 'முழுத்திரை',
-        codeview: 'நிரலாக்க காட்சி'
+        codeview: 'நிரலாக்க காட்சி',
       },
       paragraph: {
         paragraph: 'பத்தி',
@@ -92,7 +92,7 @@
         left: 'இடது சீரமைப்பு',
         center: 'நடு சீரமைப்பு',
         right: 'வலது சீரமைப்பு',
-        justify: 'இருபுற சீரமைப்பு'
+        justify: 'இருபுற சீரமைப்பு',
       },
       color: {
         recent: 'அண்மை நிறம்',
@@ -102,7 +102,7 @@
         transparent: 'தெளிமையான',
         setTransparent: 'தெளிமையாக்கு',
         reset: 'மீட்டமைக்க',
-        resetToDefault: 'இயல்புநிலைக்கு மீட்டமை'
+        resetToDefault: 'இயல்புநிலைக்கு மீட்டமை',
       },
       shortcut: {
         shortcuts: 'குறுக்குவழி',
@@ -111,7 +111,7 @@
         action: 'செயல்படுத்து',
         paragraphFormatting: 'பத்தி வடிவமைப்பு',
         documentStyle: 'ஆவண பாணி',
-        extraKeys: 'Extra keys'
+        extraKeys: 'Extra keys',
       },
       help: {
         'insertParagraph': 'Insert Paragraph',
@@ -140,16 +140,16 @@
         'formatH5': 'Change current block\'s format as H5',
         'formatH6': 'Change current block\'s format as H6',
         'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
+        'linkDialog.show': 'Show Link Dialog',
       },
       history: {
         undo: 'மீளமை',
-        redo: 'மீண்டும்'
+        redo: 'மீண்டும்',
       },
       specialChar: {
         specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
-      }
-    }
+        select: 'Select Special characters',
+      },
+    },
   });
 })(jQuery);

@@ -23,7 +23,7 @@ export default class Handle {
       },
       'summernote.codeview.toggled': () => {
         this.update();
-      }
+      },
     };
   }
 
@@ -40,7 +40,7 @@ export default class Handle {
       ' note-control-se"></div>',
       (this.options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>'),
       '</div>',
-      '</div>'
+      '</div>',
     ].join('')).prependTo(this.$editingArea);
 
     this.$handle.on('mousedown', (event) => {
@@ -55,7 +55,7 @@ export default class Handle {
         const onMouseMove = (event) => {
           this.context.invoke('editor.resizeTo', {
             x: event.clientX - posStart.left,
-            y: event.clientY - (posStart.top - scrollTop)
+            y: event.clientY - (posStart.top - scrollTop),
           }, $target, !event.shiftKey);
 
           this.update($target[0]);
@@ -101,13 +101,13 @@ export default class Handle {
       const position = $image.position();
       const pos = {
         left: position.left + parseInt($image.css('marginLeft'), 10),
-        top: position.top + parseInt($image.css('marginTop'), 10)
+        top: position.top + parseInt($image.css('marginTop'), 10),
       };
 
       // exclude margin
       const imageSize = {
         w: $image.outerWidth(false),
-        h: $image.outerHeight(false)
+        h: $image.outerHeight(false),
       };
 
       $selection.css({
@@ -115,7 +115,7 @@ export default class Handle {
         left: pos.left,
         top: pos.top,
         width: imageSize.w,
-        height: imageSize.h
+        height: imageSize.h,
       }).data('target', $image); // save current image element.
 
       const origImageObj = new Image();

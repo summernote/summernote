@@ -83,7 +83,7 @@ function rect2bnd(rect) {
     top: rect.top + $document.scrollTop(),
     left: rect.left + $document.scrollLeft(),
     width: rect.right - rect.left,
-    height: rect.bottom - rect.top
+    height: rect.bottom - rect.top,
   };
 }
 
@@ -158,5 +158,5 @@ export default {
   rect2bnd,
   invertObject,
   namespaceToCamel,
-  debounce
+  debounce,
 };

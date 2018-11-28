@@ -9,8 +9,8 @@ module.exports = (() => {
       server_path: 'test/libs/selenium-server-standalone.jar',
       port: 4444,
       cli_args: {
-        'webdriver.chrome.driver': 'node_modules/.bin/chromedriver'
-      }
+        'webdriver.chrome.driver': 'node_modules/.bin/chromedriver',
+      },
     },
 
     test_settings: {
@@ -20,9 +20,9 @@ module.exports = (() => {
         selenium_host: 'localhost',
         desiredCapabilities: {
           browserName: 'chrome',
-          javascriptEnabled: true
+          javascriptEnabled: true,
         },
-        filter: 'test/e2e/**/*.test.js'
+        filter: 'test/e2e/**/*.test.js',
       },
       ie9: {
         desiredCapabilities: {
@@ -30,8 +30,8 @@ module.exports = (() => {
           platform: 'Windows 7',
           version: '9.0',
           build: process.env.TRAVIS_BUILD_NUMBER,
-          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
-        }
+          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+        },
       },
       ie10: {
         desiredCapabilities: {
@@ -39,8 +39,8 @@ module.exports = (() => {
           platform: 'Windows 8',
           version: '10.0',
           build: process.env.TRAVIS_BUILD_NUMBER,
-          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
-        }
+          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+        },
       },
       ie11: {
         desiredCapabilities: {
@@ -48,8 +48,8 @@ module.exports = (() => {
           platform: 'Windows 8.1',
           version: '11.0',
           build: process.env.TRAVIS_BUILD_NUMBER,
-          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
-        }
+          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+        },
       },
       ie_edge: {
         desiredCapabilities: {
@@ -57,8 +57,8 @@ module.exports = (() => {
           platform: 'Windows 10',
           version: 'latest',
           build: process.env.TRAVIS_BUILD_NUMBER,
-          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
-        }
+          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+        },
       },
       chrome: {
         desiredCapabilities: {
@@ -66,8 +66,8 @@ module.exports = (() => {
           platform: 'Windows 8',
           version: 'latest',
           build: process.env.TRAVIS_BUILD_NUMBER,
-          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
-        }
+          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+        },
       },
       firefox: {
         desiredCapabilities: {
@@ -75,8 +75,8 @@ module.exports = (() => {
           platform: 'Windows 8',
           version: 'latest',
           build: process.env.TRAVIS_BUILD_NUMBER,
-          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
-        }
+          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+        },
       },
       safari: {
         desiredCapabilities: {
@@ -84,10 +84,10 @@ module.exports = (() => {
           platform: 'OS X 10.10',
           version: 'latest',
           build: process.env.TRAVIS_BUILD_NUMBER,
-          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER
-        }
-      }
-    }
+          'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+        },
+      },
+    },
   };
 
   if (process.env.TRAVIS) {
@@ -98,7 +98,7 @@ module.exports = (() => {
       selenium_port: 80,
       username: process.env.SAUCE_USERNAME,
       access_key: process.env.SAUCE_ACCESS_KEY,
-      filter: 'test/e2e/**/*.test.js'
+      filter: 'test/e2e/**/*.test.js',
     };
   }
 

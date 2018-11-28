@@ -53,7 +53,7 @@ $.summernote = $.extend($.summernote, {
       'tablePopover': TablePopover,
       'videoDialog': VideoDialog,
       'helpDialog': HelpDialog,
-      'airPopover': AirPopover
+      'airPopover': AirPopover,
     },
 
     buttons: {},
@@ -73,7 +73,7 @@ $.summernote = $.extend($.summernote, {
       ['para', ['ul', 'ol', 'paragraph']],
       ['table', ['table']],
       ['insert', ['link', 'picture', 'video']],
-      ['view', ['fullscreen', 'codeview', 'help']]
+      ['view', ['fullscreen', 'codeview', 'help']],
     ],
 
     // popover
@@ -82,22 +82,22 @@ $.summernote = $.extend($.summernote, {
       image: [
         ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
         ['float', ['floatLeft', 'floatRight', 'floatNone']],
-        ['remove', ['removeMedia']]
+        ['remove', ['removeMedia']],
       ],
       link: [
-        ['link', ['linkDialogShow', 'unlink']]
+        ['link', ['linkDialogShow', 'unlink']],
       ],
       table: [
         ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
-        ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]
+        ['delete', ['deleteRow', 'deleteCol', 'deleteTable']],
       ],
       air: [
         ['color', ['color']],
         ['font', ['bold', 'underline', 'clear']],
         ['para', ['ul', 'paragraph']],
         ['table', ['table']],
-        ['insert', ['link', 'picture']]
-      ]
+        ['insert', ['link', 'picture']],
+      ],
     },
 
     // air mode: inline editor
@@ -123,7 +123,7 @@ $.summernote = $.extend($.summernote, {
     fontNames: [
       'Arial', 'Arial Black', 'Comic Sans MS', 'Courier New',
       'Helvetica Neue', 'Helvetica', 'Impact', 'Lucida Grande',
-      'Tahoma', 'Times New Roman', 'Verdana'
+      'Tahoma', 'Times New Roman', 'Verdana',
     ],
 
     fontSizes: ['8', '9', '10', '11', '12', '14', '18', '24', '36'],
@@ -137,7 +137,7 @@ $.summernote = $.extend($.summernote, {
       ['#E76363', '#F7AD6B', '#FFD663', '#94BD7B', '#73A5AD', '#6BADDE', '#8C7BC6', '#C67BA5'],
       ['#CE0000', '#E79439', '#EFC631', '#6BA54A', '#4A7B8C', '#3984C6', '#634AA5', '#A54A7B'],
       ['#9C0000', '#B56308', '#BD9400', '#397B21', '#104A5A', '#085294', '#311873', '#731842'],
-      ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031']
+      ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031'],
     ],
 
     // http://chir.ag/projects/name-that-color/
@@ -149,7 +149,7 @@ $.summernote = $.extend($.summernote, {
       ['Mandy', 'Rajah', 'Dandelion', 'Olivine', 'Gulf Stream', 'Viking', 'Blue Marguerite', 'Puce'],
       ['Guardsman Red', 'Fire Bush', 'Golden Dream', 'Chelsea Cucumber', 'Smalt Blue', 'Boston Blue', 'Butterfly Bush', 'Cadillac'],
       ['Sangria', 'Mai Tai', 'Buddha Gold', 'Forest Green', 'Eden', 'Venice Blue', 'Meteorite', 'Claret'],
-      ['Rosewood', 'Cinnamon', 'Olive', 'Parsley', 'Tiber', 'Midnight Blue', 'Valentino', 'Loulou']
+      ['Rosewood', 'Cinnamon', 'Olive', 'Parsley', 'Tiber', 'Midnight Blue', 'Valentino', 'Loulou'],
     ],
 
     lineHeights: ['1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'],
@@ -158,7 +158,7 @@ $.summernote = $.extend($.summernote, {
 
     insertTableMaxSize: {
       col: 10,
-      row: 10
+      row: 10,
     },
 
     dialogsInBody: false,
@@ -176,13 +176,13 @@ $.summernote = $.extend($.summernote, {
       onKeydown: null,
       onImageUpload: null,
       onImageUploadError: null,
-      onImageLinkInsert: null
+      onImageLinkInsert: null,
     },
 
     codemirror: {
       mode: 'text/html',
       htmlMode: true,
-      lineNumbers: true
+      lineNumbers: true,
     },
 
     keyMap: {
@@ -213,7 +213,7 @@ $.summernote = $.extend($.summernote, {
         'CTRL+NUM5': 'formatH5',
         'CTRL+NUM6': 'formatH6',
         'CTRL+ENTER': 'insertHorizontalRule',
-        'CTRL+K': 'linkDialog.show'
+        'CTRL+K': 'linkDialog.show',
       },
 
       mac: {
@@ -243,8 +243,8 @@ $.summernote = $.extend($.summernote, {
         'CMD+NUM5': 'formatH5',
         'CMD+NUM6': 'formatH6',
         'CMD+ENTER': 'insertHorizontalRule',
-        'CMD+K': 'linkDialog.show'
-      }
+        'CMD+K': 'linkDialog.show',
+      },
     },
     icons: {
       'align': 'note-icon-align',
@@ -290,9 +290,9 @@ $.summernote = $.extend($.summernote, {
       'underline': 'note-icon-underline',
       'undo': 'note-icon-undo',
       'unorderedlist': 'note-icon-unorderedlist',
-      'video': 'note-icon-video'
-    }
-  }
+      'video': 'note-icon-video',
+    },
+  },
 });
 
 import '../summernote'; // eslint-disable-line
