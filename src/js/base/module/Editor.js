@@ -204,12 +204,9 @@ export default class Editor {
       if (this.options.onCreateLink) {
         linkUrl = this.options.onCreateLink(linkUrl);
       } else {
-        // if url is not relative,
-        if (!/^\.?\/(.*)/.test(linkUrl)) {
-          // if url doesn't match an URL schema, set http:// as default
-          linkUrl = /^[A-Za-z][A-Za-z0-9+-.]*\:[\/\/]?/.test(linkUrl)
-            ? linkUrl : 'http://' + linkUrl;
-        }
+        // if url doesn't have any protocol and not even a relative or a label, use http:// as default
+        linkUrl = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/.test(linkUrl)
+          ? linkUrl : 'http://' + linkUrl;
       }
 
       let anchors = [];
