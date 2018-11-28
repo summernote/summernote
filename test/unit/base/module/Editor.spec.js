@@ -169,6 +169,17 @@ describe('Editor', () => {
       editor.insertNode($('<span> world</span>')[0]);
       expectContents(context, '<p>hello</p>');
     });
+
+    it('should insert node in last focus', () => {
+      $editable.appendTo('body');
+      context.invoke('editor.focus');
+      editor.insertNode($('<span> world</span>')[0]);
+      $('body').focus();
+      editor.insertNode($('<span> hello</span>')[0]);
+      expectContents(context, '<p><span> world</span><span> hello</span>hello</p>');
+
+      $editable.remove();
+    });
   });
 
   describe('insertText', () => {
@@ -186,6 +197,17 @@ describe('Editor', () => {
 
       editor.insertText(' world');
       expectContents(context, '<p>hello</p>');
+    });
+
+    it('should insert text in last focus', () => {
+      $editable.appendTo('body');
+      context.invoke('editor.focus');
+      editor.insertText(' world');
+      $('body').focus();
+      editor.insertText(' summernote ');
+      expectContents(context, '<p> world summernote hello</p>');
+
+      $editable.remove();
     });
   });
 
