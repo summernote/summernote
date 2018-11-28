@@ -10,6 +10,7 @@ import Fullscreen from '../base/module/Fullscreen';
 import Handle from '../base/module/Handle';
 import AutoLink from '../base/module/AutoLink';
 import AutoSync from '../base/module/AutoSync';
+import AutoReplace from '../base/module/AutoReplace';
 import Placeholder from '../base/module/Placeholder';
 import Buttons from '../base/module/Buttons';
 import Toolbar from '../base/module/Toolbar';
@@ -43,6 +44,7 @@ $.summernote = $.extend($.summernote, {
       'hintPopover': HintPopover,
       'autoLink': AutoLink,
       'autoSync': AutoSync,
+      'autoReplace': AutoReplace,
       'placeholder': Placeholder,
       'buttons': Buttons,
       'toolbar': Toolbar,
