@@ -51,6 +51,34 @@ export default class CodeView {
   }
 
   /**
+   * purify code view
+   * @param value
+   * @returns {*}
+   */
+  purify(value) {
+    if (this.options.codeviewFilter) {
+      // filter code view regex
+      value = value.replace(this.options.codeviewRegex, '');
+      // allow specific iframe tag
+      var whitelist = this.options.codeviewIframeWhitelistSrc.concat(this.options.codeviewIframeWhitelistSrcOrigin);
+      value = value.replace(/(<iframe.*?>.*?<\/iframe>)/gi, function(tag) {
+        // remove src duplication
+        if (/<.+src(?==?('|"|\s)?)[\s\S]+src(?=('|"|\s)?)[^>]*?>/i.test(tag)) {
+          return '';
+        }
+        for (var i in whitelist) {
+          // pass whitelist src
+          if ((new RegExp('src="\/\/' + whitelist[i] + '\/(.+)"')).test(tag)) {
+            return tag;
+          }
+        }
+        return '';
+      });
+    }
+    return value;
+  }
+
+  /**
    * activate code view
    */
   activate() {
@@ -99,7 +127,7 @@ export default class CodeView {
       cmEditor.toTextArea();
     }
 
-    const value = dom.value(this.$codable, this.options.prettifyHtml) || dom.emptyPara;
+    const value = this.purify(dom.value(this.$codable, this.options.prettifyHtml) || dom.emptyPara);
     const isChange = this.$editable.html() !== value;
 
     this.$editable.html(value);
