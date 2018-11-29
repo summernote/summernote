@@ -29,7 +29,7 @@ export default class HintPopover {
       },
       'summernote.disable summernote.dialog.shown': () => {
         this.hide();
-      }
+      },
     };
   }
 
@@ -42,7 +42,7 @@ export default class HintPopover {
     this.$popover = this.ui.popover({
       className: 'note-hint-popover',
       hideArrow: true,
-      direction: ''
+      direction: '',
     }).render().appendTo(this.options.container);
 
     this.$popover.hide();
@@ -132,7 +132,7 @@ export default class HintPopover {
       $item.append(hint.template ? hint.template(item) : item + '');
       $item.data({
         'index': hintIdx,
-        'item': item
+        'item': item,
       });
       return $item;
     });
@@ -201,12 +201,12 @@ export default class HintPopover {
           if (this.direction === 'top') {
             this.$popover.css({
               left: bnd.left,
-              top: bnd.top - this.$popover.outerHeight() - POPOVER_DIST
+              top: bnd.top - this.$popover.outerHeight() - POPOVER_DIST,
             });
           } else {
             this.$popover.css({
               left: bnd.left,
-              top: bnd.top + bnd.height + POPOVER_DIST
+              top: bnd.top + bnd.height + POPOVER_DIST,
             });
           }
         }

@@ -28,7 +28,7 @@ export default class AirPopover {
         if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq(this.$popover[0]))) {
           this.hide();
         }
-      }
+      },
     };
   }
 
@@ -38,7 +38,7 @@ export default class AirPopover {
 
   initialize() {
     this.$popover = this.ui.popover({
-      className: 'note-air-popover'
+      className: 'note-air-popover',
     }).render().appendTo(this.options.container);
     const $content = this.$popover.find('.popover-content');
 
@@ -58,7 +58,7 @@ export default class AirPopover {
         this.$popover.css({
           display: 'block',
           left: Math.max(bnd.left + bnd.width / 2, 0) - AIR_MODE_POPOVER_X_OFFSET,
-          top: bnd.top + bnd.height
+          top: bnd.top + bnd.height,
         });
         this.context.invoke('buttons.updateCurrentStyle', this.$popover);
       }

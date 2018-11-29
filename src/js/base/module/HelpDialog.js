@@ -20,7 +20,7 @@ export default class HelpDialog {
       '<a href="http://summernote.org/" target="_blank">Summernote @@VERSION@@</a> · ',
       '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ',
       '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>',
-      '</p>'
+      '</p>',
     ].join('');
 
     this.$dialog = this.ui.dialog({
@@ -31,9 +31,9 @@ export default class HelpDialog {
       callback: ($node) => {
         $node.find('.modal-body,.note-modal-body').css({
           'max-height': 300,
-          'overflow': 'scroll'
+          'overflow': 'scroll',
         });
-      }
+      },
     }).render().appendTo($container);
   }
 
@@ -49,7 +49,7 @@ export default class HelpDialog {
       const $row = $('<div><div class="help-list-item"/></div>');
       $row.append($('<label><kbd>' + key + '</kdb></label>').css({
         'width': 180,
-        'margin-right': 10
+        'margin-right': 10,
       })).append($('<span/>').html(this.context.memo('help.' + command) || command));
       return $row.html();
     }).join('');

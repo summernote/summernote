@@ -11,7 +11,7 @@
         strikethrough: 'Закреслений',
         subscript: 'Нижній індекс',
         superscript: 'Верхній індекс',
-        size: 'Розмір шрифту'
+        size: 'Розмір шрифту',
       },
       image: {
         image: 'Картинка',
@@ -33,14 +33,14 @@
         maximumFileSizeError: 'Maximum file size exceeded.',
         url: 'URL картинки',
         remove: 'Видалити картинку',
-        original: 'Original'
+        original: 'Original',
       },
       video: {
         video: 'Відео',
         videoLink: 'Посилання на відео',
         insert: 'Вставити відео',
         url: 'URL відео',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion чи Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion чи Youku)',
       },
       link: {
         link: 'Посилання',
@@ -49,7 +49,7 @@
         edit: 'Редагувати',
         textToDisplay: 'Текст, що відображається',
         url: 'URL для переходу',
-        openInNewWindow: 'Відкривати у новому вікні'
+        openInNewWindow: 'Відкривати у новому вікні',
       },
       table: {
         table: 'Таблиця',
@@ -59,10 +59,10 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
       },
       hr: {
-        insert: 'Вставити горизонтальну лінію'
+        insert: 'Вставити горизонтальну лінію',
       },
       style: {
         style: 'Стиль',
@@ -74,16 +74,16 @@
         h3: 'Заголовок 3',
         h4: 'Заголовок 4',
         h5: 'Заголовок 5',
-        h6: 'Заголовок 6'
+        h6: 'Заголовок 6',
       },
       lists: {
         unordered: 'Маркований список',
-        ordered: 'Нумерований список'
+        ordered: 'Нумерований список',
       },
       options: {
         help: 'Допомога',
         fullscreen: 'На весь екран',
-        codeview: 'Початковий код'
+        codeview: 'Початковий код',
       },
       paragraph: {
         paragraph: 'Параграф',
@@ -92,7 +92,7 @@
         left: 'Вирівняти по лівому краю',
         center: 'Вирівняти по центру',
         right: 'Вирівняти по правому краю',
-        justify: 'Розтягнути по ширині'
+        justify: 'Розтягнути по ширині',
       },
       color: {
         recent: 'Останній колір',
@@ -102,7 +102,7 @@
         transparent: 'Прозорий',
         setTransparent: 'Зробити прозорим',
         reset: 'Відновити',
-        resetToDefault: 'Відновити початкові'
+        resetToDefault: 'Відновити початкові',
       },
       shortcut: {
         shortcuts: 'Комбінації клавіш',
@@ -111,7 +111,7 @@
         action: 'Дія',
         paragraphFormatting: 'Форматування параграфу',
         documentStyle: 'Стиль документу',
-        extraKeys: 'Extra keys'
+        extraKeys: 'Extra keys',
       },
       help: {
         'insertParagraph': 'Insert Paragraph',
@@ -140,16 +140,16 @@
         'formatH5': 'Change current block\'s format as H5',
         'formatH6': 'Change current block\'s format as H6',
         'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
+        'linkDialog.show': 'Show Link Dialog',
       },
       history: {
         undo: 'Відмінити',
-        redo: 'Повторити'
+        redo: 'Повторити',
       },
       specialChar: {
         specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
-      }
-    }
+        select: 'Select Special characters',
+      },
+    },
   });
 })(jQuery);

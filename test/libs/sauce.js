@@ -16,10 +16,10 @@ const reportResult = (client, done) => {
       url: url,
       auth: {
         username: user,
-        password: key
+        password: key,
       },
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ passed: passed })
+      body: JSON.stringify({ passed: passed }),
     }, function(res, status, body) {
       console.log('Sauce response:', body);
       done();
@@ -31,5 +31,5 @@ const reportResult = (client, done) => {
 };
 
 module.exports = {
-  reportResult: reportResult
+  reportResult: reportResult,
 };

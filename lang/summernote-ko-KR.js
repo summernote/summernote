@@ -11,7 +11,7 @@
         superscript: '위 첨자',
         subscript: '아래 첨자',
         strikethrough: '취소선',
-        size: '글자 크기'
+        size: '글자 크기',
       },
       image: {
         image: '사진',
@@ -33,14 +33,14 @@
         maximumFileSizeError: 'Maximum file size exceeded.',
         url: '사진 URL',
         remove: '사진 삭제',
-        original: 'Original'
+        original: 'Original',
       },
       video: {
         video: '동영상',
         videoLink: '동영상 링크',
         insert: '동영상 추가',
         url: '동영상 URL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, Youku 사용 가능)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, Youku 사용 가능)',
       },
       link: {
         link: '링크',
@@ -49,7 +49,7 @@
         edit: '수정',
         textToDisplay: '링크에 표시할 내용',
         url: '이동할 URL',
-        openInNewWindow: '새창으로 열기'
+        openInNewWindow: '새창으로 열기',
       },
       table: {
         table: '테이블',
@@ -59,10 +59,10 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
       },
       hr: {
-        insert: '구분선 추가'
+        insert: '구분선 추가',
       },
       style: {
         style: '스타일',
@@ -74,16 +74,16 @@
         h3: '제목 3',
         h4: '제목 4',
         h5: '제목 5',
-        h6: '제목 6'
+        h6: '제목 6',
       },
       lists: {
         unordered: '글머리 기호',
-        ordered: '번호 매기기'
+        ordered: '번호 매기기',
       },
       options: {
         help: '도움말',
         fullscreen: '전체 화면',
-        codeview: '코드 보기'
+        codeview: '코드 보기',
       },
       paragraph: {
         paragraph: '문단 정렬',
@@ -92,7 +92,7 @@
         left: '왼쪽 정렬',
         center: '가운데 정렬',
         right: '오른쪽 정렬',
-        justify: '양쪽 정렬'
+        justify: '양쪽 정렬',
       },
       color: {
         recent: '마지막으로 사용한 색',
@@ -103,7 +103,7 @@
         setTransparent: '투명',
         reset: '취소',
         resetToDefault: '기본 값으로 변경',
-        cpSelect: '고르다'
+        cpSelect: '고르다',
       },
       shortcut: {
         shortcuts: '키보드 단축키',
@@ -112,7 +112,7 @@
         action: '기능',
         paragraphFormatting: '문단 스타일 적용',
         documentStyle: '문서 스타일 적용',
-        extraKeys: 'Extra keys'
+        extraKeys: 'Extra keys',
       },
       help: {
         'insertParagraph': 'Insert Paragraph',
@@ -141,16 +141,16 @@
         'formatH5': 'Change current block\'s format as H5',
         'formatH6': 'Change current block\'s format as H6',
         'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
+        'linkDialog.show': 'Show Link Dialog',
       },
       history: {
         undo: '실행 취소',
-        redo: '다시 실행'
+        redo: '다시 실행',
       },
       specialChar: {
         specialChar: '특수문자',
-        select: '특수문자를 선택하세요'
-      }
-    }
+        select: '특수문자를 선택하세요',
+      },
+    },
   });
 })(jQuery);

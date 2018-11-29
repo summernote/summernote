@@ -547,7 +547,7 @@ function prevPoint(point, isSkipInnerOffset) {
 
   return {
     node: node,
-    offset: offset
+    offset: offset,
   };
 }
 
@@ -578,7 +578,7 @@ function nextPoint(point, isSkipInnerOffset) {
 
   return {
     node: node,
-    offset: offset
+    offset: offset,
   };
 }
 
@@ -810,7 +810,7 @@ function splitTree(root, point, options) {
 
     return splitNode({
       node: parent,
-      offset: node ? position(node) : nodeLength(parent)
+      offset: node ? position(node) : nodeLength(parent),
     }, options);
   });
 }
@@ -842,7 +842,7 @@ function splitPoint(point, isInline) {
   // if splitRoot is exists, split with splitTree
   let pivot = splitRoot && splitTree(splitRoot, point, {
     isSkipPaddingBlankHTML: isInline,
-    isNotSplitEdgePoint: isInline
+    isNotSplitEdgePoint: isInline,
   });
 
   // if container is point.node, find pivot with point.offset
@@ -852,7 +852,7 @@ function splitPoint(point, isInline) {
 
   return {
     rightNode: pivot,
-    container: container
+    container: container,
   };
 }
 
@@ -984,7 +984,7 @@ function posFromPlaceholder(placeholder) {
 
   return {
     left: pos.left,
-    top: pos.top + height
+    top: pos.top + height,
   };
 }
 
@@ -1100,5 +1100,5 @@ export default {
   posFromPlaceholder,
   attachEvents,
   detachEvents,
-  isCustomStyleTag
+  isCustomStyleTag,
 };

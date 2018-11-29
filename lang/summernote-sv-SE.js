@@ -11,7 +11,7 @@
         strikethrough: 'Genomstruken',
         subscript: 'Subscript',
         superscript: 'Superscript',
-        size: 'Teckenstorlek'
+        size: 'Teckenstorlek',
       },
       image: {
         image: 'Bild',
@@ -33,14 +33,14 @@
         maximumFileSizeError: 'Maximum file size exceeded.',
         url: 'Länk till bild',
         remove: 'Ta bort bild',
-        original: 'Original'
+        original: 'Original',
       },
       video: {
         video: 'Filmklipp',
         videoLink: 'Länk till filmklipp',
         insert: 'Infoga filmklipp',
         url: 'Länk till filmklipp',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion eller Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion eller Youku)',
       },
       link: {
         link: 'Länk',
@@ -49,7 +49,7 @@
         edit: 'Redigera',
         textToDisplay: 'Visningstext',
         url: 'Till vilken URL ska denna länk peka?',
-        openInNewWindow: 'Öppna i ett nytt fönster'
+        openInNewWindow: 'Öppna i ett nytt fönster',
       },
       table: {
         table: 'Tabell',
@@ -59,10 +59,10 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
       },
       hr: {
-        insert: 'Infoga horisontell linje'
+        insert: 'Infoga horisontell linje',
       },
       style: {
         style: 'Stil',
@@ -74,16 +74,16 @@
         h3: 'Rubrik 3',
         h4: 'Rubrik 4',
         h5: 'Rubrik 5',
-        h6: 'Rubrik 6'
+        h6: 'Rubrik 6',
       },
       lists: {
         unordered: 'Punktlista',
-        ordered: 'Numrerad lista'
+        ordered: 'Numrerad lista',
       },
       options: {
         help: 'Hjälp',
         fullscreen: 'Fullskärm',
-        codeview: 'HTML-visning'
+        codeview: 'HTML-visning',
       },
       paragraph: {
         paragraph: 'Justera text',
@@ -92,7 +92,7 @@
         left: 'Vänsterjusterad',
         center: 'Centrerad',
         right: 'Högerjusterad',
-        justify: 'Justera text'
+        justify: 'Justera text',
       },
       color: {
         recent: 'Senast använda färg',
@@ -102,7 +102,7 @@
         transparent: 'Genomskinlig',
         setTransparent: 'Gör genomskinlig',
         reset: 'Nollställ',
-        resetToDefault: 'Återställ till standard'
+        resetToDefault: 'Återställ till standard',
       },
       shortcut: {
         shortcuts: 'Kortkommandon',
@@ -111,7 +111,7 @@
         action: 'Funktion',
         paragraphFormatting: 'Avsnittsformatering',
         documentStyle: 'Dokumentstil',
-        extraKeys: 'Extra keys'
+        extraKeys: 'Extra keys',
       },
       help: {
         'insertParagraph': 'Insert Paragraph',
@@ -140,16 +140,16 @@
         'formatH5': 'Change current block\'s format as H5',
         'formatH6': 'Change current block\'s format as H6',
         'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
+        'linkDialog.show': 'Show Link Dialog',
       },
       history: {
         undo: 'Ångra',
-        redo: 'Gör om'
+        redo: 'Gör om',
       },
       specialChar: {
         specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
-      }
-    }
+        select: 'Select Special characters',
+      },
+    },
   });
 })(jQuery);

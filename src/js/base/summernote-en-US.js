@@ -1,7 +1,7 @@
 import $ from 'jquery';
 
 $.summernote = $.summernote || {
-  lang: {}
+  lang: {},
 };
 
 $.extend($.summernote.lang, {
@@ -16,7 +16,7 @@ $.extend($.summernote.lang, {
       strikethrough: 'Strikethrough',
       subscript: 'Subscript',
       superscript: 'Superscript',
-      size: 'Font Size'
+      size: 'Font Size',
     },
     image: {
       image: 'Picture',
@@ -38,14 +38,14 @@ $.extend($.summernote.lang, {
       maximumFileSizeError: 'Maximum file size exceeded.',
       url: 'Image URL',
       remove: 'Remove Image',
-      original: 'Original'
+      original: 'Original',
     },
     video: {
       video: 'Video',
       videoLink: 'Video Link',
       insert: 'Insert Video',
       url: 'Video URL',
-      providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
+      providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)',
     },
     link: {
       link: 'Link',
@@ -54,7 +54,7 @@ $.extend($.summernote.lang, {
       edit: 'Edit',
       textToDisplay: 'Text to display',
       url: 'To what URL should this link go?',
-      openInNewWindow: 'Open in new window'
+      openInNewWindow: 'Open in new window',
     },
     table: {
       table: 'Table',
@@ -64,10 +64,10 @@ $.extend($.summernote.lang, {
       addColRight: 'Add column right',
       delRow: 'Delete row',
       delCol: 'Delete column',
-      delTable: 'Delete table'
+      delTable: 'Delete table',
     },
     hr: {
-      insert: 'Insert Horizontal Rule'
+      insert: 'Insert Horizontal Rule',
     },
     style: {
       style: 'Style',
@@ -79,16 +79,16 @@ $.extend($.summernote.lang, {
       h3: 'Header 3',
       h4: 'Header 4',
       h5: 'Header 5',
-      h6: 'Header 6'
+      h6: 'Header 6',
     },
     lists: {
       unordered: 'Unordered list',
-      ordered: 'Ordered list'
+      ordered: 'Ordered list',
     },
     options: {
       help: 'Help',
       fullscreen: 'Full Screen',
-      codeview: 'Code View'
+      codeview: 'Code View',
     },
     paragraph: {
       paragraph: 'Paragraph',
@@ -97,7 +97,7 @@ $.extend($.summernote.lang, {
       left: 'Align left',
       center: 'Align center',
       right: 'Align right',
-      justify: 'Justify full'
+      justify: 'Justify full',
     },
     color: {
       recent: 'Recent Color',
@@ -108,7 +108,7 @@ $.extend($.summernote.lang, {
       setTransparent: 'Set transparent',
       reset: 'Reset',
       resetToDefault: 'Reset to default',
-      cpSelect: 'Select'
+      cpSelect: 'Select',
     },
     shortcut: {
       shortcuts: 'Keyboard shortcuts',
@@ -117,7 +117,7 @@ $.extend($.summernote.lang, {
       action: 'Action',
       paragraphFormatting: 'Paragraph formatting',
       documentStyle: 'Document Style',
-      extraKeys: 'Extra keys'
+      extraKeys: 'Extra keys',
     },
     help: {
       'insertParagraph': 'Insert Paragraph',
@@ -146,15 +146,15 @@ $.extend($.summernote.lang, {
       'formatH5': 'Change current block\'s format as H5',
       'formatH6': 'Change current block\'s format as H6',
       'insertHorizontalRule': 'Insert horizontal rule',
-      'linkDialog.show': 'Show Link Dialog'
+      'linkDialog.show': 'Show Link Dialog',
     },
     history: {
       undo: 'Undo',
-      redo: 'Redo'
+      redo: 'Redo',
     },
     specialChar: {
       specialChar: 'SPECIAL CHARACTERS',
-      select: 'Select Special characters'
-    }
-  }
+      select: 'Select Special characters',
+    },
+  },
 });

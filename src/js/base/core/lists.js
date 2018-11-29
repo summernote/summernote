@@ -206,5 +206,5 @@ export default {
   isEmpty,
   clusterBy,
   compact,
-  unique
+  unique,
 };

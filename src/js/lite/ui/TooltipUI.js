@@ -5,7 +5,7 @@ class TooltipUI {
       title: '',
       target: options.container,
       trigger: 'hover focus',
-      placement: 'bottom'
+      placement: 'bottom',
     }, options);
 
     // create tooltip node
@@ -13,7 +13,7 @@ class TooltipUI {
       '<div class="note-tooltip in">',
       '  <div class="note-tooltip-arrow"/>',
       '  <div class="note-tooltip-content"/>',
-      '</div>'
+      '</div>',
     ].join(''));
 
     // define event
@@ -56,22 +56,22 @@ class TooltipUI {
     if (placement === 'bottom') {
       $tooltip.css({
         top: offset.top + nodeHeight,
-        left: offset.left + (nodeWidth / 2 - tooltipWidth / 2)
+        left: offset.left + (nodeWidth / 2 - tooltipWidth / 2),
       });
     } else if (placement === 'top') {
       $tooltip.css({
         top: offset.top - tooltipHeight,
-        left: offset.left + (nodeWidth / 2 - tooltipWidth / 2)
+        left: offset.left + (nodeWidth / 2 - tooltipWidth / 2),
       });
     } else if (placement === 'left') {
       $tooltip.css({
         top: offset.top + (nodeHeight / 2 - tooltipHeight / 2),
-        left: offset.left - tooltipWidth
+        left: offset.left - tooltipWidth,
       });
     } else if (placement === 'right') {
       $tooltip.css({
         top: offset.top + (nodeHeight / 2 - tooltipHeight / 2),
-        left: offset.left + nodeWidth
+        left: offset.left + nodeWidth,
       });
     }
   }

@@ -13,7 +13,7 @@ function isFontInstalled(fontName) {
     position: 'absolute',
     left: '-9999px',
     top: '-9999px',
-    fontSize: '200px'
+    fontSize: '200px',
   }).text('mmmmmmmmmwwwwwww').appendTo(document.body);
 
   const originalWidth = $tester.css('fontFamily', testFontName).width();
@@ -103,5 +103,5 @@ export default {
   hasCodeMirror,
   isFontInstalled,
   isW3CRangeSupport: !!document.createRange,
-  inputEventName
+  inputEventName,
 };

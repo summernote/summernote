@@ -18,7 +18,7 @@ export default class AutoReplace {
       },
       'summernote.keydown': (we, e) => {
         this.handleKeydown(e);
-      }
+      },
     };
   }
 

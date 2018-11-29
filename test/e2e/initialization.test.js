@@ -13,5 +13,5 @@ module.exports = {
     /* eslint-enable */
 
     client.end();
-  }
+  },
 };

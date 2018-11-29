@@ -15,13 +15,13 @@ const statusbar = renderer.create([
   '    <div class="note-icon-bar"/>',
   '    <div class="note-icon-bar"/>',
   '  </div>',
-  '</div>'
+  '</div>',
 ].join(''));
 
 const airEditor = renderer.create('<div class="note-editor"/>');
 const airEditable = renderer.create([
   '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>',
-  '<output class="note-status-output" aria-live="polite"/>'
+  '<output class="note-status-output" aria-live="polite"/>',
 ].join(''));
 
 const buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
@@ -70,7 +70,7 @@ const palette = renderer.create('<div class="note-color-palette"/>', function($n
         'data-value="', color, '" ',
         'title="', colorName, '" ',
         'aria-label="', colorName, '" ',
-        'data-toggle="button" tabindex="-1"></button>'
+        'data-toggle="button" tabindex="-1"></button>',
       ].join(''));
     }
     contents.push('<div class="note-color-row">' + buttons.join('') + '</div>');
@@ -81,7 +81,7 @@ const palette = renderer.create('<div class="note-color-palette"/>', function($n
     $node.find('.note-color-btn').tooltip({
       container: options.container,
       trigger: 'hover',
-      placement: 'bottom'
+      placement: 'bottom',
     });
   }
 });
@@ -91,7 +91,7 @@ const dialog = renderer.create('<div class="modal" aria-hidden="false" tabindex=
     $node.addClass('fade');
   }
   $node.attr({
-    'aria-label': options.title
+    'aria-label': options.title,
   });
   $node.html([
     '<div class="modal-dialog">',
@@ -107,7 +107,7 @@ const dialog = renderer.create('<div class="modal" aria-hidden="false" tabindex=
       ? '    <div class="modal-footer">' + options.footer + '</div>' : ''
     ),
     '  </div>',
-    '</div>'
+    '</div>',
   ].join(''));
 });
 
@@ -115,7 +115,7 @@ const popover = renderer.create([
   '<div class="note-popover popover in">',
   '  <div class="arrow"/>',
   '  <div class="popover-content note-children-container"/>',
-  '</div>'
+  '</div>',
 ].join(''), function($node, options) {
   const direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
 
@@ -133,7 +133,7 @@ const checkbox = renderer.create('<div class="form-check"></div>', function($nod
     (options.checked ? ' checked' : ''),
     ' aria-label="' + (options.text ? options.text : '') + '"',
     ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',
-    ' ' + (options.text ? options.text : '') + '</label>'
+    ' ' + (options.text ? options.text : '') + '</label>',
   ].join(''));
 });
 
@@ -167,11 +167,11 @@ const ui = {
       if (options && options.tooltip) {
         $node.attr({
           title: options.tooltip,
-          'aria-label': options.tooltip
+          'aria-label': options.tooltip,
         }).tooltip({
           container: (options.container !== undefined) ? options.container : 'body',
           trigger: 'hover',
-          placement: 'bottom'
+          placement: 'bottom',
         });
       }
     })($node, options);
@@ -205,15 +205,15 @@ const ui = {
   createLayout: function($note, options) {
     const $editor = (options.airMode ? ui.airEditor([
       ui.editingArea([
-        ui.airEditable()
-      ])
+        ui.airEditable(),
+      ]),
     ]) : ui.editor([
       ui.toolbar(),
       ui.editingArea([
         ui.codable(),
-        ui.editable()
+        ui.editable(),
       ]),
-      ui.statusbar()
+      ui.statusbar(),
     ])).render();
 
     $editor.insertAfter($note);
@@ -225,7 +225,7 @@ const ui = {
       editingArea: $editor.find('.note-editing-area'),
       editable: $editor.find('.note-editable'),
       codable: $editor.find('.note-codable'),
-      statusbar: $editor.find('.note-statusbar')
+      statusbar: $editor.find('.note-statusbar'),
     };
   },
 
@@ -233,7 +233,7 @@ const ui = {
     $note.html(layoutInfo.editable.html());
     layoutInfo.editor.remove();
     $note.show();
-  }
+  },
 };
 
 export default ui;
