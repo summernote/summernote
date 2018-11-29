@@ -204,7 +204,7 @@ $.summernote = $.extend($.summernote, {
       'player.vimeo.com',
       'www.dailymotion.com',
       'player.youku.com',
-      'v.qq.com'
+      'v.qq.com',
     ],
 
     keyMap: {
