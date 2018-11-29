@@ -127,6 +127,7 @@ $.summernote = $.extend($.summernote, {
       'Helvetica Neue', 'Helvetica', 'Impact', 'Lucida Grande',
       'Tahoma', 'Times New Roman', 'Verdana',
     ],
+    fontNamesIgnoreCheck: [],
 
     fontSizes: ['8', '9', '10', '11', '12', '14', '18', '24', '36'],
 
