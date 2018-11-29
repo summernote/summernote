@@ -38,6 +38,7 @@ describe('LinkDialog', () => {
   describe('LinkDialog', () => {
     it('should check new window when target=_blank', () => {
       range.createFromNode($editable.find('a')[0]).normalize().select();
+      context.invoke('editor.setLastRange');
       dialog.show();
 
       var checked = dialog.$dialog
@@ -48,11 +49,10 @@ describe('LinkDialog', () => {
 
     it('should uncheck new window without target=_blank', () => {
       range.createFromNode($editable.find('a')[1]).normalize().select();
+      context.invoke('editor.setLastRange');
       dialog.show();
 
-      var checked = dialog.$dialog
-        .find('.sn-checkbox-open-in-new-window input[type=checkbox]')
-        .is(':checked');
+      var checked = dialog.$dialog.find('#sn-checkbox-open-in-new-window').is(':checked');
       expect(checked).to.be.false;
     });
   });

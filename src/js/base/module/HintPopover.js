@@ -180,7 +180,7 @@ export default class HintPopover {
 
   handleKeyup(e) {
     if (!lists.contains([key.code.ENTER, key.code.UP, key.code.DOWN], e.keyCode)) {
-      const wordRange = this.context.invoke('editor.createRange').getWordRange();
+      const wordRange = this.context.invoke('editor.getLastRange').getWordRange();
       const keyword = wordRange.toString();
       if (this.hints.length && keyword) {
         this.$content.empty();

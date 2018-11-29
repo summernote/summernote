@@ -147,7 +147,7 @@
         redo: 'Restaurer la dernière action annulée',
       },
       specialChar: {
-        specialChar: 'CARACTÈRES SPÉCIAUX',
+        specialChar: 'Caractères spéciaux',
         select: 'Choisir des caractères spéciaux',
       },
     },

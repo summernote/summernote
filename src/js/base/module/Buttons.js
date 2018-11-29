@@ -775,7 +775,7 @@ export default class Buttons {
       for (let idx = 0, len = buttons.length; idx < len; idx++) {
         const btn = this.context.memo('button.' + buttons[idx]);
         if (btn) {
-          $group.append(typeof btn === 'function' ? btn(this.context) : btn);
+          $group.append(typeof btn === 'function' ? btn() : btn);
         }
       }
       $group.appendTo($container);
