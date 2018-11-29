@@ -97,10 +97,13 @@ export default class Buttons {
           callback: ($button) => {
             const $recentColor = $button.find('.note-recent-color');
             if (backColor) {
-              $recentColor.css('background-color', '#FFFF00');
-              $button.attr('data-backColor', '#FFFF00');
+              $recentColor.css('background-color', this.options.colorButton.backColor);
+              $button.attr('data-backColor', this.options.colorButton.backColor);
             }
-            if (!foreColor) {
+            if (foreColor) {
+              $recentColor.css('color', this.options.colorButton.foreColor);
+              $button.attr('data-foreColor', this.options.colorButton.foreColor);
+            } else {
               $recentColor.css('color', 'transparent');
             }
           }
@@ -127,7 +130,7 @@ export default class Buttons {
             '    <button type="button" class="note-color-select btn" data-event="openPalette" data-value="backColorPicker">',
             this.lang.color.cpSelect,
             '    </button>',
-            '    <input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="#FFFF00" data-event="backColorPalette">',
+            '    <input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.backColor + '" data-event="backColorPalette">',
             '  </div>',
             '  <div class="note-holder-custom" id="backColorPalette" data-event="backColor"/>',
             '</div>'
@@ -145,7 +148,7 @@ export default class Buttons {
             '    <button type="button" class="note-color-select btn" data-event="openPalette" data-value="foreColorPicker">',
             this.lang.color.cpSelect,
             '    </button>',
-            '    <input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="#000000" data-event="foreColorPalette">',
+            '    <input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.foreColor + '" data-event="foreColorPalette">',
             '  <div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"/>',
             '</div>'
           ].join('') : ''),
