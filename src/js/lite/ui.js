@@ -35,7 +35,9 @@ const button = renderer.create('<button type="button" class="note-btn" role="but
     $node.data('_lite_tooltip', new TooltipUI($node, {
       title: options.tooltip,
       container: options.container,
-    }));
+    })).on('click', (e) => {
+      $(e.currentTarget).data('_lite_tooltip').hide();
+    });
   }
   if (options.contents) {
     $node.html(options.contents);
