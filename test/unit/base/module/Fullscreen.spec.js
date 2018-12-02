@@ -8,6 +8,7 @@ import chai from 'chai';
 import $ from 'jquery';
 import Context from '../../../../src/js/base/Context';
 import Fullscreen from '../../../../src/js/base/module/Fullscreen';
+import '../../../../src/js/bs4/settings';
 
 describe('Fullscreen', () => {
   var expect = chai.expect;
@@ -15,8 +16,6 @@ describe('Fullscreen', () => {
 
   beforeEach(() => {
     var options = $.extend({}, $.summernote.options);
-    options.langInfo = $.extend(true, {
-    }, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
     context = new Context($('<div><p>hello</p></div>'), options);
     fullscreen = new Fullscreen(context);
   });

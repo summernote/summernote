@@ -3,11 +3,11 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-import '../../../../src/js/bs3/settings';
-import $ from 'jquery';
 import chai from 'chai';
+import $ from 'jquery';
 import Context from '../../../../src/js/base/Context';
 import Codeview from '../../../../src/js/base/module/Codeview';
+import '../../../../src/js/bs4/settings';
 
 describe('Codeview', () => {
   var expect = chai.expect;
@@ -15,8 +15,6 @@ describe('Codeview', () => {
 
   beforeEach(() => {
     var options = $.extend({}, $.summernote.options);
-    options.langInfo = $.extend(true, {
-    }, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
     context = new Context($('<div><p>hello</p></div>'), options);
     codeview = new Codeview(context);
   });

@@ -11,6 +11,7 @@ import $ from 'jquery';
 import env from '../../../../src/js/base/core/env';
 import range from '../../../../src/js/base/core/range';
 import Context from '../../../../src/js/base/Context';
+import '../../../../src/js/bs4/settings';
 
 describe('Editor', () => {
   var expect = chai.expect;
@@ -36,7 +37,6 @@ describe('Editor', () => {
     var $note = $('<div><p>hello</p></div>');
 
     var options = $.extend({}, $.summernote.options);
-    options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
     context = new Context($note, options);
 
     editor = context.modules.editor;
@@ -161,7 +161,6 @@ describe('Editor', () => {
 
     it('should be limited', () => {
       var options = $.extend({}, $.summernote.options);
-      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
       options.maxTextLength = 5;
       context = new Context($('<div><p>hello</p></div>'), options);
       editor = context.modules.editor;
@@ -190,7 +189,6 @@ describe('Editor', () => {
 
     it('should be limited', () => {
       var options = $.extend({}, $.summernote.options);
-      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
       options.maxTextLength = 5;
       context = new Context($('<div><p>hello</p></div>'), options);
       editor = context.modules.editor;
@@ -236,7 +234,6 @@ describe('Editor', () => {
 
     it('should be limited', () => {
       var options = $.extend({}, $.summernote.options);
-      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
       options.maxTextLength = 5;
       context = new Context($('<div><p>hello</p></div>'), options);
       editor = context.modules.editor;
@@ -431,7 +428,6 @@ describe('Editor', () => {
 
     it('should be limited when creating a link', () => {
       var options = $.extend({}, $.summernote.options);
-      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
       options.maxTextLength = 5;
       context = new Context($('<div><p>hello</p></div>'), options);
       editor = context.modules.editor;
@@ -445,7 +441,6 @@ describe('Editor', () => {
 
     it('should be limited when modifying a link', () => {
       var options = $.extend({}, $.summernote.options);
-      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
       options.maxTextLength = 5;
       context = new Context($('<p><a href="http://summernote.org">hello</a></p>'), options);
 
