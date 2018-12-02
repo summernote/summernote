@@ -51,7 +51,7 @@ export default class CodeView {
   }
 
   /**
-   * purify code view
+   * purify input value
    * @param value
    * @returns {*}
    */
@@ -60,15 +60,15 @@ export default class CodeView {
       // filter code view regex
       value = value.replace(this.options.codeviewRegex, '');
       // allow specific iframe tag
-      var whitelist = this.options.codeviewIframeWhitelistSrc.concat(this.options.codeviewIframeWhitelistSrcOrigin);
+      const whitelist = this.options.codeviewIframeWhitelistSrc.concat(this.options.codeviewIframeWhitelistSrcBase);
       value = value.replace(/(<iframe.*?>.*?<\/iframe>)/gi, function(tag) {
-        // remove src duplication
+        // remove if src attribute is duplicated
         if (/<.+src(?==?('|"|\s)?)[\s\S]+src(?=('|"|\s)?)[^>]*?>/i.test(tag)) {
           return '';
         }
-        for (var i in whitelist) {
-          // pass whitelist src
-          if ((new RegExp('src="\/\/' + whitelist[i] + '\/(.+)"')).test(tag)) {
+        for (const src of whitelist) {
+          // pass if src is trusted
+          if ((new RegExp('src="\/\/' + src + '\/(.+)"')).test(tag)) {
             return tag;
           }
         }
