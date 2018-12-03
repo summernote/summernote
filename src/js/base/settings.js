@@ -191,6 +191,20 @@ $.summernote = $.extend($.summernote, {
       lineNumbers: true,
     },
 
+    codeviewFilter: false,
+    codeviewRegex: /<\/*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|ilayer|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|t(?:itle|extarea)|xml)[^>]*?>/gi,
+    codeviewIframeWhitelistSrc: [],
+    codeviewIframeWhitelistSrcBase: [
+      'www.youtube(?:-nocookie)?.com',
+      'www.facebook.com',
+      'vine.co',
+      'instagram.com',
+      'player.vimeo.com',
+      'www.dailymotion.com',
+      'player.youku.com',
+      'v.qq.com',
+    ],
+
     keyMap: {
       pc: {
         'ENTER': 'insertParagraph',
