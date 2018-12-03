@@ -668,6 +668,21 @@ export default class Editor {
   }
 
   /**
+   * insertImagesOrCallback
+   * @param {File[]} files
+   */
+  insertImagesOrCallback(files) {
+    const callbacks = this.options.callbacks;
+    // If onImageUpload set,
+    if (callbacks.onImageUpload) {
+      this.context.triggerEvent('image.upload', files);
+      // else insert Image as dataURL
+    } else {
+      this.insertImagesAsDataURL(files);
+    }
+  }
+
+  /**
    * return selected plain text
    * @return {String} text
    */

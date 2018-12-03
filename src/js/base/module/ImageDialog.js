@@ -76,13 +76,7 @@ export default class ImageDialog {
           this.context.invoke('editor.insertImage', data);
         }
       } else { // array of files
-        // If onImageUpload set,
-        if (this.options.callbacks.onImageUpload) {
-          this.context.triggerEvent('image.upload', data);
-        } else {
-          // else insert Image as dataURL
-          this.context.invoke('editor.insertImagesAsDataURL', data);
-        }
+        this.context.invoke('editor.insertImagesOrCallback', data);
       }
     }).fail(() => {
       this.context.invoke('editor.restoreRange');
