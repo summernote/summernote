@@ -170,6 +170,8 @@ const ui = {
           container: (options.container !== undefined) ? options.container : 'body',
           trigger: 'hover',
           placement: 'bottom',
+        }).on('click', (e) => {
+          $(e.currentTarget).tooltip('hide');
         });
       }
     })($node, options);
