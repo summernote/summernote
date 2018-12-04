@@ -61,7 +61,7 @@ export default class CodeView {
       value = value.replace(this.options.codeviewRegex, '');
       // allow specific iframe tag
       const whitelist = this.options.codeviewIframeWhitelistSrc.concat(this.options.codeviewIframeWhitelistSrcBase);
-      value = value.replace(/(<iframe.*?>.*?<\/iframe>)/gi, function(tag) {
+      value = value.replace(/(<iframe.*?>.*?(?:<\/iframe>)?)/gi, function(tag) {
         // remove if src attribute is duplicated
         if (/<.+src(?==?('|"|\s)?)[\s\S]+src(?=('|"|\s)?)[^>]*?>/i.test(tag)) {
           return '';
