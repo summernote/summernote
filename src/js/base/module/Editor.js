@@ -358,6 +358,8 @@ export default class Editor {
       this.context.triggerEvent('paste', event);
     });
 
+    this.$editable.attr('spellcheck', this.options.spellCheck);
+
     // init content before set event
     this.$editable.html(dom.html(this.$note) || dom.emptyPara);
 
