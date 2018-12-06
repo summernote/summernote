@@ -19,6 +19,7 @@
         resizeFull: '100% 크기로 변경',
         resizeHalf: '50% 크기로 변경',
         resizeQuarter: '25% 크기로 변경',
+        resizeNone: '원본 크기',
         floatLeft: '왼쪽 정렬',
         floatRight: '오른쪽 정렬',
         floatNone: '정렬하지 않음',
