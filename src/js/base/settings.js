@@ -80,7 +80,7 @@ $.summernote = $.extend($.summernote, {
     popatmouse: true,
     popover: {
       image: [
-        ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
+        ['resize', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
         ['float', ['floatLeft', 'floatRight', 'floatNone']],
         ['remove', ['removeMedia']],
       ],
@@ -288,6 +288,8 @@ $.summernote = $.extend($.summernote, {
       'close': 'note-icon-close',
       'code': 'note-icon-code',
       'eraser': 'note-icon-eraser',
+      'floatLeft': 'note-icon-float-left',
+      'floatRight': 'note-icon-float-right',
       'font': 'note-icon-font',
       'frame': 'note-icon-frame',
       'italic': 'note-icon-italic',
@@ -301,6 +303,7 @@ $.summernote = $.extend($.summernote, {
       'picture': 'note-icon-picture',
       'question': 'note-icon-question',
       'redo': 'note-icon-redo',
+      'rollback': 'note-icon-rollback',
       'square': 'note-icon-square',
       'strikethrough': 'note-icon-strikethrough',
       'subscript': 'note-icon-subscript',

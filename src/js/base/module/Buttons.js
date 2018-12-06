@@ -617,40 +617,47 @@ export default class Buttons {
   }
 
   /**
-   * image : [
-   *   ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
-   *   ['float', ['floatLeft', 'floatRight', 'floatNone' ]],
-   *   ['remove', ['removeMedia']]
+   * image: [
+   *   ['imageResize', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
+   *   ['float', ['floatLeft', 'floatRight', 'floatNone']],
+   *   ['remove', ['removeMedia']],
    * ],
    */
   addImagePopoverButtons() {
     // Image Size Buttons
-    this.context.memo('button.imageSize100', () => {
+    this.context.memo('button.resizeFull', () => {
       return this.button({
         contents: '<span class="note-fontsize-10">100%</span>',
         tooltip: this.lang.image.resizeFull,
         click: this.context.createInvokeHandler('editor.resize', '1'),
       }).render();
     });
-    this.context.memo('button.imageSize50', () => {
+    this.context.memo('button.resizeHalf', () => {
       return this.button({
         contents: '<span class="note-fontsize-10">50%</span>',
         tooltip: this.lang.image.resizeHalf,
         click: this.context.createInvokeHandler('editor.resize', '0.5'),
       }).render();
     });
-    this.context.memo('button.imageSize25', () => {
+    this.context.memo('button.resizeQuarter', () => {
       return this.button({
         contents: '<span class="note-fontsize-10">25%</span>',
         tooltip: this.lang.image.resizeQuarter,
         click: this.context.createInvokeHandler('editor.resize', '0.25'),
       }).render();
     });
+    this.context.memo('button.resizeNone', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.rollback),
+        tooltip: this.lang.image.resizeNone,
+        click: this.context.createInvokeHandler('editor.resize', '0'),
+      }).render();
+    });
 
     // Float Buttons
     this.context.memo('button.floatLeft', () => {
       return this.button({
-        contents: this.ui.icon(this.options.icons.alignLeft),
+        contents: this.ui.icon(this.options.icons.floatLeft),
         tooltip: this.lang.image.floatLeft,
         click: this.context.createInvokeHandler('editor.floatMe', 'left'),
       }).render();
@@ -658,7 +665,7 @@ export default class Buttons {
 
     this.context.memo('button.floatRight', () => {
       return this.button({
-        contents: this.ui.icon(this.options.icons.alignRight),
+        contents: this.ui.icon(this.options.icons.floatRight),
         tooltip: this.lang.image.floatRight,
         click: this.context.createInvokeHandler('editor.floatMe', 'right'),
       }).render();
@@ -666,7 +673,7 @@ export default class Buttons {
 
     this.context.memo('button.floatNone', () => {
       return this.button({
-        contents: this.ui.icon(this.options.icons.alignJustify),
+        contents: this.ui.icon(this.options.icons.rollback),
         tooltip: this.lang.image.floatNone,
         click: this.context.createInvokeHandler('editor.floatMe', 'none'),
       }).render();

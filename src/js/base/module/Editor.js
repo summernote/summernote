@@ -304,7 +304,7 @@ export default class Editor {
       const $target = $(this.restoreTarget());
       $target.toggleClass('note-float-left', value === 'left');
       $target.toggleClass('note-float-right', value === 'right');
-      $target.css('float', value);
+      $target.css('float', (value === 'none' ? '' : value));
     });
 
     /**
@@ -313,10 +313,15 @@ export default class Editor {
      */
     this.resize = this.wrapCommand((value) => {
       const $target = $(this.restoreTarget());
-      $target.css({
-        width: value * 100 + '%',
-        height: '',
-      });
+      value = parseFloat(value);
+      if (value === 0) {
+        $target.css('width', '');
+      } else {
+        $target.css({
+          width: value * 100 + '%',
+          height: '',
+        });
+      }
     });
   }
 
