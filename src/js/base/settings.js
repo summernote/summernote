@@ -192,7 +192,8 @@ $.summernote = $.extend($.summernote, {
     },
 
     codeviewFilter: false,
-    codeviewRegex: /<\/*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|ilayer|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|t(?:itle|extarea)|xml)[^>]*?>/gi,
+    codeviewFilterRegex: /<\/*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|ilayer|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|t(?:itle|extarea)|xml)[^>]*?>/gi,
+    codeviewIframeFilter: true,
     codeviewIframeWhitelistSrc: [],
     codeviewIframeWhitelistSrcBase: [
       'www.youtube(?:-nocookie)?.com',
