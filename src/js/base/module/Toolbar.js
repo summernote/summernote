@@ -10,6 +10,7 @@ export default class Toolbar {
     this.$note = context.layoutInfo.note;
     this.$editor = context.layoutInfo.editor;
     this.$toolbar = context.layoutInfo.toolbar;
+    this.$editable = context.layoutInfo.editable;
     this.options = context.options;
 
     this.followScroll = this.followScroll.bind(this);
@@ -83,12 +84,19 @@ export default class Toolbar {
         position: 'fixed',
         top: otherBarHeight,
         width: editorWidth,
+        zIndex: 1
+      });
+      this.$editable.css({
+       	paddingTop: this.$toolbar.height() + 10
       });
     } else {
       this.$toolbar.css({
         position: 'relative',
         top: 0,
         width: '100%',
+      });
+      this.$editable.css({
+       	paddingTop: ''
       });
     }
   }
