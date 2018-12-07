@@ -84,10 +84,9 @@ export default class Toolbar {
         position: 'fixed',
         top: otherBarHeight,
         width: editorWidth,
-        zIndex: 1
       });
       this.$editable.css({
-       	paddingTop: this.$toolbar.height() + 10
+        marginTop: this.$toolbar.height() + 5,
       });
     } else {
       this.$toolbar.css({
@@ -96,7 +95,7 @@ export default class Toolbar {
         width: '100%',
       });
       this.$editable.css({
-       	paddingTop: ''
+        marginTop: '',
       });
     }
   }
@@ -109,6 +108,7 @@ export default class Toolbar {
         this.$toolbar.appendTo(this.options.toolbarContainer);
       }
     }
+    this.followScroll();
   }
 
   updateFullscreen(isFullscreen) {
