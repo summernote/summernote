@@ -26,7 +26,7 @@ export default class ImageDialog {
     const body = [
       '<div class="form-group note-form-group note-group-select-from-files">',
       '<label class="note-form-label">' + this.lang.image.selectFromFiles + '</label>',
-      '<input class="note-image-input note-form-control note-input" ',
+      '<input class="note-image-input form-control-file note-form-control note-input" ',
       ' type="file" name="files" accept="image/*" multiple="multiple" />',
       imageLimitation,
       '</div>',
