@@ -58,22 +58,24 @@ export default class CodeView {
   purify(value) {
     if (this.options.codeviewFilter) {
       // filter code view regex
-      value = value.replace(this.options.codeviewRegex, '');
+      value = value.replace(this.options.codeviewFilterRegex, '');
       // allow specific iframe tag
-      const whitelist = this.options.codeviewIframeWhitelistSrc.concat(this.options.codeviewIframeWhitelistSrcBase);
-      value = value.replace(/(<iframe.*?>.*?<\/iframe>)/gi, function(tag) {
-        // remove if src attribute is duplicated
-        if (/<.+src(?==?('|"|\s)?)[\s\S]+src(?=('|"|\s)?)[^>]*?>/i.test(tag)) {
-          return '';
-        }
-        for (const src of whitelist) {
-          // pass if src is trusted
-          if ((new RegExp('src="\/\/' + src + '\/(.+)"')).test(tag)) {
-            return tag;
+      if (this.options.codeviewIframeFilter) {
+        const whitelist = this.options.codeviewIframeWhitelistSrc.concat(this.options.codeviewIframeWhitelistSrcBase);
+        value = value.replace(/(<iframe.*?>.*?(?:<\/iframe>)?)/gi, function(tag) {
+          // remove if src attribute is duplicated
+          if (/<.+src(?==?('|"|\s)?)[\s\S]+src(?=('|"|\s)?)[^>]*?>/i.test(tag)) {
+            return '';
           }
-        }
-        return '';
-      });
+          for (const src of whitelist) {
+            // pass if src is trusted
+            if ((new RegExp('src="(https?:)?\/\/' + src + '\/(.+)"')).test(tag)) {
+              return tag;
+            }
+          }
+          return '';
+        });
+      }
     }
     return value;
   }

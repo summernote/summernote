@@ -140,6 +140,7 @@ export default class Editor {
       if (this.isLimited(markup.length)) {
         return;
       }
+      markup = this.context.invoke('codeview.purify', markup);
       const contents = this.getLastRange().pasteHTML(markup);
       range.createFromNodeAfter(lists.last(contents)).select();
       this.setLastRange();
