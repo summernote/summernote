@@ -174,16 +174,23 @@ $.summernote = $.extend($.summernote, {
     maximumImageFileSize: null,
 
     callbacks: {
-      onInit: null,
-      onFocus: null,
+      onBeforeCommand: null,
       onBlur: null,
       onBlurCodeview: null,
+      onChange: null,
+      onDialogShown: null,
       onEnter: null,
-      onKeyup: null,
-      onKeydown: null,
+      onFocus: null,
+      onImageLinkInsert: null,
       onImageUpload: null,
       onImageUploadError: null,
-      onImageLinkInsert: null,
+      onInit: null,
+      onKeydown: null,
+      onKeyup: null,
+      onMousedown: null,
+      onMouseup: null,
+      onPaste: null,
+      onScroll: null,
     },
 
     codemirror: {

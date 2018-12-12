@@ -98,7 +98,7 @@ export default class Context {
         this.layoutInfo.editable.html(html);
       }
       this.$note.val(html);
-      this.triggerEvent('change', html);
+      this.triggerEvent('change', html, this.layoutInfo.editable);
     }
   }
 
