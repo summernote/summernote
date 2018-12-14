@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import './summernote-en-US';
 import '../summernote';
+import dom from './core/dom';
+import range from './core/range';
 import Editor from './module/Editor';
 import Clipboard from './module/Clipboard';
 import Dropzone from './module/Dropzone';
@@ -27,6 +29,9 @@ import HintPopover from './module/HintPopover';
 $.summernote = $.extend($.summernote, {
   version: '@@VERSION@@',
   plugins: {},
+
+  dom: dom,
+  range: range,
 
   options: {
     langInfo: $.summernote.lang['en-US'],
