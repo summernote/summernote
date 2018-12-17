@@ -83,6 +83,9 @@ export default class VideoDialog {
     const webmRegExp = /^.+.(webm)$/;
     const webmMatch = url.match(webmRegExp);
 
+    const fbRegExp = /(?:www\.|\/\/)facebook\.com\/([^\/]+)\/videos\/([0-9]+)/;
+    const fbMatch = url.match(fbRegExp);
+
     let $video;
     if (ytMatch && ytMatch[1].length === 11) {
       const youtubeId = ytMatch[1];
@@ -139,6 +142,13 @@ export default class VideoDialog {
       $video = $('<video controls>')
         .attr('src', url)
         .attr('width', '640').attr('height', '360');
+    } else if (fbMatch && fbMatch[0].length) {
+      $video = $('<iframe>')
+        .attr('frameborder', 0)
+        .attr('src', 'https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent(fbMatch[0]) + '&show_text=0&width=560')
+        .attr('width', '560').attr('height', '301')
+        .attr('scrolling', 'no')
+        .attr('allowtransparency', 'true');
     } else {
       // this is not a known video link. Now what, Cat? Now what?
       return false;
