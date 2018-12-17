@@ -5265,7 +5265,7 @@
                   }),
                   this.button({
                       className: 'dropdown-toggle',
-                      contents: this.ui.dropdownButtonContents('', this.options),
+                      contents: this.ui.dropdownButtonContents('', this.options)+icon('note-icon-caret'),
                       tooltip: this.lang.color.more,
                       data: {
                           toggle: 'dropdown'
