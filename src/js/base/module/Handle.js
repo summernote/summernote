@@ -11,7 +11,7 @@ export default class Handle {
 
     this.events = {
       'summernote.mousedown': (we, e) => {
-        if (this.update(e.target)) {
+        if (this.update(e.target, e)) {
           e.preventDefault();
         }
       },
@@ -86,7 +86,7 @@ export default class Handle {
     this.$handle.remove();
   }
 
-  update(target) {
+  update(target, event) {
     if (this.context.isDisabled()) {
       return false;
     }
@@ -94,7 +94,7 @@ export default class Handle {
     const isImage = dom.isImg(target);
     const $selection = this.$handle.find('.note-control-selection');
 
-    this.context.invoke('imagePopover.update', target);
+    this.context.invoke('imagePopover.update', target, event);
 
     if (isImage) {
       const $image = $(target);
