@@ -66,7 +66,7 @@ $.summernote = $.extend($.summernote, {
 
     lang: 'en-US',
 
-    followingToolbar: true,
+    followingToolbar: false,
     otherStaticBar: '',
 
     // toolbar
