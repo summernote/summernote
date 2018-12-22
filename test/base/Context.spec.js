@@ -9,10 +9,10 @@ import spies from 'chai-spies';
 /* eslint-disable import/first */
 import $ from 'jquery'; window.jQuery = $;
 import 'bootstrap';
-import chaidom from '../../chaidom';
-import env from '../../../src/js/base/core/env';
-import Context from '../../../src/js/base/Context';
-import '../../../src/js/bs4/settings';
+import chaidom from '../chaidom';
+import env from '../../src/js/base/core/env';
+import Context from '../../src/js/base/Context';
+import '../../src/js/bs4/settings';
 /* eslint-enable import/first */
 
 var expect = chai.expect;

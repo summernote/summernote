@@ -7,8 +7,8 @@
 /* jshint -W101 */
 import chai from 'chai';
 import $ from 'jquery';
-import range from '../../../../src/js/base/core/range';
-import Typing from '../../../../src/js/base/editing/Typing';
+import range from '../../../src/js/base/core/range';
+import Typing from '../../../src/js/base/editing/Typing';
 
 var expect = chai.expect;
 

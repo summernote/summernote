@@ -43,7 +43,7 @@ module.exports = function(grunt) {
     'SL_CHROME': {
       base: 'SauceLabs',
       browserName: 'chrome',
-      version: 'latest',
+      version: '70',
       platform: 'windows 8',
     },
     'SL_FIREFOX': {
