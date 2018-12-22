@@ -38,7 +38,7 @@ export default class ImagePopover {
     this.$popover.remove();
   }
 
-  update(target) {
+  update(target, event) {
     if (dom.isImg(target)) {
       const pos = dom.posFromPlaceholder(target);
       const posEditor = dom.posFromPlaceholder(this.editable);
