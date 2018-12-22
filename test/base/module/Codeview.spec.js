@@ -5,9 +5,9 @@
  */
 import chai from 'chai';
 import $ from 'jquery';
-import Context from '../../../../src/js/base/Context';
-import Codeview from '../../../../src/js/base/module/Codeview';
-import '../../../../src/js/bs4/settings';
+import Context from '../../../src/js/base/Context';
+import Codeview from '../../../src/js/base/module/Codeview';
+import '../../../src/js/bs4/settings';
 
 describe('Codeview', () => {
   var expect = chai.expect;
