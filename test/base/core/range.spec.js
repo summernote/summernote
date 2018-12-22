@@ -5,10 +5,10 @@
  */
 
 import chai from 'chai';
-import chaidom from '../../../chaidom';
+import chaidom from '../../chaidom';
 import $ from 'jquery';
-import dom from '../../../../src/js/base/core/dom';
-import range from '../../../../src/js/base/core/range';
+import dom from '../../../src/js/base/core/dom';
+import range from '../../../src/js/base/core/range';
 
 var expect = chai.expect;
 chai.use(chaidom);
