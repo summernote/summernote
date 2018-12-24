@@ -35,6 +35,7 @@
     }
   },
   "devDependencies": {
+    "@types/jquery": "^3.3.28",
     "babel-preset-es2015": "^6.24.1",
     "bootstrap": "^4.2.1",
     "chai": "^4.2.0",
@@ -87,5 +88,8 @@
     "rollup-plugin-typescript": "^1.0.0",
     "serve-static": "^1.13.2",
     "typescript": "^3.2.2"
+  },
+  "dependencies": {
+    "promise-polyfill": "^8.1.0"
   }
 }

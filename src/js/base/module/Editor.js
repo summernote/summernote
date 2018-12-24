@@ -651,7 +651,7 @@ export default class Editor {
       range.createFromNodeAfter($image[0]).select();
       this.setLastRange();
       this.afterCommand();
-    }).fail((e) => {
+    }).catch((e) => {
       this.context.triggerEvent('image.upload.error', e);
     });
   }
@@ -668,7 +668,7 @@ export default class Editor {
       } else {
         readFileAsDataURL(file).then((dataURL) => {
           return this.insertImage(dataURL, filename);
-        }).fail(() => {
+        }).catch(() => {
           this.context.triggerEvent('image.upload.error');
         });
       }

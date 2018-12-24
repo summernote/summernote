@@ -1,9 +1,7 @@
-import $ from 'jquery';
+import * as $ from 'jquery';
 
 export function eq<V>(itemA: V): (V) => boolean {
-  return function(itemB: V) {
-    return itemA === itemB;
-  };
+  return (itemB: V) => itemA === itemB;
 }
 
 export function eq2<V>(itemA: V, itemB: V): boolean {

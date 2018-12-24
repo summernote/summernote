@@ -1,47 +1,37 @@
-import $ from 'jquery';
+import * as $ from 'jquery';
+import PromiseImpl from 'promise-polyfill';
 
 /**
- * @method readFileAsDataURL
- *
  * read contents of file as representing URL
- *
- * @param {File} file
- * @return {Promise} - then: dataUrl
  */
-export function readFileAsDataURL(file) {
-  return $.Deferred((deferred) => {
+export function readFileAsDataURL(file: File): Promise<string> {
+  return new PromiseImpl((resolve, reject) => {
     $.extend(new FileReader(), {
       onload: (e) => {
         const dataURL = e.target.result;
-        deferred.resolve(dataURL);
+        resolve(dataURL);
       },
       onerror: (err) => {
-        deferred.reject(err);
+        reject(err);
       },
     }).readAsDataURL(file);
-  }).promise();
+  });
 }
 
 /**
- * @method createImage
- *
  * create `<image>` from url string
- *
- * @param {String} url
- * @return {Promise} - then: $image
  */
-export function createImage(url) {
-  return $.Deferred((deferred) => {
+export function createImage(url: string): Promise<JQuery> {
+  return new PromiseImpl((resolve, reject) => {
     const $img = $('<img>');
-
     $img.one('load', () => {
       $img.off('error abort');
-      deferred.resolve($img);
+      resolve($img);
     }).one('error abort', () => {
       $img.off('load').detach();
-      deferred.reject($img);
+      reject($img);
     }).css({
       display: 'none',
     }).appendTo(document.body).attr('src', url);
-  }).promise();
+  });
 }
