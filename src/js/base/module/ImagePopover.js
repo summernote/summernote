@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import lists from '../core/lists';
+import * as lists from '../core/lists';
 import dom from '../core/dom';
 
 /**

@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import env from './base/core/env';
-import lists from './base/core/lists';
+import * as lists from './base/core/lists';
 import Context from './base/Context';
 
 $.fn.extend({

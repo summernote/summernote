@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import func from '../core/func';
-import lists from '../core/lists';
+import * as lists from '../core/lists';
 import env from '../core/env';
 
 export default class Buttons {

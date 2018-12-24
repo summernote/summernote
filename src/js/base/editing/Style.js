@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import env from '../core/env';
 import func from '../core/func';
-import lists from '../core/lists';
+import * as lists from '../core/lists';
 import dom from '../core/dom';
 
 export default class Style {

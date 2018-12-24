@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import func from './func';
-import lists from './lists';
+import * as lists from './lists';
 import env from './env';
 
 const NBSP_CHAR = String.fromCharCode(160);

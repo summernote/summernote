@@ -5,13 +5,17 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     files: [
       { pattern: 'src/js/**/*.js' },
-      { pattern: 'test/**/*.spec.js' }
+      { pattern: 'src/js/**/*.ts' },
+      { pattern: 'test/**/*.spec.js' },
+      { pattern: 'test/**/*.spec.ts' }
     ],
     // Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS, IE
     browsers: ['ChromeHeadless'],
     preprocessors: {
       'src/js/**/*.js': ['karma-typescript'],
-      'test/**/*.spec.js': ['karma-typescript']
+      'src/js/**/*.ts': ['karma-typescript'],
+      'test/**/*.spec.js': ['karma-typescript'],
+      'test/**/*.spec.ts': ['karma-typescript']
     },
     reporters: ['dots', 'karma-typescript'],
     coverageReporter: {
@@ -23,7 +27,8 @@ module.exports = function (config) {
     karmaTypescriptConfig: {
       tsconfig: './tsconfig.json',
       include: [
-        'test/**/*.spec.js'
+        'test/**/*.spec.js',
+        'test/**/*.spec.ts'
       ],
       bundlerOptions: {
         entrypoints: /\.spec\.js$/,

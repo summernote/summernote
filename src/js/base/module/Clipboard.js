@@ -1,4 +1,4 @@
-import lists from '../core/lists';
+import * as lists from '../core/lists';
 
 export default class Clipboard {
   constructor(context) {

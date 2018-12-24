@@ -1,4 +1,4 @@
-import lists from './lists';
+import * as lists from './lists';
 import func from './func';
 
 const KEY_MAP = {

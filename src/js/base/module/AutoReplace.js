@@ -1,4 +1,4 @@
-import lists from '../core/lists';
+import * as lists from '../core/lists';
 import dom from '../core/dom';
 import key from '../core/key';
 

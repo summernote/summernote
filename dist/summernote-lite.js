@@ -5,7 +5,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2018-12-22T04:42Z
+ * Date: 2018-12-24T07:10Z
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -1300,7 +1300,12 @@
    * returns index of item
    */
   function indexOf(array, item) {
-      return $$1.inArray(item, array);
+      for (var idx = 0; idx < array.length; idx++) {
+          if (array[idx] === item) {
+              return idx;
+          }
+      }
+      return -1;
   }
   /**
    * returns true if the value is present in the list.
@@ -1350,8 +1355,7 @@
       if (!array.length) {
           return [];
       }
-      var aTail = tail(array);
-      return aTail.reduce(function (memo, v) {
+      return tail(array).reduce(function (memo, v) {
           var aLast = last(memo);
           if (fn(last(aLast), v)) {
               aLast[aLast.length] = v;
@@ -1366,7 +1370,7 @@
    * returns a copy of the array with all false values removed
    *
    * @param {Array} array - array
-   * @param {Function} fn - predicate function for cluster rule
+   * @param {Function} fn - predicate function
    */
   function compact(array) {
       var aResult = [];
@@ -1379,8 +1383,6 @@
   }
   /**
    * produces a duplicate-free version of the array
-   *
-   * @param {Array} array
    */
   function unique(array) {
       var results = [];
@@ -1393,7 +1395,6 @@
   }
   /**
    * returns next item.
-   * @param {Array} array
    */
   function next(array, item) {
       var idx = indexOf(array, item);
@@ -1404,7 +1405,6 @@
   }
   /**
    * returns prev item.
-   * @param {Array} array
    */
   function prev(array, item) {
       var idx = indexOf(array, item);
@@ -1413,31 +1413,25 @@
       }
       return array[idx - 1];
   }
-  /**
-   * @class core.list
-   *
-   * list utils
-   *
-   * @singleton
-   * @alternateClassName list
-   */
-  var lists = {
-      head: head,
-      last: last,
-      initial: initial,
-      tail: tail,
-      prev: prev,
-      next: next,
-      find: find,
-      contains: contains,
-      all: all,
-      sum: sum,
-      from: from,
-      isEmpty: isEmpty,
-      clusterBy: clusterBy,
-      compact: compact,
-      unique: unique
-  };
+
+  var lists = /*#__PURE__*/Object.freeze({
+    head: head,
+    last: last,
+    initial: initial,
+    tail: tail,
+    find: find,
+    all: all,
+    indexOf: indexOf,
+    contains: contains,
+    sum: sum,
+    from: from,
+    isEmpty: isEmpty,
+    clusterBy: clusterBy,
+    compact: compact,
+    unique: unique,
+    next: next,
+    prev: prev
+  });
 
   var NBSP_CHAR = String.fromCharCode(160);
   var ZERO_WIDTH_NBSP_CHAR = '\ufeff';
@@ -1618,7 +1612,7 @@
           // ex) <p><br></p>, <span><br></span>
           return true;
       }
-      else if (lists.all(node.childNodes, isText) && node.innerHTML === '') {
+      else if (all(node.childNodes, isText) && node.innerHTML === '') {
           // ex) <p></p>, <span></span>
           return true;
       }
@@ -1694,7 +1688,7 @@
    */
   function lastAncestor(node, pred) {
       var ancestors = listAncestor(node);
-      return lists.last(ancestors.filter(pred));
+      return last(ancestors.filter(pred));
   }
   /**
    * returns common ancestor node between two nodes.
@@ -1788,10 +1782,10 @@
    * @param {Node} preceding - predicate function
    */
   function insertAfter(node, preceding) {
-      var next = preceding.nextSibling;
+      var next$$1 = preceding.nextSibling;
       var parent = preceding.parentNode;
-      if (next) {
-          parent.insertBefore(node, next);
+      if (next$$1) {
+          parent.insertBefore(node, next$$1);
       }
       else {
           parent.appendChild(node);
@@ -2185,7 +2179,7 @@
       //  - block: splitRoot is a child of bodyContainer
       var pred = isInline ? isPara : isBodyContainer;
       var ancestors = listAncestor(point.node, pred);
-      var topAncestor = lists.last(ancestors) || point.node;
+      var topAncestor = last(ancestors) || point.node;
       var splitRoot, container;
       if (pred(topAncestor)) {
           splitRoot = ancestors[ancestors.length - 2];
@@ -2275,7 +2269,7 @@
       if (node.style.cssText) {
           newNode.style.cssText = node.style.cssText;
       }
-      appendChildNodes(newNode, lists.from(node.childNodes));
+      appendChildNodes(newNode, from(node.childNodes));
       insertAfter(newNode, node);
       remove(node);
       return newNode;
@@ -2343,7 +2337,7 @@
    * @param {Node} an HTML DOM node
    */
   function isCustomStyleTag(node) {
-      return node && !isText(node) && lists.contains(node.classList, 'note-styletag');
+      return node && !isText(node) && contains(node.classList, 'note-styletag');
   }
   var dom = {
       /** @property {String} NBSP_CHAR */
@@ -2542,8 +2536,8 @@
           this.triggerEvent('disable', true);
       };
       Context.prototype.triggerEvent = function () {
-          var namespace = lists.head(arguments);
-          var args = lists.tail(lists.from(arguments));
+          var namespace = head(arguments);
+          var args = tail(from(arguments));
           var callback = this.options.callbacks[func.namespaceToCamel(namespace, 'on')];
           if (callback) {
               callback.apply(this.$note[0], args);
@@ -2617,12 +2611,12 @@
           };
       };
       Context.prototype.invoke = function () {
-          var namespace = lists.head(arguments);
-          var args = lists.tail(lists.from(arguments));
+          var namespace = head(arguments);
+          var args = tail(from(arguments));
           var splits = namespace.split('.');
           var hasSeparator = splits.length > 1;
-          var moduleName = hasSeparator && lists.head(splits);
-          var methodName = hasSeparator ? lists.last(splits) : lists.head(splits);
+          var moduleName = hasSeparator && head(splits);
+          var methodName = hasSeparator ? last(splits) : head(splits);
           var module = this.modules[moduleName || 'editor'];
           if (!moduleName && this[methodName]) {
               return this[methodName].apply(this, args);
@@ -2642,10 +2636,10 @@
        * @return {this}
        */
       summernote: function () {
-          var type = $$1.type(lists.head(arguments));
+          var type = $$1.type(head(arguments));
           var isExternalAPICalled = type === 'string';
           var hasInitOptions = type === 'object';
-          var options = $$1.extend({}, $$1.summernote.options, hasInitOptions ? lists.head(arguments) : {});
+          var options = $$1.extend({}, $$1.summernote.options, hasInitOptions ? head(arguments) : {});
           // Update options
           options.langInfo = $$1.extend(true, {}, $$1.summernote.lang['en-US'], $$1.summernote.lang[options.lang]);
           options.icons = $$1.extend(true, {}, $$1.summernote.options.icons, options.icons);
@@ -2662,7 +2656,7 @@
           if ($note.length) {
               var context = $note.data('summernote');
               if (isExternalAPICalled) {
-                  return context.invoke.apply(context, lists.from(arguments));
+                  return context.invoke.apply(context, from(arguments));
               }
               else if (options.focus) {
                   context.invoke('editor.focus');
@@ -2686,7 +2680,7 @@
       var offset;
       var tester = document.body.createTextRange();
       var prevContainer;
-      var childNodes = lists.from(container.childNodes);
+      var childNodes = from(container.childNodes);
       for (offset = 0; offset < childNodes.length; offset++) {
           if (dom.isText(childNodes[offset])) {
               continue;
@@ -2735,9 +2729,9 @@
           var node, isCollapseToStart;
           if (dom.isText(container)) {
               var prevTextNodes = dom.listPrev(container, func.not(dom.isText));
-              var prevContainer = lists.last(prevTextNodes).previousSibling;
+              var prevContainer = last(prevTextNodes).previousSibling;
               node = prevContainer || container.parentNode;
-              offset += lists.sum(lists.tail(prevTextNodes), dom.nodeLength);
+              offset += sum(tail(prevTextNodes), dom.nodeLength);
               isCollapseToStart = !prevContainer;
           }
           else {
@@ -2918,7 +2912,7 @@
                   if (dom.isLeftEdgePoint(point)) {
                       leftEdgeNodes.push(point.node);
                   }
-                  if (dom.isRightEdgePoint(point) && lists.contains(leftEdgeNodes, point.node)) {
+                  if (dom.isRightEdgePoint(point) && contains(leftEdgeNodes, point.node)) {
                       node = point.node;
                   }
               }
@@ -2932,7 +2926,7 @@
                   nodes.push(node);
               }
           }, true);
-          return lists.unique(nodes);
+          return unique(nodes);
       };
       /**
        * returns commonAncestor of range
@@ -3009,7 +3003,7 @@
           });
           // find new cursor point
           var point = dom.prevPointUntil(rng.getStartPoint(), function (point) {
-              return !lists.contains(nodes, point.node);
+              return !contains(nodes, point.node);
           });
           var emptyParents = [];
           $$1.each(nodes, function (idx, node) {
@@ -3075,7 +3069,7 @@
           var topAncestor;
           if (dom.isInline(rng.sc)) {
               var ancestors = dom.listAncestor(rng.sc, func.not(dom.isInline));
-              topAncestor = lists.last(ancestors);
+              topAncestor = last(ancestors);
               if (!dom.isInline(topAncestor)) {
                   topAncestor = ancestors[ancestors.length - 2] || rng.sc.childNodes[rng.so];
               }
@@ -3088,8 +3082,8 @@
           inlineSiblings = inlineSiblings.concat(dom.listNext(topAncestor.nextSibling, dom.isParaInline));
           // wrap with paragraph
           if (inlineSiblings.length) {
-              var para = dom.wrap(lists.head(inlineSiblings), 'p');
-              dom.appendChildNodes(para, lists.tail(inlineSiblings));
+              var para = dom.wrap(head(inlineSiblings), 'p');
+              dom.appendChildNodes(para, tail(inlineSiblings));
           }
           return this.normalize();
       };
@@ -3115,7 +3109,7 @@
        */
       WrappedRange.prototype.pasteHTML = function (markup) {
           var contentsContainer = $$1('<div></div>').html(markup)[0];
-          var childNodes = lists.from(contentsContainer.childNodes);
+          var childNodes = from(contentsContainer.childNodes);
           var rng = this.wrapBodyInlineWithPara().deleteContents();
           if (rng.so > 0) {
               childNodes = childNodes.reverse();
@@ -3183,11 +3177,11 @@
       WrappedRange.prototype.paraBookmark = function (paras) {
           return {
               s: {
-                  path: lists.tail(dom.makeOffsetPath(lists.head(paras), this.sc)),
+                  path: tail(dom.makeOffsetPath(head(paras), this.sc)),
                   offset: this.so
               },
               e: {
-                  path: lists.tail(dom.makeOffsetPath(lists.last(paras), this.ec)),
+                  path: tail(dom.makeOffsetPath(last(paras), this.ec)),
                   offset: this.eo
               }
           };
@@ -3350,8 +3344,8 @@
       createFromParaBookmark: function (bookmark, paras) {
           var so = bookmark.s.offset;
           var eo = bookmark.e.offset;
-          var sc = dom.fromOffsetPath(lists.head(paras), bookmark.s.path);
-          var ec = dom.fromOffsetPath(lists.last(paras), bookmark.e.path);
+          var sc = dom.fromOffsetPath(head(paras), bookmark.s.path);
+          var ec = dom.fromOffsetPath(last(paras), bookmark.e.path);
           return new WrappedRange(sc, so, ec, eo);
       }
   };
@@ -3411,7 +3405,7 @@
        * @return {Boolean}
        */
       isEdit: function (keyCode) {
-          return lists.contains([
+          return contains([
               KEY_MAP.BACKSPACE,
               KEY_MAP.TAB,
               KEY_MAP.ENTER,
@@ -3426,7 +3420,7 @@
        * @return {Boolean}
        */
       isMove: function (keyCode) {
-          return lists.contains([
+          return contains([
               KEY_MAP.LEFT,
               KEY_MAP.UP,
               KEY_MAP.RIGHT,
@@ -3666,18 +3660,18 @@
                   var nodesInRange_1 = rng.nodes();
                   // compose with partial contains predication
                   pred = func.and(pred, function (node) {
-                      return lists.contains(nodesInRange_1, node);
+                      return contains(nodesInRange_1, node);
                   });
               }
               return nodes.map(function (node) {
                   var siblings = dom.withClosestSiblings(node, pred);
-                  var head = lists.head(siblings);
-                  var tails = lists.tail(siblings);
+                  var head$$1 = head(siblings);
+                  var tails = tail(siblings);
                   $$1.each(tails, function (idx, elem) {
-                      dom.appendChildNodes(head, elem.childNodes);
+                      dom.appendChildNodes(head$$1, elem.childNodes);
                       dom.remove(elem);
                   });
-                  return lists.head(siblings);
+                  return head(siblings);
               });
           }
           else {
@@ -3754,17 +3748,17 @@
           var _this = this;
           var rng = range.create(editable).wrapBodyInlineWithPara();
           var paras = rng.nodes(dom.isPara, { includeAncestor: true });
-          var clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
+          var clustereds = clusterBy(paras, func.peq2('parentNode'));
           $$1.each(clustereds, function (idx, paras) {
-              var head = lists.head(paras);
-              if (dom.isLi(head)) {
-                  var previousList_1 = _this.findList(head.previousSibling);
+              var head$$1 = head(paras);
+              if (dom.isLi(head$$1)) {
+                  var previousList_1 = _this.findList(head$$1.previousSibling);
                   if (previousList_1) {
                       paras
                           .map(function (para) { return previousList_1.appendChild(para); });
                   }
                   else {
-                      _this.wrapList(paras, head.parentNode.nodeName);
+                      _this.wrapList(paras, head$$1.parentNode.nodeName);
                       paras
                           .map(function (para) { return para.parentNode; })
                           .map(function (para) { return _this.appendToPrevious(para); });
@@ -3787,10 +3781,10 @@
           var _this = this;
           var rng = range.create(editable).wrapBodyInlineWithPara();
           var paras = rng.nodes(dom.isPara, { includeAncestor: true });
-          var clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
+          var clustereds = clusterBy(paras, func.peq2('parentNode'));
           $$1.each(clustereds, function (idx, paras) {
-              var head = lists.head(paras);
-              if (dom.isLi(head)) {
+              var head$$1 = head(paras);
+              if (dom.isLi(head$$1)) {
                   _this.releaseList([paras]);
               }
               else {
@@ -3814,9 +3808,9 @@
           var rng = range.create(editable).wrapBodyInlineWithPara();
           var paras = rng.nodes(dom.isPara, { includeAncestor: true });
           var bookmark = rng.paraBookmark(paras);
-          var clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
+          var clustereds = clusterBy(paras, func.peq2('parentNode'));
           // paragraph to list
-          if (lists.find(paras, dom.isPurePara)) {
+          if (find(paras, dom.isPurePara)) {
               var wrappedParas_1 = [];
               $$1.each(clustereds, function (idx, paras) {
                   wrappedParas_1 = wrappedParas_1.concat(_this.wrapList(paras, listName));
@@ -3847,11 +3841,11 @@
        * @return {Node[]}
        */
       Bullet.prototype.wrapList = function (paras, listName) {
-          var head = lists.head(paras);
-          var last = lists.last(paras);
-          var prevList = dom.isList(head.previousSibling) && head.previousSibling;
-          var nextList = dom.isList(last.nextSibling) && last.nextSibling;
-          var listNode = prevList || dom.insertAfter(dom.create(listName || 'UL'), last);
+          var head$$1 = head(paras);
+          var last$$1 = last(paras);
+          var prevList = dom.isList(head$$1.previousSibling) && head$$1.previousSibling;
+          var nextList = dom.isList(last$$1.nextSibling) && last$$1.nextSibling;
+          var listNode = prevList || dom.insertAfter(dom.create(listName || 'UL'), last$$1);
           // P to LI
           paras = paras.map(function (para) {
               return dom.isPurePara(para) ? dom.replace(para, 'LI') : para;
@@ -3859,7 +3853,7 @@
           // append to list(<ul>, <ol>)
           dom.appendChildNodes(listNode, paras);
           if (nextList) {
-              dom.appendChildNodes(listNode, lists.from(nextList.childNodes));
+              dom.appendChildNodes(listNode, from(nextList.childNodes));
               dom.remove(nextList);
           }
           return paras;
@@ -3875,9 +3869,9 @@
           var _this = this;
           var releasedParas = [];
           $$1.each(clustereds, function (idx, paras) {
-              var head = lists.head(paras);
-              var last = lists.last(paras);
-              var headList = isEscapseToBody ? dom.lastAncestor(head, dom.isList) : head.parentNode;
+              var head$$1 = head(paras);
+              var last$$1 = last(paras);
+              var headList = isEscapseToBody ? dom.lastAncestor(head$$1, dom.isList) : head$$1.parentNode;
               var parentItem = headList.parentNode;
               if (headList.parentNode.nodeName === 'LI') {
                   paras.map(function (para) {
@@ -3902,30 +3896,30 @@
               }
               else {
                   var lastList = headList.childNodes.length > 1 ? dom.splitTree(headList, {
-                      node: last.parentNode,
-                      offset: dom.position(last) + 1
+                      node: last$$1.parentNode,
+                      offset: dom.position(last$$1) + 1
                   }, {
                       isSkipPaddingBlankHTML: true
                   }) : null;
                   var middleList = dom.splitTree(headList, {
-                      node: head.parentNode,
-                      offset: dom.position(head)
+                      node: head$$1.parentNode,
+                      offset: dom.position(head$$1)
                   }, {
                       isSkipPaddingBlankHTML: true
                   });
                   paras = isEscapseToBody ? dom.listDescendant(middleList, dom.isLi)
-                      : lists.from(middleList.childNodes).filter(dom.isLi);
+                      : from(middleList.childNodes).filter(dom.isLi);
                   // LI to P
                   if (isEscapseToBody || !dom.isList(headList.parentNode)) {
                       paras = paras.map(function (para) {
                           return dom.replace(para, 'P');
                       });
                   }
-                  $$1.each(lists.from(paras).reverse(), function (idx, para) {
+                  $$1.each(from(paras).reverse(), function (idx, para) {
                       dom.insertAfter(para, headList);
                   });
                   // remove empty lists
-                  var rootLists = lists.compact([headList, middleList, lastList]);
+                  var rootLists = compact([headList, middleList, lastList]);
                   $$1.each(rootLists, function (idx, rootList) {
                       var listNodes = [rootList].concat(dom.listDescendant(rootList, dom.isList));
                       $$1.each(listNodes.reverse(), function (idx, listNode) {
@@ -3963,7 +3957,7 @@
        */
       Bullet.prototype.findList = function (node) {
           return node
-              ? lists.find(node.children, function (child) { return ['OL', 'UL'].indexOf(child.nodeName) > -1; })
+              ? find(node.children, function (child) { return ['OL', 'UL'].indexOf(child.nodeName) > -1; })
               : null;
       };
       /**
@@ -4748,7 +4742,7 @@
               }
               markup = _this.context.invoke('codeview.purify', markup);
               var contents = _this.getLastRange().pasteHTML(markup);
-              range.createFromNodeAfter(lists.last(contents)).select();
+              range.createFromNodeAfter(last(contents)).select();
               _this.setLastRange();
           });
           /**
@@ -4833,9 +4827,9 @@
                       $$1(anchor).removeAttr('target');
                   }
               });
-              var startRange = range.createFromNodeBefore(lists.head(anchors));
+              var startRange = range.createFromNodeBefore(head(anchors));
               var startPoint = startRange.getStartPoint();
-              var endRange = range.createFromNodeAfter(lists.last(anchors));
+              var endRange = range.createFromNodeAfter(last(anchors));
               var endPoint = endRange.getEndPoint();
               range.create(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset).select();
               _this.setLastRange();
@@ -5016,7 +5010,7 @@
       Editor.prototype.preventDefaultEditableShortCuts = function (event) {
           // B(Bold, 66) / I(Italic, 73) / U(Underline, 85)
           if ((event.ctrlKey || event.metaKey) &&
-              lists.contains([66, 73, 85], event.keyCode)) {
+              contains([66, 73, 85], event.keyCode)) {
               event.preventDefault();
           }
       };
@@ -5025,7 +5019,7 @@
           if (typeof event !== 'undefined') {
               if (key.isMove(event.keyCode) ||
                   (event.ctrlKey || event.metaKey) ||
-                  lists.contains([key.code.BACKSPACE, key.code.DELETE], event.keyCode)) {
+                  contains([key.code.BACKSPACE, key.code.DELETE], event.keyCode)) {
                   return false;
               }
           }
@@ -5295,7 +5289,7 @@
               // [workaround] added styled bogus span for style
               //  - also bogus character needed for cursor position
               if (rng.isCollapsed()) {
-                  var firstSpan = lists.head(spans);
+                  var firstSpan = head(spans);
                   if (firstSpan && !dom.nodeLength(firstSpan)) {
                       firstSpan.innerHTML = dom.ZERO_WIDTH_NBSP_CHAR;
                       range.createFromNodeAfter(firstSpan.firstChild).select();
@@ -5334,7 +5328,7 @@
       Editor.prototype.getLinkInfo = function () {
           var rng = this.getLastRange().expand(dom.isAnchor);
           // Get the first anchor on range(for edit).
-          var $anchor = $$1(lists.head(rng.nodes(dom.isAnchor)));
+          var $anchor = $$1(head(rng.nodes(dom.isAnchor)));
           var linkInfo = {
               range: rng,
               text: rng.toString(),
@@ -5465,7 +5459,7 @@
           var clipboardData = event.originalEvent.clipboardData;
           if (clipboardData && clipboardData.items && clipboardData.items.length) {
               // paste img file
-              var item = clipboardData.items.length > 1 ? clipboardData.items[1] : lists.head(clipboardData.items);
+              var item = clipboardData.items.length > 1 ? clipboardData.items[1] : head(clipboardData.items);
               if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
                   this.context.invoke('editor.insertImagesOrCallback', [item.getAsFile()]);
               }
@@ -5822,7 +5816,7 @@
           this.lang = this.options.langInfo;
           this.events = {
               'summernote.mousedown': function (we, e) {
-                  if (_this.update(e.target)) {
+                  if (_this.update(e.target, e)) {
                       e.preventDefault();
                   }
               },
@@ -5888,13 +5882,13 @@
       Handle.prototype.destroy = function () {
           this.$handle.remove();
       };
-      Handle.prototype.update = function (target) {
+      Handle.prototype.update = function (target, event) {
           if (this.context.isDisabled()) {
               return false;
           }
           var isImage = dom.isImg(target);
           var $selection = this.$handle.find('.note-control-selection');
-          this.context.invoke('imagePopover.update', target);
+          this.context.invoke('imagePopover.update', target, event);
           if (isImage) {
               var $image = $$1(target);
               var position = $image.position();
@@ -5978,13 +5972,13 @@
           }
       };
       AutoLink.prototype.handleKeydown = function (e) {
-          if (lists.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
+          if (contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
               var wordRange = this.context.invoke('editor.createRange').getWordRange();
               this.lastWordRange = wordRange;
           }
       };
       AutoLink.prototype.handleKeyup = function (e) {
-          if (lists.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
+          if (contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
               this.replace();
           }
       };
@@ -6066,18 +6060,18 @@
       AutoReplace.prototype.handleKeydown = function (e) {
           // this forces it to remember the last whole word, even if multiple termination keys are pressed
           // before the previous key is let go.
-          if (this.previousKeydownCode && lists.contains(this.keys, this.previousKeydownCode)) {
+          if (this.previousKeydownCode && contains(this.keys, this.previousKeydownCode)) {
               this.previousKeydownCode = e.keyCode;
               return;
           }
-          if (lists.contains(this.keys, e.keyCode)) {
+          if (contains(this.keys, e.keyCode)) {
               var wordRange = this.context.invoke('editor.createRange').getWordRange();
               this.lastWord = wordRange;
           }
           this.previousKeydownCode = e.keyCode;
       };
       AutoReplace.prototype.handleKeyup = function (e) {
-          if (lists.contains(this.keys, e.keyCode)) {
+          if (contains(this.keys, e.keyCode)) {
               this.replace();
           }
       };
@@ -6163,7 +6157,7 @@
       Buttons.prototype.isFontInstalled = function (name) {
           if (!this.fontInstalledMap.hasOwnProperty(name)) {
               this.fontInstalledMap[name] = env.isFontInstalled(name) ||
-                  lists.contains(this.options.fontNamesIgnoreCheck, name);
+                  contains(this.options.fontNamesIgnoreCheck, name);
           }
           return this.fontInstalledMap[name];
       };
@@ -6316,7 +6310,7 @@
                               $palette.prepend($chip);
                               $picker.click();
                           }
-                          else if (lists.contains(['backColor', 'foreColor'], eventName)) {
+                          else if (contains(['backColor', 'foreColor'], eventName)) {
                               var key = eventName === 'backColor' ? 'background-color' : 'color';
                               var $color = $button.closest('.note-color').find('.note-recent-color');
                               var $currentButton = $button.closest('.note-color').find('.note-current-color-button');
@@ -6880,7 +6874,7 @@
                       .replace(/\s+$/, '')
                       .replace(/^\s+/, '');
               });
-              var fontName_1 = lists.find(fontNames, this.isFontInstalled.bind(this));
+              var fontName_1 = find(fontNames, this.isFontInstalled.bind(this));
               $cont.find('.dropdown-fontname a').each(function (idx, item) {
                   var $item = $$1(item);
                   // always compare string to avoid creating another func.
@@ -7245,7 +7239,7 @@
           };
       }
       LinkPopover.prototype.shouldInitialize = function () {
-          return !lists.isEmpty(this.options.popover.link);
+          return !isEmpty(this.options.popover.link);
       };
       LinkPopover.prototype.initialize = function () {
           this.$popover = this.ui.popover({
@@ -7428,7 +7422,7 @@
           };
       }
       ImagePopover.prototype.shouldInitialize = function () {
-          return !lists.isEmpty(this.options.popover.image);
+          return !isEmpty(this.options.popover.image);
       };
       ImagePopover.prototype.initialize = function () {
           this.$popover = this.ui.popover({
@@ -7440,7 +7434,7 @@
       ImagePopover.prototype.destroy = function () {
           this.$popover.remove();
       };
-      ImagePopover.prototype.update = function (target) {
+      ImagePopover.prototype.update = function (target, event) {
           if (dom.isImg(target)) {
               var pos = dom.posFromPlaceholder(target);
               var posEditor = dom.posFromPlaceholder(this.editable);
@@ -7479,7 +7473,7 @@
           };
       }
       TablePopover.prototype.shouldInitialize = function () {
-          return !lists.isEmpty(this.options.popover.table);
+          return !isEmpty(this.options.popover.table);
       };
       TablePopover.prototype.initialize = function () {
           this.$popover = this.ui.popover({
@@ -7819,7 +7813,7 @@
           };
       }
       AirPopover.prototype.shouldInitialize = function () {
-          return this.options.airMode && !lists.isEmpty(this.options.popover.air);
+          return this.options.airMode && !isEmpty(this.options.popover.air);
       };
       AirPopover.prototype.initialize = function () {
           this.$popover = this.ui.popover({
@@ -7834,7 +7828,7 @@
       AirPopover.prototype.update = function () {
           var styleInfo = this.context.invoke('editor.currentStyle');
           if (styleInfo.range && !styleInfo.range.isCollapsed()) {
-              var rect = lists.last(styleInfo.range.getClientRects());
+              var rect = last(styleInfo.range.getClientRects());
               if (rect) {
                   var bnd = func.rect2bnd(rect);
                   this.$popover.css({
@@ -8010,12 +8004,12 @@
       };
       HintPopover.prototype.handleKeyup = function (e) {
           var _this = this;
-          if (!lists.contains([key.code.ENTER, key.code.UP, key.code.DOWN], e.keyCode)) {
+          if (!contains([key.code.ENTER, key.code.UP, key.code.DOWN], e.keyCode)) {
               var wordRange = this.context.invoke('editor.getLastRange').getWordRange();
               var keyword_1 = wordRange.toString();
               if (this.hints.length && keyword_1) {
                   this.$content.empty();
-                  var bnd = func.rect2bnd(lists.last(wordRange.getClientRects()));
+                  var bnd = func.rect2bnd(last(wordRange.getClientRects()));
                   if (bnd) {
                       this.$popover.hide();
                       this.lastWordRange = wordRange;
@@ -8090,7 +8084,7 @@
           },
           buttons: {},
           lang: 'en-US',
-          followingToolbar: true,
+          followingToolbar: false,
           otherStaticBar: '',
           // toolbar
           toolbar: [

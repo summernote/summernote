@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import func from './func';
 
 /**
@@ -6,7 +5,7 @@ import func from './func';
  *
  * @param {Array} array
  */
-function head(array) {
+export function head<V>(array: Array<V>): V {
   return array[0];
 }
 
@@ -15,7 +14,7 @@ function head(array) {
  *
  * @param {Array} array
  */
-function last(array) {
+export function last<V>(array: Array<V>): V {
   return array[array.length - 1];
 }
 
@@ -24,7 +23,7 @@ function last(array) {
  *
  * @param {Array} array
  */
-function initial(array) {
+export function initial<V>(array: Array<V>): Array<V> {
   return array.slice(0, array.length - 1);
 }
 
@@ -33,14 +32,14 @@ function initial(array) {
  *
  * @param {Array} array
  */
-function tail(array) {
+export function tail<V>(array: Array<V>): Array<V> {
   return array.slice(1);
 }
 
 /**
  * returns item of array
  */
-function find(array, pred) {
+export function find<V>(array: Array<V>, pred: (V) => boolean): V {
   for (let idx = 0, len = array.length; idx < len; idx++) {
     const item = array[idx];
     if (pred(item)) {
@@ -52,7 +51,7 @@ function find(array, pred) {
 /**
  * returns true if all of the values in the array pass the predicate truth test.
  */
-function all(array, pred) {
+export function all<V>(array: Array<V>, pred: (V) => boolean): boolean {
   for (let idx = 0, len = array.length; idx < len; idx++) {
     if (!pred(array[idx])) {
       return false;
@@ -64,14 +63,19 @@ function all(array, pred) {
 /**
  * returns index of item
  */
-function indexOf(array, item) {
-  return $.inArray(item, array);
+export function indexOf<V>(array: Array<V>, item: V): number {
+  for (let idx = 0; idx < array.length; idx++) {
+    if (array[idx] === item) {
+      return idx;
+    }
+  }
+  return -1;
 }
 
 /**
  * returns true if the value is present in the list.
  */
-function contains(array, item) {
+export function contains<V>(array: Array<V>, item: V): boolean {
   return indexOf(array, item) !== -1;
 }
 
@@ -81,7 +85,7 @@ function contains(array, item) {
  * @param {Array} array - array
  * @param {Function} fn - iterator
  */
-function sum(array, fn) {
+export function sum<V>(array: Array<V>, fn: (V) => number): number {
   fn = fn || func.self;
   return array.reduce(function(memo, v) {
     return memo + fn(v);
@@ -92,7 +96,7 @@ function sum(array, fn) {
  * returns a copy of the collection with array type.
  * @param {Collection} collection - collection eg) node.childNodes, ...
  */
-function from(collection) {
+export function from<V>(collection: any): Array<V> {
   const result = [];
   const length = collection.length;
   let idx = -1;
@@ -105,7 +109,7 @@ function from(collection) {
 /**
  * returns whether list is empty or not
  */
-function isEmpty(array) {
+export function isEmpty<V>(array: Array<V>): boolean {
   return !array || !array.length;
 }
 
@@ -116,10 +120,9 @@ function isEmpty(array) {
  * @param {Function} fn - predicate function for cluster rule
  * @param {Array[]}
  */
-function clusterBy(array, fn) {
+export function clusterBy<V>(array: Array<V>, fn): Array<Array<V>> {
   if (!array.length) { return []; }
-  const aTail = tail(array);
-  return aTail.reduce(function(memo, v) {
+  return tail(array).reduce(function(memo, v) {
     const aLast = last(memo);
     if (fn(last(aLast), v)) {
       aLast[aLast.length] = v;
@@ -134,9 +137,9 @@ function clusterBy(array, fn) {
  * returns a copy of the array with all false values removed
  *
  * @param {Array} array - array
- * @param {Function} fn - predicate function for cluster rule
+ * @param {Function} fn - predicate function
  */
-function compact(array) {
+export function compact<V>(array: Array<V>): Array<V> {
   const aResult = [];
   for (let idx = 0, len = array.length; idx < len; idx++) {
     if (array[idx]) { aResult.push(array[idx]); }
@@ -146,10 +149,8 @@ function compact(array) {
 
 /**
  * produces a duplicate-free version of the array
- *
- * @param {Array} array
  */
-function unique(array) {
+export function unique<V>(array: Array<V>): Array<V> {
   const results = [];
 
   for (let idx = 0, len = array.length; idx < len; idx++) {
@@ -163,9 +164,8 @@ function unique(array) {
 
 /**
  * returns next item.
- * @param {Array} array
  */
-function next(array, item) {
+export function next<V>(array: Array<V>, item: V): V {
   const idx = indexOf(array, item);
   if (idx === -1) { return null; }
 
@@ -174,37 +174,10 @@ function next(array, item) {
 
 /**
  * returns prev item.
- * @param {Array} array
  */
-function prev(array, item) {
+export function prev<V>(array: Array<V>, item: V): V {
   const idx = indexOf(array, item);
   if (idx === -1) { return null; }
 
   return array[idx - 1];
 }
-
-/**
- * @class core.list
- *
- * list utils
- *
- * @singleton
- * @alternateClassName list
- */
-export default {
-  head,
-  last,
-  initial,
-  tail,
-  prev,
-  next,
-  find,
-  contains,
-  all,
-  sum,
-  from,
-  isEmpty,
-  clusterBy,
-  compact,
-  unique,
-};
