@@ -5,7 +5,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2018-12-24T08:10Z
+ * Date: 2018-12-24T09:13Z
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -536,9 +536,7 @@
   };
 
   function eq(itemA) {
-      return function (itemB) {
-          return itemA === itemB;
-      };
+      return function (itemB) { return itemA === itemB; };
   }
   function peq2(propName) {
       return function (itemA, itemB) { return itemA[propName] === itemB[propName]; };
@@ -2776,94 +2774,287 @@
       'BACKSLASH': 220,
       'RIGHTBRACKET': 221
   };
+  function isEdit(keyCode) {
+      return contains([
+          KEY_MAP.BACKSPACE,
+          KEY_MAP.TAB,
+          KEY_MAP.ENTER,
+          KEY_MAP.SPACE,
+          KEY_MAP.DELETE,
+      ], keyCode);
+  }
+  function isMove(keyCode) {
+      return contains([
+          KEY_MAP.LEFT,
+          KEY_MAP.UP,
+          KEY_MAP.RIGHT,
+          KEY_MAP.DOWN,
+      ], keyCode);
+  }
+  var nameFromCode = invertObject(KEY_MAP);
+
   /**
-   * @class core.key
-   *
-   * Object for keycodes.
-   *
-   * @singleton
-   * @alternateClassName key
+   * @this {Promise}
    */
-  var key = {
-      /**
-       * @method isEdit
-       *
-       * @param {Number} keyCode
-       * @return {Boolean}
-       */
-      isEdit: function (keyCode) {
-          return contains([
-              KEY_MAP.BACKSPACE,
-              KEY_MAP.TAB,
-              KEY_MAP.ENTER,
-              KEY_MAP.SPACE,
-              KEY_MAP.DELETE,
-          ], keyCode);
-      },
-      /**
-       * @method isMove
-       *
-       * @param {Number} keyCode
-       * @return {Boolean}
-       */
-      isMove: function (keyCode) {
-          return contains([
-              KEY_MAP.LEFT,
-              KEY_MAP.UP,
-              KEY_MAP.RIGHT,
-              KEY_MAP.DOWN,
-          ], keyCode);
-      },
-      /**
-       * @property {Object} nameFromCode
-       * @property {String} nameFromCode.8 "BACKSPACE"
-       */
-      nameFromCode: invertObject(KEY_MAP),
-      code: KEY_MAP
+  function finallyConstructor(callback) {
+      var constructor = this.constructor;
+      return this.then(function (value) {
+          return constructor.resolve(callback()).then(function () {
+              return value;
+          });
+      }, function (reason) {
+          return constructor.resolve(callback()).then(function () {
+              return constructor.reject(reason);
+          });
+      });
+  }
+
+  // Store setTimeout reference so promise-polyfill will be unaffected by
+  // other code modifying setTimeout (like sinon.useFakeTimers())
+  var setTimeoutFunc = setTimeout;
+  function noop() { }
+  // Polyfill for Function.prototype.bind
+  function bind(fn, thisArg) {
+      return function () {
+          fn.apply(thisArg, arguments);
+      };
+  }
+  /**
+   * @constructor
+   * @param {Function} fn
+   */
+  function Promise(fn) {
+      if (!(this instanceof Promise))
+          throw new TypeError('Promises must be constructed via new');
+      if (typeof fn !== 'function')
+          throw new TypeError('not a function');
+      /** @type {!number} */
+      this._state = 0;
+      /** @type {!boolean} */
+      this._handled = false;
+      /** @type {Promise|undefined} */
+      this._value = undefined;
+      /** @type {!Array<!Function>} */
+      this._deferreds = [];
+      doResolve(fn, this);
+  }
+  function handle(self, deferred) {
+      while (self._state === 3) {
+          self = self._value;
+      }
+      if (self._state === 0) {
+          self._deferreds.push(deferred);
+          return;
+      }
+      self._handled = true;
+      Promise._immediateFn(function () {
+          var cb = self._state === 1 ? deferred.onFulfilled : deferred.onRejected;
+          if (cb === null) {
+              (self._state === 1 ? resolve : reject)(deferred.promise, self._value);
+              return;
+          }
+          var ret;
+          try {
+              ret = cb(self._value);
+          }
+          catch (e) {
+              reject(deferred.promise, e);
+              return;
+          }
+          resolve(deferred.promise, ret);
+      });
+  }
+  function resolve(self, newValue) {
+      try {
+          // Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
+          if (newValue === self)
+              throw new TypeError('A promise cannot be resolved with itself.');
+          if (newValue &&
+              (typeof newValue === 'object' || typeof newValue === 'function')) {
+              var then = newValue.then;
+              if (newValue instanceof Promise) {
+                  self._state = 3;
+                  self._value = newValue;
+                  finale(self);
+                  return;
+              }
+              else if (typeof then === 'function') {
+                  doResolve(bind(then, newValue), self);
+                  return;
+              }
+          }
+          self._state = 1;
+          self._value = newValue;
+          finale(self);
+      }
+      catch (e) {
+          reject(self, e);
+      }
+  }
+  function reject(self, newValue) {
+      self._state = 2;
+      self._value = newValue;
+      finale(self);
+  }
+  function finale(self) {
+      if (self._state === 2 && self._deferreds.length === 0) {
+          Promise._immediateFn(function () {
+              if (!self._handled) {
+                  Promise._unhandledRejectionFn(self._value);
+              }
+          });
+      }
+      for (var i = 0, len = self._deferreds.length; i < len; i++) {
+          handle(self, self._deferreds[i]);
+      }
+      self._deferreds = null;
+  }
+  /**
+   * @constructor
+   */
+  function Handler(onFulfilled, onRejected, promise) {
+      this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null;
+      this.onRejected = typeof onRejected === 'function' ? onRejected : null;
+      this.promise = promise;
+  }
+  /**
+   * Take a potentially misbehaving resolver function and make sure
+   * onFulfilled and onRejected are only called once.
+   *
+   * Makes no guarantees about asynchrony.
+   */
+  function doResolve(fn, self) {
+      var done = false;
+      try {
+          fn(function (value) {
+              if (done)
+                  return;
+              done = true;
+              resolve(self, value);
+          }, function (reason) {
+              if (done)
+                  return;
+              done = true;
+              reject(self, reason);
+          });
+      }
+      catch (ex) {
+          if (done)
+              return;
+          done = true;
+          reject(self, ex);
+      }
+  }
+  Promise.prototype['catch'] = function (onRejected) {
+      return this.then(null, onRejected);
+  };
+  Promise.prototype.then = function (onFulfilled, onRejected) {
+      // @ts-ignore
+      var prom = new this.constructor(noop);
+      handle(this, new Handler(onFulfilled, onRejected, prom));
+      return prom;
+  };
+  Promise.prototype['finally'] = finallyConstructor;
+  Promise.all = function (arr) {
+      return new Promise(function (resolve, reject) {
+          if (!arr || typeof arr.length === 'undefined')
+              throw new TypeError('Promise.all accepts an array');
+          var args = Array.prototype.slice.call(arr);
+          if (args.length === 0)
+              return resolve([]);
+          var remaining = args.length;
+          function res(i, val) {
+              try {
+                  if (val && (typeof val === 'object' || typeof val === 'function')) {
+                      var then = val.then;
+                      if (typeof then === 'function') {
+                          then.call(val, function (val) {
+                              res(i, val);
+                          }, reject);
+                          return;
+                      }
+                  }
+                  args[i] = val;
+                  if (--remaining === 0) {
+                      resolve(args);
+                  }
+              }
+              catch (ex) {
+                  reject(ex);
+              }
+          }
+          for (var i = 0; i < args.length; i++) {
+              res(i, args[i]);
+          }
+      });
+  };
+  Promise.resolve = function (value) {
+      if (value && typeof value === 'object' && value.constructor === Promise) {
+          return value;
+      }
+      return new Promise(function (resolve) {
+          resolve(value);
+      });
+  };
+  Promise.reject = function (value) {
+      return new Promise(function (resolve, reject) {
+          reject(value);
+      });
+  };
+  Promise.race = function (values) {
+      return new Promise(function (resolve, reject) {
+          for (var i = 0, len = values.length; i < len; i++) {
+              values[i].then(resolve, reject);
+          }
+      });
+  };
+  // Use polyfill for setImmediate for performance gains
+  Promise._immediateFn =
+      (typeof setImmediate === 'function' &&
+          function (fn) {
+              setImmediate(fn);
+          }) ||
+          function (fn) {
+              setTimeoutFunc(fn, 0);
+          };
+  Promise._unhandledRejectionFn = function _unhandledRejectionFn(err) {
+      if (typeof console !== 'undefined' && console) {
+          console.warn('Possible Unhandled Promise Rejection:', err); // eslint-disable-line no-console
+      }
   };
 
   /**
-   * @method readFileAsDataURL
-   *
    * read contents of file as representing URL
-   *
-   * @param {File} file
-   * @return {Promise} - then: dataUrl
    */
   function readFileAsDataURL(file) {
-      return $.Deferred(function (deferred) {
+      return new Promise(function (resolve, reject) {
           $.extend(new FileReader(), {
               onload: function (e) {
                   var dataURL = e.target.result;
-                  deferred.resolve(dataURL);
+                  resolve(dataURL);
               },
               onerror: function (err) {
-                  deferred.reject(err);
+                  reject(err);
               }
           }).readAsDataURL(file);
-      }).promise();
+      });
   }
   /**
-   * @method createImage
-   *
    * create `<image>` from url string
-   *
-   * @param {String} url
-   * @return {Promise} - then: $image
    */
   function createImage(url) {
-      return $.Deferred(function (deferred) {
+      return new Promise(function (resolve, reject) {
           var $img = $('<img>');
           $img.one('load', function () {
               $img.off('error abort');
-              deferred.resolve($img);
+              resolve($img);
           }).one('error abort', function () {
               $img.off('load').detach();
-              deferred.reject($img);
+              reject($img);
           }).css({
               display: 'none'
           }).appendTo(document.body).attr('src', url);
-      }).promise();
+      });
   }
 
   var History = /** @class */ (function () {
@@ -4303,7 +4494,7 @@
           var _this = this;
           // bind custom events
           this.$editable.on('keydown', function (event) {
-              if (event.keyCode === key.code.ENTER) {
+              if (event.keyCode === KEY_MAP.ENTER) {
                   _this.context.triggerEvent('enter', event);
               }
               _this.context.triggerEvent('keydown', event);
@@ -4380,7 +4571,7 @@
           if (event.shiftKey) {
               keys.push('SHIFT');
           }
-          var keyName = key.nameFromCode[event.keyCode];
+          var keyName = nameFromCode[event.keyCode];
           if (keyName) {
               keys.push(keyName);
           }
@@ -4390,7 +4581,7 @@
                   event.preventDefault();
               }
           }
-          else if (key.isEdit(event.keyCode)) {
+          else if (isEdit(event.keyCode)) {
               this.afterCommand();
           }
       };
@@ -4404,9 +4595,12 @@
       Editor.prototype.isLimited = function (pad, event) {
           pad = pad || 0;
           if (typeof event !== 'undefined') {
-              if (key.isMove(event.keyCode) ||
+              if (isMove(event.keyCode) ||
                   (event.ctrlKey || event.metaKey) ||
-                  contains([key.code.BACKSPACE, key.code.DELETE], event.keyCode)) {
+                  contains([
+                      KEY_MAP.BACKSPACE,
+                      KEY_MAP.DELETE
+                  ], event.keyCode)) {
                   return false;
               }
           }
@@ -4600,7 +4794,7 @@
               range.createFromNodeAfter($image[0]).select();
               _this.setLastRange();
               _this.afterCommand();
-          }).fail(function (e) {
+          })["catch"](function (e) {
               _this.context.triggerEvent('image.upload.error', e);
           });
       };
@@ -4618,7 +4812,7 @@
               else {
                   readFileAsDataURL(file).then(function (dataURL) {
                       return _this.insertImage(dataURL, filename);
-                  }).fail(function () {
+                  })["catch"](function () {
                       _this.context.triggerEvent('image.upload.error');
                   });
               }
@@ -5359,13 +5553,18 @@
           }
       };
       AutoLink.prototype.handleKeydown = function (e) {
-          if (contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
+          if (contains([
+              KEY_MAP.ENTER,
+              KEY_MAP.SPACE
+          ], e.keyCode)) {
               var wordRange = this.context.invoke('editor.createRange').getWordRange();
               this.lastWordRange = wordRange;
           }
       };
       AutoLink.prototype.handleKeyup = function (e) {
-          if (contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
+          if (contains([
+              KEY_MAP.ENTER, KEY_MAP.SPACE
+          ], e.keyCode)) {
               this.replace();
           }
       };
@@ -5396,7 +5595,14 @@
           var _this = this;
           this.context = context;
           this.options = context.options.replace || {};
-          this.keys = [key.code.ENTER, key.code.SPACE, key.code.PERIOD, key.code.COMMA, key.code.SEMICOLON, key.code.SLASH];
+          this.keys = [
+              KEY_MAP.ENTER,
+              KEY_MAP.SPACE,
+              KEY_MAP.PERIOD,
+              KEY_MAP.COMMA,
+              KEY_MAP.SEMICOLON,
+              KEY_MAP.SLASH
+          ];
           this.previousKeydownCode = null;
           this.events = {
               'summernote.keyup': function (we, e) {
@@ -6508,7 +6714,7 @@
       };
       LinkDialog.prototype.bindEnterKey = function ($input, $btn) {
           $input.on('keypress', function (event) {
-              if (event.keyCode === key.code.ENTER) {
+              if (event.keyCode === KEY_MAP.ENTER) {
                   event.preventDefault();
                   $btn.trigger('click');
               }
@@ -6716,7 +6922,7 @@
       };
       ImageDialog.prototype.bindEnterKey = function ($input, $btn) {
           $input.on('keypress', function (event) {
-              if (event.keyCode === key.code.ENTER) {
+              if (event.keyCode === KEY_MAP.ENTER) {
                   event.preventDefault();
                   $btn.trigger('click');
               }
@@ -6932,7 +7138,7 @@
       };
       VideoDialog.prototype.bindEnterKey = function ($input, $btn) {
           $input.on('keypress', function (event) {
-              if (event.keyCode === key.code.ENTER) {
+              if (event.keyCode === KEY_MAP.ENTER) {
                   event.preventDefault();
                   $btn.trigger('click');
               }
@@ -7354,15 +7560,15 @@
           if (!this.$popover.is(':visible')) {
               return;
           }
-          if (e.keyCode === key.code.ENTER) {
+          if (e.keyCode === KEY_MAP.ENTER) {
               e.preventDefault();
               this.replace();
           }
-          else if (e.keyCode === key.code.UP) {
+          else if (e.keyCode === KEY_MAP.UP) {
               e.preventDefault();
               this.moveUp();
           }
-          else if (e.keyCode === key.code.DOWN) {
+          else if (e.keyCode === KEY_MAP.DOWN) {
               e.preventDefault();
               this.moveDown();
           }
@@ -7391,7 +7597,7 @@
       };
       HintPopover.prototype.handleKeyup = function (e) {
           var _this = this;
-          if (!contains([key.code.ENTER, key.code.UP, key.code.DOWN], e.keyCode)) {
+          if (!contains([KEY_MAP.ENTER, KEY_MAP.UP, KEY_MAP.DOWN], e.keyCode)) {
               var wordRange = this.context.invoke('editor.getLastRange').getWordRange();
               var keyword_1 = wordRange.toString();
               if (this.hints.length && keyword_1) {

@@ -1,4 +1,4 @@
-import * as $ from 'jquery';
+import $ from 'jquery';
 
 export function eq<V>(itemA: V): (V) => boolean {
   return (itemB: V) => itemA === itemB;

@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import env from '../core/env';
-import key from '../core/key';
+import { KEY_MAP } from '../core/key';
 
 export default class ImageDialog {
   constructor(context) {
@@ -54,7 +54,7 @@ export default class ImageDialog {
 
   bindEnterKey($input, $btn) {
     $input.on('keypress', (event) => {
-      if (event.keyCode === key.code.ENTER) {
+      if (event.keyCode === KEY_MAP.ENTER) {
         event.preventDefault();
         $btn.trigger('click');
       }

@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import env from '../core/env';
-import key from '../core/key';
+import { nameFromCode, isEdit, isMove, KEY_MAP } from '../core/key';
 import * as func from '../core/func';
 import * as lists from '../core/lists';
 import dom from '../core/dom';
@@ -329,7 +329,7 @@ export default class Editor {
   initialize() {
     // bind custom events
     this.$editable.on('keydown', (event) => {
-      if (event.keyCode === key.code.ENTER) {
+      if (event.keyCode === KEY_MAP.ENTER) {
         this.context.triggerEvent('enter', event);
       }
       this.context.triggerEvent('keydown', event);
@@ -410,7 +410,7 @@ export default class Editor {
     if (event.ctrlKey && !event.altKey) { keys.push('CTRL'); }
     if (event.shiftKey) { keys.push('SHIFT'); }
 
-    const keyName = key.nameFromCode[event.keyCode];
+    const keyName = nameFromCode[event.keyCode];
     if (keyName) {
       keys.push(keyName);
     }
@@ -420,7 +420,7 @@ export default class Editor {
       if (this.context.invoke(eventName) !== false) {
         event.preventDefault();
       }
-    } else if (key.isEdit(event.keyCode)) {
+    } else if (isEdit(event.keyCode)) {
       this.afterCommand();
     }
   }
@@ -437,9 +437,12 @@ export default class Editor {
     pad = pad || 0;
 
     if (typeof event !== 'undefined') {
-      if (key.isMove(event.keyCode) ||
+      if (isMove(event.keyCode) ||
           (event.ctrlKey || event.metaKey) ||
-          lists.contains([key.code.BACKSPACE, key.code.DELETE], event.keyCode)) {
+          lists.contains([
+            KEY_MAP.BACKSPACE,
+            KEY_MAP.DELETE,
+          ], event.keyCode)) {
         return false;
       }
     }

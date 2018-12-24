@@ -3,7 +3,7 @@ import * as func from '../core/func';
 import * as lists from '../core/lists';
 import dom from '../core/dom';
 import range from '../core/range';
-import key from '../core/key';
+import { KEY_MAP } from '../core/key';
 
 const POPOVER_DIST = 5;
 
@@ -143,13 +143,13 @@ export default class HintPopover {
       return;
     }
 
-    if (e.keyCode === key.code.ENTER) {
+    if (e.keyCode === KEY_MAP.ENTER) {
       e.preventDefault();
       this.replace();
-    } else if (e.keyCode === key.code.UP) {
+    } else if (e.keyCode === KEY_MAP.UP) {
       e.preventDefault();
       this.moveUp();
-    } else if (e.keyCode === key.code.DOWN) {
+    } else if (e.keyCode === KEY_MAP.DOWN) {
       e.preventDefault();
       this.moveDown();
     }
@@ -179,7 +179,7 @@ export default class HintPopover {
   }
 
   handleKeyup(e) {
-    if (!lists.contains([key.code.ENTER, key.code.UP, key.code.DOWN], e.keyCode)) {
+    if (!lists.contains([KEY_MAP.ENTER, KEY_MAP.UP, KEY_MAP.DOWN], e.keyCode)) {
       const wordRange = this.context.invoke('editor.getLastRange').getWordRange();
       const keyword = wordRange.toString();
       if (this.hints.length && keyword) {

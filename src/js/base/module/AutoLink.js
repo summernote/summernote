@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import * as lists from '../core/lists';
-import key from '../core/key';
+import { KEY_MAP } from '../core/key';
 
 const defaultScheme = 'http://';
 const linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/]{2}|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
@@ -50,14 +50,20 @@ export default class AutoLink {
   }
 
   handleKeydown(e) {
-    if (lists.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
+    if (lists.contains([
+      KEY_MAP.ENTER,
+      KEY_MAP.SPACE,
+    ], e.keyCode)) {
       const wordRange = this.context.invoke('editor.createRange').getWordRange();
       this.lastWordRange = wordRange;
     }
   }
 
   handleKeyup(e) {
-    if (lists.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
+    if (lists.contains([
+      KEY_MAP.ENTER,
+      KEY_MAP.SPACE,
+    ], e.keyCode)) {
       this.replace();
     }
   }

@@ -1,13 +1,20 @@
 import * as lists from '../core/lists';
 import dom from '../core/dom';
-import key from '../core/key';
+import { KEY_MAP } from '../core/key';
 
 export default class AutoReplace {
   constructor(context) {
     this.context = context;
     this.options = context.options.replace || {};
 
-    this.keys = [key.code.ENTER, key.code.SPACE, key.code.PERIOD, key.code.COMMA, key.code.SEMICOLON, key.code.SLASH];
+    this.keys = [
+      KEY_MAP.ENTER,
+      KEY_MAP.SPACE,
+      KEY_MAP.PERIOD,
+      KEY_MAP.COMMA,
+      KEY_MAP.SEMICOLON,
+      KEY_MAP.SLASH,
+    ];
     this.previousKeydownCode = null;
 
     this.events = {

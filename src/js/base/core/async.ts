@@ -1,4 +1,4 @@
-import * as $ from 'jquery';
+import $ from 'jquery';
 import PromiseImpl from 'promise-polyfill';
 
 /**
@@ -21,7 +21,7 @@ export function readFileAsDataURL(file: File): Promise<string> {
 /**
  * create `<image>` from url string
  */
-export function createImage(url: string): Promise<JQuery> {
+export function createImage(url: string): Promise<any> {
   return new PromiseImpl((resolve, reject) => {
     const $img = $('<img>');
     $img.one('load', () => {

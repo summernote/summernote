@@ -18,6 +18,7 @@ module.exports = function (grunt) {
   const rollupTypescript = require('rollup-plugin-typescript');
   const typescript = require('typescript');
   const replace = require('rollup-plugin-replace');
+  const resolve = require('rollup-plugin-node-resolve');
  
   const inputOptions = {
     external: ['jquery'],
@@ -28,7 +29,12 @@ module.exports = function (grunt) {
       }),
       replace({
         delimiters: ['@@', '@@'],
-        VERSION: version
+        VERSION: version,
+      }),
+      resolve({
+        jsnext: true,
+        main: true,
+        browser: true
       })
     ]
   };
