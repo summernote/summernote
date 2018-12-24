@@ -1,5 +1,5 @@
 import env from '../core/env';
-import dom from '../core/dom';
+import { EMPTY_PARA, Nodes } from '../core/dom';
 
 let CodeMirror;
 if (env.hasCodeMirror) {
@@ -84,7 +84,7 @@ export default class CodeView {
    * activate code view
    */
   activate() {
-    this.$codable.val(dom.html(this.$editable, this.options.prettifyHtml));
+    this.$codable.val(Nodes.html(this.$editable, this.options.prettifyHtml));
     this.$codable.height(this.$editable.height());
 
     this.context.invoke('toolbar.updateCodeview', true);
@@ -135,7 +135,9 @@ export default class CodeView {
       cmEditor.toTextArea();
     }
 
-    const value = this.purify(dom.value(this.$codable, this.options.prettifyHtml) || dom.emptyPara);
+    const value = this.purify(
+      Nodes.value(this.$codable, this.options.prettifyHtml) || EMPTY_PARA
+    );
     const isChange = this.$editable.html() !== value;
 
     this.$editable.html(value);

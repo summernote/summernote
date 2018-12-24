@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import dom from '../core/dom';
+import { BoundaryPoints, EMPTY_PARA, Nodes, NBSP_CHAR } from '../core/dom';
 import range from '../core/range';
 import Bullet from '../editing/Bullet';
 
@@ -23,7 +23,7 @@ export default class Typing {
    * @param {Number} tabsize
    */
   insertTab(rng, tabsize) {
-    const tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
+    const tab = Nodes.createText(new Array(tabsize + 1).join(NBSP_CHAR));
     rng = rng.deleteContents();
     rng.insertNode(tab, true);
 
@@ -52,59 +52,59 @@ export default class Typing {
     rng = rng.wrapBodyInlineWithPara();
 
     // finding paragraph
-    const splitRoot = dom.ancestor(rng.sc, dom.isPara);
+    const splitRoot = Nodes.ancestor(rng.sc, Nodes.isPara);
 
     let nextPara;
     // on paragraph: split paragraph
     if (splitRoot) {
       // if it is an empty line with li
-      if (dom.isEmpty(splitRoot) && dom.isLi(splitRoot)) {
+      if (Nodes.isEmpty(splitRoot) && Nodes.isLi(splitRoot)) {
         // toogle UL/OL and escape
         this.bullet.toggleList(splitRoot.parentNode.nodeName);
         return;
       } else {
         let blockquote = null;
         if (this.options.blockquoteBreakingLevel === 1) {
-          blockquote = dom.ancestor(splitRoot, dom.isBlockquote);
+          blockquote = Nodes.ancestor(splitRoot, Nodes.isBlockquote);
         } else if (this.options.blockquoteBreakingLevel === 2) {
-          blockquote = dom.lastAncestor(splitRoot, dom.isBlockquote);
+          blockquote = Nodes.lastAncestor(splitRoot, Nodes.isBlockquote);
         }
 
         if (blockquote) {
           // We're inside a blockquote and options ask us to break it
-          nextPara = $(dom.emptyPara)[0];
+          nextPara = $(EMPTY_PARA)[0];
           // If the split is right before a <br>, remove it so that there's no "empty line"
           // after the split in the new blockquote created
-          if (dom.isRightEdgePoint(rng.getStartPoint()) && dom.isBR(rng.sc.nextSibling)) {
+          if (BoundaryPoints.isRightEdgePoint(rng.getStartPoint()) && Nodes.isBR(rng.sc.nextSibling)) {
             $(rng.sc.nextSibling).remove();
           }
-          const split = dom.splitTree(blockquote, rng.getStartPoint(), { isDiscardEmptySplits: true });
+          const split = Nodes.splitTree(blockquote, rng.getStartPoint(), { isDiscardEmptySplits: true });
           if (split) {
             split.parentNode.insertBefore(nextPara, split);
           } else {
-            dom.insertAfter(nextPara, blockquote); // There's no split if we were at the end of the blockquote
+            Nodes.insertAfter(nextPara, blockquote); // There's no split if we were at the end of the blockquote
           }
         } else {
-          nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
+          nextPara = Nodes.splitTree(splitRoot, rng.getStartPoint());
 
           // not a blockquote, just insert the paragraph
-          let emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
-          emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
+          let emptyAnchors = Nodes.listDescendant(splitRoot, Nodes.isEmptyAnchor);
+          emptyAnchors = emptyAnchors.concat(Nodes.listDescendant(nextPara, Nodes.isEmptyAnchor));
 
           $.each(emptyAnchors, (idx, anchor) => {
-            dom.remove(anchor);
+            Nodes.remove(anchor);
           });
 
           // replace empty heading, pre or custom-made styleTag with P tag
-          if ((dom.isHeading(nextPara) || dom.isPre(nextPara) || dom.isCustomStyleTag(nextPara)) && dom.isEmpty(nextPara)) {
-            nextPara = dom.replace(nextPara, 'p');
+          if ((Nodes.isHeading(nextPara) || Nodes.isPre(nextPara) || Nodes.isCustomStyleTag(nextPara)) && Nodes.isEmpty(nextPara)) {
+            nextPara = Nodes.replace(nextPara, 'p');
           }
         }
       }
     // no paragraph: insert empty paragraph
     } else {
       const next = rng.sc.childNodes[rng.so];
-      nextPara = $(dom.emptyPara)[0];
+      nextPara = $(EMPTY_PARA)[0];
       if (next) {
         rng.sc.insertBefore(nextPara, next);
       } else {

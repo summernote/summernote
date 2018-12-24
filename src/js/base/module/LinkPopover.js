@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import * as lists from '../core/lists';
-import dom from '../core/dom';
+import { Lists } from '../core/lists';
+import { BoundaryPoints, Nodes } from '../core/dom';
 
 export default class LinkPopover {
   constructor(context) {
@@ -19,7 +19,7 @@ export default class LinkPopover {
   }
 
   shouldInitialize() {
-    return !lists.isEmpty(this.options.popover.link);
+    return !Lists.isEmpty(this.options.popover.link);
   }
 
   initialize() {
@@ -48,11 +48,11 @@ export default class LinkPopover {
 
     const rng = this.context.invoke('editor.getLastRange');
     if (rng.isCollapsed() && rng.isOnAnchor()) {
-      const anchor = dom.ancestor(rng.sc, dom.isAnchor);
+      const anchor = Nodes.ancestor(rng.sc, Nodes.isAnchor);
       const href = $(anchor).attr('href');
       this.$popover.find('a').attr('href', href).html(href);
 
-      const pos = dom.posFromPlaceholder(anchor);
+      const pos = BoundaryPoints.posFromPlaceholder(anchor);
       this.$popover.css({
         display: 'block',
         left: pos.left,

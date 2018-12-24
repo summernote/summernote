@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import * as lists from '../core/lists';
+import { Lists } from '../core/lists';
 import { KEY_MAP } from '../core/key';
 
 const defaultScheme = 'http://';
@@ -50,7 +50,7 @@ export default class AutoLink {
   }
 
   handleKeydown(e) {
-    if (lists.contains([
+    if (Lists.contains([
       KEY_MAP.ENTER,
       KEY_MAP.SPACE,
     ], e.keyCode)) {
@@ -60,7 +60,7 @@ export default class AutoLink {
   }
 
   handleKeyup(e) {
-    if (lists.contains([
+    if (Lists.contains([
       KEY_MAP.ENTER,
       KEY_MAP.SPACE,
     ], e.keyCode)) {

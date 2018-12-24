@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import * as func from './core/func';
-import * as lists from './core/lists';
-import dom from './core/dom';
+import { Lists } from './core/lists';
+import { EMPTY_PARA, Nodes } from './core/dom';
 
 export default class Context {
   /**
@@ -44,7 +44,7 @@ export default class Context {
    */
   reset() {
     const disabled = this.isDisabled();
-    this.code(dom.emptyPara);
+    this.code(EMPTY_PARA);
     this._destroy();
     this._initialize();
 
@@ -124,8 +124,8 @@ export default class Context {
   }
 
   triggerEvent() {
-    const namespace = lists.head(arguments);
-    const args = lists.tail(lists.from(arguments));
+    const namespace = Lists.head(arguments);
+    const args = Lists.tail(Lists.from(arguments));
 
     const callback = this.options.callbacks[func.namespaceToCamel(namespace, 'on')];
     if (callback) {
@@ -148,7 +148,7 @@ export default class Context {
 
     // attach events
     if (module.events) {
-      dom.attachEvents(this.$note, module.events);
+      Nodes.attachEvents(this.$note, module.events);
     }
   }
 
@@ -168,7 +168,7 @@ export default class Context {
     const module = this.modules[key];
     if (module.shouldInitialize()) {
       if (module.events) {
-        dom.detachEvents(this.$note, module.events);
+        Nodes.detachEvents(this.$note, module.events);
       }
 
       if (module.destroy) {
@@ -213,13 +213,13 @@ export default class Context {
   }
 
   invoke() {
-    const namespace = lists.head(arguments);
-    const args = lists.tail(lists.from(arguments));
+    const namespace = Lists.head(arguments);
+    const args = Lists.tail(Lists.from(arguments));
 
     const splits = namespace.split('.');
     const hasSeparator = splits.length > 1;
-    const moduleName = hasSeparator && lists.head(splits);
-    const methodName = hasSeparator ? lists.last(splits) : lists.head(splits);
+    const moduleName = hasSeparator && Lists.head(splits);
+    const methodName = hasSeparator ? Lists.last(splits) : Lists.head(splits);
 
     const module = this.modules[moduleName || 'editor'];
     if (!moduleName && this[methodName]) {

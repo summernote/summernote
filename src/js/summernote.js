@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import env from './base/core/env';
-import * as lists from './base/core/lists';
+import { Lists } from './base/core/lists';
 import Context from './base/Context';
 
 $.fn.extend({
@@ -11,11 +11,11 @@ $.fn.extend({
    * @return {this}
    */
   summernote: function() {
-    const type = $.type(lists.head(arguments));
+    const type = $.type(Lists.head(arguments));
     const isExternalAPICalled = type === 'string';
     const hasInitOptions = type === 'object';
 
-    const options = $.extend({}, $.summernote.options, hasInitOptions ? lists.head(arguments) : {});
+    const options = $.extend({}, $.summernote.options, hasInitOptions ? Lists.head(arguments) : {});
 
     // Update options
     options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
@@ -35,7 +35,7 @@ $.fn.extend({
     if ($note.length) {
       const context = $note.data('summernote');
       if (isExternalAPICalled) {
-        return context.invoke.apply(context, lists.from(arguments));
+        return context.invoke.apply(context, Lists.from(arguments));
       } else if (options.focus) {
         context.invoke('editor.focus');
       }

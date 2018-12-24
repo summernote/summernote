@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import * as lists from '../core/lists';
-import dom from '../core/dom';
+import { Lists } from '../core/lists';
+import { BoundaryPoints, Nodes } from '../core/dom';
 
 /**
  * Image popover module
@@ -23,7 +23,7 @@ export default class ImagePopover {
   }
 
   shouldInitialize() {
-    return !lists.isEmpty(this.options.popover.image);
+    return !Lists.isEmpty(this.options.popover.image);
   }
 
   initialize() {
@@ -39,9 +39,9 @@ export default class ImagePopover {
   }
 
   update(target, event) {
-    if (dom.isImg(target)) {
-      const pos = dom.posFromPlaceholder(target);
-      const posEditor = dom.posFromPlaceholder(this.editable);
+    if (Nodes.isImg(target)) {
+      const pos = BoundaryPoints.posFromPlaceholder(target);
+      const posEditor = BoundaryPoints.posFromPlaceholder(this.editable);
       this.$popover.css({
         display: 'block',
         left: this.options.popatmouse ? event.pageX - 20 : pos.left,

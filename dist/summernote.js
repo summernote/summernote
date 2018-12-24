@@ -5,7 +5,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2018-12-24T09:13Z
+ * Date: 2018-12-24T18:10Z
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -627,1193 +627,980 @@
       return expression.test(url);
   }
 
-  /**
-   * returns the first item of an array.
-   *
-   * @param {Array} array
-   */
-  function head(array) {
-      return array[0];
-  }
-  /**
-   * returns the last item of an array.
-   *
-   * @param {Array} array
-   */
-  function last(array) {
-      return array[array.length - 1];
-  }
-  /**
-   * returns everything but the last entry of the array.
-   *
-   * @param {Array} array
-   */
-  function initial(array) {
-      return array.slice(0, array.length - 1);
-  }
-  /**
-   * returns the rest of the items in an array.
-   *
-   * @param {Array} array
-   */
-  function tail(array) {
-      return array.slice(1);
-  }
-  /**
-   * returns item of array
-   */
-  function find(array, pred) {
-      for (var idx = 0, len = array.length; idx < len; idx++) {
-          var item = array[idx];
-          if (pred(item)) {
-              return item;
+  var Lists = /** @class */ (function () {
+      function Lists() {
+      }
+      /**
+       * returns the first item of an array.
+       *
+       * @param {Array} array
+       */
+      Lists.head = function (array) {
+          return array[0];
+      };
+      /**
+       * returns the last item of an array.
+       *
+       * @param {Array} array
+       */
+      Lists.last = function (array) {
+          return array[array.length - 1];
+      };
+      /**
+       * returns everything but the last entry of the array.
+       *
+       * @param {Array} array
+       */
+      Lists.initial = function (array) {
+          return array.slice(0, array.length - 1);
+      };
+      /**
+       * returns the rest of the items in an array.
+       *
+       * @param {Array} array
+       */
+      Lists.tail = function (array) {
+          return array.slice(1);
+      };
+      /**
+       * returns item of array
+       */
+      Lists.find = function (array, pred) {
+          for (var idx = 0, len = array.length; idx < len; idx++) {
+              var item = array[idx];
+              if (pred(item)) {
+                  return item;
+              }
           }
-      }
-  }
-  /**
-   * returns true if all of the values in the array pass the predicate truth test.
-   */
-  function all(array, pred) {
-      for (var idx = 0, len = array.length; idx < len; idx++) {
-          if (!pred(array[idx])) {
-              return false;
+      };
+      /**
+       * returns true if all of the values in the array pass the predicate truth test.
+       */
+      Lists.all = function (array, pred) {
+          for (var idx = 0, len = array.length; idx < len; idx++) {
+              if (!pred(array[idx])) {
+                  return false;
+              }
           }
-      }
-      return true;
-  }
-  /**
-   * returns index of item
-   */
-  function indexOf(array, item) {
-      for (var idx = 0; idx < array.length; idx++) {
-          if (array[idx] === item) {
-              return idx;
+          return true;
+      };
+      /**
+       * returns index of item
+       */
+      Lists.indexOf = function (array, item) {
+          for (var idx = 0; idx < array.length; idx++) {
+              if (array[idx] === item) {
+                  return idx;
+              }
           }
-      }
-      return -1;
-  }
-  /**
-   * returns true if the value is present in the list.
-   */
-  function contains(array, item) {
-      return indexOf(array, item) !== -1;
-  }
-  /**
-   * get sum from a list
-   *
-   * @param {Array} array - array
-   * @param {Function} fn - iterator
-   */
-  function sum(array, fn) {
-      fn = fn || self;
-      return array.reduce(function (memo, v) {
-          return memo + fn(v);
-      }, 0);
-  }
-  /**
-   * returns a copy of the collection with array type.
-   * @param {Collection} collection - collection eg) node.childNodes, ...
-   */
-  function from(collection) {
-      var result = [];
-      var length = collection.length;
-      var idx = -1;
-      while (++idx < length) {
-          result[idx] = collection[idx];
-      }
-      return result;
-  }
-  /**
-   * returns whether list is empty or not
-   */
-  function isEmpty(array) {
-      return !array || !array.length;
-  }
-  /**
-   * cluster elements by predicate function.
-   *
-   * @param {Array} array - array
-   * @param {Function} fn - predicate function for cluster rule
-   * @param {Array[]}
-   */
-  function clusterBy(array, fn) {
-      if (!array.length) {
-          return [];
-      }
-      return tail(array).reduce(function (memo, v) {
-          var aLast = last(memo);
-          if (fn(last(aLast), v)) {
-              aLast[aLast.length] = v;
+          return -1;
+      };
+      /**
+       * returns true if the value is present in the list.
+       */
+      Lists.contains = function (array, item) {
+          return Lists.indexOf(array, item) !== -1;
+      };
+      /**
+       * get sum from a list
+       *
+       * @param {Array} array - array
+       * @param {Function} fn - iterator
+       */
+      Lists.sum = function (array, fn) {
+          fn = fn || self;
+          return array.reduce(function (memo, v) {
+              return memo + fn(v);
+          }, 0);
+      };
+      /**
+       * returns a copy of the collection with array type.
+       * @param {Collection} collection - collection eg) node.childNodes, ...
+       */
+      Lists.from = function (collection) {
+          var result = [];
+          var length = collection.length;
+          var idx = -1;
+          while (++idx < length) {
+              result[idx] = collection[idx];
           }
-          else {
-              memo[memo.length] = [v];
+          return result;
+      };
+      /**
+       * returns whether list is empty or not
+       */
+      Lists.isEmpty = function (array) {
+          return !array || !array.length;
+      };
+      /**
+       * cluster elements by predicate function.
+       *
+       * @param {Array} array - array
+       * @param {Function} fn - predicate function for cluster rule
+       * @param {Array[]}
+       */
+      Lists.clusterBy = function (array, fn) {
+          if (!array.length) {
+              return [];
           }
-          return memo;
-      }, [[head(array)]]);
-  }
-  /**
-   * returns a copy of the array with all false values removed
-   *
-   * @param {Array} array - array
-   * @param {Function} fn - predicate function
-   */
-  function compact(array) {
-      var aResult = [];
-      for (var idx = 0, len = array.length; idx < len; idx++) {
-          if (array[idx]) {
-              aResult.push(array[idx]);
+          return Lists.tail(array).reduce(function (memo, v) {
+              var aLast = Lists.last(memo);
+              if (fn(Lists.last(aLast), v)) {
+                  aLast[aLast.length] = v;
+              }
+              else {
+                  memo[memo.length] = [v];
+              }
+              return memo;
+          }, [[Lists.head(array)]]);
+      };
+      /**
+       * returns a copy of the array with all false values removed
+       *
+       * @param {Array} array - array
+       * @param {Function} fn - predicate function
+       */
+      Lists.compact = function (array) {
+          var aResult = [];
+          for (var idx = 0, len = array.length; idx < len; idx++) {
+              if (array[idx]) {
+                  aResult.push(array[idx]);
+              }
           }
-      }
-      return aResult;
-  }
-  /**
-   * produces a duplicate-free version of the array
-   */
-  function unique(array) {
-      var results = [];
-      for (var idx = 0, len = array.length; idx < len; idx++) {
-          if (!contains(results, array[idx])) {
-              results.push(array[idx]);
+          return aResult;
+      };
+      /**
+       * produces a duplicate-free version of the array
+       */
+      Lists.unique = function (array) {
+          var results = [];
+          for (var idx = 0, len = array.length; idx < len; idx++) {
+              if (!Lists.contains(results, array[idx])) {
+                  results.push(array[idx]);
+              }
           }
-      }
-      return results;
-  }
-  /**
-   * returns next item.
-   */
-  function next(array, item) {
-      var idx = indexOf(array, item);
-      if (idx === -1) {
-          return null;
-      }
-      return array[idx + 1];
-  }
-  /**
-   * returns prev item.
-   */
-  function prev(array, item) {
-      var idx = indexOf(array, item);
-      if (idx === -1) {
-          return null;
-      }
-      return array[idx - 1];
-  }
-
-  var lists = /*#__PURE__*/Object.freeze({
-    head: head,
-    last: last,
-    initial: initial,
-    tail: tail,
-    find: find,
-    all: all,
-    indexOf: indexOf,
-    contains: contains,
-    sum: sum,
-    from: from,
-    isEmpty: isEmpty,
-    clusterBy: clusterBy,
-    compact: compact,
-    unique: unique,
-    next: next,
-    prev: prev
-  });
+          return results;
+      };
+      /**
+       * returns next item.
+       */
+      Lists.next = function (array, item) {
+          var idx = Lists.indexOf(array, item);
+          if (idx === -1) {
+              return null;
+          }
+          return array[idx + 1];
+      };
+      /**
+       * returns prev item.
+       */
+      Lists.prev = function (array, item) {
+          var idx = Lists.indexOf(array, item);
+          if (idx === -1) {
+              return null;
+          }
+          return array[idx - 1];
+      };
+      return Lists;
+  }());
 
   var NBSP_CHAR = String.fromCharCode(160);
   var ZERO_WIDTH_NBSP_CHAR = '\ufeff';
-  /**
-   * @method isEditable
-   *
-   * returns whether node is `note-editable` or not.
-   *
-   * @param {Node} node
-   * @return {Boolean}
-   */
-  function isEditable(node) {
-      return node && $(node).hasClass('note-editable');
-  }
-  /**
-   * @method isControlSizing
-   *
-   * returns whether node is `note-control-sizing` or not.
-   *
-   * @param {Node} node
-   * @return {Boolean}
-   */
-  function isControlSizing(node) {
-      return node && $(node).hasClass('note-control-sizing');
-  }
-  /**
-   * @method makePredByNodeName
-   *
-   * returns predicate which judge whether nodeName is same
-   *
-   * @param {String} nodeName
-   * @return {Function}
-   */
-  function makePredByNodeName(nodeName) {
-      nodeName = nodeName.toUpperCase();
-      return function (node) {
-          return node && node.nodeName.toUpperCase() === nodeName;
-      };
-  }
-  /**
-   * @method isText
-   *
-   *
-   *
-   * @param {Node} node
-   * @return {Boolean} true if node's type is text(3)
-   */
-  function isText(node) {
-      return node && node.nodeType === 3;
-  }
-  /**
-   * @method isElement
-   *
-   *
-   *
-   * @param {Node} node
-   * @return {Boolean} true if node's type is element(1)
-   */
-  function isElement(node) {
-      return node && node.nodeType === 1;
-  }
-  /**
-   * ex) br, col, embed, hr, img, input, ...
-   * @see http://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
-   */
-  function isVoid(node) {
-      return node && /^BR|^IMG|^HR|^IFRAME|^BUTTON|^INPUT|^AUDIO|^VIDEO|^EMBED/.test(node.nodeName.toUpperCase());
-  }
-  function isPara(node) {
-      if (isEditable(node)) {
-          return false;
-      }
-      // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
-      return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName.toUpperCase());
-  }
-  function isHeading(node) {
-      return node && /^H[1-7]/.test(node.nodeName.toUpperCase());
-  }
-  var isPre = makePredByNodeName('PRE');
-  var isLi = makePredByNodeName('LI');
-  function isPurePara(node) {
-      return isPara(node) && !isLi(node);
-  }
-  var isTable = makePredByNodeName('TABLE');
-  var isData = makePredByNodeName('DATA');
-  function isInline(node) {
-      return !isBodyContainer(node) &&
-          !isList(node) &&
-          !isHr(node) &&
-          !isPara(node) &&
-          !isTable(node) &&
-          !isBlockquote(node) &&
-          !isData(node);
-  }
-  function isList(node) {
-      return node && /^UL|^OL/.test(node.nodeName.toUpperCase());
-  }
-  var isHr = makePredByNodeName('HR');
-  function isCell(node) {
-      return node && /^TD|^TH/.test(node.nodeName.toUpperCase());
-  }
-  var isBlockquote = makePredByNodeName('BLOCKQUOTE');
-  function isBodyContainer(node) {
-      return isCell(node) || isBlockquote(node) || isEditable(node);
-  }
-  var isAnchor = makePredByNodeName('A');
-  function isParaInline(node) {
-      return isInline(node) && !!ancestor(node, isPara);
-  }
-  function isBodyInline(node) {
-      return isInline(node) && !ancestor(node, isPara);
-  }
-  var isBody = makePredByNodeName('BODY');
-  /**
-   * returns whether nodeB is closest sibling of nodeA
-   *
-   * @param {Node} nodeA
-   * @param {Node} nodeB
-   * @return {Boolean}
-   */
-  function isClosestSibling(nodeA, nodeB) {
-      return nodeA.nextSibling === nodeB ||
-          nodeA.previousSibling === nodeB;
-  }
-  /**
-   * returns array of closest siblings with node
-   *
-   * @param {Node} node
-   * @param {function} [pred] - predicate function
-   * @return {Node[]}
-   */
-  function withClosestSiblings(node, pred) {
-      pred = pred || ok;
-      var siblings = [];
-      if (node.previousSibling && pred(node.previousSibling)) {
-          siblings.push(node.previousSibling);
-      }
-      siblings.push(node);
-      if (node.nextSibling && pred(node.nextSibling)) {
-          siblings.push(node.nextSibling);
-      }
-      return siblings;
-  }
   /**
    * blank HTML for cursor position
    * - [workaround] old IE only works with &nbsp;
    * - [workaround] IE11 and other browser works with bogus br
    */
-  var blankHTML = env.isMSIE && env.browserVersion < 11 ? '&nbsp;' : '<br>';
-  /**
-   * @method nodeLength
-   *
-   * returns #text's text size or element's childNodes size
-   *
-   * @param {Node} node
-   */
-  function nodeLength(node) {
-      if (isText(node)) {
-          return node.nodeValue.length;
+  var BLANK_HTML = env.isMSIE && env.browserVersion < 11 ? '&nbsp;' : '<br>';
+  var EMPTY_PARA$1 = "<p>" + BLANK_HTML + "</p>";
+  var Nodes = /** @class */ (function () {
+      function Nodes() {
       }
-      if (node) {
-          return node.childNodes.length;
-      }
-      return 0;
-  }
-  /**
-   * returns whether node is empty or not.
-   *
-   * @param {Node} node
-   * @return {Boolean}
-   */
-  function isEmpty$1(node) {
-      var len = nodeLength(node);
-      if (len === 0) {
-          return true;
-      }
-      else if (!isText(node) && len === 1 && node.innerHTML === blankHTML) {
-          // ex) <p><br></p>, <span><br></span>
-          return true;
-      }
-      else if (all(node.childNodes, isText) && node.innerHTML === '') {
-          // ex) <p></p>, <span></span>
-          return true;
-      }
-      return false;
-  }
-  /**
-   * padding blankHTML if node is empty (for cursor position)
-   */
-  function paddingBlankHTML(node) {
-      if (!isVoid(node) && !nodeLength(node)) {
-          node.innerHTML = blankHTML;
-      }
-  }
-  /**
-   * find nearest ancestor predicate hit
-   *
-   * @param {Node} node
-   * @param {Function} pred - predicate function
-   */
-  function ancestor(node, pred) {
-      while (node) {
-          if (pred(node)) {
-              return node;
-          }
-          if (isEditable(node)) {
-              break;
-          }
-          node = node.parentNode;
-      }
-      return null;
-  }
-  /**
-   * find nearest ancestor only single child blood line and predicate hit
-   *
-   * @param {Node} node
-   * @param {Function} pred - predicate function
-   */
-  function singleChildAncestor(node, pred) {
-      node = node.parentNode;
-      while (node) {
-          if (nodeLength(node) !== 1) {
-              break;
-          }
-          if (pred(node)) {
-              return node;
-          }
-          if (isEditable(node)) {
-              break;
-          }
-          node = node.parentNode;
-      }
-      return null;
-  }
-  /**
-   * returns new array of ancestor nodes (until predicate hit).
-   *
-   * @param {Node} node
-   * @param {Function} [optional] pred - predicate function
-   */
-  function listAncestor(node, pred) {
-      pred = pred || fail;
-      var ancestors = [];
-      ancestor(node, function (el) {
-          if (!isEditable(el)) {
-              ancestors.push(el);
-          }
-          return pred(el);
-      });
-      return ancestors;
-  }
-  /**
-   * find farthest ancestor predicate hit
-   */
-  function lastAncestor(node, pred) {
-      var ancestors = listAncestor(node);
-      return last(ancestors.filter(pred));
-  }
-  /**
-   * returns common ancestor node between two nodes.
-   *
-   * @param {Node} nodeA
-   * @param {Node} nodeB
-   */
-  function commonAncestor(nodeA, nodeB) {
-      var ancestors = listAncestor(nodeA);
-      for (var n = nodeB; n; n = n.parentNode) {
-          if ($.inArray(n, ancestors) > -1) {
-              return n;
-          }
-      }
-      return null; // difference document area
-  }
-  /**
-   * listing all previous siblings (until predicate hit).
-   *
-   * @param {Node} node
-   * @param {Function} [optional] pred - predicate function
-   */
-  function listPrev(node, pred) {
-      pred = pred || fail;
-      var nodes = [];
-      while (node) {
-          if (pred(node)) {
-              break;
-          }
-          nodes.push(node);
-          node = node.previousSibling;
-      }
-      return nodes;
-  }
-  /**
-   * listing next siblings (until predicate hit).
-   *
-   * @param {Node} node
-   * @param {Function} [pred] - predicate function
-   */
-  function listNext(node, pred) {
-      pred = pred || fail;
-      var nodes = [];
-      while (node) {
-          if (pred(node)) {
-              break;
-          }
-          nodes.push(node);
-          node = node.nextSibling;
-      }
-      return nodes;
-  }
-  /**
-   * listing descendant nodes
-   *
-   * @param {Node} node
-   * @param {Function} [pred] - predicate function
-   */
-  function listDescendant(node, pred) {
-      var descendants = [];
-      pred = pred || ok;
-      // start DFS(depth first search) with node
-      (function fnWalk(current) {
-          if (node !== current && pred(current)) {
-              descendants.push(current);
-          }
-          for (var idx = 0, len = current.childNodes.length; idx < len; idx++) {
-              fnWalk(current.childNodes[idx]);
-          }
-      })(node);
-      return descendants;
-  }
-  /**
-   * wrap node with new tag.
-   *
-   * @param {Node} node
-   * @param {Node} tagName of wrapper
-   * @return {Node} - wrapper
-   */
-  function wrap(node, wrapperName) {
-      var parent = node.parentNode;
-      var wrapper = $('<' + wrapperName + '>')[0];
-      parent.insertBefore(wrapper, node);
-      wrapper.appendChild(node);
-      return wrapper;
-  }
-  /**
-   * insert node after preceding
-   *
-   * @param {Node} node
-   * @param {Node} preceding - predicate function
-   */
-  function insertAfter(node, preceding) {
-      var next$$1 = preceding.nextSibling;
-      var parent = preceding.parentNode;
-      if (next$$1) {
-          parent.insertBefore(node, next$$1);
-      }
-      else {
-          parent.appendChild(node);
-      }
-      return node;
-  }
-  /**
-   * append elements.
-   *
-   * @param {Node} node
-   * @param {Collection} aChild
-   */
-  function appendChildNodes(node, aChild) {
-      $.each(aChild, function (idx, child) {
-          node.appendChild(child);
-      });
-      return node;
-  }
-  /**
-   * returns whether boundaryPoint is left edge or not.
-   *
-   * @param {BoundaryPoint} point
-   * @return {Boolean}
-   */
-  function isLeftEdgePoint(point) {
-      return point.offset === 0;
-  }
-  /**
-   * returns whether boundaryPoint is right edge or not.
-   *
-   * @param {BoundaryPoint} point
-   * @return {Boolean}
-   */
-  function isRightEdgePoint(point) {
-      return point.offset === nodeLength(point.node);
-  }
-  /**
-   * returns whether boundaryPoint is edge or not.
-   *
-   * @param {BoundaryPoint} point
-   * @return {Boolean}
-   */
-  function isEdgePoint(point) {
-      return isLeftEdgePoint(point) || isRightEdgePoint(point);
-  }
-  /**
-   * returns whether node is left edge of ancestor or not.
-   *
-   * @param {Node} node
-   * @param {Node} ancestor
-   * @return {Boolean}
-   */
-  function isLeftEdgeOf(node, ancestor) {
-      while (node && node !== ancestor) {
-          if (position(node) !== 0) {
+      /**
+       * returns whether node is `note-editable` or not.
+       */
+      Nodes.isEditable = function (node) {
+          return node && $(node).hasClass('note-editable');
+      };
+      /**
+       * returns whether node is `note-control-sizing` or not.
+       */
+      Nodes.isControlSizing = function (node) {
+          return node && $(node).hasClass('note-control-sizing');
+      };
+      /**
+       * returns predicate which judge whether nodeName is same
+       */
+      Nodes.makePredByNodeName = function (nodeName) {
+          nodeName = nodeName.toUpperCase();
+          return function (node) { return node && node.nodeName.toUpperCase() === nodeName; };
+      };
+      /**
+       * returns whether the node is text type(3) or not.
+       */
+      Nodes.isText = function (node) {
+          return node && node.nodeType === 3;
+      };
+      /**
+       * returns whether the node is element type(1) or not.
+       */
+      Nodes.isElement = function (node) {
+          return node && node.nodeType === 1;
+      };
+      /**
+       * returns whether the node is void element or not.
+       * ex) br, col, embed, hr, img, input, ...
+       * @see http://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
+       */
+      Nodes.isVoid = function (node) {
+          return node && /^BR|^IMG|^HR|^IFRAME|^BUTTON|^INPUT|^AUDIO|^VIDEO|^EMBED/.test(node.nodeName.toUpperCase());
+      };
+      Nodes.isPara = function (node) {
+          if (Nodes.isEditable(node)) {
               return false;
           }
-          node = node.parentNode;
-      }
-      return true;
-  }
-  /**
-   * returns whether node is right edge of ancestor or not.
-   *
-   * @param {Node} node
-   * @param {Node} ancestor
-   * @return {Boolean}
-   */
-  function isRightEdgeOf(node, ancestor) {
-      if (!ancestor) {
-          return false;
-      }
-      while (node && node !== ancestor) {
-          if (position(node) !== nodeLength(node.parentNode) - 1) {
-              return false;
-          }
-          node = node.parentNode;
-      }
-      return true;
-  }
-  /**
-   * returns whether point is left edge of ancestor or not.
-   * @param {BoundaryPoint} point
-   * @param {Node} ancestor
-   * @return {Boolean}
-   */
-  function isLeftEdgePointOf(point, ancestor) {
-      return isLeftEdgePoint(point) && isLeftEdgeOf(point.node, ancestor);
-  }
-  /**
-   * returns whether point is right edge of ancestor or not.
-   * @param {BoundaryPoint} point
-   * @param {Node} ancestor
-   * @return {Boolean}
-   */
-  function isRightEdgePointOf(point, ancestor) {
-      return isRightEdgePoint(point) && isRightEdgeOf(point.node, ancestor);
-  }
-  /**
-   * returns offset from parent.
-   *
-   * @param {Node} node
-   */
-  function position(node) {
-      var offset = 0;
-      while ((node = node.previousSibling)) {
-          offset += 1;
-      }
-      return offset;
-  }
-  function hasChildren(node) {
-      return !!(node && node.childNodes && node.childNodes.length);
-  }
-  /**
-   * returns previous boundaryPoint
-   *
-   * @param {BoundaryPoint} point
-   * @param {Boolean} isSkipInnerOffset
-   * @return {BoundaryPoint}
-   */
-  function prevPoint(point, isSkipInnerOffset) {
-      var node;
-      var offset;
-      if (point.offset === 0) {
-          if (isEditable(point.node)) {
-              return null;
-          }
-          node = point.node.parentNode;
-          offset = position(point.node);
-      }
-      else if (hasChildren(point.node)) {
-          node = point.node.childNodes[point.offset - 1];
-          offset = nodeLength(node);
-      }
-      else {
-          node = point.node;
-          offset = isSkipInnerOffset ? 0 : point.offset - 1;
-      }
-      return {
-          node: node,
-          offset: offset
+          // Chrome(v31.0), FF(v25.0.1) use DIV for paragraph
+          return node && /^DIV|^P|^LI|^H[1-7]/.test(node.nodeName.toUpperCase());
       };
-  }
-  /**
-   * returns next boundaryPoint
-   *
-   * @param {BoundaryPoint} point
-   * @param {Boolean} isSkipInnerOffset
-   * @return {BoundaryPoint}
-   */
-  function nextPoint(point, isSkipInnerOffset) {
-      var node, offset;
-      if (nodeLength(point.node) === point.offset) {
-          if (isEditable(point.node)) {
-              return null;
-          }
-          node = point.node.parentNode;
-          offset = position(point.node) + 1;
-      }
-      else if (hasChildren(point.node)) {
-          node = point.node.childNodes[point.offset];
-          offset = 0;
-      }
-      else {
-          node = point.node;
-          offset = isSkipInnerOffset ? nodeLength(point.node) : point.offset + 1;
-      }
-      return {
-          node: node,
-          offset: offset
+      Nodes.isHeading = function (node) {
+          return node && /^H[1-7]/.test(node.nodeName.toUpperCase());
       };
-  }
-  /**
-   * returns whether pointA and pointB is same or not.
-   *
-   * @param {BoundaryPoint} pointA
-   * @param {BoundaryPoint} pointB
-   * @return {Boolean}
-   */
-  function isSamePoint(pointA, pointB) {
-      return pointA.node === pointB.node && pointA.offset === pointB.offset;
-  }
-  /**
-   * returns whether point is visible (can set cursor) or not.
-   *
-   * @param {BoundaryPoint} point
-   * @return {Boolean}
-   */
-  function isVisiblePoint(point) {
-      if (isText(point.node) || !hasChildren(point.node) || isEmpty$1(point.node)) {
-          return true;
-      }
-      var leftNode = point.node.childNodes[point.offset - 1];
-      var rightNode = point.node.childNodes[point.offset];
-      if ((!leftNode || isVoid(leftNode)) && (!rightNode || isVoid(rightNode))) {
-          return true;
-      }
-      return false;
-  }
-  /**
-   * @method prevPointUtil
-   *
-   * @param {BoundaryPoint} point
-   * @param {Function} pred
-   * @return {BoundaryPoint}
-   */
-  function prevPointUntil(point, pred) {
-      while (point) {
-          if (pred(point)) {
-              return point;
+      Nodes.isPre = function (node) {
+          return node && node.nodeName.toUpperCase() === 'PRE';
+      };
+      Nodes.isLi = function (node) {
+          return node && node.nodeName.toUpperCase() === 'LI';
+      };
+      Nodes.isPurePara = function (node) {
+          return Nodes.isPara(node) && !Nodes.isLi(node);
+      };
+      Nodes.isTable = function (node) {
+          return node && node.nodeName.toUpperCase() === 'TABLE';
+      };
+      Nodes.isData = function (node) {
+          return node && node.nodeName.toUpperCase() === 'DATA';
+      };
+      Nodes.isInline = function (node) {
+          return !Nodes.isBodyContainer(node) &&
+              !Nodes.isList(node) &&
+              !Nodes.isHr(node) &&
+              !Nodes.isPara(node) &&
+              !Nodes.isTable(node) &&
+              !Nodes.isBlockquote(node) &&
+              !Nodes.isData(node);
+      };
+      Nodes.isBlock = function (node) {
+          return !Nodes.isInline(node);
+      };
+      Nodes.isList = function (node) {
+          return node && /^UL|^OL/.test(node.nodeName.toUpperCase());
+      };
+      Nodes.isHr = function (node) {
+          return node && node.nodeName.toUpperCase() === 'HR';
+      };
+      Nodes.isCell = function (node) {
+          return node && /^TD|^TH/.test(node.nodeName.toUpperCase());
+      };
+      Nodes.isBlockquote = function (node) {
+          return node && node.nodeName.toUpperCase() === 'BLOCKQUOTE';
+      };
+      Nodes.isBodyContainer = function (node) {
+          return Nodes.isCell(node) || Nodes.isBlockquote(node) || Nodes.isEditable(node);
+      };
+      Nodes.isAnchor = function (node) {
+          return node && node.nodeName.toUpperCase() === 'A';
+      };
+      Nodes.isDiv = function (node) {
+          return node && node.nodeName.toUpperCase() === 'DIV';
+      };
+      Nodes.isBR = function (node) {
+          return node && node.nodeName.toUpperCase() === 'BR';
+      };
+      Nodes.isSpan = function (node) {
+          return node && node.nodeName.toUpperCase() === 'SPAN';
+      };
+      Nodes.isB = function (node) {
+          return node && node.nodeName.toUpperCase() === 'B';
+      };
+      Nodes.isU = function (node) {
+          return node && node.nodeName.toUpperCase() === 'U';
+      };
+      Nodes.isS = function (node) {
+          return node && node.nodeName.toUpperCase() === 'S';
+      };
+      Nodes.isI = function (node) {
+          return node && node.nodeName.toUpperCase() === 'I';
+      };
+      Nodes.isImg = function (node) {
+          return node && node.nodeName.toUpperCase() === 'IMG';
+      };
+      Nodes.isTextarea = function (node) {
+          return node && node.nodeName.toUpperCase() === 'TEXTAREA';
+      };
+      Nodes.isParaInline = function (node) {
+          return Nodes.isInline(node) && !!Nodes.ancestor(node, Nodes.isPara);
+      };
+      Nodes.isBodyInline = function (node) {
+          return Nodes.isInline(node) && !Nodes.ancestor(node, Nodes.isPara);
+      };
+      Nodes.isBody = function (node) {
+          return node && node.nodeName.toUpperCase() === 'BODY';
+      };
+      /**
+       * returns whether nodeB is closest sibling of nodeA
+       */
+      Nodes.isClosestSibling = function (nodeA, nodeB) {
+          return nodeA.nextSibling === nodeB ||
+              nodeA.previousSibling === nodeB;
+      };
+      /**
+       * returns array of closest siblings with node
+       */
+      Nodes.withClosestSiblings = function (node, pred) {
+          pred = pred || ok;
+          var siblings = [];
+          if (node.previousSibling && pred(node.previousSibling)) {
+              siblings.push(node.previousSibling);
           }
-          point = prevPoint(point);
-      }
-      return null;
-  }
-  /**
-   * @method nextPointUntil
-   *
-   * @param {BoundaryPoint} point
-   * @param {Function} pred
-   * @return {BoundaryPoint}
-   */
-  function nextPointUntil(point, pred) {
-      while (point) {
-          if (pred(point)) {
-              return point;
+          siblings.push(node);
+          if (node.nextSibling && pred(node.nextSibling)) {
+              siblings.push(node.nextSibling);
           }
-          point = nextPoint(point);
-      }
-      return null;
-  }
-  /**
-   * returns whether point has character or not.
-   *
-   * @param {Point} point
-   * @return {Boolean}
-   */
-  function isCharPoint(point) {
-      if (!isText(point.node)) {
+          return siblings;
+      };
+      /**
+       * returns #text's text size or element's childNodes size
+       */
+      Nodes.nodeLength = function (node) {
+          if (Nodes.isText(node)) {
+              return node.nodeValue.length;
+          }
+          if (node) {
+              return node.childNodes.length;
+          }
+          return 0;
+      };
+      /**
+       * returns whether node is empty or not.
+       */
+      Nodes.isEmpty = function (node) {
+          var len = Nodes.nodeLength(node);
+          if (len === 0) {
+              return true;
+          }
+          if (!Nodes.isText(node) &&
+              len === 1 &&
+              node.innerHTML === BLANK_HTML) {
+              // ex) <p><br></p>, <span><br></span>
+              return true;
+          }
+          if (Lists.all(Lists.from(node.childNodes), Nodes.isText) &&
+              node.innerHTML === '') {
+              // ex) <p></p>, <span></span>
+              return true;
+          }
           return false;
-      }
-      var ch = point.node.nodeValue.charAt(point.offset - 1);
-      return ch && (ch !== ' ' && ch !== NBSP_CHAR);
-  }
-  /**
-   * @method walkPoint
-   *
-   * @param {BoundaryPoint} startPoint
-   * @param {BoundaryPoint} endPoint
-   * @param {Function} handler
-   * @param {Boolean} isSkipInnerOffset
-   */
-  function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
-      var point = startPoint;
-      while (point) {
-          handler(point);
-          if (isSamePoint(point, endPoint)) {
-              break;
+      };
+      Nodes.isEmptyAnchor = function (node) {
+          return Nodes.isAnchor(node) && Nodes.isEmpty(node);
+      };
+      /**
+       * padding blankHTML if node is empty (for cursor position)
+       */
+      Nodes.paddingBlankHTML = function (node) {
+          if (!Nodes.isVoid(node) && !Nodes.nodeLength(node)) {
+              node.innerHTML = BLANK_HTML;
           }
-          var isSkipOffset = isSkipInnerOffset &&
-              startPoint.node !== point.node &&
-              endPoint.node !== point.node;
-          point = nextPoint(point, isSkipOffset);
-      }
-  }
-  /**
-   * @method makeOffsetPath
-   *
-   * return offsetPath(array of offset) from ancestor
-   *
-   * @param {Node} ancestor - ancestor node
-   * @param {Node} node
-   */
-  function makeOffsetPath(ancestor, node) {
-      var ancestors = listAncestor(node, eq(ancestor));
-      return ancestors.map(position).reverse();
-  }
-  /**
-   * @method fromOffsetPath
-   *
-   * return element from offsetPath(array of offset)
-   *
-   * @param {Node} ancestor - ancestor node
-   * @param {array} offsets - offsetPath
-   */
-  function fromOffsetPath(ancestor, offsets) {
-      var current = ancestor;
-      for (var i = 0, len = offsets.length; i < len; i++) {
-          if (current.childNodes.length <= offsets[i]) {
-              current = current.childNodes[current.childNodes.length - 1];
+      };
+      /**
+       * find nearest ancestor predicate hit
+       */
+      Nodes.ancestor = function (node, pred) {
+          while (node) {
+              if (pred(node)) {
+                  return node;
+              }
+              if (Nodes.isEditable(node)) {
+                  break;
+              }
+              node = node.parentNode;
+          }
+          return null;
+      };
+      /**
+       * find nearest ancestor only single child blood line and predicate hit
+       */
+      Nodes.singleChildAncestor = function (node, pred) {
+          node = node.parentNode;
+          while (node) {
+              if (Nodes.nodeLength(node) !== 1) {
+                  break;
+              }
+              if (pred(node)) {
+                  return node;
+              }
+              if (Nodes.isEditable(node)) {
+                  break;
+              }
+              node = node.parentNode;
+          }
+          return null;
+      };
+      /**
+       * returns new array of ancestor nodes (until predicate hit).
+       */
+      Nodes.listAncestor = function (node, pred) {
+          pred = pred || fail;
+          var ancestors = [];
+          Nodes.ancestor(node, function (el) {
+              if (!Nodes.isEditable(el)) {
+                  ancestors.push(el);
+              }
+              return pred(el);
+          });
+          return ancestors;
+      };
+      /**
+       * find farthest ancestor predicate hit
+       */
+      Nodes.lastAncestor = function (node, pred) {
+          var ancestors = Nodes.listAncestor(node);
+          return Lists.last(ancestors.filter(pred));
+      };
+      /**
+       * returns common ancestor node between two nodes.
+       */
+      Nodes.commonAncestor = function (nodeA, nodeB) {
+          var ancestors = Nodes.listAncestor(nodeA);
+          for (var n = nodeB; n; n = n.parentNode) {
+              if (Lists.indexOf(ancestors, n) > -1) {
+                  return n;
+              }
+          }
+          return null; // difference document area
+      };
+      /**
+       * listing all previous siblings (until predicate hit).
+       */
+      Nodes.listPrev = function (node, pred) {
+          pred = pred || fail;
+          var nodes = [];
+          while (node) {
+              if (pred(node)) {
+                  break;
+              }
+              nodes.push(node);
+              node = node.previousSibling;
+          }
+          return nodes;
+      };
+      /**
+       * listing next siblings (until predicate hit).
+       */
+      Nodes.listNext = function (node, pred) {
+          pred = pred || fail;
+          var nodes = [];
+          while (node) {
+              if (pred(node)) {
+                  break;
+              }
+              nodes.push(node);
+              node = node.nextSibling;
+          }
+          return nodes;
+      };
+      /**
+       * listing descendant nodes
+       */
+      Nodes.listDescendant = function (node, pred) {
+          var descendants = [];
+          pred = pred || ok;
+          // start DFS(depth first search) with node
+          (function fnWalk(current) {
+              if (node !== current && pred(current)) {
+                  descendants.push(current);
+              }
+              for (var idx = 0, len = current.childNodes.length; idx < len; idx++) {
+                  fnWalk(current.childNodes[idx]);
+              }
+          })(node);
+          return descendants;
+      };
+      /**
+       * wrap node with new tag.
+       *
+       * @param {Node} node
+       * @param {Node} tagName of wrapper
+       * @return {Node} - wrapper
+       */
+      Nodes.wrap = function (node, wrapperName) {
+          var parent = node.parentNode;
+          var wrapper = $('<' + wrapperName + '>')[0];
+          parent.insertBefore(wrapper, node);
+          wrapper.appendChild(node);
+          return wrapper;
+      };
+      /**
+       * insert node after preceding
+       */
+      Nodes.insertAfter = function (node, preceding) {
+          var next = preceding.nextSibling;
+          var parent = preceding.parentNode;
+          if (next) {
+              parent.insertBefore(node, next);
           }
           else {
-              current = current.childNodes[offsets[i]];
+              parent.appendChild(node);
           }
-      }
-      return current;
-  }
-  /**
-   * @method splitNode
-   *
-   * split element or #text
-   *
-   * @param {BoundaryPoint} point
-   * @param {Object} [options]
-   * @param {Boolean} [options.isSkipPaddingBlankHTML] - default: false
-   * @param {Boolean} [options.isNotSplitEdgePoint] - default: false
-   * @param {Boolean} [options.isDiscardEmptySplits] - default: false
-   * @return {Node} right node of boundaryPoint
-   */
-  function splitNode(point, options) {
-      var isSkipPaddingBlankHTML = options && options.isSkipPaddingBlankHTML;
-      var isNotSplitEdgePoint = options && options.isNotSplitEdgePoint;
-      var isDiscardEmptySplits = options && options.isDiscardEmptySplits;
-      if (isDiscardEmptySplits) {
-          isSkipPaddingBlankHTML = true;
-      }
-      // edge case
-      if (isEdgePoint(point) && (isText(point.node) || isNotSplitEdgePoint)) {
-          if (isLeftEdgePoint(point)) {
-              return point.node;
+          return node;
+      };
+      /**
+       * append elements.
+       */
+      Nodes.appendChildNodes = function (node, childNodes) {
+          for (var _i = 0, childNodes_1 = childNodes; _i < childNodes_1.length; _i++) {
+              var child = childNodes_1[_i];
+              node.appendChild(child);
           }
-          else if (isRightEdgePoint(point)) {
-              return point.node.nextSibling;
-          }
-      }
-      // split #text
-      if (isText(point.node)) {
-          return point.node.splitText(point.offset);
-      }
-      else {
-          var childNode = point.node.childNodes[point.offset];
-          var clone = insertAfter(point.node.cloneNode(false), point.node);
-          appendChildNodes(clone, listNext(childNode));
-          if (!isSkipPaddingBlankHTML) {
-              paddingBlankHTML(point.node);
-              paddingBlankHTML(clone);
-          }
-          if (isDiscardEmptySplits) {
-              if (isEmpty$1(point.node)) {
-                  remove(point.node);
+          return node;
+      };
+      /**
+       * returns whether node is left edge of ancestor or not.
+       */
+      Nodes.isLeftEdgeOf = function (node, ancestor) {
+          while (node && node !== ancestor) {
+              if (Nodes.position(node) !== 0) {
+                  return false;
               }
-              if (isEmpty$1(clone)) {
-                  remove(clone);
+              node = node.parentNode;
+          }
+          return true;
+      };
+      /**
+       * returns whether node is right edge of ancestor or not.
+       *
+       * @param {Node} node
+       * @param {Node} ancestor
+       * @return {Boolean}
+       */
+      Nodes.isRightEdgeOf = function (node, ancestor) {
+          if (!ancestor) {
+              return false;
+          }
+          while (node && node !== ancestor) {
+              if (Nodes.position(node) !== Nodes.nodeLength(node.parentNode) - 1) {
+                  return false;
+              }
+              node = node.parentNode;
+          }
+          return true;
+      };
+      /**
+       * returns offset from parent.
+       */
+      Nodes.position = function (node) {
+          var offset = 0;
+          while ((node = node.previousSibling)) {
+              offset += 1;
+          }
+          return offset;
+      };
+      Nodes.hasChildren = function (node) {
+          return !!(node && node.childNodes && node.childNodes.length);
+      };
+      /**
+       * return offsetPath(array of offset) from ancestor
+       */
+      Nodes.makeOffsetPath = function (ancestor, node) {
+          var ancestors = Nodes.listAncestor(node, eq(ancestor));
+          return ancestors.map(Nodes.position).reverse();
+      };
+      /**
+       * return element from offsetPath(array of offset)
+       */
+      Nodes.fromOffsetPath = function (ancestor, offsets) {
+          var current = ancestor;
+          for (var i = 0, len = offsets.length; i < len; i++) {
+              if (current.childNodes.length <= offsets[i]) {
+                  current = current.childNodes[current.childNodes.length - 1];
+              }
+              else {
+                  current = current.childNodes[offsets[i]];
+              }
+          }
+          return current;
+      };
+      /**
+       * split element or #text
+       *
+       * @param {BoundaryPoint} point
+       * @param {Object} [options]
+       * @param {Boolean} [options.isSkipPaddingBlankHTML] - default: false
+       * @param {Boolean} [options.isNotSplitEdgePoint] - default: false
+       * @param {Boolean} [options.isDiscardEmptySplits] - default: false
+       * @return {Node} right node of boundaryPoint
+       */
+      Nodes.splitNode = function (point, options) {
+          var isSkipPaddingBlankHTML = options && options.isSkipPaddingBlankHTML;
+          var isNotSplitEdgePoint = options && options.isNotSplitEdgePoint;
+          var isDiscardEmptySplits = options && options.isDiscardEmptySplits;
+          if (isDiscardEmptySplits) {
+              isSkipPaddingBlankHTML = true;
+          }
+          // edge case
+          if (BoundaryPoints.isEdgePoint(point) &&
+              (Nodes.isText(point.node) || isNotSplitEdgePoint)) {
+              if (BoundaryPoints.isLeftEdgePoint(point)) {
+                  return point.node;
+              }
+              else if (BoundaryPoints.isRightEdgePoint(point)) {
                   return point.node.nextSibling;
               }
           }
-          return clone;
-      }
-  }
-  /**
-   * @method splitTree
-   *
-   * split tree by point
-   *
-   * @param {Node} root - split root
-   * @param {BoundaryPoint} point
-   * @param {Object} [options]
-   * @param {Boolean} [options.isSkipPaddingBlankHTML] - default: false
-   * @param {Boolean} [options.isNotSplitEdgePoint] - default: false
-   * @return {Node} right node of boundaryPoint
-   */
-  function splitTree(root, point, options) {
-      // ex) [#text, <span>, <p>]
-      var ancestors = listAncestor(point.node, eq(root));
-      if (!ancestors.length) {
-          return null;
-      }
-      else if (ancestors.length === 1) {
-          return splitNode(point, options);
-      }
-      return ancestors.reduce(function (node, parent) {
-          if (node === point.node) {
-              node = splitNode(point, options);
+          // split #text
+          if (Nodes.isText(point.node)) {
+              return point.node.splitText(point.offset);
           }
-          return splitNode({
-              node: parent,
-              offset: node ? position(node) : nodeLength(parent)
-          }, options);
-      });
-  }
-  /**
-   * split point
-   *
-   * @param {Point} point
-   * @param {Boolean} isInline
-   * @return {Object}
-   */
-  function splitPoint(point, isInline) {
-      // find splitRoot, container
-      //  - inline: splitRoot is a child of paragraph
-      //  - block: splitRoot is a child of bodyContainer
-      var pred = isInline ? isPara : isBodyContainer;
-      var ancestors = listAncestor(point.node, pred);
-      var topAncestor = last(ancestors) || point.node;
-      var splitRoot, container;
-      if (pred(topAncestor)) {
-          splitRoot = ancestors[ancestors.length - 2];
-          container = topAncestor;
-      }
-      else {
-          splitRoot = topAncestor;
-          container = splitRoot.parentNode;
-      }
-      // if splitRoot is exists, split with splitTree
-      var pivot = splitRoot && splitTree(splitRoot, point, {
-          isSkipPaddingBlankHTML: isInline,
-          isNotSplitEdgePoint: isInline
-      });
-      // if container is point.node, find pivot with point.offset
-      if (!pivot && container === point.node) {
-          pivot = point.node.childNodes[point.offset];
-      }
-      return {
-          rightNode: pivot,
-          container: container
+          else {
+              var childNode = point.node.childNodes[point.offset];
+              var clone = Nodes.insertAfter(point.node.cloneNode(false), point.node);
+              Nodes.appendChildNodes(clone, Nodes.listNext(childNode));
+              if (!isSkipPaddingBlankHTML) {
+                  Nodes.paddingBlankHTML(point.node);
+                  Nodes.paddingBlankHTML(clone);
+              }
+              if (isDiscardEmptySplits) {
+                  if (Nodes.isEmpty(point.node)) {
+                      Nodes.remove(point.node, false);
+                  }
+                  if (Nodes.isEmpty(clone)) {
+                      Nodes.remove(clone, false);
+                      return point.node.nextSibling;
+                  }
+              }
+              return clone;
+          }
       };
-  }
-  function create(nodeName) {
-      return document.createElement(nodeName);
-  }
-  function createText(text) {
-      return document.createTextNode(text);
-  }
-  /**
-   * @method remove
-   *
-   * remove node, (isRemoveChild: remove child or not)
-   *
-   * @param {Node} node
-   * @param {Boolean} isRemoveChild
-   */
-  function remove(node, isRemoveChild) {
-      if (!node || !node.parentNode) {
-          return;
-      }
-      if (node.removeNode) {
-          return node.removeNode(isRemoveChild);
-      }
-      var parent = node.parentNode;
-      if (!isRemoveChild) {
-          var nodes = [];
-          for (var i = 0, len = node.childNodes.length; i < len; i++) {
-              nodes.push(node.childNodes[i]);
+      /**
+       * split tree by point
+       *
+       * @param {Node} root - split root
+       * @param {BoundaryPoint} point
+       * @param {Object} [options]
+       * @param {Boolean} [options.isSkipPaddingBlankHTML] - default: false
+       * @param {Boolean} [options.isNotSplitEdgePoint] - default: false
+       * @return {Node} right node of boundaryPoint
+       */
+      Nodes.splitTree = function (root, point, options) {
+          // ex) [#text, <span>, <p>]
+          var ancestors = Nodes.listAncestor(point.node, eq(root));
+          if (!ancestors.length) {
+              return null;
           }
-          for (var i = 0, len = nodes.length; i < len; i++) {
-              parent.insertBefore(nodes[i], node);
+          else if (ancestors.length === 1) {
+              return Nodes.splitNode(point, options);
           }
-      }
-      parent.removeChild(node);
-  }
-  /**
-   * @method removeWhile
-   *
-   * @param {Node} node
-   * @param {Function} pred
-   */
-  function removeWhile(node, pred) {
-      while (node) {
-          if (isEditable(node) || !pred(node)) {
-              break;
+          return ancestors.reduce(function (node, parent) {
+              if (node === point.node) {
+                  node = Nodes.splitNode(point, options);
+              }
+              return Nodes.splitNode({
+                  node: parent,
+                  offset: node ? Nodes.position(node) : Nodes.nodeLength(parent)
+              }, options);
+          });
+      };
+      Nodes.create = function (nodeName) {
+          return document.createElement(nodeName);
+      };
+      Nodes.createText = function (text) {
+          return document.createTextNode(text);
+      };
+      /**
+       * remove node, (isRemoveChild: remove child or not)
+       */
+      Nodes.remove = function (node, isRemoveChild) {
+          if (!node || !node.parentNode) {
+              return;
           }
           var parent = node.parentNode;
-          remove(node);
-          node = parent;
-      }
-  }
-  /**
-   * @method replace
-   *
-   * replace node with provided nodeName
-   *
-   * @param {Node} node
-   * @param {String} nodeName
-   * @return {Node} - new node
-   */
-  function replace(node, nodeName) {
-      if (node.nodeName.toUpperCase() === nodeName.toUpperCase()) {
-          return node;
-      }
-      var newNode = create(nodeName);
-      if (node.style.cssText) {
-          newNode.style.cssText = node.style.cssText;
-      }
-      appendChildNodes(newNode, from(node.childNodes));
-      insertAfter(newNode, node);
-      remove(node);
-      return newNode;
-  }
-  var isTextarea = makePredByNodeName('TEXTAREA');
-  /**
-   * @param {jQuery} $node
-   * @param {Boolean} [stripLinebreaks] - default: false
-   */
-  function value($node, stripLinebreaks) {
-      var val = isTextarea($node[0]) ? $node.val() : $node.html();
-      if (stripLinebreaks) {
-          return val.replace(/[\n\r]/g, '');
-      }
-      return val;
-  }
-  /**
-   * @method html
-   *
-   * get the HTML contents of node
-   *
-   * @param {jQuery} $node
-   * @param {Boolean} [isNewlineOnBlock]
-   */
-  function html($node, isNewlineOnBlock) {
-      var markup = value($node);
-      if (isNewlineOnBlock) {
-          var regexTag = /<(\/?)(\b(?!!)[^>\s]*)(.*?)(\s*\/?>)/g;
-          markup = markup.replace(regexTag, function (match, endSlash, name) {
-              name = name.toUpperCase();
-              var isEndOfInlineContainer = /^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) &&
-                  !!endSlash;
-              var isBlockNode = /^BLOCKQUOTE|^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
-              return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
-          });
-          markup = $.trim(markup);
-      }
-      return markup;
-  }
-  function posFromPlaceholder(placeholder) {
-      var $placeholder = $(placeholder);
-      var pos = $placeholder.offset();
-      var height = $placeholder.outerHeight(true); // include margin
-      return {
-          left: pos.left,
-          top: pos.top + height
+          if (!isRemoveChild) {
+              var nodes = [];
+              for (var i = 0, len = node.childNodes.length; i < len; i++) {
+                  nodes.push(node.childNodes[i]);
+              }
+              for (var i = 0, len = nodes.length; i < len; i++) {
+                  parent.insertBefore(nodes[i], node);
+              }
+          }
+          parent.removeChild(node);
       };
-  }
-  function attachEvents($node, events) {
-      Object.keys(events).forEach(function (key) {
-          $node.on(key, events[key]);
-      });
-  }
-  function detachEvents($node, events) {
-      Object.keys(events).forEach(function (key) {
-          $node.off(key, events[key]);
-      });
-  }
-  /**
-   * @method isCustomStyleTag
-   *
-   * assert if a node contains a "note-styletag" class,
-   * which implies that's a custom-made style tag node
-   *
-   * @param {Node} an HTML DOM node
-   */
-  function isCustomStyleTag(node) {
-      return node && !isText(node) && contains(node.classList, 'note-styletag');
-  }
-  var dom = {
-      /** @property {String} NBSP_CHAR */
-      NBSP_CHAR: NBSP_CHAR,
-      /** @property {String} ZERO_WIDTH_NBSP_CHAR */
-      ZERO_WIDTH_NBSP_CHAR: ZERO_WIDTH_NBSP_CHAR,
-      /** @property {String} blank */
-      blank: blankHTML,
-      /** @property {String} emptyPara */
-      emptyPara: "<p>" + blankHTML + "</p>",
-      makePredByNodeName: makePredByNodeName,
-      isEditable: isEditable,
-      isControlSizing: isControlSizing,
-      isText: isText,
-      isElement: isElement,
-      isVoid: isVoid,
-      isPara: isPara,
-      isPurePara: isPurePara,
-      isHeading: isHeading,
-      isInline: isInline,
-      isBlock: not(isInline),
-      isBodyInline: isBodyInline,
-      isBody: isBody,
-      isParaInline: isParaInline,
-      isPre: isPre,
-      isList: isList,
-      isTable: isTable,
-      isData: isData,
-      isCell: isCell,
-      isBlockquote: isBlockquote,
-      isBodyContainer: isBodyContainer,
-      isAnchor: isAnchor,
-      isDiv: makePredByNodeName('DIV'),
-      isLi: isLi,
-      isBR: makePredByNodeName('BR'),
-      isSpan: makePredByNodeName('SPAN'),
-      isB: makePredByNodeName('B'),
-      isU: makePredByNodeName('U'),
-      isS: makePredByNodeName('S'),
-      isI: makePredByNodeName('I'),
-      isImg: makePredByNodeName('IMG'),
-      isTextarea: isTextarea,
-      isEmpty: isEmpty$1,
-      isEmptyAnchor: and(isAnchor, isEmpty$1),
-      isClosestSibling: isClosestSibling,
-      withClosestSiblings: withClosestSiblings,
-      nodeLength: nodeLength,
-      isLeftEdgePoint: isLeftEdgePoint,
-      isRightEdgePoint: isRightEdgePoint,
-      isEdgePoint: isEdgePoint,
-      isLeftEdgeOf: isLeftEdgeOf,
-      isRightEdgeOf: isRightEdgeOf,
-      isLeftEdgePointOf: isLeftEdgePointOf,
-      isRightEdgePointOf: isRightEdgePointOf,
-      prevPoint: prevPoint,
-      nextPoint: nextPoint,
-      isSamePoint: isSamePoint,
-      isVisiblePoint: isVisiblePoint,
-      prevPointUntil: prevPointUntil,
-      nextPointUntil: nextPointUntil,
-      isCharPoint: isCharPoint,
-      walkPoint: walkPoint,
-      ancestor: ancestor,
-      singleChildAncestor: singleChildAncestor,
-      listAncestor: listAncestor,
-      lastAncestor: lastAncestor,
-      listNext: listNext,
-      listPrev: listPrev,
-      listDescendant: listDescendant,
-      commonAncestor: commonAncestor,
-      wrap: wrap,
-      insertAfter: insertAfter,
-      appendChildNodes: appendChildNodes,
-      position: position,
-      hasChildren: hasChildren,
-      makeOffsetPath: makeOffsetPath,
-      fromOffsetPath: fromOffsetPath,
-      splitTree: splitTree,
-      splitPoint: splitPoint,
-      create: create,
-      createText: createText,
-      remove: remove,
-      removeWhile: removeWhile,
-      replace: replace,
-      html: html,
-      value: value,
-      posFromPlaceholder: posFromPlaceholder,
-      attachEvents: attachEvents,
-      detachEvents: detachEvents,
-      isCustomStyleTag: isCustomStyleTag
-  };
+      Nodes.removeWhile = function (node, pred) {
+          while (node) {
+              if (Nodes.isEditable(node) || !pred(node)) {
+                  break;
+              }
+              var parent = node.parentNode;
+              Nodes.remove(node, false);
+              node = parent;
+          }
+      };
+      /**
+       * replace node with provided nodeName
+       */
+      Nodes.replace = function (node, nodeName) {
+          if (node.nodeName.toUpperCase() === nodeName.toUpperCase()) {
+              return node;
+          }
+          var newNode = Nodes.create(nodeName);
+          if (node.style.cssText) {
+              newNode.style.cssText = node.style.cssText;
+          }
+          Nodes.appendChildNodes(newNode, Lists.from(node.childNodes));
+          Nodes.insertAfter(newNode, node);
+          Nodes.remove(node, false);
+          return newNode;
+      };
+      Nodes.value = function ($node, stripLinebreaks) {
+          var val = Nodes.isTextarea($node[0]) ? $node.val() : $node.html();
+          if (stripLinebreaks) {
+              return val.replace(/[\n\r]/g, '');
+          }
+          return val;
+      };
+      /**
+       * get the HTML contents of node
+       */
+      Nodes.html = function ($node, isNewlineOnBlock) {
+          var markup = Nodes.value($node, false);
+          if (isNewlineOnBlock) {
+              var regexTag = /<(\/?)(\b(?!!)[^>\s]*)(.*?)(\s*\/?>)/g;
+              markup = markup.replace(regexTag, function (match, endSlash, name) {
+                  name = name.toUpperCase();
+                  var isEndOfInlineContainer = /^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) &&
+                      !!endSlash;
+                  var isBlockNode = /^BLOCKQUOTE|^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
+                  return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
+              });
+              markup = $.trim(markup);
+          }
+          return markup;
+      };
+      Nodes.attachEvents = function ($node, events) {
+          Object.keys(events).forEach(function (key) {
+              $node.on(key, events[key]);
+          });
+      };
+      Nodes.detachEvents = function ($node, events) {
+          Object.keys(events).forEach(function (key) {
+              $node.off(key, events[key]);
+          });
+      };
+      /**
+       * assert if a node contains a "note-styletag" class,
+       * which implies that's a custom-made style tag node
+       */
+      Nodes.isCustomStyleTag = function (node) {
+          return node && !Nodes.isText(node) &&
+              Lists.contains(node.classList, 'note-styletag');
+      };
+      return Nodes;
+  }());
+  var BoundaryPoints = /** @class */ (function () {
+      function BoundaryPoints() {
+      }
+      BoundaryPoints.posFromPlaceholder = function (placeholder) {
+          var $placeholder = $(placeholder);
+          var pos = $placeholder.offset();
+          var height = $placeholder.outerHeight(true); // include margin
+          return {
+              left: pos.left,
+              top: pos.top + height
+          };
+      };
+      /**
+       * returns whether point is left edge of ancestor or not.
+       */
+      BoundaryPoints.isLeftEdgePointOf = function (point, ancestor) {
+          return BoundaryPoints.isLeftEdgePoint(point) &&
+              Nodes.isLeftEdgeOf(point.node, ancestor);
+      };
+      /**
+       * returns whether point is right edge of ancestor or not.
+       * @param {BoundaryPoint} point
+       * @param {Node} ancestor
+       * @return {Boolean}
+       */
+      BoundaryPoints.isRightEdgePointOf = function (point, ancestor) {
+          return BoundaryPoints.isRightEdgePoint(point) &&
+              Nodes.isRightEdgeOf(point.node, ancestor);
+      };
+      /**
+       * returns whether boundaryPoint is left edge or not.
+       */
+      BoundaryPoints.isLeftEdgePoint = function (point) {
+          return point.offset === 0;
+      };
+      /**
+       * returns whether boundaryPoint is right edge or not.
+       */
+      BoundaryPoints.isRightEdgePoint = function (point) {
+          return point.offset === Nodes.nodeLength(point.node);
+      };
+      /**
+       * returns whether boundaryPoint is edge or not.
+       */
+      BoundaryPoints.isEdgePoint = function (point) {
+          return BoundaryPoints.isLeftEdgePoint(point) ||
+              BoundaryPoints.isRightEdgePoint(point);
+      };
+      /**
+       * returns previous boundaryPoint
+       */
+      BoundaryPoints.prevPoint = function (point, isSkipInnerOffset) {
+          var node;
+          var offset;
+          if (point.offset === 0) {
+              if (Nodes.isEditable(point.node)) {
+                  return null;
+              }
+              node = point.node.parentNode;
+              offset = Nodes.position(point.node);
+          }
+          else if (Nodes.hasChildren(point.node)) {
+              node = point.node.childNodes[point.offset - 1];
+              offset = Nodes.nodeLength(node);
+          }
+          else {
+              node = point.node;
+              offset = isSkipInnerOffset ? 0 : point.offset - 1;
+          }
+          return {
+              node: node,
+              offset: offset
+          };
+      };
+      /**
+       * returns next boundaryPoint
+       */
+      BoundaryPoints.nextPoint = function (point, isSkipInnerOffset) {
+          var node, offset;
+          if (Nodes.nodeLength(point.node) === point.offset) {
+              if (Nodes.isEditable(point.node)) {
+                  return null;
+              }
+              node = point.node.parentNode;
+              offset = Nodes.position(point.node) + 1;
+          }
+          else if (Nodes.hasChildren(point.node)) {
+              node = point.node.childNodes[point.offset];
+              offset = 0;
+          }
+          else {
+              node = point.node;
+              offset = isSkipInnerOffset ? Nodes.nodeLength(point.node) : point.offset + 1;
+          }
+          return {
+              node: node,
+              offset: offset
+          };
+      };
+      /**
+       * returns whether pointA and pointB is same or not.
+       */
+      BoundaryPoints.isSamePoint = function (pointA, pointB) {
+          return pointA.node === pointB.node && pointA.offset === pointB.offset;
+      };
+      /**
+       * returns whether point is visible (can set cursor) or not.
+       */
+      BoundaryPoints.isVisiblePoint = function (point) {
+          if (Nodes.isText(point.node) ||
+              !Nodes.hasChildren(point.node) ||
+              Nodes.isEmpty(point.node)) {
+              return true;
+          }
+          var leftNode = point.node.childNodes[point.offset - 1];
+          var rightNode = point.node.childNodes[point.offset];
+          if ((!leftNode || Nodes.isVoid(leftNode)) &&
+              (!rightNode || Nodes.isVoid(rightNode))) {
+              return true;
+          }
+          return false;
+      };
+      BoundaryPoints.prevPointUntil = function (point, pred) {
+          while (point) {
+              if (pred(point)) {
+                  return point;
+              }
+              point = BoundaryPoints.prevPoint(point, false);
+          }
+          return null;
+      };
+      BoundaryPoints.nextPointUntil = function (point, pred) {
+          while (point) {
+              if (pred(point)) {
+                  return point;
+              }
+              point = BoundaryPoints.nextPoint(point, false);
+          }
+          return null;
+      };
+      /**
+       * returns whether point has character or not.
+       */
+      BoundaryPoints.isCharPoint = function (point) {
+          if (!Nodes.isText(point.node)) {
+              return false;
+          }
+          var ch = point.node.nodeValue.charAt(point.offset - 1);
+          return ch && (ch !== ' ' && ch !== NBSP_CHAR);
+      };
+      BoundaryPoints.walkPoint = function (startPoint, endPoint, handler, isSkipInnerOffset) {
+          var point = startPoint;
+          while (point) {
+              handler(point);
+              if (BoundaryPoints.isSamePoint(point, endPoint)) {
+                  break;
+              }
+              var isSkipOffset = isSkipInnerOffset &&
+                  startPoint.node !== point.node &&
+                  endPoint.node !== point.node;
+              point = BoundaryPoints.nextPoint(point, isSkipOffset);
+          }
+      };
+      BoundaryPoints.splitPoint = function (point, isInline) {
+          // find splitRoot, container
+          //  - inline: splitRoot is a child of paragraph
+          //  - block: splitRoot is a child of bodyContainer
+          var pred = isInline ? Nodes.isPara : Nodes.isBodyContainer;
+          var ancestors = Nodes.listAncestor(point.node, pred);
+          var topAncestor = Lists.last(ancestors) || point.node;
+          var splitRoot, container;
+          if (pred(topAncestor)) {
+              splitRoot = ancestors[ancestors.length - 2];
+              container = topAncestor;
+          }
+          else {
+              splitRoot = topAncestor;
+              container = splitRoot.parentNode;
+          }
+          // if splitRoot is exists, split with splitTree
+          var pivot = splitRoot && Nodes.splitTree(splitRoot, point, {
+              isSkipPaddingBlankHTML: isInline,
+              isNotSplitEdgePoint: isInline
+          });
+          // if container is point.node, find pivot with point.offset
+          if (!pivot && container === point.node) {
+              pivot = point.node.childNodes[point.offset];
+          }
+          return {
+              rightNode: pivot,
+              container: container
+          };
+      };
+      return BoundaryPoints;
+  }());
 
   var Context = /** @class */ (function () {
       /**
@@ -1851,7 +1638,7 @@
        */
       Context.prototype.reset = function () {
           var disabled = this.isDisabled();
-          this.code(dom.emptyPara);
+          this.code(EMPTY_PARA$1);
           this._destroy();
           this._initialize();
           if (disabled) {
@@ -1921,8 +1708,8 @@
           this.triggerEvent('disable', true);
       };
       Context.prototype.triggerEvent = function () {
-          var namespace = head(arguments);
-          var args = tail(from(arguments));
+          var namespace = Lists.head(arguments);
+          var args = Lists.tail(Lists.from(arguments));
           var callback = this.options.callbacks[namespaceToCamel(namespace, 'on')];
           if (callback) {
               callback.apply(this.$note[0], args);
@@ -1941,7 +1728,7 @@
           }
           // attach events
           if (module.events) {
-              dom.attachEvents(this.$note, module.events);
+              Nodes.attachEvents(this.$note, module.events);
           }
       };
       Context.prototype.module = function (key, ModuleClass, withoutIntialize) {
@@ -1957,7 +1744,7 @@
           var module = this.modules[key];
           if (module.shouldInitialize()) {
               if (module.events) {
-                  dom.detachEvents(this.$note, module.events);
+                  Nodes.detachEvents(this.$note, module.events);
               }
               if (module.destroy) {
                   module.destroy();
@@ -1996,12 +1783,12 @@
           };
       };
       Context.prototype.invoke = function () {
-          var namespace = head(arguments);
-          var args = tail(from(arguments));
+          var namespace = Lists.head(arguments);
+          var args = Lists.tail(Lists.from(arguments));
           var splits = namespace.split('.');
           var hasSeparator = splits.length > 1;
-          var moduleName = hasSeparator && head(splits);
-          var methodName = hasSeparator ? last(splits) : head(splits);
+          var moduleName = hasSeparator && Lists.head(splits);
+          var methodName = hasSeparator ? Lists.last(splits) : Lists.head(splits);
           var module = this.modules[moduleName || 'editor'];
           if (!moduleName && this[methodName]) {
               return this[methodName].apply(this, args);
@@ -2021,10 +1808,10 @@
        * @return {this}
        */
       summernote: function () {
-          var type = $.type(head(arguments));
+          var type = $.type(Lists.head(arguments));
           var isExternalAPICalled = type === 'string';
           var hasInitOptions = type === 'object';
-          var options = $.extend({}, $.summernote.options, hasInitOptions ? head(arguments) : {});
+          var options = $.extend({}, $.summernote.options, hasInitOptions ? Lists.head(arguments) : {});
           // Update options
           options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
           options.icons = $.extend(true, {}, $.summernote.options.icons, options.icons);
@@ -2041,7 +1828,7 @@
           if ($note.length) {
               var context = $note.data('summernote');
               if (isExternalAPICalled) {
-                  return context.invoke.apply(context, from(arguments));
+                  return context.invoke.apply(context, lists.from(arguments));
               }
               else if (options.focus) {
                   context.invoke('editor.focus');
@@ -2065,9 +1852,9 @@
       var offset;
       var tester = document.body.createTextRange();
       var prevContainer;
-      var childNodes = from(container.childNodes);
+      var childNodes = Lists.from(container.childNodes);
       for (offset = 0; offset < childNodes.length; offset++) {
-          if (dom.isText(childNodes[offset])) {
+          if (Nodes.isText(childNodes[offset])) {
               continue;
           }
           tester.moveToElementText(childNodes[offset]);
@@ -2076,7 +1863,7 @@
           }
           prevContainer = childNodes[offset];
       }
-      if (offset !== 0 && dom.isText(childNodes[offset - 1])) {
+      if (offset !== 0 && Nodes.isText(childNodes[offset - 1])) {
           var textRangeStart = document.body.createTextRange();
           var curTextNode = null;
           textRangeStart.moveToElementText(prevContainer || container);
@@ -2091,7 +1878,7 @@
           }
           // [workaround] enforce IE to re-reference curTextNode, hack
           var dummy = curTextNode.nodeValue; // eslint-disable-line
-          if (isStart && curTextNode.nextSibling && dom.isText(curTextNode.nextSibling) &&
+          if (isStart && curTextNode.nextSibling && Nodes.isText(curTextNode.nextSibling) &&
               textCount === curTextNode.nodeValue.length) {
               textCount -= curTextNode.nodeValue.length;
               curTextNode = curTextNode.nextSibling;
@@ -2112,16 +1899,16 @@
   function pointToTextRange(point) {
       var textRangeInfo = function (container, offset) {
           var node, isCollapseToStart;
-          if (dom.isText(container)) {
-              var prevTextNodes = dom.listPrev(container, not(dom.isText));
-              var prevContainer = last(prevTextNodes).previousSibling;
+          if (Nodes.isText(container)) {
+              var prevTextNodes = Nodes.listPrev(container, not(Nodes.isText));
+              var prevContainer = Lists.last(prevTextNodes).previousSibling;
               node = prevContainer || container.parentNode;
-              offset += sum(tail(prevTextNodes), dom.nodeLength);
+              offset += Lists.sum(Lists.tail(prevTextNodes), Nodes.nodeLength);
               isCollapseToStart = !prevContainer;
           }
           else {
               node = container.childNodes[offset] || container;
-              if (dom.isText(node)) {
+              if (Nodes.isText(node)) {
                   return textRangeInfo(node, 0);
               }
               offset = 0;
@@ -2156,15 +1943,15 @@
           this.ec = ec;
           this.eo = eo;
           // isOnEditable: judge whether range is on editable or not
-          this.isOnEditable = this.makeIsOn(dom.isEditable);
+          this.isOnEditable = this.makeIsOn(Nodes.isEditable);
           // isOnList: judge whether range is on list node or not
-          this.isOnList = this.makeIsOn(dom.isList);
+          this.isOnList = this.makeIsOn(Nodes.isList);
           // isOnAnchor: judge whether range is on anchor node or not
-          this.isOnAnchor = this.makeIsOn(dom.isAnchor);
+          this.isOnAnchor = this.makeIsOn(Nodes.isAnchor);
           // isOnCell: judge whether range is on cell node or not
-          this.isOnCell = this.makeIsOn(dom.isCell);
+          this.isOnCell = this.makeIsOn(Nodes.isCell);
           // isOnData: judge whether range is on data node or not
-          this.isOnData = this.makeIsOn(dom.isData);
+          this.isOnData = this.makeIsOn(Nodes.isData);
       }
       // nativeRange: get nativeRange from sc, so, ec, eo
       WrappedRange.prototype.nativeRange = function () {
@@ -2245,25 +2032,25 @@
            * @return {BoundaryPoint}
            */
           var getVisiblePoint = function (point, isLeftToRight) {
-              if ((dom.isVisiblePoint(point) && !dom.isEdgePoint(point)) ||
-                  (dom.isVisiblePoint(point) && dom.isRightEdgePoint(point) && !isLeftToRight) ||
-                  (dom.isVisiblePoint(point) && dom.isLeftEdgePoint(point) && isLeftToRight) ||
-                  (dom.isVisiblePoint(point) && dom.isBlock(point.node) && dom.isEmpty(point.node))) {
+              if ((BoundaryPoints.isVisiblePoint(point) && !BoundaryPoints.isEdgePoint(point)) ||
+                  (BoundaryPoints.isVisiblePoint(point) && BoundaryPoints.isRightEdgePoint(point) && !isLeftToRight) ||
+                  (BoundaryPoints.isVisiblePoint(point) && BoundaryPoints.isLeftEdgePoint(point) && isLeftToRight) ||
+                  (BoundaryPoints.isVisiblePoint(point) && Nodes.isBlock(point.node) && Nodes.isEmpty(point.node))) {
                   return point;
               }
               // point on block's edge
-              var block = dom.ancestor(point.node, dom.isBlock);
-              if (((dom.isLeftEdgePointOf(point, block) || dom.isVoid(dom.prevPoint(point).node)) && !isLeftToRight) ||
-                  ((dom.isRightEdgePointOf(point, block) || dom.isVoid(dom.nextPoint(point).node)) && isLeftToRight)) {
+              var block = Nodes.ancestor(point.node, Nodes.isBlock);
+              if (((BoundaryPoints.isLeftEdgePointOf(point, block) || Nodes.isVoid(BoundaryPoints.prevPoint(point).node)) && !isLeftToRight) ||
+                  ((BoundaryPoints.isRightEdgePointOf(point, block) || Nodes.isVoid(BoundaryPoints.nextPoint(point).node)) && isLeftToRight)) {
                   // returns point already on visible point
-                  if (dom.isVisiblePoint(point)) {
+                  if (BoundaryPoints.isVisiblePoint(point)) {
                       return point;
                   }
                   // reverse direction
                   isLeftToRight = !isLeftToRight;
               }
-              var nextPoint = isLeftToRight ? dom.nextPointUntil(dom.nextPoint(point), dom.isVisiblePoint)
-                  : dom.prevPointUntil(dom.prevPoint(point), dom.isVisiblePoint);
+              var nextPoint = isLeftToRight ? BoundaryPoints.nextPointUntil(BoundaryPoints.nextPoint(point), BoundaryPoints.isVisiblePoint)
+                  : BoundaryPoints.prevPointUntil(BoundaryPoints.prevPoint(point), BoundaryPoints.isVisiblePoint);
               return nextPoint || point;
           };
           var endPoint = getVisiblePoint(this.getEndPoint(), false);
@@ -2288,21 +2075,21 @@
           var endPoint = this.getEndPoint();
           var nodes = [];
           var leftEdgeNodes = [];
-          dom.walkPoint(startPoint, endPoint, function (point) {
-              if (dom.isEditable(point.node)) {
+          BoundaryPoints.walkPoint(startPoint, endPoint, function (point) {
+              if (Nodes.isEditable(point.node)) {
                   return;
               }
               var node;
               if (fullyContains) {
-                  if (dom.isLeftEdgePoint(point)) {
+                  if (BoundaryPoints.isLeftEdgePoint(point)) {
                       leftEdgeNodes.push(point.node);
                   }
-                  if (dom.isRightEdgePoint(point) && contains(leftEdgeNodes, point.node)) {
+                  if (BoundaryPoints.isRightEdgePoint(point) && Lists.contains(leftEdgeNodes, point.node)) {
                       node = point.node;
                   }
               }
               else if (includeAncestor) {
-                  node = dom.ancestor(point.node, pred);
+                  node = Nodes.ancestor(point.node, pred);
               }
               else {
                   node = point.node;
@@ -2311,14 +2098,14 @@
                   nodes.push(node);
               }
           }, true);
-          return unique(nodes);
+          return Lists.unique(nodes);
       };
       /**
        * returns commonAncestor of range
        * @return {Element} - commonAncestor
        */
       WrappedRange.prototype.commonAncestor = function () {
-          return dom.commonAncestor(this.sc, this.ec);
+          return Nodes.commonAncestor(this.sc, this.ec);
       };
       /**
        * returns expanded range by pred
@@ -2327,8 +2114,8 @@
        * @return {WrappedRange}
        */
       WrappedRange.prototype.expand = function (pred) {
-          var startAncestor = dom.ancestor(this.sc, pred);
-          var endAncestor = dom.ancestor(this.ec, pred);
+          var startAncestor = Nodes.ancestor(this.sc, pred);
+          var endAncestor = Nodes.ancestor(this.ec, pred);
           if (!startAncestor && !endAncestor) {
               return new WrappedRange(this.sc, this.so, this.ec, this.eo);
           }
@@ -2339,7 +2126,7 @@
           }
           if (endAncestor) {
               boundaryPoints.ec = endAncestor;
-              boundaryPoints.eo = dom.nodeLength(endAncestor);
+              boundaryPoints.eo = Nodes.nodeLength(endAncestor);
           }
           return new WrappedRange(boundaryPoints.sc, boundaryPoints.so, boundaryPoints.ec, boundaryPoints.eo);
       };
@@ -2361,10 +2148,10 @@
       WrappedRange.prototype.splitText = function () {
           var isSameContainer = this.sc === this.ec;
           var boundaryPoints = this.getPoints();
-          if (dom.isText(this.ec) && !dom.isEdgePoint(this.getEndPoint())) {
+          if (Nodes.isText(this.ec) && !BoundaryPoints.isEdgePoint(this.getEndPoint())) {
               this.ec.splitText(this.eo);
           }
-          if (dom.isText(this.sc) && !dom.isEdgePoint(this.getStartPoint())) {
+          if (Nodes.isText(this.sc) && !BoundaryPoints.isEdgePoint(this.getStartPoint())) {
               boundaryPoints.sc = this.sc.splitText(this.so);
               boundaryPoints.so = 0;
               if (isSameContainer) {
@@ -2387,21 +2174,21 @@
               fullyContains: true
           });
           // find new cursor point
-          var point = dom.prevPointUntil(rng.getStartPoint(), function (point) {
-              return !contains(nodes, point.node);
+          var point = BoundaryPoints.prevPointUntil(rng.getStartPoint(), function (point) {
+              return !Lists.contains(nodes, point.node);
           });
           var emptyParents = [];
           $.each(nodes, function (idx, node) {
               // find empty parents
               var parent = node.parentNode;
-              if (point.node !== parent && dom.nodeLength(parent) === 1) {
+              if (point.node !== parent && Nodes.nodeLength(parent) === 1) {
                   emptyParents.push(parent);
               }
-              dom.remove(node, false);
+              Nodes.remove(node, false);
           });
           // remove empty parents
           $.each(emptyParents, function (idx, node) {
-              dom.remove(node, false);
+              Nodes.remove(node, false);
           });
           return new WrappedRange(point.node, point.offset, point.node, point.offset).normalize();
       };
@@ -2410,8 +2197,8 @@
        */
       WrappedRange.prototype.makeIsOn = function (pred) {
           return function () {
-              var ancestor = dom.ancestor(this.sc, pred);
-              return !!ancestor && (ancestor === dom.ancestor(this.ec, pred));
+              var ancestor = Nodes.ancestor(this.sc, pred);
+              return !!ancestor && (ancestor === Nodes.ancestor(this.ec, pred));
           };
       };
       /**
@@ -2419,11 +2206,11 @@
        * @return {Boolean}
        */
       WrappedRange.prototype.isLeftEdgeOf = function (pred) {
-          if (!dom.isLeftEdgePoint(this.getStartPoint())) {
+          if (!BoundaryPoints.isLeftEdgePoint(this.getStartPoint())) {
               return false;
           }
-          var node = dom.ancestor(this.sc, pred);
-          return node && dom.isLeftEdgeOf(this.sc, node);
+          var node = Nodes.ancestor(this.sc, pred);
+          return node && Nodes.isLeftEdgeOf(this.sc, node);
       };
       /**
        * returns whether range was collapsed or not
@@ -2437,8 +2224,8 @@
        * @return {WrappedRange}
        */
       WrappedRange.prototype.wrapBodyInlineWithPara = function () {
-          if (dom.isBodyContainer(this.sc) && dom.isEmpty(this.sc)) {
-              this.sc.innerHTML = dom.emptyPara;
+          if (Nodes.isBodyContainer(this.sc) && Nodes.isEmpty(this.sc)) {
+              this.sc.innerHTML = EMPTY_PARA$1;
               return new WrappedRange(this.sc.firstChild, 0, this.sc.firstChild, 0);
           }
           /**
@@ -2447,15 +2234,15 @@
            *  - chrome: <p>|text|</p>
            */
           var rng = this.normalize();
-          if (dom.isParaInline(this.sc) || dom.isPara(this.sc)) {
+          if (Nodes.isParaInline(this.sc) || Nodes.isPara(this.sc)) {
               return rng;
           }
           // find inline top ancestor
           var topAncestor;
-          if (dom.isInline(rng.sc)) {
-              var ancestors = dom.listAncestor(rng.sc, not(dom.isInline));
-              topAncestor = last(ancestors);
-              if (!dom.isInline(topAncestor)) {
+          if (Nodes.isInline(rng.sc)) {
+              var ancestors = Nodes.listAncestor(rng.sc, not(Nodes.isInline));
+              topAncestor = Lists.last(ancestors);
+              if (!Nodes.isInline(topAncestor)) {
                   topAncestor = ancestors[ancestors.length - 2] || rng.sc.childNodes[rng.so];
               }
           }
@@ -2463,12 +2250,12 @@
               topAncestor = rng.sc.childNodes[rng.so > 0 ? rng.so - 1 : 0];
           }
           // siblings not in paragraph
-          var inlineSiblings = dom.listPrev(topAncestor, dom.isParaInline).reverse();
-          inlineSiblings = inlineSiblings.concat(dom.listNext(topAncestor.nextSibling, dom.isParaInline));
+          var inlineSiblings = Nodes.listPrev(topAncestor, Nodes.isParaInline).reverse();
+          inlineSiblings = inlineSiblings.concat(Nodes.listNext(topAncestor.nextSibling, Nodes.isParaInline));
           // wrap with paragraph
           if (inlineSiblings.length) {
-              var para = dom.wrap(head(inlineSiblings), 'p');
-              dom.appendChildNodes(para, tail(inlineSiblings));
+              var para = Nodes.wrap(Lists.head(inlineSiblings), 'p');
+              Nodes.appendChildNodes(para, Lists.tail(inlineSiblings));
           }
           return this.normalize();
       };
@@ -2480,7 +2267,7 @@
        */
       WrappedRange.prototype.insertNode = function (node) {
           var rng = this.wrapBodyInlineWithPara().deleteContents();
-          var info = dom.splitPoint(rng.getStartPoint(), dom.isInline(node));
+          var info = BoundaryPoints.splitPoint(rng.getStartPoint(), Nodes.isInline(node));
           if (info.rightNode) {
               info.rightNode.parentNode.insertBefore(node, info.rightNode);
           }
@@ -2494,7 +2281,7 @@
        */
       WrappedRange.prototype.pasteHTML = function (markup) {
           var contentsContainer = $('<div></div>').html(markup)[0];
-          var childNodes = from(contentsContainer.childNodes);
+          var childNodes = Lists.from(contentsContainer.childNodes);
           var rng = this.wrapBodyInlineWithPara().deleteContents();
           if (rng.so > 0) {
               childNodes = childNodes.reverse();
@@ -2524,15 +2311,15 @@
        */
       WrappedRange.prototype.getWordRange = function (findAfter) {
           var endPoint = this.getEndPoint();
-          if (!dom.isCharPoint(endPoint)) {
+          if (!BoundaryPoints.isCharPoint(endPoint)) {
               return this;
           }
-          var startPoint = dom.prevPointUntil(endPoint, function (point) {
-              return !dom.isCharPoint(point);
+          var startPoint = BoundaryPoints.prevPointUntil(endPoint, function (point) {
+              return !BoundaryPoints.isCharPoint(point);
           });
           if (findAfter) {
-              endPoint = dom.nextPointUntil(endPoint, function (point) {
-                  return !dom.isCharPoint(point);
+              endPoint = BoundaryPoints.nextPointUntil(endPoint, function (point) {
+                  return !BoundaryPoints.isCharPoint(point);
               });
           }
           return new WrappedRange(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
@@ -2545,11 +2332,11 @@
       WrappedRange.prototype.bookmark = function (editable) {
           return {
               s: {
-                  path: dom.makeOffsetPath(editable, this.sc),
+                  path: Nodes.makeOffsetPath(editable, this.sc),
                   offset: this.so
               },
               e: {
-                  path: dom.makeOffsetPath(editable, this.ec),
+                  path: Nodes.makeOffsetPath(editable, this.ec),
                   offset: this.eo
               }
           };
@@ -2562,11 +2349,11 @@
       WrappedRange.prototype.paraBookmark = function (paras) {
           return {
               s: {
-                  path: tail(dom.makeOffsetPath(head(paras), this.sc)),
+                  path: Lists.tail(Nodes.makeOffsetPath(Lists.head(paras), this.sc)),
                   offset: this.so
               },
               e: {
-                  path: tail(dom.makeOffsetPath(last(paras), this.ec)),
+                  path: Lists.tail(Nodes.makeOffsetPath(Lists.last(paras), this.ec)),
                   offset: this.eo
               }
           };
@@ -2611,7 +2398,7 @@
               var wrappedRange = this.createFromSelection();
               if (!wrappedRange && arguments.length === 1) {
                   wrappedRange = this.createFromNode(arguments[0]);
-                  return wrappedRange.collapse(dom.emptyPara === arguments[0].innerHTML);
+                  return wrappedRange.collapse(EMPTY_PARA$1 === arguments[0].innerHTML);
               }
               return wrappedRange;
           }
@@ -2623,7 +2410,7 @@
               if (!selection || selection.rangeCount === 0) {
                   return null;
               }
-              else if (dom.isBody(selection.anchorNode)) {
+              else if (Nodes.isBody(selection.anchorNode)) {
                   // Firefox: returns entire body as range on initialization.
                   // We won't never need it.
                   return null;
@@ -2643,8 +2430,8 @@
               var startPoint = textRangeToPoint(textRangeStart, true);
               var endPoint = textRangeToPoint(textRangeEnd, false);
               // same visible point case: range was collapsed.
-              if (dom.isText(startPoint.node) && dom.isLeftEdgePoint(startPoint) &&
-                  dom.isTextNode(endPoint.node) && dom.isRightEdgePoint(endPoint) &&
+              if (Nodes.isText(startPoint.node) && Nodes.isLeftEdgePoint(startPoint) &&
+                  Nodes.isTextNode(endPoint.node) && Nodes.isRightEdgePoint(endPoint) &&
                   endPoint.node.nextSibling === startPoint.node) {
                   startPoint = endPoint;
               }
@@ -2667,18 +2454,18 @@
           var sc = node;
           var so = 0;
           var ec = node;
-          var eo = dom.nodeLength(ec);
+          var eo = Nodes.nodeLength(ec);
           // browsers can't target a picture or void node
-          if (dom.isVoid(sc)) {
-              so = dom.listPrev(sc).length - 1;
+          if (Nodes.isVoid(sc)) {
+              so = Nodes.listPrev(sc).length - 1;
               sc = sc.parentNode;
           }
-          if (dom.isBR(ec)) {
-              eo = dom.listPrev(ec).length - 1;
+          if (Nodes.isBR(ec)) {
+              eo = Nodes.listPrev(ec).length - 1;
               ec = ec.parentNode;
           }
-          else if (dom.isVoid(ec)) {
-              eo = dom.listPrev(ec).length;
+          else if (Nodes.isVoid(ec)) {
+              eo = Nodes.listPrev(ec).length;
               ec = ec.parentNode;
           }
           return this.create(sc, so, ec, eo);
@@ -2711,9 +2498,9 @@
        * @return {WrappedRange}
        */
       createFromBookmark: function (editable, bookmark) {
-          var sc = dom.fromOffsetPath(editable, bookmark.s.path);
+          var sc = Nodes.fromOffsetPath(editable, bookmark.s.path);
           var so = bookmark.s.offset;
-          var ec = dom.fromOffsetPath(editable, bookmark.e.path);
+          var ec = Nodes.fromOffsetPath(editable, bookmark.e.path);
           var eo = bookmark.e.offset;
           return new WrappedRange(sc, so, ec, eo);
       },
@@ -2729,8 +2516,8 @@
       createFromParaBookmark: function (bookmark, paras) {
           var so = bookmark.s.offset;
           var eo = bookmark.e.offset;
-          var sc = dom.fromOffsetPath(head(paras), bookmark.s.path);
-          var ec = dom.fromOffsetPath(last(paras), bookmark.e.path);
+          var sc = Nodes.fromOffsetPath(Lists.head(paras), bookmark.s.path);
+          var ec = Nodes.fromOffsetPath(Lists.last(paras), bookmark.e.path);
           return new WrappedRange(sc, so, ec, eo);
       }
   };
@@ -2775,7 +2562,7 @@
       'RIGHTBRACKET': 221
   };
   function isEdit(keyCode) {
-      return contains([
+      return Lists.contains([
           KEY_MAP.BACKSPACE,
           KEY_MAP.TAB,
           KEY_MAP.ENTER,
@@ -2784,7 +2571,7 @@
       ], keyCode);
   }
   function isMove(keyCode) {
-      return contains([
+      return Lists.contains([
           KEY_MAP.LEFT,
           KEY_MAP.UP,
           KEY_MAP.RIGHT,
@@ -3203,7 +2990,7 @@
        * @param {Object} styleInfo
        */
       Style.prototype.stylePara = function (rng, styleInfo) {
-          $.each(rng.nodes(dom.isPara, {
+          $.each(rng.nodes(Nodes.isPara, {
               includeAncestor: true
           }), function (idx, para) {
               $(para).css(styleInfo);
@@ -3225,31 +3012,31 @@
           var expandClosestSibling = !!(options && options.expandClosestSibling);
           var onlyPartialContains = !!(options && options.onlyPartialContains);
           if (rng.isCollapsed()) {
-              return [rng.insertNode(dom.create(nodeName))];
+              return [rng.insertNode(Nodes.create(nodeName))];
           }
-          var pred = dom.makePredByNodeName(nodeName);
-          var nodes = rng.nodes(dom.isText, {
+          var pred = Nodes.makePredByNodeName(nodeName);
+          var nodes = rng.nodes(Nodes.isText, {
               fullyContains: true
           }).map(function (text) {
-              return dom.singleChildAncestor(text, pred) || dom.wrap(text, nodeName);
+              return Nodes.singleChildAncestor(text, pred) || Nodes.wrap(text, nodeName);
           });
           if (expandClosestSibling) {
               if (onlyPartialContains) {
                   var nodesInRange_1 = rng.nodes();
                   // compose with partial contains predication
                   pred = and(pred, function (node) {
-                      return contains(nodesInRange_1, node);
+                      return Lists.contains(nodesInRange_1, node);
                   });
               }
               return nodes.map(function (node) {
-                  var siblings = dom.withClosestSiblings(node, pred);
-                  var head$$1 = head(siblings);
-                  var tails = tail(siblings);
+                  var siblings = Nodes.withClosestSiblings(node, pred);
+                  var head = Lists.head(siblings);
+                  var tails = Lists.tail(siblings);
                   $.each(tails, function (idx, elem) {
-                      dom.appendChildNodes(head$$1, elem.childNodes);
-                      dom.remove(elem);
+                      Nodes.appendChildNodes(head, elem.childNodes);
+                      Nodes.remove(elem);
                   });
-                  return head(siblings);
+                  return Lists.head(siblings);
               });
           }
           else {
@@ -3263,7 +3050,7 @@
        * @return {Object} - object contains style properties.
        */
       Style.prototype.current = function (rng) {
-          var $cont = $(!dom.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
+          var $cont = $(!Nodes.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
           var styleInfo = this.fromNode($cont);
           // document.queryCommandState for toggle state
           // [workaround] prevent Firefox nsresult: "0x80004005 (NS_ERROR_FAILURE)"
@@ -3288,7 +3075,7 @@
               var isUnordered = $.inArray(styleInfo['list-style-type'], orderedTypes) > -1;
               styleInfo['list-style'] = isUnordered ? 'unordered' : 'ordered';
           }
-          var para = dom.ancestor(rng.sc, dom.isPara);
+          var para = Nodes.ancestor(rng.sc, Nodes.isPara);
           if (para && para.style['line-height']) {
               styleInfo['line-height'] = para.style.lineHeight;
           }
@@ -3296,8 +3083,8 @@
               var lineHeight = parseInt(styleInfo['line-height'], 10) / parseInt(styleInfo['font-size'], 10);
               styleInfo['line-height'] = lineHeight.toFixed(1);
           }
-          styleInfo.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);
-          styleInfo.ancestors = dom.listAncestor(rng.sc, dom.isEditable);
+          styleInfo.anchor = rng.isOnAnchor() && Nodes.ancestor(rng.sc, Nodes.isAnchor);
+          styleInfo.ancestors = Nodes.listAncestor(rng.sc, Nodes.isEditable);
           styleInfo.range = rng;
           return styleInfo;
       };
@@ -3325,18 +3112,18 @@
       Bullet.prototype.indent = function (editable) {
           var _this = this;
           var rng = range.create(editable).wrapBodyInlineWithPara();
-          var paras = rng.nodes(dom.isPara, { includeAncestor: true });
-          var clustereds = clusterBy(paras, peq2('parentNode'));
+          var paras = rng.nodes(Nodes.isPara, { includeAncestor: true });
+          var clustereds = Lists.clusterBy(paras, peq2('parentNode'));
           $.each(clustereds, function (idx, paras) {
-              var head$$1 = head(paras);
-              if (dom.isLi(head$$1)) {
-                  var previousList_1 = _this.findList(head$$1.previousSibling);
+              var head = Lists.head(paras);
+              if (Nodes.isLi(head)) {
+                  var previousList_1 = _this.findList(head.previousSibling);
                   if (previousList_1) {
                       paras
                           .map(function (para) { return previousList_1.appendChild(para); });
                   }
                   else {
-                      _this.wrapList(paras, head$$1.parentNode.nodeName);
+                      _this.wrapList(paras, head.parentNode.nodeName);
                       paras
                           .map(function (para) { return para.parentNode; })
                           .map(function (para) { return _this.appendToPrevious(para); });
@@ -3358,11 +3145,11 @@
       Bullet.prototype.outdent = function (editable) {
           var _this = this;
           var rng = range.create(editable).wrapBodyInlineWithPara();
-          var paras = rng.nodes(dom.isPara, { includeAncestor: true });
-          var clustereds = clusterBy(paras, peq2('parentNode'));
+          var paras = rng.nodes(Nodes.isPara, { includeAncestor: true });
+          var clustereds = Lists.clusterBy(paras, peq2('parentNode'));
           $.each(clustereds, function (idx, paras) {
-              var head$$1 = head(paras);
-              if (dom.isLi(head$$1)) {
+              var head = Lists.head(paras);
+              if (Nodes.isLi(head)) {
                   _this.releaseList([paras]);
               }
               else {
@@ -3384,11 +3171,11 @@
       Bullet.prototype.toggleList = function (listName, editable) {
           var _this = this;
           var rng = range.create(editable).wrapBodyInlineWithPara();
-          var paras = rng.nodes(dom.isPara, { includeAncestor: true });
+          var paras = rng.nodes(Nodes.isPara, { includeAncestor: true });
           var bookmark = rng.paraBookmark(paras);
-          var clustereds = clusterBy(paras, peq2('parentNode'));
+          var clustereds = Lists.clusterBy(paras, peq2('parentNode'));
           // paragraph to list
-          if (find(paras, dom.isPurePara)) {
+          if (Lists.find(paras, Nodes.isPurePara)) {
               var wrappedParas_1 = [];
               $.each(clustereds, function (idx, paras) {
                   wrappedParas_1 = wrappedParas_1.concat(_this.wrapList(paras, listName));
@@ -3397,14 +3184,14 @@
               // list to paragraph or change list style
           }
           else {
-              var diffLists = rng.nodes(dom.isList, {
+              var diffLists = rng.nodes(Nodes.isList, {
                   includeAncestor: true
               }).filter(function (listNode) {
                   return !$.nodeName(listNode, listName);
               });
               if (diffLists.length) {
                   $.each(diffLists, function (idx, listNode) {
-                      dom.replace(listNode, listName);
+                      Nodes.replace(listNode, listName);
                   });
               }
               else {
@@ -3419,20 +3206,20 @@
        * @return {Node[]}
        */
       Bullet.prototype.wrapList = function (paras, listName) {
-          var head$$1 = head(paras);
-          var last$$1 = last(paras);
-          var prevList = dom.isList(head$$1.previousSibling) && head$$1.previousSibling;
-          var nextList = dom.isList(last$$1.nextSibling) && last$$1.nextSibling;
-          var listNode = prevList || dom.insertAfter(dom.create(listName || 'UL'), last$$1);
+          var head = Lists.head(paras);
+          var last = Lists.last(paras);
+          var prevList = Nodes.isList(head.previousSibling) && head.previousSibling;
+          var nextList = Nodes.isList(last.nextSibling) && last.nextSibling;
+          var listNode = prevList || Nodes.insertAfter(Nodes.create(listName || 'UL'), last);
           // P to LI
           paras = paras.map(function (para) {
-              return dom.isPurePara(para) ? dom.replace(para, 'LI') : para;
+              return Nodes.isPurePara(para) ? Nodes.replace(para, 'LI') : para;
           });
           // append to list(<ul>, <ol>)
-          dom.appendChildNodes(listNode, paras);
+          Nodes.appendChildNodes(listNode, paras);
           if (nextList) {
-              dom.appendChildNodes(listNode, from(nextList.childNodes));
-              dom.remove(nextList);
+              Nodes.appendChildNodes(listNode, Lists.from(nextList.childNodes));
+              Nodes.remove(nextList);
           }
           return paras;
       };
@@ -3447,9 +3234,9 @@
           var _this = this;
           var releasedParas = [];
           $.each(clustereds, function (idx, paras) {
-              var head$$1 = head(paras);
-              var last$$1 = last(paras);
-              var headList = isEscapseToBody ? dom.lastAncestor(head$$1, dom.isList) : head$$1.parentNode;
+              var head = Lists.head(paras);
+              var last = Lists.last(paras);
+              var headList = isEscapseToBody ? Nodes.lastAncestor(head, Nodes.isList) : head.parentNode;
               var parentItem = headList.parentNode;
               if (headList.parentNode.nodeName === 'LI') {
                   paras.map(function (para) {
@@ -3473,36 +3260,36 @@
                   }
               }
               else {
-                  var lastList = headList.childNodes.length > 1 ? dom.splitTree(headList, {
-                      node: last$$1.parentNode,
-                      offset: dom.position(last$$1) + 1
+                  var lastList = headList.childNodes.length > 1 ? Nodes.splitTree(headList, {
+                      node: last.parentNode,
+                      offset: Nodes.position(last) + 1
                   }, {
                       isSkipPaddingBlankHTML: true
                   }) : null;
-                  var middleList = dom.splitTree(headList, {
-                      node: head$$1.parentNode,
-                      offset: dom.position(head$$1)
+                  var middleList = Nodes.splitTree(headList, {
+                      node: head.parentNode,
+                      offset: Nodes.position(head)
                   }, {
                       isSkipPaddingBlankHTML: true
                   });
-                  paras = isEscapseToBody ? dom.listDescendant(middleList, dom.isLi)
-                      : from(middleList.childNodes).filter(dom.isLi);
+                  paras = isEscapseToBody ? Nodes.listDescendant(middleList, Nodes.isLi)
+                      : Lists.from(middleList.childNodes).filter(Nodes.isLi);
                   // LI to P
-                  if (isEscapseToBody || !dom.isList(headList.parentNode)) {
+                  if (isEscapseToBody || !Nodes.isList(headList.parentNode)) {
                       paras = paras.map(function (para) {
-                          return dom.replace(para, 'P');
+                          return Nodes.replace(para, 'P');
                       });
                   }
-                  $.each(from(paras).reverse(), function (idx, para) {
-                      dom.insertAfter(para, headList);
+                  $.each(Lists.from(paras).reverse(), function (idx, para) {
+                      Nodes.insertAfter(para, headList);
                   });
                   // remove empty lists
-                  var rootLists = compact([headList, middleList, lastList]);
+                  var rootLists = Lists.compact([headList, middleList, lastList]);
                   $.each(rootLists, function (idx, rootList) {
-                      var listNodes = [rootList].concat(dom.listDescendant(rootList, dom.isList));
+                      var listNodes = [rootList].concat(Nodes.listDescendant(rootList, Nodes.isList));
                       $.each(listNodes.reverse(), function (idx, listNode) {
-                          if (!dom.nodeLength(listNode)) {
-                              dom.remove(listNode, true);
+                          if (!Nodes.nodeLength(listNode)) {
+                              Nodes.remove(listNode, true);
                           }
                       });
                   });
@@ -3522,7 +3309,7 @@
        */
       Bullet.prototype.appendToPrevious = function (node) {
           return node.previousSibling
-              ? dom.appendChildNodes(node.previousSibling, [node])
+              ? Nodes.appendChildNodes(node.previousSibling, [node])
               : this.wrapList([node], 'LI');
       };
       /**
@@ -3535,7 +3322,7 @@
        */
       Bullet.prototype.findList = function (node) {
           return node
-              ? find(node.children, function (child) { return ['OL', 'UL'].indexOf(child.nodeName) > -1; })
+              ? Lists.find(node.children, function (child) { return ['OL', 'UL'].indexOf(child.nodeName) > -1; })
               : null;
       };
       /**
@@ -3576,7 +3363,7 @@
        * @param {Number} tabsize
        */
       Typing.prototype.insertTab = function (rng, tabsize) {
-          var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
+          var tab = Nodes.createText(new Array(tabsize + 1).join(NBSP_CHAR));
           rng = rng.deleteContents();
           rng.insertNode(tab, true);
           rng = range.create(tab, tabsize);
@@ -3600,12 +3387,12 @@
           // Wrap range if it needs to be wrapped by paragraph
           rng = rng.wrapBodyInlineWithPara();
           // finding paragraph
-          var splitRoot = dom.ancestor(rng.sc, dom.isPara);
+          var splitRoot = Nodes.ancestor(rng.sc, Nodes.isPara);
           var nextPara;
           // on paragraph: split paragraph
           if (splitRoot) {
               // if it is an empty line with li
-              if (dom.isEmpty(splitRoot) && dom.isLi(splitRoot)) {
+              if (Nodes.isEmpty(splitRoot) && Nodes.isLi(splitRoot)) {
                   // toogle UL/OL and escape
                   this.bullet.toggleList(splitRoot.parentNode.nodeName);
                   return;
@@ -3613,38 +3400,38 @@
               else {
                   var blockquote = null;
                   if (this.options.blockquoteBreakingLevel === 1) {
-                      blockquote = dom.ancestor(splitRoot, dom.isBlockquote);
+                      blockquote = Nodes.ancestor(splitRoot, Nodes.isBlockquote);
                   }
                   else if (this.options.blockquoteBreakingLevel === 2) {
-                      blockquote = dom.lastAncestor(splitRoot, dom.isBlockquote);
+                      blockquote = Nodes.lastAncestor(splitRoot, Nodes.isBlockquote);
                   }
                   if (blockquote) {
                       // We're inside a blockquote and options ask us to break it
-                      nextPara = $(dom.emptyPara)[0];
+                      nextPara = $(EMPTY_PARA$1)[0];
                       // If the split is right before a <br>, remove it so that there's no "empty line"
                       // after the split in the new blockquote created
-                      if (dom.isRightEdgePoint(rng.getStartPoint()) && dom.isBR(rng.sc.nextSibling)) {
+                      if (BoundaryPoints.isRightEdgePoint(rng.getStartPoint()) && Nodes.isBR(rng.sc.nextSibling)) {
                           $(rng.sc.nextSibling).remove();
                       }
-                      var split = dom.splitTree(blockquote, rng.getStartPoint(), { isDiscardEmptySplits: true });
+                      var split = Nodes.splitTree(blockquote, rng.getStartPoint(), { isDiscardEmptySplits: true });
                       if (split) {
                           split.parentNode.insertBefore(nextPara, split);
                       }
                       else {
-                          dom.insertAfter(nextPara, blockquote); // There's no split if we were at the end of the blockquote
+                          Nodes.insertAfter(nextPara, blockquote); // There's no split if we were at the end of the blockquote
                       }
                   }
                   else {
-                      nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
+                      nextPara = Nodes.splitTree(splitRoot, rng.getStartPoint());
                       // not a blockquote, just insert the paragraph
-                      var emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
-                      emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
+                      var emptyAnchors = Nodes.listDescendant(splitRoot, Nodes.isEmptyAnchor);
+                      emptyAnchors = emptyAnchors.concat(Nodes.listDescendant(nextPara, Nodes.isEmptyAnchor));
                       $.each(emptyAnchors, function (idx, anchor) {
-                          dom.remove(anchor);
+                          Nodes.remove(anchor);
                       });
                       // replace empty heading, pre or custom-made styleTag with P tag
-                      if ((dom.isHeading(nextPara) || dom.isPre(nextPara) || dom.isCustomStyleTag(nextPara)) && dom.isEmpty(nextPara)) {
-                          nextPara = dom.replace(nextPara, 'p');
+                      if ((Nodes.isHeading(nextPara) || Nodes.isPre(nextPara) || Nodes.isCustomStyleTag(nextPara)) && Nodes.isEmpty(nextPara)) {
+                          nextPara = Nodes.replace(nextPara, 'p');
                       }
                   }
               }
@@ -3652,7 +3439,7 @@
           }
           else {
               var next = rng.sc.childNodes[rng.so];
-              nextPara = $(dom.emptyPara)[0];
+              nextPara = $(EMPTY_PARA$1)[0];
               if (next) {
                   rng.sc.insertBefore(nextPara, next);
               }
@@ -3935,10 +3722,10 @@
        * @param {Boolean} isShift
        */
       Table.prototype.tab = function (rng, isShift) {
-          var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-          var table = dom.ancestor(cell, dom.isTable);
-          var cells = dom.listDescendant(table, dom.isCell);
-          var nextCell = lists[isShift ? 'prev' : 'next'](cells, cell);
+          var cell = Nodes.ancestor(rng.commonAncestor(), Nodes.isCell);
+          var table = Nodes.ancestor(cell, Nodes.isTable);
+          var cells = Nodes.listDescendant(table, Nodes.isCell);
+          var nextCell = Lists[isShift ? 'prev' : 'next'](cells, cell);
           if (nextCell) {
               range.create(nextCell, 0).select();
           }
@@ -3951,7 +3738,7 @@
        * @return {Node}
        */
       Table.prototype.addRow = function (rng, position) {
-          var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+          var cell = Nodes.ancestor(rng.commonAncestor(), Nodes.isCell);
           var currentTr = $(cell).closest('tr');
           var trAttributes = this.recoverAttributes(currentTr);
           var html = $('<tr' + trAttributes + '></tr>');
@@ -3962,14 +3749,14 @@
               var tdAttributes = this.recoverAttributes(currentCell.baseCell);
               switch (currentCell.action) {
                   case TableResultAction.resultAction.AddCell:
-                      html.append('<td' + tdAttributes + '>' + dom.blank + '</td>');
+                      html.append('<td' + tdAttributes + '>' + BLANK_HTML + '</td>');
                       break;
                   case TableResultAction.resultAction.SumSpanCount:
                       if (position === 'top') {
                           var baseCellTr = currentCell.baseCell.parent;
                           var isTopFromRowSpan = (!baseCellTr ? 0 : currentCell.baseCell.closest('tr').rowIndex) <= currentTr[0].rowIndex;
                           if (isTopFromRowSpan) {
-                              var newTd = $('<div></div>').append($('<td' + tdAttributes + '>' + dom.blank + '</td>').removeAttr('rowspan')).html();
+                              var newTd = $('<div></div>').append($('<td' + tdAttributes + '>' + BLANK_HTML + '</td>').removeAttr('rowspan')).html();
                               html.append(newTd);
                               break;
                           }
@@ -4001,7 +3788,7 @@
        * @return {Node}
        */
       Table.prototype.addCol = function (rng, position) {
-          var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+          var cell = Nodes.ancestor(rng.commonAncestor(), Nodes.isCell);
           var row = $(cell).closest('tr');
           var rowsGroup = $(row).siblings();
           rowsGroup.push(row);
@@ -4013,10 +3800,10 @@
               switch (currentCell.action) {
                   case TableResultAction.resultAction.AddCell:
                       if (position === 'right') {
-                          $(currentCell.baseCell).after('<td' + tdAttributes + '>' + dom.blank + '</td>');
+                          $(currentCell.baseCell).after('<td' + tdAttributes + '>' + BLANK_HTML + '</td>');
                       }
                       else {
-                          $(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
+                          $(currentCell.baseCell).before('<td' + tdAttributes + '>' + BLANK_HTML + '</td>');
                       }
                       break;
                   case TableResultAction.resultAction.SumSpanCount:
@@ -4026,7 +3813,7 @@
                           currentCell.baseCell.setAttribute('colSpan', colspanNumber);
                       }
                       else {
-                          $(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
+                          $(currentCell.baseCell).before('<td' + tdAttributes + '>' + BLANK_HTML + '</td>');
                       }
                       break;
               }
@@ -4061,7 +3848,7 @@
        * @return {Node}
        */
       Table.prototype.deleteRow = function (rng) {
-          var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+          var cell = Nodes.ancestor(rng.commonAncestor(), Nodes.isCell);
           var row = $(cell).closest('tr');
           var cellPos = row.children('td, th').index($(cell));
           var rowPos = row[0].rowIndex;
@@ -4129,7 +3916,7 @@
        * @return {Node}
        */
       Table.prototype.deleteCol = function (rng) {
-          var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+          var cell = Nodes.ancestor(rng.commonAncestor(), Nodes.isCell);
           var row = $(cell).closest('tr');
           var cellPos = row.children('td, th').index($(cell));
           var vTable = new TableResultAction(cell, TableResultAction.where.Column, TableResultAction.requestAction.Delete, $(row).closest('table')[0]);
@@ -4162,7 +3949,7 @@
                       }
                       continue;
                   case TableResultAction.resultAction.RemoveCell:
-                      dom.remove(actions[actionIndex].baseCell, true);
+                      Nodes.remove(actions[actionIndex].baseCell, true);
                       continue;
               }
           }
@@ -4178,7 +3965,7 @@
           var tds = [];
           var tdHTML;
           for (var idxCol = 0; idxCol < colCount; idxCol++) {
-              tds.push('<td>' + dom.blank + '</td>');
+              tds.push('<td>' + BLANK_HTML + '</td>');
           }
           tdHTML = tds.join('');
           var trs = [];
@@ -4200,7 +3987,7 @@
        * @return {Node}
        */
       Table.prototype.deleteTable = function (rng) {
-          var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+          var cell = Nodes.ancestor(rng.commonAncestor(), Nodes.isCell);
           $(cell).closest('table').remove();
       };
       return Table;
@@ -4306,8 +4093,8 @@
                   return;
               }
               var rng = _this.getLastRange();
-              var textNode = rng.insertNode(dom.createText(text));
-              range.create(textNode, dom.nodeLength(textNode)).select();
+              var textNode = rng.insertNode(Nodes.createText(text));
+              range.create(textNode, Nodes.nodeLength(textNode)).select();
               _this.setLastRange();
           });
           /**
@@ -4320,7 +4107,7 @@
               }
               markup = _this.context.invoke('codeview.purify', markup);
               var contents = _this.getLastRange().pasteHTML(markup);
-              range.createFromNodeAfter(last(contents)).select();
+              range.createFromNodeAfter(Lists.last(contents)).select();
               _this.setLastRange();
           });
           /**
@@ -4341,7 +4128,7 @@
            * insert horizontal rule
            */
           this.insertHorizontalRule = this.wrapCommand(function () {
-              var hrNode = _this.getLastRange().insertNode(dom.create('HR'));
+              var hrNode = _this.getLastRange().insertNode(Nodes.create('HR'));
               if (hrNode.nextSibling) {
                   range.create(hrNode.nextSibling, 0).normalize().select();
                   _this.setLastRange();
@@ -4405,9 +4192,9 @@
                       $(anchor).removeAttr('target');
                   }
               });
-              var startRange = range.createFromNodeBefore(head(anchors));
+              var startRange = range.createFromNodeBefore(Lists.head(anchors));
               var startPoint = startRange.getStartPoint();
-              var endRange = range.createFromNodeAfter(last(anchors));
+              var endRange = range.createFromNodeAfter(Lists.last(anchors));
               var endPoint = endRange.getEndPoint();
               range.create(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset).select();
               _this.setLastRange();
@@ -4530,7 +4317,7 @@
           });
           this.$editable.attr('spellcheck', this.options.spellCheck);
           // init content before set event
-          this.$editable.html(dom.html(this.$note) || dom.emptyPara);
+          this.$editable.html(Nodes.html(this.$note) || EMPTY_PARA$1);
           this.$editable.on(env.inputEventName, debounce(function () {
               _this.context.triggerEvent('change', _this.$editable.html(), _this.$editable);
           }, 10));
@@ -4588,7 +4375,7 @@
       Editor.prototype.preventDefaultEditableShortCuts = function (event) {
           // B(Bold, 66) / I(Italic, 73) / U(Underline, 85)
           if ((event.ctrlKey || event.metaKey) &&
-              contains([66, 73, 85], event.keyCode)) {
+              Lists.contains([66, 73, 85], event.keyCode)) {
               event.preventDefault();
           }
       };
@@ -4597,9 +4384,9 @@
           if (typeof event !== 'undefined') {
               if (isMove(event.keyCode) ||
                   (event.ctrlKey || event.metaKey) ||
-                  contains([
+                  Lists.contains([
                       KEY_MAP.BACKSPACE,
-                      KEY_MAP.DELETE
+                      KEY_MAP.DELETE,
                   ], event.keyCode)) {
                   return false;
               }
@@ -4841,7 +4628,7 @@
           var rng = this.getLastRange();
           // if range on anchor, expand range with anchor
           if (rng.isOnAnchor()) {
-              rng = range.createFromNode(dom.ancestor(rng.sc, dom.isAnchor));
+              rng = range.createFromNode(Nodes.ancestor(rng.sc, Nodes.isAnchor));
           }
           return rng.toString();
       };
@@ -4870,9 +4657,9 @@
               // [workaround] added styled bogus span for style
               //  - also bogus character needed for cursor position
               if (rng.isCollapsed()) {
-                  var firstSpan = head(spans);
-                  if (firstSpan && !dom.nodeLength(firstSpan)) {
-                      firstSpan.innerHTML = dom.ZERO_WIDTH_NBSP_CHAR;
+                  var firstSpan = Lists.head(spans);
+                  if (firstSpan && !Nodes.nodeLength(firstSpan)) {
+                      firstSpan.innerHTML = ZERO_WIDTH_NBSP_CHAR;
                       range.createFromNodeAfter(firstSpan.firstChild).select();
                       this.setLastRange();
                       this.$editable.data(KEY_BOGUS, firstSpan);
@@ -4888,7 +4675,7 @@
       Editor.prototype.unlink = function () {
           var rng = this.getLastRange();
           if (rng.isOnAnchor()) {
-              var anchor = dom.ancestor(rng.sc, dom.isAnchor);
+              var anchor = Nodes.ancestor(rng.sc, Nodes.isAnchor);
               rng = range.createFromNode(anchor);
               rng.select();
               this.setLastRange();
@@ -4907,9 +4694,9 @@
        * @return {String} [return.url=""]
        */
       Editor.prototype.getLinkInfo = function () {
-          var rng = this.getLastRange().expand(dom.isAnchor);
+          var rng = this.getLastRange().expand(Nodes.isAnchor);
           // Get the first anchor on range(for edit).
-          var $anchor = $(head(rng.nodes(dom.isAnchor)));
+          var $anchor = $(Lists.head(rng.nodes(Nodes.isAnchor)));
           var linkInfo = {
               range: rng,
               text: rng.toString(),
@@ -5006,13 +4793,14 @@
        * @return {Boolean}
        */
       Editor.prototype.isEmpty = function () {
-          return dom.isEmpty(this.$editable[0]) || dom.emptyPara === this.$editable.html();
+          return Nodes.isEmpty(this.$editable[0]) ||
+              EMPTY_PARA$1 === this.$editable.html();
       };
       /**
        * Removes all contents and restores the editable instance to an _emptyPara_.
        */
       Editor.prototype.empty = function () {
-          this.context.invoke('code', dom.emptyPara);
+          this.context.invoke('code', EMPTY_PARA$1);
       };
       /**
        * normalize content
@@ -5040,7 +4828,7 @@
           var clipboardData = event.originalEvent.clipboardData;
           if (clipboardData && clipboardData.items && clipboardData.items.length) {
               // paste img file
-              var item = clipboardData.items.length > 1 ? clipboardData.items[1] : head(clipboardData.items);
+              var item = clipboardData.items.length > 1 ? clipboardData.items[1] : Lists.head(clipboardData.items);
               if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
                   this.context.invoke('editor.insertImagesOrCallback', [item.getAsFile()]);
               }
@@ -5238,7 +5026,7 @@
        */
       CodeView.prototype.activate = function () {
           var _this = this;
-          this.$codable.val(dom.html(this.$editable, this.options.prettifyHtml));
+          this.$codable.val(Nodes.html(this.$editable, this.options.prettifyHtml));
           this.$codable.height(this.$editable.height());
           this.context.invoke('toolbar.updateCodeview', true);
           this.$editor.addClass('codeview');
@@ -5283,7 +5071,7 @@
               this.$codable.val(cmEditor.getValue());
               cmEditor.toTextArea();
           }
-          var value = this.purify(dom.value(this.$codable, this.options.prettifyHtml) || dom.emptyPara);
+          var value = this.purify(Nodes.value(this.$codable, this.options.prettifyHtml) || EMPTY_PARA);
           var isChange = this.$editable.html() !== value;
           this.$editable.html(value);
           this.$editable.height(this.options.height ? this.$codable.height() : 'auto');
@@ -5429,7 +5217,7 @@
               '</div>',
           ].join('')).prependTo(this.$editingArea);
           this.$handle.on('mousedown', function (event) {
-              if (dom.isControlSizing(event.target)) {
+              if (Nodes.isControlSizing(event.target)) {
                   event.preventDefault();
                   event.stopPropagation();
                   var $target_1 = _this.$handle.find('.note-control-selection').data('target');
@@ -5467,7 +5255,7 @@
           if (this.context.isDisabled()) {
               return false;
           }
-          var isImage = dom.isImg(target);
+          var isImage = Nodes.isImg(target);
           var $selection = this.$handle.find('.note-control-selection');
           this.context.invoke('imagePopover.update', target, event);
           if (isImage) {
@@ -5553,17 +5341,18 @@
           }
       };
       AutoLink.prototype.handleKeydown = function (e) {
-          if (contains([
+          if (Lists.contains([
               KEY_MAP.ENTER,
-              KEY_MAP.SPACE
+              KEY_MAP.SPACE,
           ], e.keyCode)) {
               var wordRange = this.context.invoke('editor.createRange').getWordRange();
               this.lastWordRange = wordRange;
           }
       };
       AutoLink.prototype.handleKeyup = function (e) {
-          if (contains([
-              KEY_MAP.ENTER, KEY_MAP.SPACE
+          if (Lists.contains([
+              KEY_MAP.ENTER,
+              KEY_MAP.SPACE,
           ], e.keyCode)) {
               this.replace();
           }
@@ -5585,7 +5374,7 @@
           };
       }
       AutoSync.prototype.shouldInitialize = function () {
-          return dom.isTextarea(this.$note[0]);
+          return Nodes.isTextarea(this.$note[0]);
       };
       return AutoSync;
   }());
@@ -5601,7 +5390,7 @@
               KEY_MAP.PERIOD,
               KEY_MAP.COMMA,
               KEY_MAP.SEMICOLON,
-              KEY_MAP.SLASH
+              KEY_MAP.SLASH,
           ];
           this.previousKeydownCode = null;
           this.events = {
@@ -5634,7 +5423,7 @@
               if (match) {
                   var node = '';
                   if (typeof match === 'string') {
-                      node = dom.createText(match);
+                      node = Nodes.createText(match);
                   }
                   else if (match instanceof jQuery) {
                       node = match[0];
@@ -5653,18 +5442,18 @@
       AutoReplace.prototype.handleKeydown = function (e) {
           // this forces it to remember the last whole word, even if multiple termination keys are pressed
           // before the previous key is let go.
-          if (this.previousKeydownCode && contains(this.keys, this.previousKeydownCode)) {
+          if (this.previousKeydownCode && Lists.contains(this.keys, this.previousKeydownCode)) {
               this.previousKeydownCode = e.keyCode;
               return;
           }
-          if (contains(this.keys, e.keyCode)) {
+          if (Lists.contains(this.keys, e.keyCode)) {
               var wordRange = this.context.invoke('editor.createRange').getWordRange();
               this.lastWord = wordRange;
           }
           this.previousKeydownCode = e.keyCode;
       };
       AutoReplace.prototype.handleKeyup = function (e) {
-          if (contains(this.keys, e.keyCode)) {
+          if (Lists.contains(this.keys, e.keyCode)) {
               this.replace();
           }
       };
@@ -5750,7 +5539,7 @@
       Buttons.prototype.isFontInstalled = function (name) {
           if (!this.fontInstalledMap.hasOwnProperty(name)) {
               this.fontInstalledMap[name] = env.isFontInstalled(name) ||
-                  contains(this.options.fontNamesIgnoreCheck, name);
+                  Lists.contains(this.options.fontNamesIgnoreCheck, name);
           }
           return this.fontInstalledMap[name];
       };
@@ -5903,7 +5692,7 @@
                               $palette.prepend($chip);
                               $picker.click();
                           }
-                          else if (contains(['backColor', 'foreColor'], eventName)) {
+                          else if (Lists.contains(['backColor', 'foreColor'], eventName)) {
                               var key = eventName === 'backColor' ? 'background-color' : 'color';
                               var $color = $button.closest('.note-color').find('.note-recent-color');
                               var $currentButton = $button.closest('.note-color').find('.note-current-color-button');
@@ -6467,7 +6256,7 @@
                       .replace(/\s+$/, '')
                       .replace(/^\s+/, '');
               });
-              var fontName_1 = find(fontNames, this.isFontInstalled.bind(this));
+              var fontName_1 = Lists.find(fontNames, this.isFontInstalled.bind(this));
               $cont.find('.dropdown-fontname a').each(function (idx, item) {
                   var $item = $(item);
                   // always compare string to avoid creating another func.
@@ -6832,7 +6621,7 @@
           };
       }
       LinkPopover.prototype.shouldInitialize = function () {
-          return !isEmpty(this.options.popover.link);
+          return !Lists.isEmpty(this.options.popover.link);
       };
       LinkPopover.prototype.initialize = function () {
           this.$popover = this.ui.popover({
@@ -6856,10 +6645,10 @@
           }
           var rng = this.context.invoke('editor.getLastRange');
           if (rng.isCollapsed() && rng.isOnAnchor()) {
-              var anchor = dom.ancestor(rng.sc, dom.isAnchor);
+              var anchor = Nodes.ancestor(rng.sc, Nodes.isAnchor);
               var href = $(anchor).attr('href');
               this.$popover.find('a').attr('href', href).html(href);
-              var pos = dom.posFromPlaceholder(anchor);
+              var pos = BoundaryPoints.posFromPlaceholder(anchor);
               this.$popover.css({
                   display: 'block',
                   left: pos.left,
@@ -7015,7 +6804,7 @@
           };
       }
       ImagePopover.prototype.shouldInitialize = function () {
-          return !isEmpty(this.options.popover.image);
+          return !Lists.isEmpty(this.options.popover.image);
       };
       ImagePopover.prototype.initialize = function () {
           this.$popover = this.ui.popover({
@@ -7028,9 +6817,9 @@
           this.$popover.remove();
       };
       ImagePopover.prototype.update = function (target, event) {
-          if (dom.isImg(target)) {
-              var pos = dom.posFromPlaceholder(target);
-              var posEditor = dom.posFromPlaceholder(this.editable);
+          if (Nodes.isImg(target)) {
+              var pos = BoundaryPoints.posFromPlaceholder(target);
+              var posEditor = BoundaryPoints.posFromPlaceholder(this.editable);
               this.$popover.css({
                   display: 'block',
                   left: this.options.popatmouse ? event.pageX - 20 : pos.left,
@@ -7066,7 +6855,7 @@
           };
       }
       TablePopover.prototype.shouldInitialize = function () {
-          return !isEmpty(this.options.popover.table);
+          return !Lists.isEmpty(this.options.popover.table);
       };
       TablePopover.prototype.initialize = function () {
           this.$popover = this.ui.popover({
@@ -7086,9 +6875,9 @@
           if (this.context.isDisabled()) {
               return false;
           }
-          var isCell = dom.isCell(target);
+          var isCell = Nodes.isCell(target);
           if (isCell) {
-              var pos = dom.posFromPlaceholder(target);
+              var pos = BoundaryPoints.posFromPlaceholder(target);
               this.$popover.css({
                   display: 'block',
                   left: pos.left,
@@ -7399,14 +7188,15 @@
                   if (env.isFF) {
                       return;
                   }
-                  if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, eq(_this.$popover[0]))) {
+                  if (!e.relatedTarget ||
+                      !Nodes.ancestor(e.relatedTarget, eq(_this.$popover[0]))) {
                       _this.hide();
                   }
               }
           };
       }
       AirPopover.prototype.shouldInitialize = function () {
-          return this.options.airMode && !isEmpty(this.options.popover.air);
+          return this.options.airMode && !Lists.isEmpty(this.options.popover.air);
       };
       AirPopover.prototype.initialize = function () {
           this.$popover = this.ui.popover({
@@ -7421,7 +7211,7 @@
       AirPopover.prototype.update = function () {
           var styleInfo = this.context.invoke('editor.currentStyle');
           if (styleInfo.range && !styleInfo.range.isCollapsed()) {
-              var rect = last(styleInfo.range.getClientRects());
+              var rect = Lists.last(styleInfo.range.getClientRects());
               if (rect) {
                   var bnd = rect2bnd(rect);
                   this.$popover.css({
@@ -7540,7 +7330,7 @@
           var item = $item.data('item');
           var node = hint.content ? hint.content(item) : item;
           if (typeof node === 'string') {
-              node = dom.createText(node);
+              node = Nodes.createText(node);
           }
           return node;
       };
@@ -7597,12 +7387,12 @@
       };
       HintPopover.prototype.handleKeyup = function (e) {
           var _this = this;
-          if (!contains([KEY_MAP.ENTER, KEY_MAP.UP, KEY_MAP.DOWN], e.keyCode)) {
+          if (!Lists.contains([KEY_MAP.ENTER, KEY_MAP.UP, KEY_MAP.DOWN], e.keyCode)) {
               var wordRange = this.context.invoke('editor.getLastRange').getWordRange();
               var keyword_1 = wordRange.toString();
               if (this.hints.length && keyword_1) {
                   this.$content.empty();
-                  var bnd = rect2bnd(last(wordRange.getClientRects()));
+                  var bnd = rect2bnd(Lists.last(wordRange.getClientRects()));
                   if (bnd) {
                       this.$popover.hide();
                       this.lastWordRange = wordRange;
@@ -7645,7 +7435,7 @@
   $.summernote = $.extend($.summernote, {
       version: '0.8.11',
       plugins: {},
-      dom: dom,
+      dom: Nodes,
       range: range,
       options: {
           langInfo: $.summernote.lang['en-US'],

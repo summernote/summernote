@@ -1,4 +1,4 @@
-import { contains } from './lists';
+import { Lists } from './lists';
 import { invertObject } from './func';
 
 export const KEY_MAP = {
@@ -46,7 +46,7 @@ export const KEY_MAP = {
 };
 
 export function isEdit(keyCode: number): boolean {
-  return contains([
+  return Lists.contains([
     KEY_MAP.BACKSPACE,
     KEY_MAP.TAB,
     KEY_MAP.ENTER,
@@ -56,7 +56,7 @@ export function isEdit(keyCode: number): boolean {
 }
 
 export function isMove(keyCode: number): boolean {
-  return contains([
+  return Lists.contains([
     KEY_MAP.LEFT,
     KEY_MAP.UP,
     KEY_MAP.RIGHT,

@@ -1,5 +1,5 @@
-import * as lists from '../core/lists';
-import dom from '../core/dom';
+import { Lists } from '../core/lists';
+import { Nodes } from '../core/dom';
 import { KEY_MAP } from '../core/key';
 
 export default class AutoReplace {
@@ -53,7 +53,7 @@ export default class AutoReplace {
         let node = '';
 
         if (typeof match === 'string') {
-          node = dom.createText(match);
+          node = Nodes.createText(match);
         } else if (match instanceof jQuery) {
           node = match[0];
         } else if (match instanceof Node) {
@@ -71,12 +71,12 @@ export default class AutoReplace {
   handleKeydown(e) {
     // this forces it to remember the last whole word, even if multiple termination keys are pressed
     // before the previous key is let go.
-    if (this.previousKeydownCode && lists.contains(this.keys, this.previousKeydownCode)) {
+    if (this.previousKeydownCode && Lists.contains(this.keys, this.previousKeydownCode)) {
       this.previousKeydownCode = e.keyCode;
       return;
     }
 
-    if (lists.contains(this.keys, e.keyCode)) {
+    if (Lists.contains(this.keys, e.keyCode)) {
       const wordRange = this.context.invoke('editor.createRange').getWordRange();
       this.lastWord = wordRange;
     }
@@ -84,7 +84,7 @@ export default class AutoReplace {
   }
 
   handleKeyup(e) {
-    if (lists.contains(this.keys, e.keyCode)) {
+    if (Lists.contains(this.keys, e.keyCode)) {
       this.replace();
     }
   }

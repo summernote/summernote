@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import env from '../core/env';
 import * as func from '../core/func';
-import * as lists from '../core/lists';
-import dom from '../core/dom';
+import { Lists } from '../core/lists';
+import { Nodes } from '../core/dom';
 
 export default class Style {
   /**
@@ -49,7 +49,7 @@ export default class Style {
    * @param {Object} styleInfo
    */
   stylePara(rng, styleInfo) {
-    $.each(rng.nodes(dom.isPara, {
+    $.each(rng.nodes(Nodes.isPara, {
       includeAncestor: true,
     }), (idx, para) => {
       $(para).css(styleInfo);
@@ -74,14 +74,14 @@ export default class Style {
     const onlyPartialContains = !!(options && options.onlyPartialContains);
 
     if (rng.isCollapsed()) {
-      return [rng.insertNode(dom.create(nodeName))];
+      return [rng.insertNode(Nodes.create(nodeName))];
     }
 
-    let pred = dom.makePredByNodeName(nodeName);
-    const nodes = rng.nodes(dom.isText, {
+    let pred = Nodes.makePredByNodeName(nodeName);
+    const nodes = rng.nodes(Nodes.isText, {
       fullyContains: true,
     }).map((text) => {
-      return dom.singleChildAncestor(text, pred) || dom.wrap(text, nodeName);
+      return Nodes.singleChildAncestor(text, pred) || Nodes.wrap(text, nodeName);
     });
 
     if (expandClosestSibling) {
@@ -89,19 +89,19 @@ export default class Style {
         const nodesInRange = rng.nodes();
         // compose with partial contains predication
         pred = func.and(pred, (node) => {
-          return lists.contains(nodesInRange, node);
+          return Lists.contains(nodesInRange, node);
         });
       }
 
       return nodes.map((node) => {
-        const siblings = dom.withClosestSiblings(node, pred);
-        const head = lists.head(siblings);
-        const tails = lists.tail(siblings);
+        const siblings = Nodes.withClosestSiblings(node, pred);
+        const head = Lists.head(siblings);
+        const tails = Lists.tail(siblings);
         $.each(tails, (idx, elem) => {
-          dom.appendChildNodes(head, elem.childNodes);
-          dom.remove(elem);
+          Nodes.appendChildNodes(head, elem.childNodes);
+          Nodes.remove(elem);
         });
-        return lists.head(siblings);
+        return Lists.head(siblings);
       });
     } else {
       return nodes;
@@ -115,7 +115,7 @@ export default class Style {
    * @return {Object} - object contains style properties.
    */
   current(rng) {
-    const $cont = $(!dom.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
+    const $cont = $(!Nodes.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
     let styleInfo = this.fromNode($cont);
 
     // document.queryCommandState for toggle state
@@ -141,7 +141,7 @@ export default class Style {
       styleInfo['list-style'] = isUnordered ? 'unordered' : 'ordered';
     }
 
-    const para = dom.ancestor(rng.sc, dom.isPara);
+    const para = Nodes.ancestor(rng.sc, Nodes.isPara);
     if (para && para.style['line-height']) {
       styleInfo['line-height'] = para.style.lineHeight;
     } else {
@@ -149,8 +149,8 @@ export default class Style {
       styleInfo['line-height'] = lineHeight.toFixed(1);
     }
 
-    styleInfo.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);
-    styleInfo.ancestors = dom.listAncestor(rng.sc, dom.isEditable);
+    styleInfo.anchor = rng.isOnAnchor() && Nodes.ancestor(rng.sc, Nodes.isAnchor);
+    styleInfo.ancestors = Nodes.listAncestor(rng.sc, Nodes.isEditable);
     styleInfo.range = rng;
 
     return styleInfo;

@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import * as func from '../core/func';
-import * as lists from '../core/lists';
-import dom from '../core/dom';
+import { Lists } from '../core/lists';
+import { Nodes } from '../core/dom';
 import range from '../core/range';
 import { KEY_MAP } from '../core/key';
 
@@ -120,7 +120,7 @@ export default class HintPopover {
     const item = $item.data('item');
     let node = hint.content ? hint.content(item) : item;
     if (typeof node === 'string') {
-      node = dom.createText(node);
+      node = Nodes.createText(node);
     }
     return node;
   }
@@ -179,13 +179,13 @@ export default class HintPopover {
   }
 
   handleKeyup(e) {
-    if (!lists.contains([KEY_MAP.ENTER, KEY_MAP.UP, KEY_MAP.DOWN], e.keyCode)) {
+    if (!Lists.contains([KEY_MAP.ENTER, KEY_MAP.UP, KEY_MAP.DOWN], e.keyCode)) {
       const wordRange = this.context.invoke('editor.getLastRange').getWordRange();
       const keyword = wordRange.toString();
       if (this.hints.length && keyword) {
         this.$content.empty();
 
-        const bnd = func.rect2bnd(lists.last(wordRange.getClientRects()));
+        const bnd = func.rect2bnd(Lists.last(wordRange.getClientRects()));
         if (bnd) {
           this.$popover.hide();
           this.lastWordRange = wordRange;

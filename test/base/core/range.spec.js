@@ -7,7 +7,7 @@
 import chai from 'chai';
 import chaidom from '../../chaidom';
 import $ from 'jquery';
-import dom from '../../../src/js/base/core/dom';
+import { Nodes } from '../../../src/js/base/core/dom';
 import range from '../../../src/js/base/core/range';
 
 var expect = chai.expect;
@@ -24,12 +24,12 @@ describe('base:core.range', () => {
 
       it('should return array of two paragraphs', () => {
         var rng = range.create($para[0].firstChild, 0, $para[1].firstChild, 1);
-        expect(rng.nodes(dom.isPara, { includeAncestor: true })).to.have.length(2);
+        expect(rng.nodes(Nodes.isPara, { includeAncestor: true })).to.have.length(2);
       });
 
       it('should return array of a paragraph', () => {
         var rng = range.create($para[0].firstChild, 0, $para[0].firstChild, 0);
-        expect(rng.nodes(dom.isPara, { includeAncestor: true })).to.have.length(1);
+        expect(rng.nodes(Nodes.isPara, { includeAncestor: true })).to.have.length(1);
       });
     });
 
@@ -39,7 +39,7 @@ describe('base:core.range', () => {
         var $b = $cont.find('b');
         var rng = range.create($b[0].firstChild, 0, $b[0].firstChild, 0);
 
-        expect(rng.nodes(dom.isPara, { includeAncestor: true })).to.have.length(1);
+        expect(rng.nodes(Nodes.isPara, { includeAncestor: true })).to.have.length(1);
       });
     });
 
@@ -49,7 +49,7 @@ describe('base:core.range', () => {
         var $li = $cont.find('li');
         var rng = range.create($li[0].firstChild, 0, $li[1].firstChild, 1);
 
-        expect(rng.nodes(dom.isPara, { includeAncestor: true })).to.have.length(2);
+        expect(rng.nodes(Nodes.isPara, { includeAncestor: true })).to.have.length(2);
       });
 
       it('should return array of list paragraphs', () => {
@@ -58,7 +58,7 @@ describe('base:core.range', () => {
         var $h2 = $cont.find('h2');
         var rng = range.create($h1[0].firstChild, 0, $h2[0].firstChild, 1);
 
-        expect(rng.nodes(dom.isPara, { includeAncestor: true })).to.have.length(2);
+        expect(rng.nodes(Nodes.isPara, { includeAncestor: true })).to.have.length(2);
       });
     });
   });
@@ -92,7 +92,7 @@ describe('base:core.range', () => {
       var $anchor = $cont.find('a');
       var $b = $cont.find('b');
 
-      var rng = range.create($b[0].firstChild, 0, $b[0].firstChild, 0).expand(dom.isAnchor);
+      var rng = range.create($b[0].firstChild, 0, $b[0].firstChild, 0).expand(Nodes.isAnchor);
       expect(rng.sc).to.deep.equal($anchor[0]);
       expect(rng.so).to.equal(0);
       expect(rng.ec).to.deep.equal($anchor[0]);

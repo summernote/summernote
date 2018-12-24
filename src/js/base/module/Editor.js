@@ -2,8 +2,8 @@ import $ from 'jquery';
 import env from '../core/env';
 import { nameFromCode, isEdit, isMove, KEY_MAP } from '../core/key';
 import * as func from '../core/func';
-import * as lists from '../core/lists';
-import dom from '../core/dom';
+import { Lists } from '../core/lists';
+import { Nodes, EMPTY_PARA, ZERO_WIDTH_NBSP_CHAR } from '../core/dom';
 import range from '../core/range';
 import { readFileAsDataURL, createImage } from '../core/async';
 import History from '../editing/History';
@@ -128,8 +128,8 @@ export default class Editor {
         return;
       }
       const rng = this.getLastRange();
-      const textNode = rng.insertNode(dom.createText(text));
-      range.create(textNode, dom.nodeLength(textNode)).select();
+      const textNode = rng.insertNode(Nodes.createText(text));
+      range.create(textNode, Nodes.nodeLength(textNode)).select();
       this.setLastRange();
     });
     /**
@@ -142,7 +142,7 @@ export default class Editor {
       }
       markup = this.context.invoke('codeview.purify', markup);
       const contents = this.getLastRange().pasteHTML(markup);
-      range.createFromNodeAfter(lists.last(contents)).select();
+      range.createFromNodeAfter(Lists.last(contents)).select();
       this.setLastRange();
     });
 
@@ -164,7 +164,7 @@ export default class Editor {
      * insert horizontal rule
      */
     this.insertHorizontalRule = this.wrapCommand(() => {
-      const hrNode = this.getLastRange().insertNode(dom.create('HR'));
+      const hrNode = this.getLastRange().insertNode(Nodes.create('HR'));
       if (hrNode.nextSibling) {
         range.create(hrNode.nextSibling, 0).normalize().select();
         this.setLastRange();
@@ -232,9 +232,9 @@ export default class Editor {
         }
       });
 
-      const startRange = range.createFromNodeBefore(lists.head(anchors));
+      const startRange = range.createFromNodeBefore(Lists.head(anchors));
       const startPoint = startRange.getStartPoint();
-      const endRange = range.createFromNodeAfter(lists.last(anchors));
+      const endRange = range.createFromNodeAfter(Lists.last(anchors));
       const endPoint = endRange.getEndPoint();
 
       range.create(
@@ -367,7 +367,7 @@ export default class Editor {
     this.$editable.attr('spellcheck', this.options.spellCheck);
 
     // init content before set event
-    this.$editable.html(dom.html(this.$note) || dom.emptyPara);
+    this.$editable.html(Nodes.html(this.$note) || EMPTY_PARA);
 
     this.$editable.on(env.inputEventName, func.debounce(() => {
       this.context.triggerEvent('change', this.$editable.html(), this.$editable);
@@ -428,7 +428,7 @@ export default class Editor {
   preventDefaultEditableShortCuts(event) {
     // B(Bold, 66) / I(Italic, 73) / U(Underline, 85)
     if ((event.ctrlKey || event.metaKey) &&
-      lists.contains([66, 73, 85], event.keyCode)) {
+      Lists.contains([66, 73, 85], event.keyCode)) {
       event.preventDefault();
     }
   }
@@ -439,7 +439,7 @@ export default class Editor {
     if (typeof event !== 'undefined') {
       if (isMove(event.keyCode) ||
           (event.ctrlKey || event.metaKey) ||
-          lists.contains([
+          Lists.contains([
             KEY_MAP.BACKSPACE,
             KEY_MAP.DELETE,
           ], event.keyCode)) {
@@ -702,7 +702,7 @@ export default class Editor {
 
     // if range on anchor, expand range with anchor
     if (rng.isOnAnchor()) {
-      rng = range.createFromNode(dom.ancestor(rng.sc, dom.isAnchor));
+      rng = range.createFromNode(Nodes.ancestor(rng.sc, Nodes.isAnchor));
     }
 
     return rng.toString();
@@ -739,9 +739,9 @@ export default class Editor {
       // [workaround] added styled bogus span for style
       //  - also bogus character needed for cursor position
       if (rng.isCollapsed()) {
-        const firstSpan = lists.head(spans);
-        if (firstSpan && !dom.nodeLength(firstSpan)) {
-          firstSpan.innerHTML = dom.ZERO_WIDTH_NBSP_CHAR;
+        const firstSpan = Lists.head(spans);
+        if (firstSpan && !Nodes.nodeLength(firstSpan)) {
+          firstSpan.innerHTML = ZERO_WIDTH_NBSP_CHAR;
           range.createFromNodeAfter(firstSpan.firstChild).select();
           this.setLastRange();
           this.$editable.data(KEY_BOGUS, firstSpan);
@@ -758,7 +758,7 @@ export default class Editor {
   unlink() {
     let rng = this.getLastRange();
     if (rng.isOnAnchor()) {
-      const anchor = dom.ancestor(rng.sc, dom.isAnchor);
+      const anchor = Nodes.ancestor(rng.sc, Nodes.isAnchor);
       rng = range.createFromNode(anchor);
       rng.select();
       this.setLastRange();
@@ -779,9 +779,9 @@ export default class Editor {
    * @return {String} [return.url=""]
    */
   getLinkInfo() {
-    const rng = this.getLastRange().expand(dom.isAnchor);
+    const rng = this.getLastRange().expand(Nodes.isAnchor);
     // Get the first anchor on range(for edit).
-    const $anchor = $(lists.head(rng.nodes(dom.isAnchor)));
+    const $anchor = $(Lists.head(rng.nodes(Nodes.isAnchor)));
     const linkInfo = {
       range: rng,
       text: rng.toString(),
@@ -889,14 +889,15 @@ export default class Editor {
    * @return {Boolean}
    */
   isEmpty() {
-    return dom.isEmpty(this.$editable[0]) || dom.emptyPara === this.$editable.html();
+    return Nodes.isEmpty(this.$editable[0]) ||
+      EMPTY_PARA === this.$editable.html();
   }
 
   /**
    * Removes all contents and restores the editable instance to an _emptyPara_.
    */
   empty() {
-    this.context.invoke('code', dom.emptyPara);
+    this.context.invoke('code', EMPTY_PARA);
   }
 
   /**

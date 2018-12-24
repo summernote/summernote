@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import env from '../core/env';
 import * as func from '../core/func';
-import * as lists from '../core/lists';
-import dom from '../core/dom';
+import { Lists } from '../core/lists';
+import { Nodes } from '../core/dom';
 
 const AIR_MODE_POPOVER_X_OFFSET = 20;
 
@@ -25,7 +25,8 @@ export default class AirPopover {
           return;
         }
 
-        if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq(this.$popover[0]))) {
+        if (!e.relatedTarget ||
+            !Nodes.ancestor(e.relatedTarget, func.eq(this.$popover[0]))) {
           this.hide();
         }
       },
@@ -33,7 +34,7 @@ export default class AirPopover {
   }
 
   shouldInitialize() {
-    return this.options.airMode && !lists.isEmpty(this.options.popover.air);
+    return this.options.airMode && !Lists.isEmpty(this.options.popover.air);
   }
 
   initialize() {
@@ -52,7 +53,7 @@ export default class AirPopover {
   update() {
     const styleInfo = this.context.invoke('editor.currentStyle');
     if (styleInfo.range && !styleInfo.range.isCollapsed()) {
-      const rect = lists.last(styleInfo.range.getClientRects());
+      const rect = Lists.last(styleInfo.range.getClientRects());
       if (rect) {
         const bnd = func.rect2bnd(rect);
         this.$popover.css({

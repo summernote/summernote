@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import dom from '../core/dom';
+import { Nodes } from '../core/dom';
 
 export default class Handle {
   constructor(context) {
@@ -44,7 +44,7 @@ export default class Handle {
     ].join('')).prependTo(this.$editingArea);
 
     this.$handle.on('mousedown', (event) => {
-      if (dom.isControlSizing(event.target)) {
+      if (Nodes.isControlSizing(event.target)) {
         event.preventDefault();
         event.stopPropagation();
 
@@ -91,7 +91,7 @@ export default class Handle {
       return false;
     }
 
-    const isImage = dom.isImg(target);
+    const isImage = Nodes.isImg(target);
     const $selection = this.$handle.find('.note-control-selection');
 
     this.context.invoke('imagePopover.update', target, event);

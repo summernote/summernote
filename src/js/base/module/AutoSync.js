@@ -1,4 +1,4 @@
-import dom from '../core/dom';
+import { Nodes } from '../core/dom';
 
 /**
  * textarea auto sync.
@@ -14,6 +14,6 @@ export default class AutoSync {
   }
 
   shouldInitialize() {
-    return dom.isTextarea(this.$note[0]);
+    return Nodes.isTextarea(this.$note[0]);
   }
 }

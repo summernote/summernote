@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import './summernote-en-US';
 import '../summernote';
-import dom from './core/dom';
+import { Nodes } from './core/dom';
 import range from './core/range';
 import Editor from './module/Editor';
 import Clipboard from './module/Clipboard';
@@ -30,7 +30,7 @@ $.summernote = $.extend($.summernote, {
   version: '@@VERSION@@',
   plugins: {},
 
-  dom: dom,
+  dom: Nodes,
   range: range,
 
   options: {

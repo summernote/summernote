@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import dom from '../core/dom';
+import { BLANK_HTML, Nodes } from '../core/dom';
 import range from '../core/range';
-import * as lists from '../core/lists';
+import { Lists } from '../core/lists';
 
 /**
  * @class Create a virtual table to create what actions to do in change.
@@ -289,11 +289,11 @@ export default class Table {
    * @param {Boolean} isShift
    */
   tab(rng, isShift) {
-    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    const table = dom.ancestor(cell, dom.isTable);
-    const cells = dom.listDescendant(table, dom.isCell);
+    const cell = Nodes.ancestor(rng.commonAncestor(), Nodes.isCell);
+    const table = Nodes.ancestor(cell, Nodes.isTable);
+    const cells = Nodes.listDescendant(table, Nodes.isCell);
 
-    const nextCell = lists[isShift ? 'prev' : 'next'](cells, cell);
+    const nextCell = Lists[isShift ? 'prev' : 'next'](cells, cell);
     if (nextCell) {
       range.create(nextCell, 0).select();
     }
@@ -307,7 +307,7 @@ export default class Table {
    * @return {Node}
    */
   addRow(rng, position) {
-    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+    const cell = Nodes.ancestor(rng.commonAncestor(), Nodes.isCell);
 
     const currentTr = $(cell).closest('tr');
     const trAttributes = this.recoverAttributes(currentTr);
@@ -322,14 +322,14 @@ export default class Table {
       const tdAttributes = this.recoverAttributes(currentCell.baseCell);
       switch (currentCell.action) {
         case TableResultAction.resultAction.AddCell:
-          html.append('<td' + tdAttributes + '>' + dom.blank + '</td>');
+          html.append('<td' + tdAttributes + '>' + BLANK_HTML + '</td>');
           break;
         case TableResultAction.resultAction.SumSpanCount:
           if (position === 'top') {
             const baseCellTr = currentCell.baseCell.parent;
             const isTopFromRowSpan = (!baseCellTr ? 0 : currentCell.baseCell.closest('tr').rowIndex) <= currentTr[0].rowIndex;
             if (isTopFromRowSpan) {
-              const newTd = $('<div></div>').append($('<td' + tdAttributes + '>' + dom.blank + '</td>').removeAttr('rowspan')).html();
+              const newTd = $('<div></div>').append($('<td' + tdAttributes + '>' + BLANK_HTML + '</td>').removeAttr('rowspan')).html();
               html.append(newTd);
               break;
             }
@@ -362,7 +362,7 @@ export default class Table {
    * @return {Node}
    */
   addCol(rng, position) {
-    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+    const cell = Nodes.ancestor(rng.commonAncestor(), Nodes.isCell);
     const row = $(cell).closest('tr');
     const rowsGroup = $(row).siblings();
     rowsGroup.push(row);
@@ -377,9 +377,9 @@ export default class Table {
       switch (currentCell.action) {
         case TableResultAction.resultAction.AddCell:
           if (position === 'right') {
-            $(currentCell.baseCell).after('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            $(currentCell.baseCell).after('<td' + tdAttributes + '>' + BLANK_HTML + '</td>');
           } else {
-            $(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            $(currentCell.baseCell).before('<td' + tdAttributes + '>' + BLANK_HTML + '</td>');
           }
           break;
         case TableResultAction.resultAction.SumSpanCount:
@@ -388,7 +388,7 @@ export default class Table {
             colspanNumber++;
             currentCell.baseCell.setAttribute('colSpan', colspanNumber);
           } else {
-            $(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            $(currentCell.baseCell).before('<td' + tdAttributes + '>' + BLANK_HTML + '</td>');
           }
           break;
       }
@@ -430,7 +430,7 @@ export default class Table {
    * @return {Node}
    */
   deleteRow(rng) {
-    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+    const cell = Nodes.ancestor(rng.commonAncestor(), Nodes.isCell);
     const row = $(cell).closest('tr');
     const cellPos = row.children('td, th').index($(cell));
     const rowPos = row[0].rowIndex;
@@ -495,7 +495,7 @@ export default class Table {
    * @return {Node}
    */
   deleteCol(rng) {
-    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+    const cell = Nodes.ancestor(rng.commonAncestor(), Nodes.isCell);
     const row = $(cell).closest('tr');
     const cellPos = row.children('td, th').index($(cell));
 
@@ -526,7 +526,7 @@ export default class Table {
           }
           continue;
         case TableResultAction.resultAction.RemoveCell:
-          dom.remove(actions[actionIndex].baseCell, true);
+          Nodes.remove(actions[actionIndex].baseCell, true);
           continue;
       }
     }
@@ -543,7 +543,7 @@ export default class Table {
     const tds = [];
     let tdHTML;
     for (let idxCol = 0; idxCol < colCount; idxCol++) {
-      tds.push('<td>' + dom.blank + '</td>');
+      tds.push('<td>' + BLANK_HTML + '</td>');
     }
     tdHTML = tds.join('');
 
@@ -568,7 +568,7 @@ export default class Table {
    * @return {Node}
    */
   deleteTable(rng) {
-    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+    const cell = Nodes.ancestor(rng.commonAncestor(), Nodes.isCell);
     $(cell).closest('table').remove();
   }
 }

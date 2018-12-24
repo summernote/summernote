@@ -1,7 +1,7 @@
 import $ from 'jquery';
-import * as lists from '../core/lists';
+import { Lists } from '../core/lists';
 import * as func from '../core/func';
-import dom from '../core/dom';
+import { Nodes } from '../core/dom';
 import range from '../core/range';
 
 export default class Bullet {
@@ -25,12 +25,12 @@ export default class Bullet {
   indent(editable) {
     const rng = range.create(editable).wrapBodyInlineWithPara();
 
-    const paras = rng.nodes(dom.isPara, { includeAncestor: true });
-    const clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
+    const paras = rng.nodes(Nodes.isPara, { includeAncestor: true });
+    const clustereds = Lists.clusterBy(paras, func.peq2('parentNode'));
 
     $.each(clustereds, (idx, paras) => {
-      const head = lists.head(paras);
-      if (dom.isLi(head)) {
+      const head = Lists.head(paras);
+      if (Nodes.isLi(head)) {
         const previousList = this.findList(head.previousSibling);
         if (previousList) {
           paras
@@ -59,12 +59,12 @@ export default class Bullet {
   outdent(editable) {
     const rng = range.create(editable).wrapBodyInlineWithPara();
 
-    const paras = rng.nodes(dom.isPara, { includeAncestor: true });
-    const clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
+    const paras = rng.nodes(Nodes.isPara, { includeAncestor: true });
+    const clustereds = Lists.clusterBy(paras, func.peq2('parentNode'));
 
     $.each(clustereds, (idx, paras) => {
-      const head = lists.head(paras);
-      if (dom.isLi(head)) {
+      const head = Lists.head(paras);
+      if (Nodes.isLi(head)) {
         this.releaseList([paras]);
       } else {
         $.each(paras, (idx, para) => {
@@ -87,12 +87,12 @@ export default class Bullet {
   toggleList(listName, editable) {
     const rng = range.create(editable).wrapBodyInlineWithPara();
 
-    let paras = rng.nodes(dom.isPara, { includeAncestor: true });
+    let paras = rng.nodes(Nodes.isPara, { includeAncestor: true });
     const bookmark = rng.paraBookmark(paras);
-    const clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
+    const clustereds = Lists.clusterBy(paras, func.peq2('parentNode'));
 
     // paragraph to list
-    if (lists.find(paras, dom.isPurePara)) {
+    if (Lists.find(paras, Nodes.isPurePara)) {
       let wrappedParas = [];
       $.each(clustereds, (idx, paras) => {
         wrappedParas = wrappedParas.concat(this.wrapList(paras, listName));
@@ -100,7 +100,7 @@ export default class Bullet {
       paras = wrappedParas;
     // list to paragraph or change list style
     } else {
-      const diffLists = rng.nodes(dom.isList, {
+      const diffLists = rng.nodes(Nodes.isList, {
         includeAncestor: true,
       }).filter((listNode) => {
         return !$.nodeName(listNode, listName);
@@ -108,7 +108,7 @@ export default class Bullet {
 
       if (diffLists.length) {
         $.each(diffLists, (idx, listNode) => {
-          dom.replace(listNode, listName);
+          Nodes.replace(listNode, listName);
         });
       } else {
         paras = this.releaseList(clustereds, true);
@@ -124,25 +124,25 @@ export default class Bullet {
    * @return {Node[]}
    */
   wrapList(paras, listName) {
-    const head = lists.head(paras);
-    const last = lists.last(paras);
+    const head = Lists.head(paras);
+    const last = Lists.last(paras);
 
-    const prevList = dom.isList(head.previousSibling) && head.previousSibling;
-    const nextList = dom.isList(last.nextSibling) && last.nextSibling;
+    const prevList = Nodes.isList(head.previousSibling) && head.previousSibling;
+    const nextList = Nodes.isList(last.nextSibling) && last.nextSibling;
 
-    const listNode = prevList || dom.insertAfter(dom.create(listName || 'UL'), last);
+    const listNode = prevList || Nodes.insertAfter(Nodes.create(listName || 'UL'), last);
 
     // P to LI
     paras = paras.map((para) => {
-      return dom.isPurePara(para) ? dom.replace(para, 'LI') : para;
+      return Nodes.isPurePara(para) ? Nodes.replace(para, 'LI') : para;
     });
 
     // append to list(<ul>, <ol>)
-    dom.appendChildNodes(listNode, paras);
+    Nodes.appendChildNodes(listNode, paras);
 
     if (nextList) {
-      dom.appendChildNodes(listNode, lists.from(nextList.childNodes));
-      dom.remove(nextList);
+      Nodes.appendChildNodes(listNode, Lists.from(nextList.childNodes));
+      Nodes.remove(nextList);
     }
 
     return paras;
@@ -159,10 +159,10 @@ export default class Bullet {
     let releasedParas = [];
 
     $.each(clustereds, (idx, paras) => {
-      const head = lists.head(paras);
-      const last = lists.last(paras);
+      const head = Lists.head(paras);
+      const last = Lists.last(paras);
 
-      const headList = isEscapseToBody ? dom.lastAncestor(head, dom.isList) : head.parentNode;
+      const headList = isEscapseToBody ? Nodes.lastAncestor(head, Nodes.isList) : head.parentNode;
       const parentItem = headList.parentNode;
 
       if (headList.parentNode.nodeName === 'LI') {
@@ -192,41 +192,41 @@ export default class Bullet {
           parentItem.parentNode.removeChild(parentItem);
         }
       } else {
-        const lastList = headList.childNodes.length > 1 ? dom.splitTree(headList, {
+        const lastList = headList.childNodes.length > 1 ? Nodes.splitTree(headList, {
           node: last.parentNode,
-          offset: dom.position(last) + 1,
+          offset: Nodes.position(last) + 1,
         }, {
           isSkipPaddingBlankHTML: true,
         }) : null;
 
-        const middleList = dom.splitTree(headList, {
+        const middleList = Nodes.splitTree(headList, {
           node: head.parentNode,
-          offset: dom.position(head),
+          offset: Nodes.position(head),
         }, {
           isSkipPaddingBlankHTML: true,
         });
 
-        paras = isEscapseToBody ? dom.listDescendant(middleList, dom.isLi)
-          : lists.from(middleList.childNodes).filter(dom.isLi);
+        paras = isEscapseToBody ? Nodes.listDescendant(middleList, Nodes.isLi)
+          : Lists.from(middleList.childNodes).filter(Nodes.isLi);
 
         // LI to P
-        if (isEscapseToBody || !dom.isList(headList.parentNode)) {
+        if (isEscapseToBody || !Nodes.isList(headList.parentNode)) {
           paras = paras.map((para) => {
-            return dom.replace(para, 'P');
+            return Nodes.replace(para, 'P');
           });
         }
 
-        $.each(lists.from(paras).reverse(), (idx, para) => {
-          dom.insertAfter(para, headList);
+        $.each(Lists.from(paras).reverse(), (idx, para) => {
+          Nodes.insertAfter(para, headList);
         });
 
         // remove empty lists
-        const rootLists = lists.compact([headList, middleList, lastList]);
+        const rootLists = Lists.compact([headList, middleList, lastList]);
         $.each(rootLists, (idx, rootList) => {
-          const listNodes = [rootList].concat(dom.listDescendant(rootList, dom.isList));
+          const listNodes = [rootList].concat(Nodes.listDescendant(rootList, Nodes.isList));
           $.each(listNodes.reverse(), (idx, listNode) => {
-            if (!dom.nodeLength(listNode)) {
-              dom.remove(listNode, true);
+            if (!Nodes.nodeLength(listNode)) {
+              Nodes.remove(listNode, true);
             }
           });
         });
@@ -249,7 +249,7 @@ export default class Bullet {
    */
   appendToPrevious(node) {
     return node.previousSibling
-      ? dom.appendChildNodes(node.previousSibling, [node])
+      ? Nodes.appendChildNodes(node.previousSibling, [node])
       : this.wrapList([node], 'LI');
   }
 
@@ -263,7 +263,7 @@ export default class Bullet {
    */
   findList(node) {
     return node
-      ? lists.find(node.children, child => ['OL', 'UL'].indexOf(child.nodeName) > -1)
+      ? Lists.find(node.children, child => ['OL', 'UL'].indexOf(child.nodeName) > -1)
       : null;
   }
 

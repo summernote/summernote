@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import env from '../core/env';
-import * as lists from '../core/lists';
-import dom from '../core/dom';
+import { Lists } from '../core/lists';
+import { BoundaryPoints, Nodes } from '../core/dom';
 
 export default class TablePopover {
   constructor(context) {
@@ -23,7 +23,7 @@ export default class TablePopover {
   }
 
   shouldInitialize() {
-    return !lists.isEmpty(this.options.popover.table);
+    return !Lists.isEmpty(this.options.popover.table);
   }
 
   initialize() {
@@ -49,10 +49,10 @@ export default class TablePopover {
       return false;
     }
 
-    const isCell = dom.isCell(target);
+    const isCell = Nodes.isCell(target);
 
     if (isCell) {
-      const pos = dom.posFromPlaceholder(target);
+      const pos = BoundaryPoints.posFromPlaceholder(target);
       this.$popover.css({
         display: 'block',
         left: pos.left,

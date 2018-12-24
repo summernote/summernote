@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import * as func from '../core/func';
-import * as lists from '../core/lists';
+import { Lists } from '../core/lists';
 import env from '../core/env';
 
 export default class Buttons {
@@ -56,7 +56,7 @@ export default class Buttons {
   isFontInstalled(name) {
     if (!this.fontInstalledMap.hasOwnProperty(name)) {
       this.fontInstalledMap[name] = env.isFontInstalled(name) ||
-        lists.contains(this.options.fontNamesIgnoreCheck, name);
+        Lists.contains(this.options.fontNamesIgnoreCheck, name);
     }
 
     return this.fontInstalledMap[name];
@@ -212,7 +212,7 @@ export default class Buttons {
                 .attr('data-original-title', color);
               $palette.prepend($chip);
               $picker.click();
-            } else if (lists.contains(['backColor', 'foreColor'], eventName)) {
+            } else if (Lists.contains(['backColor', 'foreColor'], eventName)) {
               const key = eventName === 'backColor' ? 'background-color' : 'color';
               const $color = $button.closest('.note-color').find('.note-recent-color');
               const $currentButton = $button.closest('.note-color').find('.note-current-color-button');
@@ -826,7 +826,7 @@ export default class Buttons {
           .replace(/\s+$/, '')
           .replace(/^\s+/, '');
       });
-      const fontName = lists.find(fontNames, this.isFontInstalled.bind(this));
+      const fontName = Lists.find(fontNames, this.isFontInstalled.bind(this));
 
       $cont.find('.dropdown-fontname a').each((idx, item) => {
         const $item = $(item);
