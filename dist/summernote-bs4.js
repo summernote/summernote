@@ -5,15 +5,15 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2018-12-24T07:10Z
+ * Date: 2018-12-24T08:10Z
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
   typeof define === 'function' && define.amd ? define(['jquery'], factory) :
   (global = global || self, factory(global.jQuery));
-}(this, function ($$1) { 'use strict';
+}(this, function ($) { 'use strict';
 
-  $$1 = $$1 && $$1.hasOwnProperty('default') ? $$1['default'] : $$1;
+  $ = $ && $.hasOwnProperty('default') ? $['default'] : $;
 
   var Renderer = /** @class */ (function () {
       function Renderer(markup, children, options, callback) {
@@ -23,7 +23,7 @@
           this.callback = callback;
       }
       Renderer.prototype.render = function ($parent) {
-          var $node = $$1(this.markup);
+          var $node = $(this.markup);
           if (this.options && this.options.contents) {
               $node.html(this.options.contents);
           }
@@ -31,7 +31,7 @@
               $node.addClass(this.options.className);
           }
           if (this.options && this.options.data) {
-              $$1.each(this.options.data, function (k, v) {
+              $.each(this.options.data, function (k, v) {
                   $node.attr('data-' + k, v);
               });
           }
@@ -61,7 +61,7 @@
       create: function (markup, callback) {
           return function () {
               var options = typeof arguments[1] === 'object' ? arguments[1] : arguments[0];
-              var children = $$1.isArray(arguments[0]) ? arguments[0] : [];
+              var children = $.isArray(arguments[0]) ? arguments[0] : [];
               if (options && options.children) {
                   children = options.children;
               }
@@ -93,7 +93,7 @@
   ].join(''));
   var buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
   var dropdown = renderer.create('<div class="dropdown-menu" role="list">', function ($node, options) {
-      var markup = $$1.isArray(options.items) ? options.items.map(function (item) {
+      var markup = $.isArray(options.items) ? options.items.map(function (item) {
           var value = (typeof item === 'string') ? item : (item.value || '');
           var content = options.template ? options.template(item) : item;
           var option = (typeof item === 'object') ? item.option : undefined;
@@ -107,7 +107,7 @@
       return contents;
   };
   var dropdownCheck = renderer.create('<div class="dropdown-menu note-check" role="list">', function ($node, options) {
-      var markup = $$1.isArray(options.items) ? options.items.map(function (item) {
+      var markup = $.isArray(options.items) ? options.items.map(function (item) {
           var value = (typeof item === 'string') ? item : (item.value || '');
           var content = options.template ? options.template(item) : item;
           return '<a class="dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + item + '">' + icon(options.checkClassName) + ' ' + content + '</a>';
@@ -223,7 +223,7 @@
                       trigger: 'hover',
                       placement: 'bottom'
                   }).on('click', function (e) {
-                      $$1(e.currentTarget).tooltip('hide');
+                      $(e.currentTarget).tooltip('hide');
                   });
               }
           })($node, options);
@@ -278,10 +278,10 @@
       }
   };
 
-  $$1.summernote = $$1.summernote || {
+  $.summernote = $.summernote || {
       lang: {}
   };
-  $$1.extend($$1.summernote.lang, {
+  $.extend($.summernote.lang, {
       'en-US': {
           font: {
               bold: 'Bold',
@@ -527,7 +527,7 @@
       isChrome: !isEdge && /chrome/i.test(userAgent),
       isSafari: !isEdge && /safari/i.test(userAgent),
       browserVersion: browserVersion,
-      jqueryVersion: parseFloat($$1.fn.jquery),
+      jqueryVersion: parseFloat($.fn.jquery),
       isSupportAmd: isSupportAmd,
       isSupportTouch: isSupportTouch,
       hasCodeMirror: hasCodeMirror,
@@ -536,26 +536,13 @@
       inputEventName: inputEventName
   };
 
-  /**
-   * @class core.func
-   *
-   * func utils (for high-order func's arg)
-   *
-   * @singleton
-   * @alternateClassName func
-   */
   function eq(itemA) {
       return function (itemB) {
           return itemA === itemB;
       };
   }
-  function eq2(itemA, itemB) {
-      return itemA === itemB;
-  }
   function peq2(propName) {
-      return function (itemA, itemB) {
-          return itemA[propName] === itemB[propName];
-      };
+      return function (itemA, itemB) { return itemA[propName] === itemB[propName]; };
   }
   function ok() {
       return true;
@@ -569,9 +556,7 @@
       };
   }
   function and(fA, fB) {
-      return function (item) {
-          return fA(item) && fB(item);
-      };
+      return function (item) { return fA(item) && fB(item); };
   }
   function self(a) {
       return a;
@@ -581,28 +566,11 @@
           return obj[method].apply(obj, arguments);
       };
   }
-  var idCounter = 0;
-  /**
-   * generate a globally-unique id
-   *
-   * @param {String} [prefix]
-   */
-  function uniqueId(prefix) {
-      var id = ++idCounter + '';
-      return prefix ? prefix + id : id;
-  }
   /**
    * returns bnd (bounds) from rect
    *
    * - IE Compatibility Issue: http://goo.gl/sRLOAo
    * - Scroll Issue: http://goo.gl/sNjUc
-   *
-   * @param {Rect} rect
-   * @return {Object} bounds
-   * @return {Number} bounds.top
-   * @return {Number} bounds.left
-   * @return {Number} bounds.width
-   * @return {Number} bounds.height
    */
   function rect2bnd(rect) {
       var $document = $(document);
@@ -614,9 +582,8 @@
       };
   }
   /**
-   * returns a copy of the object where the keys have become the values and the values the keys.
-   * @param {Object} obj
-   * @return {Object}
+   * returns a copy of the object where the keys have become the values and
+   * the values the keys.
    */
   function invertObject(obj) {
       var inverted = {};
@@ -627,11 +594,6 @@
       }
       return inverted;
   }
-  /**
-   * @param {String} namespace
-   * @param {String} [prefix]
-   * @return {String}
-   */
   function namespaceToCamel(namespace, prefix) {
       prefix = prefix || '';
       return prefix + namespace.split('.').map(function (name) {
@@ -643,10 +605,6 @@
    * be triggered. The function will be called after it stops being called for
    * N milliseconds. If `immediate` is passed, trigger the function on the
    * leading edge, instead of the trailing.
-   * @param {Function} func
-   * @param {Number} wait
-   * @param {Boolean} immediate
-   * @return {Function}
    */
   function debounce(func, wait, immediate) {
       var timeout;
@@ -667,32 +625,10 @@
           }
       };
   }
-  /**
-   *
-   * @param {String} url
-   * @return {Boolean}
-   */
   function isValidUrl(url) {
       var expression = /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi;
       return expression.test(url);
   }
-  var func = {
-      eq: eq,
-      eq2: eq2,
-      peq2: peq2,
-      ok: ok,
-      fail: fail,
-      self: self,
-      not: not,
-      and: and,
-      invoke: invoke,
-      uniqueId: uniqueId,
-      rect2bnd: rect2bnd,
-      invertObject: invertObject,
-      namespaceToCamel: namespaceToCamel,
-      debounce: debounce,
-      isValidUrl: isValidUrl
-  };
 
   /**
    * returns the first item of an array.
@@ -772,7 +708,7 @@
    * @param {Function} fn - iterator
    */
   function sum(array, fn) {
-      fn = fn || func.self;
+      fn = fn || self;
       return array.reduce(function (memo, v) {
           return memo + fn(v);
       }, 0);
@@ -896,7 +832,7 @@
    * @return {Boolean}
    */
   function isEditable(node) {
-      return node && $$1(node).hasClass('note-editable');
+      return node && $(node).hasClass('note-editable');
   }
   /**
    * @method isControlSizing
@@ -907,7 +843,7 @@
    * @return {Boolean}
    */
   function isControlSizing(node) {
-      return node && $$1(node).hasClass('note-control-sizing');
+      return node && $(node).hasClass('note-control-sizing');
   }
   /**
    * @method makePredByNodeName
@@ -1016,7 +952,7 @@
    * @return {Node[]}
    */
   function withClosestSiblings(node, pred) {
-      pred = pred || func.ok;
+      pred = pred || ok;
       var siblings = [];
       if (node.previousSibling && pred(node.previousSibling)) {
           siblings.push(node.previousSibling);
@@ -1125,7 +1061,7 @@
    * @param {Function} [optional] pred - predicate function
    */
   function listAncestor(node, pred) {
-      pred = pred || func.fail;
+      pred = pred || fail;
       var ancestors = [];
       ancestor(node, function (el) {
           if (!isEditable(el)) {
@@ -1151,7 +1087,7 @@
   function commonAncestor(nodeA, nodeB) {
       var ancestors = listAncestor(nodeA);
       for (var n = nodeB; n; n = n.parentNode) {
-          if ($$1.inArray(n, ancestors) > -1) {
+          if ($.inArray(n, ancestors) > -1) {
               return n;
           }
       }
@@ -1164,7 +1100,7 @@
    * @param {Function} [optional] pred - predicate function
    */
   function listPrev(node, pred) {
-      pred = pred || func.fail;
+      pred = pred || fail;
       var nodes = [];
       while (node) {
           if (pred(node)) {
@@ -1182,7 +1118,7 @@
    * @param {Function} [pred] - predicate function
    */
   function listNext(node, pred) {
-      pred = pred || func.fail;
+      pred = pred || fail;
       var nodes = [];
       while (node) {
           if (pred(node)) {
@@ -1201,7 +1137,7 @@
    */
   function listDescendant(node, pred) {
       var descendants = [];
-      pred = pred || func.ok;
+      pred = pred || ok;
       // start DFS(depth first search) with node
       (function fnWalk(current) {
           if (node !== current && pred(current)) {
@@ -1222,7 +1158,7 @@
    */
   function wrap(node, wrapperName) {
       var parent = node.parentNode;
-      var wrapper = $$1('<' + wrapperName + '>')[0];
+      var wrapper = $('<' + wrapperName + '>')[0];
       parent.insertBefore(wrapper, node);
       wrapper.appendChild(node);
       return wrapper;
@@ -1251,7 +1187,7 @@
    * @param {Collection} aChild
    */
   function appendChildNodes(node, aChild) {
-      $$1.each(aChild, function (idx, child) {
+      $.each(aChild, function (idx, child) {
           node.appendChild(child);
       });
       return node;
@@ -1512,7 +1448,7 @@
    * @param {Node} node
    */
   function makeOffsetPath(ancestor, node) {
-      var ancestors = listAncestor(node, func.eq(ancestor));
+      var ancestors = listAncestor(node, eq(ancestor));
       return ancestors.map(position).reverse();
   }
   /**
@@ -1601,7 +1537,7 @@
    */
   function splitTree(root, point, options) {
       // ex) [#text, <span>, <p>]
-      var ancestors = listAncestor(point.node, func.eq(root));
+      var ancestors = listAncestor(point.node, eq(root));
       if (!ancestors.length) {
           return null;
       }
@@ -1757,12 +1693,12 @@
               var isBlockNode = /^BLOCKQUOTE|^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
               return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
           });
-          markup = $$1.trim(markup);
+          markup = $.trim(markup);
       }
       return markup;
   }
   function posFromPlaceholder(placeholder) {
-      var $placeholder = $$1(placeholder);
+      var $placeholder = $(placeholder);
       var pos = $placeholder.offset();
       var height = $placeholder.outerHeight(true); // include margin
       return {
@@ -1810,7 +1746,7 @@
       isPurePara: isPurePara,
       isHeading: isHeading,
       isInline: isInline,
-      isBlock: func.not(isInline),
+      isBlock: not(isInline),
       isBodyInline: isBodyInline,
       isBody: isBody,
       isParaInline: isParaInline,
@@ -1833,7 +1769,7 @@
       isImg: makePredByNodeName('IMG'),
       isTextarea: isTextarea,
       isEmpty: isEmpty$1,
-      isEmptyAnchor: func.and(isAnchor, isEmpty$1),
+      isEmptyAnchor: and(isAnchor, isEmpty$1),
       isClosestSibling: isClosestSibling,
       withClosestSiblings: withClosestSiblings,
       nodeLength: nodeLength,
@@ -1888,7 +1824,7 @@
        * @param {Object} options
        */
       function Context($note, options) {
-          this.ui = $$1.summernote.ui;
+          this.ui = $.summernote.ui;
           this.$note = $note;
           this.memos = {};
           this.modules = {};
@@ -1928,11 +1864,11 @@
       Context.prototype._initialize = function () {
           var _this = this;
           // add optional buttons
-          var buttons = $$1.extend({}, this.options.buttons);
+          var buttons = $.extend({}, this.options.buttons);
           Object.keys(buttons).forEach(function (key) {
               _this.memo('button.' + key, buttons[key]);
           });
-          var modules = $$1.extend({}, this.options.modules, $$1.summernote.plugins || {});
+          var modules = $.extend({}, this.options.modules, $.summernote.plugins || {});
           // add and initialize modules
           Object.keys(modules).forEach(function (key) {
               _this.module(key, modules[key], true);
@@ -1990,7 +1926,7 @@
       Context.prototype.triggerEvent = function () {
           var namespace = head(arguments);
           var args = tail(from(arguments));
-          var callback = this.options.callbacks[func.namespaceToCamel(namespace, 'on')];
+          var callback = this.options.callbacks[namespaceToCamel(namespace, 'on')];
           if (callback) {
               callback.apply(this.$note[0], args);
           }
@@ -1998,7 +1934,7 @@
       };
       Context.prototype.initializeModule = function (key) {
           var module = this.modules[key];
-          module.shouldInitialize = module.shouldInitialize || func.ok;
+          module.shouldInitialize = module.shouldInitialize || ok;
           if (!module.shouldInitialize()) {
               return;
           }
@@ -2058,7 +1994,7 @@
           var _this = this;
           return function (event) {
               event.preventDefault();
-              var $target = $$1(event.target);
+              var $target = $(event.target);
               _this.invoke(namespace, value || $target.closest('[data-value]').data('value'), $target);
           };
       };
@@ -2080,7 +2016,7 @@
       return Context;
   }());
 
-  $$1.fn.extend({
+  $.fn.extend({
       /**
        * Summernote API
        *
@@ -2088,16 +2024,16 @@
        * @return {this}
        */
       summernote: function () {
-          var type = $$1.type(head(arguments));
+          var type = $.type(head(arguments));
           var isExternalAPICalled = type === 'string';
           var hasInitOptions = type === 'object';
-          var options = $$1.extend({}, $$1.summernote.options, hasInitOptions ? head(arguments) : {});
+          var options = $.extend({}, $.summernote.options, hasInitOptions ? head(arguments) : {});
           // Update options
-          options.langInfo = $$1.extend(true, {}, $$1.summernote.lang['en-US'], $$1.summernote.lang[options.lang]);
-          options.icons = $$1.extend(true, {}, $$1.summernote.options.icons, options.icons);
+          options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
+          options.icons = $.extend(true, {}, $.summernote.options.icons, options.icons);
           options.tooltip = options.tooltip === 'auto' ? !env.isSupportTouch : options.tooltip;
           this.each(function (idx, note) {
-              var $note = $$1(note);
+              var $note = $(note);
               if (!$note.data('summernote')) {
                   var context = new Context($note, options);
                   $note.data('summernote', context);
@@ -2180,7 +2116,7 @@
       var textRangeInfo = function (container, offset) {
           var node, isCollapseToStart;
           if (dom.isText(container)) {
-              var prevTextNodes = dom.listPrev(container, func.not(dom.isText));
+              var prevTextNodes = dom.listPrev(container, not(dom.isText));
               var prevContainer = last(prevTextNodes).previousSibling;
               node = prevContainer || container.parentNode;
               offset += sum(tail(prevTextNodes), dom.nodeLength);
@@ -2296,7 +2232,7 @@
        * @return {WrappedRange}
        */
       WrappedRange.prototype.scrollIntoView = function (container) {
-          var height = $$1(container).height();
+          var height = $(container).height();
           if (container.scrollTop + height < this.sc.offsetTop) {
               container.scrollTop += Math.abs(container.scrollTop + height - this.sc.offsetTop);
           }
@@ -2347,7 +2283,7 @@
        * @return {Node[]}
        */
       WrappedRange.prototype.nodes = function (pred, options) {
-          pred = pred || func.ok;
+          pred = pred || ok;
           var includeAncestor = options && options.includeAncestor;
           var fullyContains = options && options.fullyContains;
           // TODO compare points and sort
@@ -2458,7 +2394,7 @@
               return !contains(nodes, point.node);
           });
           var emptyParents = [];
-          $$1.each(nodes, function (idx, node) {
+          $.each(nodes, function (idx, node) {
               // find empty parents
               var parent = node.parentNode;
               if (point.node !== parent && dom.nodeLength(parent) === 1) {
@@ -2467,7 +2403,7 @@
               dom.remove(node, false);
           });
           // remove empty parents
-          $$1.each(emptyParents, function (idx, node) {
+          $.each(emptyParents, function (idx, node) {
               dom.remove(node, false);
           });
           return new WrappedRange(point.node, point.offset, point.node, point.offset).normalize();
@@ -2520,7 +2456,7 @@
           // find inline top ancestor
           var topAncestor;
           if (dom.isInline(rng.sc)) {
-              var ancestors = dom.listAncestor(rng.sc, func.not(dom.isInline));
+              var ancestors = dom.listAncestor(rng.sc, not(dom.isInline));
               topAncestor = last(ancestors);
               if (!dom.isInline(topAncestor)) {
                   topAncestor = ancestors[ancestors.length - 2] || rng.sc.childNodes[rng.so];
@@ -2560,7 +2496,7 @@
        * insert html at current cursor
        */
       WrappedRange.prototype.pasteHTML = function (markup) {
-          var contentsContainer = $$1('<div></div>').html(markup)[0];
+          var contentsContainer = $('<div></div>').html(markup)[0];
           var childNodes = from(contentsContainer.childNodes);
           var rng = this.wrapBodyInlineWithPara().deleteContents();
           if (rng.so > 0) {
@@ -2883,7 +2819,7 @@
        * @property {Object} nameFromCode
        * @property {String} nameFromCode.8 "BACKSPACE"
        */
-      nameFromCode: func.invertObject(KEY_MAP),
+      nameFromCode: invertObject(KEY_MAP),
       code: KEY_MAP
   };
 
@@ -2896,8 +2832,8 @@
    * @return {Promise} - then: dataUrl
    */
   function readFileAsDataURL(file) {
-      return $$1.Deferred(function (deferred) {
-          $$1.extend(new FileReader(), {
+      return $.Deferred(function (deferred) {
+          $.extend(new FileReader(), {
               onload: function (e) {
                   var dataURL = e.target.result;
                   deferred.resolve(dataURL);
@@ -2917,8 +2853,8 @@
    * @return {Promise} - then: $image
    */
   function createImage(url) {
-      return $$1.Deferred(function (deferred) {
-          var $img = $$1('<img>');
+      return $.Deferred(function (deferred) {
+          var $img = $('<img>');
           $img.one('load', function () {
               $img.off('error abort');
               deferred.resolve($img);
@@ -3051,7 +2987,7 @@
       Style.prototype.jQueryCSS = function ($obj, propertyNames) {
           if (env.jqueryVersion < 1.9) {
               var result_1 = {};
-              $$1.each(propertyNames, function (idx, propertyName) {
+              $.each(propertyNames, function (idx, propertyName) {
                   result_1[propertyName] = $obj.css(propertyName);
               });
               return result_1;
@@ -3077,10 +3013,10 @@
        * @param {Object} styleInfo
        */
       Style.prototype.stylePara = function (rng, styleInfo) {
-          $$1.each(rng.nodes(dom.isPara, {
+          $.each(rng.nodes(dom.isPara, {
               includeAncestor: true
           }), function (idx, para) {
-              $$1(para).css(styleInfo);
+              $(para).css(styleInfo);
           });
       };
       /**
@@ -3111,7 +3047,7 @@
               if (onlyPartialContains) {
                   var nodesInRange_1 = rng.nodes();
                   // compose with partial contains predication
-                  pred = func.and(pred, function (node) {
+                  pred = and(pred, function (node) {
                       return contains(nodesInRange_1, node);
                   });
               }
@@ -3119,7 +3055,7 @@
                   var siblings = dom.withClosestSiblings(node, pred);
                   var head$$1 = head(siblings);
                   var tails = tail(siblings);
-                  $$1.each(tails, function (idx, elem) {
+                  $.each(tails, function (idx, elem) {
                       dom.appendChildNodes(head$$1, elem.childNodes);
                       dom.remove(elem);
                   });
@@ -3137,12 +3073,12 @@
        * @return {Object} - object contains style properties.
        */
       Style.prototype.current = function (rng) {
-          var $cont = $$1(!dom.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
+          var $cont = $(!dom.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
           var styleInfo = this.fromNode($cont);
           // document.queryCommandState for toggle state
           // [workaround] prevent Firefox nsresult: "0x80004005 (NS_ERROR_FAILURE)"
           try {
-              styleInfo = $$1.extend(styleInfo, {
+              styleInfo = $.extend(styleInfo, {
                   'font-bold': document.queryCommandState('bold') ? 'bold' : 'normal',
                   'font-italic': document.queryCommandState('italic') ? 'italic' : 'normal',
                   'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
@@ -3159,7 +3095,7 @@
           }
           else {
               var orderedTypes = ['circle', 'disc', 'disc-leading-zero', 'square'];
-              var isUnordered = $$1.inArray(styleInfo['list-style-type'], orderedTypes) > -1;
+              var isUnordered = $.inArray(styleInfo['list-style-type'], orderedTypes) > -1;
               styleInfo['list-style'] = isUnordered ? 'unordered' : 'ordered';
           }
           var para = dom.ancestor(rng.sc, dom.isPara);
@@ -3200,8 +3136,8 @@
           var _this = this;
           var rng = range.create(editable).wrapBodyInlineWithPara();
           var paras = rng.nodes(dom.isPara, { includeAncestor: true });
-          var clustereds = clusterBy(paras, func.peq2('parentNode'));
-          $$1.each(clustereds, function (idx, paras) {
+          var clustereds = clusterBy(paras, peq2('parentNode'));
+          $.each(clustereds, function (idx, paras) {
               var head$$1 = head(paras);
               if (dom.isLi(head$$1)) {
                   var previousList_1 = _this.findList(head$$1.previousSibling);
@@ -3217,8 +3153,8 @@
                   }
               }
               else {
-                  $$1.each(paras, function (idx, para) {
-                      $$1(para).css('marginLeft', function (idx, val) {
+                  $.each(paras, function (idx, para) {
+                      $(para).css('marginLeft', function (idx, val) {
                           return (parseInt(val, 10) || 0) + 25;
                       });
                   });
@@ -3233,15 +3169,15 @@
           var _this = this;
           var rng = range.create(editable).wrapBodyInlineWithPara();
           var paras = rng.nodes(dom.isPara, { includeAncestor: true });
-          var clustereds = clusterBy(paras, func.peq2('parentNode'));
-          $$1.each(clustereds, function (idx, paras) {
+          var clustereds = clusterBy(paras, peq2('parentNode'));
+          $.each(clustereds, function (idx, paras) {
               var head$$1 = head(paras);
               if (dom.isLi(head$$1)) {
                   _this.releaseList([paras]);
               }
               else {
-                  $$1.each(paras, function (idx, para) {
-                      $$1(para).css('marginLeft', function (idx, val) {
+                  $.each(paras, function (idx, para) {
+                      $(para).css('marginLeft', function (idx, val) {
                           val = (parseInt(val, 10) || 0);
                           return val > 25 ? val - 25 : '';
                       });
@@ -3260,11 +3196,11 @@
           var rng = range.create(editable).wrapBodyInlineWithPara();
           var paras = rng.nodes(dom.isPara, { includeAncestor: true });
           var bookmark = rng.paraBookmark(paras);
-          var clustereds = clusterBy(paras, func.peq2('parentNode'));
+          var clustereds = clusterBy(paras, peq2('parentNode'));
           // paragraph to list
           if (find(paras, dom.isPurePara)) {
               var wrappedParas_1 = [];
-              $$1.each(clustereds, function (idx, paras) {
+              $.each(clustereds, function (idx, paras) {
                   wrappedParas_1 = wrappedParas_1.concat(_this.wrapList(paras, listName));
               });
               paras = wrappedParas_1;
@@ -3274,10 +3210,10 @@
               var diffLists = rng.nodes(dom.isList, {
                   includeAncestor: true
               }).filter(function (listNode) {
-                  return !$$1.nodeName(listNode, listName);
+                  return !$.nodeName(listNode, listName);
               });
               if (diffLists.length) {
-                  $$1.each(diffLists, function (idx, listNode) {
+                  $.each(diffLists, function (idx, listNode) {
                       dom.replace(listNode, listName);
                   });
               }
@@ -3320,7 +3256,7 @@
       Bullet.prototype.releaseList = function (clustereds, isEscapseToBody) {
           var _this = this;
           var releasedParas = [];
-          $$1.each(clustereds, function (idx, paras) {
+          $.each(clustereds, function (idx, paras) {
               var head$$1 = head(paras);
               var last$$1 = last(paras);
               var headList = isEscapseToBody ? dom.lastAncestor(head$$1, dom.isList) : head$$1.parentNode;
@@ -3367,14 +3303,14 @@
                           return dom.replace(para, 'P');
                       });
                   }
-                  $$1.each(from(paras).reverse(), function (idx, para) {
+                  $.each(from(paras).reverse(), function (idx, para) {
                       dom.insertAfter(para, headList);
                   });
                   // remove empty lists
                   var rootLists = compact([headList, middleList, lastList]);
-                  $$1.each(rootLists, function (idx, rootList) {
+                  $.each(rootLists, function (idx, rootList) {
                       var listNodes = [rootList].concat(dom.listDescendant(rootList, dom.isList));
-                      $$1.each(listNodes.reverse(), function (idx, listNode) {
+                      $.each(listNodes.reverse(), function (idx, listNode) {
                           if (!dom.nodeLength(listNode)) {
                               dom.remove(listNode, true);
                           }
@@ -3494,11 +3430,11 @@
                   }
                   if (blockquote) {
                       // We're inside a blockquote and options ask us to break it
-                      nextPara = $$1(dom.emptyPara)[0];
+                      nextPara = $(dom.emptyPara)[0];
                       // If the split is right before a <br>, remove it so that there's no "empty line"
                       // after the split in the new blockquote created
                       if (dom.isRightEdgePoint(rng.getStartPoint()) && dom.isBR(rng.sc.nextSibling)) {
-                          $$1(rng.sc.nextSibling).remove();
+                          $(rng.sc.nextSibling).remove();
                       }
                       var split = dom.splitTree(blockquote, rng.getStartPoint(), { isDiscardEmptySplits: true });
                       if (split) {
@@ -3513,7 +3449,7 @@
                       // not a blockquote, just insert the paragraph
                       var emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
                       emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
-                      $$1.each(emptyAnchors, function (idx, anchor) {
+                      $.each(emptyAnchors, function (idx, anchor) {
                           dom.remove(anchor);
                       });
                       // replace empty heading, pre or custom-made styleTag with P tag
@@ -3526,7 +3462,7 @@
           }
           else {
               var next = rng.sc.childNodes[rng.so];
-              nextPara = $$1(dom.emptyPara)[0];
+              nextPara = $(dom.emptyPara)[0];
               if (next) {
                   rng.sc.insertBefore(nextPara, next);
               }
@@ -3826,10 +3762,10 @@
        */
       Table.prototype.addRow = function (rng, position) {
           var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-          var currentTr = $$1(cell).closest('tr');
+          var currentTr = $(cell).closest('tr');
           var trAttributes = this.recoverAttributes(currentTr);
-          var html = $$1('<tr' + trAttributes + '></tr>');
-          var vTable = new TableResultAction(cell, TableResultAction.where.Row, TableResultAction.requestAction.Add, $$1(currentTr).closest('table')[0]);
+          var html = $('<tr' + trAttributes + '></tr>');
+          var vTable = new TableResultAction(cell, TableResultAction.where.Row, TableResultAction.requestAction.Add, $(currentTr).closest('table')[0]);
           var actions = vTable.getActionList();
           for (var idCell = 0; idCell < actions.length; idCell++) {
               var currentCell = actions[idCell];
@@ -3843,7 +3779,7 @@
                           var baseCellTr = currentCell.baseCell.parent;
                           var isTopFromRowSpan = (!baseCellTr ? 0 : currentCell.baseCell.closest('tr').rowIndex) <= currentTr[0].rowIndex;
                           if (isTopFromRowSpan) {
-                              var newTd = $$1('<div></div>').append($$1('<td' + tdAttributes + '>' + dom.blank + '</td>').removeAttr('rowspan')).html();
+                              var newTd = $('<div></div>').append($('<td' + tdAttributes + '>' + dom.blank + '</td>').removeAttr('rowspan')).html();
                               html.append(newTd);
                               break;
                           }
@@ -3861,7 +3797,7 @@
               var cellHasRowspan = (cell.rowSpan > 1);
               if (cellHasRowspan) {
                   var lastTrIndex = currentTr[0].rowIndex + (cell.rowSpan - 2);
-                  $$1($$1(currentTr).parent().find('tr')[lastTrIndex]).after($$1(html));
+                  $($(currentTr).parent().find('tr')[lastTrIndex]).after($(html));
                   return;
               }
               currentTr.after(html);
@@ -3876,10 +3812,10 @@
        */
       Table.prototype.addCol = function (rng, position) {
           var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-          var row = $$1(cell).closest('tr');
-          var rowsGroup = $$1(row).siblings();
+          var row = $(cell).closest('tr');
+          var rowsGroup = $(row).siblings();
           rowsGroup.push(row);
-          var vTable = new TableResultAction(cell, TableResultAction.where.Column, TableResultAction.requestAction.Add, $$1(row).closest('table')[0]);
+          var vTable = new TableResultAction(cell, TableResultAction.where.Column, TableResultAction.requestAction.Add, $(row).closest('table')[0]);
           var actions = vTable.getActionList();
           for (var actionIndex = 0; actionIndex < actions.length; actionIndex++) {
               var currentCell = actions[actionIndex];
@@ -3887,10 +3823,10 @@
               switch (currentCell.action) {
                   case TableResultAction.resultAction.AddCell:
                       if (position === 'right') {
-                          $$1(currentCell.baseCell).after('<td' + tdAttributes + '>' + dom.blank + '</td>');
+                          $(currentCell.baseCell).after('<td' + tdAttributes + '>' + dom.blank + '</td>');
                       }
                       else {
-                          $$1(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
+                          $(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
                       }
                       break;
                   case TableResultAction.resultAction.SumSpanCount:
@@ -3900,7 +3836,7 @@
                           currentCell.baseCell.setAttribute('colSpan', colspanNumber);
                       }
                       else {
-                          $$1(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
+                          $(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
                       }
                       break;
               }
@@ -3936,10 +3872,10 @@
        */
       Table.prototype.deleteRow = function (rng) {
           var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-          var row = $$1(cell).closest('tr');
-          var cellPos = row.children('td, th').index($$1(cell));
+          var row = $(cell).closest('tr');
+          var cellPos = row.children('td, th').index($(cell));
           var rowPos = row[0].rowIndex;
-          var vTable = new TableResultAction(cell, TableResultAction.where.Row, TableResultAction.requestAction.Delete, $$1(row).closest('table')[0]);
+          var vTable = new TableResultAction(cell, TableResultAction.where.Row, TableResultAction.requestAction.Delete, $(row).closest('table')[0]);
           var actions = vTable.getActionList();
           for (var actionIndex = 0; actionIndex < actions.length; actionIndex++) {
               if (!actions[actionIndex]) {
@@ -4004,9 +3940,9 @@
        */
       Table.prototype.deleteCol = function (rng) {
           var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-          var row = $$1(cell).closest('tr');
-          var cellPos = row.children('td, th').index($$1(cell));
-          var vTable = new TableResultAction(cell, TableResultAction.where.Column, TableResultAction.requestAction.Delete, $$1(row).closest('table')[0]);
+          var row = $(cell).closest('tr');
+          var cellPos = row.children('td, th').index($(cell));
+          var vTable = new TableResultAction(cell, TableResultAction.where.Column, TableResultAction.requestAction.Delete, $(row).closest('table')[0]);
           var actions = vTable.getActionList();
           for (var actionIndex = 0; actionIndex < actions.length; actionIndex++) {
               if (!actions[actionIndex]) {
@@ -4061,7 +3997,7 @@
               trs.push('<tr>' + tdHTML + '</tr>');
           }
           trHTML = trs.join('');
-          var $table = $$1('<table>' + trHTML + '</table>');
+          var $table = $('<table>' + trHTML + '</table>');
           if (options && options.tableClassName) {
               $table.addClass(options.tableClassName);
           }
@@ -4075,7 +4011,7 @@
        */
       Table.prototype.deleteTable = function (rng) {
           var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-          $$1(cell).closest('table').remove();
+          $(cell).closest('table').remove();
       };
       return Table;
   }());
@@ -4163,7 +4099,7 @@
            * @param {Node} node
            */
           this.insertNode = this.wrapCommand(function (node) {
-              if (_this.isLimited($$1(node).text().length)) {
+              if (_this.isLimited($(node).text().length)) {
                   return;
               }
               var rng = _this.getLastRange();
@@ -4260,7 +4196,7 @@
               var anchors = [];
               if (isTextChanged) {
                   rng = rng.deleteContents();
-                  var anchor = rng.insertNode($$1('<A>' + linkText + '</A>')[0]);
+                  var anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
                   anchors.push(anchor);
               }
               else {
@@ -4270,13 +4206,13 @@
                       onlyPartialContains: true
                   });
               }
-              $$1.each(anchors, function (idx, anchor) {
-                  $$1(anchor).attr('href', linkUrl);
+              $.each(anchors, function (idx, anchor) {
+                  $(anchor).attr('href', linkUrl);
                   if (isNewWindow) {
-                      $$1(anchor).attr('target', '_blank');
+                      $(anchor).attr('target', '_blank');
                   }
                   else {
-                      $$1(anchor).removeAttr('target');
+                      $(anchor).removeAttr('target');
                   }
               });
               var startRange = range.createFromNodeBefore(head(anchors));
@@ -4326,12 +4262,12 @@
            * remove media object and Figure Elements if media object is img with Figure.
            */
           this.removeMedia = this.wrapCommand(function () {
-              var $target = $$1(_this.restoreTarget()).parent();
+              var $target = $(_this.restoreTarget()).parent();
               if ($target.parent('figure').length) {
                   $target.parent('figure').remove();
               }
               else {
-                  $target = $$1(_this.restoreTarget()).detach();
+                  $target = $(_this.restoreTarget()).detach();
               }
               _this.context.triggerEvent('media.delete', $target, _this.$editable);
           });
@@ -4341,7 +4277,7 @@
            * @param {String} value
            */
           this.floatMe = this.wrapCommand(function (value) {
-              var $target = $$1(_this.restoreTarget());
+              var $target = $(_this.restoreTarget());
               $target.toggleClass('note-float-left', value === 'left');
               $target.toggleClass('note-float-right', value === 'right');
               $target.css('float', (value === 'none' ? '' : value));
@@ -4351,7 +4287,7 @@
            * @param {String} value
            */
           this.resize = this.wrapCommand(function (value) {
-              var $target = $$1(_this.restoreTarget());
+              var $target = $(_this.restoreTarget());
               value = parseFloat(value);
               if (value === 0) {
                   $target.css('width', '');
@@ -4405,7 +4341,7 @@
           this.$editable.attr('spellcheck', this.options.spellCheck);
           // init content before set event
           this.$editable.html(dom.html(this.$note) || dom.emptyPara);
-          this.$editable.on(env.inputEventName, func.debounce(function () {
+          this.$editable.on(env.inputEventName, debounce(function () {
               _this.context.triggerEvent('change', _this.$editable.html(), _this.$editable);
           }, 10));
           this.$editor.on('focusin', function (event) {
@@ -4675,7 +4611,7 @@
        */
       Editor.prototype.insertImagesAsDataURL = function (files) {
           var _this = this;
-          $$1.each(files, function (idx, file) {
+          $.each(files, function (idx, file) {
               var filename = file.name;
               if (_this.options.maximumImageFileSize && _this.options.maximumImageFileSize < file.size) {
                   _this.context.triggerEvent('image.upload.error', _this.lang.image.maximumFileSizeError);
@@ -4725,7 +4661,7 @@
               var className = $target[0].className || '';
               if (className) {
                   var currentRange = this.createRange();
-                  var $parent = $$1([currentRange.sc, currentRange.ec]).closest(tagName);
+                  var $parent = $([currentRange.sc, currentRange.ec]).closest(tagName);
                   $parent.addClass(className);
               }
           }
@@ -4737,7 +4673,7 @@
           var rng = this.getLastRange();
           if (rng) {
               var spans = this.style.styleNodes(rng);
-              $$1(spans).css(target, value);
+              $(spans).css(target, value);
               // [workaround] added styled bogus span for style
               //  - also bogus character needed for cursor position
               if (rng.isCollapsed()) {
@@ -4780,7 +4716,7 @@
       Editor.prototype.getLinkInfo = function () {
           var rng = this.getLastRange().expand(dom.isAnchor);
           // Get the first anchor on range(for edit).
-          var $anchor = $$1(head(rng.nodes(dom.isAnchor)));
+          var $anchor = $(head(rng.nodes(dom.isAnchor)));
           var linkInfo = {
               range: rng,
               text: rng.toString(),
@@ -4924,13 +4860,13 @@
   var Dropzone = /** @class */ (function () {
       function Dropzone(context) {
           this.context = context;
-          this.$eventListener = $$1(document);
+          this.$eventListener = $(document);
           this.$editor = context.layoutInfo.editor;
           this.$editable = context.layoutInfo.editable;
           this.options = context.options;
           this.lang = this.options.langInfo;
           this.documentEventHandlers = {};
-          this.$dropzone = $$1([
+          this.$dropzone = $([
               '<div class="note-dropzone">',
               '  <div class="note-dropzone-message"/>',
               '</div>',
@@ -4958,7 +4894,7 @@
        */
       Dropzone.prototype.attachDragAndDropEvent = function () {
           var _this = this;
-          var collection = $$1();
+          var collection = $();
           var $dropzoneMessage = this.$dropzone.find('.note-dropzone-message');
           this.documentEventHandlers.onDragenter = function (e) {
               var isCodeview = _this.context.invoke('codeview.isActivated');
@@ -4978,7 +4914,7 @@
               }
           };
           this.documentEventHandlers.onDrop = function () {
-              collection = $$1();
+              collection = $();
               _this.$editor.removeClass('dragover');
           };
           // show dropzone on dragenter when dragging a object to document
@@ -5004,13 +4940,13 @@
                   _this.context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
               }
               else {
-                  $$1.each(dataTransfer.types, function (idx, type) {
+                  $.each(dataTransfer.types, function (idx, type) {
                       var content = dataTransfer.getData(type);
                       if (type.toLowerCase().indexOf('text') > -1) {
                           _this.context.invoke('editor.pasteHTML', content);
                       }
                       else {
-                          $$1(content).each(function (idx, item) {
+                          $(content).each(function (idx, item) {
                               _this.context.invoke('editor.insertNode', item);
                           });
                       }
@@ -5176,7 +5112,7 @@
   var EDITABLE_PADDING = 24;
   var Statusbar = /** @class */ (function () {
       function Statusbar(context) {
-          this.$document = $$1(document);
+          this.$document = $(document);
           this.$statusbar = context.layoutInfo.statusbar;
           this.$editable = context.layoutInfo.editable;
           this.options = context.options;
@@ -5217,8 +5153,8 @@
           this.$toolbar = context.layoutInfo.toolbar;
           this.$editable = context.layoutInfo.editable;
           this.$codable = context.layoutInfo.codable;
-          this.$window = $$1(window);
-          this.$scrollbar = $$1('html, body');
+          this.$window = $(window);
+          this.$scrollbar = $('html, body');
           this.onResize = function () {
               _this.resizeTo({
                   h: _this.$window.height() - _this.$toolbar.outerHeight()
@@ -5262,7 +5198,7 @@
       function Handle(context) {
           var _this = this;
           this.context = context;
-          this.$document = $$1(document);
+          this.$document = $(document);
           this.$editingArea = context.layoutInfo.editingArea;
           this.options = context.options;
           this.lang = this.options.langInfo;
@@ -5285,7 +5221,7 @@
       }
       Handle.prototype.initialize = function () {
           var _this = this;
-          this.$handle = $$1([
+          this.$handle = $([
               '<div class="note-handle">',
               '<div class="note-control-selection">',
               '<div class="note-control-selection-bg"></div>',
@@ -5342,7 +5278,7 @@
           var $selection = this.$handle.find('.note-control-selection');
           this.context.invoke('imagePopover.update', target, event);
           if (isImage) {
-              var $image = $$1(target);
+              var $image = $(target);
               var position = $image.position();
               var pos = {
                   left: position.left + parseInt($image.css('marginLeft'), 10),
@@ -5414,9 +5350,9 @@
           var match = keyword.match(linkPattern);
           if (match && (match[1] || match[2])) {
               var link = match[1] ? keyword : defaultScheme + keyword;
-              var node = $$1('<a />').html(keyword).attr('href', link)[0];
+              var node = $('<a />').html(keyword).attr('href', link)[0];
               if (this.context.options.linkTargetBlank) {
-                  $$1(node).attr('target', '_blank');
+                  $(node).attr('target', '_blank');
               }
               this.lastWordRange.insertNode(node);
               this.lastWordRange = null;
@@ -5550,7 +5486,7 @@
       };
       Placeholder.prototype.initialize = function () {
           var _this = this;
-          this.$placeholder = $$1('<div class="note-placeholder">');
+          this.$placeholder = $('<div class="note-placeholder">');
           this.$placeholder.on('click', function () {
               _this.context.invoke('focus');
           }).html(this.options.placeholder).prependTo(this.$editingArea);
@@ -5568,12 +5504,12 @@
 
   var Buttons = /** @class */ (function () {
       function Buttons(context) {
-          this.ui = $$1.summernote.ui;
+          this.ui = $.summernote.ui;
           this.context = context;
           this.$toolbar = context.layoutInfo.toolbar;
           this.options = context.options;
           this.lang = this.options.langInfo;
-          this.invertedKeyMap = func.invertObject(this.options.keyMap[env.isMac ? 'mac' : 'pc']);
+          this.invertedKeyMap = invertObject(this.options.keyMap[env.isMac ? 'mac' : 'pc']);
       }
       Buttons.prototype.representShortcut = function (editorMethod) {
           var shortcut = this.invertedKeyMap[editorMethod];
@@ -5616,7 +5552,7 @@
       Buttons.prototype.isFontDeservedToAdd = function (name) {
           var genericFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
           name = name.toLowerCase();
-          return ((name !== '') && this.isFontInstalled(name) && ($$1.inArray(name, genericFamilies) === -1));
+          return ((name !== '') && this.isFontInstalled(name) && ($.inArray(name, genericFamilies) === -1));
       };
       Buttons.prototype.colorPalette = function (className, tooltip, backColor, foreColor) {
           var _this = this;
@@ -5628,7 +5564,7 @@
                       contents: this.ui.icon(this.options.icons.font + ' note-recent-color'),
                       tooltip: tooltip,
                       click: function (e) {
-                          var $button = $$1(e.currentTarget);
+                          var $button = $(e.currentTarget);
                           if (backColor && foreColor) {
                               _this.context.invoke('editor.color', {
                                   backColor: $button.attr('data-backColor'),
@@ -5707,7 +5643,7 @@
                           ].join('') : ''),
                       callback: function ($dropdown) {
                           $dropdown.find('.note-holder').each(function (idx, item) {
-                              var $holder = $$1(item);
+                              var $holder = $(item);
                               $holder.append(_this.ui.palette({
                                   colors: _this.options.colors,
                                   colorsName: _this.options.colorsName,
@@ -5721,7 +5657,7 @@
                               ['#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'],
                           ];
                           $dropdown.find('.note-holder-custom').each(function (idx, item) {
-                              var $holder = $$1(item);
+                              var $holder = $(item);
                               $holder.append(_this.ui.palette({
                                   colors: customColors,
                                   colorsName: customColors,
@@ -5731,8 +5667,8 @@
                               }).render());
                           });
                           $dropdown.find('input[type=color]').each(function (idx, item) {
-                              $$1(item).change(function () {
-                                  var $chip = $dropdown.find('#' + $$1(this).data('event')).find('.note-color-btn').first();
+                              $(item).change(function () {
+                                  var $chip = $dropdown.find('#' + $(this).data('event')).find('.note-color-btn').first();
                                   var color = this.value.toUpperCase();
                                   $chip.css('background-color', color)
                                       .attr('aria-label', color)
@@ -5744,13 +5680,13 @@
                       },
                       click: function (event) {
                           event.stopPropagation();
-                          var $parent = $$1('.' + className);
-                          var $button = $$1(event.target);
+                          var $parent = $('.' + className);
+                          var $button = $(event.target);
                           var eventName = $button.data('event');
                           var value = $button.attr('data-value');
                           if (eventName === 'openPalette') {
                               var $picker = $parent.find('#' + value);
-                              var $palette = $$1($parent.find('#' + $picker.data('event')).find('.note-color-row')[0]);
+                              var $palette = $($parent.find('#' + $picker.data('event')).find('.note-color-row')[0]);
                               // Shift palette chips
                               var $chip = $palette.find('.note-color-btn').last().detach();
                               // Set chip attributes
@@ -5878,10 +5814,10 @@
           this.context.memo('button.fontname', function () {
               var styleInfo = _this.context.invoke('editor.currentStyle');
               // Add 'default' fonts into the fontnames array if not exist
-              $$1.each(styleInfo['font-family'].split(','), function (idx, fontname) {
+              $.each(styleInfo['font-family'].split(','), function (idx, fontname) {
                   fontname = fontname.trim().replace(/['"]+/g, '');
                   if (_this.isFontDeservedToAdd(fontname)) {
-                      if ($$1.inArray(fontname, _this.options.fontNames) === -1) {
+                      if ($.inArray(fontname, _this.options.fontNames) === -1) {
                           _this.options.fontNames.push(fontname);
                       }
                   }
@@ -5979,12 +5915,12 @@
               tooltip: this.lang.paragraph.indent + this.representShortcut('indent'),
               click: this.context.createInvokeHandler('editor.indent')
           });
-          this.context.memo('button.justifyLeft', func.invoke(justifyLeft, 'render'));
-          this.context.memo('button.justifyCenter', func.invoke(justifyCenter, 'render'));
-          this.context.memo('button.justifyRight', func.invoke(justifyRight, 'render'));
-          this.context.memo('button.justifyFull', func.invoke(justifyFull, 'render'));
-          this.context.memo('button.outdent', func.invoke(outdent, 'render'));
-          this.context.memo('button.indent', func.invoke(indent, 'render'));
+          this.context.memo('button.justifyLeft', invoke(justifyLeft, 'render'));
+          this.context.memo('button.justifyCenter', invoke(justifyCenter, 'render'));
+          this.context.memo('button.justifyRight', invoke(justifyRight, 'render'));
+          this.context.memo('button.justifyFull', invoke(justifyFull, 'render'));
+          this.context.memo('button.outdent', invoke(outdent, 'render'));
+          this.context.memo('button.indent', invoke(indent, 'render'));
           this.context.memo('button.paragraph', function () {
               return _this.ui.buttonGroup([
                   _this.button({
@@ -6279,8 +6215,8 @@
       Buttons.prototype.build = function ($container, groups) {
           for (var groupIdx = 0, groupLen = groups.length; groupIdx < groupLen; groupIdx++) {
               var group = groups[groupIdx];
-              var groupName = $$1.isArray(group) ? group[0] : group;
-              var buttons = $$1.isArray(group) ? ((group.length === 1) ? [group[0]] : group[1]) : [group];
+              var groupName = $.isArray(group) ? group[0] : group;
+              var buttons = $.isArray(group) ? ((group.length === 1) ? [group[0]] : group[1]) : [group];
               var $group = this.ui.buttonGroup({
                   className: 'note-' + groupName
               }).render();
@@ -6328,7 +6264,7 @@
               });
               var fontName_1 = find(fontNames, this.isFontInstalled.bind(this));
               $cont.find('.dropdown-fontname a').each(function (idx, item) {
-                  var $item = $$1(item);
+                  var $item = $(item);
                   // always compare string to avoid creating another func.
                   var isChecked = ($item.data('value') + '') === (fontName_1 + '');
                   $item.toggleClass('checked', isChecked);
@@ -6338,7 +6274,7 @@
           if (styleInfo['font-size']) {
               var fontSize_1 = styleInfo['font-size'];
               $cont.find('.dropdown-fontsize a').each(function (idx, item) {
-                  var $item = $$1(item);
+                  var $item = $(item);
                   // always compare with string to avoid creating another func.
                   var isChecked = ($item.data('value') + '') === (fontSize_1 + '');
                   $item.toggleClass('checked', isChecked);
@@ -6349,20 +6285,20 @@
               var lineHeight_1 = styleInfo['line-height'];
               $cont.find('.dropdown-line-height li a').each(function (idx, item) {
                   // always compare with string to avoid creating another func.
-                  var isChecked = ($$1(item).data('value') + '') === (lineHeight_1 + '');
+                  var isChecked = ($(item).data('value') + '') === (lineHeight_1 + '');
                   _this.className = isChecked ? 'checked' : '';
               });
           }
       };
       Buttons.prototype.updateBtnStates = function ($container, infos) {
           var _this = this;
-          $$1.each(infos, function (selector, pred) {
+          $.each(infos, function (selector, pred) {
               _this.ui.toggleBtnActive($container.find(selector), pred());
           });
       };
       Buttons.prototype.tableMoveHandler = function (event) {
           var PX_PER_EM = 18;
-          var $picker = $$1(event.target.parentNode); // target is mousecatcher
+          var $picker = $(event.target.parentNode); // target is mousecatcher
           var $dimensionDisplay = $picker.next();
           var $catcher = $picker.find('.note-dimension-picker-mousecatcher');
           var $highlighted = $picker.find('.note-dimension-picker-highlighted');
@@ -6370,7 +6306,7 @@
           var posOffset;
           // HTML5 with jQuery - e.offsetX is undefined in Firefox
           if (event.offsetX === undefined) {
-              var posCatcher = $$1(event.target).offset();
+              var posCatcher = $(event.target).offset();
               posOffset = {
                   x: event.pageX - posCatcher.left,
                   y: event.pageY - posCatcher.top
@@ -6402,9 +6338,9 @@
   var Toolbar = /** @class */ (function () {
       function Toolbar(context) {
           this.context = context;
-          this.$window = $$1(window);
-          this.$document = $$1(document);
-          this.ui = $$1.summernote.ui;
+          this.$window = $(window);
+          this.$document = $(document);
+          this.ui = $.summernote.ui;
           this.$note = context.layoutInfo.note;
           this.$editor = context.layoutInfo.editor;
           this.$toolbar = context.layoutInfo.toolbar;
@@ -6455,7 +6391,7 @@
           // check if the web app is currently using another static bar
           var otherBarHeight = 0;
           if (this.options.otherStaticBar) {
-              otherBarHeight = $$1(this.options.otherStaticBar).outerHeight();
+              otherBarHeight = $(this.options.otherStaticBar).outerHeight();
           }
           var currentOffset = this.$document.scrollTop();
           var editorOffsetTop = this.$editor.offset().top;
@@ -6531,8 +6467,8 @@
   var LinkDialog = /** @class */ (function () {
       function LinkDialog(context) {
           this.context = context;
-          this.ui = $$1.summernote.ui;
-          this.$body = $$1(document.body);
+          this.ui = $.summernote.ui;
+          this.$body = $(document.body);
           this.$editor = context.layoutInfo.editor;
           this.options = context.options;
           this.lang = this.options.langInfo;
@@ -6550,7 +6486,7 @@
               '<input class="note-link-url form-control note-form-control note-input" type="text" value="http://" />',
               '</div>',
               !this.options.disableLinkTarget
-                  ? $$1('<div/>').append(this.ui.checkbox({
+                  ? $('<div/>').append(this.ui.checkbox({
                       className: 'sn-checkbox-open-in-new-window',
                       text: this.lang.link.openInNewWindow,
                       checked: true
@@ -6593,7 +6529,7 @@
        */
       LinkDialog.prototype.showLinkDialog = function (linkInfo) {
           var _this = this;
-          return $$1.Deferred(function (deferred) {
+          return $.Deferred(function (deferred) {
               var $linkText = _this.$dialog.find('.note-link-text');
               var $linkUrl = _this.$dialog.find('.note-link-url');
               var $linkBtn = _this.$dialog.find('.note-link-btn');
@@ -6602,7 +6538,7 @@
               _this.ui.onDialogShown(_this.$dialog, function () {
                   _this.context.triggerEvent('dialog.shown');
                   // if no url was given and given text is valid URL then copy that into URL Field
-                  if (!linkInfo.url && func.isValidUrl(linkInfo.text)) {
+                  if (!linkInfo.url && isValidUrl(linkInfo.text)) {
                       linkInfo.url = linkInfo.text;
                   }
                   $linkText.val(linkInfo.text);
@@ -6679,7 +6615,7 @@
       function LinkPopover(context) {
           var _this = this;
           this.context = context;
-          this.ui = $$1.summernote.ui;
+          this.ui = $.summernote.ui;
           this.options = context.options;
           this.events = {
               'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function () {
@@ -6716,7 +6652,7 @@
           var rng = this.context.invoke('editor.getLastRange');
           if (rng.isCollapsed() && rng.isOnAnchor()) {
               var anchor = dom.ancestor(rng.sc, dom.isAnchor);
-              var href = $$1(anchor).attr('href');
+              var href = $(anchor).attr('href');
               this.$popover.find('a').attr('href', href).html(href);
               var pos = dom.posFromPlaceholder(anchor);
               this.$popover.css({
@@ -6738,8 +6674,8 @@
   var ImageDialog = /** @class */ (function () {
       function ImageDialog(context) {
           this.context = context;
-          this.ui = $$1.summernote.ui;
-          this.$body = $$1(document.body);
+          this.ui = $.summernote.ui;
+          this.$body = $(document.body);
           this.$editor = context.layoutInfo.editor;
           this.options = context.options;
           this.lang = this.options.langInfo;
@@ -6818,7 +6754,7 @@
        */
       ImageDialog.prototype.showImageDialog = function () {
           var _this = this;
-          return $$1.Deferred(function (deferred) {
+          return $.Deferred(function (deferred) {
               var $imageInput = _this.$dialog.find('.note-image-input');
               var $imageUrl = _this.$dialog.find('.note-image-url');
               var $imageBtn = _this.$dialog.find('.note-image-btn');
@@ -6864,7 +6800,7 @@
       function ImagePopover(context) {
           var _this = this;
           this.context = context;
-          this.ui = $$1.summernote.ui;
+          this.ui = $.summernote.ui;
           this.editable = context.layoutInfo.editable[0];
           this.options = context.options;
           this.events = {
@@ -6910,7 +6846,7 @@
       function TablePopover(context) {
           var _this = this;
           this.context = context;
-          this.ui = $$1.summernote.ui;
+          this.ui = $.summernote.ui;
           this.options = context.options;
           this.events = {
               'summernote.mousedown': function (we, e) {
@@ -6968,8 +6904,8 @@
   var VideoDialog = /** @class */ (function () {
       function VideoDialog(context) {
           this.context = context;
-          this.ui = $$1.summernote.ui;
-          this.$body = $$1(document.body);
+          this.ui = $.summernote.ui;
+          this.$body = $(document.body);
           this.$editor = context.layoutInfo.editor;
           this.options = context.options;
           this.lang = this.options.langInfo;
@@ -7042,13 +6978,13 @@
                       }
                   }
               }
-              $video = $$1('<iframe>')
+              $video = $('<iframe>')
                   .attr('frameborder', 0)
                   .attr('src', '//www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : ''))
                   .attr('width', '640').attr('height', '360');
           }
           else if (igMatch && igMatch[0].length) {
-              $video = $$1('<iframe>')
+              $video = $('<iframe>')
                   .attr('frameborder', 0)
                   .attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/')
                   .attr('width', '612').attr('height', '710')
@@ -7056,26 +6992,26 @@
                   .attr('allowtransparency', 'true');
           }
           else if (vMatch && vMatch[0].length) {
-              $video = $$1('<iframe>')
+              $video = $('<iframe>')
                   .attr('frameborder', 0)
                   .attr('src', vMatch[0] + '/embed/simple')
                   .attr('width', '600').attr('height', '600')
                   .attr('class', 'vine-embed');
           }
           else if (vimMatch && vimMatch[3].length) {
-              $video = $$1('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+              $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
                   .attr('frameborder', 0)
                   .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
                   .attr('width', '640').attr('height', '360');
           }
           else if (dmMatch && dmMatch[2].length) {
-              $video = $$1('<iframe>')
+              $video = $('<iframe>')
                   .attr('frameborder', 0)
                   .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
                   .attr('width', '640').attr('height', '360');
           }
           else if (youkuMatch && youkuMatch[1].length) {
-              $video = $$1('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+              $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
                   .attr('frameborder', 0)
                   .attr('height', '498')
                   .attr('width', '510')
@@ -7083,19 +7019,19 @@
           }
           else if ((qqMatch && qqMatch[1].length) || (qqMatch2 && qqMatch2[2].length)) {
               var vid = ((qqMatch && qqMatch[1].length) ? qqMatch[1] : qqMatch2[2]);
-              $video = $$1('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+              $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
                   .attr('frameborder', 0)
                   .attr('height', '310')
                   .attr('width', '500')
                   .attr('src', 'http://v.qq.com/iframe/player.html?vid=' + vid + '&amp;auto=0');
           }
           else if (mp4Match || oggMatch || webmMatch) {
-              $video = $$1('<video controls>')
+              $video = $('<video controls>')
                   .attr('src', url)
                   .attr('width', '640').attr('height', '360');
           }
           else if (fbMatch && fbMatch[0].length) {
-              $video = $$1('<iframe>')
+              $video = $('<iframe>')
                   .attr('frameborder', 0)
                   .attr('src', 'https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent(fbMatch[0]) + '&show_text=0&width=560')
                   .attr('width', '560').attr('height', '301')
@@ -7135,7 +7071,7 @@
        */
       VideoDialog.prototype.showVideoDialog = function (text) {
           var _this = this;
-          return $$1.Deferred(function (deferred) {
+          return $.Deferred(function (deferred) {
               var $videoUrl = _this.$dialog.find('.note-video-url');
               var $videoBtn = _this.$dialog.find('.note-video-btn');
               _this.ui.onDialogShown(_this.$dialog, function () {
@@ -7168,8 +7104,8 @@
   var HelpDialog = /** @class */ (function () {
       function HelpDialog(context) {
           this.context = context;
-          this.ui = $$1.summernote.ui;
-          this.$body = $$1(document.body);
+          this.ui = $.summernote.ui;
+          this.$body = $(document.body);
           this.$editor = context.layoutInfo.editor;
           this.options = context.options;
           this.lang = this.options.langInfo;
@@ -7205,11 +7141,11 @@
           var keyMap = this.options.keyMap[env.isMac ? 'mac' : 'pc'];
           return Object.keys(keyMap).map(function (key) {
               var command = keyMap[key];
-              var $row = $$1('<div><div class="help-list-item"/></div>');
-              $row.append($$1('<label><kbd>' + key + '</kdb></label>').css({
+              var $row = $('<div><div class="help-list-item"/></div>');
+              $row.append($('<label><kbd>' + key + '</kdb></label>').css({
                   'width': 180,
                   'margin-right': 10
-              })).append($$1('<span/>').html(_this.context.memo('help.' + command) || command));
+              })).append($('<span/>').html(_this.context.memo('help.' + command) || command));
               return $row.html();
           }).join('');
       };
@@ -7220,7 +7156,7 @@
        */
       HelpDialog.prototype.showHelpDialog = function () {
           var _this = this;
-          return $$1.Deferred(function (deferred) {
+          return $.Deferred(function (deferred) {
               _this.ui.onDialogShown(_this.$dialog, function () {
                   _this.context.triggerEvent('dialog.shown');
                   deferred.resolve();
@@ -7243,7 +7179,7 @@
       function AirPopover(context) {
           var _this = this;
           this.context = context;
-          this.ui = $$1.summernote.ui;
+          this.ui = $.summernote.ui;
           this.options = context.options;
           this.events = {
               'summernote.keyup summernote.mouseup summernote.scroll': function () {
@@ -7258,7 +7194,7 @@
                   if (env.isFF) {
                       return;
                   }
-                  if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq(_this.$popover[0]))) {
+                  if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, eq(_this.$popover[0]))) {
                       _this.hide();
                   }
               }
@@ -7282,7 +7218,7 @@
           if (styleInfo.range && !styleInfo.range.isCollapsed()) {
               var rect = last(styleInfo.range.getClientRects());
               if (rect) {
-                  var bnd = func.rect2bnd(rect);
+                  var bnd = rect2bnd(rect);
                   this.$popover.css({
                       display: 'block',
                       left: Math.max(bnd.left + bnd.width / 2, 0) - AIR_MODE_POPOVER_X_OFFSET,
@@ -7306,12 +7242,12 @@
       function HintPopover(context) {
           var _this = this;
           this.context = context;
-          this.ui = $$1.summernote.ui;
+          this.ui = $.summernote.ui;
           this.$editable = context.layoutInfo.editable;
           this.options = context.options;
           this.hint = this.options.hint || [];
           this.direction = this.options.hintDirection || 'bottom';
-          this.hints = $$1.isArray(this.hint) ? this.hint : [this.hint];
+          this.hints = $.isArray(this.hint) ? this.hint : [this.hint];
           this.events = {
               'summernote.keyup': function (we, e) {
                   if (!e.isDefaultPrevented()) {
@@ -7341,7 +7277,7 @@
           this.$content = this.$popover.find('.popover-content,.note-popover-content');
           this.$content.on('click', '.note-hint-item', function (e) {
               _this.$content.find('.active').removeClass('active');
-              $$1(e.currentTarget).addClass('active');
+              $(e.currentTarget).addClass('active');
               _this.replace();
           });
       };
@@ -7406,7 +7342,7 @@
       HintPopover.prototype.createItemTemplates = function (hintIdx, items) {
           var hint = this.hints[hintIdx];
           return items.map(function (item, idx) {
-              var $item = $$1('<div class="note-hint-item"/>');
+              var $item = $('<div class="note-hint-item"/>');
               $item.append(hint.template ? hint.template(item) : item + '');
               $item.data({
                   'index': hintIdx,
@@ -7444,7 +7380,7 @@
       };
       HintPopover.prototype.createGroup = function (idx, keyword) {
           var _this = this;
-          var $group = $$1('<div class="note-hint-group note-hint-group-' + idx + '"/>');
+          var $group = $('<div class="note-hint-group note-hint-group-' + idx + '"/>');
           this.searchKeyword(idx, keyword, function (items) {
               items = items || [];
               if (items.length) {
@@ -7461,7 +7397,7 @@
               var keyword_1 = wordRange.toString();
               if (this.hints.length && keyword_1) {
                   this.$content.empty();
-                  var bnd = func.rect2bnd(last(wordRange.getClientRects()));
+                  var bnd = rect2bnd(last(wordRange.getClientRects()));
                   if (bnd) {
                       this.$popover.hide();
                       this.lastWordRange = wordRange;
@@ -7501,13 +7437,13 @@
       return HintPopover;
   }());
 
-  $$1.summernote = $$1.extend($$1.summernote, {
+  $.summernote = $.extend($.summernote, {
       version: '0.8.11',
       plugins: {},
       dom: dom,
       range: range,
       options: {
-          langInfo: $$1.summernote.lang['en-US'],
+          langInfo: $.summernote.lang['en-US'],
           modules: {
               'editor': Editor,
               'clipboard': Clipboard,
@@ -7782,10 +7718,10 @@
       }
   });
 
-  $$1.summernote = $$1.extend($$1.summernote, {
+  $.summernote = $.extend($.summernote, {
       ui: ui
   });
-  $$1.summernote.options.styleTags = [
+  $.summernote.options.styleTags = [
       'p',
       { title: 'Blockquote', tag: 'blockquote', className: 'blockquote', value: 'blockquote' },
       'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',

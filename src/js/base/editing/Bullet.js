@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import * as lists from '../core/lists';
-import func from '../core/func';
+import * as func from '../core/func';
 import dom from '../core/dom';
 import range from '../core/range';
 

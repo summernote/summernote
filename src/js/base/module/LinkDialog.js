@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import env from '../core/env';
 import key from '../core/key';
-import func from '../core/func';
+import * as func from '../core/func';
 
 export default class LinkDialog {
   constructor(context) {

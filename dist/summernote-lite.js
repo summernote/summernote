@@ -5,7 +5,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2018-12-24T07:10Z
+ * Date: 2018-12-24T08:10Z
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -1084,26 +1084,13 @@
       inputEventName: inputEventName
   };
 
-  /**
-   * @class core.func
-   *
-   * func utils (for high-order func's arg)
-   *
-   * @singleton
-   * @alternateClassName func
-   */
   function eq(itemA) {
       return function (itemB) {
           return itemA === itemB;
       };
   }
-  function eq2(itemA, itemB) {
-      return itemA === itemB;
-  }
   function peq2(propName) {
-      return function (itemA, itemB) {
-          return itemA[propName] === itemB[propName];
-      };
+      return function (itemA, itemB) { return itemA[propName] === itemB[propName]; };
   }
   function ok() {
       return true;
@@ -1117,9 +1104,7 @@
       };
   }
   function and(fA, fB) {
-      return function (item) {
-          return fA(item) && fB(item);
-      };
+      return function (item) { return fA(item) && fB(item); };
   }
   function self(a) {
       return a;
@@ -1129,31 +1114,14 @@
           return obj[method].apply(obj, arguments);
       };
   }
-  var idCounter = 0;
-  /**
-   * generate a globally-unique id
-   *
-   * @param {String} [prefix]
-   */
-  function uniqueId(prefix) {
-      var id = ++idCounter + '';
-      return prefix ? prefix + id : id;
-  }
   /**
    * returns bnd (bounds) from rect
    *
    * - IE Compatibility Issue: http://goo.gl/sRLOAo
    * - Scroll Issue: http://goo.gl/sNjUc
-   *
-   * @param {Rect} rect
-   * @return {Object} bounds
-   * @return {Number} bounds.top
-   * @return {Number} bounds.left
-   * @return {Number} bounds.width
-   * @return {Number} bounds.height
    */
   function rect2bnd(rect) {
-      var $document = $(document);
+      var $document = $$1(document);
       return {
           top: rect.top + $document.scrollTop(),
           left: rect.left + $document.scrollLeft(),
@@ -1162,9 +1130,8 @@
       };
   }
   /**
-   * returns a copy of the object where the keys have become the values and the values the keys.
-   * @param {Object} obj
-   * @return {Object}
+   * returns a copy of the object where the keys have become the values and
+   * the values the keys.
    */
   function invertObject(obj) {
       var inverted = {};
@@ -1175,11 +1142,6 @@
       }
       return inverted;
   }
-  /**
-   * @param {String} namespace
-   * @param {String} [prefix]
-   * @return {String}
-   */
   function namespaceToCamel(namespace, prefix) {
       prefix = prefix || '';
       return prefix + namespace.split('.').map(function (name) {
@@ -1191,10 +1153,6 @@
    * be triggered. The function will be called after it stops being called for
    * N milliseconds. If `immediate` is passed, trigger the function on the
    * leading edge, instead of the trailing.
-   * @param {Function} func
-   * @param {Number} wait
-   * @param {Boolean} immediate
-   * @return {Function}
    */
   function debounce(func, wait, immediate) {
       var timeout;
@@ -1215,32 +1173,10 @@
           }
       };
   }
-  /**
-   *
-   * @param {String} url
-   * @return {Boolean}
-   */
   function isValidUrl(url) {
       var expression = /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi;
       return expression.test(url);
   }
-  var func = {
-      eq: eq,
-      eq2: eq2,
-      peq2: peq2,
-      ok: ok,
-      fail: fail,
-      self: self,
-      not: not,
-      and: and,
-      invoke: invoke,
-      uniqueId: uniqueId,
-      rect2bnd: rect2bnd,
-      invertObject: invertObject,
-      namespaceToCamel: namespaceToCamel,
-      debounce: debounce,
-      isValidUrl: isValidUrl
-  };
 
   /**
    * returns the first item of an array.
@@ -1320,7 +1256,7 @@
    * @param {Function} fn - iterator
    */
   function sum(array, fn) {
-      fn = fn || func.self;
+      fn = fn || self;
       return array.reduce(function (memo, v) {
           return memo + fn(v);
       }, 0);
@@ -1564,7 +1500,7 @@
    * @return {Node[]}
    */
   function withClosestSiblings(node, pred) {
-      pred = pred || func.ok;
+      pred = pred || ok;
       var siblings = [];
       if (node.previousSibling && pred(node.previousSibling)) {
           siblings.push(node.previousSibling);
@@ -1673,7 +1609,7 @@
    * @param {Function} [optional] pred - predicate function
    */
   function listAncestor(node, pred) {
-      pred = pred || func.fail;
+      pred = pred || fail;
       var ancestors = [];
       ancestor(node, function (el) {
           if (!isEditable(el)) {
@@ -1712,7 +1648,7 @@
    * @param {Function} [optional] pred - predicate function
    */
   function listPrev(node, pred) {
-      pred = pred || func.fail;
+      pred = pred || fail;
       var nodes = [];
       while (node) {
           if (pred(node)) {
@@ -1730,7 +1666,7 @@
    * @param {Function} [pred] - predicate function
    */
   function listNext(node, pred) {
-      pred = pred || func.fail;
+      pred = pred || fail;
       var nodes = [];
       while (node) {
           if (pred(node)) {
@@ -1749,7 +1685,7 @@
    */
   function listDescendant(node, pred) {
       var descendants = [];
-      pred = pred || func.ok;
+      pred = pred || ok;
       // start DFS(depth first search) with node
       (function fnWalk(current) {
           if (node !== current && pred(current)) {
@@ -2060,7 +1996,7 @@
    * @param {Node} node
    */
   function makeOffsetPath(ancestor, node) {
-      var ancestors = listAncestor(node, func.eq(ancestor));
+      var ancestors = listAncestor(node, eq(ancestor));
       return ancestors.map(position).reverse();
   }
   /**
@@ -2149,7 +2085,7 @@
    */
   function splitTree(root, point, options) {
       // ex) [#text, <span>, <p>]
-      var ancestors = listAncestor(point.node, func.eq(root));
+      var ancestors = listAncestor(point.node, eq(root));
       if (!ancestors.length) {
           return null;
       }
@@ -2358,7 +2294,7 @@
       isPurePara: isPurePara,
       isHeading: isHeading,
       isInline: isInline,
-      isBlock: func.not(isInline),
+      isBlock: not(isInline),
       isBodyInline: isBodyInline,
       isBody: isBody,
       isParaInline: isParaInline,
@@ -2381,7 +2317,7 @@
       isImg: makePredByNodeName('IMG'),
       isTextarea: isTextarea,
       isEmpty: isEmpty$1,
-      isEmptyAnchor: func.and(isAnchor, isEmpty$1),
+      isEmptyAnchor: and(isAnchor, isEmpty$1),
       isClosestSibling: isClosestSibling,
       withClosestSiblings: withClosestSiblings,
       nodeLength: nodeLength,
@@ -2538,7 +2474,7 @@
       Context.prototype.triggerEvent = function () {
           var namespace = head(arguments);
           var args = tail(from(arguments));
-          var callback = this.options.callbacks[func.namespaceToCamel(namespace, 'on')];
+          var callback = this.options.callbacks[namespaceToCamel(namespace, 'on')];
           if (callback) {
               callback.apply(this.$note[0], args);
           }
@@ -2546,7 +2482,7 @@
       };
       Context.prototype.initializeModule = function (key) {
           var module = this.modules[key];
-          module.shouldInitialize = module.shouldInitialize || func.ok;
+          module.shouldInitialize = module.shouldInitialize || ok;
           if (!module.shouldInitialize()) {
               return;
           }
@@ -2728,7 +2664,7 @@
       var textRangeInfo = function (container, offset) {
           var node, isCollapseToStart;
           if (dom.isText(container)) {
-              var prevTextNodes = dom.listPrev(container, func.not(dom.isText));
+              var prevTextNodes = dom.listPrev(container, not(dom.isText));
               var prevContainer = last(prevTextNodes).previousSibling;
               node = prevContainer || container.parentNode;
               offset += sum(tail(prevTextNodes), dom.nodeLength);
@@ -2895,7 +2831,7 @@
        * @return {Node[]}
        */
       WrappedRange.prototype.nodes = function (pred, options) {
-          pred = pred || func.ok;
+          pred = pred || ok;
           var includeAncestor = options && options.includeAncestor;
           var fullyContains = options && options.fullyContains;
           // TODO compare points and sort
@@ -3068,7 +3004,7 @@
           // find inline top ancestor
           var topAncestor;
           if (dom.isInline(rng.sc)) {
-              var ancestors = dom.listAncestor(rng.sc, func.not(dom.isInline));
+              var ancestors = dom.listAncestor(rng.sc, not(dom.isInline));
               topAncestor = last(ancestors);
               if (!dom.isInline(topAncestor)) {
                   topAncestor = ancestors[ancestors.length - 2] || rng.sc.childNodes[rng.so];
@@ -3431,7 +3367,7 @@
        * @property {Object} nameFromCode
        * @property {String} nameFromCode.8 "BACKSPACE"
        */
-      nameFromCode: func.invertObject(KEY_MAP),
+      nameFromCode: invertObject(KEY_MAP),
       code: KEY_MAP
   };
 
@@ -3659,7 +3595,7 @@
               if (onlyPartialContains) {
                   var nodesInRange_1 = rng.nodes();
                   // compose with partial contains predication
-                  pred = func.and(pred, function (node) {
+                  pred = and(pred, function (node) {
                       return contains(nodesInRange_1, node);
                   });
               }
@@ -3748,7 +3684,7 @@
           var _this = this;
           var rng = range.create(editable).wrapBodyInlineWithPara();
           var paras = rng.nodes(dom.isPara, { includeAncestor: true });
-          var clustereds = clusterBy(paras, func.peq2('parentNode'));
+          var clustereds = clusterBy(paras, peq2('parentNode'));
           $$1.each(clustereds, function (idx, paras) {
               var head$$1 = head(paras);
               if (dom.isLi(head$$1)) {
@@ -3781,7 +3717,7 @@
           var _this = this;
           var rng = range.create(editable).wrapBodyInlineWithPara();
           var paras = rng.nodes(dom.isPara, { includeAncestor: true });
-          var clustereds = clusterBy(paras, func.peq2('parentNode'));
+          var clustereds = clusterBy(paras, peq2('parentNode'));
           $$1.each(clustereds, function (idx, paras) {
               var head$$1 = head(paras);
               if (dom.isLi(head$$1)) {
@@ -3808,7 +3744,7 @@
           var rng = range.create(editable).wrapBodyInlineWithPara();
           var paras = rng.nodes(dom.isPara, { includeAncestor: true });
           var bookmark = rng.paraBookmark(paras);
-          var clustereds = clusterBy(paras, func.peq2('parentNode'));
+          var clustereds = clusterBy(paras, peq2('parentNode'));
           // paragraph to list
           if (find(paras, dom.isPurePara)) {
               var wrappedParas_1 = [];
@@ -4953,7 +4889,7 @@
           this.$editable.attr('spellcheck', this.options.spellCheck);
           // init content before set event
           this.$editable.html(dom.html(this.$note) || dom.emptyPara);
-          this.$editable.on(env.inputEventName, func.debounce(function () {
+          this.$editable.on(env.inputEventName, debounce(function () {
               _this.context.triggerEvent('change', _this.$editable.html(), _this.$editable);
           }, 10));
           this.$editor.on('focusin', function (event) {
@@ -6121,7 +6057,7 @@
           this.$toolbar = context.layoutInfo.toolbar;
           this.options = context.options;
           this.lang = this.options.langInfo;
-          this.invertedKeyMap = func.invertObject(this.options.keyMap[env.isMac ? 'mac' : 'pc']);
+          this.invertedKeyMap = invertObject(this.options.keyMap[env.isMac ? 'mac' : 'pc']);
       }
       Buttons.prototype.representShortcut = function (editorMethod) {
           var shortcut = this.invertedKeyMap[editorMethod];
@@ -6527,12 +6463,12 @@
               tooltip: this.lang.paragraph.indent + this.representShortcut('indent'),
               click: this.context.createInvokeHandler('editor.indent')
           });
-          this.context.memo('button.justifyLeft', func.invoke(justifyLeft, 'render'));
-          this.context.memo('button.justifyCenter', func.invoke(justifyCenter, 'render'));
-          this.context.memo('button.justifyRight', func.invoke(justifyRight, 'render'));
-          this.context.memo('button.justifyFull', func.invoke(justifyFull, 'render'));
-          this.context.memo('button.outdent', func.invoke(outdent, 'render'));
-          this.context.memo('button.indent', func.invoke(indent, 'render'));
+          this.context.memo('button.justifyLeft', invoke(justifyLeft, 'render'));
+          this.context.memo('button.justifyCenter', invoke(justifyCenter, 'render'));
+          this.context.memo('button.justifyRight', invoke(justifyRight, 'render'));
+          this.context.memo('button.justifyFull', invoke(justifyFull, 'render'));
+          this.context.memo('button.outdent', invoke(outdent, 'render'));
+          this.context.memo('button.indent', invoke(indent, 'render'));
           this.context.memo('button.paragraph', function () {
               return _this.ui.buttonGroup([
                   _this.button({
@@ -7150,7 +7086,7 @@
               _this.ui.onDialogShown(_this.$dialog, function () {
                   _this.context.triggerEvent('dialog.shown');
                   // if no url was given and given text is valid URL then copy that into URL Field
-                  if (!linkInfo.url && func.isValidUrl(linkInfo.text)) {
+                  if (!linkInfo.url && isValidUrl(linkInfo.text)) {
                       linkInfo.url = linkInfo.text;
                   }
                   $linkText.val(linkInfo.text);
@@ -7806,7 +7742,7 @@
                   if (env.isFF) {
                       return;
                   }
-                  if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq(_this.$popover[0]))) {
+                  if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, eq(_this.$popover[0]))) {
                       _this.hide();
                   }
               }
@@ -7830,7 +7766,7 @@
           if (styleInfo.range && !styleInfo.range.isCollapsed()) {
               var rect = last(styleInfo.range.getClientRects());
               if (rect) {
-                  var bnd = func.rect2bnd(rect);
+                  var bnd = rect2bnd(rect);
                   this.$popover.css({
                       display: 'block',
                       left: Math.max(bnd.left + bnd.width / 2, 0) - AIR_MODE_POPOVER_X_OFFSET,
@@ -8009,7 +7945,7 @@
               var keyword_1 = wordRange.toString();
               if (this.hints.length && keyword_1) {
                   this.$content.empty();
-                  var bnd = func.rect2bnd(last(wordRange.getClientRects()));
+                  var bnd = rect2bnd(last(wordRange.getClientRects()));
                   if (bnd) {
                       this.$popover.hide();
                       this.lastWordRange = wordRange;

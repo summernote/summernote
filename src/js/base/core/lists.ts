@@ -1,4 +1,4 @@
-import func from './func';
+import * as func from './func';
 
 /**
  * returns the first item of an array.

@@ -1,5 +1,5 @@
 import * as lists from './lists';
-import func from './func';
+import * as func from './func';
 
 const KEY_MAP = {
   'BACKSPACE': 8,

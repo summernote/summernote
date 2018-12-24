@@ -1,67 +1,63 @@
-/**
- * @class core.func
- *
- * func utils (for high-order func's arg)
- *
- * @singleton
- * @alternateClassName func
- */
-function eq(itemA) {
-  return function(itemB) {
+import $ from 'jquery';
+
+export function eq<V>(itemA: V): (V) => boolean {
+  return function(itemB: V) {
     return itemA === itemB;
   };
 }
 
-function eq2(itemA, itemB) {
+export function eq2<V>(itemA: V, itemB: V): boolean {
   return itemA === itemB;
 }
 
-function peq2(propName) {
-  return function(itemA, itemB) {
-    return itemA[propName] === itemB[propName];
-  };
+export function peq2<V>(propName: string): (a: V, b: V) => boolean {
+  return (itemA, itemB) => itemA[propName] === itemB[propName];
 }
 
-function ok() {
+export function ok(): boolean {
   return true;
 }
 
-function fail() {
+export function fail(): boolean {
   return false;
 }
 
-function not(f) {
+export function not(f: Function): Function {
   return function() {
     return !f.apply(f, arguments);
   };
 }
 
-function and(fA, fB) {
-  return function(item) {
-    return fA(item) && fB(item);
-  };
+export function and<V>(fA: (V) => boolean, fB: (V) => boolean): (V) => boolean {
+  return (item) => fA(item) && fB(item);
 }
 
-function self(a) {
+export function self<V>(a: V): V {
   return a;
 }
 
-function invoke(obj, method) {
+export function invoke(obj: any, method: string): Function {
   return function() {
     return obj[method].apply(obj, arguments);
   };
 }
 
 let idCounter = 0;
-
 /**
  * generate a globally-unique id
  *
  * @param {String} [prefix]
  */
-function uniqueId(prefix) {
+export function uniqueId(prefix?: string): string {
   const id = ++idCounter + '';
-  return prefix ? prefix + id : id;
+  return prefix ? `${prefix}${id}` : id;
+}
+
+export interface Bound {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
 }
 
 /**
@@ -69,15 +65,8 @@ function uniqueId(prefix) {
  *
  * - IE Compatibility Issue: http://goo.gl/sRLOAo
  * - Scroll Issue: http://goo.gl/sNjUc
- *
- * @param {Rect} rect
- * @return {Object} bounds
- * @return {Number} bounds.top
- * @return {Number} bounds.left
- * @return {Number} bounds.width
- * @return {Number} bounds.height
  */
-function rect2bnd(rect) {
+export function rect2bnd(rect): Bound {
   const $document = $(document);
   return {
     top: rect.top + $document.scrollTop(),
@@ -88,11 +77,10 @@ function rect2bnd(rect) {
 }
 
 /**
- * returns a copy of the object where the keys have become the values and the values the keys.
- * @param {Object} obj
- * @return {Object}
+ * returns a copy of the object where the keys have become the values and
+ * the values the keys.
  */
-function invertObject(obj) {
+export function invertObject(obj: any): any {
   const inverted = {};
   for (const key in obj) {
     if (obj.hasOwnProperty(key)) {
@@ -102,14 +90,9 @@ function invertObject(obj) {
   return inverted;
 }
 
-/**
- * @param {String} namespace
- * @param {String} [prefix]
- * @return {String}
- */
-function namespaceToCamel(namespace, prefix) {
+export function namespaceToCamel(namespace: string, prefix?: string): string {
   prefix = prefix || '';
-  return prefix + namespace.split('.').map(function(name) {
+  return prefix + namespace.split('.').map((name) => {
     return name.substring(0, 1).toUpperCase() + name.substring(1);
   }).join('');
 }
@@ -119,12 +102,10 @@ function namespaceToCamel(namespace, prefix) {
  * be triggered. The function will be called after it stops being called for
  * N milliseconds. If `immediate` is passed, trigger the function on the
  * leading edge, instead of the trailing.
- * @param {Function} func
- * @param {Number} wait
- * @param {Boolean} immediate
- * @return {Function}
  */
-function debounce(func, wait, immediate) {
+export function debounce(
+  func: Function, wait: number, immediate: boolean
+): Function {
   let timeout;
   return function() {
     const context = this;
@@ -144,30 +125,8 @@ function debounce(func, wait, immediate) {
   };
 }
 
-/**
- *
- * @param {String} url
- * @return {Boolean}
- */
-function isValidUrl(url) {
-  const expression = /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi;
+export function isValidUrl(url): boolean {
+  const expression =
+    /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi;
   return expression.test(url);
 }
-
-export default {
-  eq,
-  eq2,
-  peq2,
-  ok,
-  fail,
-  self,
-  not,
-  and,
-  invoke,
-  uniqueId,
-  rect2bnd,
-  invertObject,
-  namespaceToCamel,
-  debounce,
-  isValidUrl,
-};
