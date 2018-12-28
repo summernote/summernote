@@ -34,7 +34,7 @@ const dropdown = renderer.create('<div class="dropdown-menu" role="list">', func
 
     const dataValue = 'data-value="' + value + '"';
     const dataOption = (option !== undefined) ? ' data-option="' + option + '"' : '';
-    return '<a class="dropdown-item" href="#" ' + (dataValue + dataOption) + ' role="listitem" aria-label="' + item + '">' + content + '</a>';
+    return '<a class="dropdown-item" href="#" ' + (dataValue + dataOption) + ' role="listitem" aria-label="' + value + '">' + content + '</a>';
   }).join('') : options.items;
 
   $node.html(markup).attr({ 'aria-label': options.title });
