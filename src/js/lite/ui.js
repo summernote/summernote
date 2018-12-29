@@ -54,7 +54,7 @@ const dropdown = renderer.create('<div class="note-dropdown-menu" role="list">',
   const markup = $.isArray(options.items) ? options.items.map(function(item) {
     const value = (typeof item === 'string') ? item : (item.value || '');
     const content = options.template ? options.template(item) : item;
-    const $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + item + '"></a>');
+    const $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + value + '"></a>');
 
     $temp.html(content).data('item', item);
 

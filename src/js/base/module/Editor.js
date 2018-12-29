@@ -707,17 +707,23 @@ export default class Editor {
 
   onFormatBlock(tagName, $target) {
     // [workaround] for MSIE, IE need `<`
-    tagName = env.isMSIE ? '<' + tagName + '>' : tagName;
-    document.execCommand('FormatBlock', false, tagName);
+    document.execCommand('FormatBlock', false, env.isMSIE ? '<' + tagName + '>' : tagName);
 
     // support custom class
     if ($target && $target.length) {
-      const className = $target[0].className || '';
-      if (className) {
-        const currentRange = this.createRange();
+      // find the exact element has given tagName
+      if ($target[0].tagName.toUpperCase() !== tagName.toUpperCase()) {
+        $target = $target.find(tagName);
+      }
 
-        const $parent = $([currentRange.sc, currentRange.ec]).closest(tagName);
-        $parent.addClass(className);
+      if ($target && $target.length) {
+        const className = $target[0].className || '';
+        if (className) {
+          const currentRange = this.createRange();
+
+          const $parent = $([currentRange.sc, currentRange.ec]).closest(tagName);
+          $parent.addClass(className);
+        }
       }
     }
   }

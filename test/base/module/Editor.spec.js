@@ -334,6 +334,15 @@ describe('Editor', () => {
       // start <p>hello</p> => <blockquote class="blockquote">hello</blockquote>
       expectContents(context, '<blockquote class="blockquote">hello</blockquote>');
     });
+
+    it('should find exact target in formatBlock', () => {
+      var $target = $('<a class="dropdown-item" href="#" data-value="blockquote" role="listitem" aria-label="blockquote"><blockquote class="blockquote">Blockquote</blockquote></a>');
+      $editable.appendTo('body');
+      editor.formatBlock('blockquote', $target);
+
+      // start <p>hello</p> => <blockquote class="blockquote">hello</blockquote>
+      expectContents(context, '<blockquote class="blockquote">hello</blockquote>');
+    });
   });
 
   describe('createLink', () => {
