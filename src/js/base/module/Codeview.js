@@ -119,7 +119,16 @@ export default class CodeView {
         this.context.triggerEvent('blur.codeview', this.$codable.val(), event);
       });
       this.$codable.on('input', (event) => {
+        this.$editable.html(this.$codable.val());
+        this.context.triggerEvent('change', this.$editable.html(), this.$editable);
         this.context.triggerEvent('change.codeview', this.$codable.val(), this.$codable);
+      });
+      this.$codable.on('paste', (event) => {
+        setTimeout(() => {
+          this.$editable.html(this.$codable.val());
+          this.context.triggerEvent('change', this.$editable.html(), this.$editable);
+          this.context.triggerEvent('paste.codeview', this.$codable.val(), event);
+        });
       });
     }
   }

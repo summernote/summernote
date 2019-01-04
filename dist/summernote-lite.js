@@ -5,7 +5,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2018-12-22T04:42Z
+ * Date: 2019-01-04T11:19Z
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -296,7 +296,7 @@
       var markup = $.isArray(options.items) ? options.items.map(function (item) {
           var value = (typeof item === 'string') ? item : (item.value || '');
           var content = options.template ? options.template(item) : item;
-          var $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + item + '"></a>');
+          var $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + value + '"></a>');
           $temp.html(content).data('item', item);
           return $temp;
       }) : options.items;
@@ -5272,15 +5272,20 @@
       };
       Editor.prototype.onFormatBlock = function (tagName, $target) {
           // [workaround] for MSIE, IE need `<`
-          tagName = env.isMSIE ? '<' + tagName + '>' : tagName;
-          document.execCommand('FormatBlock', false, tagName);
+          document.execCommand('FormatBlock', false, env.isMSIE ? '<' + tagName + '>' : tagName);
           // support custom class
           if ($target && $target.length) {
-              var className = $target[0].className || '';
-              if (className) {
-                  var currentRange = this.createRange();
-                  var $parent = $$1([currentRange.sc, currentRange.ec]).closest(tagName);
-                  $parent.addClass(className);
+              // find the exact element has given tagName
+              if ($target[0].tagName.toUpperCase() !== tagName.toUpperCase()) {
+                  $target = $target.find(tagName);
+              }
+              if ($target && $target.length) {
+                  var className = $target[0].className || '';
+                  if (className) {
+                      var currentRange = this.createRange();
+                      var $parent = $$1([currentRange.sc, currentRange.ec]).closest(tagName);
+                      $parent.addClass(className);
+                  }
               }
           }
       };
@@ -5694,7 +5699,16 @@
                   _this.context.triggerEvent('blur.codeview', _this.$codable.val(), event);
               });
               this.$codable.on('input', function (event) {
+                  _this.$editable.html(_this.$codable.val());
+                  _this.context.triggerEvent('change', _this.$editable.html(), _this.$editable);
                   _this.context.triggerEvent('change.codeview', _this.$codable.val(), _this.$codable);
+              });
+              this.$codable.on('paste', function (event) {
+                  setTimeout(function () {
+                      _this.$editable.html(_this.$codable.val());
+                      _this.context.triggerEvent('change', _this.$editable.html(), _this.$editable);
+                      _this.context.triggerEvent('paste.codeview', _this.$codable.val(), event);
+                  });
               });
           }
       };
@@ -5822,7 +5836,7 @@
           this.lang = this.options.langInfo;
           this.events = {
               'summernote.mousedown': function (we, e) {
-                  if (_this.update(e.target)) {
+                  if (_this.update(e.target, e)) {
                       e.preventDefault();
                   }
               },
@@ -5888,13 +5902,13 @@
       Handle.prototype.destroy = function () {
           this.$handle.remove();
       };
-      Handle.prototype.update = function (target) {
+      Handle.prototype.update = function (target, event) {
           if (this.context.isDisabled()) {
               return false;
           }
           var isImage = dom.isImg(target);
           var $selection = this.$handle.find('.note-control-selection');
-          this.context.invoke('imagePopover.update', target);
+          this.context.invoke('imagePopover.update', target, event);
           if (isImage) {
               var $image = $$1(target);
               var position = $image.position();
@@ -7440,7 +7454,7 @@
       ImagePopover.prototype.destroy = function () {
           this.$popover.remove();
       };
-      ImagePopover.prototype.update = function (target) {
+      ImagePopover.prototype.update = function (target, event) {
           if (dom.isImg(target)) {
               var pos = dom.posFromPlaceholder(target);
               var posEditor = dom.posFromPlaceholder(this.editable);
@@ -8090,7 +8104,7 @@
           },
           buttons: {},
           lang: 'en-US',
-          followingToolbar: true,
+          followingToolbar: false,
           otherStaticBar: '',
           // toolbar
           toolbar: [
