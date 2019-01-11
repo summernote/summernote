@@ -111,12 +111,12 @@ export default class HintPopover {
         this.lastWordRange.so = this.lastWordRange.eo;
       // Else si > 0 and normal case -> adjust range "before" for correct position of insertion
       } else if (this.matchingWord !== null && this.matchingWord.length > 0 && !this.lastWordRange.isCollapsed()) {
-          let rangeCompute = this.lastWordRange.eo - this.lastWordRange.so - this.matchingWord.length;
-          if (rangeCompute > 0) {
-            this.lastWordRange.so += rangeCompute;
-          }
+        let rangeCompute = this.lastWordRange.eo - this.lastWordRange.so - this.matchingWord.length;
+        if (rangeCompute > 0) {
+          this.lastWordRange.so += rangeCompute;
+        }
       }
-      if (document.queryCommandSupported('insertText')) { 
+      if (document.queryCommandSupported('insertText')) {
         this.context.triggerEvent('before.command', this.$editable.html());
         this.lastWordRange.deleteContents().collapse().select();
         this.context.invoke('editor.focus');
@@ -127,14 +127,14 @@ export default class HintPopover {
         // -- Add To history
         this.history = new History(this.$editable);
         this.history.recordUndo();
-      }
+
       // Default : if insertText not work
-      else {
+      } else {
         // XXX: consider to move codes to editor for recording redo/undo.
         this.lastWordRange.insertNode(node);
         range.createFromNode(node).collapse().select();
       }
-      
+
       this.lastWordRange = null;
       this.matchingWord = null;
       this.hide();
