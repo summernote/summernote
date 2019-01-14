@@ -139,8 +139,8 @@ class WrappedRange {
   nativeRange() {
     if (env.isW3CRangeSupport) {
       const w3cRange = document.createRange();
-      w3cRange.setStart(this.sc, this.so);
-      w3cRange.setEnd(this.ec, this.eo);
+      w3cRange.setStart(this.sc, this.sc.data && this.so > this.sc.data.length ? 0 : this.so);
+      w3cRange.setEnd(this.ec, this.sc.data ? Math.min(this.eo, this.sc.data.length) : this.eo);
 
       return w3cRange;
     } else {
@@ -224,16 +224,16 @@ class WrappedRange {
      */
     const getVisiblePoint = function(point, isLeftToRight) {
       if ((dom.isVisiblePoint(point) && !dom.isEdgePoint(point)) ||
-          (dom.isVisiblePoint(point) && dom.isRightEdgePoint(point) && !isLeftToRight) ||
-          (dom.isVisiblePoint(point) && dom.isLeftEdgePoint(point) && isLeftToRight) ||
-          (dom.isVisiblePoint(point) && dom.isBlock(point.node) && dom.isEmpty(point.node))) {
+        (dom.isVisiblePoint(point) && dom.isRightEdgePoint(point) && !isLeftToRight) ||
+        (dom.isVisiblePoint(point) && dom.isLeftEdgePoint(point) && isLeftToRight) ||
+        (dom.isVisiblePoint(point) && dom.isBlock(point.node) && dom.isEmpty(point.node))) {
         return point;
       }
 
       // point on block's edge
       const block = dom.ancestor(point.node, dom.isBlock);
       if (((dom.isLeftEdgePointOf(point, block) || dom.isVoid(dom.prevPoint(point).node)) && !isLeftToRight) ||
-          ((dom.isRightEdgePointOf(point, block) || dom.isVoid(dom.nextPoint(point).node)) && isLeftToRight)) {
+        ((dom.isRightEdgePointOf(point, block) || dom.isVoid(dom.nextPoint(point).node)) && isLeftToRight)) {
         // returns point already on visible point
         if (dom.isVisiblePoint(point)) {
           return point;
@@ -697,8 +697,8 @@ export default {
 
       // same visible point case: range was collapsed.
       if (dom.isText(startPoint.node) && dom.isLeftEdgePoint(startPoint) &&
-          dom.isTextNode(endPoint.node) && dom.isRightEdgePoint(endPoint) &&
-          endPoint.node.nextSibling === startPoint.node) {
+        dom.isTextNode(endPoint.node) && dom.isRightEdgePoint(endPoint) &&
+        endPoint.node.nextSibling === startPoint.node) {
         startPoint = endPoint;
       }
 
