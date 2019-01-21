@@ -118,7 +118,7 @@ export default class HintPopover {
       }
       if (document.queryCommandSupported('insertText')) {
         this.context.triggerEvent('before.command', this.$editable.html());
-        this.lastWordRange.deleteContents().collapse().select();
+        this.lastWordRange.select();
         this.context.invoke('editor.focus');
         document.execCommand('insertText', false, node.textContent);
         // -- Normalize
