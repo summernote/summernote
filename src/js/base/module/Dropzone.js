@@ -50,6 +50,11 @@ export default class Dropzone {
         this.$dropzone.height(this.$editor.height());
         $dropzoneMessage.text(this.lang.image.dragImageHere);
       }
+	  
+	  if (collection.length > 1) {
+			collection = collection.not(collection);
+		}
+	  
       collection = collection.add(e.target);
     };
 
