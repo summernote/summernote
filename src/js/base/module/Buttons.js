@@ -469,8 +469,12 @@ export default class Buttons {
     this.context.memo('button.justifyFull', () => {
       return justifyFull.render();
     });
-    this.context.memo('button.outdent', func.invoke(outdent, 'render'));
-    this.context.memo('button.indent', func.invoke(indent, 'render'));
+    this.context.memo('button.outdent', () => {
+      return outdent.render();
+    });
+    this.context.memo('button.indent', () => {
+      return indent.render();
+    });
 
     this.context.memo('button.paragraph', () => {
       return this.ui.buttonGroup([
