@@ -457,10 +457,18 @@ export default class Buttons {
       click: this.context.createInvokeHandler('editor.indent'),
     });
 
-    this.context.memo('button.justifyLeft', func.invoke(justifyLeft, 'render'));
-    this.context.memo('button.justifyCenter', func.invoke(justifyCenter, 'render'));
-    this.context.memo('button.justifyRight', func.invoke(justifyRight, 'render'));
-    this.context.memo('button.justifyFull', func.invoke(justifyFull, 'render'));
+    this.context.memo('button.justifyLeft', () => {
+      return justifyLeft.render();
+    });
+    this.context.memo('button.justifyCenter', () => {
+      return justifyCenter.render();
+    });
+    this.context.memo('button.justifyRight', () => {
+      return justifyRight.render();
+    });
+    this.context.memo('button.justifyFull', () => {
+      return justifyFull.render();
+    });
     this.context.memo('button.outdent', func.invoke(outdent, 'render'));
     this.context.memo('button.indent', func.invoke(indent, 'render'));
 
