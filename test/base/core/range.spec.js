@@ -178,7 +178,7 @@ describe('base:core.range', () => {
       expect(rng.eo).to.equal(0);
     });
 
-    it('should return <p>text</p><p>|text</b></p> for <p>text</p><p>|text</p>', () => {
+    it('should return <p>text</p><p>|text</p> for <p>text</p><p>|text</p>', () => {
       var $cont = $('<div><p>text</p><p>text</p></div>');
       var $p = $cont.find('p');
 
@@ -189,7 +189,7 @@ describe('base:core.range', () => {
       expect(rng.eo).to.equal(0);
     });
 
-    it('should return <p>|text</p><p>text|</b></p> for |<p>text</p><p>text</p>|', () => {
+    it('should return <p>|text</p><p>text|</p> for |<p>text</p><p>text</p>|', () => {
       var $cont = $('<div class="note-editable"><p>text</p><p>text</p></div>');
       var $p = $cont.find('p');
 
@@ -212,6 +212,17 @@ describe('base:core.range', () => {
       expect(rng.so).to.equal(0);
       expect(rng.ec).to.deep.equal($b[0].firstChild);
       expect(rng.eo).to.equal(0);
+    });
+
+    it('should return <p><img>|text></p> for <p><img>|text></p>', () => {
+      var $cont = $('<div><p><img>bold</p></div>');
+      var $img = $cont.find('img');
+      var text = $img[0].nextSibling;
+
+      var rng = range.create(text, 0, text, 0).normalize();
+      expect(rng.sc).to.equal(text);
+      expect(rng.so).to.equal(0);
+      expect(rng.isCollapsed()).to.true;
     });
   });
 
