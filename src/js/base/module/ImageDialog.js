@@ -105,18 +105,19 @@ export default class ImageDialog {
 
         $imageBtn.click((event) => {
           event.preventDefault();
-
           deferred.resolve($imageUrl.val());
         });
+        
+         const handleImageUrlUpdate = () => {
+          const url = $imageUrl.val();
+          this.ui.toggleBtn($imageBtn, url);
+        }
 
         $imageUrl.on('keyup', handleImageUrlUpdate).on('paste', () => {
           setTimeout(handleImageUrlUpdate, 0);
         }).val('');
         
-        const handleImageUrlUpdate = () => {
-          const url = $imageUrl.val();
-          this.ui.toggleBtn($imageBtn, url);
-        }
+       
         
         if (!env.isSupportTouch) {
           $imageUrl.trigger('focus');
