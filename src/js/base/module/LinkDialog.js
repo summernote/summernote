@@ -92,30 +92,16 @@ export default class LinkDialog {
           linkInfo.url = linkInfo.text;
         }
 
-        $linkText.val(linkInfo.text);
-
-        const handleLinkTextUpdate = () => {
-          this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
-          // if linktext was modified by keyup,
-          // stop cloning text from linkUrl
+        $linkText.on('input paste propertychange', () => {
           linkInfo.text = $linkText.val();
-        };
-
-        $linkText.on('input', handleLinkTextUpdate).on('paste', () => {
-          setTimeout(handleLinkTextUpdate, 0);
-        });
-
-        const handleLinkUrlUpdate = () => {
           this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
-          // display same link on `Text to display` input
-          // when create a new link
+        }).val(linkInfo.text);
+
+        $linkUrl.on('input paste propertychange', () => {
           if (!linkInfo.text) {
             $linkText.val($linkUrl.val());
           }
-        };
-
-        $linkUrl.on('input', handleLinkUrlUpdate).on('paste', () => {
-          setTimeout(handleLinkUrlUpdate, 0);
+          this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
         }).val(linkInfo.url);
 
         if (!env.isSupportTouch) {
