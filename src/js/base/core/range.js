@@ -231,13 +231,15 @@ class WrappedRange {
       //  - case 04. if the point is on the right edge and prefer to choose right node but the node is void
       //  - case 05. if the point is on the left edge and prefer to choose left node but the node is void
       //  - case 06. if the point is on the block node and there is no children
-      if ((dom.isVisiblePoint(point) && !dom.isEdgePoint(point)) ||
-          (dom.isVisiblePoint(point) && dom.isRightEdgePoint(point) && !isLeftToRight) ||
-          (dom.isVisiblePoint(point) && dom.isLeftEdgePoint(point) && isLeftToRight) ||
-          (dom.isVisiblePoint(point) && dom.isRightEdgePoint(point) && isLeftToRight && dom.isVoid(point.node.nextSibling)) ||
-          (dom.isVisiblePoint(point) && dom.isLeftEdgePoint(point) && !isLeftToRight && dom.isVoid(point.node.previousSibling)) ||
-          (dom.isVisiblePoint(point) && dom.isBlock(point.node) && dom.isEmpty(point.node))) {
-        return point;
+      if (dom.isVisiblePoint(point)) {
+        if (!dom.isEdgePoint(point) ||
+            (dom.isRightEdgePoint(point) && !isLeftToRight) ||
+            (dom.isLeftEdgePoint(point) && isLeftToRight) ||
+            (dom.isRightEdgePoint(point) && isLeftToRight && dom.isVoid(point.node.nextSibling)) ||
+            (dom.isLeftEdgePoint(point) && !isLeftToRight && dom.isVoid(point.node.previousSibling)) ||
+            (dom.isBlock(point.node) && dom.isEmpty(point.node))) {
+          return point;
+        }
       }
 
       // point on block's edge
