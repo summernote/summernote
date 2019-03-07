@@ -210,8 +210,8 @@ export default class VideoDialog {
       });
 
       this.ui.onDialogHidden(this.$dialog, () => {
-        $videoUrl.off('input propertychange keypress');
-        $videoBtn.off('click');
+        $videoUrl.off();
+        $videoBtn.off();
 
         if (deferred.state() === 'pending') {
           deferred.reject();

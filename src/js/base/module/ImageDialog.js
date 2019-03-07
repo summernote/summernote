@@ -120,9 +120,9 @@ export default class ImageDialog {
       });
 
       this.ui.onDialogHidden(this.$dialog, () => {
-        $imageInput.off('change');
-        $imageUrl.off('input propertychange keypress');
-        $imageBtn.off('click');
+        $imageInput.off();
+        $imageUrl.off();
+        $imageBtn.off();
 
         if (deferred.state() === 'pending') {
           deferred.reject();
