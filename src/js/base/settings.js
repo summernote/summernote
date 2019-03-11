@@ -210,7 +210,8 @@ $.summernote = $.extend($.summernote, {
     codeviewIframeFilter: true,
     codeviewIframeWhitelistSrc: [],
     codeviewIframeWhitelistSrcBase: [
-      'www.youtube(?:-nocookie)?.com',
+      'www.youtube.com',
+      'www.youtube-nocookie.com',
       'www.facebook.com',
       'vine.co',
       'instagram.com',

@@ -69,7 +69,7 @@ export default class CodeView {
           }
           for (const src of whitelist) {
             // pass if src is trusted
-            if ((new RegExp('src="(https?:)?\/\/' + src + '\/(.+)"')).test(tag)) {
+            if ((new RegExp('src="(https?:)?\/\/' + src.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '\/(.+)"')).test(tag)) {
               return tag;
             }
           }
