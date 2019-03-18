@@ -68,7 +68,9 @@ export default class Editor {
     }
 
     this.fontName = this.wrapCommand((value) => {
-      return this.fontStyling('font-family', "\'" + value + "\'");
+      const genericFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
+      const name = ($.inArray(value.toLowerCase(), genericFamilies) === -1) ? `'${value}'` : value;
+      return this.fontStyling('font-family', name);
     });
 
     this.fontSize = this.wrapCommand((value) => {
