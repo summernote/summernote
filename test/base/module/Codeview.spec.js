@@ -35,6 +35,9 @@ describe('Codeview', () => {
     expect(codeview.purify('<iframe frameborder="0" src="//www.youtube.com/embed/CXgsA98krxA" width="640" height="360" class="note-video-clip"></iframe>')).to.equalsIgnoreCase(
       '<iframe frameborder="0" src="//www.youtube.com/embed/CXgsA98krxA" width="640" height="360" class="note-video-clip"></iframe>'
     );
+    expect(codeview.purify('<iframe frameborder="0" src="//wwwXyoutube.com/embed/CXgsA98krxA" width="640" height="360" class="note-video-clip">')).to.equalsIgnoreCase(
+      ''
+    );
     expect(codeview.purify('<iframe frameborder="0" src="//www.fake-youtube.com/embed/CXgsA98krxA" width="640" height="360" class="note-video-clip">')).to.equalsIgnoreCase(
       ''
     );
