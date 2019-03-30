@@ -103,27 +103,26 @@ export default class ImageDialog {
           deferred.resolve(event.target.files || event.target.value);
         }).val(''));
 
-        $imageBtn.click((event) => {
-          event.preventDefault();
-
-          deferred.resolve($imageUrl.val());
-        });
-
-        $imageUrl.on('keyup paste', () => {
-          const url = $imageUrl.val();
-          this.ui.toggleBtn($imageBtn, url);
+        $imageUrl.on('input paste propertychange', () => {
+          this.ui.toggleBtn($imageBtn, $imageUrl.val());
         }).val('');
 
         if (!env.isSupportTouch) {
           $imageUrl.trigger('focus');
         }
+
+        $imageBtn.click((event) => {
+          event.preventDefault();
+          deferred.resolve($imageUrl.val());
+        });
+
         this.bindEnterKey($imageUrl, $imageBtn);
       });
 
       this.ui.onDialogHidden(this.$dialog, () => {
-        $imageInput.off('change');
-        $imageUrl.off('keyup paste keypress');
-        $imageBtn.off('click');
+        $imageInput.off();
+        $imageUrl.off();
+        $imageBtn.off();
 
         if (deferred.state() === 'pending') {
           deferred.reject();

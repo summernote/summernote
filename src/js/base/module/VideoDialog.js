@@ -193,7 +193,7 @@ export default class VideoDialog {
       this.ui.onDialogShown(this.$dialog, () => {
         this.context.triggerEvent('dialog.shown');
 
-        $videoUrl.val(text).on('input', () => {
+        $videoUrl.on('input paste propertychange', () => {
           this.ui.toggleBtn($videoBtn, $videoUrl.val());
         });
 
@@ -203,7 +203,6 @@ export default class VideoDialog {
 
         $videoBtn.click((event) => {
           event.preventDefault();
-
           deferred.resolve($videoUrl.val());
         });
 
@@ -211,8 +210,8 @@ export default class VideoDialog {
       });
 
       this.ui.onDialogHidden(this.$dialog, () => {
-        $videoUrl.off('input');
-        $videoBtn.off('click');
+        $videoUrl.off();
+        $videoBtn.off();
 
         if (deferred.state() === 'pending') {
           deferred.reject();

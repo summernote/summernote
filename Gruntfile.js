@@ -28,6 +28,10 @@ module.exports = function(grunt) {
       platform: 'windows 7'
     },
     */
+    ChromeHeadlessNoSandbox: {
+      base: 'ChromeHeadless',
+      flags: [ '--no-sandbox' ],
+    },
     'SL_IE10': {
       base: 'SauceLabs',
       browserName: 'internet explorer',
@@ -199,17 +203,17 @@ module.exports = function(grunt) {
         singleRun: false,
       },
       all: {
-        // Chrome, ChromeCanary, Firefox, Opera, Safari, PhantomJS, IE
+        // Chrome, ChromeCanary, Firefox, Opera, Safari, IE
         singleRun: true,
-        browsers: ['PhantomJS'],
+        browsers: ['ChromeHeadlessNoSandbox'],
       },
       dist: {
         singleRun: true,
-        browsers: ['PhantomJS'],
+        browsers: ['ChromeHeadlessNoSandbox'],
       },
       travis: {
         singleRun: true,
-        browsers: ['PhantomJS'],
+        browsers: ['ChromeHeadlessNoSandbox'],
         reporters: ['dots', 'coverage'],
       },
       saucelabs: {
