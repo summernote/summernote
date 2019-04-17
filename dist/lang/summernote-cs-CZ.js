@@ -48,13 +48,13 @@
       },
       table: {
         table: 'Tabulka',
-        addRowAbove: 'Add row above',
-        addRowBelow: 'Add row below',
-        addColLeft: 'Add column left',
-        addColRight: 'Add column right',
-        delRow: 'Delete row',
-        delCol: 'Delete column',
-        delTable: 'Delete table'
+        addRowAbove: 'Přidat řádek nad',
+        addRowBelow: 'Přidat řádek níže',
+        addColLeft: 'Přidat sloupec vlevo',
+        addColRight: 'Přidat sloupec vpravo',
+        delRow: 'Smazat řádek',
+        delCol: 'Smazat sloupec',
+        delTable: 'Smazat tabulku'
       },
       hr: {
         insert: 'Vložit vodorovnou čáru'
