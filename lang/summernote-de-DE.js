@@ -88,8 +88,8 @@
       },
       paragraph: {
         paragraph: 'Absatz',
-        outdent: 'Einzug vergrößern',
-        indent: 'Einzug verkleinern',
+        outdent: 'Einzug verkleinern',
+        indent: 'Einzug vergrößern',
         left: 'Links ausrichten',
         center: 'Zentriert ausrichten',
         right: 'Rechts ausrichten',
