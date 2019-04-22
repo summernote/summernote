@@ -49,7 +49,7 @@ const button = renderer.create('<button type="button" class="note-btn" role="but
 });
 
 const dropdown = renderer.create('<div class="note-dropdown-menu" role="list">', function($node, options) {
-  const markup = $.isArray(options.items) ? options.items.map(function(item) {
+  const markup = Array.isArray(options.items) ? options.items.map(function(item) {
     const value = (typeof item === 'string') ? item : (item.value || '');
     const content = options.template ? options.template(item) : item;
     const $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + item + '"></a>');
@@ -76,7 +76,7 @@ const dropdown = renderer.create('<div class="note-dropdown-menu" role="list">',
 });
 
 const dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check" role="list">', function($node, options) {
-  const markup = $.isArray(options.items) ? options.items.map(function(item) {
+  const markup = Array.isArray(options.items) ? options.items.map(function(item) {
     const value = (typeof item === 'string') ? item : (item.value || '');
     const content = options.template ? options.template(item) : item;
 

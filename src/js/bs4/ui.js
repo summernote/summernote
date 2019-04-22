@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import renderer from '../base/renderer';
 
 const editor = renderer.create('<div class="note-editor note-frame card"/>');
@@ -27,7 +26,7 @@ const airEditable = renderer.create([
 const buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
 
 const dropdown = renderer.create('<div class="dropdown-menu" role="list">', function($node, options) {
-  const markup = $.isArray(options.items) ? options.items.map(function(item) {
+  const markup = Array.isArray(options.items) ? options.items.map(function(item) {
     const value = (typeof item === 'string') ? item : (item.value || '');
     const content = options.template ? options.template(item) : item;
     const option = (typeof item === 'object') ? item.option : undefined;
@@ -45,7 +44,7 @@ const dropdownButtonContents = function(contents) {
 };
 
 const dropdownCheck = renderer.create('<div class="dropdown-menu note-check" role="list">', function($node, options) {
-  const markup = $.isArray(options.items) ? options.items.map(function(item) {
+  const markup = Array.isArray(options.items) ? options.items.map(function(item) {
     const value = (typeof item === 'string') ? item : (item.value || '');
     const content = options.template ? options.template(item) : item;
     return '<a class="dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + item + '">' + icon(options.checkClassName) + ' ' + content + '</a>';

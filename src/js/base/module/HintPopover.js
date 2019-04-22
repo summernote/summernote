@@ -16,7 +16,7 @@ export default class HintPopover {
     this.options = context.options;
     this.hint = this.options.hint || [];
     this.direction = this.options.hintDirection || 'bottom';
-    this.hints = $.isArray(this.hint) ? this.hint : [this.hint];
+    this.hints = Array.isArray(this.hint) ? this.hint : [this.hint];
 
     this.events = {
       'summernote.keyup': (we, e) => {
