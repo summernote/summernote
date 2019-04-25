@@ -91,17 +91,18 @@ export default class Dropzone {
         this.$editable.focus();
         this.context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
       } else {
-        $.each(dataTransfer.types, (idx, type) => {
-          const content = dataTransfer.getData(type);
+        for (var i = 0; i < dataTransfer.types.length; i++) {
+          const content = dataTransfer.getData(dataTransfer.types[i]);
 
-          if (type.toLowerCase().indexOf('text') > -1) {
+          if (dataTransfer.types[i].toLowerCase().indexOf('text') > -1) {
             this.context.invoke('editor.pasteHTML', content);
           } else {
-            $(content).each((idx, item) => {
-              this.context.invoke('editor.insertNode', item);
-            });
+            let items = $(content);
+            for (let i = 0; i < items.length; i++) {
+              this.context.invoke('editor.insertNode', items[i]);
+            }
           }
-        });
+        }
       }
     }).on('dragover', false); // prevent default dragover event
   }

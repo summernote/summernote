@@ -269,11 +269,12 @@ const palette = renderer.create('<div class="note-color-palette"/>', function($n
   }
   $node.html(contents.join(''));
 
-  $node.find('.note-color-btn').each(function() {
+  let items = $node.find('.note-color-btn');
+  for (let i = items.length - 1; i >= 0; i--) {
     $(this).data('_lite_tooltip', new TooltipUI($(this), {
       container: options.container
     }));
-  });
+  }
 });
 
 const colorDropdownButton = function(opt, type) {
@@ -340,13 +341,14 @@ const colorDropdownButton = function(opt, type) {
           '</div>'
         ].join(''),
         callback: function($dropdown) {
-          $dropdown.find('.note-holder').each(function() {
+          let items = $dropdown.find('.note-holder');
+          for (let i = 0; i < items.length; i++) {
             const $holder = $(this);
             $holder.append(palette({
               colors: opt.colors,
               eventName: $holder.data('event')
             }).render());
-          });
+          }
 
           if (type === 'fore') {
             $dropdown.find('.btn-background-color').hide();

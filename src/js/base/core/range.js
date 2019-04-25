@@ -410,19 +410,19 @@ class WrappedRange {
     });
 
     const emptyParents = [];
-    $.each(nodes, function(idx, node) {
+    for (let i = nodes.length - 1; i >= 0; i--) {
       // find empty parents
-      const parent = node.parentNode;
+      const parent = nodes[i].parentNode;
       if (point.node !== parent && dom.nodeLength(parent) === 1) {
         emptyParents.push(parent);
       }
-      dom.remove(node, false);
-    });
+      dom.remove(nodes[i], false);
+    }
 
     // remove empty parents
-    $.each(emptyParents, function(idx, node) {
-      dom.remove(node, false);
-    });
+    for (let i = emptyParents.length - 1; i >= 0; i--) {
+      dom.remove(emptyParents[i], false);
+    }
 
     return new WrappedRange(
       point.node,

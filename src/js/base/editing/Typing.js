@@ -65,9 +65,9 @@ export default class Typing {
         let emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
         emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
 
-        $.each(emptyAnchors, (idx, anchor) => {
-          dom.remove(anchor);
-        });
+        for (let i = emptyAnchors.length - 1; i >= 0; i--) {
+          dom.remove(emptyAnchors[i]);
+        }
 
         // replace empty heading, pre or custom-made styleTag with P tag
         if ((dom.isHeading(nextPara) || dom.isPre(nextPara) || dom.isCustomStyleTag(nextPara)) && dom.isEmpty(nextPara)) {

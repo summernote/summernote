@@ -22,14 +22,15 @@ $.fn.extend({
     options.icons = $.extend(true, {}, $.summernote.options.icons, options.icons);
     options.tooltip = options.tooltip === 'auto' ? !env.isSupportTouch : options.tooltip;
 
-    this.each((idx, note) => {
-      const $note = $(note);
+    let items = this;
+    for (let i = items.length - 1; i >= 0; i--) {
+      const $note = $(items[i]);
       if (!$note.data('summernote')) {
         const context = new Context($note, options);
         $note.data('summernote', context);
         $note.data('summernote').triggerEvent('init', context.layoutInfo);
       }
-    });
+    }
 
     const $note = this.first();
     if ($note.length) {

@@ -407,9 +407,9 @@ function insertAfter(node, preceding) {
  * @param {Collection} aChild
  */
 function appendChildNodes(node, aChild) {
-  $.each(aChild, function(idx, child) {
-    node.appendChild(child);
-  });
+  for (let i = 0; i < aChild.length; i++) {
+    node.appendChild(aChild[i]);
+  }
   return node;
 }
 
