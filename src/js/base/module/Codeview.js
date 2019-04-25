@@ -3,13 +3,7 @@ import dom from '../core/dom';
 
 let CodeMirror;
 if (env.hasCodeMirror) {
-  if (env.isSupportAmd) {
-    require(['codemirror'], function(cm) {
-      CodeMirror = cm;
-    });
-  } else {
-    CodeMirror = window.CodeMirror;
-  }
+  CodeMirror = window.CodeMirror;
 }
 
 /**
