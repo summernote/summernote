@@ -66,7 +66,7 @@ export default class Buttons {
     const genericFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
     name = name.toLowerCase();
 
-    return ((name !== '') && this.isFontInstalled(name) && ($.inArray(name, genericFamilies) === -1));
+    return (name !== '' && this.isFontInstalled(name) && genericFamilies.indexOf(name) === -1);
   }
 
   colorPalette(className, tooltip, backColor, foreColor) {
@@ -340,7 +340,7 @@ export default class Buttons {
       $.each(styleInfo['font-family'].split(','), (idx, fontname) => {
         fontname = fontname.trim().replace(/['"]+/g, '');
         if (this.isFontDeservedToAdd(fontname)) {
-          if ($.inArray(fontname, this.options.fontNames) === -1) {
+          if (this.options.fontNames.indexOf(fontname) === -1) {
             this.options.fontNames.push(fontname);
           }
         }

@@ -137,7 +137,7 @@ export default class Style {
       styleInfo['list-style'] = 'none';
     } else {
       const orderedTypes = ['circle', 'disc', 'disc-leading-zero', 'square'];
-      const isUnordered = $.inArray(styleInfo['list-style-type'], orderedTypes) > -1;
+      const isUnordered = orderedTypes.indexOf(styleInfo['list-style-type']) > -1;
       styleInfo['list-style'] = isUnordered ? 'unordered' : 'ordered';
     }
 
