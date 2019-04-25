@@ -21,9 +21,9 @@ export default class Style {
   jQueryCSS($obj, propertyNames) {
     if (env.jqueryVersion < 1.9) {
       const result = {};
-      $.each(propertyNames, (idx, propertyName) => {
-        result[propertyName] = $obj.css(propertyName);
-      });
+      for (let i = propertyNames.length - 1; i >= 0; i--) {
+        result[propertyNames[i]] = $obj.css(propertyNames[i]);
+      }
       return result;
     }
     return $obj.css(propertyNames);
@@ -49,11 +49,12 @@ export default class Style {
    * @param {Object} styleInfo
    */
   stylePara(rng, styleInfo) {
-    $.each(rng.nodes(dom.isPara, {
+    let items = rng.nodes(dom.isPara, {
       includeAncestor: true
-    }), (idx, para) => {
-      $(para).css(styleInfo);
     });
+    for (let i = items.length - 1; i >= 0; i--) {
+      $(items[i]).css(styleInfo);
+    }
   }
 
   /**
@@ -97,10 +98,10 @@ export default class Style {
         const siblings = dom.withClosestSiblings(node, pred);
         const head = lists.head(siblings);
         const tails = lists.tail(siblings);
-        $.each(tails, (idx, elem) => {
-          dom.appendChildNodes(head, elem.childNodes);
-          dom.remove(elem);
-        });
+        for (let i = 0; i < tails.length; i++) {
+          dom.appendChildNodes(head, tails[i].childNodes);
+          dom.remove(tails[i]);
+        }
         return lists.head(siblings);
       });
     } else {

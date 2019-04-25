@@ -150,8 +150,9 @@ export default class Buttons {
             '</div>'
           ].join('') : ''),
           callback: ($dropdown) => {
-            $dropdown.find('.note-holder').each((idx, item) => {
-              const $holder = $(item);
+            let items = $dropdown.find('.note-holder');
+            for (let i = 0; i < items.length; i++) {
+              const $holder = $(items[i]);
               $holder.append(this.ui.palette({
                 colors: this.options.colors,
                 colorsName: this.options.colorsName,
@@ -159,13 +160,14 @@ export default class Buttons {
                 container: this.options.container,
                 tooltip: this.options.tooltip
               }).render());
-            });
+            }
             /* TODO: do we have to record recent custom colors within cookies? */
             var customColors = [
               ['#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF']
             ];
-            $dropdown.find('.note-holder-custom').each((idx, item) => {
-              const $holder = $(item);
+            items = $dropdown.find('.note-holder-custom');
+            for (let i = 0; i < items.length; i++) {
+              const $holder = $(items[i]);
               $holder.append(this.ui.palette({
                 colors: customColors,
                 colorsName: customColors,
@@ -173,9 +175,10 @@ export default class Buttons {
                 container: this.options.container,
                 tooltip: this.options.tooltip
               }).render());
-            });
-            $dropdown.find('input[type=color]').each((idx, item) => {
-              $(item).change(function() {
+            }
+            items = $dropdown.find('input[type=color]');
+            for (let i = 0; i < items.length; i++) {
+              $(items[i]).change(function() {
                 const $chip = $dropdown.find('#' + $(this).data('event')).find('.note-color-btn').first();
                 const color = this.value.toUpperCase();
                 $chip.css('background-color', color)
@@ -184,7 +187,7 @@ export default class Buttons {
                   .attr('data-original-title', color);
                 $chip.click();
               });
-            });
+            }
           },
           click: (event) => {
             event.stopPropagation();
@@ -337,14 +340,15 @@ export default class Buttons {
       const styleInfo = this.context.invoke('editor.currentStyle');
 
       // Add 'default' fonts into the fontnames array if not exist
-      $.each(styleInfo['font-family'].split(','), (idx, fontname) => {
-        fontname = fontname.trim().replace(/['"]+/g, '');
+      let items = styleInfo['font-family'].split(',');
+      for (let i = 0; i < items.length; i++) {
+        let fontname = items[i].trim().replace(/['"]+/g, '');
         if (this.isFontDeservedToAdd(fontname)) {
           if ($.inArray(fontname, this.options.fontNames) === -1) {
             this.options.fontNames.push(fontname);
           }
         }
-      });
+      }
 
       return this.ui.buttonGroup([
         this.button({
@@ -810,6 +814,8 @@ export default class Buttons {
       }
     });
 
+    let items;
+
     if (styleInfo['font-family']) {
       const fontNames = styleInfo['font-family'].split(',').map((name) => {
         return name.replace(/[\'\"]/g, '')
@@ -818,40 +824,46 @@ export default class Buttons {
       });
       const fontName = lists.find(fontNames, this.isFontInstalled.bind(this));
 
-      $cont.find('.dropdown-fontname a').each((idx, item) => {
-        const $item = $(item);
+      items = $cont.find('.dropdown-fontname a');
+      for (let i = 0; i < items.length; i++) {
+        const $item = $(items[i]);
         // always compare string to avoid creating another func.
         const isChecked = ($item.data('value') + '') === (fontName + '');
         $item.toggleClass('checked', isChecked);
-      });
+      }
       $cont.find('.note-current-fontname').text(fontName).css('font-family', fontName);
     }
 
     if (styleInfo['font-size']) {
       const fontSize = styleInfo['font-size'];
-      $cont.find('.dropdown-fontsize a').each((idx, item) => {
-        const $item = $(item);
+      items = $cont.find('.dropdown-fontsize a');
+      for (let i = 0; i < items.length; i++) {
+        const $item = $(items[i]);
         // always compare with string to avoid creating another func.
         const isChecked = ($item.data('value') + '') === (fontSize + '');
         $item.toggleClass('checked', isChecked);
-      });
+      }
       $cont.find('.note-current-fontsize').text(fontSize);
     }
 
     if (styleInfo['line-height']) {
       const lineHeight = styleInfo['line-height'];
-      $cont.find('.dropdown-line-height li a').each((idx, item) => {
+      items = $cont.find('.dropdown-line-height li a');
+      for (let i = 0; i < items.length; i++) {
         // always compare with string to avoid creating another func.
-        const isChecked = ($(item).data('value') + '') === (lineHeight + '');
+        const isChecked = ($(items[i]).data('value') + '') === (lineHeight + '');
         this.className = isChecked ? 'checked' : '';
-      });
+      }
     }
   }
 
   updateBtnStates($container, infos) {
-    $.each(infos, (selector, pred) => {
-      this.ui.toggleBtnActive($container.find(selector), pred());
-    });
+    let items = Object.keys(infos);
+    for (let i = items.length - 1; i >= 0; i--) {
+      let key = items[i];
+      let value = infos[key];
+      this.ui.toggleBtnActive($container.find(key), value());
+    }
   }
 
   tableMoveHandler(event) {

@@ -20,9 +20,12 @@ class Renderer {
     }
 
     if (this.options && this.options.data) {
-      $.each(this.options.data, (k, v) => {
-        $node.attr('data-' + k, v);
-      });
+      let items = Object.keys(this.options.data);
+      for (let i = items.length - 1; i >= 0; i--) {
+        let key = items[i];
+        let value = this.options.data[key];
+        $node.attr('data-' + key, value);
+      }
     }
 
     if (this.options && this.options.click) {

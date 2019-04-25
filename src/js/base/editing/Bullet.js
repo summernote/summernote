@@ -28,18 +28,18 @@ export default class Bullet {
     const paras = rng.nodes(dom.isPara, { includeAncestor: true });
     const clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
 
-    $.each(clustereds, (idx, paras) => {
-      const head = lists.head(paras);
+    for (let i = 0; i < clustereds.length; i++) {
+      const head = lists.head(clustereds[i]);
       if (dom.isLi(head)) {
-        this.wrapList(paras, head.parentNode.nodeName);
+        this.wrapList(clustereds[i], head.parentNode.nodeName);
       } else {
-        $.each(paras, (idx, para) => {
-          $(para).css('marginLeft', (idx, val) => {
+        for (var j = 0; j < clustereds[i].length; j++) {
+          $(clustereds[i][j]).css('marginLeft', (j, val) => {
             return (parseInt(val, 10) || 0) + 25;
           });
-        });
+        }
       }
-    });
+    }
 
     rng.select();
   }
@@ -53,19 +53,19 @@ export default class Bullet {
     const paras = rng.nodes(dom.isPara, { includeAncestor: true });
     const clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
 
-    $.each(clustereds, (idx, paras) => {
-      const head = lists.head(paras);
+    for (let i = 0; i < clustereds.length; i++) {
+      const head = lists.head(clustereds[i]);
       if (dom.isLi(head)) {
-        this.releaseList([paras]);
+        this.releaseList([clustereds[i]]);
       } else {
-        $.each(paras, (idx, para) => {
-          $(para).css('marginLeft', (idx, val) => {
+        for (var j = 0; j < clustereds[i].length; j++) {
+          $(clustereds[i][j]).css('marginLeft', (j, val) => {
             val = (parseInt(val, 10) || 0);
             return val > 25 ? val - 25 : '';
           });
-        });
+        }
       }
-    });
+    }
 
     rng.select();
   }
@@ -85,9 +85,9 @@ export default class Bullet {
     // paragraph to list
     if (lists.find(paras, dom.isPurePara)) {
       let wrappedParas = [];
-      $.each(clustereds, (idx, paras) => {
-        wrappedParas = wrappedParas.concat(this.wrapList(paras, listName));
-      });
+      for (let i = 0; i < clustereds.length; i++) {
+        wrappedParas = wrappedParas.concat(this.wrapList(clustereds[i], listName));
+      }
       paras = wrappedParas;
     // list to paragraph or change list style
     } else {
@@ -98,9 +98,9 @@ export default class Bullet {
       });
 
       if (diffLists.length) {
-        $.each(diffLists, (idx, listNode) => {
-          dom.replace(listNode, listName);
-        });
+        for (let i = diffLists.length - 1; i >= 0; i--) {
+          dom.replace(diffLists[i], listName);
+        }
       } else {
         paras = this.releaseList(clustereds, true);
       }
@@ -149,9 +149,9 @@ export default class Bullet {
   releaseList(clustereds, isEscapseToBody) {
     let releasedParas = [];
 
-    $.each(clustereds, (idx, paras) => {
-      const head = lists.head(paras);
-      const last = lists.last(paras);
+    for (let i = 0; i < clustereds.length; i++) {
+      const head = lists.head(clustereds[i]);
+      const last = lists.last(clustereds[i]);
 
       const headList = isEscapseToBody ? dom.lastAncestor(head, dom.isList) : head.parentNode;
       const lastList = headList.childNodes.length > 1 ? dom.splitTree(headList, {
@@ -168,7 +168,7 @@ export default class Bullet {
         isSkipPaddingBlankHTML: true
       });
 
-      paras = isEscapseToBody ? dom.listDescendant(middleList, dom.isLi)
+      let paras = isEscapseToBody ? dom.listDescendant(middleList, dom.isLi)
         : lists.from(middleList.childNodes).filter(dom.isLi);
 
       // LI to P
@@ -178,23 +178,24 @@ export default class Bullet {
         });
       }
 
-      $.each(lists.from(paras).reverse(), (idx, para) => {
-        dom.insertAfter(para, headList);
-      });
+      let items = lists.from(paras);
+      for (let j = items.length - 1; j >= 0; j--) {
+        dom.insertAfter(items[j], headList);
+      }
 
       // remove empty lists
       const rootLists = lists.compact([headList, middleList, lastList]);
-      $.each(rootLists, (idx, rootList) => {
-        const listNodes = [rootList].concat(dom.listDescendant(rootList, dom.isList));
-        $.each(listNodes.reverse(), (idx, listNode) => {
-          if (!dom.nodeLength(listNode)) {
-            dom.remove(listNode, true);
+      for (let j = 0; j < rootLists.length; j++) {
+        const listNodes = [rootLists[j]].concat(dom.listDescendant(rootLists[j], dom.isList));
+        for (let k = listNodes.length - 1; k >= 0; k--) {
+          if (!dom.nodeLength(listNodes[k])) {
+            dom.remove(listNodes[k], true);
           }
-        });
-      });
+        }
+      }
 
       releasedParas = releasedParas.concat(paras);
-    });
+    };
 
     return releasedParas;
   }

@@ -217,14 +217,14 @@ export default class Editor {
         });
       }
 
-      $.each(anchors, (idx, anchor) => {
-        $(anchor).attr('href', linkUrl);
+      for (let i = anchors.length - 1; i >= 0; i--) {
+        $(anchors[i]).attr('href', linkUrl);
         if (isNewWindow) {
-          $(anchor).attr('target', '_blank');
+          $(anchors[i]).attr('target', '_blank');
         } else {
-          $(anchor).removeAttr('target');
+          $(anchors[i]).removeAttr('target');
         }
-      });
+      }
 
       const startRange = range.createFromNodeBefore(lists.head(anchors));
       const startPoint = startRange.getStartPoint();
@@ -621,18 +621,18 @@ export default class Editor {
    * @param {File[]} files
    */
   insertImagesAsDataURL(files) {
-    $.each(files, (idx, file) => {
-      const filename = file.name;
-      if (this.options.maximumImageFileSize && this.options.maximumImageFileSize < file.size) {
+    for (let i = 0; i < files.length; i++) {
+      const filename = files[i].name;
+      if (this.options.maximumImageFileSize && this.options.maximumImageFileSize < files[i].size) {
         this.context.triggerEvent('image.upload.error', this.lang.image.maximumFileSizeError);
       } else {
-        readFileAsDataURL(file).then((dataURL) => {
+        readFileAsDataURL(files[i]).then((dataURL) => {
           return this.insertImage(dataURL, filename);
         }).fail(() => {
           this.context.triggerEvent('image.upload.error');
         });
       }
-    });
+    }
   }
 
   /**
