@@ -5,15 +5,22 @@ Please provide a short description of the issue or Request. If you don't provide
 
 #### steps to reproduce (Add more if necessary):
 1.
+
 2.
+
 3.
+
 
 #### What is your Operating System, Browser and Version and Summernote Version you are using:
 This can help find and resolve any issues.
-Operating System:
-Browser and Version:
-Summernote Version:
-Bootstrap Version or Lite:
+1. Operating System:
+
+2. Browser and Version:
+
+3. Summernote Version:
+
+4. Bootstrap Version or Lite:
+
 
 #### screenshot of issue
 Add screenshot which shows your issue(if needed).
