@@ -1,7 +1,7 @@
-Before submitting an issue, please make sure to search for already open issues, and add to that. This way we can track issue's more easily. Thank you, and Thanks for using Summernote.
+Before submitting an issue, please make sure to search for already open issues, and add to that. This way we can track issues more easily. Thank you, and Thanks for using Summernote.
 
 #### Description of your Issue or Request:
-Please provide a short description of the issue or Request. If you don't provide one, we can't expedite helping to fix your issue or fullfilling your request.
+Please provide a short description of the issue or request. If you don't provide one, we can't expedite helping to fix your issue or fullfill your request.
 
 #### steps to reproduce (Add more if necessary):
 1.
