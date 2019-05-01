@@ -12,7 +12,6 @@ before_script:
 - node --version
 - npm --version
 script:
-- npm run test:travis
 - npm run test:saucelabs
 before_deploy:
 - npm install

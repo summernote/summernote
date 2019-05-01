@@ -25,7 +25,7 @@
     "test": "karma start karma.conf.js --single-run",
     "test:watch": "karma start karma.conf.js",
     "test:travis": "grunt test-travis --verbose",
-    "test:saucelabs": "grunt saucelabs-test"
+    "test:saucelabs": "karma start karma.ci.conf.js --single-run"
   },
   "husky": {
     "hooks": {
