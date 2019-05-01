@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import renderer from '../base/renderer';
 
 const editor = renderer.create('<div class="note-editor note-frame card"/>');
