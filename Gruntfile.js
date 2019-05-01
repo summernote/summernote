@@ -221,6 +221,8 @@ module.exports = function(grunt) {
         sauceLabs: {
           testName: 'unit tests for summernote',
           startConnect: false,
+          username: 'summernoteis',
+          accessKey: '3d57fd7c-72ea-4c79-8183-bbd6bfa11cc3',
           tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
           build: process.env.TRAVIS_BUILD_NUMBER,
           tags: [process.env.TRAVIS_BRANCH, process.env.TRAVIS_PULL_REQUEST],
