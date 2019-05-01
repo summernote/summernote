@@ -66,7 +66,7 @@ export default class Buttons {
     const genericFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
     name = name.toLowerCase();
 
-    return ((name !== '') && this.isFontInstalled(name) && ($.inArray(name, genericFamilies) === -1));
+    return (name !== '' && this.isFontInstalled(name) && genericFamilies.indexOf(name) === -1);
   }
 
   colorPalette(className, tooltip, backColor, foreColor) {
@@ -343,7 +343,7 @@ export default class Buttons {
       $.each(styleInfo['font-family'].split(','), (idx, fontname) => {
         fontname = fontname.trim().replace(/['"]+/g, '');
         if (this.isFontDeservedToAdd(fontname)) {
-          if ($.inArray(fontname, this.options.fontNames) === -1) {
+          if (this.options.fontNames.indexOf(fontname) === -1) {
             this.options.fontNames.push(fontname);
           }
         }
@@ -775,8 +775,8 @@ export default class Buttons {
   build($container, groups) {
     for (let groupIdx = 0, groupLen = groups.length; groupIdx < groupLen; groupIdx++) {
       const group = groups[groupIdx];
-      const groupName = $.isArray(group) ? group[0] : group;
-      const buttons = $.isArray(group) ? ((group.length === 1) ? [group[0]] : group[1]) : [group];
+      const groupName = Array.isArray(group) ? group[0] : group;
+      const buttons = Array.isArray(group) ? ((group.length === 1) ? [group[0]] : group[1]) : [group];
 
       const $group = this.ui.buttonGroup({
         className: 'note-' + groupName,

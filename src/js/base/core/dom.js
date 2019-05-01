@@ -302,7 +302,7 @@ function lastAncestor(node, pred) {
 function commonAncestor(nodeA, nodeB) {
   const ancestors = listAncestor(nodeA);
   for (let n = nodeB; n; n = n.parentNode) {
-    if ($.inArray(n, ancestors) > -1) { return n; }
+    if (ancestors.indexOf(n) > -1) return n;
   }
   return null; // difference document area
 }
