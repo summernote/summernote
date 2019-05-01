@@ -1,63 +1,6 @@
 module.exports = function(grunt) {
   'use strict';
 
-  var customLaunchers = {
-    /*
-    'SL_IE8': {
-      base: 'SauceLabs',
-      browserName: 'internet explorer',
-      version: '8.0',
-      platform: 'windows XP'
-    },
-    'SL_EDGE': {
-      base: 'SauceLabs',
-      browserName: 'microsoftedge',
-      version: 'latest',
-      platform: 'windows 10'
-    },
-    'SL_SAFARI': {
-      base: 'SauceLabs',
-      browserName: 'safari',
-      version: 'latest',
-      platform: 'OS X 10.12'
-    },
-    'SL_IE9': {
-      base: 'SauceLabs',
-      browserName: 'internet explorer',
-      version: '9.0',
-      platform: 'windows 7'
-    },
-    */
-    ChromeHeadlessNoSandbox: {
-      base: 'ChromeHeadless',
-      flags: [ '--no-sandbox' ],
-    },
-    'SL_IE10': {
-      base: 'SauceLabs',
-      browserName: 'internet explorer',
-      version: '10.0',
-      platform: 'windows 8',
-    },
-    'SL_IE11': {
-      base: 'SauceLabs',
-      browserName: 'internet explorer',
-      version: '11.0',
-      platform: 'windows 8.1',
-    },
-    'SL_CHROME': {
-      base: 'SauceLabs',
-      browserName: 'chrome',
-      version: '70',
-      platform: 'windows 8',
-    },
-    'SL_FIREFOX': {
-      base: 'SauceLabs',
-      browserName: 'firefox',
-      version: 'latest',
-      platform: 'windows 8',
-    },
-  };
-
   grunt.initConfig({
     // package File
     pkg: grunt.file.readJSON('package.json'),
@@ -187,48 +130,10 @@ module.exports = function(grunt) {
       },
       script: {
         files: ['src/js/**/*.js', 'test/unit/**/*.js'],
-        tasks: ['lint', 'build', 'karma:all'],
+        tasks: ['lint', 'build'],
         options: {
           livereload: true,
         },
-      },
-    },
-
-    karma: {
-      options: {
-        configFile: './karma.conf.js',
-      },
-      watch: {
-        background: false,
-        singleRun: false,
-      },
-      all: {
-        // Chrome, ChromeCanary, Firefox, Opera, Safari, IE
-        singleRun: true,
-        browsers: ['ChromeHeadlessNoSandbox'],
-      },
-      dist: {
-        singleRun: true,
-        browsers: ['ChromeHeadlessNoSandbox'],
-      },
-      travis: {
-        singleRun: true,
-        browsers: ['ChromeHeadlessNoSandbox'],
-        reporters: ['dots', 'coverage'],
-      },
-      saucelabs: {
-        reporters: ['saucelabs'],
-        sauceLabs: {
-          testName: 'unit tests for summernote',
-          startConnect: false,
-          tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
-          build: process.env.TRAVIS_BUILD_NUMBER,
-          tags: [process.env.TRAVIS_BRANCH, process.env.TRAVIS_PULL_REQUEST],
-        },
-        captureTimeout: 120000,
-        customLaunchers: customLaunchers,
-        browsers: Object.keys(customLaunchers),
-        singleRun: true,
       },
     },
 
@@ -240,9 +145,11 @@ module.exports = function(grunt) {
         src: 'coverage/**/lcov.info',
       },
     },
+
     clean: {
       dist: ['dist/**/*'],
     },
+
     copy: {
       dist: {
         files: [
@@ -251,6 +158,7 @@ module.exports = function(grunt) {
         ],
       },
     },
+
     webfont: {
       icons: {
         src: 'src/icons/*.svg',
@@ -279,18 +187,12 @@ module.exports = function(grunt) {
   grunt.registerTask('lint', ['eslint']);
 
   // test: unit test on test folder
-  grunt.registerTask('test', ['lint', 'karma:watch']);
-
-  // test: unit test on travis
-  grunt.registerTask('test-travis', ['lint', 'karma:travis']);
-
-  // test: saucelabs test
-  grunt.registerTask('saucelabs-test', ['karma:saucelabs']);
+  grunt.registerTask('test', ['lint']);
 
   // dist: make dist files
   grunt.registerTask('dist', [
     'clean:dist',
-    'build', 'webfont', 'lint', 'karma:dist',
+    'build', 'webfont', 'lint',
     'copy:dist', 'uglify', 'recess', 'compress',
   ]);
 
