@@ -265,9 +265,10 @@ $img-margin-right: 10px;
 
 /* Popover and Toolbar (Button container)
 ------------------------------------------*/
-.note-popover .popover-content, .panel-heading.note-toolbar {
+.note-popover .popover-content, .card-header.note-toolbar {
   margin: 0;
   padding: 0 0 5px 5px;
+  background: $background-color;
 
   &>.btn-group {
     margin-top: 5px;

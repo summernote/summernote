@@ -11,7 +11,7 @@
         strikethrough: 'Прецртано',
         subscript: 'Subscript',
         superscript: 'Superscript',
-        size: 'Величина фонта'
+        size: 'Величина фонта',
       },
       image: {
         image: 'Слика',
@@ -33,14 +33,14 @@
         maximumFileSizeError: 'Maximum file size exceeded.',
         url: 'Адреса слике',
         remove: 'Уклони слику',
-        original: 'Original'
+        original: 'Original',
       },
       video: {
         video: 'Видео',
         videoLink: 'Веза ка видеу',
         insert: 'Уметни видео',
         url: 'URL видео',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion или Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion или Youku)',
       },
       link: {
         link: 'Веза',
@@ -49,7 +49,7 @@
         edit: 'Уреди',
         textToDisplay: 'Текст за приказ',
         url: 'Интернет адреса',
-        openInNewWindow: 'Отвори у новом прозору'
+        openInNewWindow: 'Отвори у новом прозору',
       },
       table: {
         table: 'Табела',
@@ -59,10 +59,10 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
       },
       hr: {
-        insert: 'Уметни хоризонталну линију'
+        insert: 'Уметни хоризонталну линију',
       },
       style: {
         style: 'Стил',
@@ -74,16 +74,16 @@
         h3: 'Заглавље 3',
         h4: 'Заглавље 4',
         h5: 'Заглавље 5',
-        h6: 'Заглавље 6'
+        h6: 'Заглавље 6',
       },
       lists: {
         unordered: 'Обична листа',
-        ordered: 'Нумерисана листа'
+        ordered: 'Нумерисана листа',
       },
       options: {
         help: 'Помоћ',
         fullscreen: 'Преко целог екрана',
-        codeview: 'Изворни код'
+        codeview: 'Изворни код',
       },
       paragraph: {
         paragraph: 'Параграф',
@@ -92,7 +92,7 @@
         left: 'Поравнај у лево',
         center: 'Центрирано',
         right: 'Поравнај у десно',
-        justify: 'Поравнај обострано'
+        justify: 'Поравнај обострано',
       },
       color: {
         recent: 'Последња боја',
@@ -102,7 +102,7 @@
         transparent: 'Провидна',
         setTransparent: 'Провидна',
         reset: 'Опозив',
-        resetToDefault: 'Подразумевана'
+        resetToDefault: 'Подразумевана',
       },
       shortcut: {
         shortcuts: 'Пречице са тастатуре',
@@ -111,7 +111,7 @@
         action: 'Акција',
         paragraphFormatting: 'Форматирање параграфа',
         documentStyle: 'Стил документа',
-        extraKeys: 'Додатне комбинације'
+        extraKeys: 'Додатне комбинације',
       },
       help: {
         'insertParagraph': 'Insert Paragraph',
@@ -140,16 +140,16 @@
         'formatH5': 'Change current block\'s format as H5',
         'formatH6': 'Change current block\'s format as H6',
         'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
+        'linkDialog.show': 'Show Link Dialog',
       },
       history: {
         undo: 'Поништи',
-        redo: 'Понови'
+        redo: 'Понови',
       },
       specialChar: {
         specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
-      }
-    }
+        select: 'Select Special characters',
+      },
+    },
   });
 })(jQuery);

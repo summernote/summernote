@@ -42,7 +42,7 @@ const KEY_MAP = {
   'SLASH': 191,
   'LEFTBRACKET': 219,
   'BACKSLASH': 220,
-  'RIGHTBRACKET': 221
+  'RIGHTBRACKET': 221,
 };
 
 /**
@@ -66,7 +66,7 @@ export default {
       KEY_MAP.TAB,
       KEY_MAP.ENTER,
       KEY_MAP.SPACE,
-      KEY_MAP.DELETE
+      KEY_MAP.DELETE,
     ], keyCode);
   },
   /**
@@ -80,7 +80,7 @@ export default {
       KEY_MAP.LEFT,
       KEY_MAP.UP,
       KEY_MAP.RIGHT,
-      KEY_MAP.DOWN
+      KEY_MAP.DOWN,
     ], keyCode);
   },
   /**
@@ -88,5 +88,5 @@ export default {
    * @property {String} nameFromCode.8 "BACKSPACE"
    */
   nameFromCode: func.invertObject(KEY_MAP),
-  code: KEY_MAP
+  code: KEY_MAP,
 };

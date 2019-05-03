@@ -3,55 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.css" />
-  <link rel="stylesheet" href="../dist/summernote-bs4.css">
-  <title>summernote</title>
+  <title>Summernote - Bootstrap 4</title>
+  <!-- include jquery -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
 
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script> 
-  <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.js"></script>
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.js"></script>
+  <!-- include libs stylesheets -->
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.css" />
+  <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.5/umd/popper.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.js"></script>
+
+  <!-- include summernote -->
+  <link rel="stylesheet" href="../dist/summernote-bs4.css">
   <script type="text/javascript" src="../dist/summernote-bs4.js"></script>
 
+  <link rel="stylesheet" href="example.css">
   <script type="text/javascript">
     $(document).ready(function() {
       $('.summernote').summernote({
         height: 300,
-        tabsize: 2
+        tabsize: 2,
+        followingToolbar: true,
       });
     });
   </script>
 </head>
 <body>
-  <div class="container">
-    <h5>
-      <i class="note-icon-summernote"></i> Summernote
-      <span class="badge badge-pill badge-info">Bootstrap v4.0.0</span>
-    </h5>
-    <div class="summernote"><p>Hello World</p></div>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-    <p>scroll text...</p>
-  </div>
+<div class="container">
+  <h1>Summernote with Bootstrap 4</h1>
+  <p>
+    <span class="badge badge-primary">jQuery v3.3.1</span>
+    <span class="badge badge-info">Bootstrap v4.1.3</span>
+  </p>
+  <div class="summernote"><p>Hello World</p></div>
+  <pre>
+  Scroll page to see sticky toolbar.
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  End of document.
+  </pre>
+</div>
 </body>
 </html>

@@ -2,13 +2,16 @@ class DropdownUI {
   constructor($node, options) {
     this.$button = $node;
     this.options = $.extend({}, {
-      target: options.container
+      target: options.container,
     }, options);
     this.setEvent();
   }
 
   setEvent() {
-    this.$button.on('click', this.toggle.bind(this));
+    this.$button.on('click', (e) => {
+      this.toggle();
+      e.stopImmediatePropagation();
+    });
   }
 
   clear() {

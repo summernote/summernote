@@ -11,7 +11,7 @@
         strikethrough: 'ขีดฆ่า',
         subscript: 'ตัวห้อย',
         superscript: 'ตัวยก',
-        size: 'ขนาดตัวอักษร'
+        size: 'ขนาดตัวอักษร',
       },
       image: {
         image: 'รูปภาพ',
@@ -27,20 +27,20 @@
         shapeThumbnail: 'Shape: Thumbnail',
         shapeNone: 'Shape: None',
         dragImageHere: 'ลากรูปภาพที่ต้องการไว้ที่นี่',
-        dropImage: 'Drop image or Text',
+        dropImage: 'วางรูปภาพหรือข้อความ',
         selectFromFiles: 'เลือกไฟล์รูปภาพ',
-        maximumFileSize: 'Maximum file size',
-        maximumFileSizeError: 'Maximum file size exceeded.',
+        maximumFileSize: 'ขนาดไฟล์ใหญ่สุด',
+        maximumFileSizeError: 'ไฟล์เกินขนาดที่กำหนด',
         url: 'ที่อยู่ URL ของรูปภาพ',
         remove: 'ลบรูปภาพ',
-        original: 'Original'
+        original: 'Original',
       },
       video: {
         video: 'วีดีโอ',
         videoLink: 'ลิงก์ของวีดีโอ',
         insert: 'แทรกวีดีโอ',
-        url: 'ที่อยู่ URL ของวีดีโอ?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion หรือ Youku)'
+        url: 'ที่อยู่ URL ของวีดีโอ',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion หรือ Youku)',
       },
       link: {
         link: 'ตัวเชื่อมโยง',
@@ -49,20 +49,20 @@
         edit: 'แก้ไข',
         textToDisplay: 'ข้อความที่ให้แสดง',
         url: 'ที่อยู่เว็บไซต์ที่ต้องการให้เชื่อมโยงไปถึง?',
-        openInNewWindow: 'เปิดในหน้าต่างใหม่'
+        openInNewWindow: 'เปิดในหน้าต่างใหม่',
       },
       table: {
         table: 'ตาราง',
-        addRowAbove: 'Add row above',
-        addRowBelow: 'Add row below',
-        addColLeft: 'Add column left',
-        addColRight: 'Add column right',
-        delRow: 'Delete row',
-        delCol: 'Delete column',
-        delTable: 'Delete table'
+        addRowAbove: 'เพิ่มแถวด้านบน',
+        addRowBelow: 'เพิ่มแถวด้านล่าง',
+        addColLeft: 'เพิ่มคอลัมน์ด้านซ้าย',
+        addColRight: 'เพิ่มคอลัมน์ด้านขวา',
+        delRow: 'ลบแถว',
+        delCol: 'ลบคอลัมน์',
+        delTable: 'ลบตาราง',
       },
       hr: {
-        insert: 'แทรกเส้นคั่น'
+        insert: 'แทรกเส้นคั่น',
       },
       style: {
         style: 'รูปแบบ',
@@ -74,16 +74,16 @@
         h3: 'หัวข้อ 3',
         h4: 'หัวข้อ 4',
         h5: 'หัวข้อ 5',
-        h6: 'หัวข้อ 6'
+        h6: 'หัวข้อ 6',
       },
       lists: {
         unordered: 'รายการแบบไม่มีลำดับ',
-        ordered: 'รายการแบบมีลำดับ'
+        ordered: 'รายการแบบมีลำดับ',
       },
       options: {
         help: 'ช่วยเหลือ',
         fullscreen: 'ขยายเต็มหน้าจอ',
-        codeview: 'ซอร์สโค้ด'
+        codeview: 'ซอร์สโค้ด',
       },
       paragraph: {
         paragraph: 'ย่อหน้า',
@@ -92,7 +92,7 @@
         left: 'จัดหน้าชิดซ้าย',
         center: 'จัดหน้ากึ่งกลาง',
         right: 'จัดหน้าชิดขวา',
-        justify: 'จัดบรรทัดเสมอกัน'
+        justify: 'จัดบรรทัดเสมอกัน',
       },
       color: {
         recent: 'สีที่ใช้ล่าสุด',
@@ -102,7 +102,7 @@
         transparent: 'โปร่งแสง',
         setTransparent: 'ตั้งค่าความโปร่งแสง',
         reset: 'คืนค่า',
-        resetToDefault: 'คืนค่ามาตรฐาน'
+        resetToDefault: 'คืนค่ามาตรฐาน',
       },
       shortcut: {
         shortcuts: 'แป้นลัด',
@@ -111,7 +111,7 @@
         action: 'การกระทำ',
         paragraphFormatting: 'การจัดรูปแบบย่อหน้า',
         documentStyle: 'รูปแบบของเอกสาร',
-        extraKeys: 'Extra keys'
+        extraKeys: 'Extra keys',
       },
       help: {
         'insertParagraph': 'Insert Paragraph',
@@ -119,8 +119,8 @@
         'redo': 'Redoes the last command',
         'tab': 'Tab',
         'untab': 'Untab',
-        'bold': 'Set a bold style',
-        'italic': 'Set a italic style',
+        'bold': 'ทำตัวหนา',
+        'italic': 'ทำตัวเอียง',
         'underline': 'Set a underline style',
         'strikethrough': 'Set a strikethrough style',
         'removeFormat': 'Clean a style',
@@ -133,23 +133,23 @@
         'outdent': 'Outdent on current paragraph',
         'indent': 'Indent on current paragraph',
         'formatPara': 'Change current block\'s format as a paragraph(P tag)',
-        'formatH1': 'Change current block\'s format as H1',
-        'formatH2': 'Change current block\'s format as H2',
-        'formatH3': 'Change current block\'s format as H3',
-        'formatH4': 'Change current block\'s format as H4',
-        'formatH5': 'Change current block\'s format as H5',
-        'formatH6': 'Change current block\'s format as H6',
+        'formatH1': 'เปลี่ยนรูปแบบบล็อคปัจจุบันเป็น H1',
+        'formatH2': 'เปลี่ยนรูปแบบบล็อคปัจจุบันเป็น H2',
+        'formatH3': 'เปลี่ยนรูปแบบบล็อคปัจจุบันเป็น H3',
+        'formatH4': 'เปลี่ยนรูปแบบบล็อคปัจจุบันเป็น H4',
+        'formatH5': 'เปลี่ยนรูปแบบบล็อคปัจจุบันเป็น H5',
+        'formatH6': 'เปลี่ยนรูปแบบบล็อคปัจจุบันเป็น H6',
         'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
+        'linkDialog.show': 'เปิดหน้าแก้ไข Link',
       },
       history: {
         undo: 'ยกเลิกการกระทำ',
-        redo: 'ทำซ้ำการกระทำ'
+        redo: 'ทำซ้ำการกระทำ',
       },
       specialChar: {
         specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
-      }
-    }
+        select: 'Select Special characters',
+      },
+    },
   });
 })(jQuery);

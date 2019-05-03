@@ -62,7 +62,7 @@ function textRangeToPoint(textRange, isStart) {
 
   return {
     cont: container,
-    offset: offset
+    offset: offset,
   };
 }
 
@@ -94,7 +94,7 @@ function pointToTextRange(point) {
     return {
       node: node,
       collapseToStart: isCollapseToStart,
-      offset: offset
+      offset: offset,
     };
   };
 
@@ -139,19 +139,19 @@ class WrappedRange {
   nativeRange() {
     if (env.isW3CRangeSupport) {
       const w3cRange = document.createRange();
-      w3cRange.setStart(this.sc, this.so);
-      w3cRange.setEnd(this.ec, this.eo);
+      w3cRange.setStart(this.sc, this.sc.data && this.so > this.sc.data.length ? 0 : this.so);
+      w3cRange.setEnd(this.ec, this.sc.data ? Math.min(this.eo, this.sc.data.length) : this.eo);
 
       return w3cRange;
     } else {
       const textRange = pointToTextRange({
         node: this.sc,
-        offset: this.so
+        offset: this.so,
       });
 
       textRange.setEndPoint('EndToEnd', pointToTextRange({
         node: this.ec,
-        offset: this.eo
+        offset: this.eo,
       }));
 
       return textRange;
@@ -163,21 +163,21 @@ class WrappedRange {
       sc: this.sc,
       so: this.so,
       ec: this.ec,
-      eo: this.eo
+      eo: this.eo,
     };
   }
 
   getStartPoint() {
     return {
       node: this.sc,
-      offset: this.so
+      offset: this.so,
     };
   }
 
   getEndPoint() {
     return {
       node: this.ec,
-      offset: this.eo
+      offset: this.eo,
     };
   }
 
@@ -219,21 +219,33 @@ class WrappedRange {
   normalize() {
     /**
      * @param {BoundaryPoint} point
-     * @param {Boolean} isLeftToRight
+     * @param {Boolean} isLeftToRight - true: prefer to choose right node
+     *                                - false: prefer to choose left node
      * @return {BoundaryPoint}
      */
     const getVisiblePoint = function(point, isLeftToRight) {
-      if ((dom.isVisiblePoint(point) && !dom.isEdgePoint(point)) ||
-          (dom.isVisiblePoint(point) && dom.isRightEdgePoint(point) && !isLeftToRight) ||
-          (dom.isVisiblePoint(point) && dom.isLeftEdgePoint(point) && isLeftToRight) ||
-          (dom.isVisiblePoint(point) && dom.isBlock(point.node) && dom.isEmpty(point.node))) {
-        return point;
+      // Just use the given point [XXX:Adhoc]
+      //  - case 01. if the point is on the middle of the node
+      //  - case 02. if the point is on the right edge and prefer to choose left node
+      //  - case 03. if the point is on the left edge and prefer to choose right node
+      //  - case 04. if the point is on the right edge and prefer to choose right node but the node is void
+      //  - case 05. if the point is on the left edge and prefer to choose left node but the node is void
+      //  - case 06. if the point is on the block node and there is no children
+      if (dom.isVisiblePoint(point)) {
+        if (!dom.isEdgePoint(point) ||
+            (dom.isRightEdgePoint(point) && !isLeftToRight) ||
+            (dom.isLeftEdgePoint(point) && isLeftToRight) ||
+            (dom.isRightEdgePoint(point) && isLeftToRight && dom.isVoid(point.node.nextSibling)) ||
+            (dom.isLeftEdgePoint(point) && !isLeftToRight && dom.isVoid(point.node.previousSibling)) ||
+            (dom.isBlock(point.node) && dom.isEmpty(point.node))) {
+          return point;
+        }
       }
 
       // point on block's edge
       const block = dom.ancestor(point.node, dom.isBlock);
       if (((dom.isLeftEdgePointOf(point, block) || dom.isVoid(dom.prevPoint(point).node)) && !isLeftToRight) ||
-          ((dom.isRightEdgePointOf(point, block) || dom.isVoid(dom.nextPoint(point).node)) && isLeftToRight)) {
+        ((dom.isRightEdgePointOf(point, block) || dom.isVoid(dom.nextPoint(point).node)) && isLeftToRight)) {
         // returns point already on visible point
         if (dom.isVisiblePoint(point)) {
           return point;
@@ -401,7 +413,7 @@ class WrappedRange {
 
     const rng = this.splitText();
     const nodes = rng.nodes(null, {
-      fullyContains: true
+      fullyContains: true,
     });
 
     // find new cursor point
@@ -597,12 +609,12 @@ class WrappedRange {
     return {
       s: {
         path: dom.makeOffsetPath(editable, this.sc),
-        offset: this.so
+        offset: this.so,
       },
       e: {
         path: dom.makeOffsetPath(editable, this.ec),
-        offset: this.eo
-      }
+        offset: this.eo,
+      },
     };
   }
 
@@ -615,12 +627,12 @@ class WrappedRange {
     return {
       s: {
         path: lists.tail(dom.makeOffsetPath(lists.head(paras), this.sc)),
-        offset: this.so
+        offset: this.so,
       },
       e: {
         path: lists.tail(dom.makeOffsetPath(lists.last(paras), this.ec)),
-        offset: this.eo
-      }
+        offset: this.eo,
+      },
     };
   }
 
@@ -697,8 +709,8 @@ export default {
 
       // same visible point case: range was collapsed.
       if (dom.isText(startPoint.node) && dom.isLeftEdgePoint(startPoint) &&
-          dom.isTextNode(endPoint.node) && dom.isRightEdgePoint(endPoint) &&
-          endPoint.node.nextSibling === startPoint.node) {
+        dom.isTextNode(endPoint.node) && dom.isRightEdgePoint(endPoint) &&
+        endPoint.node.nextSibling === startPoint.node) {
         startPoint = endPoint;
       }
 
@@ -794,5 +806,5 @@ export default {
     const ec = dom.fromOffsetPath(lists.last(paras), bookmark.e.path);
 
     return new WrappedRange(sc, so, ec, eo);
-  }
+  },
 };

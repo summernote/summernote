@@ -1,7 +1,7 @@
 class ModalUI {
   constructor($node, options) {
     this.options = $.extend({}, {
-      target: options.container || 'body'
+      target: options.container || 'body',
     }, options);
 
     this.$modal = $node;

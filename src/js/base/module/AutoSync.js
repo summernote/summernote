@@ -9,7 +9,7 @@ export default class AutoSync {
     this.events = {
       'summernote.change': () => {
         this.$note.val(context.invoke('code'));
-      }
+      },
     };
   }
 

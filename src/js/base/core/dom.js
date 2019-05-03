@@ -74,7 +74,7 @@ function isElement(node) {
  * @see http://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
  */
 function isVoid(node) {
-  return node && /^BR|^IMG|^HR|^IFRAME|^BUTTON|^INPUT/.test(node.nodeName.toUpperCase());
+  return node && /^BR|^IMG|^HR|^IFRAME|^BUTTON|^INPUT|^AUDIO|^VIDEO|^EMBED/.test(node.nodeName.toUpperCase());
 }
 
 function isPara(node) {
@@ -302,7 +302,7 @@ function lastAncestor(node, pred) {
 function commonAncestor(nodeA, nodeB) {
   const ancestors = listAncestor(nodeA);
   for (let n = nodeB; n; n = n.parentNode) {
-    if ($.inArray(n, ancestors) > -1) { return n; }
+    if (ancestors.indexOf(n) > -1) return n;
   }
   return null; // difference document area
 }
@@ -547,7 +547,7 @@ function prevPoint(point, isSkipInnerOffset) {
 
   return {
     node: node,
-    offset: offset
+    offset: offset,
   };
 }
 
@@ -578,7 +578,7 @@ function nextPoint(point, isSkipInnerOffset) {
 
   return {
     node: node,
-    offset: offset
+    offset: offset,
   };
 }
 
@@ -733,11 +733,17 @@ function fromOffsetPath(ancestor, offsets) {
  * @param {Object} [options]
  * @param {Boolean} [options.isSkipPaddingBlankHTML] - default: false
  * @param {Boolean} [options.isNotSplitEdgePoint] - default: false
+ * @param {Boolean} [options.isDiscardEmptySplits] - default: false
  * @return {Node} right node of boundaryPoint
  */
 function splitNode(point, options) {
-  const isSkipPaddingBlankHTML = options && options.isSkipPaddingBlankHTML;
+  let isSkipPaddingBlankHTML = options && options.isSkipPaddingBlankHTML;
   const isNotSplitEdgePoint = options && options.isNotSplitEdgePoint;
+  const isDiscardEmptySplits = options && options.isDiscardEmptySplits;
+
+  if (isDiscardEmptySplits) {
+    isSkipPaddingBlankHTML = true;
+  }
 
   // edge case
   if (isEdgePoint(point) && (isText(point.node) || isNotSplitEdgePoint)) {
@@ -759,6 +765,16 @@ function splitNode(point, options) {
     if (!isSkipPaddingBlankHTML) {
       paddingBlankHTML(point.node);
       paddingBlankHTML(clone);
+    }
+
+    if (isDiscardEmptySplits) {
+      if (isEmpty(point.node)) {
+        remove(point.node);
+      }
+      if (isEmpty(clone)) {
+        remove(clone);
+        return point.node.nextSibling;
+      }
     }
 
     return clone;
@@ -794,7 +810,7 @@ function splitTree(root, point, options) {
 
     return splitNode({
       node: parent,
-      offset: node ? position(node) : nodeLength(parent)
+      offset: node ? position(node) : nodeLength(parent),
     }, options);
   });
 }
@@ -826,7 +842,7 @@ function splitPoint(point, isInline) {
   // if splitRoot is exists, split with splitTree
   let pivot = splitRoot && splitTree(splitRoot, point, {
     isSkipPaddingBlankHTML: isInline,
-    isNotSplitEdgePoint: isInline
+    isNotSplitEdgePoint: isInline,
   });
 
   // if container is point.node, find pivot with point.offset
@@ -836,7 +852,7 @@ function splitPoint(point, isInline) {
 
   return {
     rightNode: pivot,
-    container: container
+    container: container,
   };
 }
 
@@ -968,7 +984,7 @@ function posFromPlaceholder(placeholder) {
 
   return {
     left: pos.left,
-    top: pos.top + height
+    top: pos.top + height,
   };
 }
 
@@ -1084,5 +1100,5 @@ export default {
   posFromPlaceholder,
   attachEvents,
   detachEvents,
-  isCustomStyleTag
+  isCustomStyleTag,
 };

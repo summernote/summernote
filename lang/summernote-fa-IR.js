@@ -11,7 +11,7 @@
         strikethrough: 'Strike',
         subscript: 'Subscript',
         superscript: 'Superscript',
-        size: 'اندازه ی فونت'
+        size: 'اندازه ی فونت',
       },
       image: {
         image: 'تصویر',
@@ -33,14 +33,14 @@
         maximumFileSizeError: 'Maximum file size exceeded.',
         url: 'آدرس تصویر',
         remove: 'حذف تصویر',
-        original: 'Original'
+        original: 'Original',
       },
       video: {
         video: 'ویدیو',
         videoLink: 'لینک ویدیو',
         insert: 'افزودن ویدیو',
         url: 'آدرس ویدیو ؟',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion یا Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion یا Youku)',
       },
       link: {
         link: 'لینک',
@@ -49,7 +49,7 @@
         edit: 'ویرایش',
         textToDisplay: 'متن جهت نمایش',
         url: 'این لینک به چه آدرسی باید برود ؟',
-        openInNewWindow: 'در یک پنجره ی جدید باز شود'
+        openInNewWindow: 'در یک پنجره ی جدید باز شود',
       },
       table: {
         table: 'جدول',
@@ -59,10 +59,10 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
       },
       hr: {
-        insert: 'افزودن خط افقی'
+        insert: 'افزودن خط افقی',
       },
       style: {
         style: 'استیل',
@@ -74,16 +74,16 @@
         h3: 'سرتیتر 3',
         h4: 'سرتیتر 4',
         h5: 'سرتیتر 5',
-        h6: 'سرتیتر 6'
+        h6: 'سرتیتر 6',
       },
       lists: {
         unordered: 'لیست غیر ترتیبی',
-        ordered: 'لیست ترتیبی'
+        ordered: 'لیست ترتیبی',
       },
       options: {
         help: 'راهنما',
         fullscreen: 'نمایش تمام صفحه',
-        codeview: 'مشاهده ی کد'
+        codeview: 'مشاهده ی کد',
       },
       paragraph: {
         paragraph: 'پاراگراف',
@@ -92,7 +92,7 @@
         left: 'چپ چین',
         center: 'میان چین',
         right: 'راست چین',
-        justify: 'بلوک چین'
+        justify: 'بلوک چین',
       },
       color: {
         recent: 'رنگ اخیرا استفاده شده',
@@ -102,7 +102,7 @@
         transparent: 'بی رنگ',
         setTransparent: 'تنظیم حالت بی رنگ',
         reset: 'بازنشاندن',
-        resetToDefault: 'حالت پیش فرض'
+        resetToDefault: 'حالت پیش فرض',
       },
       shortcut: {
         shortcuts: 'دکمه های میان بر',
@@ -111,7 +111,7 @@
         action: 'عملیات',
         paragraphFormatting: 'فرمت پاراگراف',
         documentStyle: 'استیل سند',
-        extraKeys: 'Extra keys'
+        extraKeys: 'Extra keys',
       },
       help: {
         'insertParagraph': 'Insert Paragraph',
@@ -140,16 +140,16 @@
         'formatH5': 'Change current block\'s format as H5',
         'formatH6': 'Change current block\'s format as H6',
         'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
+        'linkDialog.show': 'Show Link Dialog',
       },
       history: {
         undo: 'واچیدن',
-        redo: 'بازچیدن'
+        redo: 'بازچیدن',
       },
       specialChar: {
         specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
-      }
-    }
+        select: 'Select Special characters',
+      },
+    },
   });
 })(jQuery);

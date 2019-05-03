@@ -11,7 +11,7 @@
         strikethrough: 'فى وسطه خط',
         subscript: 'مخطوطة',
         superscript: 'حرف فوقي',
-        size: 'الحجم'
+        size: 'الحجم',
       },
       image: {
         image: 'صورة',
@@ -33,14 +33,14 @@
         maximumFileSizeError: 'تم تجاوز الحد الأقصى لحجم الملف',
         url: 'رابط الصورة',
         remove: 'حذف الصورة',
-        original: 'Original'
+        original: 'Original',
       },
       video: {
         video: 'فيديو',
         videoLink: 'رابط الفيديو',
         insert: 'إدراج الفيديو',
         url: 'رابط الفيديو',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ou Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ou Youku)',
       },
       link: {
         link: 'رابط رابط',
@@ -49,7 +49,7 @@
         edit: 'تعديل',
         textToDisplay: 'النص',
         url: 'مسار الرابط',
-        openInNewWindow: 'فتح في نافذة جديدة'
+        openInNewWindow: 'فتح في نافذة جديدة',
       },
       table: {
         table: 'جدول',
@@ -59,10 +59,10 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
       },
       hr: {
-        insert: 'إدراج خط أفقي'
+        insert: 'إدراج خط أفقي',
       },
       style: {
         style: 'تنسيق',
@@ -74,16 +74,16 @@
         h3: 'عنوان رئيسي 3',
         h4: 'عنوان رئيسي 4',
         h5: 'عنوان رئيسي 5',
-        h6: 'عنوان رئيسي 6'
+        h6: 'عنوان رئيسي 6',
       },
       lists: {
         unordered: 'قائمة مُنقطة',
-        ordered: 'قائمة مُرقمة'
+        ordered: 'قائمة مُرقمة',
       },
       options: {
         help: 'مساعدة',
         fullscreen: 'حجم الشاشة بالكامل',
-        codeview: 'شفيرة المصدر'
+        codeview: 'شفيرة المصدر',
       },
       paragraph: {
         paragraph: 'فقرة',
@@ -92,7 +92,7 @@
         left: 'محاذاة لليسار',
         center: 'توسيط',
         right: 'محاذاة لليمين',
-        justify: 'ملئ السطر'
+        justify: 'ملئ السطر',
       },
       color: {
         recent: 'تم إستخدامه',
@@ -103,7 +103,7 @@
         setTransparent: 'بدون خلفية',
         reset: 'إعادة الضبط',
         resetToDefault: 'إعادة الضبط',
-        cpSelect: 'اختار'
+        cpSelect: 'اختار',
       },
       shortcut: {
         shortcuts: 'إختصارات',
@@ -112,7 +112,7 @@
         action: 'Action',
         paragraphFormatting: 'تنسيق الفقرة',
         documentStyle: 'تنسيق المستند',
-        extraKeys: 'Extra keys'
+        extraKeys: 'Extra keys',
       },
       help: {
         'insertParagraph': 'Insert Paragraph',
@@ -141,16 +141,16 @@
         'formatH5': 'Change current block\'s format as H5',
         'formatH6': 'Change current block\'s format as H6',
         'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
+        'linkDialog.show': 'Show Link Dialog',
       },
       history: {
         undo: 'تراجع',
-        redo: 'إعادة'
+        redo: 'إعادة',
       },
       specialChar: {
         specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
-      }
-    }
+        select: 'Select Special characters',
+      },
+    },
   });
 })(jQuery);

@@ -7,11 +7,11 @@
         underline: 'Garis bawah',
         clear: 'Bersihkan gaya',
         height: 'Jarak baris',
-        name: 'Font Family',
+        name: 'Jenis Tulisan',
         strikethrough: 'Coret',
         subscript: 'Subscript',
         superscript: 'Superscript',
-        size: 'Ukuran font'
+        size: 'Ukuran font',
       },
       image: {
         image: 'Gambar',
@@ -21,26 +21,26 @@
         resizeQuarter: 'Ukuran 25%',
         floatLeft: 'Rata kiri',
         floatRight: 'Rata kanan',
-        floatNone: 'Tidak ada perataan',
-        shapeRounded: 'Shape: Rounded',
-        shapeCircle: 'Shape: Circle',
-        shapeThumbnail: 'Shape: Thumbnail',
-        shapeNone: 'Shape: None',
-        dragImageHere: 'Tarik gambar pada area ini',
-        dropImage: 'Drop image or Text',
+        floatNone: 'Tanpa perataan',
+        shapeRounded: 'Bentuk: Membundar',
+        shapeCircle: 'Bentuk: Bundar',
+        shapeThumbnail: 'Bentuk: Thumbnail',
+        shapeNone: 'Bentuk: Tidak ada',
+        dragImageHere: 'Tarik gambar ke area ini',
+        dropImage: 'Letakkan gambar atau teks',
         selectFromFiles: 'Pilih gambar dari berkas',
-        maximumFileSize: 'Maximum file size',
-        maximumFileSizeError: 'Maximum file size exceeded.',
+        maximumFileSize: 'Ukuran maksimal berkas',
+        maximumFileSizeError: 'Ukuran maksimal berkas terlampaui.',
         url: 'URL gambar',
         remove: 'Hapus Gambar',
-        original: 'Original'
+        original: 'Original',
       },
       video: {
         video: 'Video',
         videoLink: 'Link video',
         insert: 'Sisipkan video',
         url: 'Tautan video',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion atau Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion atau Youku)',
       },
       link: {
         link: 'Tautan',
@@ -49,20 +49,20 @@
         edit: 'Edit',
         textToDisplay: 'Tampilan teks',
         url: 'Tautan tujuan',
-        openInNewWindow: 'Buka di jendela baru'
+        openInNewWindow: 'Buka di jendela baru',
       },
       table: {
         table: 'Tabel',
-        addRowAbove: 'Add row above',
-        addRowBelow: 'Add row below',
-        addColLeft: 'Add column left',
-        addColRight: 'Add column right',
-        delRow: 'Delete row',
-        delCol: 'Delete column',
-        delTable: 'Delete table'
+        addRowAbove: 'Tambahkan baris ke atas',
+        addRowBelow: 'Tambahkan baris ke bawah',
+        addColLeft: 'Tambahkan kolom ke kiri',
+        addColRight: 'Tambahkan kolom ke kanan',
+        delRow: 'Hapus baris',
+        delCol: 'Hapus kolom',
+        delTable: 'Hapus tabel',
       },
       hr: {
-        insert: 'Masukkan garis horizontal'
+        insert: 'Masukkan garis horizontal',
       },
       style: {
         style: 'Gaya',
@@ -74,16 +74,16 @@
         h3: 'Heading 3',
         h4: 'Heading 4',
         h5: 'Heading 5',
-        h6: 'Heading 6'
+        h6: 'Heading 6',
       },
       lists: {
         unordered: 'Pencacahan',
-        ordered: 'Penomoran'
+        ordered: 'Penomoran',
       },
       options: {
         help: 'Bantuan',
         fullscreen: 'Layar penuh',
-        codeview: 'Kode HTML'
+        codeview: 'Kode HTML',
       },
       paragraph: {
         paragraph: 'Paragraf',
@@ -92,7 +92,7 @@
         left: 'Rata kiri',
         center: 'Rata tengah',
         right: 'Rata kanan',
-        justify: 'Rata kanan kiri'
+        justify: 'Rata kanan kiri',
       },
       color: {
         recent: 'Warna sekarang',
@@ -102,54 +102,54 @@
         transparent: 'Transparan',
         setTransparent: 'Atur transparansi',
         reset: 'Atur ulang',
-        resetToDefault: 'Kembalikan kesemula'
+        resetToDefault: 'Kembalikan kesemula',
       },
       shortcut: {
         shortcuts: 'Jalan pintas',
-        close: 'Keluar',
+        close: 'Tutup',
         textFormatting: 'Format teks',
         action: 'Aksi',
         paragraphFormatting: 'Format paragraf',
         documentStyle: 'Gaya dokumen',
-        extraKeys: 'Extra keys'
+        extraKeys: 'Shortcut tambahan',
       },
       help: {
-        'insertParagraph': 'Insert Paragraph',
-        'undo': 'Undoes the last command',
-        'redo': 'Redoes the last command',
+        'insertParagraph': 'Tambahkan paragraf',
+        'undo': 'Urungkan perintah terakhir',
+        'redo': 'Kembalikan perintah terakhir',
         'tab': 'Tab',
         'untab': 'Untab',
-        'bold': 'Set a bold style',
-        'italic': 'Set a italic style',
-        'underline': 'Set a underline style',
-        'strikethrough': 'Set a strikethrough style',
-        'removeFormat': 'Clean a style',
-        'justifyLeft': 'Set left align',
-        'justifyCenter': 'Set center align',
-        'justifyRight': 'Set right align',
-        'justifyFull': 'Set full align',
-        'insertUnorderedList': 'Toggle unordered list',
-        'insertOrderedList': 'Toggle ordered list',
-        'outdent': 'Outdent on current paragraph',
-        'indent': 'Indent on current paragraph',
-        'formatPara': 'Change current block\'s format as a paragraph(P tag)',
-        'formatH1': 'Change current block\'s format as H1',
-        'formatH2': 'Change current block\'s format as H2',
-        'formatH3': 'Change current block\'s format as H3',
-        'formatH4': 'Change current block\'s format as H4',
-        'formatH5': 'Change current block\'s format as H5',
-        'formatH6': 'Change current block\'s format as H6',
-        'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
+        'bold': 'Mengaktifkan gaya tebal',
+        'italic': 'Mengaktifkan gaya italic',
+        'underline': 'Mengaktifkan gaya underline',
+        'strikethrough': 'Mengaktifkan gaya strikethrough',
+        'removeFormat': 'Hapus semua gaya',
+        'justifyLeft': 'Atur rata kiri',
+        'justifyCenter': 'Atur rata tengah',
+        'justifyRight': 'Atur rata kanan',
+        'justifyFull': 'Atur rata kiri-kanan',
+        'insertUnorderedList': 'Nyalakan urutan tanpa nomor',
+        'insertOrderedList': 'Nyalakan urutan bernomor',
+        'outdent': 'Outdent di paragraf terpilih',
+        'indent': 'Indent di paragraf terpilih',
+        'formatPara': 'Ubah format gaya tulisan terpilih menjadi paragraf',
+        'formatH1': 'Ubah format gaya tulisan terpilih menjadi Heading 1',
+        'formatH2': 'Ubah format gaya tulisan terpilih menjadi Heading 2',
+        'formatH3': 'Ubah format gaya tulisan terpilih menjadi Heading 3',
+        'formatH4': 'Ubah format gaya tulisan terpilih menjadi Heading 4',
+        'formatH5': 'Ubah format gaya tulisan terpilih menjadi Heading 5',
+        'formatH6': 'Ubah format gaya tulisan terpilih menjadi Heading 6',
+        'insertHorizontalRule': 'Masukkan garis horizontal',
+        'linkDialog.show': 'Tampilkan Link Dialog',
       },
       history: {
         undo: 'Kembali',
-        redo: 'Ulang'
+        redo: 'Ulang',
       },
       specialChar: {
-        specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
-      }
-    }
+        specialChar: 'KARAKTER KHUSUS',
+        select: 'Pilih karakter khusus',
+      },
+    },
   });
 })(jQuery);

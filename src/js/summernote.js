@@ -43,5 +43,5 @@ $.fn.extend({
     }
 
     return this;
-  }
+  },
 });

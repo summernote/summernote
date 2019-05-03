@@ -11,7 +11,7 @@
         strikethrough: 'Διεγραμμένα',
         subscript: 'Δείκτης',
         superscript: 'Εκθέτης',
-        size: 'Μέγεθος'
+        size: 'Μέγεθος',
       },
       image: {
         image: 'εικόνα',
@@ -33,7 +33,7 @@
         maximumFileSizeError: 'Το μέγεθος είναι μεγαλύτερο από το μέγιστο επιτρεπτό.',
         url: 'URL',
         remove: 'Αφαίρεση',
-        original: 'Original'
+        original: 'Original',
       },
       link: {
         link: 'Σύνδεσμος',
@@ -42,14 +42,14 @@
         edit: 'Επεξεργασία συνδέσμου',
         textToDisplay: 'Κείμενο συνδέσμου',
         url: 'URL',
-        openInNewWindow: 'Άνοιγμα σε νέο παράθυρο'
+        openInNewWindow: 'Άνοιγμα σε νέο παράθυρο',
       },
       video: {
         video: 'Βίντεο',
         videoLink: 'Σύνδεσμος Βίντεο',
         insert: 'Εισαγωγή',
         url: 'URL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion or Youku)',
       },
       table: {
         table: 'Πίνακας',
@@ -59,10 +59,10 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
       },
       hr: {
-        insert: 'Εισαγωγή οριζόντιας γραμμής'
+        insert: 'Εισαγωγή οριζόντιας γραμμής',
       },
       style: {
         style: 'Στυλ',
@@ -74,16 +74,16 @@
         h3: 'συνδέσμου 3',
         h4: 'συνδέσμου 4',
         h5: 'συνδέσμου 5',
-        h6: 'συνδέσμου 6'
+        h6: 'συνδέσμου 6',
       },
       lists: {
         unordered: 'Αταξινόμητη λίστα',
-        ordered: 'Ταξινομημένη λίστα'
+        ordered: 'Ταξινομημένη λίστα',
       },
       options: {
         help: 'Βοήθεια',
         fullscreen: 'Πλήρης οθόνη',
-        codeview: 'Προβολή HTML'
+        codeview: 'Προβολή HTML',
       },
       paragraph: {
         paragraph: 'Παράγραφος',
@@ -92,7 +92,7 @@
         left: 'Αριστερή στοίχιση',
         center: 'Στοίχιση στο κέντρο',
         right: 'Δεξιά στοίχιση',
-        justify: 'Πλήρης στοίχιση'
+        justify: 'Πλήρης στοίχιση',
       },
       color: {
         recent: 'Πρόσφατη επιλογή',
@@ -102,7 +102,7 @@
         transparent: 'Διαφανές',
         setTransparent: 'Επιλογή διαφάνειας',
         reset: 'Επαναφορά',
-        resetToDefault: 'Επαναφορά στις προκαθορισμένες τιμές'
+        resetToDefault: 'Επαναφορά στις προκαθορισμένες τιμές',
       },
       shortcut: {
         shortcuts: 'Συντομεύσεις',
@@ -111,7 +111,7 @@
         action: 'Ενέργεια',
         paragraphFormatting: 'Διαμόρφωση παραγράφου',
         documentStyle: 'Στυλ κειμένου',
-        extraKeys: 'Επιπλέον συντομεύσεις'
+        extraKeys: 'Επιπλέον συντομεύσεις',
       },
       help: {
         'insertParagraph': 'Εισαγωγή παραγράφου',
@@ -140,16 +140,16 @@
         'formatH5': 'Αλλαγή της μορφής του τρέχοντος μπλοκ σε H5',
         'formatH6': 'Αλλαγή της μορφής του τρέχοντος μπλοκ σε H6',
         'insertHorizontalRule': 'Εισαγωγή οριζόντιας γραμμής',
-        'linkDialog.show': 'Εμφάνιση διαλόγου συνδέσμου'
+        'linkDialog.show': 'Εμφάνιση διαλόγου συνδέσμου',
       },
       history: {
         undo: 'Αναίρεση',
-        redo: 'Επαναληψη'
+        redo: 'Επαναληψη',
       },
       specialChar: {
         specialChar: 'SPECIAL CHARACTERS',
-        select: 'Επιλέξτε ειδικούς χαρακτήρες'
-      }
-    }
+        select: 'Επιλέξτε ειδικούς χαρακτήρες',
+      },
+    },
   });
 })(jQuery);

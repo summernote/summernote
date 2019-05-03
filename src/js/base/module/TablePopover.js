@@ -18,7 +18,7 @@ export default class TablePopover {
       },
       'summernote.disable': () => {
         this.hide();
-      }
+      },
     };
   }
 
@@ -28,7 +28,7 @@ export default class TablePopover {
 
   initialize() {
     this.$popover = this.ui.popover({
-      className: 'note-table-popover'
+      className: 'note-table-popover',
     }).render().appendTo(this.options.container);
     const $content = this.$popover.find('.popover-content,.note-popover-content');
 
@@ -56,7 +56,7 @@ export default class TablePopover {
       this.$popover.css({
         display: 'block',
         left: pos.left,
-        top: pos.top
+        top: pos.top,
       });
     } else {
       this.hide();

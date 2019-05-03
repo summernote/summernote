@@ -6,7 +6,7 @@ class PopoverUI {
       content: '',
       target: options.container,
       trigger: 'hover focus',
-      placement: 'bottom'
+      placement: 'bottom',
     }, options);
 
     // create popover node
@@ -14,7 +14,7 @@ class PopoverUI {
       '<div class="note-popover in">',
       ' <div class="note-popover-arrow" />',
       ' <div class="note-popover-content" />',
-      '</div>'
+      '</div>',
     ].join(''));
 
     // define event
@@ -57,22 +57,22 @@ class PopoverUI {
     if (placement === 'bottom') {
       $popover.css({
         top: offset.top + nodeHeight + dist,
-        left: offset.left + (nodeWidth / 2 - popoverWidth / 2)
+        left: offset.left + (nodeWidth / 2 - popoverWidth / 2),
       });
     } else if (placement === 'top') {
       $popover.css({
         top: offset.top - popoverHeight - dist,
-        left: offset.left + (nodeWidth / 2 - popoverWidth / 2)
+        left: offset.left + (nodeWidth / 2 - popoverWidth / 2),
       });
     } else if (placement === 'left') {
       $popover.css({
         top: offset.top + (nodeHeight / 2 - popoverHeight / 2),
-        left: offset.left - popoverWidth - dist
+        left: offset.left - popoverWidth - dist,
       });
     } else if (placement === 'right') {
       $popover.css({
         top: offset.top + (nodeHeight / 2 - popoverHeight / 2),
-        left: offset.left + nodeWidth + dist
+        left: offset.left + nodeWidth + dist,
       });
     }
   }

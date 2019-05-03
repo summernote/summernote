@@ -14,7 +14,7 @@ export default class Fullscreen {
 
     this.onResize = () => {
       this.resizeTo({
-        h: this.$window.height() - this.$toolbar.outerHeight()
+        h: this.$window.height() - this.$toolbar.outerHeight(),
       });
     };
   }
@@ -34,11 +34,14 @@ export default class Fullscreen {
     this.$editor.toggleClass('fullscreen');
     if (this.isFullscreen()) {
       this.$editable.data('orgHeight', this.$editable.css('height'));
+      this.$editable.data('orgMaxHeight', this.$editable.css('maxHeight'));
+      this.$editable.css('maxHeight', '');
       this.$window.on('resize', this.onResize).trigger('resize');
       this.$scrollbar.css('overflow', 'hidden');
     } else {
       this.$window.off('resize', this.onResize);
       this.resizeTo({ h: this.$editable.data('orgHeight') });
+      this.$editable.css('maxHeight', this.$editable.css('orgMaxHeight'));
       this.$scrollbar.css('overflow', 'visible');
     }
 

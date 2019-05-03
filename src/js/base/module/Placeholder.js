@@ -11,7 +11,7 @@ export default class Placeholder {
       },
       'summernote.codeview.toggled': () => {
         this.update();
-      }
+      },
     };
   }
 
@@ -23,7 +23,7 @@ export default class Placeholder {
     this.$placeholder = $('<div class="note-placeholder">');
     this.$placeholder.on('click', () => {
       this.context.invoke('focus');
-    }).text(this.options.placeholder).prependTo(this.$editingArea);
+    }).html(this.options.placeholder).prependTo(this.$editingArea);
 
     this.update();
   }

@@ -51,6 +51,36 @@ export default class CodeView {
   }
 
   /**
+   * purify input value
+   * @param value
+   * @returns {*}
+   */
+  purify(value) {
+    if (this.options.codeviewFilter) {
+      // filter code view regex
+      value = value.replace(this.options.codeviewFilterRegex, '');
+      // allow specific iframe tag
+      if (this.options.codeviewIframeFilter) {
+        const whitelist = this.options.codeviewIframeWhitelistSrc.concat(this.options.codeviewIframeWhitelistSrcBase);
+        value = value.replace(/(<iframe.*?>.*?(?:<\/iframe>)?)/gi, function(tag) {
+          // remove if src attribute is duplicated
+          if (/<.+src(?==?('|"|\s)?)[\s\S]+src(?=('|"|\s)?)[^>]*?>/i.test(tag)) {
+            return '';
+          }
+          for (const src of whitelist) {
+            // pass if src is trusted
+            if ((new RegExp('src="(https?:)?\/\/' + src.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '\/(.+)"')).test(tag)) {
+              return tag;
+            }
+          }
+          return '';
+        });
+      }
+    }
+    return value;
+  }
+
+  /**
    * activate code view
    */
   activate() {
@@ -77,6 +107,9 @@ export default class CodeView {
       cmEditor.on('blur', (event) => {
         this.context.triggerEvent('blur.codeview', cmEditor.getValue(), event);
       });
+      cmEditor.on('change', (event) => {
+        this.context.triggerEvent('change.codeview', cmEditor.getValue(), cmEditor);
+      });
 
       // CodeMirror hasn't Padding.
       cmEditor.setSize(null, this.$editable.outerHeight());
@@ -84,6 +117,9 @@ export default class CodeView {
     } else {
       this.$codable.on('blur', (event) => {
         this.context.triggerEvent('blur.codeview', this.$codable.val(), event);
+      });
+      this.$codable.on('input', (event) => {
+        this.context.triggerEvent('change.codeview', this.$codable.val(), this.$codable);
       });
     }
   }
@@ -99,7 +135,7 @@ export default class CodeView {
       cmEditor.toTextArea();
     }
 
-    const value = dom.value(this.$codable, this.options.prettifyHtml) || dom.emptyPara;
+    const value = this.purify(dom.value(this.$codable, this.options.prettifyHtml) || dom.emptyPara);
     const isChange = this.$editable.html() !== value;
 
     this.$editable.html(value);

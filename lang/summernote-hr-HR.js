@@ -11,7 +11,7 @@
         strikethrough: 'Precrtano',
         subscript: 'Subscript',
         superscript: 'Superscript',
-        size: 'Veličina fonta'
+        size: 'Veličina fonta',
       },
       image: {
         image: 'Slika',
@@ -33,14 +33,14 @@
         maximumFileSizeError: 'Maximum file size exceeded.',
         url: 'Adresa slike',
         remove: 'Ukloni sliku',
-        original: 'Original'
+        original: 'Original',
       },
       video: {
         video: 'Video',
         videoLink: 'Veza na video',
         insert: 'Ubaci video',
         url: 'URL video',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ili Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ili Youku)',
       },
       link: {
         link: 'Veza',
@@ -49,7 +49,7 @@
         edit: 'Uredi',
         textToDisplay: 'Tekst za prikaz',
         url: 'Internet adresa',
-        openInNewWindow: 'Otvori u novom prozoru'
+        openInNewWindow: 'Otvori u novom prozoru',
       },
       table: {
         table: 'Tablica',
@@ -59,10 +59,10 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
       },
       hr: {
-        insert: 'Ubaci horizontalnu liniju'
+        insert: 'Ubaci horizontalnu liniju',
       },
       style: {
         style: 'Stil',
@@ -74,16 +74,16 @@
         h3: 'Naslov 3',
         h4: 'Naslov 4',
         h5: 'Naslov 5',
-        h6: 'Naslov 6'
+        h6: 'Naslov 6',
       },
       lists: {
         unordered: 'Obična lista',
-        ordered: 'Numerirana lista'
+        ordered: 'Numerirana lista',
       },
       options: {
         help: 'Pomoć',
         fullscreen: 'Preko cijelog ekrana',
-        codeview: 'Izvorni kôd'
+        codeview: 'Izvorni kôd',
       },
       paragraph: {
         paragraph: 'Paragraf',
@@ -92,7 +92,7 @@
         left: 'Poravnaj lijevo',
         center: 'Centrirano',
         right: 'Poravnaj desno',
-        justify: 'Poravnaj obostrano'
+        justify: 'Poravnaj obostrano',
       },
       color: {
         recent: 'Posljednja boja',
@@ -102,7 +102,7 @@
         transparent: 'Prozirna',
         setTransparent: 'Prozirna',
         reset: 'Poništi',
-        resetToDefault: 'Podrazumijevana'
+        resetToDefault: 'Podrazumijevana',
       },
       shortcut: {
         shortcuts: 'Prečice s tipkovnice',
@@ -111,7 +111,7 @@
         action: 'Akcija',
         paragraphFormatting: 'Formatiranje paragrafa',
         documentStyle: 'Stil dokumenta',
-        extraKeys: 'Dodatne kombinacije'
+        extraKeys: 'Dodatne kombinacije',
       },
       help: {
         'insertParagraph': 'Insert Paragraph',
@@ -140,16 +140,16 @@
         'formatH5': 'Change current block\'s format as H5',
         'formatH6': 'Change current block\'s format as H6',
         'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
+        'linkDialog.show': 'Show Link Dialog',
       },
       history: {
         undo: 'Poništi',
-        redo: 'Ponovi'
+        redo: 'Ponovi',
       },
       specialChar: {
         specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
-      }
-    }
+        select: 'Select Special characters',
+      },
+    },
   });
 })(jQuery);

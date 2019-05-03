@@ -17,7 +17,7 @@ export function readFileAsDataURL(file) {
       },
       onerror: (err) => {
         deferred.reject(err);
-      }
+      },
     }).readAsDataURL(file);
   }).promise();
 }
@@ -41,7 +41,7 @@ export function createImage(url) {
       $img.off('load').detach();
       deferred.reject($img);
     }).css({
-      display: 'none'
+      display: 'none',
     }).appendTo(document.body).attr('src', url);
   }).promise();
 }
