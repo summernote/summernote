@@ -9,7 +9,7 @@ Super simple WYSIWYG Editor.
 ### Summernote
 Summernote is a JavaScript library that helps you create WYSIWYG editors online.
 
-Home page: <https://summernote.org>
+ - Home page: <https://summernote.org>
 
 ### Why Summernote?
 
