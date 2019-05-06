@@ -971,7 +971,7 @@ function html($node, isNewlineOnBlock) {
 
       return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
     });
-    markup = $.trim(markup);
+    markup = markup.trim();
   }
 
   return markup;
