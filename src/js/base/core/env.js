@@ -41,34 +41,6 @@ if (isMSIE) {
 const isEdge = /Edge\/\d+/.test(userAgent);
 
 let hasCodeMirror = !!window.CodeMirror;
-if (!hasCodeMirror && isSupportAmd) {
-  // Webpack
-  if (typeof __webpack_require__ === 'function') { // eslint-disable-line
-    try {
-      // If CodeMirror can't be resolved, `require.resolve` will throw an
-      // exception and `hasCodeMirror` won't be set to `true`.
-      require.resolve('codemirror');
-      hasCodeMirror = true;
-    } catch (e) {
-      // do nothing
-    }
-  } else if (typeof require !== 'undefined') {
-    // Browserify
-    if (typeof require.resolve !== 'undefined') {
-      try {
-        // If CodeMirror can't be resolved, `require.resolve` will throw an
-        // exception and `hasCodeMirror` won't be set to `true`.
-        require.resolve('codemirror');
-        hasCodeMirror = true;
-      } catch (e) {
-        // do nothing
-      }
-    // Almond/Require
-    } else if (typeof require.specified !== 'undefined') {
-      hasCodeMirror = require.specified('codemirror');
-    }
-  }
-}
 
 const isSupportTouch =
   (('ontouchstart' in window) ||
