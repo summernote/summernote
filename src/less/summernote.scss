@@ -342,8 +342,10 @@ $img-margin-right: 10px;
       padding-left: 5px;
     }
     .dropdown-menu {
-      .btn-group {
+      .note-palette {
+        display: inline-block;
         margin: 0;
+        width: 160px;
         &:first-child {
           margin: 0 5px;
         }
