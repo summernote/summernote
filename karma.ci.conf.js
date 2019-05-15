@@ -52,7 +52,7 @@ module.exports = function (config) {
       'src/js/**/*.js': ['karma-typescript'],
       'test/**/*.spec.js': ['karma-typescript']
     },
-    reporters: ['dots', 'karma-typescript'],
+    reporters: ['dots', 'karma-typescript', 'coverage', 'coveralls'],
     coverageReporter: {
       type: 'lcov',
       dir: 'coverage/',
