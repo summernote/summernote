@@ -1,0 +1,239 @@
+@font-face {
+  font-family: "summernote";
+  font-style: normal;
+  font-weight: normal;
+  src: url("./font/summernote.eot?4c7e83314b68cfa6a0d18a8b4690044b");
+  src: url("./font/summernote.eot?4c7e83314b68cfa6a0d18a8b4690044b#iefix")
+      format("embedded-opentype"),
+    url("./font/summernote.woff?4c7e83314b68cfa6a0d18a8b4690044b")
+      format("woff"),
+    url("./font/summernote.ttf?4c7e83314b68cfa6a0d18a8b4690044b")
+      format("truetype");
+}
+[class^="note-icon-"]:before,
+[class*=" note-icon-"]:before {
+  display: inline-block;
+  font: normal normal normal 14px summernote;
+  font-size: inherit;
+  -webkit-font-smoothing: antialiased;
+  text-decoration: inherit;
+  text-rendering: auto;
+  text-transform: none;
+  vertical-align: middle;
+  speak: none;
+  -moz-osx-font-smoothing: grayscale;
+}
+.note-icon-align-center:before,
+.note-icon-align-indent:before,
+.note-icon-align-justify:before,
+.note-icon-align-left:before,
+.note-icon-align-outdent:before,
+.note-icon-align-right:before,
+.note-icon-align:before,
+.note-icon-arrow-circle-down:before,
+.note-icon-arrow-circle-left:before,
+.note-icon-arrow-circle-right:before,
+.note-icon-arrow-circle-up:before,
+.note-icon-arrows-alt:before,
+.note-icon-arrows-h:before,
+.note-icon-arrows-v:before,
+.note-icon-bold:before,
+.note-icon-caret:before,
+.note-icon-chain-broken:before,
+.note-icon-circle:before,
+.note-icon-close:before,
+.note-icon-code:before,
+.note-icon-col-after:before,
+.note-icon-col-before:before,
+.note-icon-col-remove:before,
+.note-icon-eraser:before,
+.note-icon-font:before,
+.note-icon-frame:before,
+.note-icon-italic:before,
+.note-icon-link:before,
+.note-icon-magic:before,
+.note-icon-menu-check:before,
+.note-icon-minus:before,
+.note-icon-orderedlist:before,
+.note-icon-pencil:before,
+.note-icon-picture:before,
+.note-icon-question:before,
+.note-icon-redo:before,
+.note-icon-row-above:before,
+.note-icon-row-below:before,
+.note-icon-row-remove:before,
+.note-icon-special-character:before,
+.note-icon-square:before,
+.note-icon-strikethrough:before,
+.note-icon-subscript:before,
+.note-icon-summernote:before,
+.note-icon-superscript:before,
+.note-icon-table:before,
+.note-icon-text-height:before,
+.note-icon-trash:before,
+.note-icon-underline:before,
+.note-icon-undo:before,
+.note-icon-unorderedlist:before,
+.note-icon-video:before {
+  display: inline-block;
+  font-family: "summernote";
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: inherit;
+}
+.note-icon-align-center:before {
+  content: "\f101";
+}
+.note-icon-align-indent:before {
+  content: "\f102";
+}
+.note-icon-align-justify:before {
+  content: "\f103";
+}
+.note-icon-align-left:before {
+  content: "\f104";
+}
+.note-icon-align-outdent:before {
+  content: "\f105";
+}
+.note-icon-align-right:before {
+  content: "\f106";
+}
+.note-icon-align:before {
+  content: "\f107";
+}
+.note-icon-arrow-circle-down:before {
+  content: "\f108";
+}
+.note-icon-arrow-circle-left:before {
+  content: "\f109";
+}
+.note-icon-arrow-circle-right:before {
+  content: "\f10a";
+}
+.note-icon-arrow-circle-up:before {
+  content: "\f10b";
+}
+.note-icon-arrows-alt:before {
+  content: "\f10c";
+}
+.note-icon-arrows-h:before {
+  content: "\f10d";
+}
+.note-icon-arrows-v:before {
+  content: "\f10e";
+}
+.note-icon-bold:before {
+  content: "\f10f";
+}
+.note-icon-caret:before {
+  content: "\f110";
+}
+.note-icon-chain-broken:before {
+  content: "\f111";
+}
+.note-icon-circle:before {
+  content: "\f112";
+}
+.note-icon-close:before {
+  content: "\f113";
+}
+.note-icon-code:before {
+  content: "\f114";
+}
+.note-icon-col-after:before {
+  content: "\f115";
+}
+.note-icon-col-before:before {
+  content: "\f116";
+}
+.note-icon-col-remove:before {
+  content: "\f117";
+}
+.note-icon-eraser:before {
+  content: "\f118";
+}
+.note-icon-font:before {
+  content: "\f119";
+}
+.note-icon-frame:before {
+  content: "\f11a";
+}
+.note-icon-italic:before {
+  content: "\f11b";
+}
+.note-icon-link:before {
+  content: "\f11c";
+}
+.note-icon-magic:before {
+  content: "\f11d";
+}
+.note-icon-menu-check:before {
+  content: "\f11e";
+}
+.note-icon-minus:before {
+  content: "\f11f";
+}
+.note-icon-orderedlist:before {
+  content: "\f120";
+}
+.note-icon-pencil:before {
+  content: "\f121";
+}
+.note-icon-picture:before {
+  content: "\f122";
+}
+.note-icon-question:before {
+  content: "\f123";
+}
+.note-icon-redo:before {
+  content: "\f124";
+}
+.note-icon-row-above:before {
+  content: "\f125";
+}
+.note-icon-row-below:before {
+  content: "\f126";
+}
+.note-icon-row-remove:before {
+  content: "\f127";
+}
+.note-icon-special-character:before {
+  content: "\f128";
+}
+.note-icon-square:before {
+  content: "\f129";
+}
+.note-icon-strikethrough:before {
+  content: "\f12a";
+}
+.note-icon-subscript:before {
+  content: "\f12b";
+}
+.note-icon-summernote:before {
+  content: "\f12c";
+}
+.note-icon-superscript:before {
+  content: "\f12d";
+}
+.note-icon-table:before {
+  content: "\f12e";
+}
+.note-icon-text-height:before {
+  content: "\f12f";
+}
+.note-icon-trash:before {
+  content: "\f130";
+}
+.note-icon-underline:before {
+  content: "\f131";
+}
+.note-icon-undo:before {
+  content: "\f132";
+}
+.note-icon-unorderedlist:before {
+  content: "\f133";
+}
+.note-icon-video:before {
+  content: "\f134";
+}
