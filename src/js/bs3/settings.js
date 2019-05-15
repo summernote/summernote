@@ -1,10 +1,8 @@
-import $ from "jquery";
-import ui from "./ui";
-import "../base/settings.js";
-import "../summernote";
+import $ from 'jquery';
+import ui from './ui';
+import '../base/settings.js';
+import '../summernote';
 
-import "../../less/summernote.scss";
+import '../../less/summernote.scss';
 
-$.summernote = $.extend($.summernote, {
-  ui: ui
-});
+$.summernote = $.extend($.summernote, { ui: ui });
