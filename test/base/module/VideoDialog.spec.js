@@ -5,8 +5,9 @@
  */
 import chai from 'chai';
 import $ from 'jquery';
-import Context from '../../../../src/js/base/Context';
-import VideoDialog from '../../../../src/js/base/module/VideoDialog';
+import Context from '../../../src/js/base/Context';
+import VideoDialog from '../../../src/js/base/module/VideoDialog';
+import '../../../src/js/bs4/settings';
 
 describe('VideoDialog', () => {
   var expect = chai.expect;
@@ -22,9 +23,8 @@ describe('VideoDialog', () => {
   beforeEach(() => {
     var $note = $('<div></div>').appendTo('body');
     var options = $.extend({}, $.summernote.options);
-    options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
     options.toolbar = [
-      ['video', ['video']]
+      ['video', ['video']],
     ];
     context = new Context($note, options);
     context.initialize();
@@ -51,6 +51,9 @@ describe('VideoDialog', () => {
         '//v.qq.com/iframe/player.html?vid=f0196y2b2cx&amp;auto=0');
       expectUrl('http://v.qq.com/x/page/p0330y279lm.html',
         '//v.qq.com/iframe/player.html?vid=p0330y279lm&amp;auto=0');
+      // Facebook
+      expectUrl('https://www.facebook.com/Engineering/videos/631826881803/',
+        '//www.facebook.com/plugins/video.php?href=www.facebook.com%2FEngineering%2Fvideos%2F631826881803');
     });
 
     it('should be embedded start parameter when insert YouTube video with t', () => {

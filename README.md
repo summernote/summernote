@@ -6,8 +6,6 @@ Super simple WYSIWYG Editor.
 [![npm version](https://badge.fury.io/js/summernote.svg)](http://badge.fury.io/js/summernote)
 [![Coverage Status](https://coveralls.io/repos/summernote/summernote/badge.svg?branch=develop&service=github)](https://coveralls.io/github/summernote/summernote?branch=develop)
 
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/summernoteis.svg)](https://saucelabs.com/u/summernoteis)
-
 ### Summernote
 Summernote is a JavaScript library that helps you create WYSIWYG editors online.
 
@@ -79,7 +77,7 @@ For more detail about API, please refer to [document](http://summernote.org/gett
 The code view allows the user to enter script contents. Make sure to filter/[sanitize the HTML on the server](https://github.com/search?l=JavaScript&q=sanitize+html). Otherwise, an attacker can inject arbitrary JavaScript code into clients.
 
 ### For contributing
-https://github.com/summernote/summernote/blob/develop/CONTRIBUTING.md
+https://github.com/summernote/summernote/blob/develop/.github/CONTRIBUTING.md
 
 ### Contacts
 * Facebook user group: https://www.facebook.com/groups/summernote

@@ -101,7 +101,7 @@ export default class Bullet {
     // list to paragraph or change list style
     } else {
       const diffLists = rng.nodes(dom.isList, {
-        includeAncestor: true
+        includeAncestor: true,
       }).filter((listNode) => {
         return !$.nodeName(listNode, listName);
       });
@@ -194,16 +194,16 @@ export default class Bullet {
       } else {
         const lastList = headList.childNodes.length > 1 ? dom.splitTree(headList, {
           node: last.parentNode,
-          offset: dom.position(last) + 1
+          offset: dom.position(last) + 1,
         }, {
-          isSkipPaddingBlankHTML: true
+          isSkipPaddingBlankHTML: true,
         }) : null;
 
         const middleList = dom.splitTree(headList, {
           node: head.parentNode,
-          offset: dom.position(head)
+          offset: dom.position(head),
         }, {
-          isSkipPaddingBlankHTML: true
+          isSkipPaddingBlankHTML: true,
         });
 
         paras = isEscapseToBody ? dom.listDescendant(middleList, dom.isLi)

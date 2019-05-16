@@ -50,7 +50,7 @@ export default class Style {
    */
   stylePara(rng, styleInfo) {
     $.each(rng.nodes(dom.isPara, {
-      includeAncestor: true
+      includeAncestor: true,
     }), (idx, para) => {
       $(para).css(styleInfo);
     });
@@ -79,7 +79,7 @@ export default class Style {
 
     let pred = dom.makePredByNodeName(nodeName);
     const nodes = rng.nodes(dom.isText, {
-      fullyContains: true
+      fullyContains: true,
     }).map((text) => {
       return dom.singleChildAncestor(text, pred) || dom.wrap(text, nodeName);
     });
@@ -128,7 +128,7 @@ export default class Style {
         'font-subscript': document.queryCommandState('subscript') ? 'subscript' : 'normal',
         'font-superscript': document.queryCommandState('superscript') ? 'superscript' : 'normal',
         'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal',
-        'font-family': document.queryCommandValue('fontname') || styleInfo['font-family']
+        'font-family': document.queryCommandValue('fontname') || styleInfo['font-family'],
       });
     } catch (e) {}
 
@@ -137,7 +137,7 @@ export default class Style {
       styleInfo['list-style'] = 'none';
     } else {
       const orderedTypes = ['circle', 'disc', 'disc-leading-zero', 'square'];
-      const isUnordered = $.inArray(styleInfo['list-style-type'], orderedTypes) > -1;
+      const isUnordered = orderedTypes.indexOf(styleInfo['list-style-type']) > -1;
       styleInfo['list-style'] = isUnordered ? 'unordered' : 'ordered';
     }
 

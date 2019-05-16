@@ -10,8 +10,11 @@ export default class Toolbar {
     this.$note = context.layoutInfo.note;
     this.$editor = context.layoutInfo.editor;
     this.$toolbar = context.layoutInfo.toolbar;
+    this.$editable = context.layoutInfo.editable;
+    this.$statusbar = context.layoutInfo.statusbar;
     this.options = context.options;
 
+    this.isFollowing = false;
     this.followScroll = this.followScroll.bind(this);
   }
 
@@ -57,14 +60,10 @@ export default class Toolbar {
       return false;
     }
 
-    const $toolbarWrapper = this.$toolbar.parent('.note-toolbar-wrapper');
     const editorHeight = this.$editor.outerHeight();
     const editorWidth = this.$editor.width();
-
     const toolbarHeight = this.$toolbar.height();
-    $toolbarWrapper.css({
-      height: toolbarHeight
-    });
+    const statusbarHeight = this.$statusbar.height();
 
     // check if the web app is currently using another static bar
     let otherBarHeight = 0;
@@ -76,19 +75,29 @@ export default class Toolbar {
     const editorOffsetTop = this.$editor.offset().top;
     const editorOffsetBottom = editorOffsetTop + editorHeight;
     const activateOffset = editorOffsetTop - otherBarHeight;
-    const deactivateOffsetBottom = editorOffsetBottom - otherBarHeight - toolbarHeight;
+    const deactivateOffsetBottom = editorOffsetBottom - otherBarHeight - toolbarHeight - statusbarHeight;
 
-    if ((currentOffset > activateOffset) && (currentOffset < deactivateOffsetBottom)) {
+    if (!this.isFollowing &&
+      (currentOffset > activateOffset) && (currentOffset < deactivateOffsetBottom - toolbarHeight)) {
+      this.isFollowing = true;
       this.$toolbar.css({
         position: 'fixed',
         top: otherBarHeight,
-        width: editorWidth
+        width: editorWidth,
       });
-    } else {
+      this.$editable.css({
+        marginTop: this.$toolbar.height() + 5,
+      });
+    } else if (this.isFollowing &&
+      ((currentOffset < activateOffset) || (currentOffset > deactivateOffsetBottom))) {
+      this.isFollowing = false;
       this.$toolbar.css({
         position: 'relative',
         top: 0,
-        width: '100%'
+        width: '100%',
+      });
+      this.$editable.css({
+        marginTop: '',
       });
     }
   }
@@ -101,6 +110,7 @@ export default class Toolbar {
         this.$toolbar.appendTo(this.options.toolbarContainer);
       }
     }
+    this.followScroll();
   }
 
   updateFullscreen(isFullscreen) {

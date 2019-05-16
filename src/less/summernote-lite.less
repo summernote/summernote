@@ -22,7 +22,7 @@
     color: @dropzone-color;
     background-color: #fff;
     opacity: 0.95;
-    pointer-event: none;
+    pointer-events: none;
 
     .note-dropzone-message {
       display: table-cell;
@@ -135,6 +135,7 @@
       color: #ccc;
       background-color: #222;
       resize: none;
+      outline: none;
 
       /* override BS2 default style */
       .box-sizing(border-box);
@@ -349,9 +350,7 @@
       padding-left: 5px;
     }
     .note-dropdown-menu {
-      -webkit-box-sizing: content-box;
-         -moz-box-sizing: content-box;
-              box-sizing: content-box;
+      .box-sizing(content-box);
       .note-palette {
         display: inline-block;
         margin: 0;

@@ -56,11 +56,11 @@ export default {
   create: (markup, callback) => {
     return function() {
       const options = typeof arguments[1] === 'object' ? arguments[1] : arguments[0];
-      let children = $.isArray(arguments[0]) ? arguments[0] : [];
+      let children = Array.isArray(arguments[0]) ? arguments[0] : [];
       if (options && options.children) {
         children = options.children;
       }
       return new Renderer(markup, children, options, callback);
     };
-  }
+  },
 };

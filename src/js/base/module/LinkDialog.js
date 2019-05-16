@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import env from '../core/env';
 import key from '../core/key';
+import func from '../core/func';
 
 export default class LinkDialog {
   constructor(context) {
@@ -31,9 +32,9 @@ export default class LinkDialog {
         ? $('<div/>').append(this.ui.checkbox({
           className: 'sn-checkbox-open-in-new-window',
           text: this.lang.link.openInNewWindow,
-          checked: true
+          checked: true,
         }).render()).html()
-        : ''
+        : '',
     ].join('');
 
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-link-btn';
@@ -44,7 +45,7 @@ export default class LinkDialog {
       title: this.lang.link.insert,
       fade: this.options.dialogsFade,
       body: body,
-      footer: footer
+      footer: footer,
     }).render().appendTo($container);
   }
 
@@ -86,35 +87,25 @@ export default class LinkDialog {
       this.ui.onDialogShown(this.$dialog, () => {
         this.context.triggerEvent('dialog.shown');
 
-        // if no url was given, copy text to url
-        if (!linkInfo.url) {
+        // If no url was given and given text is valid URL then copy that into URL Field
+        if (!linkInfo.url && func.isValidUrl(linkInfo.text)) {
           linkInfo.url = linkInfo.text;
         }
 
-        $linkText.val(linkInfo.text);
-
-        const handleLinkTextUpdate = () => {
-          this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
-          // if linktext was modified by keyup,
-          // stop cloning text from linkUrl
+        $linkText.on('input paste propertychange', () => {
+          // If linktext was modified by input events,
+          // cloning text from linkUrl will be stopped.
           linkInfo.text = $linkText.val();
-        };
-
-        $linkText.on('input', handleLinkTextUpdate).on('paste', () => {
-          setTimeout(handleLinkTextUpdate, 0);
-        });
-
-        const handleLinkUrlUpdate = () => {
           this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
-          // display same link on `Text to display` input
-          // when create a new link
+        }).val(linkInfo.text);
+
+        $linkUrl.on('input paste propertychange', () => {
+          // Display same text on `Text to display` as default
+          // when linktext has no text
           if (!linkInfo.text) {
             $linkText.val($linkUrl.val());
           }
-        };
-
-        $linkUrl.on('input', handleLinkUrlUpdate).on('paste', () => {
-          setTimeout(handleLinkUrlUpdate, 0);
+          this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
         }).val(linkInfo.url);
 
         if (!env.isSupportTouch) {
@@ -137,7 +128,7 @@ export default class LinkDialog {
             range: linkInfo.range,
             url: $linkUrl.val(),
             text: $linkText.val(),
-            isNewWindow: $openInNewWindow.is(':checked')
+            isNewWindow: $openInNewWindow.is(':checked'),
           });
           this.ui.hideDialog(this.$dialog);
         });
@@ -145,9 +136,9 @@ export default class LinkDialog {
 
       this.ui.onDialogHidden(this.$dialog, () => {
         // detach events
-        $linkText.off('input paste keypress');
-        $linkUrl.off('input paste keypress');
-        $linkBtn.off('click');
+        $linkText.off();
+        $linkUrl.off();
+        $linkBtn.off();
 
         if (deferred.state() === 'pending') {
           deferred.reject();

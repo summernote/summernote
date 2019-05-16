@@ -66,7 +66,7 @@ export default class Buttons {
     const genericFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
     name = name.toLowerCase();
 
-    return ((name !== '') && this.isFontInstalled(name) && ($.inArray(name, genericFamilies) === -1));
+    return (name !== '' && this.isFontInstalled(name) && genericFamilies.indexOf(name) === -1);
   }
 
   colorPalette(className, tooltip, backColor, foreColor) {
@@ -82,36 +82,39 @@ export default class Buttons {
             if (backColor && foreColor) {
               this.context.invoke('editor.color', {
                 backColor: $button.attr('data-backColor'),
-                foreColor: $button.attr('data-foreColor')
+                foreColor: $button.attr('data-foreColor'),
               });
             } else if (backColor) {
               this.context.invoke('editor.color', {
-                backColor: $button.attr('data-backColor')
+                backColor: $button.attr('data-backColor'),
               });
             } else if (foreColor) {
               this.context.invoke('editor.color', {
-                foreColor: $button.attr('data-foreColor')
+                foreColor: $button.attr('data-foreColor'),
               });
             }
           },
           callback: ($button) => {
             const $recentColor = $button.find('.note-recent-color');
             if (backColor) {
-              $recentColor.css('background-color', '#FFFF00');
-              $button.attr('data-backColor', '#FFFF00');
+              $recentColor.css('background-color', this.options.colorButton.backColor);
+              $button.attr('data-backColor', this.options.colorButton.backColor);
             }
-            if (!foreColor) {
+            if (foreColor) {
+              $recentColor.css('color', this.options.colorButton.foreColor);
+              $button.attr('data-foreColor', this.options.colorButton.foreColor);
+            } else {
               $recentColor.css('color', 'transparent');
             }
-          }
+          },
         }),
         this.button({
           className: 'dropdown-toggle',
           contents: this.ui.dropdownButtonContents('', this.options),
           tooltip: this.lang.color.more,
           data: {
-            toggle: 'dropdown'
-          }
+            toggle: 'dropdown',
+          },
         }),
         this.ui.dropdown({
           items: (backColor ? [
@@ -127,10 +130,10 @@ export default class Buttons {
             '    <button type="button" class="note-color-select btn" data-event="openPalette" data-value="backColorPicker">',
             this.lang.color.cpSelect,
             '    </button>',
-            '    <input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="#FFFF00" data-event="backColorPalette">',
+            '    <input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.backColor + '" data-event="backColorPalette">',
             '  </div>',
             '  <div class="note-holder-custom" id="backColorPalette" data-event="backColor"/>',
-            '</div>'
+            '</div>',
           ].join('') : '') +
           (foreColor ? [
             '<div class="note-palette">',
@@ -145,9 +148,9 @@ export default class Buttons {
             '    <button type="button" class="note-color-select btn" data-event="openPalette" data-value="foreColorPicker">',
             this.lang.color.cpSelect,
             '    </button>',
-            '    <input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="#000000" data-event="foreColorPalette">',
+            '    <input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.foreColor + '" data-event="foreColorPalette">',
             '  <div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"/>',
-            '</div>'
+            '</div>',
           ].join('') : ''),
           callback: ($dropdown) => {
             $dropdown.find('.note-holder').each((idx, item) => {
@@ -157,12 +160,12 @@ export default class Buttons {
                 colorsName: this.options.colorsName,
                 eventName: $holder.data('event'),
                 container: this.options.container,
-                tooltip: this.options.tooltip
+                tooltip: this.options.tooltip,
               }).render());
             });
             /* TODO: do we have to record recent custom colors within cookies? */
             var customColors = [
-              ['#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF']
+              ['#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'],
             ];
             $dropdown.find('.note-holder-custom').each((idx, item) => {
               const $holder = $(item);
@@ -171,7 +174,7 @@ export default class Buttons {
                 colorsName: customColors,
                 eventName: $holder.data('event'),
                 container: this.options.container,
-                tooltip: this.options.tooltip
+                tooltip: this.options.tooltip,
               }).render());
             });
             $dropdown.find('input[type=color]').each((idx, item) => {
@@ -218,9 +221,9 @@ export default class Buttons {
               $currentButton.attr('data-' + eventName, value);
               this.context.invoke('editor.' + eventName, value);
             }
-          }
-        })
-      ]
+          },
+        }),
+      ],
     }).render();
   }
 
@@ -234,8 +237,8 @@ export default class Buttons {
           ),
           tooltip: this.lang.style.style,
           data: {
-            toggle: 'dropdown'
-          }
+            toggle: 'dropdown',
+          },
         }),
         this.ui.dropdown({
           className: 'dropdown-style',
@@ -253,8 +256,8 @@ export default class Buttons {
 
             return '<' + tag + style + className + '>' + title + '</' + tag + '>';
           },
-          click: this.context.createInvokeHandler('editor.formatBlock')
-        })
+          click: this.context.createInvokeHandler('editor.formatBlock'),
+        }),
       ]).render();
     });
 
@@ -266,7 +269,7 @@ export default class Buttons {
           className: 'note-btn-style-' + item,
           contents: '<div data-value="' + item + '">' + item.toUpperCase() + '</div>',
           tooltip: this.lang.style[item],
-          click: this.context.createInvokeHandler('editor.formatBlock')
+          click: this.context.createInvokeHandler('editor.formatBlock'),
         }).render();
       });
     }
@@ -276,7 +279,7 @@ export default class Buttons {
         className: 'note-btn-bold',
         contents: this.ui.icon(this.options.icons.bold),
         tooltip: this.lang.font.bold + this.representShortcut('bold'),
-        click: this.context.createInvokeHandlerAndUpdateState('editor.bold')
+        click: this.context.createInvokeHandlerAndUpdateState('editor.bold'),
       }).render();
     });
 
@@ -285,7 +288,7 @@ export default class Buttons {
         className: 'note-btn-italic',
         contents: this.ui.icon(this.options.icons.italic),
         tooltip: this.lang.font.italic + this.representShortcut('italic'),
-        click: this.context.createInvokeHandlerAndUpdateState('editor.italic')
+        click: this.context.createInvokeHandlerAndUpdateState('editor.italic'),
       }).render();
     });
 
@@ -294,7 +297,7 @@ export default class Buttons {
         className: 'note-btn-underline',
         contents: this.ui.icon(this.options.icons.underline),
         tooltip: this.lang.font.underline + this.representShortcut('underline'),
-        click: this.context.createInvokeHandlerAndUpdateState('editor.underline')
+        click: this.context.createInvokeHandlerAndUpdateState('editor.underline'),
       }).render();
     });
 
@@ -302,7 +305,7 @@ export default class Buttons {
       return this.button({
         contents: this.ui.icon(this.options.icons.eraser),
         tooltip: this.lang.font.clear + this.representShortcut('removeFormat'),
-        click: this.context.createInvokeHandler('editor.removeFormat')
+        click: this.context.createInvokeHandler('editor.removeFormat'),
       }).render();
     });
 
@@ -311,7 +314,7 @@ export default class Buttons {
         className: 'note-btn-strikethrough',
         contents: this.ui.icon(this.options.icons.strikethrough),
         tooltip: this.lang.font.strikethrough + this.representShortcut('strikethrough'),
-        click: this.context.createInvokeHandlerAndUpdateState('editor.strikethrough')
+        click: this.context.createInvokeHandlerAndUpdateState('editor.strikethrough'),
       }).render();
     });
 
@@ -320,7 +323,7 @@ export default class Buttons {
         className: 'note-btn-superscript',
         contents: this.ui.icon(this.options.icons.superscript),
         tooltip: this.lang.font.superscript,
-        click: this.context.createInvokeHandlerAndUpdateState('editor.superscript')
+        click: this.context.createInvokeHandlerAndUpdateState('editor.superscript'),
       }).render();
     });
 
@@ -329,7 +332,7 @@ export default class Buttons {
         className: 'note-btn-subscript',
         contents: this.ui.icon(this.options.icons.subscript),
         tooltip: this.lang.font.subscript,
-        click: this.context.createInvokeHandlerAndUpdateState('editor.subscript')
+        click: this.context.createInvokeHandlerAndUpdateState('editor.subscript'),
       }).render();
     });
 
@@ -340,7 +343,7 @@ export default class Buttons {
       $.each(styleInfo['font-family'].split(','), (idx, fontname) => {
         fontname = fontname.trim().replace(/['"]+/g, '');
         if (this.isFontDeservedToAdd(fontname)) {
-          if ($.inArray(fontname, this.options.fontNames) === -1) {
+          if (this.options.fontNames.indexOf(fontname) === -1) {
             this.options.fontNames.push(fontname);
           }
         }
@@ -354,8 +357,8 @@ export default class Buttons {
           ),
           tooltip: this.lang.font.name,
           data: {
-            toggle: 'dropdown'
-          }
+            toggle: 'dropdown',
+          },
         }),
         this.ui.dropdownCheck({
           className: 'dropdown-fontname',
@@ -365,8 +368,8 @@ export default class Buttons {
           template: (item) => {
             return '<span style="font-family: \'' + item + '\'">' + item + '</span>';
           },
-          click: this.context.createInvokeHandlerAndUpdateState('editor.fontName')
-        })
+          click: this.context.createInvokeHandlerAndUpdateState('editor.fontName'),
+        }),
       ]).render();
     });
 
@@ -377,16 +380,16 @@ export default class Buttons {
           contents: this.ui.dropdownButtonContents('<span class="note-current-fontsize"/>', this.options),
           tooltip: this.lang.font.size,
           data: {
-            toggle: 'dropdown'
-          }
+            toggle: 'dropdown',
+          },
         }),
         this.ui.dropdownCheck({
           className: 'dropdown-fontsize',
           checkClassName: this.options.icons.menuCheck,
           items: this.options.fontSizes,
           title: this.lang.font.size,
-          click: this.context.createInvokeHandlerAndUpdateState('editor.fontSize')
-        })
+          click: this.context.createInvokeHandlerAndUpdateState('editor.fontSize'),
+        }),
       ]).render();
     });
 
@@ -406,7 +409,7 @@ export default class Buttons {
       return this.button({
         contents: this.ui.icon(this.options.icons.unorderedlist),
         tooltip: this.lang.lists.unordered + this.representShortcut('insertUnorderedList'),
-        click: this.context.createInvokeHandler('editor.insertUnorderedList')
+        click: this.context.createInvokeHandler('editor.insertUnorderedList'),
       }).render();
     });
 
@@ -414,44 +417,44 @@ export default class Buttons {
       return this.button({
         contents: this.ui.icon(this.options.icons.orderedlist),
         tooltip: this.lang.lists.ordered + this.representShortcut('insertOrderedList'),
-        click: this.context.createInvokeHandler('editor.insertOrderedList')
+        click: this.context.createInvokeHandler('editor.insertOrderedList'),
       }).render();
     });
 
     const justifyLeft = this.button({
       contents: this.ui.icon(this.options.icons.alignLeft),
       tooltip: this.lang.paragraph.left + this.representShortcut('justifyLeft'),
-      click: this.context.createInvokeHandler('editor.justifyLeft')
+      click: this.context.createInvokeHandler('editor.justifyLeft'),
     });
 
     const justifyCenter = this.button({
       contents: this.ui.icon(this.options.icons.alignCenter),
       tooltip: this.lang.paragraph.center + this.representShortcut('justifyCenter'),
-      click: this.context.createInvokeHandler('editor.justifyCenter')
+      click: this.context.createInvokeHandler('editor.justifyCenter'),
     });
 
     const justifyRight = this.button({
       contents: this.ui.icon(this.options.icons.alignRight),
       tooltip: this.lang.paragraph.right + this.representShortcut('justifyRight'),
-      click: this.context.createInvokeHandler('editor.justifyRight')
+      click: this.context.createInvokeHandler('editor.justifyRight'),
     });
 
     const justifyFull = this.button({
       contents: this.ui.icon(this.options.icons.alignJustify),
       tooltip: this.lang.paragraph.justify + this.representShortcut('justifyFull'),
-      click: this.context.createInvokeHandler('editor.justifyFull')
+      click: this.context.createInvokeHandler('editor.justifyFull'),
     });
 
     const outdent = this.button({
       contents: this.ui.icon(this.options.icons.outdent),
       tooltip: this.lang.paragraph.outdent + this.representShortcut('outdent'),
-      click: this.context.createInvokeHandler('editor.outdent')
+      click: this.context.createInvokeHandler('editor.outdent'),
     });
 
     const indent = this.button({
       contents: this.ui.icon(this.options.icons.indent),
       tooltip: this.lang.paragraph.indent + this.representShortcut('indent'),
-      click: this.context.createInvokeHandler('editor.indent')
+      click: this.context.createInvokeHandler('editor.indent'),
     });
 
     this.context.memo('button.justifyLeft', func.invoke(justifyLeft, 'render'));
@@ -468,19 +471,19 @@ export default class Buttons {
           contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.alignLeft), this.options),
           tooltip: this.lang.paragraph.paragraph,
           data: {
-            toggle: 'dropdown'
-          }
+            toggle: 'dropdown',
+          },
         }),
         this.ui.dropdown([
           this.ui.buttonGroup({
             className: 'note-align',
-            children: [justifyLeft, justifyCenter, justifyRight, justifyFull]
+            children: [justifyLeft, justifyCenter, justifyRight, justifyFull],
           }),
           this.ui.buttonGroup({
             className: 'note-list',
-            children: [outdent, indent]
-          })
-        ])
+            children: [outdent, indent],
+          }),
+        ]),
       ]).render();
     });
 
@@ -491,16 +494,16 @@ export default class Buttons {
           contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.textHeight), this.options),
           tooltip: this.lang.font.height,
           data: {
-            toggle: 'dropdown'
-          }
+            toggle: 'dropdown',
+          },
         }),
         this.ui.dropdownCheck({
           items: this.options.lineHeights,
           checkClassName: this.options.icons.menuCheck,
           className: 'dropdown-line-height',
           title: this.lang.font.height,
-          click: this.context.createInvokeHandler('editor.lineHeight')
-        })
+          click: this.context.createInvokeHandler('editor.lineHeight'),
+        }),
       ]).render();
     });
 
@@ -511,8 +514,8 @@ export default class Buttons {
           contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.table), this.options),
           tooltip: this.lang.table.table,
           data: {
-            toggle: 'dropdown'
-          }
+            toggle: 'dropdown',
+          },
         }),
         this.ui.dropdown({
           title: this.lang.table.table,
@@ -523,18 +526,18 @@ export default class Buttons {
             '  <div class="note-dimension-picker-highlighted"/>',
             '  <div class="note-dimension-picker-unhighlighted"/>',
             '</div>',
-            '<div class="note-dimension-display">1 x 1</div>'
-          ].join('')
-        })
+            '<div class="note-dimension-display">1 x 1</div>',
+          ].join(''),
+        }),
       ], {
         callback: ($node) => {
           const $catcher = $node.find('.note-dimension-picker-mousecatcher');
           $catcher.css({
             width: this.options.insertTableMaxSize.col + 'em',
-            height: this.options.insertTableMaxSize.row + 'em'
+            height: this.options.insertTableMaxSize.row + 'em',
           }).mousedown(this.context.createInvokeHandler('editor.insertTable'))
             .on('mousemove', this.tableMoveHandler.bind(this));
-        }
+        },
       }).render();
     });
 
@@ -542,7 +545,7 @@ export default class Buttons {
       return this.button({
         contents: this.ui.icon(this.options.icons.link),
         tooltip: this.lang.link.link + this.representShortcut('linkDialog.show'),
-        click: this.context.createInvokeHandler('linkDialog.show')
+        click: this.context.createInvokeHandler('linkDialog.show'),
       }).render();
     });
 
@@ -550,7 +553,7 @@ export default class Buttons {
       return this.button({
         contents: this.ui.icon(this.options.icons.picture),
         tooltip: this.lang.image.image,
-        click: this.context.createInvokeHandler('imageDialog.show')
+        click: this.context.createInvokeHandler('imageDialog.show'),
       }).render();
     });
 
@@ -558,7 +561,7 @@ export default class Buttons {
       return this.button({
         contents: this.ui.icon(this.options.icons.video),
         tooltip: this.lang.video.video,
-        click: this.context.createInvokeHandler('videoDialog.show')
+        click: this.context.createInvokeHandler('videoDialog.show'),
       }).render();
     });
 
@@ -566,7 +569,7 @@ export default class Buttons {
       return this.button({
         contents: this.ui.icon(this.options.icons.minus),
         tooltip: this.lang.hr.insert + this.representShortcut('insertHorizontalRule'),
-        click: this.context.createInvokeHandler('editor.insertHorizontalRule')
+        click: this.context.createInvokeHandler('editor.insertHorizontalRule'),
       }).render();
     });
 
@@ -575,7 +578,7 @@ export default class Buttons {
         className: 'btn-fullscreen',
         contents: this.ui.icon(this.options.icons.arrowsAlt),
         tooltip: this.lang.options.fullscreen,
-        click: this.context.createInvokeHandler('fullscreen.toggle')
+        click: this.context.createInvokeHandler('fullscreen.toggle'),
       }).render();
     });
 
@@ -584,7 +587,7 @@ export default class Buttons {
         className: 'btn-codeview',
         contents: this.ui.icon(this.options.icons.code),
         tooltip: this.lang.options.codeview,
-        click: this.context.createInvokeHandler('codeview.toggle')
+        click: this.context.createInvokeHandler('codeview.toggle'),
       }).render();
     });
 
@@ -592,7 +595,7 @@ export default class Buttons {
       return this.button({
         contents: this.ui.icon(this.options.icons.redo),
         tooltip: this.lang.history.redo + this.representShortcut('redo'),
-        click: this.context.createInvokeHandler('editor.redo')
+        click: this.context.createInvokeHandler('editor.redo'),
       }).render();
     });
 
@@ -600,7 +603,7 @@ export default class Buttons {
       return this.button({
         contents: this.ui.icon(this.options.icons.undo),
         tooltip: this.lang.history.undo + this.representShortcut('undo'),
-        click: this.context.createInvokeHandler('editor.undo')
+        click: this.context.createInvokeHandler('editor.undo'),
       }).render();
     });
 
@@ -608,64 +611,71 @@ export default class Buttons {
       return this.button({
         contents: this.ui.icon(this.options.icons.question),
         tooltip: this.lang.options.help,
-        click: this.context.createInvokeHandler('helpDialog.show')
+        click: this.context.createInvokeHandler('helpDialog.show'),
       }).render();
     });
   }
 
   /**
-   * image : [
-   *   ['imagesize', ['imageSize100', 'imageSize50', 'imageSize25']],
-   *   ['float', ['floatLeft', 'floatRight', 'floatNone' ]],
-   *   ['remove', ['removeMedia']]
+   * image: [
+   *   ['imageResize', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
+   *   ['float', ['floatLeft', 'floatRight', 'floatNone']],
+   *   ['remove', ['removeMedia']],
    * ],
    */
   addImagePopoverButtons() {
     // Image Size Buttons
-    this.context.memo('button.imageSize100', () => {
+    this.context.memo('button.resizeFull', () => {
       return this.button({
         contents: '<span class="note-fontsize-10">100%</span>',
         tooltip: this.lang.image.resizeFull,
-        click: this.context.createInvokeHandler('editor.resize', '1')
+        click: this.context.createInvokeHandler('editor.resize', '1'),
       }).render();
     });
-    this.context.memo('button.imageSize50', () => {
+    this.context.memo('button.resizeHalf', () => {
       return this.button({
         contents: '<span class="note-fontsize-10">50%</span>',
         tooltip: this.lang.image.resizeHalf,
-        click: this.context.createInvokeHandler('editor.resize', '0.5')
+        click: this.context.createInvokeHandler('editor.resize', '0.5'),
       }).render();
     });
-    this.context.memo('button.imageSize25', () => {
+    this.context.memo('button.resizeQuarter', () => {
       return this.button({
         contents: '<span class="note-fontsize-10">25%</span>',
         tooltip: this.lang.image.resizeQuarter,
-        click: this.context.createInvokeHandler('editor.resize', '0.25')
+        click: this.context.createInvokeHandler('editor.resize', '0.25'),
+      }).render();
+    });
+    this.context.memo('button.resizeNone', () => {
+      return this.button({
+        contents: this.ui.icon(this.options.icons.rollback),
+        tooltip: this.lang.image.resizeNone,
+        click: this.context.createInvokeHandler('editor.resize', '0'),
       }).render();
     });
 
     // Float Buttons
     this.context.memo('button.floatLeft', () => {
       return this.button({
-        contents: this.ui.icon(this.options.icons.alignLeft),
+        contents: this.ui.icon(this.options.icons.floatLeft),
         tooltip: this.lang.image.floatLeft,
-        click: this.context.createInvokeHandler('editor.floatMe', 'left')
+        click: this.context.createInvokeHandler('editor.floatMe', 'left'),
       }).render();
     });
 
     this.context.memo('button.floatRight', () => {
       return this.button({
-        contents: this.ui.icon(this.options.icons.alignRight),
+        contents: this.ui.icon(this.options.icons.floatRight),
         tooltip: this.lang.image.floatRight,
-        click: this.context.createInvokeHandler('editor.floatMe', 'right')
+        click: this.context.createInvokeHandler('editor.floatMe', 'right'),
       }).render();
     });
 
     this.context.memo('button.floatNone', () => {
       return this.button({
-        contents: this.ui.icon(this.options.icons.alignJustify),
+        contents: this.ui.icon(this.options.icons.rollback),
         tooltip: this.lang.image.floatNone,
-        click: this.context.createInvokeHandler('editor.floatMe', 'none')
+        click: this.context.createInvokeHandler('editor.floatMe', 'none'),
       }).render();
     });
 
@@ -674,7 +684,7 @@ export default class Buttons {
       return this.button({
         contents: this.ui.icon(this.options.icons.trash),
         tooltip: this.lang.image.remove,
-        click: this.context.createInvokeHandler('editor.removeMedia')
+        click: this.context.createInvokeHandler('editor.removeMedia'),
       }).render();
     });
   }
@@ -684,7 +694,7 @@ export default class Buttons {
       return this.button({
         contents: this.ui.icon(this.options.icons.link),
         tooltip: this.lang.link.edit,
-        click: this.context.createInvokeHandler('linkDialog.show')
+        click: this.context.createInvokeHandler('linkDialog.show'),
       }).render();
     });
 
@@ -692,7 +702,7 @@ export default class Buttons {
       return this.button({
         contents: this.ui.icon(this.options.icons.unlink),
         tooltip: this.lang.link.unlink,
-        click: this.context.createInvokeHandler('editor.unlink')
+        click: this.context.createInvokeHandler('editor.unlink'),
       }).render();
     });
   }
@@ -709,7 +719,7 @@ export default class Buttons {
         className: 'btn-md',
         contents: this.ui.icon(this.options.icons.rowAbove),
         tooltip: this.lang.table.addRowAbove,
-        click: this.context.createInvokeHandler('editor.addRow', 'top')
+        click: this.context.createInvokeHandler('editor.addRow', 'top'),
       }).render();
     });
     this.context.memo('button.addRowDown', () => {
@@ -717,7 +727,7 @@ export default class Buttons {
         className: 'btn-md',
         contents: this.ui.icon(this.options.icons.rowBelow),
         tooltip: this.lang.table.addRowBelow,
-        click: this.context.createInvokeHandler('editor.addRow', 'bottom')
+        click: this.context.createInvokeHandler('editor.addRow', 'bottom'),
       }).render();
     });
     this.context.memo('button.addColLeft', () => {
@@ -725,7 +735,7 @@ export default class Buttons {
         className: 'btn-md',
         contents: this.ui.icon(this.options.icons.colBefore),
         tooltip: this.lang.table.addColLeft,
-        click: this.context.createInvokeHandler('editor.addCol', 'left')
+        click: this.context.createInvokeHandler('editor.addCol', 'left'),
       }).render();
     });
     this.context.memo('button.addColRight', () => {
@@ -733,7 +743,7 @@ export default class Buttons {
         className: 'btn-md',
         contents: this.ui.icon(this.options.icons.colAfter),
         tooltip: this.lang.table.addColRight,
-        click: this.context.createInvokeHandler('editor.addCol', 'right')
+        click: this.context.createInvokeHandler('editor.addCol', 'right'),
       }).render();
     });
     this.context.memo('button.deleteRow', () => {
@@ -741,7 +751,7 @@ export default class Buttons {
         className: 'btn-md',
         contents: this.ui.icon(this.options.icons.rowRemove),
         tooltip: this.lang.table.delRow,
-        click: this.context.createInvokeHandler('editor.deleteRow')
+        click: this.context.createInvokeHandler('editor.deleteRow'),
       }).render();
     });
     this.context.memo('button.deleteCol', () => {
@@ -749,7 +759,7 @@ export default class Buttons {
         className: 'btn-md',
         contents: this.ui.icon(this.options.icons.colRemove),
         tooltip: this.lang.table.delCol,
-        click: this.context.createInvokeHandler('editor.deleteCol')
+        click: this.context.createInvokeHandler('editor.deleteCol'),
       }).render();
     });
     this.context.memo('button.deleteTable', () => {
@@ -757,7 +767,7 @@ export default class Buttons {
         className: 'btn-md',
         contents: this.ui.icon(this.options.icons.trash),
         tooltip: this.lang.table.delTable,
-        click: this.context.createInvokeHandler('editor.deleteTable')
+        click: this.context.createInvokeHandler('editor.deleteTable'),
       }).render();
     });
   }
@@ -765,17 +775,17 @@ export default class Buttons {
   build($container, groups) {
     for (let groupIdx = 0, groupLen = groups.length; groupIdx < groupLen; groupIdx++) {
       const group = groups[groupIdx];
-      const groupName = $.isArray(group) ? group[0] : group;
-      const buttons = $.isArray(group) ? ((group.length === 1) ? [group[0]] : group[1]) : [group];
+      const groupName = Array.isArray(group) ? group[0] : group;
+      const buttons = Array.isArray(group) ? ((group.length === 1) ? [group[0]] : group[1]) : [group];
 
       const $group = this.ui.buttonGroup({
-        className: 'note-' + groupName
+        className: 'note-' + groupName,
       }).render();
 
       for (let idx = 0, len = buttons.length; idx < len; idx++) {
         const btn = this.context.memo('button.' + buttons[idx]);
         if (btn) {
-          $group.append(typeof btn === 'function' ? btn(this.context) : btn);
+          $group.append(typeof btn === 'function' ? btn() : btn);
         }
       }
       $group.appendTo($container);
@@ -807,7 +817,7 @@ export default class Buttons {
       },
       '.note-btn-strikethrough': () => {
         return styleInfo['font-strikethrough'] === 'strikethrough';
-      }
+      },
     });
 
     if (styleInfo['font-family']) {
@@ -868,18 +878,18 @@ export default class Buttons {
       const posCatcher = $(event.target).offset();
       posOffset = {
         x: event.pageX - posCatcher.left,
-        y: event.pageY - posCatcher.top
+        y: event.pageY - posCatcher.top,
       };
     } else {
       posOffset = {
         x: event.offsetX,
-        y: event.offsetY
+        y: event.offsetY,
       };
     }
 
     const dim = {
       c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
-      r: Math.ceil(posOffset.y / PX_PER_EM) || 1
+      r: Math.ceil(posOffset.y / PX_PER_EM) || 1,
     };
 
     $highlighted.css({ width: dim.c + 'em', height: dim.r + 'em' });

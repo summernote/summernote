@@ -14,7 +14,7 @@ export default class History {
 
     return {
       contents: this.$editable.html(),
-      bookmark: (rng ? rng.bookmark(this.editable) : emptyBookmark)
+      bookmark: ((rng && rng.isOnEditable()) ? rng.bookmark(this.editable) : emptyBookmark),
     };
   }
 

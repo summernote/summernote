@@ -11,7 +11,7 @@
         strikethrough: 'קו חוצה',
         subscript: 'כתב תחתי',
         superscript: 'כתב עילי',
-        size: 'גודל גופן'
+        size: 'גודל גופן',
       },
       image: {
         image: 'תמונה',
@@ -33,14 +33,14 @@
         maximumFileSizeError: 'Maximum file size exceeded.',
         url: 'נתיב לתמונה',
         remove: 'הסר תמונה',
-        original: 'Original'
+        original: 'Original',
       },
       video: {
         video: 'סרטון',
         videoLink: 'קישור לסרטון',
         insert: 'הוסף סרטון',
         url: 'קישור לסרטון',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion או Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion או Youku)',
       },
       link: {
         link: 'קישור',
@@ -49,7 +49,7 @@
         edit: 'ערוך',
         textToDisplay: 'טקסט להציג',
         url: 'קישור',
-        openInNewWindow: 'פתח בחלון חדש'
+        openInNewWindow: 'פתח בחלון חדש',
       },
       table: {
         table: 'טבלה',
@@ -59,10 +59,10 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
       },
       hr: {
-        insert: 'הוסף קו'
+        insert: 'הוסף קו',
       },
       style: {
         style: 'עיצוב',
@@ -74,16 +74,16 @@
         h3: 'כותרת 3',
         h4: 'כותרת 4',
         h5: 'כותרת 5',
-        h6: 'כותרת 6'
+        h6: 'כותרת 6',
       },
       lists: {
         unordered: 'רשימת תבליטים',
-        ordered: 'רשימה ממוספרת'
+        ordered: 'רשימה ממוספרת',
       },
       options: {
         help: 'עזרה',
         fullscreen: 'מסך מלא',
-        codeview: 'תצוגת קוד'
+        codeview: 'תצוגת קוד',
       },
       paragraph: {
         paragraph: 'פסקה',
@@ -92,7 +92,7 @@
         left: 'יישור לשמאל',
         center: 'יישור למרכז',
         right: 'יישור לימין',
-        justify: 'מיושר'
+        justify: 'מיושר',
       },
       color: {
         recent: 'צבע טקסט אחרון',
@@ -102,7 +102,7 @@
         transparent: 'שקוף',
         setTransparent: 'קבע כשקוף',
         reset: 'איפוס',
-        resetToDefault: 'אפס לברירת מחדל'
+        resetToDefault: 'אפס לברירת מחדל',
       },
       shortcut: {
         shortcuts: 'קיצורי מקלדת',
@@ -111,7 +111,7 @@
         action: 'פעולה',
         paragraphFormatting: 'סגנונות פסקה',
         documentStyle: 'עיצוב המסמך',
-        extraKeys: 'קיצורים נוספים'
+        extraKeys: 'קיצורים נוספים',
       },
       help: {
         'insertParagraph': 'Insert Paragraph',
@@ -140,16 +140,16 @@
         'formatH5': 'Change current block\'s format as H5',
         'formatH6': 'Change current block\'s format as H6',
         'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
+        'linkDialog.show': 'Show Link Dialog',
       },
       history: {
         undo: 'בטל פעולה',
-        redo: 'בצע שוב'
+        redo: 'בצע שוב',
       },
       specialChar: {
         specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
-      }
-    }
+        select: 'Select Special characters',
+      },
+    },
   });
 })(jQuery);

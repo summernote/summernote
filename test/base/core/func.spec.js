@@ -4,7 +4,7 @@
  * summernote may be freely distributed under the MIT license./
  */
 import chai from 'chai';
-import func from '../../../../src/js/base/core/func';
+import func from '../../../src/js/base/core/func';
 
 var expect = chai.expect;
 
@@ -134,6 +134,18 @@ describe('base:core.func', () => {
         expect(count).to.be.equal(1);
         done();
       }, 101);
+    });
+  });
+
+  describe('isValidUrl', () => {
+    it('should return true with valid URLs', () => {
+      expect(func.isValidUrl('https://www.summernote.org')).to.be.ok;
+      expect(func.isValidUrl('http://summernote.org')).to.be.ok;
+      expect(func.isValidUrl('summernote.org')).to.be.ok;
+    });
+
+    it('should return false with invalid URLs', () => {
+      expect(func.isValidUrl('summernote')).to.be.not.ok;
     });
   });
 });

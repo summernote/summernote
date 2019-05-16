@@ -11,7 +11,7 @@
         strikethrough: 'Testo barrato',
         subscript: 'Subscript',
         superscript: 'Superscript',
-        size: 'Dimensione del carattere'
+        size: 'Dimensione del carattere',
       },
       image: {
         image: 'Immagine',
@@ -33,14 +33,14 @@
         maximumFileSizeError: 'Maximum file size exceeded.',
         url: 'URL dell\'immagine',
         remove: 'Rimuovi immagine',
-        original: 'Original'
+        original: 'Original',
       },
       video: {
         video: 'Video',
         videoLink: 'Collegamento ad un Video',
         insert: 'Inserisci Video',
         url: 'URL del Video',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion o Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion o Youku)',
       },
       link: {
         link: 'Collegamento',
@@ -49,7 +49,7 @@
         edit: 'Modifica collegamento',
         textToDisplay: 'Testo del collegamento',
         url: 'URL del collegamento',
-        openInNewWindow: 'Apri in una nuova finestra'
+        openInNewWindow: 'Apri in una nuova finestra',
       },
       table: {
         table: 'Tabella',
@@ -59,10 +59,10 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
       },
       hr: {
-        insert: 'Inserisce una linea di separazione'
+        insert: 'Inserisce una linea di separazione',
       },
       style: {
         style: 'Stili',
@@ -74,16 +74,16 @@
         h3: 'Titolo 3',
         h4: 'Titolo 4',
         h5: 'Titolo 5',
-        h6: 'Titolo 6'
+        h6: 'Titolo 6',
       },
       lists: {
         unordered: 'Elenco non ordinato',
-        ordered: 'Elenco ordinato'
+        ordered: 'Elenco ordinato',
       },
       options: {
         help: 'Aiuto',
         fullscreen: 'Modalità a tutto schermo',
-        codeview: 'Visualizza codice'
+        codeview: 'Visualizza codice',
       },
       paragraph: {
         paragraph: 'Paragrafo',
@@ -92,7 +92,7 @@
         left: 'Allinea a sinistra',
         center: 'Centra',
         right: 'Allinea a destra',
-        justify: 'Giustifica (allinea a destra e sinistra)'
+        justify: 'Giustifica (allinea a destra e sinistra)',
       },
       color: {
         recent: 'Ultimo colore utilizzato',
@@ -102,7 +102,7 @@
         transparent: 'Trasparente',
         setTransparent: 'Trasparente',
         reset: 'Reimposta',
-        resetToDefault: 'Reimposta i colori'
+        resetToDefault: 'Reimposta i colori',
       },
       shortcut: {
         shortcuts: 'Scorciatoie da tastiera',
@@ -111,7 +111,7 @@
         action: 'Azioni',
         paragraphFormatting: 'Formattazione paragrafo',
         documentStyle: 'Stili',
-        extraKeys: 'Extra keys'
+        extraKeys: 'Extra keys',
       },
       help: {
         'insertParagraph': 'Insert Paragraph',
@@ -140,16 +140,16 @@
         'formatH5': 'Change current block\'s format as H5',
         'formatH6': 'Change current block\'s format as H6',
         'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
+        'linkDialog.show': 'Show Link Dialog',
       },
       history: {
         undo: 'Annulla',
-        redo: 'Ripristina'
+        redo: 'Ripristina',
       },
       specialChar: {
         specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
-      }
-    }
+        select: 'Select Special characters',
+      },
+    },
   });
 })(jQuery);

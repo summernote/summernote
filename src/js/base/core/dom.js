@@ -74,7 +74,7 @@ function isElement(node) {
  * @see http://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
  */
 function isVoid(node) {
-  return node && /^BR|^IMG|^HR|^IFRAME|^BUTTON|^INPUT|^VIDEO|^EMBED/.test(node.nodeName.toUpperCase());
+  return node && /^BR|^IMG|^HR|^IFRAME|^BUTTON|^INPUT|^AUDIO|^VIDEO|^EMBED/.test(node.nodeName.toUpperCase());
 }
 
 function isPara(node) {
@@ -302,7 +302,7 @@ function lastAncestor(node, pred) {
 function commonAncestor(nodeA, nodeB) {
   const ancestors = listAncestor(nodeA);
   for (let n = nodeB; n; n = n.parentNode) {
-    if ($.inArray(n, ancestors) > -1) { return n; }
+    if (ancestors.indexOf(n) > -1) return n;
   }
   return null; // difference document area
 }
@@ -547,7 +547,7 @@ function prevPoint(point, isSkipInnerOffset) {
 
   return {
     node: node,
-    offset: offset
+    offset: offset,
   };
 }
 
@@ -578,7 +578,7 @@ function nextPoint(point, isSkipInnerOffset) {
 
   return {
     node: node,
-    offset: offset
+    offset: offset,
   };
 }
 
@@ -810,7 +810,7 @@ function splitTree(root, point, options) {
 
     return splitNode({
       node: parent,
-      offset: node ? position(node) : nodeLength(parent)
+      offset: node ? position(node) : nodeLength(parent),
     }, options);
   });
 }
@@ -842,7 +842,7 @@ function splitPoint(point, isInline) {
   // if splitRoot is exists, split with splitTree
   let pivot = splitRoot && splitTree(splitRoot, point, {
     isSkipPaddingBlankHTML: isInline,
-    isNotSplitEdgePoint: isInline
+    isNotSplitEdgePoint: isInline,
   });
 
   // if container is point.node, find pivot with point.offset
@@ -852,7 +852,7 @@ function splitPoint(point, isInline) {
 
   return {
     rightNode: pivot,
-    container: container
+    container: container,
   };
 }
 
@@ -971,7 +971,7 @@ function html($node, isNewlineOnBlock) {
 
       return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
     });
-    markup = $.trim(markup);
+    markup = markup.trim();
   }
 
   return markup;
@@ -984,7 +984,7 @@ function posFromPlaceholder(placeholder) {
 
   return {
     left: pos.left,
-    top: pos.top + height
+    top: pos.top + height,
   };
 }
 
@@ -1100,5 +1100,5 @@ export default {
   posFromPlaceholder,
   attachEvents,
   detachEvents,
-  isCustomStyleTag
+  isCustomStyleTag,
 };

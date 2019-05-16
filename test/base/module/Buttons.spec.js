@@ -6,9 +6,10 @@
 
 import chai from 'chai';
 import $ from 'jquery';
-import env from '../../../../src/js/base/core/env';
-import range from '../../../../src/js/base/core/range';
-import Context from '../../../../src/js/base/Context';
+import env from '../../../src/js/base/core/env';
+import range from '../../../src/js/base/core/range';
+import Context from '../../../src/js/base/Context';
+import '../../../src/js/bs4/settings';
 
 describe('Buttons', () => {
   var expect = chai.expect;
@@ -20,7 +21,6 @@ describe('Buttons', () => {
     var $note = $('<div><p>hello</p></div>').appendTo('body');
 
     var options = $.extend({}, $.summernote.options);
-    options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
     options.toolbar = [
       ['font1', ['style', 'clear']],
       ['font2', ['bold', 'underline', 'italic', 'superscript', 'subscript', 'strikethrough']],
@@ -29,7 +29,7 @@ describe('Buttons', () => {
       ['para', ['ul', 'ol', 'paragraph']],
       ['table', ['table']],
       ['insert', ['link', 'picture', 'video']],
-      ['view', ['fullscreen', 'codeview', 'help']]
+      ['view', ['fullscreen', 'codeview', 'help']],
     ];
     context = new Context($note, options);
     context.initialize();

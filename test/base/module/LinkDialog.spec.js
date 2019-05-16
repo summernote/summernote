@@ -5,9 +5,10 @@
  */
 import chai from 'chai';
 import $ from 'jquery';
-import range from '../../../../src/js/base/core/range';
-import Context from '../../../../src/js/base/Context';
-import LinkDialog from '../../../../src/js/base/module/LinkDialog';
+import range from '../../../src/js/base/core/range';
+import Context from '../../../src/js/base/Context';
+import LinkDialog from '../../../src/js/base/module/LinkDialog';
+import '../../../src/js/bs4/settings';
 
 describe('LinkDialog', () => {
   var expect = chai.expect;
@@ -15,9 +16,8 @@ describe('LinkDialog', () => {
 
   beforeEach(() => {
     var options = $.extend({}, $.summernote.options);
-    options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
     options.toolbar = [
-      ['insert', ['link']]
+      ['insert', ['link']],
     ];
     context = new Context(
       $('<div>' +
@@ -38,6 +38,7 @@ describe('LinkDialog', () => {
   describe('LinkDialog', () => {
     it('should check new window when target=_blank', () => {
       range.createFromNode($editable.find('a')[0]).normalize().select();
+      context.invoke('editor.setLastRange');
       dialog.show();
 
       var checked = dialog.$dialog
@@ -48,11 +49,10 @@ describe('LinkDialog', () => {
 
     it('should uncheck new window without target=_blank', () => {
       range.createFromNode($editable.find('a')[1]).normalize().select();
+      context.invoke('editor.setLastRange');
       dialog.show();
 
-      var checked = dialog.$dialog
-        .find('.sn-checkbox-open-in-new-window input[type=checkbox]')
-        .is(':checked');
+      var checked = dialog.$dialog.find('#sn-checkbox-open-in-new-window').is(':checked');
       expect(checked).to.be.false;
     });
   });

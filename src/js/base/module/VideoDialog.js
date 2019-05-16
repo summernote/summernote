@@ -20,7 +20,7 @@ export default class VideoDialog {
       '<div class="form-group note-form-group row-fluid">',
       `<label class="note-form-label">${this.lang.video.url} <small class="text-muted">${this.lang.video.providers}</small></label>`,
       '<input class="note-video-url form-control note-form-control note-input" type="text" />',
-      '</div>'
+      '</div>',
     ].join('');
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-video-btn';
     const footer = `<input type="button" href="#" class="${buttonClass}" value="${this.lang.video.insert}" disabled>`;
@@ -29,7 +29,7 @@ export default class VideoDialog {
       title: this.lang.video.insert,
       fade: this.options.dialogsFade,
       body: body,
-      footer: footer
+      footer: footer,
     }).render().appendTo($container);
   }
 
@@ -82,6 +82,9 @@ export default class VideoDialog {
 
     const webmRegExp = /^.+.(webm)$/;
     const webmMatch = url.match(webmRegExp);
+
+    const fbRegExp = /(?:www\.|\/\/)facebook\.com\/([^\/]+)\/videos\/([0-9]+)/;
+    const fbMatch = url.match(fbRegExp);
 
     let $video;
     if (ytMatch && ytMatch[1].length === 11) {
@@ -139,6 +142,13 @@ export default class VideoDialog {
       $video = $('<video controls>')
         .attr('src', url)
         .attr('width', '640').attr('height', '360');
+    } else if (fbMatch && fbMatch[0].length) {
+      $video = $('<iframe>')
+        .attr('frameborder', 0)
+        .attr('src', 'https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent(fbMatch[0]) + '&show_text=0&width=560')
+        .attr('width', '560').attr('height', '301')
+        .attr('scrolling', 'no')
+        .attr('allowtransparency', 'true');
     } else {
       // this is not a known video link. Now what, Cat? Now what?
       return false;
@@ -183,7 +193,7 @@ export default class VideoDialog {
       this.ui.onDialogShown(this.$dialog, () => {
         this.context.triggerEvent('dialog.shown');
 
-        $videoUrl.val(text).on('input', () => {
+        $videoUrl.on('input paste propertychange', () => {
           this.ui.toggleBtn($videoBtn, $videoUrl.val());
         });
 
@@ -193,7 +203,6 @@ export default class VideoDialog {
 
         $videoBtn.click((event) => {
           event.preventDefault();
-
           deferred.resolve($videoUrl.val());
         });
 
@@ -201,8 +210,8 @@ export default class VideoDialog {
       });
 
       this.ui.onDialogHidden(this.$dialog, () => {
-        $videoUrl.off('input');
-        $videoBtn.off('click');
+        $videoUrl.off();
+        $videoBtn.off();
 
         if (deferred.state() === 'pending') {
           deferred.reject();

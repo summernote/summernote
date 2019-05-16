@@ -6,11 +6,12 @@
 
 import chai from 'chai';
 import spies from 'chai-spies';
-import chaidom from '../../../chaidom';
+import chaidom from '../../chaidom';
 import $ from 'jquery';
-import env from '../../../../src/js/base/core/env';
-import range from '../../../../src/js/base/core/range';
-import Context from '../../../../src/js/base/Context';
+import env from '../../../src/js/base/core/env';
+import range from '../../../src/js/base/core/range';
+import Context from '../../../src/js/base/Context';
+import '../../../src/js/bs4/settings';
 
 describe('Editor', () => {
   var expect = chai.expect;
@@ -36,7 +37,6 @@ describe('Editor', () => {
     var $note = $('<div><p>hello</p></div>');
 
     var options = $.extend({}, $.summernote.options);
-    options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
     context = new Context($note, options);
 
     editor = context.modules.editor;
@@ -54,7 +54,7 @@ describe('Editor', () => {
     it('should bind custom events', () => {
       [
         'keydown', 'keyup', 'blur', 'mousedown', 'mouseup',
-        'scroll', 'focusin', 'focusout'
+        'scroll', 'focusin', 'focusout',
       ].forEach((eventName) => {
         expectToHaveBeenCalled(context, 'summernote.' + eventName, () => {
           $editable.trigger(eventName);
@@ -161,13 +161,23 @@ describe('Editor', () => {
 
     it('should be limited', () => {
       var options = $.extend({}, $.summernote.options);
-      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
       options.maxTextLength = 5;
       context = new Context($('<div><p>hello</p></div>'), options);
       editor = context.modules.editor;
 
       editor.insertNode($('<span> world</span>')[0]);
       expectContents(context, '<p>hello</p>');
+    });
+
+    it('should insert node in last focus', () => {
+      $editable.appendTo('body');
+      context.invoke('editor.focus');
+      editor.insertNode($('<span> world</span>')[0]);
+      $('body').focus();
+      editor.insertNode($('<span> hello</span>')[0]);
+      expectContents(context, '<p><span> world</span><span> hello</span>hello</p>');
+
+      $editable.remove();
     });
   });
 
@@ -179,13 +189,23 @@ describe('Editor', () => {
 
     it('should be limited', () => {
       var options = $.extend({}, $.summernote.options);
-      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
       options.maxTextLength = 5;
       context = new Context($('<div><p>hello</p></div>'), options);
       editor = context.modules.editor;
 
       editor.insertText(' world');
       expectContents(context, '<p>hello</p>');
+    });
+
+    it('should insert text in last focus', () => {
+      $editable.appendTo('body');
+      context.invoke('editor.focus');
+      editor.insertText(' world');
+      $('body').focus();
+      editor.insertText(' summernote ');
+      expectContents(context, '<p> world summernote hello</p>');
+
+      $editable.remove();
     });
   });
 
@@ -214,7 +234,6 @@ describe('Editor', () => {
 
     it('should be limited', () => {
       var options = $.extend({}, $.summernote.options);
-      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
       options.maxTextLength = 5;
       context = new Context($('<div><p>hello</p></div>'), options);
       editor = context.modules.editor;
@@ -239,7 +258,7 @@ describe('Editor', () => {
         '<tr><td><br></td><td><br></td></tr>',
         '<tr><td><br></td><td><br></td></tr>',
         '</tbody></table>',
-        '<p><br></p>'
+        '<p><br></p>',
       ].join('');
       editor.insertTable('2x2');
       expectContents(context, markup);
@@ -267,7 +286,7 @@ describe('Editor', () => {
       var codes = [
         '<p><a href="http://summernote.org">hello world</a></p>',
         '<p><a href="http://summernote.org">hello world</a></p>',
-        '<p><a href="http://summernote.org">hello world</a></p>'
+        '<p><a href="http://summernote.org">hello world</a></p>',
       ];
 
       context.invoke('code', codes.join(''));
@@ -286,7 +305,7 @@ describe('Editor', () => {
       var codes = [
         '<p><a href="http://summernote.org">hello world</a></p>',
         '<p><a href="http://summernote.org">hello world</a></p>',
-        '<p><a href="http://summernote.org">hello world</a></p>'
+        '<p><a href="http://summernote.org">hello world</a></p>',
       ];
 
       context.invoke('code', codes.join(''));
@@ -315,6 +334,15 @@ describe('Editor', () => {
       // start <p>hello</p> => <blockquote class="blockquote">hello</blockquote>
       expectContents(context, '<blockquote class="blockquote">hello</blockquote>');
     });
+
+    it('should find exact target in formatBlock', () => {
+      var $target = $('<a class="dropdown-item" href="#" data-value="blockquote" role="listitem" aria-label="blockquote"><blockquote class="blockquote">Blockquote</blockquote></a>');
+      $editable.appendTo('body');
+      editor.formatBlock('blockquote', $target);
+
+      // start <p>hello</p> => <blockquote class="blockquote">hello</blockquote>
+      expectContents(context, '<blockquote class="blockquote">hello</blockquote>');
+    });
   });
 
   describe('createLink', () => {
@@ -330,7 +358,7 @@ describe('Editor', () => {
       // check creation normal link
       editor.createLink({
         url: 'http://summernote.org',
-        text: 'summernote'
+        text: 'summernote',
       });
 
       expectContents(context, '<p>hello<a href="http://summernote.org">summernote</a></p>');
@@ -348,7 +376,7 @@ describe('Editor', () => {
       editor.createLink({
         url: 'http://summernote.org',
         text: 'summernote',
-        range: rng
+        range: rng,
       });
 
       expectContents(context, '<p><a href="http://summernote.org">summernote</a></p>');
@@ -367,7 +395,7 @@ describe('Editor', () => {
         url: 'http://summernote.org',
         text: 'summernote',
         range: rng,
-        isNewWindow: true
+        isNewWindow: true,
       });
 
       expectContents(context, '<p><a href="http://summernote.org" target="_blank">summernote</a></p>');
@@ -386,7 +414,7 @@ describe('Editor', () => {
         url: '/relative/url',
         text: 'summernote',
         range: rng,
-        isNewWindow: true
+        isNewWindow: true,
       });
 
       expectContents(context, '<p><a href="/relative/url" target="_blank">summernote</a></p>');
@@ -401,7 +429,7 @@ describe('Editor', () => {
       editor.createLink({
         url: 'http://wow.summernote.org',
         text: 'summernote wow',
-        range: rng
+        range: rng,
       });
 
       expectContents(context, '<p><a href="http://wow.summernote.org">summernote wow</a></p>');
@@ -409,21 +437,19 @@ describe('Editor', () => {
 
     it('should be limited when creating a link', () => {
       var options = $.extend({}, $.summernote.options);
-      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
       options.maxTextLength = 5;
       context = new Context($('<div><p>hello</p></div>'), options);
       editor = context.modules.editor;
 
       editor.createLink({
         url: 'http://summernote.org',
-        text: 'summernote'
+        text: 'summernote',
       });
       expectContents(context, '<p>hello</p>');
     });
 
     it('should be limited when modifying a link', () => {
       var options = $.extend({}, $.summernote.options);
-      options.langInfo = $.extend(true, {}, $.summernote.lang['en-US'], $.summernote.lang[options.lang]);
       options.maxTextLength = 5;
       context = new Context($('<p><a href="http://summernote.org">hello</a></p>'), options);
 
@@ -435,7 +461,7 @@ describe('Editor', () => {
       editor.createLink({
         url: 'http://summernote.org',
         text: 'hello world',
-        range: rng
+        range: rng,
       });
 
       expectContents(context, '<a href="http://summernote.org">hello</a>');

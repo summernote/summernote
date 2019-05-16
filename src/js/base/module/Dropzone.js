@@ -13,7 +13,7 @@ export default class Dropzone {
     this.$dropzone = $([
       '<div class="note-dropzone">',
       '  <div class="note-dropzone-message"/>',
-      '</div>'
+      '</div>',
     ].join('')).prependTo(this.$editor);
   }
 

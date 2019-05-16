@@ -26,7 +26,7 @@ export default class ImageDialog {
     const body = [
       '<div class="form-group note-form-group note-group-select-from-files">',
       '<label class="note-form-label">' + this.lang.image.selectFromFiles + '</label>',
-      '<input class="note-image-input note-form-control note-input" ',
+      '<input class="note-image-input form-control-file note-form-control note-input" ',
       ' type="file" name="files" accept="image/*" multiple="multiple" />',
       imageLimitation,
       '</div>',
@@ -34,7 +34,7 @@ export default class ImageDialog {
       '<label class="note-form-label">' + this.lang.image.url + '</label>',
       '<input class="note-image-url form-control note-form-control note-input ',
       ' col-md-12" type="text" />',
-      '</div>'
+      '</div>',
     ].join('');
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-image-btn';
     const footer = `<input type="button" href="#" class="${buttonClass}" value="${this.lang.image.insert}" disabled>`;
@@ -43,7 +43,7 @@ export default class ImageDialog {
       title: this.lang.image.insert,
       fade: this.options.dialogsFade,
       body: body,
-      footer: footer
+      footer: footer,
     }).render().appendTo($container);
   }
 
@@ -76,13 +76,7 @@ export default class ImageDialog {
           this.context.invoke('editor.insertImage', data);
         }
       } else { // array of files
-        // If onImageUpload set,
-        if (this.options.callbacks.onImageUpload) {
-          this.context.triggerEvent('image.upload', data);
-        } else {
-          // else insert Image as dataURL
-          this.context.invoke('editor.insertImagesAsDataURL', data);
-        }
+        this.context.invoke('editor.insertImagesOrCallback', data);
       }
     }).fail(() => {
       this.context.invoke('editor.restoreRange');
@@ -109,27 +103,26 @@ export default class ImageDialog {
           deferred.resolve(event.target.files || event.target.value);
         }).val(''));
 
-        $imageBtn.click((event) => {
-          event.preventDefault();
-
-          deferred.resolve($imageUrl.val());
-        });
-
-        $imageUrl.on('keyup paste', () => {
-          const url = $imageUrl.val();
-          this.ui.toggleBtn($imageBtn, url);
+        $imageUrl.on('input paste propertychange', () => {
+          this.ui.toggleBtn($imageBtn, $imageUrl.val());
         }).val('');
 
         if (!env.isSupportTouch) {
           $imageUrl.trigger('focus');
         }
+
+        $imageBtn.click((event) => {
+          event.preventDefault();
+          deferred.resolve($imageUrl.val());
+        });
+
         this.bindEnterKey($imageUrl, $imageBtn);
       });
 
       this.ui.onDialogHidden(this.$dialog, () => {
-        $imageInput.off('change');
-        $imageUrl.off('keyup paste keypress');
-        $imageBtn.off('click');
+        $imageInput.off();
+        $imageUrl.off();
+        $imageBtn.off();
 
         if (deferred.state() === 'pending') {
           deferred.reject();

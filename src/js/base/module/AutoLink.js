@@ -16,7 +16,7 @@ export default class AutoLink {
       },
       'summernote.keydown': (we, e) => {
         this.handleKeydown(e);
-      }
+      },
     };
   }
 

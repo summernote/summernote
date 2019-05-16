@@ -11,7 +11,7 @@ export default class Placeholder {
       },
       'summernote.codeview.toggled': () => {
         this.update();
-      }
+      },
     };
   }
 

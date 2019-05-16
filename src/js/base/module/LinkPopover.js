@@ -14,7 +14,7 @@ export default class LinkPopover {
       },
       'summernote.disable summernote.dialog.shown': () => {
         this.hide();
-      }
+      },
     };
   }
 
@@ -28,7 +28,7 @@ export default class LinkPopover {
       callback: ($node) => {
         const $content = $node.find('.popover-content,.note-popover-content');
         $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
-      }
+      },
     }).render().appendTo(this.options.container);
     const $content = this.$popover.find('.popover-content,.note-popover-content');
 
@@ -46,7 +46,7 @@ export default class LinkPopover {
       return;
     }
 
-    const rng = this.context.invoke('editor.createRange');
+    const rng = this.context.invoke('editor.getLastRange');
     if (rng.isCollapsed() && rng.isOnAnchor()) {
       const anchor = dom.ancestor(rng.sc, dom.isAnchor);
       const href = $(anchor).attr('href');
@@ -56,7 +56,7 @@ export default class LinkPopover {
       this.$popover.css({
         display: 'block',
         left: pos.left,
-        top: pos.top
+        top: pos.top,
       });
     } else {
       this.hide();

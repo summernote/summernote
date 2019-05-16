@@ -50,7 +50,7 @@ const TableResultAction = function(startPoint, where, action, domTable) {
       'baseCell': baseCell,
       'isRowSpan': isRowSpan,
       'isColSpan': isColSpan,
-      'isVirtual': isVirtualCell
+      'isVirtual': isVirtualCell,
     };
     if (!_virtualTable[rowIndex]) {
       _virtualTable[rowIndex] = [];
@@ -70,8 +70,8 @@ const TableResultAction = function(startPoint, where, action, domTable) {
       'action': resultAction,
       'virtualTable': {
         'rowIndex': virtualRowPosition,
-        'cellIndex': virtualColPosition
-      }
+        'cellIndex': virtualColPosition,
+      },
     };
   }
 

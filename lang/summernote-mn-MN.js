@@ -13,7 +13,7 @@
         superscript: 'Дээд илтгэгч',
         subscript: 'Доод илтгэгч',
         strikethrough: 'Дарах',
-        size: 'Хэмжээ'
+        size: 'Хэмжээ',
       },
       image: {
         image: 'Зураг',
@@ -35,14 +35,14 @@
         maximumFileSizeError: 'Файлын дээд хэмжээ хэтэрсэн',
         url: 'Зургийн URL',
         remove: 'Зургийг устгах',
-        original: 'Original'
+        original: 'Original',
       },
       video: {
         video: 'Видео',
         videoLink: 'Видео холбоос',
         insert: 'Видео оруулах',
         url: 'Видео URL?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion болон Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion болон Youku)',
       },
       link: {
         link: 'Холбоос',
@@ -51,7 +51,7 @@
         edit: 'Засварлах',
         textToDisplay: 'Харуулах бичвэр',
         url: 'Энэ холбоос хаашаа очих вэ?',
-        openInNewWindow: 'Шинэ цонхонд нээх'
+        openInNewWindow: 'Шинэ цонхонд нээх',
       },
       table: {
         table: 'Хүснэгт',
@@ -61,10 +61,10 @@
         addColRight: 'Add column right',
         delRow: 'Delete row',
         delCol: 'Delete column',
-        delTable: 'Delete table'
+        delTable: 'Delete table',
       },
       hr: {
-        insert: 'Хэвтээ шугам оруулах'
+        insert: 'Хэвтээ шугам оруулах',
       },
       style: {
         style: 'Хэв маяг',
@@ -76,16 +76,16 @@
         h3: 'Гарчиг 3',
         h4: 'Гарчиг 4',
         h5: 'Гарчиг 5',
-        h6: 'Гарчиг 6'
+        h6: 'Гарчиг 6',
       },
       lists: {
         unordered: 'Эрэмбэлэгдээгүй',
-        ordered: 'Эрэмбэлэгдсэн'
+        ordered: 'Эрэмбэлэгдсэн',
       },
       options: {
         help: 'Тусламж',
         fullscreen: 'Дэлгэцийг дүүргэх',
-        codeview: 'HTML-Code харуулах'
+        codeview: 'HTML-Code харуулах',
       },
       paragraph: {
         paragraph: 'Хэсэг',
@@ -94,7 +94,7 @@
         left: 'Зүүн тийш эгнүүлэх',
         center: 'Төвд эгнүүлэх',
         right: 'Баруун тийш эгнүүлэх',
-        justify: 'Мөрийг тэгшлэх'
+        justify: 'Мөрийг тэгшлэх',
       },
       color: {
         recent: 'Сүүлд хэрэглэсэн өнгө',
@@ -104,7 +104,7 @@
         transparent: 'Тунгалаг',
         setTransparent: 'Тунгалаг болгох',
         reset: 'Анхдагч өнгөөр тохируулах',
-        resetToDefault: 'Хэвд нь оруулах'
+        resetToDefault: 'Хэвд нь оруулах',
       },
       shortcut: {
         shortcuts: 'Богино холбоос',
@@ -113,7 +113,7 @@
         action: 'Үйлдэл',
         paragraphFormatting: 'Догол мөрийг хэлбэржүүлэх',
         documentStyle: 'Бичиг баримтын хэв загвар',
-        extraKeys: 'Extra keys'
+        extraKeys: 'Extra keys',
       },
       help: {
         'insertParagraph': 'Insert Paragraph',
@@ -142,16 +142,16 @@
         'formatH5': 'Change current block\'s format as H5',
         'formatH6': 'Change current block\'s format as H6',
         'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
+        'linkDialog.show': 'Show Link Dialog',
       },
       history: {
         undo: 'Буцаах',
-        redo: 'Дахин хийх'
+        redo: 'Дахин хийх',
       },
       specialChar: {
         specialChar: 'Тусгай тэмдэгт',
-        select: 'Тусгай тэмдэгт сонгох'
-      }
-    }
+        select: 'Тусгай тэмдэгт сонгох',
+      },
+    },
   });
 })(jQuery);
