@@ -13,10 +13,17 @@ Build dist files and push to master
 git checkout master
 # fetch all changes
 git pull
+
+# Bump version in package.json
+
 # build dist files and binary(.zip) for release post
 grunt dist
-# Push new dist files to remote repository.
+
+# Commit and add tag for new version
 git commit -a -m "Update dist files"
+git tag -a "<new-version>"
+
+# Push new dist files to remote repository.
 git push origin
 ```
 
