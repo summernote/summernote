@@ -42,5 +42,5 @@ npm publish
 ### 05. Update summernote.github.io
 Update summernote version in _config.yml.
 
-### 06. Update connector
- - [summernote-rails](https://github.com/summernote/summernote-rails/blob/master/MAINTAIN.md)
+### 06. Update connectors
+Request maintainers of each connector to update package information.
