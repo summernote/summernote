@@ -1,11 +1,11 @@
 /**
- * Super simple wysiwyg editor v0.8.11
+ * Super simple wysiwyg editor v0.8.12
  * https://summernote.org
  *
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2018-12-22T04:42Z
+ * Date: 2019-05-16T08:16Z
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -61,7 +61,7 @@
       create: function (markup, callback) {
           return function () {
               var options = typeof arguments[1] === 'object' ? arguments[1] : arguments[0];
-              var children = $$1.isArray(arguments[0]) ? arguments[0] : [];
+              var children = Array.isArray(arguments[0]) ? arguments[0] : [];
               if (options && options.children) {
                   children = options.children;
               }
@@ -293,10 +293,10 @@
       }
   });
   var dropdown = renderer.create('<div class="note-dropdown-menu" role="list">', function ($node, options) {
-      var markup = $.isArray(options.items) ? options.items.map(function (item) {
+      var markup = Array.isArray(options.items) ? options.items.map(function (item) {
           var value = (typeof item === 'string') ? item : (item.value || '');
           var content = options.template ? options.template(item) : item;
-          var $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + item + '"></a>');
+          var $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + value + '"></a>');
           $temp.html(content).data('item', item);
           return $temp;
       }) : options.items;
@@ -314,7 +314,7 @@
       });
   });
   var dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check" role="list">', function ($node, options) {
-      var markup = $.isArray(options.items) ? options.items.map(function (item) {
+      var markup = Array.isArray(options.items) ? options.items.map(function (item) {
           var value = (typeof item === 'string') ? item : (item.value || '');
           var content = options.template ? options.template(item) : item;
           var $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + item + '"></a>');
@@ -1019,38 +1019,6 @@
   }
   var isEdge = /Edge\/\d+/.test(userAgent);
   var hasCodeMirror = !!window.CodeMirror;
-  if (!hasCodeMirror && isSupportAmd) {
-      // Webpack
-      if (typeof __webpack_require__ === 'function') { // eslint-disable-line
-          try {
-              // If CodeMirror can't be resolved, `require.resolve` will throw an
-              // exception and `hasCodeMirror` won't be set to `true`.
-              require.resolve('codemirror');
-              hasCodeMirror = true;
-          }
-          catch (e) {
-              // do nothing
-          }
-      }
-      else if (typeof require !== 'undefined') {
-          // Browserify
-          if (typeof require.resolve !== 'undefined') {
-              try {
-                  // If CodeMirror can't be resolved, `require.resolve` will throw an
-                  // exception and `hasCodeMirror` won't be set to `true`.
-                  require.resolve('codemirror');
-                  hasCodeMirror = true;
-              }
-              catch (e) {
-                  // do nothing
-              }
-              // Almond/Require
-          }
-          else if (typeof require.specified !== 'undefined') {
-              hasCodeMirror = require.specified('codemirror');
-          }
-      }
-  }
   var isSupportTouch = (('ontouchstart' in window) ||
       (navigator.MaxTouchPoints > 0) ||
       (navigator.msMaxTouchPoints > 0));
@@ -1297,16 +1265,13 @@
       return true;
   }
   /**
-   * returns index of item
-   */
-  function indexOf(array, item) {
-      return $$1.inArray(item, array);
-  }
-  /**
    * returns true if the value is present in the list.
    */
   function contains(array, item) {
-      return indexOf(array, item) !== -1;
+      if (array && array.length && item) {
+          return array.indexOf(item) !== -1;
+      }
+      return false;
   }
   /**
    * get sum from a list
@@ -1396,22 +1361,22 @@
    * @param {Array} array
    */
   function next(array, item) {
-      var idx = indexOf(array, item);
-      if (idx === -1) {
-          return null;
+      if (array && array.length && item) {
+          var idx = array.indexOf(item);
+          return idx === -1 ? null : array[idx + 1];
       }
-      return array[idx + 1];
+      return null;
   }
   /**
    * returns prev item.
    * @param {Array} array
    */
   function prev(array, item) {
-      var idx = indexOf(array, item);
-      if (idx === -1) {
-          return null;
+      if (array && array.length && item) {
+          var idx = array.indexOf(item);
+          return idx === -1 ? null : array[idx - 1];
       }
-      return array[idx - 1];
+      return null;
   }
   /**
    * @class core.list
@@ -1705,9 +1670,8 @@
   function commonAncestor(nodeA, nodeB) {
       var ancestors = listAncestor(nodeA);
       for (var n = nodeB; n; n = n.parentNode) {
-          if ($$1.inArray(n, ancestors) > -1) {
+          if (ancestors.indexOf(n) > -1)
               return n;
-          }
       }
       return null; // difference document area
   }
@@ -2311,7 +2275,7 @@
               var isBlockNode = /^BLOCKQUOTE|^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
               return match + ((isEndOfInlineContainer || isBlockNode) ? '\n' : '');
           });
-          markup = $$1.trim(markup);
+          markup = markup.trim();
       }
       return markup;
   }
@@ -2791,8 +2755,8 @@
       WrappedRange.prototype.nativeRange = function () {
           if (env.isW3CRangeSupport) {
               var w3cRange = document.createRange();
-              w3cRange.setStart(this.sc, this.so);
-              w3cRange.setEnd(this.ec, this.eo);
+              w3cRange.setStart(this.sc, this.sc.data && this.so > this.sc.data.length ? 0 : this.so);
+              w3cRange.setEnd(this.ec, this.sc.data ? Math.min(this.eo, this.sc.data.length) : this.eo);
               return w3cRange;
           }
           else {
@@ -2862,15 +2826,27 @@
       WrappedRange.prototype.normalize = function () {
           /**
            * @param {BoundaryPoint} point
-           * @param {Boolean} isLeftToRight
+           * @param {Boolean} isLeftToRight - true: prefer to choose right node
+           *                                - false: prefer to choose left node
            * @return {BoundaryPoint}
            */
           var getVisiblePoint = function (point, isLeftToRight) {
-              if ((dom.isVisiblePoint(point) && !dom.isEdgePoint(point)) ||
-                  (dom.isVisiblePoint(point) && dom.isRightEdgePoint(point) && !isLeftToRight) ||
-                  (dom.isVisiblePoint(point) && dom.isLeftEdgePoint(point) && isLeftToRight) ||
-                  (dom.isVisiblePoint(point) && dom.isBlock(point.node) && dom.isEmpty(point.node))) {
-                  return point;
+              // Just use the given point [XXX:Adhoc]
+              //  - case 01. if the point is on the middle of the node
+              //  - case 02. if the point is on the right edge and prefer to choose left node
+              //  - case 03. if the point is on the left edge and prefer to choose right node
+              //  - case 04. if the point is on the right edge and prefer to choose right node but the node is void
+              //  - case 05. if the point is on the left edge and prefer to choose left node but the node is void
+              //  - case 06. if the point is on the block node and there is no children
+              if (dom.isVisiblePoint(point)) {
+                  if (!dom.isEdgePoint(point) ||
+                      (dom.isRightEdgePoint(point) && !isLeftToRight) ||
+                      (dom.isLeftEdgePoint(point) && isLeftToRight) ||
+                      (dom.isRightEdgePoint(point) && isLeftToRight && dom.isVoid(point.node.nextSibling)) ||
+                      (dom.isLeftEdgePoint(point) && !isLeftToRight && dom.isVoid(point.node.previousSibling)) ||
+                      (dom.isBlock(point.node) && dom.isEmpty(point.node))) {
+                      return point;
+                  }
               }
               // point on block's edge
               var block = dom.ancestor(point.node, dom.isBlock);
@@ -3713,7 +3689,7 @@
           }
           else {
               var orderedTypes = ['circle', 'disc', 'disc-leading-zero', 'square'];
-              var isUnordered = $$1.inArray(styleInfo['list-style-type'], orderedTypes) > -1;
+              var isUnordered = orderedTypes.indexOf(styleInfo['list-style-type']) > -1;
               styleInfo['list-style'] = isUnordered ? 'unordered' : 'ordered';
           }
           var para = dom.ancestor(rng.sc, dom.isPara);
@@ -5272,15 +5248,20 @@
       };
       Editor.prototype.onFormatBlock = function (tagName, $target) {
           // [workaround] for MSIE, IE need `<`
-          tagName = env.isMSIE ? '<' + tagName + '>' : tagName;
-          document.execCommand('FormatBlock', false, tagName);
+          document.execCommand('FormatBlock', false, env.isMSIE ? '<' + tagName + '>' : tagName);
           // support custom class
           if ($target && $target.length) {
-              var className = $target[0].className || '';
-              if (className) {
-                  var currentRange = this.createRange();
-                  var $parent = $$1([currentRange.sc, currentRange.ec]).closest(tagName);
-                  $parent.addClass(className);
+              // find the exact element has given tagName
+              if ($target[0].tagName.toUpperCase() !== tagName.toUpperCase()) {
+                  $target = $target.find(tagName);
+              }
+              if ($target && $target.length) {
+                  var className = $target[0].className || '';
+                  if (className) {
+                      var currentRange = this.createRange();
+                      var $parent = $$1([currentRange.sc, currentRange.ec]).closest(tagName);
+                      $parent.addClass(className);
+                  }
               }
           }
       };
@@ -5584,14 +5565,7 @@
 
   var CodeMirror;
   if (env.hasCodeMirror) {
-      if (env.isSupportAmd) {
-          require(['codemirror'], function (cm) {
-              CodeMirror = cm;
-          });
-      }
-      else {
-          CodeMirror = window.CodeMirror;
-      }
+      CodeMirror = window.CodeMirror;
   }
   /**
    * @class Codeview
@@ -5648,7 +5622,7 @@
                       for (var _i = 0, whitelist_2 = whitelist_1; _i < whitelist_2.length; _i++) {
                           var src = whitelist_2[_i];
                           // pass if src is trusted
-                          if ((new RegExp('src="(https?:)?\/\/' + src + '\/(.+)"')).test(tag)) {
+                          if ((new RegExp('src="(https?:)?\/\/' + src.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '\/(.+)"')).test(tag)) {
                               return tag;
                           }
                       }
@@ -5822,7 +5796,7 @@
           this.lang = this.options.langInfo;
           this.events = {
               'summernote.mousedown': function (we, e) {
-                  if (_this.update(e.target)) {
+                  if (_this.update(e.target, e)) {
                       e.preventDefault();
                   }
               },
@@ -5888,13 +5862,13 @@
       Handle.prototype.destroy = function () {
           this.$handle.remove();
       };
-      Handle.prototype.update = function (target) {
+      Handle.prototype.update = function (target, event) {
           if (this.context.isDisabled()) {
               return false;
           }
           var isImage = dom.isImg(target);
           var $selection = this.$handle.find('.note-control-selection');
-          this.context.invoke('imagePopover.update', target);
+          this.context.invoke('imagePopover.update', target, event);
           if (isImage) {
               var $image = $$1(target);
               var position = $image.position();
@@ -6170,7 +6144,7 @@
       Buttons.prototype.isFontDeservedToAdd = function (name) {
           var genericFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
           name = name.toLowerCase();
-          return ((name !== '') && this.isFontInstalled(name) && ($$1.inArray(name, genericFamilies) === -1));
+          return (name !== '' && this.isFontInstalled(name) && genericFamilies.indexOf(name) === -1);
       };
       Buttons.prototype.colorPalette = function (className, tooltip, backColor, foreColor) {
           var _this = this;
@@ -6435,7 +6409,7 @@
               $$1.each(styleInfo['font-family'].split(','), function (idx, fontname) {
                   fontname = fontname.trim().replace(/['"]+/g, '');
                   if (_this.isFontDeservedToAdd(fontname)) {
-                      if ($$1.inArray(fontname, _this.options.fontNames) === -1) {
+                      if (_this.options.fontNames.indexOf(fontname) === -1) {
                           _this.options.fontNames.push(fontname);
                       }
                   }
@@ -6833,8 +6807,8 @@
       Buttons.prototype.build = function ($container, groups) {
           for (var groupIdx = 0, groupLen = groups.length; groupIdx < groupLen; groupIdx++) {
               var group = groups[groupIdx];
-              var groupName = $$1.isArray(group) ? group[0] : group;
-              var buttons = $$1.isArray(group) ? ((group.length === 1) ? [group[0]] : group[1]) : [group];
+              var groupName = Array.isArray(group) ? group[0] : group;
+              var buttons = Array.isArray(group) ? ((group.length === 1) ? [group[0]] : group[1]) : [group];
               var $group = this.ui.buttonGroup({
                   className: 'note-' + groupName
               }).render();
@@ -7155,30 +7129,23 @@
                   .find('.sn-checkbox-open-in-new-window input[type=checkbox]');
               _this.ui.onDialogShown(_this.$dialog, function () {
                   _this.context.triggerEvent('dialog.shown');
-                  // if no url was given and given text is valid URL then copy that into URL Field
+                  // If no url was given and given text is valid URL then copy that into URL Field
                   if (!linkInfo.url && func.isValidUrl(linkInfo.text)) {
                       linkInfo.url = linkInfo.text;
                   }
-                  $linkText.val(linkInfo.text);
-                  var handleLinkTextUpdate = function () {
-                      _this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
-                      // if linktext was modified by keyup,
-                      // stop cloning text from linkUrl
+                  $linkText.on('input paste propertychange', function () {
+                      // If linktext was modified by input events,
+                      // cloning text from linkUrl will be stopped.
                       linkInfo.text = $linkText.val();
-                  };
-                  $linkText.on('input', handleLinkTextUpdate).on('paste', function () {
-                      setTimeout(handleLinkTextUpdate, 0);
-                  });
-                  var handleLinkUrlUpdate = function () {
                       _this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
-                      // display same link on `Text to display` input
-                      // when create a new link
+                  }).val(linkInfo.text);
+                  $linkUrl.on('input paste propertychange', function () {
+                      // Display same text on `Text to display` as default
+                      // when linktext has no text
                       if (!linkInfo.text) {
                           $linkText.val($linkUrl.val());
                       }
-                  };
-                  $linkUrl.on('input', handleLinkUrlUpdate).on('paste', function () {
-                      setTimeout(handleLinkUrlUpdate, 0);
+                      _this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
                   }).val(linkInfo.url);
                   if (!env.isSupportTouch) {
                       $linkUrl.trigger('focus');
@@ -7202,9 +7169,9 @@
               });
               _this.ui.onDialogHidden(_this.$dialog, function () {
                   // detach events
-                  $linkText.off('input paste keypress');
-                  $linkUrl.off('input paste keypress');
-                  $linkBtn.off('click');
+                  $linkText.off();
+                  $linkUrl.off();
+                  $linkBtn.off();
                   if (deferred.state() === 'pending') {
                       deferred.reject();
                   }
@@ -7382,23 +7349,22 @@
                   $imageInput.replaceWith($imageInput.clone().on('change', function (event) {
                       deferred.resolve(event.target.files || event.target.value);
                   }).val(''));
-                  $imageBtn.click(function (event) {
-                      event.preventDefault();
-                      deferred.resolve($imageUrl.val());
-                  });
-                  $imageUrl.on('keyup paste', function () {
-                      var url = $imageUrl.val();
-                      _this.ui.toggleBtn($imageBtn, url);
+                  $imageUrl.on('input paste propertychange', function () {
+                      _this.ui.toggleBtn($imageBtn, $imageUrl.val());
                   }).val('');
                   if (!env.isSupportTouch) {
                       $imageUrl.trigger('focus');
                   }
+                  $imageBtn.click(function (event) {
+                      event.preventDefault();
+                      deferred.resolve($imageUrl.val());
+                  });
                   _this.bindEnterKey($imageUrl, $imageBtn);
               });
               _this.ui.onDialogHidden(_this.$dialog, function () {
-                  $imageInput.off('change');
-                  $imageUrl.off('keyup paste keypress');
-                  $imageBtn.off('click');
+                  $imageInput.off();
+                  $imageUrl.off();
+                  $imageBtn.off();
                   if (deferred.state() === 'pending') {
                       deferred.reject();
                   }
@@ -7440,7 +7406,7 @@
       ImagePopover.prototype.destroy = function () {
           this.$popover.remove();
       };
-      ImagePopover.prototype.update = function (target) {
+      ImagePopover.prototype.update = function (target, event) {
           if (dom.isImg(target)) {
               var pos = dom.posFromPlaceholder(target);
               var posEditor = dom.posFromPlaceholder(this.editable);
@@ -7694,7 +7660,7 @@
               var $videoBtn = _this.$dialog.find('.note-video-btn');
               _this.ui.onDialogShown(_this.$dialog, function () {
                   _this.context.triggerEvent('dialog.shown');
-                  $videoUrl.val(text).on('input', function () {
+                  $videoUrl.on('input paste propertychange', function () {
                       _this.ui.toggleBtn($videoBtn, $videoUrl.val());
                   });
                   if (!env.isSupportTouch) {
@@ -7707,8 +7673,8 @@
                   _this.bindEnterKey($videoUrl, $videoBtn);
               });
               _this.ui.onDialogHidden(_this.$dialog, function () {
-                  $videoUrl.off('input');
-                  $videoBtn.off('click');
+                  $videoUrl.off();
+                  $videoBtn.off();
                   if (deferred.state() === 'pending') {
                       deferred.reject();
                   }
@@ -7732,7 +7698,7 @@
           var $container = this.options.dialogsInBody ? this.$body : this.$editor;
           var body = [
               '<p class="text-center">',
-              '<a href="http://summernote.org/" target="_blank">Summernote 0.8.11</a> · ',
+              '<a href="http://summernote.org/" target="_blank">Summernote 0.8.12</a> · ',
               '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ',
               '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>',
               '</p>',
@@ -7865,7 +7831,7 @@
           this.options = context.options;
           this.hint = this.options.hint || [];
           this.direction = this.options.hintDirection || 'bottom';
-          this.hints = $$1.isArray(this.hint) ? this.hint : [this.hint];
+          this.hints = Array.isArray(this.hint) ? this.hint : [this.hint];
           this.events = {
               'summernote.keyup': function (we, e) {
                   if (!e.isDefaultPrevented()) {
@@ -8056,7 +8022,7 @@
   }());
 
   $$1.summernote = $$1.extend($$1.summernote, {
-      version: '0.8.11',
+      version: '0.8.12',
       plugins: {},
       dom: dom,
       range: range,
@@ -8090,7 +8056,7 @@
           },
           buttons: {},
           lang: 'en-US',
-          followingToolbar: true,
+          followingToolbar: false,
           otherStaticBar: '',
           // toolbar
           toolbar: [
@@ -8215,7 +8181,8 @@
           codeviewIframeFilter: true,
           codeviewIframeWhitelistSrc: [],
           codeviewIframeWhitelistSrcBase: [
-              'www.youtube(?:-nocookie)?.com',
+              'www.youtube.com',
+              'www.youtube-nocookie.com',
               'www.facebook.com',
               'vine.co',
               'instagram.com',

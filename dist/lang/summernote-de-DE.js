@@ -11,7 +11,7 @@
         strikethrough: 'Durchgestrichen',
         subscript: 'Tiefgestellt',
         superscript: 'Hochgestellt',
-        size: 'Schriftgröße'
+        size: 'Schriftgröße',
       },
       image: {
         image: 'Bild',
@@ -33,14 +33,14 @@
         maximumFileSizeError: 'Maximale Dateigröße überschritten',
         url: 'Bild URL',
         remove: 'Bild entfernen',
-        original: 'Original'
+        original: 'Original',
       },
       video: {
         video: 'Video',
         videoLink: 'Videolink',
         insert: 'Video einfügen',
         url: 'Video URL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion oder Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion oder Youku)',
       },
       link: {
         link: 'Link',
@@ -49,7 +49,7 @@
         edit: 'Bearbeiten',
         textToDisplay: 'Anzeigetext',
         url: 'Link URL',
-        openInNewWindow: 'In neuem Fenster öffnen'
+        openInNewWindow: 'In neuem Fenster öffnen',
       },
       table: {
         table: 'Tabelle',
@@ -59,10 +59,10 @@
         addColRight: '+ Spalte rechts',
         delRow: 'Reihe löschen',
         delCol: 'Spalte löschen',
-        delTable: 'Tabelle löschen'
+        delTable: 'Tabelle löschen',
       },
       hr: {
-        insert: 'Horizontale Linie einfügen'
+        insert: 'Horizontale Linie einfügen',
       },
       style: {
         style: 'Stil',
@@ -75,25 +75,25 @@
         h3: 'Überschrift 3',
         h4: 'Überschrift 4',
         h5: 'Überschrift 5',
-        h6: 'Überschrift 6'
+        h6: 'Überschrift 6',
       },
       lists: {
         unordered: 'Unnummerierte Liste',
-        ordered: 'Nummerierte Liste'
+        ordered: 'Nummerierte Liste',
       },
       options: {
         help: 'Hilfe',
         fullscreen: 'Vollbild',
-        codeview: 'Quellcode anzeigen'
+        codeview: 'Quellcode anzeigen',
       },
       paragraph: {
         paragraph: 'Absatz',
-        outdent: 'Einzug vergrößern',
-        indent: 'Einzug verkleinern',
+        outdent: 'Einzug verkleinern',
+        indent: 'Einzug vergrößern',
         left: 'Links ausrichten',
         center: 'Zentriert ausrichten',
         right: 'Rechts ausrichten',
-        justify: 'Blocksatz'
+        justify: 'Blocksatz',
       },
       color: {
         recent: 'Letzte Farbe',
@@ -103,7 +103,7 @@
         transparent: 'Transparenz',
         setTransparent: 'Transparenz setzen',
         reset: 'Zurücksetzen',
-        resetToDefault: 'Auf Standard zurücksetzen'
+        resetToDefault: 'Auf Standard zurücksetzen',
       },
       shortcut: {
         shortcuts: 'Tastenkürzel',
@@ -112,7 +112,7 @@
         action: 'Aktion',
         paragraphFormatting: 'Absatzformatierung',
         documentStyle: 'Dokumentenstil',
-        extraKeys: 'Weitere Tasten'
+        extraKeys: 'Weitere Tasten',
       },
       help: {
         'insertParagraph': 'Absatz einfügen',
@@ -141,16 +141,16 @@
         'formatH5': 'Formatiert aktuellen Block als H5',
         'formatH6': 'Formatiert aktuellen Block als H6',
         'insertHorizontalRule': 'Fügt eine horizontale Linie ein',
-        'linkDialog.show': 'Zeigt Linkdialog'
+        'linkDialog.show': 'Zeigt Linkdialog',
       },
       history: {
         undo: 'Rückgängig',
-        redo: 'Wiederholen'
+        redo: 'Wiederholen',
       },
       specialChar: {
         specialChar: 'Sonderzeichen',
-        select: 'Zeichen auswählen'
-      }
-    }
+        select: 'Zeichen auswählen',
+      },
+    },
   });
 })(jQuery);

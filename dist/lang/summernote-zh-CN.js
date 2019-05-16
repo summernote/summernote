@@ -11,7 +11,7 @@
         strikethrough: '删除线',
         subscript: '下标',
         superscript: '上标',
-        size: '字号'
+        size: '字号',
       },
       image: {
         image: '图片',
@@ -33,14 +33,14 @@
         maximumFileSizeError: '文件大小超出最大值。',
         url: '图片地址',
         remove: '移除图片',
-        original: '原始图片'
+        original: '原始图片',
       },
       video: {
         video: '视频',
         videoLink: '视频链接',
         insert: '插入视频',
         url: '视频地址',
-        providers: '(优酷, 腾讯, Instagram, DailyMotion, Youtube等)'
+        providers: '(优酷, 腾讯, Instagram, DailyMotion, Youtube等)',
       },
       link: {
         link: '链接',
@@ -49,7 +49,7 @@
         edit: '编辑链接',
         textToDisplay: '显示文本',
         url: '链接地址',
-        openInNewWindow: '在新窗口打开'
+        openInNewWindow: '在新窗口打开',
       },
       table: {
         table: '表格',
@@ -59,10 +59,10 @@
         addColRight: '在右侧插入列',
         delRow: '删除行',
         delCol: '删除列',
-        delTable: '删除表格'
+        delTable: '删除表格',
       },
       hr: {
-        insert: '水平线'
+        insert: '水平线',
       },
       style: {
         style: '样式',
@@ -74,16 +74,16 @@
         h3: '标题 3',
         h4: '标题 4',
         h5: '标题 5',
-        h6: '标题 6'
+        h6: '标题 6',
       },
       lists: {
         unordered: '无序列表',
-        ordered: '有序列表'
+        ordered: '有序列表',
       },
       options: {
         help: '帮助',
         fullscreen: '全屏',
-        codeview: '源代码'
+        codeview: '源代码',
       },
       paragraph: {
         paragraph: '段落',
@@ -92,7 +92,7 @@
         left: '左对齐',
         center: '居中对齐',
         right: '右对齐',
-        justify: '两端对齐'
+        justify: '两端对齐',
       },
       color: {
         recent: '最近使用',
@@ -102,7 +102,7 @@
         transparent: '透明',
         setTransparent: '透明',
         reset: '重置',
-        resetToDefault: '默认'
+        resetToDefault: '默认',
       },
       shortcut: {
         shortcuts: '快捷键',
@@ -111,7 +111,7 @@
         action: '动作',
         paragraphFormatting: '段落格式',
         documentStyle: '文档样式',
-        extraKeys: '额外按键'
+        extraKeys: '额外按键',
       },
       help: {
         insertParagraph: '插入段落',
@@ -140,16 +140,16 @@
         formatH5: '设置选中内容样式为 标题5',
         formatH6: '设置选中内容样式为 标题6',
         insertHorizontalRule: '插入水平线',
-        'linkDialog.show': '显示链接对话框'
+        'linkDialog.show': '显示链接对话框',
       },
       history: {
         undo: '撤销',
-        redo: '重做'
+        redo: '重做',
       },
       specialChar: {
         specialChar: '特殊字符',
-        select: '选取特殊字符'
-      }
-    }
+        select: '选取特殊字符',
+      },
+    },
   });
 })(jQuery);
