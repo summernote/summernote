@@ -23,8 +23,8 @@ grunt dist
 git commit -a -m "Update dist files"
 git tag -a "<new-version>"
 
-# Push new dist files to remote repository.
-git push origin
+# Push new dist files and tags to remote repository.
+git push origin --tags
 ```
 
 ### 3. Release new version
