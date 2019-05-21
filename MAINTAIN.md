@@ -5,27 +5,6 @@
 Send pull request `develop` to `master` on github repository and merge it.
 https://github.com/summernote/summernote/compare/master...develop
 
-#### development 
-
-```bash
-npm install 
-
-npm run dev
-```
-
-* you can test examples/ files 
-
-```bash
-npm run dev
-open localhost:3000/examples/
-click example page 
-```
-
-#### build dist files 
-
-```bash
-npm build
-```
 
 ### 2. Build dist files
 
@@ -37,12 +16,17 @@ git checkout master
 # fetch all changes
 git pull
 
+# Bump version in package.json
+
 # build dist files and binary(.zip) for release post
 npm run build 
 
-# Push new dist files to remote repository.
+# Commit and add tag for new version
 git commit -a -m "Update dist files"
-git push origin
+git tag -a "<new-version>"
+
+# Push new dist files and tags to remote repository.
+git push origin --tags
 ```
 
 ### 3. Release new version
@@ -60,5 +44,5 @@ npm publish
 ### 05. Update summernote.github.io
 Update summernote version in _config.yml.
 
-### 06. Update connector
- - [summernote-rails](https://github.com/summernote/summernote-rails/blob/master/MAINTAIN.md)
+### 06. Update connectors
+Request maintainers of each connector to update package information.

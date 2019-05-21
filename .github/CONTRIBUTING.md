@@ -20,7 +20,7 @@ At this point, you should now have a `dist/` directory populated with everything
 run local server with webpack-dev-server and watch.
 ```bash
 npm run dev
-# Open a browser on http://localhost:8080.
+# Open a browser on http://localhost:3000.
 # If you change source code, automatically reload your page.
 ```
 
