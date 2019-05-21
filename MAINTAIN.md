@@ -5,19 +5,21 @@
 Send pull request `develop` to `master` on github repository and merge it.
 https://github.com/summernote/summernote/compare/master...develop
 
+
 ### 2. Build dist files
 
 Build dist files and push to master
 ```bash
 # change branch
 git checkout master
+
 # fetch all changes
 git pull
 
 # Bump version in package.json
 
 # build dist files and binary(.zip) for release post
-grunt dist
+npm run build 
 
 # Commit and add tag for new version
 git commit -a -m "Update dist files"

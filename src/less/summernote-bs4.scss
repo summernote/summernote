@@ -1,3 +1,4 @@
+@import './summernote.css';
 @import "elements.scss";
 
 /* Theme Variables
@@ -246,6 +247,9 @@ $img-margin-right: 10px;
 
 /* Popover
 ------------------------------------------*/
+.note-popover {
+  display: none;
+}
 .note-popover.popover {
   max-width: none;
   .popover-content {
@@ -332,8 +336,10 @@ $img-margin-right: 10px;
       padding-left: 5px;
     }
     .dropdown-menu {
-      .btn-group {
+      .note-palette {
+        display: inline-block;
         margin: 0;
+        width: 160px;
         &:first-child {
           margin: 0 5px;
         }
