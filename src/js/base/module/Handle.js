@@ -58,7 +58,7 @@ export default class Handle {
             y: event.clientY - (posStart.top - scrollTop),
           }, $target, !event.shiftKey);
 
-          this.update($target[0]);
+          this.update($target[0], event);
         };
 
         this.$document
