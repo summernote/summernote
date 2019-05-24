@@ -11,7 +11,7 @@
         strikethrough: 'Gennemstreget',
         subscript: 'Sænket skrift',
         superscript: 'Hævet skrift',
-        size: 'Skriftstørrelse'
+        size: 'Skriftstørrelse',
       },
       image: {
         image: 'Billede',
@@ -33,14 +33,14 @@
         maximumFileSizeError: 'Filen er større end maks tilladte fil størrelse!',
         url: 'Billede URL',
         remove: 'Fjern billede',
-        original: 'Original'
+        original: 'Original',
       },
       video: {
         video: 'Video',
         videoLink: 'Video Link',
         insert: 'Indsæt Video',
         url: 'Video URL?',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion eller Youku)'
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion eller Youku)',
       },
       link: {
         link: 'Link',
@@ -49,7 +49,7 @@
         edit: 'Rediger',
         textToDisplay: 'Visningstekst',
         url: 'Hvor skal linket pege hen?',
-        openInNewWindow: 'Åbn i nyt vindue'
+        openInNewWindow: 'Åbn i nyt vindue',
       },
       table: {
         table: 'Tabel',
@@ -59,10 +59,10 @@
         addColRight: 'Tilføj højre kolonne',
         delRow: 'Slet række',
         delCol: 'Slet kolonne',
-        delTable: 'Slet tabel'
+        delTable: 'Slet tabel',
       },
       hr: {
-        insert: 'Indsæt horisontal linje'
+        insert: 'Indsæt horisontal linje',
       },
       style: {
         style: 'Stil',
@@ -74,16 +74,16 @@
         h3: 'Overskrift 3',
         h4: 'Overskrift 4',
         h5: 'Overskrift 5',
-        h6: 'Overskrift 6'
+        h6: 'Overskrift 6',
       },
       lists: {
         unordered: 'Punktopstillet liste',
-        ordered: 'Nummereret liste'
+        ordered: 'Nummereret liste',
       },
       options: {
         help: 'Hjælp',
         fullscreen: 'Fuld skærm',
-        codeview: 'HTML-Visning'
+        codeview: 'HTML-Visning',
       },
       paragraph: {
         paragraph: 'Afsnit',
@@ -92,7 +92,7 @@
         left: 'Venstrestillet',
         center: 'Centreret',
         right: 'Højrestillet',
-        justify: 'Blokjuster'
+        justify: 'Blokjuster',
       },
       color: {
         recent: 'Nyligt valgt farve',
@@ -102,7 +102,7 @@
         transparent: 'Transparent',
         setTransparent: 'Sæt transparent',
         reset: 'Nulstil',
-        resetToDefault: 'Gendan standardindstillinger'
+        resetToDefault: 'Gendan standardindstillinger',
       },
       shortcut: {
         shortcuts: 'Genveje',
@@ -111,7 +111,7 @@
         action: 'Handling',
         paragraphFormatting: 'Afsnitsformatering',
         documentStyle: 'Dokumentstil',
-        extraKeys: 'Extra keys'
+        extraKeys: 'Extra keys',
       },
       help: {
         'insertParagraph': 'Indsæt paragraf',
@@ -140,16 +140,16 @@
         'formatH5': 'Change current block\'s format as H5',
         'formatH6': 'Change current block\'s format as H6',
         'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Vis Link Dialog'
+        'linkDialog.show': 'Vis Link Dialog',
       },
       history: {
         undo: 'Fortryd',
-        redo: 'Annuller fortryd'
+        redo: 'Annuller fortryd',
       },
       specialChar: {
         specialChar: 'SPECIAL CHARACTERS',
-        select: 'Vælg special karakterer'
-      }
-    }
+        select: 'Vælg special karakterer',
+      },
+    },
   });
 })(jQuery);
