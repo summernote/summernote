@@ -2,7 +2,7 @@
 @import "elements.less";
 
 /* Theme Variables
- ------------------------------------------*/
+ ------------------------------------------ */
 @border-color: #a9a9a9;
 @background-color: #f5f5f5;
 
@@ -10,11 +10,11 @@
 @img-margin-right: 10px;
 
 /* Layout
- ------------------------------------------*/
+ ------------------------------------------ */
 .note-editor {
   position: relative;
 
-  /* dropzone */
+  // dropzone
   @dropzone-color: lightskyblue;
   @dropzone-active-color: darken(@dropzone-color, 30);
   .note-dropzone {
@@ -55,24 +55,24 @@
       sub {
         vertical-align: sub;
       }
-    }
 
-    img.note-float-left {
-      margin-right: @img-margin-right;
-    }
+      img.note-float-left {
+        margin-right: @img-margin-right;
+      }
 
-    img.note-float-right {
-      margin-left: @img-margin-left;
+      img.note-float-right {
+        margin-left: @img-margin-left;
+      }
     }
   }
 }
 
 /* Frame mode layout
-------------------------------------------*/
+ ------------------------------------------ */
 .note-editor.note-frame {
   border: 1px solid @border-color;
 
-  /* codeview mode */
+  // codeview mode
   &.codeview {
     .note-editing-area {
       .note-editable {
@@ -87,7 +87,7 @@
   .note-editing-area {
     overflow: hidden;
 
-    /* editable */
+    // editable
     .note-editable {
       background-color: #fff;
       color: #000;
@@ -100,7 +100,7 @@
       }
     }
 
-    /* codeable */
+    // codeable
     .note-codable {
       display: none;
       width: 100%;
@@ -114,20 +114,20 @@
       resize: none;
       outline: none;
 
-      /* override BS2 default style */
+      // override BS2 default style
       .box-sizing(border-box);
       .rounded(0);
       margin-bottom: 0;
     }
   }
 
-  /* fullscreen mode */
+  // fullscreen mode
   &.fullscreen {
     position: fixed;
     top: 0;
     left: 0;
     width: 100% !important;
-    z-index: 1050; /* bs3 modal-backdrop: 1030, bs2: 1040 */
+    z-index: 1050; // bs3 modal-backdrop: 1030, bs2: 1040
     .note-editable {
       background-color: #fff;
     }
@@ -136,7 +136,7 @@
     }
   }
 
-/* Notifications */
+  // Notifications
   .note-status-output {
     display: block;
     width: 100%;
@@ -214,7 +214,7 @@
     background-color: #f2dede !important;
   }
 
-  /* statusbar */
+  // statusbar
   .note-statusbar {
     background-color: @background-color;
     border-bottom-left-radius: 4px;
@@ -247,7 +247,7 @@
 }
 
 /* Popover
-------------------------------------------*/
+ ------------------------------------------ */
 .note-popover.popover {
   max-width: none;
   .popover-content {
@@ -256,8 +256,8 @@
       max-width: 200px;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;    /* for FF */
-      vertical-align: middle; /* for FF */
+      white-space: nowrap;    // for FF
+      vertical-align: middle; // for FF
     }
   }
   .arrow {
@@ -266,17 +266,18 @@
 }
 
 /* Popover and Toolbar (Button container)
-------------------------------------------*/
+ ------------------------------------------ */
 .note-toolbar {
   z-index: 500;
   position: relative;
 }
 
-.note-popover .popover-content, .panel-heading.note-toolbar {
+.note-popover .popover-content,
+.panel-heading.note-toolbar {
   margin: 0;
   padding: 0 0 5px 5px;
 
-  &>.btn-group {
+  & > .btn-group {
     margin-top: 5px;
     margin-left: 0;
     margin-right: 5px;
@@ -313,7 +314,7 @@
     }
   }
 
-  .note-style { 
+  .note-style {
     .dropdown-style {
       blockquote, pre {
           margin: 0;
@@ -388,25 +389,31 @@
     .dropdown-menu {
       min-width: 216px;
       padding: 5px;
-      &>div:first-child {
+      & > div:first-child {
         margin-right: 5px;
       }
     }
   }
 
-  /* dropdown-menu for toolbar and popover */
+  // dropdown-menu for toolbar and popover
   .dropdown-menu {
     min-width: 90px;
 
-    /* dropdown-menu right position */
-    /* http://forrst.com/posts/Bootstrap_right_positioned_dropdown-2KB */
+    // dropdown-menu right position
+    // http://forrst.com/posts/Bootstrap_right_positioned_dropdown-2KB
     &.right {
       right: 0;
       left: auto;
-      &::before { right: 9px; left: auto !important;  }
-      &::after { right: 10px; left: auto !important;  }
+      &::before {
+        right: 9px;
+        left: auto !important;
+      }
+      &::after {
+        right: 10px;
+        left: auto !important;
+      }
     }
-    /* dropdown-menu for selectbox */
+    // dropdown-menu for selectbox
     &.note-check {
       li a i {
         color: deepskyblue;
@@ -416,14 +423,13 @@
         visibility: visible;
       }
     }
-
   }
 
   .note-fontsize-10 {
     font-size: 10px;
   }
 
-  /* color palette for toolbar and popover */
+  // color palette for toolbar and popover
   .note-color-palette {
     line-height: 1;
     div {
@@ -442,23 +448,23 @@
 }
 
 /* Dialog
-------------------------------------------*/
+ ------------------------------------------ */
 .note-dialog {
-  &>div {
-    display: none; /* BS2's hide pacth. */
+  & > div {
+    display: none; // BS2's hide pacth.
   }
-  .form-group { /* overwrite BS's form-horizontal minus margins */
+  .form-group { // overwrite BS's form-horizontal minus margins
     margin-left: 0;
     margin-right: 0;
   }
   .note-modal-form {
-    margin: 0; /* overwrite BS2's form margin bottom */
+    margin: 0; // overwrite BS2's form margin bottom
   }
   .note-image-dialog {
     .note-dropzone {
       min-height: 100px;
       font-size: 30px;
-      line-height: 4; /* vertical-align */
+      line-height: 4; // vertical-align
       color: lightgray;
       text-align: center;
       border: 4px dashed lightgray;
@@ -475,7 +481,7 @@
 }
 
 /* Placeholder
-------------------------------------------*/
+ ------------------------------------------ */
 .note-placeholder {
   position: absolute;
   display: none;
@@ -483,14 +489,16 @@
 }
 
 /* Handle
-------------------------------------------*/
+ ------------------------------------------ */
 .note-handle {
-  /* control selection */
+  // control selection
   .note-control-selection {
     position: absolute;
     display: none;
     border: 1px solid #000;
-    &>div { position: absolute; }
+    & > div {
+      position: absolute;
+    }
 
     .note-control-selection-bg {
       width: 100%;
