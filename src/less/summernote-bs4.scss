@@ -2,7 +2,7 @@
 @import "elements.scss";
 
 /* Theme Variables
- ------------------------------------------*/
+ ------------------------------------------ */
 $border-color: #a9a9a9;
 $background-color: #f5f5f5;
 
@@ -10,11 +10,11 @@ $img-margin-left: 10px;
 $img-margin-right: 10px;
 
 /* Layout
- ------------------------------------------*/
+ ------------------------------------------ */
 .note-editor {
   position: relative;
 
-  /* dropzone */
+  // dropzone
   $dropzone-color: lightskyblue;
   $dropzone-active-color: darken($dropzone-color, 30);
   .note-dropzone {
@@ -68,11 +68,11 @@ $img-margin-right: 10px;
 }
 
 /* Frame mode layout
-------------------------------------------*/
+ ------------------------------------------ */
 .note-editor.note-frame {
   border: 1px solid $border-color;
 
-  /* codeview mode */
+  // codeview mode
   &.codeview {
     .note-editing-area {
       .note-editable {
@@ -87,7 +87,7 @@ $img-margin-right: 10px;
   .note-editing-area {
     overflow: hidden;
 
-    /* editable */
+    // editable
     .note-editable {
       background-color: #fff;
       color: #000;
@@ -100,7 +100,7 @@ $img-margin-right: 10px;
       }
     }
 
-    /* codeable */
+    // codeable
     .note-codable {
       display: none;
       width: 100%;
@@ -112,21 +112,22 @@ $img-margin-right: 10px;
       color: #ccc;
       background-color: #222;
       resize: none;
+      outline: none;
 
-      /* override BS2 default style */
+      // override BS2 default style
       @include box-sizing(border-box);
       @include rounded(0);
       margin-bottom: 0;
     }
   }
 
-  /* fullscreen mode */
+  // fullscreen mode
   &.fullscreen {
     position: fixed;
     top: 0;
     left: 0;
     width: 100% !important;
-    z-index: 1050; /* bs3 modal-backdrop: 1030, bs2: 1040 */
+    z-index: 1050; // bs3 modal-backdrop: 1030, bs2: 1040
     .note-editable {
       background-color: #fff;
     }
@@ -135,7 +136,7 @@ $img-margin-right: 10px;
     }
   }
 
-/* Notifications */
+  // Notifications
   .note-status-output {
     display: block;
     width: 100%;
@@ -213,7 +214,7 @@ $img-margin-right: 10px;
     background-color: #f2dede !important;
   }
 
-  /* statusbar */
+  // statusbar
   .note-statusbar {
     background-color: $background-color;
     border-bottom-left-radius: 4px;
@@ -246,11 +247,9 @@ $img-margin-right: 10px;
 }
 
 /* Popover
-------------------------------------------*/
-.note-popover {
-  display: none;
-}
+ ------------------------------------------ */
 .note-popover.popover {
+  display: none;
   max-width: none;
   .popover-content {
     a {
@@ -258,8 +257,8 @@ $img-margin-right: 10px;
       max-width: 200px;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;    /* for FF */
-      vertical-align: middle; /* for FF */
+      white-space: nowrap;    // for FF
+      vertical-align: middle; // for FF
     }
   }
   .arrow {
@@ -268,7 +267,12 @@ $img-margin-right: 10px;
 }
 
 /* Popover and Toolbar (Button container)
-------------------------------------------*/
+ ------------------------------------------ */
+.note-toolbar {
+  z-index: 500;
+  position: relative;
+}
+
 .note-popover .popover-content, .card-header.note-toolbar {
   margin: 0;
   padding: 0 0 5px 5px;
@@ -311,7 +315,7 @@ $img-margin-right: 10px;
     }
   }
 
-  .note-style { 
+  .note-style {
     .dropdown-style {
       blockquote, pre {
           margin: 0;
@@ -355,6 +359,7 @@ $img-margin-right: 10px;
         .note-color-select {
           font-size: 11px;
           margin: 3px;
+          width: 100%;
           padding: 0 3px;
           cursor: pointer;
           @include rounded(5px);
@@ -391,19 +396,19 @@ $img-margin-right: 10px;
     }
   }
 
-  /* dropdown-menu for toolbar and popover */
+  // dropdown-menu for toolbar and popover
   .dropdown-menu {
     min-width: 90px;
 
-    /* dropdown-menu right position */
-    /* http://forrst.com/posts/Bootstrap_right_positioned_dropdown-2KB */
+    // dropdown-menu right position
+    // http://forrst.com/posts/Bootstrap_right_positioned_dropdown-2KB
     &.right {
       right: 0;
       left: auto;
       &::before { right: 9px; left: auto !important;  }
       &::after { right: 10px; left: auto !important;  }
     }
-    /* dropdown-menu for selectbox */
+    // dropdown-menu for selectbox
     &.note-check {
       li a i {
         color: deepskyblue;
@@ -413,14 +418,13 @@ $img-margin-right: 10px;
         visibility: visible;
       }
     }
-
   }
 
   .note-fontsize-10 {
     font-size: 10px;
   }
 
-  /* color palette for toolbar and popover */
+  // color palette for toolbar and popover
   .note-color-palette {
     line-height: 1;
     div {
@@ -439,33 +443,40 @@ $img-margin-right: 10px;
 }
 
 /* Dialog
-------------------------------------------*/
+ ------------------------------------------ */
 .note-dialog {
   &>div {
-    display: none; /* BS2's hide pacth. */
+    display: none; // BS2's hide pacth.
   }
-  .form-group { /* overwrite BS's form-horizontal minus margins */
+  .form-group { // overwrite BS's form-horizontal minus margins
     margin-left: 0;
     margin-right: 0;
   }
   .note-modal-form {
-    margin: 0; /* overwrite BS2's form margin bottom */
+    margin: 0; // overwrite BS2's form margin bottom
   }
   .note-image-dialog {
     .note-dropzone {
       min-height: 100px;
       font-size: 30px;
-      line-height: 4; /* vertical-align */
+      line-height: 4; // vertical-align
       color: lightgray;
       text-align: center;
       border: 4px dashed lightgray;
       margin-bottom: 10px;
     }
   }
+
+  // [workaround] firefox fileinput
+  @-moz-document url-prefix() {
+    .note-image-input {
+      height: auto;
+    }
+  }
 }
 
 /* Placeholder
-------------------------------------------*/
+ ------------------------------------------ */
 .note-placeholder {
   position: absolute;
   display: none;
@@ -473,9 +484,9 @@ $img-margin-right: 10px;
 }
 
 /* Handle
-------------------------------------------*/
+ ------------------------------------------ */
 .note-handle {
-  /* control selection */
+  // control selection
   .note-control-selection {
     position: absolute;
     display: none;
