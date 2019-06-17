@@ -1,10 +1,10 @@
 module.exports = {
   files: './src/icons/*.svg',
-  dest: './src/less/font/',
+  dest: './dist/font/',
   formats: ['ttf', 'eot', 'woff', 'woff2'],
   fontName: 'summernote',
   template: './src/icons/templates/summernote.css',
-  destTemplate: './src/less',
+  destTemplate: './dist/font/',
   templateFontName: 'summernote',
   templateClassName: 'note-icon',
   templateFontPath: './font/',

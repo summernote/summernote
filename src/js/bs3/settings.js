@@ -2,7 +2,7 @@ import $ from 'jquery';
 import ui from './ui';
 import '../base/settings.js';
 
-import '../../less/summernote.scss';
+import '../../styles/summernote.scss';
 
 $.summernote = $.extend($.summernote, {
   ui: ui,
