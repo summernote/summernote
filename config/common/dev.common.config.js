@@ -68,7 +68,7 @@ module.exports = function() {
             {
               loader: 'html-loader',
               options: {
-                minimize: true,
+                minimize: false,
               },
             },
           ],

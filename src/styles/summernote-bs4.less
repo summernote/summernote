@@ -1,13 +1,13 @@
-@import './summernote.css';
-@import "elements.scss";
+@import './summernote-icons.css';
+@import "elements.less";
 
 /* Theme Variables
  ------------------------------------------ */
-$border-color: #a9a9a9;
-$background-color: #f5f5f5;
+@border-color: #a9a9a9;
+@background-color: #f5f5f5;
 
-$img-margin-left: 10px;
-$img-margin-right: 10px;
+@img-margin-left: 10px;
+@img-margin-right: 10px;
 
 /* Layout
  ------------------------------------------ */
@@ -15,13 +15,13 @@ $img-margin-right: 10px;
   position: relative;
 
   // dropzone
-  $dropzone-color: lightskyblue;
-  $dropzone-active-color: darken($dropzone-color, 30);
+  @dropzone-color: lightskyblue;
+  @dropzone-active-color: darken(@dropzone-color, 30);
   .note-dropzone {
     position: absolute;
     display: none;
     z-index: 100;
-    color: $dropzone-color;
+    color: @dropzone-color;
     background-color: #fff;
     opacity: 0.95;
 
@@ -34,7 +34,7 @@ $img-margin-right: 10px;
     }
 
     &.hover {
-      color: $dropzone-active-color;
+      color: @dropzone-active-color;
     }
   }
 
@@ -57,11 +57,11 @@ $img-margin-right: 10px;
       }
 
       img.note-float-left {
-        margin-right: $img-margin-right;
+        margin-right: @img-margin-right;
       }
 
       img.note-float-right {
-        margin-left: $img-margin-left;
+        margin-left: @img-margin-left;
       }
     }
   }
@@ -70,7 +70,7 @@ $img-margin-right: 10px;
 /* Frame mode layout
  ------------------------------------------ */
 .note-editor.note-frame {
-  border: 1px solid $border-color;
+  border: 1px solid @border-color;
 
   // codeview mode
   &.codeview {
@@ -115,8 +115,8 @@ $img-margin-right: 10px;
       outline: none;
 
       // override BS2 default style
-      @include box-sizing(border-box);
-      @include rounded(0);
+      .box-sizing(border-box);
+      .rounded(0);
       margin-bottom: 0;
     }
   }
@@ -146,40 +146,40 @@ $img-margin-right: 10px;
     margin-bottom: 0;
     color: #000;
     border: 0;
-    border-top: 1px solid #e2e2e2;
+    border-top: 1px solid #e2e2e2
   }
 
   .note-status-output:empty {
     height: 0;
-    border-top: 0 solid transparent;
+    border-top:0 solid transparent
   }
 
   .note-status-output .pull-right {
-    float: right !important;
+    float: right !important
   }
 
   .note-status-output .text-muted {
-    color: #777;
+    color: #777
   }
 
   .note-status-output .text-primary {
-    color: #286090;
+    color: #286090
   }
 
   .note-status-output .text-success {
-    color: #3c763d;
+    color: #3c763d
   }
 
   .note-status-output .text-info {
-    color: #31708f;
+    color: #31708f
   }
 
   .note-status-output .text-warning {
-    color: #8a6d3b;
+    color: #8a6d3b
   }
 
   .note-status-output .text-danger {
-    color: #a94442;
+    color:#a94442
   }
 
   .note-status-output .alert {
@@ -190,8 +190,8 @@ $img-margin-right: 10px;
     background-color: #f5f5f5;
   }
 
-  .note-status-output .alert .note-icon {
-    margin-right: 5px;
+  .note-status-output .alert .note-icon{
+    margin-right: 5px
   }
 
   .note-status-output .alert-success {
@@ -216,7 +216,7 @@ $img-margin-right: 10px;
 
   // statusbar
   .note-statusbar {
-    background-color: $background-color;
+    background-color: @background-color;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     border-top: 1px solid #ddd;
@@ -228,7 +228,7 @@ $img-margin-right: 10px;
       .note-icon-bar {
         width: 20px;
         margin: 1px auto;
-        border-top: 1px solid $border-color;
+        border-top: 1px solid @border-color;
       }
     }
 
@@ -249,6 +249,7 @@ $img-margin-right: 10px;
 /* Popover
  ------------------------------------------ */
 .note-popover.popover {
+  display: none;
   max-width: none;
   .popover-content {
     a {
@@ -256,7 +257,7 @@ $img-margin-right: 10px;
       max-width: 200px;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap; // for FF
+      white-space: nowrap;    // for FF
       vertical-align: middle; // for FF
     }
   }
@@ -271,12 +272,17 @@ $img-margin-right: 10px;
   position: relative;
 }
 
-.note-popover .popover-content,
-.panel-heading.note-toolbar {
+.note-btn {
+  background: #fff;
+  border-color: #dae0e5;
+}
+
+.note-popover .popover-content, .card-header.note-toolbar {
   margin: 0;
   padding: 0 0 5px 5px;
+  background: @background-color;
 
-  & > .btn-group {
+  &>.btn-group {
     margin-top: 5px;
     margin-left: 0;
     margin-right: 5px;
@@ -300,14 +306,14 @@ $img-margin-right: 10px;
           z-index: 1;
           width: 5em;
           height: 5em;
-          background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASAgMAAAAroGbEAAAACVBMVEUAAIj4+Pjp6ekKlAqjAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfYAR0BKhmnaJzPAAAAG0lEQVQI12NgAAOtVatWMTCohoaGUY+EmIkEAEruEzK2J7tvAAAAAElFTkSuQmCC") repeat;
+          background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASAgMAAAAroGbEAAAACVBMVEUAAIj4+Pjp6ekKlAqjAAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfYAR0BKhmnaJzPAAAAG0lEQVQI12NgAAOtVatWMTCohoaGUY+EmIkEAEruEzK2J7tvAAAAAElFTkSuQmCC') repeat;
         }
         .note-dimension-picker-highlighted {
           position: absolute !important;
           z-index: 2;
           width: 1em;
           height: 1em;
-          background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASAgMAAAAroGbEAAAACVBMVEUAAIjd6vvD2f9LKLW+AAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfYAR0BKwNDEVT0AAAAG0lEQVQI12NgAAOtVatWMTCohoaGUY+EmIkEAEruEzK2J7tvAAAAAElFTkSuQmCC") repeat;
+          background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASAgMAAAAroGbEAAAACVBMVEUAAIjd6vvD2f9LKLW+AAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfYAR0BKwNDEVT0AAAAG0lEQVQI12NgAAOtVatWMTCohoaGUY+EmIkEAEruEzK2J7tvAAAAAElFTkSuQmCC') repeat;
         }
       }
     }
@@ -316,12 +322,12 @@ $img-margin-right: 10px;
   .note-style {
     .dropdown-style {
       blockquote, pre {
-        margin: 0;
-        padding: 5px 10px;
+          margin: 0;
+          padding: 5px 10px;
       }
       h1, h2, h3, h4, h5, h6, p {
-        margin: 0;
-        padding: 0;
+          margin: 0;
+          padding: 0;
       }
     }
   }
@@ -355,11 +361,12 @@ $img-margin-right: 10px;
 
         .note-color-reset,
         .note-color-select {
-          font-size: 11px;
           margin: 3px;
           padding: 0 3px;
+          width: 100%;
+          font-size: 11px;
           cursor: pointer;
-          @include rounded(5px);
+          .rounded(5px);
         }
 
         .note-color-row {
@@ -387,7 +394,7 @@ $img-margin-right: 10px;
     .dropdown-menu {
       min-width: 216px;
       padding: 5px;
-      & > div:first-child {
+      &>div:first-child {
         margin-right: 5px;
       }
     }
@@ -402,22 +409,16 @@ $img-margin-right: 10px;
     &.right {
       right: 0;
       left: auto;
-      &::before {
-        right: 9px;
-        left: auto !important;
-      }
-      &::after {
-        right: 10px;
-        left: auto !important;
-      }
+      &::before { right: 9px; left: auto !important;  }
+      &::after { right: 10px; left: auto !important;  }
     }
     // dropdown-menu for selectbox
     &.note-check {
-      li a i {
+      a i {
         color: deepskyblue;
         visibility: hidden;
       }
-      li a.checked i {
+      a.checked i {
         visibility: visible;
       }
     }
@@ -448,11 +449,10 @@ $img-margin-right: 10px;
 /* Dialog
  ------------------------------------------ */
 .note-dialog {
-  & > div {
+  &>div {
     display: none; // BS2's hide pacth.
   }
-  .form-group {
-    // overwrite BS's form-horizontal minus margins
+  .form-group { // overwrite BS's form-horizontal minus margins
     margin-left: 0;
     margin-right: 0;
   }
@@ -494,31 +494,29 @@ $img-margin-right: 10px;
   .note-control-selection {
     position: absolute;
     display: none;
-    border: 1px solid #000;
-    & > div {
-      position: absolute;
-    }
+    border: 1px solid black;
+    &>div { position: absolute; }
 
     .note-control-selection-bg {
       width: 100%;
       height: 100%;
-      background-color: #000;
-      @include opacity(0.3);
+      background-color: black;
+      .opacity(0.30)
     }
 
     .note-control-handle {
       width: 7px;
       height: 7px;
-      border: 1px solid #000;
+      border: 1px solid black;
     }
 
     .note-control-holder {
-      @extend .note-control-handle;
+      .note-control-handle;
     }
 
     .note-control-sizing {
-      @extend .note-control-handle;
-      background-color: #000;
+      .note-control-handle;
+      background-color: white;
     }
 
     .note-control-nw {
@@ -562,8 +560,8 @@ $img-margin-right: 10px;
       color: #fff;
       background-color: #000;
       font-size: 12px;
-      @include rounded(5px);
-      @include opacity(0.7);
+      .rounded(5px);
+      .opacity(0.7);
     }
   }
 }
@@ -587,7 +585,7 @@ $img-margin-right: 10px;
           clear: both;
           font-weight: 400;
           line-height: 1.4;
-          color: white;
+          color: #fff;
           white-space: nowrap;
           text-decoration: none;
           background-color: #428bca;
