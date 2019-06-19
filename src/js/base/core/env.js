@@ -7,6 +7,12 @@ const isSupportAmd = typeof define === 'function' && define.amd; // eslint-disab
  * @param {String} fontName
  * @return {Boolean}
  */
+const genericFontFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
+
+function validFontName(fontName) {
+  return ($.inArray(fontName.toLowerCase(), genericFontFamilies) === -1) ? `'${fontName}'` : fontName;
+}
+
 function isFontInstalled(fontName) {
   const testFontName = fontName === 'Comic Sans MS' ? 'Courier New' : 'Comic Sans MS';
   const testText = 'mmmmmmmmmmwwwww';
@@ -18,7 +24,7 @@ function isFontInstalled(fontName) {
   context.font = testSize + " '" + testFontName + "'";
   const originalWidth = context.measureText(testText).width;
 
-  context.font = testSize + " '" + fontName + "', '" + testFontName + "'";
+  context.font = testSize + ' ' + validFontName(fontName) + ', "' + testFontName + '"';
   const width = context.measureText(testText).width;
 
   return originalWidth !== width;
@@ -76,4 +82,6 @@ export default {
   isFontInstalled,
   isW3CRangeSupport: !!document.createRange,
   inputEventName,
+  genericFontFamilies,
+  validFontName,
 };

@@ -58,15 +58,12 @@ export default class Buttons {
       this.fontInstalledMap[name] = env.isFontInstalled(name) ||
         lists.contains(this.options.fontNamesIgnoreCheck, name);
     }
-
     return this.fontInstalledMap[name];
   }
 
   isFontDeservedToAdd(name) {
-    const genericFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
     name = name.toLowerCase();
-
-    return (name !== '' && this.isFontInstalled(name) && genericFamilies.indexOf(name) === -1);
+    return (name !== '' && this.isFontInstalled(name) && env.genericFontFamilies.indexOf(name) === -1);
   }
 
   colorPalette(className, tooltip, backColor, foreColor) {
@@ -366,7 +363,7 @@ export default class Buttons {
           items: this.options.fontNames.filter(this.isFontInstalled.bind(this)),
           title: this.lang.font.name,
           template: (item) => {
-            return '<span style="font-family: \'' + item + '\'">' + item + '</span>';
+            return '<span style="font-family: ' + env.validFontName(item) + '">' + item + '</span>';
           },
           click: this.context.createInvokeHandlerAndUpdateState('editor.fontName'),
         }),

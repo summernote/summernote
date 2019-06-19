@@ -68,7 +68,7 @@ export default class Editor {
     }
 
     this.fontName = this.wrapCommand((value) => {
-      return this.fontStyling('font-family', "\'" + value + "\'");
+      return this.fontStyling('font-family', env.validFontName(value));
     });
 
     this.fontSize = this.wrapCommand((value) => {
