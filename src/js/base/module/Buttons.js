@@ -388,7 +388,13 @@ export default class Buttons {
           checkClassName: this.options.icons.menuCheck,
           items: this.options.fontSizes,
           title: this.lang.font.size,
-          click: this.context.createInvokeHandlerAndUpdateState('editor.fontSize'),
+          template: function (item) {
+            if (typeof item === 'string') {
+              item = { title: (this.lang.style.hasOwnProperty(item) ? this.lang.style[item] : item), value: item };
+            }
+            return '<span  style="font-size: ' + item.value + 'px;">' + item.title + '</span>';
+          },
+          click: this.context.createInvokeHandlerAndUpdateState('editor.fontSize')
         }),
       ]).render();
     });
