@@ -18,6 +18,7 @@
   "main": "dist/summernote.js",
   "scripts": {
     "dev": "eslint config && webpack-dev-server --config=./config/webpack.config.dev.js --open --progress",
+    "icons": "webpack --config=./config/webpack.config.icons.js --progress ",
     "build": "webpack --mode=production --config=./config/webpack.config.production.js --progress ",
     "lint": "eslint src/js plugin lang test config",
     "test": "karma start karma.conf.js --single-run",

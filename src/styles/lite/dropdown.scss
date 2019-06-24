@@ -9,14 +9,14 @@
   position: absolute;
   top: 100%;
   left: 0;
-  z-index : @zindex-dropdown;
+  z-index : $zindex-dropdown;
   float: left;
   text-align:left;
-  background: @dropdown-color-bg;
-  border: 1px solid @dropdown-color-border;
+  background: $dropdown-color-bg;
+  border: 1px solid $dropdown-color-border;
   padding: 5px;
   background-clip: padding-box;
-  .box-shadow(0 1px 1px rgba(0,0,0,.06));
+  @include box-shadow(0 1px 1px rgba(0,0,0,.06));
 }
 
 .note-btn-group.open .note-dropdown-menu {
@@ -27,7 +27,7 @@
   display: block;
 
   &:hover {
-    background-color: @btn-default-hover-bg;
+    background-color: $btn-default-hover-bg;
   }
 }
 

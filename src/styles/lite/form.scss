@@ -22,22 +22,22 @@
   outline: 0;
   padding: 6px 4px; 
   font-size: 14px;
-  .box-sizing();
+  @include box-sizing();
 }
 
 
 .note-input::-webkit-input-placeholder {
-  color: @gray-lighter;
+  color: $gray-lighter;
 }
 
 .note-input:-moz-placeholder { /* Firefox 18- */
-  color: @gray-lighter;
+  color: $gray-lighter;
 }
 
 .note-input::-moz-placeholder {  /* Firefox 19+ */
-  color: @gray-lighter;
+  color: $gray-lighter;
 }
 
 .note-input:-ms-input-placeholder {
-  color: @gray-lighter;
+  color: $gray-lighter;
 }
