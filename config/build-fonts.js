@@ -1,8 +1,8 @@
-const webfont = require("webfont").default;
-const fs = require("fs");
-const path = require("path");
+const webfont = require('webfont').default;
+const fs = require('fs');
+const path = require('path');
 
-webfontConfig = {
+const webfontConfig = {
   files: 'src/icons/*.svg',
   dest: 'src/styles/font/',
   formats: ['ttf', 'eot', 'woff', 'woff2'],
@@ -18,13 +18,12 @@ webfontConfig = {
 
 console.log('Building fonts...');
 
-webfont(webfontConfig)
-.then(result => {
+webfont(webfontConfig).then(result => {
   Object.keys(result).map(type => {
     if (
-      type === "config" ||
-      type === "usedBuildInTemplate" ||
-      type === "glyphsData"
+      type === 'config' ||
+      type === 'usedBuildInTemplate' ||
+      type === 'glyphsData'
     ) {
       return;
     }
@@ -32,17 +31,16 @@ webfont(webfontConfig)
     const content = result[type];
     let file = null;
 
-    if (type !== "template") {
+    if (type !== 'template') {
       file = path.resolve(path.join(webfontConfig['dest'], webfontConfig['fontName'] + '.' + type));
     } else {
       file = path.resolve(webfontConfig['destTemplate']);
     }
-    console.log("Writing ", file);
+    console.log('Writing ', file);
 
     fs.writeFileSync(file, content);
-  })
-})
-.catch(error => {
+  });
+}).catch(error => {
   console.log(error);
   throw error;
 });
