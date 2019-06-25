@@ -6,10 +6,10 @@
   src: url("./font/summernote.eot");
   src: url("./font/summernote.eot?#iefix") format("embedded-opentype"), url("./font/summernote.woff2") format("woff2"), url("./font/summernote.woff") format("woff"), url("./font/summernote.ttf") format("truetype");}
 
-[class^="note-icon"]:before,  
+[class^="note-icon"]:before,
 [class*=" note-icon"]:before {
   display: inline-block;
-  font: normal normal normal 11px/1 summernote;  
+  font: normal normal normal 11px/1 summernote;
   text-rendering: auto;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;

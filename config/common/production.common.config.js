@@ -3,9 +3,7 @@ const path = require('path');
 
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const WebfontPlugin = require('webfont-webpack-plugin').default;
 const CopyPlugin = require('copy-webpack-plugin');
-const webfontConfig = require('./webfont.config');
 const scssConfig = require('./scss.config');
 const CleanPlugin = require('clean-webpack-plugin');
 const ZipPlugin = require('zip-webpack-plugin');
@@ -157,7 +155,6 @@ module.exports = function() {
           return basename.includes('min') ? minBanner : banner;
         },
       }),
-      new WebfontPlugin(webfontConfig),
       new MiniCssExtractPlugin({
         filename: `[name].css`,
       }),

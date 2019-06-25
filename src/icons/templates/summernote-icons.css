@@ -32,10 +32,10 @@
   {%- endif -%}
 }
 
-[class^="{{ className }}"]:before,  
+[class^="{{ className }}"]:before,
 [class*=" {{ className }}"]:before {
   display: inline-block;
-  font: normal normal normal 11px/1 {{ fontName }};  
+  font: normal normal normal 11px/1 {{ fontName }};
   text-rendering: auto;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
