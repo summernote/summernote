@@ -90,7 +90,6 @@
     "uglify-js": "^3.5.12",
     "url-loader": "^1.1.2",
     "webfont": "^9.0.0",
-    "webfont-webpack-plugin": "^1.0.0",
     "webpack": "^4.30.0",
     "webpack-bundle-analyzer": "^3.3.2",
     "webpack-cli": "^3.3.1",
