@@ -5,8 +5,8 @@
   top: 0;
   bottom: 0;
   overflow: hidden;
-  z-index: @zindex-modal;
-  .opacity(1);
+  z-index: $zindex-modal;
+  @include opacity(1);
   display: none;
 
   &.open {
@@ -18,8 +18,8 @@
   position: relative;
   width: auto;
   margin: 30px 20px;
-  border: 1px solid @modal-content-border-color;
-  background: @modal-content-bg;
+  border: 1px solid $modal-content-border-color;
+  background: $modal-content-bg;
   background-clip: border-box;
   outline:0;
 }
@@ -45,7 +45,7 @@
     color: #fff;
     padding: 3px 5px;
     font-weight: 700;
-    .box-sizing();
+    @include box-sizing();
   }
 }
 
@@ -84,9 +84,9 @@
   right: 0;
   bottom: 0;
   top: 0;
-  z-index: @zindex-modal-background;
-  background: @modal-backdrop-bg;
-  .opacity(0.5);
+  z-index: $zindex-modal-background;
+  background: $modal-backdrop-bg;
+  @include opacity(0.5);
   display: none;
 
   &.open {

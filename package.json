@@ -18,7 +18,8 @@
   "main": "dist/summernote.js",
   "scripts": {
     "dev": "eslint config && webpack-dev-server --config=./config/webpack.config.dev.js --open --progress",
-    "build": "webpack --mode=production --config=./config/webpack.config.production.js --progress ",
+    "prebuild": "node ./config/build-fonts.js",
+    "build": "npm run prebuild && webpack --mode=production --config=./config/webpack.config.production.js --progress",
     "lint": "eslint src/js plugin lang test config",
     "test": "karma start karma.conf.js --single-run",
     "test:watch": "karma start karma.conf.js",
@@ -89,7 +90,6 @@
     "uglify-js": "^3.5.12",
     "url-loader": "^1.1.2",
     "webfont": "^9.0.0",
-    "webfont-webpack-plugin": "^1.0.0",
     "webpack": "^4.30.0",
     "webpack-bundle-analyzer": "^3.3.2",
     "webpack-cli": "^3.3.1",

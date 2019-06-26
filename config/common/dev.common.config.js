@@ -1,9 +1,6 @@
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const WebfontPlugin = require('webfont-webpack-plugin').default;
 const CopyPlugin = require('copy-webpack-plugin');
-const webfontConfig = require('./webfont.config');
-const lessConfig = require('./less.config');
 const scssConfig = require('./scss.config');
 const path = require('path');
 const fs = require('fs');
@@ -74,7 +71,6 @@ module.exports = function() {
           ],
         },
         scssConfig,
-        lessConfig,
         {
           test: /\.(png|jpe?g|gif|svg)$/,
           use: [
@@ -102,7 +98,6 @@ module.exports = function() {
       ],
     },
     plugins: [
-      new WebfontPlugin(webfontConfig),
       new MiniCssExtractPlugin({
         filename: '[name].css',
       }),
