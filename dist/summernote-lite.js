@@ -5839,7 +5839,7 @@
                           x: event.clientX - posStart_1.left,
                           y: event.clientY - (posStart_1.top - scrollTop_1)
                       }, $target_1, !event.shiftKey);
-                      _this.update($target_1[0]);
+                      _this.update($target_1[0], event);
                   };
                   _this.$document
                       .on('mousemove', onMouseMove_1)
