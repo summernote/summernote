@@ -200,6 +200,30 @@ function nodeLength(node) {
 }
 
 /**
+ * returns whether deepest child node is empty or not.
+ *
+ * @param {Node} node
+ * @return {Boolean}
+ */
+function deepestChildIsEmpty(node) {
+  var html = '';
+  var child = node;
+  while ((child = child.firstChild)) {
+    var childHtml = child.innerHTML;
+    if (typeof childHtml === 'undefined' || childHtml === '') {
+      break;
+    } else {
+      html = childHtml;
+    }
+  }
+  if (html === blankHTML) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/**
  * returns whether node is empty or not.
  *
  * @param {Node} node
@@ -1053,6 +1077,7 @@ export default {
   isI: makePredByNodeName('I'),
   isImg: makePredByNodeName('IMG'),
   isTextarea,
+  deepestChildIsEmpty,
   isEmpty,
   isEmptyAnchor: func.and(isAnchor, isEmpty),
   isClosestSibling,
