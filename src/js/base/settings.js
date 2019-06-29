@@ -3,6 +3,7 @@ import './summernote-en-US';
 import '../summernote';
 import dom from './core/dom';
 import range from './core/range';
+import lists from './core/lists';
 import Editor from './module/Editor';
 import Clipboard from './module/Clipboard';
 import Dropzone from './module/Dropzone';
@@ -32,6 +33,7 @@ $.summernote = $.extend($.summernote, {
 
   dom: dom,
   range: range,
+  lists: lists,
 
   options: {
     langInfo: $.summernote.lang['en-US'],
