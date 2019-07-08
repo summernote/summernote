@@ -65,7 +65,12 @@ function all(array, pred) {
  */
 function contains(array, item) {
   if (array && array.length && item) {
-    return array.indexOf(item) !== -1;
+    if (array.indexOf) {
+      return array.indexOf(item) !== -1;
+    } else if (array.contains) {
+      // `DOMTokenList` doesn't implement `.indexOf`, but it implements `.contains`
+      return array.contains(item);
+    }
   }
   return false;
 }
