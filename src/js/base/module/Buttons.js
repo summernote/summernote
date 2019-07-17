@@ -336,15 +336,17 @@ export default class Buttons {
     this.context.memo('button.fontname', () => {
       const styleInfo = this.context.invoke('editor.currentStyle');
 
-      // Add 'default' fonts into the fontnames array if not exist
-      $.each(styleInfo['font-family'].split(','), (idx, fontname) => {
-        fontname = fontname.trim().replace(/['"]+/g, '');
-        if (this.isFontDeservedToAdd(fontname)) {
-          if (this.options.fontNames.indexOf(fontname) === -1) {
-            this.options.fontNames.push(fontname);
+      if (this.options.addDefaultFonts) {
+        // Add 'default' fonts into the fontnames array if not exist
+        $.each(styleInfo['font-family'].split(','), (idx, fontname) => {
+          fontname = fontname.trim().replace(/['"]+/g, '');
+          if (this.isFontDeservedToAdd(fontname)) {
+            if (this.options.fontNames.indexOf(fontname) === -1) {
+              this.options.fontNames.push(fontname);
+            }
           }
-        }
-      });
+        });
+      }
 
       return this.ui.buttonGroup([
         this.button({
