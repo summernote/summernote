@@ -125,6 +125,8 @@ $.summernote = $.extend($.summernote, {
     maxTextLength: 0,
     blockquoteBreakingLevel: 2,
     spellCheck: true,
+    placeholder: null,
+    inheritPlaceholder: false,
 
     styleTags: ['p', 'blockquote', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
 
