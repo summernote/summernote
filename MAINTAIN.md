@@ -41,8 +41,8 @@ Publish on npm
 npm publish
 ```
 
-### 05. Update summernote.github.io
+### 5. Update summernote.github.io
 Update summernote version in _config.yml.
 
-### 06. Update connectors
+### 6. Update connectors
 Request maintainers of each connector to update package information.
