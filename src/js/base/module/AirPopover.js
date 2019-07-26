@@ -19,9 +19,9 @@ export default class AirPopover {
         this.hide();
       },
       'summernote.focusout': (we, e) => {
-        // [workaround] Firefox doesn't support relatedTarget on focusout
-        //  - Ignore hide action on focus out in FF.
-        if (env.isFF) {
+        // [workaround] Firefox/Safari don't support relatedTarget on focusout
+        //  - Ignore hide action on focus out in FF/Safari.
+        if (env.isFF || env.isSafari) {
           return;
         }
 
