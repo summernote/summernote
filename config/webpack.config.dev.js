@@ -11,4 +11,5 @@ module.exports = {
   devServer: config.devServer,
   module: config.module,
   plugins: config.plugins,
+  devtool: 'source-map',
 };
