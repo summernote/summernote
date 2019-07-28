@@ -206,21 +206,11 @@ function nodeLength(node) {
  * @return {Boolean}
  */
 function deepestChildIsEmpty(node) {
-  var html = '';
-  var child = node;
-  while ((child = child.firstChild)) {
-    var childHtml = child.innerHTML;
-    if (typeof childHtml === 'undefined' || childHtml === '') {
-      break;
-    } else {
-      html = childHtml;
-    }
-  }
-  if (html === blankHTML) {
-    return true;
-  } else {
-    return false;
-  }
+  do {
+    if (node.firstElementChild === null || node.firstElementChild.innerHTML === '') break;
+  } while ((node = node.firstElementChild));
+
+  return isEmpty(node);
 }
 
 /**
