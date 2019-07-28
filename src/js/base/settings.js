@@ -134,6 +134,7 @@ $.summernote = $.extend($.summernote, {
       'Tahoma', 'Times New Roman', 'Verdana',
     ],
     fontNamesIgnoreCheck: [],
+    addDefaultFonts: true,
 
     fontSizes: ['8', '9', '10', '11', '12', '14', '18', '24', '36'],
 
