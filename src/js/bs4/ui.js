@@ -26,7 +26,7 @@ const airEditable = renderer.create([
 
 const buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
 
-const dropdown = renderer.create('<div class="dropdown-menu" role="list">', function($node, options) {
+const dropdown = renderer.create('<div class="note-dropdown-menu dropdown-menu" role="list">', function($node, options) {
   const markup = Array.isArray(options.items) ? options.items.map(function(item) {
     const value = (typeof item === 'string') ? item : (item.value || '');
     const content = options.template ? options.template(item) : item;
@@ -44,7 +44,7 @@ const dropdownButtonContents = function(contents) {
   return contents;
 };
 
-const dropdownCheck = renderer.create('<div class="dropdown-menu note-check" role="list">', function($node, options) {
+const dropdownCheck = renderer.create('<div class="note-dropdown-menu dropdown-menu note-check" role="list">', function($node, options) {
   const markup = Array.isArray(options.items) ? options.items.map(function(item) {
     const value = (typeof item === 'string') ? item : (item.value || '');
     const content = options.template ? options.template(item) : item;

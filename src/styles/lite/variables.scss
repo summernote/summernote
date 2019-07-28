@@ -16,7 +16,7 @@ $line-height-computed: floor(($line-height * $font-size));
 $padding-base-vertical: 5px;
 $padding-base-horizontal: 10px;
 
-$border-radius-base: 1px;
+$border-radius-base: 3px;
 $btn-border-radius-base: $border-radius-base;
 
 $icon-font-path: "../fonts/";
@@ -26,7 +26,7 @@ $icon-font-svg-id: "summernote";
 $btn-font-weight: normal;
 $btn-default-color : #333;
 $btn-default-bg: #fff;
-$btn-default-border: #fff;
+$btn-default-border: #dae0e5;
 $btn-default-hover-bg: #ebebeb;
 $btn-default-active-bg: #f0f0f0;
 
