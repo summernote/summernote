@@ -17,21 +17,15 @@ export default class Dropzone {
     ].join('')).prependTo(this.$editor);
   }
 
+  shouldInitialize() {
+    return !this.options.disableDragAndDrop;
+  }
+
   /**
    * attach Drag and Drop Events
    */
   initialize() {
-    if (this.options.disableDragAndDrop) {
-      // prevent default drop event
-      this.documentEventHandlers.onDrop = (e) => {
-        e.preventDefault();
-      };
-      // do not consider outside of dropzone
-      this.$eventListener = this.$dropzone;
-      this.$eventListener.on('drop', this.documentEventHandlers.onDrop);
-    } else {
-      this.attachDragAndDropEvent();
-    }
+    this.attachDragAndDropEvent();
   }
 
   /**
