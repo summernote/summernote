@@ -49,7 +49,10 @@ export default class Dropzone {
 
     this.documentEventHandlers.onDragleave = (e) => {
       collection = collection.not(e.target);
-      if (!collection.length) {
+
+      // If nodeName is BODY, then just make it over (fix for IE)
+      if (!collection.length || e.target.nodeName === 'BODY') {
+        collection = $();
         this.$editor.removeClass('dragover');
       }
     };
