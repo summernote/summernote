@@ -17,21 +17,15 @@ export default class Dropzone {
     ].join('')).prependTo(this.$editor);
   }
 
+  shouldInitialize() {
+    return !this.options.disableDragAndDrop;
+  }
+
   /**
    * attach Drag and Drop Events
    */
   initialize() {
-    if (this.options.disableDragAndDrop) {
-      // prevent default drop event
-      this.documentEventHandlers.onDrop = (e) => {
-        e.preventDefault();
-      };
-      // do not consider outside of dropzone
-      this.$eventListener = this.$dropzone;
-      this.$eventListener.on('drop', this.documentEventHandlers.onDrop);
-    } else {
-      this.attachDragAndDropEvent();
-    }
+    this.attachDragAndDropEvent();
   }
 
   /**
@@ -55,7 +49,10 @@ export default class Dropzone {
 
     this.documentEventHandlers.onDragleave = (e) => {
       collection = collection.not(e.target);
-      if (!collection.length) {
+
+      // If nodeName is BODY, then just make it over (fix for IE)
+      if (!collection.length || e.target.nodeName === 'BODY') {
+        collection = $();
         this.$editor.removeClass('dragover');
       }
     };
