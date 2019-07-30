@@ -41,6 +41,12 @@ karma: {
 }
 
 ```
+
+Or, pass `--browsers` argument via `npm run test` command.
+```
+$ npm run test -- --browsers Safari,Firefox
+```
+
 You can use `Chrome`, `ChromeCanary`, `Firefox`, `Opera`, `Safari`, `PhantomJS` and `IE` beside `PhantomJS`.
 Once you run `npm test`, it will watch all javascript file. Therefore karma run tests every time you change code.
 
@@ -59,7 +65,7 @@ As part of this repo, we use the NPM package husky to implement git hooks. We le
 ```
 
 1. A body container has block node, but `<ul>` has only `<li>` nodes.
-2. A body container also has inline nodes sometimes. This inline nodes will be wrapped with `<p>` when enter key pressed.
-4. A block node only has inline nodes.
-5. A inline nodes has another inline nodes
-6. `#text` and void inline node doesn't have children.
+1. A body container also has inline nodes sometimes. This inline nodes will be wrapped with `<p>` when enter key pressed.
+1. A block node only has inline nodes.
+1. A inline nodes has another inline nodes
+1. `#text` and void inline node doesn't have children.
