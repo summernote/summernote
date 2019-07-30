@@ -103,165 +103,122 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 25);
+/******/ 	return __webpack_require__(__webpack_require__.s = 46);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 25:
+/***/ 46:
 /***/ (function(module, exports) {
 
 (function ($) {
   $.extend($.summernote.lang, {
-    'ja-JP': {
+    'uz-UZ': {
       font: {
-        bold: '太字',
-        italic: '斜体',
-        underline: '下線',
-        clear: 'クリア',
-        height: '文字高',
-        name: 'フォント',
-        strikethrough: '取り消し線',
-        subscript: 'Subscript',
-        superscript: 'Superscript',
-        size: '大きさ'
+        bold: 'қалин',
+        italic: 'Курсив',
+        underline: 'Белгиланган',
+        clear: 'Ҳарф турларини олиб ташлаш',
+        height: 'Чизиқ баландлиги',
+        name: 'Ҳарф',
+        strikethrough: 'Ўчирилган',
+        subscript: 'Пастки индекс',
+        superscript: 'Юқори индекс',
+        size: 'ҳарф ҳажми'
       },
       image: {
-        image: '画像',
-        insert: '画像挿入',
-        resizeFull: '最大化',
-        resizeHalf: '1/2',
-        resizeQuarter: '1/4',
-        floatLeft: '左寄せ',
-        floatRight: '右寄せ',
-        floatNone: '寄せ解除',
-        shapeRounded: 'Shape: Rounded',
-        shapeCircle: 'Shape: Circle',
-        shapeThumbnail: 'Shape: Thumbnail',
-        shapeNone: 'Shape: None',
-        dragImageHere: 'ここに画像をドラッグしてください',
-        dropImage: 'Drop image or Text',
-        selectFromFiles: '画像ファイルを選ぶ',
-        maximumFileSize: 'Maximum file size',
-        maximumFileSizeError: 'Maximum file size exceeded.',
-        url: 'URLから画像を挿入する',
-        remove: '画像を削除する',
-        original: 'Original'
+        image: 'Расм',
+        insert: 'расмни қўйиш',
+        resizeFull: 'Ҳажмни тиклаш',
+        resizeHalf: '50% гача кичрайтириш',
+        resizeQuarter: '25% гача кичрайтириш',
+        floatLeft: 'Чапда жойлаштириш',
+        floatRight: 'Ўнгда жойлаштириш',
+        floatNone: 'Стандарт бўйича жойлашув',
+        shapeRounded: 'Шакли: Юмалоқ',
+        shapeCircle: 'Шакли: Доира',
+        shapeThumbnail: 'Шакли: Миниатюра',
+        shapeNone: 'Шакли: Йўқ',
+        dragImageHere: 'Суратни кўчириб ўтинг',
+        dropImage: 'Суратни кўчириб ўтинг',
+        selectFromFiles: 'Файллардан бирини танлаш',
+        url: 'суратлар URL и',
+        remove: 'Суратни ўчириш'
       },
       video: {
-        video: '動画',
-        videoLink: '動画リンク',
-        insert: '動画挿入',
-        url: '動画のURL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion, Youku)'
+        video: 'Видео',
+        videoLink: 'Видеога ҳавола',
+        insert: 'Видео',
+        url: 'URL видео',
+        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion или Youku)'
       },
       link: {
-        link: 'リンク',
-        insert: 'リンク挿入',
-        unlink: 'リンク解除',
-        edit: '編集',
-        textToDisplay: 'リンク文字列',
-        url: 'URLを入力してください',
-        openInNewWindow: '新しいウィンドウで開く'
+        link: 'Ҳавола',
+        insert: 'Ҳаволани қўйиш',
+        unlink: 'Ҳаволани олиб ташлаш',
+        edit: 'Таҳрир қилиш',
+        textToDisplay: 'Кўринадиган матн',
+        url: 'URL ўтиш учун',
+        openInNewWindow: 'Янги дарчада очиш'
       },
       table: {
-        table: 'テーブル',
-        addRowAbove: '行を上に追加',
-        addRowBelow: '行を下に追加',
-        addColLeft: '列を左に追加',
-        addColRight: '列を右に追加',
-        delRow: '行を削除',
-        delCol: '列を削除',
-        delTable: 'テーブルを削除'
+        table: 'Жадвал'
       },
       hr: {
-        insert: '水平線の挿入'
+        insert: 'Горизонтал чизиқни қўйиш'
       },
       style: {
-        style: 'スタイル',
-        p: '標準',
-        blockquote: '引用',
-        pre: 'コード',
-        h1: '見出し1',
-        h2: '見出し2',
-        h3: '見出し3',
-        h4: '見出し4',
-        h5: '見出し5',
-        h6: '見出し6'
+        style: 'Услуб',
+        p: 'Яхши',
+        blockquote: 'Жумла',
+        pre: 'Код',
+        h1: 'Сарлавҳа 1',
+        h2: 'Сарлавҳа  2',
+        h3: 'Сарлавҳа  3',
+        h4: 'Сарлавҳа  4',
+        h5: 'Сарлавҳа  5',
+        h6: 'Сарлавҳа  6'
       },
       lists: {
-        unordered: '通常リスト',
-        ordered: '番号リスト'
+        unordered: 'Белгиланган рўйҳат',
+        ordered: 'Рақамланган рўйҳат'
       },
       options: {
-        help: 'ヘルプ',
-        fullscreen: 'フルスクリーン',
-        codeview: 'コード表示'
+        help: 'Ёрдам',
+        fullscreen: 'Бутун экран бўйича',
+        codeview: 'Бошланғич код'
       },
       paragraph: {
-        paragraph: '文章',
-        outdent: '字上げ',
-        indent: '字下げ',
-        left: '左寄せ',
-        center: '中央寄せ',
-        right: '右寄せ',
-        justify: '均等割付'
+        paragraph: 'Параграф',
+        outdent: 'Орқага қайтишни камайтириш',
+        indent: 'Орқага қайтишни кўпайтириш',
+        left: 'Чап қирғоққа тўғрилаш',
+        center: 'Марказга тўғрилаш',
+        right: 'Ўнг қирғоққа тўғрилаш',
+        justify: 'Эни бўйлаб чўзиш'
       },
       color: {
-        recent: '現在の色',
-        more: 'もっと見る',
-        background: '背景色',
-        foreground: '文字色',
-        transparent: '透明',
-        setTransparent: '透明にする',
-        reset: '標準',
-        resetToDefault: '標準に戻す'
+        recent: 'Охирги ранг',
+        more: 'Яна ранглар',
+        background: 'Фон  ранги',
+        foreground: 'Ҳарф ранги',
+        transparent: 'Шаффоф',
+        setTransparent: 'Шаффофдай қилиш',
+        reset: 'Бекор қилиш',
+        resetToDefault: 'Стандартга оид тиклаш'
       },
       shortcut: {
-        shortcuts: 'ショートカット',
-        close: '閉じる',
-        textFormatting: '文字フォーマット',
-        action: 'アクション',
-        paragraphFormatting: '文章フォーマット',
-        documentStyle: 'ドキュメント形式',
-        extraKeys: 'Extra keys'
-      },
-      help: {
-        'insertParagraph': '改行挿入',
-        'undo': '一旦、行った操作を戻す',
-        'redo': '最後のコマンドをやり直す',
-        'tab': 'Tab',
-        'untab': 'タブ戻し',
-        'bold': '太文字',
-        'italic': '斜体',
-        'underline': '下線',
-        'strikethrough': '取り消し線',
-        'removeFormat': '装飾を戻す',
-        'justifyLeft': '左寄せ',
-        'justifyCenter': '真ん中寄せ',
-        'justifyRight': '右寄せ',
-        'justifyFull': 'すべてを整列',
-        'insertUnorderedList': '行頭に●を挿入',
-        'insertOrderedList': '行頭に番号を挿入',
-        'outdent': '字下げを戻す（アウトデント）',
-        'indent': '字下げする（インデント）',
-        'formatPara': '段落(P tag)指定',
-        'formatH1': 'H1指定',
-        'formatH2': 'H2指定',
-        'formatH3': 'H3指定',
-        'formatH4': 'H4指定',
-        'formatH5': 'H5指定',
-        'formatH6': 'H6指定',
-        'insertHorizontalRule': '&lt;hr /&gt;を挿入',
-        'linkDialog.show': 'リンク挿入'
+        shortcuts: 'Клавишларнинг ҳамохҳанглиги',
+        close: 'Ёпиқ',
+        textFormatting: 'Матнни ',
+        action: 'Ҳаркат',
+        paragraphFormatting: 'Параграфни форматлаш',
+        documentStyle: 'Ҳужжатнинг тури',
+        extraKeys: 'Қўшимча имкониятлар'
       },
       history: {
-        undo: '元に戻す',
-        redo: 'やり直す'
-      },
-      specialChar: {
-        specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
+        undo: 'Бекор қилиш',
+        redo: 'Қайтариш'
       }
     }
   });
