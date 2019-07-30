@@ -1,6 +1,7 @@
 module.exports = function (config) {
   config.set({
     frameworks: ['mocha', 'karma-typescript'],
+    concurrency: 3,
     colors: true,
     logLevel: config.LOG_INFO,
     files: [
@@ -12,33 +13,50 @@ module.exports = function (config) {
         base: "ChromeHeadless",
         flags: [ "--no-sandbox" ]
       },
-      'SL_IE10': {
+      'SL_WINDOWS_IE10': {
         base: 'SauceLabs',
-        browserName: 'internet explorer',
+        browserName: 'Internet Explorer',
         version: '10.0',
-        platform: 'windows 8',
+        platform: 'Windows 8',
       },
-      'SL_IE11': {
+      'SL_WINDOWS_IE11': {
         base: 'SauceLabs',
-        browserName: 'internet explorer',
+        browserName: 'Internet Explorer',
         version: '11.0',
-        platform: 'windows 8.1',
+        platform: 'Windows 10',
       },
-      'SL_CHROME': {
+      'SL_WINDOWS_CHROME': {
         base: 'SauceLabs',
-        browserName: 'chrome',
-        version: '70',
-        platform: 'windows 8',
-      },
-      'SL_FIREFOX': {
-        base: 'SauceLabs',
-        browserName: 'firefox',
+        browserName: 'Chrome',
         version: 'latest',
-        platform: 'windows 8',
+        platform: 'Windows 10',
       },
+      'SL_LINUX_FIREFOX': {
+        base: 'SauceLabs',
+        browserName: 'Firefox',
+        version: 'latest',
+        platform: 'Linux',
+      },
+      'SL_MACOS_CHROME': {
+        base: 'SauceLabs',
+        browserName: 'Chrome',
+        version: 'latest',
+        platform: 'macOS 10.13',
+      },
+      /*
+      'SL_MACOS_SAFARI': {
+        base: 'SauceLabs',
+        browserName: 'Safari',
+        version: 'latest',
+        platform: 'macOS 10.13',
+      },
+      */
     },
     // Chrome, ChromeCanary, Firefox, Opera, Safari, IE
-    browsers: ['ChromeHeadlessNoSandbox', 'SL_IE10', 'SL_IE11', 'SL_CHROME', 'SL_FIREFOX'],
+    browsers: ['ChromeHeadlessNoSandbox',
+      'SL_WINDOWS_IE10', 'SL_WINDOWS_IE11', 'SL_WINDOWS_CHROME',
+      'SL_LINUX_FIREFOX', 'SL_MACOS_CHROME',
+    ],
     sauceLabs: {
       testName: 'unit tests for summernote',
       startConnect: false,
