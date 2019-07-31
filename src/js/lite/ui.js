@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import renderer from '../base/renderer';
 import TooltipUI from './ui/TooltipUI';
 import DropdownUI from './ui/DropdownUI';
