@@ -89,6 +89,10 @@ export default class Dropzone {
         this.context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
       } else {
         $.each(dataTransfer.types, (idx, type) => {
+          // skip moz-specific types
+          if (type.toLowerCase().indexOf('_moz_') > -1) {
+            return;
+          }
           const content = dataTransfer.getData(type);
 
           if (type.toLowerCase().indexOf('text') > -1) {
