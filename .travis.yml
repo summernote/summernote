@@ -28,6 +28,5 @@ deploy:
 addons:
   sauce_connect:
     username: 'summernoteis'
-    access_key: '3d57fd7c-72ea-4c79-8183-bbd6bfa11cc3'
 after_success:
 - npm run coveralls
