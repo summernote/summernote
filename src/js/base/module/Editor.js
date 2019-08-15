@@ -445,7 +445,7 @@ export default class Editor {
     }
 
     if (this.options.maxTextLength > 0) {
-      if ((this.$editable.text().length + pad) >= this.options.maxTextLength) {
+      if ((this.$editable.text().length + pad) > this.options.maxTextLength) {
         return true;
       }
     }
