@@ -104,7 +104,7 @@ $.extend($.summernote.lang, {
       recent: 'Recent Color',
       more: 'More Color',
       background: 'Background Color',
-      foreground: 'Foreground Color',
+      foreground: 'Text Color',
       transparent: 'Transparent',
       setTransparent: 'Set transparent',
       reset: 'Reset',
