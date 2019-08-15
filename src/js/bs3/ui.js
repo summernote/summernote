@@ -9,7 +9,7 @@ const editable = renderer.create('<div class="note-editable" contentEditable="tr
 const statusbar = renderer.create([
   '<output class="note-status-output" aria-live="polite"/>',
   '<div class="note-statusbar" role="status">',
-  '  <div class="note-resizebar" role="seperator" aria-orientation="horizontal" aria-label="Resize">',
+  '  <div class="note-resizebar" role="separator" aria-orientation="horizontal" aria-label="Resize">',
   '    <div class="note-icon-bar"/>',
   '    <div class="note-icon-bar"/>',
   '    <div class="note-icon-bar"/>',
