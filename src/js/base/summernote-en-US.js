@@ -56,6 +56,7 @@ $.extend($.summernote.lang, {
       textToDisplay: 'Text to display',
       url: 'To what URL should this link go?',
       openInNewWindow: 'Open in new window',
+      useProtocol: 'Use default protocol',
     },
     table: {
       table: 'Table',
