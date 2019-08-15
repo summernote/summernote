@@ -13,6 +13,7 @@ module.exports = function (config) {
         base: "ChromeHeadless",
         flags: [ "--no-sandbox" ]
       },
+      /*
       'SL_WINDOWS_IE10': {
         base: 'SauceLabs',
         browserName: 'Internet Explorer',
@@ -23,6 +24,19 @@ module.exports = function (config) {
         base: 'SauceLabs',
         browserName: 'Internet Explorer',
         version: '11.0',
+        platform: 'Windows 10',
+      },
+      */
+      'SL_WINDOWS_EDGE': {
+        base: 'SauceLabs',
+        browserName: 'MicrosoftEdge',
+        version: 'latest',
+        platform: 'Windows 10',
+      },
+      'SL_WINDOWS_FIREFOX': {
+        base: 'SauceLabs',
+        browserName: 'Firefox',
+        version: 'latest',
         platform: 'Windows 10',
       },
       'SL_WINDOWS_CHROME': {
@@ -54,7 +68,7 @@ module.exports = function (config) {
     },
     // Chrome, ChromeCanary, Firefox, Opera, Safari, IE
     browsers: ['ChromeHeadlessNoSandbox',
-      'SL_WINDOWS_IE10', 'SL_WINDOWS_IE11', 'SL_WINDOWS_CHROME',
+      'SL_WINDOWS_EDGE', 'SL_WINDOWS_FIREFOX', 'SL_WINDOWS_CHROME',
       'SL_LINUX_FIREFOX', 'SL_MACOS_CHROME',
     ],
     sauceLabs: {
