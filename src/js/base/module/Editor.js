@@ -208,7 +208,7 @@ export default class Editor {
       } else if (checkProtocol) {
         // if url doesn't have any protocol and not even a relative or a label, use http:// as default
         linkUrl = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/.test(linkUrl)
-          ? linkUrl : 'http://' + linkUrl;
+          ? linkUrl : this.options.defaultProtocol + linkUrl;
       }
 
       let anchors = [];

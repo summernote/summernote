@@ -128,8 +128,8 @@ export default class LinkDialog {
 
         $openInNewWindow.prop('checked', isNewWindowChecked);
 
-        const useProtocolChecked = linkInfo.checkProtocol !== undefined
-          ? linkInfo.checkProtocol : this.context.options.useProtocol;
+        const useProtocolChecked = linkInfo.url
+          ? false : this.context.options.useProtocol;
 
         $useProtocol.prop('checked', useProtocolChecked);
 
