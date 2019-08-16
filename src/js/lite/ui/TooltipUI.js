@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 class TooltipUI {
   constructor($node, options) {
     this.$node = $node;
