@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 class DropdownUI {
   constructor($node, options) {
     this.$button = $node;
