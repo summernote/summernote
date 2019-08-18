@@ -22,6 +22,7 @@
     "build": "webpack --mode=production --config=./config/webpack.config.production.js --progress",
     "lint": "eslint src/js plugin lang test config",
     "test": "karma start karma.conf.js --single-run",
+    "test:grep": "karma run karma.conf.js -- --grep",
     "test:watch": "karma start karma.conf.js",
     "test:ci": "karma start karma.ci.conf.js --single-run"
   },
