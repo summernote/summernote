@@ -56,7 +56,9 @@ describe('LinkDialog', () => {
       context.invoke('editor.setLastRange');
       dialog.show();
 
-      var checked = dialog.$dialog.find('#sn-checkbox-open-in-new-window').is(':checked');
+      var checked = dialog.$dialog
+        .find('.sn-checkbox-open-in-new-window input[type=checkbox]')
+        .is(':checked');
       expect(checked).to.be.false;
     });
 
