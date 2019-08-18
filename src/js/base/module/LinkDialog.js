@@ -35,6 +35,11 @@ export default class LinkDialog {
           checked: true,
         }).render()).html()
         : '',
+      $('<div/>').append(this.ui.checkbox({
+        className: 'sn-checkbox-use-protocol',
+        text: this.lang.link.useProtocol,
+        checked: true,
+      }).render()).html(),
     ].join('');
 
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-link-btn';
@@ -83,6 +88,8 @@ export default class LinkDialog {
       const $linkBtn = this.$dialog.find('.note-link-btn');
       const $openInNewWindow = this.$dialog
         .find('.sn-checkbox-open-in-new-window input[type=checkbox]');
+      const $useProtocol = this.$dialog
+        .find('.sn-checkbox-use-protocol input[type=checkbox]');
 
       this.ui.onDialogShown(this.$dialog, () => {
         this.context.triggerEvent('dialog.shown');
@@ -121,6 +128,11 @@ export default class LinkDialog {
 
         $openInNewWindow.prop('checked', isNewWindowChecked);
 
+        const useProtocolChecked = linkInfo.url
+          ? false : this.context.options.useProtocol;
+
+        $useProtocol.prop('checked', useProtocolChecked);
+
         $linkBtn.one('click', (event) => {
           event.preventDefault();
 
@@ -129,6 +141,7 @@ export default class LinkDialog {
             url: $linkUrl.val(),
             text: $linkText.val(),
             isNewWindow: $openInNewWindow.is(':checked'),
+            checkProtocol: $useProtocol.is(':checked'),
           });
           this.ui.hideDialog(this.$dialog);
         });
