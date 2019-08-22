@@ -8594,7 +8594,7 @@ const dropdown = renderer["a" /* default */].create('<div class="note-dropdown-m
 });
 
 const dropdownButtonContents = function (contents) {
-  return contents;
+  return contents + ' ' + icon(options.icons.caret, 'span');
 };
 
 const dropdownCheck = renderer["a" /* default */].create('<div class="note-dropdown-menu dropdown-menu note-check" role="list">', function ($node, options) {
