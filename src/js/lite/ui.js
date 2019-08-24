@@ -478,7 +478,11 @@ const linkDialog = function(opt) {
       ? '<div class="checkbox">' +
       '<label>' + '<input type="checkbox" checked> ' + opt.lang.link.openInNewWindow + '</label>' +
       '</div>' : ''
-    );
+    ) +
+    '<div class="checkbox">' +
+    '<label>' + '<input type="checkbox" checked> ' + opt.lang.link.useProtocol + '</label>' +
+    '</div>'
+    ;
   const footer = [
     '<button href="#" type="button" class="note-btn note-btn-primary note-link-btn disabled" disabled>',
     opt.lang.link.insert,
