@@ -50,6 +50,20 @@ $ npm run test -- --browsers Safari,Firefox
 You can use `Chrome`, `ChromeCanary`, `Firefox`, `Opera`, `Safari`, `PhantomJS` and `IE` beside `PhantomJS`.
 Once you run `npm test`, it will watch all javascript file. Therefore karma run tests every time you change code.
 
+## Test a part of test
+
+If you would like to run some part of your test codes, use the watch mode.
+
+```bash
+$ npm run test:watch
+```
+
+`karma` will run test and keep waiting other test requests. And then, run `test:grep` in another terminal. Below shows how to run `LinkDialog` related tests only.
+
+```bash
+$ npm run test:grep LinkDialog
+```
+
 ## Prepush Hooks
 As part of this repo, we use the NPM package husky to implement git hooks. We leverage the prepush hook to prevent bad commits.
 
