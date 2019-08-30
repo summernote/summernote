@@ -442,6 +442,7 @@ export default class Editor {
 
     if (typeof event !== 'undefined') {
       if (key.isMove(event.keyCode) ||
+          key.isNavigation(event.keyCode) ||
           (event.ctrlKey || event.metaKey) ||
           lists.contains([key.code.BACKSPACE, key.code.DELETE], event.keyCode)) {
         return false;
