@@ -343,7 +343,10 @@ export default class Editor {
         }
       }
       if (this.isLimited(1, event)) {
-        return false;
+        const lastRange = this.getLastRange();
+        if (lastRange.eo - lastRange.so === 0) {
+          return false;
+        }
       }
     }).on('keyup', (event) => {
       this.setLastRange();
