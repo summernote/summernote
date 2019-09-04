@@ -262,7 +262,7 @@ const palette = renderer.create('<div class="note-color-palette"/>', function($n
         'style="background-color:', color, '" ',
         'data-event="', eventName, '" ',
         'data-value="', color, '" ',
-        'title="', colorName, '" ',
+        'data-title="', colorName, '" ',
         'aria-label="', colorName, '" ',
         'data-toggle="button" tabindex="-1"></button>',
       ].join(''));
