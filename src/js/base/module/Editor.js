@@ -68,7 +68,7 @@ export default class Editor {
     }
 
     this.fontName = this.wrapCommand((value) => {
-      return this.fontStyling('font-family', "\'" + value + "\'");
+      document.execCommand('fontName', false, value);
     });
 
     this.fontSize = this.wrapCommand((value) => {
@@ -438,8 +438,8 @@ export default class Editor {
 
     if (typeof event !== 'undefined') {
       if (key.isMove(event.keyCode) ||
-          (event.ctrlKey || event.metaKey) ||
-          lists.contains([key.code.BACKSPACE, key.code.DELETE], event.keyCode)) {
+        (event.ctrlKey || event.metaKey) ||
+        lists.contains([key.code.BACKSPACE, key.code.DELETE], event.keyCode)) {
         return false;
       }
     }
@@ -736,7 +736,12 @@ export default class Editor {
     const rng = this.getLastRange();
 
     if (rng) {
+      var previousEl = rng.sc.parentElement;
       const spans = this.style.styleNodes(rng);
+
+      if (previousEl && previousEl.style && previousEl.style.length > 0) {
+        $(spans).attr('style', previousEl.style.cssText);
+      }
       $(spans).css(target, value);
 
       // [workaround] added styled bogus span for style

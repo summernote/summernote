@@ -343,6 +343,13 @@ describe('Editor', () => {
       // start <p>hello</p> => <blockquote class="blockquote">hello</blockquote>
       expectContents(context, '<blockquote class="blockquote">hello</blockquote>');
     });
+
+    it('should add fontSize to block', () => {
+      $editable.appendTo('body');
+      editor.fontSize(20);
+
+      expectContents(context, '<p><span style="font-size: 20px;">﻿</span>hello</p>');
+    });
   });
 
   describe('createLink', () => {
