@@ -24,7 +24,8 @@
     "lint": "eslint src/js plugin lang test Gruntfile.js",
     "test": "karma start karma.conf.js --single-run",
     "test:watch": "karma start karma.conf.js",
-    "test:ci": "karma start karma.ci.conf.js --single-run"
+    "test:ci": "karma start karma.ci.conf.js --single-run",
+    "test:debug": "karma start karma.debug.conf.js"
   },
   "husky": {
     "hooks": {

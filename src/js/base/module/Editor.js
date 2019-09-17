@@ -68,7 +68,7 @@ export default class Editor {
     }
 
     this.fontName = this.wrapCommand((value) => {
-      document.execCommand('fontName', false, value);
+      return this.fontStyling('font-family', "\'" + value + "\'");
     });
 
     this.fontSize = this.wrapCommand((value) => {
@@ -736,12 +736,7 @@ export default class Editor {
     const rng = this.getLastRange();
 
     if (rng) {
-      var previousEl = rng.sc.parentElement;
       const spans = this.style.styleNodes(rng);
-
-      if (previousEl && previousEl.style && previousEl.style.length > 0) {
-        $(spans).attr('style', previousEl.style.cssText);
-      }
       $(spans).css(target, value);
 
       // [workaround] added styled bogus span for style
@@ -750,7 +745,7 @@ export default class Editor {
         const firstSpan = lists.head(spans);
         if (firstSpan && !dom.nodeLength(firstSpan)) {
           firstSpan.innerHTML = dom.ZERO_WIDTH_NBSP_CHAR;
-          range.createFromNodeAfter(firstSpan.firstChild).select();
+          range.createFromNode(firstSpan.firstChild).select();
           this.setLastRange();
           this.$editable.data(KEY_BOGUS, firstSpan);
         }
