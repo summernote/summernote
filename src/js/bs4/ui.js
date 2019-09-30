@@ -4,13 +4,12 @@ import renderer from '../base/renderer';
 const editor = renderer.create('<div class="note-editor note-frame card"/>');
 const toolbar = renderer.create('<div class="note-toolbar card-header" role="toolbar"></div>');
 const editingArea = renderer.create('<div class="note-editing-area"/>');
-const codable = renderer.create('<textarea class="note-codable" role="textbox" aria-multiline="true"/>');
+const codable = renderer.create('<textarea class="note-codable" aria-multiline="true"/>');
 const editable = renderer.create('<div class="note-editable card-block" contentEditable="true" role="textbox" aria-multiline="true"/>');
 const statusbar = renderer.create([
-  '<output class="note-status-output" aria-live="polite"/>',
+  '<output class="note-status-output" role="status" aria-live="polite"/>',
   '<div class="note-statusbar" role="status">',
-  '  <output class="note-status-output" aria-live="polite"></output>',
-  '  <div class="note-resizebar" role="separator" aria-orientation="horizontal" aria-label="Resize">',
+  '  <div class="note-resizebar" aria-label="Resize">',
   '    <div class="note-icon-bar"/>',
   '    <div class="note-icon-bar"/>',
   '    <div class="note-icon-bar"/>',
@@ -21,7 +20,7 @@ const statusbar = renderer.create([
 const airEditor = renderer.create('<div class="note-editor"/>');
 const airEditable = renderer.create([
   '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>',
-  '<output class="note-status-output" aria-live="polite"/>',
+  '<output class="note-status-output" role="status" aria-live="polite"/>',
 ].join(''));
 
 const buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
@@ -95,18 +94,16 @@ const dialog = renderer.create('<div class="modal" aria-hidden="false" tabindex=
   });
   $node.html([
     '<div class="modal-dialog">',
-    '  <div class="modal-content">',
-    (options.title
-      ? '    <div class="modal-header">' +
-    '      <h4 class="modal-title">' + options.title + '</h4>' +
-    '      <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">&times;</button>' +
-    '    </div>' : ''
+      '<div class="modal-content">',
+    (options.title ? '<div class="modal-header">' +
+        '<h4 class="modal-title">' + options.title + '</h4>' +
+        '<button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">&times;</button>' +
+      '</div>' : ''
     ),
-    '    <div class="modal-body">' + options.body + '</div>',
-    (options.footer
-      ? '    <div class="modal-footer">' + options.footer + '</div>' : ''
+    '<div class="modal-body">' + options.body + '</div>',
+    (options.footer ? '<div class="modal-footer">' + options.footer + '</div>' : ''
     ),
-    '  </div>',
+      '</div>',
     '</div>',
   ].join(''));
 });
@@ -128,8 +125,8 @@ const popover = renderer.create([
 
 const checkbox = renderer.create('<div class="form-check"></div>', function($node, options) {
   $node.html([
-    '<label class="form-check-label"' + (options.id ? ' for="' + options.id + '"' : '') + '>',
-    ' <input role="checkbox" type="checkbox" class="form-check-input"' + (options.id ? ' id="' + options.id + '"' : ''),
+    '<label class="form-check-label"' + (options.id ? ' for="note-' + options.id + '"' : '') + '>',
+    ' <input type="checkbox" class="form-check-input"' + (options.id ? ' id="note-' + options.id + '"' : ''),
     (options.checked ? ' checked' : ''),
     ' aria-label="' + (options.text ? options.text : '') + '"',
     ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',
@@ -163,7 +160,7 @@ const ui = {
   options: {},
 
   button: function($node, options) {
-    return renderer.create('<button type="button" class="note-btn btn btn-light btn-sm" role="button" tabindex="-1">', function($node, options) {
+    return renderer.create('<button type="button" class="note-btn btn btn-light btn-sm" tabindex="-1">', function($node, options) {
       if (options && options.tooltip) {
         $node.attr({
           title: options.tooltip,

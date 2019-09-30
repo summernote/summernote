@@ -21,12 +21,12 @@ export default class LinkDialog {
 
     const body = [
       '<div class="form-group note-form-group">',
-      `<label class="note-form-label">${this.lang.link.textToDisplay}</label>`,
-      '<input class="note-link-text form-control note-form-control note-input" type="text" />',
+      `<label for="note-dialog-link-text-${this.options.id}" class="note-form-label">${this.lang.link.textToDisplay}</label>`,
+      `<input id="note-dialog-link-text-${this.options.id}" class="note-link-text form-control note-form-control note-input" type="text"/>`,
       '</div>',
       '<div class="form-group note-form-group">',
-      `<label class="note-form-label">${this.lang.link.url}</label>`,
-      '<input class="note-link-url form-control note-form-control note-input" type="text" value="http://" />',
+      `<label for="note-dialog-link-url-${this.options.id}" class="note-form-label">${this.lang.link.url}</label>`,
+      `<input id="note-dialog-link-url-${this.options.id}" class="note-link-url form-control note-form-control note-input" type="text" value="http://"/>`,
       '</div>',
       !this.options.disableLinkTarget
         ? $('<div/>').append(this.ui.checkbox({

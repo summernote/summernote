@@ -37,6 +37,8 @@ $.summernote = $.extend($.summernote, {
 
   options: {
     langInfo: $.summernote.lang['en-US'],
+    // Use timestamp for ID so each instance of Summernote can have unique ID's.
+    id: $.now(),
     modules: {
       'editor': Editor,
       'clipboard': Clipboard,
