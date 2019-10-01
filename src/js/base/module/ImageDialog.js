@@ -25,15 +25,14 @@ export default class ImageDialog {
 
     const body = [
       '<div class="form-group note-form-group note-group-select-from-files">',
-      '<label class="note-form-label">' + this.lang.image.selectFromFiles + '</label>',
-      '<input class="note-image-input form-control-file note-form-control note-input" ',
-      ' type="file" name="files" accept="image/*" multiple="multiple" />',
-      imageLimitation,
+        '<label for="note-dialog-image-file-' + this.options.id + '" class="note-form-label">' + this.lang.image.selectFromFiles + '</label>',
+        '<input id="note-dialog-image-file-' + this.options.id + '" class="note-image-input form-control-file note-form-control note-input" ',
+        ' type="file" name="files" accept="image/*" multiple="multiple"/>',
+        imageLimitation,
       '</div>',
-      '<div class="form-group note-group-image-url" style="overflow:auto;">',
-      '<label class="note-form-label">' + this.lang.image.url + '</label>',
-      '<input class="note-image-url form-control note-form-control note-input ',
-      ' col-md-12" type="text" />',
+      '<div class="form-group note-group-image-url">',
+        '<label for="note-dialog-image-url-' + this.options.id + '" class="note-form-label">' + this.lang.image.url + '</label>',
+        '<input id="note-dialog-image-url-' + this.options.id + '" class="note-image-url form-control note-form-control note-input" type="text"/>',
       '</div>',
     ].join('');
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-image-btn';

@@ -30,16 +30,16 @@ export default class Handle {
   initialize() {
     this.$handle = $([
       '<div class="note-handle">',
-      '<div class="note-control-selection">',
-      '<div class="note-control-selection-bg"></div>',
-      '<div class="note-control-holder note-control-nw"></div>',
-      '<div class="note-control-holder note-control-ne"></div>',
-      '<div class="note-control-holder note-control-sw"></div>',
-      '<div class="',
-      (this.options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing'),
-      ' note-control-se"></div>',
-      (this.options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>'),
-      '</div>',
+        '<div class="note-control-selection">',
+          '<div class="note-control-selection-bg"></div>',
+          '<div class="note-control-holder note-control-nw"></div>',
+          '<div class="note-control-holder note-control-ne"></div>',
+          '<div class="note-control-holder note-control-sw"></div>',
+          '<div class="',
+            (this.options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing'),
+          ' note-control-se"></div>',
+          (this.options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>'),
+        '</div>',
       '</div>',
     ].join('')).prependTo(this.$editingArea);
 

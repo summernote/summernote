@@ -14,8 +14,8 @@ class PopoverUI {
     // create popover node
     this.$popover = $([
       '<div class="note-popover in">',
-      ' <div class="note-popover-arrow" />',
-      ' <div class="note-popover-content" />',
+        '<div class="note-popover-arrow"/>',
+        '<div class="note-popover-content"/>',
       '</div>',
     ].join(''));
 

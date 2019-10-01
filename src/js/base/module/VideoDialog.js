@@ -18,8 +18,8 @@ export default class VideoDialog {
 
     const body = [
       '<div class="form-group note-form-group row-fluid">',
-      `<label class="note-form-label">${this.lang.video.url} <small class="text-muted">${this.lang.video.providers}</small></label>`,
-      '<input class="note-video-url form-control note-form-control note-input" type="text" />',
+        `<label for="note-dialog-video-url-${this.options.id}" class="note-form-label">${this.lang.video.url} <small class="text-muted">${this.lang.video.providers}</small></label>`,
+        `<input id="note-dialog-video-url-${this.options.id}" class="note-video-url form-control note-form-control note-input" type="text"/>`,
       '</div>',
     ].join('');
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-video-btn';
