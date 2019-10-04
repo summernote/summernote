@@ -6,4 +6,5 @@ import '../../styles/summernote-bs3.scss';
 
 $.summernote = $.extend($.summernote, {
   ui: ui,
+  interface: 'bs3',
 });
