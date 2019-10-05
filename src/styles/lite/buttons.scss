@@ -49,6 +49,22 @@
 
 }
 
+.note-icon-caret {
+  padding: 3px 5px 3px 0;
+}
+
+.note-icon-caret::before {
+  padding: 3px 2px 2px 0;
+}
+
+.note-btn .note-icon-caret:before {
+  padding: 3px 2px 3px 4px;
+}
+
+.note-btn.dropdown-toggle {
+  padding: 1px 1px 1px 10px;
+}
+
 .note-btn-primary {
   background: #fa6362;
   color: #fff;
