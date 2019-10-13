@@ -6,16 +6,16 @@ import ModalUI from './ui/ModalUI';
 const editor = renderer.create('<div class="note-editor note-frame"/>');
 const toolbar = renderer.create('<div class="note-toolbar" role="toolbar"/>');
 const editingArea = renderer.create('<div class="note-editing-area"/>');
-const codable = renderer.create('<textarea class="note-codable" role="textbox" aria-multiline="true"/>');
+const codable = renderer.create('<textarea class="note-codable" aria-multiline="true"/>');
 const editable = renderer.create('<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>');
 const statusbar = renderer.create([
   '<output class="note-status-output" role="status" aria-live="polite"/>',
-  '<div class="note-statusbar" role="resize">',
-  '  <div class="note-resizebar" role="separator" aria-orientation="horizontal" aria-label="resize">',
-  '    <div class="note-icon-bar"/>',
-  '    <div class="note-icon-bar"/>',
-  '    <div class="note-icon-bar"/>',
-  '  </div>',
+  '<div class="note-statusbar" role="status">',
+    '<div class="note-resizebar" aria-label="resize">',
+      '<div class="note-icon-bar"/>',
+      '<div class="note-icon-bar"/>',
+      '<div class="note-icon-bar"/>',
+    '</div>',
   '</div>',
 ].join(''));
 
@@ -26,7 +26,7 @@ const airEditable = renderer.create([
 ].join(''));
 
 const buttonGroup = renderer.create('<div class="note-btn-group">');
-const button = renderer.create('<button type="button" class="note-btn" role="button" tabindex="-1">', function($node, options) {
+const button = renderer.create('<button type="button" class="note-btn" tabindex="-1">', function($node, options) {
   // set button type
   if (options && options.tooltip) {
     $node.attr({
@@ -225,9 +225,9 @@ const tableDropdownButton = function(opt) {
       className: 'note-table',
       items: [
         '<div class="note-dimension-picker">',
-        '  <div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>',
-        '  <div class="note-dimension-picker-highlighted"/>',
-        '  <div class="note-dimension-picker-unhighlighted"/>',
+          '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>',
+          '<div class="note-dimension-picker-highlighted"/>',
+          '<div class="note-dimension-picker-unhighlighted"/>',
         '</div>',
         '<div class="note-dimension-display">1 x 1</div>',
       ].join(''),
@@ -307,38 +307,36 @@ const colorDropdownButton = function(opt, type) {
       dropdown({
         items: [
           '<div>',
-          '<div class="note-btn-group btn-background-color">',
-          '  <div class="note-palette-title">' + opt.lang.color.background + '</div>',
-          '  <div>',
-          '<button type="button" class="note-color-reset note-btn note-btn-block" ' +
-          ' data-event="backColor" data-value="inherit">',
-          opt.lang.color.transparent,
-          '    </button>',
-          '  </div>',
-          '  <div class="note-holder" data-event="backColor"/>',
-          '  <div class="btn-sm">',
-          '    <input type="color" id="html5bcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
-          '    <button type="button" class="note-color-reset btn" data-event="backColor" data-value="cpbackColor">',
-          opt.lang.color.cpSelect,
-          '    </button>',
-          '  </div>',
+            '<div class="note-btn-group btn-background-color">',
+              '<div class="note-palette-title">' + opt.lang.color.background + '</div>',
+            '<div>',
+            '<button type="button" class="note-color-reset note-btn note-btn-block" data-event="backColor" data-value="inherit">',
+              opt.lang.color.transparent,
+            '</button>',
+          '</div>',
+          '<div class="note-holder" data-event="backColor"/>',
+            '<div class="btn-sm">',
+              '<input type="color" id="html5bcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
+              '<button type="button" class="note-color-reset btn" data-event="backColor" data-value="cpbackColor">',
+                opt.lang.color.cpSelect,
+              '</button>',
+            '</div>',
           '</div>',
           '<div class="note-btn-group btn-foreground-color">',
-          '  <div class="note-palette-title">' + opt.lang.color.foreground + '</div>',
-          '  <div>',
-          '<button type="button" class="note-color-reset note-btn note-btn-block" ' +
-          ' data-event="removeFormat" data-value="foreColor">',
-          opt.lang.color.resetToDefault,
-          '    </button>',
-          '  </div>',
-          '  <div class="note-holder" data-event="foreColor"/>',
-          '  <div class="btn-sm">',
-          '    <input type="color" id="html5fcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
-          '    <button type="button" class="note-color-reset btn" data-event="foreColor" data-value="cpforeColor">',
-          opt.lang.color.cpSelect,
-          '    </button>',
-          '  </div>',
-          '</div>',
+            '<div class="note-palette-title">' + opt.lang.color.foreground + '</div>',
+            '<div>',
+              '<button type="button" class="note-color-reset note-btn note-btn-block" data-event="removeFormat" data-value="foreColor">',
+                opt.lang.color.resetToDefault,
+              '</button>',
+            '</div>',
+            '<div class="note-holder" data-event="foreColor"/>',
+              '<div class="btn-sm">',
+                '<input type="color" id="html5fcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
+                '<button type="button" class="note-color-reset btn" data-event="foreColor" data-value="cpforeColor">',
+                  opt.lang.color.cpSelect,
+                '</button>',
+              '</div>',
+            '</div>',
           '</div>',
         ].join(''),
         callback: function($dropdown) {
@@ -402,18 +400,11 @@ const dialog = renderer.create('<div class="note-modal" aria-hidden="false" tabi
     'aria-label': options.title,
   });
   $node.html([
-    '  <div class="note-modal-content">',
-    (options.title
-      ? '    <div class="note-modal-header">' +
-    '      <button type="button" class="close" aria-label="Close" aria-hidden="true"><i class="note-icon-close"></i></button>' +
-    '      <h4 class="note-modal-title">' + options.title + '</h4>' +
-    '    </div>' : ''
-    ),
-    '    <div class="note-modal-body">' + options.body + '</div>',
-    (options.footer
-      ? '    <div class="note-modal-footer">' + options.footer + '</div>' : ''
-    ),
-    '  </div>',
+    '<div class="note-modal-content">',
+      (options.title ? '<div class="note-modal-header"><button type="button" class="close" aria-label="Close" aria-hidden="true"><i class="note-icon-close"></i></button><h4 class="note-modal-title">' + options.title + '</h4></div>' : ''),
+      '<div class="note-modal-body">' + options.body + '</div>',
+      (options.footer ? '<div class="note-modal-footer">' + options.footer + '</div>' : ''),
+    '</div>',
   ].join(''));
 
   $node.data('modal', new ModalUI($node, options));
@@ -421,15 +412,12 @@ const dialog = renderer.create('<div class="note-modal" aria-hidden="false" tabi
 
 const videoDialog = function(opt) {
   const body = '<div class="note-form-group">' +
-    '<label class="note-form-label">' +
-    opt.lang.video.url + ' <small class="text-muted">' +
-    opt.lang.video.providers + '</small>' +
-    '</label>' +
-    '<input class="note-video-url note-input" type="text" />' +
-    '</div>';
+    '<label for="note-dialog-video-url-' + opt.id + '" class="note-form-label">' + opt.lang.video.url + ' <small class="text-muted">' + opt.lang.video.providers + '</small></label>' +
+    '<input id="note-dialog-video-url-' + opt.id + '" class="note-video-url note-input" type="text"/>' +
+  '</div>';
   const footer = [
     '<button type="button" href="#" class="note-btn note-btn-primary note-video-btn disabled" disabled>',
-    opt.lang.video.insert,
+      opt.lang.video.insert,
     '</button>',
   ].join('');
 
@@ -443,17 +431,17 @@ const videoDialog = function(opt) {
 
 const imageDialog = function(opt) {
   const body = '<div class="note-form-group note-group-select-from-files">' +
-    '<label class="note-form-label">' + opt.lang.image.selectFromFiles + '</label>' +
-    '<input class="note-note-image-input note-input" type="file" name="files" accept="image/*" multiple="multiple" />' +
+    '<label for="note-dialog-image-file-' + opt.id + '" class="note-form-label">' + opt.lang.image.selectFromFiles + '</label>' +
+    '<input id="note-dialog-image-file-' + opt.id + '" class="note-note-image-input note-input" type="file" name="files" accept="image/*" multiple="multiple"/>' +
     opt.imageLimitation +
-    '</div>' +
-    '<div class="note-form-group" style="overflow:auto;">' +
-    '<label class="note-form-label">' + opt.lang.image.url + '</label>' +
-    '<input class="note-image-url note-input" type="text" />' +
-    '</div>';
+  '</div>' +
+  '<div class="note-form-group">' +
+    '<label for="note-dialog-image-url-' + opt.id + '" class="note-form-label">' + opt.lang.image.url + '</label>' +
+    '<input id="note-dialog-image-url-' + opt.id +'" class="note-image-url note-input" type="text"/>' +
+  '</div>';
   const footer = [
     '<button href="#" type="button" class="note-btn note-btn-primary note-btn-large note-image-btn disabled" disabled>',
-    opt.lang.image.insert,
+      opt.lang.image.insert,
     '</button>',
   ].join('');
 
@@ -467,25 +455,18 @@ const imageDialog = function(opt) {
 
 const linkDialog = function(opt) {
   const body = '<div class="note-form-group">' +
-    '<label class="note-form-label">' + opt.lang.link.textToDisplay + '</label>' +
-    '<input class="note-link-text note-input" type="text" />' +
-    '</div>' +
-    '<div class="note-form-group">' +
-    '<label class="note-form-label">' + opt.lang.link.url + '</label>' +
-    '<input class="note-link-url note-input" type="text" value="http://" />' +
-    '</div>' +
-    (!opt.disableLinkTarget
-      ? '<div class="checkbox">' +
-      '<label>' + '<input type="checkbox" checked> ' + opt.lang.link.openInNewWindow + '</label>' +
-      '</div>' : ''
-    ) +
-    '<div class="checkbox">' +
-    '<label>' + '<input type="checkbox" checked> ' + opt.lang.link.useProtocol + '</label>' +
-    '</div>'
-    ;
+    '<label for="note-dialog-link-txt-' + opt.id + '" class="note-form-label">' + opt.lang.link.textToDisplay + '</label>' +
+    '<input id="note-dialog-link-txt-' + opt.id + '" class="note-link-text note-input" type="text"/>' +
+  '</div>' +
+  '<div class="note-form-group">' +
+    '<label for="note-dialog-link-url-' + opt.id + '" class="note-form-label">' + opt.lang.link.url + '</label>' +
+    '<input id="note-dialog-link-url-' + opt.id + '" class="note-link-url note-input" type="text" value="http://"/>' +
+  '</div>' +
+  (!opt.disableLinkTarget ? '<div class="checkbox"><label for="note-dialog-link-nw-' + opt.id + '"><input id="note-dialog-link-nw-' + opt.id + '" type="checkbox" checked> ' + opt.lang.link.openInNewWindow + '</label></div>' : '') +
+  '<div class="checkbox"><label for="note-dialog-link-up-' + opt.id + '"><input id="note-dialog-link-up-' + opt.id + '" type="checkbox" checked> ' + opt.lang.link.useProtocol + '</label></div>';
   const footer = [
     '<button href="#" type="button" class="note-btn note-btn-primary note-link-btn disabled" disabled>',
-    opt.lang.link.insert,
+      opt.lang.link.insert,
     '</button>',
   ].join('');
 
@@ -500,8 +481,8 @@ const linkDialog = function(opt) {
 
 const popover = renderer.create([
   '<div class="note-popover bottom">',
-  '  <div class="note-popover-arrow"/>',
-  '  <div class="popover-content note-children-container"/>',
+    '<div class="note-popover-arrow"/>',
+    '<div class="popover-content note-children-container"/>',
   '</div>',
 ].join(''), function($node, options) {
   const direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
@@ -515,11 +496,11 @@ const popover = renderer.create([
 
 const checkbox = renderer.create('<div class="checkbox"></div>', function($node, options) {
   $node.html([
-    '<label' + (options.id ? ' for="' + options.id + '"' : '') + '>',
-    ' <input role="checkbox" type="checkbox"' + (options.id ? ' id="' + options.id + '"' : ''),
-    (options.checked ? ' checked' : ''),
-    ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',
-    (options.text ? options.text : ''),
+    '<label' + (options.id ? ' for="note-' + options.id + '"' : '') + '>',
+      '<input role="checkbox" type="checkbox"' + (options.id ? ' id="note-' + options.id + '"' : ''),
+      (options.checked ? ' checked' : ''),
+      ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',
+      (options.text ? options.text : ''),
     '</label>',
   ].join(''));
 });
