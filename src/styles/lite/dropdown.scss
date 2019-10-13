@@ -19,6 +19,10 @@
   @include box-shadow(0 1px 1px rgba(0,0,0,.06));
 }
 
+.note-air-popover .note-btn.dropdown-toggle {
+    padding: 5px 1px 5px 10px;
+}
+
 .note-btn-group.open .note-dropdown-menu {
   display: block;
 }
@@ -36,4 +40,8 @@ a.note-dropdown-item:hover {
   margin: 5px 0;
   color: #000;
   text-decoration: none;
+}
+.dropdown-toggle:after{
+  content:'';
+  display:none;
 }

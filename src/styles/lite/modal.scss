@@ -12,6 +12,24 @@
   &.open {
     display:block;
   }
+
+}
+
+.note-modal.fade .note-modal-content {
+  transition: -webkit-transform .3s ease-out;
+  transition: transform .3s ease-out, -webkit-transform .3s ease-out;
+  transition: transform .3s ease-out;
+}
+
+/* This is needed if Lite is used with Bootstrap 3/4, possible also other CSS Frameworks */
+.note-modal.fade:not(.show){
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .note-modal.fade .note-modal-content {
+    transition: none;
+  }
 }
 
 .note-modal-content {
@@ -21,21 +39,24 @@
   border: 1px solid $modal-content-border-color;
   background: $modal-content-bg;
   background-clip: border-box;
-  outline:0;
+  outline: 0;
+  border-radius: .3rem;
 }
 
 .note-modal-header {
   padding: 30px 20px 20px 20px;
   border: 1px solid #ededef;
+  border-top-right-radius: .3rem;
+  border-top-left-radius: .3rem;
 
-  .close {
+  .note-close {
     margin-top: -10px;
   }
-
 }
 
 .note-modal-body {
   position: relative;
+  font-family: sans-serif;
   padding: 20px 30px;
 
   // shortcut text style
@@ -43,39 +64,67 @@
     border-radius: 2px;
     background-color: #000;
     color: #fff;
-    padding: 3px 5px;
+    padding: 1px 3px;
+    font-family: sans-serif;
     font-weight: 700;
     @include box-sizing();
+  }
+
+  label {
+    font-family: sans-serif;
+    font-size: .75em;
+    display: inline-block;
+    margin-bottom: .5rem;
   }
 }
 
 .note-modal-footer {
-  height: 40px;
-  padding: 10px;
-  text-align: center;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: end;
+  justify-content: center;
+  font-family: sans-serif;
+  font-size: .75em;
+  padding: 1rem;
+  border-top: 1px solid #dee2e6;
+  border-bottom-right-radius: .3rem;
+  border-bottom-left-radius: .3rem;
+}
 
+.note-modal-footer > :not(:first-child) {
+  margin-left: .25rem;
+}
+
+.note-modal-footer > :not(:last-child) {
+  margin-right: .25rem;
 }
 
 .note-modal-footer a {
+  font-size: inherit;
+  font-weight: inherit;
   color: #337ab7;
-  text-decoration: none
+  text-decoration: none;
 }
 
 .note-modal-footer a:hover,
 .note-modal-footer a:focus {
   color: #23527c;
-  text-decoration: underline
+  text-decoration: underline;
 }
 
 .note-modal-footer .note-btn {
-  float: right
+  float: right;
 }
 
 .note-modal-title {
-  font-size: 26px;
+  font-family: sans-serif;
+  font-size: 1.5rem;
+  font-weight: 500;
   color: #42515f;
-  margin: 0;
-  line-height: 1.4;
+  margin: 0 0 .5rem 0;
+  line-height: 1.2;
 }
 
 .note-modal-backdrop {

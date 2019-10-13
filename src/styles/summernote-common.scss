@@ -332,8 +332,14 @@ $img-margin-right: 10px;
 
   .note-color {
     .dropdown-toggle {
-      width: 20px;
+      width: 30px;
       padding-left: 5px;
+    }
+    .dropdown-toggle .note-icon-caret {
+      padding: 3px 5px 3px 0;
+    }
+    .dropdown-toggle .note-icon-caret:before {
+      padding: 3px 2px 2px 0;
     }
     .note-dropdown-menu {
       .note-palette {
