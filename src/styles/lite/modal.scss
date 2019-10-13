@@ -84,7 +84,7 @@
   -ms-flex-align: center;
   align-items: center;
   -ms-flex-pack: end;
-  justify-content: center;
+  justify-content: flex-end;
   font-family: sans-serif;
   font-size: .75em;
   padding: 1rem;
@@ -116,6 +116,7 @@
 
 .note-modal-footer .note-btn {
   float: right;
+  height: auto;
 }
 
 .note-modal-title {
