@@ -416,13 +416,15 @@ export default class Editor {
       keys.push(keyName);
     }
 
-    const eventName = keyMap[keys.join('+')];
-    if (eventName) {
-      if (this.context.invoke(eventName) !== false) {
-        event.preventDefault();
+    if (keyName == 'TAB' && !this.options.tabDisable){
+      const eventName = keyMap[keys.join('+')];
+      if (eventName) {
+        if (this.context.invoke(eventName) !== false) {
+          event.preventDefault();
+        }
+      } else if (key.isEdit(event.keyCode)) {
+        this.afterCommand();
       }
-    } else if (key.isEdit(event.keyCode)) {
-      this.afterCommand();
     }
   }
 
