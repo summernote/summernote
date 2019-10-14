@@ -190,7 +190,7 @@ export default class Buttons {
           click: (event) => {
             event.stopPropagation();
 
-            const $parent = $('.' + className);
+            const $parent = $('.' + className).find('.show');
             const $button = $(event.target);
             const eventName = $button.data('event');
             let value = $button.attr('data-value');

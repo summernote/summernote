@@ -507,14 +507,16 @@ class WrappedRange {
       topAncestor = rng.sc.childNodes[rng.so > 0 ? rng.so - 1 : 0];
     }
 
-    // siblings not in paragraph
-    let inlineSiblings = dom.listPrev(topAncestor, dom.isParaInline).reverse();
-    inlineSiblings = inlineSiblings.concat(dom.listNext(topAncestor.nextSibling, dom.isParaInline));
+    if (topAncestor) {
+      // siblings not in paragraph
+      let inlineSiblings = dom.listPrev(topAncestor, dom.isParaInline).reverse();
+      inlineSiblings = inlineSiblings.concat(dom.listNext(topAncestor.nextSibling, dom.isParaInline));
 
-    // wrap with paragraph
-    if (inlineSiblings.length) {
-      const para = dom.wrap(lists.head(inlineSiblings), 'p');
-      dom.appendChildNodes(para, lists.tail(inlineSiblings));
+      // wrap with paragraph
+      if (inlineSiblings.length) {
+        const para = dom.wrap(lists.head(inlineSiblings), 'p');
+        dom.appendChildNodes(para, lists.tail(inlineSiblings));
+      }
     }
 
     return this.normalize();
