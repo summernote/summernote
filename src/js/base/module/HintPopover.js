@@ -27,7 +27,7 @@ export default class HintPopover {
       'summernote.keydown': (we, e) => {
         this.handleKeydown(e);
       },
-      'summernote.disable summernote.dialog.shown': () => {
+      'summernote.disable summernote.dialog.shown summernote.blur': () => {
         this.hide();
       },
     };

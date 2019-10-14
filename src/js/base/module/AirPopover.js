@@ -15,7 +15,7 @@ export default class AirPopover {
       'summernote.keyup summernote.mouseup summernote.scroll': () => {
         this.update();
       },
-      'summernote.disable summernote.change summernote.dialog.shown': () => {
+      'summernote.disable summernote.change summernote.dialog.shown summernote.blur': () => {
         this.hide();
       },
       'summernote.focusout': (we, e) => {

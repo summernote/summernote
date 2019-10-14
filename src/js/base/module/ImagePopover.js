@@ -16,7 +16,7 @@ export default class ImagePopover {
     this.options = context.options;
 
     this.events = {
-      'summernote.disable': () => {
+      'summernote.disable summernote.blur': () => {
         this.hide();
       },
     };
