@@ -129,6 +129,7 @@ $.summernote = $.extend($.summernote, {
     maxTextLength: 0,
     blockquoteBreakingLevel: 2,
     spellCheck: true,
+    disableGrammar: false,
     placeholder: null,
     inheritPlaceholder: false,
 
