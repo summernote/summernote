@@ -367,6 +367,12 @@ export default class Editor {
 
     this.$editable.attr('spellcheck', this.options.spellCheck);
 
+    this.$editable.attr('autocorrect', this.options.spellCheck);
+
+    if (this.options.disableGrammar) {
+      this.$editable.attr('data-gramm', false);
+    }
+
     // init content before set event
     this.$editable.html(dom.html(this.$note) || dom.emptyPara);
 
