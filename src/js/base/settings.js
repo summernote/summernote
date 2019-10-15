@@ -38,6 +38,7 @@ $.summernote = $.extend($.summernote, {
   options: {
     langInfo: $.summernote.lang['en-US'],
     id: $.now(),
+    editing: true,
     modules: {
       'editor': Editor,
       'clipboard': Clipboard,
