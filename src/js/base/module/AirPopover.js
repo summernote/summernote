@@ -13,7 +13,9 @@ export default class AirPopover {
     this.options = context.options;
     this.events = {
       'summernote.keyup summernote.mouseup summernote.scroll': () => {
-        this.update();
+        if (this.options.editing == true) {
+          this.update();
+        }
       },
       'summernote.disable summernote.change summernote.dialog.shown summernote.blur': () => {
         this.hide();

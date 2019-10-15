@@ -110,6 +110,7 @@ export default class Context {
     this.layoutInfo.editable.attr('contenteditable', true);
     this.invoke('toolbar.activate', true);
     this.triggerEvent('disable', false);
+    this.options.editing = true;
   }
 
   disable() {
@@ -118,6 +119,7 @@ export default class Context {
       this.invoke('codeview.deactivate');
     }
     this.layoutInfo.editable.attr('contenteditable', false);
+    this.options.editing = false;
     this.invoke('toolbar.deactivate', true);
 
     this.triggerEvent('disable', true);
