@@ -12,7 +12,7 @@ export default class AirPopover {
     this.ui = $.summernote.ui;
     this.options = context.options;
     this.events = {
-      'summernote.keyup summernote.mousedown summernote.scroll': () => {
+      'summernote.keyup summernote.mouseup summernote.scroll': () => {
         if (this.options.editing == true) {
           this.update();
         }
