@@ -71,6 +71,7 @@ $.summernote = $.extend($.summernote, {
     lang: 'en-US',
 
     followingToolbar: false,
+    toolbarPosition: 'top', // top|bottom
     otherStaticBar: '',
 
     // toolbar
