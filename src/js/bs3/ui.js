@@ -203,14 +203,26 @@ const ui = {
       ui.editingArea([
         ui.airEditable(),
       ]),
-    ]) : ui.editor([
-      ui.toolbar(),
-      ui.editingArea([
-        ui.codable(),
-        ui.editable(),
-      ]),
-      ui.statusbar(),
-    ])).render();
+    ]) : (options.toolbarPosition == 'bottom' ?
+        ui.editor([
+          ui.editingArea([
+            ui.codable(),
+            ui.editable(),
+          ]),
+          ui.toolbar(),
+          ui.statusbar(),
+        ])
+      :
+        ui.editor([
+          ui.toolbar(),
+          ui.editingArea([
+            ui.codable(),
+            ui.editable(),
+          ]),
+          ui.statusbar(),
+        ])
+      )
+    ).render();
 
     $editor.insertAfter($note);
 
