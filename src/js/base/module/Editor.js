@@ -289,8 +289,8 @@ export default class Editor {
      */
     this.removeMedia = this.wrapCommand(() => {
       let $target = $(this.restoreTarget()).parent();
-      if ($target.parent('figure').length) {
-        $target.parent('figure').remove();
+      if ($target.closest('figure').length) {
+        $target.closest('figure').remove();
       } else {
         $target = $(this.restoreTarget()).detach();
       }
