@@ -71,7 +71,7 @@ $.summernote = $.extend($.summernote, {
     lang: 'en-US',
 
     followingToolbar: false,
-    toolbarPosition: 'top', // top|bottom
+    toolbarPosition: 'top',
     otherStaticBar: '',
 
     // toolbar
@@ -107,6 +107,7 @@ $.summernote = $.extend($.summernote, {
         ['para', ['ul', 'paragraph']],
         ['table', ['table']],
         ['insert', ['link', 'picture']],
+        ['view', ['fullscreen', 'codeview']]
       ],
     },
 
