@@ -18,7 +18,7 @@ const statusbar = renderer.create([
   '</div>',
 ].join(''));
 
-const airEditor = renderer.create('<div class="note-editor"/>');
+const airEditor = renderer.create('<div class="note-editor note-airframe"/>');
 const airEditable = renderer.create([
   '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>',
   '<output class="note-status-output" role="status" aria-live="polite"/>',
@@ -204,6 +204,7 @@ const ui = {
   createLayout: function($note, options) {
     const $editor = (options.airMode ? ui.airEditor([
       ui.editingArea([
+        ui.codable(),
         ui.airEditable(),
       ]),
     ]) : (options.toolbarPosition == 'bottom' ?
