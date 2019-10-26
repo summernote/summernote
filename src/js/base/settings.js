@@ -107,7 +107,7 @@ $.summernote = $.extend($.summernote, {
         ['para', ['ul', 'paragraph']],
         ['table', ['table']],
         ['insert', ['link', 'picture']],
-        ['view', ['fullscreen', 'codeview']]
+        ['view', ['fullscreen', 'codeview']],
       ],
     },
 

@@ -160,6 +160,6 @@ $.extend($.summernote.lang, {
     },
     output: {
       noSelection: 'No Selection Made!',
-    }
+    },
   },
 });
