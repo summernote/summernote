@@ -22,6 +22,8 @@ export default class Clipboard {
       if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
         // paste img file
         this.context.invoke('editor.insertImagesOrCallback', [item.getAsFile()]);
+        event.preventDefault();
+
         this.context.invoke('editor.afterCommand');
       } else if (item.kind === 'string') {
         // paste text with maxTextLength check
