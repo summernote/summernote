@@ -112,7 +112,9 @@ export default class Toolbar {
         this.$toolbar.appendTo(this.options.toolbarContainer);
       }
     }
-    this.followScroll();
+    if (this.options.followingToolbar) {
+      this.followScroll();
+    }
   }
 
   updateFullscreen(isFullscreen) {
