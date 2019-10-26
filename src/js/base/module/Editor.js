@@ -343,7 +343,10 @@ export default class Editor {
         }
       }
       if (this.isLimited(1, event)) {
-        return false;
+        const lastRange = this.getLastRange();
+        if (lastRange.eo - lastRange.so === 0) {
+          return false;
+        }
       }
     }).on('keyup', (event) => {
       this.setLastRange();
@@ -447,6 +450,7 @@ export default class Editor {
 
     if (typeof event !== 'undefined') {
       if (key.isMove(event.keyCode) ||
+          key.isNavigation(event.keyCode) ||
           (event.ctrlKey || event.metaKey) ||
           lists.contains([key.code.BACKSPACE, key.code.DELETE], event.keyCode)) {
         return false;
