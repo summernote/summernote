@@ -207,8 +207,8 @@ const ui = {
         ui.codable(),
         ui.airEditable(),
       ]),
-    ]) : (options.toolbarPosition == 'bottom' ?
-        ui.editor([
+    ]) : (options.toolbarPosition === 'bottom'
+       ? ui.editor([
           ui.editingArea([
             ui.codable(),
             ui.editable(),
@@ -216,8 +216,7 @@ const ui = {
           ui.toolbar(),
           ui.statusbar(),
         ])
-      :
-        ui.editor([
+      : ui.editor([
           ui.toolbar(),
           ui.editingArea([
             ui.codable(),

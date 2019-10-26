@@ -343,7 +343,10 @@ export default class Editor {
         }
       }
       if (this.isLimited(1, event)) {
-        return false;
+        const lastRange = this.getLastRange();
+        if (lastRange.eo - lastRange.so === 0) {
+          return false;
+        }
       }
     }).on('keyup', (event) => {
       this.setLastRange();
@@ -422,7 +425,7 @@ export default class Editor {
       keys.push(keyName);
     }
 
-    if (keyName == 'TAB' && !this.options.tabDisable){
+    if (keyName === 'TAB' && !this.options.tabDisable) {
       const eventName = keyMap[keys.join('+')];
       if (eventName) {
         if (this.context.invoke(eventName) !== false) {
@@ -447,6 +450,7 @@ export default class Editor {
 
     if (typeof event !== 'undefined') {
       if (key.isMove(event.keyCode) ||
+          key.isNavigation(event.keyCode) ||
           (event.ctrlKey || event.metaKey) ||
           lists.contains([key.code.BACKSPACE, key.code.DELETE], event.keyCode)) {
         return false;
@@ -744,7 +748,7 @@ export default class Editor {
   fontStyling(target, value) {
     const rng = this.getLastRange();
 
-    if (rng != '') {
+    if (rng !== '') {
       const spans = this.style.styleNodes(rng);
       this.$editor.find('.note-status-output').html('');
       $(spans).css(target, value);
@@ -763,7 +767,7 @@ export default class Editor {
     } else {
       const noteStatusOutput = $.now();
       this.$editor.find('.note-status-output').html('<div id="note-status-output-' + noteStatusOutput + '" class="alert alert-info">' + this.lang.output.noSelection + '</div>');
-      setTimeout(function(){$('#note-status-output-' + noteStatusOutput).remove();}, 5000);
+      setTimeout(function() { $('#note-status-output-' + noteStatusOutput).remove(); }, 5000);
     }
   }
 
