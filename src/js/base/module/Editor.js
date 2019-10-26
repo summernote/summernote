@@ -422,7 +422,7 @@ export default class Editor {
       keys.push(keyName);
     }
 
-    if (keyName === 'TAB' && !this.options.tabDisable){
+    if (keyName === 'TAB' && !this.options.tabDisable) {
       const eventName = keyMap[keys.join('+')];
       if (eventName) {
         if (this.context.invoke(eventName) !== false) {
@@ -763,7 +763,7 @@ export default class Editor {
     } else {
       const noteStatusOutput = $.now();
       this.$editor.find('.note-status-output').html('<div id="note-status-output-' + noteStatusOutput + '" class="alert alert-info">' + this.lang.output.noSelection + '</div>');
-      setTimeout(function(){$('#note-status-output-' + noteStatusOutput).remove();}, 5000);
+      setTimeout(function() { $('#note-status-output-' + noteStatusOutput).remove(); }, 5000);
     }
   }
 
