@@ -437,7 +437,7 @@ const imageDialog = function(opt) {
   '</div>' +
   '<div class="note-form-group">' +
     '<label for="note-dialog-image-url-' + opt.id + '" class="note-form-label">' + opt.lang.image.url + '</label>' +
-    '<input id="note-dialog-image-url-' + opt.id +'" class="note-image-url note-input" type="text"/>' +
+    '<input id="note-dialog-image-url-' + opt.id + '" class="note-image-url note-input" type="text"/>' +
   '</div>';
   const footer = [
     '<button href="#" type="button" class="note-btn note-btn-primary note-btn-large note-image-btn disabled" disabled>',
@@ -594,8 +594,8 @@ const ui = {
         ui.codable(),
         ui.airEditable(),
       ]),
-    ]) : (options.toolbarPosition == 'bottom' ?
-        ui.editor([
+    ]) : (options.toolbarPosition === 'bottom'
+      ? ui.editor([
           ui.editingArea([
             ui.codable(),
             ui.editable(),
@@ -603,8 +603,7 @@ const ui = {
           ui.toolbar(),
           ui.statusbar(),
         ])
-      :
-        ui.editor([
+      : ui.editor([
           ui.toolbar(),
           ui.editingArea([
             ui.codable(),

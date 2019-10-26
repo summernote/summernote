@@ -38,7 +38,7 @@ export default class AutoLink {
 
     if (match && (match[1] || match[2])) {
       const link = match[1] ? keyword : defaultScheme + keyword;
-      const urlText = keyword.replace(/^(?:https?:\/\/)?(?:tel?:?)?(?:mailto?:?)?(?:www\.)?/i, "").split('/')[0]
+      const urlText = keyword.replace(/^(?:https?:\/\/)?(?:tel?:?)?(?:mailto?:?)?(?:www\.)?/i, '').split('/')[0];
       const node = $('<a />').html(urlText).attr('href', link)[0];
       if (this.context.options.linkTargetBlank) {
         $(node).attr('target', '_blank');
