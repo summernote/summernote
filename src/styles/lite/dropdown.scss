@@ -2,7 +2,24 @@
   position: relative;
 
 }
-
+.dropdown-toggle .note-icon-caret {
+  padding: 3px 5px 3px 0;
+}
+.dropdown-toggle .note-icon-caret:before {
+  padding: 3px 2px 2px 0;
+}
+.note-color {
+  .dropdown-toggle {
+    width: 30px;
+    padding-left: 5px;
+  }
+  .dropdown-toggle .note-icon-caret {
+    padding: 3px 5px 3px 0;
+  }
+  .dropdown-toggle .note-icon-caret:before {
+    padding: 3px 2px 2px 0;
+  }
+}
 .note-dropdown-menu {
   display: none;
   min-width: 100px;
