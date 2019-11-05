@@ -240,8 +240,10 @@ describe('Buttons', () => {
     });
   });
 
-  describe('font size button with empty content', () => {
+  describe('font size button', () => {
     it('should update font size button value when changing font size', () => {
+      range.createFromNode($editable.find('p')[0]).normalize().select();
+
       var $fontSizeDropdown = $toolbar.find('.dropdown-fontsize');
       var $fontSizeButton = $fontSizeDropdown.siblings('button');
       var $fontSizeList = $fontSizeDropdown.find('a');
