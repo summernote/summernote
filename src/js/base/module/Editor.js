@@ -476,6 +476,10 @@ export default class Editor {
 
   setLastRange() {
     this.lastRange = range.create(this.editable);
+
+    if ($(this.lastRange.sc).closest('.note-editable').length === 0) {
+      this.lastRange = range.createFromBodyElement(this.editable);
+    }
   }
 
   getLastRange() {

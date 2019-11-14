@@ -674,12 +674,17 @@ export default {
       return new WrappedRange(sc, so, ec, eo);
     } else {
       let wrappedRange = this.createFromSelection();
+
       if (!wrappedRange && arguments.length === 1) {
-        wrappedRange = this.createFromNode(arguments[0]);
-        return wrappedRange.collapse(dom.emptyPara === arguments[0].innerHTML);
+        return this.createFromBodyElement(arguments[0], dom.emptyPara === arguments[0].innerHTML);
       }
       return wrappedRange;
     }
+  },
+
+  createFromBodyElement: function(bodyElement, isCollapseToStart = false) {
+    var wrappedRange = this.createFromNode(bodyElement);
+    return wrappedRange.collapse(isCollapseToStart);
   },
 
   createFromSelection: function() {

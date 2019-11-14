@@ -153,6 +153,15 @@ describe('Editor', () => {
     });
   });
 
+  describe('setLastRange', () => {
+    it('should set last range', () => {
+      document.body.click();
+      editor.setLastRange();
+
+      expect(editor.lastRange.sc).to.equal(editor.editable);
+    });
+  })
+
   describe('insertNode', () => {
     it('should insert node', () => {
       editor.insertNode($('<span> world</span>')[0]);
