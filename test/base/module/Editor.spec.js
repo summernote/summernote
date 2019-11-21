@@ -246,7 +246,7 @@ describe('Editor', () => {
   describe('insertHorizontalRule', () => {
     it('should insert horizontal rule', () => {
       editor.insertHorizontalRule();
-      expectContents(context, '<p>hello</p><hr><p><br></p>');
+      expectContents(context, '<p>hello</p><hr>');
     });
   });
 
@@ -258,7 +258,6 @@ describe('Editor', () => {
         '<tr><td><br></td><td><br></td></tr>',
         '<tr><td><br></td><td><br></td></tr>',
         '</tbody></table>',
-        '<p><br></p>',
       ].join('');
       editor.insertTable('2x2');
       expectContents(context, markup);
@@ -315,7 +314,7 @@ describe('Editor', () => {
       var endNode = $editable.find('p').last()[0];
 
       // all p tags is wrapped
-      range.create(startNode, 1, endNode, 1).normalize().select();
+      range.create(startNode, 0, endNode, 1).normalize().select();
 
       editor.formatBlock('blockquote');
 

@@ -224,6 +224,10 @@ class WrappedRange {
      * @return {BoundaryPoint}
      */
     const getVisiblePoint = function(point, isLeftToRight) {
+      if (!point) {
+        return point;
+      }
+
       // Just use the given point [XXX:Adhoc]
       //  - case 01. if the point is on the middle of the node
       //  - case 02. if the point is on the right edge and prefer to choose left node
@@ -244,8 +248,20 @@ class WrappedRange {
 
       // point on block's edge
       const block = dom.ancestor(point.node, dom.isBlock);
-      if (((dom.isLeftEdgePointOf(point, block) || dom.isVoid(dom.prevPoint(point).node)) && !isLeftToRight) ||
-        ((dom.isRightEdgePointOf(point, block) || dom.isVoid(dom.nextPoint(point).node)) && isLeftToRight)) {
+      let hasRightNode = false;
+
+      if (!hasRightNode) {
+        const prevPoint = dom.prevPoint(point) || { node: null };
+        hasRightNode = (dom.isLeftEdgePointOf(point, block) || dom.isVoid(prevPoint.node)) && !isLeftToRight;
+      }
+
+      let hasLeftNode = false;
+      if (!hasLeftNode) {
+        const nextPoint = dom.nextPoint(point) || { node: null };
+        hasLeftNode = (dom.isRightEdgePointOf(point, block) || dom.isVoid(nextPoint.node)) && isLeftToRight;
+      }
+
+      if (hasRightNode || hasLeftNode) {
         // returns point already on visible point
         if (dom.isVisiblePoint(point)) {
           return point;
@@ -529,9 +545,13 @@ class WrappedRange {
    * @return {Node}
    */
   insertNode(node) {
-    const rng = this.wrapBodyInlineWithPara().deleteContents();
-    const info = dom.splitPoint(rng.getStartPoint(), dom.isInline(node));
+    let rng = this;
 
+    if (dom.isText(node) || dom.isInline(node)) {
+      rng = this.wrapBodyInlineWithPara().deleteContents();
+    }
+
+    const info = dom.splitPoint(rng.getStartPoint(), dom.isInline(node));
     if (info.rightNode) {
       info.rightNode.parentNode.insertBefore(node, info.rightNode);
     } else {
@@ -545,11 +565,15 @@ class WrappedRange {
    * insert html at current cursor
    */
   pasteHTML(markup) {
+    markup = $.trim(markup);
+
     const contentsContainer = $('<div></div>').html(markup)[0];
     let childNodes = lists.from(contentsContainer.childNodes);
-    const rng = this.wrapBodyInlineWithPara().deleteContents();
 
-    if (rng.so > 0) {
+    // const rng = this.wrapBodyInlineWithPara().deleteContents();
+    const rng = this;
+
+    if (rng.so >= 0) {
       childNodes = childNodes.reverse();
     }
     childNodes = childNodes.map(function(childNode) {
