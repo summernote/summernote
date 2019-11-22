@@ -52,6 +52,8 @@ export default class HintPopover {
       $(e.currentTarget).addClass('active');
       this.replace();
     });
+
+    this.$popover.on('mousedown', (e) => { e.preventDefault(); });
   }
 
   destroy() {

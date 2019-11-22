@@ -38,6 +38,8 @@ export default class TablePopover {
     if (env.isFF) {
       document.execCommand('enableInlineTableEditing', false, false);
     }
+
+    this.$popover.on('mousedown', (e) => { e.preventDefault(); });
   }
 
   destroy() {

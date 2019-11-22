@@ -11,6 +11,9 @@ export default class AirPopover {
     this.context = context;
     this.ui = $.summernote.ui;
     this.options = context.options;
+
+    this.hidable = true;
+
     this.events = {
       'summernote.keyup summernote.mouseup summernote.scroll': () => {
         if (this.options.editing) {
@@ -45,6 +48,11 @@ export default class AirPopover {
     const $content = this.$popover.find('.popover-content');
 
     this.context.invoke('buttons.build', $content, this.options.popover.air);
+
+    // disable hiding this popover preemptively by 'summernote.blur' event.
+    this.$popover.on('mousedown', () => { this.hidable = false; });
+    // (re-)enable hiding after 'summernote.blur' has been handled (aka. ignored).
+    this.$popover.on('mouseup', () => { this.hidable = true; });
   }
 
   destroy() {
@@ -70,6 +78,8 @@ export default class AirPopover {
   }
 
   hide() {
-    this.$popover.hide();
+    if (this.hidable) {
+      this.$popover.hide();
+    }
   }
 }
