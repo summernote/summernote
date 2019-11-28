@@ -72,7 +72,8 @@ export default class Editor {
     });
 
     this.fontSize = this.wrapCommand((value) => {
-      return this.fontStyling('font-size', value + 'px');
+      let unit = this.options.fontSizeUnit || 'px';
+      return this.fontStyling('font-size', value + unit);
     });
 
     for (let idx = 1; idx <= 6; idx++) {
