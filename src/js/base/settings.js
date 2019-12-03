@@ -148,6 +148,8 @@ $.summernote = $.extend($.summernote, {
 
     fontSizes: ['8', '9', '10', '11', '12', '14', '18', '24', '36'],
 
+    fontSizeUnits: ['px', 'pt'],
+
     // pallete colors(n x n)
     colors: [
       ['#000000', '#424242', '#636363', '#9C9C94', '#CEC6CE', '#EFEFEF', '#F7F7F7', '#FFFFFF'],

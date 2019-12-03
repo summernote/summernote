@@ -17,6 +17,7 @@ $.extend($.summernote.lang, {
       subscript: 'Subscript',
       superscript: 'Superscript',
       size: 'Font Size',
+      sizeunit: 'Font Size Unit',
     },
     image: {
       image: 'Picture',

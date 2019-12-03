@@ -393,6 +393,26 @@ export default class Buttons {
       ]).render();
     });
 
+    this.context.memo('button.fontsizeunit', () => {
+      return this.ui.buttonGroup([
+        this.button({
+          className: 'dropdown-toggle',
+          contents: this.ui.dropdownButtonContents('<span class="note-current-fontsizeunit"/>', this.options),
+          tooltip: this.lang.font.sizeunit,
+          data: {
+            toggle: 'dropdown',
+          },
+        }),
+        this.ui.dropdownCheck({
+          className: 'dropdown-fontsizeunit',
+          checkClassName: this.options.icons.menuCheck,
+          items: this.options.fontSizeUnits,
+          title: this.lang.font.sizeunit,
+          click: this.context.createInvokeHandlerAndUpdateState('editor.fontSizeUnit'),
+        }),
+      ]).render();
+    });
+
     this.context.memo('button.color', () => {
       return this.colorPalette('note-color-all', this.lang.color.recent, true, true);
     });
@@ -846,6 +866,14 @@ export default class Buttons {
         $item.toggleClass('checked', isChecked);
       });
       $cont.find('.note-current-fontsize').text(fontSize);
+
+      const fontSizeUnit = styleInfo['font-size-unit'];
+      $cont.find('.dropdown-fontsizeunit a').each((idx, item) => {
+        const $item = $(item);
+        const isChecked = ($item.data('value') + '') === (fontSizeUnit + '');
+        $item.toggleClass('checked', isChecked);
+      });
+      $cont.find('.note-current-fontsizeunit').text(fontSizeUnit);
     }
 
     if (styleInfo['line-height']) {
