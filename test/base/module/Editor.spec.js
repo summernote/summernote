@@ -160,7 +160,17 @@ describe('Editor', () => {
 
       expect(editor.lastRange.sc).to.equal(editor.editable.lastChild);
     });
+
+    it('should set last range without content', () => {
+      context.layoutInfo.editable.html('');
+      document.body.click();
+      editor.setLastRange();
+
+      expect(editor.lastRange.sc).to.equal(editor.editable);
+    });    
   });
+
+
 
   describe('insertNode', () => {
     it('should insert node', () => {
