@@ -660,7 +660,7 @@ export default class Editor {
       }
 
       $image.show();
-      range.create(this.editable).insertNode($image[0]);
+      this.getLastRange().insertNode($image[0]);
       range.createFromNodeAfter($image[0]).select();
       this.setLastRange();
       this.afterCommand();
