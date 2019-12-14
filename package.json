@@ -24,7 +24,8 @@
     "test": "karma start karma.conf.js --single-run",
     "test:grep": "karma run karma.conf.js -- --grep",
     "test:watch": "karma start karma.conf.js",
-    "test:ci": "karma start karma.ci.conf.js --single-run"
+    "test:ci": "karma start karma.ci.conf.js --single-run",
+    "test:sauce": "karma start karma.saucelabs.conf.js --single-run"
   },
   "husky": {
     "hooks": {
