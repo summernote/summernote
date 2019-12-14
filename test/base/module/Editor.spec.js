@@ -158,7 +158,7 @@ describe('Editor', () => {
       document.body.click();
       editor.setLastRange();
 
-      expect(editor.lastRange.sc).to.equal(editor.editable);
+      expect(editor.lastRange.sc).to.equal(editor.editable.lastChild);
     });
   });
 
@@ -253,15 +253,7 @@ describe('Editor', () => {
   });
 
   describe('insertHorizontalRule', () => {
-    it('should insert horizontal rule without splitting tag', () => {
-      editor.insertHorizontalRule();
-      expectContents(context, '<p>hello</p><hr>');
-    });
-
-    it('should insert horizontal rule with splitting tag', () => {
-      var textNode = $editable.find('p')[0].firstChild;
-      var rng = range.create(textNode, 5, textNode, 5).normalize().select();
-      editor.lastRange = rng;
+    it('should insert horizontal rule', () => {
       editor.insertHorizontalRule();
       expectContents(context, '<p>hello</p><hr><p><br></p>');
     });
@@ -275,6 +267,7 @@ describe('Editor', () => {
         '<tr><td><br></td><td><br></td></tr>',
         '<tr><td><br></td><td><br></td></tr>',
         '</tbody></table>',
+        '<p><br></p>'
       ].join('');
       editor.insertTable('2x2');
       expectContents(context, markup);
