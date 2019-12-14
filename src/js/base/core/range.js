@@ -700,7 +700,11 @@ export default {
       let wrappedRange = this.createFromSelection();
 
       if (!wrappedRange && arguments.length === 1) {
-        return this.createFromBodyElement(arguments[0], dom.emptyPara === arguments[0].innerHTML);
+        let bodyElement = arguments[0];
+        if (dom.isEditable(bodyElement)) {
+          bodyElement = bodyElement.lastChild;
+        }
+        return this.createFromBodyElement(bodyElement, dom.emptyPara === arguments[0].innerHTML);
       }
       return wrappedRange;
     }
