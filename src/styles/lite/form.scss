@@ -9,7 +9,6 @@
 .note-form-label {
   display: block;
   width: 100%;
-  font-family: sans-serif;
   font-size: 16px;
   color: #42515f;
   margin-bottom: 10px;
@@ -17,73 +16,29 @@
 }
 
 .note-input {
-  display: block;
   width: 100%;
-  height: calc(1.5em + .75rem + 2px);
-  padding: .375rem .75rem;
-  font-family: sans-serif;
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #495057;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid #ced4da;
-  border-radius: .25rem;
-  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-}
-
-@media (prefers-reduced-motion:reduce) {
-  .note-input {
-    transition: none;
-  }
-}
-
-.note-input::-ms-expand {
-  background-color: transparent;
-  border: 0
-}
-
-.note-input:focus {
-  color: #495057;
-  background-color: #fff;
-  border-color: #80bdff;
+  display: block;
+  border: 1px solid #ededef;
+  background: #fff;
   outline: 0;
-  box-shadow: 0 0 0 .2rem rgba(0, 123, 255, .25)
+  padding: 6px 4px;
+  font-size: 14px;
+  @include box-sizing();
 }
+
 
 .note-input::-webkit-input-placeholder {
-  color: #6c757d;
-  opacity: 1;
+  color: $gray-lighter;
 }
 
 .note-input:-moz-placeholder { /* Firefox 18- */
-  color: #6c757d;
-  opacity: 1;
+  color: $gray-lighter;
 }
 
-.note-input::-moz-placeholder { /* Firefox 19- */
-  color: #6c757d;
-  opacity: 1;
+.note-input::-moz-placeholder {  /* Firefox 19+ */
+  color: $gray-lighter;
 }
 
 .note-input:-ms-input-placeholder {
-  color: #6c757d;
-  opacity: 1;
-}
-
-.note-input::-ms-input-placeholder {
-  color: #6c757d;
-  opacity: 1;
-}
-
-.note-input::placeholder {
-  color: #6c757d;
-  opacity: 1;
-}
-
-.note-input:disabled,
-.note-input[readonly] {
-  background-color: #e9ecef;
-  opacity: 1;
+  color: $gray-lighter;
 }

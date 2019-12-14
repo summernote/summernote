@@ -2,22 +2,10 @@
   position: relative;
 
 }
-.dropdown-toggle .note-icon-caret {
-  padding: 3px 5px 3px 0;
-}
-.dropdown-toggle .note-icon-caret:before {
-  padding: 3px 2px 2px 0;
-}
 .note-color {
   .dropdown-toggle {
     width: 30px;
     padding-left: 5px;
-  }
-  .dropdown-toggle .note-icon-caret {
-    padding: 3px 5px 3px 0;
-  }
-  .dropdown-toggle .note-icon-caret:before {
-    padding: 3px 2px 2px 0;
   }
 }
 .note-dropdown-menu {
@@ -34,10 +22,6 @@
   padding: 5px;
   background-clip: padding-box;
   @include box-shadow(0 1px 1px rgba(0,0,0,.06));
-}
-
-.note-air-popover .note-btn.dropdown-toggle {
-    padding: 5px 1px 5px 10px;
 }
 
 .note-btn-group.open .note-dropdown-menu {
@@ -57,8 +41,4 @@ a.note-dropdown-item:hover {
   margin: 5px 0;
   color: #000;
   text-decoration: none;
-}
-.dropdown-toggle:after{
-  content:'';
-  display:none;
 }

@@ -48,7 +48,7 @@ export default class HelpDialog {
       const command = keyMap[key];
       const $row = $('<div><div class="help-list-item"/></div>');
       $row.append($('<label><kbd>' + key + '</kdb></label>').css({
-        'width': 170,
+        'width': 180,
         'margin-right': 10,
       })).append($('<span/>').html(this.context.memo('help.' + command) || command));
       return $row.html();

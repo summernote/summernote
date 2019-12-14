@@ -140,7 +140,7 @@ $.extend($.summernote.lang, {
       'insertOrderedList': 'Toggle ordered list',
       'outdent': 'Outdent on current paragraph',
       'indent': 'Indent on current paragraph',
-      'formatPara': 'Change current block\'s format as a Paragraph',
+      'formatPara': 'Change current block\'s format as a paragraph(P tag)',
       'formatH1': 'Change current block\'s format as H1',
       'formatH2': 'Change current block\'s format as H2',
       'formatH3': 'Change current block\'s format as H3',
