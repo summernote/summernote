@@ -244,9 +244,17 @@ describe('Editor', () => {
   });
 
   describe('insertHorizontalRule', () => {
-    it('should insert horizontal rule', () => {
+    it('should insert horizontal rule without splitting tag', () => {
       editor.insertHorizontalRule();
       expectContents(context, '<p>hello</p><hr>');
+    });
+
+    it('should insert horizontal rule with splitting tag', () => {
+      var textNode = $editable.find('p')[0].firstChild;
+      var rng = range.create(textNode, 5, textNode, 5).normalize().select();
+      editor.lastRange = rng;
+      editor.insertHorizontalRule();
+      expectContents(context, '<p>hello</p><hr><p><br></p>');
     });
   });
 
