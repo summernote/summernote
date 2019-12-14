@@ -160,7 +160,7 @@ describe('Editor', () => {
 
       expect(editor.lastRange.sc).to.equal(editor.editable);
     });
-  })
+  });
 
   describe('insertNode', () => {
     it('should insert node', () => {
