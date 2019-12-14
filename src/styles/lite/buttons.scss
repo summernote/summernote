@@ -1,6 +1,5 @@
 .note-btn {
   display: inline-block;
-  height: 30px;
   font-weight: 400;
   margin-bottom: 0;
   text-align: center;
@@ -50,67 +49,29 @@
 
 }
 
-.note-toolbar .note-btn {
-  padding-right: $padding-base-horizontal !important;
-  padding-left: $padding-base-horizontal !important;
+.note-icon-caret {
+  padding: 3px 5px 3px 0;
 }
 
-.note-air-popover .note-btn {
-  padding-top: 9px!important;
-  padding-right: 10px!important;
-  padding-bottom: 9px!important;
-  padding-left: 10px!important;
-}
-
-.note-toolbar .note-icon-caret {
-  padding: 3px 0 3px 5px;
-}
-
-.note-air-popover .note-icon-caret {
-  padding: 3px 0 3px 5px;
-}
-
-.note-toolbar .note-icon-caret::before {
+.note-icon-caret::before {
   padding: 3px 2px 2px 0;
 }
 
-.note-air-popover .note-icon-caret::before {
-  padding: 3px 2px 2px 0;
+.note-btn .note-icon-caret:before {
+  padding: 3px 2px 3px 4px;
 }
 
-.note-toolbar .note-btn .note-icon-caret:before {
-  padding: 3px 0 3px 5px;
-}
-
-.note-air-popover .note-btn .note-icon-caret:before {
-  padding: 3px 0 3px 5px;
-}
-
-.note-toolbar .note-btn.dropdown-toggle {
-  padding: 5px 1px 5px 10px;
-}
-
-.note-air-popover .note-btn.dropdown-toggle {
-  padding-top: 5px!important;
-  padding-right: 1px!important;
-  padding-bottom: 5px!important;
-  padding-left: 10px!important;
+.note-btn.dropdown-toggle {
+  padding: 1px 1px 1px 10px;
 }
 
 .note-btn-primary {
+  background: #fa6362;
   color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
 
-  &:hover {
-    color: #fff;
-    background-color: #0069d9;
-    border-color: #0062cc;
-  }
-
+  &:hover,
   &:focus,
   &.focus {
-    box-shadow: 0 0 0 .2rem rgba(38,143,255,.5);
     color: #fff;
     text-decoration: none;
     border: 1px solid $btn-default-border;
@@ -138,7 +99,7 @@ input[type="button"] {
   }
 }
 
-button.note-close {
+button.close {
   padding: 0;
   cursor: pointer;
   background: transparent;
@@ -146,16 +107,15 @@ button.note-close {
   -webkit-appearance: none;
 }
 
-.note-close {
+.close {
   float: right;
   font-size: 21px;
-  font-weight: 700;
   line-height: 1;
   color: #000;
   opacity: .2;
 }
 
-.note-close:hover {
+.close:hover {
   -webkit-opacity: 1;
    -khtml-opacity: 1;
      -moz-opacity: 1;

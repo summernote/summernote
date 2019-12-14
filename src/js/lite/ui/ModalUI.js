@@ -23,7 +23,7 @@ class ModalUI {
     this.$modal.appendTo(this.options.target).addClass('open').show();
 
     this.$modal.trigger('note.modal.show');
-    this.$modal.off('click', '.note-close').on('click', '.note-close', this.hide.bind(this));
+    this.$modal.off('click', '.close').on('click', '.close', this.hide.bind(this));
   }
 
   hide() {
