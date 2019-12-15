@@ -9,10 +9,6 @@ module.exports = function (config) {
       { pattern: 'test/**/*.spec.js' }
     ],
     customLaunchers: {
-      ChromeHeadlessNoSandbox: {
-        base: "ChromeHeadless",
-        flags: [ "--no-sandbox" ]
-      },
       'SL_WINDOWS_IE10': {
         base: 'SauceLabs',
         browserName: 'Internet Explorer',
@@ -53,20 +49,29 @@ module.exports = function (config) {
         base: 'SauceLabs',
         browserName: 'Chrome',
         version: 'latest',
-        platform: 'macOS 10.13',
+        platform: 'macOS 10.14',
       },
       'SL_MACOS_SAFARI': {
         base: 'SauceLabs',
         browserName: 'Safari',
         version: 'latest',
-        platform: 'macOS 10.13',
+        platform: 'macOS 10.14',
+      },
+      'SL_MACOS_FIREFOX': {
+        base: 'SauceLabs',
+        browserName: 'Firefox',
+        version: 'latest',
+        platform: 'macOS 10.14',
       },
     },
-    // Chrome, ChromeCanary, Firefox, Opera, Safari, IE
-    browsers: ['ChromeHeadlessNoSandbox',
-      'SL_WINDOWS_EDGE', 'SL_WINDOWS_CHROME', 'SL_WINDOWS_FIREFOX',
-      'SL_LINUX_FIREFOX',
-      'SL_MACOS_CHROME', 'SL_MACOS_SAFARI',
+    browsers: [
+      'SL_WINDOWS_EDGE',
+      'SL_WINDOWS_CHROME',
+      'SL_WINDOWS_FIREFOX',
+      //'SL_LINUX_FIREFOX',
+      'SL_MACOS_CHROME',
+      'SL_MACOS_SAFARI',
+      'SL_MACOS_FIREFOX',
     ],
     sauceLabs: {
       testName: 'local unit tests for summernote',
