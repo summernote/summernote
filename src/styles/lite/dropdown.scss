@@ -22,6 +22,10 @@
   padding: 5px;
   background-clip: padding-box;
   @include box-shadow(0 1px 1px rgba(0,0,0,.06));
+
+  > *:last-child {
+    margin-right: 0;
+  }
 }
 
 .note-btn-group.open .note-dropdown-menu {

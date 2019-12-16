@@ -12,7 +12,7 @@ module.exports = function (config) {
       usePhantomJS: false,
       preferHeadless: true,
       postDetection: function(availableBrowsers) {
-        return availableBrowsers.slice(0, 1);
+        return (config.browsers.length === 0) ? availableBrowsers.slice(0, 1) : [];
       }
     },
     preprocessors: {
