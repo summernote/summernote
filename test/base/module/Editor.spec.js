@@ -290,7 +290,7 @@ describe('Editor', () => {
   });
 
   describe('insertHorizontalRule', () => {
-    it('should insert horizontal rule', () => {
+    it('should insert horizontal rule', (done) => {
       editor.insertHorizontalRule();
       expectContentsAwait(context, '<p>hello</p><hr><p><br></p>', done);
     });
