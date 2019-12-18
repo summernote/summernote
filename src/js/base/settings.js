@@ -37,6 +37,8 @@ $.summernote = $.extend($.summernote, {
 
   options: {
     langInfo: $.summernote.lang['en-US'],
+    id: $.now(),
+    editing: true,
     modules: {
       'editor': Editor,
       'clipboard': Clipboard,
@@ -69,6 +71,7 @@ $.summernote = $.extend($.summernote, {
     lang: 'en-US',
 
     followingToolbar: false,
+    toolbarPosition: 'top',
     otherStaticBar: '',
 
     // toolbar
@@ -104,6 +107,7 @@ $.summernote = $.extend($.summernote, {
         ['para', ['ul', 'paragraph']],
         ['table', ['table']],
         ['insert', ['link', 'picture']],
+        ['view', ['fullscreen', 'codeview']],
       ],
     },
 
@@ -117,6 +121,7 @@ $.summernote = $.extend($.summernote, {
     defaultProtocol: 'http://',
 
     focus: false,
+    tabDisabled: false,
     tabSize: 4,
     styleWithSpan: true,
     shortcuts: true,
@@ -127,6 +132,7 @@ $.summernote = $.extend($.summernote, {
     maxTextLength: 0,
     blockquoteBreakingLevel: 2,
     spellCheck: true,
+    disableGrammar: false,
     placeholder: null,
     inheritPlaceholder: false,
 
@@ -141,6 +147,8 @@ $.summernote = $.extend($.summernote, {
     addDefaultFonts: true,
 
     fontSizes: ['8', '9', '10', '11', '12', '14', '18', '24', '36'],
+
+    fontSizeUnits: ['px', 'pt'],
 
     // pallete colors(n x n)
     colors: [

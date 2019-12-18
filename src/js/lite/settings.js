@@ -6,4 +6,5 @@ import '../../styles/summernote-lite.scss';
 
 $.summernote = $.extend($.summernote, {
   ui: ui,
+  interface: 'lite',
 });

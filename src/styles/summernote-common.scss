@@ -21,7 +21,6 @@ $img-margin-right: 10px;
     color: $dropzone-color;
     background-color: #fff;
     opacity: 0.95;
-    pointer-events: none;
 
     .note-dropzone-message {
       display: table-cell;
@@ -67,7 +66,8 @@ $img-margin-right: 10px;
 
 /* Frame mode layout
  ------------------------------------------ */
-.note-editor.note-frame {
+.note-editor.note-frame,
+.note-editor.note-airframe {
   border: 1px solid $border-color;
 
   // codeview mode
@@ -243,6 +243,11 @@ $img-margin-right: 10px;
     padding: 10px;
   }
 }
+
+.note-editor.note-airframe {
+  border: 0;
+}
+
 
 /* Popover
  ------------------------------------------ */

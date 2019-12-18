@@ -30,7 +30,7 @@ run tests with Karma and PhantomJS
 npm run test
 ```
 If you want run tests on other browser,
-change the values for `broswers` properties in `karma.conf.js`.
+change the values for `browsers` properties in `karma.conf.js`.
 
 ```
 karma: {

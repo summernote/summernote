@@ -16,7 +16,7 @@ export default class ImagePopover {
     this.options = context.options;
 
     this.events = {
-      'summernote.disable': () => {
+      'summernote.disable summernote.blur': () => {
         this.hide();
       },
     };
@@ -32,6 +32,8 @@ export default class ImagePopover {
     }).render().appendTo(this.options.container);
     const $content = this.$popover.find('.popover-content,.note-popover-content');
     this.context.invoke('buttons.build', $content, this.options.popover.image);
+
+    this.$popover.on('mousedown', (e) => { e.preventDefault(); });
   }
 
   destroy() {

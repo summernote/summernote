@@ -17,6 +17,7 @@ $.extend($.summernote.lang, {
       subscript: 'Subscript',
       superscript: 'Superscript',
       size: 'Font Size',
+      sizeunit: 'Font Size Unit',
     },
     image: {
       image: 'Picture',
@@ -157,6 +158,9 @@ $.extend($.summernote.lang, {
     specialChar: {
       specialChar: 'SPECIAL CHARACTERS',
       select: 'Select Special characters',
+    },
+    output: {
+      noSelection: 'No Selection Made!',
     },
   },
 });

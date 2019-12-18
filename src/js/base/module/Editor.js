@@ -72,7 +72,13 @@ export default class Editor {
     });
 
     this.fontSize = this.wrapCommand((value) => {
-      return this.fontStyling('font-size', value + 'px');
+      const unit = this.currentStyle()['font-size-unit'];
+      return this.fontStyling('font-size', value + unit);
+    });
+
+    this.fontSizeUnit = this.wrapCommand((value) => {
+      const size = this.currentStyle()['font-size'];
+      return this.fontStyling('font-size', size + value);
     });
 
     for (let idx = 1; idx <= 6; idx++) {
@@ -115,8 +121,7 @@ export default class Editor {
       }
       const rng = this.getLastRange();
       rng.insertNode(node);
-      range.createFromNodeAfter(node).select();
-      this.setLastRange();
+      this.setLastRange(range.createFromNodeAfter(node).select());
     });
 
     /**
@@ -129,9 +134,9 @@ export default class Editor {
       }
       const rng = this.getLastRange();
       const textNode = rng.insertNode(dom.createText(text));
-      range.create(textNode, dom.nodeLength(textNode)).select();
-      this.setLastRange();
+      this.setLastRange(range.create(textNode, dom.nodeLength(textNode)).select());
     });
+
     /**
      * paste HTML
      * @param {String} markup
@@ -142,8 +147,7 @@ export default class Editor {
       }
       markup = this.context.invoke('codeview.purify', markup);
       const contents = this.getLastRange().pasteHTML(markup);
-      range.createFromNodeAfter(lists.last(contents)).select();
-      this.setLastRange();
+      this.setLastRange(range.createFromNodeAfter(lists.last(contents)).select());
     });
 
     /**
@@ -166,8 +170,7 @@ export default class Editor {
     this.insertHorizontalRule = this.wrapCommand(() => {
       const hrNode = this.getLastRange().insertNode(dom.create('HR'));
       if (hrNode.nextSibling) {
-        range.create(hrNode.nextSibling, 0).normalize().select();
-        this.setLastRange();
+        this.setLastRange(range.create(hrNode.nextSibling, 0).normalize().select());
       }
     });
 
@@ -238,13 +241,14 @@ export default class Editor {
       const endRange = range.createFromNodeAfter(lists.last(anchors));
       const endPoint = endRange.getEndPoint();
 
-      range.create(
-        startPoint.node,
-        startPoint.offset,
-        endPoint.node,
-        endPoint.offset
-      ).select();
-      this.setLastRange();
+      this.setLastRange(
+        range.create(
+          startPoint.node,
+          startPoint.offset,
+          endPoint.node,
+          endPoint.offset
+        ).select()
+      );
     });
 
     /**
@@ -289,8 +293,8 @@ export default class Editor {
      */
     this.removeMedia = this.wrapCommand(() => {
       let $target = $(this.restoreTarget()).parent();
-      if ($target.parent('figure').length) {
-        $target.parent('figure').remove();
+      if ($target.closest('figure').length) {
+        $target.closest('figure').remove();
       } else {
         $target = $(this.restoreTarget()).detach();
       }
@@ -345,10 +349,12 @@ export default class Editor {
         }
       }
       if (this.isLimited(1, event)) {
-        return false;
-      } else {
-        this.setLastRange();
+        const lastRange = this.getLastRange();
+        if (lastRange.eo - lastRange.so === 0) {
+          return false;
+        }
       }
+      this.setLastRange();
     }).on('keyup', (event) => {
       this.setLastRange();
       this.context.triggerEvent('keyup', event);
@@ -375,6 +381,12 @@ export default class Editor {
     });
 
     this.$editable.attr('spellcheck', this.options.spellCheck);
+
+    this.$editable.attr('autocorrect', this.options.spellCheck);
+
+    if (this.options.disableGrammar) {
+      this.$editable.attr('data-gramm', false);
+    }
 
     // init content before set event
     this.$editable.html(dom.html(this.$note) || dom.emptyPara);
@@ -426,7 +438,10 @@ export default class Editor {
     }
 
     const eventName = keyMap[keys.join('+')];
-    if (eventName) {
+
+    if (keyName === 'TAB' && !this.options.tabDisable) {
+      this.afterCommand();
+    } else if (eventName) {
       if (this.context.invoke(eventName) !== false) {
         event.preventDefault();
       }
@@ -448,6 +463,7 @@ export default class Editor {
 
     if (typeof event !== 'undefined') {
       if (key.isMove(event.keyCode) ||
+          key.isNavigation(event.keyCode) ||
           (event.ctrlKey || event.metaKey) ||
           lists.contains([key.code.BACKSPACE, key.code.DELETE], event.keyCode)) {
         return false;
@@ -471,8 +487,16 @@ export default class Editor {
     return this.getLastRange();
   }
 
-  setLastRange() {
-    this.lastRange = range.create(this.editable);
+  setLastRange(rng) {
+    if (rng) {
+      this.lastRange = rng;
+    } else {
+      this.lastRange = range.create(this.editable);
+
+      if ($(this.lastRange.sc).closest('.note-editable').length === 0) {
+        this.lastRange = range.createFromBodyElement(this.editable);
+      }
+    }
   }
 
   getLastRange() {
@@ -657,9 +681,8 @@ export default class Editor {
       }
 
       $image.show();
-      range.create(this.editable).insertNode($image[0]);
-      range.createFromNodeAfter($image[0]).select();
-      this.setLastRange();
+      this.getLastRange().insertNode($image[0]);
+      this.setLastRange(range.createFromNodeAfter($image[0]).select());
       this.afterCommand();
     }).fail((e) => {
       this.context.triggerEvent('image.upload.error', e);
@@ -745,8 +768,9 @@ export default class Editor {
   fontStyling(target, value) {
     const rng = this.getLastRange();
 
-    if (rng) {
+    if (rng !== '') {
       const spans = this.style.styleNodes(rng);
+      this.$editor.find('.note-status-output').html('');
       $(spans).css(target, value);
 
       // [workaround] added styled bogus span for style
@@ -760,6 +784,10 @@ export default class Editor {
           this.$editable.data(KEY_BOGUS, firstSpan);
         }
       }
+    } else {
+      const noteStatusOutput = $.now();
+      this.$editor.find('.note-status-output').html('<div id="note-status-output-' + noteStatusOutput + '" class="alert alert-info">' + this.lang.output.noSelection + '</div>');
+      setTimeout(function() { $('#note-status-output-' + noteStatusOutput).remove(); }, 5000);
     }
   }
 

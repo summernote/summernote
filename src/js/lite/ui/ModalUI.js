@@ -7,7 +7,7 @@ class ModalUI {
     }, options);
 
     this.$modal = $node;
-    this.$backdrop = $('<div class="note-modal-backdrop" />');
+    this.$backdrop = $('<div class="note-modal-backdrop"/>');
   }
 
   show() {
