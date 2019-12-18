@@ -33,6 +33,8 @@ export default class LinkPopover {
     const $content = this.$popover.find('.popover-content,.note-popover-content');
 
     this.context.invoke('buttons.build', $content, this.options.popover.link);
+
+    this.$popover.on('mousedown', (e) => { e.preventDefault(); });
   }
 
   destroy() {

@@ -18,7 +18,7 @@ export default class Handle {
       'summernote.keyup summernote.scroll summernote.change summernote.dialog.shown': () => {
         this.update();
       },
-      'summernote.disable': () => {
+      'summernote.disable summernote.blur': () => {
         this.hide();
       },
       'summernote.codeview.toggled': () => {
