@@ -339,6 +339,8 @@ export default class Editor {
       }
       this.context.triggerEvent('keydown', event);
 
+      this.history.recordUndo();
+
       if (!event.isDefaultPrevented()) {
         if (this.options.shortcuts) {
           this.handleKeyMap(event);
@@ -352,6 +354,7 @@ export default class Editor {
           return false;
         }
       }
+      this.setLastRange();
     }).on('keyup', (event) => {
       this.setLastRange();
       this.context.triggerEvent('keyup', event);
@@ -364,12 +367,17 @@ export default class Editor {
       this.context.triggerEvent('mousedown', event);
     }).on('mouseup', (event) => {
       this.setLastRange();
+      this.history.recordUndo();
       this.context.triggerEvent('mouseup', event);
     }).on('scroll', (event) => {
       this.context.triggerEvent('scroll', event);
     }).on('paste', (event) => {
       this.setLastRange();
       this.context.triggerEvent('paste', event);
+    }).on('input', (event) => {
+      if (this.isLimited(0)) {
+        this.history.undo();
+      }
     });
 
     this.$editable.attr('spellcheck', this.options.spellCheck);
