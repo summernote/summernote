@@ -72,7 +72,13 @@ export default class Editor {
     });
 
     this.fontSize = this.wrapCommand((value) => {
-      return this.fontStyling('font-size', value + 'px');
+      const unit = this.currentStyle()['font-size-unit'];
+      return this.fontStyling('font-size', value + unit);
+    });
+
+    this.fontSizeUnit = this.wrapCommand((value) => {
+      const size = this.currentStyle()['font-size'];
+      return this.fontStyling('font-size', size + value);
     });
 
     for (let idx = 1; idx <= 6; idx++) {
