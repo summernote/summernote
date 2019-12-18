@@ -115,8 +115,7 @@ export default class Editor {
       }
       const rng = this.getLastRange();
       rng.insertNode(node);
-      range.createFromNodeAfter(node).select();
-      this.setLastRange();
+      this.setLastRange(range.createFromNodeAfter(node).select());
     });
 
     /**
@@ -129,9 +128,9 @@ export default class Editor {
       }
       const rng = this.getLastRange();
       const textNode = rng.insertNode(dom.createText(text));
-      range.create(textNode, dom.nodeLength(textNode)).select();
-      this.setLastRange();
+      this.setLastRange(range.create(textNode, dom.nodeLength(textNode)).select());
     });
+
     /**
      * paste HTML
      * @param {String} markup
@@ -142,8 +141,7 @@ export default class Editor {
       }
       markup = this.context.invoke('codeview.purify', markup);
       const contents = this.getLastRange().pasteHTML(markup);
-      range.createFromNodeAfter(lists.last(contents)).select();
-      this.setLastRange();
+      this.setLastRange(range.createFromNodeAfter(lists.last(contents)).select());
     });
 
     /**
@@ -166,8 +164,7 @@ export default class Editor {
     this.insertHorizontalRule = this.wrapCommand(() => {
       const hrNode = this.getLastRange().insertNode(dom.create('HR'));
       if (hrNode.nextSibling) {
-        range.create(hrNode.nextSibling, 0).normalize().select();
-        this.setLastRange();
+        this.setLastRange(range.create(hrNode.nextSibling, 0).normalize().select());
       }
     });
 
@@ -238,13 +235,14 @@ export default class Editor {
       const endRange = range.createFromNodeAfter(lists.last(anchors));
       const endPoint = endRange.getEndPoint();
 
-      range.create(
-        startPoint.node,
-        startPoint.offset,
-        endPoint.node,
-        endPoint.offset
-      ).select();
-      this.setLastRange();
+      this.setLastRange(
+        range.create(
+          startPoint.node,
+          startPoint.offset,
+          endPoint.node,
+          endPoint.offset
+        ).select()
+      );
     });
 
     /**
@@ -475,11 +473,15 @@ export default class Editor {
     return this.getLastRange();
   }
 
-  setLastRange() {
-    this.lastRange = range.create(this.editable);
+  setLastRange(rng) {
+    if (rng) {
+      this.lastRange = rng;
+    } else {
+      this.lastRange = range.create(this.editable);
 
-    if ($(this.lastRange.sc).closest('.note-editable').length === 0) {
-      this.lastRange = range.createFromBodyElement(this.editable);
+      if ($(this.lastRange.sc).closest('.note-editable').length === 0) {
+        this.lastRange = range.createFromBodyElement(this.editable);
+      }
     }
   }
 
@@ -666,8 +668,7 @@ export default class Editor {
 
       $image.show();
       this.getLastRange().insertNode($image[0]);
-      range.createFromNodeAfter($image[0]).select();
-      this.setLastRange();
+      this.setLastRange(range.createFromNodeAfter($image[0]).select());
       this.afterCommand();
     }).fail((e) => {
       this.context.triggerEvent('image.upload.error', e);

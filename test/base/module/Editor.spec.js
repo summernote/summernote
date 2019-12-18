@@ -61,7 +61,7 @@ describe('Editor', () => {
   });
 
   describe('initialize', () => {
-    it('should bind custom events', () => {
+    it('should bind custom events', (done) => {
       [
         'keydown', 'keyup', 'blur', 'mousedown', 'mouseup',
         'scroll', 'focusin', 'focusout',
@@ -73,6 +73,7 @@ describe('Editor', () => {
 
       expectToHaveBeenCalled(context, 'summernote.change', () => {
         editor.insertText('hello');
+        done();
       });
     });
   });
@@ -146,9 +147,7 @@ describe('Editor', () => {
       editor.indent();
       expectContentsChain(context, '<p style="margin-left: 25px;">hello</p>', () => {
         editor.outdent();
-        expectContentsChain(context, '<p style="">hello</p>', () => {
-          done();
-        });
+        expect($editable.find('p').css('margin-left')).await(done).to.be.empty;
       });
     });
 
@@ -173,23 +172,21 @@ describe('Editor', () => {
   });
 
   describe('setLastRange', () => {
-    it('should set last range', () => {
+    it('should set last range', (done) => {
       document.body.click();
       editor.setLastRange();
 
-      expect(editor.lastRange.sc).to.equal(editor.editable.lastChild);
+      expect(editor.lastRange.sc).await(done).to.equal(editor.editable.lastChild);
     });
 
-    it('should set last range without content', () => {
+    it('should set last range without content', (done) => {
       context.layoutInfo.editable.html('');
       document.body.click();
       editor.setLastRange();
 
-      expect(editor.lastRange.sc).to.equal(editor.editable);
-    });    
+      expect(editor.lastRange.sc).await(done).to.equal(editor.editable);
+    });
   });
-
-
 
   describe('insertNode', () => {
     it('should insert node', (done) => {
@@ -197,29 +194,35 @@ describe('Editor', () => {
       expectContentsAwait(context, '<p>hello<span> world</span></p>', done);
     });
 
-    it('should be limited', () => {
+    it('should be limited', (done) => {
       var options = $.extend({}, $.summernote.options);
       options.maxTextLength = 5;
       context = new Context($('<div><p>hello</p></div>'), options);
       editor = context.modules.editor;
 
       editor.insertNode($('<span> world</span>')[0]);
-      expectContents(context, '<p>hello</p>');
+      expectContentsAwait(context, '<p>hello</p>', done);
     });
 
-    it('should insert node in last focus', () => {
+    it('should insert node in last focus', (done) => {
       $editable.appendTo('body');
       context.invoke('editor.focus');
 
-      var textNode = $editable.find('p')[0].firstChild;
-      range.create(textNode, 0, textNode, 0).normalize().select();
+      setTimeout(() => {
+        var textNode = $editable.find('p')[0].firstChild;
+        editor.setLastRange(range.create(textNode, 0, textNode, 0).select());
 
-      editor.insertNode($('<span> world</span>')[0]);
-      $('body').focus();
-      editor.insertNode($('<span> hello</span>')[0]);
-      expectContents(context, '<p><span> world</span><span> hello</span>hello</p>');
-
-      $editable.remove();
+        setTimeout(() => {
+          editor.insertNode($('<span> world</span>')[0]);
+          setTimeout(() => {
+            $('body').focus();
+            editor.insertNode($('<span> hello</span>')[0]);
+            setTimeout(() => {
+              expectContentsAwait(context, '<p><span> world</span><span> hello</span>hello</p>', done);
+            }, 10);
+          }, 10);
+        }, 10);
+      }, 10);
     });
   });
 
@@ -244,14 +247,20 @@ describe('Editor', () => {
       context.invoke('editor.focus');
 
       var textNode = $editable.find('p')[0].firstChild;
-      range.create(textNode, 0, textNode, 0).normalize().select();
+      editor.setLastRange(range.create(textNode, 0, textNode, 0).select());
 
-      editor.insertText(' world');
-      $('body').focus();
-      editor.insertText(' summernote ');
-      expectContentsAwait(context, '<p> world summernote hello</p>', done);
-
-      $editable.remove();
+      setTimeout(() => {
+        editor.insertText(' world');
+        setTimeout(() => {
+          $('body').focus();
+          setTimeout(() => {
+            editor.insertText(' summernote');
+            setTimeout(() => {
+              expectContentsAwait(context, '<p> world summernotehello</p>', done);
+            }, 10);
+          }, 10);
+        }, 10);
+      }, 10);
     });
   });
 
@@ -304,7 +313,7 @@ describe('Editor', () => {
         '<tr><td><br></td><td><br></td></tr>',
         '<tr><td><br></td><td><br></td></tr>',
         '</tbody></table>',
-        '<p><br></p>'
+        '<p><br></p>',
       ].join('');
       editor.insertTable('2x2');
       expectContentsAwait(context, markup, done);
@@ -321,10 +330,14 @@ describe('Editor', () => {
   describe('formatBlock', () => {
     it('should apply formatBlock', (done) => {
       $editable.appendTo('body');
-      editor.formatBlock('h1');
 
-      // start <p>hello</p> => <h1>hello</h1>
-      expectContentsAwait(context, '<h1>hello</h1>', done);
+      var textNode = $editable.find('p')[0].firstChild;
+      editor.setLastRange(range.create(textNode, 0, textNode, 0).select());
+
+      setTimeout(() => {
+        editor.formatBlock('h1');
+        expectContentsAwait(context, '<h1>hello</h1>', done);
+      }, 10);
     });
 
     it('should apply multi formatBlock', (done) => {
