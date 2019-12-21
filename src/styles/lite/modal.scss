@@ -1,5 +1,5 @@
 .note-modal {
-  position: absolute;
+  position: fixed;
   left: 0;
   right: 0;
   top: 0;
@@ -22,6 +22,8 @@
   background: $modal-content-bg;
   background-clip: border-box;
   outline:0;
+
+  @include box-shadow(0 3px 9px rgba(0,0,0,.5));
 }
 
 .note-modal-header {
@@ -79,7 +81,7 @@
 }
 
 .note-modal-backdrop {
-  position: absolute;
+  position: fixed;
   left: 0;
   right: 0;
   bottom: 0;

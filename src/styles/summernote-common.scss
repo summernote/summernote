@@ -254,6 +254,8 @@ $img-margin-right: 10px;
 .note-popover.popover {
   display: none;
   max-width: none;
+  position: fixed;
+
   .popover-content {
     a {
       display: inline-block;

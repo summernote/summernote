@@ -1,11 +1,12 @@
 .note-tooltip {
-  position: absolute;
+  position: fixed;
   z-index: $zindex-tooltip;
   display: block;
   // Our parent element can be arbitrary since tooltips are by default inserted as a sibling of their target element.
   // So reset our font and text properties to avoid inheriting weird values.
   font-size: 13px;
 
+  transition: opacity .5s ease-in-out;
   @include opacity(0);
 
   &.in     { @include opacity($tooltip-opacity); }
