@@ -12,7 +12,7 @@ class TooltipUI {
 
     // create tooltip node
     this.$tooltip = $([
-      '<div class="note-tooltip in">',
+      '<div class="note-tooltip">',
         '<div class="note-tooltip-arrow"/>',
         '<div class="note-tooltip-content"/>',
       '</div>',
@@ -46,7 +46,6 @@ class TooltipUI {
     const placement = this.options.placement || $node.data('placement');
 
     $tooltip.addClass(placement);
-    $tooltip.addClass('in');
     $tooltip.find('.note-tooltip-content').text(title);
     $tooltip.appendTo(this.options.target);
 
@@ -76,11 +75,15 @@ class TooltipUI {
         left: offset.left + nodeWidth,
       });
     }
+
+    $tooltip.addClass('in');
   }
 
   hide() {
     this.$tooltip.removeClass('in');
-    this.$tooltip.remove();
+    setTimeout(() => {
+      this.$tooltip.remove();
+    }, 200);
   }
 
   toggle() {
