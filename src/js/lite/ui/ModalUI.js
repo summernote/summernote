@@ -24,12 +24,19 @@ class ModalUI {
 
     this.$modal.trigger('note.modal.show');
     this.$modal.off('click', '.close').on('click', '.close', this.hide.bind(this));
+    this.$modal.on('keydown', (event) => {
+      if (event.which === 27) {
+        event.preventDefault();
+        this.hide();
+      }
+    });
   }
 
   hide() {
     this.$modal.removeClass('open').hide();
     this.$backdrop.hide();
     this.$modal.trigger('note.modal.hide');
+    this.$modal.off('keydown');
   }
 }
 
