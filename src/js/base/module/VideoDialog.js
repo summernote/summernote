@@ -14,8 +14,7 @@ export default class VideoDialog {
   }
 
   initialize() {
-    const $container = this.options.dialogsInBody ? this.$body : this.$editor;
-
+    const $container = this.options.dialogsInBody ? this.$body : this.options.container;
     const body = [
       '<div class="form-group note-form-group row-fluid">',
         `<label for="note-dialog-video-url-${this.options.id}" class="note-form-label">${this.lang.video.url} <small class="text-muted">${this.lang.video.providers}</small></label>`,

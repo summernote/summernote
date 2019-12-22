@@ -54,6 +54,9 @@ export default class Context {
   }
 
   _initialize() {
+    // set container for tooltips and popovers
+    this.options.container = this.options.container || this.layoutInfo.editor;
+
     // add optional buttons
     const buttons = $.extend({}, this.options.buttons);
     Object.keys(buttons).forEach((key) => {

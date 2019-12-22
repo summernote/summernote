@@ -17,8 +17,7 @@ export default class LinkDialog {
   }
 
   initialize() {
-    const $container = this.options.dialogsInBody ? this.$body : this.$editor;
-
+    const $container = this.options.dialogsInBody ? this.$body : this.options.container;
     const body = [
       '<div class="form-group note-form-group">',
         `<label for="note-dialog-link-txt-${this.options.id}" class="note-form-label">${this.lang.link.textToDisplay}</label>`,
