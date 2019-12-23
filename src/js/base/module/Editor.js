@@ -29,6 +29,7 @@ export default class Editor {
 
     this.editable = this.$editable[0];
     this.lastRange = null;
+    this.snapshot = null;
 
     this.style = new Style();
     this.table = new Table();
@@ -339,7 +340,8 @@ export default class Editor {
       }
       this.context.triggerEvent('keydown', event);
 
-      this.history.recordUndo();
+      // keep a snapshot to limit text on input event
+      this.snapshot = this.history.makeSnapshot();
 
       if (!event.isDefaultPrevented()) {
         if (this.options.shortcuts) {
@@ -375,8 +377,9 @@ export default class Editor {
       this.setLastRange();
       this.context.triggerEvent('paste', event);
     }).on('input', (event) => {
-      if (this.isLimited(0)) {
-        this.history.undo();
+      // To limit composition characters (e.g. Korean)
+      if (this.isLimited(0) && this.snapshot) {
+        this.history.applySnapshot(this.snapshot);
       }
     });
 
