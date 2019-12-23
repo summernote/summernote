@@ -54,7 +54,7 @@ export default class Context {
   }
 
   _initialize() {
-    // set container for tooltips and popovers
+    // set default container for tooltips, popovers, and dialogs
     this.options.container = this.options.container || this.layoutInfo.editor;
 
     // add optional buttons
