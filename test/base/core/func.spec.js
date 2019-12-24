@@ -71,6 +71,7 @@ describe('base:core.func', () => {
 
   describe('uniqueId', () => {
     it('should return uniqueId with the prefix as a parameter', () => {
+      func.resetUniqueId();
       expect(func.uniqueId('note-')).to.be.equal('note-1');
       expect(func.uniqueId('note-')).to.be.equal('note-2');
       expect(func.uniqueId('note-')).to.be.equal('note-3');

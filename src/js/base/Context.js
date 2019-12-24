@@ -15,7 +15,7 @@ export default class Context {
     this.memos = {};
     this.modules = {};
     this.layoutInfo = {};
-    this.options = options;
+    this.options = $.extend(true, {}, options);
 
     this.initialize();
   }
@@ -54,6 +54,8 @@ export default class Context {
   }
 
   _initialize() {
+    // set own id
+    this.options.id = func.uniqueId($.now());
     // set default container for tooltips, popovers, and dialogs
     this.options.container = this.options.container || this.layoutInfo.editor;
 
