@@ -65,6 +65,7 @@ export default class AirPopover {
       const rect = lists.last(styleInfo.range.getClientRects());
       if (rect) {
         const bnd = func.rect2bnd(rect);
+
         this.$popover.css({
           display: 'block',
           left: Math.max(bnd.left + bnd.width / 2, 0) - AIR_MODE_POPOVER_X_OFFSET,

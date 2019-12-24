@@ -6,6 +6,7 @@
   // So reset our font and text properties to avoid inheriting weird values.
   font-size: 13px;
 
+  transition: opacity .15s;
   @include opacity(0);
 
   &.in     { @include opacity($tooltip-opacity); }

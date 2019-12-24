@@ -86,7 +86,7 @@ const palette = renderer.create('<div class="note-color-palette"/>', function($n
   }
 });
 
-const dialog = renderer.create('<div class="modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function($node, options) {
+const dialog = renderer.create('<div class="modal note-modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function($node, options) {
   if (options.fade) {
     $node.addClass('fade');
   }
@@ -166,7 +166,7 @@ const ui = {
           title: options.tooltip,
           'aria-label': options.tooltip,
         }).tooltip({
-          container: (options.container !== undefined) ? options.container : 'body',
+          container: options.container,
           trigger: 'hover',
           placement: 'bottom',
         }).on('click', (e) => {

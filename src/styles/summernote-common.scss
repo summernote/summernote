@@ -254,6 +254,7 @@ $img-margin-right: 10px;
 .note-popover.popover {
   display: none;
   max-width: none;
+
   .popover-content {
     a {
       display: inline-block;
@@ -450,12 +451,13 @@ $img-margin-right: 10px;
 
 /* Dialog
  ------------------------------------------ */
-.note-dialog {
-  & > div {
-    display: none; // BS2's hide pacth.
+.note-modal {
+  .modal-dialog {
+    outline: 0;
+    border-radius: 5px;
+    @include box-shadow(0 3px 9px rgba(0,0,0,.5));
   }
-  .form-group {
-    // overwrite BS's form-horizontal minus margins
+  .form-group { // overwrite BS's form-horizontal minus margins
     margin-left: 0;
     margin-right: 0;
   }

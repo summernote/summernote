@@ -13,8 +13,6 @@ export default class ImageDialog {
   }
 
   initialize() {
-    const $container = this.options.dialogsInBody ? this.$body : this.$editor;
-
     let imageLimitation = '';
     if (this.options.maximumImageFileSize) {
       const unit = Math.floor(Math.log(this.options.maximumImageFileSize) / Math.log(1024));
@@ -23,6 +21,7 @@ export default class ImageDialog {
       imageLimitation = `<small>${this.lang.image.maximumFileSize + ' : ' + readableSize}</small>`;
     }
 
+    const $container = this.options.dialogsInBody ? this.$body : this.options.container;
     const body = [
       '<div class="form-group note-form-group note-group-select-from-files">',
         '<label for="note-dialog-image-file-' + this.options.id + '" class="note-form-label">' + this.lang.image.selectFromFiles + '</label>',

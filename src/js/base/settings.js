@@ -37,7 +37,6 @@ $.summernote = $.extend($.summernote, {
 
   options: {
     langInfo: $.summernote.lang['en-US'],
-    id: $.now(),
     editing: true,
     modules: {
       'editor': Editor,
@@ -128,7 +127,7 @@ $.summernote = $.extend($.summernote, {
     textareaAutoSync: true,
     hintDirection: 'bottom',
     tooltip: 'auto',
-    container: 'body',
+    container: null,
     maxTextLength: 0,
     blockquoteBreakingLevel: 2,
     spellCheck: true,
@@ -188,6 +187,7 @@ $.summernote = $.extend($.summernote, {
       row: 10,
     },
 
+    // By default, dialogs are attached in container.
     dialogsInBody: false,
     dialogsFade: false,
 
