@@ -2,6 +2,7 @@ import $ from 'jquery';
 import func from '../core/func';
 import lists from '../core/lists';
 import dom from '../core/dom';
+import range from '../core/range';
 import key from '../core/key';
 
 const POPOVER_DIST = 5;
@@ -106,8 +107,7 @@ export default class HintPopover {
     const $item = this.$content.find('.note-hint-item.active');
 
     if ($item.length) {
-      const node = this.nodeFromItem($item);
-
+      var node = this.nodeFromItem($item);
       // If matchingWord length = 0 -> capture OK / open hint / but as mention capture "" (\w*)
       if (this.matchingWord !== null && this.matchingWord.length === 0) {
         this.lastWordRange.so = this.lastWordRange.eo;
@@ -118,10 +118,17 @@ export default class HintPopover {
           this.lastWordRange.so += rangeCompute;
         }
       }
-      this.context.invoke('editor.replaceNode', this.lastWordRange, node);
+      this.lastWordRange.insertNode(node);
+
+      if (this.options.hintSelect === 'next') {
+        var blank = document.createTextNode('');
+        $(node).after(blank);
+        range.createFromNodeBefore(blank).select();
+      } else {
+        range.createFromNodeAfter(node).select();
+      }
 
       this.lastWordRange = null;
-      this.matchingWord = null;
       this.hide();
       this.context.invoke('editor.focus');
     }
@@ -171,7 +178,7 @@ export default class HintPopover {
     const hint = this.hints[index];
     if (hint && hint.match.test(keyword) && hint.search) {
       const matches = hint.match.exec(keyword);
-      this.matchingWord = matches[1];
+      this.matchingWord = matches[0];
       hint.search(matches[1], callback);
     } else {
       callback();
@@ -193,8 +200,30 @@ export default class HintPopover {
 
   handleKeyup(e) {
     if (!lists.contains([key.code.ENTER, key.code.UP, key.code.DOWN], e.keyCode)) {
-      const wordRange = this.context.invoke('editor.getLastRange').getWordRange();
-      const keyword = wordRange.toString();
+      let range = this.context.invoke('editor.getLastRange');
+      let wordRange, keyword;
+      if (this.options.hintMode === 'words') {
+        wordRange = range.getWordsRange(range);
+        keyword = wordRange.toString();
+
+        this.hints.forEach((hint) => {
+          if (hint.match.test(keyword)) {
+            wordRange = range.getWordsMatchRange(hint.match);
+            return false;
+          }
+        });
+
+        if (!wordRange) {
+          this.hide();
+          return;
+        }
+
+        keyword = wordRange.toString();
+      } else {
+        wordRange = range.getWordRange();
+        keyword = wordRange.toString();
+      }
+
       if (this.hints.length && keyword) {
         this.$content.empty();
 

@@ -134,6 +134,7 @@ $.summernote = $.extend($.summernote, {
     placeholder: null,
     inheritPlaceholder: false,
 
+    // TODO: need to be documented
     hintMode: 'word',
     hintSelect: 'after',
     hintDirection: 'bottom',
