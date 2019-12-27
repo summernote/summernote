@@ -126,19 +126,6 @@ export default class Editor {
     });
 
     /**
-     * replaceNode
-     * replace node
-     * @param {Node} node
-     */
-    this.replaceNode = this.wrapCommand((rng, node) => {
-      if (this.isLimited($(node).text().length)) {
-        return;
-      }
-      rng.insertNode(node);
-      this.setLastRange(range.createFromNodeAfter(node).select());
-    });
-
-    /**
      * insert text
      * @param {String} text
      */

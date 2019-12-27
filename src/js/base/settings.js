@@ -125,7 +125,6 @@ $.summernote = $.extend($.summernote, {
     styleWithSpan: true,
     shortcuts: true,
     textareaAutoSync: true,
-    hintDirection: 'bottom',
     tooltip: 'auto',
     container: null,
     maxTextLength: 0,
@@ -134,6 +133,11 @@ $.summernote = $.extend($.summernote, {
     disableGrammar: false,
     placeholder: null,
     inheritPlaceholder: false,
+
+    // TODO: need to be documented
+    hintMode: 'word',
+    hintSelect: 'after',
+    hintDirection: 'bottom',
 
     styleTags: ['p', 'blockquote', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
 
