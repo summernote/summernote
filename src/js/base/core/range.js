@@ -627,6 +627,82 @@ class WrappedRange {
   }
 
   /**
+   * returns range for words before cursor
+   *
+   * @param {Boolean} [findAfter] - find after cursor, default: false
+   * @return {WrappedRange}
+   */
+  getWordsRange(findAfter) {
+    var endPoint = this.getEndPoint();
+
+    var isNotTextPoint = function(point) {
+      return !dom.isCharPoint(point) && !dom.isSpacePoint(point);
+    };
+
+    if (isNotTextPoint(endPoint)) {
+      return this;
+    }
+
+    var startPoint = dom.prevPointUntil(endPoint, isNotTextPoint);
+
+    if (findAfter) {
+      endPoint = dom.nextPointUntil(endPoint, isNotTextPoint);
+    }
+
+    return new WrappedRange(
+      startPoint.node,
+      startPoint.offset,
+      endPoint.node,
+      endPoint.offset
+    );
+  };
+
+  /**
+   * returns range for words before cursor that match with a Regex
+   *
+   * example:
+   *  range: 'hi @Peter Pan'
+   *  regex: '/@[a-z ]+/i'
+   *  return range: '@Peter Pan'
+   *
+   * @param {RegExp} [regex]
+   * @return {WrappedRange|null}
+   */
+  getWordsMatchRange(regex) {
+    var endPoint = this.getEndPoint();
+
+    var startPoint = dom.prevPointUntil(endPoint, function(point) {
+      if (!dom.isCharPoint(point) && !dom.isSpacePoint(point)) {
+        return true;
+      }
+      var rng = new WrappedRange(
+        point.node,
+        point.offset,
+        endPoint.node,
+        endPoint.offset
+      );
+      var result = regex.exec(rng.toString());
+      return result && result.index === 0;
+    });
+
+    var rng = new WrappedRange(
+      startPoint.node,
+      startPoint.offset,
+      endPoint.node,
+      endPoint.offset
+    );
+
+    var text = rng.toString();
+    var result = regex.exec(text);
+
+    if (result && result[0].length === text.length) {
+      return rng;
+    } else {
+      return null;
+    }
+  };
+
+  /**
    * create offsetPath bookmark
    *
    * @param {Node} editable

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>summernote</title>
+    <!-- include jquery -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+
+    <!-- include libraries BS3 -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
+    <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+    <!-- include summernote -->
+    <link rel="stylesheet" href="../dist/summernote.css">
+
+    <script type="text/javascript" src="../dist/summernote.js"></script>
+    <script type="text/javascript" src="../lang/summernote-ko-KR.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.summernote').summernote({
+                height: 300,
+                placeholder: 'type starting with @',
+                hintMode: 'words',
+                hintSelect: 'next',
+                hint: {
+                    mentions: [
+                        {
+                            name: 'Jayden Smith',
+                            url: 'http://example.org/person/jayden-smith'
+                        },
+                        {
+                            name: 'Peter Pan',
+                            url: 'http://example.org/person/peter-pan'
+                        },
+                        {
+                            name: 'Lorca',
+                            url: 'http://example.org/person/lorca'
+                        },
+                        {
+                            name: 'David Summer',
+                            url: 'http://example.org/person/david-summer'
+                        }
+                    ],
+                    match: /\B@([a-z ]*)/i,
+                    search: function (keyword, callback) {
+                        callback($.grep(this.mentions, function (item) {
+                            return item.name.toLowerCase().indexOf(keyword.toLowerCase()) == 0;
+                        }));
+                    },
+                    template: function(item) {
+                        return item.name;
+                    },
+                    content: function (item) {
+                        return $('<a>')
+                                .attr('src', item.url)
+                                .text('@'+item.name)
+                                .get(0);
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<textarea class="summernote"></textarea>
+</body>
+</html>

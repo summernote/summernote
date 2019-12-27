@@ -692,6 +692,21 @@ function isCharPoint(point) {
 }
 
 /**
+ * returns whether point has space or not.
+ *
+ * @param {Point} point
+ * @return {Boolean}
+ */
+function isSpacePoint(point) {
+  if (!isText(point.node)) {
+    return false;
+  }
+
+  const ch = point.node.nodeValue.charAt(point.offset - 1);
+  return ch === ' ' || ch === NBSP_CHAR;
+};
+
+/**
  * @method walkPoint
  *
  * @param {BoundaryPoint} startPoint
@@ -1098,6 +1113,7 @@ export default {
   prevPointUntil,
   nextPointUntil,
   isCharPoint,
+  isSpacePoint,
   walkPoint,
   ancestor,
   singleChildAncestor,
