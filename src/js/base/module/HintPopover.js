@@ -2,7 +2,6 @@ import $ from 'jquery';
 import func from '../core/func';
 import lists from '../core/lists';
 import dom from '../core/dom';
-import range from '../core/range';
 import key from '../core/key';
 
 const POPOVER_DIST = 5;
@@ -14,6 +13,7 @@ export default class HintPopover {
     this.ui = $.summernote.ui;
     this.$editable = context.layoutInfo.editable;
     this.options = context.options;
+    this.target = context.options.container;
     this.hint = this.options.hint || [];
     this.direction = this.options.hintDirection || 'bottom';
     this.hints = Array.isArray(this.hint) ? this.hint : [this.hint];
@@ -44,7 +44,7 @@ export default class HintPopover {
       className: 'note-hint-popover',
       hideArrow: true,
       direction: '',
-    }).render().appendTo(this.options.container);
+    }).render().appendTo(this.target);
 
     this.$popover.hide();
     this.$content = this.$popover.find('.popover-content,.note-popover-content');
@@ -118,29 +118,11 @@ export default class HintPopover {
           this.lastWordRange.so += rangeCompute;
         }
       }
-      if (document.queryCommandSupported('insertText')) {
-        this.context.triggerEvent('before.command', this.$editable.html());
-        this.lastWordRange.select();
-        this.context.invoke('editor.focus');
-        document.execCommand('insertText', false, node.textContent);
-        // -- Normalize
-        this.$editable = this.context.layoutInfo.editable;
-        this.$editable[0].normalize();
-        // -- Add To history
-        this.history = new History(this.$editable);
-        this.history.recordUndo();
-
-      // Default : if insertText not work
-      } else {
-        // XXX: consider to move codes to editor for recording redo/undo.
-        this.lastWordRange.insertNode(node);
-        range.createFromNode(node).collapse().select();
-      }
+      this.context.invoke('editor.replaceNode', this.lastWordRange, node);
 
       this.lastWordRange = null;
       this.matchingWord = null;
       this.hide();
-      this.context.triggerEvent('change', this.$editable.html(), this.$editable[0]);
       this.context.invoke('editor.focus');
     }
   }
@@ -217,7 +199,11 @@ export default class HintPopover {
         this.$content.empty();
 
         const bnd = func.rect2bnd(lists.last(wordRange.getClientRects()));
+        const targetOffset = $(this.target).offset();
         if (bnd) {
+          bnd.top -= targetOffset.top;
+          bnd.left -= targetOffset.left;
+
           this.$popover.hide();
           this.lastWordRange = wordRange;
           this.hints.forEach((hint, idx) => {
