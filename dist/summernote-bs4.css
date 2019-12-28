@@ -1,13 +1,13 @@
 /*!
  * 
- * Super simple wysiwyg editor v0.8.12
+ * Super simple wysiwyg editor v0.8.13
  * https://summernote.org
  * 
  * 
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  * 
- * Date: 2019-07-30T07:32Z
+ * Date: 2019-12-28T13:39Z
  * 
  */
 @font-face {
@@ -18,15 +18,22 @@
   src: url(font/summernote.eot);
   src: url(font/summernote.eot?#iefix) format("embedded-opentype"), url(font/summernote.woff2) format("woff2"), url(font/summernote.woff) format("woff"), url(font/summernote.ttf) format("truetype");}
 
+
 [class^="note-icon"]:before,
 [class*=" note-icon"]:before {
   display: inline-block;
-  font: normal normal normal 11px/1 summernote;
+  font-family: summernote;
+  font-style: normal;
+  font-size: inherit;
+  text-decoration: inherit;
   text-rendering: auto;
+  text-transform: none;
+  vertical-align: middle;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
+  speak: none;
 }
- 
+
 
 .note-icon-fw {
   text-align: center;
@@ -295,7 +302,6 @@
   color: lightskyblue;
   background-color: #fff;
   opacity: 0.95;
-  pointer-events: none;
 }
 .note-editor .note-dropzone .note-dropzone-message {
   display: table-cell;
@@ -331,29 +337,36 @@
 
 /* Frame mode layout
  ------------------------------------------ */
-.note-editor.note-frame {
+.note-editor.note-frame,
+.note-editor.note-airframe {
   border: 1px solid #a9a9a9;
 }
-.note-editor.note-frame.codeview .note-editing-area .note-editable {
+.note-editor.note-frame.codeview .note-editing-area .note-editable,
+.note-editor.note-airframe.codeview .note-editing-area .note-editable {
   display: none;
 }
-.note-editor.note-frame.codeview .note-editing-area .note-codable {
+.note-editor.note-frame.codeview .note-editing-area .note-codable,
+.note-editor.note-airframe.codeview .note-editing-area .note-codable {
   display: block;
 }
-.note-editor.note-frame .note-editing-area {
+.note-editor.note-frame .note-editing-area,
+.note-editor.note-airframe .note-editing-area {
   overflow: hidden;
 }
-.note-editor.note-frame .note-editing-area .note-editable {
+.note-editor.note-frame .note-editing-area .note-editable,
+.note-editor.note-airframe .note-editing-area .note-editable {
   background-color: #fff;
   color: #000;
   padding: 10px;
   overflow: auto;
   word-wrap: break-word;
 }
-.note-editor.note-frame .note-editing-area .note-editable[contenteditable=false] {
+.note-editor.note-frame .note-editing-area .note-editable[contenteditable=false],
+.note-editor.note-airframe .note-editing-area .note-editable[contenteditable=false] {
   background-color: #e5e5e5;
 }
-.note-editor.note-frame .note-editing-area .note-codable {
+.note-editor.note-frame .note-editing-area .note-codable,
+.note-editor.note-airframe .note-editing-area .note-codable {
   display: none;
   width: 100%;
   padding: 10px;
@@ -370,20 +383,24 @@
   border-radius: 0;
   margin-bottom: 0;
 }
-.note-editor.note-frame.fullscreen {
+.note-editor.note-frame.fullscreen,
+.note-editor.note-airframe.fullscreen {
   position: fixed;
   top: 0;
   left: 0;
   width: 100% !important;
   z-index: 1050;
 }
-.note-editor.note-frame.fullscreen .note-editable {
+.note-editor.note-frame.fullscreen .note-editable,
+.note-editor.note-airframe.fullscreen .note-editable {
   background-color: #fff;
 }
-.note-editor.note-frame.fullscreen .note-resizebar {
+.note-editor.note-frame.fullscreen .note-resizebar,
+.note-editor.note-airframe.fullscreen .note-resizebar {
   display: none;
 }
-.note-editor.note-frame .note-status-output {
+.note-editor.note-frame .note-status-output,
+.note-editor.note-airframe .note-status-output {
   display: block;
   width: 100%;
   font-size: 14px;
@@ -394,82 +411,106 @@
   border: 0;
   border-top: 1px solid #e2e2e2;
 }
-.note-editor.note-frame .note-status-output:empty {
+.note-editor.note-frame .note-status-output:empty,
+.note-editor.note-airframe .note-status-output:empty {
   height: 0;
   border-top: 0 solid transparent;
 }
-.note-editor.note-frame .note-status-output .pull-right {
+.note-editor.note-frame .note-status-output .pull-right,
+.note-editor.note-airframe .note-status-output .pull-right {
   float: right !important;
 }
-.note-editor.note-frame .note-status-output .text-muted {
+.note-editor.note-frame .note-status-output .text-muted,
+.note-editor.note-airframe .note-status-output .text-muted {
   color: #777;
 }
-.note-editor.note-frame .note-status-output .text-primary {
+.note-editor.note-frame .note-status-output .text-primary,
+.note-editor.note-airframe .note-status-output .text-primary {
   color: #286090;
 }
-.note-editor.note-frame .note-status-output .text-success {
+.note-editor.note-frame .note-status-output .text-success,
+.note-editor.note-airframe .note-status-output .text-success {
   color: #3c763d;
 }
-.note-editor.note-frame .note-status-output .text-info {
+.note-editor.note-frame .note-status-output .text-info,
+.note-editor.note-airframe .note-status-output .text-info {
   color: #31708f;
 }
-.note-editor.note-frame .note-status-output .text-warning {
+.note-editor.note-frame .note-status-output .text-warning,
+.note-editor.note-airframe .note-status-output .text-warning {
   color: #8a6d3b;
 }
-.note-editor.note-frame .note-status-output .text-danger {
+.note-editor.note-frame .note-status-output .text-danger,
+.note-editor.note-airframe .note-status-output .text-danger {
   color: #a94442;
 }
-.note-editor.note-frame .note-status-output .alert {
+.note-editor.note-frame .note-status-output .alert,
+.note-editor.note-airframe .note-status-output .alert {
   margin: -7px 0 0 0;
   padding: 7px 10px 2px 10px;
   border-radius: 0;
   color: #000;
   background-color: #f5f5f5;
 }
-.note-editor.note-frame .note-status-output .alert .note-icon {
+.note-editor.note-frame .note-status-output .alert .note-icon,
+.note-editor.note-airframe .note-status-output .alert .note-icon {
   margin-right: 5px;
 }
-.note-editor.note-frame .note-status-output .alert-success {
+.note-editor.note-frame .note-status-output .alert-success,
+.note-editor.note-airframe .note-status-output .alert-success {
   color: #3c763d !important;
   background-color: #dff0d8 !important;
 }
-.note-editor.note-frame .note-status-output .alert-info {
+.note-editor.note-frame .note-status-output .alert-info,
+.note-editor.note-airframe .note-status-output .alert-info {
   color: #31708f !important;
   background-color: #d9edf7 !important;
 }
-.note-editor.note-frame .note-status-output .alert-warning {
+.note-editor.note-frame .note-status-output .alert-warning,
+.note-editor.note-airframe .note-status-output .alert-warning {
   color: #8a6d3b !important;
   background-color: #fcf8e3 !important;
 }
-.note-editor.note-frame .note-status-output .alert-danger {
+.note-editor.note-frame .note-status-output .alert-danger,
+.note-editor.note-airframe .note-status-output .alert-danger {
   color: #a94442 !important;
   background-color: #f2dede !important;
 }
-.note-editor.note-frame .note-statusbar {
+.note-editor.note-frame .note-statusbar,
+.note-editor.note-airframe .note-statusbar {
   background-color: #f5f5f5;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
   border-top: 1px solid #ddd;
 }
-.note-editor.note-frame .note-statusbar .note-resizebar {
+.note-editor.note-frame .note-statusbar .note-resizebar,
+.note-editor.note-airframe .note-statusbar .note-resizebar {
   padding-top: 1px;
   height: 9px;
   width: 100%;
   cursor: ns-resize;
 }
-.note-editor.note-frame .note-statusbar .note-resizebar .note-icon-bar {
+.note-editor.note-frame .note-statusbar .note-resizebar .note-icon-bar,
+.note-editor.note-airframe .note-statusbar .note-resizebar .note-icon-bar {
   width: 20px;
   margin: 1px auto;
   border-top: 1px solid #a9a9a9;
 }
-.note-editor.note-frame .note-statusbar.locked .note-resizebar {
+.note-editor.note-frame .note-statusbar.locked .note-resizebar,
+.note-editor.note-airframe .note-statusbar.locked .note-resizebar {
   cursor: default;
 }
-.note-editor.note-frame .note-statusbar.locked .note-resizebar .note-icon-bar {
+.note-editor.note-frame .note-statusbar.locked .note-resizebar .note-icon-bar,
+.note-editor.note-airframe .note-statusbar.locked .note-resizebar .note-icon-bar {
   display: none;
 }
-.note-editor.note-frame .note-placeholder {
+.note-editor.note-frame .note-placeholder,
+.note-editor.note-airframe .note-placeholder {
   padding: 10px;
+}
+
+.note-editor.note-airframe {
+  border: 0;
 }
 
 /* Popover
@@ -631,17 +672,19 @@
 
 /* Dialog
  ------------------------------------------ */
-.note-dialog > div {
-  display: none;
+.note-modal .modal-dialog {
+  outline: 0;
+  border-radius: 5px;
+  box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
 }
-.note-dialog .form-group {
+.note-modal .form-group {
   margin-left: 0;
   margin-right: 0;
 }
-.note-dialog .note-modal-form {
+.note-modal .note-modal-form {
   margin: 0;
 }
-.note-dialog .note-image-dialog .note-dropzone {
+.note-modal .note-image-dialog .note-dropzone {
   min-height: 100px;
   font-size: 30px;
   line-height: 4;
@@ -651,7 +694,7 @@
   margin-bottom: 10px;
 }
 @-moz-document url-prefix() {
-  .note-dialog .note-image-input {
+  .note-modal .note-image-input {
     height: auto;
   }
 }
@@ -764,8 +807,9 @@
   cursor: pointer;
 }
 
-.note-btn {
+.note-toolbar .note-btn {
   background: #fff;
   border-color: #dae0e5;
-  padding: 0.25rem 0.65rem;
+  padding: 0.28rem 0.65rem;
+  font-size: 13px;
 }

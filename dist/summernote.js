@@ -1,13 +1,13 @@
 /*!
  * 
- * Super simple wysiwyg editor v0.8.12
+ * Super simple wysiwyg editor v0.8.13
  * https://summernote.org
  * 
  * 
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  * 
- * Date: 2019-07-30T07:32Z
+ * Date: 2019-12-28T13:39Z
  * 
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -229,7 +229,8 @@ external_jQuery_default.a.extend(external_jQuery_default.a.summernote.lang, {
       strikethrough: 'Strikethrough',
       subscript: 'Subscript',
       superscript: 'Superscript',
-      size: 'Font Size'
+      size: 'Font Size',
+      sizeunit: 'Font Size Unit'
     },
     image: {
       image: 'Picture',
@@ -268,7 +269,8 @@ external_jQuery_default.a.extend(external_jQuery_default.a.summernote.lang, {
       edit: 'Edit',
       textToDisplay: 'Text to display',
       url: 'To what URL should this link go?',
-      openInNewWindow: 'Open in new window'
+      openInNewWindow: 'Open in new window',
+      useProtocol: 'Use default protocol'
     },
     table: {
       table: 'Table',
@@ -317,7 +319,7 @@ external_jQuery_default.a.extend(external_jQuery_default.a.summernote.lang, {
       recent: 'Recent Color',
       more: 'More Color',
       background: 'Background Color',
-      foreground: 'Foreground Color',
+      foreground: 'Text Color',
       transparent: 'Transparent',
       setTransparent: 'Set transparent',
       reset: 'Reset',
@@ -369,6 +371,9 @@ external_jQuery_default.a.extend(external_jQuery_default.a.summernote.lang, {
     specialChar: {
       specialChar: 'SPECIAL CHARACTERS',
       select: 'Select Special characters'
+    },
+    output: {
+      noSelection: 'No Selection Made!'
     }
   }
 });
@@ -425,7 +430,7 @@ let hasCodeMirror = !!window.CodeMirror;
 const isSupportTouch = 'ontouchstart' in window || navigator.MaxTouchPoints > 0 || navigator.msMaxTouchPoints > 0; // [workaround] IE doesn't have input events for contentEditable
 // - see: https://goo.gl/4bfIvA
 
-const inputEventName = isMSIE || isEdge ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
+const inputEventName = isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
 /**
  * @class core.env
  *
@@ -443,7 +448,7 @@ const inputEventName = isMSIE || isEdge ? 'DOMCharacterDataModified DOMSubtreeMo
   isPhantom: /PhantomJS/i.test(userAgent),
   isWebkit: !isEdge && /webkit/i.test(userAgent),
   isChrome: !isEdge && /chrome/i.test(userAgent),
-  isSafari: !isEdge && /safari/i.test(userAgent),
+  isSafari: !isEdge && /safari/i.test(userAgent) && !/chrome/i.test(userAgent),
   browserVersion,
   jqueryVersion: parseFloat(external_jQuery_default.a.fn.jquery),
   isSupportAmd,
@@ -456,6 +461,7 @@ const inputEventName = isMSIE || isEdge ? 'DOMCharacterDataModified DOMSubtreeMo
   validFontName
 });
 // CONCATENATED MODULE: ./src/js/base/core/func.js
+
 /**
  * @class core.func
  *
@@ -464,6 +470,7 @@ const inputEventName = isMSIE || isEdge ? 'DOMCharacterDataModified DOMSubtreeMo
  * @singleton
  * @alternateClassName func
  */
+
 function eq(itemA) {
   return function (itemB) {
     return itemA === itemB;
@@ -512,10 +519,19 @@ function invoke(obj, method) {
 
 let idCounter = 0;
 /**
+ * reset globally-unique id
+ *
+ */
+
+function resetUniqueId() {
+  idCounter = 0;
+}
+/**
  * generate a globally-unique id
  *
  * @param {String} [prefix]
  */
+
 
 function uniqueId(prefix) {
   const id = ++idCounter + '';
@@ -537,7 +553,7 @@ function uniqueId(prefix) {
 
 
 function rect2bnd(rect) {
-  const $document = $(document);
+  const $document = external_jQuery_default()(document);
   return {
     top: rect.top + $document.scrollTop(),
     left: rect.left + $document.scrollLeft(),
@@ -633,6 +649,7 @@ function isValidUrl(url) {
   not,
   and,
   invoke,
+  resetUniqueId,
   uniqueId,
   rect2bnd,
   invertObject,
@@ -1479,7 +1496,7 @@ function hasChildren(node) {
  */
 
 
-function prevPoint(point, isSkipInnerOffset) {
+function dom_prevPoint(point, isSkipInnerOffset) {
   let node;
   let offset;
 
@@ -1515,6 +1532,10 @@ function prevPoint(point, isSkipInnerOffset) {
 function dom_nextPoint(point, isSkipInnerOffset) {
   let node, offset;
 
+  if (dom_isEmpty(point.node)) {
+    return null;
+  }
+
   if (nodeLength(point.node) === point.offset) {
     if (isEditable(point.node)) {
       return null;
@@ -1525,9 +1546,17 @@ function dom_nextPoint(point, isSkipInnerOffset) {
   } else if (hasChildren(point.node)) {
     node = point.node.childNodes[point.offset];
     offset = 0;
+
+    if (dom_isEmpty(node)) {
+      return null;
+    }
   } else {
     node = point.node;
     offset = isSkipInnerOffset ? nodeLength(point.node) : point.offset + 1;
+
+    if (dom_isEmpty(node)) {
+      return null;
+    }
   }
 
   return {
@@ -1584,7 +1613,7 @@ function prevPointUntil(point, pred) {
       return point;
     }
 
-    point = prevPoint(point);
+    point = dom_prevPoint(point);
   }
 
   return null;
@@ -1626,6 +1655,24 @@ function isCharPoint(point) {
   return ch && ch !== ' ' && ch !== NBSP_CHAR;
 }
 /**
+ * returns whether point has space or not.
+ *
+ * @param {Point} point
+ * @return {Boolean}
+ */
+
+
+function isSpacePoint(point) {
+  if (!isText(point.node)) {
+    return false;
+  }
+
+  const ch = point.node.nodeValue.charAt(point.offset - 1);
+  return ch === ' ' || ch === NBSP_CHAR;
+}
+
+;
+/**
  * @method walkPoint
  *
  * @param {BoundaryPoint} startPoint
@@ -1633,7 +1680,6 @@ function isCharPoint(point) {
  * @param {Function} handler
  * @param {Boolean} isSkipInnerOffset
  */
-
 
 function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
   let point = startPoint;
@@ -2046,13 +2092,14 @@ function isCustomStyleTag(node) {
   isRightEdgeOf,
   isLeftEdgePointOf,
   isRightEdgePointOf,
-  prevPoint,
+  prevPoint: dom_prevPoint,
   nextPoint: dom_nextPoint,
   isSamePoint,
   isVisiblePoint,
   prevPointUntil,
   nextPointUntil,
   isCharPoint,
+  isSpacePoint,
   walkPoint,
   ancestor: dom_ancestor,
   singleChildAncestor,
@@ -2099,7 +2146,7 @@ class Context_Context {
     this.memos = {};
     this.modules = {};
     this.layoutInfo = {};
-    this.options = options;
+    this.options = external_jQuery_default.a.extend(true, {}, options);
     this.initialize();
   }
   /**
@@ -2145,7 +2192,11 @@ class Context_Context {
   }
 
   _initialize() {
-    // add optional buttons
+    // set own id
+    this.options.id = func.uniqueId(external_jQuery_default.a.now()); // set default container for tooltips, popovers, and dialogs
+
+    this.options.container = this.options.container || this.layoutInfo.editor; // add optional buttons
+
     const buttons = external_jQuery_default.a.extend({}, this.options.buttons);
     Object.keys(buttons).forEach(key => {
       this.memo('button.' + key, buttons[key]);
@@ -2198,6 +2249,7 @@ class Context_Context {
     this.layoutInfo.editable.attr('contenteditable', true);
     this.invoke('toolbar.activate', true);
     this.triggerEvent('disable', false);
+    this.options.editing = true;
   }
 
   disable() {
@@ -2207,6 +2259,7 @@ class Context_Context {
     }
 
     this.layoutInfo.editable.attr('contenteditable', false);
+    this.options.editing = false;
     this.invoke('toolbar.deactivate', true);
     this.triggerEvent('disable', true);
   }
@@ -2600,13 +2653,17 @@ class range_WrappedRange {
      * @return {BoundaryPoint}
      */
     const getVisiblePoint = function (point, isLeftToRight) {
-      // Just use the given point [XXX:Adhoc]
+      if (!point) {
+        return point;
+      } // Just use the given point [XXX:Adhoc]
       //  - case 01. if the point is on the middle of the node
       //  - case 02. if the point is on the right edge and prefer to choose left node
       //  - case 03. if the point is on the left edge and prefer to choose right node
       //  - case 04. if the point is on the right edge and prefer to choose right node but the node is void
       //  - case 05. if the point is on the left edge and prefer to choose left node but the node is void
       //  - case 06. if the point is on the block node and there is no children
+
+
       if (dom.isVisiblePoint(point)) {
         if (!dom.isEdgePoint(point) || dom.isRightEdgePoint(point) && !isLeftToRight || dom.isLeftEdgePoint(point) && isLeftToRight || dom.isRightEdgePoint(point) && isLeftToRight && dom.isVoid(point.node.nextSibling) || dom.isLeftEdgePoint(point) && !isLeftToRight && dom.isVoid(point.node.previousSibling) || dom.isBlock(point.node) && dom.isEmpty(point.node)) {
           return point;
@@ -2615,8 +2672,25 @@ class range_WrappedRange {
 
 
       const block = dom.ancestor(point.node, dom.isBlock);
+      let hasRightNode = false;
 
-      if ((dom.isLeftEdgePointOf(point, block) || dom.isVoid(dom.prevPoint(point).node)) && !isLeftToRight || (dom.isRightEdgePointOf(point, block) || dom.isVoid(dom.nextPoint(point).node)) && isLeftToRight) {
+      if (!hasRightNode) {
+        const prevPoint = dom.prevPoint(point) || {
+          node: null
+        };
+        hasRightNode = (dom.isLeftEdgePointOf(point, block) || dom.isVoid(prevPoint.node)) && !isLeftToRight;
+      }
+
+      let hasLeftNode = false;
+
+      if (!hasLeftNode) {
+        const nextPoint = dom.nextPoint(point) || {
+          node: null
+        };
+        hasLeftNode = (dom.isRightEdgePointOf(point, block) || dom.isVoid(nextPoint.node)) && isLeftToRight;
+      }
+
+      if (hasRightNode || hasLeftNode) {
         // returns point already on visible point
         if (dom.isVisiblePoint(point)) {
           return point;
@@ -2864,15 +2938,17 @@ class range_WrappedRange {
       }
     } else {
       topAncestor = rng.sc.childNodes[rng.so > 0 ? rng.so - 1 : 0];
-    } // siblings not in paragraph
+    }
 
+    if (topAncestor) {
+      // siblings not in paragraph
+      let inlineSiblings = dom.listPrev(topAncestor, dom.isParaInline).reverse();
+      inlineSiblings = inlineSiblings.concat(dom.listNext(topAncestor.nextSibling, dom.isParaInline)); // wrap with paragraph
 
-    let inlineSiblings = dom.listPrev(topAncestor, dom.isParaInline).reverse();
-    inlineSiblings = inlineSiblings.concat(dom.listNext(topAncestor.nextSibling, dom.isParaInline)); // wrap with paragraph
-
-    if (inlineSiblings.length) {
-      const para = dom.wrap(lists.head(inlineSiblings), 'p');
-      dom.appendChildNodes(para, lists.tail(inlineSiblings));
+      if (inlineSiblings.length) {
+        const para = dom.wrap(lists.head(inlineSiblings), 'p');
+        dom.appendChildNodes(para, lists.tail(inlineSiblings));
+      }
     }
 
     return this.normalize();
@@ -2886,7 +2962,12 @@ class range_WrappedRange {
 
 
   insertNode(node) {
-    const rng = this.wrapBodyInlineWithPara().deleteContents();
+    let rng = this;
+
+    if (dom.isText(node) || dom.isInline(node)) {
+      rng = this.wrapBodyInlineWithPara().deleteContents();
+    }
+
     const info = dom.splitPoint(rng.getStartPoint(), dom.isInline(node));
 
     if (info.rightNode) {
@@ -2903,11 +2984,13 @@ class range_WrappedRange {
 
 
   pasteHTML(markup) {
+    markup = external_jQuery_default.a.trim(markup);
     const contentsContainer = external_jQuery_default()('<div></div>').html(markup)[0];
-    let childNodes = lists.from(contentsContainer.childNodes);
-    const rng = this.wrapBodyInlineWithPara().deleteContents();
+    let childNodes = lists.from(contentsContainer.childNodes); // const rng = this.wrapBodyInlineWithPara().deleteContents();
 
-    if (rng.so > 0) {
+    const rng = this;
+
+    if (rng.so >= 0) {
       childNodes = childNodes.reverse();
     }
 
@@ -2960,12 +3043,71 @@ class range_WrappedRange {
     return new range_WrappedRange(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
   }
   /**
+   * returns range for words before cursor
+   *
+   * @param {Boolean} [findAfter] - find after cursor, default: false
+   * @return {WrappedRange}
+   */
+
+
+  getWordsRange(findAfter) {
+    var endPoint = this.getEndPoint();
+
+    var isNotTextPoint = function (point) {
+      return !dom.isCharPoint(point) && !dom.isSpacePoint(point);
+    };
+
+    if (isNotTextPoint(endPoint)) {
+      return this;
+    }
+
+    var startPoint = dom.prevPointUntil(endPoint, isNotTextPoint);
+
+    if (findAfter) {
+      endPoint = dom.nextPointUntil(endPoint, isNotTextPoint);
+    }
+
+    return new range_WrappedRange(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
+  }
+
+  /**
+   * returns range for words before cursor that match with a Regex
+   *
+   * example:
+   *  range: 'hi @Peter Pan'
+   *  regex: '/@[a-z ]+/i'
+   *  return range: '@Peter Pan'
+   *
+   * @param {RegExp} [regex]
+   * @return {WrappedRange|null}
+   */
+  getWordsMatchRange(regex) {
+    var endPoint = this.getEndPoint();
+    var startPoint = dom.prevPointUntil(endPoint, function (point) {
+      if (!dom.isCharPoint(point) && !dom.isSpacePoint(point)) {
+        return true;
+      }
+
+      var rng = new range_WrappedRange(point.node, point.offset, endPoint.node, endPoint.offset);
+      var result = regex.exec(rng.toString());
+      return result && result.index === 0;
+    });
+    var rng = new range_WrappedRange(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
+    var text = rng.toString();
+    var result = regex.exec(text);
+
+    if (result && result[0].length === text.length) {
+      return rng;
+    } else {
+      return null;
+    }
+  }
+
+  /**
    * create offsetPath bookmark
    *
    * @param {Node} editable
    */
-
-
   bookmark(editable) {
     return {
       s: {
@@ -3018,7 +3160,7 @@ class range_WrappedRange {
  */
 
 
-/* harmony default export */ var range = ({
+/* harmony default export */ var core_range = ({
   /**
    * create Range Object From arguments or Browser Selection
    *
@@ -3040,12 +3182,21 @@ class range_WrappedRange {
       let wrappedRange = this.createFromSelection();
 
       if (!wrappedRange && arguments.length === 1) {
-        wrappedRange = this.createFromNode(arguments[0]);
-        return wrappedRange.collapse(dom.emptyPara === arguments[0].innerHTML);
+        let bodyElement = arguments[0];
+
+        if (dom.isEditable(bodyElement)) {
+          bodyElement = bodyElement.lastChild;
+        }
+
+        return this.createFromBodyElement(bodyElement, dom.emptyPara === arguments[0].innerHTML);
       }
 
       return wrappedRange;
     }
+  },
+  createFromBodyElement: function (bodyElement, isCollapseToStart = false) {
+    var wrappedRange = this.createFromNode(bodyElement);
+    return wrappedRange.collapse(isCollapseToStart);
   },
   createFromSelection: function () {
     let sc, so, ec, eo;
@@ -3213,7 +3364,12 @@ const KEY_MAP = {
   'SLASH': 191,
   'LEFTBRACKET': 219,
   'BACKSLASH': 220,
-  'RIGHTBRACKET': 221
+  'RIGHTBRACKET': 221,
+  // Navigation
+  'HOME': 36,
+  'END': 35,
+  'PAGEUP': 33,
+  'PAGEDOWN': 34
 };
 /**
  * @class core.key
@@ -3243,6 +3399,16 @@ const KEY_MAP = {
    */
   isMove: keyCode => {
     return lists.contains([KEY_MAP.LEFT, KEY_MAP.UP, KEY_MAP.RIGHT, KEY_MAP.DOWN], keyCode);
+  },
+
+  /**
+   * @method isNavigation
+   *
+   * @param {Number} keyCode
+   * @return {Boolean}
+   */
+  isNavigation: keyCode => {
+    return lists.contains([KEY_MAP.HOME, KEY_MAP.END, KEY_MAP.PAGEUP, KEY_MAP.PAGEDOWN], keyCode);
   },
 
   /**
@@ -3310,7 +3476,7 @@ class History_History {
   }
 
   makeSnapshot() {
-    const rng = range.create(this.editable);
+    const rng = core_range.create(this.editable);
     const emptyBookmark = {
       s: {
         path: [],
@@ -3333,7 +3499,7 @@ class History_History {
     }
 
     if (snapshot.bookmark !== null) {
-      range.createFromBookmark(this.editable, snapshot.bookmark).select();
+      core_range.createFromBookmark(this.editable, snapshot.bookmark).select();
     }
   }
   /**
@@ -3470,7 +3636,9 @@ class Style_Style {
   fromNode($node) {
     const properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
     const styleInfo = this.jQueryCSS($node, properties) || {};
-    styleInfo['font-size'] = parseInt(styleInfo['font-size'], 10);
+    const fontSize = $node[0].style.fontSize || styleInfo['font-size'];
+    styleInfo['font-size'] = parseInt(fontSize, 10);
+    styleInfo['font-size-unit'] = fontSize.match(/[a-z%]+$/);
     return styleInfo;
   }
   /**
@@ -3617,7 +3785,7 @@ class Bullet_Bullet {
 
 
   indent(editable) {
-    const rng = range.create(editable).wrapBodyInlineWithPara();
+    const rng = core_range.create(editable).wrapBodyInlineWithPara();
     const paras = rng.nodes(dom.isPara, {
       includeAncestor: true
     });
@@ -3650,7 +3818,7 @@ class Bullet_Bullet {
 
 
   outdent(editable) {
-    const rng = range.create(editable).wrapBodyInlineWithPara();
+    const rng = core_range.create(editable).wrapBodyInlineWithPara();
     const paras = rng.nodes(dom.isPara, {
       includeAncestor: true
     });
@@ -3679,7 +3847,7 @@ class Bullet_Bullet {
 
 
   toggleList(listName, editable) {
-    const rng = range.create(editable).wrapBodyInlineWithPara();
+    const rng = core_range.create(editable).wrapBodyInlineWithPara();
     let paras = rng.nodes(dom.isPara, {
       includeAncestor: true
     });
@@ -3708,7 +3876,7 @@ class Bullet_Bullet {
       }
     }
 
-    range.createFromParaBookmark(bookmark, paras).select();
+    core_range.createFromParaBookmark(bookmark, paras).select();
   }
   /**
    * @param {Node[]} paras
@@ -3896,7 +4064,7 @@ class Typing_Typing {
     const tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
     rng = rng.deleteContents();
     rng.insertNode(tab, true);
-    rng = range.create(tab, tabsize);
+    rng = core_range.create(tab, tabsize);
     rng.select();
   }
   /**
@@ -3913,7 +4081,7 @@ class Typing_Typing {
 
 
   insertParagraph(editable, rng) {
-    rng = rng || range.create(editable); // deleteContents on range.
+    rng = rng || core_range.create(editable); // deleteContents on range.
 
     rng = rng.deleteContents(); // Wrap range if it needs to be wrapped by paragraph
 
@@ -3981,7 +4149,7 @@ class Typing_Typing {
       }
     }
 
-    range.create(nextPara, 0).normalize().select().scrollIntoView(editable);
+    core_range.create(nextPara, 0).normalize().select().scrollIntoView(editable);
   }
 
 }
@@ -4335,7 +4503,7 @@ class Table_Table {
     const nextCell = lists[isShift ? 'prev' : 'next'](cells, cell);
 
     if (nextCell) {
-      range.create(nextCell, 0).select();
+      core_range.create(nextCell, 0).select();
     }
   }
   /**
@@ -4684,6 +4852,7 @@ class Editor_Editor {
     this.lang = this.options.langInfo;
     this.editable = this.$editable[0];
     this.lastRange = null;
+    this.snapshot = null;
     this.style = new Style_Style();
     this.table = new Table_Table();
     this.typing = new Typing_Typing(context);
@@ -4720,7 +4889,12 @@ class Editor_Editor {
       return this.fontStyling('font-family', env.validFontName(value));
     });
     this.fontSize = this.wrapCommand(value => {
-      return this.fontStyling('font-size', value + 'px');
+      const unit = this.currentStyle()['font-size-unit'];
+      return this.fontStyling('font-size', value + unit);
+    });
+    this.fontSizeUnit = this.wrapCommand(value => {
+      const size = this.currentStyle()['font-size'];
+      return this.fontStyling('font-size', size + value);
     });
 
     for (let idx = 1; idx <= 6; idx++) {
@@ -4762,8 +4936,7 @@ class Editor_Editor {
 
       const rng = this.getLastRange();
       rng.insertNode(node);
-      range.createFromNodeAfter(node).select();
-      this.setLastRange();
+      this.setLastRange(core_range.createFromNodeAfter(node).select());
     });
     /**
      * insert text
@@ -4777,8 +4950,7 @@ class Editor_Editor {
 
       const rng = this.getLastRange();
       const textNode = rng.insertNode(dom.createText(text));
-      range.create(textNode, dom.nodeLength(textNode)).select();
-      this.setLastRange();
+      this.setLastRange(core_range.create(textNode, dom.nodeLength(textNode)).select());
     });
     /**
      * paste HTML
@@ -4792,8 +4964,7 @@ class Editor_Editor {
 
       markup = this.context.invoke('codeview.purify', markup);
       const contents = this.getLastRange().pasteHTML(markup);
-      range.createFromNodeAfter(lists.last(contents)).select();
-      this.setLastRange();
+      this.setLastRange(core_range.createFromNodeAfter(lists.last(contents)).select());
     });
     /**
      * formatBlock
@@ -4818,8 +4989,7 @@ class Editor_Editor {
       const hrNode = this.getLastRange().insertNode(dom.create('HR'));
 
       if (hrNode.nextSibling) {
-        range.create(hrNode.nextSibling, 0).normalize().select();
-        this.setLastRange();
+        this.setLastRange(core_range.create(hrNode.nextSibling, 0).normalize().select());
       }
     });
     /**
@@ -4842,6 +5012,7 @@ class Editor_Editor {
       let linkUrl = linkInfo.url;
       const linkText = linkInfo.text;
       const isNewWindow = linkInfo.isNewWindow;
+      const checkProtocol = linkInfo.checkProtocol;
       let rng = linkInfo.range || this.getLastRange();
       const additionalTextLength = linkText.length - rng.toString().length;
 
@@ -4857,9 +5028,9 @@ class Editor_Editor {
 
       if (this.options.onCreateLink) {
         linkUrl = this.options.onCreateLink(linkUrl);
-      } else {
+      } else if (checkProtocol) {
         // if url doesn't have any protocol and not even a relative or a label, use http:// as default
-        linkUrl = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/.test(linkUrl) ? linkUrl : 'http://' + linkUrl;
+        linkUrl = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/.test(linkUrl) ? linkUrl : this.options.defaultProtocol + linkUrl;
       }
 
       let anchors = [];
@@ -4885,12 +5056,11 @@ class Editor_Editor {
           external_jQuery_default()(anchor).removeAttr('target');
         }
       });
-      const startRange = range.createFromNodeBefore(lists.head(anchors));
+      const startRange = core_range.createFromNodeBefore(lists.head(anchors));
       const startPoint = startRange.getStartPoint();
-      const endRange = range.createFromNodeAfter(lists.last(anchors));
+      const endRange = core_range.createFromNodeAfter(lists.last(anchors));
       const endPoint = endRange.getEndPoint();
-      range.create(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset).select();
-      this.setLastRange();
+      this.setLastRange(core_range.create(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset).select());
     });
     /**
      * setting color
@@ -4940,8 +5110,8 @@ class Editor_Editor {
     this.removeMedia = this.wrapCommand(() => {
       let $target = external_jQuery_default()(this.restoreTarget()).parent();
 
-      if ($target.parent('figure').length) {
-        $target.parent('figure').remove();
+      if ($target.closest('figure').length) {
+        $target.closest('figure').remove();
       } else {
         $target = external_jQuery_default()(this.restoreTarget()).detach();
       }
@@ -4987,7 +5157,9 @@ class Editor_Editor {
         this.context.triggerEvent('enter', event);
       }
 
-      this.context.triggerEvent('keydown', event);
+      this.context.triggerEvent('keydown', event); // keep a snapshot to limit text on input event
+
+      this.snapshot = this.history.makeSnapshot();
 
       if (!event.isDefaultPrevented()) {
         if (this.options.shortcuts) {
@@ -4998,8 +5170,14 @@ class Editor_Editor {
       }
 
       if (this.isLimited(1, event)) {
-        return false;
+        const lastRange = this.getLastRange();
+
+        if (lastRange.eo - lastRange.so === 0) {
+          return false;
+        }
       }
+
+      this.setLastRange();
     }).on('keyup', event => {
       this.setLastRange();
       this.context.triggerEvent('keyup', event);
@@ -5012,14 +5190,26 @@ class Editor_Editor {
       this.context.triggerEvent('mousedown', event);
     }).on('mouseup', event => {
       this.setLastRange();
+      this.history.recordUndo();
       this.context.triggerEvent('mouseup', event);
     }).on('scroll', event => {
       this.context.triggerEvent('scroll', event);
     }).on('paste', event => {
       this.setLastRange();
       this.context.triggerEvent('paste', event);
+    }).on('input', event => {
+      // To limit composition characters (e.g. Korean)
+      if (this.isLimited(0) && this.snapshot) {
+        this.history.applySnapshot(this.snapshot);
+      }
     });
-    this.$editable.attr('spellcheck', this.options.spellCheck); // init content before set event
+    this.$editable.attr('spellcheck', this.options.spellCheck);
+    this.$editable.attr('autocorrect', this.options.spellCheck);
+
+    if (this.options.disableGrammar) {
+      this.$editable.attr('data-gramm', false);
+    } // init content before set event
+
 
     this.$editable.html(dom.html(this.$note) || dom.emptyPara);
     this.$editable.on(env.inputEventName, func.debounce(() => {
@@ -5081,7 +5271,9 @@ class Editor_Editor {
 
     const eventName = keyMap[keys.join('+')];
 
-    if (eventName) {
+    if (keyName === 'TAB' && !this.options.tabDisable) {
+      this.afterCommand();
+    } else if (eventName) {
       if (this.context.invoke(eventName) !== false) {
         event.preventDefault();
       }
@@ -5101,13 +5293,13 @@ class Editor_Editor {
     pad = pad || 0;
 
     if (typeof event !== 'undefined') {
-      if (core_key.isMove(event.keyCode) || event.ctrlKey || event.metaKey || lists.contains([core_key.code.BACKSPACE, core_key.code.DELETE], event.keyCode)) {
+      if (core_key.isMove(event.keyCode) || core_key.isNavigation(event.keyCode) || event.ctrlKey || event.metaKey || lists.contains([core_key.code.BACKSPACE, core_key.code.DELETE], event.keyCode)) {
         return false;
       }
     }
 
     if (this.options.maxTextLength > 0) {
-      if (this.$editable.text().length + pad >= this.options.maxTextLength) {
+      if (this.$editable.text().length + pad > this.options.maxTextLength) {
         return true;
       }
     }
@@ -5126,8 +5318,16 @@ class Editor_Editor {
     return this.getLastRange();
   }
 
-  setLastRange() {
-    this.lastRange = range.create(this.editable);
+  setLastRange(rng) {
+    if (rng) {
+      this.lastRange = rng;
+    } else {
+      this.lastRange = core_range.create(this.editable);
+
+      if (external_jQuery_default()(this.lastRange.sc).closest('.note-editable').length === 0) {
+        this.lastRange = core_range.createFromBodyElement(this.editable);
+      }
+    }
   }
 
   getLastRange() {
@@ -5185,7 +5385,7 @@ class Editor_Editor {
 
 
   currentStyle() {
-    let rng = range.create();
+    let rng = core_range.create();
 
     if (rng) {
       rng = rng.normalize();
@@ -5332,9 +5532,8 @@ class Editor_Editor {
       }
 
       $image.show();
-      range.create(this.editable).insertNode($image[0]);
-      range.createFromNodeAfter($image[0]).select();
-      this.setLastRange();
+      this.getLastRange().insertNode($image[0]);
+      this.setLastRange(core_range.createFromNodeAfter($image[0]).select());
       this.afterCommand();
     }).fail(e => {
       this.context.triggerEvent('image.upload.error', e);
@@ -5386,7 +5585,7 @@ class Editor_Editor {
     let rng = this.getLastRange(); // if range on anchor, expand range with anchor
 
     if (rng.isOnAnchor()) {
-      rng = range.createFromNode(dom.ancestor(rng.sc, dom.isAnchor));
+      rng = core_range.createFromNode(dom.ancestor(rng.sc, dom.isAnchor));
     }
 
     return rng.toString();
@@ -5421,8 +5620,9 @@ class Editor_Editor {
   fontStyling(target, value) {
     const rng = this.getLastRange();
 
-    if (rng) {
+    if (rng !== '') {
       const spans = this.style.styleNodes(rng);
+      this.$editor.find('.note-status-output').html('');
       external_jQuery_default()(spans).css(target, value); // [workaround] added styled bogus span for style
       //  - also bogus character needed for cursor position
 
@@ -5431,11 +5631,17 @@ class Editor_Editor {
 
         if (firstSpan && !dom.nodeLength(firstSpan)) {
           firstSpan.innerHTML = dom.ZERO_WIDTH_NBSP_CHAR;
-          range.createFromNodeAfter(firstSpan.firstChild).select();
+          core_range.createFromNodeAfter(firstSpan.firstChild).select();
           this.setLastRange();
           this.$editable.data(KEY_BOGUS, firstSpan);
         }
       }
+    } else {
+      const noteStatusOutput = external_jQuery_default.a.now();
+      this.$editor.find('.note-status-output').html('<div id="note-status-output-' + noteStatusOutput + '" class="alert alert-info">' + this.lang.output.noSelection + '</div>');
+      setTimeout(function () {
+        external_jQuery_default()('#note-status-output-' + noteStatusOutput).remove();
+      }, 5000);
     }
   }
   /**
@@ -5450,7 +5656,7 @@ class Editor_Editor {
 
     if (rng.isOnAnchor()) {
       const anchor = dom.ancestor(rng.sc, dom.isAnchor);
-      rng = range.createFromNode(anchor);
+      rng = core_range.createFromNode(anchor);
       rng.select();
       this.setLastRange();
       this.beforeCommand();
@@ -5631,14 +5837,21 @@ class Clipboard_Clipboard {
     const clipboardData = event.originalEvent.clipboardData;
 
     if (clipboardData && clipboardData.items && clipboardData.items.length) {
-      // paste img file
       const item = clipboardData.items.length > 1 ? clipboardData.items[1] : lists.head(clipboardData.items);
 
       if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
+        // paste img file
         this.context.invoke('editor.insertImagesOrCallback', [item.getAsFile()]);
+        event.preventDefault();
+        this.context.invoke('editor.afterCommand');
+      } else if (item.kind === 'string') {
+        // paste text with maxTextLength check
+        if (this.context.invoke('editor.isLimited', clipboardData.getData('Text').length)) {
+          event.preventDefault();
+        } else {
+          this.context.invoke('editor.afterCommand');
+        }
       }
-
-      this.context.invoke('editor.afterCommand');
     }
   }
 
@@ -5654,11 +5867,7 @@ class Dropzone_Dropzone {
     this.options = context.options;
     this.lang = this.options.langInfo;
     this.documentEventHandlers = {};
-    this.$dropzone = external_jQuery_default()(['<div class="note-dropzone">', '  <div class="note-dropzone-message"/>', '</div>'].join('')).prependTo(this.$editor);
-  }
-
-  shouldInitialize() {
-    return !this.options.disableDragAndDrop;
+    this.$dropzone = external_jQuery_default()(['<div class="note-dropzone">', '<div class="note-dropzone-message"/>', '</div>'].join('')).prependTo(this.$editor);
   }
   /**
    * attach Drag and Drop Events
@@ -5666,7 +5875,18 @@ class Dropzone_Dropzone {
 
 
   initialize() {
-    this.attachDragAndDropEvent();
+    if (this.options.disableDragAndDrop) {
+      // prevent default drop event
+      this.documentEventHandlers.onDrop = e => {
+        e.preventDefault();
+      }; // do not consider outside of dropzone
+
+
+      this.$eventListener = this.$dropzone;
+      this.$eventListener.on('drop', this.documentEventHandlers.onDrop);
+    } else {
+      this.attachDragAndDropEvent();
+    }
   }
   /**
    * attach Drag and Drop Events
@@ -5727,6 +5947,11 @@ class Dropzone_Dropzone {
         this.context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
       } else {
         external_jQuery_default.a.each(dataTransfer.types, (idx, type) => {
+          // skip moz-specific types
+          if (type.toLowerCase().indexOf('_moz_') > -1) {
+            return;
+          }
+
           const content = dataTransfer.getData(type);
 
           if (type.toLowerCase().indexOf('text') > -1) {
@@ -6027,7 +6252,7 @@ class Handle_Handle {
       'summernote.keyup summernote.scroll summernote.change summernote.dialog.shown': () => {
         this.update();
       },
-      'summernote.disable': () => {
+      'summernote.disable summernote.blur': () => {
         this.hide();
       },
       'summernote.codeview.toggled': () => {
@@ -6135,7 +6360,7 @@ class Handle_Handle {
 
 
 const defaultScheme = 'http://';
-const linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/]{2}|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
+const linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/]{2}|tel:|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
 class AutoLink_AutoLink {
   constructor(context) {
     this.context = context;
@@ -6169,7 +6394,8 @@ class AutoLink_AutoLink {
 
     if (match && (match[1] || match[2])) {
       const link = match[1] ? keyword : defaultScheme + keyword;
-      const node = external_jQuery_default()('<a />').html(keyword).attr('href', link)[0];
+      const urlText = keyword.replace(/^(?:https?:\/\/)?(?:tel?:?)?(?:mailto?:?)?(?:www\.)?/i, '').split('/')[0];
+      const node = external_jQuery_default()('<a />').html(urlText).attr('href', link)[0];
 
       if (this.context.options.linkTargetBlank) {
         external_jQuery_default()(node).attr('target', '_blank');
@@ -6457,7 +6683,8 @@ class Buttons_Buttons {
           toggle: 'dropdown'
         }
       }), this.ui.dropdown({
-        items: (backColor ? ['<div class="note-palette">', '  <div class="note-palette-title">' + this.lang.color.background + '</div>', '  <div>', '    <button type="button" class="note-color-reset btn btn-light" data-event="backColor" data-value="inherit">', this.lang.color.transparent, '    </button>', '  </div>', '  <div class="note-holder" data-event="backColor"/>', '  <div>', '    <button type="button" class="note-color-select btn" data-event="openPalette" data-value="backColorPicker">', this.lang.color.cpSelect, '    </button>', '    <input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.backColor + '" data-event="backColorPalette">', '  </div>', '  <div class="note-holder-custom" id="backColorPalette" data-event="backColor"/>', '</div>'].join('') : '') + (foreColor ? ['<div class="note-palette">', '  <div class="note-palette-title">' + this.lang.color.foreground + '</div>', '  <div>', '    <button type="button" class="note-color-reset btn btn-light" data-event="removeFormat" data-value="foreColor">', this.lang.color.resetToDefault, '    </button>', '  </div>', '  <div class="note-holder" data-event="foreColor"/>', '  <div>', '    <button type="button" class="note-color-select btn" data-event="openPalette" data-value="foreColorPicker">', this.lang.color.cpSelect, '    </button>', '    <input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.foreColor + '" data-event="foreColorPalette">', '  <div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"/>', '</div>'].join('') : ''),
+        items: (backColor ? ['<div class="note-palette">', '<div class="note-palette-title">' + this.lang.color.background + '</div>', '<div>', '<button type="button" class="note-color-reset btn btn-light" data-event="backColor" data-value="inherit">', this.lang.color.transparent, '</button>', '</div>', '<div class="note-holder" data-event="backColor"/>', '<div>', '<button type="button" class="note-color-select btn" data-event="openPalette" data-value="backColorPicker">', this.lang.color.cpSelect, '</button>', '<input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.backColor + '" data-event="backColorPalette">', '</div>', '<div class="note-holder-custom" id="backColorPalette" data-event="backColor"/>', '</div>'].join('') : '') + (foreColor ? ['<div class="note-palette">', '<div class="note-palette-title">' + this.lang.color.foreground + '</div>', '<div>', '<button type="button" class="note-color-reset btn btn-light" data-event="removeFormat" data-value="foreColor">', this.lang.color.resetToDefault, '</button>', '</div>', '<div class="note-holder" data-event="foreColor"/>', '<div>', '<button type="button" class="note-color-select btn" data-event="openPalette" data-value="foreColorPicker">', this.lang.color.cpSelect, '</button>', '<input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.foreColor + '" data-event="foreColorPalette">', '</div>', // Fix missing Div, Commented to find easily if it's wrong
+        '<div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"/>', '</div>'].join('') : ''),
         callback: $dropdown => {
           $dropdown.find('.note-holder').each((idx, item) => {
             const $holder = external_jQuery_default()(item);
@@ -6493,7 +6720,7 @@ class Buttons_Buttons {
         },
         click: event => {
           event.stopPropagation();
-          const $parent = external_jQuery_default()('.' + className);
+          const $parent = external_jQuery_default()('.' + className).find('.show');
           const $button = external_jQuery_default()(event.target);
           const eventName = $button.data('event');
           let value = $button.attr('data-value');
@@ -6669,6 +6896,22 @@ class Buttons_Buttons {
         click: this.context.createInvokeHandlerAndUpdateState('editor.fontSize')
       })]).render();
     });
+    this.context.memo('button.fontsizeunit', () => {
+      return this.ui.buttonGroup([this.button({
+        className: 'dropdown-toggle',
+        contents: this.ui.dropdownButtonContents('<span class="note-current-fontsizeunit"/>', this.options),
+        tooltip: this.lang.font.sizeunit,
+        data: {
+          toggle: 'dropdown'
+        }
+      }), this.ui.dropdownCheck({
+        className: 'dropdown-fontsizeunit',
+        checkClassName: this.options.icons.menuCheck,
+        items: this.options.fontSizeUnits,
+        title: this.lang.font.sizeunit,
+        click: this.context.createInvokeHandlerAndUpdateState('editor.fontSizeUnit')
+      })]).render();
+    });
     this.context.memo('button.color', () => {
       return this.colorPalette('note-color-all', this.lang.color.recent, true, true);
     });
@@ -6771,7 +7014,7 @@ class Buttons_Buttons {
       }), this.ui.dropdown({
         title: this.lang.table.table,
         className: 'note-table',
-        items: ['<div class="note-dimension-picker">', '  <div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>', '  <div class="note-dimension-picker-highlighted"/>', '  <div class="note-dimension-picker-unhighlighted"/>', '</div>', '<div class="note-dimension-display">1 x 1</div>'].join('')
+        items: ['<div class="note-dimension-picker">', '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>', '<div class="note-dimension-picker-highlighted"/>', '<div class="note-dimension-picker-unhighlighted"/>', '</div>', '<div class="note-dimension-display">1 x 1</div>'].join('')
       })], {
         callback: $node => {
           const $catcher = $node.find('.note-dimension-picker-mousecatcher');
@@ -7074,6 +7317,13 @@ class Buttons_Buttons {
         $item.toggleClass('checked', isChecked);
       });
       $cont.find('.note-current-fontsize').text(fontSize);
+      const fontSizeUnit = styleInfo['font-size-unit'];
+      $cont.find('.dropdown-fontsizeunit a').each((idx, item) => {
+        const $item = external_jQuery_default()(item);
+        const isChecked = $item.data('value') + '' === fontSizeUnit + '';
+        $item.toggleClass('checked', isChecked);
+      });
+      $cont.find('.note-current-fontsizeunit').text(fontSizeUnit);
     }
 
     if (styleInfo['line-height']) {
@@ -7251,7 +7501,9 @@ class Toolbar_Toolbar {
       }
     }
 
-    this.followScroll();
+    if (this.options.followingToolbar) {
+      this.followScroll();
+    }
   }
 
   updateFullscreen(isFullscreen) {
@@ -7273,7 +7525,7 @@ class Toolbar_Toolbar {
     let $btn = this.$toolbar.find('button');
 
     if (!isIncludeCodeview) {
-      $btn = $btn.not('.btn-codeview');
+      $btn = $btn.not('.btn-codeview').not('.btn-fullscreen');
     }
 
     this.ui.toggleBtn($btn, true);
@@ -7283,7 +7535,7 @@ class Toolbar_Toolbar {
     let $btn = this.$toolbar.find('button');
 
     if (!isIncludeCodeview) {
-      $btn = $btn.not('.btn-codeview');
+      $btn = $btn.not('.btn-codeview').not('.btn-fullscreen');
     }
 
     this.ui.toggleBtn($btn, false);
@@ -7307,12 +7559,16 @@ class LinkDialog_LinkDialog {
   }
 
   initialize() {
-    const $container = this.options.dialogsInBody ? this.$body : this.$editor;
-    const body = ['<div class="form-group note-form-group">', `<label class="note-form-label">${this.lang.link.textToDisplay}</label>`, '<input class="note-link-text form-control note-form-control note-input" type="text" />', '</div>', '<div class="form-group note-form-group">', `<label class="note-form-label">${this.lang.link.url}</label>`, '<input class="note-link-url form-control note-form-control note-input" type="text" value="http://" />', '</div>', !this.options.disableLinkTarget ? external_jQuery_default()('<div/>').append(this.ui.checkbox({
+    const $container = this.options.dialogsInBody ? this.$body : this.options.container;
+    const body = ['<div class="form-group note-form-group">', `<label for="note-dialog-link-txt-${this.options.id}" class="note-form-label">${this.lang.link.textToDisplay}</label>`, `<input id="note-dialog-link-txt-${this.options.id}" class="note-link-text form-control note-form-control note-input" type="text"/>`, '</div>', '<div class="form-group note-form-group">', `<label for="note-dialog-link-url-${this.options.id}" class="note-form-label">${this.lang.link.url}</label>`, `<input id="note-dialog-link-url-${this.options.id}" class="note-link-url form-control note-form-control note-input" type="text" value="http://"/>`, '</div>', !this.options.disableLinkTarget ? external_jQuery_default()('<div/>').append(this.ui.checkbox({
       className: 'sn-checkbox-open-in-new-window',
       text: this.lang.link.openInNewWindow,
       checked: true
-    }).render()).html() : ''].join('');
+    }).render()).html() : '', external_jQuery_default()('<div/>').append(this.ui.checkbox({
+      className: 'sn-checkbox-use-protocol',
+      text: this.lang.link.useProtocol,
+      checked: true
+    }).render()).html()].join('');
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-link-btn';
     const footer = `<input type="button" href="#" class="${buttonClass}" value="${this.lang.link.insert}" disabled>`;
     this.$dialog = this.ui.dialog({
@@ -7359,6 +7615,7 @@ class LinkDialog_LinkDialog {
       const $linkUrl = this.$dialog.find('.note-link-url');
       const $linkBtn = this.$dialog.find('.note-link-btn');
       const $openInNewWindow = this.$dialog.find('.sn-checkbox-open-in-new-window input[type=checkbox]');
+      const $useProtocol = this.$dialog.find('.sn-checkbox-use-protocol input[type=checkbox]');
       this.ui.onDialogShown(this.$dialog, () => {
         this.context.triggerEvent('dialog.shown'); // If no url was given and given text is valid URL then copy that into URL Field
 
@@ -7391,13 +7648,16 @@ class LinkDialog_LinkDialog {
         this.bindEnterKey($linkText, $linkBtn);
         const isNewWindowChecked = linkInfo.isNewWindow !== undefined ? linkInfo.isNewWindow : this.context.options.linkTargetBlank;
         $openInNewWindow.prop('checked', isNewWindowChecked);
+        const useProtocolChecked = linkInfo.url ? false : this.context.options.useProtocol;
+        $useProtocol.prop('checked', useProtocolChecked);
         $linkBtn.one('click', event => {
           event.preventDefault();
           deferred.resolve({
             range: linkInfo.range,
             url: $linkUrl.val(),
             text: $linkText.val(),
-            isNewWindow: $openInNewWindow.is(':checked')
+            isNewWindow: $openInNewWindow.is(':checked'),
+            checkProtocol: $useProtocol.is(':checked')
           });
           this.ui.hideDialog(this.$dialog);
         });
@@ -7441,11 +7701,12 @@ class LinkPopover_LinkPopover {
     this.context = context;
     this.ui = external_jQuery_default.a.summernote.ui;
     this.options = context.options;
+    this.target = context.options.container;
     this.events = {
       'summernote.keyup summernote.mouseup summernote.change summernote.scroll': () => {
         this.update();
       },
-      'summernote.disable summernote.dialog.shown': () => {
+      'summernote.disable summernote.dialog.shown summernote.blur': () => {
         this.hide();
       }
     };
@@ -7462,9 +7723,12 @@ class LinkPopover_LinkPopover {
         const $content = $node.find('.popover-content,.note-popover-content');
         $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
       }
-    }).render().appendTo(this.options.container);
+    }).render().appendTo(this.target);
     const $content = this.$popover.find('.popover-content,.note-popover-content');
     this.context.invoke('buttons.build', $content, this.options.popover.link);
+    this.$popover.on('mousedown', e => {
+      e.preventDefault();
+    });
   }
 
   destroy() {
@@ -7485,6 +7749,9 @@ class LinkPopover_LinkPopover {
       const href = external_jQuery_default()(anchor).attr('href');
       this.$popover.find('a').attr('href', href).html(href);
       const pos = dom.posFromPlaceholder(anchor);
+      const targetOffset = external_jQuery_default()(this.target).offset();
+      pos.top -= targetOffset.top;
+      pos.left -= targetOffset.left;
       this.$popover.css({
         display: 'block',
         left: pos.left,
@@ -7515,7 +7782,6 @@ class ImageDialog_ImageDialog {
   }
 
   initialize() {
-    const $container = this.options.dialogsInBody ? this.$body : this.$editor;
     let imageLimitation = '';
 
     if (this.options.maximumImageFileSize) {
@@ -7524,7 +7790,8 @@ class ImageDialog_ImageDialog {
       imageLimitation = `<small>${this.lang.image.maximumFileSize + ' : ' + readableSize}</small>`;
     }
 
-    const body = ['<div class="form-group note-form-group note-group-select-from-files">', '<label class="note-form-label">' + this.lang.image.selectFromFiles + '</label>', '<input class="note-image-input form-control-file note-form-control note-input" ', ' type="file" name="files" accept="image/*" multiple="multiple" />', imageLimitation, '</div>', '<div class="form-group note-group-image-url" style="overflow:auto;">', '<label class="note-form-label">' + this.lang.image.url + '</label>', '<input class="note-image-url form-control note-form-control note-input ', ' col-md-12" type="text" />', '</div>'].join('');
+    const $container = this.options.dialogsInBody ? this.$body : this.options.container;
+    const body = ['<div class="form-group note-form-group note-group-select-from-files">', '<label for="note-dialog-image-file-' + this.options.id + '" class="note-form-label">' + this.lang.image.selectFromFiles + '</label>', '<input id="note-dialog-image-file-' + this.options.id + '" class="note-image-input form-control-file note-form-control note-input" ', ' type="file" name="files" accept="image/*" multiple="multiple"/>', imageLimitation, '</div>', '<div class="form-group note-group-image-url">', '<label for="note-dialog-image-url-' + this.options.id + '" class="note-form-label">' + this.lang.image.url + '</label>', '<input id="note-dialog-image-url-' + this.options.id + '" class="note-image-url form-control note-form-control note-input" type="text"/>', '</div>'].join('');
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-image-btn';
     const footer = `<input type="button" href="#" class="${buttonClass}" value="${this.lang.image.insert}" disabled>`;
     this.$dialog = this.ui.dialog({
@@ -7636,7 +7903,7 @@ class ImagePopover_ImagePopover {
     this.editable = context.layoutInfo.editable[0];
     this.options = context.options;
     this.events = {
-      'summernote.disable': () => {
+      'summernote.disable summernote.blur': () => {
         this.hide();
       }
     };
@@ -7652,6 +7919,9 @@ class ImagePopover_ImagePopover {
     }).render().appendTo(this.options.container);
     const $content = this.$popover.find('.popover-content,.note-popover-content');
     this.context.invoke('buttons.build', $content, this.options.popover.image);
+    this.$popover.on('mousedown', e => {
+      e.preventDefault();
+    });
   }
 
   destroy() {
@@ -7660,12 +7930,16 @@ class ImagePopover_ImagePopover {
 
   update(target, event) {
     if (dom.isImg(target)) {
-      const pos = dom.posFromPlaceholder(target);
-      const posEditor = dom.posFromPlaceholder(this.editable);
+      const position = external_jQuery_default()(target).offset();
+      const editingOffset = external_jQuery_default()(this.context.layoutInfo.editingArea).offset();
+      const pos = {
+        left: position.left - editingOffset.left,
+        top: position.top - editingOffset.top
+      };
       this.$popover.css({
         display: 'block',
         left: this.options.popatmouse ? event.pageX - 20 : pos.left,
-        top: this.options.popatmouse ? event.pageY : Math.min(pos.top, posEditor.top)
+        top: this.options.popatmouse ? event.pageY : pos.top
       });
     } else {
       this.hide();
@@ -7694,7 +7968,7 @@ class TablePopover_TablePopover {
       'summernote.keyup summernote.scroll summernote.change': () => {
         this.update();
       },
-      'summernote.disable': () => {
+      'summernote.disable summernote.blur': () => {
         this.hide();
       }
     };
@@ -7714,6 +7988,10 @@ class TablePopover_TablePopover {
     if (env.isFF) {
       document.execCommand('enableInlineTableEditing', false, false);
     }
+
+    this.$popover.on('mousedown', e => {
+      e.preventDefault();
+    });
   }
 
   destroy() {
@@ -7761,8 +8039,8 @@ class VideoDialog_VideoDialog {
   }
 
   initialize() {
-    const $container = this.options.dialogsInBody ? this.$body : this.$editor;
-    const body = ['<div class="form-group note-form-group row-fluid">', `<label class="note-form-label">${this.lang.video.url} <small class="text-muted">${this.lang.video.providers}</small></label>`, '<input class="note-video-url form-control note-form-control note-input" type="text" />', '</div>'].join('');
+    const $container = this.options.dialogsInBody ? this.$body : this.options.container;
+    const body = ['<div class="form-group note-form-group row-fluid">', `<label for="note-dialog-video-url-${this.options.id}" class="note-form-label">${this.lang.video.url} <small class="text-muted">${this.lang.video.providers}</small></label>`, `<input id="note-dialog-video-url-${this.options.id}" class="note-video-url form-control note-form-control note-input" type="text"/>`, '</div>'].join('');
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-video-btn';
     const footer = `<input type="button" href="#" class="${buttonClass}" value="${this.lang.video.insert}" disabled>`;
     this.$dialog = this.ui.dialog({
@@ -7843,7 +8121,7 @@ class VideoDialog_VideoDialog {
       $video = external_jQuery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('height', '498').attr('width', '510').attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
     } else if (qqMatch && qqMatch[1].length || qqMatch2 && qqMatch2[2].length) {
       const vid = qqMatch && qqMatch[1].length ? qqMatch[1] : qqMatch2[2];
-      $video = external_jQuery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('height', '310').attr('width', '500').attr('src', 'http://v.qq.com/iframe/player.html?vid=' + vid + '&amp;auto=0');
+      $video = external_jQuery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('height', '310').attr('width', '500').attr('src', 'https://v.qq.com/iframe/player.html?vid=' + vid + '&amp;auto=0');
     } else if (mp4Match || oggMatch || webmMatch) {
       $video = external_jQuery_default()('<video controls>').attr('src', url).attr('width', '640').attr('height', '360');
     } else if (fbMatch && fbMatch[0].length) {
@@ -7930,8 +8208,8 @@ class HelpDialog_HelpDialog {
   }
 
   initialize() {
-    const $container = this.options.dialogsInBody ? this.$body : this.$editor;
-    const body = ['<p class="text-center">', '<a href="http://summernote.org/" target="_blank">Summernote 0.8.12</a> · ', '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ', '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>', '</p>'].join('');
+    const $container = this.options.dialogsInBody ? this.$body : this.options.container;
+    const body = ['<p class="text-center">', '<a href="http://summernote.org/" target="_blank">Summernote 0.8.13</a> · ', '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ', '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>', '</p>'].join('');
     this.$dialog = this.ui.dialog({
       title: this.lang.options.help,
       fade: this.options.dialogsFade,
@@ -7992,29 +8270,24 @@ class HelpDialog_HelpDialog {
 
 
 
-
-
 const AIR_MODE_POPOVER_X_OFFSET = 20;
 class AirPopover_AirPopover {
   constructor(context) {
     this.context = context;
     this.ui = external_jQuery_default.a.summernote.ui;
     this.options = context.options;
+    this.hidable = true;
     this.events = {
       'summernote.keyup summernote.mouseup summernote.scroll': () => {
-        this.update();
+        if (this.options.editing) {
+          this.update();
+        }
       },
-      'summernote.disable summernote.change summernote.dialog.shown': () => {
+      'summernote.disable summernote.change summernote.dialog.shown summernote.blur': () => {
         this.hide();
       },
       'summernote.focusout': (we, e) => {
-        // [workaround] Firefox/Safari don't support relatedTarget on focusout
-        //  - Ignore hide action on focus out in FF/Safari.
-        if (env.isFF || env.isSafari) {
-          return;
-        }
-
-        if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq(this.$popover[0]))) {
+        if (!this.$popover.is(':active,:focus')) {
           this.hide();
         }
       }
@@ -8030,7 +8303,15 @@ class AirPopover_AirPopover {
       className: 'note-air-popover'
     }).render().appendTo(this.options.container);
     const $content = this.$popover.find('.popover-content');
-    this.context.invoke('buttons.build', $content, this.options.popover.air);
+    this.context.invoke('buttons.build', $content, this.options.popover.air); // disable hiding this popover preemptively by 'summernote.blur' event.
+
+    this.$popover.on('mousedown', () => {
+      this.hidable = false;
+    }); // (re-)enable hiding after 'summernote.blur' has been handled (aka. ignored).
+
+    this.$popover.on('mouseup', () => {
+      this.hidable = true;
+    });
   }
 
   destroy() {
@@ -8058,7 +8339,9 @@ class AirPopover_AirPopover {
   }
 
   hide() {
-    this.$popover.hide();
+    if (this.hidable) {
+      this.$popover.hide();
+    }
   }
 
 }
@@ -8076,6 +8359,7 @@ class HintPopover_HintPopover {
     this.ui = external_jQuery_default.a.summernote.ui;
     this.$editable = context.layoutInfo.editable;
     this.options = context.options;
+    this.target = context.options.container;
     this.hint = this.options.hint || [];
     this.direction = this.options.hintDirection || 'bottom';
     this.hints = Array.isArray(this.hint) ? this.hint : [this.hint];
@@ -8088,7 +8372,7 @@ class HintPopover_HintPopover {
       'summernote.keydown': (we, e) => {
         this.handleKeydown(e);
       },
-      'summernote.disable summernote.dialog.shown': () => {
+      'summernote.disable summernote.dialog.shown summernote.blur': () => {
         this.hide();
       }
     };
@@ -8100,17 +8384,21 @@ class HintPopover_HintPopover {
 
   initialize() {
     this.lastWordRange = null;
+    this.matchingWord = null;
     this.$popover = this.ui.popover({
       className: 'note-hint-popover',
       hideArrow: true,
       direction: ''
-    }).render().appendTo(this.options.container);
+    }).render().appendTo(this.target);
     this.$popover.hide();
     this.$content = this.$popover.find('.popover-content,.note-popover-content');
     this.$content.on('click', '.note-hint-item', e => {
       this.$content.find('.active').removeClass('active');
       external_jQuery_default()(e.currentTarget).addClass('active');
       this.replace();
+    });
+    this.$popover.on('mousedown', e => {
+      e.preventDefault();
     });
   }
 
@@ -8162,13 +8450,30 @@ class HintPopover_HintPopover {
     const $item = this.$content.find('.note-hint-item.active');
 
     if ($item.length) {
-      const node = this.nodeFromItem($item); // XXX: consider to move codes to editor for recording redo/undo.
+      var node = this.nodeFromItem($item); // If matchingWord length = 0 -> capture OK / open hint / but as mention capture "" (\w*)
+
+      if (this.matchingWord !== null && this.matchingWord.length === 0) {
+        this.lastWordRange.so = this.lastWordRange.eo; // Else si > 0 and normal case -> adjust range "before" for correct position of insertion
+      } else if (this.matchingWord !== null && this.matchingWord.length > 0 && !this.lastWordRange.isCollapsed()) {
+        let rangeCompute = this.lastWordRange.eo - this.lastWordRange.so - this.matchingWord.length;
+
+        if (rangeCompute > 0) {
+          this.lastWordRange.so += rangeCompute;
+        }
+      }
 
       this.lastWordRange.insertNode(node);
-      range.createFromNode(node).collapse().select();
+
+      if (this.options.hintSelect === 'next') {
+        var blank = document.createTextNode('');
+        external_jQuery_default()(node).after(blank);
+        core_range.createFromNodeBefore(blank).select();
+      } else {
+        core_range.createFromNodeAfter(node).select();
+      }
+
       this.lastWordRange = null;
       this.hide();
-      this.context.triggerEvent('change', this.$editable.html(), this.$editable[0]);
       this.context.invoke('editor.focus');
     }
   }
@@ -8220,6 +8525,7 @@ class HintPopover_HintPopover {
 
     if (hint && hint.match.test(keyword) && hint.search) {
       const matches = hint.match.exec(keyword);
+      this.matchingWord = matches[0];
       hint.search(matches[1], callback);
     } else {
       callback();
@@ -8241,14 +8547,38 @@ class HintPopover_HintPopover {
 
   handleKeyup(e) {
     if (!lists.contains([core_key.code.ENTER, core_key.code.UP, core_key.code.DOWN], e.keyCode)) {
-      const wordRange = this.context.invoke('editor.getLastRange').getWordRange();
-      const keyword = wordRange.toString();
+      let range = this.context.invoke('editor.getLastRange');
+      let wordRange, keyword;
+
+      if (this.options.hintMode === 'words') {
+        wordRange = range.getWordsRange(range);
+        keyword = wordRange.toString();
+        this.hints.forEach(hint => {
+          if (hint.match.test(keyword)) {
+            wordRange = range.getWordsMatchRange(hint.match);
+            return false;
+          }
+        });
+
+        if (!wordRange) {
+          this.hide();
+          return;
+        }
+
+        keyword = wordRange.toString();
+      } else {
+        wordRange = range.getWordRange();
+        keyword = wordRange.toString();
+      }
 
       if (this.hints.length && keyword) {
         this.$content.empty();
         const bnd = func.rect2bnd(lists.last(wordRange.getClientRects()));
+        const targetOffset = external_jQuery_default()(this.target).offset();
 
         if (bnd) {
+          bnd.top -= targetOffset.top;
+          bnd.left -= targetOffset.left;
           this.$popover.hide();
           this.lastWordRange = wordRange;
           this.hints.forEach((hint, idx) => {
@@ -8316,13 +8646,14 @@ class HintPopover_HintPopover {
 
 
 external_jQuery_default.a.summernote = external_jQuery_default.a.extend(external_jQuery_default.a.summernote, {
-  version: '0.8.12',
+  version: '0.8.13',
   plugins: {},
   dom: dom,
-  range: range,
+  range: core_range,
   lists: lists,
   options: {
     langInfo: external_jQuery_default.a.summernote.lang['en-US'],
+    editing: true,
     modules: {
       'editor': Editor_Editor,
       'clipboard': Clipboard_Clipboard,
@@ -8352,6 +8683,7 @@ external_jQuery_default.a.summernote = external_jQuery_default.a.extend(external
     buttons: {},
     lang: 'en-US',
     followingToolbar: false,
+    toolbarPosition: 'top',
     otherStaticBar: '',
     // toolbar
     toolbar: [['style', ['style']], ['font', ['bold', 'underline', 'clear']], ['fontname', ['fontname']], ['color', ['color']], ['para', ['ul', 'ol', 'paragraph']], ['table', ['table']], ['insert', ['link', 'picture', 'video']], ['view', ['fullscreen', 'codeview', 'help']]],
@@ -8361,31 +8693,39 @@ external_jQuery_default.a.summernote = external_jQuery_default.a.extend(external
       image: [['resize', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']], ['float', ['floatLeft', 'floatRight', 'floatNone']], ['remove', ['removeMedia']]],
       link: [['link', ['linkDialogShow', 'unlink']]],
       table: [['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']], ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]],
-      air: [['color', ['color']], ['font', ['bold', 'underline', 'clear']], ['para', ['ul', 'paragraph']], ['table', ['table']], ['insert', ['link', 'picture']]]
+      air: [['color', ['color']], ['font', ['bold', 'underline', 'clear']], ['para', ['ul', 'paragraph']], ['table', ['table']], ['insert', ['link', 'picture']], ['view', ['fullscreen', 'codeview']]]
     },
     // air mode: inline editor
     airMode: false,
     width: null,
     height: null,
     linkTargetBlank: true,
+    useProtocol: true,
+    defaultProtocol: 'http://',
     focus: false,
+    tabDisabled: false,
     tabSize: 4,
     styleWithSpan: true,
     shortcuts: true,
     textareaAutoSync: true,
-    hintDirection: 'bottom',
     tooltip: 'auto',
-    container: 'body',
+    container: null,
     maxTextLength: 0,
     blockquoteBreakingLevel: 2,
     spellCheck: true,
+    disableGrammar: false,
     placeholder: null,
     inheritPlaceholder: false,
+    // TODO: need to be documented
+    hintMode: 'word',
+    hintSelect: 'after',
+    hintDirection: 'bottom',
     styleTags: ['p', 'blockquote', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
     fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Helvetica Neue', 'Helvetica', 'Impact', 'Lucida Grande', 'Tahoma', 'Times New Roman', 'Verdana'],
     fontNamesIgnoreCheck: [],
     addDefaultFonts: true,
     fontSizes: ['8', '9', '10', '11', '12', '14', '18', '24', '36'],
+    fontSizeUnits: ['px', 'pt'],
     // pallete colors(n x n)
     colors: [['#000000', '#424242', '#636363', '#9C9C94', '#CEC6CE', '#EFEFEF', '#F7F7F7', '#FFFFFF'], ['#FF0000', '#FF9C00', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#9C00FF', '#FF00FF'], ['#F7C6CE', '#FFE7CE', '#FFEFC6', '#D6EFD6', '#CEDEE7', '#CEE7F7', '#D6D6E7', '#E7D6DE'], ['#E79C9C', '#FFC69C', '#FFE79C', '#B5D6A5', '#A5C6CE', '#9CC6EF', '#B5A5D6', '#D6A5BD'], ['#E76363', '#F7AD6B', '#FFD663', '#94BD7B', '#73A5AD', '#6BADDE', '#8C7BC6', '#C67BA5'], ['#CE0000', '#E79439', '#EFC631', '#6BA54A', '#4A7B8C', '#3984C6', '#634AA5', '#A54A7B'], ['#9C0000', '#B56308', '#BD9400', '#397B21', '#104A5A', '#085294', '#311873', '#731842'], ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031']],
     // http://chir.ag/projects/name-that-color/
@@ -8400,6 +8740,7 @@ external_jQuery_default.a.summernote = external_jQuery_default.a.extend(external
       col: 10,
       row: 10
     },
+    // By default, dialogs are attached in container.
     dialogsInBody: false,
     dialogsFade: false,
     maximumImageFileSize: null,
@@ -8573,20 +8914,20 @@ var renderer = __webpack_require__(1);
 const editor = renderer["a" /* default */].create('<div class="note-editor note-frame panel panel-default"/>');
 const toolbar = renderer["a" /* default */].create('<div class="note-toolbar panel-heading" role="toolbar"></div></div>');
 const editingArea = renderer["a" /* default */].create('<div class="note-editing-area"/>');
-const codable = renderer["a" /* default */].create('<textarea class="note-codable" role="textbox" aria-multiline="true"/>');
+const codable = renderer["a" /* default */].create('<textarea class="note-codable" aria-multiline="true"/>');
 const editable = renderer["a" /* default */].create('<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>');
-const statusbar = renderer["a" /* default */].create(['<output class="note-status-output" aria-live="polite"/>', '<div class="note-statusbar" role="status">', '  <div class="note-resizebar" role="seperator" aria-orientation="horizontal" aria-label="Resize">', '    <div class="note-icon-bar"/>', '    <div class="note-icon-bar"/>', '    <div class="note-icon-bar"/>', '  </div>', '</div>'].join(''));
-const airEditor = renderer["a" /* default */].create('<div class="note-editor"/>');
-const airEditable = renderer["a" /* default */].create(['<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>', '<output class="note-status-output" aria-live="polite"/>'].join(''));
+const statusbar = renderer["a" /* default */].create(['<output class="note-status-output" role="status" aria-live="polite"/>', '<div class="note-statusbar" role="status">', '<div class="note-resizebar" aria-label="Resize">', '<div class="note-icon-bar"/>', '<div class="note-icon-bar"/>', '<div class="note-icon-bar"/>', '</div>', '</div>'].join(''));
+const airEditor = renderer["a" /* default */].create('<div class="note-editor note-airframe"/>');
+const airEditable = renderer["a" /* default */].create(['<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>', '<output class="note-status-output" role="status" aria-live="polite"/>'].join(''));
 const buttonGroup = renderer["a" /* default */].create('<div class="note-btn-group btn-group">');
-const dropdown = renderer["a" /* default */].create('<ul class="note-dropdown-menu dropdown-menu" role="list">', function ($node, options) {
+const dropdown = renderer["a" /* default */].create('<ul class="note-dropdown-menu dropdown-menu">', function ($node, options) {
   const markup = Array.isArray(options.items) ? options.items.map(function (item) {
     const value = typeof item === 'string' ? item : item.value || '';
     const content = options.template ? options.template(item) : item;
     const option = typeof item === 'object' ? item.option : undefined;
     const dataValue = 'data-value="' + value + '"';
     const dataOption = option !== undefined ? ' data-option="' + option + '"' : '';
-    return '<li role="listitem" aria-label="' + value + '"><a href="#" ' + (dataValue + dataOption) + '>' + content + '</a></li>';
+    return '<li aria-label="' + value + '"><a href="#" ' + (dataValue + dataOption) + '>' + content + '</a></li>';
   }).join('') : options.items;
   $node.html(markup).attr({
     'aria-label': options.title
@@ -8597,11 +8938,11 @@ const dropdownButtonContents = function (contents, options) {
   return contents + ' ' + icon(options.icons.caret, 'span');
 };
 
-const dropdownCheck = renderer["a" /* default */].create('<ul class="note-dropdown-menu dropdown-menu note-check" role="list">', function ($node, options) {
+const dropdownCheck = renderer["a" /* default */].create('<ul class="note-dropdown-menu dropdown-menu note-check">', function ($node, options) {
   const markup = Array.isArray(options.items) ? options.items.map(function (item) {
     const value = typeof item === 'string' ? item : item.value || '';
     const content = options.template ? options.template(item) : item;
-    return '<li role="listitem" aria-label="' + item + '"><a href="#" data-value="' + value + '">' + icon(options.checkClassName) + ' ' + content + '</a></li>';
+    return '<li aria-label="' + item + '"><a href="#" data-value="' + value + '">' + icon(options.checkClassName) + ' ' + content + '</a></li>';
   }).join('') : options.items;
   $node.html(markup).attr({
     'aria-label': options.title
@@ -8635,7 +8976,7 @@ const palette = renderer["a" /* default */].create('<div class="note-color-palet
     });
   }
 });
-const dialog = renderer["a" /* default */].create('<div class="modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function ($node, options) {
+const dialog = renderer["a" /* default */].create('<div class="modal note-modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function ($node, options) {
   if (options.fade) {
     $node.addClass('fade');
   }
@@ -8643,9 +8984,9 @@ const dialog = renderer["a" /* default */].create('<div class="modal" aria-hidde
   $node.attr({
     'aria-label': options.title
   });
-  $node.html(['<div class="modal-dialog">', '  <div class="modal-content">', options.title ? '    <div class="modal-header">' + '      <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">&times;</button>' + '      <h4 class="modal-title">' + options.title + '</h4>' + '    </div>' : '', '    <div class="modal-body">' + options.body + '</div>', options.footer ? '    <div class="modal-footer">' + options.footer + '</div>' : '', '  </div>', '</div>'].join(''));
+  $node.html(['<div class="modal-dialog">', '<div class="modal-content">', options.title ? '<div class="modal-header">' + '<button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">&times;</button>' + '<h4 class="modal-title">' + options.title + '</h4>' + '</div>' : '', '<div class="modal-body">' + options.body + '</div>', options.footer ? '<div class="modal-footer">' + options.footer + '</div>' : '', '</div>', '</div>'].join(''));
 });
-const popover = renderer["a" /* default */].create(['<div class="note-popover popover in">', '  <div class="arrow"/>', '  <div class="popover-content note-children-container"/>', '</div>'].join(''), function ($node, options) {
+const popover = renderer["a" /* default */].create(['<div class="note-popover popover in">', '<div class="arrow"/>', '<div class="popover-content note-children-container"/>', '</div>'].join(''), function ($node, options) {
   const direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
   $node.addClass(direction);
 
@@ -8654,7 +8995,7 @@ const popover = renderer["a" /* default */].create(['<div class="note-popover po
   }
 });
 const ui_checkbox = renderer["a" /* default */].create('<div class="checkbox"></div>', function ($node, options) {
-  $node.html(['<label' + (options.id ? ' for="' + options.id + '"' : '') + '>', ' <input role="checkbox" type="checkbox"' + (options.id ? ' id="' + options.id + '"' : ''), options.checked ? ' checked' : '', ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>', options.text ? options.text : '', '</label>'].join(''));
+  $node.html(['<label' + (options.id ? ' for="note-' + options.id + '"' : '') + '>', '<input type="checkbox"' + (options.id ? ' id="note-' + options.id + '"' : ''), options.checked ? ' checked' : '', ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>', options.text ? options.text : '', '</label>'].join(''));
 });
 
 const icon = function (iconClassName, tagName) {
@@ -8682,13 +9023,13 @@ const ui = {
   icon: icon,
   options: {},
   button: function ($node, options) {
-    return renderer["a" /* default */].create('<button type="button" class="note-btn btn btn-default btn-sm" role="button" tabindex="-1">', function ($node, options) {
+    return renderer["a" /* default */].create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
       if (options && options.tooltip) {
         $node.attr({
           title: options.tooltip,
           'aria-label': options.tooltip
         }).tooltip({
-          container: options.container !== undefined ? options.container : 'body',
+          container: options.container,
           trigger: 'hover',
           placement: 'bottom'
         }).on('click', e => {
@@ -8717,7 +9058,7 @@ const ui = {
     $dialog.modal('hide');
   },
   createLayout: function ($note, options) {
-    const $editor = (options.airMode ? ui.airEditor([ui.editingArea([ui.airEditable()])]) : ui.editor([ui.toolbar(), ui.editingArea([ui.codable(), ui.editable()]), ui.statusbar()])).render();
+    const $editor = (options.airMode ? ui.airEditor([ui.editingArea([ui.codable(), ui.airEditable()])]) : options.toolbarPosition === 'bottom' ? ui.editor([ui.editingArea([ui.codable(), ui.editable()]), ui.toolbar(), ui.statusbar()]) : ui.editor([ui.toolbar(), ui.editingArea([ui.codable(), ui.editable()]), ui.statusbar()])).render();
     $editor.insertAfter($note);
     return {
       note: $note,
@@ -8748,7 +9089,8 @@ var summernote_bs3 = __webpack_require__(4);
 
 
 external_jQuery_default.a.summernote = external_jQuery_default.a.extend(external_jQuery_default.a.summernote, {
-  ui: bs3_ui
+  ui: bs3_ui,
+  interface: 'bs3'
 });
 
 /***/ })
