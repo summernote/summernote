@@ -8,3 +8,4 @@ Gruntfile.js
 MAINTAIN.md
 grunts/
 test/
+coverage/
