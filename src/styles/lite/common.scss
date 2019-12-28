@@ -1,0 +1,6 @@
+.note-frame {
+  @include box-sizing(border-box);
+  color: #000;
+  font-family: $font-family;
+  border-radius: 4px;
+}

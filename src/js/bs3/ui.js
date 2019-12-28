@@ -4,28 +4,28 @@ import renderer from '../base/renderer';
 const editor = renderer.create('<div class="note-editor note-frame panel panel-default"/>');
 const toolbar = renderer.create('<div class="note-toolbar panel-heading" role="toolbar"></div></div>');
 const editingArea = renderer.create('<div class="note-editing-area"/>');
-const codable = renderer.create('<textarea class="note-codable" role="textbox" aria-multiline="true"/>');
+const codable = renderer.create('<textarea class="note-codable" aria-multiline="true"/>');
 const editable = renderer.create('<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>');
 const statusbar = renderer.create([
-  '<output class="note-status-output" aria-live="polite"/>',
+  '<output class="note-status-output" role="status" aria-live="polite"/>',
   '<div class="note-statusbar" role="status">',
-  '  <div class="note-resizebar" role="seperator" aria-orientation="horizontal" aria-label="Resize">',
-  '    <div class="note-icon-bar"/>',
-  '    <div class="note-icon-bar"/>',
-  '    <div class="note-icon-bar"/>',
-  '  </div>',
+    '<div class="note-resizebar" aria-label="Resize">',
+      '<div class="note-icon-bar"/>',
+      '<div class="note-icon-bar"/>',
+      '<div class="note-icon-bar"/>',
+    '</div>',
   '</div>',
 ].join(''));
 
-const airEditor = renderer.create('<div class="note-editor"/>');
+const airEditor = renderer.create('<div class="note-editor note-airframe"/>');
 const airEditable = renderer.create([
   '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>',
-  '<output class="note-status-output" aria-live="polite"/>',
+  '<output class="note-status-output" role="status" aria-live="polite"/>',
 ].join(''));
 
 const buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
 
-const dropdown = renderer.create('<ul class="dropdown-menu" role="list">', function($node, options) {
+const dropdown = renderer.create('<ul class="note-dropdown-menu dropdown-menu">', function($node, options) {
   const markup = Array.isArray(options.items) ? options.items.map(function(item) {
     const value = (typeof item === 'string') ? item : (item.value || '');
     const content = options.template ? options.template(item) : item;
@@ -33,7 +33,7 @@ const dropdown = renderer.create('<ul class="dropdown-menu" role="list">', funct
 
     const dataValue = 'data-value="' + value + '"';
     const dataOption = (option !== undefined) ? ' data-option="' + option + '"' : '';
-    return '<li role="listitem" aria-label="' + value + '"><a href="#" ' + (dataValue + dataOption) + '>' + content + '</a></li>';
+    return '<li aria-label="' + value + '"><a href="#" ' + (dataValue + dataOption) + '>' + content + '</a></li>';
   }).join('') : options.items;
 
   $node.html(markup).attr({ 'aria-label': options.title });
@@ -43,11 +43,11 @@ const dropdownButtonContents = function(contents, options) {
   return contents + ' ' + icon(options.icons.caret, 'span');
 };
 
-const dropdownCheck = renderer.create('<ul class="dropdown-menu note-check" role="list">', function($node, options) {
+const dropdownCheck = renderer.create('<ul class="note-dropdown-menu dropdown-menu note-check">', function($node, options) {
   const markup = Array.isArray(options.items) ? options.items.map(function(item) {
     const value = (typeof item === 'string') ? item : (item.value || '');
     const content = options.template ? options.template(item) : item;
-    return '<li role="listitem" aria-label="' + item + '"><a href="#" data-value="' + value + '">' + icon(options.checkClassName) + ' ' + content + '</a></li>';
+    return '<li aria-label="' + item + '"><a href="#" data-value="' + value + '">' + icon(options.checkClassName) + ' ' + content + '</a></li>';
   }).join('') : options.items;
   $node.html(markup).attr({ 'aria-label': options.title });
 });
@@ -85,7 +85,7 @@ const palette = renderer.create('<div class="note-color-palette"/>', function($n
   }
 });
 
-const dialog = renderer.create('<div class="modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function($node, options) {
+const dialog = renderer.create('<div class="modal note-modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function($node, options) {
   if (options.fade) {
     $node.addClass('fade');
   }
@@ -94,26 +94,22 @@ const dialog = renderer.create('<div class="modal" aria-hidden="false" tabindex=
   });
   $node.html([
     '<div class="modal-dialog">',
-    '  <div class="modal-content">',
-    (options.title
-      ? '    <div class="modal-header">' +
-    '      <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">&times;</button>' +
-    '      <h4 class="modal-title">' + options.title + '</h4>' +
-    '    </div>' : ''
-    ),
-    '    <div class="modal-body">' + options.body + '</div>',
-    (options.footer
-      ? '    <div class="modal-footer">' + options.footer + '</div>' : ''
-    ),
-    '  </div>',
+      '<div class="modal-content">',
+        (options.title ? '<div class="modal-header">' +
+          '<button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">&times;</button>' +
+          '<h4 class="modal-title">' + options.title + '</h4>' +
+        '</div>' : ''),
+        '<div class="modal-body">' + options.body + '</div>',
+        (options.footer ? '<div class="modal-footer">' + options.footer + '</div>' : ''),
+      '</div>',
     '</div>',
   ].join(''));
 });
 
 const popover = renderer.create([
   '<div class="note-popover popover in">',
-  '  <div class="arrow"/>',
-  '  <div class="popover-content note-children-container"/>',
+    '<div class="arrow"/>',
+    '<div class="popover-content note-children-container"/>',
   '</div>',
 ].join(''), function($node, options) {
   const direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
@@ -127,11 +123,11 @@ const popover = renderer.create([
 
 const checkbox = renderer.create('<div class="checkbox"></div>', function($node, options) {
   $node.html([
-    '<label' + (options.id ? ' for="' + options.id + '"' : '') + '>',
-    ' <input role="checkbox" type="checkbox"' + (options.id ? ' id="' + options.id + '"' : ''),
-    (options.checked ? ' checked' : ''),
-    ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',
-    (options.text ? options.text : ''),
+    '<label' + (options.id ? ' for="note-' + options.id + '"' : '') + '>',
+      '<input type="checkbox"' + (options.id ? ' id="note-' + options.id + '"' : ''),
+        (options.checked ? ' checked' : ''),
+        ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',
+      (options.text ? options.text : ''),
     '</label>',
   ].join(''));
 });
@@ -161,13 +157,13 @@ const ui = {
   options: {},
 
   button: function($node, options) {
-    return renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" role="button" tabindex="-1">', function($node, options) {
+    return renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function($node, options) {
       if (options && options.tooltip) {
         $node.attr({
           title: options.tooltip,
           'aria-label': options.tooltip,
         }).tooltip({
-          container: (options.container !== undefined) ? options.container : 'body',
+          container: options.container,
           trigger: 'hover',
           placement: 'bottom',
         }).on('click', (e) => {
@@ -205,16 +201,27 @@ const ui = {
   createLayout: function($note, options) {
     const $editor = (options.airMode ? ui.airEditor([
       ui.editingArea([
+        ui.codable(),
         ui.airEditable(),
       ]),
-    ]) : ui.editor([
-      ui.toolbar(),
-      ui.editingArea([
-        ui.codable(),
-        ui.editable(),
-      ]),
-      ui.statusbar(),
-    ])).render();
+    ]) : (options.toolbarPosition === 'bottom'
+      ? ui.editor([
+        ui.editingArea([
+          ui.codable(),
+          ui.editable(),
+        ]),
+        ui.toolbar(),
+        ui.statusbar(),
+      ])
+      : ui.editor([
+        ui.toolbar(),
+        ui.editingArea([
+          ui.codable(),
+          ui.editable(),
+        ]),
+        ui.statusbar(),
+      ])
+    )).render();
 
     $editor.insertAfter($note);
 

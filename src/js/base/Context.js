@@ -15,7 +15,7 @@ export default class Context {
     this.memos = {};
     this.modules = {};
     this.layoutInfo = {};
-    this.options = options;
+    this.options = $.extend(true, {}, options);
 
     this.initialize();
   }
@@ -54,6 +54,11 @@ export default class Context {
   }
 
   _initialize() {
+    // set own id
+    this.options.id = func.uniqueId($.now());
+    // set default container for tooltips, popovers, and dialogs
+    this.options.container = this.options.container || this.layoutInfo.editor;
+
     // add optional buttons
     const buttons = $.extend({}, this.options.buttons);
     Object.keys(buttons).forEach((key) => {
@@ -110,6 +115,7 @@ export default class Context {
     this.layoutInfo.editable.attr('contenteditable', true);
     this.invoke('toolbar.activate', true);
     this.triggerEvent('disable', false);
+    this.options.editing = true;
   }
 
   disable() {
@@ -118,6 +124,7 @@ export default class Context {
       this.invoke('codeview.deactivate');
     }
     this.layoutInfo.editable.attr('contenteditable', false);
+    this.options.editing = false;
     this.invoke('toolbar.deactivate', true);
 
     this.triggerEvent('disable', true);

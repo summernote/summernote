@@ -13,8 +13,8 @@
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.js"></script>
 
   <!-- include summernote -->
-  <link rel="stylesheet" href="../dist/summernote-bs4.css">
-  <script type="text/javascript" src="../dist/summernote-bs4.js"></script>
+  <link rel="stylesheet" href="../summernote-bs4.css">
+  <script type="text/javascript" src="../summernote-bs4.js"></script>
   <script type="text/javascript" src="../lang/summernote-ko-KR.js"></script>
 
   <link rel="stylesheet" href="example.css">
@@ -30,6 +30,7 @@
         var emojiUrls = data;
 
         $('.summernote').summernote({
+          placeholder: 'Type text start with ":". For example, :smile or :+1:.',
           height: 300,
           hintDirection: 'top',
           hint: [{
@@ -60,7 +61,7 @@
 <div class="container">
   <h1>Summernote with Hint Emoji</h1>
   <p>This example uses GitHub emojis.</p>
-  <textarea class="summernote">Type text start with ":". For example, :smile or :+1:.</textarea>
+  <textarea class="summernote"></textarea>
 </div>
 </body>
 </html>

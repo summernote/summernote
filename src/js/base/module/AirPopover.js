@@ -1,8 +1,6 @@
 import $ from 'jquery';
-import env from '../core/env';
 import func from '../core/func';
 import lists from '../core/lists';
-import dom from '../core/dom';
 
 const AIR_MODE_POPOVER_X_OFFSET = 20;
 
@@ -11,21 +9,20 @@ export default class AirPopover {
     this.context = context;
     this.ui = $.summernote.ui;
     this.options = context.options;
+
+    this.hidable = true;
+
     this.events = {
       'summernote.keyup summernote.mouseup summernote.scroll': () => {
-        this.update();
+        if (this.options.editing) {
+          this.update();
+        }
       },
-      'summernote.disable summernote.change summernote.dialog.shown': () => {
+      'summernote.disable summernote.change summernote.dialog.shown summernote.blur': () => {
         this.hide();
       },
       'summernote.focusout': (we, e) => {
-        // [workaround] Firefox doesn't support relatedTarget on focusout
-        //  - Ignore hide action on focus out in FF.
-        if (env.isFF) {
-          return;
-        }
-
-        if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq(this.$popover[0]))) {
+        if (!this.$popover.is(':active,:focus')) {
           this.hide();
         }
       },
@@ -43,6 +40,11 @@ export default class AirPopover {
     const $content = this.$popover.find('.popover-content');
 
     this.context.invoke('buttons.build', $content, this.options.popover.air);
+
+    // disable hiding this popover preemptively by 'summernote.blur' event.
+    this.$popover.on('mousedown', () => { this.hidable = false; });
+    // (re-)enable hiding after 'summernote.blur' has been handled (aka. ignored).
+    this.$popover.on('mouseup', () => { this.hidable = true; });
   }
 
   destroy() {
@@ -55,6 +57,7 @@ export default class AirPopover {
       const rect = lists.last(styleInfo.range.getClientRects());
       if (rect) {
         const bnd = func.rect2bnd(rect);
+
         this.$popover.css({
           display: 'block',
           left: Math.max(bnd.left + bnd.width / 2, 0) - AIR_MODE_POPOVER_X_OFFSET,
@@ -68,6 +71,8 @@ export default class AirPopover {
   }
 
   hide() {
-    this.$popover.hide();
+    if (this.hidable) {
+      this.$popover.hide();
+    }
   }
 }

@@ -12,7 +12,7 @@ export default class Dropzone {
 
     this.$dropzone = $([
       '<div class="note-dropzone">',
-      '  <div class="note-dropzone-message"/>',
+        '<div class="note-dropzone-message"/>',
       '</div>',
     ].join('')).prependTo(this.$editor);
   }
@@ -55,7 +55,10 @@ export default class Dropzone {
 
     this.documentEventHandlers.onDragleave = (e) => {
       collection = collection.not(e.target);
-      if (!collection.length) {
+
+      // If nodeName is BODY, then just make it over (fix for IE)
+      if (!collection.length || e.target.nodeName === 'BODY') {
+        collection = $();
         this.$editor.removeClass('dragover');
       }
     };
@@ -92,6 +95,10 @@ export default class Dropzone {
         this.context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
       } else {
         $.each(dataTransfer.types, (idx, type) => {
+          // skip moz-specific types
+          if (type.toLowerCase().indexOf('_moz_') > -1) {
+            return;
+          }
           const content = dataTransfer.getData(type);
 
           if (type.toLowerCase().indexOf('text') > -1) {

@@ -84,6 +84,7 @@ export default class Toolbar {
         position: 'fixed',
         top: otherBarHeight,
         width: editorWidth,
+        zIndex: 1000,
       });
       this.$editable.css({
         marginTop: this.$toolbar.height() + 5,
@@ -95,6 +96,7 @@ export default class Toolbar {
         position: 'relative',
         top: 0,
         width: '100%',
+        zIndex: 'auto',
       });
       this.$editable.css({
         marginTop: '',
@@ -110,7 +112,9 @@ export default class Toolbar {
         this.$toolbar.appendTo(this.options.toolbarContainer);
       }
     }
-    this.followScroll();
+    if (this.options.followingToolbar) {
+      this.followScroll();
+    }
   }
 
   updateFullscreen(isFullscreen) {
@@ -131,7 +135,7 @@ export default class Toolbar {
   activate(isIncludeCodeview) {
     let $btn = this.$toolbar.find('button');
     if (!isIncludeCodeview) {
-      $btn = $btn.not('.btn-codeview');
+      $btn = $btn.not('.btn-codeview').not('.btn-fullscreen');
     }
     this.ui.toggleBtn($btn, true);
   }
@@ -139,7 +143,7 @@ export default class Toolbar {
   deactivate(isIncludeCodeview) {
     let $btn = this.$toolbar.find('button');
     if (!isIncludeCodeview) {
-      $btn = $btn.not('.btn-codeview');
+      $btn = $btn.not('.btn-codeview').not('.btn-fullscreen');
     }
     this.ui.toggleBtn($btn, false);
   }

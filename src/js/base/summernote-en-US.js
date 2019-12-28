@@ -17,6 +17,7 @@ $.extend($.summernote.lang, {
       subscript: 'Subscript',
       superscript: 'Superscript',
       size: 'Font Size',
+      sizeunit: 'Font Size Unit',
     },
     image: {
       image: 'Picture',
@@ -56,6 +57,7 @@ $.extend($.summernote.lang, {
       textToDisplay: 'Text to display',
       url: 'To what URL should this link go?',
       openInNewWindow: 'Open in new window',
+      useProtocol: 'Use default protocol',
     },
     table: {
       table: 'Table',
@@ -104,7 +106,7 @@ $.extend($.summernote.lang, {
       recent: 'Recent Color',
       more: 'More Color',
       background: 'Background Color',
-      foreground: 'Foreground Color',
+      foreground: 'Text Color',
       transparent: 'Transparent',
       setTransparent: 'Set transparent',
       reset: 'Reset',
@@ -156,6 +158,9 @@ $.extend($.summernote.lang, {
     specialChar: {
       specialChar: 'SPECIAL CHARACTERS',
       select: 'Select Special characters',
+    },
+    output: {
+      noSelection: 'No Selection Made!',
     },
   },
 });

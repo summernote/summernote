@@ -18,7 +18,7 @@ export default class Handle {
       'summernote.keyup summernote.scroll summernote.change summernote.dialog.shown': () => {
         this.update();
       },
-      'summernote.disable': () => {
+      'summernote.disable summernote.blur': () => {
         this.hide();
       },
       'summernote.codeview.toggled': () => {
@@ -30,16 +30,16 @@ export default class Handle {
   initialize() {
     this.$handle = $([
       '<div class="note-handle">',
-      '<div class="note-control-selection">',
-      '<div class="note-control-selection-bg"></div>',
-      '<div class="note-control-holder note-control-nw"></div>',
-      '<div class="note-control-holder note-control-ne"></div>',
-      '<div class="note-control-holder note-control-sw"></div>',
-      '<div class="',
-      (this.options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing'),
-      ' note-control-se"></div>',
-      (this.options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>'),
-      '</div>',
+        '<div class="note-control-selection">',
+          '<div class="note-control-selection-bg"></div>',
+          '<div class="note-control-holder note-control-nw"></div>',
+          '<div class="note-control-holder note-control-ne"></div>',
+          '<div class="note-control-holder note-control-sw"></div>',
+          '<div class="',
+            (this.options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing'),
+          ' note-control-se"></div>',
+          (this.options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>'),
+        '</div>',
       '</div>',
     ].join('')).prependTo(this.$editingArea);
 
@@ -58,7 +58,7 @@ export default class Handle {
             y: event.clientY - (posStart.top - scrollTop),
           }, $target, !event.shiftKey);
 
-          this.update($target[0]);
+          this.update($target[0], event);
         };
 
         this.$document

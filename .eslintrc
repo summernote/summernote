@@ -4,6 +4,7 @@
       "chai-friendly"
     ],
     "rules": {
+      "indent": ["warn", 2, {"ArrayExpression": "off", "SwitchCase": 1}],
       "semi": [2, "always"],
       "space-before-function-paren": ["error", "never"],
       "no-useless-escape": 0,

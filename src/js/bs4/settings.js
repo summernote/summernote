@@ -2,8 +2,11 @@ import $ from 'jquery';
 import ui from './ui';
 import '../base/settings.js';
 
+import '../../styles/summernote-bs4.scss';
+
 $.summernote = $.extend($.summernote, {
   ui: ui,
+  interface: 'bs4',
 });
 
 $.summernote.options.styleTags = [

@@ -13,15 +13,13 @@ npm install
 # build full version of summernote: dist/summernote.js
 npm run build
 
-# generate minified copy: dist/summernote.min.js, dist/summernote.css
-npm run dist
 ```
-At this point, you should now have a `build/` directory populated with everything you need to use summernote.
+At this point, you should now have a `dist/` directory populated with everything you need to use summernote.
 
 ## Start local server for developing summernote.
-run local server with connect and watch.
+run local server with webpack-dev-server and watch.
 ```bash
-npm run start
+npm run dev
 # Open a browser on http://localhost:3000.
 # If you change source code, automatically reload your page.
 ```
@@ -32,7 +30,7 @@ run tests with Karma and PhantomJS
 npm run test
 ```
 If you want run tests on other browser,
-change the values for `broswers` properties in `karma.conf.js`.
+change the values for `browsers` properties in `karma.conf.js`.
 
 ```
 karma: {
@@ -43,8 +41,28 @@ karma: {
 }
 
 ```
+
+Or, pass `--browsers` argument via `npm run test` command.
+```
+$ npm run test -- --browsers Safari,Firefox
+```
+
 You can use `Chrome`, `ChromeCanary`, `Firefox`, `Opera`, `Safari`, `PhantomJS` and `IE` beside `PhantomJS`.
 Once you run `npm test`, it will watch all javascript file. Therefore karma run tests every time you change code.
+
+## Test a part of test
+
+If you would like to run some part of your test codes, use the watch mode.
+
+```bash
+$ npm run test:watch
+```
+
+`karma` will run test and keep waiting other test requests. And then, run `test:grep` in another terminal. Below shows how to run `LinkDialog` related tests only.
+
+```bash
+$ npm run test:grep LinkDialog
+```
 
 ## Prepush Hooks
 As part of this repo, we use the NPM package husky to implement git hooks. We leverage the prepush hook to prevent bad commits.
@@ -61,7 +79,7 @@ As part of this repo, we use the NPM package husky to implement git hooks. We le
 ```
 
 1. A body container has block node, but `<ul>` has only `<li>` nodes.
-2. A body container also has inline nodes sometimes. This inline nodes will be wrapped with `<p>` when enter key pressed.
-4. A block node only has inline nodes.
-5. A inline nodes has another inline nodes
-6. `#text` and void inline node doesn't have children.
+1. A body container also has inline nodes sometimes. This inline nodes will be wrapped with `<p>` when enter key pressed.
+1. A block node only has inline nodes.
+1. A inline nodes has another inline nodes
+1. `#text` and void inline node doesn't have children.

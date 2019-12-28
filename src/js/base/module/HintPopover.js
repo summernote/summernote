@@ -14,6 +14,7 @@ export default class HintPopover {
     this.ui = $.summernote.ui;
     this.$editable = context.layoutInfo.editable;
     this.options = context.options;
+    this.target = context.options.container;
     this.hint = this.options.hint || [];
     this.direction = this.options.hintDirection || 'bottom';
     this.hints = Array.isArray(this.hint) ? this.hint : [this.hint];
@@ -27,7 +28,7 @@ export default class HintPopover {
       'summernote.keydown': (we, e) => {
         this.handleKeydown(e);
       },
-      'summernote.disable summernote.dialog.shown': () => {
+      'summernote.disable summernote.dialog.shown summernote.blur': () => {
         this.hide();
       },
     };
@@ -39,11 +40,12 @@ export default class HintPopover {
 
   initialize() {
     this.lastWordRange = null;
+    this.matchingWord = null;
     this.$popover = this.ui.popover({
       className: 'note-hint-popover',
       hideArrow: true,
       direction: '',
-    }).render().appendTo(this.options.container);
+    }).render().appendTo(this.target);
 
     this.$popover.hide();
     this.$content = this.$popover.find('.popover-content,.note-popover-content');
@@ -52,6 +54,8 @@ export default class HintPopover {
       $(e.currentTarget).addClass('active');
       this.replace();
     });
+
+    this.$popover.on('mousedown', (e) => { e.preventDefault(); });
   }
 
   destroy() {
@@ -103,14 +107,29 @@ export default class HintPopover {
     const $item = this.$content.find('.note-hint-item.active');
 
     if ($item.length) {
-      const node = this.nodeFromItem($item);
-      // XXX: consider to move codes to editor for recording redo/undo.
+      var node = this.nodeFromItem($item);
+      // If matchingWord length = 0 -> capture OK / open hint / but as mention capture "" (\w*)
+      if (this.matchingWord !== null && this.matchingWord.length === 0) {
+        this.lastWordRange.so = this.lastWordRange.eo;
+      // Else si > 0 and normal case -> adjust range "before" for correct position of insertion
+      } else if (this.matchingWord !== null && this.matchingWord.length > 0 && !this.lastWordRange.isCollapsed()) {
+        let rangeCompute = this.lastWordRange.eo - this.lastWordRange.so - this.matchingWord.length;
+        if (rangeCompute > 0) {
+          this.lastWordRange.so += rangeCompute;
+        }
+      }
       this.lastWordRange.insertNode(node);
-      range.createFromNode(node).collapse().select();
+
+      if (this.options.hintSelect === 'next') {
+        var blank = document.createTextNode('');
+        $(node).after(blank);
+        range.createFromNodeBefore(blank).select();
+      } else {
+        range.createFromNodeAfter(node).select();
+      }
 
       this.lastWordRange = null;
       this.hide();
-      this.context.triggerEvent('change', this.$editable.html(), this.$editable[0]);
       this.context.invoke('editor.focus');
     }
   }
@@ -159,6 +178,7 @@ export default class HintPopover {
     const hint = this.hints[index];
     if (hint && hint.match.test(keyword) && hint.search) {
       const matches = hint.match.exec(keyword);
+      this.matchingWord = matches[0];
       hint.search(matches[1], callback);
     } else {
       callback();
@@ -180,13 +200,39 @@ export default class HintPopover {
 
   handleKeyup(e) {
     if (!lists.contains([key.code.ENTER, key.code.UP, key.code.DOWN], e.keyCode)) {
-      const wordRange = this.context.invoke('editor.getLastRange').getWordRange();
-      const keyword = wordRange.toString();
+      let range = this.context.invoke('editor.getLastRange');
+      let wordRange, keyword;
+      if (this.options.hintMode === 'words') {
+        wordRange = range.getWordsRange(range);
+        keyword = wordRange.toString();
+
+        this.hints.forEach((hint) => {
+          if (hint.match.test(keyword)) {
+            wordRange = range.getWordsMatchRange(hint.match);
+            return false;
+          }
+        });
+
+        if (!wordRange) {
+          this.hide();
+          return;
+        }
+
+        keyword = wordRange.toString();
+      } else {
+        wordRange = range.getWordRange();
+        keyword = wordRange.toString();
+      }
+
       if (this.hints.length && keyword) {
         this.$content.empty();
 
         const bnd = func.rect2bnd(lists.last(wordRange.getClientRects()));
+        const targetOffset = $(this.target).offset();
         if (bnd) {
+          bnd.top -= targetOffset.top;
+          bnd.left -= targetOffset.left;
+
           this.$popover.hide();
           this.lastWordRange = wordRange;
           this.hints.forEach((hint, idx) => {

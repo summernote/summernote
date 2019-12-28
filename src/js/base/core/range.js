@@ -224,6 +224,10 @@ class WrappedRange {
      * @return {BoundaryPoint}
      */
     const getVisiblePoint = function(point, isLeftToRight) {
+      if (!point) {
+        return point;
+      }
+
       // Just use the given point [XXX:Adhoc]
       //  - case 01. if the point is on the middle of the node
       //  - case 02. if the point is on the right edge and prefer to choose left node
@@ -244,8 +248,20 @@ class WrappedRange {
 
       // point on block's edge
       const block = dom.ancestor(point.node, dom.isBlock);
-      if (((dom.isLeftEdgePointOf(point, block) || dom.isVoid(dom.prevPoint(point).node)) && !isLeftToRight) ||
-        ((dom.isRightEdgePointOf(point, block) || dom.isVoid(dom.nextPoint(point).node)) && isLeftToRight)) {
+      let hasRightNode = false;
+
+      if (!hasRightNode) {
+        const prevPoint = dom.prevPoint(point) || { node: null };
+        hasRightNode = (dom.isLeftEdgePointOf(point, block) || dom.isVoid(prevPoint.node)) && !isLeftToRight;
+      }
+
+      let hasLeftNode = false;
+      if (!hasLeftNode) {
+        const nextPoint = dom.nextPoint(point) || { node: null };
+        hasLeftNode = (dom.isRightEdgePointOf(point, block) || dom.isVoid(nextPoint.node)) && isLeftToRight;
+      }
+
+      if (hasRightNode || hasLeftNode) {
         // returns point already on visible point
         if (dom.isVisiblePoint(point)) {
           return point;
@@ -507,14 +523,16 @@ class WrappedRange {
       topAncestor = rng.sc.childNodes[rng.so > 0 ? rng.so - 1 : 0];
     }
 
-    // siblings not in paragraph
-    let inlineSiblings = dom.listPrev(topAncestor, dom.isParaInline).reverse();
-    inlineSiblings = inlineSiblings.concat(dom.listNext(topAncestor.nextSibling, dom.isParaInline));
+    if (topAncestor) {
+      // siblings not in paragraph
+      let inlineSiblings = dom.listPrev(topAncestor, dom.isParaInline).reverse();
+      inlineSiblings = inlineSiblings.concat(dom.listNext(topAncestor.nextSibling, dom.isParaInline));
 
-    // wrap with paragraph
-    if (inlineSiblings.length) {
-      const para = dom.wrap(lists.head(inlineSiblings), 'p');
-      dom.appendChildNodes(para, lists.tail(inlineSiblings));
+      // wrap with paragraph
+      if (inlineSiblings.length) {
+        const para = dom.wrap(lists.head(inlineSiblings), 'p');
+        dom.appendChildNodes(para, lists.tail(inlineSiblings));
+      }
     }
 
     return this.normalize();
@@ -527,9 +545,13 @@ class WrappedRange {
    * @return {Node}
    */
   insertNode(node) {
-    const rng = this.wrapBodyInlineWithPara().deleteContents();
-    const info = dom.splitPoint(rng.getStartPoint(), dom.isInline(node));
+    let rng = this;
 
+    if (dom.isText(node) || dom.isInline(node)) {
+      rng = this.wrapBodyInlineWithPara().deleteContents();
+    }
+
+    const info = dom.splitPoint(rng.getStartPoint(), dom.isInline(node));
     if (info.rightNode) {
       info.rightNode.parentNode.insertBefore(node, info.rightNode);
     } else {
@@ -543,9 +565,13 @@ class WrappedRange {
    * insert html at current cursor
    */
   pasteHTML(markup) {
+    markup = $.trim(markup);
+
     const contentsContainer = $('<div></div>').html(markup)[0];
     let childNodes = lists.from(contentsContainer.childNodes);
-    const rng = this.wrapBodyInlineWithPara().deleteContents();
+
+    // const rng = this.wrapBodyInlineWithPara().deleteContents();
+    const rng = this;
 
     if (rng.so >= 0) {
       childNodes = childNodes.reverse();
@@ -599,6 +625,82 @@ class WrappedRange {
       endPoint.offset
     );
   }
+
+  /**
+   * returns range for words before cursor
+   *
+   * @param {Boolean} [findAfter] - find after cursor, default: false
+   * @return {WrappedRange}
+   */
+  getWordsRange(findAfter) {
+    var endPoint = this.getEndPoint();
+
+    var isNotTextPoint = function(point) {
+      return !dom.isCharPoint(point) && !dom.isSpacePoint(point);
+    };
+
+    if (isNotTextPoint(endPoint)) {
+      return this;
+    }
+
+    var startPoint = dom.prevPointUntil(endPoint, isNotTextPoint);
+
+    if (findAfter) {
+      endPoint = dom.nextPointUntil(endPoint, isNotTextPoint);
+    }
+
+    return new WrappedRange(
+      startPoint.node,
+      startPoint.offset,
+      endPoint.node,
+      endPoint.offset
+    );
+  };
+
+  /**
+   * returns range for words before cursor that match with a Regex
+   *
+   * example:
+   *  range: 'hi @Peter Pan'
+   *  regex: '/@[a-z ]+/i'
+   *  return range: '@Peter Pan'
+   *
+   * @param {RegExp} [regex]
+   * @return {WrappedRange|null}
+   */
+  getWordsMatchRange(regex) {
+    var endPoint = this.getEndPoint();
+
+    var startPoint = dom.prevPointUntil(endPoint, function(point) {
+      if (!dom.isCharPoint(point) && !dom.isSpacePoint(point)) {
+        return true;
+      }
+      var rng = new WrappedRange(
+        point.node,
+        point.offset,
+        endPoint.node,
+        endPoint.offset
+      );
+      var result = regex.exec(rng.toString());
+      return result && result.index === 0;
+    });
+
+    var rng = new WrappedRange(
+      startPoint.node,
+      startPoint.offset,
+      endPoint.node,
+      endPoint.offset
+    );
+
+    var text = rng.toString();
+    var result = regex.exec(text);
+
+    if (result && result[0].length === text.length) {
+      return rng;
+    } else {
+      return null;
+    }
+  };
 
   /**
    * create offsetPath bookmark
@@ -672,12 +774,21 @@ export default {
       return new WrappedRange(sc, so, ec, eo);
     } else {
       let wrappedRange = this.createFromSelection();
+
       if (!wrappedRange && arguments.length === 1) {
-        wrappedRange = this.createFromNode(arguments[0]);
-        return wrappedRange.collapse(dom.emptyPara === arguments[0].innerHTML);
+        let bodyElement = arguments[0];
+        if (dom.isEditable(bodyElement)) {
+          bodyElement = bodyElement.lastChild;
+        }
+        return this.createFromBodyElement(bodyElement, dom.emptyPara === arguments[0].innerHTML);
       }
       return wrappedRange;
     }
+  },
+
+  createFromBodyElement: function(bodyElement, isCollapseToStart = false) {
+    var wrappedRange = this.createFromNode(bodyElement);
+    return wrappedRange.collapse(isCollapseToStart);
   },
 
   createFromSelection: function() {

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>summernote</title>
+  <!-- include jquery -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+
+  <!-- include libraries BS -->
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.css" />
+  <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.5/umd/popper.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.js"></script>
+
+  <!-- include summernote -->
+  <link rel="stylesheet" href="../summernote-bs4.css">
+  <script type="text/javascript" src="../summernote-bs4.js"></script>
+  <script type="text/javascript" src="../lang/summernote-ko-KR.js"></script>
+
+  <link rel="stylesheet" href="example.css">
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $('.summernote').summernote({
+        height: 300,
+        placeholder: 'type starting with @',
+        hintMode: 'words',
+        hintSelect: 'next',
+        hint: {
+          mentions: [
+            {
+              name: 'Jayden Smith',
+              url: 'http://example.org/person/jayden-smith'
+            },
+            {
+              name: 'Peter Pan',
+              url: 'http://example.org/person/peter-pan'
+            },
+            {
+              name: 'Lorca',
+              url: 'http://example.org/person/lorca'
+            },
+            {
+              name: 'David Summer',
+              url: 'http://example.org/person/david-summer'
+            }
+          ],
+          match: /\B@([a-z ]*)/i,
+          search: function (keyword, callback) {
+            callback($.grep(this.mentions, function (item) {
+              return item.name.toLowerCase().indexOf(keyword.toLowerCase()) == 0;
+            }));
+          },
+          template: function(item) {
+            return item.name;
+          },
+          content: function (item) {
+            return $('<a>')
+                .attr('href', item.url)
+                .text('@' + item.name)
+                .get(0);
+          }
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+<div class="container">
+  <h1>Summernote with multiple words hint</h1>
+  <textarea class="summernote"></textarea>
+</div>
+</body>
+</html>

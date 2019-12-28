@@ -200,6 +200,20 @@ function nodeLength(node) {
 }
 
 /**
+ * returns whether deepest child node is empty or not.
+ *
+ * @param {Node} node
+ * @return {Boolean}
+ */
+function deepestChildIsEmpty(node) {
+  do {
+    if (node.firstElementChild === null || node.firstElementChild.innerHTML === '') break;
+  } while ((node = node.firstElementChild));
+
+  return isEmpty(node);
+}
+
+/**
  * returns whether node is empty or not.
  *
  * @param {Node} node
@@ -561,6 +575,10 @@ function prevPoint(point, isSkipInnerOffset) {
 function nextPoint(point, isSkipInnerOffset) {
   let node, offset;
 
+  if (isEmpty(point.node)) {
+    return null;
+  }
+
   if (nodeLength(point.node) === point.offset) {
     if (isEditable(point.node)) {
       return null;
@@ -571,9 +589,16 @@ function nextPoint(point, isSkipInnerOffset) {
   } else if (hasChildren(point.node)) {
     node = point.node.childNodes[point.offset];
     offset = 0;
+    if (isEmpty(node)) {
+      return null;
+    }
   } else {
     node = point.node;
     offset = isSkipInnerOffset ? nodeLength(point.node) : point.offset + 1;
+
+    if (isEmpty(node)) {
+      return null;
+    }
   }
 
   return {
@@ -665,6 +690,21 @@ function isCharPoint(point) {
   const ch = point.node.nodeValue.charAt(point.offset - 1);
   return ch && (ch !== ' ' && ch !== NBSP_CHAR);
 }
+
+/**
+ * returns whether point has space or not.
+ *
+ * @param {Point} point
+ * @return {Boolean}
+ */
+function isSpacePoint(point) {
+  if (!isText(point.node)) {
+    return false;
+  }
+
+  const ch = point.node.nodeValue.charAt(point.offset - 1);
+  return ch === ' ' || ch === NBSP_CHAR;
+};
 
 /**
  * @method walkPoint
@@ -1053,6 +1093,7 @@ export default {
   isI: makePredByNodeName('I'),
   isImg: makePredByNodeName('IMG'),
   isTextarea,
+  deepestChildIsEmpty,
   isEmpty,
   isEmptyAnchor: func.and(isAnchor, isEmpty),
   isClosestSibling,
@@ -1072,6 +1113,7 @@ export default {
   prevPointUntil,
   nextPointUntil,
   isCharPoint,
+  isSpacePoint,
   walkPoint,
   ancestor,
   singleChildAncestor,
