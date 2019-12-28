@@ -1,13 +1,13 @@
 /*!
  * 
- * Super simple wysiwyg editor v0.8.13
+ * Super simple wysiwyg editor v0.8.14
  * https://summernote.org
  * 
  * 
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  * 
- * Date: 2019-12-28T13:39Z
+ * Date: 2019-12-28T14:35Z
  * 
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -8209,7 +8209,7 @@ class HelpDialog_HelpDialog {
 
   initialize() {
     const $container = this.options.dialogsInBody ? this.$body : this.options.container;
-    const body = ['<p class="text-center">', '<a href="http://summernote.org/" target="_blank">Summernote 0.8.13</a> · ', '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ', '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>', '</p>'].join('');
+    const body = ['<p class="text-center">', '<a href="http://summernote.org/" target="_blank">Summernote 0.8.14</a> · ', '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ', '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>', '</p>'].join('');
     this.$dialog = this.ui.dialog({
       title: this.lang.options.help,
       fade: this.options.dialogsFade,
@@ -8646,7 +8646,7 @@ class HintPopover_HintPopover {
 
 
 external_jQuery_default.a.summernote = external_jQuery_default.a.extend(external_jQuery_default.a.summernote, {
-  version: '0.8.13',
+  version: '0.8.14',
   plugins: {},
   dom: dom,
   range: core_range,
