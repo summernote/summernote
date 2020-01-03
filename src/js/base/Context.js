@@ -9,13 +9,16 @@ export default class Context {
    * @param {Object} options
    */
   constructor($note, options) {
-    this.ui = $.summernote.ui;
     this.$note = $note;
 
     this.memos = {};
     this.modules = {};
     this.layoutInfo = {};
     this.options = $.extend(true, {}, options);
+
+    // init ui with options
+    $.summernote.ui = $.summernote.ui_template(this.options);
+    this.ui = $.summernote.ui;
 
     this.initialize();
   }
@@ -24,7 +27,7 @@ export default class Context {
    * create layout and initialize modules and other resources
    */
   initialize() {
-    this.layoutInfo = this.ui.createLayout(this.$note, this.options);
+    this.layoutInfo = this.ui.createLayout(this.$note);
     this._initialize();
     this.$note.hide();
     return this;
