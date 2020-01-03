@@ -55,6 +55,10 @@ export default class TablePopover {
 
     if (isCell) {
       const pos = dom.posFromPlaceholder(target);
+      const containerOffset = $(this.options.container).offset();
+      pos.top -= containerOffset.top;
+      pos.left -= containerOffset.left;
+
       this.$popover.css({
         display: 'block',
         left: pos.left,

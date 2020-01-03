@@ -14,7 +14,6 @@ export default class HintPopover {
     this.ui = $.summernote.ui;
     this.$editable = context.layoutInfo.editable;
     this.options = context.options;
-    this.target = context.options.container;
     this.hint = this.options.hint || [];
     this.direction = this.options.hintDirection || 'bottom';
     this.hints = Array.isArray(this.hint) ? this.hint : [this.hint];
@@ -45,7 +44,7 @@ export default class HintPopover {
       className: 'note-hint-popover',
       hideArrow: true,
       direction: '',
-    }).render().appendTo(this.target);
+    }).render().appendTo(this.options.container);
 
     this.$popover.hide();
     this.$content = this.$popover.find('.popover-content,.note-popover-content');
@@ -228,10 +227,10 @@ export default class HintPopover {
         this.$content.empty();
 
         const bnd = func.rect2bnd(lists.last(wordRange.getClientRects()));
-        const targetOffset = $(this.target).offset();
+        const containerOffset = $(this.options.container).offset();
         if (bnd) {
-          bnd.top -= targetOffset.top;
-          bnd.left -= targetOffset.left;
+          bnd.top -= containerOffset.top;
+          bnd.left -= containerOffset.left;
 
           this.$popover.hide();
           this.lastWordRange = wordRange;
