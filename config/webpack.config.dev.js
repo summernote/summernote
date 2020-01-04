@@ -1,4 +1,4 @@
-const config = require('./common/dev.common.config')('bs3');
+const config = require('./common/dev.common.config');
 module.exports = {
   entry: {
     'summernote': './src/js/bs3/settings',
