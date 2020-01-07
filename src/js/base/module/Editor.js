@@ -404,7 +404,14 @@ export default class Editor {
       this.context.triggerEvent('focusout', event);
     });
 
-    if (!this.options.airMode) {
+    if (this.options.airMode) {
+      if (this.options.overrideContextMenu) {
+        this.$editor.on('contextmenu', (event) => {
+          this.context.triggerEvent('contextmenu', event);
+          return false;
+        });
+      }
+    } else {
       if (this.options.width) {
         this.$editor.outerWidth(this.options.width);
       }

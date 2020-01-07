@@ -112,6 +112,7 @@ $.summernote = $.extend($.summernote, {
 
     // air mode: inline editor
     airMode: false,
+    overrideContextMenu: true, // TBD
 
     width: null,
     height: null,
