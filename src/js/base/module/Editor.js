@@ -35,7 +35,7 @@ export default class Editor {
     this.table = new Table();
     this.typing = new Typing(context);
     this.bullet = new Bullet();
-    this.history = new History(this.$editable);
+    this.history = new History(context);
 
     this.context.memo('help.undo', this.lang.help.undo);
     this.context.memo('help.redo', this.lang.help.redo);
