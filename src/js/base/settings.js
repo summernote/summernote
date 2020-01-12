@@ -133,7 +133,8 @@ $.summernote = $.extend($.summernote, {
     disableGrammar: false,
     placeholder: null,
     inheritPlaceholder: false,
-
+    // TODO: need to be documented
+    recordEveryKeystroke: false,
     // TODO: need to be documented
     hintMode: 'word',
     hintSelect: 'after',

@@ -359,8 +359,10 @@ export default class Editor {
       this.setLastRange();
 
       // record undo in the key event except keyMap.
-      if (this.hasKeyShortCut === false) {
-        this.history.recordUndo();
+      if (this.options.recordEveryKeystroke) {
+        if (this.hasKeyShortCut === false) {
+          this.history.recordUndo();
+        }
       }
     }).on('keyup', (event) => {
       this.setLastRange();
