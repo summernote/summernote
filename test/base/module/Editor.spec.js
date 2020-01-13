@@ -48,6 +48,7 @@ describe('Editor', () => {
     var $note = $('<div><p>hello</p></div>');
 
     var options = $.extend({}, $.summernote.options);
+    options.historyLimit = 5;
     context = new Context($note, options);
 
     editor = context.modules.editor;
@@ -87,6 +88,30 @@ describe('Editor', () => {
         setTimeout(() => {
           expectContents(context, '<p>hello</p>');
           editor.redo();
+          setTimeout(() => {
+            expectContents(context, '<p>hello world</p>');
+            done();
+          }, 10);
+        }, 10);
+      }, 10);
+    });
+
+    it('should be limited by option.historyLimit value', (done) => {
+      editor.insertText(' world');
+      editor.insertText(' world');
+      editor.insertText(' world');
+      editor.insertText(' world');
+      editor.insertText(' world');
+      setTimeout(() => {
+        expectContents(context, '<p>hello world world world world world</p>');
+        editor.undo();
+        editor.undo();
+        editor.undo();
+        setTimeout(() => {
+          expectContents(context, '<p>hello world world</p>');
+          editor.undo();
+          editor.undo();
+          editor.undo();
           setTimeout(() => {
             expectContents(context, '<p>hello world</p>');
             done();
