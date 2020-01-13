@@ -3,13 +3,16 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-import chai from 'chai';
 import $ from 'jquery';
-import Context from '../../../src/js/base/Context';
-import range from '../../../src/js/base/core/range';
-import env from '../../../src/js/base/core/env';
-import key from '../../../src/js/base/core/key';
-import '../../../src/js/bs4/settings';
+import chai from 'chai';
+import chaidom from 'test/chaidom';
+import Context from 'src/js/base/Context';
+import range from 'src/js/base/core/range';
+import env from 'src/js/base/core/env';
+import key from 'src/js/base/core/key';
+import 'src/js/bs4/settings';
+
+chai.use(chaidom);
 
 describe('HintPopover', () => {
   var expect = chai.expect;

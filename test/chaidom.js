@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import env from '../src/js/base/core/env';
+import env from 'src/js/base/core/env';
 
 export default function(chai) {
   chai.dom = chai.dom || {};
