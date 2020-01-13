@@ -1,11 +1,12 @@
 import range from '../core/range';
 
 export default class History {
-  constructor($editable) {
+  constructor(context) {
     this.stack = [];
     this.stackOffset = -1;
-    this.$editable = $editable;
-    this.editable = $editable[0];
+    this.context = context;
+    this.$editable = context.layoutInfo.editable;
+    this.editable = this.$editable[0];
   }
 
   makeSnapshot() {
@@ -116,5 +117,11 @@ export default class History {
 
     // Create new snapshot and push it to the end
     this.stack.push(this.makeSnapshot());
+
+    // If the stack size reachs to the limit, then slice it
+    if (this.stack.length > this.context.options.historyLimit) {
+      this.stack.shift();
+      this.stackOffset -= 1;
+    }
   }
 }
