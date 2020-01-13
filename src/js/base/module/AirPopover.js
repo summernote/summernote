@@ -2,7 +2,8 @@ import $ from 'jquery';
 import func from '../core/func';
 import lists from '../core/lists';
 
-const AIR_MODE_POPOVER_X_OFFSET = 20;
+const AIRMODE_POPOVER_X_OFFSET = -5;
+const AIRMODE_POPOVER_Y_OFFSET = 5;
 
 export default class AirPopover {
   constructor(context) {
@@ -11,17 +12,35 @@ export default class AirPopover {
     this.options = context.options;
 
     this.hidable = true;
+    this.onContextmenu = false;
+    this.pageX = null;
+    this.pageY = null;
 
     this.events = {
-      'summernote.keyup summernote.mouseup summernote.scroll': () => {
+      'summernote.contextmenu': (e) => {
         if (this.options.editing) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.onContextmenu = true;
+          this.update(true);
+        }
+      },
+      'summernote.mousedown': (we, e) => {
+        this.pageX = e.pageX;
+        this.pageY = e.pageY;
+      },
+      'summernote.keyup summernote.mouseup summernote.scroll': (we, e) => {
+        if (this.options.editing && !this.onContextmenu) {
+          this.pageX = e.pageX;
+          this.pageY = e.pageY;
           this.update();
         }
+        this.onContextmenu = false;
       },
       'summernote.disable summernote.change summernote.dialog.shown summernote.blur': () => {
         this.hide();
       },
-      'summernote.focusout': (we, e) => {
+      'summernote.focusout': () => {
         if (!this.$popover.is(':active,:focus')) {
           this.hide();
         }
@@ -51,20 +70,25 @@ export default class AirPopover {
     this.$popover.remove();
   }
 
-  update() {
+  update(forcelyOpen) {
     const styleInfo = this.context.invoke('editor.currentStyle');
-    if (styleInfo.range && !styleInfo.range.isCollapsed()) {
-      const rect = lists.last(styleInfo.range.getClientRects());
-      if (rect) {
-        const bnd = func.rect2bnd(rect);
+    if (styleInfo.range && (!styleInfo.range.isCollapsed() || forcelyOpen)) {
+      let rect = {
+        left: this.pageX,
+        top: this.pageY,
+      };
 
-        this.$popover.css({
-          display: 'block',
-          left: Math.max(bnd.left + bnd.width / 2, 0) - AIR_MODE_POPOVER_X_OFFSET,
-          top: bnd.top + bnd.height,
-        });
-        this.context.invoke('buttons.updateCurrentStyle', this.$popover);
-      }
+      const bnd = func.rect2bnd(rect);
+      const containerOffset = $(this.options.container).offset();
+      bnd.top -= containerOffset.top;
+      bnd.left -= containerOffset.left;
+
+      this.$popover.css({
+        display: 'block',
+        left: Math.max(bnd.left, 0) + AIRMODE_POPOVER_X_OFFSET,
+        top: bnd.top + AIRMODE_POPOVER_Y_OFFSET,
+      });
+      this.context.invoke('buttons.updateCurrentStyle', this.$popover);
     } else {
       this.hide();
     }
