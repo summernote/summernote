@@ -145,7 +145,7 @@ export default class HintPopover {
 
   createItemTemplates(hintIdx, items) {
     const hint = this.hints[hintIdx];
-    return items.map((item, idx) => {
+    return items.map((item /*, idx */) => {
       const $item = $('<div class="note-hint-item"/>');
       $item.append(hint.template ? hint.template(item) : item + '');
       $item.data({
