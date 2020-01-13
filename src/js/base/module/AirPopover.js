@@ -1,31 +1,47 @@
 import $ from 'jquery';
-import env from '../core/env';
 import func from '../core/func';
 import lists from '../core/lists';
-import dom from '../core/dom';
 
-const AIR_MODE_POPOVER_X_OFFSET = 20;
+const AIRMODE_POPOVER_X_OFFSET = -5;
+const AIRMODE_POPOVER_Y_OFFSET = 5;
 
 export default class AirPopover {
   constructor(context) {
     this.context = context;
     this.ui = $.summernote.ui;
     this.options = context.options;
+
+    this.hidable = true;
+    this.onContextmenu = false;
+    this.pageX = null;
+    this.pageY = null;
+
     this.events = {
-      'summernote.keyup summernote.mouseup summernote.scroll': () => {
-        this.update();
+      'summernote.contextmenu': (e) => {
+        if (this.options.editing) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.onContextmenu = true;
+          this.update(true);
+        }
       },
-      'summernote.disable summernote.change summernote.dialog.shown': () => {
+      'summernote.mousedown': (we, e) => {
+        this.pageX = e.pageX;
+        this.pageY = e.pageY;
+      },
+      'summernote.keyup summernote.mouseup summernote.scroll': (we, e) => {
+        if (this.options.editing && !this.onContextmenu) {
+          this.pageX = e.pageX;
+          this.pageY = e.pageY;
+          this.update();
+        }
+        this.onContextmenu = false;
+      },
+      'summernote.disable summernote.change summernote.dialog.shown summernote.blur': () => {
         this.hide();
       },
-      'summernote.focusout': (we, e) => {
-        // [workaround] Firefox/Safari don't support relatedTarget on focusout
-        //  - Ignore hide action on focus out in FF/Safari.
-        if (env.isFF || env.isSafari) {
-          return;
-        }
-
-        if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq(this.$popover[0]))) {
+      'summernote.focusout': () => {
+        if (!this.$popover.is(':active,:focus')) {
           this.hide();
         }
       },
@@ -43,31 +59,44 @@ export default class AirPopover {
     const $content = this.$popover.find('.popover-content');
 
     this.context.invoke('buttons.build', $content, this.options.popover.air);
+
+    // disable hiding this popover preemptively by 'summernote.blur' event.
+    this.$popover.on('mousedown', () => { this.hidable = false; });
+    // (re-)enable hiding after 'summernote.blur' has been handled (aka. ignored).
+    this.$popover.on('mouseup', () => { this.hidable = true; });
   }
 
   destroy() {
     this.$popover.remove();
   }
 
-  update() {
+  update(forcelyOpen) {
     const styleInfo = this.context.invoke('editor.currentStyle');
-    if (styleInfo.range && !styleInfo.range.isCollapsed()) {
-      const rect = lists.last(styleInfo.range.getClientRects());
-      if (rect) {
-        const bnd = func.rect2bnd(rect);
-        this.$popover.css({
-          display: 'block',
-          left: Math.max(bnd.left + bnd.width / 2, 0) - AIR_MODE_POPOVER_X_OFFSET,
-          top: bnd.top + bnd.height,
-        });
-        this.context.invoke('buttons.updateCurrentStyle', this.$popover);
-      }
+    if (styleInfo.range && (!styleInfo.range.isCollapsed() || forcelyOpen)) {
+      let rect = {
+        left: this.pageX,
+        top: this.pageY,
+      };
+
+      const bnd = func.rect2bnd(rect);
+      const containerOffset = $(this.options.container).offset();
+      bnd.top -= containerOffset.top;
+      bnd.left -= containerOffset.left;
+
+      this.$popover.css({
+        display: 'block',
+        left: Math.max(bnd.left, 0) + AIRMODE_POPOVER_X_OFFSET,
+        top: bnd.top + AIRMODE_POPOVER_Y_OFFSET,
+      });
+      this.context.invoke('buttons.updateCurrentStyle', this.$popover);
     } else {
       this.hide();
     }
   }
 
   hide() {
-    this.$popover.hide();
+    if (this.hidable) {
+      this.$popover.hide();
+    }
   }
 }

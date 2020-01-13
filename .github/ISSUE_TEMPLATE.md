@@ -1,5 +1,7 @@
 Before submitting an issue, please make sure to search for already open issues, and add to that. This way we can track issues more easily. Thank you, and Thanks for using Summernote.
 
+Please answer the below questions, this will help us to more easily resolve whatever issues you are having, and direct issue to the suitable people to with your issue or to give you correct answers.
+
 #### Description of your Issue or Request:
 Please provide a short description of the issue or request. If you don't provide one, we can't expedite helping to fix your issue or fullfill your request.
 
@@ -17,9 +19,7 @@ This can help find and resolve any issues.
 
 2. Browser and Version:
 
-3. Summernote Version:
-
-4. Bootstrap Version or Lite:
+3. Summernote Version (including which BS3, BS4, Lite or All):
 
 
 #### screenshot of issue

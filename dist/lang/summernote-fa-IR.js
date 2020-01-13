@@ -1,13 +1,13 @@
 /*!
  * 
- * Super simple wysiwyg editor v0.8.12
+ * Super simple wysiwyg editor v0.8.15
  * https://summernote.org
  * 
  * 
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  * 
- * Date: 2019-07-30T07:32Z
+ * Date: 2020-01-04T11:44Z
  * 
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -142,7 +142,7 @@ return /******/ (function(modules) { // webpackBootstrap
         dragImageHere: 'یک تصویر را اینجا بکشید',
         dropImage: 'Drop image or Text',
         selectFromFiles: 'فایل ها را انتخاب کنید',
-        maximumFileSize: 'Maximum file size',
+        maximumFileSize: 'حداکثر اندازه پرونده',
         maximumFileSizeError: 'Maximum file size exceeded.',
         url: 'آدرس تصویر',
         remove: 'حذف تصویر',
@@ -166,13 +166,13 @@ return /******/ (function(modules) { // webpackBootstrap
       },
       table: {
         table: 'جدول',
-        addRowAbove: 'Add row above',
-        addRowBelow: 'Add row below',
-        addColLeft: 'Add column left',
-        addColRight: 'Add column right',
-        delRow: 'Delete row',
-        delCol: 'Delete column',
-        delTable: 'Delete table'
+        addRowAbove: 'افزودن ردیف بالا',
+        addRowBelow: 'افزودن ردیف پایین',
+        addColLeft: 'افزودن ستون چپ',
+        addColRight: 'افزودن ستون راست',
+        delRow: 'حذف ردیف',
+        delCol: 'حذف ستون',
+        delTable: 'حذف جدول'
       },
       hr: {
         insert: 'افزودن خط افقی'
@@ -227,7 +227,7 @@ return /******/ (function(modules) { // webpackBootstrap
         extraKeys: 'Extra keys'
       },
       help: {
-        'insertParagraph': 'Insert Paragraph',
+        'insertParagraph': 'افزودن پاراگراف',
         'undo': 'Undoes the last command',
         'redo': 'Redoes the last command',
         'tab': 'Tab',
@@ -237,9 +237,9 @@ return /******/ (function(modules) { // webpackBootstrap
         'underline': 'Set a underline style',
         'strikethrough': 'Set a strikethrough style',
         'removeFormat': 'Clean a style',
-        'justifyLeft': 'Set left align',
-        'justifyCenter': 'Set center align',
-        'justifyRight': 'Set right align',
+        'justifyLeft': 'چپ چین',
+        'justifyCenter': 'وسط چین',
+        'justifyRight': 'راست چین',
         'justifyFull': 'Set full align',
         'insertUnorderedList': 'Toggle unordered list',
         'insertOrderedList': 'Toggle ordered list',
@@ -260,8 +260,8 @@ return /******/ (function(modules) { // webpackBootstrap
         redo: 'بازچیدن'
       },
       specialChar: {
-        specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
+        specialChar: 'کاراکتر خاص',
+        select: 'انتخاب کاراکتر خاص'
       }
     }
   });

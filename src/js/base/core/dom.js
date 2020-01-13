@@ -575,6 +575,10 @@ function prevPoint(point, isSkipInnerOffset) {
 function nextPoint(point, isSkipInnerOffset) {
   let node, offset;
 
+  if (isEmpty(point.node)) {
+    return null;
+  }
+
   if (nodeLength(point.node) === point.offset) {
     if (isEditable(point.node)) {
       return null;
@@ -585,9 +589,16 @@ function nextPoint(point, isSkipInnerOffset) {
   } else if (hasChildren(point.node)) {
     node = point.node.childNodes[point.offset];
     offset = 0;
+    if (isEmpty(node)) {
+      return null;
+    }
   } else {
     node = point.node;
     offset = isSkipInnerOffset ? nodeLength(point.node) : point.offset + 1;
+
+    if (isEmpty(node)) {
+      return null;
+    }
   }
 
   return {
@@ -678,6 +689,21 @@ function isCharPoint(point) {
 
   const ch = point.node.nodeValue.charAt(point.offset - 1);
   return ch && (ch !== ' ' && ch !== NBSP_CHAR);
+}
+
+/**
+ * returns whether point has space or not.
+ *
+ * @param {Point} point
+ * @return {Boolean}
+ */
+function isSpacePoint(point) {
+  if (!isText(point.node)) {
+    return false;
+  }
+
+  const ch = point.node.nodeValue.charAt(point.offset - 1);
+  return ch === ' ' || ch === NBSP_CHAR;
 }
 
 /**
@@ -1087,6 +1113,7 @@ export default {
   prevPointUntil,
   nextPointUntil,
   isCharPoint,
+  isSpacePoint,
   walkPoint,
   ancestor,
   singleChildAncestor,

@@ -32,15 +32,22 @@
   {%- endif -%}
 }
 
+
 [class^="{{ className }}"]:before,
 [class*=" {{ className }}"]:before {
   display: inline-block;
-  font: normal normal normal 11px/1 {{ fontName }};
+  font-family: {{ fontName }};
+  font-style: normal;
+  font-size: inherit;
+  text-decoration: inherit;
   text-rendering: auto;
+  text-transform: none;
+  vertical-align: middle;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
+  speak: none;
 }
- 
+
 
 .{{ className }}-fw {
   text-align: center;

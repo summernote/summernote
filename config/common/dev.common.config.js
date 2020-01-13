@@ -18,117 +18,118 @@ fs.readdirSync(path.resolve(__dirname, '../../lang')).forEach(file => {
   entries[filename] = `./lang/${filename}`;
 });
 
-module.exports = function() {
-  return {
-    entries,
-    output: {
-      path: path.join(__dirname, 'dist'),
-      filename: (chunkData) => {
-        var isProduct = productList.includes(chunkData.chunk.name);
-        return isProduct ? '[name].js' : 'lang/[name].js';
+module.exports = {
+  entries,
+  output: {
+    path: path.join(__dirname, 'dist'),
+    filename: (chunkData) => {
+      var isProduct = productList.includes(chunkData.chunk.name);
+      return isProduct ? '[name].js' : 'lang/[name].js';
+    },
+  },
+  externals: {
+    jquery: 'jQuery', // dev includes jQuery by <script> tag
+  },
+  devServer: {
+    port: 3000,
+    contentBase: ['./dist'],
+  },
+  module: {
+    rules: [
+      {
+        enforce: 'pre',
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'eslint-loader',
       },
-    },
-    externals: {
-      jquery: 'jQuery',
-    },
-    devServer: {
-      port: 3000,
-      contentBase: ['./dist'],
-    },
-    module: {
-      rules: [
-        {
-          enforce: 'pre',
-          test: /\.js$/,
-          exclude: /node_modules/,
-          loader: 'eslint-loader',
-        },
-        {
-          test: /\.js$/,
-          exclude: /node_modules/,
-          use: [
-            {
-              loader: 'string-replace-loader',
-              options: {
-                search: '@@VERSION@@',
-                replace: pkg.version,
-              },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'string-replace-loader',
+            options: {
+              search: '@@VERSION@@',
+              replace: pkg.version,
             },
-            {
-              loader: 'babel-loader',
+          },
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env'],
             },
-          ],
-        },
-        {
-          test: /\.html$/,
-          use: [
-            {
-              loader: 'html-loader',
-              options: {
-                minimize: false,
-              },
+          },
+        ],
+      },
+      {
+        test: /\.html$/,
+        use: [
+          {
+            loader: 'html-loader',
+            options: {
+              minimize: false,
             },
-          ],
-        },
-        scssConfig,
-        {
-          test: /\.(png|jpe?g|gif|svg)$/,
-          use: [
-            {
-              loader: 'file-loader',
-              options: {
-                name: '[name].[ext]',
-                outputPath: 'images',
-              },
+          },
+        ],
+      },
+      scssConfig,
+      {
+        test: /\.(png|jpe?g|gif|svg)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'images',
             },
-          ],
-        },
-        {
-          test: /\.(woff|woff2|ttf|otf|eot)$/,
-          use: [
-            {
-              loader: 'file-loader',
-              options: {
-                name: '[name].[ext]',
-                outputPath: 'font',
-              },
+          },
+        ],
+      },
+      {
+        test: /\.(woff|woff2|ttf|otf|eot)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'font',
             },
-          ],
-        },
-      ],
-    },
-    plugins: [
-      new MiniCssExtractPlugin({
-        filename: '[name].css',
-      }),
-      new CopyPlugin([
-        {
-          from: 'examples',
-          to: 'examples',
-        },
-        {
-          from: 'plugin',
-          to: 'plugin',
-        },
-      ]),
-      new HtmlWebPackPlugin({
-        inject: true,
-        chunks: ['summernote'],
-        template: `./src/summernote-bs3.html`,
-        filename: 'index.html',
-      }),
-      new HtmlWebPackPlugin({
-        inject: true,
-        chunks: ['summernote-bs4'],
-        template: `./src/summernote-bs4.html`,
-        filename: 'bs4.html',
-      }),
-      new HtmlWebPackPlugin({
-        inject: true,
-        chunks: ['summernote-lite'],
-        template: `./src/summernote-lite.html`,
-        filename: 'lite.html',
-      }),
+          },
+        ],
+      },
     ],
-  };
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+    }),
+    new CopyPlugin([
+      {
+        from: 'examples',
+        to: 'examples',
+      },
+      {
+        from: 'plugin',
+        to: 'plugin',
+      },
+    ]),
+    new HtmlWebPackPlugin({
+      inject: true,
+      chunks: ['summernote'],
+      template: `./src/summernote-bs3.html`,
+      filename: 'index.html',
+    }),
+    new HtmlWebPackPlugin({
+      inject: true,
+      chunks: ['summernote-bs4'],
+      template: `./src/summernote-bs4.html`,
+      filename: 'bs4.html',
+    }),
+    new HtmlWebPackPlugin({
+      inject: true,
+      chunks: ['summernote-lite'],
+      template: `./src/summernote-lite.html`,
+      filename: 'lite.html',
+    }),
+  ],
 };

@@ -8,6 +8,7 @@
 
 .note-form-label {
   display: block;
+  width: 100%;
   font-size: 16px;
   color: #42515f;
   margin-bottom: 10px;
@@ -20,7 +21,7 @@
   border: 1px solid #ededef;
   background: #fff;
   outline: 0;
-  padding: 6px 4px; 
+  padding: 6px 4px;
   font-size: 14px;
   @include box-sizing();
 }

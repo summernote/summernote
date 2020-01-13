@@ -11,6 +11,7 @@ import '../../../src/js/bs4/settings';
 
 describe('VideoDialog', () => {
   var expect = chai.expect;
+  var context, $video;
 
   function expectUrl(source, target) {
     var iframe = $video.createVideoNode(source);
@@ -19,7 +20,6 @@ describe('VideoDialog', () => {
     expect(iframe.src).to.be.have.string(target);
   }
 
-  var context, $video;
   beforeEach(() => {
     var $note = $('<div></div>').appendTo('body');
     var options = $.extend({}, $.summernote.options);

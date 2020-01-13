@@ -6,6 +6,7 @@
   // So reset our font and text properties to avoid inheriting weird values.
   font-size: 13px;
 
+  transition: opacity .15s;
   @include opacity(0);
 
   &.in     { @include opacity($tooltip-opacity); }
@@ -59,6 +60,7 @@
 
 .note-tooltip-content {
   max-width: $tooltip-max-width;
+  font-family: $font-family;
   padding: 3px 8px;
   color: $tooltip-color;
   text-align: center;

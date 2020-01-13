@@ -12,20 +12,26 @@ export default class Dropzone {
 
     this.$dropzone = $([
       '<div class="note-dropzone">',
-      '  <div class="note-dropzone-message"/>',
+        '<div class="note-dropzone-message"/>',
       '</div>',
     ].join('')).prependTo(this.$editor);
-  }
-
-  shouldInitialize() {
-    return !this.options.disableDragAndDrop;
   }
 
   /**
    * attach Drag and Drop Events
    */
   initialize() {
-    this.attachDragAndDropEvent();
+    if (this.options.disableDragAndDrop) {
+      // prevent default drop event
+      this.documentEventHandlers.onDrop = (e) => {
+        e.preventDefault();
+      };
+      // do not consider outside of dropzone
+      this.$eventListener = this.$dropzone;
+      this.$eventListener.on('drop', this.documentEventHandlers.onDrop);
+    } else {
+      this.attachDragAndDropEvent();
+    }
   }
 
   /**
@@ -89,6 +95,10 @@ export default class Dropzone {
         this.context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
       } else {
         $.each(dataTransfer.types, (idx, type) => {
+          // skip moz-specific types
+          if (type.toLowerCase().indexOf('_moz_') > -1) {
+            return;
+          }
           const content = dataTransfer.getData(type);
 
           if (type.toLowerCase().indexOf('text') > -1) {

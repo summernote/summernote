@@ -16,7 +16,7 @@ export default class TablePopover {
       'summernote.keyup summernote.scroll summernote.change': () => {
         this.update();
       },
-      'summernote.disable': () => {
+      'summernote.disable summernote.blur': () => {
         this.hide();
       },
     };
@@ -38,6 +38,8 @@ export default class TablePopover {
     if (env.isFF) {
       document.execCommand('enableInlineTableEditing', false, false);
     }
+
+    this.$popover.on('mousedown', (e) => { e.preventDefault(); });
   }
 
   destroy() {
@@ -53,6 +55,10 @@ export default class TablePopover {
 
     if (isCell) {
       const pos = dom.posFromPlaceholder(target);
+      const containerOffset = $(this.options.container).offset();
+      pos.top -= containerOffset.top;
+      pos.left -= containerOffset.left;
+
       this.$popover.css({
         display: 'block',
         left: pos.left,

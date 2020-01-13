@@ -37,6 +37,7 @@ $.summernote = $.extend($.summernote, {
 
   options: {
     langInfo: $.summernote.lang['en-US'],
+    editing: true,
     modules: {
       'editor': Editor,
       'clipboard': Clipboard,
@@ -69,6 +70,7 @@ $.summernote = $.extend($.summernote, {
     lang: 'en-US',
 
     followingToolbar: false,
+    toolbarPosition: 'top',
     otherStaticBar: '',
 
     // toolbar
@@ -104,29 +106,39 @@ $.summernote = $.extend($.summernote, {
         ['para', ['ul', 'paragraph']],
         ['table', ['table']],
         ['insert', ['link', 'picture']],
+        ['view', ['fullscreen', 'codeview']],
       ],
     },
 
     // air mode: inline editor
     airMode: false,
+    overrideContextMenu: false, // TBD
 
     width: null,
     height: null,
     linkTargetBlank: true,
+    useProtocol: true,
+    defaultProtocol: 'http://',
 
     focus: false,
+    tabDisabled: false,
     tabSize: 4,
     styleWithSpan: true,
     shortcuts: true,
     textareaAutoSync: true,
-    hintDirection: 'bottom',
     tooltip: 'auto',
-    container: 'body',
+    container: null,
     maxTextLength: 0,
     blockquoteBreakingLevel: 2,
     spellCheck: true,
+    disableGrammar: false,
     placeholder: null,
     inheritPlaceholder: false,
+
+    // TODO: need to be documented
+    hintMode: 'word',
+    hintSelect: 'after',
+    hintDirection: 'bottom',
 
     styleTags: ['p', 'blockquote', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
 
@@ -139,6 +151,8 @@ $.summernote = $.extend($.summernote, {
     addDefaultFonts: true,
 
     fontSizes: ['8', '9', '10', '11', '12', '14', '18', '24', '36'],
+
+    fontSizeUnits: ['px', 'pt'],
 
     // pallete colors(n x n)
     colors: [
@@ -178,6 +192,7 @@ $.summernote = $.extend($.summernote, {
       row: 10,
     },
 
+    // By default, dialogs are attached in container.
     dialogsInBody: false,
     dialogsFade: false,
 

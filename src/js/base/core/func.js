@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 /**
  * @class core.func
  *
@@ -53,6 +55,14 @@ function invoke(obj, method) {
 }
 
 let idCounter = 0;
+
+/**
+ * reset globally-unique id
+ *
+ */
+function resetUniqueId() {
+  idCounter = 0;
+}
 
 /**
  * generate a globally-unique id
@@ -164,6 +174,7 @@ export default {
   not,
   and,
   invoke,
+  resetUniqueId,
   uniqueId,
   rect2bnd,
   invertObject,

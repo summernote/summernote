@@ -19,7 +19,7 @@ git pull
 # Bump version in package.json
 
 # build dist files and binary(.zip) for release post
-npm run build 
+npm run build
 
 # Commit and add tag for new version
 git commit -a -m "Update dist files"
@@ -42,7 +42,7 @@ npm publish
 ```
 
 ### 5. Update summernote.github.io
-Update summernote version in _config.yml.
+Update summernote version in `_config.yml`.
 
 ### 6. Update connectors
 Request maintainers of each connector to update package information.

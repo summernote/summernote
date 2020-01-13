@@ -23,6 +23,7 @@ export default class Clipboard {
       if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
         // paste img file
         this.context.invoke('editor.insertImagesOrCallback', [item.getAsFile()]);
+        event.preventDefault();
       } else if (item.kind === 'string') {
         // paste text with maxTextLength check
         if (this.context.invoke('editor.isLimited', clipboardData.getData('Text').length)) {
@@ -36,6 +37,9 @@ export default class Clipboard {
         event.preventDefault();
       }
     }
-    this.context.invoke('editor.afterCommand');
+    // Call editor.afterCommand after proceeding default event handler
+    setTimeout(() => {
+      this.context.invoke('editor.afterCommand');
+    }, 10);
   }
 }

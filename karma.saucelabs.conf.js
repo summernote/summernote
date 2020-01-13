@@ -74,22 +74,13 @@ module.exports = function (config) {
       'SL_MACOS_FIREFOX',
     ],
     sauceLabs: {
-      testName: 'unit tests for summernote',
-      startConnect: false,
-      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
-      build: process.env.TRAVIS_BUILD_NUMBER,
-      tags: [process.env.TRAVIS_BRANCH, process.env.TRAVIS_PULL_REQUEST],
+      testName: 'local unit tests for summernote',
     },
     preprocessors: {
       'src/js/**/*.js': ['karma-typescript'],
       'test/**/*.spec.js': ['karma-typescript']
     },
-    reporters: ['dots', 'karma-typescript', 'coverage', 'coveralls'],
-    coverageReporter: {
-      type: 'lcov',
-      dir: 'coverage/',
-      includeAllSources: true
-    },
+    reporters: ['dots', 'karma-typescript'],
     browserNoActivityTimeout: 60000,
     karmaTypescriptConfig: {
       tsconfig: './tsconfig.json',

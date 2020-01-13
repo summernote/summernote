@@ -21,7 +21,6 @@ $img-margin-right: 10px;
     color: $dropzone-color;
     background-color: #fff;
     opacity: 0.95;
-    pointer-events: none;
 
     .note-dropzone-message {
       display: table-cell;
@@ -67,7 +66,8 @@ $img-margin-right: 10px;
 
 /* Frame mode layout
  ------------------------------------------ */
-.note-editor.note-frame {
+.note-editor.note-frame,
+.note-editor.note-airframe {
   border: 1px solid $border-color;
 
   // codeview mode
@@ -244,11 +244,17 @@ $img-margin-right: 10px;
   }
 }
 
+.note-editor.note-airframe {
+  border: 0;
+}
+
+
 /* Popover
  ------------------------------------------ */
 .note-popover.popover {
   display: none;
   max-width: none;
+
   .popover-content {
     a {
       display: inline-block;
@@ -445,12 +451,13 @@ $img-margin-right: 10px;
 
 /* Dialog
  ------------------------------------------ */
-.note-dialog {
-  & > div {
-    display: none; // BS2's hide pacth.
+.note-modal {
+  .modal-dialog {
+    outline: 0;
+    border-radius: 5px;
+    @include box-shadow(0 3px 9px rgba(0,0,0,.5));
   }
-  .form-group {
-    // overwrite BS's form-horizontal minus margins
+  .form-group { // overwrite BS's form-horizontal minus margins
     margin-left: 0;
     margin-right: 0;
   }

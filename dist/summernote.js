@@ -1,22 +1,22 @@
 /*!
  * 
- * Super simple wysiwyg editor v0.8.12
+ * Super simple wysiwyg editor v0.8.15
  * https://summernote.org
  * 
  * 
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  * 
- * Date: 2019-07-30T07:32Z
+ * Date: 2020-01-04T11:44Z
  * 
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("jQuery"));
+		module.exports = factory(require("jquery"));
 	else if(typeof define === 'function' && define.amd)
-		define(["jQuery"], factory);
+		define(["jquery"], factory);
 	else {
-		var a = typeof exports === 'object' ? factory(require("jQuery")) : factory(root["jQuery"]);
+		var a = typeof exports === 'object' ? factory(require("jquery")) : factory(root["jQuery"]);
 		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
 	}
 })(window, function(__WEBPACK_EXTERNAL_MODULE__0__) {
@@ -208,16 +208,16 @@ module.exports = __webpack_amd_options__;
 
 "use strict";
 
-// EXTERNAL MODULE: external "jQuery"
-var external_jQuery_ = __webpack_require__(0);
-var external_jQuery_default = /*#__PURE__*/__webpack_require__.n(external_jQuery_);
+// EXTERNAL MODULE: external {"root":"jQuery","commonjs2":"jquery","commonjs":"jquery","amd":"jquery"}
+var external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_ = __webpack_require__(0);
+var external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default = /*#__PURE__*/__webpack_require__.n(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_);
 
 // CONCATENATED MODULE: ./src/js/base/summernote-en-US.js
 
-external_jQuery_default.a.summernote = external_jQuery_default.a.summernote || {
+external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote || {
   lang: {}
 };
-external_jQuery_default.a.extend(external_jQuery_default.a.summernote.lang, {
+external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.lang, {
   'en-US': {
     font: {
       bold: 'Bold',
@@ -229,7 +229,8 @@ external_jQuery_default.a.extend(external_jQuery_default.a.summernote.lang, {
       strikethrough: 'Strikethrough',
       subscript: 'Subscript',
       superscript: 'Superscript',
-      size: 'Font Size'
+      size: 'Font Size',
+      sizeunit: 'Font Size Unit'
     },
     image: {
       image: 'Picture',
@@ -268,7 +269,8 @@ external_jQuery_default.a.extend(external_jQuery_default.a.summernote.lang, {
       edit: 'Edit',
       textToDisplay: 'Text to display',
       url: 'To what URL should this link go?',
-      openInNewWindow: 'Open in new window'
+      openInNewWindow: 'Open in new window',
+      useProtocol: 'Use default protocol'
     },
     table: {
       table: 'Table',
@@ -317,7 +319,7 @@ external_jQuery_default.a.extend(external_jQuery_default.a.summernote.lang, {
       recent: 'Recent Color',
       more: 'More Color',
       background: 'Background Color',
-      foreground: 'Foreground Color',
+      foreground: 'Text Color',
       transparent: 'Transparent',
       setTransparent: 'Set transparent',
       reset: 'Reset',
@@ -369,6 +371,9 @@ external_jQuery_default.a.extend(external_jQuery_default.a.summernote.lang, {
     specialChar: {
       specialChar: 'SPECIAL CHARACTERS',
       select: 'Select Special characters'
+    },
+    output: {
+      noSelection: 'No Selection Made!'
     }
   }
 });
@@ -386,7 +391,7 @@ const isSupportAmd = typeof define === 'function' && __webpack_require__(2); // 
 const genericFontFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
 
 function validFontName(fontName) {
-  return external_jQuery_default.a.inArray(fontName.toLowerCase(), genericFontFamilies) === -1 ? `'${fontName}'` : fontName;
+  return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.inArray(fontName.toLowerCase(), genericFontFamilies) === -1 ? `'${fontName}'` : fontName;
 }
 
 function isFontInstalled(fontName) {
@@ -425,7 +430,7 @@ let hasCodeMirror = !!window.CodeMirror;
 const isSupportTouch = 'ontouchstart' in window || navigator.MaxTouchPoints > 0 || navigator.msMaxTouchPoints > 0; // [workaround] IE doesn't have input events for contentEditable
 // - see: https://goo.gl/4bfIvA
 
-const inputEventName = isMSIE || isEdge ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
+const inputEventName = isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
 /**
  * @class core.env
  *
@@ -443,9 +448,9 @@ const inputEventName = isMSIE || isEdge ? 'DOMCharacterDataModified DOMSubtreeMo
   isPhantom: /PhantomJS/i.test(userAgent),
   isWebkit: !isEdge && /webkit/i.test(userAgent),
   isChrome: !isEdge && /chrome/i.test(userAgent),
-  isSafari: !isEdge && /safari/i.test(userAgent),
+  isSafari: !isEdge && /safari/i.test(userAgent) && !/chrome/i.test(userAgent),
   browserVersion,
-  jqueryVersion: parseFloat(external_jQuery_default.a.fn.jquery),
+  jqueryVersion: parseFloat(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.fn.jquery),
   isSupportAmd,
   isSupportTouch,
   hasCodeMirror,
@@ -456,6 +461,7 @@ const inputEventName = isMSIE || isEdge ? 'DOMCharacterDataModified DOMSubtreeMo
   validFontName
 });
 // CONCATENATED MODULE: ./src/js/base/core/func.js
+
 /**
  * @class core.func
  *
@@ -464,6 +470,7 @@ const inputEventName = isMSIE || isEdge ? 'DOMCharacterDataModified DOMSubtreeMo
  * @singleton
  * @alternateClassName func
  */
+
 function eq(itemA) {
   return function (itemB) {
     return itemA === itemB;
@@ -512,10 +519,19 @@ function invoke(obj, method) {
 
 let idCounter = 0;
 /**
+ * reset globally-unique id
+ *
+ */
+
+function resetUniqueId() {
+  idCounter = 0;
+}
+/**
  * generate a globally-unique id
  *
  * @param {String} [prefix]
  */
+
 
 function uniqueId(prefix) {
   const id = ++idCounter + '';
@@ -537,7 +553,7 @@ function uniqueId(prefix) {
 
 
 function rect2bnd(rect) {
-  const $document = $(document);
+  const $document = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document);
   return {
     top: rect.top + $document.scrollTop(),
     left: rect.left + $document.scrollLeft(),
@@ -633,6 +649,7 @@ function isValidUrl(url) {
   not,
   and,
   invoke,
+  resetUniqueId,
   uniqueId,
   rect2bnd,
   invertObject,
@@ -901,7 +918,7 @@ const ZERO_WIDTH_NBSP_CHAR = '\ufeff';
  */
 
 function isEditable(node) {
-  return node && external_jQuery_default()(node).hasClass('note-editable');
+  return node && external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(node).hasClass('note-editable');
 }
 /**
  * @method isControlSizing
@@ -914,7 +931,7 @@ function isEditable(node) {
 
 
 function isControlSizing(node) {
-  return node && external_jQuery_default()(node).hasClass('note-control-sizing');
+  return node && external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(node).hasClass('note-control-sizing');
 }
 /**
  * @method makePredByNodeName
@@ -1312,7 +1329,7 @@ function listDescendant(node, pred) {
 
 function wrap(node, wrapperName) {
   const parent = node.parentNode;
-  const wrapper = external_jQuery_default()('<' + wrapperName + '>')[0];
+  const wrapper = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<' + wrapperName + '>')[0];
   parent.insertBefore(wrapper, node);
   wrapper.appendChild(node);
   return wrapper;
@@ -1346,7 +1363,7 @@ function insertAfter(node, preceding) {
 
 
 function appendChildNodes(node, aChild) {
-  external_jQuery_default.a.each(aChild, function (idx, child) {
+  external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(aChild, function (idx, child) {
     node.appendChild(child);
   });
   return node;
@@ -1479,7 +1496,7 @@ function hasChildren(node) {
  */
 
 
-function prevPoint(point, isSkipInnerOffset) {
+function dom_prevPoint(point, isSkipInnerOffset) {
   let node;
   let offset;
 
@@ -1515,6 +1532,10 @@ function prevPoint(point, isSkipInnerOffset) {
 function dom_nextPoint(point, isSkipInnerOffset) {
   let node, offset;
 
+  if (dom_isEmpty(point.node)) {
+    return null;
+  }
+
   if (nodeLength(point.node) === point.offset) {
     if (isEditable(point.node)) {
       return null;
@@ -1525,9 +1546,17 @@ function dom_nextPoint(point, isSkipInnerOffset) {
   } else if (hasChildren(point.node)) {
     node = point.node.childNodes[point.offset];
     offset = 0;
+
+    if (dom_isEmpty(node)) {
+      return null;
+    }
   } else {
     node = point.node;
     offset = isSkipInnerOffset ? nodeLength(point.node) : point.offset + 1;
+
+    if (dom_isEmpty(node)) {
+      return null;
+    }
   }
 
   return {
@@ -1584,7 +1613,7 @@ function prevPointUntil(point, pred) {
       return point;
     }
 
-    point = prevPoint(point);
+    point = dom_prevPoint(point);
   }
 
   return null;
@@ -1626,6 +1655,24 @@ function isCharPoint(point) {
   return ch && ch !== ' ' && ch !== NBSP_CHAR;
 }
 /**
+ * returns whether point has space or not.
+ *
+ * @param {Point} point
+ * @return {Boolean}
+ */
+
+
+function isSpacePoint(point) {
+  if (!isText(point.node)) {
+    return false;
+  }
+
+  const ch = point.node.nodeValue.charAt(point.offset - 1);
+  return ch === ' ' || ch === NBSP_CHAR;
+}
+
+;
+/**
  * @method walkPoint
  *
  * @param {BoundaryPoint} startPoint
@@ -1633,7 +1680,6 @@ function isCharPoint(point) {
  * @param {Function} handler
  * @param {Boolean} isSkipInnerOffset
  */
-
 
 function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
   let point = startPoint;
@@ -1954,7 +2000,7 @@ function dom_html($node, isNewlineOnBlock) {
 }
 
 function posFromPlaceholder(placeholder) {
-  const $placeholder = external_jQuery_default()(placeholder);
+  const $placeholder = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(placeholder);
   const pos = $placeholder.offset();
   const height = $placeholder.outerHeight(true); // include margin
 
@@ -2046,13 +2092,14 @@ function isCustomStyleTag(node) {
   isRightEdgeOf,
   isLeftEdgePointOf,
   isRightEdgePointOf,
-  prevPoint,
+  prevPoint: dom_prevPoint,
   nextPoint: dom_nextPoint,
   isSamePoint,
   isVisiblePoint,
   prevPointUntil,
   nextPointUntil,
   isCharPoint,
+  isSpacePoint,
   walkPoint,
   ancestor: dom_ancestor,
   singleChildAncestor,
@@ -2094,12 +2141,14 @@ class Context_Context {
    * @param {Object} options
    */
   constructor($note, options) {
-    this.ui = external_jQuery_default.a.summernote.ui;
     this.$note = $note;
     this.memos = {};
     this.modules = {};
     this.layoutInfo = {};
-    this.options = options;
+    this.options = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(true, {}, options); // init ui with options
+
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui_template(this.options);
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.initialize();
   }
   /**
@@ -2108,7 +2157,7 @@ class Context_Context {
 
 
   initialize() {
-    this.layoutInfo = this.ui.createLayout(this.$note, this.options);
+    this.layoutInfo = this.ui.createLayout(this.$note);
 
     this._initialize();
 
@@ -2145,12 +2194,16 @@ class Context_Context {
   }
 
   _initialize() {
-    // add optional buttons
-    const buttons = external_jQuery_default.a.extend({}, this.options.buttons);
+    // set own id
+    this.options.id = func.uniqueId(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.now()); // set default container for tooltips, popovers, and dialogs
+
+    this.options.container = this.options.container || this.layoutInfo.editor; // add optional buttons
+
+    const buttons = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend({}, this.options.buttons);
     Object.keys(buttons).forEach(key => {
       this.memo('button.' + key, buttons[key]);
     });
-    const modules = external_jQuery_default.a.extend({}, this.options.modules, external_jQuery_default.a.summernote.plugins || {}); // add and initialize modules
+    const modules = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend({}, this.options.modules, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.plugins || {}); // add and initialize modules
 
     Object.keys(modules).forEach(key => {
       this.module(key, modules[key], true);
@@ -2198,6 +2251,7 @@ class Context_Context {
     this.layoutInfo.editable.attr('contenteditable', true);
     this.invoke('toolbar.activate', true);
     this.triggerEvent('disable', false);
+    this.options.editing = true;
   }
 
   disable() {
@@ -2207,6 +2261,7 @@ class Context_Context {
     }
 
     this.layoutInfo.editable.attr('contenteditable', false);
+    this.options.editing = false;
     this.invoke('toolbar.deactivate', true);
     this.triggerEvent('disable', true);
   }
@@ -2300,7 +2355,7 @@ class Context_Context {
   createInvokeHandler(namespace, value) {
     return event => {
       event.preventDefault();
-      const $target = external_jQuery_default()(event.target);
+      const $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target);
       this.invoke(namespace, value || $target.closest('[data-value]').data('value'), $target);
     };
   }
@@ -2327,7 +2382,7 @@ class Context_Context {
 
 
 
-external_jQuery_default.a.fn.extend({
+external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.fn.extend({
   /**
    * Summernote API
    *
@@ -2335,16 +2390,16 @@ external_jQuery_default.a.fn.extend({
    * @return {this}
    */
   summernote: function () {
-    const type = external_jQuery_default.a.type(lists.head(arguments));
+    const type = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.type(lists.head(arguments));
     const isExternalAPICalled = type === 'string';
     const hasInitOptions = type === 'object';
-    const options = external_jQuery_default.a.extend({}, external_jQuery_default.a.summernote.options, hasInitOptions ? lists.head(arguments) : {}); // Update options
+    const options = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend({}, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.options, hasInitOptions ? lists.head(arguments) : {}); // Update options
 
-    options.langInfo = external_jQuery_default.a.extend(true, {}, external_jQuery_default.a.summernote.lang['en-US'], external_jQuery_default.a.summernote.lang[options.lang]);
-    options.icons = external_jQuery_default.a.extend(true, {}, external_jQuery_default.a.summernote.options.icons, options.icons);
+    options.langInfo = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(true, {}, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.lang['en-US'], external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.lang[options.lang]);
+    options.icons = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(true, {}, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.options.icons, options.icons);
     options.tooltip = options.tooltip === 'auto' ? !env.isSupportTouch : options.tooltip;
     this.each((idx, note) => {
-      const $note = external_jQuery_default()(note);
+      const $note = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(note);
 
       if (!$note.data('summernote')) {
         const context = new Context_Context($note, options);
@@ -2579,7 +2634,7 @@ class range_WrappedRange {
 
 
   scrollIntoView(container) {
-    const height = external_jQuery_default()(container).height();
+    const height = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(container).height();
 
     if (container.scrollTop + height < this.sc.offsetTop) {
       container.scrollTop += Math.abs(container.scrollTop + height - this.sc.offsetTop);
@@ -2600,13 +2655,17 @@ class range_WrappedRange {
      * @return {BoundaryPoint}
      */
     const getVisiblePoint = function (point, isLeftToRight) {
-      // Just use the given point [XXX:Adhoc]
+      if (!point) {
+        return point;
+      } // Just use the given point [XXX:Adhoc]
       //  - case 01. if the point is on the middle of the node
       //  - case 02. if the point is on the right edge and prefer to choose left node
       //  - case 03. if the point is on the left edge and prefer to choose right node
       //  - case 04. if the point is on the right edge and prefer to choose right node but the node is void
       //  - case 05. if the point is on the left edge and prefer to choose left node but the node is void
       //  - case 06. if the point is on the block node and there is no children
+
+
       if (dom.isVisiblePoint(point)) {
         if (!dom.isEdgePoint(point) || dom.isRightEdgePoint(point) && !isLeftToRight || dom.isLeftEdgePoint(point) && isLeftToRight || dom.isRightEdgePoint(point) && isLeftToRight && dom.isVoid(point.node.nextSibling) || dom.isLeftEdgePoint(point) && !isLeftToRight && dom.isVoid(point.node.previousSibling) || dom.isBlock(point.node) && dom.isEmpty(point.node)) {
           return point;
@@ -2615,8 +2674,25 @@ class range_WrappedRange {
 
 
       const block = dom.ancestor(point.node, dom.isBlock);
+      let hasRightNode = false;
 
-      if ((dom.isLeftEdgePointOf(point, block) || dom.isVoid(dom.prevPoint(point).node)) && !isLeftToRight || (dom.isRightEdgePointOf(point, block) || dom.isVoid(dom.nextPoint(point).node)) && isLeftToRight) {
+      if (!hasRightNode) {
+        const prevPoint = dom.prevPoint(point) || {
+          node: null
+        };
+        hasRightNode = (dom.isLeftEdgePointOf(point, block) || dom.isVoid(prevPoint.node)) && !isLeftToRight;
+      }
+
+      let hasLeftNode = false;
+
+      if (!hasLeftNode) {
+        const nextPoint = dom.nextPoint(point) || {
+          node: null
+        };
+        hasLeftNode = (dom.isRightEdgePointOf(point, block) || dom.isVoid(nextPoint.node)) && isLeftToRight;
+      }
+
+      if (hasRightNode || hasLeftNode) {
         // returns point already on visible point
         if (dom.isVisiblePoint(point)) {
           return point;
@@ -2778,7 +2854,7 @@ class range_WrappedRange {
       return !lists.contains(nodes, point.node);
     });
     const emptyParents = [];
-    external_jQuery_default.a.each(nodes, function (idx, node) {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(nodes, function (idx, node) {
       // find empty parents
       const parent = node.parentNode;
 
@@ -2789,7 +2865,7 @@ class range_WrappedRange {
       dom.remove(node, false);
     }); // remove empty parents
 
-    external_jQuery_default.a.each(emptyParents, function (idx, node) {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(emptyParents, function (idx, node) {
       dom.remove(node, false);
     });
     return new range_WrappedRange(point.node, point.offset, point.node, point.offset).normalize();
@@ -2864,15 +2940,17 @@ class range_WrappedRange {
       }
     } else {
       topAncestor = rng.sc.childNodes[rng.so > 0 ? rng.so - 1 : 0];
-    } // siblings not in paragraph
+    }
 
+    if (topAncestor) {
+      // siblings not in paragraph
+      let inlineSiblings = dom.listPrev(topAncestor, dom.isParaInline).reverse();
+      inlineSiblings = inlineSiblings.concat(dom.listNext(topAncestor.nextSibling, dom.isParaInline)); // wrap with paragraph
 
-    let inlineSiblings = dom.listPrev(topAncestor, dom.isParaInline).reverse();
-    inlineSiblings = inlineSiblings.concat(dom.listNext(topAncestor.nextSibling, dom.isParaInline)); // wrap with paragraph
-
-    if (inlineSiblings.length) {
-      const para = dom.wrap(lists.head(inlineSiblings), 'p');
-      dom.appendChildNodes(para, lists.tail(inlineSiblings));
+      if (inlineSiblings.length) {
+        const para = dom.wrap(lists.head(inlineSiblings), 'p');
+        dom.appendChildNodes(para, lists.tail(inlineSiblings));
+      }
     }
 
     return this.normalize();
@@ -2886,7 +2964,12 @@ class range_WrappedRange {
 
 
   insertNode(node) {
-    const rng = this.wrapBodyInlineWithPara().deleteContents();
+    let rng = this;
+
+    if (dom.isText(node) || dom.isInline(node)) {
+      rng = this.wrapBodyInlineWithPara().deleteContents();
+    }
+
     const info = dom.splitPoint(rng.getStartPoint(), dom.isInline(node));
 
     if (info.rightNode) {
@@ -2903,11 +2986,13 @@ class range_WrappedRange {
 
 
   pasteHTML(markup) {
-    const contentsContainer = external_jQuery_default()('<div></div>').html(markup)[0];
-    let childNodes = lists.from(contentsContainer.childNodes);
-    const rng = this.wrapBodyInlineWithPara().deleteContents();
+    markup = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.trim(markup);
+    const contentsContainer = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div></div>').html(markup)[0];
+    let childNodes = lists.from(contentsContainer.childNodes); // const rng = this.wrapBodyInlineWithPara().deleteContents();
 
-    if (rng.so > 0) {
+    const rng = this;
+
+    if (rng.so >= 0) {
       childNodes = childNodes.reverse();
     }
 
@@ -2960,12 +3045,71 @@ class range_WrappedRange {
     return new range_WrappedRange(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
   }
   /**
+   * returns range for words before cursor
+   *
+   * @param {Boolean} [findAfter] - find after cursor, default: false
+   * @return {WrappedRange}
+   */
+
+
+  getWordsRange(findAfter) {
+    var endPoint = this.getEndPoint();
+
+    var isNotTextPoint = function (point) {
+      return !dom.isCharPoint(point) && !dom.isSpacePoint(point);
+    };
+
+    if (isNotTextPoint(endPoint)) {
+      return this;
+    }
+
+    var startPoint = dom.prevPointUntil(endPoint, isNotTextPoint);
+
+    if (findAfter) {
+      endPoint = dom.nextPointUntil(endPoint, isNotTextPoint);
+    }
+
+    return new range_WrappedRange(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
+  }
+
+  /**
+   * returns range for words before cursor that match with a Regex
+   *
+   * example:
+   *  range: 'hi @Peter Pan'
+   *  regex: '/@[a-z ]+/i'
+   *  return range: '@Peter Pan'
+   *
+   * @param {RegExp} [regex]
+   * @return {WrappedRange|null}
+   */
+  getWordsMatchRange(regex) {
+    var endPoint = this.getEndPoint();
+    var startPoint = dom.prevPointUntil(endPoint, function (point) {
+      if (!dom.isCharPoint(point) && !dom.isSpacePoint(point)) {
+        return true;
+      }
+
+      var rng = new range_WrappedRange(point.node, point.offset, endPoint.node, endPoint.offset);
+      var result = regex.exec(rng.toString());
+      return result && result.index === 0;
+    });
+    var rng = new range_WrappedRange(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
+    var text = rng.toString();
+    var result = regex.exec(text);
+
+    if (result && result[0].length === text.length) {
+      return rng;
+    } else {
+      return null;
+    }
+  }
+
+  /**
    * create offsetPath bookmark
    *
    * @param {Node} editable
    */
-
-
   bookmark(editable) {
     return {
       s: {
@@ -3018,7 +3162,7 @@ class range_WrappedRange {
  */
 
 
-/* harmony default export */ var range = ({
+/* harmony default export */ var core_range = ({
   /**
    * create Range Object From arguments or Browser Selection
    *
@@ -3040,12 +3184,21 @@ class range_WrappedRange {
       let wrappedRange = this.createFromSelection();
 
       if (!wrappedRange && arguments.length === 1) {
-        wrappedRange = this.createFromNode(arguments[0]);
-        return wrappedRange.collapse(dom.emptyPara === arguments[0].innerHTML);
+        let bodyElement = arguments[0];
+
+        if (dom.isEditable(bodyElement)) {
+          bodyElement = bodyElement.lastChild;
+        }
+
+        return this.createFromBodyElement(bodyElement, dom.emptyPara === arguments[0].innerHTML);
       }
 
       return wrappedRange;
     }
+  },
+  createFromBodyElement: function (bodyElement, isCollapseToStart = false) {
+    var wrappedRange = this.createFromNode(bodyElement);
+    return wrappedRange.collapse(isCollapseToStart);
   },
   createFromSelection: function () {
     let sc, so, ec, eo;
@@ -3213,7 +3366,12 @@ const KEY_MAP = {
   'SLASH': 191,
   'LEFTBRACKET': 219,
   'BACKSLASH': 220,
-  'RIGHTBRACKET': 221
+  'RIGHTBRACKET': 221,
+  // Navigation
+  'HOME': 36,
+  'END': 35,
+  'PAGEUP': 33,
+  'PAGEDOWN': 34
 };
 /**
  * @class core.key
@@ -3246,6 +3404,16 @@ const KEY_MAP = {
   },
 
   /**
+   * @method isNavigation
+   *
+   * @param {Number} keyCode
+   * @return {Boolean}
+   */
+  isNavigation: keyCode => {
+    return lists.contains([KEY_MAP.HOME, KEY_MAP.END, KEY_MAP.PAGEUP, KEY_MAP.PAGEDOWN], keyCode);
+  },
+
+  /**
    * @property {Object} nameFromCode
    * @property {String} nameFromCode.8 "BACKSPACE"
    */
@@ -3264,8 +3432,8 @@ const KEY_MAP = {
  */
 
 function readFileAsDataURL(file) {
-  return external_jQuery_default.a.Deferred(deferred => {
-    external_jQuery_default.a.extend(new FileReader(), {
+  return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(deferred => {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(new FileReader(), {
       onload: e => {
         const dataURL = e.target.result;
         deferred.resolve(dataURL);
@@ -3286,8 +3454,8 @@ function readFileAsDataURL(file) {
  */
 
 function createImage(url) {
-  return external_jQuery_default.a.Deferred(deferred => {
-    const $img = external_jQuery_default()('<img>');
+  return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(deferred => {
+    const $img = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<img>');
     $img.one('load', () => {
       $img.off('error abort');
       deferred.resolve($img);
@@ -3310,7 +3478,7 @@ class History_History {
   }
 
   makeSnapshot() {
-    const rng = range.create(this.editable);
+    const rng = core_range.create(this.editable);
     const emptyBookmark = {
       s: {
         path: [],
@@ -3333,7 +3501,7 @@ class History_History {
     }
 
     if (snapshot.bookmark !== null) {
-      range.createFromBookmark(this.editable, snapshot.bookmark).select();
+      core_range.createFromBookmark(this.editable, snapshot.bookmark).select();
     }
   }
   /**
@@ -3451,7 +3619,7 @@ class Style_Style {
   jQueryCSS($obj, propertyNames) {
     if (env.jqueryVersion < 1.9) {
       const result = {};
-      external_jQuery_default.a.each(propertyNames, (idx, propertyName) => {
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(propertyNames, (idx, propertyName) => {
         result[propertyName] = $obj.css(propertyName);
       });
       return result;
@@ -3470,7 +3638,9 @@ class Style_Style {
   fromNode($node) {
     const properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
     const styleInfo = this.jQueryCSS($node, properties) || {};
-    styleInfo['font-size'] = parseInt(styleInfo['font-size'], 10);
+    const fontSize = $node[0].style.fontSize || styleInfo['font-size'];
+    styleInfo['font-size'] = parseInt(fontSize, 10);
+    styleInfo['font-size-unit'] = fontSize.match(/[a-z%]+$/);
     return styleInfo;
   }
   /**
@@ -3482,10 +3652,10 @@ class Style_Style {
 
 
   stylePara(rng, styleInfo) {
-    external_jQuery_default.a.each(rng.nodes(dom.isPara, {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(rng.nodes(dom.isPara, {
       includeAncestor: true
     }), (idx, para) => {
-      external_jQuery_default()(para).css(styleInfo);
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(para).css(styleInfo);
     });
   }
   /**
@@ -3530,7 +3700,7 @@ class Style_Style {
         const siblings = dom.withClosestSiblings(node, pred);
         const head = lists.head(siblings);
         const tails = lists.tail(siblings);
-        external_jQuery_default.a.each(tails, (idx, elem) => {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(tails, (idx, elem) => {
           dom.appendChildNodes(head, elem.childNodes);
           dom.remove(elem);
         });
@@ -3549,12 +3719,12 @@ class Style_Style {
 
 
   current(rng) {
-    const $cont = external_jQuery_default()(!dom.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
+    const $cont = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(!dom.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
     let styleInfo = this.fromNode($cont); // document.queryCommandState for toggle state
     // [workaround] prevent Firefox nsresult: "0x80004005 (NS_ERROR_FAILURE)"
 
     try {
-      styleInfo = external_jQuery_default.a.extend(styleInfo, {
+      styleInfo = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(styleInfo, {
         'font-bold': document.queryCommandState('bold') ? 'bold' : 'normal',
         'font-italic': document.queryCommandState('italic') ? 'italic' : 'normal',
         'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
@@ -3617,12 +3787,12 @@ class Bullet_Bullet {
 
 
   indent(editable) {
-    const rng = range.create(editable).wrapBodyInlineWithPara();
+    const rng = core_range.create(editable).wrapBodyInlineWithPara();
     const paras = rng.nodes(dom.isPara, {
       includeAncestor: true
     });
     const clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
-    external_jQuery_default.a.each(clustereds, (idx, paras) => {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(clustereds, (idx, paras) => {
       const head = lists.head(paras);
 
       if (dom.isLi(head)) {
@@ -3635,8 +3805,8 @@ class Bullet_Bullet {
           paras.map(para => para.parentNode).map(para => this.appendToPrevious(para));
         }
       } else {
-        external_jQuery_default.a.each(paras, (idx, para) => {
-          external_jQuery_default()(para).css('marginLeft', (idx, val) => {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(paras, (idx, para) => {
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(para).css('marginLeft', (idx, val) => {
             return (parseInt(val, 10) || 0) + 25;
           });
         });
@@ -3650,19 +3820,19 @@ class Bullet_Bullet {
 
 
   outdent(editable) {
-    const rng = range.create(editable).wrapBodyInlineWithPara();
+    const rng = core_range.create(editable).wrapBodyInlineWithPara();
     const paras = rng.nodes(dom.isPara, {
       includeAncestor: true
     });
     const clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
-    external_jQuery_default.a.each(clustereds, (idx, paras) => {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(clustereds, (idx, paras) => {
       const head = lists.head(paras);
 
       if (dom.isLi(head)) {
         this.releaseList([paras]);
       } else {
-        external_jQuery_default.a.each(paras, (idx, para) => {
-          external_jQuery_default()(para).css('marginLeft', (idx, val) => {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(paras, (idx, para) => {
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(para).css('marginLeft', (idx, val) => {
             val = parseInt(val, 10) || 0;
             return val > 25 ? val - 25 : '';
           });
@@ -3679,7 +3849,7 @@ class Bullet_Bullet {
 
 
   toggleList(listName, editable) {
-    const rng = range.create(editable).wrapBodyInlineWithPara();
+    const rng = core_range.create(editable).wrapBodyInlineWithPara();
     let paras = rng.nodes(dom.isPara, {
       includeAncestor: true
     });
@@ -3688,7 +3858,7 @@ class Bullet_Bullet {
 
     if (lists.find(paras, dom.isPurePara)) {
       let wrappedParas = [];
-      external_jQuery_default.a.each(clustereds, (idx, paras) => {
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(clustereds, (idx, paras) => {
         wrappedParas = wrappedParas.concat(this.wrapList(paras, listName));
       });
       paras = wrappedParas; // list to paragraph or change list style
@@ -3696,11 +3866,11 @@ class Bullet_Bullet {
       const diffLists = rng.nodes(dom.isList, {
         includeAncestor: true
       }).filter(listNode => {
-        return !external_jQuery_default.a.nodeName(listNode, listName);
+        return !external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.nodeName(listNode, listName);
       });
 
       if (diffLists.length) {
-        external_jQuery_default.a.each(diffLists, (idx, listNode) => {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(diffLists, (idx, listNode) => {
           dom.replace(listNode, listName);
         });
       } else {
@@ -3708,7 +3878,7 @@ class Bullet_Bullet {
       }
     }
 
-    range.createFromParaBookmark(bookmark, paras).select();
+    core_range.createFromParaBookmark(bookmark, paras).select();
   }
   /**
    * @param {Node[]} paras
@@ -3748,7 +3918,7 @@ class Bullet_Bullet {
 
   releaseList(clustereds, isEscapseToBody) {
     let releasedParas = [];
-    external_jQuery_default.a.each(clustereds, (idx, paras) => {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(clustereds, (idx, paras) => {
       const head = lists.head(paras);
       const last = lists.last(paras);
       const headList = isEscapseToBody ? dom.lastAncestor(head, dom.isList) : head.parentNode;
@@ -3798,14 +3968,14 @@ class Bullet_Bullet {
           });
         }
 
-        external_jQuery_default.a.each(lists.from(paras).reverse(), (idx, para) => {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(lists.from(paras).reverse(), (idx, para) => {
           dom.insertAfter(para, headList);
         }); // remove empty lists
 
         const rootLists = lists.compact([headList, middleList, lastList]);
-        external_jQuery_default.a.each(rootLists, (idx, rootList) => {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(rootLists, (idx, rootList) => {
           const listNodes = [rootList].concat(dom.listDescendant(rootList, dom.isList));
-          external_jQuery_default.a.each(listNodes.reverse(), (idx, listNode) => {
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(listNodes.reverse(), (idx, listNode) => {
             if (!dom.nodeLength(listNode)) {
               dom.remove(listNode, true);
             }
@@ -3896,7 +4066,7 @@ class Typing_Typing {
     const tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
     rng = rng.deleteContents();
     rng.insertNode(tab, true);
-    rng = range.create(tab, tabsize);
+    rng = core_range.create(tab, tabsize);
     rng.select();
   }
   /**
@@ -3913,7 +4083,7 @@ class Typing_Typing {
 
 
   insertParagraph(editable, rng) {
-    rng = rng || range.create(editable); // deleteContents on range.
+    rng = rng || core_range.create(editable); // deleteContents on range.
 
     rng = rng.deleteContents(); // Wrap range if it needs to be wrapped by paragraph
 
@@ -3939,11 +4109,11 @@ class Typing_Typing {
 
         if (blockquote) {
           // We're inside a blockquote and options ask us to break it
-          nextPara = external_jQuery_default()(dom.emptyPara)[0]; // If the split is right before a <br>, remove it so that there's no "empty line"
+          nextPara = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(dom.emptyPara)[0]; // If the split is right before a <br>, remove it so that there's no "empty line"
           // after the split in the new blockquote created
 
           if (dom.isRightEdgePoint(rng.getStartPoint()) && dom.isBR(rng.sc.nextSibling)) {
-            external_jQuery_default()(rng.sc.nextSibling).remove();
+            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(rng.sc.nextSibling).remove();
           }
 
           const split = dom.splitTree(blockquote, rng.getStartPoint(), {
@@ -3960,7 +4130,7 @@ class Typing_Typing {
 
           let emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
           emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
-          external_jQuery_default.a.each(emptyAnchors, (idx, anchor) => {
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(emptyAnchors, (idx, anchor) => {
             dom.remove(anchor);
           }); // replace empty heading, pre or custom-made styleTag with P tag
 
@@ -3972,7 +4142,7 @@ class Typing_Typing {
 
     } else {
       const next = rng.sc.childNodes[rng.so];
-      nextPara = external_jQuery_default()(dom.emptyPara)[0];
+      nextPara = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(dom.emptyPara)[0];
 
       if (next) {
         rng.sc.insertBefore(nextPara, next);
@@ -3981,7 +4151,7 @@ class Typing_Typing {
       }
     }
 
-    range.create(nextPara, 0).normalize().select().scrollIntoView(editable);
+    core_range.create(nextPara, 0).normalize().select().scrollIntoView(editable);
   }
 
 }
@@ -4335,7 +4505,7 @@ class Table_Table {
     const nextCell = lists[isShift ? 'prev' : 'next'](cells, cell);
 
     if (nextCell) {
-      range.create(nextCell, 0).select();
+      core_range.create(nextCell, 0).select();
     }
   }
   /**
@@ -4349,10 +4519,10 @@ class Table_Table {
 
   addRow(rng, position) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    const currentTr = external_jQuery_default()(cell).closest('tr');
+    const currentTr = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('tr');
     const trAttributes = this.recoverAttributes(currentTr);
-    const html = external_jQuery_default()('<tr' + trAttributes + '></tr>');
-    const vTable = new TableResultAction(cell, TableResultAction.where.Row, TableResultAction.requestAction.Add, external_jQuery_default()(currentTr).closest('table')[0]);
+    const html = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<tr' + trAttributes + '></tr>');
+    const vTable = new TableResultAction(cell, TableResultAction.where.Row, TableResultAction.requestAction.Add, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentTr).closest('table')[0]);
     const actions = vTable.getActionList();
 
     for (let idCell = 0; idCell < actions.length; idCell++) {
@@ -4370,7 +4540,7 @@ class Table_Table {
             const isTopFromRowSpan = (!baseCellTr ? 0 : currentCell.baseCell.closest('tr').rowIndex) <= currentTr[0].rowIndex;
 
             if (isTopFromRowSpan) {
-              const newTd = external_jQuery_default()('<div></div>').append(external_jQuery_default()('<td' + tdAttributes + '>' + dom.blank + '</td>').removeAttr('rowspan')).html();
+              const newTd = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div></div>').append(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<td' + tdAttributes + '>' + dom.blank + '</td>').removeAttr('rowspan')).html();
               html.append(newTd);
               break;
             }
@@ -4390,7 +4560,7 @@ class Table_Table {
 
       if (cellHasRowspan) {
         const lastTrIndex = currentTr[0].rowIndex + (cell.rowSpan - 2);
-        external_jQuery_default()(external_jQuery_default()(currentTr).parent().find('tr')[lastTrIndex]).after(external_jQuery_default()(html));
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentTr).parent().find('tr')[lastTrIndex]).after(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(html));
         return;
       }
 
@@ -4408,10 +4578,10 @@ class Table_Table {
 
   addCol(rng, position) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    const row = external_jQuery_default()(cell).closest('tr');
-    const rowsGroup = external_jQuery_default()(row).siblings();
+    const row = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('tr');
+    const rowsGroup = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(row).siblings();
     rowsGroup.push(row);
-    const vTable = new TableResultAction(cell, TableResultAction.where.Column, TableResultAction.requestAction.Add, external_jQuery_default()(row).closest('table')[0]);
+    const vTable = new TableResultAction(cell, TableResultAction.where.Column, TableResultAction.requestAction.Add, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(row).closest('table')[0]);
     const actions = vTable.getActionList();
 
     for (let actionIndex = 0; actionIndex < actions.length; actionIndex++) {
@@ -4421,9 +4591,9 @@ class Table_Table {
       switch (currentCell.action) {
         case TableResultAction.resultAction.AddCell:
           if (position === 'right') {
-            external_jQuery_default()(currentCell.baseCell).after('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentCell.baseCell).after('<td' + tdAttributes + '>' + dom.blank + '</td>');
           } else {
-            external_jQuery_default()(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
           }
 
           break;
@@ -4434,7 +4604,7 @@ class Table_Table {
             colspanNumber++;
             currentCell.baseCell.setAttribute('colSpan', colspanNumber);
           } else {
-            external_jQuery_default()(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
           }
 
           break;
@@ -4480,10 +4650,10 @@ class Table_Table {
 
   deleteRow(rng) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    const row = external_jQuery_default()(cell).closest('tr');
-    const cellPos = row.children('td, th').index(external_jQuery_default()(cell));
+    const row = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('tr');
+    const cellPos = row.children('td, th').index(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell));
     const rowPos = row[0].rowIndex;
-    const vTable = new TableResultAction(cell, TableResultAction.where.Row, TableResultAction.requestAction.Delete, external_jQuery_default()(row).closest('table')[0]);
+    const vTable = new TableResultAction(cell, TableResultAction.where.Row, TableResultAction.requestAction.Delete, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(row).closest('table')[0]);
     const actions = vTable.getActionList();
 
     for (let actionIndex = 0; actionIndex < actions.length; actionIndex++) {
@@ -4562,9 +4732,9 @@ class Table_Table {
 
   deleteCol(rng) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    const row = external_jQuery_default()(cell).closest('tr');
-    const cellPos = row.children('td, th').index(external_jQuery_default()(cell));
-    const vTable = new TableResultAction(cell, TableResultAction.where.Column, TableResultAction.requestAction.Delete, external_jQuery_default()(row).closest('table')[0]);
+    const row = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('tr');
+    const cellPos = row.children('td, th').index(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell));
+    const vTable = new TableResultAction(cell, TableResultAction.where.Column, TableResultAction.requestAction.Delete, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(row).closest('table')[0]);
     const actions = vTable.getActionList();
 
     for (let actionIndex = 0; actionIndex < actions.length; actionIndex++) {
@@ -4633,7 +4803,7 @@ class Table_Table {
     }
 
     trHTML = trs.join('');
-    const $table = external_jQuery_default()('<table>' + trHTML + '</table>');
+    const $table = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<table>' + trHTML + '</table>');
 
     if (options && options.tableClassName) {
       $table.addClass(options.tableClassName);
@@ -4651,7 +4821,7 @@ class Table_Table {
 
   deleteTable(rng) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    external_jQuery_default()(cell).closest('table').remove();
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('table').remove();
   }
 
 }
@@ -4684,6 +4854,7 @@ class Editor_Editor {
     this.lang = this.options.langInfo;
     this.editable = this.$editable[0];
     this.lastRange = null;
+    this.snapshot = null;
     this.style = new Style_Style();
     this.table = new Table_Table();
     this.typing = new Typing_Typing(context);
@@ -4720,7 +4891,12 @@ class Editor_Editor {
       return this.fontStyling('font-family', env.validFontName(value));
     });
     this.fontSize = this.wrapCommand(value => {
-      return this.fontStyling('font-size', value + 'px');
+      const unit = this.currentStyle()['font-size-unit'];
+      return this.fontStyling('font-size', value + unit);
+    });
+    this.fontSizeUnit = this.wrapCommand(value => {
+      const size = this.currentStyle()['font-size'];
+      return this.fontStyling('font-size', size + value);
     });
 
     for (let idx = 1; idx <= 6; idx++) {
@@ -4756,14 +4932,13 @@ class Editor_Editor {
      */
 
     this.insertNode = this.wrapCommand(node => {
-      if (this.isLimited(external_jQuery_default()(node).text().length)) {
+      if (this.isLimited(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(node).text().length)) {
         return;
       }
 
       const rng = this.getLastRange();
       rng.insertNode(node);
-      range.createFromNodeAfter(node).select();
-      this.setLastRange();
+      this.setLastRange(core_range.createFromNodeAfter(node).select());
     });
     /**
      * insert text
@@ -4777,8 +4952,7 @@ class Editor_Editor {
 
       const rng = this.getLastRange();
       const textNode = rng.insertNode(dom.createText(text));
-      range.create(textNode, dom.nodeLength(textNode)).select();
-      this.setLastRange();
+      this.setLastRange(core_range.create(textNode, dom.nodeLength(textNode)).select());
     });
     /**
      * paste HTML
@@ -4792,8 +4966,7 @@ class Editor_Editor {
 
       markup = this.context.invoke('codeview.purify', markup);
       const contents = this.getLastRange().pasteHTML(markup);
-      range.createFromNodeAfter(lists.last(contents)).select();
-      this.setLastRange();
+      this.setLastRange(core_range.createFromNodeAfter(lists.last(contents)).select());
     });
     /**
      * formatBlock
@@ -4818,8 +4991,7 @@ class Editor_Editor {
       const hrNode = this.getLastRange().insertNode(dom.create('HR'));
 
       if (hrNode.nextSibling) {
-        range.create(hrNode.nextSibling, 0).normalize().select();
-        this.setLastRange();
+        this.setLastRange(core_range.create(hrNode.nextSibling, 0).normalize().select());
       }
     });
     /**
@@ -4842,6 +5014,7 @@ class Editor_Editor {
       let linkUrl = linkInfo.url;
       const linkText = linkInfo.text;
       const isNewWindow = linkInfo.isNewWindow;
+      const checkProtocol = linkInfo.checkProtocol;
       let rng = linkInfo.range || this.getLastRange();
       const additionalTextLength = linkText.length - rng.toString().length;
 
@@ -4857,16 +5030,16 @@ class Editor_Editor {
 
       if (this.options.onCreateLink) {
         linkUrl = this.options.onCreateLink(linkUrl);
-      } else {
+      } else if (checkProtocol) {
         // if url doesn't have any protocol and not even a relative or a label, use http:// as default
-        linkUrl = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/.test(linkUrl) ? linkUrl : 'http://' + linkUrl;
+        linkUrl = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/.test(linkUrl) ? linkUrl : this.options.defaultProtocol + linkUrl;
       }
 
       let anchors = [];
 
       if (isTextChanged) {
         rng = rng.deleteContents();
-        const anchor = rng.insertNode(external_jQuery_default()('<A>' + linkText + '</A>')[0]);
+        const anchor = rng.insertNode(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<A>' + linkText + '</A>')[0]);
         anchors.push(anchor);
       } else {
         anchors = this.style.styleNodes(rng, {
@@ -4876,21 +5049,20 @@ class Editor_Editor {
         });
       }
 
-      external_jQuery_default.a.each(anchors, (idx, anchor) => {
-        external_jQuery_default()(anchor).attr('href', linkUrl);
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(anchors, (idx, anchor) => {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(anchor).attr('href', linkUrl);
 
         if (isNewWindow) {
-          external_jQuery_default()(anchor).attr('target', '_blank');
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(anchor).attr('target', '_blank');
         } else {
-          external_jQuery_default()(anchor).removeAttr('target');
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(anchor).removeAttr('target');
         }
       });
-      const startRange = range.createFromNodeBefore(lists.head(anchors));
+      const startRange = core_range.createFromNodeBefore(lists.head(anchors));
       const startPoint = startRange.getStartPoint();
-      const endRange = range.createFromNodeAfter(lists.last(anchors));
+      const endRange = core_range.createFromNodeAfter(lists.last(anchors));
       const endPoint = endRange.getEndPoint();
-      range.create(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset).select();
-      this.setLastRange();
+      this.setLastRange(core_range.create(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset).select());
     });
     /**
      * setting color
@@ -4938,12 +5110,12 @@ class Editor_Editor {
      */
 
     this.removeMedia = this.wrapCommand(() => {
-      let $target = external_jQuery_default()(this.restoreTarget()).parent();
+      let $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.restoreTarget()).parent();
 
-      if ($target.parent('figure').length) {
-        $target.parent('figure').remove();
+      if ($target.closest('figure').length) {
+        $target.closest('figure').remove();
       } else {
-        $target = external_jQuery_default()(this.restoreTarget()).detach();
+        $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.restoreTarget()).detach();
       }
 
       this.context.triggerEvent('media.delete', $target, this.$editable);
@@ -4955,7 +5127,7 @@ class Editor_Editor {
      */
 
     this.floatMe = this.wrapCommand(value => {
-      const $target = external_jQuery_default()(this.restoreTarget());
+      const $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.restoreTarget());
       $target.toggleClass('note-float-left', value === 'left');
       $target.toggleClass('note-float-right', value === 'right');
       $target.css('float', value === 'none' ? '' : value);
@@ -4966,7 +5138,7 @@ class Editor_Editor {
      */
 
     this.resize = this.wrapCommand(value => {
-      const $target = external_jQuery_default()(this.restoreTarget());
+      const $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.restoreTarget());
       value = parseFloat(value);
 
       if (value === 0) {
@@ -4987,7 +5159,9 @@ class Editor_Editor {
         this.context.triggerEvent('enter', event);
       }
 
-      this.context.triggerEvent('keydown', event);
+      this.context.triggerEvent('keydown', event); // keep a snapshot to limit text on input event
+
+      this.snapshot = this.history.makeSnapshot();
 
       if (!event.isDefaultPrevented()) {
         if (this.options.shortcuts) {
@@ -4998,8 +5172,14 @@ class Editor_Editor {
       }
 
       if (this.isLimited(1, event)) {
-        return false;
+        const lastRange = this.getLastRange();
+
+        if (lastRange.eo - lastRange.so === 0) {
+          return false;
+        }
       }
+
+      this.setLastRange();
     }).on('keyup', event => {
       this.setLastRange();
       this.context.triggerEvent('keyup', event);
@@ -5012,14 +5192,26 @@ class Editor_Editor {
       this.context.triggerEvent('mousedown', event);
     }).on('mouseup', event => {
       this.setLastRange();
+      this.history.recordUndo();
       this.context.triggerEvent('mouseup', event);
     }).on('scroll', event => {
       this.context.triggerEvent('scroll', event);
     }).on('paste', event => {
       this.setLastRange();
       this.context.triggerEvent('paste', event);
+    }).on('input', event => {
+      // To limit composition characters (e.g. Korean)
+      if (this.isLimited(0) && this.snapshot) {
+        this.history.applySnapshot(this.snapshot);
+      }
     });
-    this.$editable.attr('spellcheck', this.options.spellCheck); // init content before set event
+    this.$editable.attr('spellcheck', this.options.spellCheck);
+    this.$editable.attr('autocorrect', this.options.spellCheck);
+
+    if (this.options.disableGrammar) {
+      this.$editable.attr('data-gramm', false);
+    } // init content before set event
+
 
     this.$editable.html(dom.html(this.$note) || dom.emptyPara);
     this.$editable.on(env.inputEventName, func.debounce(() => {
@@ -5081,7 +5273,9 @@ class Editor_Editor {
 
     const eventName = keyMap[keys.join('+')];
 
-    if (eventName) {
+    if (keyName === 'TAB' && !this.options.tabDisable) {
+      this.afterCommand();
+    } else if (eventName) {
       if (this.context.invoke(eventName) !== false) {
         event.preventDefault();
       }
@@ -5101,13 +5295,13 @@ class Editor_Editor {
     pad = pad || 0;
 
     if (typeof event !== 'undefined') {
-      if (core_key.isMove(event.keyCode) || event.ctrlKey || event.metaKey || lists.contains([core_key.code.BACKSPACE, core_key.code.DELETE], event.keyCode)) {
+      if (core_key.isMove(event.keyCode) || core_key.isNavigation(event.keyCode) || event.ctrlKey || event.metaKey || lists.contains([core_key.code.BACKSPACE, core_key.code.DELETE], event.keyCode)) {
         return false;
       }
     }
 
     if (this.options.maxTextLength > 0) {
-      if (this.$editable.text().length + pad >= this.options.maxTextLength) {
+      if (this.$editable.text().length + pad > this.options.maxTextLength) {
         return true;
       }
     }
@@ -5126,8 +5320,16 @@ class Editor_Editor {
     return this.getLastRange();
   }
 
-  setLastRange() {
-    this.lastRange = range.create(this.editable);
+  setLastRange(rng) {
+    if (rng) {
+      this.lastRange = rng;
+    } else {
+      this.lastRange = core_range.create(this.editable);
+
+      if (external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.lastRange.sc).closest('.note-editable').length === 0) {
+        this.lastRange = core_range.createFromBodyElement(this.editable);
+      }
+    }
   }
 
   getLastRange() {
@@ -5185,7 +5387,7 @@ class Editor_Editor {
 
 
   currentStyle() {
-    let rng = range.create();
+    let rng = core_range.create();
 
     if (rng) {
       rng = rng.normalize();
@@ -5332,9 +5534,8 @@ class Editor_Editor {
       }
 
       $image.show();
-      range.create(this.editable).insertNode($image[0]);
-      range.createFromNodeAfter($image[0]).select();
-      this.setLastRange();
+      this.getLastRange().insertNode($image[0]);
+      this.setLastRange(core_range.createFromNodeAfter($image[0]).select());
       this.afterCommand();
     }).fail(e => {
       this.context.triggerEvent('image.upload.error', e);
@@ -5347,7 +5548,7 @@ class Editor_Editor {
 
 
   insertImagesAsDataURL(files) {
-    external_jQuery_default.a.each(files, (idx, file) => {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(files, (idx, file) => {
       const filename = file.name;
 
       if (this.options.maximumImageFileSize && this.options.maximumImageFileSize < file.size) {
@@ -5386,7 +5587,7 @@ class Editor_Editor {
     let rng = this.getLastRange(); // if range on anchor, expand range with anchor
 
     if (rng.isOnAnchor()) {
-      rng = range.createFromNode(dom.ancestor(rng.sc, dom.isAnchor));
+      rng = core_range.createFromNode(dom.ancestor(rng.sc, dom.isAnchor));
     }
 
     return rng.toString();
@@ -5407,7 +5608,7 @@ class Editor_Editor {
 
         if (className) {
           const currentRange = this.createRange();
-          const $parent = external_jQuery_default()([currentRange.sc, currentRange.ec]).closest(tagName);
+          const $parent = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()([currentRange.sc, currentRange.ec]).closest(tagName);
           $parent.addClass(className);
         }
       }
@@ -5421,9 +5622,10 @@ class Editor_Editor {
   fontStyling(target, value) {
     const rng = this.getLastRange();
 
-    if (rng) {
+    if (rng !== '') {
       const spans = this.style.styleNodes(rng);
-      external_jQuery_default()(spans).css(target, value); // [workaround] added styled bogus span for style
+      this.$editor.find('.note-status-output').html('');
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(spans).css(target, value); // [workaround] added styled bogus span for style
       //  - also bogus character needed for cursor position
 
       if (rng.isCollapsed()) {
@@ -5431,11 +5633,17 @@ class Editor_Editor {
 
         if (firstSpan && !dom.nodeLength(firstSpan)) {
           firstSpan.innerHTML = dom.ZERO_WIDTH_NBSP_CHAR;
-          range.createFromNodeAfter(firstSpan.firstChild).select();
+          core_range.createFromNodeAfter(firstSpan.firstChild).select();
           this.setLastRange();
           this.$editable.data(KEY_BOGUS, firstSpan);
         }
       }
+    } else {
+      const noteStatusOutput = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.now();
+      this.$editor.find('.note-status-output').html('<div id="note-status-output-' + noteStatusOutput + '" class="alert alert-info">' + this.lang.output.noSelection + '</div>');
+      setTimeout(function () {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('#note-status-output-' + noteStatusOutput).remove();
+      }, 5000);
     }
   }
   /**
@@ -5450,7 +5658,7 @@ class Editor_Editor {
 
     if (rng.isOnAnchor()) {
       const anchor = dom.ancestor(rng.sc, dom.isAnchor);
-      rng = range.createFromNode(anchor);
+      rng = core_range.createFromNode(anchor);
       rng.select();
       this.setLastRange();
       this.beforeCommand();
@@ -5472,7 +5680,7 @@ class Editor_Editor {
   getLinkInfo() {
     const rng = this.getLastRange().expand(dom.isAnchor); // Get the first anchor on range(for edit).
 
-    const $anchor = external_jQuery_default()(lists.head(rng.nodes(dom.isAnchor)));
+    const $anchor = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(lists.head(rng.nodes(dom.isAnchor)));
     const linkInfo = {
       range: rng,
       text: rng.toString(),
@@ -5631,14 +5839,21 @@ class Clipboard_Clipboard {
     const clipboardData = event.originalEvent.clipboardData;
 
     if (clipboardData && clipboardData.items && clipboardData.items.length) {
-      // paste img file
       const item = clipboardData.items.length > 1 ? clipboardData.items[1] : lists.head(clipboardData.items);
 
       if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
+        // paste img file
         this.context.invoke('editor.insertImagesOrCallback', [item.getAsFile()]);
+        event.preventDefault();
+        this.context.invoke('editor.afterCommand');
+      } else if (item.kind === 'string') {
+        // paste text with maxTextLength check
+        if (this.context.invoke('editor.isLimited', clipboardData.getData('Text').length)) {
+          event.preventDefault();
+        } else {
+          this.context.invoke('editor.afterCommand');
+        }
       }
-
-      this.context.invoke('editor.afterCommand');
     }
   }
 
@@ -5648,17 +5863,13 @@ class Clipboard_Clipboard {
 class Dropzone_Dropzone {
   constructor(context) {
     this.context = context;
-    this.$eventListener = external_jQuery_default()(document);
+    this.$eventListener = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document);
     this.$editor = context.layoutInfo.editor;
     this.$editable = context.layoutInfo.editable;
     this.options = context.options;
     this.lang = this.options.langInfo;
     this.documentEventHandlers = {};
-    this.$dropzone = external_jQuery_default()(['<div class="note-dropzone">', '  <div class="note-dropzone-message"/>', '</div>'].join('')).prependTo(this.$editor);
-  }
-
-  shouldInitialize() {
-    return !this.options.disableDragAndDrop;
+    this.$dropzone = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(['<div class="note-dropzone">', '<div class="note-dropzone-message"/>', '</div>'].join('')).prependTo(this.$editor);
   }
   /**
    * attach Drag and Drop Events
@@ -5666,7 +5877,18 @@ class Dropzone_Dropzone {
 
 
   initialize() {
-    this.attachDragAndDropEvent();
+    if (this.options.disableDragAndDrop) {
+      // prevent default drop event
+      this.documentEventHandlers.onDrop = e => {
+        e.preventDefault();
+      }; // do not consider outside of dropzone
+
+
+      this.$eventListener = this.$dropzone;
+      this.$eventListener.on('drop', this.documentEventHandlers.onDrop);
+    } else {
+      this.attachDragAndDropEvent();
+    }
   }
   /**
    * attach Drag and Drop Events
@@ -5674,7 +5896,7 @@ class Dropzone_Dropzone {
 
 
   attachDragAndDropEvent() {
-    let collection = external_jQuery_default()();
+    let collection = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()();
     const $dropzoneMessage = this.$dropzone.find('.note-dropzone-message');
 
     this.documentEventHandlers.onDragenter = e => {
@@ -5695,13 +5917,13 @@ class Dropzone_Dropzone {
       collection = collection.not(e.target); // If nodeName is BODY, then just make it over (fix for IE)
 
       if (!collection.length || e.target.nodeName === 'BODY') {
-        collection = external_jQuery_default()();
+        collection = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()();
         this.$editor.removeClass('dragover');
       }
     };
 
     this.documentEventHandlers.onDrop = () => {
-      collection = external_jQuery_default()();
+      collection = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()();
       this.$editor.removeClass('dragover');
     }; // show dropzone on dragenter when dragging a object to document
     // -but only if the editor is visible, i.e. has a positive width and height
@@ -5726,13 +5948,18 @@ class Dropzone_Dropzone {
         this.$editable.focus();
         this.context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
       } else {
-        external_jQuery_default.a.each(dataTransfer.types, (idx, type) => {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(dataTransfer.types, (idx, type) => {
+          // skip moz-specific types
+          if (type.toLowerCase().indexOf('_moz_') > -1) {
+            return;
+          }
+
           const content = dataTransfer.getData(type);
 
           if (type.toLowerCase().indexOf('text') > -1) {
             this.context.invoke('editor.pasteHTML', content);
           } else {
-            external_jQuery_default()(content).each((idx, item) => {
+            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(content).each((idx, item) => {
               this.context.invoke('editor.insertNode', item);
             });
           }
@@ -5914,7 +6141,7 @@ class Codeview_CodeView {
 const EDITABLE_PADDING = 24;
 class Statusbar_Statusbar {
   constructor(context) {
-    this.$document = external_jQuery_default()(document);
+    this.$document = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document);
     this.$statusbar = context.layoutInfo.statusbar;
     this.$editable = context.layoutInfo.editable;
     this.options = context.options;
@@ -5959,8 +6186,8 @@ class Fullscreen_Fullscreen {
     this.$toolbar = context.layoutInfo.toolbar;
     this.$editable = context.layoutInfo.editable;
     this.$codable = context.layoutInfo.codable;
-    this.$window = external_jQuery_default()(window);
-    this.$scrollbar = external_jQuery_default()('html, body');
+    this.$window = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(window);
+    this.$scrollbar = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('html, body');
 
     this.onResize = () => {
       this.resizeTo({
@@ -6014,7 +6241,7 @@ class Fullscreen_Fullscreen {
 class Handle_Handle {
   constructor(context) {
     this.context = context;
-    this.$document = external_jQuery_default()(document);
+    this.$document = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document);
     this.$editingArea = context.layoutInfo.editingArea;
     this.options = context.options;
     this.lang = this.options.langInfo;
@@ -6027,7 +6254,7 @@ class Handle_Handle {
       'summernote.keyup summernote.scroll summernote.change summernote.dialog.shown': () => {
         this.update();
       },
-      'summernote.disable': () => {
+      'summernote.disable summernote.blur': () => {
         this.hide();
       },
       'summernote.codeview.toggled': () => {
@@ -6037,7 +6264,7 @@ class Handle_Handle {
   }
 
   initialize() {
-    this.$handle = external_jQuery_default()(['<div class="note-handle">', '<div class="note-control-selection">', '<div class="note-control-selection-bg"></div>', '<div class="note-control-holder note-control-nw"></div>', '<div class="note-control-holder note-control-ne"></div>', '<div class="note-control-holder note-control-sw"></div>', '<div class="', this.options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing', ' note-control-se"></div>', this.options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>', '</div>', '</div>'].join('')).prependTo(this.$editingArea);
+    this.$handle = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(['<div class="note-handle">', '<div class="note-control-selection">', '<div class="note-control-selection-bg"></div>', '<div class="note-control-holder note-control-nw"></div>', '<div class="note-control-holder note-control-ne"></div>', '<div class="note-control-holder note-control-sw"></div>', '<div class="', this.options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing', ' note-control-se"></div>', this.options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>', '</div>', '</div>'].join('')).prependTo(this.$editingArea);
     this.$handle.on('mousedown', event => {
       if (dom.isControlSizing(event.target)) {
         event.preventDefault();
@@ -6087,7 +6314,7 @@ class Handle_Handle {
     this.context.invoke('imagePopover.update', target, event);
 
     if (isImage) {
-      const $image = external_jQuery_default()(target);
+      const $image = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(target);
       const position = $image.position();
       const pos = {
         left: position.left + parseInt($image.css('marginLeft'), 10),
@@ -6135,7 +6362,7 @@ class Handle_Handle {
 
 
 const defaultScheme = 'http://';
-const linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/]{2}|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
+const linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/]{2}|tel:|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
 class AutoLink_AutoLink {
   constructor(context) {
     this.context = context;
@@ -6169,10 +6396,11 @@ class AutoLink_AutoLink {
 
     if (match && (match[1] || match[2])) {
       const link = match[1] ? keyword : defaultScheme + keyword;
-      const node = external_jQuery_default()('<a />').html(keyword).attr('href', link)[0];
+      const urlText = keyword.replace(/^(?:https?:\/\/)?(?:tel?:?)?(?:mailto?:?)?(?:www\.)?/i, '').split('/')[0];
+      const node = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<a />').html(urlText).attr('href', link)[0];
 
       if (this.context.options.linkTargetBlank) {
-        external_jQuery_default()(node).attr('target', '_blank');
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(node).attr('target', '_blank');
       }
 
       this.lastWordRange.insertNode(node);
@@ -6328,7 +6556,7 @@ class Placeholder_Placeholder {
   }
 
   initialize() {
-    this.$placeholder = external_jQuery_default()('<div class="note-placeholder">');
+    this.$placeholder = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div class="note-placeholder">');
     this.$placeholder.on('click', () => {
       this.context.invoke('focus');
     }).html(this.options.placeholder).prependTo(this.$editingArea);
@@ -6352,7 +6580,7 @@ class Placeholder_Placeholder {
 
 class Buttons_Buttons {
   constructor(context) {
-    this.ui = external_jQuery_default.a.summernote.ui;
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.context = context;
     this.$toolbar = context.layoutInfo.toolbar;
     this.options = context.options;
@@ -6417,7 +6645,7 @@ class Buttons_Buttons {
         contents: this.ui.icon(this.options.icons.font + ' note-recent-color'),
         tooltip: tooltip,
         click: e => {
-          const $button = external_jQuery_default()(e.currentTarget);
+          const $button = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(e.currentTarget);
 
           if (backColor && foreColor) {
             this.context.invoke('editor.color', {
@@ -6457,10 +6685,11 @@ class Buttons_Buttons {
           toggle: 'dropdown'
         }
       }), this.ui.dropdown({
-        items: (backColor ? ['<div class="note-palette">', '  <div class="note-palette-title">' + this.lang.color.background + '</div>', '  <div>', '    <button type="button" class="note-color-reset btn btn-light" data-event="backColor" data-value="inherit">', this.lang.color.transparent, '    </button>', '  </div>', '  <div class="note-holder" data-event="backColor"/>', '  <div>', '    <button type="button" class="note-color-select btn" data-event="openPalette" data-value="backColorPicker">', this.lang.color.cpSelect, '    </button>', '    <input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.backColor + '" data-event="backColorPalette">', '  </div>', '  <div class="note-holder-custom" id="backColorPalette" data-event="backColor"/>', '</div>'].join('') : '') + (foreColor ? ['<div class="note-palette">', '  <div class="note-palette-title">' + this.lang.color.foreground + '</div>', '  <div>', '    <button type="button" class="note-color-reset btn btn-light" data-event="removeFormat" data-value="foreColor">', this.lang.color.resetToDefault, '    </button>', '  </div>', '  <div class="note-holder" data-event="foreColor"/>', '  <div>', '    <button type="button" class="note-color-select btn" data-event="openPalette" data-value="foreColorPicker">', this.lang.color.cpSelect, '    </button>', '    <input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.foreColor + '" data-event="foreColorPalette">', '  <div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"/>', '</div>'].join('') : ''),
+        items: (backColor ? ['<div class="note-palette">', '<div class="note-palette-title">' + this.lang.color.background + '</div>', '<div>', '<button type="button" class="note-color-reset btn btn-light" data-event="backColor" data-value="inherit">', this.lang.color.transparent, '</button>', '</div>', '<div class="note-holder" data-event="backColor"/>', '<div>', '<button type="button" class="note-color-select btn" data-event="openPalette" data-value="backColorPicker">', this.lang.color.cpSelect, '</button>', '<input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.backColor + '" data-event="backColorPalette">', '</div>', '<div class="note-holder-custom" id="backColorPalette" data-event="backColor"/>', '</div>'].join('') : '') + (foreColor ? ['<div class="note-palette">', '<div class="note-palette-title">' + this.lang.color.foreground + '</div>', '<div>', '<button type="button" class="note-color-reset btn btn-light" data-event="removeFormat" data-value="foreColor">', this.lang.color.resetToDefault, '</button>', '</div>', '<div class="note-holder" data-event="foreColor"/>', '<div>', '<button type="button" class="note-color-select btn" data-event="openPalette" data-value="foreColorPicker">', this.lang.color.cpSelect, '</button>', '<input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.foreColor + '" data-event="foreColorPalette">', '</div>', // Fix missing Div, Commented to find easily if it's wrong
+        '<div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"/>', '</div>'].join('') : ''),
         callback: $dropdown => {
           $dropdown.find('.note-holder').each((idx, item) => {
-            const $holder = external_jQuery_default()(item);
+            const $holder = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item);
             $holder.append(this.ui.palette({
               colors: this.options.colors,
               colorsName: this.options.colorsName,
@@ -6473,7 +6702,7 @@ class Buttons_Buttons {
 
           var customColors = [['#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF']];
           $dropdown.find('.note-holder-custom').each((idx, item) => {
-            const $holder = external_jQuery_default()(item);
+            const $holder = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item);
             $holder.append(this.ui.palette({
               colors: customColors,
               colorsName: customColors,
@@ -6483,8 +6712,8 @@ class Buttons_Buttons {
             }).render());
           });
           $dropdown.find('input[type=color]').each((idx, item) => {
-            external_jQuery_default()(item).change(function () {
-              const $chip = $dropdown.find('#' + external_jQuery_default()(this).data('event')).find('.note-color-btn').first();
+            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item).change(function () {
+              const $chip = $dropdown.find('#' + external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this).data('event')).find('.note-color-btn').first();
               const color = this.value.toUpperCase();
               $chip.css('background-color', color).attr('aria-label', color).attr('data-value', color).attr('data-original-title', color);
               $chip.click();
@@ -6493,14 +6722,14 @@ class Buttons_Buttons {
         },
         click: event => {
           event.stopPropagation();
-          const $parent = external_jQuery_default()('.' + className);
-          const $button = external_jQuery_default()(event.target);
+          const $parent = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('.' + className).find('.show');
+          const $button = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target);
           const eventName = $button.data('event');
           let value = $button.attr('data-value');
 
           if (eventName === 'openPalette') {
             const $picker = $parent.find('#' + value);
-            const $palette = external_jQuery_default()($parent.find('#' + $picker.data('event')).find('.note-color-row')[0]); // Shift palette chips
+            const $palette = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()($parent.find('#' + $picker.data('event')).find('.note-color-row')[0]); // Shift palette chips
 
             const $chip = $palette.find('.note-color-btn').last().detach(); // Set chip attributes
 
@@ -6624,7 +6853,7 @@ class Buttons_Buttons {
 
       if (this.options.addDefaultFonts) {
         // Add 'default' fonts into the fontnames array if not exist
-        external_jQuery_default.a.each(styleInfo['font-family'].split(','), (idx, fontname) => {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(styleInfo['font-family'].split(','), (idx, fontname) => {
           fontname = fontname.trim().replace(/['"]+/g, '');
 
           if (this.isFontDeservedToAdd(fontname)) {
@@ -6667,6 +6896,22 @@ class Buttons_Buttons {
         items: this.options.fontSizes,
         title: this.lang.font.size,
         click: this.context.createInvokeHandlerAndUpdateState('editor.fontSize')
+      })]).render();
+    });
+    this.context.memo('button.fontsizeunit', () => {
+      return this.ui.buttonGroup([this.button({
+        className: 'dropdown-toggle',
+        contents: this.ui.dropdownButtonContents('<span class="note-current-fontsizeunit"/>', this.options),
+        tooltip: this.lang.font.sizeunit,
+        data: {
+          toggle: 'dropdown'
+        }
+      }), this.ui.dropdownCheck({
+        className: 'dropdown-fontsizeunit',
+        checkClassName: this.options.icons.menuCheck,
+        items: this.options.fontSizeUnits,
+        title: this.lang.font.sizeunit,
+        click: this.context.createInvokeHandlerAndUpdateState('editor.fontSizeUnit')
       })]).render();
     });
     this.context.memo('button.color', () => {
@@ -6771,7 +7016,7 @@ class Buttons_Buttons {
       }), this.ui.dropdown({
         title: this.lang.table.table,
         className: 'note-table',
-        items: ['<div class="note-dimension-picker">', '  <div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>', '  <div class="note-dimension-picker-highlighted"/>', '  <div class="note-dimension-picker-unhighlighted"/>', '</div>', '<div class="note-dimension-display">1 x 1</div>'].join('')
+        items: ['<div class="note-dimension-picker">', '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>', '<div class="note-dimension-picker-highlighted"/>', '<div class="note-dimension-picker-unhighlighted"/>', '</div>', '<div class="note-dimension-display">1 x 1</div>'].join('')
       })], {
         callback: $node => {
           const $catcher = $node.find('.note-dimension-picker-mousecatcher');
@@ -7057,7 +7302,7 @@ class Buttons_Buttons {
       });
       const fontName = lists.find(fontNames, this.isFontInstalled.bind(this));
       $cont.find('.dropdown-fontname a').each((idx, item) => {
-        const $item = external_jQuery_default()(item); // always compare string to avoid creating another func.
+        const $item = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item); // always compare string to avoid creating another func.
 
         const isChecked = $item.data('value') + '' === fontName + '';
         $item.toggleClass('checked', isChecked);
@@ -7068,33 +7313,40 @@ class Buttons_Buttons {
     if (styleInfo['font-size']) {
       const fontSize = styleInfo['font-size'];
       $cont.find('.dropdown-fontsize a').each((idx, item) => {
-        const $item = external_jQuery_default()(item); // always compare with string to avoid creating another func.
+        const $item = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item); // always compare with string to avoid creating another func.
 
         const isChecked = $item.data('value') + '' === fontSize + '';
         $item.toggleClass('checked', isChecked);
       });
       $cont.find('.note-current-fontsize').text(fontSize);
+      const fontSizeUnit = styleInfo['font-size-unit'];
+      $cont.find('.dropdown-fontsizeunit a').each((idx, item) => {
+        const $item = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item);
+        const isChecked = $item.data('value') + '' === fontSizeUnit + '';
+        $item.toggleClass('checked', isChecked);
+      });
+      $cont.find('.note-current-fontsizeunit').text(fontSizeUnit);
     }
 
     if (styleInfo['line-height']) {
       const lineHeight = styleInfo['line-height'];
       $cont.find('.dropdown-line-height li a').each((idx, item) => {
         // always compare with string to avoid creating another func.
-        const isChecked = external_jQuery_default()(item).data('value') + '' === lineHeight + '';
+        const isChecked = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item).data('value') + '' === lineHeight + '';
         this.className = isChecked ? 'checked' : '';
       });
     }
   }
 
   updateBtnStates($container, infos) {
-    external_jQuery_default.a.each(infos, (selector, pred) => {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(infos, (selector, pred) => {
       this.ui.toggleBtnActive($container.find(selector), pred());
     });
   }
 
   tableMoveHandler(event) {
     const PX_PER_EM = 18;
-    const $picker = external_jQuery_default()(event.target.parentNode); // target is mousecatcher
+    const $picker = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target.parentNode); // target is mousecatcher
 
     const $dimensionDisplay = $picker.next();
     const $catcher = $picker.find('.note-dimension-picker-mousecatcher');
@@ -7103,7 +7355,7 @@ class Buttons_Buttons {
     let posOffset; // HTML5 with jQuery - e.offsetX is undefined in Firefox
 
     if (event.offsetX === undefined) {
-      const posCatcher = external_jQuery_default()(event.target).offset();
+      const posCatcher = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target).offset();
       posOffset = {
         x: event.pageX - posCatcher.left,
         y: event.pageY - posCatcher.top
@@ -7146,9 +7398,9 @@ class Buttons_Buttons {
 class Toolbar_Toolbar {
   constructor(context) {
     this.context = context;
-    this.$window = external_jQuery_default()(window);
-    this.$document = external_jQuery_default()(document);
-    this.ui = external_jQuery_default.a.summernote.ui;
+    this.$window = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(window);
+    this.$document = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document);
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.$note = context.layoutInfo.note;
     this.$editor = context.layoutInfo.editor;
     this.$toolbar = context.layoutInfo.toolbar;
@@ -7208,7 +7460,7 @@ class Toolbar_Toolbar {
     let otherBarHeight = 0;
 
     if (this.options.otherStaticBar) {
-      otherBarHeight = external_jQuery_default()(this.options.otherStaticBar).outerHeight();
+      otherBarHeight = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.otherStaticBar).outerHeight();
     }
 
     const currentOffset = this.$document.scrollTop();
@@ -7251,7 +7503,9 @@ class Toolbar_Toolbar {
       }
     }
 
-    this.followScroll();
+    if (this.options.followingToolbar) {
+      this.followScroll();
+    }
   }
 
   updateFullscreen(isFullscreen) {
@@ -7273,7 +7527,7 @@ class Toolbar_Toolbar {
     let $btn = this.$toolbar.find('button');
 
     if (!isIncludeCodeview) {
-      $btn = $btn.not('.btn-codeview');
+      $btn = $btn.not('.btn-codeview').not('.btn-fullscreen');
     }
 
     this.ui.toggleBtn($btn, true);
@@ -7283,7 +7537,7 @@ class Toolbar_Toolbar {
     let $btn = this.$toolbar.find('button');
 
     if (!isIncludeCodeview) {
-      $btn = $btn.not('.btn-codeview');
+      $btn = $btn.not('.btn-codeview').not('.btn-fullscreen');
     }
 
     this.ui.toggleBtn($btn, false);
@@ -7298,8 +7552,8 @@ class Toolbar_Toolbar {
 class LinkDialog_LinkDialog {
   constructor(context) {
     this.context = context;
-    this.ui = external_jQuery_default.a.summernote.ui;
-    this.$body = external_jQuery_default()(document.body);
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
+    this.$body = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document.body);
     this.$editor = context.layoutInfo.editor;
     this.options = context.options;
     this.lang = this.options.langInfo;
@@ -7307,12 +7561,16 @@ class LinkDialog_LinkDialog {
   }
 
   initialize() {
-    const $container = this.options.dialogsInBody ? this.$body : this.$editor;
-    const body = ['<div class="form-group note-form-group">', `<label class="note-form-label">${this.lang.link.textToDisplay}</label>`, '<input class="note-link-text form-control note-form-control note-input" type="text" />', '</div>', '<div class="form-group note-form-group">', `<label class="note-form-label">${this.lang.link.url}</label>`, '<input class="note-link-url form-control note-form-control note-input" type="text" value="http://" />', '</div>', !this.options.disableLinkTarget ? external_jQuery_default()('<div/>').append(this.ui.checkbox({
+    const $container = this.options.dialogsInBody ? this.$body : this.options.container;
+    const body = ['<div class="form-group note-form-group">', `<label for="note-dialog-link-txt-${this.options.id}" class="note-form-label">${this.lang.link.textToDisplay}</label>`, `<input id="note-dialog-link-txt-${this.options.id}" class="note-link-text form-control note-form-control note-input" type="text"/>`, '</div>', '<div class="form-group note-form-group">', `<label for="note-dialog-link-url-${this.options.id}" class="note-form-label">${this.lang.link.url}</label>`, `<input id="note-dialog-link-url-${this.options.id}" class="note-link-url form-control note-form-control note-input" type="text" value="http://"/>`, '</div>', !this.options.disableLinkTarget ? external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div/>').append(this.ui.checkbox({
       className: 'sn-checkbox-open-in-new-window',
       text: this.lang.link.openInNewWindow,
       checked: true
-    }).render()).html() : ''].join('');
+    }).render()).html() : '', external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div/>').append(this.ui.checkbox({
+      className: 'sn-checkbox-use-protocol',
+      text: this.lang.link.useProtocol,
+      checked: true
+    }).render()).html()].join('');
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-link-btn';
     const footer = `<input type="button" href="#" class="${buttonClass}" value="${this.lang.link.insert}" disabled>`;
     this.$dialog = this.ui.dialog({
@@ -7354,11 +7612,12 @@ class LinkDialog_LinkDialog {
 
 
   showLinkDialog(linkInfo) {
-    return external_jQuery_default.a.Deferred(deferred => {
+    return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(deferred => {
       const $linkText = this.$dialog.find('.note-link-text');
       const $linkUrl = this.$dialog.find('.note-link-url');
       const $linkBtn = this.$dialog.find('.note-link-btn');
       const $openInNewWindow = this.$dialog.find('.sn-checkbox-open-in-new-window input[type=checkbox]');
+      const $useProtocol = this.$dialog.find('.sn-checkbox-use-protocol input[type=checkbox]');
       this.ui.onDialogShown(this.$dialog, () => {
         this.context.triggerEvent('dialog.shown'); // If no url was given and given text is valid URL then copy that into URL Field
 
@@ -7391,13 +7650,16 @@ class LinkDialog_LinkDialog {
         this.bindEnterKey($linkText, $linkBtn);
         const isNewWindowChecked = linkInfo.isNewWindow !== undefined ? linkInfo.isNewWindow : this.context.options.linkTargetBlank;
         $openInNewWindow.prop('checked', isNewWindowChecked);
+        const useProtocolChecked = linkInfo.url ? false : this.context.options.useProtocol;
+        $useProtocol.prop('checked', useProtocolChecked);
         $linkBtn.one('click', event => {
           event.preventDefault();
           deferred.resolve({
             range: linkInfo.range,
             url: $linkUrl.val(),
             text: $linkText.val(),
-            isNewWindow: $openInNewWindow.is(':checked')
+            isNewWindow: $openInNewWindow.is(':checked'),
+            checkProtocol: $useProtocol.is(':checked')
           });
           this.ui.hideDialog(this.$dialog);
         });
@@ -7439,13 +7701,13 @@ class LinkDialog_LinkDialog {
 class LinkPopover_LinkPopover {
   constructor(context) {
     this.context = context;
-    this.ui = external_jQuery_default.a.summernote.ui;
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.options = context.options;
     this.events = {
       'summernote.keyup summernote.mouseup summernote.change summernote.scroll': () => {
         this.update();
       },
-      'summernote.disable summernote.dialog.shown': () => {
+      'summernote.disable summernote.dialog.shown summernote.blur': () => {
         this.hide();
       }
     };
@@ -7465,6 +7727,9 @@ class LinkPopover_LinkPopover {
     }).render().appendTo(this.options.container);
     const $content = this.$popover.find('.popover-content,.note-popover-content');
     this.context.invoke('buttons.build', $content, this.options.popover.link);
+    this.$popover.on('mousedown', e => {
+      e.preventDefault();
+    });
   }
 
   destroy() {
@@ -7482,9 +7747,12 @@ class LinkPopover_LinkPopover {
 
     if (rng.isCollapsed() && rng.isOnAnchor()) {
       const anchor = dom.ancestor(rng.sc, dom.isAnchor);
-      const href = external_jQuery_default()(anchor).attr('href');
+      const href = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(anchor).attr('href');
       this.$popover.find('a').attr('href', href).html(href);
       const pos = dom.posFromPlaceholder(anchor);
+      const containerOffset = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.container).offset();
+      pos.top -= containerOffset.top;
+      pos.left -= containerOffset.left;
       this.$popover.css({
         display: 'block',
         left: pos.left,
@@ -7507,15 +7775,14 @@ class LinkPopover_LinkPopover {
 class ImageDialog_ImageDialog {
   constructor(context) {
     this.context = context;
-    this.ui = external_jQuery_default.a.summernote.ui;
-    this.$body = external_jQuery_default()(document.body);
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
+    this.$body = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document.body);
     this.$editor = context.layoutInfo.editor;
     this.options = context.options;
     this.lang = this.options.langInfo;
   }
 
   initialize() {
-    const $container = this.options.dialogsInBody ? this.$body : this.$editor;
     let imageLimitation = '';
 
     if (this.options.maximumImageFileSize) {
@@ -7524,7 +7791,8 @@ class ImageDialog_ImageDialog {
       imageLimitation = `<small>${this.lang.image.maximumFileSize + ' : ' + readableSize}</small>`;
     }
 
-    const body = ['<div class="form-group note-form-group note-group-select-from-files">', '<label class="note-form-label">' + this.lang.image.selectFromFiles + '</label>', '<input class="note-image-input form-control-file note-form-control note-input" ', ' type="file" name="files" accept="image/*" multiple="multiple" />', imageLimitation, '</div>', '<div class="form-group note-group-image-url" style="overflow:auto;">', '<label class="note-form-label">' + this.lang.image.url + '</label>', '<input class="note-image-url form-control note-form-control note-input ', ' col-md-12" type="text" />', '</div>'].join('');
+    const $container = this.options.dialogsInBody ? this.$body : this.options.container;
+    const body = ['<div class="form-group note-form-group note-group-select-from-files">', '<label for="note-dialog-image-file-' + this.options.id + '" class="note-form-label">' + this.lang.image.selectFromFiles + '</label>', '<input id="note-dialog-image-file-' + this.options.id + '" class="note-image-input form-control-file note-form-control note-input" ', ' type="file" name="files" accept="image/*" multiple="multiple"/>', imageLimitation, '</div>', '<div class="form-group note-group-image-url">', '<label for="note-dialog-image-url-' + this.options.id + '" class="note-form-label">' + this.lang.image.url + '</label>', '<input id="note-dialog-image-url-' + this.options.id + '" class="note-image-url form-control note-form-control note-input" type="text"/>', '</div>'].join('');
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-image-btn';
     const footer = `<input type="button" href="#" class="${buttonClass}" value="${this.lang.image.insert}" disabled>`;
     this.$dialog = this.ui.dialog({
@@ -7581,7 +7849,7 @@ class ImageDialog_ImageDialog {
 
 
   showImageDialog() {
-    return external_jQuery_default.a.Deferred(deferred => {
+    return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(deferred => {
       const $imageInput = this.$dialog.find('.note-image-input');
       const $imageUrl = this.$dialog.find('.note-image-url');
       const $imageBtn = this.$dialog.find('.note-image-btn');
@@ -7632,11 +7900,11 @@ class ImageDialog_ImageDialog {
 class ImagePopover_ImagePopover {
   constructor(context) {
     this.context = context;
-    this.ui = external_jQuery_default.a.summernote.ui;
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.editable = context.layoutInfo.editable[0];
     this.options = context.options;
     this.events = {
-      'summernote.disable': () => {
+      'summernote.disable summernote.blur': () => {
         this.hide();
       }
     };
@@ -7652,6 +7920,9 @@ class ImagePopover_ImagePopover {
     }).render().appendTo(this.options.container);
     const $content = this.$popover.find('.popover-content,.note-popover-content');
     this.context.invoke('buttons.build', $content, this.options.popover.image);
+    this.$popover.on('mousedown', e => {
+      e.preventDefault();
+    });
   }
 
   destroy() {
@@ -7660,12 +7931,23 @@ class ImagePopover_ImagePopover {
 
   update(target, event) {
     if (dom.isImg(target)) {
-      const pos = dom.posFromPlaceholder(target);
-      const posEditor = dom.posFromPlaceholder(this.editable);
+      const position = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(target).offset();
+      const containerOffset = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.container).offset();
+      let pos = {};
+
+      if (this.options.popatmouse) {
+        pos.left = event.pageX - 20;
+        pos.top = event.pageY;
+      } else {
+        pos = position;
+      }
+
+      pos.top -= containerOffset.top;
+      pos.left -= containerOffset.left;
       this.$popover.css({
         display: 'block',
-        left: this.options.popatmouse ? event.pageX - 20 : pos.left,
-        top: this.options.popatmouse ? event.pageY : Math.min(pos.top, posEditor.top)
+        left: pos.left,
+        top: pos.top
       });
     } else {
       this.hide();
@@ -7685,7 +7967,7 @@ class ImagePopover_ImagePopover {
 class TablePopover_TablePopover {
   constructor(context) {
     this.context = context;
-    this.ui = external_jQuery_default.a.summernote.ui;
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.options = context.options;
     this.events = {
       'summernote.mousedown': (we, e) => {
@@ -7694,7 +7976,7 @@ class TablePopover_TablePopover {
       'summernote.keyup summernote.scroll summernote.change': () => {
         this.update();
       },
-      'summernote.disable': () => {
+      'summernote.disable summernote.blur': () => {
         this.hide();
       }
     };
@@ -7714,6 +7996,10 @@ class TablePopover_TablePopover {
     if (env.isFF) {
       document.execCommand('enableInlineTableEditing', false, false);
     }
+
+    this.$popover.on('mousedown', e => {
+      e.preventDefault();
+    });
   }
 
   destroy() {
@@ -7729,6 +8015,9 @@ class TablePopover_TablePopover {
 
     if (isCell) {
       const pos = dom.posFromPlaceholder(target);
+      const containerOffset = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.container).offset();
+      pos.top -= containerOffset.top;
+      pos.left -= containerOffset.left;
       this.$popover.css({
         display: 'block',
         left: pos.left,
@@ -7753,16 +8042,16 @@ class TablePopover_TablePopover {
 class VideoDialog_VideoDialog {
   constructor(context) {
     this.context = context;
-    this.ui = external_jQuery_default.a.summernote.ui;
-    this.$body = external_jQuery_default()(document.body);
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
+    this.$body = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document.body);
     this.$editor = context.layoutInfo.editor;
     this.options = context.options;
     this.lang = this.options.langInfo;
   }
 
   initialize() {
-    const $container = this.options.dialogsInBody ? this.$body : this.$editor;
-    const body = ['<div class="form-group note-form-group row-fluid">', `<label class="note-form-label">${this.lang.video.url} <small class="text-muted">${this.lang.video.providers}</small></label>`, '<input class="note-video-url form-control note-form-control note-input" type="text" />', '</div>'].join('');
+    const $container = this.options.dialogsInBody ? this.$body : this.options.container;
+    const body = ['<div class="form-group note-form-group row-fluid">', `<label for="note-dialog-video-url-${this.options.id}" class="note-form-label">${this.lang.video.url} <small class="text-muted">${this.lang.video.providers}</small></label>`, `<input id="note-dialog-video-url-${this.options.id}" class="note-video-url form-control note-form-control note-input" type="text"/>`, '</div>'].join('');
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-video-btn';
     const footer = `<input type="button" href="#" class="${buttonClass}" value="${this.lang.video.insert}" disabled>`;
     this.$dialog = this.ui.dialog({
@@ -7830,24 +8119,24 @@ class VideoDialog_VideoDialog {
         }
       }
 
-      $video = external_jQuery_default()('<iframe>').attr('frameborder', 0).attr('src', '//www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : '')).attr('width', '640').attr('height', '360');
+      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', '//www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : '')).attr('width', '640').attr('height', '360');
     } else if (igMatch && igMatch[0].length) {
-      $video = external_jQuery_default()('<iframe>').attr('frameborder', 0).attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/').attr('width', '612').attr('height', '710').attr('scrolling', 'no').attr('allowtransparency', 'true');
+      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/').attr('width', '612').attr('height', '710').attr('scrolling', 'no').attr('allowtransparency', 'true');
     } else if (vMatch && vMatch[0].length) {
-      $video = external_jQuery_default()('<iframe>').attr('frameborder', 0).attr('src', vMatch[0] + '/embed/simple').attr('width', '600').attr('height', '600').attr('class', 'vine-embed');
+      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', vMatch[0] + '/embed/simple').attr('width', '600').attr('height', '600').attr('class', 'vine-embed');
     } else if (vimMatch && vimMatch[3].length) {
-      $video = external_jQuery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('src', '//player.vimeo.com/video/' + vimMatch[3]).attr('width', '640').attr('height', '360');
+      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('src', '//player.vimeo.com/video/' + vimMatch[3]).attr('width', '640').attr('height', '360');
     } else if (dmMatch && dmMatch[2].length) {
-      $video = external_jQuery_default()('<iframe>').attr('frameborder', 0).attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2]).attr('width', '640').attr('height', '360');
+      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2]).attr('width', '640').attr('height', '360');
     } else if (youkuMatch && youkuMatch[1].length) {
-      $video = external_jQuery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('height', '498').attr('width', '510').attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
+      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('height', '498').attr('width', '510').attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
     } else if (qqMatch && qqMatch[1].length || qqMatch2 && qqMatch2[2].length) {
       const vid = qqMatch && qqMatch[1].length ? qqMatch[1] : qqMatch2[2];
-      $video = external_jQuery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('height', '310').attr('width', '500').attr('src', 'http://v.qq.com/iframe/player.html?vid=' + vid + '&amp;auto=0');
+      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('height', '310').attr('width', '500').attr('src', 'https://v.qq.com/iframe/player.html?vid=' + vid + '&amp;auto=0');
     } else if (mp4Match || oggMatch || webmMatch) {
-      $video = external_jQuery_default()('<video controls>').attr('src', url).attr('width', '640').attr('height', '360');
+      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<video controls>').attr('src', url).attr('width', '640').attr('height', '360');
     } else if (fbMatch && fbMatch[0].length) {
-      $video = external_jQuery_default()('<iframe>').attr('frameborder', 0).attr('src', 'https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent(fbMatch[0]) + '&show_text=0&width=560').attr('width', '560').attr('height', '301').attr('scrolling', 'no').attr('allowtransparency', 'true');
+      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', 'https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent(fbMatch[0]) + '&show_text=0&width=560').attr('width', '560').attr('height', '301').attr('scrolling', 'no').attr('allowtransparency', 'true');
     } else {
       // this is not a known video link. Now what, Cat? Now what?
       return false;
@@ -7884,7 +8173,7 @@ class VideoDialog_VideoDialog {
 
 
   showVideoDialog(text) {
-    return external_jQuery_default.a.Deferred(deferred => {
+    return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(deferred => {
       const $videoUrl = this.$dialog.find('.note-video-url');
       const $videoBtn = this.$dialog.find('.note-video-btn');
       this.ui.onDialogShown(this.$dialog, () => {
@@ -7922,16 +8211,16 @@ class VideoDialog_VideoDialog {
 class HelpDialog_HelpDialog {
   constructor(context) {
     this.context = context;
-    this.ui = external_jQuery_default.a.summernote.ui;
-    this.$body = external_jQuery_default()(document.body);
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
+    this.$body = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document.body);
     this.$editor = context.layoutInfo.editor;
     this.options = context.options;
     this.lang = this.options.langInfo;
   }
 
   initialize() {
-    const $container = this.options.dialogsInBody ? this.$body : this.$editor;
-    const body = ['<p class="text-center">', '<a href="http://summernote.org/" target="_blank">Summernote 0.8.12</a> · ', '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ', '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>', '</p>'].join('');
+    const $container = this.options.dialogsInBody ? this.$body : this.options.container;
+    const body = ['<p class="text-center">', '<a href="http://summernote.org/" target="_blank">Summernote 0.8.15</a> · ', '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ', '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>', '</p>'].join('');
     this.$dialog = this.ui.dialog({
       title: this.lang.options.help,
       fade: this.options.dialogsFade,
@@ -7955,11 +8244,11 @@ class HelpDialog_HelpDialog {
     const keyMap = this.options.keyMap[env.isMac ? 'mac' : 'pc'];
     return Object.keys(keyMap).map(key => {
       const command = keyMap[key];
-      const $row = external_jQuery_default()('<div><div class="help-list-item"/></div>');
-      $row.append(external_jQuery_default()('<label><kbd>' + key + '</kdb></label>').css({
+      const $row = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div><div class="help-list-item"/></div>');
+      $row.append(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<label><kbd>' + key + '</kdb></label>').css({
         'width': 180,
         'margin-right': 10
-      })).append(external_jQuery_default()('<span/>').html(this.context.memo('help.' + command) || command));
+      })).append(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<span/>').html(this.context.memo('help.' + command) || command));
       return $row.html();
     }).join('');
   }
@@ -7971,7 +8260,7 @@ class HelpDialog_HelpDialog {
 
 
   showHelpDialog() {
-    return external_jQuery_default.a.Deferred(deferred => {
+    return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(deferred => {
       this.ui.onDialogShown(this.$dialog, () => {
         this.context.triggerEvent('dialog.shown');
         deferred.resolve();
@@ -7992,29 +8281,24 @@ class HelpDialog_HelpDialog {
 
 
 
-
-
 const AIR_MODE_POPOVER_X_OFFSET = 20;
 class AirPopover_AirPopover {
   constructor(context) {
     this.context = context;
-    this.ui = external_jQuery_default.a.summernote.ui;
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.options = context.options;
+    this.hidable = true;
     this.events = {
       'summernote.keyup summernote.mouseup summernote.scroll': () => {
-        this.update();
+        if (this.options.editing) {
+          this.update();
+        }
       },
-      'summernote.disable summernote.change summernote.dialog.shown': () => {
+      'summernote.disable summernote.change summernote.dialog.shown summernote.blur': () => {
         this.hide();
       },
       'summernote.focusout': (we, e) => {
-        // [workaround] Firefox/Safari don't support relatedTarget on focusout
-        //  - Ignore hide action on focus out in FF/Safari.
-        if (env.isFF || env.isSafari) {
-          return;
-        }
-
-        if (!e.relatedTarget || !dom.ancestor(e.relatedTarget, func.eq(this.$popover[0]))) {
+        if (!this.$popover.is(':active,:focus')) {
           this.hide();
         }
       }
@@ -8030,7 +8314,15 @@ class AirPopover_AirPopover {
       className: 'note-air-popover'
     }).render().appendTo(this.options.container);
     const $content = this.$popover.find('.popover-content');
-    this.context.invoke('buttons.build', $content, this.options.popover.air);
+    this.context.invoke('buttons.build', $content, this.options.popover.air); // disable hiding this popover preemptively by 'summernote.blur' event.
+
+    this.$popover.on('mousedown', () => {
+      this.hidable = false;
+    }); // (re-)enable hiding after 'summernote.blur' has been handled (aka. ignored).
+
+    this.$popover.on('mouseup', () => {
+      this.hidable = true;
+    });
   }
 
   destroy() {
@@ -8058,7 +8350,9 @@ class AirPopover_AirPopover {
   }
 
   hide() {
-    this.$popover.hide();
+    if (this.hidable) {
+      this.$popover.hide();
+    }
   }
 
 }
@@ -8073,7 +8367,7 @@ const POPOVER_DIST = 5;
 class HintPopover_HintPopover {
   constructor(context) {
     this.context = context;
-    this.ui = external_jQuery_default.a.summernote.ui;
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.$editable = context.layoutInfo.editable;
     this.options = context.options;
     this.hint = this.options.hint || [];
@@ -8088,7 +8382,7 @@ class HintPopover_HintPopover {
       'summernote.keydown': (we, e) => {
         this.handleKeydown(e);
       },
-      'summernote.disable summernote.dialog.shown': () => {
+      'summernote.disable summernote.dialog.shown summernote.blur': () => {
         this.hide();
       }
     };
@@ -8100,6 +8394,7 @@ class HintPopover_HintPopover {
 
   initialize() {
     this.lastWordRange = null;
+    this.matchingWord = null;
     this.$popover = this.ui.popover({
       className: 'note-hint-popover',
       hideArrow: true,
@@ -8109,8 +8404,11 @@ class HintPopover_HintPopover {
     this.$content = this.$popover.find('.popover-content,.note-popover-content');
     this.$content.on('click', '.note-hint-item', e => {
       this.$content.find('.active').removeClass('active');
-      external_jQuery_default()(e.currentTarget).addClass('active');
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(e.currentTarget).addClass('active');
       this.replace();
+    });
+    this.$popover.on('mousedown', e => {
+      e.preventDefault();
     });
   }
 
@@ -8162,13 +8460,30 @@ class HintPopover_HintPopover {
     const $item = this.$content.find('.note-hint-item.active');
 
     if ($item.length) {
-      const node = this.nodeFromItem($item); // XXX: consider to move codes to editor for recording redo/undo.
+      var node = this.nodeFromItem($item); // If matchingWord length = 0 -> capture OK / open hint / but as mention capture "" (\w*)
+
+      if (this.matchingWord !== null && this.matchingWord.length === 0) {
+        this.lastWordRange.so = this.lastWordRange.eo; // Else si > 0 and normal case -> adjust range "before" for correct position of insertion
+      } else if (this.matchingWord !== null && this.matchingWord.length > 0 && !this.lastWordRange.isCollapsed()) {
+        let rangeCompute = this.lastWordRange.eo - this.lastWordRange.so - this.matchingWord.length;
+
+        if (rangeCompute > 0) {
+          this.lastWordRange.so += rangeCompute;
+        }
+      }
 
       this.lastWordRange.insertNode(node);
-      range.createFromNode(node).collapse().select();
+
+      if (this.options.hintSelect === 'next') {
+        var blank = document.createTextNode('');
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(node).after(blank);
+        core_range.createFromNodeBefore(blank).select();
+      } else {
+        core_range.createFromNodeAfter(node).select();
+      }
+
       this.lastWordRange = null;
       this.hide();
-      this.context.triggerEvent('change', this.$editable.html(), this.$editable[0]);
       this.context.invoke('editor.focus');
     }
   }
@@ -8188,7 +8503,7 @@ class HintPopover_HintPopover {
   createItemTemplates(hintIdx, items) {
     const hint = this.hints[hintIdx];
     return items.map((item, idx) => {
-      const $item = external_jQuery_default()('<div class="note-hint-item"/>');
+      const $item = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div class="note-hint-item"/>');
       $item.append(hint.template ? hint.template(item) : item + '');
       $item.data({
         'index': hintIdx,
@@ -8220,6 +8535,7 @@ class HintPopover_HintPopover {
 
     if (hint && hint.match.test(keyword) && hint.search) {
       const matches = hint.match.exec(keyword);
+      this.matchingWord = matches[0];
       hint.search(matches[1], callback);
     } else {
       callback();
@@ -8227,7 +8543,7 @@ class HintPopover_HintPopover {
   }
 
   createGroup(idx, keyword) {
-    const $group = external_jQuery_default()('<div class="note-hint-group note-hint-group-' + idx + '"/>');
+    const $group = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div class="note-hint-group note-hint-group-' + idx + '"/>');
     this.searchKeyword(idx, keyword, items => {
       items = items || [];
 
@@ -8241,14 +8557,38 @@ class HintPopover_HintPopover {
 
   handleKeyup(e) {
     if (!lists.contains([core_key.code.ENTER, core_key.code.UP, core_key.code.DOWN], e.keyCode)) {
-      const wordRange = this.context.invoke('editor.getLastRange').getWordRange();
-      const keyword = wordRange.toString();
+      let range = this.context.invoke('editor.getLastRange');
+      let wordRange, keyword;
+
+      if (this.options.hintMode === 'words') {
+        wordRange = range.getWordsRange(range);
+        keyword = wordRange.toString();
+        this.hints.forEach(hint => {
+          if (hint.match.test(keyword)) {
+            wordRange = range.getWordsMatchRange(hint.match);
+            return false;
+          }
+        });
+
+        if (!wordRange) {
+          this.hide();
+          return;
+        }
+
+        keyword = wordRange.toString();
+      } else {
+        wordRange = range.getWordRange();
+        keyword = wordRange.toString();
+      }
 
       if (this.hints.length && keyword) {
         this.$content.empty();
         const bnd = func.rect2bnd(lists.last(wordRange.getClientRects()));
+        const containerOffset = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.container).offset();
 
         if (bnd) {
+          bnd.top -= containerOffset.top;
+          bnd.left -= containerOffset.left;
           this.$popover.hide();
           this.lastWordRange = wordRange;
           this.hints.forEach((hint, idx) => {
@@ -8315,14 +8655,15 @@ class HintPopover_HintPopover {
 
 
 
-external_jQuery_default.a.summernote = external_jQuery_default.a.extend(external_jQuery_default.a.summernote, {
-  version: '0.8.12',
+external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote, {
+  version: '0.8.15',
   plugins: {},
   dom: dom,
-  range: range,
+  range: core_range,
   lists: lists,
   options: {
-    langInfo: external_jQuery_default.a.summernote.lang['en-US'],
+    langInfo: external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.lang['en-US'],
+    editing: true,
     modules: {
       'editor': Editor_Editor,
       'clipboard': Clipboard_Clipboard,
@@ -8352,6 +8693,7 @@ external_jQuery_default.a.summernote = external_jQuery_default.a.extend(external
     buttons: {},
     lang: 'en-US',
     followingToolbar: false,
+    toolbarPosition: 'top',
     otherStaticBar: '',
     // toolbar
     toolbar: [['style', ['style']], ['font', ['bold', 'underline', 'clear']], ['fontname', ['fontname']], ['color', ['color']], ['para', ['ul', 'ol', 'paragraph']], ['table', ['table']], ['insert', ['link', 'picture', 'video']], ['view', ['fullscreen', 'codeview', 'help']]],
@@ -8361,31 +8703,39 @@ external_jQuery_default.a.summernote = external_jQuery_default.a.extend(external
       image: [['resize', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']], ['float', ['floatLeft', 'floatRight', 'floatNone']], ['remove', ['removeMedia']]],
       link: [['link', ['linkDialogShow', 'unlink']]],
       table: [['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']], ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]],
-      air: [['color', ['color']], ['font', ['bold', 'underline', 'clear']], ['para', ['ul', 'paragraph']], ['table', ['table']], ['insert', ['link', 'picture']]]
+      air: [['color', ['color']], ['font', ['bold', 'underline', 'clear']], ['para', ['ul', 'paragraph']], ['table', ['table']], ['insert', ['link', 'picture']], ['view', ['fullscreen', 'codeview']]]
     },
     // air mode: inline editor
     airMode: false,
     width: null,
     height: null,
     linkTargetBlank: true,
+    useProtocol: true,
+    defaultProtocol: 'http://',
     focus: false,
+    tabDisabled: false,
     tabSize: 4,
     styleWithSpan: true,
     shortcuts: true,
     textareaAutoSync: true,
-    hintDirection: 'bottom',
     tooltip: 'auto',
-    container: 'body',
+    container: null,
     maxTextLength: 0,
     blockquoteBreakingLevel: 2,
     spellCheck: true,
+    disableGrammar: false,
     placeholder: null,
     inheritPlaceholder: false,
+    // TODO: need to be documented
+    hintMode: 'word',
+    hintSelect: 'after',
+    hintDirection: 'bottom',
     styleTags: ['p', 'blockquote', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
     fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Helvetica Neue', 'Helvetica', 'Impact', 'Lucida Grande', 'Tahoma', 'Times New Roman', 'Verdana'],
     fontNamesIgnoreCheck: [],
     addDefaultFonts: true,
     fontSizes: ['8', '9', '10', '11', '12', '14', '18', '24', '36'],
+    fontSizeUnits: ['px', 'pt'],
     // pallete colors(n x n)
     colors: [['#000000', '#424242', '#636363', '#9C9C94', '#CEC6CE', '#EFEFEF', '#F7F7F7', '#FFFFFF'], ['#FF0000', '#FF9C00', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#9C00FF', '#FF00FF'], ['#F7C6CE', '#FFE7CE', '#FFEFC6', '#D6EFD6', '#CEDEE7', '#CEE7F7', '#D6D6E7', '#E7D6DE'], ['#E79C9C', '#FFC69C', '#FFE79C', '#B5D6A5', '#A5C6CE', '#9CC6EF', '#B5A5D6', '#D6A5BD'], ['#E76363', '#F7AD6B', '#FFD663', '#94BD7B', '#73A5AD', '#6BADDE', '#8C7BC6', '#C67BA5'], ['#CE0000', '#E79439', '#EFC631', '#6BA54A', '#4A7B8C', '#3984C6', '#634AA5', '#A54A7B'], ['#9C0000', '#B56308', '#BD9400', '#397B21', '#104A5A', '#085294', '#311873', '#731842'], ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031']],
     // http://chir.ag/projects/name-that-color/
@@ -8400,6 +8750,7 @@ external_jQuery_default.a.summernote = external_jQuery_default.a.extend(external
       col: 10,
       row: 10
     },
+    // By default, dialogs are attached in container.
     dialogsInBody: false,
     dialogsFade: false,
     maximumImageFileSize: null,
@@ -8560,9 +8911,9 @@ external_jQuery_default.a.summernote = external_jQuery_default.a.extend(external
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 
-// EXTERNAL MODULE: external "jQuery"
-var external_jQuery_ = __webpack_require__(0);
-var external_jQuery_default = /*#__PURE__*/__webpack_require__.n(external_jQuery_);
+// EXTERNAL MODULE: external {"root":"jQuery","commonjs2":"jquery","commonjs":"jquery","amd":"jquery"}
+var external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_ = __webpack_require__(0);
+var external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default = /*#__PURE__*/__webpack_require__.n(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_);
 
 // EXTERNAL MODULE: ./src/js/base/renderer.js
 var renderer = __webpack_require__(1);
@@ -8573,20 +8924,20 @@ var renderer = __webpack_require__(1);
 const editor = renderer["a" /* default */].create('<div class="note-editor note-frame panel panel-default"/>');
 const toolbar = renderer["a" /* default */].create('<div class="note-toolbar panel-heading" role="toolbar"></div></div>');
 const editingArea = renderer["a" /* default */].create('<div class="note-editing-area"/>');
-const codable = renderer["a" /* default */].create('<textarea class="note-codable" role="textbox" aria-multiline="true"/>');
+const codable = renderer["a" /* default */].create('<textarea class="note-codable" aria-multiline="true"/>');
 const editable = renderer["a" /* default */].create('<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>');
-const statusbar = renderer["a" /* default */].create(['<output class="note-status-output" aria-live="polite"/>', '<div class="note-statusbar" role="status">', '  <div class="note-resizebar" role="seperator" aria-orientation="horizontal" aria-label="Resize">', '    <div class="note-icon-bar"/>', '    <div class="note-icon-bar"/>', '    <div class="note-icon-bar"/>', '  </div>', '</div>'].join(''));
-const airEditor = renderer["a" /* default */].create('<div class="note-editor"/>');
-const airEditable = renderer["a" /* default */].create(['<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>', '<output class="note-status-output" aria-live="polite"/>'].join(''));
+const statusbar = renderer["a" /* default */].create(['<output class="note-status-output" role="status" aria-live="polite"/>', '<div class="note-statusbar" role="status">', '<div class="note-resizebar" aria-label="Resize">', '<div class="note-icon-bar"/>', '<div class="note-icon-bar"/>', '<div class="note-icon-bar"/>', '</div>', '</div>'].join(''));
+const airEditor = renderer["a" /* default */].create('<div class="note-editor note-airframe"/>');
+const airEditable = renderer["a" /* default */].create(['<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>', '<output class="note-status-output" role="status" aria-live="polite"/>'].join(''));
 const buttonGroup = renderer["a" /* default */].create('<div class="note-btn-group btn-group">');
-const dropdown = renderer["a" /* default */].create('<ul class="note-dropdown-menu dropdown-menu" role="list">', function ($node, options) {
+const dropdown = renderer["a" /* default */].create('<ul class="note-dropdown-menu dropdown-menu">', function ($node, options) {
   const markup = Array.isArray(options.items) ? options.items.map(function (item) {
     const value = typeof item === 'string' ? item : item.value || '';
     const content = options.template ? options.template(item) : item;
     const option = typeof item === 'object' ? item.option : undefined;
     const dataValue = 'data-value="' + value + '"';
     const dataOption = option !== undefined ? ' data-option="' + option + '"' : '';
-    return '<li role="listitem" aria-label="' + value + '"><a href="#" ' + (dataValue + dataOption) + '>' + content + '</a></li>';
+    return '<li aria-label="' + value + '"><a href="#" ' + (dataValue + dataOption) + '>' + content + '</a></li>';
   }).join('') : options.items;
   $node.html(markup).attr({
     'aria-label': options.title
@@ -8597,45 +8948,17 @@ const dropdownButtonContents = function (contents, options) {
   return contents + ' ' + icon(options.icons.caret, 'span');
 };
 
-const dropdownCheck = renderer["a" /* default */].create('<ul class="note-dropdown-menu dropdown-menu note-check" role="list">', function ($node, options) {
+const dropdownCheck = renderer["a" /* default */].create('<ul class="note-dropdown-menu dropdown-menu note-check">', function ($node, options) {
   const markup = Array.isArray(options.items) ? options.items.map(function (item) {
     const value = typeof item === 'string' ? item : item.value || '';
     const content = options.template ? options.template(item) : item;
-    return '<li role="listitem" aria-label="' + item + '"><a href="#" data-value="' + value + '">' + icon(options.checkClassName) + ' ' + content + '</a></li>';
+    return '<li aria-label="' + item + '"><a href="#" data-value="' + value + '">' + icon(options.checkClassName) + ' ' + content + '</a></li>';
   }).join('') : options.items;
   $node.html(markup).attr({
     'aria-label': options.title
   });
 });
-const palette = renderer["a" /* default */].create('<div class="note-color-palette"/>', function ($node, options) {
-  const contents = [];
-
-  for (let row = 0, rowSize = options.colors.length; row < rowSize; row++) {
-    const eventName = options.eventName;
-    const colors = options.colors[row];
-    const colorsName = options.colorsName[row];
-    const buttons = [];
-
-    for (let col = 0, colSize = colors.length; col < colSize; col++) {
-      const color = colors[col];
-      const colorName = colorsName[col];
-      buttons.push(['<button type="button" class="note-color-btn"', 'style="background-color:', color, '" ', 'data-event="', eventName, '" ', 'data-value="', color, '" ', 'title="', colorName, '" ', 'aria-label="', colorName, '" ', 'data-toggle="button" tabindex="-1"></button>'].join(''));
-    }
-
-    contents.push('<div class="note-color-row">' + buttons.join('') + '</div>');
-  }
-
-  $node.html(contents.join(''));
-
-  if (options.tooltip) {
-    $node.find('.note-color-btn').tooltip({
-      container: options.container,
-      trigger: 'hover',
-      placement: 'bottom'
-    });
-  }
-});
-const dialog = renderer["a" /* default */].create('<div class="modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function ($node, options) {
+const dialog = renderer["a" /* default */].create('<div class="modal note-modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function ($node, options) {
   if (options.fade) {
     $node.addClass('fade');
   }
@@ -8643,9 +8966,9 @@ const dialog = renderer["a" /* default */].create('<div class="modal" aria-hidde
   $node.attr({
     'aria-label': options.title
   });
-  $node.html(['<div class="modal-dialog">', '  <div class="modal-content">', options.title ? '    <div class="modal-header">' + '      <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">&times;</button>' + '      <h4 class="modal-title">' + options.title + '</h4>' + '    </div>' : '', '    <div class="modal-body">' + options.body + '</div>', options.footer ? '    <div class="modal-footer">' + options.footer + '</div>' : '', '  </div>', '</div>'].join(''));
+  $node.html(['<div class="modal-dialog">', '<div class="modal-content">', options.title ? '<div class="modal-header">' + '<button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">&times;</button>' + '<h4 class="modal-title">' + options.title + '</h4>' + '</div>' : '', '<div class="modal-body">' + options.body + '</div>', options.footer ? '<div class="modal-footer">' + options.footer + '</div>' : '', '</div>', '</div>'].join(''));
 });
-const popover = renderer["a" /* default */].create(['<div class="note-popover popover in">', '  <div class="arrow"/>', '  <div class="popover-content note-children-container"/>', '</div>'].join(''), function ($node, options) {
+const popover = renderer["a" /* default */].create(['<div class="note-popover popover in">', '<div class="arrow"/>', '<div class="popover-content note-children-container"/>', '</div>'].join(''), function ($node, options) {
   const direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
   $node.addClass(direction);
 
@@ -8654,7 +8977,7 @@ const popover = renderer["a" /* default */].create(['<div class="note-popover po
   }
 });
 const ui_checkbox = renderer["a" /* default */].create('<div class="checkbox"></div>', function ($node, options) {
-  $node.html(['<label' + (options.id ? ' for="' + options.id + '"' : '') + '>', ' <input role="checkbox" type="checkbox"' + (options.id ? ' id="' + options.id + '"' : ''), options.checked ? ' checked' : '', ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>', options.text ? options.text : '', '</label>'].join(''));
+  $node.html(['<label' + (options.id ? ' for="note-' + options.id + '"' : '') + '>', '<input type="checkbox"' + (options.id ? ' id="note-' + options.id + '"' : ''), options.checked ? ' checked' : '', ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>', options.text ? options.text : '', '</label>'].join(''));
 });
 
 const icon = function (iconClassName, tagName) {
@@ -8662,79 +8985,111 @@ const icon = function (iconClassName, tagName) {
   return '<' + tagName + ' class="' + iconClassName + '"/>';
 };
 
-const ui = {
-  editor: editor,
-  toolbar: toolbar,
-  editingArea: editingArea,
-  codable: codable,
-  editable: editable,
-  statusbar: statusbar,
-  airEditor: airEditor,
-  airEditable: airEditable,
-  buttonGroup: buttonGroup,
-  dropdown: dropdown,
-  dropdownButtonContents: dropdownButtonContents,
-  dropdownCheck: dropdownCheck,
-  palette: palette,
-  dialog: dialog,
-  popover: popover,
-  checkbox: ui_checkbox,
-  icon: icon,
-  options: {},
-  button: function ($node, options) {
-    return renderer["a" /* default */].create('<button type="button" class="note-btn btn btn-default btn-sm" role="button" tabindex="-1">', function ($node, options) {
-      if (options && options.tooltip) {
-        $node.attr({
-          title: options.tooltip,
-          'aria-label': options.tooltip
-        }).tooltip({
-          container: options.container !== undefined ? options.container : 'body',
-          trigger: 'hover',
-          placement: 'bottom'
-        }).on('click', e => {
-          external_jQuery_default()(e.currentTarget).tooltip('hide');
-        });
-      }
-    })($node, options);
-  },
-  toggleBtn: function ($btn, isEnable) {
-    $btn.toggleClass('disabled', !isEnable);
-    $btn.attr('disabled', !isEnable);
-  },
-  toggleBtnActive: function ($btn, isActive) {
-    $btn.toggleClass('active', isActive);
-  },
-  onDialogShown: function ($dialog, handler) {
-    $dialog.one('shown.bs.modal', handler);
-  },
-  onDialogHidden: function ($dialog, handler) {
-    $dialog.one('hidden.bs.modal', handler);
-  },
-  showDialog: function ($dialog) {
-    $dialog.modal('show');
-  },
-  hideDialog: function ($dialog) {
-    $dialog.modal('hide');
-  },
-  createLayout: function ($note, options) {
-    const $editor = (options.airMode ? ui.airEditor([ui.editingArea([ui.airEditable()])]) : ui.editor([ui.toolbar(), ui.editingArea([ui.codable(), ui.editable()]), ui.statusbar()])).render();
-    $editor.insertAfter($note);
-    return {
-      note: $note,
-      editor: $editor,
-      toolbar: $editor.find('.note-toolbar'),
-      editingArea: $editor.find('.note-editing-area'),
-      editable: $editor.find('.note-editable'),
-      codable: $editor.find('.note-codable'),
-      statusbar: $editor.find('.note-statusbar')
-    };
-  },
-  removeLayout: function ($note, layoutInfo) {
-    $note.html(layoutInfo.editable.html());
-    layoutInfo.editor.remove();
-    $note.show();
-  }
+const ui = function (editorOptions) {
+  return {
+    editor: editor,
+    toolbar: toolbar,
+    editingArea: editingArea,
+    codable: codable,
+    editable: editable,
+    statusbar: statusbar,
+    airEditor: airEditor,
+    airEditable: airEditable,
+    buttonGroup: buttonGroup,
+    dropdown: dropdown,
+    dropdownButtonContents: dropdownButtonContents,
+    dropdownCheck: dropdownCheck,
+    dialog: dialog,
+    popover: popover,
+    checkbox: ui_checkbox,
+    icon: icon,
+    options: editorOptions,
+    palette: function ($node, options) {
+      return renderer["a" /* default */].create('<div class="note-color-palette"/>', function ($node, options) {
+        const contents = [];
+
+        for (let row = 0, rowSize = options.colors.length; row < rowSize; row++) {
+          const eventName = options.eventName;
+          const colors = options.colors[row];
+          const colorsName = options.colorsName[row];
+          const buttons = [];
+
+          for (let col = 0, colSize = colors.length; col < colSize; col++) {
+            const color = colors[col];
+            const colorName = colorsName[col];
+            buttons.push(['<button type="button" class="note-color-btn"', 'style="background-color:', color, '" ', 'data-event="', eventName, '" ', 'data-value="', color, '" ', 'title="', colorName, '" ', 'aria-label="', colorName, '" ', 'data-toggle="button" tabindex="-1"></button>'].join(''));
+          }
+
+          contents.push('<div class="note-color-row">' + buttons.join('') + '</div>');
+        }
+
+        $node.html(contents.join(''));
+
+        if (options.tooltip) {
+          $node.find('.note-color-btn').tooltip({
+            container: options.container || editorOptions.container,
+            trigger: 'hover',
+            placement: 'bottom'
+          });
+        }
+      })($node, options);
+    },
+    button: function ($node, options) {
+      return renderer["a" /* default */].create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
+        if (options && options.tooltip) {
+          $node.attr({
+            title: options.tooltip,
+            'aria-label': options.tooltip
+          }).tooltip({
+            container: options.container || editorOptions.container,
+            trigger: 'hover',
+            placement: 'bottom'
+          }).on('click', e => {
+            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(e.currentTarget).tooltip('hide');
+          });
+        }
+      })($node, options);
+    },
+    toggleBtn: function ($btn, isEnable) {
+      $btn.toggleClass('disabled', !isEnable);
+      $btn.attr('disabled', !isEnable);
+    },
+    toggleBtnActive: function ($btn, isActive) {
+      $btn.toggleClass('active', isActive);
+    },
+    onDialogShown: function ($dialog, handler) {
+      $dialog.one('shown.bs.modal', handler);
+    },
+    onDialogHidden: function ($dialog, handler) {
+      $dialog.one('hidden.bs.modal', handler);
+    },
+    showDialog: function ($dialog) {
+      $dialog.modal('show');
+    },
+    hideDialog: function ($dialog) {
+      $dialog.modal('hide');
+    },
+    createLayout: function ($note) {
+      const $editor = (editorOptions.airMode ? airEditor([editingArea([codable(), airEditable()])]) : editorOptions.toolbarPosition === 'bottom' ? editor([editingArea([codable(), editable()]), toolbar(), statusbar()]) : editor([toolbar(), editingArea([codable(), editable()]), statusbar()])).render();
+      $editor.insertAfter($note);
+      return {
+        note: $note,
+        editor: $editor,
+        toolbar: $editor.find('.note-toolbar'),
+        editingArea: $editor.find('.note-editing-area'),
+        editable: $editor.find('.note-editable'),
+        codable: $editor.find('.note-codable'),
+        statusbar: $editor.find('.note-statusbar')
+      };
+    },
+    removeLayout: function ($note, layoutInfo) {
+      $note.html(layoutInfo.editable.html());
+      layoutInfo.editor.remove();
+      $note.show();
+    }
+  };
 };
+
 /* harmony default export */ var bs3_ui = (ui);
 // EXTERNAL MODULE: ./src/js/base/settings.js + 37 modules
 var settings = __webpack_require__(3);
@@ -8747,8 +9102,9 @@ var summernote_bs3 = __webpack_require__(4);
 
 
 
-external_jQuery_default.a.summernote = external_jQuery_default.a.extend(external_jQuery_default.a.summernote, {
-  ui: bs3_ui
+external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote, {
+  ui_template: bs3_ui,
+  interface: 'bs3'
 });
 
 /***/ })
