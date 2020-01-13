@@ -179,12 +179,12 @@ export default class VideoDialog {
   }
 
   /**
-   * show image dialog
+   * show video dialog
    *
    * @param {jQuery} $dialog
    * @return {Promise}
    */
-  showVideoDialog(text) {
+  showVideoDialog(/* text */) {
     return $.Deferred((deferred) => {
       const $videoUrl = this.$dialog.find('.note-video-url');
       const $videoBtn = this.$dialog.find('.note-video-btn');

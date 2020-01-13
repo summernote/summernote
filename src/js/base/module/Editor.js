@@ -89,7 +89,7 @@ export default class Editor {
         };
       })(idx);
       this.context.memo('help.formatH' + idx, this.lang.help['formatH' + idx]);
-    };
+    }
 
     this.insertParagraph = this.wrapCommand(() => {
       this.typing.insertParagraph(this.editable);
@@ -376,7 +376,7 @@ export default class Editor {
     }).on('paste', (event) => {
       this.setLastRange();
       this.context.triggerEvent('paste', event);
-    }).on('input', (event) => {
+    }).on('input', () => {
       // To limit composition characters (e.g. Korean)
       if (this.isLimited(0) && this.snapshot) {
         this.history.applySnapshot(this.snapshot);
