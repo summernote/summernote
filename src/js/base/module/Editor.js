@@ -35,7 +35,7 @@ export default class Editor {
     this.table = new Table();
     this.typing = new Typing(context);
     this.bullet = new Bullet();
-    this.history = new History(this.$editable);
+    this.history = new History(context);
 
     this.context.memo('help.undo', this.lang.help.undo);
     this.context.memo('help.redo', this.lang.help.redo);
@@ -89,7 +89,7 @@ export default class Editor {
         };
       })(idx);
       this.context.memo('help.formatH' + idx, this.lang.help['formatH' + idx]);
-    };
+    }
 
     this.insertParagraph = this.wrapCommand(() => {
       this.typing.insertParagraph(this.editable);
@@ -383,7 +383,7 @@ export default class Editor {
     }).on('paste', (event) => {
       this.setLastRange();
       this.context.triggerEvent('paste', event);
-    }).on('input', (event) => {
+    }).on('input', () => {
       // To limit composition characters (e.g. Korean)
       if (this.isLimited(0) && this.snapshot) {
         this.history.applySnapshot(this.snapshot);
@@ -411,7 +411,14 @@ export default class Editor {
       this.context.triggerEvent('focusout', event);
     });
 
-    if (!this.options.airMode) {
+    if (this.options.airMode) {
+      if (this.options.overrideContextMenu) {
+        this.$editor.on('contextmenu', (event) => {
+          this.context.triggerEvent('contextmenu', event);
+          return false;
+        });
+      }
+    } else {
       if (this.options.width) {
         this.$editor.outerWidth(this.options.width);
       }

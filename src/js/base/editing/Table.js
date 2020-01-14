@@ -24,12 +24,12 @@ const TableResultAction = function(startPoint, where, action, domTable) {
    */
   function setStartPoint() {
     if (!startPoint || !startPoint.tagName || (startPoint.tagName.toLowerCase() !== 'td' && startPoint.tagName.toLowerCase() !== 'th')) {
-      console.error('Impossible to identify start Cell point.', startPoint);
+      // Impossible to identify start Cell point
       return;
     }
     _startPoint.colPos = startPoint.cellIndex;
     if (!startPoint.parentElement || !startPoint.parentElement.tagName || startPoint.parentElement.tagName.toLowerCase() !== 'tr') {
-      console.error('Impossible to identify start Row point.', startPoint);
+      // Impossible to identify start Row point
       return;
     }
     _startPoint.rowPos = startPoint.parentElement.rowIndex;
@@ -325,18 +325,20 @@ export default class Table {
           html.append('<td' + tdAttributes + '>' + dom.blank + '</td>');
           break;
         case TableResultAction.resultAction.SumSpanCount:
-          if (position === 'top') {
-            const baseCellTr = currentCell.baseCell.parent;
-            const isTopFromRowSpan = (!baseCellTr ? 0 : currentCell.baseCell.closest('tr').rowIndex) <= currentTr[0].rowIndex;
-            if (isTopFromRowSpan) {
-              const newTd = $('<div></div>').append($('<td' + tdAttributes + '>' + dom.blank + '</td>').removeAttr('rowspan')).html();
-              html.append(newTd);
-              break;
+          {
+            if (position === 'top') {
+              const baseCellTr = currentCell.baseCell.parent;
+              const isTopFromRowSpan = (!baseCellTr ? 0 : currentCell.baseCell.closest('tr').rowIndex) <= currentTr[0].rowIndex;
+              if (isTopFromRowSpan) {
+                const newTd = $('<div></div>').append($('<td' + tdAttributes + '>' + dom.blank + '</td>').removeAttr('rowspan')).html();
+                html.append(newTd);
+                break;
+              }
             }
+            let rowspanNumber = parseInt(currentCell.baseCell.rowSpan, 10);
+            rowspanNumber++;
+            currentCell.baseCell.setAttribute('rowSpan', rowspanNumber);
           }
-          let rowspanNumber = parseInt(currentCell.baseCell.rowSpan, 10);
-          rowspanNumber++;
-          currentCell.baseCell.setAttribute('rowSpan', rowspanNumber);
           break;
       }
     }
@@ -452,19 +454,21 @@ export default class Table {
         case TableResultAction.resultAction.Ignore:
           continue;
         case TableResultAction.resultAction.AddCell:
-          const nextRow = row.next('tr')[0];
-          if (!nextRow) { continue; }
-          const cloneRow = row[0].cells[cellPos];
-          if (hasRowspan) {
-            if (rowspanNumber > 2) {
-              rowspanNumber--;
-              nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
-              nextRow.cells[cellPos].setAttribute('rowSpan', rowspanNumber);
-              nextRow.cells[cellPos].innerHTML = '';
-            } else if (rowspanNumber === 2) {
-              nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
-              nextRow.cells[cellPos].removeAttribute('rowSpan');
-              nextRow.cells[cellPos].innerHTML = '';
+          {
+            const nextRow = row.next('tr')[0];
+            if (!nextRow) { continue; }
+            const cloneRow = row[0].cells[cellPos];
+            if (hasRowspan) {
+              if (rowspanNumber > 2) {
+                rowspanNumber--;
+                nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
+                nextRow.cells[cellPos].setAttribute('rowSpan', rowspanNumber);
+                nextRow.cells[cellPos].innerHTML = '';
+              } else if (rowspanNumber === 2) {
+                nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
+                nextRow.cells[cellPos].removeAttribute('rowSpan');
+                nextRow.cells[cellPos].innerHTML = '';
+              }
             }
           }
           continue;
@@ -511,17 +515,19 @@ export default class Table {
         case TableResultAction.resultAction.Ignore:
           continue;
         case TableResultAction.resultAction.SubtractSpanCount:
-          const baseCell = actions[actionIndex].baseCell;
-          const hasColspan = (baseCell.colSpan && baseCell.colSpan > 1);
-          if (hasColspan) {
-            let colspanNumber = (baseCell.colSpan) ? parseInt(baseCell.colSpan, 10) : 0;
-            if (colspanNumber > 2) {
-              colspanNumber--;
-              baseCell.setAttribute('colSpan', colspanNumber);
-              if (baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
-            } else if (colspanNumber === 2) {
-              baseCell.removeAttribute('colSpan');
-              if (baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
+          {
+            const baseCell = actions[actionIndex].baseCell;
+            const hasColspan = (baseCell.colSpan && baseCell.colSpan > 1);
+            if (hasColspan) {
+              let colspanNumber = (baseCell.colSpan) ? parseInt(baseCell.colSpan, 10) : 0;
+              if (colspanNumber > 2) {
+                colspanNumber--;
+                baseCell.setAttribute('colSpan', colspanNumber);
+                if (baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
+              } else if (colspanNumber === 2) {
+                baseCell.removeAttribute('colSpan');
+                if (baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
+              }
             }
           }
           continue;

@@ -1,22 +1,22 @@
 /*!
  * 
- * Super simple wysiwyg editor v0.8.14
+ * Super simple wysiwyg editor v0.8.15
  * https://summernote.org
  * 
  * 
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  * 
- * Date: 2019-12-28T14:35Z
+ * Date: 2020-01-04T11:44Z
  * 
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("jQuery"));
+		module.exports = factory(require("jquery"));
 	else if(typeof define === 'function' && define.amd)
-		define(["jQuery"], factory);
+		define(["jquery"], factory);
 	else {
-		var a = typeof exports === 'object' ? factory(require("jQuery")) : factory(root["jQuery"]);
+		var a = typeof exports === 'object' ? factory(require("jquery")) : factory(root["jQuery"]);
 		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
 	}
 })(window, function(__WEBPACK_EXTERNAL_MODULE__0__) {
@@ -208,16 +208,16 @@ module.exports = __webpack_amd_options__;
 
 "use strict";
 
-// EXTERNAL MODULE: external "jQuery"
-var external_jQuery_ = __webpack_require__(0);
-var external_jQuery_default = /*#__PURE__*/__webpack_require__.n(external_jQuery_);
+// EXTERNAL MODULE: external {"root":"jQuery","commonjs2":"jquery","commonjs":"jquery","amd":"jquery"}
+var external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_ = __webpack_require__(0);
+var external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default = /*#__PURE__*/__webpack_require__.n(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_);
 
 // CONCATENATED MODULE: ./src/js/base/summernote-en-US.js
 
-external_jQuery_default.a.summernote = external_jQuery_default.a.summernote || {
+external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote || {
   lang: {}
 };
-external_jQuery_default.a.extend(external_jQuery_default.a.summernote.lang, {
+external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.lang, {
   'en-US': {
     font: {
       bold: 'Bold',
@@ -391,7 +391,7 @@ const isSupportAmd = typeof define === 'function' && __webpack_require__(2); // 
 const genericFontFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
 
 function validFontName(fontName) {
-  return external_jQuery_default.a.inArray(fontName.toLowerCase(), genericFontFamilies) === -1 ? `'${fontName}'` : fontName;
+  return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.inArray(fontName.toLowerCase(), genericFontFamilies) === -1 ? `'${fontName}'` : fontName;
 }
 
 function isFontInstalled(fontName) {
@@ -450,7 +450,7 @@ const inputEventName = isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOM
   isChrome: !isEdge && /chrome/i.test(userAgent),
   isSafari: !isEdge && /safari/i.test(userAgent) && !/chrome/i.test(userAgent),
   browserVersion,
-  jqueryVersion: parseFloat(external_jQuery_default.a.fn.jquery),
+  jqueryVersion: parseFloat(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.fn.jquery),
   isSupportAmd,
   isSupportTouch,
   hasCodeMirror,
@@ -553,7 +553,7 @@ function uniqueId(prefix) {
 
 
 function rect2bnd(rect) {
-  const $document = external_jQuery_default()(document);
+  const $document = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document);
   return {
     top: rect.top + $document.scrollTop(),
     left: rect.left + $document.scrollLeft(),
@@ -918,7 +918,7 @@ const ZERO_WIDTH_NBSP_CHAR = '\ufeff';
  */
 
 function isEditable(node) {
-  return node && external_jQuery_default()(node).hasClass('note-editable');
+  return node && external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(node).hasClass('note-editable');
 }
 /**
  * @method isControlSizing
@@ -931,7 +931,7 @@ function isEditable(node) {
 
 
 function isControlSizing(node) {
-  return node && external_jQuery_default()(node).hasClass('note-control-sizing');
+  return node && external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(node).hasClass('note-control-sizing');
 }
 /**
  * @method makePredByNodeName
@@ -1329,7 +1329,7 @@ function listDescendant(node, pred) {
 
 function wrap(node, wrapperName) {
   const parent = node.parentNode;
-  const wrapper = external_jQuery_default()('<' + wrapperName + '>')[0];
+  const wrapper = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<' + wrapperName + '>')[0];
   parent.insertBefore(wrapper, node);
   wrapper.appendChild(node);
   return wrapper;
@@ -1363,7 +1363,7 @@ function insertAfter(node, preceding) {
 
 
 function appendChildNodes(node, aChild) {
-  external_jQuery_default.a.each(aChild, function (idx, child) {
+  external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(aChild, function (idx, child) {
     node.appendChild(child);
   });
   return node;
@@ -2000,7 +2000,7 @@ function dom_html($node, isNewlineOnBlock) {
 }
 
 function posFromPlaceholder(placeholder) {
-  const $placeholder = external_jQuery_default()(placeholder);
+  const $placeholder = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(placeholder);
   const pos = $placeholder.offset();
   const height = $placeholder.outerHeight(true); // include margin
 
@@ -2141,12 +2141,14 @@ class Context_Context {
    * @param {Object} options
    */
   constructor($note, options) {
-    this.ui = external_jQuery_default.a.summernote.ui;
     this.$note = $note;
     this.memos = {};
     this.modules = {};
     this.layoutInfo = {};
-    this.options = external_jQuery_default.a.extend(true, {}, options);
+    this.options = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(true, {}, options); // init ui with options
+
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui_template(this.options);
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.initialize();
   }
   /**
@@ -2155,7 +2157,7 @@ class Context_Context {
 
 
   initialize() {
-    this.layoutInfo = this.ui.createLayout(this.$note, this.options);
+    this.layoutInfo = this.ui.createLayout(this.$note);
 
     this._initialize();
 
@@ -2193,15 +2195,15 @@ class Context_Context {
 
   _initialize() {
     // set own id
-    this.options.id = func.uniqueId(external_jQuery_default.a.now()); // set default container for tooltips, popovers, and dialogs
+    this.options.id = func.uniqueId(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.now()); // set default container for tooltips, popovers, and dialogs
 
     this.options.container = this.options.container || this.layoutInfo.editor; // add optional buttons
 
-    const buttons = external_jQuery_default.a.extend({}, this.options.buttons);
+    const buttons = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend({}, this.options.buttons);
     Object.keys(buttons).forEach(key => {
       this.memo('button.' + key, buttons[key]);
     });
-    const modules = external_jQuery_default.a.extend({}, this.options.modules, external_jQuery_default.a.summernote.plugins || {}); // add and initialize modules
+    const modules = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend({}, this.options.modules, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.plugins || {}); // add and initialize modules
 
     Object.keys(modules).forEach(key => {
       this.module(key, modules[key], true);
@@ -2353,7 +2355,7 @@ class Context_Context {
   createInvokeHandler(namespace, value) {
     return event => {
       event.preventDefault();
-      const $target = external_jQuery_default()(event.target);
+      const $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target);
       this.invoke(namespace, value || $target.closest('[data-value]').data('value'), $target);
     };
   }
@@ -2380,7 +2382,7 @@ class Context_Context {
 
 
 
-external_jQuery_default.a.fn.extend({
+external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.fn.extend({
   /**
    * Summernote API
    *
@@ -2388,16 +2390,16 @@ external_jQuery_default.a.fn.extend({
    * @return {this}
    */
   summernote: function () {
-    const type = external_jQuery_default.a.type(lists.head(arguments));
+    const type = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.type(lists.head(arguments));
     const isExternalAPICalled = type === 'string';
     const hasInitOptions = type === 'object';
-    const options = external_jQuery_default.a.extend({}, external_jQuery_default.a.summernote.options, hasInitOptions ? lists.head(arguments) : {}); // Update options
+    const options = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend({}, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.options, hasInitOptions ? lists.head(arguments) : {}); // Update options
 
-    options.langInfo = external_jQuery_default.a.extend(true, {}, external_jQuery_default.a.summernote.lang['en-US'], external_jQuery_default.a.summernote.lang[options.lang]);
-    options.icons = external_jQuery_default.a.extend(true, {}, external_jQuery_default.a.summernote.options.icons, options.icons);
+    options.langInfo = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(true, {}, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.lang['en-US'], external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.lang[options.lang]);
+    options.icons = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(true, {}, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.options.icons, options.icons);
     options.tooltip = options.tooltip === 'auto' ? !env.isSupportTouch : options.tooltip;
     this.each((idx, note) => {
-      const $note = external_jQuery_default()(note);
+      const $note = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(note);
 
       if (!$note.data('summernote')) {
         const context = new Context_Context($note, options);
@@ -2632,7 +2634,7 @@ class range_WrappedRange {
 
 
   scrollIntoView(container) {
-    const height = external_jQuery_default()(container).height();
+    const height = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(container).height();
 
     if (container.scrollTop + height < this.sc.offsetTop) {
       container.scrollTop += Math.abs(container.scrollTop + height - this.sc.offsetTop);
@@ -2852,7 +2854,7 @@ class range_WrappedRange {
       return !lists.contains(nodes, point.node);
     });
     const emptyParents = [];
-    external_jQuery_default.a.each(nodes, function (idx, node) {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(nodes, function (idx, node) {
       // find empty parents
       const parent = node.parentNode;
 
@@ -2863,7 +2865,7 @@ class range_WrappedRange {
       dom.remove(node, false);
     }); // remove empty parents
 
-    external_jQuery_default.a.each(emptyParents, function (idx, node) {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(emptyParents, function (idx, node) {
       dom.remove(node, false);
     });
     return new range_WrappedRange(point.node, point.offset, point.node, point.offset).normalize();
@@ -2984,8 +2986,8 @@ class range_WrappedRange {
 
 
   pasteHTML(markup) {
-    markup = external_jQuery_default.a.trim(markup);
-    const contentsContainer = external_jQuery_default()('<div></div>').html(markup)[0];
+    markup = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.trim(markup);
+    const contentsContainer = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div></div>').html(markup)[0];
     let childNodes = lists.from(contentsContainer.childNodes); // const rng = this.wrapBodyInlineWithPara().deleteContents();
 
     const rng = this;
@@ -3430,8 +3432,8 @@ const KEY_MAP = {
  */
 
 function readFileAsDataURL(file) {
-  return external_jQuery_default.a.Deferred(deferred => {
-    external_jQuery_default.a.extend(new FileReader(), {
+  return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(deferred => {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(new FileReader(), {
       onload: e => {
         const dataURL = e.target.result;
         deferred.resolve(dataURL);
@@ -3452,8 +3454,8 @@ function readFileAsDataURL(file) {
  */
 
 function createImage(url) {
-  return external_jQuery_default.a.Deferred(deferred => {
-    const $img = external_jQuery_default()('<img>');
+  return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(deferred => {
+    const $img = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<img>');
     $img.one('load', () => {
       $img.off('error abort');
       deferred.resolve($img);
@@ -3617,7 +3619,7 @@ class Style_Style {
   jQueryCSS($obj, propertyNames) {
     if (env.jqueryVersion < 1.9) {
       const result = {};
-      external_jQuery_default.a.each(propertyNames, (idx, propertyName) => {
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(propertyNames, (idx, propertyName) => {
         result[propertyName] = $obj.css(propertyName);
       });
       return result;
@@ -3650,10 +3652,10 @@ class Style_Style {
 
 
   stylePara(rng, styleInfo) {
-    external_jQuery_default.a.each(rng.nodes(dom.isPara, {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(rng.nodes(dom.isPara, {
       includeAncestor: true
     }), (idx, para) => {
-      external_jQuery_default()(para).css(styleInfo);
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(para).css(styleInfo);
     });
   }
   /**
@@ -3698,7 +3700,7 @@ class Style_Style {
         const siblings = dom.withClosestSiblings(node, pred);
         const head = lists.head(siblings);
         const tails = lists.tail(siblings);
-        external_jQuery_default.a.each(tails, (idx, elem) => {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(tails, (idx, elem) => {
           dom.appendChildNodes(head, elem.childNodes);
           dom.remove(elem);
         });
@@ -3717,12 +3719,12 @@ class Style_Style {
 
 
   current(rng) {
-    const $cont = external_jQuery_default()(!dom.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
+    const $cont = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(!dom.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
     let styleInfo = this.fromNode($cont); // document.queryCommandState for toggle state
     // [workaround] prevent Firefox nsresult: "0x80004005 (NS_ERROR_FAILURE)"
 
     try {
-      styleInfo = external_jQuery_default.a.extend(styleInfo, {
+      styleInfo = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(styleInfo, {
         'font-bold': document.queryCommandState('bold') ? 'bold' : 'normal',
         'font-italic': document.queryCommandState('italic') ? 'italic' : 'normal',
         'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
@@ -3790,7 +3792,7 @@ class Bullet_Bullet {
       includeAncestor: true
     });
     const clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
-    external_jQuery_default.a.each(clustereds, (idx, paras) => {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(clustereds, (idx, paras) => {
       const head = lists.head(paras);
 
       if (dom.isLi(head)) {
@@ -3803,8 +3805,8 @@ class Bullet_Bullet {
           paras.map(para => para.parentNode).map(para => this.appendToPrevious(para));
         }
       } else {
-        external_jQuery_default.a.each(paras, (idx, para) => {
-          external_jQuery_default()(para).css('marginLeft', (idx, val) => {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(paras, (idx, para) => {
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(para).css('marginLeft', (idx, val) => {
             return (parseInt(val, 10) || 0) + 25;
           });
         });
@@ -3823,14 +3825,14 @@ class Bullet_Bullet {
       includeAncestor: true
     });
     const clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
-    external_jQuery_default.a.each(clustereds, (idx, paras) => {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(clustereds, (idx, paras) => {
       const head = lists.head(paras);
 
       if (dom.isLi(head)) {
         this.releaseList([paras]);
       } else {
-        external_jQuery_default.a.each(paras, (idx, para) => {
-          external_jQuery_default()(para).css('marginLeft', (idx, val) => {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(paras, (idx, para) => {
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(para).css('marginLeft', (idx, val) => {
             val = parseInt(val, 10) || 0;
             return val > 25 ? val - 25 : '';
           });
@@ -3856,7 +3858,7 @@ class Bullet_Bullet {
 
     if (lists.find(paras, dom.isPurePara)) {
       let wrappedParas = [];
-      external_jQuery_default.a.each(clustereds, (idx, paras) => {
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(clustereds, (idx, paras) => {
         wrappedParas = wrappedParas.concat(this.wrapList(paras, listName));
       });
       paras = wrappedParas; // list to paragraph or change list style
@@ -3864,11 +3866,11 @@ class Bullet_Bullet {
       const diffLists = rng.nodes(dom.isList, {
         includeAncestor: true
       }).filter(listNode => {
-        return !external_jQuery_default.a.nodeName(listNode, listName);
+        return !external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.nodeName(listNode, listName);
       });
 
       if (diffLists.length) {
-        external_jQuery_default.a.each(diffLists, (idx, listNode) => {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(diffLists, (idx, listNode) => {
           dom.replace(listNode, listName);
         });
       } else {
@@ -3916,7 +3918,7 @@ class Bullet_Bullet {
 
   releaseList(clustereds, isEscapseToBody) {
     let releasedParas = [];
-    external_jQuery_default.a.each(clustereds, (idx, paras) => {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(clustereds, (idx, paras) => {
       const head = lists.head(paras);
       const last = lists.last(paras);
       const headList = isEscapseToBody ? dom.lastAncestor(head, dom.isList) : head.parentNode;
@@ -3966,14 +3968,14 @@ class Bullet_Bullet {
           });
         }
 
-        external_jQuery_default.a.each(lists.from(paras).reverse(), (idx, para) => {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(lists.from(paras).reverse(), (idx, para) => {
           dom.insertAfter(para, headList);
         }); // remove empty lists
 
         const rootLists = lists.compact([headList, middleList, lastList]);
-        external_jQuery_default.a.each(rootLists, (idx, rootList) => {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(rootLists, (idx, rootList) => {
           const listNodes = [rootList].concat(dom.listDescendant(rootList, dom.isList));
-          external_jQuery_default.a.each(listNodes.reverse(), (idx, listNode) => {
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(listNodes.reverse(), (idx, listNode) => {
             if (!dom.nodeLength(listNode)) {
               dom.remove(listNode, true);
             }
@@ -4107,11 +4109,11 @@ class Typing_Typing {
 
         if (blockquote) {
           // We're inside a blockquote and options ask us to break it
-          nextPara = external_jQuery_default()(dom.emptyPara)[0]; // If the split is right before a <br>, remove it so that there's no "empty line"
+          nextPara = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(dom.emptyPara)[0]; // If the split is right before a <br>, remove it so that there's no "empty line"
           // after the split in the new blockquote created
 
           if (dom.isRightEdgePoint(rng.getStartPoint()) && dom.isBR(rng.sc.nextSibling)) {
-            external_jQuery_default()(rng.sc.nextSibling).remove();
+            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(rng.sc.nextSibling).remove();
           }
 
           const split = dom.splitTree(blockquote, rng.getStartPoint(), {
@@ -4128,7 +4130,7 @@ class Typing_Typing {
 
           let emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
           emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
-          external_jQuery_default.a.each(emptyAnchors, (idx, anchor) => {
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(emptyAnchors, (idx, anchor) => {
             dom.remove(anchor);
           }); // replace empty heading, pre or custom-made styleTag with P tag
 
@@ -4140,7 +4142,7 @@ class Typing_Typing {
 
     } else {
       const next = rng.sc.childNodes[rng.so];
-      nextPara = external_jQuery_default()(dom.emptyPara)[0];
+      nextPara = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(dom.emptyPara)[0];
 
       if (next) {
         rng.sc.insertBefore(nextPara, next);
@@ -4517,10 +4519,10 @@ class Table_Table {
 
   addRow(rng, position) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    const currentTr = external_jQuery_default()(cell).closest('tr');
+    const currentTr = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('tr');
     const trAttributes = this.recoverAttributes(currentTr);
-    const html = external_jQuery_default()('<tr' + trAttributes + '></tr>');
-    const vTable = new TableResultAction(cell, TableResultAction.where.Row, TableResultAction.requestAction.Add, external_jQuery_default()(currentTr).closest('table')[0]);
+    const html = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<tr' + trAttributes + '></tr>');
+    const vTable = new TableResultAction(cell, TableResultAction.where.Row, TableResultAction.requestAction.Add, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentTr).closest('table')[0]);
     const actions = vTable.getActionList();
 
     for (let idCell = 0; idCell < actions.length; idCell++) {
@@ -4538,7 +4540,7 @@ class Table_Table {
             const isTopFromRowSpan = (!baseCellTr ? 0 : currentCell.baseCell.closest('tr').rowIndex) <= currentTr[0].rowIndex;
 
             if (isTopFromRowSpan) {
-              const newTd = external_jQuery_default()('<div></div>').append(external_jQuery_default()('<td' + tdAttributes + '>' + dom.blank + '</td>').removeAttr('rowspan')).html();
+              const newTd = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div></div>').append(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<td' + tdAttributes + '>' + dom.blank + '</td>').removeAttr('rowspan')).html();
               html.append(newTd);
               break;
             }
@@ -4558,7 +4560,7 @@ class Table_Table {
 
       if (cellHasRowspan) {
         const lastTrIndex = currentTr[0].rowIndex + (cell.rowSpan - 2);
-        external_jQuery_default()(external_jQuery_default()(currentTr).parent().find('tr')[lastTrIndex]).after(external_jQuery_default()(html));
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentTr).parent().find('tr')[lastTrIndex]).after(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(html));
         return;
       }
 
@@ -4576,10 +4578,10 @@ class Table_Table {
 
   addCol(rng, position) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    const row = external_jQuery_default()(cell).closest('tr');
-    const rowsGroup = external_jQuery_default()(row).siblings();
+    const row = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('tr');
+    const rowsGroup = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(row).siblings();
     rowsGroup.push(row);
-    const vTable = new TableResultAction(cell, TableResultAction.where.Column, TableResultAction.requestAction.Add, external_jQuery_default()(row).closest('table')[0]);
+    const vTable = new TableResultAction(cell, TableResultAction.where.Column, TableResultAction.requestAction.Add, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(row).closest('table')[0]);
     const actions = vTable.getActionList();
 
     for (let actionIndex = 0; actionIndex < actions.length; actionIndex++) {
@@ -4589,9 +4591,9 @@ class Table_Table {
       switch (currentCell.action) {
         case TableResultAction.resultAction.AddCell:
           if (position === 'right') {
-            external_jQuery_default()(currentCell.baseCell).after('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentCell.baseCell).after('<td' + tdAttributes + '>' + dom.blank + '</td>');
           } else {
-            external_jQuery_default()(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
           }
 
           break;
@@ -4602,7 +4604,7 @@ class Table_Table {
             colspanNumber++;
             currentCell.baseCell.setAttribute('colSpan', colspanNumber);
           } else {
-            external_jQuery_default()(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
           }
 
           break;
@@ -4648,10 +4650,10 @@ class Table_Table {
 
   deleteRow(rng) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    const row = external_jQuery_default()(cell).closest('tr');
-    const cellPos = row.children('td, th').index(external_jQuery_default()(cell));
+    const row = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('tr');
+    const cellPos = row.children('td, th').index(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell));
     const rowPos = row[0].rowIndex;
-    const vTable = new TableResultAction(cell, TableResultAction.where.Row, TableResultAction.requestAction.Delete, external_jQuery_default()(row).closest('table')[0]);
+    const vTable = new TableResultAction(cell, TableResultAction.where.Row, TableResultAction.requestAction.Delete, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(row).closest('table')[0]);
     const actions = vTable.getActionList();
 
     for (let actionIndex = 0; actionIndex < actions.length; actionIndex++) {
@@ -4730,9 +4732,9 @@ class Table_Table {
 
   deleteCol(rng) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    const row = external_jQuery_default()(cell).closest('tr');
-    const cellPos = row.children('td, th').index(external_jQuery_default()(cell));
-    const vTable = new TableResultAction(cell, TableResultAction.where.Column, TableResultAction.requestAction.Delete, external_jQuery_default()(row).closest('table')[0]);
+    const row = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('tr');
+    const cellPos = row.children('td, th').index(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell));
+    const vTable = new TableResultAction(cell, TableResultAction.where.Column, TableResultAction.requestAction.Delete, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(row).closest('table')[0]);
     const actions = vTable.getActionList();
 
     for (let actionIndex = 0; actionIndex < actions.length; actionIndex++) {
@@ -4801,7 +4803,7 @@ class Table_Table {
     }
 
     trHTML = trs.join('');
-    const $table = external_jQuery_default()('<table>' + trHTML + '</table>');
+    const $table = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<table>' + trHTML + '</table>');
 
     if (options && options.tableClassName) {
       $table.addClass(options.tableClassName);
@@ -4819,7 +4821,7 @@ class Table_Table {
 
   deleteTable(rng) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    external_jQuery_default()(cell).closest('table').remove();
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('table').remove();
   }
 
 }
@@ -4930,7 +4932,7 @@ class Editor_Editor {
      */
 
     this.insertNode = this.wrapCommand(node => {
-      if (this.isLimited(external_jQuery_default()(node).text().length)) {
+      if (this.isLimited(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(node).text().length)) {
         return;
       }
 
@@ -5037,7 +5039,7 @@ class Editor_Editor {
 
       if (isTextChanged) {
         rng = rng.deleteContents();
-        const anchor = rng.insertNode(external_jQuery_default()('<A>' + linkText + '</A>')[0]);
+        const anchor = rng.insertNode(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<A>' + linkText + '</A>')[0]);
         anchors.push(anchor);
       } else {
         anchors = this.style.styleNodes(rng, {
@@ -5047,13 +5049,13 @@ class Editor_Editor {
         });
       }
 
-      external_jQuery_default.a.each(anchors, (idx, anchor) => {
-        external_jQuery_default()(anchor).attr('href', linkUrl);
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(anchors, (idx, anchor) => {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(anchor).attr('href', linkUrl);
 
         if (isNewWindow) {
-          external_jQuery_default()(anchor).attr('target', '_blank');
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(anchor).attr('target', '_blank');
         } else {
-          external_jQuery_default()(anchor).removeAttr('target');
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(anchor).removeAttr('target');
         }
       });
       const startRange = core_range.createFromNodeBefore(lists.head(anchors));
@@ -5108,12 +5110,12 @@ class Editor_Editor {
      */
 
     this.removeMedia = this.wrapCommand(() => {
-      let $target = external_jQuery_default()(this.restoreTarget()).parent();
+      let $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.restoreTarget()).parent();
 
       if ($target.closest('figure').length) {
         $target.closest('figure').remove();
       } else {
-        $target = external_jQuery_default()(this.restoreTarget()).detach();
+        $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.restoreTarget()).detach();
       }
 
       this.context.triggerEvent('media.delete', $target, this.$editable);
@@ -5125,7 +5127,7 @@ class Editor_Editor {
      */
 
     this.floatMe = this.wrapCommand(value => {
-      const $target = external_jQuery_default()(this.restoreTarget());
+      const $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.restoreTarget());
       $target.toggleClass('note-float-left', value === 'left');
       $target.toggleClass('note-float-right', value === 'right');
       $target.css('float', value === 'none' ? '' : value);
@@ -5136,7 +5138,7 @@ class Editor_Editor {
      */
 
     this.resize = this.wrapCommand(value => {
-      const $target = external_jQuery_default()(this.restoreTarget());
+      const $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.restoreTarget());
       value = parseFloat(value);
 
       if (value === 0) {
@@ -5324,7 +5326,7 @@ class Editor_Editor {
     } else {
       this.lastRange = core_range.create(this.editable);
 
-      if (external_jQuery_default()(this.lastRange.sc).closest('.note-editable').length === 0) {
+      if (external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.lastRange.sc).closest('.note-editable').length === 0) {
         this.lastRange = core_range.createFromBodyElement(this.editable);
       }
     }
@@ -5546,7 +5548,7 @@ class Editor_Editor {
 
 
   insertImagesAsDataURL(files) {
-    external_jQuery_default.a.each(files, (idx, file) => {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(files, (idx, file) => {
       const filename = file.name;
 
       if (this.options.maximumImageFileSize && this.options.maximumImageFileSize < file.size) {
@@ -5606,7 +5608,7 @@ class Editor_Editor {
 
         if (className) {
           const currentRange = this.createRange();
-          const $parent = external_jQuery_default()([currentRange.sc, currentRange.ec]).closest(tagName);
+          const $parent = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()([currentRange.sc, currentRange.ec]).closest(tagName);
           $parent.addClass(className);
         }
       }
@@ -5623,7 +5625,7 @@ class Editor_Editor {
     if (rng !== '') {
       const spans = this.style.styleNodes(rng);
       this.$editor.find('.note-status-output').html('');
-      external_jQuery_default()(spans).css(target, value); // [workaround] added styled bogus span for style
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(spans).css(target, value); // [workaround] added styled bogus span for style
       //  - also bogus character needed for cursor position
 
       if (rng.isCollapsed()) {
@@ -5637,10 +5639,10 @@ class Editor_Editor {
         }
       }
     } else {
-      const noteStatusOutput = external_jQuery_default.a.now();
+      const noteStatusOutput = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.now();
       this.$editor.find('.note-status-output').html('<div id="note-status-output-' + noteStatusOutput + '" class="alert alert-info">' + this.lang.output.noSelection + '</div>');
       setTimeout(function () {
-        external_jQuery_default()('#note-status-output-' + noteStatusOutput).remove();
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('#note-status-output-' + noteStatusOutput).remove();
       }, 5000);
     }
   }
@@ -5678,7 +5680,7 @@ class Editor_Editor {
   getLinkInfo() {
     const rng = this.getLastRange().expand(dom.isAnchor); // Get the first anchor on range(for edit).
 
-    const $anchor = external_jQuery_default()(lists.head(rng.nodes(dom.isAnchor)));
+    const $anchor = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(lists.head(rng.nodes(dom.isAnchor)));
     const linkInfo = {
       range: rng,
       text: rng.toString(),
@@ -5861,13 +5863,13 @@ class Clipboard_Clipboard {
 class Dropzone_Dropzone {
   constructor(context) {
     this.context = context;
-    this.$eventListener = external_jQuery_default()(document);
+    this.$eventListener = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document);
     this.$editor = context.layoutInfo.editor;
     this.$editable = context.layoutInfo.editable;
     this.options = context.options;
     this.lang = this.options.langInfo;
     this.documentEventHandlers = {};
-    this.$dropzone = external_jQuery_default()(['<div class="note-dropzone">', '<div class="note-dropzone-message"/>', '</div>'].join('')).prependTo(this.$editor);
+    this.$dropzone = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(['<div class="note-dropzone">', '<div class="note-dropzone-message"/>', '</div>'].join('')).prependTo(this.$editor);
   }
   /**
    * attach Drag and Drop Events
@@ -5894,7 +5896,7 @@ class Dropzone_Dropzone {
 
 
   attachDragAndDropEvent() {
-    let collection = external_jQuery_default()();
+    let collection = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()();
     const $dropzoneMessage = this.$dropzone.find('.note-dropzone-message');
 
     this.documentEventHandlers.onDragenter = e => {
@@ -5915,13 +5917,13 @@ class Dropzone_Dropzone {
       collection = collection.not(e.target); // If nodeName is BODY, then just make it over (fix for IE)
 
       if (!collection.length || e.target.nodeName === 'BODY') {
-        collection = external_jQuery_default()();
+        collection = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()();
         this.$editor.removeClass('dragover');
       }
     };
 
     this.documentEventHandlers.onDrop = () => {
-      collection = external_jQuery_default()();
+      collection = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()();
       this.$editor.removeClass('dragover');
     }; // show dropzone on dragenter when dragging a object to document
     // -but only if the editor is visible, i.e. has a positive width and height
@@ -5946,7 +5948,7 @@ class Dropzone_Dropzone {
         this.$editable.focus();
         this.context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
       } else {
-        external_jQuery_default.a.each(dataTransfer.types, (idx, type) => {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(dataTransfer.types, (idx, type) => {
           // skip moz-specific types
           if (type.toLowerCase().indexOf('_moz_') > -1) {
             return;
@@ -5957,7 +5959,7 @@ class Dropzone_Dropzone {
           if (type.toLowerCase().indexOf('text') > -1) {
             this.context.invoke('editor.pasteHTML', content);
           } else {
-            external_jQuery_default()(content).each((idx, item) => {
+            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(content).each((idx, item) => {
               this.context.invoke('editor.insertNode', item);
             });
           }
@@ -6139,7 +6141,7 @@ class Codeview_CodeView {
 const EDITABLE_PADDING = 24;
 class Statusbar_Statusbar {
   constructor(context) {
-    this.$document = external_jQuery_default()(document);
+    this.$document = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document);
     this.$statusbar = context.layoutInfo.statusbar;
     this.$editable = context.layoutInfo.editable;
     this.options = context.options;
@@ -6184,8 +6186,8 @@ class Fullscreen_Fullscreen {
     this.$toolbar = context.layoutInfo.toolbar;
     this.$editable = context.layoutInfo.editable;
     this.$codable = context.layoutInfo.codable;
-    this.$window = external_jQuery_default()(window);
-    this.$scrollbar = external_jQuery_default()('html, body');
+    this.$window = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(window);
+    this.$scrollbar = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('html, body');
 
     this.onResize = () => {
       this.resizeTo({
@@ -6239,7 +6241,7 @@ class Fullscreen_Fullscreen {
 class Handle_Handle {
   constructor(context) {
     this.context = context;
-    this.$document = external_jQuery_default()(document);
+    this.$document = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document);
     this.$editingArea = context.layoutInfo.editingArea;
     this.options = context.options;
     this.lang = this.options.langInfo;
@@ -6262,7 +6264,7 @@ class Handle_Handle {
   }
 
   initialize() {
-    this.$handle = external_jQuery_default()(['<div class="note-handle">', '<div class="note-control-selection">', '<div class="note-control-selection-bg"></div>', '<div class="note-control-holder note-control-nw"></div>', '<div class="note-control-holder note-control-ne"></div>', '<div class="note-control-holder note-control-sw"></div>', '<div class="', this.options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing', ' note-control-se"></div>', this.options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>', '</div>', '</div>'].join('')).prependTo(this.$editingArea);
+    this.$handle = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(['<div class="note-handle">', '<div class="note-control-selection">', '<div class="note-control-selection-bg"></div>', '<div class="note-control-holder note-control-nw"></div>', '<div class="note-control-holder note-control-ne"></div>', '<div class="note-control-holder note-control-sw"></div>', '<div class="', this.options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing', ' note-control-se"></div>', this.options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>', '</div>', '</div>'].join('')).prependTo(this.$editingArea);
     this.$handle.on('mousedown', event => {
       if (dom.isControlSizing(event.target)) {
         event.preventDefault();
@@ -6312,7 +6314,7 @@ class Handle_Handle {
     this.context.invoke('imagePopover.update', target, event);
 
     if (isImage) {
-      const $image = external_jQuery_default()(target);
+      const $image = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(target);
       const position = $image.position();
       const pos = {
         left: position.left + parseInt($image.css('marginLeft'), 10),
@@ -6395,10 +6397,10 @@ class AutoLink_AutoLink {
     if (match && (match[1] || match[2])) {
       const link = match[1] ? keyword : defaultScheme + keyword;
       const urlText = keyword.replace(/^(?:https?:\/\/)?(?:tel?:?)?(?:mailto?:?)?(?:www\.)?/i, '').split('/')[0];
-      const node = external_jQuery_default()('<a />').html(urlText).attr('href', link)[0];
+      const node = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<a />').html(urlText).attr('href', link)[0];
 
       if (this.context.options.linkTargetBlank) {
-        external_jQuery_default()(node).attr('target', '_blank');
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(node).attr('target', '_blank');
       }
 
       this.lastWordRange.insertNode(node);
@@ -6554,7 +6556,7 @@ class Placeholder_Placeholder {
   }
 
   initialize() {
-    this.$placeholder = external_jQuery_default()('<div class="note-placeholder">');
+    this.$placeholder = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div class="note-placeholder">');
     this.$placeholder.on('click', () => {
       this.context.invoke('focus');
     }).html(this.options.placeholder).prependTo(this.$editingArea);
@@ -6578,7 +6580,7 @@ class Placeholder_Placeholder {
 
 class Buttons_Buttons {
   constructor(context) {
-    this.ui = external_jQuery_default.a.summernote.ui;
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.context = context;
     this.$toolbar = context.layoutInfo.toolbar;
     this.options = context.options;
@@ -6643,7 +6645,7 @@ class Buttons_Buttons {
         contents: this.ui.icon(this.options.icons.font + ' note-recent-color'),
         tooltip: tooltip,
         click: e => {
-          const $button = external_jQuery_default()(e.currentTarget);
+          const $button = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(e.currentTarget);
 
           if (backColor && foreColor) {
             this.context.invoke('editor.color', {
@@ -6687,7 +6689,7 @@ class Buttons_Buttons {
         '<div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"/>', '</div>'].join('') : ''),
         callback: $dropdown => {
           $dropdown.find('.note-holder').each((idx, item) => {
-            const $holder = external_jQuery_default()(item);
+            const $holder = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item);
             $holder.append(this.ui.palette({
               colors: this.options.colors,
               colorsName: this.options.colorsName,
@@ -6700,7 +6702,7 @@ class Buttons_Buttons {
 
           var customColors = [['#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF']];
           $dropdown.find('.note-holder-custom').each((idx, item) => {
-            const $holder = external_jQuery_default()(item);
+            const $holder = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item);
             $holder.append(this.ui.palette({
               colors: customColors,
               colorsName: customColors,
@@ -6710,8 +6712,8 @@ class Buttons_Buttons {
             }).render());
           });
           $dropdown.find('input[type=color]').each((idx, item) => {
-            external_jQuery_default()(item).change(function () {
-              const $chip = $dropdown.find('#' + external_jQuery_default()(this).data('event')).find('.note-color-btn').first();
+            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item).change(function () {
+              const $chip = $dropdown.find('#' + external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this).data('event')).find('.note-color-btn').first();
               const color = this.value.toUpperCase();
               $chip.css('background-color', color).attr('aria-label', color).attr('data-value', color).attr('data-original-title', color);
               $chip.click();
@@ -6720,14 +6722,14 @@ class Buttons_Buttons {
         },
         click: event => {
           event.stopPropagation();
-          const $parent = external_jQuery_default()('.' + className).find('.show');
-          const $button = external_jQuery_default()(event.target);
+          const $parent = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('.' + className).find('.show');
+          const $button = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target);
           const eventName = $button.data('event');
           let value = $button.attr('data-value');
 
           if (eventName === 'openPalette') {
             const $picker = $parent.find('#' + value);
-            const $palette = external_jQuery_default()($parent.find('#' + $picker.data('event')).find('.note-color-row')[0]); // Shift palette chips
+            const $palette = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()($parent.find('#' + $picker.data('event')).find('.note-color-row')[0]); // Shift palette chips
 
             const $chip = $palette.find('.note-color-btn').last().detach(); // Set chip attributes
 
@@ -6851,7 +6853,7 @@ class Buttons_Buttons {
 
       if (this.options.addDefaultFonts) {
         // Add 'default' fonts into the fontnames array if not exist
-        external_jQuery_default.a.each(styleInfo['font-family'].split(','), (idx, fontname) => {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(styleInfo['font-family'].split(','), (idx, fontname) => {
           fontname = fontname.trim().replace(/['"]+/g, '');
 
           if (this.isFontDeservedToAdd(fontname)) {
@@ -7300,7 +7302,7 @@ class Buttons_Buttons {
       });
       const fontName = lists.find(fontNames, this.isFontInstalled.bind(this));
       $cont.find('.dropdown-fontname a').each((idx, item) => {
-        const $item = external_jQuery_default()(item); // always compare string to avoid creating another func.
+        const $item = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item); // always compare string to avoid creating another func.
 
         const isChecked = $item.data('value') + '' === fontName + '';
         $item.toggleClass('checked', isChecked);
@@ -7311,7 +7313,7 @@ class Buttons_Buttons {
     if (styleInfo['font-size']) {
       const fontSize = styleInfo['font-size'];
       $cont.find('.dropdown-fontsize a').each((idx, item) => {
-        const $item = external_jQuery_default()(item); // always compare with string to avoid creating another func.
+        const $item = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item); // always compare with string to avoid creating another func.
 
         const isChecked = $item.data('value') + '' === fontSize + '';
         $item.toggleClass('checked', isChecked);
@@ -7319,7 +7321,7 @@ class Buttons_Buttons {
       $cont.find('.note-current-fontsize').text(fontSize);
       const fontSizeUnit = styleInfo['font-size-unit'];
       $cont.find('.dropdown-fontsizeunit a').each((idx, item) => {
-        const $item = external_jQuery_default()(item);
+        const $item = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item);
         const isChecked = $item.data('value') + '' === fontSizeUnit + '';
         $item.toggleClass('checked', isChecked);
       });
@@ -7330,21 +7332,21 @@ class Buttons_Buttons {
       const lineHeight = styleInfo['line-height'];
       $cont.find('.dropdown-line-height li a').each((idx, item) => {
         // always compare with string to avoid creating another func.
-        const isChecked = external_jQuery_default()(item).data('value') + '' === lineHeight + '';
+        const isChecked = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item).data('value') + '' === lineHeight + '';
         this.className = isChecked ? 'checked' : '';
       });
     }
   }
 
   updateBtnStates($container, infos) {
-    external_jQuery_default.a.each(infos, (selector, pred) => {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(infos, (selector, pred) => {
       this.ui.toggleBtnActive($container.find(selector), pred());
     });
   }
 
   tableMoveHandler(event) {
     const PX_PER_EM = 18;
-    const $picker = external_jQuery_default()(event.target.parentNode); // target is mousecatcher
+    const $picker = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target.parentNode); // target is mousecatcher
 
     const $dimensionDisplay = $picker.next();
     const $catcher = $picker.find('.note-dimension-picker-mousecatcher');
@@ -7353,7 +7355,7 @@ class Buttons_Buttons {
     let posOffset; // HTML5 with jQuery - e.offsetX is undefined in Firefox
 
     if (event.offsetX === undefined) {
-      const posCatcher = external_jQuery_default()(event.target).offset();
+      const posCatcher = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target).offset();
       posOffset = {
         x: event.pageX - posCatcher.left,
         y: event.pageY - posCatcher.top
@@ -7396,9 +7398,9 @@ class Buttons_Buttons {
 class Toolbar_Toolbar {
   constructor(context) {
     this.context = context;
-    this.$window = external_jQuery_default()(window);
-    this.$document = external_jQuery_default()(document);
-    this.ui = external_jQuery_default.a.summernote.ui;
+    this.$window = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(window);
+    this.$document = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document);
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.$note = context.layoutInfo.note;
     this.$editor = context.layoutInfo.editor;
     this.$toolbar = context.layoutInfo.toolbar;
@@ -7458,7 +7460,7 @@ class Toolbar_Toolbar {
     let otherBarHeight = 0;
 
     if (this.options.otherStaticBar) {
-      otherBarHeight = external_jQuery_default()(this.options.otherStaticBar).outerHeight();
+      otherBarHeight = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.otherStaticBar).outerHeight();
     }
 
     const currentOffset = this.$document.scrollTop();
@@ -7550,8 +7552,8 @@ class Toolbar_Toolbar {
 class LinkDialog_LinkDialog {
   constructor(context) {
     this.context = context;
-    this.ui = external_jQuery_default.a.summernote.ui;
-    this.$body = external_jQuery_default()(document.body);
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
+    this.$body = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document.body);
     this.$editor = context.layoutInfo.editor;
     this.options = context.options;
     this.lang = this.options.langInfo;
@@ -7560,11 +7562,11 @@ class LinkDialog_LinkDialog {
 
   initialize() {
     const $container = this.options.dialogsInBody ? this.$body : this.options.container;
-    const body = ['<div class="form-group note-form-group">', `<label for="note-dialog-link-txt-${this.options.id}" class="note-form-label">${this.lang.link.textToDisplay}</label>`, `<input id="note-dialog-link-txt-${this.options.id}" class="note-link-text form-control note-form-control note-input" type="text"/>`, '</div>', '<div class="form-group note-form-group">', `<label for="note-dialog-link-url-${this.options.id}" class="note-form-label">${this.lang.link.url}</label>`, `<input id="note-dialog-link-url-${this.options.id}" class="note-link-url form-control note-form-control note-input" type="text" value="http://"/>`, '</div>', !this.options.disableLinkTarget ? external_jQuery_default()('<div/>').append(this.ui.checkbox({
+    const body = ['<div class="form-group note-form-group">', `<label for="note-dialog-link-txt-${this.options.id}" class="note-form-label">${this.lang.link.textToDisplay}</label>`, `<input id="note-dialog-link-txt-${this.options.id}" class="note-link-text form-control note-form-control note-input" type="text"/>`, '</div>', '<div class="form-group note-form-group">', `<label for="note-dialog-link-url-${this.options.id}" class="note-form-label">${this.lang.link.url}</label>`, `<input id="note-dialog-link-url-${this.options.id}" class="note-link-url form-control note-form-control note-input" type="text" value="http://"/>`, '</div>', !this.options.disableLinkTarget ? external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div/>').append(this.ui.checkbox({
       className: 'sn-checkbox-open-in-new-window',
       text: this.lang.link.openInNewWindow,
       checked: true
-    }).render()).html() : '', external_jQuery_default()('<div/>').append(this.ui.checkbox({
+    }).render()).html() : '', external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div/>').append(this.ui.checkbox({
       className: 'sn-checkbox-use-protocol',
       text: this.lang.link.useProtocol,
       checked: true
@@ -7610,7 +7612,7 @@ class LinkDialog_LinkDialog {
 
 
   showLinkDialog(linkInfo) {
-    return external_jQuery_default.a.Deferred(deferred => {
+    return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(deferred => {
       const $linkText = this.$dialog.find('.note-link-text');
       const $linkUrl = this.$dialog.find('.note-link-url');
       const $linkBtn = this.$dialog.find('.note-link-btn');
@@ -7699,9 +7701,8 @@ class LinkDialog_LinkDialog {
 class LinkPopover_LinkPopover {
   constructor(context) {
     this.context = context;
-    this.ui = external_jQuery_default.a.summernote.ui;
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.options = context.options;
-    this.target = context.options.container;
     this.events = {
       'summernote.keyup summernote.mouseup summernote.change summernote.scroll': () => {
         this.update();
@@ -7723,7 +7724,7 @@ class LinkPopover_LinkPopover {
         const $content = $node.find('.popover-content,.note-popover-content');
         $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
       }
-    }).render().appendTo(this.target);
+    }).render().appendTo(this.options.container);
     const $content = this.$popover.find('.popover-content,.note-popover-content');
     this.context.invoke('buttons.build', $content, this.options.popover.link);
     this.$popover.on('mousedown', e => {
@@ -7746,12 +7747,12 @@ class LinkPopover_LinkPopover {
 
     if (rng.isCollapsed() && rng.isOnAnchor()) {
       const anchor = dom.ancestor(rng.sc, dom.isAnchor);
-      const href = external_jQuery_default()(anchor).attr('href');
+      const href = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(anchor).attr('href');
       this.$popover.find('a').attr('href', href).html(href);
       const pos = dom.posFromPlaceholder(anchor);
-      const targetOffset = external_jQuery_default()(this.target).offset();
-      pos.top -= targetOffset.top;
-      pos.left -= targetOffset.left;
+      const containerOffset = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.container).offset();
+      pos.top -= containerOffset.top;
+      pos.left -= containerOffset.left;
       this.$popover.css({
         display: 'block',
         left: pos.left,
@@ -7774,8 +7775,8 @@ class LinkPopover_LinkPopover {
 class ImageDialog_ImageDialog {
   constructor(context) {
     this.context = context;
-    this.ui = external_jQuery_default.a.summernote.ui;
-    this.$body = external_jQuery_default()(document.body);
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
+    this.$body = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document.body);
     this.$editor = context.layoutInfo.editor;
     this.options = context.options;
     this.lang = this.options.langInfo;
@@ -7848,7 +7849,7 @@ class ImageDialog_ImageDialog {
 
 
   showImageDialog() {
-    return external_jQuery_default.a.Deferred(deferred => {
+    return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(deferred => {
       const $imageInput = this.$dialog.find('.note-image-input');
       const $imageUrl = this.$dialog.find('.note-image-url');
       const $imageBtn = this.$dialog.find('.note-image-btn');
@@ -7899,7 +7900,7 @@ class ImageDialog_ImageDialog {
 class ImagePopover_ImagePopover {
   constructor(context) {
     this.context = context;
-    this.ui = external_jQuery_default.a.summernote.ui;
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.editable = context.layoutInfo.editable[0];
     this.options = context.options;
     this.events = {
@@ -7930,16 +7931,23 @@ class ImagePopover_ImagePopover {
 
   update(target, event) {
     if (dom.isImg(target)) {
-      const position = external_jQuery_default()(target).offset();
-      const editingOffset = external_jQuery_default()(this.context.layoutInfo.editingArea).offset();
-      const pos = {
-        left: position.left - editingOffset.left,
-        top: position.top - editingOffset.top
-      };
+      const position = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(target).offset();
+      const containerOffset = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.container).offset();
+      let pos = {};
+
+      if (this.options.popatmouse) {
+        pos.left = event.pageX - 20;
+        pos.top = event.pageY;
+      } else {
+        pos = position;
+      }
+
+      pos.top -= containerOffset.top;
+      pos.left -= containerOffset.left;
       this.$popover.css({
         display: 'block',
-        left: this.options.popatmouse ? event.pageX - 20 : pos.left,
-        top: this.options.popatmouse ? event.pageY : pos.top
+        left: pos.left,
+        top: pos.top
       });
     } else {
       this.hide();
@@ -7959,7 +7967,7 @@ class ImagePopover_ImagePopover {
 class TablePopover_TablePopover {
   constructor(context) {
     this.context = context;
-    this.ui = external_jQuery_default.a.summernote.ui;
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.options = context.options;
     this.events = {
       'summernote.mousedown': (we, e) => {
@@ -8007,6 +8015,9 @@ class TablePopover_TablePopover {
 
     if (isCell) {
       const pos = dom.posFromPlaceholder(target);
+      const containerOffset = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.container).offset();
+      pos.top -= containerOffset.top;
+      pos.left -= containerOffset.left;
       this.$popover.css({
         display: 'block',
         left: pos.left,
@@ -8031,8 +8042,8 @@ class TablePopover_TablePopover {
 class VideoDialog_VideoDialog {
   constructor(context) {
     this.context = context;
-    this.ui = external_jQuery_default.a.summernote.ui;
-    this.$body = external_jQuery_default()(document.body);
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
+    this.$body = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document.body);
     this.$editor = context.layoutInfo.editor;
     this.options = context.options;
     this.lang = this.options.langInfo;
@@ -8108,24 +8119,24 @@ class VideoDialog_VideoDialog {
         }
       }
 
-      $video = external_jQuery_default()('<iframe>').attr('frameborder', 0).attr('src', '//www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : '')).attr('width', '640').attr('height', '360');
+      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', '//www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : '')).attr('width', '640').attr('height', '360');
     } else if (igMatch && igMatch[0].length) {
-      $video = external_jQuery_default()('<iframe>').attr('frameborder', 0).attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/').attr('width', '612').attr('height', '710').attr('scrolling', 'no').attr('allowtransparency', 'true');
+      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/').attr('width', '612').attr('height', '710').attr('scrolling', 'no').attr('allowtransparency', 'true');
     } else if (vMatch && vMatch[0].length) {
-      $video = external_jQuery_default()('<iframe>').attr('frameborder', 0).attr('src', vMatch[0] + '/embed/simple').attr('width', '600').attr('height', '600').attr('class', 'vine-embed');
+      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', vMatch[0] + '/embed/simple').attr('width', '600').attr('height', '600').attr('class', 'vine-embed');
     } else if (vimMatch && vimMatch[3].length) {
-      $video = external_jQuery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('src', '//player.vimeo.com/video/' + vimMatch[3]).attr('width', '640').attr('height', '360');
+      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('src', '//player.vimeo.com/video/' + vimMatch[3]).attr('width', '640').attr('height', '360');
     } else if (dmMatch && dmMatch[2].length) {
-      $video = external_jQuery_default()('<iframe>').attr('frameborder', 0).attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2]).attr('width', '640').attr('height', '360');
+      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2]).attr('width', '640').attr('height', '360');
     } else if (youkuMatch && youkuMatch[1].length) {
-      $video = external_jQuery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('height', '498').attr('width', '510').attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
+      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('height', '498').attr('width', '510').attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
     } else if (qqMatch && qqMatch[1].length || qqMatch2 && qqMatch2[2].length) {
       const vid = qqMatch && qqMatch[1].length ? qqMatch[1] : qqMatch2[2];
-      $video = external_jQuery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('height', '310').attr('width', '500').attr('src', 'https://v.qq.com/iframe/player.html?vid=' + vid + '&amp;auto=0');
+      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('height', '310').attr('width', '500').attr('src', 'https://v.qq.com/iframe/player.html?vid=' + vid + '&amp;auto=0');
     } else if (mp4Match || oggMatch || webmMatch) {
-      $video = external_jQuery_default()('<video controls>').attr('src', url).attr('width', '640').attr('height', '360');
+      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<video controls>').attr('src', url).attr('width', '640').attr('height', '360');
     } else if (fbMatch && fbMatch[0].length) {
-      $video = external_jQuery_default()('<iframe>').attr('frameborder', 0).attr('src', 'https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent(fbMatch[0]) + '&show_text=0&width=560').attr('width', '560').attr('height', '301').attr('scrolling', 'no').attr('allowtransparency', 'true');
+      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', 'https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent(fbMatch[0]) + '&show_text=0&width=560').attr('width', '560').attr('height', '301').attr('scrolling', 'no').attr('allowtransparency', 'true');
     } else {
       // this is not a known video link. Now what, Cat? Now what?
       return false;
@@ -8162,7 +8173,7 @@ class VideoDialog_VideoDialog {
 
 
   showVideoDialog(text) {
-    return external_jQuery_default.a.Deferred(deferred => {
+    return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(deferred => {
       const $videoUrl = this.$dialog.find('.note-video-url');
       const $videoBtn = this.$dialog.find('.note-video-btn');
       this.ui.onDialogShown(this.$dialog, () => {
@@ -8200,8 +8211,8 @@ class VideoDialog_VideoDialog {
 class HelpDialog_HelpDialog {
   constructor(context) {
     this.context = context;
-    this.ui = external_jQuery_default.a.summernote.ui;
-    this.$body = external_jQuery_default()(document.body);
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
+    this.$body = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document.body);
     this.$editor = context.layoutInfo.editor;
     this.options = context.options;
     this.lang = this.options.langInfo;
@@ -8209,7 +8220,7 @@ class HelpDialog_HelpDialog {
 
   initialize() {
     const $container = this.options.dialogsInBody ? this.$body : this.options.container;
-    const body = ['<p class="text-center">', '<a href="http://summernote.org/" target="_blank">Summernote 0.8.14</a> · ', '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ', '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>', '</p>'].join('');
+    const body = ['<p class="text-center">', '<a href="http://summernote.org/" target="_blank">Summernote 0.8.15</a> · ', '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ', '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>', '</p>'].join('');
     this.$dialog = this.ui.dialog({
       title: this.lang.options.help,
       fade: this.options.dialogsFade,
@@ -8233,11 +8244,11 @@ class HelpDialog_HelpDialog {
     const keyMap = this.options.keyMap[env.isMac ? 'mac' : 'pc'];
     return Object.keys(keyMap).map(key => {
       const command = keyMap[key];
-      const $row = external_jQuery_default()('<div><div class="help-list-item"/></div>');
-      $row.append(external_jQuery_default()('<label><kbd>' + key + '</kdb></label>').css({
+      const $row = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div><div class="help-list-item"/></div>');
+      $row.append(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<label><kbd>' + key + '</kdb></label>').css({
         'width': 180,
         'margin-right': 10
-      })).append(external_jQuery_default()('<span/>').html(this.context.memo('help.' + command) || command));
+      })).append(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<span/>').html(this.context.memo('help.' + command) || command));
       return $row.html();
     }).join('');
   }
@@ -8249,7 +8260,7 @@ class HelpDialog_HelpDialog {
 
 
   showHelpDialog() {
-    return external_jQuery_default.a.Deferred(deferred => {
+    return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(deferred => {
       this.ui.onDialogShown(this.$dialog, () => {
         this.context.triggerEvent('dialog.shown');
         deferred.resolve();
@@ -8274,7 +8285,7 @@ const AIR_MODE_POPOVER_X_OFFSET = 20;
 class AirPopover_AirPopover {
   constructor(context) {
     this.context = context;
-    this.ui = external_jQuery_default.a.summernote.ui;
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.options = context.options;
     this.hidable = true;
     this.events = {
@@ -8356,10 +8367,9 @@ const POPOVER_DIST = 5;
 class HintPopover_HintPopover {
   constructor(context) {
     this.context = context;
-    this.ui = external_jQuery_default.a.summernote.ui;
+    this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.$editable = context.layoutInfo.editable;
     this.options = context.options;
-    this.target = context.options.container;
     this.hint = this.options.hint || [];
     this.direction = this.options.hintDirection || 'bottom';
     this.hints = Array.isArray(this.hint) ? this.hint : [this.hint];
@@ -8389,12 +8399,12 @@ class HintPopover_HintPopover {
       className: 'note-hint-popover',
       hideArrow: true,
       direction: ''
-    }).render().appendTo(this.target);
+    }).render().appendTo(this.options.container);
     this.$popover.hide();
     this.$content = this.$popover.find('.popover-content,.note-popover-content');
     this.$content.on('click', '.note-hint-item', e => {
       this.$content.find('.active').removeClass('active');
-      external_jQuery_default()(e.currentTarget).addClass('active');
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(e.currentTarget).addClass('active');
       this.replace();
     });
     this.$popover.on('mousedown', e => {
@@ -8466,7 +8476,7 @@ class HintPopover_HintPopover {
 
       if (this.options.hintSelect === 'next') {
         var blank = document.createTextNode('');
-        external_jQuery_default()(node).after(blank);
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(node).after(blank);
         core_range.createFromNodeBefore(blank).select();
       } else {
         core_range.createFromNodeAfter(node).select();
@@ -8493,7 +8503,7 @@ class HintPopover_HintPopover {
   createItemTemplates(hintIdx, items) {
     const hint = this.hints[hintIdx];
     return items.map((item, idx) => {
-      const $item = external_jQuery_default()('<div class="note-hint-item"/>');
+      const $item = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div class="note-hint-item"/>');
       $item.append(hint.template ? hint.template(item) : item + '');
       $item.data({
         'index': hintIdx,
@@ -8533,7 +8543,7 @@ class HintPopover_HintPopover {
   }
 
   createGroup(idx, keyword) {
-    const $group = external_jQuery_default()('<div class="note-hint-group note-hint-group-' + idx + '"/>');
+    const $group = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div class="note-hint-group note-hint-group-' + idx + '"/>');
     this.searchKeyword(idx, keyword, items => {
       items = items || [];
 
@@ -8574,11 +8584,11 @@ class HintPopover_HintPopover {
       if (this.hints.length && keyword) {
         this.$content.empty();
         const bnd = func.rect2bnd(lists.last(wordRange.getClientRects()));
-        const targetOffset = external_jQuery_default()(this.target).offset();
+        const containerOffset = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.container).offset();
 
         if (bnd) {
-          bnd.top -= targetOffset.top;
-          bnd.left -= targetOffset.left;
+          bnd.top -= containerOffset.top;
+          bnd.left -= containerOffset.left;
           this.$popover.hide();
           this.lastWordRange = wordRange;
           this.hints.forEach((hint, idx) => {
@@ -8645,14 +8655,14 @@ class HintPopover_HintPopover {
 
 
 
-external_jQuery_default.a.summernote = external_jQuery_default.a.extend(external_jQuery_default.a.summernote, {
-  version: '0.8.14',
+external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote, {
+  version: '0.8.15',
   plugins: {},
   dom: dom,
   range: core_range,
   lists: lists,
   options: {
-    langInfo: external_jQuery_default.a.summernote.lang['en-US'],
+    langInfo: external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.lang['en-US'],
     editing: true,
     modules: {
       'editor': Editor_Editor,
@@ -8901,9 +8911,9 @@ external_jQuery_default.a.summernote = external_jQuery_default.a.extend(external
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 
-// EXTERNAL MODULE: external "jQuery"
-var external_jQuery_ = __webpack_require__(0);
-var external_jQuery_default = /*#__PURE__*/__webpack_require__.n(external_jQuery_);
+// EXTERNAL MODULE: external {"root":"jQuery","commonjs2":"jquery","commonjs":"jquery","amd":"jquery"}
+var external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_ = __webpack_require__(0);
+var external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default = /*#__PURE__*/__webpack_require__.n(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_);
 
 // EXTERNAL MODULE: ./src/js/base/renderer.js
 var renderer = __webpack_require__(1);
@@ -8948,34 +8958,6 @@ const dropdownCheck = renderer["a" /* default */].create('<ul class="note-dropdo
     'aria-label': options.title
   });
 });
-const palette = renderer["a" /* default */].create('<div class="note-color-palette"/>', function ($node, options) {
-  const contents = [];
-
-  for (let row = 0, rowSize = options.colors.length; row < rowSize; row++) {
-    const eventName = options.eventName;
-    const colors = options.colors[row];
-    const colorsName = options.colorsName[row];
-    const buttons = [];
-
-    for (let col = 0, colSize = colors.length; col < colSize; col++) {
-      const color = colors[col];
-      const colorName = colorsName[col];
-      buttons.push(['<button type="button" class="note-color-btn"', 'style="background-color:', color, '" ', 'data-event="', eventName, '" ', 'data-value="', color, '" ', 'title="', colorName, '" ', 'aria-label="', colorName, '" ', 'data-toggle="button" tabindex="-1"></button>'].join(''));
-    }
-
-    contents.push('<div class="note-color-row">' + buttons.join('') + '</div>');
-  }
-
-  $node.html(contents.join(''));
-
-  if (options.tooltip) {
-    $node.find('.note-color-btn').tooltip({
-      container: options.container,
-      trigger: 'hover',
-      placement: 'bottom'
-    });
-  }
-});
 const dialog = renderer["a" /* default */].create('<div class="modal note-modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function ($node, options) {
   if (options.fade) {
     $node.addClass('fade');
@@ -9003,79 +8985,111 @@ const icon = function (iconClassName, tagName) {
   return '<' + tagName + ' class="' + iconClassName + '"/>';
 };
 
-const ui = {
-  editor: editor,
-  toolbar: toolbar,
-  editingArea: editingArea,
-  codable: codable,
-  editable: editable,
-  statusbar: statusbar,
-  airEditor: airEditor,
-  airEditable: airEditable,
-  buttonGroup: buttonGroup,
-  dropdown: dropdown,
-  dropdownButtonContents: dropdownButtonContents,
-  dropdownCheck: dropdownCheck,
-  palette: palette,
-  dialog: dialog,
-  popover: popover,
-  checkbox: ui_checkbox,
-  icon: icon,
-  options: {},
-  button: function ($node, options) {
-    return renderer["a" /* default */].create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
-      if (options && options.tooltip) {
-        $node.attr({
-          title: options.tooltip,
-          'aria-label': options.tooltip
-        }).tooltip({
-          container: options.container,
-          trigger: 'hover',
-          placement: 'bottom'
-        }).on('click', e => {
-          external_jQuery_default()(e.currentTarget).tooltip('hide');
-        });
-      }
-    })($node, options);
-  },
-  toggleBtn: function ($btn, isEnable) {
-    $btn.toggleClass('disabled', !isEnable);
-    $btn.attr('disabled', !isEnable);
-  },
-  toggleBtnActive: function ($btn, isActive) {
-    $btn.toggleClass('active', isActive);
-  },
-  onDialogShown: function ($dialog, handler) {
-    $dialog.one('shown.bs.modal', handler);
-  },
-  onDialogHidden: function ($dialog, handler) {
-    $dialog.one('hidden.bs.modal', handler);
-  },
-  showDialog: function ($dialog) {
-    $dialog.modal('show');
-  },
-  hideDialog: function ($dialog) {
-    $dialog.modal('hide');
-  },
-  createLayout: function ($note, options) {
-    const $editor = (options.airMode ? ui.airEditor([ui.editingArea([ui.codable(), ui.airEditable()])]) : options.toolbarPosition === 'bottom' ? ui.editor([ui.editingArea([ui.codable(), ui.editable()]), ui.toolbar(), ui.statusbar()]) : ui.editor([ui.toolbar(), ui.editingArea([ui.codable(), ui.editable()]), ui.statusbar()])).render();
-    $editor.insertAfter($note);
-    return {
-      note: $note,
-      editor: $editor,
-      toolbar: $editor.find('.note-toolbar'),
-      editingArea: $editor.find('.note-editing-area'),
-      editable: $editor.find('.note-editable'),
-      codable: $editor.find('.note-codable'),
-      statusbar: $editor.find('.note-statusbar')
-    };
-  },
-  removeLayout: function ($note, layoutInfo) {
-    $note.html(layoutInfo.editable.html());
-    layoutInfo.editor.remove();
-    $note.show();
-  }
+const ui = function (editorOptions) {
+  return {
+    editor: editor,
+    toolbar: toolbar,
+    editingArea: editingArea,
+    codable: codable,
+    editable: editable,
+    statusbar: statusbar,
+    airEditor: airEditor,
+    airEditable: airEditable,
+    buttonGroup: buttonGroup,
+    dropdown: dropdown,
+    dropdownButtonContents: dropdownButtonContents,
+    dropdownCheck: dropdownCheck,
+    dialog: dialog,
+    popover: popover,
+    checkbox: ui_checkbox,
+    icon: icon,
+    options: editorOptions,
+    palette: function ($node, options) {
+      return renderer["a" /* default */].create('<div class="note-color-palette"/>', function ($node, options) {
+        const contents = [];
+
+        for (let row = 0, rowSize = options.colors.length; row < rowSize; row++) {
+          const eventName = options.eventName;
+          const colors = options.colors[row];
+          const colorsName = options.colorsName[row];
+          const buttons = [];
+
+          for (let col = 0, colSize = colors.length; col < colSize; col++) {
+            const color = colors[col];
+            const colorName = colorsName[col];
+            buttons.push(['<button type="button" class="note-color-btn"', 'style="background-color:', color, '" ', 'data-event="', eventName, '" ', 'data-value="', color, '" ', 'title="', colorName, '" ', 'aria-label="', colorName, '" ', 'data-toggle="button" tabindex="-1"></button>'].join(''));
+          }
+
+          contents.push('<div class="note-color-row">' + buttons.join('') + '</div>');
+        }
+
+        $node.html(contents.join(''));
+
+        if (options.tooltip) {
+          $node.find('.note-color-btn').tooltip({
+            container: options.container || editorOptions.container,
+            trigger: 'hover',
+            placement: 'bottom'
+          });
+        }
+      })($node, options);
+    },
+    button: function ($node, options) {
+      return renderer["a" /* default */].create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
+        if (options && options.tooltip) {
+          $node.attr({
+            title: options.tooltip,
+            'aria-label': options.tooltip
+          }).tooltip({
+            container: options.container || editorOptions.container,
+            trigger: 'hover',
+            placement: 'bottom'
+          }).on('click', e => {
+            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(e.currentTarget).tooltip('hide');
+          });
+        }
+      })($node, options);
+    },
+    toggleBtn: function ($btn, isEnable) {
+      $btn.toggleClass('disabled', !isEnable);
+      $btn.attr('disabled', !isEnable);
+    },
+    toggleBtnActive: function ($btn, isActive) {
+      $btn.toggleClass('active', isActive);
+    },
+    onDialogShown: function ($dialog, handler) {
+      $dialog.one('shown.bs.modal', handler);
+    },
+    onDialogHidden: function ($dialog, handler) {
+      $dialog.one('hidden.bs.modal', handler);
+    },
+    showDialog: function ($dialog) {
+      $dialog.modal('show');
+    },
+    hideDialog: function ($dialog) {
+      $dialog.modal('hide');
+    },
+    createLayout: function ($note) {
+      const $editor = (editorOptions.airMode ? airEditor([editingArea([codable(), airEditable()])]) : editorOptions.toolbarPosition === 'bottom' ? editor([editingArea([codable(), editable()]), toolbar(), statusbar()]) : editor([toolbar(), editingArea([codable(), editable()]), statusbar()])).render();
+      $editor.insertAfter($note);
+      return {
+        note: $note,
+        editor: $editor,
+        toolbar: $editor.find('.note-toolbar'),
+        editingArea: $editor.find('.note-editing-area'),
+        editable: $editor.find('.note-editable'),
+        codable: $editor.find('.note-codable'),
+        statusbar: $editor.find('.note-statusbar')
+      };
+    },
+    removeLayout: function ($note, layoutInfo) {
+      $note.html(layoutInfo.editable.html());
+      layoutInfo.editor.remove();
+      $note.show();
+    }
+  };
 };
+
 /* harmony default export */ var bs3_ui = (ui);
 // EXTERNAL MODULE: ./src/js/base/settings.js + 37 modules
 var settings = __webpack_require__(3);
@@ -9088,8 +9102,8 @@ var summernote_bs3 = __webpack_require__(4);
 
 
 
-external_jQuery_default.a.summernote = external_jQuery_default.a.extend(external_jQuery_default.a.summernote, {
-  ui: bs3_ui,
+external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote, {
+  ui_template: bs3_ui,
   interface: 'bs3'
 });
 

@@ -1,7 +1,7 @@
 {
   "name": "summernote",
   "description": "Super simple WYSIWYG editor",
-  "version": "0.8.14",
+  "version": "0.8.15",
   "license": "MIT",
   "keywords": [
     "editor",
@@ -39,6 +39,7 @@
     "@babel/preset-env": "^7.7.7",
     "autoprefixer": "^9.7.3",
     "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.5",
     "bootstrap": "^4.4.1",
     "chai": "^4.2.0",
