@@ -411,6 +411,80 @@ describe('Editor', () => {
     });
   });
 
+
+  describe('editor.unlink', () => {
+    it('should remove all link on selection', () => {
+      var codes = [
+        '<p><a href="http://summernote.org">hello world</a></p>',
+        '<p><a href="http://summernote.org">hello world</a></p>',
+        '<p><a href="http://summernote.org">hello world</a></p>',
+      ];
+
+      context.invoke('code', codes.join(''));
+      $editable.appendTo('body');
+
+      range.createFromNode($editable[0]).normalize().select();
+
+      // check creation normal link
+      editor.unlink(); 
+
+      expect($editable.find('a').length).to.equal(0);
+    });
+
+    it('should remove a link on anchor', () => {
+      var codes = [
+        '<p><a href="http://summernote.org">hello world</a></p>',
+      ];
+
+      context.invoke('code', codes.join(''));
+      $editable.appendTo('body');
+
+      range.createFromNode($editable.find('a')[0]).normalize().select();
+
+      // check creation normal link
+      editor.unlink(); 
+
+      expect($editable.find('a').length).to.equal(0);
+    });    
+
+    it('should remove a link on part anchor', () => {
+      var codes = [
+        '<p><a href="http://summernote.org">hello world</a></p>',
+      ];
+
+      context.invoke('code', codes.join(''));
+      $editable.appendTo('body');
+
+      var anchorTextNode = $editable.find('a')[0].childNodes[0];
+
+      range.create(anchorTextNode, 1, anchorTextNode, 5).select();
+
+      // check creation normal link
+      editor.unlink(); 
+
+      expectContents(context, '<p><a href="http://summernote.org">h</a>ello<a href="http://summernote.org"> world</a></p>');
+    });        
+
+    it('should remove links on multipart anchor', () => {
+      var codes = [
+        '<p><a href="http://summernote.org">hello world</a> middle text <a href="http://summernote.org">2hello world</a></p>',
+      ];
+
+      context.invoke('code', codes.join(''));
+      $editable.appendTo('body');
+
+      var anchor1TextNode = $editable.find('a')[0].childNodes[0];
+      var anchor2TextNode = $editable.find('a')[1].childNodes[0];
+
+      range.create(anchor1TextNode, 1, anchor2TextNode, 2).select();
+
+      // check creation normal link
+      editor.unlink(); 
+
+      expectContents(context, '<p><a href="http://summernote.org">h</a>ello world middle text 2h<a href="http://summernote.org">ello world</a></p>');
+    });            
+  });
+
   describe('createLink', () => {
     it('should create normal link', (done) => {
       var text = 'hello';

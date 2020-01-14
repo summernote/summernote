@@ -807,17 +807,9 @@ export default class Editor {
    * @type command
    */
   unlink() {
-    let rng = this.getLastRange();
-    if (rng.isOnAnchor()) {
-      const anchor = dom.ancestor(rng.sc, dom.isAnchor);
-      rng = range.createFromNode(anchor);
-      rng.select();
-      this.setLastRange();
-
-      this.beforeCommand();
-      document.execCommand('unlink');
-      this.afterCommand();
-    }
+    this.beforeCommand();
+    document.execCommand('unlink');
+    this.afterCommand();
   }
 
   /**
