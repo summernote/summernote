@@ -342,10 +342,10 @@ export default class Editor {
 
       // keep a snapshot to limit text on input event
       this.snapshot = this.history.makeSnapshot();
-
+      this.hasKeyShortCut = false;
       if (!event.isDefaultPrevented()) {
         if (this.options.shortcuts) {
-          this.handleKeyMap(event);
+          this.hasKeyShortCut = this.handleKeyMap(event);
         } else {
           this.preventDefaultEditableShortCuts(event);
         }
@@ -357,6 +357,13 @@ export default class Editor {
         }
       }
       this.setLastRange();
+
+      // record undo in the key event except keyMap.
+      if (this.options.recordEveryKeystroke) {
+        if (this.hasKeyShortCut === false) {
+          this.history.recordUndo();
+        }
+      }
     }).on('keyup', (event) => {
       this.setLastRange();
       this.context.triggerEvent('keyup', event);
@@ -454,10 +461,13 @@ export default class Editor {
     } else if (eventName) {
       if (this.context.invoke(eventName) !== false) {
         event.preventDefault();
+        // if keyMap action was invoked
+        return true;
       }
     } else if (key.isEdit(event.keyCode)) {
       this.afterCommand();
     }
+    return false;
   }
 
   preventDefaultEditableShortCuts(event) {

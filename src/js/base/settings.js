@@ -135,6 +135,7 @@ $.summernote = $.extend($.summernote, {
     placeholder: null,
     inheritPlaceholder: false,
     // TODO: need to be documented
+    recordEveryKeystroke: false,
     historyLimit: 200,
 
     // TODO: need to be documented
