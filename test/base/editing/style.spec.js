@@ -6,8 +6,8 @@
 
 import chai from 'chai';
 import $ from 'jquery';
-import range from '../../../src/js/base/core/range';
-import Style from '../../../src/js/base/editing/Style';
+import range from 'src/js/base/core/range';
+import Style from 'src/js/base/editing/Style';
 
 var expect = chai.expect;
 

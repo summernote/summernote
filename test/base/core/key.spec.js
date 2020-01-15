@@ -4,7 +4,7 @@
  * summernote may be freely distributed under the MIT license./
  */
 import chai from 'chai';
-import key from '../../../src/js/base/core/key';
+import key from 'src/js/base/core/key';
 
 var expect = chai.expect;
 
