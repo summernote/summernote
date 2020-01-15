@@ -246,6 +246,12 @@ $img-margin-right: 10px;
 
 .note-editor.note-airframe {
   border: 0;
+
+  .note-editing-area {
+    .note-editable {
+      padding: 0;
+    }
+  }
 }
 
 
