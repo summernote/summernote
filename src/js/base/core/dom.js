@@ -704,7 +704,7 @@ function isSpacePoint(point) {
 
   const ch = point.node.nodeValue.charAt(point.offset - 1);
   return ch === ' ' || ch === NBSP_CHAR;
-};
+}
 
 /**
  * @method walkPoint

@@ -655,7 +655,7 @@ class WrappedRange {
       endPoint.node,
       endPoint.offset
     );
-  };
+  }
 
   /**
    * returns range for words before cursor that match with a Regex
@@ -700,7 +700,7 @@ class WrappedRange {
     } else {
       return null;
     }
-  };
+  }
 
   /**
    * create offsetPath bookmark

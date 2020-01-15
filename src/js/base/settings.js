@@ -112,6 +112,7 @@ $.summernote = $.extend($.summernote, {
 
     // air mode: inline editor
     airMode: false,
+    overrideContextMenu: false, // TBD
 
     width: null,
     height: null,
@@ -133,6 +134,8 @@ $.summernote = $.extend($.summernote, {
     disableGrammar: false,
     placeholder: null,
     inheritPlaceholder: false,
+    // TODO: need to be documented
+    historyLimit: 200,
 
     // TODO: need to be documented
     hintMode: 'word',

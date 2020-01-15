@@ -39,6 +39,7 @@
     "@babel/preset-env": "^7.7.7",
     "autoprefixer": "^9.7.3",
     "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
     "babel-plugin-module-resolver": "^4.0.0",
     "bootstrap": "^4.4.1",
