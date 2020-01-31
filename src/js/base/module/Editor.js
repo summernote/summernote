@@ -208,7 +208,7 @@ export default class Editor {
       }
 
       if (this.options.onCreateLink) {
-        don= this.options.onCreateLink(linkUrl);
+        linkUrl = this.options.onCreateLink(linkUrl);
       } else if (checkProtocol) {
         // if url doesn't have any protocol and not even a relative or a label, use http:// as default
         if (!this.options.disableAutoUrlPrefix)
