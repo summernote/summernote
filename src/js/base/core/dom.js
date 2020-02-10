@@ -607,6 +607,63 @@ function nextPoint(point, isSkipInnerOffset) {
   };
 }
 
+
+/**
+ * returns next boundaryPoint with empty node 
+ *
+ * @param {BoundaryPoint} point
+ * @param {Boolean} isSkipInnerOffset
+ * @return {BoundaryPoint}
+ */
+function nextPointWithEmptyNode(point, isSkipInnerOffset) {
+  let node, offset;
+
+  // if node is empty string node, return current node's sibling.
+  if (isEmpty(point.node)) {
+    node = point.node.nextSibling;
+    offset = 0;
+
+    return {
+      node: node,
+      offset: offset,
+    };
+  }
+
+  if (nodeLength(point.node) === point.offset) {
+    if (isEditable(point.node)) {
+      return null;
+    }
+
+    node = point.node.parentNode;
+    offset = position(point.node) + 1;
+
+    // if next node is editable ,  return current node's sibling node.
+    if (isEditable(node)) {
+      node = point.node.nextSibling;
+      offset = 0;
+    }
+
+  } else if (hasChildren(point.node)) {
+    node = point.node.childNodes[point.offset];
+    offset = 0;
+    if (isEmpty(node)) {
+      return null;
+    }
+  } else {
+    node = point.node;
+    offset = isSkipInnerOffset ? nodeLength(point.node) : point.offset + 1;
+
+    if (isEmpty(node)) {
+      return null;
+    }
+  }
+
+  return {
+    node: node,
+    offset: offset,
+  };
+}
+
 /**
  * returns whether pointA and pointB is same or not.
  *
@@ -727,7 +784,7 @@ function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
     const isSkipOffset = isSkipInnerOffset &&
                        startPoint.node !== point.node &&
                        endPoint.node !== point.node;
-    point = nextPoint(point, isSkipOffset);
+    point = nextPointWithEmptyNode(point, isSkipOffset);
   }
 }
 
@@ -1108,6 +1165,7 @@ export default {
   isRightEdgePointOf,
   prevPoint,
   nextPoint,
+  nextPointWithEmptyNode,
   isSamePoint,
   isVisiblePoint,
   prevPointUntil,
