@@ -404,7 +404,7 @@ export default class Editor {
       this.context.triggerEvent('change', this.$editable.html(), this.$editable);
     }, 10));
 
-    this.$editor.on('focusin', (event) => {
+    this.$editable.on('focusin', (event) => {
       this.context.triggerEvent('focusin', event);
     }).on('focusout', (event) => {
       this.context.triggerEvent('focusout', event);
