@@ -156,7 +156,7 @@
       },
       output: {
         noSelection: '¡No ha seleccionado nada!',
-      }
-    }
+      },
+    },
   });
 })(jQuery);
