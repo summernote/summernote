@@ -273,7 +273,6 @@ export default class Editor {
      * @param {String} colorCode foreground color code
      */
     this.foreColor = this.wrapCommand((colorInfo) => {
-      document.execCommand('styleWithCSS', false, true);
       document.execCommand('foreColor', false, colorInfo);
     });
 
@@ -619,6 +618,10 @@ export default class Editor {
    */
   beforeCommand() {
     this.context.triggerEvent('before.command', this.$editable.html());
+
+    // Set styleWithCSS before run a command
+    document.execCommand('styleWithCSS', false, this.options.styleWithCSS);
+
     // keep focus on editable before command execution
     this.focus();
   }
