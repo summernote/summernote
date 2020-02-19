@@ -193,7 +193,7 @@ export default class Buttons {
             const $parent = $('.' + className).find('.note-dropdown-menu');
             const $button = $(event.target);
             const eventName = $button.data('event');
-            let value = $button.attr('data-value');
+            const value = $button.attr('data-value');
 
             if (eventName === 'openPalette') {
               const $picker = $parent.find('#' + value);
@@ -210,13 +210,15 @@ export default class Buttons {
                 .attr('data-original-title', color);
               $palette.prepend($chip);
               $picker.click();
-            } else if (lists.contains(['backColor', 'foreColor'], eventName)) {
-              const key = eventName === 'backColor' ? 'background-color' : 'color';
-              const $color = $button.closest('.note-color').find('.note-recent-color');
-              const $currentButton = $button.closest('.note-color').find('.note-current-color-button');
+            } else {
+              if (lists.contains(['backColor', 'foreColor'], eventName)) {
+                const key = eventName === 'backColor' ? 'background-color' : 'color';
+                const $color = $button.closest('.note-color').find('.note-recent-color');
+                const $currentButton = $button.closest('.note-color').find('.note-current-color-button');
 
-              $color.css(key, value);
-              $currentButton.attr('data-' + eventName, value);
+                $color.css(key, value);
+                $currentButton.attr('data-' + eventName, value);
+              }
               this.context.invoke('editor.' + eventName, value);
             }
           },
