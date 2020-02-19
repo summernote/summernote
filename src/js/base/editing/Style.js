@@ -135,7 +135,9 @@ export default class Style {
         'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal',
         'font-family': document.queryCommandValue('fontname') || styleInfo['font-family'],
       });
-    } catch (e) {}
+    } catch (e) {
+      // eslint-disable-next-line
+    }
 
     // list-style-type to list-style(unordered, ordered)
     if (!rng.isOnList()) {

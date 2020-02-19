@@ -35,7 +35,7 @@ export default class Editor {
     this.table = new Table();
     this.typing = new Typing(context);
     this.bullet = new Bullet();
-    this.history = new History(this.$editable);
+    this.history = new History(context);
 
     this.context.memo('help.undo', this.lang.help.undo);
     this.context.memo('help.redo', this.lang.help.redo);
@@ -89,7 +89,7 @@ export default class Editor {
         };
       })(idx);
       this.context.memo('help.formatH' + idx, this.lang.help['formatH' + idx]);
-    };
+    }
 
     this.insertParagraph = this.wrapCommand(() => {
       this.typing.insertParagraph(this.editable);
@@ -273,7 +273,6 @@ export default class Editor {
      * @param {String} colorCode foreground color code
      */
     this.foreColor = this.wrapCommand((colorInfo) => {
-      document.execCommand('styleWithCSS', false, true);
       document.execCommand('foreColor', false, colorInfo);
     });
 
@@ -342,10 +341,10 @@ export default class Editor {
 
       // keep a snapshot to limit text on input event
       this.snapshot = this.history.makeSnapshot();
-
+      this.hasKeyShortCut = false;
       if (!event.isDefaultPrevented()) {
         if (this.options.shortcuts) {
-          this.handleKeyMap(event);
+          this.hasKeyShortCut = this.handleKeyMap(event);
         } else {
           this.preventDefaultEditableShortCuts(event);
         }
@@ -357,6 +356,13 @@ export default class Editor {
         }
       }
       this.setLastRange();
+
+      // record undo in the key event except keyMap.
+      if (this.options.recordEveryKeystroke) {
+        if (this.hasKeyShortCut === false) {
+          this.history.recordUndo();
+        }
+      }
     }).on('keyup', (event) => {
       this.setLastRange();
       this.context.triggerEvent('keyup', event);
@@ -376,7 +382,7 @@ export default class Editor {
     }).on('paste', (event) => {
       this.setLastRange();
       this.context.triggerEvent('paste', event);
-    }).on('input', (event) => {
+    }).on('input', () => {
       // To limit composition characters (e.g. Korean)
       if (this.isLimited(0) && this.snapshot) {
         this.history.applySnapshot(this.snapshot);
@@ -398,13 +404,20 @@ export default class Editor {
       this.context.triggerEvent('change', this.$editable.html(), this.$editable);
     }, 10));
 
-    this.$editor.on('focusin', (event) => {
+    this.$editable.on('focusin', (event) => {
       this.context.triggerEvent('focusin', event);
     }).on('focusout', (event) => {
       this.context.triggerEvent('focusout', event);
     });
 
-    if (!this.options.airMode) {
+    if (this.options.airMode) {
+      if (this.options.overrideContextMenu) {
+        this.$editor.on('contextmenu', (event) => {
+          this.context.triggerEvent('contextmenu', event);
+          return false;
+        });
+      }
+    } else {
       if (this.options.width) {
         this.$editor.outerWidth(this.options.width);
       }
@@ -447,10 +460,13 @@ export default class Editor {
     } else if (eventName) {
       if (this.context.invoke(eventName) !== false) {
         event.preventDefault();
+        // if keyMap action was invoked
+        return true;
       }
     } else if (key.isEdit(event.keyCode)) {
       this.afterCommand();
     }
+    return false;
   }
 
   preventDefaultEditableShortCuts(event) {
@@ -602,6 +618,10 @@ export default class Editor {
    */
   beforeCommand() {
     this.context.triggerEvent('before.command', this.$editable.html());
+
+    // Set styleWithCSS before run a command
+    document.execCommand('styleWithCSS', false, this.options.styleWithCSS);
+
     // keep focus on editable before command execution
     this.focus();
   }

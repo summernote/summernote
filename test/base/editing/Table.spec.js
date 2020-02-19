@@ -3,12 +3,14 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-import chai from 'chai';
 import $ from 'jquery';
-import range from '../../../src/js/base/core/range';
-import Table from '../../../src/js/base/editing/Table';
+import chai from 'chai';
+import chaidom from 'test/chaidom';
+import range from 'src/js/base/core/range';
+import Table from 'src/js/base/editing/Table';
 
 var expect = chai.expect;
+chai.use(chaidom);
 
 describe('base:editing.Table', () => {
   var table = new Table();
