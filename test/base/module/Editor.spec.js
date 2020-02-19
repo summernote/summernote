@@ -45,11 +45,9 @@ describe('Editor', () => {
 
   beforeEach(function() {
     $('body').empty(); // important !
-    var $note = $('<div><p>hello</p></div>');
-
     var options = $.extend({}, $.summernote.options);
     options.historyLimit = 5;
-    context = new Context($note, options);
+    context = new Context($('<div><p>hello</p></div>'), options);
 
     editor = context.modules.editor;
     $editable = context.layoutInfo.editable;
@@ -64,8 +62,7 @@ describe('Editor', () => {
   describe('initialize', () => {
     it('should bind custom events', (done) => {
       [
-        'keydown', 'keyup', 'blur', 'mousedown', 'mouseup',
-        'scroll', 'focusin', 'focusout',
+        'keydown', 'keyup', 'blur', 'mousedown', 'mouseup', 'scroll', 'focusin', 'focusout',
       ].forEach((eventName) => {
         expectToHaveBeenCalled(context, 'summernote.' + eventName, () => {
           $editable.trigger(eventName);
@@ -349,6 +346,30 @@ describe('Editor', () => {
     it('should make contents empty', (done) => {
       editor.empty();
       expect(editor.isEmpty()).await(done).to.be.true;
+    });
+  });
+
+  describe('styleWithCSS', () => {
+    it('should style with tag when it is false (default)', (done) => {
+      $editable.appendTo('body');
+      range.createFromNode($editable.find('p')[0]).normalize().select();
+      editor.bold();
+      expectContentsAwait(context, '<p><b>hello</b></p>', done);
+    });
+
+    it('should style with CSS when it is true', (done) => {
+      var options = $.extend({}, $.summernote.options);
+      options.styleWithCSS = true;
+
+      $('body').empty();
+      context = new Context($('<div><p>hello</p></div>').appendTo('body'), options);
+      editor = context.modules.editor;
+      $editable = context.layoutInfo.editable;
+      $editable.appendTo('body');
+
+      range.createFromNode($editable.find('p')[0]).normalize().select();
+      editor.bold();
+      expectContentsAwait(context, '<p><span style="font-weight: bold;">hello</span></p>', done);
     });
   });
 
