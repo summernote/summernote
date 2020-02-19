@@ -105,7 +105,7 @@ function rect2bnd(rect) {
 function invertObject(obj) {
   const inverted = {};
   for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
       inverted[obj[key]] = key;
     }
   }

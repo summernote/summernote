@@ -54,7 +54,7 @@ export default class Buttons {
   }
 
   isFontInstalled(name) {
-    if (!this.fontInstalledMap.hasOwnProperty(name)) {
+    if (!Object.prototype.hasOwnProperty.call(this.fontInstalledMap, name)) {
       this.fontInstalledMap[name] = env.isFontInstalled(name) ||
         lists.contains(this.options.fontNamesIgnoreCheck, name);
     }
@@ -245,8 +245,12 @@ export default class Buttons {
           items: this.options.styleTags,
           title: this.lang.style.style,
           template: (item) => {
+            // TBD: need to be simplified
             if (typeof item === 'string') {
-              item = { tag: item, title: (this.lang.style.hasOwnProperty(item) ? this.lang.style[item] : item) };
+              item = {
+                tag: item,
+                title: (Object.prototype.hasOwnProperty.call(this.lang.style, item) ? this.lang.style[item] : item),
+              };
             }
 
             const tag = item.tag;
