@@ -5,7 +5,7 @@ const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const scssConfig = require('./scss.config');
-const CleanPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ZipPlugin = require('zip-webpack-plugin');
 
 const pkg = require('../../package.json');
@@ -153,7 +153,7 @@ module.exports = {
     ],
   },
   plugins: [
-    new CleanPlugin(),
+    new CleanWebpackPlugin(),
     new webpack.BannerPlugin({
       banner: ({ basename }) => {
         return basename.includes('min') ? minBanner : banner;
