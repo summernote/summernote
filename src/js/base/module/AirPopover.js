@@ -92,6 +92,13 @@ export default class AirPopover {
     }
   }
 
+  updateCodeview(isCodeview) {
+    this.ui.toggleBtnActive(this.$popover.find('.btn-codeview'), isCodeview);
+    if (isCodeview) {
+      this.hide();
+    } 
+  }
+
   hide() {
     if (this.hidable) {
       this.$popover.hide();
