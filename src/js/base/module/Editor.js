@@ -37,6 +37,7 @@ export default class Editor {
     this.bullet = new Bullet();
     this.history = new History(context);
 
+    this.context.memo('help.escape', this.lang.help.escape);
     this.context.memo('help.undo', this.lang.help.undo);
     this.context.memo('help.redo', this.lang.help.redo);
     this.context.memo('help.tab', this.lang.help.tab);
@@ -52,7 +53,7 @@ export default class Editor {
 
     // native commands(with execCommand), generate function for execCommand
     const commands = [
-      'bold', 'escape','italic', 'underline', 'strikethrough', 'superscript', 'subscript',
+      'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
       'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
       'formatBlock', 'removeFormat', 'backColor',
     ];
