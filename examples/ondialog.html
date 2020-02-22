@@ -20,7 +20,7 @@
   <script>
     $(function () {
       $('#dropper').on('shown.bs.modal', function() {
-        $('#dropping').summernote({ height: 300, focus: true });
+        $('#dropping').summernote({ height: 300, focus: true, dialogsInBody: true });
       }).on('hidden.bs.modal', function () {
         $('#dropping').summernote('destroy');
       });
@@ -52,7 +52,7 @@
       </div>
     </div>
   </div>
-</div> 
+</div>
 </body>
 </html>
 

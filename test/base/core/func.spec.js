@@ -4,7 +4,7 @@
  * summernote may be freely distributed under the MIT license./
  */
 import chai from 'chai';
-import func from '../../../src/js/base/core/func';
+import func from 'src/js/base/core/func';
 
 var expect = chai.expect;
 
@@ -71,6 +71,7 @@ describe('base:core.func', () => {
 
   describe('uniqueId', () => {
     it('should return uniqueId with the prefix as a parameter', () => {
+      func.resetUniqueId();
       expect(func.uniqueId('note-')).to.be.equal('note-1');
       expect(func.uniqueId('note-')).to.be.equal('note-2');
       expect(func.uniqueId('note-')).to.be.equal('note-3');

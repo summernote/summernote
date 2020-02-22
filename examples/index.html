@@ -44,11 +44,17 @@
 
     <script type="text/javascript">
     var samples = [
+      { title: 'Languages', link : 'lang.html', description: 'Support language setting', support: 'bs3, bs4, lite'},      
+      { title: 'Record every key stroke', link : 'recordEveryKeyStroke.html', description: 'Support language setting', support: 'bs3, bs4, lite'},      
       { title: 'hint-emoji', link : 'hint-emoji.html', description: 'test hint ui ', support: 'bs3, bs4, lite'},
       { title: 'hint-userdefine', link : 'hint-userdefine.html', description: 'test hint userdefine ', support: 'bs3, bs4, lite'},
       { title: 'hint-symbol', link : 'hint-symbols_mathematical-symbols_Greek-letters.html', description: 'test hint symbol ', support: 'bs3, bs4, lite'},
       { title: 'jQuery custom event', link : 'jquery-custom-event.html', description: 'test jQuery custom event ', support: 'bs3, bs4, lite'},
       { title: 'Plugin : Hello', link : 'plugin-hello.html', description: 'Plugin sample - Hello', support: 'bs3, bs4, lite'},
+      { title: 'Limited history stack', link : 'history-limit.html', description: 'Limited history stack', support: 'bs3, bs4, lite'},
+      { title: 'Mode Switcher', link : 'mode-switcher.html', description: 'Change mode between Default and Air', support: 'bs3, bs4, lite'},      
+      { title: 'Air Mode', link : 'airmode.html', description: 'run as airmode', support: 'bs3, bs4, lite'},      
+      { title: 'Air Mode with scroll', link : 'airmode-scroll.html', description: 'run as airmode with scroll', support: 'bs3, bs4, lite'},      
     ]
     function generate_sample_pages() {
       var html = samples.map(it => {

@@ -55,7 +55,7 @@ const isSupportTouch =
 
 // [workaround] IE doesn't have input events for contentEditable
 // - see: https://goo.gl/4bfIvA
-const inputEventName = (isMSIE || isEdge) ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
+const inputEventName = (isMSIE) ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
 
 /**
  * @class core.env
@@ -73,7 +73,7 @@ export default {
   isPhantom: /PhantomJS/i.test(userAgent),
   isWebkit: !isEdge && /webkit/i.test(userAgent),
   isChrome: !isEdge && /chrome/i.test(userAgent),
-  isSafari: !isEdge && /safari/i.test(userAgent),
+  isSafari: !isEdge && /safari/i.test(userAgent) && (!/chrome/i.test(userAgent)),
   browserVersion,
   jqueryVersion: parseFloat($.fn.jquery),
   isSupportAmd,

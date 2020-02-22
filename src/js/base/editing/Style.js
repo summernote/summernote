@@ -38,7 +38,12 @@ export default class Style {
   fromNode($node) {
     const properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
     const styleInfo = this.jQueryCSS($node, properties) || {};
-    styleInfo['font-size'] = parseInt(styleInfo['font-size'], 10);
+
+    const fontSize = $node[0].style.fontSize || styleInfo['font-size'];
+
+    styleInfo['font-size'] = parseInt(fontSize, 10);
+    styleInfo['font-size-unit'] = fontSize.match(/[a-z%]+$/);
+
     return styleInfo;
   }
 
@@ -130,7 +135,9 @@ export default class Style {
         'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal',
         'font-family': document.queryCommandValue('fontname') || styleInfo['font-family'],
       });
-    } catch (e) {}
+    } catch (e) {
+      // eslint-disable-next-line
+    }
 
     // list-style-type to list-style(unordered, ordered)
     if (!rng.isOnList()) {

@@ -101,7 +101,7 @@ export default class CodeView {
       cmEditor.on('blur', (event) => {
         this.context.triggerEvent('blur.codeview', cmEditor.getValue(), event);
       });
-      cmEditor.on('change', (event) => {
+      cmEditor.on('change', () => {
         this.context.triggerEvent('change.codeview', cmEditor.getValue(), cmEditor);
       });
 
@@ -112,7 +112,7 @@ export default class CodeView {
       this.$codable.on('blur', (event) => {
         this.context.triggerEvent('blur.codeview', this.$codable.val(), event);
       });
-      this.$codable.on('input', (event) => {
+      this.$codable.on('input', () => {
         this.context.triggerEvent('change.codeview', this.$codable.val(), this.$codable);
       });
     }

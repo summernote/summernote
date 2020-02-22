@@ -57,6 +57,14 @@ function invoke(obj, method) {
 let idCounter = 0;
 
 /**
+ * reset globally-unique id
+ *
+ */
+function resetUniqueId() {
+  idCounter = 0;
+}
+
+/**
  * generate a globally-unique id
  *
  * @param {String} [prefix]
@@ -97,7 +105,7 @@ function rect2bnd(rect) {
 function invertObject(obj) {
   const inverted = {};
   for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
       inverted[obj[key]] = key;
     }
   }
@@ -166,6 +174,7 @@ export default {
   not,
   and,
   invoke,
+  resetUniqueId,
   uniqueId,
   rect2bnd,
   invertObject,

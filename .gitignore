@@ -48,3 +48,7 @@ selenium-debug.log
 
 # Ignoring rpt2_cache
 .rpt2_cache
+
+# direnv
+.envrc
+.env

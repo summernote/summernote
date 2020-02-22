@@ -6,6 +6,7 @@ $gray:        lighten($gray-base, 33.5%); // #555
 $gray-light:  lighten($gray-base, 46.7%); // #777
 $gray-lighter:lighten($gray-base, 93.5%); // #eee
 
+$font-family: sans-serif;
 $font-size: 14px;
 $font-size-large: ceil(($font-size * 1.25));
 $font-size-small: ceil(($font-size * 0.85));

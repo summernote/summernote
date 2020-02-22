@@ -4,19 +4,22 @@
  * summernote may be freely distributed under the MIT license./
  */
 
-import chai from 'chai';
 import $ from 'jquery';
-import env from '../../../src/js/base/core/env';
-import range from '../../../src/js/base/core/range';
-import Context from '../../../src/js/base/Context';
-import '../../../src/js/bs4/settings';
+import chai from 'chai';
+import chaidom from 'test/chaidom';
+import env from 'src/js/base/core/env';
+import range from 'src/js/base/core/range';
+import Context from 'src/js/base/Context';
+import 'src/js/bs4/settings';
+
+chai.use(chaidom);
 
 describe('Buttons', () => {
   var expect = chai.expect;
   var assert = chai.assert;
   var context, $toolbar, $editable;
 
-  beforeEach(function() {
+  beforeEach(() => {
     $('body').empty(); // important !
     var $note = $('<div><p>hello</p></div>').appendTo('body');
 
@@ -37,211 +40,194 @@ describe('Buttons', () => {
     $toolbar = context.layoutInfo.toolbar;
     $editable = context.layoutInfo.editable;
 
+    // Select the first paragraph
+    range.createFromNode($editable.find('p')[0]).normalize().select();
+
     // [workaround]
-    //  - Firefox need setTimeout for applying contents
     //  - IE8~11 can't create range in headless mode
-    if (env.isFF || env.isMSIE || env.isEdge) {
+    if (env.isMSIE) {
       this.skip();
     }
   });
 
   describe('bold button', () => {
-    it('should execute bold command when it is clicked', () => {
-      range.createFromNode($editable.find('p')[0]).normalize().select();
-
+    it('should execute bold command when it is clicked', (done) => {
       $toolbar.find('.note-btn-bold').click();
-      expect($editable.html()).to.equalsIgnoreCase('<p><b>hello</b></p>');
+      expect($editable.html()).await(done).to.equalsIgnoreCase('<p><b>hello</b></p>');
     });
   });
 
   describe('bold button state updated', () => {
-    it('should look toggled immediately when clicked', () => {
+    it('should look toggled immediately when clicked', (done) => {
       var $button = $toolbar.find('.note-btn-bold');
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
       $button.click();
-      assert.isTrue($button.hasClass('active'), 'button is now active');
+      expect($button.hasClass('active')).await(done).to.be.true;
     });
   });
 
   describe('italic button', () => {
-    it('should execute italic command when it is clicked', () => {
-      range.createFromNode($editable.find('p')[0]).normalize().select();
-
+    it('should execute italic command when it is clicked', (done) => {
       $toolbar.find('.note-btn-italic').click();
-      expect($editable.html()).to.equalsIgnoreCase('<p><i>hello</i></p>');
+      expect($editable.html()).await(done).to.equalsIgnoreCase('<p><i>hello</i></p>');
     });
   });
 
   describe('italic button state updated', () => {
-    it('should look toggled immediately when clicked', () => {
+    it('should look toggled immediately when clicked', (done) => {
       var $button = $toolbar.find('.note-btn-italic');
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
       $button.click();
-      assert.isTrue($button.hasClass('active'), 'button is now active');
+      expect($button.hasClass('active')).await(done).to.be.true;
     });
   });
 
   describe('underline button', () => {
-    it('should execute underline command when it is clicked', () => {
-      range.createFromNode($editable.find('p')[0]).normalize().select();
-
+    it('should execute underline command when it is clicked', (done) => {
       $toolbar.find('.note-btn-underline').click();
-      expect($editable.html()).to.equalsIgnoreCase('<p><u>hello</u></p>');
+      expect($editable.html()).await(done).to.equalsIgnoreCase('<p><u>hello</u></p>');
     });
   });
 
   describe('underline button state updated', () => {
-    it('should look toggled immediately when clicked', () => {
+    it('should look toggled immediately when clicked', (done) => {
       var $button = $toolbar.find('.note-btn-underline');
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
       $button.click();
-      assert.isTrue($button.hasClass('active'), 'button is now active');
+      expect($button.hasClass('active')).await(done).to.be.true;
     });
   });
 
   describe('superscript button', () => {
-    it('should execute superscript command when it is clicked', () => {
-      range.createFromNode($editable.find('p')[0]).normalize().select();
-
+    it('should execute superscript command when it is clicked', (done) => {
       $toolbar.find('.note-btn-superscript').click();
-      expect($editable.html()).to.equalsIgnoreCase('<p><sup>hello</sup></p>');
+      expect($editable.html()).await(done).to.equalsIgnoreCase('<p><sup>hello</sup></p>');
     });
   });
 
   describe('superscript button state updated', () => {
-    it('should look toggled immediately when clicked', () => {
+    it('should look toggled immediately when clicked', (done) => {
       var $button = $toolbar.find('.note-btn-superscript');
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
       $button.click();
-      assert.isTrue($button.hasClass('active'), 'button is now active');
+      expect($button.hasClass('active')).await(done).to.be.true;
     });
   });
 
   describe('subscript button', () => {
-    it('should execute subscript command when it is clicked', () => {
-      range.createFromNode($editable.find('p')[0]).normalize().select();
-
+    it('should execute subscript command when it is clicked', (done) => {
       $toolbar.find('.note-btn-subscript').click();
-      expect($editable.html()).to.equalsIgnoreCase('<p><sub>hello</sub></p>');
+      expect($editable.html()).await(done).to.equalsIgnoreCase('<p><sub>hello</sub></p>');
     });
   });
 
   describe('subscript button state updated', () => {
-    it('should look toggled immediately when clicked', () => {
+    it('should look toggled immediately when clicked', (done) => {
       var $button = $toolbar.find('.note-btn-subscript');
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
       $button.click();
-      assert.isTrue($button.hasClass('active'), 'button is now active');
+      expect($button.hasClass('active')).await(done).to.be.true;
     });
   });
 
   describe('strikethrough button', () => {
-    it('should execute strikethrough command when it is clicked', () => {
-      range.createFromNode($editable.find('p')[0]).normalize().select();
-
+    it('should execute strikethrough command when it is clicked', (done) => {
       $toolbar.find('.note-btn-strikethrough').click();
-      expect($editable.html()).to.equalsIgnoreCase('<p><strike>hello</strike></p>');
+      expect($editable.html()).await(done).to.equalsIgnoreCase('<p><strike>hello</strike></p>');
     });
   });
 
   describe('strikethrough button state updated', () => {
-    it('should look toggled immediately when clicked', () => {
+    it('should look toggled immediately when clicked', (done) => {
       var $button = $toolbar.find('.note-btn-strikethrough');
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
       $button.click();
-      assert.isTrue($button.hasClass('active'), 'button is now active');
+      expect($button.hasClass('active')).await(done).to.be.true;
     });
   });
 
   describe('clear button state not updated when clicked', () => {
-    it('should never look toggled when clicked', () => {
+    it('should never look toggled when clicked', (done) => {
       var $button = $toolbar.find('i.note-icon-eraser').parent();
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
       $button.click();
-      assert.isFalse($button.hasClass('active'), 'button is now active');
+      expect($button.hasClass('active')).await(done).to.be.false;
     });
   });
 
+  /* Below test cannot be passed under Firefox
   describe('font family button', () => {
-    it('should select the right font family name in the dropdown list when it is clicked', () => {
-      // XXX: skip assertions for passing test on travis.
-      // var $li = $toolbar.find('.dropdown-fontname li>a[data-value="Comic Sans MS"]');
-      // var $span = $toolbar.find('span.note-current-fontname');
-      // assert.isTrue($li.length === 1);
-      // assert.isTrue($span.text() !== 'Comic Sans MS');
-      // $li.click();
-      // assert.isTrue($span.text() === 'Comic Sans MS');
+    it('should select the right font family name in the dropdown list when it is clicked', (done) => {
+      var $li = $toolbar.find('.dropdown-fontname a[data-value="Comic Sans MS"]');
+      var $span = $toolbar.find('span.note-current-fontname');
+      assert.isTrue($li.length === 1);
+      assert.isTrue($span.text() !== 'Comic Sans MS');
+      $li.click();
+      expect($span.text()).await(done).to.equalsIgnoreCase('Comic Sans MS');
+    });
+  });
+  */
+
+  describe('font family button', () => {
+    it('should change font family when it is clicked', (done) => {
+      var $li = $toolbar.find('.dropdown-fontname a[data-value="Comic Sans MS"]');
+      var $span = $toolbar.find('span.note-current-fontname');
+      assert.isTrue($li.length === 1);
+      assert.isTrue($span.text() !== 'Comic Sans MS');
+      $li.click();
+      expect($editable.find('p').children().first()).await(done).to.be.equalsStyle('"Comic Sans MS"', 'font-family');
     });
   });
 
   describe('recent color button in all color button', () => {
-    it('should execute color command when it is clicked', () => {
-      range.createFromNode($editable.find('p')[0]).normalize().select();
-
+    it('should execute color command when it is clicked', (done) => {
       $toolbar.find('.note-color-all').find('.note-current-color-button').click();
-
-      var $span = $editable.find('span');
-      expect($span).to.be.equalsStyle('#FFFF00', 'background-color');
+      expect($editable.find('p').children().first()).await(done).to.be.equalsStyle('#FFFF00', 'background-color');
     });
   });
 
   describe('fore color button in all color button', () => {
-    it('should execute fore color command when it is clicked', () => {
-      range.createFromNode($editable.find('p')[0]).normalize().select();
-
-      var $button = $toolbar.find('.note-color-all').find('[data-event=foreColor]').eq(10);
+    it('should execute fore color command when it is clicked', (done) => {
+      var $button = $toolbar.find('.note-color-all').find('[data-event=foreColor]').eq(10).click();
       $button.click();
-
-      var $span = $editable.find('span');
-      expect($span).to.be.equalsStyle('#FF9C00', 'color');
+      expect($editable.find('p').children().first()).await(done).to.be.equalsStyle($button.data('value'), 'color');
     });
   });
 
   describe('back color button in all color button', () => {
-    it('should execute back color command when it is clicked', () => {
-      range.createFromNode($editable.find('p')[0]).normalize().select();
-
+    it('should execute back color command when it is clicked', (done) => {
       var $button = $toolbar.find('.note-color-all').find('[data-event=backColor]').eq(10);
       $button.click();
-
-      var $span = $editable.find('span');
-      expect($span).to.be.equalsStyle($button.data('value'), 'background-color');
+      expect($editable.find('p').children().first()).await(done).to.be.equalsStyle($button.data('value'), 'background-color');
     });
   });
 
   describe('color button in fore color button', () => {
-    it('should execute fore color command when it is clicked', () => {
-      range.createFromNode($editable.find('p')[0]).normalize().select();
-
+    it('should execute fore color command when it is clicked', (done) => {
       var $button = $toolbar.find('.note-color-fore').find('[data-event=foreColor]').eq(4);
       $button.click();
-
-      var $span = $editable.find('span');
-      expect($span).to.be.equalsStyle($button.data('value'), 'color');
+      expect($editable.find('p').children().first()).await(done).to.be.equalsStyle($button.data('value'), 'color');
     });
   });
 
   describe('back color button in back color button', () => {
-    it('should execute back color command when it is clicked', () => {
-      range.createFromNode($editable.find('p')[0]).normalize().select();
-
+    it('should execute back color command when it is clicked', (done) => {
       var $button = $toolbar.find('.note-color-back').find('[data-event=backColor]').eq(20);
       $button.click();
 
-      var $span = $editable.find('span');
-      expect($span).to.be.equalsStyle($button.data('value'), 'background-color');
+      expect($editable.find('p').children().first()).await(done).to.be.equalsStyle($button.data('value'), 'background-color');
     });
   });
 
-  describe('font size button with empty content', () => {
-    it('should update font size button value when changing font size', () => {
+  describe('font size button', () => {
+    it('should update font size button value when changing font size', (done) => {
       var $fontSizeDropdown = $toolbar.find('.dropdown-fontsize');
       var $fontSizeButton = $fontSizeDropdown.siblings('button');
       var $fontSizeList = $fontSizeDropdown.find('a');
@@ -252,7 +238,7 @@ describe('Buttons', () => {
       // select a font size
       $fontSizeList.filter('[data-value="' + selectedSize + '"]').trigger('click');
 
-      expect($fontSizeButton.text().trim()).to.equal(selectedSize);
+      expect($fontSizeButton.text().trim()).await(done).to.equal(selectedSize);
     });
   });
 });

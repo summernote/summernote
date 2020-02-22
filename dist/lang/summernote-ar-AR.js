@@ -1,13 +1,13 @@
 /*!
  * 
- * Super simple wysiwyg editor v0.8.12
+ * Super simple wysiwyg editor v0.8.16
  * https://summernote.org
  * 
  * 
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  * 
- * Date: 2019-07-30T07:32Z
+ * Date: 2020-02-19T09:12Z
  * 
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -156,7 +156,7 @@ return /******/ (function(modules) { // webpackBootstrap
         providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion ou Youku)'
       },
       link: {
-        link: 'رابط رابط',
+        link: 'رابط',
         insert: 'إدراج',
         unlink: 'حذف الرابط',
         edit: 'تعديل',
@@ -166,13 +166,13 @@ return /******/ (function(modules) { // webpackBootstrap
       },
       table: {
         table: 'جدول',
-        addRowAbove: 'Add row above',
-        addRowBelow: 'Add row below',
-        addColLeft: 'Add column left',
-        addColRight: 'Add column right',
-        delRow: 'Delete row',
-        delCol: 'Delete column',
-        delTable: 'Delete table'
+        addRowAbove: 'إضافة سطر أعلاه',
+        addRowBelow: 'إضافة سطر أدناه',
+        addColLeft: 'إضافة عمود قبله',
+        addColRight: 'إضافة عمود بعده',
+        delRow: 'حذف سطر',
+        delCol: 'حذف عمود',
+        delTable: 'حذف الجدول'
       },
       hr: {
         insert: 'إدراج خط أفقي'
@@ -225,44 +225,44 @@ return /******/ (function(modules) { // webpackBootstrap
         action: 'Action',
         paragraphFormatting: 'تنسيق الفقرة',
         documentStyle: 'تنسيق المستند',
-        extraKeys: 'Extra keys'
+        extraKeys: 'أزرار إضافية'
       },
       help: {
-        'insertParagraph': 'Insert Paragraph',
-        'undo': 'Undoes the last command',
-        'redo': 'Redoes the last command',
-        'tab': 'Tab',
-        'untab': 'Untab',
-        'bold': 'Set a bold style',
-        'italic': 'Set a italic style',
-        'underline': 'Set a underline style',
-        'strikethrough': 'Set a strikethrough style',
-        'removeFormat': 'Clean a style',
-        'justifyLeft': 'Set left align',
-        'justifyCenter': 'Set center align',
-        'justifyRight': 'Set right align',
-        'justifyFull': 'Set full align',
-        'insertUnorderedList': 'Toggle unordered list',
-        'insertOrderedList': 'Toggle ordered list',
-        'outdent': 'Outdent on current paragraph',
-        'indent': 'Indent on current paragraph',
-        'formatPara': 'Change current block\'s format as a paragraph(P tag)',
-        'formatH1': 'Change current block\'s format as H1',
-        'formatH2': 'Change current block\'s format as H2',
-        'formatH3': 'Change current block\'s format as H3',
-        'formatH4': 'Change current block\'s format as H4',
-        'formatH5': 'Change current block\'s format as H5',
-        'formatH6': 'Change current block\'s format as H6',
-        'insertHorizontalRule': 'Insert horizontal rule',
-        'linkDialog.show': 'Show Link Dialog'
+        'insertParagraph': 'إدراج فقرة',
+        'undo': 'تراجع عن آخر أمر',
+        'redo': 'إعادة تنفيذ آخر أمر',
+        'tab': 'إزاحة (تاب)',
+        'untab': 'سحب النص باتجاه البداية',
+        'bold': 'تنسيق عريض',
+        'italic': 'تنسيق مائل',
+        'underline': 'تنسيق خط سفلي',
+        'strikethrough': 'تنسيق خط متوسط للنص',
+        'removeFormat': 'إزالة التنسيقات',
+        'justifyLeft': 'محاذاة لليسار',
+        'justifyCenter': 'محاذاة توسيط',
+        'justifyRight': 'محاذاة لليمين',
+        'justifyFull': 'محاذاة كاملة',
+        'insertUnorderedList': 'قائمة منقّطة',
+        'insertOrderedList': 'قائمة مرقّمة',
+        'outdent': 'إزاحة للأمام على الفقرة الحالية',
+        'indent': 'إزاحة للخلف على الفقرة الحالية',
+        'formatPara': 'تغيير التنسيق للكتلة الحالية إلى فقرة',
+        'formatH1': 'تغيير التنسيق للكتلة الحالية إلى ترويسة 1',
+        'formatH2': 'تغيير التنسيق للكتلة الحالية إلى ترويسة 2',
+        'formatH3': 'تغيير التنسيق للكتلة الحالية إلى ترويسة 3',
+        'formatH4': 'تغيير التنسيق للكتلة الحالية إلى ترويسة 4',
+        'formatH5': 'تغيير التنسيق للكتلة الحالية إلى ترويسة 5',
+        'formatH6': 'تغيير التنسيق للكتلة الحالية إلى ترويسة 6',
+        'insertHorizontalRule': 'إدراج خط أفقي',
+        'linkDialog.show': 'إظهار خصائص الرابط'
       },
       history: {
         undo: 'تراجع',
         redo: 'إعادة'
       },
       specialChar: {
-        specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters'
+        specialChar: 'محارف خاصة',
+        select: 'اختر المحرف الخاص'
       }
     }
   });
