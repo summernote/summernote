@@ -1,5 +1,6 @@
-import env from '../core/env';
 import dom from '../core/dom';
+import env from '../core/env';
+import key from '../core/key';
 
 let CodeMirror;
 if (env.hasCodeMirror) {
@@ -23,6 +24,14 @@ export default class CodeView {
     if (isCodeview && env.hasCodeMirror) {
       this.$codable.data('cmEditor').save();
     }
+  }
+
+  initialize() {
+    this.$codable.on('keyup', (event) => {
+      if (event.keyCode === key.code.ESCAPE) {
+        this.deactivate();
+      } 
+    });
   }
 
   /**

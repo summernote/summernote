@@ -5,6 +5,7 @@ const KEY_MAP = {
   'BACKSPACE': 8,
   'TAB': 9,
   'ENTER': 13,
+  'ESCAPE': 27,
   'SPACE': 32,
   'DELETE': 46,
 

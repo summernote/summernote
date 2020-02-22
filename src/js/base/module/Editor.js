@@ -52,7 +52,7 @@ export default class Editor {
 
     // native commands(with execCommand), generate function for execCommand
     const commands = [
-      'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
+      'bold', 'escape','italic', 'underline', 'strikethrough', 'superscript', 'subscript',
       'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
       'formatBlock', 'removeFormat', 'backColor',
     ];
