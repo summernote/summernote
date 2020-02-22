@@ -82,6 +82,8 @@ export default class CodeView {
     this.$codable.height(this.$editable.height());
 
     this.context.invoke('toolbar.updateCodeview', true);
+    this.context.invoke('airPopover.updateCodeview', true);
+
     this.$editor.addClass('codeview');
     this.$codable.focus();
 
@@ -143,6 +145,7 @@ export default class CodeView {
     this.$editable.focus();
 
     this.context.invoke('toolbar.updateCodeview', false);
+    this.context.invoke('airPopover.updateCodeview', false);
   }
 
   destroy() {
