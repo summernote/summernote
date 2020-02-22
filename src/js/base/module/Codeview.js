@@ -1,5 +1,6 @@
-import env from '../core/env';
 import dom from '../core/dom';
+import env from '../core/env';
+import key from '../core/key';
 
 let CodeMirror;
 if (env.hasCodeMirror) {
@@ -23,6 +24,14 @@ export default class CodeView {
     if (isCodeview && env.hasCodeMirror) {
       this.$codable.data('cmEditor').save();
     }
+  }
+
+  initialize() {
+    this.$codable.on('keyup', (event) => {
+      if (event.keyCode === key.code.ESCAPE) {
+        this.deactivate();
+      } 
+    });
   }
 
   /**
@@ -82,6 +91,8 @@ export default class CodeView {
     this.$codable.height(this.$editable.height());
 
     this.context.invoke('toolbar.updateCodeview', true);
+    this.context.invoke('airPopover.updateCodeview', true);
+
     this.$editor.addClass('codeview');
     this.$codable.focus();
 
@@ -143,6 +154,7 @@ export default class CodeView {
     this.$editable.focus();
 
     this.context.invoke('toolbar.updateCodeview', false);
+    this.context.invoke('airPopover.updateCodeview', false);
   }
 
   destroy() {
