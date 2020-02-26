@@ -9,7 +9,6 @@ const editable = renderer.create('<div class="note-editable card-block" contentE
 const statusbar = renderer.create([
   '<output class="note-status-output" role="status" aria-live="polite"/>',
   '<div class="note-statusbar" role="status">',
-    '<output class="note-status-output" aria-live="polite"></output>',
     '<div class="note-resizebar" aria-label="Resize">',
       '<div class="note-icon-bar"/>',
       '<div class="note-icon-bar"/>',
