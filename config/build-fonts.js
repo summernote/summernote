@@ -16,6 +16,7 @@ const webfontConfig = {
   normalize: true,
 };
 
+// eslint-disable-next-line
 console.log('Building fonts...');
 
 webfont(webfontConfig).then(result => {
@@ -36,11 +37,13 @@ webfont(webfontConfig).then(result => {
     } else {
       file = path.resolve(webfontConfig['destTemplate']);
     }
+    // eslint-disable-next-line
     console.log('Writing ', file);
 
     fs.writeFileSync(file, content);
   });
 }).catch(error => {
+  // eslint-disable-next-line
   console.log(error);
   throw error;
 });

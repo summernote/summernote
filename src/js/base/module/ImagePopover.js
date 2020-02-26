@@ -43,15 +43,21 @@ export default class ImagePopover {
   update(target, event) {
     if (dom.isImg(target)) {
       const position = $(target).offset();
-      const editingOffset = $(this.context.layoutInfo.editingArea).offset();
-      const pos = {
-        left: position.left - editingOffset.left,
-        top: position.top - editingOffset.top,
-      };
+      const containerOffset = $(this.options.container).offset();
+      let pos = {};
+      if (this.options.popatmouse) {
+        pos.left = event.pageX - 20;
+        pos.top = event.pageY;
+      } else {
+        pos = position;
+      }
+      pos.top -= containerOffset.top;
+      pos.left -= containerOffset.left;
+
       this.$popover.css({
         display: 'block',
-        left: this.options.popatmouse ? event.pageX - 20 : pos.left,
-        top: this.options.popatmouse ? event.pageY : pos.top,
+        left: pos.left,
+        top: pos.top,
       });
     } else {
       this.hide();

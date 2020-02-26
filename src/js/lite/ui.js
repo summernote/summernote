@@ -511,128 +511,131 @@ const icon = function(iconClassName, tagName) {
   return '<' + tagName + ' class="' + iconClassName + '"/>';
 };
 
-const ui = {
-  editor: editor,
-  toolbar: toolbar,
-  editingArea: editingArea,
-  codable: codable,
-  editable: editable,
-  statusbar: statusbar,
-  airEditor: airEditor,
-  airEditable: airEditable,
-  buttonGroup: buttonGroup,
-  button: button,
-  dropdown: dropdown,
-  dropdownCheck: dropdownCheck,
-  dropdownButton: dropdownButton,
-  dropdownButtonContents: dropdownButtonContents,
-  dropdownCheckButton: dropdownCheckButton,
-  paragraphDropdownButton: paragraphDropdownButton,
-  tableDropdownButton: tableDropdownButton,
-  colorDropdownButton: colorDropdownButton,
-  palette: palette,
-  dialog: dialog,
-  videoDialog: videoDialog,
-  imageDialog: imageDialog,
-  linkDialog: linkDialog,
-  popover: popover,
-  checkbox: checkbox,
-  icon: icon,
+const ui = function(editorOptions) {
+  return {
+    editor: editor,
+    toolbar: toolbar,
+    editingArea: editingArea,
+    codable: codable,
+    editable: editable,
+    statusbar: statusbar,
+    airEditor: airEditor,
+    airEditable: airEditable,
+    buttonGroup: buttonGroup,
+    button: button,
+    dropdown: dropdown,
+    dropdownCheck: dropdownCheck,
+    dropdownButton: dropdownButton,
+    dropdownButtonContents: dropdownButtonContents,
+    dropdownCheckButton: dropdownCheckButton,
+    paragraphDropdownButton: paragraphDropdownButton,
+    tableDropdownButton: tableDropdownButton,
+    colorDropdownButton: colorDropdownButton,
+    palette: palette,
+    dialog: dialog,
+    videoDialog: videoDialog,
+    imageDialog: imageDialog,
+    linkDialog: linkDialog,
+    popover: popover,
+    checkbox: checkbox,
+    icon: icon,
+    options: editorOptions,
 
-  toggleBtn: function($btn, isEnable) {
-    $btn.toggleClass('disabled', !isEnable);
-    $btn.attr('disabled', !isEnable);
-  },
+    toggleBtn: function($btn, isEnable) {
+      $btn.toggleClass('disabled', !isEnable);
+      $btn.attr('disabled', !isEnable);
+    },
 
-  toggleBtnActive: function($btn, isActive) {
-    $btn.toggleClass('active', isActive);
-  },
+    toggleBtnActive: function($btn, isActive) {
+      $btn.toggleClass('active', isActive);
+    },
 
-  check: function($dom, value) {
-    $dom.find('.checked').removeClass('checked');
-    $dom.find('[data-value="' + value + '"]').addClass('checked');
-  },
+    check: function($dom, value) {
+      $dom.find('.checked').removeClass('checked');
+      $dom.find('[data-value="' + value + '"]').addClass('checked');
+    },
 
-  onDialogShown: function($dialog, handler) {
-    $dialog.one('note.modal.show', handler);
-  },
+    onDialogShown: function($dialog, handler) {
+      $dialog.one('note.modal.show', handler);
+    },
 
-  onDialogHidden: function($dialog, handler) {
-    $dialog.one('note.modal.hide', handler);
-  },
+    onDialogHidden: function($dialog, handler) {
+      $dialog.one('note.modal.hide', handler);
+    },
 
-  showDialog: function($dialog) {
-    $dialog.data('modal').show();
-  },
+    showDialog: function($dialog) {
+      $dialog.data('modal').show();
+    },
 
-  hideDialog: function($dialog) {
-    $dialog.data('modal').hide();
-  },
+    hideDialog: function($dialog) {
+      $dialog.data('modal').hide();
+    },
 
-  /**
-   * get popover content area
-   *
-   * @param $popover
-   * @returns {*}
-   */
-  getPopoverContent: function($popover) {
-    return $popover.find('.note-popover-content');
-  },
+    /**
+     * get popover content area
+     *
+     * @param $popover
+     * @returns {*}
+     */
+    getPopoverContent: function($popover) {
+      return $popover.find('.note-popover-content');
+    },
 
-  /**
-   * get dialog's body area
-   *
-   * @param $dialog
-   * @returns {*}
-   */
-  getDialogBody: function($dialog) {
-    return $dialog.find('.note-modal-body');
-  },
+    /**
+     * get dialog's body area
+     *
+     * @param $dialog
+     * @returns {*}
+     */
+    getDialogBody: function($dialog) {
+      return $dialog.find('.note-modal-body');
+    },
 
-  createLayout: function($note, options) {
-    const $editor = (options.airMode ? ui.airEditor([
-      ui.editingArea([
-        ui.codable(),
-        ui.airEditable(),
-      ]),
-    ]) : (options.toolbarPosition === 'bottom'
-      ? ui.editor([
-        ui.editingArea([
-          ui.codable(),
-          ui.editable(),
+    createLayout: function($note) {
+      const $editor = (editorOptions.airMode ? airEditor([
+        editingArea([
+          codable(),
+          airEditable(),
         ]),
-        ui.toolbar(),
-        ui.statusbar(),
-      ])
-      : ui.editor([
-        ui.toolbar(),
-        ui.editingArea([
-          ui.codable(),
-          ui.editable(),
-        ]),
-        ui.statusbar(),
-      ])
-    )).render();
+      ]) : (editorOptions.toolbarPosition === 'bottom'
+        ? editor([
+          editingArea([
+            codable(),
+            editable(),
+          ]),
+          toolbar(),
+          statusbar(),
+        ])
+        : editor([
+          toolbar(),
+          editingArea([
+            codable(),
+            editable(),
+          ]),
+          statusbar(),
+        ])
+      )).render();
 
-    $editor.insertAfter($note);
+      $editor.insertAfter($note);
 
-    return {
-      note: $note,
-      editor: $editor,
-      toolbar: $editor.find('.note-toolbar'),
-      editingArea: $editor.find('.note-editing-area'),
-      editable: $editor.find('.note-editable'),
-      codable: $editor.find('.note-codable'),
-      statusbar: $editor.find('.note-statusbar'),
-    };
-  },
+      return {
+        note: $note,
+        editor: $editor,
+        toolbar: $editor.find('.note-toolbar'),
+        editingArea: $editor.find('.note-editing-area'),
+        editable: $editor.find('.note-editable'),
+        codable: $editor.find('.note-codable'),
+        statusbar: $editor.find('.note-statusbar'),
+      };
+    },
 
-  removeLayout: function($note, layoutInfo) {
-    $note.html(layoutInfo.editable.html());
-    layoutInfo.editor.remove();
-    $note.off('summernote'); // remove summernote custom event
-    $note.show();
-  },
+    removeLayout: function($note, layoutInfo) {
+      $note.html(layoutInfo.editable.html());
+      layoutInfo.editor.remove();
+      $note.off('summernote'); // remove summernote custom event
+      $note.show();
+    },
+  };
 };
 
 export default ui;

@@ -1,10 +1,13 @@
+var webpackConfig = require('./config/webpack.config.dev.js');
+
 module.exports = function (config) {
   config.set({
-    frameworks: ['mocha', 'karma-typescript'],
+    frameworks: ['mocha'],
     concurrency: 3,
     colors: true,
     logLevel: config.LOG_INFO,
     files: [
+      'node_modules/jquery/dist/jquery.js',
       { pattern: 'src/js/**/*.js' },
       { pattern: 'test/**/*.spec.js' }
     ],
@@ -81,33 +84,19 @@ module.exports = function (config) {
       tags: [process.env.TRAVIS_BRANCH, process.env.TRAVIS_PULL_REQUEST],
     },
     preprocessors: {
-      'src/js/**/*.js': ['karma-typescript'],
-      'test/**/*.spec.js': ['karma-typescript']
+      'src/js/**/*.js': ['webpack'],
+      'test/**/*.spec.js': ['webpack']
     },
-    reporters: ['dots', 'karma-typescript', 'coverage', 'coveralls'],
+    webpack: webpackConfig,
+    webpackMiddleware: {
+      stats: 'errors-only',
+    },
+    reporters: ['dots', 'coverage', 'coveralls'],
     coverageReporter: {
       type: 'lcov',
       dir: 'coverage/',
       includeAllSources: true
     },
     browserNoActivityTimeout: 60000,
-    karmaTypescriptConfig: {
-      tsconfig: './tsconfig.json',
-      include: [
-        'test/**/*.spec.js'
-      ],
-      bundlerOptions: {
-        entrypoints: /\.spec\.js$/,
-        transforms: [require("karma-typescript-es6-transform")()],
-        exclude: [
-          'node_modules'
-        ],
-        sourceMap: true,
-        addNodeGlobals: false
-      },
-      compilerOptions: {
-        "module": "commonjs"
-      }
-    }
   });
 };

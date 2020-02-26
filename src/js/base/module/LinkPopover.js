@@ -8,7 +8,6 @@ export default class LinkPopover {
 
     this.ui = $.summernote.ui;
     this.options = context.options;
-    this.target = context.options.container;
     this.events = {
       'summernote.keyup summernote.mouseup summernote.change summernote.scroll': () => {
         this.update();
@@ -30,7 +29,7 @@ export default class LinkPopover {
         const $content = $node.find('.popover-content,.note-popover-content');
         $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
       },
-    }).render().appendTo(this.target);
+    }).render().appendTo(this.options.container);
     const $content = this.$popover.find('.popover-content,.note-popover-content');
 
     this.context.invoke('buttons.build', $content, this.options.popover.link);
@@ -53,12 +52,12 @@ export default class LinkPopover {
     if (rng.isCollapsed() && rng.isOnAnchor()) {
       const anchor = dom.ancestor(rng.sc, dom.isAnchor);
       const href = $(anchor).attr('href');
-      this.$popover.find('a').attr('href', href).html(href);
+      this.$popover.find('a').attr('href', href).text(href);
 
       const pos = dom.posFromPlaceholder(anchor);
-      const targetOffset = $(this.target).offset();
-      pos.top -= targetOffset.top;
-      pos.left -= targetOffset.left;
+      const containerOffset = $(this.options.container).offset();
+      pos.top -= containerOffset.top;
+      pos.left -= containerOffset.left;
 
       this.$popover.css({
         display: 'block',

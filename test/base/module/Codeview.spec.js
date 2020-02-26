@@ -3,11 +3,14 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-import chai from 'chai';
 import $ from 'jquery';
-import Context from '../../../src/js/base/Context';
-import Codeview from '../../../src/js/base/module/Codeview';
-import '../../../src/js/bs4/settings';
+import chai from 'chai';
+import chaidom from 'test/chaidom';
+import Context from 'src/js/base/Context';
+import Codeview from 'src/js/base/module/Codeview';
+import 'src/js/bs4/settings';
+
+chai.use(chaidom);
 
 describe('Codeview', () => {
   var expect = chai.expect;

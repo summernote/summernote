@@ -112,6 +112,7 @@ $.summernote = $.extend($.summernote, {
 
     // air mode: inline editor
     airMode: false,
+    overrideContextMenu: false, // TBD
 
     width: null,
     height: null,
@@ -122,7 +123,7 @@ $.summernote = $.extend($.summernote, {
     focus: false,
     tabDisabled: false,
     tabSize: 4,
-    styleWithSpan: true,
+    styleWithCSS: false,
     shortcuts: true,
     textareaAutoSync: true,
     tooltip: 'auto',
@@ -133,6 +134,9 @@ $.summernote = $.extend($.summernote, {
     disableGrammar: false,
     placeholder: null,
     inheritPlaceholder: false,
+    // TODO: need to be documented
+    recordEveryKeystroke: false,
+    historyLimit: 200,
 
     // TODO: need to be documented
     hintMode: 'word',
@@ -242,6 +246,7 @@ $.summernote = $.extend($.summernote, {
 
     keyMap: {
       pc: {
+        'ESC': 'escape',
         'ENTER': 'insertParagraph',
         'CTRL+Z': 'undo',
         'CTRL+Y': 'redo',
@@ -272,6 +277,7 @@ $.summernote = $.extend($.summernote, {
       },
 
       mac: {
+        'ESC': 'escape',
         'ENTER': 'insertParagraph',
         'CMD+Z': 'undo',
         'CMD+SHIFT+Z': 'redo',

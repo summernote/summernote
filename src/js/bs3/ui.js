@@ -52,39 +52,6 @@ const dropdownCheck = renderer.create('<ul class="note-dropdown-menu dropdown-me
   $node.html(markup).attr({ 'aria-label': options.title });
 });
 
-const palette = renderer.create('<div class="note-color-palette"/>', function($node, options) {
-  const contents = [];
-  for (let row = 0, rowSize = options.colors.length; row < rowSize; row++) {
-    const eventName = options.eventName;
-    const colors = options.colors[row];
-    const colorsName = options.colorsName[row];
-    const buttons = [];
-    for (let col = 0, colSize = colors.length; col < colSize; col++) {
-      const color = colors[col];
-      const colorName = colorsName[col];
-      buttons.push([
-        '<button type="button" class="note-color-btn"',
-        'style="background-color:', color, '" ',
-        'data-event="', eventName, '" ',
-        'data-value="', color, '" ',
-        'title="', colorName, '" ',
-        'aria-label="', colorName, '" ',
-        'data-toggle="button" tabindex="-1"></button>',
-      ].join(''));
-    }
-    contents.push('<div class="note-color-row">' + buttons.join('') + '</div>');
-  }
-  $node.html(contents.join(''));
-
-  if (options.tooltip) {
-    $node.find('.note-color-btn').tooltip({
-      container: options.container,
-      trigger: 'hover',
-      placement: 'bottom',
-    });
-  }
-});
-
 const dialog = renderer.create('<div class="modal note-modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function($node, options) {
   if (options.fade) {
     $node.addClass('fade');
@@ -136,111 +103,148 @@ const icon = function(iconClassName, tagName) {
   tagName = tagName || 'i';
   return '<' + tagName + ' class="' + iconClassName + '"/>';
 };
-const ui = {
-  editor: editor,
-  toolbar: toolbar,
-  editingArea: editingArea,
-  codable: codable,
-  editable: editable,
-  statusbar: statusbar,
-  airEditor: airEditor,
-  airEditable: airEditable,
-  buttonGroup: buttonGroup,
-  dropdown: dropdown,
-  dropdownButtonContents: dropdownButtonContents,
-  dropdownCheck: dropdownCheck,
-  palette: palette,
-  dialog: dialog,
-  popover: popover,
-  checkbox: checkbox,
-  icon: icon,
-  options: {},
 
-  button: function($node, options) {
-    return renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function($node, options) {
-      if (options && options.tooltip) {
-        $node.attr({
-          title: options.tooltip,
-          'aria-label': options.tooltip,
-        }).tooltip({
-          container: options.container,
-          trigger: 'hover',
-          placement: 'bottom',
-        }).on('click', (e) => {
-          $(e.currentTarget).tooltip('hide');
-        });
-      }
-    })($node, options);
-  },
+const ui = function(editorOptions) {
+  return {
+    editor: editor,
+    toolbar: toolbar,
+    editingArea: editingArea,
+    codable: codable,
+    editable: editable,
+    statusbar: statusbar,
+    airEditor: airEditor,
+    airEditable: airEditable,
+    buttonGroup: buttonGroup,
+    dropdown: dropdown,
+    dropdownButtonContents: dropdownButtonContents,
+    dropdownCheck: dropdownCheck,
+    dialog: dialog,
+    popover: popover,
+    checkbox: checkbox,
+    icon: icon,
+    options: editorOptions,
 
-  toggleBtn: function($btn, isEnable) {
-    $btn.toggleClass('disabled', !isEnable);
-    $btn.attr('disabled', !isEnable);
-  },
+    palette: function($node, options) {
+      return renderer.create('<div class="note-color-palette"/>', function($node, options) {
+        const contents = [];
+        for (let row = 0, rowSize = options.colors.length; row < rowSize; row++) {
+          const eventName = options.eventName;
+          const colors = options.colors[row];
+          const colorsName = options.colorsName[row];
+          const buttons = [];
+          for (let col = 0, colSize = colors.length; col < colSize; col++) {
+            const color = colors[col];
+            const colorName = colorsName[col];
+            buttons.push([
+              '<button type="button" class="note-color-btn"',
+              'style="background-color:', color, '" ',
+              'data-event="', eventName, '" ',
+              'data-value="', color, '" ',
+              'title="', colorName, '" ',
+              'aria-label="', colorName, '" ',
+              'data-toggle="button" tabindex="-1"></button>',
+            ].join(''));
+          }
+          contents.push('<div class="note-color-row">' + buttons.join('') + '</div>');
+        }
+        $node.html(contents.join(''));
 
-  toggleBtnActive: function($btn, isActive) {
-    $btn.toggleClass('active', isActive);
-  },
+        if (options.tooltip) {
+          $node.find('.note-color-btn').tooltip({
+            container: options.container || editorOptions.container,
+            trigger: 'hover',
+            placement: 'bottom',
+          });
+        }
+      })($node, options);
+    },
 
-  onDialogShown: function($dialog, handler) {
-    $dialog.one('shown.bs.modal', handler);
-  },
+    button: function($node, options) {
+      return renderer.create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function($node, options) {
+        if (options && options.tooltip) {
+          $node.attr({
+            title: options.tooltip,
+            'aria-label': options.tooltip,
+          }).tooltip({
+            container: options.container || editorOptions.container,
+            trigger: 'hover',
+            placement: 'bottom',
+          }).on('click', (e) => {
+            $(e.currentTarget).tooltip('hide');
+          });
+        }
+      })($node, options);
+    },
 
-  onDialogHidden: function($dialog, handler) {
-    $dialog.one('hidden.bs.modal', handler);
-  },
+    toggleBtn: function($btn, isEnable) {
+      $btn.toggleClass('disabled', !isEnable);
+      $btn.attr('disabled', !isEnable);
+    },
 
-  showDialog: function($dialog) {
-    $dialog.modal('show');
-  },
+    toggleBtnActive: function($btn, isActive) {
+      $btn.toggleClass('active', isActive);
+    },
 
-  hideDialog: function($dialog) {
-    $dialog.modal('hide');
-  },
+    onDialogShown: function($dialog, handler) {
+      $dialog.one('shown.bs.modal', handler);
+    },
 
-  createLayout: function($note, options) {
-    const $editor = (options.airMode ? ui.airEditor([
-      ui.editingArea([
-        ui.codable(),
-        ui.airEditable(),
-      ]),
-    ]) : (options.toolbarPosition === 'bottom'
-      ? ui.editor([
-        ui.editingArea([
-          ui.codable(),
-          ui.editable(),
+    onDialogHidden: function($dialog, handler) {
+      $dialog.one('hidden.bs.modal', handler);
+    },
+
+    showDialog: function($dialog) {
+      $dialog.modal('show');
+    },
+
+    hideDialog: function($dialog) {
+      $dialog.modal('hide');
+    },
+
+    createLayout: function($note) {
+      const $editor = (editorOptions.airMode ? airEditor([
+        editingArea([
+          codable(),
+          airEditable(),
         ]),
-        ui.toolbar(),
-        ui.statusbar(),
-      ])
-      : ui.editor([
-        ui.toolbar(),
-        ui.editingArea([
-          ui.codable(),
-          ui.editable(),
-        ]),
-        ui.statusbar(),
-      ])
-    )).render();
+      ]) : (editorOptions.toolbarPosition === 'bottom'
+        ? editor([
+          editingArea([
+            codable(),
+            editable(),
+          ]),
+          toolbar(),
+          statusbar(),
+        ])
+        : editor([
+          toolbar(),
+          editingArea([
+            codable(),
+            editable(),
+          ]),
+          statusbar(),
+        ])
+      )).render();
 
-    $editor.insertAfter($note);
+      $editor.insertAfter($note);
 
-    return {
-      note: $note,
-      editor: $editor,
-      toolbar: $editor.find('.note-toolbar'),
-      editingArea: $editor.find('.note-editing-area'),
-      editable: $editor.find('.note-editable'),
-      codable: $editor.find('.note-codable'),
-      statusbar: $editor.find('.note-statusbar'),
-    };
-  },
+      return {
+        note: $note,
+        editor: $editor,
+        toolbar: $editor.find('.note-toolbar'),
+        editingArea: $editor.find('.note-editing-area'),
+        editable: $editor.find('.note-editable'),
+        codable: $editor.find('.note-codable'),
+        statusbar: $editor.find('.note-statusbar'),
+      };
+    },
 
-  removeLayout: function($note, layoutInfo) {
-    $note.html(layoutInfo.editable.html());
-    layoutInfo.editor.remove();
-    $note.show();
-  },
+    removeLayout: function($note, layoutInfo) {
+      $note.html(layoutInfo.editable.html());
+      layoutInfo.editor.remove();
+      $note.show();
+    },
+  };
 };
 
 export default ui;
