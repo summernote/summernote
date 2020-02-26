@@ -48,7 +48,7 @@ export default class VideoDialog {
 
   createVideoNode(url) {
     // video url patterns(youtube, instagram, vimeo, dailymotion, youku, mp4, ogg, webm)
-    const ytRegExp = /\/\/(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w|-]{11})(?:(?:[\?&]t=)(\S+))?$/;
+    const ytRegExp = /\/\/(?:(?:www|m)\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w|-]{11})(?:(?:[\?&]t=)(\S+))?$/;
     const ytRegExpForStart = /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/;
     const ytMatch = url.match(ytRegExp);
 
