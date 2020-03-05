@@ -16,11 +16,17 @@ export default class CodeView {
     this.$editable = context.layoutInfo.editable;
     this.$codable = context.layoutInfo.codable;
     this.options = context.options;
+    this.CodeMirrorConstructor = CodeMirror; 
+
+    if (this.options.codemirror.CodeMirrorConstructor) {
+      this.CodeMirrorConstructor = this.options.codemirror.CodeMirrorConstructor;
+    }
   }
 
   sync() {
     const isCodeview = this.isActivated();
-    if (isCodeview && env.hasCodeMirror) {
+    const CodeMirror = this.CodeMirrorConstructor;
+    if (isCodeview && CodeMirror) {
       this.$codable.data('cmEditor').save();
     }
   }
@@ -78,6 +84,7 @@ export default class CodeView {
    * activate code view
    */
   activate() {
+    const CodeMirror = this.CodeMirrorConstructor;    
     this.$codable.val(dom.html(this.$editable, this.options.prettifyHtml));
     this.$codable.height(this.$editable.height());
 
@@ -86,7 +93,7 @@ export default class CodeView {
     this.$codable.focus();
 
     // activate CodeMirror as codable
-    if (env.hasCodeMirror) {
+    if (CodeMirror) {
       const cmEditor = CodeMirror.fromTextArea(this.$codable[0], this.options.codemirror);
 
       // CodeMirror TernServer
@@ -122,8 +129,9 @@ export default class CodeView {
    * deactivate code view
    */
   deactivate() {
+    const CodeMirror = this.CodeMirrorConstructor;    
     // deactivate CodeMirror as codable
-    if (env.hasCodeMirror) {
+    if (CodeMirror) {
       const cmEditor = this.$codable.data('cmEditor');
       this.$codable.val(cmEditor.getValue());
       cmEditor.toTextArea();
