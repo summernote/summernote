@@ -1,10 +1,4 @@
-import env from '../core/env';
 import dom from '../core/dom';
-
-let CodeMirror;
-if (env.hasCodeMirror) {
-  CodeMirror = window.CodeMirror;
-}
 
 /**
  * @class Codeview
@@ -16,7 +10,7 @@ export default class CodeView {
     this.$editable = context.layoutInfo.editable;
     this.$codable = context.layoutInfo.codable;
     this.options = context.options;
-    this.CodeMirrorConstructor = CodeMirror; 
+    this.CodeMirrorConstructor = window.CodeMirror; 
 
     if (this.options.codemirror.CodeMirrorConstructor) {
       this.CodeMirrorConstructor = this.options.codemirror.CodeMirrorConstructor;
