@@ -105,3 +105,86 @@
     width: 900px;
   }
 }
+
+.note-modal {
+
+  .note-help-block {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    color: #737373;
+  }
+
+  .note-nav {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+  }
+
+  .note-nav-link {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #007bff;
+    text-decoration: none;
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects;
+  }
+
+  .note-nav-link:focus,
+  .note-nav-link:hover {
+    color: #0056b3;
+    text-decoration: none;
+  }
+
+  .note-nav-link.disabled {
+    color: #868e96;
+  }
+
+  .note-nav-tabs {
+    border-bottom: 1px solid #ddd;
+  }
+
+  .note-nav-tabs .note-nav-item {
+    margin-bottom: -1px;
+  }
+
+  .note-nav-tabs .note-nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+  }
+
+  .note-nav-tabs .note-nav-link:focus,
+  .note-nav-tabs .note-nav-link:hover {
+    border-color: #e9ecef #e9ecef #ddd;
+  }
+
+  .note-nav-tabs .note-nav-link.disabled {
+    color: #868e96;
+    background-color: transparent;
+    border-color: transparent;
+  }
+
+  .note-nav-tabs .note-nav-item.show .note-nav-link {
+    color: #495057;
+    background-color: #fff;
+    border-color: #ddd #ddd #fff;
+  }
+
+  .note-tab-content {
+    margin: 15px auto;
+  }
+
+  .note-tab-content > .note-tab-pane:target ~ .note-tab-pane:last-child,
+  .note-tab-content > .note-tab-pane {
+    display: none;
+  }
+  .note-tab-content > :last-child,
+  .note-tab-content > .note-tab-pane:target {
+    display: block;
+  }
+}
