@@ -311,7 +311,7 @@ const colorDropdownButton = function(opt, type) {
             '<div class="note-btn-group btn-background-color">',
               '<div class="note-palette-title">' + opt.lang.color.background + '</div>',
             '<div>',
-            '<button type="button" class="note-color-reset note-btn note-btn-block" data-event="backColor" data-value="inherit">',
+            '<button type="button" class="note-color-reset note-btn note-btn-block" data-event="backColor" data-value="transparent">',
               opt.lang.color.transparent,
             '</button>',
           '</div>',
