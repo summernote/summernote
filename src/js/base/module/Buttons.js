@@ -118,7 +118,7 @@ export default class Buttons {
             '<div class="note-palette">',
               '<div class="note-palette-title">' + this.lang.color.background + '</div>',
               '<div>',
-                '<button type="button" class="note-color-reset btn btn-light" data-event="backColor" data-value="inherit">',
+                '<button type="button" class="note-color-reset btn btn-light" data-event="backColor" data-value="transparent">',
                   this.lang.color.transparent,
                 '</button>',
               '</div>',
