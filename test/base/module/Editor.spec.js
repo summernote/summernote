@@ -430,6 +430,13 @@ describe('Editor', () => {
       // start <p>hello</p> => <h6 class="h6">hello</h6>
       expectContentsAwait(context, '<h6 class="customH6Class">hello</h6>', done);
     });
+
+    it('should add fontSize to block', () => {
+      $editable.appendTo('body');
+      editor.fontSize(20);
+
+      expectContents(context, '<p><span style="font-size: 20px;">﻿</span>hello</p>');
+    });
   });
 
   describe('createLink', () => {
