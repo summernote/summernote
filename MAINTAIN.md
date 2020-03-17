@@ -1,3 +1,38 @@
+## Debug with VSCode
+
+You can debug unit tests with VSCode following the steps:
+(Based on [article](http://blog.mlewandowski.com/Debugging-Karma-tests-with-VSCode.html))
+
+1. Install [VsCode](https://code.visualstudio.com/docs/setup/setup-overview)
+2. Install [debugger-for-chrome](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome) extension.
+3. Create launch.json file on ~/.vscode folder with follow config:
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "attach",
+      "name": "Attach Karma Chrome",
+      "address": "localhost",
+      "port": 9333,
+      "sourceMaps": true,
+      "pathMapping": {
+        "/": "${workspaceRoot}",
+        "/base/": "${workspaceRoot}/"
+      }
+    }
+  ]
+}
+```
+4. On terminal, run test with command:
+```
+npm run test:debug
+```
+4. Open vscode
+5. Set breakpoint on code
+6. Press F5 to run Debug and wait to stop on breakpoint
+
 ## Publish new version
 
 ### 1. `develop` to `master`
