@@ -139,6 +139,9 @@ $.summernote = $.extend($.summernote, {
     historyLimit: 200,
 
     // TODO: need to be documented
+    showDomainOnlyForAutolink: false,
+
+    // TODO: need to be documented
     hintMode: 'word',
     hintSelect: 'after',
     hintDirection: 'bottom',
