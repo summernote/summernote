@@ -19,10 +19,19 @@ export default class CodeView {
     this.options = context.options;
   }
 
-  sync() {
-    const isCodeview = this.isActivated();
-    if (isCodeview && env.hasCodeMirror) {
-      this.$codable.data('cmEditor').save();
+  sync(html) {
+    if (this.isActivated()) {
+      if (html) {
+        if (env.hasCodeMirror) {
+          this.$codable.data('cmEditor').getDoc().setValue(html);
+        } else {
+          this.$codable.val(html);
+        }
+      } else {
+        if (env.hasCodeMirror) {
+          this.$codable.data('cmEditor').save();
+        }
+      }
     }
   }
 
