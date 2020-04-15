@@ -1,5 +1,4 @@
 import dom from '../core/dom';
-import env from '../core/env';
 import key from '../core/key';
 
 /**
@@ -12,7 +11,7 @@ export default class CodeView {
     this.$editable = context.layoutInfo.editable;
     this.$codable = context.layoutInfo.codable;
     this.options = context.options;
-    this.CodeMirrorConstructor = window.CodeMirror; 
+    this.CodeMirrorConstructor = window.CodeMirror;
 
     if (this.options.codemirror.CodeMirrorConstructor) {
       this.CodeMirrorConstructor = this.options.codemirror.CodeMirrorConstructor;
@@ -31,7 +30,7 @@ export default class CodeView {
     this.$codable.on('keyup', (event) => {
       if (event.keyCode === key.code.ESCAPE) {
         this.deactivate();
-      } 
+      }
     });
   }
 
@@ -88,7 +87,7 @@ export default class CodeView {
    * activate code view
    */
   activate() {
-    const CodeMirror = this.CodeMirrorConstructor;    
+    const CodeMirror = this.CodeMirrorConstructor;
     this.$codable.val(dom.html(this.$editable, this.options.prettifyHtml));
     this.$codable.height(this.$editable.height());
 
@@ -135,7 +134,7 @@ export default class CodeView {
    * deactivate code view
    */
   deactivate() {
-    const CodeMirror = this.CodeMirrorConstructor;    
+    const CodeMirror = this.CodeMirrorConstructor;
     // deactivate CodeMirror as codable
     if (CodeMirror) {
       const cmEditor = this.$codable.data('cmEditor');
