@@ -59,7 +59,7 @@ export default class Typing {
     if (splitRoot) {
       // if it is an empty line with li
       if (dom.isLi(splitRoot) && (dom.isEmpty(splitRoot) || dom.deepestChildIsEmpty(splitRoot))) {
-        // toogle UL/OL and escape
+        // toggle UL/OL and escape
         this.bullet.toggleList(splitRoot.parentNode.nodeName);
         return;
       } else {
