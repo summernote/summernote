@@ -195,7 +195,7 @@ describe('Buttons', () => {
 
   describe('fore color button in all color button', () => {
     it('should execute fore color command when it is clicked', (done) => {
-      var $button = $toolbar.find('.note-color-all').find('[data-event=foreColor]').eq(10).click();
+      var $button = $toolbar.find('.note-color-all .note-holder').find('.note-color-btn[data-event=foreColor]').eq(10);
       $button.click();
       expect($editable.find('p').children().first()).await(done).to.be.equalsStyle($button.data('value'), 'color');
     });
@@ -203,7 +203,7 @@ describe('Buttons', () => {
 
   describe('back color button in all color button', () => {
     it('should execute back color command when it is clicked', (done) => {
-      var $button = $toolbar.find('.note-color-all').find('[data-event=backColor]').eq(10);
+      var $button = $toolbar.find('.note-color-all .note-holder').find('.note-color-btn[data-event=backColor]').eq(10);
       $button.click();
       expect($editable.find('p').children().first()).await(done).to.be.equalsStyle($button.data('value'), 'background-color');
     });
@@ -211,7 +211,7 @@ describe('Buttons', () => {
 
   describe('color button in fore color button', () => {
     it('should execute fore color command when it is clicked', (done) => {
-      var $button = $toolbar.find('.note-color-fore').find('[data-event=foreColor]').eq(4);
+      var $button = $toolbar.find('.note-color-fore').find('.note-color-btn[data-event=foreColor]').eq(4);
       $button.click();
       expect($editable.find('p').children().first()).await(done).to.be.equalsStyle($button.data('value'), 'color');
     });
@@ -219,9 +219,8 @@ describe('Buttons', () => {
 
   describe('back color button in back color button', () => {
     it('should execute back color command when it is clicked', (done) => {
-      var $button = $toolbar.find('.note-color-back').find('[data-event=backColor]').eq(20);
+      var $button = $toolbar.find('.note-color-back').find('.note-color-btn[data-event=backColor]').eq(20);
       $button.click();
-
       expect($editable.find('p').children().first()).await(done).to.be.equalsStyle($button.data('value'), 'background-color');
     });
   });
