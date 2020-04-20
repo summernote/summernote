@@ -75,7 +75,7 @@
     "karma-mocha": "^2.0.0",
     "karma-opera-launcher": "^1.0.0",
     "karma-safari-launcher": "^1.0.0",
-    "karma-sauce-launcher": "4.1.3",
+    "karma-sauce-launcher": "^1.2.0",
     "karma-webpack": "^4.0.2",
     "less": "^3.11.1",
     "less-loader": "^5.0.0",

@@ -68,13 +68,15 @@ module.exports = function (config) {
       },
     },
     browsers: [
+      //'SL_WINDOWS_IE10',
+      //'SL_WINDOWS_IE11',
       'SL_WINDOWS_EDGE',
       'SL_WINDOWS_CHROME',
       'SL_WINDOWS_FIREFOX',
-      //'SL_LINUX_FIREFOX',
       'SL_MACOS_CHROME',
       'SL_MACOS_SAFARI',
       'SL_MACOS_FIREFOX',
+      //'SL_LINUX_FIREFOX',
     ],
     sauceLabs: {
       testName: 'local unit tests for summernote',
@@ -88,6 +90,9 @@ module.exports = function (config) {
       stats: 'errors-only',
     },
     reporters: ['dots'],
+
+    browserDisconnectTimeout: 10000,
     browserNoActivityTimeout: 60000,
+    singleRun: true,
   });
 };
