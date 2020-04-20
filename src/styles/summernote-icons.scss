@@ -1,0 +1,149 @@
+// Variables
+
+$sni-filename:   "summernote";
+$sni-font-name:  "Summernote Icons";
+$sni-font-path:  "./font" !default;
+$sni-css-prefix: note-icon !default;
+
+$sni-icons: (
+  "align": ea01,
+  "align-center": ea02,
+  "align-indent": ea03,
+  "align-justify": ea04,
+  "align-left": ea05,
+  "align-outdent": ea06,
+  "align-right": ea07,
+  "arrow-circle-down": ea08,
+  "arrow-circle-left": ea09,
+  "arrow-circle-right": ea0a,
+  "arrow-circle-up": ea0b,
+  "arrows-alt": ea0c,
+  "arrows-h": ea0d,
+  "arrows-v": ea0e,
+  "bold": ea0f,
+  "caret": ea10,
+  "chain-broken": ea11,
+  "circle": ea12,
+  "close": ea13,
+  "code": ea14,
+  "col-after": ea15,
+  "col-before": ea16,
+  "col-remove": ea17,
+  "eraser": ea18,
+  "float-left": ea19,
+  "float-none": ea1a,
+  "float-right": ea1b,
+  "font": ea1c,
+  "frame": ea1d,
+  "italic": ea1e,
+  "link": ea1f,
+  "magic": ea20,
+  "menu-check": ea21,
+  "minus": ea22,
+  "orderedlist": ea23,
+  "pencil": ea24,
+  "picture": ea25,
+  "question": ea26,
+  "redo": ea27,
+  "rollback": ea28,
+  "row-above": ea29,
+  "row-below": ea2a,
+  "row-remove": ea2b,
+  "special-character": ea2c,
+  "square": ea2d,
+  "strikethrough": ea2e,
+  "subscript": ea2f,
+  "summernote": ea30,
+  "superscript": ea31,
+  "table": ea32,
+  "text-height": ea33,
+  "trash": ea34,
+  "underline": ea35,
+  "undo": ea36,
+  "unorderedlist": ea37,
+  "video": ea38
+);
+
+// Path
+
+@font-face {
+  font-family: '#{$sni-font-name}';
+  src: url('#{$sni-font-path}/#{$sni-filename}.eot');
+  src: url('#{$sni-font-path}/#{$sni-filename}.eot?#iefix') format('embedded-opentype'),
+    url('#{$sni-font-path}/#{$sni-filename}.woff2') format('woff2'),
+    url('#{$sni-font-path}/#{$sni-filename}.woff') format('woff'),
+    url('#{$sni-font-path}/#{$sni-filename}.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: auto;
+}
+
+// Core
+
+[class^="#{$sni-css-prefix}"]:before,
+[class*=" #{$sni-css-prefix}"]:before {
+  display: inline-block;
+  font-family: #{$sni-font-name};
+  font-style: normal;
+  font-size: inherit;
+  text-decoration: inherit;
+  text-rendering: auto;
+  text-transform: none;
+  vertical-align: middle;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  speak: none;
+}
+
+// Extras
+
+.#{$sni-css-prefix}-fw {
+  text-align: center;
+  width: 1.25em;
+}
+
+.#{$sni-css-prefix}-border {
+  border: solid 0.08em #eee;
+  border-radius: 0.1em;
+  padding: 0.2em 0.25em 0.15em;
+}
+
+.#{$sni-css-prefix}-pull-left {
+  float: left;
+}
+
+.#{$sni-css-prefix}-pull-right {
+  float: right;
+}
+
+.#{$sni-css-prefix} {
+  .#{$sni-css-prefix}-pull-left {
+    margin-right: 0.3em;
+  }
+  .#{$sni-css-prefix}-pull-right {
+    margin-left: 0.3em;
+  }
+}
+
+// Functions
+
+@function char($character-code) {
+  @if function-exists("selector-append") {
+    @return unquote("\"\\#{$character-code}\"");
+  }
+
+  @if "\\#{'x'}" == "\\x" {
+    @return str-slice("\x", 1, 1) + $character-code;
+  }
+  @else {
+    @return #{"\"\\"}#{$character-code + "\""};
+  }
+}
+
+// Icons
+
+@each $key, $value in $sni-icons {
+  .#{$sni-css-prefix}-#{$key}::before {
+    content: char($value);
+  }
+}
