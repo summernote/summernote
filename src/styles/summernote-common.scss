@@ -442,10 +442,12 @@ $img-margin-right: 10px;
         height: 20px;
         padding: 0;
         margin: 0;
-        border: 1px solid #fff;
+        border: 0;
+        border-radius: 0;
       }
       .note-color-btn:hover {
-        border: 1px solid #000;
+        transform: scale(1.2);
+        transition: all 0.2s;
       }
     }
   }
