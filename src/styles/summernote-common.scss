@@ -391,10 +391,10 @@ $img-margin-right: 10px;
 
   .note-para {
     .note-dropdown-menu {
-      min-width: 216px;
+      min-width: 228px;
       padding: 5px;
-      & > div:first-child {
-        margin-right: 5px;
+      & > div + div {
+        margin-left: 5px;
       }
     }
   }
