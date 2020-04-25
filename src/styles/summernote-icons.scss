@@ -117,10 +117,10 @@ $sni-icons: (
 }
 
 .#{$sni-css-prefix} {
-  .#{$sni-css-prefix}-pull-left {
+  &.#{$sni-css-prefix}-pull-left {
     margin-right: 0.3em;
   }
-  .#{$sni-css-prefix}-pull-right {
+  &.#{$sni-css-prefix}-pull-right {
     margin-left: 0.3em;
   }
 }
