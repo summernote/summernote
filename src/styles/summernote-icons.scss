@@ -1,82 +1,19 @@
 // Variables
 
 $sni-filename:   "summernote";
-$sni-font-name:  "Summernote Icons";
+$sni-font-name:  "summernote";
 $sni-font-path:  "./font" !default;
 $sni-css-prefix: note-icon !default;
-
-$sni-icons: (
-  "align": ea01,
-  "align-center": ea02,
-  "align-indent": ea03,
-  "align-justify": ea04,
-  "align-left": ea05,
-  "align-outdent": ea06,
-  "align-right": ea07,
-  "arrow-circle-down": ea08,
-  "arrow-circle-left": ea09,
-  "arrow-circle-right": ea0a,
-  "arrow-circle-up": ea0b,
-  "arrows-alt": ea0c,
-  "arrows-h": ea0d,
-  "arrows-v": ea0e,
-  "bold": ea0f,
-  "caret": ea10,
-  "chain-broken": ea11,
-  "circle": ea12,
-  "close": ea13,
-  "code": ea14,
-  "col-after": ea15,
-  "col-before": ea16,
-  "col-remove": ea17,
-  "eraser": ea18,
-  "float-left": ea19,
-  "float-none": ea1a,
-  "float-right": ea1b,
-  "font": ea1c,
-  "frame": ea1d,
-  "italic": ea1e,
-  "link": ea1f,
-  "magic": ea20,
-  "menu-check": ea21,
-  "minus": ea22,
-  "orderedlist": ea23,
-  "pencil": ea24,
-  "picture": ea25,
-  "question": ea26,
-  "redo": ea27,
-  "rollback": ea28,
-  "row-above": ea29,
-  "row-below": ea2a,
-  "row-remove": ea2b,
-  "special-character": ea2c,
-  "square": ea2d,
-  "strikethrough": ea2e,
-  "subscript": ea2f,
-  "summernote": ea30,
-  "superscript": ea31,
-  "table": ea32,
-  "text-height": ea33,
-  "trash": ea34,
-  "underline": ea35,
-  "undo": ea36,
-  "unorderedlist": ea37,
-  "video": ea38
-);
 
 // Path
 
 @font-face {
-  font-family: '#{$sni-font-name}';
-  src: url('#{$sni-font-path}/#{$sni-filename}.eot');
-  src: url('#{$sni-font-path}/#{$sni-filename}.eot?#iefix') format('embedded-opentype'),
-    url('#{$sni-font-path}/#{$sni-filename}.woff2') format('woff2'),
-    url('#{$sni-font-path}/#{$sni-filename}.woff') format('woff'),
-    url('#{$sni-font-path}/#{$sni-filename}.ttf') format('truetype');
-  font-weight: 400;
+  font-family: "summernote";
   font-style: normal;
+  font-weight: 400;
   font-display: auto;
-}
+  src: url("./font/summernote.eot");
+  src: url("./font/summernote.eot?#iefix") format("embedded-opentype"), url("./font/summernote.woff2") format("woff2"), url("./font/summernote.woff") format("woff"), url("./font/summernote.ttf") format("truetype");}
 
 // Core
 
@@ -142,8 +79,228 @@ $sni-icons: (
 
 // Icons
 
-@each $key, $value in $sni-icons {
-  .#{$sni-css-prefix}-#{$key}::before {
-    content: char($value);
-  }
+
+.note-icon-align::before {
+  content: "\ea01";
 }
+
+.note-icon-align-center::before {
+  content: "\ea02";
+}
+
+.note-icon-align-indent::before {
+  content: "\ea03";
+}
+
+.note-icon-align-justify::before {
+  content: "\ea04";
+}
+
+.note-icon-align-left::before {
+  content: "\ea05";
+}
+
+.note-icon-align-outdent::before {
+  content: "\ea06";
+}
+
+.note-icon-align-right::before {
+  content: "\ea07";
+}
+
+.note-icon-arrow-circle-down::before {
+  content: "\ea08";
+}
+
+.note-icon-arrow-circle-left::before {
+  content: "\ea09";
+}
+
+.note-icon-arrow-circle-right::before {
+  content: "\ea0a";
+}
+
+.note-icon-arrow-circle-up::before {
+  content: "\ea0b";
+}
+
+.note-icon-arrows-alt::before {
+  content: "\ea0c";
+}
+
+.note-icon-arrows-h::before {
+  content: "\ea0d";
+}
+
+.note-icon-arrows-v::before {
+  content: "\ea0e";
+}
+
+.note-icon-bold::before {
+  content: "\ea0f";
+}
+
+.note-icon-caret::before {
+  content: "\ea10";
+}
+
+.note-icon-chain-broken::before {
+  content: "\ea11";
+}
+
+.note-icon-circle::before {
+  content: "\ea12";
+}
+
+.note-icon-close::before {
+  content: "\ea13";
+}
+
+.note-icon-code::before {
+  content: "\ea14";
+}
+
+.note-icon-col-after::before {
+  content: "\ea15";
+}
+
+.note-icon-col-before::before {
+  content: "\ea16";
+}
+
+.note-icon-col-remove::before {
+  content: "\ea17";
+}
+
+.note-icon-eraser::before {
+  content: "\ea18";
+}
+
+.note-icon-float-left::before {
+  content: "\ea19";
+}
+
+.note-icon-float-none::before {
+  content: "\ea1a";
+}
+
+.note-icon-float-right::before {
+  content: "\ea1b";
+}
+
+.note-icon-font::before {
+  content: "\ea1c";
+}
+
+.note-icon-frame::before {
+  content: "\ea1d";
+}
+
+.note-icon-italic::before {
+  content: "\ea1e";
+}
+
+.note-icon-link::before {
+  content: "\ea1f";
+}
+
+.note-icon-magic::before {
+  content: "\ea20";
+}
+
+.note-icon-menu-check::before {
+  content: "\ea21";
+}
+
+.note-icon-minus::before {
+  content: "\ea22";
+}
+
+.note-icon-orderedlist::before {
+  content: "\ea23";
+}
+
+.note-icon-pencil::before {
+  content: "\ea24";
+}
+
+.note-icon-picture::before {
+  content: "\ea25";
+}
+
+.note-icon-question::before {
+  content: "\ea26";
+}
+
+.note-icon-redo::before {
+  content: "\ea27";
+}
+
+.note-icon-rollback::before {
+  content: "\ea28";
+}
+
+.note-icon-row-above::before {
+  content: "\ea29";
+}
+
+.note-icon-row-below::before {
+  content: "\ea2a";
+}
+
+.note-icon-row-remove::before {
+  content: "\ea2b";
+}
+
+.note-icon-special-character::before {
+  content: "\ea2c";
+}
+
+.note-icon-square::before {
+  content: "\ea2d";
+}
+
+.note-icon-strikethrough::before {
+  content: "\ea2e";
+}
+
+.note-icon-subscript::before {
+  content: "\ea2f";
+}
+
+.note-icon-summernote::before {
+  content: "\ea30";
+}
+
+.note-icon-superscript::before {
+  content: "\ea31";
+}
+
+.note-icon-table::before {
+  content: "\ea32";
+}
+
+.note-icon-text-height::before {
+  content: "\ea33";
+}
+
+.note-icon-trash::before {
+  content: "\ea34";
+}
+
+.note-icon-underline::before {
+  content: "\ea35";
+}
+
+.note-icon-undo::before {
+  content: "\ea36";
+}
+
+.note-icon-unorderedlist::before {
+  content: "\ea37";
+}
+
+.note-icon-video::before {
+  content: "\ea38";
+}
+
