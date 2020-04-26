@@ -37,6 +37,9 @@ const dropdown = renderer.create('<div class="note-dropdown-menu dropdown-menu" 
   }).join('') : options.items;
 
   $node.html(markup).attr({ 'aria-label': options.title });
+  if (options && options.codeviewButton) {
+    $node.addClass('note-keep');
+  }
 });
 
 const dropdownButtonContents = function(contents) {

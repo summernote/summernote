@@ -49,6 +49,9 @@ const button = renderer.create('<button type="button" class="note-btn" tabindex=
       container: options.container,
     }));
   }
+  if (options && options.codeviewButton) {
+    $node.addClass('note-keep');
+  }
 });
 
 const dropdown = renderer.create('<div class="note-dropdown-menu" role="list">', function($node, options) {
