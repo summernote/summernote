@@ -177,6 +177,9 @@ const ui = function(editorOptions) {
             $(e.currentTarget).tooltip('hide');
           });
         }
+        if (options && options.codeviewButton) {
+          $node.addClass('note-keep');
+        }
       })($node, options);
     },
 
