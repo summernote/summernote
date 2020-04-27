@@ -584,8 +584,17 @@ function nextPoint(point, isSkipInnerOffset) {
       return null;
     }
 
-    node = point.node.parentNode;
-    offset = position(point.node) + 1;
+    let nextTextNode = getNextTextNode(point.node);
+    if(nextTextNode)
+    {
+      node = nextTextNode;
+      offset = 0;
+    }
+    else
+    {
+      node = point.node.parentNode;
+      offset = position(point.node) + 1;
+    }
   } else if (hasChildren(point.node)) {
     node = point.node.childNodes[point.offset];
     offset = 0;
@@ -607,9 +616,8 @@ function nextPoint(point, isSkipInnerOffset) {
   };
 }
 
-
 /**
- * returns next boundaryPoint with empty node 
+ * returns next boundaryPoint with empty node
  *
  * @param {BoundaryPoint} point
  * @param {Boolean} isSkipInnerOffset
@@ -662,6 +670,17 @@ function nextPointWithEmptyNode(point, isSkipInnerOffset) {
     node: node,
     offset: offset,
   };
+}
+
+/*
+* returns the next Text node index or 0 if not found.
+*/
+function getNextTextNode(actual) {
+  if(!actual.nextSibling) return undefined;
+  if(actual.parent !== actual.nextSibling.parent) return undefined;
+
+  if(isText(actual.nextSibling) ) return actual.nextSibling;
+  else return getNextTextNode(actual.nextSibling);
 }
 
 /**

@@ -1,3 +1,12 @@
+// Variables
+
+$sni-filename:   "summernote";
+$sni-font-name:  "summernote";
+$sni-font-path:  "./font" !default;
+$sni-css-prefix: note-icon !default;
+
+// Path
+
 @font-face {
   font-family: "summernote";
   font-style: normal;
@@ -6,11 +15,12 @@
   src: url("./font/summernote.eot");
   src: url("./font/summernote.eot?#iefix") format("embedded-opentype"), url("./font/summernote.woff2") format("woff2"), url("./font/summernote.woff") format("woff"), url("./font/summernote.ttf") format("truetype");}
 
+// Core
 
-[class^="note-icon"]:before,
-[class*=" note-icon"]:before {
+[class^="#{$sni-css-prefix}"]:before,
+[class*=" #{$sni-css-prefix}"]:before {
   display: inline-block;
-  font-family: summernote;
+  font-family: #{$sni-font-name};
   font-style: normal;
   font-size: inherit;
   text-decoration: inherit;
@@ -22,33 +32,52 @@
   speak: none;
 }
 
+// Extras
 
-.note-icon-fw {
+.#{$sni-css-prefix}-fw {
   text-align: center;
   width: 1.25em;
 }
 
-.note-icon-border {
+.#{$sni-css-prefix}-border {
   border: solid 0.08em #eee;
   border-radius: 0.1em;
   padding: 0.2em 0.25em 0.15em;
 }
 
-.note-icon-pull-left {
+.#{$sni-css-prefix}-pull-left {
   float: left;
 }
 
-.note-icon-pull-right {
+.#{$sni-css-prefix}-pull-right {
   float: right;
 }
 
-.note-icon.note-icon-pull-left {
-  margin-right: 0.3em;
+.#{$sni-css-prefix} {
+  &.#{$sni-css-prefix}-pull-left {
+    margin-right: 0.3em;
+  }
+  &.#{$sni-css-prefix}-pull-right {
+    margin-left: 0.3em;
+  }
 }
 
-.note-icon.note-icon-pull-right {
-  margin-left: 0.3em;
+// Functions
+
+@function char($character-code) {
+  @if function-exists("selector-append") {
+    @return unquote("\"\\#{$character-code}\"");
+  }
+
+  @if "\\#{'x'}" == "\\x" {
+    @return str-slice("\x", 1, 1) + $character-code;
+  }
+  @else {
+    @return #{"\"\\"}#{$character-code + "\""};
+  }
 }
+
+// Icons
 
 
 .note-icon-align::before {

@@ -1,13 +1,13 @@
 /*!
  * 
- * Super simple wysiwyg editor v0.8.15
+ * Super simple wysiwyg editor v0.8.16
  * https://summernote.org
  * 
  * 
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  * 
- * Date: 2020-01-04T11:44Z
+ * Date: 2020-02-19T09:12Z
  * 
  */
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -103,7 +103,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 52);
+/******/ 	return __webpack_require__(__webpack_require__.s = 53);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -121,66 +121,82 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__0__;
 "use strict";
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 
-class Renderer {
-  constructor(markup, children, options, callback) {
+
+var Renderer =
+/*#__PURE__*/
+function () {
+  function Renderer(markup, children, options, callback) {
+    _classCallCheck(this, Renderer);
+
     this.markup = markup;
     this.children = children;
     this.options = options;
     this.callback = callback;
   }
 
-  render($parent) {
-    const $node = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this.markup);
+  _createClass(Renderer, [{
+    key: "render",
+    value: function render($parent) {
+      var $node = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this.markup);
 
-    if (this.options && this.options.contents) {
-      $node.html(this.options.contents);
+      if (this.options && this.options.contents) {
+        $node.html(this.options.contents);
+      }
+
+      if (this.options && this.options.className) {
+        $node.addClass(this.options.className);
+      }
+
+      if (this.options && this.options.data) {
+        jquery__WEBPACK_IMPORTED_MODULE_0___default.a.each(this.options.data, function (k, v) {
+          $node.attr('data-' + k, v);
+        });
+      }
+
+      if (this.options && this.options.click) {
+        $node.on('click', this.options.click);
+      }
+
+      if (this.children) {
+        var $container = $node.find('.note-children-container');
+        this.children.forEach(function (child) {
+          child.render($container.length ? $container : $node);
+        });
+      }
+
+      if (this.callback) {
+        this.callback($node, this.options);
+      }
+
+      if (this.options && this.options.callback) {
+        this.options.callback($node);
+      }
+
+      if ($parent) {
+        $parent.append($node);
+      }
+
+      return $node;
     }
+  }]);
 
-    if (this.options && this.options.className) {
-      $node.addClass(this.options.className);
-    }
-
-    if (this.options && this.options.data) {
-      jquery__WEBPACK_IMPORTED_MODULE_0___default.a.each(this.options.data, (k, v) => {
-        $node.attr('data-' + k, v);
-      });
-    }
-
-    if (this.options && this.options.click) {
-      $node.on('click', this.options.click);
-    }
-
-    if (this.children) {
-      const $container = $node.find('.note-children-container');
-      this.children.forEach(child => {
-        child.render($container.length ? $container : $node);
-      });
-    }
-
-    if (this.callback) {
-      this.callback($node, this.options);
-    }
-
-    if (this.options && this.options.callback) {
-      this.options.callback($node);
-    }
-
-    if ($parent) {
-      $parent.append($node);
-    }
-
-    return $node;
-  }
-
-}
+  return Renderer;
+}();
 
 /* harmony default export */ __webpack_exports__["a"] = ({
-  create: (markup, callback) => {
+  create: function create(markup, callback) {
     return function () {
-      const options = typeof arguments[1] === 'object' ? arguments[1] : arguments[0];
-      let children = Array.isArray(arguments[0]) ? arguments[0] : [];
+      var options = _typeof(arguments[1]) === 'object' ? arguments[1] : arguments[0];
+      var children = Array.isArray(arguments[0]) ? arguments[0] : [];
 
       if (options && options.children) {
         children = options.children;
@@ -379,7 +395,7 @@ external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.exten
 });
 // CONCATENATED MODULE: ./src/js/base/core/env.js
 
-const isSupportAmd = typeof define === 'function' && __webpack_require__(2); // eslint-disable-line
+var isSupportAmd = typeof define === 'function' && __webpack_require__(2); // eslint-disable-line
 
 /**
  * returns whether font is installed or not.
@@ -388,31 +404,31 @@ const isSupportAmd = typeof define === 'function' && __webpack_require__(2); // 
  * @return {Boolean}
  */
 
-const genericFontFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
+var genericFontFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
 
 function validFontName(fontName) {
-  return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.inArray(fontName.toLowerCase(), genericFontFamilies) === -1 ? `'${fontName}'` : fontName;
+  return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.inArray(fontName.toLowerCase(), genericFontFamilies) === -1 ? "'".concat(fontName, "'") : fontName;
 }
 
-function isFontInstalled(fontName) {
-  const testFontName = fontName === 'Comic Sans MS' ? 'Courier New' : 'Comic Sans MS';
-  const testText = 'mmmmmmmmmmwwwww';
-  const testSize = '200px';
+function env_isFontInstalled(fontName) {
+  var testFontName = fontName === 'Comic Sans MS' ? 'Courier New' : 'Comic Sans MS';
+  var testText = 'mmmmmmmmmmwwwww';
+  var testSize = '200px';
   var canvas = document.createElement('canvas');
   var context = canvas.getContext('2d');
   context.font = testSize + " '" + testFontName + "'";
-  const originalWidth = context.measureText(testText).width;
+  var originalWidth = context.measureText(testText).width;
   context.font = testSize + ' ' + validFontName(fontName) + ', "' + testFontName + '"';
-  const width = context.measureText(testText).width;
+  var width = context.measureText(testText).width;
   return originalWidth !== width;
 }
 
-const userAgent = navigator.userAgent;
-const isMSIE = /MSIE|Trident/i.test(userAgent);
-let browserVersion;
+var userAgent = navigator.userAgent;
+var isMSIE = /MSIE|Trident/i.test(userAgent);
+var browserVersion;
 
 if (isMSIE) {
-  let matches = /MSIE (\d+[.]\d+)/.exec(userAgent);
+  var matches = /MSIE (\d+[.]\d+)/.exec(userAgent);
 
   if (matches) {
     browserVersion = parseFloat(matches[1]);
@@ -425,12 +441,12 @@ if (isMSIE) {
   }
 }
 
-const isEdge = /Edge\/\d+/.test(userAgent);
-let hasCodeMirror = !!window.CodeMirror;
-const isSupportTouch = 'ontouchstart' in window || navigator.MaxTouchPoints > 0 || navigator.msMaxTouchPoints > 0; // [workaround] IE doesn't have input events for contentEditable
+var isEdge = /Edge\/\d+/.test(userAgent);
+var hasCodeMirror = !!window.CodeMirror;
+var isSupportTouch = 'ontouchstart' in window || navigator.MaxTouchPoints > 0 || navigator.msMaxTouchPoints > 0; // [workaround] IE doesn't have input events for contentEditable
 // - see: https://goo.gl/4bfIvA
 
-const inputEventName = isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
+var inputEventName = isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
 /**
  * @class core.env
  *
@@ -442,23 +458,23 @@ const inputEventName = isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOM
 
 /* harmony default export */ var env = ({
   isMac: navigator.appVersion.indexOf('Mac') > -1,
-  isMSIE,
-  isEdge,
+  isMSIE: isMSIE,
+  isEdge: isEdge,
   isFF: !isEdge && /firefox/i.test(userAgent),
   isPhantom: /PhantomJS/i.test(userAgent),
   isWebkit: !isEdge && /webkit/i.test(userAgent),
   isChrome: !isEdge && /chrome/i.test(userAgent),
   isSafari: !isEdge && /safari/i.test(userAgent) && !/chrome/i.test(userAgent),
-  browserVersion,
+  browserVersion: browserVersion,
   jqueryVersion: parseFloat(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.fn.jquery),
-  isSupportAmd,
-  isSupportTouch,
-  hasCodeMirror,
-  isFontInstalled,
+  isSupportAmd: isSupportAmd,
+  isSupportTouch: isSupportTouch,
+  hasCodeMirror: hasCodeMirror,
+  isFontInstalled: env_isFontInstalled,
   isW3CRangeSupport: !!document.createRange,
-  inputEventName,
-  genericFontFamilies,
-  validFontName
+  inputEventName: inputEventName,
+  genericFontFamilies: genericFontFamilies,
+  validFontName: validFontName
 });
 // CONCATENATED MODULE: ./src/js/base/core/func.js
 
@@ -511,13 +527,13 @@ function func_self(a) {
   return a;
 }
 
-function invoke(obj, method) {
+function func_invoke(obj, method) {
   return function () {
     return obj[method].apply(obj, arguments);
   };
 }
 
-let idCounter = 0;
+var idCounter = 0;
 /**
  * reset globally-unique id
  *
@@ -534,7 +550,7 @@ function resetUniqueId() {
 
 
 function uniqueId(prefix) {
-  const id = ++idCounter + '';
+  var id = ++idCounter + '';
   return prefix ? prefix + id : id;
 }
 /**
@@ -553,7 +569,7 @@ function uniqueId(prefix) {
 
 
 function rect2bnd(rect) {
-  const $document = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document);
+  var $document = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document);
   return {
     top: rect.top + $document.scrollTop(),
     left: rect.left + $document.scrollLeft(),
@@ -569,10 +585,10 @@ function rect2bnd(rect) {
 
 
 function invertObject(obj) {
-  const inverted = {};
+  var inverted = {};
 
-  for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
+  for (var key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
       inverted[obj[key]] = key;
     }
   }
@@ -605,12 +621,12 @@ function namespaceToCamel(namespace, prefix) {
 
 
 function debounce(func, wait, immediate) {
-  let timeout;
+  var timeout;
   return function () {
-    const context = this;
-    const args = arguments;
+    var context = this;
+    var args = arguments;
 
-    const later = () => {
+    var later = function later() {
       timeout = null;
 
       if (!immediate) {
@@ -618,7 +634,7 @@ function debounce(func, wait, immediate) {
       }
     };
 
-    const callNow = immediate && !timeout;
+    var callNow = immediate && !timeout;
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
 
@@ -635,27 +651,27 @@ function debounce(func, wait, immediate) {
 
 
 function isValidUrl(url) {
-  const expression = /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi;
+  var expression = /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi;
   return expression.test(url);
 }
 
 /* harmony default export */ var func = ({
-  eq,
-  eq2,
-  peq2,
-  ok,
-  fail,
+  eq: eq,
+  eq2: eq2,
+  peq2: peq2,
+  ok: ok,
+  fail: fail,
   self: func_self,
-  not,
-  and,
-  invoke,
-  resetUniqueId,
-  uniqueId,
-  rect2bnd,
-  invertObject,
-  namespaceToCamel,
-  debounce,
-  isValidUrl
+  not: not,
+  and: and,
+  invoke: func_invoke,
+  resetUniqueId: resetUniqueId,
+  uniqueId: uniqueId,
+  rect2bnd: rect2bnd,
+  invertObject: invertObject,
+  namespaceToCamel: namespaceToCamel,
+  debounce: debounce,
+  isValidUrl: isValidUrl
 });
 // CONCATENATED MODULE: ./src/js/base/core/lists.js
 
@@ -704,8 +720,8 @@ function tail(array) {
 
 
 function find(array, pred) {
-  for (let idx = 0, len = array.length; idx < len; idx++) {
-    const item = array[idx];
+  for (var idx = 0, len = array.length; idx < len; idx++) {
+    var item = array[idx];
 
     if (pred(item)) {
       return item;
@@ -718,7 +734,7 @@ function find(array, pred) {
 
 
 function lists_all(array, pred) {
-  for (let idx = 0, len = array.length; idx < len; idx++) {
+  for (var idx = 0, len = array.length; idx < len; idx++) {
     if (!pred(array[idx])) {
       return false;
     }
@@ -764,9 +780,9 @@ function sum(array, fn) {
 
 
 function from(collection) {
-  const result = [];
-  const length = collection.length;
-  let idx = -1;
+  var result = [];
+  var length = collection.length;
+  var idx = -1;
 
   while (++idx < length) {
     result[idx] = collection[idx];
@@ -779,7 +795,7 @@ function from(collection) {
  */
 
 
-function isEmpty(array) {
+function lists_isEmpty(array) {
   return !array || !array.length;
 }
 /**
@@ -796,9 +812,9 @@ function clusterBy(array, fn) {
     return [];
   }
 
-  const aTail = tail(array);
+  var aTail = tail(array);
   return aTail.reduce(function (memo, v) {
-    const aLast = lists_last(memo);
+    var aLast = lists_last(memo);
 
     if (fn(lists_last(aLast), v)) {
       aLast[aLast.length] = v;
@@ -818,9 +834,9 @@ function clusterBy(array, fn) {
 
 
 function compact(array) {
-  const aResult = [];
+  var aResult = [];
 
-  for (let idx = 0, len = array.length; idx < len; idx++) {
+  for (var idx = 0, len = array.length; idx < len; idx++) {
     if (array[idx]) {
       aResult.push(array[idx]);
     }
@@ -836,9 +852,9 @@ function compact(array) {
 
 
 function unique(array) {
-  const results = [];
+  var results = [];
 
-  for (let idx = 0, len = array.length; idx < len; idx++) {
+  for (var idx = 0, len = array.length; idx < len; idx++) {
     if (!contains(results, array[idx])) {
       results.push(array[idx]);
     }
@@ -854,7 +870,7 @@ function unique(array) {
 
 function lists_next(array, item) {
   if (array && array.length && item) {
-    const idx = array.indexOf(item);
+    var idx = array.indexOf(item);
     return idx === -1 ? null : array[idx + 1];
   }
 
@@ -868,7 +884,7 @@ function lists_next(array, item) {
 
 function prev(array, item) {
   if (array && array.length && item) {
-    const idx = array.indexOf(item);
+    var idx = array.indexOf(item);
     return idx === -1 ? null : array[idx - 1];
   }
 
@@ -887,27 +903,27 @@ function prev(array, item) {
 /* harmony default export */ var lists = ({
   head: lists_head,
   last: lists_last,
-  initial,
-  tail,
-  prev,
+  initial: initial,
+  tail: tail,
+  prev: prev,
   next: lists_next,
-  find,
-  contains,
+  find: find,
+  contains: contains,
   all: lists_all,
-  sum,
-  from,
-  isEmpty,
-  clusterBy,
-  compact,
-  unique
+  sum: sum,
+  from: from,
+  isEmpty: lists_isEmpty,
+  clusterBy: clusterBy,
+  compact: compact,
+  unique: unique
 });
 // CONCATENATED MODULE: ./src/js/base/core/dom.js
 
 
 
 
-const NBSP_CHAR = String.fromCharCode(160);
-const ZERO_WIDTH_NBSP_CHAR = '\ufeff';
+var NBSP_CHAR = String.fromCharCode(160);
+var ZERO_WIDTH_NBSP_CHAR = "\uFEFF";
 /**
  * @method isEditable
  *
@@ -998,15 +1014,15 @@ function isHeading(node) {
   return node && /^H[1-7]/.test(node.nodeName.toUpperCase());
 }
 
-const isPre = makePredByNodeName('PRE');
-const isLi = makePredByNodeName('LI');
+var isPre = makePredByNodeName('PRE');
+var isLi = makePredByNodeName('LI');
 
 function isPurePara(node) {
   return isPara(node) && !isLi(node);
 }
 
-const isTable = makePredByNodeName('TABLE');
-const isData = makePredByNodeName('DATA');
+var isTable = makePredByNodeName('TABLE');
+var isData = makePredByNodeName('DATA');
 
 function dom_isInline(node) {
   return !isBodyContainer(node) && !isList(node) && !isHr(node) && !isPara(node) && !isTable(node) && !isBlockquote(node) && !isData(node);
@@ -1016,19 +1032,19 @@ function isList(node) {
   return node && /^UL|^OL/.test(node.nodeName.toUpperCase());
 }
 
-const isHr = makePredByNodeName('HR');
+var isHr = makePredByNodeName('HR');
 
 function dom_isCell(node) {
   return node && /^TD|^TH/.test(node.nodeName.toUpperCase());
 }
 
-const isBlockquote = makePredByNodeName('BLOCKQUOTE');
+var isBlockquote = makePredByNodeName('BLOCKQUOTE');
 
 function isBodyContainer(node) {
   return dom_isCell(node) || isBlockquote(node) || isEditable(node);
 }
 
-const isAnchor = makePredByNodeName('A');
+var isAnchor = makePredByNodeName('A');
 
 function isParaInline(node) {
   return dom_isInline(node) && !!dom_ancestor(node, isPara);
@@ -1038,7 +1054,7 @@ function isBodyInline(node) {
   return dom_isInline(node) && !dom_ancestor(node, isPara);
 }
 
-const isBody = makePredByNodeName('BODY');
+var isBody = makePredByNodeName('BODY');
 /**
  * returns whether nodeB is closest sibling of nodeA
  *
@@ -1061,7 +1077,7 @@ function isClosestSibling(nodeA, nodeB) {
 
 function withClosestSiblings(node, pred) {
   pred = pred || func.ok;
-  const siblings = [];
+  var siblings = [];
 
   if (node.previousSibling && pred(node.previousSibling)) {
     siblings.push(node.previousSibling);
@@ -1082,7 +1098,7 @@ function withClosestSiblings(node, pred) {
  */
 
 
-const blankHTML = env.isMSIE && env.browserVersion < 11 ? '&nbsp;' : '<br>';
+var blankHTML = env.isMSIE && env.browserVersion < 11 ? '&nbsp;' : '<br>';
 /**
  * @method nodeLength
  *
@@ -1126,7 +1142,7 @@ function deepestChildIsEmpty(node) {
 
 
 function dom_isEmpty(node) {
-  const len = nodeLength(node);
+  var len = nodeLength(node);
 
   if (len === 0) {
     return true;
@@ -1212,7 +1228,7 @@ function singleChildAncestor(node, pred) {
 
 function listAncestor(node, pred) {
   pred = pred || func.fail;
-  const ancestors = [];
+  var ancestors = [];
   dom_ancestor(node, function (el) {
     if (!isEditable(el)) {
       ancestors.push(el);
@@ -1228,7 +1244,7 @@ function listAncestor(node, pred) {
 
 
 function lastAncestor(node, pred) {
-  const ancestors = listAncestor(node);
+  var ancestors = listAncestor(node);
   return lists.last(ancestors.filter(pred));
 }
 /**
@@ -1239,10 +1255,10 @@ function lastAncestor(node, pred) {
  */
 
 
-function commonAncestor(nodeA, nodeB) {
-  const ancestors = listAncestor(nodeA);
+function dom_commonAncestor(nodeA, nodeB) {
+  var ancestors = listAncestor(nodeA);
 
-  for (let n = nodeB; n; n = n.parentNode) {
+  for (var n = nodeB; n; n = n.parentNode) {
     if (ancestors.indexOf(n) > -1) return n;
   }
 
@@ -1258,7 +1274,7 @@ function commonAncestor(nodeA, nodeB) {
 
 function listPrev(node, pred) {
   pred = pred || func.fail;
-  const nodes = [];
+  var nodes = [];
 
   while (node) {
     if (pred(node)) {
@@ -1281,7 +1297,7 @@ function listPrev(node, pred) {
 
 function listNext(node, pred) {
   pred = pred || func.fail;
-  const nodes = [];
+  var nodes = [];
 
   while (node) {
     if (pred(node)) {
@@ -1303,7 +1319,7 @@ function listNext(node, pred) {
 
 
 function listDescendant(node, pred) {
-  const descendants = [];
+  var descendants = [];
   pred = pred || func.ok; // start DFS(depth first search) with node
 
   (function fnWalk(current) {
@@ -1311,7 +1327,7 @@ function listDescendant(node, pred) {
       descendants.push(current);
     }
 
-    for (let idx = 0, len = current.childNodes.length; idx < len; idx++) {
+    for (var idx = 0, len = current.childNodes.length; idx < len; idx++) {
       fnWalk(current.childNodes[idx]);
     }
   })(node);
@@ -1328,8 +1344,8 @@ function listDescendant(node, pred) {
 
 
 function wrap(node, wrapperName) {
-  const parent = node.parentNode;
-  const wrapper = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<' + wrapperName + '>')[0];
+  var parent = node.parentNode;
+  var wrapper = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<' + wrapperName + '>')[0];
   parent.insertBefore(wrapper, node);
   wrapper.appendChild(node);
   return wrapper;
@@ -1343,8 +1359,8 @@ function wrap(node, wrapperName) {
 
 
 function insertAfter(node, preceding) {
-  const next = preceding.nextSibling;
-  let parent = preceding.parentNode;
+  var next = preceding.nextSibling;
+  var parent = preceding.parentNode;
 
   if (next) {
     parent.insertBefore(node, next);
@@ -1410,7 +1426,7 @@ function isEdgePoint(point) {
  */
 
 
-function isLeftEdgeOf(node, ancestor) {
+function dom_isLeftEdgeOf(node, ancestor) {
   while (node && node !== ancestor) {
     if (dom_position(node) !== 0) {
       return false;
@@ -1454,7 +1470,7 @@ function isRightEdgeOf(node, ancestor) {
 
 
 function isLeftEdgePointOf(point, ancestor) {
-  return isLeftEdgePoint(point) && isLeftEdgeOf(point.node, ancestor);
+  return isLeftEdgePoint(point) && dom_isLeftEdgeOf(point.node, ancestor);
 }
 /**
  * returns whether point is right edge of ancestor or not.
@@ -1475,7 +1491,7 @@ function isRightEdgePointOf(point, ancestor) {
 
 
 function dom_position(node) {
-  let offset = 0;
+  var offset = 0;
 
   while (node = node.previousSibling) {
     offset += 1;
@@ -1497,8 +1513,8 @@ function hasChildren(node) {
 
 
 function dom_prevPoint(point, isSkipInnerOffset) {
-  let node;
-  let offset;
+  var node;
+  var offset;
 
   if (point.offset === 0) {
     if (isEditable(point.node)) {
@@ -1530,7 +1546,7 @@ function dom_prevPoint(point, isSkipInnerOffset) {
 
 
 function dom_nextPoint(point, isSkipInnerOffset) {
-  let node, offset;
+  var node, offset;
 
   if (dom_isEmpty(point.node)) {
     return null;
@@ -1589,8 +1605,8 @@ function isVisiblePoint(point) {
     return true;
   }
 
-  const leftNode = point.node.childNodes[point.offset - 1];
-  const rightNode = point.node.childNodes[point.offset];
+  var leftNode = point.node.childNodes[point.offset - 1];
+  var rightNode = point.node.childNodes[point.offset];
 
   if ((!leftNode || isVoid(leftNode)) && (!rightNode || isVoid(rightNode))) {
     return true;
@@ -1651,7 +1667,7 @@ function isCharPoint(point) {
     return false;
   }
 
-  const ch = point.node.nodeValue.charAt(point.offset - 1);
+  var ch = point.node.nodeValue.charAt(point.offset - 1);
   return ch && ch !== ' ' && ch !== NBSP_CHAR;
 }
 /**
@@ -1667,11 +1683,9 @@ function isSpacePoint(point) {
     return false;
   }
 
-  const ch = point.node.nodeValue.charAt(point.offset - 1);
+  var ch = point.node.nodeValue.charAt(point.offset - 1);
   return ch === ' ' || ch === NBSP_CHAR;
 }
-
-;
 /**
  * @method walkPoint
  *
@@ -1681,8 +1695,9 @@ function isSpacePoint(point) {
  * @param {Boolean} isSkipInnerOffset
  */
 
+
 function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
-  let point = startPoint;
+  var point = startPoint;
 
   while (point) {
     handler(point);
@@ -1691,7 +1706,7 @@ function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
       break;
     }
 
-    const isSkipOffset = isSkipInnerOffset && startPoint.node !== point.node && endPoint.node !== point.node;
+    var isSkipOffset = isSkipInnerOffset && startPoint.node !== point.node && endPoint.node !== point.node;
     point = dom_nextPoint(point, isSkipOffset);
   }
 }
@@ -1706,7 +1721,7 @@ function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
 
 
 function makeOffsetPath(ancestor, node) {
-  const ancestors = listAncestor(node, func.eq(ancestor));
+  var ancestors = listAncestor(node, func.eq(ancestor));
   return ancestors.map(dom_position).reverse();
 }
 /**
@@ -1720,9 +1735,9 @@ function makeOffsetPath(ancestor, node) {
 
 
 function fromOffsetPath(ancestor, offsets) {
-  let current = ancestor;
+  var current = ancestor;
 
-  for (let i = 0, len = offsets.length; i < len; i++) {
+  for (var i = 0, len = offsets.length; i < len; i++) {
     if (current.childNodes.length <= offsets[i]) {
       current = current.childNodes[current.childNodes.length - 1];
     } else {
@@ -1747,9 +1762,9 @@ function fromOffsetPath(ancestor, offsets) {
 
 
 function splitNode(point, options) {
-  let isSkipPaddingBlankHTML = options && options.isSkipPaddingBlankHTML;
-  const isNotSplitEdgePoint = options && options.isNotSplitEdgePoint;
-  const isDiscardEmptySplits = options && options.isDiscardEmptySplits;
+  var isSkipPaddingBlankHTML = options && options.isSkipPaddingBlankHTML;
+  var isNotSplitEdgePoint = options && options.isNotSplitEdgePoint;
+  var isDiscardEmptySplits = options && options.isDiscardEmptySplits;
 
   if (isDiscardEmptySplits) {
     isSkipPaddingBlankHTML = true;
@@ -1768,8 +1783,8 @@ function splitNode(point, options) {
   if (isText(point.node)) {
     return point.node.splitText(point.offset);
   } else {
-    const childNode = point.node.childNodes[point.offset];
-    const clone = insertAfter(point.node.cloneNode(false), point.node);
+    var childNode = point.node.childNodes[point.offset];
+    var clone = insertAfter(point.node.cloneNode(false), point.node);
     appendChildNodes(clone, listNext(childNode));
 
     if (!isSkipPaddingBlankHTML) {
@@ -1807,7 +1822,7 @@ function splitNode(point, options) {
 
 function splitTree(root, point, options) {
   // ex) [#text, <span>, <p>]
-  const ancestors = listAncestor(point.node, func.eq(root));
+  var ancestors = listAncestor(point.node, func.eq(root));
 
   if (!ancestors.length) {
     return null;
@@ -1839,10 +1854,10 @@ function splitPoint(point, isInline) {
   // find splitRoot, container
   //  - inline: splitRoot is a child of paragraph
   //  - block: splitRoot is a child of bodyContainer
-  const pred = isInline ? isPara : isBodyContainer;
-  const ancestors = listAncestor(point.node, pred);
-  const topAncestor = lists.last(ancestors) || point.node;
-  let splitRoot, container;
+  var pred = isInline ? isPara : isBodyContainer;
+  var ancestors = listAncestor(point.node, pred);
+  var topAncestor = lists.last(ancestors) || point.node;
+  var splitRoot, container;
 
   if (pred(topAncestor)) {
     splitRoot = ancestors[ancestors.length - 2];
@@ -1853,7 +1868,7 @@ function splitPoint(point, isInline) {
   } // if splitRoot is exists, split with splitTree
 
 
-  let pivot = splitRoot && splitTree(splitRoot, point, {
+  var pivot = splitRoot && splitTree(splitRoot, point, {
     isSkipPaddingBlankHTML: isInline,
     isNotSplitEdgePoint: isInline
   }); // if container is point.node, find pivot with point.offset
@@ -1868,7 +1883,7 @@ function splitPoint(point, isInline) {
   };
 }
 
-function create(nodeName) {
+function dom_create(nodeName) {
   return document.createElement(nodeName);
 }
 
@@ -1894,17 +1909,17 @@ function remove(node, isRemoveChild) {
     return node.removeNode(isRemoveChild);
   }
 
-  const parent = node.parentNode;
+  var parent = node.parentNode;
 
   if (!isRemoveChild) {
-    const nodes = [];
+    var nodes = [];
 
-    for (let i = 0, len = node.childNodes.length; i < len; i++) {
+    for (var i = 0, len = node.childNodes.length; i < len; i++) {
       nodes.push(node.childNodes[i]);
     }
 
-    for (let i = 0, len = nodes.length; i < len; i++) {
-      parent.insertBefore(nodes[i], node);
+    for (var _i = 0, _len = nodes.length; _i < _len; _i++) {
+      parent.insertBefore(nodes[_i], node);
     }
   }
 
@@ -1924,7 +1939,7 @@ function removeWhile(node, pred) {
       break;
     }
 
-    const parent = node.parentNode;
+    var parent = node.parentNode;
     remove(node);
     node = parent;
   }
@@ -1940,12 +1955,12 @@ function removeWhile(node, pred) {
  */
 
 
-function replace(node, nodeName) {
+function dom_replace(node, nodeName) {
   if (node.nodeName.toUpperCase() === nodeName.toUpperCase()) {
     return node;
   }
 
-  const newNode = create(nodeName);
+  var newNode = dom_create(nodeName);
 
   if (node.style.cssText) {
     newNode.style.cssText = node.style.cssText;
@@ -1957,14 +1972,14 @@ function replace(node, nodeName) {
   return newNode;
 }
 
-const isTextarea = makePredByNodeName('TEXTAREA');
+var isTextarea = makePredByNodeName('TEXTAREA');
 /**
  * @param {jQuery} $node
  * @param {Boolean} [stripLinebreaks] - default: false
  */
 
 function dom_value($node, stripLinebreaks) {
-  const val = isTextarea($node[0]) ? $node.val() : $node.html();
+  var val = isTextarea($node[0]) ? $node.val() : $node.html();
 
   if (stripLinebreaks) {
     return val.replace(/[\n\r]/g, '');
@@ -1983,14 +1998,14 @@ function dom_value($node, stripLinebreaks) {
 
 
 function dom_html($node, isNewlineOnBlock) {
-  let markup = dom_value($node);
+  var markup = dom_value($node);
 
   if (isNewlineOnBlock) {
-    const regexTag = /<(\/?)(\b(?!!)[^>\s]*)(.*?)(\s*\/?>)/g;
+    var regexTag = /<(\/?)(\b(?!!)[^>\s]*)(.*?)(\s*\/?>)/g;
     markup = markup.replace(regexTag, function (match, endSlash, name) {
       name = name.toUpperCase();
-      const isEndOfInlineContainer = /^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) && !!endSlash;
-      const isBlockNode = /^BLOCKQUOTE|^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
+      var isEndOfInlineContainer = /^DIV|^TD|^TH|^P|^LI|^H[1-7]/.test(name) && !!endSlash;
+      var isBlockNode = /^BLOCKQUOTE|^TABLE|^TBODY|^TR|^HR|^UL|^OL/.test(name);
       return match + (isEndOfInlineContainer || isBlockNode ? '\n' : '');
     });
     markup = markup.trim();
@@ -2000,9 +2015,9 @@ function dom_html($node, isNewlineOnBlock) {
 }
 
 function posFromPlaceholder(placeholder) {
-  const $placeholder = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(placeholder);
-  const pos = $placeholder.offset();
-  const height = $placeholder.outerHeight(true); // include margin
+  var $placeholder = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(placeholder);
+  var pos = $placeholder.offset();
+  var height = $placeholder.outerHeight(true); // include margin
 
   return {
     left: pos.left,
@@ -2037,40 +2052,40 @@ function isCustomStyleTag(node) {
 
 /* harmony default export */ var dom = ({
   /** @property {String} NBSP_CHAR */
-  NBSP_CHAR,
+  NBSP_CHAR: NBSP_CHAR,
 
   /** @property {String} ZERO_WIDTH_NBSP_CHAR */
-  ZERO_WIDTH_NBSP_CHAR,
+  ZERO_WIDTH_NBSP_CHAR: ZERO_WIDTH_NBSP_CHAR,
 
   /** @property {String} blank */
   blank: blankHTML,
 
   /** @property {String} emptyPara */
-  emptyPara: `<p>${blankHTML}</p>`,
-  makePredByNodeName,
-  isEditable,
-  isControlSizing,
-  isText,
-  isElement,
-  isVoid,
-  isPara,
-  isPurePara,
-  isHeading,
+  emptyPara: "<p>".concat(blankHTML, "</p>"),
+  makePredByNodeName: makePredByNodeName,
+  isEditable: isEditable,
+  isControlSizing: isControlSizing,
+  isText: isText,
+  isElement: isElement,
+  isVoid: isVoid,
+  isPara: isPara,
+  isPurePara: isPurePara,
+  isHeading: isHeading,
   isInline: dom_isInline,
   isBlock: func.not(dom_isInline),
-  isBodyInline,
-  isBody,
-  isParaInline,
-  isPre,
-  isList,
-  isTable,
-  isData,
+  isBodyInline: isBodyInline,
+  isBody: isBody,
+  isParaInline: isParaInline,
+  isPre: isPre,
+  isList: isList,
+  isTable: isTable,
+  isData: isData,
   isCell: dom_isCell,
-  isBlockquote,
-  isBodyContainer,
-  isAnchor,
+  isBlockquote: isBlockquote,
+  isBodyContainer: isBodyContainer,
+  isAnchor: isAnchor,
   isDiv: makePredByNodeName('DIV'),
-  isLi,
+  isLi: isLi,
   isBR: makePredByNodeName('BR'),
   isSpan: makePredByNodeName('SPAN'),
   isB: makePredByNodeName('B'),
@@ -2078,69 +2093,80 @@ function isCustomStyleTag(node) {
   isS: makePredByNodeName('S'),
   isI: makePredByNodeName('I'),
   isImg: makePredByNodeName('IMG'),
-  isTextarea,
-  deepestChildIsEmpty,
+  isTextarea: isTextarea,
+  deepestChildIsEmpty: deepestChildIsEmpty,
   isEmpty: dom_isEmpty,
   isEmptyAnchor: func.and(isAnchor, dom_isEmpty),
-  isClosestSibling,
-  withClosestSiblings,
-  nodeLength,
-  isLeftEdgePoint,
-  isRightEdgePoint,
-  isEdgePoint,
-  isLeftEdgeOf,
-  isRightEdgeOf,
-  isLeftEdgePointOf,
-  isRightEdgePointOf,
+  isClosestSibling: isClosestSibling,
+  withClosestSiblings: withClosestSiblings,
+  nodeLength: nodeLength,
+  isLeftEdgePoint: isLeftEdgePoint,
+  isRightEdgePoint: isRightEdgePoint,
+  isEdgePoint: isEdgePoint,
+  isLeftEdgeOf: dom_isLeftEdgeOf,
+  isRightEdgeOf: isRightEdgeOf,
+  isLeftEdgePointOf: isLeftEdgePointOf,
+  isRightEdgePointOf: isRightEdgePointOf,
   prevPoint: dom_prevPoint,
   nextPoint: dom_nextPoint,
-  isSamePoint,
-  isVisiblePoint,
-  prevPointUntil,
-  nextPointUntil,
-  isCharPoint,
-  isSpacePoint,
-  walkPoint,
+  isSamePoint: isSamePoint,
+  isVisiblePoint: isVisiblePoint,
+  prevPointUntil: prevPointUntil,
+  nextPointUntil: nextPointUntil,
+  isCharPoint: isCharPoint,
+  isSpacePoint: isSpacePoint,
+  walkPoint: walkPoint,
   ancestor: dom_ancestor,
-  singleChildAncestor,
-  listAncestor,
-  lastAncestor,
-  listNext,
-  listPrev,
-  listDescendant,
-  commonAncestor,
-  wrap,
-  insertAfter,
-  appendChildNodes,
+  singleChildAncestor: singleChildAncestor,
+  listAncestor: listAncestor,
+  lastAncestor: lastAncestor,
+  listNext: listNext,
+  listPrev: listPrev,
+  listDescendant: listDescendant,
+  commonAncestor: dom_commonAncestor,
+  wrap: wrap,
+  insertAfter: insertAfter,
+  appendChildNodes: appendChildNodes,
   position: dom_position,
-  hasChildren,
-  makeOffsetPath,
-  fromOffsetPath,
-  splitTree,
-  splitPoint,
-  create,
-  createText,
-  remove,
-  removeWhile,
-  replace,
+  hasChildren: hasChildren,
+  makeOffsetPath: makeOffsetPath,
+  fromOffsetPath: fromOffsetPath,
+  splitTree: splitTree,
+  splitPoint: splitPoint,
+  create: dom_create,
+  createText: createText,
+  remove: remove,
+  removeWhile: removeWhile,
+  replace: dom_replace,
   html: dom_html,
   value: dom_value,
-  posFromPlaceholder,
-  attachEvents,
-  detachEvents,
-  isCustomStyleTag
+  posFromPlaceholder: posFromPlaceholder,
+  attachEvents: attachEvents,
+  detachEvents: detachEvents,
+  isCustomStyleTag: isCustomStyleTag
 });
 // CONCATENATED MODULE: ./src/js/base/Context.js
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 
 
 
-class Context_Context {
+
+
+var Context_Context =
+/*#__PURE__*/
+function () {
   /**
    * @param {jQuery} $note
    * @param {Object} options
    */
-  constructor($note, options) {
+  function Context($note, options) {
+    _classCallCheck(this, Context);
+
     this.$note = $note;
     this.memos = {};
     this.modules = {};
@@ -2156,227 +2182,260 @@ class Context_Context {
    */
 
 
-  initialize() {
-    this.layoutInfo = this.ui.createLayout(this.$note);
+  _createClass(Context, [{
+    key: "initialize",
+    value: function initialize() {
+      this.layoutInfo = this.ui.createLayout(this.$note);
 
-    this._initialize();
+      this._initialize();
 
-    this.$note.hide();
-    return this;
-  }
-  /**
-   * destroy modules and other resources and remove layout
-   */
-
-
-  destroy() {
-    this._destroy();
-
-    this.$note.removeData('summernote');
-    this.ui.removeLayout(this.$note, this.layoutInfo);
-  }
-  /**
-   * destory modules and other resources and initialize it again
-   */
-
-
-  reset() {
-    const disabled = this.isDisabled();
-    this.code(dom.emptyPara);
-
-    this._destroy();
-
-    this._initialize();
-
-    if (disabled) {
-      this.disable();
+      this.$note.hide();
+      return this;
     }
-  }
+    /**
+     * destroy modules and other resources and remove layout
+     */
 
-  _initialize() {
-    // set own id
-    this.options.id = func.uniqueId(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.now()); // set default container for tooltips, popovers, and dialogs
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this._destroy();
 
-    this.options.container = this.options.container || this.layoutInfo.editor; // add optional buttons
+      this.$note.removeData('summernote');
+      this.ui.removeLayout(this.$note, this.layoutInfo);
+    }
+    /**
+     * destory modules and other resources and initialize it again
+     */
 
-    const buttons = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend({}, this.options.buttons);
-    Object.keys(buttons).forEach(key => {
-      this.memo('button.' + key, buttons[key]);
-    });
-    const modules = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend({}, this.options.modules, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.plugins || {}); // add and initialize modules
+  }, {
+    key: "reset",
+    value: function reset() {
+      var disabled = this.isDisabled();
+      this.code(dom.emptyPara);
 
-    Object.keys(modules).forEach(key => {
-      this.module(key, modules[key], true);
-    });
-    Object.keys(this.modules).forEach(key => {
-      this.initializeModule(key);
-    });
-  }
+      this._destroy();
 
-  _destroy() {
-    // destroy modules with reversed order
-    Object.keys(this.modules).reverse().forEach(key => {
-      this.removeModule(key);
-    });
-    Object.keys(this.memos).forEach(key => {
-      this.removeMemo(key);
-    }); // trigger custom onDestroy callback
+      this._initialize();
 
-    this.triggerEvent('destroy', this);
-  }
+      if (disabled) {
+        this.disable();
+      }
+    }
+  }, {
+    key: "_initialize",
+    value: function _initialize() {
+      var _this = this;
 
-  code(html) {
-    const isActivated = this.invoke('codeview.isActivated');
+      // set own id
+      this.options.id = func.uniqueId(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.now()); // set default container for tooltips, popovers, and dialogs
 
-    if (html === undefined) {
-      this.invoke('codeview.sync');
-      return isActivated ? this.layoutInfo.codable.val() : this.layoutInfo.editable.html();
-    } else {
-      if (isActivated) {
-        this.layoutInfo.codable.val(html);
+      this.options.container = this.options.container || this.layoutInfo.editor; // add optional buttons
+
+      var buttons = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend({}, this.options.buttons);
+      Object.keys(buttons).forEach(function (key) {
+        _this.memo('button.' + key, buttons[key]);
+      });
+      var modules = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend({}, this.options.modules, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.plugins || {}); // add and initialize modules
+
+      Object.keys(modules).forEach(function (key) {
+        _this.module(key, modules[key], true);
+      });
+      Object.keys(this.modules).forEach(function (key) {
+        _this.initializeModule(key);
+      });
+    }
+  }, {
+    key: "_destroy",
+    value: function _destroy() {
+      var _this2 = this;
+
+      // destroy modules with reversed order
+      Object.keys(this.modules).reverse().forEach(function (key) {
+        _this2.removeModule(key);
+      });
+      Object.keys(this.memos).forEach(function (key) {
+        _this2.removeMemo(key);
+      }); // trigger custom onDestroy callback
+
+      this.triggerEvent('destroy', this);
+    }
+  }, {
+    key: "code",
+    value: function code(html) {
+      var isActivated = this.invoke('codeview.isActivated');
+
+      if (html === undefined) {
+        this.invoke('codeview.sync');
+        return isActivated ? this.layoutInfo.codable.val() : this.layoutInfo.editable.html();
       } else {
-        this.layoutInfo.editable.html(html);
+        if (isActivated) {
+          this.layoutInfo.codable.val(html);
+        } else {
+          this.layoutInfo.editable.html(html);
+        }
+
+        this.$note.val(html);
+        this.triggerEvent('change', html, this.layoutInfo.editable);
+      }
+    }
+  }, {
+    key: "isDisabled",
+    value: function isDisabled() {
+      return this.layoutInfo.editable.attr('contenteditable') === 'false';
+    }
+  }, {
+    key: "enable",
+    value: function enable() {
+      this.layoutInfo.editable.attr('contenteditable', true);
+      this.invoke('toolbar.activate', true);
+      this.triggerEvent('disable', false);
+      this.options.editing = true;
+    }
+  }, {
+    key: "disable",
+    value: function disable() {
+      // close codeview if codeview is opend
+      if (this.invoke('codeview.isActivated')) {
+        this.invoke('codeview.deactivate');
       }
 
-      this.$note.val(html);
-      this.triggerEvent('change', html, this.layoutInfo.editable);
+      this.layoutInfo.editable.attr('contenteditable', false);
+      this.options.editing = false;
+      this.invoke('toolbar.deactivate', true);
+      this.triggerEvent('disable', true);
     }
-  }
+  }, {
+    key: "triggerEvent",
+    value: function triggerEvent() {
+      var namespace = lists.head(arguments);
+      var args = lists.tail(lists.from(arguments));
+      var callback = this.options.callbacks[func.namespaceToCamel(namespace, 'on')];
 
-  isDisabled() {
-    return this.layoutInfo.editable.attr('contenteditable') === 'false';
-  }
+      if (callback) {
+        callback.apply(this.$note[0], args);
+      }
 
-  enable() {
-    this.layoutInfo.editable.attr('contenteditable', true);
-    this.invoke('toolbar.activate', true);
-    this.triggerEvent('disable', false);
-    this.options.editing = true;
-  }
-
-  disable() {
-    // close codeview if codeview is opend
-    if (this.invoke('codeview.isActivated')) {
-      this.invoke('codeview.deactivate');
+      this.$note.trigger('summernote.' + namespace, args);
     }
+  }, {
+    key: "initializeModule",
+    value: function initializeModule(key) {
+      var module = this.modules[key];
+      module.shouldInitialize = module.shouldInitialize || func.ok;
 
-    this.layoutInfo.editable.attr('contenteditable', false);
-    this.options.editing = false;
-    this.invoke('toolbar.deactivate', true);
-    this.triggerEvent('disable', true);
-  }
-
-  triggerEvent() {
-    const namespace = lists.head(arguments);
-    const args = lists.tail(lists.from(arguments));
-    const callback = this.options.callbacks[func.namespaceToCamel(namespace, 'on')];
-
-    if (callback) {
-      callback.apply(this.$note[0], args);
-    }
-
-    this.$note.trigger('summernote.' + namespace, args);
-  }
-
-  initializeModule(key) {
-    const module = this.modules[key];
-    module.shouldInitialize = module.shouldInitialize || func.ok;
-
-    if (!module.shouldInitialize()) {
-      return;
-    } // initialize module
+      if (!module.shouldInitialize()) {
+        return;
+      } // initialize module
 
 
-    if (module.initialize) {
-      module.initialize();
-    } // attach events
+      if (module.initialize) {
+        module.initialize();
+      } // attach events
 
 
-    if (module.events) {
-      dom.attachEvents(this.$note, module.events);
-    }
-  }
-
-  module(key, ModuleClass, withoutIntialize) {
-    if (arguments.length === 1) {
-      return this.modules[key];
-    }
-
-    this.modules[key] = new ModuleClass(this);
-
-    if (!withoutIntialize) {
-      this.initializeModule(key);
-    }
-  }
-
-  removeModule(key) {
-    const module = this.modules[key];
-
-    if (module.shouldInitialize()) {
       if (module.events) {
-        dom.detachEvents(this.$note, module.events);
-      }
-
-      if (module.destroy) {
-        module.destroy();
+        dom.attachEvents(this.$note, module.events);
       }
     }
+  }, {
+    key: "module",
+    value: function module(key, ModuleClass, withoutIntialize) {
+      if (arguments.length === 1) {
+        return this.modules[key];
+      }
 
-    delete this.modules[key];
-  }
+      this.modules[key] = new ModuleClass(this);
 
-  memo(key, obj) {
-    if (arguments.length === 1) {
-      return this.memos[key];
+      if (!withoutIntialize) {
+        this.initializeModule(key);
+      }
     }
+  }, {
+    key: "removeModule",
+    value: function removeModule(key) {
+      var module = this.modules[key];
 
-    this.memos[key] = obj;
-  }
+      if (module.shouldInitialize()) {
+        if (module.events) {
+          dom.detachEvents(this.$note, module.events);
+        }
 
-  removeMemo(key) {
-    if (this.memos[key] && this.memos[key].destroy) {
-      this.memos[key].destroy();
+        if (module.destroy) {
+          module.destroy();
+        }
+      }
+
+      delete this.modules[key];
     }
+  }, {
+    key: "memo",
+    value: function memo(key, obj) {
+      if (arguments.length === 1) {
+        return this.memos[key];
+      }
 
-    delete this.memos[key];
-  }
-  /**
-   * Some buttons need to change their visual style immediately once they get pressed
-   */
-
-
-  createInvokeHandlerAndUpdateState(namespace, value) {
-    return event => {
-      this.createInvokeHandler(namespace, value)(event);
-      this.invoke('buttons.updateCurrentStyle');
-    };
-  }
-
-  createInvokeHandler(namespace, value) {
-    return event => {
-      event.preventDefault();
-      const $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target);
-      this.invoke(namespace, value || $target.closest('[data-value]').data('value'), $target);
-    };
-  }
-
-  invoke() {
-    const namespace = lists.head(arguments);
-    const args = lists.tail(lists.from(arguments));
-    const splits = namespace.split('.');
-    const hasSeparator = splits.length > 1;
-    const moduleName = hasSeparator && lists.head(splits);
-    const methodName = hasSeparator ? lists.last(splits) : lists.head(splits);
-    const module = this.modules[moduleName || 'editor'];
-
-    if (!moduleName && this[methodName]) {
-      return this[methodName].apply(this, args);
-    } else if (module && module[methodName] && module.shouldInitialize()) {
-      return module[methodName].apply(module, args);
+      this.memos[key] = obj;
     }
-  }
+  }, {
+    key: "removeMemo",
+    value: function removeMemo(key) {
+      if (this.memos[key] && this.memos[key].destroy) {
+        this.memos[key].destroy();
+      }
 
-}
+      delete this.memos[key];
+    }
+    /**
+     * Some buttons need to change their visual style immediately once they get pressed
+     */
+
+  }, {
+    key: "createInvokeHandlerAndUpdateState",
+    value: function createInvokeHandlerAndUpdateState(namespace, value) {
+      var _this3 = this;
+
+      return function (event) {
+        _this3.createInvokeHandler(namespace, value)(event);
+
+        _this3.invoke('buttons.updateCurrentStyle');
+      };
+    }
+  }, {
+    key: "createInvokeHandler",
+    value: function createInvokeHandler(namespace, value) {
+      var _this4 = this;
+
+      return function (event) {
+        event.preventDefault();
+        var $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target);
+
+        _this4.invoke(namespace, value || $target.closest('[data-value]').data('value'), $target);
+      };
+    }
+  }, {
+    key: "invoke",
+    value: function invoke() {
+      var namespace = lists.head(arguments);
+      var args = lists.tail(lists.from(arguments));
+      var splits = namespace.split('.');
+      var hasSeparator = splits.length > 1;
+      var moduleName = hasSeparator && lists.head(splits);
+      var methodName = hasSeparator ? lists.last(splits) : lists.head(splits);
+      var module = this.modules[moduleName || 'editor'];
+
+      if (!moduleName && this[methodName]) {
+        return this[methodName].apply(this, args);
+      } else if (module && module[methodName] && module.shouldInitialize()) {
+        return module[methodName].apply(module, args);
+      }
+    }
+  }]);
+
+  return Context;
+}();
+
+
 // CONCATENATED MODULE: ./src/js/summernote.js
 
 
@@ -2389,28 +2448,28 @@ external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.fn.ex
    * @param {Object|String}
    * @return {this}
    */
-  summernote: function () {
-    const type = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.type(lists.head(arguments));
-    const isExternalAPICalled = type === 'string';
-    const hasInitOptions = type === 'object';
-    const options = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend({}, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.options, hasInitOptions ? lists.head(arguments) : {}); // Update options
+  summernote: function summernote() {
+    var type = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.type(lists.head(arguments));
+    var isExternalAPICalled = type === 'string';
+    var hasInitOptions = type === 'object';
+    var options = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend({}, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.options, hasInitOptions ? lists.head(arguments) : {}); // Update options
 
     options.langInfo = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(true, {}, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.lang['en-US'], external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.lang[options.lang]);
     options.icons = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(true, {}, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.options.icons, options.icons);
     options.tooltip = options.tooltip === 'auto' ? !env.isSupportTouch : options.tooltip;
-    this.each((idx, note) => {
-      const $note = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(note);
+    this.each(function (idx, note) {
+      var $note = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(note);
 
       if (!$note.data('summernote')) {
-        const context = new Context_Context($note, options);
+        var context = new Context_Context($note, options);
         $note.data('summernote', context);
         $note.data('summernote').triggerEvent('init', context.layoutInfo);
       }
     });
-    const $note = this.first();
+    var $note = this.first();
 
     if ($note.length) {
-      const context = $note.data('summernote');
+      var context = $note.data('summernote');
 
       if (isExternalAPICalled) {
         return context.invoke.apply(context, lists.from(arguments));
@@ -2423,6 +2482,12 @@ external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.fn.ex
   }
 });
 // CONCATENATED MODULE: ./src/js/base/core/range.js
+function range_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function range_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function range_createClass(Constructor, protoProps, staticProps) { if (protoProps) range_defineProperties(Constructor.prototype, protoProps); if (staticProps) range_defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 
@@ -2439,11 +2504,11 @@ external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.fn.ex
  */
 
 function textRangeToPoint(textRange, isStart) {
-  let container = textRange.parentElement();
-  let offset;
-  const tester = document.body.createTextRange();
-  let prevContainer;
-  const childNodes = lists.from(container.childNodes);
+  var container = textRange.parentElement();
+  var offset;
+  var tester = document.body.createTextRange();
+  var prevContainer;
+  var childNodes = lists.from(container.childNodes);
 
   for (offset = 0; offset < childNodes.length; offset++) {
     if (dom.isText(childNodes[offset])) {
@@ -2460,14 +2525,14 @@ function textRangeToPoint(textRange, isStart) {
   }
 
   if (offset !== 0 && dom.isText(childNodes[offset - 1])) {
-    const textRangeStart = document.body.createTextRange();
-    let curTextNode = null;
+    var textRangeStart = document.body.createTextRange();
+    var curTextNode = null;
     textRangeStart.moveToElementText(prevContainer || container);
     textRangeStart.collapse(!prevContainer);
     curTextNode = prevContainer ? prevContainer.nextSibling : container.firstChild;
-    const pointTester = textRange.duplicate();
+    var pointTester = textRange.duplicate();
     pointTester.setEndPoint('StartToStart', textRangeStart);
-    let textCount = pointTester.text.replace(/[\r\n]/g, '').length;
+    var textCount = pointTester.text.replace(/[\r\n]/g, '').length;
 
     while (textCount > curTextNode.nodeValue.length && curTextNode.nextSibling) {
       textCount -= curTextNode.nodeValue.length;
@@ -2475,7 +2540,7 @@ function textRangeToPoint(textRange, isStart) {
     } // [workaround] enforce IE to re-reference curTextNode, hack
 
 
-    const dummy = curTextNode.nodeValue; // eslint-disable-line
+    var dummy = curTextNode.nodeValue; // eslint-disable-line
 
     if (isStart && curTextNode.nextSibling && dom.isText(curTextNode.nextSibling) && textCount === curTextNode.nodeValue.length) {
       textCount -= curTextNode.nodeValue.length;
@@ -2499,12 +2564,12 @@ function textRangeToPoint(textRange, isStart) {
 
 
 function pointToTextRange(point) {
-  const textRangeInfo = function (container, offset) {
-    let node, isCollapseToStart;
+  var textRangeInfo = function textRangeInfo(container, offset) {
+    var node, isCollapseToStart;
 
     if (dom.isText(container)) {
-      const prevTextNodes = dom.listPrev(container, func.not(dom.isText));
-      const prevContainer = lists.last(prevTextNodes).previousSibling;
+      var prevTextNodes = dom.listPrev(container, func.not(dom.isText));
+      var prevContainer = lists.last(prevTextNodes).previousSibling;
       node = prevContainer || container.parentNode;
       offset += lists.sum(lists.tail(prevTextNodes), dom.nodeLength);
       isCollapseToStart = !prevContainer;
@@ -2526,8 +2591,8 @@ function pointToTextRange(point) {
     };
   };
 
-  const textRange = document.body.createTextRange();
-  const info = textRangeInfo(point.node, point.offset);
+  var textRange = document.body.createTextRange();
+  var info = textRangeInfo(point.node, point.offset);
   textRange.moveToElementText(info.node);
   textRange.collapse(info.collapseToStart);
   textRange.moveStart('character', info.offset);
@@ -2544,8 +2609,12 @@ function pointToTextRange(point) {
    */
 
 
-class range_WrappedRange {
-  constructor(sc, so, ec, eo) {
+var range_WrappedRange =
+/*#__PURE__*/
+function () {
+  function WrappedRange(sc, so, ec, eo) {
+    range_classCallCheck(this, WrappedRange);
+
     this.sc = sc;
     this.so = so;
     this.ec = ec;
@@ -2563,596 +2632,628 @@ class range_WrappedRange {
   } // nativeRange: get nativeRange from sc, so, ec, eo
 
 
-  nativeRange() {
-    if (env.isW3CRangeSupport) {
-      const w3cRange = document.createRange();
-      w3cRange.setStart(this.sc, this.sc.data && this.so > this.sc.data.length ? 0 : this.so);
-      w3cRange.setEnd(this.ec, this.sc.data ? Math.min(this.eo, this.sc.data.length) : this.eo);
-      return w3cRange;
-    } else {
-      const textRange = pointToTextRange({
+  range_createClass(WrappedRange, [{
+    key: "nativeRange",
+    value: function nativeRange() {
+      if (env.isW3CRangeSupport) {
+        var w3cRange = document.createRange();
+        w3cRange.setStart(this.sc, this.sc.data && this.so > this.sc.data.length ? 0 : this.so);
+        w3cRange.setEnd(this.ec, this.sc.data ? Math.min(this.eo, this.sc.data.length) : this.eo);
+        return w3cRange;
+      } else {
+        var textRange = pointToTextRange({
+          node: this.sc,
+          offset: this.so
+        });
+        textRange.setEndPoint('EndToEnd', pointToTextRange({
+          node: this.ec,
+          offset: this.eo
+        }));
+        return textRange;
+      }
+    }
+  }, {
+    key: "getPoints",
+    value: function getPoints() {
+      return {
+        sc: this.sc,
+        so: this.so,
+        ec: this.ec,
+        eo: this.eo
+      };
+    }
+  }, {
+    key: "getStartPoint",
+    value: function getStartPoint() {
+      return {
         node: this.sc,
         offset: this.so
-      });
-      textRange.setEndPoint('EndToEnd', pointToTextRange({
+      };
+    }
+  }, {
+    key: "getEndPoint",
+    value: function getEndPoint() {
+      return {
         node: this.ec,
         offset: this.eo
-      }));
-      return textRange;
+      };
     }
-  }
-
-  getPoints() {
-    return {
-      sc: this.sc,
-      so: this.so,
-      ec: this.ec,
-      eo: this.eo
-    };
-  }
-
-  getStartPoint() {
-    return {
-      node: this.sc,
-      offset: this.so
-    };
-  }
-
-  getEndPoint() {
-    return {
-      node: this.ec,
-      offset: this.eo
-    };
-  }
-  /**
-   * select update visible range
-   */
-
-
-  select() {
-    const nativeRng = this.nativeRange();
-
-    if (env.isW3CRangeSupport) {
-      const selection = document.getSelection();
-
-      if (selection.rangeCount > 0) {
-        selection.removeAllRanges();
-      }
-
-      selection.addRange(nativeRng);
-    } else {
-      nativeRng.select();
-    }
-
-    return this;
-  }
-  /**
-   * Moves the scrollbar to start container(sc) of current range
-   *
-   * @return {WrappedRange}
-   */
-
-
-  scrollIntoView(container) {
-    const height = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(container).height();
-
-    if (container.scrollTop + height < this.sc.offsetTop) {
-      container.scrollTop += Math.abs(container.scrollTop + height - this.sc.offsetTop);
-    }
-
-    return this;
-  }
-  /**
-   * @return {WrappedRange}
-   */
-
-
-  normalize() {
     /**
-     * @param {BoundaryPoint} point
-     * @param {Boolean} isLeftToRight - true: prefer to choose right node
-     *                                - false: prefer to choose left node
-     * @return {BoundaryPoint}
+     * select update visible range
      */
-    const getVisiblePoint = function (point, isLeftToRight) {
-      if (!point) {
-        return point;
-      } // Just use the given point [XXX:Adhoc]
-      //  - case 01. if the point is on the middle of the node
-      //  - case 02. if the point is on the right edge and prefer to choose left node
-      //  - case 03. if the point is on the left edge and prefer to choose right node
-      //  - case 04. if the point is on the right edge and prefer to choose right node but the node is void
-      //  - case 05. if the point is on the left edge and prefer to choose left node but the node is void
-      //  - case 06. if the point is on the block node and there is no children
 
+  }, {
+    key: "select",
+    value: function select() {
+      var nativeRng = this.nativeRange();
 
-      if (dom.isVisiblePoint(point)) {
-        if (!dom.isEdgePoint(point) || dom.isRightEdgePoint(point) && !isLeftToRight || dom.isLeftEdgePoint(point) && isLeftToRight || dom.isRightEdgePoint(point) && isLeftToRight && dom.isVoid(point.node.nextSibling) || dom.isLeftEdgePoint(point) && !isLeftToRight && dom.isVoid(point.node.previousSibling) || dom.isBlock(point.node) && dom.isEmpty(point.node)) {
-          return point;
+      if (env.isW3CRangeSupport) {
+        var selection = document.getSelection();
+
+        if (selection.rangeCount > 0) {
+          selection.removeAllRanges();
         }
-      } // point on block's edge
 
-
-      const block = dom.ancestor(point.node, dom.isBlock);
-      let hasRightNode = false;
-
-      if (!hasRightNode) {
-        const prevPoint = dom.prevPoint(point) || {
-          node: null
-        };
-        hasRightNode = (dom.isLeftEdgePointOf(point, block) || dom.isVoid(prevPoint.node)) && !isLeftToRight;
+        selection.addRange(nativeRng);
+      } else {
+        nativeRng.select();
       }
 
-      let hasLeftNode = false;
+      return this;
+    }
+    /**
+     * Moves the scrollbar to start container(sc) of current range
+     *
+     * @return {WrappedRange}
+     */
 
-      if (!hasLeftNode) {
-        const nextPoint = dom.nextPoint(point) || {
-          node: null
-        };
-        hasLeftNode = (dom.isRightEdgePointOf(point, block) || dom.isVoid(nextPoint.node)) && isLeftToRight;
+  }, {
+    key: "scrollIntoView",
+    value: function scrollIntoView(container) {
+      var height = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(container).height();
+
+      if (container.scrollTop + height < this.sc.offsetTop) {
+        container.scrollTop += Math.abs(container.scrollTop + height - this.sc.offsetTop);
       }
 
-      if (hasRightNode || hasLeftNode) {
-        // returns point already on visible point
+      return this;
+    }
+    /**
+     * @return {WrappedRange}
+     */
+
+  }, {
+    key: "normalize",
+    value: function normalize() {
+      /**
+       * @param {BoundaryPoint} point
+       * @param {Boolean} isLeftToRight - true: prefer to choose right node
+       *                                - false: prefer to choose left node
+       * @return {BoundaryPoint}
+       */
+      var getVisiblePoint = function getVisiblePoint(point, isLeftToRight) {
+        if (!point) {
+          return point;
+        } // Just use the given point [XXX:Adhoc]
+        //  - case 01. if the point is on the middle of the node
+        //  - case 02. if the point is on the right edge and prefer to choose left node
+        //  - case 03. if the point is on the left edge and prefer to choose right node
+        //  - case 04. if the point is on the right edge and prefer to choose right node but the node is void
+        //  - case 05. if the point is on the left edge and prefer to choose left node but the node is void
+        //  - case 06. if the point is on the block node and there is no children
+
+
         if (dom.isVisiblePoint(point)) {
-          return point;
-        } // reverse direction
+          if (!dom.isEdgePoint(point) || dom.isRightEdgePoint(point) && !isLeftToRight || dom.isLeftEdgePoint(point) && isLeftToRight || dom.isRightEdgePoint(point) && isLeftToRight && dom.isVoid(point.node.nextSibling) || dom.isLeftEdgePoint(point) && !isLeftToRight && dom.isVoid(point.node.previousSibling) || dom.isBlock(point.node) && dom.isEmpty(point.node)) {
+            return point;
+          }
+        } // point on block's edge
 
 
-        isLeftToRight = !isLeftToRight;
-      }
+        var block = dom.ancestor(point.node, dom.isBlock);
+        var hasRightNode = false;
 
-      const nextPoint = isLeftToRight ? dom.nextPointUntil(dom.nextPoint(point), dom.isVisiblePoint) : dom.prevPointUntil(dom.prevPoint(point), dom.isVisiblePoint);
-      return nextPoint || point;
-    };
-
-    const endPoint = getVisiblePoint(this.getEndPoint(), false);
-    const startPoint = this.isCollapsed() ? endPoint : getVisiblePoint(this.getStartPoint(), true);
-    return new range_WrappedRange(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
-  }
-  /**
-   * returns matched nodes on range
-   *
-   * @param {Function} [pred] - predicate function
-   * @param {Object} [options]
-   * @param {Boolean} [options.includeAncestor]
-   * @param {Boolean} [options.fullyContains]
-   * @return {Node[]}
-   */
-
-
-  nodes(pred, options) {
-    pred = pred || func.ok;
-    const includeAncestor = options && options.includeAncestor;
-    const fullyContains = options && options.fullyContains; // TODO compare points and sort
-
-    const startPoint = this.getStartPoint();
-    const endPoint = this.getEndPoint();
-    const nodes = [];
-    const leftEdgeNodes = [];
-    dom.walkPoint(startPoint, endPoint, function (point) {
-      if (dom.isEditable(point.node)) {
-        return;
-      }
-
-      let node;
-
-      if (fullyContains) {
-        if (dom.isLeftEdgePoint(point)) {
-          leftEdgeNodes.push(point.node);
+        if (!hasRightNode) {
+          var prevPoint = dom.prevPoint(point) || {
+            node: null
+          };
+          hasRightNode = (dom.isLeftEdgePointOf(point, block) || dom.isVoid(prevPoint.node)) && !isLeftToRight;
         }
 
-        if (dom.isRightEdgePoint(point) && lists.contains(leftEdgeNodes, point.node)) {
+        var hasLeftNode = false;
+
+        if (!hasLeftNode) {
+          var _nextPoint = dom.nextPoint(point) || {
+            node: null
+          };
+
+          hasLeftNode = (dom.isRightEdgePointOf(point, block) || dom.isVoid(_nextPoint.node)) && isLeftToRight;
+        }
+
+        if (hasRightNode || hasLeftNode) {
+          // returns point already on visible point
+          if (dom.isVisiblePoint(point)) {
+            return point;
+          } // reverse direction
+
+
+          isLeftToRight = !isLeftToRight;
+        }
+
+        var nextPoint = isLeftToRight ? dom.nextPointUntil(dom.nextPoint(point), dom.isVisiblePoint) : dom.prevPointUntil(dom.prevPoint(point), dom.isVisiblePoint);
+        return nextPoint || point;
+      };
+
+      var endPoint = getVisiblePoint(this.getEndPoint(), false);
+      var startPoint = this.isCollapsed() ? endPoint : getVisiblePoint(this.getStartPoint(), true);
+      return new WrappedRange(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
+    }
+    /**
+     * returns matched nodes on range
+     *
+     * @param {Function} [pred] - predicate function
+     * @param {Object} [options]
+     * @param {Boolean} [options.includeAncestor]
+     * @param {Boolean} [options.fullyContains]
+     * @return {Node[]}
+     */
+
+  }, {
+    key: "nodes",
+    value: function nodes(pred, options) {
+      pred = pred || func.ok;
+      var includeAncestor = options && options.includeAncestor;
+      var fullyContains = options && options.fullyContains; // TODO compare points and sort
+
+      var startPoint = this.getStartPoint();
+      var endPoint = this.getEndPoint();
+      var nodes = [];
+      var leftEdgeNodes = [];
+      dom.walkPoint(startPoint, endPoint, function (point) {
+        if (dom.isEditable(point.node)) {
+          return;
+        }
+
+        var node;
+
+        if (fullyContains) {
+          if (dom.isLeftEdgePoint(point)) {
+            leftEdgeNodes.push(point.node);
+          }
+
+          if (dom.isRightEdgePoint(point) && lists.contains(leftEdgeNodes, point.node)) {
+            node = point.node;
+          }
+        } else if (includeAncestor) {
+          node = dom.ancestor(point.node, pred);
+        } else {
           node = point.node;
         }
-      } else if (includeAncestor) {
-        node = dom.ancestor(point.node, pred);
-      } else {
-        node = point.node;
-      }
 
-      if (node && pred(node)) {
-        nodes.push(node);
-      }
-    }, true);
-    return lists.unique(nodes);
-  }
-  /**
-   * returns commonAncestor of range
-   * @return {Element} - commonAncestor
-   */
-
-
-  commonAncestor() {
-    return dom.commonAncestor(this.sc, this.ec);
-  }
-  /**
-   * returns expanded range by pred
-   *
-   * @param {Function} pred - predicate function
-   * @return {WrappedRange}
-   */
-
-
-  expand(pred) {
-    const startAncestor = dom.ancestor(this.sc, pred);
-    const endAncestor = dom.ancestor(this.ec, pred);
-
-    if (!startAncestor && !endAncestor) {
-      return new range_WrappedRange(this.sc, this.so, this.ec, this.eo);
-    }
-
-    const boundaryPoints = this.getPoints();
-
-    if (startAncestor) {
-      boundaryPoints.sc = startAncestor;
-      boundaryPoints.so = 0;
-    }
-
-    if (endAncestor) {
-      boundaryPoints.ec = endAncestor;
-      boundaryPoints.eo = dom.nodeLength(endAncestor);
-    }
-
-    return new range_WrappedRange(boundaryPoints.sc, boundaryPoints.so, boundaryPoints.ec, boundaryPoints.eo);
-  }
-  /**
-   * @param {Boolean} isCollapseToStart
-   * @return {WrappedRange}
-   */
-
-
-  collapse(isCollapseToStart) {
-    if (isCollapseToStart) {
-      return new range_WrappedRange(this.sc, this.so, this.sc, this.so);
-    } else {
-      return new range_WrappedRange(this.ec, this.eo, this.ec, this.eo);
-    }
-  }
-  /**
-   * splitText on range
-   */
-
-
-  splitText() {
-    const isSameContainer = this.sc === this.ec;
-    const boundaryPoints = this.getPoints();
-
-    if (dom.isText(this.ec) && !dom.isEdgePoint(this.getEndPoint())) {
-      this.ec.splitText(this.eo);
-    }
-
-    if (dom.isText(this.sc) && !dom.isEdgePoint(this.getStartPoint())) {
-      boundaryPoints.sc = this.sc.splitText(this.so);
-      boundaryPoints.so = 0;
-
-      if (isSameContainer) {
-        boundaryPoints.ec = boundaryPoints.sc;
-        boundaryPoints.eo = this.eo - this.so;
-      }
-    }
-
-    return new range_WrappedRange(boundaryPoints.sc, boundaryPoints.so, boundaryPoints.ec, boundaryPoints.eo);
-  }
-  /**
-   * delete contents on range
-   * @return {WrappedRange}
-   */
-
-
-  deleteContents() {
-    if (this.isCollapsed()) {
-      return this;
-    }
-
-    const rng = this.splitText();
-    const nodes = rng.nodes(null, {
-      fullyContains: true
-    }); // find new cursor point
-
-    const point = dom.prevPointUntil(rng.getStartPoint(), function (point) {
-      return !lists.contains(nodes, point.node);
-    });
-    const emptyParents = [];
-    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(nodes, function (idx, node) {
-      // find empty parents
-      const parent = node.parentNode;
-
-      if (point.node !== parent && dom.nodeLength(parent) === 1) {
-        emptyParents.push(parent);
-      }
-
-      dom.remove(node, false);
-    }); // remove empty parents
-
-    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(emptyParents, function (idx, node) {
-      dom.remove(node, false);
-    });
-    return new range_WrappedRange(point.node, point.offset, point.node, point.offset).normalize();
-  }
-  /**
-   * makeIsOn: return isOn(pred) function
-   */
-
-
-  makeIsOn(pred) {
-    return function () {
-      const ancestor = dom.ancestor(this.sc, pred);
-      return !!ancestor && ancestor === dom.ancestor(this.ec, pred);
-    };
-  }
-  /**
-   * @param {Function} pred
-   * @return {Boolean}
-   */
-
-
-  isLeftEdgeOf(pred) {
-    if (!dom.isLeftEdgePoint(this.getStartPoint())) {
-      return false;
-    }
-
-    const node = dom.ancestor(this.sc, pred);
-    return node && dom.isLeftEdgeOf(this.sc, node);
-  }
-  /**
-   * returns whether range was collapsed or not
-   */
-
-
-  isCollapsed() {
-    return this.sc === this.ec && this.so === this.eo;
-  }
-  /**
-   * wrap inline nodes which children of body with paragraph
-   *
-   * @return {WrappedRange}
-   */
-
-
-  wrapBodyInlineWithPara() {
-    if (dom.isBodyContainer(this.sc) && dom.isEmpty(this.sc)) {
-      this.sc.innerHTML = dom.emptyPara;
-      return new range_WrappedRange(this.sc.firstChild, 0, this.sc.firstChild, 0);
+        if (node && pred(node)) {
+          nodes.push(node);
+        }
+      }, true);
+      return lists.unique(nodes);
     }
     /**
-     * [workaround] firefox often create range on not visible point. so normalize here.
-     *  - firefox: |<p>text</p>|
-     *  - chrome: <p>|text|</p>
+     * returns commonAncestor of range
+     * @return {Element} - commonAncestor
      */
 
+  }, {
+    key: "commonAncestor",
+    value: function commonAncestor() {
+      return dom.commonAncestor(this.sc, this.ec);
+    }
+    /**
+     * returns expanded range by pred
+     *
+     * @param {Function} pred - predicate function
+     * @return {WrappedRange}
+     */
 
-    const rng = this.normalize();
+  }, {
+    key: "expand",
+    value: function expand(pred) {
+      var startAncestor = dom.ancestor(this.sc, pred);
+      var endAncestor = dom.ancestor(this.ec, pred);
 
-    if (dom.isParaInline(this.sc) || dom.isPara(this.sc)) {
-      return rng;
-    } // find inline top ancestor
-
-
-    let topAncestor;
-
-    if (dom.isInline(rng.sc)) {
-      const ancestors = dom.listAncestor(rng.sc, func.not(dom.isInline));
-      topAncestor = lists.last(ancestors);
-
-      if (!dom.isInline(topAncestor)) {
-        topAncestor = ancestors[ancestors.length - 2] || rng.sc.childNodes[rng.so];
+      if (!startAncestor && !endAncestor) {
+        return new WrappedRange(this.sc, this.so, this.ec, this.eo);
       }
-    } else {
-      topAncestor = rng.sc.childNodes[rng.so > 0 ? rng.so - 1 : 0];
+
+      var boundaryPoints = this.getPoints();
+
+      if (startAncestor) {
+        boundaryPoints.sc = startAncestor;
+        boundaryPoints.so = 0;
+      }
+
+      if (endAncestor) {
+        boundaryPoints.ec = endAncestor;
+        boundaryPoints.eo = dom.nodeLength(endAncestor);
+      }
+
+      return new WrappedRange(boundaryPoints.sc, boundaryPoints.so, boundaryPoints.ec, boundaryPoints.eo);
     }
+    /**
+     * @param {Boolean} isCollapseToStart
+     * @return {WrappedRange}
+     */
 
-    if (topAncestor) {
-      // siblings not in paragraph
-      let inlineSiblings = dom.listPrev(topAncestor, dom.isParaInline).reverse();
-      inlineSiblings = inlineSiblings.concat(dom.listNext(topAncestor.nextSibling, dom.isParaInline)); // wrap with paragraph
-
-      if (inlineSiblings.length) {
-        const para = dom.wrap(lists.head(inlineSiblings), 'p');
-        dom.appendChildNodes(para, lists.tail(inlineSiblings));
+  }, {
+    key: "collapse",
+    value: function collapse(isCollapseToStart) {
+      if (isCollapseToStart) {
+        return new WrappedRange(this.sc, this.so, this.sc, this.so);
+      } else {
+        return new WrappedRange(this.ec, this.eo, this.ec, this.eo);
       }
     }
+    /**
+     * splitText on range
+     */
 
-    return this.normalize();
-  }
-  /**
-   * insert node at current cursor
-   *
-   * @param {Node} node
-   * @return {Node}
-   */
+  }, {
+    key: "splitText",
+    value: function splitText() {
+      var isSameContainer = this.sc === this.ec;
+      var boundaryPoints = this.getPoints();
 
+      if (dom.isText(this.ec) && !dom.isEdgePoint(this.getEndPoint())) {
+        this.ec.splitText(this.eo);
+      }
 
-  insertNode(node) {
-    let rng = this;
+      if (dom.isText(this.sc) && !dom.isEdgePoint(this.getStartPoint())) {
+        boundaryPoints.sc = this.sc.splitText(this.so);
+        boundaryPoints.so = 0;
 
-    if (dom.isText(node) || dom.isInline(node)) {
-      rng = this.wrapBodyInlineWithPara().deleteContents();
+        if (isSameContainer) {
+          boundaryPoints.ec = boundaryPoints.sc;
+          boundaryPoints.eo = this.eo - this.so;
+        }
+      }
+
+      return new WrappedRange(boundaryPoints.sc, boundaryPoints.so, boundaryPoints.ec, boundaryPoints.eo);
     }
+    /**
+     * delete contents on range
+     * @return {WrappedRange}
+     */
 
-    const info = dom.splitPoint(rng.getStartPoint(), dom.isInline(node));
+  }, {
+    key: "deleteContents",
+    value: function deleteContents() {
+      if (this.isCollapsed()) {
+        return this;
+      }
 
-    if (info.rightNode) {
-      info.rightNode.parentNode.insertBefore(node, info.rightNode);
-    } else {
-      info.container.appendChild(node);
+      var rng = this.splitText();
+      var nodes = rng.nodes(null, {
+        fullyContains: true
+      }); // find new cursor point
+
+      var point = dom.prevPointUntil(rng.getStartPoint(), function (point) {
+        return !lists.contains(nodes, point.node);
+      });
+      var emptyParents = [];
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(nodes, function (idx, node) {
+        // find empty parents
+        var parent = node.parentNode;
+
+        if (point.node !== parent && dom.nodeLength(parent) === 1) {
+          emptyParents.push(parent);
+        }
+
+        dom.remove(node, false);
+      }); // remove empty parents
+
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(emptyParents, function (idx, node) {
+        dom.remove(node, false);
+      });
+      return new WrappedRange(point.node, point.offset, point.node, point.offset).normalize();
     }
+    /**
+     * makeIsOn: return isOn(pred) function
+     */
 
-    return node;
-  }
-  /**
-   * insert html at current cursor
-   */
-
-
-  pasteHTML(markup) {
-    markup = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.trim(markup);
-    const contentsContainer = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div></div>').html(markup)[0];
-    let childNodes = lists.from(contentsContainer.childNodes); // const rng = this.wrapBodyInlineWithPara().deleteContents();
-
-    const rng = this;
-
-    if (rng.so >= 0) {
-      childNodes = childNodes.reverse();
+  }, {
+    key: "makeIsOn",
+    value: function makeIsOn(pred) {
+      return function () {
+        var ancestor = dom.ancestor(this.sc, pred);
+        return !!ancestor && ancestor === dom.ancestor(this.ec, pred);
+      };
     }
+    /**
+     * @param {Function} pred
+     * @return {Boolean}
+     */
 
-    childNodes = childNodes.map(function (childNode) {
-      return rng.insertNode(childNode);
-    });
+  }, {
+    key: "isLeftEdgeOf",
+    value: function isLeftEdgeOf(pred) {
+      if (!dom.isLeftEdgePoint(this.getStartPoint())) {
+        return false;
+      }
 
-    if (rng.so > 0) {
-      childNodes = childNodes.reverse();
+      var node = dom.ancestor(this.sc, pred);
+      return node && dom.isLeftEdgeOf(this.sc, node);
     }
+    /**
+     * returns whether range was collapsed or not
+     */
 
-    return childNodes;
-  }
-  /**
-   * returns text in range
-   *
-   * @return {String}
-   */
-
-
-  toString() {
-    const nativeRng = this.nativeRange();
-    return env.isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
-  }
-  /**
-   * returns range for word before cursor
-   *
-   * @param {Boolean} [findAfter] - find after cursor, default: false
-   * @return {WrappedRange}
-   */
-
-
-  getWordRange(findAfter) {
-    let endPoint = this.getEndPoint();
-
-    if (!dom.isCharPoint(endPoint)) {
-      return this;
+  }, {
+    key: "isCollapsed",
+    value: function isCollapsed() {
+      return this.sc === this.ec && this.so === this.eo;
     }
+    /**
+     * wrap inline nodes which children of body with paragraph
+     *
+     * @return {WrappedRange}
+     */
 
-    const startPoint = dom.prevPointUntil(endPoint, function (point) {
-      return !dom.isCharPoint(point);
-    });
+  }, {
+    key: "wrapBodyInlineWithPara",
+    value: function wrapBodyInlineWithPara() {
+      if (dom.isBodyContainer(this.sc) && dom.isEmpty(this.sc)) {
+        this.sc.innerHTML = dom.emptyPara;
+        return new WrappedRange(this.sc.firstChild, 0, this.sc.firstChild, 0);
+      }
+      /**
+       * [workaround] firefox often create range on not visible point. so normalize here.
+       *  - firefox: |<p>text</p>|
+       *  - chrome: <p>|text|</p>
+       */
 
-    if (findAfter) {
-      endPoint = dom.nextPointUntil(endPoint, function (point) {
+
+      var rng = this.normalize();
+
+      if (dom.isParaInline(this.sc) || dom.isPara(this.sc)) {
+        return rng;
+      } // find inline top ancestor
+
+
+      var topAncestor;
+
+      if (dom.isInline(rng.sc)) {
+        var ancestors = dom.listAncestor(rng.sc, func.not(dom.isInline));
+        topAncestor = lists.last(ancestors);
+
+        if (!dom.isInline(topAncestor)) {
+          topAncestor = ancestors[ancestors.length - 2] || rng.sc.childNodes[rng.so];
+        }
+      } else {
+        topAncestor = rng.sc.childNodes[rng.so > 0 ? rng.so - 1 : 0];
+      }
+
+      if (topAncestor) {
+        // siblings not in paragraph
+        var inlineSiblings = dom.listPrev(topAncestor, dom.isParaInline).reverse();
+        inlineSiblings = inlineSiblings.concat(dom.listNext(topAncestor.nextSibling, dom.isParaInline)); // wrap with paragraph
+
+        if (inlineSiblings.length) {
+          var para = dom.wrap(lists.head(inlineSiblings), 'p');
+          dom.appendChildNodes(para, lists.tail(inlineSiblings));
+        }
+      }
+
+      return this.normalize();
+    }
+    /**
+     * insert node at current cursor
+     *
+     * @param {Node} node
+     * @return {Node}
+     */
+
+  }, {
+    key: "insertNode",
+    value: function insertNode(node) {
+      var rng = this;
+
+      if (dom.isText(node) || dom.isInline(node)) {
+        rng = this.wrapBodyInlineWithPara().deleteContents();
+      }
+
+      var info = dom.splitPoint(rng.getStartPoint(), dom.isInline(node));
+
+      if (info.rightNode) {
+        info.rightNode.parentNode.insertBefore(node, info.rightNode);
+      } else {
+        info.container.appendChild(node);
+      }
+
+      return node;
+    }
+    /**
+     * insert html at current cursor
+     */
+
+  }, {
+    key: "pasteHTML",
+    value: function pasteHTML(markup) {
+      markup = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.trim(markup);
+      var contentsContainer = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div></div>').html(markup)[0];
+      var childNodes = lists.from(contentsContainer.childNodes); // const rng = this.wrapBodyInlineWithPara().deleteContents();
+
+      var rng = this;
+
+      if (rng.so >= 0) {
+        childNodes = childNodes.reverse();
+      }
+
+      childNodes = childNodes.map(function (childNode) {
+        return rng.insertNode(childNode);
+      });
+
+      if (rng.so > 0) {
+        childNodes = childNodes.reverse();
+      }
+
+      return childNodes;
+    }
+    /**
+     * returns text in range
+     *
+     * @return {String}
+     */
+
+  }, {
+    key: "toString",
+    value: function toString() {
+      var nativeRng = this.nativeRange();
+      return env.isW3CRangeSupport ? nativeRng.toString() : nativeRng.text;
+    }
+    /**
+     * returns range for word before cursor
+     *
+     * @param {Boolean} [findAfter] - find after cursor, default: false
+     * @return {WrappedRange}
+     */
+
+  }, {
+    key: "getWordRange",
+    value: function getWordRange(findAfter) {
+      var endPoint = this.getEndPoint();
+
+      if (!dom.isCharPoint(endPoint)) {
+        return this;
+      }
+
+      var startPoint = dom.prevPointUntil(endPoint, function (point) {
         return !dom.isCharPoint(point);
       });
-    }
 
-    return new range_WrappedRange(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
-  }
-  /**
-   * returns range for words before cursor
-   *
-   * @param {Boolean} [findAfter] - find after cursor, default: false
-   * @return {WrappedRange}
-   */
-
-
-  getWordsRange(findAfter) {
-    var endPoint = this.getEndPoint();
-
-    var isNotTextPoint = function (point) {
-      return !dom.isCharPoint(point) && !dom.isSpacePoint(point);
-    };
-
-    if (isNotTextPoint(endPoint)) {
-      return this;
-    }
-
-    var startPoint = dom.prevPointUntil(endPoint, isNotTextPoint);
-
-    if (findAfter) {
-      endPoint = dom.nextPointUntil(endPoint, isNotTextPoint);
-    }
-
-    return new range_WrappedRange(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
-  }
-
-  /**
-   * returns range for words before cursor that match with a Regex
-   *
-   * example:
-   *  range: 'hi @Peter Pan'
-   *  regex: '/@[a-z ]+/i'
-   *  return range: '@Peter Pan'
-   *
-   * @param {RegExp} [regex]
-   * @return {WrappedRange|null}
-   */
-  getWordsMatchRange(regex) {
-    var endPoint = this.getEndPoint();
-    var startPoint = dom.prevPointUntil(endPoint, function (point) {
-      if (!dom.isCharPoint(point) && !dom.isSpacePoint(point)) {
-        return true;
+      if (findAfter) {
+        endPoint = dom.nextPointUntil(endPoint, function (point) {
+          return !dom.isCharPoint(point);
+        });
       }
 
-      var rng = new range_WrappedRange(point.node, point.offset, endPoint.node, endPoint.offset);
-      var result = regex.exec(rng.toString());
-      return result && result.index === 0;
-    });
-    var rng = new range_WrappedRange(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
-    var text = rng.toString();
-    var result = regex.exec(text);
-
-    if (result && result[0].length === text.length) {
-      return rng;
-    } else {
-      return null;
+      return new WrappedRange(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
     }
-  }
+    /**
+     * returns range for words before cursor
+     *
+     * @param {Boolean} [findAfter] - find after cursor, default: false
+     * @return {WrappedRange}
+     */
 
-  /**
-   * create offsetPath bookmark
-   *
-   * @param {Node} editable
-   */
-  bookmark(editable) {
-    return {
-      s: {
-        path: dom.makeOffsetPath(editable, this.sc),
-        offset: this.so
-      },
-      e: {
-        path: dom.makeOffsetPath(editable, this.ec),
-        offset: this.eo
+  }, {
+    key: "getWordsRange",
+    value: function getWordsRange(findAfter) {
+      var endPoint = this.getEndPoint();
+
+      var isNotTextPoint = function isNotTextPoint(point) {
+        return !dom.isCharPoint(point) && !dom.isSpacePoint(point);
+      };
+
+      if (isNotTextPoint(endPoint)) {
+        return this;
       }
-    };
-  }
-  /**
-   * create offsetPath bookmark base on paragraph
-   *
-   * @param {Node[]} paras
-   */
 
+      var startPoint = dom.prevPointUntil(endPoint, isNotTextPoint);
 
-  paraBookmark(paras) {
-    return {
-      s: {
-        path: lists.tail(dom.makeOffsetPath(lists.head(paras), this.sc)),
-        offset: this.so
-      },
-      e: {
-        path: lists.tail(dom.makeOffsetPath(lists.last(paras), this.ec)),
-        offset: this.eo
+      if (findAfter) {
+        endPoint = dom.nextPointUntil(endPoint, isNotTextPoint);
       }
-    };
-  }
-  /**
-   * getClientRects
-   * @return {Rect[]}
-   */
 
+      return new WrappedRange(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
+    }
+    /**
+     * returns range for words before cursor that match with a Regex
+     *
+     * example:
+     *  range: 'hi @Peter Pan'
+     *  regex: '/@[a-z ]+/i'
+     *  return range: '@Peter Pan'
+     *
+     * @param {RegExp} [regex]
+     * @return {WrappedRange|null}
+     */
 
-  getClientRects() {
-    const nativeRng = this.nativeRange();
-    return nativeRng.getClientRects();
-  }
+  }, {
+    key: "getWordsMatchRange",
+    value: function getWordsMatchRange(regex) {
+      var endPoint = this.getEndPoint();
+      var startPoint = dom.prevPointUntil(endPoint, function (point) {
+        if (!dom.isCharPoint(point) && !dom.isSpacePoint(point)) {
+          return true;
+        }
 
-}
+        var rng = new WrappedRange(point.node, point.offset, endPoint.node, endPoint.offset);
+        var result = regex.exec(rng.toString());
+        return result && result.index === 0;
+      });
+      var rng = new WrappedRange(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset);
+      var text = rng.toString();
+      var result = regex.exec(text);
+
+      if (result && result[0].length === text.length) {
+        return rng;
+      } else {
+        return null;
+      }
+    }
+    /**
+     * create offsetPath bookmark
+     *
+     * @param {Node} editable
+     */
+
+  }, {
+    key: "bookmark",
+    value: function bookmark(editable) {
+      return {
+        s: {
+          path: dom.makeOffsetPath(editable, this.sc),
+          offset: this.so
+        },
+        e: {
+          path: dom.makeOffsetPath(editable, this.ec),
+          offset: this.eo
+        }
+      };
+    }
+    /**
+     * create offsetPath bookmark base on paragraph
+     *
+     * @param {Node[]} paras
+     */
+
+  }, {
+    key: "paraBookmark",
+    value: function paraBookmark(paras) {
+      return {
+        s: {
+          path: lists.tail(dom.makeOffsetPath(lists.head(paras), this.sc)),
+          offset: this.so
+        },
+        e: {
+          path: lists.tail(dom.makeOffsetPath(lists.last(paras), this.ec)),
+          offset: this.eo
+        }
+      };
+    }
+    /**
+     * getClientRects
+     * @return {Rect[]}
+     */
+
+  }, {
+    key: "getClientRects",
+    value: function getClientRects() {
+      var nativeRng = this.nativeRange();
+      return nativeRng.getClientRects();
+    }
+  }]);
+
+  return WrappedRange;
+}();
 /**
  * Data structure
  *  * BoundaryPoint: a point of dom tree
@@ -3162,7 +3263,7 @@ class range_WrappedRange {
  */
 
 
-/* harmony default export */ var core_range = ({
+/* harmony default export */ var range = ({
   /**
    * create Range Object From arguments or Browser Selection
    *
@@ -3172,7 +3273,7 @@ class range_WrappedRange {
    * @param {Number} eo - end offset
    * @return {WrappedRange}
    */
-  create: function (sc, so, ec, eo) {
+  create: function create(sc, so, ec, eo) {
     if (arguments.length === 4) {
       return new range_WrappedRange(sc, so, ec, eo);
     } else if (arguments.length === 2) {
@@ -3181,10 +3282,10 @@ class range_WrappedRange {
       eo = so;
       return new range_WrappedRange(sc, so, ec, eo);
     } else {
-      let wrappedRange = this.createFromSelection();
+      var wrappedRange = this.createFromSelection();
 
       if (!wrappedRange && arguments.length === 1) {
-        let bodyElement = arguments[0];
+        var bodyElement = arguments[0];
 
         if (dom.isEditable(bodyElement)) {
           bodyElement = bodyElement.lastChild;
@@ -3196,15 +3297,16 @@ class range_WrappedRange {
       return wrappedRange;
     }
   },
-  createFromBodyElement: function (bodyElement, isCollapseToStart = false) {
+  createFromBodyElement: function createFromBodyElement(bodyElement) {
+    var isCollapseToStart = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     var wrappedRange = this.createFromNode(bodyElement);
     return wrappedRange.collapse(isCollapseToStart);
   },
-  createFromSelection: function () {
-    let sc, so, ec, eo;
+  createFromSelection: function createFromSelection() {
+    var sc, so, ec, eo;
 
     if (env.isW3CRangeSupport) {
-      const selection = document.getSelection();
+      var selection = document.getSelection();
 
       if (!selection || selection.rangeCount === 0) {
         return null;
@@ -3214,20 +3316,20 @@ class range_WrappedRange {
         return null;
       }
 
-      const nativeRng = selection.getRangeAt(0);
+      var nativeRng = selection.getRangeAt(0);
       sc = nativeRng.startContainer;
       so = nativeRng.startOffset;
       ec = nativeRng.endContainer;
       eo = nativeRng.endOffset;
     } else {
       // IE8: TextRange
-      const textRange = document.selection.createRange();
-      const textRangeEnd = textRange.duplicate();
+      var textRange = document.selection.createRange();
+      var textRangeEnd = textRange.duplicate();
       textRangeEnd.collapse(false);
-      const textRangeStart = textRange;
+      var textRangeStart = textRange;
       textRangeStart.collapse(true);
-      let startPoint = textRangeToPoint(textRangeStart, true);
-      let endPoint = textRangeToPoint(textRangeEnd, false); // same visible point case: range was collapsed.
+      var startPoint = textRangeToPoint(textRangeStart, true);
+      var endPoint = textRangeToPoint(textRangeEnd, false); // same visible point case: range was collapsed.
 
       if (dom.isText(startPoint.node) && dom.isLeftEdgePoint(startPoint) && dom.isTextNode(endPoint.node) && dom.isRightEdgePoint(endPoint) && endPoint.node.nextSibling === startPoint.node) {
         startPoint = endPoint;
@@ -3250,11 +3352,11 @@ class range_WrappedRange {
    * @param {Node} node
    * @return {WrappedRange}
    */
-  createFromNode: function (node) {
-    let sc = node;
-    let so = 0;
-    let ec = node;
-    let eo = dom.nodeLength(ec); // browsers can't target a picture or void node
+  createFromNode: function createFromNode(node) {
+    var sc = node;
+    var so = 0;
+    var ec = node;
+    var eo = dom.nodeLength(ec); // browsers can't target a picture or void node
 
     if (dom.isVoid(sc)) {
       so = dom.listPrev(sc).length - 1;
@@ -3278,7 +3380,7 @@ class range_WrappedRange {
    * @param {Node} node
    * @return {WrappedRange}
    */
-  createFromNodeBefore: function (node) {
+  createFromNodeBefore: function createFromNodeBefore(node) {
     return this.createFromNode(node).collapse(true);
   },
 
@@ -3288,7 +3390,7 @@ class range_WrappedRange {
    * @param {Node} node
    * @return {WrappedRange}
    */
-  createFromNodeAfter: function (node) {
+  createFromNodeAfter: function createFromNodeAfter(node) {
     return this.createFromNode(node).collapse();
   },
 
@@ -3301,11 +3403,11 @@ class range_WrappedRange {
    * @param {Object} bookmark
    * @return {WrappedRange}
    */
-  createFromBookmark: function (editable, bookmark) {
-    const sc = dom.fromOffsetPath(editable, bookmark.s.path);
-    const so = bookmark.s.offset;
-    const ec = dom.fromOffsetPath(editable, bookmark.e.path);
-    const eo = bookmark.e.offset;
+  createFromBookmark: function createFromBookmark(editable, bookmark) {
+    var sc = dom.fromOffsetPath(editable, bookmark.s.path);
+    var so = bookmark.s.offset;
+    var ec = dom.fromOffsetPath(editable, bookmark.e.path);
+    var eo = bookmark.e.offset;
     return new range_WrappedRange(sc, so, ec, eo);
   },
 
@@ -3318,18 +3420,18 @@ class range_WrappedRange {
    * @param {Node[]} paras
    * @return {WrappedRange}
    */
-  createFromParaBookmark: function (bookmark, paras) {
-    const so = bookmark.s.offset;
-    const eo = bookmark.e.offset;
-    const sc = dom.fromOffsetPath(lists.head(paras), bookmark.s.path);
-    const ec = dom.fromOffsetPath(lists.last(paras), bookmark.e.path);
+  createFromParaBookmark: function createFromParaBookmark(bookmark, paras) {
+    var so = bookmark.s.offset;
+    var eo = bookmark.e.offset;
+    var sc = dom.fromOffsetPath(lists.head(paras), bookmark.s.path);
+    var ec = dom.fromOffsetPath(lists.last(paras), bookmark.e.path);
     return new range_WrappedRange(sc, so, ec, eo);
   }
 });
 // CONCATENATED MODULE: ./src/js/base/core/key.js
 
 
-const KEY_MAP = {
+var KEY_MAP = {
   'BACKSPACE': 8,
   'TAB': 9,
   'ENTER': 13,
@@ -3389,7 +3491,7 @@ const KEY_MAP = {
    * @param {Number} keyCode
    * @return {Boolean}
    */
-  isEdit: keyCode => {
+  isEdit: function isEdit(keyCode) {
     return lists.contains([KEY_MAP.BACKSPACE, KEY_MAP.TAB, KEY_MAP.ENTER, KEY_MAP.SPACE, KEY_MAP.DELETE], keyCode);
   },
 
@@ -3399,7 +3501,7 @@ const KEY_MAP = {
    * @param {Number} keyCode
    * @return {Boolean}
    */
-  isMove: keyCode => {
+  isMove: function isMove(keyCode) {
     return lists.contains([KEY_MAP.LEFT, KEY_MAP.UP, KEY_MAP.RIGHT, KEY_MAP.DOWN], keyCode);
   },
 
@@ -3409,7 +3511,7 @@ const KEY_MAP = {
    * @param {Number} keyCode
    * @return {Boolean}
    */
-  isNavigation: keyCode => {
+  isNavigation: function isNavigation(keyCode) {
     return lists.contains([KEY_MAP.HOME, KEY_MAP.END, KEY_MAP.PAGEUP, KEY_MAP.PAGEDOWN], keyCode);
   },
 
@@ -3432,13 +3534,13 @@ const KEY_MAP = {
  */
 
 function readFileAsDataURL(file) {
-  return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(deferred => {
+  return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(function (deferred) {
     external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(new FileReader(), {
-      onload: e => {
-        const dataURL = e.target.result;
+      onload: function onload(e) {
+        var dataURL = e.target.result;
         deferred.resolve(dataURL);
       },
-      onerror: err => {
+      onerror: function onerror(err) {
         deferred.reject(err);
       }
     }).readAsDataURL(file);
@@ -3454,12 +3556,12 @@ function readFileAsDataURL(file) {
  */
 
 function createImage(url) {
-  return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(deferred => {
-    const $img = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<img>');
-    $img.one('load', () => {
+  return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(function (deferred) {
+    var $img = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<img>');
+    $img.one('load', function () {
       $img.off('error abort');
       deferred.resolve($img);
-    }).one('error abort', () => {
+    }).one('error abort', function () {
       $img.off('load').detach();
       deferred.reject($img);
     }).css({
@@ -3468,575 +3570,683 @@ function createImage(url) {
   }).promise();
 }
 // CONCATENATED MODULE: ./src/js/base/editing/History.js
+function History_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-class History_History {
-  constructor($editable) {
+function History_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function History_createClass(Constructor, protoProps, staticProps) { if (protoProps) History_defineProperties(Constructor.prototype, protoProps); if (staticProps) History_defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var History_History =
+/*#__PURE__*/
+function () {
+  function History(context) {
+    History_classCallCheck(this, History);
+
     this.stack = [];
     this.stackOffset = -1;
-    this.$editable = $editable;
-    this.editable = $editable[0];
+    this.context = context;
+    this.$editable = context.layoutInfo.editable;
+    this.editable = this.$editable[0];
   }
 
-  makeSnapshot() {
-    const rng = core_range.create(this.editable);
-    const emptyBookmark = {
-      s: {
-        path: [],
-        offset: 0
-      },
-      e: {
-        path: [],
-        offset: 0
+  History_createClass(History, [{
+    key: "makeSnapshot",
+    value: function makeSnapshot() {
+      var rng = range.create(this.editable);
+      var emptyBookmark = {
+        s: {
+          path: [],
+          offset: 0
+        },
+        e: {
+          path: [],
+          offset: 0
+        }
+      };
+      return {
+        contents: this.$editable.html(),
+        bookmark: rng && rng.isOnEditable() ? rng.bookmark(this.editable) : emptyBookmark
+      };
+    }
+  }, {
+    key: "applySnapshot",
+    value: function applySnapshot(snapshot) {
+      if (snapshot.contents !== null) {
+        this.$editable.html(snapshot.contents);
       }
-    };
-    return {
-      contents: this.$editable.html(),
-      bookmark: rng && rng.isOnEditable() ? rng.bookmark(this.editable) : emptyBookmark
-    };
-  }
 
-  applySnapshot(snapshot) {
-    if (snapshot.contents !== null) {
-      this.$editable.html(snapshot.contents);
+      if (snapshot.bookmark !== null) {
+        range.createFromBookmark(this.editable, snapshot.bookmark).select();
+      }
     }
+    /**
+    * @method rewind
+    * Rewinds the history stack back to the first snapshot taken.
+    * Leaves the stack intact, so that "Redo" can still be used.
+    */
 
-    if (snapshot.bookmark !== null) {
-      core_range.createFromBookmark(this.editable, snapshot.bookmark).select();
-    }
-  }
-  /**
-  * @method rewind
-  * Rewinds the history stack back to the first snapshot taken.
-  * Leaves the stack intact, so that "Redo" can still be used.
-  */
-
-
-  rewind() {
-    // Create snap shot if not yet recorded
-    if (this.$editable.html() !== this.stack[this.stackOffset].contents) {
-      this.recordUndo();
-    } // Return to the first available snapshot.
+  }, {
+    key: "rewind",
+    value: function rewind() {
+      // Create snap shot if not yet recorded
+      if (this.$editable.html() !== this.stack[this.stackOffset].contents) {
+        this.recordUndo();
+      } // Return to the first available snapshot.
 
 
-    this.stackOffset = 0; // Apply that snapshot.
+      this.stackOffset = 0; // Apply that snapshot.
 
-    this.applySnapshot(this.stack[this.stackOffset]);
-  }
-  /**
-  *  @method commit
-  *  Resets history stack, but keeps current editor's content.
-  */
-
-
-  commit() {
-    // Clear the stack.
-    this.stack = []; // Restore stackOffset to its original value.
-
-    this.stackOffset = -1; // Record our first snapshot (of nothing).
-
-    this.recordUndo();
-  }
-  /**
-  * @method reset
-  * Resets the history stack completely; reverting to an empty editor.
-  */
-
-
-  reset() {
-    // Clear the stack.
-    this.stack = []; // Restore stackOffset to its original value.
-
-    this.stackOffset = -1; // Clear the editable area.
-
-    this.$editable.html(''); // Record our first snapshot (of nothing).
-
-    this.recordUndo();
-  }
-  /**
-   * undo
-   */
-
-
-  undo() {
-    // Create snap shot if not yet recorded
-    if (this.$editable.html() !== this.stack[this.stackOffset].contents) {
-      this.recordUndo();
-    }
-
-    if (this.stackOffset > 0) {
-      this.stackOffset--;
       this.applySnapshot(this.stack[this.stackOffset]);
     }
-  }
-  /**
-   * redo
-   */
+    /**
+    *  @method commit
+    *  Resets history stack, but keeps current editor's content.
+    */
 
+  }, {
+    key: "commit",
+    value: function commit() {
+      // Clear the stack.
+      this.stack = []; // Restore stackOffset to its original value.
 
-  redo() {
-    if (this.stack.length - 1 > this.stackOffset) {
-      this.stackOffset++;
-      this.applySnapshot(this.stack[this.stackOffset]);
+      this.stackOffset = -1; // Record our first snapshot (of nothing).
+
+      this.recordUndo();
     }
-  }
-  /**
-   * recorded undo
-   */
+    /**
+    * @method reset
+    * Resets the history stack completely; reverting to an empty editor.
+    */
+
+  }, {
+    key: "reset",
+    value: function reset() {
+      // Clear the stack.
+      this.stack = []; // Restore stackOffset to its original value.
+
+      this.stackOffset = -1; // Clear the editable area.
+
+      this.$editable.html(''); // Record our first snapshot (of nothing).
+
+      this.recordUndo();
+    }
+    /**
+     * undo
+     */
+
+  }, {
+    key: "undo",
+    value: function undo() {
+      // Create snap shot if not yet recorded
+      if (this.$editable.html() !== this.stack[this.stackOffset].contents) {
+        this.recordUndo();
+      }
+
+      if (this.stackOffset > 0) {
+        this.stackOffset--;
+        this.applySnapshot(this.stack[this.stackOffset]);
+      }
+    }
+    /**
+     * redo
+     */
+
+  }, {
+    key: "redo",
+    value: function redo() {
+      if (this.stack.length - 1 > this.stackOffset) {
+        this.stackOffset++;
+        this.applySnapshot(this.stack[this.stackOffset]);
+      }
+    }
+    /**
+     * recorded undo
+     */
+
+  }, {
+    key: "recordUndo",
+    value: function recordUndo() {
+      this.stackOffset++; // Wash out stack after stackOffset
+
+      if (this.stack.length > this.stackOffset) {
+        this.stack = this.stack.slice(0, this.stackOffset);
+      } // Create new snapshot and push it to the end
 
 
-  recordUndo() {
-    this.stackOffset++; // Wash out stack after stackOffset
+      this.stack.push(this.makeSnapshot()); // If the stack size reachs to the limit, then slice it
 
-    if (this.stack.length > this.stackOffset) {
-      this.stack = this.stack.slice(0, this.stackOffset);
-    } // Create new snapshot and push it to the end
+      if (this.stack.length > this.context.options.historyLimit) {
+        this.stack.shift();
+        this.stackOffset -= 1;
+      }
+    }
+  }]);
+
+  return History;
+}();
 
 
-    this.stack.push(this.makeSnapshot());
-  }
-
-}
 // CONCATENATED MODULE: ./src/js/base/editing/Style.js
+function Style_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function Style_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Style_createClass(Constructor, protoProps, staticProps) { if (protoProps) Style_defineProperties(Constructor.prototype, protoProps); if (staticProps) Style_defineProperties(Constructor, staticProps); return Constructor; }
 
 
 
 
 
-class Style_Style {
-  /**
-   * @method jQueryCSS
-   *
-   * [workaround] for old jQuery
-   * passing an array of style properties to .css()
-   * will result in an object of property-value pairs.
-   * (compability with version < 1.9)
-   *
-   * @private
-   * @param  {jQuery} $obj
-   * @param  {Array} propertyNames - An array of one or more CSS properties.
-   * @return {Object}
-   */
-  jQueryCSS($obj, propertyNames) {
-    if (env.jqueryVersion < 1.9) {
-      const result = {};
-      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(propertyNames, (idx, propertyName) => {
-        result[propertyName] = $obj.css(propertyName);
-      });
-      return result;
-    }
 
-    return $obj.css(propertyNames);
+
+var Style_Style =
+/*#__PURE__*/
+function () {
+  function Style() {
+    Style_classCallCheck(this, Style);
   }
-  /**
-   * returns style object from node
-   *
-   * @param {jQuery} $node
-   * @return {Object}
-   */
 
+  Style_createClass(Style, [{
+    key: "jQueryCSS",
 
-  fromNode($node) {
-    const properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
-    const styleInfo = this.jQueryCSS($node, properties) || {};
-    const fontSize = $node[0].style.fontSize || styleInfo['font-size'];
-    styleInfo['font-size'] = parseInt(fontSize, 10);
-    styleInfo['font-size-unit'] = fontSize.match(/[a-z%]+$/);
-    return styleInfo;
-  }
-  /**
-   * paragraph level style
-   *
-   * @param {WrappedRange} rng
-   * @param {Object} styleInfo
-   */
-
-
-  stylePara(rng, styleInfo) {
-    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(rng.nodes(dom.isPara, {
-      includeAncestor: true
-    }), (idx, para) => {
-      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(para).css(styleInfo);
-    });
-  }
-  /**
-   * insert and returns styleNodes on range.
-   *
-   * @param {WrappedRange} rng
-   * @param {Object} [options] - options for styleNodes
-   * @param {String} [options.nodeName] - default: `SPAN`
-   * @param {Boolean} [options.expandClosestSibling] - default: `false`
-   * @param {Boolean} [options.onlyPartialContains] - default: `false`
-   * @return {Node[]}
-   */
-
-
-  styleNodes(rng, options) {
-    rng = rng.splitText();
-    const nodeName = options && options.nodeName || 'SPAN';
-    const expandClosestSibling = !!(options && options.expandClosestSibling);
-    const onlyPartialContains = !!(options && options.onlyPartialContains);
-
-    if (rng.isCollapsed()) {
-      return [rng.insertNode(dom.create(nodeName))];
-    }
-
-    let pred = dom.makePredByNodeName(nodeName);
-    const nodes = rng.nodes(dom.isText, {
-      fullyContains: true
-    }).map(text => {
-      return dom.singleChildAncestor(text, pred) || dom.wrap(text, nodeName);
-    });
-
-    if (expandClosestSibling) {
-      if (onlyPartialContains) {
-        const nodesInRange = rng.nodes(); // compose with partial contains predication
-
-        pred = func.and(pred, node => {
-          return lists.contains(nodesInRange, node);
+    /**
+     * @method jQueryCSS
+     *
+     * [workaround] for old jQuery
+     * passing an array of style properties to .css()
+     * will result in an object of property-value pairs.
+     * (compability with version < 1.9)
+     *
+     * @private
+     * @param  {jQuery} $obj
+     * @param  {Array} propertyNames - An array of one or more CSS properties.
+     * @return {Object}
+     */
+    value: function jQueryCSS($obj, propertyNames) {
+      if (env.jqueryVersion < 1.9) {
+        var result = {};
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(propertyNames, function (idx, propertyName) {
+          result[propertyName] = $obj.css(propertyName);
         });
+        return result;
       }
 
-      return nodes.map(node => {
-        const siblings = dom.withClosestSiblings(node, pred);
-        const head = lists.head(siblings);
-        const tails = lists.tail(siblings);
-        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(tails, (idx, elem) => {
-          dom.appendChildNodes(head, elem.childNodes);
-          dom.remove(elem);
-        });
-        return lists.head(siblings);
-      });
-    } else {
-      return nodes;
+      return $obj.css(propertyNames);
     }
-  }
-  /**
-   * get current style on cursor
-   *
-   * @param {WrappedRange} rng
-   * @return {Object} - object contains style properties.
-   */
+    /**
+     * returns style object from node
+     *
+     * @param {jQuery} $node
+     * @return {Object}
+     */
 
-
-  current(rng) {
-    const $cont = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(!dom.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
-    let styleInfo = this.fromNode($cont); // document.queryCommandState for toggle state
-    // [workaround] prevent Firefox nsresult: "0x80004005 (NS_ERROR_FAILURE)"
-
-    try {
-      styleInfo = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(styleInfo, {
-        'font-bold': document.queryCommandState('bold') ? 'bold' : 'normal',
-        'font-italic': document.queryCommandState('italic') ? 'italic' : 'normal',
-        'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
-        'font-subscript': document.queryCommandState('subscript') ? 'subscript' : 'normal',
-        'font-superscript': document.queryCommandState('superscript') ? 'superscript' : 'normal',
-        'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal',
-        'font-family': document.queryCommandValue('fontname') || styleInfo['font-family']
-      });
-    } catch (e) {} // list-style-type to list-style(unordered, ordered)
-
-
-    if (!rng.isOnList()) {
-      styleInfo['list-style'] = 'none';
-    } else {
-      const orderedTypes = ['circle', 'disc', 'disc-leading-zero', 'square'];
-      const isUnordered = orderedTypes.indexOf(styleInfo['list-style-type']) > -1;
-      styleInfo['list-style'] = isUnordered ? 'unordered' : 'ordered';
+  }, {
+    key: "fromNode",
+    value: function fromNode($node) {
+      var properties = ['font-family', 'font-size', 'text-align', 'list-style-type', 'line-height'];
+      var styleInfo = this.jQueryCSS($node, properties) || {};
+      var fontSize = $node[0].style.fontSize || styleInfo['font-size'];
+      styleInfo['font-size'] = parseInt(fontSize, 10);
+      styleInfo['font-size-unit'] = fontSize.match(/[a-z%]+$/);
+      return styleInfo;
     }
+    /**
+     * paragraph level style
+     *
+     * @param {WrappedRange} rng
+     * @param {Object} styleInfo
+     */
 
-    const para = dom.ancestor(rng.sc, dom.isPara);
-
-    if (para && para.style['line-height']) {
-      styleInfo['line-height'] = para.style.lineHeight;
-    } else {
-      const lineHeight = parseInt(styleInfo['line-height'], 10) / parseInt(styleInfo['font-size'], 10);
-      styleInfo['line-height'] = lineHeight.toFixed(1);
-    }
-
-    styleInfo.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);
-    styleInfo.ancestors = dom.listAncestor(rng.sc, dom.isEditable);
-    styleInfo.range = rng;
-    return styleInfo;
-  }
-
-}
-// CONCATENATED MODULE: ./src/js/base/editing/Bullet.js
-
-
-
-
-
-class Bullet_Bullet {
-  /**
-   * toggle ordered list
-   */
-  insertOrderedList(editable) {
-    this.toggleList('OL', editable);
-  }
-  /**
-   * toggle unordered list
-   */
-
-
-  insertUnorderedList(editable) {
-    this.toggleList('UL', editable);
-  }
-  /**
-   * indent
-   */
-
-
-  indent(editable) {
-    const rng = core_range.create(editable).wrapBodyInlineWithPara();
-    const paras = rng.nodes(dom.isPara, {
-      includeAncestor: true
-    });
-    const clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
-    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(clustereds, (idx, paras) => {
-      const head = lists.head(paras);
-
-      if (dom.isLi(head)) {
-        const previousList = this.findList(head.previousSibling);
-
-        if (previousList) {
-          paras.map(para => previousList.appendChild(para));
-        } else {
-          this.wrapList(paras, head.parentNode.nodeName);
-          paras.map(para => para.parentNode).map(para => this.appendToPrevious(para));
-        }
-      } else {
-        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(paras, (idx, para) => {
-          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(para).css('marginLeft', (idx, val) => {
-            return (parseInt(val, 10) || 0) + 25;
-          });
-        });
-      }
-    });
-    rng.select();
-  }
-  /**
-   * outdent
-   */
-
-
-  outdent(editable) {
-    const rng = core_range.create(editable).wrapBodyInlineWithPara();
-    const paras = rng.nodes(dom.isPara, {
-      includeAncestor: true
-    });
-    const clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
-    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(clustereds, (idx, paras) => {
-      const head = lists.head(paras);
-
-      if (dom.isLi(head)) {
-        this.releaseList([paras]);
-      } else {
-        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(paras, (idx, para) => {
-          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(para).css('marginLeft', (idx, val) => {
-            val = parseInt(val, 10) || 0;
-            return val > 25 ? val - 25 : '';
-          });
-        });
-      }
-    });
-    rng.select();
-  }
-  /**
-   * toggle list
-   *
-   * @param {String} listName - OL or UL
-   */
-
-
-  toggleList(listName, editable) {
-    const rng = core_range.create(editable).wrapBodyInlineWithPara();
-    let paras = rng.nodes(dom.isPara, {
-      includeAncestor: true
-    });
-    const bookmark = rng.paraBookmark(paras);
-    const clustereds = lists.clusterBy(paras, func.peq2('parentNode')); // paragraph to list
-
-    if (lists.find(paras, dom.isPurePara)) {
-      let wrappedParas = [];
-      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(clustereds, (idx, paras) => {
-        wrappedParas = wrappedParas.concat(this.wrapList(paras, listName));
-      });
-      paras = wrappedParas; // list to paragraph or change list style
-    } else {
-      const diffLists = rng.nodes(dom.isList, {
+  }, {
+    key: "stylePara",
+    value: function stylePara(rng, styleInfo) {
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(rng.nodes(dom.isPara, {
         includeAncestor: true
-      }).filter(listNode => {
-        return !external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.nodeName(listNode, listName);
+      }), function (idx, para) {
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(para).css(styleInfo);
+      });
+    }
+    /**
+     * insert and returns styleNodes on range.
+     *
+     * @param {WrappedRange} rng
+     * @param {Object} [options] - options for styleNodes
+     * @param {String} [options.nodeName] - default: `SPAN`
+     * @param {Boolean} [options.expandClosestSibling] - default: `false`
+     * @param {Boolean} [options.onlyPartialContains] - default: `false`
+     * @return {Node[]}
+     */
+
+  }, {
+    key: "styleNodes",
+    value: function styleNodes(rng, options) {
+      rng = rng.splitText();
+      var nodeName = options && options.nodeName || 'SPAN';
+      var expandClosestSibling = !!(options && options.expandClosestSibling);
+      var onlyPartialContains = !!(options && options.onlyPartialContains);
+
+      if (rng.isCollapsed()) {
+        return [rng.insertNode(dom.create(nodeName))];
+      }
+
+      var pred = dom.makePredByNodeName(nodeName);
+      var nodes = rng.nodes(dom.isText, {
+        fullyContains: true
+      }).map(function (text) {
+        return dom.singleChildAncestor(text, pred) || dom.wrap(text, nodeName);
       });
 
-      if (diffLists.length) {
-        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(diffLists, (idx, listNode) => {
-          dom.replace(listNode, listName);
-        });
-      } else {
-        paras = this.releaseList(clustereds, true);
-      }
-    }
+      if (expandClosestSibling) {
+        if (onlyPartialContains) {
+          var nodesInRange = rng.nodes(); // compose with partial contains predication
 
-    core_range.createFromParaBookmark(bookmark, paras).select();
-  }
-  /**
-   * @param {Node[]} paras
-   * @param {String} listName
-   * @return {Node[]}
-   */
-
-
-  wrapList(paras, listName) {
-    const head = lists.head(paras);
-    const last = lists.last(paras);
-    const prevList = dom.isList(head.previousSibling) && head.previousSibling;
-    const nextList = dom.isList(last.nextSibling) && last.nextSibling;
-    const listNode = prevList || dom.insertAfter(dom.create(listName || 'UL'), last); // P to LI
-
-    paras = paras.map(para => {
-      return dom.isPurePara(para) ? dom.replace(para, 'LI') : para;
-    }); // append to list(<ul>, <ol>)
-
-    dom.appendChildNodes(listNode, paras);
-
-    if (nextList) {
-      dom.appendChildNodes(listNode, lists.from(nextList.childNodes));
-      dom.remove(nextList);
-    }
-
-    return paras;
-  }
-  /**
-   * @method releaseList
-   *
-   * @param {Array[]} clustereds
-   * @param {Boolean} isEscapseToBody
-   * @return {Node[]}
-   */
-
-
-  releaseList(clustereds, isEscapseToBody) {
-    let releasedParas = [];
-    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(clustereds, (idx, paras) => {
-      const head = lists.head(paras);
-      const last = lists.last(paras);
-      const headList = isEscapseToBody ? dom.lastAncestor(head, dom.isList) : head.parentNode;
-      const parentItem = headList.parentNode;
-
-      if (headList.parentNode.nodeName === 'LI') {
-        paras.map(para => {
-          const newList = this.findNextSiblings(para);
-
-          if (parentItem.nextSibling) {
-            parentItem.parentNode.insertBefore(para, parentItem.nextSibling);
-          } else {
-            parentItem.parentNode.appendChild(para);
-          }
-
-          if (newList.length) {
-            this.wrapList(newList, headList.nodeName);
-            para.appendChild(newList[0].parentNode);
-          }
-        });
-
-        if (headList.children.length === 0) {
-          parentItem.removeChild(headList);
-        }
-
-        if (parentItem.childNodes.length === 0) {
-          parentItem.parentNode.removeChild(parentItem);
-        }
-      } else {
-        const lastList = headList.childNodes.length > 1 ? dom.splitTree(headList, {
-          node: last.parentNode,
-          offset: dom.position(last) + 1
-        }, {
-          isSkipPaddingBlankHTML: true
-        }) : null;
-        const middleList = dom.splitTree(headList, {
-          node: head.parentNode,
-          offset: dom.position(head)
-        }, {
-          isSkipPaddingBlankHTML: true
-        });
-        paras = isEscapseToBody ? dom.listDescendant(middleList, dom.isLi) : lists.from(middleList.childNodes).filter(dom.isLi); // LI to P
-
-        if (isEscapseToBody || !dom.isList(headList.parentNode)) {
-          paras = paras.map(para => {
-            return dom.replace(para, 'P');
+          pred = func.and(pred, function (node) {
+            return lists.contains(nodesInRange, node);
           });
         }
 
-        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(lists.from(paras).reverse(), (idx, para) => {
-          dom.insertAfter(para, headList);
-        }); // remove empty lists
+        return nodes.map(function (node) {
+          var siblings = dom.withClosestSiblings(node, pred);
+          var head = lists.head(siblings);
+          var tails = lists.tail(siblings);
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(tails, function (idx, elem) {
+            dom.appendChildNodes(head, elem.childNodes);
+            dom.remove(elem);
+          });
+          return lists.head(siblings);
+        });
+      } else {
+        return nodes;
+      }
+    }
+    /**
+     * get current style on cursor
+     *
+     * @param {WrappedRange} rng
+     * @return {Object} - object contains style properties.
+     */
 
-        const rootLists = lists.compact([headList, middleList, lastList]);
-        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(rootLists, (idx, rootList) => {
-          const listNodes = [rootList].concat(dom.listDescendant(rootList, dom.isList));
-          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(listNodes.reverse(), (idx, listNode) => {
-            if (!dom.nodeLength(listNode)) {
-              dom.remove(listNode, true);
+  }, {
+    key: "current",
+    value: function current(rng) {
+      var $cont = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(!dom.isElement(rng.sc) ? rng.sc.parentNode : rng.sc);
+      var styleInfo = this.fromNode($cont); // document.queryCommandState for toggle state
+      // [workaround] prevent Firefox nsresult: "0x80004005 (NS_ERROR_FAILURE)"
+
+      try {
+        styleInfo = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(styleInfo, {
+          'font-bold': document.queryCommandState('bold') ? 'bold' : 'normal',
+          'font-italic': document.queryCommandState('italic') ? 'italic' : 'normal',
+          'font-underline': document.queryCommandState('underline') ? 'underline' : 'normal',
+          'font-subscript': document.queryCommandState('subscript') ? 'subscript' : 'normal',
+          'font-superscript': document.queryCommandState('superscript') ? 'superscript' : 'normal',
+          'font-strikethrough': document.queryCommandState('strikethrough') ? 'strikethrough' : 'normal',
+          'font-family': document.queryCommandValue('fontname') || styleInfo['font-family']
+        });
+      } catch (e) {} // eslint-disable-next-line
+      // list-style-type to list-style(unordered, ordered)
+
+
+      if (!rng.isOnList()) {
+        styleInfo['list-style'] = 'none';
+      } else {
+        var orderedTypes = ['circle', 'disc', 'disc-leading-zero', 'square'];
+        var isUnordered = orderedTypes.indexOf(styleInfo['list-style-type']) > -1;
+        styleInfo['list-style'] = isUnordered ? 'unordered' : 'ordered';
+      }
+
+      var para = dom.ancestor(rng.sc, dom.isPara);
+
+      if (para && para.style['line-height']) {
+        styleInfo['line-height'] = para.style.lineHeight;
+      } else {
+        var lineHeight = parseInt(styleInfo['line-height'], 10) / parseInt(styleInfo['font-size'], 10);
+        styleInfo['line-height'] = lineHeight.toFixed(1);
+      }
+
+      styleInfo.anchor = rng.isOnAnchor() && dom.ancestor(rng.sc, dom.isAnchor);
+      styleInfo.ancestors = dom.listAncestor(rng.sc, dom.isEditable);
+      styleInfo.range = rng;
+      return styleInfo;
+    }
+  }]);
+
+  return Style;
+}();
+
+
+// CONCATENATED MODULE: ./src/js/base/editing/Bullet.js
+function Bullet_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function Bullet_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Bullet_createClass(Constructor, protoProps, staticProps) { if (protoProps) Bullet_defineProperties(Constructor.prototype, protoProps); if (staticProps) Bullet_defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+
+
+
+
+var Bullet_Bullet =
+/*#__PURE__*/
+function () {
+  function Bullet() {
+    Bullet_classCallCheck(this, Bullet);
+  }
+
+  Bullet_createClass(Bullet, [{
+    key: "insertOrderedList",
+
+    /**
+     * toggle ordered list
+     */
+    value: function insertOrderedList(editable) {
+      this.toggleList('OL', editable);
+    }
+    /**
+     * toggle unordered list
+     */
+
+  }, {
+    key: "insertUnorderedList",
+    value: function insertUnorderedList(editable) {
+      this.toggleList('UL', editable);
+    }
+    /**
+     * indent
+     */
+
+  }, {
+    key: "indent",
+    value: function indent(editable) {
+      var _this = this;
+
+      var rng = range.create(editable).wrapBodyInlineWithPara();
+      var paras = rng.nodes(dom.isPara, {
+        includeAncestor: true
+      });
+      var clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(clustereds, function (idx, paras) {
+        var head = lists.head(paras);
+
+        if (dom.isLi(head)) {
+          var previousList = _this.findList(head.previousSibling);
+
+          if (previousList) {
+            paras.map(function (para) {
+              return previousList.appendChild(para);
+            });
+          } else {
+            _this.wrapList(paras, head.parentNode.nodeName);
+
+            paras.map(function (para) {
+              return para.parentNode;
+            }).map(function (para) {
+              return _this.appendToPrevious(para);
+            });
+          }
+        } else {
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(paras, function (idx, para) {
+            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(para).css('marginLeft', function (idx, val) {
+              return (parseInt(val, 10) || 0) + 25;
+            });
+          });
+        }
+      });
+      rng.select();
+    }
+    /**
+     * outdent
+     */
+
+  }, {
+    key: "outdent",
+    value: function outdent(editable) {
+      var _this2 = this;
+
+      var rng = range.create(editable).wrapBodyInlineWithPara();
+      var paras = rng.nodes(dom.isPara, {
+        includeAncestor: true
+      });
+      var clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(clustereds, function (idx, paras) {
+        var head = lists.head(paras);
+
+        if (dom.isLi(head)) {
+          _this2.releaseList([paras]);
+        } else {
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(paras, function (idx, para) {
+            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(para).css('marginLeft', function (idx, val) {
+              val = parseInt(val, 10) || 0;
+              return val > 25 ? val - 25 : '';
+            });
+          });
+        }
+      });
+      rng.select();
+    }
+    /**
+     * toggle list
+     *
+     * @param {String} listName - OL or UL
+     */
+
+  }, {
+    key: "toggleList",
+    value: function toggleList(listName, editable) {
+      var _this3 = this;
+
+      var rng = range.create(editable).wrapBodyInlineWithPara();
+      var paras = rng.nodes(dom.isPara, {
+        includeAncestor: true
+      });
+      var bookmark = rng.paraBookmark(paras);
+      var clustereds = lists.clusterBy(paras, func.peq2('parentNode')); // paragraph to list
+
+      if (lists.find(paras, dom.isPurePara)) {
+        var wrappedParas = [];
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(clustereds, function (idx, paras) {
+          wrappedParas = wrappedParas.concat(_this3.wrapList(paras, listName));
+        });
+        paras = wrappedParas; // list to paragraph or change list style
+      } else {
+        var diffLists = rng.nodes(dom.isList, {
+          includeAncestor: true
+        }).filter(function (listNode) {
+          return !external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.nodeName(listNode, listName);
+        });
+
+        if (diffLists.length) {
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(diffLists, function (idx, listNode) {
+            dom.replace(listNode, listName);
+          });
+        } else {
+          paras = this.releaseList(clustereds, true);
+        }
+      }
+
+      range.createFromParaBookmark(bookmark, paras).select();
+    }
+    /**
+     * @param {Node[]} paras
+     * @param {String} listName
+     * @return {Node[]}
+     */
+
+  }, {
+    key: "wrapList",
+    value: function wrapList(paras, listName) {
+      var head = lists.head(paras);
+      var last = lists.last(paras);
+      var prevList = dom.isList(head.previousSibling) && head.previousSibling;
+      var nextList = dom.isList(last.nextSibling) && last.nextSibling;
+      var listNode = prevList || dom.insertAfter(dom.create(listName || 'UL'), last); // P to LI
+
+      paras = paras.map(function (para) {
+        return dom.isPurePara(para) ? dom.replace(para, 'LI') : para;
+      }); // append to list(<ul>, <ol>)
+
+      dom.appendChildNodes(listNode, paras);
+
+      if (nextList) {
+        dom.appendChildNodes(listNode, lists.from(nextList.childNodes));
+        dom.remove(nextList);
+      }
+
+      return paras;
+    }
+    /**
+     * @method releaseList
+     *
+     * @param {Array[]} clustereds
+     * @param {Boolean} isEscapseToBody
+     * @return {Node[]}
+     */
+
+  }, {
+    key: "releaseList",
+    value: function releaseList(clustereds, isEscapseToBody) {
+      var _this4 = this;
+
+      var releasedParas = [];
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(clustereds, function (idx, paras) {
+        var head = lists.head(paras);
+        var last = lists.last(paras);
+        var headList = isEscapseToBody ? dom.lastAncestor(head, dom.isList) : head.parentNode;
+        var parentItem = headList.parentNode;
+
+        if (headList.parentNode.nodeName === 'LI') {
+          paras.map(function (para) {
+            var newList = _this4.findNextSiblings(para);
+
+            if (parentItem.nextSibling) {
+              parentItem.parentNode.insertBefore(para, parentItem.nextSibling);
+            } else {
+              parentItem.parentNode.appendChild(para);
+            }
+
+            if (newList.length) {
+              _this4.wrapList(newList, headList.nodeName);
+
+              para.appendChild(newList[0].parentNode);
             }
           });
-        });
+
+          if (headList.children.length === 0) {
+            parentItem.removeChild(headList);
+          }
+
+          if (parentItem.childNodes.length === 0) {
+            parentItem.parentNode.removeChild(parentItem);
+          }
+        } else {
+          var lastList = headList.childNodes.length > 1 ? dom.splitTree(headList, {
+            node: last.parentNode,
+            offset: dom.position(last) + 1
+          }, {
+            isSkipPaddingBlankHTML: true
+          }) : null;
+          var middleList = dom.splitTree(headList, {
+            node: head.parentNode,
+            offset: dom.position(head)
+          }, {
+            isSkipPaddingBlankHTML: true
+          });
+          paras = isEscapseToBody ? dom.listDescendant(middleList, dom.isLi) : lists.from(middleList.childNodes).filter(dom.isLi); // LI to P
+
+          if (isEscapseToBody || !dom.isList(headList.parentNode)) {
+            paras = paras.map(function (para) {
+              return dom.replace(para, 'P');
+            });
+          }
+
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(lists.from(paras).reverse(), function (idx, para) {
+            dom.insertAfter(para, headList);
+          }); // remove empty lists
+
+          var rootLists = lists.compact([headList, middleList, lastList]);
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(rootLists, function (idx, rootList) {
+            var listNodes = [rootList].concat(dom.listDescendant(rootList, dom.isList));
+            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(listNodes.reverse(), function (idx, listNode) {
+              if (!dom.nodeLength(listNode)) {
+                dom.remove(listNode, true);
+              }
+            });
+          });
+        }
+
+        releasedParas = releasedParas.concat(paras);
+      });
+      return releasedParas;
+    }
+    /**
+     * @method appendToPrevious
+     *
+     * Appends list to previous list item, if
+     * none exist it wraps the list in a new list item.
+     *
+     * @param {HTMLNode} ListItem
+     * @return {HTMLNode}
+     */
+
+  }, {
+    key: "appendToPrevious",
+    value: function appendToPrevious(node) {
+      return node.previousSibling ? dom.appendChildNodes(node.previousSibling, [node]) : this.wrapList([node], 'LI');
+    }
+    /**
+     * @method findList
+     *
+     * Finds an existing list in list item
+     *
+     * @param {HTMLNode} ListItem
+     * @return {Array[]}
+     */
+
+  }, {
+    key: "findList",
+    value: function findList(node) {
+      return node ? lists.find(node.children, function (child) {
+        return ['OL', 'UL'].indexOf(child.nodeName) > -1;
+      }) : null;
+    }
+    /**
+     * @method findNextSiblings
+     *
+     * Finds all list item siblings that follow it
+     *
+     * @param {HTMLNode} ListItem
+     * @return {HTMLNode}
+     */
+
+  }, {
+    key: "findNextSiblings",
+    value: function findNextSiblings(node) {
+      var siblings = [];
+
+      while (node.nextSibling) {
+        siblings.push(node.nextSibling);
+        node = node.nextSibling;
       }
 
-      releasedParas = releasedParas.concat(paras);
-    });
-    return releasedParas;
-  }
-  /**
-   * @method appendToPrevious
-   *
-   * Appends list to previous list item, if
-   * none exist it wraps the list in a new list item.
-   *
-   * @param {HTMLNode} ListItem
-   * @return {HTMLNode}
-   */
-
-
-  appendToPrevious(node) {
-    return node.previousSibling ? dom.appendChildNodes(node.previousSibling, [node]) : this.wrapList([node], 'LI');
-  }
-  /**
-   * @method findList
-   *
-   * Finds an existing list in list item
-   *
-   * @param {HTMLNode} ListItem
-   * @return {Array[]}
-   */
-
-
-  findList(node) {
-    return node ? lists.find(node.children, child => ['OL', 'UL'].indexOf(child.nodeName) > -1) : null;
-  }
-  /**
-   * @method findNextSiblings
-   *
-   * Finds all list item siblings that follow it
-   *
-   * @param {HTMLNode} ListItem
-   * @return {HTMLNode}
-   */
-
-
-  findNextSiblings(node) {
-    const siblings = [];
-
-    while (node.nextSibling) {
-      siblings.push(node.nextSibling);
-      node = node.nextSibling;
+      return siblings;
     }
+  }]);
 
-    return siblings;
-  }
+  return Bullet;
+}();
 
-}
+
 // CONCATENATED MODULE: ./src/js/base/editing/Typing.js
+function Typing_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function Typing_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Typing_createClass(Constructor, protoProps, staticProps) { if (protoProps) Typing_defineProperties(Constructor.prototype, protoProps); if (staticProps) Typing_defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 
@@ -4048,8 +4258,12 @@ class Bullet_Bullet {
  *
  */
 
-class Typing_Typing {
-  constructor(context) {
+var Typing_Typing =
+/*#__PURE__*/
+function () {
+  function Typing(context) {
+    Typing_classCallCheck(this, Typing);
+
     // a Bullet instance to toggle lists off
     this.bullet = new Bullet_Bullet();
     this.options = context.options;
@@ -4062,100 +4276,113 @@ class Typing_Typing {
    */
 
 
-  insertTab(rng, tabsize) {
-    const tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
-    rng = rng.deleteContents();
-    rng.insertNode(tab, true);
-    rng = core_range.create(tab, tabsize);
-    rng.select();
-  }
-  /**
-   * insert paragraph
-   *
-   * @param {jQuery} $editable
-   * @param {WrappedRange} rng Can be used in unit tests to "mock" the range
-   *
-   * blockquoteBreakingLevel
-   *   0 - No break, the new paragraph remains inside the quote
-   *   1 - Break the first blockquote in the ancestors list
-   *   2 - Break all blockquotes, so that the new paragraph is not quoted (this is the default)
-   */
-
-
-  insertParagraph(editable, rng) {
-    rng = rng || core_range.create(editable); // deleteContents on range.
-
-    rng = rng.deleteContents(); // Wrap range if it needs to be wrapped by paragraph
-
-    rng = rng.wrapBodyInlineWithPara(); // finding paragraph
-
-    const splitRoot = dom.ancestor(rng.sc, dom.isPara);
-    let nextPara; // on paragraph: split paragraph
-
-    if (splitRoot) {
-      // if it is an empty line with li
-      if (dom.isLi(splitRoot) && (dom.isEmpty(splitRoot) || dom.deepestChildIsEmpty(splitRoot))) {
-        // toogle UL/OL and escape
-        this.bullet.toggleList(splitRoot.parentNode.nodeName);
-        return;
-      } else {
-        let blockquote = null;
-
-        if (this.options.blockquoteBreakingLevel === 1) {
-          blockquote = dom.ancestor(splitRoot, dom.isBlockquote);
-        } else if (this.options.blockquoteBreakingLevel === 2) {
-          blockquote = dom.lastAncestor(splitRoot, dom.isBlockquote);
-        }
-
-        if (blockquote) {
-          // We're inside a blockquote and options ask us to break it
-          nextPara = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(dom.emptyPara)[0]; // If the split is right before a <br>, remove it so that there's no "empty line"
-          // after the split in the new blockquote created
-
-          if (dom.isRightEdgePoint(rng.getStartPoint()) && dom.isBR(rng.sc.nextSibling)) {
-            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(rng.sc.nextSibling).remove();
-          }
-
-          const split = dom.splitTree(blockquote, rng.getStartPoint(), {
-            isDiscardEmptySplits: true
-          });
-
-          if (split) {
-            split.parentNode.insertBefore(nextPara, split);
-          } else {
-            dom.insertAfter(nextPara, blockquote); // There's no split if we were at the end of the blockquote
-          }
-        } else {
-          nextPara = dom.splitTree(splitRoot, rng.getStartPoint()); // not a blockquote, just insert the paragraph
-
-          let emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
-          emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
-          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(emptyAnchors, (idx, anchor) => {
-            dom.remove(anchor);
-          }); // replace empty heading, pre or custom-made styleTag with P tag
-
-          if ((dom.isHeading(nextPara) || dom.isPre(nextPara) || dom.isCustomStyleTag(nextPara)) && dom.isEmpty(nextPara)) {
-            nextPara = dom.replace(nextPara, 'p');
-          }
-        }
-      } // no paragraph: insert empty paragraph
-
-    } else {
-      const next = rng.sc.childNodes[rng.so];
-      nextPara = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(dom.emptyPara)[0];
-
-      if (next) {
-        rng.sc.insertBefore(nextPara, next);
-      } else {
-        rng.sc.appendChild(nextPara);
-      }
+  Typing_createClass(Typing, [{
+    key: "insertTab",
+    value: function insertTab(rng, tabsize) {
+      var tab = dom.createText(new Array(tabsize + 1).join(dom.NBSP_CHAR));
+      rng = rng.deleteContents();
+      rng.insertNode(tab, true);
+      rng = range.create(tab, tabsize);
+      rng.select();
     }
+    /**
+     * insert paragraph
+     *
+     * @param {jQuery} $editable
+     * @param {WrappedRange} rng Can be used in unit tests to "mock" the range
+     *
+     * blockquoteBreakingLevel
+     *   0 - No break, the new paragraph remains inside the quote
+     *   1 - Break the first blockquote in the ancestors list
+     *   2 - Break all blockquotes, so that the new paragraph is not quoted (this is the default)
+     */
 
-    core_range.create(nextPara, 0).normalize().select().scrollIntoView(editable);
-  }
+  }, {
+    key: "insertParagraph",
+    value: function insertParagraph(editable, rng) {
+      rng = rng || range.create(editable); // deleteContents on range.
 
-}
+      rng = rng.deleteContents(); // Wrap range if it needs to be wrapped by paragraph
+
+      rng = rng.wrapBodyInlineWithPara(); // finding paragraph
+
+      var splitRoot = dom.ancestor(rng.sc, dom.isPara);
+      var nextPara; // on paragraph: split paragraph
+
+      if (splitRoot) {
+        // if it is an empty line with li
+        if (dom.isLi(splitRoot) && (dom.isEmpty(splitRoot) || dom.deepestChildIsEmpty(splitRoot))) {
+          // toogle UL/OL and escape
+          this.bullet.toggleList(splitRoot.parentNode.nodeName);
+          return;
+        } else {
+          var blockquote = null;
+
+          if (this.options.blockquoteBreakingLevel === 1) {
+            blockquote = dom.ancestor(splitRoot, dom.isBlockquote);
+          } else if (this.options.blockquoteBreakingLevel === 2) {
+            blockquote = dom.lastAncestor(splitRoot, dom.isBlockquote);
+          }
+
+          if (blockquote) {
+            // We're inside a blockquote and options ask us to break it
+            nextPara = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(dom.emptyPara)[0]; // If the split is right before a <br>, remove it so that there's no "empty line"
+            // after the split in the new blockquote created
+
+            if (dom.isRightEdgePoint(rng.getStartPoint()) && dom.isBR(rng.sc.nextSibling)) {
+              external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(rng.sc.nextSibling).remove();
+            }
+
+            var split = dom.splitTree(blockquote, rng.getStartPoint(), {
+              isDiscardEmptySplits: true
+            });
+
+            if (split) {
+              split.parentNode.insertBefore(nextPara, split);
+            } else {
+              dom.insertAfter(nextPara, blockquote); // There's no split if we were at the end of the blockquote
+            }
+          } else {
+            nextPara = dom.splitTree(splitRoot, rng.getStartPoint()); // not a blockquote, just insert the paragraph
+
+            var emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor);
+            emptyAnchors = emptyAnchors.concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
+            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(emptyAnchors, function (idx, anchor) {
+              dom.remove(anchor);
+            }); // replace empty heading, pre or custom-made styleTag with P tag
+
+            if ((dom.isHeading(nextPara) || dom.isPre(nextPara) || dom.isCustomStyleTag(nextPara)) && dom.isEmpty(nextPara)) {
+              nextPara = dom.replace(nextPara, 'p');
+            }
+          }
+        } // no paragraph: insert empty paragraph
+
+      } else {
+        var next = rng.sc.childNodes[rng.so];
+        nextPara = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(dom.emptyPara)[0];
+
+        if (next) {
+          rng.sc.insertBefore(nextPara, next);
+        } else {
+          rng.sc.appendChild(nextPara);
+        }
+      }
+
+      range.create(nextPara, 0).normalize().select().scrollIntoView(editable);
+    }
+  }]);
+
+  return Typing;
+}();
+
+
 // CONCATENATED MODULE: ./src/js/base/editing/Table.js
+function Table_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function Table_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Table_createClass(Constructor, protoProps, staticProps) { if (protoProps) Table_defineProperties(Constructor.prototype, protoProps); if (staticProps) Table_defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 
@@ -4168,13 +4395,13 @@ class Typing_Typing {
  * @param {object} domTable Dom element of table to make changes.
  */
 
-const TableResultAction = function (startPoint, where, action, domTable) {
-  const _startPoint = {
+var TableResultAction = function TableResultAction(startPoint, where, action, domTable) {
+  var _startPoint = {
     'colPos': 0,
     'rowPos': 0
   };
-  const _virtualTable = [];
-  const _actionCellList = []; /// ///////////////////////////////////////////
+  var _virtualTable = [];
+  var _actionCellList = []; /// ///////////////////////////////////////////
   // Private functions
   /// ///////////////////////////////////////////
 
@@ -4184,14 +4411,14 @@ const TableResultAction = function (startPoint, where, action, domTable) {
 
   function setStartPoint() {
     if (!startPoint || !startPoint.tagName || startPoint.tagName.toLowerCase() !== 'td' && startPoint.tagName.toLowerCase() !== 'th') {
-      console.error('Impossible to identify start Cell point.', startPoint);
+      // Impossible to identify start Cell point
       return;
     }
 
     _startPoint.colPos = startPoint.cellIndex;
 
     if (!startPoint.parentElement || !startPoint.parentElement.tagName || startPoint.parentElement.tagName.toLowerCase() !== 'tr') {
-      console.error('Impossible to identify start Row point.', startPoint);
+      // Impossible to identify start Row point
       return;
     }
 
@@ -4209,7 +4436,7 @@ const TableResultAction = function (startPoint, where, action, domTable) {
 
 
   function setVirtualTablePosition(rowIndex, cellIndex, baseRow, baseCell, isRowSpan, isColSpan, isVirtualCell) {
-    const objPosition = {
+    var objPosition = {
       'baseRow': baseRow,
       'baseCell': baseCell,
       'isRowSpan': isRowSpan,
@@ -4258,7 +4485,7 @@ const TableResultAction = function (startPoint, where, action, domTable) {
       return cellIndex;
     }
 
-    let newCellIndex = cellIndex;
+    var newCellIndex = cellIndex;
 
     while (_virtualTable[rowIndex][newCellIndex]) {
       newCellIndex++;
@@ -4277,28 +4504,28 @@ const TableResultAction = function (startPoint, where, action, domTable) {
 
 
   function addCellInfoToVirtual(row, cell) {
-    const cellIndex = recoverCellIndex(row.rowIndex, cell.cellIndex);
-    const cellHasColspan = cell.colSpan > 1;
-    const cellHasRowspan = cell.rowSpan > 1;
-    const isThisSelectedCell = row.rowIndex === _startPoint.rowPos && cell.cellIndex === _startPoint.colPos;
+    var cellIndex = recoverCellIndex(row.rowIndex, cell.cellIndex);
+    var cellHasColspan = cell.colSpan > 1;
+    var cellHasRowspan = cell.rowSpan > 1;
+    var isThisSelectedCell = row.rowIndex === _startPoint.rowPos && cell.cellIndex === _startPoint.colPos;
     setVirtualTablePosition(row.rowIndex, cellIndex, row, cell, cellHasRowspan, cellHasColspan, false); // Add span rows to virtual Table.
 
-    const rowspanNumber = cell.attributes.rowSpan ? parseInt(cell.attributes.rowSpan.value, 10) : 0;
+    var rowspanNumber = cell.attributes.rowSpan ? parseInt(cell.attributes.rowSpan.value, 10) : 0;
 
     if (rowspanNumber > 1) {
-      for (let rp = 1; rp < rowspanNumber; rp++) {
-        const rowspanIndex = row.rowIndex + rp;
+      for (var rp = 1; rp < rowspanNumber; rp++) {
+        var rowspanIndex = row.rowIndex + rp;
         adjustStartPoint(rowspanIndex, cellIndex, cell, isThisSelectedCell);
         setVirtualTablePosition(rowspanIndex, cellIndex, row, cell, true, cellHasColspan, true);
       }
     } // Add span cols to virtual table.
 
 
-    const colspanNumber = cell.attributes.colSpan ? parseInt(cell.attributes.colSpan.value, 10) : 0;
+    var colspanNumber = cell.attributes.colSpan ? parseInt(cell.attributes.colSpan.value, 10) : 0;
 
     if (colspanNumber > 1) {
-      for (let cp = 1; cp < colspanNumber; cp++) {
-        const cellspanIndex = recoverCellIndex(row.rowIndex, cellIndex + cp);
+      for (var cp = 1; cp < colspanNumber; cp++) {
+        var cellspanIndex = recoverCellIndex(row.rowIndex, cellIndex + cp);
         adjustStartPoint(row.rowIndex, cellspanIndex, cell, isThisSelectedCell);
         setVirtualTablePosition(row.rowIndex, cellspanIndex, row, cell, cellHasRowspan, true, true);
       }
@@ -4325,12 +4552,12 @@ const TableResultAction = function (startPoint, where, action, domTable) {
 
 
   function createVirtualTable() {
-    const rows = domTable.rows;
+    var rows = domTable.rows;
 
-    for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
-      const cells = rows[rowIndex].cells;
+    for (var rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+      var cells = rows[rowIndex].cells;
 
-      for (let cellIndex = 0; cellIndex < cells.length; cellIndex++) {
+      for (var cellIndex = 0; cellIndex < cells.length; cellIndex++) {
         addCellInfoToVirtual(rows[rowIndex], cells[cellIndex]);
       }
     }
@@ -4407,22 +4634,22 @@ const TableResultAction = function (startPoint, where, action, domTable) {
 
 
   this.getActionList = function () {
-    const fixedRow = where === TableResultAction.where.Row ? _startPoint.rowPos : -1;
-    const fixedCol = where === TableResultAction.where.Column ? _startPoint.colPos : -1;
-    let actualPosition = 0;
-    let canContinue = true;
+    var fixedRow = where === TableResultAction.where.Row ? _startPoint.rowPos : -1;
+    var fixedCol = where === TableResultAction.where.Column ? _startPoint.colPos : -1;
+    var actualPosition = 0;
+    var canContinue = true;
 
     while (canContinue) {
-      const rowPosition = fixedRow >= 0 ? fixedRow : actualPosition;
-      const colPosition = fixedCol >= 0 ? fixedCol : actualPosition;
-      const row = _virtualTable[rowPosition];
+      var rowPosition = fixedRow >= 0 ? fixedRow : actualPosition;
+      var colPosition = fixedCol >= 0 ? fixedCol : actualPosition;
+      var row = _virtualTable[rowPosition];
 
       if (!row) {
         canContinue = false;
         return _actionCellList;
       }
 
-      const cell = row[colPosition];
+      var cell = row[colPosition];
 
       if (!cell) {
         canContinue = false;
@@ -4430,7 +4657,7 @@ const TableResultAction = function (startPoint, where, action, domTable) {
       } // Define action to be applied in this cell
 
 
-      let resultAction = TableResultAction.resultAction.Ignore;
+      var resultAction = TableResultAction.resultAction.Ignore;
 
       switch (action) {
         case TableResultAction.requestAction.Add:
@@ -4491,341 +4718,370 @@ TableResultAction.resultAction = {
  *
  */
 
-class Table_Table {
-  /**
-   * handle tab key
-   *
-   * @param {WrappedRange} rng
-   * @param {Boolean} isShift
-   */
-  tab(rng, isShift) {
-    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    const table = dom.ancestor(cell, dom.isTable);
-    const cells = dom.listDescendant(table, dom.isCell);
-    const nextCell = lists[isShift ? 'prev' : 'next'](cells, cell);
-
-    if (nextCell) {
-      core_range.create(nextCell, 0).select();
-    }
+var Table_Table =
+/*#__PURE__*/
+function () {
+  function Table() {
+    Table_classCallCheck(this, Table);
   }
-  /**
-   * Add a new row
-   *
-   * @param {WrappedRange} rng
-   * @param {String} position (top/bottom)
-   * @return {Node}
-   */
 
+  Table_createClass(Table, [{
+    key: "tab",
 
-  addRow(rng, position) {
-    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    const currentTr = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('tr');
-    const trAttributes = this.recoverAttributes(currentTr);
-    const html = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<tr' + trAttributes + '></tr>');
-    const vTable = new TableResultAction(cell, TableResultAction.where.Row, TableResultAction.requestAction.Add, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentTr).closest('table')[0]);
-    const actions = vTable.getActionList();
+    /**
+     * handle tab key
+     *
+     * @param {WrappedRange} rng
+     * @param {Boolean} isShift
+     */
+    value: function tab(rng, isShift) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      var table = dom.ancestor(cell, dom.isTable);
+      var cells = dom.listDescendant(table, dom.isCell);
+      var nextCell = lists[isShift ? 'prev' : 'next'](cells, cell);
 
-    for (let idCell = 0; idCell < actions.length; idCell++) {
-      const currentCell = actions[idCell];
-      const tdAttributes = this.recoverAttributes(currentCell.baseCell);
+      if (nextCell) {
+        range.create(nextCell, 0).select();
+      }
+    }
+    /**
+     * Add a new row
+     *
+     * @param {WrappedRange} rng
+     * @param {String} position (top/bottom)
+     * @return {Node}
+     */
 
-      switch (currentCell.action) {
-        case TableResultAction.resultAction.AddCell:
-          html.append('<td' + tdAttributes + '>' + dom.blank + '</td>');
-          break;
+  }, {
+    key: "addRow",
+    value: function addRow(rng, position) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      var currentTr = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('tr');
+      var trAttributes = this.recoverAttributes(currentTr);
+      var html = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<tr' + trAttributes + '></tr>');
+      var vTable = new TableResultAction(cell, TableResultAction.where.Row, TableResultAction.requestAction.Add, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentTr).closest('table')[0]);
+      var actions = vTable.getActionList();
 
-        case TableResultAction.resultAction.SumSpanCount:
-          if (position === 'top') {
-            const baseCellTr = currentCell.baseCell.parent;
-            const isTopFromRowSpan = (!baseCellTr ? 0 : currentCell.baseCell.closest('tr').rowIndex) <= currentTr[0].rowIndex;
+      for (var idCell = 0; idCell < actions.length; idCell++) {
+        var currentCell = actions[idCell];
+        var tdAttributes = this.recoverAttributes(currentCell.baseCell);
 
-            if (isTopFromRowSpan) {
-              const newTd = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div></div>').append(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<td' + tdAttributes + '>' + dom.blank + '</td>').removeAttr('rowspan')).html();
-              html.append(newTd);
-              break;
+        switch (currentCell.action) {
+          case TableResultAction.resultAction.AddCell:
+            html.append('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            break;
+
+          case TableResultAction.resultAction.SumSpanCount:
+            {
+              if (position === 'top') {
+                var baseCellTr = currentCell.baseCell.parent;
+                var isTopFromRowSpan = (!baseCellTr ? 0 : currentCell.baseCell.closest('tr').rowIndex) <= currentTr[0].rowIndex;
+
+                if (isTopFromRowSpan) {
+                  var newTd = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div></div>').append(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<td' + tdAttributes + '>' + dom.blank + '</td>').removeAttr('rowspan')).html();
+                  html.append(newTd);
+                  break;
+                }
+              }
+
+              var rowspanNumber = parseInt(currentCell.baseCell.rowSpan, 10);
+              rowspanNumber++;
+              currentCell.baseCell.setAttribute('rowSpan', rowspanNumber);
             }
-          }
-
-          let rowspanNumber = parseInt(currentCell.baseCell.rowSpan, 10);
-          rowspanNumber++;
-          currentCell.baseCell.setAttribute('rowSpan', rowspanNumber);
-          break;
-      }
-    }
-
-    if (position === 'top') {
-      currentTr.before(html);
-    } else {
-      const cellHasRowspan = cell.rowSpan > 1;
-
-      if (cellHasRowspan) {
-        const lastTrIndex = currentTr[0].rowIndex + (cell.rowSpan - 2);
-        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentTr).parent().find('tr')[lastTrIndex]).after(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(html));
-        return;
+            break;
+        }
       }
 
-      currentTr.after(html);
-    }
-  }
-  /**
-   * Add a new col
-   *
-   * @param {WrappedRange} rng
-   * @param {String} position (left/right)
-   * @return {Node}
-   */
+      if (position === 'top') {
+        currentTr.before(html);
+      } else {
+        var cellHasRowspan = cell.rowSpan > 1;
 
+        if (cellHasRowspan) {
+          var lastTrIndex = currentTr[0].rowIndex + (cell.rowSpan - 2);
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentTr).parent().find('tr')[lastTrIndex]).after(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(html));
+          return;
+        }
 
-  addCol(rng, position) {
-    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    const row = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('tr');
-    const rowsGroup = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(row).siblings();
-    rowsGroup.push(row);
-    const vTable = new TableResultAction(cell, TableResultAction.where.Column, TableResultAction.requestAction.Add, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(row).closest('table')[0]);
-    const actions = vTable.getActionList();
-
-    for (let actionIndex = 0; actionIndex < actions.length; actionIndex++) {
-      const currentCell = actions[actionIndex];
-      const tdAttributes = this.recoverAttributes(currentCell.baseCell);
-
-      switch (currentCell.action) {
-        case TableResultAction.resultAction.AddCell:
-          if (position === 'right') {
-            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentCell.baseCell).after('<td' + tdAttributes + '>' + dom.blank + '</td>');
-          } else {
-            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
-          }
-
-          break;
-
-        case TableResultAction.resultAction.SumSpanCount:
-          if (position === 'right') {
-            let colspanNumber = parseInt(currentCell.baseCell.colSpan, 10);
-            colspanNumber++;
-            currentCell.baseCell.setAttribute('colSpan', colspanNumber);
-          } else {
-            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
-          }
-
-          break;
+        currentTr.after(html);
       }
     }
-  }
-  /*
-  * Copy attributes from element.
-  *
-  * @param {object} Element to recover attributes.
-  * @return {string} Copied string elements.
-  */
+    /**
+     * Add a new col
+     *
+     * @param {WrappedRange} rng
+     * @param {String} position (left/right)
+     * @return {Node}
+     */
 
+  }, {
+    key: "addCol",
+    value: function addCol(rng, position) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      var row = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('tr');
+      var rowsGroup = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(row).siblings();
+      rowsGroup.push(row);
+      var vTable = new TableResultAction(cell, TableResultAction.where.Column, TableResultAction.requestAction.Add, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(row).closest('table')[0]);
+      var actions = vTable.getActionList();
 
-  recoverAttributes(el) {
-    let resultStr = '';
+      for (var actionIndex = 0; actionIndex < actions.length; actionIndex++) {
+        var currentCell = actions[actionIndex];
+        var tdAttributes = this.recoverAttributes(currentCell.baseCell);
 
-    if (!el) {
+        switch (currentCell.action) {
+          case TableResultAction.resultAction.AddCell:
+            if (position === 'right') {
+              external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentCell.baseCell).after('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            } else {
+              external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            }
+
+            break;
+
+          case TableResultAction.resultAction.SumSpanCount:
+            if (position === 'right') {
+              var colspanNumber = parseInt(currentCell.baseCell.colSpan, 10);
+              colspanNumber++;
+              currentCell.baseCell.setAttribute('colSpan', colspanNumber);
+            } else {
+              external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(currentCell.baseCell).before('<td' + tdAttributes + '>' + dom.blank + '</td>');
+            }
+
+            break;
+        }
+      }
+    }
+    /*
+    * Copy attributes from element.
+    *
+    * @param {object} Element to recover attributes.
+    * @return {string} Copied string elements.
+    */
+
+  }, {
+    key: "recoverAttributes",
+    value: function recoverAttributes(el) {
+      var resultStr = '';
+
+      if (!el) {
+        return resultStr;
+      }
+
+      var attrList = el.attributes || [];
+
+      for (var i = 0; i < attrList.length; i++) {
+        if (attrList[i].name.toLowerCase() === 'id') {
+          continue;
+        }
+
+        if (attrList[i].specified) {
+          resultStr += ' ' + attrList[i].name + '=\'' + attrList[i].value + '\'';
+        }
+      }
+
       return resultStr;
     }
+    /**
+     * Delete current row
+     *
+     * @param {WrappedRange} rng
+     * @return {Node}
+     */
 
-    const attrList = el.attributes || [];
+  }, {
+    key: "deleteRow",
+    value: function deleteRow(rng) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      var row = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('tr');
+      var cellPos = row.children('td, th').index(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell));
+      var rowPos = row[0].rowIndex;
+      var vTable = new TableResultAction(cell, TableResultAction.where.Row, TableResultAction.requestAction.Delete, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(row).closest('table')[0]);
+      var actions = vTable.getActionList();
 
-    for (let i = 0; i < attrList.length; i++) {
-      if (attrList[i].name.toLowerCase() === 'id') {
-        continue;
-      }
-
-      if (attrList[i].specified) {
-        resultStr += ' ' + attrList[i].name + '=\'' + attrList[i].value + '\'';
-      }
-    }
-
-    return resultStr;
-  }
-  /**
-   * Delete current row
-   *
-   * @param {WrappedRange} rng
-   * @return {Node}
-   */
-
-
-  deleteRow(rng) {
-    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    const row = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('tr');
-    const cellPos = row.children('td, th').index(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell));
-    const rowPos = row[0].rowIndex;
-    const vTable = new TableResultAction(cell, TableResultAction.where.Row, TableResultAction.requestAction.Delete, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(row).closest('table')[0]);
-    const actions = vTable.getActionList();
-
-    for (let actionIndex = 0; actionIndex < actions.length; actionIndex++) {
-      if (!actions[actionIndex]) {
-        continue;
-      }
-
-      const baseCell = actions[actionIndex].baseCell;
-      const virtualPosition = actions[actionIndex].virtualTable;
-      const hasRowspan = baseCell.rowSpan && baseCell.rowSpan > 1;
-      let rowspanNumber = hasRowspan ? parseInt(baseCell.rowSpan, 10) : 0;
-
-      switch (actions[actionIndex].action) {
-        case TableResultAction.resultAction.Ignore:
+      for (var actionIndex = 0; actionIndex < actions.length; actionIndex++) {
+        if (!actions[actionIndex]) {
           continue;
+        }
 
-        case TableResultAction.resultAction.AddCell:
-          const nextRow = row.next('tr')[0];
+        var baseCell = actions[actionIndex].baseCell;
+        var virtualPosition = actions[actionIndex].virtualTable;
+        var hasRowspan = baseCell.rowSpan && baseCell.rowSpan > 1;
+        var rowspanNumber = hasRowspan ? parseInt(baseCell.rowSpan, 10) : 0;
 
-          if (!nextRow) {
+        switch (actions[actionIndex].action) {
+          case TableResultAction.resultAction.Ignore:
             continue;
-          }
 
-          const cloneRow = row[0].cells[cellPos];
+          case TableResultAction.resultAction.AddCell:
+            {
+              var nextRow = row.next('tr')[0];
 
-          if (hasRowspan) {
-            if (rowspanNumber > 2) {
-              rowspanNumber--;
-              nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
-              nextRow.cells[cellPos].setAttribute('rowSpan', rowspanNumber);
-              nextRow.cells[cellPos].innerHTML = '';
-            } else if (rowspanNumber === 2) {
-              nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
-              nextRow.cells[cellPos].removeAttribute('rowSpan');
-              nextRow.cells[cellPos].innerHTML = '';
-            }
-          }
-
-          continue;
-
-        case TableResultAction.resultAction.SubtractSpanCount:
-          if (hasRowspan) {
-            if (rowspanNumber > 2) {
-              rowspanNumber--;
-              baseCell.setAttribute('rowSpan', rowspanNumber);
-
-              if (virtualPosition.rowIndex !== rowPos && baseCell.cellIndex === cellPos) {
-                baseCell.innerHTML = '';
+              if (!nextRow) {
+                continue;
               }
-            } else if (rowspanNumber === 2) {
-              baseCell.removeAttribute('rowSpan');
 
-              if (virtualPosition.rowIndex !== rowPos && baseCell.cellIndex === cellPos) {
-                baseCell.innerHTML = '';
+              var cloneRow = row[0].cells[cellPos];
+
+              if (hasRowspan) {
+                if (rowspanNumber > 2) {
+                  rowspanNumber--;
+                  nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
+                  nextRow.cells[cellPos].setAttribute('rowSpan', rowspanNumber);
+                  nextRow.cells[cellPos].innerHTML = '';
+                } else if (rowspanNumber === 2) {
+                  nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
+                  nextRow.cells[cellPos].removeAttribute('rowSpan');
+                  nextRow.cells[cellPos].innerHTML = '';
+                }
               }
             }
-          }
+            continue;
 
-          continue;
+          case TableResultAction.resultAction.SubtractSpanCount:
+            if (hasRowspan) {
+              if (rowspanNumber > 2) {
+                rowspanNumber--;
+                baseCell.setAttribute('rowSpan', rowspanNumber);
 
-        case TableResultAction.resultAction.RemoveCell:
-          // Do not need remove cell because row will be deleted.
-          continue;
-      }
-    }
+                if (virtualPosition.rowIndex !== rowPos && baseCell.cellIndex === cellPos) {
+                  baseCell.innerHTML = '';
+                }
+              } else if (rowspanNumber === 2) {
+                baseCell.removeAttribute('rowSpan');
 
-    row.remove();
-  }
-  /**
-   * Delete current col
-   *
-   * @param {WrappedRange} rng
-   * @return {Node}
-   */
-
-
-  deleteCol(rng) {
-    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    const row = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('tr');
-    const cellPos = row.children('td, th').index(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell));
-    const vTable = new TableResultAction(cell, TableResultAction.where.Column, TableResultAction.requestAction.Delete, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(row).closest('table')[0]);
-    const actions = vTable.getActionList();
-
-    for (let actionIndex = 0; actionIndex < actions.length; actionIndex++) {
-      if (!actions[actionIndex]) {
-        continue;
-      }
-
-      switch (actions[actionIndex].action) {
-        case TableResultAction.resultAction.Ignore:
-          continue;
-
-        case TableResultAction.resultAction.SubtractSpanCount:
-          const baseCell = actions[actionIndex].baseCell;
-          const hasColspan = baseCell.colSpan && baseCell.colSpan > 1;
-
-          if (hasColspan) {
-            let colspanNumber = baseCell.colSpan ? parseInt(baseCell.colSpan, 10) : 0;
-
-            if (colspanNumber > 2) {
-              colspanNumber--;
-              baseCell.setAttribute('colSpan', colspanNumber);
-
-              if (baseCell.cellIndex === cellPos) {
-                baseCell.innerHTML = '';
-              }
-            } else if (colspanNumber === 2) {
-              baseCell.removeAttribute('colSpan');
-
-              if (baseCell.cellIndex === cellPos) {
-                baseCell.innerHTML = '';
+                if (virtualPosition.rowIndex !== rowPos && baseCell.cellIndex === cellPos) {
+                  baseCell.innerHTML = '';
+                }
               }
             }
-          }
 
-          continue;
+            continue;
 
-        case TableResultAction.resultAction.RemoveCell:
-          dom.remove(actions[actionIndex].baseCell, true);
+          case TableResultAction.resultAction.RemoveCell:
+            // Do not need remove cell because row will be deleted.
+            continue;
+        }
+      }
+
+      row.remove();
+    }
+    /**
+     * Delete current col
+     *
+     * @param {WrappedRange} rng
+     * @return {Node}
+     */
+
+  }, {
+    key: "deleteCol",
+    value: function deleteCol(rng) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      var row = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('tr');
+      var cellPos = row.children('td, th').index(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell));
+      var vTable = new TableResultAction(cell, TableResultAction.where.Column, TableResultAction.requestAction.Delete, external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(row).closest('table')[0]);
+      var actions = vTable.getActionList();
+
+      for (var actionIndex = 0; actionIndex < actions.length; actionIndex++) {
+        if (!actions[actionIndex]) {
           continue;
+        }
+
+        switch (actions[actionIndex].action) {
+          case TableResultAction.resultAction.Ignore:
+            continue;
+
+          case TableResultAction.resultAction.SubtractSpanCount:
+            {
+              var baseCell = actions[actionIndex].baseCell;
+              var hasColspan = baseCell.colSpan && baseCell.colSpan > 1;
+
+              if (hasColspan) {
+                var colspanNumber = baseCell.colSpan ? parseInt(baseCell.colSpan, 10) : 0;
+
+                if (colspanNumber > 2) {
+                  colspanNumber--;
+                  baseCell.setAttribute('colSpan', colspanNumber);
+
+                  if (baseCell.cellIndex === cellPos) {
+                    baseCell.innerHTML = '';
+                  }
+                } else if (colspanNumber === 2) {
+                  baseCell.removeAttribute('colSpan');
+
+                  if (baseCell.cellIndex === cellPos) {
+                    baseCell.innerHTML = '';
+                  }
+                }
+              }
+            }
+            continue;
+
+          case TableResultAction.resultAction.RemoveCell:
+            dom.remove(actions[actionIndex].baseCell, true);
+            continue;
+        }
       }
     }
-  }
-  /**
-   * create empty table element
-   *
-   * @param {Number} rowCount
-   * @param {Number} colCount
-   * @return {Node}
-   */
+    /**
+     * create empty table element
+     *
+     * @param {Number} rowCount
+     * @param {Number} colCount
+     * @return {Node}
+     */
 
+  }, {
+    key: "createTable",
+    value: function createTable(colCount, rowCount, options) {
+      var tds = [];
+      var tdHTML;
 
-  createTable(colCount, rowCount, options) {
-    const tds = [];
-    let tdHTML;
+      for (var idxCol = 0; idxCol < colCount; idxCol++) {
+        tds.push('<td>' + dom.blank + '</td>');
+      }
 
-    for (let idxCol = 0; idxCol < colCount; idxCol++) {
-      tds.push('<td>' + dom.blank + '</td>');
+      tdHTML = tds.join('');
+      var trs = [];
+      var trHTML;
+
+      for (var idxRow = 0; idxRow < rowCount; idxRow++) {
+        trs.push('<tr>' + tdHTML + '</tr>');
+      }
+
+      trHTML = trs.join('');
+      var $table = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<table>' + trHTML + '</table>');
+
+      if (options && options.tableClassName) {
+        $table.addClass(options.tableClassName);
+      }
+
+      return $table[0];
     }
+    /**
+     * Delete current table
+     *
+     * @param {WrappedRange} rng
+     * @return {Node}
+     */
 
-    tdHTML = tds.join('');
-    const trs = [];
-    let trHTML;
-
-    for (let idxRow = 0; idxRow < rowCount; idxRow++) {
-      trs.push('<tr>' + tdHTML + '</tr>');
+  }, {
+    key: "deleteTable",
+    value: function deleteTable(rng) {
+      var cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('table').remove();
     }
+  }]);
 
-    trHTML = trs.join('');
-    const $table = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<table>' + trHTML + '</table>');
-
-    if (options && options.tableClassName) {
-      $table.addClass(options.tableClassName);
-    }
-
-    return $table[0];
-  }
-  /**
-   * Delete current table
-   *
-   * @param {WrappedRange} rng
-   * @return {Node}
-   */
+  return Table;
+}();
 
 
-  deleteTable(rng) {
-    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(cell).closest('table').remove();
-  }
-
-}
 // CONCATENATED MODULE: ./src/js/base/module/Editor.js
+function Editor_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function Editor_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Editor_createClass(Constructor, protoProps, staticProps) { if (protoProps) Editor_defineProperties(Constructor.prototype, protoProps); if (staticProps) Editor_defineProperties(Constructor, staticProps); return Constructor; }
 
 
 
@@ -4839,13 +5095,20 @@ class Table_Table {
 
 
 
-const KEY_BOGUS = 'bogus';
+
+var KEY_BOGUS = 'bogus';
 /**
  * @class Editor
  */
 
-class Editor_Editor {
-  constructor(context) {
+var Editor_Editor =
+/*#__PURE__*/
+function () {
+  function Editor(context) {
+    var _this = this;
+
+    Editor_classCallCheck(this, Editor);
+
     this.context = context;
     this.$note = context.layoutInfo.note;
     this.$editor = context.layoutInfo.editor;
@@ -4859,7 +5122,7 @@ class Editor_Editor {
     this.table = new Table_Table();
     this.typing = new Typing_Typing(context);
     this.bullet = new Bullet_Bullet();
-    this.history = new History_History(this.$editable);
+    this.history = new History_History(context);
     this.context.memo('help.undo', this.lang.help.undo);
     this.context.memo('help.redo', this.lang.help.redo);
     this.context.memo('help.tab', this.lang.help.tab);
@@ -4873,57 +5136,60 @@ class Editor_Editor {
     this.context.memo('help.insertHorizontalRule', this.lang.help.insertHorizontalRule);
     this.context.memo('help.fontName', this.lang.help.fontName); // native commands(with execCommand), generate function for execCommand
 
-    const commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'formatBlock', 'removeFormat', 'backColor'];
+    var commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'formatBlock', 'removeFormat', 'backColor'];
 
-    for (let idx = 0, len = commands.length; idx < len; idx++) {
-      this[commands[idx]] = (sCmd => {
-        return value => {
-          this.beforeCommand();
+    for (var idx = 0, len = commands.length; idx < len; idx++) {
+      this[commands[idx]] = function (sCmd) {
+        return function (value) {
+          _this.beforeCommand();
+
           document.execCommand(sCmd, false, value);
-          this.afterCommand(true);
+
+          _this.afterCommand(true);
         };
-      })(commands[idx]);
+      }(commands[idx]);
 
       this.context.memo('help.' + commands[idx], this.lang.help[commands[idx]]);
     }
 
-    this.fontName = this.wrapCommand(value => {
-      return this.fontStyling('font-family', env.validFontName(value));
+    this.fontName = this.wrapCommand(function (value) {
+      return _this.fontStyling('font-family', env.validFontName(value));
     });
-    this.fontSize = this.wrapCommand(value => {
-      const unit = this.currentStyle()['font-size-unit'];
-      return this.fontStyling('font-size', value + unit);
+    this.fontSize = this.wrapCommand(function (value) {
+      var unit = _this.currentStyle()['font-size-unit'];
+
+      return _this.fontStyling('font-size', value + unit);
     });
-    this.fontSizeUnit = this.wrapCommand(value => {
-      const size = this.currentStyle()['font-size'];
-      return this.fontStyling('font-size', size + value);
+    this.fontSizeUnit = this.wrapCommand(function (value) {
+      var size = _this.currentStyle()['font-size'];
+
+      return _this.fontStyling('font-size', size + value);
     });
 
-    for (let idx = 1; idx <= 6; idx++) {
-      this['formatH' + idx] = (idx => {
-        return () => {
-          this.formatBlock('H' + idx);
+    for (var _idx = 1; _idx <= 6; _idx++) {
+      this['formatH' + _idx] = function (idx) {
+        return function () {
+          _this.formatBlock('H' + idx);
         };
-      })(idx);
+      }(_idx);
 
-      this.context.memo('help.formatH' + idx, this.lang.help['formatH' + idx]);
+      this.context.memo('help.formatH' + _idx, this.lang.help['formatH' + _idx]);
     }
 
-    ;
-    this.insertParagraph = this.wrapCommand(() => {
-      this.typing.insertParagraph(this.editable);
+    this.insertParagraph = this.wrapCommand(function () {
+      _this.typing.insertParagraph(_this.editable);
     });
-    this.insertOrderedList = this.wrapCommand(() => {
-      this.bullet.insertOrderedList(this.editable);
+    this.insertOrderedList = this.wrapCommand(function () {
+      _this.bullet.insertOrderedList(_this.editable);
     });
-    this.insertUnorderedList = this.wrapCommand(() => {
-      this.bullet.insertUnorderedList(this.editable);
+    this.insertUnorderedList = this.wrapCommand(function () {
+      _this.bullet.insertUnorderedList(_this.editable);
     });
-    this.indent = this.wrapCommand(() => {
-      this.bullet.indent(this.editable);
+    this.indent = this.wrapCommand(function () {
+      _this.bullet.indent(_this.editable);
     });
-    this.outdent = this.wrapCommand(() => {
-      this.bullet.outdent(this.editable);
+    this.outdent = this.wrapCommand(function () {
+      _this.bullet.outdent(_this.editable);
     });
     /**
      * insertNode
@@ -4931,42 +5197,48 @@ class Editor_Editor {
      * @param {Node} node
      */
 
-    this.insertNode = this.wrapCommand(node => {
-      if (this.isLimited(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(node).text().length)) {
+    this.insertNode = this.wrapCommand(function (node) {
+      if (_this.isLimited(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(node).text().length)) {
         return;
       }
 
-      const rng = this.getLastRange();
+      var rng = _this.getLastRange();
+
       rng.insertNode(node);
-      this.setLastRange(core_range.createFromNodeAfter(node).select());
+
+      _this.setLastRange(range.createFromNodeAfter(node).select());
     });
     /**
      * insert text
      * @param {String} text
      */
 
-    this.insertText = this.wrapCommand(text => {
-      if (this.isLimited(text.length)) {
+    this.insertText = this.wrapCommand(function (text) {
+      if (_this.isLimited(text.length)) {
         return;
       }
 
-      const rng = this.getLastRange();
-      const textNode = rng.insertNode(dom.createText(text));
-      this.setLastRange(core_range.create(textNode, dom.nodeLength(textNode)).select());
+      var rng = _this.getLastRange();
+
+      var textNode = rng.insertNode(dom.createText(text));
+
+      _this.setLastRange(range.create(textNode, dom.nodeLength(textNode)).select());
     });
     /**
      * paste HTML
      * @param {String} markup
      */
 
-    this.pasteHTML = this.wrapCommand(markup => {
-      if (this.isLimited(markup.length)) {
+    this.pasteHTML = this.wrapCommand(function (markup) {
+      if (_this.isLimited(markup.length)) {
         return;
       }
 
-      markup = this.context.invoke('codeview.purify', markup);
-      const contents = this.getLastRange().pasteHTML(markup);
-      this.setLastRange(core_range.createFromNodeAfter(lists.last(contents)).select());
+      markup = _this.context.invoke('codeview.purify', markup);
+
+      var contents = _this.getLastRange().pasteHTML(markup);
+
+      _this.setLastRange(range.createFromNodeAfter(lists.last(contents)).select());
     });
     /**
      * formatBlock
@@ -4974,24 +5246,24 @@ class Editor_Editor {
      * @param {String} tagName
      */
 
-    this.formatBlock = this.wrapCommand((tagName, $target) => {
-      const onApplyCustomStyle = this.options.callbacks.onApplyCustomStyle;
+    this.formatBlock = this.wrapCommand(function (tagName, $target) {
+      var onApplyCustomStyle = _this.options.callbacks.onApplyCustomStyle;
 
       if (onApplyCustomStyle) {
-        onApplyCustomStyle.call(this, $target, this.context, this.onFormatBlock);
+        onApplyCustomStyle.call(_this, $target, _this.context, _this.onFormatBlock);
       } else {
-        this.onFormatBlock(tagName, $target);
+        _this.onFormatBlock(tagName, $target);
       }
     });
     /**
      * insert horizontal rule
      */
 
-    this.insertHorizontalRule = this.wrapCommand(() => {
-      const hrNode = this.getLastRange().insertNode(dom.create('HR'));
+    this.insertHorizontalRule = this.wrapCommand(function () {
+      var hrNode = _this.getLastRange().insertNode(dom.create('HR'));
 
       if (hrNode.nextSibling) {
-        this.setLastRange(core_range.create(hrNode.nextSibling, 0).normalize().select());
+        _this.setLastRange(range.create(hrNode.nextSibling, 0).normalize().select());
       }
     });
     /**
@@ -4999,8 +5271,8 @@ class Editor_Editor {
      * @param {String} value
      */
 
-    this.lineHeight = this.wrapCommand(value => {
-      this.style.stylePara(this.getLastRange(), {
+    this.lineHeight = this.wrapCommand(function (value) {
+      _this.style.stylePara(_this.getLastRange(), {
         lineHeight: value
       });
     });
@@ -5010,46 +5282,48 @@ class Editor_Editor {
      * @param {Object} linkInfo
      */
 
-    this.createLink = this.wrapCommand(linkInfo => {
-      let linkUrl = linkInfo.url;
-      const linkText = linkInfo.text;
-      const isNewWindow = linkInfo.isNewWindow;
-      const checkProtocol = linkInfo.checkProtocol;
-      let rng = linkInfo.range || this.getLastRange();
-      const additionalTextLength = linkText.length - rng.toString().length;
+    this.createLink = this.wrapCommand(function (linkInfo) {
+      var linkUrl = linkInfo.url;
+      var linkText = linkInfo.text;
+      var isNewWindow = linkInfo.isNewWindow;
+      var checkProtocol = linkInfo.checkProtocol;
 
-      if (additionalTextLength > 0 && this.isLimited(additionalTextLength)) {
+      var rng = linkInfo.range || _this.getLastRange();
+
+      var additionalTextLength = linkText.length - rng.toString().length;
+
+      if (additionalTextLength > 0 && _this.isLimited(additionalTextLength)) {
         return;
       }
 
-      const isTextChanged = rng.toString() !== linkText; // handle spaced urls from input
+      var isTextChanged = rng.toString() !== linkText; // handle spaced urls from input
 
       if (typeof linkUrl === 'string') {
         linkUrl = linkUrl.trim();
       }
 
-      if (this.options.onCreateLink) {
-        linkUrl = this.options.onCreateLink(linkUrl);
+      if (_this.options.onCreateLink) {
+        linkUrl = _this.options.onCreateLink(linkUrl);
       } else if (checkProtocol) {
         // if url doesn't have any protocol and not even a relative or a label, use http:// as default
-        linkUrl = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/.test(linkUrl) ? linkUrl : this.options.defaultProtocol + linkUrl;
+        linkUrl = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/.test(linkUrl) ? linkUrl : _this.options.defaultProtocol + linkUrl;
       }
 
-      let anchors = [];
+      var anchors = [];
 
       if (isTextChanged) {
         rng = rng.deleteContents();
-        const anchor = rng.insertNode(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<A>' + linkText + '</A>')[0]);
+        var anchor = rng.insertNode(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<A>' + linkText + '</A>')[0]);
         anchors.push(anchor);
       } else {
-        anchors = this.style.styleNodes(rng, {
+        anchors = _this.style.styleNodes(rng, {
           nodeName: 'A',
           expandClosestSibling: true,
           onlyPartialContains: true
         });
       }
 
-      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(anchors, (idx, anchor) => {
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(anchors, function (idx, anchor) {
         external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(anchor).attr('href', linkUrl);
 
         if (isNewWindow) {
@@ -5058,11 +5332,12 @@ class Editor_Editor {
           external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(anchor).removeAttr('target');
         }
       });
-      const startRange = core_range.createFromNodeBefore(lists.head(anchors));
-      const startPoint = startRange.getStartPoint();
-      const endRange = core_range.createFromNodeAfter(lists.last(anchors));
-      const endPoint = endRange.getEndPoint();
-      this.setLastRange(core_range.create(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset).select());
+      var startRange = range.createFromNodeBefore(lists.head(anchors));
+      var startPoint = startRange.getStartPoint();
+      var endRange = range.createFromNodeAfter(lists.last(anchors));
+      var endPoint = endRange.getEndPoint();
+
+      _this.setLastRange(range.create(startPoint.node, startPoint.offset, endPoint.node, endPoint.offset).select());
     });
     /**
      * setting color
@@ -5072,9 +5347,9 @@ class Editor_Editor {
      * @param {String} sObjColor.backColor background color
      */
 
-    this.color = this.wrapCommand(colorInfo => {
-      const foreColor = colorInfo.foreColor;
-      const backColor = colorInfo.backColor;
+    this.color = this.wrapCommand(function (colorInfo) {
+      var foreColor = colorInfo.foreColor;
+      var backColor = colorInfo.backColor;
 
       if (foreColor) {
         document.execCommand('foreColor', false, foreColor);
@@ -5090,8 +5365,7 @@ class Editor_Editor {
      * @param {String} colorCode foreground color code
      */
 
-    this.foreColor = this.wrapCommand(colorInfo => {
-      document.execCommand('styleWithCSS', false, true);
+    this.foreColor = this.wrapCommand(function (colorInfo) {
       document.execCommand('foreColor', false, colorInfo);
     });
     /**
@@ -5100,25 +5374,27 @@ class Editor_Editor {
      * @param {String} dimension of table (ex : "5x5")
      */
 
-    this.insertTable = this.wrapCommand(dim => {
-      const dimension = dim.split('x');
-      const rng = this.getLastRange().deleteContents();
-      rng.insertNode(this.table.createTable(dimension[0], dimension[1], this.options));
+    this.insertTable = this.wrapCommand(function (dim) {
+      var dimension = dim.split('x');
+
+      var rng = _this.getLastRange().deleteContents();
+
+      rng.insertNode(_this.table.createTable(dimension[0], dimension[1], _this.options));
     });
     /**
      * remove media object and Figure Elements if media object is img with Figure.
      */
 
-    this.removeMedia = this.wrapCommand(() => {
-      let $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.restoreTarget()).parent();
+    this.removeMedia = this.wrapCommand(function () {
+      var $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(_this.restoreTarget()).parent();
 
       if ($target.closest('figure').length) {
         $target.closest('figure').remove();
       } else {
-        $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.restoreTarget()).detach();
+        $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(_this.restoreTarget()).detach();
       }
 
-      this.context.triggerEvent('media.delete', $target, this.$editable);
+      _this.context.triggerEvent('media.delete', $target, _this.$editable);
     });
     /**
      * float me
@@ -5126,8 +5402,8 @@ class Editor_Editor {
      * @param {String} value
      */
 
-    this.floatMe = this.wrapCommand(value => {
-      const $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.restoreTarget());
+    this.floatMe = this.wrapCommand(function (value) {
+      var $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(_this.restoreTarget());
       $target.toggleClass('note-float-left', value === 'left');
       $target.toggleClass('note-float-right', value === 'right');
       $target.css('float', value === 'none' ? '' : value);
@@ -5137,8 +5413,8 @@ class Editor_Editor {
      * @param {String} value
      */
 
-    this.resize = this.wrapCommand(value => {
-      const $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.restoreTarget());
+    this.resize = this.wrapCommand(function (value) {
+      var $target = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(_this.restoreTarget());
       value = parseFloat(value);
 
       if (value === 0) {
@@ -5152,716 +5428,841 @@ class Editor_Editor {
     });
   }
 
-  initialize() {
-    // bind custom events
-    this.$editable.on('keydown', event => {
-      if (event.keyCode === core_key.code.ENTER) {
-        this.context.triggerEvent('enter', event);
-      }
+  Editor_createClass(Editor, [{
+    key: "initialize",
+    value: function initialize() {
+      var _this2 = this;
 
-      this.context.triggerEvent('keydown', event); // keep a snapshot to limit text on input event
+      // bind custom events
+      this.$editable.on('keydown', function (event) {
+        if (event.keyCode === core_key.code.ENTER) {
+          _this2.context.triggerEvent('enter', event);
+        }
 
-      this.snapshot = this.history.makeSnapshot();
+        _this2.context.triggerEvent('keydown', event); // keep a snapshot to limit text on input event
 
-      if (!event.isDefaultPrevented()) {
-        if (this.options.shortcuts) {
-          this.handleKeyMap(event);
-        } else {
-          this.preventDefaultEditableShortCuts(event);
+
+        _this2.snapshot = _this2.history.makeSnapshot();
+        _this2.hasKeyShortCut = false;
+
+        if (!event.isDefaultPrevented()) {
+          if (_this2.options.shortcuts) {
+            _this2.hasKeyShortCut = _this2.handleKeyMap(event);
+          } else {
+            _this2.preventDefaultEditableShortCuts(event);
+          }
+        }
+
+        if (_this2.isLimited(1, event)) {
+          var lastRange = _this2.getLastRange();
+
+          if (lastRange.eo - lastRange.so === 0) {
+            return false;
+          }
+        }
+
+        _this2.setLastRange(); // record undo in the key event except keyMap.
+
+
+        if (_this2.options.recordEveryKeystroke) {
+          if (_this2.hasKeyShortCut === false) {
+            _this2.history.recordUndo();
+          }
+        }
+      }).on('keyup', function (event) {
+        _this2.setLastRange();
+
+        _this2.context.triggerEvent('keyup', event);
+      }).on('focus', function (event) {
+        _this2.setLastRange();
+
+        _this2.context.triggerEvent('focus', event);
+      }).on('blur', function (event) {
+        _this2.context.triggerEvent('blur', event);
+      }).on('mousedown', function (event) {
+        _this2.context.triggerEvent('mousedown', event);
+      }).on('mouseup', function (event) {
+        _this2.setLastRange();
+
+        _this2.history.recordUndo();
+
+        _this2.context.triggerEvent('mouseup', event);
+      }).on('scroll', function (event) {
+        _this2.context.triggerEvent('scroll', event);
+      }).on('paste', function (event) {
+        _this2.setLastRange();
+
+        _this2.context.triggerEvent('paste', event);
+      }).on('input', function () {
+        // To limit composition characters (e.g. Korean)
+        if (_this2.isLimited(0) && _this2.snapshot) {
+          _this2.history.applySnapshot(_this2.snapshot);
+        }
+      });
+      this.$editable.attr('spellcheck', this.options.spellCheck);
+      this.$editable.attr('autocorrect', this.options.spellCheck);
+
+      if (this.options.disableGrammar) {
+        this.$editable.attr('data-gramm', false);
+      } // init content before set event
+
+
+      this.$editable.html(dom.html(this.$note) || dom.emptyPara);
+      this.$editable.on(env.inputEventName, func.debounce(function () {
+        _this2.context.triggerEvent('change', _this2.$editable.html(), _this2.$editable);
+      }, 10));
+      this.$editable.on('focusin', function (event) {
+        _this2.context.triggerEvent('focusin', event);
+      }).on('focusout', function (event) {
+        _this2.context.triggerEvent('focusout', event);
+      });
+
+      if (this.options.airMode) {
+        if (this.options.overrideContextMenu) {
+          this.$editor.on('contextmenu', function (event) {
+            _this2.context.triggerEvent('contextmenu', event);
+
+            return false;
+          });
+        }
+      } else {
+        if (this.options.width) {
+          this.$editor.outerWidth(this.options.width);
+        }
+
+        if (this.options.height) {
+          this.$editable.outerHeight(this.options.height);
+        }
+
+        if (this.options.maxHeight) {
+          this.$editable.css('max-height', this.options.maxHeight);
+        }
+
+        if (this.options.minHeight) {
+          this.$editable.css('min-height', this.options.minHeight);
         }
       }
 
-      if (this.isLimited(1, event)) {
-        const lastRange = this.getLastRange();
+      this.history.recordUndo();
+      this.setLastRange();
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this.$editable.off();
+    }
+  }, {
+    key: "handleKeyMap",
+    value: function handleKeyMap(event) {
+      var keyMap = this.options.keyMap[env.isMac ? 'mac' : 'pc'];
+      var keys = [];
 
-        if (lastRange.eo - lastRange.so === 0) {
+      if (event.metaKey) {
+        keys.push('CMD');
+      }
+
+      if (event.ctrlKey && !event.altKey) {
+        keys.push('CTRL');
+      }
+
+      if (event.shiftKey) {
+        keys.push('SHIFT');
+      }
+
+      var keyName = core_key.nameFromCode[event.keyCode];
+
+      if (keyName) {
+        keys.push(keyName);
+      }
+
+      var eventName = keyMap[keys.join('+')];
+
+      if (keyName === 'TAB' && !this.options.tabDisable) {
+        this.afterCommand();
+      } else if (eventName) {
+        if (this.context.invoke(eventName) !== false) {
+          event.preventDefault(); // if keyMap action was invoked
+
+          return true;
+        }
+      } else if (core_key.isEdit(event.keyCode)) {
+        this.afterCommand();
+      }
+
+      return false;
+    }
+  }, {
+    key: "preventDefaultEditableShortCuts",
+    value: function preventDefaultEditableShortCuts(event) {
+      // B(Bold, 66) / I(Italic, 73) / U(Underline, 85)
+      if ((event.ctrlKey || event.metaKey) && lists.contains([66, 73, 85], event.keyCode)) {
+        event.preventDefault();
+      }
+    }
+  }, {
+    key: "isLimited",
+    value: function isLimited(pad, event) {
+      pad = pad || 0;
+
+      if (typeof event !== 'undefined') {
+        if (core_key.isMove(event.keyCode) || core_key.isNavigation(event.keyCode) || event.ctrlKey || event.metaKey || lists.contains([core_key.code.BACKSPACE, core_key.code.DELETE], event.keyCode)) {
           return false;
         }
       }
 
-      this.setLastRange();
-    }).on('keyup', event => {
-      this.setLastRange();
-      this.context.triggerEvent('keyup', event);
-    }).on('focus', event => {
-      this.setLastRange();
-      this.context.triggerEvent('focus', event);
-    }).on('blur', event => {
-      this.context.triggerEvent('blur', event);
-    }).on('mousedown', event => {
-      this.context.triggerEvent('mousedown', event);
-    }).on('mouseup', event => {
-      this.setLastRange();
-      this.history.recordUndo();
-      this.context.triggerEvent('mouseup', event);
-    }).on('scroll', event => {
-      this.context.triggerEvent('scroll', event);
-    }).on('paste', event => {
-      this.setLastRange();
-      this.context.triggerEvent('paste', event);
-    }).on('input', event => {
-      // To limit composition characters (e.g. Korean)
-      if (this.isLimited(0) && this.snapshot) {
-        this.history.applySnapshot(this.snapshot);
+      if (this.options.maxTextLength > 0) {
+        if (this.$editable.text().length + pad > this.options.maxTextLength) {
+          return true;
+        }
       }
-    });
-    this.$editable.attr('spellcheck', this.options.spellCheck);
-    this.$editable.attr('autocorrect', this.options.spellCheck);
 
-    if (this.options.disableGrammar) {
-      this.$editable.attr('data-gramm', false);
-    } // init content before set event
+      return false;
+    }
+    /**
+     * create range
+     * @return {WrappedRange}
+     */
 
+  }, {
+    key: "createRange",
+    value: function createRange() {
+      this.focus();
+      this.setLastRange();
+      return this.getLastRange();
+    }
+  }, {
+    key: "setLastRange",
+    value: function setLastRange(rng) {
+      if (rng) {
+        this.lastRange = rng;
+      } else {
+        this.lastRange = range.create(this.editable);
 
-    this.$editable.html(dom.html(this.$note) || dom.emptyPara);
-    this.$editable.on(env.inputEventName, func.debounce(() => {
+        if (external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.lastRange.sc).closest('.note-editable').length === 0) {
+          this.lastRange = range.createFromBodyElement(this.editable);
+        }
+      }
+    }
+  }, {
+    key: "getLastRange",
+    value: function getLastRange() {
+      if (!this.lastRange) {
+        this.setLastRange();
+      }
+
+      return this.lastRange;
+    }
+    /**
+     * saveRange
+     *
+     * save current range
+     *
+     * @param {Boolean} [thenCollapse=false]
+     */
+
+  }, {
+    key: "saveRange",
+    value: function saveRange(thenCollapse) {
+      if (thenCollapse) {
+        this.getLastRange().collapse().select();
+      }
+    }
+    /**
+     * restoreRange
+     *
+     * restore lately range
+     */
+
+  }, {
+    key: "restoreRange",
+    value: function restoreRange() {
+      if (this.lastRange) {
+        this.lastRange.select();
+        this.focus();
+      }
+    }
+  }, {
+    key: "saveTarget",
+    value: function saveTarget(node) {
+      this.$editable.data('target', node);
+    }
+  }, {
+    key: "clearTarget",
+    value: function clearTarget() {
+      this.$editable.removeData('target');
+    }
+  }, {
+    key: "restoreTarget",
+    value: function restoreTarget() {
+      return this.$editable.data('target');
+    }
+    /**
+     * currentStyle
+     *
+     * current style
+     * @return {Object|Boolean} unfocus
+     */
+
+  }, {
+    key: "currentStyle",
+    value: function currentStyle() {
+      var rng = range.create();
+
+      if (rng) {
+        rng = rng.normalize();
+      }
+
+      return rng ? this.style.current(rng) : this.style.fromNode(this.$editable);
+    }
+    /**
+     * style from node
+     *
+     * @param {jQuery} $node
+     * @return {Object}
+     */
+
+  }, {
+    key: "styleFromNode",
+    value: function styleFromNode($node) {
+      return this.style.fromNode($node);
+    }
+    /**
+     * undo
+     */
+
+  }, {
+    key: "undo",
+    value: function undo() {
+      this.context.triggerEvent('before.command', this.$editable.html());
+      this.history.undo();
       this.context.triggerEvent('change', this.$editable.html(), this.$editable);
-    }, 10));
-    this.$editor.on('focusin', event => {
-      this.context.triggerEvent('focusin', event);
-    }).on('focusout', event => {
-      this.context.triggerEvent('focusout', event);
-    });
-
-    if (!this.options.airMode) {
-      if (this.options.width) {
-        this.$editor.outerWidth(this.options.width);
-      }
-
-      if (this.options.height) {
-        this.$editable.outerHeight(this.options.height);
-      }
-
-      if (this.options.maxHeight) {
-        this.$editable.css('max-height', this.options.maxHeight);
-      }
-
-      if (this.options.minHeight) {
-        this.$editable.css('min-height', this.options.minHeight);
-      }
     }
+    /*
+    * commit
+    */
 
-    this.history.recordUndo();
-    this.setLastRange();
-  }
-
-  destroy() {
-    this.$editable.off();
-  }
-
-  handleKeyMap(event) {
-    const keyMap = this.options.keyMap[env.isMac ? 'mac' : 'pc'];
-    const keys = [];
-
-    if (event.metaKey) {
-      keys.push('CMD');
+  }, {
+    key: "commit",
+    value: function commit() {
+      this.context.triggerEvent('before.command', this.$editable.html());
+      this.history.commit();
+      this.context.triggerEvent('change', this.$editable.html(), this.$editable);
     }
+    /**
+     * redo
+     */
 
-    if (event.ctrlKey && !event.altKey) {
-      keys.push('CTRL');
+  }, {
+    key: "redo",
+    value: function redo() {
+      this.context.triggerEvent('before.command', this.$editable.html());
+      this.history.redo();
+      this.context.triggerEvent('change', this.$editable.html(), this.$editable);
     }
+    /**
+     * before command
+     */
 
-    if (event.shiftKey) {
-      keys.push('SHIFT');
-    }
+  }, {
+    key: "beforeCommand",
+    value: function beforeCommand() {
+      this.context.triggerEvent('before.command', this.$editable.html()); // Set styleWithCSS before run a command
 
-    const keyName = core_key.nameFromCode[event.keyCode];
+      document.execCommand('styleWithCSS', false, this.options.styleWithCSS); // keep focus on editable before command execution
 
-    if (keyName) {
-      keys.push(keyName);
-    }
-
-    const eventName = keyMap[keys.join('+')];
-
-    if (keyName === 'TAB' && !this.options.tabDisable) {
-      this.afterCommand();
-    } else if (eventName) {
-      if (this.context.invoke(eventName) !== false) {
-        event.preventDefault();
-      }
-    } else if (core_key.isEdit(event.keyCode)) {
-      this.afterCommand();
-    }
-  }
-
-  preventDefaultEditableShortCuts(event) {
-    // B(Bold, 66) / I(Italic, 73) / U(Underline, 85)
-    if ((event.ctrlKey || event.metaKey) && lists.contains([66, 73, 85], event.keyCode)) {
-      event.preventDefault();
-    }
-  }
-
-  isLimited(pad, event) {
-    pad = pad || 0;
-
-    if (typeof event !== 'undefined') {
-      if (core_key.isMove(event.keyCode) || core_key.isNavigation(event.keyCode) || event.ctrlKey || event.metaKey || lists.contains([core_key.code.BACKSPACE, core_key.code.DELETE], event.keyCode)) {
-        return false;
-      }
-    }
-
-    if (this.options.maxTextLength > 0) {
-      if (this.$editable.text().length + pad > this.options.maxTextLength) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-  /**
-   * create range
-   * @return {WrappedRange}
-   */
-
-
-  createRange() {
-    this.focus();
-    this.setLastRange();
-    return this.getLastRange();
-  }
-
-  setLastRange(rng) {
-    if (rng) {
-      this.lastRange = rng;
-    } else {
-      this.lastRange = core_range.create(this.editable);
-
-      if (external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.lastRange.sc).closest('.note-editable').length === 0) {
-        this.lastRange = core_range.createFromBodyElement(this.editable);
-      }
-    }
-  }
-
-  getLastRange() {
-    if (!this.lastRange) {
-      this.setLastRange();
-    }
-
-    return this.lastRange;
-  }
-  /**
-   * saveRange
-   *
-   * save current range
-   *
-   * @param {Boolean} [thenCollapse=false]
-   */
-
-
-  saveRange(thenCollapse) {
-    if (thenCollapse) {
-      this.getLastRange().collapse().select();
-    }
-  }
-  /**
-   * restoreRange
-   *
-   * restore lately range
-   */
-
-
-  restoreRange() {
-    if (this.lastRange) {
-      this.lastRange.select();
       this.focus();
     }
-  }
+    /**
+     * after command
+     * @param {Boolean} isPreventTrigger
+     */
 
-  saveTarget(node) {
-    this.$editable.data('target', node);
-  }
+  }, {
+    key: "afterCommand",
+    value: function afterCommand(isPreventTrigger) {
+      this.normalizeContent();
+      this.history.recordUndo();
 
-  clearTarget() {
-    this.$editable.removeData('target');
-  }
-
-  restoreTarget() {
-    return this.$editable.data('target');
-  }
-  /**
-   * currentStyle
-   *
-   * current style
-   * @return {Object|Boolean} unfocus
-   */
-
-
-  currentStyle() {
-    let rng = core_range.create();
-
-    if (rng) {
-      rng = rng.normalize();
+      if (!isPreventTrigger) {
+        this.context.triggerEvent('change', this.$editable.html(), this.$editable);
+      }
     }
+    /**
+     * handle tab key
+     */
 
-    return rng ? this.style.current(rng) : this.style.fromNode(this.$editable);
-  }
-  /**
-   * style from node
-   *
-   * @param {jQuery} $node
-   * @return {Object}
-   */
+  }, {
+    key: "tab",
+    value: function tab() {
+      var rng = this.getLastRange();
 
+      if (rng.isCollapsed() && rng.isOnCell()) {
+        this.table.tab(rng);
+      } else {
+        if (this.options.tabSize === 0) {
+          return false;
+        }
 
-  styleFromNode($node) {
-    return this.style.fromNode($node);
-  }
-  /**
-   * undo
-   */
-
-
-  undo() {
-    this.context.triggerEvent('before.command', this.$editable.html());
-    this.history.undo();
-    this.context.triggerEvent('change', this.$editable.html(), this.$editable);
-  }
-  /*
-  * commit
-  */
-
-
-  commit() {
-    this.context.triggerEvent('before.command', this.$editable.html());
-    this.history.commit();
-    this.context.triggerEvent('change', this.$editable.html(), this.$editable);
-  }
-  /**
-   * redo
-   */
-
-
-  redo() {
-    this.context.triggerEvent('before.command', this.$editable.html());
-    this.history.redo();
-    this.context.triggerEvent('change', this.$editable.html(), this.$editable);
-  }
-  /**
-   * before command
-   */
-
-
-  beforeCommand() {
-    this.context.triggerEvent('before.command', this.$editable.html()); // keep focus on editable before command execution
-
-    this.focus();
-  }
-  /**
-   * after command
-   * @param {Boolean} isPreventTrigger
-   */
-
-
-  afterCommand(isPreventTrigger) {
-    this.normalizeContent();
-    this.history.recordUndo();
-
-    if (!isPreventTrigger) {
-      this.context.triggerEvent('change', this.$editable.html(), this.$editable);
+        if (!this.isLimited(this.options.tabSize)) {
+          this.beforeCommand();
+          this.typing.insertTab(rng, this.options.tabSize);
+          this.afterCommand();
+        }
+      }
     }
-  }
-  /**
-   * handle tab key
-   */
+    /**
+     * handle shift+tab key
+     */
 
+  }, {
+    key: "untab",
+    value: function untab() {
+      var rng = this.getLastRange();
 
-  tab() {
-    const rng = this.getLastRange();
+      if (rng.isCollapsed() && rng.isOnCell()) {
+        this.table.tab(rng, true);
+      } else {
+        if (this.options.tabSize === 0) {
+          return false;
+        }
+      }
+    }
+    /**
+     * run given function between beforeCommand and afterCommand
+     */
 
-    if (rng.isCollapsed() && rng.isOnCell()) {
-      this.table.tab(rng);
-    } else {
-      if (this.options.tabSize === 0) {
-        return false;
+  }, {
+    key: "wrapCommand",
+    value: function wrapCommand(fn) {
+      return function () {
+        this.beforeCommand();
+        fn.apply(this, arguments);
+        this.afterCommand();
+      };
+    }
+    /**
+     * insert image
+     *
+     * @param {String} src
+     * @param {String|Function} param
+     * @return {Promise}
+     */
+
+  }, {
+    key: "insertImage",
+    value: function insertImage(src, param) {
+      var _this3 = this;
+
+      return createImage(src, param).then(function ($image) {
+        _this3.beforeCommand();
+
+        if (typeof param === 'function') {
+          param($image);
+        } else {
+          if (typeof param === 'string') {
+            $image.attr('data-filename', param);
+          }
+
+          $image.css('width', Math.min(_this3.$editable.width(), $image.width()));
+        }
+
+        $image.show();
+
+        _this3.getLastRange().insertNode($image[0]);
+
+        _this3.setLastRange(range.createFromNodeAfter($image[0]).select());
+
+        _this3.afterCommand();
+      }).fail(function (e) {
+        _this3.context.triggerEvent('image.upload.error', e);
+      });
+    }
+    /**
+     * insertImages
+     * @param {File[]} files
+     */
+
+  }, {
+    key: "insertImagesAsDataURL",
+    value: function insertImagesAsDataURL(files) {
+      var _this4 = this;
+
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(files, function (idx, file) {
+        var filename = file.name;
+
+        if (_this4.options.maximumImageFileSize && _this4.options.maximumImageFileSize < file.size) {
+          _this4.context.triggerEvent('image.upload.error', _this4.lang.image.maximumFileSizeError);
+        } else {
+          readFileAsDataURL(file).then(function (dataURL) {
+            return _this4.insertImage(dataURL, filename);
+          }).fail(function () {
+            _this4.context.triggerEvent('image.upload.error');
+          });
+        }
+      });
+    }
+    /**
+     * insertImagesOrCallback
+     * @param {File[]} files
+     */
+
+  }, {
+    key: "insertImagesOrCallback",
+    value: function insertImagesOrCallback(files) {
+      var callbacks = this.options.callbacks; // If onImageUpload set,
+
+      if (callbacks.onImageUpload) {
+        this.context.triggerEvent('image.upload', files); // else insert Image as dataURL
+      } else {
+        this.insertImagesAsDataURL(files);
+      }
+    }
+    /**
+     * return selected plain text
+     * @return {String} text
+     */
+
+  }, {
+    key: "getSelectedText",
+    value: function getSelectedText() {
+      var rng = this.getLastRange(); // if range on anchor, expand range with anchor
+
+      if (rng.isOnAnchor()) {
+        rng = range.createFromNode(dom.ancestor(rng.sc, dom.isAnchor));
       }
 
-      if (!this.isLimited(this.options.tabSize)) {
+      return rng.toString();
+    }
+  }, {
+    key: "onFormatBlock",
+    value: function onFormatBlock(tagName, $target) {
+      // [workaround] for MSIE, IE need `<`
+      document.execCommand('FormatBlock', false, env.isMSIE ? '<' + tagName + '>' : tagName); // support custom class
+
+      if ($target && $target.length) {
+        // find the exact element has given tagName
+        if ($target[0].tagName.toUpperCase() !== tagName.toUpperCase()) {
+          $target = $target.find(tagName);
+        }
+
+        if ($target && $target.length) {
+          var className = $target[0].className || '';
+
+          if (className) {
+            var currentRange = this.createRange();
+            var $parent = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()([currentRange.sc, currentRange.ec]).closest(tagName);
+            $parent.addClass(className);
+          }
+        }
+      }
+    }
+  }, {
+    key: "formatPara",
+    value: function formatPara() {
+      this.formatBlock('P');
+    }
+  }, {
+    key: "fontStyling",
+    value: function fontStyling(target, value) {
+      var rng = this.getLastRange();
+
+      if (rng !== '') {
+        var spans = this.style.styleNodes(rng);
+        this.$editor.find('.note-status-output').html('');
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(spans).css(target, value); // [workaround] added styled bogus span for style
+        //  - also bogus character needed for cursor position
+
+        if (rng.isCollapsed()) {
+          var firstSpan = lists.head(spans);
+
+          if (firstSpan && !dom.nodeLength(firstSpan)) {
+            firstSpan.innerHTML = dom.ZERO_WIDTH_NBSP_CHAR;
+            range.createFromNodeAfter(firstSpan.firstChild).select();
+            this.setLastRange();
+            this.$editable.data(KEY_BOGUS, firstSpan);
+          }
+        }
+      } else {
+        var noteStatusOutput = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.now();
+        this.$editor.find('.note-status-output').html('<div id="note-status-output-' + noteStatusOutput + '" class="alert alert-info">' + this.lang.output.noSelection + '</div>');
+        setTimeout(function () {
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('#note-status-output-' + noteStatusOutput).remove();
+        }, 5000);
+      }
+    }
+    /**
+     * unlink
+     *
+     * @type command
+     */
+
+  }, {
+    key: "unlink",
+    value: function unlink() {
+      var rng = this.getLastRange();
+
+      if (rng.isOnAnchor()) {
+        var anchor = dom.ancestor(rng.sc, dom.isAnchor);
+        rng = range.createFromNode(anchor);
+        rng.select();
+        this.setLastRange();
         this.beforeCommand();
-        this.typing.insertTab(rng, this.options.tabSize);
+        document.execCommand('unlink');
         this.afterCommand();
       }
     }
-  }
-  /**
-   * handle shift+tab key
-   */
+    /**
+     * returns link info
+     *
+     * @return {Object}
+     * @return {WrappedRange} return.range
+     * @return {String} return.text
+     * @return {Boolean} [return.isNewWindow=true]
+     * @return {String} [return.url=""]
+     */
 
+  }, {
+    key: "getLinkInfo",
+    value: function getLinkInfo() {
+      var rng = this.getLastRange().expand(dom.isAnchor); // Get the first anchor on range(for edit).
 
-  untab() {
-    const rng = this.getLastRange();
+      var $anchor = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(lists.head(rng.nodes(dom.isAnchor)));
+      var linkInfo = {
+        range: rng,
+        text: rng.toString(),
+        url: $anchor.length ? $anchor.attr('href') : ''
+      }; // When anchor exists,
 
-    if (rng.isCollapsed() && rng.isOnCell()) {
-      this.table.tab(rng, true);
-    } else {
-      if (this.options.tabSize === 0) {
-        return false;
+      if ($anchor.length) {
+        // Set isNewWindow by checking its target.
+        linkInfo.isNewWindow = $anchor.attr('target') === '_blank';
+      }
+
+      return linkInfo;
+    }
+  }, {
+    key: "addRow",
+    value: function addRow(position) {
+      var rng = this.getLastRange(this.$editable);
+
+      if (rng.isCollapsed() && rng.isOnCell()) {
+        this.beforeCommand();
+        this.table.addRow(rng, position);
+        this.afterCommand();
       }
     }
-  }
-  /**
-   * run given function between beforeCommand and afterCommand
-   */
+  }, {
+    key: "addCol",
+    value: function addCol(position) {
+      var rng = this.getLastRange(this.$editable);
 
+      if (rng.isCollapsed() && rng.isOnCell()) {
+        this.beforeCommand();
+        this.table.addCol(rng, position);
+        this.afterCommand();
+      }
+    }
+  }, {
+    key: "deleteRow",
+    value: function deleteRow() {
+      var rng = this.getLastRange(this.$editable);
 
-  wrapCommand(fn) {
-    return function () {
-      this.beforeCommand();
-      fn.apply(this, arguments);
-      this.afterCommand();
-    };
-  }
-  /**
-   * insert image
-   *
-   * @param {String} src
-   * @param {String|Function} param
-   * @return {Promise}
-   */
+      if (rng.isCollapsed() && rng.isOnCell()) {
+        this.beforeCommand();
+        this.table.deleteRow(rng);
+        this.afterCommand();
+      }
+    }
+  }, {
+    key: "deleteCol",
+    value: function deleteCol() {
+      var rng = this.getLastRange(this.$editable);
 
+      if (rng.isCollapsed() && rng.isOnCell()) {
+        this.beforeCommand();
+        this.table.deleteCol(rng);
+        this.afterCommand();
+      }
+    }
+  }, {
+    key: "deleteTable",
+    value: function deleteTable() {
+      var rng = this.getLastRange(this.$editable);
 
-  insertImage(src, param) {
-    return createImage(src, param).then($image => {
-      this.beforeCommand();
+      if (rng.isCollapsed() && rng.isOnCell()) {
+        this.beforeCommand();
+        this.table.deleteTable(rng);
+        this.afterCommand();
+      }
+    }
+    /**
+     * @param {Position} pos
+     * @param {jQuery} $target - target element
+     * @param {Boolean} [bKeepRatio] - keep ratio
+     */
 
-      if (typeof param === 'function') {
-        param($image);
+  }, {
+    key: "resizeTo",
+    value: function resizeTo(pos, $target, bKeepRatio) {
+      var imageSize;
+
+      if (bKeepRatio) {
+        var newRatio = pos.y / pos.x;
+        var ratio = $target.data('ratio');
+        imageSize = {
+          width: ratio > newRatio ? pos.x : pos.y / ratio,
+          height: ratio > newRatio ? pos.x * ratio : pos.y
+        };
       } else {
-        if (typeof param === 'string') {
-          $image.attr('data-filename', param);
-        }
-
-        $image.css('width', Math.min(this.$editable.width(), $image.width()));
+        imageSize = {
+          width: pos.x,
+          height: pos.y
+        };
       }
 
-      $image.show();
-      this.getLastRange().insertNode($image[0]);
-      this.setLastRange(core_range.createFromNodeAfter($image[0]).select());
-      this.afterCommand();
-    }).fail(e => {
-      this.context.triggerEvent('image.upload.error', e);
-    });
-  }
-  /**
-   * insertImages
-   * @param {File[]} files
-   */
-
-
-  insertImagesAsDataURL(files) {
-    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(files, (idx, file) => {
-      const filename = file.name;
-
-      if (this.options.maximumImageFileSize && this.options.maximumImageFileSize < file.size) {
-        this.context.triggerEvent('image.upload.error', this.lang.image.maximumFileSizeError);
-      } else {
-        readFileAsDataURL(file).then(dataURL => {
-          return this.insertImage(dataURL, filename);
-        }).fail(() => {
-          this.context.triggerEvent('image.upload.error');
-        });
-      }
-    });
-  }
-  /**
-   * insertImagesOrCallback
-   * @param {File[]} files
-   */
-
-
-  insertImagesOrCallback(files) {
-    const callbacks = this.options.callbacks; // If onImageUpload set,
-
-    if (callbacks.onImageUpload) {
-      this.context.triggerEvent('image.upload', files); // else insert Image as dataURL
-    } else {
-      this.insertImagesAsDataURL(files);
+      $target.css(imageSize);
     }
-  }
-  /**
-   * return selected plain text
-   * @return {String} text
-   */
+    /**
+     * returns whether editable area has focus or not.
+     */
 
-
-  getSelectedText() {
-    let rng = this.getLastRange(); // if range on anchor, expand range with anchor
-
-    if (rng.isOnAnchor()) {
-      rng = core_range.createFromNode(dom.ancestor(rng.sc, dom.isAnchor));
+  }, {
+    key: "hasFocus",
+    value: function hasFocus() {
+      return this.$editable.is(':focus');
     }
+    /**
+     * set focus
+     */
 
-    return rng.toString();
-  }
-
-  onFormatBlock(tagName, $target) {
-    // [workaround] for MSIE, IE need `<`
-    document.execCommand('FormatBlock', false, env.isMSIE ? '<' + tagName + '>' : tagName); // support custom class
-
-    if ($target && $target.length) {
-      // find the exact element has given tagName
-      if ($target[0].tagName.toUpperCase() !== tagName.toUpperCase()) {
-        $target = $target.find(tagName);
-      }
-
-      if ($target && $target.length) {
-        const className = $target[0].className || '';
-
-        if (className) {
-          const currentRange = this.createRange();
-          const $parent = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()([currentRange.sc, currentRange.ec]).closest(tagName);
-          $parent.addClass(className);
-        }
+  }, {
+    key: "focus",
+    value: function focus() {
+      // [workaround] Screen will move when page is scolled in IE.
+      //  - do focus when not focused
+      if (!this.hasFocus()) {
+        this.$editable.focus();
       }
     }
-  }
+    /**
+     * returns whether contents is empty or not.
+     * @return {Boolean}
+     */
 
-  formatPara() {
-    this.formatBlock('P');
-  }
-
-  fontStyling(target, value) {
-    const rng = this.getLastRange();
-
-    if (rng !== '') {
-      const spans = this.style.styleNodes(rng);
-      this.$editor.find('.note-status-output').html('');
-      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(spans).css(target, value); // [workaround] added styled bogus span for style
-      //  - also bogus character needed for cursor position
-
-      if (rng.isCollapsed()) {
-        const firstSpan = lists.head(spans);
-
-        if (firstSpan && !dom.nodeLength(firstSpan)) {
-          firstSpan.innerHTML = dom.ZERO_WIDTH_NBSP_CHAR;
-          core_range.createFromNodeAfter(firstSpan.firstChild).select();
-          this.setLastRange();
-          this.$editable.data(KEY_BOGUS, firstSpan);
-        }
-      }
-    } else {
-      const noteStatusOutput = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.now();
-      this.$editor.find('.note-status-output').html('<div id="note-status-output-' + noteStatusOutput + '" class="alert alert-info">' + this.lang.output.noSelection + '</div>');
-      setTimeout(function () {
-        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('#note-status-output-' + noteStatusOutput).remove();
-      }, 5000);
+  }, {
+    key: "isEmpty",
+    value: function isEmpty() {
+      return dom.isEmpty(this.$editable[0]) || dom.emptyPara === this.$editable.html();
     }
-  }
-  /**
-   * unlink
-   *
-   * @type command
-   */
+    /**
+     * Removes all contents and restores the editable instance to an _emptyPara_.
+     */
 
-
-  unlink() {
-    let rng = this.getLastRange();
-
-    if (rng.isOnAnchor()) {
-      const anchor = dom.ancestor(rng.sc, dom.isAnchor);
-      rng = core_range.createFromNode(anchor);
-      rng.select();
-      this.setLastRange();
-      this.beforeCommand();
-      document.execCommand('unlink');
-      this.afterCommand();
+  }, {
+    key: "empty",
+    value: function empty() {
+      this.context.invoke('code', dom.emptyPara);
     }
-  }
-  /**
-   * returns link info
-   *
-   * @return {Object}
-   * @return {WrappedRange} return.range
-   * @return {String} return.text
-   * @return {Boolean} [return.isNewWindow=true]
-   * @return {String} [return.url=""]
-   */
+    /**
+     * normalize content
+     */
 
-
-  getLinkInfo() {
-    const rng = this.getLastRange().expand(dom.isAnchor); // Get the first anchor on range(for edit).
-
-    const $anchor = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(lists.head(rng.nodes(dom.isAnchor)));
-    const linkInfo = {
-      range: rng,
-      text: rng.toString(),
-      url: $anchor.length ? $anchor.attr('href') : ''
-    }; // When anchor exists,
-
-    if ($anchor.length) {
-      // Set isNewWindow by checking its target.
-      linkInfo.isNewWindow = $anchor.attr('target') === '_blank';
+  }, {
+    key: "normalizeContent",
+    value: function normalizeContent() {
+      this.$editable[0].normalize();
     }
+  }]);
 
-    return linkInfo;
-  }
-
-  addRow(position) {
-    const rng = this.getLastRange(this.$editable);
-
-    if (rng.isCollapsed() && rng.isOnCell()) {
-      this.beforeCommand();
-      this.table.addRow(rng, position);
-      this.afterCommand();
-    }
-  }
-
-  addCol(position) {
-    const rng = this.getLastRange(this.$editable);
-
-    if (rng.isCollapsed() && rng.isOnCell()) {
-      this.beforeCommand();
-      this.table.addCol(rng, position);
-      this.afterCommand();
-    }
-  }
-
-  deleteRow() {
-    const rng = this.getLastRange(this.$editable);
-
-    if (rng.isCollapsed() && rng.isOnCell()) {
-      this.beforeCommand();
-      this.table.deleteRow(rng);
-      this.afterCommand();
-    }
-  }
-
-  deleteCol() {
-    const rng = this.getLastRange(this.$editable);
-
-    if (rng.isCollapsed() && rng.isOnCell()) {
-      this.beforeCommand();
-      this.table.deleteCol(rng);
-      this.afterCommand();
-    }
-  }
-
-  deleteTable() {
-    const rng = this.getLastRange(this.$editable);
-
-    if (rng.isCollapsed() && rng.isOnCell()) {
-      this.beforeCommand();
-      this.table.deleteTable(rng);
-      this.afterCommand();
-    }
-  }
-  /**
-   * @param {Position} pos
-   * @param {jQuery} $target - target element
-   * @param {Boolean} [bKeepRatio] - keep ratio
-   */
+  return Editor;
+}();
 
 
-  resizeTo(pos, $target, bKeepRatio) {
-    let imageSize;
-
-    if (bKeepRatio) {
-      const newRatio = pos.y / pos.x;
-      const ratio = $target.data('ratio');
-      imageSize = {
-        width: ratio > newRatio ? pos.x : pos.y / ratio,
-        height: ratio > newRatio ? pos.x * ratio : pos.y
-      };
-    } else {
-      imageSize = {
-        width: pos.x,
-        height: pos.y
-      };
-    }
-
-    $target.css(imageSize);
-  }
-  /**
-   * returns whether editable area has focus or not.
-   */
-
-
-  hasFocus() {
-    return this.$editable.is(':focus');
-  }
-  /**
-   * set focus
-   */
-
-
-  focus() {
-    // [workaround] Screen will move when page is scolled in IE.
-    //  - do focus when not focused
-    if (!this.hasFocus()) {
-      this.$editable.focus();
-    }
-  }
-  /**
-   * returns whether contents is empty or not.
-   * @return {Boolean}
-   */
-
-
-  isEmpty() {
-    return dom.isEmpty(this.$editable[0]) || dom.emptyPara === this.$editable.html();
-  }
-  /**
-   * Removes all contents and restores the editable instance to an _emptyPara_.
-   */
-
-
-  empty() {
-    this.context.invoke('code', dom.emptyPara);
-  }
-  /**
-   * normalize content
-   */
-
-
-  normalizeContent() {
-    this.$editable[0].normalize();
-  }
-
-}
 // CONCATENATED MODULE: ./src/js/base/module/Clipboard.js
+function Clipboard_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-class Clipboard_Clipboard {
-  constructor(context) {
+function Clipboard_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Clipboard_createClass(Constructor, protoProps, staticProps) { if (protoProps) Clipboard_defineProperties(Constructor.prototype, protoProps); if (staticProps) Clipboard_defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var Clipboard_Clipboard =
+/*#__PURE__*/
+function () {
+  function Clipboard(context) {
+    Clipboard_classCallCheck(this, Clipboard);
+
     this.context = context;
     this.$editable = context.layoutInfo.editable;
   }
 
-  initialize() {
-    this.$editable.on('paste', this.pasteByEvent.bind(this));
-  }
-  /**
-   * paste by clipboard event
-   *
-   * @param {Event} event
-   */
-
-
-  pasteByEvent(event) {
-    const clipboardData = event.originalEvent.clipboardData;
-
-    if (clipboardData && clipboardData.items && clipboardData.items.length) {
-      const item = clipboardData.items.length > 1 ? clipboardData.items[1] : lists.head(clipboardData.items);
-
-      if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
-        // paste img file
-        this.context.invoke('editor.insertImagesOrCallback', [item.getAsFile()]);
-        event.preventDefault();
-        this.context.invoke('editor.afterCommand');
-      } else if (item.kind === 'string') {
-        // paste text with maxTextLength check
-        if (this.context.invoke('editor.isLimited', clipboardData.getData('Text').length)) {
-          event.preventDefault();
-        } else {
-          this.context.invoke('editor.afterCommand');
-        }
-      }
+  Clipboard_createClass(Clipboard, [{
+    key: "initialize",
+    value: function initialize() {
+      this.$editable.on('paste', this.pasteByEvent.bind(this));
     }
-  }
+    /**
+     * paste by clipboard event
+     *
+     * @param {Event} event
+     */
 
-}
+  }, {
+    key: "pasteByEvent",
+    value: function pasteByEvent(event) {
+      var _this = this;
+
+      var clipboardData = event.originalEvent.clipboardData;
+
+      if (clipboardData && clipboardData.items && clipboardData.items.length) {
+        var item = clipboardData.items.length > 1 ? clipboardData.items[1] : lists.head(clipboardData.items);
+
+        if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
+          // paste img file
+          this.context.invoke('editor.insertImagesOrCallback', [item.getAsFile()]);
+          event.preventDefault();
+        } else if (item.kind === 'string') {
+          // paste text with maxTextLength check
+          if (this.context.invoke('editor.isLimited', clipboardData.getData('Text').length)) {
+            event.preventDefault();
+          }
+        }
+      } else if (window.clipboardData) {
+        // for IE
+        var text = window.clipboardData.getData('text');
+
+        if (this.context.invoke('editor.isLimited', text.length)) {
+          event.preventDefault();
+        }
+      } // Call editor.afterCommand after proceeding default event handler
+
+
+      setTimeout(function () {
+        _this.context.invoke('editor.afterCommand');
+      }, 10);
+    }
+  }]);
+
+  return Clipboard;
+}();
+
+
 // CONCATENATED MODULE: ./src/js/base/module/Dropzone.js
+function Dropzone_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-class Dropzone_Dropzone {
-  constructor(context) {
+function Dropzone_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Dropzone_createClass(Constructor, protoProps, staticProps) { if (protoProps) Dropzone_defineProperties(Constructor.prototype, protoProps); if (staticProps) Dropzone_defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var Dropzone_Dropzone =
+/*#__PURE__*/
+function () {
+  function Dropzone(context) {
+    Dropzone_classCallCheck(this, Dropzone);
+
     this.context = context;
     this.$eventListener = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document);
     this.$editor = context.layoutInfo.editor;
@@ -5876,110 +6277,137 @@ class Dropzone_Dropzone {
    */
 
 
-  initialize() {
-    if (this.options.disableDragAndDrop) {
-      // prevent default drop event
-      this.documentEventHandlers.onDrop = e => {
-        e.preventDefault();
-      }; // do not consider outside of dropzone
+  Dropzone_createClass(Dropzone, [{
+    key: "initialize",
+    value: function initialize() {
+      if (this.options.disableDragAndDrop) {
+        // prevent default drop event
+        this.documentEventHandlers.onDrop = function (e) {
+          e.preventDefault();
+        }; // do not consider outside of dropzone
 
 
-      this.$eventListener = this.$dropzone;
-      this.$eventListener.on('drop', this.documentEventHandlers.onDrop);
-    } else {
-      this.attachDragAndDropEvent();
-    }
-  }
-  /**
-   * attach Drag and Drop Events
-   */
-
-
-  attachDragAndDropEvent() {
-    let collection = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()();
-    const $dropzoneMessage = this.$dropzone.find('.note-dropzone-message');
-
-    this.documentEventHandlers.onDragenter = e => {
-      const isCodeview = this.context.invoke('codeview.isActivated');
-      const hasEditorSize = this.$editor.width() > 0 && this.$editor.height() > 0;
-
-      if (!isCodeview && !collection.length && hasEditorSize) {
-        this.$editor.addClass('dragover');
-        this.$dropzone.width(this.$editor.width());
-        this.$dropzone.height(this.$editor.height());
-        $dropzoneMessage.text(this.lang.image.dragImageHere);
-      }
-
-      collection = collection.add(e.target);
-    };
-
-    this.documentEventHandlers.onDragleave = e => {
-      collection = collection.not(e.target); // If nodeName is BODY, then just make it over (fix for IE)
-
-      if (!collection.length || e.target.nodeName === 'BODY') {
-        collection = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()();
-        this.$editor.removeClass('dragover');
-      }
-    };
-
-    this.documentEventHandlers.onDrop = () => {
-      collection = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()();
-      this.$editor.removeClass('dragover');
-    }; // show dropzone on dragenter when dragging a object to document
-    // -but only if the editor is visible, i.e. has a positive width and height
-
-
-    this.$eventListener.on('dragenter', this.documentEventHandlers.onDragenter).on('dragleave', this.documentEventHandlers.onDragleave).on('drop', this.documentEventHandlers.onDrop); // change dropzone's message on hover.
-
-    this.$dropzone.on('dragenter', () => {
-      this.$dropzone.addClass('hover');
-      $dropzoneMessage.text(this.lang.image.dropImage);
-    }).on('dragleave', () => {
-      this.$dropzone.removeClass('hover');
-      $dropzoneMessage.text(this.lang.image.dragImageHere);
-    }); // attach dropImage
-
-    this.$dropzone.on('drop', event => {
-      const dataTransfer = event.originalEvent.dataTransfer; // stop the browser from opening the dropped content
-
-      event.preventDefault();
-
-      if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
-        this.$editable.focus();
-        this.context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
+        this.$eventListener = this.$dropzone;
+        this.$eventListener.on('drop', this.documentEventHandlers.onDrop);
       } else {
-        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(dataTransfer.types, (idx, type) => {
-          // skip moz-specific types
-          if (type.toLowerCase().indexOf('_moz_') > -1) {
-            return;
-          }
-
-          const content = dataTransfer.getData(type);
-
-          if (type.toLowerCase().indexOf('text') > -1) {
-            this.context.invoke('editor.pasteHTML', content);
-          } else {
-            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(content).each((idx, item) => {
-              this.context.invoke('editor.insertNode', item);
-            });
-          }
-        });
+        this.attachDragAndDropEvent();
       }
-    }).on('dragover', false); // prevent default dragover event
-  }
+    }
+    /**
+     * attach Drag and Drop Events
+     */
 
-  destroy() {
-    Object.keys(this.documentEventHandlers).forEach(key => {
-      this.$eventListener.off(key.substr(2).toLowerCase(), this.documentEventHandlers[key]);
-    });
-    this.documentEventHandlers = {};
-  }
+  }, {
+    key: "attachDragAndDropEvent",
+    value: function attachDragAndDropEvent() {
+      var _this = this;
 
-}
+      var collection = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()();
+      var $dropzoneMessage = this.$dropzone.find('.note-dropzone-message');
+
+      this.documentEventHandlers.onDragenter = function (e) {
+        var isCodeview = _this.context.invoke('codeview.isActivated');
+
+        var hasEditorSize = _this.$editor.width() > 0 && _this.$editor.height() > 0;
+
+        if (!isCodeview && !collection.length && hasEditorSize) {
+          _this.$editor.addClass('dragover');
+
+          _this.$dropzone.width(_this.$editor.width());
+
+          _this.$dropzone.height(_this.$editor.height());
+
+          $dropzoneMessage.text(_this.lang.image.dragImageHere);
+        }
+
+        collection = collection.add(e.target);
+      };
+
+      this.documentEventHandlers.onDragleave = function (e) {
+        collection = collection.not(e.target); // If nodeName is BODY, then just make it over (fix for IE)
+
+        if (!collection.length || e.target.nodeName === 'BODY') {
+          collection = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()();
+
+          _this.$editor.removeClass('dragover');
+        }
+      };
+
+      this.documentEventHandlers.onDrop = function () {
+        collection = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()();
+
+        _this.$editor.removeClass('dragover');
+      }; // show dropzone on dragenter when dragging a object to document
+      // -but only if the editor is visible, i.e. has a positive width and height
+
+
+      this.$eventListener.on('dragenter', this.documentEventHandlers.onDragenter).on('dragleave', this.documentEventHandlers.onDragleave).on('drop', this.documentEventHandlers.onDrop); // change dropzone's message on hover.
+
+      this.$dropzone.on('dragenter', function () {
+        _this.$dropzone.addClass('hover');
+
+        $dropzoneMessage.text(_this.lang.image.dropImage);
+      }).on('dragleave', function () {
+        _this.$dropzone.removeClass('hover');
+
+        $dropzoneMessage.text(_this.lang.image.dragImageHere);
+      }); // attach dropImage
+
+      this.$dropzone.on('drop', function (event) {
+        var dataTransfer = event.originalEvent.dataTransfer; // stop the browser from opening the dropped content
+
+        event.preventDefault();
+
+        if (dataTransfer && dataTransfer.files && dataTransfer.files.length) {
+          _this.$editable.focus();
+
+          _this.context.invoke('editor.insertImagesOrCallback', dataTransfer.files);
+        } else {
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(dataTransfer.types, function (idx, type) {
+            // skip moz-specific types
+            if (type.toLowerCase().indexOf('_moz_') > -1) {
+              return;
+            }
+
+            var content = dataTransfer.getData(type);
+
+            if (type.toLowerCase().indexOf('text') > -1) {
+              _this.context.invoke('editor.pasteHTML', content);
+            } else {
+              external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(content).each(function (idx, item) {
+                _this.context.invoke('editor.insertNode', item);
+              });
+            }
+          });
+        }
+      }).on('dragover', false); // prevent default dragover event
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      var _this2 = this;
+
+      Object.keys(this.documentEventHandlers).forEach(function (key) {
+        _this2.$eventListener.off(key.substr(2).toLowerCase(), _this2.documentEventHandlers[key]);
+      });
+      this.documentEventHandlers = {};
+    }
+  }]);
+
+  return Dropzone;
+}();
+
+
 // CONCATENATED MODULE: ./src/js/base/module/Codeview.js
+function Codeview_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function Codeview_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Codeview_createClass(Constructor, protoProps, staticProps) { if (protoProps) Codeview_defineProperties(Constructor.prototype, protoProps); if (staticProps) Codeview_defineProperties(Constructor, staticProps); return Constructor; }
 
 
-let CodeMirror;
+
+var CodeMirror;
 
 if (env.hasCodeMirror) {
   CodeMirror = window.CodeMirror;
@@ -5989,8 +6417,12 @@ if (env.hasCodeMirror) {
  */
 
 
-class Codeview_CodeView {
-  constructor(context) {
+var Codeview_CodeView =
+/*#__PURE__*/
+function () {
+  function CodeView(context) {
+    Codeview_classCallCheck(this, CodeView);
+
     this.context = context;
     this.$editor = context.layoutInfo.editor;
     this.$editable = context.layoutInfo.editable;
@@ -5998,189 +6430,259 @@ class Codeview_CodeView {
     this.options = context.options;
   }
 
-  sync() {
-    const isCodeview = this.isActivated();
+  Codeview_createClass(CodeView, [{
+    key: "sync",
+    value: function sync() {
+      var isCodeview = this.isActivated();
 
-    if (isCodeview && env.hasCodeMirror) {
-      this.$codable.data('cmEditor').save();
+      if (isCodeview && env.hasCodeMirror) {
+        this.$codable.data('cmEditor').save();
+      }
     }
-  }
-  /**
-   * @return {Boolean}
-   */
+    /**
+     * @return {Boolean}
+     */
 
-
-  isActivated() {
-    return this.$editor.hasClass('codeview');
-  }
-  /**
-   * toggle codeview
-   */
-
-
-  toggle() {
-    if (this.isActivated()) {
-      this.deactivate();
-    } else {
-      this.activate();
+  }, {
+    key: "isActivated",
+    value: function isActivated() {
+      return this.$editor.hasClass('codeview');
     }
+    /**
+     * toggle codeview
+     */
 
-    this.context.triggerEvent('codeview.toggled');
-  }
-  /**
-   * purify input value
-   * @param value
-   * @returns {*}
-   */
+  }, {
+    key: "toggle",
+    value: function toggle() {
+      if (this.isActivated()) {
+        this.deactivate();
+      } else {
+        this.activate();
+      }
 
+      this.context.triggerEvent('codeview.toggled');
+    }
+    /**
+     * purify input value
+     * @param value
+     * @returns {*}
+     */
 
-  purify(value) {
-    if (this.options.codeviewFilter) {
-      // filter code view regex
-      value = value.replace(this.options.codeviewFilterRegex, ''); // allow specific iframe tag
+  }, {
+    key: "purify",
+    value: function purify(value) {
+      if (this.options.codeviewFilter) {
+        // filter code view regex
+        value = value.replace(this.options.codeviewFilterRegex, ''); // allow specific iframe tag
 
-      if (this.options.codeviewIframeFilter) {
-        const whitelist = this.options.codeviewIframeWhitelistSrc.concat(this.options.codeviewIframeWhitelistSrcBase);
-        value = value.replace(/(<iframe.*?>.*?(?:<\/iframe>)?)/gi, function (tag) {
-          // remove if src attribute is duplicated
-          if (/<.+src(?==?('|"|\s)?)[\s\S]+src(?=('|"|\s)?)[^>]*?>/i.test(tag)) {
-            return '';
-          }
-
-          for (const src of whitelist) {
-            // pass if src is trusted
-            if (new RegExp('src="(https?:)?\/\/' + src.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '\/(.+)"').test(tag)) {
-              return tag;
+        if (this.options.codeviewIframeFilter) {
+          var whitelist = this.options.codeviewIframeWhitelistSrc.concat(this.options.codeviewIframeWhitelistSrcBase);
+          value = value.replace(/(<iframe.*?>.*?(?:<\/iframe>)?)/gi, function (tag) {
+            // remove if src attribute is duplicated
+            if (/<.+src(?==?('|"|\s)?)[\s\S]+src(?=('|"|\s)?)[^>]*?>/i.test(tag)) {
+              return '';
             }
-          }
 
-          return '';
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+              for (var _iterator = whitelist[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var src = _step.value;
+
+                // pass if src is trusted
+                if (new RegExp('src="(https?:)?\/\/' + src.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '\/(.+)"').test(tag)) {
+                  return tag;
+                }
+              }
+            } catch (err) {
+              _didIteratorError = true;
+              _iteratorError = err;
+            } finally {
+              try {
+                if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+                  _iterator["return"]();
+                }
+              } finally {
+                if (_didIteratorError) {
+                  throw _iteratorError;
+                }
+              }
+            }
+
+            return '';
+          });
+        }
+      }
+
+      return value;
+    }
+    /**
+     * activate code view
+     */
+
+  }, {
+    key: "activate",
+    value: function activate() {
+      var _this = this;
+
+      this.$codable.val(dom.html(this.$editable, this.options.prettifyHtml));
+      this.$codable.height(this.$editable.height());
+      this.context.invoke('toolbar.updateCodeview', true);
+      this.$editor.addClass('codeview');
+      this.$codable.focus(); // activate CodeMirror as codable
+
+      if (env.hasCodeMirror) {
+        var cmEditor = CodeMirror.fromTextArea(this.$codable[0], this.options.codemirror); // CodeMirror TernServer
+
+        if (this.options.codemirror.tern) {
+          var server = new CodeMirror.TernServer(this.options.codemirror.tern);
+          cmEditor.ternServer = server;
+          cmEditor.on('cursorActivity', function (cm) {
+            server.updateArgHints(cm);
+          });
+        }
+
+        cmEditor.on('blur', function (event) {
+          _this.context.triggerEvent('blur.codeview', cmEditor.getValue(), event);
+        });
+        cmEditor.on('change', function () {
+          _this.context.triggerEvent('change.codeview', cmEditor.getValue(), cmEditor);
+        }); // CodeMirror hasn't Padding.
+
+        cmEditor.setSize(null, this.$editable.outerHeight());
+        this.$codable.data('cmEditor', cmEditor);
+      } else {
+        this.$codable.on('blur', function (event) {
+          _this.context.triggerEvent('blur.codeview', _this.$codable.val(), event);
+        });
+        this.$codable.on('input', function () {
+          _this.context.triggerEvent('change.codeview', _this.$codable.val(), _this.$codable);
         });
       }
     }
+    /**
+     * deactivate code view
+     */
 
-    return value;
-  }
-  /**
-   * activate code view
-   */
-
-
-  activate() {
-    this.$codable.val(dom.html(this.$editable, this.options.prettifyHtml));
-    this.$codable.height(this.$editable.height());
-    this.context.invoke('toolbar.updateCodeview', true);
-    this.$editor.addClass('codeview');
-    this.$codable.focus(); // activate CodeMirror as codable
-
-    if (env.hasCodeMirror) {
-      const cmEditor = CodeMirror.fromTextArea(this.$codable[0], this.options.codemirror); // CodeMirror TernServer
-
-      if (this.options.codemirror.tern) {
-        const server = new CodeMirror.TernServer(this.options.codemirror.tern);
-        cmEditor.ternServer = server;
-        cmEditor.on('cursorActivity', cm => {
-          server.updateArgHints(cm);
-        });
+  }, {
+    key: "deactivate",
+    value: function deactivate() {
+      // deactivate CodeMirror as codable
+      if (env.hasCodeMirror) {
+        var cmEditor = this.$codable.data('cmEditor');
+        this.$codable.val(cmEditor.getValue());
+        cmEditor.toTextArea();
       }
 
-      cmEditor.on('blur', event => {
-        this.context.triggerEvent('blur.codeview', cmEditor.getValue(), event);
-      });
-      cmEditor.on('change', event => {
-        this.context.triggerEvent('change.codeview', cmEditor.getValue(), cmEditor);
-      }); // CodeMirror hasn't Padding.
+      var value = this.purify(dom.value(this.$codable, this.options.prettifyHtml) || dom.emptyPara);
+      var isChange = this.$editable.html() !== value;
+      this.$editable.html(value);
+      this.$editable.height(this.options.height ? this.$codable.height() : 'auto');
+      this.$editor.removeClass('codeview');
 
-      cmEditor.setSize(null, this.$editable.outerHeight());
-      this.$codable.data('cmEditor', cmEditor);
-    } else {
-      this.$codable.on('blur', event => {
-        this.context.triggerEvent('blur.codeview', this.$codable.val(), event);
-      });
-      this.$codable.on('input', event => {
-        this.context.triggerEvent('change.codeview', this.$codable.val(), this.$codable);
-      });
+      if (isChange) {
+        this.context.triggerEvent('change', this.$editable.html(), this.$editable);
+      }
+
+      this.$editable.focus();
+      this.context.invoke('toolbar.updateCodeview', false);
     }
-  }
-  /**
-   * deactivate code view
-   */
-
-
-  deactivate() {
-    // deactivate CodeMirror as codable
-    if (env.hasCodeMirror) {
-      const cmEditor = this.$codable.data('cmEditor');
-      this.$codable.val(cmEditor.getValue());
-      cmEditor.toTextArea();
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      if (this.isActivated()) {
+        this.deactivate();
+      }
     }
+  }]);
 
-    const value = this.purify(dom.value(this.$codable, this.options.prettifyHtml) || dom.emptyPara);
-    const isChange = this.$editable.html() !== value;
-    this.$editable.html(value);
-    this.$editable.height(this.options.height ? this.$codable.height() : 'auto');
-    this.$editor.removeClass('codeview');
+  return CodeView;
+}();
 
-    if (isChange) {
-      this.context.triggerEvent('change', this.$editable.html(), this.$editable);
-    }
 
-    this.$editable.focus();
-    this.context.invoke('toolbar.updateCodeview', false);
-  }
-
-  destroy() {
-    if (this.isActivated()) {
-      this.deactivate();
-    }
-  }
-
-}
 // CONCATENATED MODULE: ./src/js/base/module/Statusbar.js
+function Statusbar_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-const EDITABLE_PADDING = 24;
-class Statusbar_Statusbar {
-  constructor(context) {
+function Statusbar_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Statusbar_createClass(Constructor, protoProps, staticProps) { if (protoProps) Statusbar_defineProperties(Constructor.prototype, protoProps); if (staticProps) Statusbar_defineProperties(Constructor, staticProps); return Constructor; }
+
+
+var EDITABLE_PADDING = 24;
+
+var Statusbar_Statusbar =
+/*#__PURE__*/
+function () {
+  function Statusbar(context) {
+    Statusbar_classCallCheck(this, Statusbar);
+
     this.$document = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document);
     this.$statusbar = context.layoutInfo.statusbar;
     this.$editable = context.layoutInfo.editable;
     this.options = context.options;
   }
 
-  initialize() {
-    if (this.options.airMode || this.options.disableResizeEditor) {
-      this.destroy();
-      return;
-    }
+  Statusbar_createClass(Statusbar, [{
+    key: "initialize",
+    value: function initialize() {
+      var _this = this;
 
-    this.$statusbar.on('mousedown', event => {
-      event.preventDefault();
-      event.stopPropagation();
-      const editableTop = this.$editable.offset().top - this.$document.scrollTop();
+      if (this.options.airMode || this.options.disableResizeEditor) {
+        this.destroy();
+        return;
+      }
 
-      const onMouseMove = event => {
-        let height = event.clientY - (editableTop + EDITABLE_PADDING);
-        height = this.options.minheight > 0 ? Math.max(height, this.options.minheight) : height;
-        height = this.options.maxHeight > 0 ? Math.min(height, this.options.maxHeight) : height;
-        this.$editable.height(height);
-      };
+      this.$statusbar.on('mousedown', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
 
-      this.$document.on('mousemove', onMouseMove).one('mouseup', () => {
-        this.$document.off('mousemove', onMouseMove);
+        var editableTop = _this.$editable.offset().top - _this.$document.scrollTop();
+
+        var onMouseMove = function onMouseMove(event) {
+          var height = event.clientY - (editableTop + EDITABLE_PADDING);
+          height = _this.options.minheight > 0 ? Math.max(height, _this.options.minheight) : height;
+          height = _this.options.maxHeight > 0 ? Math.min(height, _this.options.maxHeight) : height;
+
+          _this.$editable.height(height);
+        };
+
+        _this.$document.on('mousemove', onMouseMove).one('mouseup', function () {
+          _this.$document.off('mousemove', onMouseMove);
+        });
       });
-    });
-  }
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this.$statusbar.off();
+      this.$statusbar.addClass('locked');
+    }
+  }]);
 
-  destroy() {
-    this.$statusbar.off();
-    this.$statusbar.addClass('locked');
-  }
+  return Statusbar;
+}();
 
-}
+
 // CONCATENATED MODULE: ./src/js/base/module/Fullscreen.js
+function Fullscreen_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-class Fullscreen_Fullscreen {
-  constructor(context) {
+function Fullscreen_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Fullscreen_createClass(Constructor, protoProps, staticProps) { if (protoProps) Fullscreen_defineProperties(Constructor.prototype, protoProps); if (staticProps) Fullscreen_defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var Fullscreen_Fullscreen =
+/*#__PURE__*/
+function () {
+  function Fullscreen(context) {
+    var _this = this;
+
+    Fullscreen_classCallCheck(this, Fullscreen);
+
     this.context = context;
     this.$editor = context.layoutInfo.editor;
     this.$toolbar = context.layoutInfo.toolbar;
@@ -6189,349 +6691,466 @@ class Fullscreen_Fullscreen {
     this.$window = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(window);
     this.$scrollbar = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('html, body');
 
-    this.onResize = () => {
-      this.resizeTo({
-        h: this.$window.height() - this.$toolbar.outerHeight()
+    this.onResize = function () {
+      _this.resizeTo({
+        h: _this.$window.height() - _this.$toolbar.outerHeight()
       });
     };
   }
 
-  resizeTo(size) {
-    this.$editable.css('height', size.h);
-    this.$codable.css('height', size.h);
+  Fullscreen_createClass(Fullscreen, [{
+    key: "resizeTo",
+    value: function resizeTo(size) {
+      this.$editable.css('height', size.h);
+      this.$codable.css('height', size.h);
 
-    if (this.$codable.data('cmeditor')) {
-      this.$codable.data('cmeditor').setsize(null, size.h);
+      if (this.$codable.data('cmeditor')) {
+        this.$codable.data('cmeditor').setsize(null, size.h);
+      }
     }
-  }
-  /**
-   * toggle fullscreen
-   */
+    /**
+     * toggle fullscreen
+     */
 
+  }, {
+    key: "toggle",
+    value: function toggle() {
+      this.$editor.toggleClass('fullscreen');
 
-  toggle() {
-    this.$editor.toggleClass('fullscreen');
+      if (this.isFullscreen()) {
+        this.$editable.data('orgHeight', this.$editable.css('height'));
+        this.$editable.data('orgMaxHeight', this.$editable.css('maxHeight'));
+        this.$editable.css('maxHeight', '');
+        this.$window.on('resize', this.onResize).trigger('resize');
+        this.$scrollbar.css('overflow', 'hidden');
+      } else {
+        this.$window.off('resize', this.onResize);
+        this.resizeTo({
+          h: this.$editable.data('orgHeight')
+        });
+        this.$editable.css('maxHeight', this.$editable.css('orgMaxHeight'));
+        this.$scrollbar.css('overflow', 'visible');
+      }
 
-    if (this.isFullscreen()) {
-      this.$editable.data('orgHeight', this.$editable.css('height'));
-      this.$editable.data('orgMaxHeight', this.$editable.css('maxHeight'));
-      this.$editable.css('maxHeight', '');
-      this.$window.on('resize', this.onResize).trigger('resize');
-      this.$scrollbar.css('overflow', 'hidden');
-    } else {
-      this.$window.off('resize', this.onResize);
-      this.resizeTo({
-        h: this.$editable.data('orgHeight')
-      });
-      this.$editable.css('maxHeight', this.$editable.css('orgMaxHeight'));
-      this.$scrollbar.css('overflow', 'visible');
+      this.context.invoke('toolbar.updateFullscreen', this.isFullscreen());
     }
+  }, {
+    key: "isFullscreen",
+    value: function isFullscreen() {
+      return this.$editor.hasClass('fullscreen');
+    }
+  }]);
 
-    this.context.invoke('toolbar.updateFullscreen', this.isFullscreen());
-  }
+  return Fullscreen;
+}();
 
-  isFullscreen() {
-    return this.$editor.hasClass('fullscreen');
-  }
 
-}
 // CONCATENATED MODULE: ./src/js/base/module/Handle.js
+function Handle_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function Handle_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Handle_createClass(Constructor, protoProps, staticProps) { if (protoProps) Handle_defineProperties(Constructor.prototype, protoProps); if (staticProps) Handle_defineProperties(Constructor, staticProps); return Constructor; }
 
 
-class Handle_Handle {
-  constructor(context) {
+
+
+var Handle_Handle =
+/*#__PURE__*/
+function () {
+  function Handle(context) {
+    var _this = this;
+
+    Handle_classCallCheck(this, Handle);
+
     this.context = context;
     this.$document = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document);
     this.$editingArea = context.layoutInfo.editingArea;
     this.options = context.options;
     this.lang = this.options.langInfo;
     this.events = {
-      'summernote.mousedown': (we, e) => {
-        if (this.update(e.target, e)) {
+      'summernote.mousedown': function summernoteMousedown(we, e) {
+        if (_this.update(e.target, e)) {
           e.preventDefault();
         }
       },
-      'summernote.keyup summernote.scroll summernote.change summernote.dialog.shown': () => {
-        this.update();
+      'summernote.keyup summernote.scroll summernote.change summernote.dialog.shown': function summernoteKeyupSummernoteScrollSummernoteChangeSummernoteDialogShown() {
+        _this.update();
       },
-      'summernote.disable summernote.blur': () => {
-        this.hide();
+      'summernote.disable summernote.blur': function summernoteDisableSummernoteBlur() {
+        _this.hide();
       },
-      'summernote.codeview.toggled': () => {
-        this.update();
+      'summernote.codeview.toggled': function summernoteCodeviewToggled() {
+        _this.update();
       }
     };
   }
 
-  initialize() {
-    this.$handle = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(['<div class="note-handle">', '<div class="note-control-selection">', '<div class="note-control-selection-bg"></div>', '<div class="note-control-holder note-control-nw"></div>', '<div class="note-control-holder note-control-ne"></div>', '<div class="note-control-holder note-control-sw"></div>', '<div class="', this.options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing', ' note-control-se"></div>', this.options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>', '</div>', '</div>'].join('')).prependTo(this.$editingArea);
-    this.$handle.on('mousedown', event => {
-      if (dom.isControlSizing(event.target)) {
-        event.preventDefault();
-        event.stopPropagation();
-        const $target = this.$handle.find('.note-control-selection').data('target');
-        const posStart = $target.offset();
-        const scrollTop = this.$document.scrollTop();
+  Handle_createClass(Handle, [{
+    key: "initialize",
+    value: function initialize() {
+      var _this2 = this;
 
-        const onMouseMove = event => {
-          this.context.invoke('editor.resizeTo', {
-            x: event.clientX - posStart.left,
-            y: event.clientY - (posStart.top - scrollTop)
-          }, $target, !event.shiftKey);
-          this.update($target[0], event);
-        };
+      this.$handle = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(['<div class="note-handle">', '<div class="note-control-selection">', '<div class="note-control-selection-bg"></div>', '<div class="note-control-holder note-control-nw"></div>', '<div class="note-control-holder note-control-ne"></div>', '<div class="note-control-holder note-control-sw"></div>', '<div class="', this.options.disableResizeImage ? 'note-control-holder' : 'note-control-sizing', ' note-control-se"></div>', this.options.disableResizeImage ? '' : '<div class="note-control-selection-info"></div>', '</div>', '</div>'].join('')).prependTo(this.$editingArea);
+      this.$handle.on('mousedown', function (event) {
+        if (dom.isControlSizing(event.target)) {
+          event.preventDefault();
+          event.stopPropagation();
 
-        this.$document.on('mousemove', onMouseMove).one('mouseup', e => {
-          e.preventDefault();
-          this.$document.off('mousemove', onMouseMove);
-          this.context.invoke('editor.afterCommand');
-        });
+          var $target = _this2.$handle.find('.note-control-selection').data('target');
 
-        if (!$target.data('ratio')) {
-          // original ratio.
-          $target.data('ratio', $target.height() / $target.width());
+          var posStart = $target.offset();
+
+          var scrollTop = _this2.$document.scrollTop();
+
+          var onMouseMove = function onMouseMove(event) {
+            _this2.context.invoke('editor.resizeTo', {
+              x: event.clientX - posStart.left,
+              y: event.clientY - (posStart.top - scrollTop)
+            }, $target, !event.shiftKey);
+
+            _this2.update($target[0], event);
+          };
+
+          _this2.$document.on('mousemove', onMouseMove).one('mouseup', function (e) {
+            e.preventDefault();
+
+            _this2.$document.off('mousemove', onMouseMove);
+
+            _this2.context.invoke('editor.afterCommand');
+          });
+
+          if (!$target.data('ratio')) {
+            // original ratio.
+            $target.data('ratio', $target.height() / $target.width());
+          }
         }
+      }); // Listen for scrolling on the handle overlay.
+
+      this.$handle.on('wheel', function (e) {
+        e.preventDefault();
+
+        _this2.update();
+      });
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this.$handle.remove();
+    }
+  }, {
+    key: "update",
+    value: function update(target, event) {
+      if (this.context.isDisabled()) {
+        return false;
       }
-    }); // Listen for scrolling on the handle overlay.
 
-    this.$handle.on('wheel', e => {
-      e.preventDefault();
-      this.update();
-    });
-  }
+      var isImage = dom.isImg(target);
+      var $selection = this.$handle.find('.note-control-selection');
+      this.context.invoke('imagePopover.update', target, event);
 
-  destroy() {
-    this.$handle.remove();
-  }
+      if (isImage) {
+        var $image = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(target);
+        var position = $image.position();
+        var pos = {
+          left: position.left + parseInt($image.css('marginLeft'), 10),
+          top: position.top + parseInt($image.css('marginTop'), 10)
+        }; // exclude margin
 
-  update(target, event) {
-    if (this.context.isDisabled()) {
-      return false;
+        var imageSize = {
+          w: $image.outerWidth(false),
+          h: $image.outerHeight(false)
+        };
+        $selection.css({
+          display: 'block',
+          left: pos.left,
+          top: pos.top,
+          width: imageSize.w,
+          height: imageSize.h
+        }).data('target', $image); // save current image element.
+
+        var origImageObj = new Image();
+        origImageObj.src = $image.attr('src');
+        var sizingText = imageSize.w + 'x' + imageSize.h + ' (' + this.lang.image.original + ': ' + origImageObj.width + 'x' + origImageObj.height + ')';
+        $selection.find('.note-control-selection-info').text(sizingText);
+        this.context.invoke('editor.saveTarget', target);
+      } else {
+        this.hide();
+      }
+
+      return isImage;
     }
+    /**
+     * hide
+     *
+     * @param {jQuery} $handle
+     */
 
-    const isImage = dom.isImg(target);
-    const $selection = this.$handle.find('.note-control-selection');
-    this.context.invoke('imagePopover.update', target, event);
-
-    if (isImage) {
-      const $image = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(target);
-      const position = $image.position();
-      const pos = {
-        left: position.left + parseInt($image.css('marginLeft'), 10),
-        top: position.top + parseInt($image.css('marginTop'), 10)
-      }; // exclude margin
-
-      const imageSize = {
-        w: $image.outerWidth(false),
-        h: $image.outerHeight(false)
-      };
-      $selection.css({
-        display: 'block',
-        left: pos.left,
-        top: pos.top,
-        width: imageSize.w,
-        height: imageSize.h
-      }).data('target', $image); // save current image element.
-
-      const origImageObj = new Image();
-      origImageObj.src = $image.attr('src');
-      const sizingText = imageSize.w + 'x' + imageSize.h + ' (' + this.lang.image.original + ': ' + origImageObj.width + 'x' + origImageObj.height + ')';
-      $selection.find('.note-control-selection-info').text(sizingText);
-      this.context.invoke('editor.saveTarget', target);
-    } else {
-      this.hide();
+  }, {
+    key: "hide",
+    value: function hide() {
+      this.context.invoke('editor.clearTarget');
+      this.$handle.children().hide();
     }
+  }]);
 
-    return isImage;
-  }
-  /**
-   * hide
-   *
-   * @param {jQuery} $handle
-   */
+  return Handle;
+}();
 
 
-  hide() {
-    this.context.invoke('editor.clearTarget');
-    this.$handle.children().hide();
-  }
-
-}
 // CONCATENATED MODULE: ./src/js/base/module/AutoLink.js
+function AutoLink_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function AutoLink_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function AutoLink_createClass(Constructor, protoProps, staticProps) { if (protoProps) AutoLink_defineProperties(Constructor.prototype, protoProps); if (staticProps) AutoLink_defineProperties(Constructor, staticProps); return Constructor; }
 
 
 
-const defaultScheme = 'http://';
-const linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/]{2}|tel:|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
-class AutoLink_AutoLink {
-  constructor(context) {
+
+var defaultScheme = 'http://';
+var linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/]{2}|tel:|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
+
+var AutoLink_AutoLink =
+/*#__PURE__*/
+function () {
+  function AutoLink(context) {
+    var _this = this;
+
+    AutoLink_classCallCheck(this, AutoLink);
+
     this.context = context;
     this.events = {
-      'summernote.keyup': (we, e) => {
+      'summernote.keyup': function summernoteKeyup(we, e) {
         if (!e.isDefaultPrevented()) {
-          this.handleKeyup(e);
+          _this.handleKeyup(e);
         }
       },
-      'summernote.keydown': (we, e) => {
-        this.handleKeydown(e);
+      'summernote.keydown': function summernoteKeydown(we, e) {
+        _this.handleKeydown(e);
       }
     };
   }
 
-  initialize() {
-    this.lastWordRange = null;
-  }
-
-  destroy() {
-    this.lastWordRange = null;
-  }
-
-  replace() {
-    if (!this.lastWordRange) {
-      return;
+  AutoLink_createClass(AutoLink, [{
+    key: "initialize",
+    value: function initialize() {
+      this.lastWordRange = null;
     }
-
-    const keyword = this.lastWordRange.toString();
-    const match = keyword.match(linkPattern);
-
-    if (match && (match[1] || match[2])) {
-      const link = match[1] ? keyword : defaultScheme + keyword;
-      const urlText = keyword.replace(/^(?:https?:\/\/)?(?:tel?:?)?(?:mailto?:?)?(?:www\.)?/i, '').split('/')[0];
-      const node = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<a />').html(urlText).attr('href', link)[0];
-
-      if (this.context.options.linkTargetBlank) {
-        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(node).attr('target', '_blank');
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this.lastWordRange = null;
+    }
+  }, {
+    key: "replace",
+    value: function replace() {
+      if (!this.lastWordRange) {
+        return;
       }
 
-      this.lastWordRange.insertNode(node);
-      this.lastWordRange = null;
-      this.context.invoke('editor.focus');
-    }
-  }
+      var keyword = this.lastWordRange.toString();
+      var match = keyword.match(linkPattern);
 
-  handleKeydown(e) {
-    if (lists.contains([core_key.code.ENTER, core_key.code.SPACE], e.keyCode)) {
-      const wordRange = this.context.invoke('editor.createRange').getWordRange();
-      this.lastWordRange = wordRange;
-    }
-  }
+      if (match && (match[1] || match[2])) {
+        var link = match[1] ? keyword : defaultScheme + keyword;
+        var urlText = keyword.replace(/^(?:https?:\/\/)?(?:tel?:?)?(?:mailto?:?)?(?:www\.)?/i, '').split('/')[0];
+        var node = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<a />').html(urlText).attr('href', link)[0];
 
-  handleKeyup(e) {
-    if (lists.contains([core_key.code.ENTER, core_key.code.SPACE], e.keyCode)) {
-      this.replace();
-    }
-  }
+        if (this.context.options.linkTargetBlank) {
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(node).attr('target', '_blank');
+        }
 
-}
+        this.lastWordRange.insertNode(node);
+        this.lastWordRange = null;
+        this.context.invoke('editor.focus');
+      }
+    }
+  }, {
+    key: "handleKeydown",
+    value: function handleKeydown(e) {
+      if (lists.contains([core_key.code.ENTER, core_key.code.SPACE], e.keyCode)) {
+        var wordRange = this.context.invoke('editor.createRange').getWordRange();
+        this.lastWordRange = wordRange;
+      }
+    }
+  }, {
+    key: "handleKeyup",
+    value: function handleKeyup(e) {
+      if (lists.contains([core_key.code.ENTER, core_key.code.SPACE], e.keyCode)) {
+        this.replace();
+      }
+    }
+  }]);
+
+  return AutoLink;
+}();
+
+
 // CONCATENATED MODULE: ./src/js/base/module/AutoSync.js
+function AutoSync_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function AutoSync_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function AutoSync_createClass(Constructor, protoProps, staticProps) { if (protoProps) AutoSync_defineProperties(Constructor.prototype, protoProps); if (staticProps) AutoSync_defineProperties(Constructor, staticProps); return Constructor; }
+
 
 /**
  * textarea auto sync.
  */
 
-class AutoSync_AutoSync {
-  constructor(context) {
+var AutoSync_AutoSync =
+/*#__PURE__*/
+function () {
+  function AutoSync(context) {
+    var _this = this;
+
+    AutoSync_classCallCheck(this, AutoSync);
+
     this.$note = context.layoutInfo.note;
     this.events = {
-      'summernote.change': () => {
-        this.$note.val(context.invoke('code'));
+      'summernote.change': function summernoteChange() {
+        _this.$note.val(context.invoke('code'));
       }
     };
   }
 
-  shouldInitialize() {
-    return dom.isTextarea(this.$note[0]);
-  }
+  AutoSync_createClass(AutoSync, [{
+    key: "shouldInitialize",
+    value: function shouldInitialize() {
+      return dom.isTextarea(this.$note[0]);
+    }
+  }]);
 
-}
+  return AutoSync;
+}();
+
+
 // CONCATENATED MODULE: ./src/js/base/module/AutoReplace.js
+function AutoReplace_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function AutoReplace_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function AutoReplace_createClass(Constructor, protoProps, staticProps) { if (protoProps) AutoReplace_defineProperties(Constructor.prototype, protoProps); if (staticProps) AutoReplace_defineProperties(Constructor, staticProps); return Constructor; }
 
 
 
-class AutoReplace_AutoReplace {
-  constructor(context) {
+
+
+var AutoReplace_AutoReplace =
+/*#__PURE__*/
+function () {
+  function AutoReplace(context) {
+    var _this = this;
+
+    AutoReplace_classCallCheck(this, AutoReplace);
+
     this.context = context;
     this.options = context.options.replace || {};
     this.keys = [core_key.code.ENTER, core_key.code.SPACE, core_key.code.PERIOD, core_key.code.COMMA, core_key.code.SEMICOLON, core_key.code.SLASH];
     this.previousKeydownCode = null;
     this.events = {
-      'summernote.keyup': (we, e) => {
+      'summernote.keyup': function summernoteKeyup(we, e) {
         if (!e.isDefaultPrevented()) {
-          this.handleKeyup(e);
+          _this.handleKeyup(e);
         }
       },
-      'summernote.keydown': (we, e) => {
-        this.handleKeydown(e);
+      'summernote.keydown': function summernoteKeydown(we, e) {
+        _this.handleKeydown(e);
       }
     };
   }
 
-  shouldInitialize() {
-    return !!this.options.match;
-  }
-
-  initialize() {
-    this.lastWord = null;
-  }
-
-  destroy() {
-    this.lastWord = null;
-  }
-
-  replace() {
-    if (!this.lastWord) {
-      return;
+  AutoReplace_createClass(AutoReplace, [{
+    key: "shouldInitialize",
+    value: function shouldInitialize() {
+      return !!this.options.match;
     }
-
-    const self = this;
-    const keyword = this.lastWord.toString();
-    this.options.match(keyword, function (match) {
-      if (match) {
-        let node = '';
-
-        if (typeof match === 'string') {
-          node = dom.createText(match);
-        } else if (match instanceof jQuery) {
-          node = match[0];
-        } else if (match instanceof Node) {
-          node = match;
-        }
-
-        if (!node) return;
-        self.lastWord.insertNode(node);
-        self.lastWord = null;
-        self.context.invoke('editor.focus');
+  }, {
+    key: "initialize",
+    value: function initialize() {
+      this.lastWord = null;
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this.lastWord = null;
+    }
+  }, {
+    key: "replace",
+    value: function replace() {
+      if (!this.lastWord) {
+        return;
       }
-    });
-  }
 
-  handleKeydown(e) {
-    // this forces it to remember the last whole word, even if multiple termination keys are pressed
-    // before the previous key is let go.
-    if (this.previousKeydownCode && lists.contains(this.keys, this.previousKeydownCode)) {
+      var self = this;
+      var keyword = this.lastWord.toString();
+      this.options.match(keyword, function (match) {
+        if (match) {
+          var node = '';
+
+          if (typeof match === 'string') {
+            node = dom.createText(match);
+          } else if (match instanceof jQuery) {
+            node = match[0];
+          } else if (match instanceof Node) {
+            node = match;
+          }
+
+          if (!node) return;
+          self.lastWord.insertNode(node);
+          self.lastWord = null;
+          self.context.invoke('editor.focus');
+        }
+      });
+    }
+  }, {
+    key: "handleKeydown",
+    value: function handleKeydown(e) {
+      // this forces it to remember the last whole word, even if multiple termination keys are pressed
+      // before the previous key is let go.
+      if (this.previousKeydownCode && lists.contains(this.keys, this.previousKeydownCode)) {
+        this.previousKeydownCode = e.keyCode;
+        return;
+      }
+
+      if (lists.contains(this.keys, e.keyCode)) {
+        var wordRange = this.context.invoke('editor.createRange').getWordRange();
+        this.lastWord = wordRange;
+      }
+
       this.previousKeydownCode = e.keyCode;
-      return;
     }
-
-    if (lists.contains(this.keys, e.keyCode)) {
-      const wordRange = this.context.invoke('editor.createRange').getWordRange();
-      this.lastWord = wordRange;
+  }, {
+    key: "handleKeyup",
+    value: function handleKeyup(e) {
+      if (lists.contains(this.keys, e.keyCode)) {
+        this.replace();
+      }
     }
+  }]);
 
-    this.previousKeydownCode = e.keyCode;
-  }
+  return AutoReplace;
+}();
 
-  handleKeyup(e) {
-    if (lists.contains(this.keys, e.keyCode)) {
-      this.replace();
-    }
-  }
 
-}
 // CONCATENATED MODULE: ./src/js/base/module/Placeholder.js
+function Placeholder_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-class Placeholder_Placeholder {
-  constructor(context) {
+function Placeholder_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Placeholder_createClass(Constructor, protoProps, staticProps) { if (protoProps) Placeholder_defineProperties(Constructor.prototype, protoProps); if (staticProps) Placeholder_defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var Placeholder_Placeholder =
+/*#__PURE__*/
+function () {
+  function Placeholder(context) {
+    var _this = this;
+
+    Placeholder_classCallCheck(this, Placeholder);
+
     this.context = context;
     this.$editingArea = context.layoutInfo.editingArea;
     this.options = context.options;
@@ -6542,44 +7161,66 @@ class Placeholder_Placeholder {
     }
 
     this.events = {
-      'summernote.init summernote.change': () => {
-        this.update();
+      'summernote.init summernote.change': function summernoteInitSummernoteChange() {
+        _this.update();
       },
-      'summernote.codeview.toggled': () => {
-        this.update();
+      'summernote.codeview.toggled': function summernoteCodeviewToggled() {
+        _this.update();
       }
     };
   }
 
-  shouldInitialize() {
-    return !!this.options.placeholder;
-  }
+  Placeholder_createClass(Placeholder, [{
+    key: "shouldInitialize",
+    value: function shouldInitialize() {
+      return !!this.options.placeholder;
+    }
+  }, {
+    key: "initialize",
+    value: function initialize() {
+      var _this2 = this;
 
-  initialize() {
-    this.$placeholder = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div class="note-placeholder">');
-    this.$placeholder.on('click', () => {
-      this.context.invoke('focus');
-    }).html(this.options.placeholder).prependTo(this.$editingArea);
-    this.update();
-  }
+      this.$placeholder = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div class="note-placeholder">');
+      this.$placeholder.on('click', function () {
+        _this2.context.invoke('focus');
+      }).html(this.options.placeholder).prependTo(this.$editingArea);
+      this.update();
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this.$placeholder.remove();
+    }
+  }, {
+    key: "update",
+    value: function update() {
+      var isShow = !this.context.invoke('codeview.isActivated') && this.context.invoke('editor.isEmpty');
+      this.$placeholder.toggle(isShow);
+    }
+  }]);
 
-  destroy() {
-    this.$placeholder.remove();
-  }
+  return Placeholder;
+}();
 
-  update() {
-    const isShow = !this.context.invoke('codeview.isActivated') && this.context.invoke('editor.isEmpty');
-    this.$placeholder.toggle(isShow);
-  }
 
-}
 // CONCATENATED MODULE: ./src/js/base/module/Buttons.js
+function Buttons_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function Buttons_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Buttons_createClass(Constructor, protoProps, staticProps) { if (protoProps) Buttons_defineProperties(Constructor.prototype, protoProps); if (staticProps) Buttons_defineProperties(Constructor, staticProps); return Constructor; }
 
 
 
 
-class Buttons_Buttons {
-  constructor(context) {
+
+
+var Buttons_Buttons =
+/*#__PURE__*/
+function () {
+  function Buttons(context) {
+    Buttons_classCallCheck(this, Buttons);
+
     this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.context = context;
     this.$toolbar = context.layoutInfo.toolbar;
@@ -6588,815 +7229,869 @@ class Buttons_Buttons {
     this.invertedKeyMap = func.invertObject(this.options.keyMap[env.isMac ? 'mac' : 'pc']);
   }
 
-  representShortcut(editorMethod) {
-    let shortcut = this.invertedKeyMap[editorMethod];
+  Buttons_createClass(Buttons, [{
+    key: "representShortcut",
+    value: function representShortcut(editorMethod) {
+      var shortcut = this.invertedKeyMap[editorMethod];
 
-    if (!this.options.shortcuts || !shortcut) {
-      return '';
+      if (!this.options.shortcuts || !shortcut) {
+        return '';
+      }
+
+      if (env.isMac) {
+        shortcut = shortcut.replace('CMD', '⌘').replace('SHIFT', '⇧');
+      }
+
+      shortcut = shortcut.replace('BACKSLASH', '\\').replace('SLASH', '/').replace('LEFTBRACKET', '[').replace('RIGHTBRACKET', ']');
+      return ' (' + shortcut + ')';
     }
+  }, {
+    key: "button",
+    value: function button(o) {
+      if (!this.options.tooltip && o.tooltip) {
+        delete o.tooltip;
+      }
 
-    if (env.isMac) {
-      shortcut = shortcut.replace('CMD', '⌘').replace('SHIFT', '⇧');
+      o.container = this.options.container;
+      return this.ui.button(o);
     }
-
-    shortcut = shortcut.replace('BACKSLASH', '\\').replace('SLASH', '/').replace('LEFTBRACKET', '[').replace('RIGHTBRACKET', ']');
-    return ' (' + shortcut + ')';
-  }
-
-  button(o) {
-    if (!this.options.tooltip && o.tooltip) {
-      delete o.tooltip;
+  }, {
+    key: "initialize",
+    value: function initialize() {
+      this.addToolbarButtons();
+      this.addImagePopoverButtons();
+      this.addLinkPopoverButtons();
+      this.addTablePopoverButtons();
+      this.fontInstalledMap = {};
     }
-
-    o.container = this.options.container;
-    return this.ui.button(o);
-  }
-
-  initialize() {
-    this.addToolbarButtons();
-    this.addImagePopoverButtons();
-    this.addLinkPopoverButtons();
-    this.addTablePopoverButtons();
-    this.fontInstalledMap = {};
-  }
-
-  destroy() {
-    delete this.fontInstalledMap;
-  }
-
-  isFontInstalled(name) {
-    if (!this.fontInstalledMap.hasOwnProperty(name)) {
-      this.fontInstalledMap[name] = env.isFontInstalled(name) || lists.contains(this.options.fontNamesIgnoreCheck, name);
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      delete this.fontInstalledMap;
     }
+  }, {
+    key: "isFontInstalled",
+    value: function isFontInstalled(name) {
+      if (!Object.prototype.hasOwnProperty.call(this.fontInstalledMap, name)) {
+        this.fontInstalledMap[name] = env.isFontInstalled(name) || lists.contains(this.options.fontNamesIgnoreCheck, name);
+      }
 
-    return this.fontInstalledMap[name];
-  }
+      return this.fontInstalledMap[name];
+    }
+  }, {
+    key: "isFontDeservedToAdd",
+    value: function isFontDeservedToAdd(name) {
+      name = name.toLowerCase();
+      return name !== '' && this.isFontInstalled(name) && env.genericFontFamilies.indexOf(name) === -1;
+    }
+  }, {
+    key: "colorPalette",
+    value: function colorPalette(className, tooltip, backColor, foreColor) {
+      var _this = this;
 
-  isFontDeservedToAdd(name) {
-    name = name.toLowerCase();
-    return name !== '' && this.isFontInstalled(name) && env.genericFontFamilies.indexOf(name) === -1;
-  }
+      return this.ui.buttonGroup({
+        className: 'note-color ' + className,
+        children: [this.button({
+          className: 'note-current-color-button',
+          contents: this.ui.icon(this.options.icons.font + ' note-recent-color'),
+          tooltip: tooltip,
+          click: function click(e) {
+            var $button = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(e.currentTarget);
 
-  colorPalette(className, tooltip, backColor, foreColor) {
-    return this.ui.buttonGroup({
-      className: 'note-color ' + className,
-      children: [this.button({
-        className: 'note-current-color-button',
-        contents: this.ui.icon(this.options.icons.font + ' note-recent-color'),
-        tooltip: tooltip,
-        click: e => {
-          const $button = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(e.currentTarget);
+            if (backColor && foreColor) {
+              _this.context.invoke('editor.color', {
+                backColor: $button.attr('data-backColor'),
+                foreColor: $button.attr('data-foreColor')
+              });
+            } else if (backColor) {
+              _this.context.invoke('editor.color', {
+                backColor: $button.attr('data-backColor')
+              });
+            } else if (foreColor) {
+              _this.context.invoke('editor.color', {
+                foreColor: $button.attr('data-foreColor')
+              });
+            }
+          },
+          callback: function callback($button) {
+            var $recentColor = $button.find('.note-recent-color');
 
-          if (backColor && foreColor) {
-            this.context.invoke('editor.color', {
-              backColor: $button.attr('data-backColor'),
-              foreColor: $button.attr('data-foreColor')
-            });
-          } else if (backColor) {
-            this.context.invoke('editor.color', {
-              backColor: $button.attr('data-backColor')
-            });
-          } else if (foreColor) {
-            this.context.invoke('editor.color', {
-              foreColor: $button.attr('data-foreColor')
-            });
+            if (backColor) {
+              $recentColor.css('background-color', _this.options.colorButton.backColor);
+              $button.attr('data-backColor', _this.options.colorButton.backColor);
+            }
+
+            if (foreColor) {
+              $recentColor.css('color', _this.options.colorButton.foreColor);
+              $button.attr('data-foreColor', _this.options.colorButton.foreColor);
+            } else {
+              $recentColor.css('color', 'transparent');
+            }
           }
-        },
-        callback: $button => {
-          const $recentColor = $button.find('.note-recent-color');
-
-          if (backColor) {
-            $recentColor.css('background-color', this.options.colorButton.backColor);
-            $button.attr('data-backColor', this.options.colorButton.backColor);
+        }), this.button({
+          className: 'dropdown-toggle',
+          contents: this.ui.dropdownButtonContents('', this.options),
+          tooltip: this.lang.color.more,
+          data: {
+            toggle: 'dropdown'
           }
+        }), this.ui.dropdown({
+          items: (backColor ? ['<div class="note-palette">', '<div class="note-palette-title">' + this.lang.color.background + '</div>', '<div>', '<button type="button" class="note-color-reset btn btn-light" data-event="backColor" data-value="inherit">', this.lang.color.transparent, '</button>', '</div>', '<div class="note-holder" data-event="backColor"/>', '<div>', '<button type="button" class="note-color-select btn btn-light" data-event="openPalette" data-value="backColorPicker">', this.lang.color.cpSelect, '</button>', '<input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.backColor + '" data-event="backColorPalette">', '</div>', '<div class="note-holder-custom" id="backColorPalette" data-event="backColor"/>', '</div>'].join('') : '') + (foreColor ? ['<div class="note-palette">', '<div class="note-palette-title">' + this.lang.color.foreground + '</div>', '<div>', '<button type="button" class="note-color-reset btn btn-light" data-event="removeFormat" data-value="foreColor">', this.lang.color.resetToDefault, '</button>', '</div>', '<div class="note-holder" data-event="foreColor"/>', '<div>', '<button type="button" class="note-color-select btn btn-light" data-event="openPalette" data-value="foreColorPicker">', this.lang.color.cpSelect, '</button>', '<input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.foreColor + '" data-event="foreColorPalette">', '</div>', // Fix missing Div, Commented to find easily if it's wrong
+          '<div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"/>', '</div>'].join('') : ''),
+          callback: function callback($dropdown) {
+            $dropdown.find('.note-holder').each(function (idx, item) {
+              var $holder = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item);
+              $holder.append(_this.ui.palette({
+                colors: _this.options.colors,
+                colorsName: _this.options.colorsName,
+                eventName: $holder.data('event'),
+                container: _this.options.container,
+                tooltip: _this.options.tooltip
+              }).render());
+            });
+            /* TODO: do we have to record recent custom colors within cookies? */
 
-          if (foreColor) {
-            $recentColor.css('color', this.options.colorButton.foreColor);
-            $button.attr('data-foreColor', this.options.colorButton.foreColor);
-          } else {
-            $recentColor.css('color', 'transparent');
-          }
-        }
-      }), this.button({
-        className: 'dropdown-toggle',
-        contents: this.ui.dropdownButtonContents('', this.options),
-        tooltip: this.lang.color.more,
-        data: {
-          toggle: 'dropdown'
-        }
-      }), this.ui.dropdown({
-        items: (backColor ? ['<div class="note-palette">', '<div class="note-palette-title">' + this.lang.color.background + '</div>', '<div>', '<button type="button" class="note-color-reset btn btn-light" data-event="backColor" data-value="inherit">', this.lang.color.transparent, '</button>', '</div>', '<div class="note-holder" data-event="backColor"/>', '<div>', '<button type="button" class="note-color-select btn" data-event="openPalette" data-value="backColorPicker">', this.lang.color.cpSelect, '</button>', '<input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.backColor + '" data-event="backColorPalette">', '</div>', '<div class="note-holder-custom" id="backColorPalette" data-event="backColor"/>', '</div>'].join('') : '') + (foreColor ? ['<div class="note-palette">', '<div class="note-palette-title">' + this.lang.color.foreground + '</div>', '<div>', '<button type="button" class="note-color-reset btn btn-light" data-event="removeFormat" data-value="foreColor">', this.lang.color.resetToDefault, '</button>', '</div>', '<div class="note-holder" data-event="foreColor"/>', '<div>', '<button type="button" class="note-color-select btn" data-event="openPalette" data-value="foreColorPicker">', this.lang.color.cpSelect, '</button>', '<input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.foreColor + '" data-event="foreColorPalette">', '</div>', // Fix missing Div, Commented to find easily if it's wrong
-        '<div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"/>', '</div>'].join('') : ''),
-        callback: $dropdown => {
-          $dropdown.find('.note-holder').each((idx, item) => {
-            const $holder = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item);
-            $holder.append(this.ui.palette({
-              colors: this.options.colors,
-              colorsName: this.options.colorsName,
-              eventName: $holder.data('event'),
-              container: this.options.container,
-              tooltip: this.options.tooltip
-            }).render());
-          });
-          /* TODO: do we have to record recent custom colors within cookies? */
+            var customColors = [['#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF']];
+            $dropdown.find('.note-holder-custom').each(function (idx, item) {
+              var $holder = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item);
+              $holder.append(_this.ui.palette({
+                colors: customColors,
+                colorsName: customColors,
+                eventName: $holder.data('event'),
+                container: _this.options.container,
+                tooltip: _this.options.tooltip
+              }).render());
+            });
+            $dropdown.find('input[type=color]').each(function (idx, item) {
+              external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item).change(function () {
+                var $chip = $dropdown.find('#' + external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this).data('event')).find('.note-color-btn').first();
+                var color = this.value.toUpperCase();
+                $chip.css('background-color', color).attr('aria-label', color).attr('data-value', color).attr('data-original-title', color);
+                $chip.click();
+              });
+            });
+          },
+          click: function click(event) {
+            event.stopPropagation();
+            var $parent = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('.' + className).find('.note-dropdown-menu');
+            var $button = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target);
+            var eventName = $button.data('event');
+            var value = $button.attr('data-value');
 
-          var customColors = [['#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF']];
-          $dropdown.find('.note-holder-custom').each((idx, item) => {
-            const $holder = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item);
-            $holder.append(this.ui.palette({
-              colors: customColors,
-              colorsName: customColors,
-              eventName: $holder.data('event'),
-              container: this.options.container,
-              tooltip: this.options.tooltip
-            }).render());
-          });
-          $dropdown.find('input[type=color]').each((idx, item) => {
-            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item).change(function () {
-              const $chip = $dropdown.find('#' + external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this).data('event')).find('.note-color-btn').first();
-              const color = this.value.toUpperCase();
+            if (eventName === 'openPalette') {
+              var $picker = $parent.find('#' + value);
+              var $palette = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()($parent.find('#' + $picker.data('event')).find('.note-color-row')[0]); // Shift palette chips
+
+              var $chip = $palette.find('.note-color-btn').last().detach(); // Set chip attributes
+
+              var color = $picker.val();
               $chip.css('background-color', color).attr('aria-label', color).attr('data-value', color).attr('data-original-title', color);
-              $chip.click();
-            });
+              $palette.prepend($chip);
+              $picker.click();
+            } else {
+              if (lists.contains(['backColor', 'foreColor'], eventName)) {
+                var key = eventName === 'backColor' ? 'background-color' : 'color';
+                var $color = $button.closest('.note-color').find('.note-recent-color');
+                var $currentButton = $button.closest('.note-color').find('.note-current-color-button');
+                $color.css(key, value);
+                $currentButton.attr('data-' + eventName, value);
+              }
+
+              _this.context.invoke('editor.' + eventName, value);
+            }
+          }
+        })]
+      }).render();
+    }
+  }, {
+    key: "addToolbarButtons",
+    value: function addToolbarButtons() {
+      var _this2 = this;
+
+      this.context.memo('button.style', function () {
+        return _this2.ui.buttonGroup([_this2.button({
+          className: 'dropdown-toggle',
+          contents: _this2.ui.dropdownButtonContents(_this2.ui.icon(_this2.options.icons.magic), _this2.options),
+          tooltip: _this2.lang.style.style,
+          data: {
+            toggle: 'dropdown'
+          }
+        }), _this2.ui.dropdown({
+          className: 'dropdown-style',
+          items: _this2.options.styleTags,
+          title: _this2.lang.style.style,
+          template: function template(item) {
+            // TBD: need to be simplified
+            if (typeof item === 'string') {
+              item = {
+                tag: item,
+                title: Object.prototype.hasOwnProperty.call(_this2.lang.style, item) ? _this2.lang.style[item] : item
+              };
+            }
+
+            var tag = item.tag;
+            var title = item.title;
+            var style = item.style ? ' style="' + item.style + '" ' : '';
+            var className = item.className ? ' class="' + item.className + '"' : '';
+            return '<' + tag + style + className + '>' + title + '</' + tag + '>';
+          },
+          click: _this2.context.createInvokeHandler('editor.formatBlock')
+        })]).render();
+      });
+
+      var _loop = function _loop(styleIdx, styleLen) {
+        var item = _this2.options.styleTags[styleIdx];
+
+        _this2.context.memo('button.style.' + item, function () {
+          return _this2.button({
+            className: 'note-btn-style-' + item,
+            contents: '<div data-value="' + item + '">' + item.toUpperCase() + '</div>',
+            tooltip: _this2.lang.style[item],
+            click: _this2.context.createInvokeHandler('editor.formatBlock')
+          }).render();
+        });
+      };
+
+      for (var styleIdx = 0, styleLen = this.options.styleTags.length; styleIdx < styleLen; styleIdx++) {
+        _loop(styleIdx, styleLen);
+      }
+
+      this.context.memo('button.bold', function () {
+        return _this2.button({
+          className: 'note-btn-bold',
+          contents: _this2.ui.icon(_this2.options.icons.bold),
+          tooltip: _this2.lang.font.bold + _this2.representShortcut('bold'),
+          click: _this2.context.createInvokeHandlerAndUpdateState('editor.bold')
+        }).render();
+      });
+      this.context.memo('button.italic', function () {
+        return _this2.button({
+          className: 'note-btn-italic',
+          contents: _this2.ui.icon(_this2.options.icons.italic),
+          tooltip: _this2.lang.font.italic + _this2.representShortcut('italic'),
+          click: _this2.context.createInvokeHandlerAndUpdateState('editor.italic')
+        }).render();
+      });
+      this.context.memo('button.underline', function () {
+        return _this2.button({
+          className: 'note-btn-underline',
+          contents: _this2.ui.icon(_this2.options.icons.underline),
+          tooltip: _this2.lang.font.underline + _this2.representShortcut('underline'),
+          click: _this2.context.createInvokeHandlerAndUpdateState('editor.underline')
+        }).render();
+      });
+      this.context.memo('button.clear', function () {
+        return _this2.button({
+          contents: _this2.ui.icon(_this2.options.icons.eraser),
+          tooltip: _this2.lang.font.clear + _this2.representShortcut('removeFormat'),
+          click: _this2.context.createInvokeHandler('editor.removeFormat')
+        }).render();
+      });
+      this.context.memo('button.strikethrough', function () {
+        return _this2.button({
+          className: 'note-btn-strikethrough',
+          contents: _this2.ui.icon(_this2.options.icons.strikethrough),
+          tooltip: _this2.lang.font.strikethrough + _this2.representShortcut('strikethrough'),
+          click: _this2.context.createInvokeHandlerAndUpdateState('editor.strikethrough')
+        }).render();
+      });
+      this.context.memo('button.superscript', function () {
+        return _this2.button({
+          className: 'note-btn-superscript',
+          contents: _this2.ui.icon(_this2.options.icons.superscript),
+          tooltip: _this2.lang.font.superscript,
+          click: _this2.context.createInvokeHandlerAndUpdateState('editor.superscript')
+        }).render();
+      });
+      this.context.memo('button.subscript', function () {
+        return _this2.button({
+          className: 'note-btn-subscript',
+          contents: _this2.ui.icon(_this2.options.icons.subscript),
+          tooltip: _this2.lang.font.subscript,
+          click: _this2.context.createInvokeHandlerAndUpdateState('editor.subscript')
+        }).render();
+      });
+      this.context.memo('button.fontname', function () {
+        var styleInfo = _this2.context.invoke('editor.currentStyle');
+
+        if (_this2.options.addDefaultFonts) {
+          // Add 'default' fonts into the fontnames array if not exist
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(styleInfo['font-family'].split(','), function (idx, fontname) {
+            fontname = fontname.trim().replace(/['"]+/g, '');
+
+            if (_this2.isFontDeservedToAdd(fontname)) {
+              if (_this2.options.fontNames.indexOf(fontname) === -1) {
+                _this2.options.fontNames.push(fontname);
+              }
+            }
           });
-        },
-        click: event => {
-          event.stopPropagation();
-          const $parent = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('.' + className).find('.show');
-          const $button = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target);
-          const eventName = $button.data('event');
-          let value = $button.attr('data-value');
-
-          if (eventName === 'openPalette') {
-            const $picker = $parent.find('#' + value);
-            const $palette = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()($parent.find('#' + $picker.data('event')).find('.note-color-row')[0]); // Shift palette chips
-
-            const $chip = $palette.find('.note-color-btn').last().detach(); // Set chip attributes
-
-            const color = $picker.val();
-            $chip.css('background-color', color).attr('aria-label', color).attr('data-value', color).attr('data-original-title', color);
-            $palette.prepend($chip);
-            $picker.click();
-          } else if (lists.contains(['backColor', 'foreColor'], eventName)) {
-            const key = eventName === 'backColor' ? 'background-color' : 'color';
-            const $color = $button.closest('.note-color').find('.note-recent-color');
-            const $currentButton = $button.closest('.note-color').find('.note-current-color-button');
-            $color.css(key, value);
-            $currentButton.attr('data-' + eventName, value);
-            this.context.invoke('editor.' + eventName, value);
-          }
         }
-      })]
-    }).render();
-  }
 
-  addToolbarButtons() {
-    this.context.memo('button.style', () => {
-      return this.ui.buttonGroup([this.button({
-        className: 'dropdown-toggle',
-        contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.magic), this.options),
-        tooltip: this.lang.style.style,
-        data: {
-          toggle: 'dropdown'
-        }
-      }), this.ui.dropdown({
-        className: 'dropdown-style',
-        items: this.options.styleTags,
-        title: this.lang.style.style,
-        template: item => {
-          if (typeof item === 'string') {
-            item = {
-              tag: item,
-              title: this.lang.style.hasOwnProperty(item) ? this.lang.style[item] : item
-            };
+        return _this2.ui.buttonGroup([_this2.button({
+          className: 'dropdown-toggle',
+          contents: _this2.ui.dropdownButtonContents('<span class="note-current-fontname"/>', _this2.options),
+          tooltip: _this2.lang.font.name,
+          data: {
+            toggle: 'dropdown'
           }
-
-          const tag = item.tag;
-          const title = item.title;
-          const style = item.style ? ' style="' + item.style + '" ' : '';
-          const className = item.className ? ' class="' + item.className + '"' : '';
-          return '<' + tag + style + className + '>' + title + '</' + tag + '>';
-        },
-        click: this.context.createInvokeHandler('editor.formatBlock')
-      })]).render();
-    });
-
-    for (let styleIdx = 0, styleLen = this.options.styleTags.length; styleIdx < styleLen; styleIdx++) {
-      const item = this.options.styleTags[styleIdx];
-      this.context.memo('button.style.' + item, () => {
-        return this.button({
-          className: 'note-btn-style-' + item,
-          contents: '<div data-value="' + item + '">' + item.toUpperCase() + '</div>',
-          tooltip: this.lang.style[item],
-          click: this.context.createInvokeHandler('editor.formatBlock')
+        }), _this2.ui.dropdownCheck({
+          className: 'dropdown-fontname',
+          checkClassName: _this2.options.icons.menuCheck,
+          items: _this2.options.fontNames.filter(_this2.isFontInstalled.bind(_this2)),
+          title: _this2.lang.font.name,
+          template: function template(item) {
+            return '<span style="font-family: ' + env.validFontName(item) + '">' + item + '</span>';
+          },
+          click: _this2.context.createInvokeHandlerAndUpdateState('editor.fontName')
+        })]).render();
+      });
+      this.context.memo('button.fontsize', function () {
+        return _this2.ui.buttonGroup([_this2.button({
+          className: 'dropdown-toggle',
+          contents: _this2.ui.dropdownButtonContents('<span class="note-current-fontsize"/>', _this2.options),
+          tooltip: _this2.lang.font.size,
+          data: {
+            toggle: 'dropdown'
+          }
+        }), _this2.ui.dropdownCheck({
+          className: 'dropdown-fontsize',
+          checkClassName: _this2.options.icons.menuCheck,
+          items: _this2.options.fontSizes,
+          title: _this2.lang.font.size,
+          click: _this2.context.createInvokeHandlerAndUpdateState('editor.fontSize')
+        })]).render();
+      });
+      this.context.memo('button.fontsizeunit', function () {
+        return _this2.ui.buttonGroup([_this2.button({
+          className: 'dropdown-toggle',
+          contents: _this2.ui.dropdownButtonContents('<span class="note-current-fontsizeunit"/>', _this2.options),
+          tooltip: _this2.lang.font.sizeunit,
+          data: {
+            toggle: 'dropdown'
+          }
+        }), _this2.ui.dropdownCheck({
+          className: 'dropdown-fontsizeunit',
+          checkClassName: _this2.options.icons.menuCheck,
+          items: _this2.options.fontSizeUnits,
+          title: _this2.lang.font.sizeunit,
+          click: _this2.context.createInvokeHandlerAndUpdateState('editor.fontSizeUnit')
+        })]).render();
+      });
+      this.context.memo('button.color', function () {
+        return _this2.colorPalette('note-color-all', _this2.lang.color.recent, true, true);
+      });
+      this.context.memo('button.forecolor', function () {
+        return _this2.colorPalette('note-color-fore', _this2.lang.color.foreground, false, true);
+      });
+      this.context.memo('button.backcolor', function () {
+        return _this2.colorPalette('note-color-back', _this2.lang.color.background, true, false);
+      });
+      this.context.memo('button.ul', function () {
+        return _this2.button({
+          contents: _this2.ui.icon(_this2.options.icons.unorderedlist),
+          tooltip: _this2.lang.lists.unordered + _this2.representShortcut('insertUnorderedList'),
+          click: _this2.context.createInvokeHandler('editor.insertUnorderedList')
+        }).render();
+      });
+      this.context.memo('button.ol', function () {
+        return _this2.button({
+          contents: _this2.ui.icon(_this2.options.icons.orderedlist),
+          tooltip: _this2.lang.lists.ordered + _this2.representShortcut('insertOrderedList'),
+          click: _this2.context.createInvokeHandler('editor.insertOrderedList')
+        }).render();
+      });
+      var justifyLeft = this.button({
+        contents: this.ui.icon(this.options.icons.alignLeft),
+        tooltip: this.lang.paragraph.left + this.representShortcut('justifyLeft'),
+        click: this.context.createInvokeHandler('editor.justifyLeft')
+      });
+      var justifyCenter = this.button({
+        contents: this.ui.icon(this.options.icons.alignCenter),
+        tooltip: this.lang.paragraph.center + this.representShortcut('justifyCenter'),
+        click: this.context.createInvokeHandler('editor.justifyCenter')
+      });
+      var justifyRight = this.button({
+        contents: this.ui.icon(this.options.icons.alignRight),
+        tooltip: this.lang.paragraph.right + this.representShortcut('justifyRight'),
+        click: this.context.createInvokeHandler('editor.justifyRight')
+      });
+      var justifyFull = this.button({
+        contents: this.ui.icon(this.options.icons.alignJustify),
+        tooltip: this.lang.paragraph.justify + this.representShortcut('justifyFull'),
+        click: this.context.createInvokeHandler('editor.justifyFull')
+      });
+      var outdent = this.button({
+        contents: this.ui.icon(this.options.icons.outdent),
+        tooltip: this.lang.paragraph.outdent + this.representShortcut('outdent'),
+        click: this.context.createInvokeHandler('editor.outdent')
+      });
+      var indent = this.button({
+        contents: this.ui.icon(this.options.icons.indent),
+        tooltip: this.lang.paragraph.indent + this.representShortcut('indent'),
+        click: this.context.createInvokeHandler('editor.indent')
+      });
+      this.context.memo('button.justifyLeft', func.invoke(justifyLeft, 'render'));
+      this.context.memo('button.justifyCenter', func.invoke(justifyCenter, 'render'));
+      this.context.memo('button.justifyRight', func.invoke(justifyRight, 'render'));
+      this.context.memo('button.justifyFull', func.invoke(justifyFull, 'render'));
+      this.context.memo('button.outdent', func.invoke(outdent, 'render'));
+      this.context.memo('button.indent', func.invoke(indent, 'render'));
+      this.context.memo('button.paragraph', function () {
+        return _this2.ui.buttonGroup([_this2.button({
+          className: 'dropdown-toggle',
+          contents: _this2.ui.dropdownButtonContents(_this2.ui.icon(_this2.options.icons.alignLeft), _this2.options),
+          tooltip: _this2.lang.paragraph.paragraph,
+          data: {
+            toggle: 'dropdown'
+          }
+        }), _this2.ui.dropdown([_this2.ui.buttonGroup({
+          className: 'note-align',
+          children: [justifyLeft, justifyCenter, justifyRight, justifyFull]
+        }), _this2.ui.buttonGroup({
+          className: 'note-list',
+          children: [outdent, indent]
+        })])]).render();
+      });
+      this.context.memo('button.height', function () {
+        return _this2.ui.buttonGroup([_this2.button({
+          className: 'dropdown-toggle',
+          contents: _this2.ui.dropdownButtonContents(_this2.ui.icon(_this2.options.icons.textHeight), _this2.options),
+          tooltip: _this2.lang.font.height,
+          data: {
+            toggle: 'dropdown'
+          }
+        }), _this2.ui.dropdownCheck({
+          items: _this2.options.lineHeights,
+          checkClassName: _this2.options.icons.menuCheck,
+          className: 'dropdown-line-height',
+          title: _this2.lang.font.height,
+          click: _this2.context.createInvokeHandler('editor.lineHeight')
+        })]).render();
+      });
+      this.context.memo('button.table', function () {
+        return _this2.ui.buttonGroup([_this2.button({
+          className: 'dropdown-toggle',
+          contents: _this2.ui.dropdownButtonContents(_this2.ui.icon(_this2.options.icons.table), _this2.options),
+          tooltip: _this2.lang.table.table,
+          data: {
+            toggle: 'dropdown'
+          }
+        }), _this2.ui.dropdown({
+          title: _this2.lang.table.table,
+          className: 'note-table',
+          items: ['<div class="note-dimension-picker">', '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>', '<div class="note-dimension-picker-highlighted"/>', '<div class="note-dimension-picker-unhighlighted"/>', '</div>', '<div class="note-dimension-display">1 x 1</div>'].join('')
+        })], {
+          callback: function callback($node) {
+            var $catcher = $node.find('.note-dimension-picker-mousecatcher');
+            $catcher.css({
+              width: _this2.options.insertTableMaxSize.col + 'em',
+              height: _this2.options.insertTableMaxSize.row + 'em'
+            }).mousedown(_this2.context.createInvokeHandler('editor.insertTable')).on('mousemove', _this2.tableMoveHandler.bind(_this2));
+          }
+        }).render();
+      });
+      this.context.memo('button.link', function () {
+        return _this2.button({
+          contents: _this2.ui.icon(_this2.options.icons.link),
+          tooltip: _this2.lang.link.link + _this2.representShortcut('linkDialog.show'),
+          click: _this2.context.createInvokeHandler('linkDialog.show')
+        }).render();
+      });
+      this.context.memo('button.picture', function () {
+        return _this2.button({
+          contents: _this2.ui.icon(_this2.options.icons.picture),
+          tooltip: _this2.lang.image.image,
+          click: _this2.context.createInvokeHandler('imageDialog.show')
+        }).render();
+      });
+      this.context.memo('button.video', function () {
+        return _this2.button({
+          contents: _this2.ui.icon(_this2.options.icons.video),
+          tooltip: _this2.lang.video.video,
+          click: _this2.context.createInvokeHandler('videoDialog.show')
+        }).render();
+      });
+      this.context.memo('button.hr', function () {
+        return _this2.button({
+          contents: _this2.ui.icon(_this2.options.icons.minus),
+          tooltip: _this2.lang.hr.insert + _this2.representShortcut('insertHorizontalRule'),
+          click: _this2.context.createInvokeHandler('editor.insertHorizontalRule')
+        }).render();
+      });
+      this.context.memo('button.fullscreen', function () {
+        return _this2.button({
+          className: 'btn-fullscreen',
+          contents: _this2.ui.icon(_this2.options.icons.arrowsAlt),
+          tooltip: _this2.lang.options.fullscreen,
+          click: _this2.context.createInvokeHandler('fullscreen.toggle')
+        }).render();
+      });
+      this.context.memo('button.codeview', function () {
+        return _this2.button({
+          className: 'btn-codeview',
+          contents: _this2.ui.icon(_this2.options.icons.code),
+          tooltip: _this2.lang.options.codeview,
+          click: _this2.context.createInvokeHandler('codeview.toggle')
+        }).render();
+      });
+      this.context.memo('button.redo', function () {
+        return _this2.button({
+          contents: _this2.ui.icon(_this2.options.icons.redo),
+          tooltip: _this2.lang.history.redo + _this2.representShortcut('redo'),
+          click: _this2.context.createInvokeHandler('editor.redo')
+        }).render();
+      });
+      this.context.memo('button.undo', function () {
+        return _this2.button({
+          contents: _this2.ui.icon(_this2.options.icons.undo),
+          tooltip: _this2.lang.history.undo + _this2.representShortcut('undo'),
+          click: _this2.context.createInvokeHandler('editor.undo')
+        }).render();
+      });
+      this.context.memo('button.help', function () {
+        return _this2.button({
+          contents: _this2.ui.icon(_this2.options.icons.question),
+          tooltip: _this2.lang.options.help,
+          click: _this2.context.createInvokeHandler('helpDialog.show')
         }).render();
       });
     }
+    /**
+     * image: [
+     *   ['imageResize', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
+     *   ['float', ['floatLeft', 'floatRight', 'floatNone']],
+     *   ['remove', ['removeMedia']],
+     * ],
+     */
 
-    this.context.memo('button.bold', () => {
-      return this.button({
-        className: 'note-btn-bold',
-        contents: this.ui.icon(this.options.icons.bold),
-        tooltip: this.lang.font.bold + this.representShortcut('bold'),
-        click: this.context.createInvokeHandlerAndUpdateState('editor.bold')
-      }).render();
-    });
-    this.context.memo('button.italic', () => {
-      return this.button({
-        className: 'note-btn-italic',
-        contents: this.ui.icon(this.options.icons.italic),
-        tooltip: this.lang.font.italic + this.representShortcut('italic'),
-        click: this.context.createInvokeHandlerAndUpdateState('editor.italic')
-      }).render();
-    });
-    this.context.memo('button.underline', () => {
-      return this.button({
-        className: 'note-btn-underline',
-        contents: this.ui.icon(this.options.icons.underline),
-        tooltip: this.lang.font.underline + this.representShortcut('underline'),
-        click: this.context.createInvokeHandlerAndUpdateState('editor.underline')
-      }).render();
-    });
-    this.context.memo('button.clear', () => {
-      return this.button({
-        contents: this.ui.icon(this.options.icons.eraser),
-        tooltip: this.lang.font.clear + this.representShortcut('removeFormat'),
-        click: this.context.createInvokeHandler('editor.removeFormat')
-      }).render();
-    });
-    this.context.memo('button.strikethrough', () => {
-      return this.button({
-        className: 'note-btn-strikethrough',
-        contents: this.ui.icon(this.options.icons.strikethrough),
-        tooltip: this.lang.font.strikethrough + this.representShortcut('strikethrough'),
-        click: this.context.createInvokeHandlerAndUpdateState('editor.strikethrough')
-      }).render();
-    });
-    this.context.memo('button.superscript', () => {
-      return this.button({
-        className: 'note-btn-superscript',
-        contents: this.ui.icon(this.options.icons.superscript),
-        tooltip: this.lang.font.superscript,
-        click: this.context.createInvokeHandlerAndUpdateState('editor.superscript')
-      }).render();
-    });
-    this.context.memo('button.subscript', () => {
-      return this.button({
-        className: 'note-btn-subscript',
-        contents: this.ui.icon(this.options.icons.subscript),
-        tooltip: this.lang.font.subscript,
-        click: this.context.createInvokeHandlerAndUpdateState('editor.subscript')
-      }).render();
-    });
-    this.context.memo('button.fontname', () => {
-      const styleInfo = this.context.invoke('editor.currentStyle');
+  }, {
+    key: "addImagePopoverButtons",
+    value: function addImagePopoverButtons() {
+      var _this3 = this;
 
-      if (this.options.addDefaultFonts) {
-        // Add 'default' fonts into the fontnames array if not exist
-        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(styleInfo['font-family'].split(','), (idx, fontname) => {
-          fontname = fontname.trim().replace(/['"]+/g, '');
+      // Image Size Buttons
+      this.context.memo('button.resizeFull', function () {
+        return _this3.button({
+          contents: '<span class="note-fontsize-10">100%</span>',
+          tooltip: _this3.lang.image.resizeFull,
+          click: _this3.context.createInvokeHandler('editor.resize', '1')
+        }).render();
+      });
+      this.context.memo('button.resizeHalf', function () {
+        return _this3.button({
+          contents: '<span class="note-fontsize-10">50%</span>',
+          tooltip: _this3.lang.image.resizeHalf,
+          click: _this3.context.createInvokeHandler('editor.resize', '0.5')
+        }).render();
+      });
+      this.context.memo('button.resizeQuarter', function () {
+        return _this3.button({
+          contents: '<span class="note-fontsize-10">25%</span>',
+          tooltip: _this3.lang.image.resizeQuarter,
+          click: _this3.context.createInvokeHandler('editor.resize', '0.25')
+        }).render();
+      });
+      this.context.memo('button.resizeNone', function () {
+        return _this3.button({
+          contents: _this3.ui.icon(_this3.options.icons.rollback),
+          tooltip: _this3.lang.image.resizeNone,
+          click: _this3.context.createInvokeHandler('editor.resize', '0')
+        }).render();
+      }); // Float Buttons
 
-          if (this.isFontDeservedToAdd(fontname)) {
-            if (this.options.fontNames.indexOf(fontname) === -1) {
-              this.options.fontNames.push(fontname);
-            }
+      this.context.memo('button.floatLeft', function () {
+        return _this3.button({
+          contents: _this3.ui.icon(_this3.options.icons.floatLeft),
+          tooltip: _this3.lang.image.floatLeft,
+          click: _this3.context.createInvokeHandler('editor.floatMe', 'left')
+        }).render();
+      });
+      this.context.memo('button.floatRight', function () {
+        return _this3.button({
+          contents: _this3.ui.icon(_this3.options.icons.floatRight),
+          tooltip: _this3.lang.image.floatRight,
+          click: _this3.context.createInvokeHandler('editor.floatMe', 'right')
+        }).render();
+      });
+      this.context.memo('button.floatNone', function () {
+        return _this3.button({
+          contents: _this3.ui.icon(_this3.options.icons.rollback),
+          tooltip: _this3.lang.image.floatNone,
+          click: _this3.context.createInvokeHandler('editor.floatMe', 'none')
+        }).render();
+      }); // Remove Buttons
+
+      this.context.memo('button.removeMedia', function () {
+        return _this3.button({
+          contents: _this3.ui.icon(_this3.options.icons.trash),
+          tooltip: _this3.lang.image.remove,
+          click: _this3.context.createInvokeHandler('editor.removeMedia')
+        }).render();
+      });
+    }
+  }, {
+    key: "addLinkPopoverButtons",
+    value: function addLinkPopoverButtons() {
+      var _this4 = this;
+
+      this.context.memo('button.linkDialogShow', function () {
+        return _this4.button({
+          contents: _this4.ui.icon(_this4.options.icons.link),
+          tooltip: _this4.lang.link.edit,
+          click: _this4.context.createInvokeHandler('linkDialog.show')
+        }).render();
+      });
+      this.context.memo('button.unlink', function () {
+        return _this4.button({
+          contents: _this4.ui.icon(_this4.options.icons.unlink),
+          tooltip: _this4.lang.link.unlink,
+          click: _this4.context.createInvokeHandler('editor.unlink')
+        }).render();
+      });
+    }
+    /**
+     * table : [
+     *  ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
+     *  ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]
+     * ],
+     */
+
+  }, {
+    key: "addTablePopoverButtons",
+    value: function addTablePopoverButtons() {
+      var _this5 = this;
+
+      this.context.memo('button.addRowUp', function () {
+        return _this5.button({
+          className: 'btn-md',
+          contents: _this5.ui.icon(_this5.options.icons.rowAbove),
+          tooltip: _this5.lang.table.addRowAbove,
+          click: _this5.context.createInvokeHandler('editor.addRow', 'top')
+        }).render();
+      });
+      this.context.memo('button.addRowDown', function () {
+        return _this5.button({
+          className: 'btn-md',
+          contents: _this5.ui.icon(_this5.options.icons.rowBelow),
+          tooltip: _this5.lang.table.addRowBelow,
+          click: _this5.context.createInvokeHandler('editor.addRow', 'bottom')
+        }).render();
+      });
+      this.context.memo('button.addColLeft', function () {
+        return _this5.button({
+          className: 'btn-md',
+          contents: _this5.ui.icon(_this5.options.icons.colBefore),
+          tooltip: _this5.lang.table.addColLeft,
+          click: _this5.context.createInvokeHandler('editor.addCol', 'left')
+        }).render();
+      });
+      this.context.memo('button.addColRight', function () {
+        return _this5.button({
+          className: 'btn-md',
+          contents: _this5.ui.icon(_this5.options.icons.colAfter),
+          tooltip: _this5.lang.table.addColRight,
+          click: _this5.context.createInvokeHandler('editor.addCol', 'right')
+        }).render();
+      });
+      this.context.memo('button.deleteRow', function () {
+        return _this5.button({
+          className: 'btn-md',
+          contents: _this5.ui.icon(_this5.options.icons.rowRemove),
+          tooltip: _this5.lang.table.delRow,
+          click: _this5.context.createInvokeHandler('editor.deleteRow')
+        }).render();
+      });
+      this.context.memo('button.deleteCol', function () {
+        return _this5.button({
+          className: 'btn-md',
+          contents: _this5.ui.icon(_this5.options.icons.colRemove),
+          tooltip: _this5.lang.table.delCol,
+          click: _this5.context.createInvokeHandler('editor.deleteCol')
+        }).render();
+      });
+      this.context.memo('button.deleteTable', function () {
+        return _this5.button({
+          className: 'btn-md',
+          contents: _this5.ui.icon(_this5.options.icons.trash),
+          tooltip: _this5.lang.table.delTable,
+          click: _this5.context.createInvokeHandler('editor.deleteTable')
+        }).render();
+      });
+    }
+  }, {
+    key: "build",
+    value: function build($container, groups) {
+      for (var groupIdx = 0, groupLen = groups.length; groupIdx < groupLen; groupIdx++) {
+        var group = groups[groupIdx];
+        var groupName = Array.isArray(group) ? group[0] : group;
+        var buttons = Array.isArray(group) ? group.length === 1 ? [group[0]] : group[1] : [group];
+        var $group = this.ui.buttonGroup({
+          className: 'note-' + groupName
+        }).render();
+
+        for (var idx = 0, len = buttons.length; idx < len; idx++) {
+          var btn = this.context.memo('button.' + buttons[idx]);
+
+          if (btn) {
+            $group.append(typeof btn === 'function' ? btn(this.context) : btn);
           }
+        }
+
+        $group.appendTo($container);
+      }
+    }
+    /**
+     * @param {jQuery} [$container]
+     */
+
+  }, {
+    key: "updateCurrentStyle",
+    value: function updateCurrentStyle($container) {
+      var _this6 = this;
+
+      var $cont = $container || this.$toolbar;
+      var styleInfo = this.context.invoke('editor.currentStyle');
+      this.updateBtnStates($cont, {
+        '.note-btn-bold': function noteBtnBold() {
+          return styleInfo['font-bold'] === 'bold';
+        },
+        '.note-btn-italic': function noteBtnItalic() {
+          return styleInfo['font-italic'] === 'italic';
+        },
+        '.note-btn-underline': function noteBtnUnderline() {
+          return styleInfo['font-underline'] === 'underline';
+        },
+        '.note-btn-subscript': function noteBtnSubscript() {
+          return styleInfo['font-subscript'] === 'subscript';
+        },
+        '.note-btn-superscript': function noteBtnSuperscript() {
+          return styleInfo['font-superscript'] === 'superscript';
+        },
+        '.note-btn-strikethrough': function noteBtnStrikethrough() {
+          return styleInfo['font-strikethrough'] === 'strikethrough';
+        }
+      });
+
+      if (styleInfo['font-family']) {
+        var fontNames = styleInfo['font-family'].split(',').map(function (name) {
+          return name.replace(/[\'\"]/g, '').replace(/\s+$/, '').replace(/^\s+/, '');
+        });
+        var fontName = lists.find(fontNames, this.isFontInstalled.bind(this));
+        $cont.find('.dropdown-fontname a').each(function (idx, item) {
+          var $item = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item); // always compare string to avoid creating another func.
+
+          var isChecked = $item.data('value') + '' === fontName + '';
+          $item.toggleClass('checked', isChecked);
+        });
+        $cont.find('.note-current-fontname').text(fontName).css('font-family', fontName);
+      }
+
+      if (styleInfo['font-size']) {
+        var fontSize = styleInfo['font-size'];
+        $cont.find('.dropdown-fontsize a').each(function (idx, item) {
+          var $item = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item); // always compare with string to avoid creating another func.
+
+          var isChecked = $item.data('value') + '' === fontSize + '';
+          $item.toggleClass('checked', isChecked);
+        });
+        $cont.find('.note-current-fontsize').text(fontSize);
+        var fontSizeUnit = styleInfo['font-size-unit'];
+        $cont.find('.dropdown-fontsizeunit a').each(function (idx, item) {
+          var $item = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item);
+          var isChecked = $item.data('value') + '' === fontSizeUnit + '';
+          $item.toggleClass('checked', isChecked);
+        });
+        $cont.find('.note-current-fontsizeunit').text(fontSizeUnit);
+      }
+
+      if (styleInfo['line-height']) {
+        var lineHeight = styleInfo['line-height'];
+        $cont.find('.dropdown-line-height li a').each(function (idx, item) {
+          // always compare with string to avoid creating another func.
+          var isChecked = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item).data('value') + '' === lineHeight + '';
+          _this6.className = isChecked ? 'checked' : '';
+        });
+      }
+    }
+  }, {
+    key: "updateBtnStates",
+    value: function updateBtnStates($container, infos) {
+      var _this7 = this;
+
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(infos, function (selector, pred) {
+        _this7.ui.toggleBtnActive($container.find(selector), pred());
+      });
+    }
+  }, {
+    key: "tableMoveHandler",
+    value: function tableMoveHandler(event) {
+      var PX_PER_EM = 18;
+      var $picker = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target.parentNode); // target is mousecatcher
+
+      var $dimensionDisplay = $picker.next();
+      var $catcher = $picker.find('.note-dimension-picker-mousecatcher');
+      var $highlighted = $picker.find('.note-dimension-picker-highlighted');
+      var $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
+      var posOffset; // HTML5 with jQuery - e.offsetX is undefined in Firefox
+
+      if (event.offsetX === undefined) {
+        var posCatcher = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target).offset();
+        posOffset = {
+          x: event.pageX - posCatcher.left,
+          y: event.pageY - posCatcher.top
+        };
+      } else {
+        posOffset = {
+          x: event.offsetX,
+          y: event.offsetY
+        };
+      }
+
+      var dim = {
+        c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
+        r: Math.ceil(posOffset.y / PX_PER_EM) || 1
+      };
+      $highlighted.css({
+        width: dim.c + 'em',
+        height: dim.r + 'em'
+      });
+      $catcher.data('value', dim.c + 'x' + dim.r);
+
+      if (dim.c > 3 && dim.c < this.options.insertTableMaxSize.col) {
+        $unhighlighted.css({
+          width: dim.c + 1 + 'em'
         });
       }
 
-      return this.ui.buttonGroup([this.button({
-        className: 'dropdown-toggle',
-        contents: this.ui.dropdownButtonContents('<span class="note-current-fontname"/>', this.options),
-        tooltip: this.lang.font.name,
-        data: {
-          toggle: 'dropdown'
-        }
-      }), this.ui.dropdownCheck({
-        className: 'dropdown-fontname',
-        checkClassName: this.options.icons.menuCheck,
-        items: this.options.fontNames.filter(this.isFontInstalled.bind(this)),
-        title: this.lang.font.name,
-        template: item => {
-          return '<span style="font-family: ' + env.validFontName(item) + '">' + item + '</span>';
-        },
-        click: this.context.createInvokeHandlerAndUpdateState('editor.fontName')
-      })]).render();
-    });
-    this.context.memo('button.fontsize', () => {
-      return this.ui.buttonGroup([this.button({
-        className: 'dropdown-toggle',
-        contents: this.ui.dropdownButtonContents('<span class="note-current-fontsize"/>', this.options),
-        tooltip: this.lang.font.size,
-        data: {
-          toggle: 'dropdown'
-        }
-      }), this.ui.dropdownCheck({
-        className: 'dropdown-fontsize',
-        checkClassName: this.options.icons.menuCheck,
-        items: this.options.fontSizes,
-        title: this.lang.font.size,
-        click: this.context.createInvokeHandlerAndUpdateState('editor.fontSize')
-      })]).render();
-    });
-    this.context.memo('button.fontsizeunit', () => {
-      return this.ui.buttonGroup([this.button({
-        className: 'dropdown-toggle',
-        contents: this.ui.dropdownButtonContents('<span class="note-current-fontsizeunit"/>', this.options),
-        tooltip: this.lang.font.sizeunit,
-        data: {
-          toggle: 'dropdown'
-        }
-      }), this.ui.dropdownCheck({
-        className: 'dropdown-fontsizeunit',
-        checkClassName: this.options.icons.menuCheck,
-        items: this.options.fontSizeUnits,
-        title: this.lang.font.sizeunit,
-        click: this.context.createInvokeHandlerAndUpdateState('editor.fontSizeUnit')
-      })]).render();
-    });
-    this.context.memo('button.color', () => {
-      return this.colorPalette('note-color-all', this.lang.color.recent, true, true);
-    });
-    this.context.memo('button.forecolor', () => {
-      return this.colorPalette('note-color-fore', this.lang.color.foreground, false, true);
-    });
-    this.context.memo('button.backcolor', () => {
-      return this.colorPalette('note-color-back', this.lang.color.background, true, false);
-    });
-    this.context.memo('button.ul', () => {
-      return this.button({
-        contents: this.ui.icon(this.options.icons.unorderedlist),
-        tooltip: this.lang.lists.unordered + this.representShortcut('insertUnorderedList'),
-        click: this.context.createInvokeHandler('editor.insertUnorderedList')
-      }).render();
-    });
-    this.context.memo('button.ol', () => {
-      return this.button({
-        contents: this.ui.icon(this.options.icons.orderedlist),
-        tooltip: this.lang.lists.ordered + this.representShortcut('insertOrderedList'),
-        click: this.context.createInvokeHandler('editor.insertOrderedList')
-      }).render();
-    });
-    const justifyLeft = this.button({
-      contents: this.ui.icon(this.options.icons.alignLeft),
-      tooltip: this.lang.paragraph.left + this.representShortcut('justifyLeft'),
-      click: this.context.createInvokeHandler('editor.justifyLeft')
-    });
-    const justifyCenter = this.button({
-      contents: this.ui.icon(this.options.icons.alignCenter),
-      tooltip: this.lang.paragraph.center + this.representShortcut('justifyCenter'),
-      click: this.context.createInvokeHandler('editor.justifyCenter')
-    });
-    const justifyRight = this.button({
-      contents: this.ui.icon(this.options.icons.alignRight),
-      tooltip: this.lang.paragraph.right + this.representShortcut('justifyRight'),
-      click: this.context.createInvokeHandler('editor.justifyRight')
-    });
-    const justifyFull = this.button({
-      contents: this.ui.icon(this.options.icons.alignJustify),
-      tooltip: this.lang.paragraph.justify + this.representShortcut('justifyFull'),
-      click: this.context.createInvokeHandler('editor.justifyFull')
-    });
-    const outdent = this.button({
-      contents: this.ui.icon(this.options.icons.outdent),
-      tooltip: this.lang.paragraph.outdent + this.representShortcut('outdent'),
-      click: this.context.createInvokeHandler('editor.outdent')
-    });
-    const indent = this.button({
-      contents: this.ui.icon(this.options.icons.indent),
-      tooltip: this.lang.paragraph.indent + this.representShortcut('indent'),
-      click: this.context.createInvokeHandler('editor.indent')
-    });
-    this.context.memo('button.justifyLeft', func.invoke(justifyLeft, 'render'));
-    this.context.memo('button.justifyCenter', func.invoke(justifyCenter, 'render'));
-    this.context.memo('button.justifyRight', func.invoke(justifyRight, 'render'));
-    this.context.memo('button.justifyFull', func.invoke(justifyFull, 'render'));
-    this.context.memo('button.outdent', func.invoke(outdent, 'render'));
-    this.context.memo('button.indent', func.invoke(indent, 'render'));
-    this.context.memo('button.paragraph', () => {
-      return this.ui.buttonGroup([this.button({
-        className: 'dropdown-toggle',
-        contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.alignLeft), this.options),
-        tooltip: this.lang.paragraph.paragraph,
-        data: {
-          toggle: 'dropdown'
-        }
-      }), this.ui.dropdown([this.ui.buttonGroup({
-        className: 'note-align',
-        children: [justifyLeft, justifyCenter, justifyRight, justifyFull]
-      }), this.ui.buttonGroup({
-        className: 'note-list',
-        children: [outdent, indent]
-      })])]).render();
-    });
-    this.context.memo('button.height', () => {
-      return this.ui.buttonGroup([this.button({
-        className: 'dropdown-toggle',
-        contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.textHeight), this.options),
-        tooltip: this.lang.font.height,
-        data: {
-          toggle: 'dropdown'
-        }
-      }), this.ui.dropdownCheck({
-        items: this.options.lineHeights,
-        checkClassName: this.options.icons.menuCheck,
-        className: 'dropdown-line-height',
-        title: this.lang.font.height,
-        click: this.context.createInvokeHandler('editor.lineHeight')
-      })]).render();
-    });
-    this.context.memo('button.table', () => {
-      return this.ui.buttonGroup([this.button({
-        className: 'dropdown-toggle',
-        contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.table), this.options),
-        tooltip: this.lang.table.table,
-        data: {
-          toggle: 'dropdown'
-        }
-      }), this.ui.dropdown({
-        title: this.lang.table.table,
-        className: 'note-table',
-        items: ['<div class="note-dimension-picker">', '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>', '<div class="note-dimension-picker-highlighted"/>', '<div class="note-dimension-picker-unhighlighted"/>', '</div>', '<div class="note-dimension-display">1 x 1</div>'].join('')
-      })], {
-        callback: $node => {
-          const $catcher = $node.find('.note-dimension-picker-mousecatcher');
-          $catcher.css({
-            width: this.options.insertTableMaxSize.col + 'em',
-            height: this.options.insertTableMaxSize.row + 'em'
-          }).mousedown(this.context.createInvokeHandler('editor.insertTable')).on('mousemove', this.tableMoveHandler.bind(this));
-        }
-      }).render();
-    });
-    this.context.memo('button.link', () => {
-      return this.button({
-        contents: this.ui.icon(this.options.icons.link),
-        tooltip: this.lang.link.link + this.representShortcut('linkDialog.show'),
-        click: this.context.createInvokeHandler('linkDialog.show')
-      }).render();
-    });
-    this.context.memo('button.picture', () => {
-      return this.button({
-        contents: this.ui.icon(this.options.icons.picture),
-        tooltip: this.lang.image.image,
-        click: this.context.createInvokeHandler('imageDialog.show')
-      }).render();
-    });
-    this.context.memo('button.video', () => {
-      return this.button({
-        contents: this.ui.icon(this.options.icons.video),
-        tooltip: this.lang.video.video,
-        click: this.context.createInvokeHandler('videoDialog.show')
-      }).render();
-    });
-    this.context.memo('button.hr', () => {
-      return this.button({
-        contents: this.ui.icon(this.options.icons.minus),
-        tooltip: this.lang.hr.insert + this.representShortcut('insertHorizontalRule'),
-        click: this.context.createInvokeHandler('editor.insertHorizontalRule')
-      }).render();
-    });
-    this.context.memo('button.fullscreen', () => {
-      return this.button({
-        className: 'btn-fullscreen',
-        contents: this.ui.icon(this.options.icons.arrowsAlt),
-        tooltip: this.lang.options.fullscreen,
-        click: this.context.createInvokeHandler('fullscreen.toggle')
-      }).render();
-    });
-    this.context.memo('button.codeview', () => {
-      return this.button({
-        className: 'btn-codeview',
-        contents: this.ui.icon(this.options.icons.code),
-        tooltip: this.lang.options.codeview,
-        click: this.context.createInvokeHandler('codeview.toggle')
-      }).render();
-    });
-    this.context.memo('button.redo', () => {
-      return this.button({
-        contents: this.ui.icon(this.options.icons.redo),
-        tooltip: this.lang.history.redo + this.representShortcut('redo'),
-        click: this.context.createInvokeHandler('editor.redo')
-      }).render();
-    });
-    this.context.memo('button.undo', () => {
-      return this.button({
-        contents: this.ui.icon(this.options.icons.undo),
-        tooltip: this.lang.history.undo + this.representShortcut('undo'),
-        click: this.context.createInvokeHandler('editor.undo')
-      }).render();
-    });
-    this.context.memo('button.help', () => {
-      return this.button({
-        contents: this.ui.icon(this.options.icons.question),
-        tooltip: this.lang.options.help,
-        click: this.context.createInvokeHandler('helpDialog.show')
-      }).render();
-    });
-  }
-  /**
-   * image: [
-   *   ['imageResize', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
-   *   ['float', ['floatLeft', 'floatRight', 'floatNone']],
-   *   ['remove', ['removeMedia']],
-   * ],
-   */
-
-
-  addImagePopoverButtons() {
-    // Image Size Buttons
-    this.context.memo('button.resizeFull', () => {
-      return this.button({
-        contents: '<span class="note-fontsize-10">100%</span>',
-        tooltip: this.lang.image.resizeFull,
-        click: this.context.createInvokeHandler('editor.resize', '1')
-      }).render();
-    });
-    this.context.memo('button.resizeHalf', () => {
-      return this.button({
-        contents: '<span class="note-fontsize-10">50%</span>',
-        tooltip: this.lang.image.resizeHalf,
-        click: this.context.createInvokeHandler('editor.resize', '0.5')
-      }).render();
-    });
-    this.context.memo('button.resizeQuarter', () => {
-      return this.button({
-        contents: '<span class="note-fontsize-10">25%</span>',
-        tooltip: this.lang.image.resizeQuarter,
-        click: this.context.createInvokeHandler('editor.resize', '0.25')
-      }).render();
-    });
-    this.context.memo('button.resizeNone', () => {
-      return this.button({
-        contents: this.ui.icon(this.options.icons.rollback),
-        tooltip: this.lang.image.resizeNone,
-        click: this.context.createInvokeHandler('editor.resize', '0')
-      }).render();
-    }); // Float Buttons
-
-    this.context.memo('button.floatLeft', () => {
-      return this.button({
-        contents: this.ui.icon(this.options.icons.floatLeft),
-        tooltip: this.lang.image.floatLeft,
-        click: this.context.createInvokeHandler('editor.floatMe', 'left')
-      }).render();
-    });
-    this.context.memo('button.floatRight', () => {
-      return this.button({
-        contents: this.ui.icon(this.options.icons.floatRight),
-        tooltip: this.lang.image.floatRight,
-        click: this.context.createInvokeHandler('editor.floatMe', 'right')
-      }).render();
-    });
-    this.context.memo('button.floatNone', () => {
-      return this.button({
-        contents: this.ui.icon(this.options.icons.rollback),
-        tooltip: this.lang.image.floatNone,
-        click: this.context.createInvokeHandler('editor.floatMe', 'none')
-      }).render();
-    }); // Remove Buttons
-
-    this.context.memo('button.removeMedia', () => {
-      return this.button({
-        contents: this.ui.icon(this.options.icons.trash),
-        tooltip: this.lang.image.remove,
-        click: this.context.createInvokeHandler('editor.removeMedia')
-      }).render();
-    });
-  }
-
-  addLinkPopoverButtons() {
-    this.context.memo('button.linkDialogShow', () => {
-      return this.button({
-        contents: this.ui.icon(this.options.icons.link),
-        tooltip: this.lang.link.edit,
-        click: this.context.createInvokeHandler('linkDialog.show')
-      }).render();
-    });
-    this.context.memo('button.unlink', () => {
-      return this.button({
-        contents: this.ui.icon(this.options.icons.unlink),
-        tooltip: this.lang.link.unlink,
-        click: this.context.createInvokeHandler('editor.unlink')
-      }).render();
-    });
-  }
-  /**
-   * table : [
-   *  ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
-   *  ['delete', ['deleteRow', 'deleteCol', 'deleteTable']]
-   * ],
-   */
-
-
-  addTablePopoverButtons() {
-    this.context.memo('button.addRowUp', () => {
-      return this.button({
-        className: 'btn-md',
-        contents: this.ui.icon(this.options.icons.rowAbove),
-        tooltip: this.lang.table.addRowAbove,
-        click: this.context.createInvokeHandler('editor.addRow', 'top')
-      }).render();
-    });
-    this.context.memo('button.addRowDown', () => {
-      return this.button({
-        className: 'btn-md',
-        contents: this.ui.icon(this.options.icons.rowBelow),
-        tooltip: this.lang.table.addRowBelow,
-        click: this.context.createInvokeHandler('editor.addRow', 'bottom')
-      }).render();
-    });
-    this.context.memo('button.addColLeft', () => {
-      return this.button({
-        className: 'btn-md',
-        contents: this.ui.icon(this.options.icons.colBefore),
-        tooltip: this.lang.table.addColLeft,
-        click: this.context.createInvokeHandler('editor.addCol', 'left')
-      }).render();
-    });
-    this.context.memo('button.addColRight', () => {
-      return this.button({
-        className: 'btn-md',
-        contents: this.ui.icon(this.options.icons.colAfter),
-        tooltip: this.lang.table.addColRight,
-        click: this.context.createInvokeHandler('editor.addCol', 'right')
-      }).render();
-    });
-    this.context.memo('button.deleteRow', () => {
-      return this.button({
-        className: 'btn-md',
-        contents: this.ui.icon(this.options.icons.rowRemove),
-        tooltip: this.lang.table.delRow,
-        click: this.context.createInvokeHandler('editor.deleteRow')
-      }).render();
-    });
-    this.context.memo('button.deleteCol', () => {
-      return this.button({
-        className: 'btn-md',
-        contents: this.ui.icon(this.options.icons.colRemove),
-        tooltip: this.lang.table.delCol,
-        click: this.context.createInvokeHandler('editor.deleteCol')
-      }).render();
-    });
-    this.context.memo('button.deleteTable', () => {
-      return this.button({
-        className: 'btn-md',
-        contents: this.ui.icon(this.options.icons.trash),
-        tooltip: this.lang.table.delTable,
-        click: this.context.createInvokeHandler('editor.deleteTable')
-      }).render();
-    });
-  }
-
-  build($container, groups) {
-    for (let groupIdx = 0, groupLen = groups.length; groupIdx < groupLen; groupIdx++) {
-      const group = groups[groupIdx];
-      const groupName = Array.isArray(group) ? group[0] : group;
-      const buttons = Array.isArray(group) ? group.length === 1 ? [group[0]] : group[1] : [group];
-      const $group = this.ui.buttonGroup({
-        className: 'note-' + groupName
-      }).render();
-
-      for (let idx = 0, len = buttons.length; idx < len; idx++) {
-        const btn = this.context.memo('button.' + buttons[idx]);
-
-        if (btn) {
-          $group.append(typeof btn === 'function' ? btn(this.context) : btn);
-        }
+      if (dim.r > 3 && dim.r < this.options.insertTableMaxSize.row) {
+        $unhighlighted.css({
+          height: dim.r + 1 + 'em'
+        });
       }
 
-      $group.appendTo($container);
+      $dimensionDisplay.html(dim.c + ' x ' + dim.r);
     }
-  }
-  /**
-   * @param {jQuery} [$container]
-   */
+  }]);
+
+  return Buttons;
+}();
 
 
-  updateCurrentStyle($container) {
-    const $cont = $container || this.$toolbar;
-    const styleInfo = this.context.invoke('editor.currentStyle');
-    this.updateBtnStates($cont, {
-      '.note-btn-bold': () => {
-        return styleInfo['font-bold'] === 'bold';
-      },
-      '.note-btn-italic': () => {
-        return styleInfo['font-italic'] === 'italic';
-      },
-      '.note-btn-underline': () => {
-        return styleInfo['font-underline'] === 'underline';
-      },
-      '.note-btn-subscript': () => {
-        return styleInfo['font-subscript'] === 'subscript';
-      },
-      '.note-btn-superscript': () => {
-        return styleInfo['font-superscript'] === 'superscript';
-      },
-      '.note-btn-strikethrough': () => {
-        return styleInfo['font-strikethrough'] === 'strikethrough';
-      }
-    });
-
-    if (styleInfo['font-family']) {
-      const fontNames = styleInfo['font-family'].split(',').map(name => {
-        return name.replace(/[\'\"]/g, '').replace(/\s+$/, '').replace(/^\s+/, '');
-      });
-      const fontName = lists.find(fontNames, this.isFontInstalled.bind(this));
-      $cont.find('.dropdown-fontname a').each((idx, item) => {
-        const $item = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item); // always compare string to avoid creating another func.
-
-        const isChecked = $item.data('value') + '' === fontName + '';
-        $item.toggleClass('checked', isChecked);
-      });
-      $cont.find('.note-current-fontname').text(fontName).css('font-family', fontName);
-    }
-
-    if (styleInfo['font-size']) {
-      const fontSize = styleInfo['font-size'];
-      $cont.find('.dropdown-fontsize a').each((idx, item) => {
-        const $item = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item); // always compare with string to avoid creating another func.
-
-        const isChecked = $item.data('value') + '' === fontSize + '';
-        $item.toggleClass('checked', isChecked);
-      });
-      $cont.find('.note-current-fontsize').text(fontSize);
-      const fontSizeUnit = styleInfo['font-size-unit'];
-      $cont.find('.dropdown-fontsizeunit a').each((idx, item) => {
-        const $item = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item);
-        const isChecked = $item.data('value') + '' === fontSizeUnit + '';
-        $item.toggleClass('checked', isChecked);
-      });
-      $cont.find('.note-current-fontsizeunit').text(fontSizeUnit);
-    }
-
-    if (styleInfo['line-height']) {
-      const lineHeight = styleInfo['line-height'];
-      $cont.find('.dropdown-line-height li a').each((idx, item) => {
-        // always compare with string to avoid creating another func.
-        const isChecked = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(item).data('value') + '' === lineHeight + '';
-        this.className = isChecked ? 'checked' : '';
-      });
-    }
-  }
-
-  updateBtnStates($container, infos) {
-    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.each(infos, (selector, pred) => {
-      this.ui.toggleBtnActive($container.find(selector), pred());
-    });
-  }
-
-  tableMoveHandler(event) {
-    const PX_PER_EM = 18;
-    const $picker = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target.parentNode); // target is mousecatcher
-
-    const $dimensionDisplay = $picker.next();
-    const $catcher = $picker.find('.note-dimension-picker-mousecatcher');
-    const $highlighted = $picker.find('.note-dimension-picker-highlighted');
-    const $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
-    let posOffset; // HTML5 with jQuery - e.offsetX is undefined in Firefox
-
-    if (event.offsetX === undefined) {
-      const posCatcher = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target).offset();
-      posOffset = {
-        x: event.pageX - posCatcher.left,
-        y: event.pageY - posCatcher.top
-      };
-    } else {
-      posOffset = {
-        x: event.offsetX,
-        y: event.offsetY
-      };
-    }
-
-    const dim = {
-      c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
-      r: Math.ceil(posOffset.y / PX_PER_EM) || 1
-    };
-    $highlighted.css({
-      width: dim.c + 'em',
-      height: dim.r + 'em'
-    });
-    $catcher.data('value', dim.c + 'x' + dim.r);
-
-    if (dim.c > 3 && dim.c < this.options.insertTableMaxSize.col) {
-      $unhighlighted.css({
-        width: dim.c + 1 + 'em'
-      });
-    }
-
-    if (dim.r > 3 && dim.r < this.options.insertTableMaxSize.row) {
-      $unhighlighted.css({
-        height: dim.r + 1 + 'em'
-      });
-    }
-
-    $dimensionDisplay.html(dim.c + ' x ' + dim.r);
-  }
-
-}
 // CONCATENATED MODULE: ./src/js/base/module/Toolbar.js
+function Toolbar_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-class Toolbar_Toolbar {
-  constructor(context) {
+function Toolbar_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function Toolbar_createClass(Constructor, protoProps, staticProps) { if (protoProps) Toolbar_defineProperties(Constructor.prototype, protoProps); if (staticProps) Toolbar_defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var Toolbar_Toolbar =
+/*#__PURE__*/
+function () {
+  function Toolbar(context) {
+    Toolbar_classCallCheck(this, Toolbar);
+
     this.context = context;
     this.$window = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(window);
     this.$document = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document);
@@ -7411,146 +8106,173 @@ class Toolbar_Toolbar {
     this.followScroll = this.followScroll.bind(this);
   }
 
-  shouldInitialize() {
-    return !this.options.airMode;
-  }
-
-  initialize() {
-    this.options.toolbar = this.options.toolbar || [];
-
-    if (!this.options.toolbar.length) {
-      this.$toolbar.hide();
-    } else {
-      this.context.invoke('buttons.build', this.$toolbar, this.options.toolbar);
+  Toolbar_createClass(Toolbar, [{
+    key: "shouldInitialize",
+    value: function shouldInitialize() {
+      return !this.options.airMode;
     }
+  }, {
+    key: "initialize",
+    value: function initialize() {
+      var _this = this;
 
-    if (this.options.toolbarContainer) {
-      this.$toolbar.appendTo(this.options.toolbarContainer);
-    }
+      this.options.toolbar = this.options.toolbar || [];
 
-    this.changeContainer(false);
-    this.$note.on('summernote.keyup summernote.mouseup summernote.change', () => {
-      this.context.invoke('buttons.updateCurrentStyle');
-    });
-    this.context.invoke('buttons.updateCurrentStyle');
+      if (!this.options.toolbar.length) {
+        this.$toolbar.hide();
+      } else {
+        this.context.invoke('buttons.build', this.$toolbar, this.options.toolbar);
+      }
 
-    if (this.options.followingToolbar) {
-      this.$window.on('scroll resize', this.followScroll);
-    }
-  }
-
-  destroy() {
-    this.$toolbar.children().remove();
-
-    if (this.options.followingToolbar) {
-      this.$window.off('scroll resize', this.followScroll);
-    }
-  }
-
-  followScroll() {
-    if (this.$editor.hasClass('fullscreen')) {
-      return false;
-    }
-
-    const editorHeight = this.$editor.outerHeight();
-    const editorWidth = this.$editor.width();
-    const toolbarHeight = this.$toolbar.height();
-    const statusbarHeight = this.$statusbar.height(); // check if the web app is currently using another static bar
-
-    let otherBarHeight = 0;
-
-    if (this.options.otherStaticBar) {
-      otherBarHeight = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.otherStaticBar).outerHeight();
-    }
-
-    const currentOffset = this.$document.scrollTop();
-    const editorOffsetTop = this.$editor.offset().top;
-    const editorOffsetBottom = editorOffsetTop + editorHeight;
-    const activateOffset = editorOffsetTop - otherBarHeight;
-    const deactivateOffsetBottom = editorOffsetBottom - otherBarHeight - toolbarHeight - statusbarHeight;
-
-    if (!this.isFollowing && currentOffset > activateOffset && currentOffset < deactivateOffsetBottom - toolbarHeight) {
-      this.isFollowing = true;
-      this.$toolbar.css({
-        position: 'fixed',
-        top: otherBarHeight,
-        width: editorWidth,
-        zIndex: 1000
-      });
-      this.$editable.css({
-        marginTop: this.$toolbar.height() + 5
-      });
-    } else if (this.isFollowing && (currentOffset < activateOffset || currentOffset > deactivateOffsetBottom)) {
-      this.isFollowing = false;
-      this.$toolbar.css({
-        position: 'relative',
-        top: 0,
-        width: '100%',
-        zIndex: 'auto'
-      });
-      this.$editable.css({
-        marginTop: ''
-      });
-    }
-  }
-
-  changeContainer(isFullscreen) {
-    if (isFullscreen) {
-      this.$toolbar.prependTo(this.$editor);
-    } else {
       if (this.options.toolbarContainer) {
         this.$toolbar.appendTo(this.options.toolbarContainer);
       }
+
+      this.changeContainer(false);
+      this.$note.on('summernote.keyup summernote.mouseup summernote.change', function () {
+        _this.context.invoke('buttons.updateCurrentStyle');
+      });
+      this.context.invoke('buttons.updateCurrentStyle');
+
+      if (this.options.followingToolbar) {
+        this.$window.on('scroll resize', this.followScroll);
+      }
     }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this.$toolbar.children().remove();
 
-    if (this.options.followingToolbar) {
-      this.followScroll();
+      if (this.options.followingToolbar) {
+        this.$window.off('scroll resize', this.followScroll);
+      }
     }
-  }
+  }, {
+    key: "followScroll",
+    value: function followScroll() {
+      if (this.$editor.hasClass('fullscreen')) {
+        return false;
+      }
 
-  updateFullscreen(isFullscreen) {
-    this.ui.toggleBtnActive(this.$toolbar.find('.btn-fullscreen'), isFullscreen);
-    this.changeContainer(isFullscreen);
-  }
+      var editorHeight = this.$editor.outerHeight();
+      var editorWidth = this.$editor.width();
+      var toolbarHeight = this.$toolbar.height();
+      var statusbarHeight = this.$statusbar.height(); // check if the web app is currently using another static bar
 
-  updateCodeview(isCodeview) {
-    this.ui.toggleBtnActive(this.$toolbar.find('.btn-codeview'), isCodeview);
+      var otherBarHeight = 0;
 
-    if (isCodeview) {
-      this.deactivate();
-    } else {
-      this.activate();
+      if (this.options.otherStaticBar) {
+        otherBarHeight = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.otherStaticBar).outerHeight();
+      }
+
+      var currentOffset = this.$document.scrollTop();
+      var editorOffsetTop = this.$editor.offset().top;
+      var editorOffsetBottom = editorOffsetTop + editorHeight;
+      var activateOffset = editorOffsetTop - otherBarHeight;
+      var deactivateOffsetBottom = editorOffsetBottom - otherBarHeight - toolbarHeight - statusbarHeight;
+
+      if (!this.isFollowing && currentOffset > activateOffset && currentOffset < deactivateOffsetBottom - toolbarHeight) {
+        this.isFollowing = true;
+        this.$editable.css({
+          marginTop: this.$toolbar.outerHeight()
+        });
+        this.$toolbar.css({
+          position: 'fixed',
+          top: otherBarHeight,
+          width: editorWidth,
+          zIndex: 1000
+        });
+      } else if (this.isFollowing && (currentOffset < activateOffset || currentOffset > deactivateOffsetBottom)) {
+        this.isFollowing = false;
+        this.$toolbar.css({
+          position: 'relative',
+          top: 0,
+          width: '100%',
+          zIndex: 'auto'
+        });
+        this.$editable.css({
+          marginTop: ''
+        });
+      }
     }
-  }
+  }, {
+    key: "changeContainer",
+    value: function changeContainer(isFullscreen) {
+      if (isFullscreen) {
+        this.$toolbar.prependTo(this.$editor);
+      } else {
+        if (this.options.toolbarContainer) {
+          this.$toolbar.appendTo(this.options.toolbarContainer);
+        }
+      }
 
-  activate(isIncludeCodeview) {
-    let $btn = this.$toolbar.find('button');
-
-    if (!isIncludeCodeview) {
-      $btn = $btn.not('.btn-codeview').not('.btn-fullscreen');
+      if (this.options.followingToolbar) {
+        this.followScroll();
+      }
     }
-
-    this.ui.toggleBtn($btn, true);
-  }
-
-  deactivate(isIncludeCodeview) {
-    let $btn = this.$toolbar.find('button');
-
-    if (!isIncludeCodeview) {
-      $btn = $btn.not('.btn-codeview').not('.btn-fullscreen');
+  }, {
+    key: "updateFullscreen",
+    value: function updateFullscreen(isFullscreen) {
+      this.ui.toggleBtnActive(this.$toolbar.find('.btn-fullscreen'), isFullscreen);
+      this.changeContainer(isFullscreen);
     }
+  }, {
+    key: "updateCodeview",
+    value: function updateCodeview(isCodeview) {
+      this.ui.toggleBtnActive(this.$toolbar.find('.btn-codeview'), isCodeview);
 
-    this.ui.toggleBtn($btn, false);
-  }
+      if (isCodeview) {
+        this.deactivate();
+      } else {
+        this.activate();
+      }
+    }
+  }, {
+    key: "activate",
+    value: function activate(isIncludeCodeview) {
+      var $btn = this.$toolbar.find('button');
 
-}
+      if (!isIncludeCodeview) {
+        $btn = $btn.not('.btn-codeview').not('.btn-fullscreen');
+      }
+
+      this.ui.toggleBtn($btn, true);
+    }
+  }, {
+    key: "deactivate",
+    value: function deactivate(isIncludeCodeview) {
+      var $btn = this.$toolbar.find('button');
+
+      if (!isIncludeCodeview) {
+        $btn = $btn.not('.btn-codeview').not('.btn-fullscreen');
+      }
+
+      this.ui.toggleBtn($btn, false);
+    }
+  }]);
+
+  return Toolbar;
+}();
+
+
 // CONCATENATED MODULE: ./src/js/base/module/LinkDialog.js
+function LinkDialog_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function LinkDialog_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function LinkDialog_createClass(Constructor, protoProps, staticProps) { if (protoProps) LinkDialog_defineProperties(Constructor.prototype, protoProps); if (staticProps) LinkDialog_defineProperties(Constructor, staticProps); return Constructor; }
 
 
 
 
-class LinkDialog_LinkDialog {
-  constructor(context) {
+
+
+var LinkDialog_LinkDialog =
+/*#__PURE__*/
+function () {
+  function LinkDialog(context) {
+    LinkDialog_classCallCheck(this, LinkDialog);
+
     this.context = context;
     this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.$body = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document.body);
@@ -7560,220 +8282,283 @@ class LinkDialog_LinkDialog {
     context.memo('help.linkDialog.show', this.options.langInfo.help['linkDialog.show']);
   }
 
-  initialize() {
-    const $container = this.options.dialogsInBody ? this.$body : this.options.container;
-    const body = ['<div class="form-group note-form-group">', `<label for="note-dialog-link-txt-${this.options.id}" class="note-form-label">${this.lang.link.textToDisplay}</label>`, `<input id="note-dialog-link-txt-${this.options.id}" class="note-link-text form-control note-form-control note-input" type="text"/>`, '</div>', '<div class="form-group note-form-group">', `<label for="note-dialog-link-url-${this.options.id}" class="note-form-label">${this.lang.link.url}</label>`, `<input id="note-dialog-link-url-${this.options.id}" class="note-link-url form-control note-form-control note-input" type="text" value="http://"/>`, '</div>', !this.options.disableLinkTarget ? external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div/>').append(this.ui.checkbox({
-      className: 'sn-checkbox-open-in-new-window',
-      text: this.lang.link.openInNewWindow,
-      checked: true
-    }).render()).html() : '', external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div/>').append(this.ui.checkbox({
-      className: 'sn-checkbox-use-protocol',
-      text: this.lang.link.useProtocol,
-      checked: true
-    }).render()).html()].join('');
-    const buttonClass = 'btn btn-primary note-btn note-btn-primary note-link-btn';
-    const footer = `<input type="button" href="#" class="${buttonClass}" value="${this.lang.link.insert}" disabled>`;
-    this.$dialog = this.ui.dialog({
-      className: 'link-dialog',
-      title: this.lang.link.insert,
-      fade: this.options.dialogsFade,
-      body: body,
-      footer: footer
-    }).render().appendTo($container);
-  }
-
-  destroy() {
-    this.ui.hideDialog(this.$dialog);
-    this.$dialog.remove();
-  }
-
-  bindEnterKey($input, $btn) {
-    $input.on('keypress', event => {
-      if (event.keyCode === core_key.code.ENTER) {
-        event.preventDefault();
-        $btn.trigger('click');
-      }
-    });
-  }
-  /**
-   * toggle update button
-   */
-
-
-  toggleLinkBtn($linkBtn, $linkText, $linkUrl) {
-    this.ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
-  }
-  /**
-   * Show link dialog and set event handlers on dialog controls.
-   *
-   * @param {Object} linkInfo
-   * @return {Promise}
-   */
-
-
-  showLinkDialog(linkInfo) {
-    return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(deferred => {
-      const $linkText = this.$dialog.find('.note-link-text');
-      const $linkUrl = this.$dialog.find('.note-link-url');
-      const $linkBtn = this.$dialog.find('.note-link-btn');
-      const $openInNewWindow = this.$dialog.find('.sn-checkbox-open-in-new-window input[type=checkbox]');
-      const $useProtocol = this.$dialog.find('.sn-checkbox-use-protocol input[type=checkbox]');
-      this.ui.onDialogShown(this.$dialog, () => {
-        this.context.triggerEvent('dialog.shown'); // If no url was given and given text is valid URL then copy that into URL Field
-
-        if (!linkInfo.url && func.isValidUrl(linkInfo.text)) {
-          linkInfo.url = linkInfo.text;
+  LinkDialog_createClass(LinkDialog, [{
+    key: "initialize",
+    value: function initialize() {
+      var $container = this.options.dialogsInBody ? this.$body : this.options.container;
+      var body = ['<div class="form-group note-form-group">', "<label for=\"note-dialog-link-txt-".concat(this.options.id, "\" class=\"note-form-label\">").concat(this.lang.link.textToDisplay, "</label>"), "<input id=\"note-dialog-link-txt-".concat(this.options.id, "\" class=\"note-link-text form-control note-form-control note-input\" type=\"text\"/>"), '</div>', '<div class="form-group note-form-group">', "<label for=\"note-dialog-link-url-".concat(this.options.id, "\" class=\"note-form-label\">").concat(this.lang.link.url, "</label>"), "<input id=\"note-dialog-link-url-".concat(this.options.id, "\" class=\"note-link-url form-control note-form-control note-input\" type=\"text\" value=\"http://\"/>"), '</div>', !this.options.disableLinkTarget ? external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div/>').append(this.ui.checkbox({
+        className: 'sn-checkbox-open-in-new-window',
+        text: this.lang.link.openInNewWindow,
+        checked: true
+      }).render()).html() : '', external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div/>').append(this.ui.checkbox({
+        className: 'sn-checkbox-use-protocol',
+        text: this.lang.link.useProtocol,
+        checked: true
+      }).render()).html()].join('');
+      var buttonClass = 'btn btn-primary note-btn note-btn-primary note-link-btn';
+      var footer = "<input type=\"button\" href=\"#\" class=\"".concat(buttonClass, "\" value=\"").concat(this.lang.link.insert, "\" disabled>");
+      this.$dialog = this.ui.dialog({
+        className: 'link-dialog',
+        title: this.lang.link.insert,
+        fade: this.options.dialogsFade,
+        body: body,
+        footer: footer
+      }).render().appendTo($container);
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this.ui.hideDialog(this.$dialog);
+      this.$dialog.remove();
+    }
+  }, {
+    key: "bindEnterKey",
+    value: function bindEnterKey($input, $btn) {
+      $input.on('keypress', function (event) {
+        if (event.keyCode === core_key.code.ENTER) {
+          event.preventDefault();
+          $btn.trigger('click');
         }
+      });
+    }
+    /**
+     * toggle update button
+     */
 
-        $linkText.on('input paste propertychange', () => {
-          // If linktext was modified by input events,
-          // cloning text from linkUrl will be stopped.
-          linkInfo.text = $linkText.val();
-          this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
-        }).val(linkInfo.text);
-        $linkUrl.on('input paste propertychange', () => {
-          // Display same text on `Text to display` as default
-          // when linktext has no text
-          if (!linkInfo.text) {
-            $linkText.val($linkUrl.val());
+  }, {
+    key: "toggleLinkBtn",
+    value: function toggleLinkBtn($linkBtn, $linkText, $linkUrl) {
+      this.ui.toggleBtn($linkBtn, $linkText.val() && $linkUrl.val());
+    }
+    /**
+     * Show link dialog and set event handlers on dialog controls.
+     *
+     * @param {Object} linkInfo
+     * @return {Promise}
+     */
+
+  }, {
+    key: "showLinkDialog",
+    value: function showLinkDialog(linkInfo) {
+      var _this = this;
+
+      return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(function (deferred) {
+        var $linkText = _this.$dialog.find('.note-link-text');
+
+        var $linkUrl = _this.$dialog.find('.note-link-url');
+
+        var $linkBtn = _this.$dialog.find('.note-link-btn');
+
+        var $openInNewWindow = _this.$dialog.find('.sn-checkbox-open-in-new-window input[type=checkbox]');
+
+        var $useProtocol = _this.$dialog.find('.sn-checkbox-use-protocol input[type=checkbox]');
+
+        _this.ui.onDialogShown(_this.$dialog, function () {
+          _this.context.triggerEvent('dialog.shown'); // If no url was given and given text is valid URL then copy that into URL Field
+
+
+          if (!linkInfo.url && func.isValidUrl(linkInfo.text)) {
+            linkInfo.url = linkInfo.text;
           }
 
-          this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
-        }).val(linkInfo.url);
+          $linkText.on('input paste propertychange', function () {
+            // If linktext was modified by input events,
+            // cloning text from linkUrl will be stopped.
+            linkInfo.text = $linkText.val();
 
-        if (!env.isSupportTouch) {
-          $linkUrl.trigger('focus');
-        }
+            _this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
+          }).val(linkInfo.text);
+          $linkUrl.on('input paste propertychange', function () {
+            // Display same text on `Text to display` as default
+            // when linktext has no text
+            if (!linkInfo.text) {
+              $linkText.val($linkUrl.val());
+            }
 
-        this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
-        this.bindEnterKey($linkUrl, $linkBtn);
-        this.bindEnterKey($linkText, $linkBtn);
-        const isNewWindowChecked = linkInfo.isNewWindow !== undefined ? linkInfo.isNewWindow : this.context.options.linkTargetBlank;
-        $openInNewWindow.prop('checked', isNewWindowChecked);
-        const useProtocolChecked = linkInfo.url ? false : this.context.options.useProtocol;
-        $useProtocol.prop('checked', useProtocolChecked);
-        $linkBtn.one('click', event => {
-          event.preventDefault();
-          deferred.resolve({
-            range: linkInfo.range,
-            url: $linkUrl.val(),
-            text: $linkText.val(),
-            isNewWindow: $openInNewWindow.is(':checked'),
-            checkProtocol: $useProtocol.is(':checked')
+            _this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
+          }).val(linkInfo.url);
+
+          if (!env.isSupportTouch) {
+            $linkUrl.trigger('focus');
+          }
+
+          _this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
+
+          _this.bindEnterKey($linkUrl, $linkBtn);
+
+          _this.bindEnterKey($linkText, $linkBtn);
+
+          var isNewWindowChecked = linkInfo.isNewWindow !== undefined ? linkInfo.isNewWindow : _this.context.options.linkTargetBlank;
+          $openInNewWindow.prop('checked', isNewWindowChecked);
+          var useProtocolChecked = linkInfo.url ? false : _this.context.options.useProtocol;
+          $useProtocol.prop('checked', useProtocolChecked);
+          $linkBtn.one('click', function (event) {
+            event.preventDefault();
+            deferred.resolve({
+              range: linkInfo.range,
+              url: $linkUrl.val(),
+              text: $linkText.val(),
+              isNewWindow: $openInNewWindow.is(':checked'),
+              checkProtocol: $useProtocol.is(':checked')
+            });
+
+            _this.ui.hideDialog(_this.$dialog);
           });
-          this.ui.hideDialog(this.$dialog);
         });
+
+        _this.ui.onDialogHidden(_this.$dialog, function () {
+          // detach events
+          $linkText.off();
+          $linkUrl.off();
+          $linkBtn.off();
+
+          if (deferred.state() === 'pending') {
+            deferred.reject();
+          }
+        });
+
+        _this.ui.showDialog(_this.$dialog);
+      }).promise();
+    }
+    /**
+     * @param {Object} layoutInfo
+     */
+
+  }, {
+    key: "show",
+    value: function show() {
+      var _this2 = this;
+
+      var linkInfo = this.context.invoke('editor.getLinkInfo');
+      this.context.invoke('editor.saveRange');
+      this.showLinkDialog(linkInfo).then(function (linkInfo) {
+        _this2.context.invoke('editor.restoreRange');
+
+        _this2.context.invoke('editor.createLink', linkInfo);
+      }).fail(function () {
+        _this2.context.invoke('editor.restoreRange');
       });
-      this.ui.onDialogHidden(this.$dialog, () => {
-        // detach events
-        $linkText.off();
-        $linkUrl.off();
-        $linkBtn.off();
+    }
+  }]);
 
-        if (deferred.state() === 'pending') {
-          deferred.reject();
-        }
-      });
-      this.ui.showDialog(this.$dialog);
-    }).promise();
-  }
-  /**
-   * @param {Object} layoutInfo
-   */
+  return LinkDialog;
+}();
 
 
-  show() {
-    const linkInfo = this.context.invoke('editor.getLinkInfo');
-    this.context.invoke('editor.saveRange');
-    this.showLinkDialog(linkInfo).then(linkInfo => {
-      this.context.invoke('editor.restoreRange');
-      this.context.invoke('editor.createLink', linkInfo);
-    }).fail(() => {
-      this.context.invoke('editor.restoreRange');
-    });
-  }
-
-}
 // CONCATENATED MODULE: ./src/js/base/module/LinkPopover.js
+function LinkPopover_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function LinkPopover_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function LinkPopover_createClass(Constructor, protoProps, staticProps) { if (protoProps) LinkPopover_defineProperties(Constructor.prototype, protoProps); if (staticProps) LinkPopover_defineProperties(Constructor, staticProps); return Constructor; }
 
 
 
-class LinkPopover_LinkPopover {
-  constructor(context) {
+
+
+var LinkPopover_LinkPopover =
+/*#__PURE__*/
+function () {
+  function LinkPopover(context) {
+    var _this = this;
+
+    LinkPopover_classCallCheck(this, LinkPopover);
+
     this.context = context;
     this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.options = context.options;
     this.events = {
-      'summernote.keyup summernote.mouseup summernote.change summernote.scroll': () => {
-        this.update();
+      'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function summernoteKeyupSummernoteMouseupSummernoteChangeSummernoteScroll() {
+        _this.update();
       },
-      'summernote.disable summernote.dialog.shown summernote.blur': () => {
-        this.hide();
+      'summernote.disable summernote.dialog.shown summernote.blur': function summernoteDisableSummernoteDialogShownSummernoteBlur() {
+        _this.hide();
       }
     };
   }
 
-  shouldInitialize() {
-    return !lists.isEmpty(this.options.popover.link);
-  }
-
-  initialize() {
-    this.$popover = this.ui.popover({
-      className: 'note-link-popover',
-      callback: $node => {
-        const $content = $node.find('.popover-content,.note-popover-content');
-        $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
-      }
-    }).render().appendTo(this.options.container);
-    const $content = this.$popover.find('.popover-content,.note-popover-content');
-    this.context.invoke('buttons.build', $content, this.options.popover.link);
-    this.$popover.on('mousedown', e => {
-      e.preventDefault();
-    });
-  }
-
-  destroy() {
-    this.$popover.remove();
-  }
-
-  update() {
-    // Prevent focusing on editable when invoke('code') is executed
-    if (!this.context.invoke('editor.hasFocus')) {
-      this.hide();
-      return;
+  LinkPopover_createClass(LinkPopover, [{
+    key: "shouldInitialize",
+    value: function shouldInitialize() {
+      return !lists.isEmpty(this.options.popover.link);
     }
-
-    const rng = this.context.invoke('editor.getLastRange');
-
-    if (rng.isCollapsed() && rng.isOnAnchor()) {
-      const anchor = dom.ancestor(rng.sc, dom.isAnchor);
-      const href = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(anchor).attr('href');
-      this.$popover.find('a').attr('href', href).html(href);
-      const pos = dom.posFromPlaceholder(anchor);
-      const containerOffset = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.container).offset();
-      pos.top -= containerOffset.top;
-      pos.left -= containerOffset.left;
-      this.$popover.css({
-        display: 'block',
-        left: pos.left,
-        top: pos.top
+  }, {
+    key: "initialize",
+    value: function initialize() {
+      this.$popover = this.ui.popover({
+        className: 'note-link-popover',
+        callback: function callback($node) {
+          var $content = $node.find('.popover-content,.note-popover-content');
+          $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
+        }
+      }).render().appendTo(this.options.container);
+      var $content = this.$popover.find('.popover-content,.note-popover-content');
+      this.context.invoke('buttons.build', $content, this.options.popover.link);
+      this.$popover.on('mousedown', function (e) {
+        e.preventDefault();
       });
-    } else {
-      this.hide();
     }
-  }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this.$popover.remove();
+    }
+  }, {
+    key: "update",
+    value: function update() {
+      // Prevent focusing on editable when invoke('code') is executed
+      if (!this.context.invoke('editor.hasFocus')) {
+        this.hide();
+        return;
+      }
 
-  hide() {
-    this.$popover.hide();
-  }
+      var rng = this.context.invoke('editor.getLastRange');
 
-}
+      if (rng.isCollapsed() && rng.isOnAnchor()) {
+        var anchor = dom.ancestor(rng.sc, dom.isAnchor);
+        var href = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(anchor).attr('href');
+        this.$popover.find('a').attr('href', href).text(href);
+        var pos = dom.posFromPlaceholder(anchor);
+        var containerOffset = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.container).offset();
+        pos.top -= containerOffset.top;
+        pos.left -= containerOffset.left;
+        this.$popover.css({
+          display: 'block',
+          left: pos.left,
+          top: pos.top
+        });
+      } else {
+        this.hide();
+      }
+    }
+  }, {
+    key: "hide",
+    value: function hide() {
+      this.$popover.hide();
+    }
+  }]);
+
+  return LinkPopover;
+}();
+
+
 // CONCATENATED MODULE: ./src/js/base/module/ImageDialog.js
+function ImageDialog_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function ImageDialog_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function ImageDialog_createClass(Constructor, protoProps, staticProps) { if (protoProps) ImageDialog_defineProperties(Constructor.prototype, protoProps); if (staticProps) ImageDialog_defineProperties(Constructor, staticProps); return Constructor; }
 
 
 
-class ImageDialog_ImageDialog {
-  constructor(context) {
+
+
+var ImageDialog_ImageDialog =
+/*#__PURE__*/
+function () {
+  function ImageDialog(context) {
+    ImageDialog_classCallCheck(this, ImageDialog);
+
     this.context = context;
     this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.$body = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document.body);
@@ -7782,112 +8567,140 @@ class ImageDialog_ImageDialog {
     this.lang = this.options.langInfo;
   }
 
-  initialize() {
-    let imageLimitation = '';
+  ImageDialog_createClass(ImageDialog, [{
+    key: "initialize",
+    value: function initialize() {
+      var imageLimitation = '';
 
-    if (this.options.maximumImageFileSize) {
-      const unit = Math.floor(Math.log(this.options.maximumImageFileSize) / Math.log(1024));
-      const readableSize = (this.options.maximumImageFileSize / Math.pow(1024, unit)).toFixed(2) * 1 + ' ' + ' KMGTP'[unit] + 'B';
-      imageLimitation = `<small>${this.lang.image.maximumFileSize + ' : ' + readableSize}</small>`;
+      if (this.options.maximumImageFileSize) {
+        var unit = Math.floor(Math.log(this.options.maximumImageFileSize) / Math.log(1024));
+        var readableSize = (this.options.maximumImageFileSize / Math.pow(1024, unit)).toFixed(2) * 1 + ' ' + ' KMGTP'[unit] + 'B';
+        imageLimitation = "<small>".concat(this.lang.image.maximumFileSize + ' : ' + readableSize, "</small>");
+      }
+
+      var $container = this.options.dialogsInBody ? this.$body : this.options.container;
+      var body = ['<div class="form-group note-form-group note-group-select-from-files">', '<label for="note-dialog-image-file-' + this.options.id + '" class="note-form-label">' + this.lang.image.selectFromFiles + '</label>', '<input id="note-dialog-image-file-' + this.options.id + '" class="note-image-input form-control-file note-form-control note-input" ', ' type="file" name="files" accept="image/*" multiple="multiple"/>', imageLimitation, '</div>', '<div class="form-group note-group-image-url">', '<label for="note-dialog-image-url-' + this.options.id + '" class="note-form-label">' + this.lang.image.url + '</label>', '<input id="note-dialog-image-url-' + this.options.id + '" class="note-image-url form-control note-form-control note-input" type="text"/>', '</div>'].join('');
+      var buttonClass = 'btn btn-primary note-btn note-btn-primary note-image-btn';
+      var footer = "<input type=\"button\" href=\"#\" class=\"".concat(buttonClass, "\" value=\"").concat(this.lang.image.insert, "\" disabled>");
+      this.$dialog = this.ui.dialog({
+        title: this.lang.image.insert,
+        fade: this.options.dialogsFade,
+        body: body,
+        footer: footer
+      }).render().appendTo($container);
     }
-
-    const $container = this.options.dialogsInBody ? this.$body : this.options.container;
-    const body = ['<div class="form-group note-form-group note-group-select-from-files">', '<label for="note-dialog-image-file-' + this.options.id + '" class="note-form-label">' + this.lang.image.selectFromFiles + '</label>', '<input id="note-dialog-image-file-' + this.options.id + '" class="note-image-input form-control-file note-form-control note-input" ', ' type="file" name="files" accept="image/*" multiple="multiple"/>', imageLimitation, '</div>', '<div class="form-group note-group-image-url">', '<label for="note-dialog-image-url-' + this.options.id + '" class="note-form-label">' + this.lang.image.url + '</label>', '<input id="note-dialog-image-url-' + this.options.id + '" class="note-image-url form-control note-form-control note-input" type="text"/>', '</div>'].join('');
-    const buttonClass = 'btn btn-primary note-btn note-btn-primary note-image-btn';
-    const footer = `<input type="button" href="#" class="${buttonClass}" value="${this.lang.image.insert}" disabled>`;
-    this.$dialog = this.ui.dialog({
-      title: this.lang.image.insert,
-      fade: this.options.dialogsFade,
-      body: body,
-      footer: footer
-    }).render().appendTo($container);
-  }
-
-  destroy() {
-    this.ui.hideDialog(this.$dialog);
-    this.$dialog.remove();
-  }
-
-  bindEnterKey($input, $btn) {
-    $input.on('keypress', event => {
-      if (event.keyCode === core_key.code.ENTER) {
-        event.preventDefault();
-        $btn.trigger('click');
-      }
-    });
-  }
-
-  show() {
-    this.context.invoke('editor.saveRange');
-    this.showImageDialog().then(data => {
-      // [workaround] hide dialog before restore range for IE range focus
+  }, {
+    key: "destroy",
+    value: function destroy() {
       this.ui.hideDialog(this.$dialog);
-      this.context.invoke('editor.restoreRange');
-
-      if (typeof data === 'string') {
-        // image url
-        // If onImageLinkInsert set,
-        if (this.options.callbacks.onImageLinkInsert) {
-          this.context.triggerEvent('image.link.insert', data);
-        } else {
-          this.context.invoke('editor.insertImage', data);
-        }
-      } else {
-        // array of files
-        this.context.invoke('editor.insertImagesOrCallback', data);
-      }
-    }).fail(() => {
-      this.context.invoke('editor.restoreRange');
-    });
-  }
-  /**
-   * show image dialog
-   *
-   * @param {jQuery} $dialog
-   * @return {Promise}
-   */
-
-
-  showImageDialog() {
-    return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(deferred => {
-      const $imageInput = this.$dialog.find('.note-image-input');
-      const $imageUrl = this.$dialog.find('.note-image-url');
-      const $imageBtn = this.$dialog.find('.note-image-btn');
-      this.ui.onDialogShown(this.$dialog, () => {
-        this.context.triggerEvent('dialog.shown'); // Cloning imageInput to clear element.
-
-        $imageInput.replaceWith($imageInput.clone().on('change', event => {
-          deferred.resolve(event.target.files || event.target.value);
-        }).val(''));
-        $imageUrl.on('input paste propertychange', () => {
-          this.ui.toggleBtn($imageBtn, $imageUrl.val());
-        }).val('');
-
-        if (!env.isSupportTouch) {
-          $imageUrl.trigger('focus');
-        }
-
-        $imageBtn.click(event => {
+      this.$dialog.remove();
+    }
+  }, {
+    key: "bindEnterKey",
+    value: function bindEnterKey($input, $btn) {
+      $input.on('keypress', function (event) {
+        if (event.keyCode === core_key.code.ENTER) {
           event.preventDefault();
-          deferred.resolve($imageUrl.val());
-        });
-        this.bindEnterKey($imageUrl, $imageBtn);
-      });
-      this.ui.onDialogHidden(this.$dialog, () => {
-        $imageInput.off();
-        $imageUrl.off();
-        $imageBtn.off();
-
-        if (deferred.state() === 'pending') {
-          deferred.reject();
+          $btn.trigger('click');
         }
       });
-      this.ui.showDialog(this.$dialog);
-    });
-  }
+    }
+  }, {
+    key: "show",
+    value: function show() {
+      var _this = this;
 
-}
+      this.context.invoke('editor.saveRange');
+      this.showImageDialog().then(function (data) {
+        // [workaround] hide dialog before restore range for IE range focus
+        _this.ui.hideDialog(_this.$dialog);
+
+        _this.context.invoke('editor.restoreRange');
+
+        if (typeof data === 'string') {
+          // image url
+          // If onImageLinkInsert set,
+          if (_this.options.callbacks.onImageLinkInsert) {
+            _this.context.triggerEvent('image.link.insert', data);
+          } else {
+            _this.context.invoke('editor.insertImage', data);
+          }
+        } else {
+          // array of files
+          _this.context.invoke('editor.insertImagesOrCallback', data);
+        }
+      }).fail(function () {
+        _this.context.invoke('editor.restoreRange');
+      });
+    }
+    /**
+     * show image dialog
+     *
+     * @param {jQuery} $dialog
+     * @return {Promise}
+     */
+
+  }, {
+    key: "showImageDialog",
+    value: function showImageDialog() {
+      var _this2 = this;
+
+      return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(function (deferred) {
+        var $imageInput = _this2.$dialog.find('.note-image-input');
+
+        var $imageUrl = _this2.$dialog.find('.note-image-url');
+
+        var $imageBtn = _this2.$dialog.find('.note-image-btn');
+
+        _this2.ui.onDialogShown(_this2.$dialog, function () {
+          _this2.context.triggerEvent('dialog.shown'); // Cloning imageInput to clear element.
+
+
+          $imageInput.replaceWith($imageInput.clone().on('change', function (event) {
+            deferred.resolve(event.target.files || event.target.value);
+          }).val(''));
+          $imageUrl.on('input paste propertychange', function () {
+            _this2.ui.toggleBtn($imageBtn, $imageUrl.val());
+          }).val('');
+
+          if (!env.isSupportTouch) {
+            $imageUrl.trigger('focus');
+          }
+
+          $imageBtn.click(function (event) {
+            event.preventDefault();
+            deferred.resolve($imageUrl.val());
+          });
+
+          _this2.bindEnterKey($imageUrl, $imageBtn);
+        });
+
+        _this2.ui.onDialogHidden(_this2.$dialog, function () {
+          $imageInput.off();
+          $imageUrl.off();
+          $imageBtn.off();
+
+          if (deferred.state() === 'pending') {
+            deferred.reject();
+          }
+        });
+
+        _this2.ui.showDialog(_this2.$dialog);
+      });
+    }
+  }]);
+
+  return ImageDialog;
+}();
+
+
 // CONCATENATED MODULE: ./src/js/base/module/ImagePopover.js
+function ImagePopover_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function ImagePopover_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function ImagePopover_createClass(Constructor, protoProps, staticProps) { if (protoProps) ImagePopover_defineProperties(Constructor.prototype, protoProps); if (staticProps) ImagePopover_defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 
@@ -7897,150 +8710,200 @@ class ImageDialog_ImageDialog {
  *  Handle.js will receive the events and invoke 'imagePopover.update'.
  */
 
-class ImagePopover_ImagePopover {
-  constructor(context) {
+var ImagePopover_ImagePopover =
+/*#__PURE__*/
+function () {
+  function ImagePopover(context) {
+    var _this = this;
+
+    ImagePopover_classCallCheck(this, ImagePopover);
+
     this.context = context;
     this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.editable = context.layoutInfo.editable[0];
     this.options = context.options;
     this.events = {
-      'summernote.disable summernote.blur': () => {
-        this.hide();
+      'summernote.disable summernote.blur': function summernoteDisableSummernoteBlur() {
+        _this.hide();
       }
     };
   }
 
-  shouldInitialize() {
-    return !lists.isEmpty(this.options.popover.image);
-  }
-
-  initialize() {
-    this.$popover = this.ui.popover({
-      className: 'note-image-popover'
-    }).render().appendTo(this.options.container);
-    const $content = this.$popover.find('.popover-content,.note-popover-content');
-    this.context.invoke('buttons.build', $content, this.options.popover.image);
-    this.$popover.on('mousedown', e => {
-      e.preventDefault();
-    });
-  }
-
-  destroy() {
-    this.$popover.remove();
-  }
-
-  update(target, event) {
-    if (dom.isImg(target)) {
-      const position = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(target).offset();
-      const containerOffset = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.container).offset();
-      let pos = {};
-
-      if (this.options.popatmouse) {
-        pos.left = event.pageX - 20;
-        pos.top = event.pageY;
-      } else {
-        pos = position;
-      }
-
-      pos.top -= containerOffset.top;
-      pos.left -= containerOffset.left;
-      this.$popover.css({
-        display: 'block',
-        left: pos.left,
-        top: pos.top
-      });
-    } else {
-      this.hide();
+  ImagePopover_createClass(ImagePopover, [{
+    key: "shouldInitialize",
+    value: function shouldInitialize() {
+      return !lists.isEmpty(this.options.popover.image);
     }
-  }
+  }, {
+    key: "initialize",
+    value: function initialize() {
+      this.$popover = this.ui.popover({
+        className: 'note-image-popover'
+      }).render().appendTo(this.options.container);
+      var $content = this.$popover.find('.popover-content,.note-popover-content');
+      this.context.invoke('buttons.build', $content, this.options.popover.image);
+      this.$popover.on('mousedown', function (e) {
+        e.preventDefault();
+      });
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this.$popover.remove();
+    }
+  }, {
+    key: "update",
+    value: function update(target, event) {
+      if (dom.isImg(target)) {
+        var position = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(target).offset();
+        var containerOffset = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.container).offset();
+        var pos = {};
 
-  hide() {
-    this.$popover.hide();
-  }
+        if (this.options.popatmouse) {
+          pos.left = event.pageX - 20;
+          pos.top = event.pageY;
+        } else {
+          pos = position;
+        }
 
-}
+        pos.top -= containerOffset.top;
+        pos.left -= containerOffset.left;
+        this.$popover.css({
+          display: 'block',
+          left: pos.left,
+          top: pos.top
+        });
+      } else {
+        this.hide();
+      }
+    }
+  }, {
+    key: "hide",
+    value: function hide() {
+      this.$popover.hide();
+    }
+  }]);
+
+  return ImagePopover;
+}();
+
+
 // CONCATENATED MODULE: ./src/js/base/module/TablePopover.js
+function TablePopover_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function TablePopover_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function TablePopover_createClass(Constructor, protoProps, staticProps) { if (protoProps) TablePopover_defineProperties(Constructor.prototype, protoProps); if (staticProps) TablePopover_defineProperties(Constructor, staticProps); return Constructor; }
 
 
 
 
-class TablePopover_TablePopover {
-  constructor(context) {
+
+
+var TablePopover_TablePopover =
+/*#__PURE__*/
+function () {
+  function TablePopover(context) {
+    var _this = this;
+
+    TablePopover_classCallCheck(this, TablePopover);
+
     this.context = context;
     this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.options = context.options;
     this.events = {
-      'summernote.mousedown': (we, e) => {
-        this.update(e.target);
+      'summernote.mousedown': function summernoteMousedown(we, e) {
+        _this.update(e.target);
       },
-      'summernote.keyup summernote.scroll summernote.change': () => {
-        this.update();
+      'summernote.keyup summernote.scroll summernote.change': function summernoteKeyupSummernoteScrollSummernoteChange() {
+        _this.update();
       },
-      'summernote.disable summernote.blur': () => {
-        this.hide();
+      'summernote.disable summernote.blur': function summernoteDisableSummernoteBlur() {
+        _this.hide();
       }
     };
   }
 
-  shouldInitialize() {
-    return !lists.isEmpty(this.options.popover.table);
-  }
-
-  initialize() {
-    this.$popover = this.ui.popover({
-      className: 'note-table-popover'
-    }).render().appendTo(this.options.container);
-    const $content = this.$popover.find('.popover-content,.note-popover-content');
-    this.context.invoke('buttons.build', $content, this.options.popover.table); // [workaround] Disable Firefox's default table editor
-
-    if (env.isFF) {
-      document.execCommand('enableInlineTableEditing', false, false);
+  TablePopover_createClass(TablePopover, [{
+    key: "shouldInitialize",
+    value: function shouldInitialize() {
+      return !lists.isEmpty(this.options.popover.table);
     }
+  }, {
+    key: "initialize",
+    value: function initialize() {
+      this.$popover = this.ui.popover({
+        className: 'note-table-popover'
+      }).render().appendTo(this.options.container);
+      var $content = this.$popover.find('.popover-content,.note-popover-content');
+      this.context.invoke('buttons.build', $content, this.options.popover.table); // [workaround] Disable Firefox's default table editor
 
-    this.$popover.on('mousedown', e => {
-      e.preventDefault();
-    });
-  }
+      if (env.isFF) {
+        document.execCommand('enableInlineTableEditing', false, false);
+      }
 
-  destroy() {
-    this.$popover.remove();
-  }
-
-  update(target) {
-    if (this.context.isDisabled()) {
-      return false;
-    }
-
-    const isCell = dom.isCell(target);
-
-    if (isCell) {
-      const pos = dom.posFromPlaceholder(target);
-      const containerOffset = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.container).offset();
-      pos.top -= containerOffset.top;
-      pos.left -= containerOffset.left;
-      this.$popover.css({
-        display: 'block',
-        left: pos.left,
-        top: pos.top
+      this.$popover.on('mousedown', function (e) {
+        e.preventDefault();
       });
-    } else {
-      this.hide();
     }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this.$popover.remove();
+    }
+  }, {
+    key: "update",
+    value: function update(target) {
+      if (this.context.isDisabled()) {
+        return false;
+      }
 
-    return isCell;
-  }
+      var isCell = dom.isCell(target);
 
-  hide() {
-    this.$popover.hide();
-  }
+      if (isCell) {
+        var pos = dom.posFromPlaceholder(target);
+        var containerOffset = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.container).offset();
+        pos.top -= containerOffset.top;
+        pos.left -= containerOffset.left;
+        this.$popover.css({
+          display: 'block',
+          left: pos.left,
+          top: pos.top
+        });
+      } else {
+        this.hide();
+      }
 
-}
+      return isCell;
+    }
+  }, {
+    key: "hide",
+    value: function hide() {
+      this.$popover.hide();
+    }
+  }]);
+
+  return TablePopover;
+}();
+
+
 // CONCATENATED MODULE: ./src/js/base/module/VideoDialog.js
+function VideoDialog_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function VideoDialog_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function VideoDialog_createClass(Constructor, protoProps, staticProps) { if (protoProps) VideoDialog_defineProperties(Constructor.prototype, protoProps); if (staticProps) VideoDialog_defineProperties(Constructor, staticProps); return Constructor; }
 
 
 
-class VideoDialog_VideoDialog {
-  constructor(context) {
+
+
+var VideoDialog_VideoDialog =
+/*#__PURE__*/
+function () {
+  function VideoDialog(context) {
+    VideoDialog_classCallCheck(this, VideoDialog);
+
     this.context = context;
     this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.$body = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document.body);
@@ -8049,167 +8912,203 @@ class VideoDialog_VideoDialog {
     this.lang = this.options.langInfo;
   }
 
-  initialize() {
-    const $container = this.options.dialogsInBody ? this.$body : this.options.container;
-    const body = ['<div class="form-group note-form-group row-fluid">', `<label for="note-dialog-video-url-${this.options.id}" class="note-form-label">${this.lang.video.url} <small class="text-muted">${this.lang.video.providers}</small></label>`, `<input id="note-dialog-video-url-${this.options.id}" class="note-video-url form-control note-form-control note-input" type="text"/>`, '</div>'].join('');
-    const buttonClass = 'btn btn-primary note-btn note-btn-primary note-video-btn';
-    const footer = `<input type="button" href="#" class="${buttonClass}" value="${this.lang.video.insert}" disabled>`;
-    this.$dialog = this.ui.dialog({
-      title: this.lang.video.insert,
-      fade: this.options.dialogsFade,
-      body: body,
-      footer: footer
-    }).render().appendTo($container);
-  }
+  VideoDialog_createClass(VideoDialog, [{
+    key: "initialize",
+    value: function initialize() {
+      var $container = this.options.dialogsInBody ? this.$body : this.options.container;
+      var body = ['<div class="form-group note-form-group row-fluid">', "<label for=\"note-dialog-video-url-".concat(this.options.id, "\" class=\"note-form-label\">").concat(this.lang.video.url, " <small class=\"text-muted\">").concat(this.lang.video.providers, "</small></label>"), "<input id=\"note-dialog-video-url-".concat(this.options.id, "\" class=\"note-video-url form-control note-form-control note-input\" type=\"text\"/>"), '</div>'].join('');
+      var buttonClass = 'btn btn-primary note-btn note-btn-primary note-video-btn';
+      var footer = "<input type=\"button\" href=\"#\" class=\"".concat(buttonClass, "\" value=\"").concat(this.lang.video.insert, "\" disabled>");
+      this.$dialog = this.ui.dialog({
+        title: this.lang.video.insert,
+        fade: this.options.dialogsFade,
+        body: body,
+        footer: footer
+      }).render().appendTo($container);
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this.ui.hideDialog(this.$dialog);
+      this.$dialog.remove();
+    }
+  }, {
+    key: "bindEnterKey",
+    value: function bindEnterKey($input, $btn) {
+      $input.on('keypress', function (event) {
+        if (event.keyCode === core_key.code.ENTER) {
+          event.preventDefault();
+          $btn.trigger('click');
+        }
+      });
+    }
+  }, {
+    key: "createVideoNode",
+    value: function createVideoNode(url) {
+      // video url patterns(youtube, instagram, vimeo, dailymotion, youku, mp4, ogg, webm)
+      var ytRegExp = /\/\/(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w|-]{11})(?:(?:[\?&]t=)(\S+))?$/;
+      var ytRegExpForStart = /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/;
+      var ytMatch = url.match(ytRegExp);
+      var igRegExp = /(?:www\.|\/\/)instagram\.com\/p\/(.[a-zA-Z0-9_-]*)/;
+      var igMatch = url.match(igRegExp);
+      var vRegExp = /\/\/vine\.co\/v\/([a-zA-Z0-9]+)/;
+      var vMatch = url.match(vRegExp);
+      var vimRegExp = /\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*/;
+      var vimMatch = url.match(vimRegExp);
+      var dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
+      var dmMatch = url.match(dmRegExp);
+      var youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
+      var youkuMatch = url.match(youkuRegExp);
+      var qqRegExp = /\/\/v\.qq\.com.*?vid=(.+)/;
+      var qqMatch = url.match(qqRegExp);
+      var qqRegExp2 = /\/\/v\.qq\.com\/x?\/?(page|cover).*?\/([^\/]+)\.html\??.*/;
+      var qqMatch2 = url.match(qqRegExp2);
+      var mp4RegExp = /^.+.(mp4|m4v)$/;
+      var mp4Match = url.match(mp4RegExp);
+      var oggRegExp = /^.+.(ogg|ogv)$/;
+      var oggMatch = url.match(oggRegExp);
+      var webmRegExp = /^.+.(webm)$/;
+      var webmMatch = url.match(webmRegExp);
+      var fbRegExp = /(?:www\.|\/\/)facebook\.com\/([^\/]+)\/videos\/([0-9]+)/;
+      var fbMatch = url.match(fbRegExp);
+      var $video;
 
-  destroy() {
-    this.ui.hideDialog(this.$dialog);
-    this.$dialog.remove();
-  }
+      if (ytMatch && ytMatch[1].length === 11) {
+        var youtubeId = ytMatch[1];
+        var start = 0;
 
-  bindEnterKey($input, $btn) {
-    $input.on('keypress', event => {
-      if (event.keyCode === core_key.code.ENTER) {
-        event.preventDefault();
-        $btn.trigger('click');
-      }
-    });
-  }
+        if (typeof ytMatch[2] !== 'undefined') {
+          var ytMatchForStart = ytMatch[2].match(ytRegExpForStart);
 
-  createVideoNode(url) {
-    // video url patterns(youtube, instagram, vimeo, dailymotion, youku, mp4, ogg, webm)
-    const ytRegExp = /\/\/(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w|-]{11})(?:(?:[\?&]t=)(\S+))?$/;
-    const ytRegExpForStart = /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/;
-    const ytMatch = url.match(ytRegExp);
-    const igRegExp = /(?:www\.|\/\/)instagram\.com\/p\/(.[a-zA-Z0-9_-]*)/;
-    const igMatch = url.match(igRegExp);
-    const vRegExp = /\/\/vine\.co\/v\/([a-zA-Z0-9]+)/;
-    const vMatch = url.match(vRegExp);
-    const vimRegExp = /\/\/(player\.)?vimeo\.com\/([a-z]*\/)*(\d+)[?]?.*/;
-    const vimMatch = url.match(vimRegExp);
-    const dmRegExp = /.+dailymotion.com\/(video|hub)\/([^_]+)[^#]*(#video=([^_&]+))?/;
-    const dmMatch = url.match(dmRegExp);
-    const youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
-    const youkuMatch = url.match(youkuRegExp);
-    const qqRegExp = /\/\/v\.qq\.com.*?vid=(.+)/;
-    const qqMatch = url.match(qqRegExp);
-    const qqRegExp2 = /\/\/v\.qq\.com\/x?\/?(page|cover).*?\/([^\/]+)\.html\??.*/;
-    const qqMatch2 = url.match(qqRegExp2);
-    const mp4RegExp = /^.+.(mp4|m4v)$/;
-    const mp4Match = url.match(mp4RegExp);
-    const oggRegExp = /^.+.(ogg|ogv)$/;
-    const oggMatch = url.match(oggRegExp);
-    const webmRegExp = /^.+.(webm)$/;
-    const webmMatch = url.match(webmRegExp);
-    const fbRegExp = /(?:www\.|\/\/)facebook\.com\/([^\/]+)\/videos\/([0-9]+)/;
-    const fbMatch = url.match(fbRegExp);
-    let $video;
-
-    if (ytMatch && ytMatch[1].length === 11) {
-      const youtubeId = ytMatch[1];
-      var start = 0;
-
-      if (typeof ytMatch[2] !== 'undefined') {
-        const ytMatchForStart = ytMatch[2].match(ytRegExpForStart);
-
-        if (ytMatchForStart) {
-          for (var n = [3600, 60, 1], i = 0, r = n.length; i < r; i++) {
-            start += typeof ytMatchForStart[i + 1] !== 'undefined' ? n[i] * parseInt(ytMatchForStart[i + 1], 10) : 0;
+          if (ytMatchForStart) {
+            for (var n = [3600, 60, 1], i = 0, r = n.length; i < r; i++) {
+              start += typeof ytMatchForStart[i + 1] !== 'undefined' ? n[i] * parseInt(ytMatchForStart[i + 1], 10) : 0;
+            }
           }
         }
+
+        $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', '//www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : '')).attr('width', '640').attr('height', '360');
+      } else if (igMatch && igMatch[0].length) {
+        $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/').attr('width', '612').attr('height', '710').attr('scrolling', 'no').attr('allowtransparency', 'true');
+      } else if (vMatch && vMatch[0].length) {
+        $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', vMatch[0] + '/embed/simple').attr('width', '600').attr('height', '600').attr('class', 'vine-embed');
+      } else if (vimMatch && vimMatch[3].length) {
+        $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('src', '//player.vimeo.com/video/' + vimMatch[3]).attr('width', '640').attr('height', '360');
+      } else if (dmMatch && dmMatch[2].length) {
+        $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2]).attr('width', '640').attr('height', '360');
+      } else if (youkuMatch && youkuMatch[1].length) {
+        $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('height', '498').attr('width', '510').attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
+      } else if (qqMatch && qqMatch[1].length || qqMatch2 && qqMatch2[2].length) {
+        var vid = qqMatch && qqMatch[1].length ? qqMatch[1] : qqMatch2[2];
+        $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('height', '310').attr('width', '500').attr('src', 'https://v.qq.com/iframe/player.html?vid=' + vid + '&amp;auto=0');
+      } else if (mp4Match || oggMatch || webmMatch) {
+        $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<video controls>').attr('src', url).attr('width', '640').attr('height', '360');
+      } else if (fbMatch && fbMatch[0].length) {
+        $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', 'https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent(fbMatch[0]) + '&show_text=0&width=560').attr('width', '560').attr('height', '301').attr('scrolling', 'no').attr('allowtransparency', 'true');
+      } else {
+        // this is not a known video link. Now what, Cat? Now what?
+        return false;
       }
 
-      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', '//www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : '')).attr('width', '640').attr('height', '360');
-    } else if (igMatch && igMatch[0].length) {
-      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/').attr('width', '612').attr('height', '710').attr('scrolling', 'no').attr('allowtransparency', 'true');
-    } else if (vMatch && vMatch[0].length) {
-      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', vMatch[0] + '/embed/simple').attr('width', '600').attr('height', '600').attr('class', 'vine-embed');
-    } else if (vimMatch && vimMatch[3].length) {
-      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('src', '//player.vimeo.com/video/' + vimMatch[3]).attr('width', '640').attr('height', '360');
-    } else if (dmMatch && dmMatch[2].length) {
-      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2]).attr('width', '640').attr('height', '360');
-    } else if (youkuMatch && youkuMatch[1].length) {
-      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('height', '498').attr('width', '510').attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
-    } else if (qqMatch && qqMatch[1].length || qqMatch2 && qqMatch2[2].length) {
-      const vid = qqMatch && qqMatch[1].length ? qqMatch[1] : qqMatch2[2];
-      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('frameborder', 0).attr('height', '310').attr('width', '500').attr('src', 'https://v.qq.com/iframe/player.html?vid=' + vid + '&amp;auto=0');
-    } else if (mp4Match || oggMatch || webmMatch) {
-      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<video controls>').attr('src', url).attr('width', '640').attr('height', '360');
-    } else if (fbMatch && fbMatch[0].length) {
-      $video = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<iframe>').attr('frameborder', 0).attr('src', 'https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent(fbMatch[0]) + '&show_text=0&width=560').attr('width', '560').attr('height', '301').attr('scrolling', 'no').attr('allowtransparency', 'true');
-    } else {
-      // this is not a known video link. Now what, Cat? Now what?
-      return false;
+      $video.addClass('note-video-clip');
+      return $video[0];
     }
+  }, {
+    key: "show",
+    value: function show() {
+      var _this = this;
 
-    $video.addClass('note-video-clip');
-    return $video[0];
-  }
+      var text = this.context.invoke('editor.getSelectedText');
+      this.context.invoke('editor.saveRange');
+      this.showVideoDialog(text).then(function (url) {
+        // [workaround] hide dialog before restore range for IE range focus
+        _this.ui.hideDialog(_this.$dialog);
 
-  show() {
-    const text = this.context.invoke('editor.getSelectedText');
-    this.context.invoke('editor.saveRange');
-    this.showVideoDialog(text).then(url => {
-      // [workaround] hide dialog before restore range for IE range focus
-      this.ui.hideDialog(this.$dialog);
-      this.context.invoke('editor.restoreRange'); // build node
-
-      const $node = this.createVideoNode(url);
-
-      if ($node) {
-        // insert video node
-        this.context.invoke('editor.insertNode', $node);
-      }
-    }).fail(() => {
-      this.context.invoke('editor.restoreRange');
-    });
-  }
-  /**
-   * show image dialog
-   *
-   * @param {jQuery} $dialog
-   * @return {Promise}
-   */
+        _this.context.invoke('editor.restoreRange'); // build node
 
 
-  showVideoDialog(text) {
-    return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(deferred => {
-      const $videoUrl = this.$dialog.find('.note-video-url');
-      const $videoBtn = this.$dialog.find('.note-video-btn');
-      this.ui.onDialogShown(this.$dialog, () => {
-        this.context.triggerEvent('dialog.shown');
-        $videoUrl.on('input paste propertychange', () => {
-          this.ui.toggleBtn($videoBtn, $videoUrl.val());
+        var $node = _this.createVideoNode(url);
+
+        if ($node) {
+          // insert video node
+          _this.context.invoke('editor.insertNode', $node);
+        }
+      }).fail(function () {
+        _this.context.invoke('editor.restoreRange');
+      });
+    }
+    /**
+     * show video dialog
+     *
+     * @param {jQuery} $dialog
+     * @return {Promise}
+     */
+
+  }, {
+    key: "showVideoDialog",
+    value: function showVideoDialog()
+    /* text */
+    {
+      var _this2 = this;
+
+      return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(function (deferred) {
+        var $videoUrl = _this2.$dialog.find('.note-video-url');
+
+        var $videoBtn = _this2.$dialog.find('.note-video-btn');
+
+        _this2.ui.onDialogShown(_this2.$dialog, function () {
+          _this2.context.triggerEvent('dialog.shown');
+
+          $videoUrl.on('input paste propertychange', function () {
+            _this2.ui.toggleBtn($videoBtn, $videoUrl.val());
+          });
+
+          if (!env.isSupportTouch) {
+            $videoUrl.trigger('focus');
+          }
+
+          $videoBtn.click(function (event) {
+            event.preventDefault();
+            deferred.resolve($videoUrl.val());
+          });
+
+          _this2.bindEnterKey($videoUrl, $videoBtn);
         });
 
-        if (!env.isSupportTouch) {
-          $videoUrl.trigger('focus');
-        }
+        _this2.ui.onDialogHidden(_this2.$dialog, function () {
+          $videoUrl.off();
+          $videoBtn.off();
 
-        $videoBtn.click(event => {
-          event.preventDefault();
-          deferred.resolve($videoUrl.val());
+          if (deferred.state() === 'pending') {
+            deferred.reject();
+          }
         });
-        this.bindEnterKey($videoUrl, $videoBtn);
-      });
-      this.ui.onDialogHidden(this.$dialog, () => {
-        $videoUrl.off();
-        $videoBtn.off();
 
-        if (deferred.state() === 'pending') {
-          deferred.reject();
-        }
+        _this2.ui.showDialog(_this2.$dialog);
       });
-      this.ui.showDialog(this.$dialog);
-    });
-  }
+    }
+  }]);
 
-}
+  return VideoDialog;
+}();
+
+
 // CONCATENATED MODULE: ./src/js/base/module/HelpDialog.js
+function HelpDialog_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function HelpDialog_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function HelpDialog_createClass(Constructor, protoProps, staticProps) { if (protoProps) HelpDialog_defineProperties(Constructor.prototype, protoProps); if (staticProps) HelpDialog_defineProperties(Constructor, staticProps); return Constructor; }
 
 
-class HelpDialog_HelpDialog {
-  constructor(context) {
+
+
+var HelpDialog_HelpDialog =
+/*#__PURE__*/
+function () {
+  function HelpDialog(context) {
+    HelpDialog_classCallCheck(this, HelpDialog);
+
     this.context = context;
     this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.$body = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document.body);
@@ -8218,154 +9117,233 @@ class HelpDialog_HelpDialog {
     this.lang = this.options.langInfo;
   }
 
-  initialize() {
-    const $container = this.options.dialogsInBody ? this.$body : this.options.container;
-    const body = ['<p class="text-center">', '<a href="http://summernote.org/" target="_blank">Summernote 0.8.15</a> · ', '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ', '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>', '</p>'].join('');
-    this.$dialog = this.ui.dialog({
-      title: this.lang.options.help,
-      fade: this.options.dialogsFade,
-      body: this.createShortcutList(),
-      footer: body,
-      callback: $node => {
-        $node.find('.modal-body,.note-modal-body').css({
-          'max-height': 300,
-          'overflow': 'scroll'
+  HelpDialog_createClass(HelpDialog, [{
+    key: "initialize",
+    value: function initialize() {
+      var $container = this.options.dialogsInBody ? this.$body : this.options.container;
+      var body = ['<p class="text-center">', '<a href="http://summernote.org/" target="_blank">Summernote 0.8.16</a> · ', '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ', '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>', '</p>'].join('');
+      this.$dialog = this.ui.dialog({
+        title: this.lang.options.help,
+        fade: this.options.dialogsFade,
+        body: this.createShortcutList(),
+        footer: body,
+        callback: function callback($node) {
+          $node.find('.modal-body,.note-modal-body').css({
+            'max-height': 300,
+            'overflow': 'scroll'
+          });
+        }
+      }).render().appendTo($container);
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this.ui.hideDialog(this.$dialog);
+      this.$dialog.remove();
+    }
+  }, {
+    key: "createShortcutList",
+    value: function createShortcutList() {
+      var _this = this;
+
+      var keyMap = this.options.keyMap[env.isMac ? 'mac' : 'pc'];
+      return Object.keys(keyMap).map(function (key) {
+        var command = keyMap[key];
+        var $row = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div><div class="help-list-item"/></div>');
+        $row.append(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<label><kbd>' + key + '</kdb></label>').css({
+          'width': 180,
+          'margin-right': 10
+        })).append(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<span/>').html(_this.context.memo('help.' + command) || command));
+        return $row.html();
+      }).join('');
+    }
+    /**
+     * show help dialog
+     *
+     * @return {Promise}
+     */
+
+  }, {
+    key: "showHelpDialog",
+    value: function showHelpDialog() {
+      var _this2 = this;
+
+      return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(function (deferred) {
+        _this2.ui.onDialogShown(_this2.$dialog, function () {
+          _this2.context.triggerEvent('dialog.shown');
+
+          deferred.resolve();
         });
-      }
-    }).render().appendTo($container);
-  }
 
-  destroy() {
-    this.ui.hideDialog(this.$dialog);
-    this.$dialog.remove();
-  }
+        _this2.ui.showDialog(_this2.$dialog);
+      }).promise();
+    }
+  }, {
+    key: "show",
+    value: function show() {
+      var _this3 = this;
 
-  createShortcutList() {
-    const keyMap = this.options.keyMap[env.isMac ? 'mac' : 'pc'];
-    return Object.keys(keyMap).map(key => {
-      const command = keyMap[key];
-      const $row = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div><div class="help-list-item"/></div>');
-      $row.append(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<label><kbd>' + key + '</kdb></label>').css({
-        'width': 180,
-        'margin-right': 10
-      })).append(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<span/>').html(this.context.memo('help.' + command) || command));
-      return $row.html();
-    }).join('');
-  }
-  /**
-   * show help dialog
-   *
-   * @return {Promise}
-   */
-
-
-  showHelpDialog() {
-    return external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.Deferred(deferred => {
-      this.ui.onDialogShown(this.$dialog, () => {
-        this.context.triggerEvent('dialog.shown');
-        deferred.resolve();
+      this.context.invoke('editor.saveRange');
+      this.showHelpDialog().then(function () {
+        _this3.context.invoke('editor.restoreRange');
       });
-      this.ui.showDialog(this.$dialog);
-    }).promise();
-  }
+    }
+  }]);
 
-  show() {
-    this.context.invoke('editor.saveRange');
-    this.showHelpDialog().then(() => {
-      this.context.invoke('editor.restoreRange');
-    });
-  }
+  return HelpDialog;
+}();
 
-}
+
 // CONCATENATED MODULE: ./src/js/base/module/AirPopover.js
+function AirPopover_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function AirPopover_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function AirPopover_createClass(Constructor, protoProps, staticProps) { if (protoProps) AirPopover_defineProperties(Constructor.prototype, protoProps); if (staticProps) AirPopover_defineProperties(Constructor, staticProps); return Constructor; }
 
 
 
-const AIR_MODE_POPOVER_X_OFFSET = 20;
-class AirPopover_AirPopover {
-  constructor(context) {
+var AIRMODE_POPOVER_X_OFFSET = -5;
+var AIRMODE_POPOVER_Y_OFFSET = 5;
+
+var AirPopover_AirPopover =
+/*#__PURE__*/
+function () {
+  function AirPopover(context) {
+    var _this = this;
+
+    AirPopover_classCallCheck(this, AirPopover);
+
     this.context = context;
     this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.options = context.options;
     this.hidable = true;
+    this.onContextmenu = false;
+    this.pageX = null;
+    this.pageY = null;
     this.events = {
-      'summernote.keyup summernote.mouseup summernote.scroll': () => {
-        if (this.options.editing) {
-          this.update();
+      'summernote.contextmenu': function summernoteContextmenu(e) {
+        if (_this.options.editing) {
+          e.preventDefault();
+          e.stopPropagation();
+          _this.onContextmenu = true;
+
+          _this.update(true);
         }
       },
-      'summernote.disable summernote.change summernote.dialog.shown summernote.blur': () => {
-        this.hide();
+      'summernote.mousedown': function summernoteMousedown(we, e) {
+        _this.pageX = e.pageX;
+        _this.pageY = e.pageY;
       },
-      'summernote.focusout': (we, e) => {
-        if (!this.$popover.is(':active,:focus')) {
-          this.hide();
+      'summernote.keyup summernote.mouseup summernote.scroll': function summernoteKeyupSummernoteMouseupSummernoteScroll(we, e) {
+        if (_this.options.editing && !_this.onContextmenu) {
+          _this.pageX = e.pageX;
+          _this.pageY = e.pageY;
+
+          _this.update();
+        }
+
+        _this.onContextmenu = false;
+      },
+      'summernote.disable summernote.change summernote.dialog.shown summernote.blur': function summernoteDisableSummernoteChangeSummernoteDialogShownSummernoteBlur() {
+        _this.hide();
+      },
+      'summernote.focusout': function summernoteFocusout() {
+        if (!_this.$popover.is(':active,:focus')) {
+          _this.hide();
         }
       }
     };
   }
 
-  shouldInitialize() {
-    return this.options.airMode && !lists.isEmpty(this.options.popover.air);
-  }
+  AirPopover_createClass(AirPopover, [{
+    key: "shouldInitialize",
+    value: function shouldInitialize() {
+      return this.options.airMode && !lists.isEmpty(this.options.popover.air);
+    }
+  }, {
+    key: "initialize",
+    value: function initialize() {
+      var _this2 = this;
 
-  initialize() {
-    this.$popover = this.ui.popover({
-      className: 'note-air-popover'
-    }).render().appendTo(this.options.container);
-    const $content = this.$popover.find('.popover-content');
-    this.context.invoke('buttons.build', $content, this.options.popover.air); // disable hiding this popover preemptively by 'summernote.blur' event.
+      this.$popover = this.ui.popover({
+        className: 'note-air-popover'
+      }).render().appendTo(this.options.container);
+      var $content = this.$popover.find('.popover-content');
+      this.context.invoke('buttons.build', $content, this.options.popover.air); // disable hiding this popover preemptively by 'summernote.blur' event.
 
-    this.$popover.on('mousedown', () => {
-      this.hidable = false;
-    }); // (re-)enable hiding after 'summernote.blur' has been handled (aka. ignored).
+      this.$popover.on('mousedown', function () {
+        _this2.hidable = false;
+      }); // (re-)enable hiding after 'summernote.blur' has been handled (aka. ignored).
 
-    this.$popover.on('mouseup', () => {
-      this.hidable = true;
-    });
-  }
+      this.$popover.on('mouseup', function () {
+        _this2.hidable = true;
+      });
+    }
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this.$popover.remove();
+    }
+  }, {
+    key: "update",
+    value: function update(forcelyOpen) {
+      var styleInfo = this.context.invoke('editor.currentStyle');
 
-  destroy() {
-    this.$popover.remove();
-  }
-
-  update() {
-    const styleInfo = this.context.invoke('editor.currentStyle');
-
-    if (styleInfo.range && !styleInfo.range.isCollapsed()) {
-      const rect = lists.last(styleInfo.range.getClientRects());
-
-      if (rect) {
-        const bnd = func.rect2bnd(rect);
+      if (styleInfo.range && (!styleInfo.range.isCollapsed() || forcelyOpen)) {
+        var rect = {
+          left: this.pageX,
+          top: this.pageY
+        };
+        var containerOffset = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.container).offset();
+        rect.top -= containerOffset.top;
+        rect.left -= containerOffset.left;
         this.$popover.css({
           display: 'block',
-          left: Math.max(bnd.left + bnd.width / 2, 0) - AIR_MODE_POPOVER_X_OFFSET,
-          top: bnd.top + bnd.height
+          left: Math.max(rect.left, 0) + AIRMODE_POPOVER_X_OFFSET,
+          top: rect.top + AIRMODE_POPOVER_Y_OFFSET
         });
         this.context.invoke('buttons.updateCurrentStyle', this.$popover);
+      } else {
+        this.hide();
       }
-    } else {
-      this.hide();
     }
-  }
-
-  hide() {
-    if (this.hidable) {
-      this.$popover.hide();
+  }, {
+    key: "hide",
+    value: function hide() {
+      if (this.hidable) {
+        this.$popover.hide();
+      }
     }
-  }
+  }]);
 
-}
+  return AirPopover;
+}();
+
+
 // CONCATENATED MODULE: ./src/js/base/module/HintPopover.js
+function HintPopover_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function HintPopover_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function HintPopover_createClass(Constructor, protoProps, staticProps) { if (protoProps) HintPopover_defineProperties(Constructor.prototype, protoProps); if (staticProps) HintPopover_defineProperties(Constructor, staticProps); return Constructor; }
 
 
 
 
 
 
-const POPOVER_DIST = 5;
-class HintPopover_HintPopover {
-  constructor(context) {
+
+var POPOVER_DIST = 5;
+
+var HintPopover_HintPopover =
+/*#__PURE__*/
+function () {
+  function HintPopover(context) {
+    var _this = this;
+
+    HintPopover_classCallCheck(this, HintPopover);
+
     this.context = context;
     this.ui = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.ui;
     this.$editable = context.layoutInfo.editable;
@@ -8374,258 +9352,290 @@ class HintPopover_HintPopover {
     this.direction = this.options.hintDirection || 'bottom';
     this.hints = Array.isArray(this.hint) ? this.hint : [this.hint];
     this.events = {
-      'summernote.keyup': (we, e) => {
+      'summernote.keyup': function summernoteKeyup(we, e) {
         if (!e.isDefaultPrevented()) {
-          this.handleKeyup(e);
+          _this.handleKeyup(e);
         }
       },
-      'summernote.keydown': (we, e) => {
-        this.handleKeydown(e);
+      'summernote.keydown': function summernoteKeydown(we, e) {
+        _this.handleKeydown(e);
       },
-      'summernote.disable summernote.dialog.shown summernote.blur': () => {
-        this.hide();
+      'summernote.disable summernote.dialog.shown summernote.blur': function summernoteDisableSummernoteDialogShownSummernoteBlur() {
+        _this.hide();
       }
     };
   }
 
-  shouldInitialize() {
-    return this.hints.length > 0;
-  }
-
-  initialize() {
-    this.lastWordRange = null;
-    this.matchingWord = null;
-    this.$popover = this.ui.popover({
-      className: 'note-hint-popover',
-      hideArrow: true,
-      direction: ''
-    }).render().appendTo(this.options.container);
-    this.$popover.hide();
-    this.$content = this.$popover.find('.popover-content,.note-popover-content');
-    this.$content.on('click', '.note-hint-item', e => {
-      this.$content.find('.active').removeClass('active');
-      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(e.currentTarget).addClass('active');
-      this.replace();
-    });
-    this.$popover.on('mousedown', e => {
-      e.preventDefault();
-    });
-  }
-
-  destroy() {
-    this.$popover.remove();
-  }
-
-  selectItem($item) {
-    this.$content.find('.active').removeClass('active');
-    $item.addClass('active');
-    this.$content[0].scrollTop = $item[0].offsetTop - this.$content.innerHeight() / 2;
-  }
-
-  moveDown() {
-    const $current = this.$content.find('.note-hint-item.active');
-    const $next = $current.next();
-
-    if ($next.length) {
-      this.selectItem($next);
-    } else {
-      let $nextGroup = $current.parent().next();
-
-      if (!$nextGroup.length) {
-        $nextGroup = this.$content.find('.note-hint-group').first();
-      }
-
-      this.selectItem($nextGroup.find('.note-hint-item').first());
+  HintPopover_createClass(HintPopover, [{
+    key: "shouldInitialize",
+    value: function shouldInitialize() {
+      return this.hints.length > 0;
     }
-  }
-
-  moveUp() {
-    const $current = this.$content.find('.note-hint-item.active');
-    const $prev = $current.prev();
-
-    if ($prev.length) {
-      this.selectItem($prev);
-    } else {
-      let $prevGroup = $current.parent().prev();
-
-      if (!$prevGroup.length) {
-        $prevGroup = this.$content.find('.note-hint-group').last();
-      }
-
-      this.selectItem($prevGroup.find('.note-hint-item').last());
-    }
-  }
-
-  replace() {
-    const $item = this.$content.find('.note-hint-item.active');
-
-    if ($item.length) {
-      var node = this.nodeFromItem($item); // If matchingWord length = 0 -> capture OK / open hint / but as mention capture "" (\w*)
-
-      if (this.matchingWord !== null && this.matchingWord.length === 0) {
-        this.lastWordRange.so = this.lastWordRange.eo; // Else si > 0 and normal case -> adjust range "before" for correct position of insertion
-      } else if (this.matchingWord !== null && this.matchingWord.length > 0 && !this.lastWordRange.isCollapsed()) {
-        let rangeCompute = this.lastWordRange.eo - this.lastWordRange.so - this.matchingWord.length;
-
-        if (rangeCompute > 0) {
-          this.lastWordRange.so += rangeCompute;
-        }
-      }
-
-      this.lastWordRange.insertNode(node);
-
-      if (this.options.hintSelect === 'next') {
-        var blank = document.createTextNode('');
-        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(node).after(blank);
-        core_range.createFromNodeBefore(blank).select();
-      } else {
-        core_range.createFromNodeAfter(node).select();
-      }
+  }, {
+    key: "initialize",
+    value: function initialize() {
+      var _this2 = this;
 
       this.lastWordRange = null;
-      this.hide();
-      this.context.invoke('editor.focus');
-    }
-  }
+      this.matchingWord = null;
+      this.$popover = this.ui.popover({
+        className: 'note-hint-popover',
+        hideArrow: true,
+        direction: ''
+      }).render().appendTo(this.options.container);
+      this.$popover.hide();
+      this.$content = this.$popover.find('.popover-content,.note-popover-content');
+      this.$content.on('click', '.note-hint-item', function (e) {
+        _this2.$content.find('.active').removeClass('active');
 
-  nodeFromItem($item) {
-    const hint = this.hints[$item.data('index')];
-    const item = $item.data('item');
-    let node = hint.content ? hint.content(item) : item;
+        external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(e.currentTarget).addClass('active');
 
-    if (typeof node === 'string') {
-      node = dom.createText(node);
-    }
-
-    return node;
-  }
-
-  createItemTemplates(hintIdx, items) {
-    const hint = this.hints[hintIdx];
-    return items.map((item, idx) => {
-      const $item = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div class="note-hint-item"/>');
-      $item.append(hint.template ? hint.template(item) : item + '');
-      $item.data({
-        'index': hintIdx,
-        'item': item
+        _this2.replace();
       });
-      return $item;
-    });
-  }
-
-  handleKeydown(e) {
-    if (!this.$popover.is(':visible')) {
-      return;
+      this.$popover.on('mousedown', function (e) {
+        e.preventDefault();
+      });
     }
-
-    if (e.keyCode === core_key.code.ENTER) {
-      e.preventDefault();
-      this.replace();
-    } else if (e.keyCode === core_key.code.UP) {
-      e.preventDefault();
-      this.moveUp();
-    } else if (e.keyCode === core_key.code.DOWN) {
-      e.preventDefault();
-      this.moveDown();
+  }, {
+    key: "destroy",
+    value: function destroy() {
+      this.$popover.remove();
     }
-  }
-
-  searchKeyword(index, keyword, callback) {
-    const hint = this.hints[index];
-
-    if (hint && hint.match.test(keyword) && hint.search) {
-      const matches = hint.match.exec(keyword);
-      this.matchingWord = matches[0];
-      hint.search(matches[1], callback);
-    } else {
-      callback();
+  }, {
+    key: "selectItem",
+    value: function selectItem($item) {
+      this.$content.find('.active').removeClass('active');
+      $item.addClass('active');
+      this.$content[0].scrollTop = $item[0].offsetTop - this.$content.innerHeight() / 2;
     }
-  }
+  }, {
+    key: "moveDown",
+    value: function moveDown() {
+      var $current = this.$content.find('.note-hint-item.active');
+      var $next = $current.next();
 
-  createGroup(idx, keyword) {
-    const $group = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div class="note-hint-group note-hint-group-' + idx + '"/>');
-    this.searchKeyword(idx, keyword, items => {
-      items = items || [];
+      if ($next.length) {
+        this.selectItem($next);
+      } else {
+        var $nextGroup = $current.parent().next();
 
-      if (items.length) {
-        $group.html(this.createItemTemplates(idx, items));
-        this.show();
-      }
-    });
-    return $group;
-  }
-
-  handleKeyup(e) {
-    if (!lists.contains([core_key.code.ENTER, core_key.code.UP, core_key.code.DOWN], e.keyCode)) {
-      let range = this.context.invoke('editor.getLastRange');
-      let wordRange, keyword;
-
-      if (this.options.hintMode === 'words') {
-        wordRange = range.getWordsRange(range);
-        keyword = wordRange.toString();
-        this.hints.forEach(hint => {
-          if (hint.match.test(keyword)) {
-            wordRange = range.getWordsMatchRange(hint.match);
-            return false;
-          }
-        });
-
-        if (!wordRange) {
-          this.hide();
-          return;
+        if (!$nextGroup.length) {
+          $nextGroup = this.$content.find('.note-hint-group').first();
         }
 
-        keyword = wordRange.toString();
-      } else {
-        wordRange = range.getWordRange();
-        keyword = wordRange.toString();
+        this.selectItem($nextGroup.find('.note-hint-item').first());
       }
+    }
+  }, {
+    key: "moveUp",
+    value: function moveUp() {
+      var $current = this.$content.find('.note-hint-item.active');
+      var $prev = $current.prev();
 
-      if (this.hints.length && keyword) {
-        this.$content.empty();
-        const bnd = func.rect2bnd(lists.last(wordRange.getClientRects()));
-        const containerOffset = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.container).offset();
+      if ($prev.length) {
+        this.selectItem($prev);
+      } else {
+        var $prevGroup = $current.parent().prev();
 
-        if (bnd) {
-          bnd.top -= containerOffset.top;
-          bnd.left -= containerOffset.left;
-          this.$popover.hide();
-          this.lastWordRange = wordRange;
-          this.hints.forEach((hint, idx) => {
-            if (hint.match.test(keyword)) {
-              this.createGroup(idx, keyword).appendTo(this.$content);
-            }
-          }); // select first .note-hint-item
+        if (!$prevGroup.length) {
+          $prevGroup = this.$content.find('.note-hint-group').last();
+        }
 
-          this.$content.find('.note-hint-item:first').addClass('active'); // set position for popover after group is created
+        this.selectItem($prevGroup.find('.note-hint-item').last());
+      }
+    }
+  }, {
+    key: "replace",
+    value: function replace() {
+      var $item = this.$content.find('.note-hint-item.active');
 
-          if (this.direction === 'top') {
-            this.$popover.css({
-              left: bnd.left,
-              top: bnd.top - this.$popover.outerHeight() - POPOVER_DIST
-            });
-          } else {
-            this.$popover.css({
-              left: bnd.left,
-              top: bnd.top + bnd.height + POPOVER_DIST
-            });
+      if ($item.length) {
+        var node = this.nodeFromItem($item); // If matchingWord length = 0 -> capture OK / open hint / but as mention capture "" (\w*)
+
+        if (this.matchingWord !== null && this.matchingWord.length === 0) {
+          this.lastWordRange.so = this.lastWordRange.eo; // Else si > 0 and normal case -> adjust range "before" for correct position of insertion
+        } else if (this.matchingWord !== null && this.matchingWord.length > 0 && !this.lastWordRange.isCollapsed()) {
+          var rangeCompute = this.lastWordRange.eo - this.lastWordRange.so - this.matchingWord.length;
+
+          if (rangeCompute > 0) {
+            this.lastWordRange.so += rangeCompute;
           }
         }
-      } else {
+
+        this.lastWordRange.insertNode(node);
+
+        if (this.options.hintSelect === 'next') {
+          var blank = document.createTextNode('');
+          external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(node).after(blank);
+          range.createFromNodeBefore(blank).select();
+        } else {
+          range.createFromNodeAfter(node).select();
+        }
+
+        this.lastWordRange = null;
         this.hide();
+        this.context.invoke('editor.focus');
       }
     }
-  }
+  }, {
+    key: "nodeFromItem",
+    value: function nodeFromItem($item) {
+      var hint = this.hints[$item.data('index')];
+      var item = $item.data('item');
+      var node = hint.content ? hint.content(item) : item;
 
-  show() {
-    this.$popover.show();
-  }
+      if (typeof node === 'string') {
+        node = dom.createText(node);
+      }
 
-  hide() {
-    this.$popover.hide();
-  }
+      return node;
+    }
+  }, {
+    key: "createItemTemplates",
+    value: function createItemTemplates(hintIdx, items) {
+      var hint = this.hints[hintIdx];
+      return items.map(function (item
+      /*, idx */
+      ) {
+        var $item = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div class="note-hint-item"/>');
+        $item.append(hint.template ? hint.template(item) : item + '');
+        $item.data({
+          'index': hintIdx,
+          'item': item
+        });
+        return $item;
+      });
+    }
+  }, {
+    key: "handleKeydown",
+    value: function handleKeydown(e) {
+      if (!this.$popover.is(':visible')) {
+        return;
+      }
 
-}
+      if (e.keyCode === core_key.code.ENTER) {
+        e.preventDefault();
+        this.replace();
+      } else if (e.keyCode === core_key.code.UP) {
+        e.preventDefault();
+        this.moveUp();
+      } else if (e.keyCode === core_key.code.DOWN) {
+        e.preventDefault();
+        this.moveDown();
+      }
+    }
+  }, {
+    key: "searchKeyword",
+    value: function searchKeyword(index, keyword, callback) {
+      var hint = this.hints[index];
+
+      if (hint && hint.match.test(keyword) && hint.search) {
+        var matches = hint.match.exec(keyword);
+        this.matchingWord = matches[0];
+        hint.search(matches[1], callback);
+      } else {
+        callback();
+      }
+    }
+  }, {
+    key: "createGroup",
+    value: function createGroup(idx, keyword) {
+      var _this3 = this;
+
+      var $group = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div class="note-hint-group note-hint-group-' + idx + '"/>');
+      this.searchKeyword(idx, keyword, function (items) {
+        items = items || [];
+
+        if (items.length) {
+          $group.html(_this3.createItemTemplates(idx, items));
+
+          _this3.show();
+        }
+      });
+      return $group;
+    }
+  }, {
+    key: "handleKeyup",
+    value: function handleKeyup(e) {
+      var _this4 = this;
+
+      if (!lists.contains([core_key.code.ENTER, core_key.code.UP, core_key.code.DOWN], e.keyCode)) {
+        var _range = this.context.invoke('editor.getLastRange');
+
+        var wordRange, keyword;
+
+        if (this.options.hintMode === 'words') {
+          wordRange = _range.getWordsRange(_range);
+          keyword = wordRange.toString();
+          this.hints.forEach(function (hint) {
+            if (hint.match.test(keyword)) {
+              wordRange = _range.getWordsMatchRange(hint.match);
+              return false;
+            }
+          });
+
+          if (!wordRange) {
+            this.hide();
+            return;
+          }
+
+          keyword = wordRange.toString();
+        } else {
+          wordRange = _range.getWordRange();
+          keyword = wordRange.toString();
+        }
+
+        if (this.hints.length && keyword) {
+          this.$content.empty();
+          var bnd = func.rect2bnd(lists.last(wordRange.getClientRects()));
+          var containerOffset = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.container).offset();
+
+          if (bnd) {
+            bnd.top -= containerOffset.top;
+            bnd.left -= containerOffset.left;
+            this.$popover.hide();
+            this.lastWordRange = wordRange;
+            this.hints.forEach(function (hint, idx) {
+              if (hint.match.test(keyword)) {
+                _this4.createGroup(idx, keyword).appendTo(_this4.$content);
+              }
+            }); // select first .note-hint-item
+
+            this.$content.find('.note-hint-item:first').addClass('active'); // set position for popover after group is created
+
+            if (this.direction === 'top') {
+              this.$popover.css({
+                left: bnd.left,
+                top: bnd.top - this.$popover.outerHeight() - POPOVER_DIST
+              });
+            } else {
+              this.$popover.css({
+                left: bnd.left,
+                top: bnd.top + bnd.height + POPOVER_DIST
+              });
+            }
+          }
+        } else {
+          this.hide();
+        }
+      }
+    }
+  }, {
+    key: "show",
+    value: function show() {
+      this.$popover.show();
+    }
+  }, {
+    key: "hide",
+    value: function hide() {
+      this.$popover.hide();
+    }
+  }]);
+
+  return HintPopover;
+}();
+
+
 // CONCATENATED MODULE: ./src/js/base/settings.js
 
 
@@ -8656,10 +9666,10 @@ class HintPopover_HintPopover {
 
 
 external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote, {
-  version: '0.8.15',
+  version: '0.8.16',
   plugins: {},
   dom: dom,
-  range: core_range,
+  range: range,
   lists: lists,
   options: {
     langInfo: external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.lang['en-US'],
@@ -8707,6 +9717,8 @@ external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summe
     },
     // air mode: inline editor
     airMode: false,
+    overrideContextMenu: false,
+    // TBD
     width: null,
     height: null,
     linkTargetBlank: true,
@@ -8715,7 +9727,7 @@ external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summe
     focus: false,
     tabDisabled: false,
     tabSize: 4,
-    styleWithSpan: true,
+    styleWithCSS: false,
     shortcuts: true,
     textareaAutoSync: true,
     tooltip: 'auto',
@@ -8726,6 +9738,9 @@ external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summe
     disableGrammar: false,
     placeholder: null,
     inheritPlaceholder: false,
+    // TODO: need to be documented
+    recordEveryKeystroke: false,
+    historyLimit: 200,
     // TODO: need to be documented
     hintMode: 'word',
     hintSelect: 'after',
@@ -8905,7 +9920,7 @@ external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summe
 
 /***/ }),
 
-/***/ 52:
+/***/ 53:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8919,24 +9934,26 @@ var external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default = /
 var renderer = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/js/bs4/ui.js
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 
-const editor = renderer["a" /* default */].create('<div class="note-editor note-frame card"/>');
-const toolbar = renderer["a" /* default */].create('<div class="note-toolbar card-header" role="toolbar"></div>');
-const editingArea = renderer["a" /* default */].create('<div class="note-editing-area"/>');
-const codable = renderer["a" /* default */].create('<textarea class="note-codable" aria-multiline="true"/>');
-const editable = renderer["a" /* default */].create('<div class="note-editable card-block" contentEditable="true" role="textbox" aria-multiline="true"/>');
-const statusbar = renderer["a" /* default */].create(['<output class="note-status-output" role="status" aria-live="polite"/>', '<div class="note-statusbar" role="status">', '<output class="note-status-output" aria-live="polite"></output>', '<div class="note-resizebar" aria-label="Resize">', '<div class="note-icon-bar"/>', '<div class="note-icon-bar"/>', '<div class="note-icon-bar"/>', '</div>', '</div>'].join(''));
-const airEditor = renderer["a" /* default */].create('<div class="note-editor note-airframe"/>');
-const airEditable = renderer["a" /* default */].create(['<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>', '<output class="note-status-output" role="status" aria-live="polite"/>'].join(''));
-const buttonGroup = renderer["a" /* default */].create('<div class="note-btn-group btn-group">');
-const dropdown = renderer["a" /* default */].create('<div class="note-dropdown-menu dropdown-menu" role="list">', function ($node, options) {
-  const markup = Array.isArray(options.items) ? options.items.map(function (item) {
-    const value = typeof item === 'string' ? item : item.value || '';
-    const content = options.template ? options.template(item) : item;
-    const option = typeof item === 'object' ? item.option : undefined;
-    const dataValue = 'data-value="' + value + '"';
-    const dataOption = option !== undefined ? ' data-option="' + option + '"' : '';
+
+var editor = renderer["a" /* default */].create('<div class="note-editor note-frame card"/>');
+var toolbar = renderer["a" /* default */].create('<div class="note-toolbar card-header" role="toolbar"></div>');
+var editingArea = renderer["a" /* default */].create('<div class="note-editing-area"/>');
+var codable = renderer["a" /* default */].create('<textarea class="note-codable" aria-multiline="true"/>');
+var editable = renderer["a" /* default */].create('<div class="note-editable card-block" contentEditable="true" role="textbox" aria-multiline="true"/>');
+var statusbar = renderer["a" /* default */].create(['<output class="note-status-output" role="status" aria-live="polite"/>', '<div class="note-statusbar" role="status">', '<output class="note-status-output" aria-live="polite"></output>', '<div class="note-resizebar" aria-label="Resize">', '<div class="note-icon-bar"/>', '<div class="note-icon-bar"/>', '<div class="note-icon-bar"/>', '</div>', '</div>'].join(''));
+var airEditor = renderer["a" /* default */].create('<div class="note-editor note-airframe"/>');
+var airEditable = renderer["a" /* default */].create(['<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>', '<output class="note-status-output" role="status" aria-live="polite"/>'].join(''));
+var buttonGroup = renderer["a" /* default */].create('<div class="note-btn-group btn-group">');
+var dropdown = renderer["a" /* default */].create('<div class="note-dropdown-menu dropdown-menu" role="list">', function ($node, options) {
+  var markup = Array.isArray(options.items) ? options.items.map(function (item) {
+    var value = typeof item === 'string' ? item : item.value || '';
+    var content = options.template ? options.template(item) : item;
+    var option = _typeof(item) === 'object' ? item.option : undefined;
+    var dataValue = 'data-value="' + value + '"';
+    var dataOption = option !== undefined ? ' data-option="' + option + '"' : '';
     return '<a class="dropdown-item" href="#" ' + (dataValue + dataOption) + ' role="listitem" aria-label="' + value + '">' + content + '</a>';
   }).join('') : options.items;
   $node.html(markup).attr({
@@ -8944,21 +9961,21 @@ const dropdown = renderer["a" /* default */].create('<div class="note-dropdown-m
   });
 });
 
-const dropdownButtonContents = function (contents) {
+var dropdownButtonContents = function dropdownButtonContents(contents) {
   return contents;
 };
 
-const dropdownCheck = renderer["a" /* default */].create('<div class="note-dropdown-menu dropdown-menu note-check" role="list">', function ($node, options) {
-  const markup = Array.isArray(options.items) ? options.items.map(function (item) {
-    const value = typeof item === 'string' ? item : item.value || '';
-    const content = options.template ? options.template(item) : item;
+var dropdownCheck = renderer["a" /* default */].create('<div class="note-dropdown-menu dropdown-menu note-check" role="list">', function ($node, options) {
+  var markup = Array.isArray(options.items) ? options.items.map(function (item) {
+    var value = typeof item === 'string' ? item : item.value || '';
+    var content = options.template ? options.template(item) : item;
     return '<a class="dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + item + '">' + icon(options.checkClassName) + ' ' + content + '</a>';
   }).join('') : options.items;
   $node.html(markup).attr({
     'aria-label': options.title
   });
 });
-const dialog = renderer["a" /* default */].create('<div class="modal note-modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function ($node, options) {
+var dialog = renderer["a" /* default */].create('<div class="modal note-modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function ($node, options) {
   if (options.fade) {
     $node.addClass('fade');
   }
@@ -8968,24 +9985,24 @@ const dialog = renderer["a" /* default */].create('<div class="modal note-modal"
   });
   $node.html(['<div class="modal-dialog">', '<div class="modal-content">', options.title ? '<div class="modal-header">' + '<h4 class="modal-title">' + options.title + '</h4>' + '<button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">&times;</button>' + '</div>' : '', '<div class="modal-body">' + options.body + '</div>', options.footer ? '<div class="modal-footer">' + options.footer + '</div>' : '', '</div>', '</div>'].join(''));
 });
-const popover = renderer["a" /* default */].create(['<div class="note-popover popover in">', '<div class="arrow"/>', '<div class="popover-content note-children-container"/>', '</div>'].join(''), function ($node, options) {
-  const direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
+var popover = renderer["a" /* default */].create(['<div class="note-popover popover in">', '<div class="arrow"/>', '<div class="popover-content note-children-container"/>', '</div>'].join(''), function ($node, options) {
+  var direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
   $node.addClass(direction);
 
   if (options.hideArrow) {
     $node.find('.arrow').hide();
   }
 });
-const ui_checkbox = renderer["a" /* default */].create('<div class="form-check"></div>', function ($node, options) {
+var ui_checkbox = renderer["a" /* default */].create('<div class="form-check"></div>', function ($node, options) {
   $node.html(['<label class="form-check-label"' + (options.id ? ' for="note-' + options.id + '"' : '') + '>', '<input type="checkbox" class="form-check-input"' + (options.id ? ' id="note-' + options.id + '"' : ''), options.checked ? ' checked' : '', ' aria-label="' + (options.text ? options.text : '') + '"', ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>', ' ' + (options.text ? options.text : '') + '</label>'].join(''));
 });
 
-const icon = function (iconClassName, tagName) {
+var icon = function icon(iconClassName, tagName) {
   tagName = tagName || 'i';
   return '<' + tagName + ' class="' + iconClassName + '"/>';
 };
 
-const ui = function (editorOptions) {
+var ui_ui = function ui(editorOptions) {
   return {
     editor: editor,
     toolbar: toolbar,
@@ -9004,19 +10021,19 @@ const ui = function (editorOptions) {
     icon: icon,
     checkbox: ui_checkbox,
     options: editorOptions,
-    palette: function ($node, options) {
+    palette: function palette($node, options) {
       return renderer["a" /* default */].create('<div class="note-color-palette"/>', function ($node, options) {
-        const contents = [];
+        var contents = [];
 
-        for (let row = 0, rowSize = options.colors.length; row < rowSize; row++) {
-          const eventName = options.eventName;
-          const colors = options.colors[row];
-          const colorsName = options.colorsName[row];
-          const buttons = [];
+        for (var row = 0, rowSize = options.colors.length; row < rowSize; row++) {
+          var eventName = options.eventName;
+          var colors = options.colors[row];
+          var colorsName = options.colorsName[row];
+          var buttons = [];
 
-          for (let col = 0, colSize = colors.length; col < colSize; col++) {
-            const color = colors[col];
-            const colorName = colorsName[col];
+          for (var col = 0, colSize = colors.length; col < colSize; col++) {
+            var color = colors[col];
+            var colorName = colorsName[col];
             buttons.push(['<button type="button" class="note-color-btn"', 'style="background-color:', color, '" ', 'data-event="', eventName, '" ', 'data-value="', color, '" ', 'title="', colorName, '" ', 'aria-label="', colorName, '" ', 'data-toggle="button" tabindex="-1"></button>'].join(''));
           }
 
@@ -9034,7 +10051,7 @@ const ui = function (editorOptions) {
         }
       })($node, options);
     },
-    button: function ($node, options) {
+    button: function button($node, options) {
       return renderer["a" /* default */].create('<button type="button" class="note-btn btn btn-light btn-sm" tabindex="-1">', function ($node, options) {
         if (options && options.tooltip) {
           $node.attr({
@@ -9044,33 +10061,33 @@ const ui = function (editorOptions) {
             container: options.container || editorOptions.container,
             trigger: 'hover',
             placement: 'bottom'
-          }).on('click', e => {
+          }).on('click', function (e) {
             external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(e.currentTarget).tooltip('hide');
           });
         }
       })($node, options);
     },
-    toggleBtn: function ($btn, isEnable) {
+    toggleBtn: function toggleBtn($btn, isEnable) {
       $btn.toggleClass('disabled', !isEnable);
       $btn.attr('disabled', !isEnable);
     },
-    toggleBtnActive: function ($btn, isActive) {
+    toggleBtnActive: function toggleBtnActive($btn, isActive) {
       $btn.toggleClass('active', isActive);
     },
-    onDialogShown: function ($dialog, handler) {
+    onDialogShown: function onDialogShown($dialog, handler) {
       $dialog.one('shown.bs.modal', handler);
     },
-    onDialogHidden: function ($dialog, handler) {
+    onDialogHidden: function onDialogHidden($dialog, handler) {
       $dialog.one('hidden.bs.modal', handler);
     },
-    showDialog: function ($dialog) {
+    showDialog: function showDialog($dialog) {
       $dialog.modal('show');
     },
-    hideDialog: function ($dialog) {
+    hideDialog: function hideDialog($dialog) {
       $dialog.modal('hide');
     },
-    createLayout: function ($note) {
-      const $editor = (editorOptions.airMode ? airEditor([editingArea([codable(), airEditable()])]) : editorOptions.toolbarPosition === 'bottom' ? editor([editingArea([codable(), editable()]), toolbar(), statusbar()]) : editor([toolbar(), editingArea([codable(), editable()]), statusbar()])).render();
+    createLayout: function createLayout($note) {
+      var $editor = (editorOptions.airMode ? airEditor([editingArea([codable(), airEditable()])]) : editorOptions.toolbarPosition === 'bottom' ? editor([editingArea([codable(), editable()]), toolbar(), statusbar()]) : editor([toolbar(), editingArea([codable(), editable()]), statusbar()])).render();
       $editor.insertAfter($note);
       return {
         note: $note,
@@ -9082,7 +10099,7 @@ const ui = function (editorOptions) {
         statusbar: $editor.find('.note-statusbar')
       };
     },
-    removeLayout: function ($note, layoutInfo) {
+    removeLayout: function removeLayout($note, layoutInfo) {
       $note.html(layoutInfo.editable.html());
       layoutInfo.editor.remove();
       $note.show();
@@ -9090,7 +10107,7 @@ const ui = function (editorOptions) {
   };
 };
 
-/* harmony default export */ var bs4_ui = (ui);
+/* harmony default export */ var bs4_ui = (ui_ui);
 // EXTERNAL MODULE: ./src/js/base/settings.js + 37 modules
 var settings = __webpack_require__(3);
 
@@ -9104,7 +10121,7 @@ var summernote_bs4 = __webpack_require__(5);
 
 external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote, {
   ui_template: bs4_ui,
-  interface: 'bs4'
+  "interface": 'bs4'
 });
 external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote.options.styleTags = ['p', {
   title: 'Blockquote',

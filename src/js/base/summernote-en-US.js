@@ -123,9 +123,10 @@ $.extend($.summernote.lang, {
       extraKeys: 'Extra keys',
     },
     help: {
+      'escape': 'Escape',
       'insertParagraph': 'Insert Paragraph',
-      'undo': 'Undoes the last command',
-      'redo': 'Redoes the last command',
+      'undo': 'Undo the last command',
+      'redo': 'Redo the last command',
       'tab': 'Tab',
       'untab': 'Untab',
       'bold': 'Set a bold style',

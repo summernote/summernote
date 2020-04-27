@@ -46,8 +46,6 @@ if (isMSIE) {
 
 const isEdge = /Edge\/\d+/.test(userAgent);
 
-let hasCodeMirror = !!window.CodeMirror;
-
 const isSupportTouch =
   (('ontouchstart' in window) ||
    (navigator.MaxTouchPoints > 0) ||
@@ -78,7 +76,6 @@ export default {
   jqueryVersion: parseFloat($.fn.jquery),
   isSupportAmd,
   isSupportTouch,
-  hasCodeMirror,
   isFontInstalled,
   isW3CRangeSupport: !!document.createRange,
   inputEventName,

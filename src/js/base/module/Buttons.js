@@ -54,7 +54,7 @@ export default class Buttons {
   }
 
   isFontInstalled(name) {
-    if (!this.fontInstalledMap.hasOwnProperty(name)) {
+    if (!Object.prototype.hasOwnProperty.call(this.fontInstalledMap, name)) {
       this.fontInstalledMap[name] = env.isFontInstalled(name) ||
         lists.contains(this.options.fontNamesIgnoreCheck, name);
     }
@@ -118,13 +118,13 @@ export default class Buttons {
             '<div class="note-palette">',
               '<div class="note-palette-title">' + this.lang.color.background + '</div>',
               '<div>',
-                '<button type="button" class="note-color-reset btn btn-light" data-event="backColor" data-value="inherit">',
+                '<button type="button" class="note-color-reset btn btn-light btn-default" data-event="backColor" data-value="transparent">',
                   this.lang.color.transparent,
                 '</button>',
               '</div>',
-              '<div class="note-holder" data-event="backColor"/>',
+              '<div class="note-holder" data-event="backColor"><!-- back colors --></div>',
               '<div>',
-                '<button type="button" class="note-color-select btn" data-event="openPalette" data-value="backColorPicker">',
+                '<button type="button" class="note-color-select btn btn-light btn-default" data-event="openPalette" data-value="backColorPicker">',
                   this.lang.color.cpSelect,
                 '</button>',
                 '<input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.backColor + '" data-event="backColorPalette">',
@@ -136,13 +136,13 @@ export default class Buttons {
             '<div class="note-palette">',
               '<div class="note-palette-title">' + this.lang.color.foreground + '</div>',
               '<div>',
-                '<button type="button" class="note-color-reset btn btn-light" data-event="removeFormat" data-value="foreColor">',
+                '<button type="button" class="note-color-reset btn btn-light btn-default" data-event="removeFormat" data-value="foreColor">',
                   this.lang.color.resetToDefault,
                 '</button>',
               '</div>',
-              '<div class="note-holder" data-event="foreColor"/>',
+              '<div class="note-holder" data-event="foreColor"><!-- fore colors --></div>',
               '<div>',
-                '<button type="button" class="note-color-select btn" data-event="openPalette" data-value="foreColorPicker">',
+                '<button type="button" class="note-color-select btn btn-light btn-default" data-event="openPalette" data-value="foreColorPicker">',
                   this.lang.color.cpSelect,
                 '</button>',
                 '<input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.foreColor + '" data-event="foreColorPalette">',
@@ -190,10 +190,10 @@ export default class Buttons {
           click: (event) => {
             event.stopPropagation();
 
-            const $parent = $('.' + className).find('.show');
+            const $parent = $('.' + className).find('.note-dropdown-menu');
             const $button = $(event.target);
             const eventName = $button.data('event');
-            let value = $button.attr('data-value');
+            const value = $button.attr('data-value');
 
             if (eventName === 'openPalette') {
               const $picker = $parent.find('#' + value);
@@ -210,13 +210,15 @@ export default class Buttons {
                 .attr('data-original-title', color);
               $palette.prepend($chip);
               $picker.click();
-            } else if (lists.contains(['backColor', 'foreColor'], eventName)) {
-              const key = eventName === 'backColor' ? 'background-color' : 'color';
-              const $color = $button.closest('.note-color').find('.note-recent-color');
-              const $currentButton = $button.closest('.note-color').find('.note-current-color-button');
+            } else {
+              if (lists.contains(['backColor', 'foreColor'], eventName)) {
+                const key = eventName === 'backColor' ? 'background-color' : 'color';
+                const $color = $button.closest('.note-color').find('.note-recent-color');
+                const $currentButton = $button.closest('.note-color').find('.note-current-color-button');
 
-              $color.css(key, value);
-              $currentButton.attr('data-' + eventName, value);
+                $color.css(key, value);
+                $currentButton.attr('data-' + eventName, value);
+              }
               this.context.invoke('editor.' + eventName, value);
             }
           },
@@ -243,8 +245,12 @@ export default class Buttons {
           items: this.options.styleTags,
           title: this.lang.style.style,
           template: (item) => {
+            // TBD: need to be simplified
             if (typeof item === 'string') {
-              item = { tag: item, title: (this.lang.style.hasOwnProperty(item) ? this.lang.style[item] : item) };
+              item = {
+                tag: item,
+                title: (Object.prototype.hasOwnProperty.call(this.lang.style, item) ? this.lang.style[item] : item),
+              };
             }
 
             const tag = item.tag;

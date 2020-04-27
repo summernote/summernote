@@ -80,14 +80,14 @@ export default class Toolbar {
     if (!this.isFollowing &&
       (currentOffset > activateOffset) && (currentOffset < deactivateOffsetBottom - toolbarHeight)) {
       this.isFollowing = true;
+      this.$editable.css({
+        marginTop: this.$toolbar.outerHeight(),
+      });
       this.$toolbar.css({
         position: 'fixed',
         top: otherBarHeight,
         width: editorWidth,
         zIndex: 1000,
-      });
-      this.$editable.css({
-        marginTop: this.$toolbar.height() + 5,
       });
     } else if (this.isFollowing &&
       ((currentOffset < activateOffset) || (currentOffset > deactivateOffsetBottom))) {

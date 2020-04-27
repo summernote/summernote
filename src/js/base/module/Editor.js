@@ -37,6 +37,7 @@ export default class Editor {
     this.bullet = new Bullet();
     this.history = new History(context);
 
+    this.context.memo('help.escape', this.lang.help.escape);
     this.context.memo('help.undo', this.lang.help.undo);
     this.context.memo('help.redo', this.lang.help.redo);
     this.context.memo('help.tab', this.lang.help.tab);
@@ -273,7 +274,6 @@ export default class Editor {
      * @param {String} colorCode foreground color code
      */
     this.foreColor = this.wrapCommand((colorInfo) => {
-      document.execCommand('styleWithCSS', false, true);
       document.execCommand('foreColor', false, colorInfo);
     });
 
@@ -405,7 +405,7 @@ export default class Editor {
       this.context.triggerEvent('change', this.$editable.html(), this.$editable);
     }, 10));
 
-    this.$editor.on('focusin', (event) => {
+    this.$editable.on('focusin', (event) => {
       this.context.triggerEvent('focusin', event);
     }).on('focusout', (event) => {
       this.context.triggerEvent('focusout', event);
@@ -619,6 +619,10 @@ export default class Editor {
    */
   beforeCommand() {
     this.context.triggerEvent('before.command', this.$editable.html());
+
+    // Set styleWithCSS before run a command
+    document.execCommand('styleWithCSS', false, this.options.styleWithCSS);
+
     // keep focus on editable before command execution
     this.focus();
   }

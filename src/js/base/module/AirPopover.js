@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import func from '../core/func';
 import lists from '../core/lists';
 
 const AIRMODE_POPOVER_X_OFFSET = -5;
@@ -78,20 +77,26 @@ export default class AirPopover {
         top: this.pageY,
       };
 
-      const bnd = func.rect2bnd(rect);
       const containerOffset = $(this.options.container).offset();
-      bnd.top -= containerOffset.top;
-      bnd.left -= containerOffset.left;
+      rect.top -= containerOffset.top;
+      rect.left -= containerOffset.left;
 
       this.$popover.css({
         display: 'block',
-        left: Math.max(bnd.left, 0) + AIRMODE_POPOVER_X_OFFSET,
-        top: bnd.top + AIRMODE_POPOVER_Y_OFFSET,
+        left: Math.max(rect.left, 0) + AIRMODE_POPOVER_X_OFFSET,
+        top: rect.top + AIRMODE_POPOVER_Y_OFFSET,
       });
       this.context.invoke('buttons.updateCurrentStyle', this.$popover);
     } else {
       this.hide();
     }
+  }
+
+  updateCodeview(isCodeview) {
+    this.ui.toggleBtnActive(this.$popover.find('.btn-codeview'), isCodeview);
+    if (isCodeview) {
+      this.hide();
+    } 
   }
 
   hide() {
