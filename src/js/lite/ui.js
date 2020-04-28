@@ -49,6 +49,10 @@ const button = renderer.create('<button type="button" class="note-btn" tabindex=
       container: options.container,
     }));
   }
+
+  if (options && options.codeviewKeepButton) {
+    $node.addClass('note-codeview-keep');
+  }
 });
 
 const dropdown = renderer.create('<div class="note-dropdown-menu" role="list">', function($node, options) {
@@ -76,6 +80,9 @@ const dropdown = renderer.create('<div class="note-dropdown-menu" role="list">',
       options.itemClick(e, item, value);
     }
   });
+  if (options && options.codeviewKeepButton) {
+    $node.addClass('note-codeview-keep');
+  }
 });
 
 const dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check" role="list">', function($node, options) {
@@ -102,6 +109,9 @@ const dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check
       options.itemClick(e, item, value);
     }
   });
+  if (options && options.codeviewKeepButton) {
+    $node.addClass('note-codeview-keep');
+  }
 });
 
 const dropdownButtonContents = function(contents, options) {
