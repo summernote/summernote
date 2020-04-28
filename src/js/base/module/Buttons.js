@@ -536,7 +536,7 @@ export default class Buttons {
     this.context.memo('button.table', () => {
       return this.ui.buttonGroup([
         this.button({
-          className: 'dropdown-toggle note-codeview-keep',
+          className: 'dropdown-toggle',
           contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.table), this.options),
           tooltip: this.lang.table.table,
           data: {
