@@ -56,6 +56,8 @@ $.extend($.summernote.lang, {
       edit: 'Edit',
       textToDisplay: 'Text to display',
       url: 'To what URL should this link go?',
+      title: 'Title text to be used in link',
+      rel: 'Choose a Rel option to use',
       openInNewWindow: 'Open in new window',
       useProtocol: 'Use default protocol',
     },
