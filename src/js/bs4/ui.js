@@ -37,8 +37,9 @@ const dropdown = renderer.create('<div class="note-dropdown-menu dropdown-menu" 
   }).join('') : options.items;
 
   $node.html(markup).attr({ 'aria-label': options.title });
-  if (options && options.codeviewButton) {
-    $node.addClass('note-keep');
+
+  if (options && options.codeviewKeepButton) {
+    $node.addClass('note-codeview-keep');
   }
 });
 
@@ -53,6 +54,10 @@ const dropdownCheck = renderer.create('<div class="note-dropdown-menu dropdown-m
     return '<a class="dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + item + '">' + icon(options.checkClassName) + ' ' + content + '</a>';
   }).join('') : options.items;
   $node.html(markup).attr({ 'aria-label': options.title });
+
+  if (options && options.codeviewKeepButton) {
+    $node.addClass('note-codeview-keep');
+  }
 });
 
 const dialog = renderer.create('<div class="modal note-modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function($node, options) {
@@ -178,7 +183,7 @@ const ui = function(editorOptions) {
           });
         }
         if (options && options.codeviewButton) {
-          $node.addClass('note-keep');
+          $node.addClass('note-codeview-keep');
         }
       })($node, options);
     },

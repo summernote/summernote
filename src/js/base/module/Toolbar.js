@@ -135,7 +135,7 @@ export default class Toolbar {
   activate(isIncludeCodeview) {
     let $btn = this.$toolbar.find('button');
     if (!isIncludeCodeview) {
-      $btn = $btn.not('.note-keep');
+      $btn = $btn.not('.note-codeview-keep');
     }
     this.ui.toggleBtn($btn, true);
   }
@@ -143,7 +143,7 @@ export default class Toolbar {
   deactivate(isIncludeCodeview) {
     let $btn = this.$toolbar.find('button');
     if (!isIncludeCodeview) {
-      $btn = $btn.not('.note-keep');
+      $btn = $btn.not('.note-codeview-keep');
     }
     this.ui.toggleBtn($btn, false);
   }

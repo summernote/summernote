@@ -536,7 +536,7 @@ export default class Buttons {
     this.context.memo('button.table', () => {
       return this.ui.buttonGroup([
         this.button({
-          className: 'dropdown-toggle',
+          className: 'dropdown-toggle note-codeview-keep',
           contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.table), this.options),
           tooltip: this.lang.table.table,
           data: {
@@ -601,7 +601,7 @@ export default class Buttons {
 
     this.context.memo('button.fullscreen', () => {
       return this.button({
-        className: 'btn-fullscreen note-keep',
+        className: 'btn-fullscreen note-codeview-keep',
         contents: this.ui.icon(this.options.icons.arrowsAlt),
         tooltip: this.lang.options.fullscreen,
         click: this.context.createInvokeHandler('fullscreen.toggle'),
@@ -610,7 +610,7 @@ export default class Buttons {
 
     this.context.memo('button.codeview', () => {
       return this.button({
-        className: 'btn-codeview note-keep',
+        className: 'btn-codeview note-codeview-keep',
         contents: this.ui.icon(this.options.icons.code),
         tooltip: this.lang.options.codeview,
         click: this.context.createInvokeHandler('codeview.toggle'),

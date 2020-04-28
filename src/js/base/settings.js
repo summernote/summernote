@@ -74,7 +74,7 @@ $.summernote = $.extend($.summernote, {
     otherStaticBar: '',
 
     // toolbar
-    codeviewButton: false,
+    codeviewKeepButton: false,
     toolbar: [
       ['style', ['style']],
       ['font', ['bold', 'underline', 'clear']],
