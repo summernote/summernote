@@ -27,7 +27,7 @@ You can debug unit tests with VSCode following the steps:
 ```
 4. On terminal, run test with command:
 ```
-npm run test:debug
+yarn test:debug
 ```
 4. Open vscode
 5. Set breakpoint on code
@@ -54,7 +54,7 @@ git pull
 # Bump version in package.json
 
 # build dist files and binary(.zip) for release post
-npm run build
+yarn build
 
 # Commit and add tag for new version
 git commit -a -m "Update dist files"
@@ -71,9 +71,9 @@ https://github.com/summernote/summernote/releases/new
 
 ### 4. Publish
 
-Publish on npm
+Publish on npm registry
 ```bash
-npm publish
+yarn publish
 ```
 
 ### 5. Update summernote.github.io
