@@ -575,39 +575,25 @@ function prevPoint(point, isSkipInnerOffset) {
 function nextPoint(point, isSkipInnerOffset) {
   let node, offset;
 
-  if (isEmpty(point.node)) {
-    return null;
-  }
-
   if (nodeLength(point.node) === point.offset) {
     if (isEditable(point.node)) {
       return null;
     }
 
     let nextTextNode = getNextTextNode(point.node);
-    if(nextTextNode)
-    {
+    if (nextTextNode) {
       node = nextTextNode;
       offset = 0;
-    }
-    else
-    {
+    } else {
       node = point.node.parentNode;
       offset = position(point.node) + 1;
     }
   } else if (hasChildren(point.node)) {
     node = point.node.childNodes[point.offset];
     offset = 0;
-    if (isEmpty(node)) {
-      return null;
-    }
   } else {
     node = point.node;
     offset = isSkipInnerOffset ? nodeLength(point.node) : point.offset + 1;
-
-    if (isEmpty(node)) {
-      return null;
-    }
   }
 
   return {
