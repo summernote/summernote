@@ -422,10 +422,7 @@ const dialog = renderer.create('<div class="note-modal" aria-hidden="false" tabi
 });
 
 const videoDialog = function(opt) {
-  const body = '<div class="note-form-group">' +
-    '<label for="note-dialog-video-url-' + opt.id + '" class="note-form-label">' + opt.lang.video.url + ' <small class="text-muted">' + opt.lang.video.providers + '</small></label>' +
-    '<input id="note-dialog-video-url-' + opt.id + '" class="note-video-url note-input" type="text"/>' +
-  '</div>';
+  const body = ''; // Look in src/js/base/modules/VideoDialog.js for the markup for dialog body
   const footer = [
     '<button type="button" href="#" class="note-btn note-btn-primary note-video-btn disabled" disabled>',
       opt.lang.video.insert,
@@ -441,15 +438,7 @@ const videoDialog = function(opt) {
 };
 
 const imageDialog = function(opt) {
-  const body = '<div class="note-form-group note-group-select-from-files">' +
-    '<label for="note-dialog-image-file-' + opt.id + '" class="note-form-label">' + opt.lang.image.selectFromFiles + '</label>' +
-    '<input id="note-dialog-image-file-' + opt.id + '" class="note-note-image-input note-input" type="file" name="files" accept="image/*" multiple="multiple"/>' +
-    opt.imageLimitation +
-  '</div>' +
-  '<div class="note-form-group">' +
-    '<label for="note-dialog-image-url-' + opt.id + '" class="note-form-label">' + opt.lang.image.url + '</label>' +
-    '<input id="note-dialog-image-url-' + opt.id + '" class="note-image-url note-input" type="text"/>' +
-  '</div>';
+  const body = ''; // Look in src/js/base/modules/ImageDialog.js for the markup for dialog body
   const footer = [
     '<button href="#" type="button" class="note-btn note-btn-primary note-btn-large note-image-btn disabled" disabled>',
       opt.lang.image.insert,
@@ -465,39 +454,7 @@ const imageDialog = function(opt) {
 };
 
 const linkDialog = function(opt) {
-  const body = '<div class="note-form-group">' +
-    '<label for="note-dialog-link-url-' + opt.id + '" class="note-form-label">' + opt.lang.link.url + '</label>' +
-    '<input id="note-dialog-link-url-' + opt.id + '" class="note-link-url note-input" type="text" value="http://"/>' +
-  '</div>' +
-  '<div class="note-form-group">' +
-    '<label for="note-dialog-link-txt-' + opt.id + '" class="note-form-label">' + opt.lang.link.textToDisplay + '</label>' +
-    '<input id="note-dialog-link-txt-' + opt.id + '" class="note-link-text note-input" type="text"/>' +
-  '</div>' +
-  '<div class="note-form-group">' +
-    '<label for="note-dialog-link-title-' + opt.id + '" class="note-form-label">' + opt.lang.link.title + '</label>' +
-    '<input id="note-dialog-link-title-' + opt.id + '" class="note-link-title note-input" type="text"/>' +
-  '</div>' +
-  '<div class="note-form-group">' +
-    `<label for="note-dialog-link-rel-` + opt.id + `" class="note-form-label">` + opt.lang.link.rel + `</label>` +
-    `<select id="note-dialog-link-rel-` + opt.id + `" class="note-link-rel note-form-control note-input">` +
-      `<option value="">Nothing</option>` +
-      `<option value="alternate">Alternate</option>` +
-      `<option value="author">Author</option>` +
-      `<option value="bookmark">Bookmark</option>` +
-      `<option value="external">External</option>` +
-      `<option value="Help">Help</option>` +
-      `<option value="license">License</option>` +
-      `<option value="next">Next</option>` +
-      `<option value="nofollow">NoFollow</option>` +
-      `<option value="noreferrer">NoReferrer</option>` +
-      `<option value="noopener">NoOperner</option>` +
-      `<option value="prev">Prev</option>` +
-      `<option value="search">Search</option>` +
-      `<option value="tag">Tag</option>` +
-    `</select>` +
-  '</div>' +
-  (!opt.disableLinkTarget ? '<div class="checkbox"><label for="note-dialog-link-nw-' + opt.id + '"><input id="note-dialog-link-nw-' + opt.id + '" type="checkbox" checked> ' + opt.lang.link.openInNewWindow + '</label></div>' : '') +
-  '<div class="checkbox"><label for="note-dialog-link-up-' + opt.id + '"><input id="note-dialog-link-up-' + opt.id + '" type="checkbox" checked> ' + opt.lang.link.useProtocol + '</label></div>';
+  const body = ''; // Look in src/js/base/modules/LinkDialog.js for the markup for dialog body
   const footer = [
     '<button href="#" type="button" class="note-btn note-btn-primary note-link-btn disabled" disabled>',
       opt.lang.link.insert,

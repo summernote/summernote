@@ -181,8 +181,6 @@ export default class LinkDialog {
         // detach events
         $linkUrl.off();
         $linkText.off();
-        $linkTitle.off();
-        $linkRel.off();
         $linkBtn.off();
 
         if (deferred.state() === 'pending') {
