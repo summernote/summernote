@@ -139,8 +139,8 @@ class WrappedRange {
   nativeRange() {
     if (env.isW3CRangeSupport) {
       const w3cRange = document.createRange();
-      w3cRange.setStart(this.sc, this.sc.data && this.so > this.sc.data.length ? 0 : this.so);
-      w3cRange.setEnd(this.ec, this.sc.data ? Math.min(this.eo, this.sc.data.length) : this.eo);
+      w3cRange.setStart(this.sc, this.so);
+      w3cRange.setEnd(this.ec, this.eo);
 
       return w3cRange;
     } else {
@@ -554,6 +554,9 @@ class WrappedRange {
     const info = dom.splitPoint(rng.getStartPoint(), dom.isInline(node));
     if (info.rightNode) {
       info.rightNode.parentNode.insertBefore(node, info.rightNode);
+      if (dom.isEmpty(info.rightNode) && dom.isPara(node)) {
+        info.rightNode.parentNode.removeChild(info.rightNode);
+      }
     } else {
       info.container.appendChild(node);
     }
@@ -572,14 +575,18 @@ class WrappedRange {
 
     // const rng = this.wrapBodyInlineWithPara().deleteContents();
     const rng = this;
+    let reversed = false;
 
     if (rng.so >= 0) {
       childNodes = childNodes.reverse();
+      reversed = true;
     }
+
     childNodes = childNodes.map(function(childNode) {
       return rng.insertNode(childNode);
     });
-    if (rng.so > 0) {
+
+    if (reversed) {
       childNodes = childNodes.reverse();
     }
     return childNodes;

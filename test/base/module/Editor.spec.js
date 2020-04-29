@@ -292,7 +292,12 @@ describe('Editor', () => {
       expectContentsAwait(context, '<p>hello<span> world</span></p>', done);
     });
 
-    it('should not call change change event more than once per paste event', () => {
+    it('should not add empty paragraph', (done) => {
+      editor.pasteHTML('<p><span>whatever</span><br></p><p><span>it has</span><br></p>');
+      expectContentsAwait(context, '<p>hello</p><p><span>whatever</span><br></p><p><span>it has</span><br></p>', done);
+    });
+
+    it('should not call change event more than once per paste event', () => {
       var generateLargeHtml = () => {
         var html = '<div>';
         for (var i = 0; i < 1000; i++) {
@@ -384,6 +389,25 @@ describe('Editor', () => {
         editor.formatBlock('h1');
         expectContentsAwait(context, '<h1>hello</h1>', done);
       }, 10);
+    });
+
+    it('should toggle all paragraph even with empty paragraph', (done) => {
+      var codes = [
+        '<p><br></p>',
+        '<p>endpoint</p>',
+      ];
+
+      context.invoke('code', codes.join(''));
+      $editable.appendTo('body');
+
+      var startNode = $editable.find('p').first()[0];
+      var endNode = $editable.find('p').last()[0];
+
+      // all p tags is wrapped
+      range.create(startNode, 0, endNode, 1).normalize().select();
+
+      editor.insertUnorderedList();
+      expectContentsAwait(context, '<ul><li><br></li><li>endpoint</li></ul>', done);
     });
 
     it('should apply multi formatBlock', (done) => {
