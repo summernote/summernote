@@ -2,7 +2,7 @@ import $ from 'jquery';
 import renderer from '../base/renderer';
 
 const editor = renderer.create('<div class="note-editor note-frame panel panel-default"/>');
-const toolbar = renderer.create('<div class="panel-heading note-toolbar" role="toolbar"></div></div>');
+const toolbar = renderer.create('<div class="panel-heading note-toolbar" role="toolbar"></div>');
 const editingArea = renderer.create('<div class="note-editing-area"/>');
 const codable = renderer.create('<textarea class="note-codable" aria-multiline="true"/>');
 const editable = renderer.create('<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>');
@@ -10,9 +10,9 @@ const statusbar = renderer.create([
   '<output class="note-status-output" role="status" aria-live="polite"/>',
   '<div class="note-statusbar" role="status">',
     '<div class="note-resizebar" aria-label="Resize">',
-      '<div class="note-icon-bar"/>',
-      '<div class="note-icon-bar"/>',
-      '<div class="note-icon-bar"/>',
+      '<div class="note-icon-bar"></div>',
+      '<div class="note-icon-bar"></div>',
+      '<div class="note-icon-bar"></div>',
     '</div>',
   '</div>',
 ].join(''));
@@ -83,8 +83,8 @@ const dialog = renderer.create('<div class="modal note-modal" aria-hidden="false
 
 const popover = renderer.create([
   '<div class="note-popover popover in">',
-    '<div class="arrow"/>',
-    '<div class="popover-content note-children-container"/>',
+    '<div class="arrow"></div>',
+    '<div class="popover-content note-children-container"></div>',
   '</div>',
 ].join(''), function($node, options) {
   const direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';

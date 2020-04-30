@@ -10,16 +10,16 @@ const statusbar = renderer.create([
   '<output class="note-status-output" role="status" aria-live="polite"/>',
   '<div class="note-statusbar" role="status">',
     '<div class="note-resizebar" aria-label="Resize">',
-      '<div class="note-icon-bar"/>',
-      '<div class="note-icon-bar"/>',
-      '<div class="note-icon-bar"/>',
+      '<div class="note-icon-bar"></div>',
+      '<div class="note-icon-bar"></div>',
+      '<div class="note-icon-bar"></div>',
     '</div>',
   '</div>',
 ].join(''));
 
 const airEditor = renderer.create('<div class="note-editor note-airframe"/>');
 const airEditable = renderer.create([
-  '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>',
+  '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"></div>',
   '<output class="note-status-output" role="status" aria-live="polite"/>',
 ].join(''));
 
@@ -83,8 +83,8 @@ const dialog = renderer.create('<div class="modal note-modal" aria-hidden="false
 
 const popover = renderer.create([
   '<div class="note-popover popover in">',
-    '<div class="arrow"/>',
-    '<div class="popover-content note-children-container"/>',
+    '<div class="arrow"></div>',
+    '<div class="popover-content note-children-container"></div>',
   '</div>',
 ].join(''), function($node, options) {
   const direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
