@@ -13,16 +13,16 @@ const statusbar = renderer.create([
   '<output class="note-status-output" role="status" aria-live="polite"/>',
   '<div class="note-statusbar" role="status">',
     '<div class="note-resizebar" aria-label="resize">',
-      '<div class="note-icon-bar"/>',
-      '<div class="note-icon-bar"/>',
-      '<div class="note-icon-bar"/>',
+      '<div class="note-icon-bar"></div>',
+      '<div class="note-icon-bar"></div>',
+      '<div class="note-icon-bar"></div>',
     '</div>',
   '</div>',
 ].join(''));
 
 const airEditor = renderer.create('<div class="note-editor note-airframe"/>');
 const airEditable = renderer.create([
-  '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>',
+  '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"></div>',
   '<output class="note-status-output" role="status" aria-live="polite"/>',
 ].join(''));
 
@@ -236,9 +236,9 @@ const tableDropdownButton = function(opt) {
       className: 'note-table',
       items: [
         '<div class="note-dimension-picker">',
-          '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>',
-          '<div class="note-dimension-picker-highlighted"/>',
-          '<div class="note-dimension-picker-unhighlighted"/>',
+          '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>',
+          '<div class="note-dimension-picker-highlighted"></div>',
+          '<div class="note-dimension-picker-unhighlighted"></div>',
         '</div>',
         '<div class="note-dimension-display">1 x 1</div>',
       ].join(''),
@@ -325,7 +325,7 @@ const colorDropdownButton = function(opt, type) {
               opt.lang.color.transparent,
             '</button>',
           '</div>',
-          '<div class="note-holder" data-event="backColor"/>',
+          '<div class="note-holder" data-event="backColor"></div>',
             '<div class="btn-sm">',
               '<input type="color" id="html5bcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
               '<button type="button" class="note-color-reset btn" data-event="backColor" data-value="cpbackColor">',
@@ -340,7 +340,7 @@ const colorDropdownButton = function(opt, type) {
                 opt.lang.color.resetToDefault,
               '</button>',
             '</div>',
-            '<div class="note-holder" data-event="foreColor"/>',
+            '<div class="note-holder" data-event="foreColor"></div>',
               '<div class="btn-sm">',
                 '<input type="color" id="html5fcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
                 '<button type="button" class="note-color-reset btn" data-event="foreColor" data-value="cpforeColor">',
@@ -492,8 +492,8 @@ const linkDialog = function(opt) {
 
 const popover = renderer.create([
   '<div class="note-popover bottom">',
-    '<div class="note-popover-arrow"/>',
-    '<div class="popover-content note-children-container"/>',
+    '<div class="note-popover-arrow"></div>',
+    '<div class="popover-content note-children-container"></div>',
   '</div>',
 ].join(''), function($node, options) {
   const direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';

@@ -129,7 +129,7 @@ export default class Buttons {
                 '</button>',
                 '<input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.backColor + '" data-event="backColorPalette">',
               '</div>',
-              '<div class="note-holder-custom" id="backColorPalette" data-event="backColor"/>',
+              '<div class="note-holder-custom" id="backColorPalette" data-event="backColor"></div>',
             '</div>',
           ].join('') : '') +
           (foreColor ? [
@@ -147,7 +147,7 @@ export default class Buttons {
                 '</button>',
                 '<input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.foreColor + '" data-event="foreColorPalette">',
               '</div>', // Fix missing Div, Commented to find easily if it's wrong
-              '<div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"/>',
+              '<div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"></div>',
             '</div>',
           ].join('') : ''),
           callback: ($dropdown) => {
@@ -548,9 +548,9 @@ export default class Buttons {
           className: 'note-table',
           items: [
             '<div class="note-dimension-picker">',
-              '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>',
-              '<div class="note-dimension-picker-highlighted"/>',
-              '<div class="note-dimension-picker-unhighlighted"/>',
+              '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>',
+              '<div class="note-dimension-picker-highlighted"></div>',
+              '<div class="note-dimension-picker-unhighlighted"></div>',
             '</div>',
             '<div class="note-dimension-display">1 x 1</div>',
           ].join(''),

@@ -45,7 +45,7 @@ export default class HelpDialog {
     const keyMap = this.options.keyMap[env.isMac ? 'mac' : 'pc'];
     return Object.keys(keyMap).map((key) => {
       const command = keyMap[key];
-      const $row = $('<div><div class="help-list-item"/></div>');
+      const $row = $('<div><div class="help-list-item"></div></div>');
       $row.append($('<label><kbd>' + key + '</kdb></label>').css({
         'width': 180,
         'margin-right': 10,

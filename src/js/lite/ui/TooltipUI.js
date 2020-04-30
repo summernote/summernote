@@ -13,8 +13,8 @@ class TooltipUI {
     // create tooltip node
     this.$tooltip = $([
       '<div class="note-tooltip">',
-        '<div class="note-tooltip-arrow"/>',
-        '<div class="note-tooltip-content"/>',
+        '<div class="note-tooltip-arrow"></div>',
+        '<div class="note-tooltip-content"></div>',
       '</div>',
     ].join(''));
 
