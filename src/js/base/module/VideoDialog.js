@@ -16,10 +16,33 @@ export default class VideoDialog {
   initialize() {
     const $container = this.options.dialogsInBody ? this.$body : this.options.container;
     const body = [
-      '<div class="form-group note-form-group row-fluid">',
-        `<label for="note-dialog-video-url-${this.options.id}" class="note-form-label">${this.lang.video.url} <small class="text-muted">${this.lang.video.providers}</small></label>`,
+      '<div class="form-group note-form-group">',
+        `<div class="note-help-block help-block">${this.lang.video.note}</div>`,
+      '</div>',
+      '<div class="form-group note-form-group">',
+        `<label for="note-dialog-video-url-${this.options.id}" class="control-label note-form-label">${this.lang.video.url} <small class="text-muted">${this.lang.video.providers}</small></label>`,
         `<input id="note-dialog-video-url-${this.options.id}" class="note-video-url form-control note-form-control note-input" type="text"/>`,
       '</div>',
+      $('<div/>').append(this.ui.checkbox({
+        className: 'note-video-suggested',
+        text: this.lang.video.suggested,
+        checked: true,
+      }).render()).html(),
+      $('<div/>').append(this.ui.checkbox({
+        className: 'note-video-controls',
+        text: this.lang.video.controls,
+        checked: true,
+      }).render()).html(),
+      $('<div/>').append(this.ui.checkbox({
+        className: 'note-video-autoplay',
+        text: this.lang.video.autoplay,
+        checked: true,
+      }).render()).html(),
+      $('<div/>').append(this.ui.checkbox({
+        className: 'note-video-loop',
+        text: this.lang.video.loop,
+        checked: true,
+      }).render()).html(),
     ].join('');
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-video-btn';
     const footer = `<input type="button" href="#" class="${buttonClass}" value="${this.lang.video.insert}" disabled>`;
@@ -86,7 +109,24 @@ export default class VideoDialog {
     const fbMatch = url.match(fbRegExp);
 
     let $video;
+    let urlVars = '';
+    const $videoSuggested = this.$dialog.find('note-video-suggested input[type=checkbox]');
+    const $videoControls = this.$dialog.find('note-video-constrols input[type=checkbox]');
+    const $videoAutoplay = this.$dialog.find('note-video-autplay input[type=checkbox]');
+    const $videoLoop = this.$dialog.find('note-video-loop input[type=checkbox]');
     if (ytMatch && ytMatch[1].length === 11) {
+      if (!$videoSuggested.is(':checked')) {
+        urlVars += (start > 0 ? '&' : '') + 'rel=1';
+      }
+      if (!$videoControls.is(':checked')) {
+        urlVars += '&controls=1';
+      }
+      if ($videoAutoplay.is(':checked')) {
+        urlVars += '&autoplay=1';
+      }
+      if (!$videoLoop.is(':checked')) {
+        urlVars += '&loop=1';
+      }
       const youtubeId = ytMatch[1];
       var start = 0;
       if (typeof ytMatch[2] !== 'undefined') {
@@ -99,7 +139,7 @@ export default class VideoDialog {
       }
       $video = $('<iframe>')
         .attr('frameborder', 0)
-        .attr('src', '//www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : ''))
+        .attr('src', '//www.youtube.com/embed/' + youtubeId + '?' + (start > 0 ? 'start=' + start : '') + (urlVars.length > 0 ? urlVars : ''))
         .attr('width', '640').attr('height', '360');
     } else if (igMatch && igMatch[0].length) {
       $video = $('<iframe>')
@@ -187,6 +227,10 @@ export default class VideoDialog {
   showVideoDialog(/* text */) {
     return $.Deferred((deferred) => {
       const $videoUrl = this.$dialog.find('.note-video-url');
+      const $videoSuggested = this.$dialog.find('note-video-suggested input[type=checkbox]');
+      const $videoControls = this.$dialog.find('note-video-constrols input[type=checkbox]');
+      const $videoAutoplay = this.$dialog.find('note-video-autplay input[type=checkbox]');
+      const $videoLoop = this.$dialog.find('note-video-loop input[type=checkbox]');
       const $videoBtn = this.$dialog.find('.note-video-btn');
 
       this.ui.onDialogShown(this.$dialog, () => {
@@ -206,6 +250,7 @@ export default class VideoDialog {
         });
 
         this.bindEnterKey($videoUrl, $videoBtn);
+
       });
 
       this.ui.onDialogHidden(this.$dialog, () => {

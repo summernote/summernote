@@ -203,6 +203,7 @@ $.summernote = $.extend($.summernote, {
     dialogsInBody: false,
     dialogsFade: false,
 
+    disableUpload: false,
     maximumImageFileSize: null,
 
     callbacks: {
