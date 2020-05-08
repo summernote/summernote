@@ -110,7 +110,7 @@ const checkbox = renderer.create('<div class="form-check"></div>', function($nod
 
 const icon = function(iconClassName, tagName) {
   tagName = tagName || 'i';
-  return '<' + tagName + ' class="' + iconClassName + '"/>';
+  return '<' + tagName + ' class="' + iconClassName + '"></' + tagName+'>';
 };
 
 const ui = function(editorOptions) {
