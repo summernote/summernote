@@ -359,7 +359,7 @@ export default class Buttons {
         this.button({
           className: 'dropdown-toggle',
           contents: this.ui.dropdownButtonContents(
-            '<span class="note-current-fontname"/>', this.options
+            '<span class="note-current-fontname"></span>', this.options
           ),
           tooltip: this.lang.font.name,
           data: {
@@ -383,7 +383,7 @@ export default class Buttons {
       return this.ui.buttonGroup([
         this.button({
           className: 'dropdown-toggle',
-          contents: this.ui.dropdownButtonContents('<span class="note-current-fontsize"/>', this.options),
+          contents: this.ui.dropdownButtonContents('<span class="note-current-fontsize"></span>', this.options),
           tooltip: this.lang.font.size,
           data: {
             toggle: 'dropdown',
@@ -403,7 +403,7 @@ export default class Buttons {
       return this.ui.buttonGroup([
         this.button({
           className: 'dropdown-toggle',
-          contents: this.ui.dropdownButtonContents('<span class="note-current-fontsizeunit"/>', this.options),
+          contents: this.ui.dropdownButtonContents('<span class="note-current-fontsizeunit"></span>', this.options),
           tooltip: this.lang.font.sizeunit,
           data: {
             toggle: 'dropdown',

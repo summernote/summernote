@@ -2,12 +2,12 @@ import $ from 'jquery';
 import renderer from '../base/renderer';
 
 const editor = renderer.create('<div class="note-editor note-frame panel panel-default"/>');
-const toolbar = renderer.create('<div class="panel-heading note-toolbar" role="toolbar"></div>');
+const toolbar = renderer.create('<div class="panel-heading note-toolbar" role="toolbar"/>');
 const editingArea = renderer.create('<div class="note-editing-area"/>');
 const codable = renderer.create('<textarea class="note-codable" aria-multiline="true"/>');
 const editable = renderer.create('<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>');
 const statusbar = renderer.create([
-  '<output class="note-status-output" role="status" aria-live="polite"/>',
+  '<output class="note-status-output" role="status" aria-live="polite"></output>',
   '<div class="note-statusbar" role="status">',
     '<div class="note-resizebar" aria-label="Resize">',
       '<div class="note-icon-bar"></div>',
@@ -19,8 +19,8 @@ const statusbar = renderer.create([
 
 const airEditor = renderer.create('<div class="note-editor note-airframe"/>');
 const airEditable = renderer.create([
-  '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>',
-  '<output class="note-status-output" role="status" aria-live="polite"/>',
+  '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"></div>',
+  '<output class="note-status-output" role="status" aria-live="polite"></output>',
 ].join(''));
 
 const buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
@@ -54,7 +54,7 @@ const dropdownCheck = renderer.create('<ul class="note-dropdown-menu dropdown-me
     return '<li aria-label="' + item + '"><a href="#" data-value="' + value + '">' + icon(options.checkClassName) + ' ' + content + '</a></li>';
   }).join('') : options.items;
   $node.html(markup).attr({ 'aria-label': options.title });
-  
+
   if (options && options.codeviewKeepButton) {
     $node.addClass('note-codeview-keep');
   }
@@ -109,7 +109,7 @@ const checkbox = renderer.create('<div class="checkbox"></div>', function($node,
 
 const icon = function(iconClassName, tagName) {
   tagName = tagName || 'i';
-  return '<' + tagName + ' class="' + iconClassName + '"/>';
+  return '<' + tagName + ' class="' + iconClassName + '"></' + tagName+'>';
 };
 
 const ui = function(editorOptions) {
