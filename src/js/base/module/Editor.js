@@ -238,18 +238,8 @@ export default class Editor {
         }
       });
 
-      const startRange = range.createFromNodeBefore(lists.head(anchors));
-      const startPoint = startRange.getStartPoint();
-      const endRange = range.createFromNodeAfter(lists.last(anchors));
-      const endPoint = endRange.getEndPoint();
-
       this.setLastRange(
-        range.create(
-          startPoint.node,
-          startPoint.offset,
-          endPoint.node,
-          endPoint.offset
-        ).select()
+        this.createRangeFromList(anchors).select()
       );
     });
 
@@ -497,6 +487,7 @@ export default class Editor {
     }
     return false;
   }
+
   /**
    * create range
    * @return {WrappedRange}
@@ -507,6 +498,34 @@ export default class Editor {
     return this.getLastRange();
   }
 
+  /**
+   * create a new range from the list of elements
+   *
+   * @param {list} dom element list
+   * @return {WrappedRange}
+   */
+  createRangeFromList(lst) {
+    const startRange = range.createFromNodeBefore(lists.head(lst));
+    const startPoint = startRange.getStartPoint();
+    const endRange = range.createFromNodeAfter(lists.last(lst));
+    const endPoint = endRange.getEndPoint();
+
+    return range.create(
+      startPoint.node,
+      startPoint.offset,
+      endPoint.node,
+      endPoint.offset
+    );
+  }
+
+  /**
+   * set the last range
+   *
+   * if given rng is exist, set rng as the last range
+   * or create a new range at the end of the document
+   *
+   * @param {WrappedRange} rng
+   */
   setLastRange(rng) {
     if (rng) {
       this.lastRange = rng;
@@ -519,6 +538,14 @@ export default class Editor {
     }
   }
 
+  /**
+   * get the last range
+   *
+   * if there is a saved last range, return it
+   * or create a new range and return it
+   *
+   * @return {WrappedRange}
+   */
   getLastRange() {
     if (!this.lastRange) {
       this.setLastRange();
@@ -807,6 +834,10 @@ export default class Editor {
           this.setLastRange();
           this.$editable.data(KEY_BOGUS, firstSpan);
         }
+      } else {
+        this.setLastRange(
+          this.createRangeFromList(spans).select()
+        );
       }
     } else {
       const noteStatusOutput = $.now();
