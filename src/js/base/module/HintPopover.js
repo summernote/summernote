@@ -185,7 +185,7 @@ export default class HintPopover {
   }
 
   createGroup(idx, keyword) {
-    const $group = $('<div class="note-hint-group note-hint-group-' + idx + '"/>');
+    const $group = $('<div class="note-hint-group note-hint-group-' + idx + '"></div>');
     this.searchKeyword(idx, keyword, (items) => {
       items = items || [];
       if (items.length) {
