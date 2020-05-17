@@ -18,11 +18,22 @@ export default class CodeView {
     }
   }
 
-  sync() {
+  sync(html) {
     const isCodeview = this.isActivated();
     const CodeMirror = this.CodeMirrorConstructor;
-    if (isCodeview && CodeMirror) {
-      this.$codable.data('cmEditor').save();
+
+    if (isCodeview) {
+      if (html) {
+        if (CodeMirror) {
+          this.$codable.data('cmEditor').getDoc().setValue(html);
+        } else {
+          this.$codable.val(html);
+        }
+      } else {
+        if (CodeMirror) {
+          this.$codable.data('cmEditor').save();
+        }
+      }
     }
   }
 

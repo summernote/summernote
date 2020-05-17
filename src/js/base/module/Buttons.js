@@ -118,36 +118,36 @@ export default class Buttons {
             '<div class="note-palette">',
               '<div class="note-palette-title">' + this.lang.color.background + '</div>',
               '<div>',
-                '<button type="button" class="note-color-reset btn btn-light" data-event="backColor" data-value="transparent">',
+                '<button type="button" class="note-color-reset btn btn-light btn-default" data-event="backColor" data-value="transparent">',
                   this.lang.color.transparent,
                 '</button>',
               '</div>',
               '<div class="note-holder" data-event="backColor"><!-- back colors --></div>',
               '<div>',
-                '<button type="button" class="note-color-select btn btn-light" data-event="openPalette" data-value="backColorPicker">',
+                '<button type="button" class="note-color-select btn btn-light btn-default" data-event="openPalette" data-value="backColorPicker">',
                   this.lang.color.cpSelect,
                 '</button>',
                 '<input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.backColor + '" data-event="backColorPalette">',
               '</div>',
-              '<div class="note-holder-custom" id="backColorPalette" data-event="backColor"/>',
+              '<div class="note-holder-custom" id="backColorPalette" data-event="backColor"></div>',
             '</div>',
           ].join('') : '') +
           (foreColor ? [
             '<div class="note-palette">',
               '<div class="note-palette-title">' + this.lang.color.foreground + '</div>',
               '<div>',
-                '<button type="button" class="note-color-reset btn btn-light" data-event="removeFormat" data-value="foreColor">',
+                '<button type="button" class="note-color-reset btn btn-light btn-default" data-event="removeFormat" data-value="foreColor">',
                   this.lang.color.resetToDefault,
                 '</button>',
               '</div>',
               '<div class="note-holder" data-event="foreColor"><!-- fore colors --></div>',
               '<div>',
-                '<button type="button" class="note-color-select btn btn-light" data-event="openPalette" data-value="foreColorPicker">',
+                '<button type="button" class="note-color-select btn btn-light btn-default" data-event="openPalette" data-value="foreColorPicker">',
                   this.lang.color.cpSelect,
                 '</button>',
                 '<input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.foreColor + '" data-event="foreColorPalette">',
               '</div>', // Fix missing Div, Commented to find easily if it's wrong
-              '<div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"/>',
+              '<div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"></div>',
             '</div>',
           ].join('') : ''),
           callback: ($dropdown) => {
@@ -359,7 +359,7 @@ export default class Buttons {
         this.button({
           className: 'dropdown-toggle',
           contents: this.ui.dropdownButtonContents(
-            '<span class="note-current-fontname"/>', this.options
+            '<span class="note-current-fontname"></span>', this.options
           ),
           tooltip: this.lang.font.name,
           data: {
@@ -383,7 +383,7 @@ export default class Buttons {
       return this.ui.buttonGroup([
         this.button({
           className: 'dropdown-toggle',
-          contents: this.ui.dropdownButtonContents('<span class="note-current-fontsize"/>', this.options),
+          contents: this.ui.dropdownButtonContents('<span class="note-current-fontsize"></span>', this.options),
           tooltip: this.lang.font.size,
           data: {
             toggle: 'dropdown',
@@ -403,7 +403,7 @@ export default class Buttons {
       return this.ui.buttonGroup([
         this.button({
           className: 'dropdown-toggle',
-          contents: this.ui.dropdownButtonContents('<span class="note-current-fontsizeunit"/>', this.options),
+          contents: this.ui.dropdownButtonContents('<span class="note-current-fontsizeunit"></span>', this.options),
           tooltip: this.lang.font.sizeunit,
           data: {
             toggle: 'dropdown',
@@ -548,9 +548,9 @@ export default class Buttons {
           className: 'note-table',
           items: [
             '<div class="note-dimension-picker">',
-              '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"/>',
-              '<div class="note-dimension-picker-highlighted"/>',
-              '<div class="note-dimension-picker-unhighlighted"/>',
+              '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>',
+              '<div class="note-dimension-picker-highlighted"></div>',
+              '<div class="note-dimension-picker-unhighlighted"></div>',
             '</div>',
             '<div class="note-dimension-display">1 x 1</div>',
           ].join(''),
@@ -601,7 +601,7 @@ export default class Buttons {
 
     this.context.memo('button.fullscreen', () => {
       return this.button({
-        className: 'btn-fullscreen',
+        className: 'btn-fullscreen note-codeview-keep',
         contents: this.ui.icon(this.options.icons.arrowsAlt),
         tooltip: this.lang.options.fullscreen,
         click: this.context.createInvokeHandler('fullscreen.toggle'),
@@ -610,7 +610,7 @@ export default class Buttons {
 
     this.context.memo('button.codeview', () => {
       return this.button({
-        className: 'btn-codeview',
+        className: 'btn-codeview note-codeview-keep',
         contents: this.ui.icon(this.options.icons.code),
         tooltip: this.lang.options.codeview,
         click: this.context.createInvokeHandler('codeview.toggle'),

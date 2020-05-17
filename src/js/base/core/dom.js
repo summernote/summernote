@@ -575,8 +575,52 @@ function prevPoint(point, isSkipInnerOffset) {
 function nextPoint(point, isSkipInnerOffset) {
   let node, offset;
 
+  if (nodeLength(point.node) === point.offset) {
+    if (isEditable(point.node)) {
+      return null;
+    }
+
+    let nextTextNode = getNextTextNode(point.node);
+    if (nextTextNode) {
+      node = nextTextNode;
+      offset = 0;
+    } else {
+      node = point.node.parentNode;
+      offset = position(point.node) + 1;
+    }
+  } else if (hasChildren(point.node)) {
+    node = point.node.childNodes[point.offset];
+    offset = 0;
+  } else {
+    node = point.node;
+    offset = isSkipInnerOffset ? nodeLength(point.node) : point.offset + 1;
+  }
+
+  return {
+    node: node,
+    offset: offset,
+  };
+}
+
+/**
+ * returns next boundaryPoint with empty node
+ *
+ * @param {BoundaryPoint} point
+ * @param {Boolean} isSkipInnerOffset
+ * @return {BoundaryPoint}
+ */
+function nextPointWithEmptyNode(point, isSkipInnerOffset) {
+  let node, offset;
+
+  // if node is empty string node, return current node's sibling.
   if (isEmpty(point.node)) {
-    return null;
+    node = point.node.nextSibling;
+    offset = 0;
+
+    return {
+      node: node,
+      offset: offset,
+    };
   }
 
   if (nodeLength(point.node) === point.offset) {
@@ -585,15 +629,18 @@ function nextPoint(point, isSkipInnerOffset) {
     }
 
     let nextTextNode = getNextTextNode(point.node);
-    if(nextTextNode)
-    {
+    if (nextTextNode) {
       node = nextTextNode;
       offset = 0;
-    } 
-    else
-    {
+    } else {
       node = point.node.parentNode;
       offset = position(point.node) + 1;
+    }
+
+    // if next node is editable, return current node's sibling node.
+    if (isEditable(node)) {
+      node = point.node.nextSibling;
+      offset = 0;
     }
   } else if (hasChildren(point.node)) {
     node = point.node.childNodes[point.offset];
@@ -620,11 +667,10 @@ function nextPoint(point, isSkipInnerOffset) {
 * returns the next Text node index or 0 if not found.
 */
 function getNextTextNode(actual) {
-  if(!actual.nextSibling) return undefined;
-  if(actual.parent !== actual.nextSibling.parent) return undefined;
-  
-  if(isText(actual.nextSibling) ) return actual.nextSibling;
-  else return getNextTextNode(actual.nextSibling);
+  if (!actual.nextSibling) return undefined;
+  if (actual.parent !== actual.nextSibling.parent) return undefined;
+  if (isText(actual.nextSibling)) return actual.nextSibling;
+  return getNextTextNode(actual.nextSibling);
 }
 
 /**
@@ -747,7 +793,7 @@ function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
     const isSkipOffset = isSkipInnerOffset &&
                        startPoint.node !== point.node &&
                        endPoint.node !== point.node;
-    point = nextPoint(point, isSkipOffset);
+    point = nextPointWithEmptyNode(point, isSkipOffset);
   }
 }
 
@@ -1128,6 +1174,7 @@ export default {
   isRightEdgePointOf,
   prevPoint,
   nextPoint,
+  nextPointWithEmptyNode,
   isSamePoint,
   isVisiblePoint,
   prevPointUntil,

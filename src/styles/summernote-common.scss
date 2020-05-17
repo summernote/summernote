@@ -1,7 +1,7 @@
 /* Theme Variables
  ------------------------------------------ */
-$border-color: #a9a9a9;
-$background-color: #f5f5f5;
+$border-color: #00000032;
+$background-color: #8080801d;
 
 $img-margin-left: 10px;
 $img-margin-right: 10px;
@@ -87,14 +87,12 @@ $img-margin-right: 10px;
 
     // editable
     .note-editable {
-      background-color: #fff;
-      color: #000;
       padding: 10px;
       overflow: auto;
       word-wrap: break-word;
 
       &[contenteditable="false"] {
-        background-color: #e5e5e5;
+        background-color: $background-color;
       }
     }
 
@@ -126,9 +124,6 @@ $img-margin-right: 10px;
     left: 0;
     width: 100% !important;
     z-index: 1050; // bs3 modal-backdrop: 1030, bs2: 1040
-    .note-editable {
-      background-color: #fff;
-    }
     .note-resizebar {
       display: none;
     }
@@ -217,7 +212,7 @@ $img-margin-right: 10px;
     background-color: $background-color;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid $border-color;
     .note-resizebar {
       padding-top: 1px;
       height: 9px;
@@ -282,7 +277,7 @@ $img-margin-right: 10px;
   position: relative;
 }
 
-.note-popover .popover-content, .note-toolbar {
+.note-popover .popover-content, .note-editor .note-toolbar {
   margin: 0;
   padding: 0 0 5px 5px;
 
@@ -396,10 +391,10 @@ $img-margin-right: 10px;
 
   .note-para {
     .note-dropdown-menu {
-      min-width: 216px;
+      min-width: 228px;
       padding: 5px;
-      & > div:first-child {
-        margin-right: 5px;
+      & > div + div {
+        margin-left: 5px;
       }
     }
   }
@@ -447,10 +442,12 @@ $img-margin-right: 10px;
         height: 20px;
         padding: 0;
         margin: 0;
-        border: 1px solid #fff;
+        border: 0;
+        border-radius: 0;
       }
       .note-color-btn:hover {
-        border: 1px solid #000;
+        transform: scale(1.2);
+        transition: all 0.2s;
       }
     }
   }
