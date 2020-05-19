@@ -455,11 +455,20 @@ describe('Editor', () => {
       expectContentsAwait(context, '<h6 class="customH6Class">hello</h6>', done);
     });
 
-    it('should add fontSize to block', () => {
+    it('should add fontSize to block', (done) => {
       $editable.appendTo('body');
-      editor.fontSize(20);
+      context.invoke('editor.focus');
 
-      expectContents(context, '<p><span style="font-size: 20px;">﻿</span>hello</p>');
+      setTimeout(() => {
+        var textNode = $editable.find('p')[0].firstChild;
+        editor.setLastRange(range.create(textNode, 0, textNode, 0).select());
+
+        setTimeout(() => {
+          editor.fontSize(20);
+          expectContents(context, '<p><span style="font-size: 20px;">﻿</span>hello</p>');
+          done();
+        });
+      });
     });
   });
 
