@@ -16,8 +16,17 @@ export default class TablePopover {
       'summernote.keyup summernote.scroll summernote.change': () => {
         this.update();
       },
-      'summernote.disable summernote.blur': () => {
+      'summernote.disable summernote.dialog.shown': () => {
         this.hide();
+      },
+      'summernote.blur': (we, e) => {
+        if (e.originalEvent && e.originalEvent.relatedTarget) {
+          if (!this.$popover[0].contains(e.originalEvent.relatedTarget)) {
+            this.hide();
+          }
+        } else {
+          this.hide();
+        }
       },
     };
   }
