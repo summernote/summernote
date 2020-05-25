@@ -20,21 +20,46 @@ export default class LinkDialog {
     const $container = this.options.dialogsInBody ? this.$body : this.options.container;
     const body = [
       '<div class="form-group note-form-group">',
+        `<label for="note-dialog-link-url-${this.options.id}" class="note-form-label">${this.lang.link.url}</label>`,
+        `<input id="note-dialog-link-url-${this.options.id}" class="note-link-url form-control note-form-control note-input" type="text" value="http://"/>`,
+      '</div>',
+      '<div class="form-group note-form-group">',
         `<label for="note-dialog-link-txt-${this.options.id}" class="note-form-label">${this.lang.link.textToDisplay}</label>`,
         `<input id="note-dialog-link-txt-${this.options.id}" class="note-link-text form-control note-form-control note-input" type="text"/>`,
       '</div>',
       '<div class="form-group note-form-group">',
-        `<label for="note-dialog-link-url-${this.options.id}" class="note-form-label">${this.lang.link.url}</label>`,
-        `<input id="note-dialog-link-url-${this.options.id}" class="note-link-url form-control note-form-control note-input" type="text" value="http://"/>`,
+        `<label for="note-dialog-link-title-${this.options.id}" class="note-form-label">${this.lang.link.title}</label>`,
+        `<input id="note-dialog-link-title-${this.options.id}" class="note-link-title form-control note-form-control note-input" type="text"/>`,
+      '</div>',
+      '<div class="form-group note-form-group">',
+        `<label for="note-dialog-link-rel-${this.options.id}" class="note-form-label">${this.lang.link.rel}</label>`,
+        `<select id="note-dialog-link-rel-${this.options.id}" class="note-link-rel form-control note-form-control note-input">`,
+          `<option value="">Nothing</option>`,
+          `<option value="alternate">Alternate</option>`,
+          `<option value="author">Author</option>`,
+          `<option value="bookmark">Bookmark</option>`,
+          `<option value="external">External</option>`,
+          `<option value="Help">Help</option>`,
+          `<option value="license">License</option>`,
+          `<option value="next">Next</option>`,
+          `<option value="nofollow">NoFollow</option>`,
+          `<option value="noreferrer">NoReferrer</option>`,
+          `<option value="noopener">NoOperner</option>`,
+          `<option value="prev">Prev</option>`,
+          `<option value="search">Search</option>`,
+          `<option value="tag">Tag</option>`,
+        `</select>`,
       '</div>',
       !this.options.disableLinkTarget
         ? $('<div/>').append(this.ui.checkbox({
+          for: 'note-dialog-link-new-window-' + this.options.id,
           className: 'sn-checkbox-open-in-new-window',
           text: this.lang.link.openInNewWindow,
           checked: true,
         }).render()).html()
         : '',
       $('<div/>').append(this.ui.checkbox({
+        for: 'note-dialog-link-use-protocol-' + this.options.id,
         className: 'sn-checkbox-use-protocol',
         text: this.lang.link.useProtocol,
         checked: true,
@@ -82,8 +107,10 @@ export default class LinkDialog {
    */
   showLinkDialog(linkInfo) {
     return $.Deferred((deferred) => {
-      const $linkText = this.$dialog.find('.note-link-text');
       const $linkUrl = this.$dialog.find('.note-link-url');
+      const $linkText = this.$dialog.find('.note-link-text');
+      const $linkTitle = this.$dialog.find('.note-link-title');
+      const $linkRel = this.$dialog.find('.note-link-rel');
       const $linkBtn = this.$dialog.find('.note-link-btn');
       const $openInNewWindow = this.$dialog
         .find('.sn-checkbox-open-in-new-window input[type=checkbox]');
@@ -114,6 +141,10 @@ export default class LinkDialog {
           this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
         }).val(linkInfo.url);
 
+        $linkTitle.val(linkInfo.title);
+
+        $linkRel.val(linkInfo.rel);
+
         if (!env.isSupportTouch) {
           $linkUrl.trigger('focus');
         }
@@ -139,6 +170,8 @@ export default class LinkDialog {
             range: linkInfo.range,
             url: $linkUrl.val(),
             text: $linkText.val(),
+            title: $linkTitle.val(),
+            rel: $linkRel.val(),
             isNewWindow: $openInNewWindow.is(':checked'),
             checkProtocol: $useProtocol.is(':checked'),
           });

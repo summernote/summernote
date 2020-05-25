@@ -101,7 +101,7 @@ export default class Context {
       return isActivated ? this.layoutInfo.codable.val() : this.layoutInfo.editable.html();
     } else {
       if (isActivated) {
-        this.invoke('codeview.sync', html);
+        this.layoutInfo.codable.val(html);
       } else {
         this.layoutInfo.editable.html(html);
       }

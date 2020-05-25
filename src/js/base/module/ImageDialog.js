@@ -24,14 +24,25 @@ export default class ImageDialog {
     const $container = this.options.dialogsInBody ? this.$body : this.options.container;
     const body = [
       '<div class="form-group note-form-group note-group-select-from-files">',
-        '<label for="note-dialog-image-file-' + this.options.id + '" class="note-form-label">' + this.lang.image.selectFromFiles + '</label>',
-        '<input id="note-dialog-image-file-' + this.options.id + '" class="note-image-input form-control-file note-form-control note-input" ',
-        ' type="file" name="files" accept="image/*" multiple="multiple"/>',
+        `<label for="note-dialog-image-file-${this.options.id}" class="note-form-label">${this.lang.image.selectFromFiles}</label>`,
+        `<input id="note-dialog-image-file-${this.options.id}" class="note-image-input form-control-file note-form-control note-input" type="file" name="files" accept="image/*" multiple="multiple"/>`,
         imageLimitation,
       '</div>',
       '<div class="form-group note-group-image-url">',
-        '<label for="note-dialog-image-url-' + this.options.id + '" class="note-form-label">' + this.lang.image.url + '</label>',
-        '<input id="note-dialog-image-url-' + this.options.id + '" class="note-image-url form-control note-form-control note-input" type="text"/>',
+        `<label for="note-dialog-image-url-${this.options.id}" class="control-label note-form-label">${this.lang.image.url}</label>`,
+        `<input id="note-dialog-image-url-${this.options.id}" class="note-image-url form-control note-form-control note-input" type="text"/>`,
+      '</div>',
+      '<div class="form-group note-grouo-image-title">',
+        `<label for="note-dialog-image-title-${this.options.id}" class="control-label note-form-label">${this.lang.image.title}</label>`,
+        `<input id="note-dialog-image-title-${this.options.id}" class="note-image-title form-control note-form-control note-input" type="text"/>`,
+      '</div>',
+      '<div class="form-group note-grouo-image-alt">',
+        `<label for="note-dialog-image-alt-${this.options.id}" class="control-label note-form-label">${this.lang.image.alt}</label>`,
+        `<input id="note-dialog-image-alt-${this.options.id}" class="note-image-alt form-control note-form-control note-input" type="text"/>`,
+      '</div>',
+      '<div class="form-group note-grouo-image-class">',
+        `<label for="note-dialog-image-class-${this.options.id}" class="control-label note-form-label">${this.lang.image.class}</label>`,
+        `<input id="note-dialog-image-class-${this.options.id}" class="note-image-class form-control note-form-control note-input" type="text"/>`,
       '</div>',
     ].join('');
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-image-btn';
@@ -59,28 +70,6 @@ export default class ImageDialog {
     });
   }
 
-  show() {
-    this.context.invoke('editor.saveRange');
-    this.showImageDialog().then((data) => {
-      // [workaround] hide dialog before restore range for IE range focus
-      this.ui.hideDialog(this.$dialog);
-      this.context.invoke('editor.restoreRange');
-
-      if (typeof data === 'string') { // image url
-        // If onImageLinkInsert set,
-        if (this.options.callbacks.onImageLinkInsert) {
-          this.context.triggerEvent('image.link.insert', data);
-        } else {
-          this.context.invoke('editor.insertImage', data);
-        }
-      } else { // array of files
-        this.context.invoke('editor.insertImagesOrCallback', data);
-      }
-    }).fail(() => {
-      this.context.invoke('editor.restoreRange');
-    });
-  }
-
   /**
    * show image dialog
    *
@@ -91,6 +80,9 @@ export default class ImageDialog {
     return $.Deferred((deferred) => {
       const $imageInput = this.$dialog.find('.note-image-input');
       const $imageUrl = this.$dialog.find('.note-image-url');
+      const $imageTitle = this.$dialog.find('.note-image-title');
+      const $imageAlt = this.$dialog.find('.note-image-alt');
+      const $imageClass = this.$dialog.find('.note-image-class');
       const $imageBtn = this.$dialog.find('.note-image-btn');
 
       this.ui.onDialogShown(this.$dialog, () => {
@@ -128,6 +120,30 @@ export default class ImageDialog {
       });
 
       this.ui.showDialog(this.$dialog);
+    });
+  }
+
+  show() {
+    const imageInfo = this.context.invoke('editor.getImageInfo');
+
+    this.context.invoke('editor.saveRange');
+    this.showImageDialog(imageInfo).then((imageInfo) => {
+      // [workaround] hide dialog before restore range for IE range focus
+      this.ui.hideDialog(this.$dialog);
+      this.context.invoke('editor.restoreRange');
+
+      if (typeof imageInfo === 'string') { // image url
+        // If onImageLinkInsert set,
+        if (this.options.callbacks.onImageLinkInsert) {
+          this.context.triggerEvent('image.link.insert', imageInfo);
+        } else {
+          this.context.invoke('editor.insertImage', imageInfo);
+        }
+      } else { // array of files
+        this.context.invoke('editor.insertImagesOrCallback', imageInfo);
+      }
+    }).fail(() => {
+      this.context.invoke('editor.restoreRange');
     });
   }
 }

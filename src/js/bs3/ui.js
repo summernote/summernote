@@ -96,10 +96,13 @@ const popover = renderer.create([
   }
 });
 
+// The Layout of using Input inside Label is semantically incorrect, but Bootstrap 3
+// has styled the positioning to work this way.
+// https://getbootstrap.com/docs/3.4/css/#checkboxes-and-radios
 const checkbox = renderer.create('<div class="checkbox"></div>', function($node, options) {
   $node.html([
-    '<label' + (options.id ? ' for="note-' + options.id + '"' : '') + '>',
-      '<input type="checkbox"' + (options.id ? ' id="note-' + options.id + '"' : ''),
+    '<label' + (options.for ? ' for="' + options.for + '"' : '') + '>',
+      '<input type="checkbox"' + (options.for ? ' id="' + options.for + '"' : ''),
         (options.checked ? ' checked' : ''),
         ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',
       (options.text ? options.text : ''),

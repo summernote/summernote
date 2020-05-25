@@ -96,14 +96,17 @@ const popover = renderer.create([
   }
 });
 
+// The Layout of using Input inside Label is semantically incorrect, but styling
+// positioned the checkboxes to work this way.
+// https://getbootstrap.com/docs/4.4/components/forms/#default-stacked
 const checkbox = renderer.create('<div class="form-check"></div>', function($node, options) {
   $node.html([
-    '<label class="form-check-label"' + (options.id ? ' for="note-' + options.id + '"' : '') + '>',
-      '<input type="checkbox" class="form-check-input"' + (options.id ? ' id="note-' + options.id + '"' : ''),
+    '<label class="form-check-label"' + (options.for ? ' for="' + options.for + '"' : '') + '>',
+      '<input type="checkbox" class="form-check-input"' + (options.for ? ' id="' + options.for + '"' : ''),
         (options.checked ? ' checked' : ''),
         ' aria-label="' + (options.text ? options.text : '') + '"',
         ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',
-      ' ' + (options.text ? options.text : '') +
+      (options.text ? options.text : ''),
     '</label>',
   ].join(''));
 });

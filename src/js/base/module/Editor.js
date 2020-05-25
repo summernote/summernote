@@ -194,6 +194,8 @@ export default class Editor {
     this.createLink = this.wrapCommand((linkInfo) => {
       let linkUrl = linkInfo.url;
       const linkText = linkInfo.text;
+      const linkTitle = linkInfo.title;
+      const linkRel = linkInfo.rel;
       const isNewWindow = linkInfo.isNewWindow;
       const checkProtocol = linkInfo.checkProtocol;
       let rng = linkInfo.range || this.getLastRange();
@@ -231,6 +233,8 @@ export default class Editor {
 
       $.each(anchors, (idx, anchor) => {
         $(anchor).attr('href', linkUrl);
+        $(anchor).attr('title', linkTitle);
+        $(anchor).attr('rel', linkRel);
         if (isNewWindow) {
           $(anchor).attr('target', '_blank');
         } else {
@@ -238,8 +242,18 @@ export default class Editor {
         }
       });
 
+      const startRange = range.createFromNodeBefore(lists.head(anchors));
+      const startPoint = startRange.getStartPoint();
+      const endRange = range.createFromNodeAfter(lists.last(anchors));
+      const endPoint = endRange.getEndPoint();
+
       this.setLastRange(
-        this.createRangeFromList(anchors).select()
+        range.create(
+          startPoint.node,
+          startPoint.offset,
+          endPoint.node,
+          endPoint.offset
+        ).select()
       );
     });
 
@@ -487,7 +501,6 @@ export default class Editor {
     }
     return false;
   }
-
   /**
    * create range
    * @return {WrappedRange}
@@ -498,34 +511,6 @@ export default class Editor {
     return this.getLastRange();
   }
 
-  /**
-   * create a new range from the list of elements
-   *
-   * @param {list} dom element list
-   * @return {WrappedRange}
-   */
-  createRangeFromList(lst) {
-    const startRange = range.createFromNodeBefore(lists.head(lst));
-    const startPoint = startRange.getStartPoint();
-    const endRange = range.createFromNodeAfter(lists.last(lst));
-    const endPoint = endRange.getEndPoint();
-
-    return range.create(
-      startPoint.node,
-      startPoint.offset,
-      endPoint.node,
-      endPoint.offset
-    );
-  }
-
-  /**
-   * set the last range
-   *
-   * if given rng is exist, set rng as the last range
-   * or create a new range at the end of the document
-   *
-   * @param {WrappedRange} rng
-   */
   setLastRange(rng) {
     if (rng) {
       this.lastRange = rng;
@@ -538,14 +523,6 @@ export default class Editor {
     }
   }
 
-  /**
-   * get the last range
-   *
-   * if there is a saved last range, return it
-   * or create a new range and return it
-   *
-   * @return {WrappedRange}
-   */
   getLastRange() {
     if (!this.lastRange) {
       this.setLastRange();
@@ -711,13 +688,6 @@ export default class Editor {
     };
   }
 
-  /**
-   * insert image
-   *
-   * @param {String} src
-   * @param {String|Function} param
-   * @return {Promise}
-   */
   insertImage(src, param) {
     return createImage(src, param).then(($image) => {
       this.beforeCommand();
@@ -730,6 +700,13 @@ export default class Editor {
         }
         $image.css('width', Math.min(this.$editable.width(), $image.width()));
       }
+
+      const imageTitle = $('#note-dialog-image-title-' + this.options.id).val();
+      const imageAlt = $('#note-dialog-image-alt-' + this.options.id).val();
+      const imageClass = $('#note-dialog-image-class-' + this.options.id).val();
+      if (imageTitle) $image.attr('title', imageTitle);
+      if (imageAlt) $image.attr('alt', imageAlt);
+      if (imageClass) $image.attr('class', imageClass);
 
       $image.show();
       this.getLastRange().insertNode($image[0]);
@@ -830,14 +807,10 @@ export default class Editor {
         const firstSpan = lists.head(spans);
         if (firstSpan && !dom.nodeLength(firstSpan)) {
           firstSpan.innerHTML = dom.ZERO_WIDTH_NBSP_CHAR;
-          range.createFromNode(firstSpan.firstChild).select();
+          range.createFromNodeAfter(firstSpan.firstChild).select();
           this.setLastRange();
           this.$editable.data(KEY_BOGUS, firstSpan);
         }
-      } else {
-        this.setLastRange(
-          this.createRangeFromList(spans).select()
-        );
       }
     } else {
       const noteStatusOutput = $.now();
@@ -882,6 +855,8 @@ export default class Editor {
       range: rng,
       text: rng.toString(),
       url: $anchor.length ? $anchor.attr('href') : '',
+      title: $anchor.length ? $anchor.attr('title') : '',
+      rel: $anchor.length ? $anchor.attr('rel') : '',
     };
 
     // When anchor exists,
@@ -892,6 +867,30 @@ export default class Editor {
 
     return linkInfo;
   }
+
+  /**
+   * returns image info
+   *
+   * @return {Object}
+   * @return {WrappedRange} return.range
+   * @return {String} return.text
+   */
+  getImageInfo() {
+    const rng = this.getLastRange().expand(dom.isImg);
+    // Get the first anchor on range(for edit).
+    const $image = $(lists.head(rng.nodes(dom.isImg)));
+    const imageInfo = {
+      range: rng,
+      text: rng.toString(),
+      src: $image.length ? $image.attr('src') : '',
+      title: $image.length ? $image.attr('title') : '',
+      alt: $image.length ? $image.attr('alt') : '',
+      class: $image.length ? $image.attr('class') : '',
+    };
+
+    return imageInfo;
+  }
+
 
   addRow(position) {
     const rng = this.getLastRange(this.$editable);
