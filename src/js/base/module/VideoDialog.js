@@ -154,7 +154,7 @@ export default class VideoDialog {
     const checkVideoControls = $videoControls.is(':checked');
     const checkVideoAutoplay = $videoAutoplay.is(':checked');
     const checkVideoLoop = $videoLoop.is(':checked');
-    const vWidth = 788.54;
+    let vWidth = 788.54;
     const vHeight = 443;
     const vQuality = '';
 
