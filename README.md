@@ -2,6 +2,8 @@
 
 Super simple WYSIWYG Editor.
 
+Just testing things xo
+
 [![Build Status](https://travis-ci.org/summernote/summernote.svg?branch=develop)](http://travis-ci.org/summernote/summernote)
 [![npm version](https://badge.fury.io/js/summernote.svg)](http://badge.fury.io/js/summernote)
 [![Coverage Status](https://coveralls.io/repos/summernote/summernote/badge.svg?branch=develop&service=github)](https://coveralls.io/github/summernote/summernote?branch=develop)
