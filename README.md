@@ -1,4 +1,4 @@
-# Summernote 
+# Summernote  
 
 Super simple WYSIWYG Editor.
 
