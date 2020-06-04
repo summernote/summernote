@@ -50,6 +50,7 @@
         textToDisplay: 'Anzeigetext',
         url: 'Link URL',
         openInNewWindow: 'In neuem Fenster öffnen',
+        useProtocol: 'Standardprotokoll verwenden'
       },
       table: {
         table: 'Tabelle',
