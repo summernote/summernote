@@ -50,6 +50,7 @@
         textToDisplay: 'Visningstext',
         url: 'Till vilken URL ska denna länk peka?',
         openInNewWindow: 'Öppna i ett nytt fönster',
+        useProtocol: 'Använd standardprotokoll',
       },
       table: {
         table: 'Tabell',
