@@ -2,12 +2,12 @@ import $ from 'jquery';
 import renderer from '../base/renderer';
 
 const editor = renderer.create('<div class="note-editor note-frame card"/>');
-const toolbar = renderer.create('<div class="note-toolbar card-header" role="toolbar"/>');
+const toolbar = renderer.create('<div class="note-toolbar card-header" role="toolbar"></div>');
 const editingArea = renderer.create('<div class="note-editing-area"/>');
 const codable = renderer.create('<textarea class="note-codable" aria-multiline="true"/>');
 const editable = renderer.create('<div class="note-editable card-block" contentEditable="true" role="textbox" aria-multiline="true"/>');
 const statusbar = renderer.create([
-  '<output class="note-status-output" role="status" aria-live="polite"></output>',
+  '<output class="note-status-output" role="status" aria-live="polite"/>',
   '<div class="note-statusbar" role="status">',
     '<div class="note-resizebar" aria-label="Resize">',
       '<div class="note-icon-bar"></div>',
@@ -20,7 +20,7 @@ const statusbar = renderer.create([
 const airEditor = renderer.create('<div class="note-editor note-airframe"/>');
 const airEditable = renderer.create([
   '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"></div>',
-  '<output class="note-status-output" role="status" aria-live="polite"></output>',
+  '<output class="note-status-output" role="status" aria-live="polite"/>',
 ].join(''));
 
 const buttonGroup = renderer.create('<div class="note-btn-group btn-group">');
@@ -96,21 +96,24 @@ const popover = renderer.create([
   }
 });
 
+// The Layout of using Input inside Label is semantically incorrect, but styling
+// positioned the checkboxes to work this way.
+// https://getbootstrap.com/docs/4.4/components/forms/#default-stacked
 const checkbox = renderer.create('<div class="form-check"></div>', function($node, options) {
   $node.html([
-    '<label class="form-check-label"' + (options.id ? ' for="note-' + options.id + '"' : '') + '>',
-      '<input type="checkbox" class="form-check-input"' + (options.id ? ' id="note-' + options.id + '"' : ''),
+    '<label class="form-check-label"' + (options.for ? ' for="' + options.for + '"' : '') + '>',
+      '<input type="checkbox" class="form-check-input"' + (options.for ? ' id="' + options.for + '"' : ''),
         (options.checked ? ' checked' : ''),
         ' aria-label="' + (options.text ? options.text : '') + '"',
         ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',
-      ' ' + (options.text ? options.text : '') +
+      (options.text ? options.text : ''),
     '</label>',
   ].join(''));
 });
 
 const icon = function(iconClassName, tagName) {
   tagName = tagName || 'i';
-  return '<' + tagName + ' class="' + iconClassName + '"></' + tagName+'>';
+  return '<' + tagName + ' class="' + iconClassName + '"/>';
 };
 
 const ui = function(editorOptions) {
