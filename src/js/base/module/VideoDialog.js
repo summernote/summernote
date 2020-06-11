@@ -154,9 +154,8 @@ export default class VideoDialog {
     const checkVideoControls = $videoControls.is(':checked');
     const checkVideoAutoplay = $videoAutoplay.is(':checked');
     const checkVideoLoop = $videoLoop.is(':checked');
-    const vWidth = 788.54;
-    const vHeight = 443;
-    const vQuality = '';
+    let vWidth = 788.54;
+    let vHeight = 443;
 
     if (selectVideoAspect == '4-3') vWidth = 589.19;
     if (selectVideoAspect == '1-1') vWidth = 443;
@@ -252,13 +251,6 @@ export default class VideoDialog {
   showVideoDialog(/* text */) {
     return $.Deferred((deferred) => {
       const $videoUrl = this.$dialog.find('.note-video-url');
-      const $videoAspect = this.$dialog.find('.note-video-aspect');
-      const $videoQuality = this.$dialog.find('.note-video-quality');
-      const $videoSuggested = this.$dialog.find('.note-video-suggested input[type=checkbox]');
-      const $videoCaptions = this.$dialog.find('.note-video-captions input[type=checkbox]');
-      const $videoControls = this.$dialog.find('.note-video-controls input[type=checkbox]');
-      const $videoAutoplay = this.$dialog.find('.note-video-autoplay input[type=checkbox]');
-      const $videoLoop = this.$dialog.find('.note-video-loop input[type=checkbox]');
       const $videoBtn = this.$dialog.find('.note-video-btn');
 
       this.ui.onDialogShown(this.$dialog, () => {
