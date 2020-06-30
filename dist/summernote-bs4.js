@@ -1988,7 +1988,7 @@ function dom_value($node, stripLinebreaks) {
         '<': '&lt;',
         '>': '&gt;'
     };
-    return this.replace(/[&<>]/g, function(tag) {
+    return this.replace(/(?:&(?!amp;|gt;|lt;)|>|<)/g, function(tag) {
         return tagsToReplace[tag] || tag;
     });
   };
