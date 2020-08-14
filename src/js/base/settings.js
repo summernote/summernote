@@ -86,6 +86,9 @@ $.summernote = $.extend($.summernote, {
       ['view', ['fullscreen', 'codeview', 'help']],
     ],
 
+    // acceptable image extensions, splited by ","
+    acceptableImages: "*",
+
     // popover
     popatmouse: true,
     popover: {
