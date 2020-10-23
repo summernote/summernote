@@ -52,6 +52,9 @@ export default class VideoDialog {
     const ytRegExpForStart = /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/;
     const ytMatch = url.match(ytRegExp);
 
+    const gdRegExp = /(?:\.|\/\/)drive\.google\.com\/file\/d\/(.[a-zA-Z0-9_-]*)\/view/;
+    const gdMatch = url.match(gdRegExp);
+
     const igRegExp = /(?:www\.|\/\/)instagram\.com\/p\/(.[a-zA-Z0-9_-]*)/;
     const igMatch = url.match(igRegExp);
 
@@ -101,6 +104,11 @@ export default class VideoDialog {
         .attr('frameborder', 0)
         .attr('src', '//www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : ''))
         .attr('width', '640').attr('height', '360');
+    } else if (gdMatch && gdMatch[0].length) {
+      $video = $('<iframe>')
+        .attr('frameborder', 0)
+        .attr('src', 'https://drive.google.com/file/d/' + gdMatch[1] + '/preview')
+        .attr('width', '640').attr('height', '480');
     } else if (igMatch && igMatch[0].length) {
       $video = $('<iframe>')
         .attr('frameborder', 0)
