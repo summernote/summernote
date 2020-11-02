@@ -43,7 +43,7 @@ const dropdown = renderer.create('<div class="note-dropdown-menu dropdown-menu" 
   }
 });
 
-const dropdownButtonContents = function (contents, options) {
+const dropdownButtonContents = function(contents, options) {
   return contents + ' ' + icon(options.icons.caret, 'span');
 };
 
