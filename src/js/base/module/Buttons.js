@@ -124,12 +124,12 @@ export default class Buttons {
               '</div>',
               '<div class="note-holder" data-event="backColor"><!-- back colors --></div>',
               '<div>',
-                '<button type="button" class="note-color-select btn btn-light btn-default" data-event="openPalette" data-value="backColorPicker">',
+                '<button type="button" class="note-color-select btn btn-light btn-default" data-event="openPalette" data-value="backColorPicker-'+this.options.id+'">',
                   this.lang.color.cpSelect,
                 '</button>',
-                '<input type="color" id="backColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.backColor + '" data-event="backColorPalette">',
+                '<input type="color" id="backColorPicker-'+this.options.id+'" class="note-btn note-color-select-btn" value="' + this.options.colorButton.backColor + '" data-event="backColorPalette-'+this.options.id+'">',
               '</div>',
-              '<div class="note-holder-custom" id="backColorPalette" data-event="backColor"></div>',
+              '<div class="note-holder-custom" id="backColorPalette-'+this.options.id+'" data-event="backColor"></div>',
             '</div>',
           ].join('') : '') +
           (foreColor ? [
@@ -142,12 +142,12 @@ export default class Buttons {
               '</div>',
               '<div class="note-holder" data-event="foreColor"><!-- fore colors --></div>',
               '<div>',
-                '<button type="button" class="note-color-select btn btn-light btn-default" data-event="openPalette" data-value="foreColorPicker">',
+                '<button type="button" class="note-color-select btn btn-light btn-default" data-event="openPalette" data-value="foreColorPicker-'+this.options.id+'">',
                   this.lang.color.cpSelect,
                 '</button>',
-                '<input type="color" id="foreColorPicker" class="note-btn note-color-select-btn" value="' + this.options.colorButton.foreColor + '" data-event="foreColorPalette">',
+                '<input type="color" id="foreColorPicker-'+this.options.id+'" class="note-btn note-color-select-btn" value="' + this.options.colorButton.foreColor + '" data-event="foreColorPalette-'+this.options.id+'">',
               '</div>', // Fix missing Div, Commented to find easily if it's wrong
-              '<div class="note-holder-custom" id="foreColorPalette" data-event="foreColor"></div>',
+              '<div class="note-holder-custom" id="foreColorPalette-'+this.options.id+'" data-event="foreColor"></div>',
             '</div>',
           ].join('') : ''),
           callback: ($dropdown) => {
