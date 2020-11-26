@@ -27,6 +27,6 @@ Please be sure that you are not submitting changes made to the files in the `dis
 
 
 ### Checklist
-- [ ] added relevant tests
-- [ ] didn't break anything
-- [ ] ...
+
+- [ ] Added relevant tests or not required
+- [ ] Didn't break anything
