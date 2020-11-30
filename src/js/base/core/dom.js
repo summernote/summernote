@@ -1046,6 +1046,20 @@ const isTextarea = makePredByNodeName('TEXTAREA');
  */
 function value($node, stripLinebreaks) {
   const val = isTextarea($node[0]) ? $node.val() : $node.html();
+  
+  // Cross Site Scripting Mitigation
+  String.prototype.escape = function() {
+    var tagsToReplace = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;'
+    };
+    return this.replace(/(?:&(?!amp;|gt;|lt;)|>|<)/g, function(tag) {
+        return tagsToReplace[tag] || tag;
+    });
+  };
+  val = val.escape();
+  
   if (stripLinebreaks) {
     return val.replace(/[\n\r]/g, '');
   }
