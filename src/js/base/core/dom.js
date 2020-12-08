@@ -693,7 +693,7 @@ function isVisiblePoint(point) {
 
   const leftNode = point.node.childNodes[point.offset - 1];
   const rightNode = point.node.childNodes[point.offset];
-  if ((!leftNode || isVoid(leftNode)) && (!rightNode || isVoid(rightNode))) {
+  if ((!leftNode || isVoid(leftNode)) && (!rightNode || isVoid(rightNode)) || isTable(rightNode)) {
     return true;
   }
 
