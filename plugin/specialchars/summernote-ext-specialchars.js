@@ -26,7 +26,7 @@
         RIGHT: 39,
         ENTER: 13,
       };
-      var COLUMN_LENGTH = 15;
+      var COLUMN_LENGTH = 12;
       var COLUMN_WIDTH = 35;
 
       var currentColumn = 0;
@@ -294,7 +294,7 @@
           ui.onDialogHidden(self.$dialog, function() {
             $specialCharNode.off('click');
 
-            self.$dialog.find('button').tooltip('destroy');
+            self.$dialog.find('button').tooltip();
 
             $(document).off('keydown', keyDownEventHandler);
 
