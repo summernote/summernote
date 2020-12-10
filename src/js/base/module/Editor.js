@@ -801,11 +801,12 @@ export default class Editor {
       }
 
       if ($target && $target.length) {
+        const currentRange = this.createRange();
+        const $parent = $([currentRange.sc, currentRange.ec]).closest(tagName);
+        // remove class added for current block
+        $parent.removeClass();
         const className = $target[0].className || '';
         if (className) {
-          const currentRange = this.createRange();
-
-          const $parent = $([currentRange.sc, currentRange.ec]).closest(tagName);
           $parent.addClass(className);
         }
       }

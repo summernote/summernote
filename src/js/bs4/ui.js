@@ -43,8 +43,8 @@ const dropdown = renderer.create('<div class="note-dropdown-menu dropdown-menu" 
   }
 });
 
-const dropdownButtonContents = function(contents) {
-  return contents;
+const dropdownButtonContents = function(contents, options) {
+  return contents + ' ' + icon(options.icons.caret, 'span');
 };
 
 const dropdownCheck = renderer.create('<div class="note-dropdown-menu dropdown-menu note-check" role="list">', function($node, options) {
@@ -109,6 +109,9 @@ const checkbox = renderer.create('<div class="form-check"></div>', function($nod
 });
 
 const icon = function(iconClassName, tagName) {
+  if (iconClassName.match(/^</)) {
+    return iconClassName;
+  }
   tagName = tagName || 'i';
   return '<' + tagName + ' class="' + iconClassName + '"></' + tagName+'>';
 };

@@ -12,9 +12,6 @@ $sni-css-prefix: note-icon !default;
   font-style: normal;
   font-weight: 400;
   font-display: auto;
-  {% if formats.indexOf('eot')>-1 -%}
-    src: url("{{ fontPath }}{{ fontName }}.eot");
-  {%- endif %}
   {%- set eotIndex = formats.indexOf('eot') -%}
   {%- set woff2Index = formats.indexOf('woff2') -%}
   {%- set woffIndex = formats.indexOf('woff') -%}

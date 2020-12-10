@@ -340,4 +340,14 @@ describe('base:core.dom', () => {
       expect(result).to.deep.equal({ rightNode: $br[0], container: $para[0] });
     });
   });
+
+  describe('isVisiblePoint', () => {
+    it('should detect as visible when there is a table inside a div', () => {
+      let $editable = $('<div><table></table></div>');
+      let $point = $editable.clone().find('div');
+
+      let result = dom.isVisiblePoint($point);
+      expect(result).to.be.true;
+    });
+  });
 });
