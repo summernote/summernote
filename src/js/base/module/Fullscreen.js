@@ -11,6 +11,7 @@ export default class Fullscreen {
 
     this.$window = $(window);
     this.$scrollbar = $('html, body');
+    this.$scrollval = this.$scrollbar.css('overflow');
 
     this.onResize = () => {
       this.resizeTo({
@@ -31,7 +32,7 @@ export default class Fullscreen {
    * toggle fullscreen
    */
   toggle() {
-    this.$editor.toggleClass('fullscreen');
+    this.$editor.toggleClass('note-fullscreen');
     if (this.isFullscreen()) {
       this.$editable.data('orgHeight', this.$editable.css('height'));
       this.$editable.data('orgMaxHeight', this.$editable.css('maxHeight'));
@@ -42,13 +43,13 @@ export default class Fullscreen {
       this.$window.off('resize', this.onResize);
       this.resizeTo({ h: this.$editable.data('orgHeight') });
       this.$editable.css('maxHeight', this.$editable.css('orgMaxHeight'));
-      this.$scrollbar.css('overflow', 'visible');
+      this.$scrollbar.css('overflow', this.$scrollval);
     }
 
     this.context.invoke('toolbar.updateFullscreen', this.isFullscreen());
   }
 
   isFullscreen() {
-    return this.$editor.hasClass('fullscreen');
+    return this.$editor.hasClass('note-fullscreen');
   }
 }
