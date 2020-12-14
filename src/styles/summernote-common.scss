@@ -607,3 +607,11 @@ $img-margin-right: 10px;
     }
   }
 }
+
+/* Handle
+ ------------------------------------------ */
+html, body {
+  .summernote-fullscreen {
+    overflow: hidden !important;
+  }
+}

@@ -11,6 +11,7 @@ export default class Fullscreen {
 
     this.$window = $(window);
     this.$scrollbar = $('html, body');
+    this.scrollbarClassName = 'summernote-fullscreen';
 
     this.onResize = () => {
       this.resizeTo({
@@ -32,20 +33,20 @@ export default class Fullscreen {
    */
   toggle() {
     this.$editor.toggleClass('fullscreen');
-    if (this.isFullscreen()) {
+    const isFullscreen = this.isFullscreen();
+    this.$scrollbar.toggleClass(this.scrollbarClassName, isFullscreen);
+    if (isFullscreen) {
       this.$editable.data('orgHeight', this.$editable.css('height'));
       this.$editable.data('orgMaxHeight', this.$editable.css('maxHeight'));
       this.$editable.css('maxHeight', '');
       this.$window.on('resize', this.onResize).trigger('resize');
-      this.$scrollbar.css('overflow', 'hidden');
     } else {
       this.$window.off('resize', this.onResize);
       this.resizeTo({ h: this.$editable.data('orgHeight') });
       this.$editable.css('maxHeight', this.$editable.css('orgMaxHeight'));
-      this.$scrollbar.css('overflow', 'visible');
     }
 
-    this.context.invoke('toolbar.updateFullscreen', this.isFullscreen());
+    this.context.invoke('toolbar.updateFullscreen', isFullscreen);
   }
 
   isFullscreen() {
