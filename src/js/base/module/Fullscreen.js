@@ -52,4 +52,8 @@ export default class Fullscreen {
   isFullscreen() {
     return this.$editor.hasClass('fullscreen');
   }
+
+  destroy() {
+    this.$scrollbar.removeClass(this.scrollbarClassName);
+  }
 }
