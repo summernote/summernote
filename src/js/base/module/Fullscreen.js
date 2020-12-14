@@ -11,7 +11,7 @@ export default class Fullscreen {
 
     this.$window = $(window);
     this.$scrollbar = $('html, body');
-    this.scrollbarClassName = 'summernote-fullscreen';
+    this.scrollbarClassName = 'note-fullscreen-body';
 
     this.onResize = () => {
       this.resizeTo({
