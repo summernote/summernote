@@ -607,3 +607,11 @@ $img-margin-right: 10px;
     }
   }
 }
+
+/* Handle
+ ------------------------------------------ */
+html, body {
+  .note-fullscreen-body {
+    overflow: hidden !important;
+  }
+}
