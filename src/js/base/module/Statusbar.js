@@ -45,6 +45,6 @@ export default class Statusbar {
 
   destroy() {
     this.$statusbar.off();
-    this.$statusbar.addClass('note-locked');
+    this.$statusbar.addClass('locked');
   }
 }
