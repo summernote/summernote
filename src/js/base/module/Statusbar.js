@@ -6,6 +6,7 @@ export default class Statusbar {
     this.$document = $(document);
     this.$statusbar = context.layoutInfo.statusbar;
     this.$editable = context.layoutInfo.editable;
+    this.$codable = context.layoutInfo.codable;
     this.options = context.options;
   }
 
@@ -20,13 +21,20 @@ export default class Statusbar {
       event.stopPropagation();
 
       const editableTop = this.$editable.offset().top - this.$document.scrollTop();
+      const editableCodeTop = this.$codable.offset().top - this.$document.scrollTop();
+
       const onMouseMove = (event) => {
         let height = event.clientY - (editableTop + EDITABLE_PADDING);
+        let heightCode = event.clientY - (editableCodeTop + EDITABLE_PADDING);
 
         height = (this.options.minheight > 0) ? Math.max(height, this.options.minheight) : height;
         height = (this.options.maxHeight > 0) ? Math.min(height, this.options.maxHeight) : height;
+        heightCode = (this.options.minheight > 0) ? Math.max(heightCode, this.options.minheight) : heightCode;
+        heightCode = (this.options.maxHeight > 0) ? Math.min(heightCode, this.options.maxHeight) : heightCode;
+
 
         this.$editable.height(height);
+        this.$codable.height(heightCode);
       };
 
       this.$document.on('mousemove', onMouseMove).one('mouseup', () => {
@@ -37,6 +45,6 @@ export default class Statusbar {
 
   destroy() {
     this.$statusbar.off();
-    this.$statusbar.addClass('locked');
+    this.$statusbar.addClass('note-locked');
   }
 }
