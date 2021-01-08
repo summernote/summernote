@@ -52,19 +52,19 @@ module.exports = function (config) {
         base: 'SauceLabs',
         browserName: 'Chrome',
         version: 'latest',
-        platform: 'macOS 10.14',
+        platform: 'macOS 10.15',
       },
       'SL_MACOS_SAFARI': {
         base: 'SauceLabs',
         browserName: 'Safari',
         version: 'latest',
-        platform: 'macOS 10.14',
+        platform: 'macOS 10.15',
       },
       'SL_MACOS_FIREFOX': {
         base: 'SauceLabs',
         browserName: 'Firefox',
         version: 'latest',
-        platform: 'macOS 10.14',
+        platform: 'macOS 10.15',
       },
     },
     browsers: [
@@ -79,7 +79,7 @@ module.exports = function (config) {
       //'SL_LINUX_FIREFOX',
     ],
     sauceLabs: {
-      testName: 'local unit tests for summernote',
+      testName: 'unit tests for summernote',
     },
     preprocessors: {
       'src/js/**/*.js': ['webpack'],
