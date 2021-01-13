@@ -224,7 +224,7 @@ function isEmpty(node) {
 
   if (len === 0) {
     return true;
-  } else if (!isText(node) && len === 1 && (node.innerHTML === '<br>' || node.innerHTML === '<br/>' || node.innerHTML === '<br />')) {
+  } else if (!isText(node) && len === 1 && (node.innerHTML === blankHTML || node.innerHTML === '<br>' || node.innerHTML === '<br/>' || node.innerHTML === '<br />')) {
     // ex) <p><br></p>, <span><br></span>, <p><br/></p>, <span><br/></span>, <p><br /></p>, <span><br /></span>
     return true;
   } else if (lists.all(node.childNodes, isText) && node.innerHTML === '') {
