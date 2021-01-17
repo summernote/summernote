@@ -455,6 +455,30 @@ describe('Editor', () => {
       expectContentsAwait(context, '<h6 class="customH6Class">hello</h6>', done);
     });
 
+    it('should replace existing class in formatBlock if target has class', (done) => {
+      const $target1 = $('<p class="old" />');
+      $editable.appendTo('body');
+      range.createFromNode($editable.find('p')[0]).normalize().select();
+      editor.formatBlock('p', $target1);
+      const $target2 = $('<p class="new" />');
+      editor.formatBlock('p', $target2);
+
+      // start <p class="old">hello</p> => <p class="new">hello</p>
+      expectContentsAwait(context, '<p class="new">hello</p>', done);
+    });
+
+    it('should remove existing class in formatBlock if target has no class', (done) => {
+      const $target1 = $('<p class="customClass" />');
+      $editable.appendTo('body');
+      range.createFromNode($editable.find('p')[0]).normalize().select();
+      editor.formatBlock('p', $target1);
+      const $target2 = $('<p />');
+      editor.formatBlock('p', $target2);
+
+      // start <p class="customClass">hello</p> => <p>hello</p>
+      expectContentsAwait(context, '<p class="">hello</p>', done);
+    });
+
     it('should add fontSize to block', (done) => {
       $editable.appendTo('body');
       context.invoke('editor.focus');

@@ -104,7 +104,7 @@
         setTransparent: '투명으로 설정',
         reset: '취소',
         resetToDefault: '기본값으로 설정',
-        cpSelect: '고르다',
+        cpSelect: '선택',
       },
       shortcut: {
         shortcuts: '키보드 단축키',

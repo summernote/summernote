@@ -83,5 +83,10 @@ https://github.com/summernote/summernote/blob/develop/.github/CONTRIBUTING.md
 * Facebook user group: https://www.facebook.com/groups/summernote
 * Summernote Slack: [Join the Summernote Slack community](https://communityinviter.com/apps/summernote/summernote)
 
+## Testing powered by 
+<a target="_blank" href="https://www.browserstack.com/"><img width="200" src="https://www.browserstack.com/images/layout/browserstack-logo-600x315.png"></a><br>
+[BrowserStack Open-Source Program](https://www.browserstack.com/open-source)
+
+
 ### License
 Summernote may be freely distributed under the MIT license.

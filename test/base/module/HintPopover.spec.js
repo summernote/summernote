@@ -11,8 +11,10 @@ import range from 'src/js/base/core/range';
 import env from 'src/js/base/core/env';
 import key from 'src/js/base/core/key';
 import 'src/js/bs4/settings';
+import spies from "chai-spies";
 
 chai.use(chaidom);
+chai.use(spies);
 
 describe('HintPopover', () => {
   var expect = chai.expect;
@@ -93,6 +95,9 @@ describe('HintPopover', () => {
       editor.insertText(' #');
       $editable.keyup();
 
+      var onChange = chai.spy();
+      $note.on('summernote.change', onChange);
+
       setTimeout(() => {
         var e = $.Event('keydown');
         e.keyCode = key.code.ENTER;
@@ -100,6 +105,7 @@ describe('HintPopover', () => {
 
         setTimeout(() => {
           expectContents(context, '<p>hello #jayden world</p>');
+          expect(onChange).to.have.been.called.once;
           done();
         }, 10);
       }, 10);
