@@ -3,7 +3,7 @@ import lists from '../core/lists';
 import key from '../core/key';
 
 const defaultScheme = 'http://';
-const linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/]{2}|tel:|mailto:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
+const linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/]{2}|tel:|mailto:[A-Z0-9._%+-]+@|xmpp:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
 
 export default class AutoLink {
   constructor(context) {
@@ -40,7 +40,7 @@ export default class AutoLink {
     if (match && (match[1] || match[2])) {
       const link = match[1] ? keyword : defaultScheme + keyword;
       const urlText = this.options.showDomainOnlyForAutolink ?
-        keyword.replace(/^(?:https?:\/\/)?(?:tel?:?)?(?:mailto?:?)?(?:www\.)?/i, '').split('/')[0]
+        keyword.replace(/^(?:https?:\/\/)?(?:tel?:?)?(?:mailto?:?)?(?:xmpp?:?)?(?:www\.)?/i, '').split('/')[0]
         : keyword;
       const node = $('<a />').html(urlText).attr('href', link)[0];
       if (this.context.options.linkTargetBlank) {
