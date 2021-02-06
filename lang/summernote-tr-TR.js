@@ -104,6 +104,7 @@
         setTransparent: 'Şeffaflığı ayarla',
         reset: 'Sıfırla',
         resetToDefault: 'Varsayılanlara sıfırla',
+        cpSelect: 'Seç',
       },
       shortcut: {
         shortcuts: 'Kısayollar',
