@@ -6,6 +6,7 @@ module.exports = {
     'summernote-lite': './src/js/lite/settings',
     ...config.entries,
   },
+  mode: 'development',
   output: config.output,
   externals: config.externals,
   devServer: config.devServer,

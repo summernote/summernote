@@ -1,6 +1,7 @@
+const CopyPlugin = require('copy-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
 const scssConfig = require('./scss.config');
 const path = require('path');
 const fs = require('fs');
@@ -21,6 +22,7 @@ fs.readdirSync(path.resolve(__dirname, '../../lang')).forEach(file => {
 module.exports = {
   entries,
   output: {
+    publicPath: '/',
     path: path.join(__dirname, 'dist'),
     filename: (chunkData) => {
       var isProduct = productList.includes(chunkData.chunk.name);
@@ -36,12 +38,6 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        enforce: 'pre',
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'eslint-loader',
-      },
       {
         test: /\.js$/,
         exclude: /node_modules/,
@@ -97,19 +93,22 @@ module.exports = {
     ],
   },
   plugins: [
+    new ESLintPlugin(),
     new MiniCssExtractPlugin({
       filename: '[name].css',
     }),
-    new CopyPlugin([
-      {
-        from: 'examples',
-        to: 'examples',
-      },
-      {
-        from: 'plugin',
-        to: 'plugin',
-      },
-    ]),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: 'examples',
+          to: 'examples',
+        },
+        {
+          from: 'plugin',
+          to: 'plugin',
+        },
+      ],
+    }),
     new HtmlWebPackPlugin({
       inject: true,
       chunks: ['summernote'],
