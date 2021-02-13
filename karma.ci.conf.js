@@ -1,8 +1,8 @@
-var webpackConfig = require('./config/webpack.config.dev.js');
+var webpackConfig = require('./config/webpack.config.karma.js');
 
 module.exports = function (config) {
   config.set({
-    frameworks: ['mocha'],
+    frameworks: ['mocha', 'webpack', ],
     concurrency: 3,
     colors: true,
     logLevel: config.LOG_INFO,
@@ -88,9 +88,6 @@ module.exports = function (config) {
       'test/**/*.spec.js': ['webpack']
     },
     webpack: webpackConfig,
-    webpackMiddleware: {
-      stats: 'errors-only',
-    },
     reporters: ['dots', 'coverage', 'coveralls'],
     coverageReporter: {
       type: 'lcov',

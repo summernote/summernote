@@ -1,8 +1,8 @@
-var webpackConfig = require('./config/webpack.config.dev.js');
+var webpackConfig = require('./config/webpack.config.karma.js');
 
 module.exports = function (config) {
   config.set({
-    frameworks: ['mocha', 'detectBrowsers', ],
+    frameworks: ['mocha', 'webpack', 'detectBrowsers', ],
     colors: true,
     logLevel: config.LOG_INFO,
 
@@ -27,9 +27,6 @@ module.exports = function (config) {
     },
 
     webpack: webpackConfig,
-    webpackMiddleware: {
-      stats: 'errors-only',
-    },
 
     reporters: ['dots'],
     coverageReporter: {

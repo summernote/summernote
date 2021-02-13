@@ -1,8 +1,8 @@
-var webpackConfig = require('./config/webpack.config.dev.js');
+var webpackConfig = require('./config/webpack.config.karma.js');
 
 module.exports = function (config) {
   config.set({
-    frameworks: ['mocha'],
+    frameworks: ['mocha', 'webpack'],
     colors: true,
     logLevel: config.LOG_INFO,
 
@@ -26,9 +26,6 @@ module.exports = function (config) {
     },
 
     webpack: webpackConfig,
-    webpackMiddleware: {
-      stats: 'errors-only',
-    },
 
     reporters: ['dots'],
     browserNoActivityTimeout: 60000,
