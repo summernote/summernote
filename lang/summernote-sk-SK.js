@@ -32,7 +32,7 @@
         maximumFileSize: 'Maximálna veľkosť súboru',
         maximumFileSizeError: 'Maximálna veľkosť súboru bola prekročená.',
         url: 'URL obrázku',
-        remove: 'Odstrániť obrázok',
+        removeMedia: 'Odstrániť obrázok',
         original: 'Originál',
       },
       video: {
