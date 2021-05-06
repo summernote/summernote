@@ -233,6 +233,7 @@ export default class Editor {
         $(anchor).attr('href', linkUrl);
         if (isNewWindow) {
           $(anchor).attr('target', '_blank');
+          $(anchor).attr('rel', 'noreferrer noopener');
         } else {
           $(anchor).removeAttr('target');
         }
