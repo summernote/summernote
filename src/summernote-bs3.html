@@ -23,6 +23,16 @@
         $(".summernote").summernote({
           height: 400,
           tabsize: 2,
+          toolbar: [//工具栏配置
+            ['style', ['bold', 'italic', 'clear', 'underline', 'strikethrough']],
+            ['fontsize', ['fontsize']],
+            ['fontname', ['fontname']],
+            ['forecolor', ['forecolor']],
+            ['backcolor', ['backcolor']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['insert', ['link', 'picture', 'formatpainter', 'codeview']],
+            ['mybutton', ['myVideo']]
+          ],
           followingToolbar: true
         });
       });
