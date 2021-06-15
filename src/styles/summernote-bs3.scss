@@ -1,3 +1,14 @@
 @import 'summernote-icons.scss';
 @import "elements.scss";
 @import 'summernote-common.scss';
+
+.format-painter {
+    background-image: url(../icons/icons.png?t=L4KA);
+    background-position: 0 -480px;
+    background-size: auto;
+    margin-top: 2px;
+    width: 16px;
+    height: 16px;
+    float: left;
+    display: inline-block;
+}
