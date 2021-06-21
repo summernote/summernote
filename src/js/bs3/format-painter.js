@@ -13,7 +13,7 @@
       var ui = $.summernote.ui;
       var addListener = function() {
         var $body = $('.note-editable');
-        $body.on('mouseup', function() {
+        document.addEventListener('mouseup', function(e) {
           if (self.formatPainterFlag && document.getSelection().toString() != "") {
             document.execCommand("RemoveFormat", false, null);
             var formatHtml = document.getSelection().toString();
@@ -38,7 +38,7 @@
             self.fBgColor = "";
             self.parentTagList = [];
           }
-        });
+        }, true);
 
         document.onclick = function(e){
           //若点击元素为目标元素则返回
