@@ -2424,9 +2424,9 @@ color-name@^1.0.0, color-name@~1.1.4:
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
 
 color-string@^1.5.4:
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/color-string/-/color-string-1.5.4.tgz#dd51cd25cfee953d138fe4002372cc3d0e504cb6"
-  integrity sha512-57yF5yt8Xa3czSEW1jfQDE79Idk0+AkN/4KWad6tbdxUmAs3MvjxlWSWD4deYytcRfoZ9nhKyFl1kj5tBvidbw==
+  version "1.5.5"
+  resolved "https://registry.yarnpkg.com/color-string/-/color-string-1.5.5.tgz#65474a8f0e7439625f3d27a6a19d89fc45223014"
+  integrity sha512-jgIoum0OfQfq9Whcfc2z/VhCNcmQjWbey6qBX0vqt7YICflUmBCh9E9CiQD5GSJ+Uehixm3NUwHVhqUAWRivZg==
   dependencies:
     color-name "^1.0.0"
     simple-swizzle "^0.2.2"
@@ -3440,6 +3440,11 @@ emoji-regex@^8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-8.0.0.tgz#e818fd69ce5ccfcb404594f842963bf53164cc37"
   integrity sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==
+
+emoji-unicode@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/emoji-unicode/-/emoji-unicode-2.0.1.tgz#37b05f0cd20254fd366d1df4442b5c613a3a021a"
+  integrity sha512-jjswgV5nR3KDqtC9ugzEOYQaBLLQP5hqaH2tiTBaq9maYpMnmvl9T+ogY3u2bN6O5NAP0Ddh9D+Meo7sfW/1uw==
 
 emojis-list@^3.0.0:
   version "3.0.0"
@@ -7270,6 +7275,14 @@ postcss-discard-overridden@^4.0.1:
   integrity sha512-IYY2bEDD7g1XM1IDEsUT4//iEYCxAmP5oDSFMVU/JVvT7gh+l4fmjciLqGgwjdWpQIdb0Che2VX00QObS5+cTg==
   dependencies:
     postcss "^7.0.0"
+
+postcss-escape-generated-content-string@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/postcss-escape-generated-content-string/-/postcss-escape-generated-content-string-3.0.0.tgz#c3e20791af623be2876b8a77a2473a93753c6f4e"
+  integrity sha512-sCrXqZ1ksQf87HoBssL8Wq1HxMIls946GSKjzy7cxD1LCnD1i5Vd2z1NYTHxaBb2fx/9yNA8O3KyP6Hkh7r2Cg==
+  dependencies:
+    emoji-unicode "^2.0.0"
+    postcss-value-parser "^4.1.0"
 
 postcss-loader@^5.0.0:
   version "5.0.0"
