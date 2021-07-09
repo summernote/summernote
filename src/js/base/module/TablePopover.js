@@ -60,7 +60,7 @@ export default class TablePopover {
       return false;
     }
 
-    const isCell = dom.isCell(target);
+    const isCell = dom.isCell(target) || dom.isCell(target?.parentElement);
 
     if (isCell) {
       const pos = dom.posFromPlaceholder(target);
