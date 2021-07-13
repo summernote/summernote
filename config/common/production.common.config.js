@@ -29,9 +29,11 @@ const productList = [
   'summernote',
   'summernote-bs4',
   'summernote-lite',
+  'summernote-bs5',
   'summernote.min',
   'summernote-bs4.min',
   'summernote-lite.min',
+  'summernote-bs5.min',
 ];
 
 let entries = {};
@@ -160,7 +162,7 @@ module.exports = {
       ],
     }),
     new webpack.SourceMapDevToolPlugin({
-      test: /(summernote|summernote\-bs4|summernote\-lite)(\.min)?\.js$/g,
+      test: /(summernote|summernote\-bs[4-5]|summernote\-lite)(\.min)?\.js$/g,
       filename: '[name].js.map',
     }),
     new ZipPlugin({
