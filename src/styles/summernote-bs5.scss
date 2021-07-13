@@ -1,0 +1,13 @@
+@import 'summernote-icons.scss';
+@import "elements.scss";
+@import 'summernote-common.scss';
+
+.note-toolbar {
+  background: $background-color;
+}
+
+.note-btn-group .note-btn {
+  border-color: $border-color;
+  padding: 0.28rem 0.65rem;
+  font-size: 13px;
+}

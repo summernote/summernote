@@ -59,7 +59,7 @@
         addColRight: 'Chèn cột bên phải',
         delRow: 'Xóa dòng',
         delCol: 'Xóa cột',
-        delTable: 'Xóa bảng'
+        delTable: 'Xóa bảng',
       },
       hr: {
         insert: 'Chèn',

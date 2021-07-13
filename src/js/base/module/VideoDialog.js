@@ -153,11 +153,11 @@ export default class VideoDialog {
       var muted = 0;
       if (peerTubeMatch[6] !== 'undefined') muted = peerTubeMatch[6];
       $video = $('<iframe allowfullscreen sandbox="allow-same-origin allow-scripts allow-popups">')
-      .attr('frameborder', 0)
-      .attr('src', '//'+ peerTubeMatch[1] +'/videos/embed/' + peerTubeMatch[2]+"?loop="+loop
+        .attr('frameborder', 0)
+        .attr('src', '//'+ peerTubeMatch[1] +'/videos/embed/' + peerTubeMatch[2]+"?loop="+loop
       +"&autoplay="+autoplay+"&muted="+muted +(begin > 0 ? '&start=' + begin : '')+(end > 0 ? '&end=' + start : ''))
-      .attr('width', '560')
-      .attr('height', '315');
+        .attr('width', '560')
+        .attr('height', '315');
     }else if ((qqMatch && qqMatch[1].length) || (qqMatch2 && qqMatch2[2].length)) {
       const vid = ((qqMatch && qqMatch[1].length) ? qqMatch[1] : qqMatch2[2]);
       $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')

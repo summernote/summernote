@@ -4,6 +4,7 @@ module.exports = {
     'summernote': './src/js/bs3/settings',
     'summernote-bs4': './src/js/bs4/settings',
     'summernote-lite': './src/js/lite/settings',
+    'summernote-bs5': './src/js/bs5/settings',
     ...config.entries,
   },
   mode: 'development',
