@@ -55,6 +55,8 @@ export default class Editor {
     const commands = [
       'bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
       'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
+      'insertOrderedList', 'insertUnorderedList',
+      'indent', 'outdent',
       'formatBlock', 'removeFormat', 'backColor',
     ];
 
@@ -96,7 +98,7 @@ export default class Editor {
       this.typing.insertParagraph(this.editable);
     });
 
-    this.insertOrderedList = this.wrapCommand(() => {
+    /*this.insertOrderedList = this.wrapCommand(() => {
       this.bullet.insertOrderedList(this.editable);
     });
 
@@ -110,7 +112,7 @@ export default class Editor {
 
     this.outdent = this.wrapCommand(() => {
       this.bullet.outdent(this.editable);
-    });
+    });*/
 
     /**
      * insertNode
