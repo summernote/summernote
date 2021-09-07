@@ -1,14 +1,16 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-let postcssOptions;
+let postcssOptions = {
+  plugins: [
+    require("autoprefixer"),
+    require("postcss-escape-generated-content-string"),
+  ],
+};
+
 if (process.env.NODE_ENV === "production") {
-  postcssOptions = {
-    plugins: [require("autoprefixer"), require("cssnano") ],
-  };
-} else {
-  postcssOptions = {
-    plugins: [require("autoprefixer") ],
-  };
+  postcssOptions.plugins.push(
+    require("cssnano")
+  );
 }
 
 module.exports = {

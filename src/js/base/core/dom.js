@@ -610,10 +610,14 @@ function nextPoint(point, isSkipInnerOffset) {
  * @return {BoundaryPoint}
  */
 function nextPointWithEmptyNode(point, isSkipInnerOffset) {
-  let node, offset;
+  let node, offset = 0;
 
   // if node is empty string node, return current node's sibling.
   if (isEmpty(point.node)) {
+    if(point.node === null){
+      return null;
+    }
+
     node = point.node.nextSibling;
     offset = 0;
 
@@ -641,6 +645,12 @@ function nextPointWithEmptyNode(point, isSkipInnerOffset) {
     node = point.node.childNodes[point.offset];
     offset = 0;
     if (isEmpty(node)) {
+      if (!isEmpty(point.node.nextSibling)) {
+        return {
+          node: point.node.nextSibling,
+          offset: offset,
+        };
+      }
       return null;
     }
   } else {

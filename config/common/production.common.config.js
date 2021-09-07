@@ -77,7 +77,6 @@ module.exports = {
       }),
       new CssMinimizerPlugin({
         test: /\min\.css$/g,
-        sourceMap: true,
         minimizerOptions: {
           preset: [
             'default',

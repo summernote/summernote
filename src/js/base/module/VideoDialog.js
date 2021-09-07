@@ -47,7 +47,7 @@ export default class VideoDialog {
   }
 
   createVideoNode(url) {
-    // video url patterns(youtube, instagram, vimeo, dailymotion, youku, mp4, ogg, webm)
+    // video url patterns(youtube, instagram, vimeo, dailymotion, youku, peertube, mp4, ogg, webm)
     const ytRegExp = /\/\/(?:(?:www|m)\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w|-]{11})(?:(?:[\?&]t=)(\S+))?$/;
     const ytRegExpForStart = /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/;
     const ytMatch = url.match(ytRegExp);
@@ -69,6 +69,9 @@ export default class VideoDialog {
 
     const youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
     const youkuMatch = url.match(youkuRegExp);
+
+    const peerTubeRegExp =/\/\/(.*)\/videos\/watch\/([^?]*)(?:\?(?:start=(\w*))?(?:&stop=(\w*))?(?:&loop=([10]))?(?:&autoplay=([10]))?(?:&muted=([10]))?)?/; 
+    const peerTubeMatch = url.match(peerTubeRegExp);
 
     const qqRegExp = /\/\/v\.qq\.com.*?vid=(.+)/;
     const qqMatch = url.match(qqRegExp);
@@ -138,7 +141,24 @@ export default class VideoDialog {
         .attr('height', '498')
         .attr('width', '510')
         .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
-    } else if ((qqMatch && qqMatch[1].length) || (qqMatch2 && qqMatch2[2].length)) {
+    } else if (peerTubeMatch && peerTubeMatch[0].length){
+      var begin = 0;
+      if (peerTubeMatch[2] !== 'undefined') begin = peerTubeMatch[2];
+      var end =0;
+      if (peerTubeMatch[3] !== 'undefined') end = peerTubeMatch[3];
+      var loop = 0;
+      if (peerTubeMatch[4] !== 'undefined') loop = peerTubeMatch[4];
+      var autoplay = 0;
+      if (peerTubeMatch[5] !== 'undefined') autoplay = peerTubeMatch[5];
+      var muted = 0;
+      if (peerTubeMatch[6] !== 'undefined') muted = peerTubeMatch[6];
+      $video = $('<iframe allowfullscreen sandbox="allow-same-origin allow-scripts allow-popups">')
+      .attr('frameborder', 0)
+      .attr('src', '//'+ peerTubeMatch[1] +'/videos/embed/' + peerTubeMatch[2]+"?loop="+loop
+      +"&autoplay="+autoplay+"&muted="+muted +(begin > 0 ? '&start=' + begin : '')+(end > 0 ? '&end=' + start : ''))
+      .attr('width', '560')
+      .attr('height', '315');
+    }else if ((qqMatch && qqMatch[1].length) || (qqMatch2 && qqMatch2[2].length)) {
       const vid = ((qqMatch && qqMatch[1].length) ? qqMatch[1] : qqMatch2[2]);
       $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
         .attr('frameborder', 0)

@@ -40,7 +40,7 @@
         videoLink: 'Link đến Video',
         insert: 'Chèn Video',
         url: 'URL',
-        providers: '(YouTube, Vimeo, Vine, Instagram, DailyMotion và Youku)',
+        providers: '(Hỗ trợ YouTube, Vimeo, Vine, Instagram, DailyMotion và Youku)',
       },
       link: {
         link: 'Link',
@@ -53,13 +53,13 @@
       },
       table: {
         table: 'Bảng',
-        addRowAbove: 'Add row above',
-        addRowBelow: 'Add row below',
-        addColLeft: 'Add column left',
-        addColRight: 'Add column right',
-        delRow: 'Delete row',
-        delCol: 'Delete column',
-        delTable: 'Delete table',
+        addRowAbove: 'Chèn dòng phía trên',
+        addRowBelow: 'Chèn dòng phía dưới',
+        addColLeft: 'Chèn cột bên trái',
+        addColRight: 'Chèn cột bên phải',
+        delRow: 'Xóa dòng',
+        delCol: 'Xóa cột',
+        delTable: 'Xóa bảng'
       },
       hr: {
         insert: 'Chèn',
@@ -114,7 +114,7 @@
         extraKeys: 'Extra keys',
       },
       help: {
-        'insertParagraph': 'Insert Paragraph',
+        'insertParagraph': 'Chèn đo văn',
         'undo': 'Undoes the last command',
         'redo': 'Redoes the last command',
         'tab': 'Tab',
@@ -147,8 +147,8 @@
         redo: 'Làm lại',
       },
       specialChar: {
-        specialChar: 'SPECIAL CHARACTERS',
-        select: 'Select Special characters',
+        specialChar: 'KÝ TỰ ĐẶC BIỆT',
+        select: 'Chọn ký tự đặc biệt',
       },
     },
   });
