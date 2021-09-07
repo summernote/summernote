@@ -1,7 +1,6 @@
 import $ from 'jquery';
 import ui from './ui';
 import '../base/settings.js';
-import './format-painter.js';
 
 import '../../styles/summernote-lite.scss';
 
