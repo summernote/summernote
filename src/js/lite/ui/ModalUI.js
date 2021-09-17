@@ -3,7 +3,7 @@ import $ from 'jquery';
 class ModalUI {
   constructor($node /*, options */) {
     this.$modal = $node;
-    this.$backdrop = $('<div class="note-modal-backdrop"/>');
+    this.$backdrop = $('<div class="note-modal-backdrop"></div>');
   }
 
   show() {

@@ -28,13 +28,13 @@ export default class LinkDialog {
         `<input id="note-dialog-link-url-${this.options.id}" class="note-link-url form-control note-form-control note-input" type="text" value="http://"/>`,
       '</div>',
       !this.options.disableLinkTarget
-        ? $('<div/>').append(this.ui.checkbox({
+        ? $('<div></div>').append(this.ui.checkbox({
           className: 'sn-checkbox-open-in-new-window',
           text: this.lang.link.openInNewWindow,
           checked: true,
         }).render()).html()
         : '',
-      $('<div/>').append(this.ui.checkbox({
+      $('<div></div>').append(this.ui.checkbox({
         className: 'sn-checkbox-use-protocol',
         text: this.lang.link.useProtocol,
         checked: true,

@@ -436,7 +436,7 @@ describe('Editor', () => {
     });
 
     it('should apply custom className in formatBlock', (done) => {
-      var $target = $('<h4 class="customH4Class" />');
+      var $target = $('<h4 class="customH4Class"></h4>');
       $editable.appendTo('body');
       range.createFromNode($editable.find('p')[0]).normalize().select();
       editor.formatBlock('h4', $target);
@@ -456,11 +456,11 @@ describe('Editor', () => {
     });
 
     it('should replace existing class in formatBlock if target has class', (done) => {
-      const $target1 = $('<p class="old" />');
+      const $target1 = $('<p class="old"></p>');
       $editable.appendTo('body');
       range.createFromNode($editable.find('p')[0]).normalize().select();
       editor.formatBlock('p', $target1);
-      const $target2 = $('<p class="new" />');
+      const $target2 = $('<p class="new"></p>');
       editor.formatBlock('p', $target2);
 
       // start <p class="old">hello</p> => <p class="new">hello</p>

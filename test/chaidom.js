@@ -24,7 +24,7 @@ export default function(chai) {
 
   chai.dom.equalsStyle = ($node, expected, style) => {
     const nodeStyle = window.getComputedStyle($node[0]).getPropertyValue(style);
-    const testerStyle = $('<div />').css(style, expected).css(style);
+    const testerStyle = $('<div></div>').css(style, expected).css(style);
     return nodeStyle === testerStyle;
   };
 

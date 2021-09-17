@@ -4,11 +4,11 @@ import TooltipUI from './ui/TooltipUI';
 import DropdownUI from './ui/DropdownUI';
 import ModalUI from './ui/ModalUI';
 
-const editor = renderer.create('<div class="note-editor note-frame"/>');
-const toolbar = renderer.create('<div class="note-toolbar" role="toolbar"/>');
-const editingArea = renderer.create('<div class="note-editing-area"/>');
-const codable = renderer.create('<textarea class="note-codable" aria-multiline="true"/>');
-const editable = renderer.create('<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>');
+const editor = renderer.create('<div class="note-editor note-frame"></div>');
+const toolbar = renderer.create('<div class="note-toolbar" role="toolbar"></div>');
+const editingArea = renderer.create('<div class="note-editing-area"></div>');
+const codable = renderer.create('<textarea class="note-codable" aria-multiline="true"></textarea>');
+const editable = renderer.create('<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"></div>');
 const statusbar = renderer.create([
   '<output class="note-status-output" role="status" aria-live="polite"></output>',
   '<div class="note-statusbar" role="status">',
@@ -20,14 +20,14 @@ const statusbar = renderer.create([
   '</div>',
 ].join(''));
 
-const airEditor = renderer.create('<div class="note-editor note-airframe"/>');
+const airEditor = renderer.create('<div class="note-editor note-airframe"></div>');
 const airEditable = renderer.create([
   '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"></div>',
   '<output class="note-status-output" role="status" aria-live="polite"></output>',
 ].join(''));
 
-const buttonGroup = renderer.create('<div class="note-btn-group">');
-const button = renderer.create('<button type="button" class="note-btn" tabindex="-1">', function($node, options) {
+const buttonGroup = renderer.create('<div class="note-btn-group"></div>');
+const button = renderer.create('<button type="button" class="note-btn" tabindex="-1"></button>', function($node, options) {
   // set button type
   if (options && options.tooltip) {
     $node.attr({
@@ -55,7 +55,7 @@ const button = renderer.create('<button type="button" class="note-btn" tabindex=
   }
 });
 
-const dropdown = renderer.create('<div class="note-dropdown-menu" role="list">', function($node, options) {
+const dropdown = renderer.create('<div class="note-dropdown-menu" role="list"></div>', function($node, options) {
   const markup = Array.isArray(options.items) ? options.items.map(function(item) {
     const value = (typeof item === 'string') ? item : (item.value || '');
     const content = options.template ? options.template(item) : item;
@@ -85,7 +85,7 @@ const dropdown = renderer.create('<div class="note-dropdown-menu" role="list">',
   }
 });
 
-const dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check" role="list">', function($node, options) {
+const dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check" role="list"></div>', function($node, options) {
   const markup = Array.isArray(options.items) ? options.items.map(function(item) {
     const value = (typeof item === 'string') ? item : (item.value || '');
     const content = options.template ? options.template(item) : item;
@@ -258,7 +258,7 @@ const tableDropdownButton = function(opt) {
   }).render();
 };
 
-const palette = renderer.create('<div class="note-color-palette"/>', function($node, options) {
+const palette = renderer.create('<div class="note-color-palette"></div>', function($node, options) {
   const contents = [];
   for (let row = 0, rowSize = options.colors.length; row < rowSize; row++) {
     const eventName = options.eventName;
@@ -403,7 +403,7 @@ const colorDropdownButton = function(opt, type) {
   }).render();
 };
 
-const dialog = renderer.create('<div class="note-modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function($node, options) {
+const dialog = renderer.create('<div class="note-modal" aria-hidden="false" tabindex="-1" role="dialog"></div>', function($node, options) {
   if (options.fade) {
     $node.addClass('fade');
   }
@@ -521,7 +521,7 @@ const icon = function(iconClassName, tagName) {
     return iconClassName;
   }
   tagName = tagName || 'i';
-  return '<' + tagName + ' class="' + iconClassName + '"/>';
+  return '<' + tagName + ' class="' + iconClassName + '"></' + tagName + '>';
 };
 
 const ui = function(editorOptions) {
