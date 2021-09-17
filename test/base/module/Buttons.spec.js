@@ -19,6 +19,12 @@ describe('Buttons', () => {
   var assert = chai.assert;
   var context, $toolbar, $editable;
 
+  before(function(done) {
+    setTimeout(function() {
+      done();
+    }, 500);
+  });
+
   beforeEach(() => {
     $('body').empty(); // important !
     var $note = $('<div><p>hello</p></div>').appendTo('body');
