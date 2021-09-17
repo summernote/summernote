@@ -26,7 +26,7 @@ export default class Placeholder {
   }
 
   initialize() {
-    this.$placeholder = $('<div class="note-placeholder">');
+    this.$placeholder = $('<div class="note-placeholder"></div>');
     this.$placeholder.on('click', () => {
       this.context.invoke('focus');
     }).html(this.options.placeholder).prependTo(this.$editingArea);
