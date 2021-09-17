@@ -1,7 +1,7 @@
 dist: xenial
 os: linux
 language: node_js
-node_js: 10
+node_js: 16
 cache:
   directories:
     - node_modules
@@ -14,18 +14,6 @@ before_script:
 - npm --version
 script:
 - npm run test:ci
-before_deploy:
-- npm install
-- npm run build
-- npm run dist
-deploy:
-  provider: npm
-  email: susukang98@gmail.com
-  api_token:
-    secure: TYJfuTLZKbYvTskuMlmuKnQb5F35GFPN2AqSf0RtZYWGLozIaIkKcpTVbjzo859FWuxPjci53FGiJih3+0iVfIC39CDTrFZutubn8qduOfRAVTL1WzeQvdww8miJNwUY59HmoOa78OtbNCVg/N7zFSZzRXAcgje8IADQFIISwk8=
-  on:
-    tags: true
-    branch: develop
 addons:
   sauce_connect:
     username: 'summernoteis'
