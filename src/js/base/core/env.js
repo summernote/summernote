@@ -1,5 +1,4 @@
 import $ from 'jquery';
-const isSupportAmd = typeof define === 'function' && define.amd; // eslint-disable-line
 
 /**
  * returns whether font is installed or not.
@@ -73,8 +72,6 @@ export default {
   isChrome: !isEdge && /chrome/i.test(userAgent),
   isSafari: !isEdge && /safari/i.test(userAgent) && (!/chrome/i.test(userAgent)),
   browserVersion,
-  jqueryVersion: parseFloat($.fn.jquery),
-  isSupportAmd,
   isSupportTouch,
   isFontInstalled,
   isW3CRangeSupport: !!document.createRange,
