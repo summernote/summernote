@@ -35,18 +35,18 @@ yarn test:debug
 
 ## Publish new version
 
-### 1. `develop` to `master`
+### 1. `develop` to `main`
 
-Send pull request `develop` to `master` on github repository and merge it.
-https://github.com/summernote/summernote/compare/master...develop
+Send pull request `develop` to `main` on github repository and merge it.
+https://github.com/summernote/summernote/compare/main...develop
 
 
 ### 2. Build dist files
 
-Build dist files and push to master
+Build dist files and push to main
 ```bash
 # change branch
-git checkout master
+git checkout main
 
 # fetch all changes
 git pull
