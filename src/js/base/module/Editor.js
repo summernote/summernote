@@ -733,7 +733,7 @@ export default class Editor {
 				}
 			}
 		}
-	};
+	}
 
   /**
    * insert image

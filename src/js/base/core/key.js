@@ -82,10 +82,10 @@ export default {
    * @param {Number} keyCode
    * @return {Boolean}
    */
-  isRemove: function (keyCode) { // LB
-    return list.contains([
-      keyMap.BACKSPACE,
-      keyMap.DELETE
+  isRemove: (keyCode) => { // LB
+    return lists.contains([
+      KEY_MAP.BACKSPACE,
+      KEY_MAP.DELETE,
     ], keyCode);
   },
   /**
