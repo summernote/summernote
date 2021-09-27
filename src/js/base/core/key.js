@@ -77,6 +77,18 @@ export default {
     ], keyCode);
   },
   /**
+   * @method isRemove
+   *
+   * @param {Number} keyCode
+   * @return {Boolean}
+   */
+  isRemove: function (keyCode) { // LB
+    return list.contains([
+      keyMap.BACKSPACE,
+      keyMap.DELETE
+    ], keyCode);
+  },
+  /**
    * @method isMove
    *
    * @param {Number} keyCode
