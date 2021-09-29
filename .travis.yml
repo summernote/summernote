@@ -13,7 +13,7 @@ before_script:
 - node --version
 - npm --version
 script:
-- npm run test:ci
+- npm run test:travis
 addons:
   sauce_connect:
     username: 'summernoteis'
