@@ -1,5 +1,7 @@
 import $ from 'jquery';
-import renderer from '../base/renderer';
+import '/js/settings.js';
+import './summernote-bs3.scss';
+import renderer from '/js/renderer';
 
 const editor = renderer.create('<div class="note-editor note-frame panel panel-default"></div>');
 const toolbar = renderer.create('<div class="panel-heading note-toolbar" role="toolbar"></div>');
@@ -261,4 +263,7 @@ const ui = function(editorOptions) {
   };
 };
 
-export default ui;
+$.summernote = $.extend($.summernote, {
+  ui_template: ui,
+  interface: 'bs3',
+});

@@ -1,5 +1,7 @@
 import $ from 'jquery';
-import renderer from '../base/renderer';
+import '/js/settings';
+import renderer from '/js/renderer';
+import './summernote-bs5.scss';
 
 const editor = renderer.create('<div class="note-editor note-frame card"/>');
 const toolbar = renderer.create('<div class="note-toolbar card-header" role="toolbar"/>');
@@ -262,4 +264,13 @@ const ui = function(editorOptions) {
   };
 };
 
-export default ui;
+$.summernote = $.extend($.summernote, {
+  ui_template: ui,
+  interface: 'bs5',
+});
+
+$.summernote.options.styleTags = [
+  'p',
+  { title: 'Blockquote', tag: 'blockquote', className: 'blockquote', value: 'blockquote' },
+  'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+];

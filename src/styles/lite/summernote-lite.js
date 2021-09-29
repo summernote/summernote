@@ -1,8 +1,11 @@
 import $ from 'jquery';
-import renderer from '../base/renderer';
-import TooltipUI from './ui/TooltipUI';
-import DropdownUI from './ui/DropdownUI';
-import ModalUI from './ui/ModalUI';
+import '/js/settings';
+import renderer from '/js/renderer';
+
+import './summernote-lite.scss';
+import TooltipUI from './js/TooltipUI';
+import DropdownUI from './js/DropdownUI';
+import ModalUI from './js/ModalUI';
 
 const editor = renderer.create('<div class="note-editor note-frame"></div>');
 const toolbar = renderer.create('<div class="note-toolbar" role="toolbar"></div>');
@@ -651,4 +654,7 @@ const ui = function(editorOptions) {
   };
 };
 
-export default ui;
+$.summernote = $.extend($.summernote, {
+  ui_template: ui,
+  interface: 'lite',
+});

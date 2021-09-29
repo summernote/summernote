@@ -15,6 +15,7 @@ if (process.env.NODE_ENV === "production") {
 
 module.exports = {
   test: /\.(sa|sc|c)ss$/,
+  exclude: /node_modules/,
   use: [
     MiniCssExtractPlugin.loader,
     'css-loader',

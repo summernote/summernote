@@ -17,7 +17,7 @@
   },
   "main": "dist/summernote.js",
   "scripts": {
-    "dev": "eslint config && webpack serve --config=./config/webpack.config.dev.js --open --progress",
+    "dev": "eslint config && webpack serve --config=./config/webpack.config.dev.js --progress",
     "prebuild": "node ./config/build-fonts.js",
     "build": "webpack --node-env production --mode=production --config=./config/webpack.config.production.js --progress",
     "lint": "eslint src/js plugin lang test config",
@@ -100,7 +100,7 @@
     "webpack": "^5.40.0",
     "webpack-bundle-analyzer": "^4.4.0",
     "webpack-cli": "^4.5.0",
-    "webpack-dev-server": "^4.2.1",
+    "webpack-dev-server": "^4.3.0",
     "zip-webpack-plugin": "^4.0.1"
   }
 }
