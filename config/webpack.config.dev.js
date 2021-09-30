@@ -1,19 +1,14 @@
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
-const glob = require('glob');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
-const { readdirSync } = require('fs');
 
 const scssConfig = require('./common/scss.config');
 const pkg = require('../package.json');
+const { getStyles, getLocales } = require('./common');
 
-const styles = readdirSync("./src/styles", { withFileTypes: true })
-  .filter(dirent => dirent.isDirectory())
-  .map(dirent => dirent.name)
-  .filter(name => name != 'summernote');
-
-const locales = glob.sync("./src/locales/*.js")
-  .map(f => path.basename(f, '.js'));
+const styles = getStyles();
+const locales = getLocales();
 
 module.exports = {
   mode: 'development',
@@ -24,13 +19,13 @@ module.exports = {
 
   entry: {
     // entries for each style
-    ...Object.fromEntries(
-      styles.map(f => [`summernote-${f}`, `./src/styles/${f}/summernote-${f}.js`])
-    ),
+    ...Object.fromEntries(styles.map(style => 
+      [`summernote-${style.id}`, `./src/styles/${style.id}/summernote-${style.id}.js`]
+    )),
     // entries for each locale
-    ...Object.fromEntries(
-      locales.map(f => [`lang/${f}`, `./src/locales/${f}.js`])
-    ),
+    ...Object.fromEntries(locales.map(locale => 
+      [`lang/${locale}`, `./src/locales/${locale}.js`]
+    )),
   },
 
   externals: {
@@ -68,11 +63,24 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: '[name].css',
     }),
-    ...styles.map(f => 
+    new CopyPlugin({
+      patterns: [
+        {
+          from: 'examples',
+          to: 'examples',
+        },
+        {
+          from: 'plugin',
+          to: 'plugin',
+        },
+      ],
+    }),
+    ...styles.map(style => 
       new HtmlWebPackPlugin({
-        chunks: [`summernote-${f}`],
-        template: `./src/styles/${f}/summernote-${f}.html`,
-        filename: `index-${f}.html`,
+        chunks: [`summernote-${style.id}`],
+        template: `./src/styles/${style.id}/summernote-${style.id}.html`,
+        styles: styles,
+        filename: `summernote-${style.id}.html`,
       })
     ),
   ],
@@ -81,6 +89,6 @@ module.exports = {
 
   devServer: {
     port: 3000,
-    open: ['/index-bs5.html'],
+    open: [`/summernote-${styles[0].id}.html`],
   },
 };

@@ -2,22 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Summernote - Bootstrap 3</title>
 
-    <!-- include jquery -->
+    <!-- include jQuery -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
 
-    <!-- include libs stylesheets -->
-    <link
-      rel="stylesheet"
-      href="//netdna.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.css"
-    />
+    <!-- include Bootstrap -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.css" />
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.js"></script>
 
+    <!-- initialize Summernote -->
     <script type="text/javascript">
       $(document).ready(function() {
         $(".summernote").summernote({
@@ -30,21 +25,22 @@
   </head>
   <body>
     <div class="container">
-      <div style='float:right;'>
-        <a href='bs4.html'>Bootstrap4</a>
-        /
-        <a href="bs5.html">Bootstrap5</a>
-        /
-        <a href='lite.html'>Lite</a>
-        /
-        <a href="examples/">Example</a>
-      </div>
-      <h1>Summernote with Bootstrap 3 </h1>
+      <h1>Summernote with Bootstrap 3</h1>
       <p>
         <span class="label label-primary">jQuery v3.5.1</span>
         <span class="label label-info">Bootstrap v3.4.1</span>
       </p>
       <div class="summernote"></div>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <h5>Other styles</h5>
+          <% _.forEach(htmlWebpackPlugin.options.styles, function(style) { %>
+          <a href="summernote-<%- style.id %>.html" class="btn btn-sm btn-default">
+            <%- style.name %>
+          </a>
+          <% }); %>
+        </div>
+      </div>
     </div>
   </body>
 </html>
