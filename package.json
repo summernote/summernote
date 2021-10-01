@@ -24,7 +24,7 @@
     "test": "karma start .karma/config.js --single-run",
     "test:grep": "karma run .karma/config.js -- --grep",
     "test:watch": "karma start .karma/config.js",
-    "test:travis": "karma start .karma/tarvis.js --single-run",
+    "test:travis": "karma start .karma/travis.js --single-run",
     "test:sauce": "karma start .karma/saucelabs.js --single-run",
     "test:debug": "karma start .karma/debug.js",
     "postinstall": "husky install",
