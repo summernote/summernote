@@ -1,4 +1,4 @@
-var webpackConfig = require('./config/webpack.config.karma.js');
+var webpackConfig = require('../config/webpack.config.karma.js');
 
 module.exports = function (config) {
   config.set({
@@ -15,14 +15,14 @@ module.exports = function (config) {
     },
 
     files: [
-      'node_modules/jquery/dist/jquery.js',
-      { pattern: 'src/js/**/*.js' },
-      { pattern: 'test/**/*.spec.js' }
+      '../node_modules/jquery/dist/jquery.js',
+      { pattern: '../src/js/**/*.js' },
+      { pattern: '../test/**/*.spec.js' }
     ],
 
     preprocessors: {
-      'src/js/**/*.js': ['webpack', ],
-      'test/**/*.spec.js': ['webpack', ],
+      '../src/js/**/*.js': ['webpack', ],
+      '../test/**/*.spec.js': ['webpack', ],
     },
 
     webpack: webpackConfig,
