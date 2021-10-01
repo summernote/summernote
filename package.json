@@ -20,7 +20,7 @@
     "dev": "eslint config && webpack serve --config=./config/webpack.config.dev.js --progress",
     "prebuild": "node ./config/build-fonts.js",
     "build": "webpack --node-env production --mode=production --config=./config/webpack.config.production.js --progress",
-    "lint": "eslint src/js plugin lang test config",
+    "lint": "eslint src plugin test config",
     "test": "karma start .karma/config.js --single-run",
     "test:grep": "karma run .karma/config.js -- --grep",
     "test:watch": "karma start .karma/config.js",

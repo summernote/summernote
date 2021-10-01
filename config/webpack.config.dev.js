@@ -5,10 +5,7 @@ const path = require('path');
 
 const scssConfig = require('./common/scss.config');
 const pkg = require('../package.json');
-const { getStyles, getLocales } = require('./common');
-
-const styles = getStyles();
-const locales = getLocales();
+const { styles, locales, examples } = require('./common');
 
 module.exports = {
   mode: 'development',
@@ -83,6 +80,11 @@ module.exports = {
         filename: `summernote-${style.id}.html`,
       })
     ),
+    new HtmlWebPackPlugin({
+      template: `./examples/index.template`,
+      filename: `examples.html`,
+      examples,
+    }),
   ],
 
   devtool: 'source-map',
