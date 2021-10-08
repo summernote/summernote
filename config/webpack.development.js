@@ -3,8 +3,6 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 
-const scssConfig = require('./common/scss.config');
-const pkg = require('../package.json');
 const { styles, locales, examples } = require('./common');
 
 module.exports = {
@@ -14,16 +12,16 @@ module.exports = {
     roots: [path.resolve('./src')],
   },
 
-  entry: {
+  entry: Object.fromEntries([
     // entries for each style
-    ...Object.fromEntries(styles.map(style => 
+    ...styles.map(style => 
       [`summernote-${style.id}`, `./src/styles/${style.id}/summernote-${style.id}.js`]
-    )),
+    ),
     // entries for each locale
-    ...Object.fromEntries(locales.map(locale => 
+    ...locales.map(locale => 
       [`lang/${locale}`, `./src/locales/${locale}.js`]
-    )),
-  },
+    ),
+  ]),
 
   externals: {
     jquery: 'jQuery', // dev includes jQuery by <script> tag
@@ -32,22 +30,22 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.js$/i,
         exclude: /node_modules/,
         use: [
-          {
-            loader: 'string-replace-loader',
-            options: {
-              search: '@@VERSION@@',
-              replace: pkg.version,
-            },
-          },
-          {
-            loader: 'babel-loader',
-          },
+          'babel-loader',
         ],
       },
-      scssConfig,
+      {
+        test: /\.(sa|sc|c)ss$/i,
+        exclude: /node_modules/,
+        use: [
+          'style-loader',
+          'css-loader',
+          'resolve-url-loader',
+          'sass-loader',
+        ],
+      },
       {
         test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|otf|eot)$/,
         exclude: /node_modules/,
@@ -72,6 +70,7 @@ module.exports = {
         },
       ],
     }),
+    // Testing pages for each style
     ...styles.map(style => 
       new HtmlWebPackPlugin({
         chunks: [`summernote-${style.id}`],
@@ -80,6 +79,7 @@ module.exports = {
         filename: `summernote-${style.id}.html`,
       })
     ),
+    // Generating the index page for examples from template
     new HtmlWebPackPlugin({
       template: `./examples/index.template`,
       filename: `examples.html`,
@@ -89,6 +89,7 @@ module.exports = {
 
   devtool: 'source-map',
 
+  // Open the first style page for testing
   devServer: {
     port: 3000,
     open: [`/summernote-${styles[0].id}.html`],

@@ -1,4 +1,4 @@
-const config = require('./webpack.config.dev');
+const config = require('./webpack.development');
 
 // Do not include entry - karma-webpack does not support it
 delete config.entry;

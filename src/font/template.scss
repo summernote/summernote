@@ -1,8 +1,6 @@
 // Variables
 
-$sni-filename:   "{{ fontName }}";
-$sni-font-name:  "{{ fontName }}";
-$sni-css-prefix: note-icon !default;
+$sni-css-prefix: {{ className }} !default;
 
 // Path
 
@@ -42,7 +40,7 @@ $sni-css-prefix: note-icon !default;
 [class^="#{$sni-css-prefix}"]:before,
 [class*=" #{$sni-css-prefix}"]:before {
   display: inline-block;
-  font-family: #{$sni-font-name};
+  font-family: "{{ fontName }}";
   font-style: normal;
   font-size: inherit;
   text-decoration: inherit;

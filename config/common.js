@@ -3,9 +3,10 @@ const glob = require('glob');
 const path = require('path');
 
 module.exports = {
+  // Styles in /src/styles
+  // Each entity becomes an entry point in Webpack build process.
   styles: 
-    // Find all style directories in /src/styles
-    readdirSync("./src/styles", { withFileTypes: true })
+    readdirSync('./src/styles', { withFileTypes: true })
       .filter(dirent => dirent.isDirectory() && dirent.name != 'summernote')
       .map(dirent => { 
         const id = dirent.name;
@@ -21,13 +22,14 @@ module.exports = {
         return { id, name };
       }),
 
+  // Locale files in /src/locales
   locales:
-    glob.sync("./src/locales/*.js")
+    glob.sync('./src/locales/*.js')
       .map(name => path.basename(name, '.js')),
 
+  // Regard all html files in examples directory as examples
   examples:
-    // Regard all html files in examples directory as examples
-    glob.sync("./examples/*.html")
+    glob.sync('./examples/*.html')
       .filter(f => f.charAt(0) != '_') // except files start with underscore
       .map(filepath => { 
         let title;
