@@ -3,7 +3,7 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 
-const { styles, locales, examples } = require('./common');
+const { defaultStyle, styles, locales, examples } = require('./common');
 
 module.exports = {
   mode: 'development',
@@ -22,6 +22,12 @@ module.exports = {
       [`lang/${locale}`, `./src/locales/${locale}.js`]
     ),
   ]),
+
+  output: {
+    publicPath: '/',
+    path: path.join(__dirname, '../dist'),
+    libraryTarget: 'umd',
+  },
 
   externals: {
     jquery: 'jQuery',
@@ -89,9 +95,9 @@ module.exports = {
 
   devtool: 'source-map',
 
-  // Open the first style page for testing
+  // Open the default style page for testing
   devServer: {
     port: 3000,
-    open: [`/summernote-${styles[0].id}.html`],
+    open: [`/summernote-${defaultStyle}.html`],
   },
 };

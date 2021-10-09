@@ -2,9 +2,10 @@ const { readdirSync, readFileSync } = require('fs');
 const glob = require('glob');
 const path = require('path');
 
-const defaultStyle = 'bs3';
+const defaultStyle = 'bs5';
 
 module.exports = {
+  defaultStyle,
   // Styles in /src/styles
   // Each entity becomes an entry point in Webpack build process.
   styles: 

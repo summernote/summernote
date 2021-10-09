@@ -12,6 +12,23 @@
       max-width: 960px;
       margin: 0 auto;
     }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      border: 1px solid black;
+      background: #666;
+      color: white;
+      padding: 10px;
+    }
+
+    td {
+      border: 1px solid black;
+      padding: 5px;
+    }
     </style>
   </head>
   <body>
@@ -22,7 +39,7 @@
           <th>Filename</th>
           <th>Description</th>
         </tr>
-      <% _.forEach(htmlWebpackPlugin.options.examples, function(example) { %>
+        <% _.forEach(htmlWebpackPlugin.options.examples, function(example) { %>
         <tr>
           <td>
             <a href="<%- example.filepath %>">
@@ -33,7 +50,7 @@
             <%- example.title %>
           </td>
         </tr>
-      <% }); %>
+        <% }); %>
       </table>
     </div>
   </body>
