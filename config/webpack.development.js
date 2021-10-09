@@ -87,6 +87,7 @@ module.exports = {
     ),
     // Generating the index page for examples from template
     new HtmlWebPackPlugin({
+      chunks: [],
       template: `./examples/index.template`,
       filename: `examples.html`,
       examples,
