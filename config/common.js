@@ -2,6 +2,8 @@ const { readdirSync, readFileSync } = require('fs');
 const glob = require('glob');
 const path = require('path');
 
+const defaultStyle = 'bs3';
+
 module.exports = {
   // Styles in /src/styles
   // Each entity becomes an entry point in Webpack build process.
@@ -10,6 +12,7 @@ module.exports = {
       .filter(dirent => dirent.isDirectory() && dirent.name != 'summernote')
       .map(dirent => { 
         const id = dirent.name;
+        const target = id === defaultStyle ? 'summernote' : `summernote-${id}`;
         let name;
         
         // Try to find information json file and get them.
@@ -19,7 +22,7 @@ module.exports = {
         } catch {
           name = id;
         }
-        return { id, name };
+        return { id, name, target };
       }),
 
   // Locale files in /src/locales

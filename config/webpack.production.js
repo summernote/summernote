@@ -41,11 +41,11 @@ module.exports = {
   entry: Object.fromEntries([
     // entries for each style
     ...styles.map(style => 
-      [`summernote-${style.id}`, `./src/styles/${style.id}/summernote-${style.id}.js`]
+      [`${style.target}`, `./src/styles/${style.id}/summernote-${style.id}.js`]
     ),
     // ... and for minimized
     ...styles.map(style => 
-      [`summernote-${style.id}.min`, `./src/styles/${style.id}/summernote-${style.id}.js`]
+      [`${style.target}.min`, `./src/styles/${style.id}/summernote-${style.id}.js`]
     ),
     // entries for each locale
     ...locales.map(locale => 
@@ -64,12 +64,7 @@ module.exports = {
   },
 
   externals: {
-    jquery: {
-      root: 'jQuery',
-      commonjs2: 'jquery',
-      commonjs: 'jquery',
-      amd: 'jquery',
-    },
+    jquery: 'jQuery',
   },
 
   module: {
@@ -107,11 +102,19 @@ module.exports = {
               },
             },
           },
-          'sass-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              sassOptions: {
+                indentWidth: 4,
+                outputStyle: 'expanded',
+              },
+            },
+          },
         ],
       },
       {
-        test: /\.(woff|woff2|ttf|otf|eot)$/,
+        test: /\.(woff|woff2|ttf|otf|eot)$/i,
         type: 'asset/resource',
         generator: {
           filename: './font/[name][ext]',
@@ -123,7 +126,7 @@ module.exports = {
   optimization: {
     minimizer: [
       new TerserPlugin({
-        test: /\min\.js$/g,
+        test: /\.min\.js$/i,
         extractComments: false,
         terserOptions: {
           sourceMap: true,
@@ -134,7 +137,7 @@ module.exports = {
         },
       }),
       new CssMinimizerPlugin({
-        test: /\min\.css$/g,
+        test: /\.min\.css$/i,
         minimizerOptions: {
           preset: [
             'default',

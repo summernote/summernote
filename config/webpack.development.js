@@ -24,7 +24,7 @@ module.exports = {
   ]),
 
   externals: {
-    jquery: 'jQuery', // dev includes jQuery by <script> tag
+    jquery: 'jQuery',
   },
 
   module: {
@@ -47,7 +47,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|otf|eot)$/,
+        test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|otf|eot)$/i,
         exclude: /node_modules/,
         type: 'asset/resource',
       },
