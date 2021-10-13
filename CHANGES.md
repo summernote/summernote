@@ -1,5 +1,27 @@
-# v0.8.19 (WIP)
+# v0.8.19
 ---------
+
+## New feature
+- #4091: Add Bootstrap 5 style (@simialbi)
+
+## Improvement
+- #4008: Add support for Peertube hosted video (@mxc)
+- #4034: Support jQuery 3.5+ (@nbolender)
+
+## Bug Fix
+- #4041: Fix nextSibling and update all content (@faithgvn)
+- #4090: Show table popover with multiline content in cell (@Dheerajkawatra)
+
+## Translation
+- #4082: Fixe the language key in summernote-de-CH.js (@adil-jaafar)
+
+## Misc
+- #4048: Insert a table on mouseup (@kylepwarren)
+- #4159: Clean up files and update directory layout (@lqez)
+- 57e16a8: Remove unused env variables (@lqez)
+- 578f353: Bump jQuery to 3.6.0
+- 9f78a30: Fix Webpack configuration for newer version
+- c063870: Add a short delay before running the first test to prevent irrelevant errors (@lqez)
 
 
 # v0.8.18
