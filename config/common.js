@@ -2,7 +2,7 @@ const { readdirSync, readFileSync } = require('fs');
 const glob = require('glob');
 const path = require('path');
 
-const defaultStyle = 'bs5';
+const defaultStyle = 'bs3';
 
 module.exports = {
   defaultStyle,
