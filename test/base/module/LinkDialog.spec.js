@@ -5,10 +5,10 @@
  */
 import chai from 'chai';
 import $ from 'jquery';
-import range from 'src/js/base/core/range';
-import Context from 'src/js/base/Context';
-import LinkDialog from 'src/js/base/module/LinkDialog';
-import 'src/js/bs4/settings';
+import range from 'src/js/core/range';
+import Context from 'src/js/Context';
+import LinkDialog from 'src/js/module/LinkDialog';
+import 'src/styles/bs4/summernote-bs4';
 
 describe('LinkDialog', () => {
   var expect = chai.expect;

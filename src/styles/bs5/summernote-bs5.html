@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Summernote - Bootstrap 5</title>
+
+    <!-- include jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
+
+    <!-- include Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!-- initialize Summernote -->
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('.summernote').summernote({
+          height: 400,
+          tabsize: 2
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container py-4">
+      <h1>Summernote with Bootstrap 5</h1>
+      <p>
+        <span class="badge bg-primary">jQuery v3.5.1</span>
+        <span class="badge bg-info">Bootstrap v5.0.2</span>
+      </p>
+      <div class="summernote"></div>
+      <div class="card my-4">
+        <div class="card-body">
+          <h5 class="card-title">Other styles</h5>
+          <div class="btn-group" role="group" aria-label="Styles">
+            <% _.forEach(htmlWebpackPlugin.options.styles, function(style) { %>
+            <a href="summernote-<%- style.id %>.html" class="btn btn-outline-primary">
+              <%- style.name %>
+            </a>
+            <% }); %>
+          </div>
+          <hr>
+          <p><a href="/examples.html">Visit examples page ⮕</a></p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

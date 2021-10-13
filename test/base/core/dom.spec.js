@@ -6,8 +6,8 @@
 import chai from 'chai';
 import chaidom from 'test/chaidom';
 import $ from 'jquery';
-import dom from 'src/js/base/core/dom';
-import func from 'src/js/base/core/func';
+import dom from 'src/js/core/dom';
+import func from 'src/js/core/func';
 
 let expect = chai.expect;
 chai.use(chaidom);

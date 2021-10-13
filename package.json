@@ -17,16 +17,16 @@
   },
   "main": "dist/summernote.js",
   "scripts": {
-    "dev": "eslint config && webpack serve --config=./config/webpack.config.dev.js --open --progress",
+    "dev": "eslint config && webpack serve --config=./config/webpack.development.js --progress",
     "prebuild": "node ./config/build-fonts.js",
-    "build": "webpack --node-env production --mode=production --config=./config/webpack.config.production.js --progress",
-    "lint": "eslint src/js plugin lang test config",
-    "test": "karma start karma.conf.js --single-run",
-    "test:grep": "karma run karma.conf.js -- --grep",
-    "test:watch": "karma start karma.conf.js",
-    "test:ci": "karma start karma.ci.conf.js --single-run",
-    "test:sauce": "karma start karma.saucelabs.conf.js --single-run",
-    "test:debug": "karma start karma.debug.conf.js",
+    "build": "webpack --node-env production --mode=production --config=./config/webpack.production.js --progress",
+    "lint": "eslint src plugin test config",
+    "test": "karma start .karma/config.js --single-run",
+    "test:grep": "karma run .karma/config.js -- --grep",
+    "test:watch": "karma start .karma/config.js",
+    "test:travis": "karma start .karma/travis.js --single-run",
+    "test:sauce": "karma start .karma/saucelabs.js --single-run",
+    "test:debug": "karma start .karma/debug.js",
     "postinstall": "husky install",
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable"
@@ -88,6 +88,7 @@
     "postcss": "^8.2.6",
     "postcss-escape-generated-content-string": "^3.0.0",
     "postcss-loader": "^6.1.0",
+    "resolve-url-loader": "^4.0.0",
     "sass": "^1.26.3",
     "sass-loader": "^12.1.0",
     "serve-static": "^1.14.1",
@@ -100,7 +101,7 @@
     "webpack": "^5.40.0",
     "webpack-bundle-analyzer": "^4.4.0",
     "webpack-cli": "^4.5.0",
-    "webpack-dev-server": "^4.2.1",
+    "webpack-dev-server": "^4.3.0",
     "zip-webpack-plugin": "^4.0.1"
   }
 }
