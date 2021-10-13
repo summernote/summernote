@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import '../locales/summernote-en-US';
+import '../lang/summernote-en-US';
 import './summernote';
 import dom from './core/dom';
 import range from './core/range';

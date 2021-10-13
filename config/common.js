@@ -26,9 +26,9 @@ module.exports = {
         return { id, name, target };
       }),
 
-  // Locale files in /src/locales
-  locales:
-    glob.sync('./src/locales/*.js')
+  // Translation files in /src/locales
+  languages:
+    glob.sync('./src/lang/*.js')
       .map(name => path.basename(name, '.js')),
 
   // Regard all html files in examples directory as examples

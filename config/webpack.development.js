@@ -3,7 +3,7 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 
-const { defaultStyle, styles, locales, examples } = require('./common');
+const { defaultStyle, styles, languages, examples } = require('./common');
 
 module.exports = {
   mode: 'development',
@@ -17,9 +17,9 @@ module.exports = {
     ...styles.map(style => 
       [`summernote-${style.id}`, `./src/styles/${style.id}/summernote-${style.id}.js`]
     ),
-    // entries for each locale
-    ...locales.map(locale => 
-      [`lang/${locale}`, `./src/locales/${locale}.js`]
+    // entries for each language
+    ...languages.map(lang => 
+      [`lang/${lang}`, `./src/lang/${lang}.js`]
     ),
   ]),
 

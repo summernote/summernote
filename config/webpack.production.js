@@ -8,7 +8,7 @@ const ZipPlugin = require('zip-webpack-plugin');
 const path = require('path');
 
 const pkg = require('../package.json');
-const { styles, locales } = require('./common');
+const { styles, languages } = require('./common');
 
 const date = (new Date()).toISOString().replace(/:\d+\.\d+Z$/, 'Z');
 const banner = `
@@ -47,13 +47,13 @@ module.exports = {
     ...styles.map(style => 
       [`${style.target}.min`, `./src/styles/${style.id}/summernote-${style.id}.js`]
     ),
-    // entries for each locale
-    ...locales.map(locale => 
-      [`lang/${locale}`, `./src/locales/${locale}.js`]
+    // entries for each language
+    ...languages.map(lang => 
+      [`lang/${lang}`, `./src/lang/${lang}.js`]
     ),
     // ... and for minimized
-    ...locales.map(locale => 
-      [`lang/${locale}.min`, `./src/locales/${locale}.js`]
+    ...languages.map(lang => 
+      [`lang/${lang}.min`, `./src/lang/${lang}.js`]
     ),
   ]),
 
