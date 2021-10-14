@@ -4,7 +4,7 @@ $.summernote = $.summernote || {
   lang: {},
 };
 
-$.extend($.summernote.lang, {
+$.extend(true, $.summernote.lang, {
   'en-US': {
     font: {
       bold: 'Bold',

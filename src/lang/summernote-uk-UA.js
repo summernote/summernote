@@ -1,5 +1,5 @@
 (function($) {
-  $.extend($.summernote.lang, {
+  $.extend(true, $.summernote.lang, {
     'uk-UA': {
       font: {
         bold: 'Напівжирний',
