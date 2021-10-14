@@ -1,3 +1,9 @@
+# v0.8.20
+---------
+
+This is a hotfix for fixing path problem on css files.
+
+
 # v0.8.19
 ---------
 
