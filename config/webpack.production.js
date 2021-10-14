@@ -89,8 +89,12 @@ module.exports = {
         exclude: /node_modules/,
         use: [
           MiniCssExtractPlugin.loader,
-          'css-loader',
-          'resolve-url-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              url: false, // do not handle any url in scss/css
+            },
+          },
           {
             loader: 'postcss-loader',
             options: {
@@ -129,7 +133,6 @@ module.exports = {
         test: /\.min\.js$/i,
         extractComments: false,
         terserOptions: {
-          sourceMap: true,
           ecma: 8,
           compress: {
             warnings: false,
@@ -166,12 +169,20 @@ module.exports = {
           from: 'plugin',
           to: 'plugin',
         },
+        {
+          from: 'src/font/summernote.*',
+          to: 'font/[base]',
+        },
       ],
+    }),
+    new webpack.SourceMapDevToolPlugin({
+      filename: '[file].map',
+      exclude: /\.min\./,
     }),
     new ZipPlugin({
       filename: `summernote-${pkg.version}-dist.zip`,
     }),
   ],
 
-  devtool: 'source-map',
+  devtool: false,
 };

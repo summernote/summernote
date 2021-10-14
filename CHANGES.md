@@ -17,7 +17,7 @@
 
 ## Misc
 - #4048: Insert a table on mouseup (@kylepwarren)
-- #4159: Clean up files and update directory layout (@lqez)
+- #4155: Clean up files and update directory layout (@lqez)
 - 57e16a8: Remove unused env variables (@lqez)
 - 578f353: Bump jQuery to 3.6.0
 - 9f78a30: Fix Webpack configuration for newer version

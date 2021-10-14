@@ -23,12 +23,6 @@ module.exports = {
     ),
   ]),
 
-  output: {
-    publicPath: '/',
-    path: path.join(__dirname, '../dist'),
-    libraryTarget: 'umd',
-  },
-
   externals: {
     jquery: 'jQuery',
   },
