@@ -1,5 +1,5 @@
 (function($) {
-  $.extend($.summernote.lang, {
+  $.extend(true, $.summernote.lang, {
     'it-IT': {
       font: {
         bold: 'Testo in grassetto',
