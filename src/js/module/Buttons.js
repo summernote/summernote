@@ -110,7 +110,7 @@ export default class Buttons {
           contents: this.ui.dropdownButtonContents('', this.options),
           tooltip: this.lang.color.more,
           data: {
-            toggle: 'dropdown',
+            bs-toggle: 'dropdown',
           },
         }),
         this.ui.dropdown({
@@ -237,7 +237,7 @@ export default class Buttons {
           ),
           tooltip: this.lang.style.style,
           data: {
-            toggle: 'dropdown',
+            bs-toggle: 'dropdown',
           },
         }),
         this.ui.dropdown({
@@ -363,7 +363,7 @@ export default class Buttons {
           ),
           tooltip: this.lang.font.name,
           data: {
-            toggle: 'dropdown',
+            bs-toggle: 'dropdown',
           },
         }),
         this.ui.dropdownCheck({
@@ -386,7 +386,7 @@ export default class Buttons {
           contents: this.ui.dropdownButtonContents('<span class="note-current-fontsize"></span>', this.options),
           tooltip: this.lang.font.size,
           data: {
-            toggle: 'dropdown',
+            bs-toggle: 'dropdown',
           },
         }),
         this.ui.dropdownCheck({
@@ -406,7 +406,7 @@ export default class Buttons {
           contents: this.ui.dropdownButtonContents('<span class="note-current-fontsizeunit"></span>', this.options),
           tooltip: this.lang.font.sizeunit,
           data: {
-            toggle: 'dropdown',
+            bs-toggle: 'dropdown',
           },
         }),
         this.ui.dropdownCheck({
@@ -497,7 +497,7 @@ export default class Buttons {
           contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.alignLeft), this.options),
           tooltip: this.lang.paragraph.paragraph,
           data: {
-            toggle: 'dropdown',
+            bs-toggle: 'dropdown',
           },
         }),
         this.ui.dropdown([
@@ -520,7 +520,7 @@ export default class Buttons {
           contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.textHeight), this.options),
           tooltip: this.lang.font.height,
           data: {
-            toggle: 'dropdown',
+            bs-toggle: 'dropdown',
           },
         }),
         this.ui.dropdownCheck({
@@ -540,7 +540,7 @@ export default class Buttons {
           contents: this.ui.dropdownButtonContents(this.ui.icon(this.options.icons.table), this.options),
           tooltip: this.lang.table.table,
           data: {
-            toggle: 'dropdown',
+            bs-toggle: 'dropdown',
           },
         }),
         this.ui.dropdown({
