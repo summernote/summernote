@@ -489,7 +489,7 @@ describe('Editor', () => {
 
         setTimeout(() => {
           editor.fontSize(20);
-          expectContents(context, '<p><span style="font-size: 20px;">﻿</span>hello</p>');
+          expectContents(context, '<p><span class="backColorInherit" style="font-size: 20px;">﻿</span>hello</p>');
           done();
         });
       });

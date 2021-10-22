@@ -823,6 +823,11 @@ export default class Editor {
     if (rng !== '') {
       const spans = this.style.styleNodes(rng);
       this.$editor.find('.note-status-output').html('');
+      // add inherit
+      spans.forEach(item => {
+        $(item).addClass("backColorInherit");
+      });
+
       $(spans).css(target, value);
 
       // [workaround] added styled bogus span for style
