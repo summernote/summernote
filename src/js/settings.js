@@ -122,7 +122,7 @@ $.summernote = $.extend($.summernote, {
     defaultProtocol: 'http://',
 
     focus: false,
-    tabDisabled: false,
+    tabDisable: false,
     tabSize: 4,
     styleWithCSS: false,
     shortcuts: true,
