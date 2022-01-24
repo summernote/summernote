@@ -89,7 +89,7 @@
         paragraph: '段落',
         outdent: '取消縮排',
         indent: '增加縮排',
-        left: '靠右對齊',
+        left: '靠左對齊',
         center: '靠中對齊',
         right: '靠右對齊',
         justify: '左右對齊',
