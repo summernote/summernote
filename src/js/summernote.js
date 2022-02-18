@@ -11,7 +11,7 @@ $.fn.extend({
    * @return {this}
    */
   summernote: function() {
-    const type = $.type(lists.head(arguments));
+    const type = typeof(lists.head(arguments));
     const isExternalAPICalled = type === 'string';
     const hasInitOptions = type === 'object';
 
