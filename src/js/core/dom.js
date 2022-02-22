@@ -907,14 +907,38 @@ function splitNode(point, options) {
  */
 function splitTree(root, point, options) {
   // ex) [#text, <span>, <p>]
-  const ancestors = listAncestor(point.node, func.eq(root));
+  let ancestors = listAncestor(point.node, func.eq(root));
 
   if (!ancestors.length) {
     return null;
   } else if (ancestors.length === 1) {
     return splitNode(point, options);
   }
-
+  // Filter elements with sibling elements
+  if (ancestors.length > 2) {
+    let domList = ancestors.slice(0, ancestors.length - 1);
+    let ifHasNextSibling = domList.find(item => item.nextSibling);
+    if (ifHasNextSibling && point.offset != 0 && isRightEdgePoint(point)) {
+        let nestSibling = ifHasNextSibling.nextSibling;
+        let textNode;
+        if (nestSibling.nodeType == 1) {
+            textNode = nestSibling.childNodes[0];
+            ancestors = listAncestor(textNode, func.eq(root));
+            point = {
+                node: textNode,
+                offset: 0,
+            };
+        }
+        else if (nestSibling.nodeType == 3 && !nestSibling.data.match(/[\n\r]/g)) {
+            textNode = nestSibling;
+            ancestors = listAncestor(textNode, func.eq(root));
+            point = {
+                node: textNode,
+                offset: 0,
+            };
+        }
+    }
+  }
   return ancestors.reduce(function(node, parent) {
     if (node === point.node) {
       node = splitNode(point, options);
