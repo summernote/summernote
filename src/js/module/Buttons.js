@@ -561,7 +561,7 @@ export default class Buttons {
           $catcher.css({
             width: this.options.insertTableMaxSize.col + 'em',
             height: this.options.insertTableMaxSize.row + 'em',
-          }).mouseup(this.context.createInvokeHandler('editor.insertTable'))
+          }).mousedown(this.context.createInvokeHandler('editor.insertTable'))
             .on('mousemove', this.tableMoveHandler.bind(this));
         },
       }).render();
