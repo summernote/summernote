@@ -452,9 +452,13 @@ export default class Editor {
       if (this.context.invoke(eventName) !== false) {
         event.preventDefault();
         // if keyMap action was invoked
+        this.context.invoke(eventName);
         return true;
       }
     } else if (key.isEdit(event.keyCode)) {
+      if (key.isRemove(event.keyCode)) {
+        this.context.invoke('removed');
+      }
       this.afterCommand();
     }
     return false;
@@ -710,7 +714,25 @@ export default class Editor {
       this.afterCommand();
     };
   }
+  /**
+   * removed (function added by 1der1)
+  */
+  removed(rng, node, tagName) { // LB
+		rng = range.create();
+		if (rng.isCollapsed() && rng.isOnCell()) {
+			node = rng.ec;
+			if( (tagName = node.tagName) &&
+				(node.childElementCount === 1) &&
+				(node.childNodes[0].tagName === "BR") ){
 
+				if(tagName === "P") {
+					node.remove();
+				} else if(['TH', 'TD'].indexOf(tagName) >=0) {
+					node.firstChild.remove();
+				}
+			}
+		}
+	}
   /**
    * insert image
    *
