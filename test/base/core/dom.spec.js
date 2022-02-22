@@ -302,8 +302,8 @@ describe('base:core.dom', () => {
         let $s = $para.find('s');
         dom.splitTree($para[0], { node: $s[0].firstChild, offset: 6 });
 
-        expect($para.html()).to.equalsIgnoreCase('<b>b</b><u>u</u><s>strike</s>');
-        expect($para.next().html()).to.equalsIgnoreCase('<s><br></s><i>i</i>');
+        expect($para.html()).to.equalsIgnoreCase('<b>b</b><u>u</u><s>strike</s><i><br></i>');
+        expect($para.next().html()).to.equalsIgnoreCase('<i>i</i>');
       });
 
       it('should be split by s tag with offset 3 (2 depth case)', () => {
