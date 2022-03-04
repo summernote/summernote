@@ -176,7 +176,7 @@ export default class Buttons {
               }).render());
             });
             $dropdown.find('input[type=color]').each((idx, item) => {
-              $(item).change(function() {
+              $(item).on("change", function() {
                 const $chip = $dropdown.find('#' + $(this).data('event')).find('.note-color-btn').first();
                 const color = this.value.toUpperCase();
                 $chip.css('background-color', color)
@@ -561,7 +561,7 @@ export default class Buttons {
           $catcher.css({
             width: this.options.insertTableMaxSize.col + 'em',
             height: this.options.insertTableMaxSize.row + 'em',
-          }).mouseup(this.context.createInvokeHandler('editor.insertTable'))
+          }).mousedown(this.context.createInvokeHandler('editor.insertTable'))
             .on('mousemove', this.tableMoveHandler.bind(this));
         },
       }).render();
