@@ -20,7 +20,7 @@ Summernote has a few special features:
 * Simple UI
 * Interactive WYSIWYG editing
 * Handy integration with server
-* Supports Bootstrap 3, 4 and 5 integrities
+* Supports Bootstrap 3, 4 and 5 integrations
 * Lots of [plugins and connectors](https://github.com/summernote/awesome-summernote) provided together
 
 ### Installation and dependencies
@@ -83,7 +83,7 @@ https://github.com/summernote/summernote/blob/develop/.github/CONTRIBUTING.md
 * Facebook user group: https://www.facebook.com/groups/summernote
 * Summernote Slack: [Join the Summernote Slack community](https://communityinviter.com/apps/summernote/summernote)
 
-## Testing powered by 
+## Testing powered by
 <a target="_blank" href="https://www.browserstack.com/"><img width="200" src="https://www.browserstack.com/images/layout/browserstack-logo-600x315.png"></a><br>
 [BrowserStack Open-Source Program](https://www.browserstack.com/open-source)
 
