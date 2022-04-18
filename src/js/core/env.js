@@ -14,19 +14,29 @@ function validFontName(fontName) {
 
 function isFontInstalled(fontName) {
   const testFontName = fontName === 'Comic Sans MS' ? 'Courier New' : 'Comic Sans MS';
-  const testText = 'mmmmmmmmmmwwwww';
-  const testSize = '200px';
-
-  var canvas = document.createElement('canvas');
-  var context = canvas.getContext('2d');
-
-  context.font = testSize + " '" + testFontName + "'";
-  const originalWidth = context.measureText(testText).width;
-
-  context.font = testSize + ' ' + validFontName(fontName) + ', "' + testFontName + '"';
-  const width = context.measureText(testText).width;
-
-  return originalWidth !== width;
+  const testText = "mw";
+  const fontSize = "20px";
+  const canvasWidth = 40;
+  const canvasHeight = 20;
+  var canvas = document.createElement("canvas");
+  var context = canvas.getContext("2d");
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
+  // Center display
+  context.textAlign = "center";
+  context.fillStyle = "black";
+  context.textBaseline = "middle";
+  function getPxInfo(font) {
+    context.clearRect(0, 0, canvasWidth, canvasHeight);
+    context.font = fontSize + ' ' + validFontName(font) + ', "' + testFontName + '"';
+    context.fillText(testText, canvasWidth / 2, canvasHeight / 2);
+    // Get pixel information
+    var pxInfo = context.getImageData(0, 0, canvasWidth, canvasHeight).data;
+    return pxInfo.join("");
+  }
+  let testInfo = getPxInfo(testFontName);
+  let fontInfo = getPxInfo(fontName);
+  return testInfo !== fontInfo;
 }
 
 const userAgent = navigator.userAgent;
