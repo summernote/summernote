@@ -84,14 +84,14 @@ const dialog = renderer.create('<div class="modal note-modal" aria-hidden="false
 });
 
 const popover = renderer.create([
-  '<div class="note-popover popover show">',
+  '<div class="note-popover popover bs-popover-auto show">',
     '<div class="popover-arrow"></div>',
-    '<div class="popover-content note-children-container"></div>',
+    '<div class="popover-body note-popover-content note-children-container"></div>',
   '</div>',
 ].join(''), function($node, options) {
   const direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
 
-  $node.attr('data-bs-placement', direction);
+  $node.attr('data-popper-placement', direction);
 
   if (options.hideArrow) {
     $node.find('.popover-arrow').hide();
@@ -174,8 +174,17 @@ const ui = function(editorOptions) {
     },
 
     button: function($node, options) {
-      return renderer.create('<button type="button" class="note-btn btn btn-light btn-sm" tabindex="-1">', function($node, options) {
-        if (options && options.tooltip) {
+      return renderer.create('<button type="button" class="note-btn btn btn-outline-secondary btn-sm" tabindex="-1">', function($node, options) {
+        if (options && options.data && options.data.toggle === 'dropdown') {
+          $node.removeAttr('data-toggle');
+          $node.attr('data-bs-toggle', 'dropdown');
+          if (options && options.tooltip) {
+            $node.attr({
+              title: options.tooltip,
+              'aria-label': options.tooltip,
+            });
+          }
+        } else if (options && options.tooltip) {
           $node.attr({
             title: options.tooltip,
             'aria-label': options.tooltip,
