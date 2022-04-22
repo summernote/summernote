@@ -57,10 +57,10 @@ class DropdownUI {
   }
 }
 
-$(document).on('click', function(e) {
+$(document).on('click.note-dropdown-menu', function(e) {
   if (!$(e.target).closest('.note-btn-group').length) {
+    $('.note-btn-group.open .note-btn.active').removeClass('active');
     $('.note-btn-group.open').removeClass('open');
-    $('.note-btn-group .note-btn.active').removeClass('active');
   }
 });
 
