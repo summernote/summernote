@@ -111,6 +111,10 @@ $.summernote = $.extend($.summernote, {
       ],
     },
 
+    // link options
+    linkAddNoReferrer: false,
+    addLinkNoOpener: false,
+
     // air mode: inline editor
     airMode: false,
     overrideContextMenu: false, // TBD
