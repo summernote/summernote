@@ -98,30 +98,22 @@ export default class Handle {
 
     if (isImage) {
       const $image = $(target);
-      const position = $image.position();
-      const pos = {
-        left: position.left + parseInt($image.css('marginLeft'), 10),
-        top: position.top + parseInt($image.css('marginTop'), 10),
-      };
-
-      // exclude margin
-      const imageSize = {
-        w: $image.outerWidth(false),
-        h: $image.outerHeight(false),
-      };
+      
+      const areaRect = this.$editingArea[0].getBoundingClientRect();
+      const imageRect = target.getBoundingClientRect();
 
       $selection.css({
         display: 'block',
-        left: pos.left,
-        top: pos.top,
-        width: imageSize.w,
-        height: imageSize.h,
+        left: imageRect.left - areaRect.left,
+        top: imageRect.top - areaRect.top,
+        width: imageRect.width,
+        height: imageRect.height,
       }).data('target', $image); // save current image element.
 
       const origImageObj = new Image();
       origImageObj.src = $image.attr('src');
 
-      const sizingText = imageSize.w + 'x' + imageSize.h + ' (' + this.lang.image.original + ': ' + origImageObj.width + 'x' + origImageObj.height + ')';
+      const sizingText = imageRect.width + 'x' + imageRect.height + ' (' + this.lang.image.original + ': ' + origImageObj.width + 'x' + origImageObj.height + ')';
       $selection.find('.note-control-selection-info').text(sizingText);
       this.context.invoke('editor.saveTarget', target);
     } else {
