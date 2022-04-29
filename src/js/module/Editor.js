@@ -192,10 +192,13 @@ export default class Editor {
      * @param {Object} linkInfo
      */
     this.createLink = this.wrapCommand((linkInfo) => {
+      let rel = [];
       let linkUrl = linkInfo.url;
       const linkText = linkInfo.text;
       const isNewWindow = linkInfo.isNewWindow;
       const checkProtocol = linkInfo.checkProtocol;
+      const addNoReferrer = this.options.linkAddNoReferrer;
+      const addNoOpener = this.options.linkAddNoOpener;
       let rng = linkInfo.range || this.getLastRange();
       const additionalTextLength = linkText.length - rng.toString().length;
       if (additionalTextLength > 0 && this.isLimited(additionalTextLength)) {
@@ -233,6 +236,15 @@ export default class Editor {
         $(anchor).attr('href', linkUrl);
         if (isNewWindow) {
           $(anchor).attr('target', '_blank');
+          if (addNoReferrer) {
+            rel.push('noreferrer');
+          }
+          if (addNoOpener) {
+            rel.push('noopener');
+          }
+          if (rel.length) {
+            $(anchor).attr('rel', rel.join(' '));
+          }
         } else {
           $(anchor).removeAttr('target');
         }
