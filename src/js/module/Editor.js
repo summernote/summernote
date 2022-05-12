@@ -870,9 +870,7 @@ export default class Editor {
           this.$editable.data(KEY_BOGUS, firstSpan);
         }
       } else {
-        this.setLastRange(
-          this.createRangeFromList(spans).select()
-        );
+        rng.select();
       }
     } else {
       const noteStatusOutput = $.now();

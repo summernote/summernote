@@ -182,13 +182,29 @@ describe('Buttons', () => {
   */
 
   describe('font family button', () => {
-    it('should change font family when it is clicked', (done) => {
-      var $li = $toolbar.find('.dropdown-fontname a[data-value="Comic Sans MS"]');
+    it('should change font family (Courier New) when it is clicked', (done) => {
+      var $li = $toolbar.find('.dropdown-fontname a[data-value="Courier New"]');
       var $span = $toolbar.find('span.note-current-fontname');
       assert.isTrue($li.length === 1);
-      assert.isTrue($span.text() !== 'Comic Sans MS');
+      assert.isTrue($span.text() !== 'Courier New');
       $li.click();
-      expect($editable.find('p').children().first()).await(done).to.be.equalsStyle('"Comic Sans MS"', 'font-family');
+      expect($editable.find('p').children().first()).await(done).to.be.equalsStyle('"Courier New"', 'font-family');
+    });
+    it('should change font family (Arial) when it is clicked', (done) => {
+      var $li = $toolbar.find('.dropdown-fontname a[data-value="Arial"]');
+      var $span = $toolbar.find('span.note-current-fontname');
+      assert.isTrue($li.length === 1);
+      assert.isTrue($span.text() !== 'Arial');
+      $li.click();
+      expect($editable.find('p').children().first()).await(done).to.be.equalsStyle('"Arial"', 'font-family');
+    });
+    it('should change font family (Helvetica) when it is clicked', (done) => {
+      var $li = $toolbar.find('.dropdown-fontname a[data-value="Helvetica"]');
+      var $span = $toolbar.find('span.note-current-fontname');
+      assert.isTrue($li.length === 1);
+      assert.isTrue($span.text() !== 'Helvetica');
+      $li.click();
+      expect($editable.find('p').children().first()).await(done).to.be.equalsStyle('"Helvetica"', 'font-family');
     });
   });
 
