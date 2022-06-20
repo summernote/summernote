@@ -617,3 +617,8 @@ html, body {
     overflow: hidden !important;
   }
 }
+//Letters such as g and J are not displayed as underscores
+u{
+  text-decoration-color: transparent;
+  border-bottom: 1px solid #000;
+}
