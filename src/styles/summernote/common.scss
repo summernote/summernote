@@ -617,11 +617,6 @@ html, body {
     overflow: hidden !important;
   }
 }
-//Letters such as g and J are not displayed as underscores
-u{
-  text-decoration-color: transparent;
-  border-bottom: 1px solid #000;
-}
 //Alignment does not work with or without sequences
 .note-editable ul li,.note-editable ol li{
   list-style-position: inside;
