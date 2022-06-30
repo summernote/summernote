@@ -333,7 +333,7 @@ describe('Editor', () => {
   describe('insertHorizontalRule', () => {
     it('should insert horizontal rule', (done) => {
       editor.insertHorizontalRule();
-      expectContentsAwait(context, '<p>hello</p><hr>', done);
+      expectContentsAwait(context, '<p>hello</p><hr><p><br></p>', done);
     });
   });
 
@@ -345,6 +345,7 @@ describe('Editor', () => {
         '<tr><td><br></td><td><br></td></tr>',
         '<tr><td><br></td><td><br></td></tr>',
         '</tbody></table>',
+        '<p><br></p>',
       ].join('');
       editor.insertTable('2x2');
       expectContentsAwait(context, markup, done);
