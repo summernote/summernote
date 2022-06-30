@@ -554,7 +554,7 @@ class WrappedRange {
     const info = dom.splitPoint(rng.getStartPoint(), dom.isInline(node));
     if (info.rightNode) {
       info.rightNode.parentNode.insertBefore(node, info.rightNode);
-      if (dom.isEmpty(info.rightNode) && dom.isPara(node)) {
+      if (dom.isEmpty(info.rightNode) && !dom.isInline(node)) {
         info.rightNode.parentNode.removeChild(info.rightNode);
       }
     } else {
