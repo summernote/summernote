@@ -542,7 +542,7 @@ class WrappedRange {
    * insert node at current cursor
    *
    * @param {Node} node
-   * @param {Boolean} [doNotInsertPara} - default is false, removes added <p> that's added if true
+   * @param {Boolean} doNotInsertPara - default is false, removes added <p> that's added if true
    * @return {Node}
    */
   insertNode(node, doNotInsertPara = false) {
