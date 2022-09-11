@@ -16,6 +16,10 @@ export default class Clipboard {
    * @param {Event} event
    */
   pasteByEvent(event) {
+
+    if (this.context.isDisabled()) {
+      return;
+    }
     const clipboardData = event.originalEvent.clipboardData;
 
     if (clipboardData && clipboardData.items && clipboardData.items.length) {
