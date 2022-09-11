@@ -617,3 +617,7 @@ html, body {
     overflow: hidden !important;
   }
 }
+//Alignment does not work with or without sequences
+.note-editable ul li,.note-editable ol li{
+  list-style-position: inside;
+}
