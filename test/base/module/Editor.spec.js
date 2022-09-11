@@ -292,9 +292,14 @@ describe('Editor', () => {
       expectContentsAwait(context, '<p>hello<span> world</span></p>', done);
     });
 
-    it('should not add empty paragraph', (done) => {
+    it('should not add empty paragraph when pasting paragraphs', (done) => {
       editor.pasteHTML('<p><span>whatever</span><br></p><p><span>it has</span><br></p>');
       expectContentsAwait(context, '<p>hello</p><p><span>whatever</span><br></p><p><span>it has</span><br></p>', done);
+    });
+
+    it('should not add empty paragraph when pasting a node that is not isInline', (done) => {
+      editor.pasteHTML('<ul><li>list</li></ul><hr><p>paragraph</p><table><tr><td>table</td></tr></table><p></p><blockquote>blockquote</blockquote><data>data</data>');
+      expectContentsAwait(context, '<p>hello</p><ul><li>list</li></ul><hr><p>paragraph</p><table><tbody><tr><td>table</td></tr></tbody></table><p></p><blockquote>blockquote</blockquote><data>data</data>', done);
     });
 
     it('should not call change event more than once per paste event', () => {
