@@ -17,29 +17,29 @@ export default class AirPopover {
     this.pageY = null;
 
     this.events = {
-      'summernote.contextmenu': (e) => {
+      'summernote.contextmenu': (event) => {
         if (this.options.editing) {
-          e.preventDefault();
-          e.stopPropagation();
+          event.preventDefault();
+          event.stopPropagation();
           this.onContextmenu = true;
           this.update(true);
         }
       },
       'summernote.mousedown': (we, e) => {
-        this.pageX = e.pageX;
-        this.pageY = e.pageY;
+        this.pageX = event.pageX;
+        this.pageY = event.pageY;
       },
-      'summernote.keyup summernote.mouseup summernote.scroll': (we, e) => {
+      'summernote.keyup summernote.mouseup summernote.scroll': (we, event) => {
         if (this.options.editing && !this.onContextmenu) {
-          if (e.type == 'keyup') {
+          if (event.type == 'keyup') {
             let range = this.context.invoke('editor.getLastRange');
             let wordRange = range.getWordRange();
             const bnd = func.rect2bnd(lists.last(wordRange.getClientRects()));
             this.pageX = bnd.left;
             this.pageY = bnd.top;
           } else {
-            this.pageX = e.pageX;
-            this.pageY = e.pageY;
+            this.pageX = event.pageX;
+            this.pageY = event.pageY;
           }
           this.update();
         }

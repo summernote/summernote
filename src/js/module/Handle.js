@@ -76,8 +76,8 @@ export default class Handle {
     });
 
     // Listen for scrolling on the handle overlay.
-    this.$handle.on('wheel', (e) => {
-      e.preventDefault();
+    this.$handle.on('wheel', (event) => {
+      event.preventDefault();
       this.update();
     });
   }
@@ -98,7 +98,7 @@ export default class Handle {
 
     if (isImage) {
       const $image = $(target);
-      
+
       const areaRect = this.$editingArea[0].getBoundingClientRect();
       const imageRect = target.getBoundingClientRect();
 

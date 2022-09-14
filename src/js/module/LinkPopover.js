@@ -15,9 +15,9 @@ export default class LinkPopover {
       'summernote.disable summernote.dialog.shown': () => {
         this.hide();
       },
-      'summernote.blur': (we, e) => {
-        if (e.originalEvent && e.originalEvent.relatedTarget) {
-          if (!this.$popover[0].contains(e.originalEvent.relatedTarget)) {
+      'summernote.blur': (we, event) => {
+        if (event.originalEvent && event.originalEvent.relatedTarget) {
+          if (!this.$popover[0].contains(event.originalEvent.relatedTarget)) {
             this.hide();
           }
         } else {
@@ -43,7 +43,7 @@ export default class LinkPopover {
 
     this.context.invoke('buttons.build', $content, this.options.popover.link);
 
-    this.$popover.on('mousedown', (e) => { e.preventDefault(); });
+    this.$popover.on('mousedown', (event) => { event.preventDefault(); });
   }
 
   destroy() {

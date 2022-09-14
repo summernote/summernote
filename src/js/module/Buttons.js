@@ -74,8 +74,8 @@ export default class Buttons {
           className: 'note-current-color-button',
           contents: this.ui.icon(this.options.icons.font + ' note-recent-color'),
           tooltip: tooltip,
-          click: (e) => {
-            const $button = $(e.currentTarget);
+          click: (event) => {
+            const $button = $(event.currentTarget);
             if (backColor && foreColor) {
               this.context.invoke('editor.color', {
                 backColor: $button.attr('data-backColor'),
