@@ -10,13 +10,13 @@ export default class AutoLink {
     this.context = context;
     this.options = context.options;
     this.events = {
-      'summernote.keyup': (we, e) => {
+      'summernote.keyup': (we, event) => {
         if (!e.isDefaultPrevented()) {
-          this.handleKeyup(e);
+          this.handleKeyup(event);
         }
       },
-      'summernote.keydown': (we, e) => {
-        this.handleKeydown(e);
+      'summernote.keydown': (we, event) => {
+        this.handleKeydown(event);
       },
     };
   }
@@ -53,15 +53,15 @@ export default class AutoLink {
     }
   }
 
-  handleKeydown(e) {
-    if (lists.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
+  handleKeydown(event) {
+    if (lists.contains([key.code.ENTER, key.code.SPACE], event.keyCode)) {
       const wordRange = this.context.invoke('editor.createRange').getWordRange();
       this.lastWordRange = wordRange;
     }
   }
 
   handleKeyup(e) {
-    if (key.code.SPACE === e.keyCode || (key.code.ENTER === e.keyCode && !e.shiftKey)) {
+    if (key.code.SPACE === event.keyCode || (key.code.ENTER === event.keyCode && !event.shiftKey)) {
       this.replace();
     }
   }

@@ -11,8 +11,8 @@ import $ from 'jquery';
 export function readFileAsDataURL(file) {
   return $.Deferred((deferred) => {
     $.extend(new FileReader(), {
-      onload: (e) => {
-        const dataURL = e.target.result;
+      onload: (event) => {
+        const dataURL = event.target.result;
         deferred.resolve(dataURL);
       },
       onerror: (err) => {
