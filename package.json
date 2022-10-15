@@ -30,7 +30,6 @@
     "test:travis": "karma start .karma/travis.js --single-run",
     "test:sauce": "karma start .karma/saucelabs.js --single-run",
     "test:debug": "karma start .karma/debug.js",
-    "postinstall": "husky install",
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable"
   },
