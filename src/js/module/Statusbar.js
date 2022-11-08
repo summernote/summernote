@@ -24,7 +24,7 @@ export default class Statusbar {
       const editableCodeTop = this.$codable.offset().top - this.$document.scrollTop();
 
       const onStatusbarMove = (event) => {
-        let originalEvent = (event.type == 'mousemove') ? event : event.originalEvent.changedTouches[0];
+        let originalEvent = (event.type == 'mousemove') ? event : event.originalEvent.touches[0];
         let height = originalEvent.clientY - (editableTop + EDITABLE_PADDING);
         let heightCode = originalEvent.clientY - (editableCodeTop + EDITABLE_PADDING);
 
