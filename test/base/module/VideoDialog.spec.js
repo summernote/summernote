@@ -5,9 +5,9 @@
  */
 import chai from 'chai';
 import $ from 'jquery';
-import Context from 'src/js/base/Context';
-import VideoDialog from 'src/js/base/module/VideoDialog';
-import 'src/js/bs4/settings';
+import Context from 'src/js/Context';
+import VideoDialog from 'src/js/module/VideoDialog';
+import 'src/styles/bs4/summernote-bs4';
 
 describe('VideoDialog', () => {
   var expect = chai.expect;
@@ -48,9 +48,9 @@ describe('VideoDialog', () => {
         '//instagram.com/p/Bi9cbsxjn-F/embed/');
       // v.qq.com
       expectUrl('http://v.qq.com/cover/6/640ewqy2v071ppd.html?vid=f0196y2b2cx',
-        '//v.qq.com/iframe/player.html?vid=f0196y2b2cx&amp;auto=0');
+        '//v.qq.com/txp/iframe/player.html?vid=f0196y2b2cx&amp;auto=0');
       expectUrl('http://v.qq.com/x/page/p0330y279lm.html',
-        '//v.qq.com/iframe/player.html?vid=p0330y279lm&amp;auto=0');
+        '//v.qq.com/txp/iframe/player.html?vid=p0330y279lm&amp;auto=0');
       // Facebook
       expectUrl('https://www.facebook.com/Engineering/videos/631826881803/',
         '//www.facebook.com/plugins/video.php?href=www.facebook.com%2FEngineering%2Fvideos%2F631826881803');

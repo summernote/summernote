@@ -6,20 +6,37 @@
 import $ from 'jquery';
 import chai from 'chai';
 import chaidom from 'test/chaidom';
-import Context from 'src/js/base/Context';
-import Codeview from 'src/js/base/module/Codeview';
-import 'src/js/bs4/settings';
+import Context from 'src/js/Context';
+import Codeview from 'src/js/module/Codeview';
+import 'src/styles/bs4/summernote-bs4';
 
 chai.use(chaidom);
+
+function loadScript(url) {
+  var script = document.createElement('script');
+  script.src = url;
+  script.async = false;
+  script.type = 'text/javascript';
+  document.head.appendChild(script);
+
+  return script;
+}
+
+function unloadScript(script) {
+  document.head.removeChild(script);
+}
 
 describe('Codeview', () => {
   var expect = chai.expect;
   var options, codeview, context;
 
   beforeEach(() => {
+    $('body').empty(); // important !
     options = $.extend({}, $.summernote.options);
     options.codeviewFilter = true;
-    context = new Context($('<div><p>hello</p></div>'), options);
+
+    var $note = $('<div><p>hello</p></div>').appendTo('body');
+    context = new Context($note, options);
     codeview = new Codeview(context);
   });
 
@@ -29,6 +46,23 @@ describe('Codeview', () => {
     expect(codeview.isActivated()).to.be.true;
     codeview.toggle();
     expect(codeview.isActivated()).to.be.false;
+  });
+
+  it('should show CodeMirror if available', (done) => {
+    var codemirror = loadScript('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/codemirror.js');
+    codemirror.onload = function() {
+      // need to reinitiate codeview
+      codeview = new Codeview(context);
+      expect(codeview.isActivated()).to.be.false;
+      codeview.toggle();
+      expect(codeview.isActivated()).to.be.true;
+      expect($('.CodeMirror').length).to.be.equal(1);
+      codeview.toggle();
+      expect(codeview.isActivated()).to.be.false;
+      expect($('.CodeMirror').length).to.be.equal(0);
+      unloadScript(codemirror);
+      done();
+    };
   });
 
   it('should purify malicious codes', () => {

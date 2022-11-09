@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Summernote - Lite</title>
+
+      <!-- include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <!-- initialize Summernote -->
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('.summernote').summernote({
+          height: 400,
+          tabsize: 2
+        });
+      });
+    </script>
+    <style type="text/css">
+      body {
+        margin: 0 auto;
+        max-width: 900px;
+        font-family: sans-serif;
+      }
+      .desc {
+        margin-top: -1em;
+        font-size: 0.9em;
+      }
+      .styles .note-btn-group {
+        display: flex;
+      }
+      .styles .note-btn {
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Summernote Lite</h1>
+    <p class="desc">Summernote own lightweight style</p>
+    <div class="summernote"></div>
+    <div class="styles">
+      <h4>Other styles</h4>
+      <div class="note-btn-group" role="group" aria-label="Styles">
+        <% _.forEach(htmlWebpackPlugin.options.styles, function(style) { %>
+        <a href="summernote-<%- style.id %>.html" class="note-btn">
+          <%- style.name %>
+        </a>
+        <% }); %>
+      </div>
+      <p><a href="/examples.html">Visit examples page ⮕</a></p>
+    </div>
+  </body>
+</html>

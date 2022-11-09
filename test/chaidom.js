@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import env from 'src/js/base/core/env';
+import env from 'src/js/core/env';
 
 export default function(chai) {
   chai.dom = chai.dom || {};
@@ -24,7 +24,7 @@ export default function(chai) {
 
   chai.dom.equalsStyle = ($node, expected, style) => {
     const nodeStyle = window.getComputedStyle($node[0]).getPropertyValue(style);
-    const testerStyle = $('<div />').css(style, expected).css(style);
+    const testerStyle = $('<div></div>').css(style, expected).css(style);
     return nodeStyle === testerStyle;
   };
 

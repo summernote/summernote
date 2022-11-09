@@ -1,0 +1,106 @@
+// Variables
+
+$sni-css-prefix: {{ className }} !default;
+
+// Path
+
+@font-face {
+  font-family: "{{ fontName }}";
+  font-style: normal;
+  font-weight: 400;
+  font-display: auto;
+  {%- set eotIndex = formats.indexOf('eot') -%}
+  {%- set woff2Index = formats.indexOf('woff2') -%}
+  {%- set woffIndex = formats.indexOf('woff') -%}
+  {%- set ttfIndex = formats.indexOf('ttf') -%}
+  {%- set svgIndex = formats.indexOf('svg') %}
+  src: {% if eotIndex != -1 -%}
+    url("{{ fontPath }}{{ fontName }}.eot?#iefix") format("embedded-opentype")
+    {%- set nothing = formats.splice(eotIndex, 1) -%}
+    {%- if formats.length != 0 -%}, {% else -%}; {% endif -%}
+  {%- endif -%}
+  {%- if woff2Index != -1 -%}
+    url("{{ fontPath }}{{ fontName }}.woff2") format("woff2")
+    {%- set nothing = formats.splice(woff2Index, 1) -%}
+    {%- if formats.length != 0 -%}, {% else -%}; {% endif -%}
+  {%- endif -%}
+  {%- if woffIndex != -1 -%}
+    url("{{ fontPath }}{{ fontName }}.woff") format("woff")
+    {%- set nothing = formats.splice(woffIndex, 1) -%}
+    {%- if formats.length != 0 -%}, {% else -%}; {% endif -%}
+  {%- endif -%}
+  {%- if ttfIndex != -1 -%}
+    url("{{ fontPath }}{{ fontName }}.ttf") format("truetype");
+    {%- set nothing = formats.splice(ttfIndex, 1) -%}
+  {%- endif -%}
+}
+
+// Core
+
+[class^="#{$sni-css-prefix}"]:before,
+[class*=" #{$sni-css-prefix}"]:before {
+  display: inline-block;
+  font-family: "{{ fontName }}";
+  font-style: normal;
+  font-size: inherit;
+  text-decoration: inherit;
+  text-rendering: auto;
+  text-transform: none;
+  vertical-align: middle;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  speak: none;
+}
+
+// Extras
+
+.#{$sni-css-prefix}-fw {
+  text-align: center;
+  width: 1.25em;
+}
+
+.#{$sni-css-prefix}-border {
+  border: solid 0.08em #eee;
+  border-radius: 0.1em;
+  padding: 0.2em 0.25em 0.15em;
+}
+
+.#{$sni-css-prefix}-pull-left {
+  float: left;
+}
+
+.#{$sni-css-prefix}-pull-right {
+  float: right;
+}
+
+.#{$sni-css-prefix} {
+  &.#{$sni-css-prefix}-pull-left {
+    margin-right: 0.3em;
+  }
+  &.#{$sni-css-prefix}-pull-right {
+    margin-left: 0.3em;
+  }
+}
+
+// Functions
+
+@function char($character-code) {
+  @if function-exists("selector-append") {
+    @return unquote("\"\\#{$character-code}\"");
+  }
+
+  @if "\\#{'x'}" == "\\x" {
+    @return str-slice("\x", 1, 1) + $character-code;
+  }
+  @else {
+    @return #{"\"\\"}#{$character-code + "\""};
+  }
+}
+
+// Icons
+
+{% for glyph in glyphs %}
+.{{ className }}-{{ glyph.name }}::before {
+  content: "\{{ glyph.unicode[0].charCodeAt(0).toString(16) }}";
+}
+{% endfor %}

@@ -8,10 +8,10 @@ import chai from 'chai';
 import spies from 'chai-spies';
 import chaidom from 'test/chaidom';
 import $ from 'jquery';
-import env from 'src/js/base/core/env';
-import range from 'src/js/base/core/range';
-import Context from 'src/js/base/Context';
-import 'src/js/bs4/settings';
+import env from 'src/js/core/env';
+import range from 'src/js/core/range';
+import Context from 'src/js/Context';
+import 'src/styles/bs4/summernote-bs4';
 
 describe('Editor', () => {
   var expect = chai.expect;
@@ -45,11 +45,9 @@ describe('Editor', () => {
 
   beforeEach(function() {
     $('body').empty(); // important !
-    var $note = $('<div><p>hello</p></div>');
-
     var options = $.extend({}, $.summernote.options);
     options.historyLimit = 5;
-    context = new Context($note, options);
+    context = new Context($('<div><p>hello</p></div>'), options);
 
     editor = context.modules.editor;
     $editable = context.layoutInfo.editable;
@@ -64,8 +62,7 @@ describe('Editor', () => {
   describe('initialize', () => {
     it('should bind custom events', (done) => {
       [
-        'keydown', 'keyup', 'blur', 'mousedown', 'mouseup',
-        'scroll', 'focusin', 'focusout',
+        'keydown', 'keyup', 'blur', 'mousedown', 'mouseup', 'scroll', 'focusin', 'focusout',
       ].forEach((eventName) => {
         expectToHaveBeenCalled(context, 'summernote.' + eventName, () => {
           $editable.trigger(eventName);
@@ -295,7 +292,17 @@ describe('Editor', () => {
       expectContentsAwait(context, '<p>hello<span> world</span></p>', done);
     });
 
-    it('should not call change change event more than once per paste event', () => {
+    it('should not add empty paragraph when pasting paragraphs', (done) => {
+      editor.pasteHTML('<p><span>whatever</span><br></p><p><span>it has</span><br></p>');
+      expectContentsAwait(context, '<p>hello</p><p><span>whatever</span><br></p><p><span>it has</span><br></p>', done);
+    });
+
+    it('should not add empty paragraph when pasting a node that is not isInline', (done) => {
+      editor.pasteHTML('<ul><li>list</li></ul><hr><p>paragraph</p><table><tr><td>table</td></tr></table><p></p><blockquote>blockquote</blockquote><data>data</data>');
+      expectContentsAwait(context, '<p>hello</p><ul><li>list</li></ul><hr><p>paragraph</p><table><tbody><tr><td>table</td></tr></tbody></table><p></p><blockquote>blockquote</blockquote><data>data</data>', done);
+    });
+
+    it('should not call change event more than once per paste event', () => {
       var generateLargeHtml = () => {
         var html = '<div>';
         for (var i = 0; i < 1000; i++) {
@@ -352,6 +359,30 @@ describe('Editor', () => {
     });
   });
 
+  describe('styleWithCSS', () => {
+    it('should style with tag when it is false (default)', (done) => {
+      $editable.appendTo('body');
+      range.createFromNode($editable.find('p')[0]).normalize().select();
+      editor.bold();
+      expectContentsAwait(context, '<p><b>hello</b></p>', done);
+    });
+
+    it('should style with CSS when it is true', (done) => {
+      var options = $.extend({}, $.summernote.options);
+      options.styleWithCSS = true;
+
+      $('body').empty();
+      context = new Context($('<div><p>hello</p></div>').appendTo('body'), options);
+      editor = context.modules.editor;
+      $editable = context.layoutInfo.editable;
+      $editable.appendTo('body');
+
+      range.createFromNode($editable.find('p')[0]).normalize().select();
+      editor.bold();
+      expectContentsAwait(context, '<p><span style="font-weight: bold;">hello</span></p>', done);
+    });
+  });
+
   describe('formatBlock', () => {
     it('should apply formatBlock', (done) => {
       $editable.appendTo('body');
@@ -363,6 +394,25 @@ describe('Editor', () => {
         editor.formatBlock('h1');
         expectContentsAwait(context, '<h1>hello</h1>', done);
       }, 10);
+    });
+
+    it('should toggle all paragraph even with empty paragraph', (done) => {
+      var codes = [
+        '<p><br></p>',
+        '<p>endpoint</p>',
+      ];
+
+      context.invoke('code', codes.join(''));
+      $editable.appendTo('body');
+
+      var startNode = $editable.find('p').first()[0];
+      var endNode = $editable.find('p').last()[0];
+
+      // all p tags is wrapped
+      range.create(startNode, 0, endNode, 1).normalize().select();
+
+      editor.insertUnorderedList();
+      expectContentsAwait(context, '<ul><li><br></li><li>endpoint</li></ul>', done);
     });
 
     it('should apply multi formatBlock', (done) => {
@@ -391,7 +441,7 @@ describe('Editor', () => {
     });
 
     it('should apply custom className in formatBlock', (done) => {
-      var $target = $('<h4 class="customH4Class" />');
+      var $target = $('<h4 class="customH4Class"></h4>');
       $editable.appendTo('body');
       range.createFromNode($editable.find('p')[0]).normalize().select();
       editor.formatBlock('h4', $target);
@@ -408,6 +458,46 @@ describe('Editor', () => {
 
       // start <p>hello</p> => <h6 class="h6">hello</h6>
       expectContentsAwait(context, '<h6 class="customH6Class">hello</h6>', done);
+    });
+
+    it('should replace existing class in formatBlock if target has class', (done) => {
+      const $target1 = $('<p class="old"></p>');
+      $editable.appendTo('body');
+      range.createFromNode($editable.find('p')[0]).normalize().select();
+      editor.formatBlock('p', $target1);
+      const $target2 = $('<p class="new"></p>');
+      editor.formatBlock('p', $target2);
+
+      // start <p class="old">hello</p> => <p class="new">hello</p>
+      expectContentsAwait(context, '<p class="new">hello</p>', done);
+    });
+
+    it('should remove existing class in formatBlock if target has no class', (done) => {
+      const $target1 = $('<p class="customClass" />');
+      $editable.appendTo('body');
+      range.createFromNode($editable.find('p')[0]).normalize().select();
+      editor.formatBlock('p', $target1);
+      const $target2 = $('<p />');
+      editor.formatBlock('p', $target2);
+
+      // start <p class="customClass">hello</p> => <p>hello</p>
+      expectContentsAwait(context, '<p class="">hello</p>', done);
+    });
+
+    it('should add fontSize to block', (done) => {
+      $editable.appendTo('body');
+      context.invoke('editor.focus');
+
+      setTimeout(() => {
+        var textNode = $editable.find('p')[0].firstChild;
+        editor.setLastRange(range.create(textNode, 0, textNode, 0).select());
+
+        setTimeout(() => {
+          editor.fontSize(20);
+          expectContents(context, '<p><span style="font-size: 20px;">﻿</span>hello</p>');
+          done();
+        });
+      });
     });
   });
 

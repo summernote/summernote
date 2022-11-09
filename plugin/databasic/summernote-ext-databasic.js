@@ -1,5 +1,4 @@
 (function(factory) {
-  /* global define */
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
     define(['jquery'], factory);
@@ -21,7 +20,7 @@
     var options = context.options;
     var lang = options.langInfo;
 
-    self.icon = '<i class="fa fa-object-group"/>';
+    self.icon = '<i class="fa fa-object-group"></i>';
 
     // add context menu button for dialog
     context.memo('button.databasic', function() {

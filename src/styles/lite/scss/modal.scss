@@ -1,0 +1,190 @@
+.note-modal {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: $zindex-modal;
+  @include opacity(1);
+  display: none;
+
+  &.open {
+    display:block;
+  }
+}
+
+.note-modal-content {
+  position: relative;
+  width: auto;
+  margin: 30px 20px;
+  border: 1px solid $modal-content-border-color;
+  background: $modal-content-bg;
+  background-clip: border-box;
+  outline: 0;
+  border-radius: 5px;
+  @include box-shadow(0 3px 9px rgba(0,0,0,.5));
+}
+
+.note-modal-header {
+  padding: 10px 20px;
+  border: 1px solid #ededef;
+}
+
+.note-modal-body {
+  position: relative;
+  padding: 20px 30px;
+
+  // shortcut text style
+  kbd {
+    border-radius: 2px;
+    background-color: #000;
+    color: #fff;
+    padding: 3px 5px;
+    font-weight: 700;
+    @include box-sizing();
+  }
+}
+
+.note-modal-footer {
+  height: 40px;
+  padding: 10px;
+  text-align: center;
+
+}
+
+.note-modal-footer a {
+  color: #337ab7;
+  text-decoration: none
+}
+
+.note-modal-footer a:hover,
+.note-modal-footer a:focus {
+  color: #23527c;
+  text-decoration: underline
+}
+
+.note-modal-footer .note-btn {
+  float: right
+}
+
+.note-modal-title {
+  font-size: 20px;
+  color: #42515f;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.note-modal-backdrop {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  z-index: $zindex-modal-background;
+  background: $modal-backdrop-bg;
+  @include opacity(0.5);
+  display: none;
+
+  &.open {
+    display: block;
+  }
+}
+
+
+// Scale up the modal
+@media (min-width: 768px) {
+  // Automatically set modal's width for larger viewports
+  .note-modal-content {
+    width: 600px;
+    margin: 30px auto;
+  }
+}
+
+@media (min-width: 992px) {
+  .note-modal-content-large {
+    width: 900px;
+  }
+}
+
+.note-modal {
+
+  .note-help-block {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    color: #737373;
+  }
+
+  .note-nav {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+  }
+
+  .note-nav-link {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #007bff;
+    text-decoration: none;
+    background-color: transparent;
+    -webkit-text-decoration-skip: objects;
+  }
+
+  .note-nav-link:focus,
+  .note-nav-link:hover {
+    color: #0056b3;
+    text-decoration: none;
+  }
+
+  .note-nav-link.disabled {
+    color: #868e96;
+  }
+
+  .note-nav-tabs {
+    border-bottom: 1px solid #ddd;
+  }
+
+  .note-nav-tabs .note-nav-item {
+    margin-bottom: -1px;
+  }
+
+  .note-nav-tabs .note-nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+  }
+
+  .note-nav-tabs .note-nav-link:focus,
+  .note-nav-tabs .note-nav-link:hover {
+    border-color: #e9ecef #e9ecef #ddd;
+  }
+
+  .note-nav-tabs .note-nav-link.disabled {
+    color: #868e96;
+    background-color: transparent;
+    border-color: transparent;
+  }
+
+  .note-nav-tabs .note-nav-item.show .note-nav-link {
+    color: #495057;
+    background-color: #fff;
+    border-color: #ddd #ddd #fff;
+  }
+
+  .note-tab-content {
+    margin: 15px auto;
+  }
+
+  .note-tab-content > .note-tab-pane:target ~ .note-tab-pane:last-child,
+  .note-tab-content > .note-tab-pane {
+    display: none;
+  }
+  .note-tab-content > :last-child,
+  .note-tab-content > .note-tab-pane:target {
+    display: block;
+  }
+}

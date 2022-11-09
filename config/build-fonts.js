@@ -3,12 +3,12 @@ const fs = require('fs');
 const path = require('path');
 
 const webfontConfig = {
-  files: 'src/icons/*.svg',
-  dest: 'src/styles/font/',
+  files: 'src/font/icons/*.svg',
+  dest: 'src/font/',
   formats: ['ttf', 'eot', 'woff', 'woff2'],
   fontName: 'summernote',
-  template: 'src/icons/templates/summernote-icons.css',
-  destTemplate: 'src/styles/summernote-icons.css',
+  template: 'src/font/template.scss',
+  destTemplate: 'src/styles/summernote/font.scss',
   templateFontName: 'summernote',
   templateClassName: 'note-icon',
   templateFontPath: './font/',

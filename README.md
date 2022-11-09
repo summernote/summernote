@@ -20,7 +20,7 @@ Summernote has a few special features:
 * Simple UI
 * Interactive WYSIWYG editing
 * Handy integration with server
-* Supports Bootstrap 3 and 4 integrities
+* Supports Bootstrap 3, 4 and 5 integrations
 * Lots of [plugins and connectors](https://github.com/summernote/awesome-summernote) provided together
 
 ### Installation and dependencies
@@ -33,13 +33,13 @@ Include the following code in the `<head>` tag of your HTML:
 
 ```html
 <!-- include libraries(jQuery, bootstrap) -->
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" />
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" />
+<script type="text/javascript" src="cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <!-- include summernote css/js-->
-<link href="summernote.css" rel="stylesheet">
-<script src="summernote.js"></script>
+<link href="summernote-bs5.css" rel="stylesheet">
+<script src="summernote-bs5.js"></script>
 ```
 
 #### 2. Target a element
@@ -82,6 +82,11 @@ https://github.com/summernote/summernote/blob/develop/.github/CONTRIBUTING.md
 ### Contacts
 * Facebook user group: https://www.facebook.com/groups/summernote
 * Summernote Slack: [Join the Summernote Slack community](https://communityinviter.com/apps/summernote/summernote)
+
+## Testing powered by
+<a target="_blank" href="https://www.browserstack.com/"><img width="200" src="https://www.browserstack.com/images/layout/browserstack-logo-600x315.png"></a><br>
+[BrowserStack Open-Source Program](https://www.browserstack.com/open-source)
+
 
 ### License
 Summernote may be freely distributed under the MIT license.

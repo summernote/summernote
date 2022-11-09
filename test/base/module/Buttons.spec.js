@@ -7,10 +7,10 @@
 import $ from 'jquery';
 import chai from 'chai';
 import chaidom from 'test/chaidom';
-import env from 'src/js/base/core/env';
-import range from 'src/js/base/core/range';
-import Context from 'src/js/base/Context';
-import 'src/js/bs4/settings';
+import env from 'src/js/core/env';
+import range from 'src/js/core/range';
+import Context from 'src/js/Context';
+import 'src/styles/bs4/summernote-bs4';
 
 chai.use(chaidom);
 
@@ -18,6 +18,12 @@ describe('Buttons', () => {
   var expect = chai.expect;
   var assert = chai.assert;
   var context, $toolbar, $editable;
+
+  before(function(done) {
+    setTimeout(function() {
+      done();
+    }, 500);
+  });
 
   beforeEach(() => {
     $('body').empty(); // important !
@@ -176,13 +182,29 @@ describe('Buttons', () => {
   */
 
   describe('font family button', () => {
-    it('should change font family when it is clicked', (done) => {
-      var $li = $toolbar.find('.dropdown-fontname a[data-value="Comic Sans MS"]');
+    it('should change font family (Courier New) when it is clicked', (done) => {
+      var $li = $toolbar.find('.dropdown-fontname a[data-value="Courier New"]');
       var $span = $toolbar.find('span.note-current-fontname');
       assert.isTrue($li.length === 1);
-      assert.isTrue($span.text() !== 'Comic Sans MS');
+      assert.isTrue($span.text() !== 'Courier New');
       $li.click();
-      expect($editable.find('p').children().first()).await(done).to.be.equalsStyle('"Comic Sans MS"', 'font-family');
+      expect($editable.find('p').children().first()).await(done).to.be.equalsStyle('"Courier New"', 'font-family');
+    });
+    it('should change font family (Arial) when it is clicked', (done) => {
+      var $li = $toolbar.find('.dropdown-fontname a[data-value="Arial"]');
+      var $span = $toolbar.find('span.note-current-fontname');
+      assert.isTrue($li.length === 1);
+      assert.isTrue($span.text() !== 'Arial');
+      $li.click();
+      expect($editable.find('p').children().first()).await(done).to.be.equalsStyle('"Arial"', 'font-family');
+    });
+    it('should change font family (Helvetica) when it is clicked', (done) => {
+      var $li = $toolbar.find('.dropdown-fontname a[data-value="Helvetica"]');
+      var $span = $toolbar.find('span.note-current-fontname');
+      assert.isTrue($li.length === 1);
+      assert.isTrue($span.text() !== 'Helvetica');
+      $li.click();
+      expect($editable.find('p').children().first()).await(done).to.be.equalsStyle('"Helvetica"', 'font-family');
     });
   });
 
@@ -195,7 +217,7 @@ describe('Buttons', () => {
 
   describe('fore color button in all color button', () => {
     it('should execute fore color command when it is clicked', (done) => {
-      var $button = $toolbar.find('.note-color-all').find('[data-event=foreColor]').eq(10).click();
+      var $button = $toolbar.find('.note-color-all .note-holder').find('.note-color-btn[data-event=foreColor]').eq(10);
       $button.click();
       expect($editable.find('p').children().first()).await(done).to.be.equalsStyle($button.data('value'), 'color');
     });
@@ -203,7 +225,7 @@ describe('Buttons', () => {
 
   describe('back color button in all color button', () => {
     it('should execute back color command when it is clicked', (done) => {
-      var $button = $toolbar.find('.note-color-all').find('[data-event=backColor]').eq(10);
+      var $button = $toolbar.find('.note-color-all .note-holder').find('.note-color-btn[data-event=backColor]').eq(10);
       $button.click();
       expect($editable.find('p').children().first()).await(done).to.be.equalsStyle($button.data('value'), 'background-color');
     });
@@ -211,7 +233,7 @@ describe('Buttons', () => {
 
   describe('color button in fore color button', () => {
     it('should execute fore color command when it is clicked', (done) => {
-      var $button = $toolbar.find('.note-color-fore').find('[data-event=foreColor]').eq(4);
+      var $button = $toolbar.find('.note-color-fore').find('.note-color-btn[data-event=foreColor]').eq(4);
       $button.click();
       expect($editable.find('p').children().first()).await(done).to.be.equalsStyle($button.data('value'), 'color');
     });
@@ -219,9 +241,8 @@ describe('Buttons', () => {
 
   describe('back color button in back color button', () => {
     it('should execute back color command when it is clicked', (done) => {
-      var $button = $toolbar.find('.note-color-back').find('[data-event=backColor]').eq(20);
+      var $button = $toolbar.find('.note-color-back').find('.note-color-btn[data-event=backColor]').eq(20);
       $button.click();
-
       expect($editable.find('p').children().first()).await(done).to.be.equalsStyle($button.data('value'), 'background-color');
     });
   });
