@@ -12,7 +12,7 @@ export default class AutoReplace {
 
     this.events = {
       'summernote.keyup': (we, event) => {
-        if (!e.isDefaultPrevented()) {
+        if (!event.isDefaultPrevented()) {
           this.handleKeyup(event);
         }
       },
