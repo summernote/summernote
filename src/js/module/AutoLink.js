@@ -11,7 +11,7 @@ export default class AutoLink {
     this.options = context.options;
     this.events = {
       'summernote.keyup': (we, event) => {
-        if (!e.isDefaultPrevented()) {
+        if (!event.isDefaultPrevented()) {
           this.handleKeyup(event);
         }
       },
