@@ -576,6 +576,25 @@ describe('Editor', () => {
       expectContentsAwait(context, '<p><a href="/relative/url" target="_blank">summernote</a></p>', done);
     });
 
+    it('should insert safe html', (done) => {
+      var text = 'hello';
+      var pNode = $editable.find('p')[0];
+      var textNode = pNode.childNodes[0];
+      var startIndex = textNode.wholeText.indexOf(text);
+      var endIndex = startIndex + text.length;
+
+      var rng = range.create(textNode, startIndex, textNode, endIndex);
+
+      editor.createLink({
+        url: '/relative/url',
+        text: '<iframe src="hackme.com"></iframe>',
+        range: rng,
+        isNewWindow: true,
+      });
+
+      expectContentsAwait(context, '<p><a href="/relative/url" target="_blank">&lt;iframe src="hackme.com"&gt;&lt;/iframe&gt;</a></p>', done);
+    });
+
     it('should modify a link', (done) => {
       context.invoke('code', '<p><a href="http://summernote.org">hello world</a></p>');
 
