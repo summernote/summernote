@@ -222,7 +222,7 @@ export default class Editor {
       let anchors = [];
       if (isTextChanged) {
         rng = rng.deleteContents();
-        const anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
+        const anchor = rng.insertNode($('<A></A>').text(linkText)[0]);
         anchors.push(anchor);
       } else {
         anchors = this.style.styleNodes(rng, {
