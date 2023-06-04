@@ -82,8 +82,8 @@
       },
       paragraph: {
         paragraph: 'Odstavec',
-        outdent: 'Zvětšit odsazení',
-        indent: 'Zmenšit odsazení',
+        outdent: 'Předsadit',
+        indent: 'Odsadit',
         left: 'Zarovnat doleva',
         center: 'Zarovnat na střed',
         right: 'Zarovnat doprava',
