@@ -16,16 +16,17 @@ export default class Statusbar {
       return;
     }
 
-    this.$statusbar.on('mousedown', (event) => {
+    this.$statusbar.on('mousedown touchstart', (event) => {
       event.preventDefault();
       event.stopPropagation();
 
       const editableTop = this.$editable.offset().top - this.$document.scrollTop();
       const editableCodeTop = this.$codable.offset().top - this.$document.scrollTop();
 
-      const onMouseMove = (event) => {
-        let height = event.clientY - (editableTop + EDITABLE_PADDING);
-        let heightCode = event.clientY - (editableCodeTop + EDITABLE_PADDING);
+      const onStatusbarMove = (event) => {
+        let originalEvent = (event.type == 'mousemove') ? event : event.originalEvent.touches[0];
+        let height = originalEvent.clientY - (editableTop + EDITABLE_PADDING);
+        let heightCode = originalEvent.clientY - (editableCodeTop + EDITABLE_PADDING);
 
         height = (this.options.minheight > 0) ? Math.max(height, this.options.minheight) : height;
         height = (this.options.maxHeight > 0) ? Math.min(height, this.options.maxHeight) : height;
@@ -37,8 +38,8 @@ export default class Statusbar {
         this.$codable.height(heightCode);
       };
 
-      this.$document.on('mousemove', onMouseMove).one('mouseup', () => {
-        this.$document.off('mousemove', onMouseMove);
+      this.$document.on('mousemove touchmove', onStatusbarMove).one('mouseup touchend', () => {
+        this.$document.off('mousemove touchmove', onStatusbarMove);
       });
     });
   }

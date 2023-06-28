@@ -25,7 +25,7 @@ export default class AirPopover {
           this.update(true);
         }
       },
-      'summernote.mousedown': (we, e) => {
+      'summernote.mousedown': (we, event) => {
         this.pageX = event.pageX;
         this.pageY = event.pageY;
       },
