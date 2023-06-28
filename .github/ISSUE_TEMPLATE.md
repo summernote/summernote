@@ -4,6 +4,8 @@ This way we can track issues more easily, and try to keep issue information toge
 
 If you open an issue, and remove this template, without at least providing answers as per the questions further down this template that will help us resolve your issue, then we may simply close the issue. Without the questions being answered, it makes it very difficult to try and replicate our testing scenarios to try and resolve your issue.
 
+If an issue remains open without further interaction for more than 14 days after the last interaction, which is plenty of time to at least indicate if you're busy, or still require assistance, then your issue may be closed without warning at the discretion of the Summernote team.
+
 Thank you, and Thanks for using Summernote, and thank you those who contribute.
 
 This version of Summernote uses jQuery, if you are using a different version please refer to the relevant repositories below:-
