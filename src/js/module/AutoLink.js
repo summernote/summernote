@@ -11,7 +11,7 @@ export default class AutoLink {
     this.options = context.options;
     this.events = {
       'summernote.keyup': (we, event) => {
-        if (!e.isDefaultPrevented()) {
+        if (!event.isDefaultPrevented()) {
           this.handleKeyup(event);
         }
       },
@@ -60,7 +60,7 @@ export default class AutoLink {
     }
   }
 
-  handleKeyup(e) {
+  handleKeyup(event) {
     if (key.code.SPACE === event.keyCode || (key.code.ENTER === event.keyCode && !event.shiftKey)) {
       this.replace();
     }

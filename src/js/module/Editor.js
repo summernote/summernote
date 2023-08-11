@@ -222,7 +222,7 @@ export default class Editor {
       let anchors = [];
       if (isTextChanged) {
         rng = rng.deleteContents();
-        const anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
+        const anchor = rng.insertNode($('<A></A>').text(linkText)[0]);
         anchors.push(anchor);
       } else {
         anchors = this.style.styleNodes(rng, {
@@ -301,6 +301,8 @@ export default class Editor {
       } else {
         $target = $(this.restoreTarget()).detach();
       }
+      
+      this.setLastRange(range.createFromSelection($target).select());
       this.context.triggerEvent('media.delete', $target, this.$editable);
     });
 

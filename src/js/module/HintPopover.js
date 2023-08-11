@@ -54,7 +54,7 @@ export default class HintPopover {
       this.replace();
     });
 
-    this.$popover.on('mousedown', (event) => { e.preventDefault(); });
+    this.$popover.on('mousedown', (event) => { event.preventDefault(); });
   }
 
   destroy() {
