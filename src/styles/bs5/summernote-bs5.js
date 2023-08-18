@@ -19,7 +19,7 @@ const statusbar = renderer.create([
   '</div>',
 ].join(''));
 
-const airEditor = renderer.create('<div class="note-editor note-airframe"></div<');
+const airEditor = renderer.create('<div class="note-editor note-airframe"></div>');
 const airEditable = renderer.create([
   '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"></div>',
   '<output class="note-status-output" role="status" aria-live="polite"></output>',
