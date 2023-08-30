@@ -3,10 +3,10 @@ import '/js/settings';
 import renderer from '/js/renderer';
 import './summernote-bs5.scss';
 
-const editor = renderer.create('<div class="note-editor note-frame card"/>');
-const toolbar = renderer.create('<div class="note-toolbar card-header" role="toolbar"/>');
-const editingArea = renderer.create('<div class="note-editing-area"/>');
-const codable = renderer.create('<textarea class="note-codable" aria-multiline="true"/>');
+const editor = renderer.create('<div class="note-editor note-frame card"></div>');
+const toolbar = renderer.create('<div class="note-toolbar card-header" role="toolbar"></div>');
+const editingArea = renderer.create('<div class="note-editing-area"></div>');
+const codable = renderer.create('<textarea class="note-codable" aria-multiline="true"></textarea>');
 const editable = renderer.create('<div class="note-editable card-block" contentEditable="true" role="textbox" aria-multiline="true"/>');
 const statusbar = renderer.create([
   '<output class="note-status-output" role="status" aria-live="polite"></output>',
@@ -19,7 +19,7 @@ const statusbar = renderer.create([
   '</div>',
 ].join(''));
 
-const airEditor = renderer.create('<div class="note-editor note-airframe"/>');
+const airEditor = renderer.create('<div class="note-editor note-airframe"></div>');
 const airEditable = renderer.create([
   '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"></div>',
   '<output class="note-status-output" role="status" aria-live="polite"></output>',
@@ -62,7 +62,7 @@ const dropdownCheck = renderer.create('<div class="note-dropdown-menu dropdown-m
   }
 });
 
-const dialog = renderer.create('<div class="modal note-modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function($node, options) {
+const dialog = renderer.create('<div class="modal note-modal" aria-hidden="false" tabindex="-1" role="dialog"></div>', function($node, options) {
   if (options.fade) {
     $node.addClass('fade');
   }
@@ -139,7 +139,7 @@ const ui = function(editorOptions) {
     options: editorOptions,
 
     palette: function($node, options) {
-      return renderer.create('<div class="note-color-palette"/>', function($node, options) {
+      return renderer.create('<div class="note-color-palette"></div>', function($node, options) {
         const contents = [];
         for (let row = 0, rowSize = options.colors.length; row < rowSize; row++) {
           const eventName = options.eventName;
