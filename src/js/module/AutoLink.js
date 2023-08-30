@@ -9,6 +9,7 @@ export default class AutoLink {
   constructor(context) {
     this.context = context;
     this.options = context.options;
+    this.$editable = context.layoutInfo.editable;
     this.events = {
       'summernote.keyup': (we, event) => {
         if (!event.isDefaultPrevented()) {
@@ -50,6 +51,7 @@ export default class AutoLink {
       this.lastWordRange.insertNode(node);
       this.lastWordRange = null;
       this.context.invoke('editor.focus');
+      this.context.triggerEvent('change', this.$editable.html(), this.$editable);
     }
   }
 
