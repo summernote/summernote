@@ -3,6 +3,7 @@ import lists from '../core/lists';
 export default class Clipboard {
   constructor(context) {
     this.context = context;
+    this.options = context.options;
     this.$editable = context.layoutInfo.editable;
   }
 
@@ -27,7 +28,7 @@ export default class Clipboard {
       const clipboardText = clipboardData.getData('Text');
 
       // paste img file
-      if (clipboardFiles.length > 0) {
+      if (clipboardFiles.length > 0 && this.options.allowClipboardImagePasting) {
         this.context.invoke('editor.insertImagesOrCallback', clipboardFiles);
         event.preventDefault();
       }
@@ -43,6 +44,7 @@ export default class Clipboard {
         event.preventDefault();
       }
     }
+
     // Call editor.afterCommand after proceeding default event handler
     setTimeout(() => {
       this.context.invoke('editor.afterCommand');
