@@ -263,7 +263,7 @@ export default class Bullet {
    */
   findList(node) {
     return node
-      ? lists.find(node.children, child => ['OL', 'UL'].indexOf(child.nodeName) > -1)
+      ? node.children && lists.find(node.children, child => ['OL', 'UL'].indexOf(child.nodeName) > -1)
       : null;
   }
 
