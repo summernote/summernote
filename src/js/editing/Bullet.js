@@ -31,7 +31,7 @@ export default class Bullet {
     $.each(clustereds, (idx, paras) => {
       const head = lists.head(paras);
       if (dom.isLi(head)) {
-        const previousList = this.findList(head.previousSibling);
+        const previousList = this.findList(head.previousElementSibling);
         if (previousList) {
           paras
             .map(para => previousList.appendChild(para));
@@ -127,8 +127,8 @@ export default class Bullet {
     const head = lists.head(paras);
     const last = lists.last(paras);
 
-    const prevList = dom.isList(head.previousSibling) && head.previousSibling;
-    const nextList = dom.isList(last.nextSibling) && last.nextSibling;
+    const prevList = dom.isList(head.previousElementSibling) && head.previousElementSibling;
+    const nextList = dom.isList(last.nextElementSibling) && last.nextElementSibling;
 
     const listNode = prevList || dom.insertAfter(dom.create(listName || 'UL'), last);
 
@@ -248,8 +248,8 @@ export default class Bullet {
    * @return {HTMLNode}
    */
   appendToPrevious(node) {
-    return node.previousSibling
-      ? dom.appendChildNodes(node.previousSibling, [node])
+    return node.previousElementSibling
+      ? dom.appendChildNodes(node.previousElementSibling, [node])
       : this.wrapList([node], 'LI');
   }
 
