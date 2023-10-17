@@ -24,7 +24,7 @@ export default class Bullet {
    */
   indent(editable) {
     const rng = range.create(editable).wrapBodyInlineWithPara();
-
+    
     const paras = rng.nodes(dom.isPara, { includeAncestor: true });
     const clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
 
@@ -37,8 +37,12 @@ export default class Bullet {
             .map(para => previousList.appendChild(para));
         } else {
           this.wrapList(paras, head.parentNode.nodeName);
+          
+          // move ul element to parent li element
           paras
             .map((para) => para.parentNode)
+            // distinct
+            .filter(function(elem, index, self) {	return index === self.indexOf(elem);  })
             .map((para) => this.appendToPrevious(para));
         }
       } else {
@@ -169,10 +173,10 @@ export default class Bullet {
         paras.map(para => {
           const newList = this.findNextSiblings(para);
 
-          if (parentItem.nextSibling) {
+          if (parentItem.nextElementSibling) {
             parentItem.parentNode.insertBefore(
               para,
-              parentItem.nextSibling
+              parentItem.nextElementSibling
             );
           } else {
             parentItem.parentNode.appendChild(para);
@@ -188,7 +192,8 @@ export default class Bullet {
           parentItem.removeChild(headList);
         }
 
-        if (parentItem.childNodes.length === 0) {
+        // remove left-over ul or ul with only whitespace node
+        if (parentItem.childNodes.length === 0 || parentItem.childNodes.length === 1 && parentItem.childNodes[0].textContent.trim() === '') {
           parentItem.parentNode.removeChild(parentItem);
         }
       } else {
