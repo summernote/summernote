@@ -387,6 +387,8 @@ export default class Editor {
     }).on('paste', (event) => {
       this.setLastRange();
       this.context.triggerEvent('paste', event);
+    }).on('copy', function (event) {
+      this.context.triggerEvent('copy', event);
     }).on('input', () => {
       // To limit composition characters (e.g. Korean)
       if (this.isLimited(0) && this.snapshot) {
