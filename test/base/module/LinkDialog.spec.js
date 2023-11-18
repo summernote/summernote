@@ -74,7 +74,7 @@ describe('LinkDialog', () => {
       expect(checked).to.be.false;
     });
 
-    it('should uncheck default protocol if link (without protocol) exists', () => {
+    it('should check default protocol if link (without protocol) exists', () => {
       range.createFromNode($editable.find('a')[2]).normalize().select();
       context.invoke('editor.setLastRange');
       dialog.show();
@@ -82,7 +82,7 @@ describe('LinkDialog', () => {
       var checked = dialog.$dialog
         .find('.sn-checkbox-use-protocol input[type=checkbox]')
         .is(':checked');
-      expect(checked).to.be.false;
+      expect(checked).to.be.true;
     });
 
     it('should check default protocol if link not exists', () => {

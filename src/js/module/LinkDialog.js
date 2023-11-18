@@ -3,6 +3,8 @@ import env from '../core/env';
 import key from '../core/key';
 import func from '../core/func';
 
+const linkPattern = /^([A-Za-z][A-Za-z0-9+-.]*\:[\/]{2}|tel:|mailto:[A-Z0-9._%+-]+@|xmpp:[A-Z0-9._%+-]+@)?(www\.)?(.+)$/i;
+
 export default class LinkDialog {
   constructor(context) {
     this.context = context;
@@ -127,8 +129,8 @@ export default class LinkDialog {
 
         $openInNewWindow.prop('checked', isNewWindowChecked);
 
-        const useProtocolChecked = linkInfo.url
-          ? false : this.context.options.useProtocol;
+        const match = linkInfo.url.match(linkPattern);
+        const useProtocolChecked = linkInfo.url && match[1] ? false : this.context.options.useProtocol;
 
         $useProtocol.prop('checked', useProtocolChecked);
 
