@@ -50,7 +50,6 @@
         textToDisplay: 'Zobrazovaný text',
         url: 'Na akú URL adresu má tento odkaz viesť?',
         openInNewWindow: 'Otvoriť v novom okne',
-        useProtocol: 'Použiť predvolený protokol',
       },
       table: {
         table: 'Tabuľka',

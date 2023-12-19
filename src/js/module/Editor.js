@@ -196,7 +196,6 @@ export default class Editor {
       let linkUrl = linkInfo.url;
       const linkText = linkInfo.text;
       const isNewWindow = linkInfo.isNewWindow;
-      const checkProtocol = linkInfo.checkProtocol;
       const addNoReferrer = this.options.linkAddNoReferrer;
       const addNoOpener = this.options.linkAddNoOpener;
       let rng = linkInfo.range || this.getLastRange();
@@ -213,10 +212,10 @@ export default class Editor {
 
       if (this.options.onCreateLink) {
         linkUrl = this.options.onCreateLink(linkUrl);
-      } else if (checkProtocol) {
+      } else {
         // if url doesn't have any protocol and not even a relative or a label, use http:// as default
         linkUrl = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/.test(linkUrl)
-          ? linkUrl : this.options.defaultProtocol + linkUrl;
+          ? linkUrl : 'http://' + linkUrl;
       }
 
       let anchors = [];

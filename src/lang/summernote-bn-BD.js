@@ -52,7 +52,6 @@
         textToDisplay: 'দেখানোর জন্য লেখা',
         url: 'এই লিঙ্কটি কোন URL-এ যাবে?',
         openInNewWindow: 'নতুন উইন্ডোতে খুলুন',
-        useProtocol: 'পূর্বনির্ধারিত প্রোটোকল ব্যবহার করুন',
       },
       table: {
         table: 'ছক',
