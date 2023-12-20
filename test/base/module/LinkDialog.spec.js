@@ -61,7 +61,7 @@ describe('LinkDialog', () => {
         .is(':checked');
       expect(checked).to.be.false;
     });
-    
+
     // add protocol automatically
     it('should not modify linkInfo.url when initializing the dialog if linkInfo.url is defined and protocol exists', () => {
       range.createFromNode($editable.find('p')[2]).normalize().select();
@@ -72,7 +72,7 @@ describe('LinkDialog', () => {
       expect(linkUrl).to.equal('http://summernote.org');
     });
 
-   it('should add protocol when initializing the dialog if linkInfo.url is defined and protocol not exists', () => {
+    it('should add protocol when initializing the dialog if linkInfo.url is defined and protocol not exists', () => {
       range.createFromNode($editable.find('p')[3]).normalize().select();
       context.invoke('editor.setLastRange');
       dialog.show();
@@ -81,7 +81,7 @@ describe('LinkDialog', () => {
       expect(linkUrl).to.equal('http://summernote.org');
     });
 
-   it('should add http protocol during the onChange event if linkInfo.url is undefined and protocol not exists', () => {
+    it('should add http protocol during the onChange event if linkInfo.url is undefined and protocol not exists', () => {
       range.createFromNode($editable.find('p')[4]).normalize().select();
       context.invoke('editor.setLastRange');
       dialog.show();
@@ -92,7 +92,7 @@ describe('LinkDialog', () => {
       expect($input.val()).to.equal('http://summernote');
     });
     
-   it('should add mailto protocol during the onchange event if linkinfo.url is undefined and protocol not exists', () => {
+    it('should add mailto protocol during the onchange event if linkinfo.url is undefined and protocol not exists', () => {
       range.createFromNode($editable.find('p')[4]).normalize().select();
       context.invoke('editor.setLastRange');
       dialog.show();
@@ -103,7 +103,7 @@ describe('LinkDialog', () => {
       expect($input.val()).to.equal('mailto://email@example.com');
     });
 
-   it('should add tel protocol during the onchange event if linkinfo.url is undefined and protocol not exists', () => {
+    it('should add tel protocol during the onchange event if linkinfo.url is undefined and protocol not exists', () => {
       range.createFromNode($editable.find('p')[4]).normalize().select();
       context.invoke('editor.setLastRange');
       dialog.show();
