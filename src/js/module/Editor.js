@@ -13,6 +13,9 @@ import Table from '../editing/Table';
 import Bullet from '../editing/Bullet';
 
 const KEY_BOGUS = 'bogus';
+const MAILTO_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const TEL_PATTERN = /^(\+?\d{1,3}[\s-]?)?(\d{1,4})[\s-]?(\d{1,4})[\s-]?(\d{1,4})$/;
+const URL_SCHEME_PATTERN = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/;
 
 /**
  * @class Editor
@@ -213,9 +216,7 @@ export default class Editor {
       if (this.options.onCreateLink) {
         linkUrl = this.options.onCreateLink(linkUrl);
       } else {
-        // if url doesn't have any protocol and not even a relative or a label, use http:// as default
-        linkUrl = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/.test(linkUrl)
-          ? linkUrl : 'http://' + linkUrl;
+        linkUrl = this.checkLinkUrl(linkUrl);
       }
 
       let anchors = [];
@@ -507,6 +508,17 @@ export default class Editor {
       }
     }
     return false;
+  }
+
+  checkLinkUrl(linkUrl) {
+    if (MAILTO_PATTERN.test(linkUrl)) {
+      return 'mailto://' + linkUrl;
+    } else if (TEL_PATTERN.test(linkUrl)) {
+      return 'tel://' + linkUrl;
+    } else if (!URL_SCHEME_PATTERN.test(linkUrl)) {
+      return 'http://' + linkUrl;
+    }
+    return linkUrl;
   }
 
   /**

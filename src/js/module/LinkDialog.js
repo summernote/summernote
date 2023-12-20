@@ -3,6 +3,10 @@ import env from '../core/env';
 import key from '../core/key';
 import func from '../core/func';
 
+const MAILTO_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const TEL_PATTERN = /^(\+?\d{1,3}[\s-]?)?(\d{1,4})[\s-]?(\d{1,4})[\s-]?(\d{1,4})$/;
+const URL_SCHEME_PATTERN = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/;
+
 export default class LinkDialog {
   constructor(context) {
     this.context = context;
@@ -62,6 +66,24 @@ export default class LinkDialog {
     });
   }
 
+  checkLinkUrl(linkUrl) {
+    if (MAILTO_PATTERN.test(linkUrl)) {
+      return 'mailto://' + linkUrl;
+    } else if (TEL_PATTERN.test(linkUrl)) {
+      return 'tel://' + linkUrl;
+    } else if (!URL_SCHEME_PATTERN.test(linkUrl)) {
+      return 'http://' + linkUrl;
+    }
+    return linkUrl;
+  }
+
+  onCheckLinkUrl($input) {
+    $input.on('blur', (event) => {
+      event.target.value =
+        event.target.value == '' ? '' : this.checkLinkUrl(event.target.value);
+    });
+  }
+
   /**
    * toggle update button
    */
@@ -88,7 +110,7 @@ export default class LinkDialog {
 
         // If no url was given and given text is valid URL then copy that into URL Field
         if (!linkInfo.url && func.isValidUrl(linkInfo.text)) {
-          linkInfo.url = linkInfo.text;
+          linkInfo.url = this.checkLinkUrl(linkInfo.text);
         }
 
         $linkText.on('input paste propertychange', () => {
@@ -114,6 +136,7 @@ export default class LinkDialog {
         this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
         this.bindEnterKey($linkUrl, $linkBtn);
         this.bindEnterKey($linkText, $linkBtn);
+        this.onCheckLinkUrl($linkUrl);
 
         const isNewWindowChecked = linkInfo.isNewWindow !== undefined
           ? linkInfo.isNewWindow : this.context.options.linkTargetBlank;
