@@ -116,7 +116,11 @@ export default class LinkDialog {
         $linkText.on('input paste propertychange', () => {
           // If linktext was modified by input events,
           // cloning text from linkUrl will be stopped.
-          linkInfo.text = $linkText.val();
+          let text = $linkText.val();
+          let div = document.createElement('div');
+          div.innerText = text;
+          text = div.innerHTML;
+          linkInfo.text = text;
           this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
         }).val(linkInfo.text);
 
