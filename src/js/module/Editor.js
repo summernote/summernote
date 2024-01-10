@@ -1026,7 +1026,7 @@ export default class Editor {
     // [workaround] Screen will move when page is scolled in IE.
     //  - do focus when not focused
     if (!this.hasFocus()) {
-      this.$editable.focus();
+      this.$editable.trigger('focus');
     }
   }
 

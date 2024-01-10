@@ -222,7 +222,7 @@ export default class VideoDialog {
           $videoUrl.trigger('focus');
         }
 
-        $videoBtn.click((event) => {
+        $videoBtn.on('click', (event) => {
           event.preventDefault();
           deferred.resolve($videoUrl.val());
         });

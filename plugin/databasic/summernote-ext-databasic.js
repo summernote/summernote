@@ -237,7 +237,7 @@
 
           $saveBtn
             .text(info.node ? lang.databasic.edit : lang.databasic.insert)
-            .click(function(event) {
+            .on('click', function(event) {
               event.preventDefault();
 
               deferred.resolve({ test: $inpTest.val() });

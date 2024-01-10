@@ -58,7 +58,7 @@ describe('Buttons', () => {
 
   describe('bold button', () => {
     it('should execute bold command when it is clicked', (done) => {
-      $toolbar.find('.note-btn-bold').click();
+      $toolbar.find('.note-btn-bold').trigger('click');
       expect($editable.html()).await(done).to.equalsIgnoreCase('<p><b>hello</b></p>');
     });
   });
@@ -68,14 +68,14 @@ describe('Buttons', () => {
       var $button = $toolbar.find('.note-btn-bold');
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
-      $button.click();
+      $button.trigger('click');
       expect($button.hasClass('active')).await(done).to.be.true;
     });
   });
 
   describe('italic button', () => {
     it('should execute italic command when it is clicked', (done) => {
-      $toolbar.find('.note-btn-italic').click();
+      $toolbar.find('.note-btn-italic').trigger('click');
       expect($editable.html()).await(done).to.equalsIgnoreCase('<p><i>hello</i></p>');
     });
   });
@@ -85,14 +85,14 @@ describe('Buttons', () => {
       var $button = $toolbar.find('.note-btn-italic');
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
-      $button.click();
+      $button.trigger('click');
       expect($button.hasClass('active')).await(done).to.be.true;
     });
   });
 
   describe('underline button', () => {
     it('should execute underline command when it is clicked', (done) => {
-      $toolbar.find('.note-btn-underline').click();
+      $toolbar.find('.note-btn-underline').trigger('click');
       expect($editable.html()).await(done).to.equalsIgnoreCase('<p><u>hello</u></p>');
     });
   });
@@ -102,14 +102,14 @@ describe('Buttons', () => {
       var $button = $toolbar.find('.note-btn-underline');
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
-      $button.click();
+      $button.trigger('click');
       expect($button.hasClass('active')).await(done).to.be.true;
     });
   });
 
   describe('superscript button', () => {
     it('should execute superscript command when it is clicked', (done) => {
-      $toolbar.find('.note-btn-superscript').click();
+      $toolbar.find('.note-btn-superscript').trigger('click');
       expect($editable.html()).await(done).to.equalsIgnoreCase('<p><sup>hello</sup></p>');
     });
   });
@@ -119,14 +119,14 @@ describe('Buttons', () => {
       var $button = $toolbar.find('.note-btn-superscript');
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
-      $button.click();
+      $button.trigger('click');
       expect($button.hasClass('active')).await(done).to.be.true;
     });
   });
 
   describe('subscript button', () => {
     it('should execute subscript command when it is clicked', (done) => {
-      $toolbar.find('.note-btn-subscript').click();
+      $toolbar.find('.note-btn-subscript').trigger('click');
       expect($editable.html()).await(done).to.equalsIgnoreCase('<p><sub>hello</sub></p>');
     });
   });
@@ -136,14 +136,14 @@ describe('Buttons', () => {
       var $button = $toolbar.find('.note-btn-subscript');
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
-      $button.click();
+      $button.trigger('click');
       expect($button.hasClass('active')).await(done).to.be.true;
     });
   });
 
   describe('strikethrough button', () => {
     it('should execute strikethrough command when it is clicked', (done) => {
-      $toolbar.find('.note-btn-strikethrough').click();
+      $toolbar.find('.note-btn-strikethrough').trigger('click');
       expect($editable.html()).await(done).to.equalsIgnoreCase('<p><strike>hello</strike></p>');
     });
   });
@@ -153,7 +153,7 @@ describe('Buttons', () => {
       var $button = $toolbar.find('.note-btn-strikethrough');
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
-      $button.click();
+      $button.trigger('click');
       expect($button.hasClass('active')).await(done).to.be.true;
     });
   });
@@ -163,7 +163,7 @@ describe('Buttons', () => {
       var $button = $toolbar.find('i.note-icon-eraser').parent();
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
-      $button.click();
+      $button.trigger('click');
       expect($button.hasClass('active')).await(done).to.be.false;
     });
   });
@@ -187,7 +187,7 @@ describe('Buttons', () => {
       var $span = $toolbar.find('span.note-current-fontname');
       assert.isTrue($li.length === 1);
       assert.isTrue($span.text() !== 'Courier New');
-      $li.click();
+      $li.trigger('click');
       expect($editable.find('p').children().first()).await(done).to.be.equalsStyle('"Courier New"', 'font-family');
     });
     it('should change font family (Arial) when it is clicked', (done) => {
@@ -195,7 +195,7 @@ describe('Buttons', () => {
       var $span = $toolbar.find('span.note-current-fontname');
       assert.isTrue($li.length === 1);
       assert.isTrue($span.text() !== 'Arial');
-      $li.click();
+      $li.trigger('click');
       expect($editable.find('p').children().first()).await(done).to.be.equalsStyle('"Arial"', 'font-family');
     });
     it('should change font family (Helvetica) when it is clicked', (done) => {
@@ -203,14 +203,14 @@ describe('Buttons', () => {
       var $span = $toolbar.find('span.note-current-fontname');
       assert.isTrue($li.length === 1);
       assert.isTrue($span.text() !== 'Helvetica');
-      $li.click();
+      $li.trigger('click');
       expect($editable.find('p').children().first()).await(done).to.be.equalsStyle('"Helvetica"', 'font-family');
     });
   });
 
   describe('recent color button in all color button', () => {
     it('should execute color command when it is clicked', (done) => {
-      $toolbar.find('.note-color-all').find('.note-current-color-button').click();
+      $toolbar.find('.note-color-all').find('.note-current-color-button').trigger('click');
       expect($editable.find('p').children().first()).await(done).to.be.equalsStyle('#FFFF00', 'background-color');
     });
   });
@@ -218,7 +218,7 @@ describe('Buttons', () => {
   describe('fore color button in all color button', () => {
     it('should execute fore color command when it is clicked', (done) => {
       var $button = $toolbar.find('.note-color-all .note-holder').find('.note-color-btn[data-event=foreColor]').eq(10);
-      $button.click();
+      $button.trigger('click');
       expect($editable.find('p').children().first()).await(done).to.be.equalsStyle($button.data('value'), 'color');
     });
   });
@@ -226,7 +226,7 @@ describe('Buttons', () => {
   describe('back color button in all color button', () => {
     it('should execute back color command when it is clicked', (done) => {
       var $button = $toolbar.find('.note-color-all .note-holder').find('.note-color-btn[data-event=backColor]').eq(10);
-      $button.click();
+      $button.trigger('click');
       expect($editable.find('p').children().first()).await(done).to.be.equalsStyle($button.data('value'), 'background-color');
     });
   });
@@ -234,7 +234,7 @@ describe('Buttons', () => {
   describe('color button in fore color button', () => {
     it('should execute fore color command when it is clicked', (done) => {
       var $button = $toolbar.find('.note-color-fore').find('.note-color-btn[data-event=foreColor]').eq(4);
-      $button.click();
+      $button.trigger('click');
       expect($editable.find('p').children().first()).await(done).to.be.equalsStyle($button.data('value'), 'color');
     });
   });
@@ -242,7 +242,7 @@ describe('Buttons', () => {
   describe('back color button in back color button', () => {
     it('should execute back color command when it is clicked', (done) => {
       var $button = $toolbar.find('.note-color-back').find('.note-color-btn[data-event=backColor]').eq(20);
-      $button.click();
+      $button.trigger('click');
       expect($editable.find('p').children().first()).await(done).to.be.equalsStyle($button.data('value'), 'background-color');
     });
   });
