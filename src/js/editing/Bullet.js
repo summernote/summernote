@@ -107,7 +107,7 @@ export default class Bullet {
       const diffLists = rng.nodes(dom.isList, {
         includeAncestor: true,
       }).filter((listNode) => {
-        return !$.nodeName(listNode, listName);
+        return (listNode.nodeName !== listName);
       });
 
       if (diffLists.length) {
