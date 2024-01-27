@@ -902,24 +902,24 @@ function splitTree(root, point, options) {
     let domList = ancestors.slice(0, ancestors.length - 1);
     let ifHasNextSibling = domList.find(item => item.nextSibling);
     if (ifHasNextSibling && point.offset != 0 && isRightEdgePoint(point)) {
-        let nestSibling = ifHasNextSibling.nextSibling;
-        let textNode;
-        if (nestSibling.nodeType == 1) {
-            textNode = nestSibling.childNodes[0];
-            ancestors = listAncestor(textNode, func.eq(root));
-            point = {
-                node: textNode,
-                offset: 0,
-            };
-        }
-        else if (nestSibling.nodeType == 3 && !nestSibling.data.match(/[\n\r]/g)) {
-            textNode = nestSibling;
-            ancestors = listAncestor(textNode, func.eq(root));
-            point = {
-                node: textNode,
-                offset: 0,
-            };
-        }
+      let nestSibling = ifHasNextSibling.nextSibling;
+      let textNode;
+      if (nestSibling.nodeType == 1) {
+        textNode = nestSibling.childNodes[0];
+        ancestors = listAncestor(textNode, func.eq(root));
+        point = {
+          node: textNode,
+          offset: 0,
+        };
+      }
+      else if (nestSibling.nodeType == 3 && !nestSibling.data.match(/[\n\r]/g)) {
+        textNode = nestSibling;
+        ancestors = listAncestor(textNode, func.eq(root));
+        point = {
+          node: textNode,
+          offset: 0,
+        };
+      }
     }
   }
   return ancestors.reduce(function(node, parent) {

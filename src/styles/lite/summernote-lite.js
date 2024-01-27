@@ -253,8 +253,8 @@ const tableDropdownButton = function(opt) {
         width: opt.col + 'em',
         height: opt.row + 'em',
       })
-        .mouseup(opt.itemClick)
-        .mousemove(function(e) {
+        .on('mouseup', opt.itemClick)
+        .on('mousemove', function(e) {
           tableMoveHandler(e, opt.col, opt.row);
         });
     },

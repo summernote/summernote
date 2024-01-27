@@ -246,7 +246,7 @@ export default class HintPopover {
             }
           });
           // select first .note-hint-item
-          this.$content.find('.note-hint-item:first').addClass('active');
+          this.$content.find('.note-hint-item').first().addClass('active');
 
           // set position for popover after group is created
           if (this.direction === 'top') {

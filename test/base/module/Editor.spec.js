@@ -237,7 +237,7 @@ describe('Editor', () => {
         setTimeout(() => {
           editor.insertNode($('<span> world</span>')[0]);
           setTimeout(() => {
-            $('body').focus();
+            $('body').trigger('focus');
             editor.insertNode($('<span> hello</span>')[0]);
             setTimeout(() => {
               expectContentsAwait(context, '<p><span> world</span><span> hello</span>hello</p>', done);
@@ -274,7 +274,7 @@ describe('Editor', () => {
       setTimeout(() => {
         editor.insertText(' world');
         setTimeout(() => {
-          $('body').focus();
+          $('body').trigger('focus');
           setTimeout(() => {
             editor.insertText(' summernote');
             setTimeout(() => {

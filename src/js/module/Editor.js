@@ -747,21 +747,21 @@ export default class Editor {
    * removed (function added by 1der1)
   */
   removed(rng, node, tagName) { // LB
-		rng = range.create();
-		if (rng.isCollapsed() && rng.isOnCell()) {
-			node = rng.ec;
-			if( (tagName = node.tagName) &&
+    rng = range.create();
+    if (rng.isCollapsed() && rng.isOnCell()) {
+      node = rng.ec;
+      if( (tagName = node.tagName) &&
 				(node.childElementCount === 1) &&
 				(node.childNodes[0].tagName === "BR") ){
 
-				if(tagName === "P") {
-					node.remove();
-				} else if(['TH', 'TD'].indexOf(tagName) >=0) {
-					node.firstChild.remove();
-				}
-			}
-		}
-	}
+        if(tagName === "P") {
+          node.remove();
+        } else if(['TH', 'TD'].indexOf(tagName) >=0) {
+          node.firstChild.remove();
+        }
+      }
+    }
+  }
   /**
    * insert image
    *
@@ -1026,7 +1026,7 @@ export default class Editor {
     // [workaround] Screen will move when page is scolled in IE.
     //  - do focus when not focused
     if (!this.hasFocus()) {
-      this.$editable.focus();
+      this.$editable.trigger('focus');
     }
   }
 

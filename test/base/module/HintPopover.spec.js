@@ -58,7 +58,7 @@ describe('HintPopover', () => {
     });
 
     it('should not be shown without matches', () => {
-      $editable.keyup();
+      $editable.trigger('keyup');
       expect($('.note-hint-popover').css('display')).to.equals('none');
     });
 
@@ -66,7 +66,7 @@ describe('HintPopover', () => {
       var textNode = $editable.find('p')[0].firstChild;
       editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
       editor.insertText(' #');
-      $editable.keyup();
+      $editable.trigger('keyup');
 
       setTimeout(() => {
         expect($('.note-hint-popover').css('display')).to.equals('block');
@@ -78,7 +78,7 @@ describe('HintPopover', () => {
       var textNode = $editable.find('p')[0].firstChild;
       editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
       editor.insertText(' #al');
-      $editable.keyup();
+      $editable.trigger('keyup');
 
       setTimeout(() => {
         // alvin should be activated
@@ -93,7 +93,7 @@ describe('HintPopover', () => {
       var textNode = $editable.find('p')[0].firstChild;
       editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
       editor.insertText(' #');
-      $editable.keyup();
+      $editable.trigger('keyup');
 
       var onChange = chai.spy();
       $note.on('summernote.change', onChange);
@@ -115,7 +115,7 @@ describe('HintPopover', () => {
       var textNode = $editable.find('p')[0].firstChild;
       editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
       editor.insertText(' #');
-      $editable.keyup();
+      $editable.trigger('keyup');
 
       setTimeout(() => {
         var e = $.Event('keydown');
@@ -194,7 +194,7 @@ describe('HintPopover', () => {
       var textNode = $editable.find('p')[0].firstChild;
       editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
       editor.insertText(' @David S');
-      $editable.keyup();
+      $editable.trigger('keyup');
 
       setTimeout(() => {
         // David Summer should be activated
@@ -209,7 +209,7 @@ describe('HintPopover', () => {
       var textNode = $editable.find('p')[0].firstChild;
       editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
       editor.insertText(' @David S');
-      $editable.keyup();
+      $editable.trigger('keyup');
 
       setTimeout(() => {
         // alvin should be activated
