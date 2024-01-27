@@ -422,13 +422,13 @@ function insertAfter(node, preceding) {
  */
 function appendChildNodes(node, aChild) {
   $.each(aChild, function(idx, child) {
-	// special case: appending a pure UL/OL to a LI element creates inaccessible LI element 
+	// special case: appending a pure UL/OL to a LI element creates inaccessible LI element
 	// e.g. press enter in last LI which has UL/OL-subelements
 	// Therefore, if current node is LI element with no child nodes (text-node) and appending a list, add a br before
 	if (isLi(node) && node.firstChild === null && isList(child)) {
 		node.appendChild(create("br"));
 	}
-	
+
     node.appendChild(child);
   });
   return node;
@@ -852,8 +852,8 @@ function splitNode(point, options) {
     const childNode = point.node.childNodes[point.offset];
     let childNodes = listNext(childNode);
     // remove empty nodes
-    childNodes = childNodes.filter(function (element) {return !dom_isEmpty(element);});	
-	
+    childNodes = childNodes.filter(function (element) {return !isEmpty(element);});	
+
     const clone = insertAfter(point.node.cloneNode(false), point.node);
     appendChildNodes(clone, childNodes);
 
