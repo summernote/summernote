@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 import '../lang/summernote-en-US';
 import './summernote';
 import dom from './core/dom';
