@@ -5,7 +5,7 @@
  */
 
 import chai from 'chai';
-import $ from 'jquery';
+import $ from 'jQuery';
 import Context from 'src/js/Context';
 import Fullscreen from 'src/js/module/Fullscreen';
 import 'src/styles/bs4/summernote-bs4';

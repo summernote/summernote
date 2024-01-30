@@ -4,7 +4,7 @@
  * summernote may be freely distributed under the MIT license./
  */
 import chai from 'chai';
-import $ from 'jquery';
+import $ from 'jQuery';
 import Context from 'src/js/Context';
 import VideoDialog from 'src/js/module/VideoDialog';
 import 'src/styles/bs4/summernote-bs4';

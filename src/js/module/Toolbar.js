@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 export default class Toolbar {
   constructor(context) {
     this.context = context;

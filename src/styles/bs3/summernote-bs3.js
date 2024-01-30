@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 import '/js/settings.js';
 import './summernote-bs3.scss';
 import renderer from '/js/renderer';

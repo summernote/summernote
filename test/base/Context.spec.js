@@ -5,7 +5,7 @@
  */
 import chai from 'chai';
 import spies from 'chai-spies';
-import $ from 'jquery';// window.jQuery = $;
+import $ from 'jQuery';// window.jQuery = $;
 import 'bootstrap';
 import chaidom from 'test/chaidom';
 import env from 'src/js/core/env';

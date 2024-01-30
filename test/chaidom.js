@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 import env from 'src/js/core/env';
 
 export default function(chai) {

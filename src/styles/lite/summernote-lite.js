@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 import '/js/settings';
 import renderer from '/js/renderer';
 

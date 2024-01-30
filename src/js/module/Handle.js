@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 import dom from '../core/dom';
 
 export default class Handle {

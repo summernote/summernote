@@ -3,7 +3,7 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-import $ from 'jquery';
+import $ from 'jQuery';
 import chai from 'chai';
 import chaidom from 'test/chaidom';
 import Context from 'src/js/Context';

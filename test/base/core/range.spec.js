@@ -6,7 +6,7 @@
 
 import chai from 'chai';
 import chaidom from 'test/chaidom';
-import $ from 'jquery';
+import $ from 'jQuery';
 import dom from 'src/js/core/dom';
 import range from 'src/js/core/range';
 

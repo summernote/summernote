@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 import env from './env';
 import func from './func';
 import lists from './lists';

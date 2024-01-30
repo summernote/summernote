@@ -4,7 +4,7 @@
  * summernote may be freely distributed under the MIT license./
  */
 import chai from 'chai';
-import $ from 'jquery';
+import $ from 'jQuery';
 import lists from 'src/js/core/lists';
 
 var expect = chai.expect;

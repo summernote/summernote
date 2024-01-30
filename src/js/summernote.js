@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 import env from './core/env';
 import lists from './core/lists';
 import Context from './Context';

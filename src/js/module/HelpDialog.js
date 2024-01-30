@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 import env from '../core/env';
 
 export default class HelpDialog {

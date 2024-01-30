@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 const EDITABLE_PADDING = 24;
 
 export default class Statusbar {

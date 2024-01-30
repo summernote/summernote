@@ -4,7 +4,7 @@
  * summernote may be freely distributed under the MIT license./
  */
 import chai from 'chai';
-import $ from 'jquery';
+import $ from 'jQuery';
 import range from 'src/js/core/range';
 import Context from 'src/js/Context';
 import LinkDialog from 'src/js/module/LinkDialog';

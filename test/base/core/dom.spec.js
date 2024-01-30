@@ -5,7 +5,7 @@
  */
 import chai from 'chai';
 import chaidom from 'test/chaidom';
-import $ from 'jquery';
+import $ from 'jQuery';
 import dom from 'src/js/core/dom';
 import func from 'src/js/core/func';
 

@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 import dom from '../core/dom';
 import range from '../core/range';
 import lists from '../core/lists';

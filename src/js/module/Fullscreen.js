@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 
 export default class Fullscreen {
   constructor(context) {

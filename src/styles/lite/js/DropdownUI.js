@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 
 class DropdownUI {
   constructor($node, options) {

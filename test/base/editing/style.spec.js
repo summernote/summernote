@@ -5,7 +5,7 @@
  */
 
 import chai from 'chai';
-import $ from 'jquery';
+import $ from 'jQuery';
 import range from 'src/js/core/range';
 import Style from 'src/js/editing/Style';
 

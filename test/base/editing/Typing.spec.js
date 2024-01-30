@@ -5,7 +5,7 @@
  */
 /* jshint unused: false */
 /* jshint -W101 */
-import $ from 'jquery';
+import $ from 'jQuery';
 import chai from 'chai';
 import chaidom from 'test/chaidom';
 import range from 'src/js/core/range';
