@@ -1,7 +1,6 @@
 // Variables
 
 $sni-css-prefix: note-icon !default;
-$sni-font-path: "./font" !default;
 
 // Path
 
@@ -10,7 +9,7 @@ $sni-font-path: "./font" !default;
   font-style: normal;
   font-weight: 400;
   font-display: auto;
-  src: url("#{$sni-font-path}/summernote.eot?#iefix") format("embedded-opentype"), url("#{$sni-font-path}/summernote.woff2") format("woff2"), url("#{$sni-font-path}/summernote.woff") format("woff"), url("#{$sni-font-path}/summernote.ttf") format("truetype");}
+  src: url("./font/summernote.eot?#iefix") format("embedded-opentype"), url("./font/summernote.woff2") format("woff2"), url("./font/summernote.woff") format("woff"), url("./font/summernote.ttf") format("truetype");}
 
 // Core
 

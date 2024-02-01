@@ -55,7 +55,7 @@ export default class VideoDialog {
     const gdRegExp = /(?:\.|\/\/)drive\.google\.com\/file\/d\/(.[a-zA-Z0-9_-]*)\/view/;
     const gdMatch = url.match(gdRegExp);
 
-    const igRegExp = /(?:www\.|\/\/)instagram\.com\/p\/(.[a-zA-Z0-9_-]*)/;
+    const igRegExp = /(?:www\.|\/\/)instagram\.com\/reel\/(.[a-zA-Z0-9_-]*)/;
     const igMatch = url.match(igRegExp);
 
     const vRegExp = /\/\/vine\.co\/v\/([a-zA-Z0-9]+)/;
@@ -70,7 +70,7 @@ export default class VideoDialog {
     const youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
     const youkuMatch = url.match(youkuRegExp);
 
-    const peerTubeRegExp =/\/\/(.*)\/videos\/watch\/([^?]*)(?:\?(?:start=(\w*))?(?:&stop=(\w*))?(?:&loop=([10]))?(?:&autoplay=([10]))?(?:&muted=([10]))?)?/; 
+    const peerTubeRegExp =/\/\/(.*)\/videos\/watch\/([^?]*)(?:\?(?:start=(\w*))?(?:&stop=(\w*))?(?:&loop=([10]))?(?:&autoplay=([10]))?(?:&muted=([10]))?)?/;
     const peerTubeMatch = url.match(peerTubeRegExp);
 
     const qqRegExp = /\/\/v\.qq\.com.*?vid=(.+)/;
