@@ -175,7 +175,7 @@ const ui = function(editorOptions) {
 
     button: function($node, options) {
       return renderer.create('<button type="button" class="note-btn btn btn-outline-secondary btn-sm" tabindex="-1">', function($node, options) {
-        if (options && options.data && options.data.toggle === 'dropdown') {
+        if (options && options.data && options.data."bs-toggle" === 'dropdown') {
           $node.removeAttr('data-bs-toggle');
           $node.attr('data-bs-toggle', 'dropdown');
           if (options && options.tooltip) {
