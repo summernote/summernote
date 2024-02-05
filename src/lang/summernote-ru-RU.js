@@ -50,7 +50,6 @@
         textToDisplay: 'Отображаемый текст',
         url: 'URL для перехода',
         openInNewWindow: 'Открывать в новом окне',
-        useProtocol: 'Использовать протокол по умолчанию',
       },
       table: {
         table: 'Таблица',

@@ -52,7 +52,6 @@
         textToDisplay: 'Texto a mostrar',
         url: '¿A qué URL lleva este enlace?',
         openInNewWindow: 'Abrir en una nueva ventana',
-        useProtocol: 'Usar el protocolo predefinido',
       },
       table: {
         table: 'Tabla',

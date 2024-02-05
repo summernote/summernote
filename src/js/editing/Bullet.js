@@ -107,7 +107,7 @@ export default class Bullet {
       const diffLists = rng.nodes(dom.isList, {
         includeAncestor: true,
       }).filter((listNode) => {
-        return !$.nodeName(listNode, listName);
+        return (listNode.nodeName !== listName);
       });
 
       if (diffLists.length) {
@@ -171,7 +171,7 @@ export default class Bullet {
 
       if (headList.parentNode.nodeName === 'LI') {
         paras.map(para => {
-          const newList = this.findNextSiblings(para);
+          const newList = this.findNextElementSiblings(para);
 
           if (parentItem.nextElementSibling) {
             parentItem.parentNode.insertBefore(
@@ -273,18 +273,18 @@ export default class Bullet {
   }
 
   /**
-   * @method findNextSiblings
+   * @method findNextElementSiblings
    *
    * Finds all list item siblings that follow it
    *
    * @param {HTMLNode} ListItem
    * @return {HTMLNode}
    */
-  findNextSiblings(node) {
+  findNextElementSiblings(node) {
     const siblings = [];
-    while (node.nextSibling) {
-      siblings.push(node.nextSibling);
-      node = node.nextSibling;
+    while (node.nextElementSibling) {
+      siblings.push(node.nextElementSibling);
+      node = node.nextElementSibling;
     }
     return siblings;
   }

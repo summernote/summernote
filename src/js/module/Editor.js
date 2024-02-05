@@ -13,6 +13,9 @@ import Table from '../editing/Table';
 import Bullet from '../editing/Bullet';
 
 const KEY_BOGUS = 'bogus';
+const MAILTO_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const TEL_PATTERN = /^(\+?\d{1,3}[\s-]?)?(\d{1,4})[\s-]?(\d{1,4})[\s-]?(\d{1,4})$/;
+const URL_SCHEME_PATTERN = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/;
 
 /**
  * @class Editor
@@ -196,7 +199,6 @@ export default class Editor {
       let linkUrl = linkInfo.url;
       const linkText = linkInfo.text;
       const isNewWindow = linkInfo.isNewWindow;
-      const checkProtocol = linkInfo.checkProtocol;
       const addNoReferrer = this.options.linkAddNoReferrer;
       const addNoOpener = this.options.linkAddNoOpener;
       let rng = linkInfo.range || this.getLastRange();
@@ -213,10 +215,8 @@ export default class Editor {
 
       if (this.options.onCreateLink) {
         linkUrl = this.options.onCreateLink(linkUrl);
-      } else if (checkProtocol) {
-        // if url doesn't have any protocol and not even a relative or a label, use http:// as default
-        linkUrl = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/.test(linkUrl)
-          ? linkUrl : this.options.defaultProtocol + linkUrl;
+      } else {
+        linkUrl = this.checkLinkUrl(linkUrl);
       }
 
       let anchors = [];
@@ -467,10 +467,6 @@ export default class Editor {
     } else if (eventName) {
       if (this.context.invoke(eventName) !== false) {
         event.preventDefault();
-        // if keyMap action was invoked
-        if (keyName != 'ENTER') {  // <--- Without this check, we get double Empty Paragraph insertion.
-          this.context.invoke(eventName);
-        }
         return true;
       }
     } else if (key.isEdit(event.keyCode)) {
@@ -508,6 +504,17 @@ export default class Editor {
       }
     }
     return false;
+  }
+
+  checkLinkUrl(linkUrl) {
+    if (MAILTO_PATTERN.test(linkUrl)) {
+      return 'mailto://' + linkUrl;
+    } else if (TEL_PATTERN.test(linkUrl)) {
+      return 'tel://' + linkUrl;
+    } else if (!URL_SCHEME_PATTERN.test(linkUrl)) {
+      return 'http://' + linkUrl;
+    }
+    return linkUrl;
   }
 
   /**
@@ -736,21 +743,21 @@ export default class Editor {
    * removed (function added by 1der1)
   */
   removed(rng, node, tagName) { // LB
-		rng = range.create();
-		if (rng.isCollapsed() && rng.isOnCell()) {
-			node = rng.ec;
-			if( (tagName = node.tagName) &&
+    rng = range.create();
+    if (rng.isCollapsed() && rng.isOnCell()) {
+      node = rng.ec;
+      if( (tagName = node.tagName) &&
 				(node.childElementCount === 1) &&
 				(node.childNodes[0].tagName === "BR") ){
 
-				if(tagName === "P") {
-					node.remove();
-				} else if(['TH', 'TD'].indexOf(tagName) >=0) {
-					node.firstChild.remove();
-				}
-			}
-		}
-	}
+        if(tagName === "P") {
+          node.remove();
+        } else if(['TH', 'TD'].indexOf(tagName) >=0) {
+          node.firstChild.remove();
+        }
+      }
+    }
+  }
   /**
    * insert image
    *
@@ -1015,7 +1022,7 @@ export default class Editor {
     // [workaround] Screen will move when page is scolled in IE.
     //  - do focus when not focused
     if (!this.hasFocus()) {
-      this.$editable.focus();
+      this.$editable.trigger('focus');
     }
   }
 

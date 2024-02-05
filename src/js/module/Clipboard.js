@@ -1,5 +1,3 @@
-import lists from '../core/lists';
-
 export default class Clipboard {
   constructor(context) {
     this.context = context;

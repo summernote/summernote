@@ -50,7 +50,6 @@
         textToDisplay: 'Görüntülemek için',
         url: 'Bağlantı adresi?',
         openInNewWindow: 'Yeni pencerede aç',
-        useProtocol: "Varsayılan protokolü kullan",
       },
       table: {
         table: 'Tablo',

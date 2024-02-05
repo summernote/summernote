@@ -60,5 +60,23 @@ describe('VideoDialog', () => {
       expectUrl('https://youtu.be/wZZ7oFKsKzY?t=4h2m42s',
         '//www.youtube.com/embed/wZZ7oFKsKzY?start=14562');
     });
+
+    it('should get proper iframe src when insert various youtube urls', () => {
+      // Normal
+      expectUrl('https://www.youtube.com/watch?v=jNQXAC9IVRw',
+        '//www.youtube.com/embed/jNQXAC9IVRw');
+      // Shorten
+      expectUrl('https://youtu.be/jNQXAC9IVRw',
+        '//www.youtube.com/embed/jNQXAC9IVRw');
+      // Embed
+      expectUrl('https://www.youtube.com/embed/jNQXAC9IVRw',
+        '//www.youtube.com/embed/jNQXAC9IVRw');
+      // Shorts
+      expectUrl('https://www.youtube.com/shorts/SXHMnicI6Pg',
+        '//www.youtube.com/embed/SXHMnicI6Pg');
+      // Live
+      expectUrl('https://www.youtube.com/live/DxmRTlPv8Q4',
+        '//www.youtube.com/embed/DxmRTlPv8Q4');
+    });
   });
 });

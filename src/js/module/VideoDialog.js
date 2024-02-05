@@ -48,13 +48,14 @@ export default class VideoDialog {
 
   createVideoNode(url) {
     // video url patterns(youtube, instagram, vimeo, dailymotion, youku, peertube, mp4, ogg, webm)
-    const ytRegExp = /(?:youtu\.be\/|youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=))([^&\n?]+)(?:.*[?&]t=(\d+))?.*/;
+    const ytRegExp = /(?:youtu\.be\/|youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=|shorts\/|live\/))([^&\n?]+)(?:.*[?&]t=([^&\n]+))?.*/;
+    const ytRegExpForStart = /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/;
     const ytMatch = url.match(ytRegExp);
 
     const gdRegExp = /(?:\.|\/\/)drive\.google\.com\/file\/d\/(.[a-zA-Z0-9_-]*)\/view/;
     const gdMatch = url.match(gdRegExp);
 
-    const igRegExp = /(?:www\.|\/\/)instagram\.com\/p\/(.[a-zA-Z0-9_-]*)/;
+    const igRegExp = /(?:www\.|\/\/)instagram\.com\/reel\/(.[a-zA-Z0-9_-]*)/;
     const igMatch = url.match(igRegExp);
 
     const vRegExp = /\/\/vine\.co\/v\/([a-zA-Z0-9]+)/;
@@ -69,7 +70,7 @@ export default class VideoDialog {
     const youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
     const youkuMatch = url.match(youkuRegExp);
 
-    const peerTubeRegExp =/\/\/(.*)\/videos\/watch\/([^?]*)(?:\?(?:start=(\w*))?(?:&stop=(\w*))?(?:&loop=([10]))?(?:&autoplay=([10]))?(?:&muted=([10]))?)?/; 
+    const peerTubeRegExp =/\/\/(.*)\/videos\/watch\/([^?]*)(?:\?(?:start=(\w*))?(?:&stop=(\w*))?(?:&loop=([10]))?(?:&autoplay=([10]))?(?:&muted=([10]))?)?/;
     const peerTubeMatch = url.match(peerTubeRegExp);
 
     const qqRegExp = /\/\/v\.qq\.com.*?vid=(.+)/;
@@ -95,7 +96,14 @@ export default class VideoDialog {
       const youtubeId = ytMatch[1];
       var start = 0;
       if (typeof ytMatch[2] !== 'undefined') {
-        start = parseInt(ytMatch[2], 10);
+        const ytMatchForStart = ytMatch[2].match(ytRegExpForStart);
+        if (ytMatchForStart) {
+          for (var n = [3600, 60, 1], i = 0, r = n.length; i < r; i++) {
+            start += (typeof ytMatchForStart[i + 1] !== 'undefined' ? n[i] * parseInt(ytMatchForStart[i + 1], 10) : 0);
+          }
+        }else{
+          start = parseInt(ytMatch[2], 10);
+        }
       }
       $video = $('<iframe>')
         .attr('frameborder', 0)
@@ -222,7 +230,7 @@ export default class VideoDialog {
           $videoUrl.trigger('focus');
         }
 
-        $videoBtn.click((event) => {
+        $videoBtn.on('click', (event) => {
           event.preventDefault();
           deferred.resolve($videoUrl.val());
         });
