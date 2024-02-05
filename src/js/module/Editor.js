@@ -921,6 +921,10 @@ export default class Editor {
    * @return {String} [return.url=""]
    */
   getLinkInfo() {
+    if (!this.hasFocus()) {
+      this.focus();
+    }
+
     const rng = this.getLastRange().expand(dom.isAnchor);
     // Get the first anchor on range(for edit).
     const $anchor = $(lists.head(rng.nodes(dom.isAnchor)));
