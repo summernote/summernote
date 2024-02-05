@@ -569,7 +569,7 @@ class WrappedRange {
    * insert html at current cursor
    */
   pasteHTML(markup) {
-    markup = $.trim(markup);
+    markup = ((markup || '') + '').trim(markup);
 
     const contentsContainer = $('<div></div>').html(markup)[0];
     let childNodes = lists.from(contentsContainer.childNodes);
