@@ -851,8 +851,6 @@ function splitNode(point, options) {
   } else {
     const childNode = point.node.childNodes[point.offset];
     let childNodes = listNext(childNode);
-    // remove empty nodes
-    childNodes = childNodes.filter(function(element) {return !isEmpty(element);});	
 
     const clone = insertAfter(point.node.cloneNode(false), point.node);
     appendChildNodes(clone, childNodes);
