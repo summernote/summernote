@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Support
+    url: https://github.com/summernote/summernote/issues
+    about: >
+      We use GitHub as an issue tracker and primary support hub.
+      For general usage please refer to the Summernote documentation:
+      https://summernote.org/
+      For support questions like "How can I do X with Summernote?"
+      please search or ask questions on
+      StackOverflow: https://stackoverflow.com/questions/tagged/summernote
