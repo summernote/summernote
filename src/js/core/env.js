@@ -27,7 +27,7 @@ function isFontInstalled(fontName) {
   context.fillStyle = "black";
   context.textBaseline = "middle";
   function getPxInfo(font) {
-    let s = ''
+    let s = '';
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     context.font = fontSize + ' ' + validFontName(font) + ', "' + testFontName + '"';
     context.fillText(testText, canvasWidth / 2, canvasHeight / 2);
@@ -36,7 +36,7 @@ function isFontInstalled(fontName) {
     if (CanvasPixelArray.prototype.join) {
       s = pxInfo.join();
     } else {
-      for (let i = 0; i < data.length; i++) s += pxInfo[i].toString();
+      for (let i = 0; i < pxInfo.length; i++) s += pxInfo[i].toString();
     }
     return s;
   }
