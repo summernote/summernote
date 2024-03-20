@@ -5,7 +5,7 @@ import $ from 'jquery';
  *
  * @param {String} fontName
  * @return {Boolean}
- */
+ */getPxInfo
 const genericFontFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
 
 function validFontName(fontName) {
@@ -32,7 +32,17 @@ function isFontInstalled(fontName) {
     context.fillText(testText, canvasWidth / 2, canvasHeight / 2);
     // Get pixel information
     var pxInfo = context.getImageData(0, 0, canvasWidth, canvasHeight).data;
-    return pxInfo.join("");
+    return ((data) => {
+      if (CanvasPixelArray.prototype.join) {
+        return data.join();
+      } else {
+        var s = '';
+        for (var i = 0; i < data.length; i++) {
+          s += data[i].toString();
+        }
+        return s;
+      }
+    })(pxInfo);
   }
   let testInfo = getPxInfo(testFontName);
   let fontInfo = getPxInfo(fontName);
