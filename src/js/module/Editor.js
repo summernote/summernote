@@ -677,7 +677,11 @@ export default class Editor {
     this.context.triggerEvent('before.command', this.$editable.html());
 
     // Set styleWithCSS before run a command
-    document.execCommand('styleWithCSS', false, this.options.styleWithCSS);
+    try {
+      document.execCommand('styleWithCSS', false, this.options.styleWithCSS);
+    } catch(e) {
+      // eslint-disable-next-line
+    }
 
     // keep focus on editable before command execution
     this.focus();
