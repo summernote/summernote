@@ -5,7 +5,7 @@ import $ from 'jquery';
  *
  * @param {String} fontName
  * @return {Boolean}
- */getPxInfo
+ */
 const genericFontFamilies = ['sans-serif', 'serif', 'monospace', 'cursive', 'fantasy'];
 
 function validFontName(fontName) {
