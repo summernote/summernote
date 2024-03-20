@@ -61,6 +61,10 @@ module.exports = {
     publicPath: '/',
     path: path.join(__dirname, '../dist'),
     libraryTarget: 'umd',
+    //environment: { // es5 compatible
+    //  const: false,
+    //  arrowFunction: false,
+    //},
   },
 
   externals: {

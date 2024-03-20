@@ -27,12 +27,18 @@ function isFontInstalled(fontName) {
   context.fillStyle = "black";
   context.textBaseline = "middle";
   function getPxInfo(font) {
+    let s = '';
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     context.font = fontSize + ' ' + validFontName(font) + ', "' + testFontName + '"';
     context.fillText(testText, canvasWidth / 2, canvasHeight / 2);
     // Get pixel information
     var pxInfo = context.getImageData(0, 0, canvasWidth, canvasHeight).data;
-    return pxInfo.join("");
+    if (CanvasPixelArray.prototype.join) {
+      s = pxInfo.join();
+    } else {
+      for (let i = 0; i < pxInfo.length; i++) s += pxInfo[i].toString();
+    }
+    return s;
   }
   let testInfo = getPxInfo(testFontName);
   let fontInfo = getPxInfo(fontName);
