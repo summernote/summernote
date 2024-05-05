@@ -224,9 +224,11 @@ function isEmpty(node) {
 
   if (len === 0) {
     return true;
-  } else if (!isText(node) && len === 1 && node.innerHTML === blankHTML) {
+  } else if (!isText(node) && len === 1 && node.innerHTML.trim() === blankHTML) {
     // ex) <p><br></p>, <span><br></span>
     return true;
+  } else if (isText(node) && node.textContent.trim() === '' ) {
+    return true;	
   } else if (lists.all(node.childNodes, isText) && node.innerHTML === '') {
     // ex) <p></p>, <span></span>
     return true;
@@ -422,14 +424,16 @@ function insertAfter(node, preceding) {
  */
 function appendChildNodes(node, aChild) {
   $.each(aChild, function(idx, child) {
-    // special case: appending a pure UL/OL to a LI element creates inaccessible LI element
-    // e.g. press enter in last LI which has UL/OL-subelements
-    // Therefore, if current node is LI element with no child nodes (text-node) and appending a list, add a br before
-    if (isLi(node) && node.firstChild === null && isList(child)) {
-      node.appendChild(create("br"));
-    }
+	  if (node.nodeType==1) {
+        // special case: insert pure UL/OL within a LI element creates inaccessible LI element 
+        // e.g. press enter in last LI which has UL/OL-subelements
+        // if current node is li with no child node (text-node) and appending a list, add a br
+		if (isLi(node) && node.firstChild === null && isList(child)) {
+		  node.appendChild(create("br"));
+		}
 
-    node.appendChild(child);
+		node.appendChild(child);
+	  }
   });
   return node;
 }
@@ -530,9 +534,12 @@ function isRightEdgePointOf(point, ancestor) {
  */
 function position(node) {
   let offset = 0;
-  while ((node = node.previousSibling)) {
-    offset += 1;
+  if (node.previousSibling)  {
+	  while ((node = node.previousSibling)) {
+		offset += 1;
+	  }
   }
+  
   return offset;
 }
 
@@ -644,6 +651,41 @@ function nextPointWithEmptyNode(point, isSkipInnerOffset) {
   return {
     node: node,
     offset: offset,
+  };
+}
+
+/**
+ * Find next node
+ *
+ * @param {BoundaryPoint} point
+ * @return {BoundaryPoint}
+ */
+function nextTraversalPoint(point) {
+  var node,
+      offset = 0;
+  
+  if (point.node.hasChildNodes())
+  {
+  	node = point.node.childNodes[0];
+  	offset = 0;
+  }
+  else if (point.node.nextSibling)
+  {
+  	node = point.node.nextSibling;
+  	offset = point.offset + 1;
+  }
+  else
+  {
+	return null;
+  }
+  
+  if (isEditable(point.node)) {
+      return null;
+  }
+   
+  return {
+    node: node,
+    offset: offset
   };
 }
 
@@ -766,20 +808,64 @@ function isSpacePoint(point) {
  * @param {Boolean} isSkipInnerOffset
  */
 function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
-  let point = startPoint;
+  var point = startPoint;
 
   while (point) {
     handler(point);
+
+	// if end node is reached, call handler again with the final offset
+	if (point.node === endPoint.node) {
+		point.offset = endPoint.offset;
+		handler(point);
+	}
 
     if (isSamePoint(point, endPoint)) {
       break;
     }
 
-    const isSkipOffset = isSkipInnerOffset &&
-                       startPoint.node !== point.node &&
-                       endPoint.node !== point.node;
-    point = nextPointWithEmptyNode(point, isSkipOffset);
+    point = nextTraversalPoint(point);
   }
+}
+
+/**
+ * @method walkDom
+ *
+ * @param {Node} startNode
+ * @param {Node} endNode
+ * @param {Function} handler
+ */
+function walkDom(startNode, endNode, curDepth, maxDepth, handler) {
+  if (curDepth > maxDepth) {
+  	return true;
+  }
+
+  // handle current node
+  handler(startNode);
+
+  if (endNode === startNode) {
+     return false;  // dont go on and break
+  }
+    
+  // iterate childs recursively
+  if (startNode.firstChild) {
+  	if (!walkDom(startNode.firstChild, endNode, curDepth+1, maxDepth, handler)) {
+  		return false;
+  	};
+  }
+  
+  // children are done, continue with the siblings
+  var nd = startNode.nextSibling;
+  var goon = true;  // go on or reached the end node?
+  
+  while (nd) {
+    if (!walkDom(nd, endNode, curDepth, maxDepth, handler)) {
+  		goon = false;
+  		break;
+  	};
+    
+    nd = nd.nextSibling;
+  }
+  return goon;
 }
 
 /**
@@ -851,7 +937,10 @@ function splitNode(point, options) {
   } else {
     const childNode = point.node.childNodes[point.offset];
     let childNodes = listNext(childNode);
-
+    // remove empty nodes
+    childNodes = childNodes.filter(function (element) {
+      return !isEmpty(element);
+    });
     const clone = insertAfter(point.node.cloneNode(false), point.node);
     appendChildNodes(clone, childNodes);
 
@@ -1129,6 +1218,39 @@ function isCustomStyleTag(node) {
   return node && !isText(node) && lists.contains(node.classList, 'note-styletag');
 }
 
+
+/**
+ * @method prevNonEmptyNode
+ *
+ * return previous node which is not empty
+ *
+ * @param {Node} an HTML DOM node
+ */
+function prevNonEmptyNode(node) {
+   var n = node.previousSibling;
+   while (n && isEmpty(n)) {
+   	  n = n.previousSibling;
+   }
+   
+   return n;
+}
+
+/**
+ * @method nextNonEmptyNode
+ *
+ * return next node which is not empty
+ *
+ * @param {Node} an HTML DOM node
+ */
+function nextNonEmptyNode(node) {
+   var n = node.nextSibling;
+   while (n && isEmpty(n)) {
+   	  n = n.nextSibling;
+   }
+   
+   return n;
+}
+
 export default {
   /** @property {String} NBSP_CHAR */
   NBSP_CHAR,
@@ -1193,6 +1315,7 @@ export default {
   isCharPoint,
   isSpacePoint,
   walkPoint,
+  walkDom,
   ancestor,
   singleChildAncestor,
   listAncestor,
@@ -1221,4 +1344,6 @@ export default {
   attachEvents,
   detachEvents,
   isCustomStyleTag,
+  prevNonEmptyNode,
+  nextNonEmptyNode,
 };
