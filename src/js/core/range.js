@@ -173,6 +173,11 @@ class WrappedRange {
       offset: this.so,
     };
   }
+  
+  setStartPoint(node, offset) {
+        this.sc = node,
+        this.so = offset
+  }
 
   getEndPoint() {
     return {
@@ -181,6 +186,11 @@ class WrappedRange {
     };
   }
 
+  setEndPoint(node, offset) {
+        this.ec = node,
+        this.eo = offset
+  }
+  
   /**
    * select update visible range
    */
@@ -275,8 +285,8 @@ class WrappedRange {
       return nextPoint || point;
     };
 
-    const endPoint = getVisiblePoint(this.getEndPoint(), false);
-    const startPoint = this.isCollapsed() ? endPoint : getVisiblePoint(this.getStartPoint(), true);
+    var endPoint = getVisiblePoint(this.getEndPoint(), false);
+    var startPoint = this.isCollapsed() ? endPoint : getVisiblePoint(this.getStartPoint(), true);
 
     return new WrappedRange(
       startPoint.node,
@@ -302,11 +312,16 @@ class WrappedRange {
     const fullyContains = options && options.fullyContains;
 
     // TODO compare points and sort
-    const startPoint = this.getStartPoint();
-    const endPoint = this.getEndPoint();
+    var startPoint = this.getStartPoint();
+    var endPoint = this.getEndPoint();
 
     const nodes = [];
     const leftEdgeNodes = [];
+	
+    if (includeAncestor) {
+    	var sp = dom.ancestor(this.sc, pred);
+    	startPoint =  {node: sp, offset: dom.position(sp)};
+    }	
 
     dom.walkPoint(startPoint, endPoint, function(point) {
       if (dom.isEditable(point.node)) {
@@ -321,8 +336,8 @@ class WrappedRange {
         if (dom.isRightEdgePoint(point) && lists.contains(leftEdgeNodes, point.node)) {
           node = point.node;
         }
-      } else if (includeAncestor) {
-        node = dom.ancestor(point.node, pred);
+      //} else if (includeAncestor) {
+      //  node = dom.ancestor(point.node, pred);
       } else {
         node = point.node;
       }
@@ -335,6 +350,40 @@ class WrappedRange {
     return lists.unique(nodes);
   }
 
+  childNodes(pred, options) {
+      pred = pred || func.ok;
+
+	  var includeAncestor = options && options.includeAncestor;
+      var startPoint = this.getStartPoint();
+      var endPoint = this.getEndPoint();
+      var nodes = [];
+      var maxDepth = 100;
+      if (options && options.maxDepth) {
+      	maxDepth = options.maxDepth;
+      }
+
+ 	  // search for an anchestor with given predicate
+      if (includeAncestor)
+      {     		
+      		var sp = dom.ancestor(this.sc, pred);
+      		// if selected range is already wrapped within a single element, include this parent
+      		if (sp && sp.firstChild && sp.firstChild.textContent === startPoint.node.textContent) {
+      			startPoint =  {node: sp, offset: dom.position(sp)};
+      		}     		
+      }
+      
+      dom.walkDom(startPoint.node, endPoint.node, 1, maxDepth, function (node) {
+        if (dom.isEditable(node)) {
+          return;
+        }
+
+        if (node && pred(node)) {
+          nodes.push(node);
+        }
+      });
+      return lists.unique(nodes);
+    }
+	
   /**
    * returns commonAncestor of range
    * @return {Element} - commonAncestor
@@ -616,7 +665,7 @@ class WrappedRange {
       return this;
     }
 
-    const startPoint = dom.prevPointUntil(endPoint, function(point) {
+    let startPoint = dom.prevPointUntil(endPoint, function(point) {
       return !dom.isCharPoint(point);
     });
 
