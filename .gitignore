@@ -52,3 +52,6 @@ selenium-debug.log
 # direnv
 .envrc
 .env
+
+# asdf
+.tool-versions
