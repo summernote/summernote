@@ -49,7 +49,7 @@ module.exports = {
       {
         test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|otf|eot)$/i,
         exclude: /node_modules/,
-        type: 'asset/resource',
+        type: 'asset/inline',
       },
     ],
   },
