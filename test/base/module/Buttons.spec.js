@@ -5,18 +5,16 @@
  */
 
 import $ from 'jquery';
-import chai from 'chai';
-import chaidom from 'test/chaidom';
+import chai from 'test/chai';
 import env from 'src/js/core/env';
 import range from 'src/js/core/range';
 import Context from 'src/js/Context';
 import 'src/styles/bs4/summernote-bs4';
 
-chai.use(chaidom);
+const expect = chai.expect;
+const assert = chai.assert;
 
 describe('Buttons', () => {
-  var expect = chai.expect;
-  var assert = chai.assert;
   var context, $toolbar, $editable;
 
   before(function(done) {

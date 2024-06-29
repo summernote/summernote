@@ -4,13 +4,10 @@
  * summernote may be freely distributed under the MIT license./
  */
 import $ from 'jquery';
-import chai from 'chai';
-import chaidom from 'test/chaidom';
+import * as chai from 'chai';
 import Context from 'src/js/Context';
 import Codeview from 'src/js/module/Codeview';
 import 'src/styles/bs4/summernote-bs4';
-
-chai.use(chaidom);
 
 function loadScript(url) {
   var script = document.createElement('script');

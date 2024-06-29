@@ -3,7 +3,7 @@
  * (c) 2013~ Alan Hong
  * summernote may be freely distributed under the MIT license./
  */
-import chai from 'chai';
+import * as chai from 'chai';
 import func from 'src/js/core/func';
 
 var expect = chai.expect;

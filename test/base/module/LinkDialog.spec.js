@@ -3,8 +3,8 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-import chai from 'chai';
 import $ from 'jquery';
+import * as chai from 'chai';
 import range from 'src/js/core/range';
 import Context from 'src/js/Context';
 import LinkDialog from 'src/js/module/LinkDialog';

@@ -1,7 +1,11 @@
 import $ from 'jquery';
+import * as chaiModule from 'chai';
+import chaiSpies from 'chai-spies';
 import env from 'src/js/core/env';
 
-export default function(chai) {
+const chai = {...chaiModule};
+
+let chaiDom = function(chai) {
   chai.dom = chai.dom || {};
 
   chai.dom.equalsIgnoreCase = (str1, str2) => {
@@ -63,4 +67,9 @@ export default function(chai) {
   chai.assert.notequalsIgnoreCase = (val, exp, msg) => {
     new chai.Assertion(val, msg).to.not.be.equalsIgnoreCase(exp);
   };
-}
+};
+
+chaiSpies(chai, chai.util);
+chaiDom(chai, chai.util);
+
+export default chai;
