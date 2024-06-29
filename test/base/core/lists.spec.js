@@ -3,8 +3,8 @@
  * (c) 2013~ Alan Hong
  * summernote may be freely distributed under the MIT license./
  */
-import chai from 'chai';
 import $ from 'jquery';
+import * as chai from 'chai';
 import lists from 'src/js/core/lists';
 
 var expect = chai.expect;

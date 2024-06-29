@@ -3,8 +3,8 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-import chai from 'chai';
 import $ from 'jquery';
+import * as chai from 'chai';
 import Context from 'src/js/Context';
 import 'src/styles/bs4/summernote-bs4';
 

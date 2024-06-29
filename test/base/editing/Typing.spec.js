@@ -6,13 +6,11 @@
 /* jshint unused: false */
 /* jshint -W101 */
 import $ from 'jquery';
-import chai from 'chai';
-import chaidom from 'test/chaidom';
+import * as chai from 'chai';
 import range from 'src/js/core/range';
 import Typing from 'src/js/editing/Typing';
 
 var expect = chai.expect;
-chai.use(chaidom);
 
 describe('base:editing.Style', () => {
   function typing(level) {

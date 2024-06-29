@@ -3,14 +3,12 @@
  * (c) 2013~ Alan Hong
  * summernote may be freely distributed under the MIT license./
  */
-import chai from 'chai';
-import chaidom from 'test/chaidom';
 import $ from 'jquery';
+import * as chai from 'chai';
 import dom from 'src/js/core/dom';
 import func from 'src/js/core/func';
 
 let expect = chai.expect;
-chai.use(chaidom);
 
 describe('base:core.dom', () => {
   describe('ancestor', () => {

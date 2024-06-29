@@ -4,10 +4,8 @@
  * summernote may be freely distributed under the MIT license./
  */
 
-import chai from 'chai';
-import spies from 'chai-spies';
-import chaidom from 'test/chaidom';
 import $ from 'jquery';
+import chai from 'test/chai';
 import env from 'src/js/core/env';
 import range from 'src/js/core/range';
 import Context from 'src/js/Context';
@@ -15,9 +13,6 @@ import 'src/styles/bs4/summernote-bs4';
 
 describe('Editor', () => {
   var expect = chai.expect;
-  chai.use(spies);
-  chai.use(chaidom);
-
   var editor, context, $editable;
 
   function expectContents(context, markup) {

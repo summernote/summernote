@@ -4,8 +4,8 @@
  * summernote may be freely distributed under the MIT license./
  */
 
-import chai from 'chai';
 import $ from 'jquery';
+import * as chai from 'chai';
 import range from 'src/js/core/range';
 import Style from 'src/js/editing/Style';
 

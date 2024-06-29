@@ -4,14 +4,12 @@
  * summernote may be freely distributed under the MIT license./
  */
 
-import chai from 'chai';
-import chaidom from 'test/chaidom';
 import $ from 'jquery';
+import chai from 'test/chai';
 import dom from 'src/js/core/dom';
 import range from 'src/js/core/range';
 
 var expect = chai.expect;
-chai.use(chaidom);
 
 describe('base:core.range', () => {
   describe('nodes', () => {

@@ -4,17 +4,12 @@
  * summernote may be freely distributed under the MIT license./
  */
 import $ from 'jquery';
-import chai from 'chai';
-import chaidom from 'test/chaidom';
+import chai from 'test/chai';
 import Context from 'src/js/Context';
 import range from 'src/js/core/range';
 import env from 'src/js/core/env';
 import key from 'src/js/core/key';
 import 'src/styles/bs4/summernote-bs4';
-import spies from "chai-spies";
-
-chai.use(chaidom);
-chai.use(spies);
 
 describe('HintPopover', () => {
   var expect = chai.expect;

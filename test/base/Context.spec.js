@@ -3,18 +3,14 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-import chai from 'chai';
-import spies from 'chai-spies';
-import $ from 'jquery';// window.jQuery = $;
-import 'bootstrap';
-import chaidom from 'test/chaidom';
+import $ from 'jquery';
+import chai from 'test/chai';
 import env from 'src/js/core/env';
 import Context from 'src/js/Context';
+import 'bootstrap';
 import 'src/styles/bs4/summernote-bs4';
 
-var expect = chai.expect;
-chai.use(spies);
-chai.use(chaidom);
+const expect = chai.expect;
 
 describe('Context lifecycle', () => {
   it('should be initialized without calling callback', () => {
