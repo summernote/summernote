@@ -44,8 +44,8 @@ describe('VideoDialog', () => {
       expectUrl('https://www.youtube.com/watch?v=jNQXAC9IVRw',
         '//www.youtube.com/embed/jNQXAC9IVRw');
       // Instagram
-      expectUrl('https://www.instagram.com/p/Bi9cbsxjn-F',
-        '//instagram.com/p/Bi9cbsxjn-F/embed/');
+      expectUrl('https://www.instagram.com/p/C6y2mNwpj1k/',
+        '//instagram.com/p/C6y2mNwpj1k/embed/');
       // v.qq.com
       expectUrl('http://v.qq.com/cover/6/640ewqy2v071ppd.html?vid=f0196y2b2cx',
         '//v.qq.com/txp/iframe/player.html?vid=f0196y2b2cx&amp;auto=0');
