@@ -4,7 +4,7 @@
  * summernote may be freely distributed under the MIT license./
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import $ from 'jquery';
 import env from '@/js/core/env';
 import range from '@/js/core/range';

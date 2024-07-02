@@ -24,7 +24,6 @@ function unloadScript(script) {
 }
 
 describe('Codeview', () => {
-  var expect = chai.expect;
   var options, codeview, context;
 
   beforeEach(() => {

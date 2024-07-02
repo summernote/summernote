@@ -4,7 +4,7 @@
  * summernote may be freely distributed under the MIT license./
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, assert } from 'vitest';
 import $ from 'jquery';
 import Context from '@/js/Context';
 import '@/styles/bs4/summernote-bs4';
