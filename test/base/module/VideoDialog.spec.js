@@ -41,7 +41,12 @@ describe('VideoDialog', () => {
       // YouTube
       expectUrl('https://www.youtube.com/watch?v=jNQXAC9IVRw', '//www.youtube.com/embed/jNQXAC9IVRw');
       // Instagram
+<<<<<<< HEAD
       expectUrl('https://www.instagram.com/p/Bi9cbsxjn-F', '//instagram.com/p/Bi9cbsxjn-F/embed/');
+=======
+      expectUrl('https://www.instagram.com/p/C6y2mNwpj1k/',
+        '//instagram.com/p/C6y2mNwpj1k/embed/');
+>>>>>>> develop
       // v.qq.com
       expectUrl(
         'http://v.qq.com/cover/6/640ewqy2v071ppd.html?vid=f0196y2b2cx',

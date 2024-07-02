@@ -6,9 +6,9 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import $ from 'jquery';
-import 'bootstrap';
 import env from '@/js/core/env';
 import Context from '@/js/Context';
+import 'bootstrap';
 import '@/styles/bs4/summernote-bs4';
 
 describe('Context lifecycle', () => {
