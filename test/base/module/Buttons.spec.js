@@ -54,7 +54,7 @@ describe('Buttons', () => {
   describe('bold button', () => {
     it('should execute bold command when it is clicked', (done) => {
       $toolbar.find('.note-btn-bold').trigger('click');
-      expect($editable.html()).await(done).to.equalsIgnoreCase('<p><b>hello</b></p>');
+      expect($editable.html()).await(done).toEqual('<p><b>hello</b></p>');
     });
   });
 
@@ -71,7 +71,7 @@ describe('Buttons', () => {
   describe('italic button', () => {
     it('should execute italic command when it is clicked', (done) => {
       $toolbar.find('.note-btn-italic').trigger('click');
-      expect($editable.html()).await(done).to.equalsIgnoreCase('<p><i>hello</i></p>');
+      expect($editable.html()).await(done).toEqual('<p><i>hello</i></p>');
     });
   });
 
@@ -88,7 +88,7 @@ describe('Buttons', () => {
   describe('underline button', () => {
     it('should execute underline command when it is clicked', (done) => {
       $toolbar.find('.note-btn-underline').trigger('click');
-      expect($editable.html()).await(done).to.equalsIgnoreCase('<p><u>hello</u></p>');
+      expect($editable.html()).await(done).toEqual('<p><u>hello</u></p>');
     });
   });
 
@@ -105,7 +105,7 @@ describe('Buttons', () => {
   describe('superscript button', () => {
     it('should execute superscript command when it is clicked', (done) => {
       $toolbar.find('.note-btn-superscript').trigger('click');
-      expect($editable.html()).await(done).to.equalsIgnoreCase('<p><sup>hello</sup></p>');
+      expect($editable.html()).await(done).toEqual('<p><sup>hello</sup></p>');
     });
   });
 
@@ -122,7 +122,7 @@ describe('Buttons', () => {
   describe('subscript button', () => {
     it('should execute subscript command when it is clicked', (done) => {
       $toolbar.find('.note-btn-subscript').trigger('click');
-      expect($editable.html()).await(done).to.equalsIgnoreCase('<p><sub>hello</sub></p>');
+      expect($editable.html()).await(done).toEqual('<p><sub>hello</sub></p>');
     });
   });
 
@@ -139,7 +139,7 @@ describe('Buttons', () => {
   describe('strikethrough button', () => {
     it('should execute strikethrough command when it is clicked', (done) => {
       $toolbar.find('.note-btn-strikethrough').trigger('click');
-      expect($editable.html()).await(done).to.equalsIgnoreCase('<p><strike>hello</strike></p>');
+      expect($editable.html()).await(done).toEqual('<p><strike>hello</strike></p>');
     });
   });
 
@@ -171,7 +171,7 @@ describe('Buttons', () => {
       assert.isTrue($li.length === 1);
       assert.isTrue($span.text() !== 'Comic Sans MS');
       $li.click();
-      expect($span.text()).await(done).to.equalsIgnoreCase('Comic Sans MS');
+      expect($span.text()).await(done).toEqual('Comic Sans MS');
     });
   });
   */

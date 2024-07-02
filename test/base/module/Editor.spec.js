@@ -15,18 +15,18 @@ describe('Editor', () => {
   var editor, context, $editable;
 
   function expectContents(context, markup) {
-    expect(context.layoutInfo.editable.html()).to.equalsIgnoreCase(markup);
+    expect(context.layoutInfo.editable.html()).toEqual(markup);
   }
 
   function expectContentsChain(context, markup, next) {
     setTimeout(() => {
-      expect(context.layoutInfo.editable.html()).to.equalsIgnoreCase(markup);
+      expect(context.layoutInfo.editable.html()).toEqual(markup);
       next();
     }, 10);
   }
 
   function expectContentsAwait(context, markup, done) {
-    expect(context.layoutInfo.editable.html()).await(done).to.equalsIgnoreCase(markup);
+    expect(context.layoutInfo.editable.html()).await(done).toEqual(markup);
   }
 
   function expectToHaveBeenCalled(context, customEvent, handler) {
@@ -136,7 +136,7 @@ describe('Editor', () => {
       var source =
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAF0lEQVQYGWP8////fwYsgAmLGFiIHhIAT+oECGHuN2UAAAAASUVORK5CYII=';
       return editor.insertImage(source, 'image').then(() => {
-        expect($editable.find('img').attr('src')).to.equalsIgnoreCase(source);
+        expect($editable.find('img').attr('src')).toEqual(source);
       });
     });
   });
@@ -430,7 +430,7 @@ describe('Editor', () => {
       editor.formatBlock('h3');
 
       var nodeName = $editable.children()[0].nodeName;
-      expect(nodeName).to.equalsIgnoreCase('h3');
+      expect(nodeName).toEqual('h3');
 
       // p -> h3, p is none
       expect($editable.find('p').length).await(done).to.equals(0);

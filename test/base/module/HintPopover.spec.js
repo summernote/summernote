@@ -16,7 +16,7 @@ describe('HintPopover', () => {
   var $note, editor, context, $editable;
 
   function expectContents(context, markup) {
-    expect(context.layoutInfo.editable.html()).to.equalsIgnoreCase(markup);
+    expect(context.layoutInfo.editable.html()).toEqual(markup);
   }
 
   describe('Single word hint', () => {
