@@ -3,21 +3,16 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-import $ from 'jquery';
-import chai from 'chai';
-import chaidom from 'test/chaidom';
-import Context from 'src/js/Context';
-import range from 'src/js/core/range';
-import env from 'src/js/core/env';
-import key from 'src/js/core/key';
-import 'src/styles/bs4/summernote-bs4';
-import spies from "chai-spies";
 
-chai.use(chaidom);
-chai.use(spies);
+import { describe, it, expect, vi } from 'vitest';
+import $ from 'jquery';
+import Context from '@/js/Context';
+import range from '@/js/core/range';
+import env from '@/js/core/env';
+import key from '@/js/core/key';
+import '@/styles/bs4/summernote-bs4';
 
 describe('HintPopover', () => {
-  var expect = chai.expect;
   var $note, editor, context, $editable;
 
   function expectContents(context, markup) {
@@ -25,7 +20,7 @@ describe('HintPopover', () => {
   }
 
   describe('Single word hint', () => {
-    beforeEach(function() {
+    beforeEach(function () {
       $('body').empty(); // important !
       $note = $('<div><p>hello world</p></div>');
       $note.appendTo('body');
@@ -34,12 +29,14 @@ describe('HintPopover', () => {
         hint: {
           mentions: ['jayden', 'sam', 'alvin', 'david'],
           match: /\B#(\w*)$/,
-          search: function(keyword, callback) {
-            callback($.grep(this.mentions, function(item) {
-              return item.indexOf(keyword) === 0;
-            }));
+          search: function (keyword, callback) {
+            callback(
+              $.grep(this.mentions, function (item) {
+                return item.indexOf(keyword) === 0;
+              }),
+            );
           },
-          content: function(item) {
+          content: function (item) {
             return '#' + item;
           },
         },
@@ -95,7 +92,7 @@ describe('HintPopover', () => {
       editor.insertText(' #');
       $editable.trigger('keyup');
 
-      var onChange = chai.spy();
+      var onChange = vi.fn();
       $note.on('summernote.change', onChange);
 
       setTimeout(() => {
@@ -133,7 +130,7 @@ describe('HintPopover', () => {
   });
 
   describe('Multiple words hint', () => {
-    beforeEach(function() {
+    beforeEach(function () {
       $('body').empty();
       $note = $('<div><p>hello world</p></div>');
       $note.appendTo('body');
@@ -161,15 +158,17 @@ describe('HintPopover', () => {
             },
           ],
           match: /\B@([a-z ]*)/i,
-          search: function(keyword, callback) {
-            callback($.grep(this.mentions, function(item) {
-              return item.name.toLowerCase().indexOf(keyword.toLowerCase()) === 0;
-            }));
+          search: function (keyword, callback) {
+            callback(
+              $.grep(this.mentions, function (item) {
+                return item.name.toLowerCase().indexOf(keyword.toLowerCase()) === 0;
+              }),
+            );
           },
-          template: function(item) {
+          template: function (item) {
             return item.name;
           },
-          content: function(item) {
+          content: function (item) {
             return $('<a>')
               .attr('href', item.url)
               .text('@' + item.name)
@@ -218,7 +217,10 @@ describe('HintPopover', () => {
         $note.trigger('summernote.keydown', e);
 
         setTimeout(() => {
-          expectContents(context, '<p>hello <a href="http://example.org/person/david-summer">@David Summer</a> world</p>');
+          expectContents(
+            context,
+            '<p>hello <a href="http://example.org/person/david-summer">@David Summer</a> world</p>',
+          );
           done();
         }, 10);
       }, 10);

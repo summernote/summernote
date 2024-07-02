@@ -4,20 +4,14 @@
  * summernote may be freely distributed under the MIT license./
  */
 
-import chai from 'chai';
-import spies from 'chai-spies';
-import chaidom from 'test/chaidom';
+import { describe, it, expect } from 'vitest';
 import $ from 'jquery';
-import env from 'src/js/core/env';
-import range from 'src/js/core/range';
-import Context from 'src/js/Context';
-import 'src/styles/bs4/summernote-bs4';
+import env from '@/js/core/env';
+import range from '@/js/core/range';
+import Context from '@/js/Context';
+import '@/styles/bs4/summernote-bs4';
 
 describe('Editor', () => {
-  var expect = chai.expect;
-  chai.use(spies);
-  chai.use(chaidom);
-
   var editor, context, $editable;
 
   function expectContents(context, markup) {
@@ -37,13 +31,13 @@ describe('Editor', () => {
 
   function expectToHaveBeenCalled(context, customEvent, handler) {
     const $note = context.layoutInfo.note;
-    const spy = chai.spy();
+    const spy = vi.fn();
     $note.on(customEvent, spy);
     handler();
     expect(spy).to.have.been.called();
   }
 
-  beforeEach(function() {
+  beforeEach(function () {
     $('body').empty(); // important !
     var options = $.extend({}, $.summernote.options);
     options.historyLimit = 5;
@@ -61,9 +55,7 @@ describe('Editor', () => {
 
   describe('initialize', () => {
     it('should bind custom events', (done) => {
-      [
-        'keydown', 'keyup', 'blur', 'mousedown', 'mouseup', 'scroll', 'focusin', 'focusout',
-      ].forEach((eventName) => {
+      ['keydown', 'keyup', 'blur', 'mousedown', 'mouseup', 'scroll', 'focusin', 'focusout'].forEach((eventName) => {
         expectToHaveBeenCalled(context, 'summernote.' + eventName, () => {
           $editable.trigger(eventName);
         });
@@ -141,7 +133,8 @@ describe('Editor', () => {
 
   describe('insertImage', () => {
     it('should insert image', () => {
-      var source = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAF0lEQVQYGWP8////fwYsgAmLGFiIHhIAT+oECGHuN2UAAAAASUVORK5CYII=';
+      var source =
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAF0lEQVQYGWP8////fwYsgAmLGFiIHhIAT+oECGHuN2UAAAAASUVORK5CYII=';
       return editor.insertImage(source, 'image').then(() => {
         expect($editable.find('img').attr('src')).to.equalsIgnoreCase(source);
       });
@@ -298,8 +291,14 @@ describe('Editor', () => {
     });
 
     it('should not add empty paragraph when pasting a node that is not isInline', (done) => {
-      editor.pasteHTML('<ul><li>list</li></ul><hr><p>paragraph</p><table><tr><td>table</td></tr></table><p></p><blockquote>blockquote</blockquote><data>data</data>');
-      expectContentsAwait(context, '<p>hello</p><ul><li>list</li></ul><hr><p>paragraph</p><table><tbody><tr><td>table</td></tr></tbody></table><p></p><blockquote>blockquote</blockquote><data>data</data>', done);
+      editor.pasteHTML(
+        '<ul><li>list</li></ul><hr><p>paragraph</p><table><tr><td>table</td></tr></table><p></p><blockquote>blockquote</blockquote><data>data</data>',
+      );
+      expectContentsAwait(
+        context,
+        '<p>hello</p><ul><li>list</li></ul><hr><p>paragraph</p><table><tbody><tr><td>table</td></tr></tbody></table><p></p><blockquote>blockquote</blockquote><data>data</data>',
+        done,
+      );
     });
 
     it('should not call change event more than once per paste event', () => {
@@ -312,7 +311,7 @@ describe('Editor', () => {
         return html;
       };
       var $note = context.layoutInfo.note;
-      var spy = chai.spy();
+      var spy = vi.fn();
       $note.on('summernote.change', spy);
       var html = generateLargeHtml();
       editor.pasteHTML(html);
@@ -397,10 +396,7 @@ describe('Editor', () => {
     });
 
     it('should toggle all paragraph even with empty paragraph', (done) => {
-      var codes = [
-        '<p><br></p>',
-        '<p>endpoint</p>',
-      ];
+      var codes = ['<p><br></p>', '<p>endpoint</p>'];
 
       context.invoke('code', codes.join(''));
       $editable.appendTo('body');
@@ -451,7 +447,9 @@ describe('Editor', () => {
     });
 
     it('should find exact target in formatBlock', (done) => {
-      var $target = $('<a class="dropdown-item" href="#" data-value="h6" role="listitem" aria-label="h6"><h6 class="customH6Class">H6</h6></a>');
+      var $target = $(
+        '<a class="dropdown-item" href="#" data-value="h6" role="listitem" aria-label="h6"><h6 class="customH6Class">H6</h6></a>',
+      );
       $editable.appendTo('body');
       range.createFromNode($editable.find('p')[0]).normalize().select();
       editor.formatBlock('h6', $target);
@@ -592,7 +590,11 @@ describe('Editor', () => {
         isNewWindow: true,
       });
 
-      expectContentsAwait(context, '<p><a href="/relative/url" target="_blank">&lt;iframe src="hackme.com"&gt;&lt;/iframe&gt;</a></p>', done);
+      expectContentsAwait(
+        context,
+        '<p><a href="/relative/url" target="_blank">&lt;iframe src="hackme.com"&gt;&lt;/iframe&gt;</a></p>',
+        done,
+      );
     });
 
     it('should modify a link', (done) => {

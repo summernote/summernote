@@ -3,22 +3,17 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-import chai from 'chai';
-import spies from 'chai-spies';
-import $ from 'jquery';// window.jQuery = $;
-import 'bootstrap';
-import chaidom from 'test/chaidom';
-import env from 'src/js/core/env';
-import Context from 'src/js/Context';
-import 'src/styles/bs4/summernote-bs4';
 
-var expect = chai.expect;
-chai.use(spies);
-chai.use(chaidom);
+import { describe, it, expect, vi } from 'vitest';
+import $ from 'jquery';
+import 'bootstrap';
+import env from '@/js/core/env';
+import Context from '@/js/Context';
+import '@/styles/bs4/summernote-bs4';
 
 describe('Context lifecycle', () => {
   it('should be initialized without calling callback', () => {
-    var spy = chai.spy();
+    var spy = vi.fn();
     var $note = $('<div><p>hello</p></div>');
     $note.on('summernote.change', spy);
 
@@ -34,7 +29,7 @@ describe('Context lifecycle', () => {
   });
 
   it('should preserve user events handler after destroy', () => {
-    var spy = chai.spy();
+    var spy = vi.fn();
     var $note = $('<div><p>hello</p></div>');
     $note.on('click', spy);
 

@@ -3,31 +3,31 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-import chai from 'chai';
+
+import { describe, it, expect } from 'vitest';
 import $ from 'jquery';
-import range from 'src/js/core/range';
-import Context from 'src/js/Context';
-import LinkDialog from 'src/js/module/LinkDialog';
-import 'src/styles/bs4/summernote-bs4';
+import range from '@/js/core/range';
+import Context from '@/js/Context';
+import LinkDialog from '@/js/module/LinkDialog';
+import '@/styles/bs4/summernote-bs4';
 
 describe('LinkDialog', () => {
-  var expect = chai.expect;
   var context, dialog, $editable;
 
   beforeEach(() => {
     var options = $.extend({}, $.summernote.options);
-    options.toolbar = [
-      ['insert', ['link']],
-    ];
+    options.toolbar = [['insert', ['link']]];
     context = new Context(
-      $('<div>' +
-        '<p><a href="https://summernote.org/" target="_blank">hello</a></p>' +
-        '<p><a href="https://summernote.org/">world</a></p>' +
-        '<p>http://summernote.org</p>' +
-        '<p>summernote.org</p>' +
-        '<p>summernote</p>' +
-        '</div>'),
-      options
+      $(
+        '<div>' +
+          '<p><a href="https://summernote.org/" target="_blank">hello</a></p>' +
+          '<p><a href="https://summernote.org/">world</a></p>' +
+          '<p>http://summernote.org</p>' +
+          '<p>summernote.org</p>' +
+          '<p>summernote</p>' +
+          '</div>',
+      ),
+      options,
     );
     context.initialize();
 
@@ -45,9 +45,7 @@ describe('LinkDialog', () => {
       context.invoke('editor.setLastRange');
       dialog.show();
 
-      var checked = dialog.$dialog
-        .find('.sn-checkbox-open-in-new-window input[type=checkbox]')
-        .is(':checked');
+      var checked = dialog.$dialog.find('.sn-checkbox-open-in-new-window input[type=checkbox]').is(':checked');
       expect(checked).to.be.true;
     });
 
@@ -56,9 +54,7 @@ describe('LinkDialog', () => {
       context.invoke('editor.setLastRange');
       dialog.show();
 
-      var checked = dialog.$dialog
-        .find('.sn-checkbox-open-in-new-window input[type=checkbox]')
-        .is(':checked');
+      var checked = dialog.$dialog.find('.sn-checkbox-open-in-new-window input[type=checkbox]').is(':checked');
       expect(checked).to.be.false;
     });
 
@@ -91,7 +87,7 @@ describe('LinkDialog', () => {
       $input.val('summernote').blur();
       expect($input.val()).to.equal('http://summernote');
     });
-    
+
     it('should add mailto protocol during the onchange event if linkinfo.url is undefined and protocol not exists', () => {
       range.createFromNode($editable.find('p')[4]).normalize().select();
       context.invoke('editor.setLastRange');
@@ -110,13 +106,13 @@ describe('LinkDialog', () => {
 
       var $input = dialog.$dialog.find('.note-link-url');
       expect($input.val()).to.equal('');
-      
+
       $input.val('03-1234-5678').blur();
       expect($input.val()).to.equal('tel://03-1234-5678');
-      
+
       $input.val('090-1234-5678').blur();
       expect($input.val()).to.equal('tel://090-1234-5678');
-      
+
       $input.val('03 1234 5678').blur();
       expect($input.val()).to.equal('tel://03 1234 5678');
 

@@ -3,10 +3,9 @@
  * (c) 2013~ Alan Hong
  * summernote may be freely distributed under the MIT license./
  */
-import chai from 'chai';
-import func from 'src/js/core/func';
 
-var expect = chai.expect;
+import { describe, it, expect } from 'vitest';
+import func from '@/js/core/func';
 
 describe('base:core.func', () => {
   describe('eq', () => {
@@ -80,8 +79,7 @@ describe('base:core.func', () => {
 
   describe('invertObject', () => {
     it('should return inverted object between keys and values', () => {
-      expect(func.invertObject({ keyA: 'valueA', keyB: 'valueB' }))
-        .to.deep.equal({ valueA: 'keyA', valueB: 'keyB' });
+      expect(func.invertObject({ keyA: 'valueA', keyB: 'valueB' })).to.deep.equal({ valueA: 'keyA', valueB: 'keyB' });
     });
   });
 

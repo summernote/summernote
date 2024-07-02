@@ -3,14 +3,10 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
+import { describe, it, expect } from 'vitest';
 import $ from 'jquery';
-import chai from 'chai';
-import chaidom from 'test/chaidom';
-import range from 'src/js/core/range';
-import Table from 'src/js/editing/Table';
-
-var expect = chai.expect;
-chai.use(chaidom);
+import range from '@/js/core/range';
+import Table from '@/js/editing/Table';
 
 describe('base:editing.Table', () => {
   var table = new Table();
@@ -34,7 +30,7 @@ describe('base:editing.Table', () => {
       var $cell = $cont.find('td');
       var rng = range.create($cell[0].firstChild, 1);
       table.addRow(rng, 'top');
-      expect('<table><tbody><tr><td><br></td></tr><tr><td>content</td></tr></tbody></table>').to.equalsIgnoreCase($cont.html());
+      expect('<table><tbody><tr><td><br></td></tr><tr><td>content</td></tr></tbody></table>').toEqual($cont.html());
     });
 
     it('should add simple row to table on bottom', () => {
@@ -42,11 +38,12 @@ describe('base:editing.Table', () => {
       var $cell = $cont.find('td');
       var rng = range.create($cell[0].firstChild, 1);
       table.addRow(rng, 'bottom');
-      expect('<table><tbody><tr><td>content</td></tr><tr><td><br></td></tr></tbody></table>').to.equalsIgnoreCase($cont.html());
+      expect('<table><tbody><tr><td>content</td></tr><tr><td><br></td></tr></tbody></table>').toEqual($cont.html());
     });
 
     it('should add simple row to table on top between two rows', () => {
-      var htmlContent = '<div class="note-editable"><table><tr><td>content1</td></tr><tr><td id="td2">content2</td></tr></table></div>';
+      var htmlContent =
+        '<div class="note-editable"><table><tr><td>content1</td></tr><tr><td id="td2">content2</td></tr></table></div>';
       var $cont = $(htmlContent);
       var $cell = $cont.find('#td2');
       var rng = range.create($cell[0].firstChild, 1);
@@ -55,7 +52,7 @@ describe('base:editing.Table', () => {
       $(resultTable).append('<tr><td><br/></td></tr>');
       $(resultTable).append('<tr><td id="td2">content2</td></tr>');
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should add simple row to table on bottom between two rows', () => {
@@ -72,7 +69,7 @@ describe('base:editing.Table', () => {
       $(resultTable).append('<tr><td id="td2">content2</td></tr>');
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should add simple col to table on left between two cols', () => {
@@ -89,7 +86,7 @@ describe('base:editing.Table', () => {
       $(resultTable).append('<tr><td id="td1">content1</td><td><br/></td><td id="td2">content2</td></tr>');
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should add simple col to table on right between two cols', () => {
@@ -106,7 +103,7 @@ describe('base:editing.Table', () => {
       $(resultTable).append('<tr><td id="td1">content1</td><td><br/></td><td id="td2">content2</td></tr>');
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should delete row to table between two other rows', () => {
@@ -125,7 +122,7 @@ describe('base:editing.Table', () => {
       $(resultTable).append('<tr><td id="td1">content1</td></tr><tr><td id="td3">content3</td></tr>');
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should delete col to table between two other cols', () => {
@@ -142,7 +139,7 @@ describe('base:editing.Table', () => {
       $(resultTable).append('<tr><td id="td1">content1</td><td id="td3">content3</td></tr>');
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should delete first col to table with colspan in column with colspan', () => {
@@ -165,7 +162,7 @@ describe('base:editing.Table', () => {
       resultTable.append(resultTr2);
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should delete second col to table with colspan in column', () => {
@@ -188,13 +185,14 @@ describe('base:editing.Table', () => {
       resultTable.append(resultTr2);
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should delete second col to table with colspan in 3 columns', () => {
       var baseTable = $('<table><tbody></tbody></table> ');
       var baseTr1 = '<tr><td colspan="3" id="tr1td1">Col1-Span</td><td id="tr1td4">Col4</td></tr>';
-      var baseTr2 = '<tr><td id="tr2td1">Col1</td><td id="tr2td2">Col2</td><td id="tr2td3">Col3</td><td id="tr2td4">Col4</td></tr>';
+      var baseTr2 =
+        '<tr><td id="tr2td1">Col1</td><td id="tr2td2">Col2</td><td id="tr2td3">Col3</td><td id="tr2td4">Col4</td></tr>';
       baseTable.append(baseTr1);
       baseTable.append(baseTr2);
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
@@ -211,7 +209,7 @@ describe('base:editing.Table', () => {
       resultTable.append(resultTr2);
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should delete first row to table with rowspan in line with rowspan', () => {
@@ -236,7 +234,7 @@ describe('base:editing.Table', () => {
       resultTable.append(resultTr3);
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should delete second row to table with rowspan in line without rowspan', () => {
@@ -265,7 +263,7 @@ describe('base:editing.Table', () => {
       resultTable.append(resultTr4);
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should delete second col to table with rowspan in 2 rows', () => {
@@ -292,7 +290,7 @@ describe('base:editing.Table', () => {
       resultTable.append(resultTr3);
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should delete second col to table with rowspan in 2 rows on second row', () => {
@@ -319,7 +317,7 @@ describe('base:editing.Table', () => {
       resultTable.append(resultTr3);
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should add row on bottom rowspan cell.', () => {
@@ -348,7 +346,7 @@ describe('base:editing.Table', () => {
       resultTable.append(resultTr4);
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should add row on bottom colspan cell.', () => {
@@ -377,7 +375,7 @@ describe('base:editing.Table', () => {
       resultTable.append(resultTr4);
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should add row above rowspan cell.', () => {
@@ -406,7 +404,7 @@ describe('base:editing.Table', () => {
       resultTable.append(resultTr4);
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should add row on bottom rowspan cell and with aditional column.', () => {
@@ -431,7 +429,7 @@ describe('base:editing.Table', () => {
       resultTable.append(resultTr3);
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should add column on right having rowspan cell and with aditional column.', () => {
@@ -454,7 +452,7 @@ describe('base:editing.Table', () => {
       resultTable.append(resultTr2);
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should add column on right having rowspan cell and with aditional column with focus on rowspan column.', () => {
@@ -471,19 +469,22 @@ describe('base:editing.Table', () => {
       table.addCol(rng, 'right');
 
       var resultTable = $('<table><tbody></tbody></table> ');
-      var resultTr1 = '<tr><td rowspan="2" id="tr1td1">Col1-Span</td><td rowspan="2"><br></td><td id="tr1td2">Col2</td></tr>';
+      var resultTr1 =
+        '<tr><td rowspan="2" id="tr1td1">Col1-Span</td><td rowspan="2"><br></td><td id="tr1td2">Col2</td></tr>';
       var resultTr2 = '<tr><td id="tr2td2">Col1</td></tr>';
       resultTable.append(resultTr1);
       resultTable.append(resultTr2);
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should remove column after colspan column.', () => {
       var baseTable = $('<table><tbody></tbody></table> ');
-      var baseTr1 = '<tr><td id="tr1td1">Col1</td><td colspan="2" id="tr1td2">Col2-Span</td><td id="tr1td4">Col4</td></tr>';
-      var baseTr2 = '<tr><td id="tr2td1">Col1</td><td id="tr2td2">Col2</td><td id="tr2td3">Col3</td><td id="tr2td4">Col4</td></tr>';
+      var baseTr1 =
+        '<tr><td id="tr1td1">Col1</td><td colspan="2" id="tr1td2">Col2-Span</td><td id="tr1td4">Col4</td></tr>';
+      var baseTr2 =
+        '<tr><td id="tr2td1">Col1</td><td id="tr2td2">Col2</td><td id="tr2td3">Col3</td><td id="tr2td4">Col4</td></tr>';
       baseTable.append(baseTr1);
       baseTable.append(baseTr2);
       var htmlContent = '<div class="note-editable"><table>' + $(baseTable).html() + '</table></div>';
@@ -500,7 +501,7 @@ describe('base:editing.Table', () => {
       resultTable.append(resultTr2);
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should remove column before colspan column.', () => {
@@ -526,7 +527,7 @@ describe('base:editing.Table', () => {
       resultTable.append(resultTr2);
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
 
     it('should add column before colspan column.', () => {
@@ -549,7 +550,7 @@ describe('base:editing.Table', () => {
       resultTable.append(resultTr2);
       var expectedResult = '<table>' + $(resultTable).html() + '</table>';
 
-      expect(expectedResult).to.equalsIgnoreCase($cont.html());
+      expect(expectedResult).toEqual($cont.html());
     });
   });
 });

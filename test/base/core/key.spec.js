@@ -3,10 +3,9 @@
  * (c) 2013~ Alan Hong
  * summernote may be freely distributed under the MIT license./
  */
-import chai from 'chai';
-import key from 'src/js/core/key';
 
-var expect = chai.expect;
+import { describe, it, expect } from 'vitest';
+import key from '@/js/core/key';
 
 describe('base:core.key', () => {
   describe('isEdit', () => {

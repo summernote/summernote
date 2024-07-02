@@ -4,20 +4,16 @@
  * summernote may be freely distributed under the MIT license./
  */
 
-import chai from 'chai';
-import chaidom from 'test/chaidom';
+import { describe, it, expect } from 'vitest';
 import $ from 'jquery';
-import dom from 'src/js/core/dom';
-import range from 'src/js/core/range';
-
-var expect = chai.expect;
-chai.use(chaidom);
+import dom from '@/js/core/dom';
+import range from '@/js/core/range';
 
 describe('base:core.range', () => {
   describe('nodes', () => {
     describe('1 depth', () => {
       var $para;
-      before(() => {
+      beforeAll(() => {
         var $cont = $('<div class="note-editable"><p>para1</p><p>para2</p></div>');
         $para = $cont.find('p');
       });
@@ -65,7 +61,7 @@ describe('base:core.range', () => {
 
   describe('commonAncestor', () => {
     var $cont;
-    before(() => {
+    beforeAll(() => {
       $cont = $('<div><span><b>b</b><u>u</u></span></div>');
     });
 
@@ -116,7 +112,7 @@ describe('base:core.range', () => {
 
   describe('normalize', () => {
     var $cont;
-    before(() => {
+    beforeAll(() => {
       $cont = $('<div><p><b>b</b><u>u</u><s>s</s></p></div>');
     });
 
@@ -235,7 +231,7 @@ describe('base:core.range', () => {
       var rng = range.create($b[0].firstChild, 2, $b[0].firstChild, 2);
       rng.insertNode($p2[0]);
 
-      expect($cont.html()).to.equalsIgnoreCase('<p><b>bo</b></p><p>p</p><p><b>ld</b></p>');
+      expect($cont.html()).toEqual('<p><b>bo</b></p><p>p</p><p><b>ld</b></p>');
     });
 
     it('should not split paragraph when inserting an inline element', () => {
@@ -245,7 +241,7 @@ describe('base:core.range', () => {
 
       var rng = range.create($p[0].firstChild, 2, $p[0].firstChild, 2);
       rng.insertNode($u[0]);
-      expect($cont.html()).to.equalsIgnoreCase('<p>te<u>u</u>xt</p>');
+      expect($cont.html()).toEqual('<p>te<u>u</u>xt</p>');
     });
 
     it('should not split paragraph when inserting an inline element case 2', () => {
@@ -255,7 +251,7 @@ describe('base:core.range', () => {
 
       var rng = range.create($b[0].firstChild, 2, $b[0].firstChild, 2);
       rng.insertNode($u[0]);
-      expect($cont.html()).to.equalsIgnoreCase('<p><b>bo</b><u>u</u><b>ld</b></p>');
+      expect($cont.html()).toEqual('<p><b>bo</b><u>u</u><b>ld</b></p>');
     });
   });
 
@@ -268,7 +264,7 @@ describe('base:core.range', () => {
       var rng = range.create($p[0].firstChild, 2);
       rng.pasteHTML(markup);
 
-      expect($cont.html()).to.equalsIgnoreCase('<p>te<span>span</span><i>italic</i>xt</p>');
+      expect($cont.html()).toEqual('<p>te<span>span</span><i>italic</i>xt</p>');
     });
 
     it('should split an inline element when pasting inline elements into it', () => {
@@ -279,7 +275,7 @@ describe('base:core.range', () => {
       var rng = range.create($b[0].firstChild, 2);
       rng.pasteHTML(markup);
 
-      expect($cont.html()).to.equalsIgnoreCase('<p><b>bo</b><span>span</span><i>italic</i><b>ld</b></p>');
+      expect($cont.html()).toEqual('<p><b>bo</b><span>span</span><i>italic</i><b>ld</b></p>');
     });
 
     it('should split inline node when pasting an inline node and a block node into it', () => {
@@ -290,7 +286,7 @@ describe('base:core.range', () => {
       var rng = range.create($b[0].firstChild, 2);
       rng.pasteHTML(markup);
 
-      expect($cont.html()).to.equalsIgnoreCase('<p><b>bo</b><span>span</span></p><p><i>italic</i></p><p><b>ld</b></p>');
+      expect($cont.html()).toEqual('<p><b>bo</b><span>span</span></p><p><i>italic</i></p><p><b>ld</b></p>');
     });
   });
 
@@ -305,14 +301,14 @@ describe('base:core.range', () => {
       var rng = range.create($b[0].firstChild, 1, $b[0].firstChild, 3);
       rng.deleteContents();
 
-      expect($cont.html()).to.equalsIgnoreCase('<p><b>bd</b><u>u</u></p>');
+      expect($cont.html()).toEqual('<p><b>bd</b><u>u</u></p>');
     });
 
     it('should remove text for entire text', () => {
       var rng = range.create($b[0].firstChild, 0, $b[0].firstChild, 4);
       rng.deleteContents();
 
-      expect($cont.html()).to.equalsIgnoreCase('<p><b></b><u>u</u></p>');
+      expect($cont.html()).toEqual('<p><b></b><u>u</u></p>');
     });
   });
 
@@ -323,7 +319,7 @@ describe('base:core.range', () => {
       var rng = range.create($cont[0], 0);
       rng.wrapBodyInlineWithPara();
 
-      expect($cont.html()).to.equalsIgnoreCase('<p><br></p>');
+      expect($cont.html()).toEqual('<p><br></p>');
     });
 
     it('should wrap text with paragraph for text', () => {
@@ -332,7 +328,7 @@ describe('base:core.range', () => {
       var rng = range.create($cont[0].firstChild, 2);
       rng.wrapBodyInlineWithPara();
 
-      expect($cont.html()).to.equalsIgnoreCase('<p>text</p>');
+      expect($cont.html()).toEqual('<p>text</p>');
     });
 
     it('should wrap an inline node with paragraph when selecting text in the inline node', () => {
@@ -342,7 +338,7 @@ describe('base:core.range', () => {
       var rng = range.create($b[0].firstChild, 2);
       rng.wrapBodyInlineWithPara();
 
-      expect($cont.html()).to.equalsIgnoreCase('<p><b>bold</b></p>');
+      expect($cont.html()).toEqual('<p><b>bold</b></p>');
     });
 
     it('should wrap inline nodes with paragraph when selecting text in the inline nodes', () => {
@@ -351,7 +347,7 @@ describe('base:core.range', () => {
       var rng = range.create($cont[0], 0);
       rng.wrapBodyInlineWithPara();
 
-      expect($cont.html()).to.equalsIgnoreCase('<p><b>b</b><i>i</i></p>');
+      expect($cont.html()).toEqual('<p><b>b</b><i>i</i></p>');
     });
 
     it('should wrap inline nodes with paragraph when selection some of text in the inline nodes #1', () => {
@@ -360,7 +356,7 @@ describe('base:core.range', () => {
       var rng = range.create($cont[0], 1);
       rng.wrapBodyInlineWithPara();
 
-      expect($cont.html()).to.equalsIgnoreCase('<p><b>b</b><i>i</i></p>');
+      expect($cont.html()).toEqual('<p><b>b</b><i>i</i></p>');
     });
 
     it('should wrap inline nodes with paragraph when selection some of text in the inline nodes #2', () => {
@@ -369,13 +365,13 @@ describe('base:core.range', () => {
       var rng = range.create($cont[0], 2);
       rng.wrapBodyInlineWithPara();
 
-      expect($cont.html()).to.equalsIgnoreCase('<p><b>b</b><i>i</i></p>');
+      expect($cont.html()).toEqual('<p><b>b</b><i>i</i></p>');
     });
   });
 
   describe('getWordRange', () => {
     var $cont;
-    before(() => {
+    beforeAll(() => {
       $cont = $('<div class="note-editable">super simple wysiwyg editor</div>');
     });
 
@@ -418,7 +414,7 @@ describe('base:core.range', () => {
 
   describe('getWordsRange', () => {
     var $cont;
-    before(() => {
+    beforeAll(() => {
       $cont = $('<div class="note-editable">super &nbsp; simple wysiwyg editor</div>');
     });
 
@@ -461,7 +457,7 @@ describe('base:core.range', () => {
 
   describe('getWordsMatchRange', () => {
     var $cont, regex;
-    before(() => {
+    beforeAll(() => {
       $cont = $('<div class="note-editable">hi @Peter Pan. How are you?</div>');
       regex = /@[a-z ]+/i;
     });

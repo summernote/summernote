@@ -4,23 +4,18 @@
  * summernote may be freely distributed under the MIT license./
  */
 
+import { describe, it, expect, beforeAll, beforeEach } from 'vitest';
 import $ from 'jquery';
-import chai from 'chai';
-import chaidom from 'test/chaidom';
-import env from 'src/js/core/env';
-import range from 'src/js/core/range';
-import Context from 'src/js/Context';
-import 'src/styles/bs4/summernote-bs4';
-
-chai.use(chaidom);
+import env from '@/js/core/env';
+import range from '@/js/core/range';
+import Context from '@/js/Context';
+import '@/styles/bs4/summernote-bs4';
 
 describe('Buttons', () => {
-  var expect = chai.expect;
-  var assert = chai.assert;
   var context, $toolbar, $editable;
 
-  before(function(done) {
-    setTimeout(function() {
+  beforeAll(function (done) {
+    setTimeout(function () {
       done();
     }, 500);
   });
@@ -227,7 +222,9 @@ describe('Buttons', () => {
     it('should execute back color command when it is clicked', (done) => {
       var $button = $toolbar.find('.note-color-all .note-holder').find('.note-color-btn[data-event=backColor]').eq(10);
       $button.trigger('click');
-      expect($editable.find('p').children().first()).await(done).to.be.equalsStyle($button.data('value'), 'background-color');
+      expect($editable.find('p').children().first())
+        .await(done)
+        .to.be.equalsStyle($button.data('value'), 'background-color');
     });
   });
 
@@ -243,7 +240,9 @@ describe('Buttons', () => {
     it('should execute back color command when it is clicked', (done) => {
       var $button = $toolbar.find('.note-color-back').find('.note-color-btn[data-event=backColor]').eq(20);
       $button.trigger('click');
-      expect($editable.find('p').children().first()).await(done).to.be.equalsStyle($button.data('value'), 'background-color');
+      expect($editable.find('p').children().first())
+        .await(done)
+        .to.be.equalsStyle($button.data('value'), 'background-color');
     });
   });
 
