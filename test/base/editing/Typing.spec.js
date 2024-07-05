@@ -8,8 +8,8 @@
 
 import { describe, it, expect } from 'vitest';
 import $ from 'jquery';
-import range from '$/js/core/range';
-import Typing from '$/js/editing/Typing';
+import range from '@/js/core/range';
+import Typing from '@/js/editing/Typing';
 
 describe('base:editing.Style', () => {
   function typing(level) {

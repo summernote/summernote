@@ -9,7 +9,7 @@ import $ from 'jquery';
 import env from '@/js/core/env';
 import Context from '@/js/Context';
 import 'bootstrap';
-import '@/styles/bs4/summernote-bs4';
+import '@/styles/lite/summernote-lite';
 
 describe('Context lifecycle', () => {
   it('should be initialized without calling callback', () => {
@@ -18,13 +18,13 @@ describe('Context lifecycle', () => {
     $note.on('summernote.change', spy);
 
     var context = new Context($note, $.summernote.options);
-    expect(spy).to.have.not.been.called();
+    expect(spy).not.toHaveBeenCalled();
 
     // [workaround]
     //  - IE8-11 can't create range in headless mode
     if (!env.isMSIE) {
       context.invoke('insertText', 'hello');
-      expect(spy).to.have.been.called();
+      expect(spy).toHaveBeenCalled();
     }
   });
 
@@ -37,7 +37,7 @@ describe('Context lifecycle', () => {
     context.destroy();
 
     $note.trigger('click');
-    expect(spy).to.have.been.called();
+    expect(spy).toHaveBeenCalled();
   });
 });
 

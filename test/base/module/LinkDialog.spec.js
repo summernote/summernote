@@ -9,7 +9,7 @@ import $ from 'jquery';
 import range from '@/js/core/range';
 import Context from '@/js/Context';
 import LinkDialog from '@/js/module/LinkDialog';
-import '@/styles/bs4/summernote-bs4';
+import '@/styles/lite/summernote-lite';
 
 describe('LinkDialog', () => {
   var context, dialog, $editable;

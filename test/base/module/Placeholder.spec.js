@@ -7,7 +7,7 @@
 import { describe, it, assert } from 'vitest';
 import $ from 'jquery';
 import Context from '@/js/Context';
-import '@/styles/bs4/summernote-bs4';
+import '@/styles/lite/summernote-lite';
 
 describe('Placeholder', () => {
   it('should not be initialized by placeholder attribute without inheritPlaceHolder', () => {

@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import '/js/settings';
-import renderer from '/js/renderer';
+import '@/js/settings';
+import renderer from '@/js/renderer';
 
 import './summernote-lite.scss';
 import TooltipUI from './js/TooltipUI';

@@ -7,7 +7,7 @@ import { describe, it, expect } from 'vitest';
 import $ from 'jquery';
 import Context from '@/js/Context';
 import Codeview from '@/js/module/Codeview';
-import '@/styles/bs4/summernote-bs4';
+import '@/styles/lite/summernote-lite';
 
 function loadScript(url) {
   var script = document.createElement('script');
@@ -46,7 +46,7 @@ describe('Codeview', () => {
 
   it('should show CodeMirror if available', (done) => {
     var codemirror = loadScript('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/codemirror.js');
-    codemirror.onload = function () {
+    codemirror.onload = function() {
       // need to reinitiate codeview
       codeview = new Codeview(context);
       expect(codeview.isActivated()).to.be.false;

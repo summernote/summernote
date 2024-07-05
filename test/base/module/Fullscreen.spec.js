@@ -8,7 +8,7 @@ import { describe, it, expect } from 'vitest';
 import $ from 'jquery';
 import Context from '@/js/Context';
 import Fullscreen from '@/js/module/Fullscreen';
-import '@/styles/bs4/summernote-bs4';
+import '@/styles/lite/summernote-lite';
 
 describe('Fullscreen', () => {
   var fullscreen, context;

@@ -6,8 +6,17 @@ export default defineConfig({
       '@': '/src',
     },
   },
+
   test: {
     globals: true,
-    environment: 'jsdom',
+    setupFiles: [
+      './test/vitest.setup.js'
+    ],
+
+    browser: {
+      enabled: true,
+      headless: true,
+      name: 'chrome',
+    },
   },
 });
