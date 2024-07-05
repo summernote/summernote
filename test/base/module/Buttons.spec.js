@@ -4,7 +4,7 @@
  * summernote may be freely distributed under the MIT license./
  */
 
-import { describe, it, expect, beforeAll, beforeEach, assert } from 'vitest';
+import { describe, it, expect, beforeEach, assert } from 'vitest';
 import { nextTick } from '/test/util';
 import $ from 'jquery';
 import env from '@/js/core/env';
@@ -47,7 +47,7 @@ describe('Buttons', () => {
   });
 
   describe('bold button', () => {
-    it('should execute bold command when it is clicked', async () => {
+    it('should execute bold command when it is clicked', async() => {
       $toolbar.find('.note-btn-bold').trigger('click');
       await nextTick();
       expect($editable.html()).toEqual('<p><b>hello</b></p>');
@@ -55,7 +55,7 @@ describe('Buttons', () => {
   });
 
   describe('bold button state updated', () => {
-    it('should look toggled immediately when clicked', async () => {
+    it('should look toggled immediately when clicked', async() => {
       var $button = $toolbar.find('.note-btn-bold');
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
@@ -66,7 +66,7 @@ describe('Buttons', () => {
   });
 
   describe('italic button', () => {
-    it('should execute italic command when it is clicked', async () => {
+    it('should execute italic command when it is clicked', async() => {
       $toolbar.find('.note-btn-italic').trigger('click');
       await nextTick();
       expect($editable.html()).toEqual('<p><i>hello</i></p>');
@@ -74,7 +74,7 @@ describe('Buttons', () => {
   });
 
   describe('italic button state updated', () => {
-    it('should look toggled immediately when clicked', async () => {
+    it('should look toggled immediately when clicked', async() => {
       var $button = $toolbar.find('.note-btn-italic');
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
@@ -85,7 +85,7 @@ describe('Buttons', () => {
   });
 
   describe('underline button', () => {
-    it('should execute underline command when it is clicked', async () => {
+    it('should execute underline command when it is clicked', async() => {
       $toolbar.find('.note-btn-underline').trigger('click');
       await nextTick();
       expect($editable.html()).toEqual('<p><u>hello</u></p>');
@@ -93,7 +93,7 @@ describe('Buttons', () => {
   });
 
   describe('underline button state updated', () => {
-    it('should look toggled immediately when clicked', async () => {
+    it('should look toggled immediately when clicked', async() => {
       var $button = $toolbar.find('.note-btn-underline');
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
@@ -104,7 +104,7 @@ describe('Buttons', () => {
   });
 
   describe('superscript button', () => {
-    it('should execute superscript command when it is clicked', async () => {
+    it('should execute superscript command when it is clicked', async() => {
       $toolbar.find('.note-btn-superscript').trigger('click');
       await nextTick();
       expect($editable.html()).toEqual('<p><sup>hello</sup></p>');
@@ -112,7 +112,7 @@ describe('Buttons', () => {
   });
 
   describe('superscript button state updated', () => {
-    it('should look toggled immediately when clicked', async () => {
+    it('should look toggled immediately when clicked', async() => {
       var $button = $toolbar.find('.note-btn-superscript');
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
@@ -123,7 +123,7 @@ describe('Buttons', () => {
   });
 
   describe('subscript button', () => {
-    it('should execute subscript command when it is clicked', async () => {
+    it('should execute subscript command when it is clicked', async() => {
       $toolbar.find('.note-btn-subscript').trigger('click');
       await nextTick();
       expect($editable.html()).toEqual('<p><sub>hello</sub></p>');
@@ -131,7 +131,7 @@ describe('Buttons', () => {
   });
 
   describe('subscript button state updated', () => {
-    it('should look toggled immediately when clicked', async () => {
+    it('should look toggled immediately when clicked', async() => {
       var $button = $toolbar.find('.note-btn-subscript');
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
@@ -142,7 +142,7 @@ describe('Buttons', () => {
   });
 
   describe('strikethrough button', () => {
-    it('should execute strikethrough command when it is clicked', async () => {
+    it('should execute strikethrough command when it is clicked', async() => {
       $toolbar.find('.note-btn-strikethrough').trigger('click');
       await nextTick();
       expect($editable.html()).toEqual('<p><strike>hello</strike></p>');
@@ -150,7 +150,7 @@ describe('Buttons', () => {
   });
 
   describe('strikethrough button state updated', () => {
-    it('should look toggled immediately when clicked', async () => {
+    it('should look toggled immediately when clicked', async() => {
       var $button = $toolbar.find('.note-btn-strikethrough');
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
@@ -161,7 +161,7 @@ describe('Buttons', () => {
   });
 
   describe('clear button state not updated when clicked', () => {
-    it('should never look toggled when clicked', async () => {
+    it('should never look toggled when clicked', async() => {
       var $button = $toolbar.find('i.note-icon-eraser').parent();
       assert.isTrue($button.length === 1);
       assert.isFalse($button.hasClass('active'));
@@ -186,7 +186,7 @@ describe('Buttons', () => {
   */
 
   describe('font family button', () => {
-    it('should change font family (Courier New) when it is clicked', async () => {
+    it('should change font family (Courier New) when it is clicked', async() => {
       var $li = $toolbar.find('.dropdown-fontname a[data-value="Courier New"]');
       var $span = $toolbar.find('span.note-current-fontname');
       assert.isTrue($li.length === 1);
@@ -195,7 +195,7 @@ describe('Buttons', () => {
       await nextTick();
       expect($editable.find('p').children().first()).to.be.equalsStyle('"Courier New"', 'font-family');
     });
-    it('should change font family (Arial) when it is clicked', async () => {
+    it('should change font family (Arial) when it is clicked', async() => {
       var $li = $toolbar.find('.dropdown-fontname a[data-value="Arial"]');
       var $span = $toolbar.find('span.note-current-fontname');
       assert.isTrue($li.length === 1);
@@ -204,7 +204,7 @@ describe('Buttons', () => {
       await nextTick();
       expect($editable.find('p').children().first()).to.be.equalsStyle('"Arial"', 'font-family');
     });
-    it('should change font family (Helvetica) when it is clicked', async () => {
+    it('should change font family (Helvetica) when it is clicked', async() => {
       var $li = $toolbar.find('.dropdown-fontname a[data-value="Helvetica"]');
       var $span = $toolbar.find('span.note-current-fontname');
       assert.isTrue($li.length === 1);
@@ -216,7 +216,7 @@ describe('Buttons', () => {
   });
 
   describe('recent color button in all color button', () => {
-    it('should execute color command when it is clicked', async () => {
+    it('should execute color command when it is clicked', async() => {
       $toolbar.find('.note-color-all').find('.note-current-color-button').trigger('click');
       await nextTick();
       expect($editable.find('p').children().first()).to.be.equalsStyle('#FFFF00', 'background-color');
@@ -224,7 +224,7 @@ describe('Buttons', () => {
   });
 
   describe('fore color button in all color button', () => {
-    it('should execute fore color command when it is clicked', async () => {
+    it('should execute fore color command when it is clicked', async() => {
       var $button = $toolbar.find('.note-color-all .note-holder').find('.note-color-btn[data-event=foreColor]').eq(10);
       $button.trigger('click');
       await nextTick();
@@ -233,7 +233,7 @@ describe('Buttons', () => {
   });
 
   describe('back color button in all color button', () => {
-    it('should execute back color command when it is clicked', async () => {
+    it('should execute back color command when it is clicked', async() => {
       var $button = $toolbar.find('.note-color-all .note-holder').find('.note-color-btn[data-event=backColor]').eq(10);
       $button.trigger('click');
       await nextTick();
@@ -243,7 +243,7 @@ describe('Buttons', () => {
   });
 
   describe('color button in fore color button', () => {
-    it('should execute fore color command when it is clicked', async () => {
+    it('should execute fore color command when it is clicked', async() => {
       var $button = $toolbar.find('.note-color-fore').find('.note-color-btn[data-event=foreColor]').eq(4);
       $button.trigger('click');
       await nextTick();
@@ -252,7 +252,7 @@ describe('Buttons', () => {
   });
 
   describe('back color button in back color button', () => {
-    it('should execute back color command when it is clicked', async () => {
+    it('should execute back color command when it is clicked', async() => {
       var $button = $toolbar.find('.note-color-back').find('.note-color-btn[data-event=backColor]').eq(20);
       $button.trigger('click');
       await nextTick();
@@ -262,7 +262,7 @@ describe('Buttons', () => {
   });
 
   describe('font size button', () => {
-    it('should update font size button value when changing font size', async () => {
+    it('should update font size button value when changing font size', async() => {
       var $fontSizeDropdown = $toolbar.find('.dropdown-fontsize');
       var $fontSizeButton = $fontSizeDropdown.siblings('button');
       var $fontSizeList = $fontSizeDropdown.find('a');

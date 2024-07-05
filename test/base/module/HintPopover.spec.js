@@ -60,7 +60,7 @@ describe('HintPopover', () => {
       expect($('.note-hint-popover').css('display')).to.equals('none');
     });
 
-    it('should be shown when it matches the given condition', async () => {
+    it('should be shown when it matches the given condition', async() => {
       var textNode = $editable.find('p')[0].firstChild;
       editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
       editor.insertText(' #');
@@ -70,7 +70,7 @@ describe('HintPopover', () => {
       expect($('.note-hint-popover').css('display')).to.equals('block');
     });
 
-    it('should select the best matched item with the given condition', async () => {
+    it('should select the best matched item with the given condition', async() => {
       var textNode = $editable.find('p')[0].firstChild;
       editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
       editor.insertText(' #al');
@@ -83,7 +83,7 @@ describe('HintPopover', () => {
       expect(item.hasClass('active')).to.be.true;
     });
 
-    it('should be replaced with the selected hint', async () => {
+    it('should be replaced with the selected hint', async() => {
       var textNode = $editable.find('p')[0].firstChild;
       editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
       editor.insertText(' #');
@@ -102,7 +102,7 @@ describe('HintPopover', () => {
       expect(onChange).toHaveBeenCalledOnce();
     });
 
-    it('should move selection by pressing arrow key', async () => {
+    it('should move selection by pressing arrow key', async() => {
       var textNode = $editable.find('p')[0].firstChild;
       editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
       editor.insertText(' #');
@@ -180,7 +180,7 @@ describe('HintPopover', () => {
       }
     });
 
-    it('should select the best matched item with the given condition', async () => {
+    it('should select the best matched item with the given condition', async() => {
       var textNode = $editable.find('p')[0].firstChild;
       editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
       editor.insertText(' @David S');
@@ -193,7 +193,7 @@ describe('HintPopover', () => {
       expect(item.hasClass('active')).to.be.true;
     });
 
-    it('should render hint result with given content', async () => {
+    it('should render hint result with given content', async() => {
       var textNode = $editable.find('p')[0].firstChild;
       editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
       editor.insertText(' @David S');

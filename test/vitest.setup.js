@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import env from '@/js/core/env';
-import { expect } from 'vitest'
+import { expect } from 'vitest';
 
 expect.extend({
   equalsIgnoreCase: (str1, str2) => {
@@ -20,8 +20,8 @@ expect.extend({
 
     return {
       pass: str1 === str2,
-      message: () => ``
-    }
+      message: () => ``,
+    };
   },
 
   equalsStyle: ($node, expected, style) => {
@@ -30,7 +30,7 @@ expect.extend({
 
     return {
       pass: nodeStyle === testerStyle,
-      message: () => ``
-    }
+      message: () => ``,
+    };
   },
 });

@@ -1,6 +1,4 @@
 import $ from 'jquery';
-import '@popperjs/core';
-import 'bootstrap';
 
 import '../../js/settings.js';
 import renderer from '../../js/renderer';
@@ -38,27 +36,27 @@ const buttonGroup = renderer.create('<div class="note-btn-group btn-group"></div
 
 const dropdown = renderer.create(
   '<div class="note-dropdown-menu dropdown-menu" role="list"></div>',
-  function ($node, options) {
+  function($node, options) {
     const markup = Array.isArray(options.items)
       ? options.items
-          .map(function (item) {
-            const value = typeof item === 'string' ? item : item.value || '';
-            const content = options.template ? options.template(item) : item;
-            const option = typeof item === 'object' ? item.option : undefined;
+        .map(function(item) {
+          const value = typeof item === 'string' ? item : item.value || '';
+          const content = options.template ? options.template(item) : item;
+          const option = typeof item === 'object' ? item.option : undefined;
 
-            const dataValue = 'data-value="' + value + '"';
-            const dataOption = option !== undefined ? ' data-option="' + option + '"' : '';
-            return (
-              '<a class="dropdown-item" href="#" ' +
+          const dataValue = 'data-value="' + value + '"';
+          const dataOption = option !== undefined ? ' data-option="' + option + '"' : '';
+          return (
+            '<a class="dropdown-item" href="#" ' +
               (dataValue + dataOption) +
               ' role="listitem" aria-label="' +
               value +
               '">' +
               content +
               '</a>'
-            );
-          })
-          .join('')
+          );
+        })
+        .join('')
       : options.items;
 
     $node.html(markup).attr({ 'aria-label': options.title });
@@ -69,20 +67,20 @@ const dropdown = renderer.create(
   },
 );
 
-const dropdownButtonContents = function (contents) {
+const dropdownButtonContents = function(contents) {
   return contents;
 };
 
 const dropdownCheck = renderer.create(
   '<div class="note-dropdown-menu dropdown-menu note-check" role="list"></div>',
-  function ($node, options) {
+  function($node, options) {
     const markup = Array.isArray(options.items)
       ? options.items
-          .map(function (item) {
-            const value = typeof item === 'string' ? item : item.value || '';
-            const content = options.template ? options.template(item) : item;
-            return (
-              '<a class="dropdown-item" href="#" data-value="' +
+        .map(function(item) {
+          const value = typeof item === 'string' ? item : item.value || '';
+          const content = options.template ? options.template(item) : item;
+          return (
+            '<a class="dropdown-item" href="#" data-value="' +
               value +
               '" role="listitem" aria-label="' +
               item +
@@ -91,9 +89,9 @@ const dropdownCheck = renderer.create(
               ' ' +
               content +
               '</a>'
-            );
-          })
-          .join('')
+          );
+        })
+        .join('')
       : options.items;
     $node.html(markup).attr({ 'aria-label': options.title });
 
@@ -105,7 +103,7 @@ const dropdownCheck = renderer.create(
 
 const dialog = renderer.create(
   '<div class="modal note-modal" aria-hidden="false" tabindex="-1" role="dialog"></div>',
-  function ($node, options) {
+  function($node, options) {
     if (options.fade) {
       $node.addClass('fade');
     }
@@ -140,7 +138,7 @@ const popover = renderer.create(
     '<div class="popover-content note-children-container"></div>',
     '</div>',
   ].join(''),
-  function ($node, options) {
+  function($node, options) {
     const direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
 
     $node.addClass(direction);
@@ -151,7 +149,7 @@ const popover = renderer.create(
   },
 );
 
-const checkbox = renderer.create('<div class="form-check"></div>', function ($node, options) {
+const checkbox = renderer.create('<div class="form-check"></div>', function($node, options) {
   $node.html(
     [
       '<label class="form-check-label"' + (options.id ? ' for="note-' + options.id + '"' : '') + '>',
@@ -164,7 +162,7 @@ const checkbox = renderer.create('<div class="form-check"></div>', function ($no
   );
 });
 
-const icon = function (iconClassName, tagName) {
+const icon = function(iconClassName, tagName) {
   if (iconClassName.match(/^</)) {
     return iconClassName;
   }
@@ -172,7 +170,7 @@ const icon = function (iconClassName, tagName) {
   return '<' + tagName + ' class="' + iconClassName + '"></' + tagName + '>';
 };
 
-const ui = function (editorOptions) {
+const ui = function(editorOptions) {
   return {
     editor: editor,
     toolbar: toolbar,
@@ -192,8 +190,8 @@ const ui = function (editorOptions) {
     checkbox: checkbox,
     options: editorOptions,
 
-    palette: function ($node, options) {
-      return renderer.create('<div class="note-color-palette"></div>', function ($node, options) {
+    palette: function($node, options) {
+      return renderer.create('<div class="note-color-palette"></div>', function($node, options) {
         const contents = [];
         for (let row = 0, rowSize = options.colors.length; row < rowSize; row++) {
           const eventName = options.eventName;
@@ -239,10 +237,10 @@ const ui = function (editorOptions) {
       })($node, options);
     },
 
-    button: function ($node, options) {
+    button: function($node, options) {
       return renderer.create(
         '<button type="button" class="note-btn btn btn-light btn-sm" tabindex="-1"></button>',
-        function ($node, options) {
+        function($node, options) {
           if (options && options.tooltip) {
             $node
               .attr({
@@ -265,38 +263,38 @@ const ui = function (editorOptions) {
       )($node, options);
     },
 
-    toggleBtn: function ($btn, isEnable) {
+    toggleBtn: function($btn, isEnable) {
       $btn.toggleClass('disabled', !isEnable);
       $btn.attr('disabled', !isEnable);
     },
 
-    toggleBtnActive: function ($btn, isActive) {
+    toggleBtnActive: function($btn, isActive) {
       $btn.toggleClass('active', isActive);
     },
 
-    onDialogShown: function ($dialog, handler) {
+    onDialogShown: function($dialog, handler) {
       $dialog.one('shown.bs.modal', handler);
     },
 
-    onDialogHidden: function ($dialog, handler) {
+    onDialogHidden: function($dialog, handler) {
       $dialog.one('hidden.bs.modal', handler);
     },
 
-    showDialog: function ($dialog) {
+    showDialog: function($dialog) {
       $dialog.modal('show');
     },
 
-    hideDialog: function ($dialog) {
+    hideDialog: function($dialog) {
       $dialog.modal('hide');
     },
 
-    createLayout: function ($note) {
+    createLayout: function($note) {
       const $editor = (
         editorOptions.airMode
           ? airEditor([editingArea([codable(), airEditable()])])
           : editorOptions.toolbarPosition === 'bottom'
-          ? editor([editingArea([codable(), editable()]), toolbar(), statusbar()])
-          : editor([toolbar(), editingArea([codable(), editable()]), statusbar()])
+            ? editor([editingArea([codable(), editable()]), toolbar(), statusbar()])
+            : editor([toolbar(), editingArea([codable(), editable()]), statusbar()])
       ).render();
 
       $editor.insertAfter($note);
@@ -312,7 +310,7 @@ const ui = function (editorOptions) {
       };
     },
 
-    removeLayout: function ($note, layoutInfo) {
+    removeLayout: function($note, layoutInfo) {
       $note.html(layoutInfo.editable.html());
       layoutInfo.editor.remove();
       $note.show();
