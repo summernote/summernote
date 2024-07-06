@@ -1,10 +1,12 @@
 ## Contributing
-* Pull requests are welcome
-* Please `don't include dist/* files` on your commits.
+
+- Pull requests are welcome
+- Please `don't include dist/* files` on your commits.
 
 ## Coding convention
-* eslint: https://eslint.org
-* eslint rule: https://github.com/summernote/summernote/blob/master/.eslintrc
+
+- eslint: https://eslint.org
+- eslint rule: https://github.com/summernote/summernote/blob/master/.eslintrc
 
 ## Build summernote
 
@@ -17,10 +19,13 @@ $ yarn install
 $ yarn build
 
 ```
+
 At this point, you should now have a `dist/` directory populated with everything you need to use summernote.
 
 ## Start local server for developing summernote.
+
 run local server with webpack-dev-server and watch.
+
 ```bash
 $ yarn dev
 # Open a browser on http://localhost:3000.
@@ -28,31 +33,23 @@ $ yarn dev
 ```
 
 ## Test summernote
-run tests with Karma and PhantomJS
+
+run tests with vitest
+
 ```bash
 $ yarn test
 ```
-If you want run tests on other browser,
-change the values for `browsers` properties in `karma.conf.js`.
 
-```javascript
-karma: {
-  all: {
-    browsers: ['PhantomJS'],
-    reporters: ['progress']
-  }
-}
+````
 
-```
-
-Or, pass `--browsers` argument via `yarn test` command.
+Or, pass `--browser` argument via `yarn test` command.
 
 ```bash
-$ yarn test -- --browsers Safari,Firefox
-```
+$ yarn test --browser=chrome
+````
 
-You can use `Chrome`, `ChromeCanary`, `Firefox`, `Opera`, `Safari`, `PhantomJS` and `IE` beside `PhantomJS`.
-Once you run `yarn test`, it will watch all JavaScript file. Therefore karma runs tests every time you change code.
+You can use the following browsers:
+https://vitest.dev/guide/browser.html#browser-option-types
 
 ## Test a part of test
 
@@ -62,13 +59,16 @@ If you would like to run some part of your test codes, use the watch mode.
 $ yarn test:watch
 ```
 
-`karma` will run test and keep waiting other test requests. And then, run `test:grep` in another terminal. Below shows how to run `LinkDialog` related tests only.
+`vitest` will run test and keep waiting other test requests.
+
+If you want to run some part of your test codes, below shows how to run `dom.spec.js` related tests only.
 
 ```bash
-$ yarn test:grep LinkDialog
+$ yarn test test/base/core/dom.spec.js
 ```
 
 ## Prepush Hooks
+
 As part of this repo, we use [Husky](https://github.com/typicode/husky) for git hooks. We leverage the prepush hook to prevent bad commits.
 
 ## Document structure
