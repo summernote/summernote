@@ -25,6 +25,7 @@
     "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider webpack --node-env production --mode=production --config=./config/webpack.production.js --progress",
     "lint": "eslint src plugin test config",
     "test": "vitest run",
+    "test:watch": "vitest",
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable"
   },
