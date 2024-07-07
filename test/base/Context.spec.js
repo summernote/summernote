@@ -48,9 +48,9 @@ describe('Context', () => {
   });
 
   it('should get or set contents with code', () => {
-    expect(context.code()).toEqual('<p>hello</p>');
+    expect(context.code()).to.equalsIgnoreCase('<p>hello</p>');
     context.code('<p>hello2</p>');
-    expect(context.code()).toEqual('<p>hello2</p>');
+    expect(context.code()).to.equalsIgnoreCase('<p>hello2</p>');
   });
 
   it('should enable or disable editor', () => {

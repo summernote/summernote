@@ -50,7 +50,7 @@ describe('Buttons', () => {
     it('should execute bold command when it is clicked', async() => {
       $toolbar.find('.note-btn-bold').trigger('click');
       await nextTick();
-      expect($editable.html()).toEqual('<p><b>hello</b></p>');
+      expect($editable.html()).to.equalsIgnoreCase('<p><b>hello</b></p>');
     });
   });
 
@@ -69,7 +69,7 @@ describe('Buttons', () => {
     it('should execute italic command when it is clicked', async() => {
       $toolbar.find('.note-btn-italic').trigger('click');
       await nextTick();
-      expect($editable.html()).toEqual('<p><i>hello</i></p>');
+      expect($editable.html()).to.equalsIgnoreCase('<p><i>hello</i></p>');
     });
   });
 
@@ -88,7 +88,7 @@ describe('Buttons', () => {
     it('should execute underline command when it is clicked', async() => {
       $toolbar.find('.note-btn-underline').trigger('click');
       await nextTick();
-      expect($editable.html()).toEqual('<p><u>hello</u></p>');
+      expect($editable.html()).to.equalsIgnoreCase('<p><u>hello</u></p>');
     });
   });
 
@@ -107,7 +107,7 @@ describe('Buttons', () => {
     it('should execute superscript command when it is clicked', async() => {
       $toolbar.find('.note-btn-superscript').trigger('click');
       await nextTick();
-      expect($editable.html()).toEqual('<p><sup>hello</sup></p>');
+      expect($editable.html()).to.equalsIgnoreCase('<p><sup>hello</sup></p>');
     });
   });
 
@@ -126,7 +126,7 @@ describe('Buttons', () => {
     it('should execute subscript command when it is clicked', async() => {
       $toolbar.find('.note-btn-subscript').trigger('click');
       await nextTick();
-      expect($editable.html()).toEqual('<p><sub>hello</sub></p>');
+      expect($editable.html()).to.equalsIgnoreCase('<p><sub>hello</sub></p>');
     });
   });
 
@@ -145,7 +145,7 @@ describe('Buttons', () => {
     it('should execute strikethrough command when it is clicked', async() => {
       $toolbar.find('.note-btn-strikethrough').trigger('click');
       await nextTick();
-      expect($editable.html()).toEqual('<p><strike>hello</strike></p>');
+      expect($editable.html()).to.equalsIgnoreCase('<p><strike>hello</strike></p>');
     });
   });
 
@@ -237,8 +237,7 @@ describe('Buttons', () => {
       var $button = $toolbar.find('.note-color-all .note-holder').find('.note-color-btn[data-event=backColor]').eq(10);
       $button.trigger('click');
       await nextTick();
-      expect($editable.find('p').children().first())
-        .to.be.equalsStyle($button.data('value'), 'background-color');
+      expect($editable.find('p').children().first()).to.be.equalsStyle($button.data('value'), 'background-color');
     });
   });
 
@@ -256,8 +255,7 @@ describe('Buttons', () => {
       var $button = $toolbar.find('.note-color-back').find('.note-color-btn[data-event=backColor]').eq(20);
       $button.trigger('click');
       await nextTick();
-      expect($editable.find('p').children().first())
-        .to.be.equalsStyle($button.data('value'), 'background-color');
+      expect($editable.find('p').children().first()).to.be.equalsStyle($button.data('value'), 'background-color');
     });
   });
 

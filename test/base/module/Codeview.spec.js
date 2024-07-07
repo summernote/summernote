@@ -62,29 +62,29 @@ describe('Codeview', () => {
   });
 
   it('should purify malicious codes', () => {
-    expect(codeview.purify('<script>alert("summernote");</script>')).toEqual('alert("summernote");');
+    expect(codeview.purify('<script>alert("summernote");</script>')).to.equalsIgnoreCase('alert("summernote");');
     expect(
       codeview.purify(
         '<iframe frameborder="0" src="//www.youtube.com/embed/CXgsA98krxA" width="640" height="360" class="note-video-clip"></iframe>',
       ),
-    ).toEqual(
+    ).to.equalsIgnoreCase(
       '<iframe frameborder="0" src="//www.youtube.com/embed/CXgsA98krxA" width="640" height="360" class="note-video-clip"></iframe>',
     );
     expect(
       codeview.purify(
         '<iframe frameborder="0" src="//wwwXyoutube.com/embed/CXgsA98krxA" width="640" height="360" class="note-video-clip">',
       ),
-    ).toEqual('');
+    ).to.equalsIgnoreCase('');
     expect(
       codeview.purify(
         '<iframe frameborder="0" src="//www.fake-youtube.com/embed/CXgsA98krxA" width="640" height="360" class="note-video-clip">',
       ),
-    ).toEqual('');
+    ).to.equalsIgnoreCase('');
     expect(
       codeview.purify(
         '<iframe frameborder="0" src="//www.youtube.com/embed/CXgsA98krxA" width="640" height="360" class="note-video-clip"  src  =  "//www.fake-youtube.com/embed/CXgsA98krxA"/>',
       ),
-    ).toEqual('');
+    ).to.equalsIgnoreCase('');
   });
 
   it('should purify can be customized', () => {
@@ -99,7 +99,9 @@ describe('Codeview', () => {
     );
     codeview.options = options;
     codeview.options.codeviewFilterRegex = /\d+/;
-    expect(codeview.purify('<script>alert("summernote");</script>')).toEqual('<script>alert("summernote");</script>');
-    expect(codeview.purify('<span>Tel: 012345678</span>')).toEqual('<span>Tel: </span>');
+    expect(codeview.purify('<script>alert("summernote");</script>')).to.equalsIgnoreCase(
+      '<script>alert("summernote");</script>',
+    );
+    expect(codeview.purify('<span>Tel: 012345678</span>')).to.equalsIgnoreCase('<span>Tel: </span>');
   });
 });

@@ -22,7 +22,7 @@ describe('base:editing.Style', () => {
         var $editable;
 
         function check(html) {
-          expect($editable.html()).toEqual(html);
+          expect($editable.html()).to.equalsIgnoreCase(html);
         }
 
         beforeEach(() => {

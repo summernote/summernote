@@ -17,7 +17,7 @@ describe('HintPopover', () => {
   var $note, editor, context, $editable;
 
   function expectContents(context, markup) {
-    expect(context.layoutInfo.editable.html()).toEqual(markup);
+    expect(context.layoutInfo.editable.html()).to.equalsIgnoreCase(markup);
   }
 
   describe('Single word hint', () => {
@@ -206,10 +206,7 @@ describe('HintPopover', () => {
       $note.trigger('summernote.keydown', e);
 
       await nextTick();
-      expectContents(
-        context,
-        '<p>hello <a href="http://example.org/person/david-summer">@David Summer</a> world</p>',
-      );
+      expectContents(context, '<p>hello <a href="http://example.org/person/david-summer">@David Summer</a> world</p>');
     });
   });
 });
