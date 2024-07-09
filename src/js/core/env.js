@@ -12,7 +12,7 @@ function validFontName(fontName) {
   return ($.inArray(fontName.toLowerCase(), genericFontFamilies) === -1) ? `'${fontName}'` : fontName;
 }
 
-function isFontInstalled(fontName) {
+function createIsFontInstalledFunc() {
   const testText = "mw";
   const fontSize = "20px";
   const canvasWidth = 40;
@@ -87,7 +87,7 @@ export default {
   isSafari: !isEdge && /safari/i.test(userAgent) && (!/chrome/i.test(userAgent)),
   browserVersion,
   isSupportTouch,
-  isFontInstalled: isFontInstalled(),
+  isFontInstalled: createIsFontInstalledFunc(),
   isW3CRangeSupport: !!document.createRange,
   inputEventName,
   genericFontFamilies,
