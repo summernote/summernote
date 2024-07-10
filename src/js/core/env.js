@@ -40,7 +40,7 @@ function createIsFontInstalledFunc() {
     let testInfo = getPxInfo(testFontName, testFontName);
     let fontInfo = getPxInfo(fontName, testFontName);
     return testInfo !== fontInfo;
-  }
+  };
 }
 
 const userAgent = navigator.userAgent;
