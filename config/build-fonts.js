@@ -1,6 +1,6 @@
-const webfont = require('webfont').default;
-const fs = require('fs');
-const path = require('path');
+import { webfont } from 'webfont';
+import fs from 'fs';
+import path from 'path';
 
 const webfontConfig = {
   files: 'public/font/icons/*.svg',

@@ -16,6 +16,7 @@
     "email": "<susukang98@gmail.com>"
   },
   "main": "dist/summernote.js",
+  "type": "module",
   "engines": {
     "node": ">=17.0.0"
   },
