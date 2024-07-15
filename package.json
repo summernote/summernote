@@ -24,6 +24,7 @@
     "dev": "vite",
     "prebuild": "node ./config/build-fonts.js",
     "build": "vite build",
+    "buildall": "node ./build.js",
     "lint": "eslint src plugin test config",
     "test": "vitest run",
     "test:watch": "vitest",

@@ -1,6 +1,7 @@
 import $ from 'jquery';
-import '/js/settings';
-import renderer from '/js/renderer';
+import '@/js/settings';
+import renderer from '@/js/renderer';
+
 import './summernote-bs5.scss';
 
 const editor = renderer.create('<div class="note-editor note-frame card"></div>');

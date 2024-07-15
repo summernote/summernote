@@ -1,37 +1,51 @@
-import { defineConfig } from 'vite'
+import { defineConfig, build } from 'vite'
 import externalGlobals from 'rollup-plugin-external-globals';
+import postcss from 'rollup-plugin-postcss';
 
-export default defineConfig({
-  resolve: {
-    alias: {
-      '@': '/src',
-    },
-  },
+const styles = [
+  'lite',
+  'bs3', 'bs4', 'bs5',
+];
+const defaultStyle = 'lite';
 
-  plugins: [
-    externalGlobals({
-      jquery: '$'
-    })
-  ],
-
-  build: {
-    lib: {
-      entry: {
-        "lite": '/src/styles/lite/summernote-lite.js',
-        "bs3": '/src/styles/bs3/summernote-bs3.js',
+let configs = {};
+for (const style of styles) {
+  configs[style] = defineConfig({
+    resolve: {
+      alias: {
+        '@': '/src',
       },
-      name: 'summernote',
-      formats: ['es'],
-      fileName: (format, entryName) => `summernote-${entryName}.js`,
     },
 
-    rollupOptions: {
-      external: ['jquery'],
-      output: {
-        globals: {
-          jquery: 'jQuery'
+    plugins: [
+      externalGlobals({
+        jquery: '$'
+      }),
+    ],
+
+    build: {
+      sourcemap: true,
+
+      lib: {
+        entry: `/src/styles/${style}/summernote-${style}.js`,
+        name: 'summernote',
+        formats: ['iife'],
+        fileName: (format, entryName) => `${entryName}.js`,
+      },
+
+      rollupOptions: {
+        external: ['jquery'],
+
+        output: {
+          assetFileNames: `summernote-${style}.[ext]`,
+          globals: {
+            jquery: 'jQuery'
+          }
         }
       }
     }
-  }
-})
+  })
+};
+
+export default configs[defaultStyle];
+export {configs};
