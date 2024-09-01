@@ -768,7 +768,7 @@ function isSpacePoint(point) {
 function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
   let point = startPoint;
 
-  while (point) {
+  while (point && point.node) {
     handler(point);
 
     if (isSamePoint(point, endPoint)) {
