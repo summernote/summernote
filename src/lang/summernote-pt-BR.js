@@ -50,6 +50,7 @@
         textToDisplay: 'Texto para exibir',
         url: 'Para qual URL este link leva?',
         openInNewWindow: 'Abrir em uma nova janela',
+        useProtocol: 'Usar protocolo padrão',
       },
       table: {
         table: 'Tabela',
