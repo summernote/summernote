@@ -46,6 +46,8 @@ describe('VideoDialog', () => {
       // Instagram
       expectUrl('https://www.instagram.com/p/Bi9cbsxjn-F',
         '//instagram.com/p/Bi9cbsxjn-F/embed/');
+      expectUrl('https://www.instagram.com/reel/Bi9cbsxjn-F',
+        '//instagram.com/p/Bi9cbsxjn-F/embed/');
       // v.qq.com
       expectUrl('http://v.qq.com/cover/6/640ewqy2v071ppd.html?vid=f0196y2b2cx',
         '//v.qq.com/txp/iframe/player.html?vid=f0196y2b2cx&amp;auto=0');

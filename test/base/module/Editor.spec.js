@@ -176,17 +176,11 @@ describe('Editor', () => {
     it('should indent and outdent list', (done) => {
       editor.insertOrderedList();
       expectContentsChain(context, '<ol><li>hello</li></ol>', () => {
-        editor.indent();
-        expectContentsChain(context, '<ol><li><ol><li>hello</li></ol></li></ol>', () => {
-          editor.indent();
-          expectContentsChain(context, '<ol><li><ol><li><ol><li>hello</li></ol></li></ol></li></ol>', () => {
-            editor.outdent();
-            expectContentsChain(context, '<ol><li><ol><li>hello</li></ol></li></ol>', () => {
-              editor.outdent();
-              expectContentsChain(context, '<ol><li>hello</li></ol>', () => {
-                done();
-              });
-            });
+        editor.indent();  // no two indendations at once allowed
+        expectContentsChain(context, '<ol><li>hello</li></ol>', () => {
+          editor.outdent();
+          expectContentsChain(context, '<p>hello</p>', () => {
+            done();
           });
         });
       });
