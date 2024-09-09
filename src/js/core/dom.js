@@ -228,7 +228,7 @@ function isEmpty(node) {
     // ex) <p><br></p>, <span><br></span>
     return true;
   } else if (isText(node) && node.textContent.trim() === '' ) {
-    return true;	
+    return true;
   } else if (lists.all(node.childNodes, isText) && node.innerHTML === '') {
     // ex) <p></p>, <span></span>
     return true;
@@ -424,16 +424,16 @@ function insertAfter(node, preceding) {
  */
 function appendChildNodes(node, aChild) {
   $.each(aChild, function(idx, child) {
-	  if (node.nodeType==1) {
-        // special case: insert pure UL/OL within a LI element creates inaccessible LI element 
-        // e.g. press enter in last LI which has UL/OL-subelements
-        // if current node is li with no child node (text-node) and appending a list, add a br
-		if (isLi(node) && node.firstChild === null && isList(child)) {
-		  node.appendChild(create("br"));
-		}
+    if (node.nodeType==1) {
+      // special case: insert pure UL/OL within a LI element creates inaccessible LI element
+      // e.g. press enter in last LI which has UL/OL-subelements
+      // if current node is li with no child node (text-node) and appending a list, add a br
+      if (isLi(node) && node.firstChild === null && isList(child)) {
+        node.appendChild(create("br"));
+      }
 
-		node.appendChild(child);
-	  }
+      node.appendChild(child);
+    }
   });
   return node;
 }
@@ -535,11 +535,11 @@ function isRightEdgePointOf(point, ancestor) {
 function position(node) {
   let offset = 0;
   if (node.previousSibling)  {
-	  while ((node = node.previousSibling)) {
-		offset += 1;
-	  }
+    while ((node = node.previousSibling)) {
+      offset += 1;
+    }
   }
-  
+
   return offset;
 }
 
@@ -662,30 +662,35 @@ function nextPointWithEmptyNode(point, isSkipInnerOffset) {
  */
 function nextTraversalPoint(point) {
   var node,
-      offset = 0;
-  
+    offset = 0;
+
   if (point.node.hasChildNodes())
   {
-  	node = point.node.childNodes[0];
-  	offset = 0;
+    node = point.node.childNodes[0];
+    offset = 0;
   }
   else if (point.node.nextSibling)
   {
-  	node = point.node.nextSibling;
-  	offset = point.offset + 1;
+    node = point.node.nextSibling;
+    offset = point.offset + 1;
   }
   else
   {
-	return null;
-  }
-  
-  if (isEditable(point.node)) {
+    var par = point.node.parentNode;
+    if (isEditable(par) || !par.nextSibling) {
       return null;
+    }
+    node = par.nextSibling;
+    offset = position(node);
   }
-   
+
+  if (isEditable(point.node)) {
+    return null;
+  }
+
   return {
     node: node,
-    offset: offset
+    offset: offset,
   };
 }
 
@@ -813,18 +818,24 @@ function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
   while (point && point.node) {
     handler(point);
 
-	// if end node is reached, call handler again with the final offset
-	if (point.node === endPoint.node) {
-		point.offset = endPoint.offset;
-		handler(point);
-	}
+    // if end node is reached, call handler again with the final offset
+    if (point.node === endPoint.node) {
+      if (point.node.hasChildNodes() && startPoint.node === endPoint.node && endPoint.offset > startPoint.offset) {
+        var newStart = nextTraversalPoint(point);
+        walkPoint(newStart, endPoint, handler, isSkipInnerOffset);
+      }
+
+      point.offset = endPoint.offset;
+      handler(point);
+    }
 
     if (isSamePoint(point, endPoint)) {
       break;
     }
 
+    // point = nextPointWithEmptyNode(point);
     point = nextTraversalPoint(point);
-  }
+  }  
 }
 
 /**
@@ -836,33 +847,33 @@ function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
  */
 function walkDom(startNode, endNode, curDepth, maxDepth, handler) {
   if (curDepth > maxDepth) {
-  	return true;
+    return true;
   }
 
   // handle current node
   handler(startNode);
 
   if (endNode === startNode) {
-     return false;  // dont go on and break
+    return false;  // dont go on and break
   }
-    
+
   // iterate childs recursively
   if (startNode.firstChild) {
-  	if (!walkDom(startNode.firstChild, endNode, curDepth+1, maxDepth, handler)) {
-  		return false;
-  	};
+    if (!walkDom(startNode.firstChild, endNode, curDepth+1, maxDepth, handler)) {
+      return false;
+    }
   }
-  
+
   // children are done, continue with the siblings
   var nd = startNode.nextSibling;
   var goon = true;  // go on or reached the end node?
-  
+
   while (nd) {
     if (!walkDom(nd, endNode, curDepth, maxDepth, handler)) {
-  		goon = false;
-  		break;
-  	};
-    
+      goon = false;
+      break;
+    }
+
     nd = nd.nextSibling;
   }
   return goon;
@@ -938,9 +949,9 @@ function splitNode(point, options) {
     const childNode = point.node.childNodes[point.offset];
     let childNodes = listNext(childNode);
     // remove empty nodes
-    childNodes = childNodes.filter(function (element) {
-      return !isEmpty(element);
-    });
+    //childNodes = childNodes.filter(function (element) {
+    //  return !isEmpty(element);
+    //});
     const clone = insertAfter(point.node.cloneNode(false), point.node);
     appendChildNodes(clone, childNodes);
 
@@ -1227,12 +1238,12 @@ function isCustomStyleTag(node) {
  * @param {Node} an HTML DOM node
  */
 function prevNonEmptyNode(node) {
-   var n = node.previousSibling;
-   while (n && isEmpty(n)) {
-   	  n = n.previousSibling;
-   }
-   
-   return n;
+  var n = node.previousSibling;
+  while (n && isEmpty(n)) {
+    n = n.previousSibling;
+  }
+
+  return n;
 }
 
 /**
@@ -1243,12 +1254,12 @@ function prevNonEmptyNode(node) {
  * @param {Node} an HTML DOM node
  */
 function nextNonEmptyNode(node) {
-   var n = node.nextSibling;
-   while (n && isEmpty(n)) {
-   	  n = n.nextSibling;
-   }
-   
-   return n;
+  var n = node.nextSibling;
+  while (n && isEmpty(n)) {
+    n = n.nextSibling;
+  }
+
+  return n;
 }
 
 export default {

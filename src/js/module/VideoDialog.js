@@ -55,7 +55,7 @@ export default class VideoDialog {
     const gdRegExp = /(?:\.|\/\/)drive\.google\.com\/file\/d\/(.[a-zA-Z0-9_-]*)\/view/;
     const gdMatch = url.match(gdRegExp);
 
-    const igRegExp = /(?:www\.|\/\/)instagram\.com\/(reel|p)\/(.[a-zA-Z0-9_-]*)/;
+    const igRegExp = /(?:www\.|\/\/)instagram\.com\/(?:reel|p)\/(.[a-zA-Z0-9_-]*)/;
     const igMatch = url.match(igRegExp);
 
     const vRegExp = /\/\/vine\.co\/v\/([a-zA-Z0-9]+)/;
@@ -117,7 +117,7 @@ export default class VideoDialog {
     } else if (igMatch && igMatch[0].length) {
       $video = $('<iframe>')
         .attr('frameborder', 0)
-        .attr('src', 'https://instagram.com/p/' + igMatch[2] + '/embed/')
+        .attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/')
         .attr('width', '612').attr('height', '710')
         .attr('scrolling', 'no')
         .attr('allowtransparency', 'true');

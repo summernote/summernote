@@ -175,8 +175,8 @@ class WrappedRange {
   }
   
   setStartPoint(node, offset) {
-        this.sc = node,
-        this.so = offset
+    this.sc = node;
+    this.so = offset;
   }
 
   getEndPoint() {
@@ -187,8 +187,8 @@ class WrappedRange {
   }
 
   setEndPoint(node, offset) {
-        this.ec = node,
-        this.eo = offset
+    this.ec = node;
+    this.eo = offset;
   }
   
   /**
@@ -302,45 +302,31 @@ class WrappedRange {
    * @param {Function} [pred] - predicate function
    * @param {Object} [options]
    * @param {Boolean} [options.includeAncestor]
-   * @param {Boolean} [options.fullyContains]
    * @return {Node[]}
    */
   nodes(pred, options) {
     pred = pred || func.ok;
 
     const includeAncestor = options && options.includeAncestor;
-    const fullyContains = options && options.fullyContains;
 
     // TODO compare points and sort
     var startPoint = this.getStartPoint();
     var endPoint = this.getEndPoint();
 
     const nodes = [];
-    const leftEdgeNodes = [];
-	
+    
     if (includeAncestor) {
-    	var sp = dom.ancestor(this.sc, pred);
-    	startPoint =  {node: sp, offset: dom.position(sp)};
-    }	
+      var sp = dom.ancestor(this.sc, pred);
+      startPoint =  {node: sp, offset: dom.position(sp)};
+    }
 
     dom.walkPoint(startPoint, endPoint, function(point) {
       if (dom.isEditable(point.node)) {
         return;
       }
+      // console.log(point);
 
-      let node;
-      if (fullyContains) {
-        if (dom.isLeftEdgePoint(point)) {
-          leftEdgeNodes.push(point.node);
-        }
-        if (dom.isRightEdgePoint(point) && lists.contains(leftEdgeNodes, point.node)) {
-          node = point.node;
-        }
-      //} else if (includeAncestor) {
-      //  node = dom.ancestor(point.node, pred);
-      } else {
-        node = point.node;
-      }
+      let node = point.node;
 
       if (node && pred(node)) {
         nodes.push(node);
@@ -351,39 +337,39 @@ class WrappedRange {
   }
 
   childNodes(pred, options) {
-      pred = pred || func.ok;
+    pred = pred || func.ok;
 
-	  var includeAncestor = options && options.includeAncestor;
-      var startPoint = this.getStartPoint();
-      var endPoint = this.getEndPoint();
-      var nodes = [];
-      var maxDepth = 100;
-      if (options && options.maxDepth) {
-      	maxDepth = options.maxDepth;
-      }
-
- 	  // search for an anchestor with given predicate
-      if (includeAncestor)
-      {     		
-      		var sp = dom.ancestor(this.sc, pred);
-      		// if selected range is already wrapped within a single element, include this parent
-      		if (sp && sp.firstChild && sp.firstChild.textContent === startPoint.node.textContent) {
-      			startPoint =  {node: sp, offset: dom.position(sp)};
-      		}     		
-      }
-      
-      dom.walkDom(startPoint.node, endPoint.node, 1, maxDepth, function (node) {
-        if (dom.isEditable(node)) {
-          return;
-        }
-
-        if (node && pred(node)) {
-          nodes.push(node);
-        }
-      });
-      return lists.unique(nodes);
+    var includeAncestor = options && options.includeAncestor;
+    var startPoint = this.getStartPoint();
+    var endPoint = this.getEndPoint();
+    var nodes = [];
+    var maxDepth = 100;
+    if (options && options.maxDepth) {
+      maxDepth = options.maxDepth;
     }
-	
+
+    // search for an anchestor with given predicate
+    if (includeAncestor)
+    {             
+      var sp = dom.ancestor(this.sc, pred);
+      // if selected range is already wrapped within a single element, include this parent
+      if (sp && sp.firstChild && sp.firstChild.textContent === startPoint.node.textContent) {
+        startPoint =  {node: sp, offset: dom.position(sp)};
+      }           
+    }
+      
+    dom.walkDom(startPoint.node, endPoint.node, 1, maxDepth, function(node) {
+      if (dom.isEditable(node)) {
+        return;
+      }
+
+      if (node && pred(node)) {
+        nodes.push(node);
+      }
+    });
+    return lists.unique(nodes);
+  }
+    
   /**
    * returns commonAncestor of range
    * @return {Element} - commonAncestor
