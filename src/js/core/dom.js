@@ -660,7 +660,9 @@ function nextPointWithEmptyNode(point, isSkipInnerOffset) {
  * @param {BoundaryPoint} point
  * @return {BoundaryPoint}
  */
-function nextTraversalPoint(point) {
+function nextTraversalPoint(point, goUp) {
+  goUp = typeof goUp !== 'undefined' ? goUp : true;
+
   var node,
     offset = 0;
 
@@ -677,7 +679,7 @@ function nextTraversalPoint(point) {
   else
   {
     var par = point.node.parentNode;
-    if (isEditable(par) || !par.nextSibling) {
+    if (isEditable(par) || !par.nextSibling || !goUp) {
       return null;
     }
     node = par.nextSibling;
@@ -810,9 +812,11 @@ function isSpacePoint(point) {
  * @param {BoundaryPoint} startPoint
  * @param {BoundaryPoint} endPoint
  * @param {Function} handler
- * @param {Boolean} isSkipInnerOffset
+ * @param {Boolean} goUp
  */
-function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
+function walkPoint(startPoint, endPoint, handler, goUp) {
+  goUp = typeof goUp !== 'undefined' ? goUp : true;
+
   var point = startPoint;
 
   while (point && point.node) {
@@ -821,8 +825,8 @@ function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
     // if end node is reached, call handler again with the final offset
     if (point.node === endPoint.node) {
       if (point.node.hasChildNodes() && startPoint.node === endPoint.node && endPoint.offset > startPoint.offset) {
-        var newStart = nextTraversalPoint(point);
-        walkPoint(newStart, endPoint, handler, isSkipInnerOffset);
+        var newStart = nextTraversalPoint(point, false);
+        walkPoint(newStart, endPoint, handler, false);
       }
 
       point.offset = endPoint.offset;
@@ -834,7 +838,7 @@ function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
     }
 
     // point = nextPointWithEmptyNode(point);
-    point = nextTraversalPoint(point);
+    point = nextTraversalPoint(point, goUp);
   }  
 }
 
