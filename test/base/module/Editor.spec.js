@@ -142,13 +142,16 @@ describe('Editor', () => {
       editor.insertOrderedList();
       await expectContentsAwait(context, '<ol><li>hello</li></ol>');
       editor.indent();
-      await expectContentsAwait(context, '<ol><li><ol><li>hello</li></ol></li></ol>');
+      // multiple indents are not allowed, so nothing should happen / change
+      await expectContentsAwait(context, '<ol><li>hello</li></ol>');
       editor.indent();
+      /*
       await expectContentsAwait(context, '<ol><li><ol><li><ol><li>hello</li></ol></li></ol></li></ol>');
       editor.outdent();
       await expectContentsAwait(context, '<ol><li><ol><li>hello</li></ol></li></ol>');
+      */
       editor.outdent();
-      await expectContentsAwait(context, '<ol><li>hello</li></ol>');
+      await expectContentsAwait(context, 'hello');
     });
   });
 
