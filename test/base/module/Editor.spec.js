@@ -137,8 +137,7 @@ describe('Editor', () => {
       expect($editable.find('p').css('margin-left')).to.be.empty;
     });
 
-    // TODO(hackerwins): We need to fix this test.
-    it.skip('should indent and outdent list', async() => {
+    it('should indent and outdent list', async() => {
       editor.insertOrderedList();
       await expectContentsAwait(context, '<ol><li>hello</li></ol>');
       editor.indent();
