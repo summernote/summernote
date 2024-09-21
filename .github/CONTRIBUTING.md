@@ -32,7 +32,7 @@ $ yarn install
 $ yarn build
 ```
 
-After running `yarn build`, you should now have a `dist/` directory populated with everything you need to use summernote.
+After running `yarn build`, you should now have a `dist/` directory populated with everything you need to use Summernote.
 
 ### Starting the local server
 
@@ -40,7 +40,7 @@ For developing Summernote, you can start a local server. This will allow you to 
 
 ```bash
 
-## Start local server for developing summernote.
+## Start local server for developing Summernote.
 
 ```bash
 $ yarn dev
@@ -82,6 +82,44 @@ If you want to run some part of your test codes, below shows how to run `dom.spe
 $ yarn test test/base/core/dom.spec.js
 ```
 
+### Debugging Tests
+
+You can debug unit tests with VSCode following the steps:
+(Based on [article](https://vitest.dev/guide/debugging#vs-code))
+
+1. Install [VsCode](https://code.visualstudio.com/docs/setup/setup-overview)
+2. Create launch.json file on ~/.vscode folder with follow config:
+
+```json
+{
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Current Test File",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
+      "args": ["run", "${relativeFile}"],
+      "smartStep": true,
+      "console": "integratedTerminal"
+    }
+  ]
+}
+```
+
+3. On terminal, run test with command:
+
+```bash
+$ yarn test
+```
+
+4. Open vscode
+5. Set breakpoint on code
+6. Press F5 to run Debug and wait to stop on breakpoint
+
 ## Conventions
 
 In order to maintain a consistent codebase, we have a few coding conventions in place.
@@ -112,9 +150,9 @@ The subject line should be 70 characters or less and the body should be wrapped 
 
 Testing is the responsibility of all contributors, but it is also coordinated by maintainers. It is recommended to write them in order from successful cases to exceptional cases.
 
-## Document structure
+## Document Structure
 
-In the summernote, user can edit the document with various elements and nodes in HTML. But, the document structure is limited to the following:
+Understand the document structure of Summernote is important to contribute to the project. In Summernote, user can edit the document with various elements and nodes in HTML. But, the document structure is limited to the following:
 
 ```text
 - body container: <div class="note-editable">, <td>, <blockquote>, <ul>

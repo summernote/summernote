@@ -1,31 +1,28 @@
 # Summernote
 
-Super simple WYSIWYG Editor.
-
 [![Build Status](https://travis-ci.org/summernote/summernote.svg?branch=develop)](http://travis-ci.org/summernote/summernote)
 [![npm version](https://badge.fury.io/js/summernote.svg)](http://badge.fury.io/js/summernote)
 [![Coverage Status](https://coveralls.io/repos/summernote/summernote/badge.svg?branch=develop&service=github)](https://coveralls.io/github/summernote/summernote?branch=develop)
 
-### Summernote
-Summernote is a JavaScript library that helps you create WYSIWYG editors online.
+Summernote is a JavaScript library that helps you create WYSIWYG editors with a simple and easy-to-use interface. Summernote is licensed under MIT and maintained by the community.
 
-Home page: <https://summernote.org>
+Homepage: <https://summernote.org>
 
-### Why Summernote?
+## Why Summernote?
 
 Summernote has a few special features:
 
-* Paste images from clipboard
-* Saves images directly in the content of the field using base64 encoding, so you don't need to implement image handling at all
-* Simple UI
-* Interactive WYSIWYG editing
-* Handy integration with server
-* Supports Bootstrap 3, 4 and 5 integrations
-* Lots of [plugins and connectors](https://github.com/summernote/awesome-summernote) provided together
+- **Simple and User-friendly**: Providing a simple and intuitive interface that allows users
+- **Easy to install**: Just include the JS/CSS files on your HTML and create a div tag to get started.
+- **Compatible with Bootstrap**: Bootstrap 3, 4, and 5.
+- **Rich ecosystem**: A wide array of [plugins and connectors](https://github.com/summernote/awesome-summernote) are available, enhancing functionality and integration options.
+- **Easy image handling**: Images are automatically embedded in the content using base64 encoding, eliminating the need for separate image management
 
-### Installation and dependencies
+## How to Use
 
 Summernote is built on [jQuery](http://jquery.com/).
+
+### How to install
 
 #### 1. Include JS/CSS
 
@@ -42,7 +39,7 @@ Include the following code in the `<head>` tag of your HTML:
 <script src="summernote-bs5.js"></script>
 ```
 
-#### 2. Target a element
+#### 2. Place a `div` tag
 
 Then place a `div` tag somewhere in the `body` tag. This element will be replaced with the summernote editor.
 
@@ -50,9 +47,9 @@ Then place a `div` tag somewhere in the `body` tag. This element will be replace
 <div id="summernote">Hello Summernote</div>
 ```
 
-#### 3. Summernote it!
+#### 3. Initialize Summernote
 
-Finally, run this script after the DOM is ready:
+Finally, initialize Summernote with the following JavaScript:
 
 ```javascript
 $(document).ready(function() {
@@ -64,7 +61,7 @@ For more examples, please visit to [homepage](http://summernote.org/examples).
 
 ### API
 
-`code` - get the HTML source code underlying the text in the editor:
+Summernote provides a set of API. For example, you can use the following code to get the HTML source code underlying the text in the editor:
 
 ```javascript
 var html = $('#summernote').summernote('code');
@@ -72,21 +69,21 @@ var html = $('#summernote').summernote('code');
 
 For more detail about API, please refer to [document](http://summernote.org/getting-started/#basic-api).
 
-#### Warning - code injection
+> Warning - code injection
+> The code view allows the user to enter script contents. Make sure to filter/[sanitize the HTML on the server](https://github.com/search?l=JavaScript&q=sanitize+html). Otherwise, an attacker can inject arbitrary JavaScript code into clients.
 
-The code view allows the user to enter script contents. Make sure to filter/[sanitize the HTML on the server](https://github.com/search?l=JavaScript&q=sanitize+html). Otherwise, an attacker can inject arbitrary JavaScript code into clients.
+## For contributing
 
-### For contributing
-https://github.com/summernote/summernote/blob/develop/.github/CONTRIBUTING.md
+See the [CONTRIBUTING.md]( https://github.com/summernote/summernote/blob/develop/.github/CONTRIBUTING.md) for details on how to contribute to Summernote.
 
-### Contacts
-* Facebook user group: https://www.facebook.com/groups/summernote
-* Summernote Slack: [Join the Summernote Slack community](https://communityinviter.com/apps/summernote/summernote)
+## Contributors ✨
 
-## Testing powered by
-<a target="_blank" href="https://www.browserstack.com/"><img width="200" src="https://www.browserstack.com/images/layout/browserstack-logo-600x315.png"></a><br>
-[BrowserStack Open-Source Program](https://www.browserstack.com/open-source)
+Thanks go to these incredible people:
 
+<a href="https://github.com/summernote/summernote/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=summernote/summernote" alt="contributors"/>
+</a>
 
-### License
-Summernote may be freely distributed under the MIT license.
+## Contacts
+
+* Discord: [Join the Summernote Discord community](https://discord.gg/7A64GBKwyu)
