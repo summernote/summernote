@@ -4,14 +4,13 @@
  * summernote may be freely distributed under the MIT license./
  */
 
-import chai from 'chai';
+import { describe, it, expect } from 'vitest';
 import $ from 'jquery';
-import Context from 'src/js/Context';
-import Fullscreen from 'src/js/module/Fullscreen';
-import 'src/styles/bs4/summernote-bs4';
+import Context from '@/js/Context';
+import Fullscreen from '@/js/module/Fullscreen';
+import '@/styles/lite/summernote-lite';
 
 describe('Fullscreen', () => {
-  var expect = chai.expect;
   var fullscreen, context;
 
   beforeEach(() => {

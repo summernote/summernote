@@ -19,7 +19,7 @@ module.exports = {
         // Try to find information json file and get them.
         try {
           let info = JSON.parse(readFileSync(`./src/styles/${id}/summernote-${id}.json`));
-          name = info.name ?? id;
+          name = info.name || id;
         } catch {
           name = id;
         }

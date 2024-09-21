@@ -1,5 +1,5 @@
 (function($) {
-  $.extend($.summernote.lang, {
+  $.extend(true, $.summernote.lang, {
     'fi-FI': {
       font: {
         bold: 'Lihavointi',

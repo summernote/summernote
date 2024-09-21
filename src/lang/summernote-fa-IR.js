@@ -1,5 +1,5 @@
 (function($) {
-  $.extend($.summernote.lang, {
+  $.extend(true, $.summernote.lang, {
     'fa-IR': {
       font: {
         bold: 'درشت',
@@ -8,9 +8,9 @@
         clear: 'پاک کردن فرمت فونت',
         height: 'فاصله ی خطی',
         name: 'اسم فونت',
-        strikethrough: 'Strike',
-        subscript: 'Subscript',
-        superscript: 'Superscript',
+        strikethrough: 'خط خورده',
+        subscript: 'زیرنویس',
+        superscript: 'بالا نویس',
         size: 'اندازه ی فونت',
       },
       image: {
@@ -22,18 +22,18 @@
         floatLeft: 'چسباندن به چپ',
         floatRight: 'چسباندن به راست',
         floatNone: 'بدون چسبندگی',
-        shapeRounded: 'Shape: Rounded',
-        shapeCircle: 'Shape: Circle',
-        shapeThumbnail: 'Shape: Thumbnail',
-        shapeNone: 'Shape: None',
+        shapeRounded: 'شکل: گرد',
+        shapeCircle: 'شکل: دایره',
+        shapeThumbnail: 'شکل: تصویر کوچک',
+        shapeNone: 'شکل: هیچکدام',
         dragImageHere: 'یک تصویر را اینجا بکشید',
-        dropImage: 'Drop image or Text',
+        dropImage: 'تصویر یا متن را رها کنید',
         selectFromFiles: 'فایل ها را انتخاب کنید',
         maximumFileSize: 'حداکثر اندازه پرونده',
-        maximumFileSizeError: 'Maximum file size exceeded.',
+        maximumFileSizeError: 'از حداکثر اندازه فایل بیشتر شده است.',
         url: 'آدرس تصویر',
         remove: 'حذف تصویر',
-        original: 'Original',
+        original: 'اصلی',
       },
       video: {
         video: 'ویدیو',
@@ -111,7 +111,7 @@
         action: 'عملیات',
         paragraphFormatting: 'فرمت پاراگراف',
         documentStyle: 'استیل سند',
-        extraKeys: 'Extra keys',
+        extraKeys: 'کلیدهای اضافی',
       },
       help: {
         'insertParagraph': 'افزودن پاراگراف',

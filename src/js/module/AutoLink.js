@@ -9,14 +9,15 @@ export default class AutoLink {
   constructor(context) {
     this.context = context;
     this.options = context.options;
+    this.$editable = context.layoutInfo.editable;
     this.events = {
-      'summernote.keyup': (we, e) => {
-        if (!e.isDefaultPrevented()) {
-          this.handleKeyup(e);
+      'summernote.keyup': (we, event) => {
+        if (!event.isDefaultPrevented()) {
+          this.handleKeyup(event);
         }
       },
-      'summernote.keydown': (we, e) => {
-        this.handleKeydown(e);
+      'summernote.keydown': (we, event) => {
+        this.handleKeydown(event);
       },
     };
   }
@@ -50,18 +51,19 @@ export default class AutoLink {
       this.lastWordRange.insertNode(node);
       this.lastWordRange = null;
       this.context.invoke('editor.focus');
+      this.context.triggerEvent('change', this.$editable.html(), this.$editable);
     }
   }
 
-  handleKeydown(e) {
-    if (lists.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
+  handleKeydown(event) {
+    if (lists.contains([key.code.ENTER, key.code.SPACE], event.keyCode)) {
       const wordRange = this.context.invoke('editor.createRange').getWordRange();
       this.lastWordRange = wordRange;
     }
   }
 
-  handleKeyup(e) {
-    if (lists.contains([key.code.ENTER, key.code.SPACE], e.keyCode)) {
+  handleKeyup(event) {
+    if (key.code.SPACE === event.keyCode || (key.code.ENTER === event.keyCode && !event.shiftKey)) {
       this.replace();
     }
   }

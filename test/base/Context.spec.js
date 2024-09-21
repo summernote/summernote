@@ -3,38 +3,33 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-import chai from 'chai';
-import spies from 'chai-spies';
-import $ from 'jquery';// window.jQuery = $;
-import 'bootstrap';
-import chaidom from 'test/chaidom';
-import env from 'src/js/core/env';
-import Context from 'src/js/Context';
-import 'src/styles/bs4/summernote-bs4';
 
-var expect = chai.expect;
-chai.use(spies);
-chai.use(chaidom);
+import { describe, it, expect, vi } from 'vitest';
+import $ from 'jquery';
+import env from '@/js/core/env';
+import Context from '@/js/Context';
+import 'bootstrap';
+import '@/styles/lite/summernote-lite';
 
 describe('Context lifecycle', () => {
   it('should be initialized without calling callback', () => {
-    var spy = chai.spy();
+    var spy = vi.fn();
     var $note = $('<div><p>hello</p></div>');
     $note.on('summernote.change', spy);
 
     var context = new Context($note, $.summernote.options);
-    expect(spy).to.have.not.been.called();
+    expect(spy).not.toHaveBeenCalled();
 
     // [workaround]
     //  - IE8-11 can't create range in headless mode
     if (!env.isMSIE) {
       context.invoke('insertText', 'hello');
-      expect(spy).to.have.been.called();
+      expect(spy).toHaveBeenCalled();
     }
   });
 
   it('should preserve user events handler after destroy', () => {
-    var spy = chai.spy();
+    var spy = vi.fn();
     var $note = $('<div><p>hello</p></div>');
     $note.on('click', spy);
 
@@ -42,7 +37,7 @@ describe('Context lifecycle', () => {
     context.destroy();
 
     $note.trigger('click');
-    expect(spy).to.have.been.called();
+    expect(spy).toHaveBeenCalled();
   });
 });
 

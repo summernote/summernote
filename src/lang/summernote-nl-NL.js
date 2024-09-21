@@ -1,5 +1,5 @@
 (function($) {
-  $.extend($.summernote.lang, {
+  $.extend(true, $.summernote.lang, {
     'nl-NL': {
       font: {
         bold: 'Vet',

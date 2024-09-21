@@ -1,13 +1,6 @@
-/**
- * lists.spec.js
- * (c) 2013~ Alan Hong
- * summernote may be freely distributed under the MIT license./
- */
-import chai from 'chai';
+import { describe, it, expect } from 'vitest';
 import $ from 'jquery';
-import lists from 'src/js/core/lists';
-
-var expect = chai.expect;
+import lists from '@/js/core/lists';
 
 describe('base:core.lists', () => {
   describe('head', () => {
@@ -70,7 +63,9 @@ describe('base:core.lists', () => {
     });
 
     it('should return sum of all elements iterated', () => {
-      var result = lists.sum([1, 2, 3], (v) => { return v * 2; });
+      var result = lists.sum([1, 2, 3], (v) => {
+        return v * 2;
+      });
       expect(result).to.be.equal(12);
     });
   });

@@ -1,5 +1,5 @@
 (function($) {
-  $.extend($.summernote.lang, {
+  $.extend(true, $.summernote.lang, {
     'fr-FR': {
       font: {
         bold: 'Gras',
@@ -50,7 +50,6 @@
         textToDisplay: 'Texte à afficher',
         url: 'URL du lien',
         openInNewWindow: 'Ouvrir dans une nouvelle fenêtre',
-        useProtocol: 'Utiliser le protocole par défaut',
       },
       table: {
         table: 'Tableau',

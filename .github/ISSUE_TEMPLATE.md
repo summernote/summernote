@@ -1,8 +1,12 @@
 Before submitting an issue, please make sure to search for already open issues, and add to that, you can find already progressing or known issues or feature requests within the Projects tab.
-If your are duplicating an already open or issue closely related and that we think may also resolve your issue, we will reference you to that issue and close this one.
+If your are duplicating an already open or issue closely related that we think may also resolve your issue, we will reference you to that issue and close this one.
 This way we can track issues more easily, and try to keep issue information together.
 
-Thank you, and Thanks for using Summernote.
+If you open an issue, and remove this template, without at least providing answers as per the questions further down this template that will help us resolve your issue, then we may simply close the issue. Without the questions being answered, it makes it very difficult to try and replicate our testing scenarios to try and resolve your issue.
+
+If an issue remains open without further interaction for more than 14 days after the last interaction, which is plenty of time to at least indicate if you're busy, or still require assistance, then your issue may be closed without warning at the discretion of the Summernote team.
+
+Thank you, and Thanks for using Summernote, and thank you those who contribute.
 
 This version of Summernote uses jQuery, if you are using a different version please refer to the relevant repositories below:-
 - [Angular](https://github.com/summernote/angular-summernote)
@@ -43,18 +47,22 @@ This can help find and resolve any issues, place an x inside the brackets or if 
 2. Browser and Version:
 [ ] Brave
 [ ] Chrome
-[ ] Edge
+[ ] Edge (Old Legacy)
+[ ] Edge (Chromium Based)
 [ ] Firefox
 [ ] Internet Explorer
 [ ] Opera
 [ ] Safari
 [ ] Other (Specify):
 
-3. Summernote Version, place an x inside the brackets:
+3. Summernote Type, place an x inside the brackets:
 [ ] BS3
 [ ] BS4
 [ ] Lite
 [ ] All
+
+4. Summernote Version. If you're not sure which version you are using, you can find the version number in the help dialog in the toolbar, or at the top of the .js Summernote file.
+v
 
 #### screenshot of issue
 Add screenshot which shows your issue(if needed).

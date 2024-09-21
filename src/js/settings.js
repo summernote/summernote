@@ -111,6 +111,10 @@ $.summernote = $.extend($.summernote, {
       ],
     },
 
+    // link options
+    linkAddNoReferrer: false,
+    addLinkNoOpener: false,
+
     // air mode: inline editor
     airMode: false,
     overrideContextMenu: false, // TBD
@@ -118,11 +122,9 @@ $.summernote = $.extend($.summernote, {
     width: null,
     height: null,
     linkTargetBlank: true,
-    useProtocol: true,
-    defaultProtocol: 'http://',
 
     focus: false,
-    tabDisabled: false,
+    tabDisable: false,
     tabSize: 4,
     styleWithCSS: false,
     shortcuts: true,
@@ -205,6 +207,8 @@ $.summernote = $.extend($.summernote, {
 
     maximumImageFileSize: null,
     acceptImageFileTypes: "image/*",
+
+    allowClipboardImagePasting: true,
 
     callbacks: {
       onBeforeCommand: null,

@@ -11,7 +11,7 @@
 //Website: https://ramilaliyev.com
 
 (function($) {
-  $.extend($.summernote.lang, {
+  $.extend(true, $.summernote.lang, {
     'az-AZ': {
       font: {
         bold: 'Qalın',

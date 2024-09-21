@@ -3,21 +3,17 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-import $ from 'jquery';
-import chai from 'chai';
-import chaidom from 'test/chaidom';
-import Context from 'src/js/Context';
-import range from 'src/js/core/range';
-import env from 'src/js/core/env';
-import key from 'src/js/core/key';
-import 'src/styles/bs4/summernote-bs4';
-import spies from "chai-spies";
 
-chai.use(chaidom);
-chai.use(spies);
+import { describe, it, expect, vi } from 'vitest';
+import { nextTick } from '/test/util';
+import $ from 'jquery';
+import Context from '@/js/Context';
+import range from '@/js/core/range';
+import env from '@/js/core/env';
+import key from '@/js/core/key';
+import '@/styles/lite/summernote-lite';
 
 describe('HintPopover', () => {
-  var expect = chai.expect;
   var $note, editor, context, $editable;
 
   function expectContents(context, markup) {
@@ -35,9 +31,11 @@ describe('HintPopover', () => {
           mentions: ['jayden', 'sam', 'alvin', 'david'],
           match: /\B#(\w*)$/,
           search: function(keyword, callback) {
-            callback($.grep(this.mentions, function(item) {
-              return item.indexOf(keyword) === 0;
-            }));
+            callback(
+              $.grep(this.mentions, function(item) {
+                return item.indexOf(keyword) === 0;
+              }),
+            );
           },
           content: function(item) {
             return '#' + item;
@@ -58,77 +56,67 @@ describe('HintPopover', () => {
     });
 
     it('should not be shown without matches', () => {
-      $editable.keyup();
+      $editable.trigger('keyup');
       expect($('.note-hint-popover').css('display')).to.equals('none');
     });
 
-    it('should be shown when it matches the given condition', (done) => {
+    it('should be shown when it matches the given condition', async() => {
       var textNode = $editable.find('p')[0].firstChild;
       editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
       editor.insertText(' #');
-      $editable.keyup();
+      $editable.trigger('keyup');
 
-      setTimeout(() => {
-        expect($('.note-hint-popover').css('display')).to.equals('block');
-        done();
-      }, 10);
+      await nextTick();
+      expect($('.note-hint-popover').css('display')).to.equals('block');
     });
 
-    it('should select the best matched item with the given condition', (done) => {
+    it('should select the best matched item with the given condition', async() => {
       var textNode = $editable.find('p')[0].firstChild;
       editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
       editor.insertText(' #al');
-      $editable.keyup();
+      $editable.trigger('keyup');
 
-      setTimeout(() => {
-        // alvin should be activated
-        const item = $('.note-hint-popover').find('.note-hint-item');
-        expect(item.text()).to.equals('alvin');
-        expect(item.hasClass('active')).to.be.true;
-        done();
-      }, 10);
+      await nextTick();
+      // alvin should be activated
+      const item = $('.note-hint-popover').find('.note-hint-item');
+      expect(item.text()).to.equals('alvin');
+      expect(item.hasClass('active')).to.be.true;
     });
 
-    it('should be replaced with the selected hint', (done) => {
+    it('should be replaced with the selected hint', async() => {
       var textNode = $editable.find('p')[0].firstChild;
       editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
       editor.insertText(' #');
-      $editable.keyup();
+      $editable.trigger('keyup');
 
-      var onChange = chai.spy();
+      var onChange = vi.fn();
       $note.on('summernote.change', onChange);
 
-      setTimeout(() => {
-        var e = $.Event('keydown');
-        e.keyCode = key.code.ENTER;
-        $note.trigger('summernote.keydown', e);
+      await nextTick();
+      var e = $.Event('keydown');
+      e.keyCode = key.code.ENTER;
+      $note.trigger('summernote.keydown', e);
 
-        setTimeout(() => {
-          expectContents(context, '<p>hello #jayden world</p>');
-          expect(onChange).to.have.been.called.once;
-          done();
-        }, 10);
-      }, 10);
+      await nextTick();
+      expectContents(context, '<p>hello #jayden world</p>');
+      expect(onChange).toHaveBeenCalledOnce();
     });
 
-    it('should move selection by pressing arrow key', (done) => {
+    it('should move selection by pressing arrow key', async() => {
       var textNode = $editable.find('p')[0].firstChild;
       editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
       editor.insertText(' #');
-      $editable.keyup();
+      $editable.trigger('keyup');
 
-      setTimeout(() => {
-        var e = $.Event('keydown');
-        e.keyCode = key.code.DOWN;
-        $note.trigger('summernote.keydown', e);
-        e.keyCode = key.code.ENTER;
-        $note.trigger('summernote.keydown', e);
+      await nextTick();
+      var e = $.Event('keydown');
+      e.keyCode = key.code.DOWN;
+      $note.trigger('summernote.keydown', e);
+      e.keyCode = key.code.ENTER;
+      $note.trigger('summernote.keydown', e);
 
-        setTimeout(() => {
-          expectContents(context, '<p>hello #sam world</p>');
-          done();
-        }, 10);
-      }, 10);
+      await nextTick();
+      expectContents(context, '<p>hello #sam world</p>');
     });
   });
 
@@ -162,9 +150,11 @@ describe('HintPopover', () => {
           ],
           match: /\B@([a-z ]*)/i,
           search: function(keyword, callback) {
-            callback($.grep(this.mentions, function(item) {
-              return item.name.toLowerCase().indexOf(keyword.toLowerCase()) === 0;
-            }));
+            callback(
+              $.grep(this.mentions, function(item) {
+                return item.name.toLowerCase().indexOf(keyword.toLowerCase()) === 0;
+              }),
+            );
           },
           template: function(item) {
             return item.name;
@@ -190,38 +180,33 @@ describe('HintPopover', () => {
       }
     });
 
-    it('should select the best matched item with the given condition', (done) => {
+    it('should select the best matched item with the given condition', async() => {
       var textNode = $editable.find('p')[0].firstChild;
       editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
       editor.insertText(' @David S');
-      $editable.keyup();
+      $editable.trigger('keyup');
 
-      setTimeout(() => {
-        // David Summer should be activated
-        const item = $('.note-hint-popover').find('.note-hint-item');
-        expect(item.text()).to.equals('David Summer');
-        expect(item.hasClass('active')).to.be.true;
-        done();
-      }, 10);
+      await nextTick();
+      // David Summer should be activated
+      const item = $('.note-hint-popover').find('.note-hint-item');
+      expect(item.text()).to.equals('David Summer');
+      expect(item.hasClass('active')).to.be.true;
     });
 
-    it('should render hint result with given content', (done) => {
+    it('should render hint result with given content', async() => {
       var textNode = $editable.find('p')[0].firstChild;
       editor.setLastRange(range.create(textNode, 5, textNode, 5).select());
       editor.insertText(' @David S');
-      $editable.keyup();
+      $editable.trigger('keyup');
 
-      setTimeout(() => {
-        // alvin should be activated
-        var e = $.Event('keydown');
-        e.keyCode = key.code.ENTER;
-        $note.trigger('summernote.keydown', e);
+      await nextTick();
+      // alvin should be activated
+      var e = $.Event('keydown');
+      e.keyCode = key.code.ENTER;
+      $note.trigger('summernote.keydown', e);
 
-        setTimeout(() => {
-          expectContents(context, '<p>hello <a href="http://example.org/person/david-summer">@David Summer</a> world</p>');
-          done();
-        }, 10);
-      }, 10);
+      await nextTick();
+      expectContents(context, '<p>hello <a href="http://example.org/person/david-summer">@David Summer</a> world</p>');
     });
   });
 });

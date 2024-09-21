@@ -1,5 +1,5 @@
 (function($) {
-  $.extend($.summernote.lang, {
+  $.extend(true, $.summernote.lang, {
     'tr-TR': {
       font: {
         bold: 'Kalın',
@@ -50,7 +50,6 @@
         textToDisplay: 'Görüntülemek için',
         url: 'Bağlantı adresi?',
         openInNewWindow: 'Yeni pencerede aç',
-        useProtocol: "Varsayılan protokolü kullan",
       },
       table: {
         table: 'Tablo',

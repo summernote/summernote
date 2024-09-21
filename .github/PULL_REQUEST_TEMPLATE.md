@@ -1,32 +1,27 @@
 <!--
-Thank you for taking the time to help us improve Summernote.
-Please be sure that you are not submitting changes made to the files in the `dist/` folder, and only to the files contained in the `src/` folder.
+Thank you for taking your time to contribute to Summernote.
+Please fill out the information below to help us review your pull request.
+After you have filled out the information, please check the boxes below to confirm that you have completed the necessary steps.
 -->
-#### What does this PR do?
+#### What does this PR do / why do we need it?
 
-- awesome stuff
-- really cool feature
-- refactor X
+- Describe the feature or bug fix.
+- It is helpful to describe why this PR is needed.
 
-#### Where should the reviewer start?
+#### Which issue(s) this PR fixes?
 
-- start on the src/summernote.js
-
-#### How should this be manually tested?
-
-- click here and here
+Fixes #<issue_number>
 
 #### Any background context you want to provide?
 
-- the gem needed to be updated...
+- N/A
 
-#### What are the relevant tickets?
+#### Screenshot (if appropriate)
 
-
-#### Screenshot (if for frontend)
-
+- N/A
 
 ### Checklist
 
 - [ ] Added relevant tests or not required
+- [ ] Not submitting changes made to the files in `dist/`
 - [ ] Didn't break anything

@@ -82,9 +82,11 @@ export default class Context {
 
   _destroy() {
     // destroy modules with reversed order
-    Object.keys(this.modules).reverse().forEach((key) => {
-      this.removeModule(key);
-    });
+    Object.keys(this.modules)
+      .reverse()
+      .forEach((key) => {
+        this.removeModule(key);
+      });
 
     Object.keys(this.memos).forEach((key) => {
       this.removeMemo(key);

@@ -420,8 +420,15 @@ function insertAfter(node, preceding) {
  * @param {Node} node
  * @param {Collection} aChild
  */
-function appendChildNodes(node, aChild) {
+function appendChildNodes(node, aChild, isSkipPaddingBlankHTML) {
   $.each(aChild, function(idx, child) {
+    // special case: appending a pure UL/OL to a LI element creates inaccessible LI element
+    // e.g. press enter in last LI which has UL/OL-subelements
+    // Therefore, if current node is LI element with no child nodes (text-node) and appending a list, add a br before
+    if (!isSkipPaddingBlankHTML && isLi(node) && node.firstChild === null && isList(child)) {
+      node.appendChild(create("br"));
+    }
+
     node.appendChild(child);
   });
   return node;
@@ -603,6 +610,7 @@ function nextPoint(point, isSkipInnerOffset) {
 }
 
 /**
+ * Find next boundaryPoint for preorder / depth first traversal of the DOM
  * returns next boundaryPoint with empty node
  *
  * @param {BoundaryPoint} point
@@ -612,21 +620,6 @@ function nextPoint(point, isSkipInnerOffset) {
 function nextPointWithEmptyNode(point, isSkipInnerOffset) {
   let node, offset = 0;
 
-  // if node is empty string node, return current node's sibling.
-  if (isEmpty(point.node)) {
-    if(point.node === null){
-      return null;
-    }
-
-    node = point.node.nextSibling;
-    offset = 0;
-
-    return {
-      node: node,
-      offset: offset,
-    };
-  }
-
   if (nodeLength(point.node) === point.offset) {
     if (isEditable(point.node)) {
       return null;
@@ -635,31 +628,17 @@ function nextPointWithEmptyNode(point, isSkipInnerOffset) {
     node = point.node.parentNode;
     offset = position(point.node) + 1;
 
-    // if next node is editable ,  return current node's sibling node.
+    // if parent node is editable,  return current node's sibling node.
     if (isEditable(node)) {
       node = point.node.nextSibling;
       offset = 0;
     }
-
   } else if (hasChildren(point.node)) {
     node = point.node.childNodes[point.offset];
     offset = 0;
-    if (isEmpty(node)) {
-      if (!isEmpty(point.node.nextSibling)) {
-        return {
-          node: point.node.nextSibling,
-          offset: offset,
-        };
-      }
-      return null;
-    }
   } else {
     node = point.node;
     offset = isSkipInnerOffset ? nodeLength(point.node) : point.offset + 1;
-
-    if (isEmpty(node)) {
-      return null;
-    }
   }
 
   return {
@@ -779,7 +758,7 @@ function isSpacePoint(point) {
 }
 
 /**
- * @method walkPoint
+ * @method walkPoint - preorder / depth first traversal of the DOM
  *
  * @param {BoundaryPoint} startPoint
  * @param {BoundaryPoint} endPoint
@@ -789,7 +768,7 @@ function isSpacePoint(point) {
 function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
   let point = startPoint;
 
-  while (point) {
+  while (point && point.node) {
     handler(point);
 
     if (isSamePoint(point, endPoint)) {
@@ -871,8 +850,10 @@ function splitNode(point, options) {
     return point.node.splitText(point.offset);
   } else {
     const childNode = point.node.childNodes[point.offset];
+    let childNodes = listNext(childNode);
+
     const clone = insertAfter(point.node.cloneNode(false), point.node);
-    appendChildNodes(clone, listNext(childNode));
+    appendChildNodes(clone, childNodes);
 
     if (!isSkipPaddingBlankHTML) {
       paddingBlankHTML(point.node);
@@ -907,14 +888,38 @@ function splitNode(point, options) {
  */
 function splitTree(root, point, options) {
   // ex) [#text, <span>, <p>]
-  const ancestors = listAncestor(point.node, func.eq(root));
+  let ancestors = listAncestor(point.node, func.eq(root));
 
   if (!ancestors.length) {
     return null;
   } else if (ancestors.length === 1) {
     return splitNode(point, options);
   }
-
+  // Filter elements with sibling elements
+  if (ancestors.length > 2) {
+    let domList = ancestors.slice(0, ancestors.length - 1);
+    let ifHasNextSibling = domList.find(item => item.nextSibling);
+    if (ifHasNextSibling && point.offset != 0 && isRightEdgePoint(point)) {
+      let nestSibling = ifHasNextSibling.nextSibling;
+      let textNode;
+      if (nestSibling.nodeType == 1) {
+        textNode = nestSibling.childNodes[0];
+        ancestors = listAncestor(textNode, func.eq(root));
+        point = {
+          node: textNode,
+          offset: 0,
+        };
+      }
+      else if (nestSibling.nodeType == 3 && !nestSibling.data.match(/[\n\r]/g)) {
+        textNode = nestSibling;
+        ancestors = listAncestor(textNode, func.eq(root));
+        point = {
+          node: textNode,
+          offset: 0,
+        };
+      }
+    }
+  }
   return ancestors.reduce(function(node, parent) {
     if (node === point.node) {
       node = splitNode(point, options);
