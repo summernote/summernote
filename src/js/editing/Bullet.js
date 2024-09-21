@@ -191,15 +191,15 @@ export default class Bullet {
         const lastList =
           headList.childNodes.length > 1
             ? dom.splitTree(
-                headList,
-                {
-                  node: last.parentNode,
-                  offset: dom.position(last) + 1,
-                },
-                {
-                  isSkipPaddingBlankHTML: true,
-                },
-              )
+              headList,
+              {
+                node: last.parentNode,
+                offset: dom.position(last) + 1,
+              },
+              {
+                isSkipPaddingBlankHTML: true,
+              },
+            )
             : null;
 
         const middleList = dom.splitTree(

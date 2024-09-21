@@ -13,7 +13,9 @@ This is a rough outline of what a contributor's workflow looks like:
 1. Submit a pull request to the original repository.
 1. The PR must receive a :+1: from maintainers.
 
-> Please `don't include dist/* files` on your commits.
+> Don't include dist/* files** on your commits
+>
+> Please be sure that you are not submitting changes made to the files in the `dist/` folder, and only to the files contained in the `src/` folder.
 
 ## Building and Testing Summernote
 

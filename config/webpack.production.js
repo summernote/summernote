@@ -14,13 +14,12 @@ const banner = `
 Super simple WYSIWYG editor v${pkg.version}
 https://summernote.org
 
-
-Copyright 2013- Alan Hong and contributors
+Copyright 2013~ Hackerwins and contributors
 Summernote may be freely distributed under the MIT license.
 
 Date: ${date}
 `;
-const minBanner = `Summernote v${pkg.version} | (c) 2013- Alan Hong and contributors | MIT license`;
+const minBanner = `Summernote v${pkg.version} | (c) 2013~ Hackerwins and contributors | MIT license`;
 
 module.exports = {
   mode: 'production',

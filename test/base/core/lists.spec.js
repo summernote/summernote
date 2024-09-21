@@ -1,9 +1,3 @@
-/**
- * lists.spec.js
- * (c) 2013~ Alan Hong
- * summernote may be freely distributed under the MIT license./
- */
-
 import { describe, it, expect } from 'vitest';
 import $ from 'jquery';
 import lists from '@/js/core/lists';
