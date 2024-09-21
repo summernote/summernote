@@ -74,7 +74,7 @@ For more detail about API, please refer to [document](http://summernote.org/gett
 
 ## For contributing
 
-See the [CONTRIBUTING.md]( https://github.com/summernote/summernote/blob/develop/.github/CONTRIBUTING.md) for details on how to contribute to Summernote.
+See the [CONTRIBUTING.md]( https://github.com/summernote/summernote/blob/main/.github/CONTRIBUTING.md) for details on how to contribute to Summernote.
 
 ## Contributors ✨
 

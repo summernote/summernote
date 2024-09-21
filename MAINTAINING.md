@@ -2,12 +2,7 @@
 
 ## Releasing a New Version
 
-### 1. Merge develop to main
-
-Send pull request `develop` to `main` on github repository and merge it.
-https://github.com/summernote/summernote/compare/main...develop
-
-### 2. Build dist files
+### 1. Build dist files
 
 Build dist files and push to main
 
@@ -31,13 +26,13 @@ git tag -a "<new-version>"
 git push origin --tags
 ```
 
-### 3. Release new version
+### 2. Release new version
 
 Post release note with new tag version on github
 
 https://github.com/summernote/summernote/releases/new
 
-### 4. Publish
+### 3. Publish
 
 Publish on npm registry
 
@@ -45,10 +40,10 @@ Publish on npm registry
 yarn publish
 ```
 
-### 5. Update summernote.github.io
+### 4. Update summernote.github.io
 
 Update summernote version in `_config.yml`.
 
-### 6. Update connectors
+### 5. Update connectors
 
 Request maintainers of each connector to update package information.
