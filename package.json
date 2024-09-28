@@ -1,7 +1,7 @@
 {
   "name": "summernote",
   "description": "Super simple WYSIWYG editor",
-  "version": "0.8.20",
+  "version": "0.9.0",
   "license": "MIT",
   "keywords": [
     "editor",
@@ -26,7 +26,6 @@
     "lint": "eslint src plugin test config",
     "test": "vitest run",
     "test:watch": "vitest",
-
     "postinstall": "husky",
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable"
