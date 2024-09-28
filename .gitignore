@@ -55,3 +55,6 @@ selenium-debug.log
 
 # asdf
 .tool-versions
+
+# build files
+dist/
