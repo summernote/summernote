@@ -3,6 +3,7 @@ Thank you for taking your time to contribute to Summernote.
 Please fill out the information below to help us review your pull request.
 After you have filled out the information, please check the boxes below to confirm that you have completed the necessary steps.
 -->
+
 #### What does this PR do / why do we need it?
 
 - Describe the feature or bug fix.
@@ -23,5 +24,4 @@ Fixes #<issue_number>
 ### Checklist
 
 - [ ] Added relevant tests or not required
-- [ ] Not submitting changes made to the files in `dist/`
 - [ ] Didn't break anything

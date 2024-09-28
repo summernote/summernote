@@ -2,48 +2,20 @@
 
 ## Releasing a New Version
 
-### 1. Build dist files
+### 1. Update the version
 
-Build dist files and push to main
+Update the version in [package.json](./package.json#L4).
 
-```bash
-# change branch
-git checkout main
+### 2. Update the changelog
 
-# fetch all changes
-git pull
+Update the [CHANGES.md](./CHANGES.md) with the new version and the changes.
 
-# Bump version in package.json
+### 3. Create a PR for version and changelog and get it merged to main
 
-# build dist files and binary(.zip) for release post
-yarn build
+### 4. Create a new release
 
-# Commit and add tag for new version
-git commit -a -m "Update dist files"
-git tag -a "<new-version>"
+After creating the release, summernote will be published to [npm](https://www.npmjs.com/package/summernote) by the GitHub action.
 
-# Push new dist files and tags to remote repository.
-git push origin --tags
-```
+### 5. Update summernote.github.io
 
-### 2. Release new version
-
-Post release note with new tag version on github
-
-https://github.com/summernote/summernote/releases/new
-
-### 3. Publish
-
-Publish on npm registry
-
-```bash
-yarn publish
-```
-
-### 4. Update summernote.github.io
-
-Update summernote version in `_config.yml`.
-
-### 5. Update connectors
-
-Request maintainers of each connector to update package information.
+Update summernote [version](https://github.com/summernote/summernote.github.io/blob/master/_config.yml#L13) in `_config.yml`.
