@@ -13,10 +13,6 @@ This is a rough outline of what a contributor's workflow looks like:
 1. Submit a pull request to the original repository.
 1. The PR must receive a :+1: from maintainers.
 
-> Don't include dist/* files** on your commits
->
-> Please be sure that you are not submitting changes made to the files in the `dist/` folder, and only to the files contained in the `src/` folder.
-
 ## Building and Testing Summernote
 
 ### Building Summernote
@@ -40,7 +36,7 @@ After running `yarn build`, you should now have a `dist/` directory populated wi
 
 For developing Summernote, you can start a local server. This will allow you to make changes to the source code and see the changes in real-time.
 
-```bash
+````bash
 
 ## Start local server for developing Summernote.
 
@@ -48,7 +44,7 @@ For developing Summernote, you can start a local server. This will allow you to 
 $ yarn dev
 # Open a browser on http://localhost:3000.
 # If you change source code, automatically reload your page.
-```
+````
 
 ### Testing Summernote
 
@@ -62,7 +58,7 @@ You can also run the tests in a specific browser. To do this, you can pass the `
 
 ```bash
 $ yarn test --browser=chrome
-````
+```
 
 The following browsers are supported: https://vitest.dev/guide/browser.html#browser-option-types
 
@@ -129,7 +125,7 @@ In order to maintain a consistent codebase, we have a few coding conventions in 
 ### Code Style
 
 - eslint: https://eslint.org
-- eslint rule: https://github.com/summernote/summernote/blob/master/.eslintrc
+- eslint rule: https://github.com/summernote/summernote/blob/main/.eslintrc
 
 > As part of this repo, we use [Husky](https://github.com/typicode/husky) for git hooks. We leverage the prepush hook to prevent bad commits.
 
