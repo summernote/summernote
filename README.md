@@ -84,6 +84,17 @@ Thanks go to these incredible people:
   <img src="https://contrib.rocks/image?repo=summernote/summernote" alt="contributors"/>
 </a>
 
+## Sponsors
+
+Is your company using Summernote? Ask your boss to support us. It will help us dedicate more time to maintain this project and to make it even better for all our users. Also, your company logo will show up on here and on our website: -) [[Become a sponsor](https://opencollective.com/summernote#sponsor)]
+<a href="https://opencollective.com/summernote#sponsor" target="_
+blank"><img src="https://opencollective.com/summernote/sponsor.svg?width=890"></a>
+
+### Backers
+
+Please be our [Backers](https://opencollective.com/summernote#backers).
+<a href="https://opencollective.com/summernote#backers" target="_blank"><img src="https://opencollective.com/summernote/backers.svg?width=890"></a>
+
 ## Contacts
 
 * Discord: [Join the Summernote Discord community](https://discord.gg/7A64GBKwyu)
