@@ -26,7 +26,6 @@
     "lint": "eslint src plugin test config",
     "test": "vitest run",
     "test:watch": "vitest",
-    "postinstall": "husky",
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable"
   },
