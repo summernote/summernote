@@ -1,5 +1,11 @@
 # CHANGELOG
 
+# v0.9.1
+---------
+
+## Bug Fix
+- #4699: Remove Husky from dependencies (@hackerwins)
+
 # v0.9.0
 ---------
 
