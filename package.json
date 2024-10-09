@@ -26,15 +26,8 @@
     "lint": "eslint src plugin test config",
     "test": "vitest run",
     "test:watch": "vitest",
-    "postinstall": "husky",
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint",
-      "pre-push": "yarn lint && yarn test"
-    }
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
@@ -65,7 +58,6 @@
     "file-loader": "^6.0.0",
     "html-loader": "^5.0.0",
     "html-webpack-plugin": "^5.3.2",
-    "husky": "^9.0.11",
     "jquery": "^3.6.0",
     "less": "^4.1.1",
     "less-loader": "^12.2.0",
