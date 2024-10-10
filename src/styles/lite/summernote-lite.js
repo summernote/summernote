@@ -657,7 +657,13 @@ const ui = function(editorOptions) {
     airEditor: airEditor,
     airEditable: airEditable,
     buttonGroup: buttonGroup,
-    button: button,
+    button: (options) => {
+      console.log("button", options);
+      return button({
+        ...options,
+        container: options.container || editorOptions.container,
+      });
+    },
     dropdown: dropdown,
     dropdownCheck: dropdownCheck,
     dropdownButton: dropdownButton,
