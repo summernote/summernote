@@ -658,7 +658,6 @@ const ui = function(editorOptions) {
     airEditable: airEditable,
     buttonGroup: buttonGroup,
     button: (options) => {
-      console.log("button", options);
       return button({
         ...options,
         container: options.container || editorOptions.container,
