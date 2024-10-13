@@ -25,7 +25,7 @@
     "prebuild": "node ./scripts/build-fonts.js",
     "build": "vite build",
     "buildall": "yarn prebuild && node ./scripts/build-all.js",
-    "lint": "eslint src public/plugin test scripts",
+    "lint": "eslint src public/plugin public/lang test scripts",
     "test": "vitest run",
     "test:watch": "vitest",
     "prepublishOnly": "pinst --disable",
