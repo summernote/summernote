@@ -3,11 +3,11 @@ import fs from 'fs';
 import path from 'path';
 
 const webfontConfig = {
-  files: 'public/font/icons/*.svg',
+  files: 'src/font/icons/*.svg',
   dest: 'public/font/',
   formats: ['ttf', 'eot', 'woff', 'woff2'],
   fontName: 'summernote',
-  template: 'public/font/template.scss',
+  template: 'src/font/template.scss',
   destTemplate: 'src/styles/summernote/font.scss',
   templateFontName: 'summernote',
   templateClassName: 'note-icon',
