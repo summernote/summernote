@@ -1,6 +1,5 @@
 import { defineConfig, build } from 'vite'
 import externalGlobals from 'rollup-plugin-external-globals';
-import postcss from 'rollup-plugin-postcss';
 
 const styles = [
   'lite',
@@ -34,14 +33,18 @@ for (const style of styles) {
       },
 
       rollupOptions: {
-        external: ['jquery'],
+        external: (id) => {
+          if (id === 'jquery') return true; // do not bundle jQuery
+          if (id.startsWith('./font/')) return true; // do not bundle font files
+          return false;
+        },
 
         output: {
           assetFileNames: `summernote-${style}.[ext]`,
           globals: {
             jquery: 'jQuery'
           }
-        }
+        },
       }
     }
   })

@@ -22,9 +22,9 @@
   },
   "scripts": {
     "dev": "vite",
-    "prebuild": "node ./config/build-fonts.js",
+    "prebuild": "node ./scripts/build-fonts.js",
     "build": "vite build",
-    "buildall": "node ./build.js",
+    "buildall": "yarn prebuild && node ./scripts/build-all.js",
     "lint": "eslint src plugin test config",
     "test": "vitest run",
     "test:watch": "vitest",
