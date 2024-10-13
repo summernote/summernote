@@ -1,5 +1,22 @@
-import { defineConfig, build } from 'vite'
+import { defineConfig, build } from 'vite';
 import externalGlobals from 'rollup-plugin-external-globals';
+import banner from 'vite-plugin-banner';
+import { readFileSync } from 'fs';
+
+const pkg = JSON.parse(readFileSync('package.json', 'utf-8'));
+const date = (new Date()).toISOString().replace(/:\d+\.\d+Z$/, 'Z');
+const banners = {
+  'default': `
+Super simple WYSIWYG editor v${pkg.version}
+https://summernote.org
+
+Copyright 2013- Alan Hong and contributors
+Summernote may be freely distributed under the MIT license.
+
+Date: ${date}
+`,
+  'minimal': `Summernote v${pkg.version} | (c) 2013- Alan Hong and contributors | MIT license`
+};
 
 const styles = [
   'lite',
@@ -10,6 +27,9 @@ const defaultStyle = 'lite';
 let configs = {};
 for (const style of styles) {
   configs[style] = defineConfig({
+    // prevent to build twice while calling `build` function manually
+    configFile: false,
+
     resolve: {
       alias: {
         '@': '/src',
@@ -19,6 +39,10 @@ for (const style of styles) {
     plugins: [
       externalGlobals({
         jquery: '$'
+      }),
+      banner((fileName) => {
+        if (fileName.endsWith('.min.js')) return banners['minimal'];
+        if (fileName.endsWith('.js')) return banners['default'];
       }),
     ],
 
@@ -59,4 +83,7 @@ for (const style of styles) {
 };
 
 export default configs[defaultStyle];
-export {configs};
+export {
+  configs,
+  banners,
+};
