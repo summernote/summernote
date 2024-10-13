@@ -18,7 +18,7 @@ body:
           required: true
         - label: I understand that issues without interaction for more than 14 days (2 weeks), may be closed at our discretion. We do this, as sometimes issues are abandoned. We may at our discretion, add issues to the relevant project to be looked at, or for maintainers to work through as time permits. This is to help keep issues relevant to the current version of Summernote, and to reduce clutter.
           required: true
-        - label: I agree to follow the [Code of Conduct](https://github.com/summernote/summernote/blob/develop/.github/CODE_OF_CONDUCT.md) that this project adheres to.
+        - label: I agree to follow the [Code of Conduct](https://github.com/summernote/summernote/blob/main/.github/CODE_OF_CONDUCT.md) that this project adheres to.
           required: true
 
   - type: textarea

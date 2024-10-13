@@ -12,7 +12,7 @@ body:
           required: false
         - label: I've searched through the [current issues](https://github.com/summernote/summernote/issues) to make sure this feature hasn't been requested already.
           required: false
-        - label: I agree to follow the [Code of Conduct](https://github.com/summernote/summernote/blob/develop/.github/CODE_OF_CONDUCT.md) that this project adheres to.
+        - label: I agree to follow the [Code of Conduct](https://github.com/summernote/summernote/blob/main/.github/CODE_OF_CONDUCT.md) that this project adheres to.
           required: true
 
   - type: textarea

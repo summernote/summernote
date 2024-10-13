@@ -420,12 +420,12 @@ function insertAfter(node, preceding) {
  * @param {Node} node
  * @param {Collection} aChild
  */
-function appendChildNodes(node, aChild) {
+function appendChildNodes(node, aChild, isSkipPaddingBlankHTML) {
   $.each(aChild, function(idx, child) {
     // special case: appending a pure UL/OL to a LI element creates inaccessible LI element
     // e.g. press enter in last LI which has UL/OL-subelements
     // Therefore, if current node is LI element with no child nodes (text-node) and appending a list, add a br before
-    if (isLi(node) && node.firstChild === null && isList(child)) {
+    if (!isSkipPaddingBlankHTML && isLi(node) && node.firstChild === null && isList(child)) {
       node.appendChild(create("br"));
     }
 
@@ -768,7 +768,7 @@ function isSpacePoint(point) {
 function walkPoint(startPoint, endPoint, handler, isSkipInnerOffset) {
   let point = startPoint;
 
-  while (point) {
+  while (point && point.node) {
     handler(point);
 
     if (isSamePoint(point, endPoint)) {

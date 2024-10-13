@@ -1,3 +1,108 @@
+# CHANGELOG
+
+# v0.9.1
+---------
+
+## Bug Fix
+- #4699: Remove Husky from dependencies (@hackerwins)
+
+# v0.9.0
+---------
+
+## New feature
+- #4281: Add noreferrer and noopener link options (@simialbi)
+- #4510: Add paste clipboard image behind the config flag (@yadue)
+- #4587: Add supports for YouTube shorts and live (@alvinmatias69)
+
+## Improvement
+- #4276: Optimize isfontinstalled function (@sjw-pc)
+- #4373: Allow resize the statusbar on touch devices (@lestcape)
+- #4405: Improve images pasting from clipboard (@gl-pv)
+- #4491: Add variable to font path (@rafaeldev)
+- #4509: Trigger change when AutoLink replaces link (@yadue)
+- #4566: Add protocol automatically (@daiki0381)
+- #4580: Adapt YouTube regex + restore YouTube regex for start (hour min sec) (@gerardmorte)
+
+## Bug Fix
+- #4182: Remove optional chaining (@ljhyeok)
+- #4190: Fix typo in settings (@ddazal)
+- #4224: Fixed classname of popover content area in bs5 (@kyungjaepark)
+- #4236: Fix newline problem with style (@sjw-pc)
+- #4240: Change mouseup to mousedown in Button (@Djunnni)
+- #4257: First matched item not active when using delayed ajax call (@pandamouse)
+- #4278: Fixed bs5 issues (@dmx-patrick)
+- #4279: Fixed click removing active state in lite style (@dmx-patrick)
+- #4283: Fix image handle (@dmx-patrick)
+- #4292: Apply suggested bug fix and add two extra tests (@ritwik1233)
+- #4294: Fix additional blank lines added when Enter key is pressed (@sjw-pc)
+- #4311: Fix alignment not working with or without sequences (@gzchun)
+- #4312: Prohibit paste content when disabled (@sjw-pc)
+- #4318: Fix pasteHTML auto adding unused `<p><br></p>` (@pandamouse)
+- #4340: Fix AirPopover Position to cursor on key events (@sebsoftware)
+- #4411: Escape text link content to prevent HTML injection (@yadue)
+- #4450: Fix removeMedia-setLangRange after remove image (@quoctienkt)
+- #4472: Bug fix traversing using walkPoint() and nextPointWithEmptyNode() (@DuncanHouston)
+- #4506: Correctly close tags in summernote-bs5.js (@mikewest)
+- #4516: Fix intentation of bullet point list error when `<ul>` and `<li>` are separated by line breaks (@HoffmannTom)
+- #4528: Update Bullet.js (@HoffmannTom)
+- #4532: Fix further problems with indentation and pretty printed HTML code (@HoffmannTom)
+- #4540: Fix insert YouTube links with video dialog (@gerardmorte)
+- #4560: Fix outdent issue with whitespaces (@HoffmannTom)
+- #4571: Fix escaping inserted link text (@Quess)
+- #4584: Fix pressing enter on last LI element to create a new line (@HoffmannTom)
+- #4585: Fix error Thrown from compiled function (@DennisSuitters)
+- #4592: Fix custom keyMap containing 'TAB':'indent' creating two lines on indentation (@HoffmannTom)
+- #4596: Fix jQuery lower/uppercase issue (@HoffmannTom)
+- #4597: Fix Instagram video insertion regex (@DennisSuitters)
+- #4606: Fix problem when pressing return two times on the last li element (@HoffmannTom)
+- #4667: Fix null error when styling all text selected with ctrl+a (@youen-dev)
+- #4684: Fix unintended `<br>` insertion during bullet indentation (@hackerwins)
+
+## Translation
+- #4175: Add missing translations for Latvian language (@bokspro)
+- #4192: Update summernote-zh-TW.js (@whlshy)
+- #4264: Update summernote-sv-SE.js (@Regnander)
+- #4277: Update Italian language file (@salc)
+- #4422: Update summernote-fa-IR.js (@alizamani1616)
+- #4410: Update summernote-pl-PL.js (@web4proPL)
+- #4470: Update summernote-cs-CZ.js (@czkanec)
+- #4497: Update summernote-fa-IR.js (@alizamani1616)
+- #4665: Translate use protocol pt-BR (@luizinlara)
+- #4678: Update summernote-uk-UA.js (@uaoleg)
+
+## Misc
+- #4233: Replace deprecated jQuery $.type() (@Tecnezio)
+- #4234: Replace deprecated jQuery .change() (@Tecnezio)
+- #4263: Replace deprecated String.prototype.substr() (@CommanderRoot)
+- #4299: Fix build script for node latest (@easylogic)
+- #4308: Limit node version >= 17.0.0 (@sjw-pc)
+- #4348: Update functions from (e) to (event) (@DennisSuitters)
+- #4365: Delete husky install command (@indianazhao)
+- #4481: Update issue template (@DennisSuitters)
+- #4482: Update ISSUE_TEMPLATE.md (@DennisSuitters)
+- #4484: Update issue template to reflect time period of open issues (@DennisSuitters)
+- #4504: Update changes, such as Enter check to stop double paragraphs (@DennisSuitters)
+- #4537: Update Editor.js - add copy handler (@HoffmannTom)
+- #4578: Replace deprecated jQuery.fn.mouseup() event shorthand (@pandamouse)
+- #4586: Fix NODE_OPTIONS not working on Windows systems (@HoffmannTom)
+- #4594: Remove "unmet peer dependency" warning when running "yarn install" (@HoffmannTom)
+- #4601: Replace deprecated jQuery.trim with String.prototype.trim (@pandamouse)
+- #4602: Add feature to get link info focus (@yadue)
+- #4613: Update Issues Templates (@DennisSuitters)
+- #4614: Update bug report to better suit Summernote (@DennisSuitters)
+- #4651: Update packages and fix minor issues (@lqez)
+- #4653: Replace karma with vitest (@hackerwins)
+- #4686: Update CONTRIBUTING.md (@hackerwins)
+- #4687: Update copyright information and fix lint warnings (@hackerwins)
+- #4688: Use only the main branch (@hackerwins)
+
+
+# v0.8.20
+---------
+
+This is a hotfix for fixing path problem on css files.
+
+
 # v0.8.19
 ---------
 

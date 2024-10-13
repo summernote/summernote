@@ -1,9 +1,3 @@
-/**
- * range.spec.js
- * (c) 2013~ Alan Hong
- * summernote may be freely distributed under the MIT license./
- */
-
 import { describe, it, expect, beforeAll } from 'vitest';
 import $ from 'jquery';
 import dom from '@/js/core/dom';
