@@ -38,6 +38,7 @@
     "@babel/preset-env": "^7.9.5",
     "@popperjs/core": "^2.9.2",
     "@vitest/browser": "^1.6.0",
+    "adm-zip": "^0.5.16",
     "autoprefixer": "^10.2.4",
     "babel-plugin-module-resolver": "^5.0.2",
     "bootstrap": "^5.0.1",

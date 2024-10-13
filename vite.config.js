@@ -4,10 +4,11 @@ import banner from 'vite-plugin-banner';
 import { readFileSync } from 'fs';
 
 const pkg = JSON.parse(readFileSync('package.json', 'utf-8'));
+const version = pkg.version;
 const date = (new Date()).toISOString().replace(/:\d+\.\d+Z$/, 'Z');
 const banners = {
   'default': `
-Super simple WYSIWYG editor v${pkg.version}
+Super simple WYSIWYG editor v${version}
 https://summernote.org
 
 Copyright 2013- Alan Hong and contributors
@@ -15,7 +16,7 @@ Summernote may be freely distributed under the MIT license.
 
 Date: ${date}
 `,
-  'minimal': `Summernote v${pkg.version} | (c) 2013- Alan Hong and contributors | MIT license`
+  'minimal': `Summernote v${version} | (c) 2013- Alan Hong and contributors | MIT license`
 };
 
 const styles = [
@@ -86,4 +87,5 @@ export default configs[defaultStyle];
 export {
   configs,
   banners,
+  version,
 };

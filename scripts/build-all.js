@@ -1,5 +1,6 @@
 import { build } from 'vite';
-import { configs } from '../vite.config.js';
+import { configs, version } from '../vite.config.js';
+import AdmZip from 'adm-zip';
 
 // build every files by iteratinge all styles
 for (const [index, [style, config]] of Object.entries(configs).entries()) {
@@ -20,3 +21,10 @@ for (const [index, [style, config]] of Object.entries(configs).entries()) {
   config.build.rollupOptions.output.assetFileNames = `summernote-${style}.[ext]`;
   await build(config);
 }
+
+// compress them all into a zip file for releasing
+const zip = new AdmZip();
+const zipFilename = `summernote-${version}-dist.zip`;
+console.log(`Compressing dist files into ${zipFilename} ...`);
+zip.addLocalFolder('./dist');
+zip.writeZip(`dist/${zipFilename}`);
