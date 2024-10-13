@@ -22,6 +22,14 @@ for (const style of styles) {
       }),
     ],
 
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern'
+        },
+      },
+    },
+
     build: {
       sourcemap: true,
 
