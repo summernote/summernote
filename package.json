@@ -21,7 +21,7 @@
     "node": ">=17.0.0"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --config vite.config.dev.js",
     "prebuild": "node ./scripts/build-fonts.js",
     "build": "vite build",
     "buildall": "yarn prebuild && node ./scripts/build-all.js",
@@ -54,6 +54,7 @@
     "eslint-plugin-n": "^16.0.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.2.0",
+    "glob": "^11.0.0",
     "jquery": "3.6.0",
     "less": "^4.1.1",
     "less-loader": "^12.2.0",
@@ -68,6 +69,7 @@
     "sass-loader": "^14.2.1",
     "serve-static": "^1.14.1",
     "uglify-js": "^3.9.1",
+    "vite": "^5.4.9",
     "vite-plugin-banner": "^0.8.0",
     "vitest": "^1.6.0",
     "webdriverio": "^8.35.1",
