@@ -163,10 +163,15 @@ const ui = function(editorOptions) {
         $node.html(contents.join(''));
 
         if (options.tooltip) {
-          $node.find('.note-color-btn').tooltip({
+          var tooltipOptions = {
             container: options.container || editorOptions.container,
             trigger: 'hover',
-            placement: 'bottom',
+            placement: 'bottom'
+          };
+
+          $node.tooltip({
+            selector: '.note-color-btn',
+            ...tooltipOptions
           });
         }
       })($node, options);
