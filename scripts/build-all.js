@@ -3,7 +3,7 @@ import { configs, version } from '../vite.config.js';
 import AdmZip from 'adm-zip';
 
 // build every files by iterating all styles
-await Promise.all(Object.entries(configs).map(async ([style, config], index) => {
+await Promise.all(Object.entries(configs).map(async([style, config], index) => {
   // clean dist directory only on first
   if (index > 0) {
     config.build.emptyOutDir = false;
