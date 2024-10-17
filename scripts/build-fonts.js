@@ -1,10 +1,10 @@
-const webfont = require('webfont').default;
-const fs = require('fs');
-const path = require('path');
+import { webfont } from 'webfont';
+import fs from 'fs';
+import path from 'path';
 
 const webfontConfig = {
   files: 'src/font/icons/*.svg',
-  dest: 'src/font/',
+  dest: 'public/font/',
   formats: ['ttf', 'eot', 'woff', 'woff2'],
   fontName: 'summernote',
   template: 'src/font/template.scss',
