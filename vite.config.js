@@ -1,7 +1,9 @@
-import { defineConfig, build } from 'vite';
+import { defineConfig } from 'vite';
 import externalGlobals from 'rollup-plugin-external-globals';
 import banner from 'vite-plugin-banner';
 import { readFileSync } from 'fs';
+import vitePostCSSSourceMap from './scripts/vite-plugins/vitePostCSSSourceMap.mjs';
+
 
 const pkg = JSON.parse(readFileSync('package.json', 'utf-8'));
 const version = pkg.version;
@@ -16,7 +18,7 @@ Summernote may be freely distributed under the MIT license.
 
 Date: ${date}
 `,
-  'minimal': `Summernote v${version} | (c) 2013- Alan Hong and contributors | MIT license`
+  'minimal': `Summernote v${version} | (c) 2013- Alan Hong and contributors | MIT license`,
 };
 
 const styles = [
@@ -39,18 +41,19 @@ for (const style of styles) {
 
     plugins: [
       externalGlobals({
-        jquery: '$'
+        jquery: '$',
       }),
       banner((fileName) => {
         if (fileName.endsWith('.min.js')) return banners['minimal'];
         if (fileName.endsWith('.js')) return banners['default'];
       }),
+      vitePostCSSSourceMap(),
     ],
 
     css: {
       preprocessorOptions: {
         scss: {
-          api: 'modern'
+          api: 'modern',
         },
       },
     },
@@ -75,13 +78,13 @@ for (const style of styles) {
         output: {
           assetFileNames: `summernote-${style}.[ext]`,
           globals: {
-            jquery: 'jQuery'
-          }
+            jquery: 'jQuery',
+          },
         },
-      }
-    }
-  })
-};
+      },
+    },
+  });
+}
 
 export default configs[defaultStyle];
 export {
