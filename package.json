@@ -54,7 +54,6 @@
     "eslint-plugin-n": "^16.0.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.2.0",
-    "glob": "^11.0.0",
     "jquery": "3.6.0",
     "less": "^4.1.1",
     "less-loader": "^12.2.0",

@@ -1,12 +1,5 @@
-import { defineConfig, build } from 'vite';
+import { defineConfig } from 'vite';
 import externalGlobals from 'rollup-plugin-external-globals';
-import banner from 'vite-plugin-banner';
-import * as glob from 'glob';
-
-const examples = glob.sync('./examples/*.html').reduce((acc, it) => {
-  acc[it] = it;
-  return acc;
-}, {});
 
 const config = defineConfig({
   resolve: {
@@ -43,7 +36,6 @@ const config = defineConfig({
     rollupOptions: {
       input: {
         main: './index.html',
-        ...examples,
       },
       output: {
         entryFileNames: `[name].js`,
