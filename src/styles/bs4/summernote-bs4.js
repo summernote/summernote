@@ -231,12 +231,12 @@ const ui = function(editorOptions) {
           var tooltipOptions = {
             container: options.container || editorOptions.container,
             trigger: 'hover',
-            placement: 'bottom'
+            placement: 'bottom',
           };
 
           $node.tooltip({
             selector: '.note-color-btn',
-            ...tooltipOptions
+            ...tooltipOptions,
           });
         }
       })($node, options);
