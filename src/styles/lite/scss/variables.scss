@@ -1,10 +1,11 @@
+@use 'sass:color';
 
-$gray-base:   #000;
-$gray-darker: lighten($gray-base, 13.5%); // #222
-$gray-dark:   lighten($gray-base, 20%);   // #333
-$gray:        lighten($gray-base, 33.5%); // #555
-$gray-light:  lighten($gray-base, 46.7%); // #777
-$gray-lighter:lighten($gray-base, 93.5%); // #eee
+$gray-base:    #000;
+$gray-darker:  color.adjust($gray-base, $lightness: 13.5%); // #222
+$gray-dark:    color.adjust($gray-base, $lightness: 20%);   // #333
+$gray:         color.adjust($gray-base, $lightness: 33.5%); // #555
+$gray-light:   color.adjust($gray-base, $lightness: 46.7%); // #777
+$gray-lighter: color.adjust($gray-base, $lightness: 93.5%); // #eee
 
 $font-family: sans-serif;
 $font-size: 14px;
@@ -62,12 +63,12 @@ $popover-color: #000;
 $popover-max-width:        276px;
 $popover-border-color:     rgba(0,0,0,.2);
 $popover-fallback-border-color:       #ccc;
-$popover-title-bg:         darken($popover-bg, 3%);
+$popover-title-bg:         color.adjust($popover-bg, $lightness: -3%);
 $popover-arrow-width:      10px;
 $popover-arrow-color:      $popover-bg;
 $popover-arrow-outer-width:($popover-arrow-width + 1);
-$popover-arrow-outer-color:fade-in($popover-border-color, .05);
-$popover-arrow-outer-fallback-color:  darken($popover-fallback-border-color, 20%);
+$popover-arrow-outer-color:color.adjust($popover-border-color, $alpha: .05);
+$popover-arrow-outer-fallback-color:  color.adjust($popover-fallback-border-color, $lightness: -20%);
 
 
 $modal-inner-padding: 15px;
