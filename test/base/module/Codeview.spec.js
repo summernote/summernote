@@ -44,21 +44,23 @@ describe('Codeview', () => {
     expect(codeview.isActivated()).to.be.false;
   });
 
-  it('should show CodeMirror if available', (done) => {
-    var codemirror = loadScript('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/codemirror.js');
-    codemirror.onload = function() {
-      // need to reinitiate codeview
-      codeview = new Codeview(context);
-      expect(codeview.isActivated()).to.be.false;
-      codeview.toggle();
-      expect(codeview.isActivated()).to.be.true;
-      expect($('.CodeMirror').length).to.be.equal(1);
-      codeview.toggle();
-      expect(codeview.isActivated()).to.be.false;
-      expect($('.CodeMirror').length).to.be.equal(0);
-      unloadScript(codemirror);
-      done();
-    };
+  it('should show CodeMirror if available', async() => {
+    await new Promise((resolve) => {
+      var codemirror = loadScript('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.41.0/codemirror.js');
+      codemirror.onload = function() {
+        // need to reinitiate codeview
+        codeview = new Codeview(context);
+        expect(codeview.isActivated()).to.be.false;
+        codeview.toggle();
+        expect(codeview.isActivated()).to.be.true;
+        expect($('.CodeMirror').length).to.be.equal(1);
+        codeview.toggle();
+        expect(codeview.isActivated()).to.be.false;
+        expect($('.CodeMirror').length).to.be.equal(0);
+        unloadScript(codemirror);
+        resolve();
+      };
+    });
   });
 
   it('should purify malicious codes', () => {
