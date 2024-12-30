@@ -140,7 +140,7 @@ class WrappedRange {
     if (env.isW3CRangeSupport) {
       const w3cRange = document.createRange();
       w3cRange.setStart(this.sc, this.so);
-      w3cRange.setEnd(this.ec, this.eo);
+      w3cRange.setEnd(this.ec, this.ec.data ? Math.min(this.eo, this.ec.data.length) : this.eo);
 
       return w3cRange;
     } else {
