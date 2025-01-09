@@ -68,7 +68,7 @@ export default class LinkDialog {
 
   checkLinkUrl(linkUrl) {
     if (this.options.onCreateLink) {
-      return this.options.onCreateLink(linkUrl)
+      return this.options.onCreateLink(linkUrl);
     }
     if (MAILTO_PATTERN.test(linkUrl)) {
       return 'mailto://' + linkUrl;
