@@ -36,44 +36,46 @@ const airEditable = renderer.create(
 );
 
 const buttonGroup = renderer.create('<div class="note-btn-group"></div>');
-const button = renderer.create(
-  '<button type="button" class="note-btn" tabindex="-1"></button>',
-  function($node, options) {
-    // set button type
-    if (options && options.tooltip) {
-      $node.attr({
-        'aria-label': options.tooltip,
-      });
-      $node
-        .data(
-          '_lite_tooltip',
-          new TooltipUI($node, {
-            title: options.tooltip,
+const button = function($node, options) {
+  return renderer.create(
+    '<button type="button" class="note-btn" tabindex="-1"></button>',
+    function($node, options) {
+      // set button type
+      if (options && options.tooltip) {
+        $node.attr({
+          'aria-label': options.tooltip,
+        });
+        $node
+          .data(
+            '_lite_tooltip',
+            new TooltipUI($node, {
+              title: options.tooltip,
+              container: options.container,
+            }),
+          )
+          .on('click', (e) => {
+            $(e.currentTarget).data('_lite_tooltip').hide();
+          });
+      }
+      if (options.contents) {
+        $node.html(options.contents);
+      }
+
+      if (options && options.data && options.data.toggle === 'dropdown') {
+        $node.data(
+          '_lite_dropdown',
+          new DropdownUI($node, {
             container: options.container,
           }),
-        )
-        .on('click', (e) => {
-          $(e.currentTarget).data('_lite_tooltip').hide();
-        });
-    }
-    if (options.contents) {
-      $node.html(options.contents);
-    }
+        );
+      }
 
-    if (options && options.data && options.data.toggle === 'dropdown') {
-      $node.data(
-        '_lite_dropdown',
-        new DropdownUI($node, {
-          container: options.container,
-        }),
-      );
-    }
-
-    if (options && options.codeviewKeepButton) {
-      $node.addClass('note-codeview-keep');
-    }
-  },
-);
+      if (options && options.codeviewKeepButton) {
+        $node.addClass('note-codeview-keep');
+      }
+    },
+  )($node, options);
+};
 
 const dropdown = renderer.create('<div class="note-dropdown-menu" role="list"></div>', function($node, options) {
   const markup = Array.isArray(options.items)
@@ -657,7 +659,6 @@ const ui = function(editorOptions) {
     airEditor: airEditor,
     airEditable: airEditable,
     buttonGroup: buttonGroup,
-    button: button,
     dropdown: dropdown,
     dropdownCheck: dropdownCheck,
     dropdownButton: dropdownButton,
@@ -675,6 +676,15 @@ const ui = function(editorOptions) {
     checkbox: checkbox,
     icon: icon,
     options: editorOptions,
+
+    button: function($node, options) {
+      if ($node && !$node.container) {
+        $node = $.extend($node, {
+          container: editorOptions.container,
+        });
+      }
+      return button($node, options);
+    },
 
     toggleBtn: function($btn, isEnable) {
       $btn.toggleClass('disabled', !isEnable);
