@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Examples</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Summernote Examples</h1>
+    <ul id="example-list">
+        <!-- Example links will be dynamically inserted here -->
+    </ul>
+
+    <script>
+        // List of example HTML files (you may need to update this list manually)
+        const examples = [
+            {
+                title: 'Air Mode',
+                href: 'airmode.html'
+            },
+            {
+                title: 'CodeMirror',
+                href: 'codemirror.html'
+            },
+            {
+                title: 'Custom Style',
+                href: 'custom-style.html'
+            },
+            {
+                title: 'External API',
+                href: 'external-api.html'
+            },
+            {
+                title: 'External CodeMirror',
+                href: 'external-codemirror.html'
+            },
+            {
+                title: 'Hint Emoji',
+                href: 'hint-emoji.html'
+            },
+            {
+                title: 'Hint Math',
+                href: 'hint-math.html'
+            },
+            {
+                title: 'Hint User Define',
+                href: 'hint-userdefine.html'
+            },
+            {
+                title: 'Hint Words',
+                href: 'hint-words.html'
+            },
+            {
+                title: 'History Limit',
+                href: 'history-limit.html'
+            },
+            {
+                title: 'jQuery Custom Event',
+                href: 'jquery-custom-event.html'
+            },
+            {
+                title: 'Language',
+                href: 'lang.html'
+            },
+            {
+                title: 'Link Blank',
+                href: 'link-blank.html'
+            },
+            {
+                title: 'Mode Switcher',
+                href: 'mode-switcher.html'
+            },
+            {
+                title: 'On Dialog (Multi-tab)',
+                href: 'ondialog-multitab.html'
+            },
+            {
+                title: 'On Dialog',
+                href: 'ondialog.html'
+            },
+            {
+                title: 'Placeholder',
+                href: 'placeholder.html'
+            },
+            {
+                title: 'Plugin Hello',
+                href: 'plugin-hello.html'
+            },
+            {
+                title: 'Record Every Keystroke',
+                href: 'recordEveryKeyStroke.html'
+            },
+            {
+                title: 'Textarea',
+                href: 'textarea.html'
+            },
+            {
+                title: 'Toolbar Container',
+                href: 'toolbar-container.html'
+            },
+            {
+                title: 'With Google Font',
+                href: 'with-google-font.html'
+            }
+            // Add more example files as needed
+            
+        ];
+
+        const exampleList = document.getElementById('example-list');
+
+        examples.forEach(example => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = example.href;
+            a.textContent = example.title;
+            li.appendChild(a);
+            exampleList.appendChild(li);
+        });
+    </script>
+</body>
+</html>
+

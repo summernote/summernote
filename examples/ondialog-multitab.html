@@ -14,7 +14,7 @@
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.js"></script>
 
   <!-- include summernote -->
-  <script type="text/javascript" src="/summernote-bs4.js"></script>
+  <script type="module" src="/src/styles/bs4/summernote-bs4.js"></script>
 
   <script>
     $(function () {
@@ -24,7 +24,7 @@
         $('.dropping').summernote('destroy');
       });
 
-      $('.nav.nav-tabs a').click(function (e) {
+      $('.nav.nav-tabs a').on('click', function (e) {
         e.preventDefault()
           $(this).tab('show')
       })

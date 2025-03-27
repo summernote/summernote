@@ -4,12 +4,10 @@
  * summernote may be freely distributed under the MIT license./
  */
 
-import chai from 'chai';
+import { describe, it, expect } from 'vitest';
 import $ from 'jquery';
-import range from 'src/js/core/range';
-import Style from 'src/js/editing/Style';
-
-var expect = chai.expect;
+import range from '@/js/core/range';
+import Style from '@/js/editing/Style';
 
 describe('base:editing.Style', () => {
   var style = new Style();
@@ -84,7 +82,11 @@ describe('base:editing.Style', () => {
       var $cont = $('<div class="note-editable"><p>text<b>bold</b></p></div>');
       var $p = $cont.find('p');
       var rng = range.create($p[0].firstChild, 0, $p[0].firstChild, 4);
-      style.styleNodes(rng, { nodeName: 'B', expandClosestSibling: true, onlyPartialContains: true });
+      style.styleNodes(rng, {
+        nodeName: 'B',
+        expandClosestSibling: true,
+        onlyPartialContains: true,
+      });
 
       expect($cont.html()).to.deep.equal('<p><b>text</b><b>bold</b></p>');
     });

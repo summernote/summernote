@@ -1,3 +1,4 @@
+@use 'sass:color';
 @import "elements.scss";
 
 /* Theme Variables
@@ -15,7 +16,7 @@ $img-margin-right: 10px;
 
   // dropzone
   $dropzone-color: lightskyblue;
-  $dropzone-active-color: darken($dropzone-color, 30);
+  $dropzone-active-color: color.adjust($dropzone-color, $lightness: -30%);
   .note-dropzone {
     position: absolute;
     display: none;
@@ -616,4 +617,8 @@ html, body {
   .note-fullscreen-body {
     overflow: hidden !important;
   }
+}
+//Alignment does not work with or without sequences
+.note-editable ul li,.note-editable ol li{
+  list-style-position: inside;
 }

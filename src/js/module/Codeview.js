@@ -106,7 +106,7 @@ export default class CodeView {
     this.context.invoke('airPopover.updateCodeview', true);
 
     this.$editor.addClass('codeview');
-    this.$codable.focus();
+    this.$codable.trigger('focus');
 
     // activate CodeMirror as codable
     if (CodeMirror) {
@@ -164,7 +164,7 @@ export default class CodeView {
       this.context.triggerEvent('change', this.$editable.html(), this.$editable);
     }
 
-    this.$editable.focus();
+    this.$editable.trigger('focus');
 
     this.context.invoke('toolbar.updateCodeview', false);
     this.context.invoke('airPopover.updateCodeview', false);

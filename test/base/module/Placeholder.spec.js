@@ -3,14 +3,13 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-import chai from 'chai';
+
+import { describe, it, assert } from 'vitest';
 import $ from 'jquery';
-import Context from 'src/js/Context';
-import 'src/styles/bs4/summernote-bs4';
+import Context from '@/js/Context';
+import '@/styles/lite/summernote-lite';
 
 describe('Placeholder', () => {
-  var assert = chai.assert;
-
   it('should not be initialized by placeholder attribute without inheritPlaceHolder', () => {
     var options = $.extend({}, $.summernote.options);
     var context = new Context($('<textarea placeholder="custom_placeholder"><p>hello</p></textarea>'), options);

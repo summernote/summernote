@@ -1,23 +1,13 @@
-/**
- * range.spec.js
- * (c) 2013~ Alan Hong
- * summernote may be freely distributed under the MIT license./
- */
-
-import chai from 'chai';
-import chaidom from 'test/chaidom';
+import { describe, it, expect, beforeAll } from 'vitest';
 import $ from 'jquery';
-import dom from 'src/js/core/dom';
-import range from 'src/js/core/range';
-
-var expect = chai.expect;
-chai.use(chaidom);
+import dom from '@/js/core/dom';
+import range from '@/js/core/range';
 
 describe('base:core.range', () => {
   describe('nodes', () => {
     describe('1 depth', () => {
       var $para;
-      before(() => {
+      beforeAll(() => {
         var $cont = $('<div class="note-editable"><p>para1</p><p>para2</p></div>');
         $para = $cont.find('p');
       });
@@ -65,7 +55,7 @@ describe('base:core.range', () => {
 
   describe('commonAncestor', () => {
     var $cont;
-    before(() => {
+    beforeAll(() => {
       $cont = $('<div><span><b>b</b><u>u</u></span></div>');
     });
 
@@ -116,7 +106,7 @@ describe('base:core.range', () => {
 
   describe('normalize', () => {
     var $cont;
-    before(() => {
+    beforeAll(() => {
       $cont = $('<div><p><b>b</b><u>u</u><s>s</s></p></div>');
     });
 
@@ -375,7 +365,7 @@ describe('base:core.range', () => {
 
   describe('getWordRange', () => {
     var $cont;
-    before(() => {
+    beforeAll(() => {
       $cont = $('<div class="note-editable">super simple wysiwyg editor</div>');
     });
 
@@ -418,7 +408,7 @@ describe('base:core.range', () => {
 
   describe('getWordsRange', () => {
     var $cont;
-    before(() => {
+    beforeAll(() => {
       $cont = $('<div class="note-editable">super &nbsp; simple wysiwyg editor</div>');
     });
 
@@ -461,7 +451,7 @@ describe('base:core.range', () => {
 
   describe('getWordsMatchRange', () => {
     var $cont, regex;
-    before(() => {
+    beforeAll(() => {
       $cont = $('<div class="note-editable">hi @Peter Pan. How are you?</div>');
       regex = /@[a-z ]+/i;
     });

@@ -48,14 +48,14 @@ export default class VideoDialog {
 
   createVideoNode(url) {
     // video url patterns(youtube, instagram, vimeo, dailymotion, youku, peertube, mp4, ogg, webm)
-    const ytRegExp = /\/\/(?:(?:www|m)\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w|-]{11})(?:(?:[\?&]t=)(\S+))?$/;
+    const ytRegExp = /(?:youtu\.be\/|youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=|shorts\/|live\/))([^&\n?]+)(?:.*[?&]t=([^&\n]+))?.*/;
     const ytRegExpForStart = /^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/;
     const ytMatch = url.match(ytRegExp);
 
     const gdRegExp = /(?:\.|\/\/)drive\.google\.com\/file\/d\/(.[a-zA-Z0-9_-]*)\/view/;
     const gdMatch = url.match(gdRegExp);
 
-    const igRegExp = /(?:www\.|\/\/)instagram\.com\/p\/(.[a-zA-Z0-9_-]*)/;
+    const igRegExp = /(?:www\.|\/\/)instagram\.com\/(reel|p)\/(.[a-zA-Z0-9_-]*)/;
     const igMatch = url.match(igRegExp);
 
     const vRegExp = /\/\/vine\.co\/v\/([a-zA-Z0-9]+)/;
@@ -70,7 +70,7 @@ export default class VideoDialog {
     const youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/;
     const youkuMatch = url.match(youkuRegExp);
 
-    const peerTubeRegExp =/\/\/(.*)\/videos\/watch\/([^?]*)(?:\?(?:start=(\w*))?(?:&stop=(\w*))?(?:&loop=([10]))?(?:&autoplay=([10]))?(?:&muted=([10]))?)?/; 
+    const peerTubeRegExp =/\/\/(.*)\/videos\/watch\/([^?]*)(?:\?(?:start=(\w*))?(?:&stop=(\w*))?(?:&loop=([10]))?(?:&autoplay=([10]))?(?:&muted=([10]))?)?/;
     const peerTubeMatch = url.match(peerTubeRegExp);
 
     const qqRegExp = /\/\/v\.qq\.com.*?vid=(.+)/;
@@ -101,6 +101,8 @@ export default class VideoDialog {
           for (var n = [3600, 60, 1], i = 0, r = n.length; i < r; i++) {
             start += (typeof ytMatchForStart[i + 1] !== 'undefined' ? n[i] * parseInt(ytMatchForStart[i + 1], 10) : 0);
           }
+        }else{
+          start = parseInt(ytMatch[2], 10);
         }
       }
       $video = $('<iframe>')
@@ -115,7 +117,7 @@ export default class VideoDialog {
     } else if (igMatch && igMatch[0].length) {
       $video = $('<iframe>')
         .attr('frameborder', 0)
-        .attr('src', 'https://instagram.com/p/' + igMatch[1] + '/embed/')
+        .attr('src', 'https://instagram.com/p/' + igMatch[2] + '/embed/')
         .attr('width', '612').attr('height', '710')
         .attr('scrolling', 'no')
         .attr('allowtransparency', 'true');
@@ -228,7 +230,7 @@ export default class VideoDialog {
           $videoUrl.trigger('focus');
         }
 
-        $videoBtn.click((event) => {
+        $videoBtn.on('click', (event) => {
           event.preventDefault();
           deferred.resolve($videoUrl.val());
         });

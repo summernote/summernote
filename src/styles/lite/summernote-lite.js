@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import '/js/settings';
-import renderer from '/js/renderer';
+import '@/js/settings';
+import renderer from '@/js/renderer';
 
 import './summernote-lite.scss';
 import TooltipUI from './js/TooltipUI';
@@ -11,92 +11,88 @@ const editor = renderer.create('<div class="note-editor note-frame"></div>');
 const toolbar = renderer.create('<div class="note-toolbar" role="toolbar"></div>');
 const editingArea = renderer.create('<div class="note-editing-area"></div>');
 const codable = renderer.create('<textarea class="note-codable" aria-multiline="true"></textarea>');
-const editable = renderer.create('<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"></div>');
-const statusbar = renderer.create([
-  '<output class="note-status-output" role="status" aria-live="polite"></output>',
-  '<div class="note-statusbar" role="status">',
+const editable = renderer.create(
+  '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"></div>',
+);
+const statusbar = renderer.create(
+  [
+    '<output class="note-status-output" role="status" aria-live="polite"></output>',
+    '<div class="note-statusbar" role="status">',
     '<div class="note-resizebar" aria-label="resize">',
-      '<div class="note-icon-bar"></div>',
-      '<div class="note-icon-bar"></div>',
-      '<div class="note-icon-bar"></div>',
+    '<div class="note-icon-bar"></div>',
+    '<div class="note-icon-bar"></div>',
+    '<div class="note-icon-bar"></div>',
     '</div>',
-  '</div>',
-].join(''));
+    '</div>',
+  ].join(''),
+);
 
 const airEditor = renderer.create('<div class="note-editor note-airframe"></div>');
-const airEditable = renderer.create([
-  '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"></div>',
-  '<output class="note-status-output" role="status" aria-live="polite"></output>',
-].join(''));
+const airEditable = renderer.create(
+  [
+    '<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"></div>',
+    '<output class="note-status-output" role="status" aria-live="polite"></output>',
+  ].join(''),
+);
 
 const buttonGroup = renderer.create('<div class="note-btn-group"></div>');
-const button = renderer.create('<button type="button" class="note-btn" tabindex="-1"></button>', function($node, options) {
-  // set button type
-  if (options && options.tooltip) {
-    $node.attr({
-      'aria-label': options.tooltip,
-    });
-    $node.data('_lite_tooltip', new TooltipUI($node, {
-      title: options.tooltip,
-      container: options.container,
-    })).on('click', (e) => {
-      $(e.currentTarget).data('_lite_tooltip').hide();
-    });
-  }
-  if (options.contents) {
-    $node.html(options.contents);
-  }
+const button = renderer.create(
+  '<button type="button" class="note-btn" tabindex="-1"></button>',
+  function($node, options) {
+    // set button type
+    if (options && options.tooltip) {
+      $node.attr({
+        'aria-label': options.tooltip,
+      });
+      $node
+        .data(
+          '_lite_tooltip',
+          new TooltipUI($node, {
+            title: options.tooltip,
+            container: options.container,
+          }),
+        )
+        .on('click', (e) => {
+          $(e.currentTarget).data('_lite_tooltip').hide();
+        });
+    }
+    if (options.contents) {
+      $node.html(options.contents);
+    }
 
-  if (options && options.data && options.data.toggle === 'dropdown') {
-    $node.data('_lite_dropdown', new DropdownUI($node, {
-      container: options.container,
-    }));
-  }
+    if (options && options.data && options.data.toggle === 'dropdown') {
+      $node.data(
+        '_lite_dropdown',
+        new DropdownUI($node, {
+          container: options.container,
+        }),
+      );
+    }
 
-  if (options && options.codeviewKeepButton) {
-    $node.addClass('note-codeview-keep');
-  }
-});
+    if (options && options.codeviewKeepButton) {
+      $node.addClass('note-codeview-keep');
+    }
+  },
+);
 
 const dropdown = renderer.create('<div class="note-dropdown-menu" role="list"></div>', function($node, options) {
-  const markup = Array.isArray(options.items) ? options.items.map(function(item) {
-    const value = (typeof item === 'string') ? item : (item.value || '');
-    const content = options.template ? options.template(item) : item;
-    const $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + value + '"></a>');
+  const markup = Array.isArray(options.items)
+    ? options.items.map(function(item) {
+      const value = typeof item === 'string' ? item : item.value || '';
+      const content = options.template ? options.template(item) : item;
+      const $temp = $(
+        '<a class="note-dropdown-item" href="#" data-value="' +
+            value +
+            '" role="listitem" aria-label="' +
+            value +
+            '"></a>',
+      );
 
-    $temp.html(content).data('item', item);
+      $temp.html(content).data('item', item);
 
-    return $temp;
-  }) : options.items;
-
-  $node.html(markup).attr({ 'aria-label': options.title });
-
-  $node.on('click', '> .note-dropdown-item', function(e) {
-    const $a = $(this);
-
-    const item = $a.data('item');
-    const value = $a.data('value');
-
-    if (item.click) {
-      item.click($a);
-    } else if (options.itemClick) {
-      options.itemClick(e, item, value);
-    }
-  });
-  if (options && options.codeviewKeepButton) {
-    $node.addClass('note-codeview-keep');
-  }
-});
-
-const dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check" role="list"></div>', function($node, options) {
-  const markup = Array.isArray(options.items) ? options.items.map(function(item) {
-    const value = (typeof item === 'string') ? item : (item.value || '');
-    const content = options.template ? options.template(item) : item;
-
-    const $temp = $('<a class="note-dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + item + '"></a>');
-    $temp.html([icon(options.checkClassName), ' ', content]).data('item', item);
-    return $temp;
-  }) : options.items;
+      return $temp;
+    })
+    : options.items;
 
   $node.html(markup).attr({ 'aria-label': options.title });
 
@@ -116,48 +112,94 @@ const dropdownCheck = renderer.create('<div class="note-dropdown-menu note-check
     $node.addClass('note-codeview-keep');
   }
 });
+
+const dropdownCheck = renderer.create(
+  '<div class="note-dropdown-menu note-check" role="list"></div>',
+  function($node, options) {
+    const markup = Array.isArray(options.items)
+      ? options.items.map(function(item) {
+        const value = typeof item === 'string' ? item : item.value || '';
+        const content = options.template ? options.template(item) : item;
+
+        const $temp = $(
+          '<a class="note-dropdown-item" href="#" data-value="' +
+              value +
+              '" role="listitem" aria-label="' +
+              item +
+              '"></a>',
+        );
+        $temp.html([icon(options.checkClassName), ' ', content]).data('item', item);
+        return $temp;
+      })
+      : options.items;
+
+    $node.html(markup).attr({ 'aria-label': options.title });
+
+    $node.on('click', '> .note-dropdown-item', function(e) {
+      const $a = $(this);
+
+      const item = $a.data('item');
+      const value = $a.data('value');
+
+      if (item.click) {
+        item.click($a);
+      } else if (options.itemClick) {
+        options.itemClick(e, item, value);
+      }
+    });
+    if (options && options.codeviewKeepButton) {
+      $node.addClass('note-codeview-keep');
+    }
+  },
+);
 
 const dropdownButtonContents = function(contents, options) {
   return contents + ' ' + icon(options.icons.caret, 'span');
 };
 
 const dropdownButton = function(opt, callback) {
-  return buttonGroup([
-    button({
-      className: 'dropdown-toggle',
-      contents: opt.title + ' ' + icon('note-icon-caret'),
-      tooltip: opt.tooltip,
-      data: {
-        toggle: 'dropdown',
-      },
-    }),
-    dropdown({
-      className: opt.className,
-      items: opt.items,
-      template: opt.template,
-      itemClick: opt.itemClick,
-    }),
-  ], { callback: callback }).render();
+  return buttonGroup(
+    [
+      button({
+        className: 'dropdown-toggle',
+        contents: opt.title + ' ' + icon('note-icon-caret'),
+        tooltip: opt.tooltip,
+        data: {
+          toggle: 'dropdown',
+        },
+      }),
+      dropdown({
+        className: opt.className,
+        items: opt.items,
+        template: opt.template,
+        itemClick: opt.itemClick,
+      }),
+    ],
+    { callback: callback },
+  ).render();
 };
 
 const dropdownCheckButton = function(opt, callback) {
-  return buttonGroup([
-    button({
-      className: 'dropdown-toggle',
-      contents: opt.title + ' ' + icon('note-icon-caret'),
-      tooltip: opt.tooltip,
-      data: {
-        toggle: 'dropdown',
-      },
-    }),
-    dropdownCheck({
-      className: opt.className,
-      checkClassName: opt.checkClassName,
-      items: opt.items,
-      template: opt.template,
-      itemClick: opt.itemClick,
-    }),
-  ], { callback: callback }).render();
+  return buttonGroup(
+    [
+      button({
+        className: 'dropdown-toggle',
+        contents: opt.title + ' ' + icon('note-icon-caret'),
+        tooltip: opt.tooltip,
+        data: {
+          toggle: 'dropdown',
+        },
+      }),
+      dropdownCheck({
+        className: opt.className,
+        checkClassName: opt.checkClassName,
+        items: opt.items,
+        template: opt.template,
+        itemClick: opt.itemClick,
+      }),
+    ],
+    { callback: callback },
+  ).render();
 };
 
 const paragraphDropdownButton = function(opt) {
@@ -226,39 +268,43 @@ const tableMoveHandler = function(event, col, row) {
 };
 
 const tableDropdownButton = function(opt) {
-  return buttonGroup([
-    button({
-      className: 'dropdown-toggle',
-      contents: opt.title + ' ' + icon('note-icon-caret'),
-      tooltip: opt.tooltip,
-      data: {
-        toggle: 'dropdown',
-      },
-    }),
-    dropdown({
-      className: 'note-table',
-      items: [
-        '<div class="note-dimension-picker">',
+  return buttonGroup(
+    [
+      button({
+        className: 'dropdown-toggle',
+        contents: opt.title + ' ' + icon('note-icon-caret'),
+        tooltip: opt.tooltip,
+        data: {
+          toggle: 'dropdown',
+        },
+      }),
+      dropdown({
+        className: 'note-table',
+        items: [
+          '<div class="note-dimension-picker">',
           '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>',
           '<div class="note-dimension-picker-highlighted"></div>',
           '<div class="note-dimension-picker-unhighlighted"></div>',
-        '</div>',
-        '<div class="note-dimension-display">1 x 1</div>',
-      ].join(''),
-    }),
-  ], {
-    callback: function($node) {
-      const $catcher = $node.find('.note-dimension-picker-mousecatcher');
-      $catcher.css({
-        width: opt.col + 'em',
-        height: opt.row + 'em',
-      })
-        .mouseup(opt.itemClick)
-        .mousemove(function(e) {
-          tableMoveHandler(e, opt.col, opt.row);
-        });
+          '</div>',
+          '<div class="note-dimension-display">1 x 1</div>',
+        ].join(''),
+      }),
+    ],
+    {
+      callback: function($node) {
+        const $catcher = $node.find('.note-dimension-picker-mousecatcher');
+        $catcher
+          .css({
+            width: opt.col + 'em',
+            height: opt.row + 'em',
+          })
+          .on('mouseup', opt.itemClick)
+          .on('mousemove', function(e) {
+            tableMoveHandler(e, opt.col, opt.row);
+          });
+      },
     },
-  }).render();
+  ).render();
 };
 
 const palette = renderer.create('<div class="note-color-palette"></div>', function($node, options) {
@@ -271,24 +317,39 @@ const palette = renderer.create('<div class="note-color-palette"></div>', functi
     for (let col = 0, colSize = colors.length; col < colSize; col++) {
       const color = colors[col];
       const colorName = colorsName[col];
-      buttons.push([
-        '<button type="button" class="note-btn note-color-btn"',
-        'style="background-color:', color, '" ',
-        'data-event="', eventName, '" ',
-        'data-value="', color, '" ',
-        'data-title="', colorName, '" ',
-        'aria-label="', colorName, '" ',
-        'data-toggle="button" tabindex="-1"></button>',
-      ].join(''));
+      buttons.push(
+        [
+          '<button type="button" class="note-btn note-color-btn"',
+          'style="background-color:',
+          color,
+          '" ',
+          'data-event="',
+          eventName,
+          '" ',
+          'data-value="',
+          color,
+          '" ',
+          'data-title="',
+          colorName,
+          '" ',
+          'aria-label="',
+          colorName,
+          '" ',
+          'data-toggle="button" tabindex="-1"></button>',
+        ].join(''),
+      );
     }
     contents.push('<div class="note-color-row">' + buttons.join('') + '</div>');
   }
   $node.html(contents.join(''));
 
   $node.find('.note-color-btn').each(function() {
-    $(this).data('_lite_tooltip', new TooltipUI($(this), {
-      container: options.container,
-    }));
+    $(this).data(
+      '_lite_tooltip',
+      new TooltipUI($(this), {
+        container: options.container,
+      }),
+    );
   });
 });
 
@@ -321,45 +382,47 @@ const colorDropdownButton = function(opt, type) {
       dropdown({
         items: [
           '<div>',
-            '<div class="note-btn-group btn-background-color">',
-              '<div class="note-palette-title">' + opt.lang.color.background + '</div>',
-            '<div>',
-            '<button type="button" class="note-color-reset note-btn note-btn-block" data-event="backColor" data-value="transparent">',
-              opt.lang.color.transparent,
-            '</button>',
+          '<div class="note-btn-group btn-background-color">',
+          '<div class="note-palette-title">' + opt.lang.color.background + '</div>',
+          '<div>',
+          '<button type="button" class="note-color-reset note-btn note-btn-block" data-event="backColor" data-value="transparent">',
+          opt.lang.color.transparent,
+          '</button>',
           '</div>',
           '<div class="note-holder" data-event="backColor"></div>',
-            '<div class="btn-sm">',
-              '<input type="color" id="html5bcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
-              '<button type="button" class="note-color-reset btn" data-event="backColor" data-value="cpbackColor">',
-                opt.lang.color.cpSelect,
-              '</button>',
-            '</div>',
+          '<div class="btn-sm">',
+          '<input type="color" id="html5bcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
+          '<button type="button" class="note-color-reset btn" data-event="backColor" data-value="cpbackColor">',
+          opt.lang.color.cpSelect,
+          '</button>',
+          '</div>',
           '</div>',
           '<div class="note-btn-group btn-foreground-color">',
-            '<div class="note-palette-title">' + opt.lang.color.foreground + '</div>',
-            '<div>',
-              '<button type="button" class="note-color-reset note-btn note-btn-block" data-event="removeFormat" data-value="foreColor">',
-                opt.lang.color.resetToDefault,
-              '</button>',
-            '</div>',
-            '<div class="note-holder" data-event="foreColor"></div>',
-              '<div class="btn-sm">',
-                '<input type="color" id="html5fcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
-                '<button type="button" class="note-color-reset btn" data-event="foreColor" data-value="cpforeColor">',
-                  opt.lang.color.cpSelect,
-                '</button>',
-              '</div>',
-            '</div>',
+          '<div class="note-palette-title">' + opt.lang.color.foreground + '</div>',
+          '<div>',
+          '<button type="button" class="note-color-reset note-btn note-btn-block" data-event="removeFormat" data-value="foreColor">',
+          opt.lang.color.resetToDefault,
+          '</button>',
+          '</div>',
+          '<div class="note-holder" data-event="foreColor"></div>',
+          '<div class="btn-sm">',
+          '<input type="color" id="html5fcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">',
+          '<button type="button" class="note-color-reset btn" data-event="foreColor" data-value="cpforeColor">',
+          opt.lang.color.cpSelect,
+          '</button>',
+          '</div>',
+          '</div>',
           '</div>',
         ].join(''),
         callback: function($dropdown) {
           $dropdown.find('.note-holder').each(function() {
             const $holder = $(this);
-            $holder.append(palette({
-              colors: opt.colors,
-              eventName: $holder.data('event'),
-            }).render());
+            $holder.append(
+              palette({
+                colors: opt.colors,
+                eventName: $holder.data('event'),
+              }).render(),
+            );
           });
 
           if (type === 'fore') {
@@ -406,32 +469,50 @@ const colorDropdownButton = function(opt, type) {
   }).render();
 };
 
-const dialog = renderer.create('<div class="note-modal" aria-hidden="false" tabindex="-1" role="dialog"></div>', function($node, options) {
-  if (options.fade) {
-    $node.addClass('fade');
-  }
-  $node.attr({
-    'aria-label': options.title,
-  });
-  $node.html([
-    '<div class="note-modal-content">',
-      (options.title ? '<div class="note-modal-header"><button type="button" class="close" aria-label="Close" aria-hidden="true"><i class="note-icon-close"></i></button><h4 class="note-modal-title">' + options.title + '</h4></div>' : ''),
-      '<div class="note-modal-body">' + options.body + '</div>',
-      (options.footer ? '<div class="note-modal-footer">' + options.footer + '</div>' : ''),
-    '</div>',
-  ].join(''));
+const dialog = renderer.create(
+  '<div class="note-modal" aria-hidden="false" tabindex="-1" role="dialog"></div>',
+  function($node, options) {
+    if (options.fade) {
+      $node.addClass('fade');
+    }
+    $node.attr({
+      'aria-label': options.title,
+    });
+    $node.html(
+      [
+        '<div class="note-modal-content">',
+        options.title
+          ? '<div class="note-modal-header"><button type="button" class="close" aria-label="Close" aria-hidden="true"><i class="note-icon-close"></i></button><h4 class="note-modal-title">' +
+            options.title +
+            '</h4></div>'
+          : '',
+        '<div class="note-modal-body">' + options.body + '</div>',
+        options.footer ? '<div class="note-modal-footer">' + options.footer + '</div>' : '',
+        '</div>',
+      ].join(''),
+    );
 
-  $node.data('modal', new ModalUI($node, options));
-});
+    $node.data('modal', new ModalUI($node, options));
+  },
+);
 
 const videoDialog = function(opt) {
-  const body = '<div class="note-form-group">' +
-    '<label for="note-dialog-video-url-' + opt.id + '" class="note-form-label">' + opt.lang.video.url + ' <small class="text-muted">' + opt.lang.video.providers + '</small></label>' +
-    '<input id="note-dialog-video-url-' + opt.id + '" class="note-video-url note-input" type="text"/>' +
-  '</div>';
+  const body =
+    '<div class="note-form-group">' +
+    '<label for="note-dialog-video-url-' +
+    opt.id +
+    '" class="note-form-label">' +
+    opt.lang.video.url +
+    ' <small class="text-muted">' +
+    opt.lang.video.providers +
+    '</small></label>' +
+    '<input id="note-dialog-video-url-' +
+    opt.id +
+    '" class="note-video-url note-input" type="text"/>' +
+    '</div>';
   const footer = [
     '<button type="button" href="#" class="note-btn note-btn-primary note-video-btn disabled" disabled>',
-      opt.lang.video.insert,
+    opt.lang.video.insert,
     '</button>',
   ].join('');
 
@@ -444,18 +525,31 @@ const videoDialog = function(opt) {
 };
 
 const imageDialog = function(opt) {
-  const body = '<div class="note-form-group note-group-select-from-files">' +
-    '<label for="note-dialog-image-file-' + opt.id + '" class="note-form-label">' + opt.lang.image.selectFromFiles + '</label>' +
-    '<input id="note-dialog-image-file-' + opt.id + '" class="note-note-image-input note-input" type="file" name="files" accept="image/*" multiple="multiple"/>' +
+  const body =
+    '<div class="note-form-group note-group-select-from-files">' +
+    '<label for="note-dialog-image-file-' +
+    opt.id +
+    '" class="note-form-label">' +
+    opt.lang.image.selectFromFiles +
+    '</label>' +
+    '<input id="note-dialog-image-file-' +
+    opt.id +
+    '" class="note-note-image-input note-input" type="file" name="files" accept="image/*" multiple="multiple"/>' +
     opt.imageLimitation +
-  '</div>' +
-  '<div class="note-form-group">' +
-    '<label for="note-dialog-image-url-' + opt.id + '" class="note-form-label">' + opt.lang.image.url + '</label>' +
-    '<input id="note-dialog-image-url-' + opt.id + '" class="note-image-url note-input" type="text"/>' +
-  '</div>';
+    '</div>' +
+    '<div class="note-form-group">' +
+    '<label for="note-dialog-image-url-' +
+    opt.id +
+    '" class="note-form-label">' +
+    opt.lang.image.url +
+    '</label>' +
+    '<input id="note-dialog-image-url-' +
+    opt.id +
+    '" class="note-image-url note-input" type="text"/>' +
+    '</div>';
   const footer = [
     '<button href="#" type="button" class="note-btn note-btn-primary note-btn-large note-image-btn disabled" disabled>',
-      opt.lang.image.insert,
+    opt.lang.image.insert,
     '</button>',
   ].join('');
 
@@ -468,19 +562,39 @@ const imageDialog = function(opt) {
 };
 
 const linkDialog = function(opt) {
-  const body = '<div class="note-form-group">' +
-    '<label for="note-dialog-link-txt-' + opt.id + '" class="note-form-label">' + opt.lang.link.textToDisplay + '</label>' +
-    '<input id="note-dialog-link-txt-' + opt.id + '" class="note-link-text note-input" type="text"/>' +
-  '</div>' +
-  '<div class="note-form-group">' +
-    '<label for="note-dialog-link-url-' + opt.id + '" class="note-form-label">' + opt.lang.link.url + '</label>' +
-    '<input id="note-dialog-link-url-' + opt.id + '" class="note-link-url note-input" type="text" value="http://"/>' +
-  '</div>' +
-  (!opt.disableLinkTarget ? '<div class="checkbox"><label for="note-dialog-link-nw-' + opt.id + '"><input id="note-dialog-link-nw-' + opt.id + '" type="checkbox" checked> ' + opt.lang.link.openInNewWindow + '</label></div>' : '') +
-  '<div class="checkbox"><label for="note-dialog-link-up-' + opt.id + '"><input id="note-dialog-link-up-' + opt.id + '" type="checkbox" checked> ' + opt.lang.link.useProtocol + '</label></div>';
+  const body =
+    '<div class="note-form-group">' +
+    '<label for="note-dialog-link-txt-' +
+    opt.id +
+    '" class="note-form-label">' +
+    opt.lang.link.textToDisplay +
+    '</label>' +
+    '<input id="note-dialog-link-txt-' +
+    opt.id +
+    '" class="note-link-text note-input" type="text"/>' +
+    '</div>' +
+    '<div class="note-form-group">' +
+    '<label for="note-dialog-link-url-' +
+    opt.id +
+    '" class="note-form-label">' +
+    opt.lang.link.url +
+    '</label>' +
+    '<input id="note-dialog-link-url-' +
+    opt.id +
+    '" class="note-link-url note-input" type="text" value="http://"/>' +
+    '</div>' +
+    (!opt.disableLinkTarget
+      ? '<div class="checkbox"><label for="note-dialog-link-nw-' +
+        opt.id +
+        '"><input id="note-dialog-link-nw-' +
+        opt.id +
+        '" type="checkbox" checked> ' +
+        opt.lang.link.openInNewWindow +
+        '</label></div>'
+      : '');
   const footer = [
     '<button href="#" type="button" class="note-btn note-btn-primary note-link-btn disabled" disabled>',
-      opt.lang.link.insert,
+    opt.lang.link.insert,
     '</button>',
   ].join('');
 
@@ -493,30 +607,35 @@ const linkDialog = function(opt) {
   }).render();
 };
 
-const popover = renderer.create([
-  '<div class="note-popover bottom">',
+const popover = renderer.create(
+  [
+    '<div class="note-popover bottom">',
     '<div class="note-popover-arrow"></div>',
     '<div class="popover-content note-children-container"></div>',
-  '</div>',
-].join(''), function($node, options) {
-  const direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
+    '</div>',
+  ].join(''),
+  function($node, options) {
+    const direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
 
-  $node.addClass(direction).hide();
+    $node.addClass(direction).hide();
 
-  if (options.hideArrow) {
-    $node.find('.note-popover-arrow').hide();
-  }
-});
+    if (options.hideArrow) {
+      $node.find('.note-popover-arrow').hide();
+    }
+  },
+);
 
 const checkbox = renderer.create('<div class="checkbox"></div>', function($node, options) {
-  $node.html([
-    '<label' + (options.id ? ' for="note-' + options.id + '"' : '') + '>',
+  $node.html(
+    [
+      '<label' + (options.id ? ' for="note-' + options.id + '"' : '') + '>',
       '<input role="checkbox" type="checkbox"' + (options.id ? ' id="note-' + options.id + '"' : ''),
-      (options.checked ? ' checked' : ''),
+      options.checked ? ' checked' : '',
       ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>',
-      (options.text ? options.text : ''),
-    '</label>',
-  ].join(''));
+      options.text ? options.text : '',
+      '</label>',
+    ].join(''),
+  );
 });
 
 const icon = function(iconClassName, tagName) {
@@ -538,7 +657,12 @@ const ui = function(editorOptions) {
     airEditor: airEditor,
     airEditable: airEditable,
     buttonGroup: buttonGroup,
-    button: button,
+    button: (options) => {
+      return button({
+        ...options,
+        container: options.container || editorOptions.container,
+      });
+    },
     dropdown: dropdown,
     dropdownCheck: dropdownCheck,
     dropdownButton: dropdownButton,
@@ -608,29 +732,13 @@ const ui = function(editorOptions) {
     },
 
     createLayout: function($note) {
-      const $editor = (editorOptions.airMode ? airEditor([
-        editingArea([
-          codable(),
-          airEditable(),
-        ]),
-      ]) : (editorOptions.toolbarPosition === 'bottom'
-        ? editor([
-          editingArea([
-            codable(),
-            editable(),
-          ]),
-          toolbar(),
-          statusbar(),
-        ])
-        : editor([
-          toolbar(),
-          editingArea([
-            codable(),
-            editable(),
-          ]),
-          statusbar(),
-        ])
-      )).render();
+      const $editor = (
+        editorOptions.airMode
+          ? airEditor([editingArea([codable(), airEditable()])])
+          : editorOptions.toolbarPosition === 'bottom'
+            ? editor([editingArea([codable(), editable()]), toolbar(), statusbar()])
+            : editor([toolbar(), editingArea([codable(), editable()]), statusbar()])
+      ).render();
 
       $editor.insertAfter($note);
 

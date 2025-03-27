@@ -1,0 +1,82 @@
+name: Bug report
+description: Report a bug to help us improve
+labels: ["bug", "needs triage"]
+body:
+  - type: checkboxes
+    attributes:
+      label: Checklist
+      description: >
+        Please confirm the following:
+      options:
+        - label: I've looked at the [documentation](https://summernote.org/deep-dive/) to make sure the behavior isn't documented and expected.
+          required: true
+        - label: I'm sure this is an issue with Summernote, not with my app or other dependencies (Angular, Cordova, React, etc.).
+          required: true
+        - label: I've searched through the [current issues](https://github.com/summernote/summernote/issues) to make sure this hasn't been reported yet.
+          required: true
+        - label: My issue is pertinent to this repository of Summernote (jQuery), or I was unable to have my issue resolved from the relevant version I'm using, such as [Angular](https://github.com/summernote/angular-summernote), [dJango](https://github.com/summernote/django-summernote), [Rails](https://github.com/summernote/summernote-rails) or [React](https://github.com/summernote/react-summernote). Please try your issue at the relevent repository first.
+          required: true
+        - label: I understand that issues without interaction for more than 14 days (2 weeks), may be closed at our discretion. We do this, as sometimes issues are abandoned. We may at our discretion, add issues to the relevant project to be looked at, or for maintainers to work through as time permits. This is to help keep issues relevant to the current version of Summernote, and to reduce clutter.
+          required: true
+        - label: I agree to follow the [Code of Conduct](https://github.com/summernote/summernote/blob/main/.github/CODE_OF_CONDUCT.md) that this project adheres to.
+          required: true
+
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: >
+        How do you trigger this bug? Please walk us through it step by step.
+      placeholder: |
+        1. Go to [...]
+        2. Click on [...]
+        3. See error [...]
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: >
+        A clear and concise description of what you expected to happen.
+        Provide additional context if necessary (screenshots, video, links, etc.).
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Current behavior
+      description: >
+        A clear and concise description of what is actually happening.
+        Provide additional context if necessary (screenshots, video, links, etc.).
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Minimal example reproducing the issue
+      description: |
+        Please create an example using [gif from Recordit](http://www.recordit.co/) or any other suitable online code editor, such as [jsfiddle](https://jsfiddle.net/).
+        **This example should be as simple as possible, and should not rely on any third-party code!**
+      placeholder: Link to your example here
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: Environment
+      description: |
+        Please fill in the Summernote Version (can be found at the bottom of the help dialog) and the name and versions of the affected browser(s), OS(es), and platform(s).
+        Example:
+          - Summernote version: 0.8.20
+          - Browser (with version): Chrome 99.0.4844.82, Firefox 98.0.1
+          - OS/Platform (with version): Windows 10 laptop
+      placeholder: |
+        - Summernote version:
+        - Browser (with version):
+        - OS/Platform (with version):
+      value: |
+        - Summernote version:
+        - Browser (with version):
+        - OS/Platform (with version):
+    validations:
+      required: true

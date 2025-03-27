@@ -3,14 +3,14 @@
  * (c) 2015~ Summernote Team
  * summernote may be freely distributed under the MIT license./
  */
-import chai from 'chai';
+
+import { describe, it, expect } from 'vitest';
 import $ from 'jquery';
-import Context from 'src/js/Context';
-import VideoDialog from 'src/js/module/VideoDialog';
-import 'src/styles/bs4/summernote-bs4';
+import Context from '@/js/Context';
+import VideoDialog from '@/js/module/VideoDialog';
+import '@/styles/lite/summernote-lite';
 
 describe('VideoDialog', () => {
-  var expect = chai.expect;
   var context, $video;
 
   function expectUrl(source, target) {
@@ -23,9 +23,7 @@ describe('VideoDialog', () => {
   beforeEach(() => {
     var $note = $('<div></div>').appendTo('body');
     var options = $.extend({}, $.summernote.options);
-    options.toolbar = [
-      ['video', ['video']],
-    ];
+    options.toolbar = [['video', ['video']]];
     context = new Context($note, options);
     context.initialize();
 
@@ -41,24 +39,40 @@ describe('VideoDialog', () => {
 
     it('should get proper iframe src when insert valid video urls', () => {
       // YouTube
-      expectUrl('https://www.youtube.com/watch?v=jNQXAC9IVRw',
-        '//www.youtube.com/embed/jNQXAC9IVRw');
+      expectUrl('https://www.youtube.com/watch?v=jNQXAC9IVRw', '//www.youtube.com/embed/jNQXAC9IVRw');
       // Instagram
-      expectUrl('https://www.instagram.com/p/Bi9cbsxjn-F',
-        '//instagram.com/p/Bi9cbsxjn-F/embed/');
+      expectUrl('https://www.instagram.com/p/C6y2mNwpj1k/', '//instagram.com/p/C6y2mNwpj1k/embed/');
       // v.qq.com
-      expectUrl('http://v.qq.com/cover/6/640ewqy2v071ppd.html?vid=f0196y2b2cx',
-        '//v.qq.com/txp/iframe/player.html?vid=f0196y2b2cx&amp;auto=0');
-      expectUrl('http://v.qq.com/x/page/p0330y279lm.html',
-        '//v.qq.com/txp/iframe/player.html?vid=p0330y279lm&amp;auto=0');
+      expectUrl(
+        'http://v.qq.com/cover/6/640ewqy2v071ppd.html?vid=f0196y2b2cx',
+        '//v.qq.com/txp/iframe/player.html?vid=f0196y2b2cx&amp;auto=0',
+      );
+      expectUrl(
+        'http://v.qq.com/x/page/p0330y279lm.html',
+        '//v.qq.com/txp/iframe/player.html?vid=p0330y279lm&amp;auto=0',
+      );
       // Facebook
-      expectUrl('https://www.facebook.com/Engineering/videos/631826881803/',
-        '//www.facebook.com/plugins/video.php?href=www.facebook.com%2FEngineering%2Fvideos%2F631826881803');
+      expectUrl(
+        'https://www.facebook.com/Engineering/videos/631826881803/',
+        '//www.facebook.com/plugins/video.php?href=www.facebook.com%2FEngineering%2Fvideos%2F631826881803',
+      );
     });
 
     it('should be embedded start parameter when insert YouTube video with t', () => {
-      expectUrl('https://youtu.be/wZZ7oFKsKzY?t=4h2m42s',
-        '//www.youtube.com/embed/wZZ7oFKsKzY?start=14562');
+      expectUrl('https://youtu.be/wZZ7oFKsKzY?t=4h2m42s', '//www.youtube.com/embed/wZZ7oFKsKzY?start=14562');
+    });
+
+    it('should get proper iframe src when insert various youtube urls', () => {
+      // Normal
+      expectUrl('https://www.youtube.com/watch?v=jNQXAC9IVRw', '//www.youtube.com/embed/jNQXAC9IVRw');
+      // Shorten
+      expectUrl('https://youtu.be/jNQXAC9IVRw', '//www.youtube.com/embed/jNQXAC9IVRw');
+      // Embed
+      expectUrl('https://www.youtube.com/embed/jNQXAC9IVRw', '//www.youtube.com/embed/jNQXAC9IVRw');
+      // Shorts
+      expectUrl('https://www.youtube.com/shorts/SXHMnicI6Pg', '//www.youtube.com/embed/SXHMnicI6Pg');
+      // Live
+      expectUrl('https://www.youtube.com/live/DxmRTlPv8Q4', '//www.youtube.com/embed/DxmRTlPv8Q4');
     });
   });
 });

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Summernote</title>
+    <!-- include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <!-- initialize Summernote -->
+    <script type="module" src="src/styles/lite/summernote-lite.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('.summernote').summernote({
+          height: 400,
+          tabsize: 2
+        });
+      });
+    </script>
+    <style type="text/css">
+      body {
+        margin: 0 auto;
+        max-width: 900px;
+        font-family: sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Summernote</h1>
+    <div class="summernote">
+      <p>Summernote is a JavaScript library that helps you create WYSIWYG editors with a simple and easy-to-use interface.</p>
+      <p>Summernote is licensed under MIT and maintained by the community.</p>
+    </div>
+
+    <div>
+      <a href="/examples/summernote-bs3.html">bs3</a>
+      <a href="/examples/summernote-bs4.html">bs4</a>
+      <a href="/examples/summernote-bs5.html">bs5</a>
+      <a href="/examples/">examples</a>
+    </div>
+  </body>
+</html>

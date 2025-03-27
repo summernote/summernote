@@ -13,6 +13,9 @@ import Table from '../editing/Table';
 import Bullet from '../editing/Bullet';
 
 const KEY_BOGUS = 'bogus';
+const MAILTO_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const TEL_PATTERN = /^(\+?\d{1,3}[\s-]?)?(\d{1,4})[\s-]?(\d{1,4})[\s-]?(\d{1,4})$/;
+const URL_SCHEME_PATTERN = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/;
 
 /**
  * @class Editor
@@ -192,10 +195,12 @@ export default class Editor {
      * @param {Object} linkInfo
      */
     this.createLink = this.wrapCommand((linkInfo) => {
+      let rel = [];
       let linkUrl = linkInfo.url;
       const linkText = linkInfo.text;
       const isNewWindow = linkInfo.isNewWindow;
-      const checkProtocol = linkInfo.checkProtocol;
+      const addNoReferrer = this.options.linkAddNoReferrer;
+      const addNoOpener = this.options.linkAddNoOpener;
       let rng = linkInfo.range || this.getLastRange();
       const additionalTextLength = linkText.length - rng.toString().length;
       if (additionalTextLength > 0 && this.isLimited(additionalTextLength)) {
@@ -210,16 +215,14 @@ export default class Editor {
 
       if (this.options.onCreateLink) {
         linkUrl = this.options.onCreateLink(linkUrl);
-      } else if (checkProtocol) {
-        // if url doesn't have any protocol and not even a relative or a label, use http:// as default
-        linkUrl = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/.test(linkUrl)
-          ? linkUrl : this.options.defaultProtocol + linkUrl;
+      } else {
+        linkUrl = this.checkLinkUrl(linkUrl);
       }
 
       let anchors = [];
       if (isTextChanged) {
         rng = rng.deleteContents();
-        const anchor = rng.insertNode($('<A>' + linkText + '</A>')[0]);
+        const anchor = rng.insertNode($('<A></A>').text(linkText)[0]);
         anchors.push(anchor);
       } else {
         anchors = this.style.styleNodes(rng, {
@@ -233,6 +236,15 @@ export default class Editor {
         $(anchor).attr('href', linkUrl);
         if (isNewWindow) {
           $(anchor).attr('target', '_blank');
+          if (addNoReferrer) {
+            rel.push('noreferrer');
+          }
+          if (addNoOpener) {
+            rel.push('noopener');
+          }
+          if (rel.length) {
+            $(anchor).attr('rel', rel.join(' '));
+          }
         } else {
           $(anchor).removeAttr('target');
         }
@@ -289,6 +301,8 @@ export default class Editor {
       } else {
         $target = $(this.restoreTarget()).detach();
       }
+      
+      this.setLastRange(range.createFromSelection($target).select());
       this.context.triggerEvent('media.delete', $target, this.$editable);
     });
 
@@ -373,6 +387,8 @@ export default class Editor {
     }).on('paste', (event) => {
       this.setLastRange();
       this.context.triggerEvent('paste', event);
+    }).on('copy', (event) => {
+      this.context.triggerEvent('copy', event);
     }).on('input', () => {
       // To limit composition characters (e.g. Korean)
       if (this.isLimited(0) && this.snapshot) {
@@ -451,10 +467,12 @@ export default class Editor {
     } else if (eventName) {
       if (this.context.invoke(eventName) !== false) {
         event.preventDefault();
-        // if keyMap action was invoked
         return true;
       }
     } else if (key.isEdit(event.keyCode)) {
+      if (key.isRemove(event.keyCode)) {
+        this.context.invoke('removed');
+      }
       this.afterCommand();
     }
     return false;
@@ -486,6 +504,17 @@ export default class Editor {
       }
     }
     return false;
+  }
+
+  checkLinkUrl(linkUrl) {
+    if (MAILTO_PATTERN.test(linkUrl)) {
+      return 'mailto://' + linkUrl;
+    } else if (TEL_PATTERN.test(linkUrl)) {
+      return 'tel://' + linkUrl;
+    } else if (!URL_SCHEME_PATTERN.test(linkUrl)) {
+      return 'http://' + linkUrl;
+    }
+    return linkUrl;
   }
 
   /**
@@ -710,7 +739,25 @@ export default class Editor {
       this.afterCommand();
     };
   }
+  /**
+   * removed (function added by 1der1)
+  */
+  removed(rng, node, tagName) { // LB
+    rng = range.create();
+    if (rng.isCollapsed() && rng.isOnCell()) {
+      node = rng.ec;
+      if( (tagName = node.tagName) &&
+				(node.childElementCount === 1) &&
+				(node.childNodes[0].tagName === "BR") ){
 
+        if(tagName === "P") {
+          node.remove();
+        } else if(['TH', 'TD'].indexOf(tagName) >=0) {
+          node.firstChild.remove();
+        }
+      }
+    }
+  }
   /**
    * insert image
    *
@@ -836,9 +883,7 @@ export default class Editor {
           this.$editable.data(KEY_BOGUS, firstSpan);
         }
       } else {
-        this.setLastRange(
-          this.createRangeFromList(spans).select()
-        );
+        rng.select();
       }
     } else {
       const noteStatusOutput = $.now();
@@ -876,6 +921,10 @@ export default class Editor {
    * @return {String} [return.url=""]
    */
   getLinkInfo() {
+    if (!this.hasFocus()) {
+      this.focus();
+    }
+
     const rng = this.getLastRange().expand(dom.isAnchor);
     // Get the first anchor on range(for edit).
     const $anchor = $(lists.head(rng.nodes(dom.isAnchor)));
@@ -977,7 +1026,7 @@ export default class Editor {
     // [workaround] Screen will move when page is scolled in IE.
     //  - do focus when not focused
     if (!this.hasFocus()) {
-      this.$editable.focus();
+      this.$editable.trigger('focus');
     }
   }
 

@@ -3,6 +3,10 @@ import env from '../core/env';
 import key from '../core/key';
 import func from '../core/func';
 
+const MAILTO_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const TEL_PATTERN = /^(\+?\d{1,3}[\s-]?)?(\d{1,4})[\s-]?(\d{1,4})[\s-]?(\d{1,4})$/;
+const URL_SCHEME_PATTERN = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/;
+
 export default class LinkDialog {
   constructor(context) {
     this.context = context;
@@ -34,11 +38,6 @@ export default class LinkDialog {
           checked: true,
         }).render()).html()
         : '',
-      $('<div></div>').append(this.ui.checkbox({
-        className: 'sn-checkbox-use-protocol',
-        text: this.lang.link.useProtocol,
-        checked: true,
-      }).render()).html(),
     ].join('');
 
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-link-btn';
@@ -67,6 +66,24 @@ export default class LinkDialog {
     });
   }
 
+  checkLinkUrl(linkUrl) {
+    if (MAILTO_PATTERN.test(linkUrl)) {
+      return 'mailto://' + linkUrl;
+    } else if (TEL_PATTERN.test(linkUrl)) {
+      return 'tel://' + linkUrl;
+    } else if (!URL_SCHEME_PATTERN.test(linkUrl)) {
+      return 'http://' + linkUrl;
+    }
+    return linkUrl;
+  }
+
+  onCheckLinkUrl($input) {
+    $input.on('blur', (event) => {
+      event.target.value =
+        event.target.value == '' ? '' : this.checkLinkUrl(event.target.value);
+    });
+  }
+
   /**
    * toggle update button
    */
@@ -87,21 +104,23 @@ export default class LinkDialog {
       const $linkBtn = this.$dialog.find('.note-link-btn');
       const $openInNewWindow = this.$dialog
         .find('.sn-checkbox-open-in-new-window input[type=checkbox]');
-      const $useProtocol = this.$dialog
-        .find('.sn-checkbox-use-protocol input[type=checkbox]');
 
       this.ui.onDialogShown(this.$dialog, () => {
         this.context.triggerEvent('dialog.shown');
 
         // If no url was given and given text is valid URL then copy that into URL Field
         if (!linkInfo.url && func.isValidUrl(linkInfo.text)) {
-          linkInfo.url = linkInfo.text;
+          linkInfo.url = this.checkLinkUrl(linkInfo.text);
         }
 
         $linkText.on('input paste propertychange', () => {
           // If linktext was modified by input events,
           // cloning text from linkUrl will be stopped.
-          linkInfo.text = $linkText.val();
+          let text = $linkText.val();
+          let div = document.createElement('div');
+          div.innerText = text;
+          text = div.innerHTML;
+          linkInfo.text = text;
           this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
         }).val(linkInfo.text);
 
@@ -121,16 +140,12 @@ export default class LinkDialog {
         this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
         this.bindEnterKey($linkUrl, $linkBtn);
         this.bindEnterKey($linkText, $linkBtn);
+        this.onCheckLinkUrl($linkUrl);
 
         const isNewWindowChecked = linkInfo.isNewWindow !== undefined
           ? linkInfo.isNewWindow : this.context.options.linkTargetBlank;
 
         $openInNewWindow.prop('checked', isNewWindowChecked);
-
-        const useProtocolChecked = linkInfo.url
-          ? false : this.context.options.useProtocol;
-
-        $useProtocol.prop('checked', useProtocolChecked);
 
         $linkBtn.one('click', (event) => {
           event.preventDefault();
@@ -140,7 +155,6 @@ export default class LinkDialog {
             url: $linkUrl.val(),
             text: $linkText.val(),
             isNewWindow: $openInNewWindow.is(':checked'),
-            checkProtocol: $useProtocol.is(':checked'),
           });
           this.ui.hideDialog(this.$dialog);
         });

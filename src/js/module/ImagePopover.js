@@ -19,9 +19,9 @@ export default class ImagePopover {
       'summernote.disable summernote.dialog.shown': () => {
         this.hide();
       },
-      'summernote.blur': (we, e) => {
-        if (e.originalEvent && e.originalEvent.relatedTarget) {
-          if (!this.$popover[0].contains(e.originalEvent.relatedTarget)) {
+      'summernote.blur': (we, event) => {
+        if (event.originalEvent && event.originalEvent.relatedTarget) {
+          if (!this.$popover[0].contains(event.originalEvent.relatedTarget)) {
             this.hide();
           }
         } else {
@@ -42,7 +42,7 @@ export default class ImagePopover {
     const $content = this.$popover.find('.popover-content,.note-popover-content');
     this.context.invoke('buttons.build', $content, this.options.popover.image);
 
-    this.$popover.on('mousedown', (e) => { e.preventDefault(); });
+    this.$popover.on('mousedown', (event) => { event.preventDefault(); });
   }
 
   destroy() {
