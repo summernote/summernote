@@ -96,7 +96,7 @@ describe('LinkDialog', () => {
       var $input = dialog.$dialog.find('.note-link-url');
       expect($input.val()).to.equal('');
       $input.val('email@example.com').blur();
-      expect($input.val()).to.equal('mailto://email@example.com');
+      expect($input.val()).to.equal('mailto:email@example.com');
     });
 
     it('should add tel protocol during the onchange event if linkinfo.url is undefined and protocol not exists', () => {
@@ -108,58 +108,58 @@ describe('LinkDialog', () => {
       expect($input.val()).to.equal('');
 
       $input.val('03-1234-5678').blur();
-      expect($input.val()).to.equal('tel://03-1234-5678');
+      expect($input.val()).to.equal('tel:03-1234-5678');
 
       $input.val('090-1234-5678').blur();
-      expect($input.val()).to.equal('tel://090-1234-5678');
+      expect($input.val()).to.equal('tel:090-1234-5678');
 
       $input.val('03 1234 5678').blur();
-      expect($input.val()).to.equal('tel://03 1234 5678');
+      expect($input.val()).to.equal('tel:03 1234 5678');
 
       $input.val('090 1234 5678').blur();
-      expect($input.val()).to.equal('tel://090 1234 5678');
+      expect($input.val()).to.equal('tel:090 1234 5678');
 
       $input.val('0312345678').blur();
-      expect($input.val()).to.equal('tel://0312345678');
+      expect($input.val()).to.equal('tel:0312345678');
 
       $input.val('09012345678').blur();
-      expect($input.val()).to.equal('tel://09012345678');
+      expect($input.val()).to.equal('tel:09012345678');
 
       $input.val('+81-3-1234-5678').blur();
-      expect($input.val()).to.equal('tel://+81-3-1234-5678');
+      expect($input.val()).to.equal('tel:+81-3-1234-5678');
 
       $input.val('81-3-1234-5678').blur();
-      expect($input.val()).to.equal('tel://81-3-1234-5678');
+      expect($input.val()).to.equal('tel:81-3-1234-5678');
 
       $input.val('+81-90-1234-5678').blur();
-      expect($input.val()).to.equal('tel://+81-90-1234-5678');
+      expect($input.val()).to.equal('tel:+81-90-1234-5678');
 
       $input.val('81-90-1234-5678').blur();
-      expect($input.val()).to.equal('tel://81-90-1234-5678');
+      expect($input.val()).to.equal('tel:81-90-1234-5678');
 
       $input.val('+81 3 1234 5678').blur();
-      expect($input.val()).to.equal('tel://+81 3 1234 5678');
+      expect($input.val()).to.equal('tel:+81 3 1234 5678');
 
       $input.val('81 3 1234 5678').blur();
-      expect($input.val()).to.equal('tel://81 3 1234 5678');
+      expect($input.val()).to.equal('tel:81 3 1234 5678');
 
       $input.val('+81 90 1234 5678').blur();
-      expect($input.val()).to.equal('tel://+81 90 1234 5678');
+      expect($input.val()).to.equal('tel:+81 90 1234 5678');
 
       $input.val('81 90 1234 5678').blur();
-      expect($input.val()).to.equal('tel://81 90 1234 5678');
+      expect($input.val()).to.equal('tel:81 90 1234 5678');
 
       $input.val('+81 3-1234-5678').blur();
-      expect($input.val()).to.equal('tel://+81 3-1234-5678');
+      expect($input.val()).to.equal('tel:+81 3-1234-5678');
 
       $input.val('81 3-1234-5678').blur();
-      expect($input.val()).to.equal('tel://81 3-1234-5678');
+      expect($input.val()).to.equal('tel:81 3-1234-5678');
 
       $input.val('+81 90-1234-5678').blur();
-      expect($input.val()).to.equal('tel://+81 90-1234-5678');
+      expect($input.val()).to.equal('tel:+81 90-1234-5678');
 
       $input.val('81 90-1234-5678').blur();
-      expect($input.val()).to.equal('tel://81 90-1234-5678');
+      expect($input.val()).to.equal('tel:81 90-1234-5678');
     });
   });
 });
