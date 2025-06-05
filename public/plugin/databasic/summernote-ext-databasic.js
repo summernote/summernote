@@ -98,7 +98,7 @@
       self.$popover = ui.popover({
         className: 'ext-databasic-popover',
       }).render().appendTo('body');
-      var $content = self.$popover.find('.popover-content');
+      var $content = self.$popover.find('.popover-content,.note-popover-content');
 
       context.invoke('buttons.build', $content, options.popover.databasic);
     };
