@@ -275,4 +275,66 @@ describe('Buttons', () => {
       expect($fontSizeButton.text().trim()).to.equal(selectedSize);
     });
   });
+
+  describe('tooltip with missing container', () => {
+    it('should not crash when container is not provided', () => {
+      $('body').empty();
+      var $note = $('<div><p>test</p></div>').appendTo('body');
+
+      // Create context with undefined container
+      var options = $.extend({}, $.summernote.options);
+      options.container = undefined;
+      options.toolbar = [['font', ['bold']]];
+
+      // This should not throw an error
+      expect(() => {
+        var ctx = new Context($note, options);
+        ctx.initialize();
+      }).to.not.throw();
+    });
+
+    it('should warn to console when container does not exist', () => {
+      $('body').empty();
+      var $note = $('<div><p>test</p></div>').appendTo('body');
+
+      var warnCalls = [];
+      var originalWarn = console.warn;
+      console.warn = function(...args) {
+        warnCalls.push(args);
+      };
+
+      try {
+        var options = $.extend({}, $.summernote.options);
+        options.container = '#non-existent-container';
+        options.toolbar = [['font', ['bold']]];
+
+        var ctx = new Context($note, options);
+        ctx.initialize();
+
+        // Should have warned about missing container
+        expect(warnCalls.some(call =>
+          call[0] && call[0].includes('Tooltip container not found')
+        )).to.be.true;
+      } finally {
+        console.warn = originalWarn;
+      }
+    });
+
+    it('should initialize tooltips when container exists', () => {
+      $('body').empty();
+      var $note = $('<div id="test-container"><p>test</p></div>').appendTo('body');
+
+      var options = $.extend({}, $.summernote.options);
+      options.container = '#test-container';
+      options.toolbar = [['font', ['bold']]];
+
+      var ctx = new Context($note, options);
+      ctx.initialize();
+
+      var $button = ctx.layoutInfo.toolbar.find('.note-btn-bold');
+
+      // Should have tooltip data attached
+      expect($button.data('_lite_tooltip')).to.exist;
+    });
+  });
 });
