@@ -200,8 +200,13 @@ export default class VideoDialog {
       const $node = this.createVideoNode(url);
 
       if ($node) {
-        // insert video node
-        this.context.invoke('editor.insertNode', $node);
+        
+        if (this.options.callbacks.onVideoNodeInsert) {
+          this.context.triggerEvent('video.node.insert', node);
+        } else {
+          // insert video node
+          this.context.invoke('editor.insertNode', $node);
+        }
       }
     }).fail(() => {
       this.context.invoke('editor.restoreRange');
