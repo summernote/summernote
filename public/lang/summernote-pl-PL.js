@@ -95,7 +95,7 @@
         justify: 'Wyrównaj do lewej i prawej',
       },
       color: {
-        recent: 'Ostani kolor',
+        recent: 'Ostatni kolor',
         more: 'Więcej kolorów',
         background: 'Tło',
         foreground: 'Czcionka',
