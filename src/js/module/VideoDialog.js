@@ -202,7 +202,7 @@ export default class VideoDialog {
       if ($node) {
         
         if (this.options.callbacks.onVideoNodeInsert) {
-          this.context.triggerEvent('video.node.insert', node);
+          this.context.triggerEvent('video.node.insert', $node);
         } else {
           // insert video node
           this.context.invoke('editor.insertNode', $node);
