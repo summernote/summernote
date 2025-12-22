@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import $ from 'jquery';
 import func from '@/js/core/func';
 
 describe('base:core.func', () => {
@@ -68,6 +69,22 @@ describe('base:core.func', () => {
       expect(func.uniqueId('note-')).to.be.equal('note-1');
       expect(func.uniqueId('note-')).to.be.equal('note-2');
       expect(func.uniqueId('note-')).to.be.equal('note-3');
+    });
+  });
+
+  describe('rect2bnd', () => {
+    it('should return null for invalid rect input', () => {
+      expect(func.rect2bnd(null)).to.be.null;
+      expect(func.rect2bnd({})).to.be.null;
+    });
+
+    it('should translate rect to bounds with scroll offsets', () => {
+      const rect = { top: 10, left: 20, right: 30, bottom: 50 };
+      const bnd = func.rect2bnd(rect);
+      expect(bnd.top).to.be.equal(rect.top + $(document).scrollTop());
+      expect(bnd.left).to.be.equal(rect.left + $(document).scrollLeft());
+      expect(bnd.width).to.be.equal(10);
+      expect(bnd.height).to.be.equal(40);
     });
   });
 
