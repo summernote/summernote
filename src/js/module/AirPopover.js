@@ -33,8 +33,14 @@ export default class AirPopover {
         if (this.options.editing && !this.onContextmenu) {
           if (event.type == 'keyup') {
             let range = this.context.invoke('editor.getLastRange');
-            let wordRange = range.getWordRange();
-            const bnd = func.rect2bnd(lists.last(wordRange.getClientRects()));
+            let wordRange = range && range.getWordRange ? range.getWordRange() : null;
+            const rects = wordRange && wordRange.getClientRects ? wordRange.getClientRects() : [];
+            const lastRect = rects && rects.length ? lists.last(rects) : null;
+            const bnd = lastRect && func.rect2bnd(lastRect);
+            if (!bnd) {
+              this.hide();
+              return;
+            }
             this.pageX = bnd.left;
             this.pageY = bnd.top;
           } else {
