@@ -77,6 +77,16 @@ describe('LinkDialog', () => {
       expect(linkUrl).to.equal('http://summernote.org');
     });
 
+    it('should use custom checker if provided', () => {
+      range.createFromNode($editable.find('p')[3]).normalize().select();
+      context.options.onCreateLink = linkUrl => `parsed-${linkUrl}`;
+      context.invoke('editor.setLastRange');
+      dialog.show();
+
+      var linkUrl = dialog.$dialog.find('.note-link-url').val();
+      expect(linkUrl).to.equal('parsed-summernote.org');
+    });
+
     it('should add http protocol during the onChange event if linkInfo.url is undefined and protocol not exists', () => {
       range.createFromNode($editable.find('p')[4]).normalize().select();
       context.invoke('editor.setLastRange');
