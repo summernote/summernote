@@ -64,7 +64,7 @@ export default class AirPopover {
     this.$popover = this.ui.popover({
       className: 'note-air-popover',
     }).render().appendTo(this.options.container);
-    const $content = this.$popover.find('.popover-content');
+    const $content = this.$popover.find('.popover-content,.note-popover-content');
 
     this.context.invoke('buttons.build', $content, this.options.popover.air);
 
