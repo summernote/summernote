@@ -41,20 +41,25 @@ const button = renderer.create(
   function($node, options) {
     // set button type
     if (options && options.tooltip) {
+      const container = options.container;
       $node.attr({
         'aria-label': options.tooltip,
       });
-      $node
-        .data(
-          '_lite_tooltip',
-          new TooltipUI($node, {
-            title: options.tooltip,
-            container: options.container,
-          }),
-        )
-        .on('click', (e) => {
-          $(e.currentTarget).data('_lite_tooltip').hide();
-        });
+      if (container && $(container).length) {
+        $node
+          .data(
+            '_lite_tooltip',
+            new TooltipUI($node, {
+              title: options.tooltip,
+              container: container,
+            }),
+          )
+          .on('click', (e) => {
+            $(e.currentTarget).data('_lite_tooltip').hide();
+          });
+      } else {
+        console.warn('Summernote: Tooltip container not found, please set the container property for the Summernote Config, skipping tooltip initialization');
+      }
     }
     if (options.contents) {
       $node.html(options.contents);
@@ -344,12 +349,16 @@ const palette = renderer.create('<div class="note-color-palette"></div>', functi
   $node.html(contents.join(''));
 
   $node.find('.note-color-btn').each(function() {
-    $(this).data(
-      '_lite_tooltip',
-      new TooltipUI($(this), {
-        container: options.container,
-      }),
-    );
+    if (options.container && $(options.container).length) {
+      $(this).data(
+        '_lite_tooltip',
+        new TooltipUI($(this), {
+          container: options.container,
+        }),
+      );
+    } else {
+      console.warn('Summernote: Tooltip container not found, skipping tooltip initialization for color buttons');
+    }
   });
 });
 
