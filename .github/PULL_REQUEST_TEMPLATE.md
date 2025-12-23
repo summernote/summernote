@@ -24,4 +24,5 @@ Fixes #<issue_number>
 ### Checklist
 
 - [ ] Added relevant tests or not required
+- [ ] Addressed and resolved all CodeRabbit review comments
 - [ ] Didn't break anything
