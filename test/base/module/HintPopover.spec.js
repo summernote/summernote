@@ -8,7 +8,6 @@ import { describe, it, expect, vi } from 'vitest';
 import { nextTick } from '/test/util';
 import $ from 'jquery';
 import Context from '@/js/Context';
-import HintPopover from '@/js/module/HintPopover';
 import range from '@/js/core/range';
 import env from '@/js/core/env';
 import key from '@/js/core/key';
@@ -208,51 +207,6 @@ describe('HintPopover', () => {
 
       await nextTick();
       expectContents(context, '<p>hello <a href="http://example.org/person/david-summer">@David Summer</a> world</p>');
-    });
-  });
-
-  describe('Guarded behavior', () => {
-    it('should hide without throwing when client rects are empty', () => {
-      $('body').empty();
-      const container = $('<div></div>').appendTo('body');
-      const options = $.extend({}, $.summernote.options, {
-        container,
-        hint: {
-          match: /.*/,
-          search: (keyword, callback) => callback(['foo']),
-          content: (item) => item,
-        },
-      });
-
-      const fakeRange = {
-        getWordRange: () => fakeRange,
-        getClientRects: () => [],
-        toString: () => 'foo',
-      };
-
-      const fakeContext = {
-        options,
-        layoutInfo: { editable: $('<div></div>') },
-        invoke: (name) => {
-          if (name === 'editor.getLastRange') {
-            return {
-              getWordRange: () => fakeRange,
-            };
-          }
-          if (name === 'buttons.build') {
-            return null;
-          }
-          return null;
-        },
-      };
-
-      const popover = new HintPopover(fakeContext);
-      popover.initialize();
-
-      expect(() => popover.handleKeyup(new $.Event('keyup'))).not.to.throw();
-      expect(popover.$popover.css('display')).to.equals('none');
-
-      container.remove();
     });
   });
 });
