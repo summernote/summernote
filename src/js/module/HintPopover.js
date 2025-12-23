@@ -232,39 +232,34 @@ export default class HintPopover {
       if (this.hints.length && keyword) {
         this.$content.empty();
 
-        const rects = wordRange && wordRange.getClientRects ? wordRange.getClientRects() : [];
-        const lastRect = rects && rects.length ? lists.last(rects) : null;
-        const bnd = lastRect && func.rect2bnd(lastRect);
-        if (!bnd) {
-          this.hide();
-          return;
-        }
-
+        const bnd = func.rect2bnd(lists.last(wordRange.getClientRects()));
         const containerOffset = $(this.options.container).offset();
-        bnd.top -= containerOffset.top;
-        bnd.left -= containerOffset.left;
+        if (bnd) {
+          bnd.top -= containerOffset.top;
+          bnd.left -= containerOffset.left;
 
-        this.$popover.hide();
-        this.lastWordRange = wordRange;
-        this.hints.forEach((hint, idx) => {
-          if (hint.match.test(keyword)) {
-            this.createGroup(idx, keyword).appendTo(this.$content);
+          this.$popover.hide();
+          this.lastWordRange = wordRange;
+          this.hints.forEach((hint, idx) => {
+            if (hint.match.test(keyword)) {
+              this.createGroup(idx, keyword).appendTo(this.$content);
+            }
+          });
+          // select first .note-hint-item
+          this.$content.find('.note-hint-item').first().addClass('active');
+
+          // set position for popover after group is created
+          if (this.direction === 'top') {
+            this.$popover.css({
+              left: bnd.left,
+              top: bnd.top - this.$popover.outerHeight() - POPOVER_DIST,
+            });
+          } else {
+            this.$popover.css({
+              left: bnd.left,
+              top: bnd.top + bnd.height + POPOVER_DIST,
+            });
           }
-        });
-        // select first .note-hint-item
-        this.$content.find('.note-hint-item').first().addClass('active');
-
-        // set position for popover after group is created
-        if (this.direction === 'top') {
-          this.$popover.css({
-            left: bnd.left,
-            top: bnd.top - this.$popover.outerHeight() - POPOVER_DIST,
-          });
-        } else {
-          this.$popover.css({
-            left: bnd.left,
-            top: bnd.top + bnd.height + POPOVER_DIST,
-          });
         }
       } else {
         this.hide();

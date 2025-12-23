@@ -88,11 +88,6 @@ function uniqueId(prefix) {
  * @return {Number} bounds.height
  */
 function rect2bnd(rect) {
-  if (!rect || typeof rect.top !== 'number' || typeof rect.left !== 'number' ||
-    typeof rect.right !== 'number' || typeof rect.bottom !== 'number') {
-    return null;
-  }
-
   const $document = $(document);
   return {
     top: rect.top + $document.scrollTop(),
