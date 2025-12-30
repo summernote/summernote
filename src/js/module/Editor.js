@@ -16,6 +16,24 @@ const KEY_BOGUS = 'bogus';
 const MAILTO_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const TEL_PATTERN = /^(\+?\d{1,3}[\s-]?)?(\d{1,4})[\s-]?(\d{1,4})[\s-]?(\d{1,4})$/;
 const URL_SCHEME_PATTERN = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/;
+const FONT_SIZE_DEFAULT_STEPS = { // ~1px visual change for absolute units
+  q: 1,
+  px: 1,
+  pt: 1,
+  mm: 0.25,
+  pc: 0.05,
+  cm: 0.025,
+  in: 0.01,
+};
+const PX_PER_UNIT = {
+  q: 96 / 101.6,
+  px: 1,
+  pt: 96 / 72,
+  mm: 96 / 25.4,
+  pc: 16,
+  cm: 96 / 2.54,
+  in: 96,
+};
 
 /**
  * @class Editor
@@ -77,12 +95,21 @@ export default class Editor {
     });
 
     this.fontSize = this.wrapCommand((value) => {
-      const unit = this.currentStyle()['font-size-unit'];
-      return this.fontStyling('font-size', value + unit);
+      const currentStyle = this.currentStyle();
+      let numericValue = parseFloat(value);
+      if (isFinite(numericValue)) {
+        numericValue = this._snapToStep(numericValue, currentStyle['font-size-step']);
+        value = numericValue;
+      }
+      return this.fontStyling('font-size', value + currentStyle['font-size-unit']);
     });
 
     this.fontSizeUnit = this.wrapCommand((value) => {
-      const size = this.currentStyle()['font-size'];
+      const currentStyle = this.currentStyle();
+      if (currentStyle['font-size-unit-fixed']) {
+        return;
+      }
+      const size = currentStyle['font-size'];
       return this.fontStyling('font-size', size + value);
     });
 
@@ -630,7 +657,84 @@ export default class Editor {
     if (rng) {
       rng = rng.normalize();
     }
-    return rng ? this.style.current(rng) : this.style.fromNode(this.$editable);
+    const styleInfo = rng ? this.style.current(rng) : this.style.fromNode(this.$editable);
+
+    // if a fixed font-size unit is configured, ignore inline units and convert the computed px value
+    let fixedFontSizeUnit = this._normalizeFontSizeUnit(this.options.fixedFontSizeUnit);
+    if (this._pxPerUnit(fixedFontSizeUnit) === null) {
+      fixedFontSizeUnit = null; // discard fixed unit if it's not an absolute unit
+    }
+    styleInfo['font-size-unit-fixed'] = !!fixedFontSizeUnit;
+
+    const unit = fixedFontSizeUnit || styleInfo['font-size-unit'] || 'px';
+    let value = styleInfo['font-size'];
+    if (fixedFontSizeUnit) {
+      const pxValue = styleInfo['_font-size-computed-px'];
+      if (isFinite(pxValue)) {
+        value = this._convertPxToUnit(pxValue, fixedFontSizeUnit);
+      }
+    }
+
+    // snap the font value to the font-size step
+    const step = this._resolveFontSizeStep(this.options.fontSizeStep, unit, !!fixedFontSizeUnit);
+    styleInfo['font-size-step'] = step;
+    value = this._snapToStep(parseFloat(value), step);
+    if (isFinite(value)) {
+      styleInfo['font-size'] = value;
+    }
+    styleInfo['font-size-unit'] = unit;
+
+    return styleInfo;
+  }
+
+  _normalizeFontSizeUnit(unit) {
+    return (unit || '').toString().trim().toLowerCase();
+  }
+
+  _pxPerUnit(unit) {
+    const val = PX_PER_UNIT[this._normalizeFontSizeUnit(unit)];
+    return (val !== undefined) ? val : null;
+  }
+
+  _roundToSignificantDigits(value, significantDigits) {
+    if (!isFinite(value) || value === 0) {
+      return value;
+    }
+    return parseFloat(value.toPrecision(significantDigits));
+  }
+
+  _convertPxToUnit(pxValue, unit) {
+    const pixelsPerUnit = this._pxPerUnit(unit);
+    return pixelsPerUnit ? pxValue / pixelsPerUnit : pxValue;
+  }
+
+  _getDefaultFontSizeStep(unit) {
+    const unitKey = this._normalizeFontSizeUnit(unit);
+    return FONT_SIZE_DEFAULT_STEPS[unitKey] ?? 1;
+  }
+
+  _resolveFontSizeStep(optionStep, unit, hasFixedUnit) {
+    const defaultStep = this._getDefaultFontSizeStep(unit);
+    let step = optionStep == null ? defaultStep : Number(optionStep);
+    step = this._roundToSignificantDigits(step, 6);
+
+    let isValid = isFinite(step) && step > 0 && step <= 1;
+    if (isValid) {
+      if (hasFixedUnit) {
+        const pixelsPerUnit = this._pxPerUnit(unit);
+        isValid = !!pixelsPerUnit && step * pixelsPerUnit >= 0.01;
+      } else {
+        isValid = step >= 0.01;
+      }
+    }
+
+    return isValid ? step : defaultStep;
+  }
+
+  _snapToStep(value, step) {
+    if (!isFinite(value) || !isFinite(step) || step <= 0) return value;
+    const snapped = Math.round(value / step + 1e-12) * step;
+    return parseFloat(snapped.toFixed(6));
   }
 
   /**

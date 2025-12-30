@@ -380,11 +380,16 @@ export default class Buttons {
     });
 
     this.context.memo('button.fontsize', () => {
+      const currentStyle = this.context.invoke('editor.currentStyle');
+      let tooltip = this.lang.font.size;
+      if (currentStyle['font-size-unit-fixed']) {
+        tooltip += ' (' + currentStyle['font-size-unit'] + ')';
+      }
       return this.ui.buttonGroup([
         this.button({
           className: 'dropdown-toggle',
           contents: this.ui.dropdownButtonContents('<span class="note-current-fontsize"></span>', this.options),
-          tooltip: this.lang.font.size,
+          tooltip: tooltip,
           data: {
             toggle: 'dropdown',
           },
@@ -400,6 +405,9 @@ export default class Buttons {
     });
 
     this.context.memo('button.fontsizeunit', () => {
+      if (this.context.invoke('editor.currentStyle')['font-size-unit-fixed']) {
+        return null;
+      }
       return this.ui.buttonGroup([
         this.button({
           className: 'dropdown-toggle',
