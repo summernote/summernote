@@ -393,8 +393,62 @@ export default class Editor {
       // To limit composition characters (e.g. Korean)
       if (this.isLimited(0) && this.snapshot) {
         this.history.applySnapshot(this.snapshot);
+        return;
       }
+
+      // strip ZWNBSP from bogus element once real text arrives
+      const bogusEl = this.$editable.data(KEY_BOGUS);
+      if (!bogusEl) {
+        return;
+      }
+
+      const content = bogusEl.textContent || '';
+      if (content === dom.ZERO_WIDTH_NBSP_CHAR || !content.includes(dom.ZERO_WIDTH_NBSP_CHAR)) {
+        return;
+      }
+
+      // find the text node containing ZWNBSP
+      const walker = document.createTreeWalker(bogusEl, NodeFilter.SHOW_TEXT, null, false);
+      let node;
+      while ((node = walker.nextNode())) {
+        if (!node.nodeValue.includes(dom.ZERO_WIDTH_NBSP_CHAR)) {
+          continue;
+        }
+
+        if (node.nodeValue === dom.ZERO_WIDTH_NBSP_CHAR) {
+          node.remove();
+        } else {
+          // adjust cursor if it's in this node
+          const rng = range.create();
+          const wasInNode = rng && rng.isCollapsed() && rng.sc === node;
+          const oldOffset = wasInNode ? rng.so : 0;
+          node.nodeValue = node.nodeValue.replace(/\uFEFF/g, '');
+          if (wasInNode) {
+            range.create(node, Math.max(0, oldOffset - 1)).select();
+            this.setLastRange();
+          }
+        }
+        break;
+      }
+      this.$editable.removeData(KEY_BOGUS);
     });
+
+    const cursorIsInside = (node) => {
+      const sel = window.getSelection();
+      return sel && sel.anchorNode && (node === sel.anchorNode || node.contains(sel.anchorNode));
+    };
+
+    this._onSelectionChange = () => {
+      // remove bogus span
+      const bogusSpan = this.$editable.data(KEY_BOGUS);
+      if (bogusSpan && !cursorIsInside(bogusSpan)) {
+        if (bogusSpan.textContent === dom.ZERO_WIDTH_NBSP_CHAR) {
+          $(bogusSpan).remove();
+        }
+        this.$editable.removeData(KEY_BOGUS);
+      }
+    };
+    document.addEventListener('selectionchange', this._onSelectionChange);
 
     this.$editable.attr('spellcheck', this.options.spellCheck);
 
@@ -445,6 +499,9 @@ export default class Editor {
 
   destroy() {
     this.$editable.off();
+    if (this._onSelectionChange) {
+      document.removeEventListener('selectionchange', this._onSelectionChange);
+    }
   }
 
   handleKeyMap(event) {
@@ -868,7 +925,9 @@ export default class Editor {
     const rng = this.getLastRange();
 
     if (rng !== '') {
-      const spans = this.style.styleNodes(rng);
+      var bogusSpan = this.$editable.data(KEY_BOGUS);
+      var spans = rng.isCollapsed() && bogusSpan?.contains(rng.sc) ?
+        [bogusSpan] : this.style.styleNodes(rng);
       this.$editor.find('.note-status-output').html('');
       $(spans).css(target, value);
 
@@ -878,7 +937,7 @@ export default class Editor {
         const firstSpan = lists.head(spans);
         if (firstSpan && !dom.nodeLength(firstSpan)) {
           firstSpan.innerHTML = dom.ZERO_WIDTH_NBSP_CHAR;
-          range.createFromNode(firstSpan.firstChild).select();
+          range.createFromNode(firstSpan.firstChild).collapse().select();
           this.setLastRange();
           this.$editable.data(KEY_BOGUS, firstSpan);
         }
