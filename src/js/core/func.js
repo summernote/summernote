@@ -89,6 +89,15 @@ function uniqueId(prefix) {
  */
 function rect2bnd(rect) {
   const $document = $(document);
+  if (!rect) {
+    return {
+      top: 0,
+      left: 0,
+      width: 0,
+      height: 0,
+    };
+  }
+
   return {
     top: rect.top + $document.scrollTop(),
     left: rect.left + $document.scrollLeft(),

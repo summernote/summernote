@@ -141,4 +141,19 @@ describe('base:core.func', () => {
       expect(func.isValidUrl('summernote')).to.be.not.ok;
     });
   });
+
+  describe('rect2bnd', () => {
+    it('should return zero rect for null input', () => {
+      expect(func.rect2bnd(null)).to.deep.equal({ top: 0, left: 0, width: 0, height: 0 });
+    });
+
+    it('should translate rect to bounds with scroll offsets', () => {
+      const rect = { top: 10, left: 20, right: 30, bottom: 50 };
+      const bnd = func.rect2bnd(rect);
+      expect(bnd.top).to.be.a('number');
+      expect(bnd.left).to.be.a('number');
+      expect(bnd.width).to.be.equal(10);
+      expect(bnd.height).to.be.equal(40);
+    });
+  });
 });
