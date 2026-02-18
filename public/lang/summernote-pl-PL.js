@@ -85,6 +85,9 @@
         fullscreen: 'Pełny ekran',
         codeview: 'Źródło',
       },
+      modal: {
+        close: 'Zamknij',
+      },
       paragraph: {
         paragraph: 'Akapit',
         outdent: 'Zmniejsz wcięcie',

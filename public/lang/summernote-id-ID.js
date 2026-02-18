@@ -85,6 +85,9 @@
         fullscreen: 'Layar penuh',
         codeview: 'Kode HTML',
       },
+      modal: {
+        close: 'Tutup',
+      },
       paragraph: {
         paragraph: 'Paragraf',
         outdent: 'Outdent',

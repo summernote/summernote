@@ -87,6 +87,9 @@
         fullscreen: 'পূর্ণ পর্দা',
         codeview: 'কোড দৃশ্য',
       },
+      modal: {
+        close: 'বন্ধ করুন',
+      },
       paragraph: {
         paragraph: 'অনুচ্ছেদ',
         outdent: 'ঋণাত্মক প্রান্তিককরণ',

@@ -85,6 +85,9 @@
         fullscreen: 'Pantalla sencera',
         codeview: 'Veure codi font',
       },
+      modal: {
+        close: 'Tancar',
+      },
       paragraph: {
         paragraph: 'Paràgraf',
         outdent: 'Menys tabulació',

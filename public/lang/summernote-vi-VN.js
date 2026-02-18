@@ -85,6 +85,9 @@
         fullscreen: 'Toàn Màn hình',
         codeview: 'Xem Code',
       },
+      modal: {
+        close: 'Đóng',
+      },
       paragraph: {
         paragraph: 'Canh lề',
         outdent: 'Dịch sang trái',

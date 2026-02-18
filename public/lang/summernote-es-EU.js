@@ -85,6 +85,9 @@
         fullscreen: 'Pantaila osoa',
         codeview: 'Kodea ikusi',
       },
+      modal: {
+        close: 'Itxi',
+      },
       paragraph: {
         paragraph: 'Paragrafoa',
         outdent: 'Koska txikiagoa',

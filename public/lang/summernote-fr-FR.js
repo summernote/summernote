@@ -85,6 +85,9 @@
         fullscreen: 'Plein écran',
         codeview: 'Afficher le code HTML',
       },
+      modal: {
+        close: 'Fermer',
+      },
       paragraph: {
         paragraph: 'Paragraphe',
         outdent: 'Diminuer le retrait',

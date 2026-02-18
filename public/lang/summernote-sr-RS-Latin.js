@@ -85,6 +85,9 @@
         fullscreen: 'Preko celog ekrana',
         codeview: 'Izvorni kod',
       },
+      modal: {
+        close: 'Zatvori',
+      },
       paragraph: {
         paragraph: 'Paragraf',
         outdent: 'Smanji uvlačenje',

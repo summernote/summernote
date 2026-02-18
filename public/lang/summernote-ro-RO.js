@@ -85,6 +85,9 @@
         fullscreen: 'Măreşte',
         codeview: 'Sursă',
       },
+      modal: {
+        close: 'Închide',
+      },
       paragraph: {
         paragraph: 'Paragraf',
         outdent: 'Creşte identarea',

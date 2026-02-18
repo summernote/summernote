@@ -85,6 +85,9 @@
         fullscreen: 'מסך מלא',
         codeview: 'תצוגת קוד',
       },
+      modal: {
+        close: 'סגור',
+      },
       paragraph: {
         paragraph: 'פסקה',
         outdent: 'הקטן כניסה',

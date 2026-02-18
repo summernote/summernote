@@ -85,6 +85,9 @@
         fullscreen: '全屏',
         codeview: '源代码',
       },
+      modal: {
+        close: '关闭',
+      },
       paragraph: {
         paragraph: '段落',
         outdent: '减少缩进',

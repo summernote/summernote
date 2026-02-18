@@ -85,6 +85,9 @@
         fullscreen: 'Viso ekrano režimas',
         codeview: 'HTML kodo peržiūra',
       },
+      modal: {
+        close: 'Uždaryti',
+      },
       paragraph: {
         paragraph: 'Pastraipa',
         outdent: 'Sumažinti įtrauką',

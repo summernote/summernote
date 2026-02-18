@@ -87,6 +87,9 @@
         fullscreen: 'Πλήρης οθόνη',
         codeview: 'Προβολή HTML',
       },
+      modal: {
+        close: 'Κλείσιμο',
+      },
       paragraph: {
         paragraph: 'Παράγραφος',
         outdent: 'Μείωση εσοχής',

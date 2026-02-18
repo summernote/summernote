@@ -97,6 +97,9 @@
         fullscreen: 'Tam ekran',
         codeview: 'HTML Kodu',
       },
+      modal: {
+        close: 'Bağla',
+      },
       paragraph: {
         paragraph: 'Paraqraf',
         outdent: 'Girintini artır',

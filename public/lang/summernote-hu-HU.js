@@ -85,6 +85,9 @@
         fullscreen: 'Teljes képernyő',
         codeview: 'Kód nézet',
       },
+      modal: {
+        close: 'Bezárás',
+      },
       paragraph: {
         paragraph: 'Bekezdés',
         outdent: 'Behúzás csökkentése',

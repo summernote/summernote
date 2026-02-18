@@ -86,6 +86,9 @@
         fullscreen: '전체 화면',
         codeview: '코드 보기',
       },
+      modal: {
+        close: '닫기',
+      },
       paragraph: {
         paragraph: '문단 정렬',
         outdent: '내어쓰기',

@@ -85,6 +85,9 @@
         fullscreen: 'ขยายเต็มหน้าจอ',
         codeview: 'ซอร์สโค้ด',
       },
+      modal: {
+        close: 'ปิด',
+      },
       paragraph: {
         paragraph: 'ย่อหน้า',
         outdent: 'เยื้องซ้าย',

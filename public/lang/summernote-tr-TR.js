@@ -85,6 +85,9 @@
         fullscreen: 'Tam ekran',
         codeview: 'HTML Kodu',
       },
+      modal: {
+        close: 'Kapat',
+      },
       paragraph: {
         paragraph: 'Paragraf',
         outdent: 'Girintiyi artır',

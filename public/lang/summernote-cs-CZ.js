@@ -80,6 +80,9 @@
         fullscreen: 'Celá obrazovka',
         codeview: 'HTML kód',
       },
+      modal: {
+        close: 'Zavřít',
+      },
       paragraph: {
         paragraph: 'Odstavec',
         outdent: 'Předsadit',

@@ -75,6 +75,9 @@
         fullscreen: 'Бутун экран бўйича',
         codeview: 'Бошланғич код',
       },
+      modal: {
+        close: 'Ёпиқ',
+      },
       paragraph: {
         paragraph: 'Параграф',
         outdent: 'Орқага қайтишни камайтириш',
