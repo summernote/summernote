@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
-const examplePages = import.meta.glob('../../public/callbacks/*.html', {
+const examplePages = import.meta.glob('../../examples/callbacks/*.html', {
   eager: true,
   query: '?raw',
   import: 'default',
 });
 
-describe('public callback examples', () => {
+describe('examples callback examples', () => {
   it('keeps the local index focused on the callback topic pages', () => {
-    const indexPage = examplePages['../../public/callbacks/index.html'];
+    const indexPage = examplePages['../../examples/callbacks/index.html'];
 
     expect(indexPage).to.contain('Callbacks');
     expect(indexPage).to.contain('./lifecycle-and-content.html');

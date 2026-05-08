@@ -99,7 +99,7 @@ describe('base:core.func', () => {
       expect(hasHappened).to.be.false;
     });
 
-    it('should execute after delay', (done) => {
+    it('should execute after delay', async() => {
       var hasHappened = false;
       var fn = func.debounce(() => {
         hasHappened = true;
@@ -107,13 +107,11 @@ describe('base:core.func', () => {
 
       fn();
 
-      setTimeout(() => {
-        expect(hasHappened).to.be.true;
-        done();
-      }, 101);
+      await new Promise((resolve) => setTimeout(resolve, 101));
+      expect(hasHappened).to.be.true;
     });
 
-    it('should only happen once', (done) => {
+    it('should only happen once', async() => {
       var count = 0;
       var fn = func.debounce(() => {
         count += 1;
@@ -123,10 +121,8 @@ describe('base:core.func', () => {
       fn();
       fn();
 
-      setTimeout(() => {
-        expect(count).to.be.equal(1);
-        done();
-      }, 101);
+      await new Promise((resolve) => setTimeout(resolve, 101));
+      expect(count).to.be.equal(1);
     });
   });
 

@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
-const examplePages = import.meta.glob('../../public/font-style-api/*.html', {
+const examplePages = import.meta.glob('../../examples/font-style-api/*.html', {
   eager: true,
   query: '?raw',
   import: 'default',
 });
 
-describe('public font style API examples', () => {
+describe('examples font style API examples', () => {
   it('keeps the local index focused on the font style topic pages', () => {
-    const indexPage = examplePages['../../public/font-style-api/index.html'];
+    const indexPage = examplePages['../../examples/font-style-api/index.html'];
 
     expect(indexPage).to.contain('Font Style API');
     expect(indexPage).to.contain('./text-emphasis.html');

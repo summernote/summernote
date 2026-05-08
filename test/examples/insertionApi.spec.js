@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
-const examplePages = import.meta.glob('../../public/insertion-api/*.html', {
+const examplePages = import.meta.glob('../../examples/insertion-api/*.html', {
   eager: true,
   query: '?raw',
   import: 'default',
 });
 
-describe('public insertion API examples', () => {
+describe('examples insertion API examples', () => {
   it('keeps the local index focused on the insertion topic pages', () => {
-    const indexPage = examplePages['../../public/insertion-api/index.html'];
+    const indexPage = examplePages['../../examples/insertion-api/index.html'];
 
     expect(indexPage).to.contain('Insertion API');
     expect(indexPage).to.contain('./links.html');

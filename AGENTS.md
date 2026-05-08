@@ -13,6 +13,7 @@
 - after every task, build the project
 
 # Testing Guidelines
+- 100% test coverage without ignoring any lines or files
 - use playwright with chromium whether you want to test the new version and make screenshots from every step
 - build jest test to every new feature or fix
 - build e2e test to every new feature or fix

@@ -1,5 +1,7 @@
 # Summernote Next
 
+[![Codecov](https://codecov.io/gh/jschwind/summernote-next/graph/badge.svg)](https://codecov.io/gh/jschwind/summernote-next)
+
 Summernote Next is a maintained MIT-licensed fork of Summernote focused on the current Bootstrap 5 build, a Vanilla JS API, and a public example catalog that matches this repository.
 
 | Resource | URL |

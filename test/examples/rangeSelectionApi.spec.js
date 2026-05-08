@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
-const examplePages = import.meta.glob('../../public/range-selection-api/*.html', {
+const examplePages = import.meta.glob('../../examples/range-selection-api/*.html', {
   eager: true,
   query: '?raw',
   import: 'default',
 });
 
-describe('public range and selection API examples', () => {
+describe('examples range and selection API examples', () => {
   it('keeps the local index focused on the range topic pages', () => {
-    const indexPage = examplePages['../../public/range-selection-api/index.html'];
+    const indexPage = examplePages['../../examples/range-selection-api/index.html'];
 
     expect(indexPage).to.contain('Range and Selection API');
     expect(indexPage).to.contain('./editor-range-state.html');

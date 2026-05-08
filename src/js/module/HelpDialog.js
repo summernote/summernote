@@ -172,7 +172,7 @@ export default class HelpDialog {
       <div class="note-help-dialog-footer">
         <span class="note-help-dialog-footer-copy">Summernote Next ${versionLabel}</span>
         <span class="note-help-dialog-footer-links">
-          <a href="https://juergen-schwind.com/summernote-next" target="_blank" rel="noopener noreferrer">Examples</a>
+          <a href="https://juergen-schwind.de/summernote-next" target="_blank" rel="noopener noreferrer">Examples</a>
           <span aria-hidden="true">·</span>
           <a href="https://github.com/jschwind/summernote-next" target="_blank" rel="noopener noreferrer">Project</a>
           <span aria-hidden="true">·</span>

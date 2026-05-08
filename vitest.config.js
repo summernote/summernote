@@ -27,6 +27,22 @@ export default defineConfig({
     setupFiles: [
       './test/vitest.setup.js'
     ],
+    coverage: {
+      enabled: false,
+      provider: 'istanbul',
+      reporter: ['text', 'lcov', 'json-summary'],
+      reportsDirectory: './coverage',
+      include: [
+        'src/**',
+      ],
+      exclude: [
+        'test/**',
+        'examples/**',
+        'public/**',
+        'dist/**',
+        'font/**',
+      ],
+    },
 
     browser: {
       enabled: true,

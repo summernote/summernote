@@ -1,12 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   THEME_STORAGE_KEY,
+  getStoredTheme,
   getPreferredTheme,
   initializeExampleConfigurations,
   initializeExamplesTheme,
-} from '../../public/assets/examples.js';
+} from '../../examples/assets/examples.js';
 
-describe('public:examples theme toggle', () => {
+describe('examples:examples theme toggle', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
     document.documentElement.removeAttribute('data-bs-theme');
@@ -31,7 +32,16 @@ describe('public:examples theme toggle', () => {
     expect(getPreferredTheme(storage, mediaQueryList)).to.equal('dark');
   });
 
+  it('returns null for an invalid stored theme', () => {
+    const storage = {
+      getItem: vi.fn(() => 'sepia'),
+    };
+
+    expect(getStoredTheme(storage)).to.equal(null);
+  });
+
   it('renders one toggle and persists user changes', () => {
+    document.body.innerHTML = '<main class="page"></main>';
     const mediaQueryList = {
       matches: false,
       addEventListener: vi.fn(),
@@ -50,6 +60,8 @@ describe('public:examples theme toggle', () => {
     expect(document.documentElement.getAttribute('data-bs-theme')).to.equal('dark');
     expect(window.localStorage.getItem(THEME_STORAGE_KEY)).to.equal('dark');
     expect(firstInit.toggle.getAttribute('aria-pressed')).to.equal('true');
+    expect(document.querySelector('[data-examples-project-links]')).not.to.equal(null);
+    expect(document.querySelectorAll('[data-examples-project-links]')).to.have.length(1);
   });
 
   it('follows system theme changes until the user stores a preference', () => {
@@ -74,9 +86,30 @@ describe('public:examples theme toggle', () => {
     expect(toggle.checked).to.be.true;
     expect(storage.setItem).not.toHaveBeenCalled();
   });
+
+  it('applies the stored theme immediately when one exists', () => {
+    const storage = {
+      getItem: vi.fn(() => 'dark'),
+      setItem: vi.fn(),
+    };
+    const mediaQueryList = {
+      matches: false,
+      addEventListener: vi.fn(),
+    };
+
+    const { toggle } = initializeExamplesTheme({ storage, mediaQueryList });
+
+    expect(document.documentElement.getAttribute('data-bs-theme')).to.equal('dark');
+    expect(toggle.checked).to.be.true;
+    expect(mediaQueryList.addEventListener).not.toHaveBeenCalled();
+  });
+
+  it('returns null when the document body is unavailable', () => {
+    expect(initializeExamplesTheme({ documentRef: { body: null } })).to.equal(null);
+  });
 });
 
-describe('public:example configuration cards', () => {
+describe('examples:example configuration cards', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
   });
@@ -136,5 +169,75 @@ describe('public:example configuration cards', () => {
     await Promise.resolve();
 
     expect(clipboard.writeText).toHaveBeenCalledWith('const editor = summernote.create(\'#demo\', { height: 320 });');
+  });
+
+  it('falls back to document.execCommand when the clipboard API is unavailable', async() => {
+    document.execCommand = vi.fn(() => true);
+    document.body.innerHTML = `
+      <div class="card" data-example-configuration>
+        <div class="card-header">Example configuration</div>
+        <div class="card-body">
+          <pre><code>const value = 1;</code></pre>
+        </div>
+      </div>
+    `;
+
+    initializeExampleConfigurations({
+      documentRef: document,
+      clipboard: null,
+      setTimeoutRef: (callback) => {
+        callback();
+        return 0;
+      },
+    });
+
+    document.querySelector('.example-config-copy-button').click();
+    await Promise.resolve();
+
+    expect(document.execCommand).toHaveBeenCalledWith('copy');
+    expect(document.querySelector('.example-config-copy-button').getAttribute('aria-label')).to.equal('Copied');
+  });
+
+  it('marks the copy button as failed when the clipboard write rejects', async() => {
+    const clipboard = {
+      writeText: vi.fn(() => Promise.reject(new Error('copy failed'))),
+    };
+
+    document.body.innerHTML = `
+      <div class="card" data-example-configuration>
+        <div class="card-header">Example configuration</div>
+        <div class="card-body">
+          <pre><code data-copy-label="snippet">const value = 2;</code></pre>
+        </div>
+      </div>
+    `;
+
+    initializeExampleConfigurations({
+      documentRef: document,
+      clipboard,
+      setTimeoutRef: () => 0,
+    });
+
+    document.querySelector('.example-config-copy-button').click();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(document.querySelector('.example-config-copy-button').getAttribute('aria-label')).to.equal('Copy failed');
+  });
+
+  it('skips cards without a usable header or code blocks', () => {
+    document.body.innerHTML = `
+      <div class="card" data-example-configuration>
+        <div class="card-body"><pre><code>const value = 3;</code></pre></div>
+      </div>
+      <div class="card" data-example-configuration>
+        <div class="card-header">Example configuration</div>
+        <div class="card-body"></div>
+      </div>
+    `;
+
+    initializeExampleConfigurations({ documentRef: document });
+
+    expect(document.querySelector('.example-config-actions')).to.equal(null);
   });
 });

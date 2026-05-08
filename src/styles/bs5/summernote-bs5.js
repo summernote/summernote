@@ -11,7 +11,7 @@ const codable = renderer.create('<textarea class="note-codable" aria-multiline="
 const editable = renderer.create('<div class="note-editable card-block" contentEditable="true" role="textbox" aria-multiline="true"/>');
 const statusbar = renderer.create([
   '<output class="note-status-output" role="status" aria-live="polite"></output>',
-  '<div class="note-statusbar card-footer" role="status">',
+  '<div class="note-statusbar card-footer border-top-0 shadow-sm" role="status">',
     '<div class="note-resizebar" aria-label="Resize">',
       '<div class="note-icon-bar"></div>',
       '<div class="note-icon-bar"></div>',

@@ -8,7 +8,7 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-05-08T15:01Z
+Date: 2026-05-08T16:03Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -5256,7 +5256,14 @@ var summernote = (function() {
 		* set focus
 		*/
 		focus() {
-			if (!this.hasFocus()) this.$editable.trigger("focus");
+			if (!this.hasFocus()) {
+				const preservedRange = this.lastRange;
+				this.$editable.trigger("focus");
+				if (preservedRange) {
+					preservedRange.select();
+					this.lastRange = preservedRange;
+				}
+			}
 		}
 		/**
 		* returns whether contents is empty or not.
@@ -8018,7 +8025,7 @@ var summernote = (function() {
       <div class="note-help-dialog-footer">
         <span class="note-help-dialog-footer-copy">Summernote Next ${this.escapeHtml($$.summernote.version)}</span>
         <span class="note-help-dialog-footer-links">
-          <a href="https://juergen-schwind.com/summernote-next" target="_blank" rel="noopener noreferrer">Examples</a>
+          <a href="https://juergen-schwind.de/summernote-next" target="_blank" rel="noopener noreferrer">Examples</a>
           <span aria-hidden="true">·</span>
           <a href="https://github.com/jschwind/summernote-next" target="_blank" rel="noopener noreferrer">Project</a>
           <span aria-hidden="true">·</span>
@@ -8947,7 +8954,7 @@ var summernote = (function() {
 	var editable = renderer_default.create("<div class=\"note-editable card-block\" contentEditable=\"true\" role=\"textbox\" aria-multiline=\"true\"/>");
 	var statusbar = renderer_default.create([
 		"<output class=\"note-status-output\" role=\"status\" aria-live=\"polite\"></output>",
-		"<div class=\"note-statusbar card-footer\" role=\"status\">",
+		"<div class=\"note-statusbar card-footer border-top-0 shadow-sm\" role=\"status\">",
 		"<div class=\"note-resizebar\" aria-label=\"Resize\">",
 		"<div class=\"note-icon-bar\"></div>",
 		"<div class=\"note-icon-bar\"></div>",

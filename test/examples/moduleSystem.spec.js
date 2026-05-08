@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
-const examplePages = import.meta.glob('../../public/module-system/*.html', {
+const examplePages = import.meta.glob('../../examples/module-system/*.html', {
   eager: true,
   query: '?raw',
   import: 'default',
 });
 
-describe('public module system examples', () => {
+describe('examples module system examples', () => {
   it('keeps the local index focused on the module system topic pages', () => {
-    const indexPage = examplePages['../../public/module-system/index.html'];
+    const indexPage = examplePages['../../examples/module-system/index.html'];
 
     expect(indexPage).to.contain('Module System');
     expect(indexPage).to.contain('./lifecycle-and-events.html');
@@ -27,8 +27,8 @@ describe('public module system examples', () => {
   });
 
   it('documents both local modules and global plugin registration', () => {
-    expect(examplePages['../../public/module-system/lifecycle-and-events.html']).to.contain('modules: {');
-    expect(examplePages['../../public/module-system/conditional-modules.html']).to.contain('shouldInitialize()');
-    expect(examplePages['../../public/module-system/plugin-registration.html']).to.contain('summernote.summernote.plugins');
+    expect(examplePages['../../examples/module-system/lifecycle-and-events.html']).to.contain('modules: {');
+    expect(examplePages['../../examples/module-system/conditional-modules.html']).to.contain('shouldInitialize()');
+    expect(examplePages['../../examples/module-system/plugin-registration.html']).to.contain('summernote.summernote.plugins');
   });
 });

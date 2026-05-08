@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
-const examplePages = import.meta.glob('../../public/custom-icons/*.html', {
+const examplePages = import.meta.glob('../../examples/custom-icons/*.html', {
   eager: true,
   query: '?raw',
   import: 'default',
 });
 
-describe('public custom icon examples', () => {
+describe('examples custom icon examples', () => {
   it('keeps the local index focused on the custom icon topic pages', () => {
-    const indexPage = examplePages['../../public/custom-icons/index.html'];
+    const indexPage = examplePages['../../examples/custom-icons/index.html'];
 
     expect(indexPage).to.contain('Custom Icons');
     expect(indexPage).to.contain('./class-overrides.html');
@@ -28,7 +28,7 @@ describe('public custom icon examples', () => {
   });
 
   it('demonstrates icon reuse inside custom button factories where relevant', () => {
-    const customButtonPage = examplePages['../../public/custom-icons/custom-button-icons.html'];
+    const customButtonPage = examplePages['../../examples/custom-icons/custom-button-icons.html'];
 
     expect(customButtonPage).to.contain('buttons: {');
     expect(customButtonPage).to.contain('context.ui.icon');

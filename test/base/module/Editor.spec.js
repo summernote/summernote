@@ -43,10 +43,10 @@ describe('Editor', () => {
 
   it('inserts paragraphs and horizontal rules', async() => {
     editor.insertParagraph();
-    await expectContents('<p><br></p><p>hello</p>');
+    await expectContents('<p>hello</p><p><br></p>');
 
     editor.insertHorizontalRule();
-    await expectContents('<p><br></p><hr><p>hello</p>');
+    await expectContents('<p>hello</p><p><br></p><hr><p><br></p>');
   });
 
   it('inserts images as data URLs', async() => {

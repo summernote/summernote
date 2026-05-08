@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-const examplePages = import.meta.glob('../../public/{airmode,bootswatch,default,default-vs-card,full,toolbar-colors}.html', {
+const examplePages = import.meta.glob('../../examples/{airmode,bootswatch,default,default-vs-card,full,toolbar-colors}.html', {
   eager: true,
   query: '?raw',
   import: 'default',
 });
 
-describe('public example asset references', () => {
+describe('example asset references', () => {
   it('loads the compiled dist assets without a hard-coded cache-buster', () => {
     Object.entries(examplePages).forEach(([path, markup]) => {
       expect(markup, `${path} should load the compiled dist stylesheet`).to.contain('/dist/summernote-next.css');
@@ -17,23 +17,23 @@ describe('public example asset references', () => {
   });
 
   it('keeps an example configuration block on the default example page', () => {
-    expect(examplePages['../../public/default.html']).to.contain('data-example-configuration');
-    expect(examplePages['../../public/default.html']).to.contain('Example configuration');
-    expect(examplePages['../../public/default.html']).to.contain('summernote.create(\'#editor\');');
+    expect(examplePages['../../examples/default.html']).to.contain('data-example-configuration');
+    expect(examplePages['../../examples/default.html']).to.contain('Example configuration');
+    expect(examplePages['../../examples/default.html']).to.contain('summernote.create(\'#editor\');');
   });
 
   it('keeps an example configuration block on the airmode example page', () => {
-    expect(examplePages['../../public/airmode.html']).to.contain('data-example-configuration');
-    expect(examplePages['../../public/airmode.html']).to.contain('summernote.create(\'#airmode-editor\', {');
+    expect(examplePages['../../examples/airmode.html']).to.contain('data-example-configuration');
+    expect(examplePages['../../examples/airmode.html']).to.contain('summernote.create(\'#airmode-editor\', {');
   });
 
   it('keeps an example configuration block on the full example page', () => {
-    expect(examplePages['../../public/full.html']).to.contain('data-example-configuration');
-    expect(examplePages['../../public/full.html']).to.contain('summernote.create(\'#all-features-editor\', {');
+    expect(examplePages['../../examples/full.html']).to.contain('data-example-configuration');
+    expect(examplePages['../../examples/full.html']).to.contain('summernote.create(\'#all-features-editor\', {');
   });
 
   it('renders two separate example configuration cards on the toolbar colors page', () => {
-    const toolbarColorsPage = examplePages['../../public/toolbar-colors.html'];
+    const toolbarColorsPage = examplePages['../../examples/toolbar-colors.html'];
     const cardMatches = toolbarColorsPage.match(/data-example-configuration/g) || [];
 
     expect(cardMatches).to.have.length(2);
