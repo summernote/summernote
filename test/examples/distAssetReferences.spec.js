@@ -9,10 +9,10 @@ const examplePages = import.meta.glob('../../public/{airmode,bootswatch,default,
 describe('public example asset references', () => {
   it('loads the compiled dist assets without a hard-coded cache-buster', () => {
     Object.entries(examplePages).forEach(([path, markup]) => {
-      expect(markup, `${path} should load the compiled dist stylesheet`).to.contain('/dist/summernote-bs5.css');
-      expect(markup, `${path} should load the compiled dist script`).to.contain('/dist/summernote-bs5.js');
-      expect(markup, `${path} should not pin the dist stylesheet to a stale version`).not.to.match(/\/dist\/summernote-bs5\.css\?v=/);
-      expect(markup, `${path} should not pin the dist script to a stale version`).not.to.match(/\/dist\/summernote-bs5\.js\?v=/);
+      expect(markup, `${path} should load the compiled dist stylesheet`).to.contain('/dist/summernote-next.css');
+      expect(markup, `${path} should load the compiled dist script`).to.contain('/dist/summernote-next.js');
+      expect(markup, `${path} should not pin the dist stylesheet to a stale version`).not.to.match(/\/dist\/summernote-next\.css\?v=/);
+      expect(markup, `${path} should not pin the dist script to a stale version`).not.to.match(/\/dist\/summernote-next\.js\?v=/);
     });
   });
 

@@ -254,7 +254,8 @@
 }
 
 .note-modal.note-image-dialog-modal .modal-content,
-.note-modal.note-link-dialog-modal .modal-content {
+.note-modal.note-link-dialog-modal .modal-content,
+.note-modal.note-help-dialog-modal .modal-content {
   border-color: var(--note-border-color);
   box-shadow: var(--bs-box-shadow-lg);
 }
@@ -262,7 +263,9 @@
 .note-modal.note-image-dialog-modal .modal-header,
 .note-modal.note-image-dialog-modal .modal-footer,
 .note-modal.note-link-dialog-modal .modal-header,
-.note-modal.note-link-dialog-modal .modal-footer {
+.note-modal.note-link-dialog-modal .modal-footer,
+.note-modal.note-help-dialog-modal .modal-header,
+.note-modal.note-help-dialog-modal .modal-footer {
   border-color: var(--note-border-color);
 }
 
@@ -271,6 +274,144 @@
 .note-modal.note-link-dialog-modal .note-link-dialog-divider,
 .note-modal.note-link-dialog-modal .note-image-dialog-divider {
   background-color: var(--note-border-color);
+}
+
+.note-modal.note-help-dialog-modal .modal-dialog {
+  max-width: 760px;
+}
+
+.note-modal.note-help-dialog-modal .modal-body {
+  padding: var(--bs-modal-padding);
+}
+
+.note-help-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.note-help-dialog-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-bottom: 0.25rem;
+  border-bottom: var(--bs-border-width) solid var(--note-border-color);
+}
+
+.note-help-dialog-lead {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.note-help-dialog-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin: 0;
+  color: var(--note-muted-color);
+  font-size: 0.875rem;
+}
+
+.note-help-dialog-platform {
+  font-weight: 600;
+}
+
+.note-help-dialog-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.note-help-dialog-section-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.note-help-dialog-list {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.note-help-dialog-item {
+  display: grid;
+  grid-template-columns: minmax(10rem, 13rem) minmax(0, 1fr);
+  gap: 0.75rem 1rem;
+  align-items: center;
+}
+
+.note-help-dialog-item-shortcut {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.note-help-dialog-shortcut-separator {
+  color: var(--note-muted-color);
+  font-size: 0.875rem;
+}
+
+.note-help-dialog-item-shortcut kbd {
+  min-width: 2rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--note-border-color);
+  border-bottom-width: 2px;
+  border-radius: var(--bs-border-radius-sm);
+  background-color: var(--bs-tertiary-bg);
+  color: var(--note-color);
+  font-family: var(--bs-font-monospace);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+}
+
+.note-help-dialog-item-copy {
+  color: var(--note-color);
+  font-size: 0.9375rem;
+}
+
+.note-help-dialog-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  width: 100%;
+  color: var(--note-muted-color);
+  font-size: 0.875rem;
+}
+
+.note-help-dialog-footer-links {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.note-help-dialog-footer a {
+  color: inherit;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+}
+
+.note-help-dialog-footer a:hover,
+.note-help-dialog-footer a:focus-visible {
+  color: var(--note-color);
+  text-decoration-color: currentColor;
+}
+
+@media (max-width: 575.98px) {
+  .note-help-dialog-item {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+  }
+
+  .note-help-dialog-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 .note-handle .note-control-selection {

@@ -1,30 +1,57 @@
-# Maintaining Summernote
+# Maintaining Summernote Next
 
-## Releasing a New Version
+Summernote Next is maintained in <https://github.com/jschwind/summernote-next> and published as public examples at <https://juergen-schwind.com/summernote-next>.
 
-### 1. Update the version
+## Working locally
 
-Update the version in [package.json](./package.json#L4).
+Run project commands in Docker with the existing application container:
 
-### 2. Update the changelog
+```bash
+docker exec --user=application -w /app summernote-next-web-1 bash -lc "<command>"
+```
 
-Update the [CHANGES.md](./CHANGES.md) with the new version and the changes.
+Recommended checks:
 
-### 3. Create a PR for version and changelog and get it merged to main
+```bash
+docker exec --user=application -w /app summernote-next-web-1 bash -lc "npm run lint"
+docker exec --user=application -w /app summernote-next-web-1 bash -lc "npm test"
+docker exec --user=application -w /app summernote-next-web-1 bash -lc "npm run build"
+```
 
-### 4. Create a new release
+## Documentation and metadata
 
-Create a new release in [GitHub](https://github.com/summernote/summernote/releases/new) with the new version.
+Keep these files aligned whenever project ownership, branding, or public links change:
 
-1. Click on the `Releases` button in GitHub.
-2. Click on the `Draft a new release` button.
-3. Enter the tag version (e.g. `v0.9.0`).
-4. Click on the `Generate release notes` button to get the changelog.
-5. Attach the `/dist/summernote-<version>-dist.zip` file to the release.
-6. Click on the `Publish release` button.
+- `README.md`
+- `MAINTAINING.md`
+- `LICENSE`
+- `package.json`
+- `package-lock.json`
+- `src/js/module/HelpDialog.js`
+- `examples/`
 
-After creating the release, summernote will be published to [npm](https://www.npmjs.com/package/summernote) by the GitHub action. Also, the release will be published to [cdnjs](https://cdnjs.com/libraries/summernote).
+All public links in examples and dialogs should point to the maintained fork, not the upstream Summernote project.
 
-### 5. Update summernote.github.io
+## Copyright and license
 
-Update summernote [version](https://github.com/summernote/summernote.github.io/blob/main/_config.yml#L13), [summernote_css](https://github.com/summernote/summernote.github.io/blob/main/_config.yml#L18) and [summernote_js](https://github.com/summernote/summernote.github.io/blob/main/_config.yml#L19) in `_config.yml`.
+Summernote Next remains MIT licensed.
+
+When updating copyright notices:
+
+1. Preserve the original Summernote notice.
+2. Add the fork notice for Jürgen Schwind from 2026 onward.
+3. Keep the wording MIT-compatible and include the notice anywhere the license requires it.
+
+## Release checklist
+
+1. Update the version in `package.json` and `package-lock.json`.
+2. Run lint, tests, and build in Docker.
+3. Review the generated `dist/` files and example pages.
+4. Commit the release changes and create the corresponding Git tag.
+5. Create a GitHub release in <https://github.com/jschwind/summernote-next/releases>.
+
+## Support channels
+
+- Issues: <https://github.com/jschwind/summernote-next/issues>
+- Website: <https://juergen-schwind.com>
+- Email: <mailto:info@juergen-schwind.de>

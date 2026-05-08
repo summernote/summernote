@@ -20,6 +20,7 @@ export default [
         ...globals.node,
         ...globals.mocha,
         amd: 'readonly',
+        __SUMMERNOTE_NEXT_VERSION__: 'readonly',
       },
     },
     plugins: {

@@ -1,7 +1,8 @@
 /**
  * Typing.spec.js
- * (c) 2015~ Summernote Team
- * summernote may be freely distributed under the MIT license./
+ * (c) 2015-present Summernote Team
+ * (c) 2026-present Jürgen Schwind
+ * Summernote Next may be freely distributed under the MIT license.
  */
 /* jshint unused: false */
 /* jshint -W101 */

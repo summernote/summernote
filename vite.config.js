@@ -9,15 +9,18 @@ const version = pkg.version;
 const date = (new Date()).toISOString().replace(/:\d+\.\d+Z$/, 'Z');
 const banners = {
   'default': `
-Super simple WYSIWYG editor v${version}
-https://summernote.org
+Summernote Next
+Super simple WYSIWYG editor
+Version ${version}
+https://juergen-schwind.com/summernote-next
 
-Copyright 2013- Hackerwins and contributors
-Summernote may be freely distributed under the MIT license.
+Copyright 2013-present Hackerwins and contributors
+Copyright 2026-present Jürgen Schwind and contributors
+Summernote Next may be freely distributed under the MIT license.
 
 Date: ${date}
 `,
-  'minimal': `Summernote v${version} | (c) 2013- Hackerwins and contributors | MIT license`,
+  'minimal': `Summernote Next v${version} | (c) 2013-present Hackerwins and contributors | (c) 2026-present Jürgen Schwind and contributors | MIT license`,
 };
 
 const styles = [
@@ -35,6 +38,10 @@ for (const style of styles) {
       alias: {
         '@': '/src',
       },
+    },
+
+    define: {
+      __SUMMERNOTE_NEXT_VERSION__: JSON.stringify(version),
     },
 
     plugins: [
@@ -63,7 +70,7 @@ for (const style of styles) {
         entry: `/src/styles/${style}/summernote-${style}.js`,
         name: 'summernote',
         formats: ['iife'],
-        fileName: (format, entryName) => `${entryName}.js`,
+        fileName: () => 'summernote-next.js',
       },
 
       rollupOptions: {
@@ -73,7 +80,7 @@ for (const style of styles) {
         },
 
         output: {
-          assetFileNames: `summernote-${style}.[ext]`,
+          assetFileNames: 'summernote-next.[ext]',
         },
       },
     },

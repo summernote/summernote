@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
 import { chromium } from 'playwright';
+import { readFileSync } from 'fs';
 
 const chromeArgs = [
   '--no-sandbox',
@@ -8,12 +9,17 @@ const chromeArgs = [
   '--disable-dev-shm-usage',
   '--disable-gpu',
 ];
+const pkg = JSON.parse(readFileSync('package.json', 'utf-8'));
 
 export default defineConfig({
   resolve: {
     alias: {
       '@': '/src',
     },
+  },
+
+  define: {
+    __SUMMERNOTE_NEXT_VERSION__: JSON.stringify(pkg.version),
   },
 
   test: {

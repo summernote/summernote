@@ -1,4 +1,22 @@
 export const THEME_STORAGE_KEY = 'summernote-examples-theme';
+const PROJECT_LINKS = [
+  {
+    href: 'https://juergen-schwind.com/summernote-next',
+    label: 'Live examples',
+  },
+  {
+    href: 'https://github.com/jschwind/summernote-next',
+    label: 'GitHub repository',
+  },
+  {
+    href: 'https://juergen-schwind.com',
+    label: 'Maintainer website',
+  },
+  {
+    href: 'mailto:info@juergen-schwind.de',
+    label: 'Contact',
+  },
+];
 
 function isValidTheme(theme) {
   return theme === 'light' || theme === 'dark';
@@ -257,6 +275,31 @@ function ensureThemeToggle(documentRef, onChange) {
   return toggle;
 }
 
+function ensureProjectLinks(documentRef) {
+  const main = documentRef.querySelector('main.page');
+
+  if (!main || main.querySelector('[data-examples-project-links]')) {
+    return null;
+  }
+
+  const footer = documentRef.createElement('footer');
+  footer.className = 'examples-project-links';
+  footer.setAttribute('data-examples-project-links', 'true');
+  footer.innerHTML = `
+    <span class="examples-project-links-copy">
+      Summernote Next by <a href="https://juergen-schwind.com" target="_blank" rel="noopener noreferrer">Jürgen Schwind</a>
+    </span>
+    <span class="examples-project-links-actions">
+      ${PROJECT_LINKS.map(({ href, label }) => `
+        <a href="${href}" target="_blank" rel="noopener noreferrer">${label}</a>
+      `).join('')}
+    </span>
+  `;
+
+  main.append(footer);
+  return footer;
+}
+
 export function initializeExamplesTheme({
   documentRef = document,
   root = document.documentElement,
@@ -268,6 +311,7 @@ export function initializeExamplesTheme({
   }
 
   const storedTheme = getStoredTheme(storage);
+  ensureProjectLinks(documentRef);
   initializeExampleConfigurations({ documentRef });
   const toggle = ensureThemeToggle(documentRef, (theme, persist = false) => {
     applyTheme(theme, root);

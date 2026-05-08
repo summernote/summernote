@@ -1,21 +1,45 @@
 {
-  "name": "summernote",
-  "description": "Super simple WYSIWYG editor",
-  "version": "0.9.1",
+  "name": "summernote-next",
+  "description": "Super simple WYSIWYG editor on Bootstrap 5",
+  "version": "1.0.0",
   "license": "MIT",
   "keywords": [
+    "bootstrap",
     "editor",
-    "WYSIWYG"
+    "rich-text",
+    "summernote",
+    "summernote-next",
+    "vanilla-js",
+    "wysiwyg"
   ],
+  "homepage": "https://juergen-schwind.com/summernote-next",
+  "bugs": {
+    "url": "https://github.com/jschwind/summernote-next/issues"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/summernote/summernote.git"
+    "url": "https://github.com/jschwind/summernote-next.git"
   },
   "author": {
-    "name": "hackerwins",
-    "email": "susukang98@gmail.com"
+    "name": "Jürgen Schwind",
+    "email": "info@juergen-schwind.de",
+    "url": "https://juergen-schwind.com"
   },
-  "main": "dist/summernote.js",
+  "contributors": [
+    "Hackerwins and contributors",
+    "Jürgen Schwind and contributors"
+  ],
+  "copyright": "Copyright (c) 2015-present Summernote Team; Copyright (c) 2026-present Jürgen Schwind and Summernote Next Team",
+  "main": "dist/summernote-next.js",
+  "style": "dist/summernote-next.css",
+  "unpkg": "dist/summernote-next.js",
+  "jsdelivr": "dist/summernote-next.js",
+  "files": [
+    "dist/",
+    "font/",
+    "LICENSE",
+    "README.md"
+  ],
   "type": "module",
   "packageManager": "npm@11.13.0",
   "engines": {

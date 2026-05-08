@@ -29,7 +29,7 @@ import AirPopover from './module/AirPopover';
 import HintPopover from './module/HintPopover';
 
 $$.summernote = $$.extend($$.summernote, {
-  version: '@@VERSION@@',
+  version: __SUMMERNOTE_NEXT_VERSION__,
   plugins: {},
 
   dom: dom,

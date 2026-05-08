@@ -21,8 +21,8 @@ describe('public font style API examples', () => {
     Object.entries(examplePages)
       .filter(([path]) => !path.endsWith('/index.html'))
       .forEach(([path, markup]) => {
-        expect(markup, `${path} should load the compiled dist stylesheet`).to.contain('/dist/summernote-bs5.css');
-        expect(markup, `${path} should load the compiled dist script`).to.contain('/dist/summernote-bs5.js');
+        expect(markup, `${path} should load the compiled dist stylesheet`).to.contain('/dist/summernote-next.css');
+        expect(markup, `${path} should load the compiled dist script`).to.contain('/dist/summernote-next.js');
         expect(markup, `${path} should contain a configuration card`).to.contain('data-example-configuration');
         expect(markup, `${path} should use the Summernote API`).to.contain('summernote.invoke(');
       });

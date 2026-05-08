@@ -20,6 +20,40 @@ html[data-bs-theme="dark"] {
   color: var(--bs-secondary-color);
 }
 
+.examples-project-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.25rem;
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--bs-border-color-translucent, var(--bs-border-color));
+  color: var(--bs-secondary-color);
+  font-size: 0.875rem;
+}
+
+.examples-project-links-copy {
+  color: inherit;
+}
+
+.examples-project-links-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.9rem;
+}
+
+.examples-project-links a {
+  color: inherit;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+}
+
+.examples-project-links a:hover,
+.examples-project-links a:focus-visible {
+  color: var(--bs-body-color);
+  text-decoration-color: currentColor;
+}
+
 .example-config-header {
   display: flex;
   align-items: center;
@@ -160,4 +194,11 @@ html[data-bs-theme="dark"] .airmode-shell {
 html[data-bs-theme="light"] .example-config-pre {
   border-color: rgba(148, 163, 184, 0.35);
   background: #0b1220;
+}
+
+@media (max-width: 767.98px) {
+  .examples-project-links {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
