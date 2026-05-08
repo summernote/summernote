@@ -1,8 +1,10 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { nextTick } from '/test/util';
 import $$ from '@/js/core/dom-query.js';
 import Context from '@/js/Context';
 import LinkDialog from '@/js/module/LinkDialog';
+import env from '@/js/core/env';
+import key from '@/js/core/key';
 import '@/styles/bs5/summernote-bs5';
 
 describe('LinkDialog', () => {
@@ -135,6 +137,10 @@ describe('LinkDialog', () => {
     $input.val('summernote');
     dispatchBlur($input);
     expect($input.val()).to.equal('http://summernote');
+
+    $input.val('');
+    dispatchBlur($input);
+    expect($input.val()).to.equal('');
   });
 
   it('adds mailto during blur for email addresses', async() => {
@@ -188,5 +194,126 @@ describe('LinkDialog', () => {
       dispatchBlur($input);
       expect($input.val()).to.equal(`tel:${value}`);
     });
+  });
+
+  it('supports dialogs without a target checkbox', async() => {
+    dialog?.destroy();
+    context?.destroy();
+
+    const options = $$.extend({}, $$.summernote.options, {
+      toolbar: [['insert', ['link']]],
+      disableLinkTarget: true,
+    });
+
+    context = new Context(
+      $$('<div><p>hello</p></div>').appendTo('body'),
+      options,
+    );
+
+    dialog = new LinkDialog(context);
+    dialog.initialize();
+
+    await showDialog({
+      range: null,
+      text: 'hello',
+      url: 'https://summernote.org/',
+      isNewWindow: true,
+    });
+
+    expect(dialog.$dialog.find('.sn-checkbox-open-in-new-window').length).to.equal(0);
+  });
+
+  it('clones the entered url into the display text until the text field changes', async() => {
+    await showDialog({
+      range: null,
+      text: '',
+      url: '',
+      isNewWindow: false,
+    });
+
+    const $text = dialog.$dialog.find('.note-link-text');
+    const $url = dialog.$dialog.find('.note-link-url');
+    const $button = dialog.$dialog.find('.note-link-btn');
+
+    $url.val('example.com');
+    $url.trigger('input');
+    expect($text.val()).to.equal('example.com');
+
+    $text.val('<unsafe>');
+    $text.trigger('input');
+    expect($button.prop('disabled')).to.equal(false);
+
+    $url.val('another.example.com');
+    $url.trigger('input');
+    expect($text.val()).to.equal('<unsafe>');
+  });
+
+  it('submits the dialog and restores range when show is cancelled', async() => {
+    const invoke = vi.spyOn(context, 'invoke');
+
+    dialog.show();
+    await nextTick();
+    dialog.$dialog.trigger('shown.bs.modal');
+    await nextTick();
+
+    const $text = dialog.$dialog.find('.note-link-text');
+    const $url = dialog.$dialog.find('.note-link-url');
+    $text.val('Summernote');
+    $text.trigger('input');
+    $url.val('summernote.org');
+    $url.trigger('input');
+    dialog.$dialog.find('.note-link-btn').trigger('click');
+    await nextTick();
+
+    const createLinkCall = invoke.mock.calls.find(([namespace]) => namespace === 'editor.createLink');
+    expect(createLinkCall).to.not.equal(undefined);
+    expect(createLinkCall[1]).to.deep.include({
+      url: 'summernote.org',
+      text: 'Summernote',
+      isNewWindow: true,
+    });
+
+    dialog.show();
+    await nextTick();
+    dialog.$dialog.trigger('shown.bs.modal');
+    await nextTick();
+    dialog.$dialog.trigger('hidden.bs.modal');
+    await nextTick();
+
+    expect(invoke.mock.calls.filter(([namespace]) => namespace === 'editor.restoreRange').length).to.be.greaterThan(1);
+  });
+
+  it('skips autofocus on touch devices', async() => {
+    const originalIsSupportTouch = env.isSupportTouch;
+    env.isSupportTouch = true;
+
+    await showDialog({
+      range: null,
+      text: '',
+      url: '',
+      isNewWindow: false,
+    });
+
+    expect(dialog.$dialog.find('.note-link-url').is(':focus')).to.equal(false);
+    env.isSupportTouch = originalIsSupportTouch;
+  });
+
+  it('binds enter-key submission only for enter presses', () => {
+    const $input = $$('<input type="text">');
+    const $button = $$('<button type="button"></button>');
+    const clickSpy = vi.spyOn($button, 'trigger');
+
+    dialog.bindEnterKey($input, $button);
+
+    const tabKeypressEvent = new Event('keypress', { bubbles: true, cancelable: true });
+    Object.defineProperty(tabKeypressEvent, 'keyCode', { value: key.code.TAB });
+    $input[0].dispatchEvent(tabKeypressEvent);
+
+    const enterKeypressEvent = new Event('keypress', { bubbles: true, cancelable: true });
+    Object.defineProperty(enterKeypressEvent, 'keyCode', { value: key.code.ENTER });
+    $input[0].dispatchEvent(enterKeypressEvent);
+
+    expect(clickSpy).toHaveBeenCalledTimes(1);
+    expect(clickSpy).toHaveBeenCalledWith('click');
   });
 });

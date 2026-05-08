@@ -6,7 +6,8 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import $$ from '@/js/core/dom-query.js';
+import $$, { DomQuery } from '@/js/core/dom-query.js';
+import dom from '@/js/core/dom';
 import env from '@/js/core/env';
 import Context from '@/js/Context';
 import '@/styles/bs5/summernote-bs5';
@@ -80,6 +81,12 @@ describe('Context', () => {
     expect(context.isDisabled()).to.be.true;
   });
 
+  it('keeps the editor enabled when resetting an enabled instance', () => {
+    context.reset();
+
+    expect(context.isDisabled()).to.be.false;
+  });
+
   it('inherits the Bootstrap card radius on the frame and status bar', () => {
     const $card = $$([
       '<div class="card">',
@@ -142,5 +149,265 @@ describe('Context', () => {
     expect(context.layoutInfo.codable.hasClass('text-bg-dark')).to.be.true;
     expect(context.layoutInfo.statusbar.hasClass('border-top-0')).to.be.true;
     expect(context.layoutInfo.statusbar.hasClass('shadow-sm')).to.be.true;
+  });
+
+  it('returns an empty list when class names are not provided as a string', () => {
+    expect(context.normalizeClassNames(null)).to.deep.equal([]);
+  });
+
+  it('recreates the editor with preserved disabled state and explicit container', () => {
+    const $container = $$('<div class="container"></div>').appendTo('body');
+
+    context.destroy();
+    context = new Context($$('<div><p>hello</p></div>').appendTo('body'), $$.extend({}, $$.summernote.options, {
+      container: $container,
+    }));
+    context.disable();
+
+    const recreated = context.recreate({
+      focus: true,
+      editableClassName: 'recreated-editable',
+    });
+
+    expect(recreated).not.to.equal(context);
+    expect(recreated.$note.data('summernote')).to.equal(recreated);
+    expect(recreated.isDisabled()).to.be.true;
+    expect(recreated.options.container[0]).to.equal($container[0]);
+    expect(recreated.layoutInfo.editable.hasClass('recreated-editable')).to.be.true;
+
+    context = recreated;
+  });
+
+  it('focuses the recreated editor when the editor stays enabled', () => {
+    const invokeSpy = vi.spyOn(Context.prototype, 'invoke');
+
+    const recreated = context.recreate({
+      focus: true,
+    });
+
+    expect(recreated).not.to.equal(context);
+    expect(invokeSpy).toHaveBeenCalledWith('editor.focus');
+
+    context = recreated;
+  });
+
+  it('recreates the editor without overrides', () => {
+    const recreated = context.recreate();
+
+    expect(recreated).not.to.equal(context);
+    expect(recreated.code()).to.equalsIgnoreCase('<p>hello</p>');
+
+    context = recreated;
+  });
+
+  it('deactivates codeview before disabling the editor', () => {
+    const deactivate = vi.fn();
+
+    context.modules.codeview = {
+      isActivated: () => true,
+      deactivate,
+      shouldInitialize: () => true,
+    };
+
+    context.disable();
+
+    expect(deactivate).toHaveBeenCalledTimes(1);
+    expect(context.isDisabled()).to.be.true;
+  });
+
+  it('supports module access, eager initialization, and memo cleanup', () => {
+    const initialize = vi.fn();
+    const destroy = vi.fn();
+
+    class TestModule {
+      constructor(instance) {
+        this.context = instance;
+      }
+
+      shouldInitialize() {
+        return true;
+      }
+
+      initialize() {
+        initialize();
+      }
+    }
+
+    context.module('testModule', TestModule);
+
+    expect(initialize).toHaveBeenCalledTimes(1);
+    expect(context.module('testModule')).to.equal(context.modules.testModule);
+
+    context.memo('cleanup', { destroy });
+    context.removeMemo('cleanup');
+
+    expect(destroy).toHaveBeenCalledTimes(1);
+    expect(context.memo('cleanup')).to.equal(undefined);
+  });
+
+  it('registers optional buttons as memos during initialization', () => {
+    const buttonFactory = vi.fn();
+
+    context.destroy();
+    context = new Context($$('<div><p>hello</p></div>').appendTo('body'), $$.extend({}, $$.summernote.options, {
+      buttons: {
+        customButton: buttonFactory,
+      },
+    }));
+
+    expect(context.memo('button.customButton')).to.equal(buttonFactory);
+  });
+
+  it('registers plugin modules contributed through the global plugin registry', () => {
+    const previousPlugins = $$.summernote.plugins;
+
+    class PluginModule {
+      constructor(instance) {
+        this.context = instance;
+      }
+    }
+
+    $$.summernote.plugins = {
+      pluginModule: PluginModule,
+    };
+
+    context.destroy();
+    context = new Context($$('<div><p>hello</p></div>').appendTo('body'), $$.summernote.options);
+
+    expect(context.module('pluginModule')).toBeInstanceOf(PluginModule);
+
+    $$.summernote.plugins = previousPlugins;
+  });
+
+  it('initializes cleanly when no global plugins are registered', () => {
+    const previousPlugins = $$.summernote.plugins;
+
+    $$.summernote.plugins = null;
+
+    context.destroy();
+    context = new Context($$('<div><p>hello</p></div>').appendTo('body'), $$.summernote.options);
+
+    expect(context.module('editor')).to.exist;
+
+    $$.summernote.plugins = previousPlugins;
+  });
+
+  it('reads from the codable element when codeview is active', () => {
+    context.modules.codeview = {
+      isActivated: () => true,
+      sync: vi.fn(),
+      shouldInitialize: () => true,
+    };
+    context.layoutInfo.codable.val('<p>from-codeview</p>');
+
+    expect(context.code()).to.equal('<p>from-codeview</p>');
+  });
+
+  it('creates invoke handlers that resolve values from data attributes and refresh styles', () => {
+    const invokeSpy = vi.spyOn(context, 'invoke');
+    const event = {
+      preventDefault: vi.fn(),
+      target: $$('<button type="button" data-value="paragraph"><span></span></button>')[0].firstChild,
+    };
+
+    context.createInvokeHandler('editor.formatBlock')(event);
+    context.createInvokeHandlerAndUpdateState('editor.formatBlock')(event);
+
+    expect(event.preventDefault).toHaveBeenCalledTimes(2);
+    expect(invokeSpy).toHaveBeenCalledWith('editor.formatBlock', 'paragraph', expect.any(DomQuery));
+    expect(invokeSpy).toHaveBeenCalledWith('buttons.updateCurrentStyle');
+  });
+
+  it('syncs codeview content when setting code while codeview is active', () => {
+    const sync = vi.fn();
+
+    context.modules.codeview = {
+      isActivated: () => true,
+      sync,
+      shouldInitialize: () => true,
+    };
+
+    context.code('<p>updated</p>');
+
+    expect(sync).toHaveBeenCalledWith('<p>updated</p>');
+    expect(context.$note.val()).to.equal('<p>updated</p>');
+  });
+
+  it('skips initialization and destruction for modules that opt out', () => {
+    const initialize = vi.fn();
+    const destroy = vi.fn();
+
+    class DeferredModule {
+      shouldInitialize() {
+        return false;
+      }
+
+      initialize() {
+        initialize();
+      }
+
+      destroy() {
+        destroy();
+      }
+    }
+
+    context.module('deferred', DeferredModule);
+    context.removeModule('deferred');
+
+    expect(initialize).not.toHaveBeenCalled();
+    expect(destroy).not.toHaveBeenCalled();
+    expect(context.module('deferred')).to.equal(undefined);
+  });
+
+  it('defaults module initialization and destruction behavior when no shouldInitialize hook exists', () => {
+    const initialize = vi.fn();
+    const destroy = vi.fn();
+
+    context.modules.loose = {
+      initialize,
+      destroy,
+    };
+
+    context.initializeModule('loose');
+    context.removeModule('loose');
+
+    expect(initialize).toHaveBeenCalledTimes(1);
+    expect(destroy).toHaveBeenCalledTimes(1);
+  });
+
+  it('defaults removeModule initialization checks when a module has no shouldInitialize hook', () => {
+    const destroy = vi.fn();
+
+    context.modules.looseRemoval = {
+      destroy,
+    };
+
+    context.removeModule('looseRemoval');
+
+    expect(destroy).toHaveBeenCalledTimes(1);
+    expect(context.module('looseRemoval')).to.equal(undefined);
+  });
+
+  it('detaches registered module events before destroying the module', () => {
+    const detachEvents = vi.spyOn(dom, 'detachEvents');
+    const destroy = vi.fn();
+    const events = {
+      click: vi.fn(),
+    };
+
+    context.modules.eventful = {
+      shouldInitialize: () => true,
+      events,
+      destroy,
+    };
+
+    context.removeModule('eventful');
+
+    expect(detachEvents).toHaveBeenCalledWith(context.$note, events);
+    expect(destroy).toHaveBeenCalledTimes(1);
+  });
+
+  it('ignores removing modules that are not registered', () => {
+    expect(() => context.removeModule('missing-module')).not.to.throw();
   });
 });

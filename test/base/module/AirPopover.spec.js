@@ -1,8 +1,9 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { nextTick } from '/test/util';
 import $$ from '@/js/core/dom-query.js';
 import range from '@/js/core/range';
 import Context from '@/js/Context';
+import AirPopover from '@/js/module/AirPopover';
 import '@/styles/bs5/summernote-bs5';
 
 function dispatchSelectionEvent(element, type, x, y) {
@@ -65,5 +66,139 @@ describe('AirPopover', () => {
     expect($popover.css('display')).to.equal('block');
     expect($popover.find('.note-btn-bold').length).to.equal(1);
     expect(parseFloat($popover.css('left'))).to.be.greaterThanOrEqual(0);
+  });
+
+  it('updates coordinates from events and hides only when allowed', () => {
+    const airPopover = context.modules.airPopover;
+    const originalInvoke = context.invoke.bind(context);
+    vi.spyOn(context, 'invoke').mockImplementation((command, ...args) => {
+      if (command === 'editor.getLastRange') {
+        return {
+          getWordRange() {
+            return {
+              getClientRects() {
+                return [new DOMRect(35, 45, 10, 5)];
+              },
+            };
+          },
+        };
+      }
+
+      return originalInvoke(command, ...args);
+    });
+
+    const updateSpy = vi.spyOn(airPopover, 'update');
+    const hideSpy = vi.spyOn(airPopover, 'hide');
+
+    airPopover.events['summernote.contextmenu']({
+      preventDefault: vi.fn(),
+      stopPropagation: vi.fn(),
+    });
+    expect(updateSpy).toHaveBeenCalledWith(true);
+    airPopover.onContextmenu = false;
+
+    airPopover.events['summernote.mousedown'](null, { pageX: 11, pageY: 12 });
+    expect(airPopover.pageX).to.equal(11);
+    expect(airPopover.pageY).to.equal(12);
+
+    airPopover.events['summernote.keyup summernote.mouseup summernote.scroll'](null, {
+      type: 'keyup',
+      pageX: 1,
+      pageY: 2,
+    });
+    expect(airPopover.pageX).to.equal(35);
+    expect(airPopover.pageY).to.equal(45);
+
+    airPopover.events['summernote.keyup summernote.mouseup summernote.scroll'](null, {
+      type: 'mouseup',
+      pageX: 18,
+      pageY: 28,
+    });
+    expect(airPopover.pageX).to.equal(18);
+    expect(airPopover.pageY).to.equal(28);
+
+    airPopover.events['summernote.disable summernote.change summernote.dialog.shown summernote.blur']();
+    expect(hideSpy).toHaveBeenCalled();
+
+    airPopover.$popover.is = vi.fn(() => true);
+    hideSpy.mockClear();
+    airPopover.events['summernote.focusout']();
+    expect(hideSpy).not.toHaveBeenCalled();
+
+    airPopover.$popover.is = vi.fn(() => false);
+    airPopover.events['summernote.focusout']();
+    expect(hideSpy).toHaveBeenCalledTimes(1);
+
+    airPopover.$popover.trigger('mousedown');
+    expect(airPopover.hidable).to.equal(false);
+    airPopover.$popover.show();
+    airPopover.hide();
+    expect(airPopover.$popover.css('display')).to.equal('block');
+    airPopover.$popover.trigger('mouseup');
+    expect(airPopover.hidable).to.equal(true);
+    airPopover.hide();
+    expect(airPopover.$popover.css('display')).to.equal('none');
+  });
+
+  it('updates codeview state, hides collapsed selections, and skips empty configs', () => {
+    const airPopover = context.modules.airPopover;
+    const toggleSpy = vi.spyOn(airPopover.ui, 'toggleBtnActive');
+    const hideSpy = vi.spyOn(airPopover, 'hide');
+    const originalInvoke = context.invoke.bind(context);
+    vi.spyOn(context, 'invoke').mockImplementation((command, ...args) => {
+      if (command === 'editor.currentStyle') {
+        return {
+          range: {
+            isCollapsed() {
+              return true;
+            },
+          },
+        };
+      }
+
+      return originalInvoke(command, ...args);
+    });
+
+    airPopover.update(false);
+    expect(hideSpy).toHaveBeenCalled();
+
+    airPopover.updateCodeview(false);
+    airPopover.updateCodeview(true);
+    expect(toggleSpy).toHaveBeenCalledWith(airPopover.$popover.find('.btn-codeview'), false);
+    expect(toggleSpy).toHaveBeenCalledWith(airPopover.$popover.find('.btn-codeview'), true);
+
+    const disabledAirPopover = new AirPopover({
+      options: {
+        airMode: false,
+        popover: {
+          air: [],
+        },
+      },
+    });
+    expect(disabledAirPopover.shouldInitialize()).to.equal(false);
+  });
+
+  it('ignores editing-disabled context menus and deferred contextmenu mouse events', () => {
+    const airPopover = context.modules.airPopover;
+    const updateSpy = vi.spyOn(airPopover, 'update');
+    const event = {
+      preventDefault: vi.fn(),
+      stopPropagation: vi.fn(),
+    };
+
+    context.options.editing = false;
+    airPopover.events['summernote.contextmenu'](event);
+    expect(event.preventDefault).not.toHaveBeenCalled();
+    expect(updateSpy).not.toHaveBeenCalled();
+
+    context.options.editing = true;
+    airPopover.onContextmenu = true;
+    airPopover.events['summernote.keyup summernote.mouseup summernote.scroll'](null, {
+      type: 'mouseup',
+      pageX: 4,
+      pageY: 5,
+    });
+    expect(updateSpy).not.toHaveBeenCalled();
+    expect(airPopover.onContextmenu).to.equal(false);
   });
 });

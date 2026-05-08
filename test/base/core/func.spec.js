@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import func from '@/js/core/func';
 
 describe('base:core.func', () => {
@@ -69,11 +69,23 @@ describe('base:core.func', () => {
       expect(func.uniqueId('note-')).to.be.equal('note-2');
       expect(func.uniqueId('note-')).to.be.equal('note-3');
     });
+
+    it('should return uniqueId without a prefix', () => {
+      func.resetUniqueId();
+      expect(func.uniqueId()).to.be.equal('1');
+    });
   });
 
   describe('invertObject', () => {
     it('should return inverted object between keys and values', () => {
       expect(func.invertObject({ keyA: 'valueA', keyB: 'valueB' })).to.deep.equal({ valueA: 'keyA', valueB: 'keyB' });
+    });
+
+    it('should ignore inherited object keys', () => {
+      const source = Object.create({ inherited: 'skip' });
+      source.own = 'keep';
+
+      expect(func.invertObject(source)).to.deep.equal({ keep: 'own' });
     });
   });
 
@@ -123,6 +135,20 @@ describe('base:core.func', () => {
 
       await new Promise((resolve) => setTimeout(resolve, 101));
       expect(count).to.be.equal(1);
+    });
+
+    it('should execute immediately when requested', async() => {
+      const spy = vi.fn();
+      const fn = func.debounce(spy, 50, true);
+
+      fn('first');
+      fn('second');
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith('first');
+
+      await new Promise((resolve) => setTimeout(resolve, 60));
+      expect(spy).toHaveBeenCalledTimes(1);
     });
   });
 

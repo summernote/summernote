@@ -1,7 +1,6 @@
 import $$ from './dom-query.js';
 import func from './func';
 import lists from './lists';
-import env from './env';
 
 const NBSP_CHAR = String.fromCharCode(160);
 const ZERO_WIDTH_NBSP_CHAR = '\ufeff';
@@ -181,7 +180,7 @@ function withClosestSiblings(node, pred) {
  * - [workaround] old IE only works with &nbsp;
  * - [workaround] IE11 and other browser works with bogus br
  */
-const blankHTML = env.isMSIE && env.browserVersion < 11 ? '&nbsp;' : '<br>';
+const blankHTML = '<br>';
 
 /**
  * @method nodeLength
@@ -844,9 +843,8 @@ function splitNode(point, options) {
   if (isEdgePoint(point) && (isText(point.node) || isNotSplitEdgePoint)) {
     if (isLeftEdgePoint(point)) {
       return point.node;
-    } else if (isRightEdgePoint(point)) {
-      return point.node.nextSibling;
     }
+    return point.node.nextSibling;
   }
 
   // split #text
@@ -949,7 +947,7 @@ function splitPoint(point, isInline) {
   //  - block: splitRoot is a child of bodyContainer
   const pred = isInline ? isPara : isBodyContainer;
   const ancestors = listAncestor(point.node, pred);
-  const topAncestor = lists.last(ancestors) || point.node;
+  const topAncestor = lists.last(ancestors);
 
   let splitRoot, container;
   if (pred(topAncestor)) {

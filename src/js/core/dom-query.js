@@ -72,8 +72,12 @@ function getEventNames(events) {
   return events.split(/\s+/).filter(Boolean);
 }
 
+function normalizeEventDetail(detail) {
+  return detail === undefined ? [] : [].concat(detail);
+}
+
 function getBootstrap() {
-  return typeof window !== 'undefined' ? window.bootstrap : undefined;
+  return globalThis.window?.bootstrap;
 }
 
 function sanitizeBootstrapOptions(options) {
@@ -142,18 +146,6 @@ function isWindowObject(value) {
 
 function isDocumentObject(value) {
   return value === document;
-}
-
-function getDocumentElement(target) {
-  if (isDocumentObject(target)) {
-    return target.documentElement || document.documentElement;
-  }
-
-  if (isWindowObject(target)) {
-    return target.document.documentElement || document.documentElement;
-  }
-
-  return null;
 }
 
 function getScrollContainer(target) {
@@ -823,7 +815,7 @@ export class DomQuery {
       this.elements.forEach((el) => {
         const wrapped = (nativeEvent) => {
           const event = normalizeEvent(nativeEvent, el);
-          const detail = Array.isArray(event.detail) ? event.detail : (event.detail !== undefined ? [event.detail] : []);
+          const detail = normalizeEventDetail(event.detail);
           h.call(el, event, ...detail);
         };
         eventNames.forEach((eventName) => el.addEventListener(eventName, wrapped));
@@ -840,7 +832,7 @@ export class DomQuery {
         const target = e.target instanceof Element ? e.target.closest(selector) : null;
         if (target && this.elements.some(el => el.contains(target))) {
           const event = normalizeEvent(e, target);
-          const detail = Array.isArray(event.detail) ? event.detail : (event.detail !== undefined ? [event.detail] : []);
+          const detail = normalizeEventDetail(event.detail);
           handler.call(target, event, ...detail);
         }
       };
@@ -892,7 +884,7 @@ export class DomQuery {
         el.parentNode.replaceChild(clone, el);
         // Update internal reference
         const idx = this.elements.indexOf(el);
-        if (idx >= 0) this.elements[idx] = clone;
+        this.elements[idx] = clone;
       }
     });
     return this.refreshCollection();
@@ -902,7 +894,7 @@ export class DomQuery {
     const eventNames = getEventNames(event);
     const wrapper = (e) => {
       const event = normalizeEvent(e, e.currentTarget);
-      const detail = Array.isArray(event.detail) ? event.detail : (event.detail !== undefined ? [event.detail] : []);
+      const detail = normalizeEventDetail(event.detail);
       handler.call(e.currentTarget, event, ...detail);
       eventNames.forEach((eventName) => e.currentTarget.removeEventListener(eventName, wrapper));
     };
@@ -989,7 +981,7 @@ export class DomQuery {
         return el.innerWidth;
       }
       if (isDocumentObject(el)) {
-        return getDocumentElement(el)?.clientWidth || 0;
+        return document.documentElement.clientWidth || 0;
       }
       return el ? el.offsetWidth : 0;
     }
@@ -1004,7 +996,7 @@ export class DomQuery {
         return el.innerHeight;
       }
       if (isDocumentObject(el)) {
-        return getDocumentElement(el)?.clientHeight || 0;
+        return document.documentElement.clientHeight || 0;
       }
       return el ? el.offsetHeight : 0;
     }
@@ -1018,7 +1010,7 @@ export class DomQuery {
       return el.innerWidth;
     }
     if (isDocumentObject(el)) {
-      return getDocumentElement(el)?.clientWidth || 0;
+      return document.documentElement.clientWidth || 0;
     }
     return el ? el.clientWidth : 0;
   }
@@ -1029,7 +1021,7 @@ export class DomQuery {
       return el.innerHeight;
     }
     if (isDocumentObject(el)) {
-      return getDocumentElement(el)?.clientHeight || 0;
+      return document.documentElement.clientHeight || 0;
     }
     return el ? el.clientHeight : 0;
   }
@@ -1041,7 +1033,7 @@ export class DomQuery {
       return el.innerWidth;
     }
     if (isDocumentObject(el)) {
-      return getDocumentElement(el)?.clientWidth || 0;
+      return document.documentElement.clientWidth || 0;
     }
     let w = el.offsetWidth;
     if (includeMargin) {
@@ -1058,7 +1050,7 @@ export class DomQuery {
       return el.innerHeight;
     }
     if (isDocumentObject(el)) {
-      return getDocumentElement(el)?.clientHeight || 0;
+      return document.documentElement.clientHeight || 0;
     }
     let h = el.offsetHeight;
     if (includeMargin) {
@@ -1089,7 +1081,7 @@ export class DomQuery {
       if (!el) {
         return 0;
       }
-      return scrollContainer ? scrollContainer.scrollTop : 0;
+      return scrollContainer.scrollTop;
     }
     this.elements.forEach((element) => {
       const target = getScrollContainer(element);

@@ -8,7 +8,7 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-05-08T16:03Z
+Date: 2026-05-08T18:45Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js
@@ -60,8 +60,11 @@ var summernote = (function() {
 		if (!events) return [];
 		return events.split(/\s+/).filter(Boolean);
 	}
+	function normalizeEventDetail(detail) {
+		return detail === void 0 ? [] : [].concat(detail);
+	}
 	function getBootstrap() {
-		return typeof window !== "undefined" ? window.bootstrap : void 0;
+		return globalThis.window?.bootstrap;
 	}
 	function sanitizeBootstrapOptions(options) {
 		if (!options || typeof options !== "object") return;
@@ -107,11 +110,6 @@ var summernote = (function() {
 	}
 	function isDocumentObject(value) {
 		return value === document;
-	}
-	function getDocumentElement(target) {
-		if (isDocumentObject(target)) return target.documentElement || document.documentElement;
-		if (isWindowObject(target)) return target.document.documentElement || document.documentElement;
-		return null;
 	}
 	function getScrollContainer(target) {
 		if (isDocumentObject(target) || isWindowObject(target)) return target.document?.scrollingElement || document.scrollingElement || document.documentElement;
@@ -589,7 +587,7 @@ var summernote = (function() {
 				this.elements.forEach((el) => {
 					const wrapped = (nativeEvent) => {
 						const event = normalizeEvent(nativeEvent, el);
-						const detail = Array.isArray(event.detail) ? event.detail : event.detail !== void 0 ? [event.detail] : [];
+						const detail = normalizeEventDetail(event.detail);
 						h.call(el, event, ...detail);
 					};
 					eventNames.forEach((eventName) => el.addEventListener(eventName, wrapped));
@@ -609,7 +607,7 @@ var summernote = (function() {
 					const target = e.target instanceof Element ? e.target.closest(selector) : null;
 					if (target && this.elements.some((el) => el.contains(target))) {
 						const event = normalizeEvent(e, target);
-						const detail = Array.isArray(event.detail) ? event.detail : event.detail !== void 0 ? [event.detail] : [];
+						const detail = normalizeEventDetail(event.detail);
 						handler.call(target, event, ...detail);
 					}
 				};
@@ -650,7 +648,7 @@ var summernote = (function() {
 					if (!el.parentNode) return;
 					el.parentNode.replaceChild(clone, el);
 					const idx = this.elements.indexOf(el);
-					if (idx >= 0) this.elements[idx] = clone;
+					this.elements[idx] = clone;
 				}
 			});
 			return this.refreshCollection();
@@ -659,7 +657,7 @@ var summernote = (function() {
 			const eventNames = getEventNames(event);
 			const wrapper = (e) => {
 				const event = normalizeEvent(e, e.currentTarget);
-				const detail = Array.isArray(event.detail) ? event.detail : event.detail !== void 0 ? [event.detail] : [];
+				const detail = normalizeEventDetail(event.detail);
 				handler.call(e.currentTarget, event, ...detail);
 				eventNames.forEach((eventName) => e.currentTarget.removeEventListener(eventName, wrapper));
 			};
@@ -728,7 +726,7 @@ var summernote = (function() {
 			if (value === void 0) {
 				const el = this.get(0);
 				if (isWindowObject(el)) return el.innerWidth;
-				if (isDocumentObject(el)) return getDocumentElement(el)?.clientWidth || 0;
+				if (isDocumentObject(el)) return document.documentElement.clientWidth || 0;
 				return el ? el.offsetWidth : 0;
 			}
 			this.elements.forEach((el) => {
@@ -740,7 +738,7 @@ var summernote = (function() {
 			if (value === void 0) {
 				const el = this.get(0);
 				if (isWindowObject(el)) return el.innerHeight;
-				if (isDocumentObject(el)) return getDocumentElement(el)?.clientHeight || 0;
+				if (isDocumentObject(el)) return document.documentElement.clientHeight || 0;
 				return el ? el.offsetHeight : 0;
 			}
 			this.elements.forEach((el) => {
@@ -751,20 +749,20 @@ var summernote = (function() {
 		innerWidth() {
 			const el = this.get(0);
 			if (isWindowObject(el)) return el.innerWidth;
-			if (isDocumentObject(el)) return getDocumentElement(el)?.clientWidth || 0;
+			if (isDocumentObject(el)) return document.documentElement.clientWidth || 0;
 			return el ? el.clientWidth : 0;
 		}
 		innerHeight() {
 			const el = this.get(0);
 			if (isWindowObject(el)) return el.innerHeight;
-			if (isDocumentObject(el)) return getDocumentElement(el)?.clientHeight || 0;
+			if (isDocumentObject(el)) return document.documentElement.clientHeight || 0;
 			return el ? el.clientHeight : 0;
 		}
 		outerWidth(includeMargin) {
 			const el = this.get(0);
 			if (!el) return 0;
 			if (isWindowObject(el)) return el.innerWidth;
-			if (isDocumentObject(el)) return getDocumentElement(el)?.clientWidth || 0;
+			if (isDocumentObject(el)) return document.documentElement.clientWidth || 0;
 			let w = el.offsetWidth;
 			if (includeMargin) {
 				const style = getComputedStyle(el);
@@ -776,7 +774,7 @@ var summernote = (function() {
 			const el = this.get(0);
 			if (!el) return 0;
 			if (isWindowObject(el)) return el.innerHeight;
-			if (isDocumentObject(el)) return getDocumentElement(el)?.clientHeight || 0;
+			if (isDocumentObject(el)) return document.documentElement.clientHeight || 0;
 			let h = el.offsetHeight;
 			if (includeMargin) {
 				const style = getComputedStyle(el);
@@ -812,7 +810,7 @@ var summernote = (function() {
 			const scrollContainer = getScrollContainer(el);
 			if (value === void 0) {
 				if (!el) return 0;
-				return scrollContainer ? scrollContainer.scrollTop : 0;
+				return scrollContainer.scrollTop;
 			}
 			this.elements.forEach((element) => {
 				const target = getScrollContainer(element);
@@ -1624,7 +1622,7 @@ var summernote = (function() {
 	* - [workaround] old IE only works with &nbsp;
 	* - [workaround] IE11 and other browser works with bogus br
 	*/
-	var blankHTML = env_default.isMSIE && env_default.browserVersion < 11 ? "&nbsp;" : "<br>";
+	var blankHTML = "<br>";
 	/**
 	* @method nodeLength
 	*
@@ -2133,7 +2131,7 @@ var summernote = (function() {
 		if (isDiscardEmptySplits) isSkipPaddingBlankHTML = true;
 		if (isEdgePoint(point) && (isText(point.node) || isNotSplitEdgePoint)) {
 			if (isLeftEdgePoint(point)) return point.node;
-			else if (isRightEdgePoint(point)) return point.node.nextSibling;
+			return point.node.nextSibling;
 		}
 		if (isText(point.node)) return point.node.splitText(point.offset);
 		else {
@@ -2211,7 +2209,7 @@ var summernote = (function() {
 	function splitPoint(point, isInline) {
 		const pred = isInline ? isPara : isBodyContainer;
 		const ancestors = listAncestor(point.node, pred);
-		const topAncestor = lists_default.last(ancestors) || point.node;
+		const topAncestor = lists_default.last(ancestors);
 		let splitRoot, container;
 		if (pred(topAncestor)) {
 			splitRoot = ancestors[ancestors.length - 2];
@@ -2599,7 +2597,8 @@ var summernote = (function() {
 		}
 		removeModule(key) {
 			const module = this.modules[key];
-			if (module && typeof module.shouldInitialize === "function" ? module.shouldInitialize() : true) {
+			if (!module) return;
+			if (typeof module.shouldInitialize === "function" ? module.shouldInitialize() : true) {
 				if (module.events) dom_default.detachEvents(this.$note, module.events);
 				if (module.destroy) module.destroy();
 			}
@@ -2875,21 +2874,14 @@ var summernote = (function() {
 			* @return {BoundaryPoint}
 			*/
 			const getVisiblePoint = function(point, isLeftToRight) {
-				if (!point) return point;
 				if (dom_default.isVisiblePoint(point)) {
 					if (!dom_default.isEdgePoint(point) || dom_default.isRightEdgePoint(point) && !isLeftToRight || dom_default.isLeftEdgePoint(point) && isLeftToRight || dom_default.isRightEdgePoint(point) && isLeftToRight && dom_default.isVoid(point.node.nextSibling) || dom_default.isLeftEdgePoint(point) && !isLeftToRight && dom_default.isVoid(point.node.previousSibling) || dom_default.isBlock(point.node) && dom_default.isEmpty(point.node)) return point;
 				}
 				const block = dom_default.ancestor(point.node, dom_default.isBlock);
-				let hasRightNode = false;
-				if (!hasRightNode) {
-					const prevPoint = dom_default.prevPoint(point) || { node: null };
-					hasRightNode = (dom_default.isLeftEdgePointOf(point, block) || dom_default.isVoid(prevPoint.node)) && !isLeftToRight;
-				}
-				let hasLeftNode = false;
-				if (!hasLeftNode) {
-					const nextPoint = dom_default.nextPoint(point) || { node: null };
-					hasLeftNode = (dom_default.isRightEdgePointOf(point, block) || dom_default.isVoid(nextPoint.node)) && isLeftToRight;
-				}
+				const prevPoint = dom_default.prevPoint(point) || { node: null };
+				const hasRightNode = (dom_default.isLeftEdgePointOf(point, block) || dom_default.isVoid(prevPoint.node)) && !isLeftToRight;
+				const immediateNextPoint = dom_default.nextPoint(point) || { node: null };
+				const hasLeftNode = (dom_default.isRightEdgePointOf(point, block) || dom_default.isVoid(immediateNextPoint.node)) && isLeftToRight;
 				if (hasRightNode || hasLeftNode) {
 					if (dom_default.isVisiblePoint(point)) return point;
 					isLeftToRight = !isLeftToRight;
@@ -3049,7 +3041,7 @@ var summernote = (function() {
 			if (dom_default.isInline(rng.sc)) {
 				const ancestors = dom_default.listAncestor(rng.sc, func_default.not(dom_default.isInline));
 				topAncestor = lists_default.last(ancestors);
-				if (!dom_default.isInline(topAncestor)) topAncestor = ancestors[ancestors.length - 2] || rng.sc.childNodes[rng.so];
+				if (!dom_default.isInline(topAncestor)) topAncestor = ancestors[ancestors.length - 2];
 			} else topAncestor = rng.sc.childNodes[rng.so > 0 ? rng.so - 1 : 0];
 			if (topAncestor) {
 				let inlineSiblings = dom_default.listPrev(topAncestor, dom_default.isParaInline).reverse();
@@ -3085,18 +3077,12 @@ var summernote = (function() {
 			markup = ((markup || "") + "").trim();
 			const contentsContainer = document.createElement("div");
 			contentsContainer.innerHTML = markup;
-			let childNodes = lists_default.from(contentsContainer.childNodes);
+			let childNodes = lists_default.from(contentsContainer.childNodes).reverse();
 			const rng = this;
-			let reversed = false;
-			if (rng.so >= 0) {
-				childNodes = childNodes.reverse();
-				reversed = true;
-			}
 			childNodes = childNodes.map(function(childNode) {
 				return rng.insertNode(childNode, !dom_default.isInline(childNode));
 			});
-			if (reversed) childNodes = childNodes.reverse();
-			return childNodes;
+			return childNodes.reverse();
 		}
 		/**
 		* returns text in range
@@ -3262,7 +3248,13 @@ var summernote = (function() {
 				textRangeStart.collapse(true);
 				let startPoint = textRangeToPoint(textRangeStart, true);
 				let endPoint = textRangeToPoint(textRangeEnd, false);
-				if (dom_default.isText(startPoint.node) && dom_default.isLeftEdgePoint(startPoint) && dom_default.isTextNode(endPoint.node) && dom_default.isRightEdgePoint(endPoint) && endPoint.node.nextSibling === startPoint.node) startPoint = endPoint;
+				if (dom_default.isText(startPoint.cont) && dom_default.isLeftEdgePoint({
+					node: startPoint.cont,
+					offset: startPoint.offset
+				}) && dom_default.isText(endPoint.cont) && dom_default.isRightEdgePoint({
+					node: endPoint.cont,
+					offset: endPoint.offset
+				}) && endPoint.cont.nextSibling === startPoint.cont) startPoint = endPoint;
 				sc = startPoint.cont;
 				so = startPoint.offset;
 				ec = endPoint.cont;
@@ -4036,9 +4028,7 @@ var summernote = (function() {
 		* Set the startPoint of action.
 		*/
 		function setStartPoint() {
-			if (!startPoint || !startPoint.tagName || startPoint.tagName.toLowerCase() !== "td" && startPoint.tagName.toLowerCase() !== "th") return;
 			_startPoint.colPos = startPoint.cellIndex;
-			if (!startPoint.parentElement || !startPoint.parentElement.tagName || startPoint.parentElement.tagName.toLowerCase() !== "tr") return;
 			_startPoint.rowPos = startPoint.parentElement.rowIndex;
 		}
 		/**
@@ -4277,12 +4267,10 @@ var summernote = (function() {
 					case TableResultAction.resultAction.SumSpanCount:
 						{
 							if (position === "top") {
-								if ((!currentCell.baseCell.parent ? 0 : currentCell.baseCell.closest("tr").rowIndex) <= currentTr[0].rowIndex) {
-									const tempTd = $$.parseHTML("<td" + tdAttributes + ">" + dom_default.blank + "</td>")[0];
-									tempTd.removeAttribute("rowspan");
-									html.append(tempTd);
-									break;
-								}
+								const tempTd = $$.parseHTML("<td" + tdAttributes + ">" + dom_default.blank + "</td>")[0];
+								tempTd.removeAttribute("rowspan");
+								html.append(tempTd);
+								break;
 							}
 							let rowspanNumber = parseInt(currentCell.baseCell.rowSpan, 10);
 							rowspanNumber++;
@@ -4333,10 +4321,10 @@ var summernote = (function() {
 		recoverAttributes(el) {
 			let resultStr = "";
 			if (!el) return resultStr;
-			const attrList = el.attributes || [];
+			const attrList = el.attributes;
 			for (let i = 0; i < attrList.length; i++) {
 				if (attrList[i].name.toLowerCase() === "id") continue;
-				if (attrList[i].specified) resultStr += " " + attrList[i].name + "='" + attrList[i].value + "'";
+				resultStr += " " + attrList[i].name + "='" + attrList[i].value + "'";
 			}
 			return resultStr;
 		}
@@ -4351,46 +4339,25 @@ var summernote = (function() {
 			const row = $$(cell).closest("tr");
 			const rowEl = row[0];
 			const cellPos = Array.from(rowEl.children).filter((c) => c.nodeName === "TD" || c.nodeName === "TH").indexOf(cell);
-			const rowPos = rowEl.rowIndex;
 			const actions = new TableResultAction(cell, TableResultAction.where.Row, TableResultAction.requestAction.Delete, row.closest("table")[0]).getActionList();
 			for (let actionIndex = 0; actionIndex < actions.length; actionIndex++) {
-				if (!actions[actionIndex]) continue;
 				const baseCell = actions[actionIndex].baseCell;
-				const virtualPosition = actions[actionIndex].virtualTable;
-				const hasRowspan = baseCell.rowSpan && baseCell.rowSpan > 1;
-				let rowspanNumber = hasRowspan ? parseInt(baseCell.rowSpan, 10) : 0;
+				let rowspanNumber = parseInt(baseCell.rowSpan, 10);
 				switch (actions[actionIndex].action) {
-					case TableResultAction.resultAction.Ignore: continue;
 					case TableResultAction.resultAction.AddCell:
 						{
 							const nextRow = rowEl.nextElementSibling;
-							if (!nextRow) continue;
 							const cloneRow = rowEl.cells[cellPos];
-							if (hasRowspan) {
-								if (rowspanNumber > 2) {
-									rowspanNumber--;
-									nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
-									nextRow.cells[cellPos].setAttribute("rowSpan", rowspanNumber);
-									nextRow.cells[cellPos].innerHTML = "";
-								} else if (rowspanNumber === 2) {
-									nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
-									nextRow.cells[cellPos].removeAttribute("rowSpan");
-									nextRow.cells[cellPos].innerHTML = "";
-								}
-							}
+							const keepsRowSpan = rowspanNumber > 2;
+							nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
+							if (keepsRowSpan) nextRow.cells[cellPos].setAttribute("rowSpan", rowspanNumber - 1);
+							else nextRow.cells[cellPos].removeAttribute("rowSpan");
+							nextRow.cells[cellPos].innerHTML = "";
 						}
 						continue;
 					case TableResultAction.resultAction.SubtractSpanCount:
-						if (hasRowspan) {
-							if (rowspanNumber > 2) {
-								rowspanNumber--;
-								baseCell.setAttribute("rowSpan", rowspanNumber);
-								if (virtualPosition.rowIndex !== rowPos && baseCell.cellIndex === cellPos) baseCell.innerHTML = "";
-							} else if (rowspanNumber === 2) {
-								baseCell.removeAttribute("rowSpan");
-								if (virtualPosition.rowIndex !== rowPos && baseCell.cellIndex === cellPos) baseCell.innerHTML = "";
-							}
-						}
+						if (rowspanNumber > 2) baseCell.setAttribute("rowSpan", rowspanNumber - 1);
+						else baseCell.removeAttribute("rowSpan");
 						continue;
 					case TableResultAction.resultAction.RemoveCell: continue;
 				}
@@ -4409,30 +4376,23 @@ var summernote = (function() {
 			const rowEl = row[0];
 			const cellPos = Array.from(rowEl.children).filter((c) => c.nodeName === "TD" || c.nodeName === "TH").indexOf(cell);
 			const actions = new TableResultAction(cell, TableResultAction.where.Column, TableResultAction.requestAction.Delete, row.closest("table")[0]).getActionList();
-			for (let actionIndex = 0; actionIndex < actions.length; actionIndex++) {
-				if (!actions[actionIndex]) continue;
-				switch (actions[actionIndex].action) {
-					case TableResultAction.resultAction.Ignore: continue;
-					case TableResultAction.resultAction.SubtractSpanCount:
-						{
-							const baseCell = actions[actionIndex].baseCell;
-							if (baseCell.colSpan && baseCell.colSpan > 1) {
-								let colspanNumber = baseCell.colSpan ? parseInt(baseCell.colSpan, 10) : 0;
-								if (colspanNumber > 2) {
-									colspanNumber--;
-									baseCell.setAttribute("colSpan", colspanNumber);
-									if (baseCell.cellIndex === cellPos) baseCell.innerHTML = "";
-								} else if (colspanNumber === 2) {
-									baseCell.removeAttribute("colSpan");
-									if (baseCell.cellIndex === cellPos) baseCell.innerHTML = "";
-								}
-							}
+			for (let actionIndex = 0; actionIndex < actions.length; actionIndex++) switch (actions[actionIndex].action) {
+				case TableResultAction.resultAction.SubtractSpanCount:
+					{
+						const baseCell = actions[actionIndex].baseCell;
+						let colspanNumber = parseInt(baseCell.colSpan, 10);
+						if (colspanNumber > 2) {
+							baseCell.setAttribute("colSpan", colspanNumber - 1);
+							if (baseCell.cellIndex === cellPos) baseCell.innerHTML = "";
+						} else {
+							baseCell.removeAttribute("colSpan");
+							if (baseCell.cellIndex === cellPos) baseCell.innerHTML = "";
 						}
-						continue;
-					case TableResultAction.resultAction.RemoveCell:
-						dom_default.remove(actions[actionIndex].baseCell, true);
-						continue;
-				}
+					}
+					continue;
+				case TableResultAction.resultAction.RemoveCell:
+					dom_default.remove(actions[actionIndex].baseCell, true);
+					continue;
 			}
 		}
 		/**
@@ -7801,17 +7761,12 @@ var summernote = (function() {
 			else if (dmMatch && dmMatch[2].length) $video = $$("<iframe>").attr("frameborder", 0).attr("src", "//www.dailymotion.com/embed/video/" + dmMatch[2]).attr("width", "640").attr("height", "360");
 			else if (youkuMatch && youkuMatch[1].length) $video = $$("<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>").attr("frameborder", 0).attr("height", "498").attr("width", "510").attr("src", "//player.youku.com/embed/" + youkuMatch[1]);
 			else if (peerTubeMatch && peerTubeMatch[0].length) {
-				var begin = 0;
-				if (peerTubeMatch[2] !== "undefined") begin = peerTubeMatch[2];
-				var end = 0;
-				if (peerTubeMatch[3] !== "undefined") end = peerTubeMatch[3];
-				var loop = 0;
-				if (peerTubeMatch[4] !== "undefined") loop = peerTubeMatch[4];
-				var autoplay = 0;
-				if (peerTubeMatch[5] !== "undefined") autoplay = peerTubeMatch[5];
-				var muted = 0;
-				if (peerTubeMatch[6] !== "undefined") muted = peerTubeMatch[6];
-				$video = $$("<iframe allowfullscreen sandbox=\"allow-same-origin allow-scripts allow-popups\">").attr("frameborder", 0).attr("src", "//" + peerTubeMatch[1] + "/videos/embed/" + peerTubeMatch[2] + "?loop=" + loop + "&autoplay=" + autoplay + "&muted=" + muted + (begin > 0 ? "&start=" + begin : "") + (end > 0 ? "&end=" + start : "")).attr("width", "560").attr("height", "315");
+				const begin = Number(peerTubeMatch[3] || 0);
+				const end = Number(peerTubeMatch[4] || 0);
+				const loop = peerTubeMatch[5] || 0;
+				const autoplay = peerTubeMatch[6] || 0;
+				const muted = peerTubeMatch[7] || 0;
+				$video = $$("<iframe allowfullscreen sandbox=\"allow-same-origin allow-scripts allow-popups\">").attr("frameborder", 0).attr("src", "//" + peerTubeMatch[1] + "/videos/embed/" + peerTubeMatch[2] + "?loop=" + loop + "&autoplay=" + autoplay + "&muted=" + muted + (begin > 0 ? "&start=" + begin : "") + (end > 0 ? "&end=" + end : "")).attr("width", "560").attr("height", "315");
 			} else if (qqMatch && qqMatch[1].length || qqMatch2 && qqMatch2[2].length) {
 				const vid = qqMatch && qqMatch[1].length ? qqMatch[1] : qqMatch2[2];
 				$video = $$("<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>").attr("frameborder", 0).attr("height", "310").attr("width", "500").attr("src", "https://v.qq.com/txp/iframe/player.html?vid=" + vid + "&auto=0");
@@ -8025,7 +7980,7 @@ var summernote = (function() {
       <div class="note-help-dialog-footer">
         <span class="note-help-dialog-footer-copy">Summernote Next ${this.escapeHtml($$.summernote.version)}</span>
         <span class="note-help-dialog-footer-links">
-          <a href="https://juergen-schwind.de/summernote-next" target="_blank" rel="noopener noreferrer">Examples</a>
+          <a href="https://juergen-schwind.com/summernote-next" target="_blank" rel="noopener noreferrer">Examples</a>
           <span aria-hidden="true">·</span>
           <a href="https://github.com/jschwind/summernote-next" target="_blank" rel="noopener noreferrer">Project</a>
           <span aria-hidden="true">·</span>
@@ -8186,7 +8141,6 @@ var summernote = (function() {
 			this.$content.addClass("note-hint-content").attr("role", "listbox");
 			this.$content.on("click", ".note-hint-item", (event) => {
 				const target = event.target.closest(".note-hint-item");
-				if (!target) return;
 				this.$content.find(".note-hint-item").attr("aria-selected", "false").removeClass("active");
 				$$(target).addClass("active");
 				$$(target).attr("aria-selected", "true");
@@ -8331,24 +8285,22 @@ var summernote = (function() {
 					this.$content.empty();
 					const bnd = func_default.rect2bnd(lists_default.last(wordRange.getClientRects()));
 					const containerOffset = $$(this.options.container).offset();
-					if (bnd) {
-						bnd.top -= containerOffset.top;
-						bnd.left -= containerOffset.left;
-						this.$popover.hide();
-						this.lastWordRange = wordRange;
-						this.hints.forEach((hint, idx) => {
-							if (hint.match.test(keyword)) this.createGroup(idx, keyword).appendTo(this.$content);
-						});
-						this.$content.find(".note-hint-item").first().addClass("active");
-						if (this.direction === "top") this.$popover.css({
-							left: bnd.left,
-							top: bnd.top - this.$popover.outerHeight() - POPOVER_DIST
-						});
-						else this.$popover.css({
-							left: bnd.left,
-							top: bnd.top + bnd.height + POPOVER_DIST
-						});
-					}
+					bnd.top -= containerOffset.top;
+					bnd.left -= containerOffset.left;
+					this.$popover.hide();
+					this.lastWordRange = wordRange;
+					this.hints.forEach((hint, idx) => {
+						if (hint.match.test(keyword)) this.createGroup(idx, keyword).appendTo(this.$content);
+					});
+					this.$content.find(".note-hint-item").first().addClass("active");
+					if (this.direction === "top") this.$popover.css({
+						left: bnd.left,
+						top: bnd.top - this.$popover.outerHeight() - POPOVER_DIST
+					});
+					else this.$popover.css({
+						left: bnd.left,
+						top: bnd.top + bnd.height + POPOVER_DIST
+					});
 				} else this.hide();
 			}
 		}

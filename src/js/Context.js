@@ -230,7 +230,10 @@ export default class Context {
 
   removeModule(key) {
     const module = this.modules[key];
-    const shouldInitialize = module && typeof module.shouldInitialize === 'function' ? module.shouldInitialize() : true;
+    if (!module) {
+      return;
+    }
+    const shouldInitialize = typeof module.shouldInitialize === 'function' ? module.shouldInitialize() : true;
     if (shouldInitialize) {
       if (module.events) {
         dom.detachEvents(this.$note, module.events);

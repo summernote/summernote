@@ -223,10 +223,6 @@ class WrappedRange {
      * @return {BoundaryPoint}
      */
     const getVisiblePoint = function(point, isLeftToRight) {
-      if (!point) {
-        return point;
-      }
-
       // Just use the given point [XXX:Adhoc]
       //  - case 01. if the point is on the middle of the node
       //  - case 02. if the point is on the right edge and prefer to choose left node
@@ -247,18 +243,11 @@ class WrappedRange {
 
       // point on block's edge
       const block = dom.ancestor(point.node, dom.isBlock);
-      let hasRightNode = false;
+      const prevPoint = dom.prevPoint(point) || { node: null };
+      const hasRightNode = (dom.isLeftEdgePointOf(point, block) || dom.isVoid(prevPoint.node)) && !isLeftToRight;
 
-      if (!hasRightNode) {
-        const prevPoint = dom.prevPoint(point) || { node: null };
-        hasRightNode = (dom.isLeftEdgePointOf(point, block) || dom.isVoid(prevPoint.node)) && !isLeftToRight;
-      }
-
-      let hasLeftNode = false;
-      if (!hasLeftNode) {
-        const nextPoint = dom.nextPoint(point) || { node: null };
-        hasLeftNode = (dom.isRightEdgePointOf(point, block) || dom.isVoid(nextPoint.node)) && isLeftToRight;
-      }
+      const immediateNextPoint = dom.nextPoint(point) || { node: null };
+      const hasLeftNode = (dom.isRightEdgePointOf(point, block) || dom.isVoid(immediateNextPoint.node)) && isLeftToRight;
 
       if (hasRightNode || hasLeftNode) {
         // returns point already on visible point
@@ -269,9 +258,9 @@ class WrappedRange {
         isLeftToRight = !isLeftToRight;
       }
 
-      const nextPoint = isLeftToRight ? dom.nextPointUntil(dom.nextPoint(point), dom.isVisiblePoint)
+      const nextVisiblePoint = isLeftToRight ? dom.nextPointUntil(dom.nextPoint(point), dom.isVisiblePoint)
         : dom.prevPointUntil(dom.prevPoint(point), dom.isVisiblePoint);
-      return nextPoint || point;
+      return nextVisiblePoint || point;
     };
 
     const endPoint = getVisiblePoint(this.getEndPoint(), false);
@@ -516,7 +505,7 @@ class WrappedRange {
       const ancestors = dom.listAncestor(rng.sc, func.not(dom.isInline));
       topAncestor = lists.last(ancestors);
       if (!dom.isInline(topAncestor)) {
-        topAncestor = ancestors[ancestors.length - 2] || rng.sc.childNodes[rng.so];
+        topAncestor = ancestors[ancestors.length - 2];
       }
     } else {
       topAncestor = rng.sc.childNodes[rng.so > 0 ? rng.so - 1 : 0];
@@ -572,25 +561,16 @@ class WrappedRange {
 
     const contentsContainer = document.createElement('div');
     contentsContainer.innerHTML = markup;
-    let childNodes = lists.from(contentsContainer.childNodes);
+    let childNodes = lists.from(contentsContainer.childNodes).reverse();
 
     // const rng = this.wrapBodyInlineWithPara().deleteContents();
     const rng = this;
-    let reversed = false;
-
-    if (rng.so >= 0) {
-      childNodes = childNodes.reverse();
-      reversed = true;
-    }
 
     childNodes = childNodes.map(function(childNode) {
       return rng.insertNode(childNode, !dom.isInline(childNode));
     });
 
-    if (reversed) {
-      childNodes = childNodes.reverse();
-    }
-    return childNodes;
+    return childNodes.reverse();
   }
 
   /**
@@ -827,9 +807,9 @@ export default {
       let endPoint = textRangeToPoint(textRangeEnd, false);
 
       // same visible point case: range was collapsed.
-      if (dom.isText(startPoint.node) && dom.isLeftEdgePoint(startPoint) &&
-        dom.isTextNode(endPoint.node) && dom.isRightEdgePoint(endPoint) &&
-        endPoint.node.nextSibling === startPoint.node) {
+      if (dom.isText(startPoint.cont) && dom.isLeftEdgePoint({ node: startPoint.cont, offset: startPoint.offset }) &&
+        dom.isText(endPoint.cont) && dom.isRightEdgePoint({ node: endPoint.cont, offset: endPoint.offset }) &&
+        endPoint.cont.nextSibling === startPoint.cont) {
         startPoint = endPoint;
       }
 

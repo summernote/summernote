@@ -4,13 +4,19 @@
  * (c) 2026-present Jürgen Schwind
  * Summernote Next may be freely distributed under the MIT license.
  */
-import { describe, it, expect } from 'vitest';
+import { afterEach, describe, it, expect } from 'vitest';
 import $$ from '@/js/core/dom-query.js';
 import range from '@/js/core/range';
 import Table from '@/js/editing/Table';
 
 describe('base:editing.Table', () => {
   var table = new Table();
+  var originalCreate = range.create;
+
+  afterEach(() => {
+    range.create = originalCreate;
+  });
+
   describe('tableWorker', () => {
     it('should create simple 1x1 table', () => {
       var resultTable = table.createTable(1, 1);
@@ -84,6 +90,50 @@ describe('base:editing.Table', () => {
       var expectedResult = '<table>' + $$(resultTable).html() + '</table>';
 
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
+    });
+
+    it('should move the selection to the next and previous cells when tabbing', () => {
+      var selectCell = null;
+      var $cont = $$('<div class="note-editable"><table><tbody><tr><td id="left">left</td><td id="right">right</td></tr></tbody></table></div>');
+      var leftCell = $cont.find('#left')[0];
+      var rightCell = $cont.find('#right')[0];
+
+      range.create = function(cell) {
+        return {
+          select: function() {
+            selectCell = cell;
+          },
+        };
+      };
+
+      table.tab({
+        commonAncestor: function() {
+          return leftCell.firstChild;
+        },
+      }, false);
+      expect(selectCell).to.equal(rightCell);
+
+      table.tab({
+        commonAncestor: function() {
+          return rightCell.firstChild;
+        },
+      }, true);
+      expect(selectCell).to.equal(leftCell);
+
+      selectCell = 'unchanged';
+      table.tab({
+        commonAncestor: function() {
+          return rightCell.firstChild;
+        },
+      }, false);
+      expect(selectCell).to.equal('unchanged');
+    });
+
+    it('should recover attributes without ids and ignore missing elements', () => {
+      var td = $$('<td id="cell" data-test="1" class="alpha">x</td>')[0];
+
+      expect(table.recoverAttributes(null)).to.equal('');
+      expect(table.recoverAttributes(td)).to.equal(" data-test='1' class='alpha'");
     });
 
     it('should add simple col to table on right between two cols', () => {
@@ -484,6 +534,103 @@ describe('base:editing.Table', () => {
       var expectedResult = '<table>' + $$(resultTable).html() + '</table>';
 
       expect(expectedResult).to.equalsIgnoreCase($cont.html());
+    });
+
+    it('should add a column to the left of a colspan cell without growing the span', () => {
+      var $cont = $$('<div class="note-editable"><table><tbody><tr><td colspan="2" id="span">A</td><td id="tail">B</td></tr><tr><td>a</td><td>b</td><td>c</td></tr></tbody></table></div>');
+      var $cell = $cont.find('#span');
+      var rng = range.create($cell[0].firstChild, 1);
+
+      table.addCol(rng, 'left');
+
+      expect($cont.find('tr')[0].children[0].innerHTML).to.equal('<br>');
+      expect($cont.find('#span')[0].getAttribute('colspan')).to.equal('2');
+      expect($cont.find('tr')[1].children[0].innerHTML).to.equal('<br>');
+    });
+
+    it('should delete the first row of a rowspan-3 cell by cloning it into the next row', () => {
+      var $cont = $$('<div class="note-editable"><table><tbody><tr><td rowspan="3" id="span">Row1-Span</td><td id="r1">A</td></tr><tr><td id="r2">B</td></tr><tr><td id="r3">C</td></tr></tbody></table></div>');
+      var $cell = $cont.find('#span');
+      var rng = range.create($cell[0].firstChild, 1);
+
+      table.deleteRow(rng);
+
+      expect($cont.html()).to.equalsIgnoreCase('<table><tbody><tr><td rowspan="2" id="span"></td><td id="r2">B</td></tr><tr><td id="r3">C</td></tr></tbody></table>');
+    });
+
+    it('should delete the first row of a rowspan-2 cell by moving the cell into the next row', () => {
+      var $cont = $$('<div class="note-editable"><table><tbody><tr><td rowspan="2" id="span">Row1-Span</td><td id="r1">A</td></tr><tr><td id="r2">B</td></tr></tbody></table></div>');
+      var $cell = $cont.find('#span');
+      var rng = range.create($cell[0].firstChild, 1);
+
+      table.deleteRow(rng);
+
+      expect($cont.find('#span')[0].innerHTML).to.equal('');
+      expect($cont.find('#span')[0].hasAttribute('rowspan')).to.equal(false);
+    });
+
+    it('should delete a row under a rowspan-2 cell by clearing the carried cell', () => {
+      var $cont = $$('<div class="note-editable"><table><tbody><tr><td rowspan="2" id="span">Row1-Span</td><td id="r1">A</td></tr><tr><td id="r2">B</td></tr><tr><td id="r3">C</td><td id="r4">D</td></tr></tbody></table></div>');
+      var $cell = $cont.find('#r2');
+      var rng = range.create($cell[0].firstChild, 1);
+
+      table.deleteRow(rng);
+
+      expect($cont.find('#span')[0].innerHTML).to.equal('Row1-Span');
+      expect($cont.find('tr').length).to.equal(2);
+      expect($cont.find('#r3')[0].innerHTML).to.equal('C');
+    });
+
+    it('should delete a column from a colspan cell and clear the current cell when needed', () => {
+      var $cont = $$('<div class="note-editable"><table><tbody><tr><td colspan="3" id="span">ABC</td><td id="tail">D</td></tr><tr><td>a</td><td id="selected">b</td><td>c</td><td>d</td></tr></tbody></table></div>');
+      var $cell = $cont.find('#selected');
+      var rng = range.create($cell[0].firstChild, 1);
+
+      table.deleteCol(rng);
+
+      expect($cont.html()).to.equalsIgnoreCase('<table><tbody><tr><td colspan="2" id="span">ABC</td><td id="tail">D</td></tr><tr><td>a</td><td>c</td><td>d</td></tr></tbody></table>');
+    });
+
+    it('should clear the selected colspan base cell when shrinking spans above two columns', () => {
+      var $cont = $$('<div class="note-editable"><table><tbody><tr><td colspan="3" id="span">ABC</td><td id="tail">D</td></tr><tr><td>a</td><td>b</td><td>c</td><td>d</td></tr></tbody></table></div>');
+      var $cell = $cont.find('#span');
+      var rng = range.create($cell[0].firstChild, 1);
+
+      table.deleteCol(rng);
+
+      expect($cont.find('#span')[0].getAttribute('colspan')).to.equal('2');
+      expect($cont.find('#span')[0].innerHTML).to.equal('');
+    });
+
+    it('should delete a selected colspan-2 base cell without leaving the span attribute', () => {
+      var $cont = $$('<div class="note-editable"><table><tbody><tr><td colspan="2" id="span">AB</td><td id="tail">C</td></tr><tr><td>a</td><td>b</td><td>c</td></tr></tbody></table></div>');
+      var $cell = $cont.find('#span');
+      var rng = range.create($cell[0].firstChild, 1);
+
+      table.deleteCol(rng);
+
+      expect($cont.find('#span')[0].hasAttribute('colspan')).to.equal(false);
+      expect($cont.find('#span')[0].innerHTML).to.equal('');
+    });
+
+    it('should create tables with custom table class names', () => {
+      var resultTable = table.createTable(2, 1, { tableClassName: 'table table-sm' });
+
+      expect(resultTable.className).to.equal('table table-sm');
+      expect(resultTable.rows[0].cells.length).to.equal(2);
+    });
+
+    it('should delete header rows and columns using th elements', () => {
+      var $rowTable = $$('<div class="note-editable"><table><thead><tr><th id="h1">A</th><th id="h2">B</th></tr></thead><tbody><tr><td>C</td><td>D</td></tr></tbody></table></div>');
+      var rowRange = range.create($rowTable.find('#h1')[0].firstChild, 1);
+      table.deleteRow(rowRange);
+      expect($rowTable.find('th').length).to.equal(0);
+
+      var $colTable = $$('<div class="note-editable"><table><thead><tr><th id="c1">A</th><th id="c2">B</th></tr></thead><tbody><tr><td>C</td><td>D</td></tr></tbody></table></div>');
+      var colRange = range.create($colTable.find('#c1')[0].firstChild, 1);
+      table.deleteCol(colRange);
+      expect($colTable.find('th').length).to.equal(1);
+      expect($colTable.find('th')[0].innerHTML).to.equal('B');
     });
   });
 });

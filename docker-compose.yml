@@ -19,4 +19,3 @@ services:
           - PHP_POST_MAX_SIZE=200M
           - PHP_UPLOAD_MAX_FILESIZE=100M
           - PHP_DISMOD=ioncube
-          - PHP_ENMOD=mailparse

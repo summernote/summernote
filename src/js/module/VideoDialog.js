@@ -144,20 +144,15 @@ export default class VideoDialog {
         .attr('width', '510')
         .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
     } else if (peerTubeMatch && peerTubeMatch[0].length){
-      var begin = 0;
-      if (peerTubeMatch[2] !== 'undefined') begin = peerTubeMatch[2];
-      var end =0;
-      if (peerTubeMatch[3] !== 'undefined') end = peerTubeMatch[3];
-      var loop = 0;
-      if (peerTubeMatch[4] !== 'undefined') loop = peerTubeMatch[4];
-      var autoplay = 0;
-      if (peerTubeMatch[5] !== 'undefined') autoplay = peerTubeMatch[5];
-      var muted = 0;
-      if (peerTubeMatch[6] !== 'undefined') muted = peerTubeMatch[6];
+      const begin = Number(peerTubeMatch[3] || 0);
+      const end = Number(peerTubeMatch[4] || 0);
+      const loop = peerTubeMatch[5] || 0;
+      const autoplay = peerTubeMatch[6] || 0;
+      const muted = peerTubeMatch[7] || 0;
       $video = $$('<iframe allowfullscreen sandbox="allow-same-origin allow-scripts allow-popups">')
         .attr('frameborder', 0)
-        .attr('src', '//'+ peerTubeMatch[1] +'/videos/embed/' + peerTubeMatch[2]+"?loop="+loop
-      +"&autoplay="+autoplay+"&muted="+muted +(begin > 0 ? '&start=' + begin : '')+(end > 0 ? '&end=' + start : ''))
+        .attr('src', '//' + peerTubeMatch[1] + '/videos/embed/' + peerTubeMatch[2] + '?loop=' + loop
+      + '&autoplay=' + autoplay + '&muted=' + muted + (begin > 0 ? '&start=' + begin : '') + (end > 0 ? '&end=' + end : ''))
         .attr('width', '560')
         .attr('height', '315');
     }else if ((qqMatch && qqMatch[1].length) || (qqMatch2 && qqMatch2[2].length)) {

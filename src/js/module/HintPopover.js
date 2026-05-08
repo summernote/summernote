@@ -52,9 +52,6 @@ export default class HintPopover {
       .attr('role', 'listbox');
     this.$content.on('click', '.note-hint-item', (event) => {
       const target = event.target.closest('.note-hint-item');
-      if (!target) {
-        return;
-      }
       this.$content.find('.note-hint-item').attr('aria-selected', 'false').removeClass('active');
       $$(target).addClass('active');
       $$(target).attr('aria-selected', 'true');
@@ -243,32 +240,30 @@ export default class HintPopover {
 
         const bnd = func.rect2bnd(lists.last(wordRange.getClientRects()));
         const containerOffset = $$(this.options.container).offset();
-        if (bnd) {
-          bnd.top -= containerOffset.top;
-          bnd.left -= containerOffset.left;
+        bnd.top -= containerOffset.top;
+        bnd.left -= containerOffset.left;
 
-          this.$popover.hide();
-          this.lastWordRange = wordRange;
-          this.hints.forEach((hint, idx) => {
-            if (hint.match.test(keyword)) {
-              this.createGroup(idx, keyword).appendTo(this.$content);
-            }
-          });
-          // select first .note-hint-item
-          this.$content.find('.note-hint-item').first().addClass('active');
-
-          // set position for popover after group is created
-          if (this.direction === 'top') {
-            this.$popover.css({
-              left: bnd.left,
-              top: bnd.top - this.$popover.outerHeight() - POPOVER_DIST,
-            });
-          } else {
-            this.$popover.css({
-              left: bnd.left,
-              top: bnd.top + bnd.height + POPOVER_DIST,
-            });
+        this.$popover.hide();
+        this.lastWordRange = wordRange;
+        this.hints.forEach((hint, idx) => {
+          if (hint.match.test(keyword)) {
+            this.createGroup(idx, keyword).appendTo(this.$content);
           }
+        });
+        // select first .note-hint-item
+        this.$content.find('.note-hint-item').first().addClass('active');
+
+        // set position for popover after group is created
+        if (this.direction === 'top') {
+          this.$popover.css({
+            left: bnd.left,
+            top: bnd.top - this.$popover.outerHeight() - POPOVER_DIST,
+          });
+        } else {
+          this.$popover.css({
+            left: bnd.left,
+            top: bnd.top + bnd.height + POPOVER_DIST,
+          });
         }
       } else {
         this.hide();

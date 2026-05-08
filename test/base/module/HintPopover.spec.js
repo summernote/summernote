@@ -46,6 +46,25 @@ describe('HintPopover', () => {
     expect(hintPopover.matchingWord).to.equal('#al');
   });
 
+  it('falls back to the default direction when hintDirection is falsy', () => {
+    const options = $$.extend({}, $$.summernote.options, {
+      hintDirection: '',
+      hint: {
+        words: ['apple'],
+        match: /\b(\w{1,})$/,
+        search(keyword, callback) {
+          callback(this.words.filter((item) => item.indexOf(keyword) === 0));
+        },
+      },
+    });
+
+    context = new Context($$('<div><p>hello world</p></div>').appendTo('body'), options);
+    hintPopover = new HintPopover(context);
+    hintPopover.initialize();
+
+    expect(hintPopover.direction).to.equal('bottom');
+  });
+
   it('creates grouped items and marks the first result active', () => {
     const options = $$.extend({}, $$.summernote.options, {
       hint: {
@@ -190,5 +209,351 @@ describe('HintPopover', () => {
 
     expect($editable.html()).to.equal('<p>apple</p>');
     expect(getComputedStyle(hintPopover.$popover[0]).display).to.equal('none');
+  });
+
+  it('ignores empty clicks, prevents mousedown focus changes, and skips inactive replacements', () => {
+    const options = $$.extend({}, $$.summernote.options, {
+      hintDirection: 'top',
+      hint: {
+        words: ['apple'],
+        match: /\b(\w{1,})$/,
+        search(keyword, callback) {
+          callback(this.words.filter((item) => item.indexOf(keyword) === 0));
+        },
+      },
+    });
+
+    context = new Context($$('<div><p>app</p></div>').appendTo('body'), options);
+    hintPopover = new HintPopover(context);
+    hintPopover.initialize();
+
+    const replaceSpy = vi.spyOn(hintPopover, 'replace');
+    const mouseDownEvent = new MouseEvent('mousedown', { bubbles: true, cancelable: true });
+    hintPopover.$popover[0].dispatchEvent(mouseDownEvent);
+    hintPopover.$content[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+    expect(mouseDownEvent.defaultPrevented).to.equal(true);
+    expect(replaceSpy).not.toHaveBeenCalled();
+
+    hintPopover.replace();
+    expect(hintPopover.direction).to.equal('top');
+  });
+
+  it('wraps between hint groups and handles visible keyboard navigation', () => {
+    const options = $$.extend({}, $$.summernote.options, {
+      hint: [
+        {
+          words: ['apple', 'apricot'],
+          match: /\b(\w{1,})$/,
+          search(keyword, callback) {
+            callback(this.words.filter((item) => item.indexOf(keyword) === 0));
+          },
+        },
+        {
+          words: ['avocado'],
+          match: /\b(\w{1,})$/,
+          search(keyword, callback) {
+            callback(this.words.filter((item) => item.indexOf(keyword) === 0));
+          },
+        },
+      ],
+    });
+
+    context = new Context($$('<div><p>app</p></div>').appendTo('body'), options);
+    hintPopover = new HintPopover(context);
+    hintPopover.initialize();
+
+    hintPopover.createGroup(0, 'a').appendTo(hintPopover.$content);
+    hintPopover.createGroup(1, 'a').appendTo(hintPopover.$content);
+
+    hintPopover.moveDown();
+    hintPopover.moveDown();
+    expect(hintPopover.$content.find('.note-hint-group').last().find('.note-hint-item').first().hasClass('active')).to.be.true;
+
+    hintPopover.moveUp();
+    expect(hintPopover.$content.find('.note-hint-group').first().find('.note-hint-item').last().hasClass('active')).to.be.true;
+
+    hintPopover.$content.find('.note-hint-item').attr('aria-selected', 'false').removeClass('active');
+    hintPopover.$content.find('.note-hint-group').first().find('.note-hint-item').first().addClass('active').attr('aria-selected', 'true');
+    hintPopover.moveUp();
+    expect(hintPopover.$content.find('.note-hint-group').last().find('.note-hint-item').last().hasClass('active')).to.be.true;
+
+    hintPopover.moveDown();
+    expect(hintPopover.$content.find('.note-hint-group').first().find('.note-hint-item').first().hasClass('active')).to.be.true;
+
+    const replaceSpy = vi.spyOn(hintPopover, 'replace').mockImplementation(() => {});
+    const moveUpSpy = vi.spyOn(hintPopover, 'moveUp').mockImplementation(() => {});
+    const moveDownSpy = vi.spyOn(hintPopover, 'moveDown').mockImplementation(() => {});
+
+    hintPopover.handleKeydown({ keyCode: 13, preventDefault: vi.fn() });
+    hintPopover.handleKeydown({ keyCode: 38, preventDefault: vi.fn() });
+    hintPopover.handleKeydown({ keyCode: 40, preventDefault: vi.fn() });
+
+    expect(replaceSpy).toHaveBeenCalledTimes(1);
+    expect(moveUpSpy).toHaveBeenCalledTimes(1);
+    expect(moveDownSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('supports next-selection insertion and skips unmatched keyword searches', async() => {
+    const options = $$.extend({}, $$.summernote.options, {
+      hintSelect: 'next',
+      hint: {
+        words: ['@david'],
+        match: /\B(@\w*)$/,
+        search(keyword, callback) {
+          callback(this.words.filter((item) => item.indexOf(keyword) === 0));
+        },
+        content(item) {
+          return $$('<strong></strong>').text(item).get(0);
+        },
+      },
+    });
+
+    context = new Context($$('<div><p>hello @david</p></div>').appendTo('body'), options);
+    hintPopover = new HintPopover(context);
+    hintPopover.initialize();
+    hintPopover.matchingWord = '@david';
+    hintPopover.createGroup(0, '@d').appendTo(hintPopover.$content);
+    const insertNode = vi.fn();
+    hintPopover.lastWordRange = {
+      so: 0,
+      eo: 12,
+      isCollapsed() {
+        return false;
+      },
+      insertNode,
+    };
+    const selectSpy = vi.spyOn(range, 'createFromNodeBefore').mockReturnValue({
+      select: vi.fn(),
+    });
+    hintPopover.replace();
+
+    expect(hintPopover.lastWordRange).to.equal(null);
+    expect(insertNode.mock.calls[0][0].outerHTML).to.equal('<strong>@david</strong>');
+    expect(selectSpy).toHaveBeenCalled();
+
+    await new Promise((resolve) => {
+      hintPopover.searchKeyword(1, 'missing', (items) => {
+        expect(items).to.equal(undefined);
+        resolve();
+      });
+    });
+  });
+
+  it('replaces empty matches, skips empty groups, and ignores unrelated keys', () => {
+    const options = $$.extend({}, $$.summernote.options, {
+      hint: [
+        {
+          words: ['zebra'],
+          match: /\B#(\w*)$/,
+          search(keyword, callback) {
+            callback(this.words.filter((item) => item.indexOf(keyword) === 0));
+          },
+        },
+        {
+          words: ['alice'],
+          match: /\B@(\w*)$/,
+          search(keyword, callback) {
+            callback(this.words.filter((item) => item.indexOf(keyword) === 0));
+          },
+        },
+      ],
+    });
+
+    context = new Context($$('<div><p>@</p></div>').appendTo('body'), options);
+    hintPopover = new HintPopover(context);
+    hintPopover.initialize();
+
+    const showSpy = vi.spyOn(hintPopover, 'show');
+    const inactiveReplaceSpy = vi.spyOn(hintPopover, 'replace');
+    hintPopover.createGroup(0, '@').appendTo(hintPopover.$content);
+    expect(showSpy).not.toHaveBeenCalled();
+
+    hintPopover.$content.empty();
+    const insertNode = vi.fn();
+    hintPopover.lastWordRange = {
+      so: 0,
+      eo: 1,
+      isCollapsed() {
+        return false;
+      },
+      insertNode,
+    };
+    hintPopover.createGroup(1, '@').appendTo(hintPopover.$content);
+    hintPopover.$content.find('.note-hint-item').first().addClass('active').attr('aria-selected', 'true');
+    hintPopover.matchingWord = '';
+    const trackedRange = hintPopover.lastWordRange;
+
+    hintPopover.replace();
+
+    expect(insertNode).toHaveBeenCalledOnce();
+    expect(trackedRange.so).to.equal(1);
+    expect(hintPopover.lastWordRange).to.equal(null);
+    expect(inactiveReplaceSpy).toHaveBeenCalledOnce();
+
+    const moveUpSpy = vi.spyOn(hintPopover, 'moveUp');
+    const moveDownSpy = vi.spyOn(hintPopover, 'moveDown');
+    hintPopover.hide();
+    hintPopover.handleKeydown({ keyCode: 38, preventDefault: vi.fn() });
+    hintPopover.show();
+    hintPopover.handleKeydown({ keyCode: 9, preventDefault: vi.fn() });
+
+    expect(moveUpSpy).not.toHaveBeenCalled();
+    expect(moveDownSpy).not.toHaveBeenCalled();
+  });
+
+  it('positions word hints, skips empty results, and hides on unmatched content', () => {
+    const manualContext = {
+      layoutInfo: {
+        editable: $$('<div><p>@al</p></div>').appendTo('body'),
+      },
+      options: $$.extend({}, $$.summernote.options, {
+        container: $$('body'),
+        hintMode: 'words',
+        hintDirection: 'top',
+        hint: {
+          words: ['alice'],
+          match: /\B(@\w*)$/,
+          search(keyword, callback) {
+            callback(this.words.filter((item) => item.indexOf(keyword) === 0));
+          },
+        },
+      }),
+      invoke: vi.fn(),
+      triggerEvent: vi.fn(),
+    };
+    const rangeStub = {
+      getWordsRange() {
+        return wordRangeStub;
+      },
+      getWordsMatchRange() {
+        return wordRangeStub;
+      },
+      getWordRange() {
+        return wordRangeStub;
+      },
+    };
+    const wordRangeStub = {
+      toString() {
+        return '@al';
+      },
+      getClientRects() {
+        return [new DOMRect(25, 40, 10, 12)];
+      },
+    };
+    manualContext.invoke.mockImplementation((command) => {
+      if (command === 'editor.getLastRange') {
+        return rangeStub;
+      }
+    });
+
+    hintPopover = new HintPopover(manualContext);
+    hintPopover.initialize();
+    const createGroupSpy = vi.spyOn(hintPopover, 'createGroup');
+    const hideSpy = vi.spyOn(hintPopover, 'hide');
+
+    hintPopover.handleKeyup({ keyCode: 65 });
+    expect(createGroupSpy).toHaveBeenCalledWith(0, '@al');
+
+    wordRangeStub.getClientRects = () => [];
+    hintPopover.handleKeyup({ keyCode: 65 });
+
+    wordRangeStub.getClientRects = () => [new DOMRect(25, 40, 10, 12)];
+    wordRangeStub.toString = () => '';
+    hintPopover.handleKeyup({ keyCode: 65 });
+    expect(hideSpy).toHaveBeenCalled();
+
+    hintPopover.handleKeyup({ keyCode: 13 });
+  });
+
+  it('covers non-word hint positioning, missing matches, and module event wrappers', () => {
+    const manualContext = {
+      layoutInfo: {
+        editable: $$('<div><p>al</p></div>').appendTo('body'),
+      },
+      options: $$.extend({}, $$.summernote.options, {
+        container: $$('body'),
+        hintDirection: 'bottom',
+        hint: [
+          {
+            words: ['#alice'],
+            match: /\B#(\w*)$/,
+            search(keyword, callback) {
+              callback(this.words.filter((item) => item.indexOf(keyword) === 0));
+            },
+          },
+          {
+            words: ['alice'],
+            match: /\b(\w{1,})$/,
+            search(keyword, callback) {
+              callback(this.words.filter((item) => item.indexOf(keyword) === 0));
+            },
+          },
+        ],
+      }),
+      invoke: vi.fn(),
+      triggerEvent: vi.fn(),
+    };
+    const wordRangeStub = {
+      toString() {
+        return 'al';
+      },
+      getClientRects() {
+        return [new DOMRect(15, 20, 10, 8)];
+      },
+    };
+    manualContext.invoke.mockImplementation((command) => {
+      if (command === 'editor.getLastRange') {
+        return {
+          getWordRange() {
+            return wordRangeStub;
+          },
+        };
+      }
+    });
+
+    hintPopover = new HintPopover(manualContext);
+    hintPopover.initialize();
+    const hideSpy = vi.spyOn(hintPopover, 'hide');
+    const keydownSpy = vi.spyOn(hintPopover, 'handleKeydown');
+    const keyupSpy = vi.spyOn(hintPopover, 'handleKeyup');
+
+    hintPopover.handleKeyup({ keyCode: 65 });
+    expect(parseFloat(hintPopover.$popover.css('top'))).to.be.greaterThan(0);
+
+    manualContext.options.hintMode = 'words';
+    manualContext.invoke.mockImplementation((command) => {
+      if (command === 'editor.getLastRange') {
+        return {
+          getWordsRange() {
+            return wordRangeStub;
+          },
+          getWordsMatchRange() {
+            return null;
+          },
+        };
+      }
+    });
+    hintPopover.handleKeyup({ keyCode: 65 });
+    expect(hideSpy).toHaveBeenCalled();
+
+    hintPopover.events['summernote.keydown'](null, { keyCode: 40 });
+    hintPopover.events['summernote.keyup'](null, {
+      isDefaultPrevented() {
+        return true;
+      },
+      keyCode: 65,
+    });
+    hintPopover.events['summernote.keyup'](null, {
+      isDefaultPrevented() {
+        return false;
+      },
+      keyCode: 65,
+    });
+    hintPopover.events['summernote.disable summernote.dialog.shown summernote.blur']();
+
+    expect(keydownSpy).toHaveBeenCalledTimes(1);
+    expect(keyupSpy.mock.calls.length).to.be.greaterThanOrEqual(1);
+    expect(hideSpy).toHaveBeenCalled();
   });
 });

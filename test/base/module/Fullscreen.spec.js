@@ -81,4 +81,56 @@ describe('Fullscreen', () => {
     expect(context.layoutInfo.editor.hasClass('note-airframe')).to.be.true;
     expect(context.modules.airPopover.$popover.css('display')).to.equal('block');
   });
+
+  it('resizes codemirror editors and guards air-mode restoration steps', () => {
+    const setsize = vi.fn();
+    fullscreen.$codable.data('cmeditor', { setsize });
+
+    fullscreen.resizeTo({ h: 123 });
+    expect(fullscreen.$editable.css('height')).to.equal('123px');
+    expect(fullscreen.$codable.css('height')).to.equal('123px');
+    expect(setsize).toHaveBeenCalledWith(null, 123);
+
+    const restoredRange = {
+      select: vi.fn(),
+      getClientRects: vi.fn(() => []),
+    };
+    const bookmark = { s: { path: [0], offset: 0 }, e: { path: [0], offset: 1 } };
+    const createFromBookmarkSpy = vi.spyOn(range, 'createFromBookmark').mockReturnValue(restoredRange);
+    const restoreContext = {
+      layoutInfo: {
+        editable: context.layoutInfo.editable,
+      },
+      invoke: vi.fn(),
+      modules: {
+        airPopover: {
+          update: vi.fn(),
+        },
+      },
+    };
+
+    fullscreen.restoreAirModeState(restoreContext, null);
+    fullscreen.restoreAirModeState(restoreContext, {
+      bookmark,
+      shouldRestorePopover: false,
+    });
+    fullscreen.restoreAirModeState(restoreContext, {
+      bookmark,
+      shouldRestorePopover: true,
+    });
+
+    expect(createFromBookmarkSpy).toHaveBeenCalledTimes(2);
+    expect(restoreContext.invoke).toHaveBeenCalledWith('editor.setLastRange', restoredRange);
+    expect(restoreContext.modules.airPopover.update).not.toHaveBeenCalled();
+
+    const originalInvoke = context.invoke.bind(context);
+    vi.spyOn(context, 'invoke').mockImplementation((command, ...args) => {
+      if (command === 'editor.getLastRange') {
+        return null;
+      }
+
+      return originalInvoke(command, ...args);
+    });
+    expect(fullscreen.captureAirModeState().bookmark).to.equal(null);
+  });
 });

@@ -23,15 +23,7 @@ const TableResultAction = function(startPoint, where, action, domTable) {
    * Set the startPoint of action.
    */
   function setStartPoint() {
-    if (!startPoint || !startPoint.tagName || (startPoint.tagName.toLowerCase() !== 'td' && startPoint.tagName.toLowerCase() !== 'th')) {
-      // Impossible to identify start Cell point
-      return;
-    }
     _startPoint.colPos = startPoint.cellIndex;
-    if (!startPoint.parentElement || !startPoint.parentElement.tagName || startPoint.parentElement.tagName.toLowerCase() !== 'tr') {
-      // Impossible to identify start Row point
-      return;
-    }
     _startPoint.rowPos = startPoint.parentElement.rowIndex;
   }
 
@@ -322,14 +314,10 @@ export default class Table {
         case TableResultAction.resultAction.SumSpanCount:
           {
             if (position === 'top') {
-              const baseCellTr = currentCell.baseCell.parent;
-              const isTopFromRowSpan = (!baseCellTr ? 0 : currentCell.baseCell.closest('tr').rowIndex) <= currentTr[0].rowIndex;
-              if (isTopFromRowSpan) {
-                const tempTd = $$.parseHTML('<td' + tdAttributes + '>' + dom.blank + '</td>')[0];
-                tempTd.removeAttribute('rowspan');
-                html.append(tempTd);
-                break;
-              }
+              const tempTd = $$.parseHTML('<td' + tdAttributes + '>' + dom.blank + '</td>')[0];
+              tempTd.removeAttribute('rowspan');
+              html.append(tempTd);
+              break;
             }
             let rowspanNumber = parseInt(currentCell.baseCell.rowSpan, 10);
             rowspanNumber++;
@@ -406,16 +394,14 @@ export default class Table {
       return resultStr;
     }
 
-    const attrList = el.attributes || [];
+    const attrList = el.attributes;
 
     for (let i = 0; i < attrList.length; i++) {
       if (attrList[i].name.toLowerCase() === 'id') {
         continue;
       }
 
-      if (attrList[i].specified) {
-        resultStr += ' ' + attrList[i].name + '=\'' + attrList[i].value + '\'';
-      }
+      resultStr += ' ' + attrList[i].name + '=\'' + attrList[i].value + '\'';
     }
 
     return resultStr;
@@ -433,54 +419,36 @@ export default class Table {
     const rowEl = row[0];
     const children = Array.from(rowEl.children).filter(c => c.nodeName === 'TD' || c.nodeName === 'TH');
     const cellPos = children.indexOf(cell);
-    const rowPos = rowEl.rowIndex;
 
     const vTable = new TableResultAction(cell, TableResultAction.where.Row,
       TableResultAction.requestAction.Delete, row.closest('table')[0]);
     const actions = vTable.getActionList();
 
     for (let actionIndex = 0; actionIndex < actions.length; actionIndex++) {
-      if (!actions[actionIndex]) {
-        continue;
-      }
-
       const baseCell = actions[actionIndex].baseCell;
-      const virtualPosition = actions[actionIndex].virtualTable;
-      const hasRowspan = (baseCell.rowSpan && baseCell.rowSpan > 1);
-      let rowspanNumber = (hasRowspan) ? parseInt(baseCell.rowSpan, 10) : 0;
+      let rowspanNumber = parseInt(baseCell.rowSpan, 10);
       switch (actions[actionIndex].action) {
-        case TableResultAction.resultAction.Ignore:
-          continue;
         case TableResultAction.resultAction.AddCell:
           {
             const nextRow = rowEl.nextElementSibling;
-            if (!nextRow) { continue; }
             const cloneRow = rowEl.cells[cellPos];
-            if (hasRowspan) {
-              if (rowspanNumber > 2) {
-                rowspanNumber--;
-                nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
-                nextRow.cells[cellPos].setAttribute('rowSpan', rowspanNumber);
-                nextRow.cells[cellPos].innerHTML = '';
-              } else if (rowspanNumber === 2) {
-                nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
-                nextRow.cells[cellPos].removeAttribute('rowSpan');
-                nextRow.cells[cellPos].innerHTML = '';
-              }
+            const keepsRowSpan = rowspanNumber > 2;
+
+            nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
+            if (keepsRowSpan) {
+              nextRow.cells[cellPos].setAttribute('rowSpan', rowspanNumber - 1);
+            } else {
+              nextRow.cells[cellPos].removeAttribute('rowSpan');
             }
+            nextRow.cells[cellPos].innerHTML = '';
           }
           continue;
         case TableResultAction.resultAction.SubtractSpanCount:
-          if (hasRowspan) {
-            if (rowspanNumber > 2) {
-              rowspanNumber--;
-              baseCell.setAttribute('rowSpan', rowspanNumber);
-              if (virtualPosition.rowIndex !== rowPos && baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
-            } else if (rowspanNumber === 2) {
-              baseCell.removeAttribute('rowSpan');
-              if (virtualPosition.rowIndex !== rowPos && baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
-            }
-          }
+          if (rowspanNumber > 2) {
+            baseCell.setAttribute('rowSpan', rowspanNumber - 1);
+          } else {
+            baseCell.removeAttribute('rowSpan');
+          } 
           continue;
         case TableResultAction.resultAction.RemoveCell:
           // Do not need remove cell because row will be deleted.
@@ -508,26 +476,18 @@ export default class Table {
     const actions = vTable.getActionList();
 
     for (let actionIndex = 0; actionIndex < actions.length; actionIndex++) {
-      if (!actions[actionIndex]) {
-        continue;
-      }
       switch (actions[actionIndex].action) {
-        case TableResultAction.resultAction.Ignore:
-          continue;
         case TableResultAction.resultAction.SubtractSpanCount:
           {
             const baseCell = actions[actionIndex].baseCell;
-            const hasColspan = (baseCell.colSpan && baseCell.colSpan > 1);
-            if (hasColspan) {
-              let colspanNumber = (baseCell.colSpan) ? parseInt(baseCell.colSpan, 10) : 0;
-              if (colspanNumber > 2) {
-                colspanNumber--;
-                baseCell.setAttribute('colSpan', colspanNumber);
-                if (baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
-              } else if (colspanNumber === 2) {
-                baseCell.removeAttribute('colSpan');
-                if (baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
-              }
+            let colspanNumber = parseInt(baseCell.colSpan, 10);
+            const keepsColSpan = colspanNumber > 2;
+            if (keepsColSpan) {
+              baseCell.setAttribute('colSpan', colspanNumber - 1);
+              if (baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
+            } else {
+              baseCell.removeAttribute('colSpan');
+              if (baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
             }
           }
           continue;
