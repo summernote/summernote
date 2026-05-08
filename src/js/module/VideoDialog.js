@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $$ from '../core/dom-query.js';
 import env from '../core/env';
 import key from '../core/key';
 
@@ -6,8 +6,8 @@ export default class VideoDialog {
   constructor(context) {
     this.context = context;
 
-    this.ui = $.summernote.ui;
-    this.$body = $(document.body);
+    this.ui = $$.summernote.ui;
+    this.$body = $$(document.body);
     this.$editor = context.layoutInfo.editor;
     this.options = context.options;
     this.lang = this.options.langInfo;
@@ -105,74 +105,69 @@ export default class VideoDialog {
           start = parseInt(ytMatch[2], 10);
         }
       }
-      $video = $('<iframe>')
+      $video = $$('<iframe>')
         .attr('frameborder', 0)
         .attr('src', '//www.youtube.com/embed/' + youtubeId + (start > 0 ? '?start=' + start : ''))
         .attr('width', '640').attr('height', '360');
     } else if (gdMatch && gdMatch[0].length) {
-      $video = $('<iframe>')
+      $video = $$('<iframe>')
         .attr('frameborder', 0)
         .attr('src', 'https://drive.google.com/file/d/' + gdMatch[1] + '/preview')
         .attr('width', '640').attr('height', '480');
     } else if (igMatch && igMatch[0].length) {
-      $video = $('<iframe>')
+      $video = $$('<iframe>')
         .attr('frameborder', 0)
         .attr('src', 'https://instagram.com/p/' + igMatch[2] + '/embed/')
         .attr('width', '612').attr('height', '710')
         .attr('scrolling', 'no')
         .attr('allowtransparency', 'true');
     } else if (vMatch && vMatch[0].length) {
-      $video = $('<iframe>')
+      $video = $$('<iframe>')
         .attr('frameborder', 0)
         .attr('src', vMatch[0] + '/embed/simple')
         .attr('width', '600').attr('height', '600')
         .attr('class', 'vine-embed');
     } else if (vimMatch && vimMatch[3].length) {
-      $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+      $video = $$('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
         .attr('frameborder', 0)
         .attr('src', '//player.vimeo.com/video/' + vimMatch[3])
         .attr('width', '640').attr('height', '360');
     } else if (dmMatch && dmMatch[2].length) {
-      $video = $('<iframe>')
+      $video = $$('<iframe>')
         .attr('frameborder', 0)
         .attr('src', '//www.dailymotion.com/embed/video/' + dmMatch[2])
         .attr('width', '640').attr('height', '360');
     } else if (youkuMatch && youkuMatch[1].length) {
-      $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+      $video = $$('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
         .attr('frameborder', 0)
         .attr('height', '498')
         .attr('width', '510')
         .attr('src', '//player.youku.com/embed/' + youkuMatch[1]);
     } else if (peerTubeMatch && peerTubeMatch[0].length){
-      var begin = 0;
-      if (peerTubeMatch[2] !== 'undefined') begin = peerTubeMatch[2];
-      var end =0;
-      if (peerTubeMatch[3] !== 'undefined') end = peerTubeMatch[3];
-      var loop = 0;
-      if (peerTubeMatch[4] !== 'undefined') loop = peerTubeMatch[4];
-      var autoplay = 0;
-      if (peerTubeMatch[5] !== 'undefined') autoplay = peerTubeMatch[5];
-      var muted = 0;
-      if (peerTubeMatch[6] !== 'undefined') muted = peerTubeMatch[6];
-      $video = $('<iframe allowfullscreen sandbox="allow-same-origin allow-scripts allow-popups">')
+      const begin = Number(peerTubeMatch[3] || 0);
+      const end = Number(peerTubeMatch[4] || 0);
+      const loop = peerTubeMatch[5] || 0;
+      const autoplay = peerTubeMatch[6] || 0;
+      const muted = peerTubeMatch[7] || 0;
+      $video = $$('<iframe allowfullscreen sandbox="allow-same-origin allow-scripts allow-popups">')
         .attr('frameborder', 0)
-        .attr('src', '//'+ peerTubeMatch[1] +'/videos/embed/' + peerTubeMatch[2]+"?loop="+loop
-      +"&autoplay="+autoplay+"&muted="+muted +(begin > 0 ? '&start=' + begin : '')+(end > 0 ? '&end=' + start : ''))
+        .attr('src', '//' + peerTubeMatch[1] + '/videos/embed/' + peerTubeMatch[2] + '?loop=' + loop
+      + '&autoplay=' + autoplay + '&muted=' + muted + (begin > 0 ? '&start=' + begin : '') + (end > 0 ? '&end=' + end : ''))
         .attr('width', '560')
         .attr('height', '315');
     }else if ((qqMatch && qqMatch[1].length) || (qqMatch2 && qqMatch2[2].length)) {
       const vid = ((qqMatch && qqMatch[1].length) ? qqMatch[1] : qqMatch2[2]);
-      $video = $('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+      $video = $$('<iframe webkitallowfullscreen mozallowfullscreen allowfullscreen>')
         .attr('frameborder', 0)
         .attr('height', '310')
         .attr('width', '500')
-        .attr('src', 'https://v.qq.com/txp/iframe/player.html?vid=' + vid + '&amp;auto=0');
+        .attr('src', 'https://v.qq.com/txp/iframe/player.html?vid=' + vid + '&auto=0');
     } else if (mp4Match || oggMatch || webmMatch) {
-      $video = $('<video controls>')
+      $video = $$('<video controls>')
         .attr('src', url)
         .attr('width', '640').attr('height', '360');
     } else if (fbMatch && fbMatch[0].length) {
-      $video = $('<iframe>')
+      $video = $$('<iframe>')
         .attr('frameborder', 0)
         .attr('src', 'https://www.facebook.com/plugins/video.php?href=' + encodeURIComponent(fbMatch[0]) + '&show_text=0&width=560')
         .attr('width', '560').attr('height', '301')
@@ -203,7 +198,7 @@ export default class VideoDialog {
         // insert video node
         this.context.invoke('editor.insertNode', $node);
       }
-    }).fail(() => {
+    }).catch(() => {
       this.context.invoke('editor.restoreRange');
     });
   }
@@ -211,11 +206,11 @@ export default class VideoDialog {
   /**
    * show video dialog
    *
-   * @param {jQuery} $dialog
    * @return {Promise}
    */
   showVideoDialog(/* text */) {
-    return $.Deferred((deferred) => {
+    return new Promise((resolve, reject) => {
+      let isSettled = false;
       const $videoUrl = this.$dialog.find('.note-video-url');
       const $videoBtn = this.$dialog.find('.note-video-btn');
 
@@ -232,7 +227,8 @@ export default class VideoDialog {
 
         $videoBtn.on('click', (event) => {
           event.preventDefault();
-          deferred.resolve($videoUrl.val());
+          isSettled = true;
+          resolve($videoUrl.val());
         });
 
         this.bindEnterKey($videoUrl, $videoBtn);
@@ -242,8 +238,9 @@ export default class VideoDialog {
         $videoUrl.off();
         $videoBtn.off();
 
-        if (deferred.state() === 'pending') {
-          deferred.reject();
+        if (!isSettled) {
+          isSettled = true;
+          reject();
         }
       });
 

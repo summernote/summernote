@@ -1,0 +1,26 @@
+codecov:
+  require_ci_to_pass: true
+
+coverage:
+  precision: 2
+  round: down
+  range: 0...100
+  status:
+    project:
+      default:
+        target: 100%
+        threshold: 0%
+        informational: false
+    patch:
+      default:
+        target: 100%
+        threshold: 0%
+        informational: false
+
+ignore:
+  - "dist/**/*"
+  - "examples/**/*"
+  - "public/**/*"
+  - "test/**/*"
+  - "font/**/*"
+  - "scripts/**/*"

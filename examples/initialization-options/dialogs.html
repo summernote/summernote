@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Dialogs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Initialization options</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Dialogs</li>
+        </ol>
+      </nav>
+
+      <h1>Dialogs in normal flow and inside a Bootstrap modal</h1>
+
+      <p class="page-copy">
+        <code>dialogsFade</code> is still supported across the Bootstrap 5 dialog modules. For editors inside a modal,
+        <code>dialogsInBody</code> remains the safer configuration because the dialog markup is attached to the page body.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h5">Inline editor with faded dialogs</h2>
+              <p class="text-secondary">Use the link, image, or video buttons to see the fade effect.</p>
+              <div id="dialogs-fade-editor">
+                <p>Open the link dialog here and notice the Bootstrap fade transition.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body d-flex flex-column">
+              <h2 class="h5">Editor inside a modal</h2>
+              <p class="text-secondary">This modal initializes Summernote with <code>dialogsInBody: true</code>.</p>
+              <button class="btn btn-primary mt-auto" type="button" data-bs-toggle="modal" data-bs-target="#summernote-modal">
+                Open modal example
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="modal fade" id="summernote-modal" tabindex="-1" aria-labelledby="summernote-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2 class="modal-title fs-5" id="summernote-modal-label">Summernote inside a Bootstrap modal</h2>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div id="modal-editor">
+                <p>Use the toolbar to open a dialog from inside the modal.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Dialogs</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#dialogs-fade-editor', {
+  height: 240,
+  dialogsFade: true,
+  toolbar: [
+    ['insert', ['link', 'picture', 'video']],
+    ['view', ['codeview']],
+  ],
+});</code></pre>
+          <pre class="mb-0"><code>summernote.create('#modal-editor', {
+  height: 240,
+  dialogsInBody: true,
+  dialogsFade: true,
+  toolbar: [
+    ['insert', ['link', 'picture', 'video']],
+    ['view', ['codeview']],
+  ],
+});</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        summernote.create('#dialogs-fade-editor', {
+          height: 240,
+          dialogsFade: true,
+          toolbar: [
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['codeview']],
+          ],
+        });
+
+        const modalElement = document.getElementById('summernote-modal');
+
+        modalElement.addEventListener('shown.bs.modal', () => {
+          if (modalElement.dataset.editorReady === 'true') {
+            return;
+          }
+
+          summernote.create('#modal-editor', {
+            height: 240,
+            dialogsInBody: true,
+            dialogsFade: true,
+            toolbar: [
+              ['insert', ['link', 'picture', 'video']],
+              ['view', ['codeview']],
+            ],
+          });
+
+          modalElement.dataset.editorReady = 'true';
+        });
+      });
+    </script>
+  </body>
+</html>

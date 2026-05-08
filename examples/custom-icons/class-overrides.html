@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Custom Icon Class Overrides</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+    <style>
+      .demo-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1rem;
+        height: 1rem;
+        border: 1px solid currentColor;
+        border-radius: 0.25rem;
+        font-size: 0.625rem;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .demo-icon-bold::before {
+        content: 'B';
+      }
+
+      .demo-icon-italic::before {
+        content: 'I';
+        font-style: italic;
+      }
+
+      .demo-icon-underline::before {
+        content: 'U';
+        text-decoration: underline;
+      }
+
+      .demo-icon-link::before {
+        content: 'L';
+      }
+
+      .demo-icon-list::before {
+        content: 'UL';
+        font-size: 0.45rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Custom Icons</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Class Overrides</li>
+        </ol>
+      </nav>
+
+      <h1>Override built-in icons with your own class names</h1>
+
+      <p class="page-copy">
+        The <code>icons</code> option still accepts class names. Summernote wraps them with the Bootstrap 5 UI helper,
+        so you can swap only the icons you care about and keep the built-in button behavior unchanged.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-outline-secondary" id="custom-icon-class-inspect" type="button">Inspect toolbar icons</button>
+                <button class="btn btn-outline-secondary" id="custom-icon-class-reset" type="button">Reset content</button>
+              </div>
+              <div id="custom-icon-class-editor">
+                <p><strong>Toolbar demo</strong> paragraph with <a href="https://juergen-schwind.com/summernote-next">one link</a>.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">Toolbar inspection</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="custom-icon-class-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Class Overrides</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#custom-icon-class-editor', {
+  height: 220,
+  toolbar: [
+    ['style', ['bold', 'italic', 'underline']],
+    ['para', ['ul']],
+    ['insert', ['link']],
+  ],
+  icons: {
+    bold: 'demo-icon demo-icon-bold',
+    italic: 'demo-icon demo-icon-italic',
+    underline: 'demo-icon demo-icon-underline',
+    unorderedlist: 'demo-icon demo-icon-list',
+    link: 'demo-icon demo-icon-link',
+  },
+});</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#custom-icon-class-editor';
+        const initialMarkup = '<p><strong>Toolbar demo</strong> paragraph with <a href="https://juergen-schwind.com/summernote-next">one link</a>.</p>';
+        const output = document.getElementById('custom-icon-class-output');
+
+        function renderToolbarReport(label) {
+          const context = summernote.getInstance(target);
+          const buttons = Array.from(context.layoutInfo.toolbar[0].querySelectorAll('.note-btn'))
+            .slice(0, 5)
+            .map((button) => {
+              const name = button.getAttribute('aria-label') || button.getAttribute('title') || 'button';
+              return `${name}: ${button.innerHTML.trim()}`;
+            });
+          output.textContent = `${label}\n${buttons.join('\n')}`;
+        }
+
+        summernote.create(target, {
+          height: 220,
+          toolbar: [
+            ['style', ['bold', 'italic', 'underline']],
+            ['para', ['ul']],
+            ['insert', ['link']],
+          ],
+          icons: {
+            bold: 'demo-icon demo-icon-bold',
+            italic: 'demo-icon demo-icon-italic',
+            underline: 'demo-icon demo-icon-underline',
+            unorderedlist: 'demo-icon demo-icon-list',
+            link: 'demo-icon demo-icon-link',
+          },
+        });
+
+        renderToolbarReport('Loaded toolbar with custom class-based icons.');
+
+        document.getElementById('custom-icon-class-inspect').addEventListener('click', () => {
+          renderToolbarReport('Inspected the current toolbar icon markup.');
+        });
+
+        document.getElementById('custom-icon-class-reset').addEventListener('click', () => {
+          summernote.invoke(target, 'code', initialMarkup);
+          renderToolbarReport('Reset editor content and kept the icon overrides.');
+        });
+      });
+    </script>
+  </body>
+</html>

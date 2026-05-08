@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Instance Lifecycle</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Basic API</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Instance Lifecycle</li>
+        </ol>
+      </nav>
+
+      <h1>Inspect the active instance and the current interface</h1>
+
+      <p class="page-copy">
+        The old interface example is still valid, but this build now reports <code>bs5</code>. This page also shows how
+        <code>getInstance</code> and <code>destroy</code> fit together with <code>create</code>.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-primary" id="read-instance" type="button">Read instance</button>
+                <button class="btn btn-outline-danger" id="destroy-instance" type="button">Destroy</button>
+                <button class="btn btn-outline-success" id="recreate-instance" type="button">Recreate</button>
+              </div>
+              <div id="instance-lifecycle-editor">
+                <p>This editor can be destroyed and recreated without leaving the page.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">Instance output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="instance-lifecycle-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Instance Lifecycle</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>const editor = summernote.create('#instance-lifecycle-editor', {
+  height: 260,
+});
+
+const instance = summernote.getInstance('#instance-lifecycle-editor');
+const currentInterface = summernote.interface;
+summernote.destroy('#instance-lifecycle-editor');</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#instance-lifecycle-editor';
+        const output = document.getElementById('instance-lifecycle-output');
+        let isInitialized = false;
+
+        function ensureEditor() {
+          if (!isInitialized) {
+            summernote.create(target, {
+              height: 260,
+            });
+            isInitialized = true;
+          }
+
+          return summernote.getInstance(target);
+        }
+
+        ensureEditor();
+
+        function renderState(label) {
+          if (!isInitialized) {
+            output.textContent = `${label}\nInterface: ${summernote.interface}\nInstance: not initialized`;
+            return;
+          }
+
+          const instance = summernote.getInstance(target);
+          output.textContent = `${label}\nInterface: ${summernote.interface}\nInstance id: ${instance.options.id}\nDisabled: ${instance.isDisabled()}`;
+        }
+
+        document.getElementById('read-instance').addEventListener('click', () => {
+          renderState('Read current instance.');
+        });
+
+        document.getElementById('destroy-instance').addEventListener('click', () => {
+          if (isInitialized) {
+            summernote.destroy(target);
+            isInitialized = false;
+          }
+          renderState('Destroyed instance.');
+        });
+
+        document.getElementById('recreate-instance').addEventListener('click', () => {
+          ensureEditor();
+          renderState('Recreated instance.');
+        });
+      });
+    </script>
+  </body>
+</html>

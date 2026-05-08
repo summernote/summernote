@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite';
-import externalGlobals from 'rollup-plugin-external-globals';
 import banner from 'vite-plugin-banner';
 import { readFileSync } from 'fs';
 import vitePostCSSSourceMap from './scripts/vite-plugins/vitePostCSSSourceMap.mjs';
@@ -10,22 +9,24 @@ const version = pkg.version;
 const date = (new Date()).toISOString().replace(/:\d+\.\d+Z$/, 'Z');
 const banners = {
   'default': `
-Super simple WYSIWYG editor v${version}
-https://summernote.org
+Summernote Next
+Super simple WYSIWYG editor
+Version ${version}
+https://juergen-schwind.com/summernote-next
 
-Copyright 2013- Hackerwins and contributors
-Summernote may be freely distributed under the MIT license.
+Copyright 2013-present Hackerwins and contributors
+Copyright 2026-present Jürgen Schwind and contributors
+Summernote Next may be freely distributed under the MIT license.
 
 Date: ${date}
 `,
-  'minimal': `Summernote v${version} | (c) 2013- Hackerwins and contributors | MIT license`,
+  'minimal': `Summernote Next v${version} | (c) 2013-present Hackerwins and contributors | (c) 2026-present Jürgen Schwind and contributors | MIT license`,
 };
 
 const styles = [
-  'lite',
-  'bs3', 'bs4', 'bs5',
+  'bs5',
 ];
-const defaultStyle = 'lite';
+const defaultStyle = 'bs5';
 
 let configs = {};
 for (const style of styles) {
@@ -39,10 +40,11 @@ for (const style of styles) {
       },
     },
 
+    define: {
+      __SUMMERNOTE_NEXT_VERSION__: JSON.stringify(version),
+    },
+
     plugins: [
-      externalGlobals({
-        jquery: '$',
-      }),
       banner((fileName) => {
         if (fileName.endsWith('.min.js')) return banners['minimal'];
         if (fileName.endsWith('.js')) return banners['default'];
@@ -58,28 +60,27 @@ for (const style of styles) {
       },
     },
 
+    publicDir: false,
+
     build: {
       sourcemap: true,
+      outDir: 'dist',
 
       lib: {
         entry: `/src/styles/${style}/summernote-${style}.js`,
         name: 'summernote',
         formats: ['iife'],
-        fileName: (format, entryName) => `${entryName}.js`,
+        fileName: () => 'summernote-next.js',
       },
 
       rollupOptions: {
         external: (id) => {
-          if (id === 'jquery') return true; // do not bundle jQuery
           if (id.startsWith('./font/')) return true; // do not bundle font files
           return false;
         },
 
         output: {
-          assetFileNames: `summernote-${style}.[ext]`,
-          globals: {
-            jquery: 'jQuery',
-          },
+          assetFileNames: 'summernote-next.[ext]',
         },
       },
     },

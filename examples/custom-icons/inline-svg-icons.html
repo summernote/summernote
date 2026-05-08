@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Inline SVG Icons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+    <style>
+      .sn-svg-icon {
+        width: 1rem;
+        height: 1rem;
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      .sn-svg-icon path,
+      .sn-svg-icon rect,
+      .sn-svg-icon circle,
+      .sn-svg-icon polygon {
+        fill: currentColor;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Custom Icons</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Inline SVG Icons</li>
+        </ol>
+      </nav>
+
+      <h1>Use inline SVG markup for selected built-in icons</h1>
+
+      <p class="page-copy">
+        If an icon string starts with markup, the Bootstrap 5 UI helper returns it as-is. That makes inline SVG a
+        clean way to replace the built-in glyphs for just a few buttons.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-outline-secondary" id="custom-icon-svg-inspect" type="button">Inspect SVG buttons</button>
+                <button class="btn btn-outline-secondary" id="custom-icon-svg-reset" type="button">Reset content</button>
+              </div>
+              <div id="custom-icon-svg-editor">
+                <p>SVG icon demo paragraph.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">SVG inspection</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="custom-icon-svg-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Inline SVG Icons</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#custom-icon-svg-editor', {
+  height: 220,
+  toolbar: [
+    ['insert', ['picture', 'video', 'table']],
+    ['view', ['codeview']],
+  ],
+  icons: {
+    picture: pictureSvg,
+    video: videoSvg,
+    table: tableSvg,
+    code: codeSvg,
+  },
+});</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#custom-icon-svg-editor';
+        const initialMarkup = '<p>SVG icon demo paragraph.</p>';
+        const output = document.getElementById('custom-icon-svg-output');
+        const iconMarkup = {
+          picture: '<svg class="sn-svg-icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="2" width="14" height="11" rx="2"></rect><circle cx="5" cy="6" r="1.5"></circle><polygon points="4,11 7.5,7.5 10,10 12,8 15,13 1,13"></polygon></svg>',
+          video: '<svg class="sn-svg-icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="3" width="10" height="10" rx="2"></rect><polygon points="6,6 10,8 6,10"></polygon><rect x="12" y="5" width="3" height="6" rx="1"></rect></svg>',
+          table: '<svg class="sn-svg-icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="2" width="14" height="12" rx="1"></rect><rect x="2" y="5" width="12" height="1"></rect><rect x="2" y="9" width="12" height="1"></rect><rect x="5" y="3" width="1" height="10"></rect><rect x="10" y="3" width="1" height="10"></rect></svg>',
+          code: '<svg class="sn-svg-icon" viewBox="0 0 16 16" aria-hidden="true"><polygon points="6,4 2,8 6,12 7.5,10.5 5,8 7.5,5.5"></polygon><polygon points="10,4 14,8 10,12 8.5,10.5 11,8 8.5,5.5"></polygon></svg>',
+        };
+
+        function renderSvgReport(label) {
+          const context = summernote.getInstance(target);
+          const buttons = Array.from(context.layoutInfo.toolbar[0].querySelectorAll('.note-btn'))
+            .filter((button) => button.innerHTML.includes('sn-svg-icon'))
+            .map((button) => {
+              const name = button.getAttribute('aria-label') || button.getAttribute('title') || 'button';
+              return `${name}: ${button.innerHTML.trim()}`;
+            });
+          output.textContent = `${label}\n${buttons.join('\n')}`;
+        }
+
+        summernote.create(target, {
+          height: 220,
+          toolbar: [
+            ['insert', ['picture', 'video', 'table']],
+            ['view', ['codeview']],
+          ],
+          icons: {
+            picture: iconMarkup.picture,
+            video: iconMarkup.video,
+            table: iconMarkup.table,
+            code: iconMarkup.code,
+          },
+        });
+
+        renderSvgReport('Loaded toolbar with inline SVG icon overrides.');
+
+        document.getElementById('custom-icon-svg-inspect').addEventListener('click', () => {
+          renderSvgReport('Inspected the buttons that now render inline SVG.');
+        });
+
+        document.getElementById('custom-icon-svg-reset').addEventListener('click', () => {
+          summernote.invoke(target, 'code', initialMarkup);
+          renderSvgReport('Reset editor content and kept the SVG icon overrides.');
+        });
+      });
+    </script>
+  </body>
+</html>

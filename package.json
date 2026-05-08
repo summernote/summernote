@@ -1,77 +1,80 @@
 {
-  "name": "summernote",
-  "description": "Super simple WYSIWYG editor",
-  "version": "0.9.1",
+  "name": "summernote-next",
+  "description": "Super simple WYSIWYG editor on Bootstrap 5",
+  "version": "1.0.0",
   "license": "MIT",
   "keywords": [
+    "bootstrap",
     "editor",
-    "WYSIWYG"
+    "rich-text",
+    "summernote",
+    "summernote-next",
+    "vanilla-js",
+    "wysiwyg"
   ],
+  "homepage": "https://juergen-schwind.com/summernote-next",
+  "bugs": {
+    "url": "https://github.com/jschwind/summernote-next/issues"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/summernote/summernote.git"
+    "url": "https://github.com/jschwind/summernote-next.git"
   },
   "author": {
-    "name": "hackerwins",
-    "email": "susukang98@gmail.com"
+    "name": "Jürgen Schwind",
+    "email": "info@juergen-schwind.de",
+    "url": "https://juergen-schwind.com"
   },
-  "main": "dist/summernote.js",
+  "contributors": [
+    "Hackerwins and contributors",
+    "Jürgen Schwind and contributors"
+  ],
+  "copyright": "Copyright (c) 2015-present Summernote Team; Copyright (c) 2026-present Jürgen Schwind and Summernote Next Team",
+  "main": "dist/summernote-next.js",
+  "style": "dist/summernote-next.css",
+  "unpkg": "dist/summernote-next.js",
+  "jsdelivr": "dist/summernote-next.js",
+  "files": [
+    "dist/",
+    "font/",
+    "LICENSE",
+    "README.md"
+  ],
   "type": "module",
+  "packageManager": "npm@11.13.0",
   "engines": {
-    "node": ">=17.0.0"
+    "node": ">=20.19.0",
+    "npm": ">=11.13.0"
   },
   "scripts": {
     "dev": "vite --config vite.config.dev.js",
     "prebuild": "node ./scripts/build-fonts.js",
     "build": "vite build",
-    "buildall": "yarn prebuild && node ./scripts/build-all.js",
-    "lint": "eslint src public/plugin public/lang test scripts",
+    "postbuild": "node ./scripts/build-language-assets.js",
+    "buildall": "npm run prebuild && node ./scripts/build-all.js",
+    "lint": "eslint src test scripts",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "prepublishOnly": "pinst --disable",
-    "postpublish": "pinst --enable"
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/eslint-parser": "^7.12.16",
-    "@babel/plugin-external-helpers": "^7.8.3",
-    "@babel/preset-env": "^7.9.5",
-    "@popperjs/core": "^2.9.2",
-    "@vitest/browser": "^1.6.0",
-    "adm-zip": "^0.5.16",
-    "autoprefixer": "^10.2.4",
-    "babel-plugin-module-resolver": "^5.0.2",
-    "bootstrap": "^5.0.1",
-    "chromedriver": "^126.0.4",
-    "concurrently": "^8.2.2",
-    "cross-env": "^7.0.3",
-    "css-loader": "^7.1.2",
-    "cssnano": "^7.0.3",
-    "eslint": "^8.13.0",
-    "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-chai-friendly": "^1.0.0",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-n": "^16.0.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.2.0",
-    "jquery": "3.6.0",
-    "less": "^4.1.1",
-    "less-loader": "^12.2.0",
-    "mocha": "^10.5.2",
-    "pinst": "^3.0.0",
-    "postcss": "^8.2.6",
-    "postcss-escape-generated-content-string": "^3.0.0",
-    "postcss-loader": "^8.1.1",
-    "resolve-url-loader": "^5.0.0",
-    "rollup-plugin-external-globals": "^0.11.0",
-    "sass": "^1.26.3",
-    "sass-loader": "^14.2.1",
-    "serve-static": "^1.14.1",
-    "uglify-js": "^3.9.1",
-    "vite": "^5.4.9",
-    "vite-plugin-banner": "^0.8.0",
-    "vitest": "^1.6.0",
-    "webdriverio": "^8.35.1",
-    "webfont": "^11.1.1"
+    "@eslint/js": "^10.0.1",
+    "@popperjs/core": "^2.11.8",
+    "@vitest/browser": "^4.1.5",
+    "@vitest/browser-playwright": "^4.1.5",
+    "@vitest/coverage-istanbul": "^4.1.5",
+    "adm-zip": "^0.5.17",
+    "autoprefixer": "^10.5.0",
+    "bootstrap": "^5.3.8",
+    "eslint": "^10.3.0",
+    "eslint-plugin-chai-friendly": "^1.2.0",
+    "globals": "^17.6.0",
+    "playwright": "^1.59.1",
+    "postcss": "^8.5.14",
+    "sass": "^1.99.0",
+    "vite": "^8.0.10",
+    "vite-plugin-banner": "^0.8.1",
+    "vitest": "^4.1.5",
+    "webfont": "^11.2.26"
   }
 }

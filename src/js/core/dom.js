@@ -1,7 +1,6 @@
-import $ from 'jquery';
+import $$ from './dom-query.js';
 import func from './func';
 import lists from './lists';
-import env from './env';
 
 const NBSP_CHAR = String.fromCharCode(160);
 const ZERO_WIDTH_NBSP_CHAR = '\ufeff';
@@ -15,7 +14,7 @@ const ZERO_WIDTH_NBSP_CHAR = '\ufeff';
  * @return {Boolean}
  */
 function isEditable(node) {
-  return node && $(node).hasClass('note-editable');
+  return node && $$(node).hasClass('note-editable');
 }
 
 /**
@@ -27,7 +26,7 @@ function isEditable(node) {
  * @return {Boolean}
  */
 function isControlSizing(node) {
-  return node && $(node).hasClass('note-control-sizing');
+  return node && $$(node).hasClass('note-control-sizing');
 }
 
 /**
@@ -129,6 +128,9 @@ function isBodyContainer(node) {
 }
 
 const isAnchor = makePredByNodeName('A');
+const isImg = makePredByNodeName('IMG');
+const isVideo = makePredByNodeName('VIDEO');
+const isIframe = makePredByNodeName('IFRAME');
 
 function isParaInline(node) {
   return isInline(node) && !!ancestor(node, isPara);
@@ -178,7 +180,7 @@ function withClosestSiblings(node, pred) {
  * - [workaround] old IE only works with &nbsp;
  * - [workaround] IE11 and other browser works with bogus br
  */
-const blankHTML = env.isMSIE && env.browserVersion < 11 ? '&nbsp;' : '<br>';
+const blankHTML = '<br>';
 
 /**
  * @method nodeLength
@@ -389,7 +391,7 @@ function listDescendant(node, pred) {
  */
 function wrap(node, wrapperName) {
   const parent = node.parentNode;
-  const wrapper = $('<' + wrapperName + '>')[0];
+  const wrapper = document.createElement(wrapperName);
 
   parent.insertBefore(wrapper, node);
   wrapper.appendChild(node);
@@ -421,7 +423,7 @@ function insertAfter(node, preceding) {
  * @param {Collection} aChild
  */
 function appendChildNodes(node, aChild, isSkipPaddingBlankHTML) {
-  $.each(aChild, function(idx, child) {
+  $$.each(aChild, function(idx, child) {
     // special case: appending a pure UL/OL to a LI element creates inaccessible LI element
     // e.g. press enter in last LI which has UL/OL-subelements
     // Therefore, if current node is LI element with no child nodes (text-node) and appending a list, add a br before
@@ -618,7 +620,8 @@ function nextPoint(point, isSkipInnerOffset) {
  * @return {BoundaryPoint}
  */
 function nextPointWithEmptyNode(point, isSkipInnerOffset) {
-  let node, offset = 0;
+  let node;
+  let offset;
 
   if (nodeLength(point.node) === point.offset) {
     if (isEditable(point.node)) {
@@ -840,9 +843,8 @@ function splitNode(point, options) {
   if (isEdgePoint(point) && (isText(point.node) || isNotSplitEdgePoint)) {
     if (isLeftEdgePoint(point)) {
       return point.node;
-    } else if (isRightEdgePoint(point)) {
-      return point.node.nextSibling;
     }
+    return point.node.nextSibling;
   }
 
   // split #text
@@ -945,7 +947,7 @@ function splitPoint(point, isInline) {
   //  - block: splitRoot is a child of bodyContainer
   const pred = isInline ? isPara : isBodyContainer;
   const ancestors = listAncestor(point.node, pred);
-  const topAncestor = lists.last(ancestors) || point.node;
+  const topAncestor = lists.last(ancestors);
 
   let splitRoot, container;
   if (pred(topAncestor)) {
@@ -1056,11 +1058,12 @@ function replace(node, nodeName) {
 const isTextarea = makePredByNodeName('TEXTAREA');
 
 /**
- * @param {jQuery} $node
+ * @param {DomQuery|Element} $node
  * @param {Boolean} [stripLinebreaks] - default: false
  */
 function value($node, stripLinebreaks) {
-  const val = isTextarea($node[0]) ? $node.val() : $node.html();
+  const el = $node.get ? $node.get(0) : $node[0];
+  const val = isTextarea(el) ? (el.value || $node.val()) : $node.html();
   if (stripLinebreaks) {
     return val.replace(/[\n\r]/g, '');
   }
@@ -1072,7 +1075,7 @@ function value($node, stripLinebreaks) {
  *
  * get the HTML contents of node
  *
- * @param {jQuery} $node
+ * @param {DomQuery|Element} $node
  * @param {Boolean} [isNewlineOnBlock]
  */
 function html($node, isNewlineOnBlock) {
@@ -1095,7 +1098,7 @@ function html($node, isNewlineOnBlock) {
 }
 
 function posFromPlaceholder(placeholder) {
-  const $placeholder = $(placeholder);
+  const $placeholder = $$(placeholder);
   const pos = $placeholder.offset();
   const height = $placeholder.outerHeight(true); // include margin
 
@@ -1168,7 +1171,12 @@ export default {
   isU: makePredByNodeName('U'),
   isS: makePredByNodeName('S'),
   isI: makePredByNodeName('I'),
-  isImg: makePredByNodeName('IMG'),
+  isImg,
+  isVideo,
+  isIframe,
+  isVideoMedia: function(node) {
+    return !!(node && (isVideo(node) || (isIframe(node) && $$(node).hasClass('note-video-clip'))));
+  },
   isTextarea,
   deepestChildIsEmpty,
   isEmpty,

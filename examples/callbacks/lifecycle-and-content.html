@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Lifecycle and Content Callbacks</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Callbacks</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Lifecycle and Content</li>
+        </ol>
+      </nav>
+
+      <h1>Initialization, content updates, and command hooks</h1>
+
+      <p class="page-copy">
+        This page keeps the content-related callbacks that still map cleanly to the current build:
+        <code>onInit</code>, <code>onChange</code>, and <code>onBeforeCommand</code>. It also mirrors them with
+        native <code>summernote.*</code> events on the original note element.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-primary" id="callbacks-change-content" type="button">Trigger change</button>
+                <button class="btn btn-outline-primary" id="callbacks-run-command" type="button">Run bold command</button>
+                <button class="btn btn-outline-secondary" id="callbacks-reset-lifecycle" type="button">Reset content</button>
+              </div>
+              <div id="callbacks-lifecycle-editor">
+                <p>Change target: <span data-target="phrase">summernote callback demo</span></p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">Callback log</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="callbacks-lifecycle-log">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Lifecycle and Content</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#callbacks-lifecycle-editor', {
+  height: 220,
+  callbacks: {
+    onInit() {},
+    onChange(contents, editable) {},
+    onBeforeCommand(contents) {},
+  },
+});
+
+note.addEventListener('summernote.change', (event) => {
+  const [contents] = event.detail || [];
+});</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#callbacks-lifecycle-editor';
+        const note = document.getElementById('callbacks-lifecycle-editor');
+        const initialMarkup = '<p>Change target: <span data-target="phrase">summernote callback demo</span></p>';
+        const log = document.getElementById('callbacks-lifecycle-log');
+        const entries = [];
+
+        function pushEntry(message) {
+          entries.unshift(message);
+          log.textContent = entries.join('\n');
+        }
+
+        note.addEventListener('summernote.init', () => {
+          pushEntry('event summernote.init');
+        });
+
+        note.addEventListener('summernote.change', (event) => {
+          const [contents] = event.detail || [];
+          pushEntry(`event summernote.change -> ${(contents || '').replace(/\s+/g, ' ').trim()}`);
+        });
+
+        note.addEventListener('summernote.before.command', (event) => {
+          const [contents] = event.detail || [];
+          pushEntry(`event summernote.before.command -> ${(contents || '').replace(/\s+/g, ' ').trim()}`);
+        });
+
+        summernote.create(target, {
+          height: 220,
+          callbacks: {
+            onInit() {
+              pushEntry('callback onInit');
+            },
+            onChange(contents) {
+              pushEntry(`callback onChange -> ${contents.replace(/\s+/g, ' ').trim()}`);
+            },
+            onBeforeCommand(contents) {
+              pushEntry(`callback onBeforeCommand -> ${contents.replace(/\s+/g, ' ').trim()}`);
+            },
+          },
+        });
+
+        function selectPhrase() {
+          const context = summernote.getInstance(target);
+          const textNode = context.layoutInfo.editable[0].querySelector('[data-target="phrase"]').firstChild;
+          const selection = window.getSelection();
+          const range = document.createRange();
+          range.selectNodeContents(textNode);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          summernote.invoke(target, 'editor.setLastRange', context.modules.editor.createRange());
+        }
+
+        function placeCaretAtEnd() {
+          const context = summernote.getInstance(target);
+          const textNode = context.layoutInfo.editable[0].querySelector('[data-target="phrase"]').firstChild;
+          const selection = window.getSelection();
+          const range = document.createRange();
+          const offset = textNode.textContent.length;
+          range.setStart(textNode, offset);
+          range.setEnd(textNode, offset);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          summernote.invoke(target, 'editor.setLastRange', context.modules.editor.createRange());
+        }
+
+        document.getElementById('callbacks-change-content').addEventListener('click', () => {
+          placeCaretAtEnd();
+          summernote.invoke(target, 'insertText', ' updated');
+        });
+
+        document.getElementById('callbacks-run-command').addEventListener('click', () => {
+          selectPhrase();
+          summernote.invoke(target, 'bold');
+        });
+
+        document.getElementById('callbacks-reset-lifecycle').addEventListener('click', () => {
+          summernote.invoke(target, 'code', initialMarkup);
+          entries.length = 0;
+          log.textContent = 'Reset content.';
+        });
+      });
+    </script>
+  </body>
+</html>

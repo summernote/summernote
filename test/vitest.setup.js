@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $$ from '@/js/core/dom-query.js';
 import env from '@/js/core/env';
 import { expect } from 'vitest';
 
@@ -20,17 +20,17 @@ expect.extend({
 
     return {
       pass: str1 === str2,
-      message: () => ``,
+      message: () => `Expected: ${str1}\nReceived: ${str2}`,
     };
   },
 
   equalsStyle: ($node, expected, style) => {
     const nodeStyle = window.getComputedStyle($node[0]).getPropertyValue(style);
-    const testerStyle = $('<div></div>').css(style, expected).css(style);
+    const testerStyle = $$('<div></div>').css(style, expected).css(style);
 
     return {
       pass: nodeStyle === testerStyle,
-      message: () => ``,
+      message: () => `Expected computed ${style}: ${testerStyle}\nReceived: ${nodeStyle}`,
     };
   },
 });

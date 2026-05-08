@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Custom Ranges</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Range and Selection API</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Custom Ranges</li>
+        </ol>
+      </nav>
+
+      <h1>Create and position explicit ranges</h1>
+
+      <p class="page-copy">
+        The old <code>$.summernote.range</code> utility is available here as <code>summernote.summernote.range</code>.
+        This page uses it to create ranges from text nodes, from the current browser selection, and from positions before
+        or after a node.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-primary" id="range-create-explicit" type="button">range.create(...)</button>
+                <button class="btn btn-outline-primary" id="range-from-selection" type="button">createFromSelection()</button>
+                <button class="btn btn-outline-primary" id="range-from-node" type="button">createFromNode()</button>
+                <button class="btn btn-outline-primary" id="range-before-node" type="button">createFromNodeBefore()</button>
+                <button class="btn btn-outline-primary" id="range-after-node" type="button">createFromNodeAfter()</button>
+                <button class="btn btn-outline-primary" id="range-collapse-start" type="button">collapse(true)</button>
+                <button class="btn btn-outline-secondary" id="reset-custom-ranges" type="button">Reset content</button>
+              </div>
+              <div id="custom-ranges-editor">
+                <p><span data-target="phrase">Summernote range utility</span> keeps explicit boundaries stable.</p>
+                <p><span class="badge text-bg-secondary" data-target="marker">Marker</span></p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">Range output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="custom-ranges-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Custom Ranges</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#custom-ranges-editor', {
+  height: 240,
+});
+
+const rangeUtil = summernote.summernote.range;
+const explicit = rangeUtil.create(textNode, 0, textNode, textNode.textContent.length);
+const selected = rangeUtil.createFromSelection();
+const nodeRange = rangeUtil.createFromNode(node);
+const beforeNode = rangeUtil.createFromNodeBefore(node);
+const afterNode = rangeUtil.createFromNodeAfter(node);</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#custom-ranges-editor';
+        const initialMarkup = '<p><span data-target="phrase">Summernote range utility</span> keeps explicit boundaries stable.</p><p><span class="badge text-bg-secondary" data-target="marker">Marker</span></p>';
+        const output = document.getElementById('custom-ranges-output');
+        const rangeUtil = summernote.summernote.range;
+
+        summernote.create(target, {
+          height: 240,
+        });
+
+        function nodeLabel(node) {
+          if (!node) {
+            return 'null';
+          }
+
+          if (node.nodeType === Node.TEXT_NODE) {
+            return `#text("${node.textContent}")`;
+          }
+
+          return `<${node.nodeName.toLowerCase()}>`;
+        }
+
+        function summarizeRange(label, rng) {
+          output.textContent = `${label}\ntext: ${JSON.stringify(rng.toString())}\ncollapsed: ${rng.isCollapsed()}\nstart: ${nodeLabel(rng.sc)} @ ${rng.so}\nend: ${nodeLabel(rng.ec)} @ ${rng.eo}`;
+        }
+
+        function setAndRender(label, rng) {
+          summernote.invoke(target, 'editor.setLastRange', rng.select());
+          summarizeRange(label, summernote.invoke(target, 'editor.getLastRange'));
+        }
+
+        function selectPhraseInBrowser() {
+          const context = summernote.getInstance(target);
+          const textNode = context.layoutInfo.editable[0].querySelector('[data-target="phrase"]').firstChild;
+          const selection = window.getSelection();
+          const browserRange = document.createRange();
+          browserRange.setStart(textNode, 0);
+          browserRange.setEnd(textNode, textNode.textContent.length);
+          selection.removeAllRanges();
+          selection.addRange(browserRange);
+          return textNode;
+        }
+
+        document.getElementById('range-create-explicit').addEventListener('click', () => {
+          const textNode = selectPhraseInBrowser();
+          const rng = rangeUtil.create(textNode, 0, textNode, textNode.textContent.length);
+          setAndRender('Created an explicit text range from boundary points.', rng);
+        });
+
+        document.getElementById('range-from-selection').addEventListener('click', () => {
+          selectPhraseInBrowser();
+          setAndRender('Captured the current browser selection.', rangeUtil.createFromSelection());
+        });
+
+        document.getElementById('range-from-node').addEventListener('click', () => {
+          const context = summernote.getInstance(target);
+          const node = context.layoutInfo.editable[0].querySelector('[data-target="phrase"]');
+          setAndRender('Created a range that covers the target node.', rangeUtil.createFromNode(node));
+        });
+
+        document.getElementById('range-before-node').addEventListener('click', () => {
+          const context = summernote.getInstance(target);
+          const node = context.layoutInfo.editable[0].querySelector('[data-target="marker"]');
+          setAndRender('Placed the caret immediately before the marker node.', rangeUtil.createFromNodeBefore(node));
+        });
+
+        document.getElementById('range-after-node').addEventListener('click', () => {
+          const context = summernote.getInstance(target);
+          const node = context.layoutInfo.editable[0].querySelector('[data-target="marker"]');
+          setAndRender('Placed the caret immediately after the marker node.', rangeUtil.createFromNodeAfter(node));
+        });
+
+        document.getElementById('range-collapse-start').addEventListener('click', () => {
+          const context = summernote.getInstance(target);
+          const node = context.layoutInfo.editable[0].querySelector('[data-target="phrase"]');
+          setAndRender('Collapsed the node range to its start boundary.', rangeUtil.createFromNode(node).collapse(true));
+        });
+
+        document.getElementById('reset-custom-ranges').addEventListener('click', () => {
+          summernote.invoke(target, 'code', initialMarkup);
+          output.textContent = 'Reset content.';
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $$ from '../core/dom-query.js';
 import lists from '../core/lists';
 import dom from '../core/dom';
 
@@ -6,7 +6,7 @@ export default class LinkPopover {
   constructor(context) {
     this.context = context;
 
-    this.ui = $.summernote.ui;
+    this.ui = $$.summernote.ui;
     this.options = context.options;
     this.events = {
       'summernote.keyup summernote.mouseup summernote.change summernote.scroll': () => {
@@ -41,7 +41,9 @@ export default class LinkPopover {
     }).render().appendTo(this.options.container);
     const $content = this.$popover.find('.popover-content,.note-popover-content');
 
-    this.context.invoke('buttons.build', $content, this.options.popover.link);
+    this.context.invoke('buttons.build', $content, this.options.popover.link, {
+      classPrefix: 'popover',
+    });
 
     this.$popover.on('mousedown', (event) => { event.preventDefault(); });
   }
@@ -60,11 +62,11 @@ export default class LinkPopover {
     const rng = this.context.invoke('editor.getLastRange');
     if (rng.isCollapsed() && rng.isOnAnchor()) {
       const anchor = dom.ancestor(rng.sc, dom.isAnchor);
-      const href = $(anchor).attr('href');
+      const href = $$(anchor).attr('href');
       this.$popover.find('a').attr('href', href).text(href);
 
       const pos = dom.posFromPlaceholder(anchor);
-      const containerOffset = $(this.options.container).offset();
+      const containerOffset = $$(this.options.container).offset();
       pos.top -= containerOffset.top;
       pos.left -= containerOffset.left;
 

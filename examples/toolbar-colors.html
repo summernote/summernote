@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Toolbar Colors</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+    <style>
+      .toolbar-colors-air-editable {
+        padding-top: 4.5rem !important;
+        padding-right: 24rem !important;
+      }
+
+      .toolbar-colors-air-popover {
+        right: 1rem;
+        left: auto !important;
+        top: 1rem !important;
+      }
+
+      .toolbar-colors-air-popover-light {
+        right: 1rem;
+        left: auto !important;
+        top: 1rem !important;
+      }
+    </style>
+  </head>
+  <body>
+
+    <main class="page">
+
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="./index.html">Examples overview</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Toolbar Colors</li>
+        </ol>
+      </nav>
+
+      <h1 class="mt-3">Bootstrap-colored Summernote toolbar</h1>
+
+      <p class="mb-3">
+        This example keeps the standard Summernote toolbar features, but adds Bootstrap classes through
+        <code>toolbarClassName</code>, <code>toolbarButtonClassName</code>, plus matching popover class options. That makes
+        it easy to match both the editor toolbar and contextual popovers to the rest of your Bootstrap 5 theme.
+      </p>
+
+      <div class="row row-cols-1 row-cols-lg-2 g-3 my-3">
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <strong>Configured toolbar</strong>
+              <p class="mb-0 mt-2">
+                The toolbar uses <code>bg-primary border-primary text-white</code>, while each toolbar button switches to
+                <code>btn-light btn-sm</code>. The air, image, video, and table popovers use the same background and button classes.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <strong>How to use it</strong>
+              <p class="mb-0 mt-2">
+                Pass the new class options into <code>summernote.create()</code>. The default Summernote appearance stays
+                unchanged until you opt in, and the editor chrome now inherits Bootstrap variables for both the main toolbar and popovers.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="toolbar-colors-editor">
+        <h2>Toolbar color demo</h2>
+        <p>Use this editor to check how a branded Bootstrap toolbar still works with dropdowns, color pickers, links, and tables.</p>
+        <ul>
+          <li>The toolbar background is themed with Bootstrap utility classes.</li>
+          <li>The buttons use a Bootstrap button variant instead of the default outline style, including <code>btn-sm</code>.</li>
+          <li>The rest of the editor remains unchanged.</li>
+        </ul>
+      </div>
+
+      <div id="toolbar-colors-editor-light" class="mt-4">
+        <h2>Light toolbar demo</h2>
+        <p>This second editor uses a light toolbar and primary buttons with the same native Bootstrap button groups.</p>
+        <ul>
+          <li>Toolbar: <code>bg-light</code> with a subtle border.</li>
+          <li>Buttons: <code>btn-primary btn-sm</code>.</li>
+          <li>Same feature set, different Bootstrap surface.</li>
+        </ul>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-header">Pinned popover demo</div>
+        <div class="card-body">
+          <p class="mb-3">
+            This air mode example keeps the contextual toolbar visible so the configured popover background and button
+            classes are visible without extra interaction.
+          </p>
+          <div id="toolbar-colors-air-editor">
+            <p>Popover colors can follow the main toolbar exactly, including Bootstrap backgrounds, borders, and button variants.</p>
+            <p>Select text, an image, or a table in a real editor to reuse the same contextual styling.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-header">Pinned light popover demo</div>
+        <div class="card-body">
+          <p class="mb-3">
+            This light variant keeps the contextual toolbar visible too, so the light popover surface and primary buttons
+            match the light toolbar demo above.
+          </p>
+          <div id="toolbar-colors-air-editor-light">
+            <p>Light popovers can use a subtle Bootstrap background with the same primary button styling as the main toolbar.</p>
+            <p>This keeps the contextual tools visually aligned with the lighter editor chrome.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Primary</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#toolbar-colors-editor', {
+  toolbarClassName: 'bg-primary border-primary text-white',
+  toolbarButtonClassName: 'btn-light btn-sm',
+  toolbarUseNativeButtonGroups: true,
+  toolbarButtonGroupClassName: 'btn-group-sm shadow-sm',
+  popoverClassName: 'bg-primary border-primary text-white',
+  popoverButtonClassName: 'btn-light btn-sm',
+  popoverUseNativeButtonGroups: true,
+  popoverButtonGroupClassName: 'btn-group-sm shadow-sm',
+  toolbar: [
+    ['style', ['style']],
+    ['font', ['bold', 'italic', 'underline', 'clear']],
+    ['fontname', ['fontname']],
+    ['color', ['color']],
+    ['para', ['ul', 'ol', 'paragraph']],
+    ['table', ['table']],
+    ['insert', ['link', 'picture', 'video']],
+    ['view', ['fullscreen', 'codeview', 'help']],
+  ],
+});</code></pre>
+        </div>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Light</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#toolbar-colors-editor-light', {
+  toolbarClassName: 'bg-light border border-light-subtle',
+  toolbarButtonClassName: 'btn-primary btn-sm',
+  toolbarUseNativeButtonGroups: true,
+  toolbarButtonGroupClassName: 'btn-group-sm shadow-sm',
+  popoverClassName: 'bg-light border border-light-subtle',
+  popoverButtonClassName: 'btn-primary btn-sm',
+  popoverUseNativeButtonGroups: true,
+  popoverButtonGroupClassName: 'btn-group-sm shadow-sm',
+  toolbar: [
+    ['style', ['style']],
+    ['font', ['bold', 'italic', 'underline', 'clear']],
+    ['fontname', ['fontname']],
+    ['color', ['color']],
+    ['para', ['ul', 'ol', 'paragraph']],
+    ['table', ['table']],
+    ['insert', ['link', 'picture', 'video']],
+    ['view', ['fullscreen', 'codeview', 'help']],
+  ],
+});</code></pre>
+        </div>
+      </div>
+
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        summernote.create('#toolbar-colors-editor', {
+          height: 360,
+          dialogsInBody: true,
+          toolbarClassName: 'bg-primary border-primary text-white',
+          toolbarButtonClassName: 'btn-light btn-sm',
+          toolbarUseNativeButtonGroups: true,
+          toolbarButtonGroupClassName: 'btn-group-sm shadow-sm',
+          popoverClassName: 'bg-primary border-primary text-white',
+          popoverButtonClassName: 'btn-light btn-sm',
+          popoverUseNativeButtonGroups: true,
+          popoverButtonGroupClassName: 'btn-group-sm shadow-sm',
+          toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'italic', 'underline', 'clear']],
+            ['fontname', ['fontname']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview', 'help']],
+          ],
+        });
+
+        summernote.create('#toolbar-colors-editor-light', {
+          height: 320,
+          dialogsInBody: true,
+          toolbarClassName: 'bg-light border border-light-subtle',
+          toolbarButtonClassName: 'btn-primary btn-sm',
+          toolbarUseNativeButtonGroups: true,
+          toolbarButtonGroupClassName: 'btn-group-sm shadow-sm',
+          popoverClassName: 'bg-light border border-light-subtle',
+          popoverButtonClassName: 'btn-primary btn-sm',
+          popoverUseNativeButtonGroups: true,
+          popoverButtonGroupClassName: 'btn-group-sm shadow-sm',
+          toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'italic', 'underline', 'clear']],
+            ['fontname', ['fontname']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview', 'help']],
+          ],
+        });
+
+        const airModeContext = summernote.create('#toolbar-colors-air-editor', {
+          airMode: true,
+          airModeFullscreen: true,
+          dialogsInBody: true,
+          focus: true,
+          editableClassName: 'border rounded-3 p-3 toolbar-colors-air-editable',
+          popoverClassName: 'bg-primary border-primary text-white',
+          popoverButtonClassName: 'btn-light btn-sm',
+          popoverUseNativeButtonGroups: true,
+          popoverButtonGroupClassName: 'btn-group-sm shadow-sm',
+          toolbar: [
+            ['font', ['bold', 'italic', 'underline', 'clear']],
+            ['color', ['color']],
+            ['para', ['ul', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture']],
+            ['view', ['codeview', 'fullscreen']],
+          ],
+          popover: {
+            air: [
+              ['font', ['bold', 'italic', 'underline', 'clear']],
+              ['color', ['color']],
+              ['para', ['ul', 'paragraph']],
+              ['table', ['table']],
+              ['insert', ['link', 'picture']],
+              ['view', ['codeview', 'fullscreen']],
+            ],
+          },
+        });
+
+        const airPopover = airModeContext.modules.airPopover;
+        const $popover = airPopover.$popover.addClass('toolbar-colors-air-popover');
+        const positionPinnedPopover = () => {
+          $popover.css({
+            display: 'block',
+            right: '1rem',
+            left: 'auto',
+            top: '1rem',
+          });
+          airModeContext.invoke('buttons.updateCurrentStyle', $popover);
+        };
+
+        airPopover.update = positionPinnedPopover;
+        airPopover.hide = positionPinnedPopover;
+        positionPinnedPopover();
+
+        const airModeContextLight = summernote.create('#toolbar-colors-air-editor-light', {
+          airMode: true,
+          airModeFullscreen: true,
+          dialogsInBody: true,
+          focus: true,
+          editableClassName: 'border rounded-3 p-3 toolbar-colors-air-editable',
+          popoverClassName: 'bg-light border border-light-subtle',
+          popoverButtonClassName: 'btn-primary btn-sm',
+          popoverUseNativeButtonGroups: true,
+          popoverButtonGroupClassName: 'btn-group-sm shadow-sm',
+          toolbar: [
+            ['font', ['bold', 'italic', 'underline', 'clear']],
+            ['color', ['color']],
+            ['para', ['ul', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture']],
+            ['view', ['codeview', 'fullscreen']],
+          ],
+          popover: {
+            air: [
+              ['font', ['bold', 'italic', 'underline', 'clear']],
+              ['color', ['color']],
+              ['para', ['ul', 'paragraph']],
+              ['table', ['table']],
+              ['insert', ['link', 'picture']],
+              ['view', ['codeview', 'fullscreen']],
+            ],
+          },
+        });
+
+        const airPopoverLight = airModeContextLight.modules.airPopover;
+        const $popoverLight = airPopoverLight.$popover.addClass('toolbar-colors-air-popover-light');
+        const positionPinnedPopoverLight = () => {
+          $popoverLight.css({
+            display: 'block',
+            right: '1rem',
+            left: 'auto',
+            top: '1rem',
+          });
+          airModeContextLight.invoke('buttons.updateCurrentStyle', $popoverLight);
+        };
+
+        airPopoverLight.update = positionPinnedPopoverLight;
+        airPopoverLight.hide = positionPinnedPopoverLight;
+        positionPinnedPopoverLight();
+      });
+    </script>
+
+  </body>
+</html>

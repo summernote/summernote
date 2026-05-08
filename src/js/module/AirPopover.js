@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $$ from '../core/dom-query.js';
 import lists from '../core/lists';
 import func from '../core/func';
 
@@ -8,7 +8,7 @@ const AIRMODE_POPOVER_Y_OFFSET = 5;
 export default class AirPopover {
   constructor(context) {
     this.context = context;
-    this.ui = $.summernote.ui;
+    this.ui = $$.summernote.ui;
     this.options = context.options;
 
     this.hidable = true;
@@ -66,7 +66,9 @@ export default class AirPopover {
     }).render().appendTo(this.options.container);
     const $content = this.$popover.find('.popover-content,.note-popover-content');
 
-    this.context.invoke('buttons.build', $content, this.options.popover.air);
+    this.context.invoke('buttons.build', $content, this.options.popover.air, {
+      classPrefix: 'popover',
+    });
 
     // disable hiding this popover preemptively by 'summernote.blur' event.
     this.$popover.on('mousedown', () => { this.hidable = false; });
@@ -86,7 +88,7 @@ export default class AirPopover {
         top: this.pageY,
       };
 
-      const containerOffset = $(this.options.container).offset();
+      const containerOffset = $$(this.options.container).offset();
       rect.top -= containerOffset.top;
       rect.left -= containerOffset.left;
 

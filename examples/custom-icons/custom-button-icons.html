@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Custom Button Icons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+    <style>
+      .brand-icon {
+        width: 1rem;
+        height: 1rem;
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      .brand-icon path,
+      .brand-icon rect,
+      .brand-icon circle,
+      .brand-icon polygon {
+        fill: currentColor;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Custom Icons</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Custom Button Icons</li>
+        </ol>
+      </nav>
+
+      <h1>Reuse the same icon set in built-in and custom buttons</h1>
+
+      <p class="page-copy">
+        The legacy topic overlaps with custom buttons in the current build: you can override built-in icons with
+        <code>icons</code> and also feed the same markup into <code>context.ui.icon(...)</code> inside a custom button factory.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-outline-secondary" id="custom-icon-button-place-caret" type="button">Place caret at end</button>
+                <button class="btn btn-outline-secondary" id="custom-icon-button-reset" type="button">Reset content</button>
+              </div>
+              <div id="custom-icon-button-editor">
+                <p>Shared icon demo paragraph.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">HTML output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="custom-icon-button-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Custom Button Icons</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>function CalloutButton(context) {
+  const ui = context.ui;
+  return ui.button({
+    contents: ui.icon(iconSet.callout),
+    tooltip: 'Insert a callout block',
+    click() {
+      context.invoke('editor.pasteHTML', calloutMarkup);
+    },
+  }).render();
+}
+
+summernote.create('#custom-icon-button-editor', {
+  height: 220,
+  toolbar: [
+    ['style', ['bold']],
+    ['custom', ['callout', 'stamp']],
+  ],
+  icons: {
+    bold: iconSet.bold,
+  },
+  buttons: {
+    callout: CalloutButton,
+    stamp: StampButton,
+  },
+});</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#custom-icon-button-editor';
+        const initialMarkup = '<p>Shared icon demo paragraph.</p>';
+        const output = document.getElementById('custom-icon-button-output');
+        const iconSet = {
+          bold: '<svg class="brand-icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="3" height="12" rx="1"></rect><rect x="6" y="3" width="5" height="4" rx="2"></rect><rect x="6" y="9" width="6" height="4" rx="2"></rect></svg>',
+          callout: '<svg class="brand-icon" viewBox="0 0 16 16" aria-hidden="true"><rect x="1" y="2" width="14" height="9" rx="2"></rect><polygon points="5,11 5,15 8.5,11"></polygon></svg>',
+          stamp: '<svg class="brand-icon" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5" r="3"></circle><rect x="5" y="8" width="6" height="3" rx="1"></rect><rect x="4" y="11" width="8" height="2" rx="1"></rect></svg>',
+        };
+
+        function renderHtml(label) {
+          output.textContent = `${label}\n${summernote.invoke(target, 'code')}`;
+        }
+
+        function placeCaretAtEnd() {
+          const context = summernote.getInstance(target);
+          const paragraph = context.layoutInfo.editable[0].querySelector('p:last-of-type');
+          const textNode = paragraph.firstChild;
+          const selection = window.getSelection();
+          const range = document.createRange();
+          const offset = textNode.textContent.length;
+          range.setStart(textNode, offset);
+          range.setEnd(textNode, offset);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          summernote.invoke(target, 'editor.setLastRange', context.modules.editor.createRange());
+        }
+
+        function CalloutButton(context) {
+          const ui = context.ui;
+          return ui.button({
+            contents: ui.icon(iconSet.callout),
+            tooltip: 'Insert a callout block',
+            click() {
+              context.invoke('editor.restoreRange');
+              context.invoke('editor.focus');
+              context.invoke('editor.pasteHTML', '<p><span class="badge text-bg-warning">Callout</span> Use one shared icon set for built-in and custom buttons.</p>');
+              renderHtml('Inserted a callout with the custom icon button.');
+            },
+          }).render();
+        }
+
+        function StampButton(context) {
+          const ui = context.ui;
+          return ui.button({
+            contents: ui.icon(iconSet.stamp),
+            tooltip: 'Insert a reviewed badge',
+            click() {
+              context.invoke('editor.restoreRange');
+              context.invoke('editor.focus');
+              context.invoke('editor.pasteHTML', ' <span class="badge text-bg-success">Reviewed</span>');
+              renderHtml('Inserted a badge with the second custom icon button.');
+            },
+          }).render();
+        }
+
+        summernote.create(target, {
+          height: 220,
+          toolbar: [
+            ['style', ['bold']],
+            ['custom', ['callout', 'stamp']],
+          ],
+          icons: {
+            bold: iconSet.bold,
+          },
+          buttons: {
+            callout: CalloutButton,
+            stamp: StampButton,
+          },
+        });
+
+        renderHtml('Loaded the editor with shared built-in and custom button icons.');
+
+        document.getElementById('custom-icon-button-place-caret').addEventListener('click', () => {
+          placeCaretAtEnd();
+          output.textContent = 'Placed the caret at the end of the paragraph.';
+        });
+
+        document.getElementById('custom-icon-button-reset').addEventListener('click', () => {
+          summernote.invoke(target, 'code', initialMarkup);
+          renderHtml('Reset editor content.');
+        });
+      });
+    </script>
+  </body>
+</html>

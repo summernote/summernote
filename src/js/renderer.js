@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $$ from './core/dom-query.js';
 
 class Renderer {
   constructor(markup, children, options, callback) {
@@ -9,7 +9,7 @@ class Renderer {
   }
 
   render($parent) {
-    const $node = $(this.markup);
+    const $node = $$($$.parseHTML(this.markup));
 
     if (this.options && this.options.contents) {
       $node.html(this.options.contents);
@@ -20,7 +20,7 @@ class Renderer {
     }
 
     if (this.options && this.options.data) {
-      $.each(this.options.data, (k, v) => {
+      $$.each(this.options.data, (k, v) => {
         $node.attr('data-' + k, v);
       });
     }
@@ -55,8 +55,13 @@ class Renderer {
 export default {
   create: (markup, callback) => {
     return function() {
-      const options = typeof arguments[1] === 'object' ? arguments[1] : arguments[0];
-      let children = Array.isArray(arguments[0]) ? arguments[0] : [];
+      const firstArg = arguments[0];
+      const secondArg = arguments[1];
+      const hasChildrenArray = Array.isArray(firstArg);
+      const options = typeof secondArg === 'object'
+        ? secondArg
+        : (hasChildrenArray ? undefined : firstArg);
+      let children = hasChildrenArray ? firstArg : [];
       if (options && options.children) {
         children = options.children;
       }

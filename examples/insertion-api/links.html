@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Link Insertion</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Insertion API</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Links</li>
+        </ol>
+      </nav>
+
+      <h1>Create and remove links</h1>
+
+      <p class="page-copy">
+        This example selects the same phrase before calling <code>createLink</code> or <code>unlink</code> so the result is
+        directly visible in the HTML output.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-primary" id="create-link" type="button">Create link</button>
+                <button class="btn btn-outline-secondary" id="unlink" type="button">Unlink</button>
+                <button class="btn btn-outline-secondary" id="reset-links" type="button">Reset content</button>
+              </div>
+              <div id="insertion-links-editor">
+                <p>Selectable target: <span data-target="phrase">Summernote Next examples</span></p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">HTML output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="insertion-links-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Links</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#insertion-links-editor', {
+  height: 220,
+});
+
+summernote.invoke('#insertion-links-editor', 'createLink', {
+  text: 'Summernote Next examples',
+  url: 'https://juergen-schwind.com/summernote-next',
+  isNewWindow: true,
+});
+
+summernote.invoke('#insertion-links-editor', 'unlink');</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#insertion-links-editor';
+        const initialMarkup = '<p>Selectable target: <span data-target="phrase">Summernote Next examples</span></p>';
+        const output = document.getElementById('insertion-links-output');
+
+        summernote.create(target, {
+          height: 220,
+        });
+
+        function selectPhrase() {
+          const context = summernote.getInstance(target);
+          const element = context.layoutInfo.editable[0].querySelector('a, [data-target="phrase"]');
+          const textNode = element.firstChild;
+          const selection = window.getSelection();
+          const range = document.createRange();
+          range.selectNodeContents(textNode);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          context.modules.editor.setLastRange(context.modules.editor.createRange());
+        }
+
+        function renderHtml(label) {
+          output.textContent = `${label}\n${summernote.invoke(target, 'code')}`;
+        }
+
+        document.getElementById('create-link').addEventListener('click', () => {
+          selectPhrase();
+          summernote.invoke(target, 'createLink', {
+            text: 'Summernote Next examples',
+            url: 'https://juergen-schwind.com/summernote-next',
+            isNewWindow: true,
+          });
+          renderHtml('Applied createLink.');
+        });
+
+        document.getElementById('unlink').addEventListener('click', () => {
+          selectPhrase();
+          summernote.invoke(target, 'unlink');
+          renderHtml('Applied unlink.');
+        });
+
+        document.getElementById('reset-links').addEventListener('click', () => {
+          summernote.invoke(target, 'code', initialMarkup);
+          renderHtml('Reset content.');
+        });
+      });
+    </script>
+  </body>
+</html>

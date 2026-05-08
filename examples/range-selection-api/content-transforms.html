@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Range Content Transforms</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Range and Selection API</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Content Transforms</li>
+        </ol>
+      </nav>
+
+      <h1>Transform editor content with WrappedRange helpers</h1>
+
+      <p class="page-copy">
+        This page focuses on the low-level range helpers that still produce clear, visible changes in the editor. The
+        underlying <code>splitText()</code> helper still exists, but on its own it mainly changes text-node boundaries,
+        not the serialized markup.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">deleteContents(), insertNode(), pasteHTML()</div>
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-primary" id="range-delete-contents" type="button">deleteContents()</button>
+                <button class="btn btn-outline-primary" id="range-insert-node" type="button">insertNode()</button>
+                <button class="btn btn-outline-primary" id="range-paste-html" type="button">pasteHTML()</button>
+                <button class="btn btn-outline-secondary" id="reset-transform-editor" type="button">Reset content</button>
+              </div>
+              <div id="range-transform-editor">
+                <p><b data-target="bold">bold</b><u>u</u></p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">HTML output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="range-transform-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-4">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">wrapBodyInlineWithPara()</div>
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-primary" id="range-wrap-inline" type="button">wrapBodyInlineWithPara()</button>
+                <button class="btn btn-outline-secondary" id="reset-wrap-editor" type="button">Reset inline content</button>
+              </div>
+              <div id="range-wrap-editor">
+                <b>bold</b><i>italic</i>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">Wrapped output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="range-wrap-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Content Transforms</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#range-transform-editor', {
+  height: 220,
+});
+
+summernote.create('#range-wrap-editor', {
+  height: 180,
+});
+
+const rangeUtil = summernote.summernote.range;
+const rng = rangeUtil.create(textNode, 1, textNode, 3);
+rng.deleteContents();
+rng.insertNode(document.createElement('span'));
+rng.pasteHTML('&lt;span&gt;span&lt;/span&gt;&lt;i&gt;italic&lt;/i&gt;');
+rng.wrapBodyInlineWithPara();</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const transformTarget = '#range-transform-editor';
+        const wrapTarget = '#range-wrap-editor';
+        const transformMarkup = '<p><b data-target="bold">bold</b><u>u</u></p>';
+        const wrapMarkup = '<b>bold</b><i>italic</i>';
+        const transformOutput = document.getElementById('range-transform-output');
+        const wrapOutput = document.getElementById('range-wrap-output');
+        const rangeUtil = summernote.summernote.range;
+
+        summernote.create(transformTarget, {
+          height: 220,
+        });
+
+        summernote.create(wrapTarget, {
+          height: 180,
+        });
+
+        function renderTransform(label) {
+          transformOutput.textContent = `${label}\n${summernote.invoke(transformTarget, 'code')}`;
+        }
+
+        function renderWrap(label) {
+          wrapOutput.textContent = `${label}\n${summernote.invoke(wrapTarget, 'code')}`;
+        }
+
+        function resetTransformEditor() {
+          summernote.invoke(transformTarget, 'code', transformMarkup);
+        }
+
+        function resetWrapEditor() {
+          summernote.invoke(wrapTarget, 'code', wrapMarkup);
+        }
+
+        document.getElementById('range-delete-contents').addEventListener('click', () => {
+          resetTransformEditor();
+          const context = summernote.getInstance(transformTarget);
+          const textNode = context.layoutInfo.editable[0].querySelector('[data-target="bold"]').firstChild;
+          const nextRange = rangeUtil.create(textNode, 1, textNode, 3).deleteContents();
+          summernote.invoke(transformTarget, 'editor.setLastRange', nextRange.select());
+          renderTransform('Deleted the middle of the selected text.');
+        });
+
+        document.getElementById('range-insert-node').addEventListener('click', () => {
+          resetTransformEditor();
+          const context = summernote.getInstance(transformTarget);
+          const textNode = context.layoutInfo.editable[0].querySelector('[data-target="bold"]').firstChild;
+          const badge = document.createElement('span');
+          badge.className = 'badge text-bg-success';
+          badge.textContent = 'inline';
+          const insertedNode = rangeUtil.create(textNode, 2).insertNode(badge);
+          summernote.invoke(transformTarget, 'editor.setLastRange', rangeUtil.createFromNodeAfter(insertedNode).select());
+          renderTransform('Inserted a real inline node through WrappedRange.insertNode().');
+        });
+
+        document.getElementById('range-paste-html').addEventListener('click', () => {
+          resetTransformEditor();
+          const context = summernote.getInstance(transformTarget);
+          const textNode = context.layoutInfo.editable[0].querySelector('[data-target="bold"]').firstChild;
+          const insertedNodes = rangeUtil.create(textNode, 2).pasteHTML('<span>span</span><i>italic</i>');
+          summernote.invoke(transformTarget, 'editor.setLastRange', rangeUtil.createFromNodeAfter(insertedNodes[insertedNodes.length - 1]).select());
+          renderTransform('Pasted inline markup with WrappedRange.pasteHTML().');
+        });
+
+        document.getElementById('reset-transform-editor').addEventListener('click', () => {
+          resetTransformEditor();
+          transformOutput.textContent = 'Reset content.';
+        });
+
+        document.getElementById('range-wrap-inline').addEventListener('click', () => {
+          resetWrapEditor();
+          const context = summernote.getInstance(wrapTarget);
+          const editable = context.layoutInfo.editable[0];
+          const wrappedRange = rangeUtil.create(editable, 0).wrapBodyInlineWithPara();
+          summernote.invoke(wrapTarget, 'editor.setLastRange', wrappedRange.select());
+          renderWrap('Wrapped body-level inline nodes in a paragraph.');
+        });
+
+        document.getElementById('reset-wrap-editor').addEventListener('click', () => {
+          resetWrapEditor();
+          wrapOutput.textContent = 'Reset inline content.';
+        });
+      });
+    </script>
+  </body>
+</html>

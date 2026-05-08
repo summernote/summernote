@@ -1,9 +1,9 @@
-import $ from 'jquery';
+import $$ from '../core/dom-query.js';
 const EDITABLE_PADDING = 24;
 
 export default class Statusbar {
   constructor(context) {
-    this.$document = $(document);
+    this.$document = $$(document);
     this.$statusbar = context.layoutInfo.statusbar;
     this.$editable = context.layoutInfo.editable;
     this.$codable = context.layoutInfo.codable;
@@ -28,9 +28,9 @@ export default class Statusbar {
         let height = originalEvent.clientY - (editableTop + EDITABLE_PADDING);
         let heightCode = originalEvent.clientY - (editableCodeTop + EDITABLE_PADDING);
 
-        height = (this.options.minheight > 0) ? Math.max(height, this.options.minheight) : height;
+        height = (this.options.minHeight > 0) ? Math.max(height, this.options.minHeight) : height;
         height = (this.options.maxHeight > 0) ? Math.min(height, this.options.maxHeight) : height;
-        heightCode = (this.options.minheight > 0) ? Math.max(heightCode, this.options.minheight) : heightCode;
+        heightCode = (this.options.minHeight > 0) ? Math.max(heightCode, this.options.minHeight) : heightCode;
         heightCode = (this.options.maxHeight > 0) ? Math.min(heightCode, this.options.maxHeight) : heightCode;
 
 

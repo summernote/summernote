@@ -1,10 +1,9 @@
-@use 'sass:color';
-@import "elements.scss";
+@use "elements" as *;
 
 /* Theme Variables
  ------------------------------------------ */
-$border-color: #00000032;
-$background-color: #8080801d;
+$border-color: var(--bs-border-color-translucent);
+$background-color: var(--bs-secondary-bg);
 
 $img-margin-left: 10px;
 $img-margin-right: 10px;
@@ -15,14 +14,14 @@ $img-margin-right: 10px;
   position: relative;
 
   // dropzone
-  $dropzone-color: lightskyblue;
-  $dropzone-active-color: color.adjust($dropzone-color, $lightness: -30%);
+  $dropzone-color: var(--bs-primary);
+  $dropzone-active-color: var(--bs-primary-text-emphasis);
   .note-dropzone {
     position: absolute;
     display: none;
     z-index: 100;
     color: $dropzone-color;
-    background-color: #fff;
+    background-color: var(--bs-body-bg);
     opacity: 0.95;
 
     .note-dropzone-message {
@@ -63,6 +62,10 @@ $img-margin-right: 10px;
       img.note-float-right {
         margin-left: $img-margin-left;
       }
+
+      .note-video-clip {
+        cursor: pointer;
+      }
     }
   }
 }
@@ -71,7 +74,7 @@ $img-margin-right: 10px;
  ------------------------------------------ */
 .note-editor.note-frame,
 .note-editor.note-airframe {
-  border: 1px solid $border-color;
+  border: var(--bs-border-width) solid $border-color;
 
   // codeview mode
   &.codeview {
@@ -94,6 +97,16 @@ $img-margin-right: 10px;
       overflow: auto;
       word-wrap: break-word;
 
+      iframe.note-video-clip,
+      video.note-video-clip {
+        pointer-events: none;
+      }
+
+      iframe.note-video-clip.note-video-interactive,
+      video.note-video-clip.note-video-interactive {
+        pointer-events: auto;
+      }
+
       &[contenteditable="false"] {
         background-color: $background-color;
       }
@@ -107,9 +120,9 @@ $img-margin-right: 10px;
       border: none;
       box-shadow: none;
       font-family: Menlo, Monaco, monospace, sans-serif;
-      font-size: 14px;
-      color: #ccc;
-      background-color: #222;
+      font-size: var(--bs-body-font-size);
+      color: var(--bs-light);
+      background-color: var(--bs-dark);
       resize: none;
       outline: none;
 
@@ -124,9 +137,17 @@ $img-margin-right: 10px;
   &.fullscreen {
     position: fixed;
     top: 0;
+    right: 0;
+    bottom: 0;
     left: 0;
+    display: flex;
+    flex-direction: column;
     width: 100% !important;
+    height: 100vh;
     z-index: 1050; // bs3 modal-backdrop: 1030, bs2: 1040
+    .note-editing-area {
+      flex: 1 1 auto;
+    }
     .note-resizebar {
       display: none;
     }
@@ -136,13 +157,13 @@ $img-margin-right: 10px;
   .note-status-output {
     display: block;
     width: 100%;
-    font-size: 14px;
+    font-size: var(--bs-body-font-size);
     line-height: 1.42857143;
     height: 20px;
     margin-bottom: 0;
-    color: #000;
+    color: var(--bs-body-color);
     border: 0;
-    border-top: 1px solid #e2e2e2;
+    border-top: var(--bs-border-width) solid var(--bs-border-color);
   }
 
   .note-status-output:empty {
@@ -155,35 +176,35 @@ $img-margin-right: 10px;
   }
 
   .note-status-output .text-muted {
-    color: #777;
+    color: var(--bs-secondary-color);
   }
 
   .note-status-output .text-primary {
-    color: #286090;
+    color: var(--bs-primary-text-emphasis);
   }
 
   .note-status-output .text-success {
-    color: #3c763d;
+    color: var(--bs-success-text-emphasis);
   }
 
   .note-status-output .text-info {
-    color: #31708f;
+    color: var(--bs-info-text-emphasis);
   }
 
   .note-status-output .text-warning {
-    color: #8a6d3b;
+    color: var(--bs-warning-text-emphasis);
   }
 
   .note-status-output .text-danger {
-    color: #a94442;
+    color: var(--bs-danger-text-emphasis);
   }
 
   .note-status-output .alert {
     margin: -7px 0 0 0;
     padding: 7px 10px 2px 10px;
     border-radius: 0;
-    color: #000;
-    background-color: #f5f5f5;
+    color: var(--bs-body-color);
+    background-color: var(--bs-tertiary-bg);
   }
 
   .note-status-output .alert .note-icon {
@@ -191,31 +212,30 @@ $img-margin-right: 10px;
   }
 
   .note-status-output .alert-success {
-    color: #3c763d !important;
-    background-color: #dff0d8 !important;
+    color: var(--bs-success-text-emphasis) !important;
+    background-color: var(--bs-success-bg-subtle) !important;
   }
 
   .note-status-output .alert-info {
-    color: #31708f !important;
-    background-color: #d9edf7 !important;
+    color: var(--bs-info-text-emphasis) !important;
+    background-color: var(--bs-info-bg-subtle) !important;
   }
 
   .note-status-output .alert-warning {
-    color: #8a6d3b !important;
-    background-color: #fcf8e3 !important;
+    color: var(--bs-warning-text-emphasis) !important;
+    background-color: var(--bs-warning-bg-subtle) !important;
   }
 
   .note-status-output .alert-danger {
-    color: #a94442 !important;
-    background-color: #f2dede !important;
+    color: var(--bs-danger-text-emphasis) !important;
+    background-color: var(--bs-danger-bg-subtle) !important;
   }
 
   // statusbar
   .note-statusbar {
     background-color: $background-color;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    border-top: 1px solid $border-color;
+    border-bottom-left-radius: var(--bs-border-radius);
+    border-bottom-right-radius: var(--bs-border-radius);
     .note-resizebar {
       padding-top: 1px;
       height: 9px;
@@ -256,10 +276,15 @@ $img-margin-right: 10px;
 /* Popover
  ------------------------------------------ */
 .note-popover.popover {
+  position: absolute;
   display: none;
   max-width: none;
+  inset: auto;
+  width: auto;
 
-  .popover-content {
+  .popover-content,
+  .popover-body,
+  .note-popover-content {
     a {
       display: inline-block;
       max-width: 200px;
@@ -269,9 +294,6 @@ $img-margin-right: 10px;
       vertical-align: middle; // for FF
     }
   }
-  .arrow {
-    left: 20px !important;
-  }
 }
 
 /* Popover and Toolbar (Button container)
@@ -280,7 +302,10 @@ $img-margin-right: 10px;
   position: relative;
 }
 
-.note-popover .popover-content, .note-editor .note-toolbar {
+.note-popover .popover-content,
+.note-popover .popover-body,
+.note-popover .note-popover-content,
+.note-editor .note-toolbar {
   margin: 0;
   padding: 0 0 5px 5px;
 
@@ -355,23 +380,23 @@ $img-margin-right: 10px;
         }
 
         .note-palette-title {
-          font-size: 12px;
+          font-size: var(--bs-small-font-size);
           margin: 2px 7px;
           text-align: center;
-          border-bottom: 1px solid #eee;
+          border-bottom: var(--bs-border-width) solid var(--bs-border-color-translucent);
         }
 
         .note-color-reset,
         .note-color-select {
-          font-size: 11px;
+          font-size: var(--bs-small-font-size);
           margin: 3px;
           padding: 0 3px;
           cursor: pointer;
           width: 100%;
-          @include rounded(5px);
+          @include rounded(var(--bs-border-radius));
 
           &:hover {
-            background: #eee;
+            background: var(--bs-tertiary-bg);
           }
         }
 
@@ -385,7 +410,7 @@ $img-margin-right: 10px;
 
         .note-holder-custom {
           .note-color-btn {
-            border: 1px solid #eee;
+            border: var(--bs-border-width) solid var(--bs-border-color-translucent);
           }
         }
       }
@@ -422,10 +447,23 @@ $img-margin-right: 10px;
     }
     // dropdown-menu for selectbox
     &.note-check {
+      a {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
       a i {
-        color: deepskyblue;
+        flex: 0 0 1rem;
+        text-align: center;
+        color: var(--bs-primary);
         visibility: hidden;
       }
+
+      a > :not(i) {
+        margin-bottom: 0;
+      }
+
       a.checked i {
         visibility: visible;
       }
@@ -456,13 +494,35 @@ $img-margin-right: 10px;
   }
 }
 
+.note-image-popover,
+.note-video-popover,
+.note-table-popover {
+  .popover-content,
+  .popover-body,
+  .note-popover-content {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 5px;
+    width: max-content;
+    padding: 5px;
+    white-space: nowrap;
+
+    & > .note-btn-group {
+      flex: 0 0 auto;
+      margin: 0;
+    }
+  }
+}
+
 /* Dialog
  ------------------------------------------ */
 .note-modal {
   .modal-dialog {
     outline: 0;
-    border-radius: 5px;
-    @include box-shadow(0 3px 9px rgba(0,0,0,.5));
+    border-radius: var(--bs-border-radius);
+    max-width: 700px;
+    box-shadow: var(--bs-box-shadow-lg);
   }
   .form-group { // overwrite BS's form-horizontal minus margins
     margin-left: 0;
@@ -476,9 +536,9 @@ $img-margin-right: 10px;
       min-height: 100px;
       font-size: 30px;
       line-height: 4; // vertical-align
-      color: lightgray;
+      color: var(--bs-secondary-color);
       text-align: center;
-      border: 4px dashed lightgray;
+      border: calc(var(--bs-border-width) * 4) dashed var(--bs-secondary-color);
       margin-bottom: 10px;
     }
   }
@@ -489,6 +549,70 @@ $img-margin-right: 10px;
       height: auto;
     }
   }
+
+  &.note-image-dialog-modal,
+  &.note-link-dialog-modal {
+    .modal-dialog {
+      max-width: 700px;
+    }
+
+    .modal-content {
+      border: 0;
+      border-radius: var(--bs-modal-border-radius);
+      box-shadow: var(--bs-modal-box-shadow);
+    }
+
+    .modal-header,
+    .modal-footer {
+      border-color: var(--bs-modal-header-border-color);
+      padding: var(--bs-modal-header-padding);
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .modal-body {
+      padding: var(--bs-modal-padding);
+    }
+
+    .note-link-dialog,
+    .note-image-dialog {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .note-form-group {
+      margin-bottom: 0;
+    }
+
+    .note-link-dialog-divider,
+    .note-image-dialog-divider {
+      height: 1px;
+      background: var(--bs-modal-header-border-color);
+    }
+
+    .note-image-dialog-help {
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .note-image-dialog-file-name {
+      min-height: 1.25rem;
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .note-image-btn {
+      min-width: 9rem;
+    }
+
+    .note-link-btn {
+      min-width: 9rem;
+    }
+  }
 }
 
 /* Placeholder
@@ -496,32 +620,40 @@ $img-margin-right: 10px;
 .note-placeholder {
   position: absolute;
   display: none;
-  color: gray;
+  color: var(--bs-secondary-color);
 }
 
 /* Handle
  ------------------------------------------ */
 .note-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
   // control selection
   .note-control-selection {
     position: absolute;
     display: none;
-    border: 1px solid #000;
+    border: var(--bs-border-width) solid var(--bs-body-color);
+    pointer-events: auto;
     & > div {
       position: absolute;
+      pointer-events: auto;
     }
 
     .note-control-selection-bg {
       width: 100%;
       height: 100%;
-      background-color: #000;
+      background-color: var(--bs-body-color);
       @include opacity(0.3);
     }
 
     .note-control-handle {
       width: 7px;
       height: 7px;
-      border: 1px solid #000;
+      border: var(--bs-border-width) solid var(--bs-body-color);
     }
 
     .note-control-holder {
@@ -530,7 +662,7 @@ $img-margin-right: 10px;
 
     .note-control-sizing {
       @extend .note-control-handle;
-      background-color: #000;
+      background-color: var(--bs-body-color);
     }
 
     .note-control-nw {
@@ -571,10 +703,10 @@ $img-margin-right: 10px;
       bottom: 0;
       padding: 5px;
       margin: 5px;
-      color: #fff;
-      background-color: #000;
-      font-size: 12px;
-      @include rounded(5px);
+      color: var(--bs-white);
+      background-color: var(--bs-dark);
+      font-size: var(--bs-small-font-size);
+      @include rounded(var(--bs-border-radius));
       @include opacity(0.7);
     }
   }
@@ -599,10 +731,10 @@ $img-margin-right: 10px;
           clear: both;
           font-weight: 400;
           line-height: 1.4;
-          color: white;
+          color: var(--bs-white);
           white-space: nowrap;
           text-decoration: none;
-          background-color: #428bca;
+          background-color: var(--bs-primary);
           outline: 0;
           cursor: pointer;
         }

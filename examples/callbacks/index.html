@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Callbacks</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <script type="module" src="/assets/examples.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Callbacks</li>
+        </ol>
+      </nav>
+
+      <h1 class="mt-3">Callback examples for the Bootstrap 5 vanilla build</h1>
+
+      <p class="page-copy">
+        These pages translate the useful parts of <code>07-callbacks.html</code> to the current callback API and the
+        matching custom events on the original note element.
+      </p>
+
+      <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3 mt-3">
+        <article class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h5">Lifecycle and Content</h2>
+              <p class="mb-0 text-secondary">Inspect <code>onInit</code>, <code>onChange</code>, and <code>onBeforeCommand</code>.</p>
+            </div>
+            <div class="card-footer">
+              <a class="btn btn-primary w-100" href="./lifecycle-and-content.html">Open example</a>
+            </div>
+          </div>
+        </article>
+        <article class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h5">Interaction Events</h2>
+              <p class="mb-0 text-secondary">Trigger focus, keyboard, pointer, paste, and scroll callbacks in one deterministic page.</p>
+            </div>
+            <div class="card-footer">
+              <a class="btn btn-primary w-100" href="./interaction-events.html">Open example</a>
+            </div>
+          </div>
+        </article>
+        <article class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h5">Codeview and Dialogs</h2>
+              <p class="mb-0 text-secondary">Use <code>onChangeCodeview</code>, <code>onBlurCodeview</code>, and <code>onDialogShown</code>.</p>
+            </div>
+            <div class="card-footer">
+              <a class="btn btn-primary w-100" href="./codeview-and-dialogs.html">Open example</a>
+            </div>
+          </div>
+        </article>
+        <article class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h5">Image Callbacks</h2>
+              <p class="mb-0 text-secondary">Override image URL insertion, intercept uploads, and surface upload errors.</p>
+            </div>
+            <div class="card-footer">
+              <a class="btn btn-primary w-100" href="./image-callbacks.html">Open example</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </main>
+  </body>
+</html>

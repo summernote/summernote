@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Status Messages</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Modules</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Status Messages</li>
+        </ol>
+      </nav>
+
+      <h1>Write alerts and plain text into <code>.note-status-output</code></h1>
+
+      <p class="page-copy">
+        The documented notification area still exists in the Bootstrap 5 build. You can target
+        <code>.note-status-output</code> directly and inject Bootstrap-style alerts or lightweight informational markup.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-outline-danger" id="modules-status-danger" type="button">Danger alert</button>
+                <button class="btn btn-outline-info" id="modules-status-info" type="button">Info alert</button>
+                <button class="btn btn-outline-secondary" id="modules-status-text" type="button">Plain text</button>
+                <button class="btn btn-outline-secondary" id="modules-status-clear" type="button">Clear</button>
+              </div>
+              <div id="modules-status-editor">
+                <p>Status output demo paragraph.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">Status output markup</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="modules-status-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Status Messages</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#modules-status-editor', {
+  height: 220,
+});
+
+const statusOutput = summernote.getInstance('#modules-status-editor')
+  .layoutInfo.editor[0]
+  .querySelector('.note-status-output');
+
+statusOutput.innerHTML = `
+  &lt;div class="alert alert-danger mb-0"&gt;This is an error message.&lt;/div&gt;
+`;</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#modules-status-editor';
+        const output = document.getElementById('modules-status-output');
+
+        summernote.create(target, {
+          height: 220,
+        });
+
+        const statusOutput = summernote.getInstance(target).layoutInfo.editor[0].querySelector('.note-status-output');
+
+        function showMarkup(label, markup) {
+          statusOutput.innerHTML = markup;
+          output.textContent = `${label}\n${statusOutput.innerHTML}`;
+        }
+
+        document.getElementById('modules-status-danger').addEventListener('click', () => {
+          showMarkup('Rendered a danger alert in the status area.', '<div class="alert alert-danger mb-0">This is an error using the built-in status output area.</div>');
+        });
+
+        document.getElementById('modules-status-info').addEventListener('click', () => {
+          showMarkup('Rendered an info alert in the status area.', '<div class="alert alert-info mb-0">This is informational feedback from the status area.</div>');
+        });
+
+        document.getElementById('modules-status-text').addEventListener('click', () => {
+          showMarkup('Rendered plain informational markup in the status area.', '<div class="small text-success d-flex justify-content-between"><span>Status text only.</span><span class="text-body-secondary">Updated just now</span></div>');
+        });
+
+        document.getElementById('modules-status-clear').addEventListener('click', () => {
+          statusOutput.innerHTML = '';
+          output.textContent = 'Cleared the status output area.';
+        });
+      });
+    </script>
+  </body>
+</html>

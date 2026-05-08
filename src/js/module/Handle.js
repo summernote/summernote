@@ -1,10 +1,10 @@
-import $ from 'jquery';
+import $$ from '../core/dom-query.js';
 import dom from '../core/dom';
 
 export default class Handle {
   constructor(context) {
     this.context = context;
-    this.$document = $(document);
+    this.$document = $$(document);
     this.$editingArea = context.layoutInfo.editingArea;
     this.options = context.options;
     this.lang = this.options.langInfo;
@@ -18,8 +18,13 @@ export default class Handle {
       'summernote.keyup summernote.scroll summernote.change summernote.dialog.shown': () => {
         this.update();
       },
-      'summernote.disable summernote.blur': () => {
+      'summernote.disable': () => {
         this.hide();
+      },
+      'summernote.blur': (we, event) => {
+        if (!this.shouldKeepVisibleOnBlur(event)) {
+          this.hide();
+        }
       },
       'summernote.codeview.toggled': () => {
         this.update();
@@ -28,7 +33,7 @@ export default class Handle {
   }
 
   initialize() {
-    this.$handle = $([
+    this.$handle = $$([
       '<div class="note-handle">',
         '<div class="note-control-selection">',
           '<div class="note-control-selection-bg"></div>',
@@ -72,6 +77,14 @@ export default class Handle {
         if (!$target.data('ratio')) { // original ratio.
           $target.data('ratio', $target.height() / $target.width());
         }
+        return;
+      }
+
+      const target = this.resolveMediaTarget(event.target, event);
+      if (target) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.update(target, event);
       }
     });
 
@@ -86,49 +99,135 @@ export default class Handle {
     this.$handle.remove();
   }
 
+  findMediaTargetByPoint(event) {
+    const point = event?.originalEvent || event;
+    if (typeof point?.clientX !== 'number' || typeof point?.clientY !== 'number') {
+      return null;
+    }
+
+    const mediaNodes = this.context.layoutInfo.editable[0]?.querySelectorAll('img, video, iframe.note-video-clip') || [];
+
+    for (const node of mediaNodes) {
+      const rect = node.getBoundingClientRect();
+      if (
+        point.clientX >= rect.left &&
+        point.clientX <= rect.right &&
+        point.clientY >= rect.top &&
+        point.clientY <= rect.bottom
+      ) {
+        return node;
+      }
+    }
+
+    return null;
+  }
+
+  resolveMediaTarget(target, event) {
+    if (dom.isImg(target) || dom.isVideoMedia(target)) {
+      return target;
+    }
+
+    const hitTarget = this.findMediaTargetByPoint(event);
+    if (hitTarget) {
+      return hitTarget;
+    }
+
+    const selectionTarget = this.$handle.find('.note-control-selection').data('target');
+    const selectedMedia = selectionTarget && typeof selectionTarget.get === 'function'
+      ? selectionTarget.get(0)
+      : selectionTarget;
+
+    if (selectedMedia && (dom.isImg(selectedMedia) || dom.isVideoMedia(selectedMedia))) {
+      if (target instanceof Element && target.closest('.note-control-selection')) {
+        return selectedMedia;
+      }
+
+      const restoredTarget = this.context.invoke('editor.restoreTarget');
+      if (restoredTarget === selectedMedia && target instanceof Element && target.closest('.note-handle')) {
+        return selectedMedia;
+      }
+    }
+
+    return null;
+  }
+
+  getSelectedMediaTarget() {
+    const selectionTarget = this.$handle.find('.note-control-selection').data('target');
+    return selectionTarget && typeof selectionTarget.get === 'function'
+      ? selectionTarget.get(0)
+      : selectionTarget;
+  }
+
+  getBlurRelatedTarget(event) {
+    return event?.originalEvent?.relatedTarget || event?.relatedTarget || null;
+  }
+
+  shouldKeepVisibleOnBlur(event) {
+    const relatedTarget = this.getBlurRelatedTarget(event);
+    const selectedMedia = this.getSelectedMediaTarget();
+
+    if (!(relatedTarget instanceof Element)) {
+      return false;
+    }
+
+    if (this.$handle[0]?.contains(relatedTarget)) {
+      return true;
+    }
+
+    if (relatedTarget.closest('.note-image-popover, .note-video-popover, .note-link-popover, .note-table-popover')) {
+      return true;
+    }
+
+    return Boolean(selectedMedia && (relatedTarget === selectedMedia || selectedMedia.contains?.(relatedTarget)));
+  }
+
   update(target, event) {
     if (this.context.isDisabled()) {
       return false;
     }
 
-    const isImage = dom.isImg(target);
+    const mediaTarget = this.resolveMediaTarget(target, event);
+    const isMedia = !!mediaTarget;
     const $selection = this.$handle.find('.note-control-selection');
 
-    this.context.invoke('imagePopover.update', target, event);
+    this.context.invoke('imagePopover.update', mediaTarget || target, event);
+    this.context.invoke('videoPopover.update', mediaTarget || target, event);
 
-    if (isImage) {
-      const $image = $(target);
+    if (isMedia) {
+      const $media = $$(mediaTarget);
+      $$('.note-video-clip').not((_, node) => node === mediaTarget).removeClass('note-video-interactive');
 
       const areaRect = this.$editingArea[0].getBoundingClientRect();
-      const imageRect = target.getBoundingClientRect();
+      const mediaRect = mediaTarget.getBoundingClientRect();
 
       $selection.css({
         display: 'block',
-        left: imageRect.left - areaRect.left,
-        top: imageRect.top - areaRect.top,
-        width: imageRect.width,
-        height: imageRect.height,
-      }).data('target', $image); // save current image element.
+        left: mediaRect.left - areaRect.left,
+        top: mediaRect.top - areaRect.top,
+        width: mediaRect.width,
+        height: mediaRect.height,
+      }).data('target', $media);
 
-      const origImageObj = new Image();
-      origImageObj.src = $image.attr('src');
-
-      const sizingText = imageRect.width + 'x' + imageRect.height + ' (' + this.lang.image.original + ': ' + origImageObj.width + 'x' + origImageObj.height + ')';
+      let sizingText = `${mediaRect.width}x${mediaRect.height}`;
+      if (dom.isImg(mediaTarget)) {
+        const origImageObj = new Image();
+        origImageObj.src = $media.attr('src');
+        sizingText += ` (${this.lang.image.original}: ${origImageObj.width}x${origImageObj.height})`;
+      }
       $selection.find('.note-control-selection-info').text(sizingText);
-      this.context.invoke('editor.saveTarget', target);
+      this.context.invoke('editor.saveTarget', mediaTarget);
     } else {
       this.hide();
     }
 
-    return isImage;
+    return isMedia;
   }
 
   /**
    * hide
-   *
-   * @param {jQuery} $handle
    */
   hide() {
+    $$('.note-video-clip').removeClass('note-video-interactive');
     this.context.invoke('editor.clearTarget');
     this.$handle.children().hide();
   }

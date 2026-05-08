@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite';
-import externalGlobals from 'rollup-plugin-external-globals';
 
 const config = defineConfig({
   resolve: {
@@ -8,6 +7,9 @@ const config = defineConfig({
     },
   },
   server: {
+    headers: {
+      'Cache-Control': 'no-store',
+    },
     proxy: {
       '/examples/font': {
         target: 'http://localhost:5174',
@@ -16,12 +18,6 @@ const config = defineConfig({
       },
     },
   },
-
-  plugins: [
-      externalGlobals({
-        jquery: '$',
-      }),
-  ],
 
   css: {
     preprocessorOptions: {
@@ -41,7 +37,6 @@ const config = defineConfig({
         entryFileNames: `[name].js`,
         assetFileNames: `[name].[ext]`,
         chunkFileNames: `[name].js`,
-        external: ['jquery'],
       },
 
     },

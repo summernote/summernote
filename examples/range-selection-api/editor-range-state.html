@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Editor Range State</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Range and Selection API</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Editor Range State</li>
+        </ol>
+      </nav>
+
+      <h1>Inspect the editor&apos;s cached range</h1>
+
+      <p class="page-copy">
+        These helpers still make sense at the editor level: create the current range, read the last range, collapse the
+        visible selection while keeping it cached, and restore it later.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-outline-primary" id="select-editor-range-target" type="button">Select target phrase</button>
+                <button class="btn btn-primary" id="editor-create-range" type="button">editor.createRange</button>
+                <button class="btn btn-outline-primary" id="editor-get-last-range" type="button">editor.getLastRange</button>
+                <button class="btn btn-outline-primary" id="editor-save-range" type="button">editor.saveRange(true)</button>
+                <button class="btn btn-outline-primary" id="editor-restore-range" type="button">editor.restoreRange</button>
+                <button class="btn btn-outline-secondary" id="reset-editor-range" type="button">Reset content</button>
+              </div>
+              <div id="editor-range-state-editor">
+                <p>Selectable target: <span data-target="phrase">Summernote range selection</span> keeps the caret state.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">Range output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="editor-range-state-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Editor Range State</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#editor-range-state-editor', {
+  height: 220,
+});
+
+const rng = summernote.invoke('#editor-range-state-editor', 'editor.createRange');
+summernote.invoke('#editor-range-state-editor', 'editor.getLastRange');
+summernote.invoke('#editor-range-state-editor', 'editor.saveRange', true);
+summernote.invoke('#editor-range-state-editor', 'editor.restoreRange');</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#editor-range-state-editor';
+        const initialMarkup = '<p>Selectable target: <span data-target="phrase">Summernote range selection</span> keeps the caret state.</p>';
+        const output = document.getElementById('editor-range-state-output');
+
+        summernote.create(target, {
+          height: 220,
+        });
+
+        function nodeLabel(node) {
+          if (!node) {
+            return 'null';
+          }
+
+          if (node.nodeType === Node.TEXT_NODE) {
+            return `#text("${node.textContent}")`;
+          }
+
+          return `<${node.nodeName.toLowerCase()}>`;
+        }
+
+        function summarizeRange(label, rng) {
+          output.textContent = `${label}\ntext: ${JSON.stringify(rng.toString())}\ncollapsed: ${rng.isCollapsed()}\nstart: ${nodeLabel(rng.sc)} @ ${rng.so}\nend: ${nodeLabel(rng.ec)} @ ${rng.eo}`;
+        }
+
+        function selectPhrase() {
+          const context = summernote.getInstance(target);
+          const textNode = context.layoutInfo.editable[0].querySelector('[data-target="phrase"]').firstChild;
+          const selection = window.getSelection();
+          const browserRange = document.createRange();
+          browserRange.setStart(textNode, 0);
+          browserRange.setEnd(textNode, textNode.textContent.length);
+          selection.removeAllRanges();
+          selection.addRange(browserRange);
+          summernote.invoke(target, 'editor.setLastRange', context.modules.editor.createRange());
+        }
+
+        document.getElementById('select-editor-range-target').addEventListener('click', () => {
+          selectPhrase();
+          summarizeRange('Selected the phrase inside the editor.', summernote.invoke(target, 'editor.getLastRange'));
+        });
+
+        document.getElementById('editor-create-range').addEventListener('click', () => {
+          selectPhrase();
+          summarizeRange('Created a fresh range from the current browser selection.', summernote.invoke(target, 'editor.createRange'));
+        });
+
+        document.getElementById('editor-get-last-range').addEventListener('click', () => {
+          selectPhrase();
+          summarizeRange('Read the last range cached by the editor.', summernote.invoke(target, 'editor.getLastRange'));
+        });
+
+        document.getElementById('editor-save-range').addEventListener('click', () => {
+          selectPhrase();
+          summernote.invoke(target, 'editor.saveRange', true);
+          const selection = window.getSelection();
+          const browserRange = selection.rangeCount ? selection.getRangeAt(0) : null;
+          output.textContent = `Called editor.saveRange(true)\nvisible selection collapsed: ${browserRange ? browserRange.collapsed : 'n/a'}\nThe original selection is still cached and can be restored with editor.restoreRange().`;
+        });
+
+        document.getElementById('editor-restore-range').addEventListener('click', () => {
+          selectPhrase();
+          summernote.invoke(target, 'editor.saveRange', true);
+          summernote.invoke(target, 'editor.restoreRange');
+          summarizeRange('Restored the cached range after collapsing the visible selection.', summernote.invoke(target, 'editor.getLastRange'));
+        });
+
+        document.getElementById('reset-editor-range').addEventListener('click', () => {
+          summernote.invoke(target, 'code', initialMarkup);
+          output.textContent = 'Reset content.';
+        });
+      });
+    </script>
+  </body>
+</html>

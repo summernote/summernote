@@ -1,10 +1,10 @@
-import $ from 'jquery';
+import $$ from './core/dom-query.js';
 
-$.summernote = $.summernote || {
+$$.summernote = $$.summernote || {
   lang: {},
 };
 
-$.extend(true, $.summernote.lang, {
+$$.extend(true, $$.summernote.lang, {
   'en-US': {
     font: {
       bold: 'Bold',
@@ -46,7 +46,16 @@ $.extend(true, $.summernote.lang, {
       video: 'Video',
       videoLink: 'Video Link',
       insert: 'Insert Video',
+      play: 'Play',
+      resizeFull: 'Resize full',
+      resizeHalf: 'Resize half',
+      resizeQuarter: 'Resize quarter',
+      resizeNone: 'Original size',
+      floatLeft: 'Float Left',
+      floatRight: 'Float Right',
+      floatNone: 'Remove float',
       url: 'Video URL',
+      remove: 'Remove Video',
       providers: '(YouTube, Google Drive, Vimeo, Vine, Instagram, DailyMotion, Youku, Peertube)',
     },
     link: {
@@ -111,6 +120,16 @@ $.extend(true, $.summernote.lang, {
       reset: 'Reset',
       resetToDefault: 'Reset to default',
       cpSelect: 'Select',
+      colorsName: [
+        ['Black', 'Tundora', 'Dove Gray', 'Star Dust', 'Pale Slate', 'Gallery', 'Alabaster', 'White'],
+        ['Red', 'Orange Peel', 'Yellow', 'Green', 'Cyan', 'Blue', 'Electric Violet', 'Magenta'],
+        ['Azalea', 'Karry', 'Egg White', 'Zanah', 'Botticelli', 'Tropical Blue', 'Mischka', 'Twilight'],
+        ['Tonys Pink', 'Peach Orange', 'Cream Brulee', 'Sprout', 'Casper', 'Perano', 'Cold Purple', 'Careys Pink'],
+        ['Mandy', 'Rajah', 'Dandelion', 'Olivine', 'Gulf Stream', 'Viking', 'Blue Marguerite', 'Puce'],
+        ['Guardsman Red', 'Fire Bush', 'Golden Dream', 'Chelsea Cucumber', 'Smalt Blue', 'Boston Blue', 'Butterfly Bush', 'Cadillac'],
+        ['Sangria', 'Mai Tai', 'Buddha Gold', 'Forest Green', 'Eden', 'Venice Blue', 'Meteorite', 'Claret'],
+        ['Rosewood', 'Cinnamon', 'Olive', 'Parsley', 'Tiber', 'Midnight Blue', 'Valentino', 'Loulou'],
+      ],
     },
     shortcut: {
       shortcuts: 'Keyboard shortcuts',
@@ -161,6 +180,18 @@ $.extend(true, $.summernote.lang, {
     },
     output: {
       noSelection: 'No Selection Made!',
+    },
+    helpDialog: {
+      brand: 'Summernote Next',
+      platform: {
+        mac: 'macOS',
+        pc: 'Windows and Linux',
+      },
+      links: {
+        examples: 'Examples',
+        project: 'Project',
+        issues: 'Issues',
+      },
     },
   },
 });

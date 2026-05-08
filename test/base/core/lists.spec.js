@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import $ from 'jquery';
+import $$ from '@/js/core/dom-query.js';
 import lists from '@/js/core/lists';
 
 describe('base:core.lists', () => {
@@ -55,6 +55,24 @@ describe('base:core.lists', () => {
     it('should return true if the element is contained', () => {
       expect(lists.contains([1, 2, 4], 4)).to.be.true;
     });
+
+    it('should use a contains method when indexOf is unavailable', () => {
+      const collection = {
+        length: 1,
+        contains: (value) => value === 'checked',
+      };
+
+      expect(lists.contains(collection, 'checked')).to.be.true;
+    });
+
+    it('should return false for falsy collections or items', () => {
+      expect(lists.contains(null, 'checked')).to.be.false;
+      expect(lists.contains(['checked'], '')).to.be.false;
+    });
+
+    it('should return false when neither indexOf nor contains is available', () => {
+      expect(lists.contains({ length: 1 }, 'checked')).to.be.false;
+    });
   });
 
   describe('sum', () => {
@@ -73,7 +91,7 @@ describe('base:core.lists', () => {
   describe('from', () => {
     it('should return an array of childNodes', () => {
       var $cont, $b, $u, $s, $i;
-      $cont = $('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
+      $cont = $$('<div><b>b</b><u>u</u><s>s</s><i>i</i></div>'); // busi
       $b = $cont.find('b');
       $u = $cont.find('u');
       $s = $cont.find('s');
@@ -84,6 +102,10 @@ describe('base:core.lists', () => {
   });
 
   describe('clusterBy', () => {
+    it('should return an empty array for empty input', () => {
+      expect(lists.clusterBy([], () => true)).to.deep.equal([]);
+    });
+
     it('should cluster by equality 1', () => {
       var aaClustered = lists.clusterBy([1, 1, 2, 2, 3], (itemA, itemB) => {
         return itemA === itemB;
@@ -108,6 +130,32 @@ describe('base:core.lists', () => {
   describe('unique', () => {
     it('should return duplicate-free version of array', () => {
       expect(lists.unique([1, 2, 3, 3, 2, 1])).to.deep.equal([1, 2, 3]);
+    });
+  });
+
+  describe('isEmpty', () => {
+    it('should detect empty collections', () => {
+      expect(lists.isEmpty([])).to.be.true;
+      expect(lists.isEmpty(null)).to.be.true;
+      expect(lists.isEmpty([1])).to.be.false;
+    });
+  });
+
+  describe('next', () => {
+    it('should return the next item or null when not available', () => {
+      expect(lists.next(['a', 'b', 'c'], 'b')).to.equal('c');
+      expect(lists.next(['a', 'b', 'c'], 'missing')).to.be.null;
+      expect(lists.next(['a'], 'a')).to.equal(undefined);
+      expect(lists.next(null, 'a')).to.be.null;
+    });
+  });
+
+  describe('prev', () => {
+    it('should return the previous item or null when not available', () => {
+      expect(lists.prev(['a', 'b', 'c'], 'b')).to.equal('a');
+      expect(lists.prev(['a', 'b', 'c'], 'missing')).to.be.null;
+      expect(lists.prev(['a'], 'a')).to.equal(undefined);
+      expect(lists.prev(null, 'a')).to.be.null;
     });
   });
 });

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Module Lifecycle and Events</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Module System</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Lifecycle and Events</li>
+        </ol>
+      </nav>
+
+      <h1>Create a local module with lifecycle hooks and event handlers</h1>
+
+      <p class="page-copy">
+        The current runtime still follows the same core contract: a module instance gets a <code>context</code>,
+        can implement <code>initialize</code> and <code>destroy</code>, and can react to editor events through an
+        <code>events</code> map.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-outline-secondary" id="module-lifecycle-read" type="button">Read module summary</button>
+                <button class="btn btn-outline-secondary" id="module-lifecycle-reset" type="button">Reset content</button>
+                <button class="btn btn-outline-secondary" id="module-lifecycle-destroy" type="button">Destroy editor</button>
+                <button class="btn btn-outline-secondary" id="module-lifecycle-create" type="button">Create editor</button>
+              </div>
+              <div id="module-lifecycle-editor">
+                <p>Lifecycle module demo paragraph.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">Module output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="module-lifecycle-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Lifecycle and Events</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>class LifecycleMonitor {
+  constructor(context) {
+    this.context = context;
+    this.events = {
+      'summernote.change summernote.focus summernote.blur': () => {
+        this.updatePanel();
+      },
+    };
+  }
+
+  initialize() {
+    this.panel = document.createElement('div');
+    this.context.layoutInfo.editor[0].append(this.panel);
+    this.updatePanel();
+  }
+
+  destroy() {
+    this.panel.remove();
+  }
+
+  getSummary() {
+    return '...';
+  }
+}
+
+summernote.create('#module-lifecycle-editor', {
+  height: 220,
+  modules: {
+    lifecycleMonitor: LifecycleMonitor,
+  },
+});</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#module-lifecycle-editor';
+        const note = document.querySelector(target);
+        const initialMarkup = '<p>Lifecycle module demo paragraph.</p>';
+        const output = document.getElementById('module-lifecycle-output');
+        const lifecycleState = {
+          initializeCount: 0,
+          destroyCount: 0,
+          focusCount: 0,
+          blurCount: 0,
+          changeCount: 0,
+        };
+
+        class LifecycleMonitor {
+          constructor(context) {
+            this.context = context;
+            this.editor = context.layoutInfo.editor[0];
+            this.editable = context.layoutInfo.editable[0];
+            this.events = {
+              'summernote.change': () => {
+                lifecycleState.changeCount += 1;
+                this.updatePanel();
+              },
+              'summernote.focus': () => {
+                lifecycleState.focusCount += 1;
+                this.updatePanel();
+              },
+              'summernote.blur': () => {
+                lifecycleState.blurCount += 1;
+                this.updatePanel();
+              },
+            };
+          }
+
+          initialize() {
+            lifecycleState.initializeCount += 1;
+            this.panel = document.createElement('div');
+            this.panel.className = 'alert alert-info mt-3 mb-0';
+            this.panel.setAttribute('data-module-lifecycle-panel', '');
+            this.editor.append(this.panel);
+            this.updatePanel();
+          }
+
+          destroy() {
+            lifecycleState.destroyCount += 1;
+            if (this.panel) {
+              this.panel.remove();
+              this.panel = null;
+            }
+          }
+
+          updatePanel() {
+            if (!this.panel) {
+              return;
+            }
+
+            this.panel.innerHTML = [
+              '<strong>Lifecycle monitor</strong>',
+              `<div>initialize: ${lifecycleState.initializeCount}</div>`,
+              `<div>destroy: ${lifecycleState.destroyCount}</div>`,
+              `<div>focus: ${lifecycleState.focusCount}</div>`,
+              `<div>blur: ${lifecycleState.blurCount}</div>`,
+              `<div>change: ${lifecycleState.changeCount}</div>`,
+              `<div>characters: ${this.editable.textContent.trim().length}</div>`,
+            ].join('');
+          }
+
+          getSummary() {
+            return JSON.stringify({
+              initializeCount: lifecycleState.initializeCount,
+              destroyCount: lifecycleState.destroyCount,
+              focusCount: lifecycleState.focusCount,
+              blurCount: lifecycleState.blurCount,
+              changeCount: lifecycleState.changeCount,
+              currentHtml: this.context.invoke('code'),
+            }, null, 2);
+          }
+        }
+
+        function createEditor() {
+          if (note.dataset.moduleLifecycleReady === 'true') {
+            return;
+          }
+
+          summernote.create(target, {
+            height: 220,
+            modules: {
+              lifecycleMonitor: LifecycleMonitor,
+            },
+          });
+          summernote.invoke(target, 'code', initialMarkup);
+          note.dataset.moduleLifecycleReady = 'true';
+          output.textContent = 'Created the editor and initialized the lifecycle module.';
+        }
+
+        function destroyEditor() {
+          if (note.dataset.moduleLifecycleReady !== 'true') {
+            output.textContent = 'The editor is already destroyed.';
+            return;
+          }
+
+          summernote.destroy(target);
+          note.dataset.moduleLifecycleReady = 'false';
+          output.textContent = `Destroyed the editor.\n${JSON.stringify(lifecycleState, null, 2)}`;
+        }
+
+        createEditor();
+
+        document.getElementById('module-lifecycle-read').addEventListener('click', () => {
+          if (note.dataset.moduleLifecycleReady !== 'true') {
+            output.textContent = 'Create the editor first to access the module API.';
+            return;
+          }
+
+          output.textContent = summernote.invoke(target, 'lifecycleMonitor.getSummary');
+        });
+
+        document.getElementById('module-lifecycle-reset').addEventListener('click', () => {
+          if (note.dataset.moduleLifecycleReady !== 'true') {
+            createEditor();
+          }
+
+          summernote.invoke(target, 'code', initialMarkup);
+          output.textContent = 'Reset editor content.';
+        });
+
+        document.getElementById('module-lifecycle-destroy').addEventListener('click', destroyEditor);
+        document.getElementById('module-lifecycle-create').addEventListener('click', createEditor);
+      });
+    </script>
+  </body>
+</html>

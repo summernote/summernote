@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Media and Tables</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Insertion API</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Media and Tables</li>
+        </ol>
+      </nav>
+
+      <h1>Insert images, horizontal rules, and tables</h1>
+
+      <p class="page-copy">
+        This page covers the insertion commands that add richer structures to the document:
+        <code>insertImage</code>, <code>insertHorizontalRule</code>, and <code>insertTable</code>.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-primary" id="insert-image" type="button">Insert image</button>
+                <button class="btn btn-outline-primary" id="insert-image-callback" type="button">Insert image with callback</button>
+                <button class="btn btn-outline-primary" id="insert-hr" type="button">Insert HR</button>
+                <button class="btn btn-outline-primary" id="insert-table" type="button">Insert 2x2 table</button>
+                <button class="btn btn-outline-secondary" id="reset-media-table" type="button">Reset content</button>
+              </div>
+              <div id="insertion-media-table-editor">
+                <p>Hello from the insertion API.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">HTML output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="insertion-media-table-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Media and Tables</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#insertion-media-table-editor', {
+  height: 260,
+});
+
+const source = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAF0lEQVQYGWP8////fwYsgAmLGFiIHhIAT+oECGHuN2UAAAAASUVORK5CYII=';
+await summernote.invoke('#insertion-media-table-editor', 'insertImage', source, 'image');
+summernote.invoke('#insertion-media-table-editor', 'insertHorizontalRule');
+summernote.invoke('#insertion-media-table-editor', 'insertTable', '2x2');</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#insertion-media-table-editor';
+        const initialMarkup = '<p>Hello from the insertion API.</p>';
+        const output = document.getElementById('insertion-media-table-output');
+        const source = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAF0lEQVQYGWP8////fwYsgAmLGFiIHhIAT+oECGHuN2UAAAAASUVORK5CYII=';
+
+        summernote.create(target, {
+          height: 260,
+        });
+
+        function placeCaretAtEnd() {
+          const context = summernote.getInstance(target);
+          const paragraph = context.layoutInfo.editable[0].querySelector('p');
+          const textNode = paragraph.firstChild;
+          const selection = window.getSelection();
+          const range = document.createRange();
+          range.setStart(textNode, textNode.textContent.length);
+          range.setEnd(textNode, textNode.textContent.length);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          context.modules.editor.setLastRange(context.modules.editor.createRange());
+        }
+
+        function renderHtml(label) {
+          output.textContent = `${label}\n${summernote.invoke(target, 'code')}`;
+        }
+
+        document.getElementById('insert-image').addEventListener('click', async() => {
+          placeCaretAtEnd();
+          await summernote.invoke(target, 'insertImage', source, 'image');
+          renderHtml('Applied insertImage with filename.');
+        });
+
+        document.getElementById('insert-image-callback').addEventListener('click', async() => {
+          placeCaretAtEnd();
+          await summernote.invoke(target, 'insertImage', source, (image) => {
+            image[0].style.width = '24px';
+            image[0].dataset.filename = 'callback-image';
+          });
+          renderHtml('Applied insertImage with callback.');
+        });
+
+        document.getElementById('insert-hr').addEventListener('click', () => {
+          placeCaretAtEnd();
+          summernote.invoke(target, 'insertHorizontalRule');
+          renderHtml('Applied insertHorizontalRule.');
+        });
+
+        document.getElementById('insert-table').addEventListener('click', () => {
+          placeCaretAtEnd();
+          summernote.invoke(target, 'insertTable', '2x2');
+          renderHtml('Applied insertTable.');
+        });
+
+        document.getElementById('reset-media-table').addEventListener('click', () => {
+          summernote.invoke(target, 'code', initialMarkup);
+          renderHtml('Reset content.');
+        });
+      });
+    </script>
+  </body>
+</html>

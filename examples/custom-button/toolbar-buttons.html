@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Custom Toolbar Buttons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Custom Buttons</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Toolbar Buttons</li>
+        </ol>
+      </nav>
+
+      <h1>Create simple custom toolbar buttons</h1>
+
+      <p class="page-copy">
+        This page keeps the core pattern from the legacy example: define a button factory, register it in
+        <code>buttons</code>, and reference it from <code>toolbar</code>.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-outline-secondary" id="custom-toolbar-place-caret" type="button">Place caret at end</button>
+                <button class="btn btn-outline-secondary" id="custom-toolbar-reset" type="button">Reset content</button>
+              </div>
+              <div id="custom-toolbar-editor">
+                <p>Toolbar target paragraph.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">HTML output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="custom-toolbar-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Toolbar Buttons</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>function HelloButton(context) {
+  const ui = context.ui;
+  return ui.button({
+    contents: '&lt;span class="fw-semibold"&gt;Hello&lt;/span&gt;',
+    tooltip: 'Insert hello text',
+    click() {
+      context.invoke('editor.insertText', ' hello');
+    },
+  }).render();
+}
+
+summernote.create('#custom-toolbar-editor', {
+  height: 220,
+  toolbar: [
+    ['custom', ['hello', 'badge']],
+  ],
+  buttons: {
+    hello: HelloButton,
+    badge: BadgeButton,
+  },
+});</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#custom-toolbar-editor';
+        const initialMarkup = '<p>Toolbar target paragraph.</p>';
+        const output = document.getElementById('custom-toolbar-output');
+
+        function renderHtml(label) {
+          output.textContent = `${label}\n${summernote.invoke(target, 'code')}`;
+        }
+
+        function placeCaretAtEnd() {
+          const context = summernote.getInstance(target);
+          const paragraph = context.layoutInfo.editable[0].querySelector('p');
+          const textNode = paragraph.firstChild;
+          const selection = window.getSelection();
+          const range = document.createRange();
+          const offset = textNode.textContent.length;
+          range.setStart(textNode, offset);
+          range.setEnd(textNode, offset);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          summernote.invoke(target, 'editor.setLastRange', context.modules.editor.createRange());
+        }
+
+        function HelloButton(context) {
+          const ui = context.ui;
+          return ui.button({
+            contents: '<span class="fw-semibold">Hello</span>',
+            tooltip: 'Insert hello text',
+            click() {
+              context.invoke('editor.restoreRange');
+              context.invoke('editor.focus');
+              context.invoke('editor.insertText', ' hello');
+              renderHtml('Applied the custom Hello button.');
+            },
+          }).render();
+        }
+
+        function BadgeButton(context) {
+          const ui = context.ui;
+          return ui.button({
+            contents: '<span class="badge text-bg-info">Badge</span>',
+            tooltip: 'Insert a badge snippet',
+            click() {
+              context.invoke('editor.restoreRange');
+              context.invoke('editor.focus');
+              context.invoke('editor.pasteHTML', ' <span class="badge text-bg-info">Custom</span>');
+              renderHtml('Applied the custom Badge button.');
+            },
+          }).render();
+        }
+
+        summernote.create(target, {
+          height: 220,
+          toolbar: [
+            ['custom', ['hello', 'badge']],
+          ],
+          buttons: {
+            hello: HelloButton,
+            badge: BadgeButton,
+          },
+        });
+
+        document.getElementById('custom-toolbar-place-caret').addEventListener('click', () => {
+          placeCaretAtEnd();
+          output.textContent = 'Placed the caret at the end of the paragraph.';
+        });
+
+        document.getElementById('custom-toolbar-reset').addEventListener('click', () => {
+          summernote.invoke(target, 'code', initialMarkup);
+          output.textContent = 'Reset content.';
+        });
+      });
+    </script>
+  </body>
+</html>

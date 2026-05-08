@@ -1,0 +1,21 @@
+services:
+    web:
+        build: ./docker/web
+        working_dir: /app
+        user: application
+        ports:
+            - "80:80"
+        volumes:
+            - .:/app
+            - ./dist:/app/examples/dist
+            - ./font:/app/examples/font
+        tmpfs:
+          - /tmp:mode=1777
+        environment:
+          - WEB_DOCUMENT_ROOT=/app/examples
+          - PHP_DISPLAY_ERRORS=1
+          - PHP_MEMORY_LIMIT=512M
+          - PHP_MAX_EXECUTION_TIME=300
+          - PHP_POST_MAX_SIZE=200M
+          - PHP_UPLOAD_MAX_FILESIZE=100M
+          - PHP_DISMOD=ioncube

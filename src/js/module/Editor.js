@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $$ from '../core/dom-query.js';
 import env from '../core/env';
 import key from '../core/key';
 import func from '../core/func';
@@ -14,7 +14,7 @@ import Bullet from '../editing/Bullet';
 
 const KEY_BOGUS = 'bogus';
 const MAILTO_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const TEL_PATTERN = /^(\+?\d{1,3}[\s-]?)?(\d{1,4})[\s-]?(\d{1,4})[\s-]?(\d{1,4})$/;
+const TEL_PATTERN = /^\+?\d[\d\s-]{5,}\d$/;
 const URL_SCHEME_PATTERN = /^([A-Za-z][A-Za-z0-9+-.]*\:|#|\/)/;
 
 /**
@@ -121,7 +121,7 @@ export default class Editor {
      * @param {Node} node
      */
     this.insertNode = this.wrapCommand((node) => {
-      if (this.isLimited($(node).text().length)) {
+      if (this.isLimited($$(node).text().length)) {
         return;
       }
       const rng = this.getLastRange();
@@ -222,7 +222,7 @@ export default class Editor {
       let anchors = [];
       if (isTextChanged) {
         rng = rng.deleteContents();
-        const anchor = rng.insertNode($('<A></A>').text(linkText)[0]);
+        const anchor = rng.insertNode($$('<A></A>').text(linkText)[0]);
         anchors.push(anchor);
       } else {
         anchors = this.style.styleNodes(rng, {
@@ -232,10 +232,10 @@ export default class Editor {
         });
       }
 
-      $.each(anchors, (idx, anchor) => {
-        $(anchor).attr('href', linkUrl);
+      $$.each(anchors, (idx, anchor) => {
+        $$(anchor).attr('href', linkUrl);
         if (isNewWindow) {
-          $(anchor).attr('target', '_blank');
+          $$(anchor).attr('target', '_blank');
           if (addNoReferrer) {
             rel.push('noreferrer');
           }
@@ -243,15 +243,15 @@ export default class Editor {
             rel.push('noopener');
           }
           if (rel.length) {
-            $(anchor).attr('rel', rel.join(' '));
+            $$(anchor).attr('rel', rel.join(' '));
           }
         } else {
-          $(anchor).removeAttr('target');
+          $$(anchor).removeAttr('target');
         }
       });
 
       this.setLastRange(
-        this.createRangeFromList(anchors).select()
+        this.createRangeFromList(anchors).select(),
       );
     });
 
@@ -295,11 +295,11 @@ export default class Editor {
      * remove media object and Figure Elements if media object is img with Figure.
      */
     this.removeMedia = this.wrapCommand(() => {
-      let $target = $(this.restoreTarget()).parent();
+      let $target = $$(this.restoreTarget()).parent();
       if ($target.closest('figure').length) {
         $target.closest('figure').remove();
       } else {
-        $target = $(this.restoreTarget()).detach();
+        $target = $$(this.restoreTarget()).detach();
       }
       
       this.setLastRange(range.createFromSelection($target).select());
@@ -312,7 +312,7 @@ export default class Editor {
      * @param {String} value
      */
     this.floatMe = this.wrapCommand((value) => {
-      const $target = $(this.restoreTarget());
+      const $target = $$(this.restoreTarget());
       $target.toggleClass('note-float-left', value === 'left');
       $target.toggleClass('note-float-right', value === 'right');
       $target.css('float', (value === 'none' ? '' : value));
@@ -323,7 +323,7 @@ export default class Editor {
      * @param {String} value
      */
     this.resize = this.wrapCommand((value) => {
-      const $target = $(this.restoreTarget());
+      const $target = $$(this.restoreTarget());
       value = parseFloat(value);
       if (value === 0) {
         $target.css('width', '');
@@ -332,6 +332,40 @@ export default class Editor {
           width: value * 100 + '%',
           height: '',
         });
+      }
+    });
+
+    this.playMedia = this.wrapCommand(() => {
+      const target = this.restoreTarget();
+      if (!target) {
+        return;
+      }
+
+      $$(target).addClass('note-video-interactive');
+
+      if (target instanceof HTMLVideoElement) {
+        if (typeof target.play === 'function') {
+          target.play();
+        }
+        return;
+      }
+
+      if (target instanceof HTMLIFrameElement) {
+        const source = target.getAttribute('src');
+        if (!source) {
+          return;
+        }
+
+        const normalizedSource = source.startsWith('//')
+          ? `${window.location.protocol}${source}`
+          : source;
+        const url = new URL(normalizedSource, window.location.href);
+        url.searchParams.set('autoplay', '1');
+
+        const nextSource = source.startsWith('//')
+          ? url.toString().replace(/^https?:/, '')
+          : url.toString();
+        target.setAttribute('src', nextSource);
       }
     });
   }
@@ -543,7 +577,7 @@ export default class Editor {
       startPoint.node,
       startPoint.offset,
       endPoint.node,
-      endPoint.offset
+      endPoint.offset,
     );
   }
 
@@ -561,7 +595,7 @@ export default class Editor {
     } else {
       this.lastRange = range.create(this.editable);
 
-      if ($(this.lastRange.sc).closest('.note-editable').length === 0) {
+      if ($$(this.lastRange.sc).closest('.note-editable').length === 0) {
         this.lastRange = range.createFromBodyElement(this.editable);
       }
     }
@@ -576,6 +610,19 @@ export default class Editor {
    * @return {WrappedRange}
    */
   getLastRange() {
+    // First, check if there's a current selection in the browser
+    const currentSelection = range.createFromSelection();
+    const selectionContainer = currentSelection?.sc?.nodeType === Node.TEXT_NODE
+      ? currentSelection.sc.parentElement
+      : currentSelection?.sc;
+
+    if (currentSelection && $$(selectionContainer).closest('.note-editable').get(0) === this.editable) {
+      // Update the cached range and return it
+      this.lastRange = currentSelection;
+      return this.lastRange;
+    }
+
+    // Fall back to cached range if no current selection
     if (!this.lastRange) {
       this.setLastRange();
     }
@@ -619,6 +666,23 @@ export default class Editor {
     return this.$editable.data('target');
   }
 
+  getTableCommandRange() {
+    const rng = this.getLastRange(this.$editable);
+    if (rng.isCollapsed() && rng.isOnCell()) {
+      return rng;
+    }
+
+    const target = this.restoreTarget();
+    const cell = dom.isCell(target) ? target : dom.ancestor(target, dom.isCell);
+    if (!cell || !this.editable.contains(cell)) {
+      return null;
+    }
+
+    const cellRange = range.createFromNode(cell).collapse(true);
+    this.setLastRange(cellRange);
+    return cellRange;
+  }
+
   /**
    * currentStyle
    *
@@ -626,17 +690,14 @@ export default class Editor {
    * @return {Object|Boolean} unfocus
    */
   currentStyle() {
-    let rng = range.create();
-    if (rng) {
-      rng = rng.normalize();
-    }
-    return rng ? this.style.current(rng) : this.style.fromNode(this.$editable);
+    const rng = this.getLastRange();
+    return rng ? this.style.current(rng.normalize()) : this.style.fromNode(this.$editable);
   }
 
   /**
    * style from node
    *
-   * @param {jQuery} $node
+   * @param {DomQuery|Element} $node
    * @return {Object}
    */
   styleFromNode($node) {
@@ -775,14 +836,22 @@ export default class Editor {
         if (typeof param === 'string') {
           $image.attr('data-filename', param);
         }
-        $image.css('width', Math.min(this.$editable.width(), $image.width()));
+        const imageNode = $image[0];
+        const editableWidth = this.$editable.width();
+        const intrinsicWidth = imageNode?.naturalWidth || imageNode?.width || $image.width();
+
+        if (editableWidth && intrinsicWidth && intrinsicWidth > editableWidth) {
+          $image.css('width', editableWidth);
+        } else {
+          $image.css('width', '');
+        }
       }
 
       $image.show();
       this.getLastRange().insertNode($image[0]);
       this.setLastRange(range.createFromNodeAfter($image[0]).select());
       this.afterCommand();
-    }).fail((e) => {
+    }).catch((e) => {
       this.context.triggerEvent('image.upload.error', e);
     });
   }
@@ -792,14 +861,14 @@ export default class Editor {
    * @param {File[]} files
    */
   insertImagesAsDataURL(files) {
-    $.each(files, (idx, file) => {
+    $$.each(files, (idx, file) => {
       const filename = file.name;
       if (this.options.maximumImageFileSize && this.options.maximumImageFileSize < file.size) {
         this.context.triggerEvent('image.upload.error', this.lang.image.maximumFileSizeError);
       } else {
         readFileAsDataURL(file).then((dataURL) => {
           return this.insertImage(dataURL, filename);
-        }).fail(() => {
+        }).catch(() => {
           this.context.triggerEvent('image.upload.error');
         });
       }
@@ -812,12 +881,18 @@ export default class Editor {
    */
   insertImagesOrCallback(files) {
     const callbacks = this.options.callbacks;
+    const normalizedFiles = Array.from(files || []);
+
+    if (!normalizedFiles.length) {
+      return;
+    }
+
     // If onImageUpload set,
     if (callbacks.onImageUpload) {
-      this.context.triggerEvent('image.upload', files);
+      this.context.triggerEvent('image.upload', normalizedFiles);
       // else insert Image as dataURL
     } else {
-      this.insertImagesAsDataURL(files);
+      this.insertImagesAsDataURL(normalizedFiles);
     }
   }
 
@@ -849,7 +924,7 @@ export default class Editor {
 
       if ($target && $target.length) {
         const currentRange = this.createRange();
-        const $parent = $([currentRange.sc, currentRange.ec]).closest(tagName);
+        const $parent = $$([currentRange.sc, currentRange.ec]).closest(tagName);
         // remove class added for current block
         $parent.removeClass();
         const className = $target[0].className || '';
@@ -870,7 +945,7 @@ export default class Editor {
     if (rng !== '') {
       const spans = this.style.styleNodes(rng);
       this.$editor.find('.note-status-output').html('');
-      $(spans).css(target, value);
+      $$(spans).css(target, value);
 
       // [workaround] added styled bogus span for style
       //  - also bogus character needed for cursor position
@@ -886,9 +961,9 @@ export default class Editor {
         rng.select();
       }
     } else {
-      const noteStatusOutput = $.now();
+      const noteStatusOutput = Date.now();
       this.$editor.find('.note-status-output').html('<div id="note-status-output-' + noteStatusOutput + '" class="alert alert-info">' + this.lang.output.noSelection + '</div>');
-      setTimeout(function() { $('#note-status-output-' + noteStatusOutput).remove(); }, 5000);
+      setTimeout(function() { $$('#note-status-output-' + noteStatusOutput).remove(); }, 5000);
     }
   }
 
@@ -927,7 +1002,7 @@ export default class Editor {
 
     const rng = this.getLastRange().expand(dom.isAnchor);
     // Get the first anchor on range(for edit).
-    const $anchor = $(lists.head(rng.nodes(dom.isAnchor)));
+    const $anchor = $$(lists.head(rng.nodes(dom.isAnchor)));
     const linkInfo = {
       range: rng,
       text: rng.toString(),
@@ -944,8 +1019,8 @@ export default class Editor {
   }
 
   addRow(position) {
-    const rng = this.getLastRange(this.$editable);
-    if (rng.isCollapsed() && rng.isOnCell()) {
+    const rng = this.getTableCommandRange();
+    if (rng) {
       this.beforeCommand();
       this.table.addRow(rng, position);
       this.afterCommand();
@@ -953,8 +1028,8 @@ export default class Editor {
   }
 
   addCol(position) {
-    const rng = this.getLastRange(this.$editable);
-    if (rng.isCollapsed() && rng.isOnCell()) {
+    const rng = this.getTableCommandRange();
+    if (rng) {
       this.beforeCommand();
       this.table.addCol(rng, position);
       this.afterCommand();
@@ -962,8 +1037,8 @@ export default class Editor {
   }
 
   deleteRow() {
-    const rng = this.getLastRange(this.$editable);
-    if (rng.isCollapsed() && rng.isOnCell()) {
+    const rng = this.getTableCommandRange();
+    if (rng) {
       this.beforeCommand();
       this.table.deleteRow(rng);
       this.afterCommand();
@@ -971,8 +1046,8 @@ export default class Editor {
   }
 
   deleteCol() {
-    const rng = this.getLastRange(this.$editable);
-    if (rng.isCollapsed() && rng.isOnCell()) {
+    const rng = this.getTableCommandRange();
+    if (rng) {
       this.beforeCommand();
       this.table.deleteCol(rng);
       this.afterCommand();
@@ -980,8 +1055,8 @@ export default class Editor {
   }
 
   deleteTable() {
-    const rng = this.getLastRange(this.$editable);
-    if (rng.isCollapsed() && rng.isOnCell()) {
+    const rng = this.getTableCommandRange();
+    if (rng) {
       this.beforeCommand();
       this.table.deleteTable(rng);
       this.afterCommand();
@@ -990,7 +1065,7 @@ export default class Editor {
 
   /**
    * @param {Position} pos
-   * @param {jQuery} $target - target element
+   * @param {DomQuery} $target - target element
    * @param {Boolean} [bKeepRatio] - keep ratio
    */
   resizeTo(pos, $target, bKeepRatio) {
@@ -1026,7 +1101,12 @@ export default class Editor {
     // [workaround] Screen will move when page is scolled in IE.
     //  - do focus when not focused
     if (!this.hasFocus()) {
+      const preservedRange = this.lastRange;
       this.$editable.trigger('focus');
+      if (preservedRange) {
+        preservedRange.select();
+        this.lastRange = preservedRange;
+      }
     }
   }
 

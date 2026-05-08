@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - CodeView Filters</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Initialization options</a></li>
+          <li class="breadcrumb-item active" aria-current="page">CodeView Filters</li>
+        </ol>
+      </nav>
+
+      <h1>Current CodeView filtering behavior</h1>
+
+      <p class="page-copy">
+        The old document is outdated here: <code>codeviewFilter</code> is now enabled by default in this build. Use the
+        examples below to compare a stricter setup with a relaxed iframe policy.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h5">Strict filtering with extra iframe whitelist</h2>
+              <p class="text-secondary">Switch to Code View and try script tags or a Vimeo iframe.</p>
+              <div id="strict-codeview-editor">
+                <p>Use Code View to paste HTML and compare what survives sanitizing.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="h5">Relaxed iframe filtering</h2>
+              <p class="text-secondary">This keeps the regex filter, but disables iframe source checks.</p>
+              <div id="relaxed-codeview-editor">
+                <p>Toggle Code View and paste a custom iframe source to compare the result.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - CodeView Filters</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#strict-codeview-editor', {
+  height: 260,
+  toolbar: [
+    ['view', ['codeview']],
+    ['insert', ['video']],
+  ],
+  codeviewFilter: true,
+  codeviewFilterRegex: /&lt;\/*(?:script|style)[^&gt;]*?&gt;/gi,
+  codeviewIframeFilter: true,
+  codeviewIframeWhitelistSrc: ['player.vimeo.com'],
+});</code></pre>
+          <pre class="mb-0"><code>summernote.create('#relaxed-codeview-editor', {
+  height: 260,
+  toolbar: [
+    ['view', ['codeview']],
+  ],
+  codeviewFilter: true,
+  codeviewFilterRegex: /&lt;\/*(?:script|style)[^&gt;]*?&gt;/gi,
+  codeviewIframeFilter: false,
+});</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        summernote.create('#strict-codeview-editor', {
+          height: 260,
+          toolbar: [
+            ['view', ['codeview']],
+            ['insert', ['video']],
+          ],
+          codeviewFilter: true,
+          codeviewFilterRegex: /<\/*(?:script|style)[^>]*?>/gi,
+          codeviewIframeFilter: true,
+          codeviewIframeWhitelistSrc: ['player.vimeo.com'],
+        });
+
+        summernote.create('#relaxed-codeview-editor', {
+          height: 260,
+          toolbar: [
+            ['view', ['codeview']],
+          ],
+          codeviewFilter: true,
+          codeviewFilterRegex: /<\/*(?:script|style)[^>]*?>/gi,
+          codeviewIframeFilter: false,
+        });
+      });
+    </script>
+  </body>
+</html>

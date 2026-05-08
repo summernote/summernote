@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Word Ranges and Rects</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Range and Selection API</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Word Ranges and Rects</li>
+        </ol>
+      </nav>
+
+      <h1>Extract words and inspect the occupied rectangles</h1>
+
+      <p class="page-copy">
+        The legacy page called out <code>getWordRange()</code>, <code>getWordsMatchRange()</code>, and
+        <code>getClientRects()</code>. Those helpers still work well as focused selection utilities.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-primary" id="range-get-word" type="button">getWordRange()</button>
+                <button class="btn btn-outline-primary" id="range-match-mention" type="button">getWordsMatchRange()</button>
+                <button class="btn btn-outline-primary" id="range-client-rects" type="button">getClientRects()</button>
+                <button class="btn btn-outline-secondary" id="reset-word-ranges" type="button">Reset content</button>
+              </div>
+              <div id="word-ranges-editor">
+                <p data-target="words">super simple wysiwyg editor</p>
+                <p data-target="mention">hi @Peter Pan. How are you?</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">Range output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="word-ranges-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Word Ranges and Rects</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#word-ranges-editor', {
+  height: 220,
+});
+
+const rangeUtil = summernote.summernote.range;
+const wordRange = rangeUtil.create(textNode, offset).getWordRange();
+const matchRange = rangeUtil.create(textNode, offset).getWordsMatchRange(/@[a-z ]+/i);
+const rects = matchRange.getClientRects();</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#word-ranges-editor';
+        const initialMarkup = '<p data-target="words">super simple wysiwyg editor</p><p data-target="mention">hi @Peter Pan. How are you?</p>';
+        const output = document.getElementById('word-ranges-output');
+        const rangeUtil = summernote.summernote.range;
+
+        summernote.create(target, {
+          height: 220,
+        });
+
+        function summarizeRange(label, rng) {
+          output.textContent = `${label}\ntext: ${JSON.stringify(rng.toString())}\ncollapsed: ${rng.isCollapsed()}`;
+        }
+
+        function createWordRange() {
+          const context = summernote.getInstance(target);
+          const textNode = context.layoutInfo.editable[0].querySelector('[data-target="words"]').firstChild;
+          const offset = textNode.textContent.indexOf('wysiwyg') + 'wysiwyg'.length;
+          return rangeUtil.create(textNode, offset).getWordRange();
+        }
+
+        function createMentionMatchRange() {
+          const context = summernote.getInstance(target);
+          const textNode = context.layoutInfo.editable[0].querySelector('[data-target="mention"]').firstChild;
+          const offset = textNode.textContent.indexOf('Pan') + 'Pan'.length;
+          return rangeUtil.create(textNode, offset).getWordsMatchRange(/@[a-z ]+/i);
+        }
+
+        document.getElementById('range-get-word').addEventListener('click', () => {
+          const rng = createWordRange();
+          summernote.invoke(target, 'editor.setLastRange', rng.select());
+          summarizeRange('Expanded the current caret position to the containing word.', rng);
+        });
+
+        document.getElementById('range-match-mention').addEventListener('click', () => {
+          const rng = createMentionMatchRange();
+          summernote.invoke(target, 'editor.setLastRange', rng.select());
+          summarizeRange('Matched the @mention with a regex-driven range.', rng);
+        });
+
+        document.getElementById('range-client-rects').addEventListener('click', () => {
+          const rng = createMentionMatchRange();
+          const rects = Array.from(rng.getClientRects()).map((rect, index) => `rect ${index + 1}: x=${Math.round(rect.x)}, y=${Math.round(rect.y)}, width=${Math.round(rect.width)}, height=${Math.round(rect.height)}`);
+          summernote.invoke(target, 'editor.setLastRange', rng.select());
+          output.textContent = `Measured the visible rectangles for the matched mention.\ntext: ${JSON.stringify(rng.toString())}\nrect count: ${rects.length}\n${rects.join('\n')}`;
+        });
+
+        document.getElementById('reset-word-ranges').addEventListener('click', () => {
+          summernote.invoke(target, 'code', initialMarkup);
+          output.textContent = 'Reset content.';
+        });
+      });
+    </script>
+  </body>
+</html>

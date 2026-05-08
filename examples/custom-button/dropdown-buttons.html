@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Custom Dropdown Buttons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Custom Buttons</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Dropdown Buttons</li>
+        </ol>
+      </nav>
+
+      <h1>Create a custom dropdown button group</h1>
+
+      <p class="page-copy">
+        A custom button does not need to be a single button. This example returns a
+        <code>ui.buttonGroup()</code> with a dropdown trigger and reusable snippet actions.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-outline-secondary" id="custom-dropdown-place-caret" type="button">Place caret at end</button>
+                <button class="btn btn-outline-secondary" id="custom-dropdown-reset" type="button">Reset content</button>
+              </div>
+              <div id="custom-dropdown-editor">
+                <p>Dropdown target paragraph.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">HTML output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="custom-dropdown-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Dropdown Buttons</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>function SnippetButton(context) {
+  const ui = context.ui;
+  return ui.buttonGroup([
+    ui.button({
+      className: 'dropdown-toggle',
+      contents: ui.dropdownButtonContents('Snippets', context.options),
+      data: { toggle: 'dropdown' },
+    }),
+    ui.dropdown({
+      items: [
+        { value: 'badge', label: 'Info badge' },
+        { value: 'quote', label: 'Blockquote' },
+      ],
+    }),
+  ]).render();
+}</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#custom-dropdown-editor';
+        const initialMarkup = '<p>Dropdown target paragraph.</p>';
+        const output = document.getElementById('custom-dropdown-output');
+
+        function renderHtml(label) {
+          output.textContent = `${label}\n${summernote.invoke(target, 'code')}`;
+        }
+
+        function placeCaretAtEnd() {
+          const context = summernote.getInstance(target);
+          const paragraph = context.layoutInfo.editable[0].querySelector('p');
+          const textNode = paragraph.firstChild;
+          const selection = window.getSelection();
+          const range = document.createRange();
+          const offset = textNode.textContent.length;
+          range.setStart(textNode, offset);
+          range.setEnd(textNode, offset);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          summernote.invoke(target, 'editor.setLastRange', context.modules.editor.createRange());
+        }
+
+        function SnippetButton(context) {
+          const ui = context.ui;
+          return ui.buttonGroup([
+            ui.button({
+              className: 'dropdown-toggle',
+              contents: ui.dropdownButtonContents('<span class="fw-semibold">Snippets</span>', context.options),
+              tooltip: 'Insert a prepared snippet',
+              data: {
+                toggle: 'dropdown',
+              },
+            }),
+            ui.dropdown({
+              className: 'dropdown-custom-snippets',
+              items: [
+                { value: 'badge', label: 'Info badge' },
+                { value: 'quote', label: 'Blockquote' },
+              ],
+              title: 'Insert a prepared snippet',
+              template: (item) => item.label,
+              callback: ($dropdown) => {
+                const snippets = {
+                  badge: ' <span class="badge text-bg-info">Info</span>',
+                  quote: '<blockquote class="blockquote mb-0"><p class="mb-0">A custom dropdown inserted this blockquote.</p></blockquote>',
+                };
+
+                $dropdown.find('.dropdown-item').on('click', (event) => {
+                  event.preventDefault();
+                  const key = event.currentTarget.getAttribute('data-value');
+                  context.invoke('editor.restoreRange');
+                  context.invoke('editor.focus');
+                  context.invoke('editor.pasteHTML', snippets[key]);
+                  renderHtml(`Inserted the "${key}" snippet from the custom dropdown.`);
+                });
+              },
+            }),
+          ]).render();
+        }
+
+        summernote.create(target, {
+          height: 220,
+          toolbar: [
+            ['custom', ['snippets']],
+          ],
+          buttons: {
+            snippets: SnippetButton,
+          },
+        });
+
+        document.getElementById('custom-dropdown-place-caret').addEventListener('click', () => {
+          placeCaretAtEnd();
+          output.textContent = 'Placed the caret at the end of the paragraph.';
+        });
+
+        document.getElementById('custom-dropdown-reset').addEventListener('click', () => {
+          summernote.invoke(target, 'code', initialMarkup);
+          output.textContent = 'Reset content.';
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,31 @@
+{
+    "name": "jschwind/summernote-next",
+    "description": "Super simple WYSIWYG editor on Bootstrap 5",
+    "keywords": [
+        "bootstrap",
+        "editor",
+        "rich-text",
+        "summernote",
+        "summernote-next",
+        "vanilla-js",
+        "wysiwyg"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jürgen Schwind",
+            "email": "info@juergen-schwind.de",
+            "homepage": "https://juergen-schwind.com",
+            "role": "Developer"
+        }
+    ],
+    "homepage": "https://juergen-schwind.com/summernote-next",
+    "support": {
+        "issues": "https://github.com/jschwind/summernote-next/issues",
+        "source": "https://github.com/jschwind/summernote-next"
+    },
+    "require": {
+        "php": ">=7.4"
+    }
+}

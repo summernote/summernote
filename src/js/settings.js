@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $$ from './core/dom-query.js';
 import './summernote-en-US';
 import './summernote';
 import dom from './core/dom';
@@ -21,14 +21,15 @@ import LinkDialog from './module/LinkDialog';
 import LinkPopover from './module/LinkPopover';
 import ImageDialog from './module/ImageDialog';
 import ImagePopover from './module/ImagePopover';
+import VideoPopover from './module/VideoPopover';
 import TablePopover from './module/TablePopover';
 import VideoDialog from './module/VideoDialog';
 import HelpDialog from './module/HelpDialog';
 import AirPopover from './module/AirPopover';
 import HintPopover from './module/HintPopover';
 
-$.summernote = $.extend($.summernote, {
-  version: '@@VERSION@@',
+$$.summernote = $$.extend($$.summernote, {
+  version: __SUMMERNOTE_NEXT_VERSION__,
   plugins: {},
 
   dom: dom,
@@ -36,7 +37,7 @@ $.summernote = $.extend($.summernote, {
   lists: lists,
 
   options: {
-    langInfo: $.summernote.lang['en-US'],
+    langInfo: $$.summernote.lang['en-US'],
     editing: true,
     modules: {
       'editor': Editor,
@@ -59,6 +60,7 @@ $.summernote = $.extend($.summernote, {
       'linkPopover': LinkPopover,
       'imageDialog': ImageDialog,
       'imagePopover': ImagePopover,
+      'videoPopover': VideoPopover,
       'tablePopover': TablePopover,
       'videoDialog': VideoDialog,
       'helpDialog': HelpDialog,
@@ -72,9 +74,18 @@ $.summernote = $.extend($.summernote, {
     followingToolbar: false,
     toolbarPosition: 'top',
     otherStaticBar: '',
+    editorClassName: '',
+    editingAreaClassName: '',
+    editableClassName: '',
+    codableClassName: '',
+    statusbarClassName: '',
 
     // toolbar
     codeviewKeepButton: false,
+    toolbarClassName: '',
+    toolbarButtonClassName: '',
+    toolbarButtonGroupClassName: '',
+    toolbarUseNativeButtonGroups: false,
     toolbar: [
       ['style', ['style']],
       ['font', ['bold', 'underline', 'clear']],
@@ -88,11 +99,21 @@ $.summernote = $.extend($.summernote, {
 
     // popover
     popatmouse: true,
+    popoverClassName: '',
+    popoverButtonClassName: '',
+    popoverButtonGroupClassName: '',
+    popoverUseNativeButtonGroups: false,
     popover: {
       image: [
         ['resize', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
         ['float', ['floatLeft', 'floatRight', 'floatNone']],
         ['remove', ['removeMedia']],
+      ],
+      video: [
+        ['play', ['playMedia']],
+        ['resize', ['resizeFullVideo', 'resizeHalfVideo', 'resizeQuarterVideo', 'resizeNoneVideo']],
+        ['float', ['floatLeftVideo', 'floatRightVideo', 'floatNoneVideo']],
+        ['remove', ['removeVideo']],
       ],
       link: [
         ['link', ['linkDialogShow', 'unlink']],
@@ -117,6 +138,9 @@ $.summernote = $.extend($.summernote, {
 
     // air mode: inline editor
     airMode: false,
+    airModeFullscreen: false,
+    airModeFullscreenProxy: false,
+    airModeFullscreenState: null,
     overrideContextMenu: false, // TBD
 
     width: null,

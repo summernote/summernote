@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Content Commands</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Basic API</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Content Commands</li>
+        </ol>
+      </nav>
+
+      <h1>Initialize an editor and invoke content commands</h1>
+
+      <p class="page-copy">
+        The old jQuery method calls are now exposed through <code>summernote.create()</code> and
+        <code>summernote.invoke()</code>. The shorthand without a module name still maps to the editor module.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-primary" id="insert-module" type="button">Insert via editor.insertText</button>
+                <button class="btn btn-outline-primary" id="insert-shorthand" type="button">Insert via insertText</button>
+                <button class="btn btn-outline-secondary" id="read-html" type="button">Read HTML</button>
+                <button class="btn btn-outline-secondary" id="undo" type="button">Undo</button>
+                <button class="btn btn-outline-secondary" id="redo" type="button">Redo</button>
+              </div>
+              <div id="content-commands-editor">
+                <p>Hello world, this editor starts with one paragraph.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">API output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="content-commands-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Content Commands</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>const editor = summernote.create('#content-commands-editor', {
+  height: 260,
+});
+
+summernote.invoke('#content-commands-editor', 'editor.insertText', ' hello world');
+summernote.invoke('#content-commands-editor', 'insertText', ' from shorthand');
+const html = summernote.invoke('#content-commands-editor', 'code');
+summernote.invoke('#content-commands-editor', 'undo');
+summernote.invoke('#content-commands-editor', 'redo');</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#content-commands-editor';
+        const output = document.getElementById('content-commands-output');
+
+        summernote.create(target, {
+          height: 260,
+        });
+
+        function renderHtml() {
+          output.textContent = summernote.invoke(target, 'code');
+        }
+
+        document.getElementById('insert-module').addEventListener('click', () => {
+          summernote.invoke(target, 'editor.insertText', ' hello world');
+          renderHtml();
+        });
+
+        document.getElementById('insert-shorthand').addEventListener('click', () => {
+          summernote.invoke(target, 'insertText', ' from shorthand');
+          renderHtml();
+        });
+
+        document.getElementById('read-html').addEventListener('click', () => {
+          renderHtml();
+        });
+
+        document.getElementById('undo').addEventListener('click', () => {
+          summernote.invoke(target, 'undo');
+          renderHtml();
+        });
+
+        document.getElementById('redo').addEventListener('click', () => {
+          summernote.invoke(target, 'redo');
+          renderHtml();
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,5 +1,6 @@
 import lists from '../core/lists';
 import dom from '../core/dom';
+import { DomQuery } from '../core/dom-query.js';
 import key from '../core/key';
 
 export default class AutoReplace {
@@ -47,8 +48,8 @@ export default class AutoReplace {
 
         if (typeof match === 'string') {
           node = dom.createText(match);
-        } else if (match instanceof jQuery) {
-          node = match[0];
+        } else if (match instanceof DomQuery) {
+          node = match.get(0);
         } else if (match instanceof Node) {
           node = match;
         }

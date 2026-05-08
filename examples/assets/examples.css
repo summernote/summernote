@@ -1,0 +1,204 @@
+body {
+  margin-top: 1rem;
+  overflow-y: scroll;
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+}
+
+html[data-bs-theme="dark"] {
+  color-scheme: dark;
+}
+
+.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+}
+
+.page-copy {
+  max-width: 48rem;
+  color: var(--bs-secondary-color);
+}
+
+.examples-project-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.25rem;
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--bs-border-color-translucent, var(--bs-border-color));
+  color: var(--bs-secondary-color);
+  font-size: 0.875rem;
+}
+
+.examples-project-links-copy {
+  color: inherit;
+}
+
+.examples-project-links-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.9rem;
+}
+
+.examples-project-links a {
+  color: inherit;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+}
+
+.examples-project-links a:hover,
+.examples-project-links a:focus-visible {
+  color: var(--bs-body-color);
+  text-decoration-color: currentColor;
+}
+
+.example-config-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.example-config-actions {
+  min-height: 2rem;
+}
+
+.example-config-copy-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.55rem;
+  line-height: 1;
+}
+
+.example-config-copy-button-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.example-config-pre {
+  margin-bottom: 0;
+  padding: 1rem 1.125rem;
+  overflow-x: auto;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 0.9rem;
+  background: #0f172a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.example-config-pre + .example-config-pre {
+  margin-top: 1rem;
+}
+
+.example-config-code {
+  display: block;
+  margin: 0;
+  color: #e2e8f0;
+  font-family: var(--bs-font-monospace);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  white-space: pre;
+}
+
+.example-code-token-tag {
+  color: #7dd3fc;
+}
+
+.example-code-token-attribute {
+  color: #f9a8d4;
+}
+
+.example-code-token-string {
+  color: #86efac;
+}
+
+.example-code-token-comment {
+  color: #94a3b8;
+}
+
+.example-code-token-keyword {
+  color: #c4b5fd;
+}
+
+.example-code-token-number {
+  color: #fdba74;
+}
+
+.examples-theme-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1080;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 999px;
+  background-color: var(--bs-tertiary-bg);
+  box-shadow: var(--bs-box-shadow-sm);
+}
+
+.examples-theme-toggle .form-check {
+  min-height: auto;
+  margin-bottom: 0;
+}
+
+.examples-theme-toggle .form-check-input,
+.examples-theme-toggle .form-check-label {
+  cursor: pointer;
+}
+
+.note-editor.note-frame,
+.note-editor.note-airframe,
+.airmode-shell {
+  background-color: var(--bs-body-bg);
+  border-color: var(--bs-border-color);
+}
+
+.note-editor.note-frame .note-toolbar,
+.note-editor.note-frame .note-statusbar {
+  background-color: var(--bs-tertiary-bg);
+}
+
+.note-editor.note-frame .note-editing-area .note-editable,
+.note-editor.note-airframe .note-editing-area .note-editable {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+}
+
+.note-editor.note-frame .note-editing-area .note-editable[contenteditable="false"] {
+  background-color: var(--bs-tertiary-bg);
+}
+
+.note-editor.note-frame .note-status-output {
+  color: var(--bs-body-color);
+  background-color: var(--bs-body-bg);
+  border-top-color: var(--bs-border-color);
+}
+
+.note-editor.note-frame .note-status-output .alert {
+  color: var(--bs-body-color);
+  background-color: var(--bs-tertiary-bg);
+}
+
+.note-editor .note-placeholder {
+  color: var(--bs-secondary-color);
+}
+
+html[data-bs-theme="dark"] .airmode-shell {
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+}
+
+html[data-bs-theme="light"] .example-config-pre {
+  border-color: rgba(148, 163, 184, 0.35);
+  background: #0b1220;
+}
+
+@media (max-width: 767.98px) {
+  .examples-project-links {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

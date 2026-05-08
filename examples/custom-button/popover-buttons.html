@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Custom Popover Buttons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Custom Buttons</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Popover Buttons</li>
+        </ol>
+      </nav>
+
+      <h1>Reuse a custom button inside a popover</h1>
+
+      <p class="page-copy">
+        Custom buttons can also be referenced from popover configuration. This page adds a custom link-popover button
+        that marks the demo link with <code>rel="nofollow noopener"</code>.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-outline-secondary" id="custom-popover-select-link" type="button">Select demo link</button>
+                <button class="btn btn-outline-secondary" id="custom-popover-reset" type="button">Reset content</button>
+              </div>
+              <div id="custom-popover-editor">
+                <p><a href="https://juergen-schwind.com/summernote-next" data-target="demo-link" target="_blank">Summernote Next demo link</a></p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">HTML output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="custom-popover-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Popover Buttons</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>function NofollowButton(context) {
+  const ui = context.ui;
+  return ui.button({
+    contents: 'Nofollow',
+    tooltip: 'Mark the current link as nofollow',
+    click() {
+      const anchor = context.layoutInfo.editable[0].querySelector('a');
+      anchor.setAttribute('rel', 'nofollow noopener');
+    },
+  }).render();
+}
+
+summernote.create('#custom-popover-editor', {
+  height: 220,
+  popover: {
+    link: [
+      ['custom', ['nofollow']],
+      ['link', ['linkDialogShow', 'unlink']],
+    ],
+  },
+  buttons: {
+    nofollow: NofollowButton,
+  },
+});</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#custom-popover-editor';
+        const initialMarkup = '<p><a href="https://juergen-schwind.com/summernote-next" data-target="demo-link" target="_blank">Summernote Next demo link</a></p>';
+        const output = document.getElementById('custom-popover-output');
+
+        function renderHtml(label) {
+          output.textContent = `${label}\n${summernote.invoke(target, 'code')}`;
+        }
+
+        function showLinkPopover() {
+          const context = summernote.getInstance(target);
+          const anchor = context.layoutInfo.editable[0].querySelector('[data-target="demo-link"]');
+          const textNode = anchor.firstChild;
+          const selection = window.getSelection();
+          const range = document.createRange();
+          range.setStart(textNode, 1);
+          range.setEnd(textNode, 1);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          summernote.invoke(target, 'editor.setLastRange', context.modules.editor.createRange());
+          context.layoutInfo.editable[0].focus();
+          context.layoutInfo.editable[0].dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
+        }
+
+        function NofollowButton(context) {
+          const ui = context.ui;
+          return ui.button({
+            contents: '<span class="fw-semibold">Nofollow</span>',
+            tooltip: 'Mark the current link as nofollow',
+            click() {
+              const anchor = context.layoutInfo.editable[0].querySelector('[data-target="demo-link"]');
+              anchor.setAttribute('rel', 'nofollow noopener');
+              renderHtml('Applied the custom link-popover button.');
+            },
+          }).render();
+        }
+
+        summernote.create(target, {
+          height: 220,
+          popover: {
+            image: [],
+            video: [],
+            table: [],
+            air: [],
+            link: [
+              ['custom', ['nofollow']],
+              ['link', ['linkDialogShow', 'unlink']],
+            ],
+          },
+          buttons: {
+            nofollow: NofollowButton,
+          },
+        });
+
+        document.getElementById('custom-popover-select-link').addEventListener('click', () => {
+          showLinkPopover();
+          output.textContent = 'Selected the demo link and triggered the custom link popover.';
+        });
+
+        document.getElementById('custom-popover-reset').addEventListener('click', () => {
+          summernote.invoke(target, 'code', initialMarkup);
+          output.textContent = 'Reset content.';
+        });
+      });
+    </script>
+  </body>
+</html>

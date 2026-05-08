@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Font Family and Size</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Font Style API</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Font Family and Size</li>
+        </ol>
+      </nav>
+
+      <h1>Change font family, size, and size unit</h1>
+
+      <p class="page-copy">
+        <code>fontName</code>, <code>fontSize</code>, and <code>fontSizeUnit</code> are still exposed as editor commands.
+        The buttons below always target the same phrase so the resulting inline styles are easy to compare.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-primary" data-font-name="Courier New" type="button">FontName Courier New</button>
+                <button class="btn btn-outline-primary" data-font-size="20" type="button">FontSize 20</button>
+                <button class="btn btn-outline-primary" data-font-unit="pt" type="button">FontSizeUnit pt</button>
+                <button class="btn btn-outline-secondary" id="reset-font-family-size" type="button">Reset content</button>
+              </div>
+              <div id="font-family-size-editor">
+                <p>These buttons style <span data-target="phrase">this selected phrase</span> and preserve the resulting inline style.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">HTML output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="font-family-size-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Font Family and Size</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#font-family-size-editor', {
+  height: 240,
+  fontSizeUnits: ['px', 'pt'],
+});
+
+summernote.invoke('#font-family-size-editor', 'fontName', 'Courier New');
+summernote.invoke('#font-family-size-editor', 'fontSize', 20);
+summernote.invoke('#font-family-size-editor', 'fontSizeUnit', 'pt');</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#font-family-size-editor';
+        const initialMarkup = '<p>These buttons style <span data-target="phrase">this selected phrase</span> and preserve the resulting inline style.</p>';
+        const output = document.getElementById('font-family-size-output');
+
+        summernote.create(target, {
+          height: 240,
+          fontSizeUnits: ['px', 'pt'],
+        });
+
+        function selectPhrase() {
+          const context = summernote.getInstance(target);
+          const element = context.layoutInfo.editable[0].querySelector('[data-target="phrase"]');
+          const selection = window.getSelection();
+          const range = document.createRange();
+          range.selectNodeContents(element);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          context.modules.editor.setLastRange(context.modules.editor.createRange());
+        }
+
+        function renderHtml(label) {
+          output.textContent = `${label}\n${summernote.invoke(target, 'code')}`;
+        }
+
+        document.querySelectorAll('[data-font-name]').forEach((button) => {
+          button.addEventListener('click', () => {
+            selectPhrase();
+            summernote.invoke(target, 'fontName', button.dataset.fontName);
+            renderHtml(`Applied fontName ${button.dataset.fontName}.`);
+          });
+        });
+
+        document.querySelectorAll('[data-font-size]').forEach((button) => {
+          button.addEventListener('click', () => {
+            selectPhrase();
+            summernote.invoke(target, 'fontSize', Number(button.dataset.fontSize));
+            renderHtml(`Applied fontSize ${button.dataset.fontSize}.`);
+          });
+        });
+
+        document.querySelectorAll('[data-font-unit]').forEach((button) => {
+          button.addEventListener('click', () => {
+            selectPhrase();
+            summernote.invoke(target, 'fontSizeUnit', button.dataset.fontUnit);
+            renderHtml(`Applied fontSizeUnit ${button.dataset.fontUnit}.`);
+          });
+        });
+
+        document.getElementById('reset-font-family-size').addEventListener('click', () => {
+          summernote.invoke(target, 'code', initialMarkup);
+          renderHtml('Reset content.');
+        });
+      });
+    </script>
+  </body>
+</html>

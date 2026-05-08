@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Default</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+    <style>
+      .airmode-demo-editable {
+        padding-top: 4.5rem !important;
+        padding-right: 24rem !important;
+      }
+
+      .airmode-demo-popover {
+        right: 1rem;
+        left: auto !important;
+        top: 1rem !important;
+      }
+    </style>
+  </head>
+  <body>
+
+    <main class="page">
+
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="./index.html">Examples overview</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Default</li>
+        </ol>
+      </nav>
+
+      <h1>Summernote Next with Bootstrap 5 and Vanilla JS</h1>
+
+      <p class="mb-3">
+        This example consumes the compiled assets from <code>/dist</code> and initializes the editor with the public
+        <code>summernote.create()</code> API.
+      </p>
+
+      <div id="editor">
+        Hello world, this is Summernote.
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-header">
+          Air Mode card
+        </div>
+        <div class="card-body">
+          <div id="airmode-card-editor">
+            <p>
+              This card starts with an active air mode editor directly inside the card body.
+            </p>
+            <p>
+              Select text to open the inline toolbar, or keep writing right away.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-header">
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-primary">Left</button>
+            <button type="button" class="btn btn-primary">Middle</button>
+            <button type="button" class="btn btn-primary">Right</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <p>
+            This is a card example. It's not a Summernote editor, but it's still a card.
+          </p>
+        </div>
+        <div class="card-footer">
+        ---
+        </div>
+      </div>
+
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        summernote.create('#editor');
+        const airModeContext = summernote.create('#airmode-card-editor', {
+          airMode: true,
+          airModeFullscreen: true,
+          dialogsInBody: true,
+          focus: true,
+          editableClassName: 'border rounded-3 p-3 airmode-demo-editable',
+          toolbar: [
+            ['font', ['bold', 'italic', 'underline', 'clear']],
+            ['color', ['color']],
+            ['para', ['ul', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture']],
+            ['view', ['codeview', 'fullscreen']],
+          ],
+          popover: {
+            air: [
+              ['font', ['bold', 'italic', 'underline', 'clear']],
+              ['color', ['color']],
+              ['para', ['ul', 'paragraph']],
+              ['table', ['table']],
+              ['insert', ['link', 'picture']],
+              ['view', ['codeview', 'fullscreen']],
+            ],
+          },
+        });
+        const airPopover = airModeContext.modules.airPopover;
+        const $popover = airPopover.$popover.addClass('airmode-demo-popover');
+        const positionPinnedPopover = () => {
+          $popover.css({
+            display: 'block',
+            right: '1rem',
+            left: 'auto',
+            top: '1rem',
+          });
+          airModeContext.invoke('buttons.updateCurrentStyle', $popover);
+        };
+
+        airPopover.update = positionPinnedPopover;
+        airPopover.hide = positionPinnedPopover;
+        positionPinnedPopover();
+      });
+    </script>
+
+  </body>
+</html>

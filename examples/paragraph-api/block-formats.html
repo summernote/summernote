@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Block Formats</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Paragraph API</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Block Formats</li>
+        </ol>
+      </nav>
+
+      <h1>Insert paragraphs and switch block formats</h1>
+
+      <p class="page-copy">
+        This page covers the block-level paragraph commands that still exist in the current editor:
+        <code>insertParagraph</code>, <code>formatPara</code>, and the heading helpers.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-primary" id="insert-paragraph" type="button">Insert paragraph</button>
+                <button class="btn btn-outline-primary" data-format-command="formatPara" type="button">Format P</button>
+                <button class="btn btn-outline-primary" data-format-command="formatH1" type="button">Format H1</button>
+                <button class="btn btn-outline-primary" data-format-command="formatH2" type="button">Format H2</button>
+                <button class="btn btn-outline-secondary" id="reset-block-formats" type="button">Reset content</button>
+              </div>
+              <div id="paragraph-block-formats-editor">
+                <p data-target="paragraph">This paragraph is the current block format target.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">HTML output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="paragraph-block-formats-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Block Formats</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#paragraph-block-formats-editor', {
+  height: 240,
+});
+
+summernote.invoke('#paragraph-block-formats-editor', 'insertParagraph');
+summernote.invoke('#paragraph-block-formats-editor', 'formatPara');
+summernote.invoke('#paragraph-block-formats-editor', 'formatH1');
+summernote.invoke('#paragraph-block-formats-editor', 'formatH2');</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#paragraph-block-formats-editor';
+        const initialMarkup = '<p data-target="paragraph">This paragraph is the current block format target.</p>';
+        const output = document.getElementById('paragraph-block-formats-output');
+
+        summernote.create(target, {
+          height: 240,
+        });
+
+        function placeCaretAtEnd() {
+          const context = summernote.getInstance(target);
+          const paragraph = context.layoutInfo.editable[0].querySelector('[data-target="paragraph"]')
+            || context.layoutInfo.editable[0].querySelector('p, h1, h2');
+          const textNode = paragraph.firstChild;
+          const selection = window.getSelection();
+          const range = document.createRange();
+          const offset = textNode.textContent.length;
+          range.setStart(textNode, offset);
+          range.setEnd(textNode, offset);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          context.modules.editor.setLastRange(context.modules.editor.createRange());
+        }
+
+        function selectBlockText() {
+          const context = summernote.getInstance(target);
+          const paragraph = context.layoutInfo.editable[0].querySelector('[data-target="paragraph"]')
+            || context.layoutInfo.editable[0].querySelector('p, h1, h2');
+          const textNode = paragraph.firstChild;
+          const selection = window.getSelection();
+          const range = document.createRange();
+          range.selectNodeContents(textNode);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          context.modules.editor.setLastRange(context.modules.editor.createRange());
+        }
+
+        function renderHtml(label) {
+          output.textContent = `${label}\n${summernote.invoke(target, 'code')}`;
+        }
+
+        document.getElementById('insert-paragraph').addEventListener('click', () => {
+          placeCaretAtEnd();
+          summernote.invoke(target, 'insertParagraph');
+          renderHtml('Applied insertParagraph.');
+        });
+
+        document.querySelectorAll('[data-format-command]').forEach((button) => {
+          button.addEventListener('click', () => {
+            selectBlockText();
+            summernote.invoke(target, button.dataset.formatCommand);
+            renderHtml(`Applied ${button.dataset.formatCommand}.`);
+          });
+        });
+
+        document.getElementById('reset-block-formats').addEventListener('click', () => {
+          summernote.invoke(target, 'code', initialMarkup);
+          renderHtml('Reset content.');
+        });
+      });
+    </script>
+  </body>
+</html>

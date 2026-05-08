@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summernote Next - Line Height</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/examples.css">
+    <link rel="stylesheet" href="/dist/summernote-next.css">
+    <script type="module" src="/assets/examples.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script defer src="/dist/summernote-next.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-3">
+          <li class="breadcrumb-item"><a href="../index.html">Examples overview</a></li>
+          <li class="breadcrumb-item"><a href="./index.html">Paragraph API</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Line Height</li>
+        </ol>
+      </nav>
+
+      <h1>Apply line-height through the paragraph API</h1>
+
+      <p class="page-copy">
+        This is the runtime companion to the line-height initialization example. Here the value is changed by calling the
+        <code>lineHeight</code> command directly on the current paragraph.
+      </p>
+
+      <div class="row row-cols-1 row-cols-xl-2 g-4 mt-3">
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-primary" data-line-height="1.2" type="button">LineHeight 1.2</button>
+                <button class="btn btn-outline-primary" data-line-height="1.5" type="button">LineHeight 1.5</button>
+                <button class="btn btn-outline-primary" data-line-height="2.0" type="button">LineHeight 2.0</button>
+                <button class="btn btn-outline-secondary" id="reset-line-height" type="button">Reset content</button>
+              </div>
+              <div id="paragraph-line-height-editor">
+                <p data-target="paragraph">This paragraph is the current line-height target. Change the spacing and compare the resulting inline style.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="col">
+          <div class="card h-100">
+            <div class="card-header">HTML output</div>
+            <div class="card-body">
+              <pre class="mb-0"><code id="paragraph-line-height-output">Ready.</code></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="card mt-4" data-example-configuration>
+        <div class="card-header">Example configuration - Line Height</div>
+        <div class="card-body">
+          <pre class="mb-0"><code>summernote.create('#paragraph-line-height-editor', {
+  height: 240,
+});
+
+summernote.invoke('#paragraph-line-height-editor', 'lineHeight', '1.2');
+summernote.invoke('#paragraph-line-height-editor', 'lineHeight', '1.5');
+summernote.invoke('#paragraph-line-height-editor', 'lineHeight', '2.0');</code></pre>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const target = '#paragraph-line-height-editor';
+        const initialMarkup = '<p data-target="paragraph">This paragraph is the current line-height target. Change the spacing and compare the resulting inline style.</p>';
+        const output = document.getElementById('paragraph-line-height-output');
+
+        summernote.create(target, {
+          height: 240,
+        });
+
+        function selectParagraph() {
+          const context = summernote.getInstance(target);
+          const paragraph = context.layoutInfo.editable[0].querySelector('[data-target="paragraph"]');
+          const selection = window.getSelection();
+          const range = document.createRange();
+          range.selectNodeContents(paragraph);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          context.modules.editor.setLastRange(context.modules.editor.createRange());
+        }
+
+        function renderHtml(label) {
+          output.textContent = `${label}\n${summernote.invoke(target, 'code')}`;
+        }
+
+        document.querySelectorAll('[data-line-height]').forEach((button) => {
+          button.addEventListener('click', () => {
+            selectParagraph();
+            summernote.invoke(target, 'lineHeight', button.dataset.lineHeight);
+            renderHtml(`Applied lineHeight ${button.dataset.lineHeight}.`);
+          });
+        });
+
+        document.getElementById('reset-line-height').addEventListener('click', () => {
+          summernote.invoke(target, 'code', initialMarkup);
+          renderHtml('Reset content.');
+        });
+      });
+    </script>
+  </body>
+</html>
