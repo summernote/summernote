@@ -8,7 +8,7 @@ Copyright 2013-present Hackerwins and contributors
 Copyright 2026-present Jürgen Schwind and contributors
 Summernote Next may be freely distributed under the MIT license.
 
-Date: 2026-05-08T19:26Z
+Date: 2026-05-08T19:31Z
  */
 var summernote = (function() {
 	//#region src/js/core/dom-query.js

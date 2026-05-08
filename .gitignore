@@ -4,4 +4,4 @@
 /.tmp/
 /coverage/
 /node_modules/
-/*.zip
+/dist/*.zip
